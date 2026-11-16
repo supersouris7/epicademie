@@ -11,6 +11,9 @@ import { MultiModes } from './pages/MultiModes.tsx';
 import { ProfileEditor } from './pages/ProfileEditor.tsx';
 import { ProfilePicker } from './pages/ProfilePicker.tsx';
 import { Settings } from './pages/Settings.tsx';
+import { Chapters } from './pages/training/Chapters.tsx';
+import { Notions } from './pages/training/Notions.tsx';
+import { TrainingPlay } from './pages/training/TrainingPlay.tsx';
 import { useSession } from './store/session.ts';
 
 /** Rend `children(profile)` si un profil est sélectionné et existe, sinon renvoie vers l'accueil. */
@@ -36,6 +39,18 @@ export function App() {
       <Route path="/hub" element={<WithProfile>{(p) => <Hub profile={p} />}</WithProfile>} />
       <Route path="/multi" element={<WithProfile>{() => <MultiModes />}</WithProfile>} />
       <Route path="/jouer/:modeId" element={<WithProfile>{() => <ModeSetup />}</WithProfile>} />
+      <Route
+        path="/jouer/entrainement/:subject"
+        element={<WithProfile>{(p) => <Chapters profile={p} />}</WithProfile>}
+      />
+      <Route
+        path="/jouer/entrainement/:subject/:chapterId"
+        element={<WithProfile>{(p) => <Notions profile={p} />}</WithProfile>}
+      />
+      <Route
+        path="/partie/entrainement/:chapterId/:skillId"
+        element={<WithProfile>{(p) => <TrainingPlay profile={p} />}</WithProfile>}
+      />
       <Route path="/parametres" element={<WithProfile>{(p) => <Settings profile={p} />}</WithProfile>} />
       <Route path="/a-propos" element={<About />} />
       <Route path="*" element={<Navigate to="/" replace />} />

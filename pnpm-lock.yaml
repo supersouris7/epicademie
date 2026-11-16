@@ -357,6 +357,9 @@ importers:
 
   packages/engine:
     dependencies:
+      '@questeo/content':
+        specifier: workspace:*
+        version: link:../content
       '@questeo/shared':
         specifier: workspace:*
         version: link:../shared

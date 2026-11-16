@@ -94,45 +94,35 @@ Profils créés depuis l'écran d'accueil (prénom + avatar). Aucun mot de passe
 
 Chaque matière est découpée en **chapitres → notions (skills)**. Une notion = un type d'exercice atomique, avec 3 paliers de difficulté.
 
-### 5.1 Mathématiques — V1 complète (★ = drill prioritaire)
+### 5.1 Mathématiques — V1 complète
 
-**Automatismes / calcul mental ★**
+Référence : **nouveau programme du cycle 4, BO n°10 du 5 mars 2026** (arrêté du 18 février 2026), applicable en **5e dès la rentrée 2026**. Texte lu : annexe 2 « Programme de mathématiques pour le cycle 4 » publiée sur education.gouv.fr. Chaque notion cite dans sa leçon l'objectif officiel correspondant.
 
-- Tables d'addition et de multiplication (une notion par table, 2→12)
-- Compléments à 10, 100, 1000 ; doubles / moitiés
-- Multiplier/diviser par 10, 100, 1000, 0,1, 0,01
-- Calcul mental décimal (sommes, différences, produits simples)
-- Divisions euclidiennes (quotient, reste)
+Différences notables avec l'ancien programme de 2020 en 5e : la simplification des fractions et la multiplication des relatifs passent en 4e ; arrivent en 5e les puissances (carré, cube), la valeur absolue, la division par un décimal, les critères de divisibilité par 3 et 9, le calcul littéral (substitution, k(a+b), réduire ax+b, équations ax = c et x + b = c), hauteurs, médianes, médiatrices, fonctions (« en fonction de ») et programmation par blocs.
 
-**Nombres et calculs**
+| Chapitre                | Notions (identifiants `m5-…` dans `packages/content/src/maths`)                                                                                                                  |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Calcul mental           | tables, division euclidienne, décomposer en produit, produits décimaux, × ÷ 10/100/1000, addition/soustraction de décimaux                                                       |
+| Opérations et priorités | priorités, somme/produit/termes/facteurs, programme de calcul → expression, distributivité numérique, multiples/diviseurs, divisibilité (2, 3, 5, 9, 10), diviser par un décimal |
+| Nombres relatifs        | opposé/valeur absolue/signe, droite graduée, comparer/ranger, addition, soustraction, enchaînements, problèmes                                                                   |
+| Fractions               | écriture décimale, quotient, droite graduée, fractions égales, comparer, partie entière, addition, soustraction, fraction d'un nombre, problèmes                                 |
+| Puissances              | notation carré/cube, carrés 0–12, calculs avec puissances                                                                                                                        |
+| Calcul littéral         | suites de motifs, formules, substitution, tester une égalité, somme ou produit, développer/factoriser, réduire, équations                                                        |
+| Repérage                | abscisse décimale, coordonnées (lire, placer)                                                                                                                                    |
+| Solides et volumes      | volumes cube/pavé/prisme, unités de volume et contenance, aire du disque et volume du cylindre, patron du cube                                                                   |
+| Symétries               | symétrie axiale (automatisme), symétrie centrale, propriétés                                                                                                                     |
+| Angles                  | vocabulaire, angles et parallèles (alternes-internes, correspondants)                                                                                                            |
+| Triangles               | somme des angles (et constructibilité), aire, hauteurs/médianes/médiatrices                                                                                                      |
+| Parallélogrammes        | propriétés et parallélogrammes particuliers, aire, conversions longueurs/aires                                                                                                   |
+| Statistiques            | effectifs et fréquences, moyenne, lecture de diagramme                                                                                                                           |
+| Probabilités            | vocabulaire, calcul (équiprobabilité), échelle et fréquences                                                                                                                     |
+| Proportionnalité        | reconnaître (tableau, graphique), linéarité/retour à l'unité, pourcentages, prix unitaire/vitesse/échelle                                                                        |
+| Fonctions               | grandeur en fonction d'une autre, lecture de graphique                                                                                                                           |
+| Programmation           | prévoir la sortie d'un programme par blocs, boucle « répéter »                                                                                                                   |
 
-- Priorités opératoires (sans/avec parenthèses) ★
-- Nombres relatifs : repérage sur une droite, comparaison, addition, soustraction ★
-- Fractions : égalité, simplification, comparaison, addition/soustraction (dénominateurs multiples), fraction d'une quantité ★
-- Multiples, diviseurs, critères de divisibilité (2, 3, 5, 9, 10), nombres premiers ★
-- Calcul littéral : substitution, réduire, distributivité simple, tester une égalité
+17 chapitres, 72 notions, 3 niveaux chacune. Chaque générateur fournit l'énoncé, la réponse exacte (arithmétique rationnelle, sans flottants), les **erreurs typiques reconnues** avec leur explication, la correction pas-à-pas et une leçon sourcée.
 
-**Proportionnalité et données**
-
-- Reconnaître une situation de proportionnalité, 4e proportionnelle ★
-- Pourcentages (appliquer), échelles, ratios
-- Statistiques : moyenne, effectifs, fréquences ; lecture de graphiques
-- Probabilités : vocabulaire, calcul simple
-
-**Grandeurs et mesures**
-
-- Conversions longueurs, masses, durées, aires, volumes, contenances ★
-- Périmètres, aires (triangle, parallélogramme, disque), volumes (prisme droit, cylindre)
-
-**Espace et géométrie**
-
-- Angles : somme dans un triangle, angles alternes-internes / correspondants
-- Inégalité triangulaire, constructibilité d'un triangle
-- Parallélogramme : propriétés
-- Symétrie centrale (exercice sur grille interactive)
-- Repérage dans le plan (coordonnées)
-
-Chaque générateur produit : énoncé, réponse attendue, tolérance/équivalences (ex. `3/4 = 0,75 = 6/8` selon consigne), **correction pas-à-pas**, et 3 distracteurs plausibles (erreurs typiques : signe, priorité, dénominateurs additionnés…) pour les QCM.
+**Contrôle qualité du contenu** (pas de relecture humaine) : test structurel sur 150 graines × 3 niveaux × 72 notions (réponse acceptée, pièges ≠ réponse, options distinctes, figures valides, déterminisme) et **vérification indépendante** : chaque énoncé « Calcule … » est réévalué par un évaluateur séparé et comparé à la réponse attendue.
 
 ### 5.2 Physique-chimie — V1 : 3 notions
 

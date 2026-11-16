@@ -4,7 +4,10 @@ import Fastify, { type FastifyInstance } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import type { Db } from './db/client.ts';
 import { createProfilesRepo } from './db/profiles-repo.ts';
+import { createPlayRepo } from './db/play-repo.ts';
+import { playRoutes } from './routes/play.ts';
 import { profileRoutes } from './routes/profiles.ts';
+import { today } from './today.ts';
 import { detectLanAddress } from './lan.ts';
 
 export interface AppOptions {
@@ -13,6 +16,8 @@ export interface AppOptions {
   readonly webDir: string | null;
   readonly publicUrl: string | null;
   readonly logger?: boolean;
+  /** Date du jour injectable (tests). */
+  readonly today?: () => string;
 }
 
 export async function buildApp(opts: AppOptions): Promise<FastifyInstance> {
@@ -26,6 +31,7 @@ export async function buildApp(opts: AppOptions): Promise<FastifyInstance> {
         return { publicUrl: opts.publicUrl ?? (lan ? `http://${lan}:${opts.port}` : null) };
       });
       await api.register(profileRoutes(createProfilesRepo(opts.db)));
+      await api.register(playRoutes(createPlayRepo(opts.db, opts.today ?? (() => today()))));
     },
     { prefix: '/api' },
   );

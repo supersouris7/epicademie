@@ -32,6 +32,13 @@ export const CREDITS: readonly Credit[] = [
     sourceUrl: 'https://www.dicebear.com',
   },
   {
+    work: 'Effets sonores « Interface Sounds »',
+    author: 'Kenney (kenney.nl)',
+    license: 'CC0 1.0',
+    licenseUrl: 'https://creativecommons.org/publicdomain/zero/1.0/',
+    sourceUrl: 'https://kenney.nl/assets/interface-sounds',
+  },
+  {
     work: 'Moteur d’avatars DiceBear',
     author: 'Florian Körner',
     license: 'MIT',

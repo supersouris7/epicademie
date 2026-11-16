@@ -10,6 +10,7 @@
     "typecheck": "tsc -p ."
   },
   "dependencies": {
+    "@questeo/content": "workspace:*",
     "@questeo/shared": "workspace:*"
   }
 }
