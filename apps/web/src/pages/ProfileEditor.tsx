@@ -16,15 +16,13 @@ import { PageShell } from '../components/PageShell.tsx';
 import { useSession } from '../store/session.ts';
 
 const STYLE_LABELS: Record<AvatarStyle, string> = {
-  adventurer: 'Aventurier',
-  'big-smile': 'Sourire',
   'fun-emoji': 'Émoji',
-  bottts: 'Robot',
-  croodles: 'Gribouille',
+  'adventurer-neutral': 'Visage',
+  pixelbot: 'Robot',
 };
 
 const randomSeed = () => crypto.randomUUID().slice(0, 8);
-const seedBatch = () => Array.from({ length: 8 }, randomSeed);
+const seedBatch = () => Array.from({ length: 16 }, randomSeed);
 
 /** Création (`/profils/nouveau`) ou modification (`/profils/:id/modifier`) d'un profil. */
 export function ProfileEditor() {
@@ -41,7 +39,7 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
   const update = useUpdateProfile(existing?.id ?? '');
   const [name, setName] = useState(existing?.name ?? '');
   const [avatar, setAvatar] = useState<AvatarConfig>(
-    existing?.avatar ?? { style: 'adventurer', seed: randomSeed(), background: 'ffd166' },
+    existing?.avatar ?? { style: 'fun-emoji', seed: randomSeed(), background: 'ffd166' },
   );
   const [seeds, setSeeds] = useState(seedBatch);
   const [error, setError] = useState<string | null>(null);

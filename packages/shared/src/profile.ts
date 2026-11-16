@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 /** Styles DiceBear autorisés (licences libres, voir docs/CREDITS.md). */
-export const AVATAR_STYLES = ['adventurer', 'big-smile', 'fun-emoji', 'bottts', 'croodles'] as const;
+export const AVATAR_STYLES = ['fun-emoji', 'adventurer-neutral', 'pixelbot'] as const;
 export type AvatarStyle = (typeof AVATAR_STYLES)[number];
 
 export const AVATAR_BACKGROUNDS = [

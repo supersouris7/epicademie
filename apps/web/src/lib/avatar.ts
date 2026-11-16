@@ -6,11 +6,9 @@ type Loader = () => Promise<{ default: unknown }>;
 
 // Chargement paresseux : chaque style n'est téléchargé qu'à la première utilisation.
 const LOADERS: Record<AvatarStyle, Loader> = {
-  adventurer: () => import('@dicebear/styles/adventurer.json'),
-  'big-smile': () => import('@dicebear/styles/big-smile.json'),
   'fun-emoji': () => import('@dicebear/styles/fun-emoji.json'),
-  bottts: () => import('@dicebear/styles/bottts.json'),
-  croodles: () => import('@dicebear/styles/croodles.json'),
+  'adventurer-neutral': () => import('@dicebear/styles/adventurer-neutral.json'),
+  pixelbot: () => import('@dicebear/styles/pixelbot.json'),
 };
 
 const styles = new Map<AvatarStyle, Promise<Style>>();
