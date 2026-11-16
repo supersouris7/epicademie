@@ -6,6 +6,8 @@ import { useProfile } from './api/profiles.ts';
 import { useApplyTheme } from './lib/theme.ts';
 import { About } from './pages/About.tsx';
 import { Hub } from './pages/Hub.tsx';
+import { ModeSetup } from './pages/ModeSetup.tsx';
+import { MultiModes } from './pages/MultiModes.tsx';
 import { ProfileEditor } from './pages/ProfileEditor.tsx';
 import { ProfilePicker } from './pages/ProfilePicker.tsx';
 import { Settings } from './pages/Settings.tsx';
@@ -32,6 +34,8 @@ export function App() {
       <Route path="/profils/nouveau" element={<ProfileEditor />} />
       <Route path="/profils/:id/modifier" element={<ProfileEditor />} />
       <Route path="/hub" element={<WithProfile>{(p) => <Hub profile={p} />}</WithProfile>} />
+      <Route path="/multi" element={<WithProfile>{() => <MultiModes />}</WithProfile>} />
+      <Route path="/jouer/:modeId" element={<WithProfile>{() => <ModeSetup />}</WithProfile>} />
       <Route path="/parametres" element={<WithProfile>{(p) => <Settings profile={p} />}</WithProfile>} />
       <Route path="/a-propos" element={<About />} />
       <Route path="*" element={<Navigate to="/" replace />} />

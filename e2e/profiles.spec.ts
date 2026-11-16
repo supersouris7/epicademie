@@ -16,9 +16,20 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page).toHaveURL(/\/hub$/);
   await expect(page.getByRole('heading', { name })).toBeVisible();
   await expect(page.getByText('Apprenti')).toBeVisible();
+
+  // Mode d'abord, matière ensuite.
+  for (const mode of ['Révisions du jour', 'Entraînement', 'Combat de boss', 'Contre-la-montre', 'Bilan']) {
+    await expect(page.getByRole('button', { name: new RegExp(mode) })).toBeVisible();
+  }
+  await page.getByRole('button', { name: /Combat de boss/ }).click();
+  await expect(page).toHaveURL(/\/jouer\/boss$/);
   for (const subject of ['Maths', 'Physique-Chimie', 'Anglais', 'Espagnol', 'Histoire', 'Géographie']) {
     await expect(page.getByRole('button', { name: subject })).toBeVisible();
   }
+  await page.getByRole('button', { name: 'Retour' }).click();
+  await page.getByRole('button', { name: /Multijoueur/ }).click();
+  await expect(page.getByRole('button', { name: /Arène/ })).toBeVisible();
+  await page.getByRole('button', { name: 'Retour' }).click();
 
   await page.getByRole('button', { name: 'Paramètres' }).click();
   await page.getByRole('radio', { name: 'Sombre' }).click();

@@ -34,8 +34,9 @@ export function Questy({ mood = 'happy', size = 96, className, title }: QuestyPr
       width={size}
       height={size}
       className={className}
-      role="img"
-      aria-label={title ?? `Questy — ${m.label}`}
+      role={title === '' ? undefined : 'img'}
+      aria-hidden={title === '' ? true : undefined}
+      aria-label={title === '' ? undefined : (title ?? `Questy — ${m.label}`)}
     >
       <defs>
         <clipPath id={`${id}-c`}>

@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
-import { SUBJECTS, type Profile } from '@questeo/shared';
+import { MODES, MODE_CATEGORIES, type Profile } from '@questeo/shared';
 import { Avatar } from '../components/Avatar.tsx';
+import { ModeTile } from '../components/ModeTile.tsx';
 import { PageShell } from '../components/PageShell.tsx';
 import { SpeechBubble } from '../components/SpeechBubble.tsx';
 import { XpBar } from '../components/XpBar.tsx';
+import { CoinIcon, GearIcon, PhoneIcon } from '../components/icons.tsx';
 import { Questy } from '../components/mascot/Questy.tsx';
 import { MOOD_IDS, type MoodId } from '../components/mascot/moods.ts';
-import { CoinIcon, GearIcon, PhoneIcon, SubjectIcon } from '../components/icons.tsx';
 
 export function Hub({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
-  const [toast, setToast] = useState<string | null>(null);
   const [mood, setMood] = useState<MoodId>('happy');
   // Taper sur Questy lui fait changer de tête (au hasard, jamais deux fois la même).
   const tickle = () =>
@@ -20,10 +20,6 @@ export function Hub({ profile }: { readonly profile: Profile }) {
       const others = MOOD_IDS.filter((m) => m !== current);
       return others[Math.floor(Math.random() * others.length)] ?? 'happy';
     });
-  const soon = (what: string) => {
-    setToast(`${what} arrive bientôt !`);
-    window.setTimeout(() => setToast(null), 2000);
-  };
 
   return (
     <PageShell
@@ -53,62 +49,37 @@ export function Hub({ profile }: { readonly profile: Profile }) {
         </div>
       </section>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-4">
         <motion.button
           type="button"
           onClick={tickle}
           aria-label="Chatouiller Questy"
-          animate={{ y: [0, -8, 0] }}
           whileTap={{ scale: 0.85, rotate: -8 }}
-          transition={{ repeat: Infinity, duration: 2.4, ease: 'easeInOut' }}
-          className="w-28 shrink-0 sm:w-36"
+          className="shrink-0"
         >
-          <Questy size="100%" mood={mood} />
+          <Questy size={88} mood={mood} />
         </motion.button>
-        <SpeechBubble>Prêt pour l’aventure, {profile.name} ? Choisis ta matière !</SpeechBubble>
+        <SpeechBubble>À quoi on joue, {profile.name} ?</SpeechBubble>
       </div>
 
-      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-        {SUBJECTS.map((s, i) => (
-          <motion.li
-            key={s.id}
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.1 + i * 0.05, type: 'spring', stiffness: 220, damping: 15 }}
-          >
-            <button
-              type="button"
-              onClick={() => soon(s.name)}
-              className="cartoon cartoon-press flex min-h-36 w-full flex-col items-center justify-center gap-2 p-4 text-white"
-              style={{ backgroundColor: `var(--subject-${s.color})` }}
-            >
-              <SubjectIcon subject={s.id} size={64} />
-              <span className="font-display text-xl tracking-wide drop-shadow-[0_2px_0_var(--outline)] sm:text-2xl">
-                {s.name}
-              </span>
-            </button>
-          </motion.li>
-        ))}
-      </ul>
+      {MODE_CATEGORIES.filter((c) => c.id !== 'multi').map((category) => (
+        <section key={category.id} className="flex flex-col gap-3">
+          <h2 className="font-display text-2xl tracking-wide">{category.name}</h2>
+          <ul className="grid gap-4 sm:grid-cols-2">
+            {MODES.filter((m) => m.category === category.id).map((mode, i) => (
+              <ModeTile key={mode.id} mode={mode} index={i} onClick={() => void navigate(`/jouer/${mode.id}`)} />
+            ))}
+          </ul>
+        </section>
+      ))}
 
       <button
         type="button"
-        onClick={() => soon('Le multijoueur')}
+        onClick={() => void navigate('/multi')}
         className="cartoon cartoon-press bg-accent font-display flex min-h-20 items-center justify-center gap-3 text-2xl tracking-wide text-white"
       >
         <PhoneIcon size={40} /> Multijoueur
       </button>
-
-      {toast && (
-        <motion.div
-          role="status"
-          initial={{ y: 40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="cartoon bg-gold font-display fixed inset-x-4 bottom-6 mx-auto max-w-md p-4 text-center text-xl text-[#1d1638]"
-        >
-          {toast}
-        </motion.div>
-      )}
     </PageShell>
   );
 }

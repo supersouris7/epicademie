@@ -19,7 +19,7 @@
 | Gamification | XP + niveaux, séries quotidiennes + défi du jour + combos, trophées + avatar personnalisable (pièces)                                                                                                                                                      |
 | Drill maths  | Répétition espacée adaptative, sprints contre-la-montre, correction expliquée pas-à-pas                                                                                                                                                                    |
 | Style        | Cartoon coloré « aventure », mascotte, confettis ; sons + musique ; mode sombre                                                                                                                                                                            |
-| Multijoueur  | 2–6 joueurs, hôte = tablette ou TV ; modes Quiz plateau TV, Course de calcul, Coop boss, Handicap parent/enfant                                                                                                                                            |
+| Multijoueur  | 2–6 joueurs, hôte = tablette ou TV ; modes Arène, Raid, Quiz plateau TV, Course de calcul, Handicap parent/enfant                                                                                                                                          |
 | Qualité      | TS strict, ESLint + Prettier, Vitest, Playwright, Husky + lint-staged, GitHub Actions                                                                                                                                                                      |
 | Repo         | Monorepo pnpm, dépôt GitHub privé                                                                                                                                                                                                                          |
 | Portée V1    | Socle complet + **maths 5e complètes** ; autres matières : 2–3 notions chacune                                                                                                                                                                             |
@@ -184,19 +184,37 @@ _Ensuite_ : ressources (eau, énergie, alimentation), risques et changement glob
 - À l'intérieur d'une notion, les **paramètres ratés** reviennent (ex. 7×8 raté → reproposé dans 2–4 questions).
 - Difficulté adaptée : 3 réussites rapides consécutives → palier +1 ; 2 erreurs → palier −1.
 
-### 6.2 Modes solo
+### 6.2 Parcours de jeu
 
-| Mode                     | Description                                                             |
-| ------------------------ | ----------------------------------------------------------------------- |
-| Entraînement intelligent | 10 questions choisies par le moteur SRS                                 |
-| Notion                   | 10 questions sur une notion choisie                                     |
-| Sprint 60 s ★            | max de bonnes réponses en 60 s, record par notion                       |
-| Série parfaite           | jusqu'à la première erreur                                              |
-| Défi du jour             | 10 questions identiques pour tous les profils (graine = date), bonus XP |
+Accueil → **choix du mode** → choix de la matière (si le mode le demande) → choix du thème → partie.
+Catalogue typé dans `packages/shared/src/modes.ts`.
 
-### 6.3 Correction
+| Catégorie   | Mode                | Portée            | Principe                                                                                                                    |
+| ----------- | ------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Apprendre   | Révisions du jour   | toutes matières   | notions échues selon la répétition espacée ; badge « N à revoir » sur l'accueil                                             |
+| Apprendre   | Entraînement        | matière → thème   | 10 questions, difficulté adaptative, sans pression                                                                          |
+| Apprendre   | Combat de boss      | matière → thème   | boss du thème, bonne réponse = dégâts, erreur = −1 cœur (3 cœurs) ; boss final de matière quand tous les thèmes sont acquis |
+| Apprendre   | Atelier des erreurs | toutes matières   | uniquement les questions ratées : explication puis variante, jusqu'à réussite                                               |
+| Défis       | Contre-la-montre    | matière → thème   | max de bonnes réponses en 60 s, record par thème                                                                            |
+| Défis       | Survie              | matière → thème   | difficulté croissante, 3 vies, record de vagues                                                                             |
+| Défis       | Défi du jour        | toutes matières   | 10 questions identiques pour la famille (graine = date), classement du jour, bonus XP                                       |
+| Défis       | Bilan               | global ou matière | test sans aide : note /20 **et** niveau de maîtrise par thème, plan de révision généré                                      |
+| Multijoueur | voir §9.2           |                   |                                                                                                                             |
 
-En cas d'erreur : réponse correcte + **méthode pas-à-pas** animée (ex. priorités : surlignage de l'opération effectuée à chaque étape), puis bouton « Compris ».
+**Boss et adversaires** : univers moderne (aliens, ninjas, gunners, robots, hackers…), jamais médiéval-fantastique. Rendu **écran LED comme Questy** : visage pixel, plus une silhouette et un équipement propres (antennes, bandeau, visière), avec leurs couleurs et leurs grimaces de boss. Personnages originaux.
+
+### 6.3 Acquisition d'une notion
+
+- **Acquise** = 3 réussites espacées sans erreur : J0, J+2, J+7. Ensuite, rappel d'entretien mensuel. Une erreur repasse la notion « à revoir » (J+1).
+- **Évaluation** affichée en double : **note /20** et **niveau de maîtrise** à l'échelle du livret scolaire (LSU) : insuffisante / fragile / satisfaisante / très bonne. Le tout est calculé par thème, par matière et en global.
+- **Rappels** : badge « N notions à revoir aujourd'hui » sur l'accueil et sur le mode Révisions ; Questy prend l'air triste si des notions sont en retard. La **série quotidienne** (flamme) n'est maintenue que si les révisions du jour sont faites.
+
+### 6.4 Quand l'élève se trompe
+
+1. **Pourquoi cette erreur** : chaque mauvaise réponse typique est reconnue par le générateur (ex. « tu as additionné les dénominateurs », « le signe − s'applique à tout le produit ») et reçoit une explication ciblée.
+2. **Correction pas-à-pas** animée (surlignage de l'étape en cours).
+3. **Rappel de cours** : bouton « Revoir la leçon » qui ouvre une fiche courte de la notion avec un exemple.
+4. **Variante immédiate** : une question similaire juste après pour vérifier ; la notion passe en « à revoir » dans la répétition espacée.
 
 ---
 
@@ -230,12 +248,13 @@ En cas d'erreur : réponse correcte + **méthode pas-à-pas** animée (ex. prior
 
 ### 9.2 Modes
 
-| Mode                 | Déroulé                                                                                                                               |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| **Quiz plateau TV**  | question à l'écran hôte, choix sur les téléphones, points selon rapidité, classement animé entre les questions                        |
-| **Course de calcul** | chacun reçoit son flux de calculs sur son téléphone, l'écran hôte montre une course de personnages, premier à N bonnes réponses gagne |
-| **Coop boss**        | barre de vie d'un boss commune ; chaque bonne réponse inflige des dégâts, chaque erreur ou retard soigne le boss                      |
-| **Handicap**         | applicable à tout mode : par joueur, temps réduit et/ou palier de difficulté supérieur (parent vs enfant)                             |
+| Mode                 | Déroulé                                                                                                                                          |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Arène**            | chaque joueur a une barre de vie ; ses bonnes réponses attaquent les autres, les combos déclenchent des coups spéciaux ; le dernier debout gagne |
+| **Raid**             | toute l'équipe contre un boss géant sur l'écran TV ; chaque bonne réponse lui inflige des dégâts, chaque erreur ou retard le soigne              |
+| **Quiz plateau TV**  | question à l'écran hôte, buzzer et choix sur les téléphones, points selon rapidité, classement animé entre les questions                         |
+| **Course de calcul** | chacun reçoit son flux de questions sur son téléphone, l'écran hôte montre une course, le premier à 20 bonnes réponses gagne                     |
+| **Handicap**         | applicable à tout mode : par joueur, temps réduit et/ou palier de difficulté supérieur (parent vs enfant)                                        |
 
 ### 9.3 Protocole (Socket.IO, typé dans `packages/shared`)
 
