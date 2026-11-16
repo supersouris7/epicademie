@@ -1,0 +1,16 @@
+services:
+  questeo:
+    image: ${QUESTEO_IMAGE:-questeo:local}
+    build: .
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      # URL utilisée dans le QR code de connexion des smartphones.
+      # En conteneur, l'IP détectée est celle du réseau Docker : renseignez l'IP de la machine hôte.
+      PUBLIC_URL: ${PUBLIC_URL:-}
+    volumes:
+      - questeo-data:/data
+
+volumes:
+  questeo-data:

@@ -1,0 +1,7 @@
+pnpm-lock.yaml
+**/dist
+**/drizzle/meta
+coverage
+playwright-report
+test-results
+apps/web/public/*.svg

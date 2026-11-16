@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*.*.*']
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Lint, types, tests, build, E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: corepack enable
+      - id: pnpm-store
+        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+      - name: Cache pnpm
+        uses: actions/cache@v6
+        with:
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: pnpm-${{ runner.os }}-
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm e2e
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7
+
+  docker:
+    name: Image Docker → Docker Hub
+    needs: quality
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      HAS_DOCKERHUB: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+    steps:
+      - name: Vérifier les secrets Docker Hub
+        if: env.HAS_DOCKERHUB != 'true'
+        run: echo "::warning::Secrets DOCKERHUB_USERNAME / DOCKERHUB_TOKEN absents — publication ignorée."
+      - uses: actions/checkout@v7
+        if: env.HAS_DOCKERHUB == 'true'
+      - uses: docker/setup-qemu-action@v4
+        if: env.HAS_DOCKERHUB == 'true'
+      - uses: docker/setup-buildx-action@v4
+        if: env.HAS_DOCKERHUB == 'true'
+      - uses: docker/login-action@v4
+        if: env.HAS_DOCKERHUB == 'true'
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - id: meta
+        if: env.HAS_DOCKERHUB == 'true'
+        uses: docker/metadata-action@v6
+        with:
+          images: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/questeo
+          # main → unstable (+ sha) ; tag v1.0.1 → 1.0.1, 1.0, 1, latest
+          tags: |
+            type=raw,value=unstable,enable={{is_default_branch}}
+            type=sha,prefix=sha-,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+          flavor: |
+            latest=auto
+      - uses: docker/build-push-action@v7
+        if: env.HAS_DOCKERHUB == 'true'
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: VERSION=${{ steps.meta.outputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

@@ -1,0 +1,45 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import Fastify, { type FastifyInstance } from 'fastify';
+import fastifyStatic from '@fastify/static';
+import type { Db } from './db/client.ts';
+import { createProfilesRepo } from './db/profiles-repo.ts';
+import { profileRoutes } from './routes/profiles.ts';
+import { detectLanAddress } from './lan.ts';
+
+export interface AppOptions {
+  readonly db: Db;
+  readonly port: number;
+  readonly webDir: string | null;
+  readonly publicUrl: string | null;
+  readonly logger?: boolean;
+}
+
+export async function buildApp(opts: AppOptions): Promise<FastifyInstance> {
+  const app = Fastify({ logger: opts.logger ?? false });
+
+  await app.register(
+    async (api) => {
+      api.get('/health', async () => ({ status: 'ok' }));
+      api.get('/network', async () => {
+        const lan = detectLanAddress();
+        return { publicUrl: opts.publicUrl ?? (lan ? `http://${lan}:${opts.port}` : null) };
+      });
+      await api.register(profileRoutes(createProfilesRepo(opts.db)));
+    },
+    { prefix: '/api' },
+  );
+
+  const { webDir } = opts;
+  if (webDir && fs.existsSync(path.join(webDir, 'index.html'))) {
+    await app.register(fastifyStatic, { root: webDir, wildcard: false });
+    // Fallback SPA : toute route non-API renvoie index.html.
+    app.setNotFoundHandler((req, reply) =>
+      req.url.startsWith('/api/')
+        ? reply.code(404).send({ error: 'Route inconnue' })
+        : reply.type('text/html').sendFile('index.html'),
+    );
+  }
+
+  return app;
+}
