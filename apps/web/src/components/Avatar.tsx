@@ -12,8 +12,8 @@ export function Avatar({ avatar, size = 96, className = '', label = '' }: Avatar
   const uri = useAvatarUri(avatar);
   return (
     <div
-      className={`cartoon shrink-0 overflow-hidden rounded-full ${className}`}
-      style={{ width: size, height: size, backgroundColor: `#${avatar.background}`, borderRadius: '9999px' }}
+      className={`cartoon bg-surface-2 shrink-0 overflow-hidden rounded-full ${className}`}
+      style={{ width: size, height: size, borderRadius: '9999px' }}
       role="img"
       aria-label={label}
     >

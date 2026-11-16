@@ -15,6 +15,13 @@
       "when": 1794842199924,
       "tag": "0001_avatar_styles_v2",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1794843641521,
+      "tag": "0002_avatar_no_background",
+      "breakpoints": true
     }
   ]
 }

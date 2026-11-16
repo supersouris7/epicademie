@@ -1,13 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import {
-  AVATAR_BACKGROUNDS,
-  AVATAR_STYLES,
-  ProfileNameSchema,
-  type AvatarConfig,
-  type AvatarStyle,
-  type Profile,
-} from '@questeo/shared';
+import { AVATAR_STYLES, ProfileNameSchema, type AvatarConfig, type AvatarStyle, type Profile } from '@questeo/shared';
 import { useCreateProfile, useProfile, useUpdateProfile } from '../api/profiles.ts';
 import { Avatar } from '../components/Avatar.tsx';
 import { Button } from '../components/Button.tsx';
@@ -38,9 +31,7 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
   const create = useCreateProfile();
   const update = useUpdateProfile(existing?.id ?? '');
   const [name, setName] = useState(existing?.name ?? '');
-  const [avatar, setAvatar] = useState<AvatarConfig>(
-    existing?.avatar ?? { style: 'fun-emoji', seed: randomSeed(), background: 'ffd166' },
-  );
+  const [avatar, setAvatar] = useState<AvatarConfig>(existing?.avatar ?? { style: 'fun-emoji', seed: randomSeed() });
   const [seeds, setSeeds] = useState(seedBatch);
   const [error, setError] = useState<string | null>(null);
   const saving = create.isPending || update.isPending;
@@ -133,23 +124,6 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
           <Button variant="surface" className="self-start" onClick={() => setSeeds(seedBatch())}>
             <DiceIcon size={28} /> D’autres têtes
           </Button>
-        </fieldset>
-
-        <fieldset className="flex flex-col gap-3">
-          <legend className="font-display mb-2 text-xl tracking-wide">Couleur de fond</legend>
-          <div className="flex flex-wrap gap-3">
-            {AVATAR_BACKGROUNDS.map((bg) => (
-              <button
-                key={bg}
-                type="button"
-                aria-pressed={avatar.background === bg}
-                aria-label={`Fond #${bg}`}
-                onClick={() => setAvatar((a) => ({ ...a, background: bg }))}
-                className={`cartoon h-14 w-14 ${avatar.background === bg ? 'ring-primary ring-4 ring-offset-2' : ''}`}
-                style={{ backgroundColor: `#${bg}`, borderRadius: '9999px' }}
-              />
-            ))}
-          </div>
         </fieldset>
 
         <Button type="submit" size="lg" disabled={saving} className="self-stretch sm:self-end">

@@ -4,21 +4,9 @@ import { z } from 'zod';
 export const AVATAR_STYLES = ['fun-emoji', 'adventurer-neutral', 'pixelbot'] as const;
 export type AvatarStyle = (typeof AVATAR_STYLES)[number];
 
-export const AVATAR_BACKGROUNDS = [
-  'ffd166',
-  'ff8c42',
-  'ef476f',
-  '06d6a0',
-  '118ab2',
-  '9b5de5',
-  'f15bb5',
-  '00bbf9',
-] as const;
-
 export const AvatarConfigSchema = z.object({
   style: z.enum(AVATAR_STYLES),
   seed: z.string().min(1).max(64),
-  background: z.enum(AVATAR_BACKGROUNDS),
 });
 export type AvatarConfig = z.infer<typeof AvatarConfigSchema>;
 

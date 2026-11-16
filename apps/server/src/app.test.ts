@@ -6,7 +6,7 @@ import { buildApp } from './app.ts';
 import { openDb } from './db/client.ts';
 
 const migrationsDir = path.resolve(import.meta.dirname, '../drizzle');
-const avatar = { style: 'fun-emoji', seed: 'abc', background: 'ffd166' } as const;
+const avatar = { style: 'fun-emoji', seed: 'abc' } as const;
 
 let app: FastifyInstance;
 let close: () => void;
