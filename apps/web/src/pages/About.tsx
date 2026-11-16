@@ -1,15 +1,15 @@
 import { PageShell } from '../components/PageShell.tsx';
-import { QuestyFull } from '../components/mascot/Questy.tsx';
+import { Questy } from '../components/mascot/Questy.tsx';
 import { CREDITS } from '../credits.ts';
 
 export function About() {
   return (
     <PageShell title="À propos" back="/parametres">
       <div className="flex flex-col items-center gap-4 sm:flex-row">
-        <QuestyFull size={160} />
+        <Questy size={140} mood="cool" />
         <p className="text-lg">
-          <strong>Questeo</strong> — l’aventure des exercices de 5e. Questy, le renard explorateur, est un personnage
-          original créé pour Questeo.
+          <strong>Questeo</strong> — l’aventure des exercices de 5e. Questy, le robot à écran LED qui change de tête
+          selon l’humeur, est un personnage original créé pour Questeo.
         </p>
       </div>
       <section className="cartoon bg-surface flex flex-col gap-3 p-5">

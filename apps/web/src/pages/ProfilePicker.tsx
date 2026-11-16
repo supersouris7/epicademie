@@ -5,7 +5,7 @@ import { useProfiles } from '../api/profiles.ts';
 import { Avatar } from '../components/Avatar.tsx';
 import { PageShell } from '../components/PageShell.tsx';
 import { SpeechBubble } from '../components/SpeechBubble.tsx';
-import { QuestyHead } from '../components/mascot/Questy.tsx';
+import { Questy } from '../components/mascot/Questy.tsx';
 import { useSession } from '../store/session.ts';
 
 export function ProfilePicker() {
@@ -22,7 +22,7 @@ export function ProfilePicker() {
     <PageShell>
       <div className="flex items-center gap-4">
         <motion.div animate={{ rotate: [0, -6, 6, 0] }} transition={{ repeat: Infinity, duration: 3, repeatDelay: 2 }}>
-          <QuestyHead size={120} />
+          <Questy size={120} mood="wink" />
         </motion.div>
         <SpeechBubble>Salut ! Qui part à l’aventure ?</SpeechBubble>
       </div>

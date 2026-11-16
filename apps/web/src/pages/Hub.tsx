@@ -6,12 +6,20 @@ import { Avatar } from '../components/Avatar.tsx';
 import { PageShell } from '../components/PageShell.tsx';
 import { SpeechBubble } from '../components/SpeechBubble.tsx';
 import { XpBar } from '../components/XpBar.tsx';
-import { QuestyFull } from '../components/mascot/Questy.tsx';
+import { Questy } from '../components/mascot/Questy.tsx';
+import { MOOD_IDS, type MoodId } from '../components/mascot/moods.ts';
 import { CoinIcon, GearIcon, PhoneIcon, SubjectIcon } from '../components/icons.tsx';
 
 export function Hub({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
   const [toast, setToast] = useState<string | null>(null);
+  const [mood, setMood] = useState<MoodId>('happy');
+  // Taper sur Questy lui fait changer de tête (au hasard, jamais deux fois la même).
+  const tickle = () =>
+    setMood((current) => {
+      const others = MOOD_IDS.filter((m) => m !== current);
+      return others[Math.floor(Math.random() * others.length)] ?? 'happy';
+    });
   const soon = (what: string) => {
     setToast(`${what} arrive bientôt !`);
     window.setTimeout(() => setToast(null), 2000);
@@ -46,13 +54,17 @@ export function Hub({ profile }: { readonly profile: Profile }) {
       </section>
 
       <div className="flex items-center gap-2">
-        <motion.div
+        <motion.button
+          type="button"
+          onClick={tickle}
+          aria-label="Chatouiller Questy"
           animate={{ y: [0, -8, 0] }}
+          whileTap={{ scale: 0.85, rotate: -8 }}
           transition={{ repeat: Infinity, duration: 2.4, ease: 'easeInOut' }}
-          className="w-32 shrink-0 sm:w-44"
+          className="w-28 shrink-0 sm:w-36"
         >
-          <QuestyFull size="100%" />
-        </motion.div>
+          <Questy size="100%" mood={mood} />
+        </motion.button>
         <SpeechBubble>Prêt pour l’aventure, {profile.name} ? Choisis ta matière !</SpeechBubble>
       </div>
 

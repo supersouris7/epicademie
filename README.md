@@ -1,6 +1,6 @@
 # Questeo
 
-Exercices du programme de **5e** (maths, physique-chimie, anglais, espagnol, histoire, géographie), gamifiés et pensés tablette, avec un mode multijoueur où les smartphones servent de télécommandes (connexion par QR code). Mascotte : **Questy**, renard explorateur.
+Exercices du programme de **5e** (maths, physique-chimie, anglais, espagnol, histoire, géographie), gamifiés et pensés tablette, avec un mode multijoueur où les smartphones servent de télécommandes (connexion par QR code). Mascotte : **Questy**, avatar rond à écran LED (12 humeurs en pixels).
 
 Spécification : [`docs/SPEC.md`](docs/SPEC.md).
 
@@ -35,7 +35,7 @@ pnpm lint && pnpm typecheck && pnpm format:check
 | `packages/engine`  | XP/niveaux, répétition espacée, trophées (purs)                       |
 
 Migrations : modifier `apps/server/src/db/schema.ts` puis `pnpm --filter @questeo/server db:generate`.
-Mascotte : la source est `apps/web/src/components/mascot/` ; `pnpm --filter @questeo/web mascot:export` régénère les SVG de `public/`.
+Mascotte : la source est `apps/web/src/components/mascot/` ; `pnpm --filter @questeo/web mascot:export` régénère `public/questy.svg` ; `npx tsx scripts/preview-mascot.tsx out.html` affiche toutes les humeurs.
 
 Commits au format [Conventional Commits](https://www.conventionalcommits.org/fr/) (vérifié par commitlint).
 
