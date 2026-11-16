@@ -44,6 +44,7 @@ export interface SkillProgress {
   readonly attempts: number;
   readonly correct: number;
   readonly recent: readonly boolean[];
+  readonly maintained: number;
 }
 
 export interface SessionSkillSummary {

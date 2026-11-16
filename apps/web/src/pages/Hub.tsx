@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
-import { MODES, MODE_CATEGORIES, type Profile } from '@questeo/shared';
+import { accord, MODES, MODE_CATEGORIES, type Profile } from '@questeo/shared';
 import { Avatar } from '../components/Avatar.tsx';
+import { Medal } from '../components/Medal.tsx';
 import { ModeTile } from '../components/ModeTile.tsx';
 import { PageShell } from '../components/PageShell.tsx';
 import { SpeechBubble } from '../components/SpeechBubble.tsx';
@@ -45,7 +46,7 @@ export function Hub({ profile }: { readonly profile: Profile }) {
               <CoinIcon size={30} /> {profile.coins}
             </span>
           </div>
-          <XpBar xp={profile.xp} />
+          <XpBar xp={profile.xp} gender={profile.gender} />
         </div>
       </section>
 
@@ -59,8 +60,28 @@ export function Hub({ profile }: { readonly profile: Profile }) {
         >
           <Questy size={88} mood={mood} />
         </motion.button>
-        <SpeechBubble>À quoi on joue, {profile.name} ?</SpeechBubble>
+        <SpeechBubble>
+          {accord(profile.gender, 'Prêt', 'Prête')} à jouer, {profile.name} ?
+        </SpeechBubble>
       </div>
+
+      <button
+        type="button"
+        onClick={() => void navigate('/progres')}
+        className="cartoon cartoon-press bg-surface font-display flex min-h-16 items-center justify-center gap-3 text-2xl tracking-wide"
+      >
+        <Medal medal="or" size={34} /> Mes progrès et médailles
+      </button>
+
+      {(!profile.gender || !profile.birthDate) && (
+        <button
+          type="button"
+          onClick={() => void navigate(`/profils/${profile.id}/modifier`)}
+          className="cartoon cartoon-press bg-gold font-display p-4 text-left text-xl text-[#1d1638]"
+        >
+          Complète ton profil : fille ou garçon et date de naissance (pour adapter ton avatar et les duels) →
+        </button>
+      )}
 
       {MODE_CATEGORIES.filter((c) => c.id !== 'multi').map((category) => (
         <section key={category.id} className="flex flex-col gap-3">

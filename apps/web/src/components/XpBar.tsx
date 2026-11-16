@@ -1,8 +1,9 @@
 import { motion } from 'motion/react';
 import { levelFromXp } from '@questeo/engine';
+import type { Gender } from '@questeo/shared';
 
-export function XpBar({ xp }: { readonly xp: number }) {
-  const { level, xpInLevel, xpForNext, title } = levelFromXp(xp);
+export function XpBar({ xp, gender = null }: { readonly xp: number; readonly gender?: Gender | null }) {
+  const { level, xpInLevel, xpForNext, title } = levelFromXp(xp, gender);
   const pct = Math.round((xpInLevel / xpForNext) * 100);
   return (
     <div className="flex items-center gap-3">

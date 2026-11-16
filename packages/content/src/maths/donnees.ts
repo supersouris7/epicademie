@@ -8,6 +8,7 @@ const SPORTS = ['Foot', 'Basket', 'Danse', 'Natation', 'Judo', 'Tennis'];
 
 const effectifs: Skill = {
   id: 'm5-effectifs-frequences',
+  tools: ['calculatrice'],
   title: 'Effectifs et fréquences',
   lesson: {
     body: [
@@ -71,6 +72,7 @@ const effectifs: Skill = {
 
 const moyenne: Skill = {
   id: 'm5-moyenne',
+  tools: ['calculatrice'],
   title: 'Moyenne',
   lesson: {
     body: [
@@ -417,6 +419,7 @@ const reconnaitre: Skill = {
 
 const quatrieme: Skill = {
   id: 'm5-propor-calcul',
+  tools: ['calculatrice'],
   title: 'Calculer avec la proportionnalité',
   lesson: {
     body: [
@@ -464,6 +467,7 @@ const quatrieme: Skill = {
 
 const pourcentages: Skill = {
   id: 'm5-pourcentages',
+  tools: ['calculatrice'],
   title: 'Pourcentages',
   lesson: {
     body: [
@@ -509,6 +513,7 @@ const pourcentages: Skill = {
 
 const coefficient: Skill = {
   id: 'm5-coefficient',
+  tools: ['calculatrice'],
   title: 'Prix unitaire, vitesse, échelle',
   lesson: {
     body: [
@@ -788,30 +793,35 @@ const blocsBoucle: Skill = {
 export const statistiques: Chapter = {
   id: 'm5-statistiques',
   subject: 'maths',
+  domain: 'donnees',
   title: 'Statistiques',
   skills: [effectifs, moyenne, diagrammes],
 };
 export const probabilites: Chapter = {
   id: 'm5-probabilites',
   subject: 'maths',
+  domain: 'donnees',
   title: 'Probabilités',
   skills: [probaVocab, probaCalcul, probaFrequence],
 };
 export const proportionnalite: Chapter = {
   id: 'm5-proportionnalite',
   subject: 'maths',
+  domain: 'fonctions',
   title: 'Proportionnalité',
   skills: [reconnaitre, quatrieme, pourcentages, coefficient],
 };
 export const fonctions: Chapter = {
   id: 'm5-fonctions',
   subject: 'maths',
+  domain: 'fonctions',
   title: 'Fonctions',
   skills: [formuleValeurs, lireGraphique],
 };
 export const algorithmique: Chapter = {
   id: 'm5-algorithmique',
   subject: 'maths',
+  domain: 'informatique',
   title: 'Programmation',
   skills: [blocsValeur, blocsBoucle],
 };

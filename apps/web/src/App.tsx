@@ -10,6 +10,7 @@ import { ModeSetup } from './pages/ModeSetup.tsx';
 import { MultiModes } from './pages/MultiModes.tsx';
 import { ProfileEditor } from './pages/ProfileEditor.tsx';
 import { ProfilePicker } from './pages/ProfilePicker.tsx';
+import { Progress } from './pages/Progress.tsx';
 import { Settings } from './pages/Settings.tsx';
 import { Chapters } from './pages/training/Chapters.tsx';
 import { Notions } from './pages/training/Notions.tsx';
@@ -51,6 +52,7 @@ export function App() {
         path="/partie/entrainement/:chapterId/:skillId"
         element={<WithProfile>{(p) => <TrainingPlay profile={p} />}</WithProfile>}
       />
+      <Route path="/progres" element={<WithProfile>{(p) => <Progress profile={p} />}</WithProfile>} />
       <Route path="/parametres" element={<WithProfile>{(p) => <Settings profile={p} />}</WithProfile>} />
       <Route path="/a-propos" element={<About />} />
       <Route path="*" element={<Navigate to="/" replace />} />

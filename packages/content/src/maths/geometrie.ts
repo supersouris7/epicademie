@@ -122,6 +122,7 @@ const coordonnees: Skill = {
 
 const volumes: Skill = {
   id: 'm5-volumes',
+  tools: ['calculatrice'],
   title: 'Volume du cube, du pavé, du prisme',
   lesson: {
     body: [
@@ -194,6 +195,7 @@ const VOL_UNITS = [
 
 const conversionsVolume: Skill = {
   id: 'm5-conversions-volume',
+  tools: ['conversion-volume'],
   title: 'Unités de volume et de contenance',
   lesson: {
     body: [
@@ -251,6 +253,7 @@ const conversionsVolume: Skill = {
 
 const disque: Skill = {
   id: 'm5-disque',
+  tools: ['calculatrice'],
   title: 'Aire du disque, volume du cylindre',
   lesson: {
     body: [
@@ -1224,6 +1227,7 @@ const LENGTH = ['km', 'hm', 'dam', 'm', 'dm', 'cm', 'mm'];
 
 const conversionsLA: Skill = {
   id: 'm5-conversions-longueur-aire',
+  tools: ['conversion-longueur', 'conversion-aire'],
   title: 'Convertir longueurs et aires',
   lesson: {
     body: [
@@ -1273,6 +1277,7 @@ const conversionsLA: Skill = {
 export const reperage: Chapter = {
   id: 'm5-reperage',
   subject: 'maths',
+  domain: 'geometrie',
   title: 'Repérage',
   skills: [droiteDecimaux, coordonnees],
 };
@@ -1280,6 +1285,7 @@ export const reperage: Chapter = {
 export const espace: Chapter = {
   id: 'm5-espace',
   subject: 'maths',
+  domain: 'geometrie',
   title: 'Solides et volumes',
   skills: [volumes, conversionsVolume, disque, patron],
 };
@@ -1287,6 +1293,7 @@ export const espace: Chapter = {
 export const symetries: Chapter = {
   id: 'm5-symetries',
   subject: 'maths',
+  domain: 'geometrie',
   title: 'Symétries',
   skills: [symetrieAxiale, symetrieCentrale, proprietesSymetrie],
 };
@@ -1294,6 +1301,7 @@ export const symetries: Chapter = {
 export const angles: Chapter = {
   id: 'm5-angles',
   subject: 'maths',
+  domain: 'geometrie',
   title: 'Angles',
   skills: [anglesVocab, anglesParalleles],
 };
@@ -1301,6 +1309,7 @@ export const angles: Chapter = {
 export const triangles: Chapter = {
   id: 'm5-triangles',
   subject: 'maths',
+  domain: 'geometrie',
   title: 'Triangles',
   skills: [triangleAngles, triangleAire, droitesRemarquables],
 };
@@ -1308,6 +1317,7 @@ export const triangles: Chapter = {
 export const parallelogrammes: Chapter = {
   id: 'm5-parallelogrammes',
   subject: 'maths',
+  domain: 'geometrie',
   title: 'Parallélogrammes',
   skills: [paraProprietes, paraAire, conversionsLA],
 };

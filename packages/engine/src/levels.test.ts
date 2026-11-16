@@ -49,4 +49,9 @@ describe('titleForLevel', () => {
   ])('niveau %i → %s', (level, title) => {
     expect(titleForLevel(level)).toBe(title);
   });
+  it('accorde les titres au féminin', () => {
+    expect(titleForLevel(1, 'fille')).toBe('Apprentie');
+    expect(titleForLevel(35, 'fille')).toBe('Championne');
+    expect(levelFromXp(0, 'fille').title).toBe('Apprentie');
+  });
 });

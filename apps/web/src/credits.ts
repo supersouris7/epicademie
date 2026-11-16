@@ -18,6 +18,13 @@ export const CREDITS: readonly Credit[] = [
     sourceUrl: 'https://www.figma.com/community/file/968125295144990435',
   },
   {
+    work: 'Avatars « Big Ears » (Face Generator)',
+    author: 'The Visual Team',
+    license: 'CC BY 4.0',
+    licenseUrl: CC_BY,
+    sourceUrl: 'https://www.figma.com/community/file/986078800058673824',
+  },
+  {
     work: 'Avatars « Adventurer Neutral »',
     author: 'Lisa Wischofsky',
     license: 'CC BY 4.0',

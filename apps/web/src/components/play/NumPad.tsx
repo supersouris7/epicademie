@@ -15,6 +15,7 @@ export function NumPad({ onKey, onSubmit, canSubmit, allowComma = true, allowMin
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement) return;
+      if (document.body.dataset.toolOpen) return;
       if (/^\d$/.test(e.key)) onKey(e.key);
       else if ((e.key === ',' || e.key === '.') && allowComma) onKey(',');
       else if (e.key === '-' && allowMinus) onKey('−');

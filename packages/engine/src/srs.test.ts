@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addDays, applySession, mastery, masteryFromRate, newSkillState, scoreOn20 } from './srs.ts';
+import { addDays, applySession, mastery, masteryFromRate, medal, newSkillState, scoreOn20 } from './srs.ts';
 
 const ok = { answered: 5, correct: 5 };
 const ko = { answered: 5, correct: 2 };
@@ -62,5 +62,27 @@ describe('maîtrise et note', () => {
     expect(scoreOn20(7, 10)).toBe(14);
     expect(scoreOn20(2, 3)).toBe(13.5);
     expect(scoreOn20(0, 0)).toBe(0);
+  });
+});
+
+describe('médailles', () => {
+  it('suivent l’acquisition', () => {
+    const ok = { answered: 5, correct: 5 };
+    const five = [true, true, true, true, true];
+    let s = newSkillState('x');
+    expect(medal(s)).toBe('aucune');
+    s = applySession(s, ok, '2026-11-16', five);
+    expect(medal(s)).toBe('bronze');
+    s = applySession(s, ok, '2026-11-18', five);
+    expect(medal(s)).toBe('argent');
+    s = applySession(s, ok, '2026-11-23', five);
+    expect(medal(s)).toBe('or');
+    s = applySession(s, ok, '2026-12-23', five);
+    expect(s.maintained).toBe(1);
+    expect(medal(s)).toBe('platine');
+  });
+  it('« Je n’ai pas compris » remet à revoir, même avec de bonnes réponses', () => {
+    const s = applySession(newSkillState('x'), { answered: 5, correct: 5 }, '2026-11-16', [], true);
+    expect(s).toMatchObject({ stage: 0, due: '2026-11-17' });
   });
 });

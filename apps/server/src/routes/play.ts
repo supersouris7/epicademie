@@ -37,6 +37,17 @@ export const playRoutes =
       return handle(reply, () => repo.answer(params.data.id, body.data));
     });
 
+    app.post('/sessions/:id/confused', async (req, reply) => {
+      const params = IdParams.safeParse(req.params);
+      if (!params.success) return reply.code(404).send({ error: 'Partie introuvable' });
+      const body = z.object({ skillId: z.string().min(1).max(80) }).safeParse(req.body);
+      if (!body.success) return reply.code(400).send({ error: z.prettifyError(body.error) });
+      return handle(reply, () => {
+        repo.confused(params.data.id, body.data.skillId);
+        return reply.code(204).send();
+      });
+    });
+
     app.post('/sessions/:id/finish', async (req, reply) => {
       const params = IdParams.safeParse(req.params);
       if (!params.success) return reply.code(404).send({ error: 'Partie introuvable' });

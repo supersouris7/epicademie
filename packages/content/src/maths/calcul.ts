@@ -170,7 +170,7 @@ const produitsDecimaux: Skill = {
 
 const fois10: Skill = {
   id: 'm5-fois-10',
-  title: 'Multiplier et diviser par 10, 100, 1 000',
+  title: 'Multiplier et diviser par 10, 100, 1\u00a0000',
   lesson: {
     body: [
       '× 10, × 100, × 1 000 : chaque chiffre prend une valeur 10, 100, 1 000 fois plus grande ; la virgule se décale de 1, 2, 3 rangs **vers la droite**.',
@@ -258,6 +258,7 @@ const decimauxAdd: Skill = {
 export const calcul: Chapter = {
   id: 'm5-calcul',
   subject: 'maths',
+  domain: 'nombres',
   title: 'Calcul mental',
   skills: [tables, euclide, decomposer, produitsDecimaux, fois10, decimauxAdd],
 };

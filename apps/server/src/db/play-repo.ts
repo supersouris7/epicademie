@@ -32,6 +32,7 @@ const toState = (row: typeof skillStates.$inferSelect): SkillState => ({
   attempts: row.attempts,
   correct: row.correct,
   recent: row.recent,
+  maintained: row.maintained,
 });
 
 export function createPlayRepo(db: Db, today: () => string) {
@@ -94,6 +95,19 @@ export function createPlayRepo(db: Db, today: () => string) {
       return { correct: result.correct, invalid: false, xp };
     },
 
+    /** « Je n'ai pas compris » : la notion repassera « à revoir » à la fin de la partie. */
+    confused(sessionId: string, skillId: string): void {
+      const session = getSession(sessionId);
+      if (!session) throw new PlayError(404, 'Partie introuvable');
+      if (session.finishedAt) throw new PlayError(409, 'Partie terminée');
+      if (!getSkill(skillId)) throw new PlayError(400, 'Notion inconnue');
+      if (session.confused.includes(skillId)) return;
+      db.update(sessions)
+        .set({ confused: [...session.confused, skillId] })
+        .where(eq(sessions.id, sessionId))
+        .run();
+    },
+
     /** Clôture : répétition espacée par notion, XP et pièces du profil. */
     finish(sessionId: string): SessionSummary {
       return db.transaction((tx) => {
@@ -124,13 +138,20 @@ export function createPlayRepo(db: Db, today: () => string) {
             .get();
           const before = row ? toState(row) : newSkillState(skillId);
           const correct = answers.filter(Boolean).length;
-          const after = applySession(before, { answered: answers.length, correct }, day, answers);
+          const after = applySession(
+            before,
+            { answered: answers.length, correct },
+            day,
+            answers,
+            session.confused.includes(skillId),
+          );
           const values = {
             stage: after.stage,
             due: after.due,
             attempts: after.attempts,
             correct: after.correct,
             recent: [...after.recent],
+            maintained: after.maintained,
             updatedAt: new Date().toISOString(),
           };
           tx.insert(skillStates)

@@ -693,6 +693,7 @@ const equations: Skill = {
 export const puissances: Chapter = {
   id: 'm5-puissances',
   subject: 'maths',
+  domain: 'nombres',
   title: 'Puissances',
   skills: [notation, carres, expressionsPuissances],
 };
@@ -700,6 +701,7 @@ export const puissances: Chapter = {
 export const litteral: Chapter = {
   id: 'm5-litteral',
   subject: 'maths',
+  domain: 'nombres',
   title: 'Calcul littéral',
   skills: [motifs, formules, substitution, testerEgalite, natureLitterale, developper, reduire, equations],
 };

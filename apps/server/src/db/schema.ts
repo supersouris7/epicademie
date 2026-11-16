@@ -1,11 +1,13 @@
 import { sql } from 'drizzle-orm';
 import { index, integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import type { AvatarConfig, Theme } from '@questeo/shared';
+import type { AvatarConfig, Gender, Theme } from '@questeo/shared';
 
 export const profiles = sqliteTable('profiles', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   avatar: text('avatar', { mode: 'json' }).$type<AvatarConfig>().notNull(),
+  gender: text('gender').$type<Gender>(),
+  birthDate: text('birth_date'),
   xp: integer('xp').notNull().default(0),
   coins: integer('coins').notNull().default(0),
   theme: text('theme').$type<Theme>().notNull().default('auto'),
@@ -35,6 +37,11 @@ export const sessions = sqliteTable('sessions', {
   correct: integer('correct').notNull().default(0),
   xp: integer('xp').notNull().default(0),
   coins: integer('coins').notNull().default(0),
+  /** Notions signalées « Je n'ai pas compris » pendant la partie. */
+  confused: text('confused', { mode: 'json' })
+    .$type<string[]>()
+    .notNull()
+    .default(sql`'[]'`),
 });
 
 export const attempts = sqliteTable(
@@ -77,6 +84,7 @@ export const skillStates = sqliteTable(
     attempts: integer('attempts').notNull().default(0),
     correct: integer('correct').notNull().default(0),
     recent: text('recent', { mode: 'json' }).$type<boolean[]>().notNull(),
+    maintained: integer('maintained').notNull().default(0),
     updatedAt: text('updated_at').notNull(),
   },
   (t) => [primaryKey({ columns: [t.profileId, t.skillId] })],

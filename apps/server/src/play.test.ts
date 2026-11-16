@@ -18,7 +18,7 @@ beforeEach(async () => {
   const res = await app.inject({
     method: 'POST',
     url: '/api/profiles',
-    payload: { name: 'Léa', avatar: { style: 'pixelbot', seed: 's' } },
+    payload: { name: 'Léa', avatar: { style: 'pixelbot', seed: 's' }, gender: 'fille', birthDate: '2014-03-09' },
   });
   profileId = res.json<Profile>().id;
 });
@@ -99,6 +99,19 @@ describe('parties d’entraînement', () => {
     expect(summary.regular).toEqual({ answered: 10, correct: 5 });
     expect(summary.variants).toEqual({ answered: 5, correct: 5 });
     expect(summary.scoreOn20).toBe(10);
+    expect(summary.skills[0]).toMatchObject({ stageAfter: 0, due: '2026-11-17' });
+  });
+
+  it('« Je n’ai pas compris » remet la notion à revoir malgré un sans-faute', async () => {
+    const id = await start();
+    for (let seed = 1; seed <= 10; seed++) await answer(id, seed, true);
+    const res = await app.inject({
+      method: 'POST',
+      url: `/api/sessions/${id}/confused`,
+      payload: { skillId: 'm5-tables' },
+    });
+    expect(res.statusCode).toBe(204);
+    const summary = (await app.inject({ method: 'POST', url: `/api/sessions/${id}/finish` })).json<SessionSummary>();
     expect(summary.skills[0]).toMatchObject({ stageAfter: 0, due: '2026-11-17' });
   });
 

@@ -15,8 +15,8 @@ import {
   type SkillState,
   type TrainingState,
 } from '@questeo/engine';
-import type { Profile, SessionSummary } from '@questeo/shared';
-import { finishSession, skillsKey, startSession, submitAnswer, useSkills } from '../../api/play.ts';
+import { accord, type Gender, type Profile, type SessionSummary } from '@questeo/shared';
+import { finishSession, markConfused, skillsKey, startSession, submitAnswer, useSkills } from '../../api/play.ts';
 import { Button } from '../../components/Button.tsx';
 import { Confetti } from '../../components/Confetti.tsx';
 import { MathText } from '../../components/MathText.tsx';
@@ -27,10 +27,21 @@ import { Questy } from '../../components/mascot/Questy.tsx';
 import type { MoodId } from '../../components/mascot/moods.ts';
 import { AnswerInput } from '../../components/play/AnswerInput.tsx';
 import { Feedback } from '../../components/play/Feedback.tsx';
-import { LessonSheet } from '../../components/play/LessonSheet.tsx';
+import { NotUnderstood } from '../../components/play/NotUnderstood.tsx';
+import { Ardoise } from '../../components/tools/Ardoise.tsx';
+import { Calculator } from '../../components/tools/Calculator.tsx';
+import { ConversionTable, type ConversionKind } from '../../components/tools/ConversionTable.tsx';
 import { localToday, randomSeed } from '../../lib/dates.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../lib/sound.ts';
 import { stageMessage } from '../../lib/answers.ts';
+
+/** Tableau adapté à l'unité de la question (aires en ^2, volumes en ^3 ou en litres). */
+function conversionKind(q: Question): ConversionKind {
+  const text = q.prompt + (q.answer.kind === 'number' ? (q.answer.unit ?? '') : '');
+  if (/\^3|\bc?L\b|\bmL\b/.test(text)) return 'volume';
+  if (text.includes('^2')) return 'aire';
+  return 'longueur';
+}
 
 interface Current {
   readonly plan: PlannedQuestion;
@@ -85,6 +96,8 @@ function Game({
   const [answered, setAnswered] = useState<Answered | null>(null);
   const [picked, setPicked] = useState<{ x: number; y: number } | null>(null);
   const [lesson, setLesson] = useState(false);
+  const [tool, setTool] = useState<'calc' | 'conv' | 'ardoise' | null>(null);
+  const confusedSent = useRef(new Set<string>());
   const [summary, setSummary] = useState<SessionSummary | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [streak, setStreak] = useState(0);
@@ -203,6 +216,7 @@ function Game({
     return (
       <Results
         summary={summary}
+        gender={profile.gender}
         chapterId={chapterId}
         onReplay={() => void navigate(location.pathname, { replace: true, state: { replay: Date.now() } })}
       />
@@ -268,6 +282,33 @@ function Game({
               )}
               <span className="text-muted ml-auto text-sm font-bold">Niveau {current.plan.level}</span>
             </div>
+            <div className="flex flex-wrap gap-2" aria-label="Outils">
+              {skill?.tools?.includes('calculatrice') && (
+                <button
+                  type="button"
+                  onClick={() => setTool('calc')}
+                  className="cartoon cartoon-press bg-surface font-display h-11 px-3 text-base"
+                >
+                  Calculatrice
+                </button>
+              )}
+              {skill?.tools?.some((t) => t.startsWith('conversion')) && (
+                <button
+                  type="button"
+                  onClick={() => setTool('conv')}
+                  className="cartoon cartoon-press bg-surface font-display h-11 px-3 text-base"
+                >
+                  Tableau de conversion
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setTool('ardoise')}
+                className="cartoon cartoon-press bg-surface font-display h-11 px-3 text-base"
+              >
+                Ardoise
+              </button>
+            </div>
             <h1 className="text-2xl leading-snug font-bold sm:text-3xl">
               <MathText text={current.question.prompt} />
             </h1>
@@ -291,7 +332,15 @@ function Game({
                 xp={answered.xp}
                 streak={answered.streak}
                 variantNext={training.pendingVariant !== null}
-                onLesson={() => setLesson(true)}
+                gender={profile.gender}
+                onLesson={() => {
+                  setLesson(true);
+                  const id = current.plan.skillId;
+                  if (sessionId && !confusedSent.current.has(id)) {
+                    confusedSent.current.add(id);
+                    void markConfused(sessionId, id).catch(() => undefined);
+                  }
+                }}
                 onNext={() => void next()}
               />
             ) : (
@@ -306,7 +355,19 @@ function Game({
           </motion.main>
         )}
       </AnimatePresence>
-      {lesson && skill && <LessonSheet skill={skill} onClose={() => setLesson(false)} />}
+      {lesson && skill && current && (
+        <NotUnderstood
+          skill={skill}
+          level={current.plan.level}
+          seed={current.plan.seed}
+          onClose={() => setLesson(false)}
+        />
+      )}
+      {tool === 'calc' && <Calculator onClose={() => setTool(null)} />}
+      {tool === 'conv' && current && (
+        <ConversionTable kind={conversionKind(current.question)} onClose={() => setTool(null)} />
+      )}
+      {tool === 'ardoise' && <Ardoise onClose={() => setTool(null)} />}
       {toast}
     </div>
   );
@@ -314,10 +375,12 @@ function Game({
 
 function Results({
   summary,
+  gender,
   chapterId,
   onReplay,
 }: {
   summary: SessionSummary;
+  gender: Gender | null;
   chapterId: string;
   onReplay: () => void;
 }) {
@@ -333,7 +396,7 @@ function Results({
         : 'sad';
   const levelUp = summary.levelAfter > summary.levelBefore;
   const message = summary.perfect
-    ? 'Sans-faute !'
+    ? `Sans-faute, ${accord(gender, 'champion', 'championne')} !`
     : summary.scoreOn20 >= 14
       ? 'Très bien !'
       : summary.scoreOn20 >= 10

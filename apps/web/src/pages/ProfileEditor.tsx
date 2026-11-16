@@ -1,6 +1,14 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { AVATAR_STYLES, ProfileNameSchema, type AvatarConfig, type AvatarStyle, type Profile } from '@questeo/shared';
+import {
+  AVATAR_STYLES,
+  BirthDateSchema,
+  ProfileNameSchema,
+  type AvatarConfig,
+  type AvatarStyle,
+  type Gender,
+  type Profile,
+} from '@questeo/shared';
 import { useCreateProfile, useProfile, useUpdateProfile } from '../api/profiles.ts';
 import { Avatar } from '../components/Avatar.tsx';
 import { Button } from '../components/Button.tsx';
@@ -10,6 +18,7 @@ import { useSession } from '../store/session.ts';
 
 const STYLE_LABELS: Record<AvatarStyle, string> = {
   'fun-emoji': 'Émoji',
+  'big-ears': 'Personnage',
   'adventurer-neutral': 'Visage',
   pixelbot: 'Robot',
 };
@@ -31,7 +40,12 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
   const create = useCreateProfile();
   const update = useUpdateProfile(existing?.id ?? '');
   const [name, setName] = useState(existing?.name ?? '');
-  const [avatar, setAvatar] = useState<AvatarConfig>(existing?.avatar ?? { style: 'fun-emoji', seed: randomSeed() });
+  const [gender, setGender] = useState<Gender | null>(existing?.gender ?? null);
+  const [birthDate, setBirthDate] = useState(existing?.birthDate ?? '');
+  const [avatar, setAvatar] = useState<AvatarConfig>(existing?.avatar ?? { style: 'big-ears', seed: randomSeed() });
+  const hair = gender === 'fille' ? 'long' : gender === 'garcon' ? 'short' : undefined;
+  const shown: AvatarConfig =
+    avatar.style === 'big-ears' && hair ? { ...avatar, hair } : { style: avatar.style, seed: avatar.seed };
   const [seeds, setSeeds] = useState(seedBatch);
   const [error, setError] = useState<string | null>(null);
   const saving = create.isPending || update.isPending;
@@ -42,12 +56,22 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
       setError(parsed.error.issues[0]?.message ?? 'Prénom invalide');
       return;
     }
+    if (!gender) {
+      setError('Choisis fille ou garçon.');
+      return;
+    }
+    const birth = BirthDateSchema.safeParse(birthDate);
+    if (!birth.success) {
+      setError('Indique ta date de naissance.');
+      return;
+    }
+    const payload = { name: parsed.data, avatar: shown, gender, birthDate: birth.data };
     try {
       if (existing) {
-        await update.mutateAsync({ name: parsed.data, avatar });
+        await update.mutateAsync(payload);
         void navigate('/parametres');
       } else {
-        const profile = await create.mutateAsync({ name: parsed.data, avatar });
+        const profile = await create.mutateAsync(payload);
         selectProfile(profile.id);
         void navigate('/hub');
       }
@@ -66,7 +90,7 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
         className="flex flex-col gap-6"
       >
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-end">
-          <Avatar avatar={avatar} size={160} label="Aperçu de l’avatar" />
+          <Avatar avatar={shown} size={160} label="Aperçu de l’avatar" />
           <label className="flex w-full flex-1 flex-col gap-2">
             <span className="font-display text-xl tracking-wide">Ton prénom</span>
             <input
@@ -87,6 +111,47 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
             {error}
           </p>
         )}
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <fieldset className="flex flex-col gap-2">
+            <legend className="font-display mb-2 text-xl tracking-wide">Tu es…</legend>
+            <div className="grid grid-cols-2 gap-3">
+              {(
+                [
+                  ['fille', 'Une fille'],
+                  ['garcon', 'Un garçon'],
+                ] as const
+              ).map(([g, label]) => (
+                <button
+                  key={g}
+                  type="button"
+                  aria-pressed={gender === g}
+                  onClick={() => {
+                    setGender(g);
+                    setError(null);
+                  }}
+                  className={`cartoon cartoon-press font-display min-h-14 text-xl ${gender === g ? 'bg-accent text-white' : 'bg-surface'}`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+          <label className="flex flex-col gap-2">
+            <span className="font-display text-xl tracking-wide">Date de naissance</span>
+            <input
+              type="date"
+              value={birthDate}
+              max={new Date().toISOString().slice(0, 10)}
+              onChange={(e) => {
+                setBirthDate(e.target.value);
+                setError(null);
+              }}
+              className="cartoon bg-surface font-display min-h-14 px-4 text-xl outline-none focus:ring-4 focus:ring-[var(--primary)]"
+              aria-label="Date de naissance"
+            />
+          </label>
+        </div>
 
         <fieldset className="flex flex-col gap-3">
           <legend className="font-display mb-2 text-xl tracking-wide">Style</legend>
@@ -117,7 +182,7 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
                 onClick={() => setAvatar((a) => ({ ...a, seed }))}
                 className={`flex justify-center rounded-full p-1 ${avatar.seed === seed ? 'ring-primary ring-4' : ''}`}
               >
-                <Avatar avatar={{ ...avatar, seed }} size={72} />
+                <Avatar avatar={{ ...shown, seed }} size={72} />
               </button>
             ))}
           </div>

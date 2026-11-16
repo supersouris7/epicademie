@@ -164,6 +164,14 @@ _Ensuite_ : ressources (eau, énergie, alimentation), risques et changement glob
 
 ---
 
+## 5bis. Profils, aides et tableau de bord
+
+- **Profil** : prénom, fille ou garçon, date de naissance (3 à 100 ans). Les textes s'accordent (Prêt/Prête, titres Apprenti/Apprentie… Champion/Championne). Avatar « Personnage » (DiceBear big-ears) avec coiffures longues pour une fille, courtes pour un garçon.
+- **Âge et duels** : `packages/engine/src/duel.ts` — le plus jeune joue au niveau de référence ; écart de 1–2 ans → temps × 0,9 ; 3–5 ans → +1 niveau, temps × 0,75 ; ≥ 6 ans → +2 niveaux, temps × 0,6 ; adulte contre enfant → +2 niveaux, temps × 0,5. Utilisé par le multijoueur (à venir).
+- **Pas besoin de brouillon** : ardoise (dessin au doigt/stylet) sur toutes les questions ; calculatrice seulement sur les notions où le calcul n'est pas l'objectif (volumes, disque/cylindre, moyenne, fréquences, pourcentages, proportionnalité, prix/vitesse/échelle) ; tableau de conversion à remplir (longueurs, aires, volumes et contenances alignées) sur les conversions.
+- **« Je n'ai pas compris »** (remplace « Revoir la leçon ») : leçon, puis un nouvel exemple de la notion résolu étape par étape, puis la question similaire ; la notion repasse « à revoir » en fin de partie.
+- **Tableau de bord « Mes progrès »** : matière → domaine officiel → chapitre → notion, avec médaille : bronze (1re réussite), argent (2e, J+2), or (acquise, J+7), platine (acquise, ≥ 90 % sur les réponses récentes et au moins un rappel mensuel réussi).
+
 ## 6. Moteur pédagogique
 
 ### 6.1 Répétition espacée adaptative

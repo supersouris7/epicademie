@@ -451,6 +451,7 @@ const divDecimal: Skill = {
 export const operations: Chapter = {
   id: 'm5-operations',
   subject: 'maths',
+  domain: 'nombres',
   title: 'Opérations et priorités',
   skills: [priorites, vocabulaire, traduire, distributivite, multiples, divisibilite, divDecimal],
 };

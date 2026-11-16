@@ -14,6 +14,8 @@ export interface SkillState {
   readonly correct: number;
   /** Dernières réponses (true = juste), 20 au plus, la plus récente à la fin. */
   readonly recent: readonly boolean[];
+  /** Rappels d'entretien réussis une fois la notion acquise. */
+  readonly maintained: number;
 }
 
 export interface SkillSessionResult {
@@ -27,7 +29,7 @@ export const SUCCESS_RATE = 0.8;
 const GAP_AFTER_STAGE: Record<Stage, number> = { 0: 1, 1: 2, 2: 5, 3: 30 };
 
 export function newSkillState(skillId: string): SkillState {
-  return { skillId, stage: 0, due: null, attempts: 0, correct: 0, recent: [] };
+  return { skillId, stage: 0, due: null, attempts: 0, correct: 0, recent: [], maintained: 0 };
 }
 
 export function addDays(day: string, days: number): string {
@@ -39,11 +41,13 @@ export function addDays(day: string, days: number): string {
 export const isDue = (s: SkillState, today: string) => s.due !== null && s.due <= today;
 
 /** Applique le bilan d'une série sur une notion (au plus une progression par jour). */
+/** `forceFail` : l'élève a signalé « Je n'ai pas compris » — la notion repasse à revoir. */
 export function applySession(
   state: SkillState,
   result: SkillSessionResult,
   today: string,
   answers: readonly boolean[] = [],
+  forceFail = false,
 ): SkillState {
   const recent = [...state.recent, ...answers].slice(-RECENT_WINDOW);
   const base = {
@@ -54,12 +58,14 @@ export function applySession(
   };
   if (result.answered === 0) return state;
   const rate = result.correct / result.answered;
-  if (rate < SUCCESS_RATE) return { ...base, stage: 0, due: addDays(today, GAP_AFTER_STAGE[0]) };
+  if (rate < SUCCESS_RATE || forceFail)
+    return { ...base, stage: 0, maintained: 0, due: addDays(today, GAP_AFTER_STAGE[0]) };
   // Réussite : progression seulement si la notion est nouvelle ou arrivée à échéance.
   const canProgress = state.due === null || state.stage === 0 || state.due <= today;
   if (!canProgress) return base;
   const stage = Math.min(3, state.stage + 1) as Stage;
-  return { ...base, stage, due: addDays(today, GAP_AFTER_STAGE[stage]) };
+  const maintained = state.stage === 3 ? state.maintained + 1 : state.maintained;
+  return { ...base, stage, maintained, due: addDays(today, GAP_AFTER_STAGE[stage]) };
 }
 
 /** Niveau de maîtrise à l'échelle du livret scolaire (LSU). */
@@ -92,4 +98,23 @@ export const mastery = (state: Pick<SkillState, 'recent'>) => masteryFromRate(re
 export function scoreOn20(correct: number, total: number): number {
   if (total <= 0) return 0;
   return Math.round((correct / total) * 40) / 2;
+}
+
+/** Médaille d'une notion : bronze (J0), argent (J+2), or (acquise), platine (acquise, ≥ 90 % récents, entretien réussi). */
+export type Medal = 'aucune' | 'bronze' | 'argent' | 'or' | 'platine';
+export const MEDALS: readonly Medal[] = ['bronze', 'argent', 'or', 'platine'];
+export const MEDAL_LABELS: Record<Medal, string> = {
+  aucune: 'Pas encore',
+  bronze: 'Bronze',
+  argent: 'Argent',
+  or: 'Or',
+  platine: 'Platine',
+};
+
+export function medal(state: Pick<SkillState, 'stage' | 'recent' | 'maintained'> | undefined): Medal {
+  if (!state || state.stage === 0) return 'aucune';
+  if (state.stage === 1) return 'bronze';
+  if (state.stage === 2) return 'argent';
+  const rate = state.recent.length >= 10 ? state.recent.filter(Boolean).length / state.recent.length : 0;
+  return state.maintained >= 1 && rate >= 0.9 ? 'platine' : 'or';
 }

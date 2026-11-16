@@ -22,7 +22,11 @@ afterEach(async () => {
 });
 
 const create = async (name: string) => {
-  const res = await app.inject({ method: 'POST', url: '/api/profiles', payload: { name, avatar } });
+  const res = await app.inject({
+    method: 'POST',
+    url: '/api/profiles',
+    payload: { name, avatar, gender: 'fille', birthDate: '2014-03-09' },
+  });
   return { res, profile: res.json<Profile>() };
 };
 
@@ -30,7 +34,16 @@ describe('API profils', () => {
   it('crée puis liste des profils avec les valeurs par défaut', async () => {
     const { res, profile } = await create('  Léa  ');
     expect(res.statusCode).toBe(201);
-    expect(profile).toMatchObject({ name: 'Léa', xp: 0, coins: 0, theme: 'auto', soundOn: true, avatar });
+    expect(profile).toMatchObject({
+      name: 'Léa',
+      xp: 0,
+      coins: 0,
+      theme: 'auto',
+      soundOn: true,
+      avatar,
+      gender: 'fille',
+      birthDate: '2014-03-09',
+    });
     const list = await app.inject('/api/profiles');
     expect(list.json<Profile[]>()).toHaveLength(1);
   });
@@ -40,9 +53,21 @@ describe('API profils', () => {
     const bad = await app.inject({
       method: 'POST',
       url: '/api/profiles',
-      payload: { name: 'Tom', avatar: { ...avatar, style: 'inconnu' } },
+      payload: { name: 'Tom', avatar: { ...avatar, style: 'inconnu' }, gender: 'garcon', birthDate: '2014-01-01' },
     });
     expect(bad.statusCode).toBe(400);
+    const noGender = await app.inject({
+      method: 'POST',
+      url: '/api/profiles',
+      payload: { name: 'Tom', avatar, birthDate: '2014-01-01' },
+    });
+    expect(noGender.statusCode).toBe(400);
+    const future = await app.inject({
+      method: 'POST',
+      url: '/api/profiles',
+      payload: { name: 'Tom', avatar, gender: 'garcon', birthDate: '2099-01-01' },
+    });
+    expect(future.statusCode).toBe(400);
   });
 
   it('modifie un profil', async () => {

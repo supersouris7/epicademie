@@ -8,14 +8,24 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.getByRole('button', { name: /Nouveau joueur/ }).click();
   await page.getByRole('button', { name: /C’est parti/ }).click();
   await expect(page.getByRole('alert')).toHaveText('Le prénom est obligatoire');
+  await page.getByPlaceholder('Ex. Léa').fill('X');
+  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await expect(page.getByRole('alert')).toHaveText('Choisis fille ou garçon.');
 
   await page.getByPlaceholder('Ex. Léa').fill(name);
+  await page.getByRole('button', { name: 'Une fille' }).click();
+  await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Robot' }).click();
   await page.getByRole('button', { name: /C’est parti/ }).click();
 
   await expect(page).toHaveURL(/\/hub$/);
   await expect(page.getByRole('heading', { name })).toBeVisible();
-  await expect(page.getByText('Apprenti')).toBeVisible();
+  await expect(page.getByText('Apprentie')).toBeVisible();
+  await expect(page.getByText(/Prête à jouer/)).toBeVisible();
+  await page.getByRole('button', { name: /Mes progrès/ }).click();
+  await expect(page.getByText(/0 \/ 72 notions médaillées/)).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Nombres et calculs' })).toBeVisible();
+  await page.getByRole('button', { name: 'Retour' }).click();
 
   // Mode d'abord, matière ensuite.
   for (const mode of ['Révisions du jour', 'Entraînement', 'Combat de boss', 'Contre-la-montre', 'Bilan']) {

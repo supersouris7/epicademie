@@ -415,6 +415,7 @@ const problemes: Skill = {
 export const relatifs: Chapter = {
   id: 'm5-relatifs',
   subject: 'maths',
+  domain: 'nombres',
   title: 'Nombres relatifs',
   skills: [vocab, droite, comparer, addition, soustraction, sommes, problemes],
 };

@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import type { Question } from '@questeo/content';
+import { accord, type Gender } from '@questeo/shared';
 import { formatAnswer } from '../../lib/answers.ts';
 import { Button } from '../Button.tsx';
 import { MathText } from '../MathText.tsx';
@@ -13,16 +14,23 @@ interface FeedbackProps {
   readonly xp: number;
   readonly streak: number;
   readonly variantNext: boolean;
+  readonly gender: Gender | null;
   readonly onLesson: () => void;
   readonly onNext: () => void;
 }
 
 const PRAISE = ['Bravo !', 'Excellent !', 'Parfait !', 'Bien joué !', 'Génial !', 'Trop fort !'];
 
+function praise(seed: number, streak: number, gender: Gender | null): string {
+  if (streak >= 10) return accord(gender, 'Champion !', 'Championne !');
+  if (streak >= 5) return accord(gender, 'Inarrêtable !', 'Inarrêtable !');
+  return PRAISE[(seed + streak) % PRAISE.length] ?? 'Bravo !';
+}
+
 /** Retour après une réponse : félicitations, ou explication de l'erreur + correction pas-à-pas. */
-export function Feedback({ question, correct, why, xp, streak, variantNext, onLesson, onNext }: FeedbackProps) {
+export function Feedback({ question, correct, why, xp, streak, variantNext, gender, onLesson, onNext }: FeedbackProps) {
   const mood: MoodId = correct ? (streak >= 10 ? 'proud' : streak >= 5 ? 'laugh' : 'happy') : why ? 'dizzy' : 'sad';
-  const title = correct ? (PRAISE[(question.seed + streak) % PRAISE.length] ?? 'Bravo !') : 'Pas tout à fait…';
+  const title = correct ? praise(question.seed, streak, gender) : 'Pas tout à fait…';
   return (
     <motion.section
       initial={{ y: 30, opacity: 0 }}
@@ -86,7 +94,7 @@ export function Feedback({ question, correct, why, xp, streak, variantNext, onLe
       <div className="flex flex-wrap justify-end gap-3">
         {!correct && (
           <Button variant="surface" onClick={onLesson}>
-            Revoir la leçon
+            Je n’ai pas compris
           </Button>
         )}
         <Button variant={correct ? 'success' : 'primary'} onClick={onNext}>

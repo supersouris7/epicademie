@@ -493,6 +493,7 @@ const problemes: Skill = {
 export const fractions: Chapter = {
   id: 'm5-fractions',
   subject: 'maths',
+  domain: 'nombres',
   title: 'Fractions',
   skills: [decimales, quotient, droite, egales, comparer, entier, addition, soustraction, dunNombre, problemes],
 };

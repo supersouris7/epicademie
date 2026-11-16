@@ -150,16 +150,31 @@ export interface Lesson {
   readonly source: string;
 }
 
+/** Outils d'aide affichés pendant la question (pas de brouillon nécessaire). */
+export type Tool = 'calculatrice' | 'conversion-longueur' | 'conversion-aire' | 'conversion-volume';
+
 export interface Skill {
   readonly id: string;
   readonly title: string;
+  readonly tools?: readonly Tool[];
   readonly lesson: Lesson;
   readonly generate: (rng: Rng, level: Level) => QuestionDraft;
 }
 
+/** Domaines du programme officiel (maths cycle 4). */
+export const DOMAINS = {
+  nombres: 'Nombres et calculs',
+  geometrie: 'Espace et géométrie',
+  donnees: 'Données et probabilités',
+  fonctions: 'Proportionnalité, fonctions',
+  informatique: 'Pensée informatique',
+} as const;
+export type DomainId = keyof typeof DOMAINS;
+
 export interface Chapter {
   readonly id: string;
   readonly subject: SubjectId;
+  readonly domain: DomainId;
   readonly title: string;
   readonly skills: readonly Skill[];
 }

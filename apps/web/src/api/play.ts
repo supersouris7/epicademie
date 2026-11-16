@@ -15,3 +15,6 @@ export const submitAnswer = (sessionId: string, answer: AnswerSubmit) =>
 
 export const finishSession = (sessionId: string) =>
   api<SessionSummary>(`/sessions/${sessionId}/finish`, { method: 'POST' });
+
+export const markConfused = (sessionId: string, skillId: string) =>
+  api<undefined>(`/sessions/${sessionId}/confused`, { method: 'POST', body: JSON.stringify({ skillId }) });
