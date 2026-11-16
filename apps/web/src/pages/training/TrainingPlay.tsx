@@ -28,9 +28,13 @@ import type { MoodId } from '../../components/mascot/moods.ts';
 import { AnswerInput } from '../../components/play/AnswerInput.tsx';
 import { Feedback } from '../../components/play/Feedback.tsx';
 import { NotUnderstood } from '../../components/play/NotUnderstood.tsx';
-import { Ardoise } from '../../components/tools/Ardoise.tsx';
+import { ConfirmDialog } from '../../components/ConfirmDialog.tsx';
+import { ToolButton, ToolsPanel, type ToolTab } from '../../components/play/ToolsPanel.tsx';
+import { Brouillon, type Stroke } from '../../components/tools/Brouillon.tsx';
 import { Calculator } from '../../components/tools/Calculator.tsx';
-import { ConversionTable, type ConversionKind } from '../../components/tools/ConversionTable.tsx';
+import { EMPTY_CALC, type CalcState } from '../../lib/calcState.ts';
+import { ConversionTable } from '../../components/tools/ConversionTable.tsx';
+import { emptyConversion, unitsIn, type ConversionKind, type ConversionState } from '../../lib/conversion.ts';
 import { localToday, randomSeed } from '../../lib/dates.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../lib/sound.ts';
 import { stageMessage } from '../../lib/answers.ts';
@@ -96,7 +100,13 @@ function Game({
   const [answered, setAnswered] = useState<Answered | null>(null);
   const [picked, setPicked] = useState<{ x: number; y: number } | null>(null);
   const [lesson, setLesson] = useState(false);
-  const [tool, setTool] = useState<'calc' | 'conv' | 'ardoise' | null>(null);
+  const [toolsOpen, setToolsOpen] = useState(false);
+  const [tab, setTab] = useState<ToolTab>('brouillon');
+  const [strokes, setStrokes] = useState<readonly Stroke[]>([]);
+  const [calc, setCalc] = useState<CalcState>(EMPTY_CALC);
+  const [conv, setConv] = useState<ConversionState | null>(null);
+  const [fill, setFill] = useState<{ value: string; nonce: number } | null>(null);
+  const [confirmQuit, setConfirmQuit] = useState(false);
   const confusedSent = useRef(new Set<string>());
   const [summary, setSummary] = useState<SessionSummary | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -117,6 +127,10 @@ function Game({
       setCurrent({ plan, question: generate(plan.skillId, plan.level, plan.seed), shownAt: performance.now() });
       setAnswered(null);
       setPicked(null);
+      setStrokes([]);
+      setCalc(EMPTY_CALC);
+      setConv(null);
+      setFill(null);
     },
     [states, today],
   );
@@ -197,10 +211,8 @@ function Game({
     }
   };
 
-  const quit = () => {
-    if (window.confirm('Quitter la partie ? Ta progression sur cette série ne sera pas comptée.'))
-      void navigate(`/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`);
-  };
+  const quit = () => setConfirmQuit(true);
+  const leave = () => void navigate(`/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`);
 
   if (error) {
     return (
@@ -224,10 +236,32 @@ function Game({
 
   const done = regularCount(training);
   const skill = current ? getSkill(current.plan.skillId) : undefined;
+  const tabs: ToolTab[] = [
+    'brouillon',
+    ...(skill?.tools?.includes('calculatrice') ? (['calculatrice'] as const) : []),
+    ...(skill?.tools?.some((t) => t.startsWith('conversion')) ? (['conversion'] as const) : []),
+  ];
+  const activeTab = tabs.includes(tab) ? tab : 'brouillon';
+  const openTool = (t: ToolTab) => {
+    setTab(t);
+    setToolsOpen(true);
+  };
+  const kind = current ? conversionKind(current.question) : 'longueur';
+  const convState = conv ?? emptyConversion(kind);
+
+  const reportConfused = () => {
+    setLesson(true);
+    if (!current) return;
+    const id = current.plan.skillId;
+    if (sessionId && !confusedSent.current.has(id)) {
+      confusedSent.current.add(id);
+      void markConfused(sessionId, id).catch(() => undefined);
+    }
+  };
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-4 px-4 py-4">
-      <header className="flex items-center gap-3">
+    <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-3 px-3 py-3 sm:px-4">
+      <header className="flex shrink-0 items-center gap-3">
         <button
           type="button"
           onClick={quit}
@@ -271,87 +305,123 @@ function Game({
             initial={{ x: 40, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -40, opacity: 0 }}
-            className="flex flex-1 flex-col gap-5"
+            className="land:grid land:grid-cols-[minmax(0,1fr)_minmax(340px,400px)] flex min-h-0 flex-1 flex-col gap-3"
           >
-            <div className="flex items-center gap-2">
-              <span className="text-muted text-sm font-bold">{skill?.title}</span>
-              {current.plan.variant && (
-                <span className="bg-accent rounded-full px-2 py-0.5 text-xs font-bold text-white">
-                  Question similaire
-                </span>
-              )}
-              <span className="text-muted ml-auto text-sm font-bold">Niveau {current.plan.level}</span>
-            </div>
-            <div className="flex flex-wrap gap-2" aria-label="Outils">
-              {skill?.tools?.includes('calculatrice') && (
-                <button
-                  type="button"
-                  onClick={() => setTool('calc')}
-                  className="cartoon cartoon-press bg-surface font-display h-11 px-3 text-base"
-                >
-                  Calculatrice
-                </button>
-              )}
-              {skill?.tools?.some((t) => t.startsWith('conversion')) && (
-                <button
-                  type="button"
-                  onClick={() => setTool('conv')}
-                  className="cartoon cartoon-press bg-surface font-display h-11 px-3 text-base"
-                >
-                  Tableau de conversion
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => setTool('ardoise')}
-                className="cartoon cartoon-press bg-surface font-display h-11 px-3 text-base"
-              >
-                Ardoise
-              </button>
-            </div>
-            <h1 className="text-2xl leading-snug font-bold sm:text-3xl">
-              <MathText text={current.question.prompt} />
-            </h1>
-            {current.question.figure && (
-              <Figure
-                figure={current.question.figure}
-                picked={picked}
-                onPick={current.question.answer.kind === 'point' && !answered ? setPicked : undefined}
-                reveal={
-                  answered && !answered.correct && current.question.answer.kind === 'point'
-                    ? current.question.answer
-                    : null
-                }
-              />
-            )}
-            {answered ? (
-              <Feedback
-                question={current.question}
-                correct={answered.correct}
-                why={answered.why}
-                xp={answered.xp}
-                streak={answered.streak}
-                variantNext={training.pendingVariant !== null}
-                gender={profile.gender}
-                onLesson={() => {
-                  setLesson(true);
-                  const id = current.plan.skillId;
-                  if (sessionId && !confusedSent.current.has(id)) {
-                    confusedSent.current.add(id);
-                    void markConfused(sessionId, id).catch(() => undefined);
+            {/* Colonne question : énoncé, figure, outils (défile si besoin, sans jamais cacher la réponse). */}
+            <section className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pb-1 [&>*]:shrink-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-muted text-sm font-bold">{skill?.title}</span>
+                {current.plan.variant && (
+                  <span className="bg-accent rounded-full px-2 py-0.5 text-xs font-bold text-white">
+                    Question similaire
+                  </span>
+                )}
+                <span className="text-muted ml-auto text-sm font-bold">Niveau {current.plan.level}</span>
+              </div>
+              <h1 className="text-2xl leading-snug font-bold sm:text-3xl">
+                <MathText text={current.question.prompt} />
+              </h1>
+              {current.question.figure && (
+                <Figure
+                  figure={current.question.figure}
+                  maxHeight={toolsOpen ? '22dvh' : '46dvh'}
+                  picked={picked}
+                  onPick={current.question.answer.kind === 'point' && !answered ? setPicked : undefined}
+                  reveal={
+                    answered && !answered.correct && current.question.answer.kind === 'point'
+                      ? current.question.answer
+                      : null
                   }
-                }}
-                onNext={() => void next()}
-              />
-            ) : (
-              <AnswerInput
-                key={`${current.plan.seed}-${current.plan.variant}`}
-                question={current.question}
-                disabled={false}
-                onSubmit={submit}
-                picked={picked}
-              />
-            )}
+                />
+              )}
+              {toolsOpen ? (
+                <div className="land:h-auto land:min-h-[45dvh] land:flex-1 flex h-[50dvh] flex-col">
+                  <ToolsPanel tabs={tabs} active={activeTab} onSelect={setTab} onClose={() => setToolsOpen(false)}>
+                    {activeTab === 'brouillon' && <Brouillon strokes={strokes} onChange={setStrokes} />}
+                    {activeTab === 'calculatrice' && (
+                      <Calculator
+                        state={calc}
+                        onChange={setCalc}
+                        onUse={
+                          current.question.answer.kind === 'number' && !answered
+                            ? (value) => {
+                                setFill({ value, nonce: Date.now() });
+                                if (!window.matchMedia('(orientation: landscape) and (min-width: 900px)').matches)
+                                  setToolsOpen(false);
+                              }
+                            : undefined
+                        }
+                      />
+                    )}
+                    {activeTab === 'conversion' && (
+                      <ConversionTable
+                        kind={kind}
+                        state={convState}
+                        onChange={setConv}
+                        highlight={unitsIn(current.question.prompt)}
+                      />
+                    )}
+                  </ToolsPanel>
+                </div>
+              ) : (
+                !answered && (
+                  <div className="flex flex-wrap gap-2" aria-label="Outils">
+                    {tabs.map((t) => (
+                      <ToolButton
+                        key={t}
+                        label={
+                          t === 'brouillon'
+                            ? 'Brouillon'
+                            : t === 'calculatrice'
+                              ? 'Calculatrice'
+                              : 'Tableau de conversion'
+                        }
+                        onClick={() => openTool(t)}
+                      />
+                    ))}
+                  </div>
+                )
+              )}
+            </section>
+
+            {/* Colonne réponse : toujours visible (en bas en portrait, à droite en paysage). */}
+            <section className="land:max-h-none land:justify-center flex max-h-[60dvh] min-h-0 shrink-0 flex-col">
+              {answered ? (
+                <Feedback
+                  question={current.question}
+                  correct={answered.correct}
+                  why={answered.why}
+                  xp={answered.xp}
+                  streak={answered.streak}
+                  variantNext={training.pendingVariant !== null}
+                  gender={profile.gender}
+                  onLesson={reportConfused}
+                  onNext={() => void next()}
+                />
+              ) : (
+                <>
+                  {toolsOpen && (
+                    <button
+                      type="button"
+                      onClick={() => setToolsOpen(false)}
+                      className="cartoon cartoon-press bg-primary font-display land:hidden min-h-14 text-xl text-white"
+                    >
+                      Revenir à ma réponse
+                    </button>
+                  )}
+                  <div className={toolsOpen ? 'land:block hidden' : 'contents'}>
+                    <AnswerInput
+                      key={`${current.plan.seed}-${current.plan.variant}-${fill?.nonce ?? 0}`}
+                      question={current.question}
+                      disabled={false}
+                      onSubmit={submit}
+                      picked={picked}
+                      initialText={fill?.value}
+                    />
+                  </div>
+                </>
+              )}
+            </section>
           </motion.main>
         )}
       </AnimatePresence>
@@ -363,11 +433,16 @@ function Game({
           onClose={() => setLesson(false)}
         />
       )}
-      {tool === 'calc' && <Calculator onClose={() => setTool(null)} />}
-      {tool === 'conv' && current && (
-        <ConversionTable kind={conversionKind(current.question)} onClose={() => setTool(null)} />
+      {confirmQuit && (
+        <ConfirmDialog
+          title="Quitter la partie ?"
+          message="Ta progression sur cette série ne sera pas comptée."
+          confirm="Quitter"
+          cancel="Continuer à jouer"
+          onConfirm={leave}
+          onCancel={() => setConfirmQuit(false)}
+        />
       )}
-      {tool === 'ardoise' && <Ardoise onClose={() => setTool(null)} />}
       {toast}
     </div>
   );

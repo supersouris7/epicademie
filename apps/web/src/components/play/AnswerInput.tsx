@@ -10,6 +10,8 @@ interface AnswerInputProps {
   readonly onSubmit: (r: Response) => void;
   /** Point choisi sur le quadrillage (questions « point »). */
   readonly picked: { x: number; y: number } | null;
+  /** Valeur de départ (reportée depuis la calculatrice). */
+  readonly initialText?: string;
 }
 
 function unitLabel(unit?: string) {
@@ -17,9 +19,9 @@ function unitLabel(unit?: string) {
 }
 
 /** Saisie adaptée au type de réponse : pavé numérique, fraction, QCM, point. */
-export function AnswerInput({ question, disabled, onSubmit, picked }: AnswerInputProps) {
+export function AnswerInput({ question, disabled, onSubmit, picked, initialText }: AnswerInputProps) {
   const a = question.answer;
-  const [text, setText] = useState('');
+  const [text, setText] = useState(initialText ?? '');
   const [num, setNum] = useState('');
   const [den, setDen] = useState('');
   const [focus, setFocus] = useState<'num' | 'den'>('num');
@@ -77,7 +79,7 @@ export function AnswerInput({ question, disabled, onSubmit, picked }: AnswerInpu
         onClick={() => setFocus(which)}
         aria-label={which === 'num' ? 'Numérateur' : 'Dénominateur'}
         aria-pressed={focus === which}
-        className={`font-display flex h-16 min-w-28 items-center justify-center rounded-2xl border-4 px-3 text-4xl ${focus === which ? 'border-primary bg-surface' : 'border-outline/40 bg-surface-2'}`}
+        className={`font-display flex h-14 min-w-28 items-center justify-center rounded-2xl border-4 px-3 text-4xl ${focus === which ? 'border-primary bg-surface' : 'border-outline/40 bg-surface-2'}`}
       >
         {value || <span className="text-muted">?</span>}
       </button>
@@ -91,11 +93,18 @@ export function AnswerInput({ question, disabled, onSubmit, picked }: AnswerInpu
         </div>
         <NumPad
           onKey={onFractionKey}
+          extraKey={{
+            label: focus === 'num' ? '↓' : '↑',
+            ariaLabel: focus === 'num' ? 'Passer au dénominateur' : 'Revenir au numérateur',
+            onPress: () => setFocus((f) => (f === 'num' ? 'den' : 'num')),
+          }}
           onSubmit={() => onSubmit({ kind: 'fraction', num, den })}
           canSubmit={!disabled && num !== '' && num !== '−' && den !== ''}
           allowComma={false}
         />
-        <p className="text-muted text-sm font-bold">Touche une case pour écrire le numérateur ou le dénominateur.</p>
+        <p className="text-muted text-sm font-bold">
+          La flèche ↓ passe au dénominateur (ou touche directement une case).
+        </p>
       </div>
     );
   }

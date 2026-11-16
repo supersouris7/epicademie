@@ -1,54 +1,30 @@
-import { useState } from 'react';
+import { emptyConversion, LAYOUTS, type ConversionKind, type ConversionState } from '../../lib/conversion.ts';
 import { MathText } from '../MathText.tsx';
-import { ToolPanel } from './ToolPanel.tsx';
 
-export type ConversionKind = 'longueur' | 'aire' | 'volume';
-
-interface Column {
-  readonly unit: string;
-  /** Sous-colonnes (1 pour les longueurs, 2 pour les aires, 3 pour les volumes). */
-  readonly cells: number;
-  /** Unités de contenance alignées sous chaque sous-colonne (volumes). */
-  readonly capacity?: readonly string[];
+interface ConversionTableProps {
+  readonly kind: ConversionKind;
+  readonly state: ConversionState;
+  readonly onChange: (s: ConversionState) => void;
+  readonly highlight: ReadonlySet<string>;
 }
 
-const LENGTHS = ['km', 'hm', 'dam', 'm', 'dm', 'cm', 'mm'];
-
-const LAYOUTS: Record<ConversionKind, readonly Column[]> = {
-  longueur: LENGTHS.map((unit) => ({ unit, cells: 1 })),
-  aire: LENGTHS.map((u) => ({ unit: `${u}^2`, cells: 2 })),
-  // 1 m³ = 1 kL ; 1 dm³ = 1 L (daL, hL à gauche) ; 1 cm³ = 1 mL (cL, dL à gauche).
-  volume: [
-    { unit: 'm^3', cells: 3, capacity: ['', '', 'kL'] },
-    { unit: 'dm^3', cells: 3, capacity: ['hL', 'daL', 'L'] },
-    { unit: 'cm^3', cells: 3, capacity: ['dL', 'cL', 'mL'] },
-  ],
-};
-
-const TITLES: Record<ConversionKind, string> = {
-  longueur: 'Tableau des longueurs',
-  aire: 'Tableau des aires',
-  volume: 'Tableau des volumes et contenances',
-};
-
-/** Tableau de conversion à remplir : on place les chiffres et la virgule comme sur le cahier. */
-export function ConversionTable({ kind, onClose }: { readonly kind: ConversionKind; readonly onClose: () => void }) {
+/** Tableau de conversion à remplir : chiffres et virgule placés comme sur le cahier. */
+export function ConversionTable({ kind, state, onChange, highlight }: ConversionTableProps) {
   const layout = LAYOUTS[kind];
-  const total = layout.reduce((s, c) => s + c.cells, 0);
-  const [digits, setDigits] = useState<(string | null)[]>(() => Array.from({ length: total }, () => null));
-  const [comma, setComma] = useState<number | null>(null);
-  const [selected, setSelected] = useState(0);
-
-  const type = (d: string) => {
-    setDigits((ds) => ds.map((v, i) => (i === selected ? d : v)));
-    setSelected((s) => Math.min(total - 1, s + 1));
-  };
-  const keys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+  const total = state.digits.length;
+  const set = (patch: Partial<ConversionState>) => onChange({ ...state, ...patch });
+  const type = (d: string) =>
+    set({
+      digits: state.digits.map((v, i) => (i === state.selected ? d : v)),
+      selected: Math.min(total - 1, state.selected + 1),
+    });
+  const hl = (u: string) => (highlight.has(u) ? 'bg-primary text-white' : '');
   let index = 0;
   return (
-    <ToolPanel title={TITLES[kind]} onClose={onClose} wide>
+    <div className="flex flex-col gap-2">
       <p className="text-muted text-sm font-bold">
-        Touche une case, écris un chiffre ; « Virgule » la place juste après la case choisie.
+        Touche une case, écris un chiffre ; « Virgule » la place juste après la case choisie. Les unités de l’énoncé
+        sont en orange.
       </p>
       <div className="overflow-x-auto">
         <table className="mx-auto border-collapse">
@@ -58,7 +34,7 @@ export function ConversionTable({ kind, onClose }: { readonly kind: ConversionKi
                 <th
                   key={c.unit}
                   colSpan={c.cells}
-                  className="border-outline bg-accent border-2 px-2 py-1 text-lg text-white"
+                  className={`border-outline border-2 px-2 py-1 text-lg ${hl(c.unit) || 'bg-accent text-white'}`}
                 >
                   <MathText text={c.unit} />
                 </th>
@@ -68,7 +44,10 @@ export function ConversionTable({ kind, onClose }: { readonly kind: ConversionKi
               <tr>
                 {layout.flatMap((c) =>
                   (c.capacity ?? []).map((u, k) => (
-                    <th key={`${c.unit}${k}`} className="border-outline bg-surface-2 border-2 px-1 text-sm">
+                    <th
+                      key={`${c.unit}${k}`}
+                      className={`border-outline border-2 px-1 text-sm ${hl(u) || 'bg-surface-2'}`}
+                    >
                       {u}
                     </th>
                   )),
@@ -89,17 +68,18 @@ export function ConversionTable({ kind, onClose }: { readonly kind: ConversionKi
                     >
                       <button
                         type="button"
-                        onClick={() => setSelected(i)}
+                        onClick={() => set({ selected: i })}
                         aria-label={`Case ${i + 1}`}
-                        aria-pressed={selected === i}
-                        className={`font-display h-14 w-11 text-3xl ${selected === i ? 'bg-[color-mix(in_srgb,var(--primary)_25%,transparent)]' : ''}`}
+                        aria-pressed={state.selected === i}
+                        className={`font-display h-14 w-11 text-3xl ${state.selected === i ? 'bg-[color-mix(in_srgb,var(--primary)_28%,transparent)]' : ''}`}
                       >
-                        {digits[i] ?? ''}
+                        {state.digits[i] ?? ''}
                       </button>
-                      {comma === i && (
-                        <span className="text-danger font-display absolute -right-1.5 bottom-0 text-3xl leading-none">
-                          ,
-                        </span>
+                      {state.comma === i && (
+                        <span
+                          aria-label="virgule"
+                          className="bg-danger absolute top-1 -right-[5px] bottom-1 z-10 w-2.5 rounded-full"
+                        />
                       )}
                     </td>
                   );
@@ -110,7 +90,7 @@ export function ConversionTable({ kind, onClose }: { readonly kind: ConversionKi
         </table>
       </div>
       <div className="flex flex-wrap justify-center gap-2">
-        {keys.map((k) => (
+        {['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map((k) => (
           <button
             key={k}
             type="button"
@@ -122,30 +102,26 @@ export function ConversionTable({ kind, onClose }: { readonly kind: ConversionKi
         ))}
         <button
           type="button"
-          onClick={() => setComma((c) => (c === selected ? null : selected))}
+          onClick={() => set({ comma: state.comma === state.selected ? null : state.selected })}
           className="cartoon cartoon-press bg-danger font-display h-12 px-3 text-xl text-white"
         >
           Virgule
         </button>
         <button
           type="button"
-          onClick={() => setDigits((ds) => ds.map((v, i) => (i === selected ? null : v)))}
-          className="cartoon cartoon-press bg-surface-2 font-display h-12 px-3 text-xl"
+          onClick={() => set({ digits: state.digits.map((v, i) => (i === state.selected ? null : v)) })}
+          className="cartoon cartoon-press bg-surface-2 font-display h-12 px-3 text-lg"
         >
-          Effacer
+          Effacer la case
         </button>
         <button
           type="button"
-          onClick={() => {
-            setDigits(Array.from({ length: total }, () => null));
-            setComma(null);
-            setSelected(0);
-          }}
-          className="cartoon cartoon-press bg-surface-2 font-display h-12 px-3 text-xl"
+          onClick={() => onChange(emptyConversion(kind))}
+          className="cartoon cartoon-press bg-surface-2 font-display h-12 px-3 text-lg"
         >
           Tout effacer
         </button>
       </div>
-    </ToolPanel>
+    </div>
   );
 }

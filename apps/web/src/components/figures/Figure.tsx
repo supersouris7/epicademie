@@ -1,4 +1,4 @@
-import type { PointerEvent, ReactNode } from 'react';
+import type { CSSProperties, PointerEvent, ReactNode } from 'react';
 import type { Block, Figure as FigureSpec } from '@questeo/content';
 
 const INK = 'var(--text)';
@@ -19,12 +19,17 @@ interface FigureProps {
   readonly onPick?: (p: { x: number; y: number }) => void;
   /** Réponse attendue, affichée pendant la correction. */
   readonly reveal?: { x: number; y: number } | null;
+  /** Hauteur maximale de la figure (CSS), pour que tout tienne à l'écran. */
+  readonly maxHeight?: string;
 }
 
 export function Figure(props: FigureProps) {
   const f = props.figure;
   const box = (child: ReactNode, wide = false) => (
-    <div className={`bg-surface-2 mx-auto w-full overflow-x-auto rounded-2xl p-3 ${wide ? 'max-w-3xl' : 'max-w-xl'}`}>
+    <div
+      className={`bg-surface-2 mx-auto w-full overflow-auto rounded-2xl p-3 [&_svg]:max-h-[var(--fig-h)] ${wide ? 'max-w-3xl' : 'max-w-xl'}`}
+      style={{ '--fig-h': props.maxHeight ?? '9999px' } as CSSProperties}
+    >
       {child}
     </div>
   );
