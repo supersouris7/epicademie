@@ -83,10 +83,18 @@ button {
 /* Hauteur maximale des figures en partie : réduite sur téléphone en portrait (zone d'outils en bas). */
 :root {
   --figure-max: 40dvh;
+  /* Scène du combat de boss : grande sur tablette, simple bandeau sur téléphone. */
+  --arena-h: clamp(150px, 30dvh, 320px);
 }
 @media (orientation: portrait) and (max-width: 640px) {
   :root {
     --figure-max: 20dvh;
+    --arena-h: 22dvh;
+  }
+}
+@media (max-height: 500px) {
+  :root {
+    --arena-h: 30dvh;
   }
 }
 

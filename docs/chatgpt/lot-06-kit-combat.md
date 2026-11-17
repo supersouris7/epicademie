@@ -61,29 +61,29 @@ Réponds simplement « Prêt » si tu as compris.
 
 > Ce lot se génère avec le fichier autonome docs/chatgpt/kit-combat.md (prompt à copier en tête du fichier).
 
-#### 46. Nassim — fiche de modèle
-Enregistrer sous `assets-src/originals/characters/nassim/model-sheet.png` · 1536×1024 → final 1536×1024
+#### 46. Alex — fiche de modèle
+Enregistrer sous `assets-src/originals/characters/alex/model-sheet.png` · 1536×1024 → final 1536×1024
 
 ```text
-Image 1536×1024. Nassim, garçon de 12 ans à la peau mate, cheveux bruns bouclés en bataille, grosses lunettes de soudeur cyan relevées sur le front, sourire malin avec une dent un peu écartée, salopette de mécanicien bleu canard aux nombreuses poches remplies d’outils, t-shirt orange, clé à molette accrochée à la ceinture, bottes de chantier marron ; son bras droit porte un énorme gantelet mécanique orange et gris (bien plus gros que son autre bras) ; un petit drone rond à hélice flotte au-dessus de son épaule gauche. Arme : énorme gantelet-canon mécanique orange et gris porté au bras droit, avec une bouche de canon ronde au poing et des pistons sur l’avant-bras. Fiche de modèle : 4 vues alignées (face, trois quarts gauche, profil, dos), plus l’arme seule en grand à droite.
+Image 1536×1024. Alex, garçon de 12 ans à la peau mate, cheveux bruns bouclés en bataille, grosses lunettes de soudeur cyan relevées sur le front, sourire malin avec une dent un peu écartée, salopette de mécanicien bleu canard aux nombreuses poches remplies d’outils, t-shirt orange, clé à molette accrochée à la ceinture, bottes de chantier marron ; son bras droit porte un énorme gantelet mécanique orange et gris (bien plus gros que son autre bras) ; un petit drone rond à hélice flotte au-dessus de son épaule gauche. Arme : énorme gantelet-canon mécanique orange et gris porté au bras droit, avec une bouche de canon ronde au poing et des pistons sur l’avant-bras. Fiche de modèle : 4 vues alignées (face, trois quarts gauche, profil, dos), plus l’arme seule en grand à droite.
 Cadrage : fiche de modèle (référence pour les autres images, non affichée dans le jeu) : mêmes proportions sur toutes les vues, alignées sur une même ligne de sol.
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 47. Nassim — portrait
-Enregistrer sous `assets-src/originals/characters/nassim/portrait.png` · 1024×1024 → final 512×512
-> 📎 Joindre l'image validée `characters/nassim/model-sheet.png`.
+#### 47. Alex — portrait
+Enregistrer sous `assets-src/originals/characters/alex/portrait.png` · 1024×1024 → final 512×512
+> 📎 Joindre l'image validée `characters/alex/model-sheet.png`.
 
 ```text
-Image 1024×1024. Nassim, garçon de 12 ans à la peau mate, cheveux bruns bouclés en bataille, grosses lunettes de soudeur cyan relevées sur le front, sourire malin avec une dent un peu écartée, salopette de mécanicien bleu canard aux nombreuses poches remplies d’outils, t-shirt orange, clé à molette accrochée à la ceinture, bottes de chantier marron ; son bras droit porte un énorme gantelet mécanique orange et gris (bien plus gros que son autre bras) ; un petit drone rond à hélice flotte au-dessus de son épaule gauche. Expression énergique.
+Image 1024×1024. Alex, garçon de 12 ans à la peau mate, cheveux bruns bouclés en bataille, grosses lunettes de soudeur cyan relevées sur le front, sourire malin avec une dent un peu écartée, salopette de mécanicien bleu canard aux nombreuses poches remplies d’outils, t-shirt orange, clé à molette accrochée à la ceinture, bottes de chantier marron ; son bras droit porte un énorme gantelet mécanique orange et gris (bien plus gros que son autre bras) ; un petit drone rond à hélice flotte au-dessus de son épaule gauche. Expression énergique.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 48. Planche « nassim-poses » (6 éléments)
-Enregistrer sous `assets-src/originals/sheets/nassim-poses.png` · 1536×1024, grille 3×2 → chaque case finale 512×512
-> 📎 Joindre l'image validée `characters/nassim/model-sheet.png`.
-Cases : 1 → `characters/nassim/pose-idle` · 2 → `characters/nassim/pose-run` · 3 → `characters/nassim/pose-shoot` · 4 → `characters/nassim/pose-hurt` · 5 → `characters/nassim/pose-victory` · 6 → `characters/nassim/pose-defeat`
+#### 48. Planche « alex-poses » (6 éléments)
+Enregistrer sous `assets-src/originals/sheets/alex-poses.png` · 1536×1024, grille 3×2 → chaque case finale 512×512
+> 📎 Joindre l'image validée `characters/alex/model-sheet.png`.
+Cases : 1 → `characters/alex/pose-idle` · 2 → `characters/alex/pose-run` · 3 → `characters/alex/pose-shoot` · 4 → `characters/alex/pose-hurt` · 5 → `characters/alex/pose-victory` · 6 → `characters/alex/pose-defeat`
 
 ```text
 Image 1536×1024 : planche de 6 éléments de jeu disposés sur une grille invisible de 3 colonnes × 2 lignes (cases de 512×512 px).
@@ -91,12 +91,12 @@ Ordre : de gauche à droite, puis de haut en bas. Chaque élément est centré d
 Cadrage de chaque élément : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
 Tous les éléments ont la même épaisseur de contour, la même lumière et la même échelle visuelle.
 
-1. Nassim (exactement comme sur sa fiche de modèle), avec son arme. Pose attente : debout, détendu, arme prête
-2. Nassim (exactement comme sur sa fiche de modèle), avec son arme. Pose course : grande foulée vers la droite, un pied décollé, buste penché en avant
-3. Nassim (exactement comme sur sa fiche de modèle), avec son arme. Pose tir : arme pointée vers la droite, petit éclair à la bouche du canon
-4. Nassim (exactement comme sur sa fiche de modèle), avec son arme. Pose touché : recule d’un pas, grimace comique (dessin animé, aucune blessure)
-5. Nassim (exactement comme sur sa fiche de modèle), avec son arme. Pose victoire : saute de joie, poing ou patte levé
-6. Nassim (exactement comme sur sa fiche de modèle), avec son arme. Pose défaite : assis par terre, étourdi, petites spirales au-dessus de la tête
+1. Alex (exactement comme sur sa fiche de modèle), avec son arme. Pose attente : debout, détendu, arme prête
+2. Alex (exactement comme sur sa fiche de modèle), avec son arme. Pose course : grande foulée vers la droite, un pied décollé, buste penché en avant
+3. Alex (exactement comme sur sa fiche de modèle), avec son arme. Pose tir : arme pointée vers la droite, petit éclair à la bouche du canon
+4. Alex (exactement comme sur sa fiche de modèle), avec son arme. Pose touché : recule d’un pas, grimace comique (dessin animé, aucune blessure)
+5. Alex (exactement comme sur sa fiche de modèle), avec son arme. Pose victoire : saute de joie, poing ou patte levé
+6. Alex (exactement comme sur sa fiche de modèle), avec son arme. Pose défaite : assis par terre, étourdi, petites spirales au-dessus de la tête
 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
@@ -263,7 +263,7 @@ Style, fond et interdits : ceux du message de départ (une seule couleur de fond
 
 #### 61. Planche « armes » (5 éléments)
 Enregistrer sous `assets-src/originals/sheets/armes.png` · 1536×1024, grille 3×2 → chaque case finale 384×256
-Cases : 1 → `weapons/nassim` · 2 → `weapons/tao` · 3 → `weapons/lina` · 4 → `weapons/ayla` · 5 → `weapons/pixel`
+Cases : 1 → `weapons/alex` · 2 → `weapons/tao` · 3 → `weapons/lina` · 4 → `weapons/ayla` · 5 → `weapons/pixel`
 
 ```text
 Image 1536×1024 : planche de 5 éléments de jeu disposés sur une grille invisible de 3 colonnes × 2 lignes (cases de 512×512 px).
@@ -271,7 +271,7 @@ Ordre : de gauche à droite, puis de haut en bas. Chaque élément est centré d
 Cadrage de chaque élément : arme seule vue de profil, canon pointé vers la droite, poignée en bas à gauche, occupe 85 % de la largeur de sa case.
 Tous les éléments ont la même épaisseur de contour, la même lumière et la même échelle visuelle.
 
-1. arme de Nassim : énorme gantelet-canon mécanique orange et gris porté au bras droit, avec une bouche de canon ronde au poing et des pistons sur l’avant-bras
+1. arme d’Alex : énorme gantelet-canon mécanique orange et gris porté au bras droit, avec une bouche de canon ronde au poing et des pistons sur l’avant-bras
 2. arme de Tao : arbalète-tech compacte vert et or tenue à deux mains, avec une lunette de visée ronde et des branches recourbées lumineuses
 3. arme de Lina : gros lance-ballons rouge et blanc porté sur l’épaule comme un bazooka jouet, à large bouche ronde et réservoir d’air transparent
 4. arme d’Ayla : bombe-blaster : pistolet de peinture turquoise et jaune monté sur une bombe aérosol géante, buse ronde à l’avant
@@ -533,7 +533,7 @@ Enregistrer sous `assets-src/originals/branding/key-art.png` · 1536×1024 → f
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
 ```text
-Image 1536×1024. Scène de combat épique et joyeuse : les cinq héros alignés de gauche à droite (Nassim avec son gantelet-canon, Lina avec son lance-ballons, Pixel le chat avec son canon-poisson au premier plan, Ayla avec sa bombe-blaster, Tao avec son arbalète) et Questy qui lève le poing au milieu, tous face au Golem des Équations tout à droite ; en arrière-plan un château-académie violet flottant aux bannières à livre, ciel lavande, îles flottantes.
+Image 1536×1024. Scène de combat épique et joyeuse : les cinq héros alignés de gauche à droite (Alex avec son gantelet-canon, Lina avec son lance-ballons, Pixel le chat avec son canon-poisson au premier plan, Ayla avec sa bombe-blaster, Tao avec son arbalète) et Questy qui lève le poing au milieu, tous face au Golem des Équations tout à droite ; en arrière-plan un château-académie violet flottant aux bannières à livre, ciel lavande, îles flottantes.
 Cadrage : illustration plein cadre, composition lisible en petit, sans aucun texte ni interface.
 Style, fond et interdits : ceux du message de départ.
 ```

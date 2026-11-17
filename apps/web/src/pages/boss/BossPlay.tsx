@@ -1,0 +1,556 @@
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
+import { useQueryClient } from '@tanstack/react-query';
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router';
+import { check, generate, getAnySkill, getChapter, getSkill, type Chapter, type Response } from '@questeo/content';
+import { itemRefusal } from '@questeo/engine';
+import {
+  accord,
+  BATTLE_MOBS,
+  BOSS_LIVES,
+  getAmmo,
+  ITEM_INFO,
+  ITEMS,
+  type BattleSummary,
+  type BattleView,
+  type ItemId,
+  type Profile,
+} from '@questeo/shared';
+import { answerBattle, bossesKey, finishBattle, sendBattleItem, startBattle } from '../../api/battles.ts';
+import { ApiError } from '../../api/client.ts';
+import { BattleArena, AmmoOrb, type ArenaEnemy, type EnemyState } from '../../components/battle/BattleArena.tsx';
+import { ConfirmDialog } from '../../components/ConfirmDialog.tsx';
+import { Confetti } from '../../components/Confetti.tsx';
+import { Figure } from '../../components/figures/Figure.tsx';
+import { GameButton } from '../../components/game/GameButton.tsx';
+import { GameIcon } from '../../components/game/GameIcon.tsx';
+import { ProgressBar } from '../../components/game/ProgressBar.tsx';
+import { RewardBadge } from '../../components/game/RewardBadge.tsx';
+import { Questy } from '../../components/mascot/Questy.tsx';
+import { QuestyPose } from '../../components/mascot/QuestyPose.tsx';
+import { MathText } from '../../components/MathText.tsx';
+import { Memo } from '../../components/play/Memo.tsx';
+import { QuestionTools } from '../../components/play/QuestionTools.tsx';
+import { useToast } from '../../components/Toast.tsx';
+import type { AnimationState } from '../../design/assets.ts';
+import { bossFilter, bossOf, mobOf } from '../../design/bosses.ts';
+import { formatAnswer, formatResponse } from '../../lib/answers.ts';
+import { playSound, preloadSounds, setSoundEnabled } from '../../lib/sound.ts';
+import { ITEM_ICONS } from '../../design/items.ts';
+
+/** Combat de boss d'un chapitre (docs/SPEC.md §6.2 bis). */
+export function BossPlay({ profile }: { readonly profile: Profile }) {
+  const { chapterId = '' } = useParams();
+  const location = useLocation();
+  const chapter = getChapter(chapterId);
+  if (!chapter?.boss) return <Navigate to="/jouer/boss/maths" replace />;
+  return <Battle key={location.key} profile={profile} chapter={chapter} />;
+}
+
+/** Après une erreur : ce qui s'est passé, avant de passer à la suite. */
+interface Missed {
+  readonly given: Response;
+  readonly why?: string;
+  readonly next: BattleView;
+}
+
+const STAGE_LABEL = { mob: 'Mob', probleme: 'Problème', piege: 'Piège !' } as const;
+/** Durées de l'animation d'un tir (ms). */
+const HIT_MS = 450;
+const NEXT_MS = 1100;
+
+function Battle({ profile, chapter }: { readonly profile: Profile; readonly chapter: Chapter }) {
+  const navigate = useNavigate();
+  const qc = useQueryClient();
+  const [toast, showToast] = useToast(2500);
+  const boss = bossOf(chapter);
+  const ammo = getAmmo(profile.ammo);
+  const [battle, setBattle] = useState<BattleView | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [summary, setSummary] = useState<BattleSummary | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [missed, setMissed] = useState<Missed | null>(null);
+  const [showAll, setShowAll] = useState(false);
+  const [memo, setMemo] = useState(false);
+  const [confirmQuit, setConfirmQuit] = useState(false);
+  const [picked, setPicked] = useState<{ x: number; y: number } | null>(null);
+  const [heroState, setHeroState] = useState<AnimationState>('idle');
+  const [enemyState, setEnemyState] = useState<EnemyState>('idle');
+  const [shot, setShot] = useState(0);
+  const [riposte, setRiposte] = useState(0);
+  const shownAt = useRef(0);
+  const started = useRef(false);
+  const timers = useRef<number[]>([]);
+
+  const later = (ms: number, fn: () => void) => {
+    timers.current.push(window.setTimeout(fn, ms));
+  };
+  useEffect(() => () => timers.current.forEach((t) => window.clearTimeout(t)), []);
+
+  useEffect(() => {
+    setSoundEnabled(profile.soundOn);
+    preloadSounds();
+  }, [profile.soundOn]);
+
+  // Démarrage (une seule fois, même en StrictMode).
+  useEffect(() => {
+    if (started.current) return;
+    started.current = true;
+    startBattle(profile.id, chapter.id)
+      .then((b) => {
+        shownAt.current = performance.now();
+        setBattle(b);
+      })
+      .catch((err: unknown) =>
+        setError(
+          err instanceof ApiError ? err.message : 'Impossible de lancer le combat. Le serveur est-il joignable ?',
+        ),
+      );
+  }, [chapter.id, profile.id]);
+
+  const q = battle?.question ?? null;
+  const question = useMemo(() => (q ? generate(q.skillId, q.level, q.seed) : null), [q]);
+  const skill = q ? getAnySkill(q.skillId) : undefined;
+  const onBoss = battle ? battle.mobsDefeated >= BATTLE_MOBS : false;
+  const enemy: ArenaEnemy | null = battle
+    ? onBoss
+      ? { key: 'boss', name: boss.name, boss: true, image: `bosses-maths-${boss.id}`, filter: bossFilter(chapter.id) }
+      : (() => {
+          const mob = mobOf(boss, battle.mobsDefeated);
+          return { key: `mob-${battle.mobsDefeated}`, name: `Mob ${mob}`, boss: false, image: `bosses-minions-${mob}` };
+        })()
+    : null;
+
+  const finish = async (b: BattleView) => {
+    try {
+      const s = await finishBattle(b.id);
+      playSound(s.won ? (s.levelAfter > s.levelBefore ? 'levelup' : 'finish') : 'wrong');
+      setSummary(s);
+      void qc.invalidateQueries({ queryKey: bossesKey(profile.id) });
+      void qc.invalidateQueries({ queryKey: ['profiles'] });
+    } catch {
+      setError('Impossible d’enregistrer la fin du combat.');
+    }
+  };
+
+  /** Passe à l'état suivant du combat ; fin de combat : pose finale puis résultats. */
+  const advance = (next: BattleView) => {
+    setMissed(null);
+    setShowAll(false);
+    setPicked(null);
+    setBattle(next);
+    shownAt.current = performance.now();
+    if (next.status === 'won') {
+      setEnemyState('ko');
+      setHeroState('victory');
+      later(1400, () => void finish(next));
+    } else if (next.status === 'lost') {
+      setHeroState('defeat');
+      later(1200, () => void finish(next));
+    } else {
+      setHeroState('idle');
+      setEnemyState('idle');
+      setBusy(false);
+    }
+  };
+
+  const submit = async (response: Response) => {
+    if (!battle || !q || !question || busy || missed) return;
+    const local = check(question, response);
+    if (local.invalid) {
+      showToast('Écris un nombre valide (ex. 3,5 ou −2).');
+      return;
+    }
+    setBusy(true);
+    try {
+      const res = await answerBattle(battle.id, {
+        skillId: q.skillId,
+        level: q.level,
+        seed: q.seed,
+        response,
+        durationMs: Math.round(performance.now() - shownAt.current),
+      });
+      if (res.invalid) {
+        showToast('Écris un nombre valide (ex. 3,5 ou −2).');
+        setBusy(false);
+        return;
+      }
+      if (res.correct) {
+        playSound('correct');
+        setHeroState('shoot');
+        setShot((n) => n + 1);
+        later(HIT_MS, () => setEnemyState('hurt'));
+        later(NEXT_MS, () => advance(res.battle));
+      } else {
+        playSound('wrong');
+        setEnemyState('attack');
+        setRiposte((n) => n + 1);
+        later(HIT_MS, () => {
+          setHeroState(res.outcome === 'blocked' ? 'idle' : 'hurt');
+          setEnemyState('idle');
+          // Le bouclier a servi : on l'enlève tout de suite de la scène.
+          setBattle((b) => (b ? { ...b, shield: res.battle.shield, hearts: res.battle.hearts } : b));
+        });
+        setMissed({ given: response, why: local.why, next: res.battle });
+      }
+    } catch (err) {
+      showToast(err instanceof ApiError ? err.message : 'Réponse non envoyée (problème de connexion).');
+      setBusy(false);
+    }
+  };
+
+  const spendItem = async (item: ItemId) => {
+    if (!battle || busy || missed) return;
+    const refusal = battle.inventory[item] <= 0 ? 'Tu n’en as plus' : itemRefusal(battle, item);
+    if (refusal) {
+      showToast(refusal);
+      return;
+    }
+    try {
+      const next = await sendBattleItem(battle.id, item);
+      playSound('reveal');
+      setBattle(next);
+    } catch (err) {
+      showToast(err instanceof ApiError ? err.message : 'Problème de connexion');
+    }
+  };
+
+  const leave = () => void navigate(`/jouer/boss/${chapter.subject}`);
+
+  if (error) {
+    return (
+      <div className="mx-auto flex max-w-xl flex-col items-center gap-4 p-8 text-center">
+        <Questy mood="sad" size={120} />
+        <p className="text-xl font-bold">{error}</p>
+        <GameButton onClick={leave}>Retour aux boss</GameButton>
+      </div>
+    );
+  }
+
+  if (summary) return <BattleResults summary={summary} chapter={chapter} gender={profile.gender} />;
+
+  return (
+    <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-2 px-3 py-3 sm:px-4">
+      <header className="flex shrink-0 items-center gap-3">
+        <GameButton
+          variant="danger"
+          size="sm"
+          iconOnly
+          icon="icons-navigation-close"
+          onClick={() => setConfirmQuit(true)}
+          aria-label="Quitter le combat"
+        />
+        <div className="flex items-center gap-0.5" aria-label={`${battle?.hearts ?? 3} cœurs sur 3`} role="img">
+          {Array.from({ length: battle?.maxHearts ?? 3 }, (_, i) => (
+            <GameIcon
+              key={i}
+              id={i < (battle?.hearts ?? 3) ? 'icons-resources-life' : 'icons-resources-life-empty'}
+              size="sm"
+            />
+          ))}
+        </div>
+        <span className="flex-1" />
+        {onBoss ? (
+          <div className="flex min-w-0 flex-1 flex-col">
+            <span className="font-display truncate text-right text-sm tracking-wide">{boss.name}</span>
+            <ProgressBar
+              value={battle?.bossLives ?? BOSS_LIVES}
+              max={BOSS_LIVES}
+              segments={BOSS_LIVES}
+              color="var(--boss)"
+              label={`Vies de ${boss.name}`}
+              text={`${battle?.bossLives ?? BOSS_LIVES}/${BOSS_LIVES}`}
+            />
+          </div>
+        ) : (
+          <span className="font-display text-lg tracking-wide">
+            Mobs {Math.min((battle?.mobsDefeated ?? 0) + 1, BATTLE_MOBS)}/{BATTLE_MOBS}
+          </span>
+        )}
+      </header>
+
+      <BattleArena
+        hero={profile.hero}
+        heroState={heroState}
+        enemy={enemy}
+        enemyState={enemyState}
+        ammo={ammo}
+        shot={shot}
+        riposte={riposte}
+        shield={battle?.shield ?? false}
+        arena={boss.arena}
+        sky={boss.sky}
+      />
+
+      {!battle || !question || !q ? (
+        <div className="flex flex-1 flex-col items-center justify-center gap-3">
+          <Questy mood={battle ? 'wow' : 'angry'} size={100} />
+          <p className="font-display text-2xl">{battle ? 'Fin du combat…' : `${boss.name} arrive…`}</p>
+        </div>
+      ) : (
+        <AnimatePresence mode="wait">
+          <motion.main
+            key={`${q.seed}-${battle.turn}`}
+            data-turn={battle.turn}
+            initial={{ x: 30, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -30, opacity: 0 }}
+            className="side:grid side:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] flex min-h-0 flex-1 flex-col gap-3"
+          >
+            <section className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pb-1 [&>*]:shrink-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <span
+                  className={`rounded-full px-2 py-0.5 text-xs font-bold text-white ${q.stage === 'piege' ? 'bg-danger' : q.stage === 'probleme' ? 'bg-accent' : 'bg-info'}`}
+                >
+                  {STAGE_LABEL[q.stage]}
+                </span>
+                <span className="text-muted text-sm font-bold">{skill?.title}</span>
+                <span className="flex-1" />
+                <ItemBar battle={battle} disabled={busy || missed !== null} onUse={(i) => void spendItem(i)} />
+              </div>
+              <h1 className="text-2xl leading-snug font-bold sm:text-3xl">
+                <MathText text={question.prompt} />
+              </h1>
+              {battle.hintShown && (
+                <p className="cartoon bg-surface-2 flex items-start gap-2 px-3 py-2 font-bold" role="note">
+                  <GameIcon id="icons-navigation-hint" size="xs" />
+                  <span>
+                    <strong>Indice :</strong> <MathText text={question.hint} />
+                  </span>
+                </p>
+              )}
+              {question.figure && (
+                <Figure
+                  figure={question.figure}
+                  maxHeight="var(--figure-max)"
+                  picked={picked}
+                  onPick={question.answer.kind === 'point' && !missed ? setPicked : undefined}
+                  reveal={missed && question.answer.kind === 'point' ? question.answer : null}
+                />
+              )}
+            </section>
+
+            <section className="side:h-[min(100%,520px)] side:self-center flex h-[clamp(240px,36dvh,360px)] min-h-0 shrink-0 flex-col">
+              {missed ? (
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  className="cartoon flex min-h-0 flex-1 flex-col gap-2 bg-[color-mix(in_srgb,var(--danger)_12%,var(--surface))] p-3"
+                  aria-live="polite"
+                >
+                  <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
+                    <p className="text-lg leading-snug">
+                      Tu as répondu <MathText text={formatResponse(question, missed.given)} className="font-bold" />. La
+                      bonne réponse : <MathText text={formatAnswer(question)} className="font-bold" />.
+                    </p>
+                    {missed.why && (
+                      <p className="text-lg">
+                        <MathText text={missed.why} />
+                      </p>
+                    )}
+                    {showAll ? (
+                      <ol className="flex flex-col gap-1.5">
+                        {question.steps.map((s, i) => (
+                          <li key={i} className="bg-surface rounded-2xl p-2.5 text-lg leading-snug">
+                            <MathText text={s} />
+                          </li>
+                        ))}
+                      </ol>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setShowAll(true)}
+                        className="text-accent self-start font-bold underline"
+                      >
+                        Voir tout
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex shrink-0 flex-wrap justify-end gap-2">
+                    {skill && (
+                      <GameButton
+                        variant="surface"
+                        size="sm"
+                        icon="icons-navigation-hint"
+                        onClick={() => setMemo(true)}
+                      >
+                        Le truc à retenir
+                      </GameButton>
+                    )}
+                    <GameButton icon="icons-navigation-next" onClick={() => advance(missed.next)}>
+                      {missed.next.status === 'fighting' ? 'Suivant' : 'Voir le résultat'}
+                    </GameButton>
+                  </div>
+                </motion.div>
+              ) : (
+                <QuestionTools
+                  key={`${q.seed}-${battle.turn}`}
+                  question={question}
+                  skill={skill}
+                  picked={picked}
+                  onSubmit={(r) => void submit(r)}
+                />
+              )}
+            </section>
+          </motion.main>
+        </AnimatePresence>
+      )}
+      {memo && skill && <Memo skill={skill} onClose={() => setMemo(false)} />}
+      {confirmQuit && (
+        <ConfirmDialog
+          title="Quitter le combat ?"
+          message="Le boss gardera ses vies : tu pourras revenir l’affronter."
+          confirm="Quitter"
+          cancel="Continuer le combat"
+          onConfirm={leave}
+          onCancel={() => setConfirmQuit(false)}
+        />
+      )}
+      {toast}
+    </div>
+  );
+}
+
+/** Objets utilisables pendant le combat (3 au plus). */
+function ItemBar({
+  battle,
+  disabled,
+  onUse,
+}: {
+  readonly battle: BattleView;
+  readonly disabled: boolean;
+  readonly onUse: (item: ItemId) => void;
+}) {
+  return (
+    <div className="flex gap-1.5" aria-label="Objets">
+      {ITEMS.map((item) => {
+        const count = battle.inventory[item];
+        const off = disabled || count <= 0 || itemRefusal(battle, item) !== null;
+        return (
+          <button
+            key={item}
+            type="button"
+            onClick={() => onUse(item)}
+            aria-label={`${ITEM_INFO[item].name} (${count}) : ${ITEM_INFO[item].effect}`}
+            title={ITEM_INFO[item].effect}
+            className={`cartoon cartoon-press bg-surface-2 relative flex h-11 w-11 items-center justify-center ${off ? 'opacity-45' : ''}`}
+          >
+            <GameIcon id={ITEM_ICONS[item]} size="sm" />
+            <span className="bg-accent absolute -right-1.5 -bottom-1.5 rounded-full px-1.5 text-xs font-bold text-white">
+              {count}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function BattleResults({
+  summary,
+  chapter,
+  gender,
+}: {
+  readonly summary: BattleSummary;
+  readonly chapter: Chapter;
+  readonly gender: Profile['gender'];
+}) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const boss = bossOf(chapter);
+  const weak = summary.weakSkill ? getSkill(summary.weakSkill) : undefined;
+  const ammo = summary.ammo ? getAmmo(summary.ammo) : null;
+  const gained = ITEMS.filter((i) => (summary.items[i] ?? 0) > 0);
+  return (
+    <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-5 px-4 py-6">
+      {summary.won && <Confetti />}
+      <div className="flex flex-col items-center gap-3 text-center">
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 10 }}
+        >
+          <QuestyPose pose={summary.won ? 'hero' : 'triste'} mood={summary.won ? 'proud' : 'sad'} size={150} />
+        </motion.div>
+        <h1 className="font-display text-4xl tracking-wide">
+          {summary.won ? `${boss.name} est vaincu !` : `${boss.name} a gagné cette fois…`}
+        </h1>
+        <p className="text-muted text-xl font-bold">
+          {summary.won
+            ? summary.hearts === 3
+              ? `Sans perdre un cœur, ${accord(gender, 'champion', 'championne')} !`
+              : `Il te restait ${summary.hearts} cœur${summary.hearts > 1 ? 's' : ''}.`
+            : 'On s’entraîne encore un peu, et on revient le battre !'}
+        </p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <RewardBadge tone="gold" icon="icons-resources-xp" value={`+${summary.xpGained}`} label="XP" />
+        <RewardBadge icon="icons-resources-coin" value={`+${summary.coinsGained}`} label="pièces" />
+      </div>
+
+      {summary.firstWin && (
+        <motion.section
+          initial={{ scale: 0.6, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.3, type: 'spring' }}
+          className="cartoon bevel bg-accent flex flex-col items-center gap-3 p-4 text-center"
+        >
+          <h2 className="font-display text-toon text-2xl">1re victoire : le coffre !</h2>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <span className="flex flex-col items-center gap-1 font-bold text-white">
+              <GameIcon id="rewards-medals-or" size={56} />
+              Médaille
+            </span>
+            {ammo && (
+              <span className="flex flex-col items-center gap-1 font-bold text-white">
+                <AmmoOrb ammo={ammo} size={56} />
+                Munition {ammo.name}
+              </span>
+            )}
+            {gained.map((i) => (
+              <span key={i} className="flex flex-col items-center gap-1 font-bold text-white">
+                <GameIcon id={ITEM_ICONS[i]} size={56} />
+                {ITEM_INFO[i].name} +{summary.items[i]}
+              </span>
+            ))}
+          </div>
+        </motion.section>
+      )}
+
+      {summary.levelAfter > summary.levelBefore && (
+        <div className="cartoon bevel bg-accent font-display text-toon p-4 text-center text-3xl">
+          Niveau {summary.levelAfter} atteint !
+        </div>
+      )}
+
+      <div className="flex flex-wrap justify-center gap-3">
+        {!summary.won && weak && (
+          <GameButton
+            variant="success"
+            icon="icons-navigation-lesson"
+            onClick={() => void navigate(`/partie/entrainement/${chapter.id}/${weak.id}`)}
+          >
+            S’entraîner : {weak.title}
+          </GameButton>
+        )}
+        <GameButton
+          icon="icons-navigation-retry"
+          onClick={() => void navigate(location.pathname, { replace: true, state: { replay: Date.now() } })}
+        >
+          Rejouer
+        </GameButton>
+        <GameButton
+          variant="accent"
+          icon="icons-navigation-next"
+          onClick={() => void navigate(`/jouer/boss/${chapter.subject}`)}
+        >
+          Autres boss
+        </GameButton>
+        <GameButton variant="accent" icon="icons-navigation-home" onClick={() => void navigate('/hub')}>
+          Accueil
+        </GameButton>
+      </div>
+    </div>
+  );
+}

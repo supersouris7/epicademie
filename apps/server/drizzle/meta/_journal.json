@@ -64,6 +64,13 @@
       "when": 1795000000000,
       "tag": "0008_new_heroes",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1795100000000,
+      "tag": "0009_battle",
+      "breakpoints": true
     }
   ]
 }

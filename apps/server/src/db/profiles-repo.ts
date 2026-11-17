@@ -19,7 +19,7 @@ export function createProfilesRepo(db: Db) {
       const row = db
         .insert(profiles)
         // Héros explicite : la valeur par défaut de la colonne date d'avant les nouveaux héros.
-        .values({ id: randomUUID(), ...input, hero: input.hero ?? 'nassim' })
+        .values({ id: randomUUID(), ...input, hero: input.hero ?? 'alex' })
         .returning()
         .get();
       return toProfile(row);

@@ -41,3 +41,27 @@ describe('migration 0008 : nouveaux héros', () => {
     sqlite.close();
   });
 });
+
+describe('migration 0009 : combat de boss', () => {
+  it('renomme Nassim en Alex, ajoute la classe et la munition', () => {
+    const file = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'questeo-')), 'test.db');
+    openDb(file, migrationsDir).close();
+    const sqlite = new Database(file);
+    const insert = sqlite.prepare('INSERT INTO profiles (id, name, avatar, hero, created_at) VALUES (?, ?, ?, ?, ?)');
+    const avatar = JSON.stringify({ style: 'pixelbot', seed: 's' });
+    ['nassim', 'tao'].forEach((hero, i) => insert.run(String(i), `P${i}`, avatar, hero, Date.now()));
+    sqlite.exec(
+      fs
+        .readFileSync(path.join(migrationsDir, '0009_battle.sql'), 'utf8')
+        .split('--> statement-breakpoint')
+        .filter((st) => st.includes('UPDATE `profiles`'))
+        .join(';'),
+    );
+    const rows = sqlite.prepare('SELECT hero, grade, ammo FROM profiles ORDER BY id').all();
+    expect(rows).toEqual([
+      { hero: 'alex', grade: null, ammo: null },
+      { hero: 'tao', grade: null, ammo: null },
+    ]);
+    sqlite.close();
+  });
+});

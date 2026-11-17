@@ -20,6 +20,7 @@ const SIMPLE: readonly [number, number][] = [
 
 const decimales: Skill = {
   id: 'm5-fractions-decimales',
+  mental: true,
   title: 'Fractions et écriture décimale',
   lesson: {
     memo: [
@@ -83,6 +84,7 @@ const decimales: Skill = {
 
 const quotient: Skill = {
   id: 'm5-fractions-quotient',
+  mental: true,
   title: 'La fraction comme quotient',
   lesson: {
     memo: [
@@ -173,6 +175,7 @@ const droite: Skill = {
 
 const egales: Skill = {
   id: 'm5-fractions-egales',
+  mental: true,
   title: 'Fractions égales',
   advice: 'brouillon',
   lesson: {
@@ -245,6 +248,7 @@ function commonDenSteps(
 
 const comparer: Skill = {
   id: 'm5-fractions-comparer',
+  mental: true,
   title: 'Comparer des fractions',
   advice: 'brouillon',
   lesson: {
@@ -312,6 +316,7 @@ const comparer: Skill = {
 
 const entier: Skill = {
   id: 'm5-fractions-entier',
+  mental: true,
   title: 'Partie entière d’une fraction',
   lesson: {
     memo: [
@@ -362,6 +367,7 @@ function addSubSkill(id: string, title: string, minus: boolean): Skill {
   const op = minus ? '−' : '+';
   return {
     id,
+    mental: true,
     title,
     advice: 'brouillon',
     lesson: {
@@ -442,6 +448,7 @@ const soustraction = addSubSkill('m5-fractions-soustraction', 'Soustraire des fr
 
 const dunNombre: Skill = {
   id: 'm5-fractions-dun-nombre',
+  mental: true,
   title: 'Prendre une fraction d’un nombre',
   lesson: {
     memo: [
@@ -530,6 +537,7 @@ const problemes: Skill = {
 export const fractions: Chapter = {
   id: 'm5-fractions',
   subject: 'maths',
+  grade: '5e',
   domain: 'nombres',
   title: 'Fractions',
   skills: [decimales, quotient, droite, egales, comparer, entier, addition, soustraction, dunNombre, problemes],

@@ -17,9 +17,11 @@ export function ModeSetup() {
   const navigate = useNavigate();
   if (!mode) return <Navigate to="/hub" replace />;
   const back = mode.category === 'multi' ? '/multi' : '/hub';
-  const pickSubject = (subject: string, name: string) => {
-    if (mode.id === 'entrainement' && chaptersOf(subject).length > 0) void navigate(`/jouer/entrainement/${subject}`);
-    else showToast(mode.id === 'entrainement' ? `${name} arrive bientôt !` : `${mode.name} arrive bientôt !`);
+  const playable = (mode.id === 'entrainement' || mode.id === 'boss') && mode.available;
+  const pickSubject = (subject: string, name: string, available: boolean) => {
+    if (!available || chaptersOf(subject).length === 0) showToast(`${name} arrive bientôt !`);
+    else if (playable) void navigate(`/jouer/${mode.id}/${subject}`);
+    else showToast(`${mode.name} arrive bientôt !`);
   };
 
   return (
@@ -33,19 +35,26 @@ export function ModeSetup() {
         {SUBJECTS.map((s, i) => (
           <motion.li
             key={s.id}
+            className="relative"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.05 + i * 0.05, type: 'spring', stiffness: 220, damping: 15 }}
           >
             <button
               type="button"
-              onClick={() => pickSubject(s.id, s.name)}
-              className="cartoon bevel cartoon-press flex min-h-36 w-full flex-col items-center justify-center gap-2 p-4 hover:brightness-110"
+              onClick={() => pickSubject(s.id, s.name, s.available)}
+              aria-label={s.available ? s.name : `${s.name}, à venir`}
+              className={`cartoon bevel cartoon-press relative flex min-h-36 w-full flex-col items-center justify-center gap-2 p-4 hover:brightness-110 ${s.available ? '' : 'opacity-60 grayscale'}`}
               style={{ backgroundColor: `var(--subject-${s.color})` }}
             >
               <SubjectIcon subject={s.id} size={72} />
               <span className="font-display text-toon text-xl tracking-wide sm:text-2xl">{s.name}</span>
             </button>
+            {!s.available && (
+              <span className="bg-gold text-on-light font-display pointer-events-none absolute top-2 right-2 rounded-full px-2.5 py-0.5 text-sm">
+                À venir
+              </span>
+            )}
           </motion.li>
         ))}
       </ul>

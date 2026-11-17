@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
 import { levelFromXp } from '@questeo/engine';
-import { accord, MODES, MODE_CATEGORIES, type Profile } from '@questeo/shared';
+import { accord, gradeInfo, MODES, MODE_CATEGORIES, type Profile } from '@questeo/shared';
+import { comingSoon } from '../lib/grades.ts';
 import { ModeTile } from '../components/ModeTile.tsx';
 import { useToast } from '../components/Toast.tsx';
 import { PageShell } from '../components/PageShell.tsx';
@@ -81,14 +82,20 @@ export function Hub({ profile }: { readonly profile: Profile }) {
         Mes progrès et médailles
       </GameButton>
 
-      {(!profile.gender || !profile.birthDate) && (
+      {profile.grade && !gradeInfo(profile.grade).available && (
+        <p className="cartoon bg-surface-2 p-4 text-lg font-bold" role="note">
+          {comingSoon(profile.grade)}
+        </p>
+      )}
+
+      {(!profile.gender || !profile.birthDate || !profile.grade) && (
         <button
           type="button"
           onClick={() => void navigate(`/profils/${profile.id}/modifier`)}
           className="cartoon cartoon-press bg-gold font-display text-on-light flex items-center gap-3 p-4 text-left text-xl"
         >
           <span className="flex-1">
-            Complète ton profil : fille ou garçon et date de naissance (pour adapter ton avatar et les duels)
+            Complète ton profil : fille ou garçon, date de naissance et classe (pour adapter les questions et les duels)
           </span>
           <span aria-hidden>→</span>
         </button>

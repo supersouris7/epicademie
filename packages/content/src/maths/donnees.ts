@@ -8,7 +8,7 @@ const SPORTS = ['Foot', 'Basket', 'Danse', 'Natation', 'Judo', 'Tennis'];
 
 const effectifs: Skill = {
   id: 'm5-effectifs-frequences',
-  tools: ['calculatrice'],
+  advice: 'calculatrice',
   title: 'Effectifs et fréquences',
   lesson: {
     memo: [
@@ -84,7 +84,7 @@ const effectifs: Skill = {
 
 const moyenne: Skill = {
   id: 'm5-moyenne',
-  tools: ['calculatrice'],
+  advice: 'calculatrice',
   title: 'Moyenne',
   lesson: {
     memo: [
@@ -487,7 +487,7 @@ const reconnaitre: Skill = {
 
 const quatrieme: Skill = {
   id: 'm5-propor-calcul',
-  tools: ['calculatrice'],
+  advice: 'calculatrice',
   title: 'Calculer avec la proportionnalité',
   lesson: {
     memo: [
@@ -542,7 +542,7 @@ const quatrieme: Skill = {
 
 const pourcentages: Skill = {
   id: 'm5-pourcentages',
-  tools: ['calculatrice'],
+  advice: 'calculatrice',
   title: 'Pourcentages',
   lesson: {
     memo: [
@@ -612,7 +612,7 @@ const pourcentages: Skill = {
 
 const coefficient: Skill = {
   id: 'm5-coefficient',
-  tools: ['calculatrice'],
+  advice: 'calculatrice',
   title: 'Prix unitaire, vitesse, échelle',
   lesson: {
     memo: [
@@ -916,6 +916,7 @@ const blocsBoucle: Skill = {
 export const statistiques: Chapter = {
   id: 'm5-statistiques',
   subject: 'maths',
+  grade: '5e',
   domain: 'donnees',
   title: 'Statistiques',
   skills: [effectifs, moyenne, diagrammes],
@@ -923,6 +924,7 @@ export const statistiques: Chapter = {
 export const probabilites: Chapter = {
   id: 'm5-probabilites',
   subject: 'maths',
+  grade: '5e',
   domain: 'donnees',
   title: 'Probabilités',
   skills: [probaVocab, probaCalcul, probaFrequence],
@@ -930,6 +932,7 @@ export const probabilites: Chapter = {
 export const proportionnalite: Chapter = {
   id: 'm5-proportionnalite',
   subject: 'maths',
+  grade: '5e',
   domain: 'fonctions',
   title: 'Proportionnalité',
   skills: [reconnaitre, quatrieme, pourcentages, coefficient],
@@ -937,6 +940,7 @@ export const proportionnalite: Chapter = {
 export const fonctions: Chapter = {
   id: 'm5-fonctions',
   subject: 'maths',
+  grade: '5e',
   domain: 'fonctions',
   title: 'Fonctions',
   skills: [formuleValeurs, lireGraphique],
@@ -944,6 +948,7 @@ export const fonctions: Chapter = {
 export const algorithmique: Chapter = {
   id: 'm5-algorithmique',
   subject: 'maths',
+  grade: '5e',
   domain: 'informatique',
   title: 'Programmation',
   skills: [blocsValeur, blocsBoucle],

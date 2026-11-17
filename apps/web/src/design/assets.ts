@@ -697,7 +697,7 @@ const keyArt = a(
   'keyart',
   'branding/key-art.webp',
   'Illustration principale',
-  'scène de combat épique et joyeuse : les cinq héros alignés de gauche à droite (Nassim avec son gantelet-canon, Lina avec son lance-ballons, Pixel le chat avec son canon-poisson au premier plan, Ayla avec sa bombe-blaster, Tao avec son arbalète) et Questy qui lève le poing au milieu, tous face au Golem des Équations tout à droite ; en arrière-plan un château-académie violet flottant aux bannières à livre, ciel lavande, îles flottantes',
+  'scène de combat épique et joyeuse : les cinq héros alignés de gauche à droite (Alex avec son gantelet-canon, Lina avec son lance-ballons, Pixel le chat avec son canon-poisson au premier plan, Ayla avec sa bombe-blaster, Tao avec son arbalète) et Questy qui lève le poing au milieu, tous face au Golem des Équations tout à droite ; en arrière-plan un château-académie violet flottant aux bannières à livre, ciel lavande, îles flottantes',
   'Bandeau de l’écran d’accueil et du choix du joueur.',
   2,
   { reference: QUESTY_REF },
@@ -717,10 +717,10 @@ export interface CharacterSpec {
 /** Cinq héros très différents (silhouette, style, arme) : deux garçons, deux filles, un chat. */
 export const CHARACTERS: readonly CharacterSpec[] = [
   {
-    id: 'nassim',
-    name: 'Nassim',
+    id: 'alex',
+    name: 'Alex',
     role: 'L’inventeur',
-    look: 'Nassim, garçon de 12 ans à la peau mate, cheveux bruns bouclés en bataille, grosses lunettes de soudeur cyan relevées sur le front, sourire malin avec une dent un peu écartée, salopette de mécanicien bleu canard aux nombreuses poches remplies d’outils, t-shirt orange, clé à molette accrochée à la ceinture, bottes de chantier marron ; son bras droit porte un énorme gantelet mécanique orange et gris (bien plus gros que son autre bras) ; un petit drone rond à hélice flotte au-dessus de son épaule gauche',
+    look: 'Alex, garçon de 12 ans à la peau mate, cheveux bruns bouclés en bataille, grosses lunettes de soudeur cyan relevées sur le front, sourire malin avec une dent un peu écartée, salopette de mécanicien bleu canard aux nombreuses poches remplies d’outils, t-shirt orange, clé à molette accrochée à la ceinture, bottes de chantier marron ; son bras droit porte un énorme gantelet mécanique orange et gris (bien plus gros que son autre bras) ; un petit drone rond à hélice flotte au-dessus de son épaule gauche',
     weapon:
       'énorme gantelet-canon mécanique orange et gris porté au bras droit, avec une bouche de canon ronde au poing et des pistons sur l’avant-bras',
   },
@@ -805,7 +805,7 @@ const characterAssets = CHARACTERS.flatMap((ch) => {
   ];
 });
 
-/** « de Nassim », « d’Ayla ». */
+/** « de Tao », « d’Alex », « d’Ayla ». */
 const de = (name: string) => (/^[AEIOUYÀÉ]/i.test(name) ? `d’${name}` : `de ${name}`);
 
 const weaponAssets = CHARACTERS.map((ch) =>

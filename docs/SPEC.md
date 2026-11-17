@@ -166,7 +166,7 @@ _Ensuite_ : ressources (eau, énergie, alimentation), risques et changement glob
 
 ## 5bis. Profils, aides et tableau de bord
 
-- **Profil** : prénom, fille ou garçon, date de naissance (3 à 100 ans). Les textes s'accordent (Prêt/Prête, titres Apprenti/Apprentie… Champion/Championne). Héros au choix : Nassim, Tao, Lina, Ayla, Pixel (remplacent Alex, Zoé, Léo, Mia, migration 0008). Avatar au choix : Visage (par défaut), Émoji ou Robot (DiceBear) ; le style « Personnage » a été retiré (tête trop coupée dans l’anneau, profils migrés vers Visage).
+- **Profil** : prénom, fille ou garçon, date de naissance (3 à 100 ans). Les textes s'accordent (Prêt/Prête, titres Apprenti/Apprentie… Champion/Championne). Héros au choix, tous libres et purement cosmétiques : Alex, Tao, Lina, Ayla, Pixel (migrations 0008 puis 0009 : Nassim renommé Alex). Avatar au choix : Visage (par défaut), Émoji ou Robot (DiceBear) ; le style « Personnage » a été retiré (tête trop coupée dans l’anneau, profils migrés vers Visage).
 - **Âge et duels** : `packages/engine/src/duel.ts` — le plus jeune joue au niveau de référence ; écart de 1–2 ans → temps × 0,9 ; 3–5 ans → +1 niveau, temps × 0,75 ; ≥ 6 ans → +2 niveaux, temps × 0,6 ; adulte contre enfant → +2 niveaux, temps × 0,5. Utilisé par le multijoueur (à venir).
 - **Conseils de Questy** (calculatrice, brouillon) : seulement à la 1re question de chaque notion dans une partie. Le tableau de conversion n'est proposé que si la question mêle deux unités d'une même grandeur (ou sur les notions de conversion).
 - **Entraînement** : en haut de la liste des chapitres, « Je te propose » (à revoir d'abord, sinon chapitre commencé, sinon le premier non acquis).
@@ -199,15 +199,23 @@ Catalogue typé dans `packages/shared/src/modes.ts`.
 
 **Boss et adversaires** : univers moderne (aliens, ninjas, gunners, robots, hackers…), jamais médiéval-fantastique. Rendu **écran LED comme Questy** : visage pixel, plus une silhouette et un équipement propres (antennes, bandeau, visière), avec leurs couleurs et leurs grimaces de boss. Personnages originaux.
 
-### 6.2 bis Combat de boss (décidé le 17/11/2026, à développer)
+### 6.2 bis Combat de boss (livré le 17/11/2026, v1)
 
-- **Déroulé (10 questions)** : 7 mobs envoyés par le boss (questions classiques du chapitre, niveau 1 puis 2), puis le boss à 3 vies : 2 **petits problèmes en contexte**, puis 1 **question piège** (QCM dont les mauvaises réponses sont les erreurs typiques). Le héros a 3 cœurs ; une erreur = riposte et −1 cœur ; pas de 2e essai (explication courte, « Voir tout » au besoin) ; contre le boss, une erreur relance une question du même type. Défaite → bouton vers l'entraînement de la notion ratée.
-- **Écran** : arène en haut (tablette) ou bandeau (téléphone), héros à gauche, adversaire à droite, jauges de vie ; zone de réponse de l'entraînement en dessous. Bonne réponse : pose « tir » → projectile → impact → adversaire « touché ». Uniquement des images fixes enchaînées par animation en code.
-- **Accès** : boss du chapitre débloqué quand chaque notion du chapitre a été réussie une fois. 1re victoire : munition du chapitre, médaille de boss, coffre.
-- **Consommables** (gagnés à l'entraînement) : bouclier (annule une riposte, gagné par un sans-faute), soin (+1 cœur, notion acquise), indice (acheté en pièces) ; 3 au plus par combat.
-- **Flexibilité graphique** : 5 héros (Nassim l'inventeur, Tao l'explorateur, Lina la sportive, Ayla la graffeuse, Pixel le chat ninja), chacun avec son arme ; **munitions dessinées en code** (orbe lumineuse + symbole π, ½, ×, √, %… + couleur + traînée), une par chapitre ; un boss par domaine des maths (Golem des Équations, Géomatrix, Probabot, Courbix, IA des Connaissances) recoloré selon le chapitre ; 9 mobs ; effets blancs recolorés en code ; une arène par domaine.
-- **Contenu** : par chapitre, ~3 générateurs de problèmes en contexte et ~2 de pièges. v1 : moteur + Fractions, Nombres relatifs, Proportionnalité.
-- **Images** : kit à générer avec ChatGPT via `docs/chatgpt/kit-combat.md` (fichier autonome à joindre, prompt à copier en tête, ZIP final « demande-NN.png »).
+- **Déroulé (10 questions)** : 7 mobs envoyés par le boss (notions d'entraînement du chapitre, chacune avant qu'une autre revienne ; niveau 1 pour les 3 premiers, puis 2), puis le boss à 3 vies : 2 **problèmes en contexte**, puis 1 **question piège** (les mauvaises réponses proposées sont les erreurs typiques). Le héros a 3 cœurs. Erreur contre un mob : riposte (−1 cœur) et le mob s'enfuit ; erreur contre le boss : riposte et nouvelle question du même type. Pas de 2e essai : « Tu as répondu… la bonne réponse… », pourquoi, « Voir tout » (bulles) et « Le truc à retenir ». 0 cœur = défaite → bouton « S'entraîner » sur la notion la plus ratée.
+- **Serveur qui fait foi** : l'état du combat vit dans `sessions.battle` (`packages/engine/src/battle.ts`, routes `/api/battles`) ; le client n'envoie que la réponse à la question en cours. Les questions de boss ne comptent pas dans la répétition espacée.
+- **Écran** : arène en haut (≈30 % de la hauteur sur tablette, bandeau sur téléphone), héros à gauche, adversaire à droite, cœurs et vies du boss ; zone de réponse de l'entraînement en dessous (mêmes outils). Bonne réponse : pose « tir » → orbe de munition → adversaire « touché » → suivant automatique. Images fixes animées en code ; remplaçants provisoires tant que le kit n'est pas importé.
+- **Accès** : boss d'un chapitre réveillé quand chaque notion a été réussie au moins une fois. 1re victoire : munition du chapitre, médaille, coffre (1 bouclier, 1 soin, 1 indice) et +50 pièces. XP : 10 par bonne réponse + 50 pour la victoire.
+- **Objets** (`inventory`, 9 max chacun, 3 utilisés max par combat) : bouclier (bloque la prochaine riposte ; gagné par un sans-faute à l'entraînement), soin (+1 cœur ; gagné à chaque notion acquise), indice (affiche l'indice ; 20 pièces).
+- **Munitions** dessinées en code (orbe + symbole + couleur) : Étoile (départ), Demi-lune ½ (Fractions), Plus-moins ± (Relatifs), Pourcent % (Proportionnalité) ; à équiper sur la page des boss.
+- **Héros** : Alex, Tao, Lina, Ayla, Pixel, tous libres, purement cosmétiques. Un boss par domaine (Golem des Équations, Géomatrix, Probabot, Courbix, IA des Connaissances), teinte changée par chapitre ; mobs du domaine.
+- **Contenu v1** : Fractions, Nombres relatifs, Proportionnalité (3 problèmes + 2 pièges chacun, `packages/content/src/maths/boss.ts`) ; les autres chapitres affichent « Boss à venir ».
+- **Images** : kit ChatGPT `docs/chatgpt/kit-combat.md` (ZIP « demande-NN.png »).
+
+### 6.2 ter Classes et matières
+
+- **Classe** du profil : CM1, CM2, 6e, 5e, 4e ou Adulte. Déduite de la date de naissance (année scolaire de septembre), Questy demande « Tu es en 5e ? » ; « Non » ouvre la liste. Seule la 5e a du contenu : les autres classes sont « À venir » mais enregistrées, et l'accueil indique qu'on joue la 5e en attendant. Adulte : plus tard, questions plus difficiles (parfois drôlement difficiles).
+- **Matières** sans contenu grisées « À venir » au choix de la matière.
+- **Calculatrice** proposée partout sauf quand calculer est l'objectif de la notion (`Skill.mental` : tables, opérations, priorités, relatifs, fractions, carrés…) ; un calcul annexe (carré, aire, pourcentage) ne doit pas bloquer. Questy la conseille sur les notions à gros nombres.
 
 ### 6.3 Acquisition d'une notion
 

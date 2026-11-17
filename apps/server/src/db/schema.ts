@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
 import { index, integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import type { AvatarConfig, Gender, HeroId } from '@questeo/shared';
+import type { AvatarConfig, Gender, Grade, HeroId, ItemId } from '@questeo/shared';
 
 export const profiles = sqliteTable('profiles', {
   id: text('id').primaryKey(),
@@ -8,7 +8,9 @@ export const profiles = sqliteTable('profiles', {
   avatar: text('avatar', { mode: 'json' }).$type<AvatarConfig>().notNull(),
   gender: text('gender').$type<Gender>(),
   birthDate: text('birth_date'),
-  hero: text('hero').$type<HeroId>().notNull().default('nassim'),
+  hero: text('hero').$type<HeroId>().notNull().default('alex'),
+  grade: text('grade').$type<Grade>(),
+  ammo: text('ammo'),
   xp: integer('xp').notNull().default(0),
   coins: integer('coins').notNull().default(0),
   soundOn: integer('sound_on', { mode: 'boolean' }).notNull().default(true),
@@ -42,6 +44,8 @@ export const sessions = sqliteTable('sessions', {
     .$type<string[]>()
     .notNull()
     .default(sql`'[]'`),
+  /** État du combat de boss (mode « boss »), tenu par le serveur. */
+  battle: text('battle', { mode: 'json' }).$type<unknown>(),
 });
 
 export const attempts = sqliteTable(
@@ -88,4 +92,32 @@ export const skillStates = sqliteTable(
     updatedAt: text('updated_at').notNull(),
   },
   (t) => [primaryKey({ columns: [t.profileId, t.skillId] })],
+);
+
+/** Objets de combat (bouclier, soin, indice) possédés par un profil. */
+export const inventory = sqliteTable(
+  'inventory',
+  {
+    profileId: text('profile_id')
+      .notNull()
+      .references(() => profiles.id, { onDelete: 'cascade' }),
+    item: text('item').$type<ItemId>().notNull(),
+    count: integer('count').notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.profileId, t.item] })],
+);
+
+/** Boss vaincus : la 1re victoire donne la munition du chapitre, une médaille et un coffre. */
+export const bossRecords = sqliteTable(
+  'boss_records',
+  {
+    profileId: text('profile_id')
+      .notNull()
+      .references(() => profiles.id, { onDelete: 'cascade' }),
+    chapterId: text('chapter_id').notNull(),
+    wins: integer('wins').notNull().default(0),
+    bestHearts: integer('best_hearts').notNull().default(0),
+    firstWonAt: text('first_won_at').notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.profileId, t.chapterId] })],
 );

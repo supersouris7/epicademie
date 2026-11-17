@@ -11,6 +11,8 @@ import { ProfileEditor } from './pages/ProfileEditor.tsx';
 import { ProfilePicker } from './pages/ProfilePicker.tsx';
 import { Progress } from './pages/Progress.tsx';
 import { Settings } from './pages/Settings.tsx';
+import { BossChapters } from './pages/boss/BossChapters.tsx';
+import { BossPlay } from './pages/boss/BossPlay.tsx';
 import { Chapters } from './pages/training/Chapters.tsx';
 import { Notions } from './pages/training/Notions.tsx';
 import { TrainingPlay } from './pages/training/TrainingPlay.tsx';
@@ -52,6 +54,8 @@ export function App() {
         path="/partie/entrainement/:chapterId/:skillId"
         element={<WithProfile>{(p) => <TrainingPlay profile={p} />}</WithProfile>}
       />
+      <Route path="/jouer/boss/:subject" element={<WithProfile>{(p) => <BossChapters profile={p} />}</WithProfile>} />
+      <Route path="/partie/boss/:chapterId" element={<WithProfile>{(p) => <BossPlay profile={p} />}</WithProfile>} />
       <Route path="/progres" element={<WithProfile>{(p) => <Progress profile={p} />}</WithProfile>} />
       <Route path="/parametres" element={<WithProfile>{(p) => <Settings profile={p} />}</WithProfile>} />
       <Route path="/a-propos" element={<About />} />

@@ -6,6 +6,7 @@ import type { Chapter, Skill } from '../types.ts';
 
 const notation: Skill = {
   id: 'm5-puissances-notation',
+  mental: true,
   title: 'Carré et cube : notation',
   lesson: {
     memo: [
@@ -119,6 +120,7 @@ const notation: Skill = {
 
 const carres: Skill = {
   id: 'm5-carres',
+  mental: true,
   title: 'Carrés de 0 à 12',
   lesson: {
     memo: [
@@ -763,6 +765,7 @@ const equations: Skill = {
 export const puissances: Chapter = {
   id: 'm5-puissances',
   subject: 'maths',
+  grade: '5e',
   domain: 'nombres',
   title: 'Puissances',
   skills: [notation, carres, expressionsPuissances],
@@ -771,6 +774,7 @@ export const puissances: Chapter = {
 export const litteral: Chapter = {
   id: 'm5-litteral',
   subject: 'maths',
+  grade: '5e',
   domain: 'nombres',
   title: 'Calcul littéral',
   skills: [motifs, formules, substitution, testerEgalite, natureLitterale, developper, reduire, equations],

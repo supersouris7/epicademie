@@ -43,9 +43,23 @@ function checkFigure(f: Figure | undefined) {
   }
 }
 
-const cases = CHAPTERS.flatMap((c) => c.skills.map((s) => [c.id, s.id] as const));
+const withBoss = (c: (typeof CHAPTERS)[number]) => [...c.skills, ...(c.boss?.problems ?? []), ...(c.boss?.traps ?? [])];
+const cases = CHAPTERS.flatMap((c) => withBoss(c).map((s) => [c.id, s.id] as const));
 
 describe('catalogue', () => {
+  it('combat de boss v1 : Fractions, Relatifs, Proportionnalité (problèmes et pièges)', () => {
+    const withB = CHAPTERS.filter((c) => c.boss);
+    expect(withB.map((c) => c.id).toSorted()).toEqual(['m5-fractions', 'm5-proportionnalite', 'm5-relatifs']);
+    for (const c of withB) {
+      expect(c.boss?.problems.length, c.id).toBeGreaterThanOrEqual(2);
+      expect(c.boss?.traps.length, c.id).toBeGreaterThanOrEqual(1);
+    }
+  });
+
+  it('toutes les notions sont de 5e', () => {
+    for (const c of CHAPTERS) expect(c.grade).toBe('5e');
+  });
+
   it('a des identifiants de chapitres uniques et non vides', () => {
     expect(new Set(CHAPTERS.map((c) => c.id)).size).toBe(CHAPTERS.length);
     for (const c of CHAPTERS) expect(c.skills.length).toBeGreaterThan(0);
@@ -53,7 +67,7 @@ describe('catalogue', () => {
 
   it('chaque notion a un mémo court', () => {
     for (const c of CHAPTERS)
-      for (const s of c.skills) {
+      for (const s of withBoss(c)) {
         expect(s.lesson.memo.length, s.id).toBeGreaterThan(0);
         expect(s.lesson.memo.length, s.id).toBeLessThanOrEqual(3);
       }

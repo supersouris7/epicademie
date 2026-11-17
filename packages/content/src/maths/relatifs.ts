@@ -10,6 +10,7 @@ function relatif(rng: Rng, level: Level, max = level === 1 ? 10 : 20): Rational 
 
 const vocab: Skill = {
   id: 'm5-relatifs-vocab',
+  mental: true,
   title: 'Opposé, valeur absolue, signe',
   lesson: {
     memo: [
@@ -156,6 +157,7 @@ const droite: Skill = {
 
 const comparer: Skill = {
   id: 'm5-relatifs-comparer',
+  mental: true,
   title: 'Comparer et ranger des relatifs',
   lesson: {
     memo: [
@@ -274,6 +276,7 @@ function additionSteps(a: Rational, b: Rational): string[] {
 
 const addition: Skill = {
   id: 'm5-relatifs-addition',
+  mental: true,
   title: 'Additionner deux relatifs',
   lesson: {
     memo: [
@@ -310,6 +313,7 @@ const addition: Skill = {
 
 const soustraction: Skill = {
   id: 'm5-relatifs-soustraction',
+  mental: true,
   title: 'Soustraire deux relatifs',
   lesson: {
     memo: [
@@ -345,6 +349,7 @@ const soustraction: Skill = {
 
 const sommes: Skill = {
   id: 'm5-relatifs-sommes',
+  mental: true,
   title: 'Enchaîner additions et soustractions',
   lesson: {
     memo: [
@@ -473,6 +478,7 @@ const problemes: Skill = {
 export const relatifs: Chapter = {
   id: 'm5-relatifs',
   subject: 'maths',
+  grade: '5e',
   domain: 'nombres',
   title: 'Nombres relatifs',
   skills: [vocab, droite, comparer, addition, soustraction, sommes, problemes],

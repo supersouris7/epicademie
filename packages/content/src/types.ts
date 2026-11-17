@@ -1,4 +1,4 @@
-import type { SubjectId } from '@questeo/shared';
+import type { Grade, SubjectId } from '@questeo/shared';
 import type { Rational } from './rational.ts';
 import type { Rng } from './rng.ts';
 
@@ -177,8 +177,8 @@ export interface Lesson {
   readonly source: string;
 }
 
-/** Outils d'aide affichés pendant la question (pas de brouillon nécessaire). */
-export type Tool = 'calculatrice' | 'conversion-longueur' | 'conversion-aire' | 'conversion-volume';
+/** Outils d'aide en plus du pavé, du brouillon et de la calculatrice (toujours là sauf `mental`). */
+export type Tool = 'conversion-longueur' | 'conversion-aire' | 'conversion-volume';
 
 /** Conseil donné par Questy au début de chaque question de la notion. */
 export type Advice = 'calculatrice' | 'brouillon';
@@ -187,7 +187,13 @@ export interface Skill {
   readonly id: string;
   readonly title: string;
   readonly tools?: readonly Tool[];
-  /** Outil conseillé (par défaut : la calculatrice si elle est permise). */
+  /**
+   * Calcul visé : savoir calculer est l'objectif de la notion (tables, opérations, relatifs, fractions…),
+   * donc pas de calculatrice. Ailleurs elle est toujours proposée : un calcul annexe (un carré, une
+   * aire…) ne doit pas bloquer l'enfant.
+   */
+  readonly mental?: true;
+  /** Conseil de Questy à la 1re question de la notion (aucun par défaut). */
   readonly advice?: Advice;
   readonly lesson: Lesson;
   readonly generate: (rng: Rng, level: Level) => QuestionDraft;
@@ -203,12 +209,21 @@ export const DOMAINS = {
 } as const;
 export type DomainId = keyof typeof DOMAINS;
 
+/** Combat de boss d'un chapitre : 2 problèmes en contexte puis 1 piège (docs/SPEC.md §6.2 bis). */
+export interface BossContent {
+  readonly problems: readonly Skill[];
+  readonly traps: readonly Skill[];
+}
+
 export interface Chapter {
   readonly id: string;
   readonly subject: SubjectId;
+  readonly grade: Grade;
   readonly domain: DomainId;
   readonly title: string;
   readonly skills: readonly Skill[];
+  /** Absent : boss « À venir ». */
+  readonly boss?: BossContent;
 }
 
 export interface CheckResult {

@@ -72,6 +72,7 @@ function tableTrick(a: number, b: number): { hint: string; steps: string[] } {
 
 const tables: Skill = {
   id: 'm5-tables',
+  mental: true,
   title: 'Tables de multiplication',
   lesson: {
     memo: [
@@ -118,6 +119,7 @@ const tables: Skill = {
 
 const euclide: Skill = {
   id: 'm5-euclide',
+  mental: true,
   title: 'Division euclidienne',
   advice: 'brouillon',
   lesson: {
@@ -169,6 +171,7 @@ const euclide: Skill = {
 
 const decomposer: Skill = {
   id: 'm5-decomposer',
+  mental: true,
   title: 'Décomposer en produit',
   lesson: {
     memo: [
@@ -206,6 +209,7 @@ const decomposer: Skill = {
 
 const produitsDecimaux: Skill = {
   id: 'm5-produits-decimaux',
+  mental: true,
   title: 'Produits avec des décimaux',
   advice: 'brouillon',
   lesson: {
@@ -261,6 +265,7 @@ const produitsDecimaux: Skill = {
 
 const fois10: Skill = {
   id: 'm5-fois-10',
+  mental: true,
   title: 'Multiplier et diviser par 10, 100, 1 000',
   lesson: {
     memo: [
@@ -311,6 +316,7 @@ const fois10: Skill = {
 
 const decimauxAdd: Skill = {
   id: 'm5-decimaux-add',
+  mental: true,
   title: 'Additionner et soustraire des décimaux',
   advice: 'brouillon',
   lesson: {
@@ -377,6 +383,7 @@ const decimauxAdd: Skill = {
 export const calcul: Chapter = {
   id: 'm5-calcul',
   subject: 'maths',
+  grade: '5e',
   domain: 'nombres',
   title: 'Calcul mental',
   skills: [tables, euclide, decomposer, produitsDecimaux, fois10, decimauxAdd],

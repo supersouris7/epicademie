@@ -126,7 +126,7 @@ const coordonnees: Skill = {
 
 const volumes: Skill = {
   id: 'm5-volumes',
-  tools: ['calculatrice'],
+  advice: 'calculatrice',
   title: 'Volume du cube, du pavé, du prisme',
   lesson: {
     memo: [
@@ -279,7 +279,7 @@ const piForms = (k: number) => [roundTo(Math.PI * k, 1), roundTo(3.14 * k, 1), m
 
 const disque: Skill = {
   id: 'm5-disque',
-  tools: ['calculatrice'],
+  advice: 'calculatrice',
   title: 'Aire du disque, volume du cylindre',
   lesson: {
     memo: [
@@ -1399,6 +1399,7 @@ const conversionsLA: Skill = {
 export const reperage: Chapter = {
   id: 'm5-reperage',
   subject: 'maths',
+  grade: '5e',
   domain: 'geometrie',
   title: 'Repérage',
   skills: [droiteDecimaux, coordonnees],
@@ -1407,6 +1408,7 @@ export const reperage: Chapter = {
 export const espace: Chapter = {
   id: 'm5-espace',
   subject: 'maths',
+  grade: '5e',
   domain: 'geometrie',
   title: 'Solides et volumes',
   skills: [volumes, conversionsVolume, disque, patron],
@@ -1415,6 +1417,7 @@ export const espace: Chapter = {
 export const symetries: Chapter = {
   id: 'm5-symetries',
   subject: 'maths',
+  grade: '5e',
   domain: 'geometrie',
   title: 'Symétries',
   skills: [symetrieAxiale, symetrieCentrale, proprietesSymetrie],
@@ -1423,6 +1426,7 @@ export const symetries: Chapter = {
 export const angles: Chapter = {
   id: 'm5-angles',
   subject: 'maths',
+  grade: '5e',
   domain: 'geometrie',
   title: 'Angles',
   skills: [anglesVocab, anglesParalleles],
@@ -1431,6 +1435,7 @@ export const angles: Chapter = {
 export const triangles: Chapter = {
   id: 'm5-triangles',
   subject: 'maths',
+  grade: '5e',
   domain: 'geometrie',
   title: 'Triangles',
   skills: [triangleAngles, triangleAire, droitesRemarquables],
@@ -1439,6 +1444,7 @@ export const triangles: Chapter = {
 export const parallelogrammes: Chapter = {
   id: 'm5-parallelogrammes',
   subject: 'maths',
+  grade: '5e',
   domain: 'geometrie',
   title: 'Parallélogrammes',
   skills: [paraProprietes, paraAire, conversionsLA],

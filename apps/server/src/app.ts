@@ -4,7 +4,9 @@ import Fastify, { type FastifyInstance } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import type { Db } from './db/client.ts';
 import { createProfilesRepo } from './db/profiles-repo.ts';
+import { createBattleRepo } from './db/battle-repo.ts';
 import { createPlayRepo } from './db/play-repo.ts';
+import { battleRoutes } from './routes/battles.ts';
 import { playRoutes } from './routes/play.ts';
 import { profileRoutes } from './routes/profiles.ts';
 import { today } from './today.ts';
@@ -32,6 +34,7 @@ export async function buildApp(opts: AppOptions): Promise<FastifyInstance> {
       });
       await api.register(profileRoutes(createProfilesRepo(opts.db)));
       await api.register(playRoutes(createPlayRepo(opts.db, opts.today ?? (() => today()))));
+      await api.register(battleRoutes(createBattleRepo(opts.db)));
     },
     { prefix: '/api' },
   );

@@ -15,6 +15,14 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.getByPlaceholder('Ex. Léa').fill(name);
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
+  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await expect(page.getByRole('alert')).toHaveText('Choisis ta classe.');
+  // Classe déduite de l'âge : Questy demande de confirmer ; « Non » ouvre la liste (classes à venir marquées).
+  await expect(page.getByText('Tu es en 5e ?')).toBeVisible();
+  await page.getByRole('button', { name: 'Non', exact: true }).click();
+  await expect(page.getByRole('radio', { name: 'CM1, à venir' })).toBeVisible();
+  await expect(page.getByRole('radio', { name: 'Adulte, à venir' })).toBeVisible();
+  await page.getByRole('radio', { name: '5e', exact: true }).click();
   await page.getByRole('button', { name: 'Robot' }).click();
   await page.getByRole('radio', { name: /Pixel/ }).click();
   await expect(page.getByRole('radio', { name: /Pixel/ })).toBeChecked();
@@ -30,22 +38,27 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByRole('heading', { name: 'Nombres et calculs' })).toBeVisible();
   await page.getByRole('button', { name: 'Retour' }).click();
 
-  // Modes : seul l'Entraînement est jouable, les autres sont « À venir ».
+  // Modes : Entraînement et Combat de boss jouables, les autres « À venir ».
   await expect(page.getByRole('button', { name: /^Entraînement/ })).toBeVisible();
-  for (const mode of ['Combat de boss', 'Contre-la-montre', 'Survie']) {
+  await expect(page.getByRole('button', { name: /^Combat de boss/ })).toBeVisible();
+  for (const mode of ['Contre-la-montre', 'Survie']) {
     await expect(page.getByRole('button', { name: `${mode}, à venir` })).toBeVisible();
   }
   for (const gone of ['Révisions du jour', 'Atelier des erreurs', 'Défi du jour', 'Bilan']) {
     await expect(page.getByRole('button', { name: new RegExp(gone) })).toHaveCount(0);
   }
-  await page.getByRole('button', { name: 'Combat de boss, à venir' }).click();
+  await page.getByRole('button', { name: 'Survie, à venir' }).click();
   await expect(page.getByText('Bientôt disponible !')).toBeVisible();
   await expect(page).toHaveURL(/\/hub$/);
   // Mode d'abord, matière ensuite.
   await page.getByRole('button', { name: /^Entraînement/ }).click();
-  for (const subject of ['Maths', 'Physique-Chimie', 'Anglais', 'Espagnol', 'Histoire', 'Géographie']) {
-    await expect(page.getByRole('button', { name: subject })).toBeVisible();
+  // Matières sans contenu : grisées « À venir ».
+  await expect(page.getByRole('button', { name: 'Maths', exact: true })).toBeVisible();
+  for (const subject of ['Physique-Chimie', 'Anglais', 'Espagnol', 'Histoire', 'Géographie']) {
+    await expect(page.getByRole('button', { name: `${subject}, à venir` })).toBeVisible();
   }
+  await page.getByRole('button', { name: 'Anglais, à venir' }).click();
+  await expect(page.getByText('Anglais arrive bientôt !')).toBeVisible();
   await page.getByRole('button', { name: 'Retour' }).click();
   await page.getByRole('button', { name: /Multijoueur/ }).click();
   await expect(page.getByRole('button', { name: 'Arène, à venir' })).toBeVisible();

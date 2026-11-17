@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { GRADES } from './grades.ts';
 
 /** Styles DiceBear autorisés (licences libres, voir docs/CREDITS.md). */
 export const AVATAR_STYLES = ['adventurer-neutral', 'fun-emoji', 'pixelbot'] as const;
@@ -11,10 +12,10 @@ export const AvatarConfigSchema = z.object({
 export type AvatarConfig = z.infer<typeof AvatarConfigSchema>;
 
 /** Héros jouables (illustrations : apps/web/public/assets/characters). Le héros se change à tout moment. */
-export const HEROES = ['nassim', 'tao', 'lina', 'ayla', 'pixel'] as const;
+export const HEROES = ['alex', 'tao', 'lina', 'ayla', 'pixel'] as const;
 export type HeroId = (typeof HEROES)[number];
 export const HERO_NAMES: Record<HeroId, string> = {
-  nassim: 'Nassim',
+  alex: 'Alex',
   tao: 'Tao',
   lina: 'Lina',
   ayla: 'Ayla',
@@ -43,6 +44,10 @@ export const ProfileSchema = z.object({
   gender: z.enum(GENDERS).nullable(),
   birthDate: z.string().nullable(),
   hero: z.enum(HEROES),
+  /** Classe (null pour les profils créés avant le choix de la classe). */
+  grade: z.enum(GRADES).nullable(),
+  /** Munition équipée pour les combats de boss (null = munition de base). */
+  ammo: z.string().nullable(),
   xp: z.number().int().nonnegative(),
   coins: z.number().int().nonnegative(),
   soundOn: z.boolean(),
@@ -56,6 +61,7 @@ export const ProfileCreateSchema = z.object({
   avatar: AvatarConfigSchema,
   gender: z.enum(GENDERS),
   birthDate: BirthDateSchema,
+  grade: z.enum(GRADES),
   hero: z.enum(HEROES).optional(),
 });
 export type ProfileCreate = z.infer<typeof ProfileCreateSchema>;
@@ -66,6 +72,7 @@ export const ProfileUpdateSchema = z
     avatar: AvatarConfigSchema,
     gender: z.enum(GENDERS),
     birthDate: BirthDateSchema,
+    grade: z.enum(GRADES),
     hero: z.enum(HEROES),
     soundOn: z.boolean(),
     musicOn: z.boolean(),

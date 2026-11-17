@@ -7,13 +7,15 @@ export interface SubjectInfo {
   readonly name: string;
   /** Nom de la couleur de thème (voir tokens CSS `--subject-<id>`). */
   readonly color: SubjectId;
+  /** Matière jouable ; sinon tuile grisée « À venir ». */
+  readonly available: boolean;
 }
 
 export const SUBJECTS: readonly SubjectInfo[] = [
-  { id: 'maths', name: 'Maths', color: 'maths' },
-  { id: 'physique', name: 'Physique-Chimie', color: 'physique' },
-  { id: 'anglais', name: 'Anglais', color: 'anglais' },
-  { id: 'espagnol', name: 'Espagnol', color: 'espagnol' },
-  { id: 'histoire', name: 'Histoire', color: 'histoire' },
-  { id: 'geographie', name: 'Géographie', color: 'geographie' },
+  { id: 'maths', name: 'Maths', color: 'maths', available: true },
+  { id: 'physique', name: 'Physique-Chimie', color: 'physique', available: false },
+  { id: 'anglais', name: 'Anglais', color: 'anglais', available: false },
+  { id: 'espagnol', name: 'Espagnol', color: 'espagnol', available: false },
+  { id: 'histoire', name: 'Histoire', color: 'histoire', available: false },
+  { id: 'geographie', name: 'Géographie', color: 'geographie', available: false },
 ];

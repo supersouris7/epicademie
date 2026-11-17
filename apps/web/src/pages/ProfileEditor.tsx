@@ -8,6 +8,7 @@ import {
   type AvatarStyle,
   HEROES,
   type Gender,
+  type Grade,
   type HeroId,
   type Profile,
 } from '@questeo/shared';
@@ -16,6 +17,7 @@ import { Avatar } from '../components/Avatar.tsx';
 import { GameButton } from '../components/game/GameButton.tsx';
 import { HeroCard } from '../components/game/CharacterCard.tsx';
 import { CharacterAvatar } from '../components/game/CharacterAvatar.tsx';
+import { GradePicker } from '../components/GradePicker.tsx';
 import { PageShell } from '../components/PageShell.tsx';
 import { useSession } from '../store/session.ts';
 
@@ -44,7 +46,8 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
   const [name, setName] = useState(existing?.name ?? '');
   const [gender, setGender] = useState<Gender | null>(existing?.gender ?? null);
   const [birthDate, setBirthDate] = useState(existing?.birthDate ?? '');
-  const [hero, setHero] = useState<HeroId>(existing?.hero ?? 'nassim');
+  const [grade, setGrade] = useState<Grade | null>(existing?.grade ?? null);
+  const [hero, setHero] = useState<HeroId>(existing?.hero ?? 'alex');
   const [avatar, setAvatar] = useState<AvatarConfig>(
     existing?.avatar ?? { style: 'adventurer-neutral', seed: randomSeed() },
   );
@@ -68,7 +71,11 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
       setError('Indique ta date de naissance.');
       return;
     }
-    const payload = { name: parsed.data, avatar: shown, gender, birthDate: birth.data, hero };
+    if (!grade) {
+      setError('Choisis ta classe.');
+      return;
+    }
+    const payload = { name: parsed.data, avatar: shown, gender, birthDate: birth.data, grade, hero };
     try {
       if (existing) {
         await update.mutateAsync(payload);
@@ -155,6 +162,18 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
           </label>
         </div>
 
+        <fieldset className="flex flex-col gap-2">
+          <legend className="font-display mb-2 text-xl tracking-wide">Ta classe</legend>
+          <GradePicker
+            birthDate={birthDate}
+            grade={grade}
+            onChange={(g) => {
+              setGrade(g);
+              setError(null);
+            }}
+          />
+        </fieldset>
+
         <fieldset className="flex flex-col gap-3">
           <legend className="font-display mb-2 text-xl tracking-wide">Style</legend>
           <div className="flex flex-wrap gap-3">
@@ -200,7 +219,7 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
 
         <fieldset className="flex flex-col gap-3">
           <legend className="font-display mb-2 text-xl tracking-wide">Ton héros (tu pourras en changer)</legend>
-          <div role="radiogroup" aria-label="Ton héros" className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div role="radiogroup" aria-label="Ton héros" className="grid grid-cols-2 gap-4 sm:grid-cols-5">
             {HEROES.map((h, i) => (
               <HeroCard
                 key={h}

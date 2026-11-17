@@ -7,10 +7,11 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   await page.getByPlaceholder('Ex. Léa').fill(`Jeu${Date.now() % 10000}`);
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
+  await page.getByRole('button', { name: 'Oui', exact: true }).click();
   await page.getByRole('button', { name: /C’est parti/ }).click();
 
   await page.getByRole('button', { name: /Entraînement/ }).click();
-  await page.getByRole('button', { name: 'Maths' }).click();
+  await page.getByRole('button', { name: 'Maths', exact: true }).click();
   await expect(page.getByRole('heading', { name: /Entraînement · Maths/ })).toBeVisible();
   // Nouveau joueur : l'appli propose par où commencer.
   await page.getByRole('button', { name: /Je te propose · par où commencer Calcul mental/ }).click();
@@ -71,8 +72,12 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await page.getByPlaceholder('Ex. Léa').fill(`Outil${Date.now() % 10000}`);
   await page.getByRole('button', { name: 'Un garçon' }).click();
   await page.getByLabel('Date de naissance').fill('2013-05-20');
+  await expect(page.getByText('Tu es en 4e ?')).toBeVisible();
+  await page.getByRole('button', { name: 'Oui', exact: true }).click();
   await page.getByRole('button', { name: /C’est parti/ }).click();
   await expect(page.getByText(/Prêt à jouer/)).toBeVisible();
+  // 4e pas encore prête : on joue la 5e en attendant.
+  await expect(page.getByText(/Le programme de 4e arrive bientôt/)).toBeVisible();
 
   // Aire du disque : Questy conseille la calculatrice ; elle remplace le pavé dans la zone d'outils.
   await page.goto('/partie/entrainement/m5-espace/m5-disque');
@@ -130,6 +135,10 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await expect(page.getByRole('tab', { name: 'Brouillon' })).toBeVisible();
   await expect(page.getByRole('tab', { name: 'Calculatrice' })).toHaveCount(0);
   await expect(page.getByRole('note')).toHaveCount(0);
+
+  // Puissances : calculer un carré n'est pas l'objectif, la calculatrice est là.
+  await page.goto('/partie/entrainement/m5-puissances/m5-puissances-expressions');
+  await expect(page.getByRole('tab', { name: 'Calculatrice' })).toBeVisible();
 
   // Priorités opératoires : le brouillon est conseillé.
   await page.goto('/partie/entrainement/m5-operations/m5-priorites');

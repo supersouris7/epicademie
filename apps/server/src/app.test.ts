@@ -25,7 +25,7 @@ const create = async (name: string) => {
   const res = await app.inject({
     method: 'POST',
     url: '/api/profiles',
-    payload: { name, avatar, gender: 'fille', birthDate: '2014-03-09' },
+    payload: { name, avatar, gender: 'fille', birthDate: '2014-03-09', grade: '5e' },
   });
   return { res, profile: res.json<Profile>() };
 };
@@ -42,7 +42,9 @@ describe('API profils', () => {
       avatar,
       gender: 'fille',
       birthDate: '2014-03-09',
-      hero: 'nassim',
+      grade: '5e',
+      hero: 'alex',
+      ammo: null,
     });
     const list = await app.inject('/api/profiles');
     expect(list.json<Profile[]>()).toHaveLength(1);
@@ -53,21 +55,33 @@ describe('API profils', () => {
     const bad = await app.inject({
       method: 'POST',
       url: '/api/profiles',
-      payload: { name: 'Tom', avatar: { ...avatar, style: 'inconnu' }, gender: 'garcon', birthDate: '2014-01-01' },
+      payload: {
+        name: 'Tom',
+        avatar: { ...avatar, style: 'inconnu' },
+        gender: 'garcon',
+        birthDate: '2014-01-01',
+        grade: '5e',
+      },
     });
     expect(bad.statusCode).toBe(400);
     const noGender = await app.inject({
       method: 'POST',
       url: '/api/profiles',
-      payload: { name: 'Tom', avatar, birthDate: '2014-01-01' },
+      payload: { name: 'Tom', avatar, birthDate: '2014-01-01', grade: '5e' },
     });
     expect(noGender.statusCode).toBe(400);
     const future = await app.inject({
       method: 'POST',
       url: '/api/profiles',
-      payload: { name: 'Tom', avatar, gender: 'garcon', birthDate: '2099-01-01' },
+      payload: { name: 'Tom', avatar, gender: 'garcon', birthDate: '2099-01-01', grade: '5e' },
     });
     expect(future.statusCode).toBe(400);
+    const noGrade = await app.inject({
+      method: 'POST',
+      url: '/api/profiles',
+      payload: { name: 'Tom', avatar, gender: 'garcon', birthDate: '2014-01-01' },
+    });
+    expect(noGrade.statusCode).toBe(400);
   });
 
   it('modifie un profil', async () => {

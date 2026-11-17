@@ -4,6 +4,7 @@ import type { Chapter, Skill } from '../types.ts';
 
 const priorites: Skill = {
   id: 'm5-priorites',
+  mental: true,
   title: 'Priorités opératoires',
   advice: 'brouillon',
   lesson: {
@@ -286,6 +287,7 @@ const traduire: Skill = {
 
 const distributivite: Skill = {
   id: 'm5-distributivite',
+  mental: true,
   title: 'Distributivité (calcul astucieux)',
   lesson: {
     memo: [
@@ -340,6 +342,7 @@ const distributivite: Skill = {
 
 const multiples: Skill = {
   id: 'm5-multiples',
+  mental: true,
   title: 'Multiples et diviseurs',
   lesson: {
     memo: [
@@ -403,6 +406,7 @@ const digitSum = (n: number) =>
 
 const divisibilite: Skill = {
   id: 'm5-divisibilite',
+  mental: true,
   title: 'Critères de divisibilité',
   lesson: {
     memo: [
@@ -454,6 +458,7 @@ const divisibilite: Skill = {
 
 const divDecimal: Skill = {
   id: 'm5-division-decimal',
+  mental: true,
   title: 'Diviser par un nombre décimal',
   advice: 'brouillon',
   lesson: {
@@ -491,6 +496,7 @@ const divDecimal: Skill = {
 export const operations: Chapter = {
   id: 'm5-operations',
   subject: 'maths',
+  grade: '5e',
   domain: 'nombres',
   title: 'Opérations et priorités',
   skills: [priorites, vocabulaire, traduire, distributivite, multiples, divisibilite, divDecimal],

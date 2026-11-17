@@ -18,7 +18,13 @@ beforeEach(async () => {
   const res = await app.inject({
     method: 'POST',
     url: '/api/profiles',
-    payload: { name: 'Léa', avatar: { style: 'pixelbot', seed: 's' }, gender: 'fille', birthDate: '2014-03-09' },
+    payload: {
+      name: 'Léa',
+      avatar: { style: 'pixelbot', seed: 's' },
+      gender: 'fille',
+      birthDate: '2014-03-09',
+      grade: '5e',
+    },
   });
   profileId = res.json<Profile>().id;
 });

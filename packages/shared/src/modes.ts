@@ -33,7 +33,7 @@ export const MODES: readonly ModeInfo[] = [
     name: 'Combat de boss',
     pitch: 'Bats le boss du thème, 3 cœurs',
     category: 'apprendre',
-    available: false,
+    available: true,
   },
   {
     id: 'chrono',

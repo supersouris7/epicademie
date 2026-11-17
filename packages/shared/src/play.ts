@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { Inventory } from './battle.ts';
 import { MODE_IDS } from './modes.ts';
 import { SUBJECT_IDS } from './subjects.ts';
 
@@ -67,4 +68,6 @@ export interface SessionSummary {
   readonly levelBefore: number;
   readonly levelAfter: number;
   readonly skills: readonly SessionSkillSummary[];
+  /** Objets de combat gagnés : bouclier (sans-faute), soin (notion acquise). */
+  readonly items: Partial<Inventory>;
 }

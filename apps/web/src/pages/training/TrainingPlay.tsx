@@ -32,33 +32,13 @@ import { useToast } from '../../components/Toast.tsx';
 import { Figure } from '../../components/figures/Figure.tsx';
 import { Questy } from '../../components/mascot/Questy.tsx';
 import type { MoodId } from '../../components/mascot/moods.ts';
-import { AnswerInput } from '../../components/play/AnswerInput.tsx';
 import { Feedback } from '../../components/play/Feedback.tsx';
 import { Memo } from '../../components/play/Memo.tsx';
+import { QuestionTools } from '../../components/play/QuestionTools.tsx';
 import { ConfirmDialog } from '../../components/ConfirmDialog.tsx';
-import { PlayDock, type DockTab } from '../../components/play/PlayDock.tsx';
-import { Brouillon, type Stroke } from '../../components/tools/Brouillon.tsx';
-import { Calculator } from '../../components/tools/Calculator.tsx';
-import { EMPTY_CALC, type CalcState } from '../../lib/calcState.ts';
-import { ConversionTable } from '../../components/tools/ConversionTable.tsx';
-import {
-  emptyConversion,
-  conversionNeeded,
-  unitsIn,
-  type ConversionKind,
-  type ConversionState,
-} from '../../lib/conversion.ts';
 import { localToday, randomSeed } from '../../lib/dates.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../lib/sound.ts';
 import { formatAnswer, stageMessage } from '../../lib/answers.ts';
-
-/** Tableau adapté à l'unité de la question (aires en ^2, volumes en ^3 ou en litres). */
-function conversionKind(q: Question): ConversionKind {
-  const text = q.prompt + (q.answer.kind === 'number' ? (q.answer.unit ?? '') : '');
-  if (/\^3|\bc?L\b|\bmL\b/.test(text)) return 'volume';
-  if (text.includes('^2')) return 'aire';
-  return 'longueur';
-}
 
 interface Current {
   readonly plan: PlannedQuestion;
@@ -137,14 +117,6 @@ function Game({
   const [picked, setPicked] = useState<{ x: number; y: number } | null>(null);
   const [memo, setMemo] = useState(false);
   const [retry, setRetry] = useState<Retry | null>(null);
-  const [tab, setTab] = useState<DockTab>('reponse');
-  /** Outils déjà ouverts sur cette question (l'outil conseillé cesse de briller). */
-  const [opened, setOpened] = useState<ReadonlySet<DockTab>>(new Set());
-  const [bigDraft, setBigDraft] = useState(false);
-  const [strokes, setStrokes] = useState<readonly Stroke[]>([]);
-  const [calc, setCalc] = useState<CalcState>(EMPTY_CALC);
-  const [conv, setConv] = useState<ConversionState | null>(null);
-  const [fill, setFill] = useState<{ value: string; nonce: number } | null>(null);
   const [confirmQuit, setConfirmQuit] = useState(false);
   const confusedSent = useRef(new Set<string>());
   const advised = useRef(new Set<string>());
@@ -176,13 +148,6 @@ function Game({
       setAnswered(null);
       setRetry(null);
       setPicked(null);
-      setStrokes([]);
-      setCalc(EMPTY_CALC);
-      setConv(null);
-      setFill(null);
-      setTab('reponse');
-      setOpened(new Set());
-      setBigDraft(false);
     },
     [states, today],
   );
@@ -242,8 +207,6 @@ function Game({
         nonce: Date.now(),
       });
       setPicked(null);
-      setFill(null);
-      setTab('reponse');
     } else setAnswered({ correct: result.correct, why: result.why, given: response, xp, streak: newStreak });
     playSound(result.correct ? (newStreak > 0 && newStreak % 5 === 0 ? 'combo' : 'correct') : 'wrong');
     setTraining((t) => recordAnswer(t, current.plan, result.correct));
@@ -310,38 +273,7 @@ function Game({
 
   const done = regularCount(training);
   const skill = current ? getSkill(current.plan.skillId) : undefined;
-  const allowed = skill?.tools ?? [];
-  // Tableau de conversion proposé seulement quand la question mêle deux unités d'une même grandeur.
-  const measured =
-    current?.question.answer.kind === 'number'
-      ? conversionNeeded(current.question.prompt, current.question.answer.unit)
-      : null;
-  const tabs: DockTab[] = [
-    'reponse',
-    ...(allowed.includes('calculatrice') ? (['calculatrice'] as const) : []),
-    'brouillon',
-    ...(allowed.some((t) => t.startsWith('conversion')) || measured ? (['conversion'] as const) : []),
-  ];
-  const activeTab = tabs.includes(tab) ? tab : 'reponse';
-  const advice = current?.advise
-    ? (skill?.advice ?? (allowed.includes('calculatrice') ? 'calculatrice' : undefined))
-    : undefined;
-  const selectTab = (t: DockTab) => {
-    setTab(t);
-    setOpened((o) => new Set(o).add(t));
-  };
-  const answerKind = current?.question.answer.kind;
-  const answerLabel =
-    answerKind === 'text' ? 'Clavier' : answerKind === 'number' || answerKind === 'fraction' ? 'Pavé' : 'Réponse';
-  const kind = measured ?? (current ? conversionKind(current.question) : 'longueur');
-  const sendToAnswer =
-    current?.question.answer.kind === 'number'
-      ? (value: string) => {
-          setFill({ value, nonce: Date.now() });
-          setTab('reponse');
-        }
-      : undefined;
-  const convState = conv ?? emptyConversion(kind);
+  const advice = current?.advise ? skill?.advice : undefined;
   // Explication après une erreur : elle prend la place des outils et s'agrandit (l'énoncé reste en haut).
   const explaining = answered !== null && !answered.correct;
 
@@ -432,7 +364,7 @@ function Game({
                   </span>
                 </motion.p>
               )}
-              {advice && !answered && !retry && (
+              {advice && !answered && !retry && (advice === 'brouillon' || !skill?.mental) && (
                 <p className="flex items-center gap-2 text-base font-bold" role="note">
                   <Questy mood={advice === 'calculatrice' ? 'happy' : 'wink'} size={64} />
                   <span className="cartoon bg-surface-2 px-3 py-1.5">
@@ -476,65 +408,21 @@ function Game({
                   onNext={() => void next()}
                 />
               ) : (
-                <PlayDock
-                  tabs={tabs}
-                  active={activeTab}
-                  answerLabel={answerLabel}
-                  glow={advice && !opened.has(advice) ? advice : undefined}
-                  onSelect={selectTab}
-                >
-                  <div className={activeTab === 'reponse' ? 'flex min-h-0 flex-1 flex-col' : 'hidden'}>
-                    <AnswerInput
-                      key={`${current.plan.seed}-${current.plan.variant}-${fill?.nonce ?? 0}-${retry?.nonce ?? 0}`}
-                      excluded={retry?.excluded}
-                      question={current.question}
-                      disabled={false}
-                      onSubmit={submit}
-                      picked={picked}
-                      initialText={fill?.value}
-                    />
-                  </div>
-                  {activeTab === 'calculatrice' && <Calculator state={calc} onChange={setCalc} onUse={sendToAnswer} />}
-                  {activeTab === 'brouillon' && !bigDraft && (
-                    <Brouillon strokes={strokes} onChange={setStrokes} onToggleExpand={() => setBigDraft(true)} />
-                  )}
-                  {activeTab === 'conversion' && (
-                    <ConversionTable
-                      kind={kind}
-                      state={convState}
-                      onChange={setConv}
-                      highlight={unitsIn(current.question.prompt)}
-                      onUse={sendToAnswer}
-                    />
-                  )}
-                </PlayDock>
+                <QuestionTools
+                  key={`${current.plan.seed}-${current.plan.variant}`}
+                  question={current.question}
+                  skill={skill}
+                  advice={advice}
+                  excluded={retry?.excluded}
+                  attempt={retry?.nonce ?? 0}
+                  picked={picked}
+                  onSubmit={submit}
+                />
               )}
             </section>
           </motion.main>
         )}
       </AnimatePresence>
-      {/* Brouillon pleine page : l'énoncé reste en haut, la feuille prend tout le reste. */}
-      {bigDraft && current && !answered && (
-        <div
-          className="bg-bg fixed inset-0 z-40 flex flex-col gap-2 p-3"
-          role="dialog"
-          aria-label="Brouillon pleine page"
-        >
-          <div className="flex max-h-[30dvh] shrink-0 gap-3 overflow-y-auto">
-            <h2 className="flex-1 text-xl leading-snug font-bold">
-              <MathText text={current.question.prompt} />
-            </h2>
-            {current.question.figure && (
-              <div className="w-[40%] max-w-xs shrink-0">
-                <Figure figure={current.question.figure} maxHeight="26dvh" picked={picked} />
-              </div>
-            )}
-          </div>
-          <div className="min-h-0 flex-1">
-            <Brouillon strokes={strokes} onChange={setStrokes} expanded onToggleExpand={() => setBigDraft(false)} />
-          </div>
-        </div>
-      )}
       {memo && skill && <Memo skill={skill} onClose={() => setMemo(false)} />}
       {confirmQuit && (
         <ConfirmDialog
@@ -631,6 +519,17 @@ function Results({
         >
           Niveau {summary.levelAfter} atteint !
         </motion.div>
+      )}
+
+      {(summary.items.bouclier ?? 0) + (summary.items.soin ?? 0) > 0 && (
+        <p className="cartoon bg-surface-2 flex flex-wrap items-center justify-center gap-2 p-3 text-center text-lg font-bold">
+          <GameIcon id={summary.items.bouclier ? 'icons-items-bouclier' : 'icons-items-soin'} size="sm" />
+          Pour les combats de boss :{summary.items.bouclier ? ` +${summary.items.bouclier} bouclier (sans-faute)` : ''}
+          {summary.items.bouclier && summary.items.soin ? ' ·' : ''}
+          {summary.items.soin
+            ? ` +${summary.items.soin} soin${summary.items.soin > 1 ? 's' : ''} (notion acquise)`
+            : ''}
+        </p>
       )}
 
       {summary.variants.answered > 0 && (

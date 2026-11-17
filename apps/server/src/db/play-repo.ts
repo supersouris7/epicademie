@@ -14,6 +14,7 @@ import {
 } from '@questeo/engine';
 import type { AnswerResult, AnswerSubmit, SessionCreate, SessionSummary, SkillProgress } from '@questeo/shared';
 import type { Db } from './client.ts';
+import { addItems } from './inventory.ts';
 import { attempts, profiles, sessions, skillStates } from './schema.ts';
 
 export class PlayError extends Error {
@@ -47,6 +48,7 @@ export function createPlayRepo(db: Db, today: () => string) {
       const profile = db.select({ id: profiles.id }).from(profiles).where(eq(profiles.id, input.profileId)).get();
       if (!profile) throw new PlayError(404, 'Profil introuvable');
       if (input.skillId && !getSkill(input.skillId)) throw new PlayError(400, 'Notion inconnue');
+      if (input.mode === 'boss') throw new PlayError(400, 'Le combat de boss se lance par /battles');
       const id = randomUUID();
       db.insert(sessions)
         .values({ id, ...input })
@@ -59,6 +61,7 @@ export function createPlayRepo(db: Db, today: () => string) {
       const session = getSession(sessionId);
       if (!session) throw new PlayError(404, 'Partie introuvable');
       if (session.finishedAt) throw new PlayError(409, 'Partie terminée');
+      if (session.mode === 'boss') throw new PlayError(409, 'Combat de boss : utiliser /battles');
       if (!getSkill(a.skillId)) throw new PlayError(400, 'Notion inconnue');
       const question = generate(a.skillId, a.level, a.seed);
       const result = check(question, a.response);
@@ -114,6 +117,7 @@ export function createPlayRepo(db: Db, today: () => string) {
         const session = tx.select().from(sessions).where(eq(sessions.id, sessionId)).get();
         if (!session) throw new PlayError(404, 'Partie introuvable');
         if (session.finishedAt) throw new PlayError(409, 'Partie déjà terminée');
+        if (session.mode === 'boss') throw new PlayError(409, 'Combat de boss : utiliser /battles');
         const rows = tx
           .select()
           .from(attempts)
@@ -170,6 +174,11 @@ export function createPlayRepo(db: Db, today: () => string) {
 
         const profile = tx.select().from(profiles).where(eq(profiles.id, session.profileId)).get();
         if (!profile) throw new PlayError(404, 'Profil introuvable');
+        // Objets pour les combats de boss : bouclier pour un sans-faute, soin par notion acquise.
+        const items = addItems(tx, profile.id, {
+          bouclier: perfect ? 1 : 0,
+          soin: skills.filter((s) => s.stageAfter === 3 && s.stageBefore < 3).length,
+        });
         tx.update(profiles)
           .set({ xp: profile.xp + xpGained, coins: profile.coins + coinsGained })
           .where(eq(profiles.id, profile.id))
@@ -195,6 +204,7 @@ export function createPlayRepo(db: Db, today: () => string) {
           levelBefore: levelFromXp(profile.xp).level,
           levelAfter: levelFromXp(profile.xp + xpGained).level,
           skills,
+          items,
         };
       });
     },
