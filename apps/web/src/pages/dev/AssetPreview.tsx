@@ -118,7 +118,7 @@ function Gallery() {
           <CharacterAvatar avatar={{ style: 'adventurer-neutral', seed: 'demo' }} level={12} />
           <CharacterAvatar avatar={{ style: 'pixelbot', seed: 'robot' }} size={64} />
         </div>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
           {HEROES.map((h, i) => (
             <HeroCard key={h} hero={h} index={i} selected={i === 0} caption="Niv. 12" className="min-h-40" />
           ))}
@@ -131,10 +131,10 @@ function Gallery() {
             color="var(--subject-maths)"
           />
           <BossCard
-            name="Molécor"
-            image="bosses-physics-molecor"
-            subject="Physique-chimie"
-            color="var(--subject-physique)"
+            name="Géomatrix"
+            image="bosses-maths-geomatrix"
+            subject="Maths"
+            color="var(--subject-maths)"
             defeated
           />
         </div>

@@ -6,7 +6,7 @@ import { CHARACTER_MOTION } from '../../design/motion.ts';
 interface CharacterSpriteProps {
   readonly hero: HeroId;
   readonly state: AnimationState;
-  /** Hauteur affichée ; la largeur suit le format des poses (2:3). */
+  /** Hauteur affichée ; les poses sont carrées. */
   readonly height?: number;
   /** Retourne le personnage (face à gauche). */
   readonly flip?: boolean;
@@ -29,7 +29,7 @@ export function CharacterSprite({ hero, state, height = 240, flip = false }: Cha
       alt=""
       aria-hidden
       draggable={false}
-      style={{ height, width: (height * 2) / 3, originX: 0.5, originY: 1, scaleX: flip ? -1 : 1 }}
+      style={{ height, width: height, originX: 0.5, originY: 1, scaleX: flip ? -1 : 1 }}
       animate={reduce ? undefined : CHARACTER_MOTION[state]}
     />
   );

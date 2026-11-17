@@ -129,16 +129,18 @@ export const KINDS = {
     framing: 'même cadrage exact que le portrait de référence, seule l’expression change',
   },
   pose: {
-    gen: '1024x1536',
-    final: [768, 1152],
+    gen: '1536x1024',
+    final: [512, 512],
     framing:
-      'personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur, tête vers 10 %, même échelle pour toutes les poses',
+      'personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases',
+    grid: { gen: '1536x1024', cols: 3, rows: 2 },
   },
   boss: {
-    gen: '1024x1024',
-    final: [768, 768],
+    gen: '1536x1024',
+    final: [512, 512],
     framing:
-      'boss en pied, trois quarts face tourné vers la gauche (il fait face au joueur), base à 92 % de la hauteur, occupe 80 % du cadre',
+      'boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases',
+    grid: { gen: '1536x1024', cols: 2, rows: 2 },
   },
   minion: {
     gen: '1024x1024',
@@ -148,8 +150,10 @@ export const KINDS = {
   },
   weapon: {
     gen: '1536x1024',
-    final: [768, 512],
-    framing: 'lanceur vu de profil, canon pointé vers la droite, poignée en bas à gauche, occupe 85 % de la largeur',
+    final: [384, 256],
+    framing:
+      'arme seule vue de profil, canon pointé vers la droite, poignée en bas à gauche, occupe 85 % de la largeur de sa case',
+    grid: { gen: '1536x1024', cols: 3, rows: 2 },
   },
   projectile: {
     gen: '1024x1024',
@@ -166,7 +170,9 @@ export const KINDS = {
   arena: {
     gen: '1536x1024',
     final: [1536, 1024],
-    framing: 'île d’arène isométrique flottante vue de trois quarts plongée, centrée, occupe 85 % de la largeur',
+    framing:
+      'décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage',
+    opaque: true,
   },
   floor: {
     gen: '1024x1024',
@@ -691,293 +697,241 @@ const keyArt = a(
   'keyart',
   'branding/key-art.webp',
   'Illustration principale',
-  'scène de combat épique et joyeuse : à gauche Questy lève le poing, au centre Alex tire avec son blaster, à droite Zoé tire avec son blaster, face au Golem des Équations (golem de pierre violette moussue aux runes lumineuses) tout à droite ; en arrière-plan un château-académie violet flottant aux bannières à livre, ciel lavande, îles flottantes',
+  'scène de combat épique et joyeuse : les cinq héros alignés de gauche à droite (Nassim avec son gantelet-canon, Lina avec son lance-ballons, Pixel le chat avec son canon-poisson au premier plan, Ayla avec sa bombe-blaster, Tao avec son arbalète) et Questy qui lève le poing au milieu, tous face au Golem des Équations tout à droite ; en arrière-plan un château-académie violet flottant aux bannières à livre, ciel lavande, îles flottantes',
   'Bandeau de l’écran d’accueil et du choix du joueur.',
   2,
   { reference: QUESTY_REF },
 );
 
-// ─── Héros ─────────────────────────────────────────────────────────────────
+// ─── Kit combat : héros ───────────────────────────────────────────────────
 
 export interface CharacterSpec {
   readonly id: string;
   readonly name: string;
+  /** Rôle, pour la carte du héros. */
+  readonly role: string;
   readonly look: string;
   readonly weapon: string;
 }
 
+/** Cinq héros très différents (silhouette, style, arme) : deux garçons, deux filles, un chat. */
 export const CHARACTERS: readonly CharacterSpec[] = [
   {
-    id: 'alex',
-    name: 'Alex',
-    look: 'Alex, garçon de 12 ans, cheveux châtains en épis, bandeau orange avec grosses lunettes d’aviateur orange à verres violets relevées sur le front, yeux marron, sourire confiant, veste sans manches violette à empiècements orange sur t-shirt blanc, mitaines noires, pantalon cargo violet foncé, baskets violettes à semelle orange, sac à dos orange',
-    weapon: 'blaster jouet violet et orange tirant un rayon jaune-orange',
+    id: 'nassim',
+    name: 'Nassim',
+    role: 'L’inventeur',
+    look: 'Nassim, garçon de 12 ans à la peau mate, cheveux bruns bouclés en bataille, grosses lunettes de soudeur cyan relevées sur le front, sourire malin avec une dent un peu écartée, salopette de mécanicien bleu canard aux nombreuses poches remplies d’outils, t-shirt orange, clé à molette accrochée à la ceinture, bottes de chantier marron ; son bras droit porte un énorme gantelet mécanique orange et gris (bien plus gros que son autre bras) ; un petit drone rond à hélice flotte au-dessus de son épaule gauche',
+    weapon:
+      'énorme gantelet-canon mécanique orange et gris porté au bras droit, avec une bouche de canon ronde au poing et des pistons sur l’avant-bras',
   },
   {
-    id: 'zoe',
-    name: 'Zoé',
-    look: 'Zoé, fille de 12 ans, longue queue de cheval rose vif, casquette blanche à visière violette avec un petit insigne orange, casque audio violet et cyan sur les oreilles, yeux bleus, sourire espiègle, veste blanche à manches violettes, short cargo violet foncé sur leggings, baskets violettes, sac à dos orange',
-    weapon: 'blaster jouet blanc et cyan tirant un anneau d’énergie cyan',
+    id: 'tao',
+    name: 'Tao',
+    role: 'L’explorateur',
+    look: 'Tao, garçon de 12 ans, mince et agile, cheveux noirs raides en épis, bandana vert noué sur le front aux pans qui volent, yeux en amande pétillants, grand sourire, gilet sans manches beige sable à poches multiples sur t-shirt vert forêt, short cargo marron, grosses chaussures de randonnée orange, boussole dorée autour du cou, petit sac à dos avec une corde enroulée',
+    weapon:
+      'arbalète-tech compacte vert et or tenue à deux mains, avec une lunette de visée ronde et des branches recourbées lumineuses',
   },
   {
-    id: 'leo',
-    name: 'Léo',
-    look: 'Léo, garçon de 12 ans, cheveux blonds en épis, lunettes rondes noires, casque audio orange et noir, yeux bleus, sourire malin, blouse de laboratoire blanche ouverte sur un sweat bleu, pantalon bleu marine, baskets blanches',
-    weapon: 'lance-formules jouet violet et orange avec un écran',
+    id: 'lina',
+    name: 'Lina',
+    role: 'La sportive',
+    look: 'Lina, fille de 12 ans, grande et tonique, peau foncée, tresses fines relevées en haute couronne avec des perles dorées, bandeau éponge blanc, regard déterminé et sourire franc, maillot de sport rouge vif à bandes blanches (sans numéro ni texte), short de sport blanc, chaussettes hautes rouges, baskets épaisses blanches et rouges, protège-poignets',
+    weapon:
+      'gros lance-ballons rouge et blanc porté sur l’épaule comme un bazooka jouet, à large bouche ronde et réservoir d’air transparent',
   },
   {
-    id: 'mia',
-    name: 'Mia',
-    look: 'Mia, fille de 12 ans, longs cheveux bleu roi, lunettes d’aviateur orange posées sur la tête, casque audio fin cyan, yeux bleus, sourire assuré, veste blanche à bandes bleues sur t-shirt bleu, pantalon bleu marine, baskets bleues, sac à dos orange',
-    weapon: 'canon jouet bleu et orange tirant des mini-globes',
+    id: 'ayla',
+    name: 'Ayla',
+    role: 'La graffeuse',
+    look: 'Ayla, fille de 12 ans, petite et vive, peau claire avec des taches de rousseur, cheveux violets courts en coupe asymétrique avec une longue mèche turquoise, casque audio jaune fluo autour du cou, sourire espiègle, veste bomber noire couverte de patchs colorés (formes, étoiles, éclairs), t-shirt jaune, pantalon baggy gris, rangers noires lacées de turquoise, éclaboussures de peinture turquoise et jaune sur les vêtements',
+    weapon:
+      'bombe-blaster : pistolet de peinture turquoise et jaune monté sur une bombe aérosol géante, buse ronde à l’avant',
+  },
+  {
+    id: 'pixel',
+    name: 'Pixel',
+    role: 'Le chat ninja',
+    look: 'Pixel, chat noir et blanc (pelage « smoking » : dos noir, museau, poitrail et pattes blancs) qui se tient debout sur deux pattes comme un héros, de la taille d’un enfant de 8 ans, grands yeux vert émeraude, oreille gauche avec une petite encoche, moustaches blanches, longue queue noire au bout blanc, bandeau rouge de ninja noué sur le front aux pans qui volent, foulard rouge au cou avec un grelot doré',
+    weapon:
+      'canon-poisson : petit canon argenté en forme de poisson stylisé, la bouche du poisson sert de canon, nageoires bleues en guise de poignée',
   },
 ];
-
-const EXPRESSIONS = [
-  ['joie', 'grand sourire, yeux plissés de joie'],
-  ['rire', 'éclat de rire, bouche grande ouverte, un œil fermé'],
-  ['surprise', 'bouche en O, sourcils très hauts, yeux ronds'],
-  ['determination', 'regard déterminé, sourcils froncés, sourire en coin'],
-  ['effort', 'grimace d’effort, un œil fermé, dents serrées (dessin animé, aucune blessure)'],
-  ['tristesse', 'moue triste, sourcils relevés au centre, regard vers le bas'],
-] as const;
 
 export const ANIMATION_STATES = ['idle', 'run', 'shoot', 'hurt', 'victory', 'defeat'] as const;
 export type AnimationState = (typeof ANIMATION_STATES)[number];
 
 const POSES: Record<AnimationState, string> = {
-  idle: 'attente : debout, détendu, arme tenue à deux mains vers le bas',
+  idle: 'attente : debout, détendu, arme prête',
   run: 'course : grande foulée vers la droite, un pied décollé, buste penché en avant',
-  shoot: 'tir : bras tendus, arme pointée vers la droite, éclair à la bouche du canon',
-  hurt: 'touché : recule d’un pas, bras levés, grimace (dessin animé, aucune blessure)',
-  victory: 'victoire : saute sur place, poing levé, grand sourire',
+  shoot: 'tir : arme pointée vers la droite, petit éclair à la bouche du canon',
+  hurt: 'touché : recule d’un pas, grimace comique (dessin animé, aucune blessure)',
+  victory: 'victoire : saute de joie, poing ou patte levé',
   defeat: 'défaite : assis par terre, étourdi, petites spirales au-dessus de la tête',
 };
 
 const characterAssets = CHARACTERS.flatMap((ch) => {
   const base = `characters/${ch.id}`;
-  const ref = { reference: `characters-${ch.id}-portrait`, fallback: 'placeholder-character' } as const;
+  const ref = { reference: `characters-${ch.id}-model-sheet`, fallback: 'placeholder-character' } as const;
   return [
+    a(
+      'sheet',
+      `${base}/model-sheet.webp`,
+      `${ch.name} — fiche de modèle`,
+      `${ch.look}. Arme : ${ch.weapon}. Fiche de modèle : 4 vues alignées (face, trois quarts gauche, profil, dos), plus l’arme seule en grand à droite`,
+      'Référence de cohérence (non affichée).',
+      1,
+    ),
     a(
       'portrait',
       `${base}/portrait.webp`,
       `${ch.name} — portrait`,
       `${ch.look}. Expression énergique.`,
-      'Avatar et carte du personnage.',
-      2,
-      {
-        fallback: 'placeholder-character',
-      },
-    ),
-    ...EXPRESSIONS.map(([id, desc]) =>
-      a(
-        'expression',
-        `${base}/expression-${id}.webp`,
-        `${ch.name} — ${id}`,
-        `${ch.look}. Expression : ${desc}.`,
-        'Réactions pendant les parties.',
-        2,
-        ref,
-      ),
+      'Avatar et carte du héros.',
+      1,
+      ref,
     ),
     ...ANIMATION_STATES.map((state) =>
       a(
         'pose',
         `${base}/pose-${state}.webp`,
         `${ch.name} — pose ${state}`,
-        `${ch.look}. Tient un ${ch.weapon}. Pose ${POSES[state]}.`,
-        'Images clés d’animation (combats).',
-        3,
-        ref,
+        `${ch.name} (exactement comme sur sa fiche de modèle), avec son arme. Pose ${POSES[state]}`,
+        'Combat : une image par état, enchaînées par animation.',
+        1,
+        { ...ref, sheet: `${ch.id}-poses` },
       ),
     ),
   ];
 });
 
-// ─── Boss et ennemis (repris des planches) ─────────────────────────────────
+/** « de Nassim », « d’Ayla ». */
+const de = (name: string) => (/^[AEIOUYÀÉ]/i.test(name) ? `d’${name}` : `de ${name}`);
 
-const BOSSES = [
-  [
-    'maths',
-    'golem-des-equations',
-    'Golem des Équations',
-    'golem massif de blocs de pierre violette et grise couverts de mousse verte, cristaux violets sur les épaules, runes géométriques violettes lumineuses sur la poitrine et les poings, yeux violets brillants en colère',
-  ],
-  [
-    'maths',
-    'geomatrix',
-    'Géomatrix',
-    'golem de cubes de cristal bleu et violet, symboles géométriques cyan lumineux gravés, petits cubes flottant autour, yeux orange',
-  ],
-  [
-    'physics',
-    'molecor',
-    'Molécor',
-    'robot-fiole : grande fiole remplie de liquide vert fluo bouillonnant avec deux yeux en colère dans le liquide, carapace et bras mécaniques violets, tuyaux',
-  ],
-  [
-    'physics',
-    'professeur-molecule',
-    'Professeur Molécule',
-    'blob de slime vert fluo dans une fiole renversée à poignées métalliques, tuyaux, yeux verts lumineux',
-  ],
-  [
-    'biology',
-    'florion',
-    'Florion',
-    'golem-arbre au tronc sculpté en visage sévère, feuillage vert dense, racines en jambes, petit champignon rouge, yeux verts lumineux',
-  ],
-  [
-    'french',
-    'scriptor',
-    'Scriptor',
-    'parchemin vivant enroulé au visage aux yeux orange, cape violette à bordure dorée, grande plume rose, feuilles volantes',
-  ],
-  [
-    'french',
-    'ombre-des-livres',
-    'L’Ombre des Livres',
-    'silhouette encapuchonnée violette au visage d’ombre et yeux violets lumineux, livres ouverts flottant autour, volutes d’encre violette',
-  ],
-  [
-    'history',
-    'chronos',
-    'Chronos',
-    'horloge géante dorée à engrenages, visage blanc aux yeux rouges dans le cadran, bras mécaniques, petit globe au-dessus',
-  ],
-  [
-    'history',
-    'globotron',
-    'Globotron',
-    'robot dont la tête est un globe terrestre à visière noire et yeux jaunes, casque audio cyan, corps violet et argent',
-  ],
-  [
-    'general',
-    'ia-des-connaissances',
-    'IA des Connaissances',
-    'robot cubique bleu à écran-visage aux yeux cyan en colère, cubes de données violets en orbite',
-  ],
-  [
-    'general',
-    'araignee-mecanique',
-    'Araignée mécanique',
-    'robot araignée blanc et violet à six pattes orange pointues, cœur-réacteur orange lumineux',
-  ],
-] as const;
-
-const bossAssets = BOSSES.flatMap(([subject, id, name, look]) => {
-  const ref = { reference: `bosses-${subject}-${id}`, fallback: 'placeholder-boss' } as const;
-  return [
-    a(
-      'boss',
-      `bosses/${subject}/${id}.webp`,
-      name,
-      `${look}. Pose de combat menaçante mais comique, adaptée aux 11-13 ans.`,
-      'Combat de boss, carte de boss.',
-      2,
-      {
-        fallback: 'placeholder-boss',
-      },
-    ),
-    a(
-      'portrait',
-      `bosses/${subject}/${id}-portrait.webp`,
-      `${name} — portrait`,
-      `${look}. Tête seule, de face, l’air menaçant.`,
-      'Portrait rond de la barre de vie du boss.',
-      2,
-      ref,
-    ),
-    a(
-      'boss',
-      `bosses/${subject}/${id}-hurt.webp`,
-      `${name} — touché`,
-      `${look}. Touché : recule, grimace comique, petites étincelles.`,
-      'Combat de boss : réaction au coup.',
-      3,
-      ref,
-    ),
-  ];
-});
-
-const MINIONS = [
-  ['cube-bot', 'petit robot cube blanc à écran bleu, deux petits bras'],
-  ['equerre', 'équerre jaune vivante avec un rapporteur, yeux rouges'],
-  ['calculatrice', 'calculatrice grise vivante sur pattes, écran-yeux bleus'],
-  ['fiole', 'petite fiole verte vivante, yeux jaunes'],
-  ['molecule', 'molécule violette et rose (boules reliées), yeux méchants'],
-  ['feuille', 'boule de feuilles vertes épineuses, yeux rouges'],
-  ['parchemin', 'petit parchemin vivant, yeux orange'],
-  ['livre', 'livre violet vivant à lunettes rondes'],
-  ['globe', 'globe terrestre vivant sur pied avec règle'],
-  ['casque', 'casque grec argenté à crête rouge vivant, yeux jaunes dans la fente'],
-] as const;
-
-const minionAssets = MINIONS.map(([id, look], i) =>
+const weaponAssets = CHARACTERS.map((ch) =>
   a(
-    'minion',
-    `bosses/minions/${id}.webp`,
-    `Ennemi ${id}`,
-    `${look}. Mignon mais espiègle.`,
-    'Petits ennemis (modes à venir).',
-    3,
+    'weapon',
+    `weapons/${ch.id}.webp`,
+    `Arme ${de(ch.name)}`,
+    `arme ${de(ch.name)} : ${ch.weapon}`,
+    'Carte du héros, arsenal.',
+    2,
     {
-      fallback: 'placeholder-boss',
-      sheet: chunk('ennemis', i, 9, MINIONS.length),
+      sheet: 'armes',
     },
   ),
 );
 
-// ─── Armes, projectiles, effets ───────────────────────────────────────────
+// ─── Kit combat : boss (un par domaine des maths) et mobs ─────────────────
 
-const WEAPONS = [
-  ['blaster-alex', 'Blaster d’Alex', 'blaster violet et orange à canon court', 'rayon d’énergie jaune-orange'],
-  ['blaster-zoe', 'Blaster de Zoé', 'blaster blanc et cyan à canon annelé', 'anneau d’énergie cyan'],
-  ['lance-livre', 'Lance-Livre', 'gros lanceur violet et or dont le canon est un livre ouvert', 'livre ouvert volant'],
-  ['lance-formules', 'Lance-Formules', 'lanceur argenté et orange avec un écran', 'cube bleu lumineux'],
+const BOSSES = [
   [
-    'rayon-labo',
-    'Rayon de Laboratoire',
-    'pistolet-rayon orange à réservoir de cristal violet',
-    'bulle de liquide vert',
+    'golem-des-equations',
+    'Golem des Équations',
+    'nombres et calculs',
+    'golem massif de blocs de pierre violette et grise couverts de mousse verte, cristaux violets sur les épaules, runes géométriques violettes lumineuses sur la poitrine et les poings, yeux violets brillants en colère',
   ],
-  ['canon-atlas', 'Canon Atlas', 'canon bleu et orange portant un globe terrestre', 'mini globe terrestre'],
-  ['plume-laser', 'Plume Laser', 'grande plume violette lumineuse montée sur une poignée', 'plume violette'],
-  ['bio-scanner', 'Bio-Scanner', 'lanceur vert à capsule contenant une feuille', 'feuille verte'],
-  ['projecteur-tech', 'Projecteur Tech', 'lanceur violet à écran', 'éclair violet'],
+  [
+    'geomatrix',
+    'Géomatrix',
+    'géométrie',
+    'golem fait de cubes et de pyramides de cristal bleu et violet, arêtes cyan lumineuses, petits cubes flottant autour de lui, yeux orange',
+  ],
+  [
+    'probabot',
+    'Probabot',
+    'données et probabilités',
+    'robot trapu dont le corps est un énorme dé blanc aux points violets, une face-écran avec des yeux rouges en colère, bras mécaniques dorés qui jonglent avec deux petits dés, roues chenilles',
+  ],
+  [
+    'courbix',
+    'Courbix',
+    'proportionnalité et fonctions',
+    'serpent mécanique géant dont le long corps segmenté ondule comme une courbe de graphique, segments violets reliés par des articulations cyan lumineuses, tête-écran aux yeux jaunes, crête en antennes',
+  ],
+  [
+    'ia-des-connaissances',
+    'IA des Connaissances',
+    'programmation',
+    'gros robot cubique bleu nuit flottant, écran-visage aux yeux cyan en colère, câbles comme des tentacules, cubes de données violets en orbite',
+  ],
 ] as const;
 
-const weaponAssets = [
-  ...WEAPONS.map(([id, name, look]) =>
+const BOSS_STATES = [
+  ['idle', 'Pose de combat menaçante mais comique'],
+  ['attack', 'Attaque : se penche vers la gauche et lance une grosse onde d’énergie rouge'],
+  ['hurt', 'Touché : recule, grimace comique, petites étincelles'],
+  ['ko', 'Vaincu : affalé, étourdi, petites spirales au-dessus de la tête'],
+] as const;
+
+const bossAssets = BOSSES.flatMap(([id, name, domain, look]) => [
+  ...BOSS_STATES.map(([state, pose]) =>
     a(
-      'weapon',
-      `weapons/${id}.webp`,
-      name,
-      `${look}. Jouet futuriste aux formes rondes et inoffensives.`,
-      'Équipement des personnages.',
-      3,
+      'boss',
+      `bosses/maths/${id}${state === 'idle' ? '' : `-${state}`}.webp`,
+      `${name} — ${state}`,
+      `${name}, boss du domaine « ${domain} » : ${look}. ${pose}`,
+      'Combat de boss.',
+      1,
+      { fallback: 'placeholder-boss', sheet: `${id}-etats` },
     ),
   ),
-  ...WEAPONS.map(([id, name, , shot]) =>
-    a('projectile', `projectiles/${id}.webp`, `Projectile ${name}`, `${shot}.`, 'Tirs (combat de boss).', 3, {
-      sheet: 'projectiles',
-    }),
+  a(
+    'portrait',
+    `bosses/maths/${id}-portrait.webp`,
+    `${name} — portrait`,
+    `${name} (exactement comme sur sa planche d’états) : ${look}. Tête seule, de face, l’air menaçant mais drôle`,
+    'Portrait rond de la barre de vie du boss.',
+    2,
+    { reference: `bosses-maths-${id}`, fallback: 'placeholder-boss' },
   ),
-];
+]);
+
+const MINIONS = [
+  [
+    'calculatrice',
+    'calculatrice grise vivante sur deux petites pattes, écran aux yeux bleus (sans chiffres), touches colorées',
+  ],
+  ['cube-bot', 'petit robot cube blanc à écran-visage bleu, deux petits bras'],
+  ['equerre', 'équerre jaune vivante, yeux rouges, petites jambes'],
+  ['compas', 'compas argenté vivant qui marche sur ses deux pointes, yeux violets'],
+  ['de', 'petit dé blanc vivant aux points violets, yeux et sourire moqueur, petits bras'],
+  ['camembert', 'diagramme circulaire vivant (disque coupé en parts rouge, jaune, bleu), yeux méchants'],
+  ['courbe', 'petite courbe néon cyan vivante qui ondule comme un ver, yeux jaunes'],
+  ['bug', 'insecte en pixels verts (bug informatique), six pattes, antennes'],
+  ['bloc-code', 'bloc de programmation orange arrondi et vivant (comme une brique de code), yeux blancs'],
+] as const;
+
+const minionAssets = MINIONS.map(([id, look]) =>
+  a(
+    'minion',
+    `bosses/minions/${id}.webp`,
+    `Mob ${id}`,
+    `${look}. Mignon mais espiègle`,
+    'Mobs envoyés par le boss.',
+    1,
+    {
+      fallback: 'placeholder-boss',
+      sheet: 'mobs',
+    },
+  ),
+);
+
+// ─── Kit combat : effets (les blancs sont recolorés par l'application) ─────
 
 const EFFECTS = [
-  ['impacts/hit-burst', 'éclat d’impact orange et jaune', 'fx-hit-burst'],
-  ['impacts/eclat-violet', 'éclat d’impact violet à cœur blanc'],
-  ['impacts/anneau-cyan', 'anneau d’onde de choc cyan vu de trois quarts'],
-  ['impacts/explosion', 'petite explosion orange avec cailloux'],
-  ['impacts/eclat-feuilles', 'gerbe de feuilles vertes'],
-  ['impacts/cristaux', 'éclats de cristal bleu glacé'],
-  ['particles/puff', 'nuage de fumée violette cartoon (disparition)', 'fx-puff'],
-  ['particles/pixels', 'nuée de petits carrés cyan (téléportation)'],
+  ['impacts/hit-burst', 'éclat d’impact étoilé BLANC pur (sera recoloré par l’application)', 'fx-hit-burst'],
+  ['impacts/anneau', 'anneau d’onde de choc BLANC pur vu de trois quarts (sera recoloré)'],
+  ['impacts/etincelles', 'gerbe d’étincelles BLANCHES en étoile (sera recolorée)'],
+  ['impacts/flash', 'flash de bouche de canon BLANC et jaune pâle, en étoile, vu de profil vers la droite'],
+  ['impacts/explosion', 'petite explosion cartoon orange et jaune avec fumée'],
+  ['particles/puff', 'nuage de fumée violette cartoon (disparition d’un mob)', 'fx-puff'],
+  ['particles/bouclier', 'bulle de bouclier hexagonale cyan translucide (vue de face, vide au centre)'],
+  ['particles/soin', 'croix verte lumineuse entourée de petits cœurs et d’étincelles vertes'],
   ['particles/etourdi', 'trois petites spirales dorées en orbite (étourdi)'],
+  ['impacts/onde-boss', 'onde d’attaque rouge et orange en forme de croissant, se déplaçant vers la gauche'],
+  ['particles/confettis', 'gerbe de confettis violets, orange, cyan et jaunes'],
   ['transitions/portail', 'tourbillon de portail violet vu de face'],
-  ['particles/poussiere', 'petit nuage de poussière blanche (course)'],
-  ['particles/confettis', 'gerbe de confettis violets, orange, cyan et roses'],
 ] as const satisfies readonly (readonly [string, string, (keyof typeof SVG_ASSETS)?])[];
 
 const effectAssets = EFFECTS.map(([id, look, fallback], i) =>
@@ -985,9 +939,9 @@ const effectAssets = EFFECTS.map(([id, look, fallback], i) =>
     'effect',
     `effects/${id}.webp`,
     `Effet ${id.split('/')[1] ?? id}`,
-    `${look}.`,
+    look,
     'Effets de combat, récompenses, transitions.',
-    fallback ? 2 : 3,
+    1,
     {
       sheet: chunk('effets', i, 9, EFFECTS.length),
       ...(fallback ? { fallback } : {}),
@@ -995,94 +949,39 @@ const effectAssets = EFFECTS.map(([id, look, fallback], i) =>
   ),
 );
 
-// ─── Environnements ────────────────────────────────────────────────────────
+// ─── Kit combat : arènes (une par boss) ───────────────────────────────────
 
-const ENV = [
+const ARENAS = [
   [
-    'arena',
-    'environments/arenas/arene-tech',
-    'Arène tech',
-    'arène circulaire violette à piliers dorés et néons cyan, cercle lumineux au sol',
-    2,
+    'nombres',
+    'Arène des nombres',
+    'cour d’une académie futuriste violette, tableaux noirs géants couverts de symboles abstraits à la craie (aucun chiffre ni lettre lisible), colonnes et bannières violettes, ciel lavande',
   ],
   [
-    'arena',
-    'environments/arenas/arene-academie',
-    'Arène académie',
-    'arène circulaire en dalles crème avec bannières violettes à livre, portail surmonté d’un livre géant',
-    2,
+    'geometrie',
+    'Arène de la géométrie',
+    'plateau de cristal bleu et violet sous un ciel indigo, formes géométriques géantes flottantes (cubes, pyramides, sphères) aux arêtes lumineuses',
   ],
   [
-    'arena',
-    'environments/arenas/arene-nature',
-    'Arène nature',
-    'arène circulaire d’herbe avec arbres, piliers de pierre moussus, portail bleu lumineux',
-    3,
+    'donnees',
+    'Arène des données',
+    'salle de jeux futuriste : dés géants, roues de loterie et grands diagrammes en barres lumineux en relief, néons dorés',
   ],
   [
-    'platform',
-    'environments/tiles/plateforme-herbe',
-    'Plateforme herbe',
-    'bloc de pierre grise surmonté d’herbe verte',
-    3,
+    'fonctions',
+    'Arène des fonctions',
+    'paysage néon de collines aux courbes lisses sous un ciel nocturne, quadrillage lumineux cyan au sol comme une feuille de graphique',
   ],
-  ['platform', 'environments/tiles/plateforme-violette', 'Plateforme violette', 'bloc de pierre violette', 3],
-  ['platform', 'environments/tiles/plateforme-pierre', 'Plateforme pierre', 'bloc de pavés gris', 3],
-  ['platform', 'environments/tiles/plateforme-glace', 'Plateforme glace', 'bloc de glace bleue cristalline', 3],
   [
-    'platform',
-    'environments/tiles/plateforme-lave',
-    'Plateforme lave',
-    'bloc de roche noire fissurée de lave orange',
-    3,
+    'informatique',
+    'Arène de la programmation',
+    'salle de serveurs futuriste aux baies clignotantes cyan, câbles lumineux, grands blocs de code colorés empilés',
   ],
-  ['floor', 'environments/tiles/sol-dalles', 'Sol dalles', 'dalles de pierre grise', 3],
-  ['floor', 'environments/tiles/sol-violet', 'Sol violet', 'dalle violette à cercle lumineux central', 3],
-  ['floor', 'environments/tiles/sol-grille', 'Sol grille', 'grille métallique sombre', 3],
-  ['floor', 'environments/tiles/sol-energie', 'Sol énergie', 'dalle cyan lumineuse', 3],
-  ['floor', 'environments/tiles/sol-herbe', 'Sol herbe', 'herbe avec petites fleurs jaunes', 3],
-  ['floor', 'environments/tiles/sol-sable', 'Sol sable', 'sable clair', 3],
 ] as const;
 
-const PROPS = [
-  ['banniere', 'bannière violette suspendue portant un livre ouvert'],
-  ['lampadaire', 'lampadaire noir avec petit drapeau violet'],
-  ['arche', 'arche de pierre moussue'],
-  ['bibliotheque', 'bibliothèque en bois remplie de livres colorés'],
-  ['pile-livres', 'pile de livres colorés'],
-  ['globe', 'globe terrestre sur pied doré'],
-  ['telescope', 'télescope doré sur trépied'],
-  ['tableau', 'tableau noir sur pied avec un triangle dessiné à la craie'],
-  ['eprouvettes', 'porte-éprouvettes en bois avec liquides colorés'],
-  ['terrarium', 'cloche de verre avec une plante'],
-  ['cristaux', 'grappe de cristaux violets'],
-  ['colonne', 'colonne grecque brisée avec lierre'],
-  ['casier', 'casier d’école violet'],
-  ['sac-a-dos', 'sac à dos orange et violet'],
-  ['portail-violet', 'portail de pierre à tourbillon violet'],
-  ['portail-bleu', 'portail de pierre à tourbillon bleu'],
-  ['portail-vert', 'portail de pierre moussue à tourbillon vert'],
-  ['portail-orange', 'portail à engrenages dorés à tourbillon orange'],
-  ['barriere-energie', 'barrière d’énergie hexagonale cyan'],
-  ['barriere-laser', 'deux poteaux reliés par des lasers rouges'],
-  ['caisse', 'caisse en bois'],
-  ['rocher', 'rochers gris'],
-  ['marqueur-cible', 'marqueur de sol rouge en forme de viseur'],
-  ['marqueur-zone', 'disque de sol bleu lumineux'],
-  ['marqueur-soin', 'disque de sol vert à croix'],
-  ['marqueur-alerte', 'disque de sol orange à point d’exclamation'],
-] as const;
-
-const envAssets = [
-  ...ENV.map(([kind, file, name, prompt, priority]) =>
-    a(kind, `${file}.webp`, name, `${prompt}.`, 'Décors des combats (modes à venir).', priority),
-  ),
-  ...PROPS.map(([id, prompt], i) =>
-    a('prop', `environments/props/${id}.webp`, `Décor ${id}`, `${prompt}.`, 'Décors des combats (modes à venir).', 3, {
-      sheet: chunk('decors', i, 9, PROPS.length),
-    }),
-  ),
-];
+const envAssets = ARENAS.map(([id, name, look]) =>
+  a('arena', `environments/arenas/${id}.webp`, name, look, 'Décor du combat de boss.', 2),
+);
 
 export const PLANNED_ASSETS: readonly PlannedAsset[] = [
   ...brandAssets,
@@ -1090,12 +989,12 @@ export const PLANNED_ASSETS: readonly PlannedAsset[] = [
   ...iconAssets,
   ...questyAssets,
   ...characterAssets,
-  keyArt,
+  ...weaponAssets,
   ...bossAssets,
   ...minionAssets,
-  ...weaponAssets,
   ...effectAssets,
   ...envAssets,
+  keyArt,
 ];
 
 // ─── Manifeste ─────────────────────────────────────────────────────────────

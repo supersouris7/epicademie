@@ -57,6 +57,13 @@
       "when": 1794990000000,
       "tag": "0007_avatar_no_big_ears",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1795000000000,
+      "tag": "0008_new_heroes",
+      "breakpoints": true
     }
   ]
 }

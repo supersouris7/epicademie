@@ -24,3 +24,20 @@ describe('migration 0007 : style « Personnage » retiré', () => {
     sqlite.close();
   });
 });
+
+describe('migration 0008 : nouveaux héros', () => {
+  it('remplace Alex, Léo, Zoé et Mia par Nassim, Tao, Lina et Ayla', () => {
+    const file = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'questeo-')), 'test.db');
+    openDb(file, migrationsDir).close();
+    const sqlite = new Database(file);
+    const insert = sqlite.prepare('INSERT INTO profiles (id, name, avatar, hero, created_at) VALUES (?, ?, ?, ?, ?)');
+    const avatar = JSON.stringify({ style: 'pixelbot', seed: 's' });
+    ['alex', 'leo', 'zoe', 'mia', 'pixel'].forEach((hero, i) =>
+      insert.run(String(i), `P${i}`, avatar, hero, Date.now()),
+    );
+    sqlite.exec(fs.readFileSync(path.join(migrationsDir, '0008_new_heroes.sql'), 'utf8'));
+    const heroes = sqlite.prepare('SELECT hero FROM profiles ORDER BY id').all() as { hero: string }[];
+    expect(heroes.map((r) => r.hero)).toEqual(['nassim', 'tao', 'lina', 'ayla', 'pixel']);
+    sqlite.close();
+  });
+});

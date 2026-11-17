@@ -18,7 +18,8 @@ export function createProfilesRepo(db: Db) {
     create(input: ProfileCreate): Profile {
       const row = db
         .insert(profiles)
-        .values({ id: randomUUID(), ...input })
+        // Héros explicite : la valeur par défaut de la colonne date d'avant les nouveaux héros.
+        .values({ id: randomUUID(), ...input, hero: input.hero ?? 'nassim' })
         .returning()
         .get();
       return toProfile(row);

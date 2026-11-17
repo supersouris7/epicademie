@@ -44,7 +44,7 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
   const [name, setName] = useState(existing?.name ?? '');
   const [gender, setGender] = useState<Gender | null>(existing?.gender ?? null);
   const [birthDate, setBirthDate] = useState(existing?.birthDate ?? '');
-  const [hero, setHero] = useState<HeroId>(existing?.hero ?? 'alex');
+  const [hero, setHero] = useState<HeroId>(existing?.hero ?? 'nassim');
   const [avatar, setAvatar] = useState<AvatarConfig>(
     existing?.avatar ?? { style: 'adventurer-neutral', seed: randomSeed() },
   );

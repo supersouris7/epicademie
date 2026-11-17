@@ -155,21 +155,14 @@ const LOTS: readonly Lot[] = [
     note: 'Commencer par la fiche de modèle, la valider, puis la joindre à chaque demande de ce lot.',
   },
   {
-    title: 'Lot 6 — Héros',
-    pick: (p) => p.file.startsWith('characters/') || p.kind === 'keyart',
-    note: 'Commencer par les 4 portraits. Pour les expressions et les poses d’un héros, joindre son portrait validé. L’illustration principale vient en dernier : joindre la fiche de Questy et les portraits d’Alex et de Zoé.',
+    title: 'Lot 6 — Kit combat',
+    pick: (p) =>
+      (p.kind !== 'background' && p.file.startsWith('characters/') && !p.file.startsWith('characters/questy/')) ||
+      p.kind === 'keyart' ||
+      (p.kind !== 'background' &&
+        ['weapons/', 'bosses/', 'effects/', 'environments/'].some((d) => p.file.startsWith(d))),
+    note: 'Ce lot se génère avec le fichier autonome docs/chatgpt/kit-combat.md (prompt à copier en tête du fichier).',
   },
-  {
-    title: 'Lot 7 — Boss et ennemis',
-    pick: (p) => p.file.startsWith('bosses/'),
-    note: 'Pour le portrait et la version « touché » d’un boss, joindre l’image validée de ce boss.',
-  },
-  {
-    title: 'Lot 8 — Armes et projectiles',
-    pick: (p) => p.file.startsWith('weapons/') || p.file.startsWith('projectiles/'),
-  },
-  { title: 'Lot 9 — Effets', pick: (p) => p.kind === 'effect' },
-  { title: 'Lot 10 — Environnements de combat', pick: (p) => p.file.startsWith('environments/') },
 ];
 
 export interface BuiltLot {
@@ -273,6 +266,115 @@ ${lot.body}
   return files;
 }
 
+/** Demandes du kit combat, dans l'ordre, chacune avec les assets qu'elle produit. */
+interface KitRequest {
+  readonly n: number;
+  readonly title: string;
+  readonly text: string;
+  readonly files: readonly string[];
+}
+
+function kitRequests(): KitRequest[] {
+  const lot = LOTS.find((l) => l.title.startsWith('Lot 6'));
+  if (!lot) throw new Error('Lot 6 introuvable');
+  const all = sheets();
+  const sheetOf = new Map(all.flatMap((s) => s.items.map((p) => [p.id, s] as const)));
+  const numberOf = new Map<string, number>();
+  const out: KitRequest[] = [];
+  for (const p of PLANNED_ASSETS.filter((q) => lot.pick(q))) {
+    if (numberOf.has(p.id)) continue;
+    const n = out.length + 1;
+    const s = sheetOf.get(p.id);
+    const items = s ? s.items : [p];
+    for (const q of items) numberOf.set(q.id, n);
+    const refId = (s ? s.first : p).reference;
+    const refN = refId ? numberOf.get(refId) : undefined;
+    const ref = refN
+      ? `Référence : reprends EXACTEMENT le personnage de la demande ${refN} (mêmes couleurs, coiffure, vêtements, équipement et proportions).\n`
+      : '';
+    let text: string;
+    let title: string;
+    if (s) {
+      const { gen, cols, rows } = s.grid;
+      const [w, h] = gen.split('x').map(Number) as [number, number];
+      title = `Planche « ${s.name} » (${s.items.length} éléments)`;
+      text = [
+        `Image ${size(gen)} : planche de ${s.items.length} éléments sur une grille invisible de ${cols} colonnes × ${rows} lignes (cases de ${Math.round(w / cols)}×${Math.round(h / rows)} px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.`,
+        `Cadrage de chaque élément : ${s.kind.framing}.`,
+        ref + s.items.map((q, i) => `${i + 1}. ${capital(q.prompt.replace(/\.$/, ''))}.`).join('\n'),
+      ].join('\n');
+    } else {
+      const k: AssetKind = KINDS[p.kind];
+      title = p.name;
+      text = [
+        `Image ${size(k.gen)}${k.opaque ? ', plein cadre avec décor (pas de fond magenta)' : ''}. ${capital(p.prompt)}${/[.!?]$/.test(p.prompt) ? '' : '.'}`,
+        `Cadrage : ${k.framing}.`,
+        ref.trim(),
+      ]
+        .filter(Boolean)
+        .join('\n');
+    }
+    out.push({ n, title, text, files: items.map((q) => q.file) });
+  }
+  return out;
+}
+
+const KIT_PROMPT = (
+  count: number,
+) => `Je te joins le fichier « kit-combat.md » et des images de référence de style (Questy, la mascotte, et l'interface du jeu).
+Lis tout le fichier : il fixe le style du jeu et contient ${count} demandes d'images numérotées (héros, boss, ennemis, effets, arènes).
+Règles :
+- Génère maintenant UNIQUEMENT l'image de la demande 1, puis attends.
+- Chaque fois que j'écris « suivant », génère la demande suivante. Une seule image par réponse, précédée seulement de « Demande N ».
+- Si j'écris « refais N : … », régénère l'image N avec ma correction.
+- Jamais de texte dans les images, jamais de détourage, de redimensionnement ni de découpe par code : fond magenta uni #FF00FF, taille exacte demandée.
+- Quand j'écris « fin », regroupe toutes les images générées, telles quelles (sans aucune retouche), dans un ZIP, nommées demande-01.png, demande-02.png… selon le numéro de la demande.`;
+
+/** Fichier autonome à joindre à ChatGPT pour le kit combat (avec le prompt à copier en tête). */
+export function kitFile(): string {
+  const reqs = kitRequests();
+  const head = `# Academy Fighters — Kit combat (à joindre à ChatGPT)
+
+${reqs.length} demandes · ${reqs.reduce((n, r) => n + r.files.length, 0)} images finales.
+
+## Pour toi (à lire avant de commencer)
+
+1. Ouvre une **nouvelle conversation** ChatGPT (ChatGPT Images).
+2. Joins **ce fichier** et 2 ou 3 images de référence du style (par exemple une planche de Questy et une planche d'interface déjà validées).
+3. Copie-colle le **prompt** ci-dessous et envoie.
+4. Écris « suivant » après chaque image. Si une image ne va pas : « refais N : plus de contour », etc.
+5. Si la conversation devient lente, ouvre-en une nouvelle avec le même fichier et le même prompt, en remplaçant « demande 1 » par le numéro où tu t'es arrêté.
+6. À la fin, écris « fin », télécharge le ZIP et dépose-le ici.
+
+### Prompt à copier
+
+\`\`\`text
+${KIT_PROMPT(reqs.length)}
+\`\`\`
+
+---
+
+## Pour ChatGPT : style à respecter pour chaque image
+
+\`\`\`text
+${MASTER.replace(/\n\nMÉTHODE[\s\S]*$/, '')}
+
+COHÉRENCE DU KIT COMBAT
+- Les cinq héros doivent être immédiatement reconnaissables entre eux : silhouette, couleurs, coiffure, tenue et arme très différentes. Ne mélange jamais leurs éléments.
+- Une fois un héros ou un boss dessiné, il ne change plus : mêmes couleurs, mêmes vêtements, même équipement d'une image à l'autre.
+- Pixel est un chat (pas un enfant) : il garde ses proportions de chat chibi debout sur deux pattes, avec la même épaisseur de contour et le même rendu que les autres héros.
+- Les héros tirent vers la droite ; les boss et les ennemis font face à la gauche.
+\`\`\`
+
+## Demandes
+`;
+  const body = reqs.map((r) => `### Demande ${r.n} — ${r.title}\n\n\`\`\`text\n${r.text}\n\`\`\``).join('\n\n');
+  const map = reqs
+    .map((r) => `| ${r.n} | ${r.files.map((f) => `\`${f.replace(/\.webp$/, '')}\``).join('<br>')} |`)
+    .join('\n');
+  return `${HEADER}\n${head}\n${body}\n\n---\n\n## Correspondance pour l'import (ne concerne pas ChatGPT)\n\n| Demande | Fichiers produits (ordre des cases) |\n|---|---|\n${map}\n`;
+}
+
 export function guide(): string {
   const built = buildLots();
   const n = built.at(-1)?.last ?? 0;
@@ -352,6 +454,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   writeFileSync(DOC, guide());
   mkdirSync(LOT_DIR, { recursive: true });
   for (const [file, content] of lotFiles()) writeFileSync(join(LOT_DIR, file), content);
+  writeFileSync(join(LOT_DIR, 'kit-combat.md'), kitFile());
   writeFileSync(AVAILABLE, availableFile());
   console.log(
     `${dirs.size} dossiers, ${PLANNED_ASSETS.length} assets, ${sheets().length} planches → docs/ASSETS-CHATGPT.md + docs/chatgpt/`,

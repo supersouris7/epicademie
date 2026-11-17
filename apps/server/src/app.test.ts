@@ -42,7 +42,7 @@ describe('API profils', () => {
       avatar,
       gender: 'fille',
       birthDate: '2014-03-09',
-      hero: 'alex',
+      hero: 'nassim',
     });
     const list = await app.inject('/api/profiles');
     expect(list.json<Profile[]>()).toHaveLength(1);
@@ -75,9 +75,9 @@ describe('API profils', () => {
     const res = await app.inject({
       method: 'PATCH',
       url: `/api/profiles/${profile.id}`,
-      payload: { soundOn: false, hero: 'mia' },
+      payload: { soundOn: false, hero: 'ayla' },
     });
-    expect(res.json<Profile>()).toMatchObject({ soundOn: false, name: 'Tom', hero: 'mia' });
+    expect(res.json<Profile>()).toMatchObject({ soundOn: false, name: 'Tom', hero: 'ayla' });
     const bad = await app.inject({ method: 'PATCH', url: `/api/profiles/${profile.id}`, payload: { hero: 'ninja' } });
     expect(bad.statusCode).toBe(400);
   });

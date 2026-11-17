@@ -8,7 +8,7 @@ export const profiles = sqliteTable('profiles', {
   avatar: text('avatar', { mode: 'json' }).$type<AvatarConfig>().notNull(),
   gender: text('gender').$type<Gender>(),
   birthDate: text('birth_date'),
-  hero: text('hero').$type<HeroId>().notNull().default('alex'),
+  hero: text('hero').$type<HeroId>().notNull().default('nassim'),
   xp: integer('xp').notNull().default(0),
   coins: integer('coins').notNull().default(0),
   soundOn: integer('sound_on', { mode: 'boolean' }).notNull().default(true),

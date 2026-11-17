@@ -166,7 +166,7 @@ _Ensuite_ : ressources (eau, énergie, alimentation), risques et changement glob
 
 ## 5bis. Profils, aides et tableau de bord
 
-- **Profil** : prénom, fille ou garçon, date de naissance (3 à 100 ans). Les textes s'accordent (Prêt/Prête, titres Apprenti/Apprentie… Champion/Championne). Avatar au choix : Visage (par défaut), Émoji ou Robot (DiceBear) ; le style « Personnage » a été retiré (tête trop coupée dans l’anneau, profils migrés vers Visage).
+- **Profil** : prénom, fille ou garçon, date de naissance (3 à 100 ans). Les textes s'accordent (Prêt/Prête, titres Apprenti/Apprentie… Champion/Championne). Héros au choix : Nassim, Tao, Lina, Ayla, Pixel (remplacent Alex, Zoé, Léo, Mia, migration 0008). Avatar au choix : Visage (par défaut), Émoji ou Robot (DiceBear) ; le style « Personnage » a été retiré (tête trop coupée dans l’anneau, profils migrés vers Visage).
 - **Âge et duels** : `packages/engine/src/duel.ts` — le plus jeune joue au niveau de référence ; écart de 1–2 ans → temps × 0,9 ; 3–5 ans → +1 niveau, temps × 0,75 ; ≥ 6 ans → +2 niveaux, temps × 0,6 ; adulte contre enfant → +2 niveaux, temps × 0,5. Utilisé par le multijoueur (à venir).
 - **Conseils de Questy** (calculatrice, brouillon) : seulement à la 1re question de chaque notion dans une partie. Le tableau de conversion n'est proposé que si la question mêle deux unités d'une même grandeur (ou sur les notions de conversion).
 - **Entraînement** : en haut de la liste des chapitres, « Je te propose » (à revoir d'abord, sinon chapitre commencé, sinon le premier non acquis).
@@ -198,6 +198,16 @@ Catalogue typé dans `packages/shared/src/modes.ts`.
 | Multijoueur | voir §9.2        |                 |                                                                                                                             |
 
 **Boss et adversaires** : univers moderne (aliens, ninjas, gunners, robots, hackers…), jamais médiéval-fantastique. Rendu **écran LED comme Questy** : visage pixel, plus une silhouette et un équipement propres (antennes, bandeau, visière), avec leurs couleurs et leurs grimaces de boss. Personnages originaux.
+
+### 6.2 bis Combat de boss (décidé le 17/11/2026, à développer)
+
+- **Déroulé (10 questions)** : 7 mobs envoyés par le boss (questions classiques du chapitre, niveau 1 puis 2), puis le boss à 3 vies : 2 **petits problèmes en contexte**, puis 1 **question piège** (QCM dont les mauvaises réponses sont les erreurs typiques). Le héros a 3 cœurs ; une erreur = riposte et −1 cœur ; pas de 2e essai (explication courte, « Voir tout » au besoin) ; contre le boss, une erreur relance une question du même type. Défaite → bouton vers l'entraînement de la notion ratée.
+- **Écran** : arène en haut (tablette) ou bandeau (téléphone), héros à gauche, adversaire à droite, jauges de vie ; zone de réponse de l'entraînement en dessous. Bonne réponse : pose « tir » → projectile → impact → adversaire « touché ». Uniquement des images fixes enchaînées par animation en code.
+- **Accès** : boss du chapitre débloqué quand chaque notion du chapitre a été réussie une fois. 1re victoire : munition du chapitre, médaille de boss, coffre.
+- **Consommables** (gagnés à l'entraînement) : bouclier (annule une riposte, gagné par un sans-faute), soin (+1 cœur, notion acquise), indice (acheté en pièces) ; 3 au plus par combat.
+- **Flexibilité graphique** : 5 héros (Nassim l'inventeur, Tao l'explorateur, Lina la sportive, Ayla la graffeuse, Pixel le chat ninja), chacun avec son arme ; **munitions dessinées en code** (orbe lumineuse + symbole π, ½, ×, √, %… + couleur + traînée), une par chapitre ; un boss par domaine des maths (Golem des Équations, Géomatrix, Probabot, Courbix, IA des Connaissances) recoloré selon le chapitre ; 9 mobs ; effets blancs recolorés en code ; une arène par domaine.
+- **Contenu** : par chapitre, ~3 générateurs de problèmes en contexte et ~2 de pièges. v1 : moteur + Fractions, Nombres relatifs, Proportionnalité.
+- **Images** : kit à générer avec ChatGPT via `docs/chatgpt/kit-combat.md` (fichier autonome à joindre, prompt à copier en tête, ZIP final « demande-NN.png »).
 
 ### 6.3 Acquisition d'une notion
 
