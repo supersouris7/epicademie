@@ -182,24 +182,20 @@ _Ensuite_ : ressources (eau, énergie, alimentation), risques et changement glob
 - Bonne réponse rapide → maîtrise ↑ et intervalle × 2 ; lente → ↑ faible ; erreur → maîtrise ↓, intervalle réinitialisé.
 - Le sélecteur de session (« Entraînement intelligent ») tire : 60 % notions échues/faibles, 30 % notions en cours, 10 % révision de notions maîtrisées.
 - À l'intérieur d'une notion, les **paramètres ratés** reviennent (ex. 7×8 raté → reproposé dans 2–4 questions).
-- Difficulté adaptée : 3 réussites rapides consécutives → palier +1 ; 2 erreurs → palier −1.
+- Difficulté adaptée : niveau 1 → 2 après 2 réussites d'affilée, niveau 2 → 3 après 3 ; 2 erreurs → palier −1.
 
 ### 6.2 Parcours de jeu
 
-Accueil → **choix du mode** → choix de la matière (si le mode le demande) → choix du thème → partie.
+Accueil → **choix du mode** → choix de la matière → choix du thème → partie. Seul l'Entraînement est jouable : les autres modes sont grisés avec l'étiquette « À venir » (un appui affiche « Bientôt disponible ! »). Révisions du jour, Atelier des erreurs, Défi du jour et Bilan ont été retirés (novembre 2026) ; les notions à revoir sont proposées par « Je te propose » dans l'Entraînement.
 Catalogue typé dans `packages/shared/src/modes.ts`.
 
-| Catégorie   | Mode                | Portée            | Principe                                                                                                                    |
-| ----------- | ------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Apprendre   | Révisions du jour   | toutes matières   | notions échues selon la répétition espacée ; badge « N à revoir » sur l'accueil                                             |
-| Apprendre   | Entraînement        | matière → thème   | 10 questions, difficulté adaptative, sans pression                                                                          |
-| Apprendre   | Combat de boss      | matière → thème   | boss du thème, bonne réponse = dégâts, erreur = −1 cœur (3 cœurs) ; boss final de matière quand tous les thèmes sont acquis |
-| Apprendre   | Atelier des erreurs | toutes matières   | uniquement les questions ratées : explication puis variante, jusqu'à réussite                                               |
-| Défis       | Contre-la-montre    | matière → thème   | max de bonnes réponses en 60 s, record par thème                                                                            |
-| Défis       | Survie              | matière → thème   | difficulté croissante, 3 vies, record de vagues                                                                             |
-| Défis       | Défi du jour        | toutes matières   | 10 questions identiques pour la famille (graine = date), classement du jour, bonus XP                                       |
-| Défis       | Bilan               | global ou matière | test sans aide : note /20 **et** niveau de maîtrise par thème, plan de révision généré                                      |
-| Multijoueur | voir §9.2           |                   |                                                                                                                             |
+| Catégorie   | Mode             | Portée          | Principe                                                                                                                    |
+| ----------- | ---------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Apprendre   | Entraînement     | matière → thème | 10 questions, difficulté adaptative, sans pression                                                                          |
+| Apprendre   | Combat de boss   | matière → thème | boss du thème, bonne réponse = dégâts, erreur = −1 cœur (3 cœurs) ; boss final de matière quand tous les thèmes sont acquis |
+| Défis       | Contre-la-montre | matière → thème | max de bonnes réponses en 60 s, record par thème                                                                            |
+| Défis       | Survie           | matière → thème | difficulté croissante, 3 vies, record de vagues                                                                             |
+| Multijoueur | voir §9.2        |                 |                                                                                                                             |
 
 **Boss et adversaires** : univers moderne (aliens, ninjas, gunners, robots, hackers…), jamais médiéval-fantastique. Rendu **écran LED comme Questy** : visage pixel, plus une silhouette et un équipement propres (antennes, bandeau, visière), avec leurs couleurs et leurs grimaces de boss. Personnages originaux.
 

@@ -2,10 +2,12 @@ import { useNavigate } from 'react-router';
 import { MODES } from '@questeo/shared';
 import { ModeTile } from '../components/ModeTile.tsx';
 import { PageShell } from '../components/PageShell.tsx';
+import { useToast } from '../components/Toast.tsx';
 
 /** Choix du mode multijoueur (les téléphones servent de manettes). */
 export function MultiModes() {
   const navigate = useNavigate();
+  const [toast, showToast] = useToast();
   return (
     <PageShell title="Multijoueur" back="/hub">
       <p className="text-muted text-lg font-bold">
@@ -13,9 +15,15 @@ export function MultiModes() {
       </p>
       <ul className="grid gap-4 sm:grid-cols-2">
         {MODES.filter((m) => m.category === 'multi').map((mode, i) => (
-          <ModeTile key={mode.id} mode={mode} index={i} onClick={() => void navigate(`/jouer/${mode.id}`)} />
+          <ModeTile
+            key={mode.id}
+            mode={mode}
+            index={i}
+            onClick={() => (mode.available ? void navigate(`/jouer/${mode.id}`) : showToast('Bientôt disponible !'))}
+          />
         ))}
       </ul>
+      {toast}
     </PageShell>
   );
 }

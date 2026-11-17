@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Lot 9 — Effets
 
-12 images, demandes 145 à 146 (2 messages à envoyer).
+12 images, demandes 144 à 145 (2 messages à envoyer).
 
 ## Marche à suivre
 
@@ -59,7 +59,7 @@ Réponds simplement « Prêt » si tu as compris.
 
 ### Lot 9 — Effets
 
-#### 145. Planche « effets-1 » (9 éléments)
+#### 144. Planche « effets-1 » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/effets-1.png` · 1024×1024, grille 3×3 → chaque case finale 512×512
 Cases : 1 → `effects/impacts/hit-burst` · 2 → `effects/impacts/eclat-violet` · 3 → `effects/impacts/anneau-cyan` · 4 → `effects/impacts/explosion` · 5 → `effects/impacts/eclat-feuilles` · 6 → `effects/impacts/cristaux` · 7 → `effects/particles/puff` · 8 → `effects/particles/pixels` · 9 → `effects/particles/etourdi`
 
@@ -82,7 +82,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 146. Planche « effets-2 » (3 éléments)
+#### 145. Planche « effets-2 » (3 éléments)
 Enregistrer sous `assets-src/originals/sheets/effets-2.png` · 1024×1024, grille 3×3 → chaque case finale 512×512
 Cases : 1 → `effects/transitions/portail` · 2 → `effects/particles/poussiere` · 3 → `effects/particles/confettis`
 

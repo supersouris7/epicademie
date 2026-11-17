@@ -23,7 +23,8 @@ export function ModeTile({ mode, index = 0, badge, onClick }: ModeTileProps) {
       <button
         type="button"
         onClick={onClick}
-        className="cartoon bevel cartoon-press flex min-h-28 w-full items-center gap-3 p-3 text-left text-white hover:brightness-110"
+        aria-label={mode.available ? undefined : `${mode.name}, à venir`}
+        className={`cartoon bevel cartoon-press flex min-h-28 w-full items-center gap-3 p-3 text-left text-white ${mode.available ? 'hover:brightness-110' : 'opacity-70 grayscale-[0.7]'}`}
         style={{ backgroundColor: CATEGORY_COLORS[mode.category] }}
       >
         {assetSrc(`icons-modes-${mode.id}`) ? (
@@ -36,6 +37,15 @@ export function ModeTile({ mode, index = 0, badge, onClick }: ModeTileProps) {
           <span className="text-sm font-bold opacity-95">{mode.pitch}</span>
         </span>
       </button>
+      {!mode.available && (
+        <span
+          className="cartoon bg-gold font-display text-on-light absolute -top-3 -right-2 px-3 py-0.5 text-sm tracking-wide"
+          style={{ borderRadius: '9999px' }}
+          aria-hidden
+        >
+          À venir
+        </span>
+      )}
       {badge !== undefined && badge > 0 && (
         <span
           className="cartoon bg-danger font-display absolute -top-3 -right-2 flex h-10 min-w-10 items-center justify-center px-2 text-lg text-white"

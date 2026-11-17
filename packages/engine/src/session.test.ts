@@ -37,9 +37,18 @@ describe('série d’entraînement', () => {
     expect(s.pendingVariant).toBeNull();
   });
 
-  it('monte d’un niveau après 3 réussites, descend après 2 erreurs', () => {
+  it('niveau 1 passé après 2 réussites, niveau 3 après 3 de plus, descend après 2 erreurs', () => {
     let s = startTraining(['a'], none);
-    for (let i = 0; i < 3; i++) s = recordAnswer(s, nextQuestion(s, none, today, 0, i), true);
+    s = recordAnswer(s, nextQuestion(s, none, today, 0, 0), true);
+    expect(s.levels.a).toBe(1);
+    s = recordAnswer(s, nextQuestion(s, none, today, 0, 1), true);
+    expect(s.levels.a).toBe(2);
+    for (let i = 2; i < 4; i++) s = recordAnswer(s, nextQuestion(s, none, today, 0, i), true);
+    expect(s.levels.a).toBe(2);
+    s = recordAnswer(s, nextQuestion(s, none, today, 0, 4), true);
+    expect(s.levels.a).toBe(3);
+    s = recordAnswer(s, nextQuestion(s, none, today, 0, 5), false);
+    s = recordAnswer(s, nextQuestion(s, none, today, 0, 6), false);
     expect(s.levels.a).toBe(2);
     s = recordAnswer(s, nextQuestion(s, none, today, 0, 10), false);
     s = recordAnswer(s, nextQuestion(s, none, today, 0, 11), false); // variante ratée

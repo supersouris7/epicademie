@@ -601,7 +601,8 @@ function Results({
           <QuestyPose pose={pose} mood={mood} size={150} />
         </motion.div>
         <h1
-          className="bg-accent font-display text-toon cartoon px-8 py-2 text-3xl tracking-wide sm:text-4xl"
+          className="bg-accent font-display text-toon cartoon px-8 pt-0 pb-[0.85em] text-3xl leading-tight tracking-wide sm:text-4xl"
+          // Le bandeau illustré a sa face dans le haut de l'image (la queue dépasse en bas) : texte remonté.
           style={skinStyle('hud/frames/ribbon.webp', 30, '1.5rem')}
         >
           {message}

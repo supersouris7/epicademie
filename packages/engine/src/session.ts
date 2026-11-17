@@ -90,10 +90,12 @@ export function nextQuestion(
 export function recordAnswer(s: TrainingState, q: PlannedQuestion, correct: boolean): TrainingState {
   const answers = [...s.answers, { skillId: q.skillId, level: q.level, variant: q.variant, correct }];
   const ofSkill = answers.filter((a) => a.skillId === q.skillId);
-  const lastThree = ofSkill.slice(-3);
   const lastTwo = ofSkill.slice(-2);
   let level = s.levels[q.skillId] ?? 1;
-  if (lastThree.length === 3 && lastThree.every((a) => a.correct && a.level === level) && level < 3)
+  // Niveau 1 vite passé (2 réussites d'affilée), niveau 2 → 3 après 3 réussites.
+  const needed = level === 1 ? 2 : 3;
+  const streak = ofSkill.slice(-needed);
+  if (streak.length === needed && streak.every((a) => a.correct && a.level === level) && level < 3)
     level = (level + 1) as Level;
   else if (lastTwo.length === 2 && lastTwo.every((a) => !a.correct) && level > 1) level = (level - 1) as Level;
   const pendingVariant =

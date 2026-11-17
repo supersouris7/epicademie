@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Lot 7 — Boss et ennemis
 
-43 images, demandes 100 à 134 (35 messages à envoyer).
+43 images, demandes 99 à 133 (35 messages à envoyer).
 
 ## Marche à suivre
 
@@ -61,7 +61,7 @@ Réponds simplement « Prêt » si tu as compris.
 
 > Pour le portrait et la version « touché » d’un boss, joindre l’image validée de ce boss.
 
-#### 100. Golem des Équations
+#### 99. Golem des Équations
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations.png` · 1024×1024 → final 768×768
 
 ```text
@@ -70,7 +70,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 101. Golem des Équations — portrait
+#### 100. Golem des Équations — portrait
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -80,7 +80,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 102. Golem des Équations — touché
+#### 101. Golem des Équations — touché
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-hurt.png` · 1024×1024 → final 768×768
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -90,7 +90,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 103. Géomatrix
+#### 102. Géomatrix
 Enregistrer sous `assets-src/originals/bosses/maths/geomatrix.png` · 1024×1024 → final 768×768
 
 ```text
@@ -99,7 +99,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 104. Géomatrix — portrait
+#### 103. Géomatrix — portrait
 Enregistrer sous `assets-src/originals/bosses/maths/geomatrix-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/geomatrix.png`.
 
@@ -109,7 +109,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 105. Géomatrix — touché
+#### 104. Géomatrix — touché
 Enregistrer sous `assets-src/originals/bosses/maths/geomatrix-hurt.png` · 1024×1024 → final 768×768
 > 📎 Joindre l'image validée `bosses/maths/geomatrix.png`.
 
@@ -119,7 +119,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 106. Molécor
+#### 105. Molécor
 Enregistrer sous `assets-src/originals/bosses/physics/molecor.png` · 1024×1024 → final 768×768
 
 ```text
@@ -128,7 +128,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 107. Molécor — portrait
+#### 106. Molécor — portrait
 Enregistrer sous `assets-src/originals/bosses/physics/molecor-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/physics/molecor.png`.
 
@@ -138,7 +138,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 108. Molécor — touché
+#### 107. Molécor — touché
 Enregistrer sous `assets-src/originals/bosses/physics/molecor-hurt.png` · 1024×1024 → final 768×768
 > 📎 Joindre l'image validée `bosses/physics/molecor.png`.
 
@@ -148,7 +148,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 109. Professeur Molécule
+#### 108. Professeur Molécule
 Enregistrer sous `assets-src/originals/bosses/physics/professeur-molecule.png` · 1024×1024 → final 768×768
 
 ```text
@@ -157,7 +157,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 110. Professeur Molécule — portrait
+#### 109. Professeur Molécule — portrait
 Enregistrer sous `assets-src/originals/bosses/physics/professeur-molecule-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/physics/professeur-molecule.png`.
 
@@ -167,7 +167,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 111. Professeur Molécule — touché
+#### 110. Professeur Molécule — touché
 Enregistrer sous `assets-src/originals/bosses/physics/professeur-molecule-hurt.png` · 1024×1024 → final 768×768
 > 📎 Joindre l'image validée `bosses/physics/professeur-molecule.png`.
 
@@ -177,7 +177,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 112. Florion
+#### 111. Florion
 Enregistrer sous `assets-src/originals/bosses/biology/florion.png` · 1024×1024 → final 768×768
 
 ```text
@@ -186,7 +186,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 113. Florion — portrait
+#### 112. Florion — portrait
 Enregistrer sous `assets-src/originals/bosses/biology/florion-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/biology/florion.png`.
 
@@ -196,7 +196,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 114. Florion — touché
+#### 113. Florion — touché
 Enregistrer sous `assets-src/originals/bosses/biology/florion-hurt.png` · 1024×1024 → final 768×768
 > 📎 Joindre l'image validée `bosses/biology/florion.png`.
 
@@ -206,7 +206,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 115. Scriptor
+#### 114. Scriptor
 Enregistrer sous `assets-src/originals/bosses/french/scriptor.png` · 1024×1024 → final 768×768
 
 ```text
@@ -215,7 +215,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 116. Scriptor — portrait
+#### 115. Scriptor — portrait
 Enregistrer sous `assets-src/originals/bosses/french/scriptor-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/french/scriptor.png`.
 
@@ -225,7 +225,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 117. Scriptor — touché
+#### 116. Scriptor — touché
 Enregistrer sous `assets-src/originals/bosses/french/scriptor-hurt.png` · 1024×1024 → final 768×768
 > 📎 Joindre l'image validée `bosses/french/scriptor.png`.
 
@@ -235,7 +235,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 118. L’Ombre des Livres
+#### 117. L’Ombre des Livres
 Enregistrer sous `assets-src/originals/bosses/french/ombre-des-livres.png` · 1024×1024 → final 768×768
 
 ```text
@@ -244,7 +244,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 119. L’Ombre des Livres — portrait
+#### 118. L’Ombre des Livres — portrait
 Enregistrer sous `assets-src/originals/bosses/french/ombre-des-livres-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/french/ombre-des-livres.png`.
 
@@ -254,7 +254,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 120. L’Ombre des Livres — touché
+#### 119. L’Ombre des Livres — touché
 Enregistrer sous `assets-src/originals/bosses/french/ombre-des-livres-hurt.png` · 1024×1024 → final 768×768
 > 📎 Joindre l'image validée `bosses/french/ombre-des-livres.png`.
 
@@ -264,7 +264,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 121. Chronos
+#### 120. Chronos
 Enregistrer sous `assets-src/originals/bosses/history/chronos.png` · 1024×1024 → final 768×768
 
 ```text
@@ -273,7 +273,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 122. Chronos — portrait
+#### 121. Chronos — portrait
 Enregistrer sous `assets-src/originals/bosses/history/chronos-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/history/chronos.png`.
 
@@ -283,7 +283,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 123. Chronos — touché
+#### 122. Chronos — touché
 Enregistrer sous `assets-src/originals/bosses/history/chronos-hurt.png` · 1024×1024 → final 768×768
 > 📎 Joindre l'image validée `bosses/history/chronos.png`.
 
@@ -293,7 +293,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 124. Globotron
+#### 123. Globotron
 Enregistrer sous `assets-src/originals/bosses/history/globotron.png` · 1024×1024 → final 768×768
 
 ```text
@@ -302,7 +302,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 125. Globotron — portrait
+#### 124. Globotron — portrait
 Enregistrer sous `assets-src/originals/bosses/history/globotron-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/history/globotron.png`.
 
@@ -312,7 +312,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 126. Globotron — touché
+#### 125. Globotron — touché
 Enregistrer sous `assets-src/originals/bosses/history/globotron-hurt.png` · 1024×1024 → final 768×768
 > 📎 Joindre l'image validée `bosses/history/globotron.png`.
 
@@ -322,7 +322,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 127. IA des Connaissances
+#### 126. IA des Connaissances
 Enregistrer sous `assets-src/originals/bosses/general/ia-des-connaissances.png` · 1024×1024 → final 768×768
 
 ```text
@@ -331,7 +331,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 128. IA des Connaissances — portrait
+#### 127. IA des Connaissances — portrait
 Enregistrer sous `assets-src/originals/bosses/general/ia-des-connaissances-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/general/ia-des-connaissances.png`.
 
@@ -341,7 +341,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 129. IA des Connaissances — touché
+#### 128. IA des Connaissances — touché
 Enregistrer sous `assets-src/originals/bosses/general/ia-des-connaissances-hurt.png` · 1024×1024 → final 768×768
 > 📎 Joindre l'image validée `bosses/general/ia-des-connaissances.png`.
 
@@ -351,7 +351,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 130. Araignée mécanique
+#### 129. Araignée mécanique
 Enregistrer sous `assets-src/originals/bosses/general/araignee-mecanique.png` · 1024×1024 → final 768×768
 
 ```text
@@ -360,7 +360,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 131. Araignée mécanique — portrait
+#### 130. Araignée mécanique — portrait
 Enregistrer sous `assets-src/originals/bosses/general/araignee-mecanique-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/general/araignee-mecanique.png`.
 
@@ -370,7 +370,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 132. Araignée mécanique — touché
+#### 131. Araignée mécanique — touché
 Enregistrer sous `assets-src/originals/bosses/general/araignee-mecanique-hurt.png` · 1024×1024 → final 768×768
 > 📎 Joindre l'image validée `bosses/general/araignee-mecanique.png`.
 
@@ -380,7 +380,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 133. Planche « ennemis-1 » (9 éléments)
+#### 132. Planche « ennemis-1 » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/ennemis-1.png` · 1024×1024, grille 3×3 → chaque case finale 384×384
 Cases : 1 → `bosses/minions/cube-bot` · 2 → `bosses/minions/equerre` · 3 → `bosses/minions/calculatrice` · 4 → `bosses/minions/fiole` · 5 → `bosses/minions/molecule` · 6 → `bosses/minions/feuille` · 7 → `bosses/minions/parchemin` · 8 → `bosses/minions/livre` · 9 → `bosses/minions/globe`
 
@@ -403,7 +403,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 134. Planche « ennemis-2 » (1 éléments)
+#### 133. Planche « ennemis-2 » (1 éléments)
 Enregistrer sous `assets-src/originals/sheets/ennemis-2.png` · 1024×1024, grille 3×3 → chaque case finale 384×384
 Cases : 1 → `bosses/minions/casque`
 

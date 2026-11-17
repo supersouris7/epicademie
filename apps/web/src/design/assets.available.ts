@@ -70,7 +70,6 @@ export const AVAILABLE: readonly string[] = [
   "icons/modes/boss.webp",
   "icons/modes/chrono.webp",
   "icons/modes/survie.webp",
-  "icons/modes/bilan.webp",
   "icons/modes/arene.webp",
   "rewards/collectibles/trophy.webp",
   "rewards/collectibles/record.webp",

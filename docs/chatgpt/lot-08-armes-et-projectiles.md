@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Lot 8 — Armes et projectiles
 
-18 images, demandes 135 à 144 (10 messages à envoyer).
+18 images, demandes 134 à 143 (10 messages à envoyer).
 
 ## Marche à suivre
 
@@ -59,7 +59,7 @@ Réponds simplement « Prêt » si tu as compris.
 
 ### Lot 8 — Armes et projectiles
 
-#### 135. Blaster d’Alex
+#### 134. Blaster d’Alex
 Enregistrer sous `assets-src/originals/weapons/blaster-alex.png` · 1536×1024 → final 768×512
 
 ```text
@@ -68,7 +68,7 @@ Cadrage : lanceur vu de profil, canon pointé vers la droite, poignée en bas à
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 136. Blaster de Zoé
+#### 135. Blaster de Zoé
 Enregistrer sous `assets-src/originals/weapons/blaster-zoe.png` · 1536×1024 → final 768×512
 
 ```text
@@ -77,7 +77,7 @@ Cadrage : lanceur vu de profil, canon pointé vers la droite, poignée en bas à
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 137. Lance-Livre
+#### 136. Lance-Livre
 Enregistrer sous `assets-src/originals/weapons/lance-livre.png` · 1536×1024 → final 768×512
 
 ```text
@@ -86,7 +86,7 @@ Cadrage : lanceur vu de profil, canon pointé vers la droite, poignée en bas à
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 138. Lance-Formules
+#### 137. Lance-Formules
 Enregistrer sous `assets-src/originals/weapons/lance-formules.png` · 1536×1024 → final 768×512
 
 ```text
@@ -95,7 +95,7 @@ Cadrage : lanceur vu de profil, canon pointé vers la droite, poignée en bas à
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 139. Rayon de Laboratoire
+#### 138. Rayon de Laboratoire
 Enregistrer sous `assets-src/originals/weapons/rayon-labo.png` · 1536×1024 → final 768×512
 
 ```text
@@ -104,7 +104,7 @@ Cadrage : lanceur vu de profil, canon pointé vers la droite, poignée en bas à
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 140. Canon Atlas
+#### 139. Canon Atlas
 Enregistrer sous `assets-src/originals/weapons/canon-atlas.png` · 1536×1024 → final 768×512
 
 ```text
@@ -113,7 +113,7 @@ Cadrage : lanceur vu de profil, canon pointé vers la droite, poignée en bas à
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 141. Plume Laser
+#### 140. Plume Laser
 Enregistrer sous `assets-src/originals/weapons/plume-laser.png` · 1536×1024 → final 768×512
 
 ```text
@@ -122,7 +122,7 @@ Cadrage : lanceur vu de profil, canon pointé vers la droite, poignée en bas à
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 142. Bio-Scanner
+#### 141. Bio-Scanner
 Enregistrer sous `assets-src/originals/weapons/bio-scanner.png` · 1536×1024 → final 768×512
 
 ```text
@@ -131,7 +131,7 @@ Cadrage : lanceur vu de profil, canon pointé vers la droite, poignée en bas à
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 143. Projecteur Tech
+#### 142. Projecteur Tech
 Enregistrer sous `assets-src/originals/weapons/projecteur-tech.png` · 1536×1024 → final 768×512
 
 ```text
@@ -140,7 +140,7 @@ Cadrage : lanceur vu de profil, canon pointé vers la droite, poignée en bas à
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 144. Planche « projectiles » (9 éléments)
+#### 143. Planche « projectiles » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/projectiles.png` · 1024×1024, grille 3×3 → chaque case finale 256×256
 Cases : 1 → `projectiles/blaster-alex` · 2 → `projectiles/blaster-zoe` · 3 → `projectiles/lance-livre` · 4 → `projectiles/lance-formules` · 5 → `projectiles/rayon-labo` · 6 → `projectiles/canon-atlas` · 7 → `projectiles/plume-laser` · 8 → `projectiles/bio-scanner` · 9 → `projectiles/projecteur-tech`
 

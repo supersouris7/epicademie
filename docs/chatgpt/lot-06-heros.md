@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Lot 6 — Héros
 
-53 images, demandes 47 à 99 (53 messages à envoyer).
+53 images, demandes 46 à 98 (53 messages à envoyer).
 
 ## Marche à suivre
 
@@ -61,7 +61,7 @@ Réponds simplement « Prêt » si tu as compris.
 
 > Commencer par les 4 portraits. Pour les expressions et les poses d’un héros, joindre son portrait validé. L’illustration principale vient en dernier : joindre la fiche de Questy et les portraits d’Alex et de Zoé.
 
-#### 47. Alex — portrait
+#### 46. Alex — portrait
 Enregistrer sous `assets-src/originals/characters/alex/portrait.png` · 1024×1024 → final 512×512
 
 ```text
@@ -70,7 +70,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 48. Alex — joie
+#### 47. Alex — joie
 Enregistrer sous `assets-src/originals/characters/alex/expression-joie.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/alex/portrait.png`.
 
@@ -80,7 +80,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 49. Alex — rire
+#### 48. Alex — rire
 Enregistrer sous `assets-src/originals/characters/alex/expression-rire.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/alex/portrait.png`.
 
@@ -90,7 +90,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 50. Alex — surprise
+#### 49. Alex — surprise
 Enregistrer sous `assets-src/originals/characters/alex/expression-surprise.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/alex/portrait.png`.
 
@@ -100,7 +100,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 51. Alex — determination
+#### 50. Alex — determination
 Enregistrer sous `assets-src/originals/characters/alex/expression-determination.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/alex/portrait.png`.
 
@@ -110,7 +110,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 52. Alex — effort
+#### 51. Alex — effort
 Enregistrer sous `assets-src/originals/characters/alex/expression-effort.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/alex/portrait.png`.
 
@@ -120,7 +120,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 53. Alex — tristesse
+#### 52. Alex — tristesse
 Enregistrer sous `assets-src/originals/characters/alex/expression-tristesse.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/alex/portrait.png`.
 
@@ -130,7 +130,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 54. Alex — pose idle
+#### 53. Alex — pose idle
 Enregistrer sous `assets-src/originals/characters/alex/pose-idle.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/alex/portrait.png`.
 
@@ -140,7 +140,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 55. Alex — pose run
+#### 54. Alex — pose run
 Enregistrer sous `assets-src/originals/characters/alex/pose-run.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/alex/portrait.png`.
 
@@ -150,7 +150,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 56. Alex — pose shoot
+#### 55. Alex — pose shoot
 Enregistrer sous `assets-src/originals/characters/alex/pose-shoot.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/alex/portrait.png`.
 
@@ -160,7 +160,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 57. Alex — pose hurt
+#### 56. Alex — pose hurt
 Enregistrer sous `assets-src/originals/characters/alex/pose-hurt.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/alex/portrait.png`.
 
@@ -170,7 +170,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 58. Alex — pose victory
+#### 57. Alex — pose victory
 Enregistrer sous `assets-src/originals/characters/alex/pose-victory.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/alex/portrait.png`.
 
@@ -180,7 +180,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 59. Alex — pose defeat
+#### 58. Alex — pose defeat
 Enregistrer sous `assets-src/originals/characters/alex/pose-defeat.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/alex/portrait.png`.
 
@@ -190,7 +190,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 60. Zoé — portrait
+#### 59. Zoé — portrait
 Enregistrer sous `assets-src/originals/characters/zoe/portrait.png` · 1024×1024 → final 512×512
 
 ```text
@@ -199,7 +199,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 61. Zoé — joie
+#### 60. Zoé — joie
 Enregistrer sous `assets-src/originals/characters/zoe/expression-joie.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/zoe/portrait.png`.
 
@@ -209,7 +209,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 62. Zoé — rire
+#### 61. Zoé — rire
 Enregistrer sous `assets-src/originals/characters/zoe/expression-rire.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/zoe/portrait.png`.
 
@@ -219,7 +219,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 63. Zoé — surprise
+#### 62. Zoé — surprise
 Enregistrer sous `assets-src/originals/characters/zoe/expression-surprise.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/zoe/portrait.png`.
 
@@ -229,7 +229,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 64. Zoé — determination
+#### 63. Zoé — determination
 Enregistrer sous `assets-src/originals/characters/zoe/expression-determination.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/zoe/portrait.png`.
 
@@ -239,7 +239,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 65. Zoé — effort
+#### 64. Zoé — effort
 Enregistrer sous `assets-src/originals/characters/zoe/expression-effort.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/zoe/portrait.png`.
 
@@ -249,7 +249,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 66. Zoé — tristesse
+#### 65. Zoé — tristesse
 Enregistrer sous `assets-src/originals/characters/zoe/expression-tristesse.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/zoe/portrait.png`.
 
@@ -259,7 +259,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 67. Zoé — pose idle
+#### 66. Zoé — pose idle
 Enregistrer sous `assets-src/originals/characters/zoe/pose-idle.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/zoe/portrait.png`.
 
@@ -269,7 +269,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 68. Zoé — pose run
+#### 67. Zoé — pose run
 Enregistrer sous `assets-src/originals/characters/zoe/pose-run.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/zoe/portrait.png`.
 
@@ -279,7 +279,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 69. Zoé — pose shoot
+#### 68. Zoé — pose shoot
 Enregistrer sous `assets-src/originals/characters/zoe/pose-shoot.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/zoe/portrait.png`.
 
@@ -289,7 +289,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 70. Zoé — pose hurt
+#### 69. Zoé — pose hurt
 Enregistrer sous `assets-src/originals/characters/zoe/pose-hurt.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/zoe/portrait.png`.
 
@@ -299,7 +299,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 71. Zoé — pose victory
+#### 70. Zoé — pose victory
 Enregistrer sous `assets-src/originals/characters/zoe/pose-victory.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/zoe/portrait.png`.
 
@@ -309,7 +309,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 72. Zoé — pose defeat
+#### 71. Zoé — pose defeat
 Enregistrer sous `assets-src/originals/characters/zoe/pose-defeat.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/zoe/portrait.png`.
 
@@ -319,7 +319,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 73. Léo — portrait
+#### 72. Léo — portrait
 Enregistrer sous `assets-src/originals/characters/leo/portrait.png` · 1024×1024 → final 512×512
 
 ```text
@@ -328,7 +328,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 74. Léo — joie
+#### 73. Léo — joie
 Enregistrer sous `assets-src/originals/characters/leo/expression-joie.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/leo/portrait.png`.
 
@@ -338,7 +338,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 75. Léo — rire
+#### 74. Léo — rire
 Enregistrer sous `assets-src/originals/characters/leo/expression-rire.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/leo/portrait.png`.
 
@@ -348,7 +348,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 76. Léo — surprise
+#### 75. Léo — surprise
 Enregistrer sous `assets-src/originals/characters/leo/expression-surprise.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/leo/portrait.png`.
 
@@ -358,7 +358,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 77. Léo — determination
+#### 76. Léo — determination
 Enregistrer sous `assets-src/originals/characters/leo/expression-determination.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/leo/portrait.png`.
 
@@ -368,7 +368,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 78. Léo — effort
+#### 77. Léo — effort
 Enregistrer sous `assets-src/originals/characters/leo/expression-effort.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/leo/portrait.png`.
 
@@ -378,7 +378,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 79. Léo — tristesse
+#### 78. Léo — tristesse
 Enregistrer sous `assets-src/originals/characters/leo/expression-tristesse.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/leo/portrait.png`.
 
@@ -388,7 +388,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 80. Léo — pose idle
+#### 79. Léo — pose idle
 Enregistrer sous `assets-src/originals/characters/leo/pose-idle.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/leo/portrait.png`.
 
@@ -398,7 +398,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 81. Léo — pose run
+#### 80. Léo — pose run
 Enregistrer sous `assets-src/originals/characters/leo/pose-run.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/leo/portrait.png`.
 
@@ -408,7 +408,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 82. Léo — pose shoot
+#### 81. Léo — pose shoot
 Enregistrer sous `assets-src/originals/characters/leo/pose-shoot.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/leo/portrait.png`.
 
@@ -418,7 +418,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 83. Léo — pose hurt
+#### 82. Léo — pose hurt
 Enregistrer sous `assets-src/originals/characters/leo/pose-hurt.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/leo/portrait.png`.
 
@@ -428,7 +428,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 84. Léo — pose victory
+#### 83. Léo — pose victory
 Enregistrer sous `assets-src/originals/characters/leo/pose-victory.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/leo/portrait.png`.
 
@@ -438,7 +438,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 85. Léo — pose defeat
+#### 84. Léo — pose defeat
 Enregistrer sous `assets-src/originals/characters/leo/pose-defeat.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/leo/portrait.png`.
 
@@ -448,7 +448,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 86. Mia — portrait
+#### 85. Mia — portrait
 Enregistrer sous `assets-src/originals/characters/mia/portrait.png` · 1024×1024 → final 512×512
 
 ```text
@@ -457,7 +457,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 87. Mia — joie
+#### 86. Mia — joie
 Enregistrer sous `assets-src/originals/characters/mia/expression-joie.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/mia/portrait.png`.
 
@@ -467,7 +467,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 88. Mia — rire
+#### 87. Mia — rire
 Enregistrer sous `assets-src/originals/characters/mia/expression-rire.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/mia/portrait.png`.
 
@@ -477,7 +477,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 89. Mia — surprise
+#### 88. Mia — surprise
 Enregistrer sous `assets-src/originals/characters/mia/expression-surprise.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/mia/portrait.png`.
 
@@ -487,7 +487,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 90. Mia — determination
+#### 89. Mia — determination
 Enregistrer sous `assets-src/originals/characters/mia/expression-determination.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/mia/portrait.png`.
 
@@ -497,7 +497,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 91. Mia — effort
+#### 90. Mia — effort
 Enregistrer sous `assets-src/originals/characters/mia/expression-effort.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/mia/portrait.png`.
 
@@ -507,7 +507,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 92. Mia — tristesse
+#### 91. Mia — tristesse
 Enregistrer sous `assets-src/originals/characters/mia/expression-tristesse.png` · 1024×1024 → final 384×384
 > 📎 Joindre l'image validée `characters/mia/portrait.png`.
 
@@ -517,7 +517,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 93. Mia — pose idle
+#### 92. Mia — pose idle
 Enregistrer sous `assets-src/originals/characters/mia/pose-idle.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/mia/portrait.png`.
 
@@ -527,7 +527,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 94. Mia — pose run
+#### 93. Mia — pose run
 Enregistrer sous `assets-src/originals/characters/mia/pose-run.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/mia/portrait.png`.
 
@@ -537,7 +537,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 95. Mia — pose shoot
+#### 94. Mia — pose shoot
 Enregistrer sous `assets-src/originals/characters/mia/pose-shoot.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/mia/portrait.png`.
 
@@ -547,7 +547,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 96. Mia — pose hurt
+#### 95. Mia — pose hurt
 Enregistrer sous `assets-src/originals/characters/mia/pose-hurt.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/mia/portrait.png`.
 
@@ -557,7 +557,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 97. Mia — pose victory
+#### 96. Mia — pose victory
 Enregistrer sous `assets-src/originals/characters/mia/pose-victory.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/mia/portrait.png`.
 
@@ -567,7 +567,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 98. Mia — pose defeat
+#### 97. Mia — pose defeat
 Enregistrer sous `assets-src/originals/characters/mia/pose-defeat.png` · 1024×1536 → final 768×1152
 > 📎 Joindre l'image validée `characters/mia/portrait.png`.
 
@@ -577,7 +577,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 99. Illustration principale
+#### 98. Illustration principale
 Enregistrer sous `assets-src/originals/branding/key-art.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 

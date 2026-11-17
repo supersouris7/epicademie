@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 import { levelFromXp } from '@questeo/engine';
 import { accord, MODES, MODE_CATEGORIES, type Profile } from '@questeo/shared';
 import { ModeTile } from '../components/ModeTile.tsx';
+import { useToast } from '../components/Toast.tsx';
 import { PageShell } from '../components/PageShell.tsx';
 import { SpeechBubble } from '../components/SpeechBubble.tsx';
 import { CharacterAvatar } from '../components/game/CharacterAvatar.tsx';
@@ -18,6 +19,7 @@ import { MOOD_IDS, type MoodId } from '../components/mascot/moods.ts';
 export function Hub({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
   const [mood, setMood] = useState<MoodId>('happy');
+  const [toast, showToast] = useToast();
   const { level, xpInLevel, xpForNext, title } = levelFromXp(profile.xp, profile.gender);
   // Taper sur Questy lui fait changer de tête (au hasard, jamais deux fois la même).
   const tickle = () =>
@@ -96,7 +98,14 @@ export function Hub({ profile }: { readonly profile: Profile }) {
         <GamePanel key={category.id} title={category.name}>
           <ul className="grid gap-4 sm:grid-cols-2">
             {MODES.filter((m) => m.category === category.id).map((mode, i) => (
-              <ModeTile key={mode.id} mode={mode} index={i} onClick={() => void navigate(`/jouer/${mode.id}`)} />
+              <ModeTile
+                key={mode.id}
+                mode={mode}
+                index={i}
+                onClick={() =>
+                  mode.available ? void navigate(`/jouer/${mode.id}`) : showToast('Bientôt disponible !')
+                }
+              />
             ))}
           </ul>
         </GamePanel>
@@ -105,6 +114,7 @@ export function Hub({ profile }: { readonly profile: Profile }) {
       <GameButton variant="accent" size="xl" icon="icons-navigation-team" onClick={() => void navigate('/multi')}>
         Multijoueur
       </GameButton>
+      {toast}
     </PageShell>
   );
 }

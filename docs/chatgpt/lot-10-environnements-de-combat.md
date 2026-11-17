@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Lot 10 — Environnements de combat
 
-40 images, demandes 147 à 163 (17 messages à envoyer).
+40 images, demandes 146 à 162 (17 messages à envoyer).
 
 ## Marche à suivre
 
@@ -59,7 +59,7 @@ Réponds simplement « Prêt » si tu as compris.
 
 ### Lot 10 — Environnements de combat
 
-#### 147. Arène tech
+#### 146. Arène tech
 Enregistrer sous `assets-src/originals/environments/arenas/arene-tech.png` · 1536×1024 → final 1536×1024
 
 ```text
@@ -68,7 +68,7 @@ Cadrage : île d’arène isométrique flottante vue de trois quarts plongée, c
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 148. Arène académie
+#### 147. Arène académie
 Enregistrer sous `assets-src/originals/environments/arenas/arene-academie.png` · 1536×1024 → final 1536×1024
 
 ```text
@@ -77,7 +77,7 @@ Cadrage : île d’arène isométrique flottante vue de trois quarts plongée, c
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 149. Arène nature
+#### 148. Arène nature
 Enregistrer sous `assets-src/originals/environments/arenas/arene-nature.png` · 1536×1024 → final 1536×1024
 
 ```text
@@ -86,7 +86,7 @@ Cadrage : île d’arène isométrique flottante vue de trois quarts plongée, c
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 150. Plateforme herbe
+#### 149. Plateforme herbe
 Enregistrer sous `assets-src/originals/environments/tiles/plateforme-herbe.png` · 1536×1024 → final 512×256
 
 ```text
@@ -95,7 +95,7 @@ Cadrage : plateforme flottante vue de face légèrement plongée, centrée, occu
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 151. Plateforme violette
+#### 150. Plateforme violette
 Enregistrer sous `assets-src/originals/environments/tiles/plateforme-violette.png` · 1536×1024 → final 512×256
 
 ```text
@@ -104,7 +104,7 @@ Cadrage : plateforme flottante vue de face légèrement plongée, centrée, occu
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 152. Plateforme pierre
+#### 151. Plateforme pierre
 Enregistrer sous `assets-src/originals/environments/tiles/plateforme-pierre.png` · 1536×1024 → final 512×256
 
 ```text
@@ -113,7 +113,7 @@ Cadrage : plateforme flottante vue de face légèrement plongée, centrée, occu
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 153. Plateforme glace
+#### 152. Plateforme glace
 Enregistrer sous `assets-src/originals/environments/tiles/plateforme-glace.png` · 1536×1024 → final 512×256
 
 ```text
@@ -122,7 +122,7 @@ Cadrage : plateforme flottante vue de face légèrement plongée, centrée, occu
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 154. Plateforme lave
+#### 153. Plateforme lave
 Enregistrer sous `assets-src/originals/environments/tiles/plateforme-lave.png` · 1536×1024 → final 512×256
 
 ```text
@@ -131,7 +131,7 @@ Cadrage : plateforme flottante vue de face légèrement plongée, centrée, occu
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 155. Sol dalles
+#### 154. Sol dalles
 Enregistrer sous `assets-src/originals/environments/tiles/sol-dalles.png` · 1024×1024 → final 256×256 · plein cadre (pas de fond magenta)
 
 ```text
@@ -140,7 +140,7 @@ Cadrage : tuile carrée vue de dessus, remplit tout le cadre, motif raccordable 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 156. Sol violet
+#### 155. Sol violet
 Enregistrer sous `assets-src/originals/environments/tiles/sol-violet.png` · 1024×1024 → final 256×256 · plein cadre (pas de fond magenta)
 
 ```text
@@ -149,7 +149,7 @@ Cadrage : tuile carrée vue de dessus, remplit tout le cadre, motif raccordable 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 157. Sol grille
+#### 156. Sol grille
 Enregistrer sous `assets-src/originals/environments/tiles/sol-grille.png` · 1024×1024 → final 256×256 · plein cadre (pas de fond magenta)
 
 ```text
@@ -158,7 +158,7 @@ Cadrage : tuile carrée vue de dessus, remplit tout le cadre, motif raccordable 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 158. Sol énergie
+#### 157. Sol énergie
 Enregistrer sous `assets-src/originals/environments/tiles/sol-energie.png` · 1024×1024 → final 256×256 · plein cadre (pas de fond magenta)
 
 ```text
@@ -167,7 +167,7 @@ Cadrage : tuile carrée vue de dessus, remplit tout le cadre, motif raccordable 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 159. Sol herbe
+#### 158. Sol herbe
 Enregistrer sous `assets-src/originals/environments/tiles/sol-herbe.png` · 1024×1024 → final 256×256 · plein cadre (pas de fond magenta)
 
 ```text
@@ -176,7 +176,7 @@ Cadrage : tuile carrée vue de dessus, remplit tout le cadre, motif raccordable 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 160. Sol sable
+#### 159. Sol sable
 Enregistrer sous `assets-src/originals/environments/tiles/sol-sable.png` · 1024×1024 → final 256×256 · plein cadre (pas de fond magenta)
 
 ```text
@@ -185,7 +185,7 @@ Cadrage : tuile carrée vue de dessus, remplit tout le cadre, motif raccordable 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 161. Planche « decors-1 » (9 éléments)
+#### 160. Planche « decors-1 » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/decors-1.png` · 1024×1024, grille 3×3 → chaque case finale 384×384
 Cases : 1 → `environments/props/banniere` · 2 → `environments/props/lampadaire` · 3 → `environments/props/arche` · 4 → `environments/props/bibliotheque` · 5 → `environments/props/pile-livres` · 6 → `environments/props/globe` · 7 → `environments/props/telescope` · 8 → `environments/props/tableau` · 9 → `environments/props/eprouvettes`
 
@@ -208,7 +208,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 162. Planche « decors-2 » (9 éléments)
+#### 161. Planche « decors-2 » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/decors-2.png` · 1024×1024, grille 3×3 → chaque case finale 384×384
 Cases : 1 → `environments/props/terrarium` · 2 → `environments/props/cristaux` · 3 → `environments/props/colonne` · 4 → `environments/props/casier` · 5 → `environments/props/sac-a-dos` · 6 → `environments/props/portail-violet` · 7 → `environments/props/portail-bleu` · 8 → `environments/props/portail-vert` · 9 → `environments/props/portail-orange`
 
@@ -231,7 +231,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 163. Planche « decors-3 » (8 éléments)
+#### 162. Planche « decors-3 » (8 éléments)
 Enregistrer sous `assets-src/originals/sheets/decors-3.png` · 1024×1024, grille 3×3 → chaque case finale 384×384
 Cases : 1 → `environments/props/barriere-energie` · 2 → `environments/props/barriere-laser` · 3 → `environments/props/caisse` · 4 → `environments/props/rocher` · 5 → `environments/props/marqueur-cible` · 6 → `environments/props/marqueur-zone` · 7 → `environments/props/marqueur-soin` · 8 → `environments/props/marqueur-alerte`
 

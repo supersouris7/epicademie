@@ -502,14 +502,10 @@ const ICONS: readonly (readonly [sheet: string, rows: readonly IconRow[]])[] = [
   [
     'modes',
     [
-      ['icons/modes/revisions', 'cerveau rose avec une flèche circulaire', 1],
       ['icons/modes/entrainement', 'haltère violet et orange', 1],
       ['icons/modes/boss', 'tête de mort cartoon blanche dans un hexagone rouge', 1],
-      ['icons/modes/atelier', 'clé à molette et marteau croisés', 1],
       ['icons/modes/chrono', 'chronomètre cyan', 1],
       ['icons/modes/survie', 'cœur rouge protégé par un bouclier', 1],
-      ['icons/modes/defi', 'calendrier avec une pastille dorée', 1],
-      ['icons/modes/bilan', 'presse-papiers avec coches vertes', 1],
       ['icons/modes/arene', 'deux blasters jouets croisés', 1],
       ['icons/modes/raid', 'trois casques de héros côte à côte', 1],
       ['icons/modes/quiz', 'buzzer rouge de jeu télévisé', 1],

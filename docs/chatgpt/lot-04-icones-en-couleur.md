@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Lot 4 — Icônes en couleur
 
-69 images, demandes 18 à 26 (9 messages à envoyer).
+65 images, demandes 18 à 25 (8 messages à envoyer).
 
 ## Marche à suivre
 
@@ -148,47 +148,29 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 22. Planche « modes-1 » (9 éléments)
-Enregistrer sous `assets-src/originals/sheets/modes-1.png` · 1024×1024, grille 3×3 → chaque case finale 256×256
-Cases : 1 → `icons/modes/revisions` · 2 → `icons/modes/entrainement` · 3 → `icons/modes/boss` · 4 → `icons/modes/atelier` · 5 → `icons/modes/chrono` · 6 → `icons/modes/survie` · 7 → `icons/modes/defi` · 8 → `icons/modes/bilan` · 9 → `icons/modes/arene`
+#### 22. Planche « modes » (8 éléments)
+Enregistrer sous `assets-src/originals/sheets/modes.png` · 1024×1024, grille 3×3 → chaque case finale 256×256
+Cases : 1 → `icons/modes/entrainement` · 2 → `icons/modes/boss` · 3 → `icons/modes/chrono` · 4 → `icons/modes/survie` · 5 → `icons/modes/arene` · 6 → `icons/modes/raid` · 7 → `icons/modes/quiz` · 8 → `icons/modes/course`
 
 ```text
-Image 1024×1024 : planche de 9 éléments de jeu disposés sur une grille invisible de 3 colonnes × 3 lignes (cases de 341×341 px).
+Image 1024×1024 : planche de 8 éléments de jeu disposés sur une grille invisible de 3 colonnes × 3 lignes (cases de 341×341 px).
 Ordre : de gauche à droite, puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais sur une autre ; les cases en trop restent vides.
 Cadrage de chaque élément : objet seul, centré, vu de face, marge de 10 % autour.
 Tous les éléments ont la même épaisseur de contour, la même lumière et la même échelle visuelle.
 
-1. cerveau rose avec une flèche circulaire
-2. haltère violet et orange
-3. tête de mort cartoon blanche dans un hexagone rouge
-4. clé à molette et marteau croisés
-5. chronomètre cyan
-6. cœur rouge protégé par un bouclier
-7. calendrier avec une pastille dorée
-8. presse-papiers avec coches vertes
-9. deux blasters jouets croisés
+1. haltère violet et orange
+2. tête de mort cartoon blanche dans un hexagone rouge
+3. chronomètre cyan
+4. cœur rouge protégé par un bouclier
+5. deux blasters jouets croisés
+6. trois casques de héros côte à côte
+7. buzzer rouge de jeu télévisé
+8. drapeau à damier et éclair
 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 23. Planche « modes-2 » (3 éléments)
-Enregistrer sous `assets-src/originals/sheets/modes-2.png` · 1024×1024, grille 3×3 → chaque case finale 256×256
-Cases : 1 → `icons/modes/raid` · 2 → `icons/modes/quiz` · 3 → `icons/modes/course`
-
-```text
-Image 1024×1024 : planche de 3 éléments de jeu disposés sur une grille invisible de 3 colonnes × 3 lignes (cases de 341×341 px).
-Ordre : de gauche à droite, puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais sur une autre ; les cases en trop restent vides.
-Cadrage de chaque élément : objet seul, centré, vu de face, marge de 10 % autour.
-Tous les éléments ont la même épaisseur de contour, la même lumière et la même échelle visuelle.
-
-1. trois casques de héros côte à côte
-2. buzzer rouge de jeu télévisé
-3. drapeau à damier et éclair
-
-Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
-```
-
-#### 24. Planche « medailles » (9 éléments)
+#### 23. Planche « medailles » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/medailles.png` · 1024×1024, grille 3×3 → chaque case finale 256×256
 Cases : 1 → `rewards/medals/bronze` · 2 → `rewards/medals/argent` · 3 → `rewards/medals/or` · 4 → `rewards/medals/platine` · 5 → `rewards/medals/none` · 6 → `rewards/collectibles/trophy` · 7 → `rewards/collectibles/record` · 8 → `rewards/collectibles/crown` · 9 → `rewards/collectibles/key`
 
@@ -211,7 +193,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 25. Planche « coffres » (6 éléments)
+#### 24. Planche « coffres » (6 éléments)
 Enregistrer sous `assets-src/originals/sheets/coffres.png` · 1024×1024, grille 3×3 → chaque case finale 256×256
 Cases : 1 → `rewards/chests/commun` · 2 → `rewards/chests/rare` · 3 → `rewards/chests/epique` · 4 → `rewards/chests/ouvert` · 5 → `rewards/chests/carte-mystere` · 6 → `rewards/chests/cadeau`
 
@@ -231,7 +213,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 26. Planche « objets » (9 éléments)
+#### 25. Planche « objets » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/objets.png` · 1024×1024, grille 3×3 → chaque case finale 256×256
 Cases : 1 → `icons/items/soin` · 2 → `icons/items/bouclier` · 3 → `icons/items/temps` · 4 → `icons/items/precision` · 5 → `icons/items/vitesse` · 6 → `icons/items/collecte` · 7 → `icons/items/boost-xp` · 8 → `icons/items/gel` · 9 → `icons/items/batterie`
 

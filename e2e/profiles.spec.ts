@@ -30,18 +30,25 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByRole('heading', { name: 'Nombres et calculs' })).toBeVisible();
   await page.getByRole('button', { name: 'Retour' }).click();
 
-  // Mode d'abord, matière ensuite.
-  for (const mode of ['Révisions du jour', 'Entraînement', 'Combat de boss', 'Contre-la-montre', 'Bilan']) {
-    await expect(page.getByRole('button', { name: new RegExp(mode) })).toBeVisible();
+  // Modes : seul l'Entraînement est jouable, les autres sont « À venir ».
+  await expect(page.getByRole('button', { name: /^Entraînement/ })).toBeVisible();
+  for (const mode of ['Combat de boss', 'Contre-la-montre', 'Survie']) {
+    await expect(page.getByRole('button', { name: `${mode}, à venir` })).toBeVisible();
   }
-  await page.getByRole('button', { name: /Combat de boss/ }).click();
-  await expect(page).toHaveURL(/\/jouer\/boss$/);
+  for (const gone of ['Révisions du jour', 'Atelier des erreurs', 'Défi du jour', 'Bilan']) {
+    await expect(page.getByRole('button', { name: new RegExp(gone) })).toHaveCount(0);
+  }
+  await page.getByRole('button', { name: 'Combat de boss, à venir' }).click();
+  await expect(page.getByText('Bientôt disponible !')).toBeVisible();
+  await expect(page).toHaveURL(/\/hub$/);
+  // Mode d'abord, matière ensuite.
+  await page.getByRole('button', { name: /^Entraînement/ }).click();
   for (const subject of ['Maths', 'Physique-Chimie', 'Anglais', 'Espagnol', 'Histoire', 'Géographie']) {
     await expect(page.getByRole('button', { name: subject })).toBeVisible();
   }
   await page.getByRole('button', { name: 'Retour' }).click();
   await page.getByRole('button', { name: /Multijoueur/ }).click();
-  await expect(page.getByRole('button', { name: /Arène/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Arène, à venir' })).toBeVisible();
   await page.getByRole('button', { name: 'Retour' }).click();
 
   await page.getByRole('button', { name: 'Paramètres' }).click();
