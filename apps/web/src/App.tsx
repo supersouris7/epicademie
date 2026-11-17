@@ -3,7 +3,6 @@ import { Navigate, Route, Routes } from 'react-router';
 import type { Profile } from '@questeo/shared';
 import { ApiError } from './api/client.ts';
 import { useProfile } from './api/profiles.ts';
-import { useApplyTheme } from './lib/theme.ts';
 import { About } from './pages/About.tsx';
 import { Hub } from './pages/Hub.tsx';
 import { ModeSetup } from './pages/ModeSetup.tsx';
@@ -33,10 +32,6 @@ function WithProfile({ children }: { readonly children: (profile: Profile) => Re
 }
 
 export function App() {
-  const profileId = useSession((s) => s.profileId);
-  const { data: profile } = useProfile(profileId);
-  useApplyTheme(profile?.theme ?? 'auto');
-
   return (
     <Routes>
       <Route path="/" element={<ProfilePicker />} />

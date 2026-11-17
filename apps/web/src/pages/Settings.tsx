@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { THEMES, type Profile, type Theme } from '@questeo/shared';
+import type { Profile } from '@questeo/shared';
 import { useDeleteProfile, useUpdateProfile } from '../api/profiles.ts';
 import { GameButton } from '../components/game/GameButton.tsx';
 import { PageShell } from '../components/PageShell.tsx';
 import { useSession } from '../store/session.ts';
-
-const THEME_LABELS: Record<Theme, string> = { auto: 'Auto', light: 'Clair', dark: 'Sombre' };
 
 function Toggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
@@ -36,24 +34,6 @@ export function Settings({ profile }: { readonly profile: Profile }) {
 
   return (
     <PageShell title="Paramètres" back="/hub">
-      <section className="flex flex-col gap-3">
-        <h2 className="font-display text-2xl tracking-wide">Thème</h2>
-        <div className="grid grid-cols-3 gap-3" role="radiogroup" aria-label="Thème">
-          {THEMES.map((theme) => (
-            <button
-              key={theme}
-              type="button"
-              role="radio"
-              aria-checked={profile.theme === theme}
-              onClick={() => update.mutate({ theme })}
-              className={`cartoon cartoon-press font-display min-h-16 text-lg ${profile.theme === theme ? 'bg-accent text-white' : 'bg-surface'}`}
-            >
-              {THEME_LABELS[theme]}
-            </button>
-          ))}
-        </div>
-      </section>
-
       <section className="flex flex-col gap-3">
         <h2 className="font-display text-2xl tracking-wide">Son</h2>
         <Toggle label="Effets sonores" checked={profile.soundOn} onChange={(soundOn) => update.mutate({ soundOn })} />

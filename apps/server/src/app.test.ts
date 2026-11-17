@@ -38,7 +38,6 @@ describe('API profils', () => {
       name: 'Léa',
       xp: 0,
       coins: 0,
-      theme: 'auto',
       soundOn: true,
       avatar,
       gender: 'fille',
@@ -76,9 +75,9 @@ describe('API profils', () => {
     const res = await app.inject({
       method: 'PATCH',
       url: `/api/profiles/${profile.id}`,
-      payload: { theme: 'dark', soundOn: false, hero: 'mia' },
+      payload: { soundOn: false, hero: 'mia' },
     });
-    expect(res.json<Profile>()).toMatchObject({ theme: 'dark', soundOn: false, name: 'Tom', hero: 'mia' });
+    expect(res.json<Profile>()).toMatchObject({ soundOn: false, name: 'Tom', hero: 'mia' });
     const bad = await app.inject({ method: 'PATCH', url: `/api/profiles/${profile.id}`, payload: { hero: 'ninja' } });
     expect(bad.statusCode).toBe(400);
   });

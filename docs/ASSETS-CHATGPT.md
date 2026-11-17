@@ -69,6 +69,7 @@ FOND ET FORMAT
 - Fond transparent si tu sais le produire. Sinon : fond uni magenta pur #FF00FF, parfaitement plat (sans dégradé, texture, ombre ni vignettage), et aucune teinte magenta dans le sujet.
 - Exception : les illustrations « plein cadre » (fonds de décor, illustration principale, sols) ont un vrai décor et aucun fond magenta.
 - Le sujet ne touche jamais les bords de l'image (sauf plein cadre et sols).
+- L'application est uniquement en thème sombre : les images seront posées sur un fond violet très sombre (#150C33). Garde un contour bien visible et des couleurs lumineuses pour qu'elles ressortent.
 - Respecte exactement la taille d'image demandée (1024×1024, 1536×1024 ou 1024×1536).
 
 MÉTHODE

@@ -3,7 +3,6 @@
 @import '@fontsource-variable/nunito';
 @import './design/tokens.css';
 
-@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 /* Tablette (ou écran large) en paysage : mise en page en deux colonnes. */
 @custom-variant land (@media (orientation: landscape) and (min-width: 900px));
 

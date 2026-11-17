@@ -17,9 +17,6 @@ export const HEROES = ['alex', 'zoe', 'leo', 'mia'] as const;
 export type HeroId = (typeof HEROES)[number];
 export const HERO_NAMES: Record<HeroId, string> = { alex: 'Alex', zoe: 'Zoé', leo: 'Léo', mia: 'Mia' };
 
-export const THEMES = ['auto', 'light', 'dark'] as const;
-export type Theme = (typeof THEMES)[number];
-
 export const ProfileNameSchema = z.string().trim().min(1, 'Le prénom est obligatoire').max(20, '20 caractères maximum');
 
 export const GENDERS = ['fille', 'garcon'] as const;
@@ -44,7 +41,6 @@ export const ProfileSchema = z.object({
   hero: z.enum(HEROES),
   xp: z.number().int().nonnegative(),
   coins: z.number().int().nonnegative(),
-  theme: z.enum(THEMES),
   soundOn: z.boolean(),
   musicOn: z.boolean(),
   createdAt: z.string(),
@@ -67,7 +63,6 @@ export const ProfileUpdateSchema = z
     gender: z.enum(GENDERS),
     birthDate: BirthDateSchema,
     hero: z.enum(HEROES),
-    theme: z.enum(THEMES),
     soundOn: z.boolean(),
     musicOn: z.boolean(),
   })

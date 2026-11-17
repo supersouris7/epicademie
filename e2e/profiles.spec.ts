@@ -45,12 +45,11 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.getByRole('button', { name: 'Retour' }).click();
 
   await page.getByRole('button', { name: 'Paramètres' }).click();
-  await page.getByRole('radio', { name: 'Sombre' }).click();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.getByRole('radio', { name: 'Sombre' })).toHaveCount(0); // thème sombre unique
 
-  // Le profil et le thème survivent à un rechargement.
+  // Le profil survit à un rechargement.
   await page.reload();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.getByRole('heading', { name: 'Paramètres' })).toBeVisible();
 
   await page.getByRole('button', { name: 'Supprimer ce profil' }).click();
   await page.getByRole('button', { name: 'Oui, supprimer' }).click();
