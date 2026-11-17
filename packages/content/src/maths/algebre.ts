@@ -8,15 +8,11 @@ const notation: Skill = {
   id: 'm5-puissances-notation',
   title: 'Carré et cube : notation',
   lesson: {
-    body: [
-      'a^2 (« a au carré ») = a × a. a^3 (« a au cube ») = a × a × a.',
-      'Attention : 5^3 = 5 × 5 × 5 = 125, pas 5 × 3 = 15.',
-      'À connaître : 10^3 = 1 000 (1 m^3 = 1 000 dm^3).',
+    memo: [
+      'Le petit nombre en haut dit **combien de fois on écrit le nombre** dans la multiplication : 5^3 = 5 × 5 × 5 = 125.',
+      'Ce n’est pas 5 × 3 = 15 ! « Au carré » = 2 fois, « au cube » = 3 fois.',
+      'À connaître : 10^3 = 10 × 10 × 10 = 1 000.',
     ],
-    example: {
-      question: 'Écris 64 comme carré puis comme cube.',
-      steps: ['64 = 8 × 8 = 8^2.', '64 = 4 × 4 × 4 = 4^3.'],
-    },
     source: objective(
       'Découvrir la notion de puissance d’un nombre et sa notation dans le cas du carré et du cube. Connaitre le cube de 10. Savoir écrire un nombre sous la forme d’une puissance 2 ou 3',
     ),
@@ -43,7 +39,12 @@ const notation: Skill = {
             why: `Il y a ${cube ? 3 : 2} facteurs ${a} : l’exposant est ${cube ? 3 : 2}.`,
           },
         ]),
-        steps: [`${product} : ${cube ? 'trois' : 'deux'} facteurs égaux à ${a} → **${correct}**.`],
+        hint: `Combien de fois le nombre ${a} est-il écrit dans la multiplication ?`,
+        steps: [
+          `Dans ${product}, le nombre ${a} est écrit ${cube ? '3' : '2'} fois.`,
+          `On écrit ${a} en gros, et le nombre de fois (${cube ? 3 : 2}) en petit en haut.`,
+          `${product} = **${correct}**`,
+        ],
         targetSeconds: 10,
       };
     }
@@ -57,7 +58,12 @@ const notation: Skill = {
           [a * 3, `${a}^3 = ${a} × ${a} × ${a}, pas ${a} × 3.`],
           [a * a, `${a}^2 = ${a * a} ; le cube a un facteur ${a} de plus.`],
         ]),
-        steps: [`${a}^3 = ${a} × ${a} × ${a} = ${a * a} × ${a} = **${v}**`],
+        hint: `${a}^3, c’est ${a} écrit 3 fois dans une multiplication.`,
+        steps: [
+          `${a}^3, c’est ${a} × ${a} × ${a} (et surtout pas ${a} × 3).`,
+          `On calcule deux par deux : ${a} × ${a} = ${a * a}, puis ${a * a} × ${a} = ${v}.`,
+          `${a}^3 = **${v}**`,
+        ],
         targetSeconds: 12,
       };
     }
@@ -99,10 +105,13 @@ const notation: Skill = {
           { label: `${base + 1}^${exp}`, why: `${base + 1}^${exp} = ${fmt((base + 1) ** exp)}, pas ${fmt(n)}.` },
         ].filter((o) => o.label !== correct && o.label !== sq && o.label !== cu),
       ),
+      hint: 'Calcule chaque proposition : 4^3 = 4 × 4 × 4, etc.',
       steps: [
+        `Pour chaque proposition, on calcule la vraie multiplication (pas « nombre × exposant » !).`,
         cu
-          ? `${fmt(n)} = ${cu.replace('^3', '')} × ${cu.replace('^3', '')} × ${cu.replace('^3', '')} = **${cu}**`
-          : `${fmt(n)} = ${sq.replace('^2', '')} × ${sq.replace('^2', '')} = **${sq}**`,
+          ? `${cu} = ${base} × ${base} × ${base} = ${base * base} × ${base} = ${fmt(n)}. C’est celle-là !`
+          : `${sq} = ${base} × ${base} = ${fmt(n)}. C’est celle-là !`,
+        `La bonne écriture est **${correct}**.`,
       ],
     };
   },
@@ -112,11 +121,11 @@ const carres: Skill = {
   id: 'm5-carres',
   title: 'Carrés de 0 à 12',
   lesson: {
-    body: [
-      'À savoir par cœur : 0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144.',
-      'Le carré de 7 se note 7^2 = 7 × 7 = 49.',
+    memo: [
+      'Le carré d’un nombre, c’est ce nombre multiplié **par lui-même** : 7^2 = 7 × 7 = 49.',
+      'Imagine un carré de 7 cases sur 7 cases : il contient 49 cases.',
+      'À connaître : 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144.',
     ],
-    example: { question: 'Quel nombre a pour carré 121 ?', steps: ['11 × 11 = 121.', 'C’est 11.'] },
     source: objective('Connaitre les carrés des entiers de 0 à 12'),
   },
   generate(rng, level) {
@@ -131,7 +140,12 @@ const carres: Skill = {
             `Le carré n’est pas le double : ${a * a} ÷ 2 ne convient pas, on cherche n tel que n × n = ${a * a}.`,
           ],
         ]),
-        steps: [`${a} × ${a} = ${a * a}, donc c’est **${a}**.`],
+        hint: `Cherche un nombre qui, multiplié par lui-même, donne ${a * a}.`,
+        steps: [
+          `On cherche un nombre qui, multiplié par lui-même, donne ${a * a}.`,
+          `On essaie : ${a - 1} × ${a - 1} = ${(a - 1) ** 2}, trop petit. ${a} × ${a} = ${a * a}, trouvé !`,
+          `C’est **${a}**.`,
+        ],
         targetSeconds: 10,
       };
     }
@@ -139,7 +153,8 @@ const carres: Skill = {
       prompt: `Calcule ${a}^2.`,
       answer: num(a * a),
       traps: traps(r(a * a), [[a * 2, `${a}^2 = ${a} × ${a}, pas ${a} × 2.`]]),
-      steps: [`${a}^2 = ${a} × ${a} = **${a * a}**`],
+      hint: `${a}^2, c’est ${a} multiplié par lui-même.`,
+      steps: [`${a}^2, c’est ${a} multiplié par lui-même (pas par 2 !).`, `${a}^2 = ${a} × ${a} = **${a * a}**`],
       targetSeconds: 6,
     };
   },
@@ -150,12 +165,11 @@ const expressionsPuissances: Skill = {
   title: 'Calculs avec des puissances',
   advice: 'brouillon',
   lesson: {
-    body: [
-      'Les puissances se calculent **avant** les multiplications et les additions (sauf parenthèses).',
-      '2 × 5^2 = 2 × 25 = 50, alors que (2 × 5)^2 = 10^2 = 100.',
-      'Avec une lettre : pour x = 3, x^2 + 1 = 3^2 + 1 = 9 + 1 = 10.',
+    memo: [
+      'Le petit exposant colle au nombre **juste à sa gauche**, et se calcule en premier (après les parenthèses).',
+      '2 × 5^2 : on calcule d’abord 5^2 = 25, puis 2 × 25 = 50.',
+      'Avec une lettre, on remplace : pour x = 3, x^2 + 1 = 3 × 3 + 1 = 10.',
     ],
-    example: { question: 'Calcule 3 + 4^2.', steps: ['4^2 = 16.', '3 + 16 = 19.'] },
     source: objective(
       'Calculer la valeur numérique d’expressions contenant des puissances simples, additions, soustractions et produits. Calculer la valeur d’une expression littérale contenant une puissance simple',
     ),
@@ -172,7 +186,12 @@ const expressionsPuissances: Skill = {
           [(a + b) ** 2, `La puissance porte seulement sur ${b} : on calcule ${b}^2 d’abord.`],
           [a + b * 2, `${b}^2 = ${b} × ${b}, pas ${b} × 2.`],
         ]),
-        steps: [`${b}^2 = ${b * b}.`, `${a} + ${b * b} = **${v}**`],
+        hint: `Le carré ne concerne que ${b}, et il se calcule en premier.`,
+        steps: [
+          `L’exposant ^2 colle seulement au ${b}, et il passe en premier.`,
+          `${b}^2 = ${b} × ${b} = ${b * b}. Le calcul devient ${a} + ${b * b}.`,
+          `${a} + ${b * b} = **${v}**`,
+        ],
       };
     }
     if (level === 2) {
@@ -184,7 +203,12 @@ const expressionsPuissances: Skill = {
           [(a * b) ** 2, `La puissance porte seulement sur ${b}, pas sur ${a} × ${b}.`],
           [a * b * 2, `${b}^2 = ${b * b}, pas ${b * 2}.`],
         ]),
-        steps: [`${b}^2 = ${b * b}.`, `${a} × ${b * b} = **${v}**`],
+        hint: `Le carré ne concerne que ${b}, et il se calcule avant la multiplication.`,
+        steps: [
+          `L’exposant ^2 colle seulement au ${b}, et il passe avant la multiplication.`,
+          `${b}^2 = ${b} × ${b} = ${b * b}. Le calcul devient ${a} × ${b * b}.`,
+          `${a} × ${b * b} = **${v}**`,
+        ],
       };
     }
     const x = rng.int(2, 6);
@@ -197,7 +221,12 @@ const expressionsPuissances: Skill = {
         [2 * x + k, `x^2 = x × x = ${x} × ${x}, pas 2 × ${x}.`],
         [(x + k) ** 2, 'La puissance porte seulement sur x.'],
       ]),
-      steps: [`On remplace x par ${x} : ${x}^2 + ${k}.`, `= ${x * x} + ${k} = **${v}**`],
+      hint: `Remplace x par ${x}, puis calcule le carré en premier.`,
+      steps: [
+        `On remplace x par ${x} : x^2 + ${k} devient ${x}^2 + ${k}.`,
+        `Le carré d’abord : ${x}^2 = ${x} × ${x} = ${x * x}.`,
+        `${x * x} + ${k} = **${v}**`,
+      ],
     };
   },
 };
@@ -279,14 +308,11 @@ const motifs: Skill = {
   id: 'm5-motifs',
   title: 'Suites de motifs',
   lesson: {
-    body: [
-      'On observe ce qui est **ajouté à chaque étape** (la régularité).',
-      'Si on ajoute 4 carreaux à chaque étape et qu’il y en a 5 à l’étape 1, l’étape n en a 4 × n + 1.',
+    memo: [
+      'Compte les carreaux des premières étapes, et regarde **combien on en ajoute à chaque fois**.',
+      'Exemple : 3, 5, 7… on ajoute 2 à chaque étape. Donc l’étape 10, c’est 2 × 10 + 1 = 21 (le « + 1 » est ce qu’il y a en plus au départ).',
+      'Pas besoin de dessiner les 10 étapes !',
     ],
-    example: {
-      question: 'Étape 1 : 3 carreaux, étape 2 : 5, étape 3 : 7. Combien à l’étape 10 ?',
-      steps: ['On ajoute 2 à chaque étape, et 3 = 2 × 1 + 1.', 'Étape n : 2 × n + 1. Étape 10 : 2 × 10 + 1 = 21.'],
-    },
     source: objective(
       'Identifier des régularités et poursuivre une suite de motifs évolutive. Trouver le nombre d’éléments pour une étape donnée',
     ),
@@ -307,9 +333,10 @@ const motifs: Skill = {
         ],
         [m.count(3) + (step - 3), `On ajoute ${m.growth} carreaux à chaque étape, pas 1.`],
       ]),
+      hint: `Compte les carreaux des étapes 1, 2 et 3 : combien en ajoute-t-on à chaque fois ?`,
       steps: [
-        `Étapes 1, 2, 3 : ${m.count(1)}, ${m.count(2)}, ${m.count(3)} carreaux — on ajoute **${m.growth}** à chaque étape.`,
-        `Étape n : ${formula}.`,
+        `On compte : ${m.count(1)} carreaux, puis ${m.count(2)}, puis ${m.count(3)}. On en ajoute **${m.growth}** à chaque étape.`,
+        `Donc à chaque étape n, il y a ${m.growth} × n carreaux${m.base ? `, plus ${m.base} qui ${m.base > 1 ? 'sont là' : 'est là'} dès le départ` : ''} : ${formula}. (Vérifie : étape 1 → ${m.growth} × 1${m.base ? ` + ${m.base}` : ''} = ${m.count(1)}.)`,
         `Étape ${step} : ${m.growth} × ${step}${m.base ? ` + ${m.base}` : ''} = **${v}**`,
       ],
       targetSeconds: level === 3 ? 60 : 30,
@@ -321,14 +348,10 @@ const formules: Skill = {
   id: 'm5-formules',
   title: 'Produire une formule',
   lesson: {
-    body: [
-      'Une lettre représente un nombre quelconque. Le double de x : 2 × x (noté 2x) ; son carré : x × x = x^2 ; son successeur : x + 1.',
-      'Périmètre d’un carré de côté c : 4 × c ; aire : c × c = c^2.',
+    memo: [
+      'Une lettre, c’est un nombre qu’on ne connaît pas encore. Essaie avec un vrai nombre pour vérifier !',
+      'Avec x = 5 : le double, c’est 2 × 5 = 10 → 2 × x. Le carré, c’est 5 × 5 = 25 → x^2. Le suivant, c’est 6 → x + 1.',
     ],
-    example: {
-      question: 'Le triple d’un nombre n, augmenté de 5 ?',
-      steps: ['Le triple : 3 × n.', 'Augmenté de 5 : 3 × n + 5.'],
-    },
     source: objective('Produire des formules (double, triple, carré, successeur, prédécesseur, aire, périmètre, etc.)'),
   },
   generate(rng, level) {
@@ -404,7 +427,19 @@ const formules: Skill = {
     return {
       prompt: `Quelle expression donne ${f.text} ?`,
       ...choice(rng, f.correct, f.wrong),
-      steps: [`${f.text.charAt(0).toUpperCase()}${f.text.slice(1)} : **${f.correct}**.`],
+      hint: 'Essaie avec un vrai nombre à la place de la lettre (par exemple 5) : quelle expression donne le bon résultat ?',
+      steps: [
+        `Astuce : on essaie avec un vrai nombre à la place de la lettre, par exemple 5.`,
+        `${f.text.charAt(0).toUpperCase()}${f.text
+          .slice(1)
+          .replace(/ (x|n|c)\b/, ' 5')
+          .replace('L et de largeur ℓ', '5 et de largeur 3')} : ${f.correct
+          .replace(/\bx\b|\bn\b|\bc\b/g, '5')
+          .replace('L', '5')
+          .replace('ℓ', '3')
+          .replace('5^2', '5 × 5')}.`,
+        `Avec la lettre, ça s’écrit **${f.correct}**.`,
+      ],
     };
   },
 };
@@ -414,11 +449,11 @@ const substitution: Skill = {
   title: 'Calculer une expression littérale',
   advice: 'brouillon',
   lesson: {
-    body: [
-      'On remplace la lettre par sa valeur, en **rétablissant le signe ×** : pour x = 4, 3x = 3 × 4 = 12 (et pas 34 !).',
-      'Puis on respecte les priorités opératoires.',
+    memo: [
+      'Quand un nombre est collé à une lettre, il y a un × caché : 3x veut dire 3 × x.',
+      'Pour x = 4 : 3x = 3 × 4 = 12, et surtout pas « 34 » !',
+      'Ensuite, on respecte l’ordre : × avant +.',
     ],
-    example: { question: 'Calcule 5x − 7 pour x = 3.', steps: ['5 × 3 − 7.', '= 15 − 7 = 8.'] },
     source: objective('Calculer la valeur d’une expression littérale par substitution'),
   },
   generate(rng, level) {
@@ -434,7 +469,12 @@ const substitution: Skill = {
         traps: traps(r(v), [
           [a * x + c, `${a}(x + ${c}) = ${a} × (x + ${c}) : le ${a} multiplie toute la parenthèse.`],
         ]),
-        steps: [`On remplace : ${a} × (${x} + ${c}).`, `= ${a} × ${x + c} = **${v}**`],
+        hint: `${a}(x + ${c}) veut dire ${a} × (x + ${c}). Remplace x, puis calcule la parenthèse d’abord.`,
+        steps: [
+          `${a}(x + ${c}) cache un × : c’est ${a} × (x + ${c}).`,
+          `On remplace x par ${x} : ${a} × (${x} + ${c}). La parenthèse d’abord : ${x} + ${c} = ${x + c}.`,
+          `${a} × ${x + c} = **${v}**`,
+        ],
       };
     }
     const x: Rational = level === 2 ? dec(rng.int(11, 49), 1) : r(rng.int(2, 9));
@@ -451,9 +491,11 @@ const substitution: Skill = {
           : []),
         [mul(r(a), add(x, r(b))), 'La multiplication se fait avant l’addition.'],
       ]),
+      hint: `${a}x cache un × : c’est ${a} × x. Remplace x par ${fmt(x)}.`,
       steps: [
-        `On remplace x par ${fmt(x)} : ${a} × ${fmt(x)} + ${b}.`,
-        `= ${fmt(mul(r(a), x))} + ${b} = **${fmt(v)}**`,
+        `${a}x veut dire ${a} × x (il y a un × caché).`,
+        `On remplace x par ${fmt(x)} : ${a} × ${fmt(x)} + ${b}. La multiplication d’abord : ${a} × ${fmt(x)} = ${fmt(mul(r(a), x))}.`,
+        `${fmt(mul(r(a), x))} + ${b} = **${fmt(v)}**`,
       ],
     };
   },
@@ -463,14 +505,10 @@ const testerEgalite: Skill = {
   id: 'm5-tester-egalite',
   title: 'Tester une égalité',
   lesson: {
-    body: [
-      'Pour tester une égalité pour une valeur de x, on calcule **séparément** chaque membre, puis on compare.',
-      'Si les deux résultats sont égaux, l’égalité est vraie pour cette valeur ; sinon elle est fausse.',
+    memo: [
+      'Une égalité, c’est comme une balance : on calcule ce qu’il y a à gauche, puis ce qu’il y a à droite.',
+      'Si les deux côtés donnent le même nombre, la balance est équilibrée : c’est **vrai**. Sinon, c’est faux.',
     ],
-    example: {
-      question: '3x + 2 = 5x − 4 pour x = 3 ?',
-      steps: ['À gauche : 3 × 3 + 2 = 11.', 'À droite : 5 × 3 − 4 = 11.', '11 = 11 : l’égalité est vraie pour x = 3.'],
-    },
     source: objective(
       'Tester si une égalité entre expressions algébriques comportant une variable est vraie ou fausse',
     ),
@@ -490,10 +528,14 @@ const testerEgalite: Skill = {
     return {
       prompt: `L’égalité ${a}x + ${b} = ${c}x ${sign} est-elle vraie pour x = ${x} ?`,
       ...trueFalse(isTrue, `À gauche : ${a} × ${x} + ${b} = ${left} ; à droite : ${c} × ${x} ${sign} = ${right}.`),
+      hint: `Remplace x par ${x} à gauche, puis à droite. Les deux côtés donnent-ils le même nombre ?`,
       steps: [
-        `Membre de gauche : ${a} × ${x} + ${b} = ${left}.`,
-        `Membre de droite : ${c} × ${x} ${sign} = ${right}.`,
-        isTrue ? `${left} = ${right} : **vraie** pour x = ${x}.` : `${left} ≠ ${right} : **fausse** pour x = ${x}.`,
+        `Comme une balance : on calcule chaque côté séparément, en remplaçant x par ${x}.`,
+        `À gauche : ${a} × ${x} + ${b} = ${a * x} + ${b} = ${left}.`,
+        `À droite : ${c} × ${x} ${sign} = ${c * x} ${sign} = ${right}.`,
+        isTrue
+          ? `${left} = ${right} : la balance est équilibrée, c’est **vrai**.`
+          : `${left} ≠ ${right} : la balance penche, c’est **faux**.`,
       ],
       targetSeconds: 40,
     };
@@ -504,13 +546,11 @@ const natureLitterale: Skill = {
   id: 'm5-nature-litterale',
   title: 'Somme ou produit (expressions)',
   lesson: {
-    body: [
-      'Comme pour les nombres, une expression porte le nom de sa **dernière opération** : 3x + 2 est une somme ; 5(x + 4) est un produit.',
+    memo: [
+      'Imagine que tu remplaces x par un nombre et que tu fais le calcul. **La dernière opération** donne le nom.',
+      '3x + 2 : on fait 3 × x, puis + 2. Dernière opération + → une **somme**.',
+      '5(x + 4) : on fait la parenthèse, puis × 5. Dernière opération × → un **produit**.',
     ],
-    example: {
-      question: '2(x − 1) est-il une somme ou un produit ?',
-      steps: ['On calcule x − 1, puis on multiplie par 2 : dernière opération ×.', 'C’est un produit.'],
-    },
     source: objective('Déterminer si une expression littérale est une somme ou un produit'),
   },
   generate(rng, level) {
@@ -539,7 +579,12 @@ const natureLitterale: Skill = {
         ],
         true,
       ),
-      steps: [`Dernière opération : ${f.sum ? '+' : '×'}. C’est **${correct.toLowerCase()}**.`],
+      hint: 'Remplace x par un nombre et fais le calcul dans ta tête : quelle opération fais-tu en dernier ?',
+      steps: [
+        `On imagine le calcul avec un nombre à la place de x, en respectant les priorités.`,
+        `Dans ${f.e}, l’opération faite en dernier est ${f.sum ? '+' : '×'}.`,
+        `${f.sum ? '+' : '×'} en dernier : c’est **${correct.toLowerCase()}**.`,
+      ],
       targetSeconds: 10,
     };
   },
@@ -550,11 +595,10 @@ const developper: Skill = {
   title: 'Développer et factoriser',
   advice: 'brouillon',
   lesson: {
-    body: [
-      '**Développer** : k(a + b) = ka + kb ; k(a − b) = ka − kb (on distribue k à chaque terme).',
-      '**Factoriser** : c’est l’inverse, on fait apparaître le facteur commun : 4x + 12 = 4 × x + 4 × 3 = 4(x + 3).',
+    memo: [
+      '**Développer** 3(x + 5) : le 3 distribue une multiplication à **chacun** dans la parenthèse : 3 × x + 3 × 5 = 3x + 15.',
+      '**Factoriser**, c’est l’inverse : dans 4x + 12, on repère que 4 est dans les deux (12 = 4 × 3), donc 4x + 12 = 4(x + 3).',
     ],
-    example: { question: 'Développe 3(x + 5).', steps: ['3 × x + 3 × 5.', '= 3x + 15.'] },
     source: objective(
       'Exploiter les relations k(a + b) = ka + kb ou k(a – b) = ka – kb pour factoriser, ou développer une expression littérale',
     ),
@@ -579,7 +623,12 @@ const developper: Skill = {
           },
           { label: `x(${k} ${op} ${k * b})`, why: 'x n’est pas un facteur du deuxième terme.' },
         ]),
-        steps: [`${k}x ${op} ${k * b} = ${k} × x ${op} ${k} × ${b}.`, `Facteur commun ${k} : **${correct}**.`],
+        hint: `Quel nombre se retrouve dans ${k}x et dans ${k * b} ? (${k * b} = ${k} × …)`,
+        steps: [
+          `On cherche ce qui est commun aux deux morceaux : ${k}x = ${k} × x et ${k * b} = ${k} × ${b}.`,
+          `Le ${k} est dans les deux : on le sort devant une parenthèse.`,
+          `${k}x ${op} ${k * b} = **${correct}** (vérifie en développant : ${k} × x ${op} ${k} × ${b}).`,
+        ],
       };
     }
     const correct = `${k}x ${op} ${k * b}`;
@@ -590,7 +639,12 @@ const developper: Skill = {
         { label: `${k + b}x`, why: `On ne peut pas additionner ${k}x et ${b} : ce ne sont pas des termes semblables.` },
         { label: `${k}x ${op} ${k + b}`, why: `${k} × ${b} = ${k * b}, pas ${k + b}.` },
       ]),
-      steps: [`${k}(x ${op} ${b}) = ${k} × x ${op} ${k} × ${b}.`, `= **${correct}**`],
+      hint: `Le ${k} doit multiplier chacun des deux termes dans la parenthèse : x et ${b}.`,
+      steps: [
+        `Le ${k} devant la parenthèse multiplie **chacun** des termes à l’intérieur : x et ${b}.`,
+        `${k} × x = ${k}x et ${k} × ${b} = ${k * b}.`,
+        `${k}(x ${op} ${b}) = **${correct}**`,
+      ],
     };
   },
 };
@@ -600,14 +654,11 @@ const reduire: Skill = {
   title: 'Réduire une expression',
   advice: 'brouillon',
   lesson: {
-    body: [
-      'On regroupe les termes « en x » ensemble et les nombres ensemble : 3x + 5x = 8x (3 x plus 5 x font 8 x).',
-      '2x + 7 + 4x − 3 = 6x + 4. On ne mélange jamais les x et les nombres seuls.',
+    memo: [
+      'Pense à des fruits : 3x + 5x, c’est 3 pommes + 5 pommes = 8 pommes → 8x.',
+      'Dans 2x + 7 + 4x − 3, on range : les pommes (2x + 4x = 6x) d’un côté, les nombres seuls (7 − 3 = 4) de l’autre → 6x + 4.',
+      'On ne mélange jamais les pommes et les nombres seuls !',
     ],
-    example: {
-      question: 'Réduis 5x + 2 + 3x + 6.',
-      steps: ['Termes en x : 5x + 3x = 8x.', 'Nombres : 2 + 6 = 8.', 'Résultat : 8x + 8.'],
-    },
     source: objective('Réduire une expression littérale de la forme ax + b, où a et b sont des nombres décimaux'),
   },
   generate(rng, level) {
@@ -621,7 +672,12 @@ const reduire: Skill = {
           { label: `${a + c}x^2`, why: 'On additionne des x (comme 3 pommes + 5 pommes) : x reste x, pas x^2.' },
           { label: `${a * c}x`, why: `${a} x plus ${c} x : on additionne ${a} et ${c}.` },
         ]),
-        steps: [`${a}x + ${c}x = (${a} + ${c})x = **${correct}**`],
+        hint: `Pense à des pommes : ${a} pommes + ${c} pommes = ?`,
+        steps: [
+          `x, c’est comme une pomme : ${a}x + ${c}x, c’est ${a} pommes + ${c} pommes.`,
+          `${a} + ${c} = ${a + c} pommes. On ne multiplie pas, et x reste x (pas x^2).`,
+          `${a}x + ${c}x = **${correct}**`,
+        ],
         targetSeconds: 10,
       };
     }
@@ -641,10 +697,11 @@ const reduire: Skill = {
         { label: `${fmt(xs)}x + ${minus ? b + d : Math.abs(b - d)}`, why: `Attention au signe devant ${d}.` },
         { label: `${fmt(xs)}x^2 + ${cst}`, why: 'x + x = 2x, pas x^2 : x reste x.' },
       ]),
+      hint: 'Range d’un côté les termes avec x, de l’autre les nombres seuls.',
       steps: [
-        `Termes en x : ${fmt(A)}x + ${fmt(C)}x = ${fmt(xs)}x.`,
-        `Nombres : ${b} ${minus ? '−' : '+'} ${d} = ${cst}.`,
-        `Résultat : **${correct}**`,
+        `On range comme des fruits : les « x » ensemble, les nombres seuls ensemble.`,
+        `Les x : ${fmt(A)}x + ${fmt(C)}x = ${fmt(xs)}x. Les nombres : ${b} ${minus ? '−' : '+'} ${d} = ${cst}.`,
+        `On ne peut pas mélanger les deux : **${correct}**`,
       ],
     };
   },
@@ -655,13 +712,11 @@ const equations: Skill = {
   title: 'Équations ax = c et x + b = c',
   advice: 'brouillon',
   lesson: {
-    body: [
-      'La lettre est une **inconnue** : on cherche le nombre qui rend l’égalité vraie.',
-      'x + b = c : on fait l’opération inverse, x = c − b.',
-      'a × x = c : on divise, x = c ÷ a.',
-      'On vérifie toujours en remplaçant x par la solution trouvée.',
+    memo: [
+      'x est un nombre caché. On cherche lequel rend l’égalité vraie.',
+      'x + 5 = 12 : quel nombre plus 5 fait 12 ? On fait l’inverse : 12 − 5 = 7.',
+      '4x = 28 : 4 fois quel nombre fait 28 ? On fait l’inverse : 28 ÷ 4 = 7. Puis on vérifie : 4 × 7 = 28 ✔',
     ],
-    example: { question: 'Résous 4x = 26.', steps: ['x = 26 ÷ 4 = 6,5.', 'Vérification : 4 × 6,5 = 26.'] },
     source: objective(
       'Résoudre des équations du type ax = c ou x + b = c par des méthodes arithmétiques s’appuyant sur les opérations inverses',
     ),
@@ -679,7 +734,12 @@ const equations: Skill = {
           [sub(c, r(a)), `${a}x veut dire ${a} × x : on divise par ${a}, on ne soustrait pas.`],
           [mul(c, r(a)), `On fait l’opération inverse de × ${a} : ÷ ${a}.`],
         ]),
-        steps: [`x = ${fmt(c)} ÷ ${a} = **${fmt(x)}**`, `Vérification : ${a} × ${fmt(x)} = ${fmt(c)}.`],
+        hint: `${a}x veut dire ${a} × x. Quelle est l’opération inverse de « × ${a} » ?`,
+        steps: [
+          `${a}x = ${fmt(c)} veut dire : ${a} fois quel nombre fait ${fmt(c)} ?`,
+          `Pour défaire « × ${a} », on fait l’inverse : on divise par ${a}. ${fmt(c)} ÷ ${a} = ${fmt(x)}.`,
+          `On vérifie : ${a} × ${fmt(x)} = ${fmt(c)} ✔. Donc x = **${fmt(x)}**.`,
+        ],
       };
     }
     const b: Rational = level === 3 ? dec(rng.int(11, 99), 1) : r(rng.int(2, 30));
@@ -689,7 +749,12 @@ const equations: Skill = {
       prompt: `Résous : x + ${fmt(b)} = ${fmt(c)}`,
       answer: num(x),
       traps: traps(x, [[add(c, b), `L’opération inverse de + ${fmt(b)} est − ${fmt(b)}.`]]),
-      steps: [`x = ${fmt(c)} − ${fmt(b)} = **${fmt(x)}**`, `Vérification : ${fmt(x)} + ${fmt(b)} = ${fmt(c)}.`],
+      hint: `Quel nombre plus ${fmt(b)} fait ${fmt(c)} ? Fais l’opération inverse de « + ${fmt(b)} ».`,
+      steps: [
+        `x + ${fmt(b)} = ${fmt(c)} veut dire : quel nombre plus ${fmt(b)} fait ${fmt(c)} ?`,
+        `Pour défaire « + ${fmt(b)} », on fait l’inverse : on enlève ${fmt(b)}. ${fmt(c)} − ${fmt(b)} = ${fmt(x)}.`,
+        `On vérifie : ${fmt(x)} + ${fmt(b)} = ${fmt(c)} ✔. Donc x = **${fmt(x)}**.`,
+      ],
       targetSeconds: 25,
     };
   },

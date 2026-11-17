@@ -1,4 +1,4 @@
-import { fmt, frac, type Question } from '@questeo/content';
+import { fmt, frac, type Question, type Response } from '@questeo/content';
 
 /** Bonne réponse en texte enrichi (pour la correction). */
 export function formatAnswer(q: Question): string {
@@ -16,6 +16,23 @@ export function formatAnswer(q: Question): string {
         : 'le nœud entouré en vert';
     case 'text':
       return a.accepted[0] ?? '';
+  }
+}
+
+/** Réponse donnée par l'élève, en texte enrichi (« Tu as répondu … »). */
+export function formatResponse(q: Question, r: Response): string {
+  const unit = q.answer.kind === 'number' && q.answer.unit ? ` ${q.answer.unit}` : '';
+  switch (r.kind) {
+    case 'number':
+      return `${r.text}${unit}`;
+    case 'fraction':
+      return r.den.trim() === '' || r.den === '1' ? r.num : `{${r.num}/${r.den}}`;
+    case 'choice':
+      return q.answer.kind === 'choice' ? (q.answer.options[r.index] ?? '') : '';
+    case 'point':
+      return q.figure?.kind === 'grid' && q.figure.axes ? `le point (${fmt(r.x)} ; ${fmt(r.y)})` : 'ce nœud';
+    case 'text':
+      return r.text;
   }
 }
 

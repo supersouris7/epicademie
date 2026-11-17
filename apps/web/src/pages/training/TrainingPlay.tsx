@@ -18,6 +18,7 @@ import {
 import { accord, type Gender, type Profile, type SessionSummary } from '@questeo/shared';
 import { finishSession, markConfused, skillsKey, startSession, submitAnswer, useSkills } from '../../api/play.ts';
 import { GameButton } from '../../components/game/GameButton.tsx';
+import { GameIcon } from '../../components/game/GameIcon.tsx';
 import { Confetti } from '../../components/Confetti.tsx';
 import { ProgressBar } from '../../components/game/ProgressBar.tsx';
 import { ResourceCounter } from '../../components/game/ResourceCounter.tsx';
@@ -33,7 +34,7 @@ import { Questy } from '../../components/mascot/Questy.tsx';
 import type { MoodId } from '../../components/mascot/moods.ts';
 import { AnswerInput } from '../../components/play/AnswerInput.tsx';
 import { Feedback } from '../../components/play/Feedback.tsx';
-import { NotUnderstood } from '../../components/play/NotUnderstood.tsx';
+import { Memo } from '../../components/play/Memo.tsx';
 import { ConfirmDialog } from '../../components/ConfirmDialog.tsx';
 import { PlayDock, type DockTab } from '../../components/play/PlayDock.tsx';
 import { Brouillon, type Stroke } from '../../components/tools/Brouillon.tsx';
@@ -67,10 +68,25 @@ interface Current {
 
 interface Answered {
   readonly correct: boolean;
+  /** Bonne réponse trouvée au 2e essai, grâce à l'indice. */
+  readonly retried?: boolean;
   readonly why?: string;
+  /** Dernière réponse donnée (affichée dans l'explication). */
+  readonly given?: Response;
   readonly xp: number;
   readonly streak: number;
 }
+
+/** 1re erreur : Questy dit ce qui cloche et donne un indice, l'enfant réessaie la même question. */
+interface Retry {
+  readonly why?: string;
+  /** Option de QCM déjà essayée (grisée au 2e essai). */
+  readonly excluded?: number;
+  readonly nonce: number;
+}
+
+/** Un 2e essai n'a pas de sens quand il ne reste qu'une option (Vrai / Faux, < / >…). */
+const canRetry = (q: Question) => q.answer.kind !== 'choice' || q.answer.options.length > 2;
 
 /** Partie d'Entraînement : 10 questions + variantes, correction après chaque réponse. */
 export function TrainingPlay({ profile }: { readonly profile: Profile }) {
@@ -111,7 +127,8 @@ function Game({
   const [current, setCurrent] = useState<Current | null>(null);
   const [answered, setAnswered] = useState<Answered | null>(null);
   const [picked, setPicked] = useState<{ x: number; y: number } | null>(null);
-  const [lesson, setLesson] = useState(false);
+  const [memo, setMemo] = useState(false);
+  const [retry, setRetry] = useState<Retry | null>(null);
   const [tab, setTab] = useState<DockTab>('reponse');
   /** Outils déjà ouverts sur cette question (l'outil conseillé cesse de briller). */
   const [opened, setOpened] = useState<ReadonlySet<DockTab>>(new Set());
@@ -140,6 +157,7 @@ function Game({
       const plan = nextQuestion(t, states, today, Math.random(), randomSeed() % 2_000_000_000);
       setCurrent({ plan, question: generate(plan.skillId, plan.level, plan.seed), shownAt: performance.now() });
       setAnswered(null);
+      setRetry(null);
       setPicked(null);
       setStrokes([]);
       setCalc(EMPTY_CALC);
@@ -177,6 +195,14 @@ function Game({
       showToast('Écris un nombre valide (ex. 3,5 ou −2).');
       return;
     }
+    // 2e essai : il ne compte pas dans le score (la 1re réponse est déjà enregistrée), il sert à apprendre.
+    if (retry) {
+      playSound(result.correct ? 'correct' : 'wrong');
+      setAnswered({ correct: result.correct, retried: true, why: result.why, given: response, xp: 0, streak: 0 });
+      // Erreur corrigée seul avec l'indice : pas besoin d'une question similaire.
+      if (result.correct) setTraining((t) => ({ ...t, pendingVariant: null }));
+      return;
+    }
     const durationMs = Math.round(performance.now() - current.shownAt);
     const newStreak = result.correct ? streak + 1 : 0;
     const xp = xpForAnswer({
@@ -188,7 +214,16 @@ function Game({
     });
     setStreak(newStreak);
     setXpTotal((v) => v + xp);
-    setAnswered({ correct: result.correct, why: result.why, xp, streak: newStreak });
+    if (!result.correct && canRetry(current.question)) {
+      setRetry({
+        why: result.why,
+        excluded: response.kind === 'choice' ? response.index : undefined,
+        nonce: Date.now(),
+      });
+      setPicked(null);
+      setFill(null);
+      setTab('reponse');
+    } else setAnswered({ correct: result.correct, why: result.why, given: response, xp, streak: newStreak });
     playSound(result.correct ? (newStreak > 0 && newStreak % 5 === 0 ? 'combo' : 'correct') : 'wrong');
     setTraining((t) => recordAnswer(t, current.plan, result.correct));
     const { plan } = current;
@@ -283,9 +318,11 @@ function Game({
         }
       : undefined;
   const convState = conv ?? emptyConversion(kind);
+  // Explication après une erreur : elle prend la place des outils et s'agrandit (l'énoncé reste en haut).
+  const explaining = answered !== null && !answered.correct;
 
   const reportConfused = () => {
-    setLesson(true);
+    setMemo(true);
     if (!current) return;
     const id = current.plan.skillId;
     if (sessionId && !confusedSent.current.has(id)) {
@@ -311,7 +348,7 @@ function Game({
           max={TRAINING_LENGTH}
           label="Progression de la série"
           segments={TRAINING_LENGTH}
-          text={`${Math.min(done + (answered ? 0 : 1), TRAINING_LENGTH)}/${TRAINING_LENGTH}`}
+          text={`${Math.min(done + (answered || retry ? 0 : 1), TRAINING_LENGTH)}/${TRAINING_LENGTH}`}
         />
         <ResourceCounter icon="icons-resources-xp" value={xpTotal} label={`${xpTotal} XP gagnés`} />
       </header>
@@ -333,7 +370,9 @@ function Game({
             className="side:grid side:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] flex min-h-0 flex-1 flex-col gap-3"
           >
             {/* Énoncé et figure : jamais recouverts par les outils. */}
-            <section className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pb-1 [&>*]:shrink-0">
+            <section
+              className={`flex min-h-0 flex-col gap-3 overflow-y-auto pb-1 [&>*]:shrink-0 ${explaining ? 'side:max-h-none max-h-[38dvh] flex-none' : 'flex-1'}`}
+            >
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-muted text-sm font-bold">{skill?.title}</span>
                 {current.plan.variant && (
@@ -346,7 +385,30 @@ function Game({
               <h1 className="text-2xl leading-snug font-bold sm:text-3xl">
                 <MathText text={current.question.prompt} />
               </h1>
-              {advice && !answered && (
+              {retry && !answered && (
+                <motion.p
+                  key={retry.nonce}
+                  initial={{ x: -8 }}
+                  animate={{ x: [0, -8, 8, -4, 4, 0] }}
+                  className="flex items-start gap-2 text-base font-bold"
+                  role="status"
+                >
+                  <span className="shrink-0">
+                    <Questy mood="wink" size={44} />
+                  </span>
+                  <span className="cartoon bg-[color-mix(in_srgb,var(--danger)_14%,var(--surface))] px-3 py-2">
+                    {retry.why ? <MathText text={retry.why} /> : 'Ce n’est pas ça…'}
+                    <span className="mt-1 flex items-start gap-1.5">
+                      <GameIcon id="icons-navigation-hint" size="xs" />
+                      <span>
+                        <strong>Indice :</strong> <MathText text={current.question.hint} />
+                      </span>
+                    </span>
+                    <span className="text-muted mt-1 block">Essaie encore !</span>
+                  </span>
+                </motion.p>
+              )}
+              {advice && !answered && !retry && (
                 <p className="flex items-center gap-2 text-base font-bold" role="note">
                   <Questy mood={advice === 'calculatrice' ? 'happy' : 'wink'} size={40} />
                   <span className="cartoon bg-surface-2 px-3 py-1.5">
@@ -372,17 +434,21 @@ function Game({
             </section>
 
             {/* Écran coupé : pavé et outils en bas (portrait) ou sur le côté (paysage). */}
-            <section className="side:h-[min(100%,560px)] side:self-center flex h-[clamp(280px,40dvh,390px)] min-h-0 shrink-0 flex-col">
+            <section
+              className={`flex min-h-0 shrink-0 flex-col ${explaining ? 'side:h-full min-h-[clamp(280px,40dvh,390px)] flex-1' : 'side:h-[min(100%,560px)] side:self-center h-[clamp(280px,40dvh,390px)]'}`}
+            >
               {answered ? (
                 <Feedback
                   question={current.question}
                   correct={answered.correct}
+                  retried={answered.retried}
                   why={answered.why}
+                  given={answered.given}
                   xp={answered.xp}
                   streak={answered.streak}
                   variantNext={training.pendingVariant !== null}
                   gender={profile.gender}
-                  onLesson={reportConfused}
+                  onMemo={reportConfused}
                   onNext={() => void next()}
                 />
               ) : (
@@ -395,7 +461,8 @@ function Game({
                 >
                   <div className={activeTab === 'reponse' ? 'flex min-h-0 flex-1 flex-col' : 'hidden'}>
                     <AnswerInput
-                      key={`${current.plan.seed}-${current.plan.variant}-${fill?.nonce ?? 0}`}
+                      key={`${current.plan.seed}-${current.plan.variant}-${fill?.nonce ?? 0}-${retry?.nonce ?? 0}`}
+                      excluded={retry?.excluded}
                       question={current.question}
                       disabled={false}
                       onSubmit={submit}
@@ -444,14 +511,7 @@ function Game({
           </div>
         </div>
       )}
-      {lesson && skill && current && (
-        <NotUnderstood
-          skill={skill}
-          level={current.plan.level}
-          seed={current.plan.seed}
-          onClose={() => setLesson(false)}
-        />
-      )}
+      {memo && skill && <Memo skill={skill} onClose={() => setMemo(false)} />}
       {confirmQuit && (
         <ConfirmDialog
           title="Quitter la partie ?"

@@ -78,3 +78,53 @@ export function measureKind(prompt: string, answerUnit?: string): ConversionKind
   if (afterNumber(LENGTH_UNIT)) return 'longueur';
   return null;
 }
+
+/** Case des unités d'une unité dans le tableau (« cm^2 » : 2e case de sa colonne ; « L » : sous dm^3). */
+export function unitCell(kind: ConversionKind, unit: string): number | null {
+  let start = 0;
+  for (const c of LAYOUTS[kind]) {
+    if (c.unit === unit) return start + c.cells - 1;
+    const k = c.capacity?.indexOf(unit) ?? -1;
+    if (k >= 0 && unit !== '') return start + k;
+    start += c.cells;
+  }
+  return null;
+}
+
+export interface ConversionDemo {
+  /** Nombre de cases ajoutées à gauche et à droite du tableau pour loger tous les chiffres. */
+  readonly padLeft: number;
+  readonly padRight: number;
+  /** Le nombre placé sous son unité de départ, puis lu dans l'unité d'arrivée (zéros ajoutés). */
+  readonly before: ConversionState;
+  readonly after: ConversionState;
+}
+
+/**
+ * Démonstration d'une conversion : `value` (écrit « 2,8 ») placé avec son chiffre des unités sous `from`,
+ * puis la virgule déplacée après la case des unités de `to`, les cases vides comblées par des zéros.
+ * Les indices des états tiennent compte des cases ajoutées (padLeft).
+ */
+export function conversionDemo(kind: ConversionKind, value: string, from: string, to: string): ConversionDemo | null {
+  const fromCell = unitCell(kind, from);
+  const toCell = unitCell(kind, to);
+  if (fromCell === null || toCell === null) return null;
+  const [int = '0', dec = ''] = value.replace('−', '').split(',');
+  const digits = (int + dec).split('');
+  const first = fromCell - int.length + 1;
+  const last = fromCell + dec.length;
+  const total = LAYOUTS[kind].reduce((s, c) => s + c.cells, 0);
+  const padLeft = Math.max(0, -Math.min(first, toCell));
+  const padRight = Math.max(0, Math.max(last, toCell) - (total - 1));
+  const size = padLeft + total + padRight;
+  const before: (string | null)[] = Array.from({ length: size }, () => null);
+  digits.forEach((d, i) => (before[padLeft + first + i] = d));
+  const after = [...before];
+  for (let i = Math.min(first, toCell); i <= Math.max(last, toCell); i++) after[padLeft + i] ??= '0';
+  return {
+    padLeft,
+    padRight,
+    before: { digits: before, comma: padLeft + fromCell, selected: -1 },
+    after: { digits: after, comma: padLeft + toCell, selected: -1 },
+  };
+}

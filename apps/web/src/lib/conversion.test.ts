@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { emptyConversion, measureKind, readConversion, type ConversionState } from './conversion.ts';
+import { conversionDemo, emptyConversion, measureKind, readConversion, type ConversionState } from './conversion.ts';
 
 const table = (cells: Record<number, string>, comma: number | null): ConversionState => {
   const empty = emptyConversion('longueur');
@@ -30,5 +30,23 @@ describe('grandeur de la question', () => {
   it('pas de mesure : calculs, lettres', () => {
     expect(measureKind('Calcule 3 × m pour m = 4.')).toBeNull();
     expect(measureKind('Calcule 12 + 7.')).toBeNull();
+  });
+});
+
+describe('démonstration de conversion', () => {
+  it('place le nombre puis le lit dans l’unité demandée', () => {
+    const d = conversionDemo('longueur', '3,5', 'm', 'cm');
+    expect(d && readConversion(d.before)).toBe('3,5');
+    expect(d && readConversion(d.after)).toBe('350');
+    const v = conversionDemo('volume', '2,8', 'mL', 'dm^3');
+    expect(v?.padRight).toBe(1);
+    expect(v && readConversion(v.after)).toBe('0,0028');
+    const a = conversionDemo('aire', '450', 'cm^2', 'dm^2');
+    expect(a && readConversion(a.after)).toBe('4,5');
+    const l = conversionDemo('volume', '5', 'L', 'cL');
+    expect(l && readConversion(l.after)).toBe('500');
+  });
+  it('unité inconnue', () => {
+    expect(conversionDemo('longueur', '3', 'm', 'L')).toBeNull();
   });
 });

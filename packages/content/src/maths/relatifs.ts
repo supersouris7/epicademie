@@ -12,22 +12,18 @@ const vocab: Skill = {
   id: 'm5-relatifs-vocab',
   title: 'Opposé, valeur absolue, signe',
   lesson: {
-    body: [
-      'L’**opposé** de a est le nombre −a : même distance à zéro, de l’autre côté (opposé de −7 : 7).',
-      'La **valeur absolue** d’un nombre est sa distance à zéro, toujours positive : |−3,5| = 3,5.',
-      'Un nombre est **positif** s’il est ≥ 0, **strictement positif** s’il est > 0. Zéro est à la fois positif et négatif, mais ni strictement positif ni strictement négatif.',
+    memo: [
+      'L’**opposé**, c’est le nombre « en miroir » de l’autre côté de zéro : l’opposé de −7 est 7, l’opposé de 3 est −3.',
+      'La **valeur absolue**, c’est la distance jusqu’à zéro. Une distance n’est jamais négative : la valeur absolue de −3,5 est 3,5.',
+      'Zéro est positif **et** négatif, mais pas « strictement » : strictement veut dire « différent de zéro ».',
     ],
-    example: {
-      question: 'Opposé et valeur absolue de −4,2 ?',
-      steps: ['Opposé : 4,2.', 'Valeur absolue : 4,2 (distance à zéro).'],
-    },
     source: objective(
       'Définir l’opposé et la valeur absolue d’un nombre. Définir la notion de nombre positif, strictement positif, négatif, strictement négatif',
     ),
   },
   generate(rng, level) {
     if (level === 3) {
-      const statements: { text: string; isTrue: boolean; why: string }[] = [
+      const statements: { text: string; isTrue: boolean; why: string; hint?: string }[] = [
         {
           text: '0 est un nombre positif.',
           isTrue: true,
@@ -42,20 +38,28 @@ const vocab: Skill = {
           text: `${fmt(dec(-rng.int(11, 99), 1))} est strictement négatif.`,
           isTrue: true,
           why: 'Il est inférieur à 0 : il est strictement négatif.',
+          hint: 'Ce nombre est-il plus petit que 0 ?',
         },
         {
           text: 'La valeur absolue d’un nombre peut être négative.',
           isTrue: false,
           why: 'La valeur absolue est une distance : elle est toujours positive.',
+          hint: 'La valeur absolue, c’est une distance. Une distance peut-elle être négative ?',
         },
         {
           text: 'L’opposé d’un nombre négatif est positif.',
           isTrue: true,
           why: 'L’opposé change le signe : l’opposé de −5 est 5.',
+          hint: 'Prends un exemple : quel est l’opposé de −5 ?',
         },
       ];
       const s = rng.pick(statements);
-      return { prompt: `Vrai ou faux : ${s.text}`, ...trueFalse(s.isTrue, s.why), steps: [s.why] };
+      return {
+        prompt: `Vrai ou faux : ${s.text}`,
+        ...trueFalse(s.isTrue, s.why),
+        hint: s.hint ?? 'Relis bien chaque mot : « strictement » veut dire « sans le zéro ».',
+        steps: [s.why, `Donc c’est **${s.isTrue ? 'vrai' : 'faux'}**.`],
+      };
     }
     const x = relatif(rng, level === 1 ? 1 : 3);
     if (level === 1) {
@@ -64,7 +68,12 @@ const vocab: Skill = {
         prompt: `Quel est l’**opposé** de ${fmt(x)} ?`,
         answer: num(o),
         traps: traps(o, [[x, 'L’opposé change le signe du nombre.']]),
-        steps: [`L’opposé de ${fmt(x)} est **${fmt(o)}** (même distance à zéro, signe contraire).`],
+        hint: 'L’opposé, c’est le nombre en miroir de l’autre côté de zéro.',
+        steps: [
+          `${fmt(x)} est à ${fmt(abs(x))} de zéro, ${x.n < 0 ? 'à gauche' : 'à droite'}.`,
+          `Son opposé est à la même distance, mais de l’autre côté : on change juste le signe.`,
+          `L’opposé de ${fmt(x)} est **${fmt(o)}**.`,
+        ],
         targetSeconds: 8,
       };
     }
@@ -73,7 +82,12 @@ const vocab: Skill = {
       prompt: `Quelle est la **valeur absolue** de ${fmt(x)} ?`,
       answer: num(a),
       traps: traps(a, [[neg(a), 'La valeur absolue est une distance à zéro : elle est toujours positive.']]),
-      steps: [`${fmt(x)} est à ${fmt(a)} unités de zéro : sa valeur absolue est **${fmt(a)}**.`],
+      hint: 'La valeur absolue, c’est une distance jusqu’à zéro. Une distance peut-elle être négative ?',
+      steps: [
+        `La valeur absolue, c’est la distance entre le nombre et zéro.`,
+        `${fmt(x)} est à ${fmt(a)} de zéro. Une distance est toujours positive.`,
+        `La valeur absolue de ${fmt(x)} est **${fmt(a)}**.`,
+      ],
       targetSeconds: 10,
     };
   },
@@ -83,14 +97,10 @@ const droite: Skill = {
   id: 'm5-relatifs-droite',
   title: 'Relatifs sur une droite graduée',
   lesson: {
-    body: [
-      'Sur une droite graduée, les nombres négatifs sont **à gauche de zéro**, les positifs à droite.',
-      'On repère d’abord ce que vaut **une graduation** (1 ? 0,5 ? 0,1 ?), puis on compte depuis zéro.',
+    memo: [
+      'À gauche de zéro, les nombres sont **négatifs** ; à droite, ils sont positifs. Comme un thermomètre couché !',
+      'D’abord, regarde ce que vaut **un petit trait** (1 ? 0,5 ? 0,1 ?). Puis compte les traits depuis zéro.',
     ],
-    example: {
-      question: 'Graduations de 0,5 en 0,5 ; le point A est 3 graduations à gauche de 0.',
-      steps: ['3 × 0,5 = 1,5.', 'À gauche de zéro : A a pour abscisse −1,5.'],
-    },
     source: objective(
       'Lire l’abscisse d’un nombre relatif sur une droite graduée et placer un nombre relatif d’abscisse donnée',
     ),
@@ -100,7 +110,11 @@ const droite: Skill = {
     const min = level === 3 ? -2 : -6;
     const max = level === 3 ? 2 : 6;
     const steps = (max - min) * sub;
-    const ticks = distinct(rng, 3, () => rng.int(1, steps - 1)).map((t) => r(min * sub + t, sub));
+    const ticks = distinct(rng, 3, () => {
+      let t = 0;
+      while (t === 0 || min * sub + t === 0) t = rng.int(1, steps - 1);
+      return t;
+    }).map((t) => r(min * sub + t, sub));
     const names = ['A', 'B', 'C'];
     const points = ticks.map((t, i) => ({ name: names[i] ?? '?', at: t.n / t.d }));
     const figure = { kind: 'numberLine' as const, min, max, subdivisions: sub, labels: [min, 0, max], points };
@@ -111,9 +125,13 @@ const droite: Skill = {
         figure,
         answer: num(target),
         traps: traps(target, [[neg(target), 'Attention au côté du zéro : à gauche, les nombres sont négatifs.']]),
+        hint: 'Combien vaut un petit trait ? Puis compte les traits entre 0 et A.',
         steps: [
-          `Une graduation vaut ${fmt(r(1, sub))}.`,
-          `A est à ${fmt(abs(target))} de zéro, ${target.n < 0 ? 'à gauche' : 'à droite'} : son abscisse est **${fmt(target)}**.`,
+          sub === 1
+            ? `Entre 0 et 1, il y a un seul intervalle : un trait vaut 1.`
+            : `Entre 0 et 1, il y a ${sub} intervalles : un trait vaut 1 ÷ ${sub} = ${fmt(r(1, sub))}.`,
+          `A est à ${Math.abs(target.n * (sub / target.d))} trait${Math.abs(target.n * (sub / target.d)) > 1 ? 's' : ''} de zéro, soit ${fmt(abs(target))}.`,
+          `A est ${target.n < 0 ? 'à gauche de zéro : son abscisse est négative' : 'à droite de zéro : son abscisse est positive'}. C’est **${fmt(target)}**.`,
         ],
       };
     }
@@ -126,8 +144,11 @@ const droite: Skill = {
       prompt: `Quel point a pour abscisse **${fmt(target)}** ?`,
       figure,
       ...choice(rng, correct, wrong, true),
+      hint: `${fmt(target)} est-il à gauche ou à droite de zéro ? Et à combien de traits ?`,
       steps: [
-        `Une graduation vaut ${fmt(r(1, sub))} : ${fmt(target)} est ${target.n < 0 ? 'à gauche' : 'à droite'} de zéro, c’est le point **A**.`,
+        `Un trait vaut ${fmt(r(1, sub))}.`,
+        `${fmt(target)} est ${target.n < 0 ? 'négatif : à gauche' : 'positif : à droite'} de zéro, à ${fmt(abs(target))}.`,
+        `Le point qui est là, c’est **A**.`,
       ],
     };
   },
@@ -137,11 +158,10 @@ const comparer: Skill = {
   id: 'm5-relatifs-comparer',
   title: 'Comparer et ranger des relatifs',
   lesson: {
-    body: [
-      'Sur la droite graduée, le plus grand nombre est **le plus à droite**.',
-      'Un négatif est toujours plus petit qu’un positif. Entre deux négatifs, le plus petit est celui qui a la **plus grande** distance à zéro : −8 < −3.',
+    memo: [
+      'Pense à un thermomètre : −8 °C, il fait plus froid que −3 °C. Donc −8 < −3.',
+      'Sur la droite graduée, le plus grand est toujours **le plus à droite**. Un négatif est toujours plus petit qu’un positif.',
     ],
-    example: { question: 'Compare −2,5 et −2,05.', steps: ['Distances à zéro : 2,5 > 2,05.', 'Donc −2,5 < −2,05.'] },
     source: objective('Comparer et ranger dans l’ordre croissant et décroissant des nombres décimaux relatifs'),
   },
   generate(rng, level) {
@@ -171,8 +191,12 @@ const comparer: Skill = {
                   : `${fmt(target)} est ${askMin ? 'plus à gauche' : 'plus à droite'} sur la droite graduée.`,
             })),
         ),
+        hint: askMin
+          ? 'Le plus petit, c’est le plus à gauche sur la droite graduée (le plus « froid »).'
+          : 'Le plus grand, c’est le plus à droite sur la droite graduée (le plus « chaud »).',
         steps: [
-          `Dans l’ordre croissant : ${sorted.map((v) => fmt(v)).join(' < ')}.`,
+          `Imagine les nombres sur un thermomètre : plus on est loin sous zéro, plus il fait froid.`,
+          `On les range du plus froid au plus chaud : ${sorted.map((v) => fmt(v)).join(' < ')}.`,
           `Le plus ${askMin ? 'petit' : 'grand'} est **${fmt(target)}**.`,
         ],
       };
@@ -200,26 +224,51 @@ const comparer: Skill = {
           })),
         true,
       ),
+      hint: 'Pense à des températures : laquelle est la plus froide ?',
       steps: [
-        `Sur la droite graduée, ${fmt(a)} est ${c < 0 ? 'à gauche' : c > 0 ? 'à droite' : 'au même endroit'} de ${fmt(b)} : **${fmt(a)} ${correct} ${fmt(b)}**.`,
+        a.n < 0 && b.n < 0
+          ? `Deux négatifs : comme des températures sous zéro. ${fmt(abs(a)) === fmt(abs(b)) ? '' : `${fmt(cmp(abs(a), abs(b)) > 0 ? a : b)} °C, c’est plus froid, car plus loin sous zéro.`}`
+          : a.n < 0 !== b.n < 0
+            ? `Un nombre négatif est toujours plus petit qu’un nombre positif.`
+            : `Deux positifs : on compare comme d’habitude.`,
+        `Sur la droite graduée, ${fmt(a)} est ${c < 0 ? 'à gauche' : c > 0 ? 'à droite' : 'au même endroit'} de ${fmt(b)}.`,
+        `Donc **${fmt(a)} ${correct} ${fmt(b)}**.`,
       ],
       targetSeconds: 10,
     };
   },
 };
 
+/** Somme des distances à zéro d'un tas de nombres de même signe (« 3 + 5 = 8 », « 4 » ou « 0 »). */
+function pile(list: readonly Rational[]): string {
+  if (list.length === 0) return '0';
+  const total = list.reduce((s, t) => add(s, abs(t)), r(0));
+  return list.length === 1 ? fmt(total) : `${list.map((t) => fmt(abs(t))).join(' + ')} = ${fmt(total)}`;
+}
+
+/** Gain ou perte, pour raconter un relatif avec de l'argent. */
+const money = (x: Rational) => (x.n < 0 ? `je perds ${fmt(abs(x))} €` : `je gagne ${fmt(x)} €`);
+
 function additionSteps(a: Rational, b: Rational): string[] {
   const s = add(a, b);
+  const story = `Imagine : ${money(a)}, puis ${money(b)}.`;
   if (a.n < 0 === b.n < 0) {
     return [
-      `Même signe : on additionne les distances à zéro (${fmt(abs(a))} + ${fmt(abs(b))} = ${fmt(add(abs(a), abs(b)))}) et on garde le signe.`,
+      story,
+      a.n < 0
+        ? `Je perds deux fois : en tout, je perds ${fmt(abs(a))} + ${fmt(abs(b))} = ${fmt(abs(s))} €.`
+        : `Je gagne deux fois : en tout, je gagne ${fmt(a)} + ${fmt(b)} = ${fmt(s)} €.`,
       `${fmtSigned(a)} + ${fmtSigned(b)} = **${fmt(s)}**`,
     ];
   }
   const big = cmp(abs(a), abs(b)) >= 0 ? a : b;
+  const small = big === a ? b : a;
   return [
-    `Signes contraires : on soustrait les distances à zéro (${fmt(abs(big))} − ${fmt(abs(big === a ? b : a))} = ${fmt(abs(s))}).`,
-    `On prend le signe du nombre le plus éloigné de zéro (${fmt(big)}) : ${fmtSigned(a)} + ${fmtSigned(b)} = **${fmt(s)}**`,
+    story,
+    `Le gain et la perte se compensent en partie : ${fmt(abs(big))} − ${fmt(abs(small))} = ${fmt(abs(s))}.`,
+    s.n === 0
+      ? `Tout se compense : ${fmtSigned(a)} + ${fmtSigned(b)} = **0**`
+      : `${big.n < 0 ? 'J’ai plus perdu que gagné : le résultat est négatif' : 'J’ai plus gagné que perdu : le résultat est positif'}. ${fmtSigned(a)} + ${fmtSigned(b)} = **${fmt(s)}**`,
   ];
 }
 
@@ -227,15 +276,11 @@ const addition: Skill = {
   id: 'm5-relatifs-addition',
   title: 'Additionner deux relatifs',
   lesson: {
-    body: [
-      '**Même signe** : on additionne les distances à zéro et on garde le signe : (−4) + (−3) = −7.',
-      '**Signes contraires** : on soustrait les distances à zéro et on prend le signe du nombre le plus éloigné de zéro : (−7) + (+3) = −4.',
-      'Deux opposés ont une somme nulle : (−5) + (+5) = 0.',
+    memo: [
+      'Pense à de l’argent : + c’est un gain, − c’est une perte.',
+      '(−4) + (−3) : je perds 4 €, puis je perds 3 €. J’ai perdu 7 € en tout → **−7**.',
+      '(−7) + (+3) : je perds 7 €, je regagne 3 €. Il me manque encore 4 € → **−4**.',
     ],
-    example: {
-      question: 'Calcule (+2,5) + (−6).',
-      steps: ['Signes contraires : 6 − 2,5 = 3,5.', '−6 est plus loin de zéro : le résultat est −3,5.'],
-    },
     source: objective('Additionner deux nombres décimaux relatifs'),
   },
   generate(rng, level) {
@@ -256,6 +301,7 @@ const addition: Skill = {
         ],
         [neg(add(abs(a), abs(b))), 'Signes contraires : on soustrait les distances à zéro.'],
       ]),
+      hint: 'Pense à de l’argent : + c’est un gain, − c’est une perte. Au total, tu as gagné ou perdu ?',
       steps: additionSteps(a, b),
       targetSeconds: 15,
     };
@@ -266,14 +312,10 @@ const soustraction: Skill = {
   id: 'm5-relatifs-soustraction',
   title: 'Soustraire deux relatifs',
   lesson: {
-    body: [
-      'Soustraire un nombre, c’est **ajouter son opposé** : a − b = a + (−b).',
-      '(+3) − (−5) = (+3) + (+5) = 8 ; (−2) − (+4) = (−2) + (−4) = −6.',
+    memo: [
+      'Soustraire un nombre, c’est **ajouter son opposé** : on transforme le − en + et on change le signe du nombre qui suit.',
+      '(+3) − (−5) devient (+3) + (+5) = 8. Enlever une dette de 5 €, c’est comme gagner 5 € !',
     ],
-    example: {
-      question: 'Calcule (−1,5) − (−4).',
-      steps: ['On ajoute l’opposé : (−1,5) + (+4).', 'Signes contraires : 4 − 1,5 = 2,5, signe + : 2,5.'],
-    },
     source: objective('Soustraire deux nombres décimaux relatifs'),
   },
   generate(rng, level) {
@@ -290,10 +332,11 @@ const soustraction: Skill = {
         ],
         [neg(d), 'Le signe du résultat est faux.'],
       ]),
+      hint: `Transforme d’abord la soustraction : − ${fmtSigned(b)} devient + ${fmtSigned(neg(b))}.`,
       steps: [
-        `Soustraire, c’est ajouter l’opposé : ${fmtSigned(a)} − ${fmtSigned(b)} = ${fmtSigned(a)} + ${fmtSigned(neg(b))}.`,
-        ...additionSteps(a, neg(b)).slice(0, 1),
-        `= **${fmt(d)}**`,
+        `Soustraire, c’est ajouter l’opposé. L’opposé de ${fmtSigned(b)} est ${fmtSigned(neg(b))}.`,
+        `Le calcul devient une addition : ${fmtSigned(a)} + ${fmtSigned(neg(b))}.`,
+        ...additionSteps(a, neg(b)).slice(1),
       ],
       targetSeconds: 18,
     };
@@ -304,14 +347,11 @@ const sommes: Skill = {
   id: 'm5-relatifs-sommes',
   title: 'Enchaîner additions et soustractions',
   lesson: {
-    body: [
-      'On transforme les soustractions en additions de l’opposé, puis on regroupe : d’abord les positifs, puis les négatifs.',
-      'Écriture simplifiée : on enlève les parenthèses et les signes + d’addition : (+5) + (−3) − (−2) = 5 − 3 + 2.',
+    memo: [
+      'D’abord, on enlève les parenthèses : + (−3) devient − 3, et − (−2) devient + 2.',
+      'Puis on fait deux tas : les gains (positifs) d’un côté, les pertes (négatifs) de l’autre. On compare les deux tas.',
+      'Exemple : −3 + 7 − 5 + 2. Gains : 7 + 2 = 9. Pertes : 3 + 5 = 8. 9 − 8 = 1.',
     ],
-    example: {
-      question: 'Calcule −3 + 7 − 5 + 2.',
-      steps: ['Positifs : 7 + 2 = 9. Négatifs : −3 − 5 = −8.', '9 − 8 = 1.'],
-    },
     source: objective(
       'Additionner plusieurs nombres décimaux relatifs. Simplifier l’écriture de sommes comportant des parenthèses. Enchainer additions et soustractions de décimaux relatifs',
     ),
@@ -345,12 +385,17 @@ const sommes: Skill = {
       steps: [
         ...(withParens
           ? [
-              `Écriture simplifiée : ${terms.map((t, i) => (i === 0 ? fmt(t) : `${t.n < 0 ? '−' : '+'} ${fmt(abs(t))}`)).join(' ')}.`,
+              `On enlève les parenthèses (− (−…) devient +, + (−…) devient −) : ${terms.map((t, i) => (i === 0 ? fmt(t) : `${t.n < 0 ? '−' : '+'} ${fmt(abs(t))}`)).join(' ')}.`,
             ]
           : []),
-        `Positifs : ${fmt(pos)} ; négatifs : ${fmt(negs)}.`,
-        `${fmt(pos)} + ${fmtSigned(negs)} = **${fmt(total)}**`,
+        `On fait deux tas. Gains : ${pile(terms.filter((t) => t.n > 0))}. Pertes : ${pile(terms.filter((t) => t.n < 0))}.`,
+        cmp(pos, abs(negs)) >= 0
+          ? `Les gains sont plus gros : ${fmt(pos)} − ${fmt(abs(negs))} = **${fmt(total)}**`
+          : `Les pertes sont plus grosses : ${fmt(abs(negs))} − ${fmt(pos)} = ${fmt(abs(total))}, et c’est négatif → **${fmt(total)}**`,
       ],
+      hint: withParens
+        ? 'Enlève d’abord les parenthèses (− (−2) devient + 2), puis regroupe les positifs et les négatifs.'
+        : 'Regroupe les nombres positifs d’un côté, les négatifs de l’autre.',
       targetSeconds: 30,
     };
   },
@@ -360,14 +405,11 @@ const problemes: Skill = {
   id: 'm5-relatifs-problemes',
   title: 'Problèmes avec des relatifs',
   lesson: {
-    body: [
-      'Températures, altitudes, soldes… on traduit l’énoncé par une addition ou une soustraction de relatifs.',
-      'L’**écart** entre deux valeurs = la plus grande − la plus petite.',
+    memo: [
+      'Fais un petit dessin : un thermomètre ou une droite verticale avec le zéro au milieu.',
+      'Quand ça monte, on ajoute ; quand ça descend, on enlève.',
+      'Pour un **écart** entre −6 °C et 4 °C : de −6 à 0, ça fait 6 ; de 0 à 4, ça fait 4. Écart : 6 + 4 = 10 °C.',
     ],
-    example: {
-      question: 'Il fait −6 °C le matin et 4 °C l’après-midi. De combien la température a-t-elle augmenté ?',
-      steps: ['4 − (−6) = 4 + 6 = 10.', 'Elle a augmenté de 10 °C.'],
-    },
     source: objective('Résoudre des problèmes mobilisant addition et soustraction de nombres décimaux relatifs'),
   },
   generate(rng, level) {
@@ -383,7 +425,14 @@ const problemes: Skill = {
           [t0 - rise, 'La température **monte** : on ajoute.'],
           [-(Math.abs(t0) + rise), `On calcule ${fmt(t0)} + ${rise}, pas −(${Math.abs(t0)} + ${rise}).`],
         ]),
-        steps: [`${fmt(t0)} + ${rise} = **${fmt(t1)}** °C`],
+        hint: `Imagine un thermomètre : pars de ${fmt(t0)} et monte de ${rise} graduations.`,
+        steps: [
+          `La température monte : on part de ${fmt(t0)} °C et on ajoute ${rise}.`,
+          t1 >= 0
+            ? `Pour remonter jusqu’à 0, il faut ${Math.abs(t0)} °C. Il reste ${rise} − ${Math.abs(t0)} = ${t1} °C au-dessus de zéro.`
+            : `On monte de ${rise}, mais pas assez pour atteindre 0 (il faudrait ${Math.abs(t0)}).`,
+          `${fmt(t0)} + ${rise} = **${fmt(t1)}** °C`,
+        ],
       };
     }
     if (kind === 1 || level === 1) {
@@ -394,9 +443,11 @@ const problemes: Skill = {
         prompt: `La nuit, il a fait ${fmt(low)} °C ; le jour, ${high} °C. Quel est l’écart de température (en °C) ?`,
         answer: num(gap, '°C'),
         traps: traps(r(gap), [[high + low, `L’écart est ${high} − (${fmt(low)}) = ${high} + ${Math.abs(low)}.`]]),
+        hint: 'Coupe le trajet en deux : de la température la plus basse jusqu’à 0, puis de 0 jusqu’à la plus haute.',
         steps: [
-          `Écart = plus grande − plus petite = ${high} − (${fmt(low)}).`,
-          `= ${high} + ${Math.abs(low)} = **${gap}** °C`,
+          `Sur le thermomètre, on va de ${fmt(low)} °C à ${high} °C.`,
+          `De ${fmt(low)} jusqu’à 0 : ${Math.abs(low)} °C. De 0 jusqu’à ${high} : ${high} °C.`,
+          `L’écart est ${Math.abs(low)} + ${high} = **${gap}** °C.`,
         ],
       };
     }
@@ -407,7 +458,14 @@ const problemes: Skill = {
       prompt: `Un sous-marin est à l’altitude ${fmt(depth)} m. Il remonte de ${up} m. Quelle est sa nouvelle altitude (en m) ?`,
       answer: num(final, 'm'),
       traps: traps(r(final), [[depth - up, 'Il **remonte** : son altitude augmente, on ajoute.']]),
-      steps: [`${fmt(depth)} + ${up} = **${fmt(final)}** m`],
+      hint: `Il remonte : son altitude augmente. Pars de ${fmt(depth)} et ajoute ${up}.`,
+      steps: [
+        `${fmt(depth)} m, c’est ${Math.abs(depth)} m sous la surface. Il remonte de ${up} m : on ajoute.`,
+        final >= 0
+          ? `Il lui faut ${Math.abs(depth)} m pour atteindre la surface (0 m). Il dépasse de ${up} − ${Math.abs(depth)} = ${final} m.`
+          : `Il reste sous la surface : ${Math.abs(depth)} − ${up} = ${Math.abs(final)} m de profondeur.`,
+        `${fmt(depth)} + ${up} = **${fmt(final)}** m`,
+      ],
     };
   },
 };

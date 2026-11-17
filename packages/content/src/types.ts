@@ -143,8 +143,15 @@ export interface Question {
   readonly figure?: Figure;
   readonly answer: AnswerSpec;
   readonly traps: readonly Trap[];
-  /** Correction pas-à-pas. */
+  /**
+   * Explication pas à pas, sur le ton de Questy qui parle à l'enfant : ce qu'on cherche,
+   * comment on s'y prend et pourquoi. Une bulle par étape ; la dernière donne la réponse en gras.
+   */
   readonly steps: readonly Rich[];
+  /** Indice pour le 2e essai : met sur la voie sans donner la réponse. */
+  readonly hint: Rich;
+  /** Animation montrée dans l'explication (ex. le nombre placé dans le tableau de conversion). */
+  readonly demo?: Demo;
   /** Temps « confortable » en secondes (bonus de vitesse au-dessous). */
   readonly targetSeconds: number;
 }
@@ -154,10 +161,18 @@ export type QuestionDraft = Omit<Question, 'skillId' | 'level' | 'seed' | 'traps
   readonly targetSeconds?: number;
 };
 
+/** Conversion montrée dans le tableau : le nombre placé sous son unité, puis lu dans l'unité demandée. */
+export interface Demo {
+  readonly kind: 'conversion';
+  readonly table: 'longueur' | 'aire' | 'volume';
+  readonly value: Rational;
+  readonly from: string;
+  readonly to: string;
+}
+
 export interface Lesson {
-  /** Paragraphes de la règle / méthode. */
-  readonly body: readonly Rich[];
-  readonly example?: { readonly question: Rich; readonly steps: readonly Rich[] };
+  /** « Le truc à retenir » : 2-3 phrases courtes à hauteur d'enfant, avec un mini-exemple. */
+  readonly memo: readonly Rich[];
   /** Référence : objectif du programme officiel et éventuelle source complémentaire. */
   readonly source: string;
 }

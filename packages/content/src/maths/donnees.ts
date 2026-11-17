@@ -11,11 +11,10 @@ const effectifs: Skill = {
   tools: ['calculatrice'],
   title: 'Effectifs et fréquences',
   lesson: {
-    body: [
-      'L’**effectif** d’une valeur est le nombre de fois où elle apparaît ; l’effectif total est la somme des effectifs.',
-      '**Fréquence** = effectif ÷ effectif total. Elle s’écrit en fraction, en décimal ou en pourcentage : {6/24} = 0,25 = 25 %.',
+    memo: [
+      '**Effectif** = « combien ». 6 élèves font du judo : l’effectif du judo est 6. L’effectif total, c’est tout le monde.',
+      '**Fréquence** = « combien sur le total » : 6 sur 24 → {6/24}. En pourcentage : 6 ÷ 24 = 0,25 = 25 %.',
     ],
-    example: { question: 'Sur 24 votes, Chloé en a 6. Fréquence ?', steps: ['6 ÷ 24 = {6/24} = 0,25 = 25 %.'] },
     source: objective(
       'Calculer des effectifs et des fréquences (exprimées sous forme décimale, fractionnaire ou de pourcentage)',
     ),
@@ -42,7 +41,11 @@ const effectifs: Skill = {
         figure: { kind: 'table', rows, header: true },
         answer: num(total),
         traps: traps(r(total), [[Math.max(...counts), 'L’effectif total est la **somme** de tous les effectifs.']]),
-        steps: [`${counts.join(' + ')} = **${total}**`],
+        hint: 'L’effectif total, c’est tout le monde : additionne tous les effectifs.',
+        steps: [
+          'L’effectif total, c’est le nombre d’élèves en tout : on additionne toutes les cases.',
+          `${counts.join(' + ')} = **${total}**`,
+        ],
         targetSeconds: 20,
       };
     }
@@ -53,7 +56,11 @@ const effectifs: Skill = {
         figure: { kind: 'table', rows, header: true },
         answer: fraction(f),
         traps: traps(f, [[r(total, c || 1), 'C’est effectif ÷ total, pas l’inverse.']]),
-        steps: [`Fréquence = effectif ÷ total = {${c}/${total}}${f.d !== total ? ` = ${frac(f)}` : ''}.`],
+        hint: `La fréquence, c’est « combien sur le total ». Combien font « ${cat} » ? Et combien d’élèves en tout ?`,
+        steps: [
+          `« ${cat} » : ${c} élèves. En tout : ${total} élèves.`,
+          `Fréquence = ${c} sur ${total}, c’est-à-dire **{${c}/${total}}**${f.d !== total ? ` (ou **${frac(f)}** en simplifiant)` : ''}.`,
+        ],
       };
     }
     const pct = mul(f, r(100));
@@ -65,7 +72,12 @@ const effectifs: Skill = {
         [f, 'C’est la fréquence en décimal : en pourcentage on multiplie par 100.'],
         [c, 'C’est l’effectif ; la fréquence se rapporte au total.'],
       ]),
-      steps: [`Fréquence = ${c} ÷ ${total} = ${fmt(f)}.`, `En pourcentage : ${fmt(f)} × 100 = **${fmt(pct)} %**`],
+      hint: `Calcule ${c} ÷ ${total}, puis multiplie par 100 pour avoir un pourcentage.`,
+      steps: [
+        `« ${cat} » : ${c} élèves sur ${total}.`,
+        `${c} ÷ ${total} = ${fmt(f)}.`,
+        `Un pourcentage, c’est « sur 100 » : ${fmt(f)} × 100 = **${fmt(pct)} %**`,
+      ],
     };
   },
 };
@@ -75,11 +87,11 @@ const moyenne: Skill = {
   tools: ['calculatrice'],
   title: 'Moyenne',
   lesson: {
-    body: [
-      'Moyenne = **somme des valeurs ÷ nombre de valeurs**.',
-      'La moyenne est toujours comprise entre la plus petite et la plus grande valeur.',
+    memo: [
+      'La moyenne, c’est ce que chacun aurait si on mettait tout en commun et qu’on **partageait équitablement**.',
+      'On additionne tout, puis on divise par le nombre de valeurs : 12, 15, 9, 14 → 50 ÷ 4 = 12,5.',
+      'Vérifie : la moyenne est toujours entre la plus petite et la plus grande valeur.',
     ],
-    example: { question: 'Notes : 12, 15, 9, 14.', steps: ['Somme : 12 + 15 + 9 + 14 = 50.', '50 ÷ 4 = 12,5.'] },
     source: objective('Calculer et interpréter la moyenne simple d’une série de données'),
   },
   generate(rng, level) {
@@ -96,7 +108,12 @@ const moyenne: Skill = {
         [r(sum, n + 1), `Il y a ${n} valeurs, pas ${n + 1}.`],
         [r(sum, n - 1), `Il y a ${n} valeurs, pas ${n - 1}.`],
       ]),
-      steps: [`Somme : ${values.join(' + ')} = ${sum}.`, `Moyenne : ${sum} ÷ ${n} = **${fmt(mean)}**`],
+      hint: `Additionne toutes les valeurs, puis partage entre les ${n} valeurs.`,
+      steps: [
+        `On met tout en commun : ${values.join(' + ')} = ${sum}.`,
+        `On partage équitablement entre les ${n} valeurs : ${sum} ÷ ${n} = ${fmt(mean)}.`,
+        `Vérification : ${fmt(mean)} est bien entre ${Math.min(...values)} et ${Math.max(...values)}. La moyenne est **${fmt(mean)}**.`,
+      ],
       targetSeconds: 45,
     };
   },
@@ -106,11 +123,10 @@ const diagrammes: Skill = {
   id: 'm5-diagrammes',
   title: 'Lire un diagramme',
   lesson: {
-    body: [
-      'On lit la **légende**, les **axes** et l’échelle de l’axe vertical avant de lire une valeur.',
-      'Pour comparer, on regarde la hauteur des barres ; pour un pourcentage, on rapporte une valeur au total.',
+    memo: [
+      'Avant de lire, regarde le **titre** et l’**axe vertical** : de combien en combien avance-t-il ?',
+      'Pour lire une barre, suis le haut de la barre à l’horizontale jusqu’à l’axe, avec ta règle ou ton doigt.',
     ],
-    example: { question: 'Barres : Lundi 12, Mardi 8, Mercredi 20. Total ?', steps: ['12 + 8 + 20 = 40.'] },
     source: objective(
       'Lire et interpréter des informations présentées sous forme de tableaux, de diagrammes et de graphiques',
     ),
@@ -127,7 +143,12 @@ const diagrammes: Skill = {
         prompt: `Combien de livres ont été empruntés ${b.label === 'Lun' ? 'lundi' : b.label === 'Mar' ? 'mardi' : b.label === 'Mer' ? 'mercredi' : b.label === 'Jeu' ? 'jeudi' : 'vendredi'} ?`,
         figure,
         answer: num(b.value),
-        steps: [`On lit la hauteur de la barre « ${b.label} » sur l’axe vertical : **${b.value}**.`],
+        hint: `Pose ton doigt en haut de la barre « ${b.label} » et glisse à l’horizontale jusqu’à l’axe de gauche.`,
+        steps: [
+          `On repère la barre « ${b.label} ».`,
+          'On suit le haut de la barre à l’horizontale jusqu’à l’axe de gauche.',
+          `On lit **${b.value}** livres.`,
+        ],
         targetSeconds: 15,
       };
     }
@@ -144,7 +165,11 @@ const diagrammes: Skill = {
             .map((b) => ({ label: b.label, why: `La barre la plus haute est celle de ${max.label} (${max.value}).` })),
           true,
         ),
-        steps: [`La barre la plus haute est « ${max.label} » : **${max.value}** livres.`],
+        hint: 'Cherche la barre la plus haute.',
+        steps: [
+          'Le jour où on a emprunté le plus de livres, c’est celui de la barre la plus haute.',
+          `La plus haute est celle de **${max.label}**, avec ${max.value} livres.`,
+        ],
       };
     }
     const total = values.reduce((s, v) => s + v, 0);
@@ -155,7 +180,11 @@ const diagrammes: Skill = {
       traps: traps(r(total), [
         [Math.max(...values), 'C’est seulement la plus grande barre ; il faut additionner toutes les barres.'],
       ]),
-      steps: [`${values.join(' + ')} = **${total}**`],
+      hint: 'Lis chaque barre, puis additionne tout.',
+      steps: [
+        `On lit chaque barre : ${bars.map((b) => `${b.label} ${b.value}`).join(', ')}.`,
+        `On additionne : ${values.join(' + ')} = **${total}**`,
+      ],
       targetSeconds: 40,
     };
   },
@@ -167,15 +196,10 @@ const probaVocab: Skill = {
   id: 'm5-probas-vocab',
   title: 'Vocabulaire des probabilités',
   lesson: {
-    body: [
-      'Une **expérience aléatoire** a plusieurs résultats possibles, les **issues** ; on ne peut pas prévoir lequel sortira.',
-      'Un **évènement** est un ensemble d’issues. Impossible : probabilité 0. Certain : probabilité 1.',
-      'Toute probabilité est comprise entre 0 et 1.',
+    memo: [
+      'Lancer un dé, c’est une **expérience aléatoire** : on ne peut pas savoir à l’avance ce qui va sortir.',
+      'Chaque résultat possible (1, 2, 3…) est une **issue**. « Obtenir 7 » avec un dé est **impossible** (probabilité 0) ; « obtenir entre 1 et 6 » est **certain** (probabilité 1).',
     ],
-    example: {
-      question: 'Obtenir 7 avec un dé à 6 faces ?',
-      steps: ['Aucune face ne porte 7 : évènement impossible, probabilité 0.'],
-    },
     source: objective(
       'Utiliser le vocabulaire des probabilités dans des contextes concrets : expérience aléatoire, issue, évènement',
     ),
@@ -217,7 +241,20 @@ const probaVocab: Skill = {
         it.a,
         it.w.map((label) => ({ label, why: `La bonne réponse : ${it.a}.` })),
       ),
-      steps: [`${it.t} **${it.a}**.`],
+      hint: 'Imagine que tu fais vraiment l’expérience : qu’est-ce qui peut arriver ?',
+      steps: [
+        'On imagine qu’on fait vraiment l’expérience.',
+        it.a === 'impossible'
+          ? 'Aucune face du dé ne porte 7 : ça ne peut jamais arriver.'
+          : it.a === 'certain'
+            ? 'Toutes les faces portent un nombre entre 1 et 6 : ça arrive à tous les coups.'
+            : it.a === 'une expérience aléatoire'
+              ? 'On ne peut pas savoir à l’avance si on aura pile ou face : c’est le hasard.'
+              : it.a === 'une issue'
+                ? '« Obtenir 4 », c’est un des résultats possibles du lancer.'
+                : 'Une probabilité va de 0 (jamais) à 1 (à coup sûr).',
+        `${it.t} **${it.a}**.`,
+      ],
       targetSeconds: 15,
     };
   },
@@ -228,14 +265,11 @@ const probaCalcul: Skill = {
   title: 'Calculer une probabilité',
   advice: 'brouillon',
   lesson: {
-    body: [
-      'Si toutes les issues ont la même chance (équiprobabilité) : P = **nombre d’issues favorables ÷ nombre d’issues possibles**.',
-      '« Une chance sur quatre » ⇔ probabilité {1/4} = 0,25 = 25 %.',
+    memo: [
+      'Probabilité = **ce qui m’arrange** sur **tout ce qui peut arriver**.',
+      'Urne de 3 boules rouges et 5 bleues : 3 rouges m’arrangent, sur 8 boules en tout → {3/8}.',
+      '« Une chance sur 4 », c’est {1/4} = 0,25 = 25 %.',
     ],
-    example: {
-      question: 'Urne : 3 boules rouges, 5 bleues. P(rouge) ?',
-      steps: ['8 boules en tout, 3 rouges.', 'P = {3/8}.'],
-    },
     source: objective('Attribuer des probabilités dans des cas simples (équiprobabilité)'),
   },
   generate(rng, level) {
@@ -255,9 +289,11 @@ const probaCalcul: Skill = {
           [r(6, e.fav), 'C’est favorables ÷ possibles, pas l’inverse.'],
           [r(e.fav, 5), 'Un dé a 6 faces, donc 6 issues possibles.'],
         ]),
+        hint: `Combien de faces t’arrangent pour « ${e.t} » ? Et combien de faces en tout ?`,
         steps: [
-          `Issues possibles : 6. Issues favorables : ${e.fav}.`,
-          `P = {${e.fav}/6}${p.d !== 6 ? ` = ${frac(p)}` : ''}`,
+          'Tout ce qui peut arriver : les 6 faces du dé.',
+          `Ce qui m’arrange (« ${e.t} ») : ${e.fav === 1 ? 'la face 3' : e.fav === 3 ? 'les faces 2, 4 et 6' : e.t.includes('supérieur') ? 'les faces 5 et 6' : 'les faces 3 et 6'}, soit ${e.fav} face${e.fav > 1 ? 's' : ''}.`,
+          `P = ${e.fav} sur 6 = **{${e.fav}/6}**${p.d !== 6 ? ` (ou **${frac(p)}** en simplifiant)` : ''}`,
         ],
       };
     }
@@ -271,7 +307,12 @@ const probaCalcul: Skill = {
         traps: traps(p, [
           [r(red, blue), `On divise par le nombre **total** de boules (${red + blue}), pas par le nombre de bleues.`],
         ]),
-        steps: [`${red + blue} boules en tout, dont ${red} rouges.`, `P(rouge) = {${red}/${red + blue}}`],
+        hint: 'Combien de boules rouges ? Et combien de boules en tout (rouges + bleues) ?',
+        steps: [
+          `Tout ce qui peut sortir : ${red} + ${blue} = ${red + blue} boules.`,
+          `Ce qui m’arrange : les ${red} boule${red > 1 ? 's' : ''} rouge${red > 1 ? 's' : ''}.`,
+          `P(rouge) = ${red} sur ${red + blue} = **{${red}/${red + blue}}**${p.d !== red + blue ? ` (ou **${frac(p)}**)` : ''}`,
+        ],
       };
     }
     const n = rng.pick([2, 4, 5, 10]);
@@ -283,7 +324,11 @@ const probaCalcul: Skill = {
         [r(n), `Une chance sur ${n}, c’est 1 ÷ ${n}.`],
         [mul(p, r(100)), 'C’est le pourcentage ; on demande l’écriture décimale.'],
       ]),
-      steps: [`P = {1/${n}} = 1 ÷ ${n} = **${fmt(p)}**`],
+      hint: `« Une chance sur ${n} », c’est la fraction {1/${n}}, c’est-à-dire 1 ÷ ${n}.`,
+      steps: [
+        `« Une chance sur ${n} » s’écrit {1/${n}}.`,
+        `La barre de fraction est une division : 1 ÷ ${n} = **${fmt(p)}**`,
+      ],
     };
   },
 };
@@ -292,11 +337,10 @@ const probaFrequence: Skill = {
   id: 'm5-probas-frequences',
   title: 'Échelle de probabilité et fréquences',
   lesson: {
-    body: [
-      'Sur l’échelle de probabilité : 0 = impossible, {1/2} = une chance sur deux (pile ou face), 1 = certain. Très peu probable : proche de 0 ; presque sûr : proche de 1.',
-      'En répétant une expérience, on calcule la **fréquence** d’un résultat : nombre d’apparitions ÷ nombre de lancers. Elle se rapproche de la probabilité quand on répète beaucoup.',
+    memo: [
+      'L’échelle va de **0 (jamais)** à **1 (à coup sûr)**. Au milieu, {1/2} : une chance sur deux, comme pile ou face.',
+      'La **fréquence**, c’est ce qu’on a vraiment observé : 23 piles sur 50 lancers → 23 ÷ 50 = 0,46. Si on lance beaucoup, elle se rapproche de 0,5.',
     ],
-    example: { question: 'Sur 50 lancers, 23 piles. Fréquence ?', steps: ['23 ÷ 50 = 0,46.'] },
     source: objective(
       'Positionner sur une échelle de probabilité des évènements. Répéter matériellement une expérience aléatoire simple. Enregistrer les résultats observés dans un tableau d’effectifs et de fréquences',
     ),
@@ -323,7 +367,22 @@ const probaFrequence: Skill = {
             .slice(0, 3)
             .map((label) => ({ label, why: `La bonne position est ${it.a}.` })),
         ),
-        steps: [`« ${it.t} » : **${it.a}**.`],
+        hint: 'Ça arrive jamais (0), rarement (proche de 0), une fois sur deux ({1/2}), presque toujours (proche de 1) ou toujours (1) ?',
+        steps: [
+          'L’échelle va de 0 (jamais) à 1 (toujours), avec {1/2} au milieu (une fois sur deux).',
+          it.a === '{1/2}'
+            ? 'Pile ou face : une chance sur deux.'
+            : it.a === '{1/6}'
+              ? 'Une face sur les 6 du dé : une chance sur 6.'
+              : it.a === 'proche de 0'
+                ? 'C’est possible, mais il faudrait beaucoup de chance : ça n’arrive presque jamais.'
+                : it.a === 'proche de 1'
+                  ? 'Gagner au loto est très rare, donc perdre arrive presque toujours.'
+                  : it.a === '0'
+                    ? 'Impossible : ça n’arrive jamais.'
+                    : 'Certain : ça arrive à tous les coups.',
+          `On le place à **${it.a}**.`,
+        ],
       };
     }
     const throws = rng.pick([20, 25, 50]);
@@ -336,7 +395,11 @@ const probaFrequence: Skill = {
         [dec(5, 1), '0,5 est la probabilité théorique ; la fréquence observée se calcule avec les résultats obtenus.'],
         [r(throws, success), 'Fréquence = nombre de piles ÷ nombre de lancers.'],
       ]),
-      steps: [`Fréquence = ${success} ÷ ${throws} = **${fmt(f)}**`],
+      hint: 'La fréquence, c’est ce qu’on a observé : nombre de piles ÷ nombre de lancers.',
+      steps: [
+        `La fréquence, c’est ce qu’on a vraiment observé : ${success} piles sur ${throws} lancers.`,
+        `${success} ÷ ${throws} = **${fmt(f)}** (proche de 0,5, la probabilité théorique, mais pas forcément égale).`,
+      ],
     };
   },
 };
@@ -347,14 +410,11 @@ const reconnaitre: Skill = {
   id: 'm5-propor-reconnaitre',
   title: 'Reconnaître la proportionnalité',
   lesson: {
-    body: [
-      'Un tableau est de proportionnalité si l’on passe de la 1re ligne à la 2e en **multipliant toujours par le même nombre** (le coefficient).',
-      'Graphiquement : une situation de proportionnalité est représentée par des points **alignés avec l’origine**.',
+    memo: [
+      'Proportionnel = si on achète 2 fois plus, on paie 2 fois plus. Le prix d’**un** objet est toujours le même.',
+      'Dans un tableau : on divise chaque prix par sa quantité. Si on trouve toujours le même nombre, c’est proportionnel.',
+      'Sur un graphique : les points sont sur une **droite qui passe par 0**.',
     ],
-    example: {
-      question: '2 → 6 ; 5 → 15 ; 7 → 21 ?',
-      steps: ['6 ÷ 2 = 3 ; 15 ÷ 5 = 3 ; 21 ÷ 7 = 3.', 'Même coefficient 3 : proportionnel.'],
-    },
     source: objective(
       'Reconnaitre une situation de proportionnalité à partir d’un tableau ou d’un graphique. Reconnaitre graphiquement qu’un nuage de points est ou n’est pas associé à une situation de proportionnalité',
     ),
@@ -387,10 +447,13 @@ const reconnaitre: Skill = {
             ? 'Les points sont alignés avec l’origine : proportionnel.'
             : 'La droite ne passe pas par l’origine : pas proportionnel.',
         ),
+        hint: 'Deux conditions : les points sont-ils alignés ? Et la droite passe-t-elle par 0 (le coin en bas à gauche) ?',
         steps: [
+          'Pour être proportionnel, il faut une droite **et** qu’elle passe par 0 (0 objet = 0 €).',
           isProp
-            ? 'Points alignés **et** droite passant par l’origine ⇒ **proportionnel**.'
-            : 'La droite ne passe pas par l’origine (0 ; 0) ⇒ **pas proportionnel**.',
+            ? 'Ici, les points sont alignés et la droite part de 0.'
+            : 'Ici, les points sont alignés, mais la droite ne part pas de 0 : 0 objet ne coûte pas 0 €.',
+          isProp ? 'Donc c’est **proportionnel** : vrai.' : 'Donc ce n’est **pas proportionnel** : faux.',
         ],
       };
     }
@@ -409,9 +472,13 @@ const reconnaitre: Skill = {
         isProp,
         isProp ? 'On multiplie toujours par le même nombre.' : 'Les quotients prix ÷ quantité ne sont pas tous égaux.',
       ),
+      hint: 'Calcule le prix d’un seul objet dans chaque colonne (prix ÷ quantité). Est-ce toujours le même ?',
       steps: [
-        `Quotients : ${xs.map((x, i) => `${fmt(ys[i] ?? r(0))} ÷ ${x} = ${(ratios[i]?.d ?? 1) <= 1000 && 10 ** 6 % (ratios[i]?.d ?? 1) === 0 ? fmt(ratios[i] ?? r(0)) : '≈ ' + ((ratios[i]?.n ?? 0) / (ratios[i]?.d ?? 1)).toFixed(2).replace('.', ',')}`).join(' ; ')}.`,
-        isProp ? 'Tous égaux ⇒ **proportionnel**.' : 'Pas tous égaux ⇒ **pas proportionnel**.',
+        'On calcule le prix d’un seul objet dans chaque colonne : prix ÷ quantité.',
+        `${xs.map((x, i) => `${fmt(ys[i] ?? r(0))} ÷ ${x} = ${(ratios[i]?.d ?? 1) <= 1000 && 10 ** 6 % (ratios[i]?.d ?? 1) === 0 ? fmt(ratios[i] ?? r(0)) : '≈ ' + ((ratios[i]?.n ?? 0) / (ratios[i]?.d ?? 1)).toFixed(2).replace('.', ',')}`).join(' ; ')}.`,
+        isProp
+          ? 'Le prix d’un objet est toujours le même : c’est **proportionnel**.'
+          : 'Le prix d’un objet change d’une colonne à l’autre : ce n’est **pas proportionnel**.',
       ],
       targetSeconds: 40,
     };
@@ -423,14 +490,10 @@ const quatrieme: Skill = {
   tools: ['calculatrice'],
   title: 'Calculer avec la proportionnalité',
   lesson: {
-    body: [
-      '**Linéarité** : si 4 personnes → 300 g, alors 2 personnes → 150 g (÷ 2) et 6 personnes → 150 + 300 = 450 g.',
-      '**Retour à l’unité** : on calcule pour 1, puis on multiplie : 3 kg à 7,50 € → 1 kg à 2,50 €.',
+    memo: [
+      'Astuce n°1, **passer par 1** : 3 kg coûtent 7,50 € → 1 kg coûte 7,50 ÷ 3 = 2,50 €. Ensuite on multiplie.',
+      'Astuce n°2, **couper ou doubler** : recette pour 4 avec 200 g → pour 2, la moitié (100 g) → pour 6 = 4 + 2, 200 + 100 = 300 g.',
     ],
-    example: {
-      question: 'Recette pour 4 : 200 g de farine. Pour 6 ?',
-      steps: ['Pour 2 : 100 g.', 'Pour 6 = 4 + 2 : 200 + 100 = 300 g.'],
-    },
     source: objective(
       'Dans des situations simples, mobiliser une procédure adaptée (propriété de linéarité pour la multiplication ou l’addition, retour à l’unité) pour résoudre un problème lié à la proportionnalité',
     ),
@@ -444,7 +507,12 @@ const quatrieme: Skill = {
         prompt: `Les tomates coûtent ${fmt(unit)} € le kilogramme. Combien coûtent ${fmt(qty)} kg de tomates (en €) ?`,
         answer: num(price, '€'),
         traps: traps(price, [[add(unit, qty), 'On multiplie le prix d’un kilogramme par la masse.']]),
-        steps: [`Prix = ${fmt(unit)} × ${fmt(qty)} = **${fmt(price)}** €`],
+        hint: `1 kg coûte ${fmt(unit)} €. Pour ${fmt(qty)} kg, on paie ${fmt(qty)} fois ce prix.`,
+        steps: [
+          `1 kg coûte ${fmt(unit)} €.`,
+          `Pour ${fmt(qty)} kg, on paie ${fmt(qty)} fois plus : ${fmt(unit)} × ${fmt(qty)}.`,
+          `À la calculatrice : **${fmt(price)}** €`,
+        ],
       };
     }
     const people = 4;
@@ -458,9 +526,15 @@ const quatrieme: Skill = {
       traps: traps(v, [
         [q + (target - people), `Ce n’est pas une addition : la quantité est proportionnelle au nombre de personnes.`],
       ]),
+      hint: `Combien faut-il pour 1 personne ? Puis multiplie par ${target}.`,
       steps: [
-        `Pour 1 personne : ${q} ÷ ${people} = ${fmt(r(q, people))}.`,
-        `Pour ${target} personnes : ${fmt(r(q, people))} × ${target} = **${fmt(v)}**`,
+        target % people === 0
+          ? `${target} personnes, c’est ${target / people} fois plus que ${people} : on multiplie par ${target / people}.`
+          : `On passe par 1 personne : ${q} ÷ ${people} = ${fmt(r(q, people))}.`,
+        target % people === 0
+          ? `${q} × ${target / people} = ${fmt(v)}.`
+          : `Pour ${target} personnes : ${fmt(r(q, people))} × ${target} = ${fmt(v)}.`,
+        `Il en faut **${fmt(v)}** ${ingr.split(' ')[0]}.`,
       ],
     };
   },
@@ -471,12 +545,11 @@ const pourcentages: Skill = {
   tools: ['calculatrice'],
   title: 'Pourcentages',
   lesson: {
-    body: [
-      'Prendre t % d’un nombre, c’est le multiplier par {t/100}.',
-      '50 % = la moitié ; 10 % = diviser par 10 ; 1 % = diviser par 100 ; 25 % = le quart.',
-      'Pourcentage d’une part : part ÷ total × 100.',
+    memo: [
+      '« Pour cent » veut dire « sur 100 ». 50 % = la moitié, 25 % = le quart, 10 % = un dixième (÷ 10), 1 % = ÷ 100.',
+      '20 % de 80 : 10 % de 80 = 8, donc 20 % = 2 × 8 = 16.',
+      'Pour trouver un pourcentage : part ÷ total, puis × 100. 6 sur 24 → 0,25 → 25 %.',
     ],
-    example: { question: '6 voix sur 24 : quel pourcentage ?', steps: ['6 ÷ 24 = 0,25.', '0,25 × 100 = 25 %.'] },
     source:
       objective('Utiliser des proportions, des pourcentages. Calculer, appliquer des proportions, des pourcentages') +
       ' ; automatisme : « Prendre 1 %, 10 % ou 50 % d’un nombre »',
@@ -493,7 +566,12 @@ const pourcentages: Skill = {
           [r(part, total), 'C’est la proportion ; en pourcentage on multiplie par 100.'],
           [part, 'C’est le nombre de voix, pas le pourcentage.'],
         ]),
-        steps: [`${part} ÷ ${total} = ${fmt(r(part, total))}.`, `× 100 : **${fmt(pct)} %**`],
+        hint: `Calcule ${part} ÷ ${total}, puis multiplie par 100.`,
+        steps: [
+          `Il a ${part} voix sur ${total}.`,
+          `${part} ÷ ${total} = ${fmt(r(part, total))}.`,
+          `« Pour cent » = sur 100 : ${fmt(r(part, total))} × 100 = **${fmt(pct)} %**`,
+        ],
       };
     }
     const t = rng.pick(level === 1 ? [10, 50] : [1, 10, 25, 50, 20]);
@@ -506,7 +584,27 @@ const pourcentages: Skill = {
         [r(x, t), `${t} % de ${x} = ${x} × ${t} ÷ 100, pas ${x} ÷ ${t}.`],
         [x - t, 'Un pourcentage n’est pas une soustraction.'],
       ]),
-      steps: [`${t} % de ${x} = ${x} × {${t}/100} = **${fmt(v)}**`],
+      hint:
+        t === 50
+          ? '50 %, c’est la moitié.'
+          : t === 25
+            ? '25 %, c’est le quart.'
+            : t === 10
+              ? '10 %, c’est diviser par 10.'
+              : t === 1
+                ? '1 %, c’est diviser par 100.'
+                : `${t} %, c’est ${t / 10} fois 10 %. Et 10 %, c’est diviser par 10.`,
+      steps:
+        t === 50 || t === 25 || t === 10 || t === 1
+          ? [
+              `${t} %, c’est ${t === 50 ? 'la moitié : on divise par 2' : t === 25 ? 'le quart : on divise par 4' : t === 10 ? 'un dixième : on divise par 10' : 'un centième : on divise par 100'}.`,
+              `${x} ÷ ${100 / t} = **${fmt(v)}**`,
+            ]
+          : [
+              `${t} %, c’est ${t / 10} fois 10 %.`,
+              `10 % de ${x} = ${x} ÷ 10 = ${fmt(r(x, 10))}.`,
+              `${t} % = ${t / 10} × ${fmt(r(x, 10))} = **${fmt(v)}**`,
+            ],
       targetSeconds: 15,
     };
   },
@@ -517,11 +615,11 @@ const coefficient: Skill = {
   tools: ['calculatrice'],
   title: 'Prix unitaire, vitesse, échelle',
   lesson: {
-    body: [
-      '**Prix unitaire** = prix total ÷ quantité. **Vitesse moyenne** = distance ÷ durée (en km/h si km et h).',
-      '**Échelle** 1/100 000 : 1 cm sur la carte représente 100 000 cm = 1 km en réalité.',
+    memo: [
+      '**Prix d’un seul** : on partage le prix total. 4 cahiers à 10 € → 10 ÷ 4 = 2,50 € le cahier.',
+      '**Vitesse** en km/h = combien de km en **1 heure** : 150 km en 2 h → 150 ÷ 2 = 75 km/h.',
+      '**Échelle** 1/100 000 : 1 cm sur la carte = 100 000 cm en vrai = 1 km.',
     ],
-    example: { question: '150 km en 2 h : vitesse moyenne ?', steps: ['150 ÷ 2 = 75 km/h.'] },
     source: objective(
       'Utiliser un coefficient de proportionnalité dans des contextes concrets (prix unitaire, vitesse moyenne, échelle, etc.)',
     ),
@@ -535,7 +633,11 @@ const coefficient: Skill = {
         prompt: `${n} cahiers coûtent ${fmt(total)} €. Quel est le prix d’un cahier (en €) ?`,
         answer: num(unit, '€'),
         traps: traps(unit, [[mul(total, r(n)), 'On cherche le prix pour **un** cahier : on divise.']]),
-        steps: [`Prix unitaire = ${fmt(total)} ÷ ${n} = **${fmt(unit)}** €`],
+        hint: `On cherche le prix d’un seul cahier : partage ${fmt(total)} € entre les ${n} cahiers.`,
+        steps: [
+          `${n} cahiers coûtent ${fmt(total)} €. Pour un seul, on partage : ${fmt(total)} ÷ ${n}.`,
+          `${fmt(total)} ÷ ${n} = **${fmt(unit)}** €`,
+        ],
       };
     }
     if (level === 2) {
@@ -547,7 +649,12 @@ const coefficient: Skill = {
         prompt: `Un car parcourt ${fmt(d)} km en ${fmt(H)} h. Quelle est sa vitesse moyenne (en km/h) ?`,
         answer: num(v, 'km/h'),
         traps: traps(r(v), [[mul(d, H), 'Vitesse = distance ÷ durée.']]),
-        steps: [`v = ${fmt(d)} ÷ ${fmt(H)} = **${v}** km/h`],
+        hint: `La vitesse en km/h, c’est le nombre de km parcourus en 1 heure. Partage ${fmt(d)} km sur ${fmt(H)} h.`,
+        steps: [
+          `km/h veut dire : combien de km en 1 heure ?`,
+          `${fmt(d)} km en ${fmt(H)} h, donc en 1 h : ${fmt(d)} ÷ ${fmt(H)}.`,
+          `${fmt(d)} ÷ ${fmt(H)} = **${v}** km/h`,
+        ],
       };
     }
     const scale = rng.pick([25000, 50000, 100000]);
@@ -560,9 +667,11 @@ const coefficient: Skill = {
         [mul(cm, r(scale)), `${fmt(mul(cm, r(scale)))} est en **cm** : il faut convertir en km (÷ 100 000).`],
         [mul(cm, r(scale, 1000)), 'Conversion : 1 km = 100 000 cm.'],
       ]),
+      hint: `1 cm sur la carte = ${fmt(scale)} cm en vrai. Calcule en cm, puis convertis en km (1 km = 100 000 cm).`,
       steps: [
-        `Distance réelle : ${fmt(cm)} × ${fmt(scale)} = ${fmt(mul(cm, r(scale)))} cm.`,
-        `En km (÷ 100 000) : **${fmt(realKm)}** km`,
+        `L’échelle 1/${fmt(scale)} veut dire : 1 cm sur la carte = ${fmt(scale)} cm en vrai.`,
+        `${fmt(cm)} cm sur la carte = ${fmt(cm)} × ${fmt(scale)} = ${fmt(mul(cm, r(scale)))} cm en vrai.`,
+        `1 km = 100 000 cm, donc on divise par 100 000 : **${fmt(realKm)}** km`,
       ],
     };
   },
@@ -574,11 +683,10 @@ const formuleValeurs: Skill = {
   id: 'm5-fonctions-formule',
   title: 'Grandeur en fonction d’une autre',
   lesson: {
-    body: [
-      '« Le périmètre P **en fonction** du côté c » : une formule donne P à partir de c, par exemple P = 4 × c.',
-      'Pour remplir un tableau de valeurs, on remplace la variable par chaque valeur.',
+    memo: [
+      'Une formule, c’est une machine : on met un nombre dedans, elle en ressort un autre.',
+      'P = 3 × n + 2 avec n = 5 : on remplace n par 5 → 3 × 5 + 2 = 17.',
     ],
-    example: { question: 'Prix = 3 × n + 2 (n tickets). Pour n = 5 ?', steps: ['3 × 5 + 2 = 17.'] },
     source: objective(
       'Introduire l’expression « en fonction de ». Traduire la relation de dépendance entre deux grandeurs par un tableau de valeurs à partir d’une formule',
     ),
@@ -611,7 +719,12 @@ const formuleValeurs: Skill = {
     return {
       prompt: `${f.what} est donné par ${f.txt}. Calcule la valeur pour ${f.v} = ${x}.`,
       answer: num(v),
-      steps: [`On remplace ${f.v} par ${x} dans ${f.txt}.`, `Résultat : **${v}**`],
+      hint: `Remplace ${f.v} par ${x} dans la formule ${f.txt}, puis calcule (× avant +).`,
+      steps: [
+        `La formule est une machine : on y met ${f.v} = ${x}.`,
+        `${f.txt} devient ${f.txt.split(' = ')[0]} = ${(f.txt.split(' = ')[1] ?? '').replace(f.v, String(x)).replace(/x\^2/, `${x} × ${x}`).replace(`${x}^2`, `${x} × ${x}`)}.`,
+        `On calcule : **${v}**`,
+      ],
       targetSeconds: 20,
     };
   },
@@ -621,14 +734,10 @@ const lireGraphique: Skill = {
   id: 'm5-fonctions-graphique',
   title: 'Lire un graphique',
   lesson: {
-    body: [
-      'Pour lire une image : on part de la valeur sur l’axe horizontal, on monte jusqu’à la courbe, puis on lit sur l’axe vertical.',
-      'Pour lire un antécédent, on fait le chemin inverse.',
+    memo: [
+      'Lire un graphique, c’est un trajet en « L » : on part de l’axe du bas, on **monte** jusqu’à la courbe, puis on va **à gauche** lire sur l’axe vertical.',
+      'Pour trouver le moment le plus chaud, on cherche le point **le plus haut** de la courbe, et on descend lire l’heure en bas.',
     ],
-    example: {
-      question: 'Température à 14 h ?',
-      steps: ['On part de 14 sur l’axe horizontal, on monte jusqu’à la courbe, on lit 18 °C.'],
-    },
     source: objective('Lire et interpréter un graphique cartésien donné par une courbe ou un nuage de points'),
   },
   generate(rng, level) {
@@ -649,7 +758,12 @@ const lireGraphique: Skill = {
         figure,
         answer: num(max.x, 'h'),
         traps: traps(r(max.x), [[max.y, `${max.y} est la température maximale ; on demande l’**heure**.`]]),
-        steps: [`Le point le plus haut a pour abscisse ${max.x} : à **${max.x} h** (${max.y} °C).`],
+        hint: 'Cherche le point le plus haut de la courbe, puis descends tout droit lire l’heure sur l’axe du bas.',
+        steps: [
+          'La température la plus élevée, c’est le point le plus haut de la courbe.',
+          `Ce point est à ${max.y} °C. On descend tout droit jusqu’à l’axe du bas.`,
+          `On lit l’heure : **${max.x} h**.`,
+        ],
       };
     }
     return {
@@ -657,7 +771,12 @@ const lireGraphique: Skill = {
       figure,
       answer: num(p.y, '°C'),
       traps: traps(r(p.y), [[p.x, 'Ça, c’est l’heure : on lit la température sur l’axe vertical.']]),
-      steps: [`On part de ${p.x} h sur l’axe horizontal, on monte jusqu’à la courbe, on lit **${p.y} °C**.`],
+      hint: `Pars de ${p.x} h sur l’axe du bas, monte jusqu’à la courbe, puis va à gauche lire la température.`,
+      steps: [
+        `On part de ${p.x} h sur l’axe du bas.`,
+        'On monte tout droit jusqu’à la courbe.',
+        `On va à gauche jusqu’à l’axe vertical et on lit **${p.y} °C**.`,
+      ],
       targetSeconds: 20,
     };
   },
@@ -670,14 +789,10 @@ const blocsValeur: Skill = {
   title: 'Prévoir le résultat d’un programme',
   advice: 'brouillon',
   lesson: {
-    body: [
-      'On exécute les blocs **dans l’ordre**, en notant la valeur des variables après chaque bloc.',
-      '« mettre a à … » remplace la valeur ; « ajouter 2 à a » augmente a de 2.',
+    memo: [
+      'Joue l’ordinateur : lis les blocs **un par un, de haut en bas**, et note au brouillon la valeur de chaque variable.',
+      '« mettre a à … » **remplace** la valeur. « ajouter 2 à a » **augmente** a de 2.',
     ],
-    example: {
-      question: 'a ← 4 ; a ← a × 3 ; ajouter 2 à a ; dire a.',
-      steps: ['a = 4, puis 12, puis 14.', 'Le lutin dit 14.'],
-    },
     source: objective(
       'Prévoir la valeur d’une expression informatique avant son exécution. Identifier les entrées et sorties d’un programme',
     ),
@@ -712,8 +827,10 @@ const blocsValeur: Skill = {
         [input * m, `N’oublie pas le bloc « ajouter ${k} à a ».`],
         [input + m + k, `« réponse × ${m} » est une multiplication.`],
       ]),
+      hint: 'Fais comme l’ordinateur : lis les blocs un par un et note la valeur de a (et de b) après chacun.',
       steps: [
-        `réponse = ${input} ; a = ${input} × ${m} = ${input * m} ; puis a = ${input * m + k}.`,
+        `On joue l’ordinateur, bloc par bloc. La réponse vaut ${input}.`,
+        `a = ${input} × ${m} = ${input * m}, puis on ajoute ${k} : a = ${input * m + k}.`,
         ...(level >= 2
           ? [
               `b = ${input * m + k} − ${s} = ${input * m + k - s}${level === 3 ? `, puis b = ${input * m + k - s} × 2 = ${(input * m + k - s) * 2}` : ''}.`,
@@ -731,11 +848,10 @@ const blocsBoucle: Skill = {
   title: 'Boucle « répéter »',
   advice: 'brouillon',
   lesson: {
-    body: [
-      '« répéter n fois » exécute les blocs à l’intérieur **n fois de suite**.',
-      'x ← 2 ; répéter 4 fois : ajouter 3 à x → x vaut 2 + 4 × 3 = 14.',
+    memo: [
+      '« répéter 4 fois » : on fait ce qu’il y a dedans **4 fois de suite**, comme 4 tours de manège.',
+      'Note x au brouillon après chaque tour : x ← 2, puis + 3 à chaque tour : 5, 8, 11, 14.',
     ],
-    example: { question: 'x ← 1 ; répéter 3 fois : x ← x × 2.', steps: ['1 → 2 → 4 → 8.', 'x vaut 8.'] },
     source: objective(
       'Effectuer une boucle inconditionnelle simple permettant de répéter une séquence linéaire d’instructions un nombre précis de fois',
     ),
@@ -761,8 +877,10 @@ const blocsBoucle: Skill = {
         traps: traps(r(v), [
           [begin * 2 * n, `x est **doublé** à chaque tour (× 2 répété ${n} fois), on n’ajoute pas.`],
         ]),
+        hint: 'Note x après chaque tour de boucle : à chaque tour, x est doublé.',
         steps: [
-          `x : ${Array.from({ length: n + 1 }, (_, i) => begin * 2 ** i).join(' → ')}.`,
+          `x commence à ${begin}. À chaque tour, x est multiplié par 2 (doublé), et il y a ${n} tours.`,
+          `Tour par tour : ${Array.from({ length: n + 1 }, (_, i) => begin * 2 ** i).join(' → ')}.`,
           `Le lutin dit **${v}**.`,
         ],
       };
@@ -784,8 +902,10 @@ const blocsBoucle: Skill = {
         [start + k, `Le bloc est répété ${n} fois, pas une seule.`],
         [n * k, `x commence à ${start}.`],
       ]),
+      hint: `x commence à ${start}. Combien ajoute-t-on à chaque tour, et combien de tours ?`,
       steps: [
-        `x commence à ${start}, puis on ajoute ${k} ${n} fois : ${start} + ${n} × ${k}.`,
+        `x commence à ${start}. À chaque tour, on ajoute ${k}, et il y a ${n} tours.`,
+        `Tour par tour : ${Array.from({ length: n + 1 }, (_, i) => start + i * k).join(' → ')}.`,
         `Le lutin dit **${v}**.`,
       ],
       targetSeconds: 30,

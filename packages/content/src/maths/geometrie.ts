@@ -21,14 +21,11 @@ const droiteDecimaux: Skill = {
   id: 'm5-droite-decimaux',
   title: 'Lire une abscisse décimale',
   lesson: {
-    body: [
-      'On cherche d’abord la valeur d’**une graduation** : écart entre deux nombres écrits ÷ nombre d’intervalles.',
-      'Puis on compte les graduations depuis le nombre écrit le plus proche.',
+    memo: [
+      'Avant tout, trouve ce que vaut **une case** : compte les cases entre deux nombres écrits (pas les traits !).',
+      '10 cases entre 2 et 3 → une case vaut 0,1. 5 cases → une case vaut 0,2. 2 cases → 0,5.',
+      'Puis pars du nombre écrit juste avant le point et avance case par case.',
     ],
-    example: {
-      question: 'Entre 2 et 3 il y a 10 intervalles ; A est 7 graduations après 2.',
-      steps: ['Une graduation vaut 1 ÷ 10 = 0,1.', 'A = 2 + 7 × 0,1 = 2,7.'],
-    },
     source: objective('Sur une droite graduée : lire l’abscisse d’un point donné ; placer un point d’abscisse donnée'),
   },
   generate(rng, level) {
@@ -55,9 +52,13 @@ const droiteDecimaux: Skill = {
           `Ici une graduation vaut ${fmt(r(1, sub))}, pas 0,1 : il y a ${sub} intervalles par unité.`,
         ],
       ]),
+      hint: `Compte les cases entre ${start} et ${start + 1} : combien vaut une case ?`,
       steps: [
-        `Entre ${start} et ${start + 1} : ${sub} intervalles, donc une graduation vaut ${fmt(r(1, sub))}.`,
-        `A est à ${k} graduations après ${start} : ${start} + ${k} × ${fmt(r(1, sub))} = **${fmt(value)}**`,
+        `Entre ${start} et ${start + 1}, on compte ${sub} cases. Une case vaut donc 1 ÷ ${sub} = ${fmt(r(1, sub))}.`,
+        k < sub
+          ? `On part de ${start} et on avance de ${k} case${k > 1 ? 's' : ''} jusqu’à A : ${k} × ${fmt(r(1, sub))} = ${fmt(r(k, sub))}.`
+          : `On part de ${start + 1} (le nombre écrit juste avant A) et on avance de ${k - sub} case${k - sub > 1 ? 's' : ''} : ${k - sub} × ${fmt(r(1, sub))} = ${fmt(r(k - sub, sub))}.`,
+        `A = ${k < sub ? start : start + 1} + ${fmt(r(k < sub ? k : k - sub, sub))} = **${fmt(value)}**`,
       ],
     };
   },
@@ -67,14 +68,10 @@ const coordonnees: Skill = {
   id: 'm5-coordonnees',
   title: 'Coordonnées dans un repère',
   lesson: {
-    body: [
-      'Les coordonnées d’un point s’écrivent (abscisse ; ordonnée) : on lit d’abord **sur l’axe horizontal**, puis **sur l’axe vertical**.',
-      'B(−3 ; 2) : 3 unités à gauche de l’origine, puis 2 vers le haut.',
+    memo: [
+      'Pour aller à B(−3 ; 2), pars du centre : **d’abord on marche** (horizontal : 3 vers la gauche), **ensuite on monte** (vertical : 2 vers le haut).',
+      'Moyen de retenir : « on prend l’ascenseur après avoir marché dans le couloir ». Négatif = gauche ou bas.',
     ],
-    example: {
-      question: 'Placer C(2 ; −4).',
-      steps: ['Abscisse 2 : 2 unités vers la droite.', 'Ordonnée −4 : 4 unités vers le bas.'],
-    },
     source: objective(
       'Dans le plan muni d’un repère orthogonal : lire les coordonnées d’un point donné ; placer un point de coordonnées données',
     ),
@@ -99,9 +96,11 @@ const coordonnees: Skill = {
         figure: { ...base, points: [], pick: true },
         answer: { kind: 'point', x, y },
         traps: t,
+        hint: `Pars du centre : d’abord ${fmt(x)} à l’horizontale, puis ${fmt(y)} à la verticale. Négatif = gauche ou bas.`,
         steps: [
-          `Abscisse ${fmt(x)} : ${Math.abs(x)} unité${Math.abs(x) > 1 ? 's' : ''} vers la ${x > 0 ? 'droite' : 'gauche'}.`,
-          `Ordonnée ${fmt(y)} : ${Math.abs(y)} unité${Math.abs(y) > 1 ? 's' : ''} vers le ${y > 0 ? 'haut' : 'bas'}.`,
+          `On part du centre du repère (l’origine).`,
+          `1er nombre, ${fmt(x)} : on marche de ${Math.abs(x)} case${Math.abs(x) > 1 ? 's' : ''} vers la ${x > 0 ? 'droite' : 'gauche'}${x < 0 ? ' (négatif = gauche)' : ''}.`,
+          `2e nombre, ${fmt(y)} : on ${y > 0 ? 'monte' : 'descend'} de ${Math.abs(y)} case${Math.abs(y) > 1 ? 's' : ''}${y < 0 ? ' (négatif = bas)' : ''}. Le point B est **là, entouré en vert**.`,
         ],
       };
     }
@@ -113,7 +112,12 @@ const coordonnees: Skill = {
         { label: coord(-x, y), why: 'Le signe de l’abscisse est faux.' },
         { label: coord(x, -y), why: 'Le signe de l’ordonnée est faux.' },
       ]),
-      steps: [`Abscisse (horizontal) : ${fmt(x)} ; ordonnée (vertical) : ${fmt(y)}.`, `A**${coord(x, y)}**`],
+      hint: 'Pars du centre : combien de cases à l’horizontale pour être sous (ou sur) A ? Puis combien à la verticale ?',
+      steps: [
+        `On part du centre et on va jusqu’à A en deux temps.`,
+        `À l’horizontale : ${Math.abs(x)} case${Math.abs(x) > 1 ? 's' : ''} vers la ${x > 0 ? 'droite' : 'gauche'} → ${fmt(x)}. C’est le 1er nombre.`,
+        `À la verticale : ${Math.abs(y)} case${Math.abs(y) > 1 ? 's' : ''} vers le ${y > 0 ? 'haut' : 'bas'} → ${fmt(y)}. C’est le 2e nombre : A**${coord(x, y)}**.`,
+      ],
     };
   },
 };
@@ -125,13 +129,11 @@ const volumes: Skill = {
   tools: ['calculatrice'],
   title: 'Volume du cube, du pavé, du prisme',
   lesson: {
-    body: [
-      'Cube d’arête a : V = a × a × a = a^3.',
-      'Pavé droit : V = L × ℓ × h.',
-      'Prisme droit : V = aire de la base × hauteur.',
-      'Si les longueurs sont en cm, le volume est en cm^3.',
+    memo: [
+      'Le volume, c’est le nombre de petits cubes de 1 cm de côté qu’on peut ranger dedans.',
+      'Pavé : on remplit le fond (longueur × largeur), puis on empile autant d’étages que la hauteur → L × ℓ × h.',
+      'Prisme : même idée, aire du fond × hauteur. Cube : a × a × a.',
     ],
-    example: { question: 'Pavé de 5 cm × 3 cm × 2 cm.', steps: ['V = 5 × 3 × 2 = 30 cm^3.'] },
     source: objective('Calculer le volume du cube, du pavé droit, du prisme droit'),
   },
   generate(rng, level) {
@@ -147,7 +149,12 @@ const volumes: Skill = {
           [a * a, `${a} × ${a} = ${a * a} est l’aire d’une face ; il faut encore × ${a}.`],
           [a * 12, `${a * 12} cm est la longueur totale des 12 arêtes.`],
         ]),
-        steps: [`V = ${a} × ${a} × ${a} = **${v}** cm^3`],
+        hint: 'Combien de petits cubes au fond ? Et combien d’étages ?',
+        steps: [
+          `On imagine qu’on remplit le cube avec des petits cubes de 1 cm.`,
+          `Au fond : ${a} rangées de ${a}, soit ${a} × ${a} = ${a * a} petits cubes.`,
+          `On empile ${a} étages : ${a * a} × ${a} = **${v}** cm^3`,
+        ],
       };
     }
     if (level === 2) {
@@ -161,7 +168,12 @@ const volumes: Skill = {
           [L + l + h, 'On multiplie les trois dimensions, on ne les additionne pas.'],
           [L * l, `${L} × ${l} est l’aire de la base ; il faut encore multiplier par la hauteur.`],
         ]),
-        steps: [`V = L × ℓ × h = ${L} × ${l} × ${h} = **${v}** cm^3`],
+        hint: 'Combien de petits cubes au fond ? Et combien d’étages ?',
+        steps: [
+          `On imagine qu’on remplit le pavé avec des petits cubes de 1 cm.`,
+          `Au fond : ${L} × ${l} = ${L * l} petits cubes.`,
+          `On empile ${h} étages : ${L * l} × ${h} = **${v}** cm^3`,
+        ],
       };
     }
     const [a, b] = [rng.int(2, 8) * 2, rng.int(2, 9)];
@@ -175,9 +187,11 @@ const volumes: Skill = {
       traps: traps(r(v), [
         [a * b * h, `L’aire d’un triangle rectangle est ${a} × ${b} ÷ 2 : il manque la division par 2.`],
       ]),
+      hint: 'Calcule d’abord l’aire du triangle du fond (attention, c’est la moitié d’un rectangle !), puis multiplie par la hauteur.',
       steps: [
-        `Aire de la base : ${a} × ${b} ÷ 2 = ${base} cm^2.`,
-        `V = aire de la base × hauteur = ${base} × ${h} = **${v}** cm^3`,
+        `Le fond est un triangle rectangle : c’est la moitié d’un rectangle de ${a} cm sur ${b} cm.`,
+        `Aire du fond : ${a} × ${b} ÷ 2 = ${base} cm^2.`,
+        `On empile ${h} étages : ${base} × ${h} = **${v}** cm^3`,
       ],
       targetSeconds: 60,
     };
@@ -198,11 +212,11 @@ const conversionsVolume: Skill = {
   tools: ['conversion-volume'],
   title: 'Unités de volume et de contenance',
   lesson: {
-    body: [
-      '1 m^3 = 1 000 dm^3 et 1 dm^3 = 1 000 cm^3 : on passe d’une unité à la suivante en × ou ÷ **1 000**.',
-      '1 dm^3 = 1 L et 1 cm^3 = 1 mL. 1 L = 100 cL = 1 000 mL.',
+    memo: [
+      'Utilise le tableau de conversion ! Place le chiffre des unités dans la colonne de l’unité de départ, puis lis le nombre dans la colonne d’arrivée.',
+      'À retenir : 1 L = 1 dm^3 (une bouteille d’eau) et 1 mL = 1 cm^3 (un petit dé).',
+      'Vers une unité plus petite, le nombre devient plus grand : 1 L = 100 cL = 1 000 mL.',
     ],
-    example: { question: '2,5 L = … cm^3', steps: ['2,5 L = 2,5 dm^3.', '2,5 × 1 000 = 2 500 cm^3.'] },
     source: objective('Connaitre et convertir des unités usuelles (volume et capacité)'),
   },
   generate(rng, level) {
@@ -243,9 +257,15 @@ const conversionsVolume: Skill = {
       prompt: `Complète : ${fmt(x)} ${from.u} = … ${to.u}`,
       answer: num(result, to.u),
       traps: traps(result, t),
+      hint: `Utilise le tableau de conversion : chiffre des unités de ${fmt(x)} sous ${from.u}, puis lis le nombre jusqu’à la colonne ${to.u}.`,
+      demo: { kind: 'conversion', table: 'volume', value: x, from: from.u, to: to.u },
       steps: [
-        'Rappels : 1 m^3 = 1 000 dm^3 = 1 000 000 cm^3 ; 1 dm^3 = 1 L = 100 cL = 1 000 mL ; 1 cm^3 = 1 mL.',
-        `${fmt(x)} ${from.u} = **${fmt(result)} ${to.u}**`,
+        `On place ${fmt(x)} dans le tableau : le chiffre des unités va dans la colonne ${from.u}.`,
+        power > 0
+          ? `${to.u} est une unité plus petite que ${from.u} : il en faut plus. Le nombre devient ${fmt(10 ** power)} fois plus grand.`
+          : `${to.u} est une unité plus grande que ${from.u} : il en faut moins. Le nombre devient ${fmt(10 ** -power)} fois plus petit.`,
+        `On met la virgule juste après la colonne ${to.u}${power > 0 ? ' et on complète les cases vides par des 0' : ''}.`,
+        `On lit : ${fmt(x)} ${from.u} = **${fmt(result)} ${to.u}**`,
       ],
     };
   },
@@ -262,16 +282,11 @@ const disque: Skill = {
   tools: ['calculatrice'],
   title: 'Aire du disque, volume du cylindre',
   lesson: {
-    body: [
-      'Aire d’un disque de rayon r : A = π × r × r = π × r^2.',
-      'À la calculatrice, utilise la touche π, puis arrondis comme demandé. On peut aussi prendre π ≈ 3,14.',
-      'Attention : si on donne le diamètre, le rayon est la moitié.',
-      'Volume d’un cylindre : V = aire du disque de base × hauteur = π × r^2 × h.',
+    memo: [
+      'Aire d’un disque = π × rayon × rayon. À la calculatrice : touche π, puis × r × r.',
+      'Le **rayon**, c’est du centre au bord. Le **diamètre**, c’est tout le travers : le rayon en est la moitié.',
+      'Arrondir au dixième : on garde 1 chiffre après la virgule (78,539… → 78,5). Le cylindre, c’est un disque empilé sur toute la hauteur : aire du disque × hauteur.',
     ],
-    example: {
-      question: 'Aire d’un disque de rayon 5 cm, arrondie au dixième.',
-      steps: ['A = π × 5 × 5 = 25 × π ≈ 78,5398…', 'Arrondi au dixième : A ≈ 78,5 cm^2.'],
-    },
     source: objective('Calculer l’aire du disque, le volume du cylindre de révolution'),
   },
   generate(rng, level) {
@@ -298,10 +313,12 @@ const disque: Skill = {
           ...wrong(2 * radius * h, 'La base est un disque : on prend son **aire** π × r^2, pas son périmètre.'),
           ...wrong(k, `Il faut encore multiplier l’aire de la base par la hauteur ${h}.`),
         ]),
+        hint: 'Calcule d’abord l’aire du disque du fond (π × r × r), puis multiplie par la hauteur. Et n’oublie pas d’arrondir !',
         steps: [
-          `Aire de la base : π × ${radius}^2 = ${k} × π.`,
-          `V = ${k} × π × ${h} = ${k * h} × π ≈ ${approx(k * h)}`,
-          `Arrondi au dixième : **${fmt(piForms(k * h)[0])}** cm^3 (avec π ≈ 3,14 : ${fmt(piForms(k * h)[1])}).`,
+          `Un cylindre, c’est un disque empilé sur toute la hauteur. On calcule d’abord l’aire du disque du fond.`,
+          `Aire du fond : π × ${radius} × ${radius} = ${k} × π.`,
+          `On multiplie par la hauteur ${h} : ${k} × π × ${h} = ${k * h} × π. La calculatrice donne ${approx(k * h)}`,
+          `On arrondit au dixième (1 chiffre après la virgule) : **${fmt(piForms(k * h)[0])}** cm^3. Avec π ≈ 3,14, on trouve ${fmt(piForms(k * h)[1])}, c’est juste aussi.`,
         ],
         targetSeconds: 60,
       };
@@ -323,10 +340,18 @@ const disque: Skill = {
         ...wrong(4 * k, 'Le diamètre a été utilisé à la place du rayon : r = diamètre ÷ 2.'),
         ...wrong(2 * radius * radius, 'r^2 = r × r, pas 2 × r.'),
       ]),
+      hint: givenDiameter
+        ? 'Attention : on te donne le diamètre. Le rayon, c’est la moitié ! Puis π × r × r.'
+        : 'Aire du disque = π × rayon × rayon. Utilise la touche π, puis arrondis.',
       steps: [
-        ...(givenDiameter ? [`Rayon = ${2 * radius} ÷ 2 = ${radius} cm.`] : []),
-        `A = π × ${radius} × ${radius} = ${k} × π ≈ ${approx(k)}`,
-        `Arrondi au dixième : **${fmt(piForms(k)[0])}** cm^2 (avec π ≈ 3,14 : ${fmt(piForms(k)[1])}).`,
+        ...(givenDiameter
+          ? [
+              `Attention : ${2 * radius} cm, c’est le diamètre (tout le travers). Le rayon, c’est la moitié : ${2 * radius} ÷ 2 = ${radius} cm.`,
+            ]
+          : []),
+        `Aire du disque = π × rayon × rayon = π × ${radius} × ${radius}.`,
+        `À la calculatrice : π × ${radius} × ${radius} = ${approx(k)}`,
+        `On arrondit au dixième (1 chiffre après la virgule) : **${fmt(piForms(k)[0])}** cm^2. Avec π ≈ 3,14, on trouve ${fmt(piForms(k)[1])}, c’est juste aussi.`,
       ],
       targetSeconds: 45,
     };
@@ -415,17 +440,11 @@ const patron: Skill = {
   id: 'm5-patron-cube',
   title: 'Patron d’un cube',
   lesson: {
-    body: [
-      'Un patron de cube est formé de **6 carrés** qui, pliés, recouvrent les 6 faces sans chevauchement.',
-      'Jamais 4 carrés en carré 2 × 2, jamais 5 carrés alignés : ils se superposeraient au pliage.',
+    memo: [
+      'Un patron, c’est le cube « déplié » à plat : 6 carrés qui, en pliant, ferment toutes les faces.',
+      'Imagine le pliage : choisis un carré comme fond, et relève les autres autour.',
+      'Ça ne marche jamais avec 4 carrés en bloc 2 × 2, ni avec 5 carrés en ligne : deux faces se chevaucheraient.',
     ],
-    example: {
-      question: 'Une croix de 6 carrés est-elle un patron ?',
-      steps: [
-        'La bande de 4 forme le tour du cube, les 2 carrés de part et d’autre font le dessus et le dessous.',
-        'Oui.',
-      ],
-    },
     source: objective('Reconnaitre un patron d’un cube') + ' (automatisme)',
   },
   generate(rng) {
@@ -440,10 +459,13 @@ const patron: Skill = {
           ? 'En pliant, chaque carré recouvre une face différente : c’est un patron.'
           : 'Au pliage, deux carrés se superposent (carré 2 × 2, 5 alignés ou 4 faces autour d’un même sommet).',
       ),
+      hint: 'Choisis un carré comme fond du cube et imagine qu’on relève les autres autour. Est-ce que tout se ferme sans chevauchement ?',
       steps: [
+        'On imagine le pliage : un carré sert de fond, et on relève les autres autour.',
         isNet
-          ? 'Une bande de 4 carrés fait le tour ; les 2 autres ferment le dessus et le dessous : **oui**.'
-          : 'Au pliage, deux faces se superposent et une face reste ouverte : **non**.',
+          ? 'Ici, une bande de 4 carrés fait le tour du cube, et les 2 autres viennent fermer le dessus et le dessous.'
+          : 'Ici, en relevant les carrés, deux d’entre eux arrivent au même endroit, et une face reste ouverte.',
+        isNet ? 'Toutes les faces sont fermées : c’est **bien un patron**.' : 'Ce n’est **pas un patron** de cube.',
       ],
       targetSeconds: 25,
     };
@@ -456,13 +478,10 @@ const symetrieAxiale: Skill = {
   id: 'm5-symetrie-axiale',
   title: 'Symétrie axiale sur quadrillage',
   lesson: {
-    body: [
-      'Le symétrique de A par rapport à la droite (d) est le point A′ tel que (d) soit la **médiatrice** de [AA′] : même distance à l’axe, de l’autre côté, perpendiculairement.',
+    memo: [
+      'La symétrie axiale, c’est un **pliage** le long de la droite : A′ est l’endroit où A se poserait en pliant la feuille.',
+      'Compte les carreaux de A jusqu’à l’axe (en allant tout droit vers lui), puis le même nombre de l’autre côté.',
     ],
-    example: {
-      question: 'A est 3 carreaux à gauche d’un axe vertical.',
-      steps: ['A′ est 3 carreaux à droite, sur la même ligne.'],
-    },
     source:
       objective(
         'Reconnaitre et construire le symétrique d’une figure par symétrie axiale, dont l’axe est vertical, horizontal, ou en diagonale sur quadrillage',
@@ -509,10 +528,22 @@ const symetrieAxiale: Skill = {
           ? [{ point: { x, y: 2 * c - y }, why: 'L’axe est vertical : A′ reste sur la même ligne horizontale que A.' }]
           : []),
       ].filter((t) => !(t.point.x === image.x && t.point.y === image.y)),
-      steps: [
-        'A′ est de l’autre côté de l’axe, à la même distance, et [AA′] est perpendiculaire à l’axe.',
-        'Compte les carreaux entre A et l’axe, puis le même nombre de l’autre côté : A′ est le nœud entouré en vert.',
-      ],
+      hint:
+        kind === 'd'
+          ? 'Imagine qu’on plie la feuille le long de la diagonale rouge : où A se pose-t-il ? (Va vers l’axe en suivant les diagonales des carreaux.)'
+          : `Compte les carreaux de A jusqu’à l’axe, en allant tout droit ${kind === 'v' ? 'à l’horizontale' : 'à la verticale'}, puis le même nombre de l’autre côté.`,
+      steps:
+        kind === 'd'
+          ? [
+              'On imagine qu’on plie la feuille le long de la droite rouge (la diagonale).',
+              'Pour aller de A à l’axe, on avance en diagonale, perpendiculairement à lui, et on continue d’autant de l’autre côté.',
+              'A′ est **le nœud entouré en vert** : en pliant, A tombe pile dessus.',
+            ]
+          : [
+              'On imagine qu’on plie la feuille le long de la droite rouge.',
+              `De A jusqu’à l’axe, on compte ${Math.abs((kind === 'v' ? x : y) - c)} carreau${Math.abs((kind === 'v' ? x : y) - c) > 1 ? 'x' : ''}, en allant tout droit ${kind === 'v' ? 'à l’horizontale' : 'à la verticale'}.`,
+              `On en compte autant de l’autre côté, sur la même ${kind === 'v' ? 'ligne' : 'colonne'} : A′ est **le nœud entouré en vert**.`,
+            ],
     };
   },
 };
@@ -521,14 +552,10 @@ const symetrieCentrale: Skill = {
   id: 'm5-symetrie-centrale',
   title: 'Symétrie centrale (demi-tour)',
   lesson: {
-    body: [
-      'Le symétrique de A par rapport au point O est le point A′ tel que **O est le milieu de [AA′]** : c’est un demi-tour autour de O.',
-      'Sur quadrillage : on compte le déplacement de A vers O, et on le refait une fois de plus à partir de O.',
+    memo: [
+      'La symétrie centrale, c’est un **demi-tour** autour du point O, comme une aiguille qui tourne.',
+      'Sur quadrillage : compte le trajet de A jusqu’à O (par exemple 2 à droite, 3 en haut), puis **refais exactement le même trajet** à partir de O.',
     ],
-    example: {
-      question: 'Pour aller de A à O : 2 à droite, 3 en haut.',
-      steps: ['On refait le même trajet à partir de O : 2 à droite, 3 en haut.', 'On arrive en A′.'],
-    },
     source: objective('Définir le demi-tour, ou symétrie centrale'),
   },
   generate(rng) {
@@ -582,9 +609,11 @@ const symetrieCentrale: Skill = {
           why: 'Trop près : A′ doit être aussi loin de O que A.',
         },
       ].filter((t) => !(t.point.x === image.x && t.point.y === image.y)),
+      hint: 'Compte le trajet de A jusqu’à O (à l’horizontale puis à la verticale), et refais le même trajet à partir de O.',
       steps: [
-        `De A à O : ${Math.abs(dx)} ${dx >= 0 ? 'vers la droite' : 'vers la gauche'}, ${Math.abs(dy)} ${dy >= 0 ? 'vers le haut' : 'vers le bas'}.`,
-        'On refait le même déplacement à partir de O : on obtient A′, et O est le milieu de [AA′].',
+        `On compte le trajet de A jusqu’à O : ${Math.abs(dx)} carreau${Math.abs(dx) > 1 ? 'x' : ''} ${dx >= 0 ? 'vers la droite' : 'vers la gauche'}, ${Math.abs(dy)} ${dy >= 0 ? 'vers le haut' : 'vers le bas'}.`,
+        `On refait exactement le même trajet à partir de O : ${Math.abs(dx)} ${dx >= 0 ? 'vers la droite' : 'vers la gauche'}, ${Math.abs(dy)} ${dy >= 0 ? 'vers le haut' : 'vers le bas'}.`,
+        'On arrive sur A′, **le nœud entouré en vert**. O est pile au milieu de A et A′.',
       ],
     };
   },
@@ -594,14 +623,10 @@ const proprietesSymetrie: Skill = {
   id: 'm5-symetrie-proprietes',
   title: 'Propriétés de la symétrie centrale',
   lesson: {
-    body: [
-      'La symétrie centrale **conserve** les longueurs, les angles, les aires et l’alignement.',
-      'L’image d’une droite est une droite **parallèle**. Le centre O est le milieu de chaque segment [MM′].',
+    memo: [
+      'Un demi-tour, c’est comme faire tourner un dessin sur la table : il ne se déforme pas.',
+      'Donc les longueurs, les angles et les aires **restent les mêmes**. Une droite devient une droite **parallèle** (elle est juste retournée).',
     ],
-    example: {
-      question: '[AB] mesure 4 cm. Combien mesure son symétrique [A′B′] ?',
-      steps: ['La symétrie centrale conserve les longueurs : A′B′ = 4 cm.'],
-    },
     source: objective('Connaitre les propriétés du demi-tour'),
   },
   generate(rng, level) {
@@ -611,7 +636,12 @@ const proprietesSymetrie: Skill = {
         prompt: `[AB] mesure ${fmt(l)} cm. [A′B′] est son symétrique par rapport à un point O. Combien mesure [A′B′] (en cm) ?`,
         answer: num(l, 'cm'),
         traps: traps(l, [[mul(l, r(2)), 'La symétrie centrale conserve les longueurs : on ne double pas.']]),
-        steps: [`La symétrie centrale conserve les longueurs : A′B′ = AB = **${fmt(l)}** cm.`],
+        hint: 'Quand on fait tourner un dessin d’un demi-tour, est-ce qu’il s’agrandit ?',
+        steps: [
+          `Le symétrique, c’est le segment après un demi-tour : on le fait tourner, sans l’étirer.`,
+          `Un demi-tour ne change pas les longueurs.`,
+          `Donc A′B′ = AB = **${fmt(l)}** cm.`,
+        ],
         targetSeconds: 10,
       };
     }
@@ -648,7 +678,12 @@ const proprietesSymetrie: Skill = {
     return {
       prompt: `Vrai ou faux : ${s.t}`,
       ...trueFalse(s.v, s.why),
-      steps: [`${s.v ? '**Vrai**' : '**Faux**'} : ${s.why}`],
+      hint: 'Imagine un dessin qu’on fait tourner d’un demi-tour sur la table : qu’est-ce qui change, qu’est-ce qui reste pareil ?',
+      steps: [
+        'On imagine un dessin qu’on fait tourner d’un demi-tour : il ne se déforme pas, il est juste retourné.',
+        s.why,
+        `Donc c’est **${s.v ? 'vrai' : 'faux'}**.`,
+      ],
     };
   },
 };
@@ -659,15 +694,11 @@ const anglesVocab: Skill = {
   id: 'm5-angles-vocab',
   title: 'Vocabulaire des angles',
   lesson: {
-    body: [
-      'Angle droit : 90°. Angle plat : 180°. Aigu : moins de 90°. Obtus : entre 90° et 180°.',
-      '**Supplémentaires** : somme 180°. **Opposés par le sommet** : de part et d’autre d’un même sommet, ils ont la même mesure.',
-      'La **bissectrice** partage un angle en deux angles égaux. Équerres : 30°, 60°, 90° ou 45°, 45°, 90°.',
+    memo: [
+      'Droit = le coin d’une feuille (90°). Plat = une ligne droite (180°). **Aigu** = plus petit qu’un coin de feuille (« aigu » comme une pointe). **Obtus** = plus ouvert.',
+      '**Supplémentaires** : ensemble, ils forment une ligne droite (180°).',
+      '**Opposés par le sommet** : deux droites se croisent, les angles face à face sont pareils, comme les deux pointes d’un X.',
     ],
-    example: {
-      question: 'Deux angles opposés par le sommet ; l’un mesure 35°.',
-      steps: ['Ils ont la même mesure : l’autre mesure 35°.'],
-    },
     source:
       objective(
         'Reconnaitre et citer sur une configuration géométrique des angles : angle plein, plat, nul, droit ; angles opposés par le sommet, adjacents, supplémentaires, aigus, obtus',
@@ -694,7 +725,15 @@ const anglesVocab: Skill = {
           q.a,
           q.w.map((label) => ({ label, why: `La bonne réponse est « ${q.a} ».` })),
         ),
-        steps: [`${q.q} **${q.a}**.`],
+        hint: 'Compare avec le coin d’une feuille (90°) et avec une ligne droite (180°).',
+        steps: [
+          q.a === 'obtus' || q.a === 'aigu'
+            ? `On compare avec le coin d’une feuille (90°) : ${q.a === 'aigu' ? 'cet angle est plus petit, plus pointu' : 'cet angle est plus grand, plus ouvert, mais moins qu’une ligne droite (180°)'}.`
+            : q.a === 'supplémentaires'
+              ? 'Deux angles qui font 180° ensemble forment une ligne droite.'
+              : `Repère : le coin d’une feuille fait 90°, une ligne droite fait 180°.`,
+          `${q.q} **${q.a}**.`,
+        ],
         targetSeconds: 10,
       };
     }
@@ -715,7 +754,18 @@ const anglesVocab: Skill = {
               [a, 'Supplémentaires ne veut pas dire égaux : la somme fait 180°.'],
             ],
       ),
-      steps: [opp ? `Opposés par le sommet ⇒ même mesure : **${v}°**.` : `Supplémentaires ⇒ 180° − ${a}° = **${v}°**.`],
+      hint: opp
+        ? 'Imagine un X : les deux angles face à face sont-ils différents ?'
+        : 'Ensemble, les deux angles forment une ligne droite. Combien mesure une ligne droite ?',
+      steps: opp
+        ? [
+            'Opposés par le sommet : deux droites se croisent comme un X, et les angles face à face sont pareils.',
+            `Ils ont donc la même mesure : **${v}°**.`,
+          ]
+        : [
+            'Supplémentaires : ensemble, les deux angles forment une ligne droite, soit 180°.',
+            `Il manque donc 180° − ${a}° = **${v}°**.`,
+          ],
       targetSeconds: 15,
     };
   },
@@ -738,15 +788,11 @@ const anglesParalleles: Skill = {
   id: 'm5-angles-paralleles',
   title: 'Angles et droites parallèles',
   lesson: {
-    body: [
-      'Une sécante coupe deux droites. Deux angles **alternes-internes** sont entre les deux droites, de part et d’autre de la sécante. Deux angles **correspondants** sont du même côté de la sécante, à la même place à chaque intersection.',
-      'Si les deux droites sont **parallèles**, les angles alternes-internes sont égaux, et les angles correspondants aussi.',
-      'Réciproquement : si deux angles alternes-internes (ou correspondants) sont égaux, les droites sont parallèles.',
+    memo: [
+      '**Alternes-internes** : à l’**intérieur** des deux droites, de chaque côté de la sécante (ils dessinent un Z).',
+      '**Correspondants** : à la **même place** à chaque croisement, comme si on faisait glisser un croisement sur l’autre (ils dessinent un F).',
+      'Si les droites sont parallèles, ces angles sont égaux. Et s’ils sont égaux, les droites sont parallèles !',
     ],
-    example: {
-      question: '(d) // (d′) et un angle alterne-interne mesure 65°.',
-      steps: ['Droites parallèles ⇒ angles alternes-internes égaux.', 'L’autre mesure 65°.'],
-    },
     source: objective('Caractériser le parallélisme par les angles : angles alternes internes, angles correspondants'),
   },
   generate(rng, level) {
@@ -775,7 +821,15 @@ const anglesParalleles: Skill = {
               why: `Regarde leur position : ${pair.name === 'alternes-internes' ? 'entre les deux droites, de part et d’autre de la sécante' : pair.name === 'correspondants' ? 'du même côté de la sécante, à la même place à chaque intersection' : 'au même sommet, l’un en face de l’autre'}.`,
             })),
         ),
-        steps: [`a et b sont **${pair.name}**.`],
+        hint: 'Les angles sont-ils entre les deux droites ou dehors ? Du même côté de la sécante ou de chaque côté ?',
+        steps: [
+          pair.name === 'alternes-internes'
+            ? 'a et b sont tous les deux **entre** les deux droites, et de chaque côté de la sécante : ils dessinent un Z.'
+            : pair.name === 'correspondants'
+              ? 'a et b sont à la **même place** à chaque croisement (même côté de la sécante) : ils dessinent un F.'
+              : 'a et b sont au **même croisement**, l’un en face de l’autre, comme les pointes d’un X.',
+          `Ce sont des angles **${pair.name}**.`,
+        ],
       };
     }
     if (level === 3 && rng.next() < 0.5) {
@@ -799,10 +853,15 @@ const anglesParalleles: Skill = {
             ? 'Les angles alternes-internes sont égaux : les droites sont parallèles.'
             : 'Les angles alternes-internes ne sont pas égaux : les droites ne sont pas parallèles (même si elles semblent l’être).',
         ),
+        hint: 'Les droites sont parallèles seulement si les deux angles alternes-internes sont exactement égaux. Ne te fie pas au dessin !',
         steps: [
+          'On ne se fie pas au dessin : on regarde les mesures des angles alternes-internes.',
           parallel
-            ? 'Alternes-internes égaux ⇒ droites **parallèles**.'
-            : `${theta}° ≠ ${other}° ⇒ droites **non parallèles**.`,
+            ? `Les deux angles mesurent ${theta}° : ils sont égaux.`
+            : `${theta}° et ${other}° : ils ne sont pas égaux, même si c’est proche.`,
+          parallel
+            ? 'Donc les droites sont **parallèles** : c’est vrai.'
+            : 'Donc les droites ne sont **pas parallèles** : c’est faux.',
         ],
       };
     }
@@ -821,9 +880,13 @@ const anglesParalleles: Skill = {
       },
       answer: num(asked, '°'),
       traps: traps(r(asked), [[180 - asked, `a et b sont ${pair.name} : ils sont égaux, pas supplémentaires.`]]),
+      hint: `Comment s’appellent les angles a et b ? Que sait-on de ces angles quand les droites sont parallèles ?`,
       steps: [
-        `a et b sont ${pair.name}${pair.name === 'opposés par le sommet' ? '' : ' et (d) // (d′)'} : ils sont égaux.`,
-        `b = **${asked}°**`,
+        `On repère la position de a et b : ce sont des angles ${pair.name}.`,
+        pair.name === 'opposés par le sommet'
+          ? 'Des angles opposés par le sommet sont toujours égaux.'
+          : `Comme (d) et (d′) sont parallèles, des angles ${pair.name} sont égaux.`,
+        `Donc b = a = **${asked}°**`,
       ],
     };
   },
@@ -851,14 +914,11 @@ const triangleAngles: Skill = {
   title: 'Somme des angles d’un triangle',
   advice: 'brouillon',
   lesson: {
-    body: [
-      'Dans un triangle, la somme des trois angles vaut **180°**.',
-      'Triangle isocèle : les deux angles à la base sont égaux. Équilatéral : trois angles de 60°. Rectangle : un angle de 90°, les deux autres font 90° à eux deux.',
+    memo: [
+      'Si on découpe les 3 coins d’un triangle et qu’on les met côte à côte, ils forment une ligne droite : **180°**, toujours !',
+      'Donc l’angle qui manque = 180° − les deux autres.',
+      'Isocèle : les deux angles du bas (à la base) sont jumeaux.',
     ],
-    example: {
-      question: 'Deux angles mesurent 48° et 75°. Le troisième ?',
-      steps: ['180 − 48 − 75 = 57.', 'Il mesure 57°.'],
-    },
     source: objective(
       'Connaitre la somme des angles d’un triangle et savoir la démontrer. Construire des triangles à partir de données partielles',
     ),
@@ -875,7 +935,12 @@ const triangleAngles: Skill = {
           [360 - b - c, 'La somme des angles d’un triangle vaut 180°, pas 360°.'],
           [b + c, `On calcule 180° − ${b}° − ${c}°.`],
         ]),
-        steps: [`180° − ${b}° − ${c}° = **${a}°**`],
+        hint: 'Les trois angles d’un triangle font 180° en tout. Combien manque-t-il ?',
+        steps: [
+          'Les trois angles d’un triangle font toujours 180° ensemble.',
+          `On a déjà ${b}° + ${c}° = ${b + c}°.`,
+          `Il manque 180° − ${b + c}° = **${a}°**`,
+        ],
       };
     }
     if (level === 2) {
@@ -891,9 +956,11 @@ const triangleAngles: Skill = {
             traps: traps(r(base), [
               [180 - apex, `Les deux angles à la base se partagent ${180 - apex}° : chacun vaut la moitié.`],
             ]),
+            hint: 'Isocèle en A : les angles en B et C sont jumeaux. Combien de degrés leur reste-t-il à se partager ?',
             steps: [
-              `Les angles en B et C sont égaux (isocèle en A) et valent ensemble 180° − ${apex}° = ${180 - apex}°.`,
-              `B = ${180 - apex} ÷ 2 = **${base}°**`,
+              'Isocèle en A : les angles en B et C sont jumeaux (même mesure).',
+              `Les trois angles font 180°. Il reste 180° − ${apex}° = ${180 - apex}° pour B et C ensemble.`,
+              `Ils se partagent ça en deux : ${180 - apex} ÷ 2 = **${base}°**`,
             ],
           }
         : {
@@ -903,9 +970,11 @@ const triangleAngles: Skill = {
             traps: traps(r(apex), [
               [180 - base, `L’angle en C mesure aussi ${base}° (isocèle) : il faut l’enlever aussi.`],
             ]),
+            hint: 'Isocèle en A : l’angle en C est le jumeau de l’angle en B. Puis les trois font 180°.',
             steps: [
-              `Isocèle en A : l’angle en C mesure aussi ${base}°.`,
-              `A = 180° − ${base}° − ${base}° = **${apex}°**`,
+              `Isocèle en A : l’angle en C est le jumeau de B, il mesure aussi ${base}°.`,
+              `B et C ensemble : ${base}° + ${base}° = ${2 * base}°.`,
+              `Il reste pour A : 180° − ${2 * base}° = **${apex}°**`,
             ],
           };
     }
@@ -915,9 +984,11 @@ const triangleAngles: Skill = {
     return {
       prompt: `Peut-on construire un triangle dont les angles mesurent ${x}°, ${y}° et ${z}° ?`,
       ...trueFalse(ok, `${x} + ${y} + ${z} = ${(x ?? 0) + (y ?? 0) + z}° ; il faut exactement 180°.`),
+      hint: 'Dans un triangle, les trois angles font exactement 180°. Additionne-les.',
       steps: [
-        `${x} + ${y} + ${z} = ${(x ?? 0) + (y ?? 0) + z}.`,
-        ok ? 'La somme fait 180° : **oui**.' : 'La somme ne fait pas 180° : **non**.',
+        'Dans un triangle, les trois angles font toujours exactement 180°.',
+        `On additionne : ${x} + ${y} + ${z} = ${(x ?? 0) + (y ?? 0) + z}°.`,
+        ok ? 'Ça fait pile 180° : **oui**, c’est possible.' : `Ça ne fait pas 180° : **non**, c’est impossible.`,
       ],
       targetSeconds: 25,
     };
@@ -929,11 +1000,11 @@ const triangleAire: Skill = {
   title: 'Aire d’un triangle',
   advice: 'brouillon',
   lesson: {
-    body: [
-      'Aire d’un triangle = **base × hauteur ÷ 2**, la hauteur étant perpendiculaire à la base.',
-      'On n’utilise pas la longueur d’un côté oblique comme hauteur.',
+    memo: [
+      'Un triangle, c’est la **moitié d’un rectangle** : aire = base × hauteur ÷ 2.',
+      'La hauteur, c’est la distance « tout droit » du sommet jusqu’à la base : elle fait un **angle droit** avec la base (le petit carré sur le dessin).',
+      'Un côté penché n’est pas la hauteur !',
     ],
-    example: { question: 'Base 8 cm, hauteur 5 cm.', steps: ['8 × 5 ÷ 2 = 20 cm^2.'] },
     source: objective('Calculer l’aire d’un triangle'),
   },
   generate(rng, level) {
@@ -970,9 +1041,11 @@ const triangleAire: Skill = {
             ] as [Rational, string][])
           : []),
       ]),
+      hint: 'Repère la hauteur : c’est le trait en pointillés avec l’angle droit. Puis base × hauteur ÷ 2.',
       steps: [
-        `Base ${b} cm, hauteur ${fmt(h)} cm (la hauteur est perpendiculaire à la base).`,
-        `A = ${b} × ${fmt(h)} ÷ 2 = **${fmt(area)}** cm^2`,
+        `La base est le côté du bas : ${b} cm. La hauteur est le pointillé avec l’angle droit : ${fmt(h)} cm${side ? ` (pas le côté penché de ${fmt(side)} cm !)` : ''}.`,
+        `Un triangle, c’est la moitié d’un rectangle de ${b} cm sur ${fmt(h)} cm : ${b} × ${fmt(h)} = ${fmt(mul(r(b), h))}.`,
+        `On prend la moitié : ${fmt(mul(r(b), h))} ÷ 2 = **${fmt(area)}** cm^2`,
       ],
       targetSeconds: 30,
     };
@@ -983,15 +1056,10 @@ const droitesRemarquables: Skill = {
   id: 'm5-droites-remarquables',
   title: 'Hauteurs, médianes, médiatrices',
   lesson: {
-    body: [
-      '**Hauteur** : passe par un sommet et est perpendiculaire au côté opposé. Les 3 hauteurs sont concourantes.',
-      '**Médiane** : relie un sommet au milieu du côté opposé. Elle partage le triangle en deux triangles de même aire.',
-      '**Médiatrice** d’un côté : perpendiculaire à ce côté en son milieu. Les 3 médiatrices se coupent au centre du cercle circonscrit.',
+    memo: [
+      'Regarde les codages sur le dessin ! Un **angle droit** (petit carré) et un **milieu** (petits traits égaux).',
+      '**Hauteur** : part d’un sommet + angle droit. **Médiane** : part d’un sommet + arrive au milieu. **Médiatrice** : milieu + angle droit (elle ne passe pas forcément par un sommet).',
     ],
-    example: {
-      question: 'Segment issu de A, perpendiculaire à [BC].',
-      steps: ['Il passe par un sommet et est perpendiculaire au côté opposé : c’est une hauteur.'],
-    },
     source: objective(
       'Définir et tracer les hauteurs dans un triangle. Définir et tracer les médianes. Connaitre les propriétés des médiatrices et du cercle circonscrit',
     ),
@@ -1029,7 +1097,12 @@ const droitesRemarquables: Skill = {
       return {
         prompt: `Vrai ou faux : ${s.t}`,
         ...trueFalse(s.v, s.why),
-        steps: [`${s.v ? '**Vrai**' : '**Faux**'} : ${s.why}`],
+        hint: 'Rappelle-toi : hauteur = angle droit, médiane = milieu, médiatrice = milieu + angle droit.',
+        steps: [
+          'Hauteur = sommet + angle droit. Médiane = sommet + milieu. Médiatrice = milieu + angle droit.',
+          s.why,
+          `Donc c’est **${s.v ? 'vrai' : 'faux'}**.`,
+        ],
       };
     }
     const ax = rng.int(2, 8);
@@ -1074,12 +1147,19 @@ const droitesRemarquables: Skill = {
                   : 'Elle est perpendiculaire à [BC] en son milieu : c’est une médiatrice.',
           })),
       ),
+      hint: 'Regarde les codages : y a-t-il un angle droit (petit carré) ? un milieu (petits traits) ? La droite part-elle d’un sommet ?',
       steps: [
+        'On regarde les codages sur le dessin : petit carré = angle droit, petits traits = milieu.',
         kind === 'hauteur'
-          ? 'Passe par un sommet + perpendiculaire au côté opposé ⇒ **hauteur**.'
+          ? 'Ici : la droite part du sommet A et fait un angle droit avec [BC]. Pas de milieu.'
           : kind === 'médiane'
-            ? 'Relie un sommet au milieu du côté opposé ⇒ **médiane**.'
-            : 'Perpendiculaire à un côté en son milieu ⇒ **médiatrice**.',
+            ? 'Ici : la droite part du sommet A et arrive au milieu de [BC]. Pas d’angle droit.'
+            : 'Ici : la droite coupe [BC] en son milieu, avec un angle droit. Elle ne part pas d’un sommet.',
+        kind === 'hauteur'
+          ? 'Sommet + angle droit : c’est **une hauteur**.'
+          : kind === 'médiane'
+            ? 'Sommet + milieu : c’est **une médiane**.'
+            : 'Milieu + angle droit : c’est **une médiatrice**.',
       ],
     };
   },
@@ -1091,16 +1171,11 @@ const paraProprietes: Skill = {
   id: 'm5-para-proprietes',
   title: 'Propriétés des parallélogrammes',
   lesson: {
-    body: [
-      '**Parallélogramme** : côtés opposés parallèles. Ses côtés opposés ont la même longueur et ses **diagonales se coupent en leur milieu** (et réciproquement).',
-      '**Rectangle** : parallélogramme avec un angle droit ; diagonales de même longueur.',
-      '**Losange** : parallélogramme avec deux côtés consécutifs égaux ; diagonales perpendiculaires.',
-      '**Carré** : à la fois rectangle et losange.',
+    memo: [
+      'C’est une famille : le **parallélogramme** est le parent. Ses diagonales se coupent en leur milieu.',
+      'Le **rectangle** a en plus des diagonales de même longueur. Le **losange** a en plus des diagonales perpendiculaires (en croix).',
+      'Le **carré** a tout : c’est à la fois un rectangle et un losange.',
     ],
-    example: {
-      question: 'Diagonales qui se coupent en leur milieu et sont perpendiculaires ?',
-      steps: ['Milieu commun ⇒ parallélogramme ; perpendiculaires ⇒ losange.'],
-    },
     source: objective(
       'Connaitre les propriétés caractéristiques des côtés opposés et des diagonales. Définir les parallélogrammes particuliers (rectangle, losange, carré)',
     ),
@@ -1128,7 +1203,18 @@ const paraProprietes: Skill = {
               why: `Milieu commun ⇒ parallélogramme ; même longueur ⇒ rectangle ; perpendiculaires ⇒ losange ; les deux ⇒ carré. Ici : ${c.a}.`,
             })),
         ),
-        steps: [`${c.d.charAt(0).toUpperCase()}${c.d.slice(1)} ⇒ **${c.a}**.`],
+        hint: 'Milieu commun → parallélogramme. Même longueur en plus → rectangle. En croix en plus → losange. Les deux → carré.',
+        steps: [
+          'Les diagonales qui se coupent en leur milieu, c’est la base : c’est au moins un parallélogramme.',
+          c.a === 'un parallélogramme'
+            ? 'Rien d’autre n’est dit (ni même longueur, ni perpendiculaires) : on ne peut pas en dire plus.'
+            : c.a === 'un rectangle'
+              ? 'En plus, elles ont la même longueur : c’est le signe du rectangle.'
+              : c.a === 'un losange'
+                ? 'En plus, elles sont perpendiculaires (en croix) : c’est le signe du losange.'
+                : 'En plus, elles ont la même longueur (rectangle) ET sont perpendiculaires (losange) : les deux à la fois.',
+          `C’est forcément **${c.a}**.`,
+        ],
       };
     }
     const st =
@@ -1186,7 +1272,12 @@ const paraProprietes: Skill = {
     return {
       prompt: `Vrai ou faux : ${s.t}`,
       ...trueFalse(s.v, s.why),
-      steps: [`${s.v ? '**Vrai**' : '**Faux**'} : ${s.why}`],
+      hint: 'Pense à la famille : parallélogramme (parent) → rectangle et losange → carré (qui a tout).',
+      steps: [
+        'Rappel de la famille : tous sont des parallélogrammes ; le rectangle et le losange ont un « super-pouvoir » chacun, le carré a les deux.',
+        s.why,
+        `Donc c’est **${s.v ? 'vrai' : 'faux'}**.`,
+      ],
       targetSeconds: 15,
     };
   },
@@ -1197,14 +1288,10 @@ const paraAire: Skill = {
   title: 'Aire d’un parallélogramme',
   advice: 'brouillon',
   lesson: {
-    body: [
-      'Aire d’un parallélogramme = **base × hauteur** (la hauteur est perpendiculaire à la base).',
-      'On n’utilise pas le côté oblique : ce n’est pas la hauteur.',
+    memo: [
+      'Coupe le petit triangle d’un côté du parallélogramme et recolle-le de l’autre : ça fait un **rectangle** !',
+      'Donc aire = base × hauteur, comme un rectangle. La hauteur, c’est le trait avec l’angle droit, pas le côté penché.',
     ],
-    example: {
-      question: 'Base 7 cm, hauteur 4 cm, côté oblique 5 cm.',
-      steps: ['A = 7 × 4 = 28 cm^2 (le 5 cm ne sert pas).'],
-    },
     source: objective('Savoir calculer l’aire d’un parallélogramme et de figures complexes'),
   },
   generate(rng, level) {
@@ -1238,7 +1325,12 @@ const paraAire: Skill = {
             ] as [Rational, string][])
           : []),
       ]),
-      steps: [`A = base × hauteur = ${b} × ${fmt(h)} = **${fmt(area)}** cm^2`],
+      hint: 'Imagine qu’on découpe le petit triangle et qu’on le recolle de l’autre côté : quel rectangle obtiens-tu ?',
+      steps: [
+        'On découpe le petit triangle d’un côté et on le recolle de l’autre : le parallélogramme devient un rectangle.',
+        `Ce rectangle a pour longueur la base (${b} cm) et pour largeur la hauteur (${fmt(h)} cm, le trait avec l’angle droit)${side ? `. Le côté penché de ${fmt(side)} cm ne sert pas` : ''}.`,
+        `Aire = ${b} × ${fmt(h)} = **${fmt(area)}** cm^2 (pas de ÷ 2 : ce n’est pas un triangle).`,
+      ],
     };
   },
 };
@@ -1250,11 +1342,11 @@ const conversionsLA: Skill = {
   tools: ['conversion-longueur', 'conversion-aire'],
   title: 'Convertir longueurs et aires',
   lesson: {
-    body: [
-      'Longueurs : km, hm, dam, m, dm, cm, mm — on passe d’une unité à la suivante en × ou ÷ **10**.',
-      'Aires : km^2, hm^2, dam^2, m^2, dm^2, cm^2, mm^2 — on passe d’une unité à la suivante en × ou ÷ **100** (1 m^2 = 100 dm^2, car 1 m × 1 m = 10 dm × 10 dm).',
+    memo: [
+      'Utilise le tableau de conversion ! Le chiffre des unités va dans la colonne de l’unité de départ.',
+      'Longueurs : **1 chiffre par colonne** (× 10 d’une unité à l’autre). Aires : **2 chiffres par colonne** (× 100), car un carré de 1 dm de côté contient 10 × 10 = 100 petits carrés de 1 cm.',
+      'Vers une unité plus petite, le nombre devient plus grand.',
     ],
-    example: { question: '450 cm^2 = … dm^2', steps: ['1 dm^2 = 100 cm^2.', '450 ÷ 100 = 4,5 dm^2.'] },
     source: objective(
       'Résoudre des problèmes faisant appel à des conversions d’unités de longueur et d’unités d’aires',
     ),
@@ -1286,9 +1378,19 @@ const conversionsLA: Skill = {
           'Mauvais sens : vers une unité plus petite, le nombre devient plus grand.',
         ],
       ]),
+      hint: `Utilise le tableau de conversion : chiffre des unités de ${fmt(x)} ${area ? 'dans la 2e case de' : 'sous'} ${from}${sup}, puis lis jusqu’à ${to}${sup}.${area ? ' Attention : 2 cases par unité pour les aires !' : ''}`,
+      demo: {
+        kind: 'conversion',
+        table: area ? 'aire' : 'longueur',
+        value: x,
+        from: `${from}${sup}`,
+        to: `${to}${sup}`,
+      },
       steps: [
-        `De ${from}${sup} à ${to}${sup} : ${Math.abs(steps)} rang${Math.abs(steps) > 1 ? 's' : ''}, donc ${steps >= 0 ? '×' : '÷'} ${fmt(factor ** Math.abs(steps))}.`,
-        `${fmt(x)} ${from}${sup} = **${fmt(result)} ${to}${sup}**`,
+        `On place ${fmt(x)} dans le tableau : le chiffre des unités va dans ${area ? 'la case de droite de la colonne' : 'la colonne'} ${from}${sup}.`,
+        `De ${from}${sup} à ${to}${sup}, on se déplace de ${Math.abs(steps)} colonne${Math.abs(steps) > 1 ? 's' : ''}${area ? ` de 2 cases, soit ${2 * Math.abs(steps)} cases` : ''} vers la ${steps >= 0 ? 'droite' : 'gauche'} : le nombre devient ${fmt(factor ** Math.abs(steps))} fois plus ${steps >= 0 ? 'grand' : 'petit'}.`,
+        `On met la virgule juste après ${area ? 'la dernière case de ' : ''}la colonne ${to}${sup}${steps > 0 ? ' et on complète les cases vides par des 0' : ''}.`,
+        `On lit : ${fmt(x)} ${from}${sup} = **${fmt(result)} ${to}${sup}**`,
       ],
     };
   },

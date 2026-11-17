@@ -1,4 +1,5 @@
 import { abs, cmp, dec, eq, fmt, isInteger, mul, parseDecimal, r, sub, type Rational } from './rational.ts';
+import { diagnose } from './diagnose.ts';
 import type { CheckResult, Question, Response } from './types.ts';
 
 function parseFraction(num: string, den: string): Rational | null {
@@ -35,14 +36,14 @@ export function check(question: Question, response: Response): CheckResult {
         const how = ROUND_NAMES[round] ?? `à ${round} décimales`;
         return { correct: false, why: `Presque ! Il fallait arrondir ${how} : ${fmt(answer.value)}.` };
       }
-      return { correct: false };
+      return { correct: false, why: diagnose(value, answer.value) };
     }
     case 'fraction': {
       if (response.kind !== 'fraction') return { correct: false, invalid: true };
       const value = parseFraction(response.num, response.den);
       if (!value) return { correct: false, invalid: true };
       if (eq(value, answer.value)) return { correct: true };
-      return { correct: false, why: trapFor(value) };
+      return { correct: false, why: trapFor(value) ?? diagnose(value, answer.value) };
     }
     case 'choice': {
       if (response.kind !== 'choice' || response.index < 0 || response.index >= answer.options.length) {

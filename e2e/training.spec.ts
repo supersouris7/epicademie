@@ -15,34 +15,39 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   await page.getByRole('button', { name: /Calcul mental/ }).click();
   await page.getByRole('button', { name: /Tables de multiplication/ }).click();
 
-  // Première réponse volontairement fausse : explication, leçon, question similaire.
+  // 1re réponse fausse : Questy donne un indice et on réessaie la même question.
   await expect(page.getByRole('progressbar', { name: 'Progression de la série' })).toBeVisible();
-  await page.getByRole('button', { name: 'Moins' }).click();
-  await page.getByRole('button', { name: '1', exact: true }).click();
-  await page.getByRole('button', { name: 'OK' }).click();
-  await expect(page.getByText('La correction')).toBeVisible();
-  await page.getByRole('button', { name: 'Je n’ai pas compris' }).click();
+  const wrong = async () => {
+    await page.getByRole('button', { name: 'Moins' }).click();
+    await page.getByRole('button', { name: '1', exact: true }).click();
+    await page.getByRole('button', { name: 'OK' }).click();
+  };
+  await wrong();
+  await expect(page.getByText('Essaie encore !')).toBeVisible();
+  // 2e erreur : explication de Questy, bulle par bulle, et mémo à la demande.
+  await wrong();
+  const explanation = page.getByRole('region', { name: 'Explication de Questy' });
+  await expect(explanation).toContainText('Tu as répondu −1');
+  await expect(explanation).toContainText('La bonne réponse');
+  const more = page.getByRole('button', { name: 'Continuer l’explication' });
+  while (await more.isVisible()) await more.click();
+  await page.getByRole('button', { name: 'Le truc à retenir' }).click();
   await expect(page.getByRole('dialog')).toContainText('Tables de multiplication');
-  await page.getByRole('button', { name: /exemple guidé/ }).click();
-  await page.getByRole('button', { name: 'Première étape' }).click();
-  await expect(page.getByText(/Réponse :/)).toBeVisible();
   await page.getByRole('button', { name: /J’ai compris/ }).click();
-  await page.getByRole('button', { name: /Question similaire/ }).click();
+  await page.getByRole('button', { name: /Je réessaie/ }).click();
   await expect(page.getByText('Question similaire', { exact: true })).toBeVisible();
-  await expect(page.getByRole('button', { name: /Question similaire/ })).toBeHidden();
 
   // On répond « −1 » (toujours faux) jusqu'à la fin de la série : 10 questions + 5 variantes au plus.
   const ok = page.getByRole('button', { name: 'OK' });
-  const next = page.getByRole('button', { name: /Suivant|Question similaire/ });
+  const next = page.getByRole('button', { name: /Suivant|Je réessaie/ });
   const end = page.getByText(/On s’accroche/);
-  for (let i = 0; i < 40; i++) {
+  for (let i = 0; i < 80; i++) {
     await expect(ok.or(next).or(end).first()).toBeVisible();
     if (await end.isVisible()) break;
     if (await ok.isVisible()) {
-      await page.getByRole('button', { name: 'Moins' }).click();
-      await page.getByRole('button', { name: '1', exact: true }).click();
-      await ok.click();
-      await expect(next).toBeVisible();
+      await wrong();
+      await expect(next.or(page.getByText('Essaie encore !'))).toBeVisible();
+      continue;
     }
     await next.click();
     await expect(next).toBeHidden();

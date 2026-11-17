@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { generate } from './catalog.ts';
 import { check, normalizeText } from './check.ts';
+import { diagnose } from './diagnose.ts';
 import { dec, r } from './rational.ts';
 import type { Question } from './types.ts';
 
-const base = { skillId: 't', level: 1, seed: 1, prompt: '', steps: [], targetSeconds: 30 } as const;
+const base = { skillId: 't', level: 1, seed: 1, prompt: '', steps: [], hint: '', targetSeconds: 30 } as const;
 
 describe('réponses arrondies', () => {
   const q: Question = {
@@ -25,9 +26,10 @@ describe('réponses arrondies', () => {
     expect(r1.why).toMatch(/arrondir au dixième/);
   });
 
-  it('pas de rappel pour une valeur fausse', () => {
-    expect(answer('80,12').why).toBeUndefined();
-    expect(answer('79').why).toBeUndefined();
+  it('pas de rappel d’arrondi pour une valeur fausse', () => {
+    expect(answer('80,12').why).not.toMatch(/arrondir/);
+    expect(answer('79').why).not.toMatch(/arrondir/);
+    expect(answer('150').why).toBeUndefined();
   });
 });
 
@@ -77,4 +79,20 @@ describe('réponses écrites', () => {
 it('nombre entier attendu : r(…) inchangé', () => {
   const q: Question = { ...base, answer: { kind: 'number', value: r(12) }, traps: [] };
   expect(check(q, { kind: 'number', text: '12' }).correct).toBe(true);
+});
+
+describe('erreurs reconnues automatiquement', () => {
+  it('virgule décalée, signe, fraction inversée, petite erreur', () => {
+    expect(diagnose(dec(35, 0), dec(35, 1))).toMatch(/10 fois trop grand.*un rang/);
+    expect(diagnose(dec(35, 3), dec(35, 1))).toMatch(/100 fois trop petit.*deux rangs/);
+    expect(diagnose(r(-7), r(7))).toMatch(/signe/);
+    expect(diagnose(r(4, 3), r(3, 4))).toMatch(/envers/);
+    expect(diagnose(r(54), r(56))).toMatch(/pas loin/);
+    expect(diagnose(r(12), r(56))).toBeUndefined();
+  });
+
+  it('utilisé par check quand aucun piège ne correspond', () => {
+    const q: Question = { ...base, answer: { kind: 'number', value: r(350) }, traps: [] };
+    expect(check(q, { kind: 'number', text: '3500' }).why).toMatch(/10 fois trop grand/);
+  });
 });

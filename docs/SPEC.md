@@ -169,7 +169,7 @@ _Ensuite_ : ressources (eau, énergie, alimentation), risques et changement glob
 - **Profil** : prénom, fille ou garçon, date de naissance (3 à 100 ans). Les textes s'accordent (Prêt/Prête, titres Apprenti/Apprentie… Champion/Championne). Avatar au choix : Visage (par défaut), Émoji ou Robot (DiceBear) ; le style « Personnage » a été retiré (tête trop coupée dans l’anneau, profils migrés vers Visage).
 - **Âge et duels** : `packages/engine/src/duel.ts` — le plus jeune joue au niveau de référence ; écart de 1–2 ans → temps × 0,9 ; 3–5 ans → +1 niveau, temps × 0,75 ; ≥ 6 ans → +2 niveaux, temps × 0,6 ; adulte contre enfant → +2 niveaux, temps × 0,5. Utilisé par le multijoueur (à venir).
 - **Pas besoin de brouillon** : ardoise (dessin au doigt/stylet) sur toutes les questions ; calculatrice seulement sur les notions où le calcul n'est pas l'objectif (volumes, disque/cylindre, moyenne, fréquences, pourcentages, proportionnalité, prix/vitesse/échelle) ; tableau de conversion à remplir (longueurs, aires, volumes et contenances alignées) sur les conversions.
-- **« Je n'ai pas compris »** (remplace « Revoir la leçon ») : leçon, puis un nouvel exemple de la notion résolu étape par étape, puis la question similaire ; la notion repasse « à revoir » en fin de partie.
+- **« Le truc à retenir »** (remplace « Je n'ai pas compris » et la leçon de manuel) : mémo de 2-3 phrases à hauteur d'enfant, ouvert à la demande depuis l'explication, jamais imposé ; l'ouvrir signale la notion comme mal comprise.
 - **Tableau de bord « Mes progrès »** : matière → domaine officiel → chapitre → notion, avec médaille : bronze (1re réussite), argent (2e, J+2), or (acquise, J+7), platine (acquise, ≥ 90 % sur les réponses récentes et au moins un rappel mensuel réussi).
 
 ## 6. Moteur pédagogique
@@ -209,10 +209,10 @@ Catalogue typé dans `packages/shared/src/modes.ts`.
 
 ### 6.4 Quand l'élève se trompe
 
-1. **Pourquoi cette erreur** : chaque mauvaise réponse typique est reconnue par le générateur (ex. « tu as additionné les dénominateurs », « le signe − s'applique à tout le produit ») et reçoit une explication ciblée.
-2. **Correction pas-à-pas** animée (surlignage de l'étape en cours).
-3. **Rappel de cours** : bouton « Revoir la leçon » qui ouvre une fiche courte de la notion avec un exemple.
-4. **Variante immédiate** : une question similaire juste après pour vérifier ; la notion passe en « à revoir » dans la répétition espacée.
+1. **2e essai avec indice** : à la 1re erreur, Questy dit ce qui cloche (piège prévu par le générateur, ou erreur reconnue automatiquement : virgule décalée, signe, fraction à l'envers, petite erreur de calcul — `packages/content/src/diagnose.ts`) et donne l'**indice** de la question (`Question.hint`, sans la réponse). L'enfant réessaie la même question ; une option de QCM déjà essayée est grisée. Pas de 2e essai quand il ne reste qu'une option (Vrai/Faux, < / >). Seule la 1re réponse compte pour le score et la répétition espacée ; réussie au 2e essai → « Bien rattrapé ! », sans question similaire.
+2. **Explication de Questy** (2e erreur) : « Tu as répondu X, la bonne réponse est Y » + pourquoi, puis l'explication de **sa** question en bulles (une par « Continuer »), sur un ton de coach : ce qu'on cherche, comment, pourquoi (images : argent, thermomètre, pizza, balance, petits cubes…). Le tableau de conversion est animé sur les conversions (`Question.demo`). L'explication s'agrandit, l'énoncé reste en haut.
+3. **Le truc à retenir** : mémo court de la notion, à la demande.
+4. **« Je réessaie »** : une question similaire juste après pour vérifier ; la notion passe en « à revoir » dans la répétition espacée.
 
 ---
 

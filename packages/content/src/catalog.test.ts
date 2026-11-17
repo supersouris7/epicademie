@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CHAPTERS, generate } from './catalog.ts';
 import { check } from './check.ts';
-import { eq, fmt, frac } from './rational.ts';
+import { eq, fmt, frac, toNumber } from './rational.ts';
 import type { Figure, Level, Question, Response } from './types.ts';
 
 const LEVELS: Level[] = [1, 2, 3];
@@ -51,13 +51,30 @@ describe('catalogue', () => {
     for (const c of CHAPTERS) expect(c.skills.length).toBeGreaterThan(0);
   });
 
+  it('chaque notion a un mémo court', () => {
+    for (const c of CHAPTERS)
+      for (const s of c.skills) {
+        expect(s.lesson.memo.length, s.id).toBeGreaterThan(0);
+        expect(s.lesson.memo.length, s.id).toBeLessThanOrEqual(3);
+      }
+  });
+
   it.each(cases)('%s / %s : questions cohérentes (150 graines × 3 niveaux)', (_chapter, skillId) => {
     for (const level of LEVELS) {
       for (let seed = 1; seed <= SEEDS; seed++) {
         const q = generate(skillId, level, seed);
         const ctx = `${skillId} niveau ${level} graine ${seed}`;
         expect(q.prompt.length, ctx).toBeGreaterThan(3);
-        expect(q.steps.length, ctx).toBeGreaterThan(0);
+        expect(q.steps.length, `${ctx} : explication en plusieurs bulles`).toBeGreaterThan(1);
+        expect(q.hint.length, `${ctx} : indice`).toBeGreaterThan(10);
+        expect(q.hint, ctx).not.toMatch(/undefined|NaN|\[object/);
+        // L'indice met sur la voie sans donner la réponse.
+        if (q.answer.kind === 'number' && Math.abs(toNumber(q.answer.value)) >= 10)
+          expect(q.hint, `${ctx} : l’indice donne la réponse`).not.toMatch(
+            new RegExp(`= ${fmt(q.answer.value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\d,\u202f])`),
+          );
+        // La dernière bulle donne la réponse en gras.
+        expect(q.steps.join(' '), `${ctx} : réponse en gras`).toMatch(/\*\*/);
         expect(q.prompt, ctx).not.toMatch(/undefined|NaN|\[object/);
         for (const s of q.steps) expect(s, ctx).not.toMatch(/undefined|NaN|\[object/);
         // La bonne réponse est acceptée.

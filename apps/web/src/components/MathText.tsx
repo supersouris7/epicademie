@@ -29,6 +29,9 @@ function renderRich(text: string): ReactNode[] {
   });
 }
 
+/** « 1 000 » : l'espace des milliers devient insécable, le nombre n'est jamais coupé en fin de ligne. */
+const glueThousands = (text: string) => text.replace(/(\d) (?=\d{3}(?!\d))/g, '$1\u202f');
+
 export function MathText({ text, className }: { readonly text: string; readonly className?: string }) {
-  return <span className={className}>{renderRich(text)}</span>;
+  return <span className={className}>{renderRich(glueThousands(text))}</span>;
 }

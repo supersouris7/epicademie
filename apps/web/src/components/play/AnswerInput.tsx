@@ -14,6 +14,8 @@ interface AnswerInputProps {
   readonly picked: { x: number; y: number } | null;
   /** Valeur de départ (reportée depuis la calculatrice). */
   readonly initialText?: string;
+  /** Option de QCM déjà essayée : grisée au 2e essai. */
+  readonly excluded?: number;
 }
 
 function unitLabel(unit?: string) {
@@ -21,7 +23,7 @@ function unitLabel(unit?: string) {
 }
 
 /** Saisie adaptée au type de réponse : pavé numérique, fraction, QCM, point. */
-export function AnswerInput({ question, disabled, onSubmit, picked, initialText }: AnswerInputProps) {
+export function AnswerInput({ question, disabled, onSubmit, picked, initialText, excluded }: AnswerInputProps) {
   const a = question.answer;
   const [text, setText] = useState(initialText ?? '');
   const [num, setNum] = useState('');
@@ -55,9 +57,9 @@ export function AnswerInput({ question, disabled, onSubmit, picked, initialText 
           <button
             key={o}
             type="button"
-            disabled={disabled}
+            disabled={disabled || excluded === i}
             onClick={() => onSubmit({ kind: 'choice', index: i })}
-            className="cartoon cartoon-press bg-surface min-h-14 px-4 py-2 text-2xl font-bold disabled:opacity-60"
+            className={`cartoon cartoon-press bg-surface min-h-14 px-4 py-2 text-2xl font-bold disabled:opacity-40 ${excluded === i ? 'line-through' : ''}`}
           >
             <MathText text={o} />
           </button>

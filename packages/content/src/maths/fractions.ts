@@ -22,12 +22,11 @@ const decimales: Skill = {
   id: 'm5-fractions-decimales',
   title: 'Fractions et écriture décimale',
   lesson: {
-    body: [
-      'Une fraction est un quotient : {3/4} = 3 ÷ 4 = 0,75.',
-      'À connaître : {1/2} = 0,5 ; {1/4} = 0,25 ; {3/4} = 0,75 ; {3/2} = 1,5 ; {5/2} = 2,5 ; {1/10} = 0,1 ; {1/5} = 0,2.',
-      'Un même nombre a plusieurs écritures : 1,2 = {12/10} = {6/5} = 1 + {1/5} = 120 %.',
+    memo: [
+      'La barre d’une fraction, c’est une division : {3/4} = 3 ÷ 4 = 0,75.',
+      'Pense aux pièces : {1/2} € = 0,50 €, {1/4} € = 0,25 €, {3/4} € = 0,75 €, {1/10} € = 0,10 €.',
+      'Un nombre a plusieurs écritures : 1,2 = 12 dixièmes = {12/10}.',
     ],
-    example: { question: 'Écris {5/2} sous forme décimale.', steps: ['{5/2} = 5 ÷ 2 = 2,5.'] },
     source: objective(
       'Entretenir l’écriture décimale des fractions simples. Écrire un même nombre sous de multiples formes',
     ),
@@ -48,7 +47,12 @@ const decimales: Skill = {
             why: `${rawFrac(k - 10, 100)} = ${fmt(r(k - 10, 100))}, donc 1 + ${rawFrac(k - 10, 100)} = ${fmt(add(r(1), r(k - 10, 100)))}.`,
           },
         ]),
-        steps: [`${fmt(value)} = ${k} dixièmes = **${rawFrac(k, 10)}**.`],
+        hint: `Combien de dixièmes y a-t-il dans ${fmt(value)} ?`,
+        steps: [
+          `${fmt(value)}, c’est 1 unité et ${k - 10} dixième${k - 10 > 1 ? 's' : ''}.`,
+          `1 unité = 10 dixièmes. Donc ${fmt(value)} = ${k} dixièmes.`,
+          `${k} dixièmes s’écrit **${rawFrac(k, 10)}**.`,
+        ],
       };
     }
     const pool = level === 1 ? SIMPLE.slice(0, 7) : SIMPLE;
@@ -64,7 +68,14 @@ const decimales: Skill = {
         ],
         [r(d, n), `C’est ${n} ÷ ${d}, pas ${d} ÷ ${n}.`],
       ]),
-      steps: [`${rawFrac(n, d)} = ${n} ÷ ${d} = **${fmt(v)}**`],
+      hint: `La barre de fraction veut dire « divisé par » : calcule ${n} ÷ ${d}.`,
+      steps: [
+        `La barre de fraction, c’est une division : ${rawFrac(n, d)} = ${n} ÷ ${d}.`,
+        d === 2 || d === 4 || d === 5 || d === 10
+          ? `Pense aux pièces : ${rawFrac(1, d)} d’euro = ${fmt(r(1, d))} €, donc ${rawFrac(n, d)} = ${n} × ${fmt(r(1, d))}.`
+          : `On partage ${n} en ${d} parts égales.`,
+        `${n} ÷ ${d} = **${fmt(v)}**`,
+      ],
       targetSeconds: 10,
     };
   },
@@ -74,11 +85,10 @@ const quotient: Skill = {
   id: 'm5-fractions-quotient',
   title: 'La fraction comme quotient',
   lesson: {
-    body: [
-      '{7/3} est le nombre qui, multiplié par 3, donne 7 : 3 × {7/3} = 7.',
-      'Pour compléter 3 × … = 7, on écrit donc … = {7/3}.',
+    memo: [
+      '3 × … = 7 : aucun entier ne marche. Le nombre qui marche, on l’écrit {7/3} (« 7 divisé par 3 »).',
+      'C’est sa définition : 3 × {7/3} = 7. Le dénominateur « annule » la multiplication.',
     ],
-    example: { question: 'Complète : 5 × … = 2.', steps: ['Le nombre cherché est 2 ÷ 5 = {2/5}.'] },
     source: objective(
       'Faire vivre la notion de nombre quotient en complétant des multiplications à trou : 3 × … = 7 puis 3 × 7/3 = …',
     ),
@@ -92,7 +102,12 @@ const quotient: Skill = {
         prompt: `Calcule ${a} × ${rawFrac(b, a)}.`,
         answer: num(b),
         traps: traps(r(b), [[a * b, `${rawFrac(b, a)} est le nombre qui, multiplié par ${a}, donne ${b}.`]]),
-        steps: [`Par définition du quotient, ${a} × ${rawFrac(b, a)} = **${b}**.`],
+        hint: `${rawFrac(b, a)}, c’est le nombre qui, multiplié par ${a}, donne… ?`,
+        steps: [
+          `${rawFrac(b, a)}, c’est « ${b} divisé par ${a} ».`,
+          `Si on le multiplie par ${a}, on annule la division : on retrouve ${b}.`,
+          `${a} × ${rawFrac(b, a)} = **${b}**`,
+        ],
         targetSeconds: 10,
       };
     }
@@ -104,9 +119,11 @@ const quotient: Skill = {
         [r(a, b), `C’est ${b} ÷ ${a}, donc ${rawFrac(b, a)}, pas ${rawFrac(a, b)}.`],
         [b - a, 'C’est une multiplication à trou, pas une addition.'],
       ]),
+      hint: `Le nombre qui, multiplié par ${a}, donne ${b}, c’est « ${b} divisé par ${a} ». Comment l’écrire en fraction ?`,
       steps: [
-        `Le nombre cherché est ${b} ÷ ${a}, qui s’écrit **${rawFrac(b, a)}**.`,
-        `Vérification : ${a} × ${rawFrac(b, a)} = ${b}.`,
+        `On cherche le nombre qui, multiplié par ${a}, donne ${b}.`,
+        `Ce nombre, c’est ${b} ÷ ${a}. En fraction : ${b} en haut, ${a} en bas.`,
+        `La réponse est **${rawFrac(b, a)}** (et on vérifie : ${a} × ${rawFrac(b, a)} = ${b}).`,
       ],
       targetSeconds: 15,
     };
@@ -117,14 +134,10 @@ const droite: Skill = {
   id: 'm5-fractions-droite',
   title: 'Fractions sur une droite graduée',
   lesson: {
-    body: [
-      'Si l’unité est partagée en d parts égales, chaque graduation vaut {1/d}.',
-      'Un point situé à n graduations de zéro a pour abscisse {n/d}.',
+    memo: [
+      'Compte les **cases** (les intervalles) entre 0 et 1, pas les traits : s’il y a 3 cases, chaque case vaut {1/3}.',
+      'Puis compte les cases de 0 jusqu’au point : 5 cases de {1/3}, ça fait {5/3}.',
     ],
-    example: {
-      question: 'Unité partagée en 3 ; A est à 5 graduations de 0.',
-      steps: ['Une graduation vaut {1/3}.', 'A a pour abscisse {5/3}.'],
-    },
     source: objective('Lire l’abscisse d’un point sur une droite graduée en tiers, en quarts, en moitiés, en dixièmes'),
   },
   generate(rng, level) {
@@ -148,9 +161,11 @@ const droite: Skill = {
         [r(n, d + 1), `L’unité est partagée en ${d} parts (compte les intervalles, pas les traits).`],
         [r(n, 10), `Une graduation vaut ${rawFrac(1, d)}, pas ${rawFrac(1, 10)}.`],
       ]),
+      hint: 'Compte les cases entre 0 et 1 (pas les traits !), puis les cases entre 0 et A.',
       steps: [
-        `L’unité est partagée en ${d} : une graduation vaut ${rawFrac(1, d)}.`,
-        `A est à ${n} graduations de 0 : son abscisse est **${rawFrac(n, d)}**.`,
+        `Entre 0 et 1, on compte ${d} cases : chaque case vaut ${rawFrac(1, d)}.`,
+        `De 0 jusqu’à A, on compte ${n} cases.`,
+        `${n} cases de ${rawFrac(1, d)}, ça fait **${rawFrac(n, d)}**.`,
       ],
     };
   },
@@ -161,14 +176,10 @@ const egales: Skill = {
   title: 'Fractions égales',
   advice: 'brouillon',
   lesson: {
-    body: [
-      'On ne change pas une fraction en multipliant (ou divisant) le numérateur **et** le dénominateur par un même nombre non nul.',
-      '{2/3} = {2 × 5/3 × 5} = {10/15}.',
+    memo: [
+      'Couper chaque part de pizza en 2 : on a 2 fois plus de parts, 2 fois plus petites. La quantité ne change pas !',
+      'Donc on peut multiplier **le haut et le bas** par le même nombre : {2/3} = {4/6} = {10/15}.',
     ],
-    example: {
-      question: 'Complète : {4/7} = {…/14}.',
-      steps: ['7 × 2 = 14, donc on multiplie aussi 4 par 2.', '{4/7} = {8/14}.'],
-    },
     source: objective('Reconnaitre des fractions égales : 2/3 = …/15 ; 4/7 = …/14'),
   },
   generate(rng, level) {
@@ -184,7 +195,12 @@ const egales: Skill = {
         traps: traps(r(d * k), [
           [d + (n * k - n), `On multiplie, on n’ajoute pas : ${n} × ${k} = ${n * k}, donc ${d} × ${k}.`],
         ]),
-        steps: [`${n} × ${k} = ${n * k} : on multiplie aussi le dénominateur par ${k}.`, `${d} × ${k} = **${d * k}**`],
+        hint: `Par combien a-t-on multiplié ${n} pour obtenir ${n * k} ? Fais pareil en bas.`,
+        steps: [
+          `En haut, ${n} est devenu ${n * k} : on a multiplié par ${k} (${n} × ${k} = ${n * k}).`,
+          `Pour garder la même fraction, on multiplie aussi le bas par ${k}.`,
+          `${d} × ${k} = **${d * k}**`,
+        ],
       };
     }
     return {
@@ -194,7 +210,12 @@ const egales: Skill = {
         [n + (d * k - d), `On multiplie, on n’ajoute pas : ${d} × ${k} = ${d * k}, donc on calcule ${n} × ${k}.`],
         [n, 'Si le dénominateur change, le numérateur doit changer aussi.'],
       ]),
-      steps: [`${d} × ${k} = ${d * k} : on multiplie aussi le numérateur par ${k}.`, `${n} × ${k} = **${n * k}**`],
+      hint: `Par combien a-t-on multiplié ${d} pour obtenir ${d * k} ? Fais pareil en haut.`,
+      steps: [
+        `En bas, ${d} est devenu ${d * k} : on a multiplié par ${k} (${d} × ${k} = ${d * k}).`,
+        `Pour garder la même fraction, on multiplie aussi le haut par ${k}.`,
+        `${n} × ${k} = **${n * k}**`,
+      ],
       targetSeconds: 15,
     };
   },
@@ -218,7 +239,7 @@ function commonDenSteps(
   const line =
     a[1] === b[1]
       ? 'Les dénominateurs sont déjà égaux.'
-      : `Même dénominateur ${den} : ${rawFrac(a[0], a[1])} = ${rawFrac(a2, den)} et ${rawFrac(b[0], b[1])} = ${rawFrac(b2, den)}.`;
+      : `On met les deux fractions au même dénominateur, ${den} : ${a[1] === 1 ? `${a[0]} = ${rawFrac(a2, den)}` : a[1] === den ? `${rawFrac(a[0], a[1])} ne change pas` : `${rawFrac(a[0], a[1])} = ${rawFrac(a2, den)} (× ${den / a[1]} en haut et en bas)`} et ${b[1] === den ? `${rawFrac(b[0], b[1])} ne change pas` : `${rawFrac(b[0], b[1])} = ${rawFrac(b2, den)} (× ${den / b[1]} en haut et en bas)`}.`;
   return { den, a2, b2, line };
 }
 
@@ -227,15 +248,11 @@ const comparer: Skill = {
   title: 'Comparer des fractions',
   advice: 'brouillon',
   lesson: {
-    body: [
-      'Même dénominateur : la plus grande est celle qui a le plus grand numérateur.',
-      'Sinon, on les met **au même dénominateur**, ou on les compare à 1 ({8/3} > 1 > {6/7}).',
-      'Même numérateur : la plus grande est celle qui a le plus **petit** dénominateur ({8/12} > {8/21}).',
+    memo: [
+      'Si les parts ont la même taille (même dénominateur), il suffit de compter les parts : {5/8} > {3/8}.',
+      'Sinon, on redécoupe pour avoir des parts de même taille (même dénominateur), puis on compte.',
+      'Astuce : compare à 1. {8/3} est plus grand que 1, {6/7} est plus petit que 1.',
     ],
-    example: {
-      question: 'Compare {3/4} et {7/18}.',
-      steps: ['Au dénominateur 36 : {3/4} = {27/36} et {7/18} = {14/36}.', '27 > 14, donc {3/4} > {7/18}.'],
-    },
     source: objective('Comparer des fractions'),
   },
   generate(rng, level) {
@@ -277,7 +294,17 @@ const comparer: Skill = {
           })),
         true,
       ),
-      steps: [s.line, `${s.a2} ${correct} ${s.b2}, donc **${rawFrac(...a)} ${correct} ${rawFrac(...b)}**.`],
+      hint:
+        a[1] === b[1]
+          ? 'Les parts ont la même taille : compare simplement le nombre de parts (le numérateur).'
+          : 'Les dénominateurs sont différents : mets d’abord les deux fractions au même dénominateur.',
+      steps: [
+        a[1] === b[1]
+          ? `Même dénominateur : les parts ont la même taille, on compare juste le nombre de parts.`
+          : `Les dénominateurs sont différents : les parts n’ont pas la même taille. On ne peut pas encore comparer.`,
+        ...(a[1] === b[1] ? [] : [s.line]),
+        `${s.a2} part${s.a2 > 1 ? 's' : ''} ${correct === '<' ? 'c’est moins que' : correct === '>' ? 'c’est plus que' : 'c’est autant que'} ${s.b2} part${s.b2 > 1 ? 's' : ''}, donc **${rawFrac(...a)} ${correct} ${rawFrac(...b)}**.`,
+      ],
       targetSeconds: 25,
     };
   },
@@ -287,14 +314,10 @@ const entier: Skill = {
   id: 'm5-fractions-entier',
   title: 'Partie entière d’une fraction',
   lesson: {
-    body: [
-      'Pour écrire {17/5} = 3 + {2/5} : dans 17, combien de fois 5 ? 3 fois (15), reste 2.',
-      'C’est la division euclidienne : 17 = 5 × 3 + 2.',
+    memo: [
+      '{17/5}, c’est 17 cinquièmes. Avec 5 cinquièmes, on fait 1 unité entière.',
+      'Avec 17 cinquièmes, on fait 3 unités (15 cinquièmes) et il en reste 2 : {17/5} = 3 + {2/5}.',
     ],
-    example: {
-      question: 'Écris {23/4} comme entier + fraction inférieure à 1.',
-      steps: ['23 = 4 × 5 + 3.', '{23/4} = 5 + {3/4}.'],
-    },
     source: objective(
       'Écrire une fraction sous la forme d’une somme d’un nombre entier et d’une fraction inférieure à 1 : 17/5 = 3 + 2/5',
     ),
@@ -304,7 +327,12 @@ const entier: Skill = {
     const q = rng.int(1, level === 1 ? 4 : 9);
     const rest = rng.int(1, d - 1);
     const n = d * q + rest;
-    const steps = [`${n} = ${d} × ${q} + ${rest}.`, `Donc ${rawFrac(n, d)} = **${q} + ${rawFrac(rest, d)}**.`];
+    const steps = [
+      `${d} parts de ${rawFrac(1, d)}, ça fait 1 unité entière. Combien d’unités entières avec ${n} parts ?`,
+      `${d} × ${q} = ${d * q} : on fait ${q} unité${q > 1 ? 's' : ''} entière${q > 1 ? 's' : ''}, et il reste ${n} − ${d * q} = ${rest} part${rest > 1 ? 's' : ''}.`,
+      `Donc ${rawFrac(n, d)} = **${q} + ${rawFrac(rest, d)}**.`,
+    ];
+    const hint = `Avec ${d} parts, on fait 1 unité. Combien d’unités complètes avec ${n} parts ?`;
     if (level === 3) {
       return {
         prompt: `Complète : ${rawFrac(n, d)} = ${q} + …`,
@@ -312,11 +340,13 @@ const entier: Skill = {
         traps: traps(r(rest, d), [
           [r(n - q, d), `${q} = ${rawFrac(q * d, d)} : il faut enlever ${q * d} au numérateur, pas ${q}.`],
         ]),
+        hint,
         steps,
       };
     }
     return {
       prompt: `Complète : ${rawFrac(n, d)} = … + ${rawFrac(rest, d)}`,
+      hint,
       answer: num(q),
       traps: traps(r(q), [
         [rest, `${rest} est le reste : on cherche combien de fois ${d} « rentre » dans ${n}.`],
@@ -335,19 +365,11 @@ function addSubSkill(id: string, title: string, minus: boolean): Skill {
     title,
     advice: 'brouillon',
     lesson: {
-      body: [
-        `On ne peut ${minus ? 'soustraire' : 'additionner'} que des fractions de **même dénominateur** : on ${minus ? 'soustrait' : 'additionne'} les numérateurs et on garde le dénominateur.`,
-        'Sinon, on met d’abord au même dénominateur (un multiple commun).',
-        'Erreur classique : ' +
-          (minus ? '{5/6} − {1/2} n’est pas {4/4}' : '{1/2} + {1/3} n’est pas {2/5}') +
-          ' ; on n’ajoute jamais les dénominateurs.',
+      memo: [
+        `Le dénominateur, c’est la **taille des parts** ; le numérateur, c’est le **nombre de parts**.`,
+        `On ${minus ? 'enlève' : 'ajoute'} des parts de même taille : {5/7} ${op} {1/7} = {${minus ? 4 : 6}/7}. La taille des parts (7) ne change pas !`,
+        'Si les parts n’ont pas la même taille, on redécoupe d’abord pour avoir le même dénominateur.',
       ],
-      example: minus
-        ? { question: 'Calcule {4/7} − {2/21}.', steps: ['{4/7} = {12/21}.', '{12/21} − {2/21} = {10/21}.'] }
-        : {
-            question: 'Calcule {2/5} + {1/4}.',
-            steps: ['Dénominateur commun 20 : {2/5} = {8/20} et {1/4} = {5/20}.', '{8/20} + {5/20} = {13/20}.'],
-          },
       source: objective('Additionner et soustraire des fractions de dénominateurs quelconques'),
     },
     generate(rng, level) {
@@ -397,10 +419,17 @@ function addSubSkill(id: string, title: string, minus: boolean): Skill {
         prompt: `Calcule ${show(a)} ${op} ${show(b)}.`,
         answer: fraction(value),
         traps: traps(value, t),
+        hint:
+          a[1] === b[1]
+            ? `Les parts ont la même taille : ${minus ? 'enlève' : 'ajoute'} les numérateurs et garde le dénominateur.`
+            : `Mets d’abord les deux fractions au même dénominateur (un nombre qui est dans la table de ${a[1]} et de ${b[1]}).`,
         steps: [
-          s.line,
-          `${rawFrac(s.a2, s.den)} ${op} ${rawFrac(s.b2, s.den)} = ${res}${res !== frac(value) ? ` = ${frac(value)}` : ''}.`,
-          `Résultat : **${frac(value)}**${value.d !== 1 && (minus ? s.a2 - s.b2 : s.a2 + s.b2) !== value.n ? ' (toute fraction égale est acceptée)' : ''}.`,
+          a[1] === b[1]
+            ? `Même dénominateur : les parts ont la même taille, on peut ${minus ? 'les enlever' : 'les ajouter'} directement.`
+            : `Les dénominateurs sont différents : les parts n’ont pas la même taille. Il faut redécouper !`,
+          ...(a[1] === b[1] ? [] : [s.line]),
+          `On ${minus ? 'enlève' : 'ajoute'} les parts : ${s.a2} ${op} ${s.b2} = ${minus ? s.a2 - s.b2 : s.a2 + s.b2}, et le dénominateur reste ${s.den}.`,
+          `${rawFrac(s.a2, s.den)} ${op} ${rawFrac(s.b2, s.den)} = **${res}**${res !== frac(value) ? ` (ou **${frac(value)}** en simplifiant, les deux sont justes)` : ''}.`,
         ],
         targetSeconds: level === 1 ? 15 : 40,
       };
@@ -415,14 +444,11 @@ const dunNombre: Skill = {
   id: 'm5-fractions-dun-nombre',
   title: 'Prendre une fraction d’un nombre',
   lesson: {
-    body: [
-      'Le {1/3} de 18, c’est 18 partagé en 3 : 18 ÷ 3 = 6.',
-      'Les {2/3} de 18, c’est 2 fois le tiers : 2 × 6 = 12.',
+    memo: [
+      'Le {1/3} de 18 bonbons : on partage les 18 bonbons en 3 tas égaux. Un tas = 18 ÷ 3 = 6.',
+      'Les {2/3} de 18 : on prend 2 tas. 2 × 6 = 12.',
+      'Le dénominateur dit en combien on partage, le numérateur combien de tas on prend.',
     ],
-    example: {
-      question: 'Calcule les {3/4} de 30.',
-      steps: ['Le quart de 30 : 30 ÷ 4 = 7,5.', 'Les trois quarts : 3 × 7,5 = 22,5.'],
-    },
     source: objective('Prendre une fraction simple d’un nombre : le 1/3 de 18 ; le 1/4 de 12'),
   },
   generate(rng, level) {
@@ -438,11 +464,13 @@ const dunNombre: Skill = {
         [r(x, d), `C’est seulement ${rawFrac(1, d)} de ${x} : il faut encore multiplier par ${n}.`],
         [mul(r(x), r(n)), `Il faut d’abord partager ${x} en ${d}.`],
       ]),
+      hint: `Partage d’abord ${x} en ${d} parts égales${n > 1 ? `, puis prends-en ${n}` : ''}.`,
       steps: [
-        `${rawFrac(1, d)} de ${x} : ${x} ÷ ${d} = ${fmt(r(x, d))}.`,
+        `Le dénominateur ${d} dit : on partage ${x} en ${d} parts égales.`,
+        `Une part : ${x} ÷ ${d} = ${fmt(r(x, d))}.`,
         ...(n > 1
-          ? [`${rawFrac(n, d)} de ${x} : ${n} × ${fmt(r(x, d))} = **${fmt(value)}**`]
-          : [`Résultat : **${fmt(value)}**`]),
+          ? [`Le numérateur ${n} dit : on prend ${n} parts. ${n} × ${fmt(r(x, d))} = **${fmt(value)}**`]
+          : [`On prend une seule part : **${fmt(value)}**`]),
       ],
       targetSeconds: 15,
     };
@@ -454,14 +482,11 @@ const problemes: Skill = {
   title: 'Problèmes avec des fractions',
   advice: 'brouillon',
   lesson: {
-    body: [
-      'Le tout correspond à 1 : si on a utilisé {1/4} puis {1/3}, il reste 1 − ({1/4} + {1/3}).',
-      'On additionne ou soustrait les fractions après les avoir mises au même dénominateur.',
+    memo: [
+      'La pizza entière, c’est 1. Coupée en 12, c’est {12/12}.',
+      'Tom mange {1/4} = {3/12}, Léa {1/3} = {4/12}. Ils ont mangé {7/12}, il reste {12/12} − {7/12} = {5/12}.',
+      'Dessine la pizza au brouillon : ça aide beaucoup !',
     ],
-    example: {
-      question: 'Tom mange {1/4} d’une pizza, Léa {1/3}. Quelle part reste-t-il ?',
-      steps: ['Mangé : {1/4} + {1/3} = {3/12} + {4/12} = {7/12}.', 'Reste : 1 − {7/12} = {5/12}.'],
-    },
     source: objective('Résoudre des problèmes avec des additions et soustractions de fractions'),
   },
   generate(rng, level) {
@@ -484,10 +509,18 @@ const problemes: Skill = {
           ? ([[eaten, `${frac(eaten)} est la part utilisée ; il reste 1 − ${frac(eaten)}.`]] as [Rational, string][])
           : []),
       ]),
+      hint: askRest
+        ? 'Calcule d’abord ce qui a été pris en tout (même dénominateur !), puis enlève-le du tout, qui vaut 1.'
+        : 'Additionne les deux fractions, après les avoir mises au même dénominateur.',
       steps: [
-        s.line,
-        `En tout : ${rawFrac(s.a2, s.den)} + ${rawFrac(s.b2, s.den)} = ${frac(eaten)}.`,
-        ...(askRest ? [`Il reste 1 − ${frac(eaten)} = **${frac(value)}**.`] : [`Réponse : **${frac(value)}**.`]),
+        a[1] === b[1] ? 'Les deux fractions ont déjà le même dénominateur.' : s.line,
+        `Pris en tout : ${rawFrac(s.a2, s.den)} + ${rawFrac(s.b2, s.den)} = ${rawFrac(s.a2 + s.b2, s.den)}${rawFrac(s.a2 + s.b2, s.den) !== frac(eaten) ? ` = ${frac(eaten)}` : ''}.`,
+        ...(askRest
+          ? [
+              `Le tout vaut 1, c’est-à-dire ${rawFrac(s.den, s.den)}.`,
+              `Il reste ${rawFrac(s.den, s.den)} − ${rawFrac(s.a2 + s.b2, s.den)} = **${rawFrac(s.den - s.a2 - s.b2, s.den)}**${rawFrac(s.den - s.a2 - s.b2, s.den) !== frac(value) ? ` = **${frac(value)}**` : ''}.`,
+            ]
+          : [`Réponse : **${frac(value)}**.`]),
       ],
       targetSeconds: 60,
     };
