@@ -7,14 +7,22 @@ export type ItemId = (typeof ITEMS)[number];
 export type Inventory = Record<ItemId, number>;
 
 export const ITEM_INFO: Record<ItemId, { readonly name: string; readonly effect: string; readonly earn: string }> = {
-  bouclier: {
-    name: 'Bouclier',
-    effect: 'Bloque la prochaine riposte',
-    earn: 'Gagné par un sans-faute à l’entraînement',
+  bouclier: { name: 'Bouclier', effect: 'Bloque la prochaine riposte', earn: 'Dans les coffres de l’entraînement' },
+  soin: { name: 'Soin', effect: 'Rend 1 cœur', earn: 'Dans les coffres de l’entraînement' },
+  indice: {
+    name: 'Indice',
+    effect: 'Affiche l’indice de la question',
+    earn: 'Dans les coffres, ou avec des pièces',
   },
-  soin: { name: 'Soin', effect: 'Rend 1 cœur', earn: 'Gagné quand une notion est acquise' },
-  indice: { name: 'Indice', effect: 'Affiche l’indice de la question', earn: 'S’achète avec des pièces' },
 };
+
+/** Coffre d'équipement gagné au hasard en fin de série d'entraînement. */
+export type ChestRarity = 'commun' | 'rare' | 'epique';
+export interface Chest {
+  readonly rarity: ChestRarity;
+  readonly items: Partial<Inventory>;
+  readonly coins: number;
+}
 
 /** Stock maximal par objet, objets utilisables par combat, prix de l'indice. */
 export const MAX_ITEM_STOCK = 9;

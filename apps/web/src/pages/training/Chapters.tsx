@@ -4,6 +4,7 @@ import { chaptersOf } from '@questeo/content';
 import { SUBJECTS, type Profile } from '@questeo/shared';
 import { useSkills } from '../../api/play.ts';
 import { PageShell } from '../../components/PageShell.tsx';
+import { GameIcon } from '../../components/game/GameIcon.tsx';
 import { localToday } from '../../lib/dates.ts';
 import { chapterProgress } from '../../lib/progress.ts';
 
@@ -39,6 +40,14 @@ export function Chapters({ profile }: { readonly profile: Profile }) {
     : '';
   return (
     <PageShell title={`Entraînement · ${info.name}`} back="/jouer/entrainement">
+      {/* C'est ici qu'on gagne son équipement de combat. */}
+      <div className="cartoon bg-surface-2 flex items-center gap-3 p-3" role="note">
+        <GameIcon id="rewards-chests-rare" size={64} />
+        <p className="text-lg font-bold">
+          C’est ici que tu gagnes ton <strong>équipement</strong> ! Chaque série de 5 questions peut t’offrir un coffre
+          (bouclier, soin, indice, pièces). 5/5 = coffre garanti.
+        </p>
+      </div>
       {suggestion && (
         <button
           type="button"

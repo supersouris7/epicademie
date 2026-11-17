@@ -17,13 +17,13 @@ import {
 } from '@questeo/shared';
 import { answerBattle, bossesKey, finishBattle, sendBattleItem, startBattle } from '../../api/battles.ts';
 import { ApiError } from '../../api/client.ts';
+import { BattleBar } from '../../components/battle/BattleBar.tsx';
 import { BattleArena, type ArenaEnemy, type EnemyState } from '../../components/battle/BattleArena.tsx';
 import { ConfirmDialog } from '../../components/ConfirmDialog.tsx';
 import { Confetti } from '../../components/Confetti.tsx';
 import { Figure } from '../../components/figures/Figure.tsx';
 import { GameButton } from '../../components/game/GameButton.tsx';
 import { GameIcon } from '../../components/game/GameIcon.tsx';
-import { ProgressBar } from '../../components/game/ProgressBar.tsx';
 import { RewardBadge } from '../../components/game/RewardBadge.tsx';
 import { Questy } from '../../components/mascot/Questy.tsx';
 import { QuestyPose } from '../../components/mascot/QuestyPose.tsx';
@@ -79,6 +79,8 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   // Entrée en scène : le héros arrive en courant.
   const [heroState, setHeroState] = useState<AnimationState>('run');
   const [face, setFace] = useState<HeroExpression>('determine');
+  /** Entrée en scène en grand, puis bandeau compact pour laisser la place aux énoncés. */
+  const [intro, setIntro] = useState(true);
   const [enemyState, setEnemyState] = useState<EnemyState>('idle');
   const [shot, setShot] = useState(0);
   const [riposte, setRiposte] = useState(0);
@@ -104,7 +106,8 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
       .then((b) => {
         shownAt.current = performance.now();
         setBattle(b);
-        later(700, () => setHeroState('idle'));
+        later(900, () => setHeroState('idle'));
+        later(2100, () => setIntro(false));
       })
       .catch((err: unknown) =>
         setError(
@@ -122,7 +125,12 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
       ? { key: 'boss', name: boss.name, boss: true, image: `bosses-maths-${boss.id}`, filter: bossFilter(chapter.id) }
       : (() => {
           const mob = mobOf(boss, battle.mobsDefeated);
-          return { key: `mob-${battle.mobsDefeated}`, name: `Mob ${mob}`, boss: false, image: `bosses-minions-${mob}` };
+          return {
+            key: `mob-${battle.mobsDefeated}`,
+            name: mob.charAt(0).toUpperCase() + mob.slice(1).replace(/-/g, ' '),
+            boss: false,
+            image: `bosses-minions-${mob}`,
+          };
         })()
     : null;
 
@@ -224,7 +232,8 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
       if (item === 'soin') setFace('joie');
       if (item === 'bouclier') {
         setHeroState('shield');
-        later(700, () => setHeroState('idle'));
+        later(900, () => setHeroState('idle'));
+        later(2100, () => setIntro(false));
       }
     } catch (err) {
       showToast(err instanceof ApiError ? err.message : 'Problème de connexion');
@@ -246,59 +255,51 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   if (summary) return <BattleResults summary={summary} chapter={chapter} gender={profile.gender} hero={profile.hero} />;
 
   return (
-    <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-2 px-3 py-3 sm:px-4">
-      <header className="flex shrink-0 items-center gap-3">
-        <GameButton
-          variant="danger"
-          size="sm"
-          iconOnly
-          icon="icons-navigation-close"
-          onClick={() => setConfirmQuit(true)}
-          aria-label="Quitter le combat"
-        />
-        <HeroFace hero={profile.hero} expression={face} />
-        <div className="flex items-center gap-0.5" aria-label={`${battle?.hearts ?? 3} cœurs sur 3`} role="img">
-          {Array.from({ length: battle?.maxHearts ?? 3 }, (_, i) => (
-            <GameIcon
-              key={i}
-              id={i < (battle?.hearts ?? 3) ? 'icons-resources-life' : 'icons-resources-life-empty'}
-              size="sm"
-            />
-          ))}
+    <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-3 px-3 py-3 sm:px-4">
+      {intro ? (
+        <div className="relative flex flex-1 flex-col justify-center gap-4">
+          <BattleArena
+            hero={profile.hero}
+            heroState={heroState}
+            enemy={enemy}
+            enemyState={enemyState}
+            shot={0}
+            riposte={0}
+            shield={false}
+            arena={arena}
+            sky={boss.sky}
+          />
+          <motion.p
+            initial={{ scale: 0.3, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.9, type: 'spring', stiffness: 300, damping: 12 }}
+            className="font-display text-toon text-center text-5xl tracking-wide"
+          >
+            {onBoss ? boss.name : 'Combat !'}
+          </motion.p>
         </div>
-        <span className="flex-1" />
-        {onBoss ? (
-          <div className="flex min-w-0 flex-1 flex-col">
-            <span className="font-display truncate text-right text-sm tracking-wide">{boss.name}</span>
-            <ProgressBar
-              value={battle?.bossLives ?? BOSS_LIVES}
-              max={BOSS_LIVES}
-              segments={BOSS_LIVES}
-              color="var(--boss)"
-              label={`Vies de ${boss.name}`}
-              text={`${battle?.bossLives ?? BOSS_LIVES}/${BOSS_LIVES}`}
-            />
-          </div>
-        ) : (
-          <span className="font-display text-lg tracking-wide">
-            Mobs {Math.min((battle?.mobsDefeated ?? 0) + 1, BATTLE_MOBS)}/{BATTLE_MOBS}
-          </span>
-        )}
-      </header>
+      ) : (
+        <BattleBar
+          hero={profile.hero}
+          face={face}
+          hearts={battle?.hearts ?? 3}
+          maxHearts={battle?.maxHearts ?? 3}
+          shield={battle?.shield ?? false}
+          enemyName={enemy?.name ?? boss.name}
+          enemyImage={enemy ? (enemy.boss ? `${enemy.image}-portrait` : enemy.image) : 'placeholder-boss'}
+          enemyFilter={enemy?.filter}
+          enemyKey={enemy?.key ?? 'boss'}
+          bossLives={onBoss ? (battle?.bossLives ?? BOSS_LIVES) : null}
+          bossMax={BOSS_LIVES}
+          mobText={`Mob ${Math.min((battle?.mobsDefeated ?? 0) + 1, BATTLE_MOBS)}/${BATTLE_MOBS}`}
+          shot={shot}
+          riposte={riposte}
+          arena={arena}
+          onQuit={() => setConfirmQuit(true)}
+        />
+      )}
 
-      <BattleArena
-        hero={profile.hero}
-        heroState={heroState}
-        enemy={enemy}
-        enemyState={enemyState}
-        shot={shot}
-        riposte={riposte}
-        shield={battle?.shield ?? false}
-        arena={arena}
-        sky={boss.sky}
-      />
-
-      {!battle || !question || !q ? (
+      {intro ? null : !battle || !question || !q ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-3">
           <Questy mood={battle ? 'wow' : 'angry'} size={100} />
           <p className="font-display text-2xl">{battle ? 'Fin du combat…' : `${boss.name} arrive…`}</p>

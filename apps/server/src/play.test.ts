@@ -82,35 +82,37 @@ describe('parties d’entraînement', () => {
 
   it('série parfaite : XP, pièces, progression de la notion', async () => {
     const id = await start();
-    for (let seed = 1; seed <= 10; seed++) await answer(id, seed, true);
+    for (let seed = 1; seed <= 5; seed++) await answer(id, seed, true);
     const summary = (await app.inject({ method: 'POST', url: `/api/sessions/${id}/finish` })).json<SessionSummary>();
-    expect(summary).toMatchObject({ regular: { answered: 10, correct: 10 }, scoreOn20: 20, perfect: true });
+    expect(summary).toMatchObject({ regular: { answered: 5, correct: 5 }, scoreOn20: 20, perfect: true });
     expect(summary.skills).toEqual([
-      { skillId: 'm5-tables', answered: 10, correct: 10, stageBefore: 0, stageAfter: 1, due: '2026-11-18' },
+      { skillId: 'm5-tables', answered: 5, correct: 5, stageBefore: 0, stageAfter: 1, due: '2026-11-18' },
     ]);
     const profile = (await app.inject(`/api/profiles/${profileId}`)).json<Profile>();
     expect(profile.xp).toBe(summary.xpGained);
-    expect(profile.coins).toBe(summary.coinsGained);
+    // Sans-faute : coffre garanti, ses pièces s'ajoutent.
+    expect(summary.chest).not.toBeNull();
+    expect(profile.coins).toBe(summary.coinsGained + (summary.chest?.coins ?? 0));
     const skills = (await app.inject(`/api/profiles/${profileId}/skills`)).json<SkillProgress[]>();
-    expect(skills[0]).toMatchObject({ skillId: 'm5-tables', stage: 1, attempts: 10, correct: 10 });
+    expect(skills[0]).toMatchObject({ skillId: 'm5-tables', stage: 1, attempts: 5, correct: 5 });
   });
 
   it('série ratée : notion à revoir demain, variantes comptées à part', async () => {
     const id = await start();
-    for (let seed = 1; seed <= 10; seed++) {
-      await answer(id, seed, seed > 5);
-      if (seed <= 5) await answer(id, 100 + seed, true, true);
+    for (let seed = 1; seed <= 5; seed++) {
+      await answer(id, seed, seed > 3);
+      if (seed <= 3) await answer(id, 100 + seed, true, true);
     }
     const summary = (await app.inject({ method: 'POST', url: `/api/sessions/${id}/finish` })).json<SessionSummary>();
-    expect(summary.regular).toEqual({ answered: 10, correct: 5 });
-    expect(summary.variants).toEqual({ answered: 5, correct: 5 });
-    expect(summary.scoreOn20).toBe(10);
+    expect(summary.regular).toEqual({ answered: 5, correct: 2 });
+    expect(summary.variants).toEqual({ answered: 3, correct: 3 });
+    expect(summary.scoreOn20).toBe(8);
     expect(summary.skills[0]).toMatchObject({ stageAfter: 0, due: '2026-11-17' });
   });
 
   it('« Je n’ai pas compris » remet la notion à revoir malgré un sans-faute', async () => {
     const id = await start();
-    for (let seed = 1; seed <= 10; seed++) await answer(id, seed, true);
+    for (let seed = 1; seed <= 5; seed++) await answer(id, seed, true);
     const res = await app.inject({
       method: 'POST',
       url: `/api/sessions/${id}/confused`,

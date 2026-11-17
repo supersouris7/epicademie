@@ -22,7 +22,15 @@ let profileId: string;
 beforeEach(async () => {
   const opened = openDb(':memory:', migrationsDir);
   close = opened.close;
-  app = await buildApp({ db: opened.db, port: 3000, webDir: null, publicUrl: null, today: () => '2026-11-17' });
+  // Hasard à 0 : coffre toujours obtenu, rareté commune, premier objet (bouclier).
+  app = await buildApp({
+    db: opened.db,
+    port: 3000,
+    webDir: null,
+    publicUrl: null,
+    today: () => '2026-11-17',
+    random: () => 0,
+  });
   const res = await app.inject({
     method: 'POST',
     url: '/api/profiles',
@@ -135,7 +143,7 @@ describe('combat de boss', () => {
   });
 
   it('objets : gagnés à l’entraînement (sans-faute), achetés en pièces, utilisés en combat', async () => {
-    // Sans-faute à l'entraînement : un bouclier.
+    // Série d'entraînement : un coffre au hasard (ici commun : 1 bouclier, 10 pièces).
     const chapter = chaptersOf('maths')[0];
     const s = await app.inject({
       method: 'POST',
@@ -143,7 +151,7 @@ describe('combat de boss', () => {
       payload: { profileId, mode: 'entrainement', subject: 'maths', chapterId: chapter?.id, skillId: 'm5-tables' },
     });
     const sid = s.json<{ id: string }>().id;
-    for (let seed = 1; seed <= 10; seed++) {
+    for (let seed = 1; seed <= 5; seed++) {
       await app.inject({
         method: 'POST',
         url: `/api/sessions/${sid}/answers`,
@@ -159,9 +167,9 @@ describe('combat de boss', () => {
     }
     const summary = (await app.inject({ method: 'POST', url: `/api/sessions/${sid}/finish` })).json<SessionSummary>();
     expect(summary.perfect).toBe(true);
-    expect(summary.items.bouclier).toBe(1);
+    expect(summary.chest).toEqual({ rarity: 'commun', items: { bouclier: 1 }, coins: 10 });
 
-    // Pas assez de pièces pour un indice ? On en a gagné avec le sans-faute.
+    // Pièces du sans-faute et du coffre : de quoi acheter un indice.
     const buy = await app.inject({ method: 'POST', url: '/api/shop', payload: { profileId, item: 'indice' } });
     expect(buy.statusCode).toBe(200);
     expect(buy.json<{ inventory: { indice: number } }>().inventory.indice).toBe(1);

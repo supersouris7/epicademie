@@ -14,7 +14,7 @@ const today = '2026-11-16';
 const none = new Map<string, SkillState>();
 
 describe('série d’entraînement', () => {
-  it('10 questions régulières, variante après chaque erreur', () => {
+  it('5 questions régulières, variante après chaque erreur', () => {
     let s = startTraining(['a'], none);
     let seed = 1;
     while (!isFinished(s)) {
@@ -24,7 +24,7 @@ describe('série d’entraînement', () => {
       if (wrong) expect(s.pendingVariant).toEqual({ skillId: 'a', level: q.level });
     }
     expect(regularCount(s)).toBe(TRAINING_LENGTH);
-    expect(s.answers.filter((a) => a.variant)).toHaveLength(4);
+    expect(s.answers.filter((a) => a.variant)).toHaveLength(2);
   });
 
   it('une variante ratée ne déclenche pas de nouvelle variante', () => {

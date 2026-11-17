@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router';
-import { check, generate, getChapter, getSkill, type Question, type Response } from '@questeo/content';
+import { check, getChapter, getSkill, type Question, type Response } from '@questeo/content';
 import {
   isFinished,
   nextQuestion,
@@ -39,6 +39,10 @@ import { ConfirmDialog } from '../../components/ConfirmDialog.tsx';
 import { localToday, randomSeed } from '../../lib/dates.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../lib/sound.ts';
 import { formatAnswer, stageMessage } from '../../lib/answers.ts';
+import { heroLine, type HeroMoment } from '../../lib/heroLines.ts';
+import { freshQuestion, recentPrompts, rememberPrompt } from '../../lib/recent.ts';
+import { HeroBubble } from '../../components/battle/HeroBubble.tsx';
+import { ChestReveal } from '../../components/game/ChestReveal.tsx';
 
 interface Current {
   readonly plan: PlannedQuestion;
@@ -107,6 +111,7 @@ function Game({
   const navigate = useNavigate();
   const location = useLocation();
   const qc = useQueryClient();
+  const profileId = profile.id;
   const chapter = getChapter(chapterId);
   const today = localToday();
   const [toast, showToast] = useToast(2500);
@@ -128,6 +133,12 @@ function Game({
   const pending = useRef<Promise<unknown>[]>([]);
   const started = useRef(false);
   const advancing = useRef(false);
+  /** Énoncés déjà posés dans la partie : jamais deux fois le même. */
+  const seen = useRef(new Set<string>());
+  /** Réaction du héros (tête + petite bulle) en haut de l'écran. */
+  const [hero, setHero] = useState(() => ({ ...heroLine('start', Math.floor(Math.random() * 3)), nonce: 1 }));
+  const react = (moment: HeroMoment) =>
+    setHero((h) => ({ ...heroLine(moment, h.nonce + Math.floor(Math.random() * 5)), nonce: h.nonce + 1 }));
 
   useEffect(() => {
     setSoundEnabled(profile.soundOn);
@@ -136,12 +147,26 @@ function Game({
 
   const draw = useCallback(
     (t: TrainingState) => {
-      const plan = nextQuestion(t, states, today, Math.random(), randomSeed() % 2_000_000_000);
+      const planned = nextQuestion(t, states, today, Math.random(), randomSeed() % 2_000_000_000);
+      const { question, seed } = freshQuestion(
+        planned.skillId,
+        planned.level,
+        planned.seed,
+        seen.current,
+        recentPrompts(profileId, planned.skillId),
+        () => randomSeed() % 2_000_000_000,
+      );
+      const plan = { ...planned, seed };
+      seen.current.add(question.prompt);
+      rememberPrompt(profileId, plan.skillId, question.prompt);
       const advise = !advised.current.has(plan.skillId);
       advised.current.add(plan.skillId);
+      if (!plan.variant && regularCount(t) === TRAINING_LENGTH - 1) {
+        setHero((h) => ({ ...heroLine('lastOne', h.nonce), nonce: h.nonce + 1 }));
+      }
       setCurrent({
         plan,
-        question: generate(plan.skillId, plan.level, plan.seed),
+        question,
         shownAt: performance.now(),
         advise,
       });
@@ -149,7 +174,7 @@ function Game({
       setRetry(null);
       setPicked(null);
     },
-    [states, today],
+    [states, today, profileId],
   );
 
   // Démarrage (une seule fois, même en StrictMode).
@@ -180,6 +205,7 @@ function Game({
     // 2e essai : il ne compte pas dans le score (la 1re réponse est déjà enregistrée), il sert à apprendre.
     if (retry) {
       playSound(result.correct ? 'correct' : 'wrong');
+      react(result.correct ? 'retried' : 'wrong');
       setAnswered({ correct: result.correct, retried: true, why: result.why, given: response, xp: 0, streak: 0 });
       // Erreur corrigée seul avec l'indice : pas besoin d'une question similaire.
       if (result.correct) setTraining((t) => ({ ...t, pendingVariant: null }));
@@ -195,6 +221,7 @@ function Game({
       streak: newStreak,
     });
     setStreak(newStreak);
+    react(result.correct ? (newStreak >= 3 ? 'streak' : 'correct') : 'wrong');
     setXpTotal((v) => v + xp);
     if (!result.correct) {
       const { question } = current;
@@ -298,6 +325,7 @@ function Game({
           onClick={quit}
           aria-label="Quitter la partie"
         />
+        <HeroBubble hero={profile.hero} face={hero.face} text={hero.text} nonce={hero.nonce} />
         <ProgressBar
           className="flex-1"
           value={done}
@@ -521,16 +549,7 @@ function Results({
         </motion.div>
       )}
 
-      {(summary.items.bouclier ?? 0) + (summary.items.soin ?? 0) > 0 && (
-        <p className="cartoon bg-surface-2 flex flex-wrap items-center justify-center gap-2 p-3 text-center text-lg font-bold">
-          <GameIcon id={summary.items.bouclier ? 'icons-items-bouclier' : 'icons-items-soin'} size="sm" />
-          Pour les combats de boss :{summary.items.bouclier ? ` +${summary.items.bouclier} bouclier (sans-faute)` : ''}
-          {summary.items.bouclier && summary.items.soin ? ' ·' : ''}
-          {summary.items.soin
-            ? ` +${summary.items.soin} soin${summary.items.soin > 1 ? 's' : ''} (notion acquise)`
-            : ''}
-        </p>
-      )}
+      <ChestReveal chest={summary.chest} />
 
       {summary.variants.answered > 0 && (
         <p className="text-center text-lg font-bold">

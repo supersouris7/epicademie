@@ -52,7 +52,9 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   const started = page.waitForResponse((r) => r.url().endsWith('/api/battles'));
   await relatifs.getByRole('button', { name: 'Combattre' }).click();
   let view = (await (await started).json()) as BattleView;
-  await expect(page.getByText('Mobs 1/7')).toBeVisible();
+  // Entrée en scène en grand, puis bandeau compact.
+  await expect(page.getByText('Combat !')).toBeVisible();
+  await expect(page.getByText('Mob 1/7')).toBeVisible({ timeout: 5000 });
   await expect(page.getByRole('img', { name: '3 cœurs sur 3' })).toBeVisible();
 
   // 1re réponse fausse : riposte, un cœur de moins, explication courte.

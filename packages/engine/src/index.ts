@@ -4,3 +4,4 @@ export * from './xp.ts';
 export * from './session.ts';
 export * from './duel.ts';
 export * from './battle.ts';
+export * from './loot.ts';

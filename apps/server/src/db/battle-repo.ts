@@ -1,5 +1,5 @@
 import { randomInt, randomUUID } from 'node:crypto';
-import { and, eq } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
 import { battlePools, check, generate, getChapter } from '@questeo/content';
 import {
   answerBattle,
@@ -55,12 +55,14 @@ export function createBattleRepo(db: Db) {
   const load = (id: string) => {
     const session = db.select().from(sessions).where(eq(sessions.id, id)).get();
     if (session?.mode !== 'boss' || !session.battle) throw new PlayError(404, 'Combat introuvable');
-    return { session, state: session.battle as BattleState };
+    // Combats commencés avant le contrôle des doublons : pas encore de liste d'énoncés.
+    const stored = session.battle as Omit<BattleState, 'seen'> & { seen?: readonly string[] };
+    return { session, state: { ...stored, seen: stored.seen ?? [] } };
   };
   const pools = (chapterId: string) => {
     const p = battlePools(chapterId);
     if (!p) throw new PlayError(400, 'Ce chapitre n’a pas encore de boss');
-    return p;
+    return { ...p, prompt: (skillId: string, level: 1 | 2 | 3, seed: number) => generate(skillId, level, seed).prompt };
   };
   const records = (profileId: string) =>
     db.select().from(bossRecords).where(eq(bossRecords.profileId, profileId)).all();
@@ -83,7 +85,24 @@ export function createBattleRepo(db: Db) {
       if (!profile) throw new PlayError(404, 'Profil introuvable');
       const chapter = getChapter(chapterId);
       const p = pools(chapterId);
-      const state = createBattle(p, dice);
+      // Énoncés des derniers combats de ce chapitre : à éviter aussi.
+      const recent = db
+        .select({ skillId: attempts.skillId, level: attempts.level, seed: attempts.seed })
+        .from(attempts)
+        .innerJoin(sessions, eq(sessions.id, attempts.sessionId))
+        .where(and(eq(attempts.profileId, profileId), eq(sessions.mode, 'boss'), eq(sessions.chapterId, chapterId)))
+        .orderBy(desc(attempts.id))
+        .limit(150)
+        .all()
+        .reverse()
+        .flatMap((a) => {
+          try {
+            return [generate(a.skillId, a.level as 1 | 2 | 3, a.seed).prompt];
+          } catch {
+            return [];
+          }
+        });
+      const state = createBattle(p, dice, recent);
       const id = randomUUID();
       db.insert(sessions)
         .values({

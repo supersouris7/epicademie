@@ -20,6 +20,8 @@ export interface AppOptions {
   readonly logger?: boolean;
   /** Date du jour injectable (tests). */
   readonly today?: () => string;
+  /** Hasard injectable (tests : coffres). */
+  readonly random?: () => number;
 }
 
 export async function buildApp(opts: AppOptions): Promise<FastifyInstance> {
@@ -33,7 +35,7 @@ export async function buildApp(opts: AppOptions): Promise<FastifyInstance> {
         return { publicUrl: opts.publicUrl ?? (lan ? `http://${lan}:${opts.port}` : null) };
       });
       await api.register(profileRoutes(createProfilesRepo(opts.db)));
-      await api.register(playRoutes(createPlayRepo(opts.db, opts.today ?? (() => today()))));
+      await api.register(playRoutes(createPlayRepo(opts.db, opts.today ?? (() => today()), opts.random)));
       await api.register(battleRoutes(createBattleRepo(opts.db)));
     },
     { prefix: '/api' },

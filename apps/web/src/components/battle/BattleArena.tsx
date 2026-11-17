@@ -44,7 +44,7 @@ export function BattleArena(props: BattleArenaProps) {
     <div
       className="cartoon relative w-full shrink-0 overflow-hidden"
       style={{
-        height: 'var(--arena-h)',
+        height: 'min(62dvh, 560px)',
         background: bg
           ? `center 62% / cover no-repeat url(${bg})`
           : `linear-gradient(180deg, ${sky[0]}, ${sky[1]} 70%, color-mix(in srgb, ${sky[1]} 50%, black))`,
@@ -55,7 +55,14 @@ export function BattleArena(props: BattleArenaProps) {
       {/* Sol */}
       <div className="absolute inset-x-0 bottom-0 h-[14%] bg-black/25" />
 
-      <div className="absolute bottom-[6%] left-[6%] h-[78%]" style={{ aspectRatio: '1' }}>
+      {/* Entrée en scène : le héros arrive en courant depuis la gauche. */}
+      <motion.div
+        className="absolute bottom-[6%] left-[6%] h-[78%]"
+        style={{ aspectRatio: '1', maxWidth: '44%' }}
+        initial={reduce ? false : { x: '-140%' }}
+        animate={{ x: 0 }}
+        transition={{ duration: 0.9, ease: 'easeOut' }}
+      >
         <HeroFigure hero={hero} state={heroState} />
         <AnimatePresence>
           {shield && (
@@ -69,16 +76,17 @@ export function BattleArena(props: BattleArenaProps) {
             />
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
 
-      <div className="absolute right-[6%] bottom-[6%] h-[82%]" style={{ aspectRatio: '1' }}>
+      <div className="absolute right-[6%] bottom-[6%] h-[82%]" style={{ aspectRatio: '1', maxWidth: '44%' }}>
         <AnimatePresence mode="wait">
           {enemy && (
             <motion.div
               key={enemy.key}
               className="h-full w-full"
-              initial={reduce ? false : { x: 80, opacity: 0 }}
+              initial={reduce ? false : { x: '140%', opacity: 1 }}
               animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.9, ease: 'easeOut' }}
               exit={reduce ? undefined : { scale: 0.2, opacity: 0, rotate: 20, transition: { duration: 0.35 } }}
             >
               <EnemyFigure enemy={enemy} state={enemyState} />
@@ -119,7 +127,7 @@ export function BattleArena(props: BattleArenaProps) {
 }
 
 /** Tir du canon à plasma d'Alex : boule d'énergie violette et sa traînée, dessinées en code. */
-function PlasmaShot() {
+export function PlasmaShot() {
   const color = '#c45cff';
   return (
     <div className="relative w-full" style={{ aspectRatio: '1' }} aria-hidden>

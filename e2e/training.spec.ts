@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 test('Entraînement : série complète de tables, correction, leçon et résultats', async ({ page }) => {
-  test.setTimeout(60_000); // série complète : 10 questions + variantes
+  test.setTimeout(60_000); // série complète : 5 questions + variantes
   await page.goto('/');
   await page.getByRole('button', { name: /Nouveau joueur/ }).click();
   await page.getByPlaceholder('Ex. Léa').fill(`Jeu${Date.now() % 10000}`);
@@ -13,6 +13,8 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   await page.getByRole('button', { name: /Entraînement/ }).click();
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   await expect(page.getByRole('heading', { name: /Entraînement · Maths/ })).toBeVisible();
+  // C'est ici qu'on gagne son équipement.
+  await expect(page.getByText(/C’est ici que tu gagnes ton/)).toBeVisible();
   // Nouveau joueur : l'appli propose par où commencer.
   await page.getByRole('button', { name: /Je te propose · par où commencer Calcul mental/ }).click();
   await page.getByRole('button', { name: /Tables de multiplication/ }).click();
@@ -39,7 +41,7 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   await page.getByRole('button', { name: /Je réessaie/ }).click();
   await expect(page.getByText('Question similaire', { exact: true })).toBeVisible();
 
-  // On répond « −1 » (toujours faux) jusqu'à la fin de la série : 10 questions + 5 variantes au plus.
+  // On répond « −1 » (toujours faux) jusqu'à la fin de la série : 5 questions + 3 variantes au plus.
   const ok = page.getByRole('button', { name: 'OK' });
   const next = page.getByRole('button', { name: /Suivant|Je réessaie/ });
   const end = page.getByText(/On s’accroche/);
@@ -55,7 +57,9 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
     await expect(next).toBeHidden();
   }
   await expect(page.getByText(/On s’accroche/)).toBeVisible();
-  await expect(page.getByText('0/10')).toBeVisible();
+  await expect(page.getByText('0/5')).toBeVisible();
+  // 0/5 : peu de chances de coffre ; s'il n'y en a pas, l'appli explique comment en gagner.
+  await expect(page.getByText(/Pas de coffre cette fois|Un coffre d’équipement/)).toBeVisible();
   await expect(page.getByText(/À revoir dès/)).toBeVisible();
   // Récapitulatif des erreurs avec la bonne réponse.
   await page.getByText(/Tes erreurs \(\d+\)/).click();

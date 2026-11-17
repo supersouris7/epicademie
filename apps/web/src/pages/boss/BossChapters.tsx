@@ -55,7 +55,8 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
       <div className="flex items-center gap-4">
         <Questy size={120} mood="angry" />
         <SpeechBubble>
-          Choisis ton boss : bats ses 7 mobs, puis retire-lui ses 3 vies ! Ton équipement se gagne à l’entraînement.
+          Choisis ton boss : bats ses 7 mobs, puis retire-lui ses 3 vies ! Ton équipement se gagne dans les coffres de
+          l’entraînement.
         </SpeechBubble>
       </div>
 

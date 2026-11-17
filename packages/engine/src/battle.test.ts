@@ -105,6 +105,22 @@ describe('combat de boss', () => {
     expect(weakestSkill({ ...s, misses: [] }, pools.mobs)).toBeNull();
   });
 
+  it('jamais deux fois le même énoncé (ni ceux des combats précédents)', () => {
+    // Chaque notion n'a que 3 énoncés possibles, selon la graine.
+    const prompt = (id: string, _l: number, seed: number) => `${id}-${seed % 3}`;
+    const p = { ...pools, prompt };
+    const d = dice();
+    let s = createBattle(p, d, ['a-0']);
+    const asked: string[] = [];
+    for (let i = 0; i < 3; i++) {
+      const q = s.question;
+      if (q) asked.push(prompt(q.skillId, q.level, q.seed));
+      s = answerBattle(s, p, true, d).state;
+    }
+    expect(new Set(asked).size).toBe(asked.length);
+    expect(asked).not.toContain('a-0');
+  });
+
   it('barèmes de niveau et d’étape', () => {
     expect([0, 2, 3, 6].map(mobLevel)).toEqual([1, 1, 2, 2]);
     expect([3, 2, 1].map(bossStage)).toEqual(['probleme', 'probleme', 'piege']);

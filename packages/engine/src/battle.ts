@@ -21,6 +21,8 @@ export interface BattlePools {
   readonly mobs: readonly string[];
   readonly problems: readonly string[];
   readonly traps: readonly string[];
+  /** Énoncé d'une question (pour éviter les doublons) ; absent : pas de contrôle. */
+  readonly prompt?: (skillId: string, level: 1 | 2 | 3, seed: number) => string;
 }
 
 export interface BattleState {
@@ -41,7 +43,24 @@ export interface BattleState {
   readonly correct: number;
   /** Notions ratées, dans l'ordre (pour proposer l'entraînement après une défaite). */
   readonly misses: readonly string[];
+  /** Énoncés déjà posés (dans ce combat et les précédents) : jamais deux fois le même. */
+  readonly seen: readonly string[];
 }
+
+/** Énoncés retenus au plus (les plus récents). */
+const SEEN_MAX = 300;
+
+/** Graine dont l'énoncé n'a pas encore été vu (sinon la dernière essayée, si la notion en propose peu). */
+function freshSeed(pools: BattlePools, skillId: string, level: 1 | 2 | 3, dice: BattleDice, seen: readonly string[]) {
+  let seed = dice.seed();
+  const { prompt } = pools;
+  if (!prompt) return seed;
+  for (let i = 0; i < 40 && seen.includes(prompt(skillId, level, seed)); i++) seed = dice.seed();
+  return seed;
+}
+
+const remember = (pools: BattlePools, seen: readonly string[], q: BattleQuestion | null) =>
+  q && pools.prompt ? [...seen, pools.prompt(q.skillId, q.level, q.seed)].slice(-SEEN_MAX) : seen;
 
 /** Tirage : `random` ∈ [0, 1) ; `seed` donne la graine du générateur de question. */
 export interface BattleDice {
@@ -79,16 +98,23 @@ function nextQuestion(
 ) {
   if (s.mobsDefeated < BATTLE_MOBS) {
     const skillId = s.order[s.mobsDefeated % s.order.length] ?? '';
-    return { skillId, level: mobLevel(s.mobsDefeated), seed: dice.seed(), stage: 'mob' } satisfies BattleQuestion;
+    const level = mobLevel(s.mobsDefeated);
+    return {
+      skillId,
+      level,
+      seed: freshSeed(pools, skillId, level, dice, s.seen),
+      stage: 'mob',
+    } satisfies BattleQuestion;
   }
   const stage = bossStage(s.bossLives);
   const pool = stage === 'piege' ? pools.traps : pools.problems;
   // Après une erreur contre le boss : une autre question du même type (autre générateur si possible).
   const skillId = pick(pool, dice.random, previous?.stage === stage ? previous.skillId : undefined);
-  return { skillId, level: 2, seed: dice.seed(), stage } satisfies BattleQuestion;
+  return { skillId, level: 2, seed: freshSeed(pools, skillId, 2, dice, s.seen), stage } satisfies BattleQuestion;
 }
 
-export function createBattle(pools: BattlePools, dice: BattleDice): BattleState {
+/** `recent` : énoncés des combats précédents, à éviter aussi. */
+export function createBattle(pools: BattlePools, dice: BattleDice, recent: readonly string[] = []): BattleState {
   if (pools.mobs.length === 0 || pools.problems.length === 0 || pools.traps.length === 0) {
     throw new Error('Chapitre sans combat de boss');
   }
@@ -106,8 +132,10 @@ export function createBattle(pools: BattlePools, dice: BattleDice): BattleState 
     answered: 0,
     correct: 0,
     misses: [],
+    seen: recent.slice(-SEEN_MAX),
   };
-  return { ...base, question: nextQuestion(base, pools, dice) };
+  const question = nextQuestion(base, pools, dice);
+  return { ...base, seen: remember(pools, base.seen, question), question };
 }
 
 /**
@@ -152,10 +180,8 @@ export function answerBattle(
     correct: s.correct + (correct ? 1 : 0),
     misses: correct ? s.misses : [...s.misses, q.skillId],
   };
-  return {
-    state: { ...next, question: status === 'fighting' ? nextQuestion(next, pools, dice, q) : null },
-    outcome,
-  };
+  const question = status === 'fighting' ? nextQuestion(next, pools, dice, q) : null;
+  return { state: { ...next, seen: remember(pools, next.seen, question), question }, outcome };
 }
 
 /** Raison du refus d'un objet, ou null s'il peut servir maintenant. */

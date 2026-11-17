@@ -7,6 +7,7 @@ import {
   levelFromXp,
   newSkillState,
   PERFECT_BONUS,
+  rollChest,
   scoreOn20,
   TRAINING_LENGTH,
   xpForAnswer,
@@ -36,7 +37,7 @@ const toState = (row: typeof skillStates.$inferSelect): SkillState => ({
   maintained: row.maintained,
 });
 
-export function createPlayRepo(db: Db, today: () => string) {
+export function createPlayRepo(db: Db, today: () => string, random: () => number = Math.random) {
   const getSession = (id: string) => db.select().from(sessions).where(eq(sessions.id, id)).get();
 
   return {
@@ -174,13 +175,12 @@ export function createPlayRepo(db: Db, today: () => string) {
 
         const profile = tx.select().from(profiles).where(eq(profiles.id, session.profileId)).get();
         if (!profile) throw new PlayError(404, 'Profil introuvable');
-        // Objets pour les combats de boss : bouclier pour un sans-faute, soin par notion acquise.
-        const items = addItems(tx, profile.id, {
-          bouclier: perfect ? 1 : 0,
-          soin: skills.filter((s) => s.stageAfter === 3 && s.stageBefore < 3).length,
-        });
+        // Coffre d'équipement au hasard : plus probable avec un bon score, garanti par un sans-faute.
+        const rolled = rollChest(regularCorrect, regular.length, random);
+        const chest = rolled ? { ...rolled, items: addItems(tx, profile.id, rolled.items) } : null;
+        const chestCoins = chest?.coins ?? 0;
         tx.update(profiles)
-          .set({ xp: profile.xp + xpGained, coins: profile.coins + coinsGained })
+          .set({ xp: profile.xp + xpGained, coins: profile.coins + coinsGained + chestCoins })
           .where(eq(profiles.id, profile.id))
           .run();
         tx.update(sessions)
@@ -204,7 +204,7 @@ export function createPlayRepo(db: Db, today: () => string) {
           levelBefore: levelFromXp(profile.xp).level,
           levelAfter: levelFromXp(profile.xp + xpGained).level,
           skills,
-          items,
+          chest,
         };
       });
     },
