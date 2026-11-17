@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { outputs, svgAssets } from '../../scripts/assets/build.ts';
 import { availableFile, guide, LOT_DIR, lotFiles } from '../../scripts/assets/plan.ts';
 import { assetSrc, MANIFEST, PLANNED_ASSETS } from './assets.ts';
+import { AVAILABLE } from './assets.available.ts';
 import { PALETTE } from './palette.ts';
 
 const read = (rel: string) => readFileSync(fileURLToPath(new URL(rel, import.meta.url)), 'utf8');
@@ -52,9 +53,11 @@ describe('catalogue', () => {
 
   it('références et remplacements existants', () => {
     const ids = new Set(PLANNED_ASSETS.map((p) => p.id));
+    const delivered = new Set<string>(AVAILABLE);
     for (const p of PLANNED_ASSETS) {
       if (p.reference) expect(ids.has(p.reference), p.id).toBe(true);
-      if (p.fallback) expect(assetSrc(p.id), p.id).toMatch(/\.svg$/);
+      // Tant que l'image finale n'est pas livrée, le remplaçant SVG est servi.
+      if (p.fallback) expect(assetSrc(p.id), p.id).toMatch(delivered.has(p.file) ? /\.webp$/ : /\.svg$/);
     }
   });
 

@@ -10,6 +10,7 @@ dominants, contours épais, relief franc. Les illustrations sont générées ave
 apps/web/
 ├── assets-src/originals/     PNG livrés par ChatGPT (jamais modifiés, hors image Docker)
 │   └── sheets/               planches en grille, découpées à l'import
+├── assets-src/chatgpt/       planches livrées hors catalogue (ordre ou contenu différents), gardées telles quelles
 ├── public/assets/            images servies : WebP finaux + SVG provisoires
 │   ├── branding/  characters/{alex,zoe,leo,mia,questy}/  bosses/{maths,physics,biology,french,history,general,minions}/
 │   ├── weapons/  projectiles/  icons/{navigation,resources,status,subjects,tools,modes,items}/
@@ -19,6 +20,7 @@ apps/web/
 │   ├── build.ts      SVG provisoires (générés en code, palette imposée) → `pnpm --filter @questeo/web assets:svg`
 │   ├── plan.ts       arborescence + guide ChatGPT + liste des images livrées → `assets:plan`
 │   ├── import.ts     import des PNG → WebP détourés → `assets:import [--force] [filtre]`
+│   ├── cut.ts        planche hors catalogue → originaux individuels → `assets:cut <png> 3x3 <chemin|-> …`
 │   └── image.ts      détourage magenta, découpe en grille, contrôles (testé)
 └── src/design/
     ├── palette.ts            couleurs (source unique)
@@ -40,7 +42,9 @@ apps/web/
 4. `assets:import` :
    - retire le fond magenta par remplissage depuis les bords, ce qui épargne le violet et le rose du sujet ;
    - adoucit et dé-magentise les bords ;
-   - découpe les planches selon la grille ;
+   - découpe les planches : chaque forme est rattachée à la case de la grille qui contient son centre
+     (un élément qui déborde n'est ni coupé ni mêlé au voisin) ;
+   - un original individuel est prioritaire sur la case de planche correspondante ;
    - recadre les icônes ;
    - convertit en WebP aux dimensions finales ;
    - vérifie les coins transparents, l'absence de reste magenta et la présence de transparence ;
@@ -51,12 +55,16 @@ Statuts du manifeste : **disponible** (WebP présent), **provisoire** (SVG de re
 La page `/dev/assets` (développement uniquement, absente du build) affiche tous les composants et le catalogue par
 catégorie et par statut.
 
+Planche livrée dans un autre ordre ou avec d'autres objets : la ranger dans `assets-src/chatgpt/`, puis
+`assets:cut` attribue chaque case utile à un chemin du catalogue (`-` pour ignorer), avant `assets:import`.
+
 ## Règles de dessin
 
 - Contour encre `#1D1238`, épais et régulier ; ombre franche en bas à droite ; reflet blanc en haut à gauche.
 - Uniquement les couleurs de `palette.ts` dans les SVG (testé) ; aucun hexadécimal dans les composants (tokens).
 - Aucun texte dans les images, sauf le logo et le badge XP : les libellés sont écrits par l'application.
 - Cadres et boutons livrés « vides » et étirables (coins identiques, bords droits) : `skinStyle()`.
+- Les cadres illustrés sont crème : leur contenu passe en `on-light` (texte encre, surfaces crème).
 
 ## Composants (`src/components/game/`)
 

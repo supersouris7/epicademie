@@ -142,6 +142,92 @@ export function contentBox(img: Rgba, threshold = 16): Box | null {
   return { left: minX, top: minY, width: maxX - minX + 1, height: maxY - minY + 1 };
 }
 
+/** Taille minimale d'une forme isolée (part de l'image) : en dessous, poussière ignorée. */
+const SPECK = 0.0002;
+
+/**
+ * Découpe une planche détourée en éléments : chaque forme visible (pixels connexes) est rattachée à la case
+ * de la grille qui contient son centre, puis chaque case est recadrée sur ses seules formes.
+ * Plus robuste qu'un découpage à la règle : un élément qui déborde de sa case n'est ni coupé ni mêlé au voisin.
+ * Renvoie une image par case (ordre de lecture), null pour une case vide.
+ */
+export function splitSheet(img: Rgba, cols: number, rows: number, threshold = 16): (Rgba | null)[] {
+  const { width: w, height: h } = img;
+  const n = w * h;
+  const label = new Int32Array(n).fill(-1);
+  const comps: { cell: number; box: Box }[] = [];
+  const stack: number[] = [];
+  const visible = (p: number) => (img.data[p * 4 + 3] ?? 0) > threshold;
+  for (let start = 0; start < n; start++) {
+    if (label[start] !== -1 || !visible(start)) continue;
+    const id = comps.length;
+    let count = 0;
+    let sx = 0;
+    let sy = 0;
+    let minX = w;
+    let minY = h;
+    let maxX = 0;
+    let maxY = 0;
+    label[start] = id;
+    stack.push(start);
+    while (stack.length) {
+      const p = stack.pop() ?? 0;
+      const x = p % w;
+      const y = (p - x) / w;
+      count++;
+      sx += x;
+      sy += y;
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+      if (y < minY) minY = y;
+      if (y > maxY) maxY = y;
+      for (const q of [x > 0 ? p - 1 : -1, x < w - 1 ? p + 1 : -1, p - w, p + w]) {
+        if (q >= 0 && q < n && label[q] === -1 && visible(q)) {
+          label[q] = id;
+          stack.push(q);
+        }
+      }
+    }
+    const cx = Math.min(cols - 1, Math.floor(((sx / count) * cols) / w));
+    const cy = Math.min(rows - 1, Math.floor(((sy / count) * rows) / h));
+    const cell = count < n * SPECK ? -1 : cy * cols + cx;
+    comps.push({ cell, box: { left: minX, top: minY, width: maxX - minX + 1, height: maxY - minY + 1 } });
+  }
+
+  return Array.from({ length: cols * rows }, (_, cell) => {
+    const mine = comps.flatMap((c, i) => (c.cell === cell ? [i] : []));
+    if (!mine.length) return null;
+    const left = Math.min(...mine.map((i) => comps[i]?.box.left ?? w));
+    const top = Math.min(...mine.map((i) => comps[i]?.box.top ?? h));
+    const right = Math.max(...mine.map((i) => (comps[i]?.box.left ?? 0) + (comps[i]?.box.width ?? 0)));
+    const bottom = Math.max(...mine.map((i) => (comps[i]?.box.top ?? 0) + (comps[i]?.box.height ?? 0)));
+    const keep = new Set(mine);
+    const out = Buffer.alloc((right - left) * (bottom - top) * 4);
+    for (let y = top; y < bottom; y++) {
+      for (let x = left; x < right; x++) {
+        const p = y * w + x;
+        const owner = label[p] ?? -1;
+        // Pixels de la forme, et pixels presque transparents qui la bordent (liseré adouci).
+        if (owner === -1 ? (img.data[p * 4 + 3] ?? 0) === 0 : !keep.has(owner)) continue;
+        if (owner === -1 && !nearOwned(label, keep, p, w, n)) continue;
+        Buffer.from(img.data.buffer, img.data.byteOffset + p * 4, 4).copy(
+          out,
+          ((y - top) * (right - left) + x - left) * 4,
+        );
+      }
+    }
+    return { data: out, width: right - left, height: bottom - top };
+  });
+}
+
+function nearOwned(label: Int32Array, keep: ReadonlySet<number>, p: number, w: number, n: number): boolean {
+  const x = p % w;
+  for (const q of [x > 0 ? p - 1 : -1, x < w - 1 ? p + 1 : -1, p - w, p + w]) {
+    if (q >= 0 && q < n && keep.has(label[q] ?? -1)) return true;
+  }
+  return false;
+}
+
 /** Cases d'une grille (colonnes × lignes) couvrant toute l'image. */
 export function gridCells(width: number, height: number, cols: number, rows: number): Box[] {
   const cells: Box[] = [];

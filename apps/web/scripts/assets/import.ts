@@ -12,7 +12,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { KINDS, PLANNED_ASSETS, type AssetKind, type KindId, type PlannedAsset } from '../../src/design/assets.ts';
-import { chromaKey, contentBox, gridCells, hasAlpha, inspect, type Box, type Rgba } from './image.ts';
+import { chromaKey, contentBox, hasAlpha, inspect, splitSheet, type Box, type Rgba } from './image.ts';
 import { availableFile, sheets } from './plan.ts';
 
 const WEB = fileURLToPath(new URL('../../', import.meta.url));
@@ -44,6 +44,7 @@ const TRIM: ReadonlySet<KindId> = new Set([
 const MARGIN = 0.04;
 
 const findSource = (base: string) => EXTENSIONS.map((e) => base + e).find((f) => existsSync(f));
+const individualSource = (asset: PlannedAsset) => findSource(join(ORIGINALS, asset.file.replace(/\.webp$/, '')));
 
 async function load(file: string): Promise<Rgba> {
   const { data, info } = await sharp(file).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -129,8 +130,9 @@ export async function run(filters: readonly string[], force: boolean): Promise<R
   const match = (...keys: string[]) => !filters.length || filters.some((f) => keys.some((k) => k.includes(f)));
   const results: Result[] = [];
 
-  for (const asset of PLANNED_ASSETS.filter((p) => !p.sheet)) {
-    const src = findSource(join(ORIGINALS, asset.file.replace(/\.webp$/, '')));
+  // Original individuel : prioritaire, même pour un élément prévu dans une planche (découpé avec assets:cut).
+  for (const asset of PLANNED_ASSETS) {
+    const src = individualSource(asset);
     if (!src || !match(asset.id, asset.file) || (!force && upToDate(src, asset))) continue;
     try {
       const { webp, notes } = await render(asset, keyed(await load(src), isOpaque(asset)));
@@ -143,15 +145,16 @@ export async function run(filters: readonly string[], force: boolean): Promise<R
 
   for (const sheet of sheets()) {
     const src = findSource(join(ORIGINALS, 'sheets', sheet.name));
-    if (!src || !match(sheet.name, ...sheet.items.map((p) => p.id))) continue;
-    if (!force && sheet.items.every((p) => upToDate(src, p))) continue;
-    const img = keyed(await load(src), false);
-    const cells = gridCells(img.width, img.height, sheet.grid.cols, sheet.grid.rows);
+    const items = sheet.items.filter((p) => !individualSource(p));
+    if (!src || !match(sheet.name, ...items.map((p) => p.id))) continue;
+    if (!force && items.every((p) => upToDate(src, p))) continue;
+    const cells = splitSheet(keyed(await load(src), false), sheet.grid.cols, sheet.grid.rows);
     for (const [i, asset] of sheet.items.entries()) {
+      if (!items.includes(asset)) continue;
       const cell = cells[i];
       try {
-        if (!cell) throw new Error('case hors grille');
-        const { webp, notes } = await render(asset, crop(img, cell));
+        if (!cell) throw new Error('case vide');
+        const { webp, notes } = await render(asset, cell);
         write(asset, webp);
         results.push({ asset, ok: true, notes });
       } catch (e) {

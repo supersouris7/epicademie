@@ -14,10 +14,11 @@ interface GamePanelProps {
  * Panneau de menu : fond crème, bordure violette, coins orange (ou l'image « panel » étirée une fois livrée).
  */
 export function GamePanel({ title, as: Tag = 'section', className = '', children, ...rest }: GamePanelProps) {
-  const skin = skinStyle(title ? 'hud/frames/panel-tab.webp' : 'hud/frames/panel.webp');
+  // L'onglet est un élément à part : le cadre à onglet intégré se déformerait à l'étirement.
+  const skin = skinStyle('hud/frames/panel.webp');
   return (
     <Tag
-      className={`relative ${title ? 'mt-5 pt-7' : ''} ${skin ? 'p-2' : 'border-accent bg-surface rounded-game-lg border-[length:var(--stroke-lg)] p-4 shadow-[var(--drop-md)]'} ${className}`}
+      className={`relative ${title ? 'mt-5 pt-7' : ''} ${skin ? 'on-light p-2' : 'border-accent bg-surface rounded-game-lg border-[length:var(--stroke-lg)] p-4 shadow-[var(--drop-md)]'} ${className}`}
       style={skin}
       {...rest}
     >

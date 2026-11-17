@@ -2,7 +2,7 @@
 import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 import { PLANNED_ASSETS } from '../../src/design/assets.ts';
-import { chromaKey, contentBox, gridCells, hasAlpha, inspect, type Rgba } from './image.ts';
+import { chromaKey, contentBox, gridCells, hasAlpha, inspect, splitSheet, type Rgba } from './image.ts';
 import { render } from './import.ts';
 
 /** Sujet de test : disque violet et rose cerclé d'encre, sur fond magenta, anticrénelé. */
@@ -58,6 +58,33 @@ describe('planches', () => {
     expect(cells).toHaveLength(6);
     expect(cells.reduce((s, c) => s + c.width * c.height, 0)).toBe(1536 * 1024);
     expect(cells[5]).toEqual({ left: 1024, top: 512, width: 512, height: 512 });
+  });
+});
+
+describe('découpe par formes', () => {
+  it('rattache un élément débordant à sa case et le sépare de son voisin', async () => {
+    // Grille 2×1 de 200×100 : le rectangle de gauche déborde sur la moitié droite, son étincelle est détachée.
+    const sheet = chromaKey(
+      await raster(`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100">
+        <rect width="200" height="100" fill="#ff00ff"/>
+        <rect x="10" y="20" width="110" height="60" fill="#7c4dff"/>
+        <rect x="12" y="5" width="6" height="6" fill="#ffd23f"/>
+        <circle cx="165" cy="50" r="25" fill="#3fc944"/>
+      </svg>`),
+    );
+    const [left, right] = splitSheet(sheet, 2, 1);
+    expect(left?.width).toBeGreaterThanOrEqual(110);
+    expect(left?.height).toBeGreaterThanOrEqual(75);
+    expect(right?.width).toBeLessThanOrEqual(52);
+  });
+
+  it('case sans élément : null', async () => {
+    const sheet = chromaKey(
+      await raster(`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100">
+        <rect width="200" height="100" fill="#ff00ff"/><circle cx="50" cy="50" r="30" fill="#3fc944"/>
+      </svg>`),
+    );
+    expect(splitSheet(sheet, 2, 1)[1]).toBeNull();
   });
 });
 

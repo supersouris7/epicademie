@@ -11,7 +11,8 @@
     "mascot:export": "tsx scripts/export-mascot.tsx",
     "assets:svg": "tsx scripts/assets/build.ts",
     "assets:plan": "tsx scripts/assets/plan.ts",
-    "assets:import": "tsx scripts/assets/import.ts"
+    "assets:import": "tsx scripts/assets/import.ts",
+    "assets:cut": "tsx scripts/assets/cut.ts"
   },
   "dependencies": {
     "@dicebear/core": "^10.7.0",

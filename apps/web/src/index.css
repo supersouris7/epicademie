@@ -88,6 +88,15 @@ button {
 }
 
 /* Texte blanc détouré (titres et libellés sur fond coloré, comme sur les planches). */
+/* Contenu posé sur un cadre illustré crème : textes sombres (les couleurs de texte suivent ces variables). */
+@utility on-light {
+  --text: var(--af-ink);
+  --text-muted: var(--af-violet-700);
+  --surface: var(--af-cream-200);
+  --surface-2: var(--af-cream-300);
+  color: var(--text);
+}
+
 @utility text-toon {
   color: var(--text-on-color);
   text-shadow:
