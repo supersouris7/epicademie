@@ -9,6 +9,7 @@ export const ResponseSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('fraction'), num: z.string().max(20), den: z.string().max(20) }),
   z.object({ kind: z.literal('choice'), index: z.number().int().min(0).max(20) }),
   z.object({ kind: z.literal('point'), x: z.number().int().min(-50).max(50), y: z.number().int().min(-50).max(50) }),
+  z.object({ kind: z.literal('text'), text: z.string().max(80) }),
 ]);
 
 export const SessionCreateSchema = z.object({

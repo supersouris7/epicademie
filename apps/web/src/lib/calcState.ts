@@ -19,3 +19,15 @@ export function pressCalc(state: CalcState, k: string): CalcState {
   }
   return { expr: state.expr.length < 40 ? state.expr + k : state.expr, result: null };
 }
+
+/** Valeur à envoyer dans la réponse : le résultat affiché, sinon l'expression évaluée ; null si incalculable. */
+export function sendable(state: CalcState): string | null {
+  if (state.result !== null) return /^[−\d]/.test(state.result) ? state.result : null;
+  if (!state.expr) return null;
+  try {
+    const r = formatResult(evaluate(state.expr));
+    return r === 'Erreur' ? null : r;
+  } catch {
+    return null;
+  }
+}

@@ -35,7 +35,7 @@ import { AnswerInput } from '../../components/play/AnswerInput.tsx';
 import { Feedback } from '../../components/play/Feedback.tsx';
 import { NotUnderstood } from '../../components/play/NotUnderstood.tsx';
 import { ConfirmDialog } from '../../components/ConfirmDialog.tsx';
-import { ToolButton, ToolsPanel, type ToolTab } from '../../components/play/ToolsPanel.tsx';
+import { PlayDock, type DockTab } from '../../components/play/PlayDock.tsx';
 import { Brouillon, type Stroke } from '../../components/tools/Brouillon.tsx';
 import { Calculator } from '../../components/tools/Calculator.tsx';
 import { EMPTY_CALC, type CalcState } from '../../lib/calcState.ts';
@@ -106,8 +106,9 @@ function Game({
   const [answered, setAnswered] = useState<Answered | null>(null);
   const [picked, setPicked] = useState<{ x: number; y: number } | null>(null);
   const [lesson, setLesson] = useState(false);
-  const [toolsOpen, setToolsOpen] = useState(false);
-  const [tab, setTab] = useState<ToolTab>('brouillon');
+  const [tab, setTab] = useState<DockTab>('reponse');
+  /** Outils déjà ouverts sur cette question (l'outil conseillé cesse de briller). */
+  const [opened, setOpened] = useState<ReadonlySet<DockTab>>(new Set());
   const [strokes, setStrokes] = useState<readonly Stroke[]>([]);
   const [calc, setCalc] = useState<CalcState>(EMPTY_CALC);
   const [conv, setConv] = useState<ConversionState | null>(null);
@@ -137,6 +138,8 @@ function Game({
       setCalc(EMPTY_CALC);
       setConv(null);
       setFill(null);
+      setTab('reponse');
+      setOpened(new Set());
     },
     [states, today],
   );
@@ -242,16 +245,22 @@ function Game({
 
   const done = regularCount(training);
   const skill = current ? getSkill(current.plan.skillId) : undefined;
-  const tabs: ToolTab[] = [
+  const allowed = skill?.tools ?? [];
+  const tabs: DockTab[] = [
+    'reponse',
+    ...(allowed.includes('calculatrice') ? (['calculatrice'] as const) : []),
     'brouillon',
-    ...(skill?.tools?.includes('calculatrice') ? (['calculatrice'] as const) : []),
-    ...(skill?.tools?.some((t) => t.startsWith('conversion')) ? (['conversion'] as const) : []),
+    ...(allowed.some((t) => t.startsWith('conversion')) ? (['conversion'] as const) : []),
   ];
-  const activeTab = tabs.includes(tab) ? tab : 'brouillon';
-  const openTool = (t: ToolTab) => {
+  const activeTab = tabs.includes(tab) ? tab : 'reponse';
+  const advice = skill?.advice ?? (allowed.includes('calculatrice') ? 'calculatrice' : undefined);
+  const selectTab = (t: DockTab) => {
     setTab(t);
-    setToolsOpen(true);
+    setOpened((o) => new Set(o).add(t));
   };
+  const answerKind = current?.question.answer.kind;
+  const answerLabel =
+    answerKind === 'text' ? 'Clavier' : answerKind === 'number' || answerKind === 'fraction' ? 'Pavé' : 'Réponse';
   const kind = current ? conversionKind(current.question) : 'longueur';
   const convState = conv ?? emptyConversion(kind);
 
@@ -301,9 +310,9 @@ function Game({
             initial={{ x: 40, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -40, opacity: 0 }}
-            className="land:grid land:grid-cols-[minmax(0,1fr)_minmax(340px,400px)] flex min-h-0 flex-1 flex-col gap-3"
+            className="side:grid side:grid-cols-[minmax(0,1fr)_minmax(300px,420px)] flex min-h-0 flex-1 flex-col gap-3"
           >
-            {/* Colonne question : énoncé, figure, outils (défile si besoin, sans jamais cacher la réponse). */}
+            {/* Énoncé et figure : jamais recouverts par les outils. */}
             <section className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pb-1 [&>*]:shrink-0">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-muted text-sm font-bold">{skill?.title}</span>
@@ -317,10 +326,20 @@ function Game({
               <h1 className="text-2xl leading-snug font-bold sm:text-3xl">
                 <MathText text={current.question.prompt} />
               </h1>
+              {advice && !answered && (
+                <p className="flex items-center gap-2 text-base font-bold" role="note">
+                  <Questy mood={advice === 'calculatrice' ? 'happy' : 'wink'} size={40} />
+                  <span className="cartoon bg-surface-2 px-3 py-1.5">
+                    {advice === 'calculatrice'
+                      ? 'Tu peux t’aider de la calculatrice.'
+                      : 'Je te conseille de faire un brouillon pour cette question.'}
+                  </span>
+                </p>
+              )}
               {current.question.figure && (
                 <Figure
                   figure={current.question.figure}
-                  maxHeight={toolsOpen ? '22dvh' : '46dvh'}
+                  maxHeight="var(--figure-max)"
                   picked={picked}
                   onPick={current.question.answer.kind === 'point' && !answered ? setPicked : undefined}
                   reveal={
@@ -330,58 +349,12 @@ function Game({
                   }
                 />
               )}
-              {toolsOpen ? (
-                <div className="land:h-auto land:min-h-[45dvh] land:flex-1 flex h-[50dvh] flex-col">
-                  <ToolsPanel tabs={tabs} active={activeTab} onSelect={setTab} onClose={() => setToolsOpen(false)}>
-                    {activeTab === 'brouillon' && <Brouillon strokes={strokes} onChange={setStrokes} />}
-                    {activeTab === 'calculatrice' && (
-                      <Calculator
-                        state={calc}
-                        onChange={setCalc}
-                        onUse={
-                          current.question.answer.kind === 'number' && !answered
-                            ? (value) => {
-                                setFill({ value, nonce: Date.now() });
-                                if (!window.matchMedia('(orientation: landscape) and (min-width: 900px)').matches)
-                                  setToolsOpen(false);
-                              }
-                            : undefined
-                        }
-                      />
-                    )}
-                    {activeTab === 'conversion' && (
-                      <ConversionTable
-                        kind={kind}
-                        state={convState}
-                        onChange={setConv}
-                        highlight={unitsIn(current.question.prompt)}
-                      />
-                    )}
-                  </ToolsPanel>
-                </div>
-              ) : (
-                !answered && (
-                  <div className="flex flex-wrap gap-2" aria-label="Outils">
-                    {tabs.map((t) => (
-                      <ToolButton
-                        key={t}
-                        label={
-                          t === 'brouillon'
-                            ? 'Brouillon'
-                            : t === 'calculatrice'
-                              ? 'Calculatrice'
-                              : 'Tableau de conversion'
-                        }
-                        onClick={() => openTool(t)}
-                      />
-                    ))}
-                  </div>
-                )
-              )}
             </section>
 
-            {/* Colonne réponse : toujours visible (en bas en portrait, à droite en paysage). */}
-            <section className="land:max-h-none land:justify-center flex max-h-[60dvh] min-h-0 shrink-0 flex-col">
+            {/* Écran coupé : pavé et outils en bas (portrait) ou sur le côté (paysage). */}
+            <section
+              className={`side:h-auto side:max-h-none flex min-h-0 shrink-0 flex-col ${!answered && activeTab === 'brouillon' ? 'h-[50dvh]' : 'max-h-[62dvh]'}`}
+            >
               {answered ? (
                 <Feedback
                   question={current.question}
@@ -395,17 +368,14 @@ function Game({
                   onNext={() => void next()}
                 />
               ) : (
-                <>
-                  {toolsOpen && (
-                    <button
-                      type="button"
-                      onClick={() => setToolsOpen(false)}
-                      className="cartoon cartoon-press bg-primary font-display land:hidden min-h-14 text-xl text-white"
-                    >
-                      Revenir à ma réponse
-                    </button>
-                  )}
-                  <div className={toolsOpen ? 'land:block hidden' : 'contents'}>
+                <PlayDock
+                  tabs={tabs}
+                  active={activeTab}
+                  answerLabel={answerLabel}
+                  glow={advice && !opened.has(advice) ? advice : undefined}
+                  onSelect={selectTab}
+                >
+                  <div className={activeTab === 'reponse' ? 'side:my-auto contents' : 'hidden'}>
                     <AnswerInput
                       key={`${current.plan.seed}-${current.plan.variant}-${fill?.nonce ?? 0}`}
                       question={current.question}
@@ -415,7 +385,30 @@ function Game({
                       initialText={fill?.value}
                     />
                   </div>
-                </>
+                  {activeTab === 'calculatrice' && (
+                    <Calculator
+                      state={calc}
+                      onChange={setCalc}
+                      onUse={
+                        current.question.answer.kind === 'number'
+                          ? (value) => {
+                              setFill({ value, nonce: Date.now() });
+                              setTab('reponse');
+                            }
+                          : undefined
+                      }
+                    />
+                  )}
+                  {activeTab === 'brouillon' && <Brouillon strokes={strokes} onChange={setStrokes} />}
+                  {activeTab === 'conversion' && (
+                    <ConversionTable
+                      kind={kind}
+                      state={convState}
+                      onChange={setConv}
+                      highlight={unitsIn(current.question.prompt)}
+                    />
+                  )}
+                </PlayDock>
               )}
             </section>
           </motion.main>

@@ -2,6 +2,8 @@ import { useCallback, useState } from 'react';
 import type { Question, Response } from '@questeo/content';
 import { MathText } from '../MathText.tsx';
 import { applyKey } from '../../lib/numpad.ts';
+import { typeKey } from '../../lib/keyboard.ts';
+import { Keyboard } from '../tools/Keyboard.tsx';
 import { NumPad } from './NumPad.tsx';
 
 interface AnswerInputProps {
@@ -25,8 +27,16 @@ export function AnswerInput({ question, disabled, onSubmit, picked, initialText 
   const [num, setNum] = useState('');
   const [den, setDen] = useState('');
   const [focus, setFocus] = useState<'num' | 'den'>('num');
+  const [upper, setUpper] = useState(false);
 
   const onNumberKey = useCallback((k: string) => setText((v) => applyKey(v, k)), []);
+  const onLetter = useCallback(
+    (k: string) => {
+      setText((v) => typeKey(v, k, upper));
+      if (k !== '⌫') setUpper(false);
+    },
+    [upper],
+  );
   const onFractionKey = useCallback(
     (k: string) => {
       if (k === ',') return;
@@ -109,11 +119,33 @@ export function AnswerInput({ question, disabled, onSubmit, picked, initialText 
     );
   }
 
+  if (a.kind === 'text') {
+    return (
+      <div className="flex w-full flex-col items-center gap-3">
+        <div
+          className="cartoon bg-surface font-display flex min-h-14 w-full items-center px-4 text-3xl break-all"
+          aria-label="Ta réponse"
+          aria-live="polite"
+        >
+          {text || <span className="text-muted">?</span>}
+          <span aria-hidden className="bg-primary ml-0.5 inline-block h-8 w-1 animate-pulse rounded" />
+        </div>
+        <Keyboard
+          onKey={onLetter}
+          onSubmit={() => onSubmit({ kind: 'text', text })}
+          canSubmit={!disabled && text.trim() !== ''}
+          upper={upper}
+          onShift={() => setUpper((u) => !u)}
+        />
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-4 [@media(max-height:500px)]:gap-2">
       <div className="flex items-center gap-3" aria-live="polite">
         <div
-          className="cartoon bg-surface font-display flex h-18 min-w-48 items-center justify-center px-4 text-4xl"
+          className="cartoon bg-surface font-display flex h-18 min-w-48 [@media(max-height:500px)]:h-12 items-center justify-center px-4 text-4xl"
           aria-label="Ta réponse"
         >
           {text || <span className="text-muted">?</span>}

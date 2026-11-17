@@ -1,6 +1,6 @@
 import { choice, distinct, nonZero, num, objective, traps, trueFalse } from '../build.ts';
-import { dec, fmt, mul, r, type Rational } from '../rational.ts';
-import type { Chapter, Skill, Trap } from '../types.ts';
+import { dec, fmt, fromNumber, mul, r, type Rational } from '../rational.ts';
+import type { AnswerSpec, Chapter, Skill, Trap } from '../types.ts';
 
 const PI = dec(314, 2);
 /** Triplets pythagoriciens (pied, hauteur, côté oblique) : longueurs affichées exactes. */
@@ -251,42 +251,57 @@ const conversionsVolume: Skill = {
   },
 };
 
+/** Arrondi décimal d'un nombre réel (π × …) en rationnel exact. */
+const roundTo = (x: number, decimals: number) => fromNumber(Math.round(x * 10 ** decimals) / 10 ** decimals);
+
+/** Les trois écritures d'un « π × k » : touche π arrondie au dixième, 3,14 arrondi, 3,14 non arrondi. */
+const piForms = (k: number) => [roundTo(Math.PI * k, 1), roundTo(3.14 * k, 1), mul(PI, r(k))] as const;
+
 const disque: Skill = {
   id: 'm5-disque',
   tools: ['calculatrice'],
   title: 'Aire du disque, volume du cylindre',
   lesson: {
     body: [
-      'Aire d’un disque de rayon r : A = π × r × r = π × r^2 (avec π ≈ 3,14).',
+      'Aire d’un disque de rayon r : A = π × r × r = π × r^2.',
+      'À la calculatrice, utilise la touche π, puis arrondis comme demandé. On peut aussi prendre π ≈ 3,14.',
       'Attention : si on donne le diamètre, le rayon est la moitié.',
       'Volume d’un cylindre : V = aire du disque de base × hauteur = π × r^2 × h.',
     ],
     example: {
-      question: 'Aire d’un disque de rayon 5 cm (π ≈ 3,14).',
-      steps: ['A = 3,14 × 5 × 5 = 3,14 × 25 = 78,5 cm^2.'],
+      question: 'Aire d’un disque de rayon 5 cm, arrondie au dixième.',
+      steps: ['A = π × 5 × 5 = 25 × π ≈ 78,5398…', 'Arrondi au dixième : A ≈ 78,5 cm^2.'],
     },
     source: objective('Calculer l’aire du disque, le volume du cylindre de révolution'),
   },
   generate(rng, level) {
     const radius = rng.int(1, 10);
-    const area = mul(PI, r(radius * radius));
+    const answer = (k: number, unit: string): AnswerSpec => ({
+      kind: 'number',
+      value: piForms(k)[0],
+      unit,
+      accept: [piForms(k)[1]],
+      round: 1,
+    });
+    const wrong = (k: number, why: string) => piForms(k).map((v) => [v, why] as const);
+    const unrounded = (k: number) => [[piForms(k)[2], 'Presque ! Arrondis ton résultat au dixième.'] as const];
+    const approx = (k: number) => `${fmt(roundTo(Math.PI * k, 4))}…`;
+    const k = radius * radius;
     if (level === 3) {
       const h = rng.int(2, 10);
-      const v = mul(area, r(h));
       return {
-        prompt: `Calcule le volume d’un cylindre de rayon ${radius} cm et de hauteur ${h} cm (prends π ≈ 3,14, résultat en cm^3).`,
+        prompt: `Calcule le volume d’un cylindre de rayon ${radius} cm et de hauteur ${h} cm, en cm^3, arrondi au dixième.`,
         figure: { kind: 'solid', solid: 'cylindre', labels: [`${radius} cm`, `${h} cm`] },
-        answer: num(v, 'cm^3'),
-        traps: traps(v, [
-          [
-            mul(mul(PI, r(2 * radius)), r(h)),
-            'La base est un disque : on prend son **aire** π × r^2, pas son périmètre.',
-          ],
-          [area, `Il faut encore multiplier l’aire de la base par la hauteur ${h}.`],
+        answer: answer(k * h, 'cm^3'),
+        traps: traps(piForms(k * h)[0], [
+          ...unrounded(k * h),
+          ...wrong(2 * radius * h, 'La base est un disque : on prend son **aire** π × r^2, pas son périmètre.'),
+          ...wrong(k, `Il faut encore multiplier l’aire de la base par la hauteur ${h}.`),
         ]),
         steps: [
-          `Aire de la base : 3,14 × ${radius}^2 = ${fmt(area)} cm^2.`,
-          `V = ${fmt(area)} × ${h} = **${fmt(v)}** cm^3`,
+          `Aire de la base : π × ${radius}^2 = ${k} × π.`,
+          `V = ${k} × π × ${h} = ${k * h} × π ≈ ${approx(k * h)}`,
+          `Arrondi au dixième : **${fmt(piForms(k * h)[0])}** cm^3 (avec π ≈ 3,14 : ${fmt(piForms(k * h)[1])}).`,
         ],
         targetSeconds: 60,
       };
@@ -294,22 +309,24 @@ const disque: Skill = {
     const givenDiameter = level === 2;
     return {
       prompt: givenDiameter
-        ? `Calcule l’aire d’un disque de **diamètre** ${2 * radius} cm (prends π ≈ 3,14, résultat en cm^2).`
-        : `Calcule l’aire d’un disque de rayon ${radius} cm (prends π ≈ 3,14, résultat en cm^2).`,
+        ? `Calcule l’aire d’un disque de **diamètre** ${2 * radius} cm, en cm^2, arrondie au dixième.`
+        : `Calcule l’aire d’un disque de rayon ${radius} cm, en cm^2, arrondie au dixième.`,
       figure: {
         kind: 'disk',
         radiusLabel: givenDiameter ? `${2 * radius} cm` : `${radius} cm`,
         diameter: givenDiameter,
       },
-      answer: num(area, 'cm^2'),
-      traps: traps(area, [
-        [mul(PI, r(2 * radius)), 'π × diamètre donne le **périmètre** du cercle, pas l’aire.'],
-        [mul(PI, r(4 * radius * radius)), 'Le diamètre a été utilisé à la place du rayon : r = diamètre ÷ 2.'],
-        [mul(PI, r(2 * radius * radius)), 'r^2 = r × r, pas 2 × r.'],
+      answer: answer(k, 'cm^2'),
+      traps: traps(piForms(k)[0], [
+        ...unrounded(k),
+        ...wrong(2 * radius, 'π × diamètre donne le **périmètre** du cercle, pas l’aire.'),
+        ...wrong(4 * k, 'Le diamètre a été utilisé à la place du rayon : r = diamètre ÷ 2.'),
+        ...wrong(2 * radius * radius, 'r^2 = r × r, pas 2 × r.'),
       ]),
       steps: [
         ...(givenDiameter ? [`Rayon = ${2 * radius} ÷ 2 = ${radius} cm.`] : []),
-        `A = 3,14 × ${radius} × ${radius} = 3,14 × ${radius * radius} = **${fmt(area)}** cm^2`,
+        `A = π × ${radius} × ${radius} = ${k} × π ≈ ${approx(k)}`,
+        `Arrondi au dixième : **${fmt(piForms(k)[0])}** cm^2 (avec π ≈ 3,14 : ${fmt(piForms(k)[1])}).`,
       ],
       targetSeconds: 45,
     };
@@ -832,6 +849,7 @@ function triangleFromAngles(b: number, c: number) {
 const triangleAngles: Skill = {
   id: 'm5-triangle-angles',
   title: 'Somme des angles d’un triangle',
+  advice: 'brouillon',
   lesson: {
     body: [
       'Dans un triangle, la somme des trois angles vaut **180°**.',
@@ -909,6 +927,7 @@ const triangleAngles: Skill = {
 const triangleAire: Skill = {
   id: 'm5-triangle-aire',
   title: 'Aire d’un triangle',
+  advice: 'brouillon',
   lesson: {
     body: [
       'Aire d’un triangle = **base × hauteur ÷ 2**, la hauteur étant perpendiculaire à la base.',
@@ -1176,6 +1195,7 @@ const paraProprietes: Skill = {
 const paraAire: Skill = {
   id: 'm5-para-aire',
   title: 'Aire d’un parallélogramme',
+  advice: 'brouillon',
   lesson: {
     body: [
       'Aire d’un parallélogramme = **base × hauteur** (la hauteur est perpendiculaire à la base).',

@@ -5,6 +5,8 @@
 
 /* Tablette (ou écran large) en paysage : mise en page en deux colonnes. */
 @custom-variant land (@media (orientation: landscape) and (min-width: 900px));
+/* Écran coupé en deux colonnes (outils sur le côté) dès qu'il y a la place en largeur, téléphone couché compris. */
+@custom-variant side (@media (orientation: landscape) and (min-width: 640px));
 
 @theme inline {
   --color-bg: var(--bg);
@@ -78,6 +80,32 @@ button {
   }
 }
 
+/* Hauteur maximale des figures en partie : réduite sur téléphone en portrait (zone d'outils en bas). */
+:root {
+  --figure-max: 40dvh;
+}
+@media (orientation: portrait) and (max-width: 640px) {
+  :root {
+    --figure-max: 20dvh;
+  }
+}
+
+/* Outil conseillé : halo doré qui pulse. */
+@keyframes glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--gold) 80%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--gold) 0%, transparent);
+  }
+}
+
+@utility glow {
+  animation: glow 1.4s var(--ease-in-out) infinite;
+  outline: 3px solid var(--gold);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -87,7 +115,6 @@ button {
   }
 }
 
-/* Texte blanc détouré (titres et libellés sur fond coloré, comme sur les planches). */
 /* Contenu posé sur un cadre illustré crème : textes sombres (les couleurs de texte suivent ces variables). */
 @utility on-light {
   --text: var(--af-ink);
@@ -97,6 +124,7 @@ button {
   color: var(--text);
 }
 
+/* Texte blanc détouré (titres et libellés sur fond coloré, comme sur les planches). */
 @utility text-toon {
   color: var(--text-on-color);
   text-shadow:

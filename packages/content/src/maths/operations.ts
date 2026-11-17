@@ -5,6 +5,7 @@ import type { Chapter, Skill } from '../types.ts';
 const priorites: Skill = {
   id: 'm5-priorites',
   title: 'Priorités opératoires',
+  advice: 'brouillon',
   lesson: {
     body: [
       '1. On calcule d’abord **entre parenthèses**.',
@@ -184,6 +185,7 @@ const vocabulaire: Skill = {
 const traduire: Skill = {
   id: 'm5-traduire',
   title: 'Programme de calcul en une expression',
+  advice: 'brouillon',
   lesson: {
     body: [
       'On traduit chaque étape dans l’ordre. Quand une étape doit s’appliquer à **tout le résultat précédent**, on met ce résultat entre parenthèses.',
@@ -415,6 +417,7 @@ const divisibilite: Skill = {
 const divDecimal: Skill = {
   id: 'm5-division-decimal',
   title: 'Diviser par un nombre décimal',
+  advice: 'brouillon',
   lesson: {
     body: [
       'Un quotient ne change pas si on multiplie le dividende **et** le diviseur par un même nombre.',

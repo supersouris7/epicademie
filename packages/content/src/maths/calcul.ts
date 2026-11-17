@@ -44,6 +44,7 @@ const tables: Skill = {
 const euclide: Skill = {
   id: 'm5-euclide',
   title: 'Division euclidienne',
+  advice: 'brouillon',
   lesson: {
     body: [
       'Diviser a par b (division euclidienne), c’est trouver le **quotient** q et le **reste** r tels que a = b × q + r avec r < b.',
@@ -125,6 +126,7 @@ const decomposer: Skill = {
 const produitsDecimaux: Skill = {
   id: 'm5-produits-decimaux',
   title: 'Produits avec des décimaux',
+  advice: 'brouillon',
   lesson: {
     body: [
       'On calcule le produit **sans la virgule** avec les tables, puis on replace la virgule : le résultat a autant de chiffres après la virgule que les deux facteurs réunis.',
@@ -214,6 +216,7 @@ const fois10: Skill = {
 const decimauxAdd: Skill = {
   id: 'm5-decimaux-add',
   title: 'Additionner et soustraire des décimaux',
+  advice: 'brouillon',
   lesson: {
     body: [
       'On aligne les virgules (unités sous unités, dixièmes sous dixièmes…). On peut compléter avec des zéros : 3,8 = 3,80.',

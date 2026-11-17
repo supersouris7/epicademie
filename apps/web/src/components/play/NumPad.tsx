@@ -35,15 +35,15 @@ export function NumPad({ onKey, onSubmit, canSubmit, allowComma = true, allowMin
       key={k}
       type="button"
       onClick={() => onKey(k)}
-      className={`cartoon cartoon-press bg-surface font-display h-14 text-3xl [@media(min-height:900px)]:h-16 ${extra}`}
+      className={`cartoon cartoon-press bg-surface font-display h-14 text-3xl [@media(max-height:500px)]:h-10 [@media(max-height:500px)]:text-2xl [@media(min-height:1000px)]:h-[4.5rem] ${extra}`}
       aria-label={label === '⌫' ? 'Effacer' : label === '−' ? 'Moins' : label}
     >
       {label}
     </button>
   );
   return (
-    <div className="mx-auto grid w-full max-w-sm grid-cols-4 gap-3">
-      <div className="col-span-3 grid grid-cols-3 gap-3">
+    <div className="mx-auto grid w-full max-w-sm grid-cols-4 gap-3 [@media(max-height:500px)]:gap-1.5 [@media(min-height:1000px)]:max-w-md">
+      <div className="col-span-3 grid grid-cols-3 gap-3 [@media(max-height:500px)]:gap-1.5">
         {KEYS.map((k) => key(k))}
         {allowMinus ? key('−') : <span />}
         {key('0')}
@@ -54,7 +54,7 @@ export function NumPad({ onKey, onSubmit, canSubmit, allowComma = true, allowMin
             type="button"
             onClick={extraKey.onPress}
             aria-label={extraKey.ariaLabel}
-            className="cartoon cartoon-press bg-accent font-display h-14 text-2xl text-white [@media(min-height:900px)]:h-16"
+            className="cartoon cartoon-press bg-accent font-display h-14 text-2xl text-white [@media(max-height:500px)]:h-10 [@media(min-height:1000px)]:h-[4.5rem]"
           >
             {extraKey.label}
           </button>
@@ -62,7 +62,7 @@ export function NumPad({ onKey, onSubmit, canSubmit, allowComma = true, allowMin
           <span />
         )}
       </div>
-      <div className="grid grid-rows-[1fr_2fr] gap-3">
+      <div className="grid grid-rows-[1fr_2fr] gap-3 [@media(max-height:500px)]:gap-1.5">
         {key('⌫')}
         <button
           type="button"

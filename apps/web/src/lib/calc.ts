@@ -1,5 +1,6 @@
 /**
- * Évaluateur de la calculatrice : nombres décimaux (virgule ou point), + − × ÷, parenthèses.
+ * Évaluateur de la calculatrice : nombres décimaux (virgule ou point), π, + − × ÷, parenthèses.
+ * Multiplication implicite devant π ou une parenthèse : « 2π », « 3(4+1) », « π(2) ».
  * Analyse descendante récursive — aucune évaluation de code arbitraire.
  */
 export class CalcError extends Error {}
@@ -25,7 +26,8 @@ export function evaluate(input: string): number {
         const d = factor();
         if (d === 0) throw new CalcError('Division par zéro');
         v /= d;
-      } else return v;
+      } else if (op === 'π' || op === '(') v *= factor();
+      else return v;
     }
   };
   const factor = (): number => {
@@ -40,6 +42,10 @@ export function evaluate(input: string): number {
       i++;
       return v;
     }
+    if (peek() === 'π') {
+      i++;
+      return Math.PI;
+    }
     const m = /^\d+(\.\d+)?|^\.\d+/.exec(src.slice(i));
     if (!m) throw new CalcError('Expression incomplète');
     i += m[0].length;
@@ -51,9 +57,16 @@ export function evaluate(input: string): number {
   return v;
 }
 
-/** Affichage français d'un résultat (10 chiffres significatifs au plus). */
+/** Décimales affichées au plus : autant qu'une réponse peut en recevoir (saisie limitée à 6). */
+export const MAX_DECIMALS = 6;
+
+/**
+ * Affichage français d'un résultat : 10 chiffres significatifs et 6 décimales au plus
+ * (π × 25 → 78,539816), sans zéro inutile ni écriture scientifique.
+ */
 export function formatResult(v: number): string {
-  if (!Number.isFinite(v)) return 'Erreur';
-  const rounded = Number(v.toPrecision(10));
+  if (!Number.isFinite(v) || Math.abs(v) >= 1e12) return 'Erreur';
+  const rounded = Number(Number(v.toPrecision(10)).toFixed(MAX_DECIMALS));
+  if (Object.is(rounded, -0)) return '0';
   return String(rounded).replace('.', ',').replace('-', '−');
 }

@@ -148,6 +148,7 @@ const carres: Skill = {
 const expressionsPuissances: Skill = {
   id: 'm5-puissances-expressions',
   title: 'Calculs avec des puissances',
+  advice: 'brouillon',
   lesson: {
     body: [
       'Les puissances se calculent **avant** les multiplications et les additions (sauf parenthèses).',
@@ -411,6 +412,7 @@ const formules: Skill = {
 const substitution: Skill = {
   id: 'm5-substitution',
   title: 'Calculer une expression littérale',
+  advice: 'brouillon',
   lesson: {
     body: [
       'On remplace la lettre par sa valeur, en **rétablissant le signe ×** : pour x = 4, 3x = 3 × 4 = 12 (et pas 34 !).',
@@ -546,6 +548,7 @@ const natureLitterale: Skill = {
 const developper: Skill = {
   id: 'm5-developper',
   title: 'Développer et factoriser',
+  advice: 'brouillon',
   lesson: {
     body: [
       '**Développer** : k(a + b) = ka + kb ; k(a − b) = ka − kb (on distribue k à chaque terme).',
@@ -595,6 +598,7 @@ const developper: Skill = {
 const reduire: Skill = {
   id: 'm5-reduire',
   title: 'Réduire une expression',
+  advice: 'brouillon',
   lesson: {
     body: [
       'On regroupe les termes « en x » ensemble et les nombres ensemble : 3x + 5x = 8x (3 x plus 5 x font 8 x).',
@@ -649,6 +653,7 @@ const reduire: Skill = {
 const equations: Skill = {
   id: 'm5-equations',
   title: 'Équations ax = c et x + b = c',
+  advice: 'brouillon',
   lesson: {
     body: [
       'La lettre est une **inconnue** : on cherche le nombre qui rend l’égalité vraie.',

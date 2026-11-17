@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Keyboard } from '../../components/tools/Keyboard.tsx';
+import { typeKey } from '../../lib/keyboard.ts';
 import { HEROES } from '@questeo/shared';
 import { MEDALS } from '@questeo/engine';
 import { BossCard } from '../../components/game/BossCard.tsx';
@@ -47,9 +49,32 @@ function AssetTile({ entry }: { readonly entry: ManifestEntry }) {
   );
 }
 
+function KeyboardDemo() {
+  const [text, setText] = useState('');
+  const [upper, setUpper] = useState(false);
+  return (
+    <GamePanel title="Clavier" className="flex flex-col gap-3">
+      <p className="font-display min-h-10 text-2xl" aria-label="Saisie clavier">
+        {text || '…'}
+      </p>
+      <Keyboard
+        onKey={(k) => {
+          setText((v) => typeKey(v, k, upper));
+          setUpper(false);
+        }}
+        onSubmit={() => setText('')}
+        canSubmit={text !== ''}
+        upper={upper}
+        onShift={() => setUpper((u) => !u)}
+      />
+    </GamePanel>
+  );
+}
+
 function Gallery() {
   return (
     <div className="flex flex-col gap-8">
+      <KeyboardDemo />
       <GamePanel title="Boutons" className="flex flex-col gap-4">
         <div className="flex flex-wrap gap-3">
           {(['primary', 'accent', 'info', 'success', 'danger', 'surface'] as const).map((v) => (

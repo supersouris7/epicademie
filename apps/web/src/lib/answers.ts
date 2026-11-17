@@ -14,6 +14,8 @@ export function formatAnswer(q: Question): string {
       return q.figure?.kind === 'grid' && q.figure.axes
         ? `le point de coordonnées (${fmt(a.x)} ; ${fmt(a.y)}), entouré en vert`
         : 'le nœud entouré en vert';
+    case 'text':
+      return a.accepted[0] ?? '';
   }
 }
 

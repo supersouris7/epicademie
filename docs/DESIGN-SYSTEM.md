@@ -98,3 +98,25 @@ interactifs sont gérés par les attributs ARIA et les variantes, et les animati
 
 Chaque compte garde son avatar DiceBear et choisit un héros (Alex, Zoé, Léo, Mia), modifiable dans le profil
 (colonne `hero`, migration 0005).
+
+## Écran de jeu : écran coupé
+
+- **Disposition** : énoncé et figure d'un côté ; zone de réponse et d'outils (`PlayDock`) de l'autre.
+  - En portrait, la zone est en bas, à portée de pouce.
+  - En paysage (dès 640 px de large, téléphone couché compris), elle est sur le côté.
+  - Aucune fenêtre ne recouvre l'énoncé.
+- **Onglets de la zone** :
+  - Pavé (ou Clavier, ou Réponse pour les QCM et les points) ;
+  - Calculatrice, si la notion la permet ;
+  - Brouillon ;
+  - Conversion, si la notion la permet.
+  - Le contenu de chaque onglet est conservé.
+- **Calculatrice** :
+  - touche π, multiplication implicite (`25π`) ;
+  - 6 décimales au plus, comme la saisie des réponses ;
+  - « Envoyer ➜ réponse » remplit le pavé et y revient : l'élève arrondit puis valide.
+- **Clavier AZERTY** (`Keyboard`) : lettres accentuées (français, espagnol), majuscule, apostrophe. Il sert aux réponses écrites (`answer.kind = 'text'`).
+- **Conseils** : Questy affiche « Tu peux t'aider de la calculatrice » ou « Je te conseille de faire un brouillon ».
+  - L'onglet conseillé brille tant qu'il n'a pas été ouvert.
+  - Le conseil vient de `skill.advice`, ou à défaut de la calculatrice quand elle est permise.
+- **Écrans bas** (hauteur 500 px ou moins) : touches et marges réduites. Les figures sont limitées par `--figure-max`.

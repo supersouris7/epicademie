@@ -18,4 +18,18 @@ describe('calculatrice', () => {
     expect(formatResult(0.1 + 0.2)).toBe('0,3');
     expect(formatResult(-2.5)).toBe('−2,5');
   });
+  it('touche π et multiplication implicite', () => {
+    expect(evaluate('π')).toBe(Math.PI);
+    expect(evaluate('25π')).toBeCloseTo(78.5398, 4);
+    expect(evaluate('π×5×5')).toBeCloseTo(78.5398, 4);
+    expect(evaluate('2(3+1)')).toBe(8);
+    expect(evaluate('(1+1)(2+1)')).toBe(6);
+  });
+  it('6 décimales au plus, comme la saisie des réponses', () => {
+    expect(formatResult(Math.PI * 25)).toBe('78,539816');
+    expect(formatResult(Math.PI)).toBe('3,141593');
+    expect(formatResult(1 / 3)).toBe('0,333333');
+    expect(formatResult(-1e-9)).toBe('0');
+    expect(formatResult(1e13)).toBe('Erreur');
+  });
 });

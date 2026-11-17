@@ -65,21 +65,20 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await page.getByRole('button', { name: /C’est parti/ }).click();
   await expect(page.getByText(/Prêt à jouer/)).toBeVisible();
 
-  // Calculatrice proposée sur l'aire du disque ; le résultat se reporte dans la réponse.
+  // Aire du disque : Questy conseille la calculatrice ; elle remplace le pavé dans la zone d'outils.
   await page.goto('/partie/entrainement/m5-espace/m5-disque');
-  await page.getByRole('button', { name: 'Calculatrice' }).click();
+  await expect(page.getByText('Tu peux t’aider de la calculatrice.')).toBeVisible();
+  await page.getByRole('tab', { name: 'Calculatrice' }).click();
   const panel = page.getByRole('tabpanel');
-  for (const k of ['3', ',', '1', '4', '×', '2', '5', '='])
-    await panel.getByRole('button', { name: k, exact: true }).click();
-  await expect(panel).toContainText('78,5');
-  await page.getByRole('button', { name: /Mettre 78,5 dans ma réponse/ }).click();
-  await expect(page.getByLabel('Ta réponse')).toHaveText('78,5');
+  for (const k of ['Pi', '×', '2', '5', '=']) await panel.getByRole('button', { name: k, exact: true }).click();
+  await expect(panel).toContainText('78,539816');
+  await page.getByRole('button', { name: 'Envoyer 78,539816 dans ma réponse' }).click();
+  await expect(page.getByRole('tab', { name: 'Pavé' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByLabel('Ta réponse')).toHaveText('78,539816');
   await expect(page.getByRole('button', { name: 'OK' })).toBeVisible();
 
   // Brouillon : on dessine, on change d'onglet, le dessin est conservé.
-  const tab = page.getByRole('tab', { name: 'Brouillon' });
-  if (await tab.isVisible()) await tab.click();
-  else await page.getByRole('button', { name: 'Brouillon' }).click();
+  await page.getByRole('tab', { name: 'Brouillon' }).click();
   const canvas = page.getByRole('img', { name: /Zone de brouillon/ });
   const box = (await canvas.boundingBox())!;
   await page.mouse.move(box.x + 20, box.y + 30);
@@ -90,10 +89,13 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await page.getByRole('tab', { name: 'Calculatrice' }).click();
   await page.getByRole('tab', { name: 'Brouillon' }).click();
   await expect(page.getByRole('button', { name: 'Annuler' })).toBeEnabled();
+  // La réponse envoyée depuis la calculatrice est toujours là.
+  await page.getByRole('tab', { name: 'Pavé' }).click();
+  await expect(page.getByLabel('Ta réponse')).toHaveText('78,539816');
 
   // Tableau de conversion à remplir, unités de l'énoncé surlignées.
   await page.goto('/partie/entrainement/m5-espace/m5-conversions-volume');
-  await page.getByRole('button', { name: 'Tableau de conversion' }).click();
+  await page.getByRole('tab', { name: 'Conversion' }).click();
   await expect(page.getByRole('tabpanel')).toContainText('dm');
   await page.getByRole('button', { name: 'Case 4' }).click();
   await page.getByRole('tabpanel').getByRole('button', { name: '2', exact: true }).click();
@@ -105,7 +107,13 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await expect(page.getByRole('alertdialog')).toContainText('Quitter la partie ?');
   await page.getByRole('button', { name: 'Continuer à jouer' }).click();
 
+  // Tables : brouillon disponible, pas de calculatrice ni de conseil.
   await page.goto('/partie/entrainement/m5-calcul/m5-tables');
-  await expect(page.getByRole('button', { name: 'Brouillon' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Calculatrice' })).toHaveCount(0);
+  await expect(page.getByRole('tab', { name: 'Brouillon' })).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'Calculatrice' })).toHaveCount(0);
+  await expect(page.getByRole('note')).toHaveCount(0);
+
+  // Priorités opératoires : le brouillon est conseillé.
+  await page.goto('/partie/entrainement/m5-operations/m5-priorites');
+  await expect(page.getByText('Je te conseille de faire un brouillon pour cette question.')).toBeVisible();
 });

@@ -226,6 +226,7 @@ const probaVocab: Skill = {
 const probaCalcul: Skill = {
   id: 'm5-probas-calcul',
   title: 'Calculer une probabilité',
+  advice: 'brouillon',
   lesson: {
     body: [
       'Si toutes les issues ont la même chance (équiprobabilité) : P = **nombre d’issues favorables ÷ nombre d’issues possibles**.',
@@ -667,6 +668,7 @@ const lireGraphique: Skill = {
 const blocsValeur: Skill = {
   id: 'm5-blocs-valeur',
   title: 'Prévoir le résultat d’un programme',
+  advice: 'brouillon',
   lesson: {
     body: [
       'On exécute les blocs **dans l’ordre**, en notant la valeur des variables après chaque bloc.',
@@ -727,6 +729,7 @@ const blocsValeur: Skill = {
 const blocsBoucle: Skill = {
   id: 'm5-blocs-boucle',
   title: 'Boucle « répéter »',
+  advice: 'brouillon',
   lesson: {
     body: [
       '« répéter n fois » exécute les blocs à l’intérieur **n fois de suite**.',

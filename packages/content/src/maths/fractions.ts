@@ -159,6 +159,7 @@ const droite: Skill = {
 const egales: Skill = {
   id: 'm5-fractions-egales',
   title: 'Fractions égales',
+  advice: 'brouillon',
   lesson: {
     body: [
       'On ne change pas une fraction en multipliant (ou divisant) le numérateur **et** le dénominateur par un même nombre non nul.',
@@ -224,6 +225,7 @@ function commonDenSteps(
 const comparer: Skill = {
   id: 'm5-fractions-comparer',
   title: 'Comparer des fractions',
+  advice: 'brouillon',
   lesson: {
     body: [
       'Même dénominateur : la plus grande est celle qui a le plus grand numérateur.',
@@ -331,6 +333,7 @@ function addSubSkill(id: string, title: string, minus: boolean): Skill {
   return {
     id,
     title,
+    advice: 'brouillon',
     lesson: {
       body: [
         `On ne peut ${minus ? 'soustraire' : 'additionner'} que des fractions de **même dénominateur** : on ${minus ? 'soustrait' : 'additionne'} les numérateurs et on garde le dénominateur.`,
@@ -449,6 +452,7 @@ const dunNombre: Skill = {
 const problemes: Skill = {
   id: 'm5-fractions-problemes',
   title: 'Problèmes avec des fractions',
+  advice: 'brouillon',
   lesson: {
     body: [
       'Le tout correspond à 1 : si on a utilisé {1/4} puis {1/3}, il reste 1 − ({1/4} + {1/3}).',

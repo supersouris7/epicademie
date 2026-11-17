@@ -31,6 +31,8 @@ function praise(seed: number, streak: number, gender: Gender | null): string {
 /** Retour après une réponse : félicitations, ou explication de l'erreur + correction pas-à-pas. */
 export function Feedback({ question, correct, why, xp, streak, variantNext, gender, onLesson, onNext }: FeedbackProps) {
   const mood: MoodId = correct ? (streak >= 10 ? 'proud' : streak >= 5 ? 'laugh' : 'happy') : why ? 'dizzy' : 'sad';
+  // Écran bas (téléphone couché) : Questy plus petit pour laisser voir la correction.
+  const short = typeof window !== 'undefined' && window.matchMedia('(max-height: 500px)').matches;
   const title = correct ? praise(question.seed, streak, gender) : 'Pas tout à fait…';
   return (
     <motion.section
@@ -39,17 +41,17 @@ export function Feedback({ question, correct, why, xp, streak, variantNext, gend
       className={`cartoon flex min-h-0 flex-col gap-3 p-4 ${correct ? 'bg-[color-mix(in_srgb,var(--success)_18%,var(--surface))]' : 'bg-[color-mix(in_srgb,var(--danger)_14%,var(--surface))]'}`}
       aria-live="assertive"
     >
-      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
+      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto [&>*]:shrink-0">
         <div className="flex items-center gap-4">
           <motion.div
             initial={{ scale: 0.4, rotate: -20 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 12 }}
           >
-            <Questy mood={mood} size={84} />
+            <Questy mood={mood} size={short ? 52 : 84} />
           </motion.div>
           <div className="flex flex-col">
-            <h2 className="font-display flex items-center gap-2 text-3xl tracking-wide">
+            <h2 className="font-display flex items-center gap-2 text-3xl tracking-wide [@media(max-height:500px)]:text-2xl">
               <GameIcon id={correct ? 'icons-status-correct' : 'icons-status-wrong'} size="sm" />
               {title}
             </h2>
@@ -97,13 +99,18 @@ export function Feedback({ question, correct, why, xp, streak, variantNext, gend
         )}
       </div>
 
-      <div className="flex shrink-0 flex-wrap justify-end gap-3">
+      <div className="flex shrink-0 flex-wrap justify-end gap-3 [@media(max-height:500px)]:gap-2">
         {!correct && (
-          <GameButton variant="accent" icon="icons-navigation-hint" onClick={onLesson}>
+          <GameButton variant="accent" size={short ? 'sm' : undefined} icon="icons-navigation-hint" onClick={onLesson}>
             Je n’ai pas compris
           </GameButton>
         )}
-        <GameButton variant={correct ? 'success' : 'primary'} icon="icons-navigation-next" onClick={onNext}>
+        <GameButton
+          variant={correct ? 'success' : 'primary'}
+          size={short ? 'sm' : undefined}
+          icon="icons-navigation-next"
+          onClick={onNext}
+        >
           {variantNext ? 'Question similaire' : 'Suivant'}
         </GameButton>
       </div>

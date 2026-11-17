@@ -106,22 +106,34 @@ export type Block =
   | { readonly op: 'repeat'; readonly times: number; readonly body: readonly Block[] };
 
 export type AnswerSpec =
-  | { readonly kind: 'number'; readonly value: Rational; readonly unit?: string }
+  | {
+      readonly kind: 'number';
+      readonly value: Rational;
+      readonly unit?: string;
+      /** Autres réponses justes (ex. arrondi obtenu avec π ≈ 3,14 au lieu de la touche π). */
+      readonly accept?: readonly Rational[];
+      /** Réponse à arrondir à ce nombre de décimales : une valeur proche non arrondie reçoit un rappel. */
+      readonly round?: number;
+    }
   | { readonly kind: 'fraction'; readonly value: Rational }
   | { readonly kind: 'choice'; readonly options: readonly Rich[]; readonly correct: number }
-  | { readonly kind: 'point'; readonly x: number; readonly y: number };
+  | { readonly kind: 'point'; readonly x: number; readonly y: number }
+  /** Réponse écrite (clavier) : comparée sans tenir compte de la casse, des espaces doublés ni de l'apostrophe typographique. */
+  | { readonly kind: 'text'; readonly accepted: readonly string[] };
 
 export type Response =
   | { readonly kind: 'number'; readonly text: string }
   | { readonly kind: 'fraction'; readonly num: string; readonly den: string }
   | { readonly kind: 'choice'; readonly index: number }
-  | { readonly kind: 'point'; readonly x: number; readonly y: number };
+  | { readonly kind: 'point'; readonly x: number; readonly y: number }
+  | { readonly kind: 'text'; readonly text: string };
 
 /** Erreur typique prévue : valeur fausse attendue et explication ciblée. */
 export type Trap =
   | { readonly value: Rational; readonly why: Rich }
   | { readonly option: number; readonly why: Rich }
-  | { readonly point: { x: number; y: number }; readonly why: Rich };
+  | { readonly point: { x: number; y: number }; readonly why: Rich }
+  | { readonly text: string; readonly why: Rich };
 
 export interface Question {
   readonly skillId: string;
@@ -153,10 +165,15 @@ export interface Lesson {
 /** Outils d'aide affichés pendant la question (pas de brouillon nécessaire). */
 export type Tool = 'calculatrice' | 'conversion-longueur' | 'conversion-aire' | 'conversion-volume';
 
+/** Conseil donné par Questy au début de chaque question de la notion. */
+export type Advice = 'calculatrice' | 'brouillon';
+
 export interface Skill {
   readonly id: string;
   readonly title: string;
   readonly tools?: readonly Tool[];
+  /** Outil conseillé (par défaut : la calculatrice si elle est permise). */
+  readonly advice?: Advice;
   readonly lesson: Lesson;
   readonly generate: (rng: Rng, level: Level) => QuestionDraft;
 }
