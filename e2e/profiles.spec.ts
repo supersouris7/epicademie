@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 test('création d’un profil, hub, thème sombre puis suppression', async ({ page }) => {
   const name = `E2E${Date.now() % 100000}`;
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'Questeo' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Academy Fighters' })).toBeVisible();
 
   await page.getByRole('button', { name: /Nouveau joueur/ }).click();
   await page.getByRole('button', { name: /C’est parti/ }).click();
@@ -16,12 +16,15 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Robot' }).click();
+  await page.getByRole('radio', { name: /Mia/ }).click();
+  await expect(page.getByRole('radio', { name: /Mia/ })).toBeChecked();
   await page.getByRole('button', { name: /C’est parti/ }).click();
 
   await expect(page).toHaveURL(/\/hub$/);
   await expect(page.getByRole('heading', { name })).toBeVisible();
   await expect(page.getByText('Apprentie')).toBeVisible();
   await expect(page.getByText(/Prête à jouer/)).toBeVisible();
+  await expect(page.getByRole('button', { name: /Mia.*Changer de héros/ })).toBeVisible();
   await page.getByRole('button', { name: /Mes progrès/ }).click();
   await expect(page.getByText(/0 \/ 72 notions médaillées/)).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Nombres et calculs' })).toBeVisible();

@@ -43,6 +43,7 @@ describe('API profils', () => {
       avatar,
       gender: 'fille',
       birthDate: '2014-03-09',
+      hero: 'alex',
     });
     const list = await app.inject('/api/profiles');
     expect(list.json<Profile[]>()).toHaveLength(1);
@@ -75,9 +76,11 @@ describe('API profils', () => {
     const res = await app.inject({
       method: 'PATCH',
       url: `/api/profiles/${profile.id}`,
-      payload: { theme: 'dark', soundOn: false },
+      payload: { theme: 'dark', soundOn: false, hero: 'mia' },
     });
-    expect(res.json<Profile>()).toMatchObject({ theme: 'dark', soundOn: false, name: 'Tom' });
+    expect(res.json<Profile>()).toMatchObject({ theme: 'dark', soundOn: false, name: 'Tom', hero: 'mia' });
+    const bad = await app.inject({ method: 'PATCH', url: `/api/profiles/${profile.id}`, payload: { hero: 'ninja' } });
+    expect(bad.statusCode).toBe(400);
   });
 
   it('ignore les champs non modifiables (xp)', async () => {

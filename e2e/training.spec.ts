@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 test('Entraînement : série complète de tables, correction, leçon et résultats', async ({ page }) => {
+  test.setTimeout(60_000); // série complète : 10 questions + variantes
   await page.goto('/');
   await page.getByRole('button', { name: /Nouveau joueur/ }).click();
   await page.getByPlaceholder('Ex. Léa').fill(`Jeu${Date.now() % 10000}`);

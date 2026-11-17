@@ -1,6 +1,8 @@
 import { motion } from 'motion/react';
 import type { ModeInfo } from '@questeo/shared';
 import { CATEGORY_COLORS, MODE_MOODS } from '../lib/modes.ts';
+import { assetSrc } from '../design/assets.ts';
+import { GameIcon } from './game/GameIcon.tsx';
 import { Questy } from './mascot/Questy.tsx';
 
 interface ModeTileProps {
@@ -21,14 +23,16 @@ export function ModeTile({ mode, index = 0, badge, onClick }: ModeTileProps) {
       <button
         type="button"
         onClick={onClick}
-        className="cartoon cartoon-press flex min-h-28 w-full items-center gap-3 p-3 text-left text-white"
+        className="cartoon bevel cartoon-press flex min-h-28 w-full items-center gap-3 p-3 text-left text-white hover:brightness-110"
         style={{ backgroundColor: CATEGORY_COLORS[mode.category] }}
       >
-        <Questy mood={MODE_MOODS[mode.id]} size={64} title="" />
+        {assetSrc(`icons-modes-${mode.id}`) ? (
+          <GameIcon id={`icons-modes-${mode.id}`} size={64} />
+        ) : (
+          <Questy mood={MODE_MOODS[mode.id]} size={64} title="" />
+        )}
         <span className="flex min-w-0 flex-col">
-          <span className="font-display text-xl tracking-wide drop-shadow-[0_2px_0_var(--outline)] sm:text-2xl">
-            {mode.name}
-          </span>
+          <span className="font-display text-toon text-xl tracking-wide sm:text-2xl">{mode.name}</span>
           <span className="text-sm font-bold opacity-95">{mode.pitch}</span>
         </span>
       </button>

@@ -36,6 +36,13 @@
       "when": 1794853079465,
       "tag": "0004_profile_gender_age",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1794907641342,
+      "tag": "0005_profile_hero",
+      "breakpoints": true
     }
   ]
 }

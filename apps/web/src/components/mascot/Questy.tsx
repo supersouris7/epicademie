@@ -1,9 +1,11 @@
 import { useId } from 'react';
+import { assetSrc } from '../../design/assets.ts';
+import { c } from '../../design/palette.ts';
 import { GRID, MOODS, litPixels, type MoodId } from './moods.ts';
 
 const PITCH = 100 / GRID;
 const LED = PITCH * 0.86;
-const OUTLINE = '#1d1638';
+const OUTLINE = c('ink');
 
 interface QuestyProps {
   readonly mood?: MoodId;
@@ -12,8 +14,29 @@ interface QuestyProps {
   readonly title?: string;
 }
 
-/** Questy : avatar rond à écran LED, une couleur et une grimace par humeur. */
+/** Questy, une tête par humeur : illustration livrée, sinon version LED dessinée en code. */
 export function Questy({ mood = 'happy', size = 96, className, title }: QuestyProps) {
+  const head = assetSrc(`characters-questy-head-${mood}`);
+  if (head) {
+    const label = title === '' ? undefined : (title ?? `Questy — ${MOODS[mood].label}`);
+    return (
+      <img
+        src={head}
+        alt={label ?? ''}
+        aria-hidden={label ? undefined : true}
+        width={typeof size === 'number' ? size : undefined}
+        style={{ width: size, height: size }}
+        className={`object-contain ${className ?? ''}`}
+        draggable={false}
+        decoding="async"
+      />
+    );
+  }
+  return <QuestyLed mood={mood} size={size} className={className} title={title} />;
+}
+
+/** Questy dessiné en LED (remplaçant tant que les têtes illustrées ne sont pas livrées). */
+function QuestyLed({ mood = 'happy', size = 96, className, title }: QuestyProps) {
   const id = useId().replace(/:/g, '');
   const m = MOODS[mood];
   const lit = new Set(litPixels(m).map(([x, y]) => `${x},${y}`));
@@ -50,8 +73,8 @@ export function Questy({ mood = 'happy', size = 96, className, title }: QuestyPr
           </feMerge>
         </filter>
         <radialGradient id={`${id}-v`} cx="0.5" cy="0.45" r="0.6">
-          <stop offset="0.6" stopColor="#000" stopOpacity="0" />
-          <stop offset="1" stopColor="#000" stopOpacity="0.45" />
+          <stop offset="0.6" stopColor="black" stopOpacity="0" />
+          <stop offset="1" stopColor="black" stopOpacity="0.45" />
         </radialGradient>
       </defs>
       <circle cx={50} cy={53} r={50} fill={OUTLINE} />
@@ -72,7 +95,7 @@ export function Questy({ mood = 'happy', size = 96, className, title }: QuestyPr
         <rect x={0} y={0} width={100} height={100} fill={`url(#${id}-v)`} />
         <path
           d="M14 30 C22 16 36 8 52 6"
-          stroke="#fff"
+          stroke="white"
           strokeWidth={4}
           strokeLinecap="round"
           opacity={0.18}

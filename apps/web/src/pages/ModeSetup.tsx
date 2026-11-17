@@ -2,12 +2,12 @@ import { motion } from 'motion/react';
 import { Navigate, useNavigate, useParams } from 'react-router';
 import { chaptersOf } from '@questeo/content';
 import { SUBJECTS, getMode } from '@questeo/shared';
-import { Button } from '../components/Button.tsx';
+import { GameButton } from '../components/game/GameButton.tsx';
 import { MODE_MOODS } from '../lib/modes.ts';
 import { PageShell } from '../components/PageShell.tsx';
 import { SpeechBubble } from '../components/SpeechBubble.tsx';
 import { useToast } from '../components/Toast.tsx';
-import { SubjectIcon } from '../components/icons.tsx';
+import { SubjectIcon } from '../components/game/SubjectIcon.tsx';
 import { Questy } from '../components/mascot/Questy.tsx';
 
 /** Après le choix du mode : choix de la matière (ou départ direct pour les modes toutes matières). */
@@ -32,9 +32,9 @@ export function ModeSetup() {
       </div>
 
       {mode.scope === 'toutes' ? (
-        <Button size="lg" className="self-center" onClick={soon}>
+        <GameButton size="xl" icon="icons-navigation-play" className="self-center" onClick={soon}>
           C’est parti !
-        </Button>
+        </GameButton>
       ) : (
         <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3">
           {mode.scope === 'globale-ou-matiere' && (
@@ -42,7 +42,7 @@ export function ModeSetup() {
               <button
                 type="button"
                 onClick={soon}
-                className="cartoon cartoon-press bg-accent font-display min-h-20 w-full text-2xl tracking-wide text-white"
+                className="cartoon bevel cartoon-press bg-accent font-display text-toon min-h-20 w-full text-2xl tracking-wide"
               >
                 Bilan global (toutes matières)
               </button>
@@ -58,13 +58,11 @@ export function ModeSetup() {
               <button
                 type="button"
                 onClick={() => pickSubject(s.id, s.name)}
-                className="cartoon cartoon-press flex min-h-36 w-full flex-col items-center justify-center gap-2 p-4 text-white"
+                className="cartoon bevel cartoon-press flex min-h-36 w-full flex-col items-center justify-center gap-2 p-4 hover:brightness-110"
                 style={{ backgroundColor: `var(--subject-${s.color})` }}
               >
-                <SubjectIcon subject={s.id} size={64} />
-                <span className="font-display text-xl tracking-wide drop-shadow-[0_2px_0_var(--outline)] sm:text-2xl">
-                  {s.name}
-                </span>
+                <SubjectIcon subject={s.id} size={72} />
+                <span className="font-display text-toon text-xl tracking-wide sm:text-2xl">{s.name}</span>
               </button>
             </motion.li>
           ))}

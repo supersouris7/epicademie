@@ -2,7 +2,8 @@ import { motion } from 'motion/react';
 import type { Question } from '@questeo/content';
 import { accord, type Gender } from '@questeo/shared';
 import { formatAnswer } from '../../lib/answers.ts';
-import { Button } from '../Button.tsx';
+import { GameButton } from '../game/GameButton.tsx';
+import { GameIcon } from '../game/GameIcon.tsx';
 import { MathText } from '../MathText.tsx';
 import { Questy } from '../mascot/Questy.tsx';
 import type { MoodId } from '../mascot/moods.ts';
@@ -48,7 +49,10 @@ export function Feedback({ question, correct, why, xp, streak, variantNext, gend
             <Questy mood={mood} size={84} />
           </motion.div>
           <div className="flex flex-col">
-            <h2 className="font-display text-3xl tracking-wide">{title}</h2>
+            <h2 className="font-display flex items-center gap-2 text-3xl tracking-wide">
+              <GameIcon id={correct ? 'icons-status-correct' : 'icons-status-wrong'} size="sm" />
+              {title}
+            </h2>
             {correct ? (
               <p className="text-lg font-bold">
                 +{xp} XP{streak >= 3 ? ` · série de ${streak} !` : ''}
@@ -95,13 +99,13 @@ export function Feedback({ question, correct, why, xp, streak, variantNext, gend
 
       <div className="flex shrink-0 flex-wrap justify-end gap-3">
         {!correct && (
-          <Button variant="surface" onClick={onLesson}>
+          <GameButton variant="accent" icon="icons-navigation-hint" onClick={onLesson}>
             Je n’ai pas compris
-          </Button>
+          </GameButton>
         )}
-        <Button variant={correct ? 'success' : 'primary'} onClick={onNext}>
-          {variantNext ? 'Question similaire →' : 'Suivant →'}
-        </Button>
+        <GameButton variant={correct ? 'success' : 'primary'} icon="icons-navigation-next" onClick={onNext}>
+          {variantNext ? 'Question similaire' : 'Suivant'}
+        </GameButton>
       </div>
     </motion.section>
   );

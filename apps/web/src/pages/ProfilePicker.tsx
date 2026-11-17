@@ -2,17 +2,23 @@ import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
 import { levelFromXp } from '@questeo/engine';
 import { useProfiles } from '../api/profiles.ts';
-import { Avatar } from '../components/Avatar.tsx';
+import { CharacterAvatar } from '../components/game/CharacterAvatar.tsx';
+import { CharacterCard } from '../components/game/CharacterCard.tsx';
+import { GameButton } from '../components/game/GameButton.tsx';
+import { assetSrc } from '../design/assets.ts';
 import { PageShell } from '../components/PageShell.tsx';
 import { SpeechBubble } from '../components/SpeechBubble.tsx';
-import { Questy } from '../components/mascot/Questy.tsx';
+import { QuestyPose } from '../components/mascot/QuestyPose.tsx';
 import { useSession } from '../store/session.ts';
+
+const CARD_COLORS = ['var(--accent)', 'var(--primary)', 'var(--info)', 'var(--pink)', 'var(--success)'];
 
 export function ProfilePicker() {
   const { data: profiles, isPending, isError, refetch } = useProfiles();
   const selectProfile = useSession((s) => s.selectProfile);
   const navigate = useNavigate();
 
+  const keyArt = assetSrc('branding-key-art');
   const choose = (id: string) => {
     selectProfile(id);
     void navigate('/hub');
@@ -20,16 +26,17 @@ export function ProfilePicker() {
 
   return (
     <PageShell>
+      <h1 className="flex justify-center">
+        <img src={assetSrc('branding-logo') ?? ''} alt="Academy Fighters" className="w-72 max-w-full sm:w-96" />
+      </h1>
+      {keyArt && <img src={keyArt} alt="" aria-hidden className="cartoon w-full object-cover" decoding="async" />}
+
       <div className="flex items-center gap-4">
         <motion.div animate={{ rotate: [0, -6, 6, 0] }} transition={{ repeat: Infinity, duration: 3, repeatDelay: 2 }}>
-          <Questy size={120} mood="wink" />
+          <QuestyPose pose="salut" mood="wink" size={120} />
         </motion.div>
         <SpeechBubble>Salut ! Qui part à l’aventure ?</SpeechBubble>
       </div>
-
-      <h1 className="font-display text-primary text-5xl tracking-wide drop-shadow-[0_4px_0_var(--outline)] sm:text-6xl">
-        Questeo
-      </h1>
 
       {isPending && <p className="text-muted text-xl">Chargement…</p>}
       {isError && (
@@ -43,32 +50,27 @@ export function ProfilePicker() {
 
       <ul className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
         {profiles?.map((p, i) => (
-          <motion.li
-            key={p.id}
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: i * 0.06, type: 'spring', stiffness: 200, damping: 16 }}
-          >
-            <button
-              type="button"
+          <li key={p.id}>
+            <CharacterCard
+              index={i}
+              name={p.name}
+              color={CARD_COLORS[i % CARD_COLORS.length] ?? 'var(--accent)'}
+              caption={`Niveau ${levelFromXp(p.xp).level}`}
+              portrait={<CharacterAvatar avatar={p.avatar} size={104} />}
               onClick={() => choose(p.id)}
-              className="cartoon cartoon-press bg-surface flex w-full flex-col items-center gap-3 p-5"
-            >
-              <Avatar avatar={p.avatar} size={104} />
-              <span className="font-display w-full truncate text-2xl tracking-wide">{p.name}</span>
-              <span className="text-muted text-sm font-bold">Niveau {levelFromXp(p.xp).level}</span>
-            </button>
-          </motion.li>
+              className="min-h-52 pt-2"
+            />
+          </li>
         ))}
         <li>
-          <button
-            type="button"
+          <GameButton
+            variant="primary"
+            icon="icons-navigation-plus"
             onClick={() => void navigate('/profils/nouveau')}
-            className="cartoon cartoon-press bg-primary flex h-full min-h-48 w-full flex-col items-center justify-center gap-2 p-5 text-white"
+            className="h-full min-h-52 w-full flex-col"
           >
-            <span className="font-display text-6xl leading-none">+</span>
-            <span className="font-display text-xl tracking-wide">Nouveau joueur</span>
-          </button>
+            Nouveau joueur
+          </GameButton>
         </li>
       </ul>
     </PageShell>

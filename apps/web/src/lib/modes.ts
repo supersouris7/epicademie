@@ -18,7 +18,7 @@ export const MODE_MOODS: Record<ModeId, MoodId> = {
 };
 
 export const CATEGORY_COLORS: Record<ModeCategory, string> = {
-  apprendre: 'var(--subject-geographie)',
-  defis: 'var(--primary)',
-  multi: 'var(--accent)',
+  apprendre: 'var(--mode-apprendre)',
+  defis: 'var(--mode-defis)',
+  multi: 'var(--mode-multi)',
 };

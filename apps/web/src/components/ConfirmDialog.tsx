@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Button } from './Button.tsx';
+import { GameButton } from './game/GameButton.tsx';
 import { Questy } from './mascot/Questy.tsx';
 
 interface ConfirmDialogProps {
@@ -23,18 +23,18 @@ export function ConfirmDialog({ title, message, confirm, cancel, onConfirm, onCa
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="cartoon bg-surface flex w-full max-w-md flex-col items-center gap-4 p-6 text-center"
+        className="cartoon border-accent bg-surface flex w-full max-w-md flex-col items-center gap-4 p-6 text-center"
       >
         <Questy mood="sad" size={88} />
         <h2 className="font-display text-3xl tracking-wide">{title}</h2>
         <p className="text-lg">{message}</p>
         <div className="flex flex-wrap justify-center gap-3">
-          <Button variant="surface" onClick={onCancel}>
+          <GameButton variant="success" icon="icons-navigation-play" onClick={onCancel}>
             {cancel}
-          </Button>
-          <Button variant="danger" onClick={onConfirm}>
+          </GameButton>
+          <GameButton variant="danger" icon="icons-navigation-close" onClick={onConfirm}>
             {confirm}
-          </Button>
+          </GameButton>
         </div>
       </motion.div>
     </div>

@@ -21,7 +21,7 @@ export function useToast(duration = 2000) {
           initial={{ y: 40, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 40, opacity: 0 }}
-          className="cartoon bg-gold font-display fixed inset-x-4 bottom-6 z-50 mx-auto max-w-md p-4 text-center text-xl text-[#1d1638]"
+          className="cartoon bg-gold font-display fixed inset-x-4 bottom-6 z-50 mx-auto max-w-md p-4 text-center text-xl text-on-light"
         >
           {message}
         </motion.div>

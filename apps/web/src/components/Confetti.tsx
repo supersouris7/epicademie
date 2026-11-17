@@ -1,7 +1,8 @@
 import { motion } from 'motion/react';
 import { useState } from 'react';
+import { c } from '../design/palette.ts';
 
-const COLORS = ['#ff7a1a', '#4b3fe0', '#12b886', '#ffc83d', '#ef476f', '#00bbf9'];
+const COLORS = [c('orange-500'), c('violet-500'), c('green-500'), c('gold-400'), c('pink-500'), c('cyan-500')];
 
 /** Pluie de confettis (purement décorative). */
 export function Confetti({ count = 60 }: { readonly count?: number }) {

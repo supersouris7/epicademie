@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 import { FullscreenButton } from './FullscreenButton.tsx';
+import { GameButton } from './game/GameButton.tsx';
+import { GameBackdrop } from './game/GameBackdrop.tsx';
 
 interface PageShellProps {
   readonly title?: string;
@@ -14,18 +16,20 @@ export function PageShell({ title, back, actions, children }: PageShellProps) {
   const navigate = useNavigate();
   return (
     <div className="mx-auto flex min-h-dvh max-w-5xl flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
+      <GameBackdrop />
       <header className="flex items-center gap-3">
         {back !== undefined && (
-          <button
-            type="button"
+          <GameButton
+            variant="accent"
+            iconOnly
+            icon="icons-navigation-back"
             onClick={() => void navigate(back)}
-            className="cartoon cartoon-press bg-surface font-display flex h-14 w-14 items-center justify-center text-3xl"
             aria-label="Retour"
-          >
-            ←
-          </button>
+          />
         )}
-        {title && <h1 className="font-display flex-1 truncate text-3xl tracking-wide sm:text-4xl">{title}</h1>}
+        {title && (
+          <h1 className="font-display text-toon flex-1 truncate text-3xl tracking-wide sm:text-4xl">{title}</h1>
+        )}
         {!title && <div className="flex-1" />}
         {actions}
         <FullscreenButton />

@@ -1,6 +1,14 @@
 import type { ReactNode } from 'react';
+import { GameButton } from '../game/GameButton.tsx';
+import { GameIcon } from '../game/GameIcon.tsx';
 
 export type ToolTab = 'brouillon' | 'calculatrice' | 'conversion';
+
+const ICONS: Record<ToolTab, string> = {
+  brouillon: 'icons-tools-pencil',
+  calculatrice: 'icons-tools-calculator',
+  conversion: 'icons-tools-conversion',
+};
 
 const LABELS: Record<ToolTab, string> = {
   brouillon: 'Brouillon',
@@ -28,19 +36,21 @@ export function ToolsPanel({ tabs, active, onSelect, onClose, children }: ToolsP
             role="tab"
             aria-selected={active === t}
             onClick={() => onSelect(t)}
-            className={`cartoon cartoon-press font-display h-11 px-3 text-base ${active === t ? 'bg-accent text-white' : 'bg-surface-2'}`}
+            className={`cartoon cartoon-press font-display flex h-11 items-center gap-1.5 px-3 text-base ${active === t ? 'bg-accent text-toon' : 'bg-surface-2'}`}
           >
+            <GameIcon id={ICONS[t]} size="xs" />
             {LABELS[t]}
           </button>
         ))}
-        <button
-          type="button"
+        <GameButton
+          variant="danger"
+          size="sm"
+          iconOnly
+          icon="icons-navigation-close"
           onClick={onClose}
-          className="cartoon cartoon-press bg-surface-2 font-display ml-auto h-11 w-11 text-xl"
+          className="ml-auto"
           aria-label="Fermer les outils"
-        >
-          ✕
-        </button>
+        />
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto" role="tabpanel">
         {children}
@@ -49,14 +59,16 @@ export function ToolsPanel({ tabs, active, onSelect, onClose, children }: ToolsP
   );
 }
 
+const TOOL_ICONS: Record<string, string> = {
+  Brouillon: 'icons-tools-pencil',
+  Calculatrice: 'icons-tools-calculator',
+  'Tableau de conversion': 'icons-tools-conversion',
+};
+
 export function ToolButton({ label, onClick }: { readonly label: string; readonly onClick: () => void }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="cartoon cartoon-press bg-surface font-display h-11 px-3 text-base"
-    >
+    <GameButton variant="surface" size="sm" icon={TOOL_ICONS[label]} onClick={onClick}>
       {label}
-    </button>
+    </GameButton>
   );
 }

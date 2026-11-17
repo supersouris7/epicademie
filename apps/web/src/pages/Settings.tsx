@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { THEMES, type Profile, type Theme } from '@questeo/shared';
 import { useDeleteProfile, useUpdateProfile } from '../api/profiles.ts';
-import { Button } from '../components/Button.tsx';
+import { GameButton } from '../components/game/GameButton.tsx';
 import { PageShell } from '../components/PageShell.tsx';
 import { useSession } from '../store/session.ts';
 
@@ -62,36 +62,36 @@ export function Settings({ profile }: { readonly profile: Profile }) {
 
       <section className="flex flex-col gap-3">
         <h2 className="font-display text-2xl tracking-wide">Profil</h2>
-        <Button variant="surface" onClick={() => void navigate(`/profils/${profile.id}/modifier`)}>
+        <GameButton variant="surface" onClick={() => void navigate(`/profils/${profile.id}/modifier`)}>
           Modifier mon prénom et mon avatar
-        </Button>
-        <Button variant="surface" onClick={() => void navigate('/')}>
+        </GameButton>
+        <GameButton variant="surface" onClick={() => void navigate('/')}>
           Changer de joueur
-        </Button>
+        </GameButton>
         {confirming ? (
           <div className="cartoon bg-surface flex flex-col gap-3 p-4">
             <p className="text-lg font-bold">
               Supprimer {profile.name} ? Toute sa progression sera perdue définitivement.
             </p>
             <div className="flex gap-3">
-              <Button variant="danger" disabled={remove.isPending} onClick={() => void deleteProfile()}>
+              <GameButton variant="danger" disabled={remove.isPending} onClick={() => void deleteProfile()}>
                 Oui, supprimer
-              </Button>
-              <Button variant="surface" onClick={() => setConfirming(false)}>
+              </GameButton>
+              <GameButton variant="surface" onClick={() => setConfirming(false)}>
                 Annuler
-              </Button>
+              </GameButton>
             </div>
           </div>
         ) : (
-          <Button variant="danger" onClick={() => setConfirming(true)}>
+          <GameButton variant="danger" onClick={() => setConfirming(true)}>
             Supprimer ce profil
-          </Button>
+          </GameButton>
         )}
       </section>
 
-      <Button variant="surface" className="self-start" onClick={() => void navigate('/a-propos')}>
+      <GameButton variant="surface" className="self-start" onClick={() => void navigate('/a-propos')}>
         À propos et crédits
-      </Button>
+      </GameButton>
     </PageShell>
   );
 }

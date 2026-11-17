@@ -12,6 +12,11 @@ export const AvatarConfigSchema = z.object({
 });
 export type AvatarConfig = z.infer<typeof AvatarConfigSchema>;
 
+/** Héros jouables (illustrations : apps/web/public/assets/characters). Le héros se change à tout moment. */
+export const HEROES = ['alex', 'zoe', 'leo', 'mia'] as const;
+export type HeroId = (typeof HEROES)[number];
+export const HERO_NAMES: Record<HeroId, string> = { alex: 'Alex', zoe: 'Zoé', leo: 'Léo', mia: 'Mia' };
+
 export const THEMES = ['auto', 'light', 'dark'] as const;
 export type Theme = (typeof THEMES)[number];
 
@@ -36,6 +41,7 @@ export const ProfileSchema = z.object({
   avatar: AvatarConfigSchema,
   gender: z.enum(GENDERS).nullable(),
   birthDate: z.string().nullable(),
+  hero: z.enum(HEROES),
   xp: z.number().int().nonnegative(),
   coins: z.number().int().nonnegative(),
   theme: z.enum(THEMES),
@@ -50,6 +56,7 @@ export const ProfileCreateSchema = z.object({
   avatar: AvatarConfigSchema,
   gender: z.enum(GENDERS),
   birthDate: BirthDateSchema,
+  hero: z.enum(HEROES).optional(),
 });
 export type ProfileCreate = z.infer<typeof ProfileCreateSchema>;
 
@@ -59,6 +66,7 @@ export const ProfileUpdateSchema = z
     avatar: AvatarConfigSchema,
     gender: z.enum(GENDERS),
     birthDate: BirthDateSchema,
+    hero: z.enum(HEROES),
     theme: z.enum(THEMES),
     soundOn: z.boolean(),
     musicOn: z.boolean(),

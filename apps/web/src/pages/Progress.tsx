@@ -5,7 +5,7 @@ import { chaptersOf, DOMAINS, type DomainId } from '@questeo/content';
 import { MEDAL_LABELS, MEDALS, medal, type Medal as MedalId } from '@questeo/engine';
 import { SUBJECTS, type Profile, type SkillProgress, type SubjectId } from '@questeo/shared';
 import { useSkills } from '../api/play.ts';
-import { Medal } from '../components/Medal.tsx';
+import { MedalBadge } from '../components/game/RewardBadge.tsx';
 import { PageShell } from '../components/PageShell.tsx';
 import { Questy } from '../components/mascot/Questy.tsx';
 import { localToday } from '../lib/dates.ts';
@@ -22,7 +22,7 @@ function MedalCounts({ counts }: { readonly counts: Record<MedalId, number> }) {
     <div className="flex flex-wrap gap-3">
       {[...MEDALS].reverse().map((m) => (
         <span key={m} className="flex items-center gap-1 font-bold" aria-label={`${counts[m]} ${MEDAL_LABELS[m]}`}>
-          <Medal medal={m} size={28} />
+          <MedalBadge medal={m} size={28} label="" />
           <span className="font-display text-xl">{counts[m]}</span>
         </span>
       ))}
@@ -116,7 +116,7 @@ export function Progress({ profile }: { readonly profile: Profile }) {
                             onClick={() => void navigate(`/partie/entrainement/${c.id}/${s.id}`)}
                             className="hover:bg-surface-2 flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-left"
                           >
-                            <Medal medal={m} size={30} label={MEDAL_LABELS[m]} />
+                            <MedalBadge medal={m} size={30} label={MEDAL_LABELS[m]} />
                             <span className="min-w-0 flex-1 font-bold">{s.title}</span>
                             {isDue && (
                               <span className="bg-danger rounded-full px-2 text-xs font-bold text-white">à revoir</span>

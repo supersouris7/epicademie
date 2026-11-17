@@ -7,3 +7,4 @@ playwright-report
 test-results
 apps/server/data
 *.db
+apps/web/assets-src

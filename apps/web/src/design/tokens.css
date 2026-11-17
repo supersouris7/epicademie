@@ -1,0 +1,145 @@
+/*
+ * Design tokens Academy Fighters.
+ * Couleurs : reprises de src/design/palette.ts (test de concordance dans design.test.ts).
+ * Les composants n'utilisent que ces variables (via les classes Tailwind déclarées dans index.css).
+ */
+
+:root {
+  /* ── Palette brute ─────────────────────────────────────────────── */
+  --af-ink: #1d1238;
+  --af-white: #ffffff;
+  --af-violet-50: #f3eeff;
+  --af-violet-100: #e4d9ff;
+  --af-violet-300: #b598ff;
+  --af-violet-500: #7c4dff;
+  --af-violet-600: #6436e0;
+  --af-violet-700: #4d24b8;
+  --af-violet-800: #33207a;
+  --af-violet-900: #261659;
+  --af-violet-950: #150c33;
+  --af-orange-200: #ffd9a8;
+  --af-orange-400: #ffa63d;
+  --af-orange-500: #ff8a1f;
+  --af-orange-600: #ec6a00;
+  --af-orange-700: #c25100;
+  --af-cream-50: #fffaf0;
+  --af-cream-100: #fff3dd;
+  --af-cream-200: #fbe5bf;
+  --af-cream-300: #f1cf98;
+  --af-cyan-300: #8ee9ff;
+  --af-cyan-500: #1ec8f2;
+  --af-cyan-700: #0a8cc0;
+  --af-blue-500: #3d7cf5;
+  --af-blue-700: #1f55c4;
+  --af-green-300: #9ef07c;
+  --af-green-500: #3fc944;
+  --af-green-700: #1f8f2e;
+  --af-pink-300: #ffa3cd;
+  --af-pink-500: #ff4fa0;
+  --af-pink-700: #cc2a77;
+  --af-red-300: #ff9aa5;
+  --af-red-500: #f03a4f;
+  --af-red-700: #b51f35;
+  --af-gold-200: #fff0a8;
+  --af-gold-400: #ffd23f;
+  --af-gold-600: #e0a00c;
+  --af-gray-300: #cbc5db;
+  --af-gray-500: #8e86a8;
+  --af-gray-700: #5d5680;
+
+  /* ── Sémantique (thème clair : crème) ──────────────────────────── */
+  --bg: var(--af-cream-100);
+  --bg-pattern: var(--af-cream-200);
+  --surface: var(--af-cream-50);
+  --surface-2: var(--af-cream-200);
+  --text: var(--af-ink);
+  --text-muted: var(--af-gray-700);
+  --text-on-color: var(--af-white);
+  --text-on-light: var(--af-ink);
+  --outline: var(--af-ink);
+  --shadow: var(--af-ink);
+  --primary: var(--af-orange-500);
+  --primary-strong: var(--af-orange-600);
+  --accent: var(--af-violet-500);
+  --accent-strong: var(--af-violet-700);
+  --info: var(--af-cyan-500);
+  --info-strong: var(--af-cyan-700);
+  --success: var(--af-green-500);
+  --success-strong: var(--af-green-700);
+  --danger: var(--af-red-500);
+  --danger-strong: var(--af-red-700);
+  --pink: var(--af-pink-500);
+  --gold: var(--af-gold-400);
+  --locked: var(--af-gray-300);
+  --locked-text: var(--af-gray-700);
+  --track: var(--af-cream-300);
+
+  /* Ressources et barres de HUD */
+  --health: var(--af-red-500);
+  --health-strong: var(--af-red-700);
+  --xp: var(--af-cyan-500);
+  --xp-strong: var(--af-cyan-700);
+  --energy: var(--af-gold-400);
+  --energy-strong: var(--af-gold-600);
+  --boss: var(--af-red-500);
+
+  /* Matières */
+  --subject-maths: var(--af-blue-500);
+  --subject-physique: var(--af-violet-500);
+  --subject-anglais: var(--af-cyan-700);
+  --subject-espagnol: var(--af-pink-500);
+  --subject-histoire: var(--af-orange-700);
+  --subject-geographie: var(--af-green-700);
+
+  /* Catégories de modes */
+  --mode-apprendre: var(--af-green-700);
+  --mode-defis: var(--af-orange-600);
+  --mode-multi: var(--af-violet-600);
+
+  /* ── Contours, arrondis, ombres ────────────────────────────────── */
+  --stroke-sm: 3px;
+  --stroke-md: 4px;
+  --stroke-lg: 5px;
+  --radius-sm: 0.75rem;
+  --radius-md: 1.25rem;
+  --radius-lg: 1.75rem;
+  --radius-pill: 9999px;
+  /* Ombre « pleine » sous les éléments (relief cartoon) */
+  --drop-sm: 0 3px 0 var(--shadow);
+  --drop-md: 0 6px 0 var(--shadow);
+  --drop-lg: 0 8px 0 var(--shadow);
+  /* Volume des boutons : bas assombri + reflet haut */
+  --bevel: inset 0 -5px 0 rgb(0 0 0 / 0.22), inset 0 3px 0 rgb(255 255 255 / 0.35);
+  --bevel-pressed: inset 0 -2px 0 rgb(0 0 0 / 0.22), inset 0 2px 0 rgb(255 255 255 / 0.25);
+
+  /* ── Tailles d'icônes ─────────────────────────────────────────── */
+  --icon-xs: 20px;
+  --icon-sm: 28px;
+  --icon-md: 40px;
+  --icon-lg: 56px;
+  --icon-xl: 80px;
+
+  /* ── Animations ───────────────────────────────────────────────── */
+  --dur-instant: 80ms;
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 450ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ── Thème sombre : violet profond ─────────────────────────────── */
+:root[data-theme='dark'] {
+  --bg: var(--af-violet-950);
+  --bg-pattern: var(--af-violet-900);
+  --surface: var(--af-violet-900);
+  --surface-2: var(--af-violet-800);
+  --text: var(--af-cream-50);
+  --text-muted: var(--af-violet-100);
+  --outline: #0a0618;
+  --shadow: #0a0618;
+  --locked: var(--af-gray-700);
+  --locked-text: var(--af-gray-300);
+  --track: var(--af-violet-950);
+}

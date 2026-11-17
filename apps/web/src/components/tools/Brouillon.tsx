@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type PointerEvent } from 'react';
+import { c } from '../../design/palette.ts';
 
 export type Point = readonly [x: number, y: number, pressure: number];
 export interface Stroke {
@@ -7,9 +8,9 @@ export interface Stroke {
 }
 
 const COLORS = [
-  { value: '#1d1638', label: 'Noir' },
-  { value: '#e6224b', label: 'Rouge' },
-  { value: '#4b3fe0', label: 'Bleu' },
+  { value: c('ink'), label: 'Noir' },
+  { value: c('red-500'), label: 'Rouge' },
+  { value: c('blue-500'), label: 'Bleu' },
 ];
 /** 5 mm à 96 ppp ≈ 19 px : petits carreaux du cahier de maths. */
 const GRID = 19;
@@ -64,7 +65,7 @@ export function Brouillon({ strokes, onChange }: BrouillonProps) {
   const penSeen = useRef(false);
   const live = useRef(strokes);
   const [mode, setMode] = useState<'stylo' | 'gomme'>('stylo');
-  const [color, setColor] = useState(COLORS[0]?.value ?? '#1d1638');
+  const [color, setColor] = useState(COLORS[0]?.value ?? c('ink'));
 
   const redraw = () => {
     const c = canvas.current;
@@ -196,7 +197,7 @@ export function Brouillon({ strokes, onChange }: BrouillonProps) {
         ref={wrap}
         className="border-outline relative min-h-48 flex-1 overflow-hidden rounded-2xl border-4 bg-white"
         style={{
-          backgroundImage: `linear-gradient(#b9c7e6 1px, transparent 1px), linear-gradient(90deg, #b9c7e6 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(${c('violet-100')} 1px, transparent 1px), linear-gradient(90deg, ${c('violet-100')} 1px, transparent 1px)`,
           backgroundSize: `${GRID}px ${GRID}px`,
         }}
       >

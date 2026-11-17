@@ -1,20 +1,24 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
+import { levelFromXp } from '@questeo/engine';
 import { accord, MODES, MODE_CATEGORIES, type Profile } from '@questeo/shared';
-import { Avatar } from '../components/Avatar.tsx';
-import { Medal } from '../components/Medal.tsx';
 import { ModeTile } from '../components/ModeTile.tsx';
 import { PageShell } from '../components/PageShell.tsx';
 import { SpeechBubble } from '../components/SpeechBubble.tsx';
-import { XpBar } from '../components/XpBar.tsx';
-import { CoinIcon, GearIcon, PhoneIcon } from '../components/icons.tsx';
+import { CharacterAvatar } from '../components/game/CharacterAvatar.tsx';
+import { HeroCard } from '../components/game/CharacterCard.tsx';
+import { GameButton } from '../components/game/GameButton.tsx';
+import { GamePanel } from '../components/game/GamePanel.tsx';
+import { XPBar } from '../components/game/HudBars.tsx';
+import { ResourceCounter } from '../components/game/ResourceCounter.tsx';
 import { Questy } from '../components/mascot/Questy.tsx';
 import { MOOD_IDS, type MoodId } from '../components/mascot/moods.ts';
 
 export function Hub({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
   const [mood, setMood] = useState<MoodId>('happy');
+  const { level, xpInLevel, xpForNext, title } = levelFromXp(profile.xp, profile.gender);
   // Taper sur Questy lui fait changer de tête (au hasard, jamais deux fois la même).
   const tickle = () =>
     setMood((current) => {
@@ -25,82 +29,82 @@ export function Hub({ profile }: { readonly profile: Profile }) {
   return (
     <PageShell
       actions={
-        <button
-          type="button"
+        <GameButton
+          variant="accent"
+          iconOnly
+          icon="icons-navigation-settings"
           onClick={() => void navigate('/parametres')}
-          className="cartoon cartoon-press bg-surface flex h-14 w-14 items-center justify-center text-2xl"
           aria-label="Paramètres"
-        >
-          <GearIcon size={32} />
-        </button>
+        />
       }
     >
-      <section className="cartoon bg-surface flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
+      {/* HUD du joueur : avatar, niveau, XP, pièces */}
+      <GamePanel as="header" className="flex flex-col gap-3 sm:flex-row sm:items-center" aria-label="Mon joueur">
         <button type="button" onClick={() => void navigate('/')} aria-label="Changer de joueur" className="self-center">
-          <Avatar avatar={profile.avatar} size={88} />
+          <CharacterAvatar avatar={profile.avatar} size={92} />
         </button>
-        <div className="flex min-w-0 flex-1 flex-col gap-2">
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
           <div className="flex items-center justify-between gap-2">
             <h1 className="font-display truncate text-3xl tracking-wide">{profile.name}</h1>
-            <span className="font-display flex items-center gap-1 text-2xl" aria-label={`${profile.coins} pièces`}>
-              <CoinIcon size={30} /> {profile.coins}
-            </span>
+            <ResourceCounter icon="icons-resources-coin" value={profile.coins} label={`${profile.coins} pièces`} />
           </div>
-          <XpBar xp={profile.xp} gender={profile.gender} />
+          <XPBar level={level} xp={xpInLevel} xpForNext={xpForNext} title={title} />
         </div>
-      </section>
+      </GamePanel>
 
-      <div className="flex items-center gap-4">
-        <motion.button
-          type="button"
-          onClick={tickle}
-          aria-label="Chatouiller Questy"
-          whileTap={{ scale: 0.85, rotate: -8 }}
-          className="shrink-0"
-        >
-          <Questy size={88} mood={mood} />
-        </motion.button>
-        <SpeechBubble>
-          {accord(profile.gender, 'Prêt', 'Prête')} à jouer, {profile.name} ?
-        </SpeechBubble>
+      <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-center">
+        <div className="flex items-center gap-4">
+          <motion.button
+            type="button"
+            onClick={tickle}
+            aria-label="Chatouiller Questy"
+            whileTap={{ scale: 0.85, rotate: -8 }}
+            className="shrink-0"
+          >
+            <Questy size={92} mood={mood} />
+          </motion.button>
+          <SpeechBubble>
+            {accord(profile.gender, 'Prêt', 'Prête')} à jouer, {profile.name} ?
+          </SpeechBubble>
+        </div>
+        <HeroCard
+          hero={profile.hero}
+          caption="Changer de héros"
+          onClick={() => void navigate(`/profils/${profile.id}/modifier`)}
+          className="min-h-36 w-36 justify-self-center"
+        />
       </div>
 
-      <button
-        type="button"
-        onClick={() => void navigate('/progres')}
-        className="cartoon cartoon-press bg-surface font-display flex min-h-16 items-center justify-center gap-3 text-2xl tracking-wide"
-      >
-        <Medal medal="or" size={34} /> Mes progrès et médailles
-      </button>
+      <GameButton variant="info" size="lg" icon="icons-resources-progression" onClick={() => void navigate('/progres')}>
+        Mes progrès et médailles
+      </GameButton>
 
       {(!profile.gender || !profile.birthDate) && (
         <button
           type="button"
           onClick={() => void navigate(`/profils/${profile.id}/modifier`)}
-          className="cartoon cartoon-press bg-gold font-display p-4 text-left text-xl text-[#1d1638]"
+          className="cartoon cartoon-press bg-gold font-display text-on-light flex items-center gap-3 p-4 text-left text-xl"
         >
-          Complète ton profil : fille ou garçon et date de naissance (pour adapter ton avatar et les duels) →
+          <span className="flex-1">
+            Complète ton profil : fille ou garçon et date de naissance (pour adapter ton avatar et les duels)
+          </span>
+          <span aria-hidden>→</span>
         </button>
       )}
 
       {MODE_CATEGORIES.filter((c) => c.id !== 'multi').map((category) => (
-        <section key={category.id} className="flex flex-col gap-3">
-          <h2 className="font-display text-2xl tracking-wide">{category.name}</h2>
+        <GamePanel key={category.id} title={category.name}>
           <ul className="grid gap-4 sm:grid-cols-2">
             {MODES.filter((m) => m.category === category.id).map((mode, i) => (
               <ModeTile key={mode.id} mode={mode} index={i} onClick={() => void navigate(`/jouer/${mode.id}`)} />
             ))}
           </ul>
-        </section>
+        </GamePanel>
       ))}
 
-      <button
-        type="button"
-        onClick={() => void navigate('/multi')}
-        className="cartoon cartoon-press bg-accent font-display flex min-h-20 items-center justify-center gap-3 text-2xl tracking-wide text-white"
-      >
-        <PhoneIcon size={40} /> Multijoueur
-      </button>
+      <GameButton variant="accent" size="xl" icon="icons-navigation-team" onClick={() => void navigate('/multi')}>
+        Multijoueur
+      </GameButton>
     </PageShell>
   );
 }

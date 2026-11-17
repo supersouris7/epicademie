@@ -1,44 +1,11 @@
 @import 'tailwindcss';
 @import '@fontsource/lilita-one';
 @import '@fontsource-variable/nunito';
+@import './design/tokens.css';
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 /* Tablette (ou écran large) en paysage : mise en page en deux colonnes. */
 @custom-variant land (@media (orientation: landscape) and (min-width: 900px));
-
-:root {
-  --bg: #fff6e9;
-  --bg-pattern: #ffe8c9;
-  --surface: #ffffff;
-  --surface-2: #fff1dc;
-  --text: #1d1638;
-  --text-muted: #5d5680;
-  --outline: #1d1638;
-  --primary: #ff7a1a;
-  --primary-strong: #e85d00;
-  --accent: #4b3fe0;
-  --success: #12b886;
-  --danger: #e6224b;
-  --gold: #ffc83d;
-  --shadow: #1d1638;
-  --subject-maths: #ff7a1a;
-  --subject-physique: #9b5de5;
-  --subject-anglais: #118ab2;
-  --subject-espagnol: #ef476f;
-  --subject-histoire: #c9822b;
-  --subject-geographie: #12b886;
-}
-
-:root[data-theme='dark'] {
-  --bg: #15102c;
-  --bg-pattern: #1d1740;
-  --surface: #251e4d;
-  --surface-2: #2f2760;
-  --text: #fff6e9;
-  --text-muted: #b9b2e0;
-  --outline: #0b0818;
-  --shadow: #0b0818;
-}
 
 @theme inline {
   --color-bg: var(--bg);
@@ -46,15 +13,32 @@
   --color-surface-2: var(--surface-2);
   --color-ink: var(--text);
   --color-muted: var(--text-muted);
+  --color-on-color: var(--text-on-color);
+  --color-on-light: var(--text-on-light);
   --color-outline: var(--outline);
   --color-primary: var(--primary);
   --color-primary-strong: var(--primary-strong);
   --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-info: var(--info);
+  --color-info-strong: var(--info-strong);
   --color-success: var(--success);
+  --color-success-strong: var(--success-strong);
   --color-danger: var(--danger);
+  --color-danger-strong: var(--danger-strong);
+  --color-pink: var(--pink);
   --color-gold: var(--gold);
+  --color-locked: var(--locked);
+  --color-locked-text: var(--locked-text);
+  --color-track: var(--track);
+  --color-health: var(--health);
+  --color-xp: var(--xp);
+  --color-energy: var(--energy);
   --font-display: 'Lilita One', system-ui, sans-serif;
   --font-sans: 'Nunito Variable', system-ui, sans-serif;
+  --radius-game-sm: var(--radius-sm);
+  --radius-game: var(--radius-md);
+  --radius-game-lg: var(--radius-lg);
 }
 
 html,
@@ -80,15 +64,15 @@ button {
 
 /* Effet « bouton cartoon » : contour épais + ombre portée pleine. */
 @utility cartoon {
-  border: 4px solid var(--outline);
-  box-shadow: 0 6px 0 var(--shadow);
-  border-radius: 1.25rem;
+  border: var(--stroke-md) solid var(--outline);
+  box-shadow: var(--drop-md);
+  border-radius: var(--radius-md);
 }
 
 @utility cartoon-press {
   transition:
-    transform 80ms ease,
-    box-shadow 80ms ease;
+    transform var(--dur-instant) ease,
+    box-shadow var(--dur-instant) ease;
   &:active:not(:disabled) {
     transform: translateY(4px);
     box-shadow: 0 2px 0 var(--shadow);
@@ -102,4 +86,24 @@ button {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Texte blanc détouré (titres et libellés sur fond coloré, comme sur les planches). */
+@utility text-toon {
+  color: var(--text-on-color);
+  text-shadow:
+    -2px -2px 0 var(--outline),
+    2px -2px 0 var(--outline),
+    -2px 2px 0 var(--outline),
+    2px 2px 0 var(--outline),
+    0 -2px 0 var(--outline),
+    0 2px 0 var(--outline),
+    -2px 0 0 var(--outline),
+    2px 0 0 var(--outline),
+    0 4px 0 var(--outline);
+}
+
+/* Volume « bouton de jeu » : bas assombri + reflet en haut. */
+@utility bevel {
+  box-shadow: var(--bevel), var(--drop-md);
 }

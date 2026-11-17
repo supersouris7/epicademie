@@ -6,13 +6,16 @@ import {
   ProfileNameSchema,
   type AvatarConfig,
   type AvatarStyle,
+  HEROES,
   type Gender,
+  type HeroId,
   type Profile,
 } from '@questeo/shared';
 import { useCreateProfile, useProfile, useUpdateProfile } from '../api/profiles.ts';
 import { Avatar } from '../components/Avatar.tsx';
-import { Button } from '../components/Button.tsx';
-import { DiceIcon } from '../components/icons.tsx';
+import { GameButton } from '../components/game/GameButton.tsx';
+import { HeroCard } from '../components/game/CharacterCard.tsx';
+import { CharacterAvatar } from '../components/game/CharacterAvatar.tsx';
 import { PageShell } from '../components/PageShell.tsx';
 import { useSession } from '../store/session.ts';
 
@@ -42,6 +45,7 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
   const [name, setName] = useState(existing?.name ?? '');
   const [gender, setGender] = useState<Gender | null>(existing?.gender ?? null);
   const [birthDate, setBirthDate] = useState(existing?.birthDate ?? '');
+  const [hero, setHero] = useState<HeroId>(existing?.hero ?? 'alex');
   const [avatar, setAvatar] = useState<AvatarConfig>(existing?.avatar ?? { style: 'big-ears', seed: randomSeed() });
   const hair = gender === 'fille' ? 'long' : gender === 'garcon' ? 'short' : undefined;
   const shown: AvatarConfig =
@@ -65,7 +69,7 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
       setError('Indique ta date de naissance.');
       return;
     }
-    const payload = { name: parsed.data, avatar: shown, gender, birthDate: birth.data };
+    const payload = { name: parsed.data, avatar: shown, gender, birthDate: birth.data, hero };
     try {
       if (existing) {
         await update.mutateAsync(payload);
@@ -90,7 +94,7 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
         className="flex flex-col gap-6"
       >
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-end">
-          <Avatar avatar={shown} size={160} label="Aperçu de l’avatar" />
+          <CharacterAvatar avatar={shown} size={160} label="Aperçu de l’avatar" />
           <label className="flex w-full flex-1 flex-col gap-2">
             <span className="font-display text-xl tracking-wide">Ton prénom</span>
             <input
@@ -122,18 +126,17 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
                   ['garcon', 'Un garçon'],
                 ] as const
               ).map(([g, label]) => (
-                <button
+                <GameButton
                   key={g}
-                  type="button"
-                  aria-pressed={gender === g}
+                  variant={gender === g ? 'accent' : 'surface'}
+                  selected={gender === g}
                   onClick={() => {
                     setGender(g);
                     setError(null);
                   }}
-                  className={`cartoon cartoon-press font-display min-h-14 text-xl ${gender === g ? 'bg-accent text-white' : 'bg-surface'}`}
                 >
                   {label}
-                </button>
+                </GameButton>
               ))}
             </div>
           </fieldset>
@@ -157,15 +160,15 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
           <legend className="font-display mb-2 text-xl tracking-wide">Style</legend>
           <div className="flex flex-wrap gap-3">
             {AVATAR_STYLES.map((style) => (
-              <button
+              <GameButton
                 key={style}
-                type="button"
-                aria-pressed={avatar.style === style}
+                size="sm"
+                variant={avatar.style === style ? 'accent' : 'surface'}
+                selected={avatar.style === style}
                 onClick={() => setAvatar((a) => ({ ...a, style }))}
-                className={`cartoon cartoon-press font-display min-h-12 px-4 text-lg ${avatar.style === style ? 'bg-accent text-white' : 'bg-surface'}`}
               >
                 {STYLE_LABELS[style]}
-              </button>
+              </GameButton>
             ))}
           </div>
         </fieldset>
@@ -186,14 +189,36 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
               </button>
             ))}
           </div>
-          <Button variant="surface" className="self-start" onClick={() => setSeeds(seedBatch())}>
-            <DiceIcon size={28} /> D’autres têtes
-          </Button>
+          <GameButton
+            variant="surface"
+            icon="icons-tools-dice"
+            className="self-start"
+            onClick={() => setSeeds(seedBatch())}
+          >
+            D’autres têtes
+          </GameButton>
         </fieldset>
 
-        <Button type="submit" size="lg" disabled={saving} className="self-stretch sm:self-end">
+        <fieldset className="flex flex-col gap-3">
+          <legend className="font-display mb-2 text-xl tracking-wide">Ton héros (tu pourras en changer)</legend>
+          <div role="radiogroup" aria-label="Ton héros" className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {HEROES.map((h, i) => (
+              <HeroCard
+                key={h}
+                hero={h}
+                radio
+                selected={hero === h}
+                index={i}
+                onClick={() => setHero(h)}
+                className="min-h-40"
+              />
+            ))}
+          </div>
+        </fieldset>
+
+        <GameButton type="submit" size="lg" disabled={saving} className="self-stretch sm:self-end">
           {existing ? 'Enregistrer' : 'C’est parti !'}
-        </Button>
+        </GameButton>
       </form>
     </PageShell>
   );

@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { lazy, Suspense, type ReactNode } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 import type { Profile } from '@questeo/shared';
 import { ApiError } from './api/client.ts';
@@ -16,6 +16,11 @@ import { Chapters } from './pages/training/Chapters.tsx';
 import { Notions } from './pages/training/Notions.tsx';
 import { TrainingPlay } from './pages/training/TrainingPlay.tsx';
 import { useSession } from './store/session.ts';
+
+/** Atelier graphique : chargé à la demande, seulement en développement (absent du build de production). */
+const AssetPreview = import.meta.env.DEV
+  ? lazy(() => import('./pages/dev/AssetPreview.tsx').then((m) => ({ default: m.AssetPreview })))
+  : null;
 
 /** Rend `children(profile)` si un profil est sélectionné et existe, sinon renvoie vers l'accueil. */
 function WithProfile({ children }: { readonly children: (profile: Profile) => ReactNode }) {
@@ -55,6 +60,16 @@ export function App() {
       <Route path="/progres" element={<WithProfile>{(p) => <Progress profile={p} />}</WithProfile>} />
       <Route path="/parametres" element={<WithProfile>{(p) => <Settings profile={p} />}</WithProfile>} />
       <Route path="/a-propos" element={<About />} />
+      {AssetPreview && (
+        <Route
+          path="/dev/assets"
+          element={
+            <Suspense fallback={<p className="p-8 text-xl">Chargement…</p>}>
+              <AssetPreview />
+            </Suspense>
+          }
+        />
+      )}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

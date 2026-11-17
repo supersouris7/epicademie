@@ -1,0 +1,83 @@
+// @vitest-environment node
+import sharp from 'sharp';
+import { describe, expect, it } from 'vitest';
+import { PLANNED_ASSETS } from '../../src/design/assets.ts';
+import { chromaKey, contentBox, gridCells, hasAlpha, inspect, type Rgba } from './image.ts';
+import { render } from './import.ts';
+
+/** Sujet de test : disque violet et rose cerclé d'encre, sur fond magenta, anticrénelé. */
+const SUBJECT = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+  <rect width="200" height="200" fill="#ff00ff"/>
+  <circle cx="100" cy="100" r="60" fill="#7c4dff" stroke="#1d1238" stroke-width="8"/>
+  <circle cx="100" cy="100" r="25" fill="#ff4fa0"/>
+  <circle cx="100" cy="100" r="8" fill="#ff00ff"/>
+</svg>`;
+
+async function raster(svg: string): Promise<Rgba> {
+  const { data, info } = await sharp(Buffer.from(svg)).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  return { data, width: info.width, height: info.height };
+}
+
+const pixel = (img: Rgba, x: number, y: number) => [
+  ...img.data.subarray((y * img.width + x) * 4, (y * img.width + x) * 4 + 4),
+];
+
+describe('détourage magenta', () => {
+  it('retire le fond relié aux bords, garde violet et rose, retire le magenta pur enfermé', async () => {
+    const img = await raster(SUBJECT);
+    expect(hasAlpha(img)).toBe(false);
+    const out = chromaKey(img);
+    expect(pixel(out, 2, 2)[3]).toBe(0);
+    expect(pixel(out, 100, 60)).toEqual([124, 77, 255, 255]); // violet intact
+    expect(pixel(out, 100, 85)).toEqual([255, 79, 160, 255]); // rose intact
+    expect(pixel(out, 100, 100)[3]).toBe(0); // magenta enfermé
+    const report = inspect(out);
+    expect(report.cornersClear).toBe(true);
+    expect(report.magentaLeft).toBe(0);
+    expect(contentBox(out)?.width).toBeGreaterThan(100);
+  });
+
+  it('les bords anticrénelés deviennent semi-transparents sans teinte magenta', async () => {
+    const out = chromaKey(await raster(SUBJECT));
+    let soft = 0;
+    for (let i = 0; i < out.data.length; i += 4) {
+      const a = out.data[i + 3] ?? 0;
+      if (a > 0 && a < 255) {
+        soft++;
+        const [r = 0, g = 0, b = 0] = [out.data[i], out.data[i + 1], out.data[i + 2]];
+        expect(Math.min(r, b) - g).toBeLessThanOrEqual(0);
+      }
+    }
+    expect(soft).toBeGreaterThan(0);
+  });
+});
+
+describe('planches', () => {
+  it('découpe une grille sans trou ni chevauchement', () => {
+    const cells = gridCells(1536, 1024, 3, 2);
+    expect(cells).toHaveLength(6);
+    expect(cells.reduce((s, c) => s + c.width * c.height, 0)).toBe(1536 * 1024);
+    expect(cells[5]).toEqual({ left: 1024, top: 512, width: 512, height: 512 });
+  });
+});
+
+describe('rendu final', () => {
+  it('icône : recadrée, centrée, aux dimensions finales, coins transparents', async () => {
+    const asset = PLANNED_ASSETS.find((p) => p.kind === 'icon');
+    if (!asset) throw new Error('aucune icône');
+    const { webp, notes } = await render(asset, chromaKey(await raster(SUBJECT)));
+    const meta = await sharp(webp).metadata();
+    expect([meta.width, meta.height, meta.hasAlpha, meta.format]).toEqual([256, 256, true, 'webp']);
+    expect(notes).toEqual([]);
+  });
+
+  it('signale une image sans transparence', async () => {
+    const asset = PLANNED_ASSETS.find((p) => p.kind === 'icon');
+    if (!asset) throw new Error('aucune icône');
+    const plain = await raster(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="64" height="64" fill="#3fc944"/></svg>',
+    );
+    const { notes } = await render(asset, plain);
+    expect(notes).toContain('fond non détouré');
+  });
+});

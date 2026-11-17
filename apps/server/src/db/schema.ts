@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
 import { index, integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import type { AvatarConfig, Gender, Theme } from '@questeo/shared';
+import type { AvatarConfig, Gender, HeroId, Theme } from '@questeo/shared';
 
 export const profiles = sqliteTable('profiles', {
   id: text('id').primaryKey(),
@@ -8,6 +8,7 @@ export const profiles = sqliteTable('profiles', {
   avatar: text('avatar', { mode: 'json' }).$type<AvatarConfig>().notNull(),
   gender: text('gender').$type<Gender>(),
   birthDate: text('birth_date'),
+  hero: text('hero').$type<HeroId>().notNull().default('alex'),
   xp: integer('xp').notNull().default(0),
   coins: integer('coins').notNull().default(0),
   theme: text('theme').$type<Theme>().notNull().default('auto'),

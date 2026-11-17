@@ -17,8 +17,14 @@ import {
 } from '@questeo/engine';
 import { accord, type Gender, type Profile, type SessionSummary } from '@questeo/shared';
 import { finishSession, markConfused, skillsKey, startSession, submitAnswer, useSkills } from '../../api/play.ts';
-import { Button } from '../../components/Button.tsx';
+import { GameButton } from '../../components/game/GameButton.tsx';
 import { Confetti } from '../../components/Confetti.tsx';
+import { ProgressBar } from '../../components/game/ProgressBar.tsx';
+import { ResourceCounter } from '../../components/game/ResourceCounter.tsx';
+import { RewardBadge } from '../../components/game/RewardBadge.tsx';
+import { QuestyPose } from '../../components/mascot/QuestyPose.tsx';
+import type { QuestyPoseId } from '../../components/mascot/poses.ts';
+import { skinStyle } from '../../design/skin.ts';
 import { MathText } from '../../components/MathText.tsx';
 import { StageDots } from '../../components/StageDots.tsx';
 import { useToast } from '../../components/Toast.tsx';
@@ -219,7 +225,7 @@ function Game({
       <div className="mx-auto flex max-w-xl flex-col items-center gap-4 p-8 text-center">
         <Questy mood="sad" size={120} />
         <p className="text-xl font-bold">{error}</p>
-        <Button onClick={() => void navigate('/hub')}>Retour à l’accueil</Button>
+        <GameButton onClick={() => void navigate('/hub')}>Retour à l’accueil</GameButton>
       </div>
     );
   }
@@ -262,33 +268,23 @@ function Game({
   return (
     <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-3 px-3 py-3 sm:px-4">
       <header className="flex shrink-0 items-center gap-3">
-        <button
-          type="button"
+        <GameButton
+          variant="danger"
+          size="sm"
+          iconOnly
+          icon="icons-navigation-close"
           onClick={quit}
-          className="cartoon cartoon-press bg-surface font-display flex h-12 w-12 items-center justify-center text-2xl"
           aria-label="Quitter la partie"
-        >
-          ✕
-        </button>
-        <div
-          className="bg-surface-2 border-outline h-6 flex-1 overflow-hidden rounded-full border-4"
-          role="progressbar"
-          aria-valuemin={0}
-          aria-valuemax={TRAINING_LENGTH}
-          aria-valuenow={done}
-          aria-label="Progression de la série"
-        >
-          <motion.div className="bg-primary h-full" animate={{ width: `${(done / TRAINING_LENGTH) * 100}%` }} />
-        </div>
-        <span className="font-display text-xl">
-          {Math.min(done + (answered ? 0 : 1), TRAINING_LENGTH)}/{TRAINING_LENGTH}
-        </span>
-        <span
-          className="font-display bg-gold rounded-full px-3 py-1 text-lg text-[#1d1638]"
-          aria-label={`${xpTotal} XP gagnés`}
-        >
-          {xpTotal} XP
-        </span>
+        />
+        <ProgressBar
+          className="flex-1"
+          value={done}
+          max={TRAINING_LENGTH}
+          label="Progression de la série"
+          segments={TRAINING_LENGTH}
+          text={`${Math.min(done + (answered ? 0 : 1), TRAINING_LENGTH)}/${TRAINING_LENGTH}`}
+        />
+        <ResourceCounter icon="icons-resources-xp" value={xpTotal} label={`${xpTotal} XP gagnés`} />
       </header>
 
       {!current && (
@@ -469,6 +465,13 @@ function Results({
       : summary.scoreOn20 >= 10
         ? 'ok'
         : 'sad';
+  const pose: QuestyPoseId = summary.perfect
+    ? 'hero'
+    : summary.scoreOn20 >= 14
+      ? 'bravo'
+      : summary.scoreOn20 >= 10
+        ? 'pouce'
+        : 'triste';
   const levelUp = summary.levelAfter > summary.levelBefore;
   const message = summary.perfect
     ? `Sans-faute, ${accord(gender, 'champion', 'championne')} !`
@@ -486,9 +489,14 @@ function Results({
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200, damping: 10 }}
         >
-          <Questy mood={mood} size={140} />
+          <QuestyPose pose={pose} mood={mood} size={150} />
         </motion.div>
-        <h1 className="font-display text-4xl tracking-wide">{message}</h1>
+        <h1
+          className="bg-accent font-display text-toon cartoon px-8 py-2 text-3xl tracking-wide sm:text-4xl"
+          style={skinStyle('hud/frames/ribbon.webp', 30, '1.5rem')}
+        >
+          {message}
+        </h1>
         <p className="font-display text-6xl">
           {regular.correct}/{regular.answered}
         </p>
@@ -496,21 +504,20 @@ function Results({
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="cartoon bg-gold flex flex-col items-center p-3 text-[#1d1638]">
-          <span className="font-display text-3xl">+{summary.xpGained}</span>
-          <span className="font-bold">XP{summary.perfect ? ' (bonus sans-faute)' : ''}</span>
-        </div>
-        <div className="cartoon bg-surface flex flex-col items-center p-3">
-          <span className="font-display text-3xl">+{summary.coinsGained}</span>
-          <span className="font-bold">pièces</span>
-        </div>
+        <RewardBadge
+          tone="gold"
+          icon="icons-resources-xp"
+          value={`+${summary.xpGained}`}
+          label={`XP${summary.perfect ? ' (bonus sans-faute)' : ''}`}
+        />
+        <RewardBadge icon="icons-resources-coin" value={`+${summary.coinsGained}`} label="pièces" />
       </div>
 
       {levelUp && (
         <motion.div
           initial={{ scale: 0.5, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="cartoon bg-accent font-display p-4 text-center text-3xl text-white"
+          className="cartoon bevel bg-accent font-display text-toon p-4 text-center text-3xl"
         >
           Niveau {summary.levelAfter} atteint !
         </motion.div>
@@ -538,16 +545,19 @@ function Results({
       </section>
 
       <div className="flex flex-wrap justify-center gap-3">
-        <Button onClick={onReplay}>Rejouer</Button>
-        <Button
-          variant="surface"
+        <GameButton icon="icons-navigation-retry" onClick={onReplay}>
+          Rejouer
+        </GameButton>
+        <GameButton
+          variant="accent"
+          icon="icons-navigation-next"
           onClick={() => void navigate(`/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`)}
         >
           Autre notion
-        </Button>
-        <Button variant="surface" onClick={() => void navigate('/hub')}>
+        </GameButton>
+        <GameButton variant="accent" icon="icons-navigation-home" onClick={() => void navigate('/hub')}>
           Accueil
-        </Button>
+        </GameButton>
       </div>
     </div>
   );

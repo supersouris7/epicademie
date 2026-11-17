@@ -685,7 +685,7 @@ const BLOCK_COLORS = { ask: '#5cb1d6', set: '#ff8c1a', change: '#ff8c1a', say: '
 
 function Pill({ children }: { children: ReactNode }) {
   return (
-    <span className="mx-1 inline-block rounded-full bg-white px-2 py-0.5 font-bold text-[#1d1638]">{children}</span>
+    <span className="mx-1 inline-block rounded-full bg-white px-2 py-0.5 font-bold text-on-light">{children}</span>
   );
 }
 
@@ -738,7 +738,7 @@ function BlockView({ b }: { b: Block }) {
 function Blocks({ program }: { program: readonly Block[] }) {
   return (
     <div className="flex flex-col gap-1.5" role="img" aria-label="Programme en blocs">
-      <div className="w-fit rounded-t-2xl rounded-b-lg bg-[#ffbf00] px-3 py-2 text-base font-bold text-[#1d1638]">
+      <div className="w-fit rounded-t-2xl rounded-b-lg bg-[#ffbf00] px-3 py-2 text-base font-bold text-on-light">
         quand le drapeau vert est cliqué
       </div>
       {program.map((b, i) => (

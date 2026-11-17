@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import { generate, type Level, type Skill } from '@questeo/content';
 import { formatAnswer } from '../../lib/answers.ts';
-import { Button } from '../Button.tsx';
+import { GameButton } from '../game/GameButton.tsx';
 import { MathText } from '../MathText.tsx';
 import { Figure } from '../figures/Figure.tsx';
 import { Questy } from '../mascot/Questy.tsx';
@@ -50,9 +50,9 @@ export function NotUnderstood({ skill, level, seed, onClose }: NotUnderstoodProp
               </p>
             ))}
             <p className="text-muted text-sm">Source : {lesson.source}</p>
-            <Button className="self-end" onClick={() => setPart('exemple')}>
+            <GameButton className="self-end" onClick={() => setPart('exemple')}>
               Voir un exemple guidé →
-            </Button>
+            </GameButton>
           </>
         ) : (
           <>
@@ -82,13 +82,13 @@ export function NotUnderstood({ skill, level, seed, onClose }: NotUnderstoodProp
             )}
             <div className="flex flex-wrap justify-end gap-3">
               {!done ? (
-                <Button onClick={() => setShown((n) => n + 1)}>
+                <GameButton onClick={() => setShown((n) => n + 1)}>
                   {shown === 0 ? 'Première étape' : 'Étape suivante'}
-                </Button>
+                </GameButton>
               ) : (
-                <Button variant="success" onClick={onClose}>
+                <GameButton variant="success" onClick={onClose}>
                   J’ai compris, je réessaie
-                </Button>
+                </GameButton>
               )}
             </div>
           </>
