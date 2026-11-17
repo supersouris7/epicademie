@@ -623,47 +623,47 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 89. Arène des nombres
-Enregistrer sous `assets-src/originals/environments/arenas/nombres.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
+#### 89. Arène de la station spatiale
+Enregistrer sous `assets-src/originals/environments/arenas/espace.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
-Image 1536×1024. Cour d’une académie futuriste violette, tableaux noirs géants couverts de symboles abstraits à la craie (aucun chiffre ni lettre lisible), colonnes et bannières violettes, ciel lavande.
+Image 1536×1024. Plateforme d’une station spatiale de l’académie, planète et vaisseaux dans le ciel étoilé.
 Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 90. Arène de la géométrie
-Enregistrer sous `assets-src/originals/environments/arenas/geometrie.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
+#### 90. Arène de l’académie
+Enregistrer sous `assets-src/originals/environments/arenas/academie.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
-Image 1536×1024. Plateau de cristal bleu et violet sous un ciel indigo, formes géométriques géantes flottantes (cubes, pyramides, sphères) aux arêtes lumineuses.
+Image 1536×1024. Terrasse de l’académie au milieu des collines, cascades et observatoires.
 Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 91. Arène des données
-Enregistrer sous `assets-src/originals/environments/arenas/donnees.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
+#### 91. Arène de la jungle
+Enregistrer sous `assets-src/originals/environments/arenas/jungle.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
-Image 1536×1024. Salle de jeux futuriste : dés géants, roues de loterie et grands diagrammes en barres lumineux en relief, néons dorés.
+Image 1536×1024. Plateforme moussue dans une jungle aux ruines et cascades, portail violet.
 Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 92. Arène des fonctions
-Enregistrer sous `assets-src/originals/environments/arenas/fonctions.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
+#### 92. Arène du volcan
+Enregistrer sous `assets-src/originals/environments/arenas/volcan.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
-Image 1536×1024. Paysage néon de collines aux courbes lisses sous un ciel nocturne, quadrillage lumineux cyan au sol comme une feuille de graphique.
+Image 1536×1024. Plateforme de pierre fissurée de lave, volcan en éruption et forteresse.
 Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 93. Arène de la programmation
-Enregistrer sous `assets-src/originals/environments/arenas/informatique.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
+#### 93. Arène des glaces
+Enregistrer sous `assets-src/originals/environments/arenas/glace.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
-Image 1536×1024. Salle de serveurs futuriste aux baies clignotantes cyan, câbles lumineux, grands blocs de code colorés empilés.
+Image 1536×1024. Plateforme gelée, aurores boréales, montagnes enneigées et palais de glace.
 Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
 Style, fond et interdits : ceux du message de départ.
 ```

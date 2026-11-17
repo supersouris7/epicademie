@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Kit combat (à joindre à ChatGPT)
 
-32 demandes · 89 images finales.
+27 demandes · 84 images finales.
 
 ## Pour toi (à lire avant de commencer)
 
@@ -16,7 +16,7 @@
 
 ```text
 Je te joins le fichier « kit-combat.md » et des images de référence de style (Questy, la mascotte, et l'interface du jeu).
-Lis tout le fichier : il fixe le style du jeu et contient 32 demandes d'images numérotées (héros, boss, ennemis, effets, arènes).
+Lis tout le fichier : il fixe le style du jeu et contient 27 demandes d'images numérotées (héros, boss, ennemis, effets, arènes).
 Règles :
 - Génère maintenant UNIQUEMENT l'image de la demande 1, puis attends.
 - Chaque fois que j'écris « suivant », génère la demande suivante. Une seule image par réponse, précédée seulement de « Demande N ».
@@ -332,42 +332,7 @@ Cadrage de chaque élément : effet centré, bords nets (pas de grand halo flou)
 3. Tourbillon de portail violet vu de face.
 ```
 
-### Demande 27 — Arène des nombres
-
-```text
-Image 1536×1024, plein cadre avec décor (pas de fond magenta). Cour d’une académie futuriste violette, tableaux noirs géants couverts de symboles abstraits à la craie (aucun chiffre ni lettre lisible), colonnes et bannières violettes, ciel lavande.
-Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
-```
-
-### Demande 28 — Arène de la géométrie
-
-```text
-Image 1536×1024, plein cadre avec décor (pas de fond magenta). Plateau de cristal bleu et violet sous un ciel indigo, formes géométriques géantes flottantes (cubes, pyramides, sphères) aux arêtes lumineuses.
-Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
-```
-
-### Demande 29 — Arène des données
-
-```text
-Image 1536×1024, plein cadre avec décor (pas de fond magenta). Salle de jeux futuriste : dés géants, roues de loterie et grands diagrammes en barres lumineux en relief, néons dorés.
-Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
-```
-
-### Demande 30 — Arène des fonctions
-
-```text
-Image 1536×1024, plein cadre avec décor (pas de fond magenta). Paysage néon de collines aux courbes lisses sous un ciel nocturne, quadrillage lumineux cyan au sol comme une feuille de graphique.
-Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
-```
-
-### Demande 31 — Arène de la programmation
-
-```text
-Image 1536×1024, plein cadre avec décor (pas de fond magenta). Salle de serveurs futuriste aux baies clignotantes cyan, câbles lumineux, grands blocs de code colorés empilés.
-Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
-```
-
-### Demande 32 — Illustration principale
+### Demande 27 — Illustration principale
 
 ```text
 Image 1536×1024, plein cadre avec décor (pas de fond magenta). Scène de combat épique et joyeuse : les cinq héros alignés de gauche à droite (Alex avec son canon à plasma, Lina avec son lance-ballons, Pixel le chat avec son canon-poisson au premier plan, Ayla avec sa bombe-blaster, Tao avec son arbalète) et Questy qui lève le poing au milieu, tous face au Golem des Équations tout à droite ; en arrière-plan un château-académie violet flottant aux bannières à livre, ciel lavande, îles flottantes.
@@ -406,9 +371,4 @@ Cadrage : illustration plein cadre, composition lisible en petit, sans aucun tex
 | 24 | `bosses/minions/calculatrice`<br>`bosses/minions/cube-bot`<br>`bosses/minions/equerre`<br>`bosses/minions/compas`<br>`bosses/minions/de`<br>`bosses/minions/camembert`<br>`bosses/minions/courbe`<br>`bosses/minions/bug`<br>`bosses/minions/bloc-code` |
 | 25 | `effects/impacts/hit-burst`<br>`effects/impacts/anneau`<br>`effects/impacts/etincelles`<br>`effects/impacts/flash`<br>`effects/impacts/explosion`<br>`effects/particles/puff`<br>`effects/particles/bouclier`<br>`effects/particles/soin`<br>`effects/particles/etourdi` |
 | 26 | `effects/impacts/onde-boss`<br>`effects/particles/confettis`<br>`effects/transitions/portail` |
-| 27 | `environments/arenas/nombres` |
-| 28 | `environments/arenas/geometrie` |
-| 29 | `environments/arenas/donnees` |
-| 30 | `environments/arenas/fonctions` |
-| 31 | `environments/arenas/informatique` |
-| 32 | `branding/key-art` |
+| 27 | `branding/key-art` |

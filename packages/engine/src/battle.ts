@@ -204,12 +204,3 @@ export const BATTLE_FIRST_WIN_COINS = 50;
 export function battleXp(s: BattleState): number {
   return s.correct * BATTLE_XP_PER_HIT + (s.status === 'won' ? BATTLE_WIN_XP : 0);
 }
-
-/** Accès au boss : chaque notion du chapitre réussie au moins une fois à l'entraînement. */
-export function bossUnlock(
-  skills: readonly string[],
-  states: ReadonlyMap<string, { readonly correct: number }>,
-): { readonly done: number; readonly total: number; readonly unlocked: boolean } {
-  const done = skills.filter((id) => (states.get(id)?.correct ?? 0) > 0).length;
-  return { done, total: skills.length, unlocked: done === skills.length };
-}

@@ -57,10 +57,10 @@ describe('migration 0009 : combat de boss', () => {
         .filter((st) => st.includes('UPDATE `profiles`'))
         .join(';'),
     );
-    const rows = sqlite.prepare('SELECT hero, grade, ammo FROM profiles ORDER BY id').all();
+    const rows = sqlite.prepare('SELECT hero, grade FROM profiles ORDER BY id').all();
     expect(rows).toEqual([
-      { hero: 'alex', grade: null, ammo: null },
-      { hero: 'tao', grade: null, ammo: null },
+      { hero: 'alex', grade: null },
+      { hero: 'tao', grade: null },
     ]);
     sqlite.close();
   });

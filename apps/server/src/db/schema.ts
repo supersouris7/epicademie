@@ -10,7 +10,6 @@ export const profiles = sqliteTable('profiles', {
   birthDate: text('birth_date'),
   hero: text('hero').$type<HeroId>().notNull().default('alex'),
   grade: text('grade').$type<Grade>(),
-  ammo: text('ammo'),
   xp: integer('xp').notNull().default(0),
   coins: integer('coins').notNull().default(0),
   soundOn: integer('sound_on', { mode: 'boolean' }).notNull().default(true),

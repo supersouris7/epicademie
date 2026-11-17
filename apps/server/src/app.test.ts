@@ -44,7 +44,6 @@ describe('API profils', () => {
       birthDate: '2014-03-09',
       grade: '5e',
       hero: 'alex',
-      ammo: null,
     });
     const list = await app.inject('/api/profiles');
     expect(list.json<Profile[]>()).toHaveLength(1);

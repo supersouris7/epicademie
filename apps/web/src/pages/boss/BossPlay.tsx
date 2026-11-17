@@ -8,7 +8,6 @@ import {
   accord,
   BATTLE_MOBS,
   BOSS_LIVES,
-  getAmmo,
   ITEM_INFO,
   ITEMS,
   type BattleSummary,
@@ -18,7 +17,7 @@ import {
 } from '@questeo/shared';
 import { answerBattle, bossesKey, finishBattle, sendBattleItem, startBattle } from '../../api/battles.ts';
 import { ApiError } from '../../api/client.ts';
-import { BattleArena, AmmoOrb, type ArenaEnemy, type EnemyState } from '../../components/battle/BattleArena.tsx';
+import { BattleArena, type ArenaEnemy, type EnemyState } from '../../components/battle/BattleArena.tsx';
 import { ConfirmDialog } from '../../components/ConfirmDialog.tsx';
 import { Confetti } from '../../components/Confetti.tsx';
 import { Figure } from '../../components/figures/Figure.tsx';
@@ -35,7 +34,7 @@ import { useToast } from '../../components/Toast.tsx';
 import type { AnimationState, HeroExpression } from '../../design/assets.ts';
 import { HeroFace } from '../../components/battle/HeroFace.tsx';
 import { CharacterSprite } from '../../components/game/CharacterSprite.tsx';
-import { bossFilter, bossOf, mobOf } from '../../design/bosses.ts';
+import { bossFilter, bossOf, mobOf, randomArena } from '../../design/bosses.ts';
 import { formatAnswer, formatResponse } from '../../lib/answers.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../lib/sound.ts';
 import { ITEM_ICONS } from '../../design/items.ts';
@@ -66,7 +65,8 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   const qc = useQueryClient();
   const [toast, showToast] = useToast(2500);
   const boss = bossOf(chapter);
-  const ammo = getAmmo(profile.ammo);
+  // Arène tirée au hasard à chaque combat.
+  const [arena] = useState(randomArena);
   const [battle, setBattle] = useState<BattleView | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [summary, setSummary] = useState<BattleSummary | null>(null);
@@ -291,11 +291,10 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
         heroState={heroState}
         enemy={enemy}
         enemyState={enemyState}
-        ammo={ammo}
         shot={shot}
         riposte={riposte}
         shield={battle?.shield ?? false}
-        arena={boss.arena}
+        arena={arena}
         sky={boss.sky}
       />
 
@@ -478,7 +477,6 @@ function BattleResults({
   const location = useLocation();
   const boss = bossOf(chapter);
   const weak = summary.weakSkill ? getSkill(summary.weakSkill) : undefined;
-  const ammo = summary.ammo ? getAmmo(summary.ammo) : null;
   const gained = ITEMS.filter((i) => (summary.items[i] ?? 0) > 0);
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-5 px-4 py-6">
@@ -528,12 +526,6 @@ function BattleResults({
               <GameIcon id="rewards-medals-or" size={56} />
               Médaille
             </span>
-            {ammo && (
-              <span className="flex flex-col items-center gap-1 font-bold text-white">
-                <AmmoOrb ammo={ammo} size={56} />
-                Munition {ammo.name}
-              </span>
-            )}
             {gained.map((i) => (
               <span key={i} className="flex flex-col items-center gap-1 font-bold text-white">
                 <GameIcon id={ITEM_ICONS[i]} size={56} />

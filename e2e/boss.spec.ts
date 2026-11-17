@@ -1,23 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
-import { fmt, generate, getChapter, type Question } from '../packages/content/src/index.ts';
-import type { BattleAnswerResult, BattleView, Profile } from '../packages/shared/src/index.ts';
-
-const CHAPTER = 'm5-relatifs';
-
-/** Réussit une fois chaque notion des Relatifs à l'entraînement (par l'API) : le boss se réveille. */
-async function unlock(page: Page, profileId: string) {
-  for (const skill of getChapter(CHAPTER)?.skills ?? []) {
-    const s = await page.request.post('/api/sessions', {
-      data: { profileId, mode: 'entrainement', subject: 'maths', chapterId: CHAPTER, skillId: skill.id },
-    });
-    const { id } = (await s.json()) as { id: string };
-    const q = generate(skill.id, 1, 7);
-    await page.request.post(`/api/sessions/${id}/answers`, {
-      data: { skillId: skill.id, level: 1, seed: 7, variant: false, response: response(q, true), durationMs: 2000 },
-    });
-    await page.request.post(`/api/sessions/${id}/finish`);
-  }
-}
+import { fmt, generate, type Question } from '../packages/content/src/index.ts';
+import type { BattleAnswerResult, BattleView } from '../packages/shared/src/index.ts';
 
 type Answer = { kind: 'choice'; index: number } | { kind: 'number'; text: string };
 
@@ -46,7 +29,7 @@ async function answer(page: Page, view: BattleView, right: boolean) {
   return ((await (await sent).json()) as BattleAnswerResult).battle;
 }
 
-test('Combat de boss : verrou, mobs, riposte, victoire et coffre', async ({ page }) => {
+test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', async ({ page }) => {
   test.setTimeout(90_000);
   const name = `Boss${Date.now() % 10000}`;
   await page.goto('/');
@@ -61,16 +44,11 @@ test('Combat de boss : verrou, mobs, riposte, victoire et coffre', async ({ page
   await page.getByRole('button', { name: /^Combat de boss/ }).click();
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Combat de boss' })).toBeVisible();
-  // Verrouillé tant que les notions ne sont pas réussies ; chapitres sans boss « À venir ».
+  // Tous les boss sont ouverts d'emblée ; chapitres sans boss « À venir ». Panneau « Équipement ».
   const relatifs = page.getByRole('listitem').filter({ hasText: 'Nombres relatifs' });
-  await expect(relatifs).toContainText('Notions réussies : 0/7');
-  await expect(relatifs.getByRole('button', { name: /S’entraîner/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Équipement' })).toBeVisible();
+  await expect(page.getByText('Munitions')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Calcul mental, boss à venir' })).toBeVisible();
-
-  const profiles = (await (await page.request.get('/api/profiles')).json()) as Profile[];
-  const profileId = profiles.find((p) => p.name === name)?.id ?? '';
-  await unlock(page, profileId);
-  await page.reload();
   const started = page.waitForResponse((r) => r.url().endsWith('/api/battles'));
   await relatifs.getByRole('button', { name: 'Combattre' }).click();
   let view = (await (await started).json()) as BattleView;
@@ -96,13 +74,10 @@ test('Combat de boss : verrou, mobs, riposte, victoire et coffre', async ({ page
   expect(view.status).toBe('won');
   await expect(page.getByRole('heading', { name: /est vaincu/ })).toBeVisible({ timeout: 10_000 });
   await expect(page.getByText('1re victoire : le coffre !')).toBeVisible();
-  await expect(page.getByText('Munition Plus-moins')).toBeVisible();
 
   await page.getByRole('button', { name: 'Autres boss' }).click();
   await expect(relatifs.getByRole('button', { name: 'Rejouer' })).toBeVisible();
   await expect(relatifs).toContainText('vaincu 1 fois');
-  // Le coffre a rempli le sac ; la nouvelle munition s'équipe.
+  // Le coffre a rempli l'équipement.
   await expect(page.getByText('Bouclier × 1')).toBeVisible();
-  await page.getByRole('radio', { name: 'Plus-moins' }).click();
-  await expect(page.getByText('Plus-moins équipée !')).toBeVisible();
 });

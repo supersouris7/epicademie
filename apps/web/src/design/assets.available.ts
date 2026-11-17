@@ -128,5 +128,10 @@ export const AVAILABLE: readonly string[] = [
   "characters/alex/head-affection.webp",
   "characters/alex/head-colere.webp",
   "characters/alex/head-triste.webp",
-  "characters/alex/head-etourdi.webp"
+  "characters/alex/head-etourdi.webp",
+  "environments/arenas/espace.webp",
+  "environments/arenas/academie.webp",
+  "environments/arenas/jungle.webp",
+  "environments/arenas/volcan.webp",
+  "environments/arenas/glace.webp"
 ];

@@ -6,7 +6,6 @@ import {
   applyItem,
   battleXp,
   BATTLE_FIRST_WIN_COINS,
-  bossUnlock,
   coinsForXp,
   createBattle,
   itemRefusal,
@@ -16,8 +15,6 @@ import {
   type BattleState,
 } from '@questeo/engine';
 import {
-  AMMO,
-  DEFAULT_AMMO,
   HINT_PRICE,
   MAX_ITEM_STOCK,
   type BattleAnswer,
@@ -31,7 +28,7 @@ import {
 import type { Db } from './client.ts';
 import { addItems, readInventory, takeItem } from './inventory.ts';
 import { PlayError } from './play-repo.ts';
-import { attempts, bossRecords, profiles, sessions, skillStates } from './schema.ts';
+import { attempts, bossRecords, profiles, sessions } from './schema.ts';
 
 const dice: BattleDice = { random: Math.random, seed: () => randomInt(2_000_000_000) };
 
@@ -53,10 +50,6 @@ const view = (id: string, chapterId: string, s: BattleState, inventory: Inventor
   question: s.question,
   inventory,
 });
-
-/** Munitions possédées : celle de départ + celle de chaque boss vaincu. */
-export const ownedAmmo = (wonChapters: readonly string[]) =>
-  AMMO.filter((a) => a.chapterId === null || wonChapters.includes(a.chapterId)).map((a) => a.id);
 
 export function createBattleRepo(db: Db) {
   const load = (id: string) => {
@@ -90,17 +83,6 @@ export function createBattleRepo(db: Db) {
       if (!profile) throw new PlayError(404, 'Profil introuvable');
       const chapter = getChapter(chapterId);
       const p = pools(chapterId);
-      const states = new Map(
-        db
-          .select()
-          .from(skillStates)
-          .where(eq(skillStates.profileId, profileId))
-          .all()
-          .map((s) => [s.skillId, s] as const),
-      );
-      if (!bossUnlock(p.mobs, states).unlocked) {
-        throw new PlayError(403, 'Réussis d’abord chaque notion du chapitre à l’entraînement');
-      }
       const state = createBattle(p, dice);
       const id = randomUUID();
       db.insert(sessions)
@@ -227,7 +209,6 @@ export function createBattleRepo(db: Db) {
           xpGained,
           coinsGained,
           hearts: state.hearts,
-          ammo: firstWin ? (AMMO.find((a) => a.chapterId === session.chapterId)?.id ?? null) : null,
           items,
           weakSkill: weakestSkill(state, pools(session.chapterId).mobs),
           levelBefore: levelFromXp(profile.xp).level,
@@ -252,19 +233,6 @@ export function createBattleRepo(db: Db) {
         addItems(tx, profileId, { indice: 1 });
         return { coins: profile.coins - HINT_PRICE, inventory: readInventory(tx, profileId) };
       });
-    },
-
-    /** Équipe une munition déjà gagnée. */
-    equip(profileId: string, ammo: string): { ammo: string } {
-      const profile = db.select({ id: profiles.id }).from(profiles).where(eq(profiles.id, profileId)).get();
-      if (!profile) throw new PlayError(404, 'Profil introuvable');
-      const owned = ownedAmmo(records(profileId).map((r) => r.chapterId));
-      if (!owned.includes(ammo)) throw new PlayError(403, 'Munition pas encore gagnée');
-      db.update(profiles)
-        .set({ ammo: ammo === DEFAULT_AMMO ? null : ammo })
-        .where(eq(profiles.id, profileId))
-        .run();
-      return { ammo };
     },
   };
 }

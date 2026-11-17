@@ -6,8 +6,6 @@ export interface BossIdentity {
   readonly name: string;
   /** Mobs envoyés par ce boss (identifiants de bosses/minions). */
   readonly mobs: readonly string[];
-  /** Arène (environments/arenas). */
-  readonly arena: string;
   /** Couleurs du décor de remplacement tant que l'arène n'est pas livrée. */
   readonly sky: readonly [string, string];
 }
@@ -17,35 +15,30 @@ export const DOMAIN_BOSSES: Record<DomainId, BossIdentity> = {
     id: 'golem-des-equations',
     name: 'Golem des Équations',
     mobs: ['calculatrice', 'cube-bot', 'bloc-code'],
-    arena: 'nombres',
     sky: ['#3b1d6e', '#8a5cd6'],
   },
   geometrie: {
     id: 'geomatrix',
     name: 'Géomatrix',
     mobs: ['equerre', 'compas', 'cube-bot'],
-    arena: 'geometrie',
     sky: ['#1b2a6b', '#5a7be0'],
   },
   donnees: {
     id: 'probabot',
     name: 'Probabot',
     mobs: ['de', 'camembert', 'calculatrice'],
-    arena: 'donnees',
     sky: ['#4a2a12', '#d69a3c'],
   },
   fonctions: {
     id: 'courbix',
     name: 'Courbix',
     mobs: ['courbe', 'camembert', 'calculatrice'],
-    arena: 'fonctions',
     sky: ['#0b1d3a', '#1f8fb0'],
   },
   informatique: {
     id: 'ia-des-connaissances',
     name: 'IA des Connaissances',
     mobs: ['bug', 'bloc-code', 'cube-bot'],
-    arena: 'informatique',
     sky: ['#081a2a', '#2a7a9a'],
   },
 };
@@ -62,5 +55,9 @@ export const bossFilter = (chapterId: string) => {
   const hue = CHAPTER_HUE[chapterId] ?? 0;
   return hue ? `hue-rotate(${hue}deg)` : undefined;
 };
+/** Arènes du combat (environments/arenas), une tirée au hasard à chaque combat. */
+export const ARENAS = ['espace', 'academie', 'jungle', 'volcan', 'glace'] as const;
+export const randomArena = (): string => ARENAS[Math.floor(Math.random() * ARENAS.length)] ?? 'academie';
+
 /** Mob affiché pour la question n°`turn` (cosmétique). */
 export const mobOf = (boss: BossIdentity, turn: number) => boss.mobs[turn % boss.mobs.length] ?? 'calculatrice';

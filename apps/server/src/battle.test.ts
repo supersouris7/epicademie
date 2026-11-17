@@ -60,26 +60,6 @@ function wrong(q: Question): Response {
   return { kind: 'text', text: 'zzz' };
 }
 
-/** Réussit une fois chaque notion du chapitre à l'entraînement (débloque le boss). */
-async function unlock(chapterId = CHAPTER) {
-  const chapter = getChapter(chapterId);
-  for (const skill of chapter?.skills ?? []) {
-    const s = await app.inject({
-      method: 'POST',
-      url: '/api/sessions',
-      payload: { profileId, mode: 'entrainement', subject: 'maths', chapterId, skillId: skill.id },
-    });
-    const id = s.json<{ id: string }>().id;
-    const q = generate(skill.id, 1, 7);
-    await app.inject({
-      method: 'POST',
-      url: `/api/sessions/${id}/answers`,
-      payload: { skillId: skill.id, level: 1, seed: 7, variant: false, response: perfect(q), durationMs: 2000 },
-    });
-    await app.inject({ method: 'POST', url: `/api/sessions/${id}/finish` });
-  }
-}
-
 const startBattle = (chapterId = CHAPTER) =>
   app.inject({ method: 'POST', url: '/api/battles', payload: { profileId, chapterId } });
 
@@ -98,14 +78,12 @@ async function reply(b: BattleView, right: boolean) {
 const overview = async () => (await app.inject(`/api/profiles/${profileId}/bosses`)).json<BossOverview>();
 
 describe('combat de boss', () => {
-  it('reste verrouillé tant que chaque notion n’a pas été réussie', async () => {
-    const res = await startBattle();
-    expect(res.statusCode).toBe(403);
+  it('tous les boss sont ouverts d’emblée ; un chapitre sans boss est refusé', async () => {
+    expect((await startBattle()).statusCode).toBe(201);
     expect((await startBattle('m5-calcul')).statusCode).toBe(400);
   });
 
   it('victoire sans faute : munition, coffre, pièces ; la 2e victoire ne redonne pas le coffre', async () => {
-    await unlock();
     const res = await startBattle();
     expect(res.statusCode).toBe(201);
     let b = res.json<BattleView>();
@@ -120,19 +98,18 @@ describe('combat de boss', () => {
     expect(turns).toBe(10);
     expect(b.status).toBe('won');
     const sum = (await app.inject({ method: 'POST', url: `/api/battles/${b.id}/finish` })).json<BattleSummary>();
-    expect(sum).toMatchObject({ won: true, firstWin: true, ammo: 'signe', hearts: 3, xpGained: 150 });
+    expect(sum).toMatchObject({ won: true, firstWin: true, hearts: 3, xpGained: 150 });
     expect(sum.items).toEqual({ bouclier: 1, soin: 1, indice: 1 });
     expect((await overview()).records).toMatchObject([{ chapterId: CHAPTER, wins: 1, bestHearts: 3 }]);
 
     let b2 = (await startBattle()).json<BattleView>();
     while (b2.status === 'fighting') b2 = (await reply(b2, true)).battle;
     const sum2 = (await app.inject({ method: 'POST', url: `/api/battles/${b2.id}/finish` })).json<BattleSummary>();
-    expect(sum2).toMatchObject({ firstWin: false, ammo: null, items: {} });
+    expect(sum2).toMatchObject({ firstWin: false, items: {} });
     expect((await overview()).records[0]?.wins).toBe(2);
   });
 
   it('3 erreurs : défaite, notion à retravailler, pas de médaille', async () => {
-    await unlock();
     let b = (await startBattle()).json<BattleView>();
     const first = b.question?.skillId;
     for (let i = 0; i < 3; i++) b = (await reply(b, false)).battle;
@@ -145,7 +122,6 @@ describe('combat de boss', () => {
   });
 
   it('refuse une autre question que celle en cours et une fin prématurée', async () => {
-    await unlock();
     const b = (await startBattle()).json<BattleView>();
     const q = b.question;
     if (!q) throw new Error('pas de question');
@@ -190,7 +166,6 @@ describe('combat de boss', () => {
     expect(buy.statusCode).toBe(200);
     expect(buy.json<{ inventory: { indice: number } }>().inventory.indice).toBe(1);
 
-    await unlock();
     const b = (await startBattle()).json<BattleView>();
     const use = (item: string) => app.inject({ method: 'POST', url: `/api/battles/${b.id}/items`, payload: { item } });
     const shield = await use('bouclier');
@@ -203,13 +178,6 @@ describe('combat de boss', () => {
     const r = await reply(hint.json<BattleView>(), false);
     expect(r.outcome).toBe('blocked');
     expect(r.battle.hearts).toBe(3);
-  });
-
-  it('équipe seulement une munition gagnée', async () => {
-    const put = (ammo: string) =>
-      app.inject({ method: 'PUT', url: `/api/profiles/${profileId}/ammo`, payload: { ammo } });
-    expect((await put('signe')).statusCode).toBe(403);
-    expect((await put('etoile')).statusCode).toBe(200);
   });
 
   it('une session de boss ne passe pas par les routes d’entraînement', async () => {

@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion, type TargetAndTransition } from 'motion/react';
-import { HERO_NAMES, type AmmoInfo, type HeroId } from '@questeo/shared';
+import { HERO_NAMES, type HeroId } from '@questeo/shared';
 import { assetSrc, heroPoseSrc, type AnimationState } from '../../design/assets.ts';
 import { HERO_COLORS } from '../../design/heroes.ts';
 import { CHARACTER_MOTION } from '../../design/motion.ts';
@@ -21,7 +21,6 @@ interface BattleArenaProps {
   readonly heroState: AnimationState;
   readonly enemy: ArenaEnemy | null;
   readonly enemyState: EnemyState;
-  readonly ammo: AmmoInfo;
   /** Change à chaque tir : une orbe part du héros vers l'adversaire. */
   readonly shot: number;
   /** Change à chaque riposte : une onde part de l'adversaire vers le héros. */
@@ -38,7 +37,7 @@ interface BattleArenaProps {
  * Tant qu'une image manque, un remplaçant dessiné prend sa place (jamais de personnage coupé).
  */
 export function BattleArena(props: BattleArenaProps) {
-  const { hero, heroState, enemy, enemyState, ammo, shot, riposte, shield, arena, sky } = props;
+  const { hero, heroState, enemy, enemyState, shot, riposte, shield, arena, sky } = props;
   const reduce = useReducedMotion();
   const bg = assetSrc(`environments-arenas-${arena}`);
   return (
@@ -47,7 +46,7 @@ export function BattleArena(props: BattleArenaProps) {
       style={{
         height: 'var(--arena-h)',
         background: bg
-          ? `center / cover no-repeat url(${bg})`
+          ? `center 62% / cover no-repeat url(${bg})`
           : `linear-gradient(180deg, ${sky[0]}, ${sky[1]} 70%, color-mix(in srgb, ${sky[1]} 50%, black))`,
       }}
       role="img"
@@ -98,7 +97,7 @@ export function BattleArena(props: BattleArenaProps) {
             transition={{ duration: reduce ? 0.01 : 0.55, ease: 'easeIn' }}
             style={{ width: '22%' }}
           >
-            <AmmoOrb ammo={ammo} />
+            <PlasmaShot />
           </motion.div>
         )}
       </AnimatePresence>
@@ -119,26 +118,22 @@ export function BattleArena(props: BattleArenaProps) {
   );
 }
 
-/** Orbe de munition : boule lumineuse à la couleur du chapitre, symbole au centre, traînée. */
-export function AmmoOrb({ ammo, size }: { readonly ammo: AmmoInfo; readonly size?: number }) {
+/** Tir du canon à plasma d'Alex : boule d'énergie violette et sa traînée, dessinées en code. */
+function PlasmaShot() {
+  const color = '#c45cff';
   return (
-    <div className="relative" style={{ width: size ?? '100%', aspectRatio: '1' }} aria-hidden>
-      {/* Traînée */}
+    <div className="relative w-full" style={{ aspectRatio: '1' }} aria-hidden>
       <div
         className="absolute top-1/2 right-1/2 h-1/2 w-[160%] -translate-y-1/2 rounded-full"
-        style={{ background: `linear-gradient(90deg, transparent, ${ammo.color})`, opacity: 0.55 }}
+        style={{ background: `linear-gradient(90deg, transparent, ${color})`, opacity: 0.6 }}
       />
       <div
-        className="font-display absolute inset-0 flex items-center justify-center rounded-full text-[min(6vw,2.2rem)] text-white"
+        className="absolute inset-0 rounded-full"
         style={{
-          background: `radial-gradient(circle at 35% 35%, white, ${ammo.color} 45%, color-mix(in srgb, ${ammo.color} 60%, black))`,
-          boxShadow: `0 0 18px ${ammo.color}, 0 0 36px ${ammo.color}`,
-          textShadow: '0 1px 2px rgba(0,0,0,0.6)',
-          fontSize: size ? size * 0.5 : undefined,
+          background: `radial-gradient(circle at 40% 40%, white, ${color} 45%, color-mix(in srgb, ${color} 55%, black))`,
+          boxShadow: `0 0 18px ${color}, 0 0 40px ${color}`,
         }}
-      >
-        {ammo.symbol}
-      </div>
+      />
     </div>
   );
 }

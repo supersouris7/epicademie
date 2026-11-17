@@ -169,7 +169,7 @@ export const KINDS = {
   },
   arena: {
     gen: '1536x1024',
-    final: [1536, 1024],
+    final: [1536, 864],
     framing:
       'décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage',
     opaque: true,
@@ -993,34 +993,18 @@ const effectAssets = EFFECTS.map(([id, look, fallback], i) =>
   ),
 );
 
-// ─── Kit combat : arènes (une par boss) ───────────────────────────────────
+// ─── Kit combat : arènes (livrées le 18/11/2026, une tirée au hasard à chaque combat) ───
 
 const ARENAS = [
   [
-    'nombres',
-    'Arène des nombres',
-    'cour d’une académie futuriste violette, tableaux noirs géants couverts de symboles abstraits à la craie (aucun chiffre ni lettre lisible), colonnes et bannières violettes, ciel lavande',
+    'espace',
+    'Arène de la station spatiale',
+    'plateforme d’une station spatiale de l’académie, planète et vaisseaux dans le ciel étoilé',
   ],
-  [
-    'geometrie',
-    'Arène de la géométrie',
-    'plateau de cristal bleu et violet sous un ciel indigo, formes géométriques géantes flottantes (cubes, pyramides, sphères) aux arêtes lumineuses',
-  ],
-  [
-    'donnees',
-    'Arène des données',
-    'salle de jeux futuriste : dés géants, roues de loterie et grands diagrammes en barres lumineux en relief, néons dorés',
-  ],
-  [
-    'fonctions',
-    'Arène des fonctions',
-    'paysage néon de collines aux courbes lisses sous un ciel nocturne, quadrillage lumineux cyan au sol comme une feuille de graphique',
-  ],
-  [
-    'informatique',
-    'Arène de la programmation',
-    'salle de serveurs futuriste aux baies clignotantes cyan, câbles lumineux, grands blocs de code colorés empilés',
-  ],
+  ['academie', 'Arène de l’académie', 'terrasse de l’académie au milieu des collines, cascades et observatoires'],
+  ['jungle', 'Arène de la jungle', 'plateforme moussue dans une jungle aux ruines et cascades, portail violet'],
+  ['volcan', 'Arène du volcan', 'plateforme de pierre fissurée de lave, volcan en éruption et forteresse'],
+  ['glace', 'Arène des glaces', 'plateforme gelée, aurores boréales, montagnes enneigées et palais de glace'],
 ] as const;
 
 const envAssets = ARENAS.map(([id, name, look]) =>

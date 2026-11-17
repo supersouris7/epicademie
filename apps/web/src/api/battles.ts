@@ -31,6 +31,3 @@ export const buyHint = (profileId: string) =>
     method: 'POST',
     body: JSON.stringify({ profileId, item: 'indice' }),
   });
-
-export const equipAmmo = (profileId: string, ammo: string) =>
-  api<{ ammo: string }>(`/profiles/${profileId}/ammo`, { method: 'PUT', body: JSON.stringify({ ammo }) });

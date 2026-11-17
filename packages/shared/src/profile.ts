@@ -49,8 +49,6 @@ export const ProfileSchema = z.object({
   hero: z.enum(HEROES),
   /** Classe (null pour les profils créés avant le choix de la classe). */
   grade: z.enum(GRADES).nullable(),
-  /** Munition équipée pour les combats de boss (null = munition de base). */
-  ammo: z.string().nullable(),
   xp: z.number().int().nonnegative(),
   coins: z.number().int().nonnegative(),
   soundOn: z.boolean(),
