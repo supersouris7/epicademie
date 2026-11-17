@@ -73,7 +73,7 @@ export function Hub({ profile }: { readonly profile: Profile }) {
         <HeroCard
           hero={profile.hero}
           caption="Changer de héros"
-          onClick={() => void navigate(`/profils/${profile.id}/modifier`)}
+          onClick={() => void navigate('/heros')}
           className="min-h-36 w-36 justify-self-center"
         />
       </div>

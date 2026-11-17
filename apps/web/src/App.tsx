@@ -4,6 +4,7 @@ import type { Profile } from '@questeo/shared';
 import { ApiError } from './api/client.ts';
 import { useProfile } from './api/profiles.ts';
 import { About } from './pages/About.tsx';
+import { Heroes } from './pages/Heroes.tsx';
 import { Hub } from './pages/Hub.tsx';
 import { ModeSetup } from './pages/ModeSetup.tsx';
 import { MultiModes } from './pages/MultiModes.tsx';
@@ -40,6 +41,7 @@ export function App() {
       <Route path="/profils/nouveau" element={<ProfileEditor />} />
       <Route path="/profils/:id/modifier" element={<ProfileEditor />} />
       <Route path="/hub" element={<WithProfile>{(p) => <Hub profile={p} />}</WithProfile>} />
+      <Route path="/heros" element={<WithProfile>{(p) => <Heroes profile={p} />}</WithProfile>} />
       <Route path="/multi" element={<WithProfile>{() => <MultiModes />}</WithProfile>} />
       <Route path="/jouer/:modeId" element={<WithProfile>{() => <ModeSetup />}</WithProfile>} />
       <Route

@@ -24,11 +24,8 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByRole('radio', { name: 'Adulte, à venir' })).toBeVisible();
   await page.getByRole('radio', { name: '5e', exact: true }).click();
   await page.getByRole('button', { name: 'Robot' }).click();
-  // Un seul héros dessiné pour l'instant : Alex ; les autres sont « À venir ».
-  await expect(page.getByRole('radio', { name: /Alex/ })).toBeChecked();
-  for (const soon of ['Tao', 'Lina', 'Ayla', 'Pixel']) {
-    await expect(page.getByRole('img', { name: `${soon}, à venir` })).toBeVisible();
-  }
+  // Le héros ne se choisit plus dans le profil : il a son propre menu.
+  await expect(page.getByRole('radiogroup', { name: 'Ton héros' })).toHaveCount(0);
   await page.getByRole('button', { name: /C’est parti/ }).click();
 
   await expect(page).toHaveURL(/\/hub$/);
@@ -36,6 +33,14 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByText('Apprentie')).toBeVisible();
   await expect(page.getByText(/Prête à jouer/)).toBeVisible();
   await expect(page.getByRole('button', { name: /Alex.*Changer de héros/ })).toBeVisible();
+  // Menu « Mon héros » : Alex seul jouable, les autres « À venir ».
+  await page.getByRole('button', { name: /Alex.*Changer de héros/ }).click();
+  await expect(page.getByRole('heading', { name: 'Mon héros' })).toBeVisible();
+  await expect(page.getByRole('radio', { name: /Alex/ })).toBeChecked();
+  for (const soon of ['Tao', 'Lina', 'Ayla', 'Pixel']) {
+    await expect(page.getByRole('img', { name: `${soon}, à venir` })).toBeVisible();
+  }
+  await page.getByRole('button', { name: 'Retour' }).click();
   await page.getByRole('button', { name: /Mes progrès/ }).click();
   await expect(page.getByText(/0 \/ 72 notions médaillées/)).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Nombres et calculs' })).toBeVisible();

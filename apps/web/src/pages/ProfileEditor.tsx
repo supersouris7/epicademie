@@ -6,18 +6,13 @@ import {
   ProfileNameSchema,
   type AvatarConfig,
   type AvatarStyle,
-  AVAILABLE_HEROES,
-  HEROES,
   type Gender,
   type Grade,
-  type HeroId,
-  HERO_NAMES,
   type Profile,
 } from '@questeo/shared';
 import { useCreateProfile, useProfile, useUpdateProfile } from '../api/profiles.ts';
 import { Avatar } from '../components/Avatar.tsx';
 import { GameButton } from '../components/game/GameButton.tsx';
-import { HeroCard } from '../components/game/CharacterCard.tsx';
 import { CharacterAvatar } from '../components/game/CharacterAvatar.tsx';
 import { GradePicker } from '../components/GradePicker.tsx';
 import { PageShell } from '../components/PageShell.tsx';
@@ -49,9 +44,6 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
   const [gender, setGender] = useState<Gender | null>(existing?.gender ?? null);
   const [birthDate, setBirthDate] = useState(existing?.birthDate ?? '');
   const [grade, setGrade] = useState<Grade | null>(existing?.grade ?? null);
-  const [hero, setHero] = useState<HeroId>(
-    existing && AVAILABLE_HEROES.includes(existing.hero) ? existing.hero : 'alex',
-  );
   const [avatar, setAvatar] = useState<AvatarConfig>(
     existing?.avatar ?? { style: 'adventurer-neutral', seed: randomSeed() },
   );
@@ -79,7 +71,7 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
       setError('Choisis ta classe.');
       return;
     }
-    const payload = { name: parsed.data, avatar: shown, gender, birthDate: birth.data, grade, hero };
+    const payload = { name: parsed.data, avatar: shown, gender, birthDate: birth.data, grade };
     try {
       if (existing) {
         await update.mutateAsync(payload);
@@ -219,38 +211,6 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
           >
             D’autres têtes
           </GameButton>
-        </fieldset>
-
-        <fieldset className="flex flex-col gap-3">
-          <legend className="font-display mb-2 text-xl tracking-wide">Ton héros (tu pourras en changer)</legend>
-          <div role="radiogroup" aria-label="Ton héros" className="grid grid-cols-2 gap-4 sm:grid-cols-5">
-            {HEROES.map((h, i) =>
-              AVAILABLE_HEROES.includes(h) ? (
-                <HeroCard
-                  key={h}
-                  hero={h}
-                  radio
-                  selected={hero === h}
-                  index={i}
-                  onClick={() => setHero(h)}
-                  className="min-h-40"
-                />
-              ) : (
-                // Héros pas encore dessiné : carte grisée, non choisissable.
-                <div
-                  key={h}
-                  className="relative opacity-50 grayscale"
-                  aria-label={`${HERO_NAMES[h]}, à venir`}
-                  role="img"
-                >
-                  <HeroCard hero={h} index={i} className="pointer-events-none min-h-40" />
-                  <span className="bg-gold text-on-light font-display absolute top-2 right-2 rounded-full px-2.5 py-0.5 text-sm">
-                    À venir
-                  </span>
-                </div>
-              ),
-            )}
-          </div>
         </fieldset>
 
         <GameButton type="submit" size="lg" disabled={saving} className="self-stretch sm:self-end">
