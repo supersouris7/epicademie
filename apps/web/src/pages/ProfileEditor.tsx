@@ -21,7 +21,6 @@ import { useSession } from '../store/session.ts';
 
 const STYLE_LABELS: Record<AvatarStyle, string> = {
   'fun-emoji': 'Émoji',
-  'big-ears': 'Personnage',
   'adventurer-neutral': 'Visage',
   pixelbot: 'Robot',
 };
@@ -46,10 +45,10 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
   const [gender, setGender] = useState<Gender | null>(existing?.gender ?? null);
   const [birthDate, setBirthDate] = useState(existing?.birthDate ?? '');
   const [hero, setHero] = useState<HeroId>(existing?.hero ?? 'alex');
-  const [avatar, setAvatar] = useState<AvatarConfig>(existing?.avatar ?? { style: 'big-ears', seed: randomSeed() });
-  const hair = gender === 'fille' ? 'long' : gender === 'garcon' ? 'short' : undefined;
-  const shown: AvatarConfig =
-    avatar.style === 'big-ears' && hair ? { ...avatar, hair } : { style: avatar.style, seed: avatar.seed };
+  const [avatar, setAvatar] = useState<AvatarConfig>(
+    existing?.avatar ?? { style: 'adventurer-neutral', seed: randomSeed() },
+  );
+  const shown: AvatarConfig = { style: avatar.style, seed: avatar.seed };
   const [seeds, setSeeds] = useState(seedBatch);
   const [error, setError] = useState<string | null>(null);
   const saving = create.isPending || update.isPending;

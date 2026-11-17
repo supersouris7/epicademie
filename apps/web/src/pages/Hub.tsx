@@ -41,7 +41,7 @@ export function Hub({ profile }: { readonly profile: Profile }) {
       {/* HUD du joueur : avatar, niveau, XP, pièces */}
       <GamePanel as="header" className="flex flex-col gap-3 sm:flex-row sm:items-center" aria-label="Mon joueur">
         <button type="button" onClick={() => void navigate('/')} aria-label="Changer de joueur" className="self-center">
-          <CharacterAvatar avatar={profile.avatar} size={92} />
+          <CharacterAvatar avatar={profile.avatar} size={108} />
         </button>
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <div className="flex items-center justify-between gap-2">

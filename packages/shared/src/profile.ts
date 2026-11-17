@@ -1,14 +1,12 @@
 import { z } from 'zod';
 
 /** Styles DiceBear autorisés (licences libres, voir docs/CREDITS.md). */
-export const AVATAR_STYLES = ['fun-emoji', 'big-ears', 'adventurer-neutral', 'pixelbot'] as const;
+export const AVATAR_STYLES = ['adventurer-neutral', 'fun-emoji', 'pixelbot'] as const;
 export type AvatarStyle = (typeof AVATAR_STYLES)[number];
 
 export const AvatarConfigSchema = z.object({
   style: z.enum(AVATAR_STYLES),
   seed: z.string().min(1).max(64),
-  /** Coiffure (style big-ears uniquement), déduite du choix fille / garçon. */
-  hair: z.enum(['long', 'short']).optional(),
 });
 export type AvatarConfig = z.infer<typeof AvatarConfigSchema>;
 

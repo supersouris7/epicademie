@@ -89,6 +89,13 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await page.getByRole('tab', { name: 'Calculatrice' }).click();
   await page.getByRole('tab', { name: 'Brouillon' }).click();
   await expect(page.getByRole('button', { name: 'Annuler' })).toBeEnabled();
+  // Pleine page : l'énoncé reste en haut, le dessin est conservé.
+  await page.getByRole('button', { name: 'Pleine page' }).click();
+  const full = page.getByRole('dialog', { name: 'Brouillon pleine page' });
+  await expect(full).toContainText('arrondie au dixième');
+  await expect(full.getByRole('button', { name: 'Annuler' })).toBeEnabled();
+  await full.getByRole('button', { name: 'Réduire' }).click();
+  await expect(full).toBeHidden();
   // La réponse envoyée depuis la calculatrice est toujours là.
   await page.getByRole('tab', { name: 'Pavé' }).click();
   await expect(page.getByLabel('Ta réponse')).toHaveText('78,539816');
@@ -101,6 +108,8 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await page.getByRole('tabpanel').getByRole('button', { name: '2', exact: true }).click();
   await page.getByRole('button', { name: 'Virgule' }).click();
   await expect(page.getByRole('button', { name: 'Case 4' })).toHaveText('2');
+  await page.getByRole('button', { name: 'Envoyer 2 dans ma réponse' }).click();
+  await expect(page.getByLabel('Ta réponse')).toHaveText('2');
 
   // Quitter : confirmation aux couleurs de l'appli.
   await page.getByRole('button', { name: 'Quitter la partie' }).click();

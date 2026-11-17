@@ -47,25 +47,23 @@ export function Calculator({ state, onChange, onUse }: CalculatorProps) {
   // Résultat envoyable : celui affiché, ou l'expression calculée à la volée.
   const value = sendable(state);
   return (
-    <div className="flex flex-col gap-2 [@media(max-height:500px)]:gap-1">
+    <div className="flex h-full min-h-0 flex-col gap-2">
       <div
-        className="bg-surface-2 border-outline rounded-xl border-4 px-3 py-2 text-right [@media(max-height:500px)]:py-0.5"
+        className="bg-surface-2 border-outline shrink-0 rounded-xl border-4 px-3 py-0.5 text-right"
         aria-live="polite"
       >
-        <div className="text-muted min-h-5 text-sm font-bold">
+        <div className="text-muted min-h-4 text-xs font-bold">
           {state.result !== null && state.result !== state.expr ? state.result : ' '}
         </div>
-        <div className="font-display min-h-9 text-3xl break-all [@media(max-height:500px)]:min-h-7 [@media(max-height:500px)]:text-2xl">
-          {state.expr || '0'}
-        </div>
+        <div className="font-display min-h-8 truncate text-2xl">{state.expr || '0'}</div>
       </div>
-      <div className="grid grid-cols-5 gap-1.5">
+      <div className="grid min-h-0 flex-1 grid-cols-5 grid-rows-5 gap-1.5">
         {KEYS.map((k) => (
           <button
             key={k}
             type="button"
             onClick={() => onChange(pressCalc(state, k))}
-            className={`cartoon cartoon-press font-display h-12 text-2xl [@media(max-height:500px)]:h-9 ${/[÷×−+()π]/.test(k) ? 'bg-accent text-white' : k === 'C' || k === '⌫' ? 'bg-surface-2' : 'bg-surface'}`}
+            className={`cartoon cartoon-press font-display h-full min-h-8 text-2xl ${/[÷×−+()π]/.test(k) ? 'bg-accent text-white' : k === 'C' || k === '⌫' ? 'bg-surface-2' : 'bg-surface'}`}
             aria-label={k === '⌫' ? 'Effacer le dernier caractère' : k === 'C' ? 'Tout effacer' : k === 'π' ? 'Pi' : k}
           >
             {k}
@@ -74,7 +72,7 @@ export function Calculator({ state, onChange, onUse }: CalculatorProps) {
         <button
           type="button"
           onClick={() => onChange(pressCalc(state, '='))}
-          className={`cartoon cartoon-press bg-success font-display h-12 text-2xl text-white [@media(max-height:500px)]:h-9 ${onUse ? 'col-span-2' : 'col-span-5'}`}
+          className={`cartoon cartoon-press bg-success font-display h-full min-h-8 text-2xl text-white ${onUse ? 'col-span-2' : 'col-span-5'}`}
         >
           =
         </button>
@@ -84,7 +82,7 @@ export function Calculator({ state, onChange, onUse }: CalculatorProps) {
             disabled={!value}
             onClick={() => value && onUse(value)}
             aria-label={value ? `Envoyer ${value} dans ma réponse` : 'Envoyer le résultat dans ma réponse'}
-            className="cartoon cartoon-press bg-primary font-display col-span-3 h-12 truncate px-2 text-lg text-white disabled:opacity-40 [@media(max-height:500px)]:h-9"
+            className="cartoon cartoon-press bg-primary font-display col-span-3 h-full min-h-8 truncate px-2 text-lg text-white disabled:opacity-40"
           >
             Envoyer ➜ réponse
           </button>

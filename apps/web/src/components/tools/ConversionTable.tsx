@@ -1,4 +1,10 @@
-import { emptyConversion, LAYOUTS, type ConversionKind, type ConversionState } from '../../lib/conversion.ts';
+import {
+  emptyConversion,
+  LAYOUTS,
+  readConversion,
+  type ConversionKind,
+  type ConversionState,
+} from '../../lib/conversion.ts';
 import { MathText } from '../MathText.tsx';
 
 interface ConversionTableProps {
@@ -6,10 +12,12 @@ interface ConversionTableProps {
   readonly state: ConversionState;
   readonly onChange: (s: ConversionState) => void;
   readonly highlight: ReadonlySet<string>;
+  /** Envoie le nombre lu dans le tableau vers la réponse. */
+  readonly onUse?: (value: string) => void;
 }
 
 /** Tableau de conversion à remplir : chiffres et virgule placés comme sur le cahier. */
-export function ConversionTable({ kind, state, onChange, highlight }: ConversionTableProps) {
+export function ConversionTable({ kind, state, onChange, highlight, onUse }: ConversionTableProps) {
   const layout = LAYOUTS[kind];
   const total = state.digits.length;
   const set = (patch: Partial<ConversionState>) => onChange({ ...state, ...patch });
@@ -19,14 +27,14 @@ export function ConversionTable({ kind, state, onChange, highlight }: Conversion
       selected: Math.min(total - 1, state.selected + 1),
     });
   const hl = (u: string) => (highlight.has(u) ? 'bg-primary text-white' : '');
+  const value = readConversion(state);
   let index = 0;
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-muted text-sm font-bold">
-        Touche une case, écris un chiffre ; « Virgule » la place juste après la case choisie. Les unités de l’énoncé
-        sont en orange.
+    <div className="flex h-full min-h-0 flex-col gap-2">
+      <p className="text-muted shrink-0 text-xs font-bold [@media(max-height:500px)]:hidden">
+        Touche une case, écris les chiffres, place la virgule. Unités de l’énoncé en orange.
       </p>
-      <div className="overflow-x-auto">
+      <div className="shrink-0 overflow-x-auto">
         <table className="mx-auto border-collapse">
           <thead>
             <tr>
@@ -34,7 +42,7 @@ export function ConversionTable({ kind, state, onChange, highlight }: Conversion
                 <th
                   key={c.unit}
                   colSpan={c.cells}
-                  className={`border-outline border-2 px-2 py-1 text-lg ${hl(c.unit) || 'bg-accent text-white'}`}
+                  className={`border-outline border-2 px-1 py-0.5 text-base ${hl(c.unit) || 'bg-accent text-white'}`}
                 >
                   <MathText text={c.unit} />
                 </th>
@@ -71,7 +79,7 @@ export function ConversionTable({ kind, state, onChange, highlight }: Conversion
                         onClick={() => set({ selected: i })}
                         aria-label={`Case ${i + 1}`}
                         aria-pressed={state.selected === i}
-                        className={`font-display h-14 w-11 text-3xl ${state.selected === i ? 'bg-[color-mix(in_srgb,var(--primary)_28%,transparent)]' : ''}`}
+                        className={`font-display h-11 w-9 text-2xl sm:w-11 sm:text-3xl ${state.selected === i ? 'bg-[color-mix(in_srgb,var(--primary)_28%,transparent)]' : ''}`}
                       >
                         {state.digits[i] ?? ''}
                       </button>
@@ -89,39 +97,60 @@ export function ConversionTable({ kind, state, onChange, highlight }: Conversion
           </tbody>
         </table>
       </div>
-      <div className="flex flex-wrap justify-center gap-2">
-        {['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map((k) => (
+      {/* Touches en grille compacte (2 lignes) : la zone garde la même hauteur que le pavé. */}
+      <div className="grid min-h-0 flex-1 grid-cols-7 grid-rows-2 gap-1.5">
+        {['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'].map((k) => (
           <button
             key={k}
             type="button"
             onClick={() => type(k)}
-            className="cartoon cartoon-press bg-surface font-display h-12 w-12 text-2xl"
+            className="cartoon cartoon-press bg-surface font-display h-full min-h-9 text-2xl"
           >
             {k}
           </button>
         ))}
         <button
           type="button"
-          onClick={() => set({ comma: state.comma === state.selected ? null : state.selected })}
-          className="cartoon cartoon-press bg-danger font-display h-12 px-3 text-xl text-white"
+          onClick={() => {
+            // Juste après le chiffre qu'on vient d'écrire (la sélection a déjà avancé d'une case).
+            const prev = state.selected - 1;
+            const at =
+              state.digits[state.selected] === null && prev >= 0 && state.digits[prev] !== null ? prev : state.selected;
+            set({ comma: state.comma === at ? null : at });
+          }}
+          aria-label="Virgule"
+          className="cartoon cartoon-press bg-danger font-display h-full min-h-9 text-2xl text-white"
         >
-          Virgule
+          ,
         </button>
         <button
           type="button"
           onClick={() => set({ digits: state.digits.map((v, i) => (i === state.selected ? null : v)) })}
-          className="cartoon cartoon-press bg-surface-2 font-display h-12 px-3 text-lg"
+          aria-label="Effacer la case"
+          className="cartoon cartoon-press bg-surface-2 font-display h-full min-h-9 text-xl"
         >
-          Effacer la case
+          ⌫
         </button>
         <button
           type="button"
           onClick={() => onChange(emptyConversion(kind))}
-          className="cartoon cartoon-press bg-surface-2 font-display h-12 px-3 text-lg"
+          aria-label="Tout effacer"
+          className="cartoon cartoon-press bg-surface-2 font-display h-full min-h-9 text-xl"
         >
-          Tout effacer
+          C
         </button>
       </div>
+      {onUse && (
+        <button
+          type="button"
+          disabled={!value}
+          onClick={() => value && onUse(value)}
+          aria-label={value ? `Envoyer ${value} dans ma réponse` : 'Envoyer le nombre du tableau dans ma réponse'}
+          className="cartoon cartoon-press bg-primary font-display h-11 shrink-0 text-lg text-white disabled:opacity-40"
+        >
+          Envoyer {value ?? ''} ➜ réponse
+        </button>
+      )}
     </div>
   );
 }

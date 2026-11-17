@@ -115,7 +115,7 @@ function Gallery() {
       </GamePanel>
       <GamePanel title="Personnages" className="flex flex-col gap-4">
         <div className="flex flex-wrap items-end gap-4">
-          <CharacterAvatar avatar={{ style: 'big-ears', seed: 'demo', hair: 'long' }} level={12} />
+          <CharacterAvatar avatar={{ style: 'adventurer-neutral', seed: 'demo' }} level={12} />
           <CharacterAvatar avatar={{ style: 'pixelbot', seed: 'robot' }} size={64} />
         </div>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">

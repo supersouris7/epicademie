@@ -120,3 +120,13 @@ Chaque compte garde son avatar DiceBear et choisit un héros (Alex, Zoé, Léo, 
   - L'onglet conseillé brille tant qu'il n'a pas été ouvert.
   - Le conseil vient de `skill.advice`, ou à défaut de la calculatrice quand elle est permise.
 - **Écrans bas** (hauteur 500 px ou moins) : touches et marges réduites. Les figures sont limitées par `--figure-max`.
+- **Hauteur fixe de la zone**, la même pour tous les onglets ; chaque mode remplit cet espace.
+  - En portrait : entre 280 et 390 px, soit 40 % de l'écran.
+  - Sur le côté : 560 px au plus.
+  - L'énoncé garde tout le reste.
+- **Tableau de conversion** :
+  - proposé sur toute question numérique qui parle de longueurs, d'aires, de volumes ou de contenances (`measureKind`) ;
+  - « Envoyer ➜ réponse » lit le nombre comme sur le cahier (`readConversion`) ;
+  - la virgule se place juste après le dernier chiffre écrit.
+- **Brouillon pleine page** : l'énoncé et la figure restent en haut, la feuille prend le reste, et le dessin est conservé.
+- **Avatar** : Visage, Émoji ou Robot. L'avatar remplit exactement le trou de l'anneau illustré, et l'anneau déborde un peu du cadre.

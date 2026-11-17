@@ -60,30 +60,30 @@ export function Keyboard({ onKey, onSubmit, canSubmit, upper, onShift }: Keyboar
       type="button"
       onClick={() => onKey(k)}
       aria-label={k === '⌫' ? 'Effacer' : k === ' ' ? 'Espace' : k === '’' ? 'Apostrophe' : undefined}
-      className={`cartoon cartoon-press bg-surface font-display h-11 min-w-0 flex-1 text-xl [@media(max-height:500px)]:h-9 ${extra}`}
+      className={`cartoon cartoon-press bg-surface font-display h-full min-h-8 min-w-0 flex-1 text-xl ${extra}`}
     >
       {upper && k.length === 1 ? label.toUpperCase() : label}
     </button>
   );
 
   return (
-    <div className="flex w-full flex-col gap-1.5" role="group" aria-label="Clavier">
-      <div className="flex gap-1 overflow-x-auto pb-0.5" aria-label="Lettres accentuées">
+    <div className="flex min-h-0 w-full flex-1 flex-col gap-1.5" role="group" aria-label="Clavier">
+      <div className="flex min-h-0 flex-1 gap-1 overflow-x-auto" aria-label="Lettres accentuées">
         {ACCENTS.map((k) => key(k, 'bg-surface-2 min-w-9 text-lg'))}
       </div>
       {ROWS.map((row) => (
-        <div key={row[0]} className="flex gap-1">
+        <div key={row[0]} className="flex min-h-0 flex-1 gap-1">
           {row.map((k) => key(k))}
           {row[0] === 'w' && key('⌫', 'flex-[1.6] bg-surface-2')}
         </div>
       ))}
-      <div className="flex gap-1">
+      <div className="flex min-h-0 flex-1 gap-1">
         <button
           type="button"
           onClick={onShift}
           aria-pressed={upper}
           aria-label="Majuscule"
-          className={`cartoon cartoon-press font-display h-11 flex-[1.4] text-xl [@media(max-height:500px)]:h-9 ${upper ? 'bg-accent text-white' : 'bg-surface-2'}`}
+          className={`cartoon cartoon-press font-display h-full flex-[1.4] text-xl ${upper ? 'bg-accent text-white' : 'bg-surface-2'}`}
         >
           ⇧
         </button>
@@ -92,7 +92,7 @@ export function Keyboard({ onKey, onSubmit, canSubmit, upper, onShift }: Keyboar
           type="button"
           onClick={onSubmit}
           disabled={!canSubmit}
-          className="cartoon cartoon-press bg-success font-display h-11 flex-[2] text-xl text-white disabled:opacity-40 [@media(max-height:500px)]:h-9"
+          className="cartoon cartoon-press bg-success font-display h-full flex-[2] text-xl text-white disabled:opacity-40"
         >
           OK
         </button>

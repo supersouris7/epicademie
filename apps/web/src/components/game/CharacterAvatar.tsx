@@ -22,11 +22,24 @@ export function CharacterAvatar({ avatar, size = 88, level, label = '' }: Charac
       role={label ? 'img' : undefined}
       aria-label={label || undefined}
     >
-      <div className="bg-surface-2 absolute inset-[9%] overflow-hidden rounded-full">
-        <Avatar avatar={avatar} size={Math.round(size * 0.82)} className="!border-0 !shadow-none" />
+      {/* L'anneau illustré est épais (trou ≈ 55 % de sa largeur) : il déborde un peu du cadre
+          et l'avatar remplit exactement le trou, pour ne pas couper la tête. */}
+      <div
+        className={`bg-surface-2 absolute overflow-hidden rounded-full ${ringIsFinal ? 'inset-[16%]' : 'inset-[9%]'}`}
+      >
+        <Avatar
+          avatar={avatar}
+          size={Math.round(size * (ringIsFinal ? 0.68 : 0.82))}
+          className="!border-0 !shadow-none"
+        />
       </div>
       {ringIsFinal && ring ? (
-        <img src={ring} alt="" aria-hidden className="pointer-events-none absolute inset-0 h-full w-full" />
+        <img
+          src={ring}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute inset-[-9%] h-[118%] w-[118%] max-w-none"
+        />
       ) : (
         <div
           aria-hidden

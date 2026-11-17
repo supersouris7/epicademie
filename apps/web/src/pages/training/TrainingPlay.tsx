@@ -40,7 +40,13 @@ import { Brouillon, type Stroke } from '../../components/tools/Brouillon.tsx';
 import { Calculator } from '../../components/tools/Calculator.tsx';
 import { EMPTY_CALC, type CalcState } from '../../lib/calcState.ts';
 import { ConversionTable } from '../../components/tools/ConversionTable.tsx';
-import { emptyConversion, unitsIn, type ConversionKind, type ConversionState } from '../../lib/conversion.ts';
+import {
+  emptyConversion,
+  measureKind,
+  unitsIn,
+  type ConversionKind,
+  type ConversionState,
+} from '../../lib/conversion.ts';
 import { localToday, randomSeed } from '../../lib/dates.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../lib/sound.ts';
 import { stageMessage } from '../../lib/answers.ts';
@@ -109,6 +115,7 @@ function Game({
   const [tab, setTab] = useState<DockTab>('reponse');
   /** Outils déjà ouverts sur cette question (l'outil conseillé cesse de briller). */
   const [opened, setOpened] = useState<ReadonlySet<DockTab>>(new Set());
+  const [bigDraft, setBigDraft] = useState(false);
   const [strokes, setStrokes] = useState<readonly Stroke[]>([]);
   const [calc, setCalc] = useState<CalcState>(EMPTY_CALC);
   const [conv, setConv] = useState<ConversionState | null>(null);
@@ -140,6 +147,7 @@ function Game({
       setFill(null);
       setTab('reponse');
       setOpened(new Set());
+      setBigDraft(false);
     },
     [states, today],
   );
@@ -246,11 +254,16 @@ function Game({
   const done = regularCount(training);
   const skill = current ? getSkill(current.plan.skillId) : undefined;
   const allowed = skill?.tools ?? [];
+  // Tableau de conversion proposé dès qu'une question numérique parle de longueurs, aires, volumes ou contenances.
+  const measured =
+    current?.question.answer.kind === 'number'
+      ? measureKind(current.question.prompt, current.question.answer.unit)
+      : null;
   const tabs: DockTab[] = [
     'reponse',
     ...(allowed.includes('calculatrice') ? (['calculatrice'] as const) : []),
     'brouillon',
-    ...(allowed.some((t) => t.startsWith('conversion')) ? (['conversion'] as const) : []),
+    ...(allowed.some((t) => t.startsWith('conversion')) || measured ? (['conversion'] as const) : []),
   ];
   const activeTab = tabs.includes(tab) ? tab : 'reponse';
   const advice = skill?.advice ?? (allowed.includes('calculatrice') ? 'calculatrice' : undefined);
@@ -261,7 +274,14 @@ function Game({
   const answerKind = current?.question.answer.kind;
   const answerLabel =
     answerKind === 'text' ? 'Clavier' : answerKind === 'number' || answerKind === 'fraction' ? 'Pavé' : 'Réponse';
-  const kind = current ? conversionKind(current.question) : 'longueur';
+  const kind = measured ?? (current ? conversionKind(current.question) : 'longueur');
+  const sendToAnswer =
+    current?.question.answer.kind === 'number'
+      ? (value: string) => {
+          setFill({ value, nonce: Date.now() });
+          setTab('reponse');
+        }
+      : undefined;
   const convState = conv ?? emptyConversion(kind);
 
   const reportConfused = () => {
@@ -310,7 +330,7 @@ function Game({
             initial={{ x: 40, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -40, opacity: 0 }}
-            className="side:grid side:grid-cols-[minmax(0,1fr)_minmax(300px,420px)] flex min-h-0 flex-1 flex-col gap-3"
+            className="side:grid side:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] flex min-h-0 flex-1 flex-col gap-3"
           >
             {/* Énoncé et figure : jamais recouverts par les outils. */}
             <section className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pb-1 [&>*]:shrink-0">
@@ -352,9 +372,7 @@ function Game({
             </section>
 
             {/* Écran coupé : pavé et outils en bas (portrait) ou sur le côté (paysage). */}
-            <section
-              className={`side:h-auto side:max-h-none flex min-h-0 shrink-0 flex-col ${!answered && activeTab === 'brouillon' ? 'h-[50dvh]' : 'max-h-[62dvh]'}`}
-            >
+            <section className="side:h-[min(100%,560px)] side:self-center flex h-[clamp(280px,40dvh,390px)] min-h-0 shrink-0 flex-col">
               {answered ? (
                 <Feedback
                   question={current.question}
@@ -375,7 +393,7 @@ function Game({
                   glow={advice && !opened.has(advice) ? advice : undefined}
                   onSelect={selectTab}
                 >
-                  <div className={activeTab === 'reponse' ? 'side:my-auto contents' : 'hidden'}>
+                  <div className={activeTab === 'reponse' ? 'flex min-h-0 flex-1 flex-col' : 'hidden'}>
                     <AnswerInput
                       key={`${current.plan.seed}-${current.plan.variant}-${fill?.nonce ?? 0}`}
                       question={current.question}
@@ -385,27 +403,17 @@ function Game({
                       initialText={fill?.value}
                     />
                   </div>
-                  {activeTab === 'calculatrice' && (
-                    <Calculator
-                      state={calc}
-                      onChange={setCalc}
-                      onUse={
-                        current.question.answer.kind === 'number'
-                          ? (value) => {
-                              setFill({ value, nonce: Date.now() });
-                              setTab('reponse');
-                            }
-                          : undefined
-                      }
-                    />
+                  {activeTab === 'calculatrice' && <Calculator state={calc} onChange={setCalc} onUse={sendToAnswer} />}
+                  {activeTab === 'brouillon' && !bigDraft && (
+                    <Brouillon strokes={strokes} onChange={setStrokes} onToggleExpand={() => setBigDraft(true)} />
                   )}
-                  {activeTab === 'brouillon' && <Brouillon strokes={strokes} onChange={setStrokes} />}
                   {activeTab === 'conversion' && (
                     <ConversionTable
                       kind={kind}
                       state={convState}
                       onChange={setConv}
                       highlight={unitsIn(current.question.prompt)}
+                      onUse={sendToAnswer}
                     />
                   )}
                 </PlayDock>
@@ -414,6 +422,28 @@ function Game({
           </motion.main>
         )}
       </AnimatePresence>
+      {/* Brouillon pleine page : l'énoncé reste en haut, la feuille prend tout le reste. */}
+      {bigDraft && current && !answered && (
+        <div
+          className="bg-bg fixed inset-0 z-40 flex flex-col gap-2 p-3"
+          role="dialog"
+          aria-label="Brouillon pleine page"
+        >
+          <div className="flex max-h-[30dvh] shrink-0 gap-3 overflow-y-auto">
+            <h2 className="flex-1 text-xl leading-snug font-bold">
+              <MathText text={current.question.prompt} />
+            </h2>
+            {current.question.figure && (
+              <div className="w-[40%] max-w-xs shrink-0">
+                <Figure figure={current.question.figure} maxHeight="26dvh" picked={picked} />
+              </div>
+            )}
+          </div>
+          <div className="min-h-0 flex-1">
+            <Brouillon strokes={strokes} onChange={setStrokes} expanded onToggleExpand={() => setBigDraft(false)} />
+          </div>
+        </div>
+      )}
       {lesson && skill && current && (
         <NotUnderstood
           skill={skill}

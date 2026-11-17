@@ -56,7 +56,7 @@ export function ProfilePicker() {
               name={p.name}
               color={CARD_COLORS[i % CARD_COLORS.length] ?? 'var(--accent)'}
               caption={`Niveau ${levelFromXp(p.xp).level}`}
-              portrait={<CharacterAvatar avatar={p.avatar} size={104} />}
+              portrait={<CharacterAvatar avatar={p.avatar} size={120} />}
               onClick={() => choose(p.id)}
               className="min-h-52 pt-2"
             />

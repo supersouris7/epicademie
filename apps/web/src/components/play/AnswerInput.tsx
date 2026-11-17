@@ -48,14 +48,16 @@ export function AnswerInput({ question, disabled, onSubmit, picked, initialText 
 
   if (a.kind === 'choice') {
     return (
-      <div className={`grid gap-3 ${a.options.length > 2 ? 'sm:grid-cols-2' : 'grid-cols-2'}`}>
+      <div
+        className={`grid h-full auto-rows-fr content-center gap-3 overflow-y-auto ${a.options.length > 2 ? 'sm:grid-cols-2' : 'grid-cols-2'}`}
+      >
         {a.options.map((o, i) => (
           <button
             key={o}
             type="button"
             disabled={disabled}
             onClick={() => onSubmit({ kind: 'choice', index: i })}
-            className="cartoon cartoon-press bg-surface min-h-18 px-4 py-3 text-2xl font-bold disabled:opacity-60"
+            className="cartoon cartoon-press bg-surface min-h-14 px-4 py-2 text-2xl font-bold disabled:opacity-60"
           >
             <MathText text={o} />
           </button>
@@ -66,7 +68,7 @@ export function AnswerInput({ question, disabled, onSubmit, picked, initialText 
 
   if (a.kind === 'point') {
     return (
-      <div className="flex flex-col items-center gap-3">
+      <div className="flex h-full flex-col items-center justify-center gap-3">
         <p className="text-muted text-lg font-bold">
           {picked ? 'Touche OK pour valider, ou touche un autre nœud.' : 'Touche un nœud du quadrillage.'}
         </p>
@@ -89,14 +91,14 @@ export function AnswerInput({ question, disabled, onSubmit, picked, initialText 
         onClick={() => setFocus(which)}
         aria-label={which === 'num' ? 'Numérateur' : 'Dénominateur'}
         aria-pressed={focus === which}
-        className={`font-display flex h-14 min-w-28 items-center justify-center rounded-2xl border-4 px-3 text-4xl ${focus === which ? 'border-primary bg-surface' : 'border-outline/40 bg-surface-2'}`}
+        className={`font-display flex h-11 min-w-28 items-center justify-center rounded-2xl border-4 px-3 text-3xl ${focus === which ? 'border-primary bg-surface' : 'border-outline/40 bg-surface-2'}`}
       >
         {value || <span className="text-muted">?</span>}
       </button>
     );
     return (
-      <div className="flex flex-col items-center gap-4">
-        <div className="flex flex-col items-center gap-2" role="group" aria-label="Fraction">
+      <div className="flex h-full min-h-0 flex-col items-center gap-2">
+        <div className="flex shrink-0 flex-col items-center gap-1" role="group" aria-label="Fraction">
           {box('num', num)}
           <div className="bg-ink h-1.5 w-32 rounded-full" />
           {box('den', den)}
@@ -112,18 +114,15 @@ export function AnswerInput({ question, disabled, onSubmit, picked, initialText 
           canSubmit={!disabled && num !== '' && num !== '−' && den !== ''}
           allowComma={false}
         />
-        <p className="text-muted text-sm font-bold">
-          La flèche ↓ passe au dénominateur (ou touche directement une case).
-        </p>
       </div>
     );
   }
 
   if (a.kind === 'text') {
     return (
-      <div className="flex w-full flex-col items-center gap-3">
+      <div className="flex h-full min-h-0 w-full flex-col items-center gap-2">
         <div
-          className="cartoon bg-surface font-display flex min-h-14 w-full items-center px-4 text-3xl break-all"
+          className="cartoon bg-surface font-display flex min-h-12 w-full shrink-0 items-center px-4 text-3xl break-all"
           aria-label="Ta réponse"
           aria-live="polite"
         >
@@ -142,10 +141,10 @@ export function AnswerInput({ question, disabled, onSubmit, picked, initialText 
   }
 
   return (
-    <div className="flex flex-col items-center gap-4 [@media(max-height:500px)]:gap-2">
-      <div className="flex items-center gap-3" aria-live="polite">
+    <div className="flex h-full min-h-0 flex-col items-center gap-2">
+      <div className="flex shrink-0 items-center gap-3" aria-live="polite">
         <div
-          className="cartoon bg-surface font-display flex h-18 min-w-48 [@media(max-height:500px)]:h-12 items-center justify-center px-4 text-4xl"
+          className="cartoon bg-surface font-display flex h-12 min-w-48 items-center justify-center px-4 text-4xl"
           aria-label="Ta réponse"
         >
           {text || <span className="text-muted">?</span>}

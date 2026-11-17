@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type PointerEvent } from 'react';
 import { c } from '../../design/palette.ts';
+import { GameIcon } from '../game/GameIcon.tsx';
 
 export type Point = readonly [x: number, y: number, pressure: number];
 export interface Stroke {
@@ -52,13 +53,16 @@ function drawStroke(g: CanvasRenderingContext2D, s: Stroke) {
 interface BrouillonProps {
   readonly strokes: readonly Stroke[];
   readonly onChange: (strokes: readonly Stroke[]) => void;
+  /** Mode pleine page (énoncé gardé en haut). */
+  readonly expanded?: boolean;
+  readonly onToggleExpand?: () => void;
 }
 
 /**
  * Brouillon à petits carreaux : stylo (3 couleurs), gomme (efface trait par trait), annuler, tout effacer.
  * Dès qu'un stylet est utilisé, les contacts au doigt sont ignorés (appui de la paume).
  */
-export function Brouillon({ strokes, onChange }: BrouillonProps) {
+export function Brouillon({ strokes, onChange, expanded, onToggleExpand }: BrouillonProps) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const wrap = useRef<HTMLDivElement>(null);
   const current = useRef<Stroke | null>(null);
@@ -150,7 +154,7 @@ export function Brouillon({ strokes, onChange }: BrouillonProps) {
     onChange(s.color === 'gomme' ? live.current : [...live.current, s]);
   };
 
-  const btn = 'cartoon cartoon-press font-display flex h-11 min-w-11 items-center justify-center px-3 text-base';
+  const btn = 'cartoon cartoon-press font-display flex h-10 min-w-10 items-center justify-center px-2.5 text-base';
   return (
     <div className="flex h-full min-h-0 flex-col gap-2">
       <div className="flex flex-wrap items-center gap-2" role="toolbar" aria-label="Outils du brouillon">
@@ -164,7 +168,7 @@ export function Brouillon({ strokes, onChange }: BrouillonProps) {
             }}
             aria-label={`Stylo ${c.label.toLowerCase()}`}
             aria-pressed={mode === 'stylo' && color === c.value}
-            className={`h-11 w-11 rounded-full border-4 ${mode === 'stylo' && color === c.value ? 'border-primary' : 'border-outline/30'}`}
+            className={`h-10 w-10 rounded-full border-4 ${mode === 'stylo' && color === c.value ? 'border-primary' : 'border-outline/30'}`}
             style={{ backgroundColor: c.value }}
           />
         ))}
@@ -192,10 +196,21 @@ export function Brouillon({ strokes, onChange }: BrouillonProps) {
         >
           Tout effacer
         </button>
+        {onToggleExpand && (
+          <button
+            type="button"
+            onClick={onToggleExpand}
+            aria-pressed={expanded}
+            className={`${btn} bg-accent ml-auto gap-1.5 text-white`}
+          >
+            <GameIcon id={expanded ? 'icons-navigation-fullscreen-exit' : 'icons-navigation-fullscreen'} size="xs" />
+            {expanded ? 'Réduire' : 'Pleine page'}
+          </button>
+        )}
       </div>
       <div
         ref={wrap}
-        className="border-outline relative min-h-48 flex-1 overflow-hidden rounded-2xl border-4 bg-white"
+        className="border-outline relative min-h-32 flex-1 overflow-hidden rounded-2xl border-4 bg-white"
         style={{
           backgroundImage: `linear-gradient(${c('violet-100')} 1px, transparent 1px), linear-gradient(90deg, ${c('violet-100')} 1px, transparent 1px)`,
           backgroundSize: `${GRID}px ${GRID}px`,

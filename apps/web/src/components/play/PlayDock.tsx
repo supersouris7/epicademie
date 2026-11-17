@@ -47,7 +47,7 @@ export function PlayDock({ tabs, active, answerLabel, glow, onSelect, children }
               role="tab"
               aria-selected={active === t}
               onClick={() => onSelect(t)}
-              className={`cartoon cartoon-press font-display flex h-11 min-w-0 flex-1 items-center justify-center gap-1 px-1.5 text-sm sm:gap-1.5 sm:px-2 sm:text-base [@media(max-height:500px)]:h-9 ${active === t ? 'bg-accent text-toon' : 'bg-surface-2'} ${glow === t && active !== t ? 'glow' : ''}`}
+              className={`cartoon cartoon-press font-display flex h-12 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-1 text-xs leading-none [@media(max-height:500px)]:h-10 ${active === t ? 'bg-accent text-toon' : 'bg-surface-2'} ${glow === t && active !== t ? 'glow' : ''}`}
             >
               <GameIcon id={ICONS[t]} size="xs" />
               <span className="truncate">{t === 'reponse' ? answerLabel : LABELS[t]}</span>
