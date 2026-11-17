@@ -63,7 +63,7 @@ export function Hub({ profile }: { readonly profile: Profile }) {
             whileTap={{ scale: 0.85, rotate: -8 }}
             className="shrink-0"
           >
-            <Questy size={92} mood={mood} />
+            <Questy size={150} mood={mood} />
           </motion.button>
           <SpeechBubble>
             {accord(profile.gender, 'Prêt', 'Prête')} à jouer, {profile.name} ?

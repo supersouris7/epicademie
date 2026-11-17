@@ -25,7 +25,7 @@ export function ModeSetup() {
   return (
     <PageShell title={mode.name} back={back}>
       <div className="flex items-center gap-4">
-        <Questy size={88} mood={MODE_MOODS[mode.id]} />
+        <Questy size={130} mood={MODE_MOODS[mode.id]} />
         <SpeechBubble>{`${mode.pitch}. Choisis ta matière !`}</SpeechBubble>
       </div>
 

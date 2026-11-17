@@ -19,7 +19,7 @@ export function Memo({ skill, onClose }: { readonly skill: Skill; readonly onClo
         className="cartoon bg-surface flex max-h-[85dvh] w-full max-w-xl flex-col gap-3 overflow-y-auto p-5"
       >
         <div className="flex items-center gap-3">
-          <Questy mood="wink" size={56} />
+          <Questy mood="wink" size={84} />
           <div>
             <p className="text-muted text-sm font-bold">Le truc à retenir</p>
             <h2 className="font-display text-2xl tracking-wide">{skill.title}</h2>

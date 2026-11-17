@@ -418,7 +418,7 @@ function Game({
                   role="status"
                 >
                   <span className="shrink-0">
-                    <Questy mood="wink" size={44} />
+                    <Questy mood="wink" size={72} />
                   </span>
                   <span className="cartoon bg-[color-mix(in_srgb,var(--danger)_14%,var(--surface))] px-3 py-2">
                     {retry.why ? <MathText text={retry.why} /> : 'Ce n’est pas ça…'}
@@ -434,7 +434,7 @@ function Game({
               )}
               {advice && !answered && !retry && (
                 <p className="flex items-center gap-2 text-base font-bold" role="note">
-                  <Questy mood={advice === 'calculatrice' ? 'happy' : 'wink'} size={40} />
+                  <Questy mood={advice === 'calculatrice' ? 'happy' : 'wink'} size={64} />
                   <span className="cartoon bg-surface-2 px-3 py-1.5">
                     {advice === 'calculatrice'
                       ? 'Tu peux t’aider de la calculatrice.'

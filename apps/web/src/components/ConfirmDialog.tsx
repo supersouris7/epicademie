@@ -25,7 +25,7 @@ export function ConfirmDialog({ title, message, confirm, cancel, onConfirm, onCa
         animate={{ scale: 1, opacity: 1 }}
         className="cartoon border-accent bg-surface flex w-full max-w-md flex-col items-center gap-4 p-6 text-center"
       >
-        <Questy mood="sad" size={88} />
+        <Questy mood="sad" size={120} />
         <h2 className="font-display text-3xl tracking-wide">{title}</h2>
         <p className="text-lg">{message}</p>
         <div className="flex flex-wrap justify-center gap-3">

@@ -49,7 +49,7 @@ export function Progress({ profile }: { readonly profile: Profile }) {
   return (
     <PageShell title="Mes progrès" back="/hub">
       <section className="cartoon bg-surface flex flex-wrap items-center gap-4 p-4">
-        <Questy mood={total.platine + total.or > 0 ? 'proud' : 'happy'} size={72} />
+        <Questy mood={total.platine + total.or > 0 ? 'proud' : 'happy'} size={110} />
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <p className="font-display text-2xl tracking-wide">
             {allIds.length - total.aucune} / {allIds.length} notions médaillées

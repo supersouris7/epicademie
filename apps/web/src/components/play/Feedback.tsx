@@ -70,7 +70,7 @@ function Success({ question, retried, xp, streak, gender, onNext }: FeedbackProp
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', stiffness: 300, damping: 12 }}
         >
-          <Questy mood={mood} size={short ? 52 : 84} />
+          <Questy mood={mood} size={short ? 72 : 110} />
         </motion.div>
         <div className="flex flex-col">
           <h2 className="font-display flex items-center gap-2 text-3xl tracking-wide [@media(max-height:500px)]:text-2xl">
@@ -133,11 +133,9 @@ function Explanation({ question, why, given, variantNext, onMemo, onNext }: Feed
       aria-label="Explication de Questy"
     >
       <div className="flex shrink-0 items-center gap-3">
-        <Questy mood={why ? 'wink' : 'ok'} size={short ? 40 : 56} />
-        <h2 className="font-display min-w-0 flex-1 text-xl leading-tight tracking-wide max-sm:sr-only sm:text-2xl">
-          On regarde ensemble
-        </h2>
-        <span className="flex-1 sm:hidden" />
+        <Questy mood={why ? 'wink' : 'ok'} size={short ? 56 : 80} />
+        <h2 className="sr-only">On regarde ensemble</h2>
+        <span className="flex-1" />
         <button
           type="button"
           onClick={onMemo}
