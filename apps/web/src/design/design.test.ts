@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
 import { describe, expect, it } from 'vitest';
 import { outputs, svgAssets } from '../../scripts/assets/build.ts';
-import { availableFile, guide } from '../../scripts/assets/plan.ts';
+import { availableFile, guide, LOT_DIR, lotFiles } from '../../scripts/assets/plan.ts';
 import { assetSrc, MANIFEST, PLANNED_ASSETS } from './assets.ts';
 import { PALETTE } from './palette.ts';
 
@@ -61,5 +61,6 @@ describe('catalogue', () => {
   it('liste des images livrées et guide ChatGPT à jour (relancer `assets:plan`)', () => {
     expect(read('./assets.available.ts')).toBe(availableFile());
     expect(read('../../../../docs/ASSETS-CHATGPT.md')).toBe(guide());
+    for (const [file, content] of lotFiles()) expect(readFileSync(`${LOT_DIR}/${file}`, 'utf8'), file).toBe(content);
   });
 });

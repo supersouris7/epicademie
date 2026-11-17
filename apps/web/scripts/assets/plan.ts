@@ -15,6 +15,7 @@ const WEB = fileURLToPath(new URL('../../', import.meta.url));
 const PUBLIC = join(WEB, 'public/assets');
 const ORIGINALS = join(WEB, 'assets-src/originals');
 const DOC = join(WEB, '../../docs/ASSETS-CHATGPT.md');
+export const LOT_DIR = join(WEB, '../../docs/chatgpt');
 const AVAILABLE = join(WEB, 'src/design/assets.available.ts');
 
 const original = (p: PlannedAsset) => p.file.replace(/\.webp$/, '.png');
@@ -76,6 +77,7 @@ FOND ET FORMAT
 
 MÉTHODE
 - Je t'envoie une demande par message. Réponds à chaque fois par UNE seule image, sans commentaire.
+- Ne produis jamais d'archive ZIP, de code ni de traitement d'image par script (détourage, redimensionnement, découpe) : uniquement des images générées, en taille d'origine, sur fond magenta. Le détourage est fait de mon côté.
 - Quand je joins une image de référence (fiche de Questy, portrait ou boss validé), reproduis exactement le même personnage : couleurs, coiffure, vêtements, proportions.
 - Pour une planche en grille, respecte l'ordre et la grille : je découperai l'image automatiquement case par case.
 
@@ -135,7 +137,7 @@ interface Lot {
 const LOTS: readonly Lot[] = [
   {
     title: 'Lot 1 — Marque et fonds de menu',
-    pick: (p) => p.file.startsWith('branding/') && p.kind !== 'keyart',
+    pick: (p) => (p.file.startsWith('branding/') && p.kind !== 'keyart') || p.kind === 'background',
   },
   {
     title: 'Lot 2 — Kit d’interface : cadres, boutons, tuiles',
@@ -170,13 +172,30 @@ const LOTS: readonly Lot[] = [
   { title: 'Lot 10 — Environnements de combat', pick: (p) => p.file.startsWith('environments/') },
 ];
 
-export function guide(): string {
+export interface BuiltLot {
+  readonly title: string;
+  readonly file: string;
+  readonly images: number;
+  readonly first: number;
+  readonly last: number;
+  readonly body: string;
+}
+
+const slug = (t: string) =>
+  t
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+/** Lots numérotés, avec le texte de leurs demandes. */
+export function buildLots(): BuiltLot[] {
   const all = sheets();
   const sheetOf = new Map(all.flatMap((s) => s.items.map((p) => [p.id, s] as const)));
   let n = 0;
   const done = new Set<string>();
-  const summary: string[] = [];
-  const lots: string[] = [];
+  const out: BuiltLot[] = [];
   for (const lot of LOTS) {
     const items = PLANNED_ASSETS.filter((p) => !done.has(p.id) && lot.pick(p));
     if (!items.length) continue;
@@ -196,20 +215,84 @@ export function guide(): string {
         parts.push(individual(p, ++n));
       }
     }
-    const count = items.length;
-    summary.push(`| ${lot.title.replace(/^Lot (\d+) — /, '$1 | ')} | ${count} | ${first}–${n} |`);
-    lots.push(parts.join('\n\n'));
+    const num = String(out.length + 1).padStart(2, '0');
+    out.push({
+      title: lot.title,
+      file: `lot-${num}-${slug(lot.title.replace(/^Lot \d+ — /, ''))}.md`,
+      images: items.length,
+      first,
+      last: n,
+      body: parts.join('\n\n'),
+    });
   }
   const missed = PLANNED_ASSETS.filter((p) => !done.has(p.id));
   if (missed.length) throw new Error(`Assets non couverts par le guide : ${missed.map((p) => p.id).join(', ')}`);
+  return out;
+}
 
+const HEADER =
+  '<!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->';
+
+const RULES = `**Règles pour ChatGPT** (rappelées dans le message de départ)
+- **Une seule image par message**, jamais tout le lot d'un coup.
+- **Aucun ZIP, aucun script, aucun détourage par code** : uniquement des images générées, sur fond magenta uni.
+- Télécharge chaque image **telle quelle** en PNG (taille d'origine, fond magenta) : le détourage et le redimensionnement sont faits par le script d'import du projet.`;
+
+/** Un fichier autonome par lot : consignes, message de départ, demandes du lot. */
+export function lotFiles(): Map<string, string> {
+  const files = new Map<string, string>();
+  for (const lot of buildLots()) {
+    files.set(
+      lot.file,
+      `${HEADER}
+# Academy Fighters — ${lot.title}
+
+${lot.images} images, demandes ${lot.first} à ${lot.last} (${lot.last - lot.first + 1} messages à envoyer).
+
+## Marche à suivre
+
+1. Ouvre une **nouvelle conversation** ChatGPT.
+2. Joins **toutes les planches de référence** et colle le **message de départ** ci-dessous. Attends « Prêt ».
+3. Envoie les demandes **une par une**, dans l'ordre : copie le bloc de texte de la demande, attends l'image, télécharge-la.
+4. Enregistre chaque PNG exactement au chemin indiqué (dans \`apps/web/\`).
+
+${RULES}
+
+## Message de départ
+
+\`\`\`text
+${MASTER}
+\`\`\`
+
+## Demandes
+
+${lot.body}
+`,
+    );
+  }
+  return files;
+}
+
+export function guide(): string {
+  const built = buildLots();
+  const n = built.at(-1)?.last ?? 0;
+  const summary = built.map(
+    (l) =>
+      `| ${l.title.replace(/^Lot (\d+) — /, '$1 | ')} | ${l.images} | ${l.first}–${l.last} | \`docs/chatgpt/${l.file}\` |`,
+  );
+  const lots = built.map((l) => l.body);
   return `<!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — génération des images avec ChatGPT
 
 ${PLANNED_ASSETS.length} images finales, produites en ${n} demandes.
 
-| Lot | Contenu | Images | Demandes |
-|---|---|---|---|
+Chaque lot existe aussi en **fichier séparé et autonome** (message de départ inclus) dans \`docs/chatgpt/\` :
+c'est ce fichier qu'il faut utiliser dans ChatGPT, un lot par conversation. Ce document-ci regroupe tout pour référence.
+
+${RULES}
+
+| Lot | Contenu | Images | Demandes | Fichier |
+|---|---|---|---|---|
 ${summary.join('\n')}
 
 ## Modèle à utiliser
@@ -267,8 +350,10 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     if (!existsSync(keep)) writeFileSync(keep, '');
   }
   writeFileSync(DOC, guide());
+  mkdirSync(LOT_DIR, { recursive: true });
+  for (const [file, content] of lotFiles()) writeFileSync(join(LOT_DIR, file), content);
   writeFileSync(AVAILABLE, availableFile());
   console.log(
-    `${dirs.size} dossiers, ${PLANNED_ASSETS.length} assets, ${sheets().length} planches → docs/ASSETS-CHATGPT.md`,
+    `${dirs.size} dossiers, ${PLANNED_ASSETS.length} assets, ${sheets().length} planches → docs/ASSETS-CHATGPT.md + docs/chatgpt/`,
   );
 }
