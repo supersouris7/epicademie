@@ -17,9 +17,44 @@ export function Chapters({ profile }: { readonly profile: Profile }) {
   if (!info || chapters.length === 0) return <Navigate to="/jouer/entrainement" replace />;
   const states = new Map((data ?? []).map((s) => [s.skillId, s]));
   const today = localToday();
+  const progress = chapters.map((c) => ({
+    chapter: c,
+    p: chapterProgress(
+      c.skills.map((s) => s.id),
+      states,
+      today,
+    ),
+  }));
+  // Où reprendre : d'abord ce qui est à revoir, puis un chapitre commencé, sinon le premier pas encore acquis.
+  const suggestion =
+    progress.find((x) => x.p.due > 0) ??
+    progress.find((x) => x.p.started > 0 && x.p.acquired < x.p.total) ??
+    progress.find((x) => x.p.acquired < x.p.total);
+  const why = suggestion
+    ? suggestion.p.due > 0
+      ? `${suggestion.p.due} notion${suggestion.p.due > 1 ? 's' : ''} à revoir`
+      : suggestion.p.started > 0
+        ? 'tu l’as commencé'
+        : 'par où commencer'
+    : '';
   return (
     <PageShell title={`Entraînement · ${info.name}`} back="/jouer/entrainement">
-      <p className="text-muted text-lg font-bold">Choisis un chapitre du programme de 5e.</p>
+      {suggestion && (
+        <button
+          type="button"
+          onClick={() => void navigate(`/jouer/entrainement/${subject}/${suggestion.chapter.id}`)}
+          className="cartoon cartoon-press bg-primary flex w-full items-center justify-between gap-3 px-5 py-4 text-left"
+        >
+          <span className="flex flex-col">
+            <span className="text-sm font-bold text-white">Je te propose · {why}</span>
+            <span className="font-display text-toon text-2xl tracking-wide">{suggestion.chapter.title}</span>
+          </span>
+          <span className="font-display text-toon text-3xl" aria-hidden>
+            ▶
+          </span>
+        </button>
+      )}
+      <p className="text-muted text-lg font-bold">Ou choisis un chapitre du programme de 5e.</p>
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {chapters.map((c, i) => {
           const p = chapterProgress(

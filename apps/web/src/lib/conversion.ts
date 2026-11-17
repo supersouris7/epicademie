@@ -128,3 +128,20 @@ export function conversionDemo(kind: ConversionKind, value: string, from: string
     after: { digits: after, comma: padLeft + toCell, selected: -1 },
   };
 }
+
+/**
+ * Le tableau de conversion n'est proposé que s'il sert : l'énoncé (et l'unité de la réponse) mêlent
+ * au moins deux unités d'une même grandeur (ex. « 3 mL = … L », « en m » pour des longueurs en cm).
+ * Une aire de triangle en cm et cm^2 n'en a pas besoin.
+ */
+export function conversionNeeded(prompt: string, answerUnit?: string): ConversionKind | null {
+  const units = unitsIn(`${prompt} ${answerUnit ?? ''}`);
+  const families: Record<ConversionKind, Set<string>> = { longueur: new Set(), aire: new Set(), volume: new Set() };
+  for (const u of units) {
+    if (u.endsWith('^3') || u.endsWith('L')) families.volume.add(u);
+    else if (u.endsWith('^2')) families.aire.add(u);
+    else families.longueur.add(u);
+  }
+  const kinds: ConversionKind[] = ['volume', 'aire', 'longueur'];
+  return kinds.find((k) => families[k].size >= 2) ?? null;
+}

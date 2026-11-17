@@ -43,14 +43,14 @@ import { EMPTY_CALC, type CalcState } from '../../lib/calcState.ts';
 import { ConversionTable } from '../../components/tools/ConversionTable.tsx';
 import {
   emptyConversion,
-  measureKind,
+  conversionNeeded,
   unitsIn,
   type ConversionKind,
   type ConversionState,
 } from '../../lib/conversion.ts';
 import { localToday, randomSeed } from '../../lib/dates.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../lib/sound.ts';
-import { stageMessage } from '../../lib/answers.ts';
+import { formatAnswer, stageMessage } from '../../lib/answers.ts';
 
 /** Tableau adapté à l'unité de la question (aires en ^2, volumes en ^3 ou en litres). */
 function conversionKind(q: Question): ConversionKind {
@@ -64,6 +64,14 @@ interface Current {
   readonly plan: PlannedQuestion;
   readonly question: Question;
   readonly shownAt: number;
+  /** Conseil d'outil de Questy : seulement à la 1re question de chaque notion (pas de radotage). */
+  readonly advise: boolean;
+}
+
+/** Une question ratée, pour le récapitulatif de fin de partie. */
+interface Missed {
+  readonly prompt: string;
+  readonly answer: string;
 }
 
 interface Answered {
@@ -139,6 +147,8 @@ function Game({
   const [fill, setFill] = useState<{ value: string; nonce: number } | null>(null);
   const [confirmQuit, setConfirmQuit] = useState(false);
   const confusedSent = useRef(new Set<string>());
+  const advised = useRef(new Set<string>());
+  const [missed, setMissed] = useState<readonly Missed[]>([]);
   const [summary, setSummary] = useState<SessionSummary | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [streak, setStreak] = useState(0);
@@ -155,7 +165,14 @@ function Game({
   const draw = useCallback(
     (t: TrainingState) => {
       const plan = nextQuestion(t, states, today, Math.random(), randomSeed() % 2_000_000_000);
-      setCurrent({ plan, question: generate(plan.skillId, plan.level, plan.seed), shownAt: performance.now() });
+      const advise = !advised.current.has(plan.skillId);
+      advised.current.add(plan.skillId);
+      setCurrent({
+        plan,
+        question: generate(plan.skillId, plan.level, plan.seed),
+        shownAt: performance.now(),
+        advise,
+      });
       setAnswered(null);
       setRetry(null);
       setPicked(null);
@@ -214,6 +231,10 @@ function Game({
     });
     setStreak(newStreak);
     setXpTotal((v) => v + xp);
+    if (!result.correct) {
+      const { question } = current;
+      setMissed((m) => [...m, { prompt: question.prompt, answer: formatAnswer(question) }]);
+    }
     if (!result.correct && canRetry(current.question)) {
       setRetry({
         why: result.why,
@@ -280,6 +301,7 @@ function Game({
     return (
       <Results
         summary={summary}
+        missed={missed}
         gender={profile.gender}
         chapterId={chapterId}
         onReplay={() => void navigate(location.pathname, { replace: true, state: { replay: Date.now() } })}
@@ -289,10 +311,10 @@ function Game({
   const done = regularCount(training);
   const skill = current ? getSkill(current.plan.skillId) : undefined;
   const allowed = skill?.tools ?? [];
-  // Tableau de conversion proposé dès qu'une question numérique parle de longueurs, aires, volumes ou contenances.
+  // Tableau de conversion proposé seulement quand la question mêle deux unités d'une même grandeur.
   const measured =
     current?.question.answer.kind === 'number'
-      ? measureKind(current.question.prompt, current.question.answer.unit)
+      ? conversionNeeded(current.question.prompt, current.question.answer.unit)
       : null;
   const tabs: DockTab[] = [
     'reponse',
@@ -301,7 +323,9 @@ function Game({
     ...(allowed.some((t) => t.startsWith('conversion')) || measured ? (['conversion'] as const) : []),
   ];
   const activeTab = tabs.includes(tab) ? tab : 'reponse';
-  const advice = skill?.advice ?? (allowed.includes('calculatrice') ? 'calculatrice' : undefined);
+  const advice = current?.advise
+    ? (skill?.advice ?? (allowed.includes('calculatrice') ? 'calculatrice' : undefined))
+    : undefined;
   const selectTab = (t: DockTab) => {
     setTab(t);
     setOpened((o) => new Set(o).add(t));
@@ -529,11 +553,13 @@ function Game({
 
 function Results({
   summary,
+  missed,
   gender,
   chapterId,
   onReplay,
 }: {
   summary: SessionSummary;
+  missed: readonly Missed[];
   gender: Gender | null;
   chapterId: string;
   onReplay: () => void;
@@ -626,6 +652,24 @@ function Results({
           </div>
         ))}
       </section>
+
+      {missed.length > 0 && (
+        <details className="cartoon bg-surface p-4">
+          <summary className="font-display cursor-pointer text-2xl tracking-wide">
+            Tes erreurs ({missed.length}) : la bonne réponse
+          </summary>
+          <ul className="mt-3 flex flex-col gap-2">
+            {missed.map((m, i) => (
+              <li key={i} className="bg-surface-2 rounded-2xl p-3 text-lg">
+                <MathText text={m.prompt} />
+                <span className="text-muted mt-1 block font-bold">
+                  Réponse : <MathText text={m.answer} className="text-ink" />
+                </span>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
 
       <div className="flex flex-wrap justify-center gap-3">
         <GameButton icon="icons-navigation-retry" onClick={onReplay}>

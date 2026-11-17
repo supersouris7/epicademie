@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { conversionDemo, emptyConversion, measureKind, readConversion, type ConversionState } from './conversion.ts';
+import {
+  conversionDemo,
+  conversionNeeded,
+  emptyConversion,
+  measureKind,
+  readConversion,
+  type ConversionState,
+} from './conversion.ts';
 
 const table = (cells: Record<number, string>, comma: number | null): ConversionState => {
   const empty = emptyConversion('longueur');
@@ -48,5 +55,16 @@ describe('démonstration de conversion', () => {
   });
   it('unité inconnue', () => {
     expect(conversionDemo('longueur', '3', 'm', 'L')).toBeNull();
+  });
+});
+
+describe('tableau de conversion utile', () => {
+  it('seulement quand deux unités d’une même grandeur se mêlent', () => {
+    expect(conversionNeeded('Complète : 3 mL = … L', 'L')).toBe('volume');
+    expect(conversionNeeded('Complète : 4,5 m = … cm', 'cm')).toBe('longueur');
+    expect(conversionNeeded('Un terrain de 3 hm^2 : combien de m^2 ?', 'm^2')).toBe('aire');
+    expect(conversionNeeded('Calcule l’aire de ce triangle (en cm^2).', 'cm^2')).toBeNull();
+    expect(conversionNeeded('Calcule l’aire d’un disque de rayon 5 cm, en cm^2', 'cm^2')).toBeNull();
+    expect(conversionNeeded('Calcule 3 × 4.')).toBeNull();
   });
 });

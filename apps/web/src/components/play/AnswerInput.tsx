@@ -51,7 +51,7 @@ export function AnswerInput({ question, disabled, onSubmit, picked, initialText,
   if (a.kind === 'choice') {
     return (
       <div
-        className={`grid h-full auto-rows-fr content-center gap-3 overflow-y-auto ${a.options.length > 2 ? 'sm:grid-cols-2' : 'grid-cols-2'}`}
+        className={`grid h-full auto-rows-[minmax(3.5rem,6.5rem)] content-center gap-3 overflow-y-auto ${a.options.length > 2 ? 'sm:grid-cols-2' : 'grid-cols-2'}`}
       >
         {a.options.map((o, i) => (
           <button

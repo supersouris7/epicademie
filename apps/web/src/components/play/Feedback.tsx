@@ -42,8 +42,20 @@ export function Feedback(props: FeedbackProps) {
   return props.correct ? <Success {...props} /> : <Explanation {...props} />;
 }
 
+/** Après une bonne réponse, on enchaîne tout seul : pas de clic inutile (le bouton reste pour aller plus vite). */
+const AUTO_NEXT_MS = 1500;
+
 function Success({ question, retried, xp, streak, gender, onNext }: FeedbackProps) {
   const short = isShort();
+  // onNext change à chaque rendu du parent : on garde la dernière version sans relancer le minuteur.
+  const next = useRef(onNext);
+  useEffect(() => {
+    next.current = onNext;
+  }, [onNext]);
+  useEffect(() => {
+    const t = setTimeout(() => next.current(), retried ? AUTO_NEXT_MS + 700 : AUTO_NEXT_MS);
+    return () => clearTimeout(t);
+  }, [retried]);
   const mood: MoodId = retried ? 'wink' : streak >= 10 ? 'proud' : streak >= 5 ? 'laugh' : 'happy';
   return (
     <motion.section
@@ -73,8 +85,22 @@ function Success({ question, retried, xp, streak, gender, onNext }: FeedbackProp
         </div>
       </div>
       <div className="flex shrink-0 justify-end">
-        <GameButton variant="success" size={short ? 'sm' : undefined} icon="icons-navigation-next" onClick={onNext}>
+        <GameButton
+          variant="success"
+          size={short ? 'sm' : undefined}
+          icon="icons-navigation-next"
+          onClick={onNext}
+          className="relative overflow-hidden"
+        >
           Suivant
+          {/* Jauge qui se remplit jusqu'au passage automatique. */}
+          <motion.span
+            aria-hidden
+            className="absolute bottom-0 left-0 h-1 bg-white/70"
+            initial={{ width: '0%' }}
+            animate={{ width: '100%' }}
+            transition={{ duration: (retried ? AUTO_NEXT_MS + 700 : AUTO_NEXT_MS) / 1000, ease: 'linear' }}
+          />
         </GameButton>
       </div>
     </motion.section>

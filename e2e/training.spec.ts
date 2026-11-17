@@ -12,7 +12,8 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   await page.getByRole('button', { name: /Entraînement/ }).click();
   await page.getByRole('button', { name: 'Maths' }).click();
   await expect(page.getByRole('heading', { name: /Entraînement · Maths/ })).toBeVisible();
-  await page.getByRole('button', { name: /Calcul mental/ }).click();
+  // Nouveau joueur : l'appli propose par où commencer.
+  await page.getByRole('button', { name: /Je te propose · par où commencer Calcul mental/ }).click();
   await page.getByRole('button', { name: /Tables de multiplication/ }).click();
 
   // 1re réponse fausse : Questy donne un indice et on réessaie la même question.
@@ -55,6 +56,9 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   await expect(page.getByText(/On s’accroche/)).toBeVisible();
   await expect(page.getByText('0/10')).toBeVisible();
   await expect(page.getByText(/À revoir dès/)).toBeVisible();
+  // Récapitulatif des erreurs avec la bonne réponse.
+  await page.getByText(/Tes erreurs \(\d+\)/).click();
+  await expect(page.getByText(/Réponse :/).first()).toBeVisible();
 
   // La notion apparaît « à revoir » demain : pas encore échue aujourd'hui, mais évaluée.
   await page.getByRole('button', { name: 'Autre notion' }).click();
