@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — génération des images avec ChatGPT
 
-254 images finales, produites en 80 demandes.
+268 images finales, produites en 94 demandes.
 
 Chaque lot existe aussi en **fichier séparé et autonome** (message de départ inclus) dans `docs/chatgpt/` :
 c'est ce fichier qu'il faut utiliser dans ChatGPT, un lot par conversation. Ce document-ci regroupe tout pour référence.
@@ -18,7 +18,7 @@ c'est ce fichier qu'il faut utiliser dans ChatGPT, un lot par conversation. Ce d
 | 3 | Pictogrammes blancs (boutons) | 27 | 15–17 | `docs/chatgpt/lot-03-pictogrammes-blancs-boutons.md` |
 | 4 | Icônes en couleur | 65 | 18–25 | `docs/chatgpt/lot-04-icones-en-couleur.md` |
 | 5 | Questy, la mascotte | 38 | 26–45 | `docs/chatgpt/lot-05-questy-la-mascotte.md` |
-| 6 | Kit combat | 97 | 46–80 | `docs/chatgpt/lot-06-kit-combat.md` |
+| 6 | Kit combat | 111 | 46–94 | `docs/chatgpt/lot-06-kit-combat.md` |
 
 ## Modèle à utiliser
 
@@ -740,7 +740,7 @@ Style, fond et interdits : ceux du message de départ (une seule couleur de fond
 Enregistrer sous `assets-src/originals/characters/alex/model-sheet.png` · 1536×1024 → final 1536×1024
 
 ```text
-Image 1536×1024. Alex, garçon de 12 ans à la peau mate, cheveux bruns bouclés en bataille, grosses lunettes de soudeur cyan relevées sur le front, sourire malin avec une dent un peu écartée, salopette de mécanicien bleu canard aux nombreuses poches remplies d’outils, t-shirt orange, clé à molette accrochée à la ceinture, bottes de chantier marron ; son bras droit porte un énorme gantelet mécanique orange et gris (bien plus gros que son autre bras) ; un petit drone rond à hélice flotte au-dessus de son épaule gauche. Arme : énorme gantelet-canon mécanique orange et gris porté au bras droit, avec une bouche de canon ronde au poing et des pistons sur l’avant-bras. Fiche de modèle : 4 vues alignées (face, trois quarts gauche, profil, dos), plus l’arme seule en grand à droite.
+Image 1536×1024. Alex, garçon de 12 ans, cheveux roux en pics avec des mèches rasées sur le côté, yeux bleus, pansement sur la joue, foulard jaune, veste blanche et dorée, pantalon violet, gants noirs sans doigts, grosses baskets blanches et dorées, sac à dos à deux batteries de plasma lumineuses. Arme : canon à plasma blanc et doré tenu à deux mains, bouche ronde où tourbillonne une énergie violette. Fiche de modèle : 4 vues alignées (face, trois quarts gauche, profil, dos), plus l’arme seule en grand à droite.
 Cadrage : fiche de modèle (référence pour les autres images, non affichée dans le jeu) : mêmes proportions sur toutes les vues, alignées sur une même ligne de sol.
 Style, fond et interdits : ceux du message de départ.
 ```
@@ -750,7 +750,7 @@ Enregistrer sous `assets-src/originals/characters/alex/portrait.png` · 1024×10
 > 📎 Joindre l'image validée `characters/alex/model-sheet.png`.
 
 ```text
-Image 1024×1024. Alex, garçon de 12 ans à la peau mate, cheveux bruns bouclés en bataille, grosses lunettes de soudeur cyan relevées sur le front, sourire malin avec une dent un peu écartée, salopette de mécanicien bleu canard aux nombreuses poches remplies d’outils, t-shirt orange, clé à molette accrochée à la ceinture, bottes de chantier marron ; son bras droit porte un énorme gantelet mécanique orange et gris (bien plus gros que son autre bras) ; un petit drone rond à hélice flotte au-dessus de son épaule gauche. Expression énergique.
+Image 1024×1024. Alex, garçon de 12 ans, cheveux roux en pics avec des mèches rasées sur le côté, yeux bleus, pansement sur la joue, foulard jaune, veste blanche et dorée, pantalon violet, gants noirs sans doigts, grosses baskets blanches et dorées, sac à dos à deux batteries de plasma lumineuses. Expression énergique.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 Style, fond et interdits : ceux du message de départ.
 ```
@@ -776,7 +776,147 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 49. Tao — fiche de modèle
+#### 49. Alex — pose jump
+Enregistrer sous `assets-src/originals/characters/alex/pose-jump.png` · 1536×1024 → final 512×512
+> 📎 Joindre l'image validée `characters/alex/model-sheet.png`.
+
+```text
+Image 1536×1024. Alex, pose jump.
+Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 50. Alex — pose shield
+Enregistrer sous `assets-src/originals/characters/alex/pose-shield.png` · 1536×1024 → final 512×512
+> 📎 Joindre l'image validée `characters/alex/model-sheet.png`.
+
+```text
+Image 1536×1024. Alex, pose shield.
+Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 51. Alex — joie
+Enregistrer sous `assets-src/originals/characters/alex/head-joie.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/alex/model-sheet.png`.
+
+```text
+Image 1024×1024. Alex, tête seule, expression joie.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 52. Alex — rire
+Enregistrer sous `assets-src/originals/characters/alex/head-rire.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/alex/model-sheet.png`.
+
+```text
+Image 1024×1024. Alex, tête seule, expression rire.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 53. Alex — enthousiaste
+Enregistrer sous `assets-src/originals/characters/alex/head-enthousiaste.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/alex/model-sheet.png`.
+
+```text
+Image 1024×1024. Alex, tête seule, expression enthousiaste.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 54. Alex — confiant
+Enregistrer sous `assets-src/originals/characters/alex/head-confiant.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/alex/model-sheet.png`.
+
+```text
+Image 1024×1024. Alex, tête seule, expression confiant.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 55. Alex — determine
+Enregistrer sous `assets-src/originals/characters/alex/head-determine.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/alex/model-sheet.png`.
+
+```text
+Image 1024×1024. Alex, tête seule, expression determine.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 56. Alex — clin-oeil
+Enregistrer sous `assets-src/originals/characters/alex/head-clin-oeil.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/alex/model-sheet.png`.
+
+```text
+Image 1024×1024. Alex, tête seule, expression clin-oeil.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 57. Alex — surprise
+Enregistrer sous `assets-src/originals/characters/alex/head-surprise.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/alex/model-sheet.png`.
+
+```text
+Image 1024×1024. Alex, tête seule, expression surprise.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 58. Alex — reflexion
+Enregistrer sous `assets-src/originals/characters/alex/head-reflexion.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/alex/model-sheet.png`.
+
+```text
+Image 1024×1024. Alex, tête seule, expression reflexion.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 59. Alex — affection
+Enregistrer sous `assets-src/originals/characters/alex/head-affection.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/alex/model-sheet.png`.
+
+```text
+Image 1024×1024. Alex, tête seule, expression affection.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 60. Alex — colere
+Enregistrer sous `assets-src/originals/characters/alex/head-colere.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/alex/model-sheet.png`.
+
+```text
+Image 1024×1024. Alex, tête seule, expression colere.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 61. Alex — triste
+Enregistrer sous `assets-src/originals/characters/alex/head-triste.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/alex/model-sheet.png`.
+
+```text
+Image 1024×1024. Alex, tête seule, expression triste.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 62. Alex — etourdi
+Enregistrer sous `assets-src/originals/characters/alex/head-etourdi.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/alex/model-sheet.png`.
+
+```text
+Image 1024×1024. Alex, tête seule, expression etourdi.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 63. Tao — fiche de modèle
 Enregistrer sous `assets-src/originals/characters/tao/model-sheet.png` · 1536×1024 → final 1536×1024
 
 ```text
@@ -785,7 +925,7 @@ Cadrage : fiche de modèle (référence pour les autres images, non affichée da
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 50. Tao — portrait
+#### 64. Tao — portrait
 Enregistrer sous `assets-src/originals/characters/tao/portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/tao/model-sheet.png`.
 
@@ -795,7 +935,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 51. Planche « tao-poses » (6 éléments)
+#### 65. Planche « tao-poses » (6 éléments)
 Enregistrer sous `assets-src/originals/sheets/tao-poses.png` · 1536×1024, grille 3×2 → chaque case finale 512×512
 > 📎 Joindre l'image validée `characters/tao/model-sheet.png`.
 Cases : 1 → `characters/tao/pose-idle` · 2 → `characters/tao/pose-run` · 3 → `characters/tao/pose-shoot` · 4 → `characters/tao/pose-hurt` · 5 → `characters/tao/pose-victory` · 6 → `characters/tao/pose-defeat`
@@ -816,7 +956,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 52. Lina — fiche de modèle
+#### 66. Lina — fiche de modèle
 Enregistrer sous `assets-src/originals/characters/lina/model-sheet.png` · 1536×1024 → final 1536×1024
 
 ```text
@@ -825,7 +965,7 @@ Cadrage : fiche de modèle (référence pour les autres images, non affichée da
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 53. Lina — portrait
+#### 67. Lina — portrait
 Enregistrer sous `assets-src/originals/characters/lina/portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/lina/model-sheet.png`.
 
@@ -835,7 +975,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 54. Planche « lina-poses » (6 éléments)
+#### 68. Planche « lina-poses » (6 éléments)
 Enregistrer sous `assets-src/originals/sheets/lina-poses.png` · 1536×1024, grille 3×2 → chaque case finale 512×512
 > 📎 Joindre l'image validée `characters/lina/model-sheet.png`.
 Cases : 1 → `characters/lina/pose-idle` · 2 → `characters/lina/pose-run` · 3 → `characters/lina/pose-shoot` · 4 → `characters/lina/pose-hurt` · 5 → `characters/lina/pose-victory` · 6 → `characters/lina/pose-defeat`
@@ -856,7 +996,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 55. Ayla — fiche de modèle
+#### 69. Ayla — fiche de modèle
 Enregistrer sous `assets-src/originals/characters/ayla/model-sheet.png` · 1536×1024 → final 1536×1024
 
 ```text
@@ -865,7 +1005,7 @@ Cadrage : fiche de modèle (référence pour les autres images, non affichée da
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 56. Ayla — portrait
+#### 70. Ayla — portrait
 Enregistrer sous `assets-src/originals/characters/ayla/portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/ayla/model-sheet.png`.
 
@@ -875,7 +1015,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 57. Planche « ayla-poses » (6 éléments)
+#### 71. Planche « ayla-poses » (6 éléments)
 Enregistrer sous `assets-src/originals/sheets/ayla-poses.png` · 1536×1024, grille 3×2 → chaque case finale 512×512
 > 📎 Joindre l'image validée `characters/ayla/model-sheet.png`.
 Cases : 1 → `characters/ayla/pose-idle` · 2 → `characters/ayla/pose-run` · 3 → `characters/ayla/pose-shoot` · 4 → `characters/ayla/pose-hurt` · 5 → `characters/ayla/pose-victory` · 6 → `characters/ayla/pose-defeat`
@@ -896,7 +1036,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 58. Pixel — fiche de modèle
+#### 72. Pixel — fiche de modèle
 Enregistrer sous `assets-src/originals/characters/pixel/model-sheet.png` · 1536×1024 → final 1536×1024
 
 ```text
@@ -905,7 +1045,7 @@ Cadrage : fiche de modèle (référence pour les autres images, non affichée da
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 59. Pixel — portrait
+#### 73. Pixel — portrait
 Enregistrer sous `assets-src/originals/characters/pixel/portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/pixel/model-sheet.png`.
 
@@ -915,7 +1055,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 60. Planche « pixel-poses » (6 éléments)
+#### 74. Planche « pixel-poses » (6 éléments)
 Enregistrer sous `assets-src/originals/sheets/pixel-poses.png` · 1536×1024, grille 3×2 → chaque case finale 512×512
 > 📎 Joindre l'image validée `characters/pixel/model-sheet.png`.
 Cases : 1 → `characters/pixel/pose-idle` · 2 → `characters/pixel/pose-run` · 3 → `characters/pixel/pose-shoot` · 4 → `characters/pixel/pose-hurt` · 5 → `characters/pixel/pose-victory` · 6 → `characters/pixel/pose-defeat`
@@ -936,7 +1076,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 61. Planche « armes » (5 éléments)
+#### 75. Planche « armes » (5 éléments)
 Enregistrer sous `assets-src/originals/sheets/armes.png` · 1536×1024, grille 3×2 → chaque case finale 384×256
 Cases : 1 → `weapons/alex` · 2 → `weapons/tao` · 3 → `weapons/lina` · 4 → `weapons/ayla` · 5 → `weapons/pixel`
 
@@ -946,7 +1086,7 @@ Ordre : de gauche à droite, puis de haut en bas. Chaque élément est centré d
 Cadrage de chaque élément : arme seule vue de profil, canon pointé vers la droite, poignée en bas à gauche, occupe 85 % de la largeur de sa case.
 Tous les éléments ont la même épaisseur de contour, la même lumière et la même échelle visuelle.
 
-1. arme d’Alex : énorme gantelet-canon mécanique orange et gris porté au bras droit, avec une bouche de canon ronde au poing et des pistons sur l’avant-bras
+1. arme d’Alex : canon à plasma blanc et doré tenu à deux mains, bouche ronde où tourbillonne une énergie violette
 2. arme de Tao : arbalète-tech compacte vert et or tenue à deux mains, avec une lunette de visée ronde et des branches recourbées lumineuses
 3. arme de Lina : gros lance-ballons rouge et blanc porté sur l’épaule comme un bazooka jouet, à large bouche ronde et réservoir d’air transparent
 4. arme d’Ayla : bombe-blaster : pistolet de peinture turquoise et jaune monté sur une bombe aérosol géante, buse ronde à l’avant
@@ -955,7 +1095,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 62. Planche « golem-des-equations-etats » (4 éléments)
+#### 76. Planche « golem-des-equations-etats » (4 éléments)
 Enregistrer sous `assets-src/originals/sheets/golem-des-equations-etats.png` · 1536×1024, grille 2×2 → chaque case finale 512×512
 Cases : 1 → `bosses/maths/golem-des-equations` · 2 → `bosses/maths/golem-des-equations-attack` · 3 → `bosses/maths/golem-des-equations-hurt` · 4 → `bosses/maths/golem-des-equations-ko`
 
@@ -973,7 +1113,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 63. Golem des Équations — portrait
+#### 77. Golem des Équations — portrait
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -983,7 +1123,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 64. Planche « geomatrix-etats » (4 éléments)
+#### 78. Planche « geomatrix-etats » (4 éléments)
 Enregistrer sous `assets-src/originals/sheets/geomatrix-etats.png` · 1536×1024, grille 2×2 → chaque case finale 512×512
 Cases : 1 → `bosses/maths/geomatrix` · 2 → `bosses/maths/geomatrix-attack` · 3 → `bosses/maths/geomatrix-hurt` · 4 → `bosses/maths/geomatrix-ko`
 
@@ -1001,7 +1141,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 65. Géomatrix — portrait
+#### 79. Géomatrix — portrait
 Enregistrer sous `assets-src/originals/bosses/maths/geomatrix-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/geomatrix.png`.
 
@@ -1011,7 +1151,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 66. Planche « probabot-etats » (4 éléments)
+#### 80. Planche « probabot-etats » (4 éléments)
 Enregistrer sous `assets-src/originals/sheets/probabot-etats.png` · 1536×1024, grille 2×2 → chaque case finale 512×512
 Cases : 1 → `bosses/maths/probabot` · 2 → `bosses/maths/probabot-attack` · 3 → `bosses/maths/probabot-hurt` · 4 → `bosses/maths/probabot-ko`
 
@@ -1029,7 +1169,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 67. Probabot — portrait
+#### 81. Probabot — portrait
 Enregistrer sous `assets-src/originals/bosses/maths/probabot-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/probabot.png`.
 
@@ -1039,7 +1179,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 68. Planche « courbix-etats » (4 éléments)
+#### 82. Planche « courbix-etats » (4 éléments)
 Enregistrer sous `assets-src/originals/sheets/courbix-etats.png` · 1536×1024, grille 2×2 → chaque case finale 512×512
 Cases : 1 → `bosses/maths/courbix` · 2 → `bosses/maths/courbix-attack` · 3 → `bosses/maths/courbix-hurt` · 4 → `bosses/maths/courbix-ko`
 
@@ -1057,7 +1197,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 69. Courbix — portrait
+#### 83. Courbix — portrait
 Enregistrer sous `assets-src/originals/bosses/maths/courbix-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/courbix.png`.
 
@@ -1067,7 +1207,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 70. Planche « ia-des-connaissances-etats » (4 éléments)
+#### 84. Planche « ia-des-connaissances-etats » (4 éléments)
 Enregistrer sous `assets-src/originals/sheets/ia-des-connaissances-etats.png` · 1536×1024, grille 2×2 → chaque case finale 512×512
 Cases : 1 → `bosses/maths/ia-des-connaissances` · 2 → `bosses/maths/ia-des-connaissances-attack` · 3 → `bosses/maths/ia-des-connaissances-hurt` · 4 → `bosses/maths/ia-des-connaissances-ko`
 
@@ -1085,7 +1225,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 71. IA des Connaissances — portrait
+#### 85. IA des Connaissances — portrait
 Enregistrer sous `assets-src/originals/bosses/maths/ia-des-connaissances-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/ia-des-connaissances.png`.
 
@@ -1095,7 +1235,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 72. Planche « mobs » (9 éléments)
+#### 86. Planche « mobs » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/mobs.png` · 1024×1024, grille 3×3 → chaque case finale 384×384
 Cases : 1 → `bosses/minions/calculatrice` · 2 → `bosses/minions/cube-bot` · 3 → `bosses/minions/equerre` · 4 → `bosses/minions/compas` · 5 → `bosses/minions/de` · 6 → `bosses/minions/camembert` · 7 → `bosses/minions/courbe` · 8 → `bosses/minions/bug` · 9 → `bosses/minions/bloc-code`
 
@@ -1118,7 +1258,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 73. Planche « effets-1 » (9 éléments)
+#### 87. Planche « effets-1 » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/effets-1.png` · 1024×1024, grille 3×3 → chaque case finale 512×512
 Cases : 1 → `effects/impacts/hit-burst` · 2 → `effects/impacts/anneau` · 3 → `effects/impacts/etincelles` · 4 → `effects/impacts/flash` · 5 → `effects/impacts/explosion` · 6 → `effects/particles/puff` · 7 → `effects/particles/bouclier` · 8 → `effects/particles/soin` · 9 → `effects/particles/etourdi`
 
@@ -1141,7 +1281,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 74. Planche « effets-2 » (3 éléments)
+#### 88. Planche « effets-2 » (3 éléments)
 Enregistrer sous `assets-src/originals/sheets/effets-2.png` · 1024×1024, grille 3×3 → chaque case finale 512×512
 Cases : 1 → `effects/impacts/onde-boss` · 2 → `effects/particles/confettis` · 3 → `effects/transitions/portail`
 
@@ -1158,7 +1298,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 75. Arène des nombres
+#### 89. Arène des nombres
 Enregistrer sous `assets-src/originals/environments/arenas/nombres.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
 
 ```text
@@ -1167,7 +1307,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 76. Arène de la géométrie
+#### 90. Arène de la géométrie
 Enregistrer sous `assets-src/originals/environments/arenas/geometrie.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
 
 ```text
@@ -1176,7 +1316,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 77. Arène des données
+#### 91. Arène des données
 Enregistrer sous `assets-src/originals/environments/arenas/donnees.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
 
 ```text
@@ -1185,7 +1325,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 78. Arène des fonctions
+#### 92. Arène des fonctions
 Enregistrer sous `assets-src/originals/environments/arenas/fonctions.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
 
 ```text
@@ -1194,7 +1334,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 79. Arène de la programmation
+#### 93. Arène de la programmation
 Enregistrer sous `assets-src/originals/environments/arenas/informatique.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
 
 ```text
@@ -1203,12 +1343,12 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 80. Illustration principale
+#### 94. Illustration principale
 Enregistrer sous `assets-src/originals/branding/key-art.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
 ```text
-Image 1536×1024. Scène de combat épique et joyeuse : les cinq héros alignés de gauche à droite (Alex avec son gantelet-canon, Lina avec son lance-ballons, Pixel le chat avec son canon-poisson au premier plan, Ayla avec sa bombe-blaster, Tao avec son arbalète) et Questy qui lève le poing au milieu, tous face au Golem des Équations tout à droite ; en arrière-plan un château-académie violet flottant aux bannières à livre, ciel lavande, îles flottantes.
+Image 1536×1024. Scène de combat épique et joyeuse : les cinq héros alignés de gauche à droite (Alex avec son canon à plasma, Lina avec son lance-ballons, Pixel le chat avec son canon-poisson au premier plan, Ayla avec sa bombe-blaster, Tao avec son arbalète) et Questy qui lève le poing au milieu, tous face au Golem des Équations tout à droite ; en arrière-plan un château-académie violet flottant aux bannières à livre, ciel lavande, îles flottantes.
 Cadrage : illustration plein cadre, composition lisible en petit, sans aucun texte ni interface.
 Style, fond et interdits : ceux du message de départ.
 ```

@@ -24,15 +24,18 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByRole('radio', { name: 'Adulte, à venir' })).toBeVisible();
   await page.getByRole('radio', { name: '5e', exact: true }).click();
   await page.getByRole('button', { name: 'Robot' }).click();
-  await page.getByRole('radio', { name: /Pixel/ }).click();
-  await expect(page.getByRole('radio', { name: /Pixel/ })).toBeChecked();
+  // Un seul héros dessiné pour l'instant : Alex ; les autres sont « À venir ».
+  await expect(page.getByRole('radio', { name: /Alex/ })).toBeChecked();
+  for (const soon of ['Tao', 'Lina', 'Ayla', 'Pixel']) {
+    await expect(page.getByRole('img', { name: `${soon}, à venir` })).toBeVisible();
+  }
   await page.getByRole('button', { name: /C’est parti/ }).click();
 
   await expect(page).toHaveURL(/\/hub$/);
   await expect(page.getByRole('heading', { name })).toBeVisible();
   await expect(page.getByText('Apprentie')).toBeVisible();
   await expect(page.getByText(/Prête à jouer/)).toBeVisible();
-  await expect(page.getByRole('button', { name: /Pixel.*Changer de héros/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Alex.*Changer de héros/ })).toBeVisible();
   await page.getByRole('button', { name: /Mes progrès/ }).click();
   await expect(page.getByText(/0 \/ 72 notions médaillées/)).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Nombres et calculs' })).toBeVisible();

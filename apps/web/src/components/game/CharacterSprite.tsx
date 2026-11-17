@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from 'motion/react';
 import type { HeroId } from '@questeo/shared';
-import { assetSrc, type AnimationState } from '../../design/assets.ts';
+import { heroPoseSrc, type AnimationState } from '../../design/assets.ts';
 import { CHARACTER_MOTION } from '../../design/motion.ts';
 
 interface CharacterSpriteProps {
@@ -20,7 +20,8 @@ interface CharacterSpriteProps {
  */
 export function CharacterSprite({ hero, state, height = 240, flip = false }: CharacterSpriteProps) {
   const reduce = useReducedMotion();
-  const src = assetSrc(`characters-${hero}-pose-${state}`);
+  // Pose manquante (touché, défaite) : la pose d'attente, animée selon l'état.
+  const src = heroPoseSrc(hero, state);
   if (!src) return null;
   return (
     <motion.img

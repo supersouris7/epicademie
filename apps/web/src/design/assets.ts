@@ -697,7 +697,7 @@ const keyArt = a(
   'keyart',
   'branding/key-art.webp',
   'Illustration principale',
-  'scène de combat épique et joyeuse : les cinq héros alignés de gauche à droite (Alex avec son gantelet-canon, Lina avec son lance-ballons, Pixel le chat avec son canon-poisson au premier plan, Ayla avec sa bombe-blaster, Tao avec son arbalète) et Questy qui lève le poing au milieu, tous face au Golem des Équations tout à droite ; en arrière-plan un château-académie violet flottant aux bannières à livre, ciel lavande, îles flottantes',
+  'scène de combat épique et joyeuse : les cinq héros alignés de gauche à droite (Alex avec son canon à plasma, Lina avec son lance-ballons, Pixel le chat avec son canon-poisson au premier plan, Ayla avec sa bombe-blaster, Tao avec son arbalète) et Questy qui lève le poing au milieu, tous face au Golem des Équations tout à droite ; en arrière-plan un château-académie violet flottant aux bannières à livre, ciel lavande, îles flottantes',
   'Bandeau de l’écran d’accueil et du choix du joueur.',
   2,
   { reference: QUESTY_REF },
@@ -720,9 +720,8 @@ export const CHARACTERS: readonly CharacterSpec[] = [
     id: 'alex',
     name: 'Alex',
     role: 'L’inventeur',
-    look: 'Alex, garçon de 12 ans à la peau mate, cheveux bruns bouclés en bataille, grosses lunettes de soudeur cyan relevées sur le front, sourire malin avec une dent un peu écartée, salopette de mécanicien bleu canard aux nombreuses poches remplies d’outils, t-shirt orange, clé à molette accrochée à la ceinture, bottes de chantier marron ; son bras droit porte un énorme gantelet mécanique orange et gris (bien plus gros que son autre bras) ; un petit drone rond à hélice flotte au-dessus de son épaule gauche',
-    weapon:
-      'énorme gantelet-canon mécanique orange et gris porté au bras droit, avec une bouche de canon ronde au poing et des pistons sur l’avant-bras',
+    look: 'Alex, garçon de 12 ans, cheveux roux en pics avec des mèches rasées sur le côté, yeux bleus, pansement sur la joue, foulard jaune, veste blanche et dorée, pantalon violet, gants noirs sans doigts, grosses baskets blanches et dorées, sac à dos à deux batteries de plasma lumineuses',
+    weapon: 'canon à plasma blanc et doré tenu à deux mains, bouche ronde où tourbillonne une énergie violette',
   },
   {
     id: 'tao',
@@ -759,9 +758,27 @@ export const CHARACTERS: readonly CharacterSpec[] = [
 ];
 
 export const ANIMATION_STATES = ['idle', 'run', 'shoot', 'hurt', 'victory', 'defeat'] as const;
-export type AnimationState = (typeof ANIMATION_STATES)[number];
+/** États affichables : ceux de la planche de poses, plus le saut et le bouclier (livrés pour Alex). */
+export type AnimationState = (typeof ANIMATION_STATES)[number] | 'jump' | 'shield';
 
-const POSES: Record<AnimationState, string> = {
+/** Expressions d'Alex, livrées en têtes séparées (characters/alex/head-<expression>.webp). */
+export const HERO_EXPRESSIONS = [
+  'joie',
+  'rire',
+  'enthousiaste',
+  'confiant',
+  'determine',
+  'clin-oeil',
+  'surprise',
+  'reflexion',
+  'affection',
+  'colere',
+  'triste',
+  'etourdi',
+] as const;
+export type HeroExpression = (typeof HERO_EXPRESSIONS)[number];
+
+const POSES: Record<(typeof ANIMATION_STATES)[number], string> = {
   idle: 'attente : debout, détendu, arme prête',
   run: 'course : grande foulée vers la droite, un pied décollé, buste penché en avant',
   shoot: 'tir : arme pointée vers la droite, petit éclair à la bouche du canon',
@@ -802,6 +819,33 @@ const characterAssets = CHARACTERS.flatMap((ch) => {
         { ...ref, sheet: `${ch.id}-poses` },
       ),
     ),
+    // Alex : poses et expressions livrées une à une (pack du 18/11/2026).
+    ...(ch.id === 'alex'
+      ? [
+          ...(['jump', 'shield'] as const).map((state) =>
+            a(
+              'pose',
+              `${base}/pose-${state}.webp`,
+              `${ch.name} — pose ${state}`,
+              `${ch.name}, pose ${state}`,
+              'Combat.',
+              1,
+              ref,
+            ),
+          ),
+          ...HERO_EXPRESSIONS.map((e) =>
+            a(
+              'expression',
+              `${base}/head-${e}.webp`,
+              `${ch.name} — ${e}`,
+              `${ch.name}, tête seule, expression ${e}`,
+              'Réactions pendant le combat.',
+              1,
+              ref,
+            ),
+          ),
+        ]
+      : []),
   ];
 });
 
@@ -1049,6 +1093,18 @@ export const MANIFEST: readonly ManifestEntry[] = [
 ];
 
 const byId = new Map(PLANNED_ASSETS.map((p) => [p.id, p]));
+
+/** URL de l'image finale si elle est livrée (sans remplaçant provisoire), sinon null. */
+export function deliveredSrc(id: string): string | null {
+  const p = byId.get(id);
+  return p && available.has(p.file) ? `/assets/${p.file}` : null;
+}
+
+/** Pose d'un héros : la pose demandée si elle est livrée, sinon sa pose d'attente, sinon le provisoire. */
+export const heroPoseSrc = (hero: string, state: AnimationState): string | null =>
+  deliveredSrc(`characters-${hero}-pose-${state}`) ??
+  deliveredSrc(`characters-${hero}-pose-idle`) ??
+  assetSrc(`characters-${hero}-pose-${state}`);
 
 /** URL à afficher : image finale si livrée, sinon SVG provisoire, sinon null. */
 export function assetSrc(id: string): string | null {

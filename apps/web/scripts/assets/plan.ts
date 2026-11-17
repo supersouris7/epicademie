@@ -281,7 +281,8 @@ function kitRequests(): KitRequest[] {
   const sheetOf = new Map(all.flatMap((s) => s.items.map((p) => [p.id, s] as const)));
   const numberOf = new Map<string, number>();
   const out: KitRequest[] = [];
-  for (const p of PLANNED_ASSETS.filter((q) => lot.pick(q))) {
+  // Alex est livré (pack du 18/11/2026) : plus rien à demander pour lui, sauf son arme.
+  for (const p of PLANNED_ASSETS.filter((q) => lot.pick(q) && !q.file.startsWith('characters/alex/'))) {
     if (numberOf.has(p.id)) continue;
     const n = out.length + 1;
     const s = sheetOf.get(p.id);

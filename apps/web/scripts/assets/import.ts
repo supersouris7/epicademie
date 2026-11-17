@@ -12,7 +12,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { KINDS, PLANNED_ASSETS, type AssetKind, type KindId, type PlannedAsset } from '../../src/design/assets.ts';
-import { chromaKey, contentBox, hasAlpha, inspect, splitSheet, type Box, type Rgba } from './image.ts';
+import { chromaKey, contentBox, dropEdgeScraps, hasAlpha, inspect, splitSheet, type Box, type Rgba } from './image.ts';
 import { availableFile, sheets } from './plan.ts';
 
 const WEB = fileURLToPath(new URL('../../', import.meta.url));
@@ -84,7 +84,29 @@ export async function render(asset: PlannedAsset, source: Rgba): Promise<{ webp:
 
   // Le fond n'a pas été retiré (ni transparence d'origine, ni magenta détouré) : à signaler.
   if (!hasAlpha(source)) notes.push('fond non détouré');
-  let img = source;
+  // Image déjà détourée par le générateur : on retire les débris de la case voisine collés au bord.
+  let img = hasAlpha(source) ? dropEdgeScraps(source) : source;
+  // Pose livrée seule et déjà détourée : même échelle pour toutes les poses (jamais agrandie),
+  // pieds posés en bas, centrée : les poses s'enchaînent sans saut de taille ni de position.
+  if (asset.kind === 'pose' && hasAlpha(source)) {
+    const box = contentBox(img);
+    if (!box) throw new Error('image vide');
+    img = crop(img, box);
+    const scale = Math.min(1, fw / img.width, (fh * 0.98) / img.height);
+    const w = Math.round(img.width * scale);
+    const h = Math.round(img.height * scale);
+    const body = await sharp(img.data, { raw: { width: img.width, height: img.height, channels: 4 } })
+      .resize(w, h)
+      .png()
+      .toBuffer();
+    const webp = await sharp({
+      create: { width: fw, height: fh, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
+    })
+      .composite([{ input: body, left: Math.round((fw - w) / 2), top: fh - h - Math.round(fh * 0.01) }])
+      .webp({ quality: 88, alphaQuality: 100, effort: 5 })
+      .toBuffer();
+    return { webp, notes };
+  }
   if (TRIM.has(asset.kind)) {
     const box = contentBox(img);
     if (!box) throw new Error('image vide');

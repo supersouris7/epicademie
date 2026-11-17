@@ -65,3 +65,18 @@ describe('migration 0009 : combat de boss', () => {
     sqlite.close();
   });
 });
+
+describe('migration 0010 : Alex seul héros jouable', () => {
+  it('passe tous les profils sur Alex', () => {
+    const file = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'questeo-')), 'test.db');
+    openDb(file, migrationsDir).close();
+    const sqlite = new Database(file);
+    const insert = sqlite.prepare('INSERT INTO profiles (id, name, avatar, hero, created_at) VALUES (?, ?, ?, ?, ?)');
+    const avatar = JSON.stringify({ style: 'pixelbot', seed: 's' });
+    ['pixel', 'alex', 'lina'].forEach((hero, i) => insert.run(String(i), `P${i}`, avatar, hero, Date.now()));
+    sqlite.exec(fs.readFileSync(path.join(migrationsDir, '0010_alex_only.sql'), 'utf8'));
+    const heroes = sqlite.prepare('SELECT hero FROM profiles ORDER BY id').all() as { hero: string }[];
+    expect(heroes.map((r) => r.hero)).toEqual(['alex', 'alex', 'alex']);
+    sqlite.close();
+  });
+});

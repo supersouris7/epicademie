@@ -14,6 +14,9 @@ export type AvatarConfig = z.infer<typeof AvatarConfigSchema>;
 /** Héros jouables (illustrations : apps/web/public/assets/characters). Le héros se change à tout moment. */
 export const HEROES = ['alex', 'tao', 'lina', 'ayla', 'pixel'] as const;
 export type HeroId = (typeof HEROES)[number];
+/** Héros jouables aujourd'hui (illustrations livrées) ; les autres sont « À venir ». */
+export const AVAILABLE_HEROES: readonly HeroId[] = ['alex'];
+const PlayableHeroSchema = z.enum(HEROES).refine((h) => AVAILABLE_HEROES.includes(h), 'Ce héros arrive bientôt');
 export const HERO_NAMES: Record<HeroId, string> = {
   alex: 'Alex',
   tao: 'Tao',
@@ -62,7 +65,7 @@ export const ProfileCreateSchema = z.object({
   gender: z.enum(GENDERS),
   birthDate: BirthDateSchema,
   grade: z.enum(GRADES),
-  hero: z.enum(HEROES).optional(),
+  hero: PlayableHeroSchema.optional(),
 });
 export type ProfileCreate = z.infer<typeof ProfileCreateSchema>;
 
@@ -73,7 +76,7 @@ export const ProfileUpdateSchema = z
     gender: z.enum(GENDERS),
     birthDate: BirthDateSchema,
     grade: z.enum(GRADES),
-    hero: z.enum(HEROES),
+    hero: PlayableHeroSchema,
     soundOn: z.boolean(),
     musicOn: z.boolean(),
   })

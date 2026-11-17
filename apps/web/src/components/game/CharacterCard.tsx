@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { HERO_NAMES, type HeroId } from '@questeo/shared';
 import { HERO_COLORS } from '../../design/heroes.ts';
-import { assetSrc } from '../../design/assets.ts';
+import { assetSrc, deliveredSrc } from '../../design/assets.ts';
 import { skinStyle } from '../../design/skin.ts';
 
 interface CharacterCardProps {
@@ -59,9 +59,9 @@ export function CharacterCard({
   );
 }
 
-/** Portrait d'un héros (illustration livrée, sinon silhouette provisoire). */
+/** Héros en entier (pose d'attente), sinon portrait, sinon silhouette provisoire. */
 export function HeroPortrait({ hero, size = 120 }: { readonly hero: HeroId; readonly size?: number }) {
-  const src = assetSrc(`characters-${hero}-portrait`);
+  const src = deliveredSrc(`characters-${hero}-pose-idle`) ?? assetSrc(`characters-${hero}-portrait`);
   return src ? (
     <img
       src={src}

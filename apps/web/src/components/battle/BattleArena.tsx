@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion, type TargetAndTransition } from 'motion/react';
 import { HERO_NAMES, type AmmoInfo, type HeroId } from '@questeo/shared';
-import { assetSrc, type AnimationState } from '../../design/assets.ts';
+import { assetSrc, heroPoseSrc, type AnimationState } from '../../design/assets.ts';
 import { HERO_COLORS } from '../../design/heroes.ts';
 import { CHARACTER_MOTION } from '../../design/motion.ts';
 
@@ -145,7 +145,8 @@ export function AmmoOrb({ ammo, size }: { readonly ammo: AmmoInfo; readonly size
 
 function HeroFigure({ hero, state }: { readonly hero: HeroId; readonly state: AnimationState }) {
   const reduce = useReducedMotion();
-  const src = assetSrc(`characters-${hero}-pose-${state}`);
+  // Pose manquante (touché, défaite) : la pose d'attente, animée selon l'état.
+  const src = heroPoseSrc(hero, state);
   const motionProps = reduce ? {} : { animate: CHARACTER_MOTION[state] };
   if (src) {
     return (
@@ -155,7 +156,7 @@ function HeroFigure({ hero, state }: { readonly hero: HeroId; readonly state: An
         alt=""
         aria-hidden
         draggable={false}
-        className="h-full w-full object-contain"
+        className={`h-full w-full object-contain ${state === 'defeat' ? 'grayscale-[0.6]' : ''} ${state === 'hurt' ? 'drop-shadow-[0_0_12px_rgba(255,60,60,0.9)]' : ''}`}
         style={{ originX: 0.5, originY: 1 }}
         {...motionProps}
       />

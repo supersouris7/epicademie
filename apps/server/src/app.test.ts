@@ -89,11 +89,14 @@ describe('API profils', () => {
     const res = await app.inject({
       method: 'PATCH',
       url: `/api/profiles/${profile.id}`,
-      payload: { soundOn: false, hero: 'ayla' },
+      payload: { soundOn: false, hero: 'alex' },
     });
-    expect(res.json<Profile>()).toMatchObject({ soundOn: false, name: 'Tom', hero: 'ayla' });
+    expect(res.json<Profile>()).toMatchObject({ soundOn: false, name: 'Tom', hero: 'alex' });
     const bad = await app.inject({ method: 'PATCH', url: `/api/profiles/${profile.id}`, payload: { hero: 'ninja' } });
     expect(bad.statusCode).toBe(400);
+    // Héros pas encore dessiné : refusé.
+    const soon = await app.inject({ method: 'PATCH', url: `/api/profiles/${profile.id}`, payload: { hero: 'ayla' } });
+    expect(soon.statusCode).toBe(400);
   });
 
   it('ignore les champs non modifiables (xp)', async () => {

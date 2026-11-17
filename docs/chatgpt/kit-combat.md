@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Kit combat (à joindre à ChatGPT)
 
-35 demandes · 97 images finales.
+32 demandes · 89 images finales.
 
 ## Pour toi (à lire avant de commencer)
 
@@ -16,7 +16,7 @@
 
 ```text
 Je te joins le fichier « kit-combat.md » et des images de référence de style (Questy, la mascotte, et l'interface du jeu).
-Lis tout le fichier : il fixe le style du jeu et contient 35 demandes d'images numérotées (héros, boss, ennemis, effets, arènes).
+Lis tout le fichier : il fixe le style du jeu et contient 32 demandes d'images numérotées (héros, boss, ennemis, effets, arènes).
 Règles :
 - Génère maintenant UNIQUEMENT l'image de la demande 1, puis attends.
 - Chaque fois que j'écris « suivant », génère la demande suivante. Une seule image par réponse, précédée seulement de « Demande N ».
@@ -67,56 +67,27 @@ COHÉRENCE DU KIT COMBAT
 
 ## Demandes
 
-### Demande 1 — Alex — fiche de modèle
-
-```text
-Image 1536×1024. Alex, garçon de 12 ans à la peau mate, cheveux bruns bouclés en bataille, grosses lunettes de soudeur cyan relevées sur le front, sourire malin avec une dent un peu écartée, salopette de mécanicien bleu canard aux nombreuses poches remplies d’outils, t-shirt orange, clé à molette accrochée à la ceinture, bottes de chantier marron ; son bras droit porte un énorme gantelet mécanique orange et gris (bien plus gros que son autre bras) ; un petit drone rond à hélice flotte au-dessus de son épaule gauche. Arme : énorme gantelet-canon mécanique orange et gris porté au bras droit, avec une bouche de canon ronde au poing et des pistons sur l’avant-bras. Fiche de modèle : 4 vues alignées (face, trois quarts gauche, profil, dos), plus l’arme seule en grand à droite.
-Cadrage : fiche de modèle (référence pour les autres images, non affichée dans le jeu) : mêmes proportions sur toutes les vues, alignées sur une même ligne de sol.
-```
-
-### Demande 2 — Alex — portrait
-
-```text
-Image 1024×1024. Alex, garçon de 12 ans à la peau mate, cheveux bruns bouclés en bataille, grosses lunettes de soudeur cyan relevées sur le front, sourire malin avec une dent un peu écartée, salopette de mécanicien bleu canard aux nombreuses poches remplies d’outils, t-shirt orange, clé à molette accrochée à la ceinture, bottes de chantier marron ; son bras droit porte un énorme gantelet mécanique orange et gris (bien plus gros que son autre bras) ; un petit drone rond à hélice flotte au-dessus de son épaule gauche. Expression énergique.
-Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
-Référence : reprends EXACTEMENT le personnage de la demande 1 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
-```
-
-### Demande 3 — Planche « alex-poses » (6 éléments)
-
-```text
-Image 1536×1024 : planche de 6 éléments sur une grille invisible de 3 colonnes × 2 lignes (cases de 512×512 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
-Cadrage de chaque élément : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
-Référence : reprends EXACTEMENT le personnage de la demande 1 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
-1. Alex (exactement comme sur sa fiche de modèle), avec son arme. Pose attente : debout, détendu, arme prête.
-2. Alex (exactement comme sur sa fiche de modèle), avec son arme. Pose course : grande foulée vers la droite, un pied décollé, buste penché en avant.
-3. Alex (exactement comme sur sa fiche de modèle), avec son arme. Pose tir : arme pointée vers la droite, petit éclair à la bouche du canon.
-4. Alex (exactement comme sur sa fiche de modèle), avec son arme. Pose touché : recule d’un pas, grimace comique (dessin animé, aucune blessure).
-5. Alex (exactement comme sur sa fiche de modèle), avec son arme. Pose victoire : saute de joie, poing ou patte levé.
-6. Alex (exactement comme sur sa fiche de modèle), avec son arme. Pose défaite : assis par terre, étourdi, petites spirales au-dessus de la tête.
-```
-
-### Demande 4 — Tao — fiche de modèle
+### Demande 1 — Tao — fiche de modèle
 
 ```text
 Image 1536×1024. Tao, garçon de 12 ans, mince et agile, cheveux noirs raides en épis, bandana vert noué sur le front aux pans qui volent, yeux en amande pétillants, grand sourire, gilet sans manches beige sable à poches multiples sur t-shirt vert forêt, short cargo marron, grosses chaussures de randonnée orange, boussole dorée autour du cou, petit sac à dos avec une corde enroulée. Arme : arbalète-tech compacte vert et or tenue à deux mains, avec une lunette de visée ronde et des branches recourbées lumineuses. Fiche de modèle : 4 vues alignées (face, trois quarts gauche, profil, dos), plus l’arme seule en grand à droite.
 Cadrage : fiche de modèle (référence pour les autres images, non affichée dans le jeu) : mêmes proportions sur toutes les vues, alignées sur une même ligne de sol.
 ```
 
-### Demande 5 — Tao — portrait
+### Demande 2 — Tao — portrait
 
 ```text
 Image 1024×1024. Tao, garçon de 12 ans, mince et agile, cheveux noirs raides en épis, bandana vert noué sur le front aux pans qui volent, yeux en amande pétillants, grand sourire, gilet sans manches beige sable à poches multiples sur t-shirt vert forêt, short cargo marron, grosses chaussures de randonnée orange, boussole dorée autour du cou, petit sac à dos avec une corde enroulée. Expression énergique.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
-Référence : reprends EXACTEMENT le personnage de la demande 4 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
+Référence : reprends EXACTEMENT le personnage de la demande 1 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
 ```
 
-### Demande 6 — Planche « tao-poses » (6 éléments)
+### Demande 3 — Planche « tao-poses » (6 éléments)
 
 ```text
 Image 1536×1024 : planche de 6 éléments sur une grille invisible de 3 colonnes × 2 lignes (cases de 512×512 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
 Cadrage de chaque élément : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
-Référence : reprends EXACTEMENT le personnage de la demande 4 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
+Référence : reprends EXACTEMENT le personnage de la demande 1 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
 1. Tao (exactement comme sur sa fiche de modèle), avec son arme. Pose attente : debout, détendu, arme prête.
 2. Tao (exactement comme sur sa fiche de modèle), avec son arme. Pose course : grande foulée vers la droite, un pied décollé, buste penché en avant.
 3. Tao (exactement comme sur sa fiche de modèle), avec son arme. Pose tir : arme pointée vers la droite, petit éclair à la bouche du canon.
@@ -125,27 +96,27 @@ Référence : reprends EXACTEMENT le personnage de la demande 4 (mêmes couleurs
 6. Tao (exactement comme sur sa fiche de modèle), avec son arme. Pose défaite : assis par terre, étourdi, petites spirales au-dessus de la tête.
 ```
 
-### Demande 7 — Lina — fiche de modèle
+### Demande 4 — Lina — fiche de modèle
 
 ```text
 Image 1536×1024. Lina, fille de 12 ans, grande et tonique, peau foncée, tresses fines relevées en haute couronne avec des perles dorées, bandeau éponge blanc, regard déterminé et sourire franc, maillot de sport rouge vif à bandes blanches (sans numéro ni texte), short de sport blanc, chaussettes hautes rouges, baskets épaisses blanches et rouges, protège-poignets. Arme : gros lance-ballons rouge et blanc porté sur l’épaule comme un bazooka jouet, à large bouche ronde et réservoir d’air transparent. Fiche de modèle : 4 vues alignées (face, trois quarts gauche, profil, dos), plus l’arme seule en grand à droite.
 Cadrage : fiche de modèle (référence pour les autres images, non affichée dans le jeu) : mêmes proportions sur toutes les vues, alignées sur une même ligne de sol.
 ```
 
-### Demande 8 — Lina — portrait
+### Demande 5 — Lina — portrait
 
 ```text
 Image 1024×1024. Lina, fille de 12 ans, grande et tonique, peau foncée, tresses fines relevées en haute couronne avec des perles dorées, bandeau éponge blanc, regard déterminé et sourire franc, maillot de sport rouge vif à bandes blanches (sans numéro ni texte), short de sport blanc, chaussettes hautes rouges, baskets épaisses blanches et rouges, protège-poignets. Expression énergique.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
-Référence : reprends EXACTEMENT le personnage de la demande 7 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
+Référence : reprends EXACTEMENT le personnage de la demande 4 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
 ```
 
-### Demande 9 — Planche « lina-poses » (6 éléments)
+### Demande 6 — Planche « lina-poses » (6 éléments)
 
 ```text
 Image 1536×1024 : planche de 6 éléments sur une grille invisible de 3 colonnes × 2 lignes (cases de 512×512 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
 Cadrage de chaque élément : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
-Référence : reprends EXACTEMENT le personnage de la demande 7 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
+Référence : reprends EXACTEMENT le personnage de la demande 4 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
 1. Lina (exactement comme sur sa fiche de modèle), avec son arme. Pose attente : debout, détendu, arme prête.
 2. Lina (exactement comme sur sa fiche de modèle), avec son arme. Pose course : grande foulée vers la droite, un pied décollé, buste penché en avant.
 3. Lina (exactement comme sur sa fiche de modèle), avec son arme. Pose tir : arme pointée vers la droite, petit éclair à la bouche du canon.
@@ -154,27 +125,27 @@ Référence : reprends EXACTEMENT le personnage de la demande 7 (mêmes couleurs
 6. Lina (exactement comme sur sa fiche de modèle), avec son arme. Pose défaite : assis par terre, étourdi, petites spirales au-dessus de la tête.
 ```
 
-### Demande 10 — Ayla — fiche de modèle
+### Demande 7 — Ayla — fiche de modèle
 
 ```text
 Image 1536×1024. Ayla, fille de 12 ans, petite et vive, peau claire avec des taches de rousseur, cheveux violets courts en coupe asymétrique avec une longue mèche turquoise, casque audio jaune fluo autour du cou, sourire espiègle, veste bomber noire couverte de patchs colorés (formes, étoiles, éclairs), t-shirt jaune, pantalon baggy gris, rangers noires lacées de turquoise, éclaboussures de peinture turquoise et jaune sur les vêtements. Arme : bombe-blaster : pistolet de peinture turquoise et jaune monté sur une bombe aérosol géante, buse ronde à l’avant. Fiche de modèle : 4 vues alignées (face, trois quarts gauche, profil, dos), plus l’arme seule en grand à droite.
 Cadrage : fiche de modèle (référence pour les autres images, non affichée dans le jeu) : mêmes proportions sur toutes les vues, alignées sur une même ligne de sol.
 ```
 
-### Demande 11 — Ayla — portrait
+### Demande 8 — Ayla — portrait
 
 ```text
 Image 1024×1024. Ayla, fille de 12 ans, petite et vive, peau claire avec des taches de rousseur, cheveux violets courts en coupe asymétrique avec une longue mèche turquoise, casque audio jaune fluo autour du cou, sourire espiègle, veste bomber noire couverte de patchs colorés (formes, étoiles, éclairs), t-shirt jaune, pantalon baggy gris, rangers noires lacées de turquoise, éclaboussures de peinture turquoise et jaune sur les vêtements. Expression énergique.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
-Référence : reprends EXACTEMENT le personnage de la demande 10 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
+Référence : reprends EXACTEMENT le personnage de la demande 7 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
 ```
 
-### Demande 12 — Planche « ayla-poses » (6 éléments)
+### Demande 9 — Planche « ayla-poses » (6 éléments)
 
 ```text
 Image 1536×1024 : planche de 6 éléments sur une grille invisible de 3 colonnes × 2 lignes (cases de 512×512 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
 Cadrage de chaque élément : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
-Référence : reprends EXACTEMENT le personnage de la demande 10 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
+Référence : reprends EXACTEMENT le personnage de la demande 7 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
 1. Ayla (exactement comme sur sa fiche de modèle), avec son arme. Pose attente : debout, détendu, arme prête.
 2. Ayla (exactement comme sur sa fiche de modèle), avec son arme. Pose course : grande foulée vers la droite, un pied décollé, buste penché en avant.
 3. Ayla (exactement comme sur sa fiche de modèle), avec son arme. Pose tir : arme pointée vers la droite, petit éclair à la bouche du canon.
@@ -183,27 +154,27 @@ Référence : reprends EXACTEMENT le personnage de la demande 10 (mêmes couleur
 6. Ayla (exactement comme sur sa fiche de modèle), avec son arme. Pose défaite : assis par terre, étourdi, petites spirales au-dessus de la tête.
 ```
 
-### Demande 13 — Pixel — fiche de modèle
+### Demande 10 — Pixel — fiche de modèle
 
 ```text
 Image 1536×1024. Pixel, chat noir et blanc (pelage « smoking » : dos noir, museau, poitrail et pattes blancs) qui se tient debout sur deux pattes comme un héros, de la taille d’un enfant de 8 ans, grands yeux vert émeraude, oreille gauche avec une petite encoche, moustaches blanches, longue queue noire au bout blanc, bandeau rouge de ninja noué sur le front aux pans qui volent, foulard rouge au cou avec un grelot doré. Arme : canon-poisson : petit canon argenté en forme de poisson stylisé, la bouche du poisson sert de canon, nageoires bleues en guise de poignée. Fiche de modèle : 4 vues alignées (face, trois quarts gauche, profil, dos), plus l’arme seule en grand à droite.
 Cadrage : fiche de modèle (référence pour les autres images, non affichée dans le jeu) : mêmes proportions sur toutes les vues, alignées sur une même ligne de sol.
 ```
 
-### Demande 14 — Pixel — portrait
+### Demande 11 — Pixel — portrait
 
 ```text
 Image 1024×1024. Pixel, chat noir et blanc (pelage « smoking » : dos noir, museau, poitrail et pattes blancs) qui se tient debout sur deux pattes comme un héros, de la taille d’un enfant de 8 ans, grands yeux vert émeraude, oreille gauche avec une petite encoche, moustaches blanches, longue queue noire au bout blanc, bandeau rouge de ninja noué sur le front aux pans qui volent, foulard rouge au cou avec un grelot doré. Expression énergique.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
-Référence : reprends EXACTEMENT le personnage de la demande 13 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
+Référence : reprends EXACTEMENT le personnage de la demande 10 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
 ```
 
-### Demande 15 — Planche « pixel-poses » (6 éléments)
+### Demande 12 — Planche « pixel-poses » (6 éléments)
 
 ```text
 Image 1536×1024 : planche de 6 éléments sur une grille invisible de 3 colonnes × 2 lignes (cases de 512×512 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
 Cadrage de chaque élément : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
-Référence : reprends EXACTEMENT le personnage de la demande 13 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
+Référence : reprends EXACTEMENT le personnage de la demande 10 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
 1. Pixel (exactement comme sur sa fiche de modèle), avec son arme. Pose attente : debout, détendu, arme prête.
 2. Pixel (exactement comme sur sa fiche de modèle), avec son arme. Pose course : grande foulée vers la droite, un pied décollé, buste penché en avant.
 3. Pixel (exactement comme sur sa fiche de modèle), avec son arme. Pose tir : arme pointée vers la droite, petit éclair à la bouche du canon.
@@ -212,19 +183,19 @@ Référence : reprends EXACTEMENT le personnage de la demande 13 (mêmes couleur
 6. Pixel (exactement comme sur sa fiche de modèle), avec son arme. Pose défaite : assis par terre, étourdi, petites spirales au-dessus de la tête.
 ```
 
-### Demande 16 — Planche « armes » (5 éléments)
+### Demande 13 — Planche « armes » (5 éléments)
 
 ```text
 Image 1536×1024 : planche de 5 éléments sur une grille invisible de 3 colonnes × 2 lignes (cases de 512×512 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
 Cadrage de chaque élément : arme seule vue de profil, canon pointé vers la droite, poignée en bas à gauche, occupe 85 % de la largeur de sa case.
-1. Arme d’Alex : énorme gantelet-canon mécanique orange et gris porté au bras droit, avec une bouche de canon ronde au poing et des pistons sur l’avant-bras.
+1. Arme d’Alex : canon à plasma blanc et doré tenu à deux mains, bouche ronde où tourbillonne une énergie violette.
 2. Arme de Tao : arbalète-tech compacte vert et or tenue à deux mains, avec une lunette de visée ronde et des branches recourbées lumineuses.
 3. Arme de Lina : gros lance-ballons rouge et blanc porté sur l’épaule comme un bazooka jouet, à large bouche ronde et réservoir d’air transparent.
 4. Arme d’Ayla : bombe-blaster : pistolet de peinture turquoise et jaune monté sur une bombe aérosol géante, buse ronde à l’avant.
 5. Arme de Pixel : canon-poisson : petit canon argenté en forme de poisson stylisé, la bouche du poisson sert de canon, nageoires bleues en guise de poignée.
 ```
 
-### Demande 17 — Planche « golem-des-equations-etats » (4 éléments)
+### Demande 14 — Planche « golem-des-equations-etats » (4 éléments)
 
 ```text
 Image 1536×1024 : planche de 4 éléments sur une grille invisible de 2 colonnes × 2 lignes (cases de 768×512 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
@@ -235,15 +206,15 @@ Cadrage de chaque élément : boss en pied, trois quarts face tourné vers la ga
 4. Golem des Équations, boss du domaine « nombres et calculs » : golem massif de blocs de pierre violette et grise couverts de mousse verte, cristaux violets sur les épaules, runes géométriques violettes lumineuses sur la poitrine et les poings, yeux violets brillants en colère. Vaincu : affalé, étourdi, petites spirales au-dessus de la tête.
 ```
 
-### Demande 18 — Golem des Équations — portrait
+### Demande 15 — Golem des Équations — portrait
 
 ```text
 Image 1024×1024. Golem des Équations (exactement comme sur sa planche d’états) : golem massif de blocs de pierre violette et grise couverts de mousse verte, cristaux violets sur les épaules, runes géométriques violettes lumineuses sur la poitrine et les poings, yeux violets brillants en colère. Tête seule, de face, l’air menaçant mais drôle.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
-Référence : reprends EXACTEMENT le personnage de la demande 17 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
+Référence : reprends EXACTEMENT le personnage de la demande 14 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
 ```
 
-### Demande 19 — Planche « geomatrix-etats » (4 éléments)
+### Demande 16 — Planche « geomatrix-etats » (4 éléments)
 
 ```text
 Image 1536×1024 : planche de 4 éléments sur une grille invisible de 2 colonnes × 2 lignes (cases de 768×512 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
@@ -254,15 +225,15 @@ Cadrage de chaque élément : boss en pied, trois quarts face tourné vers la ga
 4. Géomatrix, boss du domaine « géométrie » : golem fait de cubes et de pyramides de cristal bleu et violet, arêtes cyan lumineuses, petits cubes flottant autour de lui, yeux orange. Vaincu : affalé, étourdi, petites spirales au-dessus de la tête.
 ```
 
-### Demande 20 — Géomatrix — portrait
+### Demande 17 — Géomatrix — portrait
 
 ```text
 Image 1024×1024. Géomatrix (exactement comme sur sa planche d’états) : golem fait de cubes et de pyramides de cristal bleu et violet, arêtes cyan lumineuses, petits cubes flottant autour de lui, yeux orange. Tête seule, de face, l’air menaçant mais drôle.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
-Référence : reprends EXACTEMENT le personnage de la demande 19 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
+Référence : reprends EXACTEMENT le personnage de la demande 16 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
 ```
 
-### Demande 21 — Planche « probabot-etats » (4 éléments)
+### Demande 18 — Planche « probabot-etats » (4 éléments)
 
 ```text
 Image 1536×1024 : planche de 4 éléments sur une grille invisible de 2 colonnes × 2 lignes (cases de 768×512 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
@@ -273,15 +244,15 @@ Cadrage de chaque élément : boss en pied, trois quarts face tourné vers la ga
 4. Probabot, boss du domaine « données et probabilités » : robot trapu dont le corps est un énorme dé blanc aux points violets, une face-écran avec des yeux rouges en colère, bras mécaniques dorés qui jonglent avec deux petits dés, roues chenilles. Vaincu : affalé, étourdi, petites spirales au-dessus de la tête.
 ```
 
-### Demande 22 — Probabot — portrait
+### Demande 19 — Probabot — portrait
 
 ```text
 Image 1024×1024. Probabot (exactement comme sur sa planche d’états) : robot trapu dont le corps est un énorme dé blanc aux points violets, une face-écran avec des yeux rouges en colère, bras mécaniques dorés qui jonglent avec deux petits dés, roues chenilles. Tête seule, de face, l’air menaçant mais drôle.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
-Référence : reprends EXACTEMENT le personnage de la demande 21 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
+Référence : reprends EXACTEMENT le personnage de la demande 18 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
 ```
 
-### Demande 23 — Planche « courbix-etats » (4 éléments)
+### Demande 20 — Planche « courbix-etats » (4 éléments)
 
 ```text
 Image 1536×1024 : planche de 4 éléments sur une grille invisible de 2 colonnes × 2 lignes (cases de 768×512 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
@@ -292,15 +263,15 @@ Cadrage de chaque élément : boss en pied, trois quarts face tourné vers la ga
 4. Courbix, boss du domaine « proportionnalité et fonctions » : serpent mécanique géant dont le long corps segmenté ondule comme une courbe de graphique, segments violets reliés par des articulations cyan lumineuses, tête-écran aux yeux jaunes, crête en antennes. Vaincu : affalé, étourdi, petites spirales au-dessus de la tête.
 ```
 
-### Demande 24 — Courbix — portrait
+### Demande 21 — Courbix — portrait
 
 ```text
 Image 1024×1024. Courbix (exactement comme sur sa planche d’états) : serpent mécanique géant dont le long corps segmenté ondule comme une courbe de graphique, segments violets reliés par des articulations cyan lumineuses, tête-écran aux yeux jaunes, crête en antennes. Tête seule, de face, l’air menaçant mais drôle.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
-Référence : reprends EXACTEMENT le personnage de la demande 23 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
+Référence : reprends EXACTEMENT le personnage de la demande 20 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
 ```
 
-### Demande 25 — Planche « ia-des-connaissances-etats » (4 éléments)
+### Demande 22 — Planche « ia-des-connaissances-etats » (4 éléments)
 
 ```text
 Image 1536×1024 : planche de 4 éléments sur une grille invisible de 2 colonnes × 2 lignes (cases de 768×512 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
@@ -311,15 +282,15 @@ Cadrage de chaque élément : boss en pied, trois quarts face tourné vers la ga
 4. IA des Connaissances, boss du domaine « programmation » : gros robot cubique bleu nuit flottant, écran-visage aux yeux cyan en colère, câbles comme des tentacules, cubes de données violets en orbite. Vaincu : affalé, étourdi, petites spirales au-dessus de la tête.
 ```
 
-### Demande 26 — IA des Connaissances — portrait
+### Demande 23 — IA des Connaissances — portrait
 
 ```text
 Image 1024×1024. IA des Connaissances (exactement comme sur sa planche d’états) : gros robot cubique bleu nuit flottant, écran-visage aux yeux cyan en colère, câbles comme des tentacules, cubes de données violets en orbite. Tête seule, de face, l’air menaçant mais drôle.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
-Référence : reprends EXACTEMENT le personnage de la demande 25 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
+Référence : reprends EXACTEMENT le personnage de la demande 22 (mêmes couleurs, coiffure, vêtements, équipement et proportions).
 ```
 
-### Demande 27 — Planche « mobs » (9 éléments)
+### Demande 24 — Planche « mobs » (9 éléments)
 
 ```text
 Image 1024×1024 : planche de 9 éléments sur une grille invisible de 3 colonnes × 3 lignes (cases de 341×341 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
@@ -335,7 +306,7 @@ Cadrage de chaque élément : petit ennemi en pied, tourné vers la gauche, base
 9. Bloc de programmation orange arrondi et vivant (comme une brique de code), yeux blancs. Mignon mais espiègle.
 ```
 
-### Demande 28 — Planche « effets-1 » (9 éléments)
+### Demande 25 — Planche « effets-1 » (9 éléments)
 
 ```text
 Image 1024×1024 : planche de 9 éléments sur une grille invisible de 3 colonnes × 3 lignes (cases de 341×341 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
@@ -351,7 +322,7 @@ Cadrage de chaque élément : effet centré, bords nets (pas de grand halo flou)
 9. Trois petites spirales dorées en orbite (étourdi).
 ```
 
-### Demande 29 — Planche « effets-2 » (3 éléments)
+### Demande 26 — Planche « effets-2 » (3 éléments)
 
 ```text
 Image 1024×1024 : planche de 3 éléments sur une grille invisible de 3 colonnes × 3 lignes (cases de 341×341 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
@@ -361,45 +332,45 @@ Cadrage de chaque élément : effet centré, bords nets (pas de grand halo flou)
 3. Tourbillon de portail violet vu de face.
 ```
 
-### Demande 30 — Arène des nombres
+### Demande 27 — Arène des nombres
 
 ```text
 Image 1536×1024, plein cadre avec décor (pas de fond magenta). Cour d’une académie futuriste violette, tableaux noirs géants couverts de symboles abstraits à la craie (aucun chiffre ni lettre lisible), colonnes et bannières violettes, ciel lavande.
 Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
 ```
 
-### Demande 31 — Arène de la géométrie
+### Demande 28 — Arène de la géométrie
 
 ```text
 Image 1536×1024, plein cadre avec décor (pas de fond magenta). Plateau de cristal bleu et violet sous un ciel indigo, formes géométriques géantes flottantes (cubes, pyramides, sphères) aux arêtes lumineuses.
 Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
 ```
 
-### Demande 32 — Arène des données
+### Demande 29 — Arène des données
 
 ```text
 Image 1536×1024, plein cadre avec décor (pas de fond magenta). Salle de jeux futuriste : dés géants, roues de loterie et grands diagrammes en barres lumineux en relief, néons dorés.
 Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
 ```
 
-### Demande 33 — Arène des fonctions
+### Demande 30 — Arène des fonctions
 
 ```text
 Image 1536×1024, plein cadre avec décor (pas de fond magenta). Paysage néon de collines aux courbes lisses sous un ciel nocturne, quadrillage lumineux cyan au sol comme une feuille de graphique.
 Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
 ```
 
-### Demande 34 — Arène de la programmation
+### Demande 31 — Arène de la programmation
 
 ```text
 Image 1536×1024, plein cadre avec décor (pas de fond magenta). Salle de serveurs futuriste aux baies clignotantes cyan, câbles lumineux, grands blocs de code colorés empilés.
 Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
 ```
 
-### Demande 35 — Illustration principale
+### Demande 32 — Illustration principale
 
 ```text
-Image 1536×1024, plein cadre avec décor (pas de fond magenta). Scène de combat épique et joyeuse : les cinq héros alignés de gauche à droite (Alex avec son gantelet-canon, Lina avec son lance-ballons, Pixel le chat avec son canon-poisson au premier plan, Ayla avec sa bombe-blaster, Tao avec son arbalète) et Questy qui lève le poing au milieu, tous face au Golem des Équations tout à droite ; en arrière-plan un château-académie violet flottant aux bannières à livre, ciel lavande, îles flottantes.
+Image 1536×1024, plein cadre avec décor (pas de fond magenta). Scène de combat épique et joyeuse : les cinq héros alignés de gauche à droite (Alex avec son canon à plasma, Lina avec son lance-ballons, Pixel le chat avec son canon-poisson au premier plan, Ayla avec sa bombe-blaster, Tao avec son arbalète) et Questy qui lève le poing au milieu, tous face au Golem des Équations tout à droite ; en arrière-plan un château-académie violet flottant aux bannières à livre, ciel lavande, îles flottantes.
 Cadrage : illustration plein cadre, composition lisible en petit, sans aucun texte ni interface.
 ```
 
@@ -409,38 +380,35 @@ Cadrage : illustration plein cadre, composition lisible en petit, sans aucun tex
 
 | Demande | Fichiers produits (ordre des cases) |
 |---|---|
-| 1 | `characters/alex/model-sheet` |
-| 2 | `characters/alex/portrait` |
-| 3 | `characters/alex/pose-idle`<br>`characters/alex/pose-run`<br>`characters/alex/pose-shoot`<br>`characters/alex/pose-hurt`<br>`characters/alex/pose-victory`<br>`characters/alex/pose-defeat` |
-| 4 | `characters/tao/model-sheet` |
-| 5 | `characters/tao/portrait` |
-| 6 | `characters/tao/pose-idle`<br>`characters/tao/pose-run`<br>`characters/tao/pose-shoot`<br>`characters/tao/pose-hurt`<br>`characters/tao/pose-victory`<br>`characters/tao/pose-defeat` |
-| 7 | `characters/lina/model-sheet` |
-| 8 | `characters/lina/portrait` |
-| 9 | `characters/lina/pose-idle`<br>`characters/lina/pose-run`<br>`characters/lina/pose-shoot`<br>`characters/lina/pose-hurt`<br>`characters/lina/pose-victory`<br>`characters/lina/pose-defeat` |
-| 10 | `characters/ayla/model-sheet` |
-| 11 | `characters/ayla/portrait` |
-| 12 | `characters/ayla/pose-idle`<br>`characters/ayla/pose-run`<br>`characters/ayla/pose-shoot`<br>`characters/ayla/pose-hurt`<br>`characters/ayla/pose-victory`<br>`characters/ayla/pose-defeat` |
-| 13 | `characters/pixel/model-sheet` |
-| 14 | `characters/pixel/portrait` |
-| 15 | `characters/pixel/pose-idle`<br>`characters/pixel/pose-run`<br>`characters/pixel/pose-shoot`<br>`characters/pixel/pose-hurt`<br>`characters/pixel/pose-victory`<br>`characters/pixel/pose-defeat` |
-| 16 | `weapons/alex`<br>`weapons/tao`<br>`weapons/lina`<br>`weapons/ayla`<br>`weapons/pixel` |
-| 17 | `bosses/maths/golem-des-equations`<br>`bosses/maths/golem-des-equations-attack`<br>`bosses/maths/golem-des-equations-hurt`<br>`bosses/maths/golem-des-equations-ko` |
-| 18 | `bosses/maths/golem-des-equations-portrait` |
-| 19 | `bosses/maths/geomatrix`<br>`bosses/maths/geomatrix-attack`<br>`bosses/maths/geomatrix-hurt`<br>`bosses/maths/geomatrix-ko` |
-| 20 | `bosses/maths/geomatrix-portrait` |
-| 21 | `bosses/maths/probabot`<br>`bosses/maths/probabot-attack`<br>`bosses/maths/probabot-hurt`<br>`bosses/maths/probabot-ko` |
-| 22 | `bosses/maths/probabot-portrait` |
-| 23 | `bosses/maths/courbix`<br>`bosses/maths/courbix-attack`<br>`bosses/maths/courbix-hurt`<br>`bosses/maths/courbix-ko` |
-| 24 | `bosses/maths/courbix-portrait` |
-| 25 | `bosses/maths/ia-des-connaissances`<br>`bosses/maths/ia-des-connaissances-attack`<br>`bosses/maths/ia-des-connaissances-hurt`<br>`bosses/maths/ia-des-connaissances-ko` |
-| 26 | `bosses/maths/ia-des-connaissances-portrait` |
-| 27 | `bosses/minions/calculatrice`<br>`bosses/minions/cube-bot`<br>`bosses/minions/equerre`<br>`bosses/minions/compas`<br>`bosses/minions/de`<br>`bosses/minions/camembert`<br>`bosses/minions/courbe`<br>`bosses/minions/bug`<br>`bosses/minions/bloc-code` |
-| 28 | `effects/impacts/hit-burst`<br>`effects/impacts/anneau`<br>`effects/impacts/etincelles`<br>`effects/impacts/flash`<br>`effects/impacts/explosion`<br>`effects/particles/puff`<br>`effects/particles/bouclier`<br>`effects/particles/soin`<br>`effects/particles/etourdi` |
-| 29 | `effects/impacts/onde-boss`<br>`effects/particles/confettis`<br>`effects/transitions/portail` |
-| 30 | `environments/arenas/nombres` |
-| 31 | `environments/arenas/geometrie` |
-| 32 | `environments/arenas/donnees` |
-| 33 | `environments/arenas/fonctions` |
-| 34 | `environments/arenas/informatique` |
-| 35 | `branding/key-art` |
+| 1 | `characters/tao/model-sheet` |
+| 2 | `characters/tao/portrait` |
+| 3 | `characters/tao/pose-idle`<br>`characters/tao/pose-run`<br>`characters/tao/pose-shoot`<br>`characters/tao/pose-hurt`<br>`characters/tao/pose-victory`<br>`characters/tao/pose-defeat` |
+| 4 | `characters/lina/model-sheet` |
+| 5 | `characters/lina/portrait` |
+| 6 | `characters/lina/pose-idle`<br>`characters/lina/pose-run`<br>`characters/lina/pose-shoot`<br>`characters/lina/pose-hurt`<br>`characters/lina/pose-victory`<br>`characters/lina/pose-defeat` |
+| 7 | `characters/ayla/model-sheet` |
+| 8 | `characters/ayla/portrait` |
+| 9 | `characters/ayla/pose-idle`<br>`characters/ayla/pose-run`<br>`characters/ayla/pose-shoot`<br>`characters/ayla/pose-hurt`<br>`characters/ayla/pose-victory`<br>`characters/ayla/pose-defeat` |
+| 10 | `characters/pixel/model-sheet` |
+| 11 | `characters/pixel/portrait` |
+| 12 | `characters/pixel/pose-idle`<br>`characters/pixel/pose-run`<br>`characters/pixel/pose-shoot`<br>`characters/pixel/pose-hurt`<br>`characters/pixel/pose-victory`<br>`characters/pixel/pose-defeat` |
+| 13 | `weapons/alex`<br>`weapons/tao`<br>`weapons/lina`<br>`weapons/ayla`<br>`weapons/pixel` |
+| 14 | `bosses/maths/golem-des-equations`<br>`bosses/maths/golem-des-equations-attack`<br>`bosses/maths/golem-des-equations-hurt`<br>`bosses/maths/golem-des-equations-ko` |
+| 15 | `bosses/maths/golem-des-equations-portrait` |
+| 16 | `bosses/maths/geomatrix`<br>`bosses/maths/geomatrix-attack`<br>`bosses/maths/geomatrix-hurt`<br>`bosses/maths/geomatrix-ko` |
+| 17 | `bosses/maths/geomatrix-portrait` |
+| 18 | `bosses/maths/probabot`<br>`bosses/maths/probabot-attack`<br>`bosses/maths/probabot-hurt`<br>`bosses/maths/probabot-ko` |
+| 19 | `bosses/maths/probabot-portrait` |
+| 20 | `bosses/maths/courbix`<br>`bosses/maths/courbix-attack`<br>`bosses/maths/courbix-hurt`<br>`bosses/maths/courbix-ko` |
+| 21 | `bosses/maths/courbix-portrait` |
+| 22 | `bosses/maths/ia-des-connaissances`<br>`bosses/maths/ia-des-connaissances-attack`<br>`bosses/maths/ia-des-connaissances-hurt`<br>`bosses/maths/ia-des-connaissances-ko` |
+| 23 | `bosses/maths/ia-des-connaissances-portrait` |
+| 24 | `bosses/minions/calculatrice`<br>`bosses/minions/cube-bot`<br>`bosses/minions/equerre`<br>`bosses/minions/compas`<br>`bosses/minions/de`<br>`bosses/minions/camembert`<br>`bosses/minions/courbe`<br>`bosses/minions/bug`<br>`bosses/minions/bloc-code` |
+| 25 | `effects/impacts/hit-burst`<br>`effects/impacts/anneau`<br>`effects/impacts/etincelles`<br>`effects/impacts/flash`<br>`effects/impacts/explosion`<br>`effects/particles/puff`<br>`effects/particles/bouclier`<br>`effects/particles/soin`<br>`effects/particles/etourdi` |
+| 26 | `effects/impacts/onde-boss`<br>`effects/particles/confettis`<br>`effects/transitions/portail` |
+| 27 | `environments/arenas/nombres` |
+| 28 | `environments/arenas/geometrie` |
+| 29 | `environments/arenas/donnees` |
+| 30 | `environments/arenas/fonctions` |
+| 31 | `environments/arenas/informatique` |
+| 32 | `branding/key-art` |

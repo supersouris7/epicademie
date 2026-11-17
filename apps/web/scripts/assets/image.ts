@@ -274,3 +274,48 @@ export function inspect(img: Rgba): Report {
     cornersClear: [alphaAt(0, 0), alphaAt(w, 0), alphaAt(0, h), alphaAt(w, h)].every((a) => a === 0),
   };
 }
+
+/**
+ * Débris de la case voisine (images découpées par le générateur) : formes qui touchent le bord de l'image
+ * et sont petites devant la forme principale. Les éléments décoratifs détachés (étoiles, cœurs) ne
+ * touchent pas le bord et sont gardés.
+ */
+export function dropEdgeScraps(img: Rgba, ratio = 0.05): Rgba {
+  const { width: w, height: h } = img;
+  const n = w * h;
+  const label = new Int32Array(n).fill(-1);
+  const sizes: number[] = [];
+  const touches: boolean[] = [];
+  const vis = (p: number) => (img.data[p * 4 + 3] ?? 0) > 8;
+  const stack: number[] = [];
+  for (let s = 0; s < n; s++) {
+    if (label[s] !== -1 || !vis(s)) continue;
+    const id = sizes.length;
+    let count = 0;
+    let edge = false;
+    label[s] = id;
+    stack.push(s);
+    while (stack.length) {
+      const p = stack.pop() ?? 0;
+      const x = p % w;
+      const y = (p - x) / w;
+      count++;
+      if (x === 0 || y === 0 || x === w - 1 || y === h - 1) edge = true;
+      for (const q of [x > 0 ? p - 1 : -1, x < w - 1 ? p + 1 : -1, p - w, p + w]) {
+        if (q >= 0 && q < n && label[q] === -1 && vis(q)) {
+          label[q] = id;
+          stack.push(q);
+        }
+      }
+    }
+    sizes.push(count);
+    touches.push(edge);
+  }
+  const biggest = Math.max(0, ...sizes);
+  const out = Buffer.from(img.data);
+  for (let p = 0; p < n; p++) {
+    const id = label[p] ?? -1;
+    if (id >= 0 && touches[id] && (sizes[id] ?? 0) < biggest * ratio) out[p * 4 + 3] = 0;
+  }
+  return { data: out, width: w, height: h };
+}

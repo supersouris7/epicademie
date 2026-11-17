@@ -32,6 +32,8 @@ export const CHARACTER_MOTION: Record<AnimationState, TargetAndTransition> = {
   idle: { y: [0, -4, 0], transition: { duration: 2.4, repeat: Infinity, ease: 'easeInOut' } },
   run: { y: [0, -8, 0], transition: { duration: 0.35, repeat: Infinity, ease: 'easeInOut' } },
   shoot: { x: [0, -10, 0], transition: { duration: 0.25 } },
+  jump: { y: [0, -36, 0], transition: { duration: 0.5, ease: 'easeOut' } },
+  shield: { x: [0, 6, 0], transition: { duration: 0.3 } },
   hurt: { x: [0, -14, 10, -6, 0], opacity: [1, 0.5, 1, 0.6, 1], transition: { duration: 0.45 } },
   victory: { y: [0, -30, 0], scale: [1, 1.05, 1], transition: { duration: 0.6, repeat: 2 } },
   defeat: { y: 12, rotate: -8, opacity: 0.75, transition: { duration: DURATION.slow } },

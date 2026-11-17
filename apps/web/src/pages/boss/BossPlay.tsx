@@ -32,7 +32,9 @@ import { MathText } from '../../components/MathText.tsx';
 import { Memo } from '../../components/play/Memo.tsx';
 import { QuestionTools } from '../../components/play/QuestionTools.tsx';
 import { useToast } from '../../components/Toast.tsx';
-import type { AnimationState } from '../../design/assets.ts';
+import type { AnimationState, HeroExpression } from '../../design/assets.ts';
+import { HeroFace } from '../../components/battle/HeroFace.tsx';
+import { CharacterSprite } from '../../components/game/CharacterSprite.tsx';
 import { bossFilter, bossOf, mobOf } from '../../design/bosses.ts';
 import { formatAnswer, formatResponse } from '../../lib/answers.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../lib/sound.ts';
@@ -74,7 +76,9 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   const [memo, setMemo] = useState(false);
   const [confirmQuit, setConfirmQuit] = useState(false);
   const [picked, setPicked] = useState<{ x: number; y: number } | null>(null);
-  const [heroState, setHeroState] = useState<AnimationState>('idle');
+  // Entrée en scène : le héros arrive en courant.
+  const [heroState, setHeroState] = useState<AnimationState>('run');
+  const [face, setFace] = useState<HeroExpression>('determine');
   const [enemyState, setEnemyState] = useState<EnemyState>('idle');
   const [shot, setShot] = useState(0);
   const [riposte, setRiposte] = useState(0);
@@ -100,6 +104,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
       .then((b) => {
         shownAt.current = performance.now();
         setBattle(b);
+        later(700, () => setHeroState('idle'));
       })
       .catch((err: unknown) =>
         setError(
@@ -143,13 +148,16 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
     if (next.status === 'won') {
       setEnemyState('ko');
       setHeroState('victory');
+      setFace('rire');
       later(1400, () => void finish(next));
     } else if (next.status === 'lost') {
       setHeroState('defeat');
+      setFace('etourdi');
       later(1200, () => void finish(next));
     } else {
       setHeroState('idle');
       setEnemyState('idle');
+      setFace(next.hearts === 1 ? 'determine' : 'confiant');
       setBusy(false);
     }
   };
@@ -178,6 +186,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
       if (res.correct) {
         playSound('correct');
         setHeroState('shoot');
+        setFace(battle.mobsDefeated >= BATTLE_MOBS ? 'enthousiaste' : 'joie');
         setShot((n) => n + 1);
         later(HIT_MS, () => setEnemyState('hurt'));
         later(NEXT_MS, () => advance(res.battle));
@@ -186,7 +195,8 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
         setEnemyState('attack');
         setRiposte((n) => n + 1);
         later(HIT_MS, () => {
-          setHeroState(res.outcome === 'blocked' ? 'idle' : 'hurt');
+          setHeroState(res.outcome === 'blocked' ? 'shield' : 'hurt');
+          setFace(res.outcome === 'blocked' ? 'surprise' : res.battle.hearts <= 1 ? 'triste' : 'colere');
           setEnemyState('idle');
           // Le bouclier a servi : on l'enlève tout de suite de la scène.
           setBattle((b) => (b ? { ...b, shield: res.battle.shield, hearts: res.battle.hearts } : b));
@@ -210,6 +220,12 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
       const next = await sendBattleItem(battle.id, item);
       playSound('reveal');
       setBattle(next);
+      if (item === 'indice') setFace('reflexion');
+      if (item === 'soin') setFace('joie');
+      if (item === 'bouclier') {
+        setHeroState('shield');
+        later(700, () => setHeroState('idle'));
+      }
     } catch (err) {
       showToast(err instanceof ApiError ? err.message : 'Problème de connexion');
     }
@@ -227,7 +243,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
     );
   }
 
-  if (summary) return <BattleResults summary={summary} chapter={chapter} gender={profile.gender} />;
+  if (summary) return <BattleResults summary={summary} chapter={chapter} gender={profile.gender} hero={profile.hero} />;
 
   return (
     <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-2 px-3 py-3 sm:px-4">
@@ -240,6 +256,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
           onClick={() => setConfirmQuit(true)}
           aria-label="Quitter le combat"
         />
+        <HeroFace hero={profile.hero} expression={face} />
         <div className="flex items-center gap-0.5" aria-label={`${battle?.hearts ?? 3} cœurs sur 3`} role="img">
           {Array.from({ length: battle?.maxHearts ?? 3 }, (_, i) => (
             <GameIcon
@@ -450,10 +467,12 @@ function BattleResults({
   summary,
   chapter,
   gender,
+  hero,
 }: {
   readonly summary: BattleSummary;
   readonly chapter: Chapter;
   readonly gender: Profile['gender'];
+  readonly hero: Profile['hero'];
 }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -469,8 +488,15 @@ function BattleResults({
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200, damping: 10 }}
+          className="flex items-end gap-2"
         >
-          <QuestyPose pose={summary.won ? 'hero' : 'triste'} mood={summary.won ? 'proud' : 'sad'} size={150} />
+          {/* Le héros en entier : victoire, ou la tête basse après une défaite. */}
+          {summary.won ? (
+            <CharacterSprite hero={hero} state="victory" height={170} />
+          ) : (
+            <HeroFace hero={hero} expression="triste" size={130} />
+          )}
+          <QuestyPose pose={summary.won ? 'hero' : 'triste'} mood={summary.won ? 'proud' : 'sad'} size={130} />
         </motion.div>
         <h1 className="font-display text-4xl tracking-wide">
           {summary.won ? `${boss.name} est vaincu !` : `${boss.name} a gagné cette fois…`}

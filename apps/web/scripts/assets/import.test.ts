@@ -2,7 +2,7 @@
 import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 import { PLANNED_ASSETS } from '../../src/design/assets.ts';
-import { chromaKey, contentBox, gridCells, hasAlpha, inspect, splitSheet, type Rgba } from './image.ts';
+import { chromaKey, contentBox, dropEdgeScraps, gridCells, hasAlpha, inspect, splitSheet, type Rgba } from './image.ts';
 import { render } from './import.ts';
 
 /** Sujet de test : disque violet et rose cerclé d'encre, sur fond magenta, anticrénelé. */
@@ -106,5 +106,22 @@ describe('rendu final', () => {
     );
     const { notes } = await render(asset, plain);
     expect(notes).toContain('fond non détouré');
+  });
+});
+
+describe('débris collés au bord', () => {
+  it('retire une petite forme qui touche le bord, garde le sujet et les décors détachés', () => {
+    const w = 20;
+    const h = 20;
+    const data = Buffer.alloc(w * h * 4);
+    const set = (x: number, y: number) => (data[(y * w + x) * 4 + 3] = 255);
+    for (let y = 4; y < 16; y++) for (let x = 4; x < 16; x++) set(x, y); // sujet 12×12
+    set(0, 10); // débris au bord
+    set(18, 2); // étoile détachée, loin du bord
+    const out = dropEdgeScraps({ data, width: w, height: h });
+    const alpha = (x: number, y: number) => out.data[(y * w + x) * 4 + 3];
+    expect(alpha(0, 10)).toBe(0);
+    expect(alpha(18, 2)).toBe(255);
+    expect(alpha(10, 10)).toBe(255);
   });
 });
