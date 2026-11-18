@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — génération des images avec ChatGPT
 
-291 images finales, produites en 117 demandes.
+294 images finales, produites en 120 demandes.
 
 Chaque lot existe aussi en **fichier séparé et autonome** (message de départ inclus) dans `docs/chatgpt/` :
 c'est ce fichier qu'il faut utiliser dans ChatGPT, un lot par conversation. Ce document-ci regroupe tout pour référence.
@@ -18,7 +18,7 @@ c'est ce fichier qu'il faut utiliser dans ChatGPT, un lot par conversation. Ce d
 | 3 | Pictogrammes blancs (boutons) | 27 | 15–17 | `docs/chatgpt/lot-03-pictogrammes-blancs-boutons.md` |
 | 4 | Icônes en couleur | 65 | 18–25 | `docs/chatgpt/lot-04-icones-en-couleur.md` |
 | 5 | Questy, la mascotte | 38 | 26–45 | `docs/chatgpt/lot-05-questy-la-mascotte.md` |
-| 6 | Kit combat | 134 | 46–117 | `docs/chatgpt/lot-06-kit-combat.md` |
+| 6 | Kit combat | 137 | 46–120 | `docs/chatgpt/lot-06-kit-combat.md` |
 
 ## Modèle à utiliser
 
@@ -1385,7 +1385,37 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 101. Golem des Équations — illustration
+#### 101. Golem des Équations — début de rage
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-rage-debut.png` · 1536×1024 → final 1200×800
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1536×1024. Golem des Équations qui s’énerve : aura rouge naissante, yeux rouges, bras écartés : golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine.
+Cadrage : personnage en pied centré, de face, fond transparent, halo et effets autour de lui.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 102. Golem des Équations — rage
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-rage.png` · 1536×1024 → final 1200×800
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1536×1024. Golem des Équations en rage : éclairs rouges partout, gueule hérissée de crocs, bras écartés : golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine.
+Cadrage : personnage en pied centré, de face, fond transparent, halo et effets autour de lui.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 103. Golem des Équations — en rage (combat)
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-rage-combat.png` · 1536×1024 → final 512×512
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1536×1024. Golem des Équations en rage dans l’arène, poings serrés, aura de flammes rouges : golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine.
+Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 104. Golem des Équations — illustration
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-art.png` · 1536×1024 → final 1200×800
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1395,7 +1425,7 @@ Cadrage : personnage en pied centré, de face, fond transparent, halo et effets 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 102. Planche « mobs » (9 éléments)
+#### 105. Planche « mobs » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/mobs.png` · 1024×1024, grille 3×3 → chaque case finale 384×384
 Cases : 1 → `bosses/minions/calculatrice` · 2 → `bosses/minions/cube-bot` · 3 → `bosses/minions/equerre` · 4 → `bosses/minions/compas` · 5 → `bosses/minions/de` · 6 → `bosses/minions/camembert` · 7 → `bosses/minions/courbe` · 8 → `bosses/minions/bug` · 9 → `bosses/minions/bloc-code`
 
@@ -1418,7 +1448,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 103. Planche « effets-1 » (9 éléments)
+#### 106. Planche « effets-1 » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/effets-1.png` · 1024×1024, grille 3×3 → chaque case finale 512×512
 Cases : 1 → `effects/impacts/hit-burst` · 2 → `effects/impacts/anneau` · 3 → `effects/impacts/etincelles` · 4 → `effects/impacts/flash` · 5 → `effects/impacts/explosion` · 6 → `effects/particles/puff` · 7 → `effects/particles/bouclier` · 8 → `effects/particles/soin` · 9 → `effects/particles/etourdi`
 
@@ -1441,7 +1471,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 104. Planche « effets-2 » (3 éléments)
+#### 107. Planche « effets-2 » (3 éléments)
 Enregistrer sous `assets-src/originals/sheets/effets-2.png` · 1024×1024, grille 3×3 → chaque case finale 512×512
 Cases : 1 → `effects/impacts/onde-boss` · 2 → `effects/particles/confettis` · 3 → `effects/transitions/portail`
 
@@ -1458,7 +1488,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 105. Arène de la station spatiale
+#### 108. Arène de la station spatiale
 Enregistrer sous `assets-src/originals/environments/arenas/espace.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
@@ -1467,7 +1497,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 106. Arène de la station spatiale (portrait)
+#### 109. Arène de la station spatiale (portrait)
 Enregistrer sous `assets-src/originals/environments/arenas/espace-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/espace.png`.
 
@@ -1477,7 +1507,7 @@ Cadrage : même décor recomposé en hauteur (format portrait, écran de télép
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 107. Arène de la station spatiale (panorama)
+#### 110. Arène de la station spatiale (panorama)
 Enregistrer sous `assets-src/originals/environments/arenas/espace-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/espace.png`.
 
@@ -1487,7 +1517,7 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 108. Arène de la station spatiale (bandeau)
+#### 111. Arène de la station spatiale (bandeau)
 Enregistrer sous `assets-src/originals/environments/arenas/espace-bandeau.png` · 1536×1024 → final 1536×384 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/espace.png`.
 
@@ -1497,7 +1527,7 @@ Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 109. Arène de l’académie
+#### 112. Arène de l’académie
 Enregistrer sous `assets-src/originals/environments/arenas/academie.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
@@ -1506,7 +1536,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 110. Arène de l’académie (portrait)
+#### 113. Arène de l’académie (portrait)
 Enregistrer sous `assets-src/originals/environments/arenas/academie-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/academie.png`.
 
@@ -1516,7 +1546,7 @@ Cadrage : même décor recomposé en hauteur (format portrait, écran de télép
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 111. Arène de l’académie (panorama)
+#### 114. Arène de l’académie (panorama)
 Enregistrer sous `assets-src/originals/environments/arenas/academie-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/academie.png`.
 
@@ -1526,7 +1556,7 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 112. Arène de l’académie (bandeau)
+#### 115. Arène de l’académie (bandeau)
 Enregistrer sous `assets-src/originals/environments/arenas/academie-bandeau.png` · 1536×1024 → final 1536×384 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/academie.png`.
 
@@ -1536,7 +1566,7 @@ Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 113. Arène du volcan
+#### 116. Arène du volcan
 Enregistrer sous `assets-src/originals/environments/arenas/volcan.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
@@ -1545,7 +1575,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 114. Arène du volcan (portrait)
+#### 117. Arène du volcan (portrait)
 Enregistrer sous `assets-src/originals/environments/arenas/volcan-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/volcan.png`.
 
@@ -1555,7 +1585,7 @@ Cadrage : même décor recomposé en hauteur (format portrait, écran de télép
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 115. Arène du volcan (panorama)
+#### 118. Arène du volcan (panorama)
 Enregistrer sous `assets-src/originals/environments/arenas/volcan-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/volcan.png`.
 
@@ -1565,7 +1595,7 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 116. Arène du volcan (bandeau)
+#### 119. Arène du volcan (bandeau)
 Enregistrer sous `assets-src/originals/environments/arenas/volcan-bandeau.png` · 1536×1024 → final 1536×384 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/volcan.png`.
 
@@ -1575,7 +1605,7 @@ Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 117. Illustration principale
+#### 120. Illustration principale
 Enregistrer sous `assets-src/originals/branding/key-art.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 

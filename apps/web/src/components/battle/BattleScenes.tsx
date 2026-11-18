@@ -241,3 +241,67 @@ export function BossCloseUp({
     </div>
   );
 }
+
+/**
+ * Passage en rage du boss (dernière vie) : deux grandes images plein écran, « début de rage » puis
+ * « rage » qui éclate (secousse) ; toucher passe à la suite.
+ */
+export function RageScene({
+  bossId,
+  name,
+  stage,
+  lines,
+  onNext,
+}: {
+  readonly bossId: string;
+  readonly name: string;
+  readonly stage: 'debut' | 'rage';
+  readonly lines: { readonly debut: string; readonly rage: string };
+  readonly onNext: () => void;
+}) {
+  const reduce = useReducedMotion();
+  const src = assetSrc(`bosses-maths-${bossId}-${stage === 'debut' ? 'rage-debut' : 'rage'}`);
+  const rage = stage === 'rage';
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${name} passe en rage`}
+      className={`fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 overflow-hidden px-4 py-6 text-center ${rage ? 'bg-[radial-gradient(circle_at_50%_40%,#b3141e_0%,#4a0710_50%,#12030a_85%)]' : 'bg-[radial-gradient(circle_at_50%_40%,#6d1036_0%,#2a0b2e_50%,#0d0618_85%)]'}`}
+    >
+      <button type="button" aria-label="Passer" onClick={onNext} className="absolute inset-0 cursor-pointer" />
+      <motion.div
+        key={stage}
+        initial={reduce ? false : rage ? { scale: 1.6, opacity: 0 } : { scale: 0.85, opacity: 0 }}
+        animate={
+          reduce
+            ? { opacity: 1 }
+            : rage
+              ? { scale: [1.6, 1, 1.05, 1], opacity: 1, x: [0, -14, 14, -10, 10, -4, 0] }
+              : { scale: 1, opacity: 1 }
+        }
+        transition={{ duration: rage ? 0.8 : 0.6, ease: 'easeOut' }}
+        className="pointer-events-none relative"
+      >
+        {src && (
+          <img
+            src={src}
+            alt=""
+            aria-hidden
+            className="max-h-[56dvh] w-[min(96vw,720px)] object-contain drop-shadow-[0_10px_40px_rgba(255,30,30,0.5)]"
+          />
+        )}
+      </motion.div>
+      <motion.p
+        key={`ligne-${stage}`}
+        initial={{ scale: 0.6, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: rage ? 0.5 : 0.4, type: 'spring', stiffness: 240, damping: 14 }}
+        className={`cartoon text-on-light pointer-events-none relative max-w-lg rounded-2xl bg-[#ffdcdc] px-5 py-4 leading-snug font-bold ${rage ? 'font-display text-2xl tracking-wide sm:text-3xl' : 'text-xl sm:text-2xl'}`}
+        role="status"
+      >
+        {lines[stage]}
+      </motion.p>
+    </div>
+  );
+}

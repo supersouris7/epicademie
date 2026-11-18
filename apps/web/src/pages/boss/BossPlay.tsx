@@ -21,8 +21,15 @@ import { answerBattle, bossesKey, finishBattle, sendBattleItem, startBattle, use
 import { ApiError } from '../../api/client.ts';
 import { BattleBar } from '../../components/battle/BattleBar.tsx';
 import { BattleArena, type ArenaEnemy, type EnemyState } from '../../components/battle/BattleArena.tsx';
-import { BossLivesBadge, BossSays, QuestySays, RetryCountdown, Shake } from '../../components/battle/BattleScenes.tsx';
-import { faceOffTaunt, questyReply } from '../../lib/battleLines.ts';
+import {
+  BossLivesBadge,
+  BossSays,
+  QuestySays,
+  RageScene,
+  RetryCountdown,
+  Shake,
+} from '../../components/battle/BattleScenes.tsx';
+import { faceOffTaunt, questyReply, RAGE_LINES } from '../../lib/battleLines.ts';
 import { DOCK_HEIGHT } from '../../lib/tools.ts';
 import { useMusic } from '../../lib/music.ts';
 import { useBackGuard, useGameExit } from '../../lib/gameExit.ts';
@@ -115,6 +122,8 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   const beaten = (overview?.records ?? []).some((r) => r.chapterId === chapter.id && r.wins > 0);
   /** Arrivée du boss après le dernier mob : scène en grand, Questy félicite. */
   const [arrival, setArrival] = useState(false);
+  /** Passage en rage (le boss n'a plus qu'une vie) : « début » puis « rage », plein écran. */
+  const [rageScene, setRageScene] = useState<'debut' | 'rage' | null>(null);
   /** Défaite : « On recommence ? » (5 s) avant le bilan. */
   const [retry, setRetry] = useState(false);
   const [enemyState, setEnemyState] = useState<EnemyState>('idle');
@@ -177,9 +186,16 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   // Musique : celle du combat pendant les mobs, celle du boss face à lui, la victoire au bilan.
   useMusic(summary ? (summary.won ? 'victoire' : 'menu') : onBoss || arrival ? 'boss' : null);
   const bossEnemy: ArenaEnemy = { key: 'boss', name: boss.name, boss: true, image: `bosses-maths-${boss.id}` };
+  // En rage (dernière vie), le boss change d'apparence dans l'arène (sauf au KO, qui garde sa pose).
+  const enraged = onBoss && battle?.bossLives === 1 && enemyState !== 'ko';
   const enemy: ArenaEnemy | null = battle
     ? onBoss
-      ? { key: 'boss', name: boss.name, boss: true, image: `bosses-maths-${boss.id}` }
+      ? {
+          key: 'boss',
+          name: boss.name,
+          boss: true,
+          image: enraged ? `bosses-maths-${boss.id}-rage-combat` : `bosses-maths-${boss.id}`,
+        }
       : (() => {
           const mob = mobOf(boss, battle.mobsDefeated);
           return {
@@ -205,7 +221,20 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   };
 
   /** Passe à l'état suivant du combat ; fin de combat : pose finale puis résultats. */
+  /** Scène de rage : début, puis rage, puis retour au combat (un toucher avance). */
+  const nextRage = () => setRageScene((r) => (r === 'debut' ? 'rage' : null));
+  // Le temps de réponse de la question repart à la fin de la scène de rage.
+  useEffect(() => {
+    if (rageScene === null) shownAt.current = performance.now();
+  }, [rageScene]);
   const advance = (next: BattleView) => {
+    // Le boss tombe à sa dernière vie : il s'énerve et passe en rage.
+    if (next.status === 'fighting' && battle && battle.bossLives > 1 && next.bossLives === 1) {
+      setRageScene('debut');
+      playSound('reveal');
+      later(2600, () => setRageScene((r) => (r === 'debut' ? 'rage' : r)));
+      later(5200, () => setRageScene((r) => (r === 'rage' ? null : r)));
+    }
     // Dernier mob battu : le boss arrive, en grand.
     if (next.status === 'fighting' && battle && battle.mobsDefeated < BATTLE_MOBS && next.mobsDefeated >= BATTLE_MOBS) {
       setArrival(true);
@@ -354,6 +383,9 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
 
   return (
     <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-3 px-3 py-3 sm:px-4">
+      {rageScene && (
+        <RageScene bossId={boss.id} name={boss.name} stage={rageScene} lines={RAGE_LINES} onNext={nextRage} />
+      )}
       {intro || arrival ? (
         // Entrée en scène (mot de Questy) ou arrivée du boss : en grand, personnages entiers.
         <div
@@ -376,14 +408,16 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
               height={arrival ? 'min(46dvh, 460px)' : 'min(34dvh, 420px)'}
             />
           </Shake>
-          <motion.p
-            initial={{ scale: 0.3, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.9, type: 'spring', stiffness: 300, damping: 12 }}
-            className="font-display text-toon text-center text-4xl tracking-wide sm:text-5xl"
-          >
-            {arrival ? `${boss.name} arrive !` : onBoss ? boss.name : 'Combat !'}
-          </motion.p>
+          {arrival && (
+            <motion.p
+              initial={{ scale: 0.3, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.9, type: 'spring', stiffness: 300, damping: 12 }}
+              className="font-display text-toon text-center text-4xl tracking-wide sm:text-5xl"
+            >
+              {`${boss.name} arrive !`}
+            </motion.p>
+          )}
           {arrival && <BossLivesBadge lives={BOSS_LIVES} />}
           {!arrival && (
             <BossSays

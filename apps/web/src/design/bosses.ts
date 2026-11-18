@@ -31,9 +31,9 @@ export function bossHeadId(bossId: string, expression: BossExpression): string {
   return assetSrc(id) ? id : `bosses-maths-${bossId}-portrait`;
 }
 
-/** Expression du boss selon les vies qui lui restent (3 : menaçant, 2 : inquiet, 1 : en colère). */
+/** Expression du boss selon les vies qui lui restent (3 : menaçant, 2 : inquiet, 1 : furieux, en rage). */
 export const bossMood = (lives: number): BossExpression =>
-  lives >= 3 ? 'menace' : lives === 2 ? 'inquiet' : lives === 1 ? 'colere' : 'ko';
+  lives >= 3 ? 'menace' : lives === 2 ? 'inquiet' : lives === 1 ? 'furieux' : 'ko';
 
 /** Arènes du combat (environments/arenas), une tirée au hasard à chaque combat. */
 export const ARENAS = ['espace', 'academie', 'volcan'] as const;

@@ -60,7 +60,8 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   await relatifs.getByRole('button', { name: 'Combattre' }).click();
   let view = (await (await started).json()) as BattleView;
   // Entrée en scène en grand avec le mot de Questy, puis bandeau compact.
-  await expect(page.getByText('Combat !')).toBeVisible();
+  // Plus de texte « Combat ! » : l'arène et le face-à-face suffisent.
+  await expect(page.getByText('Combat !')).toHaveCount(0);
   // Face-à-face : le boss provoque sur le chapitre, Questy répond.
   await expect(page.getByRole('status', { name: /^Golem des Équations : .*relatifs/ })).toBeVisible();
   await expect(page.getByTestId('battle-intro').getByRole('status')).toHaveCount(2);
@@ -83,7 +84,18 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
 
   // Puis sans faute jusqu'au boss et à sa défaite.
   let sawBoss = false;
+  let sawRage = false;
   while (view.status === 'fighting') {
+    if (view.bossLives === 1 && !sawRage) {
+      // Dernière vie : le boss s'énerve puis passe en rage (deux grandes images), un toucher avance.
+      const rage = page.getByRole('dialog', { name: /passe en rage/ });
+      await expect(rage).toContainText('regretter');
+      await rage.getByRole('button', { name: 'Passer' }).click();
+      await expect(rage).toContainText('MODE RAGE');
+      await rage.getByRole('button', { name: 'Passer' }).click();
+      await expect(rage).toHaveCount(0);
+      sawRage = true;
+    }
     if (view.mobsDefeated === 7 && !sawBoss) {
       // Arrivée du boss en grand : Questy félicite, 3 vies annoncées.
       const arrival = page.getByTestId('boss-arrival');
@@ -96,6 +108,7 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
     view = await answer(page, view, true);
   }
   expect(view.status).toBe('won');
+  expect(sawRage).toBe(true);
   await expect(page.getByRole('heading', { name: /est vaincu/ })).toBeVisible({ timeout: 10_000 });
   await expect(page.getByText('1re victoire : le coffre !')).toBeVisible();
   // Un cœur perdu : médaille d'argent.

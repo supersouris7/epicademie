@@ -65,3 +65,9 @@ export const QUESTY_REPLIES = [
   'Une erreur ? Pas grave, il te reste tes cœurs. On y va !',
 ] as const;
 export const questyReply = (r: number) => pick(QUESTY_REPLIES, r);
+
+/** Répliques du boss qui passe en rage (il ne lui reste qu'une vie) : il s'énerve, puis explose. */
+export const RAGE_LINES = {
+  debut: 'Grrr… Tu m’as touché deux fois ? Tu vas le regretter…',
+  rage: 'MODE RAGE ! Plus personne ne m’arrête !',
+} as const;
