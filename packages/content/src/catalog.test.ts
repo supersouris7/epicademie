@@ -47,15 +47,9 @@ const withBoss = (c: (typeof CHAPTERS)[number]) => [...c.skills, ...(c.boss?.pro
 const cases = CHAPTERS.flatMap((c) => withBoss(c).map((s) => [c.id, s.id] as const));
 
 describe('catalogue', () => {
-  it('combat de boss : Fractions, Relatifs, Proportionnalité en 5e, tous les chapitres des autres classes', () => {
+  it('combat de boss : un boss par chapitre, dans toutes les classes', () => {
     const withB = CHAPTERS.filter((c) => c.boss);
-    expect(
-      withB
-        .filter((c) => c.grade === '5e')
-        .map((c) => c.id)
-        .toSorted(),
-    ).toEqual(['m5-fractions', 'm5-proportionnalite', 'm5-relatifs']);
-    for (const c of CHAPTERS.filter((x) => x.grade !== '5e')) expect(c.boss, c.id).toBeDefined();
+    for (const c of CHAPTERS) expect(c.boss, c.id).toBeDefined();
     for (const c of withB) {
       expect(c.boss?.problems.length, c.id).toBeGreaterThanOrEqual(2);
       expect(c.boss?.traps.length, c.id).toBeGreaterThanOrEqual(1);

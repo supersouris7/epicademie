@@ -23,6 +23,7 @@ import { BattleArena, type ArenaEnemy, type EnemyState } from '../../components/
 import { BossLivesBadge, BossSays, QuestySays, RetryCountdown, Shake } from '../../components/battle/BattleScenes.tsx';
 import { faceOffTaunt, questyReply } from '../../lib/battleLines.ts';
 import { DOCK_HEIGHT } from '../../lib/tools.ts';
+import { useBackGuard, useGameExit } from '../../lib/gameExit.ts';
 import { ConfirmDialog } from '../../components/ConfirmDialog.tsx';
 import { Confetti } from '../../components/Confetti.tsx';
 import { Figure } from '../../components/figures/Figure.tsx';
@@ -49,9 +50,16 @@ export function BossPlay({ profile }: { readonly profile: Profile }) {
   const { chapterId = '' } = useParams();
   const location = useLocation();
   const chapter = getChapter(chapterId);
+  const back = `/jouer/boss/${chapter?.subject ?? 'maths'}?classe=${chapter?.grade ?? ''}`;
+  const { left } = useGameExit(back, FROM_BATTLE);
   if (!chapter?.boss) return <Navigate to="/jouer/boss/maths" replace />;
+  // Combat déjà quitté, revenu par « précédent » : on ne le relance pas (redirection en cours).
+  if (left) return null;
   return <Battle key={location.key} profile={profile} chapter={chapter} />;
 }
+
+/** Retour à la liste des boss depuis un combat : pas de gros plan du boss. */
+const FROM_BATTLE = { fromBattle: true } as const;
 
 /** Après une erreur : ce qui s'est passé, avant de passer à la suite. */
 interface Missed {
@@ -291,8 +299,12 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
     }
   };
 
+  // Sorties : le combat est remplacé dans l'historique (« précédent » ne le relance pas).
+  const { exit } = useGameExit(`/jouer/boss/${chapter.subject}?classe=${chapter.grade}`, FROM_BATTLE);
   // Quitter la partie ramène au menu principal.
-  const leave = () => void navigate('/hub');
+  const leave = () => exit('/hub');
+  // « Précédent » pendant le combat : même confirmation que la Pause.
+  const { rearm } = useBackGuard(!summary && !error, () => setConfirmQuit(true));
 
   if (error) {
     return (
@@ -306,7 +318,10 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
 
   const replay = () => void navigate(location.pathname, { replace: true, state: { replay: Date.now() } });
   if (summary && retry) return <RetryCountdown hero={profile.hero} onRetry={replay} onSkip={() => setRetry(false)} />;
-  if (summary) return <BattleResults summary={summary} chapter={chapter} gender={profile.gender} hero={profile.hero} />;
+  if (summary)
+    return (
+      <BattleResults summary={summary} chapter={chapter} gender={profile.gender} hero={profile.hero} onExit={exit} />
+    );
 
   return (
     <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-3 px-3 py-3 sm:px-4">
@@ -414,7 +429,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
             initial={{ x: 30, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -30, opacity: 0 }}
-            className="side:grid side:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] flex min-h-0 flex-1 flex-col gap-3"
+            className="side:grid side:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] xl:side:grid-cols-[minmax(0,1fr)_minmax(420px,520px)] flex min-h-0 flex-1 flex-col gap-3"
           >
             <section className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pb-1 [&>*]:shrink-0">
               <div className="flex items-center gap-2">
@@ -428,7 +443,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
                 <PauseButton onClick={() => setConfirmQuit(true)} />
               </div>
               <p className="text-muted text-sm font-bold">{skill?.title}</p>
-              <h1 className="text-2xl leading-snug font-bold sm:text-3xl">
+              <h1 className="text-2xl leading-snug font-bold sm:text-3xl xl:text-4xl">
                 <MathText text={question.prompt} />
               </h1>
               {battle.hintShown && (
@@ -451,7 +466,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
             </section>
 
             <section
-              className={`side:h-[min(100%,520px)] side:self-center flex ${DOCK_HEIGHT} min-h-0 shrink-0 flex-col`}
+              className={`side:h-[min(100%,520px)] xl:side:h-[min(100%,680px)] side:self-center flex ${DOCK_HEIGHT} min-h-0 shrink-0 flex-col`}
             >
               {missed ? (
                 <motion.div
@@ -516,7 +531,10 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
           mood="ok"
           cancel="Reprendre"
           onConfirm={leave}
-          onCancel={() => setConfirmQuit(false)}
+          onCancel={() => {
+            setConfirmQuit(false);
+            rearm();
+          }}
         />
       )}
       {toast}
@@ -570,11 +588,13 @@ function BattleResults({
   chapter,
   gender,
   hero,
+  onExit,
 }: {
   readonly summary: BattleSummary;
   readonly chapter: Chapter;
   readonly gender: Profile['gender'];
   readonly hero: Profile['hero'];
+  readonly onExit: (to: string, state?: unknown) => void;
 }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -679,7 +699,7 @@ function BattleResults({
             size="lg"
             icon="icons-navigation-lesson"
             onClick={() =>
-              void navigate(
+              onExit(
                 weak
                   ? `/partie/entrainement/${chapter.id}/${weak.id}`
                   : `/jouer/entrainement/${chapter.subject}/${chapter.id}`,
@@ -698,11 +718,11 @@ function BattleResults({
         <GameButton
           variant="accent"
           icon="icons-navigation-next"
-          onClick={() => void navigate(`/jouer/boss/${chapter.subject}?classe=${chapter.grade}`)}
+          onClick={() => onExit(`/jouer/boss/${chapter.subject}?classe=${chapter.grade}`, FROM_BATTLE)}
         >
           Autres boss
         </GameButton>
-        <GameButton variant="accent" icon="icons-navigation-home" onClick={() => void navigate('/hub')}>
+        <GameButton variant="accent" icon="icons-navigation-home" onClick={() => onExit('/hub')}>
           Accueil
         </GameButton>
       </div>

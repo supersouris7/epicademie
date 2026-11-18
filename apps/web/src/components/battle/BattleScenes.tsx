@@ -164,8 +164,8 @@ export function BossSays({
   const src = bossPortrait(bossId, expression);
   return (
     <motion.div
-      initial={{ x: 40, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
+      initial={{ scale: 0.85, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
       transition={{ delay, type: 'spring', stiffness: 220, damping: 16 }}
       className="flex items-center gap-3"
       role="status"

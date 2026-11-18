@@ -36,6 +36,7 @@ import { Feedback } from '../../components/play/Feedback.tsx';
 import { Memo } from '../../components/play/Memo.tsx';
 import { QuestionTools } from '../../components/play/QuestionTools.tsx';
 import { DOCK_HEIGHT } from '../../lib/tools.ts';
+import { useBackGuard, useGameExit } from '../../lib/gameExit.ts';
 import { ConfirmDialog } from '../../components/ConfirmDialog.tsx';
 import { localToday, randomSeed } from '../../lib/dates.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../lib/sound.ts';
@@ -93,7 +94,10 @@ export function TrainingPlay({ profile }: { readonly profile: Profile }) {
   const valid = chapter !== undefined && skills.every((id) => chapter.skills.some((s) => s.id === id));
   const { data: progress, isPending } = useSkills(profile.id);
   const location = useLocation();
+  const { left } = useGameExit(`/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`);
   if (!valid) return <Navigate to="/jouer/entrainement" replace />;
+  // Partie déjà quittée, revenue par « précédent » : on ne la relance pas (redirection en cours).
+  if (left) return null;
   if (isPending || !progress) return <p className="p-8 text-xl">Chargement…</p>;
   const states = new Map<string, SkillState>(progress.map((s) => [s.skillId, s]));
   return <Game key={location.key} profile={profile} chapterId={chapterId} skills={skills} states={states} />;
@@ -277,15 +281,19 @@ function Game({
   };
 
   const quit = () => setConfirmQuit(true);
+  // Sorties : la partie est remplacée dans l'historique (« précédent » ne la relance pas).
+  const { exit } = useGameExit(`/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`);
   // Quitter la partie ramène au menu principal.
-  const leave = () => void navigate('/hub');
+  const leave = () => exit('/hub');
+  // « Précédent » pendant la série : même confirmation que la Pause.
+  const { rearm } = useBackGuard(!summary && !error, quit);
 
   if (error) {
     return (
       <div className="mx-auto flex max-w-xl flex-col items-center gap-4 p-8 text-center">
         <Questy mood="sad" size={120} />
         <p className="text-xl font-bold">{error}</p>
-        <GameButton onClick={() => void navigate('/hub')}>Retour à l’accueil</GameButton>
+        <GameButton onClick={() => exit('/hub')}>Retour à l’accueil</GameButton>
       </div>
     );
   }
@@ -297,6 +305,7 @@ function Game({
         missed={missed}
         gender={profile.gender}
         chapterId={chapterId}
+        onExit={exit}
         onReplay={() => void navigate(location.pathname, { replace: true, state: { replay: Date.now() } })}
       />
     );
@@ -347,7 +356,7 @@ function Game({
             initial={{ x: 40, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -40, opacity: 0 }}
-            className="side:grid side:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] flex min-h-0 flex-1 flex-col gap-3"
+            className="side:grid side:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] xl:side:grid-cols-[minmax(0,1fr)_minmax(420px,520px)] flex min-h-0 flex-1 flex-col gap-3"
           >
             {/* Énoncé et figure : jamais recouverts par les outils. */}
             <section
@@ -362,7 +371,7 @@ function Game({
                 )}
                 <span className="text-muted ml-auto text-sm font-bold">Niveau {current.plan.level}</span>
               </div>
-              <h1 className="text-2xl leading-snug font-bold sm:text-3xl">
+              <h1 className="text-2xl leading-snug font-bold sm:text-3xl xl:text-4xl">
                 <MathText text={current.question.prompt} />
               </h1>
               {retry && !answered && (
@@ -415,7 +424,7 @@ function Game({
 
             {/* Écran coupé : pavé et outils en bas (portrait) ou sur le côté (paysage). */}
             <section
-              className={`flex min-h-0 shrink-0 flex-col ${explaining ? 'side:h-full min-h-[clamp(280px,40dvh,390px)] flex-1' : `side:h-[min(100%,560px)] side:self-center ${DOCK_HEIGHT}`}`}
+              className={`flex min-h-0 shrink-0 flex-col ${explaining ? 'side:h-full min-h-[clamp(280px,40dvh,390px)] flex-1' : `side:h-[min(100%,560px)] xl:side:h-[min(100%,680px)] side:self-center ${DOCK_HEIGHT}`}`}
             >
               {answered ? (
                 <Feedback
@@ -456,7 +465,10 @@ function Game({
           mood="ok"
           cancel="Reprendre"
           onConfirm={leave}
-          onCancel={() => setConfirmQuit(false)}
+          onCancel={() => {
+            setConfirmQuit(false);
+            rearm();
+          }}
         />
       )}
       {toast}
@@ -469,15 +481,16 @@ function Results({
   missed,
   gender,
   chapterId,
+  onExit,
   onReplay,
 }: {
   summary: SessionSummary;
   missed: readonly Missed[];
   gender: Gender | null;
   chapterId: string;
+  onExit: (to: string) => void;
   onReplay: () => void;
 }) {
-  const navigate = useNavigate();
   const chapter = getChapter(chapterId);
   const { regular } = summary;
   const mood: MoodId = summary.perfect
@@ -594,11 +607,11 @@ function Results({
         <GameButton
           variant="accent"
           icon="icons-navigation-next"
-          onClick={() => void navigate(`/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`)}
+          onClick={() => onExit(`/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`)}
         >
           Autre notion
         </GameButton>
-        <GameButton variant="accent" icon="icons-navigation-home" onClick={() => void navigate('/hub')}>
+        <GameButton variant="accent" icon="icons-navigation-home" onClick={() => onExit('/hub')}>
           Accueil
         </GameButton>
       </div>

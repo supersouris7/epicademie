@@ -46,7 +46,7 @@ export function NumPad({ onKey, onSubmit, canSubmit, allowComma = true, allowMin
     </button>
   );
   return (
-    <div className="mx-auto grid h-full min-h-0 w-full max-w-md grid-cols-4 gap-2">
+    <div className="mx-auto grid h-full min-h-0 w-full max-w-md grid-cols-4 gap-2 xl:max-w-lg">
       <div className="col-span-3 grid min-h-0 grid-cols-3 grid-rows-4 gap-2">
         {KEYS.map((k) => key(k))}
         {/* Dernière rangée sans trou : le 0 prend la place des touches absentes (− ou virgule). */}

@@ -86,9 +86,10 @@ async function reply(b: BattleView, right: boolean) {
 const overview = async () => (await app.inject(`/api/profiles/${profileId}/bosses`)).json<BossOverview>();
 
 describe('combat de boss', () => {
-  it('tous les boss sont ouverts d’emblée ; un chapitre sans boss est refusé', async () => {
+  it('tous les boss sont ouverts d’emblée (5e comprise) ; un chapitre inconnu est refusé', async () => {
     expect((await startBattle()).statusCode).toBe(201);
-    expect((await startBattle('m5-calcul')).statusCode).toBe(400);
+    expect((await startBattle('m5-calcul')).statusCode).toBe(201);
+    expect((await startBattle('m5-inconnu')).statusCode).toBe(400);
   });
 
   it('victoire sans faute : munition, coffre, pièces ; la 2e victoire ne redonne pas le coffre', async () => {

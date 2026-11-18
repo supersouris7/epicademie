@@ -141,10 +141,30 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await page.getByRole('button', { name: 'Pause' }).click();
   await expect(page.getByRole('alertdialog', { name: 'Pause' })).toContainText('cette série ne sera pas comptée');
   await page.getByRole('button', { name: 'Reprendre' }).click();
-  // Quitter une partie ramène au menu principal.
   await page.getByRole('button', { name: 'Pause' }).click();
   await page.getByRole('button', { name: 'Quitter la série' }).click();
   await expect(page).toHaveURL(/\/hub$/);
+
+  // Parcours dans l'appli : « précédent » pendant la série demande confirmation ;
+  // après « Quitter », « précédent » ramène à la liste des notions, pas dans la partie.
+  await page.getByRole('button', { name: /^Entraînement/ }).click();
+  await page.getByRole('button', { name: 'Maths', exact: true }).click();
+  await page.getByRole('button', { name: /^Multiplier et diviser des relatifs \d/ }).click();
+  await page
+    .getByRole('button', { name: /^Produit de deux relatifs|^Multiplier/ })
+    .first()
+    .click();
+  await expect(page.getByRole('progressbar', { name: 'Progression de la série' })).toBeVisible();
+  await page.goBack();
+  await expect(page.getByRole('alertdialog', { name: 'Pause' })).toBeVisible();
+  await page.getByRole('button', { name: 'Reprendre' }).click();
+  await expect(page.getByRole('alertdialog', { name: 'Pause' })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Pause' }).click();
+  await page.getByRole('button', { name: 'Quitter la série' }).click();
+  await expect(page).toHaveURL(/\/hub$/);
+  await page.goBack();
+  await expect(page).toHaveURL(/\/jouer\/entrainement\/maths\/m4-relatifs/);
+  await expect(page.getByRole('progressbar', { name: 'Progression de la série' })).toHaveCount(0);
 
   // Tables : brouillon disponible, pas de calculatrice ni de conseil.
   await page.goto('/partie/entrainement/m5-calcul/m5-tables');

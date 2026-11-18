@@ -44,12 +44,17 @@ export function Notions({ profile }: { readonly profile: Profile }) {
                 onClick={() => play(s.id)}
                 className="cartoon cartoon-press bg-surface flex w-full flex-wrap items-center gap-3 p-4 text-left"
               >
-                <span className="font-display min-w-0 flex-1 text-xl tracking-wide">{s.title}</span>
-                {due && <span className="bg-danger rounded-full px-3 py-1 text-sm font-bold text-white">à revoir</span>}
-                <span className="text-sm font-bold" style={{ color: m.color }}>
-                  {m.label}
+                {/* Titre sur toute la largeur, état en dessous : rien n'écrase le titre sur téléphone. */}
+                <span className="flex min-w-0 flex-1 flex-col gap-1">
+                  <span className="font-display text-xl tracking-wide">{s.title}</span>
+                  <span className="flex items-center gap-2">
+                    <span className="text-sm font-bold" style={{ color: m.color }}>
+                      {m.label}
+                    </span>
+                    <StageDots stage={st?.stage ?? 0} />
+                  </span>
                 </span>
-                <StageDots stage={st?.stage ?? 0} />
+                {due && <span className="bg-danger rounded-full px-3 py-1 text-sm font-bold text-white">à revoir</span>}
               </button>
             </motion.li>
           );

@@ -53,7 +53,9 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   const relatifs = page.getByRole('listitem').filter({ hasText: 'Nombres relatifs' });
   await expect(page.getByRole('heading', { name: 'Équipement' })).toBeVisible();
   await expect(page.getByText('Munitions')).toHaveCount(0);
-  await expect(page.getByRole('button', { name: 'Calcul mental, boss à venir' })).toBeVisible();
+  // Un boss par chapitre, 5e comprise ; sous le chapitre, la médaille ou « Pas encore vaincu ».
+  await expect(page.getByRole('button', { name: /boss à venir/ })).toHaveCount(0);
+  await expect(page.getByRole('listitem').filter({ hasText: 'Calcul mental' })).toContainText('Pas encore vaincu');
   const started = page.waitForResponse((r) => r.url().endsWith('/api/battles'));
   await relatifs.getByRole('button', { name: 'Combattre' }).click();
   let view = (await (await started).json()) as BattleView;

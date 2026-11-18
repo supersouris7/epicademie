@@ -10,8 +10,8 @@ export function About() {
       <div className="flex flex-col items-center gap-4 sm:flex-row">
         <Questy size={140} mood="cool" />
         <p className="text-lg">
-          <strong>Academy Fighters</strong> — l’aventure des exercices de 5e. Questy, le robot à écran LED qui change de
-          tête selon l’humeur, est un personnage original créé pour Academy Fighters.
+          <strong>Academy Fighters</strong> — l’aventure des maths, du CM1 à la 3e. Questy, le robot à écran LED qui
+          change de tête selon l’humeur, est un personnage original créé pour Academy Fighters.
         </p>
       </div>
       <GamePanel title="Crédits" className="flex flex-col gap-3">

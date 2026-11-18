@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Navigate, useNavigate, useParams } from 'react-router';
+import { Navigate, NavigationType, useLocation, useNavigate, useNavigationType, useParams } from 'react-router';
 import { chaptersOf, type Chapter } from '@questeo/content';
 import {
   BOSS_MEDAL_LABELS,
@@ -36,7 +36,12 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
   const [toast, showToast] = useToast(2500);
   const [busy, setBusy] = useState(false);
   // Gros plan du boss qui provoque, à chaque entrée dans la matière (passable d'un toucher).
-  const [closeUp, setCloseUp] = useState(true);
+  // …mais pas au retour d'un combat ni par « précédent ».
+  const location = useLocation();
+  const navType = useNavigationType();
+  const [closeUp, setCloseUp] = useState(
+    () => navType !== NavigationType.Pop && !(location.state as { fromBattle?: boolean } | null)?.fromBattle,
+  );
   const [roll] = useState(Math.random);
   const info = SUBJECTS.find((s) => s.id === subject);
   const { grade, grades, own, setGrade } = useGradeChoice(profile, subject);
@@ -159,8 +164,12 @@ function BossRow({ chapter, index, record, onFight, onSoon }: BossRowProps) {
       <div className="flex min-w-0 flex-1 flex-col gap-1 text-left">
         <span className="font-display text-xl leading-tight tracking-wide">{chapter.title}</span>
         <span className="text-muted text-sm font-bold">
-          {ready ? boss.name : 'Boss à venir'}
-          {record ? ` · vaincu ${record.wins} fois` : ''}
+          {/* Même boss partout : on montre plutôt où l'on en est. */}
+          {!ready
+            ? 'Boss à venir'
+            : record
+              ? `Médaille ${BOSS_MEDAL_LABELS[record.bestMedal]} · vaincu ${record.wins} fois`
+              : 'Pas encore vaincu'}
         </span>
       </div>
     </>

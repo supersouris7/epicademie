@@ -37,6 +37,15 @@ export function Progress({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
   const { data } = useSkills(profile.id);
   const [subject, setSubject] = useState<SubjectId>('maths');
+  // Domaines ouverts (tous repliés à l'arrivée : la page reste courte sur téléphone).
+  const [open, setOpen] = useState<ReadonlySet<DomainId>>(new Set());
+  const toggle = (d: DomainId) =>
+    setOpen((o) => {
+      const n = new Set(o);
+      if (n.has(d)) n.delete(d);
+      else n.add(d);
+      return n;
+    });
   const states = new Map((data ?? []).map((s) => [s.skillId, s]));
   const today = localToday();
   const { grade, grades, own, setGrade } = useGradeChoice(profile, subject);
@@ -91,13 +100,29 @@ export function Progress({ profile }: { readonly profile: Profile }) {
       {domains.map((d) => {
         const dChapters = chapters.filter((c) => c.domain === d);
         const ids = dChapters.flatMap((c) => c.skills.map((s) => s.id));
+        const isOpen = open.has(d);
         return (
           <section key={d} className="flex flex-col gap-3">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 className="font-display text-2xl tracking-wide">{DOMAINS[d]}</h2>
-              <MedalCounts counts={countMedals(ids, states)} />
-            </div>
-            <div className="grid gap-4 lg:grid-cols-2">
+            {/* Domaine replié par défaut : titre et médailles ; un toucher l'ouvre. */}
+            <h2>
+              <button
+                type="button"
+                aria-expanded={isOpen}
+                aria-controls={`domaine-${d}`}
+                onClick={() => toggle(d)}
+                className="cartoon cartoon-press bg-surface flex w-full flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 text-left"
+              >
+                <span className="font-display min-w-0 flex-1 text-xl tracking-wide sm:text-2xl">{DOMAINS[d]}</span>
+                <MedalCounts counts={countMedals(ids, states)} />
+                <span className="text-muted text-sm font-bold">
+                  {dChapters.length} chapitre{dChapters.length > 1 ? 's' : ''}
+                </span>
+                <span aria-hidden className={`font-display text-2xl transition-transform ${isOpen ? 'rotate-90' : ''}`}>
+                  ›
+                </span>
+              </button>
+            </h2>
+            <div id={`domaine-${d}`} hidden={!isOpen} className="grid gap-4 lg:grid-cols-2">
               {dChapters.map((c, i) => (
                 <motion.article
                   key={c.id}
