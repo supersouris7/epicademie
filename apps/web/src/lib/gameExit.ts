@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { NavigationType, useLocation, useNavigate, useNavigationType } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 /**
  * Sorties d'une page de partie (entraînement ou combat).
@@ -39,9 +39,8 @@ const guarded = () => (window.history.state as GuardState | null)?.partieGarde =
 export function useGameExit(fallback: string, fallbackState?: unknown) {
   const location = useLocation();
   const navigate = useNavigate();
-  const navType = useNavigationType();
-  // Retour par « précédent » sur une partie déjà quittée : on repart vers la liste.
-  const left = navType === NavigationType.Pop && wasLeft(location.key);
+  // Retour sur une partie déjà quittée (chaque entrée d'historique a sa clé) : on repart vers la liste.
+  const left = wasLeft(location.key);
   useEffect(() => {
     if (left) void navigate(fallback, { replace: true, state: fallbackState });
   }, [left, navigate, fallback, fallbackState]);
