@@ -16,12 +16,12 @@ import {
   type ItemId,
   type Profile,
 } from '@questeo/shared';
-import { answerBattle, bossesKey, finishBattle, sendBattleItem, startBattle } from '../../api/battles.ts';
+import { answerBattle, bossesKey, finishBattle, sendBattleItem, startBattle, useBosses } from '../../api/battles.ts';
 import { ApiError } from '../../api/client.ts';
 import { BattleBar } from '../../components/battle/BattleBar.tsx';
 import { BattleArena, type ArenaEnemy, type EnemyState } from '../../components/battle/BattleArena.tsx';
-import { BossLivesBadge, QuestySays, RetryCountdown, Shake } from '../../components/battle/BattleScenes.tsx';
-import { randomIntroLine } from '../../lib/battleLines.ts';
+import { BossLivesBadge, BossSays, QuestySays, RetryCountdown, Shake } from '../../components/battle/BattleScenes.tsx';
+import { faceOffTaunt, questyReply } from '../../lib/battleLines.ts';
 import { DOCK_HEIGHT } from '../../lib/tools.ts';
 import { ConfirmDialog } from '../../components/ConfirmDialog.tsx';
 import { Confetti } from '../../components/Confetti.tsx';
@@ -39,7 +39,7 @@ import { useToast } from '../../components/Toast.tsx';
 import type { AnimationState, HeroExpression } from '../../design/assets.ts';
 import { HeroFace } from '../../components/battle/HeroFace.tsx';
 import { CharacterSprite } from '../../components/game/CharacterSprite.tsx';
-import { BOSS_MEDAL_ICONS, bossFilter, bossOf, mobOf, randomArena } from '../../design/bosses.ts';
+import { BOSS_MEDAL_ICONS, bossOf, mobOf, randomArena } from '../../design/bosses.ts';
 import { formatAnswer, formatResponse } from '../../lib/answers.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../lib/sound.ts';
 import { ITEM_ICONS } from '../../design/items.ts';
@@ -67,7 +67,7 @@ const NEXT_MS = 1500;
 /** Durée de la scène en grand après une erreur, avant l'explication. */
 const MISS_SCENE_MS = 1400;
 /** Entrée en scène avec le mot de Questy, puis arrivée du boss (le temps de lire). */
-const INTRO_MS = 3800;
+const INTRO_MS = 7000;
 const ARRIVAL_MS = 4500;
 
 function Battle({ profile, chapter }: { readonly profile: Profile; readonly chapter: Chapter }) {
@@ -93,7 +93,10 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   const [face, setFace] = useState<HeroExpression>('determine');
   /** Entrée en scène en grand, puis bandeau compact pour laisser la place aux énoncés. */
   const [intro, setIntro] = useState(true);
-  const [introLine] = useState(randomIntroLine);
+  // Face-à-face : le boss provoque (plus vexé s'il a déjà perdu sur ce chapitre), Questy répond.
+  const [roll] = useState(Math.random);
+  const { data: overview } = useBosses(profile.id);
+  const beaten = (overview?.records ?? []).some((r) => r.chapterId === chapter.id && r.wins > 0);
   /** Arrivée du boss après le dernier mob : scène en grand, Questy félicite. */
   const [arrival, setArrival] = useState(false);
   /** Défaite : « On recommence ? » (5 s) avant le bilan. */
@@ -139,7 +142,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   const onBoss = battle ? battle.mobsDefeated >= BATTLE_MOBS : false;
   const enemy: ArenaEnemy | null = battle
     ? onBoss
-      ? { key: 'boss', name: boss.name, boss: true, image: `bosses-maths-${boss.id}`, filter: bossFilter(chapter.id) }
+      ? { key: 'boss', name: boss.name, boss: true, image: `bosses-maths-${boss.id}` }
       : (() => {
           const mob = mobOf(boss, battle.mobsDefeated);
           return {
@@ -303,7 +306,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
               arena={arena}
               sky={boss.sky}
               heroEntrance={!arrival}
-              height="min(46dvh, 460px)"
+              height={arrival ? 'min(46dvh, 460px)' : 'min(34dvh, 420px)'}
             />
           </Shake>
           <motion.p
@@ -315,10 +318,19 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
             {arrival ? `${boss.name} arrive !` : onBoss ? boss.name : 'Combat !'}
           </motion.p>
           {arrival && <BossLivesBadge lives={BOSS_LIVES} />}
+          {!arrival && (
+            <BossSays
+              bossId={boss.id}
+              name={boss.name}
+              text={faceOffTaunt(chapter.title, beaten, profile.gender, roll)}
+              delay={1.1}
+            />
+          )}
           <QuestySays
-            text={arrival ? 'Bravo, tous les mobs sont battus ! Presque fini : plus que le boss !' : introLine}
+            text={arrival ? 'Bravo, tous les mobs sont battus ! Presque fini : plus que le boss !' : questyReply(roll)}
             pose={arrival ? 'bravo' : 'montre'}
             mood={arrival ? 'proud' : 'happy'}
+            delay={arrival ? 0.5 : 2.8}
           />
           <GameButton
             className="self-center"

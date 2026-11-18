@@ -43,6 +43,11 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
 
   await page.getByRole('button', { name: /^Combat de boss/ }).click();
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
+  // Gros plan du boss de la matière qui provoque, puis choix du chapitre.
+  const closeUp = page.getByRole('dialog', { name: 'Golem des Équations te provoque' });
+  await expect(closeUp).toContainText(/challenger|Aucun chapitre|n’ont pas mangé/);
+  await page.getByRole('button', { name: 'Choisir mon chapitre' }).click();
+  await expect(closeUp).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Combat de boss' })).toBeVisible();
   // Tous les boss sont ouverts d'emblée ; chapitres sans boss « À venir ». Panneau « Équipement ».
   const relatifs = page.getByRole('listitem').filter({ hasText: 'Nombres relatifs' });
@@ -54,7 +59,9 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   let view = (await (await started).json()) as BattleView;
   // Entrée en scène en grand avec le mot de Questy, puis bandeau compact.
   await expect(page.getByText('Combat !')).toBeVisible();
-  await expect(page.getByTestId('battle-intro').getByRole('status')).toBeVisible();
+  // Face-à-face : le boss provoque sur le chapitre, Questy répond.
+  await expect(page.getByRole('status', { name: /^Golem des Équations : .*relatifs/ })).toBeVisible();
+  await expect(page.getByTestId('battle-intro').getByRole('status')).toHaveCount(2);
   await page.getByRole('button', { name: 'C’est parti !' }).click();
   // Bandeau : mobs restants en barre segmentée, comme des vies.
   await expect(page.getByRole('progressbar', { name: 'Mobs restants' })).toBeVisible({ timeout: 5000 });
@@ -112,6 +119,7 @@ test('Défaite : 5 secondes pour recommencer, puis l’entraînement', async ({ 
   await expect(page).toHaveURL(/\/hub$/);
   await page.getByRole('button', { name: /^Combat de boss/ }).click();
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
+  await page.getByRole('button', { name: 'Choisir mon chapitre' }).click();
   const started = page.waitForResponse((r) => r.url().endsWith('/api/battles'));
   await page
     .getByRole('listitem')

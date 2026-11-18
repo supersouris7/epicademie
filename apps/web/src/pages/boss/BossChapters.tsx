@@ -20,7 +20,10 @@ import { GradeTabs } from '../../components/GradeTabs.tsx';
 import { PageShell } from '../../components/PageShell.tsx';
 import { useToast } from '../../components/Toast.tsx';
 import { assetSrc } from '../../design/assets.ts';
-import { BOSS_MEDAL_ICONS, bossFilter, bossOf } from '../../design/bosses.ts';
+import { BOSS_MEDAL_ICONS, bossOf, bossOfSubject } from '../../design/bosses.ts';
+import { BossCloseUp } from '../../components/battle/BattleScenes.tsx';
+import { subjectTaunt } from '../../lib/battleLines.ts';
+
 import { ITEM_ICONS } from '../../design/items.ts';
 import { ApiError } from '../../api/client.ts';
 import { useGradeChoice } from '../../lib/grades.ts';
@@ -32,6 +35,9 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
   const qc = useQueryClient();
   const [toast, showToast] = useToast(2500);
   const [busy, setBusy] = useState(false);
+  // Gros plan du boss qui provoque, à chaque entrée dans la matière (passable d'un toucher).
+  const [closeUp, setCloseUp] = useState(true);
+  const [roll] = useState(Math.random);
   const info = SUBJECTS.find((s) => s.id === subject);
   const { grade, grades, own, setGrade } = useGradeChoice(profile, subject);
   const chapters = chaptersOf(subject, grade);
@@ -39,6 +45,9 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
   if (!info || chapters.length === 0) return <Navigate to="/jouer/boss" replace />;
   const records = new Map((overview?.records ?? []).map((r) => [r.chapterId, r]));
   const inventory = overview?.inventory ?? { bouclier: 0, soin: 0, indice: 0 };
+  const subjectIds = new Set(chaptersOf(subject).map((c) => c.id));
+  const wins = (overview?.records ?? []).filter((r) => subjectIds.has(r.chapterId)).reduce((n, r) => n + r.wins, 0);
+  const boss = bossOfSubject(subject);
 
   const run = async (fn: () => Promise<unknown>, done?: string) => {
     if (busy) return;
@@ -107,6 +116,14 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
         ))}
       </ul>
       {toast}
+      {closeUp && overview && (
+        <BossCloseUp
+          bossId={boss.id}
+          name={boss.name}
+          text={subjectTaunt(wins, profile.gender, roll)}
+          onDone={() => setCloseUp(false)}
+        />
+      )}
     </PageShell>
   );
 }
@@ -127,15 +144,7 @@ function BossRow({ chapter, index, record, onFight, onSoon }: BossRowProps) {
   const body = (
     <>
       <div className="bg-accent-strong relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl">
-        {portrait && (
-          <img
-            src={portrait}
-            alt=""
-            aria-hidden
-            className="h-full w-full object-contain p-1"
-            style={{ filter: bossFilter(chapter.id) }}
-          />
-        )}
+        {portrait && <img src={portrait} alt="" aria-hidden className="h-full w-full object-contain p-1" />}
         {record && (
           <span className="absolute -right-1 -bottom-1">
             <GameIcon
