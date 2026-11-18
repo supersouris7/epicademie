@@ -41,7 +41,7 @@ import { ConfirmDialog } from '../../components/ConfirmDialog.tsx';
 import { localToday, randomSeed } from '../../lib/dates.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../lib/sound.ts';
 import { formatAnswer, medalMessage } from '../../lib/answers.ts';
-import { heroLine, type HeroMoment } from '../../lib/heroLines.ts';
+import { heroSays, type HeroMoment } from '../../lib/dialogue.ts';
 import { freshQuestion, recentPrompts, rememberPrompt } from '../../lib/recent.ts';
 import { HeroBubble } from '../../components/battle/HeroBubble.tsx';
 import { PauseButton } from '../../components/play/PauseButton.tsx';
@@ -144,9 +144,8 @@ function Game({
   /** Énoncés déjà posés dans la partie : jamais deux fois le même. */
   const seen = useRef(new Set<string>());
   /** Réaction du héros (tête + petite bulle) en haut de l'écran. */
-  const [hero, setHero] = useState(() => ({ ...heroLine('start', Math.floor(Math.random() * 3)), nonce: 1 }));
-  const react = (moment: HeroMoment) =>
-    setHero((h) => ({ ...heroLine(moment, h.nonce + Math.floor(Math.random() * 5)), nonce: h.nonce + 1 }));
+  const [hero, setHero] = useState(() => ({ ...heroSays(profile.hero, 'start'), nonce: 1 }));
+  const react = (moment: HeroMoment) => setHero((h) => ({ ...heroSays(profile.hero, moment), nonce: h.nonce + 1 }));
 
   useEffect(() => {
     setSoundEnabled(profile.soundOn);
@@ -170,7 +169,7 @@ function Game({
       const advise = !advised.current.has(plan.skillId);
       advised.current.add(plan.skillId);
       if (!plan.variant && regularCount(t) === t.length - 1) {
-        setHero((h) => ({ ...heroLine('lastOne', h.nonce), nonce: h.nonce + 1 }));
+        setHero((h) => ({ ...heroSays(profile.hero, 'lastOne'), nonce: h.nonce + 1 }));
       }
       setCurrent({
         plan,

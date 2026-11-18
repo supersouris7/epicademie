@@ -1,5 +1,5 @@
 import type { Chapter } from '@questeo/content';
-import { assetSrc, type BossExpression } from './assets.ts';
+import { assetSrc, type BossExpression, type PiBotHead } from './assets.ts';
 import type { BossMedal } from '@questeo/shared';
 
 /** Un boss par matière, le même pour tous ses chapitres et toutes les classes (docs/SPEC.md §6.2 bis). */
@@ -47,7 +47,7 @@ export const mobName = (mob: string) =>
   mob === 'pi-bot' ? 'π-bot' : mob.charAt(0).toUpperCase() + mob.slice(1).replace(/-/g, ' ');
 
 /** Tête d'un mob avec une expression (si elle est livrée), sinon son image entière. */
-export function mobHeadId(mob: string, face: 'menace' | 'triste' | 'rire'): string {
+export function mobHeadId(mob: string, face: PiBotHead): string {
   const id = `bosses-minions-${mob}-head-${face}`;
   return assetSrc(id) ? id : `bosses-minions-${mob}`;
 }

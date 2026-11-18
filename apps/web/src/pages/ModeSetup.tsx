@@ -9,6 +9,7 @@ import { useToast } from '../components/Toast.tsx';
 import { SoonBadge } from '../components/game/SoonBadge.tsx';
 import { SubjectIcon } from '../components/game/SubjectIcon.tsx';
 import { GameIcon } from '../components/game/GameIcon.tsx';
+import { CHEST_ICON } from '../components/game/ChestReveal.tsx';
 import { Questy } from '../components/mascot/Questy.tsx';
 import { useEntrance } from '../lib/entrance.ts';
 
@@ -37,7 +38,7 @@ export function ModeSetup() {
       {/* Entraînement : c'est ici qu'on gagne son équipement de combat. */}
       {mode.id === 'entrainement' && (
         <div className="cartoon bg-surface-2 flex items-center gap-3 p-3" role="note">
-          <GameIcon id="rewards-chests-rare" size={64} />
+          <GameIcon id={CHEST_ICON} size={64} />
           <p className="text-lg font-bold">
             C’est ici que tu gagnes ton <strong>équipement</strong> ! Chaque série peut t’offrir un coffre (bouclier,
             soin, indice, pièces). Sans faute = coffre garanti.

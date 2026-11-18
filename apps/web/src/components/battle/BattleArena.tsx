@@ -30,6 +30,8 @@ interface BattleArenaProps {
   readonly shield: boolean;
   /** Le héros entre en courant (par défaut comme `entrance`) ; false : il attend déjà en place. */
   readonly heroEntrance?: boolean;
+  /** Durée de l'entrée en scène de l'adversaire (secondes). */
+  readonly entranceSeconds?: number;
   /** Décor : image d'arène livrée, sinon dégradé. */
   readonly arena: string;
   readonly sky: readonly [string, string];
@@ -103,7 +105,7 @@ export function BattleArena(props: BattleArenaProps) {
               className="h-full w-full"
               initial={reduce || !run ? false : { x: '140%', opacity: 1 }}
               animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.9, ease: 'easeOut' }}
+              transition={{ duration: props.entranceSeconds ?? 0.9, ease: 'easeOut' }}
               exit={reduce ? undefined : { scale: 0.2, opacity: 0, rotate: 20, transition: { duration: 0.35 } }}
             >
               <EnemyFigure enemy={enemy} state={enemyState} />

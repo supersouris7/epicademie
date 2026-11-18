@@ -64,7 +64,8 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   await expect(page.getByText('Combat !')).toHaveCount(0);
   // Face-à-face : le boss provoque sur le chapitre, Questy répond.
   await expect(page.getByRole('status', { name: /^Golem des Équations : .*relatifs/ })).toBeVisible();
-  await expect(page.getByTestId('battle-intro').getByRole('status')).toHaveCount(2);
+  // Échange de vannes : boss, héros, boss, héros.
+  await expect(page.getByTestId('battle-intro').getByRole('status')).toHaveCount(4, { timeout: 10_000 });
   await page.getByRole('button', { name: 'C’est parti !' }).click();
   // Bandeau : mobs restants en barre segmentée, comme des vies.
   await expect(page.getByRole('progressbar', { name: 'Mobs restants' })).toBeVisible({ timeout: 5000 });
@@ -89,17 +90,16 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
     if (view.bossLives === 1 && !sawRage) {
       // Dernière vie : le boss s'énerve puis passe en rage (deux grandes images), un toucher avance.
       const rage = page.getByRole('dialog', { name: /passe en rage/ });
-      await expect(rage).toContainText('regretter');
-      await rage.getByRole('button', { name: 'Passer' }).click();
-      await expect(rage).toContainText('MODE RAGE');
-      await rage.getByRole('button', { name: 'Passer' }).click();
+      await expect(rage).toBeVisible();
+      // Trois paliers : début, montée, rage ; un toucher avance.
+      for (let k = 0; k < 3; k++) await rage.getByRole('button', { name: 'Passer' }).click();
       await expect(rage).toHaveCount(0);
       sawRage = true;
     }
     if (view.mobsDefeated === 4 && !sawBoss) {
       // Arrivée du boss en grand : Questy félicite, 3 vies annoncées.
       const arrival = page.getByTestId('boss-arrival');
-      await expect(arrival).toContainText('Presque fini');
+      await expect(arrival.getByRole('status')).toHaveCount(3, { timeout: 8000 }); // boss, héros, Questy
       await expect(arrival).toContainText('3 vies');
       await page.getByRole('button', { name: 'Au combat !' }).click();
       await expect(page.getByRole('progressbar', { name: /Vies de/ })).toBeVisible();
@@ -160,6 +160,7 @@ test('Défaite : 5 secondes pour recommencer, puis l’entraînement', async ({ 
   await expect(page.getByRole('heading', { name: 'On recommence ?' })).toBeVisible({ timeout: 10_000 });
   await expect(page.getByRole('timer')).toBeVisible();
   // Sans réponse en 5 secondes : le bilan, avec l'entraînement et le mot du héros.
-  await expect(page.getByText('Je reviendrai plus forte !')).toBeVisible({ timeout: 8000 });
+  // Le héros (Alex) a le mot de la fin, puis le Golem.
+  await expect(page.getByText(/je reviendrai plus fort|améliorer mon algorithme/i)).toBeVisible({ timeout: 8000 });
   await expect(page.getByRole('button', { name: /On s’entraîne/ })).toBeVisible();
 });

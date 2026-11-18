@@ -24,16 +24,28 @@ import { BattleArena, type ArenaEnemy, type EnemyState } from '../../components/
 import {
   BossLivesBadge,
   BossSays,
+  HeroSays,
   QuestySays,
+  QuipRow,
   RageScene,
   RetryCountdown,
   Shake,
 } from '../../components/battle/BattleScenes.tsx';
-import { faceOffTaunt, questyReply, RAGE_LINES } from '../../lib/battleLines.ts';
+import { faceOffTaunt } from '../../lib/battleLines.ts';
+import {
+  bossSays,
+  faceOffExchange,
+  HERO_GENDER,
+  heroSays,
+  mobSays,
+  questySays,
+  type Line,
+} from '../../lib/dialogue.ts';
 import { DOCK_HEIGHT } from '../../lib/tools.ts';
 import { useBackGuard, useGameExit } from '../../lib/gameExit.ts';
 import { ConfirmDialog } from '../../components/ConfirmDialog.tsx';
 import { Confetti } from '../../components/Confetti.tsx';
+import { CHEST_ICON } from '../../components/game/ChestReveal.tsx';
 import { Figure } from '../../components/figures/Figure.tsx';
 import { GameButton } from '../../components/game/GameButton.tsx';
 import { GameIcon } from '../../components/game/GameIcon.tsx';
@@ -45,7 +57,13 @@ import { Memo } from '../../components/play/Memo.tsx';
 import { PauseButton } from '../../components/play/PauseButton.tsx';
 import { QuestionTools } from '../../components/play/QuestionTools.tsx';
 import { useToast } from '../../components/Toast.tsx';
-import { assetSrc, type AnimationState, type BossExpression, type HeroExpression } from '../../design/assets.ts';
+import {
+  assetSrc,
+  type AnimationState,
+  type BossExpression,
+  type HeroExpression,
+  type PiBotHead,
+} from '../../design/assets.ts';
 import { HeroFace } from '../../components/battle/HeroFace.tsx';
 import { CharacterSprite } from '../../components/game/CharacterSprite.tsx';
 import {
@@ -92,8 +110,12 @@ const NEXT_MS = 1500;
 /** Durée de la scène en grand après une erreur, avant l'explication. */
 const MISS_SCENE_MS = 1400;
 /** Entrée en scène avec le mot de Questy, puis arrivée du boss (le temps de lire). */
-const INTRO_MS = 7000;
-const ARRIVAL_MS = 4500;
+const INTRO_MS = 11000;
+const ARRIVAL_MS = 6500;
+/** Rage : début, montée progressive (flashs blancs), rage ; 3 s chacune. */
+const RAGE_STEP_MS = 3000;
+/** Pose finale (KO du boss ou défaite du héros) avant le bilan. */
+const FINAL_POSE_MS = 3200;
 
 function Battle({ profile, chapter }: { readonly profile: Profile; readonly chapter: Chapter }) {
   const navigate = useNavigate();
@@ -128,17 +150,33 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   const [roll] = useState(Math.random);
   const { data: overview } = useBosses(profile.id);
   const beaten = (overview?.records ?? []).some((r) => r.chapterId === chapter.id && r.wins > 0);
+  // Face-à-face : échange de vannes boss ↔ héros (4 répliques), différent à chaque combat.
+  const exchange = useMemo(
+    () => faceOffExchange(profile.hero, faceOffTaunt(chapter.title, beaten, HERO_GENDER[profile.hero], roll)),
+    [profile.hero, chapter.title, beaten, roll],
+  );
   /** Arrivée du boss après le dernier mob : scène en grand, Questy félicite. */
   const [arrival, setArrival] = useState(false);
   /** Passage en rage (le boss n'a plus qu'une vie) : « début » puis « rage », plein écran. */
-  const [rageScene, setRageScene] = useState<'debut' | 'rage' | null>(null);
+  const [rageScene, setRageScene] = useState<'debut' | 'montee' | 'rage' | null>(null);
   /** Défaite : « On recommence ? » (5 s) avant le bilan. */
   const [retry, setRetry] = useState(false);
   const [enemyState, setEnemyState] = useState<EnemyState>('idle');
   /** Tête du boss dans le bandeau : il réagit aux coups et aux erreurs. */
   const [bossFace, setBossFace] = useState<BossExpression>('menace');
   /** Tête du mob dans le bandeau : menaçant, triste quand il est touché, rieur quand le héros se trompe. */
-  const [mobFace, setMobFace] = useState<'menace' | 'triste' | 'rire'>('menace');
+  const [mobFace, setMobFace] = useState<PiBotHead>('menace');
+  /** Petites répliques sous le bandeau (héros à gauche, adversaire à droite). */
+  const [heroQuip, setHeroQuip] = useState<{ text: string; nonce: number } | null>(null);
+  const [enemyQuip, setEnemyQuip] = useState<{ text: string; nonce: number } | null>(null);
+  const say = (who: 'hero' | 'enemy', line: Line) => {
+    const q = { text: line.text, nonce: Date.now() + Math.random() };
+    if (who === 'hero') setHeroQuip(q);
+    else setEnemyQuip(q);
+  };
+  /** Répliques de l'arrivée du boss et de sa rage (tirées au moment où elles se jouent). */
+  const [arrivalLines, setArrivalLines] = useState<{ boss: Line; hero: Line; questy: string } | null>(null);
+  const [rageLines, setRageLines] = useState({ debut: '', montee: '', rage: '' });
   const [shot, setShot] = useState(0);
   const [riposte, setRiposte] = useState(0);
   /** Dernier coup joué : la scène ne rejoue que lui (sinon l'ancien tir repart avec la riposte : tirs croisés). */
@@ -230,7 +268,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
 
   /** Passe à l'état suivant du combat ; fin de combat : pose finale puis résultats. */
   /** Scène de rage : début, puis rage, puis retour au combat (un toucher avance). */
-  const nextRage = () => setRageScene((r) => (r === 'debut' ? 'rage' : null));
+  const nextRage = () => setRageScene((r) => (r === 'debut' ? 'montee' : r === 'montee' ? 'rage' : null));
   // Le temps de réponse de la question repart à la fin de la scène de rage.
   useEffect(() => {
     if (rageScene === null) shownAt.current = performance.now();
@@ -238,19 +276,36 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   const advance = (next: BattleView) => {
     // Le boss tombe à sa dernière vie : il s'énerve et passe en rage.
     if (next.status === 'fighting' && battle && battle.bossLives > 1 && next.bossLives === 1) {
+      setRageLines({
+        debut: bossSays('rageDebut').text,
+        montee: bossSays('rageMontee').text,
+        rage: bossSays('rageCri').text,
+      });
       setRageScene('debut');
+      // Après la scène, le héros réagit.
+      later(RAGE_STEP_MS * 3 + 300, () => {
+        const l = heroSays(profile.hero, 'rage');
+        setFace(l.face);
+        say('hero', l);
+      });
       playSound('reveal');
-      later(2600, () => setRageScene((r) => (r === 'debut' ? 'rage' : r)));
-      later(5200, () => setRageScene((r) => (r === 'rage' ? null : r)));
+      later(RAGE_STEP_MS, () => setRageScene((r) => (r === 'debut' ? 'montee' : r)));
+      later(RAGE_STEP_MS * 2, () => setRageScene((r) => (r === 'montee' ? 'rage' : r)));
+      later(RAGE_STEP_MS * 3, () => setRageScene((r) => (r === 'rage' ? null : r)));
     }
     // Dernier mob battu : le boss arrive, en grand.
     if (next.status === 'fighting' && battle && battle.mobsDefeated < BATTLE_MOBS && next.mobsDefeated >= BATTLE_MOBS) {
       setArrival(true);
+      setArrivalLines({
+        boss: bossSays('arrival'),
+        hero: heroSays(profile.hero, 'bossArrives'),
+        questy: questySays('arrival'),
+      });
       playSound('reveal');
       // Il arrive en invoquant ses opérations, l'air moqueur.
       setBossFace('moqueur');
-      later(400, () => setEnemyState('summon'));
-      later(2600, () => setEnemyState('idle'));
+      later(1800, () => setEnemyState('summon'));
+      later(4500, () => setEnemyState('idle'));
       later(ARRIVAL_MS, () => {
         setArrival(false);
         setBossFace('menace');
@@ -265,14 +320,16 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
     if (next.status === 'won') {
       setEnemyState('ko');
       setBossFace('ko');
+      say('enemy', bossSays('ko'));
       setHeroState('victory');
       setFace('rire');
-      later(1400, () => void finish(next));
+      later(FINAL_POSE_MS, () => void finish(next));
     } else if (next.status === 'lost') {
       setBossFace('rire');
+      say('enemy', bossSays('wins'));
       setHeroState('defeat');
       setFace('etourdi');
-      later(1200, () => void finish(next));
+      later(FINAL_POSE_MS, () => void finish(next));
     } else {
       setHeroState('idle');
       // Le boss qui vient d'arriver garde sa pose d'invocation.
@@ -309,15 +366,25 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
         playSound('correct');
         setScene(true);
         setHeroState('shoot');
-        setFace(battle.mobsDefeated >= BATTLE_MOBS ? 'enthousiaste' : 'joie');
+        const shout = heroSays(profile.hero, 'shoot');
+        setFace(shout.face);
+        say('hero', shout);
         setShot((n) => n + 1);
         setLastHit('shot');
         later(HIT_MS, () => {
           setEnemyState('hurt');
-          setMobFace('triste');
-          // Touché : le boss passe de la surprise à la fureur, puis KO.
-          if (battle.mobsDefeated >= BATTLE_MOBS)
-            setBossFace(res.battle.bossLives >= 2 ? 'surprise' : res.battle.bossLives === 1 ? 'furieux' : 'ko');
+          // Touché : l'adversaire réagit (sa réplique choisit son expression).
+          if (battle.mobsDefeated >= BATTLE_MOBS) {
+            if (res.battle.bossLives > 0) {
+              const l = bossSays('onHit');
+              setBossFace(res.battle.bossLives === 1 ? 'furieux' : l.face);
+              say('enemy', l);
+            } else setBossFace('ko');
+          } else {
+            const l = mobSays('onHit');
+            setMobFace(l.face);
+            say('enemy', l);
+          }
         });
         later(NEXT_MS, () => advance(res.battle));
       } else {
@@ -325,14 +392,23 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
         setScene(true);
         later(MISS_SCENE_MS, () => setScene(false));
         setEnemyState('attack');
-        setMobFace('rire');
-        // Le boss se moque de l'erreur (un mob ne change pas de tête).
-        if (battle.mobsDefeated >= BATTLE_MOBS) setBossFace(res.outcome === 'blocked' ? 'perplexe' : 'rire');
+        // L'adversaire se moque de l'erreur (ou râle contre le bouclier).
+        if (battle.mobsDefeated >= BATTLE_MOBS) {
+          const l = bossSays(res.outcome === 'blocked' ? 'onShield' : 'onHeroMiss');
+          setBossFace(l.face);
+          say('enemy', l);
+        } else {
+          const l = mobSays('onHeroMiss');
+          setMobFace(l.face);
+          say('enemy', l);
+        }
         setRiposte((n) => n + 1);
         setLastHit('riposte');
         later(HIT_MS, () => {
           setHeroState(res.outcome === 'blocked' ? 'shield' : 'hurt');
-          setFace(res.outcome === 'blocked' ? 'surprise' : res.battle.hearts <= 1 ? 'triste' : 'colere');
+          const l = heroSays(profile.hero, res.outcome === 'blocked' ? 'shield' : 'hurt');
+          setFace(l.face);
+          say('hero', l);
           setEnemyState('idle');
           // Le bouclier a servi : on l'enlève tout de suite de la scène.
           setBattle((b) => (b ? { ...b, shield: res.battle.shield, hearts: res.battle.hearts } : b));
@@ -395,7 +471,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   return (
     <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-3 px-3 py-3 sm:px-4">
       {rageScene && (
-        <RageScene bossId={boss.id} name={boss.name} stage={rageScene} lines={RAGE_LINES} onNext={nextRage} />
+        <RageScene bossId={boss.id} name={boss.name} stage={rageScene} lines={rageLines} onNext={nextRage} />
       )}
       {intro || arrival ? (
         // Entrée en scène (mot de Questy) ou arrivée du boss : en grand, personnages entiers.
@@ -416,35 +492,52 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
               sky={boss.sky}
               heroEntrance={!arrival}
               entrance={arrival || introStage !== 'summon'}
+              entranceSeconds={arrival ? 1.8 : 0.9}
               height={arrival ? 'min(46dvh, 460px)' : 'min(34dvh, 420px)'}
             />
           </Shake>
-          {arrival && (
-            <motion.p
-              initial={{ scale: 0.3, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.9, type: 'spring', stiffness: 300, damping: 12 }}
-              className="font-display text-toon text-center text-4xl tracking-wide sm:text-5xl"
-            >
-              {`${boss.name} arrive !`}
-            </motion.p>
-          )}
           {arrival && <BossLivesBadge lives={BOSS_LIVES} />}
-          {!arrival && (
-            <BossSays
-              bossId={boss.id}
-              name={boss.name}
-              expression={beaten ? 'colere' : 'moqueur'}
-              text={faceOffTaunt(chapter.title, beaten, profile.gender, roll)}
-              delay={1.1}
-            />
+          {/* Face-à-face : 4 répliques qui arrivent l'une après l'autre (vannes aller-retour). */}
+          {!arrival &&
+            exchange.map((e, i) =>
+              e.speaker === 'boss' ? (
+                <BossSays
+                  key={i}
+                  bossId={boss.id}
+                  name={boss.name}
+                  expression={e.line.face as BossExpression}
+                  text={e.line.text}
+                  delay={1 + i * 1.9}
+                />
+              ) : (
+                <HeroSays
+                  key={i}
+                  hero={profile.hero}
+                  face={e.line.face as HeroExpression}
+                  text={e.line.text}
+                  delay={1 + i * 1.9}
+                />
+              ),
+            )}
+          {/* Arrivée du boss : il se présente, le héros réagit, Questy encourage. */}
+          {arrival && arrivalLines && (
+            <>
+              <BossSays
+                bossId={boss.id}
+                name={boss.name}
+                expression={arrivalLines.boss.face as BossExpression}
+                text={arrivalLines.boss.text}
+                delay={2.2}
+              />
+              <HeroSays
+                hero={profile.hero}
+                face={arrivalLines.hero.face as HeroExpression}
+                text={arrivalLines.hero.text}
+                delay={3.6}
+              />
+            </>
           )}
-          <QuestySays
-            text={arrival ? 'Bravo, tous les mobs sont battus ! Presque fini : plus que le boss !' : questyReply(roll)}
-            pose={arrival ? 'bravo' : 'montre'}
-            mood={arrival ? 'proud' : 'happy'}
-            delay={arrival ? 0.5 : 2.8}
-          />
+          {arrival && arrivalLines && <QuestySays text={arrivalLines.questy} pose="bravo" mood="proud" delay={4.8} />}
           {(arrival || introStage === 'boss') && (
             <GameButton
               className="self-center"
@@ -481,6 +574,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
           arena={arena}
         />
       )}
+      {!(intro || arrival) && <QuipRow hero={heroQuip} enemy={enemyQuip} />}
 
       {intro || arrival ? null : scene ? (
         // Les coups se jouent en grand, personnages entiers, au milieu de l'écran (sur tout appareil).
@@ -687,6 +781,11 @@ function BattleResults({
   const weak = summary.weakSkill ? getSkill(summary.weakSkill) : undefined;
   const gained = ITEMS.filter((i) => (summary.items[i] ?? 0) > 0);
   const bossPose = assetSrc(`bosses-maths-${boss.id}-${summary.won ? 'ko' : 'shield'}`);
+  // Le mot de la fin : le héros (victoire ou « je reviendrai ») et le boss (KO ou moqueur).
+  const [lines] = useState(() => ({
+    hero: heroSays(hero, summary.won ? 'victory' : 'defeat'),
+    boss: bossSays(summary.won ? 'ko' : 'wins'),
+  }));
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-5 px-4 py-6">
       {summary.won && <Confetti />}
@@ -701,13 +800,7 @@ function BattleResults({
           {summary.won ? (
             <CharacterSprite hero={hero} state="victory" height={150} />
           ) : (
-            <span className="relative flex flex-col items-center gap-2">
-              {/* Le héros ne baisse pas les bras. */}
-              <span className="cartoon font-display text-on-light rounded-2xl bg-white px-3 py-1 text-lg whitespace-nowrap">
-                Je reviendrai plus {accord(gender, 'fort', 'forte')} !
-              </span>
-              <HeroFace hero={hero} expression="determine" size={110} />
-            </span>
+            <HeroFace hero={hero} expression={lines.hero.face} size={110} />
           )}
           <QuestyPose pose={summary.won ? 'hero' : 'triste'} mood={summary.won ? 'proud' : 'sad'} size={110} />
           {/* Le boss : KO après une victoire, à l'abri derrière son bouclier après une défaite. */}
@@ -718,6 +811,11 @@ function BattleResults({
         <h1 className="font-display text-4xl tracking-wide">
           {summary.won ? `${boss.name} est vaincu !` : `${boss.name} a gagné cette fois…`}
         </h1>
+        {/* Échange final : le héros, puis le boss. */}
+        <div className="flex w-full max-w-xl flex-col gap-2 text-left">
+          <HeroSays hero={hero} face={lines.hero.face} text={lines.hero.text} delay={0.6} />
+          <BossSays bossId={boss.id} name={boss.name} expression={lines.boss.face} text={lines.boss.text} delay={1.4} />
+        </div>
         <p className="text-muted text-xl font-bold">
           {summary.won
             ? summary.hearts === 3
@@ -759,6 +857,7 @@ function BattleResults({
           transition={{ delay: 0.3, type: 'spring' }}
           className="cartoon bevel bg-accent flex flex-col items-center gap-3 p-4 text-center"
         >
+          <GameIcon id={CHEST_ICON} size={88} />
           <h2 className="font-display text-toon text-2xl">1re victoire : le coffre !</h2>
           <div className="flex flex-wrap items-center justify-center gap-4">
             {gained.map((i) => (

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import type { HeroId } from '@questeo/shared';
+import type { HeroExpression } from '../../design/assets.ts';
 import { GameButton } from '../game/GameButton.tsx';
 import { GameIcon } from '../game/GameIcon.tsx';
 import { QuestyPose } from '../mascot/QuestyPose.tsx';
@@ -243,8 +244,9 @@ export function BossCloseUp({
 }
 
 /**
- * Passage en rage du boss (dernière vie) : deux grandes images plein écran, « début de rage » puis
- * « rage » qui éclate (secousse) ; toucher passe à la suite.
+ * Passage en rage du boss (dernière vie), plein écran, en trois paliers (≈ 3 s chacun, un toucher avance) :
+ * « début » (il s'énerve), « montée » (l'image de rage remplace peu à peu la 1re, flashs blancs, le fond
+ * rougit), puis « rage » qui éclate (secousse).
  */
 export function RageScene({
   bossId,
@@ -255,53 +257,168 @@ export function RageScene({
 }: {
   readonly bossId: string;
   readonly name: string;
-  readonly stage: 'debut' | 'rage';
-  readonly lines: { readonly debut: string; readonly rage: string };
+  readonly stage: 'debut' | 'montee' | 'rage';
+  readonly lines: { readonly debut: string; readonly montee: string; readonly rage: string };
   readonly onNext: () => void;
 }) {
   const reduce = useReducedMotion();
-  const src = assetSrc(`bosses-maths-${bossId}-${stage === 'debut' ? 'rage-debut' : 'rage'}`);
-  const rage = stage === 'rage';
+  const debut = assetSrc(`bosses-maths-${bossId}-rage-debut`);
+  const rage = assetSrc(`bosses-maths-${bossId}-rage`);
+  const bg = {
+    debut: 'bg-[radial-gradient(circle_at_50%_40%,#6d1036_0%,#2a0b2e_50%,#0d0618_85%)]',
+    montee: 'bg-[radial-gradient(circle_at_50%_40%,#8f1226_0%,#3a0a1e_50%,#10040c_85%)]',
+    rage: 'bg-[radial-gradient(circle_at_50%_40%,#b3141e_0%,#4a0710_50%,#12030a_85%)]',
+  }[stage];
+  const img = 'max-h-[56dvh] w-[min(96vw,720px)] object-contain';
   return (
     <div
       role="dialog"
       aria-modal="true"
       aria-label={`${name} passe en rage`}
-      className={`fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 overflow-hidden px-4 py-6 text-center ${rage ? 'bg-[radial-gradient(circle_at_50%_40%,#b3141e_0%,#4a0710_50%,#12030a_85%)]' : 'bg-[radial-gradient(circle_at_50%_40%,#6d1036_0%,#2a0b2e_50%,#0d0618_85%)]'}`}
+      className={`fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 overflow-hidden px-4 py-6 text-center transition-colors duration-1000 ${bg}`}
     >
       <button type="button" aria-label="Passer" onClick={onNext} className="absolute inset-0 cursor-pointer" />
       <motion.div
-        key={stage}
-        initial={reduce ? false : rage ? { scale: 1.6, opacity: 0 } : { scale: 0.85, opacity: 0 }}
+        className="pointer-events-none relative"
         animate={
           reduce
-            ? { opacity: 1 }
-            : rage
-              ? { scale: [1.6, 1, 1.05, 1], opacity: 1, x: [0, -14, 14, -10, 10, -4, 0] }
-              : { scale: 1, opacity: 1 }
+            ? undefined
+            : stage === 'montee'
+              ? { x: [0, -3, 3, -5, 5, -8, 8, -4, 0], scale: [1, 1.02, 1.04, 1.06] }
+              : stage === 'rage'
+                ? { scale: [1.5, 1, 1.05, 1], x: [0, -16, 16, -10, 10, -4, 0] }
+                : { scale: [0.85, 1] }
         }
-        transition={{ duration: rage ? 0.8 : 0.6, ease: 'easeOut' }}
-        className="pointer-events-none relative"
+        transition={{ duration: stage === 'montee' ? 3 : 0.8, ease: 'easeOut' }}
       >
-        {src && (
-          <img
-            src={src}
+        {/* 1re image (début de rage), qui s'efface peu à peu pendant la montée. */}
+        {debut && (
+          <motion.img
+            src={debut}
             alt=""
             aria-hidden
-            className="max-h-[56dvh] w-[min(96vw,720px)] object-contain drop-shadow-[0_10px_40px_rgba(255,30,30,0.5)]"
+            className={img}
+            animate={{ opacity: stage === 'debut' ? 1 : 0 }}
+            transition={{ duration: stage === 'montee' ? 2.6 : 0.2 }}
+          />
+        )}
+        {/* Image de rage : apparaît progressivement, en rouge, par-dessus. */}
+        {rage && (
+          <motion.img
+            src={rage}
+            alt=""
+            aria-hidden
+            className={`absolute inset-0 ${img} drop-shadow-[0_10px_40px_rgba(255,30,30,0.6)]`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: stage === 'debut' ? 0 : 1 }}
+            transition={{ duration: stage === 'montee' ? 2.6 : 0.2 }}
           />
         )}
       </motion.div>
+      {/* Flashs blancs : de plus en plus forts pendant la montée, un grand éclat quand la rage éclate. */}
+      {!reduce && stage !== 'debut' && (
+        <motion.div
+          key={`flash-${stage}`}
+          aria-hidden
+          className="pointer-events-none fixed inset-0 bg-white"
+          initial={{ opacity: 0 }}
+          animate={{
+            opacity: stage === 'montee' ? [0, 0.25, 0, 0, 0.45, 0, 0, 0.7, 0] : [0.95, 0, 0.6, 0],
+          }}
+          transition={{
+            duration: stage === 'montee' ? 3 : 1,
+            times: stage === 'montee' ? undefined : [0, 0.3, 0.45, 1],
+          }}
+        />
+      )}
       <motion.p
         key={`ligne-${stage}`}
         initial={{ scale: 0.6, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: rage ? 0.5 : 0.4, type: 'spring', stiffness: 240, damping: 14 }}
-        className={`cartoon text-on-light pointer-events-none relative max-w-lg rounded-2xl bg-[#ffdcdc] px-5 py-4 leading-snug font-bold ${rage ? 'font-display text-2xl tracking-wide sm:text-3xl' : 'text-xl sm:text-2xl'}`}
+        transition={{ delay: 0.4, type: 'spring', stiffness: 240, damping: 14 }}
+        className={`cartoon text-on-light pointer-events-none relative max-w-lg rounded-2xl bg-[#ffdcdc] px-5 py-4 leading-snug font-bold ${stage === 'rage' ? 'font-display text-2xl tracking-wide sm:text-3xl' : 'text-xl sm:text-2xl'}`}
         role="status"
       >
         {lines[stage]}
       </motion.p>
+    </div>
+  );
+}
+
+/** Le héros parle : sa tête à gauche (avec l'expression de la réplique), bulle crème à droite. */
+export function HeroSays({
+  hero,
+  face,
+  text,
+  delay = 0.5,
+}: {
+  readonly hero: HeroId;
+  readonly face: HeroExpression;
+  readonly text: string;
+  readonly delay?: number;
+}) {
+  return (
+    <motion.div
+      initial={{ scale: 0.85, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ delay, type: 'spring', stiffness: 220, damping: 16 }}
+      className="flex items-center gap-3"
+      role="status"
+    >
+      <HeroFace hero={hero} expression={face} size={72} />
+      <p className="cartoon text-on-light min-w-0 flex-1 rounded-2xl bg-[#fff3dd] px-4 py-2.5 text-base leading-snug font-bold sm:text-lg">
+        {text}
+      </p>
+    </motion.div>
+  );
+}
+
+/** Petites répliques pendant le combat, sous le bandeau : le héros à gauche, l'adversaire à droite. */
+export function QuipRow({
+  hero,
+  enemy,
+}: {
+  readonly hero: { readonly text: string; readonly nonce: number } | null;
+  readonly enemy: { readonly text: string; readonly nonce: number } | null;
+}) {
+  const [hidden, setHidden] = useState<{ hero?: number; enemy?: number }>({});
+  useEffect(() => {
+    if (!hero) return;
+    const t = window.setTimeout(() => setHidden((h) => ({ ...h, hero: hero.nonce })), 2800);
+    return () => window.clearTimeout(t);
+  }, [hero]);
+  useEffect(() => {
+    if (!enemy) return;
+    const t = window.setTimeout(() => setHidden((h) => ({ ...h, enemy: enemy.nonce })), 2800);
+    return () => window.clearTimeout(t);
+  }, [enemy]);
+  const bubble =
+    'cartoon text-on-light max-w-[48%] rounded-2xl px-3 py-1.5 text-sm leading-snug font-bold shadow-lg sm:text-base';
+  return (
+    <div className="pointer-events-none relative z-30 -mt-1 flex h-0 justify-between gap-2" aria-live="polite">
+      {hero && hidden.hero !== hero.nonce ? (
+        <motion.p
+          key={`h-${hero.nonce}`}
+          initial={{ y: -8, scale: 0.8, opacity: 0 }}
+          animate={{ y: 0, scale: 1, opacity: 1 }}
+          className={`${bubble} self-start bg-[#fff3dd]`}
+        >
+          {hero.text}
+        </motion.p>
+      ) : (
+        <span />
+      )}
+      {enemy && hidden.enemy !== enemy.nonce && (
+        <motion.p
+          key={`e-${enemy.nonce}`}
+          initial={{ y: -8, scale: 0.8, opacity: 0 }}
+          animate={{ y: 0, scale: 1, opacity: 1 }}
+          transition={{ delay: 0.15 }}
+          className={`${bubble} ml-auto bg-[#ffdcdc] text-right`}
+        >
+          {enemy.text}
+        </motion.p>
+      )}
     </div>
   );
 }

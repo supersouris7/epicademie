@@ -90,7 +90,7 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
 
   // La notion apparaît « à revoir » demain : pas encore échue aujourd'hui, mais évaluée.
   await page.getByRole('button', { name: 'Autre notion' }).click();
-  await expect(page.getByRole('button', { name: /Tables de multiplication/ })).toContainText('Maîtrise insuffisante');
+  await expect(page.getByRole('button', { name: /Tables de multiplication/ })).toContainText('À travailler');
 });
 
 test('outils : calculatrice, brouillon, tableau de conversion', async ({ page }) => {

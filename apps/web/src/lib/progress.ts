@@ -1,4 +1,4 @@
-import { acquired as isAcquired, mastery, MASTERY_LABELS, type Mastery } from '@questeo/engine';
+import { acquired as isAcquired, medal } from '@questeo/engine';
 import type { SkillProgress } from '@questeo/shared';
 
 export interface ChapterProgress {
@@ -27,19 +27,24 @@ export function chapterProgress(
   return { total: skillIds.length, acquired, started, due };
 }
 
-export const MASTERY_COLORS: Record<Mastery, string> = {
-  'non-evalue': 'var(--text-muted)',
-  insuffisante: 'var(--danger)',
-  fragile: 'var(--primary)',
-  satisfaisante: 'var(--accent)',
-  'tres-bonne': 'var(--success)',
-};
-
-export function masteryOf(s: SkillProgress | undefined): { id: Mastery; label: string; color: string } {
-  const id = s ? mastery(s) : 'non-evalue';
-  return { id, label: MASTERY_LABELS[id], color: MASTERY_COLORS[id] };
+/**
+ * Niveau affiché d'une notion, tiré de sa médaille (toujours cohérent avec elle) :
+ * jamais travaillée → « Pas encore évalué » ; pas de médaille → « À travailler » ;
+ * Bronze → « Fragile » ; Argent → « Satisfaisante » ; Or → « Acquise ».
+ */
+export function masteryOf(s: SkillProgress | undefined): { id: string; label: string; color: string } {
+  if (!s || s.attempts === 0) return { id: 'non-evalue', label: 'Pas encore évalué', color: 'var(--text-muted)' };
+  switch (medal(s)) {
+    case 'or':
+      return { id: 'acquise', label: 'Acquise', color: 'var(--success)' };
+    case 'argent':
+      return { id: 'satisfaisante', label: 'Satisfaisante', color: 'var(--accent)' };
+    case 'bronze':
+      return { id: 'fragile', label: 'Fragile', color: 'var(--primary)' };
+    default:
+      return { id: 'a-travailler', label: 'À travailler', color: 'var(--danger)' };
+  }
 }
-
 export interface Suggestion<C> {
   readonly chapter: C;
   readonly progress: ChapterProgress;
