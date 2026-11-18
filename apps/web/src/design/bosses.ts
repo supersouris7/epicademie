@@ -1,4 +1,5 @@
 import type { Chapter, DomainId } from '@questeo/content';
+import type { BossMedal } from '@questeo/shared';
 
 /** Un boss par domaine des maths, recoloré selon le chapitre (docs/SPEC.md §6.2 bis). */
 export interface BossIdentity {
@@ -61,3 +62,11 @@ export const randomArena = (): string => ARENAS[Math.floor(Math.random() * ARENA
 
 /** Mob affiché pour la question n°`turn` (cosmétique). */
 export const mobOf = (boss: BossIdentity, turn: number) => boss.mobs[turn % boss.mobs.length] ?? 'calculatrice';
+
+/** Icône de chaque médaille de boss (le diamant est la gemme). */
+export const BOSS_MEDAL_ICONS: Record<BossMedal, string> = {
+  bronze: 'rewards-medals-bronze',
+  argent: 'rewards-medals-argent',
+  or: 'rewards-medals-or',
+  diamant: 'icons-resources-gem',
+};

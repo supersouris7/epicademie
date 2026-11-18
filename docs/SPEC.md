@@ -329,9 +329,18 @@ Catalogue typé dans `packages/shared/src/modes.ts`.
 - La tête du héros (Alex) est dans la barre du haut : son expression suit les réponses et une petite bulle réagit (« Trop facile ! », « Aïe… on se reprend ! », « Série en feu ! »). Questy garde les indices et explications.
 - Fin de série : coffre d'équipement au hasard (voir §6.2 bis), ouvert en touchant le coffre. La page de l'entraînement rappelle que c'est ici qu'on gagne son équipement.
 
-### 6.6 Navigation et accueil (18/11/2026)
+### 6.6 Navigation et accueil (18/11/2026, revu)
 
-- **Accueil « écran de jeu »** : en-tête joueur (avatar = identité du profil, niveau, XP, pièces) ; scène avec le héros en pied dans l'arène (toucher → « Mon héros ») et Questy ; carte « À faire aujourd'hui » (notions à revoir, sinon le chapitre où reprendre) ; deux grandes cartes JOUER (Entraînement en vert, Combat de boss en rouge) ; défis « À venir » en dessous.
-- **Barre de navigation du bas** sur les écrans principaux : Accueil · Héros · Progrès · Multi · Paramètres. Les sous-écrans (matière, chapitre, boss…) gardent le bouton retour.
-- **Pause** : en entraînement comme en combat, un même bouton ⏸ en haut à gauche ouvre le menu Pause (Reprendre / Quitter, avec ce qu'on perd).
+- **Barre du haut figée** sur les écrans principaux : le joueur en bref (avatar → changer de joueur, prénom, niveau, pièces) et les onglets Accueil · Héros · Progrès · Multi · Paramètres. Les sous-écrans gardent le bouton retour.
+- **Accueil** : le héros en pied (toucher → « Mon héros ») à côté des deux grands modes (Entraînement en vert, Combat de boss en rouge), les défis « À venir » en dessous. Boutons sobres : icône et nom, l'explication est sur l'écran du mode.
+- **Plein écran** : interrupteur dans Paramètres (gardé sur l'appareil ; le navigateur exige un toucher pour y revenir après un rechargement).
+- **Pause** : même bouton ⏸ en entraînement (en-tête) et en combat (à côté des objets), menu Reprendre / Quitter.
 - Une seule pastille « À venir » (dorée, dans le coin) pour les modes, matières, boss et héros pas encore prêts.
+
+### 6.7 Combat : objets, médailles, animations (18/11/2026)
+
+- **Un seul type d'objet par combat** : le premier objet utilisé fixe le type (jusqu'à 3 du même), les autres sont verrouillés.
+- **Médaille du combat** selon les cœurs restants à la victoire : 3 = or, 2 = argent, 1 = bronze ; **diamant** = 3 cœurs et aucun objet. On garde la meilleure par boss (liste des boss).
+- Bandeau : têtes, cœurs du héros, et à droite les **mobs restants en barre segmentée** (comme des vies), puis les vies du boss.
+- **Animations en grand** : après chaque réponse, la scène (personnages entiers, tir, riposte, bouclier, victoire) remplace l'énoncé ~1,5 s, puis l'explication ou la question suivante.
+- Après une erreur, l'explication complète s'affiche directement (plus de « Voir tout »).

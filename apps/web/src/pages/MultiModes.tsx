@@ -9,7 +9,7 @@ export function MultiModes({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
   const [toast, showToast] = useToast();
   return (
-    <PageShell title="Multijoueur" nav={profile.hero}>
+    <PageShell title="Multijoueur" nav={profile}>
       <p className="text-muted text-lg font-bold">
         Cet écran affiche la partie, chaque joueur rejoint avec son téléphone en scannant le QR code.
       </p>

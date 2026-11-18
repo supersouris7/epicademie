@@ -106,14 +106,16 @@ describe('combat de boss', () => {
     expect(turns).toBe(10);
     expect(b.status).toBe('won');
     const sum = (await app.inject({ method: 'POST', url: `/api/battles/${b.id}/finish` })).json<BattleSummary>();
-    expect(sum).toMatchObject({ won: true, firstWin: true, hearts: 3, xpGained: 150 });
+    expect(sum).toMatchObject({ won: true, firstWin: true, hearts: 3, xpGained: 150, medal: 'diamant', newBest: true });
     expect(sum.items).toEqual({ bouclier: 1, soin: 1, indice: 1 });
-    expect((await overview()).records).toMatchObject([{ chapterId: CHAPTER, wins: 1, bestHearts: 3 }]);
+    expect((await overview()).records).toMatchObject([
+      { chapterId: CHAPTER, wins: 1, bestHearts: 3, bestMedal: 'diamant' },
+    ]);
 
     let b2 = (await startBattle()).json<BattleView>();
     while (b2.status === 'fighting') b2 = (await reply(b2, true)).battle;
     const sum2 = (await app.inject({ method: 'POST', url: `/api/battles/${b2.id}/finish` })).json<BattleSummary>();
-    expect(sum2).toMatchObject({ firstWin: false, items: {} });
+    expect(sum2).toMatchObject({ firstWin: false, items: {}, medal: 'diamant', newBest: false });
     expect((await overview()).records[0]?.wins).toBe(2);
   });
 
@@ -123,7 +125,7 @@ describe('combat de boss', () => {
     for (let i = 0; i < 3; i++) b = (await reply(b, false)).battle;
     expect(b).toMatchObject({ status: 'lost', hearts: 0, question: null });
     const sum = (await app.inject({ method: 'POST', url: `/api/battles/${b.id}/finish` })).json<BattleSummary>();
-    expect(sum.won).toBe(false);
+    expect(sum).toMatchObject({ won: false, medal: null, newBest: false });
     expect(getChapter(CHAPTER)?.skills.some((s) => s.id === sum.weakSkill)).toBe(true);
     expect(first).toBeDefined();
     expect((await overview()).records).toEqual([]);
@@ -180,12 +182,13 @@ describe('combat de boss', () => {
     expect(shield.json<BattleView>()).toMatchObject({ shield: true, itemsUsed: 1 });
     expect(shield.json<BattleView>().inventory.bouclier).toBe(0);
     expect((await use('bouclier')).statusCode).toBe(409);
-    expect((await use('soin')).json<{ error: string }>().error).toMatch(/pleins/);
-    const hint = await use('indice');
-    expect(hint.json<BattleView>().hintShown).toBe(true);
-    const r = await reply(hint.json<BattleView>(), false);
+    expect(shield.json<BattleView>().itemType).toBe('bouclier');
+    // Un seul type d'objet par combat : l'indice acheté reste au sac.
+    expect((await use('indice')).json<{ error: string }>().error).toMatch(/Un seul type/);
+    const r = await reply(shield.json<BattleView>(), false);
     expect(r.outcome).toBe('blocked');
     expect(r.battle.hearts).toBe(3);
+    expect(r.battle.inventory.indice).toBe(1);
   });
 
   it('une session de boss ne passe pas par les routes d’entraînement', async () => {

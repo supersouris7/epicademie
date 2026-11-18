@@ -54,7 +54,8 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   let view = (await (await started).json()) as BattleView;
   // Entrée en scène en grand, puis bandeau compact.
   await expect(page.getByText('Combat !')).toBeVisible();
-  await expect(page.getByText('Mob 1/7')).toBeVisible({ timeout: 5000 });
+  // Bandeau : mobs restants en barre segmentée, comme des vies.
+  await expect(page.getByRole('progressbar', { name: 'Mobs restants' })).toBeVisible({ timeout: 5000 });
   await expect(page.getByRole('img', { name: '3 cœurs sur 3' })).toBeVisible();
   // Pause : le même bouton qu'à l'entraînement.
   await page.getByRole('button', { name: 'Pause' }).click();
@@ -65,7 +66,8 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   view = await answer(page, view, false);
   await expect(page.getByRole('img', { name: '2 cœurs sur 3' })).toBeVisible();
   await expect(page.getByText(/La bonne réponse/)).toBeVisible();
-  await page.getByRole('button', { name: 'Voir tout' }).click();
+  // L'explication complète s'affiche directement (plus de « Voir tout »).
+  await expect(page.getByRole('button', { name: 'Voir tout' })).toHaveCount(0);
   await page.getByRole('button', { name: 'Suivant' }).click();
 
   // Puis sans faute jusqu'au boss et à sa défaite.
@@ -80,10 +82,13 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   expect(view.status).toBe('won');
   await expect(page.getByRole('heading', { name: /est vaincu/ })).toBeVisible({ timeout: 10_000 });
   await expect(page.getByText('1re victoire : le coffre !')).toBeVisible();
+  // Un cœur perdu : médaille d'argent.
+  await expect(page.getByRole('heading', { name: 'Médaille Argent' })).toBeVisible();
 
   await page.getByRole('button', { name: 'Autres boss' }).click();
   await expect(relatifs.getByRole('button', { name: 'Rejouer' })).toBeVisible();
   await expect(relatifs).toContainText('vaincu 1 fois');
   // Le coffre a rempli l'équipement.
-  await expect(page.getByText('Bouclier × 1')).toBeVisible();
+  await expect(page.getByRole('img', { name: 'Bouclier × 1' })).toBeVisible();
+  await expect(relatifs.getByRole('img', { name: 'Médaille Argent' })).toBeVisible();
 });

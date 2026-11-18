@@ -2,6 +2,7 @@ import {
   BATTLE_MOBS,
   BOSS_LIVES,
   HERO_HEARTS,
+  ITEM_INFO,
   MAX_ITEMS_PER_BATTLE,
   type BattleOutcome,
   type BattleQuestion,
@@ -38,6 +39,8 @@ export interface BattleState {
   readonly shield: boolean;
   readonly hintShown: boolean;
   readonly itemsUsed: number;
+  /** Type d'objet choisi pour ce combat (au 1er objet) : un seul type par combat. */
+  readonly itemType: ItemId | null;
   readonly question: BattleQuestion | null;
   readonly answered: number;
   readonly correct: number;
@@ -129,6 +132,7 @@ export function createBattle(pools: BattlePools, dice: BattleDice, recent: reado
     shield: false,
     hintShown: false,
     itemsUsed: 0,
+    itemType: null,
     answered: 0,
     correct: 0,
     misses: [],
@@ -186,10 +190,12 @@ export function answerBattle(
 
 /** Raison du refus d'un objet, ou null s'il peut servir maintenant. */
 export function itemRefusal(
-  s: Pick<BattleState, 'status' | 'itemsUsed' | 'hearts' | 'maxHearts' | 'shield' | 'hintShown'>,
+  s: Pick<BattleState, 'status' | 'itemsUsed' | 'itemType' | 'hearts' | 'maxHearts' | 'shield' | 'hintShown'>,
   item: ItemId,
 ): string | null {
   if (s.status !== 'fighting') return 'Le combat est terminé';
+  if (s.itemType && s.itemType !== item)
+    return `Un seul type d’objet par combat : ${ITEM_INFO[s.itemType].name.toLowerCase()}`;
   if (s.itemsUsed >= MAX_ITEMS_PER_BATTLE) return `${MAX_ITEMS_PER_BATTLE} objets au plus par combat`;
   if (item === 'soin' && s.hearts >= s.maxHearts) return 'Tes cœurs sont déjà pleins';
   if (item === 'bouclier' && s.shield) return 'Ton bouclier est déjà levé';
@@ -200,7 +206,7 @@ export function itemRefusal(
 export function applyItem(s: BattleState, item: ItemId): BattleState {
   const refusal = itemRefusal(s, item);
   if (refusal) throw new Error(refusal);
-  const used = { ...s, itemsUsed: s.itemsUsed + 1 };
+  const used = { ...s, itemsUsed: s.itemsUsed + 1, itemType: item };
   if (item === 'soin') return { ...used, hearts: s.hearts + 1 };
   if (item === 'bouclier') return { ...used, shield: true };
   return { ...used, hintShown: true };

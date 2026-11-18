@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
 import { index, integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import type { AvatarConfig, Gender, Grade, HeroId, ItemId } from '@questeo/shared';
+import type { AvatarConfig, BossMedal, Gender, Grade, HeroId, ItemId } from '@questeo/shared';
 
 export const profiles = sqliteTable('profiles', {
   id: text('id').primaryKey(),
@@ -116,6 +116,7 @@ export const bossRecords = sqliteTable(
     chapterId: text('chapter_id').notNull(),
     wins: integer('wins').notNull().default(0),
     bestHearts: integer('best_hearts').notNull().default(0),
+    bestMedal: text('best_medal').$type<BossMedal>().notNull().default('bronze'),
     firstWonAt: text('first_won_at').notNull(),
   },
   (t) => [primaryKey({ columns: [t.profileId, t.chapterId] })],

@@ -29,9 +29,10 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.getByRole('button', { name: /C’est parti/ }).click();
 
   await expect(page).toHaveURL(/\/hub$/);
-  await expect(page.getByRole('heading', { name })).toBeVisible();
-  await expect(page.getByText('Apprentie')).toBeVisible();
-  await expect(page.getByText(/Prête pour l’aventure/)).toBeVisible();
+  // Barre du haut : le joueur en bref (prénom, niveau, pièces).
+  await expect(page.getByRole('group', { name: 'Mon joueur' })).toContainText(name);
+  await expect(page.getByRole('img', { name: /^Niveau 1/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Plein écran' })).toHaveCount(0);
   await expect(page.getByRole('button', { name: /Alex.*changer de héros/ })).toBeVisible();
   // Menu « Mon héros » : Alex seul jouable, les autres « À venir ».
   await page.getByRole('button', { name: /Alex.*changer de héros/ }).click();
@@ -75,6 +76,7 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
 
   await nav.getByRole('button', { name: 'Paramètres' }).click();
   await expect(page.getByRole('button', { name: 'Mon héros' })).toBeVisible();
+  await expect(page.getByText('Plein écran')).toBeVisible();
   await expect(page.getByRole('radio', { name: 'Sombre' })).toHaveCount(0); // thème sombre unique
 
   // Le profil survit à un rechargement.

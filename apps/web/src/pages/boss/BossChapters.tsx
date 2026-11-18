@@ -3,19 +3,23 @@ import { motion } from 'motion/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Navigate, useNavigate, useParams } from 'react-router';
 import { chaptersOf, type Chapter } from '@questeo/content';
-import { HINT_PRICE, ITEM_INFO, ITEMS, SUBJECTS, type BossRecord, type Profile } from '@questeo/shared';
+import {
+  BOSS_MEDAL_LABELS,
+  HINT_PRICE,
+  ITEM_INFO,
+  ITEMS,
+  SUBJECTS,
+  type BossRecord,
+  type Profile,
+} from '@questeo/shared';
 import { bossesKey, buyHint, useBosses } from '../../api/battles.ts';
 import { GameButton } from '../../components/game/GameButton.tsx';
 import { GameIcon } from '../../components/game/GameIcon.tsx';
-import { GamePanel } from '../../components/game/GamePanel.tsx';
 import { SoonBadge } from '../../components/game/SoonBadge.tsx';
-import { ResourceCounter } from '../../components/game/ResourceCounter.tsx';
-import { Questy } from '../../components/mascot/Questy.tsx';
 import { PageShell } from '../../components/PageShell.tsx';
-import { SpeechBubble } from '../../components/SpeechBubble.tsx';
 import { useToast } from '../../components/Toast.tsx';
 import { assetSrc } from '../../design/assets.ts';
-import { bossFilter, bossOf } from '../../design/bosses.ts';
+import { BOSS_MEDAL_ICONS, bossFilter, bossOf } from '../../design/bosses.ts';
 import { ITEM_ICONS } from '../../design/items.ts';
 import { ApiError } from '../../api/client.ts';
 
@@ -53,44 +57,38 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
 
   return (
     <PageShell title="Combat de boss" back="/jouer/boss">
-      <div className="flex items-center gap-4">
-        <Questy size={120} mood="angry" />
-        <SpeechBubble>
-          Choisis ton boss : bats ses 7 mobs, puis retire-lui ses 3 vies ! Ton équipement se gagne dans les coffres de
-          l’entraînement.
-        </SpeechBubble>
-      </div>
+      <p className="text-muted font-bold">
+        7 mobs, puis le boss. Un seul type d’objet par combat. Diamant : sans perdre de cœur et sans objet.
+      </p>
 
-      <GamePanel title="Équipement" className="flex flex-col gap-3">
-        <div className="flex flex-wrap items-center gap-3">
-          {ITEMS.map((item) => (
-            <div
-              key={item}
-              className="cartoon bg-surface-2 flex items-center gap-2 px-3 py-2"
-              title={ITEM_INFO[item].earn}
-            >
-              <GameIcon id={ITEM_ICONS[item]} size="sm" />
-              <span className="flex flex-col leading-tight">
-                <span className="font-display text-lg">
-                  {ITEM_INFO[item].name} × {inventory[item]}
-                </span>
-                <span className="text-muted text-xs font-bold">{ITEM_INFO[item].earn}</span>
-              </span>
-            </div>
-          ))}
-          <span className="flex-1" />
-          <ResourceCounter icon="icons-resources-coin" value={profile.coins} label={`${profile.coins} pièces`} />
-          <GameButton
-            size="sm"
-            variant="accent"
-            icon="icons-navigation-hint"
-            disabled={busy || profile.coins < HINT_PRICE}
-            onClick={() => void run(() => buyHint(profile.id), 'Indice acheté !')}
+      {/* Équipement : un objet = son icône et son stock ; on le gagne dans les coffres de l'entraînement. */}
+      <section aria-labelledby="equipement" className="cartoon bg-surface flex flex-wrap items-center gap-2 p-2.5">
+        <h2 id="equipement" className="font-display mr-1 text-xl tracking-wide">
+          Équipement
+        </h2>
+        {ITEMS.map((item) => (
+          <span
+            key={item}
+            className="bg-surface-2 font-display flex items-center gap-1 rounded-full py-0.5 pr-3 pl-1 text-lg"
+            title={`${ITEM_INFO[item].effect}. ${ITEM_INFO[item].earn}.`}
+            aria-label={`${ITEM_INFO[item].name} × ${inventory[item]}`}
+            role="img"
           >
-            Indice : {HINT_PRICE} pièces
-          </GameButton>
-        </div>
-      </GamePanel>
+            <GameIcon id={ITEM_ICONS[item]} size={30} />× {inventory[item]}
+          </span>
+        ))}
+        <span className="flex-1" />
+        <GameButton
+          size="sm"
+          variant="accent"
+          icon="icons-navigation-hint"
+          disabled={busy || profile.coins < HINT_PRICE}
+          onClick={() => void run(() => buyHint(profile.id), 'Indice acheté !')}
+        >
+          Indice : {HINT_PRICE}
+          <GameIcon id="icons-resources-coin" size={22} label="pièces" />
+        </GameButton>
+      </section>
 
       <ul className="grid gap-4 lg:grid-cols-2">
         {sorted.map((c, i) => (
@@ -136,7 +134,11 @@ function BossRow({ chapter, index, record, onFight, onSoon }: BossRowProps) {
         )}
         {record && (
           <span className="absolute -right-1 -bottom-1">
-            <GameIcon id="rewards-medals-or" size={36} label="Médaille de boss" />
+            <GameIcon
+              id={BOSS_MEDAL_ICONS[record.bestMedal]}
+              size={36}
+              label={`Médaille ${BOSS_MEDAL_LABELS[record.bestMedal]}`}
+            />
           </span>
         )}
       </div>
@@ -159,7 +161,13 @@ function BossRow({ chapter, index, record, onFight, onSoon }: BossRowProps) {
       {ready ? (
         <div className="cartoon bg-surface flex flex-wrap items-center gap-3 p-3">
           {body}
-          <GameButton variant="danger" size="sm" icon="icons-navigation-play" onClick={onFight}>
+          <GameButton
+            variant="danger"
+            size="sm"
+            icon="icons-navigation-play"
+            onClick={onFight}
+            className="w-full sm:w-auto"
+          >
             {record ? 'Rejouer' : 'Combattre'}
           </GameButton>
         </div>

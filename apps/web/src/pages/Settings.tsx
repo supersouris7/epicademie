@@ -6,6 +6,7 @@ import { GameButton } from '../components/game/GameButton.tsx';
 import { PageShell } from '../components/PageShell.tsx';
 import { HeroFace } from '../components/battle/HeroFace.tsx';
 import { useSession } from '../store/session.ts';
+import { fullscreenSupported, useFullscreenPreference } from '../lib/fullscreen.ts';
 
 function Toggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
@@ -26,6 +27,7 @@ export function Settings({ profile }: { readonly profile: Profile }) {
   const remove = useDeleteProfile();
   const selectProfile = useSession((s) => s.selectProfile);
   const [confirming, setConfirming] = useState(false);
+  const [fullscreen, setFullscreen] = useFullscreenPreference();
 
   const deleteProfile = async () => {
     await remove.mutateAsync(profile.id);
@@ -34,12 +36,19 @@ export function Settings({ profile }: { readonly profile: Profile }) {
   };
 
   return (
-    <PageShell title="Paramètres" nav={profile.hero}>
+    <PageShell title="Paramètres" nav={profile}>
       <section className="flex flex-col gap-3">
         <h2 className="font-display text-2xl tracking-wide">Son</h2>
         <Toggle label="Effets sonores" checked={profile.soundOn} onChange={(soundOn) => update.mutate({ soundOn })} />
         <Toggle label="Musique" checked={profile.musicOn} onChange={(musicOn) => update.mutate({ musicOn })} />
       </section>
+
+      {fullscreenSupported() && (
+        <section className="flex flex-col gap-3">
+          <h2 className="font-display text-2xl tracking-wide">Écran</h2>
+          <Toggle label="Plein écran" checked={fullscreen} onChange={setFullscreen} />
+        </section>
+      )}
 
       <section className="flex flex-col gap-3">
         <h2 className="font-display text-2xl tracking-wide">Profil</h2>
@@ -49,7 +58,7 @@ export function Settings({ profile }: { readonly profile: Profile }) {
           className="justify-start"
           onClick={() => void navigate(`/profils/${profile.id}/modifier`)}
         >
-          Modifier mon prénom, mon avatar et ma classe
+          Modifier mon profil
         </GameButton>
         <GameButton variant="surface" className="justify-start" onClick={() => void navigate('/heros')}>
           <HeroFace hero={profile.hero} expression="confiant" size={32} />

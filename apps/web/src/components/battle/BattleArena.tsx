@@ -29,6 +29,10 @@ interface BattleArenaProps {
   /** Décor : image d'arène livrée, sinon dégradé. */
   readonly arena: string;
   readonly sky: readonly [string, string];
+  /** Entrée en scène en courant (début du combat) ; non pour les scènes d'action en cours de combat. */
+  readonly entrance?: boolean;
+  /** Hauteur de la scène (CSS). */
+  readonly height?: string;
 }
 
 /**
@@ -38,13 +42,14 @@ interface BattleArenaProps {
  */
 export function BattleArena(props: BattleArenaProps) {
   const { hero, heroState, enemy, enemyState, shot, riposte, shield, arena, sky } = props;
+  const run = props.entrance !== false;
   const reduce = useReducedMotion();
   const bg = assetSrc(`environments-arenas-${arena}`);
   return (
     <div
       className="cartoon relative w-full shrink-0 overflow-hidden"
       style={{
-        height: 'min(62dvh, 560px)',
+        height: props.height ?? 'min(62dvh, 560px)',
         background: bg
           ? `center 62% / cover no-repeat url(${bg})`
           : `linear-gradient(180deg, ${sky[0]}, ${sky[1]} 70%, color-mix(in srgb, ${sky[1]} 50%, black))`,
@@ -59,7 +64,7 @@ export function BattleArena(props: BattleArenaProps) {
       <motion.div
         className="absolute bottom-[6%] left-[6%] h-[78%]"
         style={{ aspectRatio: '1', maxWidth: '44%' }}
-        initial={reduce ? false : { x: '-140%' }}
+        initial={reduce || !run ? false : { x: '-140%' }}
         animate={{ x: 0 }}
         transition={{ duration: 0.9, ease: 'easeOut' }}
       >
@@ -84,7 +89,7 @@ export function BattleArena(props: BattleArenaProps) {
             <motion.div
               key={enemy.key}
               className="h-full w-full"
-              initial={reduce ? false : { x: '140%', opacity: 1 }}
+              initial={reduce || !run ? false : { x: '140%', opacity: 1 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.9, ease: 'easeOut' }}
               exit={reduce ? undefined : { scale: 0.2, opacity: 0, rotate: 20, transition: { duration: 0.35 } }}

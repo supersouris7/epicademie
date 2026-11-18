@@ -29,7 +29,7 @@ export function Heroes({ profile }: { readonly profile: Profile }) {
   };
 
   return (
-    <PageShell title="Mon héros" nav={profile.hero}>
+    <PageShell title="Mon héros" nav={profile}>
       <GamePanel className="flex flex-col items-center gap-4 sm:flex-row sm:items-end">
         <motion.button
           type="button"
@@ -45,12 +45,11 @@ export function Heroes({ profile }: { readonly profile: Profile }) {
           {spec && (
             <>
               <p className="text-xl font-bold">{spec.role}</p>
-              <p className="text-muted">Arme : {spec.weapon}.</p>
             </>
           )}
           <div className="flex items-center gap-3">
             <HeroFace hero={hero} expression={face} size={72} />
-            <span className="text-muted text-sm font-bold">Touche ses humeurs :</span>
+            <span className="text-muted text-sm font-bold">Ses humeurs</span>
           </div>
           <div className="flex flex-wrap gap-1" aria-label="Humeurs">
             {HERO_EXPRESSIONS.map((e) => (

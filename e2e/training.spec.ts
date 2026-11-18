@@ -79,7 +79,7 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await expect(page.getByText('Tu es en 4e ?')).toBeVisible();
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
   await page.getByRole('button', { name: /C’est parti/ }).click();
-  await expect(page.getByText(/Prêt pour l’aventure/)).toBeVisible();
+  await expect(page).toHaveURL(/\/hub$/);
   // 4e pas encore prête : on joue la 5e en attendant.
   await expect(page.getByText(/Le programme de 4e arrive bientôt/)).toBeVisible();
 

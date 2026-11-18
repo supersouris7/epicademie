@@ -7,6 +7,7 @@ import { itemRefusal } from '@questeo/engine';
 import {
   accord,
   BATTLE_MOBS,
+  BOSS_MEDAL_LABELS,
   BOSS_LIVES,
   ITEM_INFO,
   ITEMS,
@@ -29,12 +30,13 @@ import { Questy } from '../../components/mascot/Questy.tsx';
 import { QuestyPose } from '../../components/mascot/QuestyPose.tsx';
 import { MathText } from '../../components/MathText.tsx';
 import { Memo } from '../../components/play/Memo.tsx';
+import { PauseButton } from '../../components/play/PauseButton.tsx';
 import { QuestionTools } from '../../components/play/QuestionTools.tsx';
 import { useToast } from '../../components/Toast.tsx';
 import type { AnimationState, HeroExpression } from '../../design/assets.ts';
 import { HeroFace } from '../../components/battle/HeroFace.tsx';
 import { CharacterSprite } from '../../components/game/CharacterSprite.tsx';
-import { bossFilter, bossOf, mobOf, randomArena } from '../../design/bosses.ts';
+import { BOSS_MEDAL_ICONS, bossFilter, bossOf, mobOf, randomArena } from '../../design/bosses.ts';
 import { formatAnswer, formatResponse } from '../../lib/answers.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../lib/sound.ts';
 import { ITEM_ICONS } from '../../design/items.ts';
@@ -58,7 +60,9 @@ interface Missed {
 const STAGE_LABEL = { mob: 'Mob', probleme: 'Problème', piege: 'Piège !' } as const;
 /** Durées de l'animation d'un tir (ms). */
 const HIT_MS = 450;
-const NEXT_MS = 1100;
+const NEXT_MS = 1500;
+/** Durée de la scène en grand après une erreur, avant l'explication. */
+const MISS_SCENE_MS = 1400;
 
 function Battle({ profile, chapter }: { readonly profile: Profile; readonly chapter: Chapter }) {
   const navigate = useNavigate();
@@ -72,7 +76,8 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   const [summary, setSummary] = useState<BattleSummary | null>(null);
   const [busy, setBusy] = useState(false);
   const [missed, setMissed] = useState<Missed | null>(null);
-  const [showAll, setShowAll] = useState(false);
+  /** Scène d'action en grand dans la zone de l'énoncé (tir, riposte, victoire, défaite). */
+  const [scene, setScene] = useState(false);
   const [memo, setMemo] = useState(false);
   const [confirmQuit, setConfirmQuit] = useState(false);
   const [picked, setPicked] = useState<{ x: number; y: number } | null>(null);
@@ -149,8 +154,8 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   /** Passe à l'état suivant du combat ; fin de combat : pose finale puis résultats. */
   const advance = (next: BattleView) => {
     setMissed(null);
-    setShowAll(false);
     setPicked(null);
+    setScene(next.status !== 'fighting');
     setBattle(next);
     shownAt.current = performance.now();
     if (next.status === 'won') {
@@ -193,6 +198,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
       }
       if (res.correct) {
         playSound('correct');
+        setScene(true);
         setHeroState('shoot');
         setFace(battle.mobsDefeated >= BATTLE_MOBS ? 'enthousiaste' : 'joie');
         setShot((n) => n + 1);
@@ -200,6 +206,8 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
         later(NEXT_MS, () => advance(res.battle));
       } else {
         playSound('wrong');
+        setScene(true);
+        later(MISS_SCENE_MS, () => setScene(false));
         setEnemyState('attack');
         setRiposte((n) => n + 1);
         later(HIT_MS, () => {
@@ -291,15 +299,32 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
           enemyKey={enemy?.key ?? 'boss'}
           bossLives={onBoss ? (battle?.bossLives ?? BOSS_LIVES) : null}
           bossMax={BOSS_LIVES}
-          mobText={`Mob ${Math.min((battle?.mobsDefeated ?? 0) + 1, BATTLE_MOBS)}/${BATTLE_MOBS}`}
+          mobsLeft={BATTLE_MOBS - Math.min(battle?.mobsDefeated ?? 0, BATTLE_MOBS)}
+          mobsMax={BATTLE_MOBS}
           shot={shot}
           riposte={riposte}
           arena={arena}
-          onQuit={() => setConfirmQuit(true)}
         />
       )}
 
-      {intro ? null : !battle || !question || !q ? (
+      {intro ? null : scene ? (
+        // Les coups se jouent en grand, personnages entiers, à la place de l'énoncé.
+        <div className="flex min-h-0 flex-1 flex-col justify-center">
+          <BattleArena
+            hero={profile.hero}
+            heroState={heroState}
+            enemy={enemy}
+            enemyState={enemyState}
+            shot={shot}
+            riposte={riposte}
+            shield={battle?.shield ?? false}
+            arena={arena}
+            sky={boss.sky}
+            entrance={false}
+            height="min(58dvh, 520px)"
+          />
+        </div>
+      ) : !battle || !question || !q ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-3">
           <Questy mood={battle ? 'wow' : 'angry'} size={100} />
           <p className="font-display text-2xl">{battle ? 'Fin du combat…' : `${boss.name} arrive…`}</p>
@@ -315,16 +340,17 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
             className="side:grid side:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] flex min-h-0 flex-1 flex-col gap-3"
           >
             <section className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pb-1 [&>*]:shrink-0">
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-2">
                 <span
                   className={`rounded-full px-2 py-0.5 text-xs font-bold text-white ${q.stage === 'piege' ? 'bg-danger' : q.stage === 'probleme' ? 'bg-accent' : 'bg-info'}`}
                 >
                   {STAGE_LABEL[q.stage]}
                 </span>
-                <span className="text-muted text-sm font-bold">{skill?.title}</span>
                 <span className="flex-1" />
                 <ItemBar battle={battle} disabled={busy || missed !== null} onUse={(i) => void spendItem(i)} />
+                <PauseButton onClick={() => setConfirmQuit(true)} />
               </div>
+              <p className="text-muted text-sm font-bold">{skill?.title}</p>
               <h1 className="text-2xl leading-snug font-bold sm:text-3xl">
                 <MathText text={question.prompt} />
               </h1>
@@ -365,23 +391,13 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
                         <MathText text={missed.why} />
                       </p>
                     )}
-                    {showAll ? (
-                      <ol className="flex flex-col gap-1.5">
-                        {question.steps.map((s, i) => (
-                          <li key={i} className="bg-surface rounded-2xl p-2.5 text-lg leading-snug">
-                            <MathText text={s} />
-                          </li>
-                        ))}
-                      </ol>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => setShowAll(true)}
-                        className="text-accent self-start font-bold underline"
-                      >
-                        Voir tout
-                      </button>
-                    )}
+                    <ol className="flex flex-col gap-1.5">
+                      {question.steps.map((s, i) => (
+                        <li key={i} className="bg-surface rounded-2xl p-2.5 text-lg leading-snug">
+                          <MathText text={s} />
+                        </li>
+                      ))}
+                    </ol>
                   </div>
                   <div className="flex shrink-0 flex-wrap justify-end gap-2">
                     {skill && (
@@ -429,7 +445,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   );
 }
 
-/** Objets utilisables pendant le combat (3 au plus). */
+/** Objets utilisables pendant le combat : 3 au plus, tous du même type (les autres sont verrouillés). */
 function ItemBar({
   battle,
   disabled,
@@ -444,6 +460,7 @@ function ItemBar({
       {ITEMS.map((item) => {
         const count = battle.inventory[item];
         const off = disabled || count <= 0 || itemRefusal(battle, item) !== null;
+        const locked = battle.itemType !== null && battle.itemType !== item;
         return (
           <button
             key={item}
@@ -454,6 +471,11 @@ function ItemBar({
             className={`cartoon cartoon-press bg-surface-2 relative flex h-11 w-11 items-center justify-center ${off ? 'opacity-45' : ''}`}
           >
             <GameIcon id={ITEM_ICONS[item]} size="sm" />
+            {locked && (
+              <span className="absolute -top-1.5 -left-1.5">
+                <GameIcon id="icons-status-locked" size={20} />
+              </span>
+            )}
             <span className="bg-accent absolute -right-1.5 -bottom-1.5 rounded-full px-1.5 text-xs font-bold text-white">
               {count}
             </span>
@@ -510,6 +532,26 @@ function BattleResults({
         </p>
       </div>
 
+      {summary.medal && (
+        <motion.section
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.2, type: 'spring', stiffness: 220, damping: 12 }}
+          className="cartoon bg-surface flex items-center gap-4 p-4"
+        >
+          <GameIcon id={BOSS_MEDAL_ICONS[summary.medal]} size={72} />
+          <div className="flex min-w-0 flex-col">
+            <h2 className="font-display text-2xl tracking-wide">Médaille {BOSS_MEDAL_LABELS[summary.medal]}</h2>
+            <p className="text-muted font-bold">
+              {summary.newBest ? 'Nouveau record sur ce boss !' : 'Ton record reste le même.'}{' '}
+              {summary.medal === 'diamant'
+                ? 'Sans perdre un cœur et sans objet : parfait !'
+                : 'Diamant : gagne sans perdre de cœur et sans objet.'}
+            </p>
+          </div>
+        </motion.section>
+      )}
+
       <div className="grid grid-cols-2 gap-3">
         <RewardBadge tone="gold" icon="icons-resources-xp" value={`+${summary.xpGained}`} label="XP" />
         <RewardBadge icon="icons-resources-coin" value={`+${summary.coinsGained}`} label="pièces" />
@@ -524,10 +566,6 @@ function BattleResults({
         >
           <h2 className="font-display text-toon text-2xl">1re victoire : le coffre !</h2>
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <span className="flex flex-col items-center gap-1 font-bold text-white">
-              <GameIcon id="rewards-medals-or" size={56} />
-              Médaille
-            </span>
             {gained.map((i) => (
               <span key={i} className="flex flex-col items-center gap-1 font-bold text-white">
                 <GameIcon id={ITEM_ICONS[i]} size={56} />

@@ -24,7 +24,7 @@ export interface Chest {
   readonly coins: number;
 }
 
-/** Stock maximal par objet, objets utilisables par combat, prix de l'indice. */
+/** Stock maximal par objet, objets utilisables par combat (tous du même type), prix de l'indice. */
 export const MAX_ITEM_STOCK = 9;
 export const MAX_ITEMS_PER_BATTLE = 3;
 export const HINT_PRICE = 20;
@@ -60,8 +60,33 @@ export interface BattleView {
   readonly shield: boolean;
   readonly hintShown: boolean;
   readonly itemsUsed: number;
+  /** Type d'objet choisi pour ce combat (au 1er objet utilisé) : les autres types sont bloqués. */
+  readonly itemType: ItemId | null;
   readonly question: BattleQuestion | null;
   readonly inventory: Inventory;
+}
+
+/** Médaille d'une victoire contre un boss : selon les cœurs restants, diamant à 3 cœurs sans objet. */
+export const BOSS_MEDALS = ['bronze', 'argent', 'or', 'diamant'] as const;
+export type BossMedal = (typeof BOSS_MEDALS)[number];
+export const BOSS_MEDAL_LABELS: Record<BossMedal, string> = {
+  bronze: 'Bronze',
+  argent: 'Argent',
+  or: 'Or',
+  diamant: 'Diamant',
+};
+
+export function bossMedal(hearts: number, maxHearts: number, itemsUsed: number): BossMedal | null {
+  if (hearts <= 0) return null;
+  if (hearts >= maxHearts) return itemsUsed === 0 ? 'diamant' : 'or';
+  return hearts >= maxHearts - 1 ? 'argent' : 'bronze';
+}
+
+/** La meilleure de deux médailles (null = aucune). */
+export function bestMedal(a: BossMedal | null, b: BossMedal | null): BossMedal | null {
+  if (!a) return b;
+  if (!b) return a;
+  return BOSS_MEDALS.indexOf(a) >= BOSS_MEDALS.indexOf(b) ? a : b;
 }
 
 /** Ce qui se passe à l'écran après une réponse. */
@@ -86,6 +111,9 @@ export interface BattleSummary {
   readonly xpGained: number;
   readonly coinsGained: number;
   readonly hearts: number;
+  /** Médaille de ce combat (null si défaite) et si elle bat le record du boss. */
+  readonly medal: BossMedal | null;
+  readonly newBest: boolean;
   /** Objets du coffre (1re victoire). */
   readonly items: Partial<Inventory>;
   /** Notion la plus ratée : l'écran de défaite propose de s'y entraîner. */
@@ -99,6 +127,7 @@ export interface BossRecord {
   readonly chapterId: string;
   readonly wins: number;
   readonly bestHearts: number;
+  readonly bestMedal: BossMedal;
   readonly firstWonAt: string;
 }
 

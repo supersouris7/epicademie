@@ -80,23 +80,37 @@ describe('combat de boss', () => {
     expect(() => answerBattle(s, pools, true, dice())).toThrow();
   });
 
-  it('le bouclier absorbe une riposte, le soin rend un cœur', () => {
+  it('le bouclier absorbe une riposte ; un seul type d’objet par combat, 3 au plus', () => {
     const d = dice();
     let s = applyItem(createBattle(pools, d), 'bouclier');
+    expect(s.itemType).toBe('bouclier');
     expect(itemRefusal(s, 'bouclier')).toMatch(/déjà levé/);
     const r = answerBattle(s, pools, false, d);
     expect(r.outcome).toBe('blocked');
     expect(r.state.hearts).toBe(3);
-    expect(itemRefusal(r.state, 'soin')).toMatch(/pleins/);
     s = answerBattle(r.state, pools, false, d).state;
     expect(s.hearts).toBe(2);
+    // Combat parti sur les boucliers : ni soin ni indice.
+    expect(itemRefusal(s, 'soin')).toMatch(/Un seul type d’objet par combat : bouclier/);
+    expect(itemRefusal(s, 'indice')).toMatch(/Un seul type/);
+    s = applyItem(s, 'bouclier');
+    s = answerBattle(s, pools, false, d).state;
+    s = applyItem(s, 'bouclier');
+    s = answerBattle(s, pools, false, d).state;
+    expect(itemRefusal(s, 'bouclier')).toMatch(/3 objets/);
+  });
+
+  it('le soin rend un cœur, l’indice ne vaut que pour la question en cours', () => {
+    const d = dice();
+    let s = createBattle(pools, d);
+    expect(itemRefusal(s, 'soin')).toMatch(/pleins/);
+    s = answerBattle(s, pools, false, d).state;
     s = applyItem(s, 'soin');
     expect(s.hearts).toBe(3);
-    s = applyItem(s, 'indice');
-    expect(s.hintShown).toBe(true);
-    expect(itemRefusal(s, 'bouclier')).toMatch(/3 objets/);
-    // L'indice ne vaut que pour la question en cours.
-    expect(answerBattle(s, pools, true, d).state.hintShown).toBe(false);
+    let h = applyItem(createBattle(pools, d), 'indice');
+    expect(h.hintShown).toBe(true);
+    h = answerBattle(h, pools, true, d).state;
+    expect(h.hintShown).toBe(false);
   });
 
   it('notion à retravailler : la plus ratée parmi celles de l’entraînement', () => {

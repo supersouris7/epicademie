@@ -15,6 +15,8 @@ import {
   type BattleState,
 } from '@questeo/engine';
 import {
+  bestMedal,
+  bossMedal,
   HINT_PRICE,
   MAX_ITEM_STOCK,
   type BattleAnswer,
@@ -47,6 +49,7 @@ const view = (id: string, chapterId: string, s: BattleState, inventory: Inventor
   shield: s.shield,
   hintShown: s.hintShown,
   itemsUsed: s.itemsUsed,
+  itemType: s.itemType,
   question: s.question,
   inventory,
 });
@@ -55,9 +58,12 @@ export function createBattleRepo(db: Db) {
   const load = (id: string) => {
     const session = db.select().from(sessions).where(eq(sessions.id, id)).get();
     if (session?.mode !== 'boss' || !session.battle) throw new PlayError(404, 'Combat introuvable');
-    // Combats commencés avant le contrôle des doublons : pas encore de liste d'énoncés.
-    const stored = session.battle as Omit<BattleState, 'seen'> & { seen?: readonly string[] };
-    return { session, state: { ...stored, seen: stored.seen ?? [] } };
+    // Combats commencés avant le contrôle des doublons ou le type d'objet unique : champs absents.
+    const stored = session.battle as Omit<BattleState, 'seen' | 'itemType'> & {
+      seen?: readonly string[];
+      itemType?: ItemId | null;
+    };
+    return { session, state: { ...stored, seen: stored.seen ?? [], itemType: stored.itemType ?? null } };
   };
   const pools = (chapterId: string) => {
     const p = battlePools(chapterId);
@@ -74,6 +80,7 @@ export function createBattleRepo(db: Db) {
           chapterId: r.chapterId,
           wins: r.wins,
           bestHearts: r.bestHearts,
+          bestMedal: r.bestMedal,
           firstWonAt: r.firstWonAt,
         })),
         inventory: readInventory(db, profileId),
@@ -189,6 +196,9 @@ export function createBattleRepo(db: Db) {
         const where = and(eq(bossRecords.profileId, profile.id), eq(bossRecords.chapterId, session.chapterId));
         const record = tx.select().from(bossRecords).where(where).get();
         const firstWin = won && !record;
+        const medal = won ? bossMedal(state.hearts, state.maxHearts, state.itemsUsed) : null;
+        const best = bestMedal(record?.bestMedal ?? null, medal) ?? 'bronze';
+        const newBest = medal !== null && best !== record?.bestMedal;
         if (firstWin) {
           tx.insert(bossRecords)
             .values({
@@ -196,12 +206,13 @@ export function createBattleRepo(db: Db) {
               chapterId: session.chapterId,
               wins: 1,
               bestHearts: state.hearts,
+              bestMedal: best,
               firstWonAt: new Date().toISOString(),
             })
             .run();
         } else if (won && record) {
           tx.update(bossRecords)
-            .set({ wins: record.wins + 1, bestHearts: Math.max(record.bestHearts, state.hearts) })
+            .set({ wins: record.wins + 1, bestHearts: Math.max(record.bestHearts, state.hearts), bestMedal: best })
             .where(where)
             .run();
         }
@@ -228,6 +239,8 @@ export function createBattleRepo(db: Db) {
           xpGained,
           coinsGained,
           hearts: state.hearts,
+          medal,
+          newBest,
           items,
           weakSkill: weakestSkill(state, pools(session.chapterId).mobs),
           levelBefore: levelFromXp(profile.xp).level,
