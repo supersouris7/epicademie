@@ -31,20 +31,22 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page).toHaveURL(/\/hub$/);
   await expect(page.getByRole('heading', { name })).toBeVisible();
   await expect(page.getByText('Apprentie')).toBeVisible();
-  await expect(page.getByText(/Prête à jouer/)).toBeVisible();
-  await expect(page.getByRole('button', { name: /Alex.*Changer de héros/ })).toBeVisible();
+  await expect(page.getByText(/Prête pour l’aventure/)).toBeVisible();
+  await expect(page.getByRole('button', { name: /Alex.*changer de héros/ })).toBeVisible();
   // Menu « Mon héros » : Alex seul jouable, les autres « À venir ».
-  await page.getByRole('button', { name: /Alex.*Changer de héros/ }).click();
+  await page.getByRole('button', { name: /Alex.*changer de héros/ }).click();
   await expect(page.getByRole('heading', { name: 'Mon héros' })).toBeVisible();
   await expect(page.getByRole('radio', { name: /Alex/ })).toBeChecked();
   for (const soon of ['Tao', 'Lina', 'Ayla', 'Pixel']) {
     await expect(page.getByRole('img', { name: `${soon}, à venir` })).toBeVisible();
   }
-  await page.getByRole('button', { name: 'Retour' }).click();
-  await page.getByRole('button', { name: /Mes progrès/ }).click();
+  // Barre de navigation du bas sur les écrans principaux.
+  const nav = page.getByRole('navigation', { name: 'Menu principal' });
+  await expect(nav.getByRole('button', { name: 'Héros' })).toHaveAttribute('aria-current', 'page');
+  await nav.getByRole('button', { name: 'Progrès' }).click();
   await expect(page.getByText(/0 \/ 72 notions médaillées/)).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Nombres et calculs' })).toBeVisible();
-  await page.getByRole('button', { name: 'Retour' }).click();
+  await nav.getByRole('button', { name: 'Accueil' }).click();
 
   // Modes : Entraînement et Combat de boss jouables, les autres « À venir ».
   await expect(page.getByRole('button', { name: /^Entraînement/ })).toBeVisible();
@@ -68,11 +70,11 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.getByRole('button', { name: 'Anglais, à venir' }).click();
   await expect(page.getByText('Anglais arrive bientôt !')).toBeVisible();
   await page.getByRole('button', { name: 'Retour' }).click();
-  await page.getByRole('button', { name: /Multijoueur/ }).click();
+  await nav.getByRole('button', { name: 'Multi' }).click();
   await expect(page.getByRole('button', { name: 'Arène, à venir' })).toBeVisible();
-  await page.getByRole('button', { name: 'Retour' }).click();
 
-  await page.getByRole('button', { name: 'Paramètres' }).click();
+  await nav.getByRole('button', { name: 'Paramètres' }).click();
+  await expect(page.getByRole('button', { name: 'Mon héros' })).toBeVisible();
   await expect(page.getByRole('radio', { name: 'Sombre' })).toHaveCount(0); // thème sombre unique
 
   // Le profil survit à un rechargement.

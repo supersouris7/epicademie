@@ -6,7 +6,7 @@ import { useSkills } from '../../api/play.ts';
 import { PageShell } from '../../components/PageShell.tsx';
 import { GameIcon } from '../../components/game/GameIcon.tsx';
 import { localToday } from '../../lib/dates.ts';
-import { chapterProgress } from '../../lib/progress.ts';
+import { chapterProgress, suggestChapter } from '../../lib/progress.ts';
 
 /** Entraînement : choix du chapitre d'une matière. */
 export function Chapters({ profile }: { readonly profile: Profile }) {
@@ -18,26 +18,8 @@ export function Chapters({ profile }: { readonly profile: Profile }) {
   if (!info || chapters.length === 0) return <Navigate to="/jouer/entrainement" replace />;
   const states = new Map((data ?? []).map((s) => [s.skillId, s]));
   const today = localToday();
-  const progress = chapters.map((c) => ({
-    chapter: c,
-    p: chapterProgress(
-      c.skills.map((s) => s.id),
-      states,
-      today,
-    ),
-  }));
-  // Où reprendre : d'abord ce qui est à revoir, puis un chapitre commencé, sinon le premier pas encore acquis.
-  const suggestion =
-    progress.find((x) => x.p.due > 0) ??
-    progress.find((x) => x.p.started > 0 && x.p.acquired < x.p.total) ??
-    progress.find((x) => x.p.acquired < x.p.total);
-  const why = suggestion
-    ? suggestion.p.due > 0
-      ? `${suggestion.p.due} notion${suggestion.p.due > 1 ? 's' : ''} à revoir`
-      : suggestion.p.started > 0
-        ? 'tu l’as commencé'
-        : 'par où commencer'
-    : '';
+  const suggestion = suggestChapter(chapters, states, today);
+  const why = suggestion?.why ?? '';
   return (
     <PageShell title={`Entraînement · ${info.name}`} back="/jouer/entrainement">
       {/* C'est ici qu'on gagne son équipement de combat. */}

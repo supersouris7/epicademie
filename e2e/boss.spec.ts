@@ -56,6 +56,10 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   await expect(page.getByText('Combat !')).toBeVisible();
   await expect(page.getByText('Mob 1/7')).toBeVisible({ timeout: 5000 });
   await expect(page.getByRole('img', { name: '3 cœurs sur 3' })).toBeVisible();
+  // Pause : le même bouton qu'à l'entraînement.
+  await page.getByRole('button', { name: 'Pause' }).click();
+  await expect(page.getByRole('alertdialog', { name: 'Pause' })).toContainText('le boss garde ses vies');
+  await page.getByRole('button', { name: 'Reprendre' }).click();
 
   // 1re réponse fausse : riposte, un cœur de moins, explication courte.
   view = await answer(page, view, false);

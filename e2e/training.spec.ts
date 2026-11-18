@@ -79,7 +79,7 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await expect(page.getByText('Tu es en 4e ?')).toBeVisible();
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
   await page.getByRole('button', { name: /C’est parti/ }).click();
-  await expect(page.getByText(/Prêt à jouer/)).toBeVisible();
+  await expect(page.getByText(/Prêt pour l’aventure/)).toBeVisible();
   // 4e pas encore prête : on joue la 5e en attendant.
   await expect(page.getByText(/Le programme de 4e arrive bientôt/)).toBeVisible();
 
@@ -129,10 +129,11 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await page.getByRole('button', { name: 'Envoyer 2 dans ma réponse' }).click();
   await expect(page.getByLabel('Ta réponse')).toHaveText('2');
 
-  // Quitter : confirmation aux couleurs de l'appli.
-  await page.getByRole('button', { name: 'Quitter la partie' }).click();
-  await expect(page.getByRole('alertdialog')).toContainText('Quitter la partie ?');
-  await page.getByRole('button', { name: 'Continuer à jouer' }).click();
+  // Pause aux couleurs de l'appli.
+  // Pause : même bouton qu'au combat, menu Reprendre / Quitter.
+  await page.getByRole('button', { name: 'Pause' }).click();
+  await expect(page.getByRole('alertdialog', { name: 'Pause' })).toContainText('cette série ne sera pas comptée');
+  await page.getByRole('button', { name: 'Reprendre' }).click();
 
   // Tables : brouillon disponible, pas de calculatrice ni de conseil.
   await page.goto('/partie/entrainement/m5-calcul/m5-tables');

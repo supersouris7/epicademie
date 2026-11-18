@@ -415,10 +415,11 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
       {memo && skill && <Memo skill={skill} onClose={() => setMemo(false)} />}
       {confirmQuit && (
         <ConfirmDialog
-          title="Quitter le combat ?"
-          message="Le boss gardera ses vies : tu pourras revenir l’affronter."
-          confirm="Quitter"
-          cancel="Continuer le combat"
+          title="Pause"
+          message="Si tu quittes, le boss garde ses vies : tu pourras revenir l’affronter."
+          confirm="Quitter le combat"
+          mood="ok"
+          cancel="Reprendre"
           onConfirm={leave}
           onCancel={() => setConfirmQuit(false)}
         />

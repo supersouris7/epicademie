@@ -1,15 +1,15 @@
 import { useNavigate } from 'react-router';
-import { MODES } from '@questeo/shared';
+import { MODES, type Profile } from '@questeo/shared';
 import { ModeTile } from '../components/ModeTile.tsx';
 import { PageShell } from '../components/PageShell.tsx';
 import { useToast } from '../components/Toast.tsx';
 
 /** Choix du mode multijoueur (les téléphones servent de manettes). */
-export function MultiModes() {
+export function MultiModes({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
   const [toast, showToast] = useToast();
   return (
-    <PageShell title="Multijoueur" back="/hub">
+    <PageShell title="Multijoueur" nav={profile.hero}>
       <p className="text-muted text-lg font-bold">
         Cet écran affiche la partie, chaque joueur rejoint avec son téléphone en scannant le QR code.
       </p>

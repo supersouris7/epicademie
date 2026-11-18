@@ -8,6 +8,7 @@ import { bossesKey, buyHint, useBosses } from '../../api/battles.ts';
 import { GameButton } from '../../components/game/GameButton.tsx';
 import { GameIcon } from '../../components/game/GameIcon.tsx';
 import { GamePanel } from '../../components/game/GamePanel.tsx';
+import { SoonBadge } from '../../components/game/SoonBadge.tsx';
 import { ResourceCounter } from '../../components/game/ResourceCounter.tsx';
 import { Questy } from '../../components/mascot/Questy.tsx';
 import { PageShell } from '../../components/PageShell.tsx';
@@ -91,7 +92,7 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
         </div>
       </GamePanel>
 
-      <ul className="grid gap-4 sm:grid-cols-2">
+      <ul className="grid gap-4 lg:grid-cols-2">
         {sorted.map((c, i) => (
           <BossRow
             key={c.id}
@@ -121,13 +122,8 @@ function BossRow({ chapter, index, record, onFight, onSoon }: BossRowProps) {
   const ready = Boolean(chapter.boss);
   // Boss à venir : pas de portrait (case vide).
   const portrait = ready ? assetSrc(`bosses-maths-${boss.id}-portrait`) : null;
-  return (
-    <motion.li
-      initial={{ y: 20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ delay: index * 0.04 }}
-      className={`cartoon bg-surface relative flex items-center gap-3 p-3 ${ready ? '' : 'opacity-60 grayscale'}`}
-    >
+  const body = (
+    <>
       <div className="bg-accent-strong relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl">
         {portrait && (
           <img
@@ -144,24 +140,40 @@ function BossRow({ chapter, index, record, onFight, onSoon }: BossRowProps) {
           </span>
         )}
       </div>
-      <div className="flex min-w-0 flex-1 flex-col gap-1">
-        <span className="font-display truncate text-xl tracking-wide">{chapter.title}</span>
-        <span className="text-muted truncate text-sm font-bold">
+      <div className="flex min-w-0 flex-1 flex-col gap-1 text-left">
+        <span className="font-display text-xl leading-tight tracking-wide">{chapter.title}</span>
+        <span className="text-muted text-sm font-bold">
           {ready ? boss.name : 'Boss à venir'}
           {record ? ` · vaincu ${record.wins} fois` : ''}
         </span>
       </div>
-      {!ready ? (
-        <span className="bg-gold text-on-light font-display rounded-full px-2.5 py-0.5 text-sm">
-          <button type="button" onClick={onSoon} aria-label={`${chapter.title}, boss à venir`}>
-            À venir
-          </button>
-        </span>
+    </>
+  );
+  return (
+    <motion.li
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ delay: index * 0.04 }}
+      className="relative"
+    >
+      {ready ? (
+        <div className="cartoon bg-surface flex flex-wrap items-center gap-3 p-3">
+          {body}
+          <GameButton variant="danger" size="sm" icon="icons-navigation-play" onClick={onFight}>
+            {record ? 'Rejouer' : 'Combattre'}
+          </GameButton>
+        </div>
       ) : (
-        <GameButton variant="danger" size="sm" icon="icons-navigation-play" onClick={onFight}>
-          {record ? 'Rejouer' : 'Combattre'}
-        </GameButton>
+        <button
+          type="button"
+          onClick={onSoon}
+          aria-label={`${chapter.title}, boss à venir`}
+          className="cartoon bg-surface flex w-full items-center gap-3 p-3 opacity-60 grayscale"
+        >
+          {body}
+        </button>
       )}
+      {!ready && <SoonBadge />}
     </motion.li>
   );
 }

@@ -38,3 +38,35 @@ export function masteryOf(s: SkillProgress | undefined): { id: Mastery; label: s
   const id = s ? mastery(s) : 'non-evalue';
   return { id, label: MASTERY_LABELS[id], color: MASTERY_COLORS[id] };
 }
+
+export interface Suggestion<C> {
+  readonly chapter: C;
+  readonly progress: ChapterProgress;
+  /** Pourquoi ce chapitre : « 2 notions à revoir », « tu l'as commencé », « par où commencer ». */
+  readonly why: string;
+}
+
+/** Où reprendre : d'abord ce qui est à revoir, puis un chapitre commencé, sinon le premier pas encore acquis. */
+export function suggestChapter<C extends { readonly skills: readonly { readonly id: string }[] }>(
+  chapters: readonly C[],
+  states: ReadonlyMap<string, SkillProgress>,
+  today: string,
+): Suggestion<C> | null {
+  const all = chapters.map((chapter) => ({
+    chapter,
+    progress: chapterProgress(
+      chapter.skills.map((s) => s.id),
+      states,
+      today,
+    ),
+  }));
+  const pick =
+    all.find((x) => x.progress.due > 0) ??
+    all.find((x) => x.progress.started > 0 && x.progress.acquired < x.progress.total) ??
+    all.find((x) => x.progress.acquired < x.progress.total);
+  if (!pick) return null;
+  const { due, started } = pick.progress;
+  const why =
+    due > 0 ? `${due} notion${due > 1 ? 's' : ''} à revoir` : started > 0 ? 'tu l’as commencé' : 'par où commencer';
+  return { ...pick, why };
+}

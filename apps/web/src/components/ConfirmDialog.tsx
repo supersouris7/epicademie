@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { GameButton } from './game/GameButton.tsx';
 import { Questy } from './mascot/Questy.tsx';
+import type { MoodId } from './mascot/moods.ts';
 
 interface ConfirmDialogProps {
   readonly title: string;
@@ -9,10 +10,20 @@ interface ConfirmDialogProps {
   readonly cancel: string;
   readonly onConfirm: () => void;
   readonly onCancel: () => void;
+  /** Humeur de Questy (triste par défaut ; « pause » plus neutre). */
+  readonly mood?: MoodId;
 }
 
 /** Confirmation aux couleurs de l'appli (remplace window.confirm, peu lisible sur tablette). */
-export function ConfirmDialog({ title, message, confirm, cancel, onConfirm, onCancel }: ConfirmDialogProps) {
+export function ConfirmDialog({
+  title,
+  message,
+  confirm,
+  cancel,
+  onConfirm,
+  onCancel,
+  mood = 'sad',
+}: ConfirmDialogProps) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
@@ -25,7 +36,7 @@ export function ConfirmDialog({ title, message, confirm, cancel, onConfirm, onCa
         animate={{ scale: 1, opacity: 1 }}
         className="cartoon border-accent bg-surface flex w-full max-w-md flex-col items-center gap-4 p-6 text-center"
       >
-        <Questy mood="sad" size={120} />
+        <Questy mood={mood} size={120} />
         <h2 className="font-display text-3xl tracking-wide">{title}</h2>
         <p className="text-lg">{message}</p>
         <div className="flex flex-wrap justify-center gap-3">

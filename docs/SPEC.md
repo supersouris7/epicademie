@@ -191,7 +191,7 @@ Catalogue typé dans `packages/shared/src/modes.ts`.
 
 | Catégorie   | Mode             | Portée          | Principe                                                                                                                    |
 | ----------- | ---------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Apprendre   | Entraînement     | matière → thème | 10 questions, difficulté adaptative, sans pression                                                                          |
+| Apprendre   | Entraînement     | matière → thème | 5 questions, difficulté adaptative, coffres d’équipement à gagner                                                           |
 | Apprendre   | Combat de boss   | matière → thème | boss du thème, bonne réponse = dégâts, erreur = −1 cœur (3 cœurs) ; boss final de matière quand tous les thèmes sont acquis |
 | Défis       | Contre-la-montre | matière → thème | max de bonnes réponses en 60 s, record par thème                                                                            |
 | Défis       | Survie           | matière → thème | difficulté croissante, 3 vies, record de vagues                                                                             |
@@ -328,3 +328,10 @@ Catalogue typé dans `packages/shared/src/modes.ts`.
 - Série de **5 questions** (3 questions similaires au plus après erreur). Jamais deux fois le même énoncé dans une série ; les énoncés des dernières séries de la notion (40 par notion, retenus sur l'appareil) sont évités aussi.
 - La tête du héros (Alex) est dans la barre du haut : son expression suit les réponses et une petite bulle réagit (« Trop facile ! », « Aïe… on se reprend ! », « Série en feu ! »). Questy garde les indices et explications.
 - Fin de série : coffre d'équipement au hasard (voir §6.2 bis), ouvert en touchant le coffre. La page de l'entraînement rappelle que c'est ici qu'on gagne son équipement.
+
+### 6.6 Navigation et accueil (18/11/2026)
+
+- **Accueil « écran de jeu »** : en-tête joueur (avatar = identité du profil, niveau, XP, pièces) ; scène avec le héros en pied dans l'arène (toucher → « Mon héros ») et Questy ; carte « À faire aujourd'hui » (notions à revoir, sinon le chapitre où reprendre) ; deux grandes cartes JOUER (Entraînement en vert, Combat de boss en rouge) ; défis « À venir » en dessous.
+- **Barre de navigation du bas** sur les écrans principaux : Accueil · Héros · Progrès · Multi · Paramètres. Les sous-écrans (matière, chapitre, boss…) gardent le bouton retour.
+- **Pause** : en entraînement comme en combat, un même bouton ⏸ en haut à gauche ouvre le menu Pause (Reprendre / Quitter, avec ce qu'on perd).
+- Une seule pastille « À venir » (dorée, dans le coin) pour les modes, matières, boss et héros pas encore prêts.

@@ -47,7 +47,7 @@ export function Progress({ profile }: { readonly profile: Profile }) {
   }).length;
 
   return (
-    <PageShell title="Mes progrès" back="/hub">
+    <PageShell title="Mes progrès" nav={profile.hero}>
       <section className="cartoon bg-surface flex flex-wrap items-center gap-4 p-4">
         <Questy mood={total.platine + total.or > 0 ? 'proud' : 'happy'} size={110} />
         <div className="flex min-w-0 flex-1 flex-col gap-2">

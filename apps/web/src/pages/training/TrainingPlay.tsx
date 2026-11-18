@@ -42,6 +42,7 @@ import { formatAnswer, stageMessage } from '../../lib/answers.ts';
 import { heroLine, type HeroMoment } from '../../lib/heroLines.ts';
 import { freshQuestion, recentPrompts, rememberPrompt } from '../../lib/recent.ts';
 import { HeroBubble } from '../../components/battle/HeroBubble.tsx';
+import { PauseButton } from '../../components/play/PauseButton.tsx';
 import { ChestReveal } from '../../components/game/ChestReveal.tsx';
 
 interface Current {
@@ -80,7 +81,7 @@ interface Retry {
 /** Un 2e essai n'a pas de sens quand il ne reste qu'une option (Vrai / Faux, < / >…). */
 const canRetry = (q: Question) => q.answer.kind !== 'choice' || q.answer.options.length > 2;
 
-/** Partie d'Entraînement : 10 questions + variantes, correction après chaque réponse. */
+/** Partie d’Entraînement : 5 questions + variantes, correction après chaque réponse. */
 export function TrainingPlay({ profile }: { readonly profile: Profile }) {
   const { chapterId = '', skillId = '' } = useParams();
   const chapter = getChapter(chapterId);
@@ -317,14 +318,7 @@ function Game({
   return (
     <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-3 px-3 py-3 sm:px-4">
       <header className="flex shrink-0 items-center gap-3">
-        <GameButton
-          variant="danger"
-          size="sm"
-          iconOnly
-          icon="icons-navigation-close"
-          onClick={quit}
-          aria-label="Quitter la partie"
-        />
+        <PauseButton onClick={quit} />
         <HeroBubble hero={profile.hero} face={hero.face} text={hero.text} nonce={hero.nonce} />
         <ProgressBar
           className="flex-1"
@@ -334,7 +328,7 @@ function Game({
           segments={TRAINING_LENGTH}
           text={`${Math.min(done + (answered || retry ? 0 : 1), TRAINING_LENGTH)}/${TRAINING_LENGTH}`}
         />
-        <ResourceCounter icon="icons-resources-xp" value={xpTotal} label={`${xpTotal} XP gagnés`} />
+        <ResourceCounter icon="icons-resources-xp" value={`+${xpTotal} XP`} label={`${xpTotal} XP gagnés`} />
       </header>
 
       {!current && (
@@ -454,10 +448,11 @@ function Game({
       {memo && skill && <Memo skill={skill} onClose={() => setMemo(false)} />}
       {confirmQuit && (
         <ConfirmDialog
-          title="Quitter la partie ?"
-          message="Ta progression sur cette série ne sera pas comptée."
-          confirm="Quitter"
-          cancel="Continuer à jouer"
+          title="Pause"
+          message="Si tu quittes, cette série ne sera pas comptée."
+          confirm="Quitter la série"
+          mood="ok"
+          cancel="Reprendre"
           onConfirm={leave}
           onCancel={() => setConfirmQuit(false)}
         />

@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type { HeroId } from '@questeo/shared';
 import { assetSrc, type HeroExpression } from '../../design/assets.ts';
 import { GameIcon } from '../game/GameIcon.tsx';
+import { PauseButton } from '../play/PauseButton.tsx';
 import { ProgressBar } from '../game/ProgressBar.tsx';
 import { PlasmaShot } from './BattleArena.tsx';
 import { HeroFace } from './HeroFace.tsx';
@@ -38,21 +39,14 @@ export function BattleBar(p: BattleBarProps) {
   const enemySrc = assetSrc(p.enemyImage);
   return (
     <header
-      className="cartoon relative flex shrink-0 items-center gap-2 overflow-hidden px-2 py-1.5 sm:gap-3 sm:px-3"
+      className="cartoon relative flex shrink-0 items-center gap-2 overflow-hidden px-2.5 py-2 sm:gap-3 sm:px-3"
       style={{
         background: bg
           ? `linear-gradient(rgb(20 10 40 / 0.55), rgb(20 10 40 / 0.55)), center 60% / cover no-repeat url(${bg})`
           : 'var(--surface)',
       }}
     >
-      <button
-        type="button"
-        onClick={p.onQuit}
-        aria-label="Quitter le combat"
-        className="cartoon cartoon-press bg-danger flex h-10 w-10 shrink-0 items-center justify-center"
-      >
-        <GameIcon id="icons-navigation-close" size="xs" />
-      </button>
+      <PauseButton onClick={p.onQuit} />
 
       {/* Héros : tête (secouée quand il est touché), cœurs, bouclier */}
       <motion.div

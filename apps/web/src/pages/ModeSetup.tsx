@@ -6,6 +6,7 @@ import { MODE_MOODS } from '../lib/modes.ts';
 import { PageShell } from '../components/PageShell.tsx';
 import { SpeechBubble } from '../components/SpeechBubble.tsx';
 import { useToast } from '../components/Toast.tsx';
+import { SoonBadge } from '../components/game/SoonBadge.tsx';
 import { SubjectIcon } from '../components/game/SubjectIcon.tsx';
 import { Questy } from '../components/mascot/Questy.tsx';
 
@@ -50,11 +51,7 @@ export function ModeSetup() {
               <SubjectIcon subject={s.id} size={72} />
               <span className="font-display text-toon text-xl tracking-wide sm:text-2xl">{s.name}</span>
             </button>
-            {!s.available && (
-              <span className="bg-gold text-on-light font-display pointer-events-none absolute top-2 right-2 rounded-full px-2.5 py-0.5 text-sm">
-                À venir
-              </span>
-            )}
+            {!s.available && <SoonBadge />}
           </motion.li>
         ))}
       </ul>

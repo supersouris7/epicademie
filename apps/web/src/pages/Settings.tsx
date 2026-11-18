@@ -4,6 +4,7 @@ import type { Profile } from '@questeo/shared';
 import { useDeleteProfile, useUpdateProfile } from '../api/profiles.ts';
 import { GameButton } from '../components/game/GameButton.tsx';
 import { PageShell } from '../components/PageShell.tsx';
+import { HeroFace } from '../components/battle/HeroFace.tsx';
 import { useSession } from '../store/session.ts';
 
 function Toggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
@@ -33,7 +34,7 @@ export function Settings({ profile }: { readonly profile: Profile }) {
   };
 
   return (
-    <PageShell title="Paramètres" back="/hub">
+    <PageShell title="Paramètres" nav={profile.hero}>
       <section className="flex flex-col gap-3">
         <h2 className="font-display text-2xl tracking-wide">Son</h2>
         <Toggle label="Effets sonores" checked={profile.soundOn} onChange={(soundOn) => update.mutate({ soundOn })} />
@@ -42,10 +43,24 @@ export function Settings({ profile }: { readonly profile: Profile }) {
 
       <section className="flex flex-col gap-3">
         <h2 className="font-display text-2xl tracking-wide">Profil</h2>
-        <GameButton variant="surface" onClick={() => void navigate(`/profils/${profile.id}/modifier`)}>
-          Modifier mon prénom et mon avatar
+        <GameButton
+          variant="surface"
+          icon="icons-navigation-edit"
+          className="justify-start"
+          onClick={() => void navigate(`/profils/${profile.id}/modifier`)}
+        >
+          Modifier mon prénom, mon avatar et ma classe
         </GameButton>
-        <GameButton variant="surface" onClick={() => void navigate('/')}>
+        <GameButton variant="surface" className="justify-start" onClick={() => void navigate('/heros')}>
+          <HeroFace hero={profile.hero} expression="confiant" size={32} />
+          Mon héros
+        </GameButton>
+        <GameButton
+          variant="surface"
+          icon="icons-navigation-swap"
+          className="justify-start"
+          onClick={() => void navigate('/')}
+        >
           Changer de joueur
         </GameButton>
         {confirming ? (
@@ -63,15 +78,28 @@ export function Settings({ profile }: { readonly profile: Profile }) {
             </div>
           </div>
         ) : (
-          <GameButton variant="danger" onClick={() => setConfirming(true)}>
+          <GameButton
+            variant="danger"
+            icon="icons-navigation-close"
+            className="justify-start"
+            onClick={() => setConfirming(true)}
+          >
             Supprimer ce profil
           </GameButton>
         )}
       </section>
 
-      <GameButton variant="surface" className="self-start" onClick={() => void navigate('/a-propos')}>
-        À propos et crédits
-      </GameButton>
+      <section className="flex flex-col gap-3">
+        <h2 className="font-display text-2xl tracking-wide">Infos</h2>
+        <GameButton
+          variant="surface"
+          icon="icons-navigation-info"
+          className="justify-start"
+          onClick={() => void navigate('/a-propos')}
+        >
+          À propos et crédits
+        </GameButton>
+      </section>
     </PageShell>
   );
 }

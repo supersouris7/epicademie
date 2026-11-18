@@ -24,14 +24,14 @@ export const MODES: readonly ModeInfo[] = [
   {
     id: 'entrainement',
     name: 'Entraînement',
-    pitch: '10 questions sur un thème, à ton rythme',
+    pitch: '5 questions sur un thème, à ton rythme',
     category: 'apprendre',
     available: true,
   },
   {
     id: 'boss',
     name: 'Combat de boss',
-    pitch: 'Bats le boss du thème, 3 cœurs',
+    pitch: '7 mobs puis le boss du chapitre',
     category: 'apprendre',
     available: true,
   },

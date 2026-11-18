@@ -7,6 +7,7 @@ import { HeroCard } from '../components/game/CharacterCard.tsx';
 import { CharacterSprite } from '../components/game/CharacterSprite.tsx';
 import { GamePanel } from '../components/game/GamePanel.tsx';
 import { PageShell } from '../components/PageShell.tsx';
+import { SoonBadge } from '../components/game/SoonBadge.tsx';
 import { useToast } from '../components/Toast.tsx';
 import { CHARACTERS, HERO_EXPRESSIONS, type AnimationState, type HeroExpression } from '../design/assets.ts';
 
@@ -28,7 +29,7 @@ export function Heroes({ profile }: { readonly profile: Profile }) {
   };
 
   return (
-    <PageShell title="Mon héros" back="/hub">
+    <PageShell title="Mon héros" nav={profile.hero}>
       <GamePanel className="flex flex-col items-center gap-4 sm:flex-row sm:items-end">
         <motion.button
           type="button"
@@ -85,9 +86,7 @@ export function Heroes({ profile }: { readonly profile: Profile }) {
             // Héros pas encore dessiné : carte grisée, non choisissable.
             <div key={h} className="relative opacity-50 grayscale" aria-label={`${HERO_NAMES[h]}, à venir`} role="img">
               <HeroCard hero={h} index={i} className="pointer-events-none min-h-40" />
-              <span className="bg-gold text-on-light font-display absolute top-2 right-2 rounded-full px-2.5 py-0.5 text-sm">
-                À venir
-              </span>
+              <SoonBadge />
             </div>
           ),
         )}

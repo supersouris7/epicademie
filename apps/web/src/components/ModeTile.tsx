@@ -3,6 +3,7 @@ import type { ModeInfo } from '@questeo/shared';
 import { CATEGORY_COLORS, MODE_MOODS } from '../lib/modes.ts';
 import { assetSrc } from '../design/assets.ts';
 import { GameIcon } from './game/GameIcon.tsx';
+import { SoonBadge } from './game/SoonBadge.tsx';
 import { Questy } from './mascot/Questy.tsx';
 
 interface ModeTileProps {
@@ -37,15 +38,7 @@ export function ModeTile({ mode, index = 0, badge, onClick }: ModeTileProps) {
           <span className="text-sm font-bold opacity-95">{mode.pitch}</span>
         </span>
       </button>
-      {!mode.available && (
-        <span
-          className="cartoon bg-gold font-display text-on-light absolute -top-3 -right-2 px-3 py-0.5 text-sm tracking-wide"
-          style={{ borderRadius: '9999px' }}
-          aria-hidden
-        >
-          À venir
-        </span>
-      )}
+      {!mode.available && <SoonBadge />}
       {badge !== undefined && badge > 0 && (
         <span
           className="cartoon bg-danger font-display absolute -top-3 -right-2 flex h-10 min-w-10 items-center justify-center px-2 text-lg text-white"

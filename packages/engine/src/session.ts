@@ -2,7 +2,7 @@ import type { Level } from '@questeo/content';
 import { isDue, type SkillState } from './srs.ts';
 
 /**
- * Déroulé d'une série d'Entraînement : 10 questions régulières, plus une variante immédiate
+ * Déroulé d’une série d’Entraînement : 5 questions régulières, plus une variante immédiate
  * (même notion, même niveau, nouvelle graine) après chaque erreur.
  */
 export const TRAINING_LENGTH = 5;

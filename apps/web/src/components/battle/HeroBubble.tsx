@@ -4,7 +4,7 @@ import type { HeroId } from '@questeo/shared';
 import type { HeroExpression } from '../../design/assets.ts';
 import { HeroFace } from './HeroFace.tsx';
 
-/** Tête du héros et sa petite bulle, qui s'efface d'elle-même (sans pousser le reste de l'écran). */
+/** Tête du héros et sa petite bulle à droite (par-dessus la barre de progression), qui s'efface d'elle-même. */
 export function HeroBubble({
   hero,
   face,
@@ -33,10 +33,10 @@ export function HeroBubble({
           <motion.span
             key={nonce}
             role="status"
-            initial={{ opacity: 0, y: -6, scale: 0.8 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
+            initial={{ opacity: 0, x: -6, scale: 0.8 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className="cartoon font-display text-on-light pointer-events-none absolute top-full left-1/2 z-30 mt-1 -translate-x-1/4 rounded-2xl bg-white px-3 py-1 text-base whitespace-nowrap shadow-lg"
+            className="cartoon font-display text-on-light pointer-events-none absolute top-1/2 left-full z-30 ml-2 -translate-y-1/2 rounded-2xl bg-white px-3 py-1 text-base whitespace-nowrap shadow-lg"
           >
             {text}
           </motion.span>
