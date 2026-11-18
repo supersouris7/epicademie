@@ -9,6 +9,7 @@ import { operations } from './operations.ts';
 import { relatifs } from './relatifs.ts';
 import { QUATRIEME } from './quatrieme.ts';
 import { SIXIEME } from './sixieme.ts';
+import { TROISIEME } from './troisieme.ts';
 
 /** Programme de mathématiques de 5e (BO n°10 du 5 mars 2026), dans l'ordre du programme. */
 const PROGRAM: readonly Chapter[] = [
@@ -38,4 +39,4 @@ const FIFTH: readonly Chapter[] = PROGRAM.map((c) => {
 });
 
 /** Chapitres de maths de toutes les classes, dans l'ordre de la scolarité. */
-export const MATHS_CHAPTERS: readonly Chapter[] = [...SIXIEME, ...FIFTH, ...QUATRIEME];
+export const MATHS_CHAPTERS: readonly Chapter[] = [...SIXIEME, ...FIFTH, ...QUATRIEME, ...TROISIEME];

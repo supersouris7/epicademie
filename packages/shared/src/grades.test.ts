@@ -22,6 +22,7 @@ describe('classe déduite de la date de naissance', () => {
   it('seule la 5e est disponible : les autres classes jouent la 5e en attendant', () => {
     expect(gradeInfo('5e').available).toBe(true);
     expect(gradeInfo('4e').available).toBe(true);
+    expect(gradeInfo('3e').available).toBe(true);
     expect(gradeInfo('cm1').available).toBe(false);
     expect(playedGrade('adulte')).toBe('5e');
     expect(playedGrade(null)).toBe('5e');

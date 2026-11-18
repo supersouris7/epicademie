@@ -18,7 +18,7 @@ export const GRADE_INFO: readonly GradeInfo[] = [
   { id: '6e', name: '6e', available: true, age: 11 },
   FIFTH,
   { id: '4e', name: '4e', available: true, age: 13 },
-  { id: '3e', name: '3e', available: false, age: 14 },
+  { id: '3e', name: '3e', available: true, age: 14 },
   { id: 'adulte', name: 'Adulte', available: false },
 ];
 

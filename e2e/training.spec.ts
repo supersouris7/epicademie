@@ -87,8 +87,8 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
   await page.getByRole('button', { name: /C’est parti/ }).click();
   await expect(page).toHaveURL(/\/hub$/);
-  // 4e pas encore prête : on joue la 5e en attendant.
-  await expect(page.getByText(/Le programme de 4e arrive bientôt/)).toBeVisible();
+  // Toutes les classes du CM1 à la 3e ont leur programme : plus de message « arrive bientôt ».
+  await expect(page.getByText(/arrive bientôt/)).toHaveCount(0);
 
   // Aire du disque : Questy conseille la calculatrice ; elle remplace le pavé dans la zone d'outils.
   await page.goto('/partie/entrainement/m5-espace/m5-disque');
