@@ -248,7 +248,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
     }
   };
 
-  const leave = () => void navigate(`/jouer/boss/${chapter.subject}`);
+  const leave = () => void navigate(`/jouer/boss/${chapter.subject}?classe=${chapter.grade}`);
 
   if (error) {
     return (
@@ -601,7 +601,7 @@ function BattleResults({
         <GameButton
           variant="accent"
           icon="icons-navigation-next"
-          onClick={() => void navigate(`/jouer/boss/${chapter.subject}`)}
+          onClick={() => void navigate(`/jouer/boss/${chapter.subject}?classe=${chapter.grade}`)}
         >
           Autres boss
         </GameButton>

@@ -19,7 +19,7 @@ export function Notions({ profile }: { readonly profile: Profile }) {
   const today = localToday();
   const play = (skill: string) => void navigate(`/partie/entrainement/${chapter.id}/${skill}`);
   return (
-    <PageShell title={chapter.title} back={`/jouer/entrainement/${subject}`}>
+    <PageShell title={chapter.title} back={`/jouer/entrainement/${subject}?classe=${chapter.grade}`}>
       <button
         type="button"
         onClick={() => play('tout')}

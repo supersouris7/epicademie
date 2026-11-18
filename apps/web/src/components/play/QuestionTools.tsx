@@ -20,7 +20,8 @@ import { toolTabs } from '../../lib/tools.ts';
 /** Tableau adapté à l'unité de la question (aires en ^2, volumes en ^3 ou en litres). */
 function conversionKind(q: Question): ConversionKind {
   const text = q.prompt + (q.answer.kind === 'number' ? (q.answer.unit ?? '') : '');
-  if (/\^3|\bc?L\b|\bmL\b/.test(text)) return 'volume';
+  if (/\^3|\b[kchd]?a?L\b|\bmL\b/.test(text)) return 'volume';
+  if (/\d\s?(?:kg|hg|dag|g|dg|cg|mg)\b/.test(text)) return 'masse';
   if (text.includes('^2')) return 'aire';
   return 'longueur';
 }

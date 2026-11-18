@@ -1,11 +1,13 @@
 import { motion } from 'motion/react';
 import { Navigate, useNavigate, useParams } from 'react-router';
 import { chaptersOf } from '@questeo/content';
-import { SUBJECTS, type Profile } from '@questeo/shared';
+import { gradeInfo, SUBJECTS, type Profile } from '@questeo/shared';
 import { useSkills } from '../../api/play.ts';
+import { GradeTabs } from '../../components/GradeTabs.tsx';
 import { PageShell } from '../../components/PageShell.tsx';
 import { GameIcon } from '../../components/game/GameIcon.tsx';
 import { localToday } from '../../lib/dates.ts';
+import { useGradeChoice } from '../../lib/grades.ts';
 import { chapterProgress, suggestChapter } from '../../lib/progress.ts';
 
 /** Entraînement : choix du chapitre d'une matière. */
@@ -13,7 +15,8 @@ export function Chapters({ profile }: { readonly profile: Profile }) {
   const { subject = '' } = useParams();
   const navigate = useNavigate();
   const info = SUBJECTS.find((s) => s.id === subject);
-  const chapters = chaptersOf(subject);
+  const { grade, grades, own, setGrade } = useGradeChoice(profile, subject);
+  const chapters = chaptersOf(subject, grade);
   const { data } = useSkills(profile.id);
   if (!info || chapters.length === 0) return <Navigate to="/jouer/entrainement" replace />;
   const states = new Map((data ?? []).map((s) => [s.skillId, s]));
@@ -30,6 +33,7 @@ export function Chapters({ profile }: { readonly profile: Profile }) {
           (bouclier, soin, indice, pièces). 5/5 = coffre garanti.
         </p>
       </div>
+      <GradeTabs grades={grades} value={grade} own={own} onChange={setGrade} />
       {suggestion && (
         <button
           type="button"
@@ -45,7 +49,9 @@ export function Chapters({ profile }: { readonly profile: Profile }) {
           </span>
         </button>
       )}
-      <p className="text-muted text-lg font-bold">Ou choisis un chapitre du programme de 5e.</p>
+      <p className="text-muted text-lg font-bold">
+        {suggestion ? 'Ou choisis' : 'Choisis'} un chapitre du programme de {gradeInfo(grade).name}.
+      </p>
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {chapters.map((c, i) => {
           const p = chapterProgress(

@@ -681,7 +681,54 @@ function Chart({ f }: { f: Of<'chart'> }) {
 
 /* ───────────── Programme par blocs ───────────── */
 
-const BLOCK_COLORS = { ask: '#5cb1d6', set: '#ff8c1a', change: '#ff8c1a', say: '#9966ff', repeat: '#ffab19' } as const;
+const BLOCK_COLORS = {
+  ask: '#5cb1d6',
+  set: '#ff8c1a',
+  change: '#ff8c1a',
+  say: '#9966ff',
+  repeat: '#ffab19',
+  if: '#ffab19',
+  until: '#ffab19',
+} as const;
+
+/** Bloc « C » de contrôle : en-tête, blocs imbriqués, éventuel « sinon ». */
+function ControlBlock({
+  color,
+  head,
+  body,
+  elseHead,
+  elseBody,
+}: {
+  color: string;
+  head: ReactNode;
+  body: readonly Block[];
+  elseHead?: ReactNode;
+  elseBody?: readonly Block[];
+}) {
+  const inner = (blocks: readonly Block[]) => (
+    <div className="ml-5 flex flex-col gap-1 rounded-l-lg bg-[var(--surface-2)] py-2 pl-2">
+      {blocks.map((c, i) => (
+        <BlockView key={i} b={c} />
+      ))}
+    </div>
+  );
+  return (
+    <div
+      className="w-fit rounded-lg border-2 border-black/20 text-base font-bold text-white"
+      style={{ backgroundColor: color }}
+    >
+      <div className="px-3 py-2">{head}</div>
+      {inner(body)}
+      {elseBody && (
+        <>
+          <div className="px-3 py-2">{elseHead}</div>
+          {inner(elseBody)}
+        </>
+      )}
+      <div className="h-4" />
+    </div>
+  );
+}
 
 function Pill({ children }: { children: ReactNode }) {
   return (
@@ -720,17 +767,41 @@ function BlockView({ b }: { b: Block }) {
       );
     case 'repeat':
       return (
-        <div className="w-fit rounded-lg border-2 border-black/20 text-base font-bold text-white" style={style}>
-          <div className="px-3 py-2">
-            répéter <Pill>{b.times}</Pill> fois
-          </div>
-          <div className="ml-5 flex flex-col gap-1 rounded-l-lg bg-[var(--surface-2)] py-2 pl-2">
-            {b.body.map((c, i) => (
-              <BlockView key={i} b={c} />
-            ))}
-          </div>
-          <div className="h-4" />
-        </div>
+        <ControlBlock
+          color={style.backgroundColor}
+          head={
+            <>
+              répéter <Pill>{b.times}</Pill> fois
+            </>
+          }
+          body={b.body}
+        />
+      );
+    case 'if':
+      return (
+        <ControlBlock
+          color={style.backgroundColor}
+          head={
+            <>
+              si <Pill>{b.cond}</Pill> alors
+            </>
+          }
+          body={b.then}
+          elseHead="sinon"
+          elseBody={b.else}
+        />
+      );
+    case 'until':
+      return (
+        <ControlBlock
+          color={style.backgroundColor}
+          head={
+            <>
+              répéter jusqu’à <Pill>{b.cond}</Pill>
+            </>
+          }
+          body={b.body}
+        />
       );
   }
 }

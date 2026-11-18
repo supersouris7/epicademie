@@ -6,6 +6,20 @@ import type { AnswerSpec, Rich, Trap } from './types.ts';
 export const BO_MATHS = 'Programme de mathématiques du cycle 4, classe de 5e (BO n°10 du 5 mars 2026)';
 export const objective = (text: string) => `${BO_MATHS} — « ${text} »`;
 
+/**
+ * Programmes officiels des autres classes. Cycle 3 : BO n°16 du 17 avril 2025 (CM1 et 6e depuis 2025,
+ * CM2 depuis 2026). 4e et 3e : objectifs par année du programme du cycle 4 publié au BO n°10 du 5 mars 2026.
+ */
+const BO_BY_GRADE = {
+  cm1: 'Programme de mathématiques du cycle 3, CM1 (BO n°16 du 17 avril 2025)',
+  cm2: 'Programme de mathématiques du cycle 3, CM2 (BO n°16 du 17 avril 2025)',
+  '6e': 'Programme de mathématiques du cycle 3, classe de 6e (BO n°16 du 17 avril 2025)',
+  '4e': 'Programme de mathématiques du cycle 4, classe de 4e (BO n°10 du 5 mars 2026)',
+  '3e': 'Programme de mathématiques du cycle 4, classe de 3e (BO n°10 du 5 mars 2026)',
+} as const;
+/** Fabrique la référence « objectif officiel » d'une classe. */
+export const objectiveOf = (grade: keyof typeof BO_BY_GRADE) => (text: string) => `${BO_BY_GRADE[grade]} — « ${text} »`;
+
 export const num = (value: Rational | number, unit?: string): AnswerSpec => ({
   kind: 'number',
   value: typeof value === 'number' ? r(value) : value,

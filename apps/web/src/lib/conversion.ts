@@ -1,4 +1,4 @@
-export type ConversionKind = 'longueur' | 'aire' | 'volume';
+export type ConversionKind = 'longueur' | 'aire' | 'volume' | 'masse';
 
 export interface ConversionState {
   readonly digits: readonly (string | null)[];
@@ -18,6 +18,7 @@ export const LAYOUTS: Record<ConversionKind, readonly Column[]> = {
   longueur: LENGTHS.map((unit) => ({ unit, cells: 1 })),
   aire: LENGTHS.map((u) => ({ unit: `${u}^2`, cells: 2 })),
   // 1 m³ = 1 kL ; 1 dm³ = 1 L (daL, hL à gauche) ; 1 cm³ = 1 mL (cL, dL à gauche).
+  masse: ['kg', 'hg', 'dag', 'g', 'dg', 'cg', 'mg'].map((unit) => ({ unit, cells: 1 })),
   volume: [
     { unit: 'm^3', cells: 3, capacity: ['', '', 'kL'] },
     { unit: 'dm^3', cells: 3, capacity: ['hL', 'daL', 'L'] },
@@ -34,7 +35,9 @@ export const emptyConversion = (kind: ConversionKind): ConversionState => ({
 /** Unités citées dans l'énoncé (ex. « 3 mL = … L » → mL, L), pour les surligner. */
 export function unitsIn(prompt: string): Set<string> {
   const found = new Set<string>();
-  for (const m of prompt.matchAll(/\b(km|hm|dam|m|dm|cm|mm|kL|hL|daL|L|dL|cL|mL)(\^[23])?(?![a-zA-Z])/g))
+  for (const m of prompt.matchAll(
+    /\b(km|hm|dam|m|dm|cm|mm|kL|hL|daL|L|dL|cL|mL|kg|hg|dag|g|dg|cg|mg)(\^[23])?(?![a-zA-Z])/g,
+  ))
     found.add(`${m[1] ?? ''}${m[2] ?? ''}`);
   return found;
 }
@@ -64,6 +67,7 @@ export function readConversion(state: ConversionState): string | null {
 
 const LENGTH_UNIT = '(?:km|hm|dam|m|dm|cm|mm)';
 const CAPACITY_UNIT = '(?:kL|hL|daL|L|dL|cL|mL)';
+const MASS_UNIT = '(?:kg|hg|dag|g|dg|cg|mg)';
 
 /**
  * Grandeur mesurée par une question (unités après un nombre dans l'énoncé, ou unité de la réponse),
@@ -76,6 +80,7 @@ export function measureKind(prompt: string, answerUnit?: string): ConversionKind
   if (afterNumber(LENGTH_UNIT, '\\^3') || afterNumber(CAPACITY_UNIT)) return 'volume';
   if (afterNumber(LENGTH_UNIT, '\\^2')) return 'aire';
   if (afterNumber(LENGTH_UNIT)) return 'longueur';
+  if (afterNumber(MASS_UNIT)) return 'masse';
   return null;
 }
 
@@ -136,12 +141,18 @@ export function conversionDemo(kind: ConversionKind, value: string, from: string
  */
 export function conversionNeeded(prompt: string, answerUnit?: string): ConversionKind | null {
   const units = unitsIn(`${prompt} ${answerUnit ?? ''}`);
-  const families: Record<ConversionKind, Set<string>> = { longueur: new Set(), aire: new Set(), volume: new Set() };
+  const families: Record<ConversionKind, Set<string>> = {
+    longueur: new Set(),
+    aire: new Set(),
+    volume: new Set(),
+    masse: new Set(),
+  };
   for (const u of units) {
     if (u.endsWith('^3') || u.endsWith('L')) families.volume.add(u);
+    else if (u.endsWith('g')) families.masse.add(u);
     else if (u.endsWith('^2')) families.aire.add(u);
     else families.longueur.add(u);
   }
-  const kinds: ConversionKind[] = ['volume', 'aire', 'longueur'];
+  const kinds: ConversionKind[] = ['volume', 'aire', 'longueur', 'masse'];
   return kinds.find((k) => families[k].size >= 2) ?? null;
 }

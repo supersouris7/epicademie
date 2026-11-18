@@ -7,6 +7,7 @@ import { fractions } from './fractions.ts';
 import { angles, espace, parallelogrammes, reperage, symetries, triangles } from './geometrie.ts';
 import { operations } from './operations.ts';
 import { relatifs } from './relatifs.ts';
+import { SIXIEME } from './sixieme.ts';
 
 /** Programme de mathématiques de 5e (BO n°10 du 5 mars 2026), dans l'ordre du programme. */
 const PROGRAM: readonly Chapter[] = [
@@ -29,8 +30,11 @@ const PROGRAM: readonly Chapter[] = [
   algorithmique,
 ];
 
-/** Chapitres de maths, avec leur combat de boss quand il est prêt. */
-export const MATHS_CHAPTERS: readonly Chapter[] = PROGRAM.map((c) => {
+/** Chapitres de 5e, avec leur combat de boss quand il est prêt. */
+const FIFTH: readonly Chapter[] = PROGRAM.map((c) => {
   const boss = BOSS_CONTENT[c.id];
   return boss ? { ...c, boss } : c;
 });
+
+/** Chapitres de maths de toutes les classes, dans l'ordre de la scolarité. */
+export const MATHS_CHAPTERS: readonly Chapter[] = [...SIXIEME, ...FIFTH];

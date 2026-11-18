@@ -47,17 +47,27 @@ const withBoss = (c: (typeof CHAPTERS)[number]) => [...c.skills, ...(c.boss?.pro
 const cases = CHAPTERS.flatMap((c) => withBoss(c).map((s) => [c.id, s.id] as const));
 
 describe('catalogue', () => {
-  it('combat de boss v1 : Fractions, Relatifs, Proportionnalité (problèmes et pièges)', () => {
+  it('combat de boss : Fractions, Relatifs, Proportionnalité en 5e, tous les chapitres des autres classes', () => {
     const withB = CHAPTERS.filter((c) => c.boss);
-    expect(withB.map((c) => c.id).toSorted()).toEqual(['m5-fractions', 'm5-proportionnalite', 'm5-relatifs']);
+    expect(
+      withB
+        .filter((c) => c.grade === '5e')
+        .map((c) => c.id)
+        .toSorted(),
+    ).toEqual(['m5-fractions', 'm5-proportionnalite', 'm5-relatifs']);
+    for (const c of CHAPTERS.filter((x) => x.grade !== '5e')) expect(c.boss, c.id).toBeDefined();
     for (const c of withB) {
       expect(c.boss?.problems.length, c.id).toBeGreaterThanOrEqual(2);
       expect(c.boss?.traps.length, c.id).toBeGreaterThanOrEqual(1);
     }
   });
 
-  it('toutes les notions sont de 5e', () => {
-    for (const c of CHAPTERS) expect(c.grade).toBe('5e');
+  it('chaque chapitre porte le préfixe de sa classe (m5-, m6-…)', () => {
+    const prefix = { cm1: 'mcm1-', cm2: 'mcm2-', '6e': 'm6-', '5e': 'm5-', '4e': 'm4-', '3e': 'm3-', adulte: 'ma-' };
+    for (const c of CHAPTERS) {
+      expect(c.id.startsWith(prefix[c.grade]), c.id).toBe(true);
+      for (const s of withBoss(c)) expect(s.id.startsWith(prefix[c.grade]), s.id).toBe(true);
+    }
   });
 
   it('a des identifiants de chapitres uniques et non vides', () => {

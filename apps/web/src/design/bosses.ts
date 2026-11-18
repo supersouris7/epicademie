@@ -24,6 +24,12 @@ export const DOMAIN_BOSSES: Record<DomainId, BossIdentity> = {
     mobs: ['equerre', 'compas', 'cube-bot'],
     sky: ['#1b2a6b', '#5a7be0'],
   },
+  grandeurs: {
+    id: 'geomatrix',
+    name: 'Géomatrix',
+    mobs: ['equerre', 'calculatrice', 'cube-bot'],
+    sky: ['#14324a', '#3c9ad6'],
+  },
   donnees: {
     id: 'probabot',
     name: 'Probabot',
@@ -52,8 +58,15 @@ const CHAPTER_HUE: Record<string, number> = {
 };
 
 export const bossOf = (chapter: Chapter) => DOMAIN_BOSSES[chapter.domain];
+/** Teinte stable tirée de l'identifiant pour les chapitres sans teinte choisie. */
+const hashHue = (id: string) => {
+  let h = 0;
+  for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) % 360;
+  return Math.round(h / 30) * 30;
+};
+
 export const bossFilter = (chapterId: string) => {
-  const hue = CHAPTER_HUE[chapterId] ?? 0;
+  const hue = CHAPTER_HUE[chapterId] ?? hashHue(chapterId);
   return hue ? `hue-rotate(${hue}deg)` : undefined;
 };
 /** Arènes du combat (environments/arenas), une tirée au hasard à chaque combat. */

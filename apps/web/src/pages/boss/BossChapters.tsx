@@ -16,12 +16,14 @@ import { bossesKey, buyHint, useBosses } from '../../api/battles.ts';
 import { GameButton } from '../../components/game/GameButton.tsx';
 import { GameIcon } from '../../components/game/GameIcon.tsx';
 import { SoonBadge } from '../../components/game/SoonBadge.tsx';
+import { GradeTabs } from '../../components/GradeTabs.tsx';
 import { PageShell } from '../../components/PageShell.tsx';
 import { useToast } from '../../components/Toast.tsx';
 import { assetSrc } from '../../design/assets.ts';
 import { BOSS_MEDAL_ICONS, bossFilter, bossOf } from '../../design/bosses.ts';
 import { ITEM_ICONS } from '../../design/items.ts';
 import { ApiError } from '../../api/client.ts';
+import { useGradeChoice } from '../../lib/grades.ts';
 
 /** Combat de boss : un boss par chapitre, tous ouverts d'emblée ; l'équipement se gagne à l'entraînement. */
 export function BossChapters({ profile }: { readonly profile: Profile }) {
@@ -31,7 +33,8 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
   const [toast, showToast] = useToast(2500);
   const [busy, setBusy] = useState(false);
   const info = SUBJECTS.find((s) => s.id === subject);
-  const chapters = chaptersOf(subject);
+  const { grade, grades, own, setGrade } = useGradeChoice(profile, subject);
+  const chapters = chaptersOf(subject, grade);
   const { data: overview } = useBosses(profile.id);
   if (!info || chapters.length === 0) return <Navigate to="/jouer/boss" replace />;
   const records = new Map((overview?.records ?? []).map((r) => [r.chapterId, r]));
@@ -90,6 +93,7 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
         </GameButton>
       </section>
 
+      <GradeTabs grades={grades} value={grade} own={own} onChange={setGrade} />
       <ul className="grid gap-4 lg:grid-cols-2">
         {sorted.map((c, i) => (
           <BossRow

@@ -1,3 +1,4 @@
+import type { Grade } from '@questeo/shared';
 import { createRng } from './rng.ts';
 import { MATHS_CHAPTERS } from './maths/index.ts';
 import type { Chapter, Level, Question, Skill } from './types.ts';
@@ -23,7 +24,14 @@ for (const chapter of CHAPTERS) {
 export const getSkill = (id: string) => skills.get(id)?.skill;
 export const getChapterOfSkill = (id: string) => skills.get(id)?.chapter;
 export const getChapter = (id: string) => CHAPTERS.find((c) => c.id === id);
-export const chaptersOf = (subject: string) => CHAPTERS.filter((c) => c.subject === subject);
+/** Chapitres d'une matière, d'une classe donnée ou de toutes. */
+export const chaptersOf = (subject: string, grade?: Grade) =>
+  CHAPTERS.filter((c) => c.subject === subject && (grade === undefined || c.grade === grade));
+/** Classes qui ont du contenu dans une matière, dans l'ordre de la scolarité. */
+export const gradesOf = (subject: string): Grade[] => {
+  const order: readonly Grade[] = ['cm1', 'cm2', '6e', '5e', '4e', '3e', 'adulte'];
+  return order.filter((g) => CHAPTERS.some((c) => c.subject === subject && c.grade === g));
+};
 export const allSkillIds = () => [...skills.keys()];
 
 /** Notion d'entraînement ou question de boss (pour l'affichage et la correction). */

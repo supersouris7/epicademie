@@ -103,7 +103,11 @@ export type Block =
   | { readonly op: 'set'; readonly variable: string; readonly expr: string }
   | { readonly op: 'change'; readonly variable: string; readonly by: string }
   | { readonly op: 'say'; readonly expr: string }
-  | { readonly op: 'repeat'; readonly times: number; readonly body: readonly Block[] };
+  | { readonly op: 'repeat'; readonly times: number; readonly body: readonly Block[] }
+  /** Si … alors … sinon … (4e : instructions conditionnelles). */
+  | { readonly op: 'if'; readonly cond: string; readonly then: readonly Block[]; readonly else?: readonly Block[] }
+  /** Répéter jusqu'à … (3e : boucle conditionnelle). */
+  | { readonly op: 'until'; readonly cond: string; readonly body: readonly Block[] };
 
 export type AnswerSpec =
   | {
@@ -164,7 +168,7 @@ export type QuestionDraft = Omit<Question, 'skillId' | 'level' | 'seed' | 'traps
 /** Conversion montrée dans le tableau : le nombre placé sous son unité, puis lu dans l'unité demandée. */
 export interface Demo {
   readonly kind: 'conversion';
-  readonly table: 'longueur' | 'aire' | 'volume';
+  readonly table: 'longueur' | 'aire' | 'volume' | 'masse';
   readonly value: Rational;
   readonly from: string;
   readonly to: string;
@@ -178,7 +182,7 @@ export interface Lesson {
 }
 
 /** Outils d'aide en plus du pavé, du brouillon et de la calculatrice (toujours là sauf `mental`). */
-export type Tool = 'conversion-longueur' | 'conversion-aire' | 'conversion-volume';
+export type Tool = 'conversion-longueur' | 'conversion-aire' | 'conversion-volume' | 'conversion-masse';
 
 /** Conseil donné par Questy au début de chaque question de la notion. */
 export type Advice = 'calculatrice' | 'brouillon';
@@ -199,9 +203,10 @@ export interface Skill {
   readonly generate: (rng: Rng, level: Level) => QuestionDraft;
 }
 
-/** Domaines du programme officiel (maths cycle 4). */
+/** Domaines des programmes officiels (maths cycles 3 et 4). */
 export const DOMAINS = {
   nombres: 'Nombres et calculs',
+  grandeurs: 'Grandeurs et mesures',
   geometrie: 'Espace et géométrie',
   donnees: 'Données et probabilités',
   fonctions: 'Proportionnalité, fonctions',

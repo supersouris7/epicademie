@@ -6,9 +6,11 @@ import { MEDAL_LABELS, MEDALS, medal, type Medal as MedalId } from '@questeo/eng
 import { SUBJECTS, type Profile, type SkillProgress, type SubjectId } from '@questeo/shared';
 import { useSkills } from '../api/play.ts';
 import { MedalBadge } from '../components/game/RewardBadge.tsx';
+import { GradeTabs } from '../components/GradeTabs.tsx';
 import { PageShell } from '../components/PageShell.tsx';
 import { Questy } from '../components/mascot/Questy.tsx';
 import { localToday } from '../lib/dates.ts';
+import { useGradeChoice } from '../lib/grades.ts';
 import { masteryOf } from '../lib/progress.ts';
 
 function countMedals(ids: readonly string[], states: ReadonlyMap<string, SkillProgress>) {
@@ -37,7 +39,8 @@ export function Progress({ profile }: { readonly profile: Profile }) {
   const [subject, setSubject] = useState<SubjectId>('maths');
   const states = new Map((data ?? []).map((s) => [s.skillId, s]));
   const today = localToday();
-  const chapters = chaptersOf(subject);
+  const { grade, grades, own, setGrade } = useGradeChoice(profile, subject);
+  const chapters = chaptersOf(subject, grade);
   const allIds = chapters.flatMap((c) => c.skills.map((s) => s.id));
   const total = countMedals(allIds, states);
   const domains = (Object.keys(DOMAINS) as DomainId[]).filter((d) => chapters.some((c) => c.domain === d));
@@ -81,6 +84,7 @@ export function Progress({ profile }: { readonly profile: Profile }) {
           </button>
         ))}
       </div>
+      <GradeTabs grades={grades} value={grade} own={own} onChange={setGrade} />
 
       {chapters.length === 0 && <p className="text-xl font-bold">Les exercices de cette matière arrivent bientôt !</p>}
 

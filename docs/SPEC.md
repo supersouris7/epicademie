@@ -213,7 +213,12 @@ Catalogue typé dans `packages/shared/src/modes.ts`.
 
 ### 6.2 ter Classes et matières
 
-- **Classe** du profil : CM1, CM2, 6e, 5e, 4e ou Adulte. Déduite de la date de naissance (année scolaire de septembre), Questy demande « Tu es en 5e ? » ; « Non » ouvre la liste. Seule la 5e a du contenu : les autres classes sont « À venir » mais enregistrées, et l'accueil indique qu'on joue la 5e en attendant. Adulte : plus tard, questions plus difficiles (parfois drôlement difficiles).
+- **Classe** du profil : CM1, CM2, 6e, 5e, 4e, 3e ou Adulte (3e ajoutée le 18/11/2026). Déduite de la date de naissance (année scolaire de septembre), Questy demande « Tu es en 5e ? » ; « Non » ouvre la liste. Adulte : « À venir » (joue la 5e en attendant), plus tard des questions plus difficiles.
+- **Programmes du CM1 à la 3e** (chantier du 18/11/2026, même profondeur que la 5e : tous les chapitres, 3 à 6 notions chacun, et un boss par chapitre — 2 problèmes + 1 piège) :
+  - CM1, CM2, 6e : programme du cycle 3, **BO n°16 du 17 avril 2025** (annexe « ensel620_annexe2-v2.pdf », lue) ; en vigueur en CM1 et 6e depuis 2025, en CM2 depuis la rentrée 2026 ;
+  - 4e, 3e : objectifs par année du programme du cycle 4, **BO n°10 du 5 mars 2026** (le même texte que la 5e). En 2026-2027, la 4e et la 3e suivent encore l'ancien programme (2020) ; on suit le nouveau pour garder une progression continue avec notre 5e ;
+  - identifiants `m6-…`, `m4-…`, `m3-…`, `mcm1-…`, `mcm2-…` ; chaque notion cite l'objectif officiel de sa classe (`objectiveOf`).
+- **Choix de la classe** : en Entraînement (et sur les pages Boss et Progrès), une rangée « Classe » (CM1 → 3e) permet de jouer le programme d'une autre classe ; sa classe est cochée par défaut (pastille dorée), le choix est gardé dans l'adresse (`?classe=6e`).
 - **Matières** sans contenu grisées « À venir » au choix de la matière.
 - **Calculatrice** proposée partout sauf quand calculer est l'objectif de la notion (`Skill.mental` : tables, opérations, priorités, relatifs, fractions, carrés…) ; un calcul annexe (carré, aire, pourcentage) ne doit pas bloquer. Questy la conseille sur les notions à gros nombres.
 

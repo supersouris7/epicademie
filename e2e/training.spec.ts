@@ -15,6 +15,13 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   await expect(page.getByRole('heading', { name: /Entraînement · Maths/ })).toBeVisible();
   // C'est ici qu'on gagne son équipement.
   await expect(page.getByText(/C’est ici que tu gagnes ton/)).toBeVisible();
+  // On peut s'entraîner sur le programme d'une autre classe ; la sienne (5e) est cochée par défaut.
+  const grades = page.getByRole('radiogroup', { name: 'Classe' });
+  await expect(grades.getByRole('radio', { name: /5e/ })).toHaveAttribute('aria-checked', 'true');
+  await grades.getByRole('radio', { name: /6e/ }).click();
+  await expect(page.getByRole('button', { name: /Nombres entiers et décimaux/ }).last()).toBeVisible();
+  await expect(page).toHaveURL(/classe=6e/);
+  await grades.getByRole('radio', { name: /5e/ }).click();
   // Nouveau joueur : l'appli propose par où commencer.
   await page.getByRole('button', { name: /Je te propose · par où commencer Calcul mental/ }).click();
   await page.getByRole('button', { name: /Tables de multiplication/ }).click();
