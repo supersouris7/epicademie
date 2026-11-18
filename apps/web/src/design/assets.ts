@@ -174,6 +174,29 @@ export const KINDS = {
       'décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage',
     opaque: true,
   },
+  // Variantes de l'arène, une par forme de cadre : l'affichage prend celle dont les proportions
+  // sont les plus proches du cadre, pour ne jamais rogner fort ni déformer le décor.
+  arenaTall: {
+    gen: '1024x1536',
+    final: [960, 1280],
+    framing:
+      'même décor recomposé en hauteur (format portrait, écran de téléphone), vu de face à hauteur de personnage ; sol plat et dégagé sur le tiers inférieur (les deux combattants y seront posés côte à côte, chacun sur près de la moitié de la largeur) ; le point d’intérêt du décor (planète, volcan, palais…) dans la moitié haute ; rien d’important à moins de 6 % du haut et du bas (rogné) ; aucun personnage',
+    opaque: true,
+  },
+  arenaWide: {
+    gen: '1536x1024',
+    final: [1536, 640],
+    framing:
+      'même décor en panorama très large (tablette en paysage) : seule la bande entre 20 % et 80 % de la hauteur sera gardée ; sol plat et dégagé entre 60 % et 80 % de la hauteur, sur toute la largeur ; horizon et point d’intérêt entre 20 % et 55 % de la hauteur ; le haut et le bas de l’image ne contiennent que du ciel et du sol ; aucun personnage',
+    opaque: true,
+  },
+  arenaBand: {
+    gen: '1536x1024',
+    final: [1536, 384],
+    framing:
+      'frise panoramique du même décor pour un bandeau de titre : seule la bande entre 31 % et 69 % de la hauteur sera gardée, tous les détails y tiennent (ligne d’horizon au milieu) ; texture régulière sans objet isolé marquant ni zone vide ; le bord gauche et le bord droit se raccordent parfaitement (image répétée en boucle) ; teintes un peu sombres, peu contrastées (du texte blanc passera dessus) ; aucun personnage',
+    opaque: true,
+  },
   floor: {
     gen: '1024x1024',
     final: [256, 256],
@@ -1007,9 +1030,43 @@ const ARENAS = [
   ['glace', 'Arène des glaces', 'plateforme gelée, aurores boréales, montagnes enneigées et palais de glace'],
 ] as const;
 
-const envAssets = ARENAS.map(([id, name, look]) =>
+const envAssets = ARENAS.flatMap(([id, name, look]) => [
   a('arena', `environments/arenas/${id}.webp`, name, look, 'Décor du combat de boss.', 2),
-);
+  a(
+    'arenaTall',
+    `environments/arenas/${id}-portrait.webp`,
+    `${name} (portrait)`,
+    look,
+    'Décor du combat sur téléphone (cadre plus haut que large).',
+    2,
+    { reference: `environments-arenas-${id}` },
+  ),
+  a(
+    'arenaWide',
+    `environments/arenas/${id}-large.webp`,
+    `${name} (panorama)`,
+    look,
+    'Décor du combat sur tablette en paysage (cadre très large).',
+    2,
+    { reference: `environments-arenas-${id}` },
+  ),
+  a(
+    'arenaBand',
+    `environments/arenas/${id}-bandeau.webp`,
+    `${name} (bandeau)`,
+    look,
+    'Bandeau du haut pendant les questions du combat (répété en largeur).',
+    2,
+    { reference: `environments-arenas-${id}` },
+  ),
+]);
+
+/** Variantes d'une arène et leurs proportions (largeur / hauteur), de la plus haute à la plus large. */
+export const ARENA_VARIANTS = [
+  { suffix: '-portrait', ratio: 960 / 1280 },
+  { suffix: '', ratio: 1536 / 864 },
+  { suffix: '-large', ratio: 1536 / 640 },
+] as const;
 
 export const PLANNED_ASSETS: readonly PlannedAsset[] = [
   ...brandAssets,

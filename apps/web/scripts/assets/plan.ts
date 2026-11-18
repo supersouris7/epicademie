@@ -282,6 +282,7 @@ function kitRequests(): KitRequest[] {
   const numberOf = new Map<string, number>();
   const out: KitRequest[] = [];
   // Alex et les arènes sont livrés (18/11/2026) : plus rien à demander pour eux (l'arme d'Alex reste).
+  // Les variantes d'arène ont leur propre fichier (kit-arenes.md).
   for (const p of PLANNED_ASSETS.filter(
     (q) => lot.pick(q) && !q.file.startsWith('characters/alex/') && !q.file.startsWith('environments/arenas/'),
   )) {
@@ -378,6 +379,60 @@ COHÉRENCE DU KIT COMBAT
   return `${HEADER}\n${head}\n${body}\n\n---\n\n## Correspondance pour l'import (ne concerne pas ChatGPT)\n\n| Demande | Fichiers produits (ordre des cases) |\n|---|---|\n${map}\n`;
 }
 
+const VARIANT_USE: Record<string, string> = {
+  arenaTall: 'scène du combat sur téléphone',
+  arenaWide: 'scène du combat sur tablette en paysage',
+  arenaBand: 'bandeau du haut pendant les questions',
+};
+
+/** Fichier autonome des variantes d'arène : une conversation par arène, l'arène livrée jointe. */
+export function arenaFile(): string {
+  const bases = PLANNED_ASSETS.filter((p) => p.kind === 'arena');
+  const sections = bases.map((base) => {
+    const variants = PLANNED_ASSETS.filter((p) => p.reference === base.id);
+    const reqs = variants.map((p, i) => {
+      const k: AssetKind = KINDS[p.kind];
+      return [
+        `#### ${i + 1}. ${p.name} — ${VARIANT_USE[p.kind] ?? ''}`,
+        `Enregistrer sous \`apps/web/assets-src/originals/${original(p)}\` · ${size(k.gen)} → final ${k.final.join('×')}`,
+        '',
+        '```text',
+        `Image ${size(k.gen)}, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : ${base.prompt}.`,
+        `Cadrage : ${k.framing}.`,
+        'Pas de texte, pas de personnage, pas de bordure.',
+        '```',
+      ].join('\n');
+    });
+    return `### ${base.name}\n\n> 📎 Joindre l'arène livrée \`apps/web/assets-src/originals/${original(base)}\`.\n\n${reqs.join('\n\n')}`;
+  });
+  const count = PLANNED_ASSETS.filter((p) => p.kind.startsWith('arena') && p.kind !== 'arena').length;
+  return `${HEADER}
+# Academy Fighters — Variantes des arènes (à utiliser avec ChatGPT)
+
+${count} images : chaque arène livrée (16:9) est déclinée en 3 formats, pour que le décor ne soit jamais écrasé ni trop rogné.
+
+| Format | Généré | Final | Proportions | Où |
+|---|---|---|---|---|
+| Plein cadre (livré) | 1536×1024 | 1536×864 | 16:9 | scène du combat, tablette en portrait et ordinateur |
+| Portrait | 1024×1536 | 960×1280 | 3:4 | scène du combat sur téléphone |
+| Panorama | 1536×1024 | 1536×640 | 12:5 | scène du combat sur tablette en paysage |
+| Bandeau | 1536×1024 | 1536×384 | 4:1, répété en largeur | bandeau du haut pendant les questions |
+
+Le jeu mesure le cadre et prend la variante dont les proportions sont les plus proches ; tant qu'une variante manque, il garde l'image plein cadre.
+Le bandeau est répété horizontalement à la hauteur du bandeau : il n'est ni étiré ni écrasé, quelle que soit la largeur de l'écran.
+
+## Mode d'emploi
+
+1. Une **conversation ChatGPT par arène** : joins l'image de l'arène livrée indiquée, puis envoie les 3 demandes une par une.
+2. Télécharge chaque image en PNG et enregistre-la au chemin indiqué.
+3. Dis-moi quand c'est déposé : je lance l'import (recadrage, WebP) et le jeu les utilise aussitôt.
+
+## Demandes
+
+${sections.join('\n\n')}
+`;
+}
+
 export function guide(): string {
   const built = buildLots();
   const n = built.at(-1)?.last ?? 0;
@@ -458,6 +513,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   mkdirSync(LOT_DIR, { recursive: true });
   for (const [file, content] of lotFiles()) writeFileSync(join(LOT_DIR, file), content);
   writeFileSync(join(LOT_DIR, 'kit-combat.md'), kitFile());
+  writeFileSync(join(LOT_DIR, 'kit-arenes.md'), arenaFile());
   writeFileSync(AVAILABLE, availableFile());
   console.log(
     `${dirs.size} dossiers, ${PLANNED_ASSETS.length} assets, ${sheets().length} planches → docs/ASSETS-CHATGPT.md + docs/chatgpt/`,

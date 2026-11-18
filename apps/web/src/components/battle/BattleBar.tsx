@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'motion/react';
 import type { HeroId } from '@questeo/shared';
 import { assetSrc, type HeroExpression } from '../../design/assets.ts';
+import { arenaBand } from '../../lib/arena.ts';
 import { GameIcon } from '../game/GameIcon.tsx';
 import { ProgressBar } from '../game/ProgressBar.tsx';
 import { HeroFace } from './HeroFace.tsx';
@@ -34,16 +35,21 @@ interface BattleBarProps {
  */
 export function BattleBar(p: BattleBarProps) {
   const reduce = useReducedMotion();
+  // Bandeau dédié répété en largeur à sa hauteur (jamais étiré) ; sinon une bande de l'arène.
+  const band = arenaBand(p.arena);
   const bg = assetSrc(`environments-arenas-${p.arena}`);
+  const dim = 'linear-gradient(rgb(20 10 40 / 0.55), rgb(20 10 40 / 0.55))';
   const enemySrc = assetSrc(p.enemyImage);
   const onBoss = p.bossLives !== null;
   return (
     <header
       className="cartoon relative flex shrink-0 items-center gap-2 overflow-hidden px-2.5 py-2 sm:gap-3 sm:px-3"
       style={{
-        background: bg
-          ? `linear-gradient(rgb(20 10 40 / 0.55), rgb(20 10 40 / 0.55)), center 60% / cover no-repeat url(${bg})`
-          : 'var(--surface)',
+        background: band
+          ? `${dim}, left center / auto 100% repeat-x url(${band})`
+          : bg
+            ? `${dim}, center 60% / cover no-repeat url(${bg})`
+            : 'var(--surface)',
       }}
     >
       {/* Héros : tête (secouée quand il est touché), cœurs, bouclier */}

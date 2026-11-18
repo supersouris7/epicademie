@@ -1,8 +1,10 @@
+import { useRef } from 'react';
 import { AnimatePresence, motion, useReducedMotion, type TargetAndTransition } from 'motion/react';
 import { HERO_NAMES, type HeroId } from '@questeo/shared';
 import { assetSrc, heroPoseSrc, type AnimationState } from '../../design/assets.ts';
 import { HERO_COLORS } from '../../design/heroes.ts';
 import { CHARACTER_MOTION } from '../../design/motion.ts';
+import { useArenaImage } from '../../lib/arena.ts';
 
 export type EnemyState = 'idle' | 'attack' | 'hurt' | 'ko';
 
@@ -44,9 +46,12 @@ export function BattleArena(props: BattleArenaProps) {
   const { hero, heroState, enemy, enemyState, shot, riposte, shield, arena, sky } = props;
   const run = props.entrance !== false;
   const reduce = useReducedMotion();
-  const bg = assetSrc(`environments-arenas-${arena}`);
+  // Variante de l'arène (portrait, 16:9, panorama) la plus proche des proportions du cadre.
+  const frame = useRef<HTMLDivElement>(null);
+  const bg = useArenaImage(frame, arena);
   return (
     <div
+      ref={frame}
       className="cartoon relative w-full shrink-0 overflow-hidden"
       style={{
         height: props.height ?? 'min(62dvh, 560px)',
