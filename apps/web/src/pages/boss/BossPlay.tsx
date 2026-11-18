@@ -11,6 +11,7 @@ import {
   BOSS_LIVES,
   ITEM_INFO,
   ITEMS,
+  MAX_ITEMS_PER_BATTLE,
   type BattleSummary,
   type BattleView,
   type ItemId,
@@ -23,6 +24,7 @@ import { BattleArena, type ArenaEnemy, type EnemyState } from '../../components/
 import { BossLivesBadge, BossSays, QuestySays, RetryCountdown, Shake } from '../../components/battle/BattleScenes.tsx';
 import { faceOffTaunt, questyReply } from '../../lib/battleLines.ts';
 import { DOCK_HEIGHT } from '../../lib/tools.ts';
+import { useMusic } from '../../lib/music.ts';
 import { useBackGuard, useGameExit } from '../../lib/gameExit.ts';
 import { ConfirmDialog } from '../../components/ConfirmDialog.tsx';
 import { Confetti } from '../../components/Confetti.tsx';
@@ -120,6 +122,8 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   const [bossFace, setBossFace] = useState<BossExpression>('menace');
   const [shot, setShot] = useState(0);
   const [riposte, setRiposte] = useState(0);
+  /** Dernier coup joué : la scène ne rejoue que lui (sinon l'ancien tir repart avec la riposte : tirs croisés). */
+  const [lastHit, setLastHit] = useState<'shot' | 'riposte' | null>(null);
   const shownAt = useRef(0);
   const started = useRef(false);
   const timers = useRef<number[]>([]);
@@ -170,6 +174,8 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   const question = useMemo(() => (q ? generate(q.skillId, q.level, q.seed) : null), [q]);
   const skill = q ? getAnySkill(q.skillId) : undefined;
   const onBoss = battle ? battle.mobsDefeated >= BATTLE_MOBS : false;
+  // Musique : celle du combat pendant les mobs, celle du boss face à lui, la victoire au bilan.
+  useMusic(summary ? (summary.won ? 'victoire' : 'menu') : onBoss || arrival ? 'boss' : null);
   const bossEnemy: ArenaEnemy = { key: 'boss', name: boss.name, boss: true, image: `bosses-maths-${boss.id}` };
   const enemy: ArenaEnemy | null = battle
     ? onBoss
@@ -267,6 +273,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
         setHeroState('shoot');
         setFace(battle.mobsDefeated >= BATTLE_MOBS ? 'enthousiaste' : 'joie');
         setShot((n) => n + 1);
+        setLastHit('shot');
         later(HIT_MS, () => {
           setEnemyState('hurt');
           // Touché : le boss passe de la surprise à la fureur, puis KO.
@@ -282,6 +289,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
         // Le boss se moque de l'erreur (un mob ne change pas de tête).
         if (battle.mobsDefeated >= BATTLE_MOBS) setBossFace(res.outcome === 'blocked' ? 'perplexe' : 'rire');
         setRiposte((n) => n + 1);
+        setLastHit('riposte');
         later(HIT_MS, () => {
           setHeroState(res.outcome === 'blocked' ? 'shield' : 'hurt');
           setFace(res.outcome === 'blocked' ? 'surprise' : res.battle.hearts <= 1 ? 'triste' : 'colere');
@@ -424,15 +432,15 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
       )}
 
       {intro || arrival ? null : scene ? (
-        // Les coups se jouent en grand, personnages entiers, à la place de l'énoncé.
-        <div className="flex min-h-0 flex-1 flex-col justify-center">
+        // Les coups se jouent en grand, personnages entiers, au milieu de l'écran (sur tout appareil).
+        <div className="pointer-events-none fixed inset-0 z-20 mx-auto flex max-w-6xl flex-col justify-center px-3 pt-24 sm:px-4">
           <BattleArena
             hero={profile.hero}
             heroState={heroState}
             enemy={enemy}
             enemyState={enemyState}
-            shot={shot}
-            riposte={riposte}
+            shot={lastHit === 'shot' ? shot : 0}
+            riposte={lastHit === 'riposte' ? riposte : 0}
             shield={battle?.shield ?? false}
             arena={arena}
             sky={boss.sky}
@@ -566,7 +574,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   );
 }
 
-/** Objets utilisables pendant le combat : 3 au plus, tous du même type (les autres sont verrouillés). */
+/** Les 3 emplacements d'équipement du combat : un objet équipé par case, case vide une fois utilisé. */
 function ItemBar({
   battle,
   disabled,
@@ -577,29 +585,29 @@ function ItemBar({
   readonly onUse: (item: ItemId) => void;
 }) {
   return (
-    <div className="flex gap-1.5" aria-label="Objets">
-      {ITEMS.map((item) => {
-        const count = battle.inventory[item];
-        const off = disabled || count <= 0 || itemRefusal(battle, item) !== null;
-        const locked = battle.itemType !== null && battle.itemType !== item;
+    <div className="flex gap-1.5" aria-label="Objets équipés">
+      {Array.from({ length: MAX_ITEMS_PER_BATTLE }, (_, i) => {
+        const item = battle.equipped[i];
+        if (!item)
+          return (
+            <span
+              key={`vide-${i}`}
+              aria-label="Emplacement vide"
+              role="img"
+              className="border-outline/60 h-11 w-11 rounded-xl border-2 border-dashed"
+            />
+          );
+        const off = disabled || itemRefusal(battle, item) !== null;
         return (
           <button
-            key={item}
+            key={`${item}-${i}`}
             type="button"
             onClick={() => onUse(item)}
-            aria-label={`${ITEM_INFO[item].name} (${count}) : ${ITEM_INFO[item].effect}`}
+            aria-label={`${ITEM_INFO[item].name} : ${ITEM_INFO[item].effect}`}
             title={ITEM_INFO[item].effect}
             className={`cartoon cartoon-press bg-surface-2 relative flex h-11 w-11 items-center justify-center ${off ? 'opacity-45' : ''}`}
           >
             <GameIcon id={ITEM_ICONS[item]} size="sm" />
-            {locked && (
-              <span className="absolute -top-1.5 -left-1.5">
-                <GameIcon id="icons-status-locked" size={20} />
-              </span>
-            )}
-            <span className="bg-accent absolute -right-1.5 -bottom-1.5 rounded-full px-1.5 text-xs font-bold text-white">
-              {count}
-            </span>
           </button>
         );
       })}

@@ -1,12 +1,14 @@
 import type { ReactNode } from 'react';
 import { motion } from 'motion/react';
 import { skinStyle } from '../design/skin.ts';
+import { useEntrance } from '../lib/entrance.ts';
 
 export function SpeechBubble({ children }: { readonly children: ReactNode }) {
+  const enter = useEntrance();
   const skin = skinStyle('hud/frames/bubble.webp', 30, '1rem');
   return (
     <motion.div
-      initial={{ scale: 0.6, opacity: 0 }}
+      initial={enter ? { scale: 0.6, opacity: 0 } : false}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ type: 'spring', stiffness: 260, damping: 14, delay: 0.2 }}
       className={`font-display relative px-5 py-4 text-xl tracking-wide sm:text-2xl ${skin ? 'on-light' : 'cartoon border-accent bg-surface'}`}

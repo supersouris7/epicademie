@@ -18,6 +18,7 @@ import { Chapters } from './pages/training/Chapters.tsx';
 import { Notions } from './pages/training/Notions.tsx';
 import { TrainingPlay } from './pages/training/TrainingPlay.tsx';
 import { useSession } from './store/session.ts';
+import { MusicDirector } from './components/MusicDirector.tsx';
 
 /** Atelier graphique : chargé à la demande, seulement en développement (absent du build de production). */
 const AssetPreview = import.meta.env.DEV
@@ -36,42 +37,45 @@ function WithProfile({ children }: { readonly children: (profile: Profile) => Re
 
 export function App() {
   return (
-    <Routes>
-      <Route path="/" element={<ProfilePicker />} />
-      <Route path="/profils/nouveau" element={<ProfileEditor />} />
-      <Route path="/profils/:id/modifier" element={<ProfileEditor />} />
-      <Route path="/hub" element={<WithProfile>{(p) => <Hub profile={p} />}</WithProfile>} />
-      <Route path="/heros" element={<WithProfile>{(p) => <Heroes profile={p} />}</WithProfile>} />
-      <Route path="/multi" element={<WithProfile>{(p) => <MultiModes profile={p} />}</WithProfile>} />
-      <Route path="/jouer/:modeId" element={<WithProfile>{() => <ModeSetup />}</WithProfile>} />
-      <Route
-        path="/jouer/entrainement/:subject"
-        element={<WithProfile>{(p) => <Chapters profile={p} />}</WithProfile>}
-      />
-      <Route
-        path="/jouer/entrainement/:subject/:chapterId"
-        element={<WithProfile>{(p) => <Notions profile={p} />}</WithProfile>}
-      />
-      <Route
-        path="/partie/entrainement/:chapterId/:skillId"
-        element={<WithProfile>{(p) => <TrainingPlay profile={p} />}</WithProfile>}
-      />
-      <Route path="/jouer/boss/:subject" element={<WithProfile>{(p) => <BossChapters profile={p} />}</WithProfile>} />
-      <Route path="/partie/boss/:chapterId" element={<WithProfile>{(p) => <BossPlay profile={p} />}</WithProfile>} />
-      <Route path="/progres" element={<WithProfile>{(p) => <Progress profile={p} />}</WithProfile>} />
-      <Route path="/parametres" element={<WithProfile>{(p) => <Settings profile={p} />}</WithProfile>} />
-      <Route path="/a-propos" element={<About />} />
-      {AssetPreview && (
+    <>
+      <MusicDirector />
+      <Routes>
+        <Route path="/" element={<ProfilePicker />} />
+        <Route path="/profils/nouveau" element={<ProfileEditor />} />
+        <Route path="/profils/:id/modifier" element={<ProfileEditor />} />
+        <Route path="/hub" element={<WithProfile>{(p) => <Hub profile={p} />}</WithProfile>} />
+        <Route path="/heros" element={<WithProfile>{(p) => <Heroes profile={p} />}</WithProfile>} />
+        <Route path="/multi" element={<WithProfile>{(p) => <MultiModes profile={p} />}</WithProfile>} />
+        <Route path="/jouer/:modeId" element={<WithProfile>{() => <ModeSetup />}</WithProfile>} />
         <Route
-          path="/dev/assets"
-          element={
-            <Suspense fallback={<p className="p-8 text-xl">Chargement…</p>}>
-              <AssetPreview />
-            </Suspense>
-          }
+          path="/jouer/entrainement/:subject"
+          element={<WithProfile>{(p) => <Chapters profile={p} />}</WithProfile>}
         />
-      )}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        <Route
+          path="/jouer/entrainement/:subject/:chapterId"
+          element={<WithProfile>{(p) => <Notions profile={p} />}</WithProfile>}
+        />
+        <Route
+          path="/partie/entrainement/:chapterId/:skillId"
+          element={<WithProfile>{(p) => <TrainingPlay profile={p} />}</WithProfile>}
+        />
+        <Route path="/jouer/boss/:subject" element={<WithProfile>{(p) => <BossChapters profile={p} />}</WithProfile>} />
+        <Route path="/partie/boss/:chapterId" element={<WithProfile>{(p) => <BossPlay profile={p} />}</WithProfile>} />
+        <Route path="/progres" element={<WithProfile>{(p) => <Progress profile={p} />}</WithProfile>} />
+        <Route path="/parametres" element={<WithProfile>{(p) => <Settings profile={p} />}</WithProfile>} />
+        <Route path="/a-propos" element={<About />} />
+        {AssetPreview && (
+          <Route
+            path="/dev/assets"
+            element={
+              <Suspense fallback={<p className="p-8 text-xl">Chargement…</p>}>
+                <AssetPreview />
+              </Suspense>
+            }
+          />
+        )}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   );
 }

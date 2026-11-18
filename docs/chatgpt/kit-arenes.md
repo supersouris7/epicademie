@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Variantes des arènes (à utiliser avec ChatGPT)
 
-15 images : chaque arène livrée (16:9) est déclinée en 3 formats, pour que le décor ne soit jamais écrasé ni trop rogné.
+9 images : chaque arène livrée (16:9) est déclinée en 3 formats, pour que le décor ne soit jamais écrasé ni trop rogné.
 
 | Format | Généré | Final | Proportions | Où |
 |---|---|---|---|---|
@@ -83,37 +83,6 @@ Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la 
 Pas de texte, pas de personnage, pas de bordure.
 ```
 
-### Arène de la jungle
-
-> 📎 Joindre l'arène livrée `apps/web/assets-src/originals/environments/arenas/jungle.png`.
-
-#### 1. Arène de la jungle (portrait) — scène du combat sur téléphone
-Enregistrer sous `apps/web/assets-src/originals/environments/arenas/jungle-portrait.png` · 1024×1536 → final 960×1280
-
-```text
-Image 1024×1536, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : plateforme moussue dans une jungle aux ruines et cascades, portail violet.
-Cadrage : même décor recomposé en hauteur (format portrait, écran de téléphone), vu de face à hauteur de personnage ; sol plat et dégagé sur le tiers inférieur (les deux combattants y seront posés côte à côte, chacun sur près de la moitié de la largeur) ; le point d’intérêt du décor (planète, volcan, palais…) dans la moitié haute ; rien d’important à moins de 6 % du haut et du bas (rogné) ; aucun personnage.
-Pas de texte, pas de personnage, pas de bordure.
-```
-
-#### 2. Arène de la jungle (panorama) — scène du combat sur tablette en paysage
-Enregistrer sous `apps/web/assets-src/originals/environments/arenas/jungle-large.png` · 1536×1024 → final 1536×640
-
-```text
-Image 1536×1024, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : plateforme moussue dans une jungle aux ruines et cascades, portail violet.
-Cadrage : même décor en panorama très large (tablette en paysage) : seule la bande entre 20 % et 80 % de la hauteur sera gardée ; sol plat et dégagé entre 60 % et 80 % de la hauteur, sur toute la largeur ; horizon et point d’intérêt entre 20 % et 55 % de la hauteur ; le haut et le bas de l’image ne contiennent que du ciel et du sol ; aucun personnage.
-Pas de texte, pas de personnage, pas de bordure.
-```
-
-#### 3. Arène de la jungle (bandeau) — bandeau du haut pendant les questions
-Enregistrer sous `apps/web/assets-src/originals/environments/arenas/jungle-bandeau.png` · 1536×1024 → final 1536×384
-
-```text
-Image 1536×1024, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : plateforme moussue dans une jungle aux ruines et cascades, portail violet.
-Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la bande entre 31 % et 69 % de la hauteur sera gardée, tous les détails y tiennent (ligne d’horizon au milieu) ; texture régulière sans objet isolé marquant ni zone vide ; le bord gauche et le bord droit se raccordent parfaitement (image répétée en boucle) ; teintes un peu sombres, peu contrastées (du texte blanc passera dessus) ; aucun personnage.
-Pas de texte, pas de personnage, pas de bordure.
-```
-
 ### Arène du volcan
 
 > 📎 Joindre l'arène livrée `apps/web/assets-src/originals/environments/arenas/volcan.png`.
@@ -141,37 +110,6 @@ Enregistrer sous `apps/web/assets-src/originals/environments/arenas/volcan-bande
 
 ```text
 Image 1536×1024, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : plateforme de pierre fissurée de lave, volcan en éruption et forteresse.
-Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la bande entre 31 % et 69 % de la hauteur sera gardée, tous les détails y tiennent (ligne d’horizon au milieu) ; texture régulière sans objet isolé marquant ni zone vide ; le bord gauche et le bord droit se raccordent parfaitement (image répétée en boucle) ; teintes un peu sombres, peu contrastées (du texte blanc passera dessus) ; aucun personnage.
-Pas de texte, pas de personnage, pas de bordure.
-```
-
-### Arène des glaces
-
-> 📎 Joindre l'arène livrée `apps/web/assets-src/originals/environments/arenas/glace.png`.
-
-#### 1. Arène des glaces (portrait) — scène du combat sur téléphone
-Enregistrer sous `apps/web/assets-src/originals/environments/arenas/glace-portrait.png` · 1024×1536 → final 960×1280
-
-```text
-Image 1024×1536, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : plateforme gelée, aurores boréales, montagnes enneigées et palais de glace.
-Cadrage : même décor recomposé en hauteur (format portrait, écran de téléphone), vu de face à hauteur de personnage ; sol plat et dégagé sur le tiers inférieur (les deux combattants y seront posés côte à côte, chacun sur près de la moitié de la largeur) ; le point d’intérêt du décor (planète, volcan, palais…) dans la moitié haute ; rien d’important à moins de 6 % du haut et du bas (rogné) ; aucun personnage.
-Pas de texte, pas de personnage, pas de bordure.
-```
-
-#### 2. Arène des glaces (panorama) — scène du combat sur tablette en paysage
-Enregistrer sous `apps/web/assets-src/originals/environments/arenas/glace-large.png` · 1536×1024 → final 1536×640
-
-```text
-Image 1536×1024, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : plateforme gelée, aurores boréales, montagnes enneigées et palais de glace.
-Cadrage : même décor en panorama très large (tablette en paysage) : seule la bande entre 20 % et 80 % de la hauteur sera gardée ; sol plat et dégagé entre 60 % et 80 % de la hauteur, sur toute la largeur ; horizon et point d’intérêt entre 20 % et 55 % de la hauteur ; le haut et le bas de l’image ne contiennent que du ciel et du sol ; aucun personnage.
-Pas de texte, pas de personnage, pas de bordure.
-```
-
-#### 3. Arène des glaces (bandeau) — bandeau du haut pendant les questions
-Enregistrer sous `apps/web/assets-src/originals/environments/arenas/glace-bandeau.png` · 1536×1024 → final 1536×384
-
-```text
-Image 1536×1024, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : plateforme gelée, aurores boréales, montagnes enneigées et palais de glace.
 Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la bande entre 31 % et 69 % de la hauteur sera gardée, tous les détails y tiennent (ligne d’horizon au milieu) ; texture régulière sans objet isolé marquant ni zone vide ; le bord gauche et le bord droit se raccordent parfaitement (image répétée en boucle) ; teintes un peu sombres, peu contrastées (du texte blanc passera dessus) ; aucun personnage.
 Pas de texte, pas de personnage, pas de bordure.
 ```

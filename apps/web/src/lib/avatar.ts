@@ -21,17 +21,26 @@ const loadStyle = (name: AvatarStyle): Promise<Style> => {
   return style;
 };
 
+/** Avatars déjà dessinés : réutilisés tout de suite (pas d'avatar vide qui clignote à chaque page). */
+const drawn = new Map<string, string>();
+
 export function useAvatarUri({ style, seed }: Pick<AvatarConfig, 'style' | 'seed'>): string | null {
-  const [uri, setUri] = useState<{ key: string; value: string } | null>(null);
   const key = `${style}:${seed}`;
+  const [uri, setUri] = useState<{ key: string; value: string } | null>(() => {
+    const value = drawn.get(key);
+    return value ? { key, value } : null;
+  });
   useEffect(() => {
+    if (drawn.has(key)) return;
     let alive = true;
     void loadStyle(style).then((s) => {
-      if (alive) setUri({ key, value: new DiceAvatar(s, { seed }).toDataUri() });
+      const value = new DiceAvatar(s, { seed }).toDataUri();
+      drawn.set(key, value);
+      if (alive) setUri({ key, value });
     });
     return () => {
       alive = false;
     };
   }, [style, seed, key]);
-  return uri?.key === key ? uri.value : null;
+  return uri?.key === key ? uri.value : (drawn.get(key) ?? null);
 }

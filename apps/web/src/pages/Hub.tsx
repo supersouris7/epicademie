@@ -7,6 +7,7 @@ import { useToast } from '../components/Toast.tsx';
 import { PageShell } from '../components/PageShell.tsx';
 import { GameIcon } from '../components/game/GameIcon.tsx';
 import { heroPoseSrc } from '../design/assets.ts';
+import { useEntrance } from '../lib/entrance.ts';
 
 /** Les deux grands modes jouables, chacun sa couleur. */
 const MAIN_MODES: readonly { id: ModeId; color: string }[] = [
@@ -16,6 +17,7 @@ const MAIN_MODES: readonly { id: ModeId; color: string }[] = [
 
 /** Accueil : le héros en pied à côté des deux grands modes, les défis en dessous. */
 export function Hub({ profile }: { readonly profile: Profile }) {
+  const enter = useEntrance();
   const navigate = useNavigate();
   const [toast, showToast] = useToast();
   const pose = heroPoseSrc(profile.hero, 'idle');
@@ -46,7 +48,7 @@ export function Hub({ profile }: { readonly profile: Profile }) {
           onClick={() => void navigate('/heros')}
           aria-label={`${HERO_NAMES[profile.hero]} : changer de héros`}
           whileTap={{ scale: 0.95 }}
-          initial={{ x: -40, opacity: 0 }}
+          initial={enter ? { x: -40, opacity: 0 } : false}
           animate={{ x: 0, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 160, damping: 16 }}
           className="flex flex-col items-center"
@@ -70,7 +72,7 @@ export function Hub({ profile }: { readonly profile: Profile }) {
             return (
               <motion.li
                 key={m.id}
-                initial={{ x: 30, opacity: 0 }}
+                initial={enter ? { x: 30, opacity: 0 } : false}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.1 + i * 0.08, type: 'spring', stiffness: 200, damping: 16 }}
               >

@@ -8,10 +8,13 @@ import { SpeechBubble } from '../components/SpeechBubble.tsx';
 import { useToast } from '../components/Toast.tsx';
 import { SoonBadge } from '../components/game/SoonBadge.tsx';
 import { SubjectIcon } from '../components/game/SubjectIcon.tsx';
+import { GameIcon } from '../components/game/GameIcon.tsx';
 import { Questy } from '../components/mascot/Questy.tsx';
+import { useEntrance } from '../lib/entrance.ts';
 
 /** Après le choix du mode : choix de la matière. */
 export function ModeSetup() {
+  const enter = useEntrance();
   const { modeId = '' } = useParams();
   const mode = getMode(modeId);
   const [toast, showToast] = useToast();
@@ -31,13 +34,23 @@ export function ModeSetup() {
         <Questy size={130} mood={MODE_MOODS[mode.id]} />
         <SpeechBubble>{`${mode.pitch}. Choisis ta matière !`}</SpeechBubble>
       </div>
+      {/* Entraînement : c'est ici qu'on gagne son équipement de combat. */}
+      {mode.id === 'entrainement' && (
+        <div className="cartoon bg-surface-2 flex items-center gap-3 p-3" role="note">
+          <GameIcon id="rewards-chests-rare" size={64} />
+          <p className="text-lg font-bold">
+            C’est ici que tu gagnes ton <strong>équipement</strong> ! Chaque série de 5 questions peut t’offrir un
+            coffre (bouclier, soin, indice, pièces). 5/5 = coffre garanti.
+          </p>
+        </div>
+      )}
 
       <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         {SUBJECTS.map((s, i) => (
           <motion.li
             key={s.id}
             className="relative"
-            initial={{ scale: 0.8, opacity: 0 }}
+            initial={enter ? { scale: 0.8, opacity: 0 } : false}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.05 + i * 0.05, type: 'spring', stiffness: 220, damping: 15 }}
           >

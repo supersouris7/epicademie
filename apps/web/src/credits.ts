@@ -46,6 +46,13 @@ export const CREDITS: readonly Credit[] = [
     sourceUrl: 'https://kenney.nl/assets/interface-sounds',
   },
   {
+    work: 'Musiques « 5 Chiptunes (Action) » (Retro Game Music Pack)',
+    author: 'Juhani Junkala (SubspaceAudio)',
+    license: 'CC0 1.0',
+    licenseUrl: 'https://creativecommons.org/publicdomain/zero/1.0/',
+    sourceUrl: 'https://opengameart.org/content/5-chiptunes-action',
+  },
+  {
     work: 'Moteur d’avatars DiceBear',
     author: 'Florian Körner',
     license: 'MIT',

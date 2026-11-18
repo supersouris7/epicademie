@@ -28,7 +28,7 @@ import {
   type ItemId,
 } from '@questeo/shared';
 import type { Db } from './client.ts';
-import { addItems, readInventory, takeItem } from './inventory.ts';
+import { addItems, readEquipped, readInventory, setEquipped, takeItem, unequipOne } from './inventory.ts';
 import { PlayError } from './play-repo.ts';
 import { attempts, bossRecords, profiles, sessions } from './schema.ts';
 
@@ -49,7 +49,7 @@ const view = (id: string, chapterId: string, s: BattleState, inventory: Inventor
   shield: s.shield,
   hintShown: s.hintShown,
   itemsUsed: s.itemsUsed,
-  itemType: s.itemType,
+  equipped: s.equipped,
   question: s.question,
   inventory,
 });
@@ -58,12 +58,12 @@ export function createBattleRepo(db: Db) {
   const load = (id: string) => {
     const session = db.select().from(sessions).where(eq(sessions.id, id)).get();
     if (session?.mode !== 'boss' || !session.battle) throw new PlayError(404, 'Combat introuvable');
-    // Combats commencés avant le contrôle des doublons ou le type d'objet unique : champs absents.
-    const stored = session.battle as Omit<BattleState, 'seen' | 'itemType'> & {
+    // Combats commencés avant le contrôle des doublons ou l'équipement : champs absents.
+    const stored = session.battle as Omit<BattleState, 'seen' | 'equipped'> & {
       seen?: readonly string[];
-      itemType?: ItemId | null;
+      equipped?: readonly ItemId[];
     };
-    return { session, state: { ...stored, seen: stored.seen ?? [], itemType: stored.itemType ?? null } };
+    return { session, state: { ...stored, seen: stored.seen ?? [], equipped: stored.equipped ?? [] } };
   };
   const pools = (chapterId: string) => {
     const p = battlePools(chapterId);
@@ -84,7 +84,18 @@ export function createBattleRepo(db: Db) {
           firstWonAt: r.firstWonAt,
         })),
         inventory: readInventory(db, profileId),
+        equipped: readEquipped(db, profileId),
       };
+    },
+
+    /** Équipe jusqu'à 3 objets de la réserve pour les prochains combats. */
+    equip(profileId: string, items: readonly ItemId[]): BossOverview {
+      const profile = db.select({ id: profiles.id }).from(profiles).where(eq(profiles.id, profileId)).get();
+      if (!profile) throw new PlayError(404, 'Profil introuvable');
+      if (items.length > 0 && setEquipped(db, profileId, items).length === 0)
+        throw new PlayError(400, 'Tu n’as pas assez de ces objets en réserve');
+      if (items.length === 0) setEquipped(db, profileId, []);
+      return this.overview(profileId);
     },
 
     start(profileId: string, chapterId: string): BattleView {
@@ -109,7 +120,7 @@ export function createBattleRepo(db: Db) {
             return [];
           }
         });
-      const state = createBattle(p, dice, recent);
+      const state = createBattle(p, dice, recent, readEquipped(db, profileId));
       const id = randomUUID();
       db.insert(sessions)
         .values({
@@ -178,6 +189,7 @@ export function createBattleRepo(db: Db) {
         const refusal = itemRefusal(state, item);
         if (refusal) throw new PlayError(409, refusal);
         if (!takeItem(tx, session.profileId, item)) throw new PlayError(409, 'Tu n’en as plus');
+        unequipOne(tx, session.profileId, item);
         const next = applyItem(state, item);
         tx.update(sessions).set({ battle: next }).where(eq(sessions.id, id)).run();
         return view(id, session.chapterId, next, readInventory(tx, session.profileId));

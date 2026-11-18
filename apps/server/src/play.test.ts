@@ -86,7 +86,16 @@ describe('parties d’entraînement', () => {
     const summary = (await app.inject({ method: 'POST', url: `/api/sessions/${id}/finish` })).json<SessionSummary>();
     expect(summary).toMatchObject({ regular: { answered: 5, correct: 5 }, scoreOn20: 20, perfect: true });
     expect(summary.skills).toEqual([
-      { skillId: 'm5-tables', answered: 5, correct: 5, stageBefore: 0, stageAfter: 1, due: '2026-11-18' },
+      {
+        skillId: 'm5-tables',
+        answered: 5,
+        correct: 5,
+        stageBefore: 0,
+        stageAfter: 1,
+        bestBefore: 0,
+        bestAfter: 5, // sans-faute : médaille d'or, notion acquise
+        due: '2026-11-18',
+      },
     ]);
     const profile = (await app.inject(`/api/profiles/${profileId}`)).json<Profile>();
     expect(profile.xp).toBe(summary.xpGained);

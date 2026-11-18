@@ -68,9 +68,10 @@ export function BattleArena(props: BattleArenaProps) {
       {/* Sol */}
       <div className="absolute inset-x-0 bottom-0 h-[14%] bg-black/25" />
 
-      {/* Entrée en scène : le héros arrive en courant depuis la gauche. */}
+      {/* Entrée en scène : le héros arrive en courant depuis la gauche. Il est plus petit que le boss
+          (le boss mesure 1,4 fois sa taille) et de la même taille que les mobs. */}
       <motion.div
-        className="absolute bottom-[6%] left-[6%] h-[78%]"
+        className="absolute bottom-[6%] left-[6%] h-[61%]"
         style={{ aspectRatio: '1', maxWidth: '44%' }}
         initial={reduce || !heroRun ? false : { x: '-140%' }}
         animate={{ x: 0 }}
@@ -91,7 +92,10 @@ export function BattleArena(props: BattleArenaProps) {
         </AnimatePresence>
       </motion.div>
 
-      <div className="absolute right-[6%] bottom-[6%] h-[82%]" style={{ aspectRatio: '1', maxWidth: '44%' }}>
+      <div
+        className={`absolute right-[6%] bottom-[6%] ${enemy?.boss ? 'h-[86%]' : 'h-[61%]'}`}
+        style={{ aspectRatio: '1', maxWidth: enemy?.boss ? '50%' : '44%' }}
+      >
         <AnimatePresence mode="wait">
           {enemy && (
             <motion.div
@@ -112,7 +116,7 @@ export function BattleArena(props: BattleArenaProps) {
         {shot > 0 && (
           <motion.div
             key={`shot-${shot}`}
-            className="pointer-events-none absolute bottom-[40%] left-[24%]"
+            className="pointer-events-none absolute bottom-[32%] left-[22%]"
             initial={{ x: 0, opacity: 1, scale: 0.6 }}
             animate={{ x: '230%', opacity: [1, 1, 0], scale: [0.6, 1, 1.3] }}
             transition={{ duration: reduce ? 0.01 : 0.55, ease: 'easeIn' }}
@@ -223,7 +227,7 @@ function EnemyFigure({ enemy, state }: { readonly enemy: ArenaEnemy; readonly st
           aria-hidden
           draggable={false}
           className="h-full w-full object-contain"
-          style={{ filter: enemy.filter, transform: enemy.boss ? undefined : 'scale(0.7)', transformOrigin: 'bottom' }}
+          style={{ filter: enemy.filter }}
         />
       )}
       {state === 'hurt' && (

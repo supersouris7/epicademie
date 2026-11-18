@@ -39,8 +39,8 @@ export interface BattleState {
   readonly shield: boolean;
   readonly hintShown: boolean;
   readonly itemsUsed: number;
-  /** Type d'objet choisi pour ce combat (au 1er objet) : un seul type par combat. */
-  readonly itemType: ItemId | null;
+  /** Objets équipés encore disponibles (pris dans l'équipement du joueur au début du combat). */
+  readonly equipped: readonly ItemId[];
   readonly question: BattleQuestion | null;
   readonly answered: number;
   readonly correct: number;
@@ -117,7 +117,12 @@ function nextQuestion(
 }
 
 /** `recent` : énoncés des combats précédents, à éviter aussi. */
-export function createBattle(pools: BattlePools, dice: BattleDice, recent: readonly string[] = []): BattleState {
+export function createBattle(
+  pools: BattlePools,
+  dice: BattleDice,
+  recent: readonly string[] = [],
+  equipped: readonly ItemId[] = [],
+): BattleState {
   if (pools.mobs.length === 0 || pools.problems.length === 0 || pools.traps.length === 0) {
     throw new Error('Chapitre sans combat de boss');
   }
@@ -132,7 +137,7 @@ export function createBattle(pools: BattlePools, dice: BattleDice, recent: reado
     shield: false,
     hintShown: false,
     itemsUsed: 0,
-    itemType: null,
+    equipped: equipped.slice(0, MAX_ITEMS_PER_BATTLE),
     answered: 0,
     correct: 0,
     misses: [],
@@ -190,13 +195,11 @@ export function answerBattle(
 
 /** Raison du refus d'un objet, ou null s'il peut servir maintenant. */
 export function itemRefusal(
-  s: Pick<BattleState, 'status' | 'itemsUsed' | 'itemType' | 'hearts' | 'maxHearts' | 'shield' | 'hintShown'>,
+  s: Pick<BattleState, 'status' | 'equipped' | 'hearts' | 'maxHearts' | 'shield' | 'hintShown'>,
   item: ItemId,
 ): string | null {
   if (s.status !== 'fighting') return 'Le combat est terminé';
-  if (s.itemType && s.itemType !== item)
-    return `Un seul type d’objet par combat : ${ITEM_INFO[s.itemType].name.toLowerCase()}`;
-  if (s.itemsUsed >= MAX_ITEMS_PER_BATTLE) return `${MAX_ITEMS_PER_BATTLE} objets au plus par combat`;
+  if (!s.equipped.includes(item)) return `${ITEM_INFO[item].name} : pas équipé pour ce combat`;
   if (item === 'soin' && s.hearts >= s.maxHearts) return 'Tes cœurs sont déjà pleins';
   if (item === 'bouclier' && s.shield) return 'Ton bouclier est déjà levé';
   if (item === 'indice' && s.hintShown) return 'L’indice est déjà affiché';
@@ -206,7 +209,8 @@ export function itemRefusal(
 export function applyItem(s: BattleState, item: ItemId): BattleState {
   const refusal = itemRefusal(s, item);
   if (refusal) throw new Error(refusal);
-  const used = { ...s, itemsUsed: s.itemsUsed + 1, itemType: item };
+  const slot = s.equipped.indexOf(item);
+  const used = { ...s, itemsUsed: s.itemsUsed + 1, equipped: s.equipped.filter((_, i) => i !== slot) };
   if (item === 'soin') return { ...used, hearts: s.hearts + 1 };
   if (item === 'bouclier') return { ...used, shield: true };
   return { ...used, hintShown: true };

@@ -1,7 +1,7 @@
 import { and, eq, sql } from 'drizzle-orm';
-import { ITEMS, MAX_ITEM_STOCK, type Inventory, type ItemId } from '@questeo/shared';
+import { ITEMS, MAX_ITEM_STOCK, sanitizeEquipped, type Inventory, type ItemId } from '@questeo/shared';
 import type { Db } from './client.ts';
-import { inventory } from './schema.ts';
+import { inventory, profiles } from './schema.ts';
 
 /** Transaction ou base : les deux exposent la même API de requêtes. */
 type Tx = Pick<Db, 'select' | 'insert' | 'update'>;
@@ -38,4 +38,28 @@ export function takeItem(db: Tx, profileId: string, item: ItemId): boolean {
     .where(and(eq(inventory.profileId, profileId), eq(inventory.item, item)))
     .run();
   return true;
+}
+
+/** Objets équipés (3 au plus), limités à ce que l'inventaire couvre encore. */
+export function readEquipped(db: Tx, profileId: string): ItemId[] {
+  const row = db.select({ equipped: profiles.equipped }).from(profiles).where(eq(profiles.id, profileId)).get();
+  return sanitizeEquipped(row?.equipped ?? [], readInventory(db, profileId));
+}
+
+/** Remplace l'équipement ; refuse ce que l'inventaire ne couvre pas. Renvoie l'équipement enregistré. */
+export function setEquipped(db: Tx, profileId: string, items: readonly ItemId[]): ItemId[] {
+  const clean = sanitizeEquipped(items, readInventory(db, profileId));
+  if (clean.length !== items.length) return [];
+  db.update(profiles).set({ equipped: clean }).where(eq(profiles.id, profileId)).run();
+  return clean;
+}
+
+/** Retire un exemplaire d'un objet de l'équipement (objet utilisé en combat). */
+export function unequipOne(db: Tx, profileId: string, item: ItemId): void {
+  const row = db.select({ equipped: profiles.equipped }).from(profiles).where(eq(profiles.id, profileId)).get();
+  const list = [...(row?.equipped ?? [])];
+  const i = list.indexOf(item);
+  if (i < 0) return;
+  list.splice(i, 1);
+  db.update(profiles).set({ equipped: list }).where(eq(profiles.id, profileId)).run();
 }

@@ -36,7 +36,7 @@ export const bossMood = (lives: number): BossExpression =>
   lives >= 3 ? 'menace' : lives === 2 ? 'inquiet' : lives === 1 ? 'colere' : 'ko';
 
 /** Arènes du combat (environments/arenas), une tirée au hasard à chaque combat. */
-export const ARENAS = ['espace', 'academie', 'jungle', 'volcan', 'glace'] as const;
+export const ARENAS = ['espace', 'academie', 'volcan'] as const;
 export const randomArena = (): string => ARENAS[Math.floor(Math.random() * ARENAS.length)] ?? 'academie';
 
 /** Mob affiché pour la question n°`turn` (cosmétique). */

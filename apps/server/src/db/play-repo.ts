@@ -3,6 +3,7 @@ import { and, asc, eq } from 'drizzle-orm';
 import { check, generate, getSkill } from '@questeo/content';
 import {
   applySession,
+  SERIES_LENGTH,
   coinsForXp,
   levelFromXp,
   newSkillState,
@@ -35,6 +36,7 @@ const toState = (row: typeof skillStates.$inferSelect): SkillState => ({
   correct: row.correct,
   recent: row.recent,
   maintained: row.maintained,
+  best: row.bestSeries,
 });
 
 export function createPlayRepo(db: Db, today: () => string, random: () => number = Math.random) {
@@ -143,12 +145,16 @@ export function createPlayRepo(db: Db, today: () => string, random: () => number
             .get();
           const before = row ? toState(row) : newSkillState(skillId);
           const correct = answers.filter(Boolean).length;
+          // Série complète de 5 sur cette seule notion : ses bonnes réponses du 1er coup fixent la médaille.
+          const firsts = regular.filter((r) => r.skillId === skillId);
+          const series = firsts.length >= SERIES_LENGTH ? firsts.filter((r) => r.correct).length : undefined;
           const after = applySession(
             before,
             { answered: answers.length, correct },
             day,
             answers,
             session.confused.includes(skillId),
+            series,
           );
           const values = {
             stage: after.stage,
@@ -157,6 +163,7 @@ export function createPlayRepo(db: Db, today: () => string, random: () => number
             correct: after.correct,
             recent: [...after.recent],
             maintained: after.maintained,
+            bestSeries: after.best,
             updatedAt: new Date().toISOString(),
           };
           tx.insert(skillStates)
@@ -169,6 +176,8 @@ export function createPlayRepo(db: Db, today: () => string, random: () => number
             correct,
             stageBefore: before.stage,
             stageAfter: after.stage,
+            bestBefore: before.best,
+            bestAfter: after.best,
             due: after.due,
           };
         });

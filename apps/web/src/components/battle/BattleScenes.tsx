@@ -171,7 +171,7 @@ export function BossSays({
       role="status"
       aria-label={`${name} : ${text}`}
     >
-      <p className="cartoon text-on-light min-w-0 flex-1 rounded-2xl border-[color:var(--danger)] bg-[#ffe3e3] px-4 py-3 text-lg leading-snug font-bold sm:text-xl">
+      <p className="cartoon text-on-light min-w-0 flex-1 rounded-2xl bg-[#ffdcdc] px-4 py-3 text-lg leading-snug font-bold sm:text-xl">
         {text}
       </p>
       {src && <img src={src} alt="" aria-hidden className="h-20 w-20 shrink-0 object-contain" />}
@@ -229,7 +229,7 @@ export function BossCloseUp({
         initial={{ scale: 0.6, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.8, type: 'spring', stiffness: 240, damping: 14 }}
-        className="cartoon text-on-light pointer-events-none relative max-w-lg rounded-2xl bg-[#ffe3e3] px-5 py-4 text-xl leading-snug font-bold sm:text-2xl"
+        className="cartoon text-on-light pointer-events-none relative max-w-lg rounded-2xl bg-[#ffdcdc] px-5 py-4 text-xl leading-snug font-bold sm:text-2xl"
       >
         {text}
       </motion.p>

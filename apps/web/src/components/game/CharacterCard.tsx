@@ -4,6 +4,7 @@ import { HERO_NAMES, type HeroId } from '@questeo/shared';
 import { HERO_COLORS } from '../../design/heroes.ts';
 import { assetSrc, deliveredSrc } from '../../design/assets.ts';
 import { skinStyle } from '../../design/skin.ts';
+import { useEntrance } from '../../lib/entrance.ts';
 
 interface CharacterCardProps {
   readonly name: string;
@@ -31,6 +32,7 @@ export function CharacterCard({
   index = 0,
   className = '',
 }: CharacterCardProps) {
+  const enter = useEntrance();
   const skin = skinStyle('hud/frames/hero-card.webp', 22, '0.9rem');
   return (
     <motion.button
@@ -38,7 +40,7 @@ export function CharacterCard({
       onClick={onClick}
       role={radio ? 'radio' : undefined}
       aria-checked={radio ? Boolean(selected) : undefined}
-      initial={{ y: 24, opacity: 0 }}
+      initial={enter ? { y: 24, opacity: 0 } : false}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: index * 0.06, type: 'spring', stiffness: 220, damping: 16 }}
       whileTap={{ scale: 0.96 }}

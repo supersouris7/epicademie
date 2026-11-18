@@ -5,6 +5,7 @@ import { assetSrc } from '../design/assets.ts';
 import { GameIcon } from './game/GameIcon.tsx';
 import { SoonBadge } from './game/SoonBadge.tsx';
 import { Questy } from './mascot/Questy.tsx';
+import { useEntrance } from '../lib/entrance.ts';
 
 interface ModeTileProps {
   readonly mode: ModeInfo;
@@ -14,9 +15,10 @@ interface ModeTileProps {
 }
 
 export function ModeTile({ mode, index = 0, badge, onClick }: ModeTileProps) {
+  const enter = useEntrance();
   return (
     <motion.li
-      initial={{ scale: 0.85, opacity: 0 }}
+      initial={enter ? { scale: 0.85, opacity: 0 } : false}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ delay: 0.05 + index * 0.04, type: 'spring', stiffness: 220, damping: 15 }}
       className="relative"

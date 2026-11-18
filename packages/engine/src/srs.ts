@@ -1,6 +1,7 @@
 /**
- * Acquisition des notions : 3 réussites espacées (J0, J+2, J+7), puis entretien mensuel.
- * Une série ratée remet la notion « à revoir » le lendemain.
+ * Médaille d'une notion : sa meilleure série de 5 questions (5/5 Or = notion acquise, 4/5 Argent,
+ * 3/5 Bronze). En arrière-plan, la répétition espacée (J0, J+2, J+7, puis mensuel) propose
+ * les notions « à revoir » ; une série ratée remet la notion à revoir le lendemain.
  */
 export type Stage = 0 | 1 | 2 | 3;
 
@@ -16,6 +17,8 @@ export interface SkillState {
   readonly recent: readonly boolean[];
   /** Rappels d'entretien réussis une fois la notion acquise. */
   readonly maintained: number;
+  /** Meilleure série de 5 questions sur cette notion (bonnes réponses du 1er coup, 0 à 5). */
+  readonly best: number;
 }
 
 export interface SkillSessionResult {
@@ -29,7 +32,7 @@ export const SUCCESS_RATE = 0.8;
 const GAP_AFTER_STAGE: Record<Stage, number> = { 0: 1, 1: 2, 2: 5, 3: 30 };
 
 export function newSkillState(skillId: string): SkillState {
-  return { skillId, stage: 0, due: null, attempts: 0, correct: 0, recent: [], maintained: 0 };
+  return { skillId, stage: 0, due: null, attempts: 0, correct: 0, recent: [], maintained: 0, best: 0 };
 }
 
 export function addDays(day: string, days: number): string {
@@ -40,14 +43,22 @@ export function addDays(day: string, days: number): string {
 
 export const isDue = (s: SkillState, today: string) => s.due !== null && s.due <= today;
 
-/** Applique le bilan d'une série sur une notion (au plus une progression par jour). */
-/** `forceFail` : l'élève a signalé « Je n'ai pas compris » — la notion repasse à revoir. */
+/** Questions d'une série complète sur une notion. */
+export const SERIES_LENGTH = 5;
+
+/**
+ * Applique le bilan d'une série sur une notion (au plus une progression par jour).
+ * `forceFail` : l'élève a signalé « Je n'ai pas compris » — la notion repasse à revoir.
+ * `series` : bonnes réponses du 1er coup sur une série complète de 5 questions de cette notion
+ * (absent si la série mêlait plusieurs notions) ; la meilleure fixe la médaille.
+ */
 export function applySession(
   state: SkillState,
   result: SkillSessionResult,
   today: string,
   answers: readonly boolean[] = [],
   forceFail = false,
+  series?: number,
 ): SkillState {
   const recent = [...state.recent, ...answers].slice(-RECENT_WINDOW);
   const base = {
@@ -55,11 +66,13 @@ export function applySession(
     attempts: state.attempts + result.answered,
     correct: state.correct + result.correct,
     recent,
+    best: Math.max(state.best, Math.min(SERIES_LENGTH, series ?? 0)),
   };
   if (result.answered === 0) return state;
+  // « Je n'ai pas compris » : la série ne compte pas pour la médaille.
+  if (forceFail) return { ...base, best: state.best, stage: 0, maintained: 0, due: addDays(today, GAP_AFTER_STAGE[0]) };
   const rate = result.correct / result.answered;
-  if (rate < SUCCESS_RATE || forceFail)
-    return { ...base, stage: 0, maintained: 0, due: addDays(today, GAP_AFTER_STAGE[0]) };
+  if (rate < SUCCESS_RATE) return { ...base, stage: 0, maintained: 0, due: addDays(today, GAP_AFTER_STAGE[0]) };
   // Réussite : progression seulement si la notion est nouvelle ou arrivée à échéance.
   const canProgress = state.due === null || state.stage === 0 || state.due <= today;
   if (!canProgress) return base;
@@ -100,21 +113,23 @@ export function scoreOn20(correct: number, total: number): number {
   return Math.round((correct / total) * 40) / 2;
 }
 
-/** Médaille d'une notion : bronze (J0), argent (J+2), or (acquise), platine (acquise, ≥ 90 % récents, entretien réussi). */
-export type Medal = 'aucune' | 'bronze' | 'argent' | 'or' | 'platine';
-export const MEDALS: readonly Medal[] = ['bronze', 'argent', 'or', 'platine'];
+/** Médaille d'une notion, d'après sa meilleure série de 5 : Or (5/5, acquise), Argent (4/5), Bronze (3/5). */
+export type Medal = 'aucune' | 'bronze' | 'argent' | 'or';
+export const MEDALS: readonly Medal[] = ['bronze', 'argent', 'or'];
 export const MEDAL_LABELS: Record<Medal, string> = {
   aucune: 'Pas encore',
   bronze: 'Bronze',
   argent: 'Argent',
   or: 'Or',
-  platine: 'Platine',
 };
 
-export function medal(state: Pick<SkillState, 'stage' | 'recent' | 'maintained'> | undefined): Medal {
-  if (!state || state.stage === 0) return 'aucune';
-  if (state.stage === 1) return 'bronze';
-  if (state.stage === 2) return 'argent';
-  const rate = state.recent.length >= 10 ? state.recent.filter(Boolean).length / state.recent.length : 0;
-  return state.maintained >= 1 && rate >= 0.9 ? 'platine' : 'or';
+export function medal(state: Pick<SkillState, 'best'> | undefined): Medal {
+  const best = state?.best ?? 0;
+  if (best >= SERIES_LENGTH) return 'or';
+  if (best === SERIES_LENGTH - 1) return 'argent';
+  if (best === SERIES_LENGTH - 2) return 'bronze';
+  return 'aucune';
 }
+
+/** Notion acquise : médaille d'or (sans-faute sur une série de 5). */
+export const acquired = (state: Pick<SkillState, 'best'> | undefined) => medal(state) === 'or';

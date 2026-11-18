@@ -31,3 +31,7 @@ export const buyHint = (profileId: string) =>
     method: 'POST',
     body: JSON.stringify({ profileId, item: 'indice' }),
   });
+
+/** Équipe jusqu'à 3 objets de la réserve pour les prochains combats. */
+export const equipItems = (profileId: string, items: readonly ItemId[]) =>
+  api<BossOverview>(`/profiles/${profileId}/equipment`, { method: 'PUT', body: JSON.stringify({ items }) });

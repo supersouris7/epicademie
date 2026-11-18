@@ -5,13 +5,14 @@ import { gradeInfo, SUBJECTS, type Profile } from '@questeo/shared';
 import { useSkills } from '../../api/play.ts';
 import { GradeTabs } from '../../components/GradeTabs.tsx';
 import { PageShell } from '../../components/PageShell.tsx';
-import { GameIcon } from '../../components/game/GameIcon.tsx';
 import { localToday } from '../../lib/dates.ts';
 import { useGradeChoice } from '../../lib/grades.ts';
 import { chapterProgress, suggestChapter } from '../../lib/progress.ts';
+import { useEntrance } from '../../lib/entrance.ts';
 
 /** Entraînement : choix du chapitre d'une matière. */
 export function Chapters({ profile }: { readonly profile: Profile }) {
+  const enter = useEntrance();
   const { subject = '' } = useParams();
   const navigate = useNavigate();
   const info = SUBJECTS.find((s) => s.id === subject);
@@ -25,14 +26,6 @@ export function Chapters({ profile }: { readonly profile: Profile }) {
   const why = suggestion?.why ?? '';
   return (
     <PageShell title={`Entraînement · ${info.name}`} back="/jouer/entrainement">
-      {/* C'est ici qu'on gagne son équipement de combat. */}
-      <div className="cartoon bg-surface-2 flex items-center gap-3 p-3" role="note">
-        <GameIcon id="rewards-chests-rare" size={64} />
-        <p className="text-lg font-bold">
-          C’est ici que tu gagnes ton <strong>équipement</strong> ! Chaque série de 5 questions peut t’offrir un coffre
-          (bouclier, soin, indice, pièces). 5/5 = coffre garanti.
-        </p>
-      </div>
       <GradeTabs grades={grades} value={grade} own={own} onChange={setGrade} />
       {suggestion && (
         <button
@@ -62,7 +55,7 @@ export function Chapters({ profile }: { readonly profile: Profile }) {
           return (
             <motion.li
               key={c.id}
-              initial={{ y: 20, opacity: 0 }}
+              initial={enter ? { y: 20, opacity: 0 } : false}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: i * 0.03 }}
               className="relative"

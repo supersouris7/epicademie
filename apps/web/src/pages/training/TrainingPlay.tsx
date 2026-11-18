@@ -22,12 +22,12 @@ import { GameIcon } from '../../components/game/GameIcon.tsx';
 import { Confetti } from '../../components/Confetti.tsx';
 import { ProgressBar } from '../../components/game/ProgressBar.tsx';
 import { ResourceCounter } from '../../components/game/ResourceCounter.tsx';
-import { RewardBadge } from '../../components/game/RewardBadge.tsx';
+import { MedalBadge, RewardBadge } from '../../components/game/RewardBadge.tsx';
+import { medal } from '@questeo/engine';
 import { QuestyPose } from '../../components/mascot/QuestyPose.tsx';
 import type { QuestyPoseId } from '../../components/mascot/poses.ts';
 import { skinStyle } from '../../design/skin.ts';
 import { MathText } from '../../components/MathText.tsx';
-import { StageDots } from '../../components/StageDots.tsx';
 import { useToast } from '../../components/Toast.tsx';
 import { Figure } from '../../components/figures/Figure.tsx';
 import { Questy } from '../../components/mascot/Questy.tsx';
@@ -40,7 +40,7 @@ import { useBackGuard, useGameExit } from '../../lib/gameExit.ts';
 import { ConfirmDialog } from '../../components/ConfirmDialog.tsx';
 import { localToday, randomSeed } from '../../lib/dates.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../lib/sound.ts';
-import { formatAnswer, stageMessage } from '../../lib/answers.ts';
+import { formatAnswer, medalMessage } from '../../lib/answers.ts';
 import { heroLine, type HeroMoment } from '../../lib/heroLines.ts';
 import { freshQuestion, recentPrompts, rememberPrompt } from '../../lib/recent.ts';
 import { HeroBubble } from '../../components/battle/HeroBubble.tsx';
@@ -574,10 +574,10 @@ function Results({
             <div className="min-w-0 flex-1">
               <p className="font-display text-xl tracking-wide">{getSkill(s.skillId)?.title}</p>
               <p className="text-muted font-bold">
-                {s.correct}/{s.answered} · {stageMessage(s.stageAfter, s.due)}
+                {s.correct}/{s.answered} · {medalMessage(s)}
               </p>
             </div>
-            <StageDots stage={s.stageAfter} />
+            <MedalBadge medal={medal({ best: s.bestAfter })} size={48} />
           </div>
         ))}
       </section>

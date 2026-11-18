@@ -105,7 +105,16 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   await expect(relatifs.getByRole('button', { name: 'Rejouer' })).toBeVisible();
   await expect(relatifs).toContainText('vaincu 1 fois');
   // Le coffre a rempli l'équipement.
-  await expect(page.getByRole('img', { name: 'Bouclier × 1' })).toBeVisible();
+  const reserve = page.getByRole('button', { name: /^Bouclier × 1 en réserve/ });
+  await expect(reserve).toBeVisible();
+  // Équipement : on équipe le bouclier (il quitte la réserve), puis on le remet en réserve.
+  await expect(page.getByRole('img', { name: 'Emplacement vide' })).toHaveCount(3);
+  await reserve.click();
+  await expect(page.getByRole('button', { name: /Bouclier équipé/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /^Bouclier × 0 en réserve/ })).toBeVisible();
+  await expect(page.getByRole('img', { name: 'Emplacement vide' })).toHaveCount(2);
+  await page.getByRole('button', { name: /Bouclier équipé/ }).click();
+  await expect(page.getByRole('button', { name: /^Bouclier × 1 en réserve/ })).toBeVisible();
   await expect(relatifs.getByRole('img', { name: 'Médaille Argent' })).toBeVisible();
 });
 

@@ -38,18 +38,19 @@ export function formatResponse(q: Question, r: Response): string {
 
 export const STAGE_LABELS = ['À revoir', 'Réussie une fois', 'Réussie deux fois', 'Acquise'] as const;
 
-export function stageMessage(stage: number, due: string | null): string {
-  const when = due
-    ? new Date(`${due}T12:00:00`).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
+/** Message de fin de série pour une notion : sa médaille (meilleure série de 5) et la suite. */
+export function medalMessage(s: {
+  readonly answered: number;
+  readonly bestBefore: number;
+  readonly bestAfter: number;
+  readonly due: string | null;
+}): string {
+  const when = s.due
+    ? new Date(`${s.due}T12:00:00`).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
     : '';
-  switch (stage) {
-    case 0:
-      return `À revoir ${when ? `dès ${when}` : 'bientôt'}`;
-    case 1:
-      return `1re réussite ! Prochaine révision ${when}`;
-    case 2:
-      return `2e réussite ! Dernière révision ${when}`;
-    default:
-      return `Acquise ! Petit rappel ${when}`;
-  }
+  if (s.bestAfter >= 5) return s.bestBefore >= 5 ? 'Toujours en or : bravo !' : 'Médaille d’or : notion acquise !';
+  if (s.answered < 5) return 'Fais une série de 5 sur cette notion pour gagner sa médaille.';
+  if (s.bestAfter === 4) return 'Argent (4/5) : un sans-faute pour l’or !';
+  if (s.bestAfter === 3) return 'Bronze (3/5) : vise 5/5 pour l’or !';
+  return `À revoir ${when ? `dès ${when}` : 'bientôt'} : 3 bonnes réponses sur 5 pour le bronze.`;
 }

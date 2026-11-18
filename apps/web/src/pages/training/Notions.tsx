@@ -4,12 +4,15 @@ import { getChapter } from '@questeo/content';
 import type { Profile } from '@questeo/shared';
 import { useSkills } from '../../api/play.ts';
 import { PageShell } from '../../components/PageShell.tsx';
-import { StageDots } from '../../components/StageDots.tsx';
+import { MedalBadge } from '../../components/game/RewardBadge.tsx';
+import { medal } from '@questeo/engine';
 import { localToday } from '../../lib/dates.ts';
 import { masteryOf } from '../../lib/progress.ts';
+import { useEntrance } from '../../lib/entrance.ts';
 
 /** Entraînement : « Tout le chapitre » ou une notion précise. */
 export function Notions({ profile }: { readonly profile: Profile }) {
+  const enter = useEntrance();
   const { subject = '', chapterId = '' } = useParams();
   const navigate = useNavigate();
   const chapter = getChapter(chapterId);
@@ -35,7 +38,7 @@ export function Notions({ profile }: { readonly profile: Profile }) {
           return (
             <motion.li
               key={s.id}
-              initial={{ x: -20, opacity: 0 }}
+              initial={enter ? { x: -20, opacity: 0 } : false}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: i * 0.03 }}
             >
@@ -51,7 +54,7 @@ export function Notions({ profile }: { readonly profile: Profile }) {
                     <span className="text-sm font-bold" style={{ color: m.color }}>
                       {m.label}
                     </span>
-                    <StageDots stage={st?.stage ?? 0} />
+                    <MedalBadge medal={medal(st)} size={28} />
                   </span>
                 </span>
                 {due && <span className="bg-danger rounded-full px-3 py-1 text-sm font-bold text-white">à revoir</span>}

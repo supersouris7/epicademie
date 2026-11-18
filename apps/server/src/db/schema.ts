@@ -14,6 +14,11 @@ export const profiles = sqliteTable('profiles', {
   coins: integer('coins').notNull().default(0),
   soundOn: integer('sound_on', { mode: 'boolean' }).notNull().default(true),
   musicOn: integer('music_on', { mode: 'boolean' }).notNull().default(true),
+  /** Objets équipés pour les combats de boss (3 au plus, pris dans l'inventaire). */
+  equipped: text('equipped', { mode: 'json' })
+    .$type<ItemId[]>()
+    .notNull()
+    .default(sql`'[]'`),
   createdAt: text('created_at')
     .notNull()
     .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
@@ -88,6 +93,8 @@ export const skillStates = sqliteTable(
     correct: integer('correct').notNull().default(0),
     recent: text('recent', { mode: 'json' }).$type<boolean[]>().notNull(),
     maintained: integer('maintained').notNull().default(0),
+    /** Meilleure série de 5 (bonnes réponses du 1er coup) : fixe la médaille. */
+    bestSeries: integer('best_series').notNull().default(0),
     updatedAt: text('updated_at').notNull(),
   },
   (t) => [primaryKey({ columns: [t.profileId, t.skillId] })],

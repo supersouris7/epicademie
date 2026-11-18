@@ -1,4 +1,4 @@
-import type { Medal } from '@questeo/engine';
+import { MEDAL_LABELS, type Medal } from '@questeo/engine';
 import { GameIcon } from './GameIcon.tsx';
 
 const MEDAL_ICONS: Record<Medal, string> = {
@@ -6,10 +6,9 @@ const MEDAL_ICONS: Record<Medal, string> = {
   bronze: 'rewards-medals-bronze',
   argent: 'rewards-medals-argent',
   or: 'rewards-medals-or',
-  platine: 'rewards-medals-platine',
 };
 
-/** Médaille d'une notion (bronze, argent, or, platine ; emplacement vide sinon). */
+/** Médaille d'une notion (bronze 3/5, argent 4/5, or 5/5 ; emplacement vide sinon). */
 export function MedalBadge({
   medal,
   size = 40,
@@ -23,7 +22,7 @@ export function MedalBadge({
     <GameIcon
       id={MEDAL_ICONS[medal]}
       size={size}
-      label={label ?? (medal === 'aucune' ? 'Pas encore de médaille' : `Médaille ${medal}`)}
+      label={label ?? (medal === 'aucune' ? 'Pas encore de médaille' : `Médaille ${MEDAL_LABELS[medal]}`)}
     />
   );
 }

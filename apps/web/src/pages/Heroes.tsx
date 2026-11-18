@@ -82,9 +82,16 @@ export function Heroes({ profile }: { readonly profile: Profile }) {
               className="min-h-40"
             />
           ) : (
-            // Héros pas encore dessiné : carte grisée, non choisissable.
-            <div key={h} className="relative opacity-50 grayscale" aria-label={`${HERO_NAMES[h]}, à venir`} role="img">
-              <HeroCard hero={h} index={i} className="pointer-events-none min-h-40" />
+            // Héros à venir : carte mystère « ? », sans nom ni portrait.
+            <div
+              key={h}
+              className="cartoon bg-surface-2 relative flex min-h-40 items-center justify-center"
+              aria-label="Héros mystère, à venir"
+              role="img"
+            >
+              <span aria-hidden className="font-display text-muted text-7xl">
+                ?
+              </span>
               <SoonBadge />
             </div>
           ),

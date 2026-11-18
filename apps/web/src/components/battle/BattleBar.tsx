@@ -35,7 +35,7 @@ interface BattleBarProps {
  */
 export function BattleBar(p: BattleBarProps) {
   const reduce = useReducedMotion();
-  // Bandeau dédié répété en largeur à sa hauteur (jamais étiré) ; sinon une bande de l'arène.
+  // Bandeau dédié (frise de l'arène) en couverture ; sinon une bande de l'arène.
   const band = arenaBand(p.arena);
   const bg = assetSrc(`environments-arenas-${p.arena}`);
   const dim = 'linear-gradient(rgb(20 10 40 / 0.55), rgb(20 10 40 / 0.55))';
@@ -46,7 +46,7 @@ export function BattleBar(p: BattleBarProps) {
       className="cartoon relative flex shrink-0 items-center gap-2 overflow-hidden px-2.5 py-2 sm:gap-3 sm:px-3"
       style={{
         background: band
-          ? `${dim}, left center / auto 100% repeat-x url(${band})`
+          ? `${dim}, center / cover no-repeat url(${band})`
           : bg
             ? `${dim}, center 60% / cover no-repeat url(${bg})`
             : 'var(--surface)',

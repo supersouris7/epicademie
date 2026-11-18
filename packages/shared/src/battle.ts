@@ -24,7 +24,7 @@ export interface Chest {
   readonly coins: number;
 }
 
-/** Stock maximal par objet, objets utilisables par combat (tous du même type), prix de l'indice. */
+/** Stock maximal par objet, emplacements d'équipement (objets utilisables par combat), prix de l'indice. */
 export const MAX_ITEM_STOCK = 9;
 export const MAX_ITEMS_PER_BATTLE = 3;
 export const HINT_PRICE = 20;
@@ -60,8 +60,8 @@ export interface BattleView {
   readonly shield: boolean;
   readonly hintShown: boolean;
   readonly itemsUsed: number;
-  /** Type d'objet choisi pour ce combat (au 1er objet utilisé) : les autres types sont bloqués. */
-  readonly itemType: ItemId | null;
+  /** Objets équipés encore disponibles dans ce combat (3 emplacements au plus). */
+  readonly equipped: readonly ItemId[];
   readonly question: BattleQuestion | null;
   readonly inventory: Inventory;
 }
@@ -133,7 +133,26 @@ export interface BossRecord {
 
 export interface BossOverview {
   readonly records: readonly BossRecord[];
+  /** Tout ce que le joueur possède ; la réserve = inventaire − objets équipés. */
   readonly inventory: Inventory;
+  /** Objets équipés pour les combats (3 emplacements au plus, types mélangés). */
+  readonly equipped: readonly ItemId[];
+}
+
+/** Équipement choisi avant un combat : jusqu'à 3 objets pris dans la réserve. */
+export const EquipmentSchema = z.object({ items: z.array(ItemIdSchema).max(MAX_ITEMS_PER_BATTLE) });
+export type Equipment = z.infer<typeof EquipmentSchema>;
+
+/** Garde les objets équipés que l'inventaire couvre encore (3 au plus). */
+export function sanitizeEquipped(items: readonly ItemId[], inventory: Inventory): ItemId[] {
+  const left: Inventory = { ...inventory };
+  const out: ItemId[] = [];
+  for (const item of items) {
+    if (out.length >= MAX_ITEMS_PER_BATTLE || left[item] <= 0) continue;
+    left[item]--;
+    out.push(item);
+  }
+  return out;
 }
 
 export const BattleCreateSchema = z.object({

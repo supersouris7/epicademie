@@ -1,4 +1,4 @@
-import { mastery, MASTERY_LABELS, type Mastery } from '@questeo/engine';
+import { acquired as isAcquired, mastery, MASTERY_LABELS, type Mastery } from '@questeo/engine';
 import type { SkillProgress } from '@questeo/shared';
 
 export interface ChapterProgress {
@@ -20,7 +20,8 @@ export function chapterProgress(
     const s = states.get(id);
     if (!s) continue;
     started++;
-    if (s.stage === 3) acquired++;
+    // Notion acquise : médaille d'or (sans-faute sur une série de 5).
+    if (isAcquired(s)) acquired++;
     if (s.due !== null && s.due <= today) due++;
   }
   return { total: skillIds.length, acquired, started, due };

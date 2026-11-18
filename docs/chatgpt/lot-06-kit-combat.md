@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Lot 6 — Kit combat
 
-142 images, demandes 46 à 125 (80 messages à envoyer).
+134 images, demandes 46 à 117 (72 messages à envoyer).
 
 ## Marche à suivre
 
@@ -861,46 +861,7 @@ Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 113. Arène de la jungle
-Enregistrer sous `assets-src/originals/environments/arenas/jungle.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
-
-```text
-Image 1536×1024. Plateforme moussue dans une jungle aux ruines et cascades, portail violet.
-Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
-Style, fond et interdits : ceux du message de départ.
-```
-
-#### 114. Arène de la jungle (portrait)
-Enregistrer sous `assets-src/originals/environments/arenas/jungle-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
-> 📎 Joindre l'image validée `environments/arenas/jungle.png`.
-
-```text
-Image 1024×1536. Plateforme moussue dans une jungle aux ruines et cascades, portail violet.
-Cadrage : même décor recomposé en hauteur (format portrait, écran de téléphone), vu de face à hauteur de personnage ; sol plat et dégagé sur le tiers inférieur (les deux combattants y seront posés côte à côte, chacun sur près de la moitié de la largeur) ; le point d’intérêt du décor (planète, volcan, palais…) dans la moitié haute ; rien d’important à moins de 6 % du haut et du bas (rogné) ; aucun personnage.
-Style, fond et interdits : ceux du message de départ.
-```
-
-#### 115. Arène de la jungle (panorama)
-Enregistrer sous `assets-src/originals/environments/arenas/jungle-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
-> 📎 Joindre l'image validée `environments/arenas/jungle.png`.
-
-```text
-Image 1536×1024. Plateforme moussue dans une jungle aux ruines et cascades, portail violet.
-Cadrage : même décor en panorama très large (tablette en paysage) : seule la bande entre 20 % et 80 % de la hauteur sera gardée ; sol plat et dégagé entre 60 % et 80 % de la hauteur, sur toute la largeur ; horizon et point d’intérêt entre 20 % et 55 % de la hauteur ; le haut et le bas de l’image ne contiennent que du ciel et du sol ; aucun personnage.
-Style, fond et interdits : ceux du message de départ.
-```
-
-#### 116. Arène de la jungle (bandeau)
-Enregistrer sous `assets-src/originals/environments/arenas/jungle-bandeau.png` · 1536×1024 → final 1536×384 · plein cadre (pas de fond magenta)
-> 📎 Joindre l'image validée `environments/arenas/jungle.png`.
-
-```text
-Image 1536×1024. Plateforme moussue dans une jungle aux ruines et cascades, portail violet.
-Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la bande entre 31 % et 69 % de la hauteur sera gardée, tous les détails y tiennent (ligne d’horizon au milieu) ; texture régulière sans objet isolé marquant ni zone vide ; le bord gauche et le bord droit se raccordent parfaitement (image répétée en boucle) ; teintes un peu sombres, peu contrastées (du texte blanc passera dessus) ; aucun personnage.
-Style, fond et interdits : ceux du message de départ.
-```
-
-#### 117. Arène du volcan
+#### 113. Arène du volcan
 Enregistrer sous `assets-src/originals/environments/arenas/volcan.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
@@ -909,7 +870,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 118. Arène du volcan (portrait)
+#### 114. Arène du volcan (portrait)
 Enregistrer sous `assets-src/originals/environments/arenas/volcan-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/volcan.png`.
 
@@ -919,7 +880,7 @@ Cadrage : même décor recomposé en hauteur (format portrait, écran de télép
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 119. Arène du volcan (panorama)
+#### 115. Arène du volcan (panorama)
 Enregistrer sous `assets-src/originals/environments/arenas/volcan-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/volcan.png`.
 
@@ -929,7 +890,7 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 120. Arène du volcan (bandeau)
+#### 116. Arène du volcan (bandeau)
 Enregistrer sous `assets-src/originals/environments/arenas/volcan-bandeau.png` · 1536×1024 → final 1536×384 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/volcan.png`.
 
@@ -939,46 +900,7 @@ Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 121. Arène des glaces
-Enregistrer sous `assets-src/originals/environments/arenas/glace.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
-
-```text
-Image 1536×1024. Plateforme gelée, aurores boréales, montagnes enneigées et palais de glace.
-Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
-Style, fond et interdits : ceux du message de départ.
-```
-
-#### 122. Arène des glaces (portrait)
-Enregistrer sous `assets-src/originals/environments/arenas/glace-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
-> 📎 Joindre l'image validée `environments/arenas/glace.png`.
-
-```text
-Image 1024×1536. Plateforme gelée, aurores boréales, montagnes enneigées et palais de glace.
-Cadrage : même décor recomposé en hauteur (format portrait, écran de téléphone), vu de face à hauteur de personnage ; sol plat et dégagé sur le tiers inférieur (les deux combattants y seront posés côte à côte, chacun sur près de la moitié de la largeur) ; le point d’intérêt du décor (planète, volcan, palais…) dans la moitié haute ; rien d’important à moins de 6 % du haut et du bas (rogné) ; aucun personnage.
-Style, fond et interdits : ceux du message de départ.
-```
-
-#### 123. Arène des glaces (panorama)
-Enregistrer sous `assets-src/originals/environments/arenas/glace-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
-> 📎 Joindre l'image validée `environments/arenas/glace.png`.
-
-```text
-Image 1536×1024. Plateforme gelée, aurores boréales, montagnes enneigées et palais de glace.
-Cadrage : même décor en panorama très large (tablette en paysage) : seule la bande entre 20 % et 80 % de la hauteur sera gardée ; sol plat et dégagé entre 60 % et 80 % de la hauteur, sur toute la largeur ; horizon et point d’intérêt entre 20 % et 55 % de la hauteur ; le haut et le bas de l’image ne contiennent que du ciel et du sol ; aucun personnage.
-Style, fond et interdits : ceux du message de départ.
-```
-
-#### 124. Arène des glaces (bandeau)
-Enregistrer sous `assets-src/originals/environments/arenas/glace-bandeau.png` · 1536×1024 → final 1536×384 · plein cadre (pas de fond magenta)
-> 📎 Joindre l'image validée `environments/arenas/glace.png`.
-
-```text
-Image 1536×1024. Plateforme gelée, aurores boréales, montagnes enneigées et palais de glace.
-Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la bande entre 31 % et 69 % de la hauteur sera gardée, tous les détails y tiennent (ligne d’horizon au milieu) ; texture régulière sans objet isolé marquant ni zone vide ; le bord gauche et le bord droit se raccordent parfaitement (image répétée en boucle) ; teintes un peu sombres, peu contrastées (du texte blanc passera dessus) ; aucun personnage.
-Style, fond et interdits : ceux du message de départ.
-```
-
-#### 125. Illustration principale
+#### 117. Illustration principale
 Enregistrer sous `assets-src/originals/branding/key-art.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 

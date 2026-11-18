@@ -80,3 +80,35 @@ describe('migration 0010 : Alex seul héros jouable', () => {
     sqlite.close();
   });
 });
+
+describe('migration 0013 : équipement et meilleure série', () => {
+  it('donne aux notions déjà travaillées la médaille qu’elles avaient (acquise → Or)', () => {
+    const file = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'questeo-')), 'test.db');
+    openDb(file, migrationsDir).close();
+    const sqlite = new Database(file);
+    sqlite
+      .prepare('INSERT INTO profiles (id, name, avatar, created_at) VALUES (?, ?, ?, ?)')
+      .run('p', 'Léa', JSON.stringify({ style: 'pixelbot', seed: 's' }), Date.now());
+    const insert = sqlite.prepare(
+      "INSERT INTO skill_states (profile_id, skill_id, stage, recent, updated_at) VALUES ('p', ?, ?, '[]', 'x')",
+    );
+    for (const [id, stage] of [
+      ['a', 0],
+      ['b', 1],
+      ['c', 2],
+      ['d', 3],
+    ] as const)
+      insert.run(id, stage);
+    const sql = fs.readFileSync(path.join(migrationsDir, '0013_equipment_series.sql'), 'utf8');
+    sqlite.exec(sql.split('--> statement-breakpoint').at(-1) ?? '');
+    const rows = sqlite.prepare('SELECT skill_id, best_series FROM skill_states ORDER BY skill_id').all();
+    expect(rows).toEqual([
+      { skill_id: 'a', best_series: 0 },
+      { skill_id: 'b', best_series: 3 },
+      { skill_id: 'c', best_series: 4 },
+      { skill_id: 'd', best_series: 5 },
+    ]);
+    expect(sqlite.prepare("SELECT equipped FROM profiles WHERE id = 'p'").get()).toEqual({ equipped: '[]' });
+    sqlite.close();
+  });
+});

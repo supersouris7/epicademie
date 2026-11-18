@@ -80,34 +80,34 @@ describe('combat de boss', () => {
     expect(() => answerBattle(s, pools, true, dice())).toThrow();
   });
 
-  it('le bouclier absorbe une riposte ; un seul type d’objet par combat, 3 au plus', () => {
+  it('le bouclier absorbe une riposte ; seuls les objets équipés servent, types mélangés', () => {
     const d = dice();
-    let s = applyItem(createBattle(pools, d), 'bouclier');
-    expect(s.itemType).toBe('bouclier');
+    let s = createBattle(pools, d, [], ['bouclier', 'soin', 'bouclier']);
+    expect(itemRefusal(s, 'indice')).toMatch(/pas équipé/);
+    s = applyItem(s, 'bouclier');
+    expect(s.equipped).toEqual(['soin', 'bouclier']);
     expect(itemRefusal(s, 'bouclier')).toMatch(/déjà levé/);
     const r = answerBattle(s, pools, false, d);
     expect(r.outcome).toBe('blocked');
     expect(r.state.hearts).toBe(3);
     s = answerBattle(r.state, pools, false, d).state;
     expect(s.hearts).toBe(2);
-    // Combat parti sur les boucliers : ni soin ni indice.
-    expect(itemRefusal(s, 'soin')).toMatch(/Un seul type d’objet par combat : bouclier/);
-    expect(itemRefusal(s, 'indice')).toMatch(/Un seul type/);
+    // Types mélangés : un soin après un bouclier.
+    s = applyItem(s, 'soin');
+    expect(s.hearts).toBe(3);
     s = applyItem(s, 'bouclier');
-    s = answerBattle(s, pools, false, d).state;
-    s = applyItem(s, 'bouclier');
-    s = answerBattle(s, pools, false, d).state;
-    expect(itemRefusal(s, 'bouclier')).toMatch(/3 objets/);
+    expect(s.equipped).toEqual([]);
+    expect(itemRefusal(s, 'bouclier')).toMatch(/pas équipé/);
   });
 
   it('le soin rend un cœur, l’indice ne vaut que pour la question en cours', () => {
     const d = dice();
-    let s = createBattle(pools, d);
+    let s = createBattle(pools, d, [], ['soin']);
     expect(itemRefusal(s, 'soin')).toMatch(/pleins/);
     s = answerBattle(s, pools, false, d).state;
     s = applyItem(s, 'soin');
     expect(s.hearts).toBe(3);
-    let h = applyItem(createBattle(pools, d), 'indice');
+    let h = applyItem(createBattle(pools, d, [], ['indice']), 'indice');
     expect(h.hintShown).toBe(true);
     h = answerBattle(h, pools, true, d).state;
     expect(h.hintShown).toBe(false);

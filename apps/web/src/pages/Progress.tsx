@@ -9,12 +9,24 @@ import { MedalBadge } from '../components/game/RewardBadge.tsx';
 import { GradeTabs } from '../components/GradeTabs.tsx';
 import { PageShell } from '../components/PageShell.tsx';
 import { Questy } from '../components/mascot/Questy.tsx';
+import { SkillRadar } from '../components/game/SkillRadar.tsx';
 import { localToday } from '../lib/dates.ts';
 import { useGradeChoice } from '../lib/grades.ts';
 import { masteryOf } from '../lib/progress.ts';
+import { useEntrance } from '../lib/entrance.ts';
+
+/** Noms courts des domaines (axes de la toile). */
+const DOMAIN_SHORT: Record<DomainId, string> = {
+  nombres: 'Nombres',
+  geometrie: 'Géométrie',
+  grandeurs: 'Grandeurs',
+  donnees: 'Données',
+  fonctions: 'Fonctions',
+  informatique: 'Programmation',
+};
 
 function countMedals(ids: readonly string[], states: ReadonlyMap<string, SkillProgress>) {
-  const counts: Record<MedalId, number> = { aucune: 0, bronze: 0, argent: 0, or: 0, platine: 0 };
+  const counts: Record<MedalId, number> = { aucune: 0, bronze: 0, argent: 0, or: 0 };
   for (const id of ids) counts[medal(states.get(id))]++;
   return counts;
 }
@@ -34,6 +46,7 @@ function MedalCounts({ counts }: { readonly counts: Record<MedalId, number> }) {
 
 /** Tableau de bord : médailles par domaine, chapitre et notion. */
 export function Progress({ profile }: { readonly profile: Profile }) {
+  const enter = useEntrance();
   const navigate = useNavigate();
   const { data } = useSkills(profile.id);
   const [subject, setSubject] = useState<SubjectId>('maths');
@@ -61,7 +74,7 @@ export function Progress({ profile }: { readonly profile: Profile }) {
   return (
     <PageShell title="Mes progrès" nav={profile}>
       <section className="cartoon bg-surface flex flex-wrap items-center gap-4 p-4">
-        <Questy mood={total.platine + total.or > 0 ? 'proud' : 'happy'} size={110} />
+        <Questy mood={total.or > 0 ? 'proud' : 'happy'} size={110} />
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <p className="font-display text-2xl tracking-wide">
             {allIds.length - total.aucune} / {allIds.length} notions médaillées
@@ -74,8 +87,8 @@ export function Progress({ profile }: { readonly profile: Profile }) {
       </section>
 
       <p className="text-muted text-sm font-bold">
-        Bronze : 1re réussite · Argent : 2e réussite deux jours plus tard · Or : acquise (3e réussite une semaine après)
-        · Platine : acquise, au moins 90 % de bonnes réponses récentes et un rappel mensuel réussi.
+        Médaille d’une notion = sa meilleure série de 5 questions : Bronze 3/5 · Argent 4/5 · Or 5/5, sans faute (notion
+        acquise).
       </p>
 
       <div className="flex flex-wrap gap-2" role="tablist" aria-label="Matières">
@@ -95,6 +108,21 @@ export function Progress({ profile }: { readonly profile: Profile }) {
       </div>
       <GradeTabs grades={grades} value={grade} own={own} onChange={setGrade} />
 
+      {/* Toile des compétences : part de notions acquises (Or) par domaine de la classe choisie. */}
+      <SkillRadar
+        title="Mes compétences (notions en or)"
+        axes={domains.map((d) => {
+          const ids = chapters.filter((c) => c.domain === d).flatMap((c) => c.skills.map((s) => s.id));
+          const gold = countMedals(ids, states).or;
+          return {
+            id: d,
+            label: DOMAIN_SHORT[d],
+            value: ids.length ? gold / ids.length : 0,
+            detail: `${gold} notion${gold > 1 ? 's' : ''} en or sur ${ids.length}`,
+          };
+        })}
+      />
+
       {chapters.length === 0 && <p className="text-xl font-bold">Les exercices de cette matière arrivent bientôt !</p>}
 
       {domains.map((d) => {
@@ -112,7 +140,7 @@ export function Progress({ profile }: { readonly profile: Profile }) {
                 onClick={() => toggle(d)}
                 className="cartoon cartoon-press bg-surface flex w-full flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 text-left"
               >
-                <span className="font-display min-w-0 flex-1 text-xl tracking-wide sm:text-2xl">{DOMAINS[d]}</span>
+                <span className="font-display min-w-[60%] flex-1 text-xl tracking-wide sm:text-2xl">{DOMAINS[d]}</span>
                 <MedalCounts counts={countMedals(ids, states)} />
                 <span className="text-muted text-sm font-bold">
                   {dChapters.length} chapitre{dChapters.length > 1 ? 's' : ''}
@@ -126,7 +154,7 @@ export function Progress({ profile }: { readonly profile: Profile }) {
               {dChapters.map((c, i) => (
                 <motion.article
                   key={c.id}
-                  initial={{ y: 15, opacity: 0 }}
+                  initial={enter ? { y: 15, opacity: 0 } : false}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: i * 0.03 }}
                   className="cartoon bg-surface flex flex-col gap-2 p-4"

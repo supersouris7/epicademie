@@ -8,11 +8,14 @@ import {
   HINT_PRICE,
   ITEM_INFO,
   ITEMS,
+  MAX_ITEMS_PER_BATTLE,
   SUBJECTS,
+  type ItemId,
   type BossRecord,
   type Profile,
 } from '@questeo/shared';
-import { bossesKey, buyHint, useBosses } from '../../api/battles.ts';
+import { bossesKey, buyHint, equipItems, useBosses } from '../../api/battles.ts';
+import { HeroFace } from '../../components/battle/HeroFace.tsx';
 import { GameButton } from '../../components/game/GameButton.tsx';
 import { GameIcon } from '../../components/game/GameIcon.tsx';
 import { SoonBadge } from '../../components/game/SoonBadge.tsx';
@@ -27,6 +30,7 @@ import { subjectTaunt } from '../../lib/battleLines.ts';
 import { ITEM_ICONS } from '../../design/items.ts';
 import { ApiError } from '../../api/client.ts';
 import { useGradeChoice } from '../../lib/grades.ts';
+import { useEntrance } from '../../lib/entrance.ts';
 
 /** Combat de boss : un boss par chapitre, tous ouverts d'emblée ; l'équipement se gagne à l'entraînement. */
 export function BossChapters({ profile }: { readonly profile: Profile }) {
@@ -53,6 +57,13 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
   if (!info || chapters.length === 0) return <Navigate to="/jouer/boss" replace />;
   const records = new Map((overview?.records ?? []).map((r) => [r.chapterId, r]));
   const inventory = overview?.inventory ?? { bouclier: 0, soin: 0, indice: 0 };
+  const equipped = overview?.equipped ?? [];
+  // Réserve : ce que le joueur possède sans l'avoir équipé.
+  const reserve = Object.fromEntries(
+    ITEMS.map((i) => [i, inventory[i] - equipped.filter((e) => e === i).length]),
+  ) as Record<ItemId, number>;
+  const equip = (items: readonly ItemId[]) =>
+    run(async () => qc.setQueryData(bossesKey(profile.id), await equipItems(profile.id, items)));
   const subjectIds = new Set(chaptersOf(subject).map((c) => c.id));
   const wins = (overview?.records ?? []).filter((r) => subjectIds.has(r.chapterId)).reduce((n, r) => n + r.wins, 0);
   const boss = bossOfSubject(subject);
@@ -77,37 +88,74 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
 
   return (
     <PageShell title="Combat de boss" back="/jouer/boss">
-      <p className="text-muted font-bold">
-        7 mobs, puis le boss. Un seul type d’objet par combat. Diamant : sans perdre de cœur et sans objet.
-      </p>
+      <p className="text-muted font-bold">7 mobs, puis le boss. Diamant : sans perdre de cœur et sans objet.</p>
 
-      {/* Équipement : un objet = son icône et son stock ; on le gagne dans les coffres de l'entraînement. */}
-      <section aria-labelledby="equipement" className="cartoon bg-surface flex flex-wrap items-center gap-2 p-2.5">
-        <h2 id="equipement" className="font-display mr-1 text-xl tracking-wide">
-          Équipement
+      {/* Équipement : la tête du héros et ses 3 emplacements ; dessous, la réserve (ce qui n'est pas équipé). */}
+      <section aria-labelledby="equipement" className="cartoon bg-surface flex flex-col gap-3 p-3">
+        <h2 id="equipement" className="font-display text-xl tracking-wide">
+          Équipement pour les boss
         </h2>
-        {ITEMS.map((item) => (
-          <span
-            key={item}
-            className="bg-surface-2 font-display flex items-center gap-1 rounded-full py-0.5 pr-3 pl-1 text-lg"
-            title={`${ITEM_INFO[item].effect}. ${ITEM_INFO[item].earn}.`}
-            aria-label={`${ITEM_INFO[item].name} × ${inventory[item]}`}
-            role="img"
+        <div className="flex items-center gap-3">
+          <HeroFace hero={profile.hero} expression="determine" size={64} />
+          <div className="flex gap-2" aria-label="Objets équipés">
+            {Array.from({ length: MAX_ITEMS_PER_BATTLE }, (_, i) => {
+              const item = equipped[i];
+              return item ? (
+                <button
+                  key={`${item}-${i}`}
+                  type="button"
+                  disabled={busy}
+                  onClick={() => void equip(equipped.filter((_, k) => k !== i))}
+                  aria-label={`${ITEM_INFO[item].name} équipé : toucher pour le remettre en réserve`}
+                  className="cartoon cartoon-press bg-surface-2 flex h-16 w-16 items-center justify-center"
+                >
+                  <GameIcon id={ITEM_ICONS[item]} size={44} />
+                </button>
+              ) : (
+                <span
+                  key={`vide-${i}`}
+                  role="img"
+                  aria-label="Emplacement vide"
+                  className="border-outline/60 h-16 w-16 rounded-2xl border-[3px] border-dashed"
+                />
+              );
+            })}
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-muted font-bold">Réserve :</span>
+          {ITEMS.map((item) => {
+            const left = reserve[item];
+            const full = equipped.length >= MAX_ITEMS_PER_BATTLE;
+            return (
+              <button
+                key={item}
+                type="button"
+                disabled={busy || left <= 0 || full}
+                onClick={() => void equip([...equipped, item])}
+                title={`${ITEM_INFO[item].effect}. ${ITEM_INFO[item].earn}.`}
+                aria-label={`${ITEM_INFO[item].name} × ${left} en réserve${left > 0 && !full ? ' : toucher pour l’équiper' : ''}`}
+                className="cartoon cartoon-press bg-surface-2 font-display flex items-center gap-1 rounded-full py-0.5 pr-3 pl-1 text-lg disabled:opacity-50"
+              >
+                <GameIcon id={ITEM_ICONS[item]} size={30} />× {left}
+              </button>
+            );
+          })}
+          <span className="flex-1" />
+          <GameButton
+            size="sm"
+            variant="accent"
+            icon="icons-navigation-hint"
+            disabled={busy || profile.coins < HINT_PRICE}
+            onClick={() => void run(() => buyHint(profile.id), 'Indice acheté !')}
           >
-            <GameIcon id={ITEM_ICONS[item]} size={30} />× {inventory[item]}
-          </span>
-        ))}
-        <span className="flex-1" />
-        <GameButton
-          size="sm"
-          variant="accent"
-          icon="icons-navigation-hint"
-          disabled={busy || profile.coins < HINT_PRICE}
-          onClick={() => void run(() => buyHint(profile.id), 'Indice acheté !')}
-        >
-          Indice : {HINT_PRICE}
-          <GameIcon id="icons-resources-coin" size={22} label="pièces" />
-        </GameButton>
+            Indice : {HINT_PRICE}
+            <GameIcon id="icons-resources-coin" size={22} label="pièces" />
+          </GameButton>
+        </div>
+        <p className="text-muted text-sm font-bold">
+          Touche un objet de la réserve pour l’équiper (3 au plus) ; seuls les objets équipés servent pendant le combat.
+        </p>
       </section>
 
       <GradeTabs grades={grades} value={grade} own={own} onChange={setGrade} />
@@ -146,6 +194,7 @@ interface BossRowProps {
 }
 
 function BossRow({ chapter, index, record, onFight, onSoon }: BossRowProps) {
+  const enter = useEntrance();
   const boss = bossOf(chapter);
   const ready = Boolean(chapter.boss);
   // Boss à venir : pas de portrait (case vide).
@@ -179,7 +228,7 @@ function BossRow({ chapter, index, record, onFight, onSoon }: BossRowProps) {
   );
   return (
     <motion.li
-      initial={{ y: 20, opacity: 0 }}
+      initial={enter ? { y: 20, opacity: 0 } : false}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: index * 0.04 }}
       className="relative"

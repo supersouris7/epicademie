@@ -11,10 +11,10 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   await page.getByRole('button', { name: /C’est parti/ }).click();
 
   await page.getByRole('button', { name: /Entraînement/ }).click();
+  // C'est ici qu'on gagne son équipement (dès le choix de la matière).
+  await expect(page.getByText(/C’est ici que tu gagnes ton/)).toBeVisible();
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   await expect(page.getByRole('heading', { name: /Entraînement · Maths/ })).toBeVisible();
-  // C'est ici qu'on gagne son équipement.
-  await expect(page.getByText(/C’est ici que tu gagnes ton/)).toBeVisible();
   // On peut s'entraîner sur le programme d'une autre classe ; la sienne (5e) est cochée par défaut.
   const grades = page.getByRole('radiogroup', { name: 'Classe' });
   await expect(grades.getByRole('radio', { name: /5e/ })).toHaveAttribute('aria-checked', 'true');

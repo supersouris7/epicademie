@@ -1,6 +1,6 @@
 import type { FastifyPluginAsync, FastifyReply } from 'fastify';
 import { z } from 'zod';
-import { BattleAnswerSchema, BattleCreateSchema, BattleItemSchema, BuySchema } from '@questeo/shared';
+import { BattleAnswerSchema, BattleCreateSchema, BattleItemSchema, BuySchema, EquipmentSchema } from '@questeo/shared';
 import type { BattleRepo } from '../db/battle-repo.ts';
 import { PlayError } from '../db/play-repo.ts';
 
@@ -23,6 +23,14 @@ export const battleRoutes =
       const params = IdParams.safeParse(req.params);
       if (!params.success) return reply.code(404).send({ error: 'Profil introuvable' });
       return repo.overview(params.data.id);
+    });
+
+    app.put('/profiles/:id/equipment', async (req, reply) => {
+      const params = IdParams.safeParse(req.params);
+      if (!params.success) return reply.code(404).send({ error: 'Profil introuvable' });
+      const body = EquipmentSchema.safeParse(req.body);
+      if (!body.success) return reply.code(400).send({ error: z.prettifyError(body.error) });
+      return handle(reply, () => repo.equip(params.data.id, body.data.items));
     });
 
     app.post('/shop', async (req, reply) => {

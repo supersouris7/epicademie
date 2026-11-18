@@ -47,6 +47,8 @@ export interface SkillProgress {
   readonly correct: number;
   readonly recent: readonly boolean[];
   readonly maintained: number;
+  /** Meilleure série de 5 sur la notion (0 à 5) : fixe la médaille (5 Or, 4 Argent, 3 Bronze). */
+  readonly best: number;
 }
 
 export interface SessionSkillSummary {
@@ -55,6 +57,9 @@ export interface SessionSkillSummary {
   readonly correct: number;
   readonly stageBefore: number;
   readonly stageAfter: number;
+  /** Meilleure série avant et après la partie (médaille). */
+  readonly bestBefore: number;
+  readonly bestAfter: number;
   readonly due: string | null;
 }
 

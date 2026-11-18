@@ -1088,9 +1088,7 @@ const ARENAS = [
     'plateforme d’une station spatiale de l’académie, planète et vaisseaux dans le ciel étoilé',
   ],
   ['academie', 'Arène de l’académie', 'terrasse de l’académie au milieu des collines, cascades et observatoires'],
-  ['jungle', 'Arène de la jungle', 'plateforme moussue dans une jungle aux ruines et cascades, portail violet'],
   ['volcan', 'Arène du volcan', 'plateforme de pierre fissurée de lave, volcan en éruption et forteresse'],
-  ['glace', 'Arène des glaces', 'plateforme gelée, aurores boréales, montagnes enneigées et palais de glace'],
 ] as const;
 
 const envAssets = ARENAS.flatMap(([id, name, look]) => [
