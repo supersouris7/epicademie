@@ -211,8 +211,8 @@ const ENEMY_MOTION: Record<EnemyState, TargetAndTransition> = {
 
 function EnemyFigure({ enemy, state }: { readonly enemy: ArenaEnemy; readonly state: EnemyState }) {
   const reduce = useReducedMotion();
-  // Boss : une image par état ; mob : une seule image, l'état est joué par le mouvement.
-  const src = (enemy.boss && state !== 'idle' ? assetSrc(`${enemy.image}-${state}`) : null) ?? assetSrc(enemy.image);
+  // Une image par état quand elle est livrée (boss, π-bot) ; sinon l'image d'attente, animée selon l'état.
+  const src = (state !== 'idle' ? assetSrc(`${enemy.image}-${state}`) : null) ?? assetSrc(enemy.image);
   return (
     <motion.div
       key={state}

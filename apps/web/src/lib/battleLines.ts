@@ -59,7 +59,7 @@ export function faceOffTaunt(chapterTitle: string, beaten: boolean, gender: Gend
 
 /** Questy répond au boss et remotive le joueur. */
 export const QUESTY_REPLIES = [
-  'Ne l’écoute pas ! Chaque bonne réponse, c’est un tir. 7 mobs, puis lui.',
+  'Ne l’écoute pas ! Chaque bonne réponse, c’est un tir. 4 mobs, puis lui.',
   'Il fait le malin… Prends ton temps et vise juste !',
   'Ton entraînement va payer : montre-lui ce que tu sais !',
   'Une erreur ? Pas grave, il te reste tes cœurs. On y va !',

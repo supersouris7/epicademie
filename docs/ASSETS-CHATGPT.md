@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — génération des images avec ChatGPT
 
-294 images finales, produites en 120 demandes.
+340 images finales, produites en 166 demandes.
 
 Chaque lot existe aussi en **fichier séparé et autonome** (message de départ inclus) dans `docs/chatgpt/` :
 c'est ce fichier qu'il faut utiliser dans ChatGPT, un lot par conversation. Ce document-ci regroupe tout pour référence.
@@ -18,7 +18,7 @@ c'est ce fichier qu'il faut utiliser dans ChatGPT, un lot par conversation. Ce d
 | 3 | Pictogrammes blancs (boutons) | 27 | 15–17 | `docs/chatgpt/lot-03-pictogrammes-blancs-boutons.md` |
 | 4 | Icônes en couleur | 65 | 18–25 | `docs/chatgpt/lot-04-icones-en-couleur.md` |
 | 5 | Questy, la mascotte | 38 | 26–45 | `docs/chatgpt/lot-05-questy-la-mascotte.md` |
-| 6 | Kit combat | 137 | 46–120 | `docs/chatgpt/lot-06-kit-combat.md` |
+| 6 | Kit combat | 183 | 46–166 | `docs/chatgpt/lot-06-kit-combat.md` |
 
 ## Modèle à utiliser
 
@@ -960,7 +960,7 @@ Style, fond et interdits : ceux du message de départ (une seule couleur de fond
 Enregistrer sous `assets-src/originals/characters/lina/model-sheet.png` · 1536×1024 → final 1536×1024
 
 ```text
-Image 1536×1024. Lina, fille de 12 ans, grande et tonique, peau foncée, tresses fines relevées en haute couronne avec des perles dorées, bandeau éponge blanc, regard déterminé et sourire franc, maillot de sport rouge vif à bandes blanches (sans numéro ni texte), short de sport blanc, chaussettes hautes rouges, baskets épaisses blanches et rouges, protège-poignets. Arme : gros lance-ballons rouge et blanc porté sur l’épaule comme un bazooka jouet, à large bouche ronde et réservoir d’air transparent. Fiche de modèle : 4 vues alignées (face, trois quarts gauche, profil, dos), plus l’arme seule en grand à droite.
+Image 1536×1024. Lina, fille de 12 ans, longs cheveux violets en queue de cheval haute, barrette étoile dorée, boucles d’oreilles étoiles, yeux violets, veste courte blanche et violette à liserés dorés, jupe plissée violette, chaussettes rayées violettes, baskets blanches à étoile, gants violets chargés d’éclairs. Arme : éclairs violets qu’elle lance de ses poings (boule d’énergie). Fiche de modèle : 4 vues alignées (face, trois quarts gauche, profil, dos), plus l’arme seule en grand à droite.
 Cadrage : fiche de modèle (référence pour les autres images, non affichée dans le jeu) : mêmes proportions sur toutes les vues, alignées sur une même ligne de sol.
 Style, fond et interdits : ceux du message de départ.
 ```
@@ -970,7 +970,7 @@ Enregistrer sous `assets-src/originals/characters/lina/portrait.png` · 1024×10
 > 📎 Joindre l'image validée `characters/lina/model-sheet.png`.
 
 ```text
-Image 1024×1024. Lina, fille de 12 ans, grande et tonique, peau foncée, tresses fines relevées en haute couronne avec des perles dorées, bandeau éponge blanc, regard déterminé et sourire franc, maillot de sport rouge vif à bandes blanches (sans numéro ni texte), short de sport blanc, chaussettes hautes rouges, baskets épaisses blanches et rouges, protège-poignets. Expression énergique.
+Image 1024×1024. Lina, fille de 12 ans, longs cheveux violets en queue de cheval haute, barrette étoile dorée, boucles d’oreilles étoiles, yeux violets, veste courte blanche et violette à liserés dorés, jupe plissée violette, chaussettes rayées violettes, baskets blanches à étoile, gants violets chargés d’éclairs. Expression énergique.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 Style, fond et interdits : ceux du message de départ.
 ```
@@ -996,7 +996,147 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 69. Ayla — fiche de modèle
+#### 69. Lina — pose jump
+Enregistrer sous `assets-src/originals/characters/lina/pose-jump.png` · 1536×1024 → final 512×512
+> 📎 Joindre l'image validée `characters/lina/model-sheet.png`.
+
+```text
+Image 1536×1024. Lina, pose jump.
+Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 70. Lina — pose shield
+Enregistrer sous `assets-src/originals/characters/lina/pose-shield.png` · 1536×1024 → final 512×512
+> 📎 Joindre l'image validée `characters/lina/model-sheet.png`.
+
+```text
+Image 1536×1024. Lina, pose shield.
+Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 71. Lina — joie
+Enregistrer sous `assets-src/originals/characters/lina/head-joie.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/lina/model-sheet.png`.
+
+```text
+Image 1024×1024. Lina, tête seule, expression joie.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 72. Lina — rire
+Enregistrer sous `assets-src/originals/characters/lina/head-rire.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/lina/model-sheet.png`.
+
+```text
+Image 1024×1024. Lina, tête seule, expression rire.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 73. Lina — enthousiaste
+Enregistrer sous `assets-src/originals/characters/lina/head-enthousiaste.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/lina/model-sheet.png`.
+
+```text
+Image 1024×1024. Lina, tête seule, expression enthousiaste.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 74. Lina — confiant
+Enregistrer sous `assets-src/originals/characters/lina/head-confiant.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/lina/model-sheet.png`.
+
+```text
+Image 1024×1024. Lina, tête seule, expression confiant.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 75. Lina — determine
+Enregistrer sous `assets-src/originals/characters/lina/head-determine.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/lina/model-sheet.png`.
+
+```text
+Image 1024×1024. Lina, tête seule, expression determine.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 76. Lina — clin-oeil
+Enregistrer sous `assets-src/originals/characters/lina/head-clin-oeil.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/lina/model-sheet.png`.
+
+```text
+Image 1024×1024. Lina, tête seule, expression clin-oeil.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 77. Lina — surprise
+Enregistrer sous `assets-src/originals/characters/lina/head-surprise.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/lina/model-sheet.png`.
+
+```text
+Image 1024×1024. Lina, tête seule, expression surprise.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 78. Lina — reflexion
+Enregistrer sous `assets-src/originals/characters/lina/head-reflexion.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/lina/model-sheet.png`.
+
+```text
+Image 1024×1024. Lina, tête seule, expression reflexion.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 79. Lina — affection
+Enregistrer sous `assets-src/originals/characters/lina/head-affection.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/lina/model-sheet.png`.
+
+```text
+Image 1024×1024. Lina, tête seule, expression affection.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 80. Lina — colere
+Enregistrer sous `assets-src/originals/characters/lina/head-colere.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/lina/model-sheet.png`.
+
+```text
+Image 1024×1024. Lina, tête seule, expression colere.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 81. Lina — triste
+Enregistrer sous `assets-src/originals/characters/lina/head-triste.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/lina/model-sheet.png`.
+
+```text
+Image 1024×1024. Lina, tête seule, expression triste.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 82. Lina — etourdi
+Enregistrer sous `assets-src/originals/characters/lina/head-etourdi.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/lina/model-sheet.png`.
+
+```text
+Image 1024×1024. Lina, tête seule, expression etourdi.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 83. Ayla — fiche de modèle
 Enregistrer sous `assets-src/originals/characters/ayla/model-sheet.png` · 1536×1024 → final 1536×1024
 
 ```text
@@ -1005,7 +1145,7 @@ Cadrage : fiche de modèle (référence pour les autres images, non affichée da
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 70. Ayla — portrait
+#### 84. Ayla — portrait
 Enregistrer sous `assets-src/originals/characters/ayla/portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/ayla/model-sheet.png`.
 
@@ -1015,7 +1155,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 71. Planche « ayla-poses » (6 éléments)
+#### 85. Planche « ayla-poses » (6 éléments)
 Enregistrer sous `assets-src/originals/sheets/ayla-poses.png` · 1536×1024, grille 3×2 → chaque case finale 512×512
 > 📎 Joindre l'image validée `characters/ayla/model-sheet.png`.
 Cases : 1 → `characters/ayla/pose-idle` · 2 → `characters/ayla/pose-run` · 3 → `characters/ayla/pose-shoot` · 4 → `characters/ayla/pose-hurt` · 5 → `characters/ayla/pose-victory` · 6 → `characters/ayla/pose-defeat`
@@ -1036,26 +1176,26 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 72. Pixel — fiche de modèle
+#### 86. Pixel — fiche de modèle
 Enregistrer sous `assets-src/originals/characters/pixel/model-sheet.png` · 1536×1024 → final 1536×1024
 
 ```text
-Image 1536×1024. Pixel, chat noir et blanc (pelage « smoking » : dos noir, museau, poitrail et pattes blancs) qui se tient debout sur deux pattes comme un héros, de la taille d’un enfant de 8 ans, grands yeux vert émeraude, oreille gauche avec une petite encoche, moustaches blanches, longue queue noire au bout blanc, bandeau rouge de ninja noué sur le front aux pans qui volent, foulard rouge au cou avec un grelot doré. Arme : canon-poisson : petit canon argenté en forme de poisson stylisé, la bouche du poisson sert de canon, nageoires bleues en guise de poignée. Fiche de modèle : 4 vues alignées (face, trois quarts gauche, profil, dos), plus l’arme seule en grand à droite.
+Image 1536×1024. Pixel, chat gris tigré debout sur deux pattes, capuche et longue écharpe violettes, yeux jaunes, tenue de ninja noire à liserés dorés, sacoche violette à patte de chat, queue grise touffue. Arme : boule d’énergie violette lancée d’une patte, bouclier violet à empreinte de patte. Fiche de modèle : 4 vues alignées (face, trois quarts gauche, profil, dos), plus l’arme seule en grand à droite.
 Cadrage : fiche de modèle (référence pour les autres images, non affichée dans le jeu) : mêmes proportions sur toutes les vues, alignées sur une même ligne de sol.
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 73. Pixel — portrait
+#### 87. Pixel — portrait
 Enregistrer sous `assets-src/originals/characters/pixel/portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/pixel/model-sheet.png`.
 
 ```text
-Image 1024×1024. Pixel, chat noir et blanc (pelage « smoking » : dos noir, museau, poitrail et pattes blancs) qui se tient debout sur deux pattes comme un héros, de la taille d’un enfant de 8 ans, grands yeux vert émeraude, oreille gauche avec une petite encoche, moustaches blanches, longue queue noire au bout blanc, bandeau rouge de ninja noué sur le front aux pans qui volent, foulard rouge au cou avec un grelot doré. Expression énergique.
+Image 1024×1024. Pixel, chat gris tigré debout sur deux pattes, capuche et longue écharpe violettes, yeux jaunes, tenue de ninja noire à liserés dorés, sacoche violette à patte de chat, queue grise touffue. Expression énergique.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 74. Planche « pixel-poses » (6 éléments)
+#### 88. Planche « pixel-poses » (6 éléments)
 Enregistrer sous `assets-src/originals/sheets/pixel-poses.png` · 1536×1024, grille 3×2 → chaque case finale 512×512
 > 📎 Joindre l'image validée `characters/pixel/model-sheet.png`.
 Cases : 1 → `characters/pixel/pose-idle` · 2 → `characters/pixel/pose-run` · 3 → `characters/pixel/pose-shoot` · 4 → `characters/pixel/pose-hurt` · 5 → `characters/pixel/pose-victory` · 6 → `characters/pixel/pose-defeat`
@@ -1076,7 +1216,147 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 75. Planche « armes » (5 éléments)
+#### 89. Pixel — pose jump
+Enregistrer sous `assets-src/originals/characters/pixel/pose-jump.png` · 1536×1024 → final 512×512
+> 📎 Joindre l'image validée `characters/pixel/model-sheet.png`.
+
+```text
+Image 1536×1024. Pixel, pose jump.
+Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 90. Pixel — pose shield
+Enregistrer sous `assets-src/originals/characters/pixel/pose-shield.png` · 1536×1024 → final 512×512
+> 📎 Joindre l'image validée `characters/pixel/model-sheet.png`.
+
+```text
+Image 1536×1024. Pixel, pose shield.
+Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 91. Pixel — joie
+Enregistrer sous `assets-src/originals/characters/pixel/head-joie.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/pixel/model-sheet.png`.
+
+```text
+Image 1024×1024. Pixel, tête seule, expression joie.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 92. Pixel — rire
+Enregistrer sous `assets-src/originals/characters/pixel/head-rire.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/pixel/model-sheet.png`.
+
+```text
+Image 1024×1024. Pixel, tête seule, expression rire.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 93. Pixel — enthousiaste
+Enregistrer sous `assets-src/originals/characters/pixel/head-enthousiaste.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/pixel/model-sheet.png`.
+
+```text
+Image 1024×1024. Pixel, tête seule, expression enthousiaste.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 94. Pixel — confiant
+Enregistrer sous `assets-src/originals/characters/pixel/head-confiant.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/pixel/model-sheet.png`.
+
+```text
+Image 1024×1024. Pixel, tête seule, expression confiant.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 95. Pixel — determine
+Enregistrer sous `assets-src/originals/characters/pixel/head-determine.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/pixel/model-sheet.png`.
+
+```text
+Image 1024×1024. Pixel, tête seule, expression determine.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 96. Pixel — clin-oeil
+Enregistrer sous `assets-src/originals/characters/pixel/head-clin-oeil.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/pixel/model-sheet.png`.
+
+```text
+Image 1024×1024. Pixel, tête seule, expression clin-oeil.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 97. Pixel — surprise
+Enregistrer sous `assets-src/originals/characters/pixel/head-surprise.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/pixel/model-sheet.png`.
+
+```text
+Image 1024×1024. Pixel, tête seule, expression surprise.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 98. Pixel — reflexion
+Enregistrer sous `assets-src/originals/characters/pixel/head-reflexion.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/pixel/model-sheet.png`.
+
+```text
+Image 1024×1024. Pixel, tête seule, expression reflexion.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 99. Pixel — affection
+Enregistrer sous `assets-src/originals/characters/pixel/head-affection.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/pixel/model-sheet.png`.
+
+```text
+Image 1024×1024. Pixel, tête seule, expression affection.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 100. Pixel — colere
+Enregistrer sous `assets-src/originals/characters/pixel/head-colere.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/pixel/model-sheet.png`.
+
+```text
+Image 1024×1024. Pixel, tête seule, expression colere.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 101. Pixel — triste
+Enregistrer sous `assets-src/originals/characters/pixel/head-triste.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/pixel/model-sheet.png`.
+
+```text
+Image 1024×1024. Pixel, tête seule, expression triste.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 102. Pixel — etourdi
+Enregistrer sous `assets-src/originals/characters/pixel/head-etourdi.png` · 1024×1024 → final 384×384
+> 📎 Joindre l'image validée `characters/pixel/model-sheet.png`.
+
+```text
+Image 1024×1024. Pixel, tête seule, expression etourdi.
+Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 103. Planche « armes » (5 éléments)
 Enregistrer sous `assets-src/originals/sheets/armes.png` · 1536×1024, grille 3×2 → chaque case finale 384×256
 Cases : 1 → `weapons/alex` · 2 → `weapons/tao` · 3 → `weapons/lina` · 4 → `weapons/ayla` · 5 → `weapons/pixel`
 
@@ -1088,14 +1368,14 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 
 1. arme d’Alex : canon à plasma blanc et doré tenu à deux mains, bouche ronde où tourbillonne une énergie violette
 2. arme de Tao : arbalète-tech compacte vert et or tenue à deux mains, avec une lunette de visée ronde et des branches recourbées lumineuses
-3. arme de Lina : gros lance-ballons rouge et blanc porté sur l’épaule comme un bazooka jouet, à large bouche ronde et réservoir d’air transparent
+3. arme de Lina : éclairs violets qu’elle lance de ses poings (boule d’énergie)
 4. arme d’Ayla : bombe-blaster : pistolet de peinture turquoise et jaune monté sur une bombe aérosol géante, buse ronde à l’avant
-5. arme de Pixel : canon-poisson : petit canon argenté en forme de poisson stylisé, la bouche du poisson sert de canon, nageoires bleues en guise de poignée
+5. arme de Pixel : boule d’énergie violette lancée d’une patte, bouclier violet à empreinte de patte
 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 76. Planche « golem-des-equations-etats » (4 éléments)
+#### 104. Planche « golem-des-equations-etats » (4 éléments)
 Enregistrer sous `assets-src/originals/sheets/golem-des-equations-etats.png` · 1536×1024, grille 2×2 → chaque case finale 512×512
 Cases : 1 → `bosses/maths/golem-des-equations` · 2 → `bosses/maths/golem-des-equations-attack` · 3 → `bosses/maths/golem-des-equations-hurt` · 4 → `bosses/maths/golem-des-equations-ko`
 
@@ -1113,7 +1393,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 77. Golem des Équations — portrait
+#### 105. Golem des Équations — portrait
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1123,7 +1403,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 78. Planche « geomatrix-etats » (4 éléments)
+#### 106. Planche « geomatrix-etats » (4 éléments)
 Enregistrer sous `assets-src/originals/sheets/geomatrix-etats.png` · 1536×1024, grille 2×2 → chaque case finale 512×512
 Cases : 1 → `bosses/maths/geomatrix` · 2 → `bosses/maths/geomatrix-attack` · 3 → `bosses/maths/geomatrix-hurt` · 4 → `bosses/maths/geomatrix-ko`
 
@@ -1141,7 +1421,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 79. Géomatrix — portrait
+#### 107. Géomatrix — portrait
 Enregistrer sous `assets-src/originals/bosses/maths/geomatrix-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/geomatrix.png`.
 
@@ -1151,7 +1431,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 80. Planche « probabot-etats » (4 éléments)
+#### 108. Planche « probabot-etats » (4 éléments)
 Enregistrer sous `assets-src/originals/sheets/probabot-etats.png` · 1536×1024, grille 2×2 → chaque case finale 512×512
 Cases : 1 → `bosses/maths/probabot` · 2 → `bosses/maths/probabot-attack` · 3 → `bosses/maths/probabot-hurt` · 4 → `bosses/maths/probabot-ko`
 
@@ -1169,7 +1449,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 81. Probabot — portrait
+#### 109. Probabot — portrait
 Enregistrer sous `assets-src/originals/bosses/maths/probabot-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/probabot.png`.
 
@@ -1179,7 +1459,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 82. Planche « courbix-etats » (4 éléments)
+#### 110. Planche « courbix-etats » (4 éléments)
 Enregistrer sous `assets-src/originals/sheets/courbix-etats.png` · 1536×1024, grille 2×2 → chaque case finale 512×512
 Cases : 1 → `bosses/maths/courbix` · 2 → `bosses/maths/courbix-attack` · 3 → `bosses/maths/courbix-hurt` · 4 → `bosses/maths/courbix-ko`
 
@@ -1197,7 +1477,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 83. Courbix — portrait
+#### 111. Courbix — portrait
 Enregistrer sous `assets-src/originals/bosses/maths/courbix-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/courbix.png`.
 
@@ -1207,7 +1487,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 84. Planche « ia-des-connaissances-etats » (4 éléments)
+#### 112. Planche « ia-des-connaissances-etats » (4 éléments)
 Enregistrer sous `assets-src/originals/sheets/ia-des-connaissances-etats.png` · 1536×1024, grille 2×2 → chaque case finale 512×512
 Cases : 1 → `bosses/maths/ia-des-connaissances` · 2 → `bosses/maths/ia-des-connaissances-attack` · 3 → `bosses/maths/ia-des-connaissances-hurt` · 4 → `bosses/maths/ia-des-connaissances-ko`
 
@@ -1225,7 +1505,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 85. IA des Connaissances — portrait
+#### 113. IA des Connaissances — portrait
 Enregistrer sous `assets-src/originals/bosses/maths/ia-des-connaissances-portrait.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/ia-des-connaissances.png`.
 
@@ -1235,7 +1515,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 86. Golem des Équations — shield
+#### 114. Golem des Équations — shield
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-shield.png` · 1536×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1245,7 +1525,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 87. Golem des Équations — summon
+#### 115. Golem des Équations — summon
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-summon.png` · 1536×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1255,7 +1535,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 88. Golem des Équations — tête menace
+#### 116. Golem des Équations — tête menace
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-menace.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1265,7 +1545,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 89. Golem des Équations — tête moqueur
+#### 117. Golem des Équations — tête moqueur
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-moqueur.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1275,7 +1555,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 90. Golem des Équations — tête colere
+#### 118. Golem des Équations — tête colere
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-colere.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1285,7 +1565,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 91. Golem des Équations — tête surprise
+#### 119. Golem des Équations — tête surprise
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-surprise.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1295,7 +1575,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 92. Golem des Équations — tête perplexe
+#### 120. Golem des Équations — tête perplexe
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-perplexe.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1305,7 +1585,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 93. Golem des Équations — tête rire
+#### 121. Golem des Équations — tête rire
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-rire.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1315,7 +1595,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 94. Golem des Équations — tête clin-oeil
+#### 122. Golem des Équations — tête clin-oeil
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-clin-oeil.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1325,7 +1605,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 95. Golem des Équations — tête amour
+#### 123. Golem des Équations — tête amour
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-amour.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1335,7 +1615,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 96. Golem des Équations — tête triste
+#### 124. Golem des Équations — tête triste
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-triste.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1345,7 +1625,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 97. Golem des Équations — tête inquiet
+#### 125. Golem des Équations — tête inquiet
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-inquiet.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1355,7 +1635,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 98. Golem des Équations — tête furieux
+#### 126. Golem des Équations — tête furieux
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-furieux.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1365,7 +1645,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 99. Golem des Équations — tête concentre
+#### 127. Golem des Équations — tête concentre
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-concentre.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1375,7 +1655,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 100. Golem des Équations — tête ko
+#### 128. Golem des Équations — tête ko
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-ko.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1385,7 +1665,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 101. Golem des Équations — début de rage
+#### 129. Golem des Équations — début de rage
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-rage-debut.png` · 1536×1024 → final 1200×800
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1395,7 +1675,7 @@ Cadrage : personnage en pied centré, de face, fond transparent, halo et effets 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 102. Golem des Équations — rage
+#### 130. Golem des Équations — rage
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-rage.png` · 1536×1024 → final 1200×800
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1405,7 +1685,7 @@ Cadrage : personnage en pied centré, de face, fond transparent, halo et effets 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 103. Golem des Équations — en rage (combat)
+#### 131. Golem des Équations — en rage (combat)
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-rage-combat.png` · 1536×1024 → final 512×512
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1415,7 +1695,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 104. Golem des Équations — illustration
+#### 132. Golem des Équations — illustration
 Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-art.png` · 1536×1024 → final 1200×800
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
@@ -1425,7 +1705,7 @@ Cadrage : personnage en pied centré, de face, fond transparent, halo et effets 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 105. Planche « mobs » (9 éléments)
+#### 133. Planche « mobs » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/mobs.png` · 1024×1024, grille 3×3 → chaque case finale 384×384
 Cases : 1 → `bosses/minions/calculatrice` · 2 → `bosses/minions/cube-bot` · 3 → `bosses/minions/equerre` · 4 → `bosses/minions/compas` · 5 → `bosses/minions/de` · 6 → `bosses/minions/camembert` · 7 → `bosses/minions/courbe` · 8 → `bosses/minions/bug` · 9 → `bosses/minions/bloc-code`
 
@@ -1448,7 +1728,169 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 106. Planche « effets-1 » (9 éléments)
+#### 134. Mob π-bot — idle
+Enregistrer sous `assets-src/originals/bosses/minions/pi-bot.png` · 1536×1024 → final 512×512
+
+```text
+Image 1536×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, pose idle.
+Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 135. Mob π-bot — attack
+Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-attack.png` · 1536×1024 → final 512×512
+
+```text
+Image 1536×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, pose attack.
+Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 136. Mob π-bot — shield
+Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-shield.png` · 1536×1024 → final 512×512
+
+```text
+Image 1536×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, pose shield.
+Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 137. Mob π-bot — run
+Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-run.png` · 1536×1024 → final 512×512
+
+```text
+Image 1536×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, pose run.
+Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 138. Mob π-bot — jump
+Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-jump.png` · 1536×1024 → final 512×512
+
+```text
+Image 1536×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, pose jump.
+Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 139. Mob π-bot — victory
+Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-victory.png` · 1536×1024 → final 512×512
+
+```text
+Image 1536×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, pose victory.
+Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 140. Mob π-bot — tête menace
+Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-menace.png` · 1024×1024 → final 512×512
+
+```text
+Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, menace.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 141. Mob π-bot — tête moqueur
+Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-moqueur.png` · 1024×1024 → final 512×512
+
+```text
+Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, moqueur.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 142. Mob π-bot — tête joie
+Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-joie.png` · 1024×1024 → final 512×512
+
+```text
+Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, joie.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 143. Mob π-bot — tête rire
+Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-rire.png` · 1024×1024 → final 512×512
+
+```text
+Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, rire.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 144. Mob π-bot — tête surprise
+Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-surprise.png` · 1024×1024 → final 512×512
+
+```text
+Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, surprise.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 145. Mob π-bot — tête triste
+Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-triste.png` · 1024×1024 → final 512×512
+
+```text
+Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, triste.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 146. Mob π-bot — tête etourdi
+Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-etourdi.png` · 1024×1024 → final 512×512
+
+```text
+Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, etourdi.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 147. Mob π-bot — tête colere
+Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-colere.png` · 1024×1024 → final 512×512
+
+```text
+Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, colere.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 148. Mob π-bot — tête reflexion
+Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-reflexion.png` · 1024×1024 → final 512×512
+
+```text
+Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, reflexion.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 149. Mob π-bot — tête idee
+Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-idee.png` · 1024×1024 → final 512×512
+
+```text
+Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, idee.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 150. Mob π-bot — tête amour
+Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-amour.png` · 1024×1024 → final 512×512
+
+```text
+Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, amour.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 151. Mob π-bot — tête dort
+Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-dort.png` · 1024×1024 → final 512×512
+
+```text
+Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, dort.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 152. Planche « effets-1 » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/effets-1.png` · 1024×1024, grille 3×3 → chaque case finale 512×512
 Cases : 1 → `effects/impacts/hit-burst` · 2 → `effects/impacts/anneau` · 3 → `effects/impacts/etincelles` · 4 → `effects/impacts/flash` · 5 → `effects/impacts/explosion` · 6 → `effects/particles/puff` · 7 → `effects/particles/bouclier` · 8 → `effects/particles/soin` · 9 → `effects/particles/etourdi`
 
@@ -1471,7 +1913,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 107. Planche « effets-2 » (3 éléments)
+#### 153. Planche « effets-2 » (3 éléments)
 Enregistrer sous `assets-src/originals/sheets/effets-2.png` · 1024×1024, grille 3×3 → chaque case finale 512×512
 Cases : 1 → `effects/impacts/onde-boss` · 2 → `effects/particles/confettis` · 3 → `effects/transitions/portail`
 
@@ -1488,7 +1930,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 108. Arène de la station spatiale
+#### 154. Arène de la station spatiale
 Enregistrer sous `assets-src/originals/environments/arenas/espace.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
@@ -1497,7 +1939,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 109. Arène de la station spatiale (portrait)
+#### 155. Arène de la station spatiale (portrait)
 Enregistrer sous `assets-src/originals/environments/arenas/espace-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/espace.png`.
 
@@ -1507,7 +1949,7 @@ Cadrage : même décor recomposé en hauteur (format portrait, écran de télép
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 110. Arène de la station spatiale (panorama)
+#### 156. Arène de la station spatiale (panorama)
 Enregistrer sous `assets-src/originals/environments/arenas/espace-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/espace.png`.
 
@@ -1517,7 +1959,7 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 111. Arène de la station spatiale (bandeau)
+#### 157. Arène de la station spatiale (bandeau)
 Enregistrer sous `assets-src/originals/environments/arenas/espace-bandeau.png` · 1536×1024 → final 1536×384 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/espace.png`.
 
@@ -1527,7 +1969,7 @@ Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 112. Arène de l’académie
+#### 158. Arène de l’académie
 Enregistrer sous `assets-src/originals/environments/arenas/academie.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
@@ -1536,7 +1978,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 113. Arène de l’académie (portrait)
+#### 159. Arène de l’académie (portrait)
 Enregistrer sous `assets-src/originals/environments/arenas/academie-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/academie.png`.
 
@@ -1546,7 +1988,7 @@ Cadrage : même décor recomposé en hauteur (format portrait, écran de télép
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 114. Arène de l’académie (panorama)
+#### 160. Arène de l’académie (panorama)
 Enregistrer sous `assets-src/originals/environments/arenas/academie-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/academie.png`.
 
@@ -1556,7 +1998,7 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 115. Arène de l’académie (bandeau)
+#### 161. Arène de l’académie (bandeau)
 Enregistrer sous `assets-src/originals/environments/arenas/academie-bandeau.png` · 1536×1024 → final 1536×384 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/academie.png`.
 
@@ -1566,7 +2008,7 @@ Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 116. Arène du volcan
+#### 162. Arène du volcan
 Enregistrer sous `assets-src/originals/environments/arenas/volcan.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
@@ -1575,7 +2017,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 117. Arène du volcan (portrait)
+#### 163. Arène du volcan (portrait)
 Enregistrer sous `assets-src/originals/environments/arenas/volcan-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/volcan.png`.
 
@@ -1585,7 +2027,7 @@ Cadrage : même décor recomposé en hauteur (format portrait, écran de télép
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 118. Arène du volcan (panorama)
+#### 164. Arène du volcan (panorama)
 Enregistrer sous `assets-src/originals/environments/arenas/volcan-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/volcan.png`.
 
@@ -1595,7 +2037,7 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 119. Arène du volcan (bandeau)
+#### 165. Arène du volcan (bandeau)
 Enregistrer sous `assets-src/originals/environments/arenas/volcan-bandeau.png` · 1536×1024 → final 1536×384 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/volcan.png`.
 
@@ -1605,7 +2047,7 @@ Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 120. Illustration principale
+#### 166. Illustration principale
 Enregistrer sous `assets-src/originals/branding/key-art.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 

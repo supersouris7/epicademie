@@ -49,8 +49,8 @@ export function medalMessage(s: {
     ? new Date(`${s.due}T12:00:00`).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
     : '';
   if (s.bestAfter >= 5) return s.bestBefore >= 5 ? 'Toujours en or : bravo !' : 'Médaille d’or : notion acquise !';
-  if (s.answered < 5) return 'Fais une série de 5 sur cette notion pour gagner sa médaille.';
-  if (s.bestAfter === 4) return 'Argent (4/5) : un sans-faute pour l’or !';
-  if (s.bestAfter === 3) return 'Bronze (3/5) : vise 5/5 pour l’or !';
-  return `À revoir ${when ? `dès ${when}` : 'bientôt'} : 3 bonnes réponses sur 5 pour le bronze.`;
+  if (s.answered < 4) return 'Fais une série complète sur cette notion pour gagner sa médaille.';
+  if (s.bestAfter === 4) return 'Argent (une erreur) : un sans-faute pour l’or !';
+  if (s.bestAfter === 3) return 'Bronze (deux erreurs) : un sans-faute pour l’or !';
+  return `À revoir ${when ? `dès ${when}` : 'bientôt'} : deux erreurs au plus pour le bronze.`;
 }

@@ -31,8 +31,8 @@ export const HINT_PRICE = 20;
 
 export const ItemIdSchema = z.enum(ITEMS);
 
-/** Les 10 questions : 7 mobs, puis le boss à 3 vies (2 problèmes en contexte, 1 piège). */
-export const BATTLE_MOBS = 7;
+/** Les 7 questions : 4 mobs, puis le boss à 3 vies (2 problèmes en contexte, 1 piège). */
+export const BATTLE_MOBS = 4;
 export const BOSS_LIVES = 3;
 export const HERO_HEARTS = 3;
 

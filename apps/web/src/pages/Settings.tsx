@@ -40,7 +40,6 @@ export function Settings({ profile }: { readonly profile: Profile }) {
       <section className="flex flex-col gap-3">
         <h2 className="font-display text-2xl tracking-wide">Son</h2>
         <Toggle label="Effets sonores" checked={profile.soundOn} onChange={(soundOn) => update.mutate({ soundOn })} />
-        <Toggle label="Musique" checked={profile.musicOn} onChange={(musicOn) => update.mutate({ musicOn })} />
       </section>
 
       {fullscreenSupported() && (

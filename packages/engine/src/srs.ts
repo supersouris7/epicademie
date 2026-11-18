@@ -17,7 +17,10 @@ export interface SkillState {
   readonly recent: readonly boolean[];
   /** Rappels d'entretien réussis une fois la notion acquise. */
   readonly maintained: number;
-  /** Meilleure série de 5 questions sur cette notion (bonnes réponses du 1er coup, 0 à 5). */
+  /**
+   * Meilleure série sur cette notion, notée « 5 − erreurs » (0 à 5) quelle que soit sa longueur
+   * (4 questions, ou 5 en calcul de tête) : 5 = sans-faute (Or), 4 = une erreur (Argent), 3 = deux (Bronze).
+   */
   readonly best: number;
 }
 
@@ -43,8 +46,11 @@ export function addDays(day: string, days: number): string {
 
 export const isDue = (s: SkillState, today: string) => s.due !== null && s.due <= today;
 
-/** Questions d'une série complète sur une notion. */
+/** Note maximale d'une série (sans-faute), quelle que soit sa longueur. */
 export const SERIES_LENGTH = 5;
+
+/** Note d'une série complète : 5 − erreurs (une série de 4 sans faute vaut 5, comme une de 5). */
+export const seriesScore = (correct: number, length: number) => Math.max(0, SERIES_LENGTH - (length - correct));
 
 /**
  * Applique le bilan d'une série sur une notion (au plus une progression par jour).
@@ -113,7 +119,7 @@ export function scoreOn20(correct: number, total: number): number {
   return Math.round((correct / total) * 40) / 2;
 }
 
-/** Médaille d'une notion, d'après sa meilleure série de 5 : Or (5/5, acquise), Argent (4/5), Bronze (3/5). */
+/** Médaille d'une notion, d'après sa meilleure série : Or (sans faute, acquise), Argent (1 erreur), Bronze (2 erreurs). */
 export type Medal = 'aucune' | 'bronze' | 'argent' | 'or';
 export const MEDALS: readonly Medal[] = ['bronze', 'argent', 'or'];
 export const MEDAL_LABELS: Record<Medal, string> = {

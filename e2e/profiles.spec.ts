@@ -40,8 +40,11 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByRole('heading', { name: 'Mon héros' })).toBeVisible();
   await expect(page.getByRole('radio', { name: /Alex/ })).toBeChecked();
   // Héros à venir : cartes mystère « ? », sans nom.
-  await expect(page.getByRole('img', { name: 'Héros mystère, à venir' })).toHaveCount(4);
-  for (const soon of ['Tao', 'Lina', 'Ayla', 'Pixel']) await expect(page.getByText(soon)).toHaveCount(0);
+  // Lina et Pixel sont jouables ; Tao et Ayla restent des cartes mystère « ? ».
+  await expect(page.getByRole('radio', { name: /Lina/ })).toBeVisible();
+  await expect(page.getByRole('radio', { name: /Pixel/ })).toBeVisible();
+  await expect(page.getByRole('img', { name: 'Héros mystère, à venir' })).toHaveCount(2);
+  for (const soon of ['Tao', 'Ayla']) await expect(page.getByText(soon)).toHaveCount(0);
   // Barre de navigation du bas sur les écrans principaux.
   const nav = page.getByRole('navigation', { name: 'Menu principal' });
   await expect(nav.getByRole('button', { name: 'Héros' })).toHaveAttribute('aria-current', 'page');

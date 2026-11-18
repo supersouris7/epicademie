@@ -762,10 +762,9 @@ export const CHARACTERS: readonly CharacterSpec[] = [
   {
     id: 'lina',
     name: 'Lina',
-    role: 'La sportive',
-    look: 'Lina, fille de 12 ans, grande et tonique, peau foncée, tresses fines relevées en haute couronne avec des perles dorées, bandeau éponge blanc, regard déterminé et sourire franc, maillot de sport rouge vif à bandes blanches (sans numéro ni texte), short de sport blanc, chaussettes hautes rouges, baskets épaisses blanches et rouges, protège-poignets',
-    weapon:
-      'gros lance-ballons rouge et blanc porté sur l’épaule comme un bazooka jouet, à large bouche ronde et réservoir d’air transparent',
+    role: 'L’électrique',
+    look: 'Lina, fille de 12 ans, longs cheveux violets en queue de cheval haute, barrette étoile dorée, boucles d’oreilles étoiles, yeux violets, veste courte blanche et violette à liserés dorés, jupe plissée violette, chaussettes rayées violettes, baskets blanches à étoile, gants violets chargés d’éclairs',
+    weapon: 'éclairs violets qu’elle lance de ses poings (boule d’énergie)',
   },
   {
     id: 'ayla',
@@ -779,9 +778,8 @@ export const CHARACTERS: readonly CharacterSpec[] = [
     id: 'pixel',
     name: 'Pixel',
     role: 'Le chat ninja',
-    look: 'Pixel, chat noir et blanc (pelage « smoking » : dos noir, museau, poitrail et pattes blancs) qui se tient debout sur deux pattes comme un héros, de la taille d’un enfant de 8 ans, grands yeux vert émeraude, oreille gauche avec une petite encoche, moustaches blanches, longue queue noire au bout blanc, bandeau rouge de ninja noué sur le front aux pans qui volent, foulard rouge au cou avec un grelot doré',
-    weapon:
-      'canon-poisson : petit canon argenté en forme de poisson stylisé, la bouche du poisson sert de canon, nageoires bleues en guise de poignée',
+    look: 'Pixel, chat gris tigré debout sur deux pattes, capuche et longue écharpe violettes, yeux jaunes, tenue de ninja noire à liserés dorés, sacoche violette à patte de chat, queue grise touffue',
+    weapon: 'boule d’énergie violette lancée d’une patte, bouclier violet à empreinte de patte',
   },
 ];
 
@@ -847,8 +845,8 @@ const characterAssets = CHARACTERS.flatMap((ch) => {
         { ...ref, sheet: `${ch.id}-poses` },
       ),
     ),
-    // Alex : poses et expressions livrées une à une (pack du 18/11/2026).
-    ...(ch.id === 'alex'
+    // Alex, Lina et Pixel : poses et expressions livrées une à une (packs du 18/11/2026).
+    ...(['alex', 'lina', 'pixel'].includes(ch.id)
       ? [
           ...(['jump', 'shield'] as const).map((state) =>
             a(
@@ -1045,6 +1043,49 @@ const golemExtras = [
   ),
 ];
 
+/** Mob des maths (planche livrée le 18/11/2026) : le cube-robot π, tourné vers le héros. */
+export const PI_BOT_POSES = ['idle', 'attack', 'shield', 'run', 'jump', 'victory'] as const;
+export const PI_BOT_HEADS = [
+  'menace',
+  'moqueur',
+  'joie',
+  'rire',
+  'surprise',
+  'triste',
+  'etourdi',
+  'colere',
+  'reflexion',
+  'idee',
+  'amour',
+  'dort',
+] as const;
+export type PiBotHead = (typeof PI_BOT_HEADS)[number];
+const PI_BOT_LOOK =
+  'cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings';
+const piBotAssets = [
+  ...PI_BOT_POSES.map((state) =>
+    a(
+      'boss',
+      `bosses/minions/pi-bot${state === 'idle' ? '' : `-${state}`}.webp`,
+      `Mob π-bot — ${state}`,
+      `${PI_BOT_LOOK}, pose ${state}`,
+      'Mob des maths en combat.',
+      1,
+      { fallback: 'placeholder-boss' },
+    ),
+  ),
+  ...PI_BOT_HEADS.map((e) =>
+    a(
+      'portrait',
+      `bosses/minions/pi-bot-head-${e}.webp`,
+      `Mob π-bot — tête ${e}`,
+      `${PI_BOT_LOOK}, ${e}`,
+      'Bandeau du combat.',
+      2,
+    ),
+  ),
+];
+
 const MINIONS = [
   [
     'calculatrice',
@@ -1167,6 +1208,7 @@ export const PLANNED_ASSETS: readonly PlannedAsset[] = [
   ...bossAssets,
   ...golemExtras,
   ...minionAssets,
+  ...piBotAssets,
   ...effectAssets,
   ...envAssets,
   keyArt,

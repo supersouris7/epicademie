@@ -87,7 +87,6 @@ export function BattleBar(p: BattleBarProps) {
           segments={onBoss ? p.bossMax : p.mobsMax}
           color={onBoss ? 'var(--boss)' : 'var(--primary)'}
           label={onBoss ? `Vies de ${p.enemyName}` : 'Mobs restants'}
-          text={onBoss ? `${p.bossLives}/${p.bossMax}` : `${p.mobsLeft}/${p.mobsMax}`}
           size="sm"
         />
       </div>

@@ -3,14 +3,14 @@ import { and, asc, eq } from 'drizzle-orm';
 import { check, generate, getSkill } from '@questeo/content';
 import {
   applySession,
-  SERIES_LENGTH,
+  seriesLength,
+  seriesScore,
   coinsForXp,
   levelFromXp,
   newSkillState,
   PERFECT_BONUS,
   rollChest,
   scoreOn20,
-  TRAINING_LENGTH,
   xpForAnswer,
   type SkillState,
 } from '@questeo/engine';
@@ -130,7 +130,9 @@ export function createPlayRepo(db: Db, today: () => string, random: () => number
         const regular = rows.filter((r) => !r.variant);
         const variants = rows.filter((r) => r.variant);
         const regularCorrect = regular.filter((r) => r.correct).length;
-        const perfect = regular.length >= TRAINING_LENGTH && regularCorrect === regular.length;
+        // Série de 5 en calcul de tête (toutes les notions « mental »), sinon de 4.
+        const length = seriesLength(regular.every((r) => getSkill(r.skillId)?.mental === true));
+        const perfect = regular.length >= length && regularCorrect === regular.length;
         const xpGained = rows.reduce((s, r) => s + r.xp, 0) + (perfect ? PERFECT_BONUS : 0);
         const coinsGained = coinsForXp(xpGained);
 
@@ -145,9 +147,10 @@ export function createPlayRepo(db: Db, today: () => string, random: () => number
             .get();
           const before = row ? toState(row) : newSkillState(skillId);
           const correct = answers.filter(Boolean).length;
-          // Série complète de 5 sur cette seule notion : ses bonnes réponses du 1er coup fixent la médaille.
+          // Série complète sur cette seule notion : ses erreurs du 1er coup fixent la médaille.
           const firsts = regular.filter((r) => r.skillId === skillId);
-          const series = firsts.length >= SERIES_LENGTH ? firsts.filter((r) => r.correct).length : undefined;
+          const series =
+            firsts.length >= length ? seriesScore(firsts.filter((r) => r.correct).length, firsts.length) : undefined;
           const after = applySession(
             before,
             { answered: answers.length, correct },

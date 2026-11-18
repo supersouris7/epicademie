@@ -15,7 +15,7 @@ export interface BossIdentity {
 const GOLEM: BossIdentity = {
   id: 'golem-des-equations',
   name: 'Golem des Équations',
-  mobs: ['calculatrice', 'cube-bot', 'bloc-code'],
+  mobs: ['pi-bot'],
   sky: ['#3b1d6e', '#8a5cd6'],
 };
 
@@ -40,7 +40,17 @@ export const ARENAS = ['espace', 'academie', 'volcan'] as const;
 export const randomArena = (): string => ARENAS[Math.floor(Math.random() * ARENAS.length)] ?? 'academie';
 
 /** Mob affiché pour la question n°`turn` (cosmétique). */
-export const mobOf = (boss: BossIdentity, turn: number) => boss.mobs[turn % boss.mobs.length] ?? 'calculatrice';
+export const mobOf = (boss: BossIdentity, turn: number) => boss.mobs[turn % boss.mobs.length] ?? 'pi-bot';
+
+/** Nom affiché d'un mob. */
+export const mobName = (mob: string) =>
+  mob === 'pi-bot' ? 'π-bot' : mob.charAt(0).toUpperCase() + mob.slice(1).replace(/-/g, ' ');
+
+/** Tête d'un mob avec une expression (si elle est livrée), sinon son image entière. */
+export function mobHeadId(mob: string, face: 'menace' | 'triste' | 'rire'): string {
+  const id = `bosses-minions-${mob}-head-${face}`;
+  return assetSrc(id) ? id : `bosses-minions-${mob}`;
+}
 
 /** Icône de chaque médaille de boss (le diamant est la gemme). */
 export const BOSS_MEDAL_ICONS: Record<BossMedal, string> = {

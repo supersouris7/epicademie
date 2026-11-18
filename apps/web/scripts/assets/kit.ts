@@ -83,20 +83,156 @@ interface Cell {
 }
 
 /** Cases d'une grille (bords arrondis au pixel, sans trou ni chevauchement). */
-export function cells(cols: number, rows: number): Cell[] {
+export function cells(cols: number, rows: number, width: number = SHEET.width, height: number = SHEET.height): Cell[] {
   const out: Cell[] = [];
   for (let r = 0; r < rows; r++)
     for (let c = 0; c < cols; c++) {
-      const x = Math.round((c * SHEET.width) / cols);
-      const y = Math.round((r * SHEET.height) / rows);
+      const x = Math.round((c * width) / cols);
+      const y = Math.round((r * height) / rows);
       out.push({
         x,
         y,
-        w: Math.round(((c + 1) * SHEET.width) / cols) - x,
-        h: Math.round(((r + 1) * SHEET.height) / rows) - y,
+        w: Math.round(((c + 1) * width) / cols) - x,
+        h: Math.round(((r + 1) * height) / rows) - y,
       });
     }
   return out;
+}
+
+const lum = (r: number, g: number, b: number) => 0.299 * r + 0.587 * g + 0.114 * b;
+
+/**
+ * Détourage d'une planche sans transparence (JPEG de ChatGPT) : dans chaque case, le fond est la
+ * couleur dominante de son pourtour (fond sombre uni ou damier clair). On le « remplit » depuis le
+ * bord de la case : le remplissage traverse le fond, les repères (pointillés cyan, grille dorée,
+ * étiquettes) et s'arrête au contour noir des personnages, qui reste intact avec ses effets.
+ */
+export function detour(src: Rgba, grid: { cols: number; rows: number }): Rgba {
+  const { width: W, height: H } = src;
+  const data = Buffer.from(src.data);
+  const clear = new Uint8Array(W * H).fill(1);
+  for (const c of cells(grid.cols, grid.rows, W, H)) {
+    // Retrait du cadre (lignes dorées) : on travaille à l'intérieur de la case.
+    const m = Math.round(Math.min(c.w, c.h) * 0.04);
+    let x0 = c.x + m;
+    let y0 = c.y + m;
+    let x1 = c.x + c.w - m;
+    let y1 = c.y + c.h - m;
+    const px = (x: number, y: number) => {
+      const i = (y * W + x) * 4;
+      return [data[i] ?? 0, data[i + 1] ?? 0, data[i + 2] ?? 0] as const;
+    };
+    // Couleur de fond : médiane du pourtour.
+    const ring: (readonly [number, number, number])[] = [];
+    for (let x = x0; x < x1; x += 3) ring.push(px(x, y0 + 2), px(x, y1 - 3));
+    for (let y = y0; y < y1; y += 3) ring.push(px(x0 + 2, y), px(x1 - 3, y));
+    const grey = (r: number, g: number, b: number) => lum(r, g, b) > 195 && Math.max(r, g, b) - Math.min(r, g, b) < 30;
+    // Damier clair si une bonne part du pourtour est gris très clair (le cadre doré peut y passer).
+    const light = ring.filter((p) => grey(...p)).length > ring.length * 0.3;
+    const base = light ? ring.filter((p) => grey(...p)) : ring;
+    const med = (k: 0 | 1 | 2) => base.map((p) => p[k]).sort((a, b) => a - b)[base.length >> 1] ?? 0;
+    const bg = [med(0), med(1), med(2)] as const;
+    const gold = (r: number, g: number, b: number) => r > 170 && g > 110 && b < 120 && r - b > 80;
+    // Planches à cadre doré épais (damier) : on écarte une bande plus large le long du cadre.
+    // (Seulement les grandes cases des poses : sur les têtes, le personnage touche presque le cadre.)
+    if (light && Math.min(c.w, c.h) > 450) {
+      const extra = Math.round(Math.min(c.w, c.h) * 0.025);
+      x0 += extra;
+      y0 += extra;
+      x1 -= extra;
+      y1 -= extra;
+    }
+    const passable = (x: number, y: number) => {
+      const [r, g, b] = px(x, y);
+      const d = Math.hypot(r - bg[0], g - bg[1], b - bg[2]);
+      if (d < (light ? 40 : 30)) return true;
+      // Damier clair : tous les gris très clairs.
+      if (light && grey(r, g, b)) return true;
+      // Cadre doré des planches à damier, seulement au bord de la case (pas les effets dorés du personnage).
+      const edge = Math.min(x - x0, x1 - 1 - x, y - y0, y1 - 1 - y);
+      if (light && edge < 30 && gold(r, g, b)) return true;
+      // Repères du gabarit : pointillés cyan.
+      if (!light && b - r > 60 && g - r > 40 && lum(r, g, b) > 70) return true;
+      return false;
+    };
+    const seen = new Uint8Array(W * H);
+    const stack: number[] = [];
+    const push = (x: number, y: number) => {
+      const p = y * W + x;
+      if (seen[p] || !passable(x, y)) return;
+      seen[p] = 1;
+      stack.push(p);
+    };
+    for (let x = x0; x < x1; x++) {
+      push(x, y0);
+      push(x, y1 - 1);
+    }
+    for (let y = y0; y < y1; y++) {
+      push(x0, y);
+      push(x1 - 1, y);
+    }
+    while (stack.length) {
+      const p = stack.pop() ?? 0;
+      const x = p % W;
+      const y = (p - x) / W;
+      if (x > x0) push(x - 1, y);
+      if (x < x1 - 1) push(x + 1, y);
+      if (y > y0) push(x, y - 1);
+      if (y < y1 - 1) push(x, y + 1);
+    }
+    // Trous de fond enfermés (entre les jambes, sous un bras) : on les vide aussi, s'ils sont assez grands.
+    const strict = (x: number, y: number) => {
+      const [r, g, b] = px(x, y);
+      // Seulement sur damier (gris très clair) : sur fond sombre, l'intérieur sombre d'une capuche
+      // ressemble trop au fond pour être retiré sans risque.
+      return light && lum(r, g, b) > 225 && Math.max(r, g, b) - Math.min(r, g, b) < 12;
+    };
+    const hole = new Uint8Array(W * H);
+    for (let y = y0; y < y1; y++)
+      for (let x = x0; x < x1; x++) {
+        const p = y * W + x;
+        if (seen[p] || hole[p] || !strict(x, y)) continue;
+        const comp: number[] = [p];
+        hole[p] = 1;
+        // (for…of parcourt aussi les cases ajoutées en cours de route.)
+        for (const q of comp) {
+          const qx = q % W;
+          const qy = (q - qx) / W;
+          for (const [nx, ny] of [
+            [qx - 1, qy],
+            [qx + 1, qy],
+            [qx, qy - 1],
+            [qx, qy + 1],
+          ] as const) {
+            if (nx < x0 || ny < y0 || nx >= x1 || ny >= y1) continue;
+            const n = ny * W + nx;
+            if (!seen[n] && !hole[n] && strict(nx, ny)) {
+              hole[n] = 1;
+              comp.push(n);
+            }
+          }
+        }
+        // Vrai damier : surtout des gris clairs (pas le blanc pur d'un symbole ou d'un reflet).
+        let checker = 0;
+        for (const q of comp) {
+          const l = lum(data[q * 4] ?? 0, data[q * 4 + 1] ?? 0, data[q * 4 + 2] ?? 0);
+          const sat =
+            Math.max(data[q * 4] ?? 0, data[q * 4 + 1] ?? 0, data[q * 4 + 2] ?? 0) -
+            Math.min(data[q * 4] ?? 0, data[q * 4 + 1] ?? 0, data[q * 4 + 2] ?? 0);
+          if (l >= 228 && l <= 249 && sat < 10) checker++;
+        }
+        if (comp.length >= 300 && checker > comp.length * 0.3) for (const q of comp) seen[q] = 1;
+      }
+    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) if (!seen[y * W + x]) clear[y * W + x] = 0;
+  }
+  // Fond transparent ; un pixel de transition adouci au bord du personnage (pas d'escalier).
+  for (let p = 0; p < W * H; p++) data[p * 4 + 3] = clear[p] ? 0 : 255;
+  for (let p = 0; p < W * H; p++) {
+    if (clear[p]) continue;
+    const x = p % W;
+    if ((x > 0 && clear[p - 1]) || (x < W - 1 && clear[p + 1]) || clear[p - W] || clear[p + W]) data[p * 4 + 3] = 170;
+  }
+  return { data, width: W, height: H };
 }
 
 /**
@@ -271,15 +407,14 @@ export async function cutSheet(
   file: string | Buffer,
   grid: { cols: number; rows: number },
 ): Promise<(Buffer | null)[]> {
-  const { data, info } = await sharp(file)
-    .resize(SHEET.width, SHEET.height, { fit: 'fill' })
-    .ensureAlpha()
-    .raw()
-    .toBuffer({ resolveWithObject: true });
+  const { data, info } = await sharp(file).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   const raw: Rgba = { data, width: info.width, height: info.height };
-  const img = hasAlpha(raw) ? raw : chromaKey(raw);
+  // Transparente : telle quelle ; fond magenta : retiré à la couleur ; sinon (JPEG) : détourage par case.
+  const corner = [data[0] ?? 0, data[1] ?? 0, data[2] ?? 0];
+  const magenta = (corner[0] ?? 0) > 200 && (corner[1] ?? 0) < 80 && (corner[2] ?? 0) > 200;
+  const img = hasAlpha(raw) ? raw : magenta ? chromaKey(raw) : detour(raw, grid);
   const { label, list } = blobs(img);
-  const grid0 = cells(grid.cols, grid.rows);
+  const grid0 = cells(grid.cols, grid.rows, img.width, img.height);
   const minArea = 0.0005 * (grid0[0]?.w ?? 1) * (grid0[0]?.h ?? 1);
   const owner = new Map<number, number>();
   for (const b of list) {
@@ -287,6 +422,21 @@ export async function cutSheet(
     const cx = b.sx / b.n;
     const cy = b.sy / b.n;
     const i = grid0.findIndex((c) => cx >= c.x && cx < c.x + c.w && cy >= c.y && cy < c.y + c.h);
+    const c = grid0[i];
+    // Étiquette du gabarit (« 1 · attente ») restée sur la planche : petites formes en haut de la case.
+    if (c && b.maxY < c.y + c.h * 0.1 && b.n < c.w * c.h * 0.01) continue;
+    // Restes de repères ou de cadre : traits fins (moins de 6 px d'épaisseur) et peu étendus,
+    // ou rectangle creux presque aussi grand que la case (bordure du cadre).
+    if (c && Math.min(b.maxX - b.minX, b.maxY - b.minY) < 6 && b.n < c.w * c.h * 0.02) continue;
+    const bw = b.maxX - b.minX + 1;
+    const bh = b.maxY - b.minY + 1;
+    if (c && (bw > c.w * 0.85 || bh > c.h * 0.85) && b.n < bw * bh * 0.12) continue;
+    // Trait de cadre horizontal ou vertical (long et très fin) à l'intérieur de la case.
+    if (c && ((bw > c.w * 0.25 && bh < c.h * 0.05) || (bh > c.h * 0.25 && bw < c.w * 0.05))) continue;
+    // Morceau de cadre resté dans la bande du bord de la case.
+    const band = Math.min(c?.w ?? 0, c?.h ?? 0) * 0.1;
+    if (c && (b.maxY < c.y + band || b.minY > c.y + c.h - band || b.maxX < c.x + band || b.minX > c.x + c.w - band))
+      continue;
     if (i >= 0) owner.set(b.id, i);
   }
   const W = img.width;
@@ -311,11 +461,38 @@ export async function cutSheet(
             [p - 1, p + 1, p - W, p + W].some((r) => ids.has(label[r] ?? -1));
           if (ids.has(l) || near) out.set(img.data.subarray(p * 4, p * 4 + 4), (y * w + x) * 4);
         }
+      despeckle(out, w, h);
       return sharp(out, { raw: { width: w, height: h, channels: 4 } })
+        .trim({ threshold: 0 })
         .png()
         .toBuffer();
     }),
   );
+}
+
+/**
+ * Gomme les traits très fins restés collés (pointillés, liserés du cadre) : un pixel visible qui a
+ * moins de 4 voisins visibles sur 8 est effacé, sur 3 passes. Les formes pleines ne bougent pas.
+ */
+function despeckle(buf: Buffer, w: number, h: number) {
+  for (let pass = 0; pass < 3; pass++) {
+    const kill: number[] = [];
+    for (let y = 0; y < h; y++)
+      for (let x = 0; x < w; x++) {
+        const p = y * w + x;
+        if ((buf[p * 4 + 3] ?? 0) <= 24) continue;
+        let n = 0;
+        for (let dy = -1; dy <= 1; dy++)
+          for (let dx = -1; dx <= 1; dx++) {
+            if (!dx && !dy) continue;
+            const nx = x + dx;
+            const ny = y + dy;
+            if (nx >= 0 && ny >= 0 && nx < w && ny < h && (buf[(ny * w + nx) * 4 + 3] ?? 0) > 24) n++;
+          }
+        if (n < 4) kill.push(p);
+      }
+    for (const p of kill) buf[p * 4 + 3] = 0;
+  }
 }
 
 /** Découpe les deux planches d'un personnage en pose-<état>.png et head-<expression>.png. */

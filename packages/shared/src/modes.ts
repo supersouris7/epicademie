@@ -31,7 +31,7 @@ export const MODES: readonly ModeInfo[] = [
   {
     id: 'boss',
     name: 'Combat de boss',
-    pitch: '7 mobs puis le boss du chapitre',
+    pitch: '4 mobs puis le boss du chapitre',
     category: 'apprendre',
     available: true,
   },

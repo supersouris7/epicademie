@@ -24,7 +24,7 @@ const play = (s: BattleState, answers: readonly boolean[], d = dice()) =>
   answers.reduce((st, ok) => answerBattle(st, pools, ok, d).state, s);
 
 describe('combat de boss', () => {
-  it('7 mobs (niveau 1 puis 2), puis 2 problèmes et le piège : 10 questions sans faute', () => {
+  it('4 mobs (niveau 1 puis 2), puis 2 problèmes et le piège : 7 questions sans faute', () => {
     const d = dice();
     let s = createBattle(pools, d);
     const stages: string[] = [];
@@ -36,9 +36,9 @@ describe('combat de boss', () => {
     }
     expect(s.status).toBe('won');
     expect(stages).toEqual([...Array<string>(BATTLE_MOBS).fill('mob'), 'probleme', 'probleme', 'piege']);
-    expect(levels.slice(0, 7)).toEqual([1, 1, 1, 2, 2, 2, 2]);
+    expect(levels.slice(0, 4)).toEqual([1, 1, 2, 2]);
     expect(s.hearts).toBe(3);
-    expect(battleXp(s)).toBe(10 * 10 + 50);
+    expect(battleXp(s)).toBe(10 * 7 + 50);
   });
 
   it('chaque notion du chapitre passe avant qu’une autre revienne', () => {
@@ -64,7 +64,7 @@ describe('combat de boss', () => {
 
   it('une erreur contre le boss relance une question du même type', () => {
     const d = dice();
-    let s = play(createBattle(pools, d), Array<boolean>(7).fill(true), d);
+    let s = play(createBattle(pools, d), Array<boolean>(BATTLE_MOBS).fill(true), d);
     expect(s.question?.stage).toBe('probleme');
     const before = s.question?.skillId;
     s = answerBattle(s, pools, false, d).state;
@@ -136,7 +136,7 @@ describe('combat de boss', () => {
   });
 
   it('barèmes de niveau et d’étape', () => {
-    expect([0, 2, 3, 6].map(mobLevel)).toEqual([1, 1, 2, 2]);
+    expect([0, 1, 2, 3].map(mobLevel)).toEqual([1, 1, 2, 2]);
     expect([3, 2, 1].map(bossStage)).toEqual(['probleme', 'probleme', 'piege']);
   });
 });

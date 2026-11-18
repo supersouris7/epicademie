@@ -18,7 +18,6 @@ import { Chapters } from './pages/training/Chapters.tsx';
 import { Notions } from './pages/training/Notions.tsx';
 import { TrainingPlay } from './pages/training/TrainingPlay.tsx';
 import { useSession } from './store/session.ts';
-import { MusicDirector } from './components/MusicDirector.tsx';
 
 /** Atelier graphique : chargé à la demande, seulement en développement (absent du build de production). */
 const AssetPreview = import.meta.env.DEV
@@ -38,7 +37,6 @@ function WithProfile({ children }: { readonly children: (profile: Profile) => Re
 export function App() {
   return (
     <>
-      <MusicDirector />
       <Routes>
         <Route path="/" element={<ProfilePicker />} />
         <Route path="/profils/nouveau" element={<ProfileEditor />} />

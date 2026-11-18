@@ -9,7 +9,7 @@ import {
   recordAnswer,
   regularCount,
   startTraining,
-  TRAINING_LENGTH,
+  seriesLength,
   xpForAnswer,
   type PlannedQuestion,
   type SkillState,
@@ -83,7 +83,7 @@ interface Retry {
 /** Un 2e essai n'a pas de sens quand il ne reste qu'une option (Vrai / Faux, < / >…). */
 const canRetry = (q: Question) => q.answer.kind !== 'choice' || q.answer.options.length > 2;
 
-/** Partie d’Entraînement : 5 questions + variantes, correction après chaque réponse. */
+/** Partie d’Entraînement : 4 questions (5 en calcul de tête) + variantes, correction après chaque réponse. */
 export function TrainingPlay({ profile }: { readonly profile: Profile }) {
   const { chapterId = '', skillId = '' } = useParams();
   const chapter = getChapter(chapterId);
@@ -122,7 +122,9 @@ function Game({
   const today = localToday();
   const [toast, showToast] = useToast(2500);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [training, setTraining] = useState<TrainingState>(() => startTraining(skills, states));
+  const [training, setTraining] = useState<TrainingState>(() =>
+    startTraining(skills, states, seriesLength(skills.every((id) => getSkill(id)?.mental === true))),
+  );
   const [current, setCurrent] = useState<Current | null>(null);
   const [answered, setAnswered] = useState<Answered | null>(null);
   const [picked, setPicked] = useState<{ x: number; y: number } | null>(null);
@@ -167,7 +169,7 @@ function Game({
       rememberPrompt(profileId, plan.skillId, question.prompt);
       const advise = !advised.current.has(plan.skillId);
       advised.current.add(plan.skillId);
-      if (!plan.variant && regularCount(t) === TRAINING_LENGTH - 1) {
+      if (!plan.variant && regularCount(t) === t.length - 1) {
         setHero((h) => ({ ...heroLine('lastOne', h.nonce), nonce: h.nonce + 1 }));
       }
       setCurrent({
@@ -334,10 +336,10 @@ function Game({
         <ProgressBar
           className="flex-1"
           value={done}
-          max={TRAINING_LENGTH}
+          max={training.length}
           label="Progression de la série"
-          segments={TRAINING_LENGTH}
-          text={`${Math.min(done + (answered || retry ? 0 : 1), TRAINING_LENGTH)}/${TRAINING_LENGTH}`}
+          segments={training.length}
+          text={`${Math.min(done + (answered || retry ? 0 : 1), training.length)}/${training.length}`}
         />
         <ResourceCounter icon="icons-resources-xp" value={`+${xpTotal} XP`} label={`${xpTotal} XP gagnés`} />
       </header>

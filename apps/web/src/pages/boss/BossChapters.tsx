@@ -88,7 +88,7 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
 
   return (
     <PageShell title="Combat de boss" back="/jouer/boss">
-      <p className="text-muted font-bold">7 mobs, puis le boss. Diamant : sans perdre de cœur et sans objet.</p>
+      <p className="text-muted font-bold">4 mobs, puis le boss. Diamant : sans perdre de cœur et sans objet.</p>
 
       {/* Équipement : la tête du héros et ses 3 emplacements ; dessous, la réserve (ce qui n'est pas équipé). */}
       <section aria-labelledby="equipement" className="cartoon bg-surface flex flex-col gap-3 p-3">

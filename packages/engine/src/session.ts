@@ -2,10 +2,14 @@ import type { Level } from '@questeo/content';
 import { isDue, type SkillState } from './srs.ts';
 
 /**
- * Déroulé d’une série d’Entraînement : 5 questions régulières, plus une variante immédiate
- * (même notion, même niveau, nouvelle graine) après chaque erreur.
+ * Déroulé d’une série d’Entraînement : 4 questions régulières (5 pour le calcul de tête, très court),
+ * plus une variante immédiate (même notion, même niveau, nouvelle graine) après chaque erreur.
  */
 export const TRAINING_LENGTH = 5;
+export const SHORT_TRAINING_LENGTH = 4;
+
+/** Longueur d'une série : 5 si toutes les notions sont du calcul de tête, sinon 4. */
+export const seriesLength = (allMental: boolean) => (allMental ? TRAINING_LENGTH : SHORT_TRAINING_LENGTH);
 export const MAX_VARIANTS = 3;
 
 export interface PlannedQuestion {
@@ -28,6 +32,8 @@ export interface TrainingState {
   readonly levels: Readonly<Record<string, Level>>;
   /** Variante à proposer juste après une erreur. */
   readonly pendingVariant: { skillId: string; level: Level } | null;
+  /** Questions régulières de la série (4, ou 5 en calcul de tête). */
+  readonly length: number;
 }
 
 /** Niveau de départ selon l'avancement de la notion. */
@@ -36,18 +42,22 @@ export function startLevel(state: SkillState | undefined): Level {
   return 2;
 }
 
-export function startTraining(skills: readonly string[], states: ReadonlyMap<string, SkillState>): TrainingState {
+export function startTraining(
+  skills: readonly string[],
+  states: ReadonlyMap<string, SkillState>,
+  length: number = TRAINING_LENGTH,
+): TrainingState {
   if (skills.length === 0) throw new Error('Aucune notion à travailler');
   const levels: Record<string, Level> = {};
   for (const id of skills) levels[id] = startLevel(states.get(id));
-  return { skills, answers: [], levels, pendingVariant: null };
+  return { skills, answers: [], levels, pendingVariant: null, length };
 }
 
 export const regularCount = (s: TrainingState) => s.answers.filter((a) => !a.variant).length;
 export const variantCount = (s: TrainingState) => s.answers.filter((a) => a.variant).length;
 
 export function isFinished(s: TrainingState): boolean {
-  return regularCount(s) >= TRAINING_LENGTH && s.pendingVariant === null;
+  return regularCount(s) >= s.length && s.pendingVariant === null;
 }
 
 /** Poids de tirage d'une notion : prioriser les nouvelles, échues et fragiles. */

@@ -12,7 +12,7 @@ import {
 } from '@questeo/shared';
 
 /**
- * Combat de boss (docs/SPEC.md §6.2 bis) : 7 mobs (questions du chapitre, niveau 1 puis 2), puis le boss
+ * Combat de boss (docs/SPEC.md §6.2 bis) : 4 mobs (questions du chapitre, niveau 1 puis 2), puis le boss
  * à 3 vies : 2 problèmes en contexte puis 1 question piège. Le héros a 3 cœurs.
  * Fonctions pures : le serveur garde l'état et fait foi.
  */
@@ -72,7 +72,7 @@ export interface BattleDice {
 }
 
 /** Niveau des mobs : les 3 premiers au niveau 1, les suivants au niveau 2. */
-export const mobLevel = (index: number): 1 | 2 => (index < 3 ? 1 : 2);
+export const mobLevel = (index: number): 1 | 2 => (index < 2 ? 1 : 2);
 
 /** Étape du boss selon ses vies restantes : 2 problèmes, puis le piège pour la dernière vie. */
 export const bossStage = (lives: number): BattleStage => (lives <= 1 ? 'piege' : 'probleme');
@@ -149,7 +149,7 @@ export function createBattle(
 
 /**
  * Applique une réponse : bonne → tir (mob vaincu ou boss −1 vie) ; mauvaise → riposte (−1 cœur, ou
- * bouclier consommé). Un mob raté s'enfuit quand même (le combat garde ses 10 questions) ; contre le
+ * bouclier consommé). Un mob raté s'enfuit quand même (le combat garde ses 7 questions) ; contre le
  * boss, une erreur relance une question du même type.
  */
 export function answerBattle(

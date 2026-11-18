@@ -48,6 +48,16 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   await page.getByRole('button', { name: /Je réessaie/ }).click();
   await expect(page.getByText('Question similaire', { exact: true })).toBeVisible();
 
+  // Le bilan reçoit un coffre (forcé ici, le tirage est aléatoire) : il s'ouvre en plein écran au toucher.
+  await page.route('**/api/sessions/*/finish', async (route) => {
+    const res = await route.fetch();
+    const json = (await res.json()) as Record<string, unknown>;
+    await route.fulfill({
+      response: res,
+      json: { ...json, chest: { rarity: 'rare', items: { bouclier: 1 }, coins: 20 } },
+    });
+  });
+
   // On répond « −1 » (toujours faux) jusqu'à la fin de la série : 5 questions + 3 variantes au plus.
   const ok = page.getByRole('button', { name: 'OK' });
   const next = page.getByRole('button', { name: /Suivant|Je réessaie/ });
@@ -63,10 +73,16 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
     await next.click();
     await expect(next).toBeHidden();
   }
+  const chest = page.getByRole('dialog', { name: 'Un coffre d’équipement !' });
+  await expect(chest).toBeVisible();
+  await chest.getByRole('button', { name: 'Ouvrir le coffre' }).click();
+  const opened = page.getByRole('dialog', { name: 'Coffre rare' });
+  await expect(opened).toContainText('Bouclier +1');
+  await expect(opened).toContainText('+20 pièces');
+  await opened.getByRole('button', { name: 'Super !' }).click();
+  await expect(opened).toHaveCount(0);
   await expect(page.getByText(/On s’accroche/)).toBeVisible();
   await expect(page.getByText('0/5')).toBeVisible();
-  // 0/5 : peu de chances de coffre ; s'il n'y en a pas, l'appli explique comment en gagner.
-  await expect(page.getByText(/Pas de coffre cette fois|Un coffre d’équipement/)).toBeVisible();
   await expect(page.getByText(/À revoir dès/)).toBeVisible();
   // Récapitulatif des erreurs avec la bonne réponse.
   await page.getByText(/Tes erreurs \(\d+\)/).click();

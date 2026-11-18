@@ -96,7 +96,7 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
       await expect(rage).toHaveCount(0);
       sawRage = true;
     }
-    if (view.mobsDefeated === 7 && !sawBoss) {
+    if (view.mobsDefeated === 4 && !sawBoss) {
       // Arrivée du boss en grand : Questy félicite, 3 vies annoncées.
       const arrival = page.getByTestId('boss-arrival');
       await expect(arrival).toContainText('Presque fini');

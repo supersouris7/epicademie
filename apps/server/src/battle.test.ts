@@ -104,10 +104,10 @@ describe('combat de boss', () => {
       b = r.battle;
       turns++;
     }
-    expect(turns).toBe(10);
+    expect(turns).toBe(7);
     expect(b.status).toBe('won');
     const sum = (await app.inject({ method: 'POST', url: `/api/battles/${b.id}/finish` })).json<BattleSummary>();
-    expect(sum).toMatchObject({ won: true, firstWin: true, hearts: 3, xpGained: 150, medal: 'diamant', newBest: true });
+    expect(sum).toMatchObject({ won: true, firstWin: true, hearts: 3, xpGained: 120, medal: 'diamant', newBest: true });
     expect(sum.items).toEqual({ bouclier: 1, soin: 1, indice: 1 });
     expect((await overview()).records).toMatchObject([
       { chapterId: CHAPTER, wins: 1, bestHearts: 3, bestMedal: 'diamant' },

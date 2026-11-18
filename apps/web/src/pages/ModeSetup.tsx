@@ -39,8 +39,8 @@ export function ModeSetup() {
         <div className="cartoon bg-surface-2 flex items-center gap-3 p-3" role="note">
           <GameIcon id="rewards-chests-rare" size={64} />
           <p className="text-lg font-bold">
-            C’est ici que tu gagnes ton <strong>équipement</strong> ! Chaque série de 5 questions peut t’offrir un
-            coffre (bouclier, soin, indice, pièces). 5/5 = coffre garanti.
+            C’est ici que tu gagnes ton <strong>équipement</strong> ! Chaque série peut t’offrir un coffre (bouclier,
+            soin, indice, pièces). Sans faute = coffre garanti.
           </p>
         </div>
       )}

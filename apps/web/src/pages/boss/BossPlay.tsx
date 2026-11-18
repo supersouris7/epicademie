@@ -31,7 +31,6 @@ import {
 } from '../../components/battle/BattleScenes.tsx';
 import { faceOffTaunt, questyReply, RAGE_LINES } from '../../lib/battleLines.ts';
 import { DOCK_HEIGHT } from '../../lib/tools.ts';
-import { useMusic } from '../../lib/music.ts';
 import { useBackGuard, useGameExit } from '../../lib/gameExit.ts';
 import { ConfirmDialog } from '../../components/ConfirmDialog.tsx';
 import { Confetti } from '../../components/Confetti.tsx';
@@ -49,7 +48,16 @@ import { useToast } from '../../components/Toast.tsx';
 import { assetSrc, type AnimationState, type BossExpression, type HeroExpression } from '../../design/assets.ts';
 import { HeroFace } from '../../components/battle/HeroFace.tsx';
 import { CharacterSprite } from '../../components/game/CharacterSprite.tsx';
-import { BOSS_MEDAL_ICONS, bossHeadId, bossMood, bossOf, mobOf, randomArena } from '../../design/bosses.ts';
+import {
+  BOSS_MEDAL_ICONS,
+  bossHeadId,
+  bossMood,
+  bossOf,
+  mobHeadId,
+  mobName,
+  mobOf,
+  randomArena,
+} from '../../design/bosses.ts';
 import { formatAnswer, formatResponse } from '../../lib/answers.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../lib/sound.ts';
 import { ITEM_ICONS } from '../../design/items.ts';
@@ -77,7 +85,7 @@ interface Missed {
   readonly next: BattleView;
 }
 
-const STAGE_LABEL = { mob: 'Mob', probleme: 'Problème', piege: 'Piège !' } as const;
+const STAGE_LABEL = { mob: '', probleme: 'Problème', piege: 'Piège !' } as const;
 /** Durées de l'animation d'un tir (ms). */
 const HIT_MS = 450;
 const NEXT_MS = 1500;
@@ -129,6 +137,8 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   const [enemyState, setEnemyState] = useState<EnemyState>('idle');
   /** Tête du boss dans le bandeau : il réagit aux coups et aux erreurs. */
   const [bossFace, setBossFace] = useState<BossExpression>('menace');
+  /** Tête du mob dans le bandeau : menaçant, triste quand il est touché, rieur quand le héros se trompe. */
+  const [mobFace, setMobFace] = useState<'menace' | 'triste' | 'rire'>('menace');
   const [shot, setShot] = useState(0);
   const [riposte, setRiposte] = useState(0);
   /** Dernier coup joué : la scène ne rejoue que lui (sinon l'ancien tir repart avec la riposte : tirs croisés). */
@@ -183,8 +193,6 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   const question = useMemo(() => (q ? generate(q.skillId, q.level, q.seed) : null), [q]);
   const skill = q ? getAnySkill(q.skillId) : undefined;
   const onBoss = battle ? battle.mobsDefeated >= BATTLE_MOBS : false;
-  // Musique : celle du combat pendant les mobs, celle du boss face à lui, la victoire au bilan.
-  useMusic(summary ? (summary.won ? 'victoire' : 'menu') : onBoss || arrival ? 'boss' : null);
   const bossEnemy: ArenaEnemy = { key: 'boss', name: boss.name, boss: true, image: `bosses-maths-${boss.id}` };
   // En rage (dernière vie), le boss change d'apparence dans l'arène (sauf au KO, qui garde sa pose).
   const enraged = onBoss && battle?.bossLives === 1 && enemyState !== 'ko';
@@ -200,7 +208,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
           const mob = mobOf(boss, battle.mobsDefeated);
           return {
             key: `mob-${battle.mobsDefeated}`,
-            name: mob.charAt(0).toUpperCase() + mob.slice(1).replace(/-/g, ' '),
+            name: mobName(mob),
             boss: false,
             image: `bosses-minions-${mob}`,
           };
@@ -250,6 +258,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
     }
     setMissed(null);
     setPicked(null);
+    setMobFace('menace');
     setScene(next.status !== 'fighting');
     setBattle(next);
     shownAt.current = performance.now();
@@ -305,6 +314,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
         setLastHit('shot');
         later(HIT_MS, () => {
           setEnemyState('hurt');
+          setMobFace('triste');
           // Touché : le boss passe de la surprise à la fureur, puis KO.
           if (battle.mobsDefeated >= BATTLE_MOBS)
             setBossFace(res.battle.bossLives >= 2 ? 'surprise' : res.battle.bossLives === 1 ? 'furieux' : 'ko');
@@ -315,6 +325,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
         setScene(true);
         later(MISS_SCENE_MS, () => setScene(false));
         setEnemyState('attack');
+        setMobFace('rire');
         // Le boss se moque de l'erreur (un mob ne change pas de tête).
         if (battle.mobsDefeated >= BATTLE_MOBS) setBossFace(res.outcome === 'blocked' ? 'perplexe' : 'rire');
         setRiposte((n) => n + 1);
@@ -452,7 +463,13 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
           maxHearts={battle?.maxHearts ?? 3}
           shield={battle?.shield ?? false}
           enemyName={enemy?.name ?? boss.name}
-          enemyImage={enemy ? (enemy.boss ? bossHeadId(boss.id, bossFace) : enemy.image) : 'placeholder-boss'}
+          enemyImage={
+            enemy
+              ? enemy.boss
+                ? bossHeadId(boss.id, bossFace)
+                : mobHeadId(mobOf(boss, battle?.mobsDefeated ?? 0), mobFace)
+              : 'placeholder-boss'
+          }
           enemyFilter={enemy?.filter}
           enemyKey={enemy?.key ?? 'boss'}
           bossLives={onBoss ? (battle?.bossLives ?? BOSS_LIVES) : null}
@@ -499,16 +516,18 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
           >
             <section className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pb-1 [&>*]:shrink-0">
               <div className="flex items-center gap-2">
-                <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-bold text-white ${q.stage === 'piege' ? 'bg-danger' : q.stage === 'probleme' ? 'bg-accent' : 'bg-info'}`}
-                >
-                  {STAGE_LABEL[q.stage]}
-                </span>
+                {/* Étape du boss seulement (pas de « Mob », pas de titre de notion pendant le combat). */}
+                {q.stage !== 'mob' && (
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-bold text-white ${q.stage === 'piege' ? 'bg-danger' : 'bg-accent'}`}
+                  >
+                    {STAGE_LABEL[q.stage]}
+                  </span>
+                )}
                 <span className="flex-1" />
                 <ItemBar battle={battle} disabled={busy || missed !== null} onUse={(i) => void spendItem(i)} />
                 <PauseButton onClick={() => setConfirmQuit(true)} />
               </div>
-              <p className="text-muted text-sm font-bold">{skill?.title}</p>
               <h1 className="text-2xl leading-snug font-bold sm:text-3xl xl:text-4xl">
                 <MathText text={question.prompt} />
               </h1>

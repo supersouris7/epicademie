@@ -15,7 +15,7 @@ export type AvatarConfig = z.infer<typeof AvatarConfigSchema>;
 export const HEROES = ['alex', 'tao', 'lina', 'ayla', 'pixel'] as const;
 export type HeroId = (typeof HEROES)[number];
 /** Héros jouables aujourd'hui (illustrations livrées) ; les autres sont « À venir ». */
-export const AVAILABLE_HEROES: readonly HeroId[] = ['alex'];
+export const AVAILABLE_HEROES: readonly HeroId[] = ['alex', 'lina', 'pixel'];
 const PlayableHeroSchema = z.enum(HEROES).refine((h) => AVAILABLE_HEROES.includes(h), 'Ce héros arrive bientôt');
 export const HERO_NAMES: Record<HeroId, string> = {
   alex: 'Alex',

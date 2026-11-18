@@ -87,8 +87,8 @@ export function Progress({ profile }: { readonly profile: Profile }) {
       </section>
 
       <p className="text-muted text-sm font-bold">
-        Médaille d’une notion = sa meilleure série de 5 questions : Bronze 3/5 · Argent 4/5 · Or 5/5, sans faute (notion
-        acquise).
+        Médaille d’une notion = sa meilleure série : Or sans faute (notion acquise) · Argent une erreur · Bronze deux
+        erreurs.
       </p>
 
       <div className="flex flex-wrap gap-2" role="tablist" aria-label="Matières">
