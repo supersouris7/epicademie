@@ -1,6 +1,7 @@
 import type { Chapter } from '../types.ts';
 import { litteral, puissances } from './algebre.ts';
 import { calcul } from './calcul.ts';
+import { CM1, CM2 } from './cours-moyen.ts';
 import { BOSS_CONTENT } from './boss.ts';
 import { algorithmique, fonctions, probabilites, proportionnalite, statistiques } from './donnees.ts';
 import { fractions } from './fractions.ts';
@@ -39,4 +40,4 @@ const FIFTH: readonly Chapter[] = PROGRAM.map((c) => {
 });
 
 /** Chapitres de maths de toutes les classes, dans l'ordre de la scolarité. */
-export const MATHS_CHAPTERS: readonly Chapter[] = [...SIXIEME, ...FIFTH, ...QUATRIEME, ...TROISIEME];
+export const MATHS_CHAPTERS: readonly Chapter[] = [...CM1, ...CM2, ...SIXIEME, ...FIFTH, ...QUATRIEME, ...TROISIEME];

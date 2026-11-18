@@ -23,7 +23,8 @@ describe('classe déduite de la date de naissance', () => {
     expect(gradeInfo('5e').available).toBe(true);
     expect(gradeInfo('4e').available).toBe(true);
     expect(gradeInfo('3e').available).toBe(true);
-    expect(gradeInfo('cm1').available).toBe(false);
+    expect(gradeInfo('cm1').available).toBe(true);
+    expect(gradeInfo('adulte').available).toBe(false);
     expect(playedGrade('adulte')).toBe('5e');
     expect(playedGrade(null)).toBe('5e');
   });

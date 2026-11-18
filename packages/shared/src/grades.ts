@@ -1,4 +1,4 @@
-/** Classes proposées à la création du compte, du CM1 à la 3e (et Adulte, « À venir »). */
+/** Classes proposées à la création du compte : du CM1 à la 3e (programmes complets) et Adulte (« À venir »). */
 export const GRADES = ['cm1', 'cm2', '6e', '5e', '4e', '3e', 'adulte'] as const;
 export type Grade = (typeof GRADES)[number];
 
@@ -13,8 +13,8 @@ export interface GradeInfo {
 
 const FIFTH: GradeInfo = { id: '5e', name: '5e', available: true, age: 12 };
 export const GRADE_INFO: readonly GradeInfo[] = [
-  { id: 'cm1', name: 'CM1', available: false, age: 9 },
-  { id: 'cm2', name: 'CM2', available: false, age: 10 },
+  { id: 'cm1', name: 'CM1', available: true, age: 9 },
+  { id: 'cm2', name: 'CM2', available: true, age: 10 },
   { id: '6e', name: '6e', available: true, age: 11 },
   FIFTH,
   { id: '4e', name: '4e', available: true, age: 13 },

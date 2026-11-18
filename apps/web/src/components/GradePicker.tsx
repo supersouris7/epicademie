@@ -69,7 +69,7 @@ export function GradePicker({ birthDate, grade, onChange }: GradePickerProps) {
   return (
     <div className="flex flex-col gap-2">
       {!guess && validBirth && <p className="font-bold">Quelle est ta classe ?</p>}
-      <div role="radiogroup" aria-label="Ta classe" className="grid grid-cols-3 gap-2 sm:grid-cols-6">
+      <div role="radiogroup" aria-label="Ta classe" className="grid grid-cols-4 gap-2 sm:grid-cols-7">
         {GRADE_INFO.map((g) => (
           <button
             key={g.id}

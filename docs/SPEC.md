@@ -218,6 +218,19 @@ Catalogue typé dans `packages/shared/src/modes.ts`.
   - CM1, CM2, 6e : programme du cycle 3, **BO n°16 du 17 avril 2025** (annexe « ensel620_annexe2-v2.pdf », lue) ; en vigueur en CM1 et 6e depuis 2025, en CM2 depuis la rentrée 2026 ;
   - 4e, 3e : objectifs par année du programme du cycle 4, **BO n°10 du 5 mars 2026** (le même texte que la 5e). En 2026-2027, la 4e et la 3e suivent encore l'ancien programme (2020) ; on suit le nouveau pour garder une progression continue avec notre 5e ;
   - identifiants `m6-…`, `m4-…`, `m3-…`, `mcm1-…`, `mcm2-…` ; chaque notion cite l'objectif officiel de sa classe (`objectiveOf`).
+- **Contenu livré le 18/11/2026** (fichiers `packages/content/src/maths/`) :
+
+  | Classe | Chapitres | Notions | Boss | Fichier(s)                                                                                                                             |
+  | ------ | --------- | ------- | ---- | -------------------------------------------------------------------------------------------------------------------------------------- |
+  | CM1    | 15        | 56      | 15   | `cours-moyen.ts` (`build('cm1')` : nombres ≤ 999 999, décimaux aux centièmes, fractions de dénominateur ≤ 20)                          |
+  | CM2    | 15        | 59      | 15   | `cours-moyen.ts` (`build('cm2')` : nombres ≤ 999 999 999, millièmes, dénominateurs ≤ 60, entier × fraction, aires en dm^2/m^2, degrés) |
+  | 6e     | 18        | 62      | 18   | `sixieme-nombres.ts`, `sixieme-mesures.ts`, `sixieme-donnees.ts`                                                                       |
+  | 5e     | 17        | 72      | 3    | `calcul.ts` … `donnees.ts`, `boss.ts`                                                                                                  |
+  | 4e     | 14        | 52      | 14   | `quatrieme-nombres.ts`, `quatrieme-autres.ts`                                                                                          |
+  | 3e     | 13        | 43      | 13   | `troisieme.ts`                                                                                                                         |
+
+  Les nombres en lettres du CM suivent l'orthographe rectifiée de 1990 (traits d'union partout, « quatre-vingt-mille », « deux-cents-millions »). Domaine « Grandeurs et mesures » ajouté (cycle 3), avec son boss.
+
 - **Choix de la classe** : en Entraînement (et sur les pages Boss et Progrès), une rangée « Classe » (CM1 → 3e) permet de jouer le programme d'une autre classe ; sa classe est cochée par défaut (pastille dorée), le choix est gardé dans l'adresse (`?classe=6e`).
 - **Matières** sans contenu grisées « À venir » au choix de la matière.
 - **Calculatrice** proposée partout sauf quand calculer est l'objectif de la notion (`Skill.mental` : tables, opérations, priorités, relatifs, fractions, carrés…) ; un calcul annexe (carré, aire, pourcentage) ne doit pas bloquer. Questy la conseille sur les notions à gros nombres.
