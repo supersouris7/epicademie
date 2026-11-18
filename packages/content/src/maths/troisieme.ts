@@ -836,26 +836,36 @@ const litteral = C(
 const thalesFigure = (butterfly: boolean): Figure =>
   butterfly
     ? {
-        kind: 'polygon',
-        vertices: [
-          { name: 'A', x: 0, y: 4 },
-          { name: 'M', x: 3, y: 2 },
-          { name: 'B', x: 0, y: 0 },
+        // Papillon schématique : (AN) et (BP) se coupent en M, (AB) // (NP).
+        kind: 'grid',
+        xMin: -5,
+        xMax: 5,
+        yMin: -5,
+        yMax: 5,
+        axes: false,
+        points: [
+          { name: 'A', x: -2, y: 2 },
+          { name: 'B', x: -2, y: -2 },
+          { name: 'M', x: 0, y: 0, color: 'accent' },
+          { name: 'N', x: 4, y: -4 },
+          { name: 'P', x: 4, y: 4 },
         ],
-        extra: [
-          { from: { x: 3, y: 2 }, to: { x: 7.5, y: -1 }, label: 'N' },
-          { from: { x: 3, y: 2 }, to: { x: 7.5, y: 5 }, label: 'P' },
-          { from: { x: 7.5, y: 5 }, to: { x: 7.5, y: -1 } },
+        segments: [
+          ['A', 'N'],
+          ['B', 'P'],
+          ['A', 'B'],
+          ['N', 'P'],
         ],
       }
     : {
         kind: 'polygon',
         vertices: [
-          { name: 'A', x: 0, y: 0 },
-          { name: 'B', x: 8, y: 0 },
-          { name: 'C', x: 3, y: 5 },
+          { name: 'A', x: 3, y: 5 },
+          { name: 'B', x: 0, y: 0 },
+          { name: 'C', x: 8, y: 0 },
         ],
-        extra: [{ from: { x: 1.2, y: 2 }, to: { x: 6, y: 2 }, label: '(MN)' }],
+        // M sur [AB] et N sur [AC] à la même hauteur : (MN) // (BC).
+        extra: [{ from: { x: 1.2, y: 2 }, to: { x: 6, y: 2 }, label: 'MN' }],
       };
 
 const thalesLongueur = S(
