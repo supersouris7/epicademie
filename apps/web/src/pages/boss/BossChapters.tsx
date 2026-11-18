@@ -40,7 +40,10 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
   const location = useLocation();
   const navType = useNavigationType();
   const [closeUp, setCloseUp] = useState(
-    () => navType !== NavigationType.Pop && !(location.state as { fromBattle?: boolean } | null)?.fromBattle,
+    // (Le 1er chargement de la page, adresse tapée ou rechargement, compte comme une entrée.)
+    () =>
+      (navType !== NavigationType.Pop || location.key === 'default') &&
+      !(location.state as { fromBattle?: boolean } | null)?.fromBattle,
   );
   const [roll] = useState(Math.random);
   const info = SUBJECTS.find((s) => s.id === subject);

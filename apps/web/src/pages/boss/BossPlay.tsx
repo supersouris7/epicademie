@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router';
@@ -101,6 +101,12 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   const [face, setFace] = useState<HeroExpression>('determine');
   /** Entrée en scène en grand, puis bandeau compact pour laisser la place aux énoncés. */
   const [intro, setIntro] = useState(true);
+  /**
+   * Début du combat : le Golem fait face au héros et provoque (« boss »), invoque ses mobs (« summon »),
+   * puis s'efface et le 1er mob entre (« mob ») avant la 1re question.
+   */
+  const [introStage, setIntroStage] = useState<'boss' | 'summon' | 'mob'>('boss');
+  const stageRef = useRef<'boss' | 'summon' | 'mob'>('boss');
   // Face-à-face : le boss provoque (plus vexé s'il a déjà perdu sur ce chapitre), Questy répond.
   const [roll] = useState(Math.random);
   const { data: overview } = useBosses(profile.id);
@@ -118,9 +124,23 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   const started = useRef(false);
   const timers = useRef<number[]>([]);
 
-  const later = (ms: number, fn: () => void) => {
+  const later = useCallback((ms: number, fn: () => void) => {
     timers.current.push(window.setTimeout(fn, ms));
-  };
+  }, []);
+  /** Le boss invoque ses mobs (une seule fois), puis le 1er mob entre et la 1re question arrive. */
+  const sendMobs = useCallback(() => {
+    if (stageRef.current !== 'boss') return;
+    stageRef.current = 'summon';
+    setIntroStage('summon');
+    setEnemyState('summon');
+    playSound('reveal');
+    later(1400, () => {
+      stageRef.current = 'mob';
+      setIntroStage('mob');
+      setEnemyState('idle');
+    });
+    later(2700, () => setIntro(false));
+  }, [later]);
   useEffect(() => () => timers.current.forEach((t) => window.clearTimeout(t)), []);
 
   useEffect(() => {
@@ -137,19 +157,20 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
         shownAt.current = performance.now();
         setBattle(b);
         later(900, () => setHeroState('idle'));
-        later(INTRO_MS, () => setIntro(false));
+        later(INTRO_MS, () => sendMobs());
       })
       .catch((err: unknown) =>
         setError(
           err instanceof ApiError ? err.message : 'Impossible de lancer le combat. Le serveur est-il joignable ?',
         ),
       );
-  }, [chapter.id, profile.id]);
+  }, [chapter.id, profile.id, later, sendMobs]);
 
   const q = battle?.question ?? null;
   const question = useMemo(() => (q ? generate(q.skillId, q.level, q.seed) : null), [q]);
   const skill = q ? getAnySkill(q.skillId) : undefined;
   const onBoss = battle ? battle.mobsDefeated >= BATTLE_MOBS : false;
+  const bossEnemy: ArenaEnemy = { key: 'boss', name: boss.name, boss: true, image: `bosses-maths-${boss.id}` };
   const enemy: ArenaEnemy | null = battle
     ? onBoss
       ? { key: 'boss', name: boss.name, boss: true, image: `bosses-maths-${boss.id}` }
@@ -335,7 +356,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
             <BattleArena
               hero={profile.hero}
               heroState={heroState}
-              enemy={enemy}
+              enemy={!arrival && introStage !== 'mob' ? bossEnemy : enemy}
               enemyState={enemyState}
               shot={0}
               riposte={0}
@@ -343,6 +364,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
               arena={arena}
               sky={boss.sky}
               heroEntrance={!arrival}
+              entrance={arrival || introStage !== 'summon'}
               height={arrival ? 'min(46dvh, 460px)' : 'min(34dvh, 420px)'}
             />
           </Shake>
@@ -370,13 +392,15 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
             mood={arrival ? 'proud' : 'happy'}
             delay={arrival ? 0.5 : 2.8}
           />
-          <GameButton
-            className="self-center"
-            icon="icons-navigation-next"
-            onClick={() => (arrival ? setArrival(false) : setIntro(false))}
-          >
-            {arrival ? 'Au combat !' : 'C’est parti !'}
-          </GameButton>
+          {(arrival || introStage === 'boss') && (
+            <GameButton
+              className="self-center"
+              icon="icons-navigation-next"
+              onClick={() => (arrival ? setArrival(false) : sendMobs())}
+            >
+              {arrival ? 'Au combat !' : 'C’est parti !'}
+            </GameButton>
+          )}
         </div>
       ) : (
         <BattleBar
