@@ -1,4 +1,5 @@
 import type { Chapter } from '@questeo/content';
+import { assetSrc, type BossExpression } from './assets.ts';
 import type { BossMedal } from '@questeo/shared';
 
 /** Un boss par matière, le même pour tous ses chapitres et toutes les classes (docs/SPEC.md §6.2 bis). */
@@ -23,6 +24,16 @@ export const SUBJECT_BOSSES: Record<string, BossIdentity> = { maths: GOLEM };
 
 export const bossOfSubject = (subject: string): BossIdentity => SUBJECT_BOSSES[subject] ?? GOLEM;
 export const bossOf = (chapter: Pick<Chapter, 'subject'>) => bossOfSubject(chapter.subject);
+
+/** Tête du boss avec une expression (identifiant d'asset) ; le portrait si l'expression n'est pas livrée. */
+export function bossHeadId(bossId: string, expression: BossExpression): string {
+  const id = `bosses-maths-${bossId}-head-${expression}`;
+  return assetSrc(id) ? id : `bosses-maths-${bossId}-portrait`;
+}
+
+/** Expression du boss selon les vies qui lui restent (3 : menaçant, 2 : inquiet, 1 : en colère). */
+export const bossMood = (lives: number): BossExpression =>
+  lives >= 3 ? 'menace' : lives === 2 ? 'inquiet' : lives === 1 ? 'colere' : 'ko';
 
 /** Arènes du combat (environments/arenas), une tirée au hasard à chaque combat. */
 export const ARENAS = ['espace', 'academie', 'jungle', 'volcan', 'glace'] as const;

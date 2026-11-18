@@ -203,6 +203,11 @@ export const KINDS = {
     framing: 'tuile carrée vue de dessus, remplit tout le cadre, motif raccordable sur les 4 bords',
     opaque: true,
   },
+  bossArt: {
+    gen: '1536x1024',
+    final: [1200, 800],
+    framing: 'personnage en pied centré, de face, fond transparent, halo et effets autour de lui',
+  },
   platform: {
     gen: '1536x1024',
     final: [512, 256],
@@ -896,7 +901,7 @@ const BOSSES = [
     'golem-des-equations',
     'Golem des Équations',
     'nombres et calculs',
-    'golem massif de blocs de pierre violette et grise couverts de mousse verte, cristaux violets sur les épaules, runes géométriques violettes lumineuses sur la poitrine et les poings, yeux violets brillants en colère',
+    'golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine',
   ],
   [
     'geomatrix',
@@ -953,6 +958,64 @@ const bossAssets = BOSSES.flatMap(([id, name, domain, look]) => [
     { reference: `bosses-maths-${id}`, fallback: 'placeholder-boss' },
   ),
 ]);
+
+/** Boss des maths (kit livré le 18/11/2026) : poses en plus, 13 expressions et illustration du menu. */
+export const BOSS_EXPRESSIONS = [
+  ['menace', 'yeux plissés menaçants'],
+  ['moqueur', 'yeux fermés en arc, sourire moqueur'],
+  ['colere', 'yeux rouges, veine de colère'],
+  ['surprise', 'grands yeux ronds, traits de surprise'],
+  ['perplexe', 'regard en coin, point d’interrogation'],
+  ['rire', 'éclat de rire, yeux fermés'],
+  ['clin-oeil', 'clin d’œil, étoile scintillante'],
+  ['amour', 'yeux en cœur, petits cœurs'],
+  ['triste', 'yeux tombants, larme'],
+  ['inquiet', 'yeux ronds, goutte de sueur'],
+  ['furieux', 'yeux blancs, éclairs'],
+  ['concentre', 'yeux mi-clos, anneaux d’énergie'],
+  ['ko', 'yeux en croix, étoiles qui tournent'],
+] as const;
+export type BossExpression = (typeof BOSS_EXPRESSIONS)[number][0];
+
+const GOLEM_LOOK = BOSSES[0][3];
+const golemExtras = [
+  ...(
+    [
+      ['shield', 'Bouclier : bulle d’énergie violette hexagonale autour de lui'],
+      ['summon', 'Invocation : bras levés, cube d’opérations au-dessus de la tête, débris en lévitation'],
+    ] as const
+  ).map(([state, pose]) =>
+    a(
+      'boss',
+      `bosses/maths/golem-des-equations-${state}.webp`,
+      `Golem des Équations — ${state}`,
+      `Golem des Équations : ${GOLEM_LOOK}. ${pose}`,
+      state === 'summon' ? 'Arrivée du boss en combat.' : 'Bilan d’une défaite : le boss se protège.',
+      2,
+      { reference: 'bosses-maths-golem-des-equations', fallback: 'placeholder-boss' },
+    ),
+  ),
+  ...BOSS_EXPRESSIONS.map(([id, look]) =>
+    a(
+      'portrait',
+      `bosses/maths/golem-des-equations-head-${id}.webp`,
+      `Golem des Équations — tête ${id}`,
+      `Tête du Golem des Équations (${GOLEM_LOOK}) : ${look}`,
+      'Tête du boss qui réagit (barre de vie, gros plan, face-à-face, bilan).',
+      2,
+      { reference: 'bosses-maths-golem-des-equations' },
+    ),
+  ),
+  a(
+    'bossArt',
+    'bosses/maths/golem-des-equations-art.webp',
+    'Golem des Équations — illustration',
+    `Golem des Équations en pied, de face, mains ouvertes, cube d’opérations brillant devant lui, signes + − × ÷ en lévitation dans un anneau violet : ${GOLEM_LOOK}`,
+    'Écran rouge « Choisir mon chapitre » : le boss en grand qui provoque (sans son nom).',
+    1,
+    { reference: 'bosses-maths-golem-des-equations' },
+  ),
+];
 
 const MINIONS = [
   [
@@ -1076,6 +1139,7 @@ export const PLANNED_ASSETS: readonly PlannedAsset[] = [
   ...characterAssets,
   ...weaponAssets,
   ...bossAssets,
+  ...golemExtras,
   ...minionAssets,
   ...effectAssets,
   ...envAssets,

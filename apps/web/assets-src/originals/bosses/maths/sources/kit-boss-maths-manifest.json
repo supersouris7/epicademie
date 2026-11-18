@@ -1,0 +1,23 @@
+{
+  "character": "boss_maths",
+  "reference": "kit_alex.html",
+  "poses": {
+    "count": 6,
+    "size": [560, 560],
+    "files": [
+      "poses/pose_idle.png",
+      "poses/pose_shoot.png",
+      "poses/pose_shield.png",
+      "poses/pose_summon.png",
+      "poses/pose_hurt.png",
+      "poses/pose_ko.png"
+    ]
+  },
+  "expressions": {
+    "count": 0,
+    "target_count": 13,
+    "size": [420, 420],
+    "status": "not_generated"
+  },
+  "note": "Poses extracted from original 6-pose sheet; source contains overlapping effects and extraction may need artistic cleanup."
+}

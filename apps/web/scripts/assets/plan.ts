@@ -281,10 +281,14 @@ function kitRequests(): KitRequest[] {
   const sheetOf = new Map(all.flatMap((s) => s.items.map((p) => [p.id, s] as const)));
   const numberOf = new Map<string, number>();
   const out: KitRequest[] = [];
-  // Alex et les arènes sont livrés (18/11/2026) : plus rien à demander pour eux (l'arme d'Alex reste).
+  // Alex, les arènes et le boss des maths sont livrés (18/11/2026) : plus rien à demander pour eux (l'arme d'Alex reste).
   // Les variantes d'arène ont leur propre fichier (kit-arenes.md).
   for (const p of PLANNED_ASSETS.filter(
-    (q) => lot.pick(q) && !q.file.startsWith('characters/alex/') && !q.file.startsWith('environments/arenas/'),
+    (q) =>
+      lot.pick(q) &&
+      !q.file.startsWith('characters/alex/') &&
+      !q.file.startsWith('environments/arenas/') &&
+      !q.file.startsWith('bosses/maths/golem-des-equations'),
   )) {
     if (numberOf.has(p.id)) continue;
     const n = out.length + 1;

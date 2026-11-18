@@ -36,10 +36,10 @@ import { Memo } from '../../components/play/Memo.tsx';
 import { PauseButton } from '../../components/play/PauseButton.tsx';
 import { QuestionTools } from '../../components/play/QuestionTools.tsx';
 import { useToast } from '../../components/Toast.tsx';
-import type { AnimationState, HeroExpression } from '../../design/assets.ts';
+import { assetSrc, type AnimationState, type BossExpression, type HeroExpression } from '../../design/assets.ts';
 import { HeroFace } from '../../components/battle/HeroFace.tsx';
 import { CharacterSprite } from '../../components/game/CharacterSprite.tsx';
-import { BOSS_MEDAL_ICONS, bossOf, mobOf, randomArena } from '../../design/bosses.ts';
+import { BOSS_MEDAL_ICONS, bossHeadId, bossMood, bossOf, mobOf, randomArena } from '../../design/bosses.ts';
 import { formatAnswer, formatResponse } from '../../lib/answers.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../lib/sound.ts';
 import { ITEM_ICONS } from '../../design/items.ts';
@@ -102,6 +102,8 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   /** Défaite : « On recommence ? » (5 s) avant le bilan. */
   const [retry, setRetry] = useState(false);
   const [enemyState, setEnemyState] = useState<EnemyState>('idle');
+  /** Tête du boss dans le bandeau : il réagit aux coups et aux erreurs. */
+  const [bossFace, setBossFace] = useState<BossExpression>('menace');
   const [shot, setShot] = useState(0);
   const [riposte, setRiposte] = useState(0);
   const shownAt = useRef(0);
@@ -173,7 +175,14 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
     if (next.status === 'fighting' && battle && battle.mobsDefeated < BATTLE_MOBS && next.mobsDefeated >= BATTLE_MOBS) {
       setArrival(true);
       playSound('reveal');
-      later(ARRIVAL_MS, () => setArrival(false));
+      // Il arrive en invoquant ses opérations, l'air moqueur.
+      setBossFace('moqueur');
+      later(400, () => setEnemyState('summon'));
+      later(2600, () => setEnemyState('idle'));
+      later(ARRIVAL_MS, () => {
+        setArrival(false);
+        setBossFace('menace');
+      });
     }
     setMissed(null);
     setPicked(null);
@@ -182,16 +191,21 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
     shownAt.current = performance.now();
     if (next.status === 'won') {
       setEnemyState('ko');
+      setBossFace('ko');
       setHeroState('victory');
       setFace('rire');
       later(1400, () => void finish(next));
     } else if (next.status === 'lost') {
+      setBossFace('rire');
       setHeroState('defeat');
       setFace('etourdi');
       later(1200, () => void finish(next));
     } else {
       setHeroState('idle');
-      setEnemyState('idle');
+      // Le boss qui vient d'arriver garde sa pose d'invocation.
+      if (!(battle && battle.mobsDefeated < BATTLE_MOBS && next.mobsDefeated >= BATTLE_MOBS)) setEnemyState('idle');
+      if (next.mobsDefeated >= BATTLE_MOBS && battle && battle.mobsDefeated >= BATTLE_MOBS)
+        setBossFace(bossMood(next.bossLives));
       setFace(next.hearts === 1 ? 'determine' : 'confiant');
       setBusy(false);
     }
@@ -224,13 +238,20 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
         setHeroState('shoot');
         setFace(battle.mobsDefeated >= BATTLE_MOBS ? 'enthousiaste' : 'joie');
         setShot((n) => n + 1);
-        later(HIT_MS, () => setEnemyState('hurt'));
+        later(HIT_MS, () => {
+          setEnemyState('hurt');
+          // Touché : le boss passe de la surprise à la fureur, puis KO.
+          if (battle.mobsDefeated >= BATTLE_MOBS)
+            setBossFace(res.battle.bossLives >= 2 ? 'surprise' : res.battle.bossLives === 1 ? 'furieux' : 'ko');
+        });
         later(NEXT_MS, () => advance(res.battle));
       } else {
         playSound('wrong');
         setScene(true);
         later(MISS_SCENE_MS, () => setScene(false));
         setEnemyState('attack');
+        // Le boss se moque de l'erreur (un mob ne change pas de tête).
+        if (battle.mobsDefeated >= BATTLE_MOBS) setBossFace(res.outcome === 'blocked' ? 'perplexe' : 'rire');
         setRiposte((n) => n + 1);
         later(HIT_MS, () => {
           setHeroState(res.outcome === 'blocked' ? 'shield' : 'hurt');
@@ -270,7 +291,8 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
     }
   };
 
-  const leave = () => void navigate(`/jouer/boss/${chapter.subject}?classe=${chapter.grade}`);
+  // Quitter la partie ramène au menu principal.
+  const leave = () => void navigate('/hub');
 
   if (error) {
     return (
@@ -322,6 +344,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
             <BossSays
               bossId={boss.id}
               name={boss.name}
+              expression={beaten ? 'colere' : 'moqueur'}
               text={faceOffTaunt(chapter.title, beaten, profile.gender, roll)}
               delay={1.1}
             />
@@ -348,7 +371,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
           maxHearts={battle?.maxHearts ?? 3}
           shield={battle?.shield ?? false}
           enemyName={enemy?.name ?? boss.name}
-          enemyImage={enemy ? (enemy.boss ? `${enemy.image}-portrait` : enemy.image) : 'placeholder-boss'}
+          enemyImage={enemy ? (enemy.boss ? bossHeadId(boss.id, bossFace) : enemy.image) : 'placeholder-boss'}
           enemyFilter={enemy?.filter}
           enemyKey={enemy?.key ?? 'boss'}
           bossLives={onBoss ? (battle?.bossLives ?? BOSS_LIVES) : null}
@@ -558,6 +581,7 @@ function BattleResults({
   const boss = bossOf(chapter);
   const weak = summary.weakSkill ? getSkill(summary.weakSkill) : undefined;
   const gained = ITEMS.filter((i) => (summary.items[i] ?? 0) > 0);
+  const bossPose = assetSrc(`bosses-maths-${boss.id}-${summary.won ? 'ko' : 'shield'}`);
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-5 px-4 py-6">
       {summary.won && <Confetti />}
@@ -570,17 +594,21 @@ function BattleResults({
         >
           {/* Le héros en entier : victoire, ou la tête basse après une défaite. */}
           {summary.won ? (
-            <CharacterSprite hero={hero} state="victory" height={170} />
+            <CharacterSprite hero={hero} state="victory" height={150} />
           ) : (
             <span className="relative flex flex-col items-center gap-2">
               {/* Le héros ne baisse pas les bras. */}
               <span className="cartoon font-display text-on-light rounded-2xl bg-white px-3 py-1 text-lg whitespace-nowrap">
                 Je reviendrai plus {accord(gender, 'fort', 'forte')} !
               </span>
-              <HeroFace hero={hero} expression="determine" size={130} />
+              <HeroFace hero={hero} expression="determine" size={110} />
             </span>
           )}
-          <QuestyPose pose={summary.won ? 'hero' : 'triste'} mood={summary.won ? 'proud' : 'sad'} size={130} />
+          <QuestyPose pose={summary.won ? 'hero' : 'triste'} mood={summary.won ? 'proud' : 'sad'} size={110} />
+          {/* Le boss : KO après une victoire, à l'abri derrière son bouclier après une défaite. */}
+          {bossPose && (
+            <img src={bossPose} alt="" aria-hidden className="h-[110px] w-[110px] object-contain sm:h-36 sm:w-36" />
+          )}
         </motion.div>
         <h1 className="font-display text-4xl tracking-wide">
           {summary.won ? `${boss.name} est vaincu !` : `${boss.name} a gagné cette fois…`}

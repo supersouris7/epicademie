@@ -7,7 +7,8 @@ import { QuestyPose } from '../mascot/QuestyPose.tsx';
 import type { QuestyPoseId } from '../mascot/poses.ts';
 import type { MoodId } from '../mascot/moods.ts';
 import { HeroFace } from './HeroFace.tsx';
-import { assetSrc } from '../../design/assets.ts';
+import { assetSrc, type BossExpression } from '../../design/assets.ts';
+import { bossHeadId } from '../../design/bosses.ts';
 import { RETRY_SECONDS } from '../../lib/battleLines.ts';
 
 /** Questy en pied qui parle, bulle à sa droite (au-dessus de l'arène). */
@@ -141,9 +142,9 @@ export function RetryCountdown({
   );
 }
 
-/** Tête du boss (portrait livré, sinon remplaçant). */
-function bossPortrait(bossId: string) {
-  return assetSrc(`bosses-maths-${bossId}-portrait`) ?? assetSrc('placeholder-boss');
+/** Tête du boss avec son expression (portrait livré, sinon remplaçant). */
+function bossPortrait(bossId: string, expression: BossExpression) {
+  return assetSrc(bossHeadId(bossId, expression)) ?? assetSrc('placeholder-boss');
 }
 
 /** Le boss parle : sa tête à droite, bulle rouge à gauche (face au héros). */
@@ -151,14 +152,16 @@ export function BossSays({
   bossId,
   name,
   text,
+  expression = 'moqueur',
   delay = 0.5,
 }: {
   readonly bossId: string;
   readonly name: string;
   readonly text: string;
+  readonly expression?: BossExpression;
   readonly delay?: number;
 }) {
-  const src = bossPortrait(bossId);
+  const src = bossPortrait(bossId, expression);
   return (
     <motion.div
       initial={{ x: 40, opacity: 0 }}
@@ -177,22 +180,26 @@ export function BossSays({
 }
 
 /**
- * Gros plan du boss à l'entrée d'une matière : il arrive en zoom, l'écran tremble, il provoque.
+ * Gros plan du boss à l'entrée d'une matière : son illustration en grand arrive en zoom, l'écran tremble,
+ * il provoque (son nom n'est pas écrit).
  * Un toucher n'importe où (ou le bouton) passe au choix du chapitre.
  */
 export function BossCloseUp({
   bossId,
   name,
   text,
+  expression = 'moqueur',
   onDone,
 }: {
   readonly bossId: string;
   readonly name: string;
   readonly text: string;
+  readonly expression?: BossExpression;
   readonly onDone: () => void;
 }) {
   const reduce = useReducedMotion();
-  const src = bossPortrait(bossId);
+  // Le boss en grand (illustration en pied) ; sa tête si l'illustration n'est pas livrée.
+  const src = assetSrc(`bosses-maths-${bossId}-art`) ?? bossPortrait(bossId, expression);
   return (
     <div
       role="dialog"
@@ -214,18 +221,10 @@ export function BossCloseUp({
             src={src}
             alt=""
             aria-hidden
-            className="relative h-[min(62vw,300px)] w-[min(62vw,300px)] object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)]"
+            className="relative max-h-[52dvh] w-[min(96vw,640px)] object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)]"
           />
         )}
       </motion.div>
-      <motion.h1
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="font-display text-toon pointer-events-none relative text-4xl tracking-wide sm:text-5xl"
-      >
-        {name}
-      </motion.h1>
       <motion.p
         initial={{ scale: 0.6, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}

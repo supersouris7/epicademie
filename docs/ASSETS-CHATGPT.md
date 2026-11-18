@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — génération des images avec ChatGPT
 
-283 images finales, produites en 109 demandes.
+299 images finales, produites en 125 demandes.
 
 Chaque lot existe aussi en **fichier séparé et autonome** (message de départ inclus) dans `docs/chatgpt/` :
 c'est ce fichier qu'il faut utiliser dans ChatGPT, un lot par conversation. Ce document-ci regroupe tout pour référence.
@@ -18,7 +18,7 @@ c'est ce fichier qu'il faut utiliser dans ChatGPT, un lot par conversation. Ce d
 | 3 | Pictogrammes blancs (boutons) | 27 | 15–17 | `docs/chatgpt/lot-03-pictogrammes-blancs-boutons.md` |
 | 4 | Icônes en couleur | 65 | 18–25 | `docs/chatgpt/lot-04-icones-en-couleur.md` |
 | 5 | Questy, la mascotte | 38 | 26–45 | `docs/chatgpt/lot-05-questy-la-mascotte.md` |
-| 6 | Kit combat | 126 | 46–109 | `docs/chatgpt/lot-06-kit-combat.md` |
+| 6 | Kit combat | 142 | 46–125 | `docs/chatgpt/lot-06-kit-combat.md` |
 
 ## Modèle à utiliser
 
@@ -1105,10 +1105,10 @@ Ordre : de gauche à droite, puis de haut en bas. Chaque élément est centré d
 Cadrage de chaque élément : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 Tous les éléments ont la même épaisseur de contour, la même lumière et la même échelle visuelle.
 
-1. Golem des Équations, boss du domaine « nombres et calculs » : golem massif de blocs de pierre violette et grise couverts de mousse verte, cristaux violets sur les épaules, runes géométriques violettes lumineuses sur la poitrine et les poings, yeux violets brillants en colère. Pose de combat menaçante mais comique
-2. Golem des Équations, boss du domaine « nombres et calculs » : golem massif de blocs de pierre violette et grise couverts de mousse verte, cristaux violets sur les épaules, runes géométriques violettes lumineuses sur la poitrine et les poings, yeux violets brillants en colère. Attaque : se penche vers la gauche et lance une grosse onde d’énergie rouge
-3. Golem des Équations, boss du domaine « nombres et calculs » : golem massif de blocs de pierre violette et grise couverts de mousse verte, cristaux violets sur les épaules, runes géométriques violettes lumineuses sur la poitrine et les poings, yeux violets brillants en colère. Touché : recule, grimace comique, petites étincelles
-4. Golem des Équations, boss du domaine « nombres et calculs » : golem massif de blocs de pierre violette et grise couverts de mousse verte, cristaux violets sur les épaules, runes géométriques violettes lumineuses sur la poitrine et les poings, yeux violets brillants en colère. Vaincu : affalé, étourdi, petites spirales au-dessus de la tête
+1. Golem des Équations, boss du domaine « nombres et calculs » : golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine. Pose de combat menaçante mais comique
+2. Golem des Équations, boss du domaine « nombres et calculs » : golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine. Attaque : se penche vers la gauche et lance une grosse onde d’énergie rouge
+3. Golem des Équations, boss du domaine « nombres et calculs » : golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine. Touché : recule, grimace comique, petites étincelles
+4. Golem des Équations, boss du domaine « nombres et calculs » : golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine. Vaincu : affalé, étourdi, petites spirales au-dessus de la tête
 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
@@ -1118,7 +1118,7 @@ Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-portrait
 > 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
 
 ```text
-Image 1024×1024. Golem des Équations (exactement comme sur sa planche d’états) : golem massif de blocs de pierre violette et grise couverts de mousse verte, cristaux violets sur les épaules, runes géométriques violettes lumineuses sur la poitrine et les poings, yeux violets brillants en colère. Tête seule, de face, l’air menaçant mais drôle.
+Image 1024×1024. Golem des Équations (exactement comme sur sa planche d’états) : golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine. Tête seule, de face, l’air menaçant mais drôle.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 Style, fond et interdits : ceux du message de départ.
 ```
@@ -1235,7 +1235,167 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 86. Planche « mobs » (9 éléments)
+#### 86. Golem des Équations — shield
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-shield.png` · 1536×1024 → final 512×512
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1536×1024. Golem des Équations : golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine. Bouclier : bulle d’énergie violette hexagonale autour de lui.
+Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 87. Golem des Équations — summon
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-summon.png` · 1536×1024 → final 512×512
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1536×1024. Golem des Équations : golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine. Invocation : bras levés, cube d’opérations au-dessus de la tête, débris en lévitation.
+Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 88. Golem des Équations — tête menace
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-menace.png` · 1024×1024 → final 512×512
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1024×1024. Tête du Golem des Équations (golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine) : yeux plissés menaçants.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 89. Golem des Équations — tête moqueur
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-moqueur.png` · 1024×1024 → final 512×512
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1024×1024. Tête du Golem des Équations (golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine) : yeux fermés en arc, sourire moqueur.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 90. Golem des Équations — tête colere
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-colere.png` · 1024×1024 → final 512×512
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1024×1024. Tête du Golem des Équations (golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine) : yeux rouges, veine de colère.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 91. Golem des Équations — tête surprise
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-surprise.png` · 1024×1024 → final 512×512
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1024×1024. Tête du Golem des Équations (golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine) : grands yeux ronds, traits de surprise.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 92. Golem des Équations — tête perplexe
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-perplexe.png` · 1024×1024 → final 512×512
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1024×1024. Tête du Golem des Équations (golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine) : regard en coin, point d’interrogation.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 93. Golem des Équations — tête rire
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-rire.png` · 1024×1024 → final 512×512
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1024×1024. Tête du Golem des Équations (golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine) : éclat de rire, yeux fermés.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 94. Golem des Équations — tête clin-oeil
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-clin-oeil.png` · 1024×1024 → final 512×512
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1024×1024. Tête du Golem des Équations (golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine) : clin d’œil, étoile scintillante.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 95. Golem des Équations — tête amour
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-amour.png` · 1024×1024 → final 512×512
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1024×1024. Tête du Golem des Équations (golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine) : yeux en cœur, petits cœurs.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 96. Golem des Équations — tête triste
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-triste.png` · 1024×1024 → final 512×512
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1024×1024. Tête du Golem des Équations (golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine) : yeux tombants, larme.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 97. Golem des Équations — tête inquiet
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-inquiet.png` · 1024×1024 → final 512×512
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1024×1024. Tête du Golem des Équations (golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine) : yeux ronds, goutte de sueur.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 98. Golem des Équations — tête furieux
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-furieux.png` · 1024×1024 → final 512×512
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1024×1024. Tête du Golem des Équations (golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine) : yeux blancs, éclairs.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 99. Golem des Équations — tête concentre
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-concentre.png` · 1024×1024 → final 512×512
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1024×1024. Tête du Golem des Équations (golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine) : yeux mi-clos, anneaux d’énergie.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 100. Golem des Équations — tête ko
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-head-ko.png` · 1024×1024 → final 512×512
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1024×1024. Tête du Golem des Équations (golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine) : yeux en croix, étoiles qui tournent.
+Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 101. Golem des Équations — illustration
+Enregistrer sous `assets-src/originals/bosses/maths/golem-des-equations-art.png` · 1536×1024 → final 1200×800
+> 📎 Joindre l'image validée `bosses/maths/golem-des-equations.png`.
+
+```text
+Image 1536×1024. Golem des Équations en pied, de face, mains ouvertes, cube d’opérations brillant devant lui, signes + − × ÷ en lévitation dans un anneau violet : golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine.
+Cadrage : personnage en pied centré, de face, fond transparent, halo et effets autour de lui.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 102. Planche « mobs » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/mobs.png` · 1024×1024, grille 3×3 → chaque case finale 384×384
 Cases : 1 → `bosses/minions/calculatrice` · 2 → `bosses/minions/cube-bot` · 3 → `bosses/minions/equerre` · 4 → `bosses/minions/compas` · 5 → `bosses/minions/de` · 6 → `bosses/minions/camembert` · 7 → `bosses/minions/courbe` · 8 → `bosses/minions/bug` · 9 → `bosses/minions/bloc-code`
 
@@ -1258,7 +1418,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 87. Planche « effets-1 » (9 éléments)
+#### 103. Planche « effets-1 » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/effets-1.png` · 1024×1024, grille 3×3 → chaque case finale 512×512
 Cases : 1 → `effects/impacts/hit-burst` · 2 → `effects/impacts/anneau` · 3 → `effects/impacts/etincelles` · 4 → `effects/impacts/flash` · 5 → `effects/impacts/explosion` · 6 → `effects/particles/puff` · 7 → `effects/particles/bouclier` · 8 → `effects/particles/soin` · 9 → `effects/particles/etourdi`
 
@@ -1281,7 +1441,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 88. Planche « effets-2 » (3 éléments)
+#### 104. Planche « effets-2 » (3 éléments)
 Enregistrer sous `assets-src/originals/sheets/effets-2.png` · 1024×1024, grille 3×3 → chaque case finale 512×512
 Cases : 1 → `effects/impacts/onde-boss` · 2 → `effects/particles/confettis` · 3 → `effects/transitions/portail`
 
@@ -1298,7 +1458,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 89. Arène de la station spatiale
+#### 105. Arène de la station spatiale
 Enregistrer sous `assets-src/originals/environments/arenas/espace.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
@@ -1307,7 +1467,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 90. Arène de la station spatiale (portrait)
+#### 106. Arène de la station spatiale (portrait)
 Enregistrer sous `assets-src/originals/environments/arenas/espace-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/espace.png`.
 
@@ -1317,7 +1477,7 @@ Cadrage : même décor recomposé en hauteur (format portrait, écran de télép
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 91. Arène de la station spatiale (panorama)
+#### 107. Arène de la station spatiale (panorama)
 Enregistrer sous `assets-src/originals/environments/arenas/espace-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/espace.png`.
 
@@ -1327,7 +1487,7 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 92. Arène de la station spatiale (bandeau)
+#### 108. Arène de la station spatiale (bandeau)
 Enregistrer sous `assets-src/originals/environments/arenas/espace-bandeau.png` · 1536×1024 → final 1536×384 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/espace.png`.
 
@@ -1337,7 +1497,7 @@ Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 93. Arène de l’académie
+#### 109. Arène de l’académie
 Enregistrer sous `assets-src/originals/environments/arenas/academie.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
@@ -1346,7 +1506,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 94. Arène de l’académie (portrait)
+#### 110. Arène de l’académie (portrait)
 Enregistrer sous `assets-src/originals/environments/arenas/academie-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/academie.png`.
 
@@ -1356,7 +1516,7 @@ Cadrage : même décor recomposé en hauteur (format portrait, écran de télép
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 95. Arène de l’académie (panorama)
+#### 111. Arène de l’académie (panorama)
 Enregistrer sous `assets-src/originals/environments/arenas/academie-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/academie.png`.
 
@@ -1366,7 +1526,7 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 96. Arène de l’académie (bandeau)
+#### 112. Arène de l’académie (bandeau)
 Enregistrer sous `assets-src/originals/environments/arenas/academie-bandeau.png` · 1536×1024 → final 1536×384 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/academie.png`.
 
@@ -1376,7 +1536,7 @@ Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 97. Arène de la jungle
+#### 113. Arène de la jungle
 Enregistrer sous `assets-src/originals/environments/arenas/jungle.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
@@ -1385,7 +1545,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 98. Arène de la jungle (portrait)
+#### 114. Arène de la jungle (portrait)
 Enregistrer sous `assets-src/originals/environments/arenas/jungle-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/jungle.png`.
 
@@ -1395,7 +1555,7 @@ Cadrage : même décor recomposé en hauteur (format portrait, écran de télép
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 99. Arène de la jungle (panorama)
+#### 115. Arène de la jungle (panorama)
 Enregistrer sous `assets-src/originals/environments/arenas/jungle-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/jungle.png`.
 
@@ -1405,7 +1565,7 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 100. Arène de la jungle (bandeau)
+#### 116. Arène de la jungle (bandeau)
 Enregistrer sous `assets-src/originals/environments/arenas/jungle-bandeau.png` · 1536×1024 → final 1536×384 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/jungle.png`.
 
@@ -1415,7 +1575,7 @@ Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 101. Arène du volcan
+#### 117. Arène du volcan
 Enregistrer sous `assets-src/originals/environments/arenas/volcan.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
@@ -1424,7 +1584,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 102. Arène du volcan (portrait)
+#### 118. Arène du volcan (portrait)
 Enregistrer sous `assets-src/originals/environments/arenas/volcan-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/volcan.png`.
 
@@ -1434,7 +1594,7 @@ Cadrage : même décor recomposé en hauteur (format portrait, écran de télép
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 103. Arène du volcan (panorama)
+#### 119. Arène du volcan (panorama)
 Enregistrer sous `assets-src/originals/environments/arenas/volcan-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/volcan.png`.
 
@@ -1444,7 +1604,7 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 104. Arène du volcan (bandeau)
+#### 120. Arène du volcan (bandeau)
 Enregistrer sous `assets-src/originals/environments/arenas/volcan-bandeau.png` · 1536×1024 → final 1536×384 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/volcan.png`.
 
@@ -1454,7 +1614,7 @@ Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 105. Arène des glaces
+#### 121. Arène des glaces
 Enregistrer sous `assets-src/originals/environments/arenas/glace.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
@@ -1463,7 +1623,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 106. Arène des glaces (portrait)
+#### 122. Arène des glaces (portrait)
 Enregistrer sous `assets-src/originals/environments/arenas/glace-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/glace.png`.
 
@@ -1473,7 +1633,7 @@ Cadrage : même décor recomposé en hauteur (format portrait, écran de télép
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 107. Arène des glaces (panorama)
+#### 123. Arène des glaces (panorama)
 Enregistrer sous `assets-src/originals/environments/arenas/glace-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/glace.png`.
 
@@ -1483,7 +1643,7 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 108. Arène des glaces (bandeau)
+#### 124. Arène des glaces (bandeau)
 Enregistrer sous `assets-src/originals/environments/arenas/glace-bandeau.png` · 1536×1024 → final 1536×384 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/glace.png`.
 
@@ -1493,7 +1653,7 @@ Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 109. Illustration principale
+#### 125. Illustration principale
 Enregistrer sous `assets-src/originals/branding/key-art.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 

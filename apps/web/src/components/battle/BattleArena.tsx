@@ -6,7 +6,7 @@ import { HERO_COLORS } from '../../design/heroes.ts';
 import { CHARACTER_MOTION } from '../../design/motion.ts';
 import { useArenaImage } from '../../lib/arena.ts';
 
-export type EnemyState = 'idle' | 'attack' | 'hurt' | 'ko';
+export type EnemyState = 'idle' | 'attack' | 'hurt' | 'ko' | 'summon' | 'shield';
 
 export interface ArenaEnemy {
   /** Clé d'affichage : change à chaque nouvel adversaire (entrée en scène). */
@@ -200,7 +200,9 @@ const ENEMY_MOTION: Record<EnemyState, TargetAndTransition> = {
   idle: { y: [0, -5, 0], transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' } },
   attack: { x: [0, -30, 0], transition: { duration: 0.4 } },
   hurt: { x: [0, 16, -6, 0], opacity: [1, 0.4, 1, 0.7, 1], transition: { duration: 0.45 } },
-  ko: { rotate: 12, y: 16, opacity: 0.6, transition: { duration: 0.5 } },
+  ko: { y: 8, transition: { duration: 0.5 } },
+  summon: { y: [0, -14, 0], transition: { duration: 1.2, repeat: Infinity, ease: 'easeInOut' } },
+  shield: { scale: [1, 1.04, 1], transition: { duration: 1.4, repeat: Infinity } },
 };
 
 function EnemyFigure({ enemy, state }: { readonly enemy: ArenaEnemy; readonly state: EnemyState }) {

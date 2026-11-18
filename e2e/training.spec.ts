@@ -141,6 +141,10 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await page.getByRole('button', { name: 'Pause' }).click();
   await expect(page.getByRole('alertdialog', { name: 'Pause' })).toContainText('cette série ne sera pas comptée');
   await page.getByRole('button', { name: 'Reprendre' }).click();
+  // Quitter une partie ramène au menu principal.
+  await page.getByRole('button', { name: 'Pause' }).click();
+  await page.getByRole('button', { name: 'Quitter la série' }).click();
+  await expect(page).toHaveURL(/\/hub$/);
 
   // Tables : brouillon disponible, pas de calculatrice ni de conseil.
   await page.goto('/partie/entrainement/m5-calcul/m5-tables');

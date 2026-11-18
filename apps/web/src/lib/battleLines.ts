@@ -22,7 +22,7 @@ export function subjectTaunt(wins: number, gender: Gender, r: number): string {
     return pick(
       [
         'Hahaha ! Un nouveau challenger ? Choisis ton chapitre… et prépare-toi à perdre tes cœurs !',
-        'Je suis le Golem des Équations ! Aucun chapitre des maths ne te résistera ? C’est ce qu’on va voir !',
+        'Je suis le maître des maths ! Aucun chapitre ne te résistera ? C’est ce qu’on va voir !',
         'Mes mobs n’ont pas mangé de héros depuis longtemps… Choisis ton chapitre, si tu l’oses !',
       ],
       r,

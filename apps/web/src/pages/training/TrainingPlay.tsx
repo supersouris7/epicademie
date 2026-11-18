@@ -277,7 +277,8 @@ function Game({
   };
 
   const quit = () => setConfirmQuit(true);
-  const leave = () => void navigate(`/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`);
+  // Quitter la partie ramène au menu principal.
+  const leave = () => void navigate('/hub');
 
   if (error) {
     return (

@@ -86,9 +86,9 @@ export async function render(asset: PlannedAsset, source: Rgba): Promise<{ webp:
   if (!hasAlpha(source)) notes.push('fond non détouré');
   // Image déjà détourée par le générateur : on retire les débris de la case voisine collés au bord.
   let img = hasAlpha(source) ? dropEdgeScraps(source) : source;
-  // Pose livrée seule et déjà détourée : même échelle pour toutes les poses (jamais agrandie),
+  // Pose (héros ou boss) livrée seule et déjà détourée : même échelle pour toutes les poses (jamais agrandie),
   // pieds posés en bas, centrée : les poses s'enchaînent sans saut de taille ni de position.
-  if (asset.kind === 'pose' && hasAlpha(source)) {
+  if ((asset.kind === 'pose' || asset.kind === 'boss') && hasAlpha(source)) {
     const box = contentBox(img);
     if (!box) throw new Error('image vide');
     img = crop(img, box);

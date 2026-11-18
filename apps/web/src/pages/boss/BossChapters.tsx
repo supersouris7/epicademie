@@ -121,6 +121,7 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
           bossId={boss.id}
           name={boss.name}
           text={subjectTaunt(wins, profile.gender, roll)}
+          expression={wins === 0 ? 'moqueur' : 'colere'}
           onDone={() => setCloseUp(false)}
         />
       )}
