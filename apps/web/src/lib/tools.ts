@@ -14,3 +14,9 @@ export function toolTabs(question: Question, skill: Skill | undefined): DockTab[
     ...(tools.length > 0 || measured ? (['conversion'] as const) : []),
   ];
 }
+
+/**
+ * Hauteur de la zone « Répondre » et outils en portrait (téléphone) : assez pour le pavé entier
+ * (4 rangées et l'affichage), davantage quand la calculatrice est ouverte (touches de fonction).
+ */
+export const DOCK_HEIGHT = 'h-[clamp(300px,46dvh,420px)] has-[[data-tool=calc]]:h-[clamp(360px,58dvh,520px)]';

@@ -28,6 +28,8 @@ interface BattleArenaProps {
   /** Change à chaque riposte : une onde part de l'adversaire vers le héros. */
   readonly riposte: number;
   readonly shield: boolean;
+  /** Le héros entre en courant (par défaut comme `entrance`) ; false : il attend déjà en place. */
+  readonly heroEntrance?: boolean;
   /** Décor : image d'arène livrée, sinon dégradé. */
   readonly arena: string;
   readonly sky: readonly [string, string];
@@ -45,6 +47,7 @@ interface BattleArenaProps {
 export function BattleArena(props: BattleArenaProps) {
   const { hero, heroState, enemy, enemyState, shot, riposte, shield, arena, sky } = props;
   const run = props.entrance !== false;
+  const heroRun = props.heroEntrance ?? run;
   const reduce = useReducedMotion();
   // Variante de l'arène (portrait, 16:9, panorama) la plus proche des proportions du cadre.
   const frame = useRef<HTMLDivElement>(null);
@@ -69,7 +72,7 @@ export function BattleArena(props: BattleArenaProps) {
       <motion.div
         className="absolute bottom-[6%] left-[6%] h-[78%]"
         style={{ aspectRatio: '1', maxWidth: '44%' }}
-        initial={reduce || !run ? false : { x: '-140%' }}
+        initial={reduce || !heroRun ? false : { x: '-140%' }}
         animate={{ x: 0 }}
         transition={{ duration: 0.9, ease: 'easeOut' }}
       >

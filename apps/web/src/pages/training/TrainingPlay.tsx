@@ -35,6 +35,7 @@ import type { MoodId } from '../../components/mascot/moods.ts';
 import { Feedback } from '../../components/play/Feedback.tsx';
 import { Memo } from '../../components/play/Memo.tsx';
 import { QuestionTools } from '../../components/play/QuestionTools.tsx';
+import { DOCK_HEIGHT } from '../../lib/tools.ts';
 import { ConfirmDialog } from '../../components/ConfirmDialog.tsx';
 import { localToday, randomSeed } from '../../lib/dates.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../lib/sound.ts';
@@ -413,7 +414,7 @@ function Game({
 
             {/* Écran coupé : pavé et outils en bas (portrait) ou sur le côté (paysage). */}
             <section
-              className={`flex min-h-0 shrink-0 flex-col ${explaining ? 'side:h-full min-h-[clamp(280px,40dvh,390px)] flex-1' : 'side:h-[min(100%,560px)] side:self-center h-[clamp(280px,40dvh,390px)]'}`}
+              className={`flex min-h-0 shrink-0 flex-col ${explaining ? 'side:h-full min-h-[clamp(280px,40dvh,390px)] flex-1' : `side:h-[min(100%,560px)] side:self-center ${DOCK_HEIGHT}`}`}
             >
               {answered ? (
                 <Feedback

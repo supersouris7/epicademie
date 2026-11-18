@@ -33,3 +33,31 @@ describe('calculatrice', () => {
     expect(formatResult(1e13)).toBe('Erreur');
   });
 });
+
+describe('calculatrice scientifique', () => {
+  it('carré, puissance et racine', () => {
+    expect(evaluate('5²')).toBe(25);
+    expect(evaluate('3²+4²')).toBe(25);
+    expect(evaluate('√(3²+4²)')).toBe(5);
+    expect(evaluate('2^10')).toBe(1024);
+    expect(evaluate('10^−2')).toBeCloseTo(0.01);
+    expect(evaluate('−2^2')).toBe(-4);
+    expect(evaluate('(−2)²')).toBe(4);
+    expect(evaluate('2^3^2')).toBe(512);
+    expect(evaluate('2√(9)')).toBe(6);
+    expect(() => evaluate('√(−4)')).toThrow(CalcError);
+  });
+  it('trigonométrie en degrés', () => {
+    expect(formatResult(evaluate('cos(60)'))).toBe('0,5');
+    expect(formatResult(evaluate('sin(30)'))).toBe('0,5');
+    expect(formatResult(evaluate('tan(45)'))).toBe('1');
+    expect(formatResult(evaluate('8×cos(35)'))).toBe('6,553216');
+    expect(formatResult(evaluate('cos⁻¹(0,5)'))).toBe('60');
+    expect(formatResult(evaluate('sin⁻¹(1)'))).toBe('90');
+    expect(formatResult(evaluate('tan⁻¹(1)'))).toBe('45');
+    expect(formatResult(evaluate('cos⁻¹(3÷5)'))).toBe('53,130102');
+    expect(() => evaluate('cos⁻¹(2)')).toThrow(CalcError);
+    expect(() => evaluate('tan(90)')).toThrow(CalcError);
+    expect(() => evaluate('cos(60')).toThrow(CalcError);
+  });
+});

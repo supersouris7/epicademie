@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Advice, Question, Response, Skill } from '@questeo/content';
+import { gradeOfSkill, type Advice, type Question, type Response, type Skill } from '@questeo/content';
 import { MathText } from '../MathText.tsx';
 import { Figure } from '../figures/Figure.tsx';
 import { Brouillon, type Stroke } from '../tools/Brouillon.tsx';
@@ -40,7 +40,7 @@ interface QuestionToolsProps {
 }
 
 /**
- * Pavé (ou clavier) et outils d'une question : calculatrice, brouillon (agrandissable en pleine page),
+ * Zone « Répondre » (pavé, clavier ou choix) et outils d'une question : calculatrice, brouillon (agrandissable en pleine page),
  * tableau de conversion. À monter avec une `key` propre à la question pour repartir de zéro.
  */
 export function QuestionTools({
@@ -77,9 +77,6 @@ export function QuestionTools({
   const kind =
     (question.answer.kind === 'number' ? conversionNeeded(question.prompt, question.answer.unit) : null) ??
     conversionKind(question);
-  const answerKind = question.answer.kind;
-  const answerLabel =
-    answerKind === 'text' ? 'Clavier' : answerKind === 'number' || answerKind === 'fraction' ? 'Pavé' : 'Réponse';
   const sendToAnswer =
     question.answer.kind === 'number'
       ? (value: string) => {
@@ -93,7 +90,6 @@ export function QuestionTools({
       <PlayDock
         tabs={tabs}
         active={activeTab}
-        answerLabel={answerLabel}
         glow={advice && tabs.includes(advice) && !opened.has(advice) ? advice : undefined}
         onSelect={selectTab}
       >
@@ -108,7 +104,9 @@ export function QuestionTools({
             initialText={fill?.value}
           />
         </div>
-        {activeTab === 'calculatrice' && <Calculator state={calc} onChange={setCalc} onUse={sendToAnswer} />}
+        {activeTab === 'calculatrice' && (
+          <Calculator state={calc} onChange={setCalc} grade={gradeOfSkill(question.skillId)} onUse={sendToAnswer} />
+        )}
         {activeTab === 'brouillon' && !bigDraft && (
           <Brouillon strokes={strokes} onChange={setStrokes} onToggleExpand={() => setBigDraft(true)} />
         )}

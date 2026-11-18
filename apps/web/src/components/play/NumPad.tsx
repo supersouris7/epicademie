@@ -11,6 +11,8 @@ interface NumPadProps {
 }
 
 const KEYS = ['7', '8', '9', '4', '5', '6', '1', '2', '3'];
+/** Largeur du 0 selon le nombre de cases libres de la dernière rangée. */
+const ZERO_SPAN: Record<number, string> = { 1: '', 2: 'col-span-2', 3: 'col-span-3' };
 
 /** Pavé numérique tactile géant (+ clavier physique). */
 export function NumPad({ onKey, onSubmit, canSubmit, allowComma = true, allowMinus = true, extraKey }: NumPadProps) {
@@ -32,12 +34,12 @@ export function NumPad({ onKey, onSubmit, canSubmit, allowComma = true, allowMin
 
   // Les touches remplissent la hauteur de la zone de saisie (même taille quel que soit l'onglet).
   const keyClass = 'cartoon cartoon-press font-display h-full min-h-10 text-3xl [@media(max-height:500px)]:text-2xl';
-  const key = (k: string, label = k) => (
+  const key = (k: string, label = k, span = '') => (
     <button
       key={k}
       type="button"
       onClick={() => onKey(k)}
-      className={`${keyClass} bg-surface`}
+      className={`${keyClass} bg-surface ${span}`}
       aria-label={label === '⌫' ? 'Effacer' : label === '−' ? 'Moins' : label}
     >
       {label}
@@ -47,22 +49,21 @@ export function NumPad({ onKey, onSubmit, canSubmit, allowComma = true, allowMin
     <div className="mx-auto grid h-full min-h-0 w-full max-w-md grid-cols-4 gap-2">
       <div className="col-span-3 grid min-h-0 grid-cols-3 grid-rows-4 gap-2">
         {KEYS.map((k) => key(k))}
-        {allowMinus ? key('−') : <span />}
-        {key('0')}
-        {allowComma ? (
-          key(',')
-        ) : extraKey ? (
-          <button
-            type="button"
-            onClick={extraKey.onPress}
-            aria-label={extraKey.ariaLabel}
-            className={`${keyClass} bg-accent text-white`}
-          >
-            {extraKey.label}
-          </button>
-        ) : (
-          <span />
-        )}
+        {/* Dernière rangée sans trou : le 0 prend la place des touches absentes (− ou virgule). */}
+        {allowMinus && key('−')}
+        {key('0', '0', ZERO_SPAN[3 - (allowMinus ? 1 : 0) - (allowComma || extraKey ? 1 : 0)])}
+        {allowComma
+          ? key(',')
+          : extraKey && (
+              <button
+                type="button"
+                onClick={extraKey.onPress}
+                aria-label={extraKey.ariaLabel}
+                className={`${keyClass} bg-accent text-white`}
+              >
+                {extraKey.label}
+              </button>
+            )}
       </div>
       <div className="grid min-h-0 grid-rows-[1fr_3fr] gap-2">
         {key('⌫')}

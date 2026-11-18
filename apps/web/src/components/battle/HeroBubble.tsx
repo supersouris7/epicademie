@@ -36,7 +36,7 @@ export function HeroBubble({
             initial={{ opacity: 0, x: -6, scale: 0.8 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className="cartoon font-display text-on-light pointer-events-none absolute top-1/2 left-full z-30 ml-2 -translate-y-1/2 rounded-2xl bg-white px-3 py-1 text-base whitespace-nowrap shadow-lg"
+            className="cartoon font-display text-on-light pointer-events-none absolute top-1/2 left-full z-30 ml-2 w-max max-w-[min(52vw,22rem)] -translate-y-1/2 rounded-2xl bg-white px-3 py-1 text-sm leading-tight shadow-lg sm:text-base"
           >
             {text}
           </motion.span>

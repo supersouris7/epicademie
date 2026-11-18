@@ -210,6 +210,8 @@ Catalogue typé dans `packages/shared/src/modes.ts`.
 - **Héros** : purement cosmétiques, choisis dans le menu à part « Mon héros » (`/heros`, depuis la carte du héros de l'accueil), pas dans le profil. Seul **Alex** est dessiné (pack du 18/11/2026 : 6 poses — attente, course, tir, bouclier, saut, victoire — et 12 expressions) ; Tao, Lina, Ayla et Pixel sont « À venir » (cartes grisées), migration 0010 : tous les profils sur Alex. En combat, Alex arrive en courant, tire (bonne réponse), lève son bouclier (riposte bloquée), recule (touché), saute de joie (victoire) ; sa tête dans le HUD change d'expression (joie, enthousiaste, colère, triste, surprise, réflexion, rire, étourdi). Pose manquante (touché, défaite) : la pose d'attente animée. Un boss par domaine (Golem des Équations, Géomatrix, Probabot, Courbix, IA des Connaissances), teinte changée par chapitre ; mobs du domaine.
 - **Contenu v1** : Fractions, Nombres relatifs, Proportionnalité (3 problèmes + 2 pièges chacun, `packages/content/src/maths/boss.ts`) ; les autres chapitres affichent « Boss à venir ».
 - **Images** : kit ChatGPT `docs/chatgpt/kit-combat.md` (ZIP « demande-NN.png »).
+- **Mise en scène (18/11/2026)** : avant le combat, Questy dit un mot (« Chaque bonne réponse, c'est un tir ! 7 mobs, puis le boss. »…), bouton « C'est parti ! ». Après le 7e mob, **arrivée du boss** en grand : il entre en courant, l'écran tremble, « X arrive ! », « 3 vies : 3 bonnes réponses pour le battre », Questy félicite (« Bravo, tous les mobs sont battus ! Presque fini… »), bouton « Au combat ! » (sinon suite après 4,5 s). **Défaite** : écran « On recommence ? » avec **5 secondes pour répondre** (anneau qui se vide) ; toucher relance tout le combat, sinon bilan : le héros dit « Je reviendrai plus fort(e) ! » et le gros bouton « On s'entraîne » mène à la notion la plus ratée (ou au chapitre).
+- **Arènes en plusieurs formats** : la scène prend la variante la plus proche des proportions du cadre (portrait 3:4 sur téléphone, 16:9, panorama 12:5 sur tablette en paysage) ; le bandeau du haut a sa frise répétée en largeur (`docs/chatgpt/kit-arenes.md`).
 
 ### 6.2 ter Classes et matières
 
@@ -233,7 +235,7 @@ Catalogue typé dans `packages/shared/src/modes.ts`.
 
 - **Choix de la classe** : en Entraînement (et sur les pages Boss et Progrès), une rangée « Classe » (CM1 → 3e) permet de jouer le programme d'une autre classe ; sa classe est cochée par défaut (pastille dorée), le choix est gardé dans l'adresse (`?classe=6e`).
 - **Matières** sans contenu grisées « À venir » au choix de la matière.
-- **Calculatrice** proposée partout sauf quand calculer est l'objectif de la notion (`Skill.mental` : tables, opérations, priorités, relatifs, fractions, carrés…) ; un calcul annexe (carré, aire, pourcentage) ne doit pas bloquer. Questy la conseille sur les notions à gros nombres.
+- **Calculatrice** proposée partout sauf quand calculer est l'objectif de la notion (`Skill.mental` : tables, opérations, priorités, relatifs, fractions, carrés…) ; un calcul annexe (carré, aire, pourcentage) ne doit pas bloquer. Questy la conseille sur les notions à gros nombres. Touches selon la classe de la notion : CM1–CM2 ( ) ; 6e + π ; 5e + x² et √ ; 4e + xⁿ ; 3e + cos, sin, tan, cos⁻¹, sin⁻¹, tan⁻¹ (en degrés). Pavé classique (0 sous le 1, = en bas à droite, « Envoyer ➜ réponse »). L'onglet de saisie s'appelle **« Répondre »** (pavé, clavier ou choix). Sur téléphone, la zone d'outils grandit quand la calculatrice est ouverte.
 
 ### 6.3 Acquisition d'une notion
 

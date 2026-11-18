@@ -13,15 +13,15 @@ const ICONS: Record<DockTab, string> = {
 interface PlayDockProps {
   readonly tabs: readonly DockTab[];
   readonly active: DockTab;
-  /** Libellé de l'onglet de saisie : « Pavé », « Clavier » ou « Réponse ». */
-  readonly answerLabel: string;
   /** Outil conseillé : son onglet brille tant qu'il n'a pas été ouvert. */
   readonly glow?: DockTab;
   readonly onSelect: (t: DockTab) => void;
   readonly children: ReactNode;
 }
 
-const LABELS: Record<Exclude<DockTab, 'reponse'>, string> = {
+/** « Répondre » pour toutes les saisies (pavé, clavier, choix, point) : le verbe dit quoi faire. */
+const LABELS: Record<DockTab, string> = {
+  reponse: 'Répondre',
   calculatrice: 'Calculatrice',
   brouillon: 'Brouillon',
   conversion: 'Conversion',
@@ -32,7 +32,7 @@ const LABELS: Record<Exclude<DockTab, 'reponse'>, string> = {
  * Le pavé (ou le clavier) partage la zone avec la calculatrice, le brouillon et le tableau de conversion ;
  * le contenu de chaque outil est conservé d'un onglet à l'autre.
  */
-export function PlayDock({ tabs, active, answerLabel, glow, onSelect, children }: PlayDockProps) {
+export function PlayDock({ tabs, active, glow, onSelect, children }: PlayDockProps) {
   return (
     <section
       className="flex min-h-0 flex-1 flex-col gap-2 [@media(max-height:500px)]:gap-1"
@@ -50,7 +50,7 @@ export function PlayDock({ tabs, active, answerLabel, glow, onSelect, children }
               className={`cartoon cartoon-press font-display flex h-12 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-1 text-xs leading-none [@media(max-height:500px)]:h-10 ${active === t ? 'bg-accent text-toon' : 'bg-surface-2'} ${glow === t && active !== t ? 'glow' : ''}`}
             >
               <GameIcon id={ICONS[t]} size="xs" />
-              <span className="truncate">{t === 'reponse' ? answerLabel : LABELS[t]}</span>
+              <span className="truncate">{LABELS[t]}</span>
             </button>
           ))}
         </div>

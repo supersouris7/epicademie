@@ -20,6 +20,9 @@ import { answerBattle, bossesKey, finishBattle, sendBattleItem, startBattle } fr
 import { ApiError } from '../../api/client.ts';
 import { BattleBar } from '../../components/battle/BattleBar.tsx';
 import { BattleArena, type ArenaEnemy, type EnemyState } from '../../components/battle/BattleArena.tsx';
+import { BossLivesBadge, QuestySays, RetryCountdown, Shake } from '../../components/battle/BattleScenes.tsx';
+import { randomIntroLine } from '../../lib/battleLines.ts';
+import { DOCK_HEIGHT } from '../../lib/tools.ts';
 import { ConfirmDialog } from '../../components/ConfirmDialog.tsx';
 import { Confetti } from '../../components/Confetti.tsx';
 import { Figure } from '../../components/figures/Figure.tsx';
@@ -63,9 +66,13 @@ const HIT_MS = 450;
 const NEXT_MS = 1500;
 /** Durée de la scène en grand après une erreur, avant l'explication. */
 const MISS_SCENE_MS = 1400;
+/** Entrée en scène avec le mot de Questy, puis arrivée du boss (le temps de lire). */
+const INTRO_MS = 3800;
+const ARRIVAL_MS = 4500;
 
 function Battle({ profile, chapter }: { readonly profile: Profile; readonly chapter: Chapter }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const qc = useQueryClient();
   const [toast, showToast] = useToast(2500);
   const boss = bossOf(chapter);
@@ -86,6 +93,11 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   const [face, setFace] = useState<HeroExpression>('determine');
   /** Entrée en scène en grand, puis bandeau compact pour laisser la place aux énoncés. */
   const [intro, setIntro] = useState(true);
+  const [introLine] = useState(randomIntroLine);
+  /** Arrivée du boss après le dernier mob : scène en grand, Questy félicite. */
+  const [arrival, setArrival] = useState(false);
+  /** Défaite : « On recommence ? » (5 s) avant le bilan. */
+  const [retry, setRetry] = useState(false);
   const [enemyState, setEnemyState] = useState<EnemyState>('idle');
   const [shot, setShot] = useState(0);
   const [riposte, setRiposte] = useState(0);
@@ -112,7 +124,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
         shownAt.current = performance.now();
         setBattle(b);
         later(900, () => setHeroState('idle'));
-        later(2100, () => setIntro(false));
+        later(INTRO_MS, () => setIntro(false));
       })
       .catch((err: unknown) =>
         setError(
@@ -143,6 +155,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
     try {
       const s = await finishBattle(b.id);
       playSound(s.won ? (s.levelAfter > s.levelBefore ? 'levelup' : 'finish') : 'wrong');
+      if (!s.won) setRetry(true);
       setSummary(s);
       void qc.invalidateQueries({ queryKey: bossesKey(profile.id) });
       void qc.invalidateQueries({ queryKey: ['profiles'] });
@@ -153,6 +166,12 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
 
   /** Passe à l'état suivant du combat ; fin de combat : pose finale puis résultats. */
   const advance = (next: BattleView) => {
+    // Dernier mob battu : le boss arrive, en grand.
+    if (next.status === 'fighting' && battle && battle.mobsDefeated < BATTLE_MOBS && next.mobsDefeated >= BATTLE_MOBS) {
+      setArrival(true);
+      playSound('reveal');
+      later(ARRIVAL_MS, () => setArrival(false));
+    }
     setMissed(null);
     setPicked(null);
     setScene(next.status !== 'fighting');
@@ -260,31 +279,54 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
     );
   }
 
+  const replay = () => void navigate(location.pathname, { replace: true, state: { replay: Date.now() } });
+  if (summary && retry) return <RetryCountdown hero={profile.hero} onRetry={replay} onSkip={() => setRetry(false)} />;
   if (summary) return <BattleResults summary={summary} chapter={chapter} gender={profile.gender} hero={profile.hero} />;
 
   return (
     <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-3 px-3 py-3 sm:px-4">
-      {intro ? (
-        <div className="relative flex flex-1 flex-col justify-center gap-4">
-          <BattleArena
-            hero={profile.hero}
-            heroState={heroState}
-            enemy={enemy}
-            enemyState={enemyState}
-            shot={0}
-            riposte={0}
-            shield={false}
-            arena={arena}
-            sky={boss.sky}
-          />
+      {intro || arrival ? (
+        // Entrée en scène (mot de Questy) ou arrivée du boss : en grand, personnages entiers.
+        <div
+          className="relative flex flex-1 flex-col justify-center gap-3"
+          data-testid={arrival ? 'boss-arrival' : 'battle-intro'}
+        >
+          <Shake delay={arrival ? 0.9 : 0} key={arrival ? 'arrival' : 'intro'}>
+            <BattleArena
+              hero={profile.hero}
+              heroState={heroState}
+              enemy={enemy}
+              enemyState={enemyState}
+              shot={0}
+              riposte={0}
+              shield={battle?.shield ?? false}
+              arena={arena}
+              sky={boss.sky}
+              heroEntrance={!arrival}
+              height="min(46dvh, 460px)"
+            />
+          </Shake>
           <motion.p
             initial={{ scale: 0.3, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.9, type: 'spring', stiffness: 300, damping: 12 }}
-            className="font-display text-toon text-center text-5xl tracking-wide"
+            className="font-display text-toon text-center text-4xl tracking-wide sm:text-5xl"
           >
-            {onBoss ? boss.name : 'Combat !'}
+            {arrival ? `${boss.name} arrive !` : onBoss ? boss.name : 'Combat !'}
           </motion.p>
+          {arrival && <BossLivesBadge lives={BOSS_LIVES} />}
+          <QuestySays
+            text={arrival ? 'Bravo, tous les mobs sont battus ! Presque fini : plus que le boss !' : introLine}
+            pose={arrival ? 'bravo' : 'montre'}
+            mood={arrival ? 'proud' : 'happy'}
+          />
+          <GameButton
+            className="self-center"
+            icon="icons-navigation-next"
+            onClick={() => (arrival ? setArrival(false) : setIntro(false))}
+          >
+            {arrival ? 'Au combat !' : 'C’est parti !'}
+          </GameButton>
         </div>
       ) : (
         <BattleBar
@@ -307,7 +349,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
         />
       )}
 
-      {intro ? null : scene ? (
+      {intro || arrival ? null : scene ? (
         // Les coups se jouent en grand, personnages entiers, à la place de l'énoncé.
         <div className="flex min-h-0 flex-1 flex-col justify-center">
           <BattleArena
@@ -373,7 +415,9 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
               )}
             </section>
 
-            <section className="side:h-[min(100%,520px)] side:self-center flex h-[clamp(240px,36dvh,360px)] min-h-0 shrink-0 flex-col">
+            <section
+              className={`side:h-[min(100%,520px)] side:self-center flex ${DOCK_HEIGHT} min-h-0 shrink-0 flex-col`}
+            >
               {missed ? (
                 <motion.div
                   initial={{ y: 20, opacity: 0 }}
@@ -516,7 +560,13 @@ function BattleResults({
           {summary.won ? (
             <CharacterSprite hero={hero} state="victory" height={170} />
           ) : (
-            <HeroFace hero={hero} expression="triste" size={130} />
+            <span className="relative flex flex-col items-center gap-2">
+              {/* Le héros ne baisse pas les bras. */}
+              <span className="cartoon font-display text-on-light rounded-2xl bg-white px-3 py-1 text-lg whitespace-nowrap">
+                Je reviendrai plus {accord(gender, 'fort', 'forte')} !
+              </span>
+              <HeroFace hero={hero} expression="determine" size={130} />
+            </span>
           )}
           <QuestyPose pose={summary.won ? 'hero' : 'triste'} mood={summary.won ? 'proud' : 'sad'} size={130} />
         </motion.div>
@@ -528,7 +578,7 @@ function BattleResults({
             ? summary.hearts === 3
               ? `Sans perdre un cœur, ${accord(gender, 'champion', 'championne')} !`
               : `Il te restait ${summary.hearts} cœur${summary.hearts > 1 ? 's' : ''}.`
-            : 'On s’entraîne encore un peu, et on revient le battre !'}
+            : 'On s’entraîne un peu, et on revient le battre !'}
         </p>
       </div>
 
@@ -583,13 +633,20 @@ function BattleResults({
       )}
 
       <div className="flex flex-wrap justify-center gap-3">
-        {!summary.won && weak && (
+        {!summary.won && (
           <GameButton
             variant="success"
+            size="lg"
             icon="icons-navigation-lesson"
-            onClick={() => void navigate(`/partie/entrainement/${chapter.id}/${weak.id}`)}
+            onClick={() =>
+              void navigate(
+                weak
+                  ? `/partie/entrainement/${chapter.id}/${weak.id}`
+                  : `/jouer/entrainement/${chapter.subject}/${chapter.id}`,
+              )
+            }
           >
-            S’entraîner : {weak.title}
+            {weak ? `On s’entraîne : ${weak.title}` : 'On s’entraîne'}
           </GameButton>
         )}
         <GameButton

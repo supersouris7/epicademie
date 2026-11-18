@@ -98,7 +98,7 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   for (const k of ['Pi', '×', '2', '5', '=']) await panel.getByRole('button', { name: k, exact: true }).click();
   await expect(panel).toContainText('78,539816');
   await page.getByRole('button', { name: 'Envoyer 78,539816 dans ma réponse' }).click();
-  await expect(page.getByRole('tab', { name: 'Pavé' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('tab', { name: 'Répondre' })).toHaveAttribute('aria-selected', 'true');
   await expect(page.getByLabel('Ta réponse')).toHaveText('78,539816');
   await expect(page.getByRole('button', { name: 'OK' })).toBeVisible();
 
@@ -122,7 +122,7 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await full.getByRole('button', { name: 'Réduire' }).click();
   await expect(full).toBeHidden();
   // La réponse envoyée depuis la calculatrice est toujours là.
-  await page.getByRole('tab', { name: 'Pavé' }).click();
+  await page.getByRole('tab', { name: 'Répondre' }).click();
   await expect(page.getByLabel('Ta réponse')).toHaveText('78,539816');
 
   // Tableau de conversion à remplir, unités de l'énoncé surlignées.

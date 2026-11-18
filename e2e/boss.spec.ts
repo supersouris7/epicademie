@@ -52,8 +52,10 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   const started = page.waitForResponse((r) => r.url().endsWith('/api/battles'));
   await relatifs.getByRole('button', { name: 'Combattre' }).click();
   let view = (await (await started).json()) as BattleView;
-  // Entrée en scène en grand, puis bandeau compact.
+  // Entrée en scène en grand avec le mot de Questy, puis bandeau compact.
   await expect(page.getByText('Combat !')).toBeVisible();
+  await expect(page.getByTestId('battle-intro').getByRole('status')).toBeVisible();
+  await page.getByRole('button', { name: 'C’est parti !' }).click();
   // Bandeau : mobs restants en barre segmentée, comme des vies.
   await expect(page.getByRole('progressbar', { name: 'Mobs restants' })).toBeVisible({ timeout: 5000 });
   await expect(page.getByRole('img', { name: '3 cœurs sur 3' })).toBeVisible();
@@ -74,6 +76,11 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   let sawBoss = false;
   while (view.status === 'fighting') {
     if (view.mobsDefeated === 7 && !sawBoss) {
+      // Arrivée du boss en grand : Questy félicite, 3 vies annoncées.
+      const arrival = page.getByTestId('boss-arrival');
+      await expect(arrival).toContainText('Presque fini');
+      await expect(arrival).toContainText('3 vies');
+      await page.getByRole('button', { name: 'Au combat !' }).click();
       await expect(page.getByRole('progressbar', { name: /Vies de/ })).toBeVisible();
       sawBoss = true;
     }
@@ -91,4 +98,36 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   // Le coffre a rempli l'équipement.
   await expect(page.getByRole('img', { name: 'Bouclier × 1' })).toBeVisible();
   await expect(relatifs.getByRole('img', { name: 'Médaille Argent' })).toBeVisible();
+});
+
+test('Défaite : 5 secondes pour recommencer, puis l’entraînement', async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.goto('/');
+  await page.getByRole('button', { name: /Nouveau joueur/ }).click();
+  await page.getByPlaceholder('Ex. Léa').fill(`Perdu${Date.now() % 10000}`);
+  await page.getByRole('button', { name: 'Une fille' }).click();
+  await page.getByLabel('Date de naissance').fill('2014-03-09');
+  await page.getByRole('button', { name: 'Oui', exact: true }).click();
+  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await expect(page).toHaveURL(/\/hub$/);
+  await page.getByRole('button', { name: /^Combat de boss/ }).click();
+  await page.getByRole('button', { name: 'Maths', exact: true }).click();
+  const started = page.waitForResponse((r) => r.url().endsWith('/api/battles'));
+  await page
+    .getByRole('listitem')
+    .filter({ hasText: 'Nombres relatifs' })
+    .getByRole('button', { name: 'Combattre' })
+    .click();
+  let view = (await (await started).json()) as BattleView;
+  await page.getByRole('button', { name: 'C’est parti !' }).click();
+  while (view.status === 'fighting') {
+    view = await answer(page, view, false);
+    await page.getByRole('button', { name: /Suivant|Voir le résultat/ }).click();
+  }
+  expect(view.status).toBe('lost');
+  await expect(page.getByRole('heading', { name: 'On recommence ?' })).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByRole('timer')).toBeVisible();
+  // Sans réponse en 5 secondes : le bilan, avec l'entraînement et le mot du héros.
+  await expect(page.getByText('Je reviendrai plus forte !')).toBeVisible({ timeout: 8000 });
+  await expect(page.getByRole('button', { name: /On s’entraîne/ })).toBeVisible();
 });
