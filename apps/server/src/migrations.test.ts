@@ -81,6 +81,26 @@ describe('migration 0010 : Alex seul héros jouable', () => {
   });
 });
 
+describe('migration 0014 : rubis', () => {
+  it('s’applique à une base arrêtée à la 0013', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'questeo-'));
+    // Dossier de migrations amputé de la 0014 : reproduit une base déjà déployée.
+    const oldDir = path.join(root, 'drizzle');
+    fs.cpSync(migrationsDir, oldDir, { recursive: true });
+    const journalPath = path.join(oldDir, 'meta/_journal.json');
+    const journal = JSON.parse(fs.readFileSync(journalPath, 'utf8')) as { entries: { tag: string }[] };
+    fs.rmSync(path.join(oldDir, `${journal.entries.pop()?.tag}.sql`));
+    fs.writeFileSync(journalPath, JSON.stringify(journal));
+    const file = path.join(root, 'test.db');
+    openDb(file, oldDir).close();
+    openDb(file, migrationsDir).close();
+    const sqlite = new Database(file);
+    const columns = sqlite.prepare('PRAGMA table_info(profiles)').all() as { name: string }[];
+    expect(columns.map((c) => c.name)).toContain('rubies');
+    sqlite.close();
+  });
+});
+
 describe('migration 0013 : équipement et meilleure série', () => {
   it('donne aux notions déjà travaillées la médaille qu’elles avaient (acquise → Or)', () => {
     const file = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'questeo-')), 'test.db');
