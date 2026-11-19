@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { NavigationType, useLocation, useNavigate, useNavigationType } from 'react-router';
 
 /**
  * Sorties d'une page de partie (entraînement ou combat).
@@ -31,6 +31,30 @@ function markLeft(key: string) {
   }
 }
 
+/** Adresse d'une partie quittée : sécurité si la clé d'historique ne correspond plus (garde, retours). */
+const LEFT_PATH = 'partie-quittee-adresse:';
+function markLeftPath(path: string) {
+  try {
+    sessionStorage.setItem(LEFT_PATH + path, '1');
+  } catch {
+    /* ignoré */
+  }
+}
+function wasLeftPath(path: string) {
+  try {
+    return sessionStorage.getItem(LEFT_PATH + path) === '1';
+  } catch {
+    return false;
+  }
+}
+function clearLeftPath(path: string) {
+  try {
+    sessionStorage.removeItem(LEFT_PATH + path);
+  } catch {
+    /* ignoré */
+  }
+}
+
 interface GuardState {
   readonly partieGarde?: boolean;
 }
@@ -39,8 +63,12 @@ const guarded = () => (window.history.state as GuardState | null)?.partieGarde =
 export function useGameExit(fallback: string, fallbackState?: unknown) {
   const location = useLocation();
   const navigate = useNavigate();
-  // Retour sur une partie déjà quittée (chaque entrée d'historique a sa clé) : on repart vers la liste.
-  const left = wasLeft(location.key);
+  const navType = useNavigationType();
+  // Une nouvelle partie lancée depuis un menu (PUSH) efface la marque de l'adresse.
+  if (navType === NavigationType.Push) clearLeftPath(location.pathname);
+  // Retour sur une partie déjà quittée (clé d'historique, ou même adresse revenue par « précédent ») :
+  // on repart vers la liste.
+  const left = wasLeft(location.key) || (navType === NavigationType.Pop && wasLeftPath(location.pathname));
   useEffect(() => {
     if (left) void navigate(fallback, { replace: true, state: fallbackState });
   }, [left, navigate, fallback, fallbackState]);
@@ -48,9 +76,10 @@ export function useGameExit(fallback: string, fallbackState?: unknown) {
   const exit = useCallback(
     (to: string, state?: unknown) => {
       markLeft(location.key);
+      markLeftPath(location.pathname);
       void navigate(to, { replace: true, state });
     },
-    [location.key, navigate],
+    [location.key, location.pathname, navigate],
   );
   return { left, exit };
 }
