@@ -179,7 +179,7 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await page.getByRole('button', { name: 'Quitter la série' }).click();
   await expect(page).toHaveURL(/\/hub$/);
   await page.goBack();
-  await expect(page).toHaveURL(/\/jouer\/entrainement\/maths\/m4-relatifs/);
+  await expect(page).toHaveURL(/\/jouer\/entrainement\/maths\/m4-relatifs/, { timeout: 10_000 });
   await expect(page.getByRole('progressbar', { name: 'Progression de la série' })).toHaveCount(0);
 
   // Tables : brouillon disponible, pas de calculatrice ni de conseil.

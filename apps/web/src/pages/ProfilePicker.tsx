@@ -10,6 +10,10 @@ import { PageShell } from '../components/PageShell.tsx';
 import { SpeechBubble } from '../components/SpeechBubble.tsx';
 import { QuestyPose } from '../components/mascot/QuestyPose.tsx';
 import { useSession } from '../store/session.ts';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '../api/client.ts';
+import { useRealtime } from '../realtime/store.ts';
+import { useToast } from '../components/Toast.tsx';
 
 const CARD_COLORS = ['var(--accent)', 'var(--primary)', 'var(--info)', 'var(--pink)', 'var(--success)'];
 
@@ -19,7 +23,23 @@ export function ProfilePicker() {
   const navigate = useNavigate();
 
   const keyArt = assetSrc('branding-key-art');
+  const [toast, showToast] = useToast(3500);
+  // Profils déjà ouverts sur un autre appareil : on ne peut pas les choisir ici.
+  const { data: presence } = useQuery({
+    queryKey: ['presence'],
+    queryFn: () => api<{ online: string[] }>('/presence'),
+    refetchInterval: 5000,
+  });
+  const refused = useRealtime((s) => s.refused);
+  const clearRefused = useRealtime((s) => s.clearRefused);
+  const myId = useSession((s) => s.profileId);
+  const busy = new Set((presence?.online ?? []).filter((id) => id !== myId));
   const choose = (id: string) => {
+    if (busy.has(id)) {
+      showToast('Non, ce joueur est déjà connecté sur un autre appareil.');
+      return;
+    }
+    clearRefused();
     selectProfile(id);
     void navigate('/hub');
   };
@@ -35,7 +55,7 @@ export function ProfilePicker() {
         <motion.div animate={{ rotate: [0, -6, 6, 0] }} transition={{ repeat: Infinity, duration: 3, repeatDelay: 2 }}>
           <QuestyPose pose="salut" mood="wink" size={120} />
         </motion.div>
-        <SpeechBubble>Salut ! Qui part à l’aventure ?</SpeechBubble>
+        <SpeechBubble>{refused ?? 'Salut ! Qui part à l’aventure ?'}</SpeechBubble>
       </div>
 
       {isPending && <p className="text-muted text-xl">Chargement…</p>}
@@ -55,7 +75,7 @@ export function ProfilePicker() {
               index={i}
               name={p.name}
               color={CARD_COLORS[i % CARD_COLORS.length] ?? 'var(--accent)'}
-              caption={`Niveau ${levelFromXp(p.xp).level}`}
+              caption={busy.has(p.id) ? 'Déjà connecté' : `Niveau ${levelFromXp(p.xp).level}`}
               portrait={<CharacterAvatar avatar={p.avatar} size={120} />}
               onClick={() => choose(p.id)}
               className="min-h-52 pt-2"
@@ -73,6 +93,7 @@ export function ProfilePicker() {
           </GameButton>
         </li>
       </ul>
+      {toast}
     </PageShell>
   );
 }

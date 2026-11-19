@@ -1,0 +1,73 @@
+import { expect, test, type Browser, type Page } from '@playwright/test';
+import { fmt, generate } from '../packages/content/src/index.ts';
+import type { ArenaView } from '../packages/shared/src/index.ts';
+
+async function newPlayer(browser: Browser, name: string): Promise<Page> {
+  const page = await (await browser.newContext()).newPage();
+  await page.goto('/');
+  await page.getByRole('button', { name: /Nouveau joueur/ }).click();
+  await page.getByPlaceholder('Ex. Léa').fill(name);
+  await page.getByRole('button', { name: 'Une fille' }).click();
+  await page.getByLabel('Date de naissance').fill('2014-03-09');
+  await page.getByRole('button', { name: 'Oui', exact: true }).click();
+  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await expect(page).toHaveURL(/hub/);
+  return page;
+}
+
+test('Plusieurs joueurs : connectés, message, profil déjà ouvert refusé, arène', async ({ browser }) => {
+  test.setTimeout(120_000);
+  const suffix = Date.now() % 10000;
+  const lea = await newPlayer(browser, `Léa${suffix}`);
+  const tom = await newPlayer(browser, `Tom${suffix}`);
+
+  // Questy annonce les joueurs connectés sur l'accueil.
+  await expect(lea.getByRole('button', { name: /Joueurs connectés : [1-9]/ })).toBeVisible();
+  await expect(lea.getByText(new RegExp(`Tom${suffix}`))).toBeVisible();
+
+  // Message prédéfini : notification en haut de l'écran de Tom.
+  await lea.getByRole('button', { name: /Joueurs connectés/ }).click();
+  await lea.getByRole('button', { name: `Message à Tom${suffix}` }).click();
+  await lea.getByRole('button', { name: 'Bien joué !' }).click();
+  await expect(tom.getByRole('alert')).toContainText('Bien joué !');
+
+  // Le profil de Léa, déjà ouvert, est refusé sur un autre appareil.
+  const intrus = await (await browser.newContext()).newPage();
+  await intrus.goto('/');
+  await intrus.getByRole('button', { name: new RegExp(`Léa${suffix}`) }).click();
+  await expect(intrus.getByText(/déjà connecté/).first()).toBeVisible();
+  await expect(intrus).toHaveURL(/\/$/);
+
+  // Arène : Léa invite Tom ; Tom accepte depuis la notification ; Léa lance.
+  await lea.goto(`/arene`);
+  await lea.getByRole('checkbox').first().check();
+  await lea.getByRole('button', { name: 'Envoyer les invitations' }).click();
+  await tom.getByRole('alert').getByRole('button', { name: 'J’y vais !' }).click();
+  await expect(tom).toHaveURL(/arene/);
+  await lea.getByRole('button', { name: 'Lancer le combat' }).click();
+
+  // Chacun répond à son tour : Léa juste, Tom faux ; Léa gagne.
+  const view = async (page: Page) =>
+    (await page.evaluate(() => (window as unknown as { __arena?: ArenaView }).__arena)) ?? null;
+  for (let i = 0; i < 30; i++) {
+    await lea.waitForTimeout(300);
+    const v = await view(lea);
+    if (!v || v.phase === 'over') break;
+    if (v.phase !== 'playing' || !v.question) continue;
+    const q = generate(v.question.skillId, v.question.level, v.question.seed);
+    const leaTurn = (await lea.getByText('À toi de jouer !').count()) > 0;
+    const page = leaTurn ? lea : tom;
+    if (!leaTurn && (await tom.getByText('À toi de jouer !').count()) === 0) continue;
+    const turn = v.turn;
+    if (q.answer.kind === 'choice') {
+      const idx = leaTurn ? q.answer.correct : q.answer.correct === 0 ? 1 : 0;
+      await page.getByRole('tabpanel').getByRole('button').nth(idx).click();
+    } else if (q.answer.kind === 'number') {
+      await page.keyboard.type(leaTurn ? fmt(q.answer.value).replace('−', '-') : '987654');
+      await page.keyboard.press('Enter');
+    } else throw new Error(q.answer.kind);
+    await expect.poll(async () => (await view(lea))?.turn ?? 0).toBeGreaterThan(turn);
+  }
+  await expect(lea.getByRole('heading', { name: 'Victoire !' })).toBeVisible();
+  await expect(tom.getByRole('heading', { name: new RegExp(`Léa${suffix} a gagné`) })).toBeVisible();
+});

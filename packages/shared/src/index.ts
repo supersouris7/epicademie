@@ -4,3 +4,4 @@ export * from './play.ts';
 export * from './subjects.ts';
 export * from './grades.ts';
 export * from './battle.ts';
+export * from './realtime.ts';

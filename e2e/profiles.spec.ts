@@ -82,9 +82,9 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.getByRole('button', { name: 'Retour' }).click();
   await nav.getByRole('button', { name: 'Multi' }).click();
   // Multi : message « arrive bientôt » et aperçu des modes, sans tuiles à toucher.
-  await expect(page.getByText(/Le multijoueur arrive bientôt/)).toBeVisible();
-  await expect(page.getByRole('list', { name: 'Modes à venir' })).toContainText('Arène');
-  await expect(page.getByRole('button', { name: /Arène/ })).toHaveCount(0);
+  // Multi : l'Arène est jouable, les autres modes « À venir ».
+  await expect(page.getByRole('button', { name: /Arène/ })).toBeVisible();
+  await expect(page.getByRole('list', { name: 'Modes multijoueur' })).toContainText('À venir');
 
   await nav.getByRole('button', { name: 'Paramètres' }).click();
   await expect(page.getByRole('button', { name: 'Mon héros' })).toBeVisible();

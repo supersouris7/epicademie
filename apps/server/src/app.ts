@@ -11,6 +11,7 @@ import { playRoutes } from './routes/play.ts';
 import { profileRoutes } from './routes/profiles.ts';
 import { today } from './today.ts';
 import { detectLanAddress } from './lan.ts';
+import type { Presence } from './realtime.ts';
 
 export interface AppOptions {
   readonly db: Db;
@@ -22,6 +23,8 @@ export interface AppOptions {
   readonly today?: () => string;
   /** Hasard injectable (tests : coffres). */
   readonly random?: () => number;
+  /** Joueurs connectés (temps réel) : profils déjà ouverts sur un appareil. */
+  readonly presence?: Presence;
 }
 
 export async function buildApp(opts: AppOptions): Promise<FastifyInstance> {
@@ -30,6 +33,8 @@ export async function buildApp(opts: AppOptions): Promise<FastifyInstance> {
   await app.register(
     async (api) => {
       api.get('/health', async () => ({ status: 'ok' }));
+      // Profils ouverts sur un appareil : on ne peut pas les choisir ailleurs.
+      api.get('/presence', async () => ({ online: [...(opts.presence?.online.keys() ?? [])] }));
       api.get('/network', async () => {
         const lan = detectLanAddress();
         return { publicUrl: opts.publicUrl ?? (lan ? `http://${lan}:${opts.port}` : null) };

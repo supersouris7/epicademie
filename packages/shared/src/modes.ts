@@ -48,7 +48,7 @@ export const MODES: readonly ModeInfo[] = [
     name: 'Arène',
     pitch: 'Tes bonnes réponses attaquent les autres',
     category: 'multi',
-    available: false,
+    available: true,
   },
   { id: 'raid', name: 'Raid', pitch: 'Toute l’équipe contre un boss géant', category: 'multi', available: false },
   {

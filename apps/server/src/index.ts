@@ -2,14 +2,17 @@ import { Server as SocketServer } from 'socket.io';
 import { buildApp } from './app.ts';
 import { loadConfig } from './config.ts';
 import { openDb } from './db/client.ts';
+import { createProfilesRepo } from './db/profiles-repo.ts';
+import { attachRealtime, createPresence } from './realtime.ts';
 
 const config = loadConfig();
 const { db, close } = openDb(config.dbPath, config.migrationsDir);
-const app = await buildApp({ ...config, db, logger: true });
+const presence = createPresence();
+const app = await buildApp({ ...config, db, logger: true, presence });
 
-// Temps réel (multijoueur, jalon J6).
+// Temps réel : joueurs connectés, messages, arène.
 const io = new SocketServer(app.server, { cors: { origin: true } });
-io.on('connection', (socket) => app.log.debug({ id: socket.id }, 'socket connecté'));
+attachRealtime(io, createProfilesRepo(db), presence);
 
 const shutdown = async () => {
   await io.close();

@@ -5,6 +5,7 @@ import { comingSoon } from '../lib/grades.ts';
 import { ModeTile } from '../components/ModeTile.tsx';
 import { useToast } from '../components/Toast.tsx';
 import { PageShell } from '../components/PageShell.tsx';
+import { OnlineBanner } from '../components/OnlineBanner.tsx';
 import { GameIcon } from '../components/game/GameIcon.tsx';
 import { heroPoseSrc } from '../design/assets.ts';
 import { useEntrance } from '../lib/entrance.ts';
@@ -40,6 +41,9 @@ export function Hub({ profile }: { readonly profile: Profile }) {
           <span aria-hidden>→</span>
         </button>
       )}
+
+      {/* Questy annonce les joueurs connectés (liste et messages en touchant). */}
+      <OnlineBanner meId={profile.id} />
 
       <div className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] items-center gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
         {/* Le héros en pied : toucher pour ouvrir « Mon héros ». */}

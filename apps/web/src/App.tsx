@@ -8,6 +8,8 @@ import { Heroes } from './pages/Heroes.tsx';
 import { Hub } from './pages/Hub.tsx';
 import { ModeSetup } from './pages/ModeSetup.tsx';
 import { MultiModes } from './pages/MultiModes.tsx';
+import { Arena } from './pages/Arena.tsx';
+import { Online } from './pages/Online.tsx';
 import { ProfileEditor } from './pages/ProfileEditor.tsx';
 import { ProfilePicker } from './pages/ProfilePicker.tsx';
 import { Progress } from './pages/Progress.tsx';
@@ -18,6 +20,7 @@ import { Chapters } from './pages/training/Chapters.tsx';
 import { Notions } from './pages/training/Notions.tsx';
 import { TrainingPlay } from './pages/training/TrainingPlay.tsx';
 import { useSession } from './store/session.ts';
+import { Notifications, RealtimeLink } from './components/Notifications.tsx';
 
 /** Atelier graphique : chargé à la demande, seulement en développement (absent du build de production). */
 const AssetPreview = import.meta.env.DEV
@@ -35,8 +38,11 @@ function WithProfile({ children }: { readonly children: (profile: Profile) => Re
 }
 
 export function App() {
+  const profileId = useSession((s) => s.profileId);
   return (
     <>
+      <RealtimeLink profileId={profileId} />
+      <Notifications />
       <Routes>
         <Route path="/" element={<ProfilePicker />} />
         <Route path="/profils/nouveau" element={<ProfileEditor />} />
@@ -44,6 +50,8 @@ export function App() {
         <Route path="/hub" element={<WithProfile>{(p) => <Hub profile={p} />}</WithProfile>} />
         <Route path="/heros" element={<WithProfile>{(p) => <Heroes profile={p} />}</WithProfile>} />
         <Route path="/multi" element={<WithProfile>{(p) => <MultiModes profile={p} />}</WithProfile>} />
+        <Route path="/arene" element={<WithProfile>{(p) => <Arena profile={p} />}</WithProfile>} />
+        <Route path="/connectes" element={<WithProfile>{(p) => <Online profile={p} />}</WithProfile>} />
         <Route path="/jouer/:modeId" element={<WithProfile>{() => <ModeSetup />}</WithProfile>} />
         <Route
           path="/jouer/entrainement/:subject"
