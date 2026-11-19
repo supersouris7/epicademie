@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { NavigationType, useLocation, useNavigate, useNavigationType } from 'react-router';
 
 /**
@@ -64,8 +64,13 @@ export function useGameExit(fallback: string, fallbackState?: unknown) {
   const location = useLocation();
   const navigate = useNavigate();
   const navType = useNavigationType();
-  // Une nouvelle partie lancée depuis un menu (PUSH) efface la marque de l'adresse.
-  if (navType === NavigationType.Push) clearLeftPath(location.pathname);
+  // Une nouvelle partie lancée depuis un menu (PUSH) efface la marque de l'adresse — une seule fois,
+  // à son arrivée : un rendu tardif juste après « Quitter » ne doit pas effacer la marque toute neuve.
+  const [arrivedByPush] = useState(() => navType === NavigationType.Push);
+  useEffect(() => {
+    if (arrivedByPush) clearLeftPath(location.pathname);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- à l'arrivée seulement
+  }, []);
   // Retour sur une partie déjà quittée (clé d'historique, ou même adresse revenue par « précédent ») :
   // on repart vers la liste.
   const left = wasLeft(location.key) || (navType === NavigationType.Pop && wasLeftPath(location.pathname));
