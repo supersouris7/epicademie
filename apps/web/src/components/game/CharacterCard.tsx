@@ -46,15 +46,15 @@ export function CharacterCard({
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: index * 0.06, type: 'spring', stiffness: 220, damping: 16 }}
       whileTap={{ scale: 0.96 }}
-      className={`relative flex w-full flex-col items-center overflow-hidden rounded-[22px] border-[3px] border-[var(--outline)] text-left shadow-[inset_0_2px_0_rgb(255_255_255/0.35),0_5px_0_var(--outline),0_12px_22px_rgb(0_0_0/0.35)] transition-shadow ${selected ? 'outline-gold outline-4 outline-offset-2 shadow-[inset_0_2px_0_rgb(255_255_255/0.35),0_5px_0_var(--outline),0_0_28px_color-mix(in_srgb,var(--gold)_70%,transparent)]' : ''} ${className}`}
+      className={`relative flex w-full flex-col items-center overflow-hidden rounded-[22px] border-4 border-[var(--outline)] text-left shadow-[inset_0_3px_0_rgb(255_255_255/0.4),0_6px_0_var(--outline),0_14px_26px_rgb(0_0_0/0.4)] transition-shadow ${selected ? 'outline-gold outline-4 outline-offset-2 shadow-[inset_0_3px_0_rgb(255_255_255/0.4),0_6px_0_var(--outline),0_0_30px_color-mix(in_srgb,var(--gold)_70%,transparent)]' : ''} ${className}`}
       style={{
-        background: `radial-gradient(circle at 50% 42%, color-mix(in srgb, white 32%, ${color}) 0%, ${color} 45%, color-mix(in srgb, ${color} 55%, var(--outline)) 100%)`,
+        background: `radial-gradient(circle at 50% 42%, color-mix(in srgb, white 12%, ${color}) 0%, ${color} 55%, color-mix(in srgb, ${color} 65%, var(--outline)) 100%)`,
       }}
     >
       {/* Reflet en haut de la carte. */}
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-white/25 to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-white/35 to-transparent"
       />
       {selected && (
         <span

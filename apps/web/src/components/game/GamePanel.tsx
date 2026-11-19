@@ -15,7 +15,7 @@ interface GamePanelProps {
 export function GamePanel({ title, as: Tag = 'section', className = '', children, ...rest }: GamePanelProps) {
   return (
     <Tag
-      className={`relative ${title ? 'mt-5 pt-7' : ''} border-accent rounded-game-lg border-[length:var(--stroke-lg)] bg-gradient-to-b from-[color-mix(in_srgb,var(--surface)_80%,white)] to-[var(--surface)] p-4 shadow-[inset_0_2px_0_rgb(255_255_255/0.12),var(--drop-md)] ${className}`}
+      className={`relative ${title ? 'mt-5 pt-7' : ''} border-outline rounded-game-lg border-[length:var(--stroke-lg)] bg-gradient-to-b from-[color-mix(in_srgb,var(--surface)_80%,white)] to-[var(--surface)] p-4 shadow-[inset_0_2px_0_rgb(255_255_255/0.12),var(--drop-md)] ${className}`}
       {...rest}
     >
       {/* Coins renforcés orange */}

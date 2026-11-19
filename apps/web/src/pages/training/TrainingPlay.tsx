@@ -337,7 +337,6 @@ function Game({
           max={training.length}
           label="Progression de la série"
           segments={training.length}
-          text={`${Math.min(done + (answered || retry ? 0 : 1), training.length)}/${training.length}`}
         />
         <ResourceCounter icon="icons-resources-xp" value={`+${xpTotal} XP`} label={`${xpTotal} XP gagnés`} />
       </header>
