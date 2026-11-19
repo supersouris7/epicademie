@@ -1,27 +1,19 @@
 import type { ReactNode } from 'react';
 import { motion } from 'motion/react';
-import { skinStyle } from '../design/skin.ts';
 import { useEntrance } from '../lib/entrance.ts';
+import { Bubble } from './Bubble.tsx';
 
+/** Bulle de Questy dans les menus (dessinée en CSS, pointe vers Questy à gauche). */
 export function SpeechBubble({ children }: { readonly children: ReactNode }) {
   const enter = useEntrance();
-  const skin = skinStyle('hud/frames/bubble.webp', 30, '1rem');
   return (
     <motion.div
       initial={enter ? { scale: 0.6, opacity: 0 } : false}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ type: 'spring', stiffness: 260, damping: 14, delay: 0.2 }}
-      className={`font-display relative px-5 py-4 text-xl tracking-wide sm:text-2xl ${skin ? 'on-light' : 'cartoon border-accent bg-surface'}`}
-      style={skin}
+      className="min-w-0 flex-1"
     >
-      {children}
-      {/* La bulle illustrée a sa propre pointe. */}
-      {!skin && (
-        <span
-          aria-hidden
-          className="border-accent bg-surface absolute top-1/2 -left-[14px] h-6 w-6 -translate-y-1/2 rotate-45 border-b-4 border-l-4"
-        />
-      )}
+      <Bubble className="font-display px-5 py-3 text-xl tracking-wide sm:text-2xl">{children}</Bubble>
     </motion.div>
   );
 }

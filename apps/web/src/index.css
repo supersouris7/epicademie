@@ -55,8 +55,14 @@ body {
 
 body {
   min-height: 100dvh;
-  background-image: radial-gradient(var(--bg-pattern) 2px, transparent 2px);
-  background-size: 28px 28px;
+  /* Halo violet doux en haut de l'écran, motif à pois discret. */
+  background-image:
+    radial-gradient(ellipse 90% 45% at 50% 0%, color-mix(in srgb, var(--accent) 22%, transparent), transparent),
+    radial-gradient(var(--bg-pattern) 2px, transparent 2px);
+  background-size:
+    100% 100%,
+    28px 28px;
+  background-attachment: fixed, scroll;
 }
 
 button {
@@ -66,7 +72,10 @@ button {
 /* Effet « bouton cartoon » : contour épais + ombre portée pleine. */
 @utility cartoon {
   border: var(--stroke-md) solid var(--outline);
-  box-shadow: var(--drop-md);
+  /* Reflet discret en haut + ombre portée pleine : volume net, sans image. */
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.1),
+    var(--drop-md);
   border-radius: var(--radius-md);
 }
 

@@ -4,7 +4,7 @@ import type { HeroId } from '@questeo/shared';
 export const HERO_COLORS: Record<HeroId, string> = {
   alex: 'var(--info)',
   tao: 'var(--success)',
-  lina: 'var(--danger)',
+  lina: 'var(--pink)',
   ayla: 'var(--accent)',
-  pixel: 'var(--primary)',
+  pixel: 'var(--af-gray-700)',
 };

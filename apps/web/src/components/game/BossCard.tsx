@@ -1,5 +1,4 @@
 import { assetSrc } from '../../design/assets.ts';
-import { skinStyle } from '../../design/skin.ts';
 
 interface BossCardProps {
   readonly name: string;
@@ -22,7 +21,6 @@ export function BossCard({ name, image, subject, color = 'var(--danger)', defeat
       onClick={onClick}
       aria-label={`${name} — ${subject}${defeated ? ' (vaincu)' : ''}`}
       className="cartoon bg-accent-strong relative flex w-full flex-col items-center overflow-hidden"
-      style={skinStyle('hud/frames/boss-card.webp', 22, '0.9rem')}
     >
       {src && (
         <img

@@ -3,7 +3,6 @@ import type { ReactNode } from 'react';
 import { HERO_NAMES, type HeroId } from '@questeo/shared';
 import { HERO_COLORS } from '../../design/heroes.ts';
 import { assetSrc, deliveredSrc } from '../../design/assets.ts';
-import { skinStyle } from '../../design/skin.ts';
 import { useEntrance } from '../../lib/entrance.ts';
 
 interface CharacterCardProps {
@@ -20,7 +19,11 @@ interface CharacterCardProps {
   readonly className?: string;
 }
 
-/** Carte de collection : fond coloré, illustration, bandeau de nom en bas. */
+/**
+ * Carte de collection, dessinée en CSS (nette à toutes les tailles) : fond dégradé à la couleur du
+ * personnage, halo derrière l'illustration, reflet en haut, plaque de nom en bas.
+ * Sélectionnée : anneau doré, lueur et coche.
+ */
 export function CharacterCard({
   name,
   portrait,
@@ -33,7 +36,6 @@ export function CharacterCard({
   className = '',
 }: CharacterCardProps) {
   const enter = useEntrance();
-  const skin = skinStyle('hud/frames/hero-card.webp', 22, '0.9rem');
   return (
     <motion.button
       type="button"
@@ -44,19 +46,29 @@ export function CharacterCard({
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: index * 0.06, type: 'spring', stiffness: 220, damping: 16 }}
       whileTap={{ scale: 0.96 }}
-      className={`cartoon relative flex w-full flex-col items-center overflow-hidden text-left ${selected ? 'ring-gold ring-4 ring-offset-2' : ''} ${className}`}
+      className={`relative flex w-full flex-col items-center overflow-hidden rounded-[22px] border-[3px] border-[var(--outline)] text-left shadow-[inset_0_2px_0_rgb(255_255_255/0.35),0_5px_0_var(--outline),0_12px_22px_rgb(0_0_0/0.35)] transition-shadow ${selected ? 'outline-gold outline-4 outline-offset-2 shadow-[inset_0_2px_0_rgb(255_255_255/0.35),0_5px_0_var(--outline),0_0_28px_color-mix(in_srgb,var(--gold)_70%,transparent)]' : ''} ${className}`}
       style={{
-        background: `linear-gradient(160deg, ${color}, color-mix(in srgb, ${color} 60%, var(--outline)))`,
-        ...skin,
+        background: `radial-gradient(circle at 50% 42%, color-mix(in srgb, white 32%, ${color}) 0%, ${color} 45%, color-mix(in srgb, ${color} 55%, var(--outline)) 100%)`,
       }}
     >
-      <span className="flex w-full flex-1 items-end justify-center px-3 pt-3">{portrait}</span>
-      <span className="bg-accent-strong font-display text-toon w-full truncate px-2 py-1.5 text-center text-xl tracking-wide">
-        {name}
-      </span>
-      {caption && (
-        <span className="bg-accent-strong text-on-color w-full pb-2 text-center text-sm font-bold">{caption}</span>
+      {/* Reflet en haut de la carte. */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-white/25 to-transparent"
+      />
+      {selected && (
+        <span
+          aria-hidden
+          className="bg-gold text-on-light font-display absolute top-1.5 right-1.5 z-10 flex h-7 w-7 items-center justify-center rounded-full border-2 border-[var(--outline)] text-base"
+        >
+          ✓
+        </span>
       )}
+      <span className="relative flex w-full flex-1 items-end justify-center px-3 pt-3">{portrait}</span>
+      <span className="relative w-full border-t-[3px] border-[var(--outline)] bg-gradient-to-b from-[var(--accent)] to-[var(--accent-strong)] px-2 py-1.5 text-center">
+        <span className="font-display text-toon block truncate text-xl tracking-wide">{name}</span>
+        {caption && <span className="text-on-color block text-sm font-bold">{caption}</span>}
+      </span>
     </motion.button>
   );
 }

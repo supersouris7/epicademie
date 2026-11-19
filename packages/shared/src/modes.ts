@@ -24,7 +24,7 @@ export const MODES: readonly ModeInfo[] = [
   {
     id: 'entrainement',
     name: 'Entraînement',
-    pitch: '5 questions sur un thème, à ton rythme',
+    pitch: '4 questions sur un thème (5 en calcul de tête), à ton rythme',
     category: 'apprendre',
     available: true,
   },

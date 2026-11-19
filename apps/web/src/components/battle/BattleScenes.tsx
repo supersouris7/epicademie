@@ -8,6 +8,7 @@ import { QuestyPose } from '../mascot/QuestyPose.tsx';
 import type { QuestyPoseId } from '../mascot/poses.ts';
 import type { MoodId } from '../mascot/moods.ts';
 import { HeroFace } from './HeroFace.tsx';
+import { Bubble } from '../Bubble.tsx';
 import { assetSrc, type BossExpression } from '../../design/assets.ts';
 import { bossHeadId } from '../../design/bosses.ts';
 import { RETRY_SECONDS } from '../../lib/battleLines.ts';
@@ -35,9 +36,9 @@ export function QuestySays({
       <span className="shrink-0">
         <QuestyPose pose={pose} mood={mood} size={96} />
       </span>
-      <p className="cartoon text-on-light min-w-0 flex-1 rounded-2xl bg-[#fff3dd] px-4 py-3 text-lg leading-snug font-bold sm:text-xl">
+      <Bubble tail="left" className="flex-1 px-4 py-3 text-lg sm:text-xl">
         {text}
-      </p>
+      </Bubble>
     </motion.div>
   );
 }
@@ -172,9 +173,9 @@ export function BossSays({
       role="status"
       aria-label={`${name} : ${text}`}
     >
-      <p className="cartoon text-on-light min-w-0 flex-1 rounded-2xl bg-[#ffdcdc] px-4 py-3 text-lg leading-snug font-bold sm:text-xl">
+      <Bubble tail="right" tone="villain" className="flex-1 px-4 py-3 text-lg sm:text-xl">
         {text}
-      </p>
+      </Bubble>
       {src && <img src={src} alt="" aria-hidden className="h-20 w-20 shrink-0 object-contain" />}
     </motion.div>
   );
@@ -230,9 +231,11 @@ export function BossCloseUp({
         initial={{ scale: 0.6, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.8, type: 'spring', stiffness: 240, damping: 14 }}
-        className="cartoon text-on-light pointer-events-none relative max-w-lg rounded-2xl bg-[#ffdcdc] px-5 py-4 text-xl leading-snug font-bold sm:text-2xl"
+        className="pointer-events-none relative max-w-lg"
       >
-        {text}
+        <Bubble tail="none" tone="villain" className="px-5 py-4 text-xl sm:text-2xl">
+          {text}
+        </Bubble>
       </motion.p>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.3 }} className="relative">
         <GameButton variant="danger" size="lg" icon="icons-navigation-play" onClick={onDone}>
@@ -336,10 +339,16 @@ export function RageScene({
         initial={{ scale: 0.6, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.4, type: 'spring', stiffness: 240, damping: 14 }}
-        className={`cartoon text-on-light pointer-events-none relative max-w-lg rounded-2xl bg-[#ffdcdc] px-5 py-4 leading-snug font-bold ${stage === 'rage' ? 'font-display text-2xl tracking-wide sm:text-3xl' : 'text-xl sm:text-2xl'}`}
+        className="pointer-events-none relative max-w-lg"
         role="status"
       >
-        {lines[stage]}
+        <Bubble
+          tail="none"
+          tone="villain"
+          className={`px-5 py-4 ${stage === 'rage' ? 'font-display text-2xl tracking-wide sm:text-3xl' : 'text-xl sm:text-2xl'}`}
+        >
+          {lines[stage]}
+        </Bubble>
       </motion.p>
     </div>
   );
@@ -366,9 +375,9 @@ export function HeroSays({
       role="status"
     >
       <HeroFace hero={hero} expression={face} size={72} />
-      <p className="cartoon text-on-light min-w-0 flex-1 rounded-2xl bg-[#fff3dd] px-4 py-2.5 text-base leading-snug font-bold sm:text-lg">
+      <Bubble tail="left" className="flex-1 text-base sm:text-lg">
         {text}
-      </p>
+      </Bubble>
     </motion.div>
   );
 }
@@ -392,32 +401,34 @@ export function QuipRow({
     const t = window.setTimeout(() => setHidden((h) => ({ ...h, enemy: enemy.nonce })), 2800);
     return () => window.clearTimeout(t);
   }, [enemy]);
-  const bubble =
-    'cartoon text-on-light max-w-[48%] rounded-2xl px-3 py-1.5 text-sm leading-snug font-bold shadow-lg sm:text-base';
   return (
     <div className="pointer-events-none relative z-30 -mt-1 flex h-0 justify-between gap-2" aria-live="polite">
       {hero && hidden.hero !== hero.nonce ? (
-        <motion.p
+        <motion.div
           key={`h-${hero.nonce}`}
           initial={{ y: -8, scale: 0.8, opacity: 0 }}
           animate={{ y: 0, scale: 1, opacity: 1 }}
-          className={`${bubble} self-start bg-[#fff3dd]`}
+          className="max-w-[48%] self-start"
         >
-          {hero.text}
-        </motion.p>
+          <Bubble tail="none" className="px-3 py-1.5 text-sm sm:text-base">
+            {hero.text}
+          </Bubble>
+        </motion.div>
       ) : (
         <span />
       )}
       {enemy && hidden.enemy !== enemy.nonce && (
-        <motion.p
+        <motion.div
           key={`e-${enemy.nonce}`}
           initial={{ y: -8, scale: 0.8, opacity: 0 }}
           animate={{ y: 0, scale: 1, opacity: 1 }}
           transition={{ delay: 0.15 }}
-          className={`${bubble} ml-auto self-start bg-[#ffdcdc] text-right`}
+          className="ml-auto max-w-[48%] self-start"
         >
-          {enemy.text}
-        </motion.p>
+          <Bubble tail="none" tone="villain" className="px-3 py-1.5 text-right text-sm sm:text-base">
+            {enemy.text}
+          </Bubble>
+        </motion.div>
       )}
     </div>
   );

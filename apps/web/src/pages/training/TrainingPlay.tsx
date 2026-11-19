@@ -26,7 +26,6 @@ import { MedalBadge, RewardBadge } from '../../components/game/RewardBadge.tsx';
 import { medal } from '@questeo/engine';
 import { QuestyPose } from '../../components/mascot/QuestyPose.tsx';
 import type { QuestyPoseId } from '../../components/mascot/poses.ts';
-import { skinStyle } from '../../design/skin.ts';
 import { MathText } from '../../components/MathText.tsx';
 import { useToast } from '../../components/Toast.tsx';
 import { Figure } from '../../components/figures/Figure.tsx';
@@ -527,12 +526,17 @@ function Results({
         >
           <QuestyPose pose={pose} mood={mood} size={150} />
         </motion.div>
-        <h1
-          className="bg-accent font-display text-toon cartoon px-8 pt-0 pb-[0.85em] text-3xl leading-tight tracking-wide sm:text-4xl"
-          // Le bandeau illustré a sa face dans le haut de l'image (la queue dépasse en bas) : texte remonté.
-          style={skinStyle('hud/frames/ribbon.webp', 30, '1.5rem')}
-        >
-          {message}
+        {/* Bandeau en CSS : ruban violet aux pointes repliées. */}
+        <h1 className="relative mx-6 rounded-xl border-[3px] border-[var(--outline)] bg-gradient-to-b from-[var(--accent)] to-[var(--accent-strong)] px-8 py-2 text-center shadow-[inset_0_2px_0_rgb(255_255_255/0.3),0_5px_0_var(--outline)]">
+          <span
+            aria-hidden
+            className="absolute top-3 -left-6 -z-10 h-full w-8 rounded-l-md border-[3px] border-[var(--outline)] bg-[var(--accent-strong)] [clip-path:polygon(0_0,100%_0,100%_100%,0_100%,40%_50%)]"
+          />
+          <span
+            aria-hidden
+            className="absolute top-3 -right-6 -z-10 h-full w-8 rounded-r-md border-[3px] border-[var(--outline)] bg-[var(--accent-strong)] [clip-path:polygon(0_0,100%_0,60%_50%,100%_100%,0_100%)]"
+          />
+          <span className="font-display text-toon text-3xl leading-tight tracking-wide sm:text-4xl">{message}</span>
         </h1>
         <p className="font-display text-6xl">
           {regular.correct}/{regular.answered}

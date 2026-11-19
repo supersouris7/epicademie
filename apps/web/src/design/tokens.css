@@ -56,6 +56,9 @@
   --text-muted: var(--af-violet-100);
   --text-on-color: var(--af-white);
   --text-on-light: var(--af-ink);
+  /* Bulles de dialogue (CSS, sans image) : crème pour les gentils, rouge pâle pour les méchants. */
+  --bubble-cream: var(--af-cream-100);
+  --bubble-villain: #ffdcdc;
   --outline: #0a0618;
   --shadow: #0a0618;
   --primary: var(--af-orange-500);
