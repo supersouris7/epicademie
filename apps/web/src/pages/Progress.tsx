@@ -117,7 +117,8 @@ export function Progress({ profile }: { readonly profile: Profile }) {
                 role="img"
                 aria-label={`${RELICS[s.id].name} : ${shards} éclats sur ${ids.size}`}
               >
-                <span className={shards ? '' : 'opacity-50 grayscale'}>
+                {/* Relique grise au départ, qui se colore avec les éclats gagnés. */}
+                <span style={{ filter: `grayscale(${ids.size ? 1 - shards / ids.size : 1})` }}>
                   <GameIcon id={RELICS[s.id].icon} size={60} />
                 </span>
                 <span className="flex min-w-0 flex-1 flex-col gap-1">
@@ -160,7 +161,7 @@ export function Progress({ profile }: { readonly profile: Profile }) {
             role="tab"
             aria-selected={subject === s.id}
             onClick={() => setSubject(s.id)}
-            className={`cartoon cartoon-press font-display min-h-12 px-4 text-lg ${subject === s.id ? 'text-white' : 'bg-surface'}`}
+            className={`cartoon cartoon-press font-display min-h-12 px-4 text-lg ${subject === s.id ? 'gloss text-white' : 'bg-surface'}`}
             style={subject === s.id ? { backgroundColor: `var(--subject-${s.color})` } : undefined}
           >
             {s.name}

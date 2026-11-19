@@ -203,6 +203,19 @@ export const KINDS = {
     framing: 'tuile carrée vue de dessus, remplit tout le cadre, motif raccordable sur les 4 bords',
     opaque: true,
   },
+  /** Grand boss en plein écran (illustration carrée détourée). */
+  bossSquare: {
+    gen: '1024x1024',
+    final: [1024, 1024],
+    framing: 'personnage en pied centré, de face, fond transparent, halo et effets autour de lui',
+  },
+  /** Bannière large (3:1) en haut d'un écran. */
+  banner: {
+    gen: '1536x1024',
+    final: [1536, 512],
+    framing: 'bannière très large, sujet au centre, fond peint jusqu’aux bords, sans texte',
+    opaque: true,
+  },
   bossArt: {
     gen: '1536x1024',
     final: [1200, 800],
@@ -1098,6 +1111,34 @@ const piBotAssets = [
   ),
 ];
 
+/** L'Empereur du Savoir : le grand boss, maître des gardiens des reliques. */
+const empereurAssets = [
+  a(
+    'bossSquare',
+    'bosses/empereur/empereur.webp',
+    'L’Empereur du Savoir',
+    'grand boss en armure violette et dorée, couronne à pointes, crinière blanche, cœur de galaxie, cape violette',
+    'Scène du grand boss (1er temps, sans reliques).',
+    2,
+  ),
+  a(
+    'bossSquare',
+    'bosses/empereur/empereur-reliques.webp',
+    'L’Empereur du Savoir et les reliques',
+    'le même grand boss entouré des six reliques des matières dans un anneau violet',
+    'Scène du grand boss (2e temps, avec les reliques).',
+    2,
+  ),
+  a(
+    'banner',
+    'bosses/empereur/banniere.webp',
+    'Bannière du Combat de boss',
+    'l’Empereur du Savoir en buste, mains lumineuses, ciel violet étoilé et cristaux flottants',
+    'Bannière de l’écran Combat de boss.',
+    2,
+  ),
+];
+
 const MINIONS = [
   [
     'calculatrice',
@@ -1221,6 +1262,7 @@ export const PLANNED_ASSETS: readonly PlannedAsset[] = [
   ...golemExtras,
   ...minionAssets,
   ...piBotAssets,
+  ...empereurAssets,
   ...effectAssets,
   ...envAssets,
   keyArt,

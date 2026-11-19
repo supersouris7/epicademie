@@ -3,12 +3,12 @@ import { GameIcon, type IconSize } from './GameIcon.tsx';
 
 /** Couleurs des boutons (planches : orange principal, violet secondaire, cyan, vert, rouge). */
 const BUTTON_VARIANTS = {
-  primary: 'bg-primary',
-  accent: 'bg-accent',
-  info: 'bg-info',
-  success: 'bg-success',
-  danger: 'bg-danger',
-  surface: 'bg-surface text-ink [text-shadow:none]',
+  primary: 'bg-primary gloss',
+  accent: 'bg-accent gloss',
+  info: 'bg-info gloss',
+  success: 'bg-success gloss',
+  danger: 'bg-danger gloss',
+  surface: 'bg-surface-2 gloss text-ink [text-shadow:none]',
 } as const;
 export type ButtonVariant = keyof typeof BUTTON_VARIANTS;
 

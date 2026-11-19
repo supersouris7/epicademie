@@ -64,7 +64,7 @@ function ArenaSetup({ profile }: { readonly profile: Profile }) {
               role="radio"
               aria-checked={chosen?.id === c.id}
               onClick={() => setChapterId(c.id)}
-              className={`cartoon cartoon-press px-3 py-2 font-bold ${chosen?.id === c.id ? 'bg-accent text-white' : 'bg-surface'}`}
+              className={`cartoon cartoon-press px-3 py-2 font-bold ${chosen?.id === c.id ? 'bg-accent gloss text-white' : 'bg-surface'}`}
             >
               {c.title}
             </button>

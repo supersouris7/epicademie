@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Kit combat (à joindre à ChatGPT)
 
-71 demandes · 125 images finales.
+74 demandes · 128 images finales.
 
 ## Pour toi (à lire avant de commencer)
 
@@ -16,7 +16,7 @@
 
 ```text
 Je te joins le fichier « kit-combat.md » et des images de référence de style (Questy, la mascotte, et l'interface du jeu).
-Lis tout le fichier : il fixe le style du jeu et contient 71 demandes d'images numérotées (héros, boss, ennemis, effets, arènes).
+Lis tout le fichier : il fixe le style du jeu et contient 74 demandes d'images numérotées (héros, boss, ennemis, effets, arènes).
 Règles :
 - Génère maintenant UNIQUEMENT l'image de la demande 1, puis attends.
 - Chaque fois que j'écris « suivant », génère la demande suivante. Une seule image par réponse, précédée seulement de « Demande N ».
@@ -637,7 +637,28 @@ Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumine
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 69 — Planche « effets-1 » (9 éléments)
+### Demande 69 — L’Empereur du Savoir
+
+```text
+Image 1024×1024. Grand boss en armure violette et dorée, couronne à pointes, crinière blanche, cœur de galaxie, cape violette.
+Cadrage : personnage en pied centré, de face, fond transparent, halo et effets autour de lui.
+```
+
+### Demande 70 — L’Empereur du Savoir et les reliques
+
+```text
+Image 1024×1024. Le même grand boss entouré des six reliques des matières dans un anneau violet.
+Cadrage : personnage en pied centré, de face, fond transparent, halo et effets autour de lui.
+```
+
+### Demande 71 — Bannière du Combat de boss
+
+```text
+Image 1536×1024, plein cadre avec décor (pas de fond magenta). L’Empereur du Savoir en buste, mains lumineuses, ciel violet étoilé et cristaux flottants.
+Cadrage : bannière très large, sujet au centre, fond peint jusqu’aux bords, sans texte.
+```
+
+### Demande 72 — Planche « effets-1 » (9 éléments)
 
 ```text
 Image 1024×1024 : planche de 9 éléments sur une grille invisible de 3 colonnes × 3 lignes (cases de 341×341 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
@@ -653,7 +674,7 @@ Cadrage de chaque élément : effet centré, bords nets (pas de grand halo flou)
 9. Trois petites spirales dorées en orbite (étourdi).
 ```
 
-### Demande 70 — Planche « effets-2 » (3 éléments)
+### Demande 73 — Planche « effets-2 » (3 éléments)
 
 ```text
 Image 1024×1024 : planche de 3 éléments sur une grille invisible de 3 colonnes × 3 lignes (cases de 341×341 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
@@ -663,7 +684,7 @@ Cadrage de chaque élément : effet centré, bords nets (pas de grand halo flou)
 3. Tourbillon de portail violet vu de face.
 ```
 
-### Demande 71 — Illustration principale
+### Demande 74 — Illustration principale
 
 ```text
 Image 1536×1024, plein cadre avec décor (pas de fond magenta). Scène de combat épique et joyeuse : les cinq héros alignés de gauche à droite (Alex avec son canon à plasma, Lina avec son lance-ballons, Pixel le chat avec son canon-poisson au premier plan, Ayla avec sa bombe-blaster, Tao avec son arbalète) et Questy qui lève le poing au milieu, tous face au Golem des Équations tout à droite ; en arrière-plan un château-académie violet flottant aux bannières à livre, ciel lavande, îles flottantes.
@@ -744,6 +765,9 @@ Cadrage : illustration plein cadre, composition lisible en petit, sans aucun tex
 | 66 | `bosses/minions/pi-bot-head-idee` |
 | 67 | `bosses/minions/pi-bot-head-amour` |
 | 68 | `bosses/minions/pi-bot-head-dort` |
-| 69 | `effects/impacts/hit-burst`<br>`effects/impacts/anneau`<br>`effects/impacts/etincelles`<br>`effects/impacts/flash`<br>`effects/impacts/explosion`<br>`effects/particles/puff`<br>`effects/particles/bouclier`<br>`effects/particles/soin`<br>`effects/particles/etourdi` |
-| 70 | `effects/impacts/onde-boss`<br>`effects/particles/confettis`<br>`effects/transitions/portail` |
-| 71 | `branding/key-art` |
+| 69 | `bosses/empereur/empereur` |
+| 70 | `bosses/empereur/empereur-reliques` |
+| 71 | `bosses/empereur/banniere` |
+| 72 | `effects/impacts/hit-burst`<br>`effects/impacts/anneau`<br>`effects/impacts/etincelles`<br>`effects/impacts/flash`<br>`effects/impacts/explosion`<br>`effects/particles/puff`<br>`effects/particles/bouclier`<br>`effects/particles/soin`<br>`effects/particles/etourdi` |
+| 73 | `effects/impacts/onde-boss`<br>`effects/particles/confettis`<br>`effects/transitions/portail` |
+| 74 | `branding/key-art` |

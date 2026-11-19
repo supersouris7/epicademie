@@ -42,6 +42,13 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   await expect(page).toHaveURL(/\/hub$/);
 
   await page.getByRole('button', { name: /^Combat de boss/ }).click();
+  // L'Empereur du Savoir se présente (1re fois du jour) : lui seul, puis avec les reliques.
+  const emperor = page.getByRole('dialog', { name: 'L’Empereur du Savoir' });
+  await expect(emperor).toContainText('gardiens');
+  await emperor.getByRole('button', { name: 'Passer' }).click();
+  await expect(emperor).toContainText('dominer le monde');
+  await emperor.getByRole('button', { name: 'Relever le défi' }).click();
+  await expect(emperor).toHaveCount(0);
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   // Gros plan du boss de la matière qui provoque, puis choix du chapitre.
   const closeUp = page.getByRole('dialog', { name: 'Golem des Équations te provoque' });
@@ -142,6 +149,7 @@ test('Défaite : 5 secondes pour recommencer, puis l’entraînement', async ({ 
   await page.getByRole('button', { name: /C’est parti/ }).click();
   await expect(page).toHaveURL(/\/hub$/);
   await page.getByRole('button', { name: /^Combat de boss/ }).click();
+  await page.getByRole('button', { name: 'Relever le défi' }).click({ timeout: 10_000 });
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   await page.getByRole('button', { name: 'Choisir mon chapitre' }).click();
   const started = page.waitForResponse((r) => r.url().endsWith('/api/battles'));

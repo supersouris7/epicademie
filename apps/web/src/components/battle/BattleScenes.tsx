@@ -238,9 +238,10 @@ export function BossCloseUp({
         </Bubble>
       </motion.p>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.3 }} className="relative">
-        <GameButton variant="danger" size="lg" icon="icons-navigation-play" onClick={onDone}>
+        {/* Le bouton se remplit en 5 s, puis appuie tout seul. */}
+        <AutoPress seconds={5} onDone={onDone}>
           Choisir mon chapitre
-        </GameButton>
+        </AutoPress>
       </motion.div>
     </div>
   );
@@ -431,5 +432,42 @@ export function QuipRow({
         </motion.div>
       )}
     </div>
+  );
+}
+
+/** Bouton qui se remplit pendant `seconds` puis s'appuie tout seul (on peut appuyer avant). */
+export function AutoPress({
+  seconds,
+  onDone,
+  children,
+}: {
+  readonly seconds: number;
+  readonly onDone: () => void;
+  readonly children: React.ReactNode;
+}) {
+  const [left, setLeft] = useState(seconds);
+  useEffect(() => {
+    if (left <= 0) {
+      onDone();
+      return;
+    }
+    const t = window.setTimeout(() => setLeft((n) => n - 1), 1000);
+    return () => window.clearTimeout(t);
+  }, [left, onDone]);
+  return (
+    <span className="relative inline-flex">
+      <GameButton variant="danger" size="lg" icon="icons-navigation-play" onClick={onDone}>
+        {children} ({left})
+      </GameButton>
+      {/* Jauge du temps restant, sous le bouton. */}
+      <span aria-hidden className="absolute inset-x-3 -bottom-2 h-1.5 overflow-hidden rounded-full bg-black/40">
+        <motion.span
+          className="bg-gold block h-full origin-left"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: seconds, ease: 'linear' }}
+        />
+      </span>
+    </span>
   );
 }

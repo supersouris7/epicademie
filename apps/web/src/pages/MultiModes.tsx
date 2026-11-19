@@ -41,7 +41,7 @@ export function MultiModes({ profile }: { readonly profile: Profile }) {
                 <button
                   type="button"
                   onClick={() => void navigate(mode.id === 'arene' ? '/arene' : `/jouer/${mode.id}`)}
-                  className="cartoon bevel cartoon-press flex w-full items-center gap-3 p-3 text-white hover:brightness-110"
+                  className="cartoon bevel cartoon-press gloss flex w-full items-center gap-3 p-3 text-white hover:brightness-110"
                   style={{ backgroundColor: CATEGORY_COLORS[mode.category] }}
                 >
                   {body}

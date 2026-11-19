@@ -23,7 +23,7 @@ export function GradeTabs({ grades, value, own, onChange }: GradeTabsProps) {
             role="radio"
             aria-checked={active}
             onClick={() => onChange(g)}
-            className={`cartoon cartoon-press font-display relative min-w-14 px-3 py-1.5 text-lg tracking-wide ${active ? 'bg-accent text-toon' : 'bg-surface-2'}`}
+            className={`cartoon cartoon-press font-display relative min-w-14 px-3 py-1.5 text-lg tracking-wide ${active ? 'bg-accent gloss text-toon' : 'bg-surface-2'}`}
             style={{ borderRadius: '9999px' }}
           >
             {gradeInfo(g).name}

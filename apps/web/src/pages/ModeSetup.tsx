@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Navigate, useNavigate, useParams } from 'react-router';
 import { chaptersOf } from '@questeo/content';
@@ -7,6 +8,8 @@ import { useSkills } from '../api/play.ts';
 import { useBosses } from '../api/battles.ts';
 import { ProgressBar } from '../components/game/ProgressBar.tsx';
 import { RELICS } from '../design/relics.ts';
+import { assetSrc } from '../design/assets.ts';
+import { EmperorScene, emperorDue } from '../components/battle/EmperorScene.tsx';
 import { MODE_MOODS } from '../lib/modes.ts';
 import { PageShell } from '../components/PageShell.tsx';
 import { SpeechBubble } from '../components/SpeechBubble.tsx';
@@ -26,9 +29,12 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
   const [toast, showToast] = useToast();
   const navigate = useNavigate();
   const { data: skills } = useSkills(profile.id);
+  // L'Empereur du Savoir se présente en plein écran une fois par jour, à l'entrée du Combat de boss.
+  const [emperor, setEmperor] = useState(() => modeId === 'boss' && emperorDue(profile.id));
   const { data: bosses } = useBosses(profile.id);
   if (!mode) return <Navigate to="/hub" replace />;
   const isBoss = mode.id === 'boss';
+  const bannerSrc = assetSrc('bosses-empereur-banniere');
   // Barre sous chaque matière (classe du joueur) : notions acquises (Entraînement) ou boss vaincus (Combat).
   const grade = playedGrade(profile.grade);
   const progressOf = (subject: string) => {
@@ -36,12 +42,12 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
     if (isBoss) {
       const ids = new Set(chapters.filter((c) => c.boss).map((c) => c.id));
       const won = (bosses?.records ?? []).filter((r) => ids.has(r.chapterId) && r.wins > 0).length;
-      return { value: won, max: ids.size, text: `${won}/${ids.size} boss` };
+      return { value: won, max: ids.size };
     }
     const ids = chapters.flatMap((c) => c.skills.map((k) => k.id));
     const states = new Map((skills ?? []).map((k) => [k.skillId, k]));
     const gold = ids.filter((id) => acquired(states.get(id))).length;
-    return { value: gold, max: ids.length, text: `${gold}/${ids.length} notions` };
+    return { value: gold, max: ids.length };
   };
   const back = mode.category === 'multi' ? '/multi' : '/hub';
   const playable = (mode.id === 'entrainement' || mode.id === 'boss') && mode.available;
@@ -53,10 +59,21 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
 
   return (
     <PageShell title={mode.name} back={back}>
-      <div className="flex items-center gap-4">
-        <Questy size={130} mood={MODE_MOODS[mode.id]} />
-        <SpeechBubble>{`${mode.pitch}. Choisis ta matière !`}</SpeechBubble>
-      </div>
+      {isBoss && bannerSrc ? (
+        // Combat de boss : bannière de l'Empereur du Savoir, maître des gardiens des reliques.
+        <div className="cartoon relative overflow-hidden">
+          <img src={bannerSrc} alt="" aria-hidden className="block aspect-[3/1] w-full object-cover" />
+          <p className="font-display text-toon absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-4 pt-6 pb-2 text-xl tracking-wide sm:text-2xl">
+            Bats les gardiens, reprends les reliques à l’Empereur du Savoir !
+          </p>
+        </div>
+      ) : (
+        <div className="flex items-center gap-4">
+          <Questy size={130} mood={MODE_MOODS[mode.id]} />
+          <SpeechBubble>{`${mode.pitch}. Choisis ta matière !`}</SpeechBubble>
+        </div>
+      )}
+      {isBoss && emperor && <EmperorScene profileId={profile.id} onDone={() => setEmperor(false)} />}
       {/* Combat de boss : chaque boss vaincu donne un éclat de la relique de sa matière. */}
       {isBoss && (
         <div className="cartoon bg-surface-2 flex items-center gap-3 p-3" role="note">
@@ -91,30 +108,35 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
               type="button"
               onClick={() => pickSubject(s.id, s.name, s.available)}
               aria-label={s.available ? s.name : `${s.name}, à venir`}
-              className={`cartoon bevel cartoon-press relative flex min-h-36 w-full flex-col items-center justify-center gap-2 p-4 hover:brightness-110 ${s.available ? '' : 'opacity-60 grayscale'}`}
+              className={`cartoon bevel cartoon-press gloss relative flex min-h-36 w-full flex-col items-center justify-center gap-2 p-4 hover:brightness-110 ${s.available ? '' : 'opacity-60 grayscale'}`}
               style={{ backgroundColor: `var(--subject-${s.color})` }}
             >
-              {/* Combat de boss : l'icône est la relique de la matière, à gagner en battant ses boss. */}
-              {isBoss ? <GameIcon id={RELICS[s.id].icon} size={80} /> : <SubjectIcon subject={s.id} size={72} />}
-              <span className="font-display text-toon text-xl tracking-wide sm:text-2xl">{s.name}</span>
-              {s.available &&
-                chaptersOf(s.id).length > 0 &&
-                (() => {
-                  const p = progressOf(s.id);
-                  return (
-                    <span className="flex w-full flex-col items-center gap-0.5">
-                      <ProgressBar
-                        className="w-full"
-                        value={p.value}
-                        max={Math.max(1, p.max)}
-                        color={isBoss ? 'var(--boss)' : 'var(--success)'}
-                        label={isBoss ? `Boss vaincus en ${s.name}` : `Notions acquises en ${s.name}`}
-                        size="sm"
-                      />
-                      <span className="text-toon text-xs font-bold text-white">{p.text}</span>
-                    </span>
-                  );
-                })()}
+              {(() => {
+                // Progression de la classe (0 pour une matière à venir) ; la relique se colore avec elle.
+                const p = s.available && chaptersOf(s.id).length > 0 ? progressOf(s.id) : { value: 0, max: 1 };
+                const ratio = p.max > 0 ? p.value / p.max : 0;
+                return (
+                  <>
+                    {/* Combat de boss : l'icône est la relique de la matière, grise puis colorée selon les boss vaincus. */}
+                    {isBoss ? (
+                      <span style={{ filter: `grayscale(${1 - ratio})` }}>
+                        <GameIcon id={RELICS[s.id].icon} size={80} />
+                      </span>
+                    ) : (
+                      <SubjectIcon subject={s.id} size={72} />
+                    )}
+                    <span className="font-display text-toon text-xl tracking-wide sm:text-2xl">{s.name}</span>
+                    <ProgressBar
+                      className="w-full"
+                      value={p.value}
+                      max={Math.max(1, p.max)}
+                      color={isBoss ? 'var(--boss)' : 'var(--success)'}
+                      label={isBoss ? `Boss vaincus en ${s.name}` : `Notions acquises en ${s.name}`}
+                      size="sm"
+                    />
+                  </>
+                );
+              })()}
             </button>
             {!s.available && <SoonBadge />}
           </motion.li>

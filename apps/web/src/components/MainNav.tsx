@@ -64,7 +64,7 @@ export function MainNav({ profile }: { readonly profile: Profile }) {
                     type="button"
                     onClick={() => void navigate(item.to)}
                     aria-current={active ? 'page' : undefined}
-                    className={`font-display text-toon flex w-full flex-col items-center gap-0.5 rounded-2xl px-2 py-1 text-xs tracking-wide transition-colors sm:text-sm lg:w-20 ${active ? 'bg-accent ring-gold ring-2' : 'hover:bg-white/10'}`}
+                    className={`font-display text-toon flex w-full flex-col items-center gap-0.5 rounded-2xl px-2 py-1 text-xs tracking-wide transition-colors sm:text-sm lg:w-20 ${active ? 'bg-accent gloss ring-gold ring-2' : 'hover:bg-white/10'}`}
                   >
                     <span className="flex h-7 w-7 items-center justify-center">
                       {item.icon ? (
