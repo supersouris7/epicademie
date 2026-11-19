@@ -26,10 +26,10 @@ export const sendBattleItem = (id: string, item: ItemId) =>
 
 export const finishBattle = (id: string) => api<BattleSummary>(`/battles/${id}/finish`, { method: 'POST' });
 
-export const buyHint = (profileId: string) =>
+export const buyItem = (profileId: string, item: ItemId | 'rubis') =>
   api<{ coins: number; inventory: Inventory }>('/shop', {
     method: 'POST',
-    body: JSON.stringify({ profileId, item: 'indice' }),
+    body: JSON.stringify({ profileId, item }),
   });
 
 /** Équipe jusqu'à 3 objets de la réserve pour les prochains combats. */

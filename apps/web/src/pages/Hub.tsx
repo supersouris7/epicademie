@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
 import { getMode, gradeInfo, HERO_NAMES, MODES, type ModeId, type Profile } from '@questeo/shared';
@@ -9,6 +10,7 @@ import { OnlineBanner } from '../components/OnlineBanner.tsx';
 import { GameIcon } from '../components/game/GameIcon.tsx';
 import { heroPoseSrc } from '../design/assets.ts';
 import { useEntrance } from '../lib/entrance.ts';
+import { Bubble } from '../components/Bubble.tsx';
 
 /** Les deux grands modes jouables, chacun sa couleur. */
 const MAIN_MODES: readonly { id: ModeId; color: string }[] = [
@@ -22,6 +24,13 @@ export function Hub({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
   const [toast, showToast] = useToast();
   const pose = heroPoseSrc(profile.hero, 'idle');
+  const [heroHint] = useState(() => {
+    const key = `questeo:hero-hint:${profile.id}`;
+    return !sessionStorage.getItem(key);
+  });
+  useEffect(() => {
+    sessionStorage.setItem(`questeo:hero-hint:${profile.id}`, '1');
+  }, [profile.id]);
 
   return (
     <PageShell nav={profile}>
@@ -67,6 +76,7 @@ export function Hub({ profile }: { readonly profile: Profile }) {
             />
           )}
           <span className="font-display text-toon text-2xl tracking-wide">{HERO_NAMES[profile.hero]}</span>
+          {heroHint && <Bubble className="mt-1 px-3 py-2 text-center text-sm">Sélectionne ton héros</Bubble>}
         </motion.button>
 
         <ul className="flex flex-col gap-4" aria-label="Jouer">

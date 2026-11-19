@@ -12,6 +12,7 @@ export const profiles = sqliteTable('profiles', {
   grade: text('grade').$type<Grade>(),
   xp: integer('xp').notNull().default(0),
   coins: integer('coins').notNull().default(0),
+  rubies: integer('rubies').notNull().default(2),
   soundOn: integer('sound_on', { mode: 'boolean' }).notNull().default(true),
   musicOn: integer('music_on', { mode: 'boolean' }).notNull().default(true),
   /** Objets équipés pour les combats de boss (3 au plus, pris dans l'inventaire). */

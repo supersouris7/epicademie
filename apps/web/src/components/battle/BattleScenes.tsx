@@ -239,7 +239,7 @@ export function BossCloseUp({
       </motion.p>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.3 }} className="relative">
         {/* Le bouton se remplit en 5 s, puis appuie tout seul. */}
-        <AutoPress seconds={5} onDone={onDone}>
+        <AutoPress seconds={3} onDone={onDone}>
           Choisir mon chapitre
         </AutoPress>
       </motion.div>
@@ -457,7 +457,7 @@ export function AutoPress({
   return (
     <span className="relative inline-flex">
       <GameButton variant="danger" size="lg" icon="icons-navigation-play" onClick={onDone}>
-        {children} ({left})
+        {children}
       </GameButton>
       {/* Jauge du temps restant, sous le bouton. */}
       <span aria-hidden className="absolute inset-x-3 -bottom-2 h-1.5 overflow-hidden rounded-full bg-black/40">

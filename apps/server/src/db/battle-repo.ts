@@ -17,8 +17,9 @@ import {
 import {
   bestMedal,
   bossMedal,
-  HINT_PRICE,
+  ITEM_PRICES,
   MAX_ITEM_STOCK,
+  RUBY_PRICE,
   type BattleAnswer,
   type BattleAnswerResult,
   type BattleSummary,
@@ -261,21 +262,26 @@ export function createBattleRepo(db: Db) {
       });
     },
 
-    /** Achat d'un indice avec des pièces. */
-    buy(profileId: string): { coins: number; inventory: Inventory } {
+    /** Achat d'un consommable, ou d'un rubis, avec des pièces. */
+    buy(profileId: string, item: ItemId | 'rubis'): { coins: number; rubies: number; inventory: Inventory } {
       return db.transaction((tx) => {
         const profile = tx.select().from(profiles).where(eq(profiles.id, profileId)).get();
         if (!profile) throw new PlayError(404, 'Profil introuvable');
-        if (profile.coins < HINT_PRICE) throw new PlayError(409, `Il te faut ${HINT_PRICE} pièces`);
-        if (readInventory(tx, profileId).indice >= MAX_ITEM_STOCK) {
-          throw new PlayError(409, `${MAX_ITEM_STOCK} indices au maximum`);
+        const price = item === 'rubis' ? RUBY_PRICE : ITEM_PRICES[item];
+        if (profile.coins < price) throw new PlayError(409, `Il te faut ${price} pièces`);
+        if (item !== 'rubis' && readInventory(tx, profileId)[item] >= MAX_ITEM_STOCK) {
+          throw new PlayError(409, `${MAX_ITEM_STOCK} ${item}s au maximum`);
         }
         tx.update(profiles)
-          .set({ coins: profile.coins - HINT_PRICE })
+          .set({ coins: profile.coins - price, rubies: profile.rubies + (item === 'rubis' ? 1 : 0) })
           .where(eq(profiles.id, profileId))
           .run();
-        addItems(tx, profileId, { indice: 1 });
-        return { coins: profile.coins - HINT_PRICE, inventory: readInventory(tx, profileId) };
+        if (item !== 'rubis') addItems(tx, profileId, { [item]: 1 });
+        return {
+          coins: profile.coins - price,
+          rubies: profile.rubies + (item === 'rubis' ? 1 : 0),
+          inventory: readInventory(tx, profileId),
+        };
       });
     },
   };

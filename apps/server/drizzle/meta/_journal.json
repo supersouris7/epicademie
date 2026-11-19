@@ -99,6 +99,13 @@
       "when": 1795500000000,
       "tag": "0013_equipment_series",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1795095965220,
+      "tag": "0014_aromatic_the_anarchist",
+      "breakpoints": true
     }
   ]
 }

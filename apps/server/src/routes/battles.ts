@@ -36,7 +36,7 @@ export const battleRoutes =
     app.post('/shop', async (req, reply) => {
       const body = BuySchema.safeParse(req.body);
       if (!body.success) return reply.code(400).send({ error: z.prettifyError(body.error) });
-      return handle(reply, () => repo.buy(body.data.profileId));
+      return handle(reply, () => repo.buy(body.data.profileId, body.data.item));
     });
 
     app.post('/battles', async (req, reply) => {

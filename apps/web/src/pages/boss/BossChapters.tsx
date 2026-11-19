@@ -14,7 +14,7 @@ import {
   type BossRecord,
   type Profile,
 } from '@questeo/shared';
-import { bossesKey, buyHint, equipItems, useBosses } from '../../api/battles.ts';
+import { bossesKey, buyItem, equipItems, useBosses } from '../../api/battles.ts';
 import { HeroFace } from '../../components/battle/HeroFace.tsx';
 import { GameButton } from '../../components/game/GameButton.tsx';
 import { GameIcon } from '../../components/game/GameIcon.tsx';
@@ -146,7 +146,7 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
             variant="accent"
             icon="icons-navigation-hint"
             disabled={busy || profile.coins < HINT_PRICE}
-            onClick={() => void run(() => buyHint(profile.id), 'Indice acheté !')}
+            onClick={() => void run(() => buyItem(profile.id, 'indice'), 'Indice acheté !')}
           >
             Indice : {HINT_PRICE}
             <GameIcon id="icons-resources-coin" size={22} label="pièces" />

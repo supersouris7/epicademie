@@ -63,6 +63,7 @@ export function ChestReveal({ chest }: { readonly chest: Chest | null }) {
   const loot = [
     ...items.map((i) => ({ id: i, icon: ITEM_ICONS[i], label: `${ITEM_INFO[i].name} +${chest.items[i] ?? 0}` })),
     { id: 'coins', icon: 'icons-resources-coin', label: `+${chest.coins} pièces` },
+    ...(chest.rubies > 0 ? [{ id: 'rubies', icon: 'icons-resources-gem', label: `+${chest.rubies} rubis` }] : []),
   ];
 
   // Après la révélation : le butin reste résumé dans le bilan.

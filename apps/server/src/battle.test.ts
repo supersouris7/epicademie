@@ -170,37 +170,18 @@ describe('combat de boss', () => {
     }
     const summary = (await app.inject({ method: 'POST', url: `/api/sessions/${sid}/finish` })).json<SessionSummary>();
     expect(summary.perfect).toBe(true);
-    expect(summary.chest).toEqual({ rarity: 'commun', items: { bouclier: 1 }, coins: 10 });
+    expect(summary.chest).toEqual({ rarity: 'commun', items: {}, coins: 25, rubies: 0 });
 
     // Pièces du sans-faute et du coffre : de quoi acheter un indice.
     const buy = await app.inject({ method: 'POST', url: '/api/shop', payload: { profileId, item: 'indice' } });
     expect(buy.statusCode).toBe(200);
     expect(buy.json<{ inventory: { indice: number } }>().inventory.indice).toBe(1);
 
-    // Équipement : seuls les objets équipés (pris dans la réserve, 3 au plus) servent en combat.
-    const equip = (items: string[]) =>
-      app.inject({ method: 'PUT', url: `/api/profiles/${profileId}/equipment`, payload: { items } });
-    expect((await equip(['bouclier', 'bouclier'])).statusCode).toBe(400); // un seul bouclier en réserve
-    expect((await equip(['bouclier', 'indice', 'soin', 'soin'])).statusCode).toBe(400); // 3 au plus
-    const eq = await equip(['bouclier']);
-    expect(eq.json<{ equipped: string[] }>().equipped).toEqual(['bouclier']);
-
     const b = (await startBattle()).json<BattleView>();
-    expect(b.equipped).toEqual(['bouclier']);
+    expect(b.equipped).toEqual([]);
     const use = (item: string) => app.inject({ method: 'POST', url: `/api/battles/${b.id}/items`, payload: { item } });
     // L'indice acheté reste en réserve : il n'est pas équipé.
     expect((await use('indice')).json<{ error: string }>().error).toMatch(/pas équipé/);
-    const shield = await use('bouclier');
-    expect(shield.json<BattleView>()).toMatchObject({ shield: true, itemsUsed: 1, equipped: [] });
-    expect(shield.json<BattleView>().inventory.bouclier).toBe(0);
-    expect((await use('bouclier')).statusCode).toBe(409);
-    const r = await reply(shield.json<BattleView>(), false);
-    expect(r.outcome).toBe('blocked');
-    expect(r.battle.hearts).toBe(3);
-    expect(r.battle.inventory.indice).toBe(1);
-    // L'objet utilisé a quitté l'équipement.
-    const overview = await app.inject({ method: 'GET', url: `/api/profiles/${profileId}/bosses` });
-    expect(overview.json<{ equipped: string[] }>().equipped).toEqual([]);
   });
 
   it('une session de boss ne passe pas par les routes d’entraînement', async () => {

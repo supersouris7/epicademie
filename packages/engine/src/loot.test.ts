@@ -23,7 +23,7 @@ describe('coffres d’équipement', () => {
 
   it('contenu : objets et pièces selon la rareté', () => {
     const chest = rollChest(5, 5, seq(0, 0.99, 0, 0.5, 0.99));
-    expect(chest).toEqual({ rarity: 'epique', items: { bouclier: 1, soin: 1, indice: 1 }, coins: 40 });
+    expect(chest).toEqual({ rarity: 'epique', items: { bouclier: 1, soin: 1 }, coins: 40, rubies: 1 });
     expect(rollChest(1, 5, seq(0.5))).toBeNull();
   });
 });

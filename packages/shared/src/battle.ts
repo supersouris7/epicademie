@@ -22,12 +22,15 @@ export interface Chest {
   readonly rarity: ChestRarity;
   readonly items: Partial<Inventory>;
   readonly coins: number;
+  readonly rubies: number;
 }
 
 /** Stock maximal par objet, emplacements d'équipement (objets utilisables par combat), prix de l'indice. */
 export const MAX_ITEM_STOCK = 9;
 export const MAX_ITEMS_PER_BATTLE = 3;
 export const HINT_PRICE = 20;
+export const ITEM_PRICES: Record<ItemId, number> = { indice: 20, soin: 30, bouclier: 40 };
+export const RUBY_PRICE = 2000;
 
 export const ItemIdSchema = z.enum(ITEMS);
 
@@ -173,4 +176,4 @@ export type BattleAnswer = z.infer<typeof BattleAnswerSchema>;
 
 export const BattleItemSchema = z.object({ item: ItemIdSchema });
 
-export const BuySchema = z.object({ profileId: z.uuid(), item: z.literal('indice') });
+export const BuySchema = z.object({ profileId: z.uuid(), item: z.union([ItemIdSchema, z.literal('rubis')]) });

@@ -14,6 +14,7 @@ import { ProfileEditor } from './pages/ProfileEditor.tsx';
 import { ProfilePicker } from './pages/ProfilePicker.tsx';
 import { Progress } from './pages/Progress.tsx';
 import { Settings } from './pages/Settings.tsx';
+import { Shop } from './pages/Shop.tsx';
 import { BossChapters } from './pages/boss/BossChapters.tsx';
 import { BossPlay } from './pages/boss/BossPlay.tsx';
 import { Chapters } from './pages/training/Chapters.tsx';
@@ -48,6 +49,7 @@ export function App() {
         <Route path="/profils/nouveau" element={<ProfileEditor />} />
         <Route path="/profils/:id/modifier" element={<ProfileEditor />} />
         <Route path="/hub" element={<WithProfile>{(p) => <Hub profile={p} />}</WithProfile>} />
+        <Route path="/shop" element={<WithProfile>{(p) => <Shop profile={p} />}</WithProfile>} />
         <Route path="/heros" element={<WithProfile>{(p) => <Heroes profile={p} />}</WithProfile>} />
         <Route path="/multi" element={<WithProfile>{(p) => <MultiModes profile={p} />}</WithProfile>} />
         <Route path="/arene" element={<WithProfile>{(p) => <Arena profile={p} />}</WithProfile>} />

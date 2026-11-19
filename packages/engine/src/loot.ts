@@ -16,11 +16,14 @@ export function chestChance(correct: number, total: number): number {
   return 0.1;
 }
 
-/** Contenu par rareté : nombre d'objets et pièces. */
-export const CHEST_CONTENT: Record<ChestRarity, { readonly items: number; readonly coins: number }> = {
-  commun: { items: 1, coins: 10 },
-  rare: { items: 2, coins: 20 },
-  epique: { items: 3, coins: 40 },
+/** Commun : pièces ; rare : équipement ; épique : équipement et rubis. */
+export const CHEST_CONTENT: Record<
+  ChestRarity,
+  { readonly items: number; readonly coins: number; readonly rubies: number }
+> = {
+  commun: { items: 0, coins: 25, rubies: 0 },
+  rare: { items: 1, coins: 10, rubies: 0 },
+  epique: { items: 2, coins: 40, rubies: 1 },
 };
 
 /** Rareté : 60 % commun, 30 % rare, 10 % épique ; un sans-faute améliore la rareté. */
@@ -35,11 +38,11 @@ export function rollRarity(random: number, perfect: boolean): ChestRarity {
 export function rollChest(correct: number, total: number, random: () => number): Chest | null {
   if (random() >= chestChance(correct, total)) return null;
   const rarity = rollRarity(random(), correct === total && total > 0);
-  const { items: count, coins } = CHEST_CONTENT[rarity];
+  const { items: count, coins, rubies } = CHEST_CONTENT[rarity];
   const items: Partial<Inventory> = {};
   for (let i = 0; i < count; i++) {
     const item = ITEMS[Math.floor(random() * ITEMS.length)] ?? 'indice';
     items[item] = (items[item] ?? 0) + 1;
   }
-  return { rarity, items, coins };
+  return { rarity, items, coins, rubies };
 }

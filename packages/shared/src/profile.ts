@@ -51,6 +51,7 @@ export const ProfileSchema = z.object({
   grade: z.enum(GRADES).nullable(),
   xp: z.number().int().nonnegative(),
   coins: z.number().int().nonnegative(),
+  rubies: z.number().int().nonnegative(),
   soundOn: z.boolean(),
   musicOn: z.boolean(),
   createdAt: z.string(),

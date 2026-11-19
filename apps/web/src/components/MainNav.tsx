@@ -1,14 +1,13 @@
 import { useLocation, useNavigate } from 'react-router';
 import { levelFromXp } from '@questeo/engine';
 import type { Profile } from '@questeo/shared';
-import { HeroFace } from './battle/HeroFace.tsx';
 import { CharacterAvatar } from './game/CharacterAvatar.tsx';
 import { GameIcon } from './game/GameIcon.tsx';
 import { ProgressBar } from './game/ProgressBar.tsx';
 
 const ITEMS = [
   { to: '/hub', label: 'Accueil', icon: 'icons-navigation-home' },
-  { to: '/heros', label: 'Héros', icon: null },
+  { to: '/shop', label: 'Boutique', icon: 'icons-resources-coin' },
   { to: '/progres', label: 'Progrès', icon: 'icons-resources-progression' },
   { to: '/multi', label: 'Multi', icon: 'icons-navigation-team' },
   { to: '/parametres', label: 'Paramètres', icon: 'icons-navigation-settings' },
@@ -52,6 +51,13 @@ export function MainNav({ profile }: { readonly profile: Profile }) {
             <GameIcon id="icons-resources-coin" size={26} />
             {profile.coins.toLocaleString('fr-FR')}
           </span>
+          <span
+            className="font-display text-toon flex shrink-0 items-center gap-1 pr-1 text-lg"
+            aria-label={`${profile.rubies} rubis`}
+          >
+            <GameIcon id="icons-resources-gem" size={24} />
+            {profile.rubies.toLocaleString('fr-FR')}
+          </span>
         </div>
 
         <nav aria-label="Menu principal" className="w-full lg:w-auto">
@@ -67,11 +73,7 @@ export function MainNav({ profile }: { readonly profile: Profile }) {
                     className={`font-display text-toon flex w-full flex-col items-center gap-0.5 rounded-2xl px-2 py-1 text-xs tracking-wide transition-colors sm:text-sm lg:w-20 ${active ? 'bg-accent gloss ring-gold ring-2' : 'hover:bg-white/10'}`}
                   >
                     <span className="flex h-7 w-7 items-center justify-center">
-                      {item.icon ? (
-                        <GameIcon id={item.icon} size={26} />
-                      ) : (
-                        <HeroFace hero={profile.hero} expression="confiant" size={30} />
-                      )}
+                      <GameIcon id={item.icon} size={26} />
                     </span>
                     {item.label}
                   </button>

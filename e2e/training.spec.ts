@@ -54,7 +54,7 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
     const json = (await res.json()) as Record<string, unknown>;
     await route.fulfill({
       response: res,
-      json: { ...json, chest: { rarity: 'rare', items: { bouclier: 1 }, coins: 20 } },
+      json: { ...json, chest: { rarity: 'rare', items: { bouclier: 1 }, coins: 10, rubies: 0 } },
     });
   });
 

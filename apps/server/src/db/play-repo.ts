@@ -192,7 +192,11 @@ export function createPlayRepo(db: Db, today: () => string, random: () => number
         const chest = rolled ? { ...rolled, items: addItems(tx, profile.id, rolled.items) } : null;
         const chestCoins = chest?.coins ?? 0;
         tx.update(profiles)
-          .set({ xp: profile.xp + xpGained, coins: profile.coins + coinsGained + chestCoins })
+          .set({
+            xp: profile.xp + xpGained,
+            coins: profile.coins + coinsGained + chestCoins,
+            rubies: profile.rubies + (chest?.rubies ?? 0),
+          })
           .where(eq(profiles.id, profile.id))
           .run();
         tx.update(sessions)
