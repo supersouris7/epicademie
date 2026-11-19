@@ -22,13 +22,11 @@ import { SoonBadge } from '../../components/game/SoonBadge.tsx';
 import { GradeTabs } from '../../components/GradeTabs.tsx';
 import { PageShell } from '../../components/PageShell.tsx';
 import { useToast } from '../../components/Toast.tsx';
-import { assetSrc } from '../../design/assets.ts';
-import { BOSS_MEDAL_ICONS, bossOf, bossOfSubject } from '../../design/bosses.ts';
+import { BOSS_MEDAL_ICONS, bossOfSubject } from '../../design/bosses.ts';
 import { BossCloseUp } from '../../components/battle/BattleScenes.tsx';
 import { subjectTaunt } from '../../lib/battleLines.ts';
 
 import { ITEM_ICONS } from '../../design/items.ts';
-import { RELICS } from '../../design/relics.ts';
 import { ApiError } from '../../api/client.ts';
 import { useGradeChoice } from '../../lib/grades.ts';
 import { useEntrance } from '../../lib/entrance.ts';
@@ -196,24 +194,22 @@ interface BossRowProps {
 
 function BossRow({ chapter, index, record, onFight, onSoon }: BossRowProps) {
   const enter = useEntrance();
-  const boss = bossOf(chapter);
   const ready = Boolean(chapter.boss);
-  // Boss à venir : pas de portrait (case vide).
-  const portrait = ready ? assetSrc(`bosses-maths-${boss.id}-portrait`) : null;
   const body = (
     <>
-      <div className="bg-accent-strong relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl">
-        {portrait && <img src={portrait} alt="" aria-hidden className="h-full w-full object-contain p-1" />}
-        {record && (
-          <span className="absolute -right-1 -bottom-1">
-            <GameIcon
-              id={BOSS_MEDAL_ICONS[record.bestMedal]}
-              size={36}
-              label={`Médaille ${BOSS_MEDAL_LABELS[record.bestMedal]}`}
-            />
-          </span>
-        )}
-      </div>
+      {record ? (
+        <GameIcon
+          id={BOSS_MEDAL_ICONS[record.bestMedal]}
+          size={64}
+          label={`Médaille ${BOSS_MEDAL_LABELS[record.bestMedal]}`}
+        />
+      ) : (
+        <span
+          role="img"
+          aria-label="Pas encore de médaille"
+          className="border-outline/60 h-16 w-16 shrink-0 rounded-full border-[3px] border-dashed"
+        />
+      )}
       <div className="flex min-w-0 flex-1 flex-col gap-1 text-left">
         <span className="font-display text-xl leading-tight tracking-wide">{chapter.title}</span>
         <span className="text-muted text-sm font-bold">
@@ -225,23 +221,6 @@ function BossRow({ chapter, index, record, onFight, onSoon }: BossRowProps) {
               : 'Pas encore vaincu'}
         </span>
       </div>
-      {/* Récompense du boss : un éclat de la relique de la matière (gagné à la 1re victoire). */}
-      {ready && (
-        <span
-          className={`flex shrink-0 flex-col items-center text-xs font-bold ${record ? 'text-success' : 'text-muted'}`}
-          role="img"
-          aria-label={
-            record
-              ? `Éclat de ${RELICS[chapter.subject].name} gagné`
-              : `Récompense : un éclat de ${RELICS[chapter.subject].name}`
-          }
-        >
-          <span className={record ? '' : 'opacity-60 grayscale-[0.4]'}>
-            <GameIcon id={RELICS[chapter.subject].icon} size={44} />
-          </span>
-          {record ? 'Gagné ✓' : 'À gagner'}
-        </span>
-      )}
     </>
   );
   return (
