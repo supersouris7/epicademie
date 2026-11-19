@@ -60,6 +60,9 @@ interface GuardState {
 }
 const guarded = () => (window.history.state as GuardState | null)?.partieGarde === true;
 
+/** Sortie en cours : le retour arrière qui retire l'entrée de garde ne doit pas ouvrir la Pause. */
+let exiting = false;
+
 export function useGameExit(fallback: string, fallbackState?: unknown) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -82,6 +85,22 @@ export function useGameExit(fallback: string, fallbackState?: unknown) {
     (to: string, state?: unknown) => {
       markLeft(location.key);
       markLeftPath(location.pathname);
+      // Entrée de garde au-dessus de la partie : on revient d'abord sur l'entrée de la partie, puis on
+      // la remplace par la destination. La partie disparaît de l'historique : « précédent » ne peut
+      // plus y revenir.
+      if (guarded()) {
+        exiting = true;
+        window.addEventListener(
+          'popstate',
+          () => {
+            exiting = false;
+            void navigate(to, { replace: true, state });
+          },
+          { once: true },
+        );
+        window.history.back();
+        return;
+      }
       void navigate(to, { replace: true, state });
     },
     [location.key, location.pathname, navigate],
@@ -111,7 +130,7 @@ export function useBackGuard(active: boolean, onBack: () => void) {
     wasActive.current = true;
     rearm();
     const onPop = () => {
-      if (!guarded()) back.current();
+      if (!exiting && !guarded()) back.current();
     };
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
