@@ -1,16 +1,55 @@
+# Questeo / Academy Fighters — déploiement de référence (une machine).
+#
+#   cp .env.example .env   # puis renseigner POSTGRES_PASSWORD (et PUBLIC_URL)
+#   docker compose up -d
+#
+# Ordre de démarrage : PostgreSQL (sain) → migration (terminée avec succès) → serveur.
+# Voir docs/operations/deploiement.md.
 services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: questeo
+      POSTGRES_USER: questeo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD est obligatoire (fichier .env)}
+    volumes:
+      - questeo-pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U questeo -d questeo']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # Applique les migrations puis s'arrête (même image que le serveur).
+  migrate:
+    image: ${QUESTEO_IMAGE:-questeo:local}
+    build: .
+    command: ['node', 'server/dist/migrate.js']
+    environment:
+      DATABASE_URL: postgres://questeo:${POSTGRES_PASSWORD}@db:5432/questeo
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: 'no'
+
   questeo:
     image: ${QUESTEO_IMAGE:-questeo:local}
     build: .
     restart: unless-stopped
     ports:
-      - '3000:3000'
+      - '${QUESTEO_PORT:-3000}:3000'
     environment:
-      # URL utilisée dans le QR code de connexion des smartphones.
+      DATABASE_URL: postgres://questeo:${POSTGRES_PASSWORD}@db:5432/questeo
+      # URL utilisée dans le QR code de connexion des appareils.
       # En conteneur, l'IP détectée est celle du réseau Docker : renseignez l'IP de la machine hôte.
       PUBLIC_URL: ${PUBLIC_URL:-}
-    volumes:
-      - questeo-data:/data
+      # 1 si un proxy (nginx…) est placé devant : IP client réelle pour la limite de débit.
+      TRUST_PROXY: ${TRUST_PROXY:-0}
+      METRICS_TOKEN: ${METRICS_TOKEN:-}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
 
 volumes:
-  questeo-data:
+  questeo-pg:

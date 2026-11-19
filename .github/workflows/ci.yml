@@ -39,7 +39,10 @@ jobs:
       - run: pnpm format:check
       - run: pnpm lint
       - run: pnpm typecheck
-      - run: pnpm test
+      # Règles d'architecture : dépendances entre paquets, modules et fonctionnalités, cycles.
+      - run: pnpm arch
+      # Tests unitaires et d'intégration (PostgreSQL embarqué), seuils de couverture bloquants.
+      - run: pnpm test:coverage
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm e2e
       - uses: actions/upload-artifact@v7
@@ -49,9 +52,43 @@ jobs:
           path: playwright-report
           retention-days: 7
 
+  # Les tests du serveur rejoués sur un vrai PostgreSQL (même version que la production).
+  postgres:
+    name: Intégration PostgreSQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: questeo
+          POSTGRES_PASSWORD: questeo
+          POSTGRES_DB: questeo
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U questeo" --health-interval 5s --health-timeout 3s --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgres://questeo:questeo@localhost:5432/questeo
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: corepack enable
+      - id: pnpm-store
+        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+      - name: Cache pnpm
+        uses: actions/cache@v6
+        with:
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: pnpm-${{ runner.os }}-
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec vitest run --project @questeo/server
+
   docker:
     name: Image Docker → Docker Hub
-    needs: quality
+    needs: [quality, postgres]
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 45

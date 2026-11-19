@@ -5,9 +5,10 @@ const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 
 // Les paquets npm restent externes (installés par `pnpm deploy`), les paquets @questeo/* sont inclus.
 const external = Object.keys(pkg.dependencies).filter((d) => !d.startsWith('@questeo/'));
 
+// Deux points d'entrée : le serveur et la commande de migration (conteneur « migrate »).
 await build({
-  entryPoints: ['src/index.ts'],
-  outfile: 'dist/index.js',
+  entryPoints: { main: 'src/main.ts', migrate: 'src/cli/migrate.ts' },
+  outdir: 'dist',
   bundle: true,
   platform: 'node',
   target: 'node24',

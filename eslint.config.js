@@ -6,7 +6,16 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
 import globals from 'globals';
 
 export default tseslint.config(
-  { ignores: ['**/dist/**', '**/coverage/**', 'playwright-report/**', 'test-results/**', '**/drizzle/meta/**'] },
+  {
+    ignores: [
+      '**/dist/**',
+      '**/coverage/**',
+      'playwright-report/**',
+      'test-results/**',
+      '**/drizzle/meta/**',
+      '.dependency-cruiser.cjs',
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,

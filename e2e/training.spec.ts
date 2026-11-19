@@ -49,7 +49,7 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   await expect(page.getByText('Question similaire', { exact: true })).toBeVisible();
 
   // Le bilan reçoit un coffre (forcé ici, le tirage est aléatoire) : il s'ouvre en plein écran au toucher.
-  await page.route('**/api/sessions/*/finish', async (route) => {
+  await page.route('**/api/v1/sessions/*/finish', async (route) => {
     const res = await route.fetch();
     const json = (await res.json()) as Record<string, unknown>;
     await route.fulfill({

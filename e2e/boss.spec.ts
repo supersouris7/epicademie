@@ -52,7 +52,7 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   // Gros plan du boss de la matière qui provoque, puis choix du chapitre.
   const closeUp = page.getByRole('dialog', { name: 'Golem des Équations te provoque' });
-  await expect(closeUp).toContainText(/challenger|Aucun chapitre|n’ont pas mangé/);
+  await expect(closeUp).toContainText(/challenger|Aucun chapitre|n’ont pas mangé|gardien/);
   await page.getByRole('button', { name: 'Choisir mon chapitre' }).click();
   await expect(closeUp).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Combat de boss' })).toBeVisible();
@@ -63,7 +63,7 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   // Un boss par chapitre, 5e comprise ; sous le chapitre, la médaille ou « Pas encore vaincu ».
   await expect(page.getByRole('button', { name: /boss à venir/ })).toHaveCount(0);
   await expect(page.getByRole('listitem').filter({ hasText: 'Calcul mental' })).toContainText('Pas encore vaincu');
-  const started = page.waitForResponse((r) => r.url().endsWith('/api/battles'));
+  const started = page.waitForResponse((r) => r.url().endsWith('/api/v1/battles'));
   await relatifs.getByRole('button', { name: 'Combattre' }).click();
   let view = (await (await started).json()) as BattleView;
   // Entrée en scène en grand avec le mot de Questy, puis bandeau compact.
@@ -152,7 +152,7 @@ test('Défaite : 5 secondes pour recommencer, puis l’entraînement', async ({ 
   await page.getByRole('button', { name: 'Relever le défi' }).click({ timeout: 10_000 });
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   await page.getByRole('button', { name: 'Choisir mon chapitre' }).click();
-  const started = page.waitForResponse((r) => r.url().endsWith('/api/battles'));
+  const started = page.waitForResponse((r) => r.url().endsWith('/api/v1/battles'));
   await page
     .getByRole('listitem')
     .filter({ hasText: 'Nombres relatifs' })

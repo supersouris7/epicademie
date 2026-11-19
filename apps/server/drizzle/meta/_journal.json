@@ -1,110 +1,12 @@
 {
   "version": "7",
-  "dialect": "sqlite",
+  "dialect": "postgresql",
   "entries": [
     {
       "idx": 0,
-      "version": "6",
-      "when": 1794833100324,
+      "version": "7",
+      "when": 1795114423048,
       "tag": "0000_init",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1794842199924,
-      "tag": "0001_avatar_styles_v2",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1794843641521,
-      "tag": "0002_avatar_no_background",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1794847748463,
-      "tag": "0003_play",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1794853079465,
-      "tag": "0004_profile_gender_age",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "6",
-      "when": 1794907641342,
-      "tag": "0005_profile_hero",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "6",
-      "when": 1794909805202,
-      "tag": "0006_profile_no_theme",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "6",
-      "when": 1794990000000,
-      "tag": "0007_avatar_no_big_ears",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "6",
-      "when": 1795000000000,
-      "tag": "0008_new_heroes",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "6",
-      "when": 1795100000000,
-      "tag": "0009_battle",
-      "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "6",
-      "when": 1795200000000,
-      "tag": "0010_alex_only",
-      "breakpoints": true
-    },
-    {
-      "idx": 11,
-      "version": "6",
-      "when": 1795300000000,
-      "tag": "0011_no_ammo",
-      "breakpoints": true
-    },
-    {
-      "idx": 12,
-      "version": "6",
-      "when": 1795400000000,
-      "tag": "0012_boss_medals",
-      "breakpoints": true
-    },
-    {
-      "idx": 13,
-      "version": "6",
-      "when": 1795500000000,
-      "tag": "0013_equipment_series",
-      "breakpoints": true
-    },
-    {
-      "idx": 14,
-      "version": "6",
-      "when": 1795600000000,
-      "tag": "0014_aromatic_the_anarchist",
       "breakpoints": true
     }
   ]

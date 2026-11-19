@@ -1,123 +1,143 @@
-import path from 'node:path';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import type { FastifyInstance } from 'fastify';
-import type { Profile } from '@questeo/shared';
-import { buildApp } from './app.ts';
-import { openDb } from './db/client.ts';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { api } from '@questeo/shared';
+import { createTestApp, profileInput } from './testing/harness.ts';
 
-const migrationsDir = path.resolve(import.meta.dirname, '../drizzle');
-const avatar = { style: 'fun-emoji', seed: 'abc' } as const;
+/** Comportements transverses : système, erreurs, sécurité, observabilité, documentation. */
 
-let app: FastifyInstance;
-let close: () => void;
-
-beforeEach(async () => {
-  const opened = openDb(':memory:', migrationsDir);
-  close = opened.close;
-  app = await buildApp({ db: opened.db, port: 3000, webDir: null, publicUrl: 'http://test:3000' });
+let t: Awaited<ReturnType<typeof createTestApp>>;
+beforeAll(async () => {
+  t = await createTestApp({ config: { metricsToken: 'jeton-de-test-0123456789' } });
 });
-afterEach(async () => {
-  await app.close();
-  close();
-});
+afterAll(() => t.close());
 
-const create = async (name: string) => {
-  const res = await app.inject({
-    method: 'POST',
-    url: '/api/profiles',
-    payload: { name, avatar, gender: 'fille', birthDate: '2014-03-09', grade: '5e' },
+describe('routes d’exploitation', () => {
+  it('santé et disponibilité (base joignable)', async () => {
+    expect((await t.http.inject('/api/health')).json()).toEqual({ status: 'ok', version: 'test' });
+    expect((await t.http.inject('/api/ready')).json()).toEqual({ status: 'ok', version: 'test' });
   });
-  return { res, profile: res.json<Profile>() };
-};
 
-describe('API profils', () => {
-  it('crée puis liste des profils avec les valeurs par défaut', async () => {
-    const { res, profile } = await create('  Léa  ');
-    expect(res.statusCode).toBe(201);
-    expect(profile).toMatchObject({
-      name: 'Léa',
-      xp: 0,
-      coins: 0,
-      soundOn: true,
-      avatar,
-      gender: 'fille',
-      birthDate: '2014-03-09',
-      grade: '5e',
-      hero: 'alex',
+  it('URL publique et présence (versionnées)', async () => {
+    expect((await t.http.inject('/api/v1/network')).json()).toEqual({ publicUrl: 'http://test:3000' });
+    expect((await t.http.inject('/api/v1/presence')).json()).toEqual({ online: [] });
+  });
+
+  it('métriques Prometheus protégées par jeton', async () => {
+    expect((await t.http.inject('/api/metrics')).statusCode).toBe(401);
+    await t.http.inject('/api/v1/profiles');
+    const res = await t.http.inject({
+      url: '/api/metrics',
+      headers: { authorization: 'Bearer jeton-de-test-0123456789' },
     });
-    const list = await app.inject('/api/profiles');
-    expect(list.json<Profile[]>()).toHaveLength(1);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toContain('questeo_http_request_duration_seconds');
+    // Route paramétrée, jamais l'URL brute (pas d'identifiant dans les métriques).
+    expect(res.body).toContain('route="/api/v1/profiles"');
+    expect(res.body).toContain('questeo_online_players');
+  });
+});
+
+describe('erreurs', () => {
+  it('route inconnue : 404 au format commun, avec identifiant de requête', async () => {
+    const res = await t.http.inject('/api/v1/inconnue');
+    expect(res.statusCode).toBe(404);
+    const body = res.json<{ code: string; error: string; requestId: string }>();
+    expect(body).toMatchObject({ code: 'NOT_FOUND', error: 'Route inconnue' });
+    expect(res.headers['x-request-id']).toBe(body.requestId);
   });
 
-  it('rejette un prénom vide ou un avatar inconnu', async () => {
-    expect((await create('   ')).res.statusCode).toBe(400);
-    const bad = await app.inject({
+  it('reprend l’identifiant de requête fourni par le proxy', async () => {
+    const res = await t.http.inject({ url: '/api/health', headers: { 'x-request-id': 'req-123' } });
+    expect(res.headers['x-request-id']).toBe('req-123');
+  });
+
+  it('JSON illisible et corps trop gros : 400 et 413', async () => {
+    const bad = await t.http.inject({
       method: 'POST',
-      url: '/api/profiles',
-      payload: {
-        name: 'Tom',
-        avatar: { ...avatar, style: 'inconnu' },
-        gender: 'garcon',
-        birthDate: '2014-01-01',
-        grade: '5e',
-      },
+      url: '/api/v1/profiles',
+      headers: { 'content-type': 'application/json' },
+      payload: '{pas du json',
     });
     expect(bad.statusCode).toBe(400);
-    const noGender = await app.inject({
+    expect(bad.json()).toMatchObject({ code: 'BAD_REQUEST' });
+    const big = await t.http.inject({
       method: 'POST',
-      url: '/api/profiles',
-      payload: { name: 'Tom', avatar, birthDate: '2014-01-01', grade: '5e' },
+      url: '/api/v1/profiles',
+      payload: { ...profileInput(), name: 'x'.repeat(100_000) },
     });
-    expect(noGender.statusCode).toBe(400);
-    const future = await app.inject({
+    expect(big.statusCode).toBe(413);
+    expect(big.json()).toMatchObject({ code: 'PAYLOAD_TOO_LARGE' });
+  });
+
+  it('message de validation lisible (champ en cause)', async () => {
+    const res = await t.http.inject({
       method: 'POST',
-      url: '/api/profiles',
-      payload: { name: 'Tom', avatar, gender: 'garcon', birthDate: '2099-01-01', grade: '5e' },
+      url: '/api/v1/profiles',
+      payload: { ...profileInput(), name: '' },
     });
-    expect(future.statusCode).toBe(400);
-    const noGrade = await app.inject({
-      method: 'POST',
-      url: '/api/profiles',
-      payload: { name: 'Tom', avatar, gender: 'garcon', birthDate: '2014-01-01' },
-    });
-    expect(noGrade.statusCode).toBe(400);
-  });
-
-  it('modifie un profil', async () => {
-    const { profile } = await create('Tom');
-    const res = await app.inject({
-      method: 'PATCH',
-      url: `/api/profiles/${profile.id}`,
-      payload: { soundOn: false, hero: 'alex' },
-    });
-    expect(res.json<Profile>()).toMatchObject({ soundOn: false, name: 'Tom', hero: 'alex' });
-    const bad = await app.inject({ method: 'PATCH', url: `/api/profiles/${profile.id}`, payload: { hero: 'ninja' } });
-    expect(bad.statusCode).toBe(400);
-    // Héros pas encore dessiné : refusé.
-    const soon = await app.inject({ method: 'PATCH', url: `/api/profiles/${profile.id}`, payload: { hero: 'ayla' } });
-    expect(soon.statusCode).toBe(400);
-  });
-
-  it('ignore les champs non modifiables (xp)', async () => {
-    const { profile } = await create('Tom');
-    const res = await app.inject({ method: 'PATCH', url: `/api/profiles/${profile.id}`, payload: { xp: 9999 } });
-    expect(res.json<Profile>().xp).toBe(0);
-  });
-
-  it('supprime un profil et renvoie 404 ensuite', async () => {
-    const { profile } = await create('Tom');
-    expect((await app.inject({ method: 'DELETE', url: `/api/profiles/${profile.id}` })).statusCode).toBe(204);
-    expect((await app.inject(`/api/profiles/${profile.id}`)).statusCode).toBe(404);
-  });
-
-  it('renvoie 404 sur un identifiant mal formé', async () => {
-    expect((await app.inject('/api/profiles/pas-un-uuid')).statusCode).toBe(404);
+    expect(res.statusCode).toBe(400);
+    expect(res.json<{ error: string }>().error).toMatch(/name/);
   });
 });
 
-describe('API système', () => {
-  it('expose la santé et l’URL publique', async () => {
-    expect((await app.inject('/api/health')).json()).toEqual({ status: 'ok' });
-    expect((await app.inject('/api/network')).json()).toEqual({ publicUrl: 'http://test:3000' });
+describe('sécurité', () => {
+  it('en-têtes de sécurité et politique de contenu stricte', async () => {
+    const res = await t.http.inject('/api/health');
+    expect(res.headers['content-security-policy']).toContain("default-src 'self'");
+    expect(res.headers['content-security-policy']).toContain("frame-ancestors 'none'");
+    expect(res.headers['x-content-type-options']).toBe('nosniff');
+  });
+
+  it('limite le débit par IP', async () => {
+    const limited = await createTestApp({ config: { rateLimitMax: 10 } });
+    try {
+      const codes: number[] = [];
+      for (let i = 0; i < 12; i++) codes.push((await limited.http.inject('/api/v1/profiles')).statusCode);
+      expect(codes.slice(0, 10).every((c) => c === 200)).toBe(true);
+      const res = await limited.http.inject('/api/v1/profiles');
+      expect(res.statusCode).toBe(429);
+      expect(res.json()).toMatchObject({ code: 'RATE_LIMITED' });
+      // Les sondes ne sont jamais limitées.
+      expect((await limited.http.inject('/api/health')).statusCode).toBe(200);
+    } finally {
+      await limited.close();
+    }
+  });
+});
+
+describe('télémétrie', () => {
+  it('reçoit les erreurs du navigateur', async () => {
+    const res = await t.http.inject({
+      method: 'POST',
+      url: '/api/v1/telemetry/errors',
+      payload: { message: 'boum', path: '/hub', release: 'test' },
+    });
+    expect(res.statusCode).toBe(204);
+  });
+});
+
+describe('documentation OpenAPI', () => {
+  it('décrit chaque point d’accès du contrat', async () => {
+    const spec = (await t.http.inject('/api/openapi.json')).json<{ paths: Record<string, Record<string, unknown>> }>();
+    for (const e of Object.values(api)) {
+      const path = `/api/v1${e.path.replace(/:(\w+)/g, '{$1}')}`;
+      expect(spec.paths[path]?.[e.method.toLowerCase()], `${e.method} ${path}`).toBeDefined();
+    }
+  });
+});
+
+describe('bug serveur', () => {
+  it('exception inattendue : 500 neutre, sans détail interne', async () => {
+    const own = await createTestApp();
+    try {
+      own.http.get('/api/v1/boum', () => {
+        throw new Error('secret interne : mot de passe');
+      });
+      const res = await own.http.inject('/api/v1/boum');
+      expect(res.statusCode).toBe(500);
+      expect(res.json()).toMatchObject({ code: 'INTERNAL', error: 'Oups, le serveur a rencontré un problème.' });
+      expect(res.body).not.toContain('secret');
+    } finally {
+      await own.close();
+    }
   });
 });

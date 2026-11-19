@@ -1,8 +1,8 @@
 /** Planche de prévisualisation des humeurs de Questy : tsx scripts/preview-mascot.tsx <sortie.html> */
 import { writeFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Questy } from '../src/components/mascot/Questy.tsx';
-import { MOODS, MOOD_IDS } from '../src/components/mascot/moods.ts';
+import { Questy } from '../src/shared/ui/mascot/Questy.tsx';
+import { MOODS, MOOD_IDS } from '../src/shared/ui/mascot/moods.ts';
 
 const html = renderToStaticMarkup(
   <body style={{ margin: 0, padding: 16, background: '#fff6e9', font: 'bold 15px sans-serif' }}>

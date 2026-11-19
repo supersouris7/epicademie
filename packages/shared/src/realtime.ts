@@ -1,4 +1,12 @@
+import { z } from 'zod';
+import { ContentIdSchema, ResponseSchema } from './play.ts';
 import type { AvatarConfig, HeroId } from './profile.ts';
+
+/**
+ * Contrats du temps réel (socket.io) : présence, messages prédéfinis, arène.
+ * Les messages client → serveur sont validés par les schémas ci-dessous ; les événements sont
+ * typés par `ClientToServerEvents` / `ServerToClientEvents`, partagés par le serveur et le client.
+ */
 
 /** Joueur connecté (visible des autres). */
 export interface OnlinePlayer {
@@ -51,8 +59,25 @@ export const CHAT_EMOJIS = [
   '🐱',
 ] as const;
 
-export type ChatPayload =
-  { readonly kind: 'preset'; readonly index: number } | { readonly kind: 'emoji'; readonly index: number };
+export const ChatPayloadSchema = z.discriminatedUnion('kind', [
+  z.object({
+    kind: z.literal('preset'),
+    index: z
+      .number()
+      .int()
+      .min(0)
+      .max(PRESET_MESSAGES.length - 1),
+  }),
+  z.object({
+    kind: z.literal('emoji'),
+    index: z
+      .number()
+      .int()
+      .min(0)
+      .max(CHAT_EMOJIS.length - 1),
+  }),
+]);
+export type ChatPayload = z.infer<typeof ChatPayloadSchema>;
 
 export const chatText = (p: ChatPayload): string | null =>
   (p.kind === 'preset' ? PRESET_MESSAGES[p.index] : CHAT_EMOJIS[p.index]) ?? null;
@@ -121,3 +146,51 @@ export interface ArenaInvite {
   readonly from: Pick<OnlinePlayer, 'id' | 'name' | 'hero'>;
   readonly chapterId: string;
 }
+
+// ——— Messages client → serveur (validés) ———
+
+export const ChatSendSchema = z.object({ to: z.uuid(), payload: ChatPayloadSchema });
+export type ChatSend = z.infer<typeof ChatSendSchema>;
+
+export const ArenaCreateSchema = z.object({
+  chapterId: ContentIdSchema,
+  invite: z
+    .array(z.uuid())
+    .min(1)
+    .max(ARENA_MAX_PLAYERS - 1),
+});
+export type ArenaCreate = z.infer<typeof ArenaCreateSchema>;
+
+export const ArenaRespondSchema = z.object({ arenaId: z.uuid(), accept: z.boolean() });
+export type ArenaRespond = z.infer<typeof ArenaRespondSchema>;
+
+export const ArenaAnswerSchema = z.object({ response: ResponseSchema });
+export type ArenaAnswer = z.infer<typeof ArenaAnswerSchema>;
+
+/** Événements émis par le client. */
+export interface ClientToServerEvents {
+  chat: (msg: ChatSend) => void;
+  'arena:create': (msg: ArenaCreate) => void;
+  'arena:respond': (msg: ArenaRespond) => void;
+  'arena:start': () => void;
+  'arena:answer': (msg: ArenaAnswer) => void;
+  'arena:leave': () => void;
+}
+
+/** Événements émis par le serveur. */
+export interface ServerToClientEvents {
+  presence: (players: OnlinePlayer[]) => void;
+  chat: (msg: ChatMessage) => void;
+  arena: (view: ArenaView) => void;
+  'arena:invite': (invite: ArenaInvite) => void;
+  'arena:closed': (arenaId: string) => void;
+}
+
+/** Données d'authentification de la connexion temps réel. */
+export const RealtimeAuthSchema = z.object({ profileId: z.uuid() });
+
+/** Raisons de refus de connexion (message affiché tel quel). */
+export const REALTIME_REFUSALS = {
+  unknownProfile: 'Profil introuvable',
+  alreadyConnected: 'Non, ce joueur est déjà connecté sur un autre appareil.',
+} as const;

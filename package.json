@@ -9,12 +9,14 @@
   "scripts": {
     "dev": "pnpm --parallel --filter \"./apps/*\" dev",
     "build": "pnpm --filter \"./apps/*\" build",
-    "start": "node apps/server/dist/index.js",
+    "start": "node apps/server/dist/main.js",
     "lint": "eslint .",
+    "arch": "depcruise packages apps/server/src apps/web/src --config .dependency-cruiser.cjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "e2e": "playwright test",
     "prepare": "husky"
@@ -35,6 +37,7 @@
     "@playwright/test": "^1.65.1",
     "@types/node": "^26.6.6",
     "@vitest/coverage-v8": "^5.1.0",
+    "dependency-cruiser": "18.7.0",
     "eslint": "^10.15.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react-hooks": "^7.1.1",

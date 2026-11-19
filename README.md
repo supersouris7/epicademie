@@ -1,41 +1,48 @@
-# Questeo
+# Questeo — Academy Fighters
 
-Exercices du programme de **5e** (maths, physique-chimie, anglais, espagnol, histoire, géographie), gamifiés et pensés tablette, avec un mode multijoueur où les smartphones servent de télécommandes (connexion par QR code). Mascotte : **Questy**, avatar rond à écran LED (12 humeurs en pixels).
+Exercices de mathématiques du **CM1 à la 3e** (programmes officiels), gamifiés : entraînement
+avec répétition espacée, combats de boss par chapitre, arène multijoueur tour par tour. Pensé
+tablette et smartphone. Mascotte : **Questy**.
 
-Spécification : [`docs/SPEC.md`](docs/SPEC.md).
+- Produit et règles du jeu : [`docs/SPEC.md`](docs/SPEC.md)
+- Architecture : [`docs/architecture/`](docs/architecture/README.md) — décisions : [`docs/adr/`](docs/adr/README.md)
+- Exploitation : [configuration](docs/operations/configuration.md), [déploiement](docs/operations/deploiement.md), [observabilité](docs/operations/observabilite.md)
+- Contribuer : [`CONTRIBUTING.md`](CONTRIBUTING.md)
 
-## Démarrage rapide (Docker, réseau local)
+## Démarrage rapide (Docker)
 
 ```bash
-PUBLIC_URL=http://192.168.1.20:3000 docker compose up -d   # IP de la machine sur le Wi-Fi
+cp .env.example .env      # renseigner POSTGRES_PASSWORD (et PUBLIC_URL)
+docker compose up -d      # PostgreSQL → migration → serveur sur :3000
 ```
 
-Puis ouvrir `http://<ip>:3000` sur la tablette. `PUBLIC_URL` sert au QR code de connexion des smartphones (dans un conteneur, l'IP détectée automatiquement est celle du réseau Docker). Les données sont dans le volume `questeo-data`.
-
-Images publiées : `docker.io/<utilisateur>/questeo` — `unstable` (dernier commit sur `main`), `1.0.1` / `1.0` / `1` / `latest` (versions taguées).
+Images publiées : `docker.io/<utilisateur>/questeo` — `unstable` (dernier commit sur `main`),
+`1.0.1` / `1.0` / `1` / `latest` (versions taguées).
 
 ## Développement
 
-Prérequis : Node 24, pnpm via Corepack (`corepack enable`).
+Prérequis : Node 24, pnpm via Corepack (`corepack enable`). Aucune base à installer
+(PostgreSQL embarqué, PGlite).
 
 ```bash
 pnpm install
-pnpm dev          # serveur :3000 + Vite :5173 (exposé sur le réseau local)
-pnpm test         # tests unitaires (Vitest)
-pnpm e2e          # tests de bout en bout (Playwright, tablette + smartphone)
-pnpm lint && pnpm typecheck && pnpm format:check
+pnpm dev                  # migre la base de dev, serveur :3000 (+ /api/docs) et Vite :5173
+pnpm test                 # tests unitaires et d'intégration
+pnpm e2e                  # tests de bout en bout (Playwright, tablette + smartphone)
+pnpm lint && pnpm typecheck && pnpm arch && pnpm format:check
 ```
 
-| Dossier            | Rôle                                                                  |
-| ------------------ | --------------------------------------------------------------------- |
-| `apps/web`         | Front React + Vite (élève, hôte multijoueur, télécommande)            |
-| `apps/server`      | Fastify + Socket.IO + SQLite (Drizzle)                                |
-| `packages/shared`  | Types et schémas zod partagés                                         |
-| `packages/content` | Générateurs d'exercices et banques de questions (purs, déterministes) |
-| `packages/engine`  | XP/niveaux, répétition espacée, trophées (purs)                       |
+| Dossier            | Rôle                                                                    |
+| ------------------ | ----------------------------------------------------------------------- |
+| `apps/web`         | Front React + Vite, organisé par fonctionnalités (`src/features/`)      |
+| `apps/server`      | Fastify + socket.io + PostgreSQL (Drizzle), organisé par modules métier |
+| `packages/shared`  | Contrats partagés : schémas Zod de l'API et du temps réel, types        |
+| `packages/content` | Générateurs d'exercices (purs, déterministes)                           |
+| `packages/engine`  | Règles du jeu : XP, répétition espacée, combats, arène, coffres (purs)  |
 
 Migrations : modifier `apps/server/src/db/schema.ts` puis `pnpm --filter @questeo/server db:generate`.
-Mascotte : la source est `apps/web/src/components/mascot/` ; `pnpm --filter @questeo/web mascot:export` régénère `public/questy.svg` ; `npx tsx scripts/preview-mascot.tsx out.html` affiche toutes les humeurs.
+Mascotte : la source est `apps/web/src/shared/ui/mascot/` ; `pnpm --filter @questeo/web mascot:export`
+régénère `public/questy.svg`.
 
 Commits au format [Conventional Commits](https://www.conventionalcommits.org/fr/) (vérifié par commitlint).
 

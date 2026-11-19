@@ -1,4 +1,4 @@
-import type { Level } from '@questeo/content';
+import type { Level } from '@questeo/shared';
 import { isDue, type SkillState } from './srs.ts';
 
 /**

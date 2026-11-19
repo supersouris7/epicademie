@@ -4,7 +4,7 @@
  */
 import { rmSync, writeFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Questy } from '../src/components/mascot/Questy.tsx';
+import { Questy } from '../src/shared/ui/mascot/Questy.tsx';
 
 const xml = (svg: string) => svg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ');
 writeFileSync(

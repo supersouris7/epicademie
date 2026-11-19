@@ -11,8 +11,8 @@
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Front        | React 19 + Vite + TypeScript strict, Tailwind CSS, Framer Motion                                                                                                                                                                                           |
 | Back         | Node 24 + Fastify + Socket.IO (TypeScript)                                                                                                                                                                                                                 |
-| Données      | SQLite (better-sqlite3) + Drizzle ORM, migrations versionnées                                                                                                                                                                                              |
-| Déploiement  | Réseau local maison, Docker Compose (un seul conteneur)                                                                                                                                                                                                    |
+| Données      | PostgreSQL (PGlite embarqué en dev/tests) + Drizzle ORM, migrations versionnées                                                                                                                                                                            |
+| Déploiement  | Docker Compose (PostgreSQL + migration + serveur) ; cible cloud UE pour l'abonnement (voir docs/operations/deploiement.md)                                                                                                                                 |
 | Utilisateurs | Profils avatars **sans mot de passe**, dashboards ouverts à tous                                                                                                                                                                                           |
 | Contenu      | Générateurs procéduraux (maths, physique) + banques rédigées (langues, histoire, géo)                                                                                                                                                                      |
 | Formats      | Saisie + pavé numérique, QCM / Vrai-Faux, glisser-déposer / associer, carte interactive, audio (synthèse vocale)                                                                                                                                           |
@@ -72,21 +72,27 @@ questeo/
 
 Profils créés depuis l'écran d'accueil (prénom + avatar). Aucun mot de passe, aucun email. Tous les dashboards sont visibles par tous.
 
-### Modèle de données (SQLite)
+### Modèle de données (PostgreSQL)
 
-| Table                    | Contenu clé                                                                                |
-| ------------------------ | ------------------------------------------------------------------------------------------ |
-| `profiles`               | id, prénom, avatar (config JSON), xp, niveau, pièces, thème, réglages son                  |
-| `skills`                 | catalogue des notions (id stable, matière, chapitre, prérequis) — semé depuis `content`    |
-| `skill_mastery`          | profil × notion : score de maîtrise 0–1, intervalle SRS, prochaine échéance, nb tentatives |
-| `sessions`               | partie solo ou multi : mode, matière, début/fin, score, XP gagné                           |
-| `attempts`               | chaque réponse : question (graine + paramètres), réponse donnée, correct, temps de réponse |
-| `records`                | meilleur score par profil × notion × mode (sprint 60 s, série parfaite…)                   |
-| `trophies`               | trophées débloqués (id, date)                                                              |
-| `inventory`              | objets d'avatar achetés / équipés                                                          |
-| `streaks`                | jours d'activité, série courante, record de série                                          |
-| `daily_challenges`       | défi du jour (graine de date), résultat par profil                                         |
-| `mp_games`, `mp_players` | historique des parties multijoueur                                                         |
+Le schéma de référence est `apps/server/src/db/schema.ts` (migrations dans `apps/server/drizzle`).
+Tables : `profiles` (profil, XP, pièces, rubis, réglages, équipement), `sessions` (parties
+d'entraînement et combats de boss, état du combat en `jsonb`), `attempts` (chaque réponse :
+notion, niveau, graine, réponse, correct, durée), `skill_states` (répétition espacée et
+médaille par notion), `inventory` (objets de combat), `boss_records` (boss vaincus, médailles).
+Architecture et règles : [docs/architecture/serveur.md](architecture/serveur.md).
+
+------------------------ | ------------------------------------------------------------------------------------------ |
+| `profiles` | id, prénom, avatar (config JSON), xp, niveau, pièces, thème, réglages son |
+| `skills` | catalogue des notions (id stable, matière, chapitre, prérequis) — semé depuis `content` |
+| `skill_mastery` | profil × notion : score de maîtrise 0–1, intervalle SRS, prochaine échéance, nb tentatives |
+| `sessions` | partie solo ou multi : mode, matière, début/fin, score, XP gagné |
+| `attempts` | chaque réponse : question (graine + paramètres), réponse donnée, correct, temps de réponse |
+| `records` | meilleur score par profil × notion × mode (sprint 60 s, série parfaite…) |
+| `trophies` | trophées débloqués (id, date) |
+| `inventory` | objets d'avatar achetés / équipés |
+| `streaks` | jours d'activité, série courante, record de série |
+| `daily_challenges` | défi du jour (graine de date), résultat par profil |
+| `mp_games`, `mp_players` | historique des parties multijoueur |
 
 ---
 
@@ -220,6 +226,7 @@ Catalogue typé dans `packages/shared/src/modes.ts`.
 - **Choix de la matière** : barre de progression sous chaque bouton (classe du joueur) : notions acquises en Entraînement, boss vaincus en Combat de boss.
 - **Barre du haut** : avatar, pseudo, « Niv. N » et barre d'XP segmentée (même rendu que les barres du combat). « Mon héros » retiré des Paramètres (onglet Héros).
 - **Cadres sans image** (19/11/2026) : plus aucun cadre en image étirée (`skin.ts` supprimé). Cartes de héros, bulles de dialogue (`components/Bubble.tsx` : crème ou rouge pâle, pointe vers celui qui parle), panneaux, carte de boss et ruban de résultat sont dessinés en CSS. Style « cartoon épuré » : reflet discret en haut des surfaces, halo violet doux en haut de l'écran ; zone de réponse plus haute sur tablette.
+- **Refonte d'architecture** (19/11/2026, en vue de l'abonnement) : PostgreSQL, serveur en modules, API versionnée `/api/v1` décrite par un contrat partagé (OpenAPI), front par fonctionnalités, observabilité, sécurité ; voir [docs/adr](adr/README.md). Données de la bêta non reprises.
 - **L'Empereur du Savoir** (19/11/2026) : grand boss, maître des gardiens des reliques (les boss de chapitre). À la 1re entrée du jour dans Combat de boss (par joueur), scène plein écran en deux temps : lui seul (« Mes gardiens protègent les reliques du savoir… »), puis entouré des six reliques (« …et avec tout ce savoir, je vais dominer le monde ! ») ; ~4 s par temps, un toucher avance, bouton « Relever le défi ». Bannière de l'Empereur en haut du choix de la matière du Combat de boss.
 - **Reliques et barres** : la relique d'une matière est grise et se colore avec la part de boss vaincus (choix de la matière, inventaire) ; barres sous tous les boutons de matière, y compris « À venir » (vides), sans texte « x/x ». Gros plan du gardien : le bouton « Choisir mon chapitre » se remplit en 5 s puis s'appuie seul.
 - **Boutons plus vifs** : vernis cartoon (`gloss` : reflet en haut, bas assombri, couleur plus saturée) sur les boutons, tuiles de matières et de modes, onglets et pastilles actifs.

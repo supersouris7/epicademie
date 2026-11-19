@@ -17,15 +17,16 @@ RUN pnpm build \
 FROM node:24-slim
 ARG VERSION=dev
 LABEL org.opencontainers.image.title="Questeo" \
-      org.opencontainers.image.description="Exercices de 5e gamifiés, multijoueur sur réseau local" \
+      org.opencontainers.image.description="Academy Fighters — exercices gamifiés du CM1 à la 3e" \
       org.opencontainers.image.version="${VERSION}"
-ENV NODE_ENV=production PORT=3000 DB_PATH=/data/questeo.db QUESTEO_VERSION=${VERSION}
+ENV NODE_ENV=production PORT=3000 QUESTEO_VERSION=${VERSION}
 WORKDIR /app
 COPY --from=build --chown=node:node /out/server ./server
 COPY --from=build --chown=node:node /out/web ./web/dist
-RUN mkdir -p /data && chown node:node /data
 USER node
-VOLUME /data
 EXPOSE 3000
-HEALTHCHECK --interval=30s --timeout=3s CMD node -e "fetch('http://localhost:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
-CMD ["node", "server/dist/index.js"]
+# Disponibilité : le processus ET la base répondent.
+HEALTHCHECK --interval=30s --timeout=3s CMD node -e "fetch('http://localhost:3000/api/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+# Serveur par défaut ; la migration se lance avec la même image : `node server/dist/migrate.js`.
+# DATABASE_URL (postgres://…) est obligatoire. Voir docs/operations/deploiement.md.
+CMD ["node", "server/dist/main.js"]

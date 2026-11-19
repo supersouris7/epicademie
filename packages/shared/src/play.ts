@@ -1,9 +1,15 @@
 import { z } from 'zod';
-import type { Chest } from './battle.ts';
+import { ChestSchema } from './items.ts';
 import { MODE_IDS } from './modes.ts';
 import { SUBJECT_IDS } from './subjects.ts';
 
+/** Contrats de l'entraînement (parties hors boss) : création, réponses, bilan, progression. */
+
 export const LevelSchema = z.union([z.literal(1), z.literal(2), z.literal(3)]);
+export type Level = z.infer<typeof LevelSchema>;
+
+/** Identifiant de notion ou de chapitre du contenu (`maths-5e-fractions`…). */
+export const ContentIdSchema = z.string().min(1).max(80);
 
 export const ResponseSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('number'), text: z.string().max(40) }),
@@ -17,14 +23,16 @@ export const SessionCreateSchema = z.object({
   profileId: z.uuid(),
   mode: z.enum(MODE_IDS),
   subject: z.enum(SUBJECT_IDS),
-  chapterId: z.string().min(1).max(80),
+  chapterId: ContentIdSchema,
   /** null = tout le chapitre. */
-  skillId: z.string().min(1).max(80).nullable(),
+  skillId: ContentIdSchema.nullable(),
 });
 export type SessionCreate = z.infer<typeof SessionCreateSchema>;
 
+export const SessionCreatedSchema = z.object({ id: z.uuid() });
+
 export const AnswerSubmitSchema = z.object({
-  skillId: z.string().min(1).max(80),
+  skillId: ContentIdSchema,
   level: LevelSchema,
   seed: z.number().int().nonnegative(),
   variant: z.boolean(),
@@ -33,46 +41,60 @@ export const AnswerSubmitSchema = z.object({
 });
 export type AnswerSubmit = z.infer<typeof AnswerSubmitSchema>;
 
-export interface AnswerResult {
-  readonly correct: boolean;
-  readonly invalid: boolean;
-  readonly xp: number;
-}
+export const ConfusedSchema = z.object({ skillId: ContentIdSchema });
 
-export interface SkillProgress {
-  readonly skillId: string;
-  readonly stage: 0 | 1 | 2 | 3;
-  readonly due: string | null;
-  readonly attempts: number;
-  readonly correct: number;
-  readonly recent: readonly boolean[];
-  readonly maintained: number;
-  /** Meilleure série de 5 sur la notion (0 à 5) : fixe la médaille (5 Or, 4 Argent, 3 Bronze). */
-  readonly best: number;
-}
+export const AnswerResultSchema = z.object({
+  correct: z.boolean(),
+  /** Réponse illisible (ex. « 3,,2 ») : ni juste ni fausse, le joueur la corrige. */
+  invalid: z.boolean(),
+  xp: z.number().int().nonnegative(),
+});
+export type AnswerResult = z.infer<typeof AnswerResultSchema>;
 
-export interface SessionSkillSummary {
-  readonly skillId: string;
-  readonly answered: number;
-  readonly correct: number;
-  readonly stageBefore: number;
-  readonly stageAfter: number;
+/** Étape de répétition espacée : 0 nouvelle, 1 à revoir, 2 en cours, 3 acquise. */
+export const StageSchema = z.union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)]);
+/** Jour AAAA-MM-JJ. */
+export const DaySchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+
+export const SkillProgressSchema = z.object({
+  skillId: z.string(),
+  stage: StageSchema,
+  due: DaySchema.nullable(),
+  attempts: z.number().int().nonnegative(),
+  correct: z.number().int().nonnegative(),
+  recent: z.array(z.boolean()).readonly(),
+  maintained: z.number().int().nonnegative(),
+  /** Meilleure série sur la notion (0 à 5) : fixe la médaille (5 Or, 4 Argent, 3 Bronze). */
+  best: z.number().int().min(0).max(5),
+});
+export type SkillProgress = z.infer<typeof SkillProgressSchema>;
+
+const Tally = z.object({ answered: z.number().int().nonnegative(), correct: z.number().int().nonnegative() });
+
+export const SessionSkillSummarySchema = z.object({
+  skillId: z.string(),
+  answered: z.number().int().nonnegative(),
+  correct: z.number().int().nonnegative(),
+  stageBefore: z.number().int(),
+  stageAfter: z.number().int(),
   /** Meilleure série avant et après la partie (médaille). */
-  readonly bestBefore: number;
-  readonly bestAfter: number;
-  readonly due: string | null;
-}
+  bestBefore: z.number().int(),
+  bestAfter: z.number().int(),
+  due: DaySchema.nullable(),
+});
+export type SessionSkillSummary = z.infer<typeof SessionSkillSummarySchema>;
 
-export interface SessionSummary {
-  readonly regular: { readonly answered: number; readonly correct: number };
-  readonly variants: { readonly answered: number; readonly correct: number };
-  readonly scoreOn20: number;
-  readonly xpGained: number;
-  readonly coinsGained: number;
-  readonly perfect: boolean;
-  readonly levelBefore: number;
-  readonly levelAfter: number;
-  readonly skills: readonly SessionSkillSummary[];
+export const SessionSummarySchema = z.object({
+  regular: Tally,
+  variants: Tally,
+  scoreOn20: z.number().min(0).max(20),
+  xpGained: z.number().int().nonnegative(),
+  coinsGained: z.number().int().nonnegative(),
+  perfect: z.boolean(),
+  levelBefore: z.number().int().positive(),
+  levelAfter: z.number().int().positive(),
+  skills: z.array(SessionSkillSummarySchema).readonly(),
   /** Coffre d'équipement tiré au hasard (plus probable avec un bon score), ou null. */
-  readonly chest: Chest | null;
-}
+  chest: ChestSchema.nullable(),
+});
+export type SessionSummary = z.infer<typeof SessionSummarySchema>;

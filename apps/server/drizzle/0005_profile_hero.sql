@@ -1,1 +1,0 @@
-ALTER TABLE `profiles` ADD `hero` text DEFAULT 'alex' NOT NULL;

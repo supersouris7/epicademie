@@ -6,3 +6,7 @@ dist/
 coverage/
 playwright-report/
 test-results/
+
+# Base PostgreSQL embarquée (PGlite) du développement
+apps/server/data/
+.e2e-db/
