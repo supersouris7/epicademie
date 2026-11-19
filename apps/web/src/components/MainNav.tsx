@@ -4,6 +4,7 @@ import type { Profile } from '@questeo/shared';
 import { HeroFace } from './battle/HeroFace.tsx';
 import { CharacterAvatar } from './game/CharacterAvatar.tsx';
 import { GameIcon } from './game/GameIcon.tsx';
+import { ProgressBar } from './game/ProgressBar.tsx';
 
 const ITEMS = [
   { to: '/hub', label: 'Accueil', icon: 'icons-navigation-home' },
@@ -29,22 +30,20 @@ export function MainNav({ profile }: { readonly profile: Profile }) {
           <button type="button" onClick={() => void navigate('/')} aria-label="Changer de joueur" className="shrink-0">
             <CharacterAvatar avatar={profile.avatar} size={44} />
           </button>
-          <div className="flex min-w-0 flex-1 flex-col">
-            <span className="font-display text-toon truncate text-lg leading-tight tracking-wide">{profile.name}</span>
-            <span
-              className="flex items-center gap-1.5"
-              role="img"
-              aria-label={`Niveau ${level}, ${xpInLevel} XP sur ${xpForNext}`}
-            >
-              <span className="font-display text-gold text-sm">Niv. {level}</span>
-              <span className="bg-bg h-2 max-w-28 flex-1 overflow-hidden rounded-full">
-                <span
-                  className="bg-gold block h-full"
-                  style={{ width: `${Math.min(100, (xpInLevel / xpForNext) * 100)}%` }}
-                />
-              </span>
-            </span>
-          </div>
+          {/* Pseudo, puis niveau et barre d'XP (même barre segmentée que celles du combat). */}
+          <span className="font-display text-toon max-w-[34%] shrink truncate text-lg leading-tight tracking-wide">
+            {profile.name}
+          </span>
+          <span className="font-display text-gold shrink-0 text-sm">Niv. {level}</span>
+          <ProgressBar
+            className="min-w-16 flex-1 sm:max-w-48"
+            value={xpInLevel}
+            max={xpForNext}
+            segments={10}
+            color="var(--gold)"
+            label={`Niveau ${level}, ${xpInLevel} XP sur ${xpForNext}`}
+            size="sm"
+          />
           <span
             className="font-display text-toon flex shrink-0 items-center gap-1 pr-1 text-lg"
             role="status"

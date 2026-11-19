@@ -3,7 +3,12 @@ import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
 import { chaptersOf, DOMAINS, type DomainId } from '@questeo/content';
 import { MEDAL_LABELS, MEDALS, medal, type Medal as MedalId } from '@questeo/engine';
-import { SUBJECTS, type Profile, type SkillProgress, type SubjectId } from '@questeo/shared';
+import { ITEM_INFO, ITEMS, SUBJECTS, type Profile, type SkillProgress, type SubjectId } from '@questeo/shared';
+import { useBosses } from '../api/battles.ts';
+import { GameIcon } from '../components/game/GameIcon.tsx';
+import { ProgressBar } from '../components/game/ProgressBar.tsx';
+import { ITEM_ICONS } from '../design/items.ts';
+import { RELICS } from '../design/relics.ts';
 import { useSkills } from '../api/play.ts';
 import { MedalBadge } from '../components/game/RewardBadge.tsx';
 import { GradeTabs } from '../components/GradeTabs.tsx';
@@ -49,6 +54,7 @@ export function Progress({ profile }: { readonly profile: Profile }) {
   const enter = useEntrance();
   const navigate = useNavigate();
   const { data } = useSkills(profile.id);
+  const { data: bosses } = useBosses(profile.id);
   const [subject, setSubject] = useState<SubjectId>('maths');
   // Domaines ouverts (tous repliés à l'arrivée : la page reste courte sur téléphone).
   const [open, setOpen] = useState<ReadonlySet<DomainId>>(new Set());
@@ -90,6 +96,61 @@ export function Progress({ profile }: { readonly profile: Profile }) {
         Médaille d’une notion = sa meilleure série : Or sans faute (notion acquise) · Argent une erreur · Bronze deux
         erreurs.
       </p>
+
+      {/* Inventaire : reliques de boss (un éclat par boss vaincu) et équipement. */}
+      <section aria-labelledby="inventaire" className="cartoon bg-surface flex flex-col gap-3 p-3">
+        <h2 id="inventaire" className="font-display text-2xl tracking-wide">
+          Mon inventaire
+        </h2>
+        <div className="flex flex-wrap gap-3" aria-label="Reliques de boss">
+          {SUBJECTS.filter((s) => s.available && chaptersOf(s.id).some((c) => c.boss)).map((s) => {
+            const ids = new Set(
+              chaptersOf(s.id)
+                .filter((c) => c.boss)
+                .map((c) => c.id),
+            );
+            const shards = (bosses?.records ?? []).filter((r) => ids.has(r.chapterId) && r.wins > 0).length;
+            return (
+              <div
+                key={s.id}
+                className="bg-surface-2 flex min-w-0 flex-1 basis-60 items-center gap-3 rounded-2xl p-2"
+                role="img"
+                aria-label={`${RELICS[s.id].name} : ${shards} éclats sur ${ids.size}`}
+              >
+                <span className={shards ? '' : 'opacity-50 grayscale'}>
+                  <GameIcon id={RELICS[s.id].icon} size={60} />
+                </span>
+                <span className="flex min-w-0 flex-1 flex-col gap-1">
+                  <span className="font-display text-lg leading-tight tracking-wide">{RELICS[s.id].name}</span>
+                  <ProgressBar
+                    value={shards}
+                    max={ids.size}
+                    color="var(--boss)"
+                    label={`Éclats du ${RELICS[s.id].name}`}
+                    size="sm"
+                  />
+                  <span className="text-muted text-xs font-bold">
+                    {shards} éclat{shards > 1 ? 's' : ''} sur {ids.size} · un par boss vaincu
+                  </span>
+                </span>
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex flex-wrap items-center gap-2" aria-label="Équipement">
+          <span className="text-muted font-bold">Équipement :</span>
+          {ITEMS.map((item) => (
+            <span
+              key={item}
+              className="bg-surface-2 font-display flex items-center gap-1 rounded-full py-0.5 pr-3 pl-1 text-lg"
+              role="img"
+              aria-label={`${ITEM_INFO[item].name} × ${bosses?.inventory[item] ?? 0}`}
+            >
+              <GameIcon id={ITEM_ICONS[item]} size={28} />× {bosses?.inventory[item] ?? 0}
+            </span>
+          ))}
+        </div>
+      </section>
 
       <div className="flex flex-wrap gap-2" role="tablist" aria-label="Matières">
         {SUBJECTS.map((s) => (

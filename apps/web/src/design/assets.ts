@@ -534,6 +534,18 @@ const ICONS: readonly (readonly [sheet: string, rows: readonly IconRow[]])[] = [
     ],
   ],
   [
+    // Combat de boss : icône de chaque matière, qui est aussi sa relique (gagnée en battant ses boss).
+    'reliques',
+    [
+      ['icons/subjects/boss-maths', 'cristal violet au π et aux signes + − × ÷ sur socle doré', 1],
+      ['icons/subjects/boss-anglais', 'livre violet et doré au drapeau britannique, marque-page rouge', 1],
+      ['icons/subjects/boss-espagnol', 'éventail rouge et jaune aux armes de l’Espagne', 1],
+      ['icons/subjects/boss-physique', 'fiole bleue à l’atome, bulles', 1],
+      ['icons/subjects/boss-histoire', 'casque de légionnaire à crête rouge et lauriers dorés', 1],
+      ['icons/subjects/boss-geographie', 'boussole dorée et carte au trésor', 1],
+    ],
+  ],
+  [
     'modes',
     [
       ['icons/modes/entrainement', 'haltère violet et orange', 1],

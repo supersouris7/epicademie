@@ -4,7 +4,6 @@ import type { Profile } from '@questeo/shared';
 import { useDeleteProfile, useUpdateProfile } from '../api/profiles.ts';
 import { GameButton } from '../components/game/GameButton.tsx';
 import { PageShell } from '../components/PageShell.tsx';
-import { HeroFace } from '../components/battle/HeroFace.tsx';
 import { useSession } from '../store/session.ts';
 import { fullscreenSupported, useFullscreenPreference } from '../lib/fullscreen.ts';
 
@@ -58,10 +57,6 @@ export function Settings({ profile }: { readonly profile: Profile }) {
           onClick={() => void navigate(`/profils/${profile.id}/modifier`)}
         >
           Modifier mon profil
-        </GameButton>
-        <GameButton variant="surface" className="justify-start" onClick={() => void navigate('/heros')}>
-          <HeroFace hero={profile.hero} expression="confiant" size={32} />
-          Mon héros
         </GameButton>
         <GameButton
           variant="surface"

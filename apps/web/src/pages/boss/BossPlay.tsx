@@ -79,6 +79,7 @@ import {
 import { formatAnswer, formatResponse } from '../../lib/answers.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../lib/sound.ts';
 import { ITEM_ICONS } from '../../design/items.ts';
+import { RELICS } from '../../design/relics.ts';
 
 /** Combat de boss d'un chapitre (docs/SPEC.md §6.2 bis). */
 export function BossPlay({ profile }: { readonly profile: Profile }) {
@@ -857,8 +858,14 @@ function BattleResults({
           transition={{ delay: 0.3, type: 'spring' }}
           className="cartoon bevel bg-accent flex flex-col items-center gap-3 p-4 text-center"
         >
-          <GameIcon id={CHEST_ICON} size={88} />
-          <h2 className="font-display text-toon text-2xl">1re victoire : le coffre !</h2>
+          <div className="flex items-end gap-3">
+            <GameIcon id={CHEST_ICON} size={88} />
+            <GameIcon id={RELICS[chapter.subject].icon} size={80} />
+          </div>
+          <h2 className="font-display text-toon text-2xl">1re victoire : le coffre et un éclat de relique !</h2>
+          <p className="font-bold text-white">
+            Tu gagnes un éclat du {RELICS[chapter.subject].name} : retrouve-le dans Mes progrès.
+          </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             {gained.map((i) => (
               <span key={i} className="flex flex-col items-center gap-1 font-bold text-white">

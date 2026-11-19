@@ -52,7 +52,7 @@ export function App() {
         <Route path="/multi" element={<WithProfile>{(p) => <MultiModes profile={p} />}</WithProfile>} />
         <Route path="/arene" element={<WithProfile>{(p) => <Arena profile={p} />}</WithProfile>} />
         <Route path="/connectes" element={<WithProfile>{(p) => <Online profile={p} />}</WithProfile>} />
-        <Route path="/jouer/:modeId" element={<WithProfile>{() => <ModeSetup />}</WithProfile>} />
+        <Route path="/jouer/:modeId" element={<WithProfile>{(p) => <ModeSetup profile={p} />}</WithProfile>} />
         <Route
           path="/jouer/entrainement/:subject"
           element={<WithProfile>{(p) => <Chapters profile={p} />}</WithProfile>}

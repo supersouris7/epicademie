@@ -28,6 +28,7 @@ import { BossCloseUp } from '../../components/battle/BattleScenes.tsx';
 import { subjectTaunt } from '../../lib/battleLines.ts';
 
 import { ITEM_ICONS } from '../../design/items.ts';
+import { RELICS } from '../../design/relics.ts';
 import { ApiError } from '../../api/client.ts';
 import { useGradeChoice } from '../../lib/grades.ts';
 import { useEntrance } from '../../lib/entrance.ts';
@@ -224,6 +225,23 @@ function BossRow({ chapter, index, record, onFight, onSoon }: BossRowProps) {
               : 'Pas encore vaincu'}
         </span>
       </div>
+      {/* Récompense du boss : un éclat de la relique de la matière (gagné à la 1re victoire). */}
+      {ready && (
+        <span
+          className={`flex shrink-0 flex-col items-center text-xs font-bold ${record ? 'text-success' : 'text-muted'}`}
+          role="img"
+          aria-label={
+            record
+              ? `Éclat de ${RELICS[chapter.subject].name} gagné`
+              : `Récompense : un éclat de ${RELICS[chapter.subject].name}`
+          }
+        >
+          <span className={record ? '' : 'opacity-60 grayscale-[0.4]'}>
+            <GameIcon id={RELICS[chapter.subject].icon} size={44} />
+          </span>
+          {record ? 'Gagné ✓' : 'À gagner'}
+        </span>
+      )}
     </>
   );
   return (

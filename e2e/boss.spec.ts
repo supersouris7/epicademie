@@ -110,7 +110,7 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   expect(view.status).toBe('won');
   expect(sawRage).toBe(true);
   await expect(page.getByRole('heading', { name: /est vaincu/ })).toBeVisible({ timeout: 10_000 });
-  await expect(page.getByText('1re victoire : le coffre !')).toBeVisible();
+  await expect(page.getByText('1re victoire : le coffre et un éclat de relique !')).toBeVisible();
   // Un cœur perdu : médaille d'argent.
   await expect(page.getByRole('heading', { name: 'Médaille Argent' })).toBeVisible();
 

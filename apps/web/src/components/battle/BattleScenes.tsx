@@ -414,7 +414,7 @@ export function QuipRow({
           initial={{ y: -8, scale: 0.8, opacity: 0 }}
           animate={{ y: 0, scale: 1, opacity: 1 }}
           transition={{ delay: 0.15 }}
-          className={`${bubble} ml-auto bg-[#ffdcdc] text-right`}
+          className={`${bubble} ml-auto self-start bg-[#ffdcdc] text-right`}
         >
           {enemy.text}
         </motion.p>
