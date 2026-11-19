@@ -23,7 +23,7 @@ export function MainNav({ profile }: { readonly profile: Profile }) {
   const { pathname } = useLocation();
   const { level, xpInLevel, xpForNext } = levelFromXp(profile.xp, profile.gender);
   return (
-    <div className="bg-bg/90 sticky top-0 z-40 -mx-4 px-4 pt-2 pb-2 backdrop-blur sm:-mx-6 sm:px-6">
+    <div className="sticky top-0 z-40 -mx-4 px-4 pt-2 pb-2 sm:-mx-6 sm:px-6">
       <div className="bg-accent-strong flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-[1.25rem] p-1.5 shadow-[0_6px_0_var(--shadow)] lg:flex-nowrap">
         {/* Le joueur : toucher l'avatar pour changer de joueur. */}
         <div className="flex min-w-0 flex-1 items-center gap-2 pl-1" aria-label="Mon joueur" role="group">

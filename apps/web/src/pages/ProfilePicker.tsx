@@ -15,8 +15,6 @@ import { api } from '../api/client.ts';
 import { useRealtime } from '../realtime/store.ts';
 import { useToast } from '../components/Toast.tsx';
 
-const CARD_COLORS = ['var(--accent)', 'var(--primary)', 'var(--info)', 'var(--pink)', 'var(--success)'];
-
 export function ProfilePicker() {
   const { data: profiles, isPending, isError, refetch } = useProfiles();
   const selectProfile = useSession((s) => s.selectProfile);
@@ -74,7 +72,6 @@ export function ProfilePicker() {
             <CharacterCard
               index={i}
               name={p.name}
-              color={CARD_COLORS[i % CARD_COLORS.length] ?? 'var(--accent)'}
               caption={busy.has(p.id) ? 'Déjà connecté' : `Niveau ${levelFromXp(p.xp).level}`}
               portrait={<CharacterAvatar avatar={p.avatar} size={120} />}
               onClick={() => choose(p.id)}

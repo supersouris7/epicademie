@@ -72,6 +72,8 @@ button {
 /* Effet « bouton cartoon » : contour épais + ombre portée pleine. */
 @utility cartoon {
   border: var(--stroke-md) solid var(--outline);
+  /* Empêche le fond coloré de transparaître dans l'anti-crénelage des coins. */
+  background-clip: padding-box;
   /* Reflet discret en haut + ombre portée pleine : volume net, sans image. */
   box-shadow:
     inset 0 2px 0 rgb(255 255 255 / 0.1),

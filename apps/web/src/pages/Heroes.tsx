@@ -13,6 +13,7 @@ import { CHARACTERS, HERO_EXPRESSIONS, type AnimationState, type HeroExpression 
 
 /** Poses montrées à tour de rôle quand on touche le héros. */
 const SHOWCASE: readonly AnimationState[] = ['idle', 'shoot', 'shield', 'jump', 'run', 'victory'];
+const HERO_CHOICES = [...AVAILABLE_HEROES, ...HEROES.filter((hero) => !AVAILABLE_HEROES.includes(hero))];
 
 /** Menu « Mon héros » : séparé du profil, on y choisit son personnage de combat. */
 export function Heroes({ profile }: { readonly profile: Profile }) {
@@ -70,7 +71,7 @@ export function Heroes({ profile }: { readonly profile: Profile }) {
 
       <h2 className="font-display text-2xl tracking-wide">Choisis ton héros</h2>
       <div role="radiogroup" aria-label="Ton héros" className="grid grid-cols-2 gap-4 sm:grid-cols-5">
-        {HEROES.map((h, i) =>
+        {HERO_CHOICES.map((h, i) =>
           AVAILABLE_HEROES.includes(h) ? (
             <HeroCard
               key={h}
