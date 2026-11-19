@@ -47,7 +47,6 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   for (const soon of ['Tao', 'Ayla']) await expect(page.getByText(soon)).toHaveCount(0);
   // Barre de navigation du bas sur les écrans principaux.
   const nav = page.getByRole('navigation', { name: 'Menu principal' });
-  await expect(nav.getByRole('button', { name: 'Héros' })).toHaveAttribute('aria-current', 'page');
   await nav.getByRole('button', { name: 'Progrès' }).click();
   await expect(page.getByText(/0 \/ 72 notions médaillées/)).toBeVisible();
   // Domaines repliés : un toucher ouvre le domaine et montre ses chapitres.

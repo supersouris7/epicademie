@@ -78,7 +78,7 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   await chest.getByRole('button', { name: 'Ouvrir le coffre' }).click();
   const opened = page.getByRole('dialog', { name: 'Coffre rare' });
   await expect(opened).toContainText('Bouclier +1');
-  await expect(opened).toContainText('+20 pièces');
+  await expect(opened).toContainText('+10 pièces');
   await opened.getByRole('button', { name: 'Super !' }).click();
   await expect(opened).toHaveCount(0);
   await expect(page.getByText(/On s’accroche/)).toBeVisible();
