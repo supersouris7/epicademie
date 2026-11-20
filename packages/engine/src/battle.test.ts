@@ -52,14 +52,33 @@ describe('combat de boss', () => {
     expect(seen.toSorted()).toEqual(['a', 'b', 'c']);
   });
 
-  it('une erreur contre un mob : riposte (−1 cœur), le mob s’enfuit', () => {
+  it('une erreur contre un mob : riposte (−1 cœur), le mob reste et pose une autre question', () => {
     const d = dice();
     const s = createBattle(pools, d);
     const { state, outcome } = answerBattle(s, pools, false, d);
     expect(outcome).toBe('riposte');
     expect(state.hearts).toBe(2);
-    expect(state.mobsDefeated).toBe(1);
+    expect(state.mobsDefeated).toBe(0);
     expect(state.misses).toEqual([s.question?.skillId]);
+    // Même notion (le même mob), nouvelle question.
+    expect(state.question?.skillId).toBe(s.question?.skillId);
+    expect(state.question?.seed).not.toBe(s.question?.seed);
+  });
+
+  it('bouclier : l’erreur est bloquée, mais le mob reste', () => {
+    const d = dice();
+    const s = { ...createBattle(pools, d), shield: true };
+    const { state, outcome } = answerBattle(s, pools, false, d);
+    expect(outcome).toBe('blocked');
+    expect(state.hearts).toBe(3);
+    expect(state.mobsDefeated).toBe(0);
+  });
+
+  it('trois erreurs d’affilée sur le 1er mob : défaite sans l’avoir passé', () => {
+    const d = dice();
+    let s = createBattle(pools, d);
+    for (let i = 0; i < 3; i++) s = answerBattle(s, pools, false, d).state;
+    expect(s).toMatchObject({ status: 'lost', hearts: 0, mobsDefeated: 0, question: null });
   });
 
   it('une erreur contre le boss relance une question du même type', () => {

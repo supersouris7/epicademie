@@ -152,11 +152,12 @@ export function createTrainingService({ db, clock, random, onFinished }: Trainin
           });
         }
 
-        // Coffre d'équipement au hasard : plus probable avec un bon score, garanti par un sans-faute.
+        // Coffre d'équipement garanti à chaque série terminée (meilleure rareté sans faute) ;
+        // une partie close sans aucune réponse n'en donne pas.
         const profiles = profilesRepo(tx);
         const profile = await profiles.findForUpdate(session.profileId);
         if (!profile) throw notFound(PROFILE_NOT_FOUND);
-        const rolled = rollChest(regularCorrect, regular.length, random.float);
+        const rolled = regular.length > 0 ? rollChest(regularCorrect, regular.length, random.float) : null;
         const chest = rolled ? { ...rolled, items: await inventoryRepo(tx).add(profile.id, rolled.items) } : null;
         await profiles.credit(profile.id, {
           xp: xpGained,

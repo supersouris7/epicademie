@@ -1,20 +1,10 @@
 import { ITEMS, type Chest, type ChestRarity, type Inventory } from '@questeo/shared';
 
 /**
- * Coffres d'équipement de l'entraînement (docs/SPEC.md §6.2 bis) : en fin de série, une chance de coffre
- * d'autant plus grande que le score est bon (sans-faute = coffre garanti). Le coffre est commun, rare ou
- * épique et contient des objets tirés au hasard et des pièces. Jamais achetable.
+ * Coffres d'équipement de l'entraînement (docs/SPEC.md §6.2 bis) : un coffre GARANTI à chaque
+ * série terminée (décision du 20/11/2026) ; un sans-faute améliore la rareté. Le coffre est
+ * commun, rare ou épique et contient des objets tirés au hasard et des pièces. Jamais achetable.
  */
-
-/** Chance d'obtenir un coffre selon la part de bonnes réponses de la série. */
-export function chestChance(correct: number, total: number): number {
-  if (total <= 0) return 0;
-  const rate = correct / total;
-  if (rate >= 1) return 1;
-  if (rate >= 0.8) return 0.6;
-  if (rate >= 0.6) return 0.35;
-  return 0.1;
-}
 
 /** Commun : pièces ; rare : équipement ; épique : équipement et rubis. */
 export const CHEST_CONTENT: Record<
@@ -34,9 +24,8 @@ export function rollRarity(random: number, perfect: boolean): ChestRarity {
   return 'commun';
 }
 
-/** Tire un coffre (ou rien). `random` renvoie un nombre dans [0, 1). */
-export function rollChest(correct: number, total: number, random: () => number): Chest | null {
-  if (random() >= chestChance(correct, total)) return null;
+/** Tire le coffre de fin de série. `random` renvoie un nombre dans [0, 1). */
+export function rollChest(correct: number, total: number, random: () => number): Chest {
   const rarity = rollRarity(random(), correct === total && total > 0);
   const { items: count, coins, rubies } = CHEST_CONTENT[rarity];
   const items: Partial<Inventory> = {};
