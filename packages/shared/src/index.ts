@@ -17,3 +17,4 @@ export * from './learning.ts';
 export * from './pedagogy.ts';
 export * from './billing.ts';
 export * from './api/contract.ts';
+export * from './hq.ts';

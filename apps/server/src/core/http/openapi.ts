@@ -20,6 +20,7 @@ const TAG_DESCRIPTIONS: Record<(typeof API_TAGS)[number], string> = {
   entrainement: 'Parties d’entraînement et progression par notion',
   combats: 'Combats de boss',
   inventaire: 'Équipement et boutique',
+  qg: 'QG, trophées et cosmétiques',
   telemetrie: 'Erreurs remontées par le navigateur',
 };
 

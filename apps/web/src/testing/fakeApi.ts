@@ -13,7 +13,11 @@ import {
 import {
   API_PREFIX,
   api,
+  COSMETICS,
+  DEFAULT_HQ,
   type AnyEndpoint,
+  type CosmeticId,
+  type HqLayout,
   type BattleView,
   type BossOverview,
   type Inventory,
@@ -234,6 +238,31 @@ function adminHandlers(
       return skill(id);
     },
     adminContentHistory: () => [],
+  };
+}
+
+/** QG du faux serveur : aménagement, achats de cosmétiques en rubis ou pièces. */
+function hqHandlers(profileOf: (id: string) => Profile | undefined): Partial<Record<keyof typeof api, Handler>> {
+  const owned = new Set<CosmeticId>(['fond-classe', 'cadre-simple', 'titre-apprenti']);
+  let layout: HqLayout = { ...DEFAULT_HQ };
+  const hq = (p: Profile | undefined) => ({ layout, unlocked: [...owned], trophies: p ? [`heros:${p.hero}`] : [] });
+  return {
+    hq: ({ params }) => hq(profileOf(params.id ?? '')),
+    saveHq: ({ params, body }) => {
+      layout = body as HqLayout;
+      return hq(profileOf(params.id ?? ''));
+    },
+    buyCosmetic: ({ body }) => {
+      const { profileId, cosmetic } = body as { profileId: string; cosmetic: CosmeticId };
+      const p = profileOf(profileId);
+      const s = COSMETICS[cosmetic].source;
+      if (!p || s.type !== 'achat') throw new FakeError(409, 'CONFLICT', 'Pas à vendre');
+      if (p.rubies < s.rubies || p.coins < s.coins)
+        throw new FakeError(409, 'CONFLICT', `Il te faut ${s.rubies} rubis.`);
+      Object.assign(p, { rubies: p.rubies - s.rubies, coins: p.coins - s.coins });
+      owned.add(cosmetic);
+      return { coins: p.coins, rubies: p.rubies, hq: hq(p) };
+    },
   };
 }
 
@@ -471,6 +500,7 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     disabledContent: () => ({ skills: [...disabledSet] }),
     learningReport: () => options.learning ?? emptyLearning(),
     ...billingHandlers(options.premium ?? true, uuid),
+    ...hqHandlers((id) => profiles.get(id)),
     ownedHeroes: ({ params }) => ({ heroes: [profile(params.id).hero] }),
     badges: () => badgeProgress({ boss: 2, parfait: 3, perseverance: 0, chapitres: 0, consolidees: 0, heros: 1 }),
     ...adminHandlers(reports, disabledSet),

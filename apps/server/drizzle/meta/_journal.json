@@ -50,6 +50,13 @@
       "when": 1795185184150,
       "tag": "0006_abonnement",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1795187275907,
+      "tag": "0007_qg",
+      "breakpoints": true
     }
   ]
 }

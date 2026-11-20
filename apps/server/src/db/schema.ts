@@ -16,6 +16,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import type {
   AccountRole,
+  HqLayout,
   Offer,
   ReportReason,
   SubscriptionStatus,
@@ -326,6 +327,28 @@ export const contentEvents = pgTable(
   (t) => [index('content_events_skill_idx').on(t.skillId, t.at)],
 );
 
+/** Cosmétiques achetés (les offerts et ceux des badges se déduisent, sans ligne ici). */
+export const ownedCosmetics = pgTable(
+  'owned_cosmetics',
+  {
+    profileId: uuid('profile_id')
+      .notNull()
+      .references(() => profiles.id, { onDelete: 'cascade' }),
+    cosmetic: text('cosmetic').notNull(),
+    obtainedAt: timestamp('obtained_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.profileId, t.cosmetic] })],
+);
+
+/** Aménagement du QG (une ligne par profil ; absent : aménagement par défaut). */
+export const hqLayouts = pgTable('hq_layouts', {
+  profileId: uuid('profile_id')
+    .primaryKey()
+    .references(() => profiles.id, { onDelete: 'cascade' }),
+  layout: jsonb('layout').$type<HqLayout>().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
 /**
  * Paiements de l'abonnement familial (historique complet, y compris les échecs). L'accès
  * premium se déduit des paiements réussis : pas de champ « premium » à tenir à jour.
@@ -393,6 +416,8 @@ export const idempotentRequests = pgTable(
 
 /** Toutes les tables, de la plus dépendante à la moins dépendante (remise à zéro des tests). */
 export const ALL_TABLES = [
+  'hq_layouts',
+  'owned_cosmetics',
   'subscriptions',
   'owned_heroes',
   'idempotent_requests',

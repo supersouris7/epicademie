@@ -20,6 +20,7 @@ import { BossChapters, BossPlay, Shop } from '../features/boss/index.ts';
 import { Hub, ModeSetup, MultiModes } from '../features/hub/index.ts';
 import { Heroes, ProfileEditor, ProfilePicker, useProfile } from '../features/profiles/index.ts';
 import { Progress } from '../features/progress/index.ts';
+import { HqPage } from '../features/hq/index.ts';
 import { Notifications, Online, RealtimeLink } from '../features/realtime/index.ts';
 import { About, Settings } from '../features/settings/index.ts';
 import { Chapters, Notions, TrainingPlay } from '../features/training/index.ts';
@@ -91,6 +92,7 @@ export function App() {
             <Route path="/hub" element={<WithProfile>{(p) => <Hub profile={p} />}</WithProfile>} />
             <Route path="/shop" element={<WithProfile>{(p) => <Shop profile={p} />}</WithProfile>} />
             <Route path="/heros" element={<WithProfile>{(p) => <Heroes profile={p} />}</WithProfile>} />
+            <Route path="/qg" element={<WithProfile>{(p) => <HqPage profile={p} />}</WithProfile>} />
             <Route path="/multi" element={<WithProfile>{(p) => <MultiModes profile={p} />}</WithProfile>} />
             <Route path="/arene" element={<WithProfile>{(p) => <Arena profile={p} />}</WithProfile>} />
             <Route path="/connectes" element={<WithProfile>{(p) => <Online profile={p} />}</WithProfile>} />

@@ -7,6 +7,7 @@ import { useToast } from '../../shared/ui/Toast.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { OnlineBanner } from '../realtime/index.ts';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
+import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { heroPoseSrc } from '../../design/assets.ts';
 import { useEntrance } from '../../shared/lib/entrance.ts';
 
@@ -98,6 +99,10 @@ export function Hub({ profile }: { readonly profile: Profile }) {
           })}
         </ul>
       </div>
+
+      <GameButton onClick={() => void navigate('/qg')} className="self-start">
+        Mon QG et mes trophées
+      </GameButton>
 
       <section className="flex flex-col gap-3" aria-labelledby="defis">
         <h2 id="defis" className="font-display text-2xl tracking-wide">

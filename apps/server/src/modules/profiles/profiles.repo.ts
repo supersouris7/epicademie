@@ -113,5 +113,15 @@ export function profilesRepo(db: Executor) {
         .returning();
       return row;
     },
+
+    /** Dépense en pièces ET rubis, seulement si le solde suffit (undefined sinon). */
+    async spendBoth(id: string, coins: number, rubies: number): Promise<ProfileRow | undefined> {
+      const [row] = await db
+        .update(profiles)
+        .set({ coins: sql`${profiles.coins} - ${coins}`, rubies: sql`${profiles.rubies} - ${rubies}` })
+        .where(and(eq(profiles.id, id), gte(profiles.coins, coins), gte(profiles.rubies, rubies)))
+        .returning();
+      return row;
+    },
   };
 }

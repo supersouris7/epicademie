@@ -30,6 +30,7 @@ import { billingRoutes, createBillingService, type BillingService } from './modu
 import { createTrainingService, trainingRoutes } from './modules/training/index.ts';
 import { battlesRoutes, createBattlesService } from './modules/battles/index.ts';
 import { createShopService, inventoryRoutes } from './modules/inventory/index.ts';
+import { createHqService, hqRoutes } from './modules/hq/index.ts';
 import { createPresence, type Presence } from './modules/realtime/index.ts';
 import { opsRoutes, systemRoutes } from './modules/system/index.ts';
 import { telemetryRoutes } from './modules/telemetry/index.ts';
@@ -153,6 +154,12 @@ export async function buildApp(deps: AppDeps): Promise<App> {
   });
   const shop = createShopService(db);
   const learning = createLearningService({ db, clock, timeZone: config.timeZone });
+  const hq = createHqService({
+    db,
+    clock,
+    badges: (id) => learning.badges(id),
+    bossRecords: async (id) => (await battles.overview(id)).records,
+  });
   const pedagogy = createPedagogyService({ db, clock });
   const billing = createBillingService({ db, clock, config: config.billing, appUrl, fetcher: deps.fetcher });
 
@@ -185,6 +192,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
       await v1.register(battlesRoutes(battles, owns, billing));
       await v1.register(billingRoutes(billing, config.billing.stripeWebhookSecret));
       await v1.register(inventoryRoutes(shop, owns));
+      await v1.register(hqRoutes(hq, owns));
       await v1.register(telemetryRoutes(reporter));
     },
     { prefix: API_PREFIX },

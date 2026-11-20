@@ -29,6 +29,7 @@ import {
 } from '../account.ts';
 import { BadgeProgressSchema, LearningReportSchema } from '../learning.ts';
 import { BillingSchema, CheckoutSchema, SimulatePaymentSchema } from '../billing.ts';
+import { BuyCosmeticSchema, CosmeticPurchaseSchema, HqLayoutSchema, HqSchema } from '../hq.ts';
 import {
   ContentEventSchema,
   ContentSkillSchema,
@@ -97,6 +98,7 @@ export const API_TAGS = [
   'entrainement',
   'combats',
   'inventaire',
+  'qg',
   'telemetrie',
 ] as const;
 export type ApiTag = (typeof API_TAGS)[number];
@@ -453,6 +455,39 @@ export const api = {
     status: 200,
     body: BuySchema,
     response: PurchaseSchema,
+  }),
+
+  // ——— QG, trophées et cosmétiques ———
+  hq: endpoint({
+    method: 'GET',
+    path: '/profiles/:id/hq',
+    tag: 'qg',
+    summary: 'QG du joueur : décor choisi, cosmétiques débloqués, trophées gagnés',
+    access: 'family',
+    status: 200,
+    params: IdParamsSchema,
+    response: HqSchema,
+  }),
+  saveHq: endpoint({
+    method: 'PUT',
+    path: '/profiles/:id/hq',
+    tag: 'qg',
+    summary: 'Aménage le QG (décor, cadre, titre, vitrine de 3 trophées)',
+    access: 'family',
+    status: 200,
+    params: IdParamsSchema,
+    body: HqLayoutSchema,
+    response: HqSchema,
+  }),
+  buyCosmetic: endpoint({
+    method: 'POST',
+    path: '/shop/cosmetics',
+    tag: 'qg',
+    summary: 'Achète un cosmétique avec des rubis ou des pièces gagnés en jouant',
+    access: 'family',
+    status: 200,
+    body: BuyCosmeticSchema,
+    response: CosmeticPurchaseSchema,
   }),
 
   // ——— Contenus : signalements, désactivations ———
