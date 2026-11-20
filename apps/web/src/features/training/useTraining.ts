@@ -131,7 +131,8 @@ export function useTraining({ profile, chapterId, skills, states }: TrainingSetu
     const durationMs = Math.round(performance.now() - shownAt.current);
     playSound(answerSound(s, result.correct));
     dispatch({ type: 'answered', result, response, durationMs });
-    if (!isFirstAttempt(s)) return;
+    // Le second essai (après l'indice) est aussi enregistré : « réussite avec aide » au suivi.
+    const attempt = isFirstAttempt(s) ? 1 : 2;
     const { plan } = current;
     pending.current.push(
       submitAnswer(sessionId, {
@@ -141,6 +142,7 @@ export function useTraining({ profile, chapterId, skills, states }: TrainingSetu
         variant: plan.variant,
         response,
         durationMs,
+        attempt,
       }).catch(() => notify('Réponse non enregistrée (problème de connexion).')),
     );
   };

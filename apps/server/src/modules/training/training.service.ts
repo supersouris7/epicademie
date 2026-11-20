@@ -1,4 +1,4 @@
-import { check, generate, getSkill } from '@questeo/content';
+import { check, generate, getSkill, skillVersion } from '@questeo/content';
 import {
   applySession,
   coinsForXp,
@@ -73,10 +73,29 @@ export function createTrainingService({ db, clock, random, onFinished }: Trainin
         const question = generate(a.skillId, a.level, a.seed);
         const result = check(question, a.response);
         if (result.invalid) return { correct: false, invalid: true, xp: 0 };
-        // Série en cours (bonnes réponses consécutives) : bonus d'XP.
         const previous = await repo.attemptsOf(sessionId);
+        const recorded = {
+          ...a,
+          sessionId,
+          profileId: session.profileId,
+          correct: result.correct,
+          skillVersion: skillVersion(getSkill(a.skillId)),
+          diagnosis: result.correct ? null : (result.why ?? null),
+        };
+        if (a.attempt === 2) {
+          // Second essai après l'indice : seulement après une 1re réponse fausse à CETTE question,
+          // une seule fois ; enregistré « avec aide », sans XP.
+          const same = previous.filter((p) => p.skillId === a.skillId && p.level === a.level && p.seed === a.seed);
+          if (!same.some((p) => p.attempt === 1 && !p.correct) || same.some((p) => p.attempt === 2)) {
+            throw conflict('Pas de second essai pour cette question');
+          }
+          await repo.insertAttempt({ ...recorded, xp: 0, attempt: 2, hinted: true });
+          return { correct: result.correct, invalid: false, xp: 0 };
+        }
+        // Série en cours (premières réponses justes consécutives) : bonus d'XP.
+        const firsts = previous.filter((p) => p.attempt === 1);
         let streak = 0;
-        for (let i = previous.length - 1; i >= 0 && previous[i]?.correct; i--) streak++;
+        for (let i = firsts.length - 1; i >= 0 && firsts[i]?.correct; i--) streak++;
         const xp = xpForAnswer({
           correct: result.correct,
           variant: a.variant,
@@ -84,7 +103,7 @@ export function createTrainingService({ db, clock, random, onFinished }: Trainin
           targetSeconds: question.targetSeconds,
           streak: result.correct ? streak + 1 : 0,
         });
-        await repo.insertAttempt({ ...a, sessionId, profileId: session.profileId, correct: result.correct, xp });
+        await repo.insertAttempt({ ...recorded, xp, attempt: 1 });
         return { correct: result.correct, invalid: false, xp };
       });
     },
@@ -111,7 +130,8 @@ export function createTrainingService({ db, clock, random, onFinished }: Trainin
         if (session.finishedAt) throw conflict('Partie déjà terminée');
         if (session.mode === 'boss') throw conflict(BOSS_ELSEWHERE);
 
-        const rows = await repo.attemptsOf(sessionId);
+        // Score, médailles et répétition espacée : premières réponses seulement.
+        const rows = await repo.firstAttemptsOf(sessionId);
         const regular = rows.filter((r) => !r.variant);
         const variants = rows.filter((r) => r.variant);
         const regularCorrect = regular.filter((r) => r.correct).length;

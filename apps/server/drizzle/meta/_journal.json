@@ -15,6 +15,13 @@
       "when": 1795168931316,
       "tag": "0001_comptes_familiaux",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795172240917,
+      "tag": "0002_suivi_apprentissages",
+      "breakpoints": true
     }
   ]
 }

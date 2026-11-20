@@ -232,7 +232,8 @@ export function createFakeApi(options: FakeApiOptions = {}) {
       const a = body as { skillId: string; level: 1 | 2 | 3; seed: number; response: Parameters<typeof check>[1] };
       const result = check(generate(a.skillId, a.level, a.seed), a.response);
       const s = sessions.get(params.id ?? '');
-      if (s && !result.invalid) {
+      // Seule la 1re réponse compte au score (le second essai est « avec aide »).
+      if (s && !result.invalid && (body as { attempt?: number }).attempt !== 2) {
         s.answered++;
         if (result.correct) s.correct++;
       }

@@ -37,7 +37,13 @@ export const AnswerSubmitSchema = z.object({
   seed: z.number().int().nonnegative(),
   variant: z.boolean(),
   response: ResponseSchema,
+  /** Temps de réponse : bonus de vitesse et rythme conseillé (aucun autre usage). */
   durationMs: z.number().int().nonnegative().max(3_600_000),
+  /**
+   * 1 : première réponse (compte pour le score et la progression) ; 2 : second essai après
+   * l'indice (enregistré comme « réussite avec aide », sans XP ni effet sur la médaille).
+   */
+  attempt: z.union([z.literal(1), z.literal(2)]).default(1),
 });
 export type AnswerSubmit = z.infer<typeof AnswerSubmitSchema>;
 

@@ -27,12 +27,17 @@ export interface NewSession {
   readonly battle?: unknown;
 }
 
-export interface NewAttempt extends Omit<AnswerSubmit, 'response'> {
+export interface NewAttempt extends Omit<AnswerSubmit, 'response' | 'attempt'> {
   readonly sessionId: string;
   readonly profileId: string;
   readonly response: unknown;
   readonly correct: boolean;
   readonly xp: number;
+  readonly attempt?: 1 | 2;
+  readonly hinted?: boolean;
+  readonly collective?: boolean;
+  readonly skillVersion: number;
+  readonly diagnosis?: string | null;
 }
 
 export function trainingRepo(db: Executor) {
@@ -76,7 +81,22 @@ export function trainingRepo(db: Executor) {
         correct: a.correct,
         durationMs: a.durationMs,
         xp: a.xp,
+        attempt: a.attempt ?? 1,
+        hinted: a.hinted ?? false,
+        collective: a.collective ?? false,
+        skillVersion: a.skillVersion,
+        // Texte de correction tronqué : sert à compter les erreurs récurrentes.
+        diagnosis: a.diagnosis?.slice(0, 300) ?? null,
       });
+    },
+
+    /** Premières réponses d'une partie, dans l'ordre (les seconds essais ne comptent pas au score). */
+    firstAttemptsOf(sessionId: string) {
+      return db
+        .select()
+        .from(attempts)
+        .where(and(eq(attempts.sessionId, sessionId), eq(attempts.attempt, 1)))
+        .orderBy(asc(attempts.id));
     },
 
     async skillStates(profileId: string): Promise<SkillState[]> {

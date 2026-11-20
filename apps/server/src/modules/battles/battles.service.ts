@@ -1,4 +1,4 @@
-import { battlePools, check, generate, getChapter } from '@questeo/content';
+import { battlePools, check, generate, getChapter, getSkill, skillVersion } from '@questeo/content';
 import {
   answerBattle,
   applyItem,
@@ -200,6 +200,10 @@ export function createBattlesService({ db, clock, random, onFinished }: BattlesD
           correct: result.correct,
           durationMs: a.durationMs,
           xp: result.correct ? 10 : 0,
+          // L'objet « indice » affiché pour cette question : réussite avec aide.
+          hinted: state.hintShown,
+          skillVersion: skillVersion(getSkill(q.skillId)),
+          diagnosis: result.correct ? null : (result.why ?? null),
         });
         await repo.updateSession(id, { battle: storeBattle(next) });
         return {

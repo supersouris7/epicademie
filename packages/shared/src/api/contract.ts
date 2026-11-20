@@ -27,6 +27,7 @@ import {
   PasswordResetSchema,
   SignupSchema,
 } from '../account.ts';
+import { LearningReportSchema } from '../learning.ts';
 
 /**
  * Contrat de l'API HTTP v1 — source unique de vérité, partagée par le serveur et le client.
@@ -78,6 +79,7 @@ export const API_TAGS = [
   'systeme',
   'comptes',
   'profils',
+  'suivi',
   'entrainement',
   'combats',
   'inventaire',
@@ -271,6 +273,18 @@ export const api = {
     status: 204,
     params: IdParamsSchema,
     response: null,
+  }),
+
+  // ——— Suivi des apprentissages ———
+  learningReport: endpoint({
+    method: 'GET',
+    path: '/profiles/:id/learning',
+    tag: 'suivi',
+    summary: 'Suivi des apprentissages : états des notions, chapitres, matières, semaines',
+    access: 'family',
+    status: 200,
+    params: IdParamsSchema,
+    response: LearningReportSchema,
   }),
 
   // ——— Entraînement ———

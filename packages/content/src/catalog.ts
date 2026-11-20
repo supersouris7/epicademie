@@ -37,6 +37,8 @@ export const allSkillIds = () => [...skills.keys()];
 /** Notion d'entraînement ou question de boss (pour l'affichage et la correction). */
 export const getAnySkill = (id: string) => skills.get(id)?.skill ?? bossSkills.get(id)?.skill;
 export const isBossSkill = (id: string) => bossSkills.has(id);
+/** Chapitre d'une notion d'entraînement ou d'une question de boss (suivi des apprentissages). */
+export const chapterOfAnySkill = (id: string) => (skills.get(id) ?? bossSkills.get(id))?.chapter;
 /** Classe d'une notion d'entraînement ou d'une question de boss. */
 export const gradeOfSkill = (id: string): Grade | undefined => (skills.get(id) ?? bossSkills.get(id))?.chapter.grade;
 

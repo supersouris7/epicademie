@@ -1,0 +1,124 @@
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { eq } from 'drizzle-orm';
+import { fmt, generate } from '@questeo/content';
+import type { LearningReport, Profile, SessionSummary } from '@questeo/shared';
+import { attempts } from '../../db/schema.ts';
+import { createTestApp, profileInput } from '../../testing/harness.ts';
+
+let t: Awaited<ReturnType<typeof createTestApp>>;
+let profileId: string;
+
+beforeAll(async () => {
+  t = await createTestApp({ today: '2026-11-20' });
+});
+afterAll(() => t.close());
+beforeEach(async () => {
+  await t.reset();
+  profileId = (
+    await t.http.inject({ method: 'POST', url: '/api/v1/profiles', payload: profileInput() })
+  ).json<Profile>().id;
+});
+
+const start = async () =>
+  (
+    await t.http.inject({
+      method: 'POST',
+      url: '/api/v1/sessions',
+      payload: { profileId, mode: 'entrainement', subject: 'maths', chapterId: 'm5-calcul', skillId: 'm5-tables' },
+    })
+  ).json<{ id: string }>().id;
+
+/** Réponse à la question m5-tables niveau 1 de graine `seed` (juste ou « −1 »). */
+const answer = (sessionId: string, seed: number, right: boolean, attempt: 1 | 2 = 1) => {
+  const q = generate('m5-tables', 1, seed);
+  if (q.answer.kind !== 'number') throw new Error('attendu : nombre');
+  return t.http.inject({
+    method: 'POST',
+    url: `/api/v1/sessions/${sessionId}/answers`,
+    payload: {
+      skillId: 'm5-tables',
+      level: 1,
+      seed,
+      variant: false,
+      response: { kind: 'number', text: right ? fmt(q.answer.value) : '-1' },
+      durationMs: 1500,
+      attempt,
+    },
+  });
+};
+const report = async () => (await t.http.inject(`/api/v1/profiles/${profileId}/learning`)).json<LearningReport>();
+
+describe('enregistrement des réponses', () => {
+  it('second essai après l’indice : enregistré « avec aide », sans XP ni effet sur le score', async () => {
+    const id = await start();
+    expect((await answer(id, 1, false)).statusCode).toBe(200);
+    const retry = await answer(id, 1, true, 2);
+    expect(retry.json()).toMatchObject({ correct: true, xp: 0 });
+    const rows = await t.database.db.select().from(attempts).where(eq(attempts.sessionId, id));
+    expect(rows.map((r) => [r.attempt, r.correct, r.hinted, r.xp])).toEqual([
+      [1, false, false, 0],
+      [2, true, true, 0],
+    ]);
+    expect(rows[0]?.skillVersion).toBe(1);
+    // Score de la partie : la 1re réponse seulement (fausse).
+    for (const seed of [2, 3, 4]) await answer(id, seed, true);
+    const sum = (await t.http.inject({ method: 'POST', url: `/api/v1/sessions/${id}/finish` })).json<SessionSummary>();
+    expect(sum.regular).toEqual({ answered: 4, correct: 3 });
+  });
+
+  it('second essai refusé sans 1re réponse fausse, ou deux fois', async () => {
+    const id = await start();
+    expect((await answer(id, 1, true, 2)).statusCode).toBe(409);
+    await answer(id, 2, true);
+    expect((await answer(id, 2, true, 2)).statusCode).toBe(409);
+    await answer(id, 3, false);
+    expect((await answer(id, 3, true, 2)).statusCode).toBe(200);
+    expect((await answer(id, 3, true, 2)).statusCode).toBe(409);
+  });
+
+  it('erreur typique reconnue : enregistrée pour repérer les erreurs récurrentes', async () => {
+    // Une question de tables qui prévoit un piège (ex. addition au lieu de multiplication).
+    const seed = [...Array(50).keys()].find((k) => generate('m5-tables', 1, k).traps.some((tr) => 'value' in tr)) ?? -1;
+    const trap = generate('m5-tables', 1, seed).traps.find((tr) => 'value' in tr);
+    if (!trap || !('value' in trap)) throw new Error('aucun piège de valeur');
+    const id = await start();
+    await t.http.inject({
+      method: 'POST',
+      url: `/api/v1/sessions/${id}/answers`,
+      payload: {
+        skillId: 'm5-tables',
+        level: 1,
+        seed,
+        variant: false,
+        response: { kind: 'number', text: fmt(trap.value) },
+        durationMs: 1000,
+      },
+    });
+    const [row] = await t.database.db.select().from(attempts).where(eq(attempts.sessionId, id));
+    expect(row?.diagnosis).toBe(trap.why);
+  });
+});
+
+describe('rapport de suivi', () => {
+  it('distingue réussite autonome et réussite avec aide, par notion, chapitre et matière', async () => {
+    const id = await start();
+    await answer(id, 1, false);
+    await answer(id, 1, true, 2);
+    for (const seed of [2, 3, 4]) await answer(id, seed, true);
+    const r = await report();
+    expect(r.tally).toEqual({ answered: 4, autonomous: 3, helped: 1, hints: 1, collective: 0 });
+    const skill = r.skills.find((s) => s.skillId === 'm5-tables');
+    expect(skill).toMatchObject({ chapterId: 'm5-calcul', subject: 'maths', status: 'en-progression' });
+    expect(r.chapters.map((c) => c.chapterId)).toEqual(['m5-calcul']);
+    expect(r.subjects.map((s) => s.subject)).toEqual(['maths']);
+    expect(r.weeks.at(-1)?.tally.answered).toBe(4);
+    expect(r.lastActivity).not.toBeNull();
+  });
+
+  it('nouveau joueur : rapport vide ; une autre famille ne le lit pas', async () => {
+    const r = await report();
+    expect(r).toMatchObject({ skills: [], toRework: [], tally: { answered: 0 } });
+    const other = await t.signup('autre@famille.test');
+    expect((await t.as(other.cookie).inject(`/api/v1/profiles/${profileId}/learning`)).statusCode).toBe(404);
+  });
+});

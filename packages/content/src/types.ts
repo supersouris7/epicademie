@@ -201,7 +201,15 @@ export interface Skill {
   readonly advice?: Advice;
   readonly lesson: Lesson;
   readonly generate: (rng: Rng, level: Level) => QuestionDraft;
+  /**
+   * Version de la notion (1 par défaut). À incrémenter quand le générateur change les énoncés ou
+   * les réponses : l'historique des réponses garde la version avec laquelle l'élève a répondu.
+   */
+  readonly version?: number;
 }
+
+/** Version d'une notion (1 si non précisée). */
+export const skillVersion = (skill: Pick<Skill, 'version'> | undefined) => skill?.version ?? 1;
 
 /** Domaines des programmes officiels (maths cycles 3 et 4). */
 export const DOMAINS = {

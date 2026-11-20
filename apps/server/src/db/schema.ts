@@ -186,12 +186,27 @@ export const attempts = pgTable(
     correct: boolean('correct').notNull(),
     durationMs: integer('duration_ms').notNull(),
     xp: integer('xp').notNull(),
+    /** 1 : première réponse ; 2 : second essai après l'indice (réussite « avec aide »). */
+    attempt: smallint('attempt').notNull().default(1),
+    /** Une aide était affichée (indice de l'entraînement, objet « indice » en combat). */
+    hinted: boolean('hinted').notNull().default(false),
+    /**
+     * Réponse donnée à plusieurs (mode TV, raid, parent à côté) : ne compte jamais comme
+     * maîtrise personnelle de l'enfant.
+     */
+    collective: boolean('collective').notNull().default(false),
+    /** Version de la notion au moment de la réponse (historique conservé si l'exercice change). */
+    skillVersion: smallint('skill_version').notNull().default(1),
+    /** Erreur typique reconnue (texte de la correction), pour repérer les erreurs récurrentes. */
+    diagnosis: text('diagnosis'),
     createdAt: createdAt(),
   },
   (t) => [
     index('attempts_session_idx').on(t.sessionId),
     index('attempts_profile_skill_idx').on(t.profileId, t.skillId),
+    index('attempts_profile_created_idx').on(t.profileId, t.createdAt),
     check('attempts_level_range', sql`${t.level} between 1 and 3`),
+    check('attempts_attempt_range', sql`${t.attempt} between 1 and 2`),
   ],
 );
 

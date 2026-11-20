@@ -6,3 +6,4 @@ export * from './duel.ts';
 export * from './battle.ts';
 export * from './loot.ts';
 export * from './arena.ts';
+export * from './learning.ts';
