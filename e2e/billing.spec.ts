@@ -9,6 +9,8 @@ test('Version gratuite puis abonnement (simulateur) : chapitres débloqués, his
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
   await page.getByRole('button', { name: /C’est parti/ }).click();
+  // Le joueur est choisi une fois l'accueil affiché : on l'attend avant de naviguer.
+  await expect(page).toHaveURL(/hub/);
 
   await page.goto('/jouer/entrainement/maths?classe=5e');
   await page

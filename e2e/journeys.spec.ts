@@ -41,6 +41,7 @@ test('Adulte : parcours de remise à niveau en maths', async ({ page }) => {
   await expect(page.getByText('Tu es un adulte ?')).toBeVisible();
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
   await page.getByRole('button', { name: /C’est parti/ }).click();
+  await expect(page).toHaveURL(/hub/);
   await page.goto('/jouer/entrainement/maths');
   const grades = page.getByRole('radiogroup', { name: 'Classe' });
   await expect(grades.getByRole('radio', { name: /Adulte/ })).toHaveAttribute('aria-checked', 'true');
