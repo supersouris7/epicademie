@@ -1,4 +1,4 @@
-/** Classes proposées à la création du compte : du CM1 à la 3e (programmes complets) et Adulte (« À venir »). */
+/** Classes proposées à la création du compte : du CM1 à la 3e (programmes complets) et Adulte (remise à niveau). */
 export const GRADES = ['cm1', 'cm2', '6e', '5e', '4e', '3e', 'adulte'] as const;
 export type Grade = (typeof GRADES)[number];
 
@@ -19,7 +19,7 @@ export const GRADE_INFO: readonly GradeInfo[] = [
   FIFTH,
   { id: '4e', name: '4e', available: true, age: 13 },
   { id: '3e', name: '3e', available: true, age: 14 },
-  { id: 'adulte', name: 'Adulte', available: false },
+  { id: 'adulte', name: 'Adulte', available: true },
 ];
 
 export const gradeInfo = (id: Grade): GradeInfo => GRADE_INFO.find((g) => g.id === id) ?? FIFTH;

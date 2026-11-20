@@ -73,16 +73,17 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.getByRole('button', { name: /^Entraînement/ }).click();
   // Matières sans contenu : grisées « À venir ».
   await expect(page.getByRole('button', { name: 'Maths', exact: true })).toBeVisible();
-  for (const subject of ['Physique-Chimie', 'Anglais', 'Espagnol', 'Histoire', 'Géographie']) {
+  await expect(page.getByRole('button', { name: 'Anglais', exact: true })).toBeVisible();
+  for (const subject of ['Physique-Chimie', 'Espagnol', 'Histoire', 'Géographie']) {
     await expect(page.getByRole('button', { name: `${subject}, à venir` })).toBeVisible();
   }
-  await page.getByRole('button', { name: 'Anglais, à venir' }).click();
-  await expect(page.getByText('Anglais arrive bientôt !')).toBeVisible();
+  await page.getByRole('button', { name: 'Espagnol, à venir' }).click();
+  await expect(page.getByText('Espagnol arrive bientôt !')).toBeVisible();
   await page.getByRole('button', { name: 'Retour' }).click();
   await nav.getByRole('button', { name: 'Multi' }).click();
-  // Multi : message « arrive bientôt » et aperçu des modes, sans tuiles à toucher.
-  // Multi : l'Arène est jouable, les autres modes « À venir ».
+  // Multi : l'Arène et le Raid sont jouables, les autres modes « À venir ».
   await expect(page.getByRole('button', { name: /Arène/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Raid/ })).toBeVisible();
   await expect(page.getByRole('list', { name: 'Modes multijoueur' })).toContainText('À venir');
 
   await nav.getByRole('button', { name: 'Paramètres' }).click();

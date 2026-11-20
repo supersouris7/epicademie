@@ -219,6 +219,7 @@ export const DOMAINS = {
   donnees: 'Données et probabilités',
   fonctions: 'Proportionnalité, fonctions',
   informatique: 'Pensée informatique',
+  langue: 'Langue : grammaire et vocabulaire',
 } as const;
 export type DomainId = keyof typeof DOMAINS;
 

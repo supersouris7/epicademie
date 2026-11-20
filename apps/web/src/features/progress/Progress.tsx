@@ -31,6 +31,7 @@ const DOMAIN_SHORT: Record<DomainId, string> = {
   donnees: 'Données',
   fonctions: 'Fonctions',
   informatique: 'Programmation',
+  langue: 'Langue',
 };
 
 function countMedals(ids: readonly string[], states: ReadonlyMap<string, SkillProgress>) {

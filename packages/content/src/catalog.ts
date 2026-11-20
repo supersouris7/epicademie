@@ -1,9 +1,10 @@
 import type { Grade } from '@questeo/shared';
 import { createRng } from './rng.ts';
 import { MATHS_CHAPTERS } from './maths/index.ts';
+import { ANGLAIS_CHAPTERS } from './anglais/index.ts';
 import type { Chapter, Level, Question, Skill } from './types.ts';
 
-export const CHAPTERS: readonly Chapter[] = [...MATHS_CHAPTERS];
+export const CHAPTERS: readonly Chapter[] = [...MATHS_CHAPTERS, ...ANGLAIS_CHAPTERS];
 
 const skills = new Map<string, { skill: Skill; chapter: Chapter }>();
 for (const chapter of CHAPTERS) {
@@ -24,13 +25,45 @@ for (const chapter of CHAPTERS) {
 export const getSkill = (id: string) => skills.get(id)?.skill;
 export const getChapterOfSkill = (id: string) => skills.get(id)?.chapter;
 export const getChapter = (id: string) => CHAPTERS.find((c) => c.id === id);
-/** Chapitres d'une matière, d'une classe donnée ou de toutes. */
-export const chaptersOf = (subject: string, grade?: Grade) =>
-  CHAPTERS.filter((c) => c.subject === subject && (grade === undefined || c.grade === grade));
-/** Classes qui ont du contenu dans une matière, dans l'ordre de la scolarité. */
+/**
+ * Parcours « Adulte » (remise à niveau, décision du 20/11/2026 : « pour les adultes pour qui
+ * l'école c'est loin ») : une sélection ordonnée de chapitres déjà vérifiés, des bases utiles au
+ * quotidien vers le collège. Aucun contenu nouveau : chaque chapitre garde sa classe d'origine.
+ */
+export const ADULT_PATHS: Readonly<Partial<Record<string, readonly string[]>>> = {
+  maths: [
+    'm6-numeration',
+    'm5-calcul',
+    'm5-operations',
+    'm6-fractions',
+    'm6-pourcentages',
+    'm4-proportionnalite',
+    'mcm2-mesures',
+    'm6-durees',
+    'm6-aires',
+    'm6-volumes',
+    'm5-relatifs',
+    'm4-litteral',
+    'm4-triangles',
+    'm4-statistiques',
+    'm5-probabilites',
+    'm3-proportionnalite',
+  ],
+};
+
+/** Chapitres d'une matière, d'une classe donnée (Adulte : son parcours) ou de toutes. */
+export const chaptersOf = (subject: string, grade?: Grade): Chapter[] => {
+  if (grade === 'adulte') {
+    return (ADULT_PATHS[subject] ?? []).flatMap(
+      (id) => CHAPTERS.find((c) => c.id === id && c.subject === subject) ?? [],
+    );
+  }
+  return CHAPTERS.filter((c) => c.subject === subject && (grade === undefined || c.grade === grade));
+};
+/** Classes qui ont du contenu dans une matière, dans l'ordre de la scolarité (Adulte en dernier). */
 export const gradesOf = (subject: string): Grade[] => {
   const order: readonly Grade[] = ['cm1', 'cm2', '6e', '5e', '4e', '3e', 'adulte'];
-  return order.filter((g) => CHAPTERS.some((c) => c.subject === subject && c.grade === g));
+  return order.filter((g) => chaptersOf(subject, g).length > 0);
 };
 export const allSkillIds = () => [...skills.keys()];
 
