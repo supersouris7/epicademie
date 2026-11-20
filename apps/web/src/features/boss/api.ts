@@ -18,7 +18,9 @@ export const sendBattleItem = (id: string, item: ItemId) =>
 
 export const finishBattle = (id: string) => request(api.finishBattle, { params: { id } });
 
-export const buyItem = (profileId: string, item: ItemId | 'rubis') => request(api.buy, { body: { profileId, item } });
+/** Achat : une clé par appui, pour qu'une requête rejouée ne débite jamais deux fois. */
+export const buyItem = (profileId: string, item: ItemId | 'rubis') =>
+  request(api.buy, { body: { profileId, item }, idempotencyKey: crypto.randomUUID() });
 
 /** Équipe jusqu'à 3 objets de la réserve pour les prochains combats. */
 export const equipItems = (profileId: string, items: readonly ItemId[]) =>

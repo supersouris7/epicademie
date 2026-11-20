@@ -324,8 +324,27 @@ export const contentEvents = pgTable(
   (t) => [index('content_events_skill_idx').on(t.skillId, t.at)],
 );
 
+/**
+ * Requêtes idempotentes (achats) : la même clé, rejouée par un double clic ou un réseau qui
+ * renvoie la requête, rend la réponse déjà donnée au lieu de recommencer l'opération.
+ */
+export const idempotentRequests = pgTable(
+  'idempotent_requests',
+  {
+    familyId: uuid('family_id')
+      .notNull()
+      .references(() => families.id, { onDelete: 'cascade' }),
+    key: text('key').notNull(),
+    route: text('route').notNull(),
+    response: jsonb('response').notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [primaryKey({ columns: [t.familyId, t.key] }), index('idempotent_requests_created_idx').on(t.createdAt)],
+);
+
 /** Toutes les tables, de la plus dépendante à la moins dépendante (remise à zéro des tests). */
 export const ALL_TABLES = [
+  'idempotent_requests',
   'question_reports',
   'content_events',
   'content_states',

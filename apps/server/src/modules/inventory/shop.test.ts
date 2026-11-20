@@ -61,4 +61,59 @@ describe('boutique', () => {
   it('profil inconnu : 404', async () => {
     expect((await buy('soin', '00000000-0000-4000-8000-000000000000')).statusCode).toBe(404);
   });
+
+  describe('requête rejouée (double appui, réseau qui renvoie)', () => {
+    const buyWithKey = (key: string, item = 'bouclier') =>
+      t.http.inject({
+        method: 'POST',
+        url: '/api/v1/shop',
+        headers: { 'idempotency-key': key },
+        payload: { profileId: profile.id, item },
+      });
+    const coins = async () => (await t.http.inject(`/api/v1/profiles/${profile.id}`)).json<Profile>().coins;
+
+    it('même clé : un seul achat, même réponse', async () => {
+      await setCoins(200);
+      const first = await buyWithKey('achat-0001');
+      const again = await buyWithKey('achat-0001');
+      expect(again.json()).toEqual(first.json());
+      expect(await coins()).toBe(160);
+      // Autre clé : nouvel achat.
+      await buyWithKey('achat-0002');
+      expect(await coins()).toBe(120);
+    });
+
+    it('même clé envoyée trois fois en même temps : débité une seule fois', async () => {
+      await setCoins(200);
+      const results = await Promise.all([buyWithKey('simultane'), buyWithKey('simultane'), buyWithKey('simultane')]);
+      expect(results.map((r) => r.statusCode)).toEqual([200, 200, 200]);
+      expect(await coins()).toBe(160);
+    });
+
+    it('clé invalide ou réutilisée pour un autre objet : refusée', async () => {
+      await setCoins(200);
+      expect((await buyWithKey('x')).statusCode).toBe(400);
+      await buyWithKey('cle-unique-1', 'bouclier');
+      // Même opération (« acheter ») : la réponse d'origine revient, sans second débit.
+      expect((await buyWithKey('cle-unique-1', 'soin')).json<Purchase>().inventory.soin).toBe(0);
+      expect(await coins()).toBe(160);
+    });
+
+    it('les clés d’une famille ne servent pas à une autre', async () => {
+      await setCoins(200);
+      await buyWithKey('partagee-01');
+      const other = await t.signup('autre@famille.test');
+      const theirs = (
+        await t.as(other.cookie).inject({ method: 'POST', url: '/api/v1/profiles', payload: profileInput('Zoé') })
+      ).json<Profile>();
+      await t.database.db.update(profiles).set({ coins: 100 }).where(eq(profiles.id, theirs.id));
+      const res = await t.as(other.cookie).inject({
+        method: 'POST',
+        url: '/api/v1/shop',
+        headers: { 'idempotency-key': 'partagee-01' },
+        payload: { profileId: theirs.id, item: 'bouclier' },
+      });
+      expect(res.json<Purchase>().coins).toBe(60);
+    });
+  });
 });

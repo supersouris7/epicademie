@@ -78,6 +78,12 @@ export function createTrainingService({ db, clock, random, onFinished }: Trainin
         const result = check(question, a.response);
         if (result.invalid) return { correct: false, invalid: true, xp: 0 };
         const previous = await repo.attemptsOf(sessionId);
+        // Réponse rejouée (double appui, réseau qui renvoie) : même résultat, rien de compté deux fois.
+        const attempt = a.attempt;
+        const already = previous.find(
+          (p) => p.skillId === a.skillId && p.level === a.level && p.seed === a.seed && p.attempt === attempt,
+        );
+        if (already) return { correct: already.correct, invalid: false, xp: already.xp };
         const recorded = {
           ...a,
           sessionId,
@@ -90,7 +96,7 @@ export function createTrainingService({ db, clock, random, onFinished }: Trainin
           // Second essai après l'indice : seulement après une 1re réponse fausse à CETTE question,
           // une seule fois ; enregistré « avec aide », sans XP.
           const same = previous.filter((p) => p.skillId === a.skillId && p.level === a.level && p.seed === a.seed);
-          if (!same.some((p) => p.attempt === 1 && !p.correct) || same.some((p) => p.attempt === 2)) {
+          if (!same.some((p) => p.attempt === 1 && !p.correct)) {
             throw conflict('Pas de second essai pour cette question');
           }
           await repo.insertAttempt({ ...recorded, xp: 0, attempt: 2, hinted: true });

@@ -66,14 +66,16 @@ describe('enregistrement des réponses', () => {
     expect(sum.regular).toEqual({ answered: 4, correct: 3 });
   });
 
-  it('second essai refusé sans 1re réponse fausse, ou deux fois', async () => {
+  it('second essai refusé sans 1re réponse fausse ; rejoué, il n’est compté qu’une fois', async () => {
     const id = await start();
     expect((await answer(id, 1, true, 2)).statusCode).toBe(409);
     await answer(id, 2, true);
     expect((await answer(id, 2, true, 2)).statusCode).toBe(409);
     await answer(id, 3, false);
-    expect((await answer(id, 3, true, 2)).statusCode).toBe(200);
-    expect((await answer(id, 3, true, 2)).statusCode).toBe(409);
+    expect((await answer(id, 3, true, 2)).json()).toMatchObject({ correct: true });
+    expect((await answer(id, 3, true, 2)).json()).toMatchObject({ correct: true, xp: 0 });
+    const rows = await t.database.db.select().from(attempts).where(eq(attempts.sessionId, id));
+    expect(rows.filter((r) => r.attempt === 2)).toHaveLength(1);
   });
 
   it('erreur typique reconnue : enregistrée pour repérer les erreurs récurrentes', async () => {

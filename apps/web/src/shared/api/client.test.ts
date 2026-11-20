@@ -28,6 +28,17 @@ describe('client HTTP typé par le contrat', () => {
     expect(init.headers).toEqual({ 'Content-Type': 'application/json' });
   });
 
+  it('clé d’idempotence envoyée dans l’en-tête Idempotency-Key', async () => {
+    const fetch = reply(200, { coins: 0, rubies: 0, inventory: { bouclier: 1, soin: 0, indice: 0 } });
+    vi.stubGlobal('fetch', fetch);
+    await request(api.buy, {
+      body: { profileId: '11111111-1111-4111-8111-111111111111', item: 'bouclier' },
+      idempotencyKey: 'achat-1234',
+    });
+    const [, init] = fetch.mock.calls[0] as [string, RequestInit];
+    expect(init.headers).toMatchObject({ 'Idempotency-Key': 'achat-1234' });
+  });
+
   it('réponse 204 : aucune donnée', async () => {
     vi.stubGlobal('fetch', reply(204));
     await expect(request(api.deleteProfile, { params: { id: 'x' } })).resolves.toBeUndefined();
