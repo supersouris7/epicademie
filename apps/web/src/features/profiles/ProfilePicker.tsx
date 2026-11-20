@@ -93,6 +93,9 @@ export function ProfilePicker() {
           </GameButton>
         </li>
       </ul>
+      <GameButton variant="surface" icon="icons-navigation-team" onClick={() => void navigate('/parent')}>
+        Espace parent
+      </GameButton>
       {me?.account.role === 'admin' && (
         <GameButton variant="surface" icon="icons-navigation-settings" onClick={() => void navigate('/admin')}>
           Administration

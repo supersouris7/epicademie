@@ -16,6 +16,7 @@ import {
   type BattleView,
   type BossOverview,
   type Inventory,
+  type LearningReport,
   type ItemId,
   type Profile,
   type SkillProgress,
@@ -87,7 +88,22 @@ export interface FakeApiOptions {
   readonly disabled?: readonly string[];
   /** Le compte connecté est administrateur. */
   readonly admin?: boolean;
+  /** Rapport de suivi renvoyé pour chaque profil (par défaut : vide). */
+  readonly learning?: LearningReport;
 }
+
+/** Rapport de suivi vide (nouveau joueur). */
+export const emptyLearning = (): LearningReport => ({
+  day: '2026-11-20',
+  tally: { answered: 0, autonomous: 0, helped: 0, hints: 0, collective: 0 },
+  lastActivity: null,
+  subjects: [],
+  chapters: [],
+  skills: [],
+  toRework: [],
+  dueReviews: [],
+  weeks: [],
+});
 
 /** Mot de passe du compte du faux serveur. */
 export const FAKE_PASSWORD = 'mot de passe parent';
@@ -410,6 +426,7 @@ export function createFakeApi(options: FakeApiOptions = {}) {
       return { id };
     },
     disabledContent: () => ({ skills: [...disabledSet] }),
+    learningReport: () => options.learning ?? emptyLearning(),
     ...adminHandlers(reports, disabledSet),
   };
 
