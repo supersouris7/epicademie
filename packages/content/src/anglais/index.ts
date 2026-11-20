@@ -7,7 +7,7 @@ import { IRREGULAR_VERBS, regularised, verbsFor } from './verbs.ts';
  * (cycle 4). Formes vérifiées : voir verbs.ts.
  */
 const SOURCE =
-  'Anglais, cycle 4 (5e) : prétérit et participe passé des verbes irréguliers. Formes vérifiées sur Wiktionary, Appendix:English irregular verbs (révision 91798533).';
+  'Anglais, cycle 4 (5e) : prétérit et participe passé des verbes irréguliers. Formes : British Council, LearnEnglish, « Irregular verbs ».';
 
 const lesson = (memo: string[]) => ({ memo, source: SOURCE });
 const draw = (rng: { pick<T>(l: readonly T[]): T }, level: Level) => rng.pick(verbsFor(level));
@@ -74,10 +74,10 @@ const SENTENCES: readonly { readonly base: string; readonly before: string; read
   { base: 'eat', before: 'Last night, Tom', after: 'a big pizza.' },
   { base: 'come', before: 'Two days ago, my cousins', after: 'to my house.' },
   { base: 'make', before: 'Yesterday, Lisa', after: 'a chocolate cake.' },
-  { base: 'drink', before: 'This morning, I', after: 'a glass of orange juice.' },
-  { base: 'buy', before: 'Last Saturday, my dad', after: 'a new bike.' },
+  { base: 'get', before: 'For my birthday, I', after: 'a new bike.' },
+  { base: 'buy', before: 'Last Saturday, my dad', after: 'a new car.' },
   { base: 'write', before: 'Yesterday, she', after: 'a letter to her grandmother.' },
-  { base: 'swim', before: 'Last summer, we', after: 'in the sea.' },
+  { base: 'win', before: 'Last Sunday, our team', after: 'the match.' },
   { base: 'meet', before: 'Last year, I', after: 'a famous singer.' },
 ];
 

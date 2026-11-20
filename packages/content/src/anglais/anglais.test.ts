@@ -3,9 +3,9 @@ import { check, generate } from '../index.ts';
 import { IRREGULAR_VERBS, regularised } from './verbs.ts';
 
 describe('anglais : verbes irréguliers', () => {
-  it('24 verbes vérifiés, sans doublon', () => {
-    expect(IRREGULAR_VERBS).toHaveLength(24);
-    expect(new Set(IRREGULAR_VERBS.map((v) => v.base)).size).toBe(24);
+  it('52 verbes du tableau du British Council, sans doublon', () => {
+    expect(IRREGULAR_VERBS).toHaveLength(52);
+    expect(new Set(IRREGULAR_VERBS.map((v) => v.base)).size).toBe(52);
   });
 
   it('prétérit : réponse acceptée sans tenir compte des majuscules ; « goed » expliqué', () => {
