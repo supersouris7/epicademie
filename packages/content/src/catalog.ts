@@ -3,9 +3,10 @@ import { createRng } from './rng.ts';
 import { autoDemo } from './explain.ts';
 import { MATHS_CHAPTERS } from './maths/index.ts';
 import { ANGLAIS_CHAPTERS } from './anglais/index.ts';
+import { ESPAGNOL_CHAPTERS } from './espagnol/index.ts';
 import type { Chapter, Level, Question, Skill } from './types.ts';
 
-export const CHAPTERS: readonly Chapter[] = [...MATHS_CHAPTERS, ...ANGLAIS_CHAPTERS];
+export const CHAPTERS: readonly Chapter[] = [...MATHS_CHAPTERS, ...ANGLAIS_CHAPTERS, ...ESPAGNOL_CHAPTERS];
 
 const skills = new Map<string, { skill: Skill; chapter: Chapter }>();
 for (const chapter of CHAPTERS) {

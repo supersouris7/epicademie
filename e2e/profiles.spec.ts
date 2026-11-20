@@ -69,12 +69,14 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.getByRole('button', { name: /^Entraînement/ }).click();
   // Matières sans contenu : grisées « À venir ».
   await expect(page.getByRole('button', { name: 'Maths', exact: true })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Anglais', exact: true })).toBeVisible();
-  for (const subject of ['Physique-Chimie', 'Espagnol', 'Histoire', 'Géographie']) {
+  for (const subject of ['Anglais', 'Espagnol']) {
+    await expect(page.getByRole('button', { name: subject, exact: true })).toBeVisible();
+  }
+  for (const subject of ['Physique-Chimie', 'Histoire', 'Géographie']) {
     await expect(page.getByRole('button', { name: `${subject}, à venir` })).toBeVisible();
   }
-  await page.getByRole('button', { name: 'Espagnol, à venir' }).click();
-  await expect(page.getByText('Espagnol arrive bientôt !')).toBeVisible();
+  await page.getByRole('button', { name: 'Histoire, à venir' }).click();
+  await expect(page.getByText('Histoire arrive bientôt !')).toBeVisible();
   await page.getByRole('button', { name: 'Retour' }).click();
   await nav.getByRole('button', { name: 'Multi' }).click();
   // Multi : l'Arène et le Raid sont jouables, les autres modes « À venir ».
