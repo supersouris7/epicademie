@@ -28,8 +28,9 @@ async function profile(name: string): Promise<Profile> {
   const res = await t.http.inject({ method: 'POST', url: '/api/v1/profiles', payload: profileInput(name) });
   return res.json<Profile>();
 }
-function join(profileId: string) {
-  const s = connect(url, { auth: { profileId }, transports: ['websocket'], forceNew: true });
+/** Connexion temps réel d'un appareil de la famille de test (cookie de session). */
+function join(profileId: string, cookie = t.family().cookie) {
+  const s = connect(url, { auth: { profileId }, transports: ['websocket'], forceNew: true, extraHeaders: { cookie } });
   sockets.push(s);
   return s;
 }
@@ -37,8 +38,8 @@ function join(profileId: string) {
 beforeAll(async () => {
   t = await createTestApp();
   realtime = startRealtime(t.app, null);
-  await t.http.listen({ port: 0, host: '127.0.0.1' });
-  url = `http://127.0.0.1:${(t.http.server.address() as AddressInfo).port}`;
+  await t.raw.listen({ port: 0, host: '127.0.0.1' });
+  url = `http://127.0.0.1:${(t.raw.server.address() as AddressInfo).port}`;
 });
 afterAll(async () => {
   await realtime.close();
@@ -65,6 +66,34 @@ describe('temps réel', () => {
     const again = join(lea.id);
     expect(await refusal(again)).toMatch(/déjà connecté/);
     expect(await refusal(join('00000000-0000-4000-8000-000000000000'))).toBe('Profil introuvable');
+  });
+
+  it('arène : connexion perdue puis reprise sur un autre appareil de la famille', async () => {
+    const lea = await profile('Léa');
+    const tom = await profile('Tom');
+    const a = join(lea.id);
+    const b = join(tom.id);
+    await once<OnlinePlayer[]>(a, 'presence', (l) => l.length === 2);
+    const invited = once<ArenaInvite>(b, 'arena:invite');
+    a.emit('arena:create', { chapterId: 'm5-calcul', invite: [tom.id] });
+    const inv = await invited;
+    const ready = once<ArenaView>(a, 'arena', (v) => v.players.every((p) => p.ready));
+    b.emit('arena:respond', { arenaId: inv.arenaId, accept: true });
+    await ready;
+    const playing = once<ArenaView>(a, 'arena', (v) => v.phase === 'playing');
+    a.emit('arena:start');
+    await playing;
+
+    // Tom perd la connexion : Léa le voit « déconnecté », la partie continue.
+    const away = once<ArenaView>(a, 'arena', (v) => v.players.some((p) => p.id === tom.id && p.away === true));
+    b.disconnect();
+    expect((await away).phase).toBe('playing');
+    // Il revient sur une autre tablette : il retrouve la partie en cours.
+    const again = join(tom.id);
+    const resumed = await once<ArenaView>(again, 'arena');
+    expect(resumed).toMatchObject({ id: inv.arenaId, phase: 'playing' });
+    const back = await once<ArenaView>(a, 'arena', (v) => v.players.every((p) => !p.away));
+    expect(back.phase).toBe('playing');
   });
 
   it('messages prédéfinis et emoji seulement', async () => {
@@ -154,5 +183,80 @@ describe('temps réel', () => {
     const err = await new Promise<Error>((resolve) => s.on('connect_error', resolve));
     expect(err).toBeInstanceOf(Error);
     expect(s.connected).toBe(false);
+  });
+
+  describe('isolation des familles', () => {
+    it('sans session, ou avec la session d’une autre famille : connexion refusée', async () => {
+      const lea = await profile('Léa');
+      expect(await refusal(join(lea.id, ''))).toBe('Profil introuvable');
+      const other = await t.signup('voisins@famille.test');
+      expect(await refusal(join(lea.id, other.cookie))).toBe('Profil introuvable');
+    });
+
+    it('chaque famille ne voit que ses joueurs ; ni message ni invitation vers une autre famille', async () => {
+      const lea = await profile('Léa');
+      const other = await t.signup('voisins@famille.test');
+      const res = await t
+        .as(other.cookie)
+        .inject({ method: 'POST', url: '/api/v1/profiles', payload: profileInput('Zoé') });
+      const zoe = res.json<Profile>();
+      const a = join(lea.id);
+      const z = join(zoe.id, other.cookie);
+      const [seenByZoe, seenByLea] = await Promise.all([
+        once<OnlinePlayer[]>(z, 'presence', (l) => l.some((p) => p.id === zoe.id)),
+        once<OnlinePlayer[]>(a, 'presence', (l) => l.some((p) => p.id === lea.id)),
+      ]);
+      await new Promise((r) => setTimeout(r, 100));
+      expect(seenByZoe.map((p) => p.name)).toEqual(['Zoé']);
+      expect(seenByLea.map((p) => p.name)).toEqual(['Léa']);
+      expect((await t.http.inject('/api/v1/presence')).json()).toEqual({ online: [lea.id] });
+
+      const received: unknown[] = [];
+      z.on('chat', (m: unknown) => received.push(m));
+      z.on('arena:invite', (m: unknown) => received.push(m));
+      a.emit('chat', { to: zoe.id, payload: { kind: 'preset', index: 1 } });
+      a.emit('arena:create', { chapterId: 'm5-relatifs', invite: [zoe.id] });
+      await new Promise((r) => setTimeout(r, 300));
+      expect(received).toEqual([]);
+    });
+  });
+
+  it('écran TV : voit le raid de sa famille, jamais celui d’une autre famille', async () => {
+    const lea = await profile('Léa');
+    const tom = await profile('Tom');
+    const tvSocket = (cookie: string) => {
+      const s = connect(url, {
+        auth: { tv: true },
+        transports: ['websocket'],
+        forceNew: true,
+        extraHeaders: { cookie },
+      });
+      sockets.push(s);
+      return s;
+    };
+    const other = await t.signup('voisins-tv@famille.test');
+    const tv = tvSocket(t.family().cookie);
+    const strangerTv = tvSocket(other.cookie);
+    await Promise.all([once(tv, 'connect'), once(strangerTv, 'connect')]);
+    const seenByStranger: ArenaView[] = [];
+    strangerTv.on('arena', (v: ArenaView) => seenByStranger.push(v));
+    const a = join(lea.id);
+    const b = join(tom.id);
+    await once<OnlinePlayer[]>(a, 'presence', (l) => l.length === 2);
+    a.emit('arena:create', { kind: 'raid', chapterId: 'm5-calcul', invite: [tom.id] });
+    const invite = await once<ArenaInvite>(b, 'arena:invite');
+    b.emit('arena:respond', { arenaId: invite.arenaId, accept: true });
+    await once<ArenaView>(a, 'arena', (v) => v.players.every((p) => p.ready));
+    a.emit('arena:start');
+    const onTv = await once<ArenaView>(tv, 'arena', (v) => v.phase === 'playing');
+    expect(onTv).toMatchObject({ kind: 'raid', raid: { bossHp: 6, teamHearts: 4 } });
+    expect(onTv.question).not.toBeNull();
+    // Un écran TV ne peut pas jouer, et une autre famille ne voit rien.
+    tv.emit('arena:answer', { response: { kind: 'number', text: '1' } });
+    await new Promise((r) => setTimeout(r, 100));
+    expect(seenByStranger).toEqual([]);
+    expect(await refusal(connect(url, { auth: { tv: true }, transports: ['websocket'], forceNew: true }))).toBe(
+      'Profil introuvable',
+    );
   });
 });

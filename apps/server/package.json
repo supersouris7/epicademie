@@ -9,7 +9,8 @@
     "typecheck": "tsc -p .",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/cli/migrate.ts",
-    "db:check": "drizzle-kit check"
+    "db:check": "drizzle-kit check",
+    "admin": "tsx src/cli/admin.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "0.5.15",

@@ -1,4 +1,4 @@
-import { act, screen, within } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { generate } from '@questeo/content';
 import type { ArenaView, OnlinePlayer } from '@questeo/shared';
@@ -31,6 +31,8 @@ const emitted = (event: string) => socket().emitted.filter(([e]) => e === event)
 
 const arena = (over: Partial<ArenaView> = {}): ArenaView => ({
   id: 'a1',
+  kind: 'duel',
+  raid: null,
   hostId: me.id,
   chapterId: 'm5-relatifs',
   phase: 'lobby',
@@ -103,6 +105,18 @@ describe('arène', () => {
   it('défaite : le nom du gagnant', async () => {
     renderApp('/arene');
     await screen.findByText(/Le chapitre/);
+    serverSays(
+      'arena',
+      arena({
+        phase: 'playing',
+        turnId: me.id,
+        players: [
+          { id: me.id, name: me.name, hero: me.hero, hearts: 3, ready: true },
+          { id: tom.id, name: tom.name, hero: tom.hero, hearts: 3, ready: true, away: true },
+        ],
+      }),
+    );
+    expect(await screen.findByText('Déconnecté…')).toBeInTheDocument();
     serverSays('arena', arena({ phase: 'over', winnerId: tom.id }));
     expect(await screen.findByRole('heading', { name: 'Tom a gagné !' })).toBeInTheDocument();
   });
@@ -129,7 +143,10 @@ describe('arène', () => {
   });
 
   it('joueurs connectés : liste et message rapide', async () => {
+    const before = sockets.length;
     const { user } = renderApp('/connectes');
+    // La connexion temps réel s'ouvre une fois la session vérifiée.
+    await waitFor(() => expect(sockets.length).toBeGreaterThan(before));
     serverSays('presence', [tom]);
     const send = await screen.findByRole('button', { name: 'Message à Tom' });
     await user.click(send);
@@ -138,5 +155,26 @@ describe('arène', () => {
       .filter((b) => b !== send && b.closest('[role="dialog"], [role="menu"], section'));
     if (emotes[0]) await user.click(emotes[0]);
     expect(screen.getAllByText('Tom').length).toBeGreaterThan(0);
+  });
+
+  it('raid : invitations d’équipiers, puis boss et cœurs partagés', async () => {
+    const { user } = renderApp('/arene?mode=raid');
+    expect(await screen.findByRole('heading', { name: 'Raid' })).toBeInTheDocument();
+    serverSays('presence', [
+      { id: me.id, name: me.name, hero: me.hero, avatar: me.avatar, busy: false },
+      { id: tom.id, name: tom.name, hero: tom.hero, avatar: tom.avatar, busy: false },
+    ]);
+    await user.click(await screen.findByRole('checkbox', { name: /Tom/ }));
+    await user.click(screen.getByRole('button', { name: 'Envoyer les invitations' }));
+    expect(emitted('arena:create').at(-1)?.[1]).toMatchObject({ kind: 'raid', invite: [tom.id] });
+    serverSays(
+      'arena',
+      arena({
+        kind: 'raid',
+        phase: 'over',
+        raid: { bossHp: 0, bossMaxHp: 6, teamHearts: 2, teamMaxHearts: 4, won: true },
+      }),
+    );
+    expect(await screen.findByRole('heading', { name: 'Boss vaincu ! Bravo l’équipe !' })).toBeInTheDocument();
   });
 });

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import type { Grade } from '@questeo/shared';
 import { calcRows, pressCalc, sendable, type CalcState } from '../calcState.ts';
+import { keyIsForGame } from '../../lib/keys.ts';
 
 const KEYBOARD: Record<string, string> = {
   '*': '×',
@@ -59,7 +60,7 @@ export function Calculator({ state, onChange, grade, onUse }: CalculatorProps) {
     document.body.dataset.keyboard = 'calc';
     const onKey = (e: KeyboardEvent) => {
       const k = /^[\d+()]$/.test(e.key) ? e.key : KEYBOARD[e.key];
-      if (!k || e.target instanceof HTMLInputElement) return;
+      if (!k || !keyIsForGame(e)) return;
       e.preventDefault();
       onChange(pressCalc(state, k));
     };

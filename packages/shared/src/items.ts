@@ -1,8 +1,9 @@
 import { z } from 'zod';
+import { HEROES } from './profile.ts';
 
 /**
  * Objets et économie du jeu : objets de combat à usage unique, coffres, prix.
- * Module sans dépendance interne (importé par `play.ts` et `battle.ts`).
+ * Dépend seulement de la liste des héros (`profile.ts`) ; importé par `play.ts` et `battle.ts`.
  */
 
 /** Objets à usage unique, gagnés à l'entraînement et utilisés pendant un combat de boss. */
@@ -37,6 +38,11 @@ export const ChestSchema = z.object({
   items: PartialInventorySchema,
   coins: count,
   rubies: count,
+  /**
+   * Acad-Héros trouvé (null : aucun). `duplicate` : déjà dans la collection, converti en pièces
+   * (comprises dans `coins`).
+   */
+  hero: z.object({ id: z.enum(HEROES), duplicate: z.boolean() }).nullable(),
 });
 export type Chest = z.infer<typeof ChestSchema>;
 

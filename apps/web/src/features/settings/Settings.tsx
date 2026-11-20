@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import type { Profile } from '@questeo/shared';
 import { useDeleteProfile, useUpdateProfile } from '../profiles/index.ts';
+import { logout, useParentGate, useSetMe } from '../account/index.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { useSession } from '../../shared/lib/session.ts';
@@ -21,7 +22,7 @@ function Toggle({ label, checked, onChange }: { label: string; checked: boolean;
   );
 }
 
-/** Paramètres du joueur : son, plein écran, profil (modifier, changer de joueur). */
+/** Paramètres du joueur : son, plein écran, profil (modifier, changer de joueur, déconnecter l'appareil). */
 export function Settings({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
   const update = useUpdateProfile(profile.id);
@@ -30,10 +31,20 @@ export function Settings({ profile }: { readonly profile: Profile }) {
   const [confirming, setConfirming] = useState(false);
   const [fullscreen, setFullscreen] = useFullscreenPreference();
 
-  const deleteProfile = async () => {
-    await remove.mutateAsync(profile.id);
+  const withParent = useParentGate();
+  const setMe = useSetMe();
+  const deleteProfile = () =>
+    withParent(async () => {
+      await remove.mutateAsync(profile.id);
+      selectProfile(null);
+      void navigate('/');
+    });
+  /** Déconnecte l'appareil du compte familial (les progrès restent sur le serveur). */
+  const signOut = async () => {
+    await logout();
     selectProfile(null);
-    void navigate('/');
+    setMe(null);
+    void navigate('/connexion');
   };
 
   return (
@@ -67,6 +78,14 @@ export function Settings({ profile }: { readonly profile: Profile }) {
           onClick={() => void navigate('/')}
         >
           Changer de joueur
+        </GameButton>
+        <GameButton
+          variant="surface"
+          icon="icons-navigation-back"
+          className="justify-start"
+          onClick={() => void signOut()}
+        >
+          Déconnecter cet appareil
         </GameButton>
         {confirming ? (
           <div className="cartoon bg-surface flex flex-col gap-3 p-4">

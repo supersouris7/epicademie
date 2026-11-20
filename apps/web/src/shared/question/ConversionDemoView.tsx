@@ -9,7 +9,7 @@ import { ConversionGrid } from './tools/ConversionTable.tsx';
  * Animation de l'explication : le nombre est posé sous son unité de départ, puis la virgule
  * glisse jusqu'à l'unité demandée et les cases vides se remplissent de zéros.
  */
-export function ConversionDemoView({ demo }: { readonly demo: Demo }) {
+export function ConversionDemoView({ demo }: { readonly demo: Extract<Demo, { kind: 'conversion' }> }) {
   const value = fmt(demo.value);
   const d = conversionDemo(demo.table, value, demo.from, demo.to);
   const [moved, setMoved] = useState(false);

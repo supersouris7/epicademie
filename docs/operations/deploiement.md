@@ -37,3 +37,11 @@ si la base est à jour, avant le redémarrage du serveur).
 - Compose : `docker compose exec db pg_dump -U questeo -Fc questeo > questeo-$(date +%F).dump` ;
   restauration : `pg_restore -U questeo -d questeo --clean questeo-AAAA-MM-JJ.dump`.
 - Tester la restauration régulièrement (une sauvegarde non restaurée n'est pas une sauvegarde).
+
+## Comptes
+
+- **Premier administrateur** : créer le compte depuis l'application, puis
+  `docker compose run --rm questeo node server/dist/admin.js role <email> admin`.
+- **Profils de la bêta** (créés avant les comptes) : conservés en base, sans famille, invisibles.
+- **E-mails** : aucun fournisseur branché ; les demandes de mot de passe oublié sont journalisées
+  sans contenu. Choisir un fournisseur avant l'ouverture au public.

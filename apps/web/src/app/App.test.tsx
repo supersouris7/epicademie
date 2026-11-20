@@ -60,11 +60,13 @@ describe('profils', () => {
     expect(screen.getByText(/joindre le serveur/)).toBeInTheDocument();
   });
 
-  it('mon héros : un héros jouable se choisit', async () => {
-    const { user, server } = renderApp('/heros');
+  it('mon héros : collection (héros de départ), les autres sont à trouver dans les coffres', async () => {
+    renderApp('/heros');
     expect(await screen.findByRole('heading', { name: 'Mon héros' })).toBeInTheDocument();
-    await user.click(screen.getByRole('radio', { name: /Pixel/ }));
-    await waitFor(() => expect(server.calls.some((c) => c.method === 'PATCH')).toBe(true));
+    expect(await screen.findByRole('radio', { name: /Lina/ })).toBeChecked();
+    expect(screen.getByRole('img', { name: 'Pixel, à trouver dans un coffre' })).toBeInTheDocument();
+    expect(screen.queryByRole('radio', { name: /Pixel/ })).not.toBeInTheDocument();
+    expect(screen.getByText(/1 sur 3 trouvés/)).toBeInTheDocument();
   });
 });
 
@@ -72,7 +74,7 @@ describe('accueil et choix du jeu', () => {
   it('hub : joueur, modes, navigation, connexion temps réel', async () => {
     const { user } = renderApp('/hub');
     expect(await screen.findByRole('group', { name: 'Mon joueur' })).toHaveTextContent('Léa');
-    expect(sockets.at(-1)?.auth.profileId).toBe(makeProfile().id);
+    expect(sockets.at(-1)?.auth).toEqual({ profileId: makeProfile().id });
     await user.click(screen.getByRole('button', { name: /Entraînement/ }));
     expect(await screen.findByText(/C’est ici que tu gagnes ton/)).toBeInTheDocument();
   });
@@ -129,6 +131,7 @@ describe('suivi et réglages', () => {
           skillId: 'm5-tables',
           stage: 3,
           due: null,
+          lastPracticed: '2026-11-19',
           attempts: 10,
           correct: 9,
           recent: [true, true],
@@ -137,6 +140,9 @@ describe('suivi et réglages', () => {
         },
       ],
     });
+    // Badges : grade atteint et prochain objectif.
+    expect(await screen.findByRole('listitem', { name: 'Badge Chasseur de boss : Bronze' })).toHaveTextContent('2 / 5');
+    expect(screen.getByRole('listitem', { name: 'Badge Persévérant : pas encore gagné' })).toBeInTheDocument();
     const domain = await screen.findByRole('button', { name: /^Nombres et calculs/ });
     expect(domain).toHaveAttribute('aria-expanded', 'false');
     await user.click(domain);

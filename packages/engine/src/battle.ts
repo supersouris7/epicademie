@@ -141,8 +141,8 @@ export function createBattle(
 
 /**
  * Applique une réponse : bonne → tir (mob vaincu ou boss −1 vie) ; mauvaise → riposte (−1 cœur, ou
- * bouclier consommé). Un mob raté s'enfuit quand même (le combat garde ses 7 questions) ; contre le
- * boss, une erreur relance une question du même type.
+ * bouclier consommé). Après une erreur, l'adversaire reste : un mob pose une autre question de sa
+ * notion, le boss une autre question du même type. À 0 cœur, le combat est perdu.
  */
 export function answerBattle(
   s: BattleState,
@@ -165,7 +165,8 @@ export function answerBattle(
       outcome = 'riposte';
     }
   }
-  const mobsDefeated = onMob ? s.mobsDefeated + 1 : s.mobsDefeated;
+  // Un mob ne tombe que sur une bonne réponse : après une erreur, il reste et pose une autre question.
+  const mobsDefeated = onMob && correct ? s.mobsDefeated + 1 : s.mobsDefeated;
   const bossLives = !onMob && correct ? s.bossLives - 1 : s.bossLives;
   const status: BattleStatus = hearts <= 0 ? 'lost' : bossLives <= 0 ? 'won' : 'fighting';
   const next = {

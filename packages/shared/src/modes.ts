@@ -50,7 +50,7 @@ export const MODES: readonly ModeInfo[] = [
     category: 'multi',
     available: true,
   },
-  { id: 'raid', name: 'Raid', pitch: 'Toute l’équipe contre un boss géant', category: 'multi', available: false },
+  { id: 'raid', name: 'Raid', pitch: 'Toute l’équipe contre un boss géant', category: 'multi', available: true },
   {
     id: 'quiz',
     name: 'Quiz plateau',

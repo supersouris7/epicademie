@@ -196,4 +196,14 @@ describe('concurrence', () => {
     const profile = (await app.inject(`/api/v1/profiles/${profileId}`)).json<Profile>();
     expect(profile.xp).toBe(won);
   });
+
+  it('réponse rejouée (réseau qui renvoie) : comptée une seule fois, même résultat', async () => {
+    const id = await start();
+    const [a, b, c] = await Promise.all([answer(id, 1, true), answer(id, 1, true), answer(id, 1, true)]);
+    expect(b).toEqual(a);
+    expect(c).toEqual(a);
+    for (const seed of [2, 3, 4]) await answer(id, seed, true);
+    const summary = (await app.inject({ method: 'POST', url: `/api/v1/sessions/${id}/finish` })).json<SessionSummary>();
+    expect(summary.regular).toEqual({ answered: 4, correct: 4 });
+  });
 });

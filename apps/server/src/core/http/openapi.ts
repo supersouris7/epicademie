@@ -11,10 +11,16 @@ import { API_TAGS } from '@questeo/shared';
  */
 const TAG_DESCRIPTIONS: Record<(typeof API_TAGS)[number], string> = {
   systeme: 'Santé, réseau, présence',
+  comptes: 'Comptes familiaux, sessions, mot de passe',
+  suivi: 'Suivi des apprentissages',
+  contenus: 'Signalements de questions, notions désactivées',
+  abonnement: 'Abonnement familial et paiements',
+  admin: 'Administration (rôle administrateur)',
   profils: 'Profils des joueurs',
   entrainement: 'Parties d’entraînement et progression par notion',
   combats: 'Combats de boss',
   inventaire: 'Équipement et boutique',
+  qg: 'QG, trophées et cosmétiques',
   telemetrie: 'Erreurs remontées par le navigateur',
 };
 

@@ -22,6 +22,11 @@ import { SoonBadge } from '../../shared/ui/game/SoonBadge.tsx';
 import { GradeTabs } from '../../shared/ui/GradeTabs.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { useToast } from '../../shared/ui/Toast.tsx';
+import { PremiumLock } from '../../shared/ui/game/PremiumLock.tsx';
+import { useChapterAccess } from '../parent/index.ts';
+
+/** Chapitre réservé à l'abonnement familial. */
+const LOCKED = 'Ce chapitre fait partie de l’abonnement familial : demande à tes parents !';
 import { BOSS_MEDAL_ICONS, bossOfSubject } from '../../design/bosses.ts';
 import { BossCloseUp } from '../../shared/battle/BattleScenes.tsx';
 import { subjectTaunt } from '../../shared/lib/battleLines.ts';
@@ -37,6 +42,7 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [toast, showToast] = useToast(2500);
+  const canPlay = useChapterAccess();
   const [busy, setBusy] = useState(false);
   // Gros plan du boss qui provoque, à chaque entrée dans la matière (passable d'un toucher).
   // …mais pas au retour d'un combat ni par « précédent ».
@@ -165,7 +171,8 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
             chapter={c}
             index={i}
             record={records.get(c.id)}
-            onFight={() => void navigate(`/partie/boss/${c.id}`)}
+            locked={!canPlay(c.id)}
+            onFight={() => (canPlay(c.id) ? void navigate(`/partie/boss/${c.id}`) : showToast(LOCKED))}
             onSoon={() => showToast('Ce boss arrive bientôt !')}
           />
         ))}
@@ -185,6 +192,8 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
 }
 
 interface BossRowProps {
+  /** Chapitre réservé à l'abonnement familial. */
+  readonly locked: boolean;
   readonly chapter: Chapter;
   readonly index: number;
   readonly record: BossRecord | undefined;
@@ -192,7 +201,7 @@ interface BossRowProps {
   readonly onSoon: () => void;
 }
 
-function BossRow({ chapter, index, record, onFight, onSoon }: BossRowProps) {
+function BossRow({ chapter, index, record, locked, onFight, onSoon }: BossRowProps) {
   const enter = useEntrance();
   const ready = Boolean(chapter.boss);
   const body = (
@@ -212,6 +221,7 @@ function BossRow({ chapter, index, record, onFight, onSoon }: BossRowProps) {
       )}
       <div className="flex min-w-0 flex-1 flex-col gap-1 text-left">
         <span className="font-display text-xl leading-tight tracking-wide">{chapter.title}</span>
+        {locked && <PremiumLock />}
         <span className="text-muted text-sm font-bold">
           {/* Même boss partout : on montre plutôt où l'on en est. */}
           {!ready

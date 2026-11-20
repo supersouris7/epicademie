@@ -1,4 +1,4 @@
-import { battlePools, check, generate, getChapter } from '@questeo/content';
+import { battlePools, check, generate, getChapter, getSkill, skillVersion } from '@questeo/content';
 import {
   answerBattle,
   applyItem,
@@ -32,6 +32,7 @@ import { badRequest, conflict, gone, notFound } from '../../core/errors.ts';
 import { PROFILE_NOT_FOUND, profilesRepo } from '../profiles/index.ts';
 import { inventoryRepo } from '../inventory/index.ts';
 import { trainingRepo } from '../training/index.ts';
+import { disabledSkills } from '../pedagogy/index.ts';
 import { readBattle, storeBattle } from './battle-state.ts';
 import { battlesRepo } from './battles.repo.ts';
 
@@ -57,7 +58,8 @@ export interface BattlesDeps {
   readonly db: Db;
   readonly clock: Clock;
   readonly random: Random;
-  readonly onFinished?: () => void;
+  /** Fin de partie : monnaie distribuée (métriques). */
+  readonly onFinished?: (rewards: { readonly coins: number; readonly rubies: number }) => void;
 }
 
 const view = (id: string, chapterId: string, s: BattleState, inventory: Inventory): BattleView => ({
@@ -78,11 +80,26 @@ const view = (id: string, chapterId: string, s: BattleState, inventory: Inventor
 });
 
 /** Réserves de questions du chapitre, avec l'énoncé (pour éviter les doublons). */
-function pools(chapterId: string) {
+/**
+ * Réserves de questions du combat, sans les notions désactivées par l'administration. Sans mob,
+ * problème ou piège disponible, le boss est « en maintenance ».
+ */
+function pools(chapterId: string, disabled: ReadonlySet<string> = new Set()) {
   const p = battlePools(chapterId);
   if (!p) throw badRequest('Ce chapitre n’a pas encore de boss');
-  return { ...p, prompt: (skillId: string, level: Level, seed: number) => generate(skillId, level, seed).prompt };
+  const keep = (ids: readonly string[]) => ids.filter((id) => !disabled.has(id));
+  const filtered = { mobs: keep(p.mobs), problems: keep(p.problems), traps: keep(p.traps) };
+  if (!filtered.mobs.length || !filtered.problems.length || !filtered.traps.length) {
+    throw conflict('Ce boss est en maintenance : reviens un peu plus tard !');
+  }
+  return {
+    ...filtered,
+    prompt: (skillId: string, level: Level, seed: number) => generate(skillId, level, seed).prompt,
+  };
 }
+
+/** Réserves du combat d'après les désactivations en base. */
+const livePools = async (ex: Executor, chapterId: string) => pools(chapterId, new Set(await disabledSkills(ex)));
 
 /** Combat chargé et verrouillé, dont l'état stocké a été validé. */
 interface LockedBattle {
@@ -144,7 +161,7 @@ export function createBattlesService({ db, clock, random, onFinished }: BattlesD
     },
 
     async start(profileId: string, chapterId: string): Promise<BattleView> {
-      const p = pools(chapterId);
+      const p = await livePools(db, chapterId);
       if (!(await profilesRepo(db).exists(profileId))) throw notFound(PROFILE_NOT_FOUND);
       const chapter = getChapter(chapterId);
       // Énoncés des derniers combats de ce chapitre : à éviter aussi.
@@ -187,7 +204,12 @@ export function createBattlesService({ db, clock, random, onFinished }: BattlesD
             battle: view(id, session.chapterId, state, inventory),
           };
         }
-        const { state: next, outcome } = answerBattle(state, pools(session.chapterId), result.correct, dice);
+        const { state: next, outcome } = answerBattle(
+          state,
+          await livePools(tx, session.chapterId),
+          result.correct,
+          dice,
+        );
         const repo = trainingRepo(tx);
         await repo.insertAttempt({
           sessionId: id,
@@ -200,6 +222,10 @@ export function createBattlesService({ db, clock, random, onFinished }: BattlesD
           correct: result.correct,
           durationMs: a.durationMs,
           xp: result.correct ? 10 : 0,
+          // L'objet « indice » affiché pour cette question : réussite avec aide.
+          hinted: state.hintShown,
+          skillVersion: skillVersion(getSkill(q.skillId)),
+          diagnosis: result.correct ? null : (result.why ?? null),
         });
         await repo.updateSession(id, { battle: storeBattle(next) });
         return {
@@ -268,7 +294,7 @@ export function createBattlesService({ db, clock, random, onFinished }: BattlesD
           levelAfter: levelFromXp(profile.xp + xpGained).level,
         };
       });
-      onFinished?.();
+      onFinished?.({ coins: summary.coinsGained, rubies: 0 });
       return summary;
     },
   };

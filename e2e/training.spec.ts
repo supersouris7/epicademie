@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test';
+import { signupFamily } from './family.ts';
 
 test('Entraînement : série complète de tables, correction, leçon et résultats', async ({ page }) => {
   test.setTimeout(60_000); // série complète : 5 questions + variantes
-  await page.goto('/');
-  await page.getByRole('button', { name: /Nouveau joueur/ }).click();
+  await signupFamily(page);
   await page.getByPlaceholder('Ex. Léa').fill(`Jeu${Date.now() % 10000}`);
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
@@ -94,8 +94,8 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
 });
 
 test('outils : calculatrice, brouillon, tableau de conversion', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('button', { name: /Nouveau joueur/ }).click();
+  test.setTimeout(60_000); // inscription, profil et trois outils : dépassait 30 s sur machine chargée
+  await signupFamily(page);
   await page.getByPlaceholder('Ex. Léa').fill(`Outil${Date.now() % 10000}`);
   await page.getByRole('button', { name: 'Un garçon' }).click();
   await page.getByLabel('Date de naissance').fill('2013-05-20');

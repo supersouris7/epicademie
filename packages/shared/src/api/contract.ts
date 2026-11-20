@@ -18,7 +18,29 @@ import {
   SessionSummarySchema,
   SkillProgressSchema,
 } from '../play.ts';
-import { ProfileCreateSchema, ProfileSchema, ProfileUpdateSchema } from '../profile.ts';
+import { HEROES, ProfileCreateSchema, ProfileSchema, ProfileUpdateSchema } from '../profile.ts';
+import {
+  LoginSchema,
+  MeSchema,
+  PasswordConfirmSchema,
+  PasswordForgotSchema,
+  PasswordResetSchema,
+  SignupSchema,
+} from '../account.ts';
+import { BadgeProgressSchema, LearningReportSchema } from '../learning.ts';
+import { BillingSchema, CheckoutSchema, SimulatePaymentSchema } from '../billing.ts';
+import { AdminErrorSchema, AdminStatsSchema, AnomalySchema } from '../insights.ts';
+import { BuyCosmeticSchema, CosmeticPurchaseSchema, HqLayoutSchema, HqSchema } from '../hq.ts';
+import {
+  ContentEventSchema,
+  ContentSkillSchema,
+  ContentUpdateSchema,
+  DisabledContentSchema,
+  REPORT_STATUSES,
+  ReportCreateSchema,
+  ReportSchema,
+  ReportUpdateSchema,
+} from '../pedagogy.ts';
 
 /**
  * Contrat de l'API HTTP v1 — source unique de vérité, partagée par le serveur et le client.
@@ -36,6 +58,18 @@ export const API_PREFIX = '/api/v1';
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
+/**
+ * Qui peut appeler un point d'accès (vérifié par le serveur avant le gestionnaire) :
+ * - `public` : tout le monde (connexion, inscription, télémétrie) ;
+ * - `family` : un appareil connecté au compte de la famille (les enfants y jouent) ;
+ * - `parent` : idem, mot de passe confirmé récemment (actions réservées au parent) ;
+ * - `admin` : compte administrateur.
+ * Les données d'une autre famille restent invisibles : le serveur vérifie aussi l'appartenance
+ * de chaque profil, partie ou combat désigné (réponse 404 sinon).
+ */
+export const ACCESS_LEVELS = ['public', 'family', 'parent', 'admin'] as const;
+export type Access = (typeof ACCESS_LEVELS)[number];
+
 /** Point d'accès : `response` vaut `null` pour une réponse sans corps (204). */
 export interface Endpoint<
   TParams extends z.ZodObject | undefined = z.ZodObject | undefined,
@@ -47,13 +81,27 @@ export interface Endpoint<
   /** Groupe de la documentation OpenAPI (= module serveur). */
   readonly tag: ApiTag;
   readonly summary: string;
+  readonly access: Access;
   readonly status: 200 | 201 | 204;
   readonly params?: TParams;
   readonly body?: TBody;
   readonly response: TResponse;
 }
 
-export const API_TAGS = ['systeme', 'profils', 'entrainement', 'combats', 'inventaire', 'telemetrie'] as const;
+export const API_TAGS = [
+  'systeme',
+  'comptes',
+  'profils',
+  'suivi',
+  'contenus',
+  'abonnement',
+  'admin',
+  'entrainement',
+  'combats',
+  'inventaire',
+  'qg',
+  'telemetrie',
+] as const;
 export type ApiTag = (typeof API_TAGS)[number];
 
 const endpoint = <
@@ -69,9 +117,11 @@ export const IdParamsSchema = z.object({ id: z.uuid() });
 /** Codes d'erreur stables (le message, lui, est destiné à l'affichage et peut changer). */
 export const ERROR_CODES = [
   'BAD_REQUEST',
+  'FORBIDDEN',
   'NOT_FOUND',
   'CONFLICT',
   'GONE',
+  'PREMIUM_REQUIRED',
   'RATE_LIMITED',
   'PAYLOAD_TOO_LARGE',
   'UNAUTHORIZED',
@@ -101,12 +151,83 @@ export const ClientErrorSchema = z.object({
 export type ClientError = z.infer<typeof ClientErrorSchema>;
 
 export const api = {
+  // ——— Comptes ———
+  signup: endpoint({
+    method: 'POST',
+    path: '/auth/signup',
+    tag: 'comptes',
+    summary: 'Crée un compte parent et sa famille, et ouvre la session',
+    access: 'public',
+    status: 201,
+    body: SignupSchema,
+    response: MeSchema,
+  }),
+  login: endpoint({
+    method: 'POST',
+    path: '/auth/login',
+    tag: 'comptes',
+    summary: 'Ouvre une session (cookie HttpOnly)',
+    access: 'public',
+    status: 200,
+    body: LoginSchema,
+    response: MeSchema,
+  }),
+  logout: endpoint({
+    method: 'POST',
+    path: '/auth/logout',
+    tag: 'comptes',
+    summary: 'Ferme la session de cet appareil',
+    access: 'public',
+    status: 204,
+    response: null,
+  }),
+  me: endpoint({
+    method: 'GET',
+    path: '/auth/me',
+    tag: 'comptes',
+    summary: 'Session courante (401 si aucune)',
+    access: 'family',
+    status: 200,
+    response: MeSchema,
+  }),
+  confirmParent: endpoint({
+    method: 'POST',
+    path: '/auth/parent',
+    tag: 'comptes',
+    summary: 'Confirme le mot de passe : déverrouille les actions parent pour quelques minutes',
+    access: 'family',
+    status: 200,
+    body: PasswordConfirmSchema,
+    response: MeSchema,
+  }),
+  forgotPassword: endpoint({
+    method: 'POST',
+    path: '/auth/password/forgot',
+    tag: 'comptes',
+    summary: 'Envoie un lien de réinitialisation (réponse identique que l’adresse existe ou non)',
+    access: 'public',
+    status: 204,
+    body: PasswordForgotSchema,
+    response: null,
+  }),
+  resetPassword: endpoint({
+    method: 'POST',
+    path: '/auth/password/reset',
+    tag: 'comptes',
+    summary: 'Change le mot de passe avec le lien reçu ; ferme les autres sessions',
+    access: 'public',
+    status: 204,
+    body: PasswordResetSchema,
+    response: null,
+  }),
+
   // ——— Système ———
   network: endpoint({
     method: 'GET',
     path: '/network',
     tag: 'systeme',
     summary: 'Adresse publique du serveur (QR code de connexion des appareils)',
+    access: 'family',
     status: 200,
     response: z.object({ publicUrl: z.string().nullable() }),
   }),
@@ -115,6 +236,7 @@ export const api = {
     path: '/presence',
     tag: 'systeme',
     summary: 'Profils ouverts sur un appareil (non sélectionnables ailleurs)',
+    access: 'family',
     status: 200,
     response: z.object({ online: z.array(z.uuid()) }),
   }),
@@ -125,6 +247,7 @@ export const api = {
     path: '/profiles',
     tag: 'profils',
     summary: 'Liste des profils, du plus ancien au plus récent',
+    access: 'family',
     status: 200,
     response: z.array(ProfileSchema),
   }),
@@ -133,6 +256,7 @@ export const api = {
     path: '/profiles/:id',
     tag: 'profils',
     summary: 'Un profil',
+    access: 'family',
     status: 200,
     params: IdParamsSchema,
     response: ProfileSchema,
@@ -142,6 +266,7 @@ export const api = {
     path: '/profiles',
     tag: 'profils',
     summary: 'Crée un profil',
+    access: 'parent',
     status: 201,
     body: ProfileCreateSchema,
     response: ProfileSchema,
@@ -151,6 +276,7 @@ export const api = {
     path: '/profiles/:id',
     tag: 'profils',
     summary: 'Modifie un profil (champs fournis seulement)',
+    access: 'family',
     status: 200,
     params: IdParamsSchema,
     body: ProfileUpdateSchema,
@@ -161,9 +287,44 @@ export const api = {
     path: '/profiles/:id',
     tag: 'profils',
     summary: 'Supprime un profil et toute sa progression',
+    access: 'parent',
     status: 204,
     params: IdParamsSchema,
     response: null,
+  }),
+
+  ownedHeroes: endpoint({
+    method: 'GET',
+    path: '/profiles/:id/heroes',
+    tag: 'profils',
+    summary: 'Acad-Héros de la collection du joueur (départ, puis trouvés dans les coffres)',
+    access: 'family',
+    status: 200,
+    params: IdParamsSchema,
+    response: z.object({ heroes: z.array(z.enum(HEROES)) }),
+  }),
+
+  // ——— Suivi des apprentissages ———
+  learningReport: endpoint({
+    method: 'GET',
+    path: '/profiles/:id/learning',
+    tag: 'suivi',
+    summary: 'Suivi des apprentissages : états des notions, chapitres, matières, semaines',
+    access: 'family',
+    status: 200,
+    params: IdParamsSchema,
+    response: LearningReportSchema,
+  }),
+
+  badges: endpoint({
+    method: 'GET',
+    path: '/profiles/:id/badges',
+    tag: 'suivi',
+    summary: 'Badges du joueur : grade atteint et prochain objectif',
+    access: 'family',
+    status: 200,
+    params: IdParamsSchema,
+    response: z.array(BadgeProgressSchema),
   }),
 
   // ——— Entraînement ———
@@ -172,6 +333,7 @@ export const api = {
     path: '/profiles/:id/skills',
     tag: 'entrainement',
     summary: 'Progression du profil par notion (répétition espacée, médailles)',
+    access: 'family',
     status: 200,
     params: IdParamsSchema,
     response: z.array(SkillProgressSchema),
@@ -181,6 +343,7 @@ export const api = {
     path: '/sessions',
     tag: 'entrainement',
     summary: 'Commence une partie (hors combat de boss)',
+    access: 'family',
     status: 201,
     body: SessionCreateSchema,
     response: SessionCreatedSchema,
@@ -190,6 +353,7 @@ export const api = {
     path: '/sessions/:id/answers',
     tag: 'entrainement',
     summary: 'Corrige une réponse (le serveur régénère la question et fait foi)',
+    access: 'family',
     status: 200,
     params: IdParamsSchema,
     body: AnswerSubmitSchema,
@@ -200,6 +364,7 @@ export const api = {
     path: '/sessions/:id/confused',
     tag: 'entrainement',
     summary: '« Je n’ai pas compris » : la notion repassera « à revoir »',
+    access: 'family',
     status: 204,
     params: IdParamsSchema,
     body: ConfusedSchema,
@@ -210,6 +375,7 @@ export const api = {
     path: '/sessions/:id/finish',
     tag: 'entrainement',
     summary: 'Termine la partie : répétition espacée, XP, pièces, coffre',
+    access: 'family',
     status: 200,
     params: IdParamsSchema,
     response: SessionSummarySchema,
@@ -221,6 +387,7 @@ export const api = {
     path: '/profiles/:id/bosses',
     tag: 'combats',
     summary: 'Boss vaincus, inventaire et équipement du profil',
+    access: 'family',
     status: 200,
     params: IdParamsSchema,
     response: BossOverviewSchema,
@@ -230,6 +397,7 @@ export const api = {
     path: '/battles',
     tag: 'combats',
     summary: 'Lance un combat de boss',
+    access: 'family',
     status: 201,
     body: BattleCreateSchema,
     response: BattleViewSchema,
@@ -239,6 +407,7 @@ export const api = {
     path: '/battles/:id/answers',
     tag: 'combats',
     summary: 'Répond à la question en cours du combat',
+    access: 'family',
     status: 200,
     params: IdParamsSchema,
     body: BattleAnswerSchema,
@@ -249,6 +418,7 @@ export const api = {
     path: '/battles/:id/items',
     tag: 'combats',
     summary: 'Utilise un objet équipé pendant le combat',
+    access: 'family',
     status: 200,
     params: IdParamsSchema,
     body: BattleItemSchema,
@@ -259,6 +429,7 @@ export const api = {
     path: '/battles/:id/finish',
     tag: 'combats',
     summary: 'Termine le combat : XP, pièces, médaille, coffre de 1re victoire',
+    access: 'family',
     status: 200,
     params: IdParamsSchema,
     response: BattleSummarySchema,
@@ -270,6 +441,7 @@ export const api = {
     path: '/profiles/:id/equipment',
     tag: 'combats',
     summary: 'Équipe jusqu’à 3 objets de la réserve pour les prochains combats',
+    access: 'family',
     status: 200,
     params: IdParamsSchema,
     body: EquipmentSchema,
@@ -280,9 +452,175 @@ export const api = {
     path: '/shop',
     tag: 'inventaire',
     summary: 'Achète un objet ou un rubis avec des pièces',
+    access: 'family',
     status: 200,
     body: BuySchema,
     response: PurchaseSchema,
+  }),
+
+  // ——— QG, trophées et cosmétiques ———
+  hq: endpoint({
+    method: 'GET',
+    path: '/profiles/:id/hq',
+    tag: 'qg',
+    summary: 'QG du joueur : décor choisi, cosmétiques débloqués, trophées gagnés',
+    access: 'family',
+    status: 200,
+    params: IdParamsSchema,
+    response: HqSchema,
+  }),
+  saveHq: endpoint({
+    method: 'PUT',
+    path: '/profiles/:id/hq',
+    tag: 'qg',
+    summary: 'Aménage le QG (décor, cadre, titre, vitrine de 3 trophées)',
+    access: 'family',
+    status: 200,
+    params: IdParamsSchema,
+    body: HqLayoutSchema,
+    response: HqSchema,
+  }),
+  buyCosmetic: endpoint({
+    method: 'POST',
+    path: '/shop/cosmetics',
+    tag: 'qg',
+    summary: 'Achète un cosmétique avec des rubis ou des pièces gagnés en jouant',
+    access: 'family',
+    status: 200,
+    body: BuyCosmeticSchema,
+    response: CosmeticPurchaseSchema,
+  }),
+
+  // ——— Contenus : signalements, désactivations ———
+  reportQuestion: endpoint({
+    method: 'POST',
+    path: '/reports',
+    tag: 'contenus',
+    summary: 'Signale un problème sur une question (lu par l’administration)',
+    access: 'family',
+    status: 201,
+    body: ReportCreateSchema,
+    response: z.object({ id: z.uuid() }),
+  }),
+  disabledContent: endpoint({
+    method: 'GET',
+    path: '/content/disabled',
+    tag: 'contenus',
+    summary: 'Notions désactivées (le jeu ne les propose plus)',
+    access: 'family',
+    status: 200,
+    response: DisabledContentSchema,
+  }),
+
+  // ——— Abonnement ———
+  billing: endpoint({
+    method: 'GET',
+    path: '/billing',
+    tag: 'abonnement',
+    summary: 'Abonnement de la famille : accès, prix, historique des paiements',
+    access: 'family',
+    status: 200,
+    response: BillingSchema,
+  }),
+  checkout: endpoint({
+    method: 'POST',
+    path: '/billing/checkout',
+    tag: 'abonnement',
+    summary: 'Commence le paiement de l’année scolaire (page du prestataire ou simulateur)',
+    access: 'parent',
+    status: 201,
+    response: CheckoutSchema,
+  }),
+  simulatePayment: endpoint({
+    method: 'POST',
+    path: '/billing/simulate/:id',
+    tag: 'abonnement',
+    summary: 'Simulateur de paiement (hors production) : paiement accepté ou refusé',
+    access: 'parent',
+    status: 200,
+    params: IdParamsSchema,
+    body: SimulatePaymentSchema,
+    response: BillingSchema,
+  }),
+
+  // ——— Administration ———
+  adminStats: endpoint({
+    method: 'GET',
+    path: '/admin/stats',
+    tag: 'admin',
+    summary: 'Statistiques agrégées (aucune donnée personnelle)',
+    access: 'admin',
+    status: 200,
+    response: AdminStatsSchema,
+  }),
+  adminErrors: endpoint({
+    method: 'GET',
+    path: '/admin/errors',
+    tag: 'admin',
+    summary: 'Erreurs récentes regroupées (serveur, navigateur, temps réel)',
+    access: 'admin',
+    status: 200,
+    response: z.array(AdminErrorSchema),
+  }),
+  adminAnomalies: endpoint({
+    method: 'GET',
+    path: '/admin/anomalies',
+    tag: 'admin',
+    summary: 'Anomalies de récompenses à vérifier (gains impossibles, rythme suspect)',
+    access: 'admin',
+    status: 200,
+    response: z.array(AnomalySchema),
+  }),
+  adminReports: endpoint({
+    method: 'GET',
+    path: '/admin/reports/:status',
+    tag: 'admin',
+    summary: 'Signalements d’un état (du plus récent au plus ancien)',
+    access: 'admin',
+    status: 200,
+    params: z.object({ status: z.enum(REPORT_STATUSES) }),
+    response: z.array(ReportSchema),
+  }),
+  adminUpdateReport: endpoint({
+    method: 'PATCH',
+    path: '/admin/reports/:id',
+    tag: 'admin',
+    summary: 'Change l’état d’un signalement',
+    access: 'admin',
+    status: 200,
+    params: IdParamsSchema,
+    body: ReportUpdateSchema,
+    response: ReportSchema,
+  }),
+  adminContent: endpoint({
+    method: 'GET',
+    path: '/admin/content',
+    tag: 'admin',
+    summary: 'Toutes les notions avec leur état de validation',
+    access: 'admin',
+    status: 200,
+    response: z.array(ContentSkillSchema),
+  }),
+  adminUpdateContent: endpoint({
+    method: 'PUT',
+    path: '/admin/content/:skillId',
+    tag: 'admin',
+    summary: 'Désactive, réactive ou marque comme relue une notion (historique conservé)',
+    access: 'admin',
+    status: 200,
+    params: z.object({ skillId: z.string().min(1).max(80) }),
+    body: ContentUpdateSchema,
+    response: ContentSkillSchema,
+  }),
+  adminContentHistory: endpoint({
+    method: 'GET',
+    path: '/admin/content/:skillId/history',
+    tag: 'admin',
+    summary: 'Historique pédagogique d’une notion (désactivations, relectures)',
+    access: 'admin',
+    status: 200,
+    params: z.object({ skillId: z.string().min(1).max(80) }),
+    response: z.array(ContentEventSchema),
   }),
 
   // ——— Télémétrie ———
@@ -291,6 +629,7 @@ export const api = {
     path: '/telemetry/errors',
     tag: 'telemetrie',
     summary: 'Remonte une erreur survenue dans le navigateur',
+    access: 'public',
     status: 204,
     body: ClientErrorSchema,
     response: null,

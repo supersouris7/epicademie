@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { Navigate, useNavigate, useParams } from 'react-router';
-import { chaptersOf } from '@questeo/content';
+import { chaptersOf, getChapterOfSkill } from '@questeo/content';
 import { gradeInfo, SUBJECTS, type Profile } from '@questeo/shared';
 import { useSkills } from './api.ts';
 import { GradeTabs } from '../../shared/ui/GradeTabs.tsx';
@@ -9,6 +9,13 @@ import { localToday } from '../../shared/lib/dates.ts';
 import { useGradeChoice } from '../../shared/lib/grades.ts';
 import { chapterProgress, suggestChapter } from '../../shared/lib/progress.ts';
 import { useEntrance } from '../../shared/lib/entrance.ts';
+import { recommendedReviews } from '@questeo/engine';
+import { useToast } from '../../shared/ui/Toast.tsx';
+import { PremiumLock } from '../../shared/ui/game/PremiumLock.tsx';
+import { useChapterAccess } from '../parent/index.ts';
+
+/** Chapitre réservé à l'abonnement familial. */
+const LOCKED = 'Ce chapitre fait partie de l’abonnement familial : demande à tes parents !';
 
 /** Entraînement : choix du chapitre d'une matière. */
 export function Chapters({ profile }: { readonly profile: Profile }) {
@@ -19,14 +26,37 @@ export function Chapters({ profile }: { readonly profile: Profile }) {
   const { grade, grades, own, setGrade } = useGradeChoice(profile, subject);
   const chapters = chaptersOf(subject, grade);
   const { data } = useSkills(profile.id);
+  const canPlay = useChapterAccess();
+  const [toast, showToast] = useToast(3000);
   if (!info || chapters.length === 0) return <Navigate to="/jouer/entrainement" replace />;
   const states = new Map((data ?? []).map((s) => [s.skillId, s]));
   const today = localToday();
   const suggestion = suggestChapter(chapters, states, today);
   const why = suggestion?.why ?? '';
+  // Révisions du jour (toutes classes de la matière) : notions dues ou fragiles, déjà étudiées.
+  const reviews = recommendedReviews(
+    [...states.values()].filter((s) => getChapterOfSkill(s.skillId)?.subject === subject),
+    today,
+    { lastPracticed: new Map([...states.values()].map((s) => [s.skillId, s.lastPracticed])) },
+  );
   return (
     <PageShell title={`Entraînement · ${info.name}`} back="/jouer/entrainement">
       <GradeTabs grades={grades} value={grade} own={own} onChange={setGrade} />
+      {reviews.length > 0 && (
+        <button
+          type="button"
+          onClick={() => void navigate(`/partie/entrainement/revisions/${subject}`)}
+          className="cartoon cartoon-press bg-accent flex w-full items-center justify-between gap-3 px-5 py-4 text-left"
+        >
+          <span className="flex flex-col">
+            <span className="text-sm font-bold text-white">Avant d’oublier · {reviews.length} notion(s)</span>
+            <span className="font-display text-toon text-2xl tracking-wide">Révisions du jour</span>
+          </span>
+          <span className="font-display text-toon text-3xl" aria-hidden>
+            ▶
+          </span>
+        </button>
+      )}
       {suggestion && (
         <button
           type="button"
@@ -62,10 +92,13 @@ export function Chapters({ profile }: { readonly profile: Profile }) {
             >
               <button
                 type="button"
-                onClick={() => void navigate(`/jouer/entrainement/${subject}/${c.id}`)}
+                onClick={() =>
+                  canPlay(c.id) ? void navigate(`/jouer/entrainement/${subject}/${c.id}`) : showToast(LOCKED)
+                }
                 className="cartoon cartoon-press bg-surface flex w-full flex-col gap-2 p-4 text-left"
               >
                 <span className="font-display text-2xl tracking-wide">{c.title}</span>
+                {!canPlay(c.id) && <PremiumLock />}
                 <span className="text-muted text-sm font-bold">
                   {p.acquired} / {p.total} notion{p.total > 1 ? 's' : ''} acquise{p.total > 1 ? 's' : ''}
                 </span>
@@ -85,6 +118,7 @@ export function Chapters({ profile }: { readonly profile: Profile }) {
           );
         })}
       </ul>
+      {toast}
     </PageShell>
   );
 }

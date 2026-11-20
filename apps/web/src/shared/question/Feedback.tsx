@@ -8,7 +8,7 @@ import { GameIcon } from '../ui/game/GameIcon.tsx';
 import { MathText } from './MathText.tsx';
 import { Questy } from '../ui/mascot/Questy.tsx';
 import type { MoodId } from '../ui/mascot/moods.ts';
-import { ConversionDemoView } from './ConversionDemoView.tsx';
+import { DemoView } from './demos/DemoView.tsx';
 
 interface FeedbackProps {
   readonly question: Question;
@@ -156,16 +156,16 @@ function Explanation({ question, why, given, variantNext, onMemo, onNext }: Feed
           La bonne réponse : <MathText text={formatAnswer(question)} className="font-bold" />.
           {why && (
             <span className="mt-1 block">
-              <MathText text={why} />
+              <MathText text={why} terms />
             </span>
           )}
         </Bubble>
         {steps.slice(0, shown).map((s, i) => (
           <Bubble key={i} step={i + 1}>
-            <MathText text={s} />
+            <MathText text={s} terms />
             {i === 0 && question.demo && (
               <span className="mt-2 block">
-                <ConversionDemoView demo={question.demo} />
+                <DemoView demo={question.demo} />
               </span>
             )}
           </Bubble>

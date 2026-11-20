@@ -149,7 +149,7 @@ function BigDraft({
     <div className="bg-bg fixed inset-0 z-40 flex flex-col gap-2 p-3" role="dialog" aria-label="Brouillon pleine page">
       <div className="flex max-h-[30dvh] shrink-0 gap-3 overflow-y-auto">
         <h2 className="flex-1 text-xl leading-snug font-bold">
-          <MathText text={question.prompt} />
+          <MathText text={question.prompt} terms />
         </h2>
         {question.figure && (
           <div className="w-[40%] max-w-xs shrink-0">

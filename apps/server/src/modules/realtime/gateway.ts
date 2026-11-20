@@ -32,10 +32,20 @@ import { tokenBucket } from './rate-limiter.ts';
  */
 export interface RealtimeDeps {
   readonly presence: Presence;
-  /** Recherche d'un profil (module profils). */
-  readonly findProfile: (id: string) => Promise<Profile | undefined>;
+  /**
+   * Profil demandé, s'il appartient à la famille de la session portée par les cookies de la
+   * connexion (module comptes + profils) ; `null` sinon.
+   */
+  readonly authorize: (
+    cookieHeader: string | undefined,
+    profileId: string,
+  ) => Promise<{ readonly profile: Profile; readonly familyId: string } | null>;
+  /** Famille de la session portée par les cookies (écran TV), ou null. */
+  readonly authorizeFamily: (cookieHeader: string | undefined) => Promise<string | null>;
   readonly clock: Clock;
   readonly random: Random;
+  /** La famille peut-elle jouer ce chapitre (gratuit, ou abonnement) ? */
+  readonly canPlayChapter: (familyId: string, chapterId: string) => Promise<boolean>;
   readonly logger: FastifyBaseLogger;
   readonly reporter: ErrorReporter;
   readonly metrics?: Metrics;
@@ -57,27 +67,61 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
     random: deps.random,
     onBusyChange: () => broadcastPresence(),
     onCountChange: (n) => metrics?.openArenas.set(n),
+    onView: (view, playerIds) => {
+      // Écran TV : la famille des joueurs (connus de la présence, ou dernière famille vue).
+      const family = playerIds.map((id) => presence.familyOf(id)).find(Boolean) ?? arenaFamily.get(view.id);
+      if (!family) return;
+      arenaFamily.set(view.id, family);
+      io.to(tvRoom(family)).emit('arena', view);
+      if (view.phase === 'over') arenaFamily.delete(view.id);
+    },
   });
+  const arenaFamily = new Map<string, string>();
+  const tvRoom = (familyId: string) => `tv:${familyId}`;
 
+  /** Chaque famille reçoit la liste de ses joueurs connectés (jamais celle des autres). */
   const broadcastPresence = () => {
-    io.emit('presence', presence.players(arenas.isBusy));
+    for (const familyId of presence.families()) {
+      const players = presence.players(familyId, arenas.isBusy);
+      for (const p of players) presence.emit(p.id, 'presence', players);
+    }
     metrics?.onlinePlayers.set(presence.count());
   };
 
-  // Authentification de la connexion : profil existant et pas déjà ouvert ailleurs.
+  // Authentification de la connexion : session de la famille (cookie), profil de cette famille,
+  // pas déjà ouvert ailleurs.
   io.use((socket, next) => {
     const auth = RealtimeAuthSchema.safeParse(socket.handshake.auth);
     if (!auth.success) {
       next(new Error(REALTIME_REFUSALS.unknownProfile));
       return;
     }
+    if ('tv' in auth.data) {
+      deps
+        .authorizeFamily(socket.handshake.headers.cookie)
+        .then((familyId) => {
+          if (!familyId) {
+            next(new Error(REALTIME_REFUSALS.unknownProfile));
+            return;
+          }
+          socket.data.familyId = familyId;
+          socket.data.tv = true;
+          next();
+        })
+        .catch((err: unknown) => {
+          reporter.capture(err, { source: 'realtime' });
+          next(new Error('Connexion impossible pour le moment'));
+        });
+      return;
+    }
     deps
-      .findProfile(auth.data.profileId)
-      .then((profile) => {
-        if (!profile) next(new Error(REALTIME_REFUSALS.unknownProfile));
-        else if (presence.isOnline(profile.id)) next(new Error(REALTIME_REFUSALS.alreadyConnected));
+      .authorize(socket.handshake.headers.cookie, auth.data.profileId)
+      .then((found) => {
+        if (!found) next(new Error(REALTIME_REFUSALS.unknownProfile));
+        else if (presence.isOnline(found.profile.id)) next(new Error(REALTIME_REFUSALS.alreadyConnected));
         else {
-          socket.data.profile = profile;
+          socket.data.profile = found.profile;
+          socket.data.familyId = found.familyId;
           next();
         }
       })
@@ -88,14 +132,27 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
   });
 
   io.on('connection', (socket) => {
+    if (socket.data.tv) {
+      // Écran TV : rejoint la diffusion de sa famille et reçoit la partie en cours, s'il y en a.
+      const familyId = socket.data.familyId;
+      void socket.join(tvRoom(familyId));
+      const current = presence
+        .onlineIds(familyId)
+        .map((id) => arenas.viewOf(id))
+        .find((v) => v !== null);
+      if (current) socket.emit('arena', current);
+      return;
+    }
     const profile = socket.data.profile;
     // Deux connexions simultanées ont pu passer l'authentification : la seconde est refusée.
     if (presence.isOnline(profile.id)) {
       socket.disconnect(true);
       return;
     }
-    presence.join(socket, profile);
+    presence.join(socket, profile, socket.data.familyId);
     broadcastPresence();
+    // Reconnexion pendant une arène : le joueur reprend sa place et reçoit l'état en cours.
+    arenas.reconnected(profile.id);
     const current = arenas.viewOf(profile.id);
     if (current) socket.emit('arena', current);
 
@@ -129,7 +186,7 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
       ChatSendSchema,
       ({ to, payload }) => {
         const text = chatText(payload);
-        if (!text || to === profile.id || !presence.isOnline(to)) return;
+        if (!text || to === profile.id || !presence.sameFamily(profile.id, to)) return;
         const out: ChatMessage = {
           from: { id: profile.id, name: profile.name, hero: profile.hero },
           text,
@@ -139,7 +196,16 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
       },
       chatLimit,
     );
-    on('arena:create', ArenaCreateSchema, (msg) => arenas.create(profile, msg));
+    // On n'invite que des joueurs de sa famille, sur un chapitre que la famille peut jouer.
+    on('arena:create', ArenaCreateSchema, (msg) => {
+      deps
+        .canPlayChapter(socket.data.familyId, msg.chapterId)
+        .then((ok) => {
+          if (ok)
+            arenas.create(profile, { ...msg, invite: msg.invite.filter((id) => presence.sameFamily(profile.id, id)) });
+        })
+        .catch((err: unknown) => reporter.capture(err, { source: 'realtime', event: 'arena:create' }));
+    });
     on('arena:respond', ArenaRespondSchema, ({ arenaId, accept }) => arenas.respond(profile.id, arenaId, accept));
     on('arena:start', null, () => arenas.start(profile.id));
     on('arena:answer', ArenaAnswerSchema, ({ response }) => arenas.answer(profile.id, response));
@@ -147,7 +213,9 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
 
     socket.on('disconnect', () => {
       presence.leave(socket, profile.id);
-      arenas.leave(profile.id);
+      // Pas d'élimination immédiate : quelques secondes pour revenir (voir ARENA_GRACE_MS).
+      arenas.disconnected(profile.id);
+      metrics?.realtimeDisconnects.inc();
       broadcastPresence();
     });
   });

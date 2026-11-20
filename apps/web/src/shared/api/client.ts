@@ -35,7 +35,10 @@ const TIMEOUT_MS = 15_000;
 type Input<E extends AnyEndpoint> = (ParamsOf<E> extends undefined
   ? { readonly params?: undefined }
   : { readonly params: ParamsOf<E> }) &
-  (BodyOf<E> extends undefined ? { readonly body?: undefined } : { readonly body: BodyOf<E> });
+  (BodyOf<E> extends undefined ? { readonly body?: undefined } : { readonly body: BodyOf<E> }) & {
+    /** Clé d'idempotence : une requête rejouée (double appui, réseau) n'est exécutée qu'une fois. */
+    readonly idempotencyKey?: string;
+  };
 
 /** L'argument est facultatif pour un point d'accès sans paramètre ni corps. */
 type Args<E extends AnyEndpoint> = object extends Input<E> ? [input?: Input<E>] : [input: Input<E>];
@@ -47,7 +50,10 @@ export async function request<E extends AnyEndpoint>(endpoint: E, ...[input]: Ar
   try {
     res = await fetch(url, {
       method: endpoint.method,
-      headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
+      headers: {
+        ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
+        ...(input?.idempotencyKey ? { 'Idempotency-Key': input.idempotencyKey } : {}),
+      },
       body: body === undefined ? undefined : JSON.stringify(body),
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });

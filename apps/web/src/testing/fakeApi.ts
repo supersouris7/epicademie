@@ -2,6 +2,7 @@ import { battlePools, check, generate } from '@questeo/content';
 import {
   answerBattle,
   applyItem,
+  badgeProgress,
   battleXp,
   createBattle,
   itemRefusal,
@@ -12,10 +13,15 @@ import {
 import {
   API_PREFIX,
   api,
+  COSMETICS,
+  DEFAULT_HQ,
   type AnyEndpoint,
+  type CosmeticId,
+  type HqLayout,
   type BattleView,
   type BossOverview,
   type Inventory,
+  type LearningReport,
   type ItemId,
   type Profile,
   type SkillProgress,
@@ -79,7 +85,35 @@ export interface FakeApiOptions {
   readonly inventory?: Inventory;
   /** Toutes les réponses aux combats sont jugées justes (true) ou fausses (false) ; absent : vraie correction. */
   readonly battleAnswers?: boolean;
+  /** Appareil connecté au compte familial (par défaut : oui). */
+  readonly loggedIn?: boolean;
+  /** Actions parent déverrouillées (par défaut : oui). */
+  readonly parent?: boolean;
+  /** Notions désactivées (en maintenance). */
+  readonly disabled?: readonly string[];
+  /** Le compte connecté est administrateur. */
+  readonly admin?: boolean;
+  /** Rapport de suivi renvoyé pour chaque profil (par défaut : vide). */
+  readonly learning?: LearningReport;
+  /** Abonnement familial en cours (par défaut : oui, tous les chapitres jouables). */
+  readonly premium?: boolean;
 }
+
+/** Rapport de suivi vide (nouveau joueur). */
+export const emptyLearning = (): LearningReport => ({
+  day: '2026-11-20',
+  tally: { answered: 0, autonomous: 0, helped: 0, hints: 0, collective: 0 },
+  lastActivity: null,
+  subjects: [],
+  chapters: [],
+  skills: [],
+  toRework: [],
+  dueReviews: [],
+  weeks: [],
+});
+
+/** Mot de passe du compte du faux serveur. */
+export const FAKE_PASSWORD = 'mot de passe parent';
 
 /** Point d'accès du contrat correspondant à la requête, avec ses paramètres de chemin. */
 function route(
@@ -117,95 +151,206 @@ const view = (id: string, b: Battle, inventory: Inventory): BattleView => ({
   inventory,
 });
 
-export function createFakeApi(options: FakeApiOptions = {}) {
-  const profiles = new Map((options.profiles ?? [makeProfile()]).map((p) => [p.id, p]));
-  const sessions = new Map<string, { answered: number; correct: number }>();
-  const battles = new Map<string, Battle>();
-  const overview: { -readonly [K in keyof BossOverview]: BossOverview[K] } = {
-    records: [],
-    inventory: options.inventory ?? EMPTY_INVENTORY,
-    equipped: [],
+/** Compte familial du faux serveur : session de l'appareil et verrou parent. */
+function authHandlers(options: FakeApiOptions) {
+  const session = { loggedIn: options.loggedIn ?? true, parent: options.parent ?? true, email: 'parent@famille.test' };
+  const me = () => {
+    if (!session.loggedIn) throw new FakeError(401, 'UNAUTHORIZED', 'Connecte-toi pour continuer.');
+    return {
+      account: {
+        id: '22222222-2222-4222-8222-222222222222',
+        email: session.email,
+        role: options.admin ? 'admin' : 'parent',
+      },
+      family: { id: '33333333-3333-4333-8333-333333333333' },
+      parent: session.parent,
+      parentUntil: session.parent ? '2099-01-01T00:00:00.000Z' : null,
+    };
   };
-  /** Appels reçus (méthode + chemin), pour vérifier ce que l'écran a envoyé. */
-  const calls: { method: string; path: string; body: unknown }[] = [];
-  let ids = 0;
-  const uuid = () => `00000000-0000-4000-8000-${String(++ids).padStart(12, '0')}`;
-  // Dés déterministes : mobs dans l'ordre, graines croissantes.
-  let seed = 0;
-  const dice: BattleDice = { random: () => 0, seed: () => ++seed };
-
-  const profile = (id: string | undefined) => {
-    const p = id ? profiles.get(id) : undefined;
-    if (!p) throw new FakeError(404, 'NOT_FOUND', 'Profil introuvable');
-    return p;
+  const requireParent = () => {
+    if (!session.parent) throw new FakeError(403, 'FORBIDDEN', 'Action réservée au parent.');
   };
-  const battleOf = (id: string | undefined) => {
-    const b = id ? battles.get(id) : undefined;
-    if (!b) throw new FakeError(404, 'NOT_FOUND', 'Combat introuvable');
-    return b;
-  };
+  const credentials = (body: unknown) => body as { email: string; password: string };
 
   const handlers: Partial<Record<keyof typeof api, Handler>> = {
-    network: () => ({ publicUrl: 'http://questeo.test' }),
-    presence: () => ({ online: [] }),
-    listProfiles: () => [...profiles.values()],
-    getProfile: ({ params }) => profile(params.id),
-    createProfile: ({ body }) => {
-      const p = makeProfile({ ...(body as Partial<Profile>), id: uuid(), xp: 0, coins: 0, rubies: 0 });
-      profiles.set(p.id, p);
-      return p;
+    signup: ({ body }) => {
+      Object.assign(session, { loggedIn: true, parent: true, email: credentials(body).email });
+      return me();
     },
-    updateProfile: ({ params, body }) => {
-      const p = { ...profile(params.id), ...(body as Partial<Profile>) };
-      profiles.set(p.id, p);
-      return p;
+    login: ({ body }) => {
+      if (credentials(body).password !== FAKE_PASSWORD) {
+        throw new FakeError(401, 'UNAUTHORIZED', 'E-mail ou mot de passe incorrect.');
+      }
+      Object.assign(session, { loggedIn: true, parent: true, email: credentials(body).email });
+      return me();
     },
-    deleteProfile: ({ params }) => {
-      profiles.delete(profile(params.id).id);
+    logout: () => {
+      session.loggedIn = false;
       return null;
     },
-    listSkills: () => options.skills ?? [],
-    startSession: () => {
-      const id = uuid();
-      sessions.set(id, { answered: 0, correct: 0 });
-      return { id };
-    },
-    answerSession: ({ params, body }) => {
-      const a = body as { skillId: string; level: 1 | 2 | 3; seed: number; response: Parameters<typeof check>[1] };
-      const result = check(generate(a.skillId, a.level, a.seed), a.response);
-      const s = sessions.get(params.id ?? '');
-      if (s && !result.invalid) {
-        s.answered++;
-        if (result.correct) s.correct++;
+    me,
+    confirmParent: ({ body }) => {
+      if ((body as { password: string }).password !== FAKE_PASSWORD) {
+        throw new FakeError(401, 'UNAUTHORIZED', 'Mot de passe incorrect.');
       }
-      return { correct: result.correct, invalid: result.invalid === true, xp: result.correct ? 10 : 0 };
+      session.parent = true;
+      return me();
     },
-    markConfused: () => null,
-    finishSession: ({ params }) => {
-      const s = sessions.get(params.id ?? '') ?? { answered: 0, correct: 0 };
-      return {
-        regular: s,
-        variants: { answered: 0, correct: 0 },
-        scoreOn20: s.answered ? Math.round((20 * s.correct) / s.answered) : 0,
-        xpGained: s.correct * 10,
-        coinsGained: s.correct,
-        perfect: s.answered > 0 && s.correct === s.answered,
-        levelBefore: 1,
-        levelAfter: 1,
-        skills: [],
-        chest: null,
-      };
+    forgotPassword: () => null,
+    resetPassword: () => null,
+  };
+  return { session, requireParent, handlers };
+}
+
+/** Administration du faux serveur : signalements reçus et quelques notions. */
+function adminHandlers(
+  reports: Record<string, unknown>[],
+  disabled: Set<string>,
+): Partial<Record<keyof typeof api, Handler>> {
+  const skill = (skillId: string) => ({
+    skillId,
+    title: skillId === 'm5-tables' ? 'Tables de multiplication' : skillId,
+    chapterId: 'm5-calcul',
+    subject: 'maths',
+    grade: '5e',
+    boss: false,
+    version: 1,
+    source: 'Programme de mathématiques',
+    state: disabled.has(skillId) ? 'desactivee' : 'validee-auto',
+    disabled: disabled.has(skillId),
+    reviewedVersion: null,
+    openReports: reports.filter((r) => r.skillId === skillId && r.status === 'nouveau').length,
+    autoIssues: [],
+  });
+  return {
+    adminReports: ({ params }) => reports.filter((r) => r.status === params.status),
+    adminUpdateReport: ({ params, body }) => {
+      const r = reports.find((x) => x.id === params.id);
+      if (!r) throw new FakeError(404, 'NOT_FOUND', 'Signalement introuvable');
+      Object.assign(r, body);
+      return r;
     },
-    bossOverview: () => overview,
-    setEquipment: ({ body }) => {
-      overview.equipped = (body as { items: ItemId[] }).items;
-      return overview;
+    adminContent: () => ['m5-tables', 'm5-priorites'].map(skill),
+    adminStats: () => ({
+      day: '2026-11-20',
+      families: 12,
+      profiles: 19,
+      activeProfiles7d: 8,
+      finishedSeries7d: 64,
+      answers7d: 300,
+      autonomousRate7d: 0.72,
+      answersBySubject7d: [{ subject: 'maths', answers: 300 }],
+      bossWins: 21,
+      premiumFamilies: 5,
+      payments: [{ status: 'payee', count: 5, amountCents: 12495 }],
+      openReports: 1,
+    }),
+    adminAnomalies: () => [
+      {
+        rule: 'reponses-eclair',
+        profileId: '00000000-0000-4000-8000-000000000042',
+        detail: '18 réponses sur 20 en moins de 1.5 s (7 jours)',
+        at: null,
+      },
+    ],
+    adminErrors: () => [
+      {
+        source: 'client',
+        message: 'Cannot read properties of undefined',
+        route: '/hub',
+        count: 3,
+        firstAt: '2026-11-20T08:00:00.000Z',
+        lastAt: '2026-11-20T09:00:00.000Z',
+      },
+    ],
+    adminUpdateContent: ({ params, body }) => {
+      const id = params.skillId ?? '';
+      if ((body as { disabled?: boolean }).disabled === true) disabled.add(id);
+      if ((body as { disabled?: boolean }).disabled === false) disabled.delete(id);
+      return skill(id);
     },
-    buy: ({ body }) => {
-      const item = (body as { item: ItemId | 'rubis' }).item;
-      if (item !== 'rubis') overview.inventory = { ...overview.inventory, [item]: overview.inventory[item] + 1 };
-      return { coins: 10, rubies: 1, inventory: overview.inventory };
+    adminContentHistory: () => [],
+  };
+}
+
+/** QG du faux serveur : aménagement, achats de cosmétiques en rubis ou pièces. */
+function hqHandlers(profileOf: (id: string) => Profile | undefined): Partial<Record<keyof typeof api, Handler>> {
+  const owned = new Set<CosmeticId>(['fond-classe', 'cadre-simple', 'titre-apprenti']);
+  let layout: HqLayout = { ...DEFAULT_HQ };
+  const hq = (p: Profile | undefined) => ({ layout, unlocked: [...owned], trophies: p ? [`heros:${p.hero}`] : [] });
+  return {
+    hq: ({ params }) => hq(profileOf(params.id ?? '')),
+    saveHq: ({ params, body }) => {
+      layout = body as HqLayout;
+      return hq(profileOf(params.id ?? ''));
     },
+    buyCosmetic: ({ body }) => {
+      const { profileId, cosmetic } = body as { profileId: string; cosmetic: CosmeticId };
+      const p = profileOf(profileId);
+      const s = COSMETICS[cosmetic].source;
+      if (!p || s.type !== 'achat') throw new FakeError(409, 'CONFLICT', 'Pas à vendre');
+      if (p.rubies < s.rubies || p.coins < s.coins)
+        throw new FakeError(409, 'CONFLICT', `Il te faut ${s.rubies} rubis.`);
+      Object.assign(p, { rubies: p.rubies - s.rubies, coins: p.coins - s.coins });
+      owned.add(cosmetic);
+      return { coins: p.coins, rubies: p.rubies, hq: hq(p) };
+    },
+  };
+}
+
+/** Abonnement du faux serveur : simulateur de paiement, historique. */
+function billingHandlers(premium: boolean, uuid: () => string): Partial<Record<keyof typeof api, Handler>> {
+  const state = { premium, history: [] as Record<string, unknown>[] };
+  const status = () => ({
+    premium: state.premium,
+    until: state.premium ? '2027-08-31' : null,
+    priceCents: 2499,
+    currency: 'eur',
+    wouldEnd: '2027-08-31',
+    available: true,
+    simulated: true,
+    history: state.history,
+  });
+  return {
+    billing: status,
+    checkout: () => {
+      const id = uuid();
+      state.history.unshift({
+        id,
+        offer: 'famille-annee',
+        status: 'en-attente',
+        amountCents: 2499,
+        currency: 'eur',
+        periodEnd: '2027-08-31',
+        createdAt: '2026-11-20T10:00:00.000Z',
+        paidAt: null,
+      });
+      return { url: `/abonnement/simulateur?paiement=${id}` };
+    },
+    simulatePayment: ({ params, body }) => {
+      const sub = state.history.find((h) => h.id === params.id);
+      if (!sub) throw new FakeError(404, 'NOT_FOUND', 'Paiement introuvable');
+      const ok = (body as { outcome: string }).outcome === 'succes';
+      Object.assign(sub, ok ? { status: 'payee', paidAt: '2026-11-20T10:01:00.000Z' } : { status: 'echouee' });
+      if (ok) state.premium = true;
+      return status();
+    },
+  };
+}
+
+/** Combats du faux serveur : vraies règles du moteur, dés déterministes. */
+function battleHandlers(ctx: {
+  readonly battles: Map<string, Battle>;
+  readonly overview: { inventory: Inventory; equipped: readonly ItemId[] };
+  readonly dice: BattleDice;
+  readonly profile: (id: string | undefined) => Profile;
+  readonly battleOf: (id: string | undefined) => Battle;
+  readonly uuid: () => string;
+  readonly battleAnswers: boolean | undefined;
+}): Partial<Record<keyof typeof api, Handler>> {
+  const { battles, overview, dice, profile, battleOf, uuid } = ctx;
+  const options = { battleAnswers: ctx.battleAnswers };
+  return {
     startBattle: ({ body }) => {
       const { profileId, chapterId } = body as { profileId: string; chapterId: string };
       profile(profileId);
@@ -268,7 +413,129 @@ export function createFakeApi(options: FakeApiOptions = {}) {
         levelAfter: levelFromXp(xp + gained).level,
       };
     },
+  };
+}
+
+export function createFakeApi(options: FakeApiOptions = {}) {
+  const profiles = new Map((options.profiles ?? [makeProfile()]).map((p) => [p.id, p]));
+  const sessions = new Map<string, { answered: number; correct: number }>();
+  const battles = new Map<string, Battle>();
+  const overview: { -readonly [K in keyof BossOverview]: BossOverview[K] } = {
+    records: [],
+    inventory: options.inventory ?? EMPTY_INVENTORY,
+    equipped: [],
+  };
+  /** Signalements reçus. */
+  const reports: Record<string, unknown>[] = [];
+  const disabledSet = new Set(options.disabled ?? []);
+  /** Appels reçus (méthode + chemin), pour vérifier ce que l'écran a envoyé. */
+  const calls: { method: string; path: string; body: unknown }[] = [];
+  let ids = 0;
+  const uuid = () => `00000000-0000-4000-8000-${String(++ids).padStart(12, '0')}`;
+  // Dés déterministes : mobs dans l'ordre, graines croissantes.
+  let seed = 0;
+  const dice: BattleDice = { random: () => 0, seed: () => ++seed };
+
+  const profile = (id: string | undefined) => {
+    const p = id ? profiles.get(id) : undefined;
+    if (!p) throw new FakeError(404, 'NOT_FOUND', 'Profil introuvable');
+    return p;
+  };
+  const battleOf = (id: string | undefined) => {
+    const b = id ? battles.get(id) : undefined;
+    if (!b) throw new FakeError(404, 'NOT_FOUND', 'Combat introuvable');
+    return b;
+  };
+
+  const { session, requireParent, handlers: auth } = authHandlers(options);
+  const handlers: Partial<Record<keyof typeof api, Handler>> = {
+    ...auth,
+    network: () => ({ publicUrl: 'http://questeo.test' }),
+    presence: () => ({ online: [] }),
+    listProfiles: () => [...profiles.values()],
+    getProfile: ({ params }) => profile(params.id),
+    createProfile: ({ body }) => {
+      requireParent();
+      const p = makeProfile({ ...(body as Partial<Profile>), id: uuid(), xp: 0, coins: 0, rubies: 0 });
+      profiles.set(p.id, p);
+      return p;
+    },
+    updateProfile: ({ params, body }) => {
+      const p = { ...profile(params.id), ...(body as Partial<Profile>) };
+      profiles.set(p.id, p);
+      return p;
+    },
+    deleteProfile: ({ params }) => {
+      requireParent();
+      profiles.delete(profile(params.id).id);
+      return null;
+    },
+    listSkills: () => options.skills ?? [],
+    startSession: () => {
+      const id = uuid();
+      sessions.set(id, { answered: 0, correct: 0 });
+      return { id };
+    },
+    answerSession: ({ params, body }) => {
+      const a = body as { skillId: string; level: 1 | 2 | 3; seed: number; response: Parameters<typeof check>[1] };
+      const result = check(generate(a.skillId, a.level, a.seed), a.response);
+      const s = sessions.get(params.id ?? '');
+      // Seule la 1re réponse compte au score (le second essai est « avec aide »).
+      if (s && !result.invalid && (body as { attempt?: number }).attempt !== 2) {
+        s.answered++;
+        if (result.correct) s.correct++;
+      }
+      return { correct: result.correct, invalid: result.invalid === true, xp: result.correct ? 10 : 0 };
+    },
+    markConfused: () => null,
+    finishSession: ({ params }) => {
+      const s = sessions.get(params.id ?? '') ?? { answered: 0, correct: 0 };
+      return {
+        regular: s,
+        variants: { answered: 0, correct: 0 },
+        scoreOn20: s.answered ? Math.round((20 * s.correct) / s.answered) : 0,
+        xpGained: s.correct * 10,
+        coinsGained: s.correct,
+        perfect: s.answered > 0 && s.correct === s.answered,
+        levelBefore: 1,
+        levelAfter: 1,
+        skills: [],
+        chest: null,
+      };
+    },
+    bossOverview: () => overview,
+    setEquipment: ({ body }) => {
+      overview.equipped = (body as { items: ItemId[] }).items;
+      return overview;
+    },
+    buy: ({ body }) => {
+      const item = (body as { item: ItemId | 'rubis' }).item;
+      if (item !== 'rubis') overview.inventory = { ...overview.inventory, [item]: overview.inventory[item] + 1 };
+      return { coins: 10, rubies: 1, inventory: overview.inventory };
+    },
+    ...battleHandlers({ battles, overview, dice, profile, battleOf, uuid, battleAnswers: options.battleAnswers }),
     reportClientError: () => null,
+    reportQuestion: ({ body }) => {
+      const id = uuid();
+      reports.push({
+        ...(body as object),
+        id,
+        skillVersion: 1,
+        comment: (body as { comment?: string }).comment ?? null,
+        status: 'nouveau',
+        adminNote: null,
+        createdAt: '2026-11-20T10:00:00.000Z',
+        resolvedAt: null,
+      });
+      return { id };
+    },
+    disabledContent: () => ({ skills: [...disabledSet] }),
+    learningReport: () => options.learning ?? emptyLearning(),
+    ...billingHandlers(options.premium ?? true, uuid),
+    ...hqHandlers((id) => profiles.get(id)),
+    ownedHeroes: ({ params }) => ({ heroes: [profile(params.id).hero] }),
+    badges: () => badgeProgress({ boss: 2, parfait: 3, perseverance: 0, chapitres: 0, consolidees: 0, heros: 1 }),
+    ...adminHandlers(reports, disabledSet),
   };
 
   function reply(method: string, url: string, body: unknown): Reply {
@@ -278,6 +545,10 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     calls.push({ method, path: apiPath, body });
     const match = route(method, apiPath);
     const handler = match && handlers[match.name];
+    // Comme le vrai serveur : sans session, seules les routes publiques répondent.
+    if (match && match.endpoint.access !== 'public' && !session.loggedIn) {
+      return { status: 401, body: { code: 'UNAUTHORIZED', error: 'Connecte-toi pour continuer.' } };
+    }
     if (!match || !handler)
       return { status: 404, body: { code: 'NOT_FOUND', error: `Pas de faux ${method} ${apiPath}` } };
     try {
@@ -308,6 +579,7 @@ export function createFakeApi(options: FakeApiOptions = {}) {
   return {
     fetch: fakeFetch,
     calls,
+    reports,
     profiles,
     battles,
     overview,

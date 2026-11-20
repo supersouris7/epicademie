@@ -6,6 +6,7 @@ const state = (skillId: string, over: Partial<SkillProgress> = {}): SkillProgres
   skillId,
   stage: 1,
   due: null,
+  lastPracticed: null,
   attempts: 4,
   correct: 3,
   recent: [true, true, true, false],

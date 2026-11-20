@@ -1,5 +1,6 @@
 import type { Level } from '@questeo/shared';
-import { isDue, type SkillState } from './srs.ts';
+import type { SkillState } from './srs.ts';
+import { skillWeight, startLevel } from './adaptive.ts';
 
 /**
  * Déroulé d’une série d’Entraînement : 4 questions régulières (5 pour le calcul de tête, très court),
@@ -36,12 +37,6 @@ export interface TrainingState {
   readonly length: number;
 }
 
-/** Niveau de départ selon l'avancement de la notion. */
-export function startLevel(state: SkillState | undefined): Level {
-  if (!state || state.stage <= 1) return 1;
-  return 2;
-}
-
 export function startTraining(
   skills: readonly string[],
   states: ReadonlyMap<string, SkillState>,
@@ -60,29 +55,28 @@ export function isFinished(s: TrainingState): boolean {
   return regularCount(s) >= s.length && s.pendingVariant === null;
 }
 
-/** Poids de tirage d'une notion : prioriser les nouvelles, échues et fragiles. */
-export function skillWeight(state: SkillState | undefined, today: string): number {
-  if (state?.due == null) return 3;
-  if (isDue(state, today) || state.stage === 0) return 3;
-  if (state.stage < 3) return 2;
-  return 1;
+/** Tirage d'une question : `random` ∈ [0, 1) pour le choix pondéré, `seed` pour le générateur. */
+export interface QuestionDraw {
+  readonly random: number;
+  readonly seed: number;
 }
 
 /**
- * Choisit la prochaine question. `random` ∈ [0, 1) pour le tirage pondéré, `seed` pour le générateur.
- * Évite de reposer la même notion deux fois de suite quand le chapitre en propose plusieurs.
+ * Choisit la prochaine question (poids : adaptive.ts). Évite de reposer la même notion deux fois
+ * de suite quand le chapitre en propose plusieurs. `lastPracticed` : jour de dernière pratique de
+ * chaque notion (espacement).
  */
 export function nextQuestion(
   s: TrainingState,
   states: ReadonlyMap<string, SkillState>,
   today: string,
-  random: number,
-  seed: number,
+  { random, seed }: QuestionDraw,
+  lastPracticed: ReadonlyMap<string, string | null> = new Map(),
 ): PlannedQuestion {
   if (s.pendingVariant) return { ...s.pendingVariant, seed, variant: true };
   const last = s.answers.at(-1)?.skillId;
   const pool = s.skills.length > 1 ? s.skills.filter((id) => id !== last) : s.skills;
-  const weights = pool.map((id) => skillWeight(states.get(id), today));
+  const weights = pool.map((id) => skillWeight(states.get(id), today, lastPracticed.get(id)));
   const total = weights.reduce((a, b) => a + b, 0);
   let pick = random * total;
   let skillId = pool[0] ?? '';

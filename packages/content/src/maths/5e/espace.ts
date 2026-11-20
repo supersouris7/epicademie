@@ -189,11 +189,15 @@ const disque: Skill = {
         prompt: `Calcule le volume d’un cylindre de rayon ${radius} cm et de hauteur ${h} cm, en cm^3, arrondi au dixième.`,
         figure: { kind: 'solid', solid: 'cylindre', labels: [`${radius} cm`, `${h} cm`] },
         answer: answer(k * h, 'cm^3'),
-        traps: traps(piForms(k * h)[0], [
-          ...unrounded(k * h),
-          ...wrong(2 * radius * h, 'La base est un disque : on prend son **aire** π × r^2, pas son périmètre.'),
-          ...wrong(k, `Il faut encore multiplier l’aire de la base par la hauteur ${h}.`),
-        ]),
+        traps: traps(
+          piForms(k * h)[0],
+          [
+            ...unrounded(k * h),
+            ...wrong(2 * radius * h, 'La base est un disque : on prend son **aire** π × r^2, pas son périmètre.'),
+            ...wrong(k, `Il faut encore multiplier l’aire de la base par la hauteur ${h}.`),
+          ],
+          [piForms(k * h)[1]],
+        ),
         hint: 'Calcule d’abord l’aire du disque du fond (π × r × r), puis multiplie par la hauteur. Et n’oublie pas d’arrondir !',
         steps: [
           `Un cylindre, c’est un disque empilé sur toute la hauteur. On calcule d’abord l’aire du disque du fond.`,
@@ -215,12 +219,16 @@ const disque: Skill = {
         diameter: givenDiameter,
       },
       answer: answer(k, 'cm^2'),
-      traps: traps(piForms(k)[0], [
-        ...unrounded(k),
-        ...wrong(2 * radius, 'π × diamètre donne le **périmètre** du cercle, pas l’aire.'),
-        ...wrong(4 * k, 'Le diamètre a été utilisé à la place du rayon : r = diamètre ÷ 2.'),
-        ...wrong(2 * radius * radius, 'r^2 = r × r, pas 2 × r.'),
-      ]),
+      traps: traps(
+        piForms(k)[0],
+        [
+          ...unrounded(k),
+          ...wrong(2 * radius, 'π × diamètre donne le **périmètre** du cercle, pas l’aire.'),
+          ...wrong(4 * k, 'Le diamètre a été utilisé à la place du rayon : r = diamètre ÷ 2.'),
+          ...wrong(2 * radius * radius, 'r^2 = r × r, pas 2 × r.'),
+        ],
+        [piForms(k)[1]],
+      ),
       hint: givenDiameter
         ? 'Attention : on te donne le diamètre. Le rayon, c’est la moitié ! Puis π × r × r.'
         : 'Aire du disque = π × rayon × rayon. Utilise la touche π, puis arrondis.',

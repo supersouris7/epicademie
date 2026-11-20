@@ -8,6 +8,55 @@
       "when": 1795114423048,
       "tag": "0000_init",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795168931316,
+      "tag": "0001_comptes_familiaux",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795172240917,
+      "tag": "0002_suivi_apprentissages",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1795173787013,
+      "tag": "0003_signalements_contenus",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795179765671,
+      "tag": "0004_idempotence",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795183718048,
+      "tag": "0005_acad_heros",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795185184150,
+      "tag": "0006_abonnement",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1795187275907,
+      "tag": "0007_qg",
+      "breakpoints": true
     }
   ]
 }

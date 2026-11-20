@@ -19,13 +19,13 @@ describe('classe déduite de la date de naissance', () => {
     expect(gradeFromBirthDate('2019-05-01', '2026-11-17')).toBeNull();
     expect(gradeFromBirthDate('1985-05-01', '2026-11-17')).toBe('adulte');
   });
-  it('seule la 5e est disponible : les autres classes jouent la 5e en attendant', () => {
+  it('toutes les classes sont disponibles, Adulte compris (parcours de remise à niveau)', () => {
     expect(gradeInfo('5e').available).toBe(true);
     expect(gradeInfo('4e').available).toBe(true);
     expect(gradeInfo('3e').available).toBe(true);
     expect(gradeInfo('cm1').available).toBe(true);
-    expect(gradeInfo('adulte').available).toBe(false);
-    expect(playedGrade('adulte')).toBe('5e');
+    expect(gradeInfo('adulte').available).toBe(true);
+    expect(playedGrade('adulte')).toBe('adulte');
     expect(playedGrade(null)).toBe('5e');
   });
 });

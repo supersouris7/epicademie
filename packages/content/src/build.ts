@@ -29,11 +29,18 @@ export const num = (value: Rational | number, unit?: string): AnswerSpec => ({
 export const fraction = (value: Rational): AnswerSpec => ({ kind: 'fraction', value });
 
 /** Pièges numériques, en ignorant ceux qui coïncident avec la bonne réponse ou entre eux. */
-export function traps(correct: Rational, list: readonly (readonly [Rational | number, Rich])[]): Trap[] {
+export function traps(
+  correct: Rational,
+  list: readonly (readonly [Rational | number, Rich])[],
+  /** Autres réponses jugées justes (`accept`) : une erreur typique ne peut pas leur être égale. */
+  alsoRight: readonly Rational[] = [],
+): Trap[] {
   const out: Trap[] = [];
   for (const [v, why] of list) {
     const value = typeof v === 'number' ? r(v) : v;
-    if (eq(value, correct) || out.some((t) => 'value' in t && eq(t.value, value))) continue;
+    // Une « erreur » égale à une réponse juste se contredirait (cas limites : r = 2, πr² = 2πr).
+    if ([correct, ...alsoRight].some((ok) => eq(value, ok))) continue;
+    if (out.some((t) => 'value' in t && eq(t.value, value))) continue;
     out.push({ value, why });
   }
   return out;

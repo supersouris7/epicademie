@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router';
-import { getChapter, getSkill } from '@questeo/content';
-import { regularCount, type SkillState } from '@questeo/engine';
+import { getChapter, getChapterOfSkill, getSkill } from '@questeo/content';
+import { recommendedReviews, regularCount } from '@questeo/engine';
+import { localToday } from '../../shared/lib/dates.ts';
 import type { Profile } from '@questeo/shared';
-import { useSkills } from './api.ts';
+import { useDisabledSkills, useSkills } from './api.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { ProgressBar } from '../../shared/ui/game/ProgressBar.tsx';
 import { ResourceCounter } from '../../shared/ui/game/ResourceCounter.tsx';
@@ -18,24 +19,59 @@ import { Results } from './TrainingResults.tsx';
 import { TrainingQuestion } from './TrainingQuestion.tsx';
 import { useTraining, type TrainingSetup } from './useTraining.ts';
 
-/** Partie d’Entraînement : 4 questions (5 en calcul de tête) + variantes, correction après chaque réponse. */
+/** Identifiant de « chapitre » des séries de révision (plusieurs chapitres d'une matière). */
+export const REVIEW_CHAPTER = 'revisions';
+/** Identifiant de « chapitre » des séances ciblées préparées par le parent (notions choisies). */
+export const TARGETED_CHAPTER = 'seance';
+
+/**
+ * Partie d’Entraînement : 4 questions (5 en calcul de tête) + variantes, correction après chaque
+ * réponse. `/partie/entrainement/<chapitre>/<notion | tout>`, ou
+ * `/partie/entrainement/revisions/<matière>` pour les révisions du jour (moteur adaptatif), ou
+ * `/partie/entrainement/seance/<notion+notion…>` pour une séance ciblée préparée par le parent.
+ */
 export function TrainingPlay({ profile }: { readonly profile: Profile }) {
   const { chapterId = '', skillId = '' } = useParams();
+  const reviews = chapterId === REVIEW_CHAPTER;
+  const targeted = chapterId === TARGETED_CHAPTER;
   const chapter = getChapter(chapterId);
-  const skills = useMemo(
-    () => (chapter ? (skillId === 'tout' ? chapter.skills.map((s) => s.id) : [skillId]) : []),
-    [chapter, skillId],
-  );
-  const valid = chapter !== undefined && skills.every((id) => chapter.skills.some((s) => s.id === id));
+  const { data: disabled, isPending: disabledPending } = useDisabledSkills();
   const { data: progress, isPending } = useSkills(profile.id);
   const location = useLocation();
-  const { left } = useGameExit(`/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`);
-  if (!valid) return <Navigate to="/jouer/entrainement" replace />;
+  const exitTo = targeted
+    ? '/hub'
+    : reviews
+      ? `/jouer/entrainement/${skillId}`
+      : `/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`;
+  const { left } = useGameExit(exitTo);
+  const skills = useMemo(() => {
+    // Séance ciblée : les notions choisies par le parent (notions d'entraînement existantes).
+    if (targeted) return skillId.split('+').filter((id) => getSkill(id) && !disabled?.has(id));
+    if (reviews) {
+      // Révisions du jour de la matière (notions déjà étudiées, dues ou fragiles).
+      const states = (progress ?? []).filter((p) => getChapterOfSkill(p.skillId)?.subject === skillId);
+      const lastPracticed = new Map(states.map((p) => [p.skillId, p.lastPracticed]));
+      return recommendedReviews(states, localToday(), { lastPracticed })
+        .map((r) => r.skillId)
+        .filter((id) => !disabled?.has(id));
+    }
+    if (!chapter) return [];
+    // « Tout le chapitre » : sans les notions en maintenance.
+    return skillId === 'tout' ? chapter.skills.map((s) => s.id).filter((id) => !disabled?.has(id)) : [skillId];
+  }, [targeted, reviews, progress, chapter, skillId, disabled]);
   // Partie déjà quittée, revenue par « précédent » : on ne la relance pas (redirection en cours).
   if (left) return null;
-  if (isPending || !progress) return <p className="p-8 text-xl">Chargement…</p>;
-  const states = new Map<string, SkillState>(progress.map((p) => [p.skillId, p]));
-  return <Game key={location.key} profile={profile} chapterId={chapterId} skills={skills} states={states} />;
+  // La série se compose une fois la progression et les notions en maintenance connues.
+  if (isPending || !progress || disabledPending) return <p className="p-8 text-xl">Chargement…</p>;
+  const valid =
+    reviews || targeted
+      ? skills.length > 0
+      : chapter !== undefined && skills.length > 0 && skills.every((id) => chapter.skills.some((s) => s.id === id));
+  if (!valid) return <Navigate to={reviews || targeted ? exitTo : '/jouer/entrainement'} replace />;
+  const states = new Map(progress.map((p) => [p.skillId, p]));
+  return (
+    <Game key={location.key} profile={profile} chapterId={chapterId} skills={skills} states={states} exitTo={exitTo} />
+  );
 }
 
 /**
@@ -43,10 +79,9 @@ export function TrainingPlay({ profile }: { readonly profile: Profile }) {
  * correction, puis bilan. Le déroulé est dans `useTraining`, les règles dans `state.ts`.
  */
 function Game(setup: TrainingSetup) {
-  const { profile, chapterId } = setup;
+  const { profile, exitTo, chapterId } = setup;
   const navigate = useNavigate();
   const location = useLocation();
-  const chapter = getChapter(chapterId);
   const [toast, showToast] = useToast(2500);
   const [memo, setMemo] = useState(false);
   const [confirmQuit, setConfirmQuit] = useState(false);
@@ -54,7 +89,7 @@ function Game(setup: TrainingSetup) {
 
   const quit = () => setConfirmQuit(true);
   // Sorties : la partie est remplacée dans l'historique (« précédent » ne la relance pas).
-  const { exit } = useGameExit(`/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`);
+  const { exit } = useGameExit(exitTo);
   // Quitter la partie ramène au menu principal.
   const leave = () => exit('/hub');
   // « Précédent » pendant la série : même confirmation que la Pause.
@@ -77,6 +112,7 @@ function Game(setup: TrainingSetup) {
         missed={s.missed}
         gender={profile.gender}
         chapterId={chapterId}
+        exitTo={exitTo}
         onExit={exit}
         onReplay={() => void navigate(location.pathname, { replace: true, state: { replay: Date.now() } })}
       />

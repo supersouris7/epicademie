@@ -23,6 +23,7 @@ export function Results({
   missed,
   gender,
   chapterId,
+  exitTo,
   onExit,
   onReplay,
 }: {
@@ -30,6 +31,8 @@ export function Results({
   missed: readonly Missed[];
   gender: Gender | null;
   chapterId: string;
+  /** Page « Autre notion » (révisions : la matière) ; par défaut, la liste des notions du chapitre. */
+  exitTo?: string;
   onExit: (to: string) => void;
   onReplay: () => void;
 }) {
@@ -154,7 +157,7 @@ export function Results({
         <GameButton
           variant="accent"
           icon="icons-navigation-next"
-          onClick={() => onExit(`/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`)}
+          onClick={() => onExit(exitTo ?? `/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`)}
         >
           Autre notion
         </GameButton>

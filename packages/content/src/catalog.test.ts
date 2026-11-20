@@ -47,20 +47,23 @@ const withBoss = (c: (typeof CHAPTERS)[number]) => [...c.skills, ...(c.boss?.pro
 const cases = CHAPTERS.flatMap((c) => withBoss(c).map((s) => [c.id, s.id] as const));
 
 describe('catalogue', () => {
-  it('combat de boss : un boss par chapitre, dans toutes les classes', () => {
+  it('combat de boss : un boss par chapitre de maths, dans toutes les classes', () => {
     const withB = CHAPTERS.filter((c) => c.boss);
-    for (const c of CHAPTERS) expect(c.boss, c.id).toBeDefined();
+    // Les pilotes hors maths n'ont pas encore de boss (« À venir »).
+    for (const c of CHAPTERS.filter((x) => x.subject === 'maths')) expect(c.boss, c.id).toBeDefined();
     for (const c of withB) {
       expect(c.boss?.problems.length, c.id).toBeGreaterThanOrEqual(2);
       expect(c.boss?.traps.length, c.id).toBeGreaterThanOrEqual(1);
     }
   });
 
-  it('chaque chapitre porte le préfixe de sa classe (m5-, m6-…)', () => {
-    const prefix = { cm1: 'mcm1-', cm2: 'mcm2-', '6e': 'm6-', '5e': 'm5-', '4e': 'm4-', '3e': 'm3-', adulte: 'ma-' };
+  it('chaque chapitre porte le préfixe de sa matière et de sa classe (m5-, m6-, a5-…)', () => {
+    const grade = { cm1: 'cm1-', cm2: 'cm2-', '6e': '6-', '5e': '5-', '4e': '4-', '3e': '3-', adulte: 'a-' };
+    const subject: Record<string, string> = { maths: 'm', anglais: 'a' };
     for (const c of CHAPTERS) {
-      expect(c.id.startsWith(prefix[c.grade]), c.id).toBe(true);
-      for (const s of withBoss(c)) expect(s.id.startsWith(prefix[c.grade]), s.id).toBe(true);
+      const prefix = `${subject[c.subject] ?? '?'}${grade[c.grade]}`;
+      expect(c.id.startsWith(prefix), c.id).toBe(true);
+      for (const s of withBoss(c)) expect(s.id.startsWith(prefix), s.id).toBe(true);
     }
   });
 
@@ -119,5 +122,19 @@ describe('catalogue', () => {
         expect(generate(skillId, level, seed), ctx).toEqual(q);
       }
     }
+  });
+});
+
+describe('parcours Adulte', () => {
+  it('chapitres existants, sans doublon, de la même matière ; le premier est gratuit', async () => {
+    const { ADULT_PATHS, chaptersOf, gradesOf, isFreeChapter } = await import('./catalog.ts');
+    const path = ADULT_PATHS.maths ?? [];
+    const chapters = chaptersOf('maths', 'adulte');
+    expect(chapters.map((c) => c.id)).toEqual(path);
+    expect(new Set(path).size).toBe(path.length);
+    expect(gradesOf('maths').at(-1)).toBe('adulte');
+    expect(isFreeChapter(chapters[0]?.id ?? '')).toBe(true);
+    // Les chapitres ne sont pas dupliqués dans le catalogue complet.
+    expect(chaptersOf('maths').filter((c) => c.id === 'm6-numeration')).toHaveLength(1);
   });
 });

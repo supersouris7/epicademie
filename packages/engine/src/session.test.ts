@@ -18,7 +18,7 @@ describe('série d’entraînement', () => {
     let s = startTraining(['a'], none);
     let seed = 1;
     while (!isFinished(s)) {
-      const q = nextQuestion(s, none, today, 0.5, seed++);
+      const q = nextQuestion(s, none, today, { random: 0.5, seed: seed++ });
       const wrong = !q.variant && regularCount(s) % 3 === 0; // une erreur toutes les 3 questions
       s = recordAnswer(s, q, !wrong);
       if (wrong) expect(s.pendingVariant).toEqual({ skillId: 'a', level: q.level });
@@ -29,9 +29,9 @@ describe('série d’entraînement', () => {
 
   it('une variante ratée ne déclenche pas de nouvelle variante', () => {
     let s = startTraining(['a'], none);
-    const q1 = nextQuestion(s, none, today, 0, 1);
+    const q1 = nextQuestion(s, none, today, { random: 0, seed: 1 });
     s = recordAnswer(s, q1, false);
-    const q2 = nextQuestion(s, none, today, 0, 2);
+    const q2 = nextQuestion(s, none, today, { random: 0, seed: 2 });
     expect(q2.variant).toBe(true);
     s = recordAnswer(s, q2, false);
     expect(s.pendingVariant).toBeNull();
@@ -39,38 +39,42 @@ describe('série d’entraînement', () => {
 
   it('niveau 1 passé après 2 réussites, niveau 3 après 3 de plus, descend après 2 erreurs', () => {
     let s = startTraining(['a'], none);
-    s = recordAnswer(s, nextQuestion(s, none, today, 0, 0), true);
+    s = recordAnswer(s, nextQuestion(s, none, today, { random: 0, seed: 0 }), true);
     expect(s.levels.a).toBe(1);
-    s = recordAnswer(s, nextQuestion(s, none, today, 0, 1), true);
+    s = recordAnswer(s, nextQuestion(s, none, today, { random: 0, seed: 1 }), true);
     expect(s.levels.a).toBe(2);
-    for (let i = 2; i < 4; i++) s = recordAnswer(s, nextQuestion(s, none, today, 0, i), true);
+    for (let i = 2; i < 4; i++) s = recordAnswer(s, nextQuestion(s, none, today, { random: 0, seed: i }), true);
     expect(s.levels.a).toBe(2);
-    s = recordAnswer(s, nextQuestion(s, none, today, 0, 4), true);
+    s = recordAnswer(s, nextQuestion(s, none, today, { random: 0, seed: 4 }), true);
     expect(s.levels.a).toBe(3);
-    s = recordAnswer(s, nextQuestion(s, none, today, 0, 5), false);
-    s = recordAnswer(s, nextQuestion(s, none, today, 0, 6), false);
+    s = recordAnswer(s, nextQuestion(s, none, today, { random: 0, seed: 5 }), false);
+    s = recordAnswer(s, nextQuestion(s, none, today, { random: 0, seed: 6 }), false);
     expect(s.levels.a).toBe(2);
-    s = recordAnswer(s, nextQuestion(s, none, today, 0, 10), false);
-    s = recordAnswer(s, nextQuestion(s, none, today, 0, 11), false); // variante ratée
+    s = recordAnswer(s, nextQuestion(s, none, today, { random: 0, seed: 10 }), false);
+    s = recordAnswer(s, nextQuestion(s, none, today, { random: 0, seed: 11 }), false); // variante ratée
     expect(s.levels.a).toBe(1);
   });
 
   it('niveau de départ 2 pour une notion déjà réussie deux fois', () => {
-    const states = new Map([['a', { ...newSkillState('a'), stage: 2 as const, due: '2026-11-20' }]]);
+    const recent = Array.from({ length: 6 }, () => true);
+    const states = new Map([['a', { ...newSkillState('a'), stage: 2 as const, due: '2026-11-20', recent }]]);
     expect(startTraining(['a'], states).levels.a).toBe(2);
   });
 
   it('privilégie les notions nouvelles et évite la répétition immédiate', () => {
-    const states = new Map([['acquise', { ...newSkillState('acquise'), stage: 3 as const, due: '2026-12-20' }]]);
+    const recent = Array.from({ length: 10 }, () => true);
+    const states = new Map([
+      ['acquise', { ...newSkillState('acquise'), stage: 3 as const, due: '2026-12-20', recent }],
+    ]);
     let s = startTraining(['nouvelle', 'acquise'], states);
     const counts = { nouvelle: 0, acquise: 0 };
     for (let i = 0; i < 400; i++) {
-      const q = nextQuestion({ ...s, answers: [] }, states, today, (i % 100) / 100, i);
+      const q = nextQuestion({ ...s, answers: [] }, states, today, { random: (i % 100) / 100, seed: i });
       counts[q.skillId as keyof typeof counts]++;
     }
     expect(counts.nouvelle).toBeGreaterThan(counts.acquise * 2);
     s = recordAnswer(s, { skillId: 'nouvelle', level: 1, seed: 1, variant: false }, true);
-    expect(nextQuestion(s, states, today, 0, 2).skillId).toBe('acquise');
+    expect(nextQuestion(s, states, today, { random: 0, seed: 2 }).skillId).toBe('acquise');
   });
 
   it('bilan par notion', () => {

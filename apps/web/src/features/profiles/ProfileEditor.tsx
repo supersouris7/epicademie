@@ -17,6 +17,7 @@ import { CharacterAvatar } from '../../shared/ui/game/CharacterAvatar.tsx';
 import { GradePicker } from '../../shared/ui/GradePicker.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { useSession } from '../../shared/lib/session.ts';
+import { useParentGate } from '../account/index.ts';
 
 const STYLE_LABELS: Record<AvatarStyle, string> = {
   'fun-emoji': 'Émoji',
@@ -38,6 +39,7 @@ export function ProfileEditor() {
 function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
   const navigate = useNavigate();
   const selectProfile = useSession((s) => s.selectProfile);
+  const withParent = useParentGate();
   const create = useCreateProfile();
   const update = useUpdateProfile(existing?.id ?? '');
   const [name, setName] = useState(existing?.name ?? '');
@@ -73,14 +75,17 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
     }
     const payload = { name: parsed.data, avatar: shown, gender, birthDate: birth.data, grade };
     try {
-      if (existing) {
-        await update.mutateAsync(payload);
-        void navigate('/parametres');
-      } else {
-        const profile = await create.mutateAsync(payload);
-        selectProfile(profile.id);
-        void navigate('/hub');
-      }
+      // Identité d'un enfant : action réservée au parent (mot de passe demandé si besoin).
+      await withParent(async () => {
+        if (existing) {
+          await update.mutateAsync(payload);
+          void navigate('/parametres');
+        } else {
+          const profile = await create.mutateAsync(payload);
+          selectProfile(profile.id);
+          void navigate('/hub');
+        }
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur inconnue');
     }

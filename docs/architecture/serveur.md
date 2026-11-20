@@ -26,15 +26,16 @@ src/
 
 ## Modules
 
-| Module      | Rôle                                                                |
-| ----------- | ------------------------------------------------------------------- |
-| `profiles`  | profils joueurs ; crédit/débit atomiques d'XP, pièces, rubis        |
-| `training`  | parties hors boss, correction serveur, répétition espacée, coffres  |
-| `battles`   | combats de boss (état serveur), boss vaincus, médailles, équipement |
-| `inventory` | objets possédés, équipement, boutique                               |
-| `realtime`  | présence, messages prédéfinis, arène (socket.io)                    |
-| `system`    | santé, disponibilité, métriques, réseau local, présence             |
-| `telemetry` | erreurs remontées par le navigateur                                 |
+| Module      | Rôle                                                                        |
+| ----------- | --------------------------------------------------------------------------- |
+| `accounts`  | familles, comptes parents, sessions, verrou parent, isolation (`ownership`) |
+| `profiles`  | profils joueurs ; crédit/débit atomiques d'XP, pièces, rubis                |
+| `training`  | parties hors boss, correction serveur, répétition espacée, coffres          |
+| `battles`   | combats de boss (état serveur), boss vaincus, médailles, équipement         |
+| `inventory` | objets possédés, équipement, boutique                                       |
+| `realtime`  | présence, messages prédéfinis, arène (socket.io)                            |
+| `system`    | santé, disponibilité, métriques, réseau local, présence                     |
+| `telemetry` | erreurs remontées par le navigateur                                         |
 
 ## Couches et règles
 
@@ -77,3 +78,11 @@ src/
 Créer `modules/<nom>/` avec `index.ts`, `<nom>.routes.ts`, `<nom>.service.ts`, `<nom>.repo.ts`,
 `<nom>.test.ts`, puis l'enregistrer dans `app.ts`. Les tables vont dans `db/schema.ts`, suivies
 de `pnpm --filter @questeo/server db:generate`.
+
+## Accès et isolation
+
+Chaque point d'accès du contrat déclare son niveau d'accès (`public`, `family`, `parent`,
+`admin`), vérifié par `route()` avant le gestionnaire à partir de la session (cookie). Une route
+qui désigne un profil, une partie ou un combat appelle d'abord `owns.profile()` / `owns.game()`
+(module `accounts`) : 404 si la donnée n'est pas à la famille connectée. Voir
+[ADR 0012](../adr/0012-comptes-familiaux.md).

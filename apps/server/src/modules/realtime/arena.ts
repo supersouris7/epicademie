@@ -1,9 +1,20 @@
 import { randomUUID } from 'node:crypto';
 import { check, generate, getChapter } from '@questeo/content';
-import { duelHandicaps, duelLevel, playArenaTurn, startArena, type ArenaState } from '@questeo/engine';
+import {
+  duelHandicaps,
+  duelLevel,
+  isRaid,
+  leaveRaid,
+  playArenaTurn,
+  playRaidTurn,
+  startArena,
+  startRaid,
+  type ArenaState,
+} from '@questeo/engine';
 import {
   ageOn,
   ARENA_TURN_SECONDS,
+  type ArenaKind,
   type ArenaCreate,
   type ArenaInvite,
   type ArenaPlayer,
@@ -27,6 +38,7 @@ import type { Presence } from './presence.ts';
 
 interface Arena {
   readonly id: string;
+  readonly kind: ArenaKind;
   readonly hostId: string;
   readonly chapterId: string;
   players: ArenaPlayer[];
@@ -36,10 +48,18 @@ interface Arena {
   timer: NodeJS.Timeout | null;
   /** Âges des joueurs (handicap des plus grands). */
   readonly ages: Map<string, number | null>;
+  /** Joueurs déconnectés, avec le minuteur qui les retire s'ils ne reviennent pas. */
+  readonly away: Map<string, NodeJS.Timeout>;
+  /** Fermeture du salon s'il n'est jamais lancé. */
+  lobbyTimer: NodeJS.Timeout | null;
 }
 
 /** Durée pendant laquelle une arène terminée reste consultable. */
 const FINISHED_ARENA_TTL_MS = 60_000;
+/** Délai de reconnexion d'un joueur (Wi-Fi qui saute, tablette en veille, autre appareil). */
+export const ARENA_GRACE_MS = 30_000;
+/** Un salon jamais lancé ferme au bout de ce délai. */
+export const LOBBY_TTL_MS = 10 * 60_000;
 
 export interface ArenaDeps {
   readonly presence: Presence;
@@ -48,6 +68,8 @@ export interface ArenaDeps {
   /** La liste des joueurs occupés a changé (diffusion de la présence). */
   readonly onBusyChange: () => void;
   readonly onCountChange?: (open: number) => void;
+  /** Nouvel état diffusé (écran TV de la famille). */
+  readonly onView?: (view: ArenaView, playerIds: readonly string[]) => void;
 }
 
 type Emit = <E extends keyof ServerToClientEvents>(
@@ -56,39 +78,54 @@ type Emit = <E extends keyof ServerToClientEvents>(
   ...args: Parameters<ServerToClientEvents[E]>
 ) => void;
 
-export function createArenas({ presence, clock, random, onBusyChange, onCountChange }: ArenaDeps) {
+/** Vue diffusée aux joueurs (et à l'écran TV de la famille). */
+function view(a: Arena): ArenaView {
+  const s = a.state;
+  return {
+    id: a.id,
+    kind: a.kind,
+    raid: s && isRaid(s) ? s.raid : null,
+    hostId: a.hostId,
+    chapterId: a.chapterId,
+    phase: s ? (s.over ? 'over' : 'playing') : 'lobby',
+    players: (s ? s.players : a.players).map((p) => (a.away.has(p.id) ? { ...p, away: true } : p)),
+    turnId: s && !s.over ? (s.players[s.current]?.id ?? null) : null,
+    turn: s?.turn ?? 0,
+    question: s && !s.over ? a.question : null,
+    deadline: s && !s.over ? a.deadline : null,
+    last: s?.last ?? null,
+    winnerId: s?.winnerId ?? null,
+  };
+}
+
+export function createArenas({ presence, clock, random, onBusyChange, onCountChange, onView }: ArenaDeps) {
   const arenas = new Map<string, Arena>();
   const emit: Emit = (profileId, event, ...args) => presence.emit(profileId, event, ...args);
   const counted = () => onCountChange?.(arenas.size);
 
   const arenaOf = (profileId: string) => [...arenas.values()].find((a) => a.players.some((p) => p.id === profileId));
 
-  const view = (a: Arena): ArenaView => {
-    const s = a.state;
-    return {
-      id: a.id,
-      hostId: a.hostId,
-      chapterId: a.chapterId,
-      phase: s ? (s.over ? 'over' : 'playing') : 'lobby',
-      players: s ? s.players : a.players,
-      turnId: s && !s.over ? (s.players[s.current]?.id ?? null) : null,
-      turn: s?.turn ?? 0,
-      question: s && !s.over ? a.question : null,
-      deadline: s && !s.over ? a.deadline : null,
-      last: s?.last ?? null,
-      winnerId: s?.winnerId ?? null,
-    };
-  };
-
   const push = (a: Arena) => {
     const v = view(a);
     for (const p of a.players) emit(p.id, 'arena', v);
+    onView?.(
+      v,
+      a.players.map((p) => p.id),
+    );
   };
 
   const remove = (a: Arena) => {
     if (a.timer) clearTimeout(a.timer);
+    if (a.lobbyTimer) clearTimeout(a.lobbyTimer);
+    for (const t of a.away.values()) clearTimeout(t);
     arenas.delete(a.id);
     counted();
+  };
+
+  /** Ferme un salon pour tous ses joueurs. */
+  const closeLobby = (a: Arena) => {
+    for (const p of a.players) emit(p.id, 'arena:closed', a.id);
+    remove(a);
   };
 
   /** Tire la question du joueur dont c'est le tour et arme le minuteur. */
@@ -114,7 +151,7 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
     if (!a.state || a.state.over) return;
     if (a.timer) clearTimeout(a.timer);
     a.timer = null;
-    a.state = playArenaTurn(a.state, correct, timeout);
+    a.state = isRaid(a.state) ? playRaidTurn(a.state, correct, timeout) : playArenaTurn(a.state, correct, timeout);
     if (a.state.over) {
       a.question = null;
       a.deadline = null;
@@ -138,12 +175,13 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
       return a ? view(a) : null;
     },
 
-    create(host: Profile, msg: ArenaCreate): void {
+    create(host: Profile, msg: Omit<ArenaCreate, 'kind'> & { readonly kind?: ArenaKind }): void {
       if (!getChapter(msg.chapterId) || arenaOf(host.id)) return;
       const invite = [...new Set(msg.invite)].filter((id) => id !== host.id && presence.isOnline(id) && !arenaOf(id));
       if (invite.length === 0) return;
       const a: Arena = {
         id: randomUUID(),
+        kind: msg.kind ?? 'duel',
         hostId: host.id,
         chapterId: msg.chapterId,
         players: [
@@ -158,11 +196,17 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
         deadline: null,
         timer: null,
         ages: new Map(),
+        away: new Map(),
+        lobbyTimer: null,
       };
+      a.lobbyTimer = setTimeout(() => {
+        if (!a.state) closeLobby(a);
+      }, LOBBY_TTL_MS);
       arenas.set(a.id, a);
       counted();
       const inv: ArenaInvite = {
         arenaId: a.id,
+        kind: a.kind,
         from: { id: host.id, name: host.name, hero: host.hero },
         chapterId: msg.chapterId,
       };
@@ -186,11 +230,13 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
       const ready = a.players.filter((p) => p.ready);
       let state: ArenaState;
       try {
-        state = startArena(ready);
+        state = a.kind === 'raid' ? startRaid(ready) : startArena(ready);
       } catch {
         return; // Pas assez de joueurs prêts.
       }
       for (const p of a.players) if (!p.ready) emit(p.id, 'arena:closed', a.id);
+      if (a.lobbyTimer) clearTimeout(a.lobbyTimer);
+      a.lobbyTimer = null;
       a.players = ready;
       a.state = state;
       const today = clock.today();
@@ -221,12 +267,22 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
       if (!a.state) {
         // Salon : l'hôte qui part ferme le salon ; un invité qui part en sort.
         if (a.hostId === profileId) {
-          for (const p of a.players) emit(p.id, 'arena:closed', a.id);
-          remove(a);
+          closeLobby(a);
         } else {
           a.players = a.players.filter((p) => p.id !== profileId);
           push(a);
         }
+      } else if (isRaid(a.state) && !a.state.over) {
+        // Raid : le joueur sort du tour de table, l'équipe continue (sans pénalité).
+        const wasTurn = a.state.players[a.state.current]?.id === profileId;
+        a.state = leaveRaid(a.state, profileId);
+        if (a.state.over) {
+          a.question = null;
+          a.deadline = null;
+          if (a.timer) clearTimeout(a.timer);
+          a.timer = setTimeout(() => remove(a), FINISHED_ARENA_TTL_MS);
+        } else if (wasTurn) nextQuestion(a);
+        push(a);
       } else if (!a.state.over) {
         // En partie : le joueur qui part est éliminé (s'il jouait, son tour compte comme raté).
         const s = a.state;
@@ -239,9 +295,36 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
       onBusyChange();
     },
 
+    /**
+     * Connexion perdue : le joueur garde sa place `ARENA_GRACE_MS` (les autres le voient
+     * « déconnecté ») ; s'il ne revient pas, il quitte l'arène. Son tour continue de s'écouler.
+     */
+    disconnected(profileId: string): void {
+      const a = arenaOf(profileId);
+      if (!a || a.away.has(profileId)) return;
+      a.away.set(
+        profileId,
+        setTimeout(() => {
+          a.away.delete(profileId);
+          this.leave(profileId);
+        }, ARENA_GRACE_MS),
+      );
+      push(a);
+    },
+
+    /** Le joueur revient (même appareil ou un autre de la famille) : il reprend sa place. */
+    reconnected(profileId: string): void {
+      const a = arenaOf(profileId);
+      const timer = a?.away.get(profileId);
+      if (!a || !timer) return;
+      clearTimeout(timer);
+      a.away.delete(profileId);
+      push(a);
+    },
+
     /** Arrêt du serveur : plus aucun minuteur actif. */
     dispose(): void {
-      for (const a of arenas.values()) if (a.timer) clearTimeout(a.timer);
+      for (const a of [...arenas.values()]) remove(a);
       arenas.clear();
     },
   };

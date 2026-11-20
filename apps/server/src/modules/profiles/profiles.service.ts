@@ -1,6 +1,7 @@
 import type { Profile, ProfileCreate, ProfileUpdate } from '@questeo/shared';
+import type { Actor } from '../../core/http/auth.ts';
 import type { Db } from '../../db/client.ts';
-import { notFound } from '../../core/errors.ts';
+import { AppError, conflict, notFound } from '../../core/errors.ts';
 import { profilesRepo, toProfile } from './profiles.repo.ts';
 
 /** Rubis offerts à la création d'un profil. */
@@ -8,11 +9,14 @@ export const STARTING_RUBIES = 2;
 
 export const PROFILE_NOT_FOUND = 'Profil introuvable';
 
+/** Champs d'identité d'un enfant : seul le parent les change (prénom, naissance, classe, genre). */
+const IDENTITY_FIELDS = ['name', 'birthDate', 'grade', 'gender'] as const;
+
 /** Règles métier des profils. */
 export function createProfilesService(db: Db) {
   const repo = profilesRepo(db);
   return {
-    list: (): Promise<Profile[]> => repo.list(),
+    list: (familyId: string): Promise<Profile[]> => repo.list(familyId),
 
     async get(id: string): Promise<Profile> {
       const row = await repo.find(id);
@@ -20,17 +24,36 @@ export function createProfilesService(db: Db) {
       return toProfile(row);
     },
 
-    /** Profil ou `undefined` (temps réel : refus de connexion plutôt qu'erreur). */
-    async find(id: string): Promise<Profile | undefined> {
+    /** Profil s'il appartient à la famille (temps réel : refus plutôt qu'erreur). */
+    async findInFamily(id: string, familyId: string): Promise<Profile | undefined> {
       const row = await repo.find(id);
-      return row && toProfile(row);
+      return row?.familyId === familyId ? toProfile(row) : undefined;
     },
 
-    async create(input: ProfileCreate): Promise<Profile> {
-      return toProfile(await repo.insert({ ...input, rubies: STARTING_RUBIES }));
+    /** Nouveau profil : son héros est son héros de départ (les autres viennent des coffres). */
+    async create(input: ProfileCreate, familyId: string): Promise<Profile> {
+      return db.transaction(async (tx) => {
+        const r = profilesRepo(tx);
+        const row = await r.insert({ ...input, rubies: STARTING_RUBIES, familyId });
+        await r.addHero(row.id, row.hero, 'depart');
+        return toProfile(row);
+      });
     },
 
-    async update(id: string, patch: ProfileUpdate): Promise<Profile> {
+    heroes: (profileId: string) => repo.heroes(profileId),
+
+    /**
+     * Modifie un profil. L'enfant peut changer ses réglages (son, héros…) ; l'identité (prénom,
+     * date de naissance, classe, genre) demande le déverrouillage parent.
+     */
+    async update(id: string, patch: ProfileUpdate, actor: Actor): Promise<Profile> {
+      if (!actor.parent && IDENTITY_FIELDS.some((f) => patch[f] !== undefined)) {
+        throw new AppError('FORBIDDEN', 'Action réservée au parent : confirme le mot de passe du compte.');
+      }
+      // Un Acad-Héros se porte seulement s'il est dans la collection (trouvé dans un coffre).
+      if (patch.hero !== undefined && !(await repo.heroes(id)).includes(patch.hero)) {
+        throw conflict('Ce héros n’est pas encore dans ta collection : trouve-le dans un coffre !');
+      }
       // Corps vide : rien à changer, on renvoie le profil tel quel.
       const row = Object.keys(patch).length === 0 ? await repo.find(id) : await repo.update(id, patch);
       if (!row) throw notFound(PROFILE_NOT_FOUND);

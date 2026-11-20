@@ -127,11 +127,13 @@ describe('documentation OpenAPI', () => {
 
 describe('bug serveur', () => {
   it('exception inattendue : 500 neutre, sans détail interne', async () => {
-    const own = await createTestApp();
+    const own = await createTestApp({
+      routes: (http) =>
+        http.get('/api/v1/boum', () => {
+          throw new Error('secret interne : mot de passe');
+        }),
+    });
     try {
-      own.http.get('/api/v1/boum', () => {
-        throw new Error('secret interne : mot de passe');
-      });
       const res = await own.http.inject('/api/v1/boum');
       expect(res.statusCode).toBe(500);
       expect(res.json()).toMatchObject({ code: 'INTERNAL', error: 'Oups, le serveur a rencontré un problème.' });

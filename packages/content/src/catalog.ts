@@ -1,9 +1,11 @@
 import type { Grade } from '@questeo/shared';
 import { createRng } from './rng.ts';
+import { autoDemo } from './explain.ts';
 import { MATHS_CHAPTERS } from './maths/index.ts';
+import { ANGLAIS_CHAPTERS } from './anglais/index.ts';
 import type { Chapter, Level, Question, Skill } from './types.ts';
 
-export const CHAPTERS: readonly Chapter[] = [...MATHS_CHAPTERS];
+export const CHAPTERS: readonly Chapter[] = [...MATHS_CHAPTERS, ...ANGLAIS_CHAPTERS];
 
 const skills = new Map<string, { skill: Skill; chapter: Chapter }>();
 for (const chapter of CHAPTERS) {
@@ -24,21 +26,70 @@ for (const chapter of CHAPTERS) {
 export const getSkill = (id: string) => skills.get(id)?.skill;
 export const getChapterOfSkill = (id: string) => skills.get(id)?.chapter;
 export const getChapter = (id: string) => CHAPTERS.find((c) => c.id === id);
-/** Chapitres d'une matière, d'une classe donnée ou de toutes. */
-export const chaptersOf = (subject: string, grade?: Grade) =>
-  CHAPTERS.filter((c) => c.subject === subject && (grade === undefined || c.grade === grade));
-/** Classes qui ont du contenu dans une matière, dans l'ordre de la scolarité. */
+/**
+ * Parcours « Adulte » (remise à niveau, décision du 20/11/2026 : « pour les adultes pour qui
+ * l'école c'est loin ») : une sélection ordonnée de chapitres déjà vérifiés, des bases utiles au
+ * quotidien vers le collège. Aucun contenu nouveau : chaque chapitre garde sa classe d'origine.
+ */
+export const ADULT_PATHS: Readonly<Partial<Record<string, readonly string[]>>> = {
+  maths: [
+    'm6-numeration',
+    'm5-calcul',
+    'm5-operations',
+    'm6-fractions',
+    'm6-pourcentages',
+    'm4-proportionnalite',
+    'mcm2-mesures',
+    'm6-durees',
+    'm6-aires',
+    'm6-volumes',
+    'm5-relatifs',
+    'm4-litteral',
+    'm4-triangles',
+    'm4-statistiques',
+    'm5-probabilites',
+    'm3-proportionnalite',
+  ],
+};
+
+/** Chapitres d'une matière, d'une classe donnée (Adulte : son parcours) ou de toutes. */
+export const chaptersOf = (subject: string, grade?: Grade): Chapter[] => {
+  if (grade === 'adulte') {
+    return (ADULT_PATHS[subject] ?? []).flatMap(
+      (id) => CHAPTERS.find((c) => c.id === id && c.subject === subject) ?? [],
+    );
+  }
+  return CHAPTERS.filter((c) => c.subject === subject && (grade === undefined || c.grade === grade));
+};
+/** Classes qui ont du contenu dans une matière, dans l'ordre de la scolarité (Adulte en dernier). */
 export const gradesOf = (subject: string): Grade[] => {
   const order: readonly Grade[] = ['cm1', 'cm2', '6e', '5e', '4e', '3e', 'adulte'];
-  return order.filter((g) => CHAPTERS.some((c) => c.subject === subject && c.grade === g));
+  return order.filter((g) => chaptersOf(subject, g).length > 0);
 };
 export const allSkillIds = () => [...skills.keys()];
 
 /** Notion d'entraînement ou question de boss (pour l'affichage et la correction). */
 export const getAnySkill = (id: string) => skills.get(id)?.skill ?? bossSkills.get(id)?.skill;
 export const isBossSkill = (id: string) => bossSkills.has(id);
+/** Chapitre d'une notion d'entraînement ou d'une question de boss (suivi des apprentissages). */
+export const chapterOfAnySkill = (id: string) => (skills.get(id) ?? bossSkills.get(id))?.chapter;
 /** Classe d'une notion d'entraînement ou d'une question de boss. */
 export const gradeOfSkill = (id: string): Grade | undefined => (skills.get(id) ?? bossSkills.get(id))?.chapter.grade;
+
+/**
+ * Chapitre gratuit : le 1er chapitre de chaque classe dans chaque matière (version gratuite,
+ * décision du 20/11/2026). Les autres chapitres demandent l'abonnement familial.
+ */
+export const isFreeChapter = (chapterId: string): boolean => {
+  const chapter = getChapter(chapterId);
+  return chapter !== undefined && chaptersOf(chapter.subject, chapter.grade)[0]?.id === chapter.id;
+};
+
+/** Toutes les notions (entraînement et questions de boss), avec leur chapitre. */
+export const allSkillEntries = () => [
+  ...[...skills.values()].map((e) => ({ ...e, boss: false })),
+  ...[...bossSkills.values()].map((e) => ({ ...e, boss: true })),
+];
 
 /** Chapitres qui ont un combat de boss. */
 export const bossChapters = () => CHAPTERS.filter((c) => c.boss);
@@ -59,5 +110,6 @@ export function generate(skillId: string, level: Level, seed: number): Question 
   const entry = skills.get(skillId) ?? bossSkills.get(skillId);
   if (!entry) throw new Error(`Notion inconnue : ${skillId}`);
   const draft = entry.skill.generate(createRng(seed), level);
-  return { traps: [], targetSeconds: 20, ...draft, skillId, level, seed };
+  const demo = draft.demo ?? autoDemo(draft, entry.chapter);
+  return { traps: [], targetSeconds: 20, ...draft, ...(demo ? { demo } : {}), skillId, level, seed };
 }

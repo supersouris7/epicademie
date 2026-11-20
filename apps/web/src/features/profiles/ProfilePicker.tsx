@@ -15,11 +15,13 @@ import { useQuery } from '@tanstack/react-query';
 import { request } from '../../shared/api/client.ts';
 import { useRealtime } from '../realtime/index.ts';
 import { useToast } from '../../shared/ui/Toast.tsx';
+import { useMe } from '../account/index.ts';
 
 export function ProfilePicker() {
   const { data: profiles, isPending, isError, refetch } = useProfiles();
   const selectProfile = useSession((s) => s.selectProfile);
   const navigate = useNavigate();
+  const { data: me } = useMe();
 
   const keyArt = assetSrc('branding-key-art');
   const [toast, showToast] = useToast(3500);
@@ -91,6 +93,14 @@ export function ProfilePicker() {
           </GameButton>
         </li>
       </ul>
+      <GameButton variant="surface" icon="icons-navigation-team" onClick={() => void navigate('/parent')}>
+        Espace parent
+      </GameButton>
+      {me?.account.role === 'admin' && (
+        <GameButton variant="surface" icon="icons-navigation-settings" onClick={() => void navigate('/admin')}>
+          Administration
+        </GameButton>
+      )}
       {toast}
     </PageShell>
   );

@@ -24,9 +24,11 @@ export class AppError extends Error {
 const STATUS: Record<ErrorCode, number> = {
   BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
   NOT_FOUND: 404,
   CONFLICT: 409,
   GONE: 410,
+  PREMIUM_REQUIRED: 402,
   PAYLOAD_TOO_LARGE: 413,
   RATE_LIMITED: 429,
   INTERNAL: 500,
@@ -40,4 +42,7 @@ export const notFound = (message: string) => new AppError('NOT_FOUND', message);
 export const conflict = (message: string) => new AppError('CONFLICT', message);
 /** Ressource qui a existé mais n'est plus utilisable (ex. combat périmé après mise à jour). */
 export const gone = (message: string) => new AppError('GONE', message);
+/** Contenu réservé à l'abonnement familial. */
+export const premiumRequired = () =>
+  new AppError('PREMIUM_REQUIRED', 'Ce chapitre fait partie de l’abonnement familial : demande à tes parents !');
 export const badRequest = (message: string) => new AppError('BAD_REQUEST', message);

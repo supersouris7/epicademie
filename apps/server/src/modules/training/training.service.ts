@@ -1,4 +1,4 @@
-import { check, generate, getSkill } from '@questeo/content';
+import { check, generate, getSkill, skillVersion } from '@questeo/content';
 import {
   applySession,
   coinsForXp,
@@ -13,19 +13,21 @@ import {
 } from '@questeo/engine';
 import type {
   AnswerResult,
+  Chest,
   AnswerSubmit,
   SessionCreate,
   SessionSkillSummary,
   SessionSummary,
   SkillProgress,
 } from '@questeo/shared';
-import type { Db } from '../../db/client.ts';
+import type { Db, Tx } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import type { Random } from '../../core/random.ts';
 import { badRequest, conflict, notFound } from '../../core/errors.ts';
 import { PROFILE_NOT_FOUND, profilesRepo } from '../profiles/index.ts';
 import { inventoryRepo } from '../inventory/index.ts';
 import { trainingRepo } from './training.repo.ts';
+import { disabledSkills } from '../pedagogy/index.ts';
 
 /**
  * Entraînement (toutes les parties hors combat de boss).
@@ -44,19 +46,36 @@ export interface TrainingDeps {
   readonly db: Db;
   readonly clock: Clock;
   readonly random: Random;
+  /** Fuseau de la famille (jours de pratique). */
+  readonly timeZone: string;
   /** Appelé à chaque partie terminée (métriques). */
-  readonly onFinished?: () => void;
+  /** Fin de partie : monnaie distribuée (métriques). */
+  readonly onFinished?: (rewards: { readonly coins: number; readonly rubies: number }) => void;
 }
 
-export function createTrainingService({ db, clock, random, onFinished }: TrainingDeps) {
+export function createTrainingService({ db, clock, random, timeZone, onFinished }: TrainingDeps) {
+  /**
+   * Coffre de fin de série : tiré, objets ajoutés à l'inventaire (stock plafonné), Acad-Héros
+   * ajouté à la collection (un doublon est déjà converti en pièces).
+   */
+  const openChest = async (tx: Tx, profileId: string, correct: number, total: number): Promise<Chest> => {
+    const profiles = profilesRepo(tx);
+    const rolled = rollChest(correct, total, random.float, new Set(await profiles.heroes(profileId)));
+    if (rolled.hero && !rolled.hero.duplicate) await profiles.addHero(profileId, rolled.hero.id, 'coffre');
+    return { ...rolled, items: await inventoryRepo(tx).add(profileId, rolled.items) };
+  };
+
   return {
     skills(profileId: string): Promise<SkillProgress[]> {
-      return trainingRepo(db).skillStates(profileId);
+      return trainingRepo(db).skillProgress(profileId, timeZone);
     },
 
     async start(input: SessionCreate): Promise<{ id: string }> {
       if (input.mode === 'boss') throw badRequest('Le combat de boss se lance par /battles');
       if (input.skillId && !getSkill(input.skillId)) throw badRequest(UNKNOWN_SKILL);
+      if (input.skillId && (await disabledSkills(db)).includes(input.skillId)) {
+        throw conflict('Cette notion est en maintenance : choisis-en une autre.');
+      }
       if (!(await profilesRepo(db).exists(input.profileId))) throw notFound(PROFILE_NOT_FOUND);
       return { id: await trainingRepo(db).insertSession(input) };
     },
@@ -73,10 +92,35 @@ export function createTrainingService({ db, clock, random, onFinished }: Trainin
         const question = generate(a.skillId, a.level, a.seed);
         const result = check(question, a.response);
         if (result.invalid) return { correct: false, invalid: true, xp: 0 };
-        // Série en cours (bonnes réponses consécutives) : bonus d'XP.
         const previous = await repo.attemptsOf(sessionId);
+        // Réponse rejouée (double appui, réseau qui renvoie) : même résultat, rien de compté deux fois.
+        const attempt = a.attempt;
+        const already = previous.find(
+          (p) => p.skillId === a.skillId && p.level === a.level && p.seed === a.seed && p.attempt === attempt,
+        );
+        if (already) return { correct: already.correct, invalid: false, xp: already.xp };
+        const recorded = {
+          ...a,
+          sessionId,
+          profileId: session.profileId,
+          correct: result.correct,
+          skillVersion: skillVersion(getSkill(a.skillId)),
+          diagnosis: result.correct ? null : (result.why ?? null),
+        };
+        if (a.attempt === 2) {
+          // Second essai après l'indice : seulement après une 1re réponse fausse à CETTE question,
+          // une seule fois ; enregistré « avec aide », sans XP.
+          const same = previous.filter((p) => p.skillId === a.skillId && p.level === a.level && p.seed === a.seed);
+          if (!same.some((p) => p.attempt === 1 && !p.correct)) {
+            throw conflict('Pas de second essai pour cette question');
+          }
+          await repo.insertAttempt({ ...recorded, xp: 0, attempt: 2, hinted: true });
+          return { correct: result.correct, invalid: false, xp: 0 };
+        }
+        // Série en cours (premières réponses justes consécutives) : bonus d'XP.
+        const firsts = previous.filter((p) => p.attempt === 1);
         let streak = 0;
-        for (let i = previous.length - 1; i >= 0 && previous[i]?.correct; i--) streak++;
+        for (let i = firsts.length - 1; i >= 0 && firsts[i]?.correct; i--) streak++;
         const xp = xpForAnswer({
           correct: result.correct,
           variant: a.variant,
@@ -84,7 +128,7 @@ export function createTrainingService({ db, clock, random, onFinished }: Trainin
           targetSeconds: question.targetSeconds,
           streak: result.correct ? streak + 1 : 0,
         });
-        await repo.insertAttempt({ ...a, sessionId, profileId: session.profileId, correct: result.correct, xp });
+        await repo.insertAttempt({ ...recorded, xp, attempt: 1 });
         return { correct: result.correct, invalid: false, xp };
       });
     },
@@ -111,7 +155,8 @@ export function createTrainingService({ db, clock, random, onFinished }: Trainin
         if (session.finishedAt) throw conflict('Partie déjà terminée');
         if (session.mode === 'boss') throw conflict(BOSS_ELSEWHERE);
 
-        const rows = await repo.attemptsOf(sessionId);
+        // Score, médailles et répétition espacée : premières réponses seulement.
+        const rows = await repo.firstAttemptsOf(sessionId);
         const regular = rows.filter((r) => !r.variant);
         const variants = rows.filter((r) => r.variant);
         const regularCorrect = regular.filter((r) => r.correct).length;
@@ -152,12 +197,12 @@ export function createTrainingService({ db, clock, random, onFinished }: Trainin
           });
         }
 
-        // Coffre d'équipement au hasard : plus probable avec un bon score, garanti par un sans-faute.
+        // Coffre d'équipement garanti à chaque série terminée (meilleure rareté sans faute) ;
+        // une partie close sans aucune réponse n'en donne pas.
         const profiles = profilesRepo(tx);
         const profile = await profiles.findForUpdate(session.profileId);
         if (!profile) throw notFound(PROFILE_NOT_FOUND);
-        const rolled = rollChest(regularCorrect, regular.length, random.float);
-        const chest = rolled ? { ...rolled, items: await inventoryRepo(tx).add(profile.id, rolled.items) } : null;
+        const chest = regular.length > 0 ? await openChest(tx, profile.id, regularCorrect, regular.length) : null;
         await profiles.credit(profile.id, {
           xp: xpGained,
           coins: coinsGained + (chest?.coins ?? 0),
@@ -184,7 +229,7 @@ export function createTrainingService({ db, clock, random, onFinished }: Trainin
           chest,
         };
       });
-      onFinished?.();
+      onFinished?.({ coins: summary.coinsGained + (summary.chest?.coins ?? 0), rubies: summary.chest?.rubies ?? 0 });
       return summary;
     },
   };

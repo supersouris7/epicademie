@@ -1,7 +1,7 @@
 import { asc, eq, gte, and, sql } from 'drizzle-orm';
-import type { Profile, ProfileCreate, ProfileUpdate } from '@questeo/shared';
+import type { HeroId, Profile, ProfileCreate, ProfileUpdate } from '@questeo/shared';
 import type { Executor } from '../../db/client.ts';
-import { profiles, type ProfileRow } from '../../db/schema.ts';
+import { ownedHeroes, profiles, type ProfileRow } from '../../db/schema.ts';
 
 /** Accès aux données des profils (aucune règle métier ici : voir profiles.service.ts). */
 
@@ -30,8 +30,28 @@ export interface Rewards {
 
 export function profilesRepo(db: Executor) {
   return {
-    async list(): Promise<Profile[]> {
-      const rows = await db.select().from(profiles).orderBy(asc(profiles.createdAt), asc(profiles.id));
+    /** Acad-Héros possédés (héros de départ, puis trouvés dans les coffres). */
+    async heroes(profileId: string): Promise<HeroId[]> {
+      const rows = await db
+        .select({ hero: ownedHeroes.hero })
+        .from(ownedHeroes)
+        .where(eq(ownedHeroes.profileId, profileId))
+        .orderBy(asc(ownedHeroes.obtainedAt), asc(ownedHeroes.hero));
+      return rows.map((r) => r.hero);
+    },
+
+    /** Ajoute un héros à la collection (sans effet s'il y est déjà). */
+    async addHero(profileId: string, hero: HeroId, source: 'depart' | 'coffre'): Promise<void> {
+      await db.insert(ownedHeroes).values({ profileId, hero, source }).onConflictDoNothing();
+    },
+
+    /** Profils d'une famille, du plus ancien au plus récent. */
+    async list(familyId: string): Promise<Profile[]> {
+      const rows = await db
+        .select()
+        .from(profiles)
+        .where(eq(profiles.familyId, familyId))
+        .orderBy(asc(profiles.createdAt), asc(profiles.id));
       return rows.map(toProfile);
     },
 
@@ -51,7 +71,7 @@ export function profilesRepo(db: Executor) {
       return row !== undefined;
     },
 
-    async insert(input: ProfileCreate & { readonly rubies: number }): Promise<ProfileRow> {
+    async insert(input: ProfileCreate & { readonly rubies: number; readonly familyId: string }): Promise<ProfileRow> {
       const [row] = await db
         .insert(profiles)
         .values({ ...input, hero: input.hero ?? 'alex' })
@@ -90,6 +110,16 @@ export function profilesRepo(db: Executor) {
         .update(profiles)
         .set({ coins: sql`${profiles.coins} - ${coins}`, rubies: sql`${profiles.rubies} + ${rubiesGained}` })
         .where(and(eq(profiles.id, id), gte(profiles.coins, coins)))
+        .returning();
+      return row;
+    },
+
+    /** Dépense en pièces ET rubis, seulement si le solde suffit (undefined sinon). */
+    async spendBoth(id: string, coins: number, rubies: number): Promise<ProfileRow | undefined> {
+      const [row] = await db
+        .update(profiles)
+        .set({ coins: sql`${profiles.coins} - ${coins}`, rubies: sql`${profiles.rubies} - ${rubies}` })
+        .where(and(eq(profiles.id, id), gte(profiles.coins, coins), gte(profiles.rubies, rubies)))
         .returning();
       return row;
     },

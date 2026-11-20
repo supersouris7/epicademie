@@ -72,7 +72,7 @@ export function bestMedal(a: BossMedal | null, b: BossMedal | null): BossMedal |
 /**
  * Ce qui se passe à l'écran après une réponse :
  * - `hit` : bonne réponse, l'adversaire est touché (mob vaincu ou boss −1 vie) ;
- * - `riposte` : erreur, riposte (−1 cœur), puis le mob s'enfuit ;
+ * - `riposte` : erreur, riposte (−1 cœur) ; l'adversaire reste et pose une autre question ;
  * - `blocked` : erreur, mais le bouclier absorbe la riposte.
  */
 export const BATTLE_OUTCOMES = ['hit', 'riposte', 'blocked'] as const;

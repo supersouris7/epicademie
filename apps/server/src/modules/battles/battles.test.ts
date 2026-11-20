@@ -9,7 +9,7 @@ import type {
   SessionSummary,
 } from '@questeo/shared';
 import { eq } from 'drizzle-orm';
-import { inventory, profiles, sessions } from '../../db/schema.ts';
+import { attempts, inventory, profiles, sessions } from '../../db/schema.ts';
 import { createTestApp, fixedRandom } from '../../testing/harness.ts';
 
 let t: Awaited<ReturnType<typeof createTestApp>>;
@@ -162,7 +162,7 @@ describe('combat de boss', () => {
       await app.inject({ method: 'POST', url: `/api/v1/sessions/${sid}/finish` })
     ).json<SessionSummary>();
     expect(summary.perfect).toBe(true);
-    expect(summary.chest).toEqual({ rarity: 'commun', items: {}, coins: 25, rubies: 0 });
+    expect(summary.chest).toEqual({ rarity: 'commun', items: {}, coins: 25, rubies: 0, hero: null });
 
     // Pièces du sans-faute et du coffre : de quoi acheter un indice.
     const buy = await app.inject({ method: 'POST', url: '/api/v1/shop', payload: { profileId, item: 'indice' } });
@@ -228,6 +228,10 @@ describe('équipement et objets en combat', () => {
     // Soin à cœurs pleins : refusé (rien n'est consommé).
     expect((await use('soin')).statusCode).toBe(409);
     expect((await overview()).inventory.soin).toBe(1);
+    // Réponse juste avec l'indice affiché : enregistrée comme réussite avec aide.
+    await reply(first.json<BattleView>(), true);
+    const rows = await t.database.db.select().from(attempts).where(eq(attempts.sessionId, b.id));
+    expect(rows.map((r) => [r.correct, r.hinted])).toEqual([[true, true]]);
   });
 
   it('combat inconnu ou terminé : 404 / 409', async () => {

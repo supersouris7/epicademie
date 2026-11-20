@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { ITEMS, ITEM_INFO, type Chest } from '@questeo/shared';
+import { ITEMS, ITEM_INFO, type Chest, HERO_NAMES } from '@questeo/shared';
 import { ITEM_ICONS } from '../../../design/items.ts';
 import { playSound } from '../../lib/sound.ts';
 import { GameButton } from './GameButton.tsx';
@@ -64,6 +64,17 @@ export function ChestReveal({ chest }: { readonly chest: Chest | null }) {
     ...items.map((i) => ({ id: i, icon: ITEM_ICONS[i], label: `${ITEM_INFO[i].name} +${chest.items[i] ?? 0}` })),
     { id: 'coins', icon: 'icons-resources-coin', label: `+${chest.coins} pièces` },
     ...(chest.rubies > 0 ? [{ id: 'rubies', icon: 'icons-resources-gem', label: `+${chest.rubies} rubis` }] : []),
+    ...(chest.hero
+      ? [
+          {
+            id: 'hero',
+            icon: 'icons-navigation-team',
+            label: chest.hero.duplicate
+              ? `${HERO_NAMES[chest.hero.id]} est déjà dans ta collection : changé en pièces`
+              : `Nouvel Acad-Héros : ${HERO_NAMES[chest.hero.id]} !`,
+          },
+        ]
+      : []),
   ];
 
   // Après la révélation : le butin reste résumé dans le bilan.

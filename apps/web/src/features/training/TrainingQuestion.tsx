@@ -5,6 +5,7 @@ import { Feedback } from '../../shared/question/Feedback.tsx';
 import { Figure } from '../../shared/question/figures/Figure.tsx';
 import { MathText } from '../../shared/question/MathText.tsx';
 import { QuestionTools } from '../../shared/question/QuestionTools.tsx';
+import { ReportButton } from '../../shared/question/ReportButton.tsx';
 import { DOCK_HEIGHT } from '../../shared/question/tools.ts';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
@@ -51,9 +52,14 @@ export function TrainingQuestion({
           <section
             className={`flex min-h-0 flex-col gap-3 overflow-y-auto pb-1 [&>*]:shrink-0 ${explaining ? 'side:max-h-none max-h-[38dvh] flex-none' : 'flex-1'}`}
           >
-            <QuestionMeta title={skill?.title} variant={current.plan.variant} level={current.plan.level} />
+            <div className="flex items-start gap-2">
+              <div className="min-w-0 flex-1">
+                <QuestionMeta title={skill?.title} variant={current.plan.variant} level={current.plan.level} />
+              </div>
+              <ReportButton question={current.question} />
+            </div>
             <h1 className="text-2xl leading-snug font-bold sm:text-3xl xl:text-4xl">
-              <MathText text={current.question.prompt} />
+              <MathText text={current.question.prompt} terms />
             </h1>
             {retry && !answered && <RetryHint retry={retry} hint={current.question.hint} />}
             {advice && !answered && !retry && (advice === 'brouillon' || !skill?.mental) && (

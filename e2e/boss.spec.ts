@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { fmt, generate, type Question } from '../packages/content/src/index.ts';
 import type { BattleAnswerResult, BattleView } from '../packages/shared/src/index.ts';
+import { signupFamily } from './family.ts';
 
 type Answer = { kind: 'choice'; index: number } | { kind: 'number'; text: string };
 
@@ -32,8 +33,7 @@ async function answer(page: Page, view: BattleView, right: boolean) {
 test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', async ({ page }) => {
   test.setTimeout(90_000);
   const name = `Boss${Date.now() % 10000}`;
-  await page.goto('/');
-  await page.getByRole('button', { name: /Nouveau joueur/ }).click();
+  await signupFamily(page);
   await page.getByPlaceholder('Ex. Léa').fill(name);
   await page.getByRole('button', { name: 'Un garçon' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
@@ -140,8 +140,7 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
 
 test('Défaite : 5 secondes pour recommencer, puis l’entraînement', async ({ page }) => {
   test.setTimeout(60_000);
-  await page.goto('/');
-  await page.getByRole('button', { name: /Nouveau joueur/ }).click();
+  await signupFamily(page);
   await page.getByPlaceholder('Ex. Léa').fill(`Perdu${Date.now() % 10000}`);
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');

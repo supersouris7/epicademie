@@ -165,14 +165,25 @@ export type QuestionDraft = Omit<Question, 'skillId' | 'level' | 'seed' | 'traps
   readonly targetSeconds?: number;
 };
 
-/** Conversion montrée dans le tableau : le nombre placé sous son unité, puis lu dans l'unité demandée. */
-export interface Demo {
-  readonly kind: 'conversion';
-  readonly table: 'longueur' | 'aire' | 'volume' | 'masse';
-  readonly value: Rational;
-  readonly from: string;
-  readonly to: string;
-}
+/**
+ * Schéma montré dans l'explication (et dans le dictionnaire) :
+ * - `conversion` : le nombre placé sous son unité dans le tableau, puis lu dans l'unité demandée ;
+ * - `division` : la division posée, chaque nombre étiqueté (dividende, diviseur, quotient, reste),
+ *   le partage en paquets et l'égalité dividende = diviseur × quotient + reste ;
+ * - `unites` : le lien longueur → aire → volume (1 cm, 1 cm², 1 cm³) ;
+ * - `rangs` : le nombre dans le tableau des rangs (partie entière, décimales).
+ */
+export type Demo =
+  | {
+      readonly kind: 'conversion';
+      readonly table: 'longueur' | 'aire' | 'volume' | 'masse';
+      readonly value: Rational;
+      readonly from: string;
+      readonly to: string;
+    }
+  | { readonly kind: 'division'; readonly dividend: number; readonly divisor: number }
+  | { readonly kind: 'unites'; readonly focus: 'longueur' | 'aire' | 'volume'; readonly unit?: string }
+  | { readonly kind: 'rangs'; readonly value: string };
 
 export interface Lesson {
   /** « Le truc à retenir » : 2-3 phrases courtes à hauteur d'enfant, avec un mini-exemple. */
@@ -201,7 +212,15 @@ export interface Skill {
   readonly advice?: Advice;
   readonly lesson: Lesson;
   readonly generate: (rng: Rng, level: Level) => QuestionDraft;
+  /**
+   * Version de la notion (1 par défaut). À incrémenter quand le générateur change les énoncés ou
+   * les réponses : l'historique des réponses garde la version avec laquelle l'élève a répondu.
+   */
+  readonly version?: number;
 }
+
+/** Version d'une notion (1 si non précisée). */
+export const skillVersion = (skill: Pick<Skill, 'version'> | undefined) => skill?.version ?? 1;
 
 /** Domaines des programmes officiels (maths cycles 3 et 4). */
 export const DOMAINS = {
@@ -211,6 +230,7 @@ export const DOMAINS = {
   donnees: 'Données et probabilités',
   fonctions: 'Proportionnalité, fonctions',
   informatique: 'Pensée informatique',
+  langue: 'Langue : grammaire et vocabulaire',
 } as const;
 export type DomainId = keyof typeof DOMAINS;
 

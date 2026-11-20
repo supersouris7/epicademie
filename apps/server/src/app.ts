@@ -14,11 +14,25 @@ import { registerErrorHandling, send } from './core/http/errors.ts';
 import { registerSecurity } from './core/http/security.ts';
 import { registerOpenApi } from './core/http/openapi.ts';
 import { logErrorReporter, type ErrorReporter } from './core/observability/error-reporter.ts';
+import { withErrorJournal } from './core/observability/error-journal.ts';
 import { createMetrics, instrumentHttp, type Metrics } from './core/observability/metrics.ts';
+import { registerAuth } from './core/http/auth.ts';
+import { logMailer, type Mailer } from './core/mail/mailer.ts';
+import {
+  accountsRoutes,
+  createAccountsService,
+  createOwnership,
+  type AccountsService,
+} from './modules/accounts/index.ts';
 import { createProfilesService, profilesRoutes, type ProfilesService } from './modules/profiles/index.ts';
+import { createLearningService, learningRoutes } from './modules/learning/index.ts';
+import { createPedagogyService, pedagogyRoutes } from './modules/pedagogy/index.ts';
+import { billingRoutes, createBillingService, type BillingService } from './modules/billing/index.ts';
 import { createTrainingService, trainingRoutes } from './modules/training/index.ts';
 import { battlesRoutes, createBattlesService } from './modules/battles/index.ts';
 import { createShopService, inventoryRoutes } from './modules/inventory/index.ts';
+import { createHqService, hqRoutes } from './modules/hq/index.ts';
+import { createInsightsService, insightsRoutes } from './modules/insights/index.ts';
 import { createPresence, type Presence } from './modules/realtime/index.ts';
 import { opsRoutes, systemRoutes } from './modules/system/index.ts';
 import { telemetryRoutes } from './modules/telemetry/index.ts';
@@ -40,10 +54,15 @@ export type AppConfig = Pick<
   | 'logLevel'
   | 'trustProxy'
   | 'rateLimitMax'
+  | 'authRateLimitMax'
   | 'metricsToken'
   | 'apiDocs'
+  | 'corsOrigins'
   | 'timeZone'
   | 'version'
+  | 'cookieSecure'
+  | 'sessionDays'
+  | 'billing'
 >;
 
 export interface AppDeps {
@@ -54,6 +73,10 @@ export interface AppDeps {
   readonly presence?: Presence;
   readonly reporter?: ErrorReporter;
   readonly metrics?: Metrics;
+  /** Envoi d'e-mails ; par défaut, journal sans contenu (aucun fournisseur configuré). */
+  readonly mailer?: Mailer;
+  /** Appels HTTP sortants (prestataire de paiement) ; remplaçable en test. */
+  readonly fetcher?: typeof fetch;
 }
 
 export interface App {
@@ -64,6 +87,8 @@ export interface App {
   readonly clock: Clock;
   readonly random: Random;
   readonly profiles: ProfilesService;
+  readonly accounts: AccountsService;
+  readonly billing: BillingService;
 }
 
 /** Corps de requête maximal (les réponses d'exercice font quelques centaines d'octets). */
@@ -94,8 +119,16 @@ export async function buildApp(deps: AppDeps): Promise<App> {
   const clock = deps.clock ?? systemClock(config.timeZone);
   const random = deps.random ?? systemRandom;
   const presence = deps.presence ?? createPresence();
-  const reporter = deps.reporter ?? logErrorReporter(http.log);
   const metrics = deps.metrics ?? createMetrics();
+  // Journal des erreurs récentes (administration) devant le suivi d'erreurs choisi.
+  const reporter = withErrorJournal(deps.reporter ?? logErrorReporter(http.log), {
+    now: () => clock.now(),
+    counter: metrics.errors,
+  });
+  const rewarded = ({ coins, rubies }: { coins: number; rubies: number }) => {
+    metrics.rewards.inc({ currency: 'pieces' }, coins);
+    metrics.rewards.inc({ currency: 'rubis' }, rubies);
+  };
 
   registerErrorHandling(http, reporter);
   instrumentHttp(http, metrics);
@@ -104,20 +137,54 @@ export async function buildApp(deps: AppDeps): Promise<App> {
 
   // Services métier (un par module), partagés par les routes HTTP et le temps réel.
   const { db } = database;
+  const appUrl = () => config.publicUrl ?? `http://localhost:${config.port}`;
+  const accounts = createAccountsService({
+    db,
+    clock,
+    // Le lien de réinitialisation n'apparaît dans les journaux qu'en développement.
+    mailer: deps.mailer ?? logMailer(http.log, { revealContent: config.env === 'development' }),
+    appUrl,
+    sessionDays: config.sessionDays,
+  });
+  const owns = createOwnership(db);
+  registerAuth(http, { resolve: (token) => accounts.resolve(token), allowedOrigins: config.corsOrigins });
   const profiles = createProfilesService(db);
   const training = createTrainingService({
     db,
     clock,
     random,
-    onFinished: () => metrics.finishedGames.inc({ kind: 'entrainement' }),
+    timeZone: config.timeZone,
+    onFinished: (r) => {
+      metrics.finishedGames.inc({ kind: 'entrainement' });
+      rewarded(r);
+    },
   });
   const battles = createBattlesService({
     db,
     clock,
     random,
-    onFinished: () => metrics.finishedGames.inc({ kind: 'boss' }),
+    onFinished: (r) => {
+      metrics.finishedGames.inc({ kind: 'boss' });
+      rewarded(r);
+    },
   });
   const shop = createShopService(db);
+  const learning = createLearningService({ db, clock, timeZone: config.timeZone });
+  const hq = createHqService({
+    db,
+    clock,
+    badges: (id) => learning.badges(id),
+    bossRecords: async (id) => (await battles.overview(id)).records,
+  });
+  const pedagogy = createPedagogyService({ db, clock });
+  const billing = createBillingService({
+    db,
+    clock,
+    config: config.billing,
+    appUrl,
+    fetcher: deps.fetcher,
+    onSettled: (status) => metrics.payments.inc({ status }),
+  });
 
   await http.register(
     opsRoutes({ ping: () => database.ping(), metrics, metricsToken: config.metricsToken, version: config.version }),
@@ -131,20 +198,32 @@ export async function buildApp(deps: AppDeps): Promise<App> {
             const lan = detectLanAddress();
             return config.publicUrl ?? (lan ? `http://${lan}:${config.port}` : null);
           },
-          onlineIds: () => presence.onlineIds(),
+          onlineIds: (familyId) => presence.onlineIds(familyId),
         }),
       );
-      await v1.register(profilesRoutes(profiles));
-      await v1.register(trainingRoutes(training));
-      await v1.register(battlesRoutes(battles));
-      await v1.register(inventoryRoutes(shop));
+      await v1.register(
+        accountsRoutes(accounts, {
+          secure: config.cookieSecure,
+          maxAgeDays: config.sessionDays,
+          rateLimitMax: config.authRateLimitMax,
+        }),
+      );
+      await v1.register(profilesRoutes(profiles, owns));
+      await v1.register(trainingRoutes(training, owns, billing));
+      await v1.register(learningRoutes(learning, owns));
+      await v1.register(pedagogyRoutes(pedagogy, owns));
+      await v1.register(battlesRoutes(battles, owns, billing));
+      await v1.register(billingRoutes(billing, config.billing.stripeWebhookSecret));
+      await v1.register(inventoryRoutes(shop, owns));
+      await v1.register(hqRoutes(hq, owns));
+      await v1.register(insightsRoutes(createInsightsService({ db, clock }), () => reporter.recent()));
       await v1.register(telemetryRoutes(reporter));
     },
     { prefix: API_PREFIX },
   );
 
   await registerWeb(http, config.webDir);
-  return { http, presence, metrics, reporter, clock, random, profiles };
+  return { http, presence, metrics, reporter, clock, random, profiles, accounts, billing };
 }
 
 /**

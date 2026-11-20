@@ -12,6 +12,13 @@ export interface Metrics {
   readonly onlinePlayers: Gauge;
   readonly openArenas: Gauge;
   readonly finishedGames: Counter<'kind'>;
+  readonly realtimeDisconnects: Counter;
+  /** Erreurs signalées, par source (serveur, navigateur, temps réel, processus). */
+  readonly errors: Counter<'source'>;
+  /** Pièces et rubis distribués (économie : détecter une dérive). */
+  readonly rewards: Counter<'currency'>;
+  /** Paiements clos, par issue. */
+  readonly payments: Counter<'status'>;
 }
 
 export function createMetrics(): Metrics {
@@ -28,6 +35,29 @@ export function createMetrics(): Metrics {
     openArenas: new Gauge({
       name: 'questeo_open_arenas',
       help: 'Arènes ouvertes (salon ou partie)',
+      registers: [registry],
+    }),
+    realtimeDisconnects: new Counter({
+      name: 'questeo_realtime_disconnects_total',
+      help: 'Déconnexions temps réel (réseau, veille, départ)',
+      registers: [registry],
+    }),
+    errors: new Counter({
+      name: 'questeo_errors_total',
+      help: 'Erreurs signalées',
+      labelNames: ['source'],
+      registers: [registry],
+    }),
+    rewards: new Counter({
+      name: 'questeo_rewards_total',
+      help: 'Monnaie distribuée en fin de partie',
+      labelNames: ['currency'],
+      registers: [registry],
+    }),
+    payments: new Counter({
+      name: 'questeo_payments_total',
+      help: 'Paiements clos',
+      labelNames: ['status'],
       registers: [registry],
     }),
     finishedGames: new Counter({
