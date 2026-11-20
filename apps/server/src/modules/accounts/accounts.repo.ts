@@ -132,3 +132,19 @@ export function accountsRepo(db: Executor) {
 /** Donne un rôle à un compte existant (commande d'exploitation `admin`, jamais par l'API). */
 export const setAccountRole = (db: Executor, email: string, role: AccountRole) =>
   accountsRepo(db).setRole(email.trim().toLowerCase(), role);
+
+/**
+ * Rattache les profils de la bêta (créés avant les comptes, sans famille) à la famille d'un
+ * compte (commande d'exploitation `admin rattacher`). Seuls les profils sans famille sont
+ * touchés ; renvoie leurs prénoms, ou null si le compte n'existe pas.
+ */
+export async function attachOrphanProfiles(db: Executor, email: string): Promise<string[] | null> {
+  const account = await accountsRepo(db).findByEmail(email.trim().toLowerCase());
+  if (!account) return null;
+  const rows = await db
+    .update(profiles)
+    .set({ familyId: account.familyId })
+    .where(isNull(profiles.familyId))
+    .returning({ name: profiles.name });
+  return rows.map((r) => r.name);
+}

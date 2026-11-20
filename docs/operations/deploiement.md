@@ -42,6 +42,11 @@ si la base est à jour, avant le redémarrage du serveur).
 
 - **Premier administrateur** : créer le compte depuis l'application, puis
   `docker compose run --rm questeo node server/dist/admin.js role <email> admin`.
-- **Profils de la bêta** (créés avant les comptes) : conservés en base, sans famille, invisibles.
+- **Profils de la bêta** (créés avant les comptes) : conservés en base, sans famille, invisibles
+  tant qu'ils ne sont pas rattachés. Après la migration, créer le compte familial depuis
+  l'application, puis :
+  `docker compose run --rm questeo node server/dist/admin.js rattacher <email>`.
+  Tous les profils sans famille (avec leurs progrès) rejoignent cette famille ; les profils des
+  autres familles ne sont pas touchés.
 - **E-mails** : aucun fournisseur branché ; les demandes de mot de passe oublié sont journalisées
   sans contenu. Choisir un fournisseur avant l'ouverture au public.
