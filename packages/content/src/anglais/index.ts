@@ -1,13 +1,14 @@
 import type { Chapter, Level, Skill } from '../types.ts';
 import { choice } from '../build.ts';
 import { IRREGULAR_VERBS, regularised, verbsFor } from './verbs.ts';
+import { ENGLISH_GRAMMAR_CHAPTERS, REGULAR_PAST_SKILL } from './grammaire.ts';
 
 /**
  * Anglais — pilote (docs/adr/0024-contenus-hors-maths.md) : verbes irréguliers, classe de 5e
  * (cycle 4). Formes vérifiées : voir verbs.ts.
  */
 const SOURCE =
-  'Anglais, cycle 4 (5e) : prétérit et participe passé des verbes irréguliers. Formes vérifiées sur Wiktionary, Appendix:English irregular verbs (révision 91798533).';
+  'Anglais, cycle 4 (5e) : prétérit et participe passé des verbes irréguliers. Formes : British Council, LearnEnglish, « Irregular verbs ».';
 
 const lesson = (memo: string[]) => ({ memo, source: SOURCE });
 const draw = (rng: { pick<T>(l: readonly T[]): T }, level: Level) => rng.pick(verbsFor(level));
@@ -74,10 +75,10 @@ const SENTENCES: readonly { readonly base: string; readonly before: string; read
   { base: 'eat', before: 'Last night, Tom', after: 'a big pizza.' },
   { base: 'come', before: 'Two days ago, my cousins', after: 'to my house.' },
   { base: 'make', before: 'Yesterday, Lisa', after: 'a chocolate cake.' },
-  { base: 'drink', before: 'This morning, I', after: 'a glass of orange juice.' },
-  { base: 'buy', before: 'Last Saturday, my dad', after: 'a new bike.' },
+  { base: 'get', before: 'For my birthday, I', after: 'a new bike.' },
+  { base: 'buy', before: 'Last Saturday, my dad', after: 'a new car.' },
   { base: 'write', before: 'Yesterday, she', after: 'a letter to her grandmother.' },
-  { base: 'swim', before: 'Last summer, we', after: 'in the sea.' },
+  { base: 'win', before: 'Last Sunday, our team', after: 'the match.' },
   { base: 'meet', before: 'Last year, I', after: 'a famous singer.' },
 ];
 
@@ -115,12 +116,14 @@ const sentence: Skill = {
 };
 
 export const ANGLAIS_CHAPTERS: readonly Chapter[] = [
+  ...ENGLISH_GRAMMAR_CHAPTERS.filter((c) => ['cm1', 'cm2', '6e'].includes(c.grade)),
   {
     id: 'a5-verbes-irreguliers',
     subject: 'anglais',
     grade: '5e',
     domain: 'langue',
     title: 'Les verbes irréguliers',
-    skills: [preterit, participle, sentence],
+    skills: [preterit, participle, sentence, REGULAR_PAST_SKILL],
   },
+  ...ENGLISH_GRAMMAR_CHAPTERS.filter((c) => ['4e', '3e'].includes(c.grade)),
 ];
