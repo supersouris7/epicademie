@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fmt, generate } from '@questeo/content';
 import type { ArenaView, Profile } from '@questeo/shared';
-import { createArenas, type Arenas } from './arena.ts';
+import { ARENA_GRACE_MS, createArenas, LOBBY_TTL_MS, type Arenas } from './arena.ts';
 import type { Presence } from './presence.ts';
 import { fixedClock } from '../../testing/harness.ts';
 import { systemRandom } from '../../core/random.ts';
@@ -121,5 +121,56 @@ describe('arène', () => {
     const next = arenas.viewOf(lea.id);
     expect(next?.turn).toBe(v.turn + 1);
     expect(next?.last).toMatchObject({ correct: true, targetId: other });
+  });
+
+  describe('connexion perdue', () => {
+    const playing = () => {
+      arenas.create(lea, { chapterId: 'm5-calcul', invite: [tom.id] });
+      arenas.respond(tom.id, arenas.viewOf(lea.id)?.id ?? '', true);
+      arenas.start(lea.id);
+    };
+
+    it('le joueur reste « déconnecté » quelques secondes, puis reprend sa place', () => {
+      playing();
+      arenas.disconnected(tom.id);
+      expect(arenas.viewOf(lea.id)?.players.find((p) => p.id === tom.id)?.away).toBe(true);
+      vi.advanceTimersByTime(ARENA_GRACE_MS - 1000);
+      arenas.reconnected(tom.id);
+      const v = arenas.viewOf(lea.id);
+      expect(v?.phase).toBe('playing');
+      expect(v?.players.find((p) => p.id === tom.id)?.away).toBeUndefined();
+      // Le délai annulé ne l'élimine plus.
+      vi.advanceTimersByTime(ARENA_GRACE_MS);
+      expect(arenas.viewOf(lea.id)?.players.find((p) => p.id === tom.id)?.hearts).toBeGreaterThan(0);
+    });
+
+    it('sans retour dans le délai : il quitte l’arène, l’autre gagne', () => {
+      playing();
+      arenas.disconnected(tom.id);
+      arenas.disconnected(tom.id); // une seconde déconnexion ne relance pas le délai
+      vi.advanceTimersByTime(ARENA_GRACE_MS + 10);
+      expect(arenas.viewOf(lea.id)).toMatchObject({ phase: 'over', winnerId: lea.id });
+    });
+
+    it('reconnexion hors arène ou sans déconnexion : rien ne change', () => {
+      arenas.reconnected(lea.id);
+      arenas.disconnected(lea.id);
+      expect(arenas.count()).toBe(0);
+    });
+
+    it('salon jamais lancé : fermé pour tous au bout de 10 minutes', () => {
+      arenas.create(lea, { chapterId: 'm5-calcul', invite: [tom.id] });
+      vi.advanceTimersByTime(LOBBY_TTL_MS + 10);
+      expect(arenas.count()).toBe(0);
+      expect(last(tom.id, 'arena:closed')).toBeDefined();
+      expect(last(lea.id, 'arena:closed')).toBeDefined();
+    });
+
+    it('salon lancé à temps : pas de fermeture automatique', () => {
+      playing();
+      vi.advanceTimersByTime(LOBBY_TTL_MS + 10);
+      // La partie se joue (ou se termine par les minuteurs de tour), mais le salon n'est jamais « fermé ».
+      expect(last(tom.id, 'arena:closed')).toBeUndefined();
+    });
   });
 });

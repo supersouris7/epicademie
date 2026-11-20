@@ -29,7 +29,7 @@ Décisions prises par le responsable du produit le 20/11/2026 :
 | 3   | P0   | Suivi des apprentissages (tentatives, indices, mode, individuel/collectif) | ✅   |
 | 4   | P0   | Modèle pédagogique, validation automatique du contenu, signalements, admin | ✅   |
 | 5   | P0   | Économie sûre : idempotence, rejeu, coffres uniques                        | ✅   |
-| 6   | P0   | Multijoueur fiable (Arène : reconnexion, abandon, expiration)              | ⏳   |
+| 6   | P0   | Multijoueur fiable (Arène : reconnexion, abandon, expiration)              | ✅   |
 | 7   | P1   | Moteur adaptatif + révisions espacées (états pédagogiques)                 | ⏳   |
 | 8   | P1   | Tableau de bord parent                                                     | ⏳   |
 | 9   | P1   | Badges                                                                     | ⏳   |

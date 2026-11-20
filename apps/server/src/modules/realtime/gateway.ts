@@ -108,6 +108,8 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
     }
     presence.join(socket, profile, socket.data.familyId);
     broadcastPresence();
+    // Reconnexion pendant une arène : le joueur reprend sa place et reçoit l'état en cours.
+    arenas.reconnected(profile.id);
     const current = arenas.viewOf(profile.id);
     if (current) socket.emit('arena', current);
 
@@ -162,7 +164,9 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
 
     socket.on('disconnect', () => {
       presence.leave(socket, profile.id);
-      arenas.leave(profile.id);
+      // Pas d'élimination immédiate : quelques secondes pour revenir (voir ARENA_GRACE_MS).
+      arenas.disconnected(profile.id);
+      metrics?.realtimeDisconnects.inc();
       broadcastPresence();
     });
   });

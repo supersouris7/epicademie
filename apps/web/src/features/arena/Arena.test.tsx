@@ -103,6 +103,18 @@ describe('arène', () => {
   it('défaite : le nom du gagnant', async () => {
     renderApp('/arene');
     await screen.findByText(/Le chapitre/);
+    serverSays(
+      'arena',
+      arena({
+        phase: 'playing',
+        turnId: me.id,
+        players: [
+          { id: me.id, name: me.name, hero: me.hero, hearts: 3, ready: true },
+          { id: tom.id, name: tom.name, hero: tom.hero, hearts: 3, ready: true, away: true },
+        ],
+      }),
+    );
+    expect(await screen.findByText('Déconnecté…')).toBeInTheDocument();
     serverSays('arena', arena({ phase: 'over', winnerId: tom.id }));
     expect(await screen.findByRole('heading', { name: 'Tom a gagné !' })).toBeInTheDocument();
   });

@@ -12,6 +12,7 @@ export interface Metrics {
   readonly onlinePlayers: Gauge;
   readonly openArenas: Gauge;
   readonly finishedGames: Counter<'kind'>;
+  readonly realtimeDisconnects: Counter;
 }
 
 export function createMetrics(): Metrics {
@@ -28,6 +29,11 @@ export function createMetrics(): Metrics {
     openArenas: new Gauge({
       name: 'questeo_open_arenas',
       help: 'Arènes ouvertes (salon ou partie)',
+      registers: [registry],
+    }),
+    realtimeDisconnects: new Counter({
+      name: 'questeo_realtime_disconnects_total',
+      help: 'Déconnexions temps réel (réseau, veille, départ)',
       registers: [registry],
     }),
     finishedGames: new Counter({

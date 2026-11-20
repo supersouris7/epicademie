@@ -118,6 +118,11 @@ function PlayerChip({ arena, id, me }: { readonly arena: ArenaView; readonly id:
         {p.name}
         {id === me ? ' (toi)' : ''}
       </span>
+      {p.away && (
+        <span className="text-danger text-xs font-bold" role="status">
+          Déconnecté…
+        </span>
+      )}
       {arena.phase === 'lobby' ? (
         <span className="text-xs font-bold">{p.ready ? 'Prêt !' : 'Invité…'}</span>
       ) : (

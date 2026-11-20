@@ -68,6 +68,34 @@ describe('temps réel', () => {
     expect(await refusal(join('00000000-0000-4000-8000-000000000000'))).toBe('Profil introuvable');
   });
 
+  it('arène : connexion perdue puis reprise sur un autre appareil de la famille', async () => {
+    const lea = await profile('Léa');
+    const tom = await profile('Tom');
+    const a = join(lea.id);
+    const b = join(tom.id);
+    await once<OnlinePlayer[]>(a, 'presence', (l) => l.length === 2);
+    const invited = once<ArenaInvite>(b, 'arena:invite');
+    a.emit('arena:create', { chapterId: 'm5-calcul', invite: [tom.id] });
+    const inv = await invited;
+    const ready = once<ArenaView>(a, 'arena', (v) => v.players.every((p) => p.ready));
+    b.emit('arena:respond', { arenaId: inv.arenaId, accept: true });
+    await ready;
+    const playing = once<ArenaView>(a, 'arena', (v) => v.phase === 'playing');
+    a.emit('arena:start');
+    await playing;
+
+    // Tom perd la connexion : Léa le voit « déconnecté », la partie continue.
+    const away = once<ArenaView>(a, 'arena', (v) => v.players.some((p) => p.id === tom.id && p.away === true));
+    b.disconnect();
+    expect((await away).phase).toBe('playing');
+    // Il revient sur une autre tablette : il retrouve la partie en cours.
+    const again = join(tom.id);
+    const resumed = await once<ArenaView>(again, 'arena');
+    expect(resumed).toMatchObject({ id: inv.arenaId, phase: 'playing' });
+    const back = await once<ArenaView>(a, 'arena', (v) => v.players.every((p) => !p.away));
+    expect(back.phase).toBe('playing');
+  });
+
   it('messages prédéfinis et emoji seulement', async () => {
     const lea = await profile('Léa');
     const tom = await profile('Tom');

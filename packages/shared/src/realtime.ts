@@ -105,6 +105,8 @@ export interface ArenaPlayer {
   readonly hearts: number;
   /** A accepté l'invitation (l'hôte : d'emblée). */
   readonly ready: boolean;
+  /** Connexion perdue : sa place est gardée quelques secondes (reconnexion possible). */
+  readonly away?: boolean;
 }
 
 export interface ArenaQuestion {

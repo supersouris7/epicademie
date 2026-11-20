@@ -36,10 +36,18 @@ interface Arena {
   timer: NodeJS.Timeout | null;
   /** Âges des joueurs (handicap des plus grands). */
   readonly ages: Map<string, number | null>;
+  /** Joueurs déconnectés, avec le minuteur qui les retire s'ils ne reviennent pas. */
+  readonly away: Map<string, NodeJS.Timeout>;
+  /** Fermeture du salon s'il n'est jamais lancé. */
+  lobbyTimer: NodeJS.Timeout | null;
 }
 
 /** Durée pendant laquelle une arène terminée reste consultable. */
 const FINISHED_ARENA_TTL_MS = 60_000;
+/** Délai de reconnexion d'un joueur (Wi-Fi qui saute, tablette en veille, autre appareil). */
+export const ARENA_GRACE_MS = 30_000;
+/** Un salon jamais lancé ferme au bout de ce délai. */
+export const LOBBY_TTL_MS = 10 * 60_000;
 
 export interface ArenaDeps {
   readonly presence: Presence;
@@ -70,7 +78,7 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
       hostId: a.hostId,
       chapterId: a.chapterId,
       phase: s ? (s.over ? 'over' : 'playing') : 'lobby',
-      players: s ? s.players : a.players,
+      players: (s ? s.players : a.players).map((p) => (a.away.has(p.id) ? { ...p, away: true } : p)),
       turnId: s && !s.over ? (s.players[s.current]?.id ?? null) : null,
       turn: s?.turn ?? 0,
       question: s && !s.over ? a.question : null,
@@ -87,8 +95,16 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
 
   const remove = (a: Arena) => {
     if (a.timer) clearTimeout(a.timer);
+    if (a.lobbyTimer) clearTimeout(a.lobbyTimer);
+    for (const t of a.away.values()) clearTimeout(t);
     arenas.delete(a.id);
     counted();
+  };
+
+  /** Ferme un salon pour tous ses joueurs. */
+  const closeLobby = (a: Arena) => {
+    for (const p of a.players) emit(p.id, 'arena:closed', a.id);
+    remove(a);
   };
 
   /** Tire la question du joueur dont c'est le tour et arme le minuteur. */
@@ -158,7 +174,12 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
         deadline: null,
         timer: null,
         ages: new Map(),
+        away: new Map(),
+        lobbyTimer: null,
       };
+      a.lobbyTimer = setTimeout(() => {
+        if (!a.state) closeLobby(a);
+      }, LOBBY_TTL_MS);
       arenas.set(a.id, a);
       counted();
       const inv: ArenaInvite = {
@@ -191,6 +212,8 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
         return; // Pas assez de joueurs prêts.
       }
       for (const p of a.players) if (!p.ready) emit(p.id, 'arena:closed', a.id);
+      if (a.lobbyTimer) clearTimeout(a.lobbyTimer);
+      a.lobbyTimer = null;
       a.players = ready;
       a.state = state;
       const today = clock.today();
@@ -221,8 +244,7 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
       if (!a.state) {
         // Salon : l'hôte qui part ferme le salon ; un invité qui part en sort.
         if (a.hostId === profileId) {
-          for (const p of a.players) emit(p.id, 'arena:closed', a.id);
-          remove(a);
+          closeLobby(a);
         } else {
           a.players = a.players.filter((p) => p.id !== profileId);
           push(a);
@@ -239,9 +261,36 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
       onBusyChange();
     },
 
+    /**
+     * Connexion perdue : le joueur garde sa place `ARENA_GRACE_MS` (les autres le voient
+     * « déconnecté ») ; s'il ne revient pas, il quitte l'arène. Son tour continue de s'écouler.
+     */
+    disconnected(profileId: string): void {
+      const a = arenaOf(profileId);
+      if (!a || a.away.has(profileId)) return;
+      a.away.set(
+        profileId,
+        setTimeout(() => {
+          a.away.delete(profileId);
+          this.leave(profileId);
+        }, ARENA_GRACE_MS),
+      );
+      push(a);
+    },
+
+    /** Le joueur revient (même appareil ou un autre de la famille) : il reprend sa place. */
+    reconnected(profileId: string): void {
+      const a = arenaOf(profileId);
+      const timer = a?.away.get(profileId);
+      if (!a || !timer) return;
+      clearTimeout(timer);
+      a.away.delete(profileId);
+      push(a);
+    },
+
     /** Arrêt du serveur : plus aucun minuteur actif. */
     dispose(): void {
-      for (const a of arenas.values()) if (a.timer) clearTimeout(a.timer);
+      for (const a of [...arenas.values()]) remove(a);
       arenas.clear();
     },
   };
