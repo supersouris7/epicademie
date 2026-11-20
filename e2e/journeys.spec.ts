@@ -71,7 +71,7 @@ test('Mes progrès : trophées et badges visibles dès le départ', async ({ pag
   await createProfile(page, `Pro${Date.now() % 10000}`);
   await page.goto('/progres');
   await expect(page.getByRole('heading', { name: 'Trophées' })).toBeVisible();
-  await expect(page.getByText(/Acad-Héros trouvés \(1 sur 3\)/)).toBeVisible();
+  await expect(page.getByText(/Acad-Héros trouvés \(1 sur 2\)/)).toBeVisible();
   await expect(page.getByText('Chasseur de boss').first()).toBeVisible();
 });
 

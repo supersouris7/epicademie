@@ -7,7 +7,7 @@ import { useToast } from '../../shared/ui/Toast.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { OnlineBanner } from '../realtime/index.ts';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
-import { heroPoseSrc } from '../../design/assets.ts';
+import { CharacterSprite } from '../../shared/ui/game/CharacterSprite.tsx';
 import { useEntrance } from '../../shared/lib/entrance.ts';
 
 /** Les deux grands modes jouables, chacun sa couleur. */
@@ -21,7 +21,6 @@ export function Hub({ profile }: { readonly profile: Profile }) {
   const enter = useEntrance();
   const navigate = useNavigate();
   const [toast, showToast] = useToast();
-  const pose = heroPoseSrc(profile.hero, 'idle');
 
   return (
     <PageShell nav={profile}>
@@ -57,15 +56,8 @@ export function Hub({ profile }: { readonly profile: Profile }) {
           transition={{ type: 'spring', stiffness: 160, damping: 16 }}
           className="flex flex-col items-center"
         >
-          {pose && (
-            <img
-              src={pose}
-              alt=""
-              aria-hidden
-              draggable={false}
-              className="aspect-square w-full max-w-72 object-contain"
-            />
-          )}
+          {/* Le héros en pied, animé sur place (bande de 8 images). */}
+          <CharacterSprite hero={profile.hero} state="idle" height="min(18rem, 40vw)" />
           <span className="font-display text-toon text-2xl tracking-wide">{HERO_NAMES[profile.hero]}</span>
         </motion.button>
 

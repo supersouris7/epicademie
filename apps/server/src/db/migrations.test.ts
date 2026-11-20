@@ -89,6 +89,38 @@ describe('migrations', () => {
       rmSync(dir, { recursive: true, force: true });
     }
   });
+
+  it('refonte des héros : Pixel, Tao, Ayla deviennent Alex ; collection nettoyée', async () => {
+    const dir = migrationsUpTo(9); // jusqu'à 0008
+    try {
+      database = await openDatabase('pglite://memory');
+      await runMigrations(database, dir);
+      const { db } = database;
+      await db.execute(sql`insert into profiles (id, name, avatar, hero) values
+        ('33333333-3333-4333-8333-333333333333', 'Noé', '{"style":"pixelbot","seed":"n"}', 'pixel'),
+        ('44444444-4444-4444-8444-444444444444', 'Ana', '{"style":"pixelbot","seed":"a"}', 'lina')`);
+      await db.execute(sql`insert into owned_heroes (profile_id, hero, source) values
+        ('33333333-3333-4333-8333-333333333333', 'pixel', 'depart'),
+        ('33333333-3333-4333-8333-333333333333', 'lina', 'coffre'),
+        ('44444444-4444-4444-8444-444444444444', 'lina', 'depart')`);
+
+      await runMigrations(database, MIGRATIONS_DIR);
+      const heroes = await db
+        .select({ name: profiles.name, hero: profiles.hero })
+        .from(profiles)
+        .orderBy(profiles.name);
+      expect(heroes).toEqual([
+        { name: 'Ana', hero: 'lina' },
+        { name: 'Noé', hero: 'alex' },
+      ]);
+      const owned: unknown = await db.execute(sql`select profile_id, hero from owned_heroes order by profile_id, hero`);
+      expect(JSON.stringify(owned)).not.toContain('pixel');
+      expect(JSON.stringify(owned).match(/"hero":"alex"/g)).toHaveLength(1);
+      expect(JSON.stringify(owned).match(/"hero":"lina"/g)).toHaveLength(2);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
 });
 
 /** Copie des `count` premières migrations (base d'une version antérieure). */

@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { Sprite } from '../ui/game/Sprite.tsx';
+import { bossPoseId } from '../../design/bosses.ts';
 import { motion, useReducedMotion } from 'motion/react';
 import type { HeroId } from '@questeo/shared';
 import type { HeroExpression } from '../../design/assets.ts';
@@ -201,7 +203,7 @@ export function BossCloseUp({
 }) {
   const reduce = useReducedMotion();
   // Le boss en grand (illustration en pied) ; sa tête si l'illustration n'est pas livrée.
-  const src = assetSrc(`bosses-maths-${bossId}-art`) ?? bossPortrait(bossId, expression);
+  const src = assetSrc(bossPoseId(bossId, 'charge')) ?? bossPortrait(bossId, expression);
   return (
     <div
       role="dialog"
@@ -266,14 +268,13 @@ export function RageScene({
   readonly onNext: () => void;
 }) {
   const reduce = useReducedMotion();
-  const debut = assetSrc(`bosses-maths-${bossId}-rage-debut`);
-  const rage = assetSrc(`bosses-maths-${bossId}-rage`);
+  // Le boss en grand : son animation sur place, d'abord calme (yeux bleus), puis en rage (yeux rouges).
+  const anim = `bosses/${bossId}/anim-idle`;
   const bg = {
     debut: 'bg-[radial-gradient(circle_at_50%_40%,#6d1036_0%,#2a0b2e_50%,#0d0618_85%)]',
     montee: 'bg-[radial-gradient(circle_at_50%_40%,#8f1226_0%,#3a0a1e_50%,#10040c_85%)]',
     rage: 'bg-[radial-gradient(circle_at_50%_40%,#b3141e_0%,#4a0710_50%,#12030a_85%)]',
   }[stage];
-  const img = 'max-h-[56dvh] w-[min(96vw,720px)] object-contain';
   return (
     <div
       role="dialog"
@@ -295,29 +296,23 @@ export function RageScene({
         }
         transition={{ duration: stage === 'montee' ? 3 : 0.8, ease: 'easeOut' }}
       >
-        {/* 1re image (début de rage), qui s'efface peu à peu pendant la montée. */}
-        {debut && (
-          <motion.img
-            src={debut}
-            alt=""
-            aria-hidden
-            className={img}
-            animate={{ opacity: stage === 'debut' ? 1 : 0 }}
-            transition={{ duration: stage === 'montee' ? 2.6 : 0.2 }}
-          />
-        )}
-        {/* Image de rage : apparaît progressivement, en rouge, par-dessus. */}
-        {rage && (
-          <motion.img
-            src={rage}
-            alt=""
-            aria-hidden
-            className={`absolute inset-0 ${img} drop-shadow-[0_10px_40px_rgba(255,30,30,0.6)]`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: stage === 'debut' ? 0 : 1 }}
-            transition={{ duration: stage === 'montee' ? 2.6 : 0.2 }}
-          />
-        )}
+        {/* Animation calme, qui s'efface peu à peu pendant la montée. */}
+        <motion.div
+          className="flex h-[56dvh] max-w-[96vw] justify-center"
+          animate={{ opacity: stage === 'debut' ? 1 : 0 }}
+          transition={{ duration: stage === 'montee' ? 2.6 : 0.2 }}
+        >
+          <Sprite anim={anim} range={[0, 4]} height="100%" fps={6} />
+        </motion.div>
+        {/* Animation en rage : apparaît progressivement, en rouge, par-dessus. */}
+        <motion.div
+          className="absolute inset-0 flex justify-center drop-shadow-[0_10px_40px_rgba(255,30,30,0.6)]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: stage === 'debut' ? 0 : 1 }}
+          transition={{ duration: stage === 'montee' ? 2.6 : 0.2 }}
+        >
+          <Sprite anim={anim} range={[4, 4]} height="100%" fps={8} />
+        </motion.div>
       </motion.div>
       {/* Flashs blancs : de plus en plus forts pendant la montée, un grand éclat quand la rage éclate. */}
       {!reduce && stage !== 'debut' && (

@@ -504,7 +504,7 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     learningReport: () => options.learning ?? emptyLearning(),
     ...billingHandlers(options.premium ?? true, uuid),
     ownedHeroes: ({ params }) => ({ heroes: [profile(params.id).hero] }),
-    badges: () => badgeProgress({ boss: 2, parfait: 3, perseverance: 0, chapitres: 0, consolidees: 0, heros: 1 }),
+    badges: () => badgeProgress({ boss: 2, parfait: 3, perseverance: 0, chapitres: 0, consolidees: 0, coffres: 1 }),
     ...adminHandlers(reports, disabledSet),
   };
 

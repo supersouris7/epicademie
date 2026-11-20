@@ -26,15 +26,15 @@ describe('coffres d’équipement', () => {
   });
 
   it('Acad-Héros : seulement dans les coffres rares ou épiques, parmi ceux qui manquent', () => {
-    // Épique, 2 objets, héros tiré (0,1 < 25 %), choix du 2e héros manquant.
+    // Épique, 2 objets, héros tiré (0,1 < 25 %) : le seul héros manquant.
     const chest = rollChest(5, 5, seq(0.99, 0, 0, 0.1, 0.5), new Set(['alex']));
-    expect(chest.hero).toEqual({ id: 'pixel', duplicate: false });
+    expect(chest.hero).toEqual({ id: 'lina', duplicate: false });
     // Un coffre commun ne contient jamais de héros.
     expect(rollChest(0, 5, seq(0.1, 0)).hero).toBeNull();
   });
 
   it('héros déjà tous possédés : doublon converti en pièces', () => {
-    const chest = rollChest(5, 5, seq(0.99, 0, 0, 0.1, 0), new Set(['alex', 'lina', 'pixel']));
+    const chest = rollChest(5, 5, seq(0.99, 0, 0, 0.1, 0), new Set(['alex', 'lina']));
     expect(chest.hero).toMatchObject({ duplicate: true });
     expect(chest.coins).toBe(40 + 60);
   });

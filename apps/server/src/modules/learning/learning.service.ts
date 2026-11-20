@@ -44,7 +44,7 @@ export function createLearningService({ db, clock, timeZone }: { db: Db; clock: 
         perseverance: c.retries,
         chapitres: chapters,
         consolidees: c.medals.filter((m) => m.stage === 3).length,
-        heros: c.heroes,
+        coffres: c.chests,
       });
     },
   };

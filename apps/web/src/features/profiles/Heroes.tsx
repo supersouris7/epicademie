@@ -14,7 +14,7 @@ import { useToast } from '../../shared/ui/Toast.tsx';
 import { CHARACTERS, HERO_EXPRESSIONS, type AnimationState, type HeroExpression } from '../../design/assets.ts';
 
 /** Poses montrées à tour de rôle quand on touche le héros. */
-const SHOWCASE: readonly AnimationState[] = ['idle', 'shoot', 'shield', 'jump', 'run', 'victory'];
+const SHOWCASE: readonly AnimationState[] = ['idle', 'shoot', 'shield', 'run', 'victory'];
 const HERO_CHOICES = [...AVAILABLE_HEROES, ...HEROES.filter((hero) => !AVAILABLE_HEROES.includes(hero))];
 
 /** Menu « Mon héros » : séparé du profil, on y choisit son personnage de combat. */

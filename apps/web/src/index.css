@@ -174,3 +174,13 @@ button {
 @utility bevel {
   box-shadow: var(--bevel), var(--drop-md);
 }
+
+/* Bandes d'animation (Sprite.tsx) : la bande glisse d'une image à l'autre, sans interpolation. */
+@keyframes af-sprite {
+  from {
+    background-position-x: var(--sprite-from);
+  }
+  to {
+    background-position-x: var(--sprite-to);
+  }
+}

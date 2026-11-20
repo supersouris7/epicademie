@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { BADGES, badgeProgress, type BadgeCounts } from './badges.ts';
 
-const zero: BadgeCounts = { boss: 0, parfait: 0, perseverance: 0, chapitres: 0, consolidees: 0, heros: 1 };
+const zero: BadgeCounts = { boss: 0, parfait: 0, perseverance: 0, chapitres: 0, consolidees: 0, coffres: 1 };
 
 describe('badges', () => {
   it('une définition par catégorie, seuils croissants', () => {
@@ -15,6 +15,6 @@ describe('badges', () => {
     expect(p.find((b) => b.category === 'parfait')).toMatchObject({ tier: null, next: 3 });
     expect(p.find((b) => b.category === 'perseverance')).toMatchObject({ tier: 'diamant', next: null });
     // Héros de départ : pas encore de grade.
-    expect(p.find((b) => b.category === 'heros')).toMatchObject({ tier: null, next: 2 });
+    expect(p.find((b) => b.category === 'coffres')).toMatchObject({ tier: null, next: 5 });
   });
 });

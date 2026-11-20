@@ -105,7 +105,7 @@ export type LearningReport = z.infer<typeof LearningReportSchema>;
 
 // ——— Badges (conditions : @questeo/engine/badges.ts) ———
 
-export const BADGE_CATEGORIES = ['boss', 'parfait', 'perseverance', 'chapitres', 'consolidees', 'heros'] as const;
+export const BADGE_CATEGORIES = ['boss', 'parfait', 'perseverance', 'chapitres', 'consolidees', 'coffres'] as const;
 export type BadgeCategory = (typeof BADGE_CATEGORIES)[number];
 export const BADGE_TIERS = ['bronze', 'argent', 'or', 'diamant'] as const;
 export type BadgeTier = (typeof BADGE_TIERS)[number];

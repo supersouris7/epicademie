@@ -1,28 +1,44 @@
 import type { BattleView } from '@questeo/shared';
 import type { ArenaEnemy, EnemyState } from '../../../shared/battle/BattleArena.tsx';
 import type { BossExpression, PiBotHead } from '../../../design/assets.ts';
-import { bossHeadId, mobHeadId, mobName, mobOf, type BossIdentity } from '../../../design/bosses.ts';
+import {
+  bossHeadId,
+  bossIdleRange,
+  bossPoseId,
+  mobHeadId,
+  mobName,
+  mobOf,
+  type BossIdentity,
+} from '../../../design/bosses.ts';
 import { onBoss, type BattleScreen } from './state.ts';
 
 /** Adversaires affichés pendant un combat de boss (fonctions pures, sans état). */
 
 /** Le boss en personne (entrée en scène). */
-export const bossEnemy = (boss: BossIdentity): ArenaEnemy => ({
+export const bossEnemy = (boss: BossIdentity, lives = 3): ArenaEnemy => ({
   key: 'boss',
   name: boss.name,
   boss: true,
-  image: `bosses-maths-${boss.id}`,
+  image: bossPoseId(boss.id, 'idle'),
+  poses: {
+    idle: bossPoseId(boss.id, 'idle'),
+    attack: bossPoseId(boss.id, 'attack'),
+    hurt: bossPoseId(boss.id, 'hurt'),
+    ko: bossPoseId(boss.id, 'defeat'),
+    summon: bossPoseId(boss.id, 'cast'),
+    shield: bossPoseId(boss.id, 'shield'),
+  },
+  idleAnim: { anim: `bosses/${boss.id}/anim-idle`, range: bossIdleRange(lives) },
 });
 
 /**
- * Adversaire du moment : le mob de la question, puis le boss. En rage (dernière vie), le boss
- * change d'apparence, sauf au KO qui garde sa pose.
+ * Adversaire du moment : le mob de la question, puis le boss. En rage (dernière vie), son
+ * animation sur place passe aux images rouges.
  */
 export function currentEnemy(boss: BossIdentity, battle: BattleView | null, state: EnemyState): ArenaEnemy | null {
   if (!battle) return null;
   if (onBoss(battle)) {
-    const enraged = battle.bossLives === 1 && state !== 'ko';
-    return { ...bossEnemy(boss), image: enraged ? `bosses-maths-${boss.id}-rage-combat` : `bosses-maths-${boss.id}` };
+    return bossEnemy(boss, state === 'ko' ? 3 : battle.bossLives);
   }
   const mob = mobOf(boss, battle.mobsDefeated);
   return { key: `mob-${battle.mobsDefeated}`, name: mobName(mob), boss: false, image: `bosses-minions-${mob}` };

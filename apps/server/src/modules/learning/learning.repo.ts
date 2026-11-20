@@ -1,7 +1,7 @@
 import { and, desc, eq, gt, gte, isNotNull, ne, sql } from 'drizzle-orm';
 import type { AnswerFact } from '@questeo/engine';
 import type { Executor } from '../../db/client.ts';
-import { attempts, bossRecords, ownedHeroes, sessions, skillStates } from '../../db/schema.ts';
+import { attempts, bossRecords, sessions, skillStates } from '../../db/schema.ts';
 
 /** Réponses lues par le suivi : au plus un an, et au plus ce nombre (les plus récentes). */
 const MAX_FACTS = 5_000;
@@ -61,11 +61,19 @@ export function learningRepo(db: Executor) {
         .select({ skillId: skillStates.skillId, best: skillStates.bestSeries, stage: skillStates.stage })
         .from(skillStates)
         .where(eq(skillStates.profileId, profileId));
-      const [heroes] = await db
+      // Coffres ouverts : une série d'entraînement terminée avec au moins une réponse.
+      const [chests] = await db
         .select({ n: sql<number>`count(*)::int` })
-        .from(ownedHeroes)
-        .where(eq(ownedHeroes.profileId, profileId));
-      return { boss: boss?.n ?? 0, perfect: perfect?.n ?? 0, retries: retries?.n ?? 0, heroes: heroes?.n ?? 0, medals };
+        .from(sessions)
+        .where(
+          and(
+            eq(sessions.profileId, profileId),
+            ne(sessions.mode, 'boss'),
+            isNotNull(sessions.finishedAt),
+            gt(sessions.answered, 0),
+          ),
+        );
+      return { boss: boss?.n ?? 0, perfect: perfect?.n ?? 0, retries: retries?.n ?? 0, chests: chests?.n ?? 0, medals };
     },
   };
 }

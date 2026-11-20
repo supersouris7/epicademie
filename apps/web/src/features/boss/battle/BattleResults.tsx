@@ -13,6 +13,7 @@ import { RewardBadge } from '../../../shared/ui/game/RewardBadge.tsx';
 import { QuestyPose } from '../../../shared/ui/mascot/QuestyPose.tsx';
 import { assetSrc } from '../../../design/assets.ts';
 import { HeroFace } from '../../../shared/battle/HeroFace.tsx';
+import { bossPoseId } from '../../../design/bosses.ts';
 import { CharacterSprite } from '../../../shared/ui/game/CharacterSprite.tsx';
 import { BOSS_MEDAL_ICONS, bossOf } from '../../../design/bosses.ts';
 import { ITEM_ICONS } from '../../../design/items.ts';
@@ -39,7 +40,7 @@ export function BattleResults({
   const boss = bossOf(chapter);
   const weak = summary.weakSkill ? getSkill(summary.weakSkill) : undefined;
   const gained = ITEMS.filter((i) => (summary.items[i] ?? 0) > 0);
-  const bossPose = assetSrc(`bosses-maths-${boss.id}-${summary.won ? 'ko' : 'shield'}`);
+  const bossPose = assetSrc(bossPoseId(boss.id, summary.won ? 'defeat' : 'victory'));
   // Le mot de la fin : le héros (victoire ou « je reviendrai ») et le boss (KO ou moqueur).
   const [lines] = useState(() => ({
     hero: heroSays(hero, summary.won ? 'victory' : 'defeat'),

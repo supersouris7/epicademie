@@ -22,7 +22,7 @@ export function subjectTaunt(wins: number, gender: Gender, r: number): string {
         'Hahaha ! Un nouveau challenger ? Choisis ton chapitre… et prépare-toi à perdre tes cœurs !',
         'Je suis le maître des maths ! Aucun chapitre ne te résistera ? C’est ce qu’on va voir !',
         'Mes mobs n’ont pas mangé de héros depuis longtemps… Choisis ton chapitre, si tu l’oses !',
-        'Je suis le gardien du Cristal des maths. L’Empereur du Savoir me l’a confié… et je ne le rendrai pas !',
+        'Mon cube des opérations a tout calculé : tu vas perdre. Choisis ton chapitre !',
       ],
       r,
     );
@@ -30,7 +30,7 @@ export function subjectTaunt(wins: number, gender: Gender, r: number): string {
     [
       `Tu m’as ${vaincu} ${wins} fois ? Simple échauffement ! Choisis ton chapitre, je t’attends.`,
       'Encore toi ! Cette fois, mes équations vont te faire tourner la tête, haha !',
-      'Tu veux encore un éclat du Cristal ? L’Empereur va me gronder… mais tu ne l’auras pas !',
+      'Tu reviens ? Mon cube a recalculé ta défaite, haha !',
       `${wins} défaite${wins > 1 ? 's' : ''} ? Je m’en souviens à peine. Viens, que je prenne ma revanche !`,
     ],
     r,

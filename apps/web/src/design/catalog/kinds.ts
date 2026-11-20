@@ -178,13 +178,6 @@ export const KINDS = {
       'même décor en panorama très large (tablette en paysage) : seule la bande entre 20 % et 80 % de la hauteur sera gardée ; sol plat et dégagé entre 60 % et 80 % de la hauteur, sur toute la largeur ; horizon et point d’intérêt entre 20 % et 55 % de la hauteur ; le haut et le bas de l’image ne contiennent que du ciel et du sol ; aucun personnage',
     opaque: true,
   },
-  arenaBand: {
-    gen: '1536x1024',
-    final: [1536, 384],
-    framing:
-      'frise panoramique du même décor pour un bandeau de titre : seule la bande entre 31 % et 69 % de la hauteur sera gardée, tous les détails y tiennent (ligne d’horizon au milieu) ; texture régulière sans objet isolé marquant ni zone vide ; le bord gauche et le bord droit se raccordent parfaitement (image répétée en boucle) ; teintes un peu sombres, peu contrastées (du texte blanc passera dessus) ; aucun personnage',
-    opaque: true,
-  },
   floor: {
     gen: '1024x1024',
     final: [256, 256],

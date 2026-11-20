@@ -42,17 +42,10 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   await expect(page).toHaveURL(/\/hub$/);
 
   await page.getByRole('button', { name: /^Combat de boss/ }).click();
-  // L'Empereur du Savoir se présente (1re fois du jour) : lui seul, puis avec les reliques.
-  const emperor = page.getByRole('dialog', { name: 'L’Empereur du Savoir' });
-  await expect(emperor).toContainText('gardiens');
-  await emperor.getByRole('button', { name: 'Passer' }).click();
-  await expect(emperor).toContainText('dominer le monde');
-  await emperor.getByRole('button', { name: 'Relever le défi' }).click();
-  await expect(emperor).toHaveCount(0);
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   // Gros plan du boss de la matière qui provoque, puis choix du chapitre.
-  const closeUp = page.getByRole('dialog', { name: 'Golem des Équations te provoque' });
-  await expect(closeUp).toContainText(/challenger|Aucun chapitre|n’ont pas mangé|gardien/);
+  const closeUp = page.getByRole('dialog', { name: 'Sorcier π te provoque' });
+  await expect(closeUp).toContainText(/challenger|Aucun chapitre|n’ont pas mangé|cube/);
   await page.getByRole('button', { name: 'Choisir mon chapitre' }).click();
   await expect(closeUp).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Combat de boss' })).toBeVisible();
@@ -70,7 +63,7 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   // Plus de texte « Combat ! » : l'arène et le face-à-face suffisent.
   await expect(page.getByText('Combat !')).toHaveCount(0);
   // Face-à-face : le boss provoque sur le chapitre, Questy répond.
-  await expect(page.getByRole('status', { name: /^Golem des Équations : .*relatifs/ })).toBeVisible();
+  await expect(page.getByRole('status', { name: /^Sorcier π : .*relatifs/ })).toBeVisible();
   // Échange de vannes : boss, héros, boss, héros.
   await expect(page.getByTestId('battle-intro').getByRole('status')).toHaveCount(4, { timeout: 10_000 });
   await page.getByRole('button', { name: 'C’est parti !' }).click();
@@ -148,7 +141,6 @@ test('Défaite : 5 secondes pour recommencer, puis l’entraînement', async ({ 
   await page.getByRole('button', { name: /C’est parti/ }).click();
   await expect(page).toHaveURL(/\/hub$/);
   await page.getByRole('button', { name: /^Combat de boss/ }).click();
-  await page.getByRole('button', { name: 'Relever le défi' }).click({ timeout: 10_000 });
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   await page.getByRole('button', { name: 'Choisir mon chapitre' }).click();
   const started = page.waitForResponse((r) => r.url().endsWith('/api/v1/battles'));
@@ -167,7 +159,7 @@ test('Défaite : 5 secondes pour recommencer, puis l’entraînement', async ({ 
   await expect(page.getByRole('heading', { name: 'On recommence ?' })).toBeVisible({ timeout: 10_000 });
   await expect(page.getByRole('timer')).toBeVisible();
   // Sans réponse en 5 secondes : le bilan, avec l'entraînement et le mot du héros.
-  // Le héros (Alex) a le mot de la fin, puis le Golem.
+  // Le héros (Alex) a le mot de la fin, puis le Sorcier π.
   await expect(page.getByText(/je reviendrai plus fort|améliorer mon algorithme/i)).toBeVisible({ timeout: 8000 });
   await expect(page.getByRole('button', { name: /On s’entraîne/ })).toBeVisible();
 });
