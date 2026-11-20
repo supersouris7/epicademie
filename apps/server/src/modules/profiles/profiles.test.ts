@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import type { Profile } from '@questeo/shared';
-import { createTestApp } from '../../testing/harness.ts';
+import type { Profile, SessionSummary } from '@questeo/shared';
+import { createTestApp, profileInput, sequenceRandom } from '../../testing/harness.ts';
 
 const avatar = { style: 'fun-emoji', seed: 'abc' } as const;
 
@@ -155,5 +155,60 @@ describe('API profils', () => {
       ].sort(),
     );
     expect(new Date(profile.createdAt).toISOString()).toBe(profile.createdAt);
+  });
+
+  it('Acad-Héros : le héros de départ est dans la collection ; un héros non trouvé ne se porte pas', async () => {
+    const p = (
+      await app.inject({ method: 'POST', url: '/api/v1/profiles', payload: { ...profileInput('Noé'), hero: 'pixel' } })
+    ).json<Profile>();
+    expect((await app.inject(`/api/v1/profiles/${p.id}/heroes`)).json()).toEqual({ heroes: ['pixel'] });
+    const res = await app.inject({ method: 'PATCH', url: `/api/v1/profiles/${p.id}`, payload: { hero: 'lina' } });
+    expect(res.statusCode).toBe(409);
+    expect(res.json<{ error: string }>().error).toMatch(/coffre/);
+    expect(
+      (await app.inject({ method: 'PATCH', url: `/api/v1/profiles/${p.id}`, payload: { hero: 'pixel' } })).statusCode,
+    ).toBe(200);
+  });
+
+  it('Acad-Héros trouvé dans le coffre d’une série : ajouté à la collection', async () => {
+    // Coffre épique (0,99), 2 objets, héros tiré (0,1 < 25 %), le 1er héros manquant.
+    const lucky = await createTestApp({ random: sequenceRandom([0.99, 0, 0, 0.1, 0]) });
+    try {
+      const p = (
+        await lucky.http.inject({ method: 'POST', url: '/api/v1/profiles', payload: profileInput('Noé') })
+      ).json<Profile>();
+      const { id } = (
+        await lucky.http.inject({
+          method: 'POST',
+          url: '/api/v1/sessions',
+          payload: {
+            profileId: p.id,
+            mode: 'entrainement',
+            subject: 'maths',
+            chapterId: 'm5-calcul',
+            skillId: 'm5-tables',
+          },
+        })
+      ).json<{ id: string }>();
+      await lucky.http.inject({
+        method: 'POST',
+        url: `/api/v1/sessions/${id}/answers`,
+        payload: {
+          skillId: 'm5-tables',
+          level: 1,
+          seed: 1,
+          variant: false,
+          response: { kind: 'number', text: '-1' },
+          durationMs: 1000,
+        },
+      });
+      const summary = (
+        await lucky.http.inject({ method: 'POST', url: `/api/v1/sessions/${id}/finish` })
+      ).json<SessionSummary>();
+      expect(summary.chest?.hero).toEqual({ id: 'lina', duplicate: false });
+      expect((await lucky.http.inject(`/api/v1/profiles/${p.id}/heroes`)).json()).toEqual({ heroes: ['alex', 'lina'] });
+    } finally {
+      await lucky.close();
+    }
   });
 });

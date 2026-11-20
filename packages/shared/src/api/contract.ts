@@ -18,7 +18,7 @@ import {
   SessionSummarySchema,
   SkillProgressSchema,
 } from '../play.ts';
-import { ProfileCreateSchema, ProfileSchema, ProfileUpdateSchema } from '../profile.ts';
+import { HEROES, ProfileCreateSchema, ProfileSchema, ProfileUpdateSchema } from '../profile.ts';
 import {
   LoginSchema,
   MeSchema,
@@ -285,6 +285,17 @@ export const api = {
     status: 204,
     params: IdParamsSchema,
     response: null,
+  }),
+
+  ownedHeroes: endpoint({
+    method: 'GET',
+    path: '/profiles/:id/heroes',
+    tag: 'profils',
+    summary: 'Acad-Héros de la collection du joueur (départ, puis trouvés dans les coffres)',
+    access: 'family',
+    status: 200,
+    params: IdParamsSchema,
+    response: z.object({ heroes: z.array(z.enum(HEROES)) }),
   }),
 
   // ——— Suivi des apprentissages ———

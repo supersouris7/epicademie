@@ -13,13 +13,14 @@ import {
 } from '@questeo/engine';
 import type {
   AnswerResult,
+  Chest,
   AnswerSubmit,
   SessionCreate,
   SessionSkillSummary,
   SessionSummary,
   SkillProgress,
 } from '@questeo/shared';
-import type { Db } from '../../db/client.ts';
+import type { Db, Tx } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import type { Random } from '../../core/random.ts';
 import { badRequest, conflict, notFound } from '../../core/errors.ts';
@@ -52,6 +53,17 @@ export interface TrainingDeps {
 }
 
 export function createTrainingService({ db, clock, random, timeZone, onFinished }: TrainingDeps) {
+  /**
+   * Coffre de fin de série : tiré, objets ajoutés à l'inventaire (stock plafonné), Acad-Héros
+   * ajouté à la collection (un doublon est déjà converti en pièces).
+   */
+  const openChest = async (tx: Tx, profileId: string, correct: number, total: number): Promise<Chest> => {
+    const profiles = profilesRepo(tx);
+    const rolled = rollChest(correct, total, random.float, new Set(await profiles.heroes(profileId)));
+    if (rolled.hero && !rolled.hero.duplicate) await profiles.addHero(profileId, rolled.hero.id, 'coffre');
+    return { ...rolled, items: await inventoryRepo(tx).add(profileId, rolled.items) };
+  };
+
   return {
     skills(profileId: string): Promise<SkillProgress[]> {
       return trainingRepo(db).skillProgress(profileId, timeZone);
@@ -189,8 +201,7 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
         const profiles = profilesRepo(tx);
         const profile = await profiles.findForUpdate(session.profileId);
         if (!profile) throw notFound(PROFILE_NOT_FOUND);
-        const rolled = regular.length > 0 ? rollChest(regularCorrect, regular.length, random.float) : null;
-        const chest = rolled ? { ...rolled, items: await inventoryRepo(tx).add(profile.id, rolled.items) } : null;
+        const chest = regular.length > 0 ? await openChest(tx, profile.id, regularCorrect, regular.length) : null;
         await profiles.credit(profile.id, {
           xp: xpGained,
           coins: coinsGained + (chest?.coins ?? 0),

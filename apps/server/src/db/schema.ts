@@ -325,6 +325,24 @@ export const contentEvents = pgTable(
 );
 
 /**
+ * Acad-Héros possédés : le héros de départ, puis ceux trouvés dans les coffres. Purement
+ * cosmétiques (aucun avantage de jeu).
+ */
+export const ownedHeroes = pgTable(
+  'owned_heroes',
+  {
+    profileId: uuid('profile_id')
+      .notNull()
+      .references(() => profiles.id, { onDelete: 'cascade' }),
+    hero: text('hero').$type<HeroId>().notNull(),
+    /** Héros de départ, ou trouvé dans un coffre. */
+    source: text('source').$type<'depart' | 'coffre'>().notNull(),
+    obtainedAt: createdAt(),
+  },
+  (t) => [primaryKey({ columns: [t.profileId, t.hero] })],
+);
+
+/**
  * Requêtes idempotentes (achats) : la même clé, rejouée par un double clic ou un réseau qui
  * renvoie la requête, rend la réponse déjà donnée au lieu de recommencer l'opération.
  */
@@ -344,6 +362,7 @@ export const idempotentRequests = pgTable(
 
 /** Toutes les tables, de la plus dépendante à la moins dépendante (remise à zéro des tests). */
 export const ALL_TABLES = [
+  'owned_heroes',
   'idempotent_requests',
   'question_reports',
   'content_events',

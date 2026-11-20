@@ -60,11 +60,13 @@ describe('profils', () => {
     expect(screen.getByText(/joindre le serveur/)).toBeInTheDocument();
   });
 
-  it('mon héros : un héros jouable se choisit', async () => {
-    const { user, server } = renderApp('/heros');
+  it('mon héros : collection (héros de départ), les autres sont à trouver dans les coffres', async () => {
+    renderApp('/heros');
     expect(await screen.findByRole('heading', { name: 'Mon héros' })).toBeInTheDocument();
-    await user.click(screen.getByRole('radio', { name: /Pixel/ }));
-    await waitFor(() => expect(server.calls.some((c) => c.method === 'PATCH')).toBe(true));
+    expect(await screen.findByRole('radio', { name: /Lina/ })).toBeChecked();
+    expect(screen.getByRole('img', { name: 'Pixel, à trouver dans un coffre' })).toBeInTheDocument();
+    expect(screen.queryByRole('radio', { name: /Pixel/ })).not.toBeInTheDocument();
+    expect(screen.getByText(/1 sur 3 trouvés/)).toBeInTheDocument();
   });
 });
 

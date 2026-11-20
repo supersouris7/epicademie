@@ -20,6 +20,10 @@ export function profilesRoutes(service: ProfilesService, owns: Ownership) {
       await owns.profile(actor(), params.id);
       return service.update(params.id, body, actor());
     });
+    route(app, api.ownedHeroes, async ({ params, actor }) => {
+      await owns.profile(actor(), params.id);
+      return { heroes: await service.heroes(params.id) };
+    });
     route(app, api.deleteProfile, async ({ params, actor }) => {
       await owns.profile(actor(), params.id);
       await service.remove(params.id);

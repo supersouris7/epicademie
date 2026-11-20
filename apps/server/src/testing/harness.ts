@@ -54,6 +54,12 @@ export function fixedClock(day: string): Clock & { set(day: string): void } {
 /** Hasard prévisible : `float()` renvoie toujours `value`, les graines restent aléatoires. */
 export const fixedRandom = (value: number): Random => ({ ...systemRandom, float: () => value });
 
+/** Hasard qui rejoue une suite de tirages (puis recommence). */
+export const sequenceRandom = (values: readonly number[]): Random => {
+  let i = 0;
+  return { ...systemRandom, float: () => values[i++ % values.length] ?? 0 };
+};
+
 /** Base de test migrée (voir en-tête). */
 export async function createTestDatabase(): Promise<Database & { reset(): Promise<void> }> {
   const adminUrl = process.env.TEST_DATABASE_URL;

@@ -36,6 +36,13 @@
       "when": 1795179765671,
       "tag": "0004_idempotence",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795183718048,
+      "tag": "0005_acad_heros",
+      "breakpoints": true
     }
   ]
 }

@@ -44,8 +44,7 @@ export function createLearningService({ db, clock, timeZone }: { db: Db; clock: 
         perseverance: c.retries,
         chapitres: chapters,
         consolidees: c.medals.filter((m) => m.stage === 3).length,
-        // Collection d'Acad-Héros : le héros de départ (les coffres en donneront d'autres).
-        heros: 1,
+        heros: c.heroes,
       });
     },
   };

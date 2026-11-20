@@ -1,7 +1,7 @@
 import { asc, eq, gte, and, sql } from 'drizzle-orm';
-import type { Profile, ProfileCreate, ProfileUpdate } from '@questeo/shared';
+import type { HeroId, Profile, ProfileCreate, ProfileUpdate } from '@questeo/shared';
 import type { Executor } from '../../db/client.ts';
-import { profiles, type ProfileRow } from '../../db/schema.ts';
+import { ownedHeroes, profiles, type ProfileRow } from '../../db/schema.ts';
 
 /** Accès aux données des profils (aucune règle métier ici : voir profiles.service.ts). */
 
@@ -30,6 +30,21 @@ export interface Rewards {
 
 export function profilesRepo(db: Executor) {
   return {
+    /** Acad-Héros possédés (héros de départ, puis trouvés dans les coffres). */
+    async heroes(profileId: string): Promise<HeroId[]> {
+      const rows = await db
+        .select({ hero: ownedHeroes.hero })
+        .from(ownedHeroes)
+        .where(eq(ownedHeroes.profileId, profileId))
+        .orderBy(asc(ownedHeroes.obtainedAt), asc(ownedHeroes.hero));
+      return rows.map((r) => r.hero);
+    },
+
+    /** Ajoute un héros à la collection (sans effet s'il y est déjà). */
+    async addHero(profileId: string, hero: HeroId, source: 'depart' | 'coffre'): Promise<void> {
+      await db.insert(ownedHeroes).values({ profileId, hero, source }).onConflictDoNothing();
+    },
+
     /** Profils d'une famille, du plus ancien au plus récent. */
     async list(familyId: string): Promise<Profile[]> {
       const rows = await db

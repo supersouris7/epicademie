@@ -162,7 +162,7 @@ describe('combat de boss', () => {
       await app.inject({ method: 'POST', url: `/api/v1/sessions/${sid}/finish` })
     ).json<SessionSummary>();
     expect(summary.perfect).toBe(true);
-    expect(summary.chest).toEqual({ rarity: 'commun', items: {}, coins: 25, rubies: 0 });
+    expect(summary.chest).toEqual({ rarity: 'commun', items: {}, coins: 25, rubies: 0, hero: null });
 
     // Pièces du sans-faute et du coffre : de quoi acheter un indice.
     const buy = await app.inject({ method: 'POST', url: '/api/v1/shop', payload: { profileId, item: 'indice' } });

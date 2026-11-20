@@ -428,6 +428,7 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     },
     disabledContent: () => ({ skills: [...disabledSet] }),
     learningReport: () => options.learning ?? emptyLearning(),
+    ownedHeroes: ({ params }) => ({ heroes: [profile(params.id).hero] }),
     badges: () => badgeProgress({ boss: 2, parfait: 3, perseverance: 0, chapitres: 0, consolidees: 0, heros: 1 }),
     ...adminHandlers(reports, disabledSet),
   };

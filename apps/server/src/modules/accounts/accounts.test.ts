@@ -100,7 +100,7 @@ describe('actions réservées au parent', () => {
     t.clock.set('2026-11-21');
     const patch = (payload: object) =>
       t.as(cookie).inject({ method: 'PATCH', url: `/api/v1/profiles/${p.id}`, payload });
-    expect((await patch({ soundOn: false, hero: 'lina' })).statusCode).toBe(200);
+    expect((await patch({ soundOn: false, hero: 'alex' })).statusCode).toBe(200);
     expect((await patch({ name: 'Autre' })).statusCode).toBe(403);
     expect((await patch({ grade: '3e' })).statusCode).toBe(403);
     expect((await t.as(cookie).inject({ method: 'DELETE', url: `/api/v1/profiles/${p.id}` })).statusCode).toBe(403);

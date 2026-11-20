@@ -1,7 +1,7 @@
 import type { Profile, ProfileCreate, ProfileUpdate } from '@questeo/shared';
 import type { Actor } from '../../core/http/auth.ts';
 import type { Db } from '../../db/client.ts';
-import { AppError, notFound } from '../../core/errors.ts';
+import { AppError, conflict, notFound } from '../../core/errors.ts';
 import { profilesRepo, toProfile } from './profiles.repo.ts';
 
 /** Rubis offerts à la création d'un profil. */
@@ -30,9 +30,17 @@ export function createProfilesService(db: Db) {
       return row?.familyId === familyId ? toProfile(row) : undefined;
     },
 
+    /** Nouveau profil : son héros est son héros de départ (les autres viennent des coffres). */
     async create(input: ProfileCreate, familyId: string): Promise<Profile> {
-      return toProfile(await repo.insert({ ...input, rubies: STARTING_RUBIES, familyId }));
+      return db.transaction(async (tx) => {
+        const r = profilesRepo(tx);
+        const row = await r.insert({ ...input, rubies: STARTING_RUBIES, familyId });
+        await r.addHero(row.id, row.hero, 'depart');
+        return toProfile(row);
+      });
     },
+
+    heroes: (profileId: string) => repo.heroes(profileId),
 
     /**
      * Modifie un profil. L'enfant peut changer ses réglages (son, héros…) ; l'identité (prénom,
@@ -41,6 +49,10 @@ export function createProfilesService(db: Db) {
     async update(id: string, patch: ProfileUpdate, actor: Actor): Promise<Profile> {
       if (!actor.parent && IDENTITY_FIELDS.some((f) => patch[f] !== undefined)) {
         throw new AppError('FORBIDDEN', 'Action réservée au parent : confirme le mot de passe du compte.');
+      }
+      // Un Acad-Héros se porte seulement s'il est dans la collection (trouvé dans un coffre).
+      if (patch.hero !== undefined && !(await repo.heroes(id)).includes(patch.hero)) {
+        throw conflict('Ce héros n’est pas encore dans ta collection : trouve-le dans un coffre !');
       }
       // Corps vide : rien à changer, on renvoie le profil tel quel.
       const row = Object.keys(patch).length === 0 ? await repo.find(id) : await repo.update(id, patch);

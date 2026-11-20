@@ -33,7 +33,7 @@ Décisions prises par le responsable du produit le 20/11/2026 :
 | 7   | P1   | Moteur adaptatif + révisions espacées (états pédagogiques)                 | ✅   |
 | 8   | P1   | Tableau de bord parent                                                     | ✅   |
 | 9   | P1   | Badges                                                                     | ✅   |
-| 10  | P1   | Économie : Acad-Héros en coffres, simulation, paramètres configurables     | ⏳   |
+| 10  | P1   | Économie : Acad-Héros en coffres, simulation, paramètres configurables     | ✅   |
 | 11  | P1   | Freemium, abonnement familial, Stripe (test) et simulateur                 | ⏳   |
 | 12  | P2   | Salle des trophées, QG personnalisable, cosmétiques                        | ⏳   |
 | 13  | P2   | Administration et observabilité                                            | ⏳   |
