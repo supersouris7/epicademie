@@ -124,3 +124,43 @@ describe('rapport de suivi', () => {
     expect((await t.as(other.cookie).inject(`/api/v1/profiles/${profileId}/learning`)).statusCode).toBe(404);
   });
 });
+
+describe('badges', () => {
+  const badges = async () =>
+    (await t.http.inject(`/api/v1/profiles/${profileId}/badges`)).json<
+      { category: string; value: number; tier: string | null }[]
+    >();
+  const perfectSeries = async () => {
+    const id = await start();
+    for (const seed of [11, 12, 13, 14]) await answer(id, seed, true);
+    await t.http.inject({ method: 'POST', url: `/api/v1/sessions/${id}/finish` });
+  };
+
+  it('nouveau joueur : aucun grade ; les objectifs sont annoncés', async () => {
+    const list = await badges();
+    expect(list.map((b) => b.category)).toEqual([
+      'boss',
+      'parfait',
+      'perseverance',
+      'chapitres',
+      'consolidees',
+      'heros',
+    ]);
+    expect(list.every((b) => b.tier === null)).toBe(true);
+  });
+
+  it('série parfaite comptée une fois par notion et par jour ; erreur corrigée au 2e essai', async () => {
+    await perfectSeries();
+    await perfectSeries();
+    const id = await start();
+    await answer(id, 30, false);
+    await answer(id, 30, true, 2);
+    const list = await badges();
+    expect(list.find((b) => b.category === 'parfait')?.value).toBe(1);
+    expect(list.find((b) => b.category === 'perseverance')?.value).toBe(1);
+    // Le lendemain, une nouvelle série parfaite compte.
+    t.clock.set('2026-11-21');
+    await perfectSeries();
+    expect((await badges()).find((b) => b.category === 'parfait')?.value).toBe(2);
+  });
+});

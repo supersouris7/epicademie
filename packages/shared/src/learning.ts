@@ -102,3 +102,23 @@ export const LearningReportSchema = z.object({
   weeks: z.array(WeekLearningSchema),
 });
 export type LearningReport = z.infer<typeof LearningReportSchema>;
+
+// ——— Badges (conditions : @questeo/engine/badges.ts) ———
+
+export const BADGE_CATEGORIES = ['boss', 'parfait', 'perseverance', 'chapitres', 'consolidees', 'heros'] as const;
+export type BadgeCategory = (typeof BADGE_CATEGORIES)[number];
+export const BADGE_TIERS = ['bronze', 'argent', 'or', 'diamant'] as const;
+export type BadgeTier = (typeof BADGE_TIERS)[number];
+
+export const BadgeProgressSchema = z.object({
+  category: z.enum(BADGE_CATEGORIES),
+  title: z.string(),
+  how: z.string(),
+  /** Compteur actuel. */
+  value: z.number().int().nonnegative(),
+  /** Grade atteint (null : pas encore de grade). */
+  tier: z.enum(BADGE_TIERS).nullable(),
+  /** Seuil du grade suivant (null : diamant atteint). */
+  next: z.number().int().positive().nullable(),
+});
+export type BadgeProgress = z.infer<typeof BadgeProgressSchema>;

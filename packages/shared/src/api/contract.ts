@@ -27,7 +27,7 @@ import {
   PasswordResetSchema,
   SignupSchema,
 } from '../account.ts';
-import { LearningReportSchema } from '../learning.ts';
+import { BadgeProgressSchema, LearningReportSchema } from '../learning.ts';
 import {
   ContentEventSchema,
   ContentSkillSchema,
@@ -297,6 +297,17 @@ export const api = {
     status: 200,
     params: IdParamsSchema,
     response: LearningReportSchema,
+  }),
+
+  badges: endpoint({
+    method: 'GET',
+    path: '/profiles/:id/badges',
+    tag: 'suivi',
+    summary: 'Badges du joueur : grade atteint et prochain objectif',
+    access: 'family',
+    status: 200,
+    params: IdParamsSchema,
+    response: z.array(BadgeProgressSchema),
   }),
 
   // ——— Entraînement ———

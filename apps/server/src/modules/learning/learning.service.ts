@@ -1,6 +1,6 @@
-import { chapterOfAnySkill } from '@questeo/content';
-import { learningReport } from '@questeo/engine';
-import type { LearningReport } from '@questeo/shared';
+import { CHAPTERS, chapterOfAnySkill } from '@questeo/content';
+import { badgeProgress, learningReport } from '@questeo/engine';
+import type { BadgeProgress, LearningReport } from '@questeo/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import { trainingRepo } from '../training/index.ts';
@@ -29,6 +29,23 @@ export function createLearningService({ db, clock, timeZone }: { db: Db; clock: 
           return chapter && { chapterId: chapter.id, subject: chapter.subject };
         },
         today: clock.today(),
+      });
+    },
+
+    /** Badges : grade atteint et prochain objectif (conditions dans @questeo/engine). */
+    async badges(profileId: string): Promise<BadgeProgress[]> {
+      const c = await learningRepo(db).badgeCounters(profileId, timeZone);
+      const bronze = new Set(c.medals.filter((m) => m.best >= 3).map((m) => m.skillId));
+      // Chapitre terminé : une médaille (bronze au moins) sur chacune de ses notions.
+      const chapters = CHAPTERS.filter((ch) => ch.skills.length > 0 && ch.skills.every((s) => bronze.has(s.id))).length;
+      return badgeProgress({
+        boss: c.boss,
+        parfait: c.perfect,
+        perseverance: c.retries,
+        chapitres: chapters,
+        consolidees: c.medals.filter((m) => m.stage === 3).length,
+        // Collection d'Acad-Héros : le héros de départ (les coffres en donneront d'autres).
+        heros: 1,
       });
     },
   };

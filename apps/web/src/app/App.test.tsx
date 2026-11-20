@@ -138,6 +138,9 @@ describe('suivi et réglages', () => {
         },
       ],
     });
+    // Badges : grade atteint et prochain objectif.
+    expect(await screen.findByRole('listitem', { name: 'Badge Chasseur de boss : Bronze' })).toHaveTextContent('2 / 5');
+    expect(screen.getByRole('listitem', { name: 'Badge Persévérant : pas encore gagné' })).toBeInTheDocument();
     const domain = await screen.findByRole('button', { name: /^Nombres et calculs/ });
     expect(domain).toHaveAttribute('aria-expanded', 'false');
     await user.click(domain);
