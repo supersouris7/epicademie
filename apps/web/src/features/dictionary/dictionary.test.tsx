@@ -5,9 +5,8 @@ import { renderApp } from '../../testing/renderApp.tsx';
 vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.ts')).socketModule);
 
 describe('Mon dictionnaire', () => {
-  it('depuis l’accueil : mots par famille, définition et schéma, mot coché une fois regardé', async () => {
-    const { user } = renderApp('/hub');
-    await user.click(await screen.findByRole('button', { name: 'Mon dictionnaire' }));
+  it('mots par famille, définition et schéma, mot coché une fois regardé', async () => {
+    const { user } = renderApp('/dictionnaire');
     expect(await screen.findByRole('heading', { name: 'La division' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Longueurs, aires et volumes' })).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /cm³ \(centimètre cube\)/ }));

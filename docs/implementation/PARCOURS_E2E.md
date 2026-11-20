@@ -1,6 +1,6 @@
 # Parcours de bout en bout
 
-17 parcours Playwright sur le build de production (base PostgreSQL embarquée jetable, aucune
+16 parcours Playwright sur le build de production (base PostgreSQL embarquée jetable, aucune
 donnée réelle), joués sur **trois formats** :
 
 - `tablette` : iPad paysage ;
@@ -21,13 +21,12 @@ Commande : `pnpm e2e`. Elle est bloquante en CI.
 | 7   | `multi.spec.ts`    | Plusieurs appareils : présence, message, profil déjà ouvert refusé, arène jusqu'à la victoire |
 | 8   | `multi.spec.ts`    | Raid coopératif sur deux téléphones, partie affichée sur l'écran TV                           |
 | 9   | `billing.spec.ts`  | Version gratuite (cadenas), paiement simulé, chapitres débloqués, historique                  |
-| 10  | `hq.spec.ts`       | Mon QG : trophée en vitrine, aménagement conservé après rechargement                          |
 | 11  | `journeys.spec.ts` | Compte : déconnexion de l'appareil, reconnexion, profils retrouvés                            |
 | 12  | `journeys.spec.ts` | Espace parent : enfant listé, abonnement familial                                             |
 | 13  | `journeys.spec.ts` | Adulte : parcours de remise à niveau                                                          |
 | 14  | `journeys.spec.ts` | Anglais : verbes irréguliers jouables                                                         |
-| 15  | `journeys.spec.ts` | Mes progrès : badges visibles                                                                 |
-| 16  | `journeys.spec.ts` | Mise en page : aucun défilement horizontal sur 9 écrans principaux                            |
+| 15  | `journeys.spec.ts` | Mes progrès : trophées et badges visibles                                                     |
+| 16  | `journeys.spec.ts` | Mise en page : aucun défilement horizontal sur 8 écrans principaux                            |
 
 Les familles e2e prennent l'abonnement par le simulateur, sauf dans le parcours « version
 gratuite ». Le simulateur est permis car le serveur e2e tourne en mode `test` ; il est

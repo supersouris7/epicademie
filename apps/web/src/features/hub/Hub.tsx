@@ -7,7 +7,6 @@ import { useToast } from '../../shared/ui/Toast.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { OnlineBanner } from '../realtime/index.ts';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
-import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { heroPoseSrc } from '../../design/assets.ts';
 import { useEntrance } from '../../shared/lib/entrance.ts';
 
@@ -98,13 +97,6 @@ export function Hub({ profile }: { readonly profile: Profile }) {
             );
           })}
         </ul>
-      </div>
-
-      <div className="flex flex-wrap gap-2">
-        <GameButton onClick={() => void navigate('/qg')}>Mon QG et mes trophées</GameButton>
-        <GameButton variant="surface" onClick={() => void navigate('/dictionnaire')}>
-          Mon dictionnaire
-        </GameButton>
       </div>
 
       <section className="flex flex-col gap-3" aria-labelledby="defis">
