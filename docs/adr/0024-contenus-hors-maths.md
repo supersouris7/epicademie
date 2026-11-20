@@ -21,7 +21,17 @@ vérifié. Les maths représentent déjà environ 20 000 lignes de générateurs
   - Les classes sans contenu n'apparaissent pas dans la matière.
 - **Vérification** : chaque donnée factuelle est confrontée à une source en ligne consultée,
   citée dans le code (URL, révision, date). Ce qui ne peut pas être vérifié n'est pas publié.
-- **Pilote livré** : anglais 5e, verbes irréguliers.
+- **Sources** (règle du 21/11/2026) : **institutionnelles seulement** (Éduscol, BO, British
+  Council, et pour les autres matières RAE ou Instituto Cervantes, BIPM, IGN, INSEE…).
+- **Anglais livré (21/11/2026)**, du CM1 à la 3e :
+  - choix des notions par classe : Éduscol, _Repères de progressivité linguistique — Anglais_ ;
+  - formes et règles : British Council, LearnEnglish, _English grammar reference_ (seules les
+    règles et les exemples que les pages donnent explicitement) ;
+  - chapitres : be au présent et possessifs (CM1), pluriel (CM2), be au prétérit et présent
+    simple (6e), verbes irréguliers et prétérit régulier (5e), comparatif et superlatif (4e),
+    present perfect (3e) ;
+  - verbes irréguliers : tableau de 52 verbes du British Council.
+- **Ancien pilote** : anglais 5e, verbes irréguliers.
   - 24 verbes, tous vérifiés sur Wiktionary, _Appendix:English irregular verbs_,
     révision 91798533. Cambridge Dictionary refuse les accès automatisés.
   - Trois notions : prétérit, participe passé, phrase au passé.
