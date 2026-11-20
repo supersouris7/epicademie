@@ -1,154 +1,100 @@
 import { a } from './kinds.ts';
 
-/** Catalogue des images — Kit combat : boss (un par domaine des maths) et mobs */
+/**
+ * Catalogue des images — boss et mobs. Refonte du 20/11/2026 : un seul boss, le Sorcier π
+ * (planches fournies par l'utilisateur, découpées par `assets:sprites`) ; les mobs sont gardés.
+ */
 
-export const BOSSES = [
-  [
-    'golem-des-equations',
-    'Golem des Équations',
-    'nombres et calculs',
-    'golem de pierre grise en armure, grande capuche et cape violettes bordées d’or, π doré sur le front, visage noir aux yeux cyan lumineux, cristaux bleus aux épaules, cube violet lumineux aux signes + − × ÷ sur la poitrine',
-  ],
-  [
-    'geomatrix',
-    'Géomatrix',
-    'géométrie',
-    'golem fait de cubes et de pyramides de cristal bleu et violet, arêtes cyan lumineuses, petits cubes flottant autour de lui, yeux orange',
-  ],
-  [
-    'probabot',
-    'Probabot',
-    'données et probabilités',
-    'robot trapu dont le corps est un énorme dé blanc aux points violets, une face-écran avec des yeux rouges en colère, bras mécaniques dorés qui jonglent avec deux petits dés, roues chenilles',
-  ],
-  [
-    'courbix',
-    'Courbix',
-    'proportionnalité et fonctions',
-    'serpent mécanique géant dont le long corps segmenté ondule comme une courbe de graphique, segments violets reliés par des articulations cyan lumineuses, tête-écran aux yeux jaunes, crête en antennes',
-  ],
-  [
-    'ia-des-connaissances',
-    'IA des Connaissances',
-    'programmation',
-    'gros robot cubique bleu nuit flottant, écran-visage aux yeux cyan en colère, câbles comme des tentacules, cubes de données violets en orbite',
-  ],
+export const SORCIER_LOOK =
+  'sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or';
+
+/** Poses fixes du Sorcier π (planche de 8 poses, dans l'ordre de lecture). */
+export const SORCIER_POSES = ['idle', 'attack', 'shield', 'hurt', 'defeat', 'cast', 'charge', 'victory'] as const;
+export type SorcierPose = (typeof SORCIER_POSES)[number];
+
+/** Têtes du Sorcier π (planche de 12) : six calmes (yeux bleus), six en rage (yeux rouges). */
+export const BOSS_HEADS = [
+  ['menace', 'yeux bleus plissés'],
+  ['concentre', 'yeux bleus grands ouverts'],
+  ['surprise', 'yeux bleus ronds'],
+  ['moqueur', 'yeux bleus mi-clos'],
+  ['perplexe', 'yeux bleus ronds, regard fixe'],
+  ['colere', 'yeux bleus en colère'],
+  ['inquiet', 'yeux rouges ronds'],
+  ['rage-menace', 'yeux rouges plissés'],
+  ['rage-surprise', 'yeux rouges ronds, lueur'],
+  ['furieux', 'yeux rouges furieux'],
+  ['rage-cri', 'yeux rouges grands ouverts'],
+  ['rage-plisse', 'yeux rouges mi-clos'],
 ] as const;
+export type BossHead = (typeof BOSS_HEADS)[number][0];
 
-export const BOSS_STATES = [
-  ['idle', 'Pose de combat menaçante mais comique'],
-  ['attack', 'Attaque : se penche vers la gauche et lance une grosse onde d’énergie rouge'],
-  ['hurt', 'Touché : recule, grimace comique, petites étincelles'],
-  ['ko', 'Vaincu : affalé, étourdi, petites spirales au-dessus de la tête'],
-] as const;
-
-export const bossAssets = BOSSES.flatMap(([id, name, domain, look]) => [
-  ...BOSS_STATES.map(([state, pose]) =>
-    a(
-      'boss',
-      `bosses/maths/${id}${state === 'idle' ? '' : `-${state}`}.webp`,
-      `${name} — ${state}`,
-      `${name}, boss du domaine « ${domain} » : ${look}. ${pose}`,
-      'Combat de boss.',
-      1,
-      { fallback: 'placeholder-boss', sheet: `${id}-etats` },
-    ),
-  ),
-  a(
-    'portrait',
-    `bosses/maths/${id}-portrait.webp`,
-    `${name} — portrait`,
-    `${name} (exactement comme sur sa planche d’états) : ${look}. Tête seule, de face, l’air menaçant mais drôle`,
-    'Portrait rond de la barre de vie du boss.',
-    2,
-    { reference: `bosses-maths-${id}`, fallback: 'placeholder-boss' },
-  ),
-]);
-
-/** Boss des maths (kit livré le 18/11/2026) : poses en plus, 13 expressions et illustration du menu. */
+/** Expressions utilisées par le combat et les dialogues. */
 export const BOSS_EXPRESSIONS = [
-  ['menace', 'yeux plissés menaçants'],
-  ['moqueur', 'yeux fermés en arc, sourire moqueur'],
-  ['colere', 'yeux rouges, veine de colère'],
-  ['surprise', 'grands yeux ronds, traits de surprise'],
-  ['perplexe', 'regard en coin, point d’interrogation'],
-  ['rire', 'éclat de rire, yeux fermés'],
-  ['clin-oeil', 'clin d’œil, étoile scintillante'],
-  ['amour', 'yeux en cœur, petits cœurs'],
-  ['triste', 'yeux tombants, larme'],
-  ['inquiet', 'yeux ronds, goutte de sueur'],
-  ['furieux', 'yeux blancs, éclairs'],
-  ['concentre', 'yeux mi-clos, anneaux d’énergie'],
-  ['ko', 'yeux en croix, étoiles qui tournent'],
+  'menace',
+  'moqueur',
+  'colere',
+  'surprise',
+  'perplexe',
+  'rire',
+  'clin-oeil',
+  'amour',
+  'triste',
+  'inquiet',
+  'furieux',
+  'concentre',
+  'ko',
 ] as const;
-export type BossExpression = (typeof BOSS_EXPRESSIONS)[number][0];
+export type BossExpression = (typeof BOSS_EXPRESSIONS)[number];
 
-export const GOLEM_LOOK = BOSSES[0][3];
-export const golemExtras = [
-  ...(
-    [
-      ['shield', 'Bouclier : bulle d’énergie violette hexagonale autour de lui'],
-      ['summon', 'Invocation : bras levés, cube d’opérations au-dessus de la tête, débris en lévitation'],
-    ] as const
-  ).map(([state, pose]) =>
-    a(
-      'boss',
-      `bosses/maths/golem-des-equations-${state}.webp`,
-      `Golem des Équations — ${state}`,
-      `Golem des Équations : ${GOLEM_LOOK}. ${pose}`,
-      state === 'summon' ? 'Arrivée du boss en combat.' : 'Bilan d’une défaite : le boss se protège.',
-      2,
-      { reference: 'bosses-maths-golem-des-equations', fallback: 'placeholder-boss' },
-    ),
-  ),
-  ...BOSS_EXPRESSIONS.map(([id, look]) =>
-    a(
-      'portrait',
-      `bosses/maths/golem-des-equations-head-${id}.webp`,
-      `Golem des Équations — tête ${id}`,
-      `Tête du Golem des Équations (${GOLEM_LOOK}) : ${look}`,
-      'Tête du boss qui réagit (barre de vie, gros plan, face-à-face, bilan).',
-      2,
-      { reference: 'bosses-maths-golem-des-equations' },
-    ),
-  ),
-  // Mode rage (dernière vie) : deux grandes images de la transformation, et son apparence en combat.
-  a(
-    'bossArt',
-    'bosses/maths/golem-des-equations-rage-debut.webp',
-    'Golem des Équations — début de rage',
-    `Golem des Équations qui s’énerve : aura rouge naissante, yeux rouges, bras écartés : ${GOLEM_LOOK}`,
-    'Scène de rage quand il ne reste qu’une vie au boss (1re image).',
-    2,
-    { reference: 'bosses-maths-golem-des-equations' },
-  ),
-  a(
-    'bossArt',
-    'bosses/maths/golem-des-equations-rage.webp',
-    'Golem des Équations — rage',
-    `Golem des Équations en rage : éclairs rouges partout, gueule hérissée de crocs, bras écartés : ${GOLEM_LOOK}`,
-    'Scène de rage quand il ne reste qu’une vie au boss (2e image).',
-    2,
-    { reference: 'bosses-maths-golem-des-equations' },
-  ),
+/** Tête du Sorcier π affichée pour chaque expression (la plus proche parmi les 12 livrées). */
+export const BOSS_FACE: Record<BossExpression, BossHead> = {
+  menace: 'menace',
+  moqueur: 'moqueur',
+  colere: 'colere',
+  surprise: 'surprise',
+  perplexe: 'perplexe',
+  rire: 'moqueur',
+  'clin-oeil': 'moqueur',
+  amour: 'concentre',
+  triste: 'perplexe',
+  inquiet: 'inquiet',
+  furieux: 'furieux',
+  concentre: 'concentre',
+  ko: 'rage-surprise',
+};
+
+const SORCIER = 'bosses/sorcier-pi';
+export const sorcierAssets = [
   a(
     'boss',
-    'bosses/maths/golem-des-equations-rage-combat.webp',
-    'Golem des Équations — en rage (combat)',
-    `Golem des Équations en rage dans l’arène, poings serrés, aura de flammes rouges : ${GOLEM_LOOK}`,
-    'Apparence du boss dans l’arène en mode rage (attente, attaque, touché).',
-    2,
-    { reference: 'bosses-maths-golem-des-equations', fallback: 'placeholder-boss' },
-  ),
-  a(
-    'bossArt',
-    'bosses/maths/golem-des-equations-art.webp',
-    'Golem des Équations — illustration',
-    `Golem des Équations en pied, de face, mains ouvertes, cube d’opérations brillant devant lui, signes + − × ÷ en lévitation dans un anneau violet : ${GOLEM_LOOK}`,
-    'Écran rouge « Choisir mon chapitre » : le boss en grand qui provoque (sans son nom).',
+    `${SORCIER}/anim-idle.webp`,
+    'Sorcier π — animation sur place',
+    `${SORCIER_LOOK}, 8 images du calme à la rage`,
+    'Combat : bande de 8 images (4 calmes, 4 en rage).',
     1,
-    { reference: 'bosses-maths-golem-des-equations' },
   ),
+  ...SORCIER_POSES.map((pose) =>
+    a(
+      'boss',
+      `${SORCIER}/pose-${pose}.webp`,
+      `Sorcier π — pose ${pose}`,
+      `${SORCIER_LOOK}, pose ${pose}`,
+      'Combat : pose fixe.',
+      1,
+    ),
+  ),
+  ...BOSS_HEADS.map(([id, look]) =>
+    a(
+      'expression',
+      `${SORCIER}/head-${id}.webp`,
+      `Sorcier π — ${id}`,
+      `${SORCIER_LOOK}, tête seule, ${look}`,
+      'Portrait du HUD de combat.',
+      1,
+    ),
+  ),
+  a('portrait', `${SORCIER}/portrait.webp`, 'Sorcier π — portrait', SORCIER_LOOK, 'Liste des boss, résultats.', 1),
 ];
 
 /** Mob des maths (planche livrée le 18/11/2026) : le cube-robot π, tourné vers le héros. */
@@ -191,34 +137,6 @@ export const piBotAssets = [
       'Bandeau du combat.',
       2,
     ),
-  ),
-];
-
-/** L'Empereur du Savoir : le grand boss, maître des gardiens des reliques. */
-export const empereurAssets = [
-  a(
-    'bossSquare',
-    'bosses/empereur/empereur.webp',
-    'L’Empereur du Savoir',
-    'grand boss en armure violette et dorée, couronne à pointes, crinière blanche, cœur de galaxie, cape violette',
-    'Scène du grand boss (1er temps, sans reliques).',
-    2,
-  ),
-  a(
-    'bossSquare',
-    'bosses/empereur/empereur-reliques.webp',
-    'L’Empereur du Savoir et les reliques',
-    'le même grand boss entouré des six reliques des matières dans un anneau violet',
-    'Scène du grand boss (2e temps, avec les reliques).',
-    2,
-  ),
-  a(
-    'banner',
-    'bosses/empereur/banniere.webp',
-    'Bannière du Combat de boss',
-    'l’Empereur du Savoir en buste, mains lumineuses, ciel violet étoilé et cristaux flottants',
-    'Bannière de l’écran Combat de boss.',
-    2,
   ),
 ];
 

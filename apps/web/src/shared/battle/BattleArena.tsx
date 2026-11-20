@@ -1,9 +1,9 @@
 import { useRef } from 'react';
 import { AnimatePresence, motion, useReducedMotion, type TargetAndTransition } from 'motion/react';
 import { HERO_NAMES, type HeroId } from '@questeo/shared';
-import { assetSrc, heroPoseSrc, type AnimationState } from '../../design/assets.ts';
-import { HERO_COLORS } from '../../design/heroes.ts';
-import { CHARACTER_MOTION } from '../../design/motion.ts';
+import { assetSrc, type AnimationState } from '../../design/assets.ts';
+import { CharacterSprite } from '../ui/game/CharacterSprite.tsx';
+import { Sprite } from '../ui/game/Sprite.tsx';
 import { useArenaImage } from './arena.ts';
 
 export type EnemyState = 'idle' | 'attack' | 'hurt' | 'ko' | 'summon' | 'shield';
@@ -16,6 +16,10 @@ export interface ArenaEnemy {
   /** Identifiant d'image (boss : sans suffixe d'état ; mob : image unique). */
   readonly image: string;
   readonly filter?: string;
+  /** Image par état (boss : poses fixes du Sorcier π) ; sinon `${image}-${état}`. */
+  readonly poses?: Partial<Record<EnemyState, string>>;
+  /** Animation sur place (bande d'images) et partie jouée (calme ou rage). */
+  readonly idleAnim?: { readonly anim: string; readonly range: readonly [number, number] };
 }
 
 interface BattleArenaProps {
@@ -190,39 +194,12 @@ export function PlasmaShot() {
 }
 
 function HeroFigure({ hero, state }: { readonly hero: HeroId; readonly state: AnimationState }) {
-  const reduce = useReducedMotion();
-  // Pose manquante (touché, défaite) : la pose d'attente, animée selon l'état.
-  const src = heroPoseSrc(hero, state);
-  const motionProps = reduce ? {} : { animate: CHARACTER_MOTION[state] };
-  if (src) {
-    return (
-      <motion.img
-        key={state}
-        src={src}
-        alt=""
-        aria-hidden
-        draggable={false}
-        className={`h-full w-full object-contain ${state === 'defeat' ? 'grayscale-[0.6]' : ''} ${state === 'hurt' ? 'drop-shadow-[0_0_12px_rgba(255,60,60,0.9)]' : ''}`}
-        style={{ originX: 0.5, originY: 1 }}
-        {...motionProps}
-      />
-    );
-  }
-  // Remplaçant tant que les poses ne sont pas livrées : jeton coloré au nom du héros.
   return (
-    <motion.div
-      key={state}
-      className="flex h-full w-full items-end justify-center"
-      style={{ originX: 0.5, originY: 1 }}
-      {...motionProps}
+    <div
+      className={`flex h-full w-full items-end justify-center ${state === 'defeat' ? 'grayscale-[0.6]' : ''} ${state === 'hurt' ? 'drop-shadow-[0_0_12px_rgba(255,60,60,0.9)]' : ''}`}
     >
-      <div
-        className="cartoon font-display text-toon flex aspect-[3/4] h-[85%] items-center justify-center rounded-[40%_40%_20%_20%] text-[min(8vw,3rem)]"
-        style={{ background: `linear-gradient(160deg, ${HERO_COLORS[hero]}, var(--outline))` }}
-      >
-        {HERO_NAMES[hero].slice(0, 1)}
-      </div>
-    </motion.div>
+      <CharacterSprite hero={hero} state={state} height="100%" />
+    </div>
   );
 }
 
@@ -237,8 +214,18 @@ const ENEMY_MOTION: Record<EnemyState, TargetAndTransition> = {
 
 function EnemyFigure({ enemy, state }: { readonly enemy: ArenaEnemy; readonly state: EnemyState }) {
   const reduce = useReducedMotion();
-  // Une image par état quand elle est livrée (boss, π-bot) ; sinon l'image d'attente, animée selon l'état.
-  const src = (state !== 'idle' ? assetSrc(`${enemy.image}-${state}`) : null) ?? assetSrc(enemy.image);
+  // Boss : animation dessinée sur place, pose fixe pour chaque action.
+  if (state === 'idle' && enemy.idleAnim) {
+    return (
+      <div className="flex h-full w-full items-end justify-center" style={{ filter: enemy.filter }}>
+        <Sprite anim={enemy.idleAnim.anim} range={enemy.idleAnim.range} height="100%" fps={6} />
+      </div>
+    );
+  }
+  // Une image par état quand elle est livrée ; sinon l'image d'attente, animée selon l'état.
+  const src =
+    (state !== 'idle' ? assetSrc(enemy.poses?.[state] ?? `${enemy.image}-${state}`) : null) ??
+    assetSrc(enemy.poses?.idle ?? enemy.image);
   return (
     <motion.div
       key={state}

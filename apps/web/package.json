@@ -13,7 +13,8 @@
     "assets:plan": "tsx scripts/assets/plan.ts",
     "assets:import": "tsx scripts/assets/import.ts",
     "assets:cut": "tsx scripts/assets/cut.ts",
-    "assets:kit": "tsx scripts/assets/kit.ts"
+    "assets:kit": "tsx scripts/assets/kit.ts",
+    "assets:sprites": "tsx scripts/assets/sprites.ts"
   },
   "dependencies": {
     "@dicebear/core": "^10.7.0",

@@ -64,6 +64,13 @@
       "when": 1795206147686,
       "tag": "0008_suppression_qg",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1795210044635,
+      "tag": "0009_heros_v2",
+      "breakpoints": true
     }
   ]
 }

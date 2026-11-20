@@ -159,14 +159,14 @@ describe('API profils', () => {
 
   it('Acad-Héros : le héros de départ est dans la collection ; un héros non trouvé ne se porte pas', async () => {
     const p = (
-      await app.inject({ method: 'POST', url: '/api/v1/profiles', payload: { ...profileInput('Noé'), hero: 'pixel' } })
+      await app.inject({ method: 'POST', url: '/api/v1/profiles', payload: { ...profileInput('Noé'), hero: 'alex' } })
     ).json<Profile>();
-    expect((await app.inject(`/api/v1/profiles/${p.id}/heroes`)).json()).toEqual({ heroes: ['pixel'] });
+    expect((await app.inject(`/api/v1/profiles/${p.id}/heroes`)).json()).toEqual({ heroes: ['alex'] });
     const res = await app.inject({ method: 'PATCH', url: `/api/v1/profiles/${p.id}`, payload: { hero: 'lina' } });
     expect(res.statusCode).toBe(409);
     expect(res.json<{ error: string }>().error).toMatch(/coffre/);
     expect(
-      (await app.inject({ method: 'PATCH', url: `/api/v1/profiles/${p.id}`, payload: { hero: 'pixel' } })).statusCode,
+      (await app.inject({ method: 'PATCH', url: `/api/v1/profiles/${p.id}`, payload: { hero: 'alex' } })).statusCode,
     ).toBe(200);
   });
 

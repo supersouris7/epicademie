@@ -3,9 +3,8 @@
  * Personnalités :
  * - Alex, l'inventeur : geek enthousiaste, jeux de mots techno et maths.
  * - Lina, l'électrique : survoltée, compétitive, tout fait des étincelles.
- * - Pixel, le chat ninja : flegmatique et taquin, « miaou », fausse sagesse ninja.
- * - Le Golem des Équations : grand méchant théâtral et vantard, mauvais perdant.
- * - Le π-bot : petit robot fayot du Golem, bip-bip et zèle.
+ * - Le Sorcier π : grand méchant théâtral et vantard, mauvais perdant.
+ * - Le π-bot : petit robot fayot du Sorcier, bip-bip et zèle.
  * Pour tous les âges : drôle, jamais méchant envers le joueur.
  */
 import { indexFor, type HeroId, type RandomSource } from '@questeo/shared';
@@ -35,10 +34,7 @@ export function pick<T>(list: readonly T[], random: RandomSource = Math.random):
 /** Les héros parlent d'eux au masculin ou au féminin (accords des répliques du boss). */
 export const HERO_GENDER: Record<HeroId, 'garcon' | 'fille'> = {
   alex: 'garcon',
-  tao: 'garcon',
   lina: 'fille',
-  ayla: 'fille',
-  pixel: 'garcon',
 };
 
 // ——— Voix des héros ———
@@ -93,7 +89,7 @@ const ALEX: Voice = {
   comeback: [
     L('confiant', 'Tu sais ce qui est petit ? Tes chances de gagner.'),
     L('clin-oeil', 'J’ai calculé tes points faibles. Il y en a beaucoup.'),
-    L('rire', 'Un golem en pierre ? Je vais te mettre à jour, toi !'),
+    L('rire', 'Un sorcier en armure ? Je vais te mettre à jour, toi !'),
     L('determine', 'Mon canon à plasma a soif de bonnes réponses.'),
     L('confiant', 'Ta capuche, c’est pour cacher que tu révises en secret ?'),
   ],
@@ -186,80 +182,11 @@ const LINA: Voice = {
   ],
 };
 
-const PIXEL: Voice = {
-  start: [
-    L('confiant', 'Miaou. Réveillez-moi quand c’est difficile.'),
-    L('determine', 'Le ninja est prêt. Après la sieste.'),
-    L('clin-oeil', 'Neuf vies, zéro stress.'),
-    L('reflexion', 'Le calme avant la tempête… miaou.'),
-  ],
-  correct: [
-    L('confiant', 'Miaou. Trop facile.'),
-    L('clin-oeil', 'Le ninja frappe sans bruit.'),
-    L('joie', 'Croquette méritée.'),
-    L('confiant', 'Je l’avais vue venir, cette réponse.'),
-    L('rire', 'Ronron de victoire.'),
-  ],
-  streak: [
-    L('confiant', 'Je ronronne de satisfaction.'),
-    L('rire', 'Même mes moustaches sont impressionnées.'),
-    L('enthousiaste', 'Combo ninja !'),
-  ],
-  wrong: [
-    L('surprise', 'J’ai fait exprès. Pour voir.'),
-    L('triste', 'Même les chats ratent un saut parfois…'),
-    L('reflexion', 'Hmm. Le ninja médite.'),
-    L('etourdi', 'J’ai couru après ma queue, pardon.'),
-  ],
-  retried: [L('clin-oeil', 'Un chat retombe toujours sur ses pattes.'), L('confiant', 'Rattrapé. Comme une souris.')],
-  lastOne: [L('determine', 'Dernier coup de griffe.'), L('confiant', 'Et après, une sieste bien méritée.')],
-  comeback: [
-    L('confiant', 'Ta pierre, je vais m’en servir comme griffoir.'),
-    L('clin-oeil', 'Un golem ? J’en ai vu des plus gros dans la litière.'),
-    L('reflexion', 'Le sage ninja dit : celui qui crie fort compte mal.'),
-    L('rire', 'Ta capuche est presque aussi belle que la mienne. Presque.'),
-    L('confiant', 'J’ai neuf vies. Toi, t’en as trois. Fais le calcul.'),
-  ],
-  shoot: [
-    L('confiant', 'Boule ninja.'),
-    L('clin-oeil', 'Shuriken de bonne réponse.'),
-    L('joie', 'Miaou-boum !'),
-    L('rire', 'Coup de patte magique !'),
-  ],
-  hurt: [
-    L('colere', 'Pfff ! Mon pelage !'),
-    L('surprise', 'Même pas mal. Bon, un peu.'),
-    L('etourdi', 'Je vois des souris partout…'),
-    L('triste', 'Une vie de moins. Il m’en reste huit.'),
-  ],
-  shield: [L('confiant', 'Bouclier patte-ninja. Raté.'), L('clin-oeil', 'Tu tapes comme une pelote de laine.')],
-  bossArrives: [
-    L('reflexion', 'Grand, gris, bruyant… comme un aspirateur.'),
-    L('confiant', 'Ah. Le gros chat de l’histoire.'),
-  ],
-  rage: [
-    L('surprise', 'Il fait son crise. Moi je fais ma sieste ? Non ?'),
-    L('determine', 'Les ninjas adorent les colères : ça rend maladroit.'),
-  ],
-  victory: [
-    L('rire', 'Miaou-victoire !'),
-    L('confiant', 'Et maintenant… la sieste du champion.'),
-    L('affection', 'Questy, tu mérites une caresse.'),
-  ],
-  defeat: [
-    L('determine', 'Il me reste huit vies. Je reviendrai.'),
-    L('reflexion', 'Le ninja apprend de ses erreurs… après la sieste.'),
-  ],
-};
-
-/** Héros sans voix propre (à venir) : répliques générales. */
-const GENERIC: Voice = { ...ALEX };
-
-const VOICES: Record<HeroId, Voice> = { alex: ALEX, lina: LINA, pixel: PIXEL, tao: GENERIC, ayla: GENERIC };
+const VOICES: Record<HeroId, Voice> = { alex: ALEX, lina: LINA };
 
 export const heroSays = (hero: HeroId, moment: HeroMoment): HeroLine => pick(VOICES[hero][moment]);
 
-// ——— Le Golem des Équations ———
+// ——— Le Sorcier π ———
 
 export type BossMoment =
   | 'taunt'
@@ -274,7 +201,7 @@ export type BossMoment =
   | 'ko'
   | 'wins';
 
-const GOLEM: Record<BossMoment, readonly BossLine[]> = {
+const SORCIER: Record<BossMoment, readonly BossLine[]> = {
   taunt: [
     L('moqueur', 'Haha ! Personne ne passe ce chapitre sans perdre ses cœurs !'),
     L('menace', 'Je suis le maître des maths. Toi, t’es le maître des… brouillons ?'),
@@ -284,7 +211,7 @@ const GOLEM: Record<BossMoment, readonly BossLine[]> = {
     L('moqueur', 'Même ma capuche est plus maligne que toi !'),
   ],
   counter: [
-    L('colere', 'QUOI ?! On ne parle pas comme ça au Golem !'),
+    L('colere', 'QUOI ?! On ne parle pas comme ça au Sorcier π !'),
     L('perplexe', 'Euh… j’avais préparé une réponse… attends…'),
     L('furieux', 'Tu vas regretter cette vanne, petit !'),
     L('moqueur', 'Parle toujours, tes cœurs vont bientôt se taire.'),
@@ -317,10 +244,7 @@ const GOLEM: Record<BossMoment, readonly BossLine[]> = {
     L('furieux', 'Je sens… la puissance… des opérations… MONTER !'),
     L('furieux', 'Plus… Moins… Fois… Divisé… TOUT EXPLOSE !'),
   ],
-  rageCri: [
-    L('furieux', 'MODE RAGE ! Plus personne ne m’arrête !'),
-    L('furieux', 'AAARGH ! Je suis le GOLEM DES ÉQUATIONS !'),
-  ],
+  rageCri: [L('furieux', 'MODE RAGE ! Plus personne ne m’arrête !'), L('furieux', 'AAARGH ! Je suis le SORCIER π !')],
   ko: [
     L('ko', 'Impossible… battu par un élève…'),
     L('ko', 'Je… reviendrai… avec des fractions…'),
@@ -333,7 +257,7 @@ const GOLEM: Record<BossMoment, readonly BossLine[]> = {
   ],
 };
 
-export const bossSays = (moment: BossMoment): BossLine => pick(GOLEM[moment]);
+export const bossSays = (moment: BossMoment): BossLine => pick(SORCIER[moment]);
 
 // ——— Le π-bot ———
 
@@ -393,7 +317,7 @@ export type Exchange =
  * personnalité, le boss réplique, le héros a le dernier mot. Tirées au hasard : jamais le même échange.
  */
 export function faceOffExchange(hero: HeroId, bossOpening: string): Exchange[] {
-  const openFace = pick(GOLEM.taunt).face;
+  const openFace = pick(SORCIER.taunt).face;
   return [
     { speaker: 'boss', line: { text: bossOpening, face: openFace } },
     { speaker: 'hero', line: heroSays(hero, 'comeback') },

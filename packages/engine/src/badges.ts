@@ -53,10 +53,10 @@ export const BADGES: readonly BadgeDefinition[] = [
     thresholds: [3, 10, 30, 80],
   },
   {
-    category: 'heros',
-    title: 'Collectionneur',
-    how: 'Trouve des Acad-Héros dans les coffres.',
-    thresholds: [2, 3, 4, 5],
+    category: 'coffres',
+    title: 'Chasseur de coffres',
+    how: 'Termine des séries d’entraînement : chacune ouvre un coffre.',
+    thresholds: [5, 25, 75, 200],
   },
 ];
 

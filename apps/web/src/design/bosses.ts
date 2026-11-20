@@ -1,5 +1,5 @@
 import type { Chapter } from '@questeo/content';
-import { assetSrc, type BossExpression, type PiBotHead } from './assets.ts';
+import { assetSrc, BOSS_FACE, type BossExpression, type PiBotHead, type SorcierPose } from './assets.ts';
 import type { BossMedal } from '@questeo/shared';
 
 /** Un boss par matière, le même pour tous ses chapitres et toutes les classes (docs/SPEC.md §6.2 bis). */
@@ -12,24 +12,31 @@ export interface BossIdentity {
   readonly sky: readonly [string, string];
 }
 
-const GOLEM: BossIdentity = {
-  id: 'golem-des-equations',
-  name: 'Golem des Équations',
+/** Le Sorcier π : boss unique de tous les chapitres (refonte des personnages du 20/11/2026). */
+const SORCIER: BossIdentity = {
+  id: 'sorcier-pi',
+  name: 'Sorcier π',
   mobs: ['pi-bot'],
   sky: ['#3b1d6e', '#8a5cd6'],
 };
 
-/** Boss de chaque matière (les matières à venir auront le leur). */
-export const SUBJECT_BOSSES: Record<string, BossIdentity> = { maths: GOLEM };
+/** Boss de chaque matière : le Sorcier π partout pour l'instant. */
+export const SUBJECT_BOSSES: Record<string, BossIdentity> = { maths: SORCIER };
 
-export const bossOfSubject = (subject: string): BossIdentity => SUBJECT_BOSSES[subject] ?? GOLEM;
+export const bossOfSubject = (subject: string): BossIdentity => SUBJECT_BOSSES[subject] ?? SORCIER;
 export const bossOf = (chapter: Pick<Chapter, 'subject'>) => bossOfSubject(chapter.subject);
 
-/** Tête du boss avec une expression (identifiant d'asset) ; le portrait si l'expression n'est pas livrée. */
+/** Tête du boss pour une expression (identifiant d'asset) ; le portrait si elle n'est pas livrée. */
 export function bossHeadId(bossId: string, expression: BossExpression): string {
-  const id = `bosses-maths-${bossId}-head-${expression}`;
-  return assetSrc(id) ? id : `bosses-maths-${bossId}-portrait`;
+  const id = `bosses-${bossId}-head-${BOSS_FACE[expression]}`;
+  return assetSrc(id) ? id : `bosses-${bossId}-portrait`;
 }
+
+/** Pose fixe du boss (identifiant d'asset). */
+export const bossPoseId = (bossId: string, pose: SorcierPose) => `bosses-${bossId}-pose-${pose}`;
+
+/** Animation sur place : 4 images calmes (vies pleines), 4 images en rage (dernière vie). */
+export const bossIdleRange = (lives: number): readonly [number, number] => (lives <= 1 ? [4, 4] : [0, 4]);
 
 /** Expression du boss selon les vies qui lui restent (3 : menaçant, 2 : inquiet, 1 : furieux, en rage). */
 export const bossMood = (lives: number): BossExpression =>

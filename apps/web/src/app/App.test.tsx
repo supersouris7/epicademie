@@ -64,9 +64,9 @@ describe('profils', () => {
     renderApp('/heros');
     expect(await screen.findByRole('heading', { name: 'Mon héros' })).toBeInTheDocument();
     expect(await screen.findByRole('radio', { name: /Lina/ })).toBeChecked();
-    expect(screen.getByRole('img', { name: 'Pixel, à trouver dans un coffre' })).toBeInTheDocument();
-    expect(screen.queryByRole('radio', { name: /Pixel/ })).not.toBeInTheDocument();
-    expect(screen.getByText(/1 sur 3 trouvés/)).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Alex, à trouver dans un coffre' })).toBeInTheDocument();
+    expect(screen.queryByRole('radio', { name: /Alex/ })).not.toBeInTheDocument();
+    expect(screen.getByText(/1 sur 2 trouvés/)).toBeInTheDocument();
   });
 });
 
@@ -89,11 +89,8 @@ describe('accueil et choix du jeu', () => {
     expect(await screen.findByRole('heading', { name: /Nombres entiers et décimaux/ })).toBeInTheDocument();
   });
 
-  it('combat de boss : l’Empereur se présente, puis le choix du chapitre', async () => {
+  it('combat de boss : le choix de la matière, puis le Sorcier π et le choix du chapitre', async () => {
     const { user } = renderApp('/jouer/boss');
-    const emperor = await screen.findByRole('dialog', { name: 'L’Empereur du Savoir' });
-    await user.click(within(emperor).getByRole('button', { name: 'Passer' }));
-    await user.click(await within(emperor).findByRole('button', { name: 'Relever le défi' }));
     await user.click(await screen.findByRole('button', { name: 'Maths' }));
     const closeUp = await screen.findByRole('dialog', { name: /te provoque/ });
     await user.click(within(closeUp).getByRole('button', { name: 'Choisir mon chapitre' }));

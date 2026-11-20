@@ -144,7 +144,7 @@ describe('badges', () => {
       'perseverance',
       'chapitres',
       'consolidees',
-      'heros',
+      'coffres',
     ]);
     expect(list.every((b) => b.tier === null)).toBe(true);
   });

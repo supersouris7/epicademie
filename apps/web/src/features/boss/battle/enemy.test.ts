@@ -24,7 +24,14 @@ const view = (over: Partial<BattleView>): BattleView => ({
 
 describe('adversaires du combat', () => {
   it('le boss en personne', () => {
-    expect(bossEnemy(boss)).toEqual({ key: 'boss', name: boss.name, boss: true, image: `bosses-maths-${boss.id}` });
+    expect(bossEnemy(boss)).toMatchObject({
+      key: 'boss',
+      name: boss.name,
+      boss: true,
+      image: 'bosses-sorcier-pi-pose-idle',
+      poses: { attack: 'bosses-sorcier-pi-pose-attack', ko: 'bosses-sorcier-pi-pose-defeat' },
+      idleAnim: { anim: 'bosses/sorcier-pi/anim-idle', range: [0, 4] },
+    });
   });
 
   it('un mob par question tant qu’il en reste', () => {
@@ -37,11 +44,11 @@ describe('adversaires du combat', () => {
     });
   });
 
-  it('le boss change d’apparence en rage, sauf au KO', () => {
+  it('en rage (dernière vie), l’animation passe aux images rouges, sauf au KO', () => {
     const calm = currentEnemy(boss, view({ mobsDefeated: 4, bossLives: 2 }), 'idle');
-    expect(calm?.image).toBe(`bosses-maths-${boss.id}`);
-    expect(currentEnemy(boss, view({ mobsDefeated: 4, bossLives: 1 }), 'idle')?.image).toMatch(/-rage-combat$/);
-    expect(currentEnemy(boss, view({ mobsDefeated: 4, bossLives: 1 }), 'ko')?.image).toBe(`bosses-maths-${boss.id}`);
+    expect(calm?.idleAnim?.range).toEqual([0, 4]);
+    expect(currentEnemy(boss, view({ mobsDefeated: 4, bossLives: 1 }), 'idle')?.idleAnim?.range).toEqual([4, 4]);
+    expect(currentEnemy(boss, view({ mobsDefeated: 4, bossLives: 1 }), 'ko')?.idleAnim?.range).toEqual([0, 4]);
   });
 
   it('tête dans le bandeau : boss ou mob avec son expression', () => {
@@ -50,6 +57,6 @@ describe('adversaires du combat', () => {
     const mob = view({ mobsDefeated: 1 });
     expect(enemyHead(boss, mob, currentEnemy(boss, mob, 'idle'), faces)).toMatch(/^bosses-minions-pi-bot/);
     const atBoss = view({ mobsDefeated: 4 });
-    expect(enemyHead(boss, atBoss, currentEnemy(boss, atBoss, 'idle'), faces)).toMatch(/^bosses-maths-/);
+    expect(enemyHead(boss, atBoss, currentEnemy(boss, atBoss, 'idle'), faces)).toBe('bosses-sorcier-pi-head-menace');
   });
 });

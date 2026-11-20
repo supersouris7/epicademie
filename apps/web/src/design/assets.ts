@@ -17,10 +17,10 @@
 import { AVAILABLE } from './assets.available.ts';
 import { SVG_ASSETS } from './assets.generated.ts';
 import { envAssets } from './catalog/arenas.ts';
-import { bossAssets, empereurAssets, golemExtras, minionAssets, piBotAssets } from './catalog/bosses.ts';
+import { minionAssets, piBotAssets, sorcierAssets } from './catalog/bosses.ts';
 import { brandAssets } from './catalog/brand.ts';
 import { effectAssets } from './catalog/effects.ts';
-import { type AnimationState, characterAssets, weaponAssets } from './catalog/heroes.ts';
+import { characterAssets } from './catalog/heroes.ts';
 import { iconAssets } from './catalog/icons.ts';
 import { type AssetStatus, KINDS, type PlannedAsset, type Priority } from './catalog/kinds.ts';
 import { keyArt, questyAssets } from './catalog/questy.ts';
@@ -35,8 +35,14 @@ export {
   type PlannedAsset,
 } from './catalog/kinds.ts';
 export { QUESTY_LOOK } from './catalog/questy.ts';
-export { CHARACTERS, type AnimationState, HERO_EXPRESSIONS, type HeroExpression } from './catalog/heroes.ts';
-export { type BossExpression, type PiBotHead } from './catalog/bosses.ts';
+export {
+  CHARACTERS,
+  type AnimationState,
+  HERO_ANIMS,
+  HERO_EXPRESSIONS,
+  type HeroExpression,
+} from './catalog/heroes.ts';
+export { BOSS_FACE, type BossExpression, type PiBotHead, type SorcierPose } from './catalog/bosses.ts';
 export { ARENA_VARIANTS } from './catalog/arenas.ts';
 
 export const PLANNED_ASSETS: readonly PlannedAsset[] = [
@@ -45,12 +51,9 @@ export const PLANNED_ASSETS: readonly PlannedAsset[] = [
   ...iconAssets,
   ...questyAssets,
   ...characterAssets,
-  ...weaponAssets,
-  ...bossAssets,
-  ...golemExtras,
+  ...sorcierAssets,
   ...minionAssets,
   ...piBotAssets,
-  ...empereurAssets,
   ...effectAssets,
   ...envAssets,
   keyArt,
@@ -114,12 +117,6 @@ export function deliveredSrc(id: string): string | null {
   const p = byId.get(id);
   return p && available.has(p.file) ? `/assets/${p.file}` : null;
 }
-
-/** Pose d'un héros : la pose demandée si elle est livrée, sinon sa pose d'attente, sinon le provisoire. */
-export const heroPoseSrc = (hero: string, state: AnimationState): string | null =>
-  deliveredSrc(`characters-${hero}-pose-${state}`) ??
-  deliveredSrc(`characters-${hero}-pose-idle`) ??
-  assetSrc(`characters-${hero}-pose-${state}`);
 
 /** URL à afficher : image finale si livrée, sinon SVG provisoire, sinon null. */
 export function assetSrc(id: string): string | null {

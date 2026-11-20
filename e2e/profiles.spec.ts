@@ -38,13 +38,9 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.getByRole('button', { name: /Alex.*changer de héros/ }).click();
   await expect(page.getByRole('heading', { name: 'Mon héros' })).toBeVisible();
   await expect(page.getByRole('radio', { name: /Alex/ })).toBeChecked();
-  // Héros à venir : cartes mystère « ? », sans nom.
-  // Collection : Alex (héros de départ) ; Lina et Pixel se trouvent dans les coffres ; Tao et
-  // Ayla restent des cartes mystère « ? ».
+  // Collection : Alex (héros de départ) ; Lina se trouve dans les coffres.
   await expect(page.getByRole('img', { name: 'Lina, à trouver dans un coffre' })).toBeVisible();
-  await expect(page.getByRole('img', { name: 'Pixel, à trouver dans un coffre' })).toBeVisible();
-  await expect(page.getByRole('img', { name: 'Héros mystère, à venir' })).toHaveCount(2);
-  for (const soon of ['Tao', 'Ayla']) await expect(page.getByText(soon)).toHaveCount(0);
+  await expect(page.getByText(/1 sur 2 trouvés/)).toBeVisible();
   // Barre de navigation du bas sur les écrans principaux.
   const nav = page.getByRole('navigation', { name: 'Menu principal' });
   await nav.getByRole('button', { name: 'Progrès' }).click();

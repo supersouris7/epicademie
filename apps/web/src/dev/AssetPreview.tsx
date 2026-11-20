@@ -105,12 +105,7 @@ function Gallery() {
         <HealthBar value={3} max={5} />
         <EnergyBar value={45} max={50} />
         <div className="sm:col-span-2">
-          <BossHealthBar
-            name="Golem des Équations"
-            hp={62}
-            maxHp={100}
-            portrait="bosses-maths-golem-des-equations-portrait"
-          />
+          <BossHealthBar name="Sorcier π" hp={62} maxHp={100} portrait="bosses-sorcier-pi-portrait" />
         </div>
       </GamePanel>
       <GamePanel title="Personnages" className="flex flex-col gap-4">
@@ -124,15 +119,10 @@ function Gallery() {
           ))}
         </div>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <BossCard name="Sorcier π" image="bosses-sorcier-pi-portrait" subject="Maths" color="var(--subject-maths)" />
           <BossCard
-            name="Golem des Équations"
-            image="bosses-maths-golem-des-equations"
-            subject="Maths"
-            color="var(--subject-maths)"
-          />
-          <BossCard
-            name="Géomatrix"
-            image="bosses-maths-geomatrix"
+            name="Sorcier π"
+            image="bosses-sorcier-pi-pose-defeat"
             subject="Maths"
             color="var(--subject-maths)"
             defeated

@@ -12,17 +12,14 @@ export const AvatarConfigSchema = z.object({
 export type AvatarConfig = z.infer<typeof AvatarConfigSchema>;
 
 /** Héros jouables (illustrations : apps/web/public/assets/characters). Le héros se change à tout moment. */
-export const HEROES = ['alex', 'tao', 'lina', 'ayla', 'pixel'] as const;
+export const HEROES = ['alex', 'lina'] as const;
 export type HeroId = (typeof HEROES)[number];
 /** Héros jouables aujourd'hui (illustrations livrées) ; les autres sont « À venir ». */
-export const AVAILABLE_HEROES: readonly HeroId[] = ['alex', 'lina', 'pixel'];
+export const AVAILABLE_HEROES: readonly HeroId[] = ['alex', 'lina'];
 const PlayableHeroSchema = z.enum(HEROES).refine((h) => AVAILABLE_HEROES.includes(h), 'Ce héros arrive bientôt');
 export const HERO_NAMES: Record<HeroId, string> = {
   alex: 'Alex',
-  tao: 'Tao',
   lina: 'Lina',
-  ayla: 'Ayla',
-  pixel: 'Pixel',
 };
 
 export const ProfileNameSchema = z.string().trim().min(1, 'Le prénom est obligatoire').max(20, '20 caractères maximum');

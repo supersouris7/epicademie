@@ -1,27 +1,40 @@
 import { motion, useReducedMotion } from 'motion/react';
 import type { HeroId } from '@questeo/shared';
-import { heroPoseSrc, type AnimationState } from '../../../design/assets.ts';
+import { assetSrc, HERO_ANIMS, type AnimationState } from '../../../design/assets.ts';
 import { CHARACTER_MOTION } from '../../../design/motion.ts';
+import { Sprite } from './Sprite.tsx';
 
 interface CharacterSpriteProps {
   readonly hero: HeroId;
   readonly state: AnimationState;
-  /** Hauteur affichée ; les poses sont carrées. */
-  readonly height?: number;
+  /** Hauteur affichée (pixels ou valeur CSS). */
+  readonly height?: number | string;
   /** Retourne le personnage (face à gauche). */
   readonly flip?: boolean;
 }
 
+const isAnim = (s: AnimationState): s is (typeof HERO_ANIMS)[number] => (HERO_ANIMS as readonly string[]).includes(s);
+
 /**
- * Personnage animé par images clés : une image de pose par état (idle, course, tir, touché, victoire, défaite)
- * et un mouvement `motion` entre les poses. Point d'ancrage : milieu des pieds (bas centre), commun à toutes
- * les poses grâce au cadrage imposé à la génération.
- * Tant qu'une pose n'est pas livrée, rien n'est affiché : aucune animation n'est simulée sans image.
+ * Héros en pied : animation dessinée pour « sur place » et « victoire » (bande de 8 images),
+ * pose fixe pour le reste (course, tir, bouclier, touché, K.-O.) avec un mouvement court.
+ * Point d'ancrage : bas centre (pieds).
  */
 export function CharacterSprite({ hero, state, height = 240, flip = false }: CharacterSpriteProps) {
   const reduce = useReducedMotion();
-  // Pose manquante (touché, défaite) : la pose d'attente, animée selon l'état.
-  const src = heroPoseSrc(hero, state);
+  if (isAnim(state)) {
+    return (
+      <div className="flex items-end justify-center" style={{ height }}>
+        <Sprite
+          anim={`characters/${hero}/anim-${state}`}
+          height={height}
+          flip={flip}
+          fps={state === 'victory' ? 10 : 7}
+        />
+      </div>
+    );
+  }
+  const src = assetSrc(`characters-${hero}-pose-${state}`);
   if (!src) return null;
   return (
     <motion.img
@@ -30,7 +43,8 @@ export function CharacterSprite({ hero, state, height = 240, flip = false }: Cha
       alt=""
       aria-hidden
       draggable={false}
-      style={{ height, width: height, originX: 0.5, originY: 1, scaleX: flip ? -1 : 1 }}
+      className="object-contain object-bottom"
+      style={{ height, aspectRatio: '1 / 1', originX: 0.5, originY: 1, scaleX: flip ? -1 : 1 }}
       animate={reduce ? undefined : CHARACTER_MOTION[state]}
     />
   );

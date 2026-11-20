@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { bossMood, bossOf, bossOfSubject, mobName, mobOf, randomArena, ARENAS } from './bosses.ts';
 
 describe('boss et mobs', () => {
-  it('un boss par matière (Golem par défaut)', () => {
-    expect(bossOf({ subject: 'maths' }).name).toBeTruthy();
+  it('un boss par matière (Sorcier π par défaut)', () => {
+    expect(bossOf({ subject: 'maths' }).name).toBe('Sorcier π');
     expect(bossOfSubject('inconnue')).toBe(bossOfSubject('maths'));
   });
 
