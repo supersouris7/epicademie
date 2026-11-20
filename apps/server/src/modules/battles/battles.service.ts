@@ -58,7 +58,8 @@ export interface BattlesDeps {
   readonly db: Db;
   readonly clock: Clock;
   readonly random: Random;
-  readonly onFinished?: () => void;
+  /** Fin de partie : monnaie distribuée (métriques). */
+  readonly onFinished?: (rewards: { readonly coins: number; readonly rubies: number }) => void;
 }
 
 const view = (id: string, chapterId: string, s: BattleState, inventory: Inventory): BattleView => ({
@@ -293,7 +294,7 @@ export function createBattlesService({ db, clock, random, onFinished }: BattlesD
           levelAfter: levelFromXp(profile.xp + xpGained).level,
         };
       });
-      onFinished?.();
+      onFinished?.({ coins: summary.coinsGained, rubies: 0 });
       return summary;
     },
   };

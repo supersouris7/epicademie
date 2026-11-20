@@ -49,7 +49,8 @@ export interface TrainingDeps {
   /** Fuseau de la famille (jours de pratique). */
   readonly timeZone: string;
   /** Appelé à chaque partie terminée (métriques). */
-  readonly onFinished?: () => void;
+  /** Fin de partie : monnaie distribuée (métriques). */
+  readonly onFinished?: (rewards: { readonly coins: number; readonly rubies: number }) => void;
 }
 
 export function createTrainingService({ db, clock, random, timeZone, onFinished }: TrainingDeps) {
@@ -228,7 +229,7 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
           chest,
         };
       });
-      onFinished?.();
+      onFinished?.({ coins: summary.coinsGained + (summary.chest?.coins ?? 0), rubies: summary.chest?.rubies ?? 0 });
       return summary;
     },
   };

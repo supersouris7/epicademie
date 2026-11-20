@@ -36,7 +36,7 @@ Décisions prises par le responsable du produit le 20/11/2026 :
 | 10  | P1   | Économie : Acad-Héros en coffres, simulation, paramètres configurables     | ✅   |
 | 11  | P1   | Freemium, abonnement familial, Stripe (test) et simulateur                 | ✅   |
 | 12  | P2   | Salle des trophées, QG personnalisable, cosmétiques                        | ✅   |
-| 13  | P2   | Administration et observabilité                                            | ⏳   |
+| 13  | P2   | Administration et observabilité                                            | ✅   |
 | 14  | —    | Raid coopératif et mode TV                                                 | ⏳   |
 | 15  | —    | Contenu : 5 matières × 7 classes, classe adulte en maths                   | ⏳   |
 | 16  | —    | Parcours de bout en bout (15 scénarios), responsive PC/TV                  | ⏳   |

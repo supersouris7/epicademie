@@ -231,6 +231,38 @@ function adminHandlers(
       return r;
     },
     adminContent: () => ['m5-tables', 'm5-priorites'].map(skill),
+    adminStats: () => ({
+      day: '2026-11-20',
+      families: 12,
+      profiles: 19,
+      activeProfiles7d: 8,
+      finishedSeries7d: 64,
+      answers7d: 300,
+      autonomousRate7d: 0.72,
+      answersBySubject7d: [{ subject: 'maths', answers: 300 }],
+      bossWins: 21,
+      premiumFamilies: 5,
+      payments: [{ status: 'payee', count: 5, amountCents: 12495 }],
+      openReports: 1,
+    }),
+    adminAnomalies: () => [
+      {
+        rule: 'reponses-eclair',
+        profileId: '00000000-0000-4000-8000-000000000042',
+        detail: '18 réponses sur 20 en moins de 1.5 s (7 jours)',
+        at: null,
+      },
+    ],
+    adminErrors: () => [
+      {
+        source: 'client',
+        message: 'Cannot read properties of undefined',
+        route: '/hub',
+        count: 3,
+        firstAt: '2026-11-20T08:00:00.000Z',
+        lastAt: '2026-11-20T09:00:00.000Z',
+      },
+    ],
     adminUpdateContent: ({ params, body }) => {
       const id = params.skillId ?? '';
       if ((body as { disabled?: boolean }).disabled === true) disabled.add(id);

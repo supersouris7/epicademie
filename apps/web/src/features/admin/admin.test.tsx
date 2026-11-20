@@ -79,3 +79,18 @@ describe('administration', () => {
     expect(await within(row).findByText(/Programme :/)).toBeInTheDocument();
   });
 });
+
+describe('pilotage', () => {
+  it('statistiques agrégées, anomalies et erreurs récentes', async () => {
+    const { user } = renderApp('/admin', { admin: true });
+    await user.click(await screen.findByRole('tab', { name: 'Statistiques' }));
+    expect(await screen.findByText('Familles abonnées')).toBeInTheDocument();
+    expect(screen.getByText('72 %')).toBeInTheDocument();
+    expect(screen.getByText(/Payé : 5/)).toBeInTheDocument();
+    await user.click(screen.getByRole('tab', { name: 'Anomalies' }));
+    expect(await screen.findByText('Réponses trop rapides pour être lues')).toBeInTheDocument();
+    expect(screen.getByText(/Profil 00000000…/)).toBeInTheDocument();
+    await user.click(screen.getByRole('tab', { name: 'Erreurs' }));
+    expect(await screen.findByText('3 × Cannot read properties of undefined')).toBeInTheDocument();
+  });
+});

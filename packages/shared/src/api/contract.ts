@@ -29,6 +29,7 @@ import {
 } from '../account.ts';
 import { BadgeProgressSchema, LearningReportSchema } from '../learning.ts';
 import { BillingSchema, CheckoutSchema, SimulatePaymentSchema } from '../billing.ts';
+import { AdminErrorSchema, AdminStatsSchema, AnomalySchema } from '../insights.ts';
 import { BuyCosmeticSchema, CosmeticPurchaseSchema, HqLayoutSchema, HqSchema } from '../hq.ts';
 import {
   ContentEventSchema,
@@ -543,6 +544,33 @@ export const api = {
   }),
 
   // ——— Administration ———
+  adminStats: endpoint({
+    method: 'GET',
+    path: '/admin/stats',
+    tag: 'admin',
+    summary: 'Statistiques agrégées (aucune donnée personnelle)',
+    access: 'admin',
+    status: 200,
+    response: AdminStatsSchema,
+  }),
+  adminErrors: endpoint({
+    method: 'GET',
+    path: '/admin/errors',
+    tag: 'admin',
+    summary: 'Erreurs récentes regroupées (serveur, navigateur, temps réel)',
+    access: 'admin',
+    status: 200,
+    response: z.array(AdminErrorSchema),
+  }),
+  adminAnomalies: endpoint({
+    method: 'GET',
+    path: '/admin/anomalies',
+    tag: 'admin',
+    summary: 'Anomalies de récompenses à vérifier (gains impossibles, rythme suspect)',
+    access: 'admin',
+    status: 200,
+    response: z.array(AnomalySchema),
+  }),
   adminReports: endpoint({
     method: 'GET',
     path: '/admin/reports/:status',

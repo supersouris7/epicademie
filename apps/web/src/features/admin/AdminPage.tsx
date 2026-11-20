@@ -15,36 +15,45 @@ import { formatAnswer } from '../../shared/question/answers.ts';
 import { MathText } from '../../shared/question/MathText.tsx';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
+import { Anomalies, Errors, Stats } from './Insights.tsx';
 import { useContent, useContentHistory, useReports, useUpdateContent, useUpdateReport } from './api.ts';
 
 /**
  * Console d'administration pédagogique : signalements des familles (avec la question exacte
- * régénérée) et état de validation de chaque notion (désactivation, relecture, historique).
+ * régénérée), état de validation de chaque notion (désactivation, relecture, historique) et
+ * pilotage (statistiques agrégées, anomalies de récompenses, erreurs récentes).
  * Réservée au rôle administrateur : le serveur refuse toute autre session.
  */
+const TABS = {
+  reports: { label: 'Signalements', panel: Reports },
+  content: { label: 'Notions', panel: Contents },
+  stats: { label: 'Statistiques', panel: Stats },
+  anomalies: { label: 'Anomalies', panel: Anomalies },
+  errors: { label: 'Erreurs', panel: Errors },
+} as const;
+type Tab = keyof typeof TABS;
+
 export function AdminPage() {
-  const [tab, setTab] = useState<'reports' | 'content'>('reports');
+  const [tab, setTab] = useState<Tab>('reports');
+  const Panel = TABS[tab].panel;
   return (
     <PageShell title="Administration" back="/">
-      <div role="tablist" aria-label="Rubriques" className="flex gap-2">
-        <GameButton
-          variant={tab === 'reports' ? 'primary' : 'surface'}
-          role="tab"
-          aria-selected={tab === 'reports'}
-          onClick={() => setTab('reports')}
-        >
-          Signalements
-        </GameButton>
-        <GameButton
-          variant={tab === 'content' ? 'primary' : 'surface'}
-          role="tab"
-          aria-selected={tab === 'content'}
-          onClick={() => setTab('content')}
-        >
-          Notions
-        </GameButton>
+      <div role="tablist" aria-label="Rubriques" className="flex flex-wrap gap-2">
+        {(Object.keys(TABS) as Tab[]).map((id) => (
+          <GameButton
+            key={id}
+            variant={tab === id ? 'primary' : 'surface'}
+            role="tab"
+            aria-selected={tab === id}
+            onClick={() => setTab(id)}
+          >
+            {TABS[id].label}
+          </GameButton>
+        ))}
       </div>
-      <div role="tabpanel">{tab === 'reports' ? <Reports /> : <Contents />}</div>
+      <div role="tabpanel" aria-label={TABS[tab].label}>
+        <Panel />
+      </div>
     </PageShell>
   );
 }

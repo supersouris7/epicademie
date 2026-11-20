@@ -14,6 +14,7 @@ import { registerErrorHandling, send } from './core/http/errors.ts';
 import { registerSecurity } from './core/http/security.ts';
 import { registerOpenApi } from './core/http/openapi.ts';
 import { logErrorReporter, type ErrorReporter } from './core/observability/error-reporter.ts';
+import { withErrorJournal } from './core/observability/error-journal.ts';
 import { createMetrics, instrumentHttp, type Metrics } from './core/observability/metrics.ts';
 import { registerAuth } from './core/http/auth.ts';
 import { logMailer, type Mailer } from './core/mail/mailer.ts';
@@ -31,6 +32,7 @@ import { createTrainingService, trainingRoutes } from './modules/training/index.
 import { battlesRoutes, createBattlesService } from './modules/battles/index.ts';
 import { createShopService, inventoryRoutes } from './modules/inventory/index.ts';
 import { createHqService, hqRoutes } from './modules/hq/index.ts';
+import { createInsightsService, insightsRoutes } from './modules/insights/index.ts';
 import { createPresence, type Presence } from './modules/realtime/index.ts';
 import { opsRoutes, systemRoutes } from './modules/system/index.ts';
 import { telemetryRoutes } from './modules/telemetry/index.ts';
@@ -117,8 +119,16 @@ export async function buildApp(deps: AppDeps): Promise<App> {
   const clock = deps.clock ?? systemClock(config.timeZone);
   const random = deps.random ?? systemRandom;
   const presence = deps.presence ?? createPresence();
-  const reporter = deps.reporter ?? logErrorReporter(http.log);
   const metrics = deps.metrics ?? createMetrics();
+  // Journal des erreurs récentes (administration) devant le suivi d'erreurs choisi.
+  const reporter = withErrorJournal(deps.reporter ?? logErrorReporter(http.log), {
+    now: () => clock.now(),
+    counter: metrics.errors,
+  });
+  const rewarded = ({ coins, rubies }: { coins: number; rubies: number }) => {
+    metrics.rewards.inc({ currency: 'pieces' }, coins);
+    metrics.rewards.inc({ currency: 'rubis' }, rubies);
+  };
 
   registerErrorHandling(http, reporter);
   instrumentHttp(http, metrics);
@@ -144,13 +154,19 @@ export async function buildApp(deps: AppDeps): Promise<App> {
     clock,
     random,
     timeZone: config.timeZone,
-    onFinished: () => metrics.finishedGames.inc({ kind: 'entrainement' }),
+    onFinished: (r) => {
+      metrics.finishedGames.inc({ kind: 'entrainement' });
+      rewarded(r);
+    },
   });
   const battles = createBattlesService({
     db,
     clock,
     random,
-    onFinished: () => metrics.finishedGames.inc({ kind: 'boss' }),
+    onFinished: (r) => {
+      metrics.finishedGames.inc({ kind: 'boss' });
+      rewarded(r);
+    },
   });
   const shop = createShopService(db);
   const learning = createLearningService({ db, clock, timeZone: config.timeZone });
@@ -161,7 +177,14 @@ export async function buildApp(deps: AppDeps): Promise<App> {
     bossRecords: async (id) => (await battles.overview(id)).records,
   });
   const pedagogy = createPedagogyService({ db, clock });
-  const billing = createBillingService({ db, clock, config: config.billing, appUrl, fetcher: deps.fetcher });
+  const billing = createBillingService({
+    db,
+    clock,
+    config: config.billing,
+    appUrl,
+    fetcher: deps.fetcher,
+    onSettled: (status) => metrics.payments.inc({ status }),
+  });
 
   await http.register(
     opsRoutes({ ping: () => database.ping(), metrics, metricsToken: config.metricsToken, version: config.version }),
@@ -193,6 +216,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
       await v1.register(billingRoutes(billing, config.billing.stripeWebhookSecret));
       await v1.register(inventoryRoutes(shop, owns));
       await v1.register(hqRoutes(hq, owns));
+      await v1.register(insightsRoutes(createInsightsService({ db, clock }), () => reporter.recent()));
       await v1.register(telemetryRoutes(reporter));
     },
     { prefix: API_PREFIX },

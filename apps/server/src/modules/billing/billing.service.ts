@@ -21,11 +21,13 @@ export interface BillingDeps {
   readonly appUrl: () => string;
   /** Appels HTTP vers le prestataire (remplaçable en test). */
   readonly fetcher?: typeof fetch;
+  /** Paiement clos (métriques). */
+  readonly onSettled?: (status: 'payee' | 'echouee') => void;
 }
 
 const OFFER = 'famille-annee' as const;
 
-export function createBillingService({ db, clock, config, appUrl, fetcher }: BillingDeps) {
+export function createBillingService({ db, clock, config, appUrl, fetcher, onSettled }: BillingDeps) {
   const repo = billingRepo(db);
   const today = () => clock.today();
   const wouldEnd = () => premiumEndFor(today(), config.schoolYearEnd, config.minDays);
@@ -59,13 +61,16 @@ export function createBillingService({ db, clock, config, appUrl, fetcher }: Bil
   };
 
   /** Clôt un paiement en attente (une seule fois, quel que soit le nombre de notifications). */
-  const settle = (id: string, outcome: 'payee' | 'echouee') =>
-    db.transaction(async (tx) => {
+  const settle = async (id: string, outcome: 'payee' | 'echouee') => {
+    const changed = await db.transaction(async (tx) => {
       const r = billingRepo(tx);
       const sub = await r.findForUpdate(id);
-      if (sub?.status !== 'en-attente') return;
+      if (sub?.status !== 'en-attente') return false;
       await r.settle(id, outcome, clock.now());
+      return true;
     });
+    if (changed) onSettled?.(outcome);
+  };
 
   const isPremium = async (familyId: string) => (await repo.activeUntil(familyId, today())) !== undefined;
 
