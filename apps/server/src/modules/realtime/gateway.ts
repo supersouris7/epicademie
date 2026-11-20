@@ -42,6 +42,8 @@ export interface RealtimeDeps {
   ) => Promise<{ readonly profile: Profile; readonly familyId: string } | null>;
   readonly clock: Clock;
   readonly random: Random;
+  /** La famille peut-elle jouer ce chapitre (gratuit, ou abonnement) ? */
+  readonly canPlayChapter: (familyId: string, chapterId: string) => Promise<boolean>;
   readonly logger: FastifyBaseLogger;
   readonly reporter: ErrorReporter;
   readonly metrics?: Metrics;
@@ -153,10 +155,16 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
       },
       chatLimit,
     );
-    // On n'invite que des joueurs de sa famille.
-    on('arena:create', ArenaCreateSchema, (msg) =>
-      arenas.create(profile, { ...msg, invite: msg.invite.filter((id) => presence.sameFamily(profile.id, id)) }),
-    );
+    // On n'invite que des joueurs de sa famille, sur un chapitre que la famille peut jouer.
+    on('arena:create', ArenaCreateSchema, (msg) => {
+      deps
+        .canPlayChapter(socket.data.familyId, msg.chapterId)
+        .then((ok) => {
+          if (ok)
+            arenas.create(profile, { ...msg, invite: msg.invite.filter((id) => presence.sameFamily(profile.id, id)) });
+        })
+        .catch((err: unknown) => reporter.capture(err, { source: 'realtime', event: 'arena:create' }));
+    });
     on('arena:respond', ArenaRespondSchema, ({ arenaId, accept }) => arenas.respond(profile.id, arenaId, accept));
     on('arena:start', null, () => arenas.start(profile.id));
     on('arena:answer', ArenaAnswerSchema, ({ response }) => arenas.answer(profile.id, response));

@@ -50,6 +50,23 @@ const EnvSchema = z.object({
   COOKIE_SECURE: bool,
   /** Durée d'une session d'appareil sans activité, en jours. */
   SESSION_DAYS: z.coerce.number().int().min(1).max(365).default(30),
+  /** Prix de l'année scolaire, en centimes (24,99 € par défaut). */
+  PREMIUM_PRICE_CENTS: z.coerce.number().int().min(50).default(2499),
+  PREMIUM_CURRENCY: z
+    .string()
+    .regex(/^[a-z]{3}$/)
+    .default('eur'),
+  /** Fin d'année scolaire (MM-JJ) : l'accès payé s'arrête à cette date. */
+  SCHOOL_YEAR_END: z
+    .string()
+    .regex(/^\d{2}-\d{2}$/)
+    .default('08-31'),
+  /** Durée minimale d'un accès payé : payer trop près de la fin donne l'année suivante. */
+  PREMIUM_MIN_DAYS: z.coerce.number().int().min(0).max(365).default(60),
+  /** Prestataire : stripe, simulateur (hors production), aucun (paiement fermé). */
+  BILLING_PROVIDER: z.enum(['stripe', 'simulateur', 'aucun']).optional(),
+  STRIPE_SECRET_KEY: z.string().startsWith('sk_').optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().startsWith('whsec_').optional(),
 });
 
 export interface ServerConfig {
@@ -74,6 +91,17 @@ export interface ServerConfig {
   readonly version: string;
   readonly cookieSecure: boolean;
   readonly sessionDays: number;
+  readonly billing: BillingConfig;
+}
+
+export interface BillingConfig {
+  readonly provider: 'stripe' | 'simulateur' | 'aucun';
+  readonly priceCents: number;
+  readonly currency: string;
+  readonly schoolYearEnd: string;
+  readonly minDays: number;
+  readonly stripeSecretKey: string | null;
+  readonly stripeWebhookSecret: string | null;
 }
 
 export class ConfigError extends Error {}
@@ -97,7 +125,8 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
     databaseUrl: e.DATABASE_URL ?? `pglite://${path.join(serverRoot, 'data/pglite')}`,
     databasePoolMax: e.DATABASE_POOL_MAX,
     migrationsDir: path.join(serverRoot, 'drizzle'),
-    webDir: production ? (e.WEB_DIR ?? path.resolve(serverRoot, '../web/dist')) : null,
+    // Hors production, le site n'est servi que si WEB_DIR est donné (tests de bout en bout).
+    webDir: e.WEB_DIR ? path.resolve(e.WEB_DIR) : production ? path.resolve(serverRoot, '../web/dist') : null,
     publicUrl: e.PUBLIC_URL ?? null,
     logLevel: e.LOG_LEVEL ?? (e.NODE_ENV === 'test' ? 'silent' : 'info'),
     trustProxy: e.TRUST_PROXY,
@@ -110,5 +139,25 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
     version: e.QUESTEO_VERSION,
     cookieSecure: e.COOKIE_SECURE ?? production,
     sessionDays: e.SESSION_DAYS,
+    billing: billingConfig(e, production),
+  };
+}
+
+/** Paiement : jamais de simulateur en production ; Stripe exige ses deux clés. */
+function billingConfig(e: z.infer<typeof EnvSchema>, production: boolean): BillingConfig {
+  const provider = e.BILLING_PROVIDER ?? (production ? 'aucun' : 'simulateur');
+  if (provider === 'simulateur' && production)
+    throw new ConfigError('Le simulateur de paiement est interdit en production');
+  if (provider === 'stripe' && (!e.STRIPE_SECRET_KEY || !e.STRIPE_WEBHOOK_SECRET)) {
+    throw new ConfigError('BILLING_PROVIDER=stripe exige STRIPE_SECRET_KEY et STRIPE_WEBHOOK_SECRET');
+  }
+  return {
+    provider,
+    priceCents: e.PREMIUM_PRICE_CENTS,
+    currency: e.PREMIUM_CURRENCY,
+    schoolYearEnd: e.SCHOOL_YEAR_END,
+    minDays: e.PREMIUM_MIN_DAYS,
+    stripeSecretKey: e.STRIPE_SECRET_KEY ?? null,
+    stripeWebhookSecret: e.STRIPE_WEBHOOK_SECRET ?? null,
   };
 }

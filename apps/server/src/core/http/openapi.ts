@@ -14,6 +14,7 @@ const TAG_DESCRIPTIONS: Record<(typeof API_TAGS)[number], string> = {
   comptes: 'Comptes familiaux, sessions, mot de passe',
   suivi: 'Suivi des apprentissages',
   contenus: 'Signalements de questions, notions désactivées',
+  abonnement: 'Abonnement familial et paiements',
   admin: 'Administration (rôle administrateur)',
   profils: 'Profils des joueurs',
   entrainement: 'Parties d’entraînement et progression par notion',

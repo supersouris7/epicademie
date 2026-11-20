@@ -28,6 +28,7 @@ import {
   SignupSchema,
 } from '../account.ts';
 import { BadgeProgressSchema, LearningReportSchema } from '../learning.ts';
+import { BillingSchema, CheckoutSchema, SimulatePaymentSchema } from '../billing.ts';
 import {
   ContentEventSchema,
   ContentSkillSchema,
@@ -91,6 +92,7 @@ export const API_TAGS = [
   'profils',
   'suivi',
   'contenus',
+  'abonnement',
   'admin',
   'entrainement',
   'combats',
@@ -116,6 +118,7 @@ export const ERROR_CODES = [
   'NOT_FOUND',
   'CONFLICT',
   'GONE',
+  'PREMIUM_REQUIRED',
   'RATE_LIMITED',
   'PAYLOAD_TOO_LARGE',
   'UNAUTHORIZED',
@@ -471,6 +474,37 @@ export const api = {
     access: 'family',
     status: 200,
     response: DisabledContentSchema,
+  }),
+
+  // ——— Abonnement ———
+  billing: endpoint({
+    method: 'GET',
+    path: '/billing',
+    tag: 'abonnement',
+    summary: 'Abonnement de la famille : accès, prix, historique des paiements',
+    access: 'family',
+    status: 200,
+    response: BillingSchema,
+  }),
+  checkout: endpoint({
+    method: 'POST',
+    path: '/billing/checkout',
+    tag: 'abonnement',
+    summary: 'Commence le paiement de l’année scolaire (page du prestataire ou simulateur)',
+    access: 'parent',
+    status: 201,
+    response: CheckoutSchema,
+  }),
+  simulatePayment: endpoint({
+    method: 'POST',
+    path: '/billing/simulate/:id',
+    tag: 'abonnement',
+    summary: 'Simulateur de paiement (hors production) : paiement accepté ou refusé',
+    access: 'parent',
+    status: 200,
+    params: IdParamsSchema,
+    body: SimulatePaymentSchema,
+    response: BillingSchema,
   }),
 
   // ——— Administration ———

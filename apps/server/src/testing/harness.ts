@@ -5,7 +5,7 @@ import pg from 'pg';
 import { buildApp, type App, type AppConfig } from '../app.ts';
 import { openDatabase, type Database } from '../db/client.ts';
 import { runMigrations } from '../db/migrations.ts';
-import { ALL_TABLES } from '../db/schema.ts';
+import { ALL_TABLES, subscriptions } from '../db/schema.ts';
 import { memoryMailer } from '../core/mail/mailer.ts';
 import { systemRandom, type Random } from '../core/random.ts';
 import type { Clock } from '../core/clock.ts';
@@ -38,6 +38,15 @@ export const testConfig = (overrides: Partial<AppConfig> = {}): AppConfig => ({
   cookieSecure: false,
   corsOrigins: null,
   sessionDays: 30,
+  billing: {
+    provider: 'simulateur',
+    priceCents: 2499,
+    currency: 'eur',
+    schoolYearEnd: '08-31',
+    minDays: 60,
+    stripeSecretKey: null,
+    stripeWebhookSecret: null,
+  },
   ...overrides,
 });
 
@@ -102,6 +111,10 @@ export interface TestHarnessOptions {
   readonly config?: Partial<AppConfig>;
   /** Routes supplémentaires, ajoutées avant le démarrage (ex. une route qui plante). */
   readonly routes?: (http: App['http']) => void;
+  /** La famille de test a l'abonnement (par défaut : oui, tous les chapitres sont jouables). */
+  readonly premium?: boolean;
+  /** Appels HTTP sortants (prestataire de paiement simulé). */
+  readonly fetcher?: typeof fetch;
 }
 
 /** Mot de passe des comptes de test. */
@@ -132,6 +145,7 @@ export async function createTestApp(options: TestHarnessOptions = {}) {
     clock,
     random: options.random ?? systemRandom,
     mailer,
+    fetcher: options.fetcher,
   });
   options.routes?.(app.http);
   let accounts = 0;
@@ -146,7 +160,25 @@ export async function createTestApp(options: TestHarnessOptions = {}) {
     if (res.statusCode !== 201) throw new Error(`inscription de test refusée : ${res.body}`);
     return { cookie: sessionCookie(res), me: res.json<Me>() };
   };
-  let family = await signup();
+  /** Paiement réussi enregistré directement (abonnement de la famille de test). */
+  const subscribe = async (familyId: string) => {
+    await database.db.insert(subscriptions).values({
+      familyId,
+      offer: 'famille-annee',
+      status: 'payee',
+      amountCents: 2499,
+      currency: 'eur',
+      periodEnd: '2099-08-31',
+      provider: 'simulateur',
+      paidAt: new Date(),
+    });
+  };
+  const defaultFamily = async () => {
+    const f = await signup();
+    if (options.premium ?? true) await subscribe(f.me.family.id);
+    return f;
+  };
+  let family = await defaultFamily();
 
   /** Client HTTP d'un appareil connecté avec ce cookie (un cookie explicite l'emporte). */
   const as = (cookie: () => string) => ({
@@ -172,7 +204,7 @@ export async function createTestApp(options: TestHarnessOptions = {}) {
     /** Vide toutes les tables (entre deux tests) et reconnecte une famille neuve. */
     async reset() {
       await database.reset();
-      family = await signup();
+      family = await defaultFamily();
     },
     async close() {
       await app.http.close();

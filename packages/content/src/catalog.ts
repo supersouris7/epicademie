@@ -42,6 +42,15 @@ export const chapterOfAnySkill = (id: string) => (skills.get(id) ?? bossSkills.g
 /** Classe d'une notion d'entraînement ou d'une question de boss. */
 export const gradeOfSkill = (id: string): Grade | undefined => (skills.get(id) ?? bossSkills.get(id))?.chapter.grade;
 
+/**
+ * Chapitre gratuit : le 1er chapitre de chaque classe dans chaque matière (version gratuite,
+ * décision du 20/11/2026). Les autres chapitres demandent l'abonnement familial.
+ */
+export const isFreeChapter = (chapterId: string): boolean => {
+  const chapter = getChapter(chapterId);
+  return chapter !== undefined && chaptersOf(chapter.subject, chapter.grade)[0]?.id === chapter.id;
+};
+
 /** Toutes les notions (entraînement et questions de boss), avec leur chapitre. */
 export const allSkillEntries = () => [
   ...[...skills.values()].map((e) => ({ ...e, boss: false })),

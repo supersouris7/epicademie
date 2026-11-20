@@ -15,7 +15,7 @@ import {
 } from '../features/account/index.ts';
 import { AdminPage } from '../features/admin/index.ts';
 import { Arena } from '../features/arena/index.ts';
-import { ChildReport, ParentHome } from '../features/parent/index.ts';
+import { ChildReport, ParentHome, PaymentSimulator, Subscription } from '../features/parent/index.ts';
 import { BossChapters, BossPlay, Shop } from '../features/boss/index.ts';
 import { Hub, ModeSetup, MultiModes } from '../features/hub/index.ts';
 import { Heroes, ProfileEditor, ProfilePicker, useProfile } from '../features/profiles/index.ts';
@@ -84,6 +84,8 @@ export function App() {
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/parent" element={<ParentHome />} />
             <Route path="/parent/:profileId" element={<ChildReport />} />
+            <Route path="/abonnement" element={<Subscription />} />
+            <Route path="/abonnement/simulateur" element={<PaymentSimulator />} />
             <Route path="/profils/nouveau" element={<ProfileEditor />} />
             <Route path="/profils/:id/modifier" element={<ProfileEditor />} />
             <Route path="/hub" element={<WithProfile>{(p) => <Hub profile={p} />}</WithProfile>} />

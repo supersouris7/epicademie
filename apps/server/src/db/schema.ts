@@ -16,7 +16,9 @@ import {
 } from 'drizzle-orm/pg-core';
 import type {
   AccountRole,
+  Offer,
   ReportReason,
+  SubscriptionStatus,
   ReportStatus,
   AvatarConfig,
   BossMedal,
@@ -325,6 +327,35 @@ export const contentEvents = pgTable(
 );
 
 /**
+ * Paiements de l'abonnement familial (historique complet, y compris les échecs). L'accès
+ * premium se déduit des paiements réussis : pas de champ « premium » à tenir à jour.
+ */
+export const subscriptions = pgTable(
+  'subscriptions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    familyId: uuid('family_id')
+      .notNull()
+      .references(() => families.id, { onDelete: 'cascade' }),
+    offer: text('offer').$type<Offer>().notNull(),
+    status: text('status').$type<SubscriptionStatus>().notNull().default('en-attente'),
+    amountCents: integer('amount_cents').notNull(),
+    currency: text('currency').notNull(),
+    periodEnd: date('period_end', { mode: 'string' }).notNull(),
+    provider: text('provider').$type<'stripe' | 'simulateur'>().notNull(),
+    /** Référence chez le prestataire (session de paiement Stripe), unique. */
+    providerRef: text('provider_ref'),
+    createdAt: createdAt(),
+    paidAt: at('paid_at'),
+  },
+  (t) => [
+    index('subscriptions_family_idx').on(t.familyId),
+    uniqueIndex('subscriptions_provider_ref_unique').on(t.providerRef),
+    check('subscriptions_amount_positive', sql`${t.amountCents} > 0`),
+  ],
+);
+
+/**
  * Acad-Héros possédés : le héros de départ, puis ceux trouvés dans les coffres. Purement
  * cosmétiques (aucun avantage de jeu).
  */
@@ -362,6 +393,7 @@ export const idempotentRequests = pgTable(
 
 /** Toutes les tables, de la plus dépendante à la moins dépendante (remise à zéro des tests). */
 export const ALL_TABLES = [
+  'subscriptions',
   'owned_heroes',
   'idempotent_requests',
   'question_reports',

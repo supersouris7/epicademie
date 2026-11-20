@@ -24,6 +24,11 @@ export function startRealtime(app: App, corsOrigins: readonly string[] | null) {
     },
     clock: app.clock,
     random: app.random,
+    canPlayChapter: (familyId, chapterId) =>
+      app.billing.requireChapter(familyId, chapterId).then(
+        () => true,
+        () => false,
+      ),
     logger: app.http.log,
     reporter: app.reporter,
     metrics: app.metrics,

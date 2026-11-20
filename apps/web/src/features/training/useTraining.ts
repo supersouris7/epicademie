@@ -10,6 +10,7 @@ import {
   type TrainingState,
 } from '@questeo/engine';
 import type { Profile, SkillProgress } from '@questeo/shared';
+import { ApiError } from '../../shared/api/client.ts';
 import { finishSession, markConfused, skillsKey, startSession, submitAnswer } from './api.ts';
 import { localToday, randomSeed } from '../../shared/lib/dates.ts';
 import { heroSays } from '../../shared/lib/dialogue.ts';
@@ -120,8 +121,15 @@ export function useTraining({ profile, chapterId, skills, states }: TrainingSetu
         dispatch({ type: 'started', sessionId: id });
         draw(latest.current.training);
       })
-      .catch(() =>
-        dispatch({ type: 'failed', error: 'Impossible de démarrer la partie. Le serveur est-il joignable ?' }),
+      .catch((err: unknown) =>
+        dispatch({
+          type: 'failed',
+          // Refus métier (chapitre de l'abonnement, notion en maintenance) : message du serveur.
+          error:
+            err instanceof ApiError && err.status !== 0
+              ? err.message
+              : 'Impossible de démarrer la partie. Le serveur est-il joignable ?',
+        }),
       );
   }, [subject, chapterId, draw, profile.id, skills]);
 

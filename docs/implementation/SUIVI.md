@@ -34,7 +34,7 @@ Décisions prises par le responsable du produit le 20/11/2026 :
 | 8   | P1   | Tableau de bord parent                                                     | ✅   |
 | 9   | P1   | Badges                                                                     | ✅   |
 | 10  | P1   | Économie : Acad-Héros en coffres, simulation, paramètres configurables     | ✅   |
-| 11  | P1   | Freemium, abonnement familial, Stripe (test) et simulateur                 | ⏳   |
+| 11  | P1   | Freemium, abonnement familial, Stripe (test) et simulateur                 | ✅   |
 | 12  | P2   | Salle des trophées, QG personnalisable, cosmétiques                        | ⏳   |
 | 13  | P2   | Administration et observabilité                                            | ⏳   |
 | 14  | —    | Raid coopératif et mode TV                                                 | ⏳   |
@@ -43,6 +43,7 @@ Décisions prises par le responsable du produit le 20/11/2026 :
 
 ## Blocages nécessitant une intervention humaine
 
-| Sujet                         | Besoin                                                                                                                                    | Contournement en place                                                 |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| E-mails (mot de passe oublié) | Choisir et ouvrir un compte chez un fournisseur d'e-mails transactionnels (ex. Brevo, Scaleway TEM, Postmark) et fournir ses identifiants | Interface `Mailer` ; en production l'envoi est journalisé sans contenu |
+| Sujet                         | Besoin                                                                                                                                    | Contournement en place                                                                                       |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| E-mails (mot de passe oublié) | Choisir et ouvrir un compte chez un fournisseur d'e-mails transactionnels (ex. Brevo, Scaleway TEM, Postmark) et fournir ses identifiants | Interface `Mailer` ; en production l'envoi est journalisé sans contenu                                       |
+| Paiement réel                 | Ouvrir le compte Stripe (identité, IBAN), fournir les clés de test puis réelles, valider CGV, rétractation, TVA et mentions légales       | `BILLING_PROVIDER=aucun` en production : paiement fermé, version gratuite seule ; simulateur hors production |

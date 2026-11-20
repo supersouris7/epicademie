@@ -10,6 +10,12 @@ import { useGradeChoice } from '../../shared/lib/grades.ts';
 import { chapterProgress, suggestChapter } from '../../shared/lib/progress.ts';
 import { useEntrance } from '../../shared/lib/entrance.ts';
 import { recommendedReviews } from '@questeo/engine';
+import { useToast } from '../../shared/ui/Toast.tsx';
+import { PremiumLock } from '../../shared/ui/game/PremiumLock.tsx';
+import { useChapterAccess } from '../parent/index.ts';
+
+/** Chapitre réservé à l'abonnement familial. */
+const LOCKED = 'Ce chapitre fait partie de l’abonnement familial : demande à tes parents !';
 
 /** Entraînement : choix du chapitre d'une matière. */
 export function Chapters({ profile }: { readonly profile: Profile }) {
@@ -20,6 +26,8 @@ export function Chapters({ profile }: { readonly profile: Profile }) {
   const { grade, grades, own, setGrade } = useGradeChoice(profile, subject);
   const chapters = chaptersOf(subject, grade);
   const { data } = useSkills(profile.id);
+  const canPlay = useChapterAccess();
+  const [toast, showToast] = useToast(3000);
   if (!info || chapters.length === 0) return <Navigate to="/jouer/entrainement" replace />;
   const states = new Map((data ?? []).map((s) => [s.skillId, s]));
   const today = localToday();
@@ -84,10 +92,13 @@ export function Chapters({ profile }: { readonly profile: Profile }) {
             >
               <button
                 type="button"
-                onClick={() => void navigate(`/jouer/entrainement/${subject}/${c.id}`)}
+                onClick={() =>
+                  canPlay(c.id) ? void navigate(`/jouer/entrainement/${subject}/${c.id}`) : showToast(LOCKED)
+                }
                 className="cartoon cartoon-press bg-surface flex w-full flex-col gap-2 p-4 text-left"
               >
                 <span className="font-display text-2xl tracking-wide">{c.title}</span>
+                {!canPlay(c.id) && <PremiumLock />}
                 <span className="text-muted text-sm font-bold">
                   {p.acquired} / {p.total} notion{p.total > 1 ? 's' : ''} acquise{p.total > 1 ? 's' : ''}
                 </span>
@@ -107,6 +118,7 @@ export function Chapters({ profile }: { readonly profile: Profile }) {
           );
         })}
       </ul>
+      {toast}
     </PageShell>
   );
 }

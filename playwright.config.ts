@@ -20,9 +20,12 @@ export default defineConfig({
     url: `http://localhost:${PORT}/api/ready`,
     reuseExistingServer: false,
     timeout: 120_000,
-    // Limites de débit relevées : tous les tests viennent de la même adresse IP.
+    // Build de production servi en mode « test » : le simulateur de paiement y est permis (il est
+    // interdit en production). Limites de débit relevées : tous les tests viennent de la même IP.
     env: {
-      NODE_ENV: 'production',
+      NODE_ENV: 'test',
+      WEB_DIR: 'apps/web/dist',
+      BILLING_PROVIDER: 'simulateur',
       PORT: String(PORT),
       DATABASE_URL: 'pglite://memory',
       RATE_LIMIT_MAX: '100000',

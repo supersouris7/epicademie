@@ -91,6 +91,8 @@ export interface FakeApiOptions {
   readonly admin?: boolean;
   /** Rapport de suivi renvoyé pour chaque profil (par défaut : vide). */
   readonly learning?: LearningReport;
+  /** Abonnement familial en cours (par défaut : oui, tous les chapitres jouables). */
+  readonly premium?: boolean;
 }
 
 /** Rapport de suivi vide (nouveau joueur). */
@@ -232,6 +234,46 @@ function adminHandlers(
       return skill(id);
     },
     adminContentHistory: () => [],
+  };
+}
+
+/** Abonnement du faux serveur : simulateur de paiement, historique. */
+function billingHandlers(premium: boolean, uuid: () => string): Partial<Record<keyof typeof api, Handler>> {
+  const state = { premium, history: [] as Record<string, unknown>[] };
+  const status = () => ({
+    premium: state.premium,
+    until: state.premium ? '2027-08-31' : null,
+    priceCents: 2499,
+    currency: 'eur',
+    wouldEnd: '2027-08-31',
+    available: true,
+    simulated: true,
+    history: state.history,
+  });
+  return {
+    billing: status,
+    checkout: () => {
+      const id = uuid();
+      state.history.unshift({
+        id,
+        offer: 'famille-annee',
+        status: 'en-attente',
+        amountCents: 2499,
+        currency: 'eur',
+        periodEnd: '2027-08-31',
+        createdAt: '2026-11-20T10:00:00.000Z',
+        paidAt: null,
+      });
+      return { url: `/abonnement/simulateur?paiement=${id}` };
+    },
+    simulatePayment: ({ params, body }) => {
+      const sub = state.history.find((h) => h.id === params.id);
+      if (!sub) throw new FakeError(404, 'NOT_FOUND', 'Paiement introuvable');
+      const ok = (body as { outcome: string }).outcome === 'succes';
+      Object.assign(sub, ok ? { status: 'payee', paidAt: '2026-11-20T10:01:00.000Z' } : { status: 'echouee' });
+      if (ok) state.premium = true;
+      return status();
+    },
   };
 }
 
@@ -428,6 +470,7 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     },
     disabledContent: () => ({ skills: [...disabledSet] }),
     learningReport: () => options.learning ?? emptyLearning(),
+    ...billingHandlers(options.premium ?? true, uuid),
     ownedHeroes: ({ params }) => ({ heroes: [profile(params.id).hero] }),
     badges: () => badgeProgress({ boss: 2, parfait: 3, perseverance: 0, chapitres: 0, consolidees: 0, heros: 1 }),
     ...adminHandlers(reports, disabledSet),

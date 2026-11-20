@@ -26,6 +26,7 @@ import {
 import { createProfilesService, profilesRoutes, type ProfilesService } from './modules/profiles/index.ts';
 import { createLearningService, learningRoutes } from './modules/learning/index.ts';
 import { createPedagogyService, pedagogyRoutes } from './modules/pedagogy/index.ts';
+import { billingRoutes, createBillingService, type BillingService } from './modules/billing/index.ts';
 import { createTrainingService, trainingRoutes } from './modules/training/index.ts';
 import { battlesRoutes, createBattlesService } from './modules/battles/index.ts';
 import { createShopService, inventoryRoutes } from './modules/inventory/index.ts';
@@ -58,6 +59,7 @@ export type AppConfig = Pick<
   | 'version'
   | 'cookieSecure'
   | 'sessionDays'
+  | 'billing'
 >;
 
 export interface AppDeps {
@@ -70,6 +72,8 @@ export interface AppDeps {
   readonly metrics?: Metrics;
   /** Envoi d'e-mails ; par défaut, journal sans contenu (aucun fournisseur configuré). */
   readonly mailer?: Mailer;
+  /** Appels HTTP sortants (prestataire de paiement) ; remplaçable en test. */
+  readonly fetcher?: typeof fetch;
 }
 
 export interface App {
@@ -81,6 +85,7 @@ export interface App {
   readonly random: Random;
   readonly profiles: ProfilesService;
   readonly accounts: AccountsService;
+  readonly billing: BillingService;
 }
 
 /** Corps de requête maximal (les réponses d'exercice font quelques centaines d'octets). */
@@ -149,6 +154,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
   const shop = createShopService(db);
   const learning = createLearningService({ db, clock, timeZone: config.timeZone });
   const pedagogy = createPedagogyService({ db, clock });
+  const billing = createBillingService({ db, clock, config: config.billing, appUrl, fetcher: deps.fetcher });
 
   await http.register(
     opsRoutes({ ping: () => database.ping(), metrics, metricsToken: config.metricsToken, version: config.version }),
@@ -173,10 +179,11 @@ export async function buildApp(deps: AppDeps): Promise<App> {
         }),
       );
       await v1.register(profilesRoutes(profiles, owns));
-      await v1.register(trainingRoutes(training, owns));
+      await v1.register(trainingRoutes(training, owns, billing));
       await v1.register(learningRoutes(learning, owns));
       await v1.register(pedagogyRoutes(pedagogy, owns));
-      await v1.register(battlesRoutes(battles, owns));
+      await v1.register(battlesRoutes(battles, owns, billing));
+      await v1.register(billingRoutes(billing, config.billing.stripeWebhookSecret));
       await v1.register(inventoryRoutes(shop, owns));
       await v1.register(telemetryRoutes(reporter));
     },
@@ -184,7 +191,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
   );
 
   await registerWeb(http, config.webDir);
-  return { http, presence, metrics, reporter, clock, random, profiles, accounts };
+  return { http, presence, metrics, reporter, clock, random, profiles, accounts, billing };
 }
 
 /**

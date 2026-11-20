@@ -81,6 +81,9 @@ export function ParentHome() {
     <ParentGate>
       <PageShell title="Espace parent" back="/">
         {isPending && <p>Chargement…</p>}
+        <Link to="/abonnement" className="font-bold underline">
+          Abonnement familial
+        </Link>
         {profiles?.length === 0 && <p>Aucun profil enfant pour l’instant : crée-en un depuis le choix du joueur.</p>}
         <ul className="grid gap-4 sm:grid-cols-2">
           {profiles?.map((p) => (
