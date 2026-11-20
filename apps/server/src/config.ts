@@ -37,6 +37,8 @@ const EnvSchema = z.object({
   CORS_ORIGINS: z.string().optional(),
   /** Requêtes HTTP par minute et par IP. */
   RATE_LIMIT_MAX: z.coerce.number().int().min(10).default(600),
+  /** Tentatives par minute et par IP sur les routes sensibles (connexion, inscription, mot de passe). */
+  AUTH_RATE_LIMIT_MAX: z.coerce.number().int().min(1).default(10),
   /** Si défini, /api/metrics exige l'en-tête `Authorization: Bearer <jeton>`. */
   METRICS_TOKEN: z.string().min(16).optional(),
   /** Documentation interactive de l'API (/api/docs) ; par défaut hors production. */
@@ -44,6 +46,10 @@ const EnvSchema = z.object({
   /** Fuseau horaire des jours de révision (répétition espacée). */
   TZ_FAMILY: z.string().min(1).default('Europe/Paris'),
   QUESTEO_VERSION: z.string().default('dev'),
+  /** Cookie de session réservé à HTTPS ; par défaut en production. */
+  COOKIE_SECURE: bool,
+  /** Durée d'une session d'appareil sans activité, en jours. */
+  SESSION_DAYS: z.coerce.number().int().min(1).max(365).default(30),
 });
 
 export interface ServerConfig {
@@ -61,10 +67,13 @@ export interface ServerConfig {
   /** `null` : même origine uniquement. */
   readonly corsOrigins: readonly string[] | null;
   readonly rateLimitMax: number;
+  readonly authRateLimitMax: number;
   readonly metricsToken: string | null;
   readonly apiDocs: boolean;
   readonly timeZone: string;
   readonly version: string;
+  readonly cookieSecure: boolean;
+  readonly sessionDays: number;
 }
 
 export class ConfigError extends Error {}
@@ -94,9 +103,12 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
     trustProxy: e.TRUST_PROXY,
     corsOrigins: origins?.length ? origins : null,
     rateLimitMax: e.RATE_LIMIT_MAX,
+    authRateLimitMax: e.AUTH_RATE_LIMIT_MAX,
     metricsToken: e.METRICS_TOKEN ?? null,
     apiDocs: e.API_DOCS ?? !production,
     timeZone: e.TZ_FAMILY,
     version: e.QUESTEO_VERSION,
+    cookieSecure: e.COOKIE_SECURE ?? production,
+    sessionDays: e.SESSION_DAYS,
   };
 }

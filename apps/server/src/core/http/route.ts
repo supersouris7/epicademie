@@ -1,7 +1,8 @@
-import type { FastifyInstance, FastifyRequest, RouteShorthandOptions } from 'fastify';
+import type { FastifyInstance, FastifyReply, FastifyRequest, RouteShorthandOptions } from 'fastify';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 import type { z } from 'zod';
 import { ErrorBodySchema, type AnyEndpoint, type ResponseOf } from '@questeo/shared';
+import { actorOf, checkAccess, type Actor } from './auth.ts';
 
 /**
  * Branche un point d'accès du contrat (`@questeo/shared` → `api`) sur Fastify.
@@ -24,6 +25,10 @@ export interface HandlerInput<E extends AnyEndpoint> {
   readonly params: Out<E['params']>;
   readonly body: Out<E['body']>;
   readonly request: FastifyRequest;
+  /** Réponse (en-têtes seulement, ex. cookie de session : le corps vient de la valeur renvoyée). */
+  readonly reply: FastifyReply;
+  /** Compte connecté (lève 401 si la route est publique et que personne ne l'est). */
+  readonly actor: () => Actor;
 }
 
 /** Gestionnaire : renvoie la réponse du contrat (valeur ignorée pour une réponse 204). */
@@ -57,8 +62,14 @@ export function route<E extends AnyEndpoint>(
       ...('body' in endpoint ? { body: endpoint.body } : {}),
       response: { ...success, ...errorResponses },
     },
+    // Niveau d'accès du contrat, vérifié avant toute lecture des données.
+    preHandler: async (request) => {
+      checkAccess(endpoint.access, request.actor);
+    },
     handler: async (request, reply): Promise<void> => {
       const result = await handler({
+        actor: () => actorOf(request),
+        reply,
         params: request.params as HandlerInput<E>['params'],
         body: request.body as HandlerInput<E>['body'],
         request,

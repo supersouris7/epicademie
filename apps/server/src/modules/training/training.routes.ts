@@ -1,15 +1,34 @@
 import type { FastifyInstance } from 'fastify';
 import { api } from '@questeo/shared';
 import { route } from '../../core/http/route.ts';
+import type { Ownership } from '../accounts/index.ts';
 import type { TrainingService } from './training.service.ts';
 
-/** Routes HTTP de l'entraînement : chaque route du contrat appelle le service, sans logique. */
-export function trainingRoutes(service: TrainingService) {
+/**
+ * Routes HTTP de l'entraînement : vérifient que le profil ou la partie désignés appartiennent à
+ * la famille connectée, puis appellent le service (aucune règle métier ici).
+ */
+export function trainingRoutes(service: TrainingService, owns: Ownership) {
   return async (app: FastifyInstance) => {
-    route(app, api.listSkills, ({ params }) => service.skills(params.id));
-    route(app, api.startSession, ({ body }) => service.start(body));
-    route(app, api.answerSession, ({ params, body }) => service.answer(params.id, body));
-    route(app, api.markConfused, ({ params, body }) => service.confused(params.id, body.skillId));
-    route(app, api.finishSession, ({ params }) => service.finish(params.id));
+    route(app, api.listSkills, async ({ params, actor }) => {
+      await owns.profile(actor(), params.id);
+      return service.skills(params.id);
+    });
+    route(app, api.startSession, async ({ body, actor }) => {
+      await owns.profile(actor(), body.profileId);
+      return service.start(body);
+    });
+    route(app, api.answerSession, async ({ params, body, actor }) => {
+      await owns.game(actor(), params.id);
+      return service.answer(params.id, body);
+    });
+    route(app, api.markConfused, async ({ params, body, actor }) => {
+      await owns.game(actor(), params.id);
+      await service.confused(params.id, body.skillId);
+    });
+    route(app, api.finishSession, async ({ params, actor }) => {
+      await owns.game(actor(), params.id);
+      return service.finish(params.id);
+    });
   };
 }

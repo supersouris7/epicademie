@@ -1,11 +1,10 @@
 import { expect, test } from '@playwright/test';
+import { signupFamily } from './family.ts';
 
 test('création d’un profil, hub, thème sombre puis suppression', async ({ page }) => {
   const name = `E2E${Date.now() % 100000}`;
-  await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'Academy Fighters' })).toBeVisible();
-
-  await page.getByRole('button', { name: /Nouveau joueur/ }).click();
+  // Le parent crée le compte familial, puis le 1er profil enfant.
+  await signupFamily(page);
   await page.getByRole('button', { name: /C’est parti/ }).click();
   await expect(page.getByRole('alert')).toHaveText('Le prénom est obligatoire');
   await page.getByPlaceholder('Ex. Léa').fill('X');
@@ -100,9 +99,9 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByRole('button', { name: new RegExp(name) })).toHaveCount(0);
 });
 
-test('une route inconnue renvoie vers l’accueil, l’API reste en JSON', async ({ page, request }) => {
+test('sans compte, toute page mène à la connexion ; l’API reste en JSON', async ({ page, request }) => {
   await page.goto('/nimporte-quoi');
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/connexion$/);
   const res = await request.get('/api/inconnu');
   expect(res.status()).toBe(404);
 });

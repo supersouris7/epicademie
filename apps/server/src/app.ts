@@ -15,6 +15,14 @@ import { registerSecurity } from './core/http/security.ts';
 import { registerOpenApi } from './core/http/openapi.ts';
 import { logErrorReporter, type ErrorReporter } from './core/observability/error-reporter.ts';
 import { createMetrics, instrumentHttp, type Metrics } from './core/observability/metrics.ts';
+import { registerAuth } from './core/http/auth.ts';
+import { logMailer, type Mailer } from './core/mail/mailer.ts';
+import {
+  accountsRoutes,
+  createAccountsService,
+  createOwnership,
+  type AccountsService,
+} from './modules/accounts/index.ts';
 import { createProfilesService, profilesRoutes, type ProfilesService } from './modules/profiles/index.ts';
 import { createTrainingService, trainingRoutes } from './modules/training/index.ts';
 import { battlesRoutes, createBattlesService } from './modules/battles/index.ts';
@@ -40,10 +48,14 @@ export type AppConfig = Pick<
   | 'logLevel'
   | 'trustProxy'
   | 'rateLimitMax'
+  | 'authRateLimitMax'
   | 'metricsToken'
   | 'apiDocs'
+  | 'corsOrigins'
   | 'timeZone'
   | 'version'
+  | 'cookieSecure'
+  | 'sessionDays'
 >;
 
 export interface AppDeps {
@@ -54,6 +66,8 @@ export interface AppDeps {
   readonly presence?: Presence;
   readonly reporter?: ErrorReporter;
   readonly metrics?: Metrics;
+  /** Envoi d'e-mails ; par défaut, journal sans contenu (aucun fournisseur configuré). */
+  readonly mailer?: Mailer;
 }
 
 export interface App {
@@ -64,6 +78,7 @@ export interface App {
   readonly clock: Clock;
   readonly random: Random;
   readonly profiles: ProfilesService;
+  readonly accounts: AccountsService;
 }
 
 /** Corps de requête maximal (les réponses d'exercice font quelques centaines d'octets). */
@@ -104,6 +119,17 @@ export async function buildApp(deps: AppDeps): Promise<App> {
 
   // Services métier (un par module), partagés par les routes HTTP et le temps réel.
   const { db } = database;
+  const appUrl = () => config.publicUrl ?? `http://localhost:${config.port}`;
+  const accounts = createAccountsService({
+    db,
+    clock,
+    // Le lien de réinitialisation n'apparaît dans les journaux qu'en développement.
+    mailer: deps.mailer ?? logMailer(http.log, { revealContent: config.env === 'development' }),
+    appUrl,
+    sessionDays: config.sessionDays,
+  });
+  const owns = createOwnership(db);
+  registerAuth(http, { resolve: (token) => accounts.resolve(token), allowedOrigins: config.corsOrigins });
   const profiles = createProfilesService(db);
   const training = createTrainingService({
     db,
@@ -131,20 +157,27 @@ export async function buildApp(deps: AppDeps): Promise<App> {
             const lan = detectLanAddress();
             return config.publicUrl ?? (lan ? `http://${lan}:${config.port}` : null);
           },
-          onlineIds: () => presence.onlineIds(),
+          onlineIds: (familyId) => presence.onlineIds(familyId),
         }),
       );
-      await v1.register(profilesRoutes(profiles));
-      await v1.register(trainingRoutes(training));
-      await v1.register(battlesRoutes(battles));
-      await v1.register(inventoryRoutes(shop));
+      await v1.register(
+        accountsRoutes(accounts, {
+          secure: config.cookieSecure,
+          maxAgeDays: config.sessionDays,
+          rateLimitMax: config.authRateLimitMax,
+        }),
+      );
+      await v1.register(profilesRoutes(profiles, owns));
+      await v1.register(trainingRoutes(training, owns));
+      await v1.register(battlesRoutes(battles, owns));
+      await v1.register(inventoryRoutes(shop, owns));
       await v1.register(telemetryRoutes(reporter));
     },
     { prefix: API_PREFIX },
   );
 
   await registerWeb(http, config.webDir);
-  return { http, presence, metrics, reporter, clock, random, profiles };
+  return { http, presence, metrics, reporter, clock, random, profiles, accounts };
 }
 
 /**

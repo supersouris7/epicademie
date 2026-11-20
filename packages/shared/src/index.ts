@@ -4,6 +4,7 @@
  * fonctions pures.
  */
 export * from './profile.ts';
+export * from './account.ts';
 export * from './modes.ts';
 export * from './items.ts';
 export * from './play.ts';

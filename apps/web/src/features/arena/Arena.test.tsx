@@ -1,4 +1,4 @@
-import { act, screen, within } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { generate } from '@questeo/content';
 import type { ArenaView, OnlinePlayer } from '@questeo/shared';
@@ -129,7 +129,10 @@ describe('arène', () => {
   });
 
   it('joueurs connectés : liste et message rapide', async () => {
+    const before = sockets.length;
     const { user } = renderApp('/connectes');
+    // La connexion temps réel s'ouvre une fois la session vérifiée.
+    await waitFor(() => expect(sockets.length).toBeGreaterThan(before));
     serverSays('presence', [tom]);
     const send = await screen.findByRole('button', { name: 'Message à Tom' });
     await user.click(send);

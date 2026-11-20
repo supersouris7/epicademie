@@ -1,5 +1,6 @@
 import { Server } from 'socket.io';
 import type { App } from './app.ts';
+import { readCookie, SESSION_COOKIE } from './core/auth/cookies.ts';
 import { attachRealtime, originAllowed, type RealtimeServer } from './modules/realtime/index.ts';
 
 /** Messages temps réel : quelques centaines d'octets suffisent. */
@@ -15,7 +16,12 @@ export function startRealtime(app: App, corsOrigins: readonly string[] | null) {
   });
   return attachRealtime(io, {
     presence: app.presence,
-    findProfile: (id) => app.profiles.find(id),
+    authorize: async (cookieHeader, profileId) => {
+      const token = readCookie(cookieHeader, SESSION_COOKIE);
+      const actor = token ? await app.accounts.resolve(token) : null;
+      const profile = actor ? await app.profiles.findInFamily(profileId, actor.familyId) : undefined;
+      return actor && profile ? { profile, familyId: actor.familyId } : null;
+    },
     clock: app.clock,
     random: app.random,
     logger: app.http.log,

@@ -57,9 +57,12 @@ export function opsRoutes(deps: SystemDeps) {
 }
 
 /** Routes versionnées d'information système (réseau, présence). */
-export function systemRoutes(deps: { readonly publicUrl: () => string | null; readonly onlineIds: () => string[] }) {
+export function systemRoutes(deps: {
+  readonly publicUrl: () => string | null;
+  readonly onlineIds: (familyId: string) => string[];
+}) {
   return async (app: FastifyInstance) => {
     route(app, api.network, async () => ({ publicUrl: deps.publicUrl() }));
-    route(app, api.presence, async () => ({ online: deps.onlineIds() }));
+    route(app, api.presence, async ({ actor }) => ({ online: deps.onlineIds(actor().familyId) }));
   };
 }

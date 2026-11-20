@@ -79,7 +79,14 @@ export interface FakeApiOptions {
   readonly inventory?: Inventory;
   /** Toutes les réponses aux combats sont jugées justes (true) ou fausses (false) ; absent : vraie correction. */
   readonly battleAnswers?: boolean;
+  /** Appareil connecté au compte familial (par défaut : oui). */
+  readonly loggedIn?: boolean;
+  /** Actions parent déverrouillées (par défaut : oui). */
+  readonly parent?: boolean;
 }
+
+/** Mot de passe du compte du faux serveur. */
+export const FAKE_PASSWORD = 'mot de passe parent';
 
 /** Point d'accès du contrat correspondant à la requête, avec ses paramètres de chemin. */
 function route(
@@ -117,6 +124,53 @@ const view = (id: string, b: Battle, inventory: Inventory): BattleView => ({
   inventory,
 });
 
+/** Compte familial du faux serveur : session de l'appareil et verrou parent. */
+function authHandlers(options: FakeApiOptions) {
+  const session = { loggedIn: options.loggedIn ?? true, parent: options.parent ?? true, email: 'parent@famille.test' };
+  const me = () => {
+    if (!session.loggedIn) throw new FakeError(401, 'UNAUTHORIZED', 'Connecte-toi pour continuer.');
+    return {
+      account: { id: '22222222-2222-4222-8222-222222222222', email: session.email, role: 'parent' },
+      family: { id: '33333333-3333-4333-8333-333333333333' },
+      parent: session.parent,
+      parentUntil: session.parent ? '2099-01-01T00:00:00.000Z' : null,
+    };
+  };
+  const requireParent = () => {
+    if (!session.parent) throw new FakeError(403, 'FORBIDDEN', 'Action réservée au parent.');
+  };
+  const credentials = (body: unknown) => body as { email: string; password: string };
+
+  const handlers: Partial<Record<keyof typeof api, Handler>> = {
+    signup: ({ body }) => {
+      Object.assign(session, { loggedIn: true, parent: true, email: credentials(body).email });
+      return me();
+    },
+    login: ({ body }) => {
+      if (credentials(body).password !== FAKE_PASSWORD) {
+        throw new FakeError(401, 'UNAUTHORIZED', 'E-mail ou mot de passe incorrect.');
+      }
+      Object.assign(session, { loggedIn: true, parent: true, email: credentials(body).email });
+      return me();
+    },
+    logout: () => {
+      session.loggedIn = false;
+      return null;
+    },
+    me,
+    confirmParent: ({ body }) => {
+      if ((body as { password: string }).password !== FAKE_PASSWORD) {
+        throw new FakeError(401, 'UNAUTHORIZED', 'Mot de passe incorrect.');
+      }
+      session.parent = true;
+      return me();
+    },
+    forgotPassword: () => null,
+    resetPassword: () => null,
+  };
+  return { session, requireParent, handlers };
+}
+
 export function createFakeApi(options: FakeApiOptions = {}) {
   const profiles = new Map((options.profiles ?? [makeProfile()]).map((p) => [p.id, p]));
   const sessions = new Map<string, { answered: number; correct: number }>();
@@ -145,12 +199,15 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     return b;
   };
 
+  const { session, requireParent, handlers: auth } = authHandlers(options);
   const handlers: Partial<Record<keyof typeof api, Handler>> = {
+    ...auth,
     network: () => ({ publicUrl: 'http://questeo.test' }),
     presence: () => ({ online: [] }),
     listProfiles: () => [...profiles.values()],
     getProfile: ({ params }) => profile(params.id),
     createProfile: ({ body }) => {
+      requireParent();
       const p = makeProfile({ ...(body as Partial<Profile>), id: uuid(), xp: 0, coins: 0, rubies: 0 });
       profiles.set(p.id, p);
       return p;
@@ -161,6 +218,7 @@ export function createFakeApi(options: FakeApiOptions = {}) {
       return p;
     },
     deleteProfile: ({ params }) => {
+      requireParent();
       profiles.delete(profile(params.id).id);
       return null;
     },
@@ -278,6 +336,10 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     calls.push({ method, path: apiPath, body });
     const match = route(method, apiPath);
     const handler = match && handlers[match.name];
+    // Comme le vrai serveur : sans session, seules les routes publiques répondent.
+    if (match && match.endpoint.access !== 'public' && !session.loggedIn) {
+      return { status: 401, body: { code: 'UNAUTHORIZED', error: 'Connecte-toi pour continuer.' } };
+    }
     if (!match || !handler)
       return { status: 404, body: { code: 'NOT_FOUND', error: `Pas de faux ${method} ${apiPath}` } };
     try {

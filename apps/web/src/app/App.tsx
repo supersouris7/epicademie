@@ -5,6 +5,14 @@ import { ApiError } from '../shared/api/client.ts';
 import { useSession } from '../shared/lib/session.ts';
 import { GameButton } from '../shared/ui/game/GameButton.tsx';
 import { Questy } from '../shared/ui/mascot/Questy.tsx';
+import {
+  ForgotPasswordScreen,
+  LoginScreen,
+  ParentGateProvider,
+  RequireAccount,
+  ResetPasswordScreen,
+  SignupScreen,
+} from '../features/account/index.ts';
 import { Arena } from '../features/arena/index.ts';
 import { BossChapters, BossPlay, Shop } from '../features/boss/index.ts';
 import { Hub, ModeSetup, MultiModes } from '../features/hub/index.ts';
@@ -46,52 +54,76 @@ function WithProfile({ children }: { readonly children: (profile: Profile) => Re
   return children(data);
 }
 
+/** Pages connectées : temps réel et notifications seulement quand l'appareil a une session. */
+function ConnectedShell({ profileId }: { readonly profileId: string | null }) {
+  return (
+    <RequireAccount>
+      <RealtimeLink profileId={profileId} />
+      <Notifications />
+    </RequireAccount>
+  );
+}
+
 export function App() {
   const profileId = useSession((s) => s.profileId);
   return (
     <ErrorBoundary>
-      <RealtimeLink profileId={profileId} />
-      <Notifications />
-      <Routes>
-        <Route path="/" element={<ProfilePicker />} />
-        <Route path="/profils/nouveau" element={<ProfileEditor />} />
-        <Route path="/profils/:id/modifier" element={<ProfileEditor />} />
-        <Route path="/hub" element={<WithProfile>{(p) => <Hub profile={p} />}</WithProfile>} />
-        <Route path="/shop" element={<WithProfile>{(p) => <Shop profile={p} />}</WithProfile>} />
-        <Route path="/heros" element={<WithProfile>{(p) => <Heroes profile={p} />}</WithProfile>} />
-        <Route path="/multi" element={<WithProfile>{(p) => <MultiModes profile={p} />}</WithProfile>} />
-        <Route path="/arene" element={<WithProfile>{(p) => <Arena profile={p} />}</WithProfile>} />
-        <Route path="/connectes" element={<WithProfile>{(p) => <Online profile={p} />}</WithProfile>} />
-        <Route path="/jouer/:modeId" element={<WithProfile>{(p) => <ModeSetup profile={p} />}</WithProfile>} />
-        <Route
-          path="/jouer/entrainement/:subject"
-          element={<WithProfile>{(p) => <Chapters profile={p} />}</WithProfile>}
-        />
-        <Route
-          path="/jouer/entrainement/:subject/:chapterId"
-          element={<WithProfile>{(p) => <Notions profile={p} />}</WithProfile>}
-        />
-        <Route
-          path="/partie/entrainement/:chapterId/:skillId"
-          element={<WithProfile>{(p) => <TrainingPlay profile={p} />}</WithProfile>}
-        />
-        <Route path="/jouer/boss/:subject" element={<WithProfile>{(p) => <BossChapters profile={p} />}</WithProfile>} />
-        <Route path="/partie/boss/:chapterId" element={<WithProfile>{(p) => <BossPlay profile={p} />}</WithProfile>} />
-        <Route path="/progres" element={<WithProfile>{(p) => <Progress profile={p} />}</WithProfile>} />
-        <Route path="/parametres" element={<WithProfile>{(p) => <Settings profile={p} />}</WithProfile>} />
-        <Route path="/a-propos" element={<About />} />
-        {AssetPreview && (
-          <Route
-            path="/dev/assets"
-            element={
-              <Suspense fallback={<p className="p-8 text-xl">Chargement…</p>}>
-                <AssetPreview />
-              </Suspense>
-            }
-          />
-        )}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <ParentGateProvider>
+        <Routes>
+          {/* Pages publiques : compte familial et informations. */}
+          <Route path="/connexion" element={<LoginScreen />} />
+          <Route path="/inscription" element={<SignupScreen />} />
+          <Route path="/mot-de-passe-oublie" element={<ForgotPasswordScreen />} />
+          <Route path="/mot-de-passe/nouveau" element={<ResetPasswordScreen />} />
+          <Route path="/a-propos" element={<About />} />
+          {/* Tout le reste demande un appareil connecté au compte de la famille. */}
+          <Route element={<ConnectedShell profileId={profileId} />}>
+            <Route path="/" element={<ProfilePicker />} />
+            <Route path="/profils/nouveau" element={<ProfileEditor />} />
+            <Route path="/profils/:id/modifier" element={<ProfileEditor />} />
+            <Route path="/hub" element={<WithProfile>{(p) => <Hub profile={p} />}</WithProfile>} />
+            <Route path="/shop" element={<WithProfile>{(p) => <Shop profile={p} />}</WithProfile>} />
+            <Route path="/heros" element={<WithProfile>{(p) => <Heroes profile={p} />}</WithProfile>} />
+            <Route path="/multi" element={<WithProfile>{(p) => <MultiModes profile={p} />}</WithProfile>} />
+            <Route path="/arene" element={<WithProfile>{(p) => <Arena profile={p} />}</WithProfile>} />
+            <Route path="/connectes" element={<WithProfile>{(p) => <Online profile={p} />}</WithProfile>} />
+            <Route path="/jouer/:modeId" element={<WithProfile>{(p) => <ModeSetup profile={p} />}</WithProfile>} />
+            <Route
+              path="/jouer/entrainement/:subject"
+              element={<WithProfile>{(p) => <Chapters profile={p} />}</WithProfile>}
+            />
+            <Route
+              path="/jouer/entrainement/:subject/:chapterId"
+              element={<WithProfile>{(p) => <Notions profile={p} />}</WithProfile>}
+            />
+            <Route
+              path="/partie/entrainement/:chapterId/:skillId"
+              element={<WithProfile>{(p) => <TrainingPlay profile={p} />}</WithProfile>}
+            />
+            <Route
+              path="/jouer/boss/:subject"
+              element={<WithProfile>{(p) => <BossChapters profile={p} />}</WithProfile>}
+            />
+            <Route
+              path="/partie/boss/:chapterId"
+              element={<WithProfile>{(p) => <BossPlay profile={p} />}</WithProfile>}
+            />
+            <Route path="/progres" element={<WithProfile>{(p) => <Progress profile={p} />}</WithProfile>} />
+            <Route path="/parametres" element={<WithProfile>{(p) => <Settings profile={p} />}</WithProfile>} />
+            {AssetPreview && (
+              <Route
+                path="/dev/assets"
+                element={
+                  <Suspense fallback={<p className="p-8 text-xl">Chargement…</p>}>
+                    <AssetPreview />
+                  </Suspense>
+                }
+              />
+            )}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        </Routes>
+      </ParentGateProvider>
     </ErrorBoundary>
   );
 }

@@ -20,6 +20,13 @@ export default defineConfig({
     url: `http://localhost:${PORT}/api/ready`,
     reuseExistingServer: false,
     timeout: 120_000,
-    env: { NODE_ENV: 'production', PORT: String(PORT), DATABASE_URL: 'pglite://memory', RATE_LIMIT_MAX: '100000' },
+    // Limites de débit relevées : tous les tests viennent de la même adresse IP.
+    env: {
+      NODE_ENV: 'production',
+      PORT: String(PORT),
+      DATABASE_URL: 'pglite://memory',
+      RATE_LIMIT_MAX: '100000',
+      AUTH_RATE_LIMIT_MAX: '1000',
+    },
   },
 });

@@ -30,8 +30,13 @@ export interface Rewards {
 
 export function profilesRepo(db: Executor) {
   return {
-    async list(): Promise<Profile[]> {
-      const rows = await db.select().from(profiles).orderBy(asc(profiles.createdAt), asc(profiles.id));
+    /** Profils d'une famille, du plus ancien au plus récent. */
+    async list(familyId: string): Promise<Profile[]> {
+      const rows = await db
+        .select()
+        .from(profiles)
+        .where(eq(profiles.familyId, familyId))
+        .orderBy(asc(profiles.createdAt), asc(profiles.id));
       return rows.map(toProfile);
     },
 
@@ -51,7 +56,7 @@ export function profilesRepo(db: Executor) {
       return row !== undefined;
     },
 
-    async insert(input: ProfileCreate & { readonly rubies: number }): Promise<ProfileRow> {
+    async insert(input: ProfileCreate & { readonly rubies: number; readonly familyId: string }): Promise<ProfileRow> {
       const [row] = await db
         .insert(profiles)
         .values({ ...input, hero: input.hero ?? 'alex' })

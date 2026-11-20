@@ -1,11 +1,15 @@
 import { expect, test, type Browser, type Page } from '@playwright/test';
 import { fmt, generate } from '../packages/content/src/index.ts';
 import type { ArenaView } from '../packages/shared/src/index.ts';
+import { loginFamily, signupFamily } from './family.ts';
 
-async function newPlayer(browser: Browser, name: string): Promise<Page> {
+/** Un appareil de la famille : le 1er crée le compte, les suivants s'y connectent. */
+async function newPlayer(browser: Browser, name: string, family: { email?: string }): Promise<Page> {
   const page = await (await browser.newContext()).newPage();
-  await page.goto('/');
-  await page.getByRole('button', { name: /Nouveau joueur/ }).click();
+  if (family.email) {
+    await loginFamily(page, family.email);
+    await page.getByRole('button', { name: /Nouveau joueur/ }).click();
+  } else family.email = await signupFamily(page);
   await page.getByPlaceholder('Ex. Léa').fill(name);
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
@@ -18,8 +22,9 @@ async function newPlayer(browser: Browser, name: string): Promise<Page> {
 test('Plusieurs joueurs : connectés, message, profil déjà ouvert refusé, arène', async ({ browser }) => {
   test.setTimeout(120_000);
   const suffix = Date.now() % 10000;
-  const lea = await newPlayer(browser, `Léa${suffix}`);
-  const tom = await newPlayer(browser, `Tom${suffix}`);
+  const family: { email?: string } = {};
+  const lea = await newPlayer(browser, `Léa${suffix}`, family);
+  const tom = await newPlayer(browser, `Tom${suffix}`, family);
 
   // Questy annonce les joueurs connectés sur l'accueil.
   await expect(lea.getByRole('button', { name: /Joueurs connectés : [1-9]/ })).toBeVisible();
@@ -33,7 +38,7 @@ test('Plusieurs joueurs : connectés, message, profil déjà ouvert refusé, ar�
 
   // Le profil de Léa, déjà ouvert, est refusé sur un autre appareil.
   const intrus = await (await browser.newContext()).newPage();
-  await intrus.goto('/');
+  await loginFamily(intrus, family.email ?? '');
   await intrus.getByRole('button', { name: new RegExp(`Léa${suffix}`) }).click();
   await expect(intrus.getByText(/déjà connecté/).first()).toBeVisible();
   await expect(intrus).toHaveURL(/\/$/);

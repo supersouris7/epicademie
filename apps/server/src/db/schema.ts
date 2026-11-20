@@ -11,9 +11,20 @@ import {
   smallint,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
 } from 'drizzle-orm/pg-core';
-import type { AvatarConfig, BossMedal, Gender, Grade, HeroId, ItemId, ModeId, SubjectId } from '@questeo/shared';
+import type {
+  AccountRole,
+  AvatarConfig,
+  BossMedal,
+  Gender,
+  Grade,
+  HeroId,
+  ItemId,
+  ModeId,
+  SubjectId,
+} from '@questeo/shared';
 
 /**
  * Schéma PostgreSQL (source des migrations : `pnpm --filter @questeo/server db:generate`).
@@ -27,11 +38,81 @@ import type { AvatarConfig, BossMedal, Gender, Grade, HeroId, ItemId, ModeId, Su
  */
 
 const createdAt = () => timestamp('created_at', { withTimezone: true }).notNull().defaultNow();
+const at = (name: string) => timestamp(name, { withTimezone: true });
+
+/** Famille : regroupe le compte parent et les profils enfants (unité d'isolation des données). */
+export const families = pgTable('families', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  createdAt: createdAt(),
+});
+
+/**
+ * Compte de connexion (parent ou administrateur). E-mail stocké en minuscules (unique) ; mot de
+ * passe haché (scrypt, sel aléatoire, voir core/auth/password.ts), jamais en clair.
+ */
+export const accounts = pgTable(
+  'accounts',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    familyId: uuid('family_id')
+      .notNull()
+      .references(() => families.id, { onDelete: 'cascade' }),
+    email: text('email').notNull(),
+    passwordHash: text('password_hash').notNull(),
+    role: text('role').$type<AccountRole>().notNull().default('parent'),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    uniqueIndex('accounts_email_unique').on(t.email),
+    index('accounts_family_idx').on(t.familyId),
+    check('accounts_email_lowercase', sql`${t.email} = lower(${t.email})`),
+    check('accounts_role_valid', sql`${t.role} in ('parent', 'admin')`),
+  ],
+);
+
+/**
+ * Session d'un appareil. Le cookie porte un jeton aléatoire ; la base n'en garde que l'empreinte
+ * SHA-256 (une fuite de la base ne permet pas de se connecter). `parentUntil` : fin du
+ * déverrouillage des actions parent (mot de passe confirmé récemment).
+ */
+export const authSessions = pgTable(
+  'auth_sessions',
+  {
+    tokenHash: text('token_hash').primaryKey(),
+    accountId: uuid('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    expiresAt: at('expires_at').notNull(),
+    parentUntil: at('parent_until'),
+    createdAt: createdAt(),
+  },
+  (t) => [index('auth_sessions_account_idx').on(t.accountId), index('auth_sessions_expires_idx').on(t.expiresAt)],
+);
+
+/** Lien de réinitialisation du mot de passe : empreinte du jeton, usage unique, courte durée. */
+export const passwordResets = pgTable(
+  'password_resets',
+  {
+    tokenHash: text('token_hash').primaryKey(),
+    accountId: uuid('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    expiresAt: at('expires_at').notNull(),
+    usedAt: at('used_at'),
+    createdAt: createdAt(),
+  },
+  (t) => [index('password_resets_account_idx').on(t.accountId)],
+);
 
 export const profiles = pgTable(
   'profiles',
   {
     id: uuid('id').primaryKey().defaultRandom(),
+    /**
+     * Famille du profil. Nul pour les profils créés avant les comptes (bêta) : invisibles de
+     * toutes les familles jusqu'à leur rattachement (aucune donnée supprimée).
+     */
+    familyId: uuid('family_id').references(() => families.id, { onDelete: 'cascade' }),
     name: text('name').notNull(),
     avatar: jsonb('avatar').$type<AvatarConfig>().notNull(),
     gender: text('gender').$type<Gender>(),
@@ -52,6 +133,7 @@ export const profiles = pgTable(
     check('profiles_coins_nonnegative', sql`${t.coins} >= 0`),
     check('profiles_rubies_nonnegative', sql`${t.rubies} >= 0`),
     index('profiles_created_at_idx').on(t.createdAt),
+    index('profiles_family_idx').on(t.familyId),
   ],
 );
 
@@ -174,4 +256,15 @@ export const bossRecords = pgTable(
 );
 
 /** Toutes les tables, de la plus dépendante à la moins dépendante (remise à zéro des tests). */
-export const ALL_TABLES = ['attempts', 'skill_states', 'inventory', 'boss_records', 'sessions', 'profiles'] as const;
+export const ALL_TABLES = [
+  'attempts',
+  'skill_states',
+  'inventory',
+  'boss_records',
+  'sessions',
+  'profiles',
+  'password_resets',
+  'auth_sessions',
+  'accounts',
+  'families',
+] as const;

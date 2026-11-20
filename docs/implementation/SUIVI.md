@@ -25,7 +25,7 @@ Décisions prises par le responsable du produit le 20/11/2026 :
 | --- | ---- | -------------------------------------------------------------------------- | ---- |
 | 0   | —    | Audit initial ([ETAT_INITIAL.md](ETAT_INITIAL.md))                         | ✅   |
 | 1   | P0   | Règles de jeu : mob gardé après une erreur, coffre garanti                 | ✅   |
-| 2   | P0   | Comptes familiaux, sessions, autorisations, isolation, rôle admin          | ⏳   |
+| 2   | P0   | Comptes familiaux, sessions, autorisations, isolation, rôle admin          | ✅   |
 | 3   | P0   | Suivi des apprentissages (tentatives, indices, mode, individuel/collectif) | ⏳   |
 | 4   | P0   | Modèle pédagogique, validation automatique du contenu, signalements, admin | ⏳   |
 | 5   | P0   | Économie sûre : idempotence, rejeu, coffres uniques                        | ⏳   |
@@ -43,4 +43,6 @@ Décisions prises par le responsable du produit le 20/11/2026 :
 
 ## Blocages nécessitant une intervention humaine
 
-(aucun pour l'instant)
+| Sujet                         | Besoin                                                                                                                                    | Contournement en place                                                 |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| E-mails (mot de passe oublié) | Choisir et ouvrir un compte chez un fournisseur d'e-mails transactionnels (ex. Brevo, Scaleway TEM, Postmark) et fournir ses identifiants | Interface `Mailer` ; en production l'envoi est journalisé sans contenu |
