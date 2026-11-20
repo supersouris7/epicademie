@@ -129,6 +129,7 @@ describe('suivi et réglages', () => {
           skillId: 'm5-tables',
           stage: 3,
           due: null,
+          lastPracticed: '2026-11-19',
           attempts: 10,
           correct: 9,
           recent: [true, true],

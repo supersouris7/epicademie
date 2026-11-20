@@ -45,14 +45,16 @@ export interface TrainingDeps {
   readonly db: Db;
   readonly clock: Clock;
   readonly random: Random;
+  /** Fuseau de la famille (jours de pratique). */
+  readonly timeZone: string;
   /** Appelé à chaque partie terminée (métriques). */
   readonly onFinished?: () => void;
 }
 
-export function createTrainingService({ db, clock, random, onFinished }: TrainingDeps) {
+export function createTrainingService({ db, clock, random, timeZone, onFinished }: TrainingDeps) {
   return {
     skills(profileId: string): Promise<SkillProgress[]> {
-      return trainingRepo(db).skillStates(profileId);
+      return trainingRepo(db).skillProgress(profileId, timeZone);
     },
 
     async start(input: SessionCreate): Promise<{ id: string }> {

@@ -1,16 +1,15 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { check, getChapter, getSkill, type Response } from '@questeo/content';
+import { check, getChapter, getChapterOfSkill, getSkill, type Response } from '@questeo/content';
 import {
   isFinished,
   nextQuestion,
   regularCount,
   seriesLength,
   startTraining,
-  type SkillState,
   type TrainingState,
 } from '@questeo/engine';
-import type { Profile } from '@questeo/shared';
+import type { Profile, SkillProgress } from '@questeo/shared';
 import { finishSession, markConfused, skillsKey, startSession, submitAnswer } from './api.ts';
 import { localToday, randomSeed } from '../../shared/lib/dates.ts';
 import { heroSays } from '../../shared/lib/dialogue.ts';
@@ -37,14 +36,20 @@ export interface TrainingSetup {
   readonly chapterId: string;
   /** Notions de la série (une seule, ou tout le chapitre). */
   readonly skills: readonly string[];
-  /** Progression du joueur par notion (niveau de départ, notions à revoir). */
-  readonly states: ReadonlyMap<string, SkillState>;
+  /** Progression du joueur par notion (niveau de départ, notions à revoir, dernière pratique). */
+  readonly states: ReadonlyMap<string, SkillProgress>;
+  /** Page où revenir en quittant la série (liste des notions, ou matière pour les révisions). */
+  readonly exitTo: string;
 }
 
 export function useTraining({ profile, chapterId, skills, states }: TrainingSetup, notify: (message: string) => void) {
   const qc = useQueryClient();
   const chapter = getChapter(chapterId);
   const today = localToday();
+  // Révisions : plusieurs chapitres ; la matière est celle de la 1re notion.
+  const subject = (chapter ?? getChapterOfSkill(skills[0] ?? ''))?.subject ?? 'maths';
+  // Dernier jour de pratique de chaque notion : le moteur espace les répétitions.
+  const lastPracticed = useMemo(() => new Map([...states.values()].map((s) => [s.skillId, s.lastPracticed])), [states]);
   const reducer = useMemo(() => createTrainingReducer((moment) => heroSays(profile.hero, moment)), [profile.hero]);
   const [state, dispatch] = useReducer(reducer, undefined, () =>
     initialTrainingScreen(
@@ -78,7 +83,7 @@ export function useTraining({ profile, chapterId, skills, states }: TrainingSetu
   /** Tire la question suivante de la série (énoncé jamais vu dans la partie). */
   const draw = useCallback(
     (t: TrainingState) => {
-      const planned = nextQuestion(t, states, today, Math.random(), nextSeed());
+      const planned = nextQuestion(t, states, today, { random: Math.random(), seed: nextSeed() }, lastPracticed);
       const { question, seed } = freshQuestion(
         planned,
         { seen: seen.current, recent: recentPrompts(profile.id, planned.skillId) },
@@ -96,7 +101,7 @@ export function useTraining({ profile, chapterId, skills, states }: TrainingSetu
         lastOne: !plan.variant && regularCount(t) === t.length - 1,
       });
     },
-    [states, today, profile.id],
+    [states, today, profile.id, lastPracticed],
   );
 
   // Démarrage (une seule fois, même en StrictMode).
@@ -106,7 +111,8 @@ export function useTraining({ profile, chapterId, skills, states }: TrainingSetu
     startSession({
       profileId: profile.id,
       mode: 'entrainement',
-      subject: chapter?.subject ?? 'maths',
+      // Révisions : plusieurs chapitres ; la matière est celle de la 1re notion.
+      subject,
       chapterId,
       skillId: skills.length === 1 ? (skills[0] ?? null) : null,
     })
@@ -117,7 +123,7 @@ export function useTraining({ profile, chapterId, skills, states }: TrainingSetu
       .catch(() =>
         dispatch({ type: 'failed', error: 'Impossible de démarrer la partie. Le serveur est-il joignable ?' }),
       );
-  }, [chapter?.subject, chapterId, draw, profile.id, skills]);
+  }, [subject, chapterId, draw, profile.id, skills]);
 
   const submit = (response: Response) => {
     const s = latest.current;

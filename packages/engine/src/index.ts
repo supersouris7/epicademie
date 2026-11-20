@@ -7,3 +7,4 @@ export * from './battle.ts';
 export * from './loot.ts';
 export * from './arena.ts';
 export * from './learning.ts';
+export * from './adaptive.ts';

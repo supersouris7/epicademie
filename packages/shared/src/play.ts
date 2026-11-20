@@ -72,6 +72,8 @@ export const SkillProgressSchema = z.object({
   maintained: z.number().int().nonnegative(),
   /** Meilleure série sur la notion (0 à 5) : fixe la médaille (5 Or, 4 Argent, 3 Bronze). */
   best: z.number().int().min(0).max(5),
+  /** Jour de dernière pratique (fuseau de la famille) : le moteur espace les répétitions. */
+  lastPracticed: DaySchema.nullable(),
 });
 export type SkillProgress = z.infer<typeof SkillProgressSchema>;
 

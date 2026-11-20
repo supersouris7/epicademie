@@ -62,4 +62,34 @@ describe('partie d’entraînement', () => {
     expect(await screen.findByText(/Le serveur est-il joignable/)).toBeInTheDocument();
     expect(within(document.body).getByRole('button', { name: /Retour à l’accueil/ })).toBeInTheDocument();
   });
+
+  it('révisions du jour : proposées sur la page de la matière, série sur les notions dues', async () => {
+    const recent = Array.from({ length: 10 }, () => true);
+    const { user, server } = renderApp('/jouer/entrainement/maths', {
+      skills: [
+        // Due depuis une semaine : à réviser.
+        {
+          skillId: 'm5-tables',
+          stage: 2,
+          due: '2026-01-01',
+          attempts: 10,
+          correct: 10,
+          recent,
+          maintained: 0,
+          best: 5,
+          lastPracticed: '2025-12-25',
+        },
+      ],
+    });
+    await user.click(await screen.findByRole('button', { name: /Révisions du jour/ }));
+    await screen.findByRole('progressbar', { name: 'Progression de la série' });
+    const started = server.calls.find((c) => c.path === '/sessions');
+    expect(started?.body).toMatchObject({ chapterId: 'revisions', subject: 'maths', skillId: 'm5-tables' });
+  });
+
+  it('pas de révision due : pas de bouton, et l’adresse directe ramène à la matière', async () => {
+    renderApp('/partie/entrainement/revisions/maths', { skills: [] });
+    expect(await screen.findByRole('heading', { name: /Entraînement · Maths/ })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Révisions du jour/ })).not.toBeInTheDocument();
+  });
 });

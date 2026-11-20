@@ -137,6 +137,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
     db,
     clock,
     random,
+    timeZone: config.timeZone,
     onFinished: () => metrics.finishedGames.inc({ kind: 'entrainement' }),
   });
   const battles = createBattlesService({
