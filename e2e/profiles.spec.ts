@@ -16,12 +16,12 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: /C’est parti/ }).click();
   await expect(page.getByRole('alert')).toHaveText('Choisis ta classe.');
-  // Classe déduite de l'âge : Questy demande de confirmer ; « Non » ouvre la liste (du CM1 à la 3e ; Adulte à venir).
+  // Classe déduite de l'âge : Questy demande de confirmer ; « Non » ouvre la liste (du CM1 à la 3e, et Adulte).
   await expect(page.getByText('Tu es en 5e ?')).toBeVisible();
   await page.getByRole('button', { name: 'Non', exact: true }).click();
   await expect(page.getByRole('radio', { name: 'CM1', exact: true })).toBeVisible();
   await expect(page.getByRole('radio', { name: '3e', exact: true })).toBeVisible();
-  await expect(page.getByRole('radio', { name: 'Adulte, à venir' })).toBeVisible();
+  await expect(page.getByRole('radio', { name: 'Adulte', exact: true })).toBeVisible();
   await page.getByRole('radio', { name: '5e', exact: true }).click();
   await page.getByRole('button', { name: 'Robot' }).click();
   // Le héros ne se choisit plus dans le profil : il a son propre menu.

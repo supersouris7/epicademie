@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { signupFamily } from './family.ts';
 
 test('Version gratuite puis abonnement (simulateur) : chapitres débloqués, historique', async ({ page }) => {
+  test.setTimeout(60_000); // parcours complet : inscription, profil, paiement simulé
   await signupFamily(page, undefined, { premium: false });
   await page.getByPlaceholder('Ex. Léa').fill(`Abo${Date.now() % 10000}`);
   await page.getByRole('button', { name: 'Un garçon' }).click();
