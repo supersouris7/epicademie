@@ -14,4 +14,5 @@ export * from './battle.ts';
 export * from './realtime.ts';
 export * from './random.ts';
 export * from './learning.ts';
+export * from './pedagogy.ts';
 export * from './api/contract.ts';

@@ -26,6 +26,7 @@ import { badRequest, conflict, notFound } from '../../core/errors.ts';
 import { PROFILE_NOT_FOUND, profilesRepo } from '../profiles/index.ts';
 import { inventoryRepo } from '../inventory/index.ts';
 import { trainingRepo } from './training.repo.ts';
+import { disabledSkills } from '../pedagogy/index.ts';
 
 /**
  * Entraînement (toutes les parties hors combat de boss).
@@ -57,6 +58,9 @@ export function createTrainingService({ db, clock, random, onFinished }: Trainin
     async start(input: SessionCreate): Promise<{ id: string }> {
       if (input.mode === 'boss') throw badRequest('Le combat de boss se lance par /battles');
       if (input.skillId && !getSkill(input.skillId)) throw badRequest(UNKNOWN_SKILL);
+      if (input.skillId && (await disabledSkills(db)).includes(input.skillId)) {
+        throw conflict('Cette notion est en maintenance : choisis-en une autre.');
+      }
       if (!(await profilesRepo(db).exists(input.profileId))) throw notFound(PROFILE_NOT_FOUND);
       return { id: await trainingRepo(db).insertSession(input) };
     },

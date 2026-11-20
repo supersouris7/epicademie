@@ -4,6 +4,7 @@ import type { BattleView, ItemId } from '@questeo/shared';
 import { Figure } from '../../../shared/question/figures/Figure.tsx';
 import { MathText } from '../../../shared/question/MathText.tsx';
 import { PauseButton } from '../../../shared/question/PauseButton.tsx';
+import { ReportButton } from '../../../shared/question/ReportButton.tsx';
 import { QuestionTools } from '../../../shared/question/QuestionTools.tsx';
 import { DOCK_HEIGHT } from '../../../shared/question/tools.ts';
 import { GameIcon } from '../../../shared/ui/game/GameIcon.tsx';
@@ -68,6 +69,7 @@ export function BattleQuestion({
             )}
             <span className="flex-1" />
             <ItemBar battle={battle} disabled={busy || missed !== null} onUse={onUseItem} />
+            <ReportButton question={question} />
             <PauseButton onClick={onPause} />
           </div>
           <h1 className="text-2xl leading-snug font-bold sm:text-3xl xl:text-4xl">

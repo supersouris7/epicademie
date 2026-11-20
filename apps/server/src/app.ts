@@ -25,6 +25,7 @@ import {
 } from './modules/accounts/index.ts';
 import { createProfilesService, profilesRoutes, type ProfilesService } from './modules/profiles/index.ts';
 import { createLearningService, learningRoutes } from './modules/learning/index.ts';
+import { createPedagogyService, pedagogyRoutes } from './modules/pedagogy/index.ts';
 import { createTrainingService, trainingRoutes } from './modules/training/index.ts';
 import { battlesRoutes, createBattlesService } from './modules/battles/index.ts';
 import { createShopService, inventoryRoutes } from './modules/inventory/index.ts';
@@ -146,6 +147,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
   });
   const shop = createShopService(db);
   const learning = createLearningService({ db, clock, timeZone: config.timeZone });
+  const pedagogy = createPedagogyService({ db, clock });
 
   await http.register(
     opsRoutes({ ping: () => database.ping(), metrics, metricsToken: config.metricsToken, version: config.version }),
@@ -172,6 +174,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
       await v1.register(profilesRoutes(profiles, owns));
       await v1.register(trainingRoutes(training, owns));
       await v1.register(learningRoutes(learning, owns));
+      await v1.register(pedagogyRoutes(pedagogy, owns));
       await v1.register(battlesRoutes(battles, owns));
       await v1.register(inventoryRoutes(shop, owns));
       await v1.register(telemetryRoutes(reporter));

@@ -3,7 +3,7 @@ import { Navigate, useLocation, useNavigate, useParams } from 'react-router';
 import { getChapter, getSkill } from '@questeo/content';
 import { regularCount, type SkillState } from '@questeo/engine';
 import type { Profile } from '@questeo/shared';
-import { useSkills } from './api.ts';
+import { useDisabledSkills, useSkills } from './api.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { ProgressBar } from '../../shared/ui/game/ProgressBar.tsx';
 import { ResourceCounter } from '../../shared/ui/game/ResourceCounter.tsx';
@@ -22,9 +22,16 @@ import { useTraining, type TrainingSetup } from './useTraining.ts';
 export function TrainingPlay({ profile }: { readonly profile: Profile }) {
   const { chapterId = '', skillId = '' } = useParams();
   const chapter = getChapter(chapterId);
+  const { data: disabled, isPending: disabledPending } = useDisabledSkills();
+  // « Tout le chapitre » : sans les notions en maintenance.
   const skills = useMemo(
-    () => (chapter ? (skillId === 'tout' ? chapter.skills.map((s) => s.id) : [skillId]) : []),
-    [chapter, skillId],
+    () =>
+      chapter
+        ? skillId === 'tout'
+          ? chapter.skills.map((s) => s.id).filter((id) => !disabled?.has(id))
+          : [skillId]
+        : [],
+    [chapter, skillId, disabled],
   );
   const valid = chapter !== undefined && skills.every((id) => chapter.skills.some((s) => s.id === id));
   const { data: progress, isPending } = useSkills(profile.id);
@@ -33,7 +40,8 @@ export function TrainingPlay({ profile }: { readonly profile: Profile }) {
   if (!valid) return <Navigate to="/jouer/entrainement" replace />;
   // Partie déjà quittée, revenue par « précédent » : on ne la relance pas (redirection en cours).
   if (left) return null;
-  if (isPending || !progress) return <p className="p-8 text-xl">Chargement…</p>;
+  // La série se compose une fois les notions en maintenance connues.
+  if (isPending || !progress || disabledPending) return <p className="p-8 text-xl">Chargement…</p>;
   const states = new Map<string, SkillState>(progress.map((p) => [p.skillId, p]));
   return <Game key={location.key} profile={profile} chapterId={chapterId} skills={skills} states={states} />;
 }

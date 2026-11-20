@@ -28,6 +28,16 @@ import {
   SignupSchema,
 } from '../account.ts';
 import { LearningReportSchema } from '../learning.ts';
+import {
+  ContentEventSchema,
+  ContentSkillSchema,
+  ContentUpdateSchema,
+  DisabledContentSchema,
+  REPORT_STATUSES,
+  ReportCreateSchema,
+  ReportSchema,
+  ReportUpdateSchema,
+} from '../pedagogy.ts';
 
 /**
  * Contrat de l'API HTTP v1 — source unique de vérité, partagée par le serveur et le client.
@@ -80,6 +90,8 @@ export const API_TAGS = [
   'comptes',
   'profils',
   'suivi',
+  'contenus',
+  'admin',
   'entrainement',
   'combats',
   'inventaire',
@@ -416,6 +428,80 @@ export const api = {
     status: 200,
     body: BuySchema,
     response: PurchaseSchema,
+  }),
+
+  // ——— Contenus : signalements, désactivations ———
+  reportQuestion: endpoint({
+    method: 'POST',
+    path: '/reports',
+    tag: 'contenus',
+    summary: 'Signale un problème sur une question (lu par l’administration)',
+    access: 'family',
+    status: 201,
+    body: ReportCreateSchema,
+    response: z.object({ id: z.uuid() }),
+  }),
+  disabledContent: endpoint({
+    method: 'GET',
+    path: '/content/disabled',
+    tag: 'contenus',
+    summary: 'Notions désactivées (le jeu ne les propose plus)',
+    access: 'family',
+    status: 200,
+    response: DisabledContentSchema,
+  }),
+
+  // ——— Administration ———
+  adminReports: endpoint({
+    method: 'GET',
+    path: '/admin/reports/:status',
+    tag: 'admin',
+    summary: 'Signalements d’un état (du plus récent au plus ancien)',
+    access: 'admin',
+    status: 200,
+    params: z.object({ status: z.enum(REPORT_STATUSES) }),
+    response: z.array(ReportSchema),
+  }),
+  adminUpdateReport: endpoint({
+    method: 'PATCH',
+    path: '/admin/reports/:id',
+    tag: 'admin',
+    summary: 'Change l’état d’un signalement',
+    access: 'admin',
+    status: 200,
+    params: IdParamsSchema,
+    body: ReportUpdateSchema,
+    response: ReportSchema,
+  }),
+  adminContent: endpoint({
+    method: 'GET',
+    path: '/admin/content',
+    tag: 'admin',
+    summary: 'Toutes les notions avec leur état de validation',
+    access: 'admin',
+    status: 200,
+    response: z.array(ContentSkillSchema),
+  }),
+  adminUpdateContent: endpoint({
+    method: 'PUT',
+    path: '/admin/content/:skillId',
+    tag: 'admin',
+    summary: 'Désactive, réactive ou marque comme relue une notion (historique conservé)',
+    access: 'admin',
+    status: 200,
+    params: z.object({ skillId: z.string().min(1).max(80) }),
+    body: ContentUpdateSchema,
+    response: ContentSkillSchema,
+  }),
+  adminContentHistory: endpoint({
+    method: 'GET',
+    path: '/admin/content/:skillId/history',
+    tag: 'admin',
+    summary: 'Historique pédagogique d’une notion (désactivations, relectures)',
+    access: 'admin',
+    status: 200,
+    params: z.object({ skillId: z.string().min(1).max(80) }),
+    response: z.array(ContentEventSchema),
   }),
 
   // ——— Télémétrie ———

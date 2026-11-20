@@ -43,6 +43,8 @@ export const toNumber = (a: Rational) => a.n / a.d;
 
 /** Vrai si l'écriture décimale est finie (dénominateur de la forme 2^a·5^b). */
 export function isDecimal(a: Rational): boolean {
+  // Garde : un dénominateur nul ou non entier ferait boucler sans fin.
+  if (!Number.isSafeInteger(a.d) || a.d === 0) return false;
   let d = a.d;
   while (d % 2 === 0) d /= 2;
   while (d % 5 === 0) d /= 5;

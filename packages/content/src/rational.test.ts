@@ -49,3 +49,10 @@ describe('rationnels', () => {
     expect(fromNumber(-2.5)).toEqual(dec(-25, 1));
   });
 });
+
+describe('garde de isDecimal', () => {
+  it('dénominateur nul ou non entier : pas décimal, et jamais de boucle sans fin', () => {
+    expect(isDecimal({ n: 1, d: 0 })).toBe(false);
+    expect(isDecimal({ n: 1, d: 0.5 })).toBe(false);
+  });
+});

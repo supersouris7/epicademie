@@ -83,6 +83,10 @@ export interface FakeApiOptions {
   readonly loggedIn?: boolean;
   /** Actions parent déverrouillées (par défaut : oui). */
   readonly parent?: boolean;
+  /** Notions désactivées (en maintenance). */
+  readonly disabled?: readonly string[];
+  /** Le compte connecté est administrateur. */
+  readonly admin?: boolean;
 }
 
 /** Mot de passe du compte du faux serveur. */
@@ -130,7 +134,11 @@ function authHandlers(options: FakeApiOptions) {
   const me = () => {
     if (!session.loggedIn) throw new FakeError(401, 'UNAUTHORIZED', 'Connecte-toi pour continuer.');
     return {
-      account: { id: '22222222-2222-4222-8222-222222222222', email: session.email, role: 'parent' },
+      account: {
+        id: '22222222-2222-4222-8222-222222222222',
+        email: session.email,
+        role: options.admin ? 'admin' : 'parent',
+      },
       family: { id: '33333333-3333-4333-8333-333333333333' },
       parent: session.parent,
       parentUntil: session.parent ? '2099-01-01T00:00:00.000Z' : null,
@@ -171,6 +179,123 @@ function authHandlers(options: FakeApiOptions) {
   return { session, requireParent, handlers };
 }
 
+/** Administration du faux serveur : signalements reçus et quelques notions. */
+function adminHandlers(
+  reports: Record<string, unknown>[],
+  disabled: Set<string>,
+): Partial<Record<keyof typeof api, Handler>> {
+  const skill = (skillId: string) => ({
+    skillId,
+    title: skillId === 'm5-tables' ? 'Tables de multiplication' : skillId,
+    chapterId: 'm5-calcul',
+    subject: 'maths',
+    grade: '5e',
+    boss: false,
+    version: 1,
+    source: 'Programme de mathématiques',
+    state: disabled.has(skillId) ? 'desactivee' : 'validee-auto',
+    disabled: disabled.has(skillId),
+    reviewedVersion: null,
+    openReports: reports.filter((r) => r.skillId === skillId && r.status === 'nouveau').length,
+    autoIssues: [],
+  });
+  return {
+    adminReports: ({ params }) => reports.filter((r) => r.status === params.status),
+    adminUpdateReport: ({ params, body }) => {
+      const r = reports.find((x) => x.id === params.id);
+      if (!r) throw new FakeError(404, 'NOT_FOUND', 'Signalement introuvable');
+      Object.assign(r, body);
+      return r;
+    },
+    adminContent: () => ['m5-tables', 'm5-priorites'].map(skill),
+    adminUpdateContent: ({ params, body }) => {
+      const id = params.skillId ?? '';
+      if ((body as { disabled?: boolean }).disabled === true) disabled.add(id);
+      if ((body as { disabled?: boolean }).disabled === false) disabled.delete(id);
+      return skill(id);
+    },
+    adminContentHistory: () => [],
+  };
+}
+
+/** Combats du faux serveur : vraies règles du moteur, dés déterministes. */
+function battleHandlers(ctx: {
+  readonly battles: Map<string, Battle>;
+  readonly overview: { inventory: Inventory; equipped: readonly ItemId[] };
+  readonly dice: BattleDice;
+  readonly profile: (id: string | undefined) => Profile;
+  readonly battleOf: (id: string | undefined) => Battle;
+  readonly uuid: () => string;
+  readonly battleAnswers: boolean | undefined;
+}): Partial<Record<keyof typeof api, Handler>> {
+  const { battles, overview, dice, profile, battleOf, uuid } = ctx;
+  const options = { battleAnswers: ctx.battleAnswers };
+  return {
+    startBattle: ({ body }) => {
+      const { profileId, chapterId } = body as { profileId: string; chapterId: string };
+      profile(profileId);
+      const pools = battlePools(chapterId);
+      if (!pools) throw new FakeError(400, 'BAD_REQUEST', 'Ce chapitre n’a pas encore de boss');
+      const id = uuid();
+      const b: Battle = {
+        profileId,
+        chapterId,
+        state: createBattle(pools, dice, [], overview.equipped),
+        finished: false,
+      };
+      battles.set(id, b);
+      return view(id, b, overview.inventory);
+    },
+    answerBattle: ({ params, body }) => {
+      const b = battleOf(params.id);
+      const q = b.state.question;
+      if (!q || b.state.status !== 'fighting') throw new FakeError(409, 'CONFLICT', 'Combat terminé');
+      const result = check(
+        generate(q.skillId, q.level, q.seed),
+        (body as { response: Parameters<typeof check>[1] }).response,
+      );
+      if (result.invalid)
+        return { correct: false, invalid: true, outcome: null, battle: view(params.id ?? '', b, overview.inventory) };
+      const correct = options.battleAnswers ?? result.correct;
+      const pools = battlePools(b.chapterId);
+      if (!pools) throw new Error('réserves introuvables');
+      const next = answerBattle(b.state, pools, correct, dice);
+      b.state = next.state;
+      return { correct, invalid: false, outcome: next.outcome, battle: view(params.id ?? '', b, overview.inventory) };
+    },
+    useBattleItem: ({ params, body }) => {
+      const b = battleOf(params.id);
+      const item = (body as { item: ItemId }).item;
+      const refusal = itemRefusal(b.state, item);
+      if (refusal) throw new FakeError(409, 'CONFLICT', refusal);
+      overview.inventory = { ...overview.inventory, [item]: overview.inventory[item] - 1 };
+      b.state = applyItem(b.state, item);
+      return view(params.id ?? '', b, overview.inventory);
+    },
+    finishBattle: ({ params }) => {
+      const b = battleOf(params.id);
+      if (b.finished) throw new FakeError(409, 'CONFLICT', 'Combat déjà terminé');
+      b.finished = true;
+      const won = b.state.status === 'won';
+      const xp = profile(b.profileId).xp;
+      const gained = battleXp(b.state);
+      return {
+        won,
+        firstWin: won,
+        xpGained: gained,
+        coinsGained: Math.floor(gained / 10),
+        hearts: b.state.hearts,
+        medal: won ? 'or' : null,
+        newBest: won,
+        items: won ? { soin: 1 } : {},
+        weakSkill: won ? null : (b.state.misses[0] ?? null),
+        levelBefore: levelFromXp(xp).level,
+        levelAfter: levelFromXp(xp + gained).level,
+      };
+    },
+  };
+}
+
 export function createFakeApi(options: FakeApiOptions = {}) {
   const profiles = new Map((options.profiles ?? [makeProfile()]).map((p) => [p.id, p]));
   const sessions = new Map<string, { answered: number; correct: number }>();
@@ -180,6 +305,9 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     inventory: options.inventory ?? EMPTY_INVENTORY,
     equipped: [],
   };
+  /** Signalements reçus. */
+  const reports: Record<string, unknown>[] = [];
+  const disabledSet = new Set(options.disabled ?? []);
   /** Appels reçus (méthode + chemin), pour vérifier ce que l'écran a envoyé. */
   const calls: { method: string; path: string; body: unknown }[] = [];
   let ids = 0;
@@ -265,69 +393,24 @@ export function createFakeApi(options: FakeApiOptions = {}) {
       if (item !== 'rubis') overview.inventory = { ...overview.inventory, [item]: overview.inventory[item] + 1 };
       return { coins: 10, rubies: 1, inventory: overview.inventory };
     },
-    startBattle: ({ body }) => {
-      const { profileId, chapterId } = body as { profileId: string; chapterId: string };
-      profile(profileId);
-      const pools = battlePools(chapterId);
-      if (!pools) throw new FakeError(400, 'BAD_REQUEST', 'Ce chapitre n’a pas encore de boss');
-      const id = uuid();
-      const b: Battle = {
-        profileId,
-        chapterId,
-        state: createBattle(pools, dice, [], overview.equipped),
-        finished: false,
-      };
-      battles.set(id, b);
-      return view(id, b, overview.inventory);
-    },
-    answerBattle: ({ params, body }) => {
-      const b = battleOf(params.id);
-      const q = b.state.question;
-      if (!q || b.state.status !== 'fighting') throw new FakeError(409, 'CONFLICT', 'Combat terminé');
-      const result = check(
-        generate(q.skillId, q.level, q.seed),
-        (body as { response: Parameters<typeof check>[1] }).response,
-      );
-      if (result.invalid)
-        return { correct: false, invalid: true, outcome: null, battle: view(params.id ?? '', b, overview.inventory) };
-      const correct = options.battleAnswers ?? result.correct;
-      const pools = battlePools(b.chapterId);
-      if (!pools) throw new Error('réserves introuvables');
-      const next = answerBattle(b.state, pools, correct, dice);
-      b.state = next.state;
-      return { correct, invalid: false, outcome: next.outcome, battle: view(params.id ?? '', b, overview.inventory) };
-    },
-    useBattleItem: ({ params, body }) => {
-      const b = battleOf(params.id);
-      const item = (body as { item: ItemId }).item;
-      const refusal = itemRefusal(b.state, item);
-      if (refusal) throw new FakeError(409, 'CONFLICT', refusal);
-      overview.inventory = { ...overview.inventory, [item]: overview.inventory[item] - 1 };
-      b.state = applyItem(b.state, item);
-      return view(params.id ?? '', b, overview.inventory);
-    },
-    finishBattle: ({ params }) => {
-      const b = battleOf(params.id);
-      if (b.finished) throw new FakeError(409, 'CONFLICT', 'Combat déjà terminé');
-      b.finished = true;
-      const won = b.state.status === 'won';
-      const xp = profile(b.profileId).xp;
-      const gained = battleXp(b.state);
-      return {
-        won,
-        firstWin: won,
-        xpGained: gained,
-        coinsGained: Math.floor(gained / 10),
-        hearts: b.state.hearts,
-        medal: won ? 'or' : null,
-        newBest: won,
-        items: won ? { soin: 1 } : {},
-        weakSkill: won ? null : (b.state.misses[0] ?? null),
-        levelBefore: levelFromXp(xp).level,
-        levelAfter: levelFromXp(xp + gained).level,
-      };
-    },
+    ...battleHandlers({ battles, overview, dice, profile, battleOf, uuid, battleAnswers: options.battleAnswers }),
     reportClientError: () => null,
+    reportQuestion: ({ body }) => {
+      const id = uuid();
+      reports.push({
+        ...(body as object),
+        id,
+        skillVersion: 1,
+        comment: (body as { comment?: string }).comment ?? null,
+        status: 'nouveau',
+        adminNote: null,
+        createdAt: '2026-11-20T10:00:00.000Z',
+        resolvedAt: null,
+      });
+      return { id };
+    },
+    disabledContent: () => ({ skills: [...disabledSet] }),
+    ...adminHandlers(reports, disabledSet),
   };
 
   function reply(method: string, url: string, body: unknown): Reply {
@@ -371,6 +454,7 @@ export function createFakeApi(options: FakeApiOptions = {}) {
   return {
     fetch: fakeFetch,
     calls,
+    reports,
     profiles,
     battles,
     overview,

@@ -27,7 +27,7 @@ Décisions prises par le responsable du produit le 20/11/2026 :
 | 1   | P0   | Règles de jeu : mob gardé après une erreur, coffre garanti                 | ✅   |
 | 2   | P0   | Comptes familiaux, sessions, autorisations, isolation, rôle admin          | ✅   |
 | 3   | P0   | Suivi des apprentissages (tentatives, indices, mode, individuel/collectif) | ✅   |
-| 4   | P0   | Modèle pédagogique, validation automatique du contenu, signalements, admin | ⏳   |
+| 4   | P0   | Modèle pédagogique, validation automatique du contenu, signalements, admin | ✅   |
 | 5   | P0   | Économie sûre : idempotence, rejeu, coffres uniques                        | ⏳   |
 | 6   | P0   | Multijoueur fiable (Arène : reconnexion, abandon, expiration)              | ⏳   |
 | 7   | P1   | Moteur adaptatif + révisions espacées (états pédagogiques)                 | ⏳   |

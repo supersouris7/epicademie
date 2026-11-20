@@ -16,6 +16,8 @@ import {
 } from 'drizzle-orm/pg-core';
 import type {
   AccountRole,
+  ReportReason,
+  ReportStatus,
   AvatarConfig,
   BossMedal,
   Gender,
@@ -270,8 +272,63 @@ export const bossRecords = pgTable(
   (t) => [primaryKey({ columns: [t.profileId, t.chapterId] })],
 );
 
+/**
+ * Signalement d'une question par une famille. Le profil peut être supprimé (droit à
+ * l'effacement) : le signalement reste, anonyme.
+ */
+export const questionReports = pgTable(
+  'question_reports',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    familyId: uuid('family_id').references(() => families.id, { onDelete: 'set null' }),
+    profileId: uuid('profile_id').references(() => profiles.id, { onDelete: 'set null' }),
+    skillId: text('skill_id').notNull(),
+    level: smallint('level').notNull(),
+    seed: integer('seed').notNull(),
+    skillVersion: smallint('skill_version').notNull(),
+    reason: text('reason').$type<ReportReason>().notNull(),
+    comment: text('comment'),
+    status: text('status').$type<ReportStatus>().notNull().default('nouveau'),
+    adminNote: text('admin_note'),
+    createdAt: createdAt(),
+    resolvedAt: at('resolved_at'),
+  },
+  (t) => [
+    index('question_reports_status_idx').on(t.status, t.createdAt),
+    index('question_reports_skill_idx').on(t.skillId),
+    check('question_reports_level_range', sql`${t.level} between 1 and 3`),
+  ],
+);
+
+/** État d'une notion décidé par l'administration (désactivation, relecture). */
+export const contentStates = pgTable('content_states', {
+  skillId: text('skill_id').primaryKey(),
+  disabled: boolean('disabled').notNull().default(false),
+  /** Version de la notion relue par l'équipe (nulle : jamais relue). */
+  reviewedVersion: smallint('reviewed_version'),
+  updatedAt: at('updated_at').notNull().defaultNow(),
+});
+
+/** Historique pédagogique d'une notion : chaque décision est conservée. */
+export const contentEvents = pgTable(
+  'content_events',
+  {
+    id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+    skillId: text('skill_id').notNull(),
+    action: text('action').$type<'desactivation' | 'reactivation' | 'relecture'>().notNull(),
+    version: smallint('version').notNull(),
+    note: text('note'),
+    accountId: uuid('account_id').references(() => accounts.id, { onDelete: 'set null' }),
+    at: at('at').notNull().defaultNow(),
+  },
+  (t) => [index('content_events_skill_idx').on(t.skillId, t.at)],
+);
+
 /** Toutes les tables, de la plus dépendante à la moins dépendante (remise à zéro des tests). */
 export const ALL_TABLES = [
+  'question_reports',
+  'content_events',
+  'content_states',
   'attempts',
   'skill_states',
   'inventory',

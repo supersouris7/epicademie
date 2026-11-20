@@ -42,6 +42,12 @@ export const chapterOfAnySkill = (id: string) => (skills.get(id) ?? bossSkills.g
 /** Classe d'une notion d'entraînement ou d'une question de boss. */
 export const gradeOfSkill = (id: string): Grade | undefined => (skills.get(id) ?? bossSkills.get(id))?.chapter.grade;
 
+/** Toutes les notions (entraînement et questions de boss), avec leur chapitre. */
+export const allSkillEntries = () => [
+  ...[...skills.values()].map((e) => ({ ...e, boss: false })),
+  ...[...bossSkills.values()].map((e) => ({ ...e, boss: true })),
+];
+
 /** Chapitres qui ont un combat de boss. */
 export const bossChapters = () => CHAPTERS.filter((c) => c.boss);
 

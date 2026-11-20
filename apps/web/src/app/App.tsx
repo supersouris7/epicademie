@@ -13,6 +13,7 @@ import {
   ResetPasswordScreen,
   SignupScreen,
 } from '../features/account/index.ts';
+import { AdminPage } from '../features/admin/index.ts';
 import { Arena } from '../features/arena/index.ts';
 import { BossChapters, BossPlay, Shop } from '../features/boss/index.ts';
 import { Hub, ModeSetup, MultiModes } from '../features/hub/index.ts';
@@ -79,6 +80,7 @@ export function App() {
           {/* Tout le reste demande un appareil connecté au compte de la famille. */}
           <Route element={<ConnectedShell profileId={profileId} />}>
             <Route path="/" element={<ProfilePicker />} />
+            <Route path="/admin" element={<AdminPage />} />
             <Route path="/profils/nouveau" element={<ProfileEditor />} />
             <Route path="/profils/:id/modifier" element={<ProfileEditor />} />
             <Route path="/hub" element={<WithProfile>{(p) => <Hub profile={p} />}</WithProfile>} />

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { keyIsForGame } from '../lib/keys.ts';
 
 interface NumPadProps {
   readonly onKey: (key: string) => void;
@@ -18,7 +19,7 @@ const ZERO_SPAN: Record<number, string> = { 1: '', 2: 'col-span-2', 3: 'col-span
 export function NumPad({ onKey, onSubmit, canSubmit, allowComma = true, allowMinus = true, extraKey }: NumPadProps) {
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement) return;
+      if (!keyIsForGame(e)) return;
       if (document.body.dataset.keyboard) return;
       if (/^\d$/.test(e.key)) onKey(e.key);
       else if ((e.key === ',' || e.key === '.') && allowComma) onKey(',');

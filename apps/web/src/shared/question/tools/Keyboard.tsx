@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { keyIsForGame } from '../../lib/keys.ts';
 
 const ROWS = [
   ['a', 'z', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
@@ -40,7 +41,7 @@ interface KeyboardProps {
 export function Keyboard({ onKey, onSubmit, canSubmit, upper, onShift }: KeyboardProps) {
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (!keyIsForGame(e)) return;
       if (document.body.dataset.keyboard || e.ctrlKey || e.metaKey || e.altKey) return;
       if (e.key === 'Enter') {
         if (canSubmit) onSubmit();

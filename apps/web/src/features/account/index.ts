@@ -11,4 +11,4 @@ export {
 } from './AuthScreens.tsx';
 export { ParentGateProvider } from './ParentGate.tsx';
 export { useParentGate } from './parentGate.ts';
-export { logout, useSetMe } from './api.ts';
+export { logout, useMe, useSetMe } from './api.ts';
