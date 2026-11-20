@@ -32,6 +32,3 @@ export function useArenaImage(ref: RefObject<HTMLElement | null>, arena: string)
   }, [ref]);
   return pickArena(arena, ratio);
 }
-
-/** Bandeau de l'arène (répété en largeur), s'il est livré. */
-export const arenaBand = (arena: string): string | null => assetSrc(`environments-arenas-${arena}-bandeau`);

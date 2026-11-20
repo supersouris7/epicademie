@@ -17,8 +17,8 @@ interface StageProps {
   readonly arena: string;
 }
 
-/** Bandeau du combat (héros, cœurs, adversaire, vies ou mobs restants) et répliques dessous. */
-export function BattleHud({ screen: s, hero, boss, arena }: StageProps) {
+/** HUD de combat (portraits, barres de vie, VS et manches) et répliques dessous. */
+export function BattleHud({ screen: s, hero, boss }: StageProps) {
   const battle = s.battle;
   const enemy = currentEnemy(boss, battle, s.enemyState);
   const mobsDefeated = Math.min(battle?.mobsDefeated ?? 0, BATTLE_MOBS);
@@ -40,7 +40,6 @@ export function BattleHud({ screen: s, hero, boss, arena }: StageProps) {
         mobsMax={BATTLE_MOBS}
         shot={s.shot}
         riposte={s.riposte}
-        arena={arena}
       />
       <QuipRow hero={s.heroQuip} enemy={s.enemyQuip} />
     </>

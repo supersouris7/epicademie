@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Variantes des arènes (à utiliser avec ChatGPT)
 
-9 images : chaque arène livrée (16:9) est déclinée en 3 formats, pour que le décor ne soit jamais écrasé ni trop rogné.
+6 images : chaque arène livrée (16:9) est déclinée en 3 formats, pour que le décor ne soit jamais écrasé ni trop rogné.
 
 | Format | Généré | Final | Proportions | Où |
 |---|---|---|---|---|
@@ -43,15 +43,6 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Pas de texte, pas de personnage, pas de bordure.
 ```
 
-#### 3. Arène de la station spatiale (bandeau) — bandeau du haut pendant les questions
-Enregistrer sous `apps/web/assets-src/originals/environments/arenas/espace-bandeau.png` · 1536×1024 → final 1536×384
-
-```text
-Image 1536×1024, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : plateforme d’une station spatiale de l’académie, planète et vaisseaux dans le ciel étoilé.
-Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la bande entre 31 % et 69 % de la hauteur sera gardée, tous les détails y tiennent (ligne d’horizon au milieu) ; texture régulière sans objet isolé marquant ni zone vide ; le bord gauche et le bord droit se raccordent parfaitement (image répétée en boucle) ; teintes un peu sombres, peu contrastées (du texte blanc passera dessus) ; aucun personnage.
-Pas de texte, pas de personnage, pas de bordure.
-```
-
 ### Arène de l’académie
 
 > 📎 Joindre l'arène livrée `apps/web/assets-src/originals/environments/arenas/academie.png`.
@@ -74,15 +65,6 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Pas de texte, pas de personnage, pas de bordure.
 ```
 
-#### 3. Arène de l’académie (bandeau) — bandeau du haut pendant les questions
-Enregistrer sous `apps/web/assets-src/originals/environments/arenas/academie-bandeau.png` · 1536×1024 → final 1536×384
-
-```text
-Image 1536×1024, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : terrasse de l’académie au milieu des collines, cascades et observatoires.
-Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la bande entre 31 % et 69 % de la hauteur sera gardée, tous les détails y tiennent (ligne d’horizon au milieu) ; texture régulière sans objet isolé marquant ni zone vide ; le bord gauche et le bord droit se raccordent parfaitement (image répétée en boucle) ; teintes un peu sombres, peu contrastées (du texte blanc passera dessus) ; aucun personnage.
-Pas de texte, pas de personnage, pas de bordure.
-```
-
 ### Arène du volcan
 
 > 📎 Joindre l'arène livrée `apps/web/assets-src/originals/environments/arenas/volcan.png`.
@@ -102,14 +84,5 @@ Enregistrer sous `apps/web/assets-src/originals/environments/arenas/volcan-large
 ```text
 Image 1536×1024, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : plateforme de pierre fissurée de lave, volcan en éruption et forteresse.
 Cadrage : même décor en panorama très large (tablette en paysage) : seule la bande entre 20 % et 80 % de la hauteur sera gardée ; sol plat et dégagé entre 60 % et 80 % de la hauteur, sur toute la largeur ; horizon et point d’intérêt entre 20 % et 55 % de la hauteur ; le haut et le bas de l’image ne contiennent que du ciel et du sol ; aucun personnage.
-Pas de texte, pas de personnage, pas de bordure.
-```
-
-#### 3. Arène du volcan (bandeau) — bandeau du haut pendant les questions
-Enregistrer sous `apps/web/assets-src/originals/environments/arenas/volcan-bandeau.png` · 1536×1024 → final 1536×384
-
-```text
-Image 1536×1024, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : plateforme de pierre fissurée de lave, volcan en éruption et forteresse.
-Cadrage : frise panoramique du même décor pour un bandeau de titre : seule la bande entre 31 % et 69 % de la hauteur sera gardée, tous les détails y tiennent (ligne d’horizon au milieu) ; texture régulière sans objet isolé marquant ni zone vide ; le bord gauche et le bord droit se raccordent parfaitement (image répétée en boucle) ; teintes un peu sombres, peu contrastées (du texte blanc passera dessus) ; aucun personnage.
 Pas de texte, pas de personnage, pas de bordure.
 ```

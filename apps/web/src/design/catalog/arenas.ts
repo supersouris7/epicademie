@@ -32,15 +32,6 @@ export const envAssets = ARENAS.flatMap(([id, name, look]) => [
     2,
     { reference: `environments-arenas-${id}` },
   ),
-  a(
-    'arenaBand',
-    `environments/arenas/${id}-bandeau.webp`,
-    `${name} (bandeau)`,
-    look,
-    'Bandeau du haut pendant les questions du combat (répété en largeur).',
-    2,
-    { reference: `environments-arenas-${id}` },
-  ),
 ]);
 
 /** Variantes d'une arène et leurs proportions (largeur / hauteur), de la plus haute à la plus large. */

@@ -197,13 +197,10 @@ export const AVAILABLE: readonly string[] = [
   "environments/arenas/espace.webp",
   "environments/arenas/espace-portrait.webp",
   "environments/arenas/espace-large.webp",
-  "environments/arenas/espace-bandeau.webp",
   "environments/arenas/academie.webp",
   "environments/arenas/academie-portrait.webp",
   "environments/arenas/academie-large.webp",
-  "environments/arenas/academie-bandeau.webp",
   "environments/arenas/volcan.webp",
   "environments/arenas/volcan-portrait.webp",
-  "environments/arenas/volcan-large.webp",
-  "environments/arenas/volcan-bandeau.webp"
+  "environments/arenas/volcan-large.webp"
 ];

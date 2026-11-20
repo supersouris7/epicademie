@@ -386,7 +386,6 @@ COHÉRENCE DU KIT COMBAT
 const VARIANT_USE: Record<string, string> = {
   arenaTall: 'scène du combat sur téléphone',
   arenaWide: 'scène du combat sur tablette en paysage',
-  arenaBand: 'bandeau du haut pendant les questions',
 };
 
 /** Fichier autonome des variantes d'arène : une conversation par arène, l'arène livrée jointe. */
