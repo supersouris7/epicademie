@@ -31,6 +31,8 @@ const emitted = (event: string) => socket().emitted.filter(([e]) => e === event)
 
 const arena = (over: Partial<ArenaView> = {}): ArenaView => ({
   id: 'a1',
+  kind: 'duel',
+  raid: null,
   hostId: me.id,
   chapterId: 'm5-relatifs',
   phase: 'lobby',
@@ -153,5 +155,26 @@ describe('arène', () => {
       .filter((b) => b !== send && b.closest('[role="dialog"], [role="menu"], section'));
     if (emotes[0]) await user.click(emotes[0]);
     expect(screen.getAllByText('Tom').length).toBeGreaterThan(0);
+  });
+
+  it('raid : invitations d’équipiers, puis boss et cœurs partagés', async () => {
+    const { user } = renderApp('/arene?mode=raid');
+    expect(await screen.findByRole('heading', { name: 'Raid' })).toBeInTheDocument();
+    serverSays('presence', [
+      { id: me.id, name: me.name, hero: me.hero, avatar: me.avatar, busy: false },
+      { id: tom.id, name: tom.name, hero: tom.hero, avatar: tom.avatar, busy: false },
+    ]);
+    await user.click(await screen.findByRole('checkbox', { name: /Tom/ }));
+    await user.click(screen.getByRole('button', { name: 'Envoyer les invitations' }));
+    expect(emitted('arena:create').at(-1)?.[1]).toMatchObject({ kind: 'raid', invite: [tom.id] });
+    serverSays(
+      'arena',
+      arena({
+        kind: 'raid',
+        phase: 'over',
+        raid: { bossHp: 0, bossMaxHp: 6, teamHearts: 2, teamMaxHearts: 4, won: true },
+      }),
+    );
+    expect(await screen.findByRole('heading', { name: 'Boss vaincu ! Bravo l’équipe !' })).toBeInTheDocument();
   });
 });

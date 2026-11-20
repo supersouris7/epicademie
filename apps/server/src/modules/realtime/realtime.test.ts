@@ -220,4 +220,43 @@ describe('temps réel', () => {
       expect(received).toEqual([]);
     });
   });
+
+  it('écran TV : voit le raid de sa famille, jamais celui d’une autre famille', async () => {
+    const lea = await profile('Léa');
+    const tom = await profile('Tom');
+    const tvSocket = (cookie: string) => {
+      const s = connect(url, {
+        auth: { tv: true },
+        transports: ['websocket'],
+        forceNew: true,
+        extraHeaders: { cookie },
+      });
+      sockets.push(s);
+      return s;
+    };
+    const other = await t.signup('voisins-tv@famille.test');
+    const tv = tvSocket(t.family().cookie);
+    const strangerTv = tvSocket(other.cookie);
+    await Promise.all([once(tv, 'connect'), once(strangerTv, 'connect')]);
+    const seenByStranger: ArenaView[] = [];
+    strangerTv.on('arena', (v: ArenaView) => seenByStranger.push(v));
+    const a = join(lea.id);
+    const b = join(tom.id);
+    await once<OnlinePlayer[]>(a, 'presence', (l) => l.length === 2);
+    a.emit('arena:create', { kind: 'raid', chapterId: 'm5-calcul', invite: [tom.id] });
+    const invite = await once<ArenaInvite>(b, 'arena:invite');
+    b.emit('arena:respond', { arenaId: invite.arenaId, accept: true });
+    await once<ArenaView>(a, 'arena', (v) => v.players.every((p) => p.ready));
+    a.emit('arena:start');
+    const onTv = await once<ArenaView>(tv, 'arena', (v) => v.phase === 'playing');
+    expect(onTv).toMatchObject({ kind: 'raid', raid: { bossHp: 6, teamHearts: 4 } });
+    expect(onTv.question).not.toBeNull();
+    // Un écran TV ne peut pas jouer, et une autre famille ne voit rien.
+    tv.emit('arena:answer', { response: { kind: 'number', text: '1' } });
+    await new Promise((r) => setTimeout(r, 100));
+    expect(seenByStranger).toEqual([]);
+    expect(await refusal(connect(url, { auth: { tv: true }, transports: ['websocket'], forceNew: true }))).toBe(
+      'Profil introuvable',
+    );
+  });
 });

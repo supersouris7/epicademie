@@ -40,6 +40,8 @@ export interface RealtimeDeps {
     cookieHeader: string | undefined,
     profileId: string,
   ) => Promise<{ readonly profile: Profile; readonly familyId: string } | null>;
+  /** Famille de la session portée par les cookies (écran TV), ou null. */
+  readonly authorizeFamily: (cookieHeader: string | undefined) => Promise<string | null>;
   readonly clock: Clock;
   readonly random: Random;
   /** La famille peut-elle jouer ce chapitre (gratuit, ou abonnement) ? */
@@ -65,7 +67,17 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
     random: deps.random,
     onBusyChange: () => broadcastPresence(),
     onCountChange: (n) => metrics?.openArenas.set(n),
+    onView: (view, playerIds) => {
+      // Écran TV : la famille des joueurs (connus de la présence, ou dernière famille vue).
+      const family = playerIds.map((id) => presence.familyOf(id)).find(Boolean) ?? arenaFamily.get(view.id);
+      if (!family) return;
+      arenaFamily.set(view.id, family);
+      io.to(tvRoom(family)).emit('arena', view);
+      if (view.phase === 'over') arenaFamily.delete(view.id);
+    },
   });
+  const arenaFamily = new Map<string, string>();
+  const tvRoom = (familyId: string) => `tv:${familyId}`;
 
   /** Chaque famille reçoit la liste de ses joueurs connectés (jamais celle des autres). */
   const broadcastPresence = () => {
@@ -82,6 +94,24 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
     const auth = RealtimeAuthSchema.safeParse(socket.handshake.auth);
     if (!auth.success) {
       next(new Error(REALTIME_REFUSALS.unknownProfile));
+      return;
+    }
+    if ('tv' in auth.data) {
+      deps
+        .authorizeFamily(socket.handshake.headers.cookie)
+        .then((familyId) => {
+          if (!familyId) {
+            next(new Error(REALTIME_REFUSALS.unknownProfile));
+            return;
+          }
+          socket.data.familyId = familyId;
+          socket.data.tv = true;
+          next();
+        })
+        .catch((err: unknown) => {
+          reporter.capture(err, { source: 'realtime' });
+          next(new Error('Connexion impossible pour le moment'));
+        });
       return;
     }
     deps
@@ -102,6 +132,17 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
   });
 
   io.on('connection', (socket) => {
+    if (socket.data.tv) {
+      // Écran TV : rejoint la diffusion de sa famille et reçoit la partie en cours, s'il y en a.
+      const familyId = socket.data.familyId;
+      void socket.join(tvRoom(familyId));
+      const current = presence
+        .onlineIds(familyId)
+        .map((id) => arenas.viewOf(id))
+        .find((v) => v !== null);
+      if (current) socket.emit('arena', current);
+      return;
+    }
     const profile = socket.data.profile;
     // Deux connexions simultanées ont pu passer l'authentification : la seconde est refusée.
     if (presence.isOnline(profile.id)) {

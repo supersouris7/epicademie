@@ -174,3 +174,33 @@ describe('arène', () => {
     });
   });
 });
+
+describe('raid coopératif', () => {
+  const startRaidWith = () => {
+    arenas.create(lea, { kind: 'raid', chapterId: 'm5-calcul', invite: [tom.id] });
+    expect(last(tom.id, 'arena:invite')).toMatchObject({ kind: 'raid' });
+    arenas.respond(tom.id, arenas.viewOf(lea.id)?.id ?? '', true);
+    arenas.start(lea.id);
+  };
+
+  it('toute l’équipe contre le boss : bonnes réponses à tour de rôle jusqu’à la victoire', () => {
+    startRaidWith();
+    let v = arenas.viewOf(lea.id);
+    expect(v).toMatchObject({ kind: 'raid', phase: 'playing', raid: { bossHp: 6, teamHearts: 4, won: null } });
+    for (let i = 0; i < 6; i++) {
+      v = arenas.viewOf(lea.id);
+      if (!v?.turnId) throw new Error('pas de tour');
+      arenas.answer(v.turnId, rightAnswer(v));
+    }
+    expect(arenas.viewOf(tom.id)).toMatchObject({ phase: 'over', raid: { bossHp: 0, won: true }, winnerId: null });
+  });
+
+  it('un équipier qui part pendant son tour : la main passe sans perte de cœur', () => {
+    startRaidWith();
+    const v = arenas.viewOf(lea.id);
+    arenas.leave(v?.turnId ?? '');
+    const after = arenas.viewOf(tom.id) ?? arenas.viewOf(lea.id);
+    expect(after).toMatchObject({ phase: 'playing', raid: { teamHearts: 4 } });
+    expect(after?.turnId).not.toBe(v?.turnId);
+  });
+});

@@ -6,6 +6,8 @@ export interface SocketData {
   profile: Profile;
   /** Famille du compte connecté : le temps réel ne relie que des joueurs de la même famille. */
   familyId: string;
+  /** Écran TV de la famille (pas de profil : `profile` n'est pas renseigné). */
+  tv?: boolean;
 }
 
 /**
@@ -29,6 +31,7 @@ export function createPresence() {
     onlineIds: (familyId: string) => inFamily(familyId).map((e) => e.profile.id),
     count: () => online.size,
     profile: (profileId: string) => online.get(profileId)?.profile,
+    familyOf: (profileId: string) => online.get(profileId)?.familyId,
     /** Les deux joueurs sont connectés et de la même famille. */
     sameFamily: (a: string, b: string) => {
       const fa = online.get(a)?.familyId;

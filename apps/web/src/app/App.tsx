@@ -21,6 +21,7 @@ import { Hub, ModeSetup, MultiModes } from '../features/hub/index.ts';
 import { Heroes, ProfileEditor, ProfilePicker, useProfile } from '../features/profiles/index.ts';
 import { Progress } from '../features/progress/index.ts';
 import { HqPage } from '../features/hq/index.ts';
+import { TvScreen } from '../features/tv/index.ts';
 import { Notifications, Online, RealtimeLink } from '../features/realtime/index.ts';
 import { About, Settings } from '../features/settings/index.ts';
 import { Chapters, Notions, TrainingPlay } from '../features/training/index.ts';
@@ -84,6 +85,7 @@ export function App() {
             <Route path="/" element={<ProfilePicker />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/parent" element={<ParentHome />} />
+            <Route path="/tv" element={<TvScreen />} />
             <Route path="/parent/:profileId" element={<ChildReport />} />
             <Route path="/abonnement" element={<Subscription />} />
             <Route path="/abonnement/simulateur" element={<PaymentSimulator />} />

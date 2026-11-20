@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router';
 import { MODES, type Profile } from '@questeo/shared';
+import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { SpeechBubble } from '../../shared/ui/SpeechBubble.tsx';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
@@ -9,6 +10,9 @@ import { assetSrc } from '../../design/assets.ts';
 import { CATEGORY_COLORS, MODE_MOODS } from '../../shared/lib/modes.ts';
 
 /** Multijoueur : l'Arène (jouable) et les modes à venir ; les joueurs connectés en tête. */
+/** Écran de chaque mode multijoueur disponible. */
+const MULTI_ROUTES: Partial<Record<string, string>> = { arene: '/arene', raid: '/arene?mode=raid' };
+
 export function MultiModes({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
   const modes = MODES.filter((m) => m.category === 'multi');
@@ -40,7 +44,7 @@ export function MultiModes({ profile }: { readonly profile: Profile }) {
               {mode.available ? (
                 <button
                   type="button"
-                  onClick={() => void navigate(mode.id === 'arene' ? '/arene' : `/jouer/${mode.id}`)}
+                  onClick={() => void navigate(MULTI_ROUTES[mode.id] ?? `/jouer/${mode.id}`)}
                   className="cartoon bevel cartoon-press gloss flex w-full items-center gap-3 p-3 text-white hover:brightness-110"
                   style={{ backgroundColor: CATEGORY_COLORS[mode.category] }}
                 >
@@ -61,6 +65,9 @@ export function MultiModes({ profile }: { readonly profile: Profile }) {
           );
         })}
       </ul>
+      <GameButton variant="surface" onClick={() => void navigate('/tv')}>
+        Mode TV : afficher la partie sur un grand écran
+      </GameButton>
     </PageShell>
   );
 }

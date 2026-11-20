@@ -22,6 +22,10 @@ export function startRealtime(app: App, corsOrigins: readonly string[] | null) {
       const profile = actor ? await app.profiles.findInFamily(profileId, actor.familyId) : undefined;
       return actor && profile ? { profile, familyId: actor.familyId } : null;
     },
+    authorizeFamily: async (cookieHeader) => {
+      const token = readCookie(cookieHeader, SESSION_COOKIE);
+      return token ? ((await app.accounts.resolve(token))?.familyId ?? null) : null;
+    },
     clock: app.clock,
     random: app.random,
     canPlayChapter: (familyId, chapterId) =>

@@ -1,9 +1,20 @@
 import { randomUUID } from 'node:crypto';
 import { check, generate, getChapter } from '@questeo/content';
-import { duelHandicaps, duelLevel, playArenaTurn, startArena, type ArenaState } from '@questeo/engine';
+import {
+  duelHandicaps,
+  duelLevel,
+  isRaid,
+  leaveRaid,
+  playArenaTurn,
+  playRaidTurn,
+  startArena,
+  startRaid,
+  type ArenaState,
+} from '@questeo/engine';
 import {
   ageOn,
   ARENA_TURN_SECONDS,
+  type ArenaKind,
   type ArenaCreate,
   type ArenaInvite,
   type ArenaPlayer,
@@ -27,6 +38,7 @@ import type { Presence } from './presence.ts';
 
 interface Arena {
   readonly id: string;
+  readonly kind: ArenaKind;
   readonly hostId: string;
   readonly chapterId: string;
   players: ArenaPlayer[];
@@ -56,6 +68,8 @@ export interface ArenaDeps {
   /** La liste des joueurs occupés a changé (diffusion de la présence). */
   readonly onBusyChange: () => void;
   readonly onCountChange?: (open: number) => void;
+  /** Nouvel état diffusé (écran TV de la famille). */
+  readonly onView?: (view: ArenaView, playerIds: readonly string[]) => void;
 }
 
 type Emit = <E extends keyof ServerToClientEvents>(
@@ -64,33 +78,40 @@ type Emit = <E extends keyof ServerToClientEvents>(
   ...args: Parameters<ServerToClientEvents[E]>
 ) => void;
 
-export function createArenas({ presence, clock, random, onBusyChange, onCountChange }: ArenaDeps) {
+/** Vue diffusée aux joueurs (et à l'écran TV de la famille). */
+function view(a: Arena): ArenaView {
+  const s = a.state;
+  return {
+    id: a.id,
+    kind: a.kind,
+    raid: s && isRaid(s) ? s.raid : null,
+    hostId: a.hostId,
+    chapterId: a.chapterId,
+    phase: s ? (s.over ? 'over' : 'playing') : 'lobby',
+    players: (s ? s.players : a.players).map((p) => (a.away.has(p.id) ? { ...p, away: true } : p)),
+    turnId: s && !s.over ? (s.players[s.current]?.id ?? null) : null,
+    turn: s?.turn ?? 0,
+    question: s && !s.over ? a.question : null,
+    deadline: s && !s.over ? a.deadline : null,
+    last: s?.last ?? null,
+    winnerId: s?.winnerId ?? null,
+  };
+}
+
+export function createArenas({ presence, clock, random, onBusyChange, onCountChange, onView }: ArenaDeps) {
   const arenas = new Map<string, Arena>();
   const emit: Emit = (profileId, event, ...args) => presence.emit(profileId, event, ...args);
   const counted = () => onCountChange?.(arenas.size);
 
   const arenaOf = (profileId: string) => [...arenas.values()].find((a) => a.players.some((p) => p.id === profileId));
 
-  const view = (a: Arena): ArenaView => {
-    const s = a.state;
-    return {
-      id: a.id,
-      hostId: a.hostId,
-      chapterId: a.chapterId,
-      phase: s ? (s.over ? 'over' : 'playing') : 'lobby',
-      players: (s ? s.players : a.players).map((p) => (a.away.has(p.id) ? { ...p, away: true } : p)),
-      turnId: s && !s.over ? (s.players[s.current]?.id ?? null) : null,
-      turn: s?.turn ?? 0,
-      question: s && !s.over ? a.question : null,
-      deadline: s && !s.over ? a.deadline : null,
-      last: s?.last ?? null,
-      winnerId: s?.winnerId ?? null,
-    };
-  };
-
   const push = (a: Arena) => {
     const v = view(a);
     for (const p of a.players) emit(p.id, 'arena', v);
+    onView?.(
+      v,
+      a.players.map((p) => p.id),
+    );
   };
 
   const remove = (a: Arena) => {
@@ -130,7 +151,7 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
     if (!a.state || a.state.over) return;
     if (a.timer) clearTimeout(a.timer);
     a.timer = null;
-    a.state = playArenaTurn(a.state, correct, timeout);
+    a.state = isRaid(a.state) ? playRaidTurn(a.state, correct, timeout) : playArenaTurn(a.state, correct, timeout);
     if (a.state.over) {
       a.question = null;
       a.deadline = null;
@@ -154,12 +175,13 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
       return a ? view(a) : null;
     },
 
-    create(host: Profile, msg: ArenaCreate): void {
+    create(host: Profile, msg: Omit<ArenaCreate, 'kind'> & { readonly kind?: ArenaKind }): void {
       if (!getChapter(msg.chapterId) || arenaOf(host.id)) return;
       const invite = [...new Set(msg.invite)].filter((id) => id !== host.id && presence.isOnline(id) && !arenaOf(id));
       if (invite.length === 0) return;
       const a: Arena = {
         id: randomUUID(),
+        kind: msg.kind ?? 'duel',
         hostId: host.id,
         chapterId: msg.chapterId,
         players: [
@@ -184,6 +206,7 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
       counted();
       const inv: ArenaInvite = {
         arenaId: a.id,
+        kind: a.kind,
         from: { id: host.id, name: host.name, hero: host.hero },
         chapterId: msg.chapterId,
       };
@@ -207,7 +230,7 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
       const ready = a.players.filter((p) => p.ready);
       let state: ArenaState;
       try {
-        state = startArena(ready);
+        state = a.kind === 'raid' ? startRaid(ready) : startArena(ready);
       } catch {
         return; // Pas assez de joueurs prêts.
       }
@@ -249,6 +272,17 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
           a.players = a.players.filter((p) => p.id !== profileId);
           push(a);
         }
+      } else if (isRaid(a.state) && !a.state.over) {
+        // Raid : le joueur sort du tour de table, l'équipe continue (sans pénalité).
+        const wasTurn = a.state.players[a.state.current]?.id === profileId;
+        a.state = leaveRaid(a.state, profileId);
+        if (a.state.over) {
+          a.question = null;
+          a.deadline = null;
+          if (a.timer) clearTimeout(a.timer);
+          a.timer = setTimeout(() => remove(a), FINISHED_ARENA_TTL_MS);
+        } else if (wasTurn) nextQuestion(a);
+        push(a);
       } else if (!a.state.over) {
         // En partie : le joueur qui part est éliminé (s'il jouait, son tour compte comme raté).
         const s = a.state;

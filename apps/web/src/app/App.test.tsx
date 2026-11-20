@@ -74,7 +74,7 @@ describe('accueil et choix du jeu', () => {
   it('hub : joueur, modes, navigation, connexion temps réel', async () => {
     const { user } = renderApp('/hub');
     expect(await screen.findByRole('group', { name: 'Mon joueur' })).toHaveTextContent('Léa');
-    expect(sockets.at(-1)?.auth.profileId).toBe(makeProfile().id);
+    expect(sockets.at(-1)?.auth).toEqual({ profileId: makeProfile().id });
     await user.click(screen.getByRole('button', { name: /Entraînement/ }));
     expect(await screen.findByText(/C’est ici que tu gagnes ton/)).toBeInTheDocument();
   });

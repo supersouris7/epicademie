@@ -10,7 +10,7 @@ export class FakeSocket {
   readonly emitted: [string, unknown][] = [];
   active = true;
   disconnected = false;
-  constructor(readonly auth: { readonly profileId: string }) {}
+  constructor(readonly auth: { readonly profileId: string } | { readonly tv: true }) {}
   on(event: string, fn: (arg: unknown) => void) {
     this.handlers.set(event, fn);
     return this;
@@ -32,7 +32,7 @@ export const sockets: FakeSocket[] = [];
 
 /** Module de remplacement de `socket.io-client`. */
 export const socketModule = {
-  io: (opts: { auth: { profileId: string } }) => {
+  io: (opts: { auth: { profileId: string } | { tv: true } }) => {
     const s = new FakeSocket(opts.auth);
     sockets.push(s);
     return s;

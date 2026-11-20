@@ -76,3 +76,43 @@ test('Plusieurs joueurs : connectés, message, profil déjà ouvert refusé, ar�
   await expect(lea.getByRole('heading', { name: 'Victoire !' })).toBeVisible();
   await expect(tom.getByRole('heading', { name: new RegExp(`Léa${suffix} a gagné`) })).toBeVisible();
 });
+
+test('Raid coopératif sur deux téléphones, partie affichée en grand sur l’écran TV', async ({ browser }) => {
+  test.setTimeout(120_000);
+  const suffix = Date.now() % 10000;
+  const family: { email?: string } = {};
+  const lea = await newPlayer(browser, `Léa${suffix}`, family);
+  const tom = await newPlayer(browser, `Tom${suffix}`, family);
+  const tv = await (await browser.newContext()).newPage();
+  await loginFamily(tv, family.email ?? '');
+  await tv.goto('/tv');
+  await expect(tv.getByText(/la partie s’affichera ici/)).toBeVisible();
+
+  await lea.goto('/arene?mode=raid');
+  await lea.getByRole('checkbox').first().check();
+  await lea.getByRole('button', { name: 'Envoyer les invitations' }).click();
+  await tom.getByRole('alert').getByRole('button', { name: 'J’y vais !' }).click();
+  await lea.getByRole('button', { name: 'Lancer le combat' }).click();
+  await expect(tv.getByRole('progressbar', { name: 'Vie du boss' })).toBeVisible();
+
+  // Toute l'équipe répond juste, à tour de rôle, jusqu'à la chute du boss.
+  const view = async (page: Page) =>
+    (await page.evaluate(() => (window as unknown as { __arena?: ArenaView }).__arena)) ?? null;
+  for (let i = 0; i < 30; i++) {
+    await lea.waitForTimeout(300);
+    const v = await view(lea);
+    if (!v || v.phase === 'over') break;
+    if (v.phase !== 'playing' || !v.question) continue;
+    const q = generate(v.question.skillId, v.question.level, v.question.seed);
+    const page = (await lea.getByText('À toi de jouer !').count()) > 0 ? lea : tom;
+    if (page === tom && (await tom.getByText('À toi de jouer !').count()) === 0) continue;
+    if (q.answer.kind === 'choice') await page.getByRole('tabpanel').getByRole('button').nth(q.answer.correct).click();
+    else if (q.answer.kind === 'number') {
+      await page.keyboard.type(fmt(q.answer.value).replace('−', '-'));
+      await page.keyboard.press('Enter');
+    } else throw new Error(q.answer.kind);
+    await expect.poll(async () => (await view(lea))?.turn ?? 0).toBeGreaterThan(v.turn);
+  }
+  await expect(lea.getByRole('heading', { name: 'Boss vaincu ! Bravo l’équipe !' })).toBeVisible();
+  await expect(tv.getByRole('heading', { name: 'Boss vaincu ! Bravo l’équipe !' })).toBeVisible();
+});
