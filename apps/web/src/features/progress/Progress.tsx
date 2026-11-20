@@ -3,10 +3,8 @@ import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
 import { chaptersOf, DOMAINS, type DomainId } from '@questeo/content';
 import { MEDAL_LABELS, MEDALS, medal, type Medal as MedalId } from '@questeo/engine';
-import { api, ITEM_INFO, ITEMS, SUBJECTS, type Profile, type SkillProgress, type SubjectId } from '@questeo/shared';
-import { useQuery } from '@tanstack/react-query';
-import { request } from '../../shared/api/client.ts';
-import { BadgeList } from '../../shared/ui/game/BadgeList.tsx';
+import { ITEM_INFO, ITEMS, SUBJECTS, type Profile, type SkillProgress, type SubjectId } from '@questeo/shared';
+import { TrophiesSection } from './Trophies.tsx';
 import { useBosses } from '../boss/index.ts';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
 import { ProgressBar } from '../../shared/ui/game/ProgressBar.tsx';
@@ -102,7 +100,7 @@ export function Progress({ profile }: { readonly profile: Profile }) {
       </p>
 
       {/* Inventaire : reliques de boss (un éclat par boss vaincu) et équipement. */}
-      <BadgesSection profileId={profile.id} />
+      <TrophiesSection profileId={profile.id} records={bosses?.records ?? []} />
       <section aria-labelledby="inventaire" className="cartoon bg-surface flex flex-col gap-3 p-3">
         <h2 id="inventaire" className="font-display text-2xl tracking-wide">
           Mon inventaire
@@ -260,22 +258,5 @@ export function Progress({ profile }: { readonly profile: Profile }) {
         );
       })}
     </PageShell>
-  );
-}
-
-/** Badges du joueur (grade atteint, prochain objectif). */
-function BadgesSection({ profileId }: { readonly profileId: string }) {
-  const { data: badges } = useQuery({
-    queryKey: ['badges', profileId],
-    queryFn: () => request(api.badges, { params: { id: profileId } }),
-  });
-  if (!badges) return null;
-  return (
-    <section aria-labelledby="badges" className="cartoon bg-surface flex flex-col gap-3 p-3">
-      <h2 id="badges" className="font-display text-2xl tracking-wide">
-        Badges
-      </h2>
-      <BadgeList badges={badges} />
-    </section>
   );
 }

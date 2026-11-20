@@ -61,6 +61,34 @@ describe('migrations', () => {
       rmSync(dir, { recursive: true, force: true });
     }
   });
+
+  it('suppression du QG : cosmétiques achetés remboursés (pièces et rubis), tables supprimées', async () => {
+    const dir = migrationsUpTo(8); // jusqu'à 0007_qg
+    try {
+      database = await openDatabase('pglite://memory');
+      await runMigrations(database, dir);
+      const { db } = database;
+      await db.execute(sql`insert into profiles (id, name, avatar, coins, rubies)
+        values ('22222222-2222-4222-8222-222222222222', 'Tom', '{"style":"pixelbot","seed":"t"}', 100, 1)`);
+      await db.execute(sql`insert into owned_cosmetics (profile_id, cosmetic) values
+        ('22222222-2222-4222-8222-222222222222', 'fond-nuit'),
+        ('22222222-2222-4222-8222-222222222222', 'cadre-feu')`);
+      await db.execute(sql`insert into hq_layouts (profile_id, layout)
+        values ('22222222-2222-4222-8222-222222222222', '{}')`);
+
+      await runMigrations(database, MIGRATIONS_DIR);
+      expect((await schemaStatus(database, MIGRATIONS_DIR)).upToDate).toBe(true);
+      const [tom] = await db.select({ coins: profiles.coins, rubies: profiles.rubies }).from(profiles);
+      // fond-nuit : 2 rubis ; cadre-feu : 300 pièces.
+      expect(tom).toEqual({ coins: 400, rubies: 3 });
+      const tables: unknown = await db.execute(
+        sql`select table_name from information_schema.tables where table_name in ('hq_layouts', 'owned_cosmetics')`,
+      );
+      expect(JSON.stringify(tables)).not.toMatch(/hq_layouts|owned_cosmetics/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
 });
 
 /** Copie des `count` premières migrations (base d'une version antérieure). */

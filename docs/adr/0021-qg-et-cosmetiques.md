@@ -1,6 +1,8 @@
 # 0021 — QG, salle des trophées et cosmétiques
 
-- Statut : Acceptée
+- Statut : **Abandonnée** le 20/11/2026 (décision produit : QG et cosmétiques supprimés). Les
+  trophées (boss vaincus, Acad-Héros) et les badges sont affichés dans « Mes progrès ». La
+  migration 0008 rembourse les cosmétiques achetés (prix du catalogue) puis supprime les tables.
 - Date : 2026-11-20
 
 ## Décision

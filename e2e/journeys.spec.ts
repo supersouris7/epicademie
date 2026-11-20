@@ -66,10 +66,12 @@ test('Anglais : chapitre des verbes irréguliers jouable', async ({ page }) => {
   await expect(page.getByText(/prétérit|participe passé|Complète/).first()).toBeVisible();
 });
 
-test('Mes progrès : badges et collection visibles dès le départ', async ({ page }) => {
+test('Mes progrès : trophées et badges visibles dès le départ', async ({ page }) => {
   await signupFamily(page);
   await createProfile(page, `Pro${Date.now() % 10000}`);
   await page.goto('/progres');
+  await expect(page.getByRole('heading', { name: 'Trophées' })).toBeVisible();
+  await expect(page.getByText(/Acad-Héros trouvés \(1 sur 3\)/)).toBeVisible();
   await expect(page.getByText('Chasseur de boss').first()).toBeVisible();
 });
 
@@ -78,7 +80,6 @@ test('Mise en page : aucun défilement horizontal sur les écrans principaux', a
   await createProfile(page, `Lay${Date.now() % 10000}`);
   for (const path of [
     '/hub',
-    '/qg',
     '/progres',
     '/heros',
     '/multi',
@@ -97,7 +98,8 @@ test('Mise en page : aucun défilement horizontal sur les écrans principaux', a
 test('Vocabulaire : le dictionnaire explique « quotient » avec la division posée et le partage', async ({ page }) => {
   await signupFamily(page);
   await createProfile(page, `Voc${Date.now() % 10000}`);
-  await page.getByRole('button', { name: 'Mon dictionnaire' }).click();
+  // Le dictionnaire n'est plus dans le menu ; la page reste accessible par son adresse.
+  await page.goto('/dictionnaire');
   await page.getByRole('button', { name: 'quotient', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: 'Le mot « quotient »' });
   await expect(dialog.getByLabel('Division de 23 par 5 expliquée en image')).toBeVisible();

@@ -17,7 +17,7 @@ export default defineConfig({
     {
       name: 'ordinateur-tv',
       use: { ...devices['Desktop Chrome'], viewport: { width: 1920, height: 1080 } },
-      testMatch: ['profiles.spec.ts', 'hq.spec.ts', 'journeys.spec.ts', 'multi.spec.ts'],
+      testMatch: ['profiles.spec.ts', 'journeys.spec.ts', 'multi.spec.ts'],
     },
   ],
   // Serveur de production (front buildé) avec une base PostgreSQL embarquée jetable (en mémoire).

@@ -25,7 +25,7 @@ Retour terrain d'un parent :
   - `cm^2`/`cm^3` s'affichent `cm²`/`cm³` et sont eux aussi des mots touchables.
 - **Leçon** : section « Les mots à connaître » avant « Le truc à retenir ». Elle liste les mots
   présents dans la notion (titre, mémo, énoncés types).
-- **Mon dictionnaire** (`/dictionnaire`, depuis l'accueil) : tous les mots par famille ; ceux
+- **Mon dictionnaire** (`/dictionnaire` ; retiré du menu de l'accueil le 20/11/2026) : tous les mots par famille ; ceux
   déjà regardés sont cochés (stockage local de l'appareil).
 - **Schémas d'explication** (`Demo`) :
   - `division` : division posée, chaque nombre nommé et coloré (dividende, diviseur, quotient,
