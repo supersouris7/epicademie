@@ -69,10 +69,10 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.getByRole('button', { name: /^Entraînement/ }).click();
   // Matières sans contenu : grisées « À venir ».
   await expect(page.getByRole('button', { name: 'Maths', exact: true })).toBeVisible();
-  for (const subject of ['Anglais', 'Espagnol']) {
+  for (const subject of ['Anglais', 'Espagnol', 'Physique-Chimie']) {
     await expect(page.getByRole('button', { name: subject, exact: true })).toBeVisible();
   }
-  for (const subject of ['Physique-Chimie', 'Histoire', 'Géographie']) {
+  for (const subject of ['Histoire', 'Géographie']) {
     await expect(page.getByRole('button', { name: `${subject}, à venir` })).toBeVisible();
   }
   await page.getByRole('button', { name: 'Histoire, à venir' }).click();
