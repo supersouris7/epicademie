@@ -5,3 +5,4 @@ export * from './check.ts';
 export * from './catalog.ts';
 export * from './diagnose.ts';
 export * from './validate.ts';
+export * from './glossary.ts';

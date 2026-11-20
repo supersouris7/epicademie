@@ -289,7 +289,7 @@ function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly are
         <main className="side:grid side:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] flex min-h-0 flex-1 flex-col gap-3">
           <section className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
             <h1 className="text-2xl leading-snug font-bold sm:text-3xl">
-              <MathText text={question.prompt} />
+              <MathText text={question.prompt} terms />
             </h1>
             {question.figure && <Figure figure={question.figure} maxHeight="var(--figure-max)" />}
           </section>

@@ -100,9 +100,12 @@ export function Hub({ profile }: { readonly profile: Profile }) {
         </ul>
       </div>
 
-      <GameButton onClick={() => void navigate('/qg')} className="self-start">
-        Mon QG et mes trophées
-      </GameButton>
+      <div className="flex flex-wrap gap-2">
+        <GameButton onClick={() => void navigate('/qg')}>Mon QG et mes trophées</GameButton>
+        <GameButton variant="surface" onClick={() => void navigate('/dictionnaire')}>
+          Mon dictionnaire
+        </GameButton>
+      </div>
 
       <section className="flex flex-col gap-3" aria-labelledby="defis">
         <h2 id="defis" className="font-display text-2xl tracking-wide">

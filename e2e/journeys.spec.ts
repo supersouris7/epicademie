@@ -92,3 +92,16 @@ test('Mise en page : aucun défilement horizontal sur les écrans principaux', a
     expect(overflow, path).toBeLessThanOrEqual(1);
   }
 });
+
+test('Vocabulaire : le dictionnaire explique « quotient » avec la division posée et le partage', async ({ page }) => {
+  await signupFamily(page);
+  await createProfile(page, `Voc${Date.now() % 10000}`);
+  await page.getByRole('button', { name: 'Mon dictionnaire' }).click();
+  await page.getByRole('button', { name: 'quotient', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: 'Le mot « quotient »' });
+  await expect(dialog.getByLabel('Division de 23 par 5 expliquée en image')).toBeVisible();
+  await expect(dialog.getByText('4 paquets', { exact: true })).toBeVisible();
+  await dialog.getByRole('button', { name: 'J’ai compris' }).click();
+  await page.getByRole('button', { name: /cm² \(centimètre carré\)/ }).click();
+  await expect(page.getByRole('dialog').getByLabel(/le lien entre cm, cm² et cm³/)).toBeVisible();
+});

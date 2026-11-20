@@ -1,6 +1,6 @@
 # Parcours de bout en bout
 
-16 parcours Playwright sur le build de production (base PostgreSQL embarquée jetable, aucune
+17 parcours Playwright sur le build de production (base PostgreSQL embarquée jetable, aucune
 donnée réelle), joués sur **trois formats** :
 
 - `tablette` : iPad paysage ;

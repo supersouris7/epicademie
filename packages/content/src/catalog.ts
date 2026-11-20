@@ -1,5 +1,6 @@
 import type { Grade } from '@questeo/shared';
 import { createRng } from './rng.ts';
+import { autoDemo } from './explain.ts';
 import { MATHS_CHAPTERS } from './maths/index.ts';
 import { ANGLAIS_CHAPTERS } from './anglais/index.ts';
 import type { Chapter, Level, Question, Skill } from './types.ts';
@@ -109,5 +110,6 @@ export function generate(skillId: string, level: Level, seed: number): Question 
   const entry = skills.get(skillId) ?? bossSkills.get(skillId);
   if (!entry) throw new Error(`Notion inconnue : ${skillId}`);
   const draft = entry.skill.generate(createRng(seed), level);
-  return { traps: [], targetSeconds: 20, ...draft, skillId, level, seed };
+  const demo = draft.demo ?? autoDemo(draft, entry.chapter);
+  return { traps: [], targetSeconds: 20, ...draft, ...(demo ? { demo } : {}), skillId, level, seed };
 }

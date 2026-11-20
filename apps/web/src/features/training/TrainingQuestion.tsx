@@ -59,7 +59,7 @@ export function TrainingQuestion({
               <ReportButton question={current.question} />
             </div>
             <h1 className="text-2xl leading-snug font-bold sm:text-3xl xl:text-4xl">
-              <MathText text={current.question.prompt} />
+              <MathText text={current.question.prompt} terms />
             </h1>
             {retry && !answered && <RetryHint retry={retry} hint={current.question.hint} />}
             {advice && !answered && !retry && (advice === 'brouillon' || !skill?.mental) && (

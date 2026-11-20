@@ -165,14 +165,25 @@ export type QuestionDraft = Omit<Question, 'skillId' | 'level' | 'seed' | 'traps
   readonly targetSeconds?: number;
 };
 
-/** Conversion montrée dans le tableau : le nombre placé sous son unité, puis lu dans l'unité demandée. */
-export interface Demo {
-  readonly kind: 'conversion';
-  readonly table: 'longueur' | 'aire' | 'volume' | 'masse';
-  readonly value: Rational;
-  readonly from: string;
-  readonly to: string;
-}
+/**
+ * Schéma montré dans l'explication (et dans le dictionnaire) :
+ * - `conversion` : le nombre placé sous son unité dans le tableau, puis lu dans l'unité demandée ;
+ * - `division` : la division posée, chaque nombre étiqueté (dividende, diviseur, quotient, reste),
+ *   le partage en paquets et l'égalité dividende = diviseur × quotient + reste ;
+ * - `unites` : le lien longueur → aire → volume (1 cm, 1 cm², 1 cm³) ;
+ * - `rangs` : le nombre dans le tableau des rangs (partie entière, décimales).
+ */
+export type Demo =
+  | {
+      readonly kind: 'conversion';
+      readonly table: 'longueur' | 'aire' | 'volume' | 'masse';
+      readonly value: Rational;
+      readonly from: string;
+      readonly to: string;
+    }
+  | { readonly kind: 'division'; readonly dividend: number; readonly divisor: number }
+  | { readonly kind: 'unites'; readonly focus: 'longueur' | 'aire' | 'volume'; readonly unit?: string }
+  | { readonly kind: 'rangs'; readonly value: string };
 
 export interface Lesson {
   /** « Le truc à retenir » : 2-3 phrases courtes à hauteur d'enfant, avec un mini-exemple. */
