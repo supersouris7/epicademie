@@ -126,21 +126,19 @@ export function createTrainingService({ db, clock, random, onFinished }: Trainin
         const bySkill = new Map<string, boolean[]>();
         for (const r of rows) bySkill.set(r.skillId, [...(bySkill.get(r.skillId) ?? []), r.correct]);
         const skills: SessionSkillSummary[] = [];
+        const states = await repo.skillStatesOf(session.profileId, [...bySkill.keys()]);
         for (const [skillId, answers] of bySkill) {
-          const before = (await repo.skillState(session.profileId, skillId)) ?? newSkillState(skillId);
+          const before = states.get(skillId) ?? newSkillState(skillId);
           const correct = answers.filter(Boolean).length;
           // Série complète sur cette seule notion : ses erreurs du 1er coup fixent la médaille.
           const firsts = regular.filter((r) => r.skillId === skillId);
           const series =
             firsts.length >= length ? seriesScore(firsts.filter((r) => r.correct).length, firsts.length) : undefined;
-          const after = applySession(
-            before,
-            { answered: answers.length, correct },
-            day,
+          const after = applySession(before, { answered: answers.length, correct }, day, {
             answers,
-            session.confused.includes(skillId),
+            forceFail: session.confused.includes(skillId),
             series,
-          );
+          });
           await repo.saveSkillState(session.profileId, after);
           skills.push({
             skillId,

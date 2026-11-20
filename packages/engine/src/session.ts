@@ -96,6 +96,10 @@ export function nextQuestion(
   return { skillId, level: s.levels[skillId] ?? 1, seed, variant: false };
 }
 
+/** Niveau après une série réussie / ratée (bornés à 1–3). */
+const LEVEL_UP: Record<Level, Level> = { 1: 2, 2: 3, 3: 3 };
+const LEVEL_DOWN: Record<Level, Level> = { 1: 1, 2: 1, 3: 2 };
+
 /** Enregistre une réponse : adapte le niveau (3 justes → +1, 2 fausses → −1) et prévoit la variante. */
 export function recordAnswer(s: TrainingState, q: PlannedQuestion, correct: boolean): TrainingState {
   const answers = [...s.answers, { skillId: q.skillId, level: q.level, variant: q.variant, correct }];
@@ -105,9 +109,8 @@ export function recordAnswer(s: TrainingState, q: PlannedQuestion, correct: bool
   // Niveau 1 vite passé (2 réussites d'affilée), niveau 2 → 3 après 3 réussites.
   const needed = level === 1 ? 2 : 3;
   const streak = ofSkill.slice(-needed);
-  if (streak.length === needed && streak.every((a) => a.correct && a.level === level) && level < 3)
-    level = (level + 1) as Level;
-  else if (lastTwo.length === 2 && lastTwo.every((a) => !a.correct) && level > 1) level = (level - 1) as Level;
+  if (streak.length === needed && streak.every((a) => a.correct && a.level === level)) level = LEVEL_UP[level];
+  else if (lastTwo.length === 2 && lastTwo.every((a) => !a.correct)) level = LEVEL_DOWN[level];
   const pendingVariant =
     !correct && !q.variant && variantCount({ ...s, answers }) < MAX_VARIANTS
       ? { skillId: q.skillId, level: q.level }

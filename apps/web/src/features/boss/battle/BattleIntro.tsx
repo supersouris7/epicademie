@@ -2,9 +2,10 @@ import type { HeroId } from '@questeo/shared';
 import { BOSS_LIVES } from '@questeo/shared';
 import { BattleArena, type ArenaEnemy, type EnemyState } from '../../../shared/battle/BattleArena.tsx';
 import { BossLivesBadge, BossSays, HeroSays, QuestySays, Shake } from '../../../shared/battle/BattleScenes.tsx';
-import { faceOffExchange, type Line } from '../../../shared/lib/dialogue.ts';
+import type { ArrivalLines, IntroStage } from './state.ts';
+import type { Exchange } from '../../../shared/lib/dialogue.ts';
 import { GameButton } from '../../../shared/ui/game/GameButton.tsx';
-import { type AnimationState, type BossExpression, type HeroExpression } from '../../../design/assets.ts';
+import type { AnimationState } from '../../../design/assets.ts';
 import { bossOf } from '../../../design/bosses.ts';
 
 /**
@@ -33,10 +34,10 @@ export function BattleIntro({
   readonly shield: boolean;
   readonly arena: string;
   readonly boss: ReturnType<typeof bossOf>;
-  readonly introStage: 'boss' | 'summon' | 'mob';
+  readonly introStage: IntroStage;
   readonly arrival: boolean;
-  readonly exchange: ReturnType<typeof faceOffExchange>;
-  readonly arrivalLines: { readonly boss: Line; readonly hero: Line; readonly questy: string } | null;
+  readonly exchange: readonly Exchange[];
+  readonly arrivalLines: ArrivalLines | null;
   readonly onContinue: () => void;
 }) {
   return (
@@ -70,12 +71,12 @@ export function BattleIntro({
               key={i}
               bossId={boss.id}
               name={boss.name}
-              expression={e.line.face as BossExpression}
+              expression={e.line.face}
               text={e.line.text}
               delay={1 + i * 1.9}
             />
           ) : (
-            <HeroSays key={i} hero={hero} face={e.line.face as HeroExpression} text={e.line.text} delay={1 + i * 1.9} />
+            <HeroSays key={i} hero={hero} face={e.line.face} text={e.line.text} delay={1 + i * 1.9} />
           ),
         )}
       {/* Arrivée du boss : il se présente, le héros réagit, Questy encourage. */}
@@ -84,16 +85,11 @@ export function BattleIntro({
           <BossSays
             bossId={boss.id}
             name={boss.name}
-            expression={arrivalLines.boss.face as BossExpression}
+            expression={arrivalLines.boss.face}
             text={arrivalLines.boss.text}
             delay={2.2}
           />
-          <HeroSays
-            hero={hero}
-            face={arrivalLines.hero.face as HeroExpression}
-            text={arrivalLines.hero.text}
-            delay={3.6}
-          />
+          <HeroSays hero={hero} face={arrivalLines.hero.face} text={arrivalLines.hero.text} delay={3.6} />
         </>
       )}
       {arrival && arrivalLines && <QuestySays text={arrivalLines.questy} pose="bravo" mood="proud" delay={4.8} />}

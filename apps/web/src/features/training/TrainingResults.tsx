@@ -14,6 +14,10 @@ import { ChestReveal } from '../../shared/ui/game/ChestReveal.tsx';
 
 import type { Missed } from './types.ts';
 
+/**
+ * Bilan d'une partie d'entraînement : note sur 20, XP et pièces, coffre éventuel, médailles par
+ * notion, récapitulatif des erreurs avec la bonne réponse, puis rejouer ou changer de notion.
+ */
 export function Results({
   summary,
   missed,

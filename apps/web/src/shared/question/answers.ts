@@ -36,8 +36,6 @@ export function formatResponse(q: Question, r: Response): string {
   }
 }
 
-export const STAGE_LABELS = ['À revoir', 'Réussie une fois', 'Réussie deux fois', 'Acquise'] as const;
-
 /** Message de fin de série pour une notion : sa médaille (meilleure série de 5) et la suite. */
 export function medalMessage(s: {
   readonly answered: number;

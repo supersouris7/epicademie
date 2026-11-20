@@ -31,6 +31,31 @@ React 19, Vite, Tailwind 4, motion (animations), React Query (données serveur),
 - `design/` : jetons CSS, palette, catalogue des images (`assets.ts`) — voir
   [DESIGN-SYSTEM](../DESIGN-SYSTEM.md).
 
+## Écrans de jeu : état, déroulé, affichage
+
+Un écran à mise en scène (combat de boss, entraînement) se découpe en trois couches
+([ADR 0010](../adr/0010-qualite-renforcee.md)) :
+
+| Fichier                                                | Rôle                                                                        |
+| ------------------------------------------------------ | --------------------------------------------------------------------------- |
+| `state.ts`                                             | état de l'écran + **réducteur pur** : qui réagit, quelle pose, quelle scène |
+| `useBattle.ts`, `useTraining.ts`                       | le **déroulé** : appels au serveur, sons, minuteurs ; envoie des événements |
+| `BossPlay.tsx`, `TrainingPlay.tsx` (+ sous-composants) | l'**affichage** seulement                                                   |
+
+Les répliques tirées au hasard sont injectées dans le réducteur (`createBattleReducer(voices)`) :
+les tests fixent le texte. Les événements sont nommés au passé (`shot`, `shotLanded`,
+`advanced`…) : ils décrivent ce qui s'est passé, le réducteur décide de l'effet.
+
+## Tests
+
+- **Logique** (`*.test.ts`) : réducteurs, fonctions pures, magasins.
+- **Écrans** (`*.test.tsx`) : l'application complète (`testing/renderApp.tsx`) sur un
+  **faux serveur** (`testing/fakeApi.ts`) construit sur le contrat d'API — chaque réponse est
+  validée par son schéma, la correction et les combats suivent les vraies règles. Le temps réel
+  passe par une fausse connexion (`testing/fakeSocket.ts`), les mises en scène longues par des
+  minuteurs simulés (`renderApp(path, { fakeTimers: true })`).
+- **Bout en bout** (`e2e/`, Playwright) : vrai serveur, vrai navigateur, tablette et smartphone.
+
 ## Règles
 
 - Les écrans orchestrent ; la logique réutilisable va dans des hooks ou des fonctions pures

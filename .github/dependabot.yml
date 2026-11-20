@@ -1,0 +1,44 @@
+# Mises à jour proposées automatiquement (une PR par groupe, chaque semaine) : la CI complète
+# les valide avant fusion. Les versions et empreintes épinglées restent ainsi à jour.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    # Délai de sécurité : jamais une version publiée depuis moins de 14 jours.
+    cooldown:
+      default-days: 14
+    groups:
+      dev:
+        dependency-type: development
+        update-types: [minor, patch]
+      prod:
+        dependency-type: production
+        update-types: [minor, patch]
+    open-pull-requests-limit: 5
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 14
+    groups:
+      actions:
+        patterns: ['*']
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 14
+  - package-ecosystem: docker-compose
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 14

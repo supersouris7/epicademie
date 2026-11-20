@@ -1,6 +1,7 @@
 import type { AvatarConfig } from '@questeo/shared';
 import { useAvatarUri } from '../lib/avatar.ts';
 
+/** Avatar généré (DiceBear) d'un profil, à partir de son style et de sa graine. */
 interface AvatarProps {
   readonly avatar: AvatarConfig;
   readonly size?: number;

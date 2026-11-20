@@ -8,26 +8,25 @@
  * - Le π-bot : petit robot fayot du Golem, bip-bip et zèle.
  * Pour tous les âges : drôle, jamais méchant envers le joueur.
  */
-import type { HeroId } from '@questeo/shared';
+import { indexFor, type HeroId, type RandomSource } from '@questeo/shared';
 import type { BossExpression, HeroExpression, PiBotHead } from '../../design/assets.ts';
 
 export interface Line<F extends string = string> {
   readonly text: string;
   readonly face: F;
 }
-type HeroLine = Line<HeroExpression>;
-type BossLine = Line<BossExpression>;
-type MobLine = Line<PiBotHead>;
+export type HeroLine = Line<HeroExpression>;
+export type BossLine = Line<BossExpression>;
+export type MobLine = Line<PiBotHead>;
 
 const L = <F extends string>(face: F, text: string): Line<F> => ({ face, text });
 
 // ——— Tirage sans répéter la dernière réplique d'une même liste ———
 
 const lastPick = new Map<readonly unknown[], number>();
-export function pick<T>(list: readonly T[], random: () => number = Math.random): T {
-  if (list.length === 0) throw new Error('liste vide');
+export function pick<T>(list: readonly T[], random: RandomSource = Math.random): T {
   const prev = lastPick.get(list);
-  let i = Math.floor(random() * list.length);
+  let i = indexFor(list.length, random());
   if (list.length > 1 && i === prev) i = (i + 1) % list.length;
   lastPick.set(list, i);
   return list[i] as T;
@@ -385,11 +384,9 @@ export const questySays = (moment: QuestyMoment): string => pick(QUESTY[moment])
 
 // ——— Échanges aller-retour (face-à-face) ———
 
-export type Speaker = 'boss' | 'hero';
-export interface Exchange {
-  readonly speaker: Speaker;
-  readonly line: Line;
-}
+/** Une réplique du face-à-face : l'expression suit celui qui parle (boss ou héros). */
+export type Exchange =
+  { readonly speaker: 'boss'; readonly line: BossLine } | { readonly speaker: 'hero'; readonly line: HeroLine };
 
 /**
  * Vannes du face-à-face : le boss provoque (réplique liée au chapitre), le héros répond avec sa

@@ -8,7 +8,11 @@ describe('questions sans doublon', () => {
     const next = () => ++n;
     const first = generate('m5-tables', 1, 1).prompt;
     const second = generate('m5-tables', 1, 2).prompt;
-    const q = freshQuestion('m5-tables', 1, 1, new Set([first]), [second], next);
+    const q = freshQuestion(
+      { skillId: 'm5-tables', level: 1, seed: 1 },
+      { seen: new Set([first]), recent: [second] },
+      next,
+    );
     expect(q.question.prompt).not.toBe(first);
     expect(q.question.prompt).not.toBe(second);
   });
@@ -17,7 +21,7 @@ describe('questions sans doublon', () => {
     const seen = new Set<string>();
     let n = 0;
     for (let i = 0; i < 5; i++) {
-      const q = freshQuestion('m5-tables', 1, ++n, seen, [], () => ++n);
+      const q = freshQuestion({ skillId: 'm5-tables', level: 1, seed: ++n }, { seen, recent: [] }, () => ++n);
       expect(seen.has(q.question.prompt)).toBe(false);
       seen.add(q.question.prompt);
     }

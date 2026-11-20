@@ -11,4 +11,5 @@ export * from './subjects.ts';
 export * from './grades.ts';
 export * from './battle.ts';
 export * from './realtime.ts';
+export * from './random.ts';
 export * from './api/contract.ts';

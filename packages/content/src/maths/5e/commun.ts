@@ -1,9 +1,6 @@
-import { BO_MATHS } from '../../build.ts';
 import { dec } from '../../rational.ts';
 
 /** Outils communs aux chapitres de la 5e. */
-
-export const SOURCE_NOTE = BO_MATHS;
 
 export const PI = dec(314, 2);
 

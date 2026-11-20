@@ -68,9 +68,7 @@ export function QuestionTools({
     setTab(t);
     setOpened((o) => new Set(o).add(t));
   };
-  const kind =
-    (question.answer.kind === 'number' ? conversionNeeded(question.prompt, question.answer.unit) : null) ??
-    conversionKind(question);
+  const kind = tableKind(question);
   const sendToAnswer =
     question.answer.kind === 'number'
       ? (value: string) => {
@@ -116,26 +114,52 @@ export function QuestionTools({
       </PlayDock>
       {/* Brouillon pleine page : l'énoncé reste en haut, la feuille prend tout le reste. */}
       {bigDraft && (
-        <div
-          className="bg-bg fixed inset-0 z-40 flex flex-col gap-2 p-3"
-          role="dialog"
-          aria-label="Brouillon pleine page"
-        >
-          <div className="flex max-h-[30dvh] shrink-0 gap-3 overflow-y-auto">
-            <h2 className="flex-1 text-xl leading-snug font-bold">
-              <MathText text={question.prompt} />
-            </h2>
-            {question.figure && (
-              <div className="w-[40%] max-w-xs shrink-0">
-                <Figure figure={question.figure} maxHeight="26dvh" picked={picked} />
-              </div>
-            )}
-          </div>
-          <div className="min-h-0 flex-1">
-            <Brouillon strokes={strokes} onChange={setStrokes} expanded onToggleExpand={() => setBigDraft(false)} />
-          </div>
-        </div>
+        <BigDraft
+          question={question}
+          picked={picked}
+          strokes={strokes}
+          onChange={setStrokes}
+          onClose={() => setBigDraft(false)}
+        />
       )}
     </>
+  );
+}
+
+/** Tableau de conversion à proposer : celui de l'unité demandée, sinon celui des unités de l'énoncé. */
+const tableKind = (question: Question) =>
+  (question.answer.kind === 'number' ? conversionNeeded(question.prompt, question.answer.unit) : null) ??
+  conversionKind(question);
+
+/** Brouillon pleine page : l'énoncé reste en haut, la feuille prend tout le reste. */
+function BigDraft({
+  question,
+  picked,
+  strokes,
+  onChange,
+  onClose,
+}: {
+  readonly question: Question;
+  readonly picked: { x: number; y: number } | null;
+  readonly strokes: readonly Stroke[];
+  readonly onChange: (strokes: readonly Stroke[]) => void;
+  readonly onClose: () => void;
+}) {
+  return (
+    <div className="bg-bg fixed inset-0 z-40 flex flex-col gap-2 p-3" role="dialog" aria-label="Brouillon pleine page">
+      <div className="flex max-h-[30dvh] shrink-0 gap-3 overflow-y-auto">
+        <h2 className="flex-1 text-xl leading-snug font-bold">
+          <MathText text={question.prompt} />
+        </h2>
+        {question.figure && (
+          <div className="w-[40%] max-w-xs shrink-0">
+            <Figure figure={question.figure} maxHeight="26dvh" picked={picked} />
+          </div>
+        )}
+      </div>
+      <div className="min-h-0 flex-1">
+        <Brouillon strokes={strokes} onChange={onChange} expanded onToggleExpand={onClose} />
+      </div>
+    </div>
   );
 }

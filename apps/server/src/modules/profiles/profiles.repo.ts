@@ -95,5 +95,3 @@ export function profilesRepo(db: Executor) {
     },
   };
 }
-
-export type ProfilesRepo = ReturnType<typeof profilesRepo>;

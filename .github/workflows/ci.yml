@@ -16,21 +16,24 @@ env:
 permissions:
   contents: read
 
+# Actions tierces épinglées par empreinte de commit (version en commentaire) : une étiquette
+# déplacée ne peut pas injecter de code dans la CI. Dependabot propose les mises à jour.
+
 jobs:
   quality:
     name: Lint, types, tests, build, E2E
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
       - run: corepack enable
       - id: pnpm-store
         run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
       - name: Cache pnpm
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.pnpm-store.outputs.path }}
           key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
@@ -41,11 +44,13 @@ jobs:
       - run: pnpm typecheck
       # Règles d'architecture : dépendances entre paquets, modules et fonctionnalités, cycles.
       - run: pnpm arch
+      # Code mort : fichiers, exports et dépendances inutilisés.
+      - run: pnpm deadcode
       # Tests unitaires et d'intégration (PostgreSQL embarqué), seuils de couverture bloquants.
       - run: pnpm test:coverage
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm e2e
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure()
         with:
           name: playwright-report
@@ -59,7 +64,7 @@ jobs:
     timeout-minutes: 15
     services:
       postgres:
-        image: postgres:17-alpine
+        image: postgres:17-alpine@sha256:526f86d93c6ea08fd3f1fe5605650cacc781b2c6013169a0ad8f42c7d3d84f32
         env:
           POSTGRES_USER: questeo
           POSTGRES_PASSWORD: questeo
@@ -70,15 +75,15 @@ jobs:
     env:
       TEST_DATABASE_URL: postgres://questeo:questeo@localhost:5432/questeo
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
       - run: corepack enable
       - id: pnpm-store
         run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
       - name: Cache pnpm
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ steps.pnpm-store.outputs.path }}
           key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
@@ -86,9 +91,32 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec vitest run --project @questeo/server
 
+  # Analyse de sécurité de l'image de production (paquets système et dépendances Node) :
+  # bloquante s'il reste une faille grave ou critique pour laquelle un correctif existe.
+  image-scan:
+    name: Analyse de sécurité de l'image
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          load: true
+          tags: questeo:scan
+          cache-from: type=gha
+      - uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: questeo:scan
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: '1'
+          format: table
+
   docker:
     name: Image Docker → Docker Hub
-    needs: [quality, postgres]
+    needs: [quality, postgres, image-scan]
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 45
@@ -98,20 +126,20 @@ jobs:
       - name: Vérifier les secrets Docker Hub
         if: env.HAS_DOCKERHUB != 'true'
         run: echo "::warning::Secrets DOCKERHUB_USERNAME / DOCKERHUB_TOKEN absents — publication ignorée."
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: env.HAS_DOCKERHUB == 'true'
-      - uses: docker/setup-qemu-action@v4
+      - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
         if: env.HAS_DOCKERHUB == 'true'
-      - uses: docker/setup-buildx-action@v4
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
         if: env.HAS_DOCKERHUB == 'true'
-      - uses: docker/login-action@v4
+      - uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
         if: env.HAS_DOCKERHUB == 'true'
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - id: meta
         if: env.HAS_DOCKERHUB == 'true'
-        uses: docker/metadata-action@v6
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
           images: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/questeo
           # main → unstable (+ sha) ; tag v1.0.1 → 1.0.1, 1.0, 1, latest
@@ -123,7 +151,7 @@ jobs:
             type=semver,pattern={{major}}
           flavor: |
             latest=auto
-      - uses: docker/build-push-action@v7
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         if: env.HAS_DOCKERHUB == 'true'
         with:
           context: .

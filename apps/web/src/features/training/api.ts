@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api, type AnswerSubmit, type SessionCreate } from '@questeo/shared';
 import { request } from '../../shared/api/client.ts';
 
+/** Appels au serveur pour l'entraînement : progression par notion, partie, réponses, bilan. */
 export const skillsKey = (profileId: string) => ['skills', profileId] as const;
 
 export const useSkills = (profileId: string) =>

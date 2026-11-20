@@ -1,7 +1,7 @@
 import type { FastifyInstance, FastifyRequest, RouteShorthandOptions } from 'fastify';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 import type { z } from 'zod';
-import { API_PREFIX, ErrorBodySchema, type AnyEndpoint, type ResponseOf } from '@questeo/shared';
+import { ErrorBodySchema, type AnyEndpoint, type ResponseOf } from '@questeo/shared';
 
 /**
  * Branche un point d'accès du contrat (`@questeo/shared` → `api`) sur Fastify.
@@ -70,6 +70,3 @@ export function route<E extends AnyEndpoint>(
     },
   });
 }
-
-/** Préfixe des routes métier versionnées. */
-export const V1 = API_PREFIX;

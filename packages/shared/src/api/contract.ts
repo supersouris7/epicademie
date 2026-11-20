@@ -71,6 +71,7 @@ export const ERROR_CODES = [
   'BAD_REQUEST',
   'NOT_FOUND',
   'CONFLICT',
+  'GONE',
   'RATE_LIMITED',
   'PAYLOAD_TOO_LARGE',
   'UNAUTHORIZED',

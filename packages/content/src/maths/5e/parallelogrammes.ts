@@ -198,24 +198,20 @@ const conversionsLA: Skill = {
     const x = level === 1 ? dec(rng.int(11, 99), 1) : dec(rng.int(1, 999), rng.int(0, 1));
     const factor = area ? 100 : 10;
     const steps = j - i;
-    const result = steps >= 0 ? mul(x, r(factor ** steps)) : mul(x, r(1, factor ** -steps));
-    const linear = steps >= 0 ? mul(x, r(10 ** steps)) : mul(x, r(1, 10 ** -steps));
+    const result = shift(x, factor, steps);
     const sup = area ? '^2' : '';
+    const wrongDirection: [Rational, string] = [
+      shift(x, factor, -steps),
+      'Mauvais sens : vers une unité plus petite, le nombre devient plus grand.',
+    ];
+    const linearForArea: [Rational, string] = [
+      shift(x, 10, steps),
+      'Pour les aires, on multiplie (ou divise) par 100 d’une unité à la suivante, pas par 10.',
+    ];
     return {
       prompt: `Complète : ${fmt(x)} ${from}${sup} = … ${to}${sup}`,
       answer: num(result, `${to}${sup}`),
-      traps: traps(result, [
-        ...(area
-          ? ([[linear, 'Pour les aires, on multiplie (ou divise) par 100 d’une unité à la suivante, pas par 10.']] as [
-              Rational,
-              string,
-            ][])
-          : []),
-        [
-          steps >= 0 ? mul(x, r(1, factor ** steps)) : mul(x, r(factor ** -steps)),
-          'Mauvais sens : vers une unité plus petite, le nombre devient plus grand.',
-        ],
-      ]),
+      traps: traps(result, area ? [linearForArea, wrongDirection] : [wrongDirection]),
       hint: `Utilise le tableau de conversion : chiffre des unités de ${fmt(x)} ${area ? 'dans la 2e case de' : 'sous'} ${from}${sup}, puis lis jusqu’à ${to}${sup}.${area ? ' Attention : 2 cases par unité pour les aires !' : ''}`,
       demo: {
         kind: 'conversion',
@@ -233,6 +229,10 @@ const conversionsLA: Skill = {
     };
   },
 };
+
+/** `x` converti de `steps` colonnes vers la droite (× base par colonne) ou vers la gauche (÷ base). */
+const shift = (x: Rational, base: number, steps: number) =>
+  steps >= 0 ? mul(x, r(base ** steps)) : mul(x, r(1, base ** -steps));
 
 export const parallelogrammes: Chapter = {
   id: 'm5-parallelogrammes',

@@ -80,18 +80,7 @@ export function BattleArena(props: BattleArenaProps) {
         transition={{ duration: 0.9, ease: 'easeOut' }}
       >
         <HeroFigure hero={hero} state={heroState} />
-        <AnimatePresence>
-          {shield && (
-            <motion.div
-              key="shield"
-              initial={{ scale: 0.4, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 1.4, opacity: 0 }}
-              className="absolute inset-[-6%] rounded-full border-4 border-cyan-300/80 bg-cyan-300/15 shadow-[0_0_24px_rgba(103,232,249,0.7)]"
-              aria-label="Bouclier levé"
-            />
-          )}
-        </AnimatePresence>
+        <ShieldBubble shield={shield} />
       </motion.div>
 
       <div
@@ -114,6 +103,41 @@ export function BattleArena(props: BattleArenaProps) {
         </AnimatePresence>
       </div>
 
+      <Projectiles shot={shot} riposte={riposte} reduce={reduce === true} />
+    </div>
+  );
+}
+
+/** Bouclier levé autour du héros. */
+function ShieldBubble({ shield }: { readonly shield: boolean }) {
+  return (
+    <AnimatePresence>
+      {shield && (
+        <motion.div
+          key="shield"
+          initial={{ scale: 0.4, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 1.4, opacity: 0 }}
+          className="absolute inset-[-6%] rounded-full border-4 border-cyan-300/80 bg-cyan-300/15 shadow-[0_0_24px_rgba(103,232,249,0.7)]"
+          aria-label="Bouclier levé"
+        />
+      )}
+    </AnimatePresence>
+  );
+}
+
+/** Tir du héros (vers la droite) et riposte de l'adversaire (vers la gauche) ; chaque incrément rejoue l'effet. */
+function Projectiles({
+  shot,
+  riposte,
+  reduce,
+}: {
+  readonly shot: number;
+  readonly riposte: number;
+  readonly reduce: boolean;
+}) {
+  return (
+    <>
       <AnimatePresence>
         {shot > 0 && (
           <motion.div
@@ -141,7 +165,7 @@ export function BattleArena(props: BattleArenaProps) {
           />
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 }
 

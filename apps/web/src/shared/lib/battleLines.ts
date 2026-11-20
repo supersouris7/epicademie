@@ -1,12 +1,10 @@
 /** Textes et durées des scènes du combat de boss. */
-import { accord, type Profile } from '@questeo/shared';
+import { accord, pickAt, type Profile } from '@questeo/shared';
 
 type Gender = Profile['gender'];
 
 /** Secondes laissées pour relancer le combat après une défaite. */
 export const RETRY_SECONDS = 5;
-
-const pick = <T>(list: readonly T[], r: number): T => list[Math.floor(r * list.length) % list.length] as T;
 
 /** Titre de chapitre dans une phrase : minuscule en tête (« Fractions » → « fractions »), sigles gardés. */
 export const inSentence = (title: string) =>
@@ -19,7 +17,7 @@ export const inSentence = (title: string) =>
 export function subjectTaunt(wins: number, gender: Gender, r: number): string {
   const vaincu = accord(gender, 'vaincu', 'vaincue');
   if (wins === 0)
-    return pick(
+    return pickAt(
       [
         'Hahaha ! Un nouveau challenger ? Choisis ton chapitre… et prépare-toi à perdre tes cœurs !',
         'Je suis le maître des maths ! Aucun chapitre ne te résistera ? C’est ce qu’on va voir !',
@@ -28,7 +26,7 @@ export function subjectTaunt(wins: number, gender: Gender, r: number): string {
       ],
       r,
     );
-  return pick(
+  return pickAt(
     [
       `Tu m’as ${vaincu} ${wins} fois ? Simple échauffement ! Choisis ton chapitre, je t’attends.`,
       'Encore toi ! Cette fois, mes équations vont te faire tourner la tête, haha !',
@@ -43,7 +41,7 @@ export function subjectTaunt(wins: number, gender: Gender, r: number): string {
 export function faceOffTaunt(chapterTitle: string, beaten: boolean, gender: Gender, r: number): string {
   const t = inSentence(chapterTitle);
   const battu = accord(gender, 'battu', 'battue');
-  return pick(
+  return pickAt(
     beaten
       ? [
           `Tu m’as peut-être ${battu}… Mais tu ne feras pas long feu en ${t}, haha !`,
@@ -66,10 +64,4 @@ export const QUESTY_REPLIES = [
   'Ton entraînement va payer : montre-lui ce que tu sais !',
   'Une erreur ? Pas grave, il te reste tes cœurs. On y va !',
 ] as const;
-export const questyReply = (r: number) => pick(QUESTY_REPLIES, r);
-
-/** Répliques du boss qui passe en rage (il ne lui reste qu'une vie) : il s'énerve, puis explose. */
-export const RAGE_LINES = {
-  debut: 'Grrr… Tu m’as touché deux fois ? Tu vas le regretter…',
-  rage: 'MODE RAGE ! Plus personne ne m’arrête !',
-} as const;
+export const questyReply = (r: number) => pickAt(QUESTY_REPLIES, r);

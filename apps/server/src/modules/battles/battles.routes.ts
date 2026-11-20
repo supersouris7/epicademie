@@ -3,6 +3,7 @@ import { api } from '@questeo/shared';
 import { route } from '../../core/http/route.ts';
 import type { BattlesService } from './battles.service.ts';
 
+/** Routes HTTP des combats de boss : chaque route du contrat appelle le service, sans logique. */
 export function battlesRoutes(service: BattlesService) {
   return async (app: FastifyInstance) => {
     route(app, api.bossOverview, ({ params }) => service.overview(params.id));

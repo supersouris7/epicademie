@@ -3,7 +3,7 @@
  * Les durées reprennent les tokens CSS (--dur-*) ; la réduction des animations du système est respectée
  * par les composants (useReducedMotion) et par la règle globale de index.css.
  */
-import type { TargetAndTransition, Transition, Variants } from 'motion/react';
+import type { TargetAndTransition, Transition } from 'motion/react';
 import type { AnimationState } from './assets.ts';
 
 /** Durées en secondes (miroir de --dur-* dans tokens.css). */
@@ -17,12 +17,6 @@ export const SPRING = {
   /** Petit rebond (compteurs qui changent). */
   bounce: { type: 'spring', stiffness: 500, damping: 12 },
 } as const satisfies Record<string, Transition>;
-
-/** Apparition échelonnée d'une liste : `custom={index}`. */
-export const popIn: Variants = {
-  hidden: { scale: 0.85, opacity: 0 },
-  shown: (i = 0) => ({ scale: 1, opacity: 1, transition: { ...SPRING.pop, delay: 0.04 * i } }),
-};
 
 /**
  * Animations des personnages par état. Les images de pose changent selon l'état ;
@@ -38,6 +32,3 @@ export const CHARACTER_MOTION: Record<AnimationState, TargetAndTransition> = {
   victory: { y: [0, -30, 0], scale: [1, 1.05, 1], transition: { duration: 0.6, repeat: 2 } },
   defeat: { y: 12, rotate: -8, opacity: 0.75, transition: { duration: DURATION.slow } },
 };
-
-/** Secousse d'impact (bonne réponse contre un boss, erreur…). */
-export const shake = { x: [0, -8, 8, -5, 5, 0], transition: { duration: 0.4 } } as const;

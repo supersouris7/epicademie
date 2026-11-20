@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fmt, generate } from '@questeo/content';
 import type { ArenaView, Profile } from '@questeo/shared';
-import { createArenas } from './arena.ts';
+import { createArenas, type Arenas } from './arena.ts';
 import type { Presence } from './presence.ts';
 import { fixedClock } from '../../testing/harness.ts';
 import { systemRandom } from '../../core/random.ts';
@@ -32,7 +32,7 @@ const presence = {
 const last = (id: string, event: string) =>
   [...(inbox.get(id) ?? [])].reverse().find(([e]) => e === event)?.[1] as ArenaView | string | undefined;
 
-let arenas: ReturnType<typeof createArenas>;
+let arenas: Arenas;
 const busy = vi.fn();
 beforeEach(() => {
   vi.useFakeTimers();

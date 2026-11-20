@@ -53,4 +53,22 @@ export default tseslint.config(
     files: ['**/*.test.ts', '**/*.test.tsx', 'e2e/**'],
     rules: { '@typescript-eslint/no-non-null-assertion': 'off' },
   },
+  // Lisibilité du code applicatif (docs/adr/0010-complexite.md) : au-delà, on découpe.
+  // Complexité « modifiée » : un `switch` compte pour une décision (réducteurs lisibles).
+  {
+    files: ['apps/*/src/**/*.{ts,tsx}', 'packages/*/src/**/*.ts'],
+    ignores: ['**/*.test.{ts,tsx}'],
+    rules: {
+      complexity: ['error', { max: 20, variant: 'modified' }],
+      'max-depth': ['error', 4],
+      'max-lines-per-function': ['error', { max: 200, skipBlankLines: true, skipComments: true }],
+      'max-params': ['error', 5],
+    },
+  },
+  // Tables de données déclaratives (exercices, catalogue d'images) : constructeurs positionnels
+  // compacts et listes longues par nature ; la complexité, elle, reste limitée.
+  {
+    files: ['packages/content/src/maths/**/*.ts', 'apps/web/src/design/catalog/**/*.ts'],
+    rules: { 'max-lines-per-function': 'off', 'max-params': 'off' },
+  },
 );

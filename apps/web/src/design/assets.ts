@@ -29,22 +29,14 @@ import { uiAssets } from './catalog/ui.ts';
 export {
   type AssetStatus,
   type Priority,
-  type GenSize,
   type AssetKind,
   KINDS,
   type KindId,
   type PlannedAsset,
 } from './catalog/kinds.ts';
-export { QUESTY_LOOK, type QuestyMood } from './catalog/questy.ts';
-export {
-  type CharacterSpec,
-  CHARACTERS,
-  ANIMATION_STATES,
-  type AnimationState,
-  HERO_EXPRESSIONS,
-  type HeroExpression,
-} from './catalog/heroes.ts';
-export { BOSS_EXPRESSIONS, type BossExpression, PI_BOT_POSES, PI_BOT_HEADS, type PiBotHead } from './catalog/bosses.ts';
+export { QUESTY_LOOK } from './catalog/questy.ts';
+export { CHARACTERS, type AnimationState, HERO_EXPRESSIONS, type HeroExpression } from './catalog/heroes.ts';
+export { type BossExpression, type PiBotHead } from './catalog/bosses.ts';
 export { ARENA_VARIANTS } from './catalog/arenas.ts';
 
 export const PLANNED_ASSETS: readonly PlannedAsset[] = [

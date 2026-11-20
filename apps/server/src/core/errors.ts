@@ -26,6 +26,7 @@ const STATUS: Record<ErrorCode, number> = {
   UNAUTHORIZED: 401,
   NOT_FOUND: 404,
   CONFLICT: 409,
+  GONE: 410,
   PAYLOAD_TOO_LARGE: 413,
   RATE_LIMITED: 429,
   INTERNAL: 500,
@@ -37,4 +38,6 @@ export const statusOf = (code: ErrorCode) => STATUS[code];
 /** Raccourcis lisibles dans les services. */
 export const notFound = (message: string) => new AppError('NOT_FOUND', message);
 export const conflict = (message: string) => new AppError('CONFLICT', message);
+/** Ressource qui a existé mais n'est plus utilisable (ex. combat périmé après mise à jour). */
+export const gone = (message: string) => new AppError('GONE', message);
 export const badRequest = (message: string) => new AppError('BAD_REQUEST', message);

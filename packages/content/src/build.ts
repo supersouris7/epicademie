@@ -1,4 +1,4 @@
-import { eq, fmt, r, type Rational } from './rational.ts';
+import { eq, r, type Rational } from './rational.ts';
 import type { Rng } from './rng.ts';
 import type { AnswerSpec, Rich, Trap } from './types.ts';
 
@@ -82,5 +82,3 @@ export function distinct<T>(rng: Rng, count: number, draw: () => T, key: (v: T) 
   if (out.length < count) throw new Error('Impossible de tirer assez de valeurs distinctes');
   return out;
 }
-
-export { fmt };

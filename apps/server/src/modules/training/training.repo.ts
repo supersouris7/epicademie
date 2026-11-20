@@ -1,14 +1,14 @@
-import { and, asc, eq } from 'drizzle-orm';
-import type { SkillState } from '@questeo/engine';
+import { and, asc, eq, inArray } from 'drizzle-orm';
+import { toStage, type SkillState } from '@questeo/engine';
 import type { AnswerSubmit, ModeId, SubjectId } from '@questeo/shared';
 import type { Executor } from '../../db/client.ts';
 import { attempts, sessions, skillStates, type SkillStateRow } from '../../db/schema.ts';
 
 /** Accès aux parties, réponses et états de répétition espacée. */
 
-export const toSkillState = (row: SkillStateRow): SkillState => ({
+const toSkillState = (row: SkillStateRow): SkillState => ({
   skillId: row.skillId,
-  stage: row.stage as SkillState['stage'],
+  stage: toStage(row.stage),
   due: row.due,
   attempts: row.attempts,
   correct: row.correct,
@@ -23,6 +23,7 @@ export interface NewSession {
   readonly subject: SubjectId;
   readonly chapterId: string;
   readonly skillId: string | null;
+  /** État d'un combat de boss, déjà mis au format stocké par le module « combats ». */
   readonly battle?: unknown;
 }
 
@@ -83,12 +84,14 @@ export function trainingRepo(db: Executor) {
       return rows.map(toSkillState);
     },
 
-    async skillState(profileId: string, skillId: string): Promise<SkillState | undefined> {
-      const [row] = await db
+    /** États des notions demandées (celles jamais jouées sont absentes), en une requête. */
+    async skillStatesOf(profileId: string, skillIds: readonly string[]): Promise<Map<string, SkillState>> {
+      if (skillIds.length === 0) return new Map();
+      const rows = await db
         .select()
         .from(skillStates)
-        .where(and(eq(skillStates.profileId, profileId), eq(skillStates.skillId, skillId)));
-      return row && toSkillState(row);
+        .where(and(eq(skillStates.profileId, profileId), inArray(skillStates.skillId, [...skillIds])));
+      return new Map(rows.map((r) => [r.skillId, toSkillState(r)]));
     },
 
     async saveSkillState(profileId: string, s: SkillState): Promise<void> {
@@ -109,5 +112,3 @@ export function trainingRepo(db: Executor) {
     },
   };
 }
-
-export type TrainingRepo = ReturnType<typeof trainingRepo>;

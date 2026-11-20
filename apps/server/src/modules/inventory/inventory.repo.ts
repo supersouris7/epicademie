@@ -73,5 +73,3 @@ export function inventoryRepo(db: Executor) {
     },
   };
 }
-
-export type InventoryRepo = ReturnType<typeof inventoryRepo>;

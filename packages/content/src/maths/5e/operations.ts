@@ -1,6 +1,7 @@
 import { choice, num, objective, traps, trueFalse } from '../../build.ts';
 import { dec, div, fmt, mul, r } from '../../rational.ts';
-import type { Chapter, Skill } from '../../types.ts';
+import type { Rng } from '../../rng.ts';
+import type { Chapter, Level, Skill } from '../../types.ts';
 
 const priorites: Skill = {
   id: 'm5-priorites',
@@ -420,19 +421,12 @@ const divisibilite: Skill = {
   generate(rng, level) {
     const d = level === 1 ? rng.pick([2, 5, 10]) : rng.pick([3, 9]);
     const isTrue = rng.next() < 0.5;
-    let n = 0;
-    for (let guard = 0; guard < 200; guard++) {
-      n = rng.int(level === 3 ? 1000 : 100, level === 3 ? 9999 : 999);
-      // Niveau 3, critère 9 : piège « divisible par 3 mais pas par 9 ».
-      if (level === 3 && d === 9 && !isTrue && !(n % 3 === 0 && n % 9 !== 0)) continue;
-      if ((n % d === 0) === isTrue) break;
-    }
+    const n = divisibilityCandidate(rng, level, d, isTrue);
+    const bySum = d === 3 || d === 9;
     const s = digitSum(n);
-    const unit = n % 10;
-    const reason =
-      d === 3 || d === 9
-        ? `${String(n).split('').join(' + ')} = ${s}. ${s} ${s % d === 0 ? 'est' : 'n’est pas'} dans la table de ${d}.`
-        : `Le dernier chiffre de ${n} est ${unit}${n % d === 0 ? ' : ça marche' : ' : ça ne marche pas'}.`;
+    const reason = bySum
+      ? `${String(n).split('').join(' + ')} = ${s}. ${s} ${s % d === 0 ? 'est' : 'n’est pas'} dans la table de ${d}.`
+      : `Le dernier chiffre de ${n} est ${n % 10}${n % d === 0 ? ' : ça marche' : ' : ça ne marche pas'}.`;
     const whyWrong =
       level === 3 && d === 9 && !isTrue
         ? `${s} est divisible par 3 mais **pas par 9** : ${n} est divisible par 3, pas par 9.`
@@ -440,14 +434,13 @@ const divisibilite: Skill = {
     return {
       prompt: `Vrai ou faux : ${n} est divisible par ${d}.`,
       ...trueFalse(isTrue, whyWrong),
-      hint:
-        d === 3 || d === 9
-          ? `Pour ${d}, additionne les chiffres de ${n}.`
-          : `Pour ${d}, regarde seulement le dernier chiffre de ${n}.`,
+      hint: bySum
+        ? `Pour ${d}, additionne les chiffres de ${n}.`
+        : `Pour ${d}, regarde seulement le dernier chiffre de ${n}.`,
       steps: [
-        d === 3 || d === 9
+        bySum
           ? `Pour savoir si un nombre est divisible par ${d}, on additionne ses chiffres.`
-          : `Pour savoir si un nombre est divisible par ${d}, on regarde son dernier chiffre : il doit être ${d === 2 ? '0, 2, 4, 6 ou 8' : d === 5 ? '0 ou 5' : '0'}.`,
+          : `Pour savoir si un nombre est divisible par ${d}, on regarde son dernier chiffre : il doit être ${LAST_DIGITS[d] ?? '0'}.`,
         reason,
         isTrue ? `Donc c’est **vrai**.` : `Donc c’est **faux**.`,
       ],
@@ -455,6 +448,23 @@ const divisibilite: Skill = {
     };
   },
 };
+
+/** Derniers chiffres possibles d'un multiple de 2, 5 ou 10. */
+const LAST_DIGITS: Readonly<Record<number, string>> = { 2: '0, 2, 4, 6 ou 8', 5: '0 ou 5', 10: '0' };
+
+/**
+ * Nombre dont la divisibilité par `d` vaut `isTrue` (3 chiffres, 4 au niveau 3). Niveau 3,
+ * critère 9, réponse « faux » : piège « divisible par 3 mais pas par 9 ».
+ */
+function divisibilityCandidate(rng: Rng, level: Level, d: number, isTrue: boolean): number {
+  let n = 0;
+  for (let guard = 0; guard < 200; guard++) {
+    n = rng.int(level === 3 ? 1000 : 100, level === 3 ? 9999 : 999);
+    if (level === 3 && d === 9 && !isTrue && !(n % 3 === 0 && n % 9 !== 0)) continue;
+    if ((n % d === 0) === isTrue) break;
+  }
+  return n;
+}
 
 const divDecimal: Skill = {
   id: 'm5-division-decimal',

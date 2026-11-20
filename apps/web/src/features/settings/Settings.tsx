@@ -7,6 +7,7 @@ import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { useSession } from '../../shared/lib/session.ts';
 import { fullscreenSupported, useFullscreenPreference } from '../../shared/lib/fullscreen.ts';
 
+/** Interrupteur accessible : une vraie case à cocher, dessinée en bascule. */
 function Toggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
     <label className="cartoon bg-surface flex min-h-16 cursor-pointer items-center justify-between gap-4 px-5">
@@ -20,6 +21,7 @@ function Toggle({ label, checked, onChange }: { label: string; checked: boolean;
   );
 }
 
+/** Paramètres du joueur : son, plein écran, profil (modifier, changer de joueur). */
 export function Settings({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
   const update = useUpdateProfile(profile.id);

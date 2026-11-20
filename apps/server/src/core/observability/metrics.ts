@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify';
-import { collectDefaultMetrics, Counter, Gauge, Histogram, Registry } from 'prom-client';
+import { collectDefaultMetrics, Counter, Gauge, Histogram, Registry } from '@prometheus-io/client';
 
 /**
  * Métriques Prometheus exposées sur /api/metrics : requêtes HTTP (nombre, durée, statut par

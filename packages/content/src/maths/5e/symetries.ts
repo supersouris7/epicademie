@@ -26,13 +26,8 @@ const symetrieAxiale: Skill = {
     if (kind === 'v' && x === c) x = c - rng.int(1, 3);
     if (kind === 'h' && y === c) y = c + rng.int(1, 3);
     if (kind === 'd' && x === y) x = y - rng.int(1, 3);
-    const image = kind === 'v' ? { x: 2 * c - x, y } : kind === 'h' ? { x, y: 2 * c - y } : { x: y, y: x };
-    const axis =
-      kind === 'v'
-        ? { x1: c, y1: -lim, x2: c, y2: lim }
-        : kind === 'h'
-          ? { x1: -lim, y1: c, x2: lim, y2: c }
-          : { x1: -lim, y1: -lim, x2: lim, y2: lim };
+    const image = axialImage(kind, c, { x, y });
+    const axis = axisSegment(kind, c, lim);
     const inRange = Math.abs(image.x) <= lim && Math.abs(image.y) <= lim;
     if (!inRange) return symetrieAxiale.generate(rng, level);
     return {
@@ -58,25 +53,52 @@ const symetrieAxiale: Skill = {
           ? [{ point: { x, y: 2 * c - y }, why: 'L’axe est vertical : A′ reste sur la même ligne horizontale que A.' }]
           : []),
       ].filter((t) => !(t.point.x === image.x && t.point.y === image.y)),
-      hint:
-        kind === 'd'
-          ? 'Imagine qu’on plie la feuille le long de la diagonale rouge : où A se pose-t-il ? (Va vers l’axe en suivant les diagonales des carreaux.)'
-          : `Compte les carreaux de A jusqu’à l’axe, en allant tout droit ${kind === 'v' ? 'à l’horizontale' : 'à la verticale'}, puis le même nombre de l’autre côté.`,
-      steps:
-        kind === 'd'
-          ? [
-              'On imagine qu’on plie la feuille le long de la droite rouge (la diagonale).',
-              'Pour aller de A à l’axe, on avance en diagonale, perpendiculairement à lui, et on continue d’autant de l’autre côté.',
-              'A′ est **le nœud entouré en vert** : en pliant, A tombe pile dessus.',
-            ]
-          : [
-              'On imagine qu’on plie la feuille le long de la droite rouge.',
-              `De A jusqu’à l’axe, on compte ${Math.abs((kind === 'v' ? x : y) - c)} carreau${Math.abs((kind === 'v' ? x : y) - c) > 1 ? 'x' : ''}, en allant tout droit ${kind === 'v' ? 'à l’horizontale' : 'à la verticale'}.`,
-              `On en compte autant de l’autre côté, sur la même ${kind === 'v' ? 'ligne' : 'colonne'} : A′ est **le nœud entouré en vert**.`,
-            ],
+      ...axialExplanation(kind, c, { x, y }),
     };
   },
 };
+
+/** Axe de symétrie sur quadrillage : vertical (x = c), horizontal (y = c) ou diagonale y = x. */
+type AxisKind = 'v' | 'h' | 'd';
+type Node = { readonly x: number; readonly y: number };
+
+/** Symétrique d'un nœud par rapport à l'axe. */
+function axialImage(kind: AxisKind, c: number, { x, y }: Node): Node {
+  if (kind === 'v') return { x: 2 * c - x, y };
+  if (kind === 'h') return { x, y: 2 * c - y };
+  return { x: y, y: x };
+}
+
+/** Segment tracé pour l'axe, d'un bord à l'autre du quadrillage [−lim, lim]. */
+function axisSegment(kind: AxisKind, c: number, lim: number) {
+  if (kind === 'v') return { x1: c, y1: -lim, x2: c, y2: lim };
+  if (kind === 'h') return { x1: -lim, y1: c, x2: lim, y2: c };
+  return { x1: -lim, y1: -lim, x2: lim, y2: lim };
+}
+
+/** Indice et étapes : compter les carreaux jusqu'à l'axe (ou plier le long de la diagonale). */
+function axialExplanation(kind: AxisKind, c: number, a: Node) {
+  if (kind === 'd') {
+    return {
+      hint: 'Imagine qu’on plie la feuille le long de la diagonale rouge : où A se pose-t-il ? (Va vers l’axe en suivant les diagonales des carreaux.)',
+      steps: [
+        'On imagine qu’on plie la feuille le long de la droite rouge (la diagonale).',
+        'Pour aller de A à l’axe, on avance en diagonale, perpendiculairement à lui, et on continue d’autant de l’autre côté.',
+        'A′ est **le nœud entouré en vert** : en pliant, A tombe pile dessus.',
+      ],
+    };
+  }
+  const way = kind === 'v' ? 'à l’horizontale' : 'à la verticale';
+  const squares = Math.abs((kind === 'v' ? a.x : a.y) - c);
+  return {
+    hint: `Compte les carreaux de A jusqu’à l’axe, en allant tout droit ${way}, puis le même nombre de l’autre côté.`,
+    steps: [
+      'On imagine qu’on plie la feuille le long de la droite rouge.',
+      `De A jusqu’à l’axe, on compte ${squares} carreau${squares > 1 ? 'x' : ''}, en allant tout droit ${way}.`,
+      `On en compte autant de l’autre côté, sur la même ${kind === 'v' ? 'ligne' : 'colonne'} : A′ est **le nœud entouré en vert**.`,
+    ],
+  };
+}
 
 const symetrieCentrale: Skill = {
   id: 'm5-symetrie-centrale',

@@ -8,6 +8,10 @@
 - serveur : commande par défaut (`node server/dist/main.js`) ;
 - migration : `node server/dist/migrate.js` (s'arrête une fois la base à jour).
 
+L'image part de `node:24-slim` épinglée par empreinte, sans npm ni corepack, et n'est publiée que
+si l'analyse de sécurité (Trivy) ne trouve aucune faille grave corrigeable. Pour obtenir une
+nouvelle image de base, accepter la PR Dependabot correspondante.
+
 ## Une machine (Docker Compose)
 
 ```bash

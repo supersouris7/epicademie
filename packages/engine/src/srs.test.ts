@@ -39,12 +39,9 @@ describe('répétition espacée', () => {
   });
 
   it('garde les 20 dernières réponses', () => {
-    const s = applySession(
-      newSkillState('x'),
-      { answered: 25, correct: 25 },
-      '2026-11-16',
-      Array.from({ length: 25 }, () => true),
-    );
+    const s = applySession(newSkillState('x'), { answered: 25, correct: 25 }, '2026-11-16', {
+      answers: Array.from({ length: 25 }, () => true),
+    });
     expect(s.recent).toHaveLength(20);
   });
 });
@@ -70,24 +67,26 @@ describe('médailles', () => {
     const day = '2026-11-16';
     let s = newSkillState('x');
     expect(medal(s)).toBe('aucune');
-    s = applySession(s, { answered: 5, correct: 2 }, day, [], false, 2);
+    s = applySession(s, { answered: 5, correct: 2 }, day, { series: 2 });
     expect(medal(s)).toBe('aucune');
-    s = applySession(s, { answered: 5, correct: 3 }, day, [], false, 3);
+    s = applySession(s, { answered: 5, correct: 3 }, day, { series: 3 });
     expect(medal(s)).toBe('bronze');
-    s = applySession(s, { answered: 5, correct: 4 }, day, [], false, 4);
+    s = applySession(s, { answered: 5, correct: 4 }, day, { series: 4 });
     expect(medal(s)).toBe('argent');
     // Un seul sans-faute suffit, même le jour même : notion acquise.
-    s = applySession(s, { answered: 5, correct: 5 }, day, [], false, 5);
+    s = applySession(s, { answered: 5, correct: 5 }, day, { series: 5 });
     expect(medal(s)).toBe('or');
     expect(acquired(s)).toBe(true);
     // Une série moins bonne ne fait pas perdre la médaille.
-    s = applySession(s, { answered: 5, correct: 1 }, day, [], false, 1);
+    s = applySession(s, { answered: 5, correct: 1 }, day, { series: 1 });
     expect(medal(s)).toBe('or');
     // Série mêlant plusieurs notions (pas de score de série) : la médaille ne bouge pas.
-    expect(medal(applySession(newSkillState('y'), { answered: 2, correct: 2 }, day, [true, true]))).toBe('aucune');
+    expect(medal(applySession(newSkillState('y'), { answered: 2, correct: 2 }, day, { answers: [true, true] }))).toBe(
+      'aucune',
+    );
   });
   it('« Je n’ai pas compris » remet à revoir, même avec de bonnes réponses', () => {
-    const s = applySession(newSkillState('x'), { answered: 5, correct: 5 }, '2026-11-16', [], true);
+    const s = applySession(newSkillState('x'), { answered: 5, correct: 5 }, '2026-11-16', { forceFail: true });
     expect(s).toMatchObject({ stage: 0, due: '2026-11-17' });
   });
 });

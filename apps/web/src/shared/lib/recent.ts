@@ -20,16 +20,19 @@ export function rememberPrompt(profileId: string, skillId: string, prompt: strin
   safeStorage.set(key(profileId, skillId), JSON.stringify(list));
 }
 
+/** Énoncés à éviter : jamais ceux de la partie (`seen`), si possible pas ceux des dernières parties (`recent`). */
+export interface PromptsToAvoid {
+  readonly seen: ReadonlySet<string>;
+  readonly recent: readonly string[];
+}
+
 /**
- * Question sans doublon : jamais un énoncé déjà posé dans la partie (`seen`), et si possible pas un des
- * dernières parties (`recent`). Une notion à peu d'énoncés possibles finit par en reposer d'anciens.
+ * Question sans doublon pour la notion prévue, en changeant de graine (`nextSeed`) tant que
+ * l'énoncé est à éviter. Une notion à peu d'énoncés possibles finit par en reposer d'anciens.
  */
 export function freshQuestion(
-  skillId: string,
-  level: Level,
-  seed: number,
-  seen: ReadonlySet<string>,
-  recent: readonly string[],
+  { skillId, level, seed }: { readonly skillId: string; readonly level: Level; readonly seed: number },
+  { seen, recent }: PromptsToAvoid,
   nextSeed: () => number,
 ): { question: Question; seed: number } {
   let best: { question: Question; seed: number } | null = null;

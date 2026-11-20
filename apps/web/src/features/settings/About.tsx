@@ -4,6 +4,7 @@ import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import { CREDITS } from './credits.ts';
 import { AVAILABLE } from '../../design/assets.available.ts';
 
+/** À propos : présentation du jeu et crédits (sons, polices, illustrations). */
 export function About() {
   return (
     <PageShell title="À propos" back="/parametres">

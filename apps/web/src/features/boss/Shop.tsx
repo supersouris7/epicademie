@@ -39,7 +39,12 @@ export function Shop({ profile }: { readonly profile: Profile }) {
                 <p className="text-muted font-bold">{ITEM_INFO[item].effect}</p>
                 <p className="text-muted text-sm">En réserve : {overview?.inventory[item] ?? 0}</p>
               </div>
-              <GameButton size="sm" disabled={profile.coins < price} onClick={() => buy(item, price)}>
+              <GameButton
+                size="sm"
+                disabled={profile.coins < price}
+                aria-label={`Acheter ${ITEM_INFO[item].name} pour ${price} pièces`}
+                onClick={() => buy(item, price)}
+              >
                 {price} <GameIcon id="icons-resources-coin" size={20} />
               </GameButton>
             </section>
@@ -51,7 +56,12 @@ export function Shop({ profile }: { readonly profile: Profile }) {
             <h2 className="font-display text-2xl tracking-wide">Rubis</h2>
             <p className="text-muted font-bold">Monnaie rare pour de futurs objets spéciaux.</p>
           </div>
-          <GameButton size="sm" disabled={profile.coins < RUBY_PRICE} onClick={() => buy('rubis', RUBY_PRICE)}>
+          <GameButton
+            size="sm"
+            disabled={profile.coins < RUBY_PRICE}
+            aria-label={`Acheter un rubis pour ${RUBY_PRICE} pièces`}
+            onClick={() => buy('rubis', RUBY_PRICE)}
+          >
             {RUBY_PRICE} <GameIcon id="icons-resources-coin" size={20} />
           </GameButton>
         </section>

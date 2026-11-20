@@ -60,6 +60,3 @@ export const bossOf = (problems: readonly Skill[], trapSkills: readonly Skill[])
   problems,
   traps: trapSkills,
 });
-
-/** Pluriel simple : « 3 billes », « 1 bille ». */
-export const pl = (n: number, word: string, plural = `${word}s`) => `${big(n)} ${n > 1 ? plural : word}`;

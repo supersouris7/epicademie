@@ -1,7 +1,10 @@
 import { choice, fraction, num, objective, traps } from '../../build.ts';
 import { add, cmp, fmt, frac, lcm, mul, r, rawFrac, sub, type Rational } from '../../rational.ts';
 import type { Rng } from '../../rng.ts';
-import type { Chapter, Skill } from '../../types.ts';
+import type { Chapter, Level, Skill } from '../../types.ts';
+
+/** Fraction écrite (numérateur, dénominateur), avant simplification. */
+type Frac = [number, number];
 
 const SIMPLE: readonly [number, number][] = [
   [1, 2],
@@ -363,6 +366,51 @@ const entier: Skill = {
   },
 };
 
+/** Opérandes d'une addition / soustraction de fractions selon le niveau (la plus grande d'abord pour une soustraction). */
+function addSubOperands(rng: Rng, level: Level, minus: boolean): [Frac, Frac] {
+  let a: Frac;
+  let b: Frac;
+  if (level === 1) {
+    const d = rng.int(3, 12);
+    a = [rng.int(1, d - 1), d];
+    b = [rng.int(1, d - 1), d];
+  } else if (level === 2) {
+    const d = rng.int(2, 7);
+    a = randomFrac(rng, [d], d);
+    b = randomFrac(rng, [d * rng.int(2, 3)]);
+    if (rng.next() < 0.5) [a, b] = [b, a];
+  } else if (rng.next() < 0.3) {
+    // entier ± fraction (3 + 2/5 ; 1 − 2/3)
+    const k = minus ? rng.int(1, 3) : rng.int(1, 4);
+    a = [k, 1];
+    b = randomFrac(rng, [3, 4, 5, 6, 7], minus ? rng.int(1, 3) : undefined);
+    if (minus) b = [Math.min(b[0], b[1] - 1) || 1, b[1]];
+  } else {
+    a = randomFrac(rng, [2, 3, 4, 5, 6]);
+    b = randomFrac(rng, [3, 4, 5, 7]);
+    while (b[1] === a[1]) b = randomFrac(rng, [3, 4, 5, 7]);
+  }
+  if (minus && cmp(r(...a), r(...b)) < 0) [a, b] = [b, a];
+  return [a, b];
+}
+
+/** Erreurs typiques : opérer aussi sur les dénominateurs, ou oublier de mettre au même dénominateur. */
+function addSubTraps(a: Frac, b: Frac, minus: boolean): [Rational, string][] {
+  const sign = minus ? -1 : 1;
+  const t: [Rational, string][] = [];
+  if (a[1] + sign * b[1] > 0)
+    t.push([
+      r(a[0] + sign * b[0], a[1] + sign * b[1]),
+      `On ne ${minus ? 'soustrait' : 'additionne'} pas les dénominateurs : on met au même dénominateur, puis on ${minus ? 'soustrait' : 'additionne'} seulement les numérateurs.`,
+    ]);
+  if (a[1] !== b[1])
+    t.push([
+      r(a[0] + sign * b[0], Math.max(a[1], b[1])),
+      'Il faut d’abord transformer les deux fractions pour qu’elles aient le même dénominateur (multiplier numérateur **et** dénominateur).',
+    ]);
+  return t;
+}
+
 function addSubSkill(id: string, title: string, minus: boolean): Skill {
   const op = minus ? '−' : '+';
   return {
@@ -379,46 +427,10 @@ function addSubSkill(id: string, title: string, minus: boolean): Skill {
       source: objective('Additionner et soustraire des fractions de dénominateurs quelconques'),
     },
     generate(rng, level) {
-      let a: [number, number];
-      let b: [number, number];
-      if (level === 1) {
-        const d = rng.int(3, 12);
-        a = [rng.int(1, d - 1), d];
-        b = [rng.int(1, d - 1), d];
-      } else if (level === 2) {
-        const d = rng.int(2, 7);
-        a = randomFrac(rng, [d], d);
-        b = randomFrac(rng, [d * rng.int(2, 3)]);
-        if (rng.next() < 0.5) [a, b] = [b, a];
-      } else if (rng.next() < 0.3) {
-        // entier ± fraction (3 + 2/5 ; 1 − 2/3)
-        const k = minus ? rng.int(1, 3) : rng.int(1, 4);
-        a = [k, 1];
-        b = randomFrac(rng, [3, 4, 5, 6, 7], minus ? rng.int(1, 3) : undefined);
-        if (minus) b = [Math.min(b[0], b[1] - 1) || 1, b[1]];
-      } else {
-        a = randomFrac(rng, [2, 3, 4, 5, 6]);
-        b = randomFrac(rng, [3, 4, 5, 7]);
-        while (b[1] === a[1]) b = randomFrac(rng, [3, 4, 5, 7]);
-      }
-      if (minus && cmp(r(...a), r(...b)) < 0) [a, b] = [b, a];
+      const [a, b] = addSubOperands(rng, level, minus);
       const value = minus ? sub(r(...a), r(...b)) : add(r(...a), r(...b));
       const s = commonDenSteps(a, b);
-      const wrongBoth: Rational | null =
-        a[1] + (minus ? -b[1] : b[1]) > 0 ? r(a[0] + (minus ? -b[0] : b[0]), a[1] + (minus ? -b[1] : b[1])) : null;
-      const t: [Rational, string][] = [];
-      if (wrongBoth)
-        t.push([
-          wrongBoth,
-          `On ne ${minus ? 'soustrait' : 'additionne'} pas les dénominateurs : on met au même dénominateur, puis on ${minus ? 'soustrait' : 'additionne'} seulement les numérateurs.`,
-        ]);
-      if (a[1] !== b[1]) {
-        const naive = r(a[0] + (minus ? -b[0] : b[0]), Math.max(a[1], b[1]));
-        t.push([
-          naive,
-          'Il faut d’abord transformer les deux fractions pour qu’elles aient le même dénominateur (multiplier numérateur **et** dénominateur).',
-        ]);
-      }
+      const t = addSubTraps(a, b, minus);
       const show = (x: [number, number]) => (x[1] === 1 ? String(x[0]) : rawFrac(...x));
       const res = rawFrac(minus ? s.a2 - s.b2 : s.a2 + s.b2, s.den);
       return {

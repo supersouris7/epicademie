@@ -2,6 +2,11 @@ packages:
   - apps/*
   - packages/*
 allowBuilds:
-  better-sqlite3: true
   esbuild: true
   sharp: true
+# Correctifs de sécurité de dépendances indirectes (outils de développement uniquement),
+# en attendant que leurs dépendants directs les intègrent. À retirer dès que `pnpm audit`
+# reste propre sans eux.
+overrides:
+  '@esbuild-kit/core-utils>esbuild': 0.25.12
+  '@typescript-eslint/typescript-estree>minimatch': 11.0.8

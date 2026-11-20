@@ -1,3 +1,5 @@
+import { indexFor, shuffleWith } from '@questeo/shared';
+
 /** Générateur pseudo-aléatoire déterministe (mulberry32), pour des exercices reproductibles par graine. */
 export interface Rng {
   /** Flottant dans [0, 1). */
@@ -26,18 +28,9 @@ export function createRng(seed: number): Rng {
   return {
     next,
     int,
-    pick<T>(items: readonly T[]): T {
-      if (items.length === 0) throw new RangeError('Liste vide');
-      return items[int(0, items.length - 1)] as T;
-    },
-    shuffle<T>(items: readonly T[]): T[] {
-      const out = [...items];
-      for (let i = out.length - 1; i > 0; i--) {
-        const j = int(0, i);
-        [out[i], out[j]] = [out[j] as T, out[i] as T];
-      }
-      return out;
-    },
+    // Mêmes tirages qu'avec `int` : les exercices restent identiques pour une même graine.
+    pick: <T>(items: readonly T[]): T => items[indexFor(items.length, next())] as T,
+    shuffle: <T>(items: readonly T[]): T[] => shuffleWith(items, next),
   };
 }
 

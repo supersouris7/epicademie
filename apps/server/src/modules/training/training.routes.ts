@@ -3,6 +3,7 @@ import { api } from '@questeo/shared';
 import { route } from '../../core/http/route.ts';
 import type { TrainingService } from './training.service.ts';
 
+/** Routes HTTP de l'entraînement : chaque route du contrat appelle le service, sans logique. */
 export function trainingRoutes(service: TrainingService) {
   return async (app: FastifyInstance) => {
     route(app, api.listSkills, ({ params }) => service.skills(params.id));

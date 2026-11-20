@@ -34,6 +34,15 @@ export const RECENT_WINDOW = 20;
 export const SUCCESS_RATE = 0.8;
 const GAP_AFTER_STAGE: Record<Stage, number> = { 0: 1, 1: 2, 2: 5, 3: 30 };
 
+/** Palier suivant après une réussite (le dernier palier est conservé). */
+const NEXT_STAGE: Record<Stage, Stage> = { 0: 1, 1: 2, 2: 3, 3: 3 };
+
+/** Palier lu depuis un stockage (entier non typé) ; refuse toute valeur hors 0–3. */
+export function toStage(value: number): Stage {
+  if (value === 0 || value === 1 || value === 2 || value === 3) return value;
+  throw new RangeError(`Palier de révision invalide : ${value}`);
+}
+
 export function newSkillState(skillId: string): SkillState {
   return { skillId, stage: 0, due: null, attempts: 0, correct: 0, recent: [], maintained: 0, best: 0 };
 }
@@ -53,18 +62,26 @@ export const SERIES_LENGTH = 5;
 export const seriesScore = (correct: number, length: number) => Math.max(0, SERIES_LENGTH - (length - correct));
 
 /**
- * Applique le bilan d'une série sur une notion (au plus une progression par jour).
- * `forceFail` : l'élève a signalé « Je n'ai pas compris » — la notion repasse à revoir.
- * `series` : bonnes réponses du 1er coup sur une série complète de 5 questions de cette notion
- * (absent si la série mêlait plusieurs notions) ; la meilleure fixe la médaille.
+ * Détails facultatifs du bilan d'une série sur une notion (voir `applySession`).
  */
+export interface SessionDetails {
+  /** Réponses dans l'ordre (vrai = juste), pour la fenêtre des réponses récentes. */
+  readonly answers?: readonly boolean[];
+  /** L'élève a signalé « Je n'ai pas compris » : la notion repasse à revoir. */
+  readonly forceFail?: boolean;
+  /**
+   * Note de la série complète de cette seule notion (5 − erreurs du 1er coup), absente si la
+   * série mêlait plusieurs notions ; la meilleure fixe la médaille.
+   */
+  readonly series?: number;
+}
+
+/** Applique le bilan d'une série sur une notion (au plus une progression par jour). */
 export function applySession(
   state: SkillState,
   result: SkillSessionResult,
   today: string,
-  answers: readonly boolean[] = [],
-  forceFail = false,
-  series?: number,
+  { answers = [], forceFail = false, series }: SessionDetails = {},
 ): SkillState {
   const recent = [...state.recent, ...answers].slice(-RECENT_WINDOW);
   const base = {
@@ -82,7 +99,7 @@ export function applySession(
   // Réussite : progression seulement si la notion est nouvelle ou arrivée à échéance.
   const canProgress = state.due === null || state.stage === 0 || state.due <= today;
   if (!canProgress) return base;
-  const stage = Math.min(3, state.stage + 1) as Stage;
+  const stage = NEXT_STAGE[state.stage];
   const maintained = state.stage === 3 ? state.maintained + 1 : state.maintained;
   return { ...base, stage, maintained, due: addDays(today, GAP_AFTER_STAGE[stage]) };
 }

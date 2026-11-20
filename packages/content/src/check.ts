@@ -17,54 +17,82 @@ export function normalizeText(text: string): string {
   return text.toLowerCase().replace(/[’`]/g, "'").replace(/\s+/g, ' ').trim();
 }
 
-/** Corrige une réponse. Pure et déterministe : utilisée à l'identique par l'appli et le serveur. */
+type Answer = Question['answer'];
+type Trap = Question['traps'][number];
+type AnswerOf<K extends Answer['kind']> = Extract<Answer, { kind: K }>;
+type ResponseOf<K extends Response['kind']> = Extract<Response, { kind: K }>;
+
+const INVALID: CheckResult = Object.freeze({ correct: false, invalid: true });
+const RIGHT: CheckResult = Object.freeze({ correct: true });
+
+/** Explication de l'erreur typique reconnue (piège) correspondant à la réponse, s'il y en a une. */
+const trapWhy = (traps: readonly Trap[], matches: (t: Trap) => boolean) => traps.find(matches)?.why;
+const valueTrap = (traps: readonly Trap[], value: Rational) =>
+  trapWhy(traps, (t) => 'value' in t && eq(t.value, value));
+
+/** Nombre décimal : valeur exacte (ou acceptée), piège connu, arrondi oublié, puis diagnostic générique. */
+function checkNumber(answer: AnswerOf<'number'>, response: ResponseOf<'number'>, traps: readonly Trap[]): CheckResult {
+  const value = parseDecimal(response.text);
+  if (!value) return INVALID;
+  if (eq(value, answer.value) || answer.accept?.some((a) => eq(a, value))) return RIGHT;
+  const trap = valueTrap(traps, value);
+  if (trap) return { correct: false, why: trap };
+  const { round } = answer;
+  const unrounded = round !== undefined && !isInteger(mul(value, r(10 ** round)));
+  if (unrounded && cmp(abs(sub(value, answer.value)), dec(1, round)) <= 0) {
+    const how = ROUND_NAMES[round] ?? `à ${round} décimales`;
+    return { correct: false, why: `Presque ! Il fallait arrondir ${how} : ${fmt(answer.value)}.` };
+  }
+  return { correct: false, why: diagnose(value, answer.value) };
+}
+
+function checkFraction(
+  answer: AnswerOf<'fraction'>,
+  response: ResponseOf<'fraction'>,
+  traps: readonly Trap[],
+): CheckResult {
+  const value = parseFraction(response.num, response.den);
+  if (!value) return INVALID;
+  if (eq(value, answer.value)) return RIGHT;
+  return { correct: false, why: valueTrap(traps, value) ?? diagnose(value, answer.value) };
+}
+
+function checkChoice(answer: AnswerOf<'choice'>, response: ResponseOf<'choice'>, traps: readonly Trap[]): CheckResult {
+  if (response.index < 0 || response.index >= answer.options.length) return INVALID;
+  if (response.index === answer.correct) return RIGHT;
+  return { correct: false, why: trapWhy(traps, (t) => 'option' in t && t.option === response.index) };
+}
+
+function checkPoint(answer: AnswerOf<'point'>, response: ResponseOf<'point'>, traps: readonly Trap[]): CheckResult {
+  if (response.x === answer.x && response.y === answer.y) return RIGHT;
+  const why = trapWhy(traps, (t) => 'point' in t && t.point.x === response.x && t.point.y === response.y);
+  return { correct: false, why };
+}
+
+function checkText(answer: AnswerOf<'text'>, response: ResponseOf<'text'>, traps: readonly Trap[]): CheckResult {
+  if (!response.text.trim()) return INVALID;
+  const given = normalizeText(response.text);
+  if (answer.accepted.some((a) => normalizeText(a) === given)) return RIGHT;
+  return { correct: false, why: trapWhy(traps, (t) => 'text' in t && normalizeText(t.text) === given) };
+}
+
+/**
+ * Corrige une réponse. Pure et déterministe : utilisée à l'identique par l'appli et le serveur.
+ * Une réponse d'une autre forme que celle attendue (ou illisible) est « invalide » : on la
+ * redemande sans compter d'erreur.
+ */
 export function check(question: Question, response: Response): CheckResult {
   const { answer, traps } = question;
-  const trapFor = (value: Rational) => traps.find((t) => 'value' in t && eq(t.value, value))?.why;
-
   switch (answer.kind) {
-    case 'number': {
-      if (response.kind !== 'number') return { correct: false, invalid: true };
-      const value = parseDecimal(response.text);
-      if (!value) return { correct: false, invalid: true };
-      if (eq(value, answer.value) || answer.accept?.some((a) => eq(a, value))) return { correct: true };
-      const trap = trapFor(value);
-      if (trap) return { correct: false, why: trap };
-      const { round } = answer;
-      const unrounded = round !== undefined && !isInteger(mul(value, r(10 ** round)));
-      if (unrounded && cmp(abs(sub(value, answer.value)), dec(1, round)) <= 0) {
-        const how = ROUND_NAMES[round] ?? `à ${round} décimales`;
-        return { correct: false, why: `Presque ! Il fallait arrondir ${how} : ${fmt(answer.value)}.` };
-      }
-      return { correct: false, why: diagnose(value, answer.value) };
-    }
-    case 'fraction': {
-      if (response.kind !== 'fraction') return { correct: false, invalid: true };
-      const value = parseFraction(response.num, response.den);
-      if (!value) return { correct: false, invalid: true };
-      if (eq(value, answer.value)) return { correct: true };
-      return { correct: false, why: trapFor(value) ?? diagnose(value, answer.value) };
-    }
-    case 'choice': {
-      if (response.kind !== 'choice' || response.index < 0 || response.index >= answer.options.length) {
-        return { correct: false, invalid: true };
-      }
-      if (response.index === answer.correct) return { correct: true };
-      const why = traps.find((t) => 'option' in t && t.option === response.index)?.why;
-      return { correct: false, why };
-    }
-    case 'point': {
-      if (response.kind !== 'point') return { correct: false, invalid: true };
-      if (response.x === answer.x && response.y === answer.y) return { correct: true };
-      const why = traps.find((t) => 'point' in t && t.point.x === response.x && t.point.y === response.y)?.why;
-      return { correct: false, why };
-    }
-    case 'text': {
-      if (response.kind !== 'text' || !response.text.trim()) return { correct: false, invalid: true };
-      const given = normalizeText(response.text);
-      if (answer.accepted.some((a) => normalizeText(a) === given)) return { correct: true };
-      const why = traps.find((t) => 'text' in t && normalizeText(t.text) === given)?.why;
-      return { correct: false, why };
-    }
+    case 'number':
+      return response.kind === 'number' ? checkNumber(answer, response, traps) : INVALID;
+    case 'fraction':
+      return response.kind === 'fraction' ? checkFraction(answer, response, traps) : INVALID;
+    case 'choice':
+      return response.kind === 'choice' ? checkChoice(answer, response, traps) : INVALID;
+    case 'point':
+      return response.kind === 'point' ? checkPoint(answer, response, traps) : INVALID;
+    case 'text':
+      return response.kind === 'text' ? checkText(answer, response, traps) : INVALID;
   }
 }

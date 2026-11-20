@@ -24,13 +24,15 @@ import {
   type ItemId,
   type Level,
 } from '@questeo/shared';
-import type { Db, Executor } from '../../db/client.ts';
+import type { Db, Executor, Tx } from '../../db/client.ts';
+import type { SessionRow } from '../../db/schema.ts';
 import type { Clock } from '../../core/clock.ts';
 import type { Random } from '../../core/random.ts';
-import { badRequest, conflict, notFound } from '../../core/errors.ts';
+import { badRequest, conflict, gone, notFound } from '../../core/errors.ts';
 import { PROFILE_NOT_FOUND, profilesRepo } from '../profiles/index.ts';
 import { inventoryRepo } from '../inventory/index.ts';
 import { trainingRepo } from '../training/index.ts';
+import { readBattle, storeBattle } from './battle-state.ts';
 import { battlesRepo } from './battles.repo.ts';
 
 /**
@@ -41,6 +43,9 @@ import { battlesRepo } from './battles.repo.ts';
  */
 
 export const BATTLE_NOT_FOUND = 'Combat introuvable';
+
+/** Combat commencé avant une mise à jour qui a changé le format de son état. */
+export const BATTLE_EXPIRED = 'Ce combat a expiré avec la mise à jour du jeu. Relance-le !';
 
 /** Coffre de la 1re victoire contre un boss. */
 export const FIRST_WIN_CHEST: Partial<Inventory> = { bouclier: 1, soin: 1, indice: 1 };
@@ -79,15 +84,41 @@ function pools(chapterId: string) {
   return { ...p, prompt: (skillId: string, level: Level, seed: number) => generate(skillId, level, seed).prompt };
 }
 
-/** Charge un combat (verrouillé jusqu'à la fin de la transaction). */
-async function loadForUpdate(tx: Executor, id: string) {
-  const session = await trainingRepo(tx).findSessionForUpdate(id);
-  if (session?.mode !== 'boss' || !session.battle) throw notFound(BATTLE_NOT_FOUND);
-  return { session, state: session.battle as BattleState };
+/** Combat chargé et verrouillé, dont l'état stocké a été validé. */
+interface LockedBattle {
+  readonly tx: Tx;
+  readonly session: SessionRow;
+  readonly state: BattleState;
 }
+
+/** Marqueur interne : le combat a été clos parce que son état stocké n'est plus lisible. */
+const EXPIRED = Symbol('combat expiré');
 
 export function createBattlesService({ db, clock, random, onFinished }: BattlesDeps) {
   const dice: BattleDice = { random: random.float, seed: random.seed };
+
+  /**
+   * Exécute `action` sur le combat verrouillé (jusqu'à la fin de la transaction : deux requêtes
+   * simultanées sur le même combat passent l'une après l'autre).
+   * État stocké périmé ou illisible (autre version du serveur) : le combat est clos sans
+   * récompense ni pénalité, la clôture est VALIDÉE, puis l'erreur GONE est levée — la lever
+   * dans la transaction annulerait la clôture.
+   */
+  async function withBattle<T>(id: string, action: (b: LockedBattle) => Promise<T>): Promise<T> {
+    const result = await db.transaction(async (tx) => {
+      const repo = trainingRepo(tx);
+      const session = await repo.findSessionForUpdate(id);
+      if (session?.mode !== 'boss' || session.battle == null) throw notFound(BATTLE_NOT_FOUND);
+      const state = readBattle(session.battle);
+      if (!state) {
+        if (!session.finishedAt) await repo.updateSession(id, { finishedAt: clock.now() });
+        return EXPIRED;
+      }
+      return { value: await action({ tx, session, state }) };
+    });
+    if (result === EXPIRED) throw gone(BATTLE_EXPIRED);
+    return result.value;
+  }
 
   const overview = async (ex: Executor, profileId: string): Promise<BossOverview> => {
     const items = inventoryRepo(ex);
@@ -119,7 +150,7 @@ export function createBattlesService({ db, clock, random, onFinished }: BattlesD
       // Énoncés des derniers combats de ce chapitre : à éviter aussi.
       const recent = (await battlesRepo(db).recentQuestions(profileId, chapterId, RECENT_PROMPTS)).flatMap((q) => {
         try {
-          return [generate(q.skillId, q.level as Level, q.seed).prompt];
+          return [generate(q.skillId, q.level, q.seed).prompt];
         } catch {
           // Notion retirée du contenu depuis : on l'ignore.
           return [];
@@ -133,15 +164,14 @@ export function createBattlesService({ db, clock, random, onFinished }: BattlesD
         subject: chapter?.subject ?? 'maths',
         chapterId,
         skillId: null,
-        battle: state,
+        battle: storeBattle(state),
       });
       return view(id, chapterId, state, await items.read(profileId));
     },
 
     /** Corrige la question en cours (le serveur la connaît) et fait avancer le combat. */
     answer(id: string, a: BattleAnswer): Promise<BattleAnswerResult> {
-      return db.transaction(async (tx) => {
-        const { session, state } = await loadForUpdate(tx, id);
+      return withBattle(id, async ({ tx, session, state }) => {
         if (session.finishedAt || state.status !== 'fighting' || !state.question) throw conflict('Combat terminé');
         const q = state.question;
         if (q.skillId !== a.skillId || q.level !== a.level || q.seed !== a.seed) {
@@ -171,7 +201,7 @@ export function createBattlesService({ db, clock, random, onFinished }: BattlesD
           durationMs: a.durationMs,
           xp: result.correct ? 10 : 0,
         });
-        await repo.updateSession(id, { battle: next });
+        await repo.updateSession(id, { battle: storeBattle(next) });
         return {
           correct: result.correct,
           invalid: false,
@@ -182,8 +212,7 @@ export function createBattlesService({ db, clock, random, onFinished }: BattlesD
     },
 
     useItem(id: string, item: ItemId): Promise<BattleView> {
-      return db.transaction(async (tx) => {
-        const { session, state } = await loadForUpdate(tx, id);
+      return withBattle(id, async ({ tx, session, state }) => {
         if (session.finishedAt) throw conflict('Combat terminé');
         const refusal = itemRefusal(state, item);
         if (refusal) throw conflict(refusal);
@@ -191,15 +220,14 @@ export function createBattlesService({ db, clock, random, onFinished }: BattlesD
         if (!(await items.take(session.profileId, item))) throw conflict('Tu n’en as plus');
         await items.unequipOne(session.profileId, item);
         const next = applyItem(state, item);
-        await trainingRepo(tx).updateSession(id, { battle: next });
+        await trainingRepo(tx).updateSession(id, { battle: storeBattle(next) });
         return view(id, session.chapterId, next, await items.read(session.profileId));
       });
     },
 
     /** Fin du combat : XP, pièces, et à la 1re victoire médaille et coffre. */
     async finish(id: string): Promise<BattleSummary> {
-      const summary = await db.transaction(async (tx): Promise<BattleSummary> => {
-        const { session, state } = await loadForUpdate(tx, id);
+      const summary = await withBattle(id, async ({ tx, session, state }): Promise<BattleSummary> => {
         if (session.finishedAt) throw conflict('Combat déjà terminé');
         if (state.status === 'fighting') throw conflict('Le combat n’est pas fini');
         const profiles = profilesRepo(tx);

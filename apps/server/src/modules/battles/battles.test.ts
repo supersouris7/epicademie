@@ -8,7 +8,8 @@ import type {
   Profile,
   SessionSummary,
 } from '@questeo/shared';
-import { inventory } from '../../db/schema.ts';
+import { eq } from 'drizzle-orm';
+import { inventory, profiles, sessions } from '../../db/schema.ts';
 import { createTestApp, fixedRandom } from '../../testing/harness.ts';
 
 let t: Awaited<ReturnType<typeof createTestApp>>;
@@ -242,5 +243,55 @@ describe('équipement et objets en combat', () => {
       payload: { profileId: unknown, chapterId: CHAPTER },
     });
     expect(noProfile.statusCode).toBe(404);
+  });
+
+  describe('combat commencé avant une mise à jour du format de son état', () => {
+    /** Remplace l'état stocké du combat par `stored` (comme l'aurait écrit une autre version). */
+    async function staleBattle(stored: unknown) {
+      const b = (
+        await app.inject({ method: 'POST', url: '/api/v1/battles', payload: { profileId, chapterId: CHAPTER } })
+      ).json<BattleView>();
+      await t.database.db.update(sessions).set({ battle: stored }).where(eq(sessions.id, b.id));
+      return b;
+    }
+    const session = async (id: string) => (await t.database.db.select().from(sessions).where(eq(sessions.id, id)))[0];
+    const wallet = async () => (await t.database.db.select().from(profiles).where(eq(profiles.id, profileId)))[0];
+
+    it('réponse : 410, combat clos sans récompense ni pénalité', async () => {
+      const before = await wallet();
+      const b = await staleBattle({ status: 'fighting', hearts: 3 }); // ancien format, sans version
+      const q = b.question;
+      if (!q) throw new Error('question attendue');
+      const res = await app.inject({
+        method: 'POST',
+        url: `/api/v1/battles/${b.id}/answers`,
+        payload: {
+          skillId: q.skillId,
+          level: q.level,
+          seed: q.seed,
+          response: { kind: 'text', text: '1' },
+          durationMs: 1000,
+        },
+      });
+      expect(res.statusCode).toBe(410);
+      const body = res.json<{ code: string; error: string }>();
+      expect(body.code).toBe('GONE');
+      expect(body.error).toMatch(/expiré/);
+      const s = await session(b.id);
+      expect(s?.finishedAt).not.toBeNull();
+      expect(s?.xp).toBe(0);
+      expect(await wallet()).toMatchObject({ xp: before?.xp, coins: before?.coins });
+    });
+
+    it('objet et fin de combat : 410 aussi', async () => {
+      const b = await staleBattle({ v: 999, state: {} });
+      const item = await app.inject({
+        method: 'POST',
+        url: `/api/v1/battles/${b.id}/items`,
+        payload: { item: 'soin' },
+      });
+      expect(item.statusCode).toBe(410);
+      expect((await app.inject({ method: 'POST', url: `/api/v1/battles/${b.id}/finish` })).statusCode).toBe(410);
+    });
   });
 });

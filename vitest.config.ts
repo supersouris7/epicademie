@@ -10,16 +10,16 @@ const at = (level: number, branches: number) => ({
 
 /**
  * Tests de tous les paquets (un projet Vitest par paquet). Couverture : `pnpm test:coverage`,
- * seuils bloquants en CI par paquet (docs/adr/0007-qualite.md). Le web n'est mesuré que sur sa
- * logique (fichiers .ts : API, état, outils) ; ses composants sont couverts par les tests de
- * bout en bout.
+ * seuils bloquants en CI par paquet (docs/adr/0007-qualite.md). Le web est mesuré en entier,
+ * composants compris : écrans testés sur l'application complète et un faux serveur
+ * (apps/web/src/testing), en plus des tests de bout en bout.
  */
 export default defineConfig({
   test: {
     projects: ['packages/*', 'apps/*'],
     coverage: {
       provider: 'v8',
-      include: ['packages/*/src/**', 'apps/server/src/**', 'apps/web/src/**/*.ts'],
+      include: ['packages/*/src/**', 'apps/server/src/**', 'apps/web/src/**'],
       exclude: [
         '**/*.test.{ts,tsx}',
         '**/testing/**',
@@ -28,6 +28,7 @@ export default defineConfig({
         // Points d'entrée de processus : couverts par les tests de bout en bout.
         'apps/server/src/main.ts',
         'apps/server/src/cli/**',
+        'apps/web/src/main.tsx',
         'apps/web/src/dev/**',
       ],
       reporter: ['text-summary', 'json-summary'],
@@ -36,7 +37,7 @@ export default defineConfig({
         'packages/shared/src/**': at(85, 70),
         'packages/content/src/**': at(80, 80),
         'apps/server/src/**': at(85, 70),
-        'apps/web/src/**/*.ts': at(60, 50),
+        'apps/web/src/**': at(60, 50),
       },
     },
   },

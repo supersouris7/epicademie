@@ -1,5 +1,5 @@
 import { and, desc, eq, sql } from 'drizzle-orm';
-import type { BossMedal, BossRecord } from '@questeo/shared';
+import { LevelSchema, type BattleQuestion, type BossMedal, type BossRecord } from '@questeo/shared';
 import type { Executor } from '../../db/client.ts';
 import { attempts, bossRecords, sessions } from '../../db/schema.ts';
 
@@ -43,7 +43,11 @@ export function battlesRepo(db: Executor) {
     },
 
     /** Dernières questions posées en combat sur ce chapitre, de la plus ancienne à la plus récente. */
-    async recentQuestions(profileId: string, chapterId: string, limit: number) {
+    async recentQuestions(
+      profileId: string,
+      chapterId: string,
+      limit: number,
+    ): Promise<Pick<BattleQuestion, 'skillId' | 'level' | 'seed'>[]> {
       const rows = await db
         .select({ skillId: attempts.skillId, level: attempts.level, seed: attempts.seed })
         .from(attempts)
@@ -51,7 +55,8 @@ export function battlesRepo(db: Executor) {
         .where(and(eq(attempts.profileId, profileId), eq(sessions.mode, 'boss'), eq(sessions.chapterId, chapterId)))
         .orderBy(desc(attempts.id))
         .limit(limit);
-      return rows.reverse();
+      // Niveau : entier en base (contrainte 1–3), relu en type `Level` sans cast.
+      return rows.reverse().map((r) => ({ ...r, level: LevelSchema.parse(r.level) }));
     },
   };
 }

@@ -7,6 +7,7 @@ const keys = {
   one: (id: string) => ['profiles', id] as const,
 };
 
+/** Profils côté serveur : lecture (cache React Query) et modifications, qui invalident le cache. */
 export const useProfiles = () => useQuery({ queryKey: keys.all, queryFn: () => request(api.listProfiles) });
 
 export const useProfile = (id: string | null) =>

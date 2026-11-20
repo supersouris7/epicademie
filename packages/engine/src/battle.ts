@@ -4,6 +4,7 @@ import {
   HERO_HEARTS,
   ITEM_INFO,
   MAX_ITEMS_PER_BATTLE,
+  shuffleWith,
   type BattleOutcome,
   type BattleQuestion,
   type BattleStage,
@@ -77,15 +78,6 @@ export const mobLevel = (index: number): 1 | 2 => (index < 2 ? 1 : 2);
 /** Étape du boss selon ses vies restantes : 2 problèmes, puis le piège pour la dernière vie. */
 export const bossStage = (lives: number): BattleStage => (lives <= 1 ? 'piege' : 'probleme');
 
-function shuffle<T>(items: readonly T[], random: () => number): T[] {
-  const out = [...items];
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(random() * (i + 1));
-    [out[i], out[j]] = [out[j] as T, out[i] as T];
-  }
-  return out;
-}
-
 function pick<T>(items: readonly T[], random: () => number, avoid?: T): T {
   const pool = items.length > 1 && avoid !== undefined ? items.filter((x) => x !== avoid) : items;
   const chosen = pool[Math.floor(random() * pool.length)];
@@ -133,7 +125,7 @@ export function createBattle(
     bossLives: BOSS_LIVES,
     mobsDefeated: 0,
     turn: 0,
-    order: shuffle(pools.mobs, dice.random),
+    order: shuffleWith(pools.mobs, dice.random),
     shield: false,
     hintShown: false,
     itemsUsed: 0,

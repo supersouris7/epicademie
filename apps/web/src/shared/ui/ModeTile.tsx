@@ -14,6 +14,7 @@ interface ModeTileProps {
   readonly onClick: () => void;
 }
 
+/** Tuile d'un mode de jeu (accueil) : illustration, nom, badge « À venir » ou nouveauté. */
 export function ModeTile({ mode, index = 0, badge, onClick }: ModeTileProps) {
   const enter = useEntrance();
   return (

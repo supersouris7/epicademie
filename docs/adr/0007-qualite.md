@@ -1,6 +1,6 @@
 # 0007 — Qualité vérifiée en CI : couverture, règles de modules
 
-- Statut : Acceptée
+- Statut : Remplacée par [0010](0010-qualite-renforcee.md)
 - Date : 2026-11-19
 
 ## Décision

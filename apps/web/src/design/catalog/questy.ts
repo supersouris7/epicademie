@@ -21,8 +21,6 @@ export const QUESTY_MOODS = [
   ['sleepy', 'endormi', 'LED bleu nuit, yeux fermés en traits et petite bulle de sommeil'],
 ] as const;
 
-export type QuestyMood = (typeof QUESTY_MOODS)[number][0];
-
 export const QUESTY_POSES = [
   ['idle', 'debout, souriant, bras le long du corps', 1],
   ['salut', 'fait coucou de la main droite levée, clin d’œil', 1],
