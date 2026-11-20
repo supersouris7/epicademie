@@ -13,6 +13,12 @@ export default defineConfig({
   projects: [
     { name: 'tablette', use: { ...devices['iPad (gen 7) landscape'], browserName: 'chromium' } },
     { name: 'smartphone', use: { ...devices['Pixel 7'] } },
+    // Ordinateur et télévision (mode TV) : grand écran 1920 × 1080, écrans principaux.
+    {
+      name: 'ordinateur-tv',
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1920, height: 1080 } },
+      testMatch: ['profiles.spec.ts', 'hq.spec.ts', 'journeys.spec.ts', 'multi.spec.ts'],
+    },
   ],
   // Serveur de production (front buildé) avec une base PostgreSQL embarquée jetable (en mémoire).
   webServer: {

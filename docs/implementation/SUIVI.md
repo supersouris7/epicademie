@@ -39,7 +39,7 @@ Décisions prises par le responsable du produit le 20/11/2026 :
 | 13  | P2   | Administration et observabilité                                            | ✅                                                 |
 | 14  | —    | Raid coopératif et mode TV                                                 | ✅                                                 |
 | 15  | —    | Contenu : 5 matières × 7 classes, classe adulte en maths                   | 🟡 Adulte + pilote anglais ; reste : voir ADR 0024 |
-| 16  | —    | Parcours de bout en bout (15 scénarios), responsive PC/TV                  | ⏳                                                 |
+| 16  | —    | Parcours de bout en bout (15 scénarios), responsive PC/TV                  | ✅ 16 parcours × 3 formats (PARCOURS_E2E.md)       |
 
 ## Blocages nécessitant une intervention humaine
 

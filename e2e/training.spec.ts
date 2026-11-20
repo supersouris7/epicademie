@@ -94,6 +94,7 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
 });
 
 test('outils : calculatrice, brouillon, tableau de conversion', async ({ page }) => {
+  test.setTimeout(60_000); // inscription, profil et trois outils : dépassait 30 s sur machine chargée
   await signupFamily(page);
   await page.getByPlaceholder('Ex. Léa').fill(`Outil${Date.now() % 10000}`);
   await page.getByRole('button', { name: 'Un garçon' }).click();
