@@ -5,3 +5,5 @@ export * from './BossChapters.tsx';
 export * from './BossPlay.tsx';
 export * from './Shop.tsx';
 export * from './api.ts';
+export * from './EmperorScene.tsx';
+export { emperorDue } from './emperor.ts';

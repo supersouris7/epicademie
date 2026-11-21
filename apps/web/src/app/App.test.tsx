@@ -60,13 +60,12 @@ describe('profils', () => {
     expect(screen.getByText(/joindre le serveur/)).toBeInTheDocument();
   });
 
-  it('mon héros : collection (héros de départ), les autres sont à trouver dans les coffres', async () => {
+  it('mon héros : Alex et Lina débloqués dès le début, on peut changer', async () => {
     renderApp('/heros');
     expect(await screen.findByRole('heading', { name: 'Mon héros' })).toBeInTheDocument();
     expect(await screen.findByRole('radio', { name: /Lina/ })).toBeChecked();
-    expect(screen.getByRole('img', { name: 'Alex, à trouver dans un coffre' })).toBeInTheDocument();
-    expect(screen.queryByRole('radio', { name: /Alex/ })).not.toBeInTheDocument();
-    expect(screen.getByText(/1 sur 2 trouvés/)).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: /Alex/ })).not.toBeChecked();
+    expect(screen.getByText(/2 sur 2 trouvés/)).toBeInTheDocument();
   });
 });
 
@@ -89,8 +88,14 @@ describe('accueil et choix du jeu', () => {
     expect(await screen.findByRole('heading', { name: /Nombres entiers et décimaux/ })).toBeInTheDocument();
   });
 
-  it('combat de boss : le choix de la matière, puis le Sorcier π et le choix du chapitre', async () => {
+  it('combat de boss : l’Empereur en deux temps, puis la matière, le Sorcier π et le choix du chapitre', async () => {
     const { user } = renderApp('/jouer/boss');
+    const emperor = await screen.findByRole('dialog', { name: 'L’Empereur du Savoir' });
+    expect(within(emperor).getByRole('status')).toHaveTextContent(/protègent le savoir de toutes les matières/);
+    await user.click(within(emperor).getByRole('button', { name: 'Passer' }));
+    expect(await within(emperor).findByText(/avec ce savoir, je vais conquérir le monde/)).toBeInTheDocument();
+    await user.click(within(emperor).getByRole('button', { name: 'Passer' }));
+    expect(screen.queryByRole('dialog', { name: 'L’Empereur du Savoir' })).not.toBeInTheDocument();
     await user.click(await screen.findByRole('button', { name: 'Maths' }));
     const closeUp = await screen.findByRole('dialog', { name: /te provoque/ });
     await user.click(within(closeUp).getByRole('button', { name: 'Passer' }));

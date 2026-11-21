@@ -34,6 +34,8 @@ export interface StillJob {
   readonly size: number;
   /** Cases dont on ne garde que la plus grande forme (effets séparés retirés). */
   readonly silhouetteOnly?: readonly number[];
+  /** Retourner en miroir (le boss, dessiné tourné vers la droite, doit regarder le héros à sa gauche). */
+  readonly mirror?: boolean;
 }
 
 export interface AnimJob {
@@ -46,6 +48,8 @@ export interface AnimJob {
   readonly height: number;
   /** Opacité minimale gardée (voile de détourage plus marqué sur certaines planches). */
   readonly minAlpha?: number;
+  /** Retourner en miroir chaque image. */
+  readonly mirror?: boolean;
 }
 
 export type Job = StillJob | AnimJob;
@@ -160,6 +164,7 @@ export const JOBS: readonly Job[] = [
     board: 'sorcier-pi-anim-attente.png',
     cols: 4,
     rows: 2,
+    mirror: true,
     target: 'bosses/sorcier-pi/anim-idle',
     height: 512,
   },
@@ -169,6 +174,7 @@ export const JOBS: readonly Job[] = [
     cols: 4,
     rows: 2,
     size: 640,
+    mirror: true,
     targets: ['idle', 'attack', 'shield', 'hurt', 'defeat', 'cast', 'charge', 'victory'].map(
       (p) => `bosses/sorcier-pi/pose-${p}`,
     ),
@@ -179,6 +185,7 @@ export const JOBS: readonly Job[] = [
     cols: 4,
     rows: 3,
     size: 320,
+    mirror: true,
     targets: SORCIER_HEADS.map((h) => `bosses/sorcier-pi/head-${h}`),
   },
   {
@@ -187,6 +194,7 @@ export const JOBS: readonly Job[] = [
     cols: 1,
     rows: 1,
     size: 640,
+    mirror: true,
     targets: ['bosses/sorcier-pi/portrait'],
   },
 ];
@@ -279,11 +287,12 @@ const withMargin = (box: Box, img: Rgba): Box => {
   };
 };
 
-async function writeWebp(img: Rgba, target: string, resize: { width?: number; height?: number }) {
+async function writeWebp(img: Rgba, target: string, resize: { width?: number; height?: number }, mirror = false) {
   const dest = join(PUBLIC, `${target}.webp`);
   mkdirSync(dirname(dest), { recursive: true });
   await sharp(img.data, { raw: { width: img.width, height: img.height, channels: 4 } })
     .resize({ ...resize, fit: 'inside', withoutEnlargement: true })
+    .flop(mirror)
     .webp({ quality: 90, alphaQuality: 100, effort: 6 })
     .toFile(dest);
   return dest;
@@ -301,7 +310,9 @@ async function stills(job: StillJob): Promise<string[]> {
     if (job.silhouetteOnly?.includes(i)) cell = largestShape(cell);
     const box = contentBox(cell, 0);
     if (!box) throw new Error(`${job.board} : case ${i + 1} vide (${target})`);
-    out.push(await writeWebp(crop(cell, withMargin(box, cell)), target, { width: job.size, height: job.size }));
+    out.push(
+      await writeWebp(crop(cell, withMargin(box, cell)), target, { width: job.size, height: job.size }, job.mirror),
+    );
   }
   return out;
 }
@@ -333,6 +344,7 @@ async function anim(job: AnimJob): Promise<string> {
     frames.map((f) =>
       sharp(f.data, { raw: { width: f.width, height: f.height, channels: 4 } })
         .resize({ width, height, fit: 'fill' })
+        .flop(job.mirror ?? false)
         .png()
         .toBuffer(),
     ),

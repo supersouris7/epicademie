@@ -17,7 +17,7 @@
 import { AVAILABLE } from './assets.available.ts';
 import { SVG_ASSETS } from './assets.generated.ts';
 import { envAssets } from './catalog/arenas.ts';
-import { minionAssets, piBotAssets, sorcierAssets } from './catalog/bosses.ts';
+import { empereurAssets, minionAssets, piBotAssets, sorcierAssets } from './catalog/bosses.ts';
 import { brandAssets } from './catalog/brand.ts';
 import { effectAssets } from './catalog/effects.ts';
 import { characterAssets } from './catalog/heroes.ts';
@@ -52,6 +52,7 @@ export const PLANNED_ASSETS: readonly PlannedAsset[] = [
   ...questyAssets,
   ...characterAssets,
   ...sorcierAssets,
+  ...empereurAssets,
   ...minionAssets,
   ...piBotAssets,
   ...effectAssets,

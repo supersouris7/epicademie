@@ -36,7 +36,8 @@ describe('API profils', () => {
       gender: 'fille',
       birthDate: '2014-03-09',
       grade: '5e',
-      hero: 'alex',
+      // Lina est proposée par défaut à une fille.
+      hero: 'lina',
     });
     const list = await app.inject('/api/v1/profiles');
     expect(list.json<Profile[]>()).toHaveLength(1);
@@ -157,21 +158,23 @@ describe('API profils', () => {
     expect(new Date(profile.createdAt).toISOString()).toBe(profile.createdAt);
   });
 
-  it('Acad-Héros : le héros de départ est dans la collection ; un héros non trouvé ne se porte pas', async () => {
+  it('Acad-Héros : Alex et Lina débloqués dès la création ; Alex par défaut pour un garçon', async () => {
     const p = (
-      await app.inject({ method: 'POST', url: '/api/v1/profiles', payload: { ...profileInput('Noé'), hero: 'alex' } })
+      await app.inject({
+        method: 'POST',
+        url: '/api/v1/profiles',
+        payload: { ...profileInput('Noé'), gender: 'garcon' },
+      })
     ).json<Profile>();
-    expect((await app.inject(`/api/v1/profiles/${p.id}/heroes`)).json()).toEqual({ heroes: ['alex'] });
+    expect(p.hero).toBe('alex');
+    expect((await app.inject(`/api/v1/profiles/${p.id}/heroes`)).json()).toEqual({ heroes: ['alex', 'lina'] });
     const res = await app.inject({ method: 'PATCH', url: `/api/v1/profiles/${p.id}`, payload: { hero: 'lina' } });
-    expect(res.statusCode).toBe(409);
-    expect(res.json<{ error: string }>().error).toMatch(/coffre/);
-    expect(
-      (await app.inject({ method: 'PATCH', url: `/api/v1/profiles/${p.id}`, payload: { hero: 'alex' } })).statusCode,
-    ).toBe(200);
+    expect(res.statusCode).toBe(200);
+    expect(res.json<Profile>().hero).toBe('lina');
   });
 
-  it('Acad-Héros trouvé dans le coffre d’une série : ajouté à la collection', async () => {
-    // Coffre épique (0,99), 2 objets, héros tiré (0,1 < 25 %), le 1er héros manquant.
+  it('Acad-Héros tiré dans le coffre alors qu’on les a tous : changé en pièces', async () => {
+    // Coffre épique (0,99), 2 objets, héros tiré (0,1 < 25 %) : doublon, les deux sont déjà là.
     const lucky = await createTestApp({ random: sequenceRandom([0.99, 0, 0, 0.1, 0]) });
     try {
       const p = (
@@ -205,7 +208,7 @@ describe('API profils', () => {
       const summary = (
         await lucky.http.inject({ method: 'POST', url: `/api/v1/sessions/${id}/finish` })
       ).json<SessionSummary>();
-      expect(summary.chest?.hero).toEqual({ id: 'lina', duplicate: false });
+      expect(summary.chest?.hero).toMatchObject({ duplicate: true });
       expect((await lucky.http.inject(`/api/v1/profiles/${p.id}/heroes`)).json()).toEqual({ heroes: ['alex', 'lina'] });
     } finally {
       await lucky.close();

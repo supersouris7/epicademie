@@ -1,5 +1,5 @@
 import { asc, eq, gte, and, sql } from 'drizzle-orm';
-import type { HeroId, Profile, ProfileCreate, ProfileUpdate } from '@questeo/shared';
+import { defaultHero, type HeroId, type Profile, type ProfileCreate, type ProfileUpdate } from '@questeo/shared';
 import type { Executor } from '../../db/client.ts';
 import { ownedHeroes, profiles, type ProfileRow } from '../../db/schema.ts';
 
@@ -74,7 +74,7 @@ export function profilesRepo(db: Executor) {
     async insert(input: ProfileCreate & { readonly rubies: number; readonly familyId: string }): Promise<ProfileRow> {
       const [row] = await db
         .insert(profiles)
-        .values({ ...input, hero: input.hero ?? 'alex' })
+        .values({ ...input, hero: input.hero ?? defaultHero(input.gender) })
         .returning();
       if (!row) throw new Error('insertion de profil sans retour');
       return row;

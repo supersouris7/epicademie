@@ -71,6 +71,13 @@
       "when": 1795210044635,
       "tag": "0009_heros_v2",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1795290000000,
+      "tag": "0010_heros_debloques",
+      "breakpoints": true
     }
   ]
 }

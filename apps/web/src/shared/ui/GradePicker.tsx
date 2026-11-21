@@ -5,7 +5,6 @@ import { localToday } from '../lib/dates.ts';
 import { comingSoon } from '../lib/grades.ts';
 import { GameButton } from './game/GameButton.tsx';
 import { Questy } from './mascot/Questy.tsx';
-import { SpeechBubble } from './SpeechBubble.tsx';
 
 interface GradePickerProps {
   readonly birthDate: string;
@@ -16,7 +15,8 @@ interface GradePickerProps {
 const question = (g: Grade) => (g === 'adulte' ? 'Tu es un adulte ?' : `Tu es en ${gradeInfo(g).name} ?`);
 
 /**
- * Classe du joueur : déduite de la date de naissance, Questy demande de confirmer (« Tu es en 5e ? »).
+ * Classe du joueur : déduite de la date de naissance, Questy demande de confirmer dans une fenêtre
+ * au premier plan (« Tu es en 5e ? »).
  * « Non » ouvre la liste ; les classes sans contenu sont marquées « À venir » mais restent choisissables.
  */
 export function GradePicker({ birthDate, grade, onChange }: GradePickerProps) {
@@ -33,21 +33,34 @@ export function GradePicker({ birthDate, grade, onChange }: GradePickerProps) {
   }
 
   if (!grade && guess && !choosing) {
+    // Questy demande en grand (fenêtre au premier plan) : impossible de passer à côté.
     return (
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-3">
-        <Questy mood="wow" size={96} />
-        <div className="flex flex-col gap-2">
-          <SpeechBubble>{question(guess)}</SpeechBubble>
-          <div className="flex gap-2">
-            <GameButton size="sm" variant="success" onClick={() => pick(guess)}>
-              Oui
-            </GameButton>
-            <GameButton size="sm" variant="surface" onClick={() => setChoosing(true)}>
-              Non
-            </GameButton>
-          </div>
+      <>
+        <p className="text-muted font-bold">Questy te demande ta classe…</p>
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Ta classe"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+        >
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="cartoon border-accent bg-surface flex w-full max-w-md flex-col items-center gap-4 p-6 text-center"
+          >
+            <Questy mood="wow" size={120} />
+            <h2 className="font-display text-3xl tracking-wide">{question(guess)}</h2>
+            <div className="flex flex-wrap justify-center gap-3">
+              <GameButton size="lg" variant="success" icon="icons-status-correct" onClick={() => pick(guess)}>
+                Oui
+              </GameButton>
+              <GameButton size="lg" variant="surface" onClick={() => setChoosing(true)}>
+                Non
+              </GameButton>
+            </div>
+          </motion.div>
         </div>
-      </motion.div>
+      </>
     );
   }
 

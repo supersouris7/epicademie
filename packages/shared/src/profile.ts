@@ -16,6 +16,10 @@ export const HEROES = ['alex', 'lina'] as const;
 export type HeroId = (typeof HEROES)[number];
 /** Héros jouables aujourd'hui (illustrations livrées) ; les autres sont « À venir ». */
 export const AVAILABLE_HEROES: readonly HeroId[] = ['alex', 'lina'];
+/** Héros débloqués dès la création du profil (les suivants viendront des coffres). */
+export const STARTING_HEROES: readonly HeroId[] = ['alex', 'lina'];
+/** Héros proposé par défaut : Lina pour une fille, Alex sinon. */
+export const defaultHero = (gender: Gender | null | undefined): HeroId => (gender === 'fille' ? 'lina' : 'alex');
 const PlayableHeroSchema = z.enum(HEROES).refine((h) => AVAILABLE_HEROES.includes(h), 'Ce héros arrive bientôt');
 export const HERO_NAMES: Record<HeroId, string> = {
   alex: 'Alex',
