@@ -108,7 +108,7 @@ const SORCIER_HEADS = [
   'rage-plisse',
 ];
 
-/** Coffres : 4 raretés fermées (1re rangée), les mêmes ouvertes (2e rangée). */
+/** Coffres : 4 raretés, de la moins à la plus précieuse. */
 const CHESTS = ['commun', 'rare', 'epique', 'legendaire'];
 
 /** Portraits de profil : planche de 5 × 5, numérotés 01 à 25 dans l'ordre de lecture. */
@@ -117,13 +117,34 @@ const AVATARS = Array.from({ length: 25 }, (_, i) => `avatars/${String(i + 1).pa
 export const JOBS: readonly Job[] = [
   // Lignes de la planche un peu irrégulières : chaque portrait est découpé selon son contour.
   { kind: 'stills', board: 'avatars.png', cols: 5, rows: 5, size: 256, targets: AVATARS, byShape: true },
+  // Coffres : 4 raretés fermées, puis les mêmes ouvertes (planches fournies le 21/11/2026).
   {
     kind: 'stills',
-    board: 'coffres.png',
+    board: 'coffres-fermes.png',
     cols: 4,
-    rows: 2,
+    rows: 1,
     size: 512,
-    targets: [...CHESTS.map((c) => `rewards/chests/${c}`), ...CHESTS.map((c) => `rewards/chests/${c}-ouvert`)],
+    targets: CHESTS.map((c) => `rewards/chests/${c}`),
+    byShape: true,
+  },
+  {
+    kind: 'stills',
+    board: 'coffres-ouverts.png',
+    cols: 4,
+    rows: 1,
+    size: 512,
+    targets: CHESTS.map((c) => `rewards/chests/${c}-ouvert`),
+    byShape: true,
+  },
+  // Médailles : bronze, argent, or, diamant.
+  {
+    kind: 'stills',
+    board: 'medailles.png',
+    cols: 4,
+    rows: 1,
+    size: 384,
+    targets: ['bronze', 'argent', 'or', 'diamant'].map((m) => `rewards/medals/${m}`),
+    byShape: true,
   },
   {
     kind: 'anim',
