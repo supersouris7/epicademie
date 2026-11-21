@@ -15,6 +15,8 @@ import { SpeechBubble } from '../../shared/ui/SpeechBubble.tsx';
 import { useToast } from '../../shared/ui/Toast.tsx';
 import { SoonBadge } from '../../shared/ui/game/SoonBadge.tsx';
 import { SubjectIcon } from '../../shared/ui/game/SubjectIcon.tsx';
+import { ProgressIcon } from '../../shared/ui/game/ProgressIcon.tsx';
+import { bestScore } from '../defis/index.ts';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
 import { CHEST_ICON } from '../../shared/ui/game/ChestReveal.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
@@ -34,6 +36,7 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
   if (!mode) return <Navigate to="/hub" replace />;
   const bannerSrc = assetSrc('bosses-empereur-banniere');
   const isBoss = mode.id === 'boss';
+  const isDefi = mode.id === 'chrono' || mode.id === 'survie';
   // Barre sous chaque matière (classe du joueur) : notions acquises (Entraînement) ou boss vaincus (Combat).
   const grade = playedGrade(profile.grade);
   const progressOf = (subject: string) => {
@@ -70,7 +73,20 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
       ) : (
         <div className="flex items-center gap-4">
           <Questy size={130} mood={MODE_MOODS[mode.id]} />
-          <SpeechBubble>{`${mode.pitch}. Choisis ta matière !`}</SpeechBubble>
+          <SpeechBubble>
+            {mode.id === 'entrainement' ? (
+              // Entraînement : c'est ici qu'on gagne son équipement (coffres).
+              <span className="flex items-center gap-2">
+                <GameIcon id={CHEST_ICON} size={48} className="shrink-0" />
+                <span>
+                  {mode.pitch}. Une série toute juste t’offre un <strong>coffre</strong> (équipement, pièces) ; sans
+                  faute du premier coup, il est souvent meilleur. Choisis ta matière !
+                </span>
+              </span>
+            ) : (
+              `${mode.pitch}. Choisis ta matière !`
+            )}
+          </SpeechBubble>
         </div>
       )}
       {isBoss && emperor && <EmperorScene profileId={profile.id} onDone={() => setEmperor(false)} />}
@@ -81,16 +97,6 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
           <p className="text-lg font-bold">
             Chaque boss vaincu te donne un <strong>éclat de relique</strong> de sa matière. Retrouve tes reliques dans{' '}
             <strong>Mes progrès</strong> !
-          </p>
-        </div>
-      )}
-      {/* Entraînement : c'est ici qu'on gagne son équipement de combat. */}
-      {mode.id === 'entrainement' && (
-        <div className="cartoon bg-surface-2 flex items-center gap-3 p-3" role="note">
-          <GameIcon id={CHEST_ICON} size={64} />
-          <p className="text-lg font-bold">
-            C’est ici que tu gagnes ton <strong>équipement</strong> ! Une série entièrement juste t’offre un coffre
-            (bouclier, soin, indice, pièces) ; sans faute du premier coup, il est souvent meilleur.
           </p>
         </div>
       )}
@@ -117,23 +123,39 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
                 const ratio = p.max > 0 ? p.value / p.max : 0;
                 return (
                   <>
-                    {/* Combat de boss : l'icône est la relique de la matière, grise puis colorée selon les boss vaincus. */}
+                    {/* Combat de boss : la relique se remplit de couleur (du bas vers le haut) avec les boss
+                        vaincus ; ailleurs, l'icône de la matière est en couleur. */}
                     {isBoss ? (
-                      <span style={{ filter: `grayscale(${1 - ratio})` }}>
-                        <GameIcon id={RELICS[s.id].icon} size={80} />
-                      </span>
+                      <ProgressIcon
+                        id={RELICS[s.id].icon}
+                        ratio={ratio}
+                        size={80}
+                        label={`${p.value} boss vaincus sur ${p.max} en ${s.name}`}
+                      />
                     ) : (
                       <SubjectIcon subject={s.id} size={72} />
                     )}
                     <span className="font-display text-toon text-xl tracking-wide sm:text-2xl">{s.name}</span>
-                    <ProgressBar
-                      className="w-full"
-                      value={p.value}
-                      max={Math.max(1, p.max)}
-                      color={isBoss ? 'var(--boss)' : 'var(--success)'}
-                      label={isBoss ? `Boss vaincus en ${s.name}` : `Notions acquises en ${s.name}`}
-                      size="sm"
-                    />
+                    {isDefi ? (
+                      // Défis : le record à battre plutôt qu'une barre.
+                      <span className="font-display text-toon rounded-full bg-black/25 px-3 py-0.5 text-base">
+                        {(() => {
+                          const best = bestScore(mode.id, profile.id, s.id);
+                          return best > 0 ? `Record : ${best}` : 'Pas encore de record';
+                        })()}
+                      </span>
+                    ) : (
+                      !isBoss && (
+                        <ProgressBar
+                          className="w-full"
+                          value={p.value}
+                          max={Math.max(1, p.max)}
+                          color="var(--success)"
+                          label={`Notions acquises en ${s.name}`}
+                          size="sm"
+                        />
+                      )
+                    )}
                   </>
                 );
               })()}

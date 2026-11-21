@@ -309,7 +309,7 @@ export function RageScene({
       >
         {/* Animation calme, qui s'efface peu à peu pendant la montée. */}
         <motion.div
-          className="flex h-[56dvh] max-w-[96vw] justify-center"
+          className="flex h-[28dvh] max-w-[96vw] justify-center"
           animate={{ opacity: stage === 'debut' ? 1 : 0 }}
           transition={{ duration: stage === 'montee' ? 2.6 : 0.2 }}
         >

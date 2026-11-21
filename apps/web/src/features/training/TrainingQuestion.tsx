@@ -215,6 +215,11 @@ function AnswerDock({
           picked={picked}
           onSubmit={onSubmit}
           onUnknown={() => onSubmit({ kind: 'unknown' })}
+          unknownWarning={
+            retry
+              ? 'Tu vas voir l’explication : cette question comptera comme une erreur.'
+              : 'Questy te donne un indice, mais cette question comptera comme une erreur.'
+          }
         />
       )}
     </section>

@@ -239,7 +239,7 @@ export const JOBS: readonly Job[] = [
     cols: 4,
     rows: 2,
     size: 640,
-    mirror: true,
+    // Poses dessinées tournées vers le héros (l'attaque part vers la gauche) : pas de miroir.
     targets: ['idle', 'attack', 'shield', 'hurt', 'defeat', 'cast', 'charge', 'victory'].map(
       (p) => `bosses/sorcier-pi/pose-${p}`,
     ),
