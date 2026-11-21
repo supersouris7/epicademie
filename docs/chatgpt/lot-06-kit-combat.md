@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Lot 6 — Kit combat
 
-109 images, demandes 47 à 137 (91 messages à envoyer).
+112 images, demandes 47 à 140 (94 messages à envoyer).
 
 ## Marche à suivre
 
@@ -601,7 +601,34 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 107. Planche « mobs » (9 éléments)
+#### 107. L’Empereur du Savoir
+Enregistrer sous `assets-src/originals/bosses/empereur/empereur.png` · 1024×1024 → final 1024×1024
+
+```text
+Image 1024×1024. Grand boss en armure violette et dorée, couronne à pointes, crinière blanche, cœur de galaxie, cape violette.
+Cadrage : personnage en pied centré, de face, fond transparent, halo et effets autour de lui.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 108. L’Empereur du Savoir et les matières
+Enregistrer sous `assets-src/originals/bosses/empereur/empereur-reliques.png` · 1024×1024 → final 1024×1024
+
+```text
+Image 1024×1024. Le même grand boss entouré des symboles des six matières dans un anneau violet.
+Cadrage : personnage en pied centré, de face, fond transparent, halo et effets autour de lui.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 109. Bannière du Combat de boss
+Enregistrer sous `assets-src/originals/bosses/empereur/banniere.png` · 1536×1024 → final 1536×512 · plein cadre (pas de fond magenta)
+
+```text
+Image 1536×1024. L’Empereur du Savoir en buste, mains lumineuses, ciel violet étoilé et cristaux flottants.
+Cadrage : bannière très large, sujet au centre, fond peint jusqu’aux bords, sans texte.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 110. Planche « mobs » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/mobs.png` · 1024×1024, grille 3×3 → chaque case finale 384×384
 Cases : 1 → `bosses/minions/calculatrice` · 2 → `bosses/minions/cube-bot` · 3 → `bosses/minions/equerre` · 4 → `bosses/minions/compas` · 5 → `bosses/minions/de` · 6 → `bosses/minions/camembert` · 7 → `bosses/minions/courbe` · 8 → `bosses/minions/bug` · 9 → `bosses/minions/bloc-code`
 
@@ -624,7 +651,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 108. Mob π-bot — idle
+#### 111. Mob π-bot — idle
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot.png` · 1536×1024 → final 512×512
 
 ```text
@@ -633,7 +660,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 109. Mob π-bot — attack
+#### 112. Mob π-bot — attack
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-attack.png` · 1536×1024 → final 512×512
 
 ```text
@@ -642,7 +669,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 110. Mob π-bot — shield
+#### 113. Mob π-bot — shield
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-shield.png` · 1536×1024 → final 512×512
 
 ```text
@@ -651,7 +678,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 111. Mob π-bot — run
+#### 114. Mob π-bot — run
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-run.png` · 1536×1024 → final 512×512
 
 ```text
@@ -660,7 +687,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 112. Mob π-bot — jump
+#### 115. Mob π-bot — jump
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-jump.png` · 1536×1024 → final 512×512
 
 ```text
@@ -669,7 +696,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 113. Mob π-bot — victory
+#### 116. Mob π-bot — victory
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-victory.png` · 1536×1024 → final 512×512
 
 ```text
@@ -678,7 +705,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 114. Mob π-bot — tête menace
+#### 117. Mob π-bot — tête menace
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-menace.png` · 1024×1024 → final 512×512
 
 ```text
@@ -687,7 +714,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 115. Mob π-bot — tête moqueur
+#### 118. Mob π-bot — tête moqueur
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-moqueur.png` · 1024×1024 → final 512×512
 
 ```text
@@ -696,7 +723,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 116. Mob π-bot — tête joie
+#### 119. Mob π-bot — tête joie
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-joie.png` · 1024×1024 → final 512×512
 
 ```text
@@ -705,7 +732,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 117. Mob π-bot — tête rire
+#### 120. Mob π-bot — tête rire
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-rire.png` · 1024×1024 → final 512×512
 
 ```text
@@ -714,7 +741,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 118. Mob π-bot — tête surprise
+#### 121. Mob π-bot — tête surprise
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-surprise.png` · 1024×1024 → final 512×512
 
 ```text
@@ -723,7 +750,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 119. Mob π-bot — tête triste
+#### 122. Mob π-bot — tête triste
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-triste.png` · 1024×1024 → final 512×512
 
 ```text
@@ -732,7 +759,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 120. Mob π-bot — tête etourdi
+#### 123. Mob π-bot — tête etourdi
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-etourdi.png` · 1024×1024 → final 512×512
 
 ```text
@@ -741,7 +768,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 121. Mob π-bot — tête colere
+#### 124. Mob π-bot — tête colere
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-colere.png` · 1024×1024 → final 512×512
 
 ```text
@@ -750,7 +777,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 122. Mob π-bot — tête reflexion
+#### 125. Mob π-bot — tête reflexion
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-reflexion.png` · 1024×1024 → final 512×512
 
 ```text
@@ -759,7 +786,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 123. Mob π-bot — tête idee
+#### 126. Mob π-bot — tête idee
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-idee.png` · 1024×1024 → final 512×512
 
 ```text
@@ -768,7 +795,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 124. Mob π-bot — tête amour
+#### 127. Mob π-bot — tête amour
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-amour.png` · 1024×1024 → final 512×512
 
 ```text
@@ -777,7 +804,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 125. Mob π-bot — tête dort
+#### 128. Mob π-bot — tête dort
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-dort.png` · 1024×1024 → final 512×512
 
 ```text
@@ -786,7 +813,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 126. Planche « effets-1 » (9 éléments)
+#### 129. Planche « effets-1 » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/effets-1.png` · 1024×1024, grille 3×3 → chaque case finale 512×512
 Cases : 1 → `effects/impacts/hit-burst` · 2 → `effects/impacts/anneau` · 3 → `effects/impacts/etincelles` · 4 → `effects/impacts/flash` · 5 → `effects/impacts/explosion` · 6 → `effects/particles/puff` · 7 → `effects/particles/bouclier` · 8 → `effects/particles/soin` · 9 → `effects/particles/etourdi`
 
@@ -809,7 +836,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 127. Planche « effets-2 » (3 éléments)
+#### 130. Planche « effets-2 » (3 éléments)
 Enregistrer sous `assets-src/originals/sheets/effets-2.png` · 1024×1024, grille 3×3 → chaque case finale 512×512
 Cases : 1 → `effects/impacts/onde-boss` · 2 → `effects/particles/confettis` · 3 → `effects/transitions/portail`
 
@@ -826,7 +853,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 128. Arène de la station spatiale
+#### 131. Arène de la station spatiale
 Enregistrer sous `assets-src/originals/environments/arenas/espace.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
@@ -835,7 +862,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 129. Arène de la station spatiale (portrait)
+#### 132. Arène de la station spatiale (portrait)
 Enregistrer sous `assets-src/originals/environments/arenas/espace-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/espace.png`.
 
@@ -845,7 +872,7 @@ Cadrage : même décor recomposé en hauteur (format portrait, écran de télép
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 130. Arène de la station spatiale (panorama)
+#### 133. Arène de la station spatiale (panorama)
 Enregistrer sous `assets-src/originals/environments/arenas/espace-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/espace.png`.
 
@@ -855,7 +882,7 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 131. Arène de l’académie
+#### 134. Arène de l’académie
 Enregistrer sous `assets-src/originals/environments/arenas/academie.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
@@ -864,7 +891,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 132. Arène de l’académie (portrait)
+#### 135. Arène de l’académie (portrait)
 Enregistrer sous `assets-src/originals/environments/arenas/academie-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/academie.png`.
 
@@ -874,7 +901,7 @@ Cadrage : même décor recomposé en hauteur (format portrait, écran de télép
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 133. Arène de l’académie (panorama)
+#### 136. Arène de l’académie (panorama)
 Enregistrer sous `assets-src/originals/environments/arenas/academie-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/academie.png`.
 
@@ -884,7 +911,7 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 134. Arène du volcan
+#### 137. Arène du volcan
 Enregistrer sous `assets-src/originals/environments/arenas/volcan.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
@@ -893,7 +920,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 135. Arène du volcan (portrait)
+#### 138. Arène du volcan (portrait)
 Enregistrer sous `assets-src/originals/environments/arenas/volcan-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/volcan.png`.
 
@@ -903,7 +930,7 @@ Cadrage : même décor recomposé en hauteur (format portrait, écran de télép
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 136. Arène du volcan (panorama)
+#### 139. Arène du volcan (panorama)
 Enregistrer sous `assets-src/originals/environments/arenas/volcan-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/volcan.png`.
 
@@ -913,7 +940,7 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 137. Illustration principale
+#### 140. Illustration principale
 Enregistrer sous `assets-src/originals/branding/key-art.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 

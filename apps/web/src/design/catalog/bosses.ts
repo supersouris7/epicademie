@@ -140,6 +140,34 @@ export const piBotAssets = [
   ),
 ];
 
+/** L'Empereur du Savoir : le grand boss final, maître des boss des matières (images fournies le 21/11/2026). */
+export const empereurAssets = [
+  a(
+    'bossSquare',
+    'bosses/empereur/empereur.webp',
+    'L’Empereur du Savoir',
+    'grand boss en armure violette et dorée, couronne à pointes, crinière blanche, cœur de galaxie, cape violette',
+    'Scène du grand boss (1er temps, seul).',
+    2,
+  ),
+  a(
+    'bossSquare',
+    'bosses/empereur/empereur-reliques.webp',
+    'L’Empereur du Savoir et les matières',
+    'le même grand boss entouré des symboles des six matières dans un anneau violet',
+    'Scène du grand boss (2e temps, avec les matières).',
+    2,
+  ),
+  a(
+    'banner',
+    'bosses/empereur/banniere.webp',
+    'Bannière du Combat de boss',
+    'l’Empereur du Savoir en buste, mains lumineuses, ciel violet étoilé et cristaux flottants',
+    'Bannière de l’écran Combat de boss.',
+    2,
+  ),
+];
+
 export const MINIONS = [
   [
     'calculatrice',

@@ -104,7 +104,9 @@ describe('migrations', () => {
         ('33333333-3333-4333-8333-333333333333', 'lina', 'coffre'),
         ('44444444-4444-4444-8444-444444444444', 'lina', 'depart')`);
 
-      await runMigrations(database, MIGRATIONS_DIR);
+      const upTo0009 = migrationsUpTo(10);
+      await runMigrations(database, upTo0009);
+      rmSync(upTo0009, { recursive: true, force: true });
       const heroes = await db
         .select({ name: profiles.name, hero: profiles.hero })
         .from(profiles)
@@ -117,6 +119,42 @@ describe('migrations', () => {
       expect(JSON.stringify(owned)).not.toContain('pixel');
       expect(JSON.stringify(owned).match(/"hero":"alex"/g)).toHaveLength(1);
       expect(JSON.stringify(owned).match(/"hero":"lina"/g)).toHaveLength(2);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('héros débloqués : chaque profil possède Alex et Lina, le héros porté ne change pas', async () => {
+    const dir = migrationsUpTo(10); // jusqu'à 0009
+    try {
+      database = await openDatabase('pglite://memory');
+      await runMigrations(database, dir);
+      const { db } = database;
+      await db.execute(sql`insert into profiles (id, name, avatar, hero) values
+        ('55555555-5555-4555-8555-555555555555', 'Zoé', '{"style":"pixelbot","seed":"z"}', 'lina'),
+        ('66666666-6666-4666-8666-666666666666', 'Tom', '{"style":"pixelbot","seed":"t"}', 'alex')`);
+      await db.execute(sql`insert into owned_heroes (profile_id, hero, source) values
+        ('55555555-5555-4555-8555-555555555555', 'lina', 'depart'),
+        ('66666666-6666-4666-8666-666666666666', 'alex', 'depart'),
+        ('66666666-6666-4666-8666-666666666666', 'lina', 'coffre')`);
+
+      await runMigrations(database, MIGRATIONS_DIR);
+      const owned: unknown = await db.execute(
+        sql`select p.name, o.hero, o.source from owned_heroes o join profiles p on p.id = o.profile_id order by p.name, o.hero`,
+      );
+      const rows = JSON.stringify(owned);
+      for (const expected of [
+        '{"name":"Tom","hero":"alex","source":"depart"}',
+        '{"name":"Tom","hero":"lina","source":"coffre"}',
+        '{"name":"Zoé","hero":"alex","source":"depart"}',
+        '{"name":"Zoé","hero":"lina","source":"depart"}',
+      ])
+        expect(rows).toContain(expected);
+      const worn = await db.select({ name: profiles.name, hero: profiles.hero }).from(profiles).orderBy(profiles.name);
+      expect(worn).toEqual([
+        { name: 'Tom', hero: 'alex' },
+        { name: 'Zoé', hero: 'lina' },
+      ]);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

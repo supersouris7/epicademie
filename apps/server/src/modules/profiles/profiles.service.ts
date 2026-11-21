@@ -1,4 +1,4 @@
-import type { Profile, ProfileCreate, ProfileUpdate } from '@questeo/shared';
+import { STARTING_HEROES, type Profile, type ProfileCreate, type ProfileUpdate } from '@questeo/shared';
 import type { Actor } from '../../core/http/auth.ts';
 import type { Db } from '../../db/client.ts';
 import { AppError, conflict, notFound } from '../../core/errors.ts';
@@ -30,12 +30,12 @@ export function createProfilesService(db: Db) {
       return row?.familyId === familyId ? toProfile(row) : undefined;
     },
 
-    /** Nouveau profil : son héros est son héros de départ (les autres viennent des coffres). */
+    /** Nouveau profil : Alex et Lina débloqués d'emblée ; Lina portée par défaut pour une fille. */
     async create(input: ProfileCreate, familyId: string): Promise<Profile> {
       return db.transaction(async (tx) => {
         const r = profilesRepo(tx);
         const row = await r.insert({ ...input, rubies: STARTING_RUBIES, familyId });
-        await r.addHero(row.id, row.hero, 'depart');
+        for (const hero of new Set([row.hero, ...STARTING_HEROES])) await r.addHero(row.id, hero, 'depart');
         return toProfile(row);
       });
     },

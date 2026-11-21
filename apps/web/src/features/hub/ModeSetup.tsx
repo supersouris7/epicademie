@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Navigate, useNavigate, useParams } from 'react-router';
 import { chaptersOf } from '@questeo/content';
 import { SUBJECTS, getMode, playedGrade, type Profile } from '@questeo/shared';
 import { acquired } from '@questeo/engine';
 import { useSkills } from '../training/index.ts';
-import { useBosses } from '../boss/index.ts';
+import { EmperorScene, emperorDue, useBosses } from '../boss/index.ts';
+import { assetSrc } from '../../design/assets.ts';
 import { ProgressBar } from '../../shared/ui/game/ProgressBar.tsx';
 import { RELICS } from '../../design/relics.ts';
 import { MODE_MOODS } from '../../shared/lib/modes.ts';
@@ -27,7 +29,10 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
   const { data: skills } = useSkills(profile.id);
   const { data: bosses } = useBosses(profile.id);
+  // L'Empereur du Savoir se présente en plein écran une fois par jour, à l'entrée du Combat de boss.
+  const [emperor, setEmperor] = useState(() => modeId === 'boss' && emperorDue(profile.id));
   if (!mode) return <Navigate to="/hub" replace />;
+  const bannerSrc = assetSrc('bosses-empereur-banniere');
   const isBoss = mode.id === 'boss';
   // Barre sous chaque matière (classe du joueur) : notions acquises (Entraînement) ou boss vaincus (Combat).
   const grade = playedGrade(profile.grade);
@@ -54,10 +59,21 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
 
   return (
     <PageShell title={mode.name} back={back}>
-      <div className="flex items-center gap-4">
-        <Questy size={130} mood={MODE_MOODS[mode.id]} />
-        <SpeechBubble>{`${mode.pitch}. Choisis ta matière !`}</SpeechBubble>
-      </div>
+      {isBoss && bannerSrc ? (
+        // Combat de boss : bannière de l'Empereur du Savoir, maître des boss des matières.
+        <div className="cartoon relative overflow-hidden">
+          <img src={bannerSrc} alt="" aria-hidden className="block aspect-[3/1] w-full object-cover" />
+          <p className="font-display text-toon absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-4 pt-6 pb-2 text-xl tracking-wide sm:text-2xl">
+            Bats les boss des matières, reprends le savoir à l’Empereur !
+          </p>
+        </div>
+      ) : (
+        <div className="flex items-center gap-4">
+          <Questy size={130} mood={MODE_MOODS[mode.id]} />
+          <SpeechBubble>{`${mode.pitch}. Choisis ta matière !`}</SpeechBubble>
+        </div>
+      )}
+      {isBoss && emperor && <EmperorScene profileId={profile.id} onDone={() => setEmperor(false)} />}
       {/* Combat de boss : chaque boss vaincu donne un éclat de la relique de sa matière. */}
       {isBoss && (
         <div className="cartoon bg-surface-2 flex items-center gap-3 p-3" role="note">

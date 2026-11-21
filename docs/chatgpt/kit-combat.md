@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Kit combat (à joindre à ChatGPT)
 
-63 demandes · 81 images finales.
+66 demandes · 84 images finales.
 
 ## Pour toi (à lire avant de commencer)
 
@@ -16,7 +16,7 @@
 
 ```text
 Je te joins le fichier « kit-combat.md » et des images de référence de style (Questy, la mascotte, et l'interface du jeu).
-Lis tout le fichier : il fixe le style du jeu et contient 63 demandes d'images numérotées (héros, boss, ennemis, effets, arènes).
+Lis tout le fichier : il fixe le style du jeu et contient 66 demandes d'images numérotées (héros, boss, ennemis, effets, arènes).
 Règles :
 - Génère maintenant UNIQUEMENT l'image de la demande 1, puis attends.
 - Chaque fois que j'écris « suivant », génère la demande suivante. Une seule image par réponse, précédée seulement de « Demande N ».
@@ -354,7 +354,28 @@ Image 1024×1024. Sorcier en armure dorée, capuche violette marquée π, visage
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 42 — Planche « mobs » (9 éléments)
+### Demande 42 — L’Empereur du Savoir
+
+```text
+Image 1024×1024. Grand boss en armure violette et dorée, couronne à pointes, crinière blanche, cœur de galaxie, cape violette.
+Cadrage : personnage en pied centré, de face, fond transparent, halo et effets autour de lui.
+```
+
+### Demande 43 — L’Empereur du Savoir et les matières
+
+```text
+Image 1024×1024. Le même grand boss entouré des symboles des six matières dans un anneau violet.
+Cadrage : personnage en pied centré, de face, fond transparent, halo et effets autour de lui.
+```
+
+### Demande 44 — Bannière du Combat de boss
+
+```text
+Image 1536×1024, plein cadre avec décor (pas de fond magenta). L’Empereur du Savoir en buste, mains lumineuses, ciel violet étoilé et cristaux flottants.
+Cadrage : bannière très large, sujet au centre, fond peint jusqu’aux bords, sans texte.
+```
+
+### Demande 45 — Planche « mobs » (9 éléments)
 
 ```text
 Image 1024×1024 : planche de 9 éléments sur une grille invisible de 3 colonnes × 3 lignes (cases de 341×341 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
@@ -370,133 +391,133 @@ Cadrage de chaque élément : petit ennemi en pied, tourné vers la gauche, base
 9. Bloc de programmation orange arrondi et vivant (comme une brique de code), yeux blancs. Mignon mais espiègle.
 ```
 
-### Demande 43 — Mob π-bot — idle
+### Demande 46 — Mob π-bot — idle
 
 ```text
 Image 1536×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, pose idle.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 44 — Mob π-bot — attack
+### Demande 47 — Mob π-bot — attack
 
 ```text
 Image 1536×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, pose attack.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 45 — Mob π-bot — shield
+### Demande 48 — Mob π-bot — shield
 
 ```text
 Image 1536×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, pose shield.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 46 — Mob π-bot — run
+### Demande 49 — Mob π-bot — run
 
 ```text
 Image 1536×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, pose run.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 47 — Mob π-bot — jump
+### Demande 50 — Mob π-bot — jump
 
 ```text
 Image 1536×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, pose jump.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 48 — Mob π-bot — victory
+### Demande 51 — Mob π-bot — victory
 
 ```text
 Image 1536×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, pose victory.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 49 — Mob π-bot — tête menace
+### Demande 52 — Mob π-bot — tête menace
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, menace.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 50 — Mob π-bot — tête moqueur
+### Demande 53 — Mob π-bot — tête moqueur
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, moqueur.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 51 — Mob π-bot — tête joie
+### Demande 54 — Mob π-bot — tête joie
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, joie.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 52 — Mob π-bot — tête rire
+### Demande 55 — Mob π-bot — tête rire
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, rire.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 53 — Mob π-bot — tête surprise
+### Demande 56 — Mob π-bot — tête surprise
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, surprise.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 54 — Mob π-bot — tête triste
+### Demande 57 — Mob π-bot — tête triste
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, triste.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 55 — Mob π-bot — tête etourdi
+### Demande 58 — Mob π-bot — tête etourdi
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, etourdi.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 56 — Mob π-bot — tête colere
+### Demande 59 — Mob π-bot — tête colere
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, colere.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 57 — Mob π-bot — tête reflexion
+### Demande 60 — Mob π-bot — tête reflexion
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, reflexion.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 58 — Mob π-bot — tête idee
+### Demande 61 — Mob π-bot — tête idee
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, idee.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 59 — Mob π-bot — tête amour
+### Demande 62 — Mob π-bot — tête amour
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, amour.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 60 — Mob π-bot — tête dort
+### Demande 63 — Mob π-bot — tête dort
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, dort.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 61 — Planche « effets-1 » (9 éléments)
+### Demande 64 — Planche « effets-1 » (9 éléments)
 
 ```text
 Image 1024×1024 : planche de 9 éléments sur une grille invisible de 3 colonnes × 3 lignes (cases de 341×341 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
@@ -512,7 +533,7 @@ Cadrage de chaque élément : effet centré, bords nets (pas de grand halo flou)
 9. Trois petites spirales dorées en orbite (étourdi).
 ```
 
-### Demande 62 — Planche « effets-2 » (3 éléments)
+### Demande 65 — Planche « effets-2 » (3 éléments)
 
 ```text
 Image 1024×1024 : planche de 3 éléments sur une grille invisible de 3 colonnes × 3 lignes (cases de 341×341 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
@@ -522,7 +543,7 @@ Cadrage de chaque élément : effet centré, bords nets (pas de grand halo flou)
 3. Tourbillon de portail violet vu de face.
 ```
 
-### Demande 63 — Illustration principale
+### Demande 66 — Illustration principale
 
 ```text
 Image 1536×1024, plein cadre avec décor (pas de fond magenta). Scène de combat épique et joyeuse : les cinq héros alignés de gauche à droite (Alex avec son canon à plasma, Lina avec son lance-ballons, Pixel le chat avec son canon-poisson au premier plan, Ayla avec sa bombe-blaster, Tao avec son arbalète) et Questy qui lève le poing au milieu, tous face au Golem des Équations tout à droite ; en arrière-plan un château-académie violet flottant aux bannières à livre, ciel lavande, îles flottantes.
@@ -576,25 +597,28 @@ Cadrage : illustration plein cadre, composition lisible en petit, sans aucun tex
 | 39 | `bosses/sorcier-pi/head-rage-cri` |
 | 40 | `bosses/sorcier-pi/head-rage-plisse` |
 | 41 | `bosses/sorcier-pi/portrait` |
-| 42 | `bosses/minions/calculatrice`<br>`bosses/minions/cube-bot`<br>`bosses/minions/equerre`<br>`bosses/minions/compas`<br>`bosses/minions/de`<br>`bosses/minions/camembert`<br>`bosses/minions/courbe`<br>`bosses/minions/bug`<br>`bosses/minions/bloc-code` |
-| 43 | `bosses/minions/pi-bot` |
-| 44 | `bosses/minions/pi-bot-attack` |
-| 45 | `bosses/minions/pi-bot-shield` |
-| 46 | `bosses/minions/pi-bot-run` |
-| 47 | `bosses/minions/pi-bot-jump` |
-| 48 | `bosses/minions/pi-bot-victory` |
-| 49 | `bosses/minions/pi-bot-head-menace` |
-| 50 | `bosses/minions/pi-bot-head-moqueur` |
-| 51 | `bosses/minions/pi-bot-head-joie` |
-| 52 | `bosses/minions/pi-bot-head-rire` |
-| 53 | `bosses/minions/pi-bot-head-surprise` |
-| 54 | `bosses/minions/pi-bot-head-triste` |
-| 55 | `bosses/minions/pi-bot-head-etourdi` |
-| 56 | `bosses/minions/pi-bot-head-colere` |
-| 57 | `bosses/minions/pi-bot-head-reflexion` |
-| 58 | `bosses/minions/pi-bot-head-idee` |
-| 59 | `bosses/minions/pi-bot-head-amour` |
-| 60 | `bosses/minions/pi-bot-head-dort` |
-| 61 | `effects/impacts/hit-burst`<br>`effects/impacts/anneau`<br>`effects/impacts/etincelles`<br>`effects/impacts/flash`<br>`effects/impacts/explosion`<br>`effects/particles/puff`<br>`effects/particles/bouclier`<br>`effects/particles/soin`<br>`effects/particles/etourdi` |
-| 62 | `effects/impacts/onde-boss`<br>`effects/particles/confettis`<br>`effects/transitions/portail` |
-| 63 | `branding/key-art` |
+| 42 | `bosses/empereur/empereur` |
+| 43 | `bosses/empereur/empereur-reliques` |
+| 44 | `bosses/empereur/banniere` |
+| 45 | `bosses/minions/calculatrice`<br>`bosses/minions/cube-bot`<br>`bosses/minions/equerre`<br>`bosses/minions/compas`<br>`bosses/minions/de`<br>`bosses/minions/camembert`<br>`bosses/minions/courbe`<br>`bosses/minions/bug`<br>`bosses/minions/bloc-code` |
+| 46 | `bosses/minions/pi-bot` |
+| 47 | `bosses/minions/pi-bot-attack` |
+| 48 | `bosses/minions/pi-bot-shield` |
+| 49 | `bosses/minions/pi-bot-run` |
+| 50 | `bosses/minions/pi-bot-jump` |
+| 51 | `bosses/minions/pi-bot-victory` |
+| 52 | `bosses/minions/pi-bot-head-menace` |
+| 53 | `bosses/minions/pi-bot-head-moqueur` |
+| 54 | `bosses/minions/pi-bot-head-joie` |
+| 55 | `bosses/minions/pi-bot-head-rire` |
+| 56 | `bosses/minions/pi-bot-head-surprise` |
+| 57 | `bosses/minions/pi-bot-head-triste` |
+| 58 | `bosses/minions/pi-bot-head-etourdi` |
+| 59 | `bosses/minions/pi-bot-head-colere` |
+| 60 | `bosses/minions/pi-bot-head-reflexion` |
+| 61 | `bosses/minions/pi-bot-head-idee` |
+| 62 | `bosses/minions/pi-bot-head-amour` |
+| 63 | `bosses/minions/pi-bot-head-dort` |
+| 64 | `effects/impacts/hit-burst`<br>`effects/impacts/anneau`<br>`effects/impacts/etincelles`<br>`effects/impacts/flash`<br>`effects/impacts/explosion`<br>`effects/particles/puff`<br>`effects/particles/bouclier`<br>`effects/particles/soin`<br>`effects/particles/etourdi` |
+| 65 | `effects/impacts/onde-boss`<br>`effects/particles/confettis`<br>`effects/transitions/portail` |
+| 66 | `branding/key-art` |

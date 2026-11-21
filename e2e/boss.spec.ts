@@ -30,6 +30,15 @@ async function answer(page: Page, view: BattleView, right: boolean) {
   return ((await (await sent).json()) as BattleAnswerResult).battle;
 }
 
+/** L'Empereur du Savoir se présente (une fois par jour) à l'entrée du Combat de boss : deux touchers. */
+async function skipEmperor(page: Page) {
+  const emperor = page.getByRole('dialog', { name: 'L’Empereur du Savoir' });
+  await expect(emperor).toBeVisible();
+  for (let k = 0; k < 2 && (await emperor.isVisible()); k++)
+    await emperor.getByRole('button', { name: 'Passer' }).click();
+  await expect(emperor).toHaveCount(0);
+}
+
 test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', async ({ page }) => {
   test.setTimeout(90_000);
   const name = `Boss${Date.now() % 10000}`;
@@ -42,6 +51,7 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   await expect(page).toHaveURL(/\/hub$/);
 
   await page.getByRole('button', { name: /^Combat de boss/ }).click();
+  await skipEmperor(page);
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   // Gros plan du boss de la matière qui provoque, puis choix du chapitre.
   const closeUp = page.getByRole('dialog', { name: 'Sorcier π te provoque' });
@@ -135,12 +145,13 @@ test('Défaite : 5 secondes pour recommencer, puis l’entraînement', async ({ 
   test.setTimeout(60_000);
   await signupFamily(page);
   await page.getByPlaceholder('Ex. Léa').fill(`Perdu${Date.now() % 10000}`);
-  await page.getByRole('button', { name: 'Une fille' }).click();
+  await page.getByRole('button', { name: 'Un garçon' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
   await page.getByRole('button', { name: /C’est parti/ }).click();
   await expect(page).toHaveURL(/\/hub$/);
   await page.getByRole('button', { name: /^Combat de boss/ }).click();
+  await skipEmperor(page);
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   const provoke = page.getByRole('dialog', { name: /te provoque/ });
   await expect(provoke).toBeVisible();

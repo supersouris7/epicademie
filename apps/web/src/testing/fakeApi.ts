@@ -21,6 +21,7 @@ import {
   type ItemId,
   type Profile,
   type SkillProgress,
+  STARTING_HEROES,
 } from '@questeo/shared';
 
 /**
@@ -503,7 +504,7 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     disabledContent: () => ({ skills: [...disabledSet] }),
     learningReport: () => options.learning ?? emptyLearning(),
     ...billingHandlers(options.premium ?? true, uuid),
-    ownedHeroes: ({ params }) => ({ heroes: [profile(params.id).hero] }),
+    ownedHeroes: () => ({ heroes: [...STARTING_HEROES] }),
     badges: () => badgeProgress({ boss: 2, parfait: 3, perseverance: 0, chapitres: 0, consolidees: 0, coffres: 1 }),
     ...adminHandlers(reports, disabledSet),
   };

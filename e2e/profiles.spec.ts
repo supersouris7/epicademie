@@ -14,11 +14,12 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.getByPlaceholder('Ex. Léa').fill(name);
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
-  await page.getByRole('button', { name: /C’est parti/ }).click();
-  await expect(page.getByRole('alert')).toHaveText('Choisis ta classe.');
-  // Classe déduite de l'âge : Questy demande de confirmer ; « Non » ouvre la liste (du CM1 à la 3e, et Adulte).
-  await expect(page.getByText('Tu es en 5e ?')).toBeVisible();
-  await page.getByRole('button', { name: 'Non', exact: true }).click();
+  // Classe déduite de l'âge : Questy demande de confirmer dans une fenêtre au premier plan ;
+  // « Non » ouvre la liste (du CM1 à la 3e, et Adulte).
+  const gradeDialog = page.getByRole('dialog', { name: 'Ta classe' });
+  await expect(gradeDialog).toContainText('Tu es en 5e ?');
+  await gradeDialog.getByRole('button', { name: 'Non', exact: true }).click();
+  await expect(gradeDialog).toHaveCount(0);
   await expect(page.getByRole('radio', { name: 'CM1', exact: true })).toBeVisible();
   await expect(page.getByRole('radio', { name: '3e', exact: true })).toBeVisible();
   await expect(page.getByRole('radio', { name: 'Adulte', exact: true })).toBeVisible();
@@ -33,14 +34,15 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByRole('group', { name: 'Mon joueur' })).toContainText(name);
   await expect(page.getByRole('progressbar', { name: /^Niveau 1/ })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Plein écran' })).toHaveCount(0);
-  await expect(page.getByRole('button', { name: /Alex.*changer de héros/ })).toBeVisible();
-  // Menu « Mon héros » : Alex seul jouable, les autres « À venir ».
-  await page.getByRole('button', { name: /Alex.*changer de héros/ }).click();
+  // Une fille : Lina est proposée par défaut.
+  await expect(page.getByRole('button', { name: /Lina.*changer de héros/ })).toBeVisible();
+  // Menu « Mon héros » : Alex et Lina débloqués dès le début.
+  await page.getByRole('button', { name: /Lina.*changer de héros/ }).click();
   await expect(page.getByRole('heading', { name: 'Mon héros' })).toBeVisible();
+  await expect(page.getByRole('radio', { name: /Lina/ })).toBeChecked();
+  await expect(page.getByText(/2 sur 2 trouvés/)).toBeVisible();
+  await page.getByRole('radio', { name: /Alex/ }).click();
   await expect(page.getByRole('radio', { name: /Alex/ })).toBeChecked();
-  // Collection : Alex (héros de départ) ; Lina se trouve dans les coffres.
-  await expect(page.getByRole('img', { name: 'Lina, à trouver dans un coffre' })).toBeVisible();
-  await expect(page.getByText(/1 sur 2 trouvés/)).toBeVisible();
   // Barre de navigation du bas sur les écrans principaux.
   const nav = page.getByRole('navigation', { name: 'Menu principal' });
   await nav.getByRole('button', { name: 'Progrès' }).click();

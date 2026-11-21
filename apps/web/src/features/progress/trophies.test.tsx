@@ -16,7 +16,7 @@ describe('Mes progrès : trophées et badges', () => {
     const trophies = await screen.findByRole('region', { name: 'Trophées et badges' });
     const bosses = await within(trophies).findByRole('list', { name: 'Boss vaincus' });
     expect(within(bosses).getByLabelText('Calcul mental : médaille Or')).toHaveTextContent('× 2');
-    expect(within(trophies).getByText(/Acad-Héros trouvés \(1 sur 2\)/)).toBeInTheDocument();
+    expect(within(trophies).getByText(/Acad-Héros trouvés \(2 sur 2\)/)).toBeInTheDocument();
     expect(await within(trophies).findByRole('heading', { name: 'Badges' })).toBeInTheDocument();
   });
 
