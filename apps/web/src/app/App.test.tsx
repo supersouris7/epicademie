@@ -93,7 +93,7 @@ describe('accueil et choix du jeu', () => {
     const { user } = renderApp('/jouer/boss');
     await user.click(await screen.findByRole('button', { name: 'Maths' }));
     const closeUp = await screen.findByRole('dialog', { name: /te provoque/ });
-    await user.click(within(closeUp).getByRole('button', { name: 'Choisir mon chapitre' }));
+    await user.click(within(closeUp).getByRole('button', { name: 'Passer' }));
     expect(await screen.findByRole('heading', { name: 'Combat de boss' })).toBeInTheDocument();
   });
 

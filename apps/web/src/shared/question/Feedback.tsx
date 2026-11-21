@@ -20,7 +20,6 @@ interface FeedbackProps {
   readonly given?: Response;
   readonly xp: number;
   readonly streak: number;
-  readonly variantNext: boolean;
   readonly gender: Gender | null;
   readonly onMemo: () => void;
   readonly onNext: () => void;
@@ -42,8 +41,8 @@ export function Feedback(props: FeedbackProps) {
   return props.correct ? <Success {...props} /> : <Explanation {...props} />;
 }
 
-/** Après une bonne réponse, on enchaîne tout seul : pas de clic inutile (le bouton reste pour aller plus vite). */
-const AUTO_NEXT_MS = 1500;
+/** Après une bonne réponse, on enchaîne tout seul après l'annonce des XP : aucun bouton. */
+export const AUTO_NEXT_MS = 2700;
 
 function Success({ question, retried, xp, streak, gender, onNext }: FeedbackProps) {
   const short = isShort();
@@ -53,9 +52,9 @@ function Success({ question, retried, xp, streak, gender, onNext }: FeedbackProp
     next.current = onNext;
   }, [onNext]);
   useEffect(() => {
-    const t = setTimeout(() => next.current(), retried ? AUTO_NEXT_MS + 700 : AUTO_NEXT_MS);
+    const t = setTimeout(() => next.current(), AUTO_NEXT_MS);
     return () => clearTimeout(t);
-  }, [retried]);
+  }, []);
   const mood: MoodId = retried ? 'wink' : streak >= 10 ? 'proud' : streak >= 5 ? 'laugh' : 'happy';
   return (
     <motion.section
@@ -84,35 +83,25 @@ function Success({ question, retried, xp, streak, gender, onNext }: FeedbackProp
           </p>
         </div>
       </div>
-      <div className="flex shrink-0 justify-end">
-        <GameButton
-          variant="success"
-          size={short ? 'sm' : undefined}
-          icon="icons-navigation-next"
-          onClick={onNext}
-          className="relative overflow-hidden"
-        >
-          Suivant
-          {/* Jauge qui se remplit jusqu'au passage automatique. */}
-          <motion.span
-            aria-hidden
-            className="absolute bottom-0 left-0 h-1 bg-white/70"
-            initial={{ width: '0%' }}
-            animate={{ width: '100%' }}
-            transition={{ duration: (retried ? AUTO_NEXT_MS + 700 : AUTO_NEXT_MS) / 1000, ease: 'linear' }}
-          />
-        </GameButton>
-      </div>
+      {/* Jauge qui se remplit jusqu'au passage automatique à la question suivante. */}
+      <span aria-hidden className="h-1.5 shrink-0 overflow-hidden rounded-full bg-black/10">
+        <motion.span
+          className="bg-success block h-full"
+          initial={{ width: '0%' }}
+          animate={{ width: '100%' }}
+          transition={{ duration: AUTO_NEXT_MS / 1000, ease: 'linear' }}
+        />
+      </span>
     </motion.section>
   );
 }
 
 /**
  * « On regarde ensemble » : Questy part de la réponse de l'enfant, dit ce qui cloche, puis explique
- * la question pas à pas (une bulle par appui sur « Continuer »). L'animation du tableau de conversion
- * accompagne la première étape quand la question en a une.
+ * la question pas à pas (une bulle par appui sur « Suivant »). L'explication ne se passe pas :
+ * on lit chaque étape, et seulement à la fin « Vérifions si j'ai compris » mène à la suite.
  */
-function Explanation({ question, why, given, variantNext, onMemo, onNext }: FeedbackProps) {
+function Explanation({ question, why, given, onMemo, onNext }: FeedbackProps) {
   const short = isShort();
   const steps = question.steps;
   // Première bulle + première étape d'emblée : un appui de moins.
@@ -159,6 +148,9 @@ function Explanation({ question, why, given, variantNext, onMemo, onNext }: Feed
               <MathText text={why} terms />
             </span>
           )}
+          <span className="text-muted mt-1 block text-base font-bold">
+            Pas de panique : on regarde ensemble pourquoi. Lis chaque étape, c’est comme ça qu’on réussit la prochaine !
+          </span>
         </Bubble>
         {steps.slice(0, shown).map((s, i) => (
           <Bubble key={i} step={i + 1}>
@@ -172,25 +164,22 @@ function Explanation({ question, why, given, variantNext, onMemo, onNext }: Feed
         ))}
       </div>
 
-      <div className="flex shrink-0 flex-wrap justify-end gap-2">
-        {!done && (
+      <div className="flex shrink-0 justify-end">
+        {done ? (
+          <GameButton size={short ? 'sm' : undefined} icon="icons-navigation-next" onClick={onNext}>
+            Vérifions si j’ai compris
+          </GameButton>
+        ) : (
           <GameButton
-            variant="surface"
+            variant="accent"
             size={short ? 'sm' : undefined}
+            icon="icons-navigation-next"
             onClick={() => setShown((n) => n + 1)}
-            aria-label="Continuer l’explication"
+            aria-label="Suivant : étape suivante de l’explication"
           >
-            Continuer ▸
+            Suivant
           </GameButton>
         )}
-        <GameButton
-          variant={done ? 'primary' : 'accent'}
-          size={short ? 'sm' : undefined}
-          icon={variantNext ? 'icons-navigation-retry' : 'icons-navigation-next'}
-          onClick={onNext}
-        >
-          {variantNext ? 'Je réessaie' : 'Suivant'}
-        </GameButton>
       </div>
     </motion.section>
   );

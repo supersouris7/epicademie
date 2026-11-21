@@ -3,7 +3,7 @@ import { levelFromXp } from '@questeo/engine';
 import type { Profile } from '@questeo/shared';
 import { CharacterAvatar } from './game/CharacterAvatar.tsx';
 import { GameIcon } from './game/GameIcon.tsx';
-import { ProgressBar } from './game/ProgressBar.tsx';
+import { HUD_FRAME, HudBar, HudPortrait } from './game/Hud.tsx';
 
 const ITEMS = [
   { to: '/hub', label: 'Accueil', icon: 'icons-navigation-home' },
@@ -14,8 +14,9 @@ const ITEMS = [
 ] as const;
 
 /**
- * Barre du haut des écrans principaux, figée : le joueur en bref (avatar, prénom, niveau, pièces)
- * et les cinq onglets. Sur téléphone, deux lignes ; à partir de la tablette en paysage, une seule.
+ * Barre du haut des écrans principaux, figée, au style du HUD de combat (même cadre, portrait
+ * incliné à bord doré, barre segmentée inclinée) : le joueur en bref (avatar, prénom, niveau,
+ * pièces) et les cinq onglets. Sur téléphone, deux lignes ; à partir de la tablette en paysage, une seule.
  */
 export function MainNav({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
@@ -23,25 +24,28 @@ export function MainNav({ profile }: { readonly profile: Profile }) {
   const { level, xpInLevel, xpForNext } = levelFromXp(profile.xp, profile.gender);
   return (
     <div className="sticky top-0 z-40 -mx-4 px-4 pt-2 pb-2 sm:-mx-6 sm:px-6">
-      <div className="bg-accent-strong flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-[1.25rem] p-1.5 shadow-[0_6px_0_var(--shadow)] lg:flex-nowrap">
+      <div className={`${HUD_FRAME} flex flex-wrap items-center gap-x-3 gap-y-1.5 p-1.5 lg:flex-nowrap`}>
         {/* Le joueur : toucher l'avatar pour changer de joueur. */}
         <div className="flex min-w-0 flex-1 items-center gap-2 pl-1" aria-label="Mon joueur" role="group">
           <button type="button" onClick={() => void navigate('/')} aria-label="Changer de joueur" className="shrink-0">
-            <CharacterAvatar avatar={profile.avatar} size={44} />
+            <HudPortrait side="left" size={50}>
+              <CharacterAvatar avatar={profile.avatar} size={42} />
+            </HudPortrait>
           </button>
           {/* Pseudo, puis niveau et barre d'XP (même barre segmentée que celles du combat). */}
           <span className="font-display text-toon max-w-[34%] shrink truncate text-lg leading-tight tracking-wide">
             {profile.name}
           </span>
-          <span className="font-display text-gold shrink-0 text-sm">Niv. {level}</span>
-          <ProgressBar
+          <span className="font-display text-toon shrink-0 text-sm text-[var(--gold)] italic">Niv. {level}</span>
+          <HudBar
+            side="right"
+            kind="xp"
+            role="progressbar"
             className="min-w-16 flex-1 sm:max-w-48"
             value={xpInLevel}
             max={xpForNext}
             segments={10}
-            color="var(--gold)"
             label={`Niveau ${level}, ${xpInLevel} XP sur ${xpForNext}`}
-            size="sm"
           />
           <span
             className="font-display text-toon flex shrink-0 items-center gap-1 pr-1 text-lg"
@@ -70,7 +74,7 @@ export function MainNav({ profile }: { readonly profile: Profile }) {
                     type="button"
                     onClick={() => void navigate(item.to)}
                     aria-current={active ? 'page' : undefined}
-                    className={`font-display text-toon flex w-full flex-col items-center gap-0.5 rounded-2xl px-2 py-1 text-xs tracking-wide transition-colors sm:text-sm lg:w-20 ${active ? 'bg-accent gloss ring-gold ring-2' : 'hover:bg-white/10'}`}
+                    className={`font-display text-toon flex w-full flex-col items-center gap-0.5 rounded-2xl px-2 py-1 text-xs tracking-wide transition-colors sm:text-sm lg:w-20 ${active ? 'bg-[radial-gradient(circle_at_50%_35%,#5b3a9e,#1b0f33)] ring-2 ring-[var(--gold)]' : 'hover:bg-white/10'}`}
                   >
                     <span className="flex h-7 w-7 items-center justify-center">
                       <GameIcon id={item.icon} size={26} />

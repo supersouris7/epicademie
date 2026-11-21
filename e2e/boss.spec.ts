@@ -46,8 +46,8 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   // Gros plan du boss de la matière qui provoque, puis choix du chapitre.
   const closeUp = page.getByRole('dialog', { name: 'Sorcier π te provoque' });
   await expect(closeUp).toContainText(/challenger|Aucun chapitre|n’ont pas mangé|cube/);
-  await page.getByRole('button', { name: 'Choisir mon chapitre' }).click();
-  await expect(closeUp).toHaveCount(0);
+  // Plus de bouton : le gros plan se ferme tout seul (ou au toucher).
+  await expect(closeUp).toHaveCount(0, { timeout: 10_000 });
   await expect(page.getByRole('heading', { name: 'Combat de boss' })).toBeVisible();
   // Tous les boss sont ouverts d'emblée ; chapitres sans boss « À venir ». Panneau « Équipement ».
   const relatifs = page.getByRole('listitem').filter({ hasText: 'Nombres relatifs' });
@@ -142,7 +142,9 @@ test('Défaite : 5 secondes pour recommencer, puis l’entraînement', async ({ 
   await expect(page).toHaveURL(/\/hub$/);
   await page.getByRole('button', { name: /^Combat de boss/ }).click();
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
-  await page.getByRole('button', { name: 'Choisir mon chapitre' }).click();
+  const provoke = page.getByRole('dialog', { name: /te provoque/ });
+  await expect(provoke).toBeVisible();
+  await expect(provoke).toHaveCount(0, { timeout: 10_000 });
   const started = page.waitForResponse((r) => r.url().endsWith('/api/v1/battles'));
   await page
     .getByRole('listitem')

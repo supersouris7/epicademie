@@ -118,7 +118,7 @@ function RetryHint({ retry, hint }: { readonly retry: Retry; readonly hint: stri
             <strong>Indice :</strong> <MathText text={hint} />
           </span>
         </span>
-        <span className="text-muted mt-1 block">Essaie encore !</span>
+        <span className="text-muted mt-1 block">Relis l’indice et réfléchis avant de répondre. Essaie encore !</span>
       </span>
     </motion.p>
   );
@@ -179,7 +179,7 @@ function AnswerDock({
   readonly onNext: () => void;
   readonly onMemo: () => void;
 }) {
-  const { answered, retry, picked, training } = screen;
+  const { answered, retry, picked } = screen;
   const explaining = answered !== null && !answered.correct;
   return (
     <section
@@ -194,7 +194,6 @@ function AnswerDock({
           given={answered.given}
           xp={answered.xp}
           streak={answered.streak}
-          variantNext={training.pendingVariant !== null}
           gender={gender}
           onMemo={onMemo}
           onNext={onNext}

@@ -34,18 +34,20 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
     await page.getByRole('button', { name: 'OK' }).click();
   };
   await wrong();
-  await expect(page.getByText('Essaie encore !')).toBeVisible();
+  await expect(page.getByText(/Essaie encore !/)).toBeVisible();
   // 2e erreur : explication de Questy, bulle par bulle, et mémo à la demande.
   await wrong();
   const explanation = page.getByRole('region', { name: 'Explication de Questy' });
   await expect(explanation).toContainText('Tu as répondu −1');
   await expect(explanation).toContainText('La bonne réponse');
-  const more = page.getByRole('button', { name: 'Continuer l’explication' });
+  // L'explication ne se passe pas : « Suivant » à chaque étape, puis « Vérifions si j'ai compris ».
+  await expect(page.getByRole('button', { name: /Vérifions/ })).toBeHidden();
+  const more = page.getByRole('button', { name: /^Suivant/ });
   while (await more.isVisible()) await more.click();
   await page.getByRole('button', { name: 'Le truc à retenir' }).click();
   await expect(page.getByRole('dialog')).toContainText('Tables de multiplication');
   await page.getByRole('button', { name: /J’ai compris/ }).click();
-  await page.getByRole('button', { name: /Je réessaie/ }).click();
+  await page.getByRole('button', { name: 'Vérifions si j’ai compris' }).click();
   await expect(page.getByText('Question similaire', { exact: true })).toBeVisible();
 
   // Le bilan reçoit un coffre (forcé ici, le tirage est aléatoire) : il s'ouvre en plein écran au toucher.
@@ -60,18 +62,19 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
 
   // On répond « −1 » (toujours faux) jusqu'à la fin de la série : 5 questions + 3 variantes au plus.
   const ok = page.getByRole('button', { name: 'OK' });
-  const next = page.getByRole('button', { name: /Suivant|Je réessaie/ });
+  const next = page.getByRole('button', { name: /^Suivant|Vérifions si j’ai compris/ });
   const end = page.getByText(/On s’accroche/);
   for (let i = 0; i < 80; i++) {
     await expect(ok.or(next).or(end).first()).toBeVisible();
     if (await end.isVisible()) break;
     if (await ok.isVisible()) {
       await wrong();
-      await expect(next.or(page.getByText('Essaie encore !'))).toBeVisible();
+      await expect(next.or(page.getByText(/Essaie encore !/))).toBeVisible();
       continue;
     }
+    const last = ((await next.textContent()) ?? '').includes('Vérifions');
     await next.click();
-    await expect(next).toBeHidden();
+    if (last) await expect(next).toBeHidden();
   }
   const chest = page.getByRole('dialog', { name: 'Un coffre d’équipement !' });
   await expect(chest).toBeVisible();
