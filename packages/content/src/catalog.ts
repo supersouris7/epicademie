@@ -6,6 +6,7 @@ import { ANGLAIS_CHAPTERS } from './anglais/index.ts';
 import { ESPAGNOL_CHAPTERS } from './espagnol/index.ts';
 import { PHYSIQUE_CHAPTERS } from './physique/index.ts';
 import { GEOGRAPHIE_CHAPTERS } from './geographie/index.ts';
+import { HISTOIRE_CHAPTERS } from './histoire/index.ts';
 import type { Chapter, Level, Question, Skill } from './types.ts';
 
 export const CHAPTERS: readonly Chapter[] = [
@@ -14,6 +15,7 @@ export const CHAPTERS: readonly Chapter[] = [
   ...ESPAGNOL_CHAPTERS,
   ...PHYSIQUE_CHAPTERS,
   ...GEOGRAPHIE_CHAPTERS,
+  ...HISTOIRE_CHAPTERS,
 ];
 
 const skills = new Map<string, { skill: Skill; chapter: Chapter }>();

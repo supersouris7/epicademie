@@ -31,6 +31,14 @@ vérifié. Les maths représentent déjà environ 20 000 lignes de générateurs
     simple (6e), verbes irréguliers et prétérit régulier (5e), comparatif et superlatif (4e),
     present perfect (3e) ;
   - verbes irréguliers : tableau de 52 verbes du British Council.
+- **Espagnol (5e–3e)** : conjugaisons de la Real Academia Española (dle.rae.es) — présent,
+  pretérito indefinido, futur, pretérito perfecto compuesto ; 22 verbes.
+- **Physique-chimie (5e–3e)** : relations du programme du cycle 4 (BOEN n° 31 du 30 juillet 2020)
+  et unités, symboles et préfixes du BIPM (SI, 9e édition).
+- **Géographie (CM1–3e)** : INSEE, Code officiel géographique 2025 (régions, départements,
+  préfectures) ; Union européenne (capitales et monnaie des 27 États membres).
+- **Histoire (CM1–6e)** : faits écrits tels quels dans le programme du cycle 3 (citation gardée
+  avec chaque question). Le cycle 4 reste à faire sur le même principe.
 - **Ancien pilote** : anglais 5e, verbes irréguliers.
   - 24 verbes, tous vérifiés sur Wiktionary, _Appendix:English irregular verbs_,
     révision 91798533. Cambridge Dictionary refuse les accès automatisés.
