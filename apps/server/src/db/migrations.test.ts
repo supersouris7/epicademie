@@ -34,6 +34,47 @@ describe('migrations', () => {
     await expect(assertSchemaUpToDate(database, MIGRATIONS_DIR)).resolves.toBeUndefined();
   });
 
+  it('journal : dates strictement croissantes (sinon le migrateur saute une migration sans rien dire)', () => {
+    const journal = JSON.parse(readFileSync(path.join(MIGRATIONS_DIR, 'meta', '_journal.json'), 'utf8')) as {
+      entries: { tag: string; when: number }[];
+    };
+    for (let i = 1; i < journal.entries.length; i++) {
+      const [prev, cur] = [journal.entries[i - 1], journal.entries[i]];
+      expect(cur?.when, `${cur?.tag} après ${prev?.tag}`).toBeGreaterThan(prev?.when ?? 0);
+    }
+  });
+
+  it('une migration sautée rend la base « pas à jour »', async () => {
+    database = await openDatabase('pglite://memory');
+    await runMigrations(database, MIGRATIONS_DIR);
+    await database.db.execute(
+      sql`delete from drizzle.__drizzle_migrations where id = (select min(id) from drizzle.__drizzle_migrations)`,
+    );
+    expect((await schemaStatus(database, MIGRATIONS_DIR)).upToDate).toBe(false);
+  });
+
+  it('coffres : depuis une base en 0010, la colonne arrive et les séries terminées comptent un coffre', async () => {
+    const dir = migrationsUpTo(11); // jusqu'à 0010
+    try {
+      database = await openDatabase('pglite://memory');
+      await runMigrations(database, dir);
+      const { db } = database;
+      await db.execute(sql`insert into profiles (id, name, avatar, hero) values
+        ('77777777-7777-4777-8777-777777777777', 'Léo', '{"style":"pixelbot","seed":"l"}', 'alex')`);
+      await db.execute(sql`insert into sessions (profile_id, mode, subject, chapter_id, finished_at, answered) values
+        ('77777777-7777-4777-8777-777777777777', 'entrainement', 'maths', 'm5-calcul', now(), 4),
+        ('77777777-7777-4777-8777-777777777777', 'entrainement', 'maths', 'm5-calcul', null, 2),
+        ('77777777-7777-4777-8777-777777777777', 'boss', 'maths', 'm5-relatifs', now(), 7)`);
+      await runMigrations(database, MIGRATIONS_DIR);
+      expect((await schemaStatus(database, MIGRATIONS_DIR)).upToDate).toBe(true);
+      const chests: unknown = await db.execute(sql`select mode, chest from sessions order by mode, chest`);
+      expect(JSON.stringify(chests)).toContain('{"mode":"entrainement","chest":"commun"}');
+      expect(JSON.stringify(chests).match(/"chest":"commun"/g)).toHaveLength(1);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it('refuse une URL de base inconnue', async () => {
     await expect(openDatabase('mysql://x')).rejects.toThrow(/DATABASE_URL/);
   });

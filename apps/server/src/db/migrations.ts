@@ -55,8 +55,10 @@ export async function schemaStatus(database: Database, migrationsFolder: string)
   )[0];
   const count = Number(applied?.n ?? 0);
   const lastApplied = Number(applied?.created_at ?? 0);
+  // Les deux conditions : la dernière migration est passée, et aucune n'a été sautée (une date
+  // de journal plus ancienne que la précédente serait ignorée en silence par le migrateur).
   return {
-    upToDate: !last || lastApplied >= last.folderMillis,
+    upToDate: (!last || lastApplied >= last.folderMillis) && count >= expected.length,
     expected: expected.length,
     applied: count,
   };
