@@ -28,6 +28,10 @@ export const GLOSSARY_FAMILIES = {
   decimaux: 'Les nombres décimaux',
   fractions: 'Les fractions',
   mesures: 'Longueurs, aires et volumes',
+  relatifs: 'Les nombres relatifs',
+  algebre: 'Les équations',
+  donnees: 'Les statistiques',
+  geometrie: 'La géométrie',
 } as const;
 export type GlossaryFamily = keyof typeof GLOSSARY_FAMILIES;
 
@@ -221,6 +225,114 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
     definition: 'Le nombre du **bas** d’une fraction : en combien de parts égales on a partagé.',
     example: 'Dans {3/4}, le dénominateur est 4 : on a partagé en 4 parts égales.',
     family: 'fractions',
+  },
+  // ——— Fractions (suite) ———
+  {
+    id: 'fraction',
+    word: 'fraction',
+    forms: ['fraction', 'fractions'],
+    definition:
+      'Un nombre écrit avec deux nombres séparés par un trait : en haut le **numérateur** (les parts prises), en bas le **dénominateur** (le nombre de parts égales).',
+    example: '{3/4} : on partage en 4 parts égales et on en prend 3.',
+    visual: { kind: 'fraction', parts: [{ num: 3, den: 4 }] },
+    family: 'fractions',
+  },
+  // ——— Les nombres relatifs ———
+  {
+    id: 'relatif',
+    word: 'nombre relatif',
+    forms: ['nombre relatif', 'nombres relatifs'],
+    definition:
+      'Un nombre avec un signe : **positif** (plus grand que zéro) ou **négatif** (plus petit que zéro, écrit avec −).',
+    example: '−3 est négatif, 5 est positif ; sur la droite graduée, −3 est à gauche de zéro.',
+    visual: { kind: 'droite', values: [-3, 5] },
+    family: 'relatifs',
+  },
+  {
+    id: 'oppose',
+    word: 'opposé',
+    forms: ['opposé', 'opposés', 'opposée'],
+    definition: 'Deux nombres opposés sont à la même distance de zéro, de part et d’autre : seul le signe change.',
+    example: 'L’opposé de 4 est −4 ; l’opposé de −7 est 7.',
+    visual: { kind: 'droite', values: [-4, 4] },
+    family: 'relatifs',
+  },
+  // ——— Les équations ———
+  {
+    id: 'equation',
+    word: 'équation',
+    forms: ['équation', 'équations'],
+    definition:
+      'Une égalité avec une **inconnue** (une lettre, souvent x). La résoudre, c’est trouver la valeur qui rend l’égalité vraie.',
+    example: 'x + 3 = 7 : la solution est 4, car 4 + 3 = 7.',
+    family: 'algebre',
+  },
+  {
+    id: 'inconnue',
+    word: 'inconnue',
+    forms: ['inconnue', 'inconnues'],
+    definition: 'Le nombre que l’on cherche dans une équation. On le note avec une lettre.',
+    example: 'Dans 2 × x = 10, l’inconnue est x ; elle vaut 5.',
+    family: 'algebre',
+  },
+  // ——— Les statistiques ———
+  {
+    id: 'moyenne',
+    word: 'moyenne',
+    forms: ['moyenne', 'moyennes'],
+    definition: 'On additionne toutes les valeurs, puis on divise par le nombre de valeurs.',
+    example: 'Notes 12, 14 et 16 : (12 + 14 + 16) ÷ 3 = 42 ÷ 3 = 14.',
+    family: 'donnees',
+  },
+  {
+    id: 'mediane',
+    word: 'médiane',
+    forms: ['médiane', 'médianes'],
+    definition:
+      'La valeur du milieu quand les valeurs sont rangées dans l’ordre : autant de valeurs en dessous qu’au-dessus.',
+    example: '3 ; 5 ; 9 : la médiane est 5.',
+    family: 'donnees',
+  },
+  // ——— La géométrie ———
+  {
+    id: 'parallele',
+    word: 'parallèles',
+    forms: ['parallèle', 'parallèles'],
+    definition: 'Deux droites parallèles ne se croisent jamais : l’écart entre elles reste toujours le même.',
+    example: 'Les deux bords d’une règle sont parallèles.',
+    family: 'geometrie',
+  },
+  {
+    id: 'perpendiculaire',
+    word: 'perpendiculaires',
+    forms: ['perpendiculaire', 'perpendiculaires'],
+    definition: 'Deux droites perpendiculaires se coupent en formant un **angle droit**.',
+    example: 'Les deux côtés qui partent d’un coin d’une feuille sont perpendiculaires.',
+    family: 'geometrie',
+  },
+  {
+    id: 'angle-droit',
+    word: 'angle droit',
+    forms: ['angle droit', 'angles droits'],
+    definition: 'Un angle de 90°, comme le coin d’une feuille. On le vérifie avec l’équerre.',
+    example: 'Un carré a 4 angles droits.',
+    family: 'geometrie',
+  },
+  {
+    id: 'rayon',
+    word: 'rayon',
+    forms: ['rayon', 'rayons'],
+    definition: 'La distance entre le centre d’un cercle et n’importe quel point du cercle.',
+    example: 'Un cercle de rayon 3 cm : chaque point du cercle est à 3 cm du centre.',
+    family: 'geometrie',
+  },
+  {
+    id: 'diametre',
+    word: 'diamètre',
+    forms: ['diamètre', 'diamètres'],
+    definition: 'Un segment qui traverse le cercle en passant par son centre ; il mesure deux rayons.',
+    example: 'Rayon 3 cm → diamètre 2 × 3 = 6 cm.',
+    family: 'geometrie',
   },
   // ——— Longueurs, aires et volumes ———
   {

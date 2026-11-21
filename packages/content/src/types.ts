@@ -171,7 +171,9 @@ export type QuestionDraft = Omit<Question, 'skillId' | 'level' | 'seed' | 'traps
  * - `division` : la division posée, chaque nombre étiqueté (dividende, diviseur, quotient, reste),
  *   le partage en paquets et l'égalité dividende = diviseur × quotient + reste ;
  * - `unites` : le lien longueur → aire → volume (1 cm, 1 cm², 1 cm³) ;
- * - `rangs` : le nombre dans le tableau des rangs (partie entière, décimales).
+ * - `rangs` : le nombre dans le tableau des rangs (partie entière, décimales) ;
+ * - `fraction` : la fraction dessinée en parts égales (dénominateur), parts prises coloriées ;
+ * - `droite` : des nombres relatifs placés sur une droite graduée autour de zéro.
  */
 export type Demo =
   | {
@@ -183,7 +185,9 @@ export type Demo =
     }
   | { readonly kind: 'division'; readonly dividend: number; readonly divisor: number }
   | { readonly kind: 'unites'; readonly focus: 'longueur' | 'aire' | 'volume'; readonly unit?: string }
-  | { readonly kind: 'rangs'; readonly value: string };
+  | { readonly kind: 'rangs'; readonly value: string }
+  | { readonly kind: 'fraction'; readonly parts: readonly { readonly num: number; readonly den: number }[] }
+  | { readonly kind: 'droite'; readonly values: readonly number[] };
 
 export interface Lesson {
   /** « Le truc à retenir » : 2-3 phrases courtes à hauteur d'enfant, avec un mini-exemple. */
