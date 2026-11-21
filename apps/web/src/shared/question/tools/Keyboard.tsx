@@ -48,7 +48,8 @@ export function Keyboard({ onKey, onSubmit, canSubmit, upper, onShift, onUnknown
       if (document.body.dataset.keyboard || e.ctrlKey || e.metaKey || e.altKey) return;
       if (e.key === 'Enter') {
         if (canSubmit) onSubmit();
-      } else if (e.key === 'Backspace') onKey('⌫');
+      } else if (e.key === '?' && !canSubmit && onUnknown) onUnknown();
+      else if (e.key === 'Backspace') onKey('⌫');
       else if (e.key === "'") onKey('’');
       else if (e.key.length === 1 && /[\p{L} \-’¿¡]/u.test(e.key)) onKey(e.key);
       else return;
@@ -56,7 +57,7 @@ export function Keyboard({ onKey, onSubmit, canSubmit, upper, onShift, onUnknown
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [onKey, onSubmit, canSubmit]);
+  }, [onKey, onSubmit, canSubmit, onUnknown]);
 
   const key = (k: string, extra = '', label: string = k) => (
     <button

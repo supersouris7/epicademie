@@ -36,12 +36,16 @@ export function NumPad({
       else if (e.key === '-' && allowMinus) onKey('−');
       else if (e.key === 'Backspace') onKey('⌫');
       else if (e.key === 'Enter' && canSubmit) onSubmit();
+      // « ? » au clavier : l'aide, quand rien n'est saisi.
+      else if (e.key === '?' && !canSubmit && onUnknown) onUnknown();
+      // Fraction : « / », Tab ou les flèches passent du numérateur au dénominateur.
+      else if (extraKey && ['/', 'Tab', 'ArrowDown', 'ArrowUp'].includes(e.key)) extraKey.onPress();
       else return;
       e.preventDefault();
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [onKey, onSubmit, canSubmit, allowComma, allowMinus]);
+  }, [onKey, onSubmit, canSubmit, allowComma, allowMinus, onUnknown, extraKey]);
 
   // Les touches remplissent la hauteur de la zone de saisie (même taille quel que soit l'onglet).
   const keyClass = 'cartoon cartoon-press font-display h-full min-h-10 text-3xl [@media(max-height:500px)]:text-2xl';
