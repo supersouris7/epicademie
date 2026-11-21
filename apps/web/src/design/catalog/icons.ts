@@ -158,10 +158,19 @@ export const ICONS: readonly (readonly [sheet: string, rows: readonly IconRow[]]
   [
     'coffres',
     [
-      ['rewards/chests/commun', 'coffre en métal gris à bandes orange', 2, 'chest-closed'],
-      ['rewards/chests/rare', 'coffre violet à ferrures dorées, lueur violette dans la serrure', 2, 'chest-closed'],
-      ['rewards/chests/epique', 'coffre tech cyan et violet aux lignes lumineuses', 2, 'chest-closed'],
-      ['rewards/chests/ouvert', 'coffre violet ouvert débordant de pièces d’or', 2, 'chest-open'],
+      ['rewards/chests/commun', 'coffre commun : métal gris à bandes orange, lumières cyan', 2, 'chest-closed'],
+      ['rewards/chests/rare', 'coffre rare : bleu à ferrures blanches, fiole lumineuse', 2, 'chest-closed'],
+      ['rewards/chests/epique', 'coffre épique : violet à ferrures dorées, livre ouvert', 2, 'chest-closed'],
+      [
+        'rewards/chests/legendaire',
+        'coffre légendaire : or et violet, ailes, diamant bleu, halo doré',
+        2,
+        'chest-closed',
+      ],
+      ['rewards/chests/commun-ouvert', 'coffre commun ouvert, lumière dorée', 2, 'chest-open'],
+      ['rewards/chests/rare-ouvert', 'coffre rare ouvert, lumière bleue', 2, 'chest-open'],
+      ['rewards/chests/epique-ouvert', 'coffre épique ouvert, lumière violette', 2, 'chest-open'],
+      ['rewards/chests/legendaire-ouvert', 'coffre légendaire ouvert, lumière dorée', 2, 'chest-open'],
       ['rewards/chests/carte-mystere', 'carte violette à cadre doré portant un grand point d’interrogation', 3],
       ['rewards/chests/cadeau', 'paquet cadeau rouge à ruban doré', 3],
     ],

@@ -130,7 +130,9 @@ export type Response =
   | { readonly kind: 'fraction'; readonly num: string; readonly den: string }
   | { readonly kind: 'choice'; readonly index: number }
   | { readonly kind: 'point'; readonly x: number; readonly y: number }
-  | { readonly kind: 'text'; readonly text: string };
+  | { readonly kind: 'text'; readonly text: string }
+  /** « Je ne sais pas » : compte comme une erreur (indice, puis explication). */
+  | { readonly kind: 'unknown' };
 
 /** Erreur typique prévue : valeur fausse attendue et explication ciblée. */
 export type Trap =

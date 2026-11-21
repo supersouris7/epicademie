@@ -61,18 +61,11 @@ export function learningRepo(db: Executor) {
         .select({ skillId: skillStates.skillId, best: skillStates.bestSeries, stage: skillStates.stage })
         .from(skillStates)
         .where(eq(skillStates.profileId, profileId));
-      // Coffres ouverts : une série d'entraînement terminée avec au moins une réponse.
+      // Coffres reçus (entraînement et boss).
       const [chests] = await db
         .select({ n: sql<number>`count(*)::int` })
         .from(sessions)
-        .where(
-          and(
-            eq(sessions.profileId, profileId),
-            ne(sessions.mode, 'boss'),
-            isNotNull(sessions.finishedAt),
-            gt(sessions.answered, 0),
-          ),
-        );
+        .where(and(eq(sessions.profileId, profileId), isNotNull(sessions.chest)));
       return { boss: boss?.n ?? 0, perfect: perfect?.n ?? 0, retries: retries?.n ?? 0, chests: chests?.n ?? 0, medals };
     },
   };

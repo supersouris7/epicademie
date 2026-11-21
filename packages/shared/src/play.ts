@@ -17,6 +17,8 @@ export const ResponseSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('choice'), index: z.number().int().min(0).max(20) }),
   z.object({ kind: z.literal('point'), x: z.number().int().min(-50).max(50), y: z.number().int().min(-50).max(50) }),
   z.object({ kind: z.literal('text'), text: z.string().max(80) }),
+  /** « Je ne sais pas » : compte comme une erreur. */
+  z.object({ kind: z.literal('unknown') }),
 ]);
 
 export const SessionCreateSchema = z.object({

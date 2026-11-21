@@ -24,6 +24,7 @@ type ResponseOf<K extends Response['kind']> = Extract<Response, { kind: K }>;
 
 const INVALID: CheckResult = Object.freeze({ correct: false, invalid: true });
 const RIGHT: CheckResult = Object.freeze({ correct: true });
+const UNKNOWN: CheckResult = Object.freeze({ correct: false });
 
 /** Explication de l'erreur typique reconnue (piège) correspondant à la réponse, s'il y en a une. */
 const trapWhy = (traps: readonly Trap[], matches: (t: Trap) => boolean) => traps.find(matches)?.why;
@@ -82,6 +83,8 @@ function checkText(answer: AnswerOf<'text'>, response: ResponseOf<'text'>, traps
  * redemande sans compter d'erreur.
  */
 export function check(question: Question, response: Response): CheckResult {
+  // « Je ne sais pas » : une erreur, sans piège à expliquer.
+  if (response.kind === 'unknown') return UNKNOWN;
   const { answer, traps } = question;
   switch (answer.kind) {
     case 'number':

@@ -1,18 +1,19 @@
 import { useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { ITEMS, ITEM_INFO, type Chest, HERO_NAMES } from '@questeo/shared';
-import { ITEM_ICONS } from '../../../design/items.ts';
+import { ITEMS, ITEM_INFO, type Chest, type ChestRarity, HERO_NAMES } from '@questeo/shared';
+import { chestIcon, ITEM_ICONS } from '../../../design/items.ts';
 import { playSound } from '../../lib/sound.ts';
 import { GameButton } from './GameButton.tsx';
 import { GameIcon } from './GameIcon.tsx';
 
-/** Le même coffre illustré partout dans l'appli, teinté selon la rareté. */
+/** Coffre générique (icônes, notes) : le coffre rare. */
 export const CHEST_ICON = 'rewards-chests-rare';
-const RARITY = {
-  commun: { name: 'Coffre commun', tint: 'grayscale(0.85) brightness(1.1)', glow: '#9fb3c8' },
-  rare: { name: 'Coffre rare', tint: 'none', glow: '#b26bff' },
-  epique: { name: 'Coffre épique', tint: 'hue-rotate(-70deg) saturate(1.4) brightness(1.1)', glow: '#ffd23f' },
-} as const;
+const RARITY: Record<ChestRarity, { readonly name: string; readonly glow: string }> = {
+  commun: { name: 'Coffre commun', glow: '#9fb3c8' },
+  rare: { name: 'Coffre rare', glow: '#3fa9ff' },
+  epique: { name: 'Coffre épique', glow: '#b26bff' },
+  legendaire: { name: 'Coffre légendaire', glow: '#ffd23f' },
+};
 
 /** Éclairs autour du coffre fermé (dessinés en code, couleur de la rareté). */
 function Bolts({ color }: { readonly color: string }) {
@@ -43,9 +44,10 @@ function Bolts({ color }: { readonly color: string }) {
 }
 
 /**
- * Coffre d'équipement de fin de série, en plein écran : il tremble entouré d'éclairs ; un toucher
- * l'ouvre dans un flash, des rayons tournent et le butin jaillit objet par objet.
- * Pas de coffre cette fois : un mot pour dire qu'un meilleur score augmente les chances.
+ * Coffre d'équipement (fin de série entièrement juste, victoire contre un boss), en plein écran :
+ * le coffre de sa rareté tremble entouré d'éclairs ; un toucher l'ouvre dans un flash (image du
+ * coffre ouvert), des rayons tournent et le butin jaillit objet par objet.
+ * Pas de coffre cette fois : un mot pour dire comment en gagner un.
  */
 export function ChestReveal({ chest }: { readonly chest: Chest | null }) {
   const reduce = useReducedMotion();
@@ -53,8 +55,9 @@ export function ChestReveal({ chest }: { readonly chest: Chest | null }) {
   if (!chest) {
     return (
       <p className="cartoon bg-surface-2 flex items-center justify-center gap-2 p-3 text-center font-bold">
-        <GameIcon id={CHEST_ICON} size="sm" className="grayscale" />
-        Pas de coffre cette fois. Plus tu as de bonnes réponses, plus tu as de chances (sans faute = coffre garanti) !
+        <GameIcon id={chestIcon('commun')} size="sm" className="grayscale" />
+        Pas de coffre cette fois : trouve toutes les réponses de la série (même avec l’indice) pour en gagner un. Sans
+        faute du premier coup, le coffre est souvent meilleur !
       </p>
     );
   }
@@ -81,7 +84,10 @@ export function ChestReveal({ chest }: { readonly chest: Chest | null }) {
   if (stage === 'done') {
     return (
       <section className="cartoon bevel bg-accent flex flex-col items-center gap-2 p-3 text-center">
-        <h2 className="font-display text-toon text-xl">{r.name}</h2>
+        <h2 className="font-display text-toon flex items-center gap-2 text-xl">
+          <GameIcon id={chestIcon(chest.rarity, true)} size={44} />
+          {r.name}
+        </h2>
         <div className="flex flex-wrap justify-center gap-4">
           {loot.map((l) => (
             <span key={l.id} className="flex items-center gap-1 font-bold text-white">
@@ -129,9 +135,7 @@ export function ChestReveal({ chest }: { readonly chest: Chest | null }) {
               className="relative z-10 flex cursor-pointer flex-col items-center gap-2"
               style={{ filter: `drop-shadow(0 0 28px ${r.glow})` }}
             >
-              <span style={{ filter: r.tint }} className="block">
-                <GameIcon id={CHEST_ICON} size={190} />
-              </span>
+              <GameIcon id={chestIcon(chest.rarity)} size={190} />
             </motion.button>
           </>
         ) : (
@@ -154,10 +158,8 @@ export function ChestReveal({ chest }: { readonly chest: Chest | null }) {
               style={{ filter: `drop-shadow(0 0 30px ${r.glow})` }}
               className="relative"
             >
-              {/* Coffre ouvert : le même coffre qui bondit, couvercle soulevé (inclinaison) dans la lumière. */}
-              <span style={{ filter: `${r.tint === 'none' ? '' : r.tint} brightness(1.25)` }} className="block">
-                <GameIcon id={CHEST_ICON} size={190} />
-              </span>
+              {/* Le même coffre, ouvert, qui bondit dans la lumière. */}
+              <GameIcon id={chestIcon(chest.rarity, true)} size={190} />
             </motion.div>
             {/* Flash blanc de l'ouverture. */}
             <motion.div

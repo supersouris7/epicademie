@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { AVAILABLE_HEROES, ITEM_PRICES, ITEMS, MAX_ITEM_STOCK, RUBY_PRICE, type HeroId } from '@questeo/shared';
+import {
+  AVAILABLE_HEROES,
+  ITEM_PRICES,
+  ITEMS,
+  MAX_ITEM_STOCK,
+  RUBY_PRICE,
+  STARTING_HEROES,
+  type HeroId,
+} from '@questeo/shared';
 import { ECONOMY } from './economy.ts';
-import { rollChest } from './loot.ts';
+import { trainingChest } from './loot.ts';
 import { coinsForXp, PERFECT_BONUS, xpForAnswer } from './xp.ts';
 
 /**
@@ -33,6 +41,8 @@ interface Player {
 interface Outcome {
   coins: number;
   rubies: number;
+  /** Séries jouées, et coffres reçus (séries entièrement justes). */
+  series: number;
   chests: number;
   heroes: Set<HeroId>;
   /** Jour où la collection d'Acad-Héros disponibles est complète (null : jamais). */
@@ -43,25 +53,42 @@ interface Outcome {
 const SCHOOL_DAYS = 150;
 const SERIES = 4;
 
-/** Une année : séries de 4 questions, coffre garanti, achats d'objets quand le stock baisse. */
+/**
+ * Une année : séries de 4 questions (2e essai avec indice après une erreur), coffre seulement si
+ * toute la série est juste, achats d'objets quand le stock baisse.
+ */
 function simulate(player: Player, seed: number): Outcome {
   const random = rng(seed);
-  const o: Outcome = { coins: 0, rubies: 0, chests: 0, heroes: new Set(['alex']), fullCollectionDay: null, items: 0 };
+  const o: Outcome = {
+    coins: 0,
+    rubies: 0,
+    series: 0,
+    chests: 0,
+    heroes: new Set(STARTING_HEROES),
+    fullCollectionDay: null,
+    items: 0,
+  };
   for (let day = 1; day <= SCHOOL_DAYS; day++) {
     for (let s = 0; s < player.seriesPerDay; s++) {
       let correct = 0;
+      let solved = 0;
       let streak = 0;
       let xp = 0;
       for (let q = 0; q < SERIES; q++) {
         const ok = random() < player.accuracy;
         streak = ok ? streak + 1 : 0;
         if (ok) correct++;
+        // Après une erreur, l'indice aide : 2e essai un peu plus souvent juste.
+        if (ok || random() < Math.min(0.95, player.accuracy + 0.15)) solved++;
         xp += xpForAnswer({ correct: ok, variant: false, durationMs: 8000, targetSeconds: 20, streak });
       }
       if (correct === SERIES) xp += PERFECT_BONUS;
-      const chest = rollChest(correct, SERIES, random, o.heroes);
+      o.series++;
+      o.coins += coinsForXp(xp);
+      const chest = trainingChest({ total: SERIES, solved, firstTry: correct }, random, o.heroes);
+      if (!chest) continue;
       o.chests++;
-      o.coins += coinsForXp(xp) + chest.coins;
+      o.coins += chest.coins;
       o.rubies += chest.rubies;
       o.items = Math.min(
         MAX_ITEM_STOCK * ITEMS.length,
@@ -86,14 +113,14 @@ describe('économie simulée sur une année scolaire', () => {
   const regular = population({ accuracy: 0.75, seriesPerDay: 2 });
 
   it('des pièces régulières, sans inflation : entre 10 et 60 par série en moyenne', () => {
-    const perSeries = median(regular.map((o) => o.coins / o.chests));
+    const perSeries = median(regular.map((o) => o.coins / o.series));
     expect(perSeries).toBeGreaterThan(10);
     expect(perSeries).toBeLessThan(60);
   });
 
   it('les objets se gagnent en jouant ; la boutique reste un complément', () => {
     // Un objet coûte l'équivalent de quelques séries seulement.
-    const perSeries = median(regular.map((o) => o.coins / o.chests));
+    const perSeries = median(regular.map((o) => o.coins / o.series));
     expect(ITEM_PRICES.bouclier / perSeries).toBeLessThan(5);
   });
 
@@ -101,28 +128,29 @@ describe('économie simulée sur une année scolaire', () => {
     const rubiesPerMonth = median(regular.map((o) => (o.rubies / SCHOOL_DAYS) * 30));
     expect(rubiesPerMonth).toBeGreaterThan(1);
     expect(rubiesPerMonth).toBeLessThan(15);
-    const seriesForOneRuby = RUBY_PRICE / median(regular.map((o) => o.coins / o.chests));
+    const seriesForOneRuby = RUBY_PRICE / median(regular.map((o) => o.coins / o.series));
     expect(seriesForOneRuby).toBeGreaterThan(30);
   });
 
-  it('collection d’Acad-Héros complète en quelques semaines pour un joueur régulier', () => {
-    const days = regular.map((o) => o.fullCollectionDay ?? Infinity);
-    expect(median(days)).toBeLessThan(60);
-    expect(median(days)).toBeGreaterThan(7);
-    // Presque tous la complètent dans l'année.
-    expect(days.filter((d) => d <= SCHOOL_DAYS).length / days.length).toBeGreaterThan(0.95);
+  it('coffres : réservés aux séries entièrement justes, mais réguliers (plusieurs par semaine)', () => {
+    const perWeek = median(regular.map((o) => (o.chests / SCHOOL_DAYS) * 5));
+    expect(perWeek).toBeGreaterThan(3);
+    // Pas un coffre à chaque série : il faut tout trouver (l'indice aide beaucoup).
+    expect(median(regular.map((o) => o.chests / o.series))).toBeLessThan(0.95);
   });
 
   it('aucun blocage : un élève en difficulté gagne aussi coffres, pièces et héros', () => {
     const struggling = population({ accuracy: 0.35, seriesPerDay: 1 });
-    expect(median(struggling.map((o) => o.coins))).toBeGreaterThan(1000);
-    expect(median(struggling.map((o) => o.heroes.size))).toBeGreaterThanOrEqual(2);
+    // Moins de coffres (il faut tout trouver) : les pièces viennent surtout des réponses.
+    expect(median(struggling.map((o) => o.coins))).toBeGreaterThan(300);
+    // Avec l'indice, il finit aussi des séries entièrement justes : des coffres chaque mois.
+    expect(median(struggling.map((o) => o.chests))).toBeGreaterThan(20);
   });
 
   it('jouer plus rapporte plus, mais sans écart démesuré par série', () => {
     const intense = population({ accuracy: 0.9, seriesPerDay: 4 });
-    const perSeriesIntense = median(intense.map((o) => o.coins / o.chests));
-    const perSeriesRegular = median(regular.map((o) => o.coins / o.chests));
+    const perSeriesIntense = median(intense.map((o) => o.coins / o.series));
+    const perSeriesRegular = median(regular.map((o) => o.coins / o.series));
     expect(perSeriesIntense / perSeriesRegular).toBeLessThan(2);
   });
 

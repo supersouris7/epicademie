@@ -6,7 +6,7 @@ import { Figure } from '../../shared/question/figures/Figure.tsx';
 import { MathText } from '../../shared/question/MathText.tsx';
 import { QuestionTools } from '../../shared/question/QuestionTools.tsx';
 import { ReportButton } from '../../shared/question/ReportButton.tsx';
-import { DOCK_HEIGHT } from '../../shared/question/tools.ts';
+import { DOCK_HEIGHT, toolTabs } from '../../shared/question/tools.ts';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import type { Current, Retry, TrainingScreen } from './state.ts';
@@ -62,7 +62,7 @@ export function TrainingQuestion({
               <MathText text={current.question.prompt} terms />
             </h1>
             {retry && !answered && <RetryHint retry={retry} hint={current.question.hint} />}
-            {advice && !answered && !retry && (advice === 'brouillon' || !skill?.mental) && (
+            {advice && !answered && !retry && toolTabs(current.question, skill).includes(advice) && (
               <AdviceNote advice={advice} />
             )}
             {current.question.figure && (
@@ -111,7 +111,13 @@ function RetryHint({ retry, hint }: { readonly retry: Retry; readonly hint: stri
         <Questy mood="wink" size={72} />
       </span>
       <span className="cartoon bg-[color-mix(in_srgb,var(--danger)_14%,var(--surface))] px-3 py-2">
-        {retry.why ? <MathText text={retry.why} /> : 'Ce n’est pas ça…'}
+        {retry.unknown ? (
+          'Pas de souci, voici un indice pour t’aider.'
+        ) : retry.why ? (
+          <MathText text={retry.why} />
+        ) : (
+          'Ce n’est pas ça…'
+        )}
         <span className="mt-1 flex items-start gap-1.5">
           <GameIcon id="icons-navigation-hint" size="xs" />
           <span>
@@ -208,6 +214,7 @@ function AnswerDock({
           attempt={retry?.nonce ?? 0}
           picked={picked}
           onSubmit={onSubmit}
+          allowUnknown
         />
       )}
     </section>

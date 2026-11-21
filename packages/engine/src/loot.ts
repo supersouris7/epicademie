@@ -1,24 +1,44 @@
-import { AVAILABLE_HEROES, ITEMS, type Chest, type ChestRarity, type HeroId, type Inventory } from '@questeo/shared';
+import {
+  AVAILABLE_HEROES,
+  BOSS_MEDALS,
+  CHEST_RARITIES,
+  ITEMS,
+  type BossMedal,
+  type Chest,
+  type ChestRarity,
+  type HeroId,
+  type Inventory,
+} from '@questeo/shared';
 import { ECONOMY } from './economy.ts';
 
 /**
- * Coffres d'équipement de l'entraînement (docs/SPEC.md §6.2 bis) : un coffre GARANTI à chaque
- * série terminée (décision du 20/11/2026) ; un sans-faute améliore la rareté. Le coffre est
- * commun, rare ou épique et contient des objets tirés au hasard, des pièces, parfois un rubis
- * et parfois un Acad-Héros (seule façon d'en obtenir, décision du 20/11/2026). Jamais achetable.
- * Paramètres : `ECONOMY.chest` (economy.ts).
+ * Coffres d'équipement (docs/SPEC.md §6.2 bis). Décision du 21/11/2026 :
+ * - entraînement : un coffre seulement quand toute la série est juste (au 2e essai compris) ;
+ *   un sans-faute du premier coup améliore le tirage ;
+ * - boss : un coffre à chaque victoire, de la rareté de la médaille (bronze → commun … diamant →
+ *   légendaire), avec une chance de monter d'un cran.
+ * Le coffre contient des objets tirés au hasard, des pièces, parfois des rubis et parfois un
+ * Acad-Héros. Jamais achetable. Paramètres : `ECONOMY.chest` (economy.ts).
  */
 
-/** Commun : pièces ; rare : équipement ; épique : équipement et rubis. */
+/** Pièces, objets et rubis selon la rareté. */
 export const CHEST_CONTENT = ECONOMY.chest.content;
 
-/** Rareté ; un sans-faute améliore le tirage. */
+/** Rareté d'un coffre d'entraînement ; un sans-faute du premier coup améliore le tirage. */
 export function rollRarity(random: number, perfect: boolean): ChestRarity {
-  const { perfectBoost, epicFrom, rareFrom } = ECONOMY.chest;
+  const { perfectBoost, legendaryFrom, epicFrom, rareFrom } = ECONOMY.chest;
   const r = perfect ? random * (1 - perfectBoost) + perfectBoost : random;
+  if (r >= legendaryFrom) return 'legendaire';
   if (r >= epicFrom) return 'epique';
   if (r >= rareFrom) return 'rare';
   return 'commun';
+}
+
+/** Rareté d'un coffre de boss : celle de la médaille, parfois un cran au-dessus. */
+export function bossRarity(medal: BossMedal, random: number): ChestRarity {
+  const base = BOSS_MEDALS.indexOf(medal);
+  const up = random < ECONOMY.chest.bossUpgradeChance ? 1 : 0;
+  return CHEST_RARITIES[Math.min(CHEST_RARITIES.length - 1, base + up)] ?? 'commun';
 }
 
 /**
@@ -33,14 +53,8 @@ function rollHero(rarity: ChestRarity, owned: ReadonlySet<HeroId>, random: () =>
   return { id, duplicate: missing.length === 0 };
 }
 
-/** Tire le coffre de fin de série. `random` renvoie un nombre dans [0, 1). */
-export function rollChest(
-  correct: number,
-  total: number,
-  random: () => number,
-  owned: ReadonlySet<HeroId> = new Set(),
-): Chest {
-  const rarity = rollRarity(random(), correct === total && total > 0);
+/** Remplit un coffre de la rareté donnée. `random` renvoie un nombre dans [0, 1). */
+export function fillChest(rarity: ChestRarity, random: () => number, owned: ReadonlySet<HeroId> = new Set()): Chest {
   const { items: count, coins, rubies } = CHEST_CONTENT[rarity];
   const items: Partial<Inventory> = {};
   for (let i = 0; i < count; i++) {
@@ -49,4 +63,26 @@ export function rollChest(
   }
   const hero = rollHero(rarity, owned, random);
   return { rarity, items, coins: coins + (hero?.duplicate ? ECONOMY.chest.duplicateHeroCoins : 0), rubies, hero };
+}
+
+/** Série d'entraînement : `solved` questions trouvées (1er ou 2e essai), dont `firstTry` du premier coup. */
+export interface SeriesResult {
+  readonly total: number;
+  readonly solved: number;
+  readonly firstTry: number;
+}
+
+/** Coffre de fin de série : seulement si toute la série est juste (sinon null). */
+export function trainingChest(
+  series: SeriesResult,
+  random: () => number,
+  owned: ReadonlySet<HeroId> = new Set(),
+): Chest | null {
+  if (series.total === 0 || series.solved < series.total) return null;
+  return fillChest(rollRarity(random(), series.firstTry === series.total), random, owned);
+}
+
+/** Coffre de victoire contre un boss, selon la médaille. */
+export function bossChest(medal: BossMedal, random: () => number, owned: ReadonlySet<HeroId> = new Set()): Chest {
+  return fillChest(bossRarity(medal, random()), random, owned);
 }

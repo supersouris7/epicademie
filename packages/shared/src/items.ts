@@ -30,8 +30,11 @@ export const ITEM_INFO: Record<ItemId, { readonly name: string; readonly effect:
   },
 };
 
-/** Coffre d'équipement gagné au hasard en fin de série d'entraînement. */
-export const CHEST_RARITIES = ['commun', 'rare', 'epique'] as const;
+/**
+ * Coffre d'équipement : après une série d'entraînement entièrement juste, ou après une victoire
+ * contre un boss. Quatre raretés, de la moins à la plus précieuse.
+ */
+export const CHEST_RARITIES = ['commun', 'rare', 'epique', 'legendaire'] as const;
 export type ChestRarity = (typeof CHEST_RARITIES)[number];
 export const ChestSchema = z.object({
   rarity: z.enum(CHEST_RARITIES),

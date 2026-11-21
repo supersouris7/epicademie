@@ -29,8 +29,14 @@ export function MissedPanel({
     >
       <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
         <p className="text-lg leading-snug">
-          Tu as répondu <MathText text={formatResponse(question, missed.given)} className="font-bold" />. La bonne
-          réponse : <MathText text={formatAnswer(question)} className="font-bold" />.
+          {missed.given.kind === 'unknown' ? (
+            'Tu ne savais pas : regarde bien comment on fait. '
+          ) : (
+            <>
+              Tu as répondu <MathText text={formatResponse(question, missed.given)} className="font-bold" />.{' '}
+            </>
+          )}
+          La bonne réponse : <MathText text={formatAnswer(question)} className="font-bold" />.
         </p>
         {missed.why && (
           <p className="text-lg">

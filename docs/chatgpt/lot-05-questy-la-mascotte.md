@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Lot 5 — Questy, la mascotte
 
-38 images, demandes 27 à 46 (20 messages à envoyer).
+38 images, demandes 28 à 47 (20 messages à envoyer).
 
 ## Marche à suivre
 
@@ -61,7 +61,7 @@ Réponds simplement « Prêt » si tu as compris.
 
 > Commencer par la fiche de modèle, la valider, puis la joindre à chaque demande de ce lot.
 
-#### 27. Questy — fiche de modèle
+#### 28. Questy — fiche de modèle
 Enregistrer sous `assets-src/originals/characters/questy/model-sheet.png` · 1536×1024 → final 1536×1024
 
 ```text
@@ -70,7 +70,7 @@ Cadrage : fiche de modèle (référence pour les autres images, non affichée da
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 28. Planche « questy-tetes-1 » (6 éléments)
+#### 29. Planche « questy-tetes-1 » (6 éléments)
 Enregistrer sous `assets-src/originals/sheets/questy-tetes-1.png` · 1536×1024, grille 3×2 → chaque case finale 384×384
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 Cases : 1 → `characters/questy/head-happy` · 2 → `characters/questy/head-ok` · 3 → `characters/questy/head-laugh` · 4 → `characters/questy/head-love` · 5 → `characters/questy/head-wow` · 6 → `characters/questy/head-proud`
@@ -91,7 +91,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 29. Planche « questy-tetes-2 » (6 éléments)
+#### 30. Planche « questy-tetes-2 » (6 éléments)
 Enregistrer sous `assets-src/originals/sheets/questy-tetes-2.png` · 1536×1024, grille 3×2 → chaque case finale 384×384
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 Cases : 1 → `characters/questy/head-cool` · 2 → `characters/questy/head-wink` · 3 → `characters/questy/head-angry` · 4 → `characters/questy/head-sad` · 5 → `characters/questy/head-dizzy` · 6 → `characters/questy/head-sleepy`
@@ -112,7 +112,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 30. Questy — pose idle
+#### 31. Questy — pose idle
 Enregistrer sous `assets-src/originals/characters/questy/pose-idle.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
@@ -122,7 +122,7 @@ Cadrage : Questy en pied, centré, base des pieds à 92 % de la hauteur, occupe 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 31. Questy — pose salut
+#### 32. Questy — pose salut
 Enregistrer sous `assets-src/originals/characters/questy/pose-salut.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
@@ -132,7 +132,7 @@ Cadrage : Questy en pied, centré, base des pieds à 92 % de la hauteur, occupe 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 32. Questy — pose hero
+#### 33. Questy — pose hero
 Enregistrer sous `assets-src/originals/characters/questy/pose-hero.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
@@ -142,7 +142,7 @@ Cadrage : Questy en pied, centré, base des pieds à 92 % de la hauteur, occupe 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 33. Questy — pose bravo
+#### 34. Questy — pose bravo
 Enregistrer sous `assets-src/originals/characters/questy/pose-bravo.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
@@ -152,7 +152,7 @@ Cadrage : Questy en pied, centré, base des pieds à 92 % de la hauteur, occupe 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 34. Questy — pose pouce
+#### 35. Questy — pose pouce
 Enregistrer sous `assets-src/originals/characters/questy/pose-pouce.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
@@ -162,7 +162,7 @@ Cadrage : Questy en pied, centré, base des pieds à 92 % de la hauteur, occupe 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 35. Questy — pose montre
+#### 36. Questy — pose montre
 Enregistrer sous `assets-src/originals/characters/questy/pose-montre.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
@@ -172,7 +172,7 @@ Cadrage : Questy en pied, centré, base des pieds à 92 % de la hauteur, occupe 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 36. Questy — pose reflexion
+#### 37. Questy — pose reflexion
 Enregistrer sous `assets-src/originals/characters/questy/pose-reflexion.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
@@ -182,7 +182,7 @@ Cadrage : Questy en pied, centré, base des pieds à 92 % de la hauteur, occupe 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 37. Questy — pose lecture
+#### 38. Questy — pose lecture
 Enregistrer sous `assets-src/originals/characters/questy/pose-lecture.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
@@ -192,7 +192,7 @@ Cadrage : Questy en pied, centré, base des pieds à 92 % de la hauteur, occupe 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 38. Questy — pose surprise
+#### 39. Questy — pose surprise
 Enregistrer sous `assets-src/originals/characters/questy/pose-surprise.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
@@ -202,7 +202,7 @@ Cadrage : Questy en pied, centré, base des pieds à 92 % de la hauteur, occupe 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 39. Questy — pose triste
+#### 40. Questy — pose triste
 Enregistrer sous `assets-src/originals/characters/questy/pose-triste.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
@@ -212,7 +212,7 @@ Cadrage : Questy en pied, centré, base des pieds à 92 % de la hauteur, occupe 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 40. Questy — pose ko
+#### 41. Questy — pose ko
 Enregistrer sous `assets-src/originals/characters/questy/pose-ko.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
@@ -222,7 +222,7 @@ Cadrage : Questy en pied, centré, base des pieds à 92 % de la hauteur, occupe 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 41. Questy — pose course
+#### 42. Questy — pose course
 Enregistrer sous `assets-src/originals/characters/questy/pose-course.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
@@ -232,7 +232,7 @@ Cadrage : Questy en pied, centré, base des pieds à 92 % de la hauteur, occupe 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 42. Questy — pose jetpack
+#### 43. Questy — pose jetpack
 Enregistrer sous `assets-src/originals/characters/questy/pose-jetpack.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
@@ -242,7 +242,7 @@ Cadrage : Questy en pied, centré, base des pieds à 92 % de la hauteur, occupe 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 43. Questy — pose tir
+#### 44. Questy — pose tir
 Enregistrer sous `assets-src/originals/characters/questy/pose-tir.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
@@ -252,7 +252,7 @@ Cadrage : Questy en pied, centré, base des pieds à 92 % de la hauteur, occupe 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 44. Questy — pose bouclier
+#### 45. Questy — pose bouclier
 Enregistrer sous `assets-src/originals/characters/questy/pose-bouclier.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
@@ -262,7 +262,7 @@ Cadrage : Questy en pied, centré, base des pieds à 92 % de la hauteur, occupe 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 45. Questy — pose dort
+#### 46. Questy — pose dort
 Enregistrer sous `assets-src/originals/characters/questy/pose-dort.png` · 1024×1024 → final 512×512
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
@@ -272,7 +272,7 @@ Cadrage : Questy en pied, centré, base des pieds à 92 % de la hauteur, occupe 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 46. Planche « questy-accessoires » (9 éléments)
+#### 47. Planche « questy-accessoires » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/questy-accessoires.png` · 1024×1024, grille 3×3 → chaque case finale 256×256
 Cases : 1 → `characters/questy/accessories/visiere` · 2 → `characters/questy/accessories/sac` · 3 → `characters/questy/accessories/bouclier` · 4 → `characters/questy/accessories/batterie` · 5 → `characters/questy/accessories/livre` · 6 → `characters/questy/accessories/blaster` · 7 → `characters/questy/accessories/hologramme` · 8 → `characters/questy/accessories/jetpack` · 9 → `characters/questy/accessories/tablette`
 

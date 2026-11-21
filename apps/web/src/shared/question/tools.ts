@@ -1,15 +1,27 @@
-import type { Question, Skill } from '@questeo/content';
+import { chapterOfAnySkill, type Question, type Skill } from '@questeo/content';
+import type { SubjectId } from '@questeo/shared';
 import type { DockTab } from './PlayDock.tsx';
 import { conversionNeeded } from './conversion.ts';
 
-/** Onglets d'une question : la calculatrice partout sauf quand calculer est l'objectif de la notion. */
+/** Matières où l'on calcule : seules à proposer calculatrice, brouillon et tableau de conversion. */
+const NUMERIC_SUBJECTS: readonly SubjectId[] = ['maths', 'physique'];
+
+/**
+ * Onglets d'une question (audit du 21/11/2026) :
+ * - langues, histoire, géographie : la réponse seule (pas d'outil de calcul) ;
+ * - maths et physique-chimie : brouillon ; calculatrice quand l'énoncé contient des nombres, sauf
+ *   quand calculer est l'objectif de la notion (calcul mental) ; tableau de conversion quand la
+ *   notion le prévoit ou que la question mêle deux unités d'une même grandeur.
+ */
 export function toolTabs(question: Question, skill: Skill | undefined): DockTab[] {
+  const subject = chapterOfAnySkill(question.skillId)?.subject;
+  if (!subject || !NUMERIC_SUBJECTS.includes(subject)) return ['reponse'];
   const tools = skill?.tools ?? [];
-  // Tableau de conversion proposé seulement quand la question mêle deux unités d'une même grandeur.
   const measured = question.answer.kind === 'number' ? conversionNeeded(question.prompt, question.answer.unit) : null;
+  const withNumbers = /\d/.test(question.prompt);
   return [
     'reponse',
-    ...(skill?.mental ? [] : (['calculatrice'] as const)),
+    ...(skill?.mental || !withNumbers ? [] : (['calculatrice'] as const)),
     'brouillon',
     ...(tools.length > 0 || measured ? (['conversion'] as const) : []),
   ];

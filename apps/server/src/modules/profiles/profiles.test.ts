@@ -1,3 +1,4 @@
+import { generate } from '@questeo/content';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { Profile, SessionSummary } from '@questeo/shared';
 import { createTestApp, profileInput, sequenceRandom } from '../../testing/harness.ts';
@@ -173,9 +174,9 @@ describe('API profils', () => {
     expect(res.json<Profile>().hero).toBe('lina');
   });
 
-  it('Acad-Héros tiré dans le coffre alors qu’on les a tous : changé en pièces', async () => {
-    // Coffre épique (0,99), 2 objets, héros tiré (0,1 < 25 %) : doublon, les deux sont déjà là.
-    const lucky = await createTestApp({ random: sequenceRandom([0.99, 0, 0, 0.1, 0]) });
+  it('série entièrement juste : coffre ; Acad-Héros tiré alors qu’on les a tous : changé en pièces', async () => {
+    // Sans-faute : coffre légendaire (0,99 décalé), 3 objets, héros tiré (0,1 < 50 %) : doublon.
+    const lucky = await createTestApp({ random: sequenceRandom([0.99, 0, 0, 0, 0.1, 0]) });
     try {
       const p = (
         await lucky.http.inject({ method: 'POST', url: '/api/v1/profiles', payload: profileInput('Noé') })
@@ -193,22 +194,27 @@ describe('API profils', () => {
           },
         })
       ).json<{ id: string }>();
-      await lucky.http.inject({
-        method: 'POST',
-        url: `/api/v1/sessions/${id}/answers`,
-        payload: {
-          skillId: 'm5-tables',
-          level: 1,
-          seed: 1,
-          variant: false,
-          response: { kind: 'number', text: '-1' },
-          durationMs: 1000,
-        },
-      });
+      // Série complète de calcul mental (5 questions), toutes justes du premier coup.
+      for (let seed = 1; seed <= 5; seed++) {
+        const q = generate('m5-tables', 1, seed);
+        const text = q.answer.kind === 'number' ? q.answer.value.n.toString() : '';
+        await lucky.http.inject({
+          method: 'POST',
+          url: `/api/v1/sessions/${id}/answers`,
+          payload: {
+            skillId: 'm5-tables',
+            level: 1,
+            seed,
+            variant: false,
+            response: { kind: 'number', text },
+            durationMs: 1000,
+          },
+        });
+      }
       const summary = (
         await lucky.http.inject({ method: 'POST', url: `/api/v1/sessions/${id}/finish` })
       ).json<SessionSummary>();
-      expect(summary.chest?.hero).toMatchObject({ duplicate: true });
+      expect(summary.chest).toMatchObject({ rarity: 'legendaire', hero: { duplicate: true } });
       expect((await lucky.http.inject(`/api/v1/profiles/${p.id}/heroes`)).json()).toEqual({ heroes: ['alex', 'lina'] });
     } finally {
       await lucky.close();
