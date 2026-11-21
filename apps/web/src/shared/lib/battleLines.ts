@@ -14,8 +14,22 @@ export const inSentence = (title: string) =>
  * Gros plan du boss à l'entrée de la matière : il provoque, selon les victoires déjà remportées
  * contre lui dans cette matière. `r` ∈ [0, 1[ choisit la réplique (tirée une fois à l'affichage).
  */
-export function subjectTaunt(wins: number, gender: Gender, r: number): string {
+export function subjectTaunt(wins: number, gender: Gender, r: number, subject = 'maths'): string {
   const vaincu = accord(gender, 'vaincu', 'vaincue');
+  // Hors maths : répliques sans calcul (les boss de ces matières n'ont pas le cube des opérations).
+  if (subject !== 'maths')
+    return pickAt(
+      wins === 0
+        ? [
+            'Hahaha ! Un nouveau challenger ? Choisis ton chapitre… et prépare-toi à perdre tes cœurs !',
+            'Mes mobs n’ont pas mangé de héros depuis longtemps… Choisis ton chapitre, si tu l’oses !',
+          ]
+        : [
+            `Tu m’as ${vaincu} ${wins} fois ? Simple échauffement ! Choisis ton chapitre, je t’attends.`,
+            `${wins} défaite${wins > 1 ? 's' : ''} ? Je m’en souviens à peine. Viens, que je prenne ma revanche !`,
+          ],
+      r,
+    );
   if (wins === 0)
     return pickAt(
       [

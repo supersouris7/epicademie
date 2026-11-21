@@ -12,7 +12,7 @@ import { GameButton } from '../../../shared/ui/game/GameButton.tsx';
 import { GameIcon } from '../../../shared/ui/game/GameIcon.tsx';
 import { RewardBadge } from '../../../shared/ui/game/RewardBadge.tsx';
 import { QuestyPose } from '../../../shared/ui/mascot/QuestyPose.tsx';
-import { assetSrc } from '../../../design/assets.ts';
+import { characterSrc } from '../../../design/assets.ts';
 import { HeroFace } from '../../../shared/battle/HeroFace.tsx';
 import { bossPoseId } from '../../../design/bosses.ts';
 import { CharacterSprite } from '../../../shared/ui/game/CharacterSprite.tsx';
@@ -41,11 +41,11 @@ export function BattleResults({
   const location = useLocation();
   const boss = bossOf(chapter);
   const weak = summary.weakSkill ? getSkill(summary.weakSkill) : undefined;
-  const bossPose = assetSrc(bossPoseId(boss.id, summary.won ? 'defeat' : 'victory'));
+  const bossPose = characterSrc(bossPoseId(boss.id, summary.won ? 'defeat' : 'victory'));
   // Le mot de la fin : le héros (victoire ou « je reviendrai ») et le boss (KO ou moqueur).
   const [lines] = useState(() => ({
     hero: heroSays(hero, summary.won ? 'victory' : 'defeat'),
-    boss: bossSays(summary.won ? 'ko' : 'wins'),
+    boss: bossSays(summary.won ? 'ko' : 'wins', boss.id),
   }));
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-5 px-4 py-6">

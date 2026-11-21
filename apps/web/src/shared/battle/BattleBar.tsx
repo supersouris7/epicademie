@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { HERO_NAMES, type HeroId } from '@questeo/shared';
-import { assetSrc, type HeroExpression } from '../../design/assets.ts';
+import { characterSrc, type HeroExpression } from '../../design/assets.ts';
 import { HeroFace } from './HeroFace.tsx';
 import { HUD_FRAME, HudBar as LifeBar, HudPortrait as Portrait } from '../ui/game/Hud.tsx';
 
@@ -32,7 +32,7 @@ interface BattleBarProps {
  */
 export function BattleBar(p: BattleBarProps) {
   const reduce = useReducedMotion();
-  const enemySrc = assetSrc(p.enemyImage);
+  const enemySrc = characterSrc(p.enemyImage);
   const onBoss = p.bossLives !== null;
   const enemyValue = p.bossLives ?? p.mobsLeft;
   const enemyMax = onBoss ? p.bossMax : p.mobsMax;

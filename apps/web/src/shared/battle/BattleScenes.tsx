@@ -10,7 +10,7 @@ import type { QuestyPoseId } from '../ui/mascot/poses.ts';
 import type { MoodId } from '../ui/mascot/moods.ts';
 import { HeroFace } from './HeroFace.tsx';
 import { Bubble } from '../ui/Bubble.tsx';
-import { assetSrc, type BossExpression } from '../../design/assets.ts';
+import { assetSrc, PLACEHOLDER_SRC, type BossExpression } from '../../design/assets.ts';
 import { bossHeadId } from '../../design/bosses.ts';
 import { RETRY_SECONDS } from '../lib/battleLines.ts';
 
@@ -147,7 +147,7 @@ export function RetryCountdown({
 
 /** Tête du boss avec son expression (portrait livré, sinon remplaçant). */
 function bossPortrait(bossId: string, expression: BossExpression) {
-  return assetSrc(bossHeadId(bossId, expression)) ?? assetSrc('placeholder-boss');
+  return assetSrc(bossHeadId(bossId, expression)) ?? PLACEHOLDER_SRC;
 }
 
 /** Le boss parle : sa tête à droite, bulle rouge à gauche (face au héros). */
@@ -213,6 +213,14 @@ export function BossCloseUp({
     >
       {/* Toucher n'importe où passe le gros plan. */}
       <button type="button" aria-label="Passer" onClick={onDone} className="absolute inset-0 z-10 cursor-pointer" />
+      {/* Le nom du méchant en titre, comme pour l'Empereur du Savoir. */}
+      <motion.h1
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="font-display text-toon pointer-events-none relative text-3xl tracking-wide sm:text-5xl"
+      >
+        {name}
+      </motion.h1>
       <motion.div
         initial={reduce ? false : { scale: 1.8, opacity: 0 }}
         animate={reduce ? { opacity: 1 } : { scale: [1.8, 1, 1.04, 1], opacity: 1, x: [0, 0, -8, 8, -4, 0] }}
@@ -272,6 +280,7 @@ export function RageScene({
   const reduce = useReducedMotion();
   // Le boss en grand : son animation sur place, d'abord calme (yeux bleus), puis en rage (yeux rouges).
   const anim = `bosses/${bossId}/anim-idle`;
+  const hasAnim = assetSrc(anim.replace(/\//g, '-')) !== null;
   const bg = {
     debut: 'bg-[radial-gradient(circle_at_50%_40%,#6d1036_0%,#2a0b2e_50%,#0d0618_85%)]',
     montee: 'bg-[radial-gradient(circle_at_50%_40%,#8f1226_0%,#3a0a1e_50%,#10040c_85%)]',
@@ -304,7 +313,11 @@ export function RageScene({
           animate={{ opacity: stage === 'debut' ? 1 : 0 }}
           transition={{ duration: stage === 'montee' ? 2.6 : 0.2 }}
         >
-          <Sprite anim={anim} range={[0, 4]} height="100%" fps={6} />
+          {hasAnim ? (
+            <Sprite anim={anim} range={[0, 4]} height="100%" fps={6} />
+          ) : (
+            <img src={PLACEHOLDER_SRC} alt="" aria-hidden className="h-full object-contain" />
+          )}
         </motion.div>
         {/* Animation en rage : apparaît progressivement, en rouge, par-dessus. */}
         <motion.div
@@ -313,7 +326,7 @@ export function RageScene({
           animate={{ opacity: stage === 'debut' ? 0 : 1 }}
           transition={{ duration: stage === 'montee' ? 2.6 : 0.2 }}
         >
-          <Sprite anim={anim} range={[4, 4]} height="100%" fps={8} />
+          {hasAnim && <Sprite anim={anim} range={[4, 4]} height="100%" fps={8} />}
         </motion.div>
       </motion.div>
       {/* Flashs blancs : de plus en plus forts pendant la montée, un grand éclat quand la rage éclate. */}

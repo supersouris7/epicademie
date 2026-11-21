@@ -258,7 +258,41 @@ const SORCIER: Record<BossMoment, readonly BossLine[]> = {
   ],
 };
 
-export const bossSays = (moment: BossMoment): BossLine => pick(SORCIER[moment]);
+/**
+ * Boss des autres matières (cadres provisoires en attendant leurs planches) : répliques sans
+ * maths ni π-bots, valables pour toutes les matières.
+ */
+const GENERIC_BOSS: Record<BossMoment, readonly BossLine[]> = {
+  taunt: [
+    L('moqueur', 'Haha ! Personne ne passe ce chapitre sans perdre ses cœurs !'),
+    L('menace', 'Mes questions sont les plus coriaces du royaume !'),
+    L('clin-oeil', 'Mes mobs ont faim de mauvaises réponses.'),
+  ],
+  counter: [
+    L('colere', 'QUOI ?! On ne me parle pas sur ce ton !'),
+    L('perplexe', 'Euh… j’avais préparé une réponse… attends…'),
+    L('rire', 'Hahaha ! Mignon. Allez, mes mobs, à table !'),
+  ],
+  onHit: [L('surprise', 'Hé ! Ça chatouille !'), L('inquiet', 'Il… il connaît la réponse ?!'), L('colere', 'Aïe !')],
+  onHeroMiss: [
+    L('rire', 'Hahaha ! Mauvaise réponse !'),
+    L('clin-oeil', 'Merci pour le cœur, je le garde en souvenir.'),
+  ],
+  onShield: [L('perplexe', 'Un bouclier ?! Ça ne compte pas !'), L('colere', 'Tricheur ! Enfin… malin.')],
+  arrival: [
+    L('colere', 'Mes mobs… tous battus ?! Bon. Je vais m’en occuper MOI-MÊME !'),
+    L('menace', 'Tu as battu mes mobs ? Tu vas le payer !'),
+  ],
+  rageDebut: [L('colere', 'Grrr… Tu m’as touché deux fois ? Tu vas le regretter…')],
+  rageMontee: [L('furieux', 'Je sens… ma colère… MONTER !')],
+  rageCri: [L('furieux', 'MODE RAGE ! Plus personne ne m’arrête !')],
+  ko: [L('ko', 'Impossible… battu par un élève…'), L('triste', 'Ma réputation… en miettes…')],
+  wins: [L('rire', 'Hahaha ! Retourne réviser !'), L('clin-oeil', 'C’était trop facile. Allez, entraîne-toi un peu.')],
+};
+
+/** Réplique du boss : le Sorcier π a les siennes ; les autres boss, les répliques communes. */
+export const bossSays = (moment: BossMoment, bossId = 'sorcier-pi'): BossLine =>
+  pick((bossId === 'sorcier-pi' ? SORCIER : GENERIC_BOSS)[moment]);
 
 // ——— Le π-bot ———
 
@@ -317,12 +351,12 @@ export type Exchange =
  * Vannes du face-à-face : le boss provoque (réplique liée au chapitre), le héros répond avec sa
  * personnalité, le boss réplique, le héros a le dernier mot. Tirées au hasard : jamais le même échange.
  */
-export function faceOffExchange(hero: HeroId, bossOpening: string): Exchange[] {
+export function faceOffExchange(hero: HeroId, bossOpening: string, bossId = 'sorcier-pi'): Exchange[] {
   const openFace = pick(SORCIER.taunt).face;
   return [
     { speaker: 'boss', line: { text: bossOpening, face: openFace } },
     { speaker: 'hero', line: heroSays(hero, 'comeback') },
-    { speaker: 'boss', line: bossSays('counter') },
+    { speaker: 'boss', line: bossSays('counter', bossId) },
     { speaker: 'hero', line: heroSays(hero, 'start') },
   ];
 }
