@@ -585,6 +585,42 @@ function friendHandlers(): Partial<Record<keyof typeof api, Handler>> {
       status = 'none';
       return view();
     },
+    ranking: () => [
+      {
+        ...tom,
+        avatar: { style: 'portrait' as const, seed: '03' },
+        me: false,
+        friend: true,
+        level: 4,
+        xp: 900,
+        weekXp: 120,
+        bosses: 2,
+        goldMedals: 1,
+        diamondMedals: 0,
+        goldSkills: 5,
+        badgePoints: 3,
+        chrono: 12,
+        survie: 7,
+      },
+      {
+        id: makeProfile().id,
+        name: 'Léa',
+        hero: 'lina' as const,
+        avatar: { style: 'portrait' as const, seed: '07' },
+        me: true,
+        friend: false,
+        level: 2,
+        xp: 300,
+        weekXp: 200,
+        bosses: 1,
+        goldMedals: 0,
+        diamondMedals: 1,
+        goldSkills: 2,
+        badgePoints: 1,
+        chrono: 20,
+        survie: 3,
+      },
+    ],
     familyFriends: () => friends().map((f) => ({ ...f, profileId: makeProfile().id, profileName: 'Léa' })),
     approveFriend: () => {
       myParentOk = true;

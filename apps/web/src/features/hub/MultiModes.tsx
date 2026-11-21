@@ -23,9 +23,14 @@ export function MultiModes({ profile }: { readonly profile: Profile }) {
     <PageShell title="Multijoueur" nav={profile}>
       {/* Une seule mascotte : Questy annonce les joueurs connectés (liste et messages en touchant). */}
       <OnlineBanner meId={profile.id} />
-      <GameButton variant="accent" icon="icons-navigation-team" onClick={() => void navigate('/amis')}>
-        Mes amis
-      </GameButton>
+      <div className="grid grid-cols-2 gap-3">
+        <GameButton variant="accent" icon="icons-navigation-team" onClick={() => void navigate('/amis')}>
+          Mes amis
+        </GameButton>
+        <GameButton variant="accent" icon="icons-navigation-ranking" onClick={() => void navigate('/classement')}>
+          Se comparer
+        </GameButton>
+      </div>
       <ul className="grid gap-3 sm:grid-cols-2" aria-label="Modes multijoueur">
         {modes.map((mode) => {
           const icon = assetSrc(`icons-modes-${mode.id}`) ? (

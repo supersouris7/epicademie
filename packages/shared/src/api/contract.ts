@@ -30,7 +30,7 @@ import {
 import { BadgeProgressSchema, LearningReportSchema } from '../learning.ts';
 import { BillingSchema, CheckoutSchema, SimulatePaymentSchema } from '../billing.ts';
 import { AdminErrorSchema, AdminStatsSchema, AnomalySchema, WeakSkillStatSchema } from '../insights.ts';
-import { FamilyFriendSchema, FriendRequestSchema, FriendsViewSchema } from '../friends.ts';
+import { FamilyFriendSchema, FriendRequestSchema, FriendsViewSchema, RankingRowSchema } from '../friends.ts';
 import {
   ContentEventSchema,
   ContentSkillSchema,
@@ -334,6 +334,16 @@ export const api = {
     status: 200,
     params: FriendParamsSchema,
     response: FriendsViewSchema,
+  }),
+  ranking: endpoint({
+    method: 'GET',
+    path: '/profiles/:id/ranking',
+    tag: 'amis',
+    summary: 'Se comparer : niveau, boss, badges, records des défis (famille et amis actifs)',
+    access: 'family',
+    status: 200,
+    params: IdParamsSchema,
+    response: z.array(RankingRowSchema),
   }),
   familyFriends: endpoint({
     method: 'GET',

@@ -140,6 +140,13 @@ export function createFriendsService({ db, clock, random, onChange }: FriendsDep
       return familyView(familyId);
     },
 
+    /** Joueurs avec qui se comparer : sa famille (lui compris) et ses amis actifs. */
+    async peersOf(profileId: string, familyId: string): Promise<{ id: string; friend: boolean }[]> {
+      const family = (await repo.profilesOfFamily(familyId)).map((p) => ({ id: p.id, friend: false }));
+      const rows = (await repo.of([profileId])).filter(isActive);
+      return [...family, ...rows.map((r) => ({ id: otherOf(r, profileId), friend: true }))];
+    },
+
     /** Amis actifs d'un profil (présence, messages, invitations). */
     async activeIds(profileId: string): Promise<string[]> {
       return (await repo.of([profileId])).filter(isActive).map((r) => otherOf(r, profileId));

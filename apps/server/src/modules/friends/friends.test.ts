@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import type { FamilyFriend, FriendsView, Profile } from '@questeo/shared';
+import type { FamilyFriend, FriendsView, Profile, RankingRow } from '@questeo/shared';
 import { createTestApp, profileInput } from '../../testing/harness.ts';
 
 let t: Awaited<ReturnType<typeof createTestApp>>;
@@ -88,5 +88,28 @@ describe('amis d’autres familles', () => {
     expect(
       (await tc.inject({ method: 'POST', url: `/api/v1/profiles/${lea.id}/friends/${tom.id}/approve` })).statusCode,
     ).toBe(404);
+  });
+
+  it('se comparer : sa famille et ses amis actifs seulement, avec leurs chiffres', async () => {
+    const { lea, tom, lc, tc } = await twoFamilies();
+    const zoe = (
+      await lc.inject({ method: 'POST', url: '/api/v1/profiles', payload: profileInput('Zoé') })
+    ).json<Profile>();
+    const ranking = async () => (await lc.inject(`/api/v1/profiles/${lea.id}/ranking`)).json<RankingRow[]>();
+    // Avant l'amitié : la famille seulement.
+    expect((await ranking()).map((r) => r.name).sort()).toEqual(['Léa', 'Zoé']);
+    // Amitié acceptée et validée par les deux parents : Tom apparaît, marqué « ami ».
+    const tomCode = (await view(tc, tom.id)).code;
+    await lc.inject({ method: 'POST', url: `/api/v1/profiles/${lea.id}/friends`, payload: { code: tomCode } });
+    await tc.inject({ method: 'POST', url: `/api/v1/profiles/${tom.id}/friends/${lea.id}/accept` });
+    await lc.inject({ method: 'POST', url: `/api/v1/profiles/${lea.id}/friends/${tom.id}/approve` });
+    await tc.inject({ method: 'POST', url: `/api/v1/profiles/${tom.id}/friends/${lea.id}/approve` });
+    const rows = await ranking();
+    expect(rows.map((r) => r.name).sort()).toEqual(['Léa', 'Tom', 'Zoé']);
+    expect(rows.find((r) => r.id === tom.id)).toMatchObject({ friend: true, me: false, level: 1, bosses: 0 });
+    expect(rows.find((r) => r.id === lea.id)).toMatchObject({ me: true, friend: false });
+    expect(rows.find((r) => r.id === zoe.id)).toMatchObject({ friend: false });
+    // Une autre famille ne lit pas le classement de Léa.
+    expect((await tc.inject(`/api/v1/profiles/${lea.id}/ranking`)).statusCode).toBe(404);
   });
 });
