@@ -4,7 +4,7 @@ import { createPresence, type PlayerSocket } from './presence.ts';
 
 const socket = () => ({ connected: true, emit: () => true }) as unknown as PlayerSocket;
 const player = (id: string, name: string) =>
-  ({ id, name, hero: 'alex', avatar: { style: 'adventurer-neutral', seed: id } }) as unknown as Profile;
+  ({ id, name, hero: 'alex', avatar: { style: 'portrait', seed: '07' } }) as unknown as Profile;
 
 describe('présence : famille et amis', () => {
   it('chacun voit sa famille et ses amis actifs, jamais les autres enfants', () => {

@@ -1,13 +1,17 @@
 import { z } from 'zod';
 import { GRADES } from './grades.ts';
 
-/** Styles DiceBear autorisés (licences libres, voir docs/CREDITS.md). */
-export const AVATAR_STYLES = ['adventurer-neutral', 'fun-emoji', 'pixelbot'] as const;
+/**
+ * Avatar de profil : un des 25 portraits dessinés (planche fournie le 21/11/2026), numérotés
+ * « 01 » à « 25 ». Les anciens avatars générés (bibliothèque DiceBear) sont retirés (migration 0013).
+ */
+export const AVATAR_IDS = Array.from({ length: 25 }, (_, i) => String(i + 1).padStart(2, '0'));
+export const AVATAR_STYLES = ['portrait'] as const;
 export type AvatarStyle = (typeof AVATAR_STYLES)[number];
 
 export const AvatarConfigSchema = z.object({
   style: z.enum(AVATAR_STYLES),
-  seed: z.string().min(1).max(64),
+  seed: z.string().refine((s) => AVATAR_IDS.includes(s), 'Avatar inconnu'),
 });
 export type AvatarConfig = z.infer<typeof AvatarConfigSchema>;
 

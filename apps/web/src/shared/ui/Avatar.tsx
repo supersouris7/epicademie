@@ -1,7 +1,8 @@
 import type { AvatarConfig } from '@questeo/shared';
-import { useAvatarUri } from '../lib/avatar.ts';
 
-/** Avatar généré (DiceBear) d'un profil, à partir de son style et de sa graine. */
+/** Image d'un portrait de profil (« 01 » à « 25 »). */
+const avatarSrc = (avatar: Pick<AvatarConfig, 'seed'>) => `/assets/avatars/${avatar.seed}.webp`;
+
 interface AvatarProps {
   readonly avatar: AvatarConfig;
   readonly size?: number;
@@ -9,16 +10,19 @@ interface AvatarProps {
   readonly label?: string;
 }
 
+/** Avatar d'un profil : un des 25 portraits dessinés (déjà ronds, avec leur contour). */
 export function Avatar({ avatar, size = 96, className = '', label = '' }: AvatarProps) {
-  const uri = useAvatarUri(avatar);
   return (
-    <div
-      className={`cartoon bg-surface-2 shrink-0 overflow-hidden rounded-full ${className}`}
-      style={{ width: size, height: size, borderRadius: '9999px' }}
-      role="img"
-      aria-label={label}
-    >
-      {uri && <img src={uri} alt="" className="h-full w-full" draggable={false} />}
-    </div>
+    <img
+      src={avatarSrc(avatar)}
+      alt={label}
+      role={label ? 'img' : 'presentation'}
+      width={size}
+      height={size}
+      draggable={false}
+      decoding="async"
+      className={`shrink-0 rounded-full object-contain ${className}`}
+      style={{ width: size, height: size }}
+    />
   );
 }

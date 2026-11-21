@@ -92,6 +92,13 @@
       "when": 1795310000000,
       "tag": "0012_amis",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1795320000000,
+      "tag": "0013_avatars",
+      "breakpoints": true
     }
   ]
 }

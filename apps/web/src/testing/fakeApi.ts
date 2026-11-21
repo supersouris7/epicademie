@@ -54,7 +54,7 @@ export function makeProfile(over: Partial<Profile> = {}): Profile {
   return {
     id: '11111111-1111-4111-8111-111111111111',
     name: 'Léa',
-    avatar: { style: 'pixelbot', seed: 'lea' },
+    avatar: { style: 'portrait', seed: '07' },
     gender: 'fille',
     birthDate: '2014-03-09',
     hero: 'lina',
@@ -570,7 +570,7 @@ function friendHandlers(): Partial<Record<keyof typeof api, Handler>> {
   let status: 'none' | 'envoyee' | 'parents' | 'active' = 'none';
   let myParentOk = false;
   const friends = () =>
-    status === 'none' ? [] : [{ ...tom, avatar: { style: 'pixelbot' as const, seed: 'tom' }, status, myParentOk }];
+    status === 'none' ? [] : [{ ...tom, avatar: { style: 'portrait' as const, seed: '07' }, status, myParentOk }];
   const view = () => ({ code: 'LEA7K2', friends: friends() });
   return {
     friends: view,

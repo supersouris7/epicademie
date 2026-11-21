@@ -46,7 +46,7 @@ describe('connexion temps réel', () => {
   it('se connecte pour le profil choisi et reçoit la présence', () => {
     useRealtime.getState().connect('p1');
     const players: OnlinePlayer[] = [
-      { id: 'p1', name: 'Léa', hero: 'lina', avatar: { style: 'pixelbot', seed: 'x' }, busy: false },
+      { id: 'p1', name: 'Léa', hero: 'lina', avatar: { style: 'portrait', seed: '07' }, busy: false },
     ];
     last().fire('presence', players);
     expect(useRealtime.getState().online).toEqual(players);
@@ -62,7 +62,7 @@ describe('connexion temps réel', () => {
       id: 'p1',
       name: 'Léa',
       hero: 'lina',
-      avatar: { style: 'pixelbot', seed: 'x' },
+      avatar: { style: 'portrait', seed: '07' },
       busy: false,
     };
     const tom: OnlinePlayer = { ...lea, id: 'p9', name: 'Tom', friend: true };

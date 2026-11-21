@@ -41,6 +41,11 @@ export interface StillJob {
    * même échelle d'une pose à l'autre (sinon une pose large paraît plus petite).
    */
   readonly sameFrame?: boolean;
+  /**
+   * Découpe par formes (chaque image est un bloc séparé des autres par du vide) au lieu de la
+   * grille : les `cols × rows` plus grandes formes, dans l'ordre de lecture.
+   */
+  readonly byShape?: boolean;
 }
 
 export interface AnimJob {
@@ -106,7 +111,12 @@ const SORCIER_HEADS = [
 /** Coffres : 4 raretés fermées (1re rangée), les mêmes ouvertes (2e rangée). */
 const CHESTS = ['commun', 'rare', 'epique', 'legendaire'];
 
+/** Portraits de profil : planche de 5 × 5, numérotés 01 à 25 dans l'ordre de lecture. */
+const AVATARS = Array.from({ length: 25 }, (_, i) => `avatars/${String(i + 1).padStart(2, '0')}`);
+
 export const JOBS: readonly Job[] = [
+  // Lignes de la planche un peu irrégulières : chaque portrait est découpé selon son contour.
+  { kind: 'stills', board: 'avatars.png', cols: 5, rows: 5, size: 256, targets: AVATARS, byShape: true },
   {
     kind: 'stills',
     board: 'coffres.png',
@@ -329,15 +339,56 @@ export function placeBottom(img: Rgba, width: number, height: number): Rgba {
   return { data, width, height };
 }
 
+/** Boîtes des formes séparées (pixels opaques reliés), les plus grandes d'abord. */
+export function shapeBoxes(img: Rgba, count: number, solid = 200): Box[] {
+  const { width: w, height: h, data } = img;
+  const seen = new Uint8Array(w * h);
+  const boxes: (Box & { area: number })[] = [];
+  const stack: number[] = [];
+  for (let start = 0; start < w * h; start++) {
+    if (seen[start] || (data[start * 4 + 3] ?? 0) < solid) continue;
+    let [minX, minY, maxX, maxY, area] = [w, h, 0, 0, 0];
+    seen[start] = 1;
+    stack.push(start);
+    while (stack.length > 0) {
+      const p = stack.pop() ?? 0;
+      const x = p % w;
+      const y = (p - x) / w;
+      area++;
+      minX = Math.min(minX, x);
+      maxX = Math.max(maxX, x);
+      minY = Math.min(minY, y);
+      maxY = Math.max(maxY, y);
+      for (const q of [p - 1, p + 1, p - w, p + w]) {
+        if (q < 0 || q >= w * h || seen[q] || (data[q * 4 + 3] ?? 0) < solid) continue;
+        if ((q === p - 1 && x === 0) || (q === p + 1 && x === w - 1)) continue;
+        seen[q] = 1;
+        stack.push(q);
+      }
+    }
+    boxes.push({ left: minX, top: minY, width: maxX - minX + 1, height: maxY - minY + 1, area });
+  }
+  const kept = boxes.sort((a, b) => b.area - a.area).slice(0, count);
+  // Ordre de lecture : par rangée (centres proches en hauteur), puis de gauche à droite.
+  const rowH = Math.max(...kept.map((b) => b.height)) / 2;
+  return kept.sort((a, b) =>
+    Math.abs(a.top + a.height / 2 - (b.top + b.height / 2)) < rowH ? a.left - b.left : a.top - b.top,
+  );
+}
+
 async function stills(job: StillJob): Promise<string[]> {
   const board = clean(await load(join(BOARDS, job.board)));
-  const cells = gridCells(board.width, board.height, job.cols, job.rows);
+  const cells = job.byShape
+    ? shapeBoxes(board, job.cols * job.rows)
+    : gridCells(board.width, board.height, job.cols, job.rows);
   const parts: { target: string; img: Rgba }[] = [];
   for (const [i, target] of job.targets.entries()) {
     const cellBox = cells[i];
     if (target === '-' || !cellBox) continue;
     // Débord d'une case voisine (lueur, objet lancé) retiré.
-    let cell = dropEdgeScraps(crop(board, cellBox));
+    let cell = job.byShape
+      ? largestShape(crop(board, withMargin(cellBox, board)))
+      : dropEdgeScraps(crop(board, cellBox));
     if (job.silhouetteOnly?.includes(i)) cell = largestShape(cell);
     const box = contentBox(cell, 0);
     if (!box) throw new Error(`${job.board} : case ${i + 1} vide (${target})`);
