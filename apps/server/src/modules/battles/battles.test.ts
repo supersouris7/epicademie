@@ -30,7 +30,7 @@ beforeEach(async () => {
     url: '/api/v1/profiles',
     payload: {
       name: 'Léa',
-      avatar: { style: 'pixelbot', seed: 's' },
+      avatar: { style: 'portrait', seed: '07' },
       gender: 'fille',
       birthDate: '2014-03-09',
       grade: '5e',

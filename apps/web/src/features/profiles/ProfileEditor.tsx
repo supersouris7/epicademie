@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import {
-  AVATAR_STYLES,
+  AVATAR_IDS,
   BirthDateSchema,
   ProfileNameSchema,
   type AvatarConfig,
-  type AvatarStyle,
   type Gender,
   type Grade,
   type Profile,
@@ -19,14 +18,8 @@ import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { useSession } from '../../shared/lib/session.ts';
 import { useParentGate } from '../account/index.ts';
 
-const STYLE_LABELS: Record<AvatarStyle, string> = {
-  'fun-emoji': 'Émoji',
-  'adventurer-neutral': 'Visage',
-  pixelbot: 'Robot',
-};
-
-const randomSeed = () => crypto.randomUUID().slice(0, 8);
-const seedBatch = () => Array.from({ length: 16 }, randomSeed);
+/** Portrait proposé à un nouveau joueur (il en choisit un autre d'un toucher). */
+const randomPortrait = () => AVATAR_IDS[Math.floor(Math.random() * AVATAR_IDS.length)] ?? '01';
 
 /** Création (`/profils/nouveau`) ou modification (`/profils/:id/modifier`) d'un profil. */
 export function ProfileEditor() {
@@ -47,10 +40,9 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
   const [birthDate, setBirthDate] = useState(existing?.birthDate ?? '');
   const [grade, setGrade] = useState<Grade | null>(existing?.grade ?? null);
   const [avatar, setAvatar] = useState<AvatarConfig>(
-    existing?.avatar ?? { style: 'adventurer-neutral', seed: randomSeed() },
+    () => existing?.avatar ?? { style: 'portrait', seed: randomPortrait() },
   );
-  const shown: AvatarConfig = { style: avatar.style, seed: avatar.seed };
-  const [seeds, setSeeds] = useState(seedBatch);
+  const shown: AvatarConfig = { style: 'portrait', seed: avatar.seed };
   const [error, setError] = useState<string | null>(null);
   const saving = create.isPending || update.isPending;
 
@@ -176,46 +168,21 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
         </fieldset>
 
         <fieldset className="flex flex-col gap-3">
-          <legend className="font-display mb-2 text-xl tracking-wide">Style</legend>
-          <div className="flex flex-wrap gap-3">
-            {AVATAR_STYLES.map((style) => (
-              <GameButton
-                key={style}
-                size="sm"
-                variant={avatar.style === style ? 'accent' : 'surface'}
-                selected={avatar.style === style}
-                onClick={() => setAvatar((a) => ({ ...a, style }))}
-              >
-                {STYLE_LABELS[style]}
-              </GameButton>
-            ))}
-          </div>
-        </fieldset>
-
-        <fieldset className="flex flex-col gap-3">
-          <legend className="font-display mb-2 text-xl tracking-wide">Choisis ta tête</legend>
-          <div className="grid grid-cols-4 gap-3 sm:grid-cols-8">
-            {seeds.map((seed) => (
+          <legend className="font-display mb-2 text-xl tracking-wide">Choisis ton avatar</legend>
+          <div className="grid grid-cols-5 gap-2 sm:gap-3">
+            {AVATAR_IDS.map((seed) => (
               <button
                 key={seed}
                 type="button"
                 aria-pressed={avatar.seed === seed}
                 aria-label={`Avatar ${seed}`}
-                onClick={() => setAvatar((a) => ({ ...a, seed }))}
-                className={`flex justify-center rounded-full p-1 ${avatar.seed === seed ? 'ring-primary ring-4' : ''}`}
+                onClick={() => setAvatar({ style: 'portrait', seed })}
+                className={`flex justify-center rounded-full p-1 transition-transform ${avatar.seed === seed ? 'ring-primary scale-105 ring-4' : 'hover:scale-105'}`}
               >
-                <Avatar avatar={{ ...shown, seed }} size={72} />
+                <Avatar avatar={{ style: 'portrait', seed }} size={72} className="max-w-full" />
               </button>
             ))}
           </div>
-          <GameButton
-            variant="surface"
-            icon="icons-tools-dice"
-            className="self-start"
-            onClick={() => setSeeds(seedBatch())}
-          >
-            D’autres têtes
-          </GameButton>
         </fieldset>
 
         <GameButton type="submit" size="lg" disabled={saving} className="self-stretch sm:self-end">

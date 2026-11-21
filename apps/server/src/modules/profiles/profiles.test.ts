@@ -3,7 +3,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { Profile, SessionSummary } from '@questeo/shared';
 import { createTestApp, profileInput, sequenceRandom } from '../../testing/harness.ts';
 
-const avatar = { style: 'fun-emoji', seed: 'abc' } as const;
+const avatar = { style: 'portrait', seed: '07' } as const;
 
 let t: Awaited<ReturnType<typeof createTestApp>>;
 let app: Awaited<ReturnType<typeof createTestApp>>['http'];

@@ -10,7 +10,7 @@ import { systemRandom } from '../../core/random.ts';
 const people = ['lea', 'tom', 'ines'].map((name, i): Profile => ({
   id: `00000000-0000-4000-8000-00000000000${i + 1}`,
   name,
-  avatar: { style: 'pixelbot', seed: name },
+  avatar: { style: 'portrait', seed: '07' },
   gender: 'fille',
   birthDate: i === 2 ? '2010-01-01' : '2014-03-09',
   hero: 'alex',

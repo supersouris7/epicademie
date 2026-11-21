@@ -216,7 +216,7 @@ export async function createTestApp(options: TestHarnessOptions = {}) {
 /** Profil de test valide (5e, fille, née en 2014). */
 export const profileInput = (name = 'Léa') => ({
   name,
-  avatar: { style: 'pixelbot', seed: name },
+  avatar: { style: 'portrait', seed: '07' },
   gender: 'fille',
   birthDate: '2014-03-09',
   grade: '5e',

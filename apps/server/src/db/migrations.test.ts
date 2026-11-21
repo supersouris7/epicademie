@@ -75,6 +75,28 @@ describe('migrations', () => {
     }
   });
 
+  it('avatars : les anciens avatars générés deviennent un des 25 portraits, toujours le même', async () => {
+    const dir = migrationsUpTo(13); // jusqu'à 0012
+    try {
+      database = await openDatabase('pglite://memory');
+      await runMigrations(database, dir);
+      const { db } = database;
+      await db.execute(sql`insert into profiles (id, name, avatar) values
+        ('88888888-8888-4888-8888-888888888888', 'Ana', '{"style":"fun-emoji","seed":"abc123"}'),
+        ('99999999-9999-4999-8999-999999999999', 'Eli', '{"style":"portrait","seed":"12"}')`);
+      await runMigrations(database, MIGRATIONS_DIR);
+      const rows = await db
+        .select({ name: profiles.name, avatar: profiles.avatar })
+        .from(profiles)
+        .orderBy(profiles.name);
+      expect(rows[0]?.avatar.style).toBe('portrait');
+      expect(rows[0]?.avatar.seed).toMatch(/^(0[1-9]|1\d|2[0-5])$/);
+      expect(rows[1]?.avatar).toEqual({ style: 'portrait', seed: '12' });
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it('refuse une URL de base inconnue', async () => {
     await expect(openDatabase('mysql://x')).rejects.toThrow(/DATABASE_URL/);
   });

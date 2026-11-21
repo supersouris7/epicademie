@@ -24,7 +24,8 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByRole('radio', { name: '3e', exact: true })).toBeVisible();
   await expect(page.getByRole('radio', { name: 'Adulte', exact: true })).toBeVisible();
   await page.getByRole('radio', { name: '5e', exact: true }).click();
-  await page.getByRole('button', { name: 'Robot' }).click();
+  await page.getByRole('button', { name: 'Avatar 05' }).click();
+  await expect(page.getByRole('button', { name: 'Avatar 05' })).toHaveAttribute('aria-pressed', 'true');
   // Le héros ne se choisit plus dans le profil : il a son propre menu.
   await expect(page.getByRole('radiogroup', { name: 'Ton héros' })).toHaveCount(0);
   await page.getByRole('button', { name: /C’est parti/ }).click();
