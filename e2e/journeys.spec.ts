@@ -70,7 +70,8 @@ test('Mes progrès : trophées et badges visibles dès le départ', async ({ pag
   await signupFamily(page);
   await createProfile(page, `Pro${Date.now() % 10000}`);
   await page.goto('/progres');
-  await expect(page.getByRole('heading', { name: 'Trophées' })).toBeVisible();
+  await page.getByRole('button', { name: /Trophées, badges et inventaire/ }).click();
+  await expect(page.getByRole('heading', { name: 'Trophées et badges' }).first()).toBeVisible();
   await expect(page.getByText(/Acad-Héros trouvés/)).toHaveCount(0);
   await expect(page.getByText('Chasseur de boss').first()).toBeVisible();
 });
