@@ -4,6 +4,7 @@ import {
   applyItem,
   BATTLE_FIRST_WIN_COINS,
   battleXp,
+  bossChest,
   coinsForXp,
   createBattle,
   itemRefusal,
@@ -30,7 +31,7 @@ import type { Clock } from '../../core/clock.ts';
 import type { Random } from '../../core/random.ts';
 import { badRequest, conflict, gone, notFound } from '../../core/errors.ts';
 import { PROFILE_NOT_FOUND, profilesRepo } from '../profiles/index.ts';
-import { inventoryRepo } from '../inventory/index.ts';
+import { grantChest, inventoryRepo } from '../inventory/index.ts';
 import { trainingRepo } from '../training/index.ts';
 import { disabledSkills } from '../pedagogy/index.ts';
 import { readBattle, storeBattle } from './battle-state.ts';
@@ -47,9 +48,6 @@ export const BATTLE_NOT_FOUND = 'Combat introuvable';
 
 /** Combat commencé avant une mise à jour qui a changé le format de son état. */
 export const BATTLE_EXPIRED = 'Ce combat a expiré avec la mise à jour du jeu. Relance-le !';
-
-/** Coffre de la 1re victoire contre un boss. */
-export const FIRST_WIN_CHEST: Partial<Inventory> = { bouclier: 1, soin: 1, indice: 1 };
 
 /** Énoncés récents à éviter (anti-répétition d'un combat à l'autre). */
 const RECENT_PROMPTS = 150;
@@ -269,16 +267,24 @@ export function createBattlesService({ db, clock, random, onFinished }: BattlesD
         const newBest = medal !== null && best !== record?.bestMedal;
         if (won) await records.saveWin(profile.id, session.chapterId, state.hearts, best, clock.now());
 
-        const items = firstWin ? await inventoryRepo(tx).add(profile.id, FIRST_WIN_CHEST) : {};
+        // Coffre à chaque victoire, selon la médaille (parfois un cran au-dessus).
+        const chest = medal
+          ? await grantChest(tx, profile.id, bossChest(medal, random.float, new Set(await profiles.heroes(profile.id))))
+          : null;
         const xpGained = battleXp(state);
         const coinsGained = coinsForXp(xpGained) + (firstWin ? BATTLE_FIRST_WIN_COINS : 0);
-        await profiles.credit(profile.id, { xp: xpGained, coins: coinsGained });
+        await profiles.credit(profile.id, {
+          xp: xpGained,
+          coins: coinsGained + (chest?.coins ?? 0),
+          rubies: chest?.rubies ?? 0,
+        });
         await trainingRepo(tx).updateSession(id, {
           finishedAt: clock.now(),
           answered: state.answered,
           correct: state.correct,
           xp: xpGained,
           coins: coinsGained,
+          chest: chest?.rarity ?? null,
         });
         return {
           won,
@@ -288,13 +294,13 @@ export function createBattlesService({ db, clock, random, onFinished }: BattlesD
           hearts: state.hearts,
           medal,
           newBest,
-          items,
+          chest,
           weakSkill: weakestSkill(state, pools(session.chapterId).mobs),
           levelBefore: levelFromXp(profile.xp).level,
           levelAfter: levelFromXp(profile.xp + xpGained).level,
         };
       });
-      onFinished?.({ coins: summary.coinsGained, rubies: 0 });
+      onFinished?.({ coins: summary.coinsGained + (summary.chest?.coins ?? 0), rubies: summary.chest?.rubies ?? 0 });
       return summary;
     },
   };

@@ -22,6 +22,7 @@ import type {
   ReportStatus,
   AvatarConfig,
   BossMedal,
+  ChestRarity,
   Gender,
   Grade,
   HeroId,
@@ -165,6 +166,8 @@ export const sessions = pgTable(
     confused: jsonb('confused').$type<string[]>().notNull().default([]),
     /** État du combat de boss (mode « boss »), tenu par le serveur. Voir modules/battles. */
     battle: jsonb('battle').$type<unknown>(),
+    /** Rareté du coffre reçu à la fin de la partie (null : pas de coffre). */
+    chest: text('chest').$type<ChestRarity>(),
   },
   (t) => [index('sessions_profile_mode_chapter_idx').on(t.profileId, t.mode, t.chapterId)],
 );

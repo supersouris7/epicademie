@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Lot 6 — Kit combat
 
-112 images, demandes 47 à 140 (94 messages à envoyer).
+112 images, demandes 48 à 141 (94 messages à envoyer).
 
 ## Marche à suivre
 
@@ -61,7 +61,7 @@ Réponds simplement « Prêt » si tu as compris.
 
 > Ce lot se génère avec le fichier autonome docs/chatgpt/kit-combat.md (prompt à copier en tête du fichier).
 
-#### 47. Alex — animation sur place
+#### 48. Alex — animation sur place
 Enregistrer sous `assets-src/originals/characters/alex/anim-idle.png` · 1536×1024 → final 512×512
 
 ```text
@@ -70,7 +70,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 48. Alex — animation victoire
+#### 49. Alex — animation victoire
 Enregistrer sous `assets-src/originals/characters/alex/anim-victory.png` · 1536×1024 → final 512×512
 
 ```text
@@ -79,7 +79,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 49. Alex — pose course
+#### 50. Alex — pose course
 Enregistrer sous `assets-src/originals/characters/alex/pose-run.png` · 1536×1024 → final 512×512
 
 ```text
@@ -88,7 +88,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 50. Alex — pose tir
+#### 51. Alex — pose tir
 Enregistrer sous `assets-src/originals/characters/alex/pose-shoot.png` · 1536×1024 → final 512×512
 
 ```text
@@ -97,7 +97,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 51. Alex — pose bouclier
+#### 52. Alex — pose bouclier
 Enregistrer sous `assets-src/originals/characters/alex/pose-shield.png` · 1536×1024 → final 512×512
 
 ```text
@@ -106,7 +106,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 52. Alex — pose touché
+#### 53. Alex — pose touché
 Enregistrer sous `assets-src/originals/characters/alex/pose-hurt.png` · 1536×1024 → final 512×512
 
 ```text
@@ -115,7 +115,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 53. Alex — pose K.-O.
+#### 54. Alex — pose K.-O.
 Enregistrer sous `assets-src/originals/characters/alex/pose-defeat.png` · 1536×1024 → final 512×512
 
 ```text
@@ -124,7 +124,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 54. Alex — joie
+#### 55. Alex — joie
 Enregistrer sous `assets-src/originals/characters/alex/head-joie.png` · 1024×1024 → final 384×384
 
 ```text
@@ -133,7 +133,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 55. Alex — rire
+#### 56. Alex — rire
 Enregistrer sous `assets-src/originals/characters/alex/head-rire.png` · 1024×1024 → final 384×384
 
 ```text
@@ -142,7 +142,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 56. Alex — enthousiaste
+#### 57. Alex — enthousiaste
 Enregistrer sous `assets-src/originals/characters/alex/head-enthousiaste.png` · 1024×1024 → final 384×384
 
 ```text
@@ -151,7 +151,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 57. Alex — confiant
+#### 58. Alex — confiant
 Enregistrer sous `assets-src/originals/characters/alex/head-confiant.png` · 1024×1024 → final 384×384
 
 ```text
@@ -160,7 +160,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 58. Alex — determine
+#### 59. Alex — determine
 Enregistrer sous `assets-src/originals/characters/alex/head-determine.png` · 1024×1024 → final 384×384
 
 ```text
@@ -169,7 +169,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 59. Alex — clin-oeil
+#### 60. Alex — clin-oeil
 Enregistrer sous `assets-src/originals/characters/alex/head-clin-oeil.png` · 1024×1024 → final 384×384
 
 ```text
@@ -178,7 +178,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 60. Alex — surprise
+#### 61. Alex — surprise
 Enregistrer sous `assets-src/originals/characters/alex/head-surprise.png` · 1024×1024 → final 384×384
 
 ```text
@@ -187,7 +187,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 61. Alex — reflexion
+#### 62. Alex — reflexion
 Enregistrer sous `assets-src/originals/characters/alex/head-reflexion.png` · 1024×1024 → final 384×384
 
 ```text
@@ -196,7 +196,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 62. Alex — affection
+#### 63. Alex — affection
 Enregistrer sous `assets-src/originals/characters/alex/head-affection.png` · 1024×1024 → final 384×384
 
 ```text
@@ -205,7 +205,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 63. Alex — colere
+#### 64. Alex — colere
 Enregistrer sous `assets-src/originals/characters/alex/head-colere.png` · 1024×1024 → final 384×384
 
 ```text
@@ -214,7 +214,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 64. Alex — triste
+#### 65. Alex — triste
 Enregistrer sous `assets-src/originals/characters/alex/head-triste.png` · 1024×1024 → final 384×384
 
 ```text
@@ -223,7 +223,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 65. Alex — etourdi
+#### 66. Alex — etourdi
 Enregistrer sous `assets-src/originals/characters/alex/head-etourdi.png` · 1024×1024 → final 384×384
 
 ```text
@@ -232,7 +232,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 66. Lina — animation sur place
+#### 67. Lina — animation sur place
 Enregistrer sous `assets-src/originals/characters/lina/anim-idle.png` · 1536×1024 → final 512×512
 
 ```text
@@ -241,7 +241,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 67. Lina — animation victoire
+#### 68. Lina — animation victoire
 Enregistrer sous `assets-src/originals/characters/lina/anim-victory.png` · 1536×1024 → final 512×512
 
 ```text
@@ -250,7 +250,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 68. Lina — pose course
+#### 69. Lina — pose course
 Enregistrer sous `assets-src/originals/characters/lina/pose-run.png` · 1536×1024 → final 512×512
 
 ```text
@@ -259,7 +259,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 69. Lina — pose tir
+#### 70. Lina — pose tir
 Enregistrer sous `assets-src/originals/characters/lina/pose-shoot.png` · 1536×1024 → final 512×512
 
 ```text
@@ -268,7 +268,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 70. Lina — pose bouclier
+#### 71. Lina — pose bouclier
 Enregistrer sous `assets-src/originals/characters/lina/pose-shield.png` · 1536×1024 → final 512×512
 
 ```text
@@ -277,7 +277,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 71. Lina — pose touché
+#### 72. Lina — pose touché
 Enregistrer sous `assets-src/originals/characters/lina/pose-hurt.png` · 1536×1024 → final 512×512
 
 ```text
@@ -286,7 +286,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 72. Lina — pose K.-O.
+#### 73. Lina — pose K.-O.
 Enregistrer sous `assets-src/originals/characters/lina/pose-defeat.png` · 1536×1024 → final 512×512
 
 ```text
@@ -295,7 +295,7 @@ Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 %
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 73. Lina — joie
+#### 74. Lina — joie
 Enregistrer sous `assets-src/originals/characters/lina/head-joie.png` · 1024×1024 → final 384×384
 
 ```text
@@ -304,7 +304,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 74. Lina — rire
+#### 75. Lina — rire
 Enregistrer sous `assets-src/originals/characters/lina/head-rire.png` · 1024×1024 → final 384×384
 
 ```text
@@ -313,7 +313,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 75. Lina — enthousiaste
+#### 76. Lina — enthousiaste
 Enregistrer sous `assets-src/originals/characters/lina/head-enthousiaste.png` · 1024×1024 → final 384×384
 
 ```text
@@ -322,7 +322,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 76. Lina — confiant
+#### 77. Lina — confiant
 Enregistrer sous `assets-src/originals/characters/lina/head-confiant.png` · 1024×1024 → final 384×384
 
 ```text
@@ -331,7 +331,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 77. Lina — determine
+#### 78. Lina — determine
 Enregistrer sous `assets-src/originals/characters/lina/head-determine.png` · 1024×1024 → final 384×384
 
 ```text
@@ -340,7 +340,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 78. Lina — clin-oeil
+#### 79. Lina — clin-oeil
 Enregistrer sous `assets-src/originals/characters/lina/head-clin-oeil.png` · 1024×1024 → final 384×384
 
 ```text
@@ -349,7 +349,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 79. Lina — surprise
+#### 80. Lina — surprise
 Enregistrer sous `assets-src/originals/characters/lina/head-surprise.png` · 1024×1024 → final 384×384
 
 ```text
@@ -358,7 +358,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 80. Lina — reflexion
+#### 81. Lina — reflexion
 Enregistrer sous `assets-src/originals/characters/lina/head-reflexion.png` · 1024×1024 → final 384×384
 
 ```text
@@ -367,7 +367,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 81. Lina — affection
+#### 82. Lina — affection
 Enregistrer sous `assets-src/originals/characters/lina/head-affection.png` · 1024×1024 → final 384×384
 
 ```text
@@ -376,7 +376,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 82. Lina — colere
+#### 83. Lina — colere
 Enregistrer sous `assets-src/originals/characters/lina/head-colere.png` · 1024×1024 → final 384×384
 
 ```text
@@ -385,7 +385,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 83. Lina — triste
+#### 84. Lina — triste
 Enregistrer sous `assets-src/originals/characters/lina/head-triste.png` · 1024×1024 → final 384×384
 
 ```text
@@ -394,7 +394,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 84. Lina — etourdi
+#### 85. Lina — etourdi
 Enregistrer sous `assets-src/originals/characters/lina/head-etourdi.png` · 1024×1024 → final 384×384
 
 ```text
@@ -403,7 +403,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 85. Sorcier π — animation sur place
+#### 86. Sorcier π — animation sur place
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/anim-idle.png` · 1536×1024 → final 512×512
 
 ```text
@@ -412,7 +412,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 86. Sorcier π — pose idle
+#### 87. Sorcier π — pose idle
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/pose-idle.png` · 1536×1024 → final 512×512
 
 ```text
@@ -421,7 +421,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 87. Sorcier π — pose attack
+#### 88. Sorcier π — pose attack
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/pose-attack.png` · 1536×1024 → final 512×512
 
 ```text
@@ -430,7 +430,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 88. Sorcier π — pose shield
+#### 89. Sorcier π — pose shield
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/pose-shield.png` · 1536×1024 → final 512×512
 
 ```text
@@ -439,7 +439,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 89. Sorcier π — pose hurt
+#### 90. Sorcier π — pose hurt
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/pose-hurt.png` · 1536×1024 → final 512×512
 
 ```text
@@ -448,7 +448,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 90. Sorcier π — pose defeat
+#### 91. Sorcier π — pose defeat
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/pose-defeat.png` · 1536×1024 → final 512×512
 
 ```text
@@ -457,7 +457,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 91. Sorcier π — pose cast
+#### 92. Sorcier π — pose cast
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/pose-cast.png` · 1536×1024 → final 512×512
 
 ```text
@@ -466,7 +466,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 92. Sorcier π — pose charge
+#### 93. Sorcier π — pose charge
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/pose-charge.png` · 1536×1024 → final 512×512
 
 ```text
@@ -475,7 +475,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 93. Sorcier π — pose victory
+#### 94. Sorcier π — pose victory
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/pose-victory.png` · 1536×1024 → final 512×512
 
 ```text
@@ -484,7 +484,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 94. Sorcier π — menace
+#### 95. Sorcier π — menace
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/head-menace.png` · 1024×1024 → final 384×384
 
 ```text
@@ -493,7 +493,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 95. Sorcier π — concentre
+#### 96. Sorcier π — concentre
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/head-concentre.png` · 1024×1024 → final 384×384
 
 ```text
@@ -502,7 +502,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 96. Sorcier π — surprise
+#### 97. Sorcier π — surprise
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/head-surprise.png` · 1024×1024 → final 384×384
 
 ```text
@@ -511,7 +511,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 97. Sorcier π — moqueur
+#### 98. Sorcier π — moqueur
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/head-moqueur.png` · 1024×1024 → final 384×384
 
 ```text
@@ -520,7 +520,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 98. Sorcier π — perplexe
+#### 99. Sorcier π — perplexe
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/head-perplexe.png` · 1024×1024 → final 384×384
 
 ```text
@@ -529,7 +529,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 99. Sorcier π — colere
+#### 100. Sorcier π — colere
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/head-colere.png` · 1024×1024 → final 384×384
 
 ```text
@@ -538,7 +538,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 100. Sorcier π — inquiet
+#### 101. Sorcier π — inquiet
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/head-inquiet.png` · 1024×1024 → final 384×384
 
 ```text
@@ -547,7 +547,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 101. Sorcier π — rage-menace
+#### 102. Sorcier π — rage-menace
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/head-rage-menace.png` · 1024×1024 → final 384×384
 
 ```text
@@ -556,7 +556,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 102. Sorcier π — rage-surprise
+#### 103. Sorcier π — rage-surprise
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/head-rage-surprise.png` · 1024×1024 → final 384×384
 
 ```text
@@ -565,7 +565,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 103. Sorcier π — furieux
+#### 104. Sorcier π — furieux
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/head-furieux.png` · 1024×1024 → final 384×384
 
 ```text
@@ -574,7 +574,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 104. Sorcier π — rage-cri
+#### 105. Sorcier π — rage-cri
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/head-rage-cri.png` · 1024×1024 → final 384×384
 
 ```text
@@ -583,7 +583,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 105. Sorcier π — rage-plisse
+#### 106. Sorcier π — rage-plisse
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/head-rage-plisse.png` · 1024×1024 → final 384×384
 
 ```text
@@ -592,7 +592,7 @@ Cadrage : même cadrage exact que le portrait de référence, seule l’expressi
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 106. Sorcier π — portrait
+#### 107. Sorcier π — portrait
 Enregistrer sous `assets-src/originals/bosses/sorcier-pi/portrait.png` · 1024×1024 → final 512×512
 
 ```text
@@ -601,7 +601,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 107. L’Empereur du Savoir
+#### 108. L’Empereur du Savoir
 Enregistrer sous `assets-src/originals/bosses/empereur/empereur.png` · 1024×1024 → final 1024×1024
 
 ```text
@@ -610,7 +610,7 @@ Cadrage : personnage en pied centré, de face, fond transparent, halo et effets 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 108. L’Empereur du Savoir et les matières
+#### 109. L’Empereur du Savoir et les matières
 Enregistrer sous `assets-src/originals/bosses/empereur/empereur-reliques.png` · 1024×1024 → final 1024×1024
 
 ```text
@@ -619,7 +619,7 @@ Cadrage : personnage en pied centré, de face, fond transparent, halo et effets 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 109. Bannière du Combat de boss
+#### 110. Bannière du Combat de boss
 Enregistrer sous `assets-src/originals/bosses/empereur/banniere.png` · 1536×1024 → final 1536×512 · plein cadre (pas de fond magenta)
 
 ```text
@@ -628,7 +628,7 @@ Cadrage : bannière très large, sujet au centre, fond peint jusqu’aux bords, 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 110. Planche « mobs » (9 éléments)
+#### 111. Planche « mobs » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/mobs.png` · 1024×1024, grille 3×3 → chaque case finale 384×384
 Cases : 1 → `bosses/minions/calculatrice` · 2 → `bosses/minions/cube-bot` · 3 → `bosses/minions/equerre` · 4 → `bosses/minions/compas` · 5 → `bosses/minions/de` · 6 → `bosses/minions/camembert` · 7 → `bosses/minions/courbe` · 8 → `bosses/minions/bug` · 9 → `bosses/minions/bloc-code`
 
@@ -651,7 +651,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 111. Mob π-bot — idle
+#### 112. Mob π-bot — idle
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot.png` · 1536×1024 → final 512×512
 
 ```text
@@ -660,7 +660,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 112. Mob π-bot — attack
+#### 113. Mob π-bot — attack
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-attack.png` · 1536×1024 → final 512×512
 
 ```text
@@ -669,7 +669,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 113. Mob π-bot — shield
+#### 114. Mob π-bot — shield
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-shield.png` · 1536×1024 → final 512×512
 
 ```text
@@ -678,7 +678,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 114. Mob π-bot — run
+#### 115. Mob π-bot — run
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-run.png` · 1536×1024 → final 512×512
 
 ```text
@@ -687,7 +687,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 115. Mob π-bot — jump
+#### 116. Mob π-bot — jump
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-jump.png` · 1536×1024 → final 512×512
 
 ```text
@@ -696,7 +696,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 116. Mob π-bot — victory
+#### 117. Mob π-bot — victory
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-victory.png` · 1536×1024 → final 512×512
 
 ```text
@@ -705,7 +705,7 @@ Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face a
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 117. Mob π-bot — tête menace
+#### 118. Mob π-bot — tête menace
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-menace.png` · 1024×1024 → final 512×512
 
 ```text
@@ -714,7 +714,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 118. Mob π-bot — tête moqueur
+#### 119. Mob π-bot — tête moqueur
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-moqueur.png` · 1024×1024 → final 512×512
 
 ```text
@@ -723,7 +723,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 119. Mob π-bot — tête joie
+#### 120. Mob π-bot — tête joie
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-joie.png` · 1024×1024 → final 512×512
 
 ```text
@@ -732,7 +732,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 120. Mob π-bot — tête rire
+#### 121. Mob π-bot — tête rire
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-rire.png` · 1024×1024 → final 512×512
 
 ```text
@@ -741,7 +741,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 121. Mob π-bot — tête surprise
+#### 122. Mob π-bot — tête surprise
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-surprise.png` · 1024×1024 → final 512×512
 
 ```text
@@ -750,7 +750,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 122. Mob π-bot — tête triste
+#### 123. Mob π-bot — tête triste
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-triste.png` · 1024×1024 → final 512×512
 
 ```text
@@ -759,7 +759,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 123. Mob π-bot — tête etourdi
+#### 124. Mob π-bot — tête etourdi
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-etourdi.png` · 1024×1024 → final 512×512
 
 ```text
@@ -768,7 +768,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 124. Mob π-bot — tête colere
+#### 125. Mob π-bot — tête colere
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-colere.png` · 1024×1024 → final 512×512
 
 ```text
@@ -777,7 +777,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 125. Mob π-bot — tête reflexion
+#### 126. Mob π-bot — tête reflexion
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-reflexion.png` · 1024×1024 → final 512×512
 
 ```text
@@ -786,7 +786,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 126. Mob π-bot — tête idee
+#### 127. Mob π-bot — tête idee
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-idee.png` · 1024×1024 → final 512×512
 
 ```text
@@ -795,7 +795,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 127. Mob π-bot — tête amour
+#### 128. Mob π-bot — tête amour
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-amour.png` · 1024×1024 → final 512×512
 
 ```text
@@ -804,7 +804,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 128. Mob π-bot — tête dort
+#### 129. Mob π-bot — tête dort
 Enregistrer sous `assets-src/originals/bosses/minions/pi-bot-head-dort.png` · 1024×1024 → final 512×512
 
 ```text
@@ -813,7 +813,7 @@ Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 129. Planche « effets-1 » (9 éléments)
+#### 130. Planche « effets-1 » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/effets-1.png` · 1024×1024, grille 3×3 → chaque case finale 512×512
 Cases : 1 → `effects/impacts/hit-burst` · 2 → `effects/impacts/anneau` · 3 → `effects/impacts/etincelles` · 4 → `effects/impacts/flash` · 5 → `effects/impacts/explosion` · 6 → `effects/particles/puff` · 7 → `effects/particles/bouclier` · 8 → `effects/particles/soin` · 9 → `effects/particles/etourdi`
 
@@ -836,7 +836,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 130. Planche « effets-2 » (3 éléments)
+#### 131. Planche « effets-2 » (3 éléments)
 Enregistrer sous `assets-src/originals/sheets/effets-2.png` · 1024×1024, grille 3×3 → chaque case finale 512×512
 Cases : 1 → `effects/impacts/onde-boss` · 2 → `effects/particles/confettis` · 3 → `effects/transitions/portail`
 
@@ -853,7 +853,7 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 131. Arène de la station spatiale
+#### 132. Arène de la station spatiale
 Enregistrer sous `assets-src/originals/environments/arenas/espace.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
@@ -862,7 +862,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 132. Arène de la station spatiale (portrait)
+#### 133. Arène de la station spatiale (portrait)
 Enregistrer sous `assets-src/originals/environments/arenas/espace-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/espace.png`.
 
@@ -872,7 +872,7 @@ Cadrage : même décor recomposé en hauteur (format portrait, écran de télép
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 133. Arène de la station spatiale (panorama)
+#### 134. Arène de la station spatiale (panorama)
 Enregistrer sous `assets-src/originals/environments/arenas/espace-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/espace.png`.
 
@@ -882,7 +882,7 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 134. Arène de l’académie
+#### 135. Arène de l’académie
 Enregistrer sous `assets-src/originals/environments/arenas/academie.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
@@ -891,7 +891,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 135. Arène de l’académie (portrait)
+#### 136. Arène de l’académie (portrait)
 Enregistrer sous `assets-src/originals/environments/arenas/academie-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/academie.png`.
 
@@ -901,7 +901,7 @@ Cadrage : même décor recomposé en hauteur (format portrait, écran de télép
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 136. Arène de l’académie (panorama)
+#### 137. Arène de l’académie (panorama)
 Enregistrer sous `assets-src/originals/environments/arenas/academie-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/academie.png`.
 
@@ -911,7 +911,7 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 137. Arène du volcan
+#### 138. Arène du volcan
 Enregistrer sous `assets-src/originals/environments/arenas/volcan.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
 
 ```text
@@ -920,7 +920,7 @@ Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 138. Arène du volcan (portrait)
+#### 139. Arène du volcan (portrait)
 Enregistrer sous `assets-src/originals/environments/arenas/volcan-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/volcan.png`.
 
@@ -930,7 +930,7 @@ Cadrage : même décor recomposé en hauteur (format portrait, écran de télép
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 139. Arène du volcan (panorama)
+#### 140. Arène du volcan (panorama)
 Enregistrer sous `assets-src/originals/environments/arenas/volcan-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `environments/arenas/volcan.png`.
 
@@ -940,7 +940,7 @@ Cadrage : même décor en panorama très large (tablette en paysage) : seule la 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 140. Illustration principale
+#### 141. Illustration principale
 Enregistrer sous `assets-src/originals/branding/key-art.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 

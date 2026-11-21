@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { InventorySchema, ItemIdSchema, PartialInventorySchema } from './items.ts';
+import { ChestSchema, InventorySchema, ItemIdSchema } from './items.ts';
 import { ContentIdSchema, LevelSchema, ResponseSchema } from './play.ts';
 
 /** Contrats du combat de boss : l'état complet vit sur le serveur, le client affiche une vue. */
@@ -95,8 +95,8 @@ export const BattleSummarySchema = z.object({
   /** Médaille de ce combat (null si défaite) et si elle bat le record du boss. */
   medal: BossMedalSchema.nullable(),
   newBest: z.boolean(),
-  /** Objets du coffre (1re victoire). */
-  items: PartialInventorySchema,
+  /** Coffre de victoire, de la rareté de la médaille (parfois un cran au-dessus) ; null si défaite. */
+  chest: ChestSchema.nullable(),
   /** Notion la plus ratée : l'écran de défaite propose de s'y entraîner. */
   weakSkill: z.string().nullable(),
   levelBefore: z.number().int().positive(),

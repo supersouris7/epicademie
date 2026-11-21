@@ -5,7 +5,6 @@ import { Navigate, NavigationType, useLocation, useNavigate, useNavigationType, 
 import { chaptersOf, type Chapter } from '@questeo/content';
 import {
   BOSS_MEDAL_LABELS,
-  HINT_PRICE,
   ITEM_INFO,
   ITEMS,
   MAX_ITEMS_PER_BATTLE,
@@ -14,7 +13,7 @@ import {
   type BossRecord,
   type Profile,
 } from '@questeo/shared';
-import { bossesKey, buyItem, equipItems, useBosses } from './api.ts';
+import { bossesKey, equipItems, useBosses } from './api.ts';
 import { HeroFace } from '../../shared/battle/HeroFace.tsx';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
@@ -146,20 +145,10 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
               </button>
             );
           })}
-          <span className="flex-1" />
-          <GameButton
-            size="sm"
-            variant="accent"
-            icon="icons-navigation-hint"
-            disabled={busy || profile.coins < HINT_PRICE}
-            onClick={() => void run(() => buyItem(profile.id, 'indice'), 'Indice acheté !')}
-          >
-            Indice : {HINT_PRICE}
-            <GameIcon id="icons-resources-coin" size={22} label="pièces" />
-          </GameButton>
         </div>
         <p className="text-muted text-sm font-bold">
           Touche un objet de la réserve pour l’équiper (3 au plus) ; seuls les objets équipés servent pendant le combat.
+          Plus d’objets : dans les coffres, ou à la Boutique.
         </p>
       </section>
 

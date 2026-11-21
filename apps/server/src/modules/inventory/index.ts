@@ -5,3 +5,4 @@
 export { inventoryRepo } from './inventory.repo.ts';
 export { createShopService } from './shop.service.ts';
 export { inventoryRoutes } from './inventory.routes.ts';
+export { grantChest } from './chests.ts';

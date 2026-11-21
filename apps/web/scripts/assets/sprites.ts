@@ -103,7 +103,18 @@ const SORCIER_HEADS = [
   'rage-plisse',
 ];
 
+/** Coffres : 4 raretés fermées (1re rangée), les mêmes ouvertes (2e rangée). */
+const CHESTS = ['commun', 'rare', 'epique', 'legendaire'];
+
 export const JOBS: readonly Job[] = [
+  {
+    kind: 'stills',
+    board: 'coffres.png',
+    cols: 4,
+    rows: 2,
+    size: 512,
+    targets: [...CHESTS.map((c) => `rewards/chests/${c}`), ...CHESTS.map((c) => `rewards/chests/${c}-ouvert`)],
+  },
   {
     kind: 'anim',
     board: 'alex-anim-attente.png',

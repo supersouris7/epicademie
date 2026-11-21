@@ -42,6 +42,8 @@ export interface Retry {
   readonly excluded?: number;
   /** Identifiant de l'essai (relance l'animation et remet les outils à zéro). */
   readonly nonce: number;
+  /** L'enfant a dit « Je ne sais pas » (pas une mauvaise réponse). */
+  readonly unknown?: boolean;
 }
 
 /** Réaction du héros en haut de l'écran ; `nonce` relance l'animation de la bulle. */
@@ -157,7 +159,8 @@ export function createTrainingReducer(heroSays: (moment: HeroMoment) => HeroLine
     if (!correct && canRetry(current.question)) {
       const nonce = s.retries + 1;
       const excluded = response.kind === 'choice' ? response.index : undefined;
-      return { ...scored, retry: { why, excluded, nonce }, retries: nonce, picked: null };
+      const unknown = response.kind === 'unknown';
+      return { ...scored, retry: { why, excluded, nonce, unknown }, retries: nonce, picked: null };
     }
     return { ...scored, answered: { correct, why, given: response, xp, streak } };
   };

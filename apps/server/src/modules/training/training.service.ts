@@ -5,7 +5,8 @@ import {
   levelFromXp,
   newSkillState,
   PERFECT_BONUS,
-  rollChest,
+  trainingChest,
+  type SeriesResult,
   scoreOn20,
   seriesLength,
   seriesScore,
@@ -25,7 +26,7 @@ import type { Clock } from '../../core/clock.ts';
 import type { Random } from '../../core/random.ts';
 import { badRequest, conflict, notFound } from '../../core/errors.ts';
 import { PROFILE_NOT_FOUND, profilesRepo } from '../profiles/index.ts';
-import { inventoryRepo } from '../inventory/index.ts';
+import { grantChest } from '../inventory/index.ts';
 import { trainingRepo } from './training.repo.ts';
 import { disabledSkills } from '../pedagogy/index.ts';
 
@@ -55,14 +56,12 @@ export interface TrainingDeps {
 
 export function createTrainingService({ db, clock, random, timeZone, onFinished }: TrainingDeps) {
   /**
-   * Coffre de fin de série : tiré, objets ajoutés à l'inventaire (stock plafonné), Acad-Héros
-   * ajouté à la collection (un doublon est déjà converti en pièces).
+   * Coffre de fin de série, seulement si toute la série est juste (au 2e essai compris) ; un
+   * sans-faute du premier coup améliore le tirage.
    */
-  const openChest = async (tx: Tx, profileId: string, correct: number, total: number): Promise<Chest> => {
-    const profiles = profilesRepo(tx);
-    const rolled = rollChest(correct, total, random.float, new Set(await profiles.heroes(profileId)));
-    if (rolled.hero && !rolled.hero.duplicate) await profiles.addHero(profileId, rolled.hero.id, 'coffre');
-    return { ...rolled, items: await inventoryRepo(tx).add(profileId, rolled.items) };
+  const openChest = async (tx: Tx, profileId: string, series: SeriesResult): Promise<Chest | null> => {
+    const rolled = trainingChest(series, random.float, new Set(await profilesRepo(tx).heroes(profileId)));
+    return rolled && grantChest(tx, profileId, rolled);
   };
 
   return {
@@ -197,12 +196,19 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
           });
         }
 
-        // Coffre d'équipement garanti à chaque série terminée (meilleure rareté sans faute) ;
-        // une partie close sans aucune réponse n'en donne pas.
+        // Coffre d'équipement : seulement pour une série complète entièrement juste (une question
+        // ratée puis trouvée avec l'indice compte comme trouvée).
         const profiles = profilesRepo(tx);
         const profile = await profiles.findForUpdate(session.profileId);
         if (!profile) throw notFound(PROFILE_NOT_FOUND);
-        const chest = regular.length > 0 ? await openChest(tx, profile.id, regularCorrect, regular.length) : null;
+        const secondTries = (await repo.attemptsOf(sessionId)).filter((a) => a.attempt === 2 && a.correct);
+        const solved = regular.filter(
+          (r) => r.correct || secondTries.some((a) => a.skillId === r.skillId && a.seed === r.seed),
+        ).length;
+        const chest =
+          regular.length >= length
+            ? await openChest(tx, profile.id, { total: regular.length, solved, firstTry: regularCorrect })
+            : null;
         await profiles.credit(profile.id, {
           xp: xpGained,
           coins: coinsGained + (chest?.coins ?? 0),
@@ -214,6 +220,7 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
           correct: rows.filter((r) => r.correct).length,
           xp: xpGained,
           coins: coinsGained,
+          chest: chest?.rarity ?? null,
         });
 
         return {

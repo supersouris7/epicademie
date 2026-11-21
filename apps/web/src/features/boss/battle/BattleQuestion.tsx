@@ -112,6 +112,7 @@ export function BattleQuestion({
               skill={skill}
               picked={picked}
               onSubmit={onSubmit}
+              allowUnknown
             />
           )}
         </section>

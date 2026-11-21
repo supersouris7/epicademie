@@ -137,10 +137,14 @@ function Explanation({ question, why, given, onMemo, onNext }: FeedbackProps) {
 
       <div ref={box} className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto scroll-smooth pr-1 [&>*]:shrink-0">
         <Bubble>
-          {given && (
-            <>
-              Tu as répondu <MathText text={formatResponse(question, given)} className="font-bold" />.{' '}
-            </>
+          {given?.kind === 'unknown' ? (
+            <>Tu ne savais pas : c’est justement pour ça qu’on regarde ensemble. </>
+          ) : (
+            given && (
+              <>
+                Tu as répondu <MathText text={formatResponse(question, given)} className="font-bold" />.{' '}
+              </>
+            )
           )}
           La bonne réponse : <MathText text={formatAnswer(question)} className="font-bold" />.
           {why && (

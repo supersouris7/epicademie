@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { useLocation, useNavigate } from 'react-router';
 import { getSkill, type Chapter } from '@questeo/content';
-import { accord, BOSS_MEDAL_LABELS, ITEM_INFO, ITEMS, type BattleSummary, type Profile } from '@questeo/shared';
+import { accord, BOSS_MEDAL_LABELS, type BattleSummary, type Profile } from '@questeo/shared';
 import { BossSays, HeroSays } from '../../../shared/battle/BattleScenes.tsx';
 import { bossSays, heroSays } from '../../../shared/lib/dialogue.ts';
 import { Confetti } from '../../../shared/ui/Confetti.tsx';
-import { CHEST_ICON } from '../../../shared/ui/game/ChestReveal.tsx';
+import { ChestReveal } from '../../../shared/ui/game/ChestReveal.tsx';
 import { GameButton } from '../../../shared/ui/game/GameButton.tsx';
 import { GameIcon } from '../../../shared/ui/game/GameIcon.tsx';
 import { RewardBadge } from '../../../shared/ui/game/RewardBadge.tsx';
@@ -16,7 +16,6 @@ import { HeroFace } from '../../../shared/battle/HeroFace.tsx';
 import { bossPoseId } from '../../../design/bosses.ts';
 import { CharacterSprite } from '../../../shared/ui/game/CharacterSprite.tsx';
 import { BOSS_MEDAL_ICONS, bossOf } from '../../../design/bosses.ts';
-import { ITEM_ICONS } from '../../../design/items.ts';
 import { RELICS } from '../../../design/relics.ts';
 
 import { FROM_BATTLE } from './constants.ts';
@@ -39,7 +38,6 @@ export function BattleResults({
   const location = useLocation();
   const boss = bossOf(chapter);
   const weak = summary.weakSkill ? getSkill(summary.weakSkill) : undefined;
-  const gained = ITEMS.filter((i) => (summary.items[i] ?? 0) > 0);
   const bossPose = assetSrc(bossPoseId(boss.id, summary.won ? 'defeat' : 'victory'));
   // Le mot de la fin : le héros (victoire ou « je reviendrai ») et le boss (KO ou moqueur).
   const [lines] = useState(() => ({
@@ -117,24 +115,16 @@ export function BattleResults({
           transition={{ delay: 0.3, type: 'spring' }}
           className="cartoon bevel bg-accent flex flex-col items-center gap-3 p-4 text-center"
         >
-          <div className="flex items-end gap-3">
-            <GameIcon id={CHEST_ICON} size={88} />
-            <GameIcon id={RELICS[chapter.subject].icon} size={80} />
-          </div>
-          <h2 className="font-display text-toon text-2xl">1re victoire : le coffre et un éclat de relique !</h2>
+          <GameIcon id={RELICS[chapter.subject].icon} size={80} />
+          <h2 className="font-display text-toon text-2xl">1re victoire : un éclat de relique !</h2>
           <p className="font-bold text-white">
             Tu gagnes un éclat du {RELICS[chapter.subject].name} : retrouve-le dans Mes progrès.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            {gained.map((i) => (
-              <span key={i} className="flex flex-col items-center gap-1 font-bold text-white">
-                <GameIcon id={ITEM_ICONS[i]} size={56} />
-                {ITEM_INFO[i].name} +{summary.items[i]}
-              </span>
-            ))}
-          </div>
         </motion.section>
       )}
+
+      {/* Coffre de victoire, de la rareté de la médaille (parfois mieux). */}
+      {summary.chest && <ChestReveal chest={summary.chest} />}
 
       {summary.levelAfter > summary.levelBefore && (
         <div className="cartoon bevel bg-accent font-display text-toon p-4 text-center text-3xl">

@@ -39,14 +39,22 @@ const start = async (skillId: string | null = 'm5-tables') =>
   ).json<{ id: string }>().id;
 
 /** Répond juste (ou faux) à la question m5-tables niveau 1 de graine `seed`. */
-async function answer(sessionId: string, seed: number, right: boolean, variant = false) {
+async function answer(sessionId: string, seed: number, right: boolean, variant = false, attempt: 1 | 2 = 1) {
   const q = generate('m5-tables', 1, seed);
   if (q.answer.kind !== 'number') throw new Error('attendu : nombre');
   const text = right ? fmt(q.answer.value) : '-1';
   const res = await app.inject({
     method: 'POST',
     url: `/api/v1/sessions/${sessionId}/answers`,
-    payload: { skillId: 'm5-tables', level: 1, seed, variant, response: { kind: 'number', text }, durationMs: 2000 },
+    payload: {
+      skillId: 'm5-tables',
+      level: 1,
+      seed,
+      variant,
+      response: { kind: 'number', text },
+      durationMs: 2000,
+      attempt,
+    },
   });
   return res.json<AnswerResult>();
 }
@@ -95,7 +103,7 @@ describe('parties d’entraînement', () => {
     ]);
     const profile = (await app.inject(`/api/v1/profiles/${profileId}`)).json<Profile>();
     expect(profile.xp).toBe(summary.xpGained);
-    // Sans-faute : coffre garanti, ses pièces s'ajoutent.
+    // Série entièrement juste : un coffre, ses pièces s'ajoutent.
     expect(summary.chest).not.toBeNull();
     expect(profile.coins).toBe(summary.coinsGained + (summary.chest?.coins ?? 0));
     const skills = (await app.inject(`/api/v1/profiles/${profileId}/skills`)).json<SkillProgress[]>();
@@ -113,6 +121,43 @@ describe('parties d’entraînement', () => {
     expect(summary.variants).toEqual({ answered: 3, correct: 3 });
     expect(summary.scoreOn20).toBe(8);
     expect(summary.skills[0]).toMatchObject({ stageAfter: 0, due: '2026-11-17' });
+  });
+
+  it('coffre seulement si toute la série est juste : une erreur rattrapée au 2e essai compte comme trouvée', async () => {
+    const missed = await start();
+    for (let seed = 1; seed <= 5; seed++) await answer(missed, seed, seed !== 2);
+    const none = (
+      await app.inject({ method: 'POST', url: `/api/v1/sessions/${missed}/finish` })
+    ).json<SessionSummary>();
+    expect(none.chest).toBeNull();
+
+    const recovered = await start();
+    for (let seed = 1; seed <= 5; seed++) {
+      await answer(recovered, seed, seed !== 2);
+      if (seed === 2) await answer(recovered, seed, true, false, 2);
+    }
+    const got = (
+      await app.inject({ method: 'POST', url: `/api/v1/sessions/${recovered}/finish` })
+    ).json<SessionSummary>();
+    expect(got.perfect).toBe(false);
+    expect(got.chest).not.toBeNull();
+  });
+
+  it('« Je ne sais pas » : compté comme une erreur', async () => {
+    const id = await start();
+    const res = await app.inject({
+      method: 'POST',
+      url: `/api/v1/sessions/${id}/answers`,
+      payload: {
+        skillId: 'm5-tables',
+        level: 1,
+        seed: 1,
+        variant: false,
+        response: { kind: 'unknown' },
+        durationMs: 900,
+      },
+    });
+    expect(res.json<AnswerResult>()).toMatchObject({ correct: false, xp: 0 });
   });
 
   it('« Je n’ai pas compris » remet la notion à revoir malgré un sans-faute', async () => {

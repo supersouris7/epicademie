@@ -82,7 +82,7 @@ describe('combat de boss', () => {
     expect((await startBattle('m5-inconnu')).statusCode).toBe(400);
   });
 
-  it('victoire sans faute : munition, coffre, pièces ; la 2e victoire ne redonne pas le coffre', async () => {
+  it('victoire sans faute : médaille diamant et coffre légendaire, à chaque victoire', async () => {
     const res = await startBattle();
     expect(res.statusCode).toBe(201);
     let b = res.json<BattleView>();
@@ -98,7 +98,8 @@ describe('combat de boss', () => {
     expect(b.status).toBe('won');
     const sum = (await app.inject({ method: 'POST', url: `/api/v1/battles/${b.id}/finish` })).json<BattleSummary>();
     expect(sum).toMatchObject({ won: true, firstWin: true, hearts: 3, xpGained: 120, medal: 'diamant', newBest: true });
-    expect(sum.items).toEqual({ bouclier: 1, soin: 1, indice: 1 });
+    // Diamant : coffre légendaire (le cran au-dessus est déjà le plus haut).
+    expect(sum.chest).toMatchObject({ rarity: 'legendaire', rubies: 2 });
     expect((await overview()).records).toMatchObject([
       { chapterId: CHAPTER, wins: 1, bestHearts: 3, bestMedal: 'diamant' },
     ]);
@@ -106,7 +107,8 @@ describe('combat de boss', () => {
     let b2 = (await startBattle()).json<BattleView>();
     while (b2.status === 'fighting') b2 = (await reply(b2, true)).battle;
     const sum2 = (await app.inject({ method: 'POST', url: `/api/v1/battles/${b2.id}/finish` })).json<BattleSummary>();
-    expect(sum2).toMatchObject({ firstWin: false, items: {}, medal: 'diamant', newBest: false });
+    expect(sum2).toMatchObject({ firstWin: false, medal: 'diamant', newBest: false });
+    expect(sum2.chest?.rarity).toBe('legendaire');
     expect((await overview()).records[0]?.wins).toBe(2);
   });
 
@@ -116,7 +118,7 @@ describe('combat de boss', () => {
     for (let i = 0; i < 3; i++) b = (await reply(b, false)).battle;
     expect(b).toMatchObject({ status: 'lost', hearts: 0, question: null });
     const sum = (await app.inject({ method: 'POST', url: `/api/v1/battles/${b.id}/finish` })).json<BattleSummary>();
-    expect(sum).toMatchObject({ won: false, medal: null, newBest: false });
+    expect(sum).toMatchObject({ won: false, medal: null, newBest: false, chest: null });
     expect(getChapter(CHAPTER)?.skills.some((s) => s.id === sum.weakSkill)).toBe(true);
     expect(first).toBeDefined();
     expect((await overview()).records).toEqual([]);

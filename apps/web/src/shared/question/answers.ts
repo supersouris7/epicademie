@@ -33,6 +33,8 @@ export function formatResponse(q: Question, r: Response): string {
       return q.figure?.kind === 'grid' && q.figure.axes ? `le point (${fmt(r.x)} ; ${fmt(r.y)})` : 'ce nœud';
     case 'text':
       return r.text;
+    case 'unknown':
+      return '';
   }
 }
 

@@ -120,24 +120,33 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   expect(view.status).toBe('won');
   expect(sawRage).toBe(true);
   await expect(page.getByRole('heading', { name: /est vaincu/ })).toBeVisible({ timeout: 10_000 });
-  await expect(page.getByText('1re victoire : le coffre et un éclat de relique !')).toBeVisible();
+  // Coffre de victoire en plein écran (médaille d'argent : rare, parfois épique), à ouvrir.
+  const chest = page.getByRole('dialog', { name: 'Un coffre d’équipement !' });
+  await expect(chest).toBeVisible();
+  await chest.getByRole('button', { name: 'Ouvrir le coffre' }).click();
+  await page
+    .getByRole('dialog', { name: /Coffre (rare|épique)/ })
+    .getByRole('button', { name: 'Super !' })
+    .click();
+  await expect(page.getByText('1re victoire : un éclat de relique !')).toBeVisible();
   // Un cœur perdu : médaille d'argent.
   await expect(page.getByRole('heading', { name: 'Médaille Argent' })).toBeVisible();
 
   await page.getByRole('button', { name: 'Autres boss' }).click();
   await expect(relatifs.getByRole('button', { name: 'Rejouer' })).toBeVisible();
   await expect(relatifs).toContainText('vaincu 1 fois');
-  // Le coffre a rempli l'équipement.
-  const reserve = page.getByRole('button', { name: /^Bouclier × 1 en réserve/ });
+  // Le coffre a rempli l'équipement (objet tiré au hasard) ; plus d'achat depuis ce panneau.
+  await expect(page.getByRole('button', { name: /^Indice : / })).toHaveCount(0);
+  const reserve = page.getByRole('button', { name: /× [1-9] en réserve : toucher pour l’équiper/ }).first();
   await expect(reserve).toBeVisible();
-  // Équipement : on équipe le bouclier (il quitte la réserve), puis on le remet en réserve.
+  const item = ((await reserve.getAttribute('aria-label')) ?? '').split(' ×')[0] ?? '';
+  // Équipement : on équipe l'objet (il quitte la réserve), puis on le remet en réserve.
   await expect(page.getByRole('img', { name: 'Emplacement vide' })).toHaveCount(3);
   await reserve.click();
-  await expect(page.getByRole('button', { name: /Bouclier équipé/ })).toBeVisible();
-  await expect(page.getByRole('button', { name: /^Bouclier × 0 en réserve/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: new RegExp(`^${item} équipé`) })).toBeVisible();
   await expect(page.getByRole('img', { name: 'Emplacement vide' })).toHaveCount(2);
-  await page.getByRole('button', { name: /Bouclier équipé/ }).click();
-  await expect(page.getByRole('button', { name: /^Bouclier × 1 en réserve/ })).toBeVisible();
+  await page.getByRole('button', { name: new RegExp(`^${item} équipé`) }).click();
+  await expect(page.getByRole('img', { name: 'Emplacement vide' })).toHaveCount(3);
   await expect(relatifs.getByRole('img', { name: 'Médaille Argent' })).toBeVisible();
 });
 

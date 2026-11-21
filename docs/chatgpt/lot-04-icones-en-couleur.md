@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Lot 4 — Icônes en couleur
 
-71 images, demandes 18 à 26 (9 messages à envoyer).
+75 images, demandes 18 à 27 (10 messages à envoyer).
 
 ## Marche à suivre
 
@@ -213,27 +213,45 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 25. Planche « coffres » (6 éléments)
-Enregistrer sous `assets-src/originals/sheets/coffres.png` · 1024×1024, grille 3×3 → chaque case finale 256×256
-Cases : 1 → `rewards/chests/commun` · 2 → `rewards/chests/rare` · 3 → `rewards/chests/epique` · 4 → `rewards/chests/ouvert` · 5 → `rewards/chests/carte-mystere` · 6 → `rewards/chests/cadeau`
+#### 25. Planche « coffres-1 » (9 éléments)
+Enregistrer sous `assets-src/originals/sheets/coffres-1.png` · 1024×1024, grille 3×3 → chaque case finale 256×256
+Cases : 1 → `rewards/chests/commun` · 2 → `rewards/chests/rare` · 3 → `rewards/chests/epique` · 4 → `rewards/chests/legendaire` · 5 → `rewards/chests/commun-ouvert` · 6 → `rewards/chests/rare-ouvert` · 7 → `rewards/chests/epique-ouvert` · 8 → `rewards/chests/legendaire-ouvert` · 9 → `rewards/chests/carte-mystere`
 
 ```text
-Image 1024×1024 : planche de 6 éléments de jeu disposés sur une grille invisible de 3 colonnes × 3 lignes (cases de 341×341 px).
+Image 1024×1024 : planche de 9 éléments de jeu disposés sur une grille invisible de 3 colonnes × 3 lignes (cases de 341×341 px).
 Ordre : de gauche à droite, puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais sur une autre ; les cases en trop restent vides.
 Cadrage de chaque élément : objet seul, centré, vu de face, marge de 10 % autour.
 Tous les éléments ont la même épaisseur de contour, la même lumière et la même échelle visuelle.
 
-1. coffre en métal gris à bandes orange
-2. coffre violet à ferrures dorées, lueur violette dans la serrure
-3. coffre tech cyan et violet aux lignes lumineuses
-4. coffre violet ouvert débordant de pièces d’or
-5. carte violette à cadre doré portant un grand point d’interrogation
-6. paquet cadeau rouge à ruban doré
+1. coffre commun : métal gris à bandes orange, lumières cyan
+2. coffre rare : bleu à ferrures blanches, fiole lumineuse
+3. coffre épique : violet à ferrures dorées, livre ouvert
+4. coffre légendaire : or et violet, ailes, diamant bleu, halo doré
+5. coffre commun ouvert, lumière dorée
+6. coffre rare ouvert, lumière bleue
+7. coffre épique ouvert, lumière violette
+8. coffre légendaire ouvert, lumière dorée
+9. carte violette à cadre doré portant un grand point d’interrogation
 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 26. Planche « objets » (9 éléments)
+#### 26. Planche « coffres-2 » (1 éléments)
+Enregistrer sous `assets-src/originals/sheets/coffres-2.png` · 1024×1024, grille 3×3 → chaque case finale 256×256
+Cases : 1 → `rewards/chests/cadeau`
+
+```text
+Image 1024×1024 : planche de 1 éléments de jeu disposés sur une grille invisible de 3 colonnes × 3 lignes (cases de 341×341 px).
+Ordre : de gauche à droite, puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais sur une autre ; les cases en trop restent vides.
+Cadrage de chaque élément : objet seul, centré, vu de face, marge de 10 % autour.
+Tous les éléments ont la même épaisseur de contour, la même lumière et la même échelle visuelle.
+
+1. paquet cadeau rouge à ruban doré
+
+Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
+```
+
+#### 27. Planche « objets » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/objets.png` · 1024×1024, grille 3×3 → chaque case finale 256×256
 Cases : 1 → `icons/items/soin` · 2 → `icons/items/bouclier` · 3 → `icons/items/temps` · 4 → `icons/items/precision` · 5 → `icons/items/vitesse` · 6 → `icons/items/collecte` · 7 → `icons/items/boost-xp` · 8 → `icons/items/gel` · 9 → `icons/items/batterie`
 
