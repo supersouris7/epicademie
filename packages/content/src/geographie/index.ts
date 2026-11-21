@@ -1,0 +1,198 @@
+import type { Chapter, Level, Skill } from '../types.ts';
+import { choice, trueFalse } from '../build.ts';
+import { DEPARTEMENTS, GEO_FETCHED_ON, PAYS_UE, REGIONS } from './donnees.generated.ts';
+
+/**
+ * Géographie (docs/adr/0024-contenus-hors-maths.md) : repères sur la France et l'Union
+ * européenne. Sources institutionnelles seulement (21/11/2026) :
+ * - INSEE, Code officiel géographique au 1er janvier 2025 (régions, chefs-lieux, départements,
+ *   préfectures) ;
+ * - Union européenne, « Pays de l'UE » (capitales, monnaie) ;
+ * récupérées par apps/web/scripts/geo.ts.
+ */
+
+const INSEE = `INSEE, Code officiel géographique au 1er janvier 2025 (relevé du ${GEO_FETCHED_ON})`;
+const UE = `Union européenne, european-union.europa.eu, « Pays de l’UE » (relevé du ${GEO_FETCHED_ON})`;
+
+type Rng = { pick<T>(l: readonly T[]): T; shuffle<T>(l: readonly T[]): T[] };
+
+/** Régions de l'Hexagone et de Corse (codes 11 à 94) ; l'outre-mer s'ajoute au niveau 2. */
+const HEXAGONE = REGIONS.filter((r) => Number(r.code) >= 11);
+/** Trois autres réponses, tirées sans doublon. */
+const others = <T>(rng: Rng, list: readonly T[], skip: T, n = 3) =>
+  rng.shuffle(list.filter((x) => x !== skip)).slice(0, n);
+
+const regions: Skill = {
+  id: 'gcm1-regions',
+  title: 'Les régions et leur chef-lieu',
+  lesson: {
+    memo: [
+      'La France compte 18 régions : 13 dans l’Hexagone et en Corse, 5 en outre-mer.',
+      'Chaque région a un chef-lieu : Bretagne → Rennes, Occitanie → Toulouse, Grand Est → Strasbourg.',
+    ],
+    source: `Géographie : les régions françaises. ${INSEE}.`,
+  },
+  generate: (rng, level) => {
+    const pool = level === 1 ? HEXAGONE : REGIONS;
+    const r = rng.pick(pool);
+    const { answer, traps } = choice(
+      rng,
+      r.chefLieu,
+      others(rng, pool, r).map((o) => ({
+        label: o.chefLieu,
+        why: `${o.chefLieu} est le chef-lieu de la région ${o.name}.`,
+      })),
+    );
+    return {
+      prompt: `Quel est le chef-lieu de la région **${r.name}** ?`,
+      answer,
+      traps,
+      hint: 'C’est souvent la plus grande ville de la région.',
+      steps: [`La région ${r.name} a pour chef-lieu ${r.chefLieu}.`, `Réponse : **${r.chefLieu}**.`],
+    };
+  },
+};
+
+/** Numéros des départements : de l'Ain (01) au Val-d'Oise (95), puis l'outre-mer (971 à 976). */
+const departmentsFor = (level: Level) =>
+  level === 1 ? DEPARTEMENTS.filter((d) => /^\d+$/.test(d.code) && Number(d.code) <= 30) : DEPARTEMENTS;
+
+const departments: Skill = {
+  id: 'gcm2-departements',
+  title: 'Les numéros des départements',
+  lesson: {
+    memo: [
+      'Chaque département a un numéro (code), souvent dans l’ordre alphabétique : 01 Ain, 02 Aisne, 03 Allier…',
+      'La Corse a deux départements : 2A (Corse-du-Sud) et 2B (Haute-Corse). L’outre-mer : 971 à 976.',
+    ],
+    source: `Géographie : les départements. ${INSEE}.`,
+  },
+  generate: (rng, level) => {
+    const pool = departmentsFor(level);
+    const d = rng.pick(pool);
+    const { answer, traps } = choice(
+      rng,
+      d.name,
+      others(rng, pool, d).map((o) => ({ label: o.name, why: `${o.name} porte le numéro ${o.code}.` })),
+    );
+    return {
+      prompt: `Quel département porte le numéro **${d.code}** ?`,
+      answer,
+      traps,
+      hint: 'Les premiers numéros suivent à peu près l’ordre alphabétique.',
+      steps: [`Le département n° ${d.code} est : ${d.name}.`, `Réponse : **${d.name}**.`],
+    };
+  },
+};
+
+const prefectures: Skill = {
+  id: 'g6-prefectures',
+  title: 'Les préfectures',
+  lesson: {
+    memo: ['Chaque département a une préfecture (son chef-lieu) : Gironde → Bordeaux, Rhône → Lyon, Nord → Lille.'],
+    source: `Géographie : les départements et leurs préfectures. ${INSEE}.`,
+  },
+  generate: (rng, level) => {
+    const pool = departmentsFor(level);
+    const d = rng.pick(pool);
+    const { answer, traps } = choice(
+      rng,
+      d.prefecture,
+      others(
+        rng,
+        pool.filter((o) => o.prefecture !== d.prefecture),
+        d,
+      ).map((o) => ({
+        label: o.prefecture,
+        why: `${o.prefecture} est la préfecture du département ${o.name}.`,
+      })),
+    );
+    return {
+      prompt: `Quelle est la préfecture du département **${d.name}** (${d.code}) ?`,
+      answer,
+      traps,
+      hint: 'La préfecture est le chef-lieu du département.',
+      steps: [
+        `Le département ${d.name} (${d.code}) a pour préfecture ${d.prefecture}.`,
+        `Réponse : **${d.prefecture}**.`,
+      ],
+    };
+  },
+};
+
+/** « Amsterdam; le Parlement… » : la capitale, puis la précision donnée par la source. */
+const capitalOf = (c: (typeof PAYS_UE)[number]) => c.capital.split(';')[0]?.trim() ?? c.capital;
+const noteOf = (c: (typeof PAYS_UE)[number]) => c.capital.split(';')[1]?.trim();
+
+const euCapitals: Skill = {
+  id: 'g3-ue-capitales',
+  title: 'Les capitales de l’Union européenne',
+  lesson: {
+    memo: [
+      'L’Union européenne compte 27 États membres. Exemples : Allemagne → Berlin, Espagne → Madrid, Pologne → Varsovie.',
+    ],
+    source: `Géographie : la France et l’Union européenne. ${UE}.`,
+  },
+  generate: (rng) => {
+    const c = rng.pick(PAYS_UE);
+    const right = capitalOf(c);
+    const { answer, traps } = choice(
+      rng,
+      right,
+      others(rng, PAYS_UE, c).map((o) => ({
+        label: capitalOf(o),
+        why: `${capitalOf(o)} est la capitale : ${o.name}.`,
+      })),
+    );
+    const note = noteOf(c);
+    return {
+      prompt: `Quelle est la capitale de ce pays de l’Union européenne : **${c.name}** ?`,
+      answer,
+      traps,
+      hint: 'C’est souvent la plus grande ville du pays.',
+      steps: [`${c.name} : capitale ${right}.${note ? ` Précision : ${note}` : ''}`, `Réponse : **${right}**.`],
+    };
+  },
+};
+
+const euro: Skill = {
+  id: 'g3-ue-euro',
+  title: 'Les pays de la zone euro',
+  lesson: {
+    memo: ['Tous les pays de l’Union européenne n’utilisent pas l’euro : certains gardent leur propre monnaie.'],
+    source: `Géographie : l’Union européenne. ${UE}.`,
+  },
+  generate: (rng) => {
+    const c = rng.pick(PAYS_UE);
+    const { answer, traps } = trueFalse(
+      c.euro,
+      c.euro ? `${c.name} utilise bien l’euro.` : `${c.name} est dans l’Union européenne mais n’utilise pas l’euro.`,
+    );
+    return {
+      prompt: `Vrai ou faux : **${c.name}** utilise l’euro.`,
+      answer,
+      traps,
+      hint: 'Être dans l’Union européenne ne veut pas toujours dire utiliser l’euro.',
+      steps: [
+        'Les 27 pays de l’Union européenne n’ont pas tous adopté l’euro.',
+        `${c.name} : **${c.euro ? 'Vrai' : 'Faux'}**, ${c.euro ? 'il utilise l’euro' : 'il garde sa propre monnaie'}.`,
+      ],
+    };
+  },
+};
+
+const chapter = (id: string, grade: Chapter['grade'], title: string, skills: readonly Skill[]): Chapter => ({
+  id,
+  subject: 'geographie',
+  grade,
+  domain: 'reperes',
+  title,
+  skills,
+});
+
+export const GEOGRAPHIE_CHAPTERS: readonly Chapter[] = [
+  chapter('gcm1-regions', 'cm1', 'Les régions de France', [regions]),
+  chapter('gcm2-departements', 'cm2', 'Les départements', [departments]),
+  chapter('g6-prefectures', '6e', 'Les préfectures', [prefectures]),
+  chapter('g3-union-europeenne', '3e', 'L’Union européenne', [euCapitals, euro]),
+];

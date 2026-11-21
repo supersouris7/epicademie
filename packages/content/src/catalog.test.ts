@@ -59,7 +59,14 @@ describe('catalogue', () => {
 
   it('chaque chapitre porte le préfixe de sa matière et de sa classe (m5-, m6-, a5-…)', () => {
     const grade = { cm1: 'cm1-', cm2: 'cm2-', '6e': '6-', '5e': '5-', '4e': '4-', '3e': '3-', adulte: 'a-' };
-    const subject: Record<string, string> = { maths: 'm', anglais: 'a' };
+    const subject: Record<string, string> = {
+      maths: 'm',
+      anglais: 'a',
+      espagnol: 'e',
+      physique: 'p',
+      geographie: 'g',
+      histoire: 'h',
+    };
     for (const c of CHAPTERS) {
       const prefix = `${subject[c.subject] ?? '?'}${grade[c.grade]}`;
       expect(c.id.startsWith(prefix), c.id).toBe(true);

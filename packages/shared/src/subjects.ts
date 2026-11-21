@@ -13,9 +13,9 @@ export interface SubjectInfo {
 
 export const SUBJECTS: readonly SubjectInfo[] = [
   { id: 'maths', name: 'Maths', color: 'maths', available: true },
-  { id: 'physique', name: 'Physique-Chimie', color: 'physique', available: false },
+  { id: 'physique', name: 'Physique-Chimie', color: 'physique', available: true },
   { id: 'anglais', name: 'Anglais', color: 'anglais', available: true },
-  { id: 'espagnol', name: 'Espagnol', color: 'espagnol', available: false },
-  { id: 'histoire', name: 'Histoire', color: 'histoire', available: false },
-  { id: 'geographie', name: 'Géographie', color: 'geographie', available: false },
+  { id: 'espagnol', name: 'Espagnol', color: 'espagnol', available: true },
+  { id: 'histoire', name: 'Histoire', color: 'histoire', available: true },
+  { id: 'geographie', name: 'Géographie', color: 'geographie', available: true },
 ];

@@ -67,14 +67,13 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page).toHaveURL(/\/hub$/);
   // Mode d'abord, matière ensuite.
   await page.getByRole('button', { name: /^Entraînement/ }).click();
-  // Matières sans contenu : grisées « À venir ».
+  // Matières : toutes jouables (maths, anglais, espagnol, physique-chimie, géographie, histoire).
   await expect(page.getByRole('button', { name: 'Maths', exact: true })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Anglais', exact: true })).toBeVisible();
-  for (const subject of ['Physique-Chimie', 'Espagnol', 'Histoire', 'Géographie']) {
-    await expect(page.getByRole('button', { name: `${subject}, à venir` })).toBeVisible();
+  // Toutes les matières sont jouables.
+  for (const subject of ['Anglais', 'Espagnol', 'Physique-Chimie', 'Géographie', 'Histoire']) {
+    await expect(page.getByRole('button', { name: subject, exact: true })).toBeVisible();
   }
-  await page.getByRole('button', { name: 'Espagnol, à venir' }).click();
-  await expect(page.getByText('Espagnol arrive bientôt !')).toBeVisible();
+  await expect(page.getByRole('button', { name: /à venir/ })).toHaveCount(0);
   await page.getByRole('button', { name: 'Retour' }).click();
   await nav.getByRole('button', { name: 'Multi' }).click();
   // Multi : l'Arène et le Raid sont jouables, les autres modes « À venir ».
