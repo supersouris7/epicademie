@@ -62,10 +62,14 @@ describe('partie d’entraînement', () => {
     const { user, server } = renderApp(PATH);
     await screen.findByRole('button', { name: ANSWER_KEY });
     await user.click(screen.getByRole('button', { name: 'Je ne sais pas : un indice' }));
+    // Confirmation : ça comptera comme une erreur.
+    expect(await screen.findByText(/comptera comme une erreur/)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Oui, aide-moi' }));
     expect(await screen.findByText(/Pas de souci, voici un indice/)).toBeInTheDocument();
     const sent = server.calls.filter((c) => c.path.endsWith('/answers')).at(-1)?.body as { response: unknown };
     expect(sent.response).toEqual({ kind: 'unknown' });
     await user.click(screen.getByRole('button', { name: 'Je ne sais pas : un indice' }));
+    await user.click(await screen.findByRole('button', { name: 'Oui, aide-moi' }));
     const explanation = await screen.findByRole('region', { name: 'Explication de Questy' });
     expect(explanation).toHaveTextContent(/Tu ne savais pas/);
   });

@@ -47,6 +47,7 @@ export function BattleQuestion({
   readonly onNext: (battle: BattleView) => void;
 }) {
   const q = battle.question;
+  const hintItem = itemRefusal(battle, 'indice') === null;
   const pointAnswer = question.answer.kind === 'point';
   return (
     <AnimatePresence mode="wait">
@@ -114,8 +115,11 @@ export function BattleQuestion({
               picked={picked}
               onSubmit={onSubmit}
               // « ? » : un objet Indice équipé s'il en reste, sinon c'est une erreur (le boss riposte).
-              onUnknown={() =>
-                itemRefusal(battle, 'indice') === null ? onUseItem('indice') : onSubmit({ kind: 'unknown' })
+              onUnknown={() => (hintItem ? onUseItem('indice') : onSubmit({ kind: 'unknown' }))}
+              unknownWarning={
+                hintItem
+                  ? 'Ça va utiliser ton objet Indice pour afficher l’indice.'
+                  : 'Tu n’as plus d’objet Indice : ça compte comme une erreur, le boss va riposter.'
               }
             />
           )}

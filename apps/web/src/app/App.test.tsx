@@ -76,7 +76,7 @@ describe('accueil et choix du jeu', () => {
     expect(await screen.findByRole('group', { name: 'Mon joueur' })).toHaveTextContent('Léa');
     expect(sockets.at(-1)?.auth).toEqual({ profileId: makeProfile().id });
     await user.click(screen.getByRole('button', { name: /Entraînement/ }));
-    expect(await screen.findByText(/C’est ici que tu gagnes ton/)).toBeInTheDocument();
+    expect(await screen.findByText(/Une série toute juste t’offre un/)).toBeInTheDocument();
   });
 
   it('entraînement : matières, chapitres de la classe, notions', async () => {

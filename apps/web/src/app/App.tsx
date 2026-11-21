@@ -22,6 +22,7 @@ import { Heroes, ProfileEditor, ProfilePicker, useProfile } from '../features/pr
 import { Progress, SubjectProgress, TrophiesPage } from '../features/progress/index.ts';
 import { Dictionary } from '../features/dictionary/index.ts';
 import { Term } from '../shared/question/Term.tsx';
+import { NoDefinitions } from '../shared/question/TermLocked.tsx';
 import { TermContext } from '../shared/question/termContext.ts';
 import { TvScreen } from '../features/tv/index.ts';
 import { DefiPlay } from '../features/defis/index.ts';
@@ -106,7 +107,11 @@ export function App() {
               <Route path="/classement" element={<WithProfile>{(p) => <Ranking profile={p} />}</WithProfile>} />
               <Route
                 path="/partie/defi/:defi/:subject"
-                element={<WithProfile>{(p) => <DefiPlay profile={p} />}</WithProfile>}
+                element={
+                  <NoDefinitions>
+                    <WithProfile>{(p) => <DefiPlay profile={p} />}</WithProfile>
+                  </NoDefinitions>
+                }
               />
               <Route path="/jouer/:modeId" element={<WithProfile>{(p) => <ModeSetup profile={p} />}</WithProfile>} />
               <Route
@@ -127,7 +132,11 @@ export function App() {
               />
               <Route
                 path="/partie/boss/:chapterId"
-                element={<WithProfile>{(p) => <BossPlay profile={p} />}</WithProfile>}
+                element={
+                  <NoDefinitions>
+                    <WithProfile>{(p) => <BossPlay profile={p} />}</WithProfile>
+                  </NoDefinitions>
+                }
               />
               <Route path="/progres" element={<WithProfile>{(p) => <Progress profile={p} />}</WithProfile>} />
               <Route

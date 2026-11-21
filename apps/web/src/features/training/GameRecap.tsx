@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router';
-import { getAnySkill } from '@questeo/content';
+import { getAnySkill, glossaryEntry } from '@questeo/content';
+import { MathText } from '../../shared/question/MathText.tsx';
+import { useTermReminders } from '../../shared/question/termReminders.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import { useSkills } from './api.ts';
@@ -22,6 +24,7 @@ export function GameRecap({
   const navigate = useNavigate();
   const { data: history } = useSkills(profileId);
   const advice = adviceFor(rows, history);
+  const words = useTermReminders();
   const title = (id: string) => getAnySkill(id)?.title ?? id;
   return (
     <section aria-labelledby="recap" className="cartoon bg-surface flex w-full flex-col gap-3 p-3 text-left">
@@ -49,6 +52,26 @@ export function GameRecap({
             ))}
           </tbody>
         </table>
+      )}
+      {/* Mots touchés pendant la partie (combat, défi) : leur définition, comme promis. */}
+      {words.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <h3 className="font-display text-lg tracking-wide">Les mots que tu voulais revoir</h3>
+          {words.map((id) => {
+            const entry = glossaryEntry(id);
+            return entry ? (
+              <div key={id} className="bg-surface-2 rounded-2xl p-3">
+                <p className="font-display text-lg tracking-wide">{entry.word}</p>
+                <p>
+                  <MathText text={entry.definition} />
+                </p>
+                <p className="text-muted text-sm">
+                  <MathText text={entry.example} />
+                </p>
+              </div>
+            ) : null;
+          })}
+        </div>
       )}
       {advice ? (
         <div className="bg-surface-2 flex flex-wrap items-center gap-3 rounded-2xl p-3">

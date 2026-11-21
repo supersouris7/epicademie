@@ -160,6 +160,15 @@ export function ChestReveal({ chest }: { readonly chest: Chest | null }) {
             >
               {/* Le même coffre, ouvert, qui bondit dans la lumière. */}
               <GameIcon id={chestIcon(chest.rarity, true)} size={190} />
+              {/* Halo lumineux qui sort de l'intérieur du coffre ouvert. */}
+              <motion.span
+                aria-hidden
+                className="pointer-events-none absolute left-1/2 top-[30%] h-[45%] w-[70%] -translate-x-1/2 rounded-full mix-blend-screen blur-md"
+                style={{ background: `radial-gradient(ellipse at 50% 60%, #fff 0%, ${r.glow} 35%, transparent 70%)` }}
+                initial={{ opacity: 0, scale: 0.6 }}
+                animate={reduce ? { opacity: 0.9 } : { opacity: [0.6, 1, 0.6], scale: [0.9, 1.08, 0.9] }}
+                transition={{ duration: 1.8, repeat: reduce ? 0 : Infinity, ease: 'easeInOut' }}
+              />
             </motion.div>
             {/* Flash blanc de l'ouverture. */}
             <motion.div

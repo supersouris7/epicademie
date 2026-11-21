@@ -12,6 +12,8 @@ interface ConfirmDialogProps {
   readonly onCancel: () => void;
   /** Humeur de Questy (triste par défaut ; « pause » plus neutre). */
   readonly mood?: MoodId;
+  /** Choix positif (aide, rappel) : bouton de confirmation vert, l'autre neutre. Sinon : quitter. */
+  readonly positive?: boolean;
 }
 
 /** Confirmation aux couleurs de l'appli (remplace window.confirm, peu lisible sur tablette). */
@@ -23,6 +25,7 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
   mood = 'sad',
+  positive = false,
 }: ConfirmDialogProps) {
   return (
     <div
@@ -40,10 +43,18 @@ export function ConfirmDialog({
         <h2 className="font-display text-3xl tracking-wide">{title}</h2>
         <p className="text-lg">{message}</p>
         <div className="flex flex-wrap justify-center gap-3">
-          <GameButton variant="success" icon="icons-navigation-play" onClick={onCancel}>
+          <GameButton
+            variant={positive ? 'surface' : 'success'}
+            icon={positive ? undefined : 'icons-navigation-play'}
+            onClick={onCancel}
+          >
             {cancel}
           </GameButton>
-          <GameButton variant="danger" icon="icons-navigation-close" onClick={onConfirm}>
+          <GameButton
+            variant={positive ? 'success' : 'danger'}
+            icon={positive ? 'icons-navigation-check' : 'icons-navigation-close'}
+            onClick={onConfirm}
+          >
             {confirm}
           </GameButton>
         </div>

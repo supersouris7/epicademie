@@ -10,6 +10,7 @@ import { conversionNeeded, emptyConversion, unitsIn, type ConversionKind, type C
 import { AnswerInput } from './AnswerInput.tsx';
 import { PlayDock, type DockTab } from './PlayDock.tsx';
 import { toolTabs } from './tools.ts';
+import { ConfirmDialog } from '../ui/ConfirmDialog.tsx';
 
 /** Tableau adapté à l'unité de la question (aires en ^2, volumes en ^3 ou en litres). */
 function conversionKind(q: Question): ConversionKind {
@@ -33,6 +34,8 @@ interface QuestionToolsProps {
   readonly onSubmit: (r: Response) => void;
   /** Rien de saisi : le bouton OK devient « ? » (entraînement, combat). */
   readonly onUnknown?: () => void;
+  /** Ce que coûte le « ? » (demandé en confirmation avant d'aider). */
+  readonly unknownWarning?: string;
 }
 
 /**
@@ -48,7 +51,10 @@ export function QuestionTools({
   picked,
   onSubmit,
   onUnknown,
+  unknownWarning = DEFAULT_WARNING,
 }: QuestionToolsProps) {
+  // « ? » : on confirme d'abord (indice compté comme erreur, objet utilisé…).
+  const help = useHelpConfirm(onUnknown, unknownWarning);
   const [tab, setTab] = useState<DockTab>('reponse');
   const [opened, setOpened] = useState<ReadonlySet<DockTab>>(new Set());
   const [bigDraft, setBigDraft] = useState(false);
@@ -97,7 +103,7 @@ export function QuestionTools({
             onSubmit={onSubmit}
             picked={picked}
             initialText={fill?.value}
-            onUnknown={onUnknown}
+            onUnknown={help.ask}
           />
           {/* Sur ordinateur (souris) : rappel que le clavier marche aussi. */}
           <p className="text-muted mt-1 hidden shrink-0 text-center text-xs font-bold [@media(pointer:fine)]:block">
@@ -120,6 +126,7 @@ export function QuestionTools({
           />
         )}
       </PlayDock>
+      {help.dialog}
       {/* Brouillon pleine page : l'énoncé reste en haut, la feuille prend tout le reste. */}
       {bigDraft && (
         <BigDraft
@@ -184,4 +191,45 @@ function keyboardTip(question: Question): string {
     default:
       return 'Au clavier : tape ta réponse puis Entrée (« ? » pour un indice).';
   }
+}
+
+/** « ? » avec confirmation : `ask` ouvre la fenêtre, `dialog` est à afficher. */
+function useHelpConfirm(onUnknown: (() => void) | undefined, message: string) {
+  const [asking, setAsking] = useState(false);
+  return {
+    ask: onUnknown ? () => setAsking(true) : undefined,
+    dialog:
+      asking && onUnknown ? (
+        <UnknownConfirm
+          message={message}
+          onConfirm={() => {
+            setAsking(false);
+            onUnknown();
+          }}
+          onCancel={() => setAsking(false)}
+        />
+      ) : null,
+  };
+}
+
+const DEFAULT_WARNING = 'Cette question comptera comme une erreur.';
+
+/** Confirmation du « ? » : ce qu'il va coûter (erreur, objet Indice…). */
+function UnknownConfirm(p: {
+  readonly message: string;
+  readonly onConfirm: () => void;
+  readonly onCancel: () => void;
+}) {
+  return (
+    <ConfirmDialog
+      title="Besoin d’aide ?"
+      message={p.message}
+      confirm="Oui, aide-moi"
+      cancel="Je cherche encore"
+      mood="ok"
+      positive
+      onConfirm={p.onConfirm}
+      onCancel={p.onCancel}
+    />
+  );
 }
