@@ -146,7 +146,7 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
             );
           })}
         </div>
-        <p className="text-muted text-sm font-bold">
+        <p className="text-muted hidden text-sm font-bold sm:block">
           Touche un objet de la réserve pour l’équiper (3 au plus) ; seuls les objets équipés servent pendant le combat.
           Plus d’objets : dans les coffres, ou à la Boutique.
         </p>

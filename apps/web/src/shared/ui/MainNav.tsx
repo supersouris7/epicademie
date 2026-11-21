@@ -71,12 +71,16 @@ export function MainNav({ profile }: { readonly profile: Profile }) {
                     type="button"
                     onClick={() => void navigate(item.to)}
                     aria-current={active ? 'page' : undefined}
+                    aria-label={item.label}
                     className={`font-display text-toon flex w-full flex-col items-center gap-0.5 rounded-2xl px-2 py-1 text-xs tracking-wide transition-colors sm:text-sm lg:w-20 ${active ? 'bg-[radial-gradient(circle_at_50%_35%,#5b3a9e,#1b0f33)] ring-2 ring-[var(--gold)]' : 'hover:bg-white/10'}`}
                   >
                     <span className="flex h-7 w-7 items-center justify-center">
                       <GameIcon id={item.icon} size={26} />
                     </span>
-                    {item.label}
+                    {/* Sur téléphone, juste l'icône (le nom reste lu par les lecteurs d'écran). */}
+                    <span className="hidden sm:inline" aria-hidden>
+                      {item.label}
+                    </span>
                   </button>
                 </li>
               );
