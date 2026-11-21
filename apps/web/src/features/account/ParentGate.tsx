@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useRef, useState, type ReactNode } from 'react';
 import { ApiError } from '../../shared/api/client.ts';
-import { GameButton } from '../../shared/ui/game/GameButton.tsx';
-import { confirmParent, useSetMe } from './api.ts';
+import { ParentUnlock } from './ParentUnlock.tsx';
 import { ParentGateContext, type ParentAction as Action } from './parentGate.ts';
 
 /**
  * Verrou parent : certaines actions (créer ou supprimer un profil, changer le prénom ou la
  * classe…) sont réservées au parent. Le serveur les refuse (403) tant que le mot de passe n'a
- * pas été confirmé récemment ; `withParent(action)` affiche alors la demande de mot de passe,
+ * pas été confirmé récemment ; `withParent(action)` demande alors le code PIN (ou le mot de passe),
  * puis relance l'action. Un enfant qui joue sur l'appareil ne peut donc pas les faire seul.
  */
 
@@ -44,23 +43,6 @@ export function ParentGateProvider({ children }: { readonly children: ReactNode 
 }
 
 function ParentPasswordDialog({ onDone }: { readonly onDone: (ok: boolean) => void }) {
-  const setMe = useSetMe();
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-  // Le champ prend le focus à l'ouverture (seul champ de la boîte de dialogue).
-  const input = useRef<HTMLInputElement>(null);
-  useEffect(() => input.current?.focus(), []);
-  const submit = async () => {
-    setBusy(true);
-    try {
-      setMe(await confirmParent(password));
-      onDone(true);
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Vérification impossible pour le moment.');
-      setBusy(false);
-    }
-  };
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
@@ -68,40 +50,13 @@ function ParentPasswordDialog({ onDone }: { readonly onDone: (ok: boolean) => vo
       aria-modal="true"
       aria-label="Espace parent"
     >
-      <form
-        className="cartoon bg-surface flex w-full max-w-md flex-col gap-4 p-6"
-        onSubmit={(e) => {
-          e.preventDefault();
-          void submit();
-        }}
-      >
-        <h2 className="font-display text-2xl tracking-wide">Espace parent</h2>
-        <p>Cette action est réservée au parent. Saisis le mot de passe du compte familial.</p>
-        <label className="flex flex-col gap-1 font-bold">
-          Mot de passe
-          <input
-            type="password"
-            autoComplete="current-password"
-            className="cartoon bg-surface-2 px-3 py-2 font-normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            ref={input}
-          />
-        </label>
-        {error && (
-          <p role="alert" className="text-danger font-bold">
-            {error}
-          </p>
-        )}
-        <div className="flex flex-wrap gap-3">
-          <GameButton type="submit" disabled={busy || password === ''}>
-            Valider
-          </GameButton>
-          <GameButton variant="surface" onClick={() => onDone(false)}>
-            Annuler
-          </GameButton>
-        </div>
-      </form>
+      <div className="bg-surface flex w-full max-w-sm flex-col gap-4 rounded-2xl p-6 shadow-2xl">
+        <h2 className="text-xl font-bold">Action réservée au parent</h2>
+        <ParentUnlock onUnlocked={() => onDone(true)} />
+        <button type="button" onClick={() => onDone(false)} className="text-muted font-bold underline">
+          Annuler
+        </button>
+      </div>
     </div>
   );
 }

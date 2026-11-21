@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { loginFamily, signupFamily } from './family.ts';
+import { loginFamily, PASSWORD, signupFamily } from './family.ts';
 
 /** Crée un profil depuis l'écran de création (après inscription ou « Nouveau joueur »). */
 async function createProfile(page: Page, name: string, birthDate = '2014-03-09') {
@@ -31,6 +31,19 @@ test('Espace parent : enfant listé, accès à l’abonnement familial', async (
   await expect(page.getByRole('listitem', { name: `Progrès de ${name}` })).toBeVisible();
   await page.getByRole('link', { name: 'Abonnement familial' }).click();
   await expect(page.getByRole('heading', { name: 'Abonnement actif' })).toBeVisible();
+
+  // Code PIN : choisi dans les Paramètres (mot de passe du compte), puis l'Espace parent s'ouvre avec.
+  await page.goto('/parametres');
+  await page.getByRole('button', { name: 'Choisir un code PIN' }).click();
+  await page.getByLabel('Mot de passe du compte').fill(PASSWORD);
+  await page.getByLabel(/Nouveau code PIN/).fill('2580');
+  await page.getByRole('button', { name: 'Enregistrer' }).click();
+  await expect(page.getByText('Code PIN enregistré.')).toBeVisible();
+  await page.goto('/parent');
+  await page.getByRole('button', { name: 'Se déconnecter' }).click();
+  await page.goto('/parent');
+  for (const k of ['2', '5', '8', '0']) await page.getByRole('button', { name: k, exact: true }).click();
+  await expect(page.getByRole('listitem', { name: `Progrès de ${name}` })).toBeVisible();
 });
 
 test('Adulte : parcours de remise à niveau en maths', async ({ page }) => {

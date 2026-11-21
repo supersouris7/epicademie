@@ -69,7 +69,21 @@ export function accountsRepo(db: Executor) {
       await db.update(authSessions).set({ expiresAt }).where(eq(authSessions.tokenHash, tokenHash));
     },
 
-    async setParentUntil(tokenHash: string, parentUntil: Date): Promise<void> {
+    async setParentPin(accountId: string, pinHash: string): Promise<void> {
+      await db
+        .update(accounts)
+        .set({ parentPinHash: pinHash, pinFailures: 0, pinLockedUntil: null })
+        .where(eq(accounts.id, accountId));
+    },
+
+    async setPinFailures(accountId: string, failures: number, lockedUntil: Date | null): Promise<void> {
+      await db
+        .update(accounts)
+        .set({ pinFailures: failures, pinLockedUntil: lockedUntil })
+        .where(eq(accounts.id, accountId));
+    },
+
+    async setParentUntil(tokenHash: string, parentUntil: Date | null): Promise<void> {
       await db.update(authSessions).set({ parentUntil }).where(eq(authSessions.tokenHash, tokenHash));
     },
 

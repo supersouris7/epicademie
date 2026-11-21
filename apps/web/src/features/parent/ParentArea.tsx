@@ -3,11 +3,12 @@ import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from 'react-router';
 import { isBossSkill } from '@questeo/content';
 import { api, gradeInfo, type LearningReport, type Profile, type SkillLearning } from '@questeo/shared';
-import { ApiError, request } from '../../shared/api/client.ts';
+import { request } from '../../shared/api/client.ts';
 import { useSession } from '../../shared/lib/session.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
-import { PageShell } from '../../shared/ui/PageShell.tsx';
-import { confirmParent, useMe, useSetMe } from '../account/index.ts';
+import { ParentCard, ParentShell } from './ParentShell.tsx';
+import { CharacterAvatar } from '../../shared/ui/game/CharacterAvatar.tsx';
+import { ParentUnlock, useMe } from '../account/index.ts';
 import { useProfiles } from '../profiles/index.ts';
 import { FamilyFriends } from './FamilyFriends.tsx';
 import { WeakPoints } from './WeakPoints.tsx';
@@ -35,45 +36,17 @@ const useLearning = (profileId: string) =>
     queryFn: () => request(api.learningReport, { params: { id: profileId } }),
   });
 
-/** Garde : sans déverrouillage parent récent, demande le mot de passe. */
+/** Garde : sans déverrouillage parent récent, demande le code PIN (ou le mot de passe). */
 function ParentGate({ children }: { readonly children: ReactNode }) {
   const { data: me } = useMe();
-  const setMe = useSetMe();
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
   if (me?.parent) return <>{children}</>;
   return (
-    <PageShell title="Espace parent" back="/">
-      <form
-        className="mx-auto flex w-full max-w-md flex-col gap-3"
-        onSubmit={(e) => {
-          e.preventDefault();
-          confirmParent(password)
-            .then(setMe)
-            .catch((err: unknown) => setError(err instanceof ApiError ? err.message : 'Vérification impossible.'));
-        }}
-      >
-        <p>Les progrès des enfants sont réservés au parent. Saisis le mot de passe du compte familial.</p>
-        <label className="flex flex-col gap-1 font-bold">
-          Mot de passe
-          <input
-            type="password"
-            autoComplete="current-password"
-            className="cartoon bg-surface px-3 py-3 font-normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </label>
-        {error && (
-          <p role="alert" className="text-danger font-bold">
-            {error}
-          </p>
-        )}
-        <GameButton type="submit" disabled={password === ''}>
-          Ouvrir l’espace parent
-        </GameButton>
-      </form>
-    </PageShell>
+    <ParentShell title="Espace parent" back="/">
+      <div className="bg-surface mx-auto flex w-full max-w-sm flex-col gap-4 rounded-2xl p-6 shadow-sm">
+        <p className="text-center">Le suivi des enfants et les réglages du compte sont réservés au parent.</p>
+        <ParentUnlock onUnlocked={() => undefined} />
+      </div>
+    </ParentShell>
   );
 }
 
@@ -81,49 +54,93 @@ export function ParentHome() {
   const { data: profiles, isPending } = useProfiles();
   return (
     <ParentGate>
-      <PageShell title="Espace parent" back="/">
+      <ParentShell title="Espace parent" back="/">
         {isPending && <p>Chargement…</p>}
-        <Link to="/abonnement" className="font-bold underline">
-          Abonnement familial
-        </Link>
-        {profiles?.length === 0 && <p>Aucun profil enfant pour l’instant : crée-en un depuis le choix du joueur.</p>}
-        <ul className="grid gap-4 sm:grid-cols-2">
-          {profiles?.map((p) => (
-            <ChildCard key={p.id} profile={p} />
-          ))}
-        </ul>
+        <section aria-labelledby="enfants" className="flex flex-col gap-3">
+          <h2 id="enfants" className="text-lg font-bold">
+            Vos enfants
+          </h2>
+          {profiles?.length === 0 && <p>Aucun profil enfant pour l’instant : créez-en un depuis le choix du joueur.</p>}
+          <ul className="grid gap-4 md:grid-cols-2">
+            {profiles?.map((p) => (
+              <ChildCard key={p.id} profile={p} />
+            ))}
+          </ul>
+        </section>
+        <ParentCard title="Compte familial" id="compte">
+          <ul className="divide-y divide-[var(--outline)]/10">
+            <li>
+              <Link to="/abonnement" className="flex items-center justify-between py-3 font-bold">
+                Abonnement familial <span aria-hidden>›</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/parametres" className="flex items-center justify-between py-3 font-bold">
+                Code PIN parent et réglages <span aria-hidden>›</span>
+              </Link>
+            </li>
+          </ul>
+        </ParentCard>
         <FamilyFriends />
-      </PageShell>
+      </ParentShell>
     </ParentGate>
+  );
+}
+
+/** Chiffre clé d'un enfant : grand nombre, libellé court. */
+function Metric({ value, label }: { readonly value: string; readonly label: string }) {
+  return (
+    <div className="bg-surface-2 flex flex-col rounded-xl px-3 py-2">
+      <span className="text-xl font-bold">{value}</span>
+      <span className="text-muted text-xs font-bold">{label}</span>
+    </div>
   );
 }
 
 function ChildCard({ profile: p }: { readonly profile: Profile }) {
   const { data: r } = useLearning(p.id);
   const week = r && weeklySummary(r);
+  const current = r?.weeks.at(-1)?.tally;
+  const rate = current && current.answered > 0 ? `${Math.round((100 * current.autonomous) / current.answered)} %` : '—';
+  const last = r?.lastActivity
+    ? new Date(r.lastActivity).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+    : '—';
   return (
-    <li className="cartoon bg-surface flex flex-col gap-2 p-4" aria-label={`Progrès de ${p.name}`}>
-      <h2 className="font-display text-2xl tracking-wide">{p.name}</h2>
-      <p className="text-muted font-bold">{p.grade ? gradeInfo(p.grade).name : 'Classe non renseignée'}</p>
+    <li className="bg-surface flex flex-col gap-3 rounded-2xl p-4 shadow-sm" aria-label={`Progrès de ${p.name}`}>
+      <div className="flex items-center gap-3">
+        <CharacterAvatar avatar={p.avatar} size={52} />
+        <div className="min-w-0 flex-1">
+          <h3 className="truncate text-lg font-bold">{p.name}</h3>
+          <p className="text-muted text-sm">{p.grade ? gradeInfo(p.grade).name : 'Classe non renseignée'}</p>
+        </div>
+      </div>
       {r && (
         <>
-          <p>
-            {r.lastActivity
-              ? `Dernière activité : ${new Date(r.lastActivity).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}`
-              : 'Pas encore joué.'}
-          </p>
-          {r.subjects.length > 0 && <p>Matières travaillées : {subjectsWorked(r).join(', ')}.</p>}
-          {week && <p>{week.lines[0]}</p>}
-          {r.toRework.length > 0 && (
-            <p>
-              <strong>À retravailler :</strong> {r.toRework.map(skillTitle).join(', ')}.
+          <div className="grid grid-cols-3 gap-2">
+            <Metric value={String(week?.answered ?? 0)} label="questions cette semaine" />
+            <Metric value={rate} label="réussite sans aide" />
+            <Metric value={last} label="dernière activité" />
+          </div>
+          {r.subjects.length > 0 && (
+            <p className="text-sm">
+              <span className="text-muted font-bold">Matières : </span>
+              {subjectsWorked(r).join(', ')}
             </p>
           )}
-          {r.dueReviews.length > 0 && <p>{r.dueReviews.length} révision(s) à faire.</p>}
+          {r.toRework.length > 0 && (
+            <p className="text-sm">
+              <span className="text-muted font-bold">À retravailler : </span>
+              {r.toRework.map(skillTitle).join(', ')}
+            </p>
+          )}
+          {r.dueReviews.length > 0 && <p className="text-sm">{r.dueReviews.length} révision(s) à faire.</p>}
         </>
       )}
-      <Link to={`/parent/${p.id}`} className="font-bold underline">
-        Voir le détail de {p.name}
+      <Link
+        to={`/parent/${p.id}`}
+        className="bg-accent mt-auto rounded-xl px-4 py-2.5 text-center font-bold text-white"
+      >
+        Voir le suivi de {p.name}
       </Link>
     </li>
   );
@@ -136,10 +153,10 @@ export function ChildReport() {
   const { data: r, isPending } = useLearning(profileId);
   return (
     <ParentGate>
-      <PageShell title={child ? `Progrès de ${child.name}` : 'Progrès'} back="/parent">
+      <ParentShell title={child ? `Suivi de ${child.name}` : 'Suivi'} back="/parent">
         {isPending && <p>Chargement…</p>}
         {r && child && <ReportView report={r} child={child} />}
-      </PageShell>
+      </ParentShell>
     </ParentGate>
   );
 }
@@ -149,7 +166,7 @@ function ReportView({ report: r, child }: { readonly report: LearningReport; rea
   return (
     <div className="flex flex-col gap-6">
       <section aria-labelledby="bilan">
-        <h2 id="bilan" className="font-display text-2xl tracking-wide">
+        <h2 id="bilan" className="text-lg font-bold">
           Bilan de la semaine
         </h2>
         <ul className="list-disc pl-5">
@@ -162,7 +179,7 @@ function ReportView({ report: r, child }: { readonly report: LearningReport; rea
       <WeakPoints report={r} />
       <TargetedSession report={r} child={child} />
       <section aria-labelledby="matieres" className="flex flex-col gap-3">
-        <h2 id="matieres" className="font-display text-2xl tracking-wide">
+        <h2 id="matieres" className="text-lg font-bold">
           Par matière
         </h2>
         {r.subjects.length === 0 && <p>Pas encore de réponse enregistrée.</p>}
@@ -202,7 +219,7 @@ function SubjectBlock({ report: r, subject }: { readonly report: LearningReport;
   const skills = r.skills.filter((s) => s.subject === subject);
   const tally = r.subjects.find((s) => s.subject === subject)?.tally;
   return (
-    <details className="cartoon bg-surface p-4">
+    <details className="bg-surface rounded-2xl shadow-sm p-4">
       <summary className="cursor-pointer font-bold">
         {subjectName(subject)} — {tally ? successPhrase(tally) : ''}
       </summary>
@@ -263,8 +280,8 @@ function TargetedSession({ report: r, child }: { readonly report: LearningReport
       return next;
     });
   return (
-    <section aria-labelledby="seance" className="cartoon bg-surface flex flex-col gap-2 p-4">
-      <h2 id="seance" className="font-display text-2xl tracking-wide">
+    <section aria-labelledby="seance" className="bg-surface rounded-2xl shadow-sm flex flex-col gap-2 p-4">
+      <h2 id="seance" className="text-lg font-bold">
         Préparer une séance ciblée
       </h2>
       <p className="text-sm">Choisis les notions à travailler : {child.name} jouera une série de questions dessus.</p>

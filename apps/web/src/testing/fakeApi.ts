@@ -77,6 +77,8 @@ interface Battle {
 }
 
 export interface FakeApiOptions {
+  /** Code PIN parent déjà choisi (null : aucun). */
+  readonly pin?: string | null;
   readonly profiles?: readonly Profile[];
   readonly skills?: readonly SkillProgress[];
   readonly inventory?: Inventory;
@@ -150,7 +152,12 @@ const view = (id: string, b: Battle, inventory: Inventory): BattleView => ({
 
 /** Compte familial du faux serveur : session de l'appareil et verrou parent. */
 function authHandlers(options: FakeApiOptions) {
-  const session = { loggedIn: options.loggedIn ?? true, parent: options.parent ?? true, email: 'parent@famille.test' };
+  const session = {
+    loggedIn: options.loggedIn ?? true,
+    parent: options.parent ?? true,
+    email: 'parent@famille.test',
+    pin: options.pin ?? null,
+  };
   const me = () => {
     if (!session.loggedIn) throw new FakeError(401, 'UNAUTHORIZED', 'Connecte-toi pour continuer.');
     return {
@@ -162,6 +169,7 @@ function authHandlers(options: FakeApiOptions) {
       family: { id: '33333333-3333-4333-8333-333333333333' },
       parent: session.parent,
       parentUntil: session.parent ? '2099-01-01T00:00:00.000Z' : null,
+      hasPin: session.pin !== null,
     };
   };
   const requireParent = () => {
@@ -186,6 +194,22 @@ function authHandlers(options: FakeApiOptions) {
       return null;
     },
     me,
+    setParentPin: ({ body }) => {
+      const b = body as { password: string; pin: string };
+      if (b.password !== FAKE_PASSWORD) throw new FakeError(401, 'UNAUTHORIZED', 'Mot de passe incorrect.');
+      session.pin = b.pin;
+      return me();
+    },
+    unlockParentPin: ({ body }) => {
+      if ((body as { pin: string }).pin !== session.pin)
+        throw new FakeError(401, 'UNAUTHORIZED', 'Code PIN incorrect.');
+      session.parent = true;
+      return me();
+    },
+    lockParent: () => {
+      session.parent = false;
+      return me();
+    },
     confirmParent: ({ body }) => {
       if ((body as { password: string }).password !== FAKE_PASSWORD) {
         throw new FakeError(401, 'UNAUTHORIZED', 'Mot de passe incorrect.');

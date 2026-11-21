@@ -94,6 +94,31 @@ describe('actions réservées au parent', () => {
     expect((await createProfile(cookie, 'Tom')).statusCode).toBe(201);
   });
 
+  it('code PIN : choisi avec le mot de passe, ouvre l’Espace parent, bloqué après 5 erreurs, se quitte', async () => {
+    const cookie = t.family().cookie;
+    const c = t.as(cookie);
+    const post = (url: string, payload?: object) => c.inject({ method: 'POST', url: `/api/v1${url}`, payload });
+    expect((await c.inject('/api/v1/auth/me')).json<Me>()).toMatchObject({ hasPin: false });
+    expect((await post('/auth/parent/pin', { password: 'mauvais', pin: '1234' })).statusCode).toBe(401);
+    expect((await post('/auth/parent/pin', { password: TEST_PASSWORD, pin: '12a4' })).statusCode).toBe(400);
+    expect((await post('/auth/parent/pin', { password: TEST_PASSWORD, pin: '2580' })).json<Me>()).toMatchObject({
+      hasPin: true,
+    });
+    // Quitter l'Espace parent : actions parent verrouillées.
+    expect((await post('/auth/parent/lock')).json<Me>()).toMatchObject({ parent: false, hasPin: true });
+    expect((await createProfile(cookie, 'Tom')).statusCode).toBe(403);
+    // Ouvrir avec le bon PIN.
+    expect((await post('/auth/parent/pin/unlock', { pin: '2580' })).json<Me>()).toMatchObject({ parent: true });
+    expect((await createProfile(cookie, 'Tom')).statusCode).toBe(201);
+    // 5 erreurs : bloqué, même avec le bon PIN ; le mot de passe reste possible.
+    await post('/auth/parent/lock');
+    for (let i = 0; i < 4; i++) expect((await post('/auth/parent/pin/unlock', { pin: '0000' })).statusCode).toBe(401);
+    const fifth = await post('/auth/parent/pin/unlock', { pin: '0000' });
+    expect(fifth.json<{ error: string }>().error).toMatch(/bloqué 15 minutes/);
+    expect((await post('/auth/parent/pin/unlock', { pin: '2580' })).statusCode).toBe(401);
+    expect((await post('/auth/parent', { password: TEST_PASSWORD })).json<Me>()).toMatchObject({ parent: true });
+  });
+
   it('l’enfant change ses réglages, pas son identité ; seul le parent supprime', async () => {
     const cookie = t.family().cookie;
     const p = (await createProfile(cookie)).json<Profile>();

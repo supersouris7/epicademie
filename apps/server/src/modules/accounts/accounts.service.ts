@@ -15,6 +15,9 @@ import { accountsRepo } from './accounts.repo.ts';
 
 /** Durée du déverrouillage parent après confirmation du mot de passe. */
 export const PARENT_UNLOCK_MINUTES = 10;
+/** Code PIN parent : erreurs d'affilée permises avant blocage, et durée du blocage. */
+const PIN_MAX_FAILURES = 5;
+const PIN_LOCK_MINUTES = 15;
 /** Validité d'un lien de réinitialisation. */
 export const RESET_LINK_MINUTES = 60;
 const MINUTE = 60_000;
@@ -42,7 +45,13 @@ export function createAccountsService({ db, clock, mailer, appUrl, sessionDays }
   const later = (ms: number) => new Date(clock.now().getTime() + ms);
 
   const meOf = (
-    a: { id: string; email: string; role: Me['account']['role']; familyId: string },
+    a: {
+      id: string;
+      email: string;
+      role: Me['account']['role'];
+      familyId: string;
+      parentPinHash?: string | null;
+    },
     parentUntil: Date | null,
   ): Me => {
     const parent = parentUntil !== null && parentUntil > clock.now();
@@ -51,6 +60,7 @@ export function createAccountsService({ db, clock, mailer, appUrl, sessionDays }
       family: { id: a.familyId },
       parent,
       parentUntil: parent ? parentUntil.toISOString() : null,
+      hasPin: Boolean(a.parentPinHash),
     };
   };
 
@@ -108,8 +118,52 @@ export function createAccountsService({ db, clock, mailer, appUrl, sessionDays }
       };
     },
 
-    me: (actor: Actor): Me =>
-      meOf({ id: actor.accountId, email: actor.email, role: actor.role, familyId: actor.familyId }, actor.parentUntil),
+    async me(actor: Actor): Promise<Me> {
+      const account = await repo.findById(actor.accountId);
+      return meOf(
+        { id: actor.accountId, email: actor.email, role: actor.role, familyId: actor.familyId, ...account },
+        actor.parentUntil,
+      );
+    },
+
+    /** Choisit ou change le code PIN parent : le mot de passe du compte est demandé. */
+    async setParentPin(actor: Actor, password: string, pin: string): Promise<Me> {
+      const account = await repo.findById(actor.accountId);
+      if (!account || !(await verifyPassword(password, account.passwordHash))) {
+        throw new AppError('UNAUTHORIZED', 'Mot de passe incorrect.');
+      }
+      await repo.setParentPin(account.id, await hashPassword(pin));
+      return meOf({ ...account, parentPinHash: 'défini' }, actor.parentUntil);
+    },
+
+    /** Ouvre l'Espace parent avec le PIN ; 5 erreurs d'affilée bloquent le PIN 15 minutes. */
+    async unlockParentPin(actor: Actor, pin: string): Promise<Me> {
+      const account = await repo.findById(actor.accountId);
+      if (!account?.parentPinHash)
+        throw new AppError('CONFLICT', 'Aucun code PIN : utilise le mot de passe du compte.');
+      if (account.pinLockedUntil && account.pinLockedUntil > clock.now()) {
+        throw new AppError('UNAUTHORIZED', 'Trop d’erreurs : réessaie dans 15 minutes, ou utilise le mot de passe.');
+      }
+      if (!(await verifyPassword(pin, account.parentPinHash))) {
+        const failures = account.pinFailures + 1;
+        const locked = failures >= PIN_MAX_FAILURES ? later(PIN_LOCK_MINUTES * MINUTE) : null;
+        await repo.setPinFailures(account.id, locked ? 0 : failures, locked);
+        throw new AppError(
+          'UNAUTHORIZED',
+          locked ? 'Trop d’erreurs : le code PIN est bloqué 15 minutes.' : 'Code PIN incorrect.',
+        );
+      }
+      await repo.setPinFailures(account.id, 0, null);
+      const until = later(PARENT_UNLOCK_MINUTES * MINUTE);
+      await repo.setParentUntil(actor.sessionHash, until);
+      return meOf(account, until);
+    },
+
+    /** Quitte l'Espace parent : les actions parent sont de nouveau verrouillées sur cet appareil. */
+    async lockParent(actor: Actor): Promise<Me> {
+      await repo.setParentUntil(actor.sessionHash, null);
+      return this.me({ ...actor, parentUntil: null, parent: false });
+    },
 
     /** Le parent confirme son mot de passe : actions parent permises quelques minutes. */
     async confirmParent(actor: Actor, password: string): Promise<Me> {
