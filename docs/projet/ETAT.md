@@ -30,7 +30,8 @@
 
 ## Prochaine action
 
-- Backlog initial dans GitHub Issues, puis reprise des matières (anglais en premier).
+- Backlog initial : #32 à #37 (badges, boss, anglais, histoire, sécurité pnpm, opentype.js).
+  Prochain ticket réalisable sans attendre le client : #34 (anglais), puis #36.
 
 ## Décisions récentes
 
