@@ -2,7 +2,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
 import type { WeakSkillStat, AdminError, AdminStats, Anomaly, Profile } from '@questeo/shared';
 import { attempts, profiles, sessions } from '../../db/schema.ts';
-import { createTestApp, profileInput } from '../../testing/harness.ts';
+import { createTestApp, profileInput, TEST_PASSWORD } from '../../testing/harness.ts';
 import { setAccountRole } from '../accounts/index.ts';
 import { ANOMALY_THRESHOLDS } from './insights.service.ts';
 import { cleanMessage } from '../../core/observability/error-journal.ts';
@@ -28,6 +28,8 @@ beforeEach(async () => {
   const account = await t.signup('admin@questeo.test');
   await setAccountRole(t.database.db, 'admin@questeo.test', 'admin');
   admin = t.as(account.cookie);
+  // Session d'administration : mot de passe redemandé à l'ouverture.
+  await admin.inject({ method: 'POST', url: '/api/v1/auth/admin', payload: { password: TEST_PASSWORD } });
 });
 
 const answer = (sessionId: string, durationMs: number, correct = true, skillId = 'm5-tables') => ({
@@ -61,6 +63,26 @@ const session = async (coins = 10) => {
 };
 
 describe('pilotage (administration)', () => {
+  it('session d’administration : compte admin et mot de passe redemandé', async () => {
+    const other = await t.signup('autre-admin@questeo.test');
+    await setAccountRole(t.database.db, 'autre-admin@questeo.test', 'admin');
+    const c = t.as(other.cookie);
+    // Compte admin, mais session d'administration pas encore ouverte : refusé.
+    expect((await c.inject('/api/v1/admin/stats')).statusCode).toBe(403);
+    expect(
+      (await c.inject({ method: 'POST', url: '/api/v1/auth/admin', payload: { password: 'mauvais' } })).statusCode,
+    ).toBe(401);
+    await c.inject({ method: 'POST', url: '/api/v1/auth/admin', payload: { password: TEST_PASSWORD } });
+    expect((await c.inject('/api/v1/admin/stats')).statusCode).toBe(200);
+    // Un parent non admin ne peut pas ouvrir de session d'administration.
+    expect(
+      (await t.http.inject({ method: 'POST', url: '/api/v1/auth/admin', payload: { password: TEST_PASSWORD } }))
+        .statusCode,
+    ).toBe(403);
+    await c.inject({ method: 'POST', url: '/api/v1/auth/admin/close' });
+    expect((await c.inject('/api/v1/admin/stats')).statusCode).toBe(403);
+  });
+
   it('réservé à l’administration', async () => {
     for (const url of [
       '/api/v1/admin/stats',

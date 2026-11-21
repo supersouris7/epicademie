@@ -48,5 +48,7 @@ export const MeSchema = z.object({
   parentUntil: z.string().nullable(),
   /** Un code PIN parent est choisi (sinon : mot de passe du compte). */
   hasPin: z.boolean(),
+  /** Fin de la session d'administration (compte admin, ISO), ou null si fermée. */
+  adminUntil: z.string().nullable(),
 });
 export type Me = z.infer<typeof MeSchema>;

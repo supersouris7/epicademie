@@ -106,6 +106,13 @@
       "when": 1795330000000,
       "tag": "0014_pin_parent",
       "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1795340000000,
+      "tag": "0015_session_admin",
+      "breakpoints": true
     }
   ]
 }

@@ -18,6 +18,9 @@ export interface Actor {
   readonly parentUntil: Date | null;
   /** Déverrouillage parent en cours, évalué à la lecture de la session (horloge du serveur). */
   readonly parent: boolean;
+  /** Session d'administration ouverte (compte admin, mot de passe redemandé récemment). */
+  readonly admin: boolean;
+  readonly adminUntil: Date | null;
   /** Empreinte du jeton de la session (déconnexion, déverrouillage parent). */
   readonly sessionHash: string;
 }
@@ -69,6 +72,8 @@ export function checkAccess(access: Access, actor: Actor | null): void {
   }
   if (access === 'admin' && actor.role !== 'admin')
     throw new AppError('FORBIDDEN', 'Accès réservé à l’administration.');
+  if (access === 'admin' && !actor.admin)
+    throw new AppError('FORBIDDEN', 'Session d’administration fermée : confirme le mot de passe.');
 }
 
 /** Acteur d'une route `family` ou plus (garanti par `route()`). */
