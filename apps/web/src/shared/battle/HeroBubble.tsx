@@ -37,7 +37,8 @@ export function HeroBubble({
             initial={{ opacity: 0, x: -6, scale: 0.8 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className="pointer-events-none absolute top-1/2 left-full z-30 ml-3 w-max max-w-[min(40vw,18rem)] -translate-y-1/2"
+            // Pas sur téléphone : la bulle recouvrait la barre de progression et le compteur d'XP.
+            className="pointer-events-none absolute top-1/2 left-full z-30 ml-3 hidden w-max max-w-[min(40vw,18rem)] -translate-y-1/2 sm:block"
           >
             <Bubble tail="left" className="font-display px-3 py-1 text-sm leading-tight sm:text-base">
               {text}

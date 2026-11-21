@@ -31,6 +31,8 @@ interface RealtimeState {
   readonly online: readonly OnlinePlayer[];
   readonly notices: readonly Notice[];
   readonly arena: ArenaView | null;
+  /** Mes réponses dans l'arène en cours, par notion (récap de fin de partie). */
+  readonly tally: readonly ArenaTally[];
   /** Refus du serveur (profil déjà ouvert ailleurs) : affiché sur l'écran des profils. */
   readonly refused: string | null;
   readonly connect: (profileId: string | null) => void;
@@ -42,6 +44,35 @@ interface RealtimeState {
   readonly startArena: () => void;
   readonly answerArena: (response: Response) => void;
   readonly leaveArena: () => void;
+}
+
+/** Réponses et réponses justes d'une notion, pour le joueur de cet appareil. */
+export interface ArenaTally {
+  readonly skillId: string;
+  readonly answered: number;
+  readonly correct: number;
+}
+
+/**
+ * Nouveau décompte après une vue d'arène : ma réponse vient d'être jugée (dernier événement à mon
+ * nom, nouveau tour) → elle compte pour la notion de la question précédente. Nouvelle arène : à zéro.
+ */
+export function nextTally(
+  tally: readonly ArenaTally[],
+  prev: ArenaView | null,
+  next: ArenaView,
+  me: string | null,
+): readonly ArenaTally[] {
+  if (prev?.id !== next.id) return [];
+  const q = prev.question;
+  const last = next.last;
+  if (!q || last?.playerId !== me || last === prev.last) return tally;
+  const skillId = q.skillId;
+  const ok = last.correct ? 1 : 0;
+  const found = tally.some((t) => t.skillId === skillId);
+  return found
+    ? tally.map((t) => (t.skillId === skillId ? { ...t, answered: t.answered + 1, correct: t.correct + ok } : t))
+    : [...tally, { skillId, answered: 1, correct: ok }];
 }
 
 let seq = 0;
@@ -56,6 +87,7 @@ export const useRealtime = create<RealtimeState>((set, get) => ({
   online: [],
   notices: [],
   arena: null,
+  tally: [],
   refused: null,
   connect(profileId) {
     const cur = get();
@@ -96,7 +128,7 @@ export const useRealtime = create<RealtimeState>((set, get) => ({
       set((s) => ({ notices: [...s.notices, { id: ++seq, kind: 'invite' as const, invite }].slice(-4) })),
     );
     socket.on('arena', (arena) => {
-      set({ arena });
+      set((s) => ({ arena, tally: nextTally(s.tally, s.arena, arena, s.profileId) }));
       // Exposé pour les tests de bout en bout (lecture seule).
       (window as unknown as { __arena?: ArenaView }).__arena = arena;
     });

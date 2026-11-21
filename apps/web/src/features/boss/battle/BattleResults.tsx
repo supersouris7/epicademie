@@ -7,6 +7,7 @@ import { BossSays, HeroSays } from '../../../shared/battle/BattleScenes.tsx';
 import { bossSays, heroSays } from '../../../shared/lib/dialogue.ts';
 import { Confetti } from '../../../shared/ui/Confetti.tsx';
 import { ChestReveal } from '../../../shared/ui/game/ChestReveal.tsx';
+import { GameRecap } from '../../training/index.ts';
 import { GameButton } from '../../../shared/ui/game/GameButton.tsx';
 import { GameIcon } from '../../../shared/ui/game/GameIcon.tsx';
 import { RewardBadge } from '../../../shared/ui/game/RewardBadge.tsx';
@@ -22,12 +23,14 @@ import { FROM_BATTLE } from './constants.ts';
 
 /** Bilan du combat : victoire ou défaite, médaille, gains, et la suite proposée. */
 export function BattleResults({
+  profileId,
   summary,
   chapter,
   gender,
   hero,
   onExit,
 }: {
+  readonly profileId: string;
   readonly summary: BattleSummary;
   readonly chapter: Chapter;
   readonly gender: Profile['gender'];
@@ -122,6 +125,9 @@ export function BattleResults({
           </p>
         </motion.section>
       )}
+
+      {/* Récap des notions et entraînement conseillé. */}
+      <GameRecap profileId={profileId} rows={summary.skills} />
 
       {/* Coffre de victoire, de la rareté de la médaille (parfois mieux). */}
       {summary.chest && <ChestReveal chest={summary.chest} />}

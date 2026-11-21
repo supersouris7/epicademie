@@ -1,7 +1,8 @@
 import type { AvatarConfig } from '@questeo/shared';
+import { versioned } from '../../design/assets.ts';
 
 /** Image d'un portrait de profil (« 01 » à « 25 »). */
-const avatarSrc = (avatar: Pick<AvatarConfig, 'seed'>) => `/assets/avatars/${avatar.seed}.webp`;
+const avatarSrc = (avatar: Pick<AvatarConfig, 'seed'>) => versioned(`/assets/avatars/${avatar.seed}.webp`);
 
 interface AvatarProps {
   readonly avatar: AvatarConfig;

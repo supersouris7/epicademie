@@ -64,5 +64,5 @@ export const BOSS_MEDAL_ICONS: Record<BossMedal, string> = {
   bronze: 'rewards-medals-bronze',
   argent: 'rewards-medals-argent',
   or: 'rewards-medals-or',
-  diamant: 'icons-resources-gem',
+  diamant: 'rewards-medals-diamant',
 };

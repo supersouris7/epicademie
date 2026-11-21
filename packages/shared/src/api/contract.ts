@@ -29,7 +29,7 @@ import {
 } from '../account.ts';
 import { BadgeProgressSchema, LearningReportSchema } from '../learning.ts';
 import { BillingSchema, CheckoutSchema, SimulatePaymentSchema } from '../billing.ts';
-import { AdminErrorSchema, AdminStatsSchema, AnomalySchema } from '../insights.ts';
+import { AdminErrorSchema, AdminStatsSchema, AnomalySchema, WeakSkillStatSchema } from '../insights.ts';
 import { FamilyFriendSchema, FriendRequestSchema, FriendsViewSchema } from '../friends.ts';
 import {
   ContentEventSchema,
@@ -581,6 +581,15 @@ export const api = {
     access: 'admin',
     status: 200,
     response: AdminStatsSchema,
+  }),
+  adminWeakSkills: endpoint({
+    method: 'GET',
+    path: '/admin/weak-skills',
+    tag: 'admin',
+    summary: 'Notions les plus ratées (90 jours, anonyme : aucun nom d’enfant)',
+    access: 'admin',
+    status: 200,
+    response: z.array(WeakSkillStatSchema),
   }),
   adminErrors: endpoint({
     method: 'GET',

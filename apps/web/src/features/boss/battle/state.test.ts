@@ -53,6 +53,7 @@ const summary = (won: boolean): BattleSummary => ({
   newBest: won,
   chest: null,
   weakSkill: null,
+  skills: [],
   levelBefore: 1,
   levelAfter: 1,
 });

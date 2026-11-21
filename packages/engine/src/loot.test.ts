@@ -60,15 +60,9 @@ describe('coffres d’équipement', () => {
     expect(Object.values(legendary.items).reduce((a, b) => a + b, 0)).toBe(3);
   });
 
-  it('Acad-Héros : jamais dans un coffre commun, tiré parmi ceux qui manquent', () => {
-    expect(fillChest('epique', seq(0, 0, 0.1, 0.5), new Set(['alex'])).hero).toEqual({ id: 'lina', duplicate: false });
-    expect(fillChest('commun', seq(0)).hero).toBeNull();
-  });
-
-  it('héros déjà tous possédés : doublon converti en pièces', () => {
-    const chest = fillChest('epique', seq(0, 0, 0.1, 0), new Set(['alex', 'lina']));
-    expect(chest.hero).toMatchObject({ duplicate: true });
-    expect(chest.coins).toBe(40 + 60);
+  it('plus d’Acad-Héros dans les coffres : ils se choisissent librement', () => {
+    for (const rarity of ['commun', 'rare', 'epique', 'legendaire'] as const)
+      expect(fillChest(rarity, seq(0.1, 0.5)).hero).toBeNull();
   });
 
   it('défis : coffre selon le score (Contre-la-montre 8/15/22/30, Survie 5/10/15/20) et bonus d’XP', () => {

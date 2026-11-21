@@ -174,7 +174,7 @@ describe('API profils', () => {
     expect(res.json<Profile>().hero).toBe('lina');
   });
 
-  it('série entièrement juste : coffre ; Acad-Héros tiré alors qu’on les a tous : changé en pièces', async () => {
+  it('série entièrement juste : un coffre (sans Acad-Héros : ils se choisissent librement)', async () => {
     // Sans-faute : coffre légendaire (0,99 décalé), 3 objets, héros tiré (0,1 < 50 %) : doublon.
     const lucky = await createTestApp({ random: sequenceRandom([0.99, 0, 0, 0, 0.1, 0]) });
     try {
@@ -214,7 +214,7 @@ describe('API profils', () => {
       const summary = (
         await lucky.http.inject({ method: 'POST', url: `/api/v1/sessions/${id}/finish` })
       ).json<SessionSummary>();
-      expect(summary.chest).toMatchObject({ rarity: 'legendaire', hero: { duplicate: true } });
+      expect(summary.chest).toMatchObject({ rarity: 'legendaire', hero: null });
       expect((await lucky.http.inject(`/api/v1/profiles/${p.id}/heroes`)).json()).toEqual({ heroes: ['alex', 'lina'] });
     } finally {
       await lucky.close();

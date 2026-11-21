@@ -92,12 +92,10 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
 
   return (
     <PageShell title="Combat de boss" back="/jouer/boss">
-      <p className="text-muted font-bold">4 mobs, puis le boss. Diamant : sans perdre de cœur et sans objet.</p>
-
       {/* Équipement : la tête du héros et ses 3 emplacements ; dessous, la réserve (ce qui n'est pas équipé). */}
       <section aria-labelledby="equipement" className="cartoon bg-surface flex flex-col gap-3 p-3">
         <h2 id="equipement" className="font-display text-xl tracking-wide">
-          Équipement pour les boss
+          Équipe-toi pour ce combat
         </h2>
         <div className="flex items-center gap-3">
           <HeroFace hero={profile.hero} expression="determine" size={64} />
@@ -146,10 +144,6 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
             );
           })}
         </div>
-        <p className="text-muted text-sm font-bold">
-          Touche un objet de la réserve pour l’équiper (3 au plus) ; seuls les objets équipés servent pendant le combat.
-          Plus d’objets : dans les coffres, ou à la Boutique.
-        </p>
       </section>
 
       <GradeTabs grades={grades} value={grade} own={own} onChange={setGrade} />

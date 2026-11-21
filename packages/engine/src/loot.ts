@@ -1,12 +1,10 @@
 import {
-  AVAILABLE_HEROES,
   BOSS_MEDALS,
   CHEST_RARITIES,
   ITEMS,
   type BossMedal,
   type Chest,
   type ChestRarity,
-  type HeroId,
   type Inventory,
 } from '@questeo/shared';
 import { ECONOMY } from './economy.ts';
@@ -17,8 +15,7 @@ import { ECONOMY } from './economy.ts';
  *   un sans-faute du premier coup améliore le tirage ;
  * - boss : un coffre à chaque victoire, de la rareté de la médaille (bronze → commun … diamant →
  *   légendaire), avec une chance de monter d'un cran.
- * Le coffre contient des objets tirés au hasard, des pièces, parfois des rubis et parfois un
- * Acad-Héros. Jamais achetable. Paramètres : `ECONOMY.chest` (economy.ts).
+ * Le coffre contient des objets tirés au hasard, des pièces et parfois des rubis. Jamais achetable. Paramètres : `ECONOMY.chest` (economy.ts).
  */
 
 /** Pièces, objets et rubis selon la rareté. */
@@ -41,28 +38,16 @@ export function bossRarity(medal: BossMedal, random: number): ChestRarity {
   return CHEST_RARITIES[Math.min(CHEST_RARITIES.length - 1, base + up)] ?? 'commun';
 }
 
-/**
- * Acad-Héros éventuel du coffre : tiré parmi les héros disponibles que le joueur n'a pas ; s'il
- * les a tous, le héros tiré est un doublon converti en pièces.
- */
-function rollHero(rarity: ChestRarity, owned: ReadonlySet<HeroId>, random: () => number): Chest['hero'] {
-  if (random() >= ECONOMY.chest.heroChance[rarity]) return null;
-  const missing = AVAILABLE_HEROES.filter((h) => !owned.has(h));
-  const pool = missing.length > 0 ? missing : AVAILABLE_HEROES;
-  const id = pool[Math.floor(random() * pool.length)] ?? AVAILABLE_HEROES[0] ?? 'alex';
-  return { id, duplicate: missing.length === 0 };
-}
-
 /** Remplit un coffre de la rareté donnée. `random` renvoie un nombre dans [0, 1). */
-export function fillChest(rarity: ChestRarity, random: () => number, owned: ReadonlySet<HeroId> = new Set()): Chest {
+export function fillChest(rarity: ChestRarity, random: () => number): Chest {
   const { items: count, coins, rubies } = CHEST_CONTENT[rarity];
   const items: Partial<Inventory> = {};
   for (let i = 0; i < count; i++) {
     const item = ITEMS[Math.floor(random() * ITEMS.length)] ?? 'indice';
     items[item] = (items[item] ?? 0) + 1;
   }
-  const hero = rollHero(rarity, owned, random);
-  return { rarity, items, coins: coins + (hero?.duplicate ? ECONOMY.chest.duplicateHeroCoins : 0), rubies, hero };
+  // Plus d'Acad-Héros dans les coffres (21/11/2026) : les héros se choisissent librement.
+  return { rarity, items, coins, rubies, hero: null };
 }
 
 /** Série d'entraînement : `solved` questions trouvées (1er ou 2e essai), dont `firstTry` du premier coup. */
@@ -73,18 +58,14 @@ export interface SeriesResult {
 }
 
 /** Coffre de fin de série : seulement si toute la série est juste (sinon null). */
-export function trainingChest(
-  series: SeriesResult,
-  random: () => number,
-  owned: ReadonlySet<HeroId> = new Set(),
-): Chest | null {
+export function trainingChest(series: SeriesResult, random: () => number): Chest | null {
   if (series.total === 0 || series.solved < series.total) return null;
-  return fillChest(rollRarity(random(), series.firstTry === series.total), random, owned);
+  return fillChest(rollRarity(random(), series.firstTry === series.total), random);
 }
 
 /** Coffre de victoire contre un boss, selon la médaille. */
-export function bossChest(medal: BossMedal, random: () => number, owned: ReadonlySet<HeroId> = new Set()): Chest {
-  return fillChest(bossRarity(medal, random()), random, owned);
+export function bossChest(medal: BossMedal, random: () => number): Chest {
+  return fillChest(bossRarity(medal, random()), random);
 }
 
 /**
@@ -105,14 +86,9 @@ export function defiRarity(kind: DefiKind, correct: number): ChestRarity | null 
 }
 
 /** Coffre de fin de défi (null sous le score minimum). */
-export function defiChest(
-  kind: DefiKind,
-  correct: number,
-  random: () => number,
-  owned: ReadonlySet<HeroId> = new Set(),
-): Chest | null {
+export function defiChest(kind: DefiKind, correct: number, random: () => number): Chest | null {
   const rarity = defiRarity(kind, correct);
-  return rarity ? fillChest(rarity, random, owned) : null;
+  return rarity ? fillChest(rarity, random) : null;
 }
 
 /** Bonus d'XP de fin de défi : 2 par bonne réponse, au plus 60. */

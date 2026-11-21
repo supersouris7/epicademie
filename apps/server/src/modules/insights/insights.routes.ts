@@ -8,6 +8,7 @@ export function insightsRoutes(service: InsightsService, recentErrors: () => Adm
   return async (app: FastifyInstance) => {
     route(app, api.adminStats, () => service.stats());
     route(app, api.adminAnomalies, () => service.anomalies());
+    route(app, api.adminWeakSkills, () => service.weakSkills());
     route(app, api.adminErrors, async () => recentErrors());
   };
 }

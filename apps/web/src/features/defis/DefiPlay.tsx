@@ -14,6 +14,7 @@ import { useToast } from '../../shared/ui/Toast.tsx';
 import { ChestReveal } from '../../shared/ui/game/ChestReveal.tsx';
 import { bestScore, SURVIE_HEARTS, type DefiId } from './rules.ts';
 import { useDefi } from './useDefi.ts';
+import { GameRecap } from '../training/index.ts';
 
 const TITLES: Record<DefiId, string> = { chrono: 'Contre-la-montre', survie: 'Survie' };
 const RULES: Record<DefiId, string> = {
@@ -52,7 +53,13 @@ export function DefiPlay({ profile }: { readonly profile: Profile }) {
   if (d.phase !== 'playing') {
     return (
       <PageShell title={TITLES[kind]} back={`/jouer/${kind}`}>
-        <Results correct={d.score.correct} record={d.record} summary={d.summary} saving={d.phase === 'finishing'} />
+        <Results
+          profileId={profile.id}
+          correct={d.score.correct}
+          record={d.record}
+          summary={d.summary}
+          saving={d.phase === 'finishing'}
+        />
       </PageShell>
     );
   }
@@ -144,6 +151,7 @@ function Intro(p: {
 }
 
 function Results(p: {
+  readonly profileId: string;
   readonly correct: number;
   readonly record: boolean;
   readonly summary: SessionSummary | null;
@@ -166,6 +174,7 @@ function Results(p: {
       )}
       {p.saving && <p>Enregistrement…</p>}
       {p.summary?.chest && <ChestReveal chest={p.summary.chest} />}
+      {p.summary && <GameRecap profileId={p.profileId} rows={p.summary.skills} />}
       <div className="flex flex-wrap justify-center gap-2">
         <GameButton onClick={() => window.location.reload()}>Rejouer</GameButton>
         <GameButton variant="surface" onClick={() => void navigate('/hub')}>

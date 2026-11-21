@@ -56,12 +56,13 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   // Gros plan du boss de la matière qui provoque, puis choix du chapitre.
   const closeUp = page.getByRole('dialog', { name: 'Sorcier π te provoque' });
   await expect(closeUp).toContainText(/challenger|Aucun chapitre|n’ont pas mangé|cube/);
-  // Plus de bouton : le gros plan se ferme tout seul (ou au toucher).
-  await expect(closeUp).toHaveCount(0, { timeout: 10_000 });
+  // On passe le gros plan en touchant l'écran.
+  await closeUp.getByRole('button', { name: 'Passer' }).click();
+  await expect(closeUp).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Combat de boss' })).toBeVisible();
   // Tous les boss sont ouverts d'emblée ; chapitres sans boss « À venir ». Panneau « Équipement ».
   const relatifs = page.getByRole('listitem').filter({ hasText: 'Nombres relatifs' });
-  await expect(page.getByRole('heading', { name: 'Équipement' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Équipe-toi pour ce combat' })).toBeVisible();
   await expect(page.getByText('Munitions')).toHaveCount(0);
   // Un boss par chapitre, 5e comprise ; sous le chapitre, la médaille ou « Pas encore vaincu ».
   await expect(page.getByRole('button', { name: /boss à venir/ })).toHaveCount(0);
@@ -163,8 +164,8 @@ test('Défaite : 5 secondes pour recommencer, puis l’entraînement', async ({ 
   await skipEmperor(page);
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   const provoke = page.getByRole('dialog', { name: /te provoque/ });
-  await expect(provoke).toBeVisible();
-  await expect(provoke).toHaveCount(0, { timeout: 10_000 });
+  await provoke.getByRole('button', { name: 'Passer' }).click();
+  await expect(provoke).toHaveCount(0);
   const started = page.waitForResponse((r) => r.url().endsWith('/api/v1/battles'));
   await page
     .getByRole('listitem')

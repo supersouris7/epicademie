@@ -57,7 +57,7 @@ describe('catalogue', () => {
     for (const p of PLANNED_ASSETS) {
       if (p.reference) expect(ids.has(p.reference), p.id).toBe(true);
       // Tant que l'image finale n'est pas livrée, le remplaçant SVG est servi.
-      if (p.fallback) expect(assetSrc(p.id), p.id).toMatch(delivered.has(p.file) ? /\.webp$/ : /\.svg$/);
+      if (p.fallback) expect(assetSrc(p.id), p.id).toMatch(delivered.has(p.file) ? /\.webp(\?v=.+)?$/ : /\.svg$/);
     }
   });
 

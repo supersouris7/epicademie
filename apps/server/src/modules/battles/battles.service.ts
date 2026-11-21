@@ -77,6 +77,16 @@ const view = (id: string, chapterId: string, s: BattleState, inventory: Inventor
   inventory,
 });
 
+/** Récap : réponses et réponses justes par notion, dans l'ordre où elles sont apparues. */
+function tallyBySkill(rows: readonly { readonly skillId: string; readonly correct: boolean }[]) {
+  const by = new Map<string, { skillId: string; answered: number; correct: number }>();
+  for (const r of rows) {
+    const t = by.get(r.skillId) ?? { skillId: r.skillId, answered: 0, correct: 0 };
+    by.set(r.skillId, { ...t, answered: t.answered + 1, correct: t.correct + (r.correct ? 1 : 0) });
+  }
+  return [...by.values()];
+}
+
 /** Réserves de questions du chapitre, avec l'énoncé (pour éviter les doublons). */
 /**
  * Réserves de questions du combat, sans les notions désactivées par l'administration. Sans mob,
@@ -268,9 +278,7 @@ export function createBattlesService({ db, clock, random, onFinished }: BattlesD
         if (won) await records.saveWin(profile.id, session.chapterId, state.hearts, best, clock.now());
 
         // Coffre à chaque victoire, selon la médaille (parfois un cran au-dessus).
-        const chest = medal
-          ? await grantChest(tx, profile.id, bossChest(medal, random.float, new Set(await profiles.heroes(profile.id))))
-          : null;
+        const chest = medal ? await grantChest(tx, profile.id, bossChest(medal, random.float)) : null;
         const xpGained = battleXp(state);
         const coinsGained = coinsForXp(xpGained) + (firstWin ? BATTLE_FIRST_WIN_COINS : 0);
         await profiles.credit(profile.id, {
@@ -296,6 +304,7 @@ export function createBattlesService({ db, clock, random, onFinished }: BattlesD
           newBest,
           chest,
           weakSkill: weakestSkill(state, pools(session.chapterId).mobs),
+          skills: tallyBySkill(await trainingRepo(tx).firstAttemptsOf(id)),
           levelBefore: levelFromXp(profile.xp).level,
           levelAfter: levelFromXp(profile.xp + xpGained).level,
         };

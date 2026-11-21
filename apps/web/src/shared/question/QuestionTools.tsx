@@ -31,8 +31,8 @@ interface QuestionToolsProps {
   readonly attempt?: number;
   readonly picked: { x: number; y: number } | null;
   readonly onSubmit: (r: Response) => void;
-  /** Affiche « Je ne sais pas » (entraînement, combat) : la réponse compte comme une erreur. */
-  readonly allowUnknown?: boolean;
+  /** Rien de saisi : le bouton OK devient « ? » (entraînement, combat). */
+  readonly onUnknown?: () => void;
 }
 
 /**
@@ -47,7 +47,7 @@ export function QuestionTools({
   attempt = 0,
   picked,
   onSubmit,
-  allowUnknown = false,
+  onUnknown,
 }: QuestionToolsProps) {
   const [tab, setTab] = useState<DockTab>('reponse');
   const [opened, setOpened] = useState<ReadonlySet<DockTab>>(new Set());
@@ -97,16 +97,8 @@ export function QuestionTools({
             onSubmit={onSubmit}
             picked={picked}
             initialText={fill?.value}
+            onUnknown={onUnknown}
           />
-          {allowUnknown && (
-            <button
-              type="button"
-              onClick={() => onSubmit({ kind: 'unknown' })}
-              className="text-muted mt-1 shrink-0 self-center rounded-full px-3 py-1 text-sm font-bold underline decoration-2 underline-offset-4 hover:bg-white/10"
-            >
-              Je ne sais pas
-            </button>
-          )}
         </div>
         {activeTab === 'calculatrice' && (
           <Calculator state={calc} onChange={setCalc} grade={gradeOfSkill(question.skillId)} onUse={sendToAnswer} />

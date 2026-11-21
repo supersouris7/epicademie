@@ -29,21 +29,23 @@ export function MainNav({ profile }: { readonly profile: Profile }) {
           <button type="button" onClick={() => void navigate('/')} aria-label="Changer de joueur" className="shrink-0">
             <CharacterAvatar avatar={profile.avatar} size={44} />
           </button>
-          {/* Pseudo, puis niveau et barre d'XP (même barre segmentée que celles du combat). */}
-          <span className="font-display text-toon max-w-[34%] shrink truncate text-lg leading-tight tracking-wide">
+          {/* Avatar et pseudo à gauche ; niveau, barre d'XP, pièces et rubis collés à droite. */}
+          <span className="font-display text-toon min-w-0 shrink truncate text-lg leading-tight tracking-wide">
             {profile.name}
           </span>
+          <span className="flex-1" />
           <span className="font-display text-toon shrink-0 text-sm text-[var(--gold)] italic">Niv. {level}</span>
-          <HudBar
-            side="right"
-            kind="xp"
-            role="progressbar"
-            className="min-w-16 flex-1 sm:max-w-48"
-            value={xpInLevel}
-            max={xpForNext}
-            segments={10}
-            label={`Niveau ${level}, ${xpInLevel} XP sur ${xpForNext}`}
-          />
+          <span className="w-20 shrink-0 sm:w-40">
+            <HudBar
+              side="right"
+              kind="xp"
+              role="progressbar"
+              value={xpInLevel}
+              max={xpForNext}
+              segments={10}
+              label={`Niveau ${level}, ${xpInLevel} XP sur ${xpForNext}`}
+            />
+          </span>
           <span
             className="font-display text-toon flex shrink-0 items-center gap-1 pr-1 text-lg"
             role="status"
@@ -71,12 +73,16 @@ export function MainNav({ profile }: { readonly profile: Profile }) {
                     type="button"
                     onClick={() => void navigate(item.to)}
                     aria-current={active ? 'page' : undefined}
+                    aria-label={item.label}
                     className={`font-display text-toon flex w-full flex-col items-center gap-0.5 rounded-2xl px-2 py-1 text-xs tracking-wide transition-colors sm:text-sm lg:w-20 ${active ? 'bg-[radial-gradient(circle_at_50%_35%,#5b3a9e,#1b0f33)] ring-2 ring-[var(--gold)]' : 'hover:bg-white/10'}`}
                   >
                     <span className="flex h-7 w-7 items-center justify-center">
                       <GameIcon id={item.icon} size={26} />
                     </span>
-                    {item.label}
+                    {/* Sur téléphone, juste l'icône (le nom reste lu par les lecteurs d'écran). */}
+                    <span className="hidden sm:inline" aria-hidden>
+                      {item.label}
+                    </span>
                   </button>
                 </li>
               );

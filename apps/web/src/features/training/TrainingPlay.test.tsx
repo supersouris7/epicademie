@@ -6,6 +6,8 @@ import { renderApp } from '../../testing/renderApp.tsx';
 vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.ts')).socketModule);
 
 const PATH = '/partie/entrainement/m5-calcul/m5-tables';
+/** Touche de validation : « OK », ou « ? » (« Je ne sais pas : un indice ») tant que rien n'est saisi. */
+const ANSWER_KEY = /^(OK|Je ne sais pas : un indice)$/;
 
 /** Saisit un nombre au pavé et valide. */
 async function answer(user: ReturnType<typeof renderApp>['user'], text: string) {
@@ -26,7 +28,7 @@ describe('partie d’entraînement', () => {
   it('erreur, indice, 2e essai réussi, puis série complète jusqu’au bilan', { timeout: 90_000 }, async () => {
     const { user, server } = renderApp(PATH);
     expect(await screen.findByRole('progressbar', { name: 'Progression de la série' })).toBeInTheDocument();
-    await screen.findByRole('button', { name: 'OK' });
+    await screen.findByRole('button', { name: ANSWER_KEY });
 
     // 1re erreur : indice de Questy, on réessaie la même question.
     await answer(user, '-1');
@@ -44,26 +46,26 @@ describe('partie d’entraînement', () => {
         await user.click(step);
         continue;
       }
-      const ok = await screen.findByRole('button', { name: 'OK' }, { timeout: 4000 }).catch(() => null);
+      const ok = await screen.findByRole('button', { name: ANSWER_KEY }, { timeout: 4000 }).catch(() => null);
       if (!ok) continue;
       await answer(user, '-1');
       if (await screen.findByText(/Essaie encore !/).catch(() => null))
         await answer(user, rightAnswer(lastQuestion(server)));
-      await waitFor(() => expect(screen.queryByRole('button', { name: 'OK' })).not.toBeInTheDocument());
+      await waitFor(() => expect(screen.queryByRole('button', { name: ANSWER_KEY })).not.toBeInTheDocument());
     }
     expect(finished()).toBe(true);
     // Bilan : 1re réponse fausse à chaque question.
     expect(await screen.findByText(/On s’accroche/)).toBeInTheDocument();
   });
 
-  it('« Je ne sais pas » : d’abord l’indice, puis l’explication ; compté comme une erreur', async () => {
+  it('rien de saisi : le bouton OK devient « ? » ; d’abord l’indice, puis l’explication ; une erreur', async () => {
     const { user, server } = renderApp(PATH);
-    await screen.findByRole('button', { name: 'OK' });
-    await user.click(screen.getByRole('button', { name: 'Je ne sais pas' }));
+    await screen.findByRole('button', { name: ANSWER_KEY });
+    await user.click(screen.getByRole('button', { name: 'Je ne sais pas : un indice' }));
     expect(await screen.findByText(/Pas de souci, voici un indice/)).toBeInTheDocument();
     const sent = server.calls.filter((c) => c.path.endsWith('/answers')).at(-1)?.body as { response: unknown };
     expect(sent.response).toEqual({ kind: 'unknown' });
-    await user.click(screen.getByRole('button', { name: 'Je ne sais pas' }));
+    await user.click(screen.getByRole('button', { name: 'Je ne sais pas : un indice' }));
     const explanation = await screen.findByRole('region', { name: 'Explication de Questy' });
     expect(explanation).toHaveTextContent(/Tu ne savais pas/);
   });

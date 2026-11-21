@@ -15,7 +15,7 @@ import { formatAnswer } from '../../shared/question/answers.ts';
 import { MathText } from '../../shared/question/MathText.tsx';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
-import { Anomalies, Errors, Stats } from './Insights.tsx';
+import { Anomalies, Errors, Stats, WeakSkills } from './Insights.tsx';
 import { useContent, useContentHistory, useReports, useUpdateContent, useUpdateReport } from './api.ts';
 
 /**
@@ -28,6 +28,7 @@ const TABS = {
   reports: { label: 'Signalements', panel: Reports },
   content: { label: 'Notions', panel: Contents },
   stats: { label: 'Statistiques', panel: Stats },
+  weak: { label: 'Points faibles', panel: WeakSkills },
   anomalies: { label: 'Anomalies', panel: Anomalies },
   errors: { label: 'Erreurs', panel: Errors },
 } as const;

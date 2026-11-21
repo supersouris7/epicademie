@@ -61,7 +61,8 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   });
 
   // On répond « −1 » (toujours faux) jusqu'à la fin de la série : 5 questions + 3 variantes au plus.
-  const ok = page.getByRole('button', { name: 'OK' });
+  // Touche de validation : « OK », ou « ? » tant que rien n'est saisi.
+  const ok = page.getByRole('button', { name: /^(OK|Je ne sais pas : un indice)$/ });
   const next = page.getByRole('button', { name: /^Suivant|Vérifions si j’ai compris/ });
   const end = page.getByText(/On s’accroche/);
   for (let i = 0; i < 80; i++) {
@@ -119,7 +120,7 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await page.getByRole('button', { name: 'Envoyer 78,539816 dans ma réponse' }).click();
   await expect(page.getByRole('tab', { name: 'Répondre' })).toHaveAttribute('aria-selected', 'true');
   await expect(page.getByLabel('Ta réponse')).toHaveText('78,539816');
-  await expect(page.getByRole('button', { name: 'OK' })).toBeVisible();
+  await expect(page.getByRole('button', { name: /^(OK|Je ne sais pas : un indice)$/ })).toBeVisible();
 
   // Brouillon : on dessine, on change d'onglet, le dessin est conservé.
   await page.getByRole('tab', { name: 'Brouillon' }).click();

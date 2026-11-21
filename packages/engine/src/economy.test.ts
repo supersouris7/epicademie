@@ -1,21 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import {
-  AVAILABLE_HEROES,
-  ITEM_PRICES,
-  ITEMS,
-  MAX_ITEM_STOCK,
-  RUBY_PRICE,
-  STARTING_HEROES,
-  type HeroId,
-} from '@questeo/shared';
-import { ECONOMY } from './economy.ts';
+import { AVAILABLE_HEROES, ITEM_PRICES, ITEMS, MAX_ITEM_STOCK, RUBY_PRICE } from '@questeo/shared';
 import { trainingChest } from './loot.ts';
 import { coinsForXp, PERFECT_BONUS, xpForAnswer } from './xp.ts';
 
 /**
  * Simulation de l'économie sur une année scolaire de joueurs fictifs (aucune donnée réelle).
  * Elle vérifie les ordres de grandeur, pas des valeurs exactes : pas d'inflation, des
- * récompenses régulières, une collection d'Acad-Héros atteignable, aucun blocage, pas de
+ * récompenses régulières, aucun blocage, pas de
  * « payer pour gagner ».
  */
 
@@ -44,9 +35,6 @@ interface Outcome {
   /** Séries jouées, et coffres reçus (séries entièrement justes). */
   series: number;
   chests: number;
-  heroes: Set<HeroId>;
-  /** Jour où la collection d'Acad-Héros disponibles est complète (null : jamais). */
-  fullCollectionDay: number | null;
   items: number;
 }
 
@@ -64,8 +52,6 @@ function simulate(player: Player, seed: number): Outcome {
     rubies: 0,
     series: 0,
     chests: 0,
-    heroes: new Set(STARTING_HEROES),
-    fullCollectionDay: null,
     items: 0,
   };
   for (let day = 1; day <= SCHOOL_DAYS; day++) {
@@ -85,7 +71,7 @@ function simulate(player: Player, seed: number): Outcome {
       if (correct === SERIES) xp += PERFECT_BONUS;
       o.series++;
       o.coins += coinsForXp(xp);
-      const chest = trainingChest({ total: SERIES, solved, firstTry: correct }, random, o.heroes);
+      const chest = trainingChest({ total: SERIES, solved, firstTry: correct }, random);
       if (!chest) continue;
       o.chests++;
       o.coins += chest.coins;
@@ -94,8 +80,6 @@ function simulate(player: Player, seed: number): Outcome {
         MAX_ITEM_STOCK * ITEMS.length,
         o.items + Object.values(chest.items).reduce((a, b) => a + b, 0),
       );
-      if (chest.hero && !chest.hero.duplicate) o.heroes.add(chest.hero.id);
-      if (o.fullCollectionDay === null && o.heroes.size === AVAILABLE_HEROES.length) o.fullCollectionDay = day;
     }
     // Un combat tous les 3 jours consomme un objet ; on en rachète s'il en manque.
     if (day % 3 === 0) {
@@ -139,10 +123,10 @@ describe('économie simulée sur une année scolaire', () => {
     expect(median(regular.map((o) => o.chests / o.series))).toBeLessThan(0.95);
   });
 
-  it('aucun blocage : un élève en difficulté gagne aussi coffres, pièces et héros', () => {
+  it('aucun blocage : un élève en difficulté gagne aussi des coffres et des pièces', () => {
     const struggling = population({ accuracy: 0.35, seriesPerDay: 1 });
     // Moins de coffres (il faut tout trouver) : les pièces viennent surtout des réponses.
-    expect(median(struggling.map((o) => o.coins))).toBeGreaterThan(300);
+    expect(median(struggling.map((o) => o.coins))).toBeGreaterThan(200);
     // Avec l'indice, il finit aussi des séries entièrement justes : des coffres chaque mois.
     expect(median(struggling.map((o) => o.chests))).toBeGreaterThan(20);
   });
@@ -154,8 +138,7 @@ describe('économie simulée sur une année scolaire', () => {
     expect(perSeriesIntense / perSeriesRegular).toBeLessThan(2);
   });
 
-  it('pas de « payer pour gagner » : les héros ne s’achètent pas, les doublons deviennent des pièces', () => {
+  it('pas de « payer pour gagner » : les héros ne s’achètent pas (ils se choisissent librement)', () => {
     expect((ITEMS as readonly string[]).some((i) => (AVAILABLE_HEROES as readonly string[]).includes(i))).toBe(false);
-    expect(ECONOMY.chest.duplicateHeroCoins).toBeGreaterThan(0);
   });
 });

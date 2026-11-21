@@ -1,31 +1,21 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { api, AVAILABLE_HEROES, HEROES, HERO_NAMES, type HeroId, type Profile } from '@questeo/shared';
-import { useQuery } from '@tanstack/react-query';
-import { request } from '../../shared/api/client.ts';
+import { AVAILABLE_HEROES, HERO_NAMES, type HeroId, type Profile } from '@questeo/shared';
 import { useUpdateProfile } from './api.ts';
 import { HeroFace } from '../../shared/battle/HeroFace.tsx';
 import { HeroCard } from '../../shared/ui/game/CharacterCard.tsx';
 import { CharacterSprite } from '../../shared/ui/game/CharacterSprite.tsx';
 import { GamePanel } from '../../shared/ui/game/GamePanel.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
-import { SoonBadge } from '../../shared/ui/game/SoonBadge.tsx';
 import { useToast } from '../../shared/ui/Toast.tsx';
 import { CHARACTERS, HERO_EXPRESSIONS, type AnimationState, type HeroExpression } from '../../design/assets.ts';
 
 /** Poses montrées à tour de rôle quand on touche le héros. */
 const SHOWCASE: readonly AnimationState[] = ['idle', 'shoot', 'shield', 'run', 'victory'];
-const HERO_CHOICES = [...AVAILABLE_HEROES, ...HEROES.filter((hero) => !AVAILABLE_HEROES.includes(hero))];
 
-/** Menu « Mon héros » : séparé du profil, on y choisit son personnage de combat. */
+/** Menu « Mon héros » : on y choisit librement son personnage de combat (Alex ou Lina). */
 export function Heroes({ profile }: { readonly profile: Profile }) {
   const update = useUpdateProfile(profile.id);
-  // Collection : le héros de départ, puis ceux trouvés dans les coffres.
-  const { data } = useQuery({
-    queryKey: ['heroes', profile.id],
-    queryFn: () => request(api.ownedHeroes, { params: { id: profile.id } }),
-  });
-  const owned = new Set<HeroId>(data?.heroes ?? [profile.hero]);
   const [toast, showToast] = useToast();
   const [pose, setPose] = useState(0);
   const [face, setFace] = useState<HeroExpression>('confiant');
@@ -77,49 +67,19 @@ export function Heroes({ profile }: { readonly profile: Profile }) {
         </div>
       </GamePanel>
 
-      <h2 className="font-display text-2xl tracking-wide">Ta collection d’Acad-Héros</h2>
-      <p className="text-muted font-bold">
-        {owned.size} sur {AVAILABLE_HEROES.length} trouvés. Les autres se cachent dans les coffres de l’entraînement !
-      </p>
-      <div role="radiogroup" aria-label="Ton héros" className="grid grid-cols-2 gap-4 sm:grid-cols-5">
-        {HERO_CHOICES.map((h, i) =>
-          owned.has(h) ? (
-            <HeroCard
-              key={h}
-              hero={h}
-              radio
-              selected={hero === h}
-              index={i}
-              onClick={() => choose(h)}
-              className="min-h-40"
-            />
-          ) : AVAILABLE_HEROES.includes(h) ? (
-            // Héros pas encore trouvé : il se gagne dans les coffres d'entraînement.
-            <div
-              key={h}
-              className="cartoon bg-surface-2 relative flex min-h-40 flex-col items-center justify-center gap-1 p-2 text-center opacity-80 grayscale"
-              aria-label={`${HERO_NAMES[h]}, à trouver dans un coffre`}
-              role="img"
-            >
-              <HeroFace hero={h} expression="confiant" size={56} />
-              <span className="font-display text-lg tracking-wide">{HERO_NAMES[h]}</span>
-              <span className="text-xs font-bold">À trouver dans un coffre</span>
-            </div>
-          ) : (
-            // Héros à venir : carte mystère « ? », sans nom ni portrait.
-            <div
-              key={h}
-              className="cartoon bg-surface-2 relative flex min-h-40 items-center justify-center"
-              aria-label="Héros mystère, à venir"
-              role="img"
-            >
-              <span aria-hidden className="font-display text-muted text-7xl">
-                ?
-              </span>
-              <SoonBadge />
-            </div>
-          ),
-        )}
+      <h2 className="font-display text-2xl tracking-wide">Choisis ton héros</h2>
+      <div role="radiogroup" aria-label="Ton héros" className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        {AVAILABLE_HEROES.map((h, i) => (
+          <HeroCard
+            key={h}
+            hero={h}
+            radio
+            selected={hero === h}
+            index={i}
+            onClick={() => choose(h)}
+            className="min-h-40"
+          />
+        ))}
       </div>
       {toast}
     </PageShell>

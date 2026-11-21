@@ -26,9 +26,5 @@ export const ECONOMY = {
     perfectBoost: 0.3,
     /** Boss : la médaille fixe la rareté, avec une chance de monter d'un cran (jamais de descendre). */
     bossUpgradeChance: 0.25,
-    /** Chance de trouver un Acad-Héros selon la rareté du coffre. */
-    heroChance: { commun: 0, rare: 0.04, epique: 0.25, legendaire: 0.5 } satisfies Record<ChestRarity, number>,
-    /** Héros déjà possédé : converti en pièces. */
-    duplicateHeroCoins: 60,
   },
 } as const;

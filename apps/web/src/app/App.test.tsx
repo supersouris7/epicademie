@@ -65,7 +65,8 @@ describe('profils', () => {
     expect(await screen.findByRole('heading', { name: 'Mon héros' })).toBeInTheDocument();
     expect(await screen.findByRole('radio', { name: /Lina/ })).toBeChecked();
     expect(screen.getByRole('radio', { name: /Alex/ })).not.toBeChecked();
-    expect(screen.getByText(/2 sur 2 trouvés/)).toBeInTheDocument();
+    // Plus de « collection » : un simple choix entre les héros.
+    expect(screen.getByRole('heading', { name: 'Choisis ton héros' })).toBeInTheDocument();
   });
 });
 
@@ -106,7 +107,7 @@ describe('accueil et choix du jeu', () => {
     const { user, server } = renderApp('/jouer/boss/maths?classe=5e', {
       inventory: { bouclier: 1, soin: 0, indice: 0 },
     });
-    expect(await screen.findByRole('heading', { name: /Équipement/ })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Équipe-toi pour ce combat' })).toBeInTheDocument();
     await user.click(await screen.findByRole('button', { name: /^Bouclier × 1 en réserve/ }));
     await waitFor(() => expect(server.calls.some((c) => c.method === 'PUT')).toBe(true));
     expect(await screen.findByRole('button', { name: /Bouclier équipé/ })).toBeInTheDocument();

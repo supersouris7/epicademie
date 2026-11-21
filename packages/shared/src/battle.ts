@@ -99,6 +99,8 @@ export const BattleSummarySchema = z.object({
   chest: ChestSchema.nullable(),
   /** Notion la plus ratée : l'écran de défaite propose de s'y entraîner. */
   weakSkill: z.string().nullable(),
+  /** Récap : réponses et réponses justes par notion (premiers essais). */
+  skills: z.array(z.object({ skillId: z.string(), answered: int, correct: int })).readonly(),
   levelBefore: z.number().int().positive(),
   levelAfter: z.number().int().positive(),
 });
