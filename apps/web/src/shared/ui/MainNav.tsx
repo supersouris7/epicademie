@@ -3,7 +3,7 @@ import { levelFromXp } from '@questeo/engine';
 import type { Profile } from '@questeo/shared';
 import { CharacterAvatar } from './game/CharacterAvatar.tsx';
 import { GameIcon } from './game/GameIcon.tsx';
-import { HUD_FRAME, HudBar, HudPortrait } from './game/Hud.tsx';
+import { HUD_FRAME, HudBar } from './game/Hud.tsx';
 
 const ITEMS = [
   { to: '/hub', label: 'Accueil', icon: 'icons-navigation-home' },
@@ -14,8 +14,7 @@ const ITEMS = [
 ] as const;
 
 /**
- * Barre du haut des écrans principaux, figée, au style du HUD de combat (même cadre, portrait
- * incliné à bord doré, barre segmentée inclinée) : le joueur en bref (avatar, prénom, niveau,
+ * Barre du haut des écrans principaux, figée, au style du HUD de combat (même cadre, barre segmentée inclinée) : le joueur en bref (avatar, prénom, niveau,
  * pièces) et les cinq onglets. Sur téléphone, deux lignes ; à partir de la tablette en paysage, une seule.
  */
 export function MainNav({ profile }: { readonly profile: Profile }) {
@@ -28,9 +27,7 @@ export function MainNav({ profile }: { readonly profile: Profile }) {
         {/* Le joueur : toucher l'avatar pour changer de joueur. */}
         <div className="flex min-w-0 flex-1 items-center gap-2 pl-1" aria-label="Mon joueur" role="group">
           <button type="button" onClick={() => void navigate('/')} aria-label="Changer de joueur" className="shrink-0">
-            <HudPortrait side="left" size={50}>
-              <CharacterAvatar avatar={profile.avatar} size={42} />
-            </HudPortrait>
+            <CharacterAvatar avatar={profile.avatar} size={44} />
           </button>
           {/* Pseudo, puis niveau et barre d'XP (même barre segmentée que celles du combat). */}
           <span className="font-display text-toon max-w-[34%] shrink truncate text-lg leading-tight tracking-wide">
