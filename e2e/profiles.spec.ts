@@ -53,18 +53,20 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByRole('heading', { name: 'Calcul mental' })).toBeVisible();
   await nav.getByRole('button', { name: 'Accueil' }).click();
 
-  // Modes : Entraînement et Combat de boss jouables, les autres « À venir ».
+  // Modes : Entraînement, Combat de boss et les défis (Contre-la-montre, Survie) sont jouables.
   await expect(page.getByRole('button', { name: /^Entraînement/ })).toBeVisible();
   await expect(page.getByRole('button', { name: /^Combat de boss/ })).toBeVisible();
-  for (const mode of ['Contre-la-montre', 'Survie']) {
-    await expect(page.getByRole('button', { name: `${mode}, à venir` })).toBeVisible();
-  }
   for (const gone of ['Révisions du jour', 'Atelier des erreurs', 'Défi du jour', 'Bilan']) {
     await expect(page.getByRole('button', { name: new RegExp(gone) })).toHaveCount(0);
   }
-  await page.getByRole('button', { name: 'Survie, à venir' }).click();
-  await expect(page.getByText('Bientôt disponible !')).toBeVisible();
-  await expect(page).toHaveURL(/\/hub$/);
+  await page.getByRole('button', { name: /^Survie/ }).click();
+  await page.getByRole('button', { name: 'Maths', exact: true }).click();
+  await expect(page.getByText(/3 cœurs. Chaque erreur coûte un cœur/)).toBeVisible();
+  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await expect(page.getByRole('img', { name: '3 cœurs sur 3' })).toBeVisible();
+  await page.getByRole('button', { name: 'Arrêter' }).click();
+  await expect(page.getByRole('heading', { name: /bonne réponse/ })).toBeVisible();
+  await page.goto('/hub');
   // Mode d'abord, matière ensuite.
   await page.getByRole('button', { name: /^Entraînement/ }).click();
   // Matières : toutes jouables (maths, anglais, espagnol, physique-chimie, géographie, histoire).

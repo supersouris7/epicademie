@@ -40,9 +40,9 @@ export const MODES: readonly ModeInfo[] = [
     name: 'Contre-la-montre',
     pitch: 'Un max de bonnes réponses en 60 s',
     category: 'defis',
-    available: false,
+    available: true,
   },
-  { id: 'survie', name: 'Survie', pitch: 'Ça monte sans arrêt, 3 vies', category: 'defis', available: false },
+  { id: 'survie', name: 'Survie', pitch: 'Ça monte sans arrêt, 3 vies', category: 'defis', available: true },
   {
     id: 'arene',
     name: 'Arène',
