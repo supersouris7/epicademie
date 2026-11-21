@@ -56,14 +56,19 @@ interface Arena {
   readonly ages: Map<string, number | null>;
   /** Joueurs déconnectés, avec le minuteur qui les retire s'ils ne reviennent pas. */
   readonly away: Map<string, NodeJS.Timeout>;
+  /** Pause : le joueur dont c'est le tour est déconnecté ; temps qu'il lui restait (ms). */
+  pausedLeft: number | null;
   /** Fermeture du salon s'il n'est jamais lancé. */
   lobbyTimer: NodeJS.Timeout | null;
 }
 
 /** Durée pendant laquelle une arène terminée reste consultable. */
 const FINISHED_ARENA_TTL_MS = 60_000;
-/** Délai de reconnexion d'un joueur (Wi-Fi qui saute, tablette en veille, autre appareil). */
-export const ARENA_GRACE_MS = 30_000;
+/**
+ * Délai de reconnexion d'un joueur (Wi-Fi qui saute, tablette en veille, autre appareil) : si
+ * c'est son tour, la partie l'attend en pause ; au-delà, il sort et les autres continuent.
+ */
+export const ARENA_GRACE_MS = 60_000;
 /** Un salon jamais lancé ferme au bout de ce délai. */
 export const LOBBY_TTL_MS = 10 * 60_000;
 
@@ -84,6 +89,9 @@ type Emit = <E extends keyof ServerToClientEvents>(
   ...args: Parameters<ServerToClientEvents[E]>
 ) => void;
 
+/** Joueur dont c'est le tour d'une partie en cours (null : quiz, où tout le monde répond). */
+const turnIdOf = (live: ArenaState | null) => (live && !isQuiz(live) ? (live.players[live.current]?.id ?? null) : null);
+
 /** Vue diffusée aux joueurs (et à l'écran TV de la famille). */
 function view(a: Arena): ArenaView {
   const s = a.state;
@@ -98,10 +106,12 @@ function view(a: Arena): ArenaView {
     phase: s ? (s.over ? 'over' : 'playing') : 'lobby',
     players: (s ? s.players : a.players).map((p) => (a.away.has(p.id) ? { ...p, away: true } : p)),
     // Quiz : tout le monde répond en même temps, pas de tour.
-    turnId: live && !isQuiz(live) ? (live.players[live.current]?.id ?? null) : null,
+    turnId: turnIdOf(live),
     turn: s?.turn ?? 0,
     question: live ? a.question : null,
     deadline: live ? a.deadline : null,
+    // Pause : on attend le joueur dont c'est le tour (déconnecté).
+    waitingFor: a.pausedLeft !== null ? turnIdOf(live) : null,
     last: s?.last ?? null,
     winnerId: s?.winnerId ?? null,
   };
@@ -156,17 +166,53 @@ function newArena(
     timer: null,
     ages: new Map(),
     away: new Map(),
+    pausedLeft: null,
     lobbyTimer: null,
   };
 }
 
-export function createArenas({ presence, clock, random, onBusyChange, onCountChange, onView }: ArenaDeps) {
+const has = (a: Arena, profileId: string) => a.players.some((p) => p.id === profileId);
+/** Le joueur dont c'est le tour (hors quiz, partie en cours). */
+const turnOf = (a: Arena) => {
+  const s = a.state;
+  return s && !s.over && !isQuiz(s) ? s.players[s.current]?.id : undefined;
+};
+/** Met la partie en pause (joueur du tour déconnecté) : le minuteur s'arrête. */
+const pause = (a: Arena, left: number) => {
+  if (a.timer) clearTimeout(a.timer);
+  a.timer = null;
+  a.pausedLeft = Math.max(1000, left);
+  a.deadline = null;
+};
+
+/**
+ * Registre des arènes en mémoire : recherche par joueur, diffusion de la vue, fermeture et
+ * sortie des salons ou parties terminées (pour être réinvité ailleurs).
+ */
+function createRegistry({ presence, onCountChange, onView }: ArenaDeps) {
   const arenas = new Map<string, Arena>();
   const emit: Emit = (profileId, event, ...args) => presence.emit(profileId, event, ...args);
   const counted = () => onCountChange?.(arenas.size);
 
-  const arenaOf = (profileId: string) => [...arenas.values()].find((a) => a.players.some((p) => p.id === profileId));
-
+  /** Arène en cours (salon ou partie non terminée) du joueur. */
+  const arenaOf = (profileId: string) => [...arenas.values()].find((a) => has(a, profileId) && !a.state?.over);
+  /** Arène terminée encore consultable (bilan). */
+  const finishedOf = (profileId: string) =>
+    [...arenas.values()].reverse().find((a) => has(a, profileId) && a.state?.over === true);
+  /** Le joueur sort des arènes terminées et des salons non lancés (nouvelle partie ailleurs). */
+  const detach = (profileId: string, except?: Arena) => {
+    for (const a of [...arenas.values()]) {
+      if (a === except || !has(a, profileId) || (a.state && !a.state.over)) continue;
+      if (!a.state && a.hostId === profileId) {
+        closeLobby(a);
+        continue;
+      }
+      a.players = a.players.filter((p) => p.id !== profileId);
+      emit(profileId, 'arena:closed', a.id);
+      if (a.players.length === 0) remove(a);
+      else if (!a.state) push(a);
+    }
+  };
   const push = (a: Arena) => {
     const v = view(a);
     for (const p of a.players) emit(p.id, 'arena', v);
@@ -190,6 +236,22 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
     remove(a);
   };
 
+  return { arenas, emit, counted, arenaOf, finishedOf, detach, push, remove, closeLobby };
+}
+
+export function createArenas(deps: ArenaDeps) {
+  const { presence, clock, random, onBusyChange } = deps;
+  const { arenas, emit, counted, arenaOf, finishedOf, detach, push, remove, closeLobby } = createRegistry(deps);
+  /** Reprend la partie là où elle en était (temps restant). */
+  const resume = (a: Arena) => {
+    const s = a.state;
+    if (a.pausedLeft === null || !s || s.over) return;
+    const ms = a.pausedLeft;
+    a.pausedLeft = null;
+    a.deadline = clock.now().getTime() + ms;
+    a.timer = setTimeout(() => play(a, false, true), ms);
+  };
+
   /** Tire la question du joueur dont c'est le tour et arme le minuteur. */
   const nextQuestion = (a: Arena) => {
     const s = a.state;
@@ -198,8 +260,15 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
     if (!s || s.over || !skill) return;
     const { question, ms } = drawQuestion(a, s, skill.id, random.seed());
     a.question = question;
+    a.pausedLeft = null;
     a.deadline = clock.now().getTime() + ms;
     if (a.timer) clearTimeout(a.timer);
+    // Le joueur du tour est déconnecté : on l'attend (pause), sans faire couler son temps.
+    const current = turnOf(a);
+    if (current && a.away.has(current)) {
+      pause(a, ms);
+      return;
+    }
     a.timer = setTimeout(() => (isQuiz(s) ? settle(a, timeoutQuiz(s)) : play(a, false, true)), ms);
   };
 
@@ -224,6 +293,7 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
     if (!a.state || a.state.over) return;
     if (a.timer) clearTimeout(a.timer);
     a.timer = null;
+    a.pausedLeft = null;
     a.state = isRaid(a.state) ? playRaidTurn(a.state, correct, timeout) : playArenaTurn(a.state, correct, timeout);
     if (a.state.over) {
       a.question = null;
@@ -244,14 +314,19 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
 
     /** Vue de l'arène du joueur (reconnexion). */
     viewOf(profileId: string): ArenaView | null {
-      const a = arenaOf(profileId);
+      const a = arenaOf(profileId) ?? finishedOf(profileId);
       return a ? view(a) : null;
     },
 
     create(host: Profile, msg: Omit<ArenaCreate, 'kind'> & { readonly kind?: ArenaKind }): void {
-      if (!getChapter(msg.chapterId) || arenaOf(host.id)) return;
-      const invite = [...new Set(msg.invite)].filter((id) => id !== host.id && presence.isOnline(id) && !arenaOf(id));
+      // Hôte en pleine partie : pas de nouveau salon. Sinon, il quitte son salon ou sa partie finie.
+      if (!getChapter(msg.chapterId) || arenaOf(host.id)?.state) return;
+      // Invités : connectés et pas en pleine partie (un salon en attente ou une partie finie ne bloque pas).
+      const invite = [...new Set(msg.invite)].filter(
+        (id) => id !== host.id && presence.isOnline(id) && !arenaOf(id)?.state,
+      );
       if (invite.length === 0) return;
+      detach(host.id);
       const a = newArena(host, msg.kind ?? 'duel', msg.chapterId, invite, presence);
       a.lobbyTimer = setTimeout(() => {
         if (!a.state) closeLobby(a);
@@ -271,6 +346,8 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
     respond(profileId: string, arenaId: string, accept: boolean): void {
       const a = arenas.get(arenaId);
       if (!a || a.state || !a.players.some((p) => p.id === profileId)) return;
+      // Accepter : on quitte ses autres salons et parties finies.
+      if (accept) detach(profileId, a);
       if (accept) a.players = a.players.map((p) => (p.id === profileId ? { ...p, ready: true } : p));
       else a.players = a.players.filter((p) => p.id !== profileId);
       push(a);
@@ -367,6 +444,8 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
           this.leave(profileId);
         }, ARENA_GRACE_MS),
       );
+      // C'était son tour : la partie l'attend (pause), son temps ne s'écoule pas.
+      if (turnOf(a) === profileId && a.deadline !== null) pause(a, a.deadline - clock.now().getTime());
       push(a);
     },
 
@@ -377,6 +456,7 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
       if (!a || !timer) return;
       clearTimeout(timer);
       a.away.delete(profileId);
+      if (turnOf(a) === profileId) resume(a);
       push(a);
     },
 

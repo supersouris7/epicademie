@@ -35,11 +35,9 @@ export function ProfilePicker() {
   const clearRefused = useRealtime((s) => s.clearRefused);
   const myId = useSession((s) => s.profileId);
   const busy = new Set((presence?.online ?? []).filter((id) => id !== myId));
+  // Un profil ouvert ailleurs se choisit quand même : ce nouvel appareil prend la main.
   const choose = (id: string) => {
-    if (busy.has(id)) {
-      showToast('Non, ce joueur est déjà connecté sur un autre appareil.');
-      return;
-    }
+    if (busy.has(id)) showToast('Ce joueur était ouvert sur un autre appareil : il continue ici.');
     clearRefused();
     selectProfile(id);
     void navigate('/hub');
@@ -75,7 +73,7 @@ export function ProfilePicker() {
             <CharacterCard
               index={i}
               name={p.name}
-              caption={busy.has(p.id) ? 'Déjà connecté' : `Niveau ${levelFromXp(p.xp).level}`}
+              caption={busy.has(p.id) ? 'Ouvert ailleurs' : `Niveau ${levelFromXp(p.xp).level}`}
               portrait={<CharacterAvatar avatar={p.avatar} size={76} />}
               onClick={() => choose(p.id)}
               centered

@@ -173,8 +173,10 @@ export interface ArenaView {
   readonly turnId: string | null;
   readonly turn: number;
   readonly question: ArenaQuestion | null;
-  /** Fin du temps de réponse (horodatage ms). */
+  /** Fin du temps de réponse (horodatage ms) ; null pendant une pause. */
   readonly deadline: number | null;
+  /** Pause : joueur déconnecté que l'on attend (son tour), sinon null. */
+  readonly waitingFor?: string | null;
   readonly last: ArenaEvent | null;
   readonly winnerId: string | null;
 }
@@ -226,6 +228,8 @@ export interface ServerToClientEvents {
   arena: (view: ArenaView) => void;
   'arena:invite': (invite: ArenaInvite) => void;
   'arena:closed': (arenaId: string) => void;
+  /** Ce profil vient d'être ouvert sur un autre appareil : cette connexion est fermée. */
+  replaced: () => void;
 }
 
 /** Données d'authentification de la connexion temps réel. */
@@ -238,5 +242,5 @@ export const RealtimeAuthSchema = z.union([z.object({ profileId: z.uuid() }), z.
 /** Raisons de refus de connexion (message affiché tel quel). */
 export const REALTIME_REFUSALS = {
   unknownProfile: 'Profil introuvable',
-  alreadyConnected: 'Non, ce joueur est déjà connecté sur un autre appareil.',
+  replaced: 'Ce joueur vient d’être ouvert sur un autre appareil.',
 } as const;

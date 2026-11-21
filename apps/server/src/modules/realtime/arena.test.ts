@@ -66,13 +66,57 @@ describe('arène', () => {
     expect(arenas.count()).toBe(0);
   });
 
-  it('refuse un chapitre inconnu, une invitation vide ou un joueur déjà en arène', () => {
+  it('refuse un chapitre inconnu, une invitation vide ou un joueur en pleine partie', () => {
     arenas.create(lea, { chapterId: 'inconnu', invite: [tom.id] });
     arenas.create(lea, { chapterId: 'm5-calcul', invite: ['00000000-0000-4000-8000-000000000099'] });
     expect(arenas.count()).toBe(0);
     arenas.create(lea, { chapterId: 'm5-calcul', invite: [tom.id] });
+    // Un salon en attente ne bloque pas : Inès peut aussi inviter Tom.
     arenas.create(ines, { chapterId: 'm5-calcul', invite: [tom.id] });
-    expect(arenas.count()).toBe(1);
+    expect(arenas.count()).toBe(2);
+    // Tom accepte Inès : il quitte le salon de Léa (qui n'a plus d'invité).
+    arenas.respond(tom.id, arenas.viewOf(ines.id)?.id ?? '', true);
+    arenas.start(ines.id);
+    expect(arenas.viewOf(tom.id)?.phase).toBe('playing');
+    // En pleine partie : Léa ne peut plus l'inviter.
+    arenas.leave(lea.id);
+    arenas.create(lea, { chapterId: 'm5-calcul', invite: [tom.id] });
+    expect(arenas.viewOf(lea.id)).toBeNull();
+  });
+
+  it('après une partie terminée : on peut réinviter tout de suite (plus « en arène »)', () => {
+    arenas.create(lea, { chapterId: 'm5-calcul', invite: [tom.id] });
+    arenas.respond(tom.id, arenas.viewOf(lea.id)?.id ?? '', true);
+    arenas.start(lea.id);
+    arenas.leave(tom.id); // Tom part : Léa gagne, la partie est finie.
+    expect(arenas.viewOf(lea.id)?.phase).toBe('over');
+    expect(arenas.isBusy(lea.id)).toBe(false);
+    expect(arenas.isBusy(tom.id)).toBe(false);
+    arenas.create(lea, { chapterId: 'm5-calcul', invite: [tom.id] });
+    expect(arenas.viewOf(lea.id)?.phase).toBe('lobby');
+    expect(last(tom.id, 'arena:invite')).toMatchObject({ from: { name: 'lea' } });
+  });
+
+  it('déconnexion pendant son tour : pause (on l’attend), reprise avec le temps restant, sinon il sort', () => {
+    arenas.create(lea, { chapterId: 'm5-calcul', invite: [tom.id] });
+    arenas.respond(tom.id, arenas.viewOf(lea.id)?.id ?? '', true);
+    arenas.start(lea.id);
+    const turnId = arenas.viewOf(lea.id)?.turnId ?? '';
+    const other = turnId === lea.id ? tom.id : lea.id;
+    const turn = arenas.viewOf(lea.id)?.turn;
+    vi.advanceTimersByTime(3000);
+    arenas.disconnected(turnId);
+    expect(arenas.viewOf(other)).toMatchObject({ waitingFor: turnId, deadline: null });
+    // Pendant la pause, son tour ne s'écoule pas.
+    vi.advanceTimersByTime(40_000);
+    expect(arenas.viewOf(other)?.turn).toBe(turn);
+    arenas.reconnected(turnId);
+    expect(arenas.viewOf(other)).toMatchObject({ waitingFor: null, turn });
+    expect(arenas.viewOf(other)?.deadline).not.toBeNull();
+    // Nouvelle coupure, sans retour : au bout de 60 s, il sort et l'autre gagne.
+    arenas.disconnected(turnId);
+    vi.advanceTimersByTime(60_000);
+    expect(arenas.viewOf(other)).toMatchObject({ phase: 'over', winnerId: other });
   });
 
   it('seul l’hôte lance, avec au moins 2 joueurs prêts ; les absents sont écartés', () => {

@@ -53,7 +53,7 @@ afterEach(async () => {
 });
 
 describe('temps réel', () => {
-  it('plusieurs joueurs en même temps ; un même profil refusé sur un 2e appareil', async () => {
+  it('plusieurs joueurs en même temps ; un 2e appareil prend la main sur le même profil', async () => {
     const lea = await profile('Léa');
     const tom = await profile('Tom');
     const a = join(lea.id);
@@ -63,8 +63,13 @@ describe('temps réel', () => {
     expect(list.map((p) => p.name).sort()).toEqual(['Léa', 'Tom']);
     const presence = (await t.http.inject('/api/v1/presence')).json<{ online: string[] }>();
     expect(presence.online.sort()).toEqual([lea.id, tom.id].sort());
+    // Le même profil sur un 2e appareil (ou après une coupure) : l'ancien est prévenu et fermé,
+    // le nouveau est connecté (plus de refus « déjà connecté »).
+    const replaced = once<undefined>(a, 'replaced');
     const again = join(lea.id);
-    expect(await refusal(again)).toMatch(/déjà connecté/);
+    const still = once<OnlinePlayer[]>(again, 'presence', (l) => l.length === 2);
+    await replaced;
+    expect((await still).map((p) => p.name).sort()).toEqual(['Léa', 'Tom']);
     expect(await refusal(join('00000000-0000-4000-8000-000000000000'))).toBe('Profil introuvable');
   });
 
