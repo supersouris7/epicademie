@@ -104,7 +104,7 @@ export const ARENA_MAX_TURNS = 30;
  * réponses sur 5 suffisent à gagner.
  */
 export const RAID_MAX_TURNS = 40;
-export const ARENA_KINDS = ['duel', 'raid'] as const;
+export const ARENA_KINDS = ['duel', 'raid', 'quiz'] as const;
 export type ArenaKind = (typeof ARENA_KINDS)[number];
 export const raidSize = (players: number) => ({ bossHp: 3 * players, teamHearts: Math.max(3, 2 * players) });
 
@@ -115,6 +115,17 @@ export interface RaidStatus {
   readonly teamMaxHearts: number;
   /** null : en cours ; true : boss vaincu ; false : défaite. */
   readonly won: boolean | null;
+}
+
+/** Quiz plateau : manches, scores, joueurs bloqués (mauvaise réponse) pour la manche. */
+export const QUIZ_ROUNDS = 10;
+/** Quiz plateau : secondes pour répondre à une manche. */
+export const QUIZ_SECONDS = 30;
+export interface QuizStatus {
+  readonly round: number;
+  readonly rounds: number;
+  readonly scores: Readonly<Record<string, number>>;
+  readonly locked: readonly string[];
 }
 
 export interface ArenaPlayer {
@@ -150,6 +161,8 @@ export interface ArenaView {
   readonly kind: ArenaKind;
   /** Raid : état du boss et de l'équipe ; null en duel. */
   readonly raid: RaidStatus | null;
+  /** Quiz plateau : manche et scores ; null sinon. */
+  readonly quiz?: QuizStatus | null;
   readonly hostId: string;
   readonly chapterId: string;
   readonly phase: ArenaPhase;

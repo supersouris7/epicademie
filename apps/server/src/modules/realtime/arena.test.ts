@@ -204,3 +204,39 @@ describe('raid coopératif', () => {
     expect(after?.turnId).not.toBe(v?.turnId);
   });
 });
+
+describe('quiz plateau', () => {
+  const startQuizWith = () => {
+    arenas.create(lea, { kind: 'quiz', chapterId: 'm5-calcul', invite: [tom.id] });
+    arenas.respond(tom.id, arenas.viewOf(lea.id)?.id ?? '', true);
+    arenas.start(lea.id);
+  };
+  const wrongAnswer = (v: ArenaView) => {
+    const right = rightAnswer(v);
+    return right.kind === 'number'
+      ? { kind: 'number' as const, text: '987654' }
+      : { kind: 'choice' as const, index: right.index === 0 ? 1 : 0 };
+  };
+
+  it('même question pour tous, pas de tour ; la 1re bonne réponse gagne la manche', () => {
+    startQuizWith();
+    const v = arenas.viewOf(lea.id);
+    expect(v).toMatchObject({ kind: 'quiz', turnId: null, quiz: { round: 1, rounds: 10, locked: [] } });
+    if (!v) throw new Error('pas de vue');
+    // Tom se trompe : bloqué pour la manche ; Léa répond juste : point et manche suivante.
+    arenas.answer(tom.id, wrongAnswer(v));
+    expect(arenas.viewOf(lea.id)?.quiz?.locked).toEqual([tom.id]);
+    arenas.answer(lea.id, rightAnswer(v));
+    expect(arenas.viewOf(tom.id)?.quiz).toMatchObject({ round: 2, locked: [], scores: { [lea.id]: 1, [tom.id]: 0 } });
+  });
+
+  it('dix manches, puis le meilleur score gagne', () => {
+    startQuizWith();
+    for (let i = 0; i < 10; i++) {
+      const v = arenas.viewOf(lea.id);
+      if (!v) throw new Error('pas de vue');
+      arenas.answer(i < 7 ? tom.id : lea.id, rightAnswer(v));
+    }
+    expect(arenas.viewOf(lea.id)).toMatchObject({ phase: 'over', winnerId: tom.id });
+  });
+});

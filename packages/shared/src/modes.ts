@@ -56,7 +56,7 @@ export const MODES: readonly ModeInfo[] = [
     name: 'Quiz plateau',
     pitch: 'Buzzer sur le téléphone, le plus rapide gagne',
     category: 'multi',
-    available: false,
+    available: true,
   },
   {
     id: 'course',

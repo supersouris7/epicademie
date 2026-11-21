@@ -69,7 +69,11 @@ export function TvScreen() {
             </p>
           )}
           <div className="flex items-center gap-3">
-            <span className="font-display flex-1 text-4xl tracking-wide">Au tour de {turnName} !</span>
+            <span className="font-display flex-1 text-4xl tracking-wide">
+              {arena.quiz
+                ? `Manche ${arena.quiz.round} / ${arena.quiz.rounds} : à vos téléphones !`
+                : `Au tour de ${turnName} !`}
+            </span>
             {arena.deadline && <Countdown deadline={arena.deadline} />}
           </div>
           {question && (
