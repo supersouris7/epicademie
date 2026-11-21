@@ -17,5 +17,5 @@ export const SUBJECTS: readonly SubjectInfo[] = [
   { id: 'anglais', name: 'Anglais', color: 'anglais', available: true },
   { id: 'espagnol', name: 'Espagnol', color: 'espagnol', available: true },
   { id: 'histoire', name: 'Histoire', color: 'histoire', available: false },
-  { id: 'geographie', name: 'Géographie', color: 'geographie', available: false },
+  { id: 'geographie', name: 'Géographie', color: 'geographie', available: true },
 ];
