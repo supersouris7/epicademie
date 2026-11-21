@@ -1,12 +1,22 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { chaptersOf, DOMAINS, type DomainId } from '@questeo/content';
 import { MEDAL_LABELS, MEDALS, medal, type Medal as MedalId } from '@questeo/engine';
-import { ITEM_INFO, ITEMS, SUBJECTS, type Profile, type SkillProgress, type SubjectId } from '@questeo/shared';
+import {
+  ITEM_INFO,
+  ITEMS,
+  playedGrade,
+  SUBJECTS,
+  type Grade,
+  type Profile,
+  type SkillProgress,
+  type SubjectId,
+} from '@questeo/shared';
 import { TrophiesSection } from './Trophies.tsx';
 import { useBosses } from '../boss/index.ts';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
+import { SubjectIcon } from '../../shared/ui/game/SubjectIcon.tsx';
 import { ProgressBar } from '../../shared/ui/game/ProgressBar.tsx';
 import { ITEM_ICONS } from '../../design/items.ts';
 import { RELICS } from '../../design/relics.ts';
@@ -52,55 +62,81 @@ function MedalCounts({ counts }: { readonly counts: Record<MedalId, number> }) {
   );
 }
 
-/** Tableau de bord : médailles par domaine, chapitre et notion. */
+/** Notions de la classe jouée dans une matière, et leurs médailles. */
+function subjectTotals(subject: SubjectId, grade: Grade | undefined, states: ReadonlyMap<string, SkillProgress>) {
+  const ids = chaptersOf(subject, grade).flatMap((c) => c.skills.map((s) => s.id));
+  return { ids, counts: countMedals(ids, states) };
+}
+
+/**
+ * « Mes progrès » (résumé) : une barre de progression par matière (notions médaillées de sa
+ * classe) ; un toucher ouvre le détail de la matière. Trophées, badges et inventaire à part.
+ */
 export function Progress({ profile }: { readonly profile: Profile }) {
-  const enter = useEntrance();
   const navigate = useNavigate();
   const { data } = useSkills(profile.id);
-  const { data: bosses } = useBosses(profile.id);
-  const [subject, setSubject] = useState<SubjectId>('maths');
-  // Domaines ouverts (tous repliés à l'arrivée : la page reste courte sur téléphone).
-  const [open, setOpen] = useState<ReadonlySet<DomainId>>(new Set());
-  const toggle = (d: DomainId) =>
-    setOpen((o) => {
-      const n = new Set(o);
-      if (n.has(d)) n.delete(d);
-      else n.add(d);
-      return n;
-    });
   const states = new Map((data ?? []).map((s) => [s.skillId, s]));
-  const today = localToday();
-  const { grade, grades, own, setGrade } = useGradeChoice(profile, subject);
-  const chapters = chaptersOf(subject, grade);
-  const allIds = chapters.flatMap((c) => c.skills.map((s) => s.id));
-  const total = countMedals(allIds, states);
-  const domains = (Object.keys(DOMAINS) as DomainId[]).filter((d) => chapters.some((c) => c.domain === d));
-  const due = allIds.filter((id) => {
-    const s = states.get(id);
-    return s?.due != null && s.due <= today;
-  }).length;
-
+  const grade = playedGrade(profile.grade);
+  const subjects = SUBJECTS.filter((s) => chaptersOf(s.id, grade).length > 0);
+  const all = subjects.map((s) => ({ subject: s, ...subjectTotals(s.id, grade, states) }));
+  const totalIds = all.reduce((n, a) => n + a.ids.length, 0);
+  const medaled = all.reduce((n, a) => n + a.ids.length - a.counts.aucune, 0);
   return (
     <PageShell title="Mes progrès" nav={profile}>
       <section className="cartoon bg-surface flex flex-wrap items-center gap-4 p-4">
-        <Questy mood={total.or > 0 ? 'proud' : 'happy'} size={110} />
-        <div className="flex min-w-0 flex-1 flex-col gap-2">
-          <p className="font-display text-2xl tracking-wide">
-            {allIds.length - total.aucune} / {allIds.length} notions médaillées
-          </p>
-          <MedalCounts counts={total} />
-        </div>
-        {due > 0 && (
-          <span className="bg-danger font-display rounded-full px-3 py-1 text-lg text-white">{due} à revoir</span>
-        )}
+        <Questy mood={medaled > 0 ? 'proud' : 'happy'} size={90} />
+        <p className="font-display min-w-0 flex-1 text-2xl tracking-wide">
+          {medaled} / {totalIds} notions médaillées
+        </p>
       </section>
+      <ul className="flex flex-col gap-3" aria-label="Progrès par matière">
+        {all.map(({ subject: s, ids, counts }) => (
+          <li key={s.id}>
+            <button
+              type="button"
+              onClick={() => void navigate(`/progres/${s.id}`)}
+              className="cartoon cartoon-press bg-surface flex w-full items-center gap-3 p-3 text-left"
+              aria-label={`${s.name} : ${ids.length - counts.aucune} notions médaillées sur ${ids.length}`}
+            >
+              <SubjectIcon subject={s.id} size={48} />
+              <span className="flex min-w-0 flex-1 flex-col gap-1">
+                <span className="font-display text-xl tracking-wide">{s.name}</span>
+                <ProgressBar
+                  value={ids.length - counts.aucune}
+                  max={ids.length}
+                  color={`var(--subject-${s.color})`}
+                  label={`Progrès en ${s.name}`}
+                  size="sm"
+                />
+                <MedalCounts counts={counts} />
+              </span>
+              <span aria-hidden className="font-display text-2xl">
+                ›
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      <button
+        type="button"
+        onClick={() => void navigate('/progres/trophees')}
+        className="cartoon cartoon-press bg-surface flex w-full items-center gap-3 p-3 text-left"
+      >
+        <GameIcon id="rewards-collectibles-trophy" size={48} />
+        <span className="font-display flex-1 text-xl tracking-wide">Trophées, badges et inventaire</span>
+        <span aria-hidden className="font-display text-2xl">
+          ›
+        </span>
+      </button>
+    </PageShell>
+  );
+}
 
-      <p className="text-muted text-sm font-bold">
-        Médaille d’une notion = sa meilleure série : Or sans faute (notion acquise) · Argent une erreur · Bronze deux
-        erreurs.
-      </p>
-
-      {/* Inventaire : reliques de boss (un éclat par boss vaincu) et équipement. */}
+/** Trophées (boss vaincus), badges, reliques et équipement. */
+export function TrophiesPage({ profile }: { readonly profile: Profile }) {
+  const { data: bosses } = useBosses(profile.id);
+  return (
+    <PageShell title="Trophées et badges" back="/progres" nav={profile}>
       <TrophiesSection profileId={profile.id} records={bosses?.records ?? []} />
       <section aria-labelledby="inventaire" className="cartoon bg-surface flex flex-col gap-3 p-3">
         <h2 id="inventaire" className="font-display text-2xl tracking-wide">
@@ -156,22 +192,57 @@ export function Progress({ profile }: { readonly profile: Profile }) {
           ))}
         </div>
       </section>
+    </PageShell>
+  );
+}
 
-      <div className="flex flex-wrap gap-2" role="tablist" aria-label="Matières">
-        {SUBJECTS.map((s) => (
-          <button
-            key={s.id}
-            type="button"
-            role="tab"
-            aria-selected={subject === s.id}
-            onClick={() => setSubject(s.id)}
-            className={`cartoon cartoon-press font-display min-h-12 px-4 text-lg ${subject === s.id ? 'gloss text-white' : 'bg-surface'}`}
-            style={subject === s.id ? { backgroundColor: `var(--subject-${s.color})` } : undefined}
-          >
-            {s.name}
-          </button>
-        ))}
-      </div>
+/** Détail d'une matière : médailles par domaine, chapitre et notion. */
+export function SubjectProgress({ profile }: { readonly profile: Profile }) {
+  const enter = useEntrance();
+  const navigate = useNavigate();
+  const { subject: param = 'maths' } = useParams();
+  const subject = SUBJECTS.find((s) => s.id === param)?.id ?? 'maths';
+  const { data } = useSkills(profile.id);
+  // Domaines ouverts (tous repliés à l'arrivée : la page reste courte sur téléphone).
+  const [open, setOpen] = useState<ReadonlySet<DomainId>>(new Set());
+  const toggle = (d: DomainId) =>
+    setOpen((o) => {
+      const n = new Set(o);
+      if (n.has(d)) n.delete(d);
+      else n.add(d);
+      return n;
+    });
+  const states = new Map((data ?? []).map((s) => [s.skillId, s]));
+  const today = localToday();
+  const { grade, grades, own, setGrade } = useGradeChoice(profile, subject);
+  const chapters = chaptersOf(subject, grade);
+  const allIds = chapters.flatMap((c) => c.skills.map((s) => s.id));
+  const total = countMedals(allIds, states);
+  const domains = (Object.keys(DOMAINS) as DomainId[]).filter((d) => chapters.some((c) => c.domain === d));
+  const due = allIds.filter((id) => {
+    const st = states.get(id);
+    return st?.due != null && st.due <= today;
+  }).length;
+  const name = SUBJECTS.find((s) => s.id === subject)?.name ?? subject;
+
+  return (
+    <PageShell title={`Mes progrès · ${name}`} back="/progres" nav={profile}>
+      <section className="cartoon bg-surface flex flex-wrap items-center gap-4 p-4">
+        <SubjectIcon subject={subject} size={64} />
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
+          <p className="font-display text-2xl tracking-wide">
+            {allIds.length - total.aucune} / {allIds.length} notions médaillées
+          </p>
+          <MedalCounts counts={total} />
+        </div>
+        {due > 0 && (
+          <span className="bg-danger font-display rounded-full px-3 py-1 text-lg text-white">{due} à revoir</span>
+        )}
+      </section>
+      <p className="text-muted text-sm font-bold">
+        Médaille d’une notion = sa meilleure série : Or sans faute (notion acquise) · Argent une erreur · Bronze deux
+        erreurs.
+      </p>
       <GradeTabs grades={grades} value={grade} own={own} onChange={setGrade} />
 
       {/* Toile des compétences : part de notions acquises (Or) par domaine de la classe choisie. */}

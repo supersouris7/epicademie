@@ -19,7 +19,7 @@ import { ChildReport, ParentHome, PaymentSimulator, Subscription } from '../feat
 import { BossChapters, BossPlay, Shop } from '../features/boss/index.ts';
 import { Hub, ModeSetup, MultiModes } from '../features/hub/index.ts';
 import { Heroes, ProfileEditor, ProfilePicker, useProfile } from '../features/profiles/index.ts';
-import { Progress } from '../features/progress/index.ts';
+import { Progress, SubjectProgress, TrophiesPage } from '../features/progress/index.ts';
 import { Dictionary } from '../features/dictionary/index.ts';
 import { Term } from '../shared/question/Term.tsx';
 import { TermContext } from '../shared/question/termContext.ts';
@@ -129,6 +129,14 @@ export function App() {
                 element={<WithProfile>{(p) => <BossPlay profile={p} />}</WithProfile>}
               />
               <Route path="/progres" element={<WithProfile>{(p) => <Progress profile={p} />}</WithProfile>} />
+              <Route
+                path="/progres/trophees"
+                element={<WithProfile>{(p) => <TrophiesPage profile={p} />}</WithProfile>}
+              />
+              <Route
+                path="/progres/:subject"
+                element={<WithProfile>{(p) => <SubjectProgress profile={p} />}</WithProfile>}
+              />
               <Route path="/parametres" element={<WithProfile>{(p) => <Settings profile={p} />}</WithProfile>} />
               {AssetPreview && (
                 <Route

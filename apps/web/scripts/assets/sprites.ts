@@ -46,6 +46,8 @@ export interface StillJob {
    * grille : les `cols × rows` plus grandes formes, dans l'ordre de lecture.
    */
   readonly byShape?: boolean;
+  /** Planche sur fond sombre opaque (pas de transparence) : le fond est retiré depuis les bords. */
+  readonly opaqueBackground?: boolean;
 }
 
 export interface AnimJob {
@@ -135,6 +137,19 @@ export const JOBS: readonly Job[] = [
     size: 512,
     targets: CHESTS.map((c) => `rewards/chests/${c}-ouvert`),
     byShape: true,
+  },
+  // Badges (« Mes progrès ») : une image par badge, planche sur fond opaque.
+  {
+    kind: 'stills',
+    board: 'badges.png',
+    cols: 3,
+    rows: 2,
+    size: 256,
+    targets: ['boss', 'parfait', 'perseverance', 'chapitres', 'consolidees', 'coffres'].map(
+      (b) => `rewards/badges/${b}`,
+    ),
+    byShape: true,
+    opaqueBackground: true,
   },
   // Médailles : bronze, argent, or, diamant.
   {
@@ -397,8 +412,40 @@ export function shapeBoxes(img: Rgba, count: number, solid = 200): Box[] {
   );
 }
 
+/**
+ * Retire un fond opaque sombre et peu coloré (dégradé gris-brun), en partant des bords : les
+ * pixels du fond reliés au bord deviennent transparents ; le contour noir des images arrête le
+ * remplissage, l'intérieur des images est gardé.
+ */
+export function removeBackground(img: Rgba): Rgba {
+  const { width: w, height: h } = img;
+  const data = Buffer.from(img.data);
+  const isBackground = (i: number) => {
+    const [r, g, b] = [data[i] ?? 0, data[i + 1] ?? 0, data[i + 2] ?? 0];
+    const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+    return lum > 28 && lum < 140 && Math.max(r, g, b) - Math.min(r, g, b) < 70;
+  };
+  const seen = new Uint8Array(w * h);
+  const stack: number[] = [];
+  for (let x = 0; x < w; x++) stack.push(x, (h - 1) * w + x);
+  for (let y = 0; y < h; y++) stack.push(y * w, y * w + w - 1);
+  while (stack.length > 0) {
+    const p = stack.pop() ?? 0;
+    if (seen[p] || !isBackground(p * 4)) continue;
+    seen[p] = 1;
+    data[p * 4 + 3] = 0;
+    const x = p % w;
+    if (x > 0) stack.push(p - 1);
+    if (x < w - 1) stack.push(p + 1);
+    if (p >= w) stack.push(p - w);
+    if (p < w * (h - 1)) stack.push(p + w);
+  }
+  return { ...img, data };
+}
+
 async function stills(job: StillJob): Promise<string[]> {
-  const board = clean(await load(join(BOARDS, job.board)));
+  const loaded = await load(join(BOARDS, job.board));
+  const board = clean(job.opaqueBackground ? removeBackground(loaded) : loaded);
   const cells = job.byShape
     ? shapeBoxes(board, job.cols * job.rows)
     : gridCells(board.width, board.height, job.cols, job.rows);

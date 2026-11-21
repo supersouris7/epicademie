@@ -47,6 +47,8 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   // Barre de navigation du bas sur les écrans principaux.
   const nav = page.getByRole('navigation', { name: 'Menu principal' });
   await nav.getByRole('button', { name: 'Progrès' }).click();
+  // Résumé par matière, puis le détail des maths.
+  await page.getByRole('button', { name: /^Maths : 0 notions médaillées sur 72/ }).click();
   await expect(page.getByText(/0 \/ 72 notions médaillées/)).toBeVisible();
   // Domaines repliés : un toucher ouvre le domaine et montre ses chapitres.
   const domain = page.getByRole('button', { name: /^Nombres et calculs/ });

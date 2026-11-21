@@ -6,7 +6,7 @@ vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.
 
 describe('Mes progrès : trophées et badges', () => {
   it('boss vaincus avec leur médaille, puis les badges (plus d’Acad-Héros)', async () => {
-    renderApp('/progres', {
+    renderApp('/progres/trophees', {
       setup: (server) => {
         server.overview.records = [
           { chapterId: 'm5-calcul', wins: 2, bestHearts: 3, bestMedal: 'or', firstWonAt: '2026-11-19T10:00:00.000Z' },
@@ -21,7 +21,7 @@ describe('Mes progrès : trophées et badges', () => {
   });
 
   it('aucun boss vaincu : message d’encouragement', async () => {
-    renderApp('/progres');
+    renderApp('/progres/trophees');
     const trophies = await screen.findByRole('region', { name: 'Trophées et badges' });
     expect(within(trophies).getByText(/Bats un boss de chapitre/)).toBeInTheDocument();
   });

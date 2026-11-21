@@ -127,7 +127,7 @@ describe('accueil et choix du jeu', () => {
 });
 
 describe('suivi et réglages', () => {
-  it('progrès : domaines repliés, un toucher les ouvre', async () => {
+  it('progrès : résumé par matière, puis le détail (domaines repliés), et les badges à part', async () => {
     const { user } = renderApp('/progres', {
       skills: [
         {
@@ -143,13 +143,17 @@ describe('suivi et réglages', () => {
         },
       ],
     });
-    // Badges : grade atteint et prochain objectif.
-    expect(await screen.findByRole('listitem', { name: 'Badge Chasseur de boss : Bronze' })).toHaveTextContent('2 / 5');
-    expect(screen.getByRole('listitem', { name: 'Badge Persévérant : pas encore gagné' })).toBeInTheDocument();
+    // Résumé : une barre par matière ; un toucher ouvre le détail.
+    await user.click(await screen.findByRole('button', { name: /^Maths : 1 notions médaillées/ }));
     const domain = await screen.findByRole('button', { name: /^Nombres et calculs/ });
     expect(domain).toHaveAttribute('aria-expanded', 'false');
     await user.click(domain);
     expect(await screen.findByRole('heading', { name: 'Calcul mental' })).toBeInTheDocument();
+    // Badges : grade atteint et prochain objectif, sur leur page.
+    await user.click(screen.getByRole('button', { name: 'Retour' }));
+    await user.click(await screen.findByRole('button', { name: /Trophées, badges et inventaire/ }));
+    expect(await screen.findByRole('listitem', { name: 'Badge Chasseur de boss : Bronze' })).toHaveTextContent('2 / 5');
+    expect(screen.getByRole('listitem', { name: 'Badge Persévérant : pas encore gagné' })).toBeInTheDocument();
   });
 
   it('paramètres : le son se coupe', async () => {

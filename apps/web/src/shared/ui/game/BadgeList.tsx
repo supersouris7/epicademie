@@ -1,10 +1,12 @@
 import { BOSS_MEDAL_LABELS, type BadgeProgress } from '@questeo/shared';
-import { BOSS_MEDAL_ICONS } from '../../../design/bosses.ts';
-import { GameIcon } from './GameIcon.tsx';
+import { versioned } from '../../../design/assets.ts';
+
+/** Image du badge (une par badge pour l'instant ; une par grade quand les planches seront livrées). */
+const badgeSrc = (category: string) => versioned(`/assets/rewards/badges/${category}.webp`);
 
 /**
- * Badges du joueur : grade atteint (bronze, argent, or, diamant) et prochain objectif. Utilisé
- * dans « Mes progrès » et la salle des trophées. Grades = mêmes icônes que les médailles de boss.
+ * Badges du joueur : image du badge (grisée tant qu'aucun grade n'est atteint), grade atteint
+ * (bronze, argent, or, diamant) et prochain objectif. Utilisé dans « Mes progrès ».
  */
 export function BadgeList({ badges }: { readonly badges: readonly BadgeProgress[] }) {
   return (
@@ -15,15 +17,17 @@ export function BadgeList({ badges }: { readonly badges: readonly BadgeProgress[
           className={`cartoon bg-surface-2 flex items-center gap-3 p-3 ${b.tier ? '' : 'opacity-70'}`}
           aria-label={`Badge ${b.title} : ${b.tier ? BOSS_MEDAL_LABELS[b.tier] : 'pas encore gagné'}`}
         >
-          {b.tier ? (
-            <GameIcon id={BOSS_MEDAL_ICONS[b.tier]} size={44} />
-          ) : (
-            <span className="bg-surface flex h-11 w-11 items-center justify-center rounded-full text-xl" aria-hidden>
-              ?
-            </span>
-          )}
+          <img
+            src={badgeSrc(b.category)}
+            alt=""
+            aria-hidden
+            className={`h-16 w-16 shrink-0 object-contain ${b.tier ? '' : 'grayscale'}`}
+          />
           <span className="flex min-w-0 flex-col">
-            <span className="font-display text-lg tracking-wide">{b.title}</span>
+            <span className="font-display text-lg tracking-wide">
+              {b.title}
+              {b.tier && <span className="text-gold ml-2 text-base">{BOSS_MEDAL_LABELS[b.tier]}</span>}
+            </span>
             <span className="text-muted text-sm">{b.how}</span>
             <span className="text-sm font-bold">
               {b.next === null ? 'Diamant atteint !' : `${b.value} / ${b.next} pour le grade suivant`}
