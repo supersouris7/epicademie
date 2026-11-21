@@ -49,7 +49,6 @@
 
   /* ── Sémantique : thème sombre unique (violet profond, comme les planches) ── */
   --bg: var(--af-violet-950);
-  --bg-pattern: var(--af-violet-900);
   --surface: var(--af-violet-900);
   --surface-2: var(--af-violet-800);
   --text: var(--af-cream-50);
