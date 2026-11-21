@@ -5,6 +5,7 @@ import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import { trainingRepo } from '../training/index.ts';
 import { learningRepo } from './learning.repo.ts';
+import { rankingStats, type RankingStats } from './ranking.ts';
 
 /** Profondeur de l'historique lu pour le suivi. */
 const HISTORY_DAYS = 365;
@@ -14,7 +15,7 @@ const HISTORY_DAYS = 365;
  * calcule le rapport (règles pures dans @questeo/engine/learning).
  */
 export function createLearningService({ db, clock, timeZone }: { db: Db; clock: Clock; timeZone: string }) {
-  return {
+  const service = {
     async report(profileId: string): Promise<LearningReport> {
       const since = new Date(clock.now().getTime() - HISTORY_DAYS * 86_400_000);
       const [facts, states] = await Promise.all([
@@ -47,7 +48,13 @@ export function createLearningService({ db, clock, timeZone }: { db: Db; clock: 
         coffres: c.chests,
       });
     },
+
+    /** Classement « Se comparer » : chiffres de ces joueurs (famille et amis, choisis par l'appelant). */
+    ranking(ids: readonly string[]): Promise<RankingStats[]> {
+      return rankingStats(db, ids, { today: clock.today(), timeZone, badges: (id) => service.badges(id) });
+    },
   };
+  return service;
 }
 
 export type LearningService = ReturnType<typeof createLearningService>;
