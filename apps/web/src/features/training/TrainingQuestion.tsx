@@ -214,7 +214,7 @@ function AnswerDock({
           attempt={retry?.nonce ?? 0}
           picked={picked}
           onSubmit={onSubmit}
-          allowUnknown
+          onUnknown={() => onSubmit({ kind: 'unknown' })}
         />
       )}
     </section>

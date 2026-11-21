@@ -1,5 +1,5 @@
-import { and, count, eq, gt, gte, isNotNull, or, sql, sum } from 'drizzle-orm';
-import { SUBJECT_IDS, type AdminStats, type Anomaly, type SubjectId } from '@questeo/shared';
+import { and, count, desc, eq, gt, gte, isNotNull, or, sql, sum } from 'drizzle-orm';
+import { SUBJECT_IDS, type AdminStats, type Anomaly, type SubjectId, type WeakSkillStat } from '@questeo/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import {
@@ -32,6 +32,8 @@ export const ANOMALY_THRESHOLDS = {
 } as const;
 
 const DAY_MS = 86_400_000;
+/** Réponses minimales pour classer une notion dans les points faibles. */
+export const WEAK_MIN_ANSWERS = 10;
 
 export function createInsightsService({ db, clock }: { db: Db; clock: Clock }) {
   const since = (days: number) => new Date(clock.now().getTime() - days * DAY_MS);
@@ -103,6 +105,33 @@ export function createInsightsService({ db, clock }: { db: Db; clock: Clock }) {
         payments: payments.map((p) => ({ status: p.status, count: num(p.count), amountCents: num(p.amountCents) })),
         openReports: num(reports[0]?.n),
       };
+    },
+
+    /**
+     * Points faibles anonymes : notions les plus ratées (taux d'erreur au 1er essai) sur 90 jours,
+     * avec au moins WEAK_MIN_ANSWERS réponses pour éviter le bruit.
+     */
+    async weakSkills(): Promise<WeakSkillStat[]> {
+      const errors = sql<number>`count(*) filter (where not ${attempts.correct})`;
+      const rows = await db
+        .select({
+          skillId: attempts.skillId,
+          answers: count(),
+          errors,
+          players: sql<number>`count(distinct ${attempts.profileId})`,
+        })
+        .from(attempts)
+        .where(and(gte(attempts.createdAt, since(90)), eq(attempts.attempt, 1), eq(attempts.collective, false)))
+        .groupBy(attempts.skillId)
+        .having(sql`count(*) >= ${WEAK_MIN_ANSWERS}`)
+        .orderBy(sql`${errors}::float / count(*) desc`, desc(count()))
+        .limit(30);
+      return rows.map((r) => ({
+        skillId: r.skillId,
+        answers: num(r.answers),
+        errors: num(r.errors),
+        players: num(r.players),
+      }));
     },
 
     async anomalies(): Promise<Anomaly[]> {

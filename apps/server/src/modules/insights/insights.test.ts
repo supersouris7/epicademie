@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
-import type { AdminError, AdminStats, Anomaly, Profile } from '@questeo/shared';
+import type { WeakSkillStat, AdminError, AdminStats, Anomaly, Profile } from '@questeo/shared';
 import { attempts, profiles, sessions } from '../../db/schema.ts';
 import { createTestApp, profileInput } from '../../testing/harness.ts';
 import { setAccountRole } from '../accounts/index.ts';
@@ -30,10 +30,10 @@ beforeEach(async () => {
   admin = t.as(account.cookie);
 });
 
-const answer = (sessionId: string, durationMs: number, correct = true) => ({
+const answer = (sessionId: string, durationMs: number, correct = true, skillId = 'm5-tables') => ({
   sessionId,
   profileId: profile.id,
-  skillId: 'm5-tables',
+  skillId,
   level: 1,
   seed: 1,
   variant: false,
@@ -62,7 +62,12 @@ const session = async (coins = 10) => {
 
 describe('pilotage (administration)', () => {
   it('réservé à l’administration', async () => {
-    for (const url of ['/api/v1/admin/stats', '/api/v1/admin/errors', '/api/v1/admin/anomalies']) {
+    for (const url of [
+      '/api/v1/admin/stats',
+      '/api/v1/admin/errors',
+      '/api/v1/admin/anomalies',
+      '/api/v1/admin/weak-skills',
+    ]) {
       expect((await t.http.inject(url)).statusCode).toBe(403);
     }
   });
@@ -100,6 +105,23 @@ describe('pilotage (administration)', () => {
       '412 pièces en une partie ; maximum attendu 300',
     );
     expect(rules.every((a) => a.profileId === profile.id)).toBe(true);
+  });
+
+  it('points faibles anonymes : notions les plus ratées (au moins 10 réponses), sans nom d’enfant', async () => {
+    const id = await session();
+    await t.database.db
+      .insert(attempts)
+      .values([
+        ...Array.from({ length: 10 }, (_, i) => answer(id, 8000, i < 3, 'm5-carres')),
+        ...Array.from({ length: 10 }, (_, i) => answer(id, 8000, i < 8, 'm5-tables')),
+        ...Array.from({ length: 4 }, () => answer(id, 8000, false, 'm5-priorites')),
+      ]);
+    const res = await admin.inject('/api/v1/admin/weak-skills');
+    expect(res.json<WeakSkillStat[]>()).toEqual([
+      { skillId: 'm5-carres', answers: 10, errors: 7, players: 1 },
+      { skillId: 'm5-tables', answers: 10, errors: 2, players: 1 },
+    ]);
+    expect(res.body).not.toContain(profile.name);
   });
 
   it('erreurs récentes regroupées par message, avec leur nombre', async () => {

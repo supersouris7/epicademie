@@ -1,3 +1,4 @@
+import { GameRecap } from './GameRecap.tsx';
 import { motion } from 'motion/react';
 import { getChapter, getSkill } from '@questeo/content';
 import { accord, type Gender, type SessionSummary } from '@questeo/shared';
@@ -19,6 +20,7 @@ import type { Missed } from './types.ts';
  * notion, récapitulatif des erreurs avec la bonne réponse, puis rejouer ou changer de notion.
  */
 export function Results({
+  profileId,
   summary,
   missed,
   gender,
@@ -27,6 +29,7 @@ export function Results({
   onExit,
   onReplay,
 }: {
+  profileId: string;
   summary: SessionSummary;
   missed: readonly Missed[];
   gender: Gender | null;
@@ -131,6 +134,9 @@ export function Results({
           </div>
         ))}
       </section>
+
+      {/* Entraînement conseillé (la notion la plus ratée, sinon la plus fragile de l'historique). */}
+      <GameRecap profileId={profileId} rows={summary.skills} table={false} />
 
       {missed.length > 0 && (
         <details className="cartoon bg-surface p-4">

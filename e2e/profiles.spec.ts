@@ -41,7 +41,7 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.getByRole('button', { name: /Lina.*changer de héros/ }).click();
   await expect(page.getByRole('heading', { name: 'Mon héros' })).toBeVisible();
   await expect(page.getByRole('radio', { name: /Lina/ })).toBeChecked();
-  await expect(page.getByText(/2 sur 2 trouvés/)).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Choisis ton héros' })).toBeVisible();
   await page.getByRole('radio', { name: /Alex/ }).click();
   await expect(page.getByRole('radio', { name: /Alex/ })).toBeChecked();
   // Barre de navigation du bas sur les écrans principaux.

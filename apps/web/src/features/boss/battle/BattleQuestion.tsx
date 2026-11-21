@@ -10,6 +10,7 @@ import { DOCK_HEIGHT } from '../../../shared/question/tools.ts';
 import { GameIcon } from '../../../shared/ui/game/GameIcon.tsx';
 import { STAGE_LABEL, type Missed } from './constants.ts';
 import { ItemBar } from './ItemBar.tsx';
+import { itemRefusal } from '@questeo/engine';
 import { MissedPanel } from './MissedPanel.tsx';
 
 type Point = { readonly x: number; readonly y: number };
@@ -112,7 +113,10 @@ export function BattleQuestion({
               skill={skill}
               picked={picked}
               onSubmit={onSubmit}
-              allowUnknown
+              // « ? » : un objet Indice équipé s'il en reste, sinon c'est une erreur (le boss riposte).
+              onUnknown={() =>
+                itemRefusal(battle, 'indice') === null ? onUseItem('indice') : onSubmit({ kind: 'unknown' })
+              }
             />
           )}
         </section>

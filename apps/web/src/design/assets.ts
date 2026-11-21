@@ -74,6 +74,9 @@ export interface ManifestEntry {
 }
 
 const available = new Set<string>(AVAILABLE);
+
+/** Adresse d'image avec la version du build (une image remplacée est rechargée tout de suite). */
+export const versioned = (path: string) => `${path}?v=${__ASSET_VERSION__}`;
 const dir = (file: string) => file.split('/').slice(0, -1).join('/');
 
 /** Manifeste complet (page de prévisualisation, tests). */
@@ -116,13 +119,13 @@ const byId = new Map(PLANNED_ASSETS.map((p) => [p.id, p]));
 /** URL de l'image finale si elle est livrée (sans remplaçant provisoire), sinon null. */
 export function deliveredSrc(id: string): string | null {
   const p = byId.get(id);
-  return p && available.has(p.file) ? `/assets/${p.file}` : null;
+  return p && available.has(p.file) ? versioned(`/assets/${p.file}`) : null;
 }
 
 /** URL à afficher : image finale si livrée, sinon SVG provisoire, sinon null. */
 export function assetSrc(id: string): string | null {
   const p = byId.get(id);
   if (!p) return null;
-  if (available.has(p.file)) return `/assets/${p.file}`;
+  if (available.has(p.file)) return versioned(`/assets/${p.file}`);
   return p.fallback ? SVG_ASSETS[p.fallback].path : null;
 }

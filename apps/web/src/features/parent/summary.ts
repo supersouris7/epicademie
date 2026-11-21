@@ -68,3 +68,17 @@ export function weekBars(report: LearningReport) {
     height: w.tally.answered / max,
   }));
 }
+
+/** Seuil : en dessous de 80 % de réussite sans aide (au moins 3 réponses), c'est un point faible. */
+const WEAK_RATE = 0.8;
+const MIN_ANSWERS = 3;
+
+/** Points faibles de l'enfant : notions travaillées où il réussit le moins seul (5 au plus). */
+export function weakPoints(r: LearningReport) {
+  return r.skills
+    .filter((s) => s.tally.answered >= MIN_ANSWERS)
+    .map((s) => ({ skillId: s.skillId, answered: s.tally.answered, rate: s.tally.autonomous / s.tally.answered }))
+    .filter((s) => s.rate < WEAK_RATE)
+    .sort((a, b) => a.rate - b.rate || b.answered - a.answered)
+    .slice(0, 5);
+}

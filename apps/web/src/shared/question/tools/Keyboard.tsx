@@ -1,3 +1,4 @@
+import { SubmitKey } from '../NumPad.tsx';
 import { useEffect } from 'react';
 import { keyIsForGame } from '../../lib/keys.ts';
 
@@ -33,12 +34,14 @@ interface KeyboardProps {
   readonly onKey: (key: string) => void;
   readonly onSubmit: () => void;
   readonly canSubmit: boolean;
+  /** Rien de saisi : le bouton OK devient « ? ». */
+  readonly onUnknown?: () => void;
   readonly upper: boolean;
   readonly onShift: () => void;
 }
 
 /** Clavier AZERTY tactile (+ clavier physique) pour les réponses écrites. */
-export function Keyboard({ onKey, onSubmit, canSubmit, upper, onShift }: KeyboardProps) {
+export function Keyboard({ onKey, onSubmit, canSubmit, upper, onShift, onUnknown }: KeyboardProps) {
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (!keyIsForGame(e)) return;
@@ -89,14 +92,12 @@ export function Keyboard({ onKey, onSubmit, canSubmit, upper, onShift }: Keyboar
           ⇧
         </button>
         {key(' ', 'flex-[5]', 'espace')}
-        <button
-          type="button"
-          onClick={onSubmit}
-          disabled={!canSubmit}
-          className="cartoon cartoon-press bg-success font-display h-full flex-[2] text-xl text-white disabled:opacity-40"
-        >
-          OK
-        </button>
+        <SubmitKey
+          className="cartoon cartoon-press font-display h-full flex-[2] text-xl"
+          canSubmit={canSubmit}
+          onSubmit={onSubmit}
+          onUnknown={onUnknown}
+        />
       </div>
     </div>
   );

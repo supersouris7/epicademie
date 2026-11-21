@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Sprite } from '../ui/game/Sprite.tsx';
 import { motion, useReducedMotion } from 'motion/react';
 import type { HeroId } from '@questeo/shared';
@@ -187,9 +187,6 @@ export function BossSays({
  * il provoque (son nom n'est pas écrit).
  * Un toucher n'importe où (ou le bouton) passe au choix du chapitre.
  */
-/** Durée du gros plan sur le boss avant fermeture automatique. */
-const CLOSE_UP_MS = 4000;
-
 export function BossCloseUp({
   bossId,
   name,
@@ -204,15 +201,7 @@ export function BossCloseUp({
   readonly onDone: () => void;
 }) {
   const reduce = useReducedMotion();
-  // Sans bouton : toucher l'écran passe le gros plan, sinon il se ferme tout seul.
-  const done = useRef(onDone);
-  useEffect(() => {
-    done.current = onDone;
-  }, [onDone]);
-  useEffect(() => {
-    const t = setTimeout(() => done.current(), CLOSE_UP_MS);
-    return () => clearTimeout(t);
-  }, []);
+  // Sans bouton : on passe le gros plan en touchant l'écran (comme pour l'Empereur du Savoir).
   // Le boss de face (portrait en pied, le plus propre) ; sa tête si le portrait n'est pas livré.
   const src = assetSrc(`bosses-${bossId}-portrait`) ?? bossPortrait(bossId, expression);
   return (
@@ -249,6 +238,14 @@ export function BossCloseUp({
         <Bubble tail="none" tone="villain" className="px-5 py-4 text-xl sm:text-2xl">
           {text}
         </Bubble>
+      </motion.p>
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={reduce ? { opacity: 1 } : { opacity: [0.4, 1, 0.4] }}
+        transition={{ delay: 1.2, duration: 1.6, repeat: reduce ? 0 : Infinity }}
+        className="font-display text-toon pointer-events-none relative text-xl"
+      >
+        Touche l’écran pour continuer
       </motion.p>
     </div>
   );

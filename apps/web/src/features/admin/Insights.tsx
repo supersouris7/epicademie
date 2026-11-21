@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { chapterOfAnySkill, getAnySkill } from '@questeo/content';
 import { ANOMALY_LABELS, api, SUBJECTS, SUBSCRIPTION_STATUS_LABELS } from '@questeo/shared';
 import { request } from '../../shared/api/client.ts';
 
@@ -115,5 +116,36 @@ export function Errors() {
         </li>
       ))}
     </ul>
+  );
+}
+
+/** Notions les plus ratées (90 jours, anonyme) : de quoi améliorer les explications. */
+export function WeakSkills() {
+  const { data } = useQuery({ queryKey: ['admin', 'weak-skills'], queryFn: () => request(api.adminWeakSkills) });
+  if (!data) return <p>Chargement…</p>;
+  if (data.length === 0) return <p>Pas encore assez de réponses (au moins 10 par notion).</p>;
+  return (
+    <table className="cartoon bg-surface w-full overflow-hidden text-left">
+      <thead className="bg-surface-2">
+        <tr>
+          <th className="p-2">Notion</th>
+          <th className="p-2">Classe</th>
+          <th className="p-2 text-right">Erreurs</th>
+          <th className="p-2 text-right">Réponses</th>
+          <th className="p-2 text-right">Élèves</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((w) => (
+          <tr key={w.skillId} className="border-outline/20 border-t">
+            <td className="p-2 font-bold">{getAnySkill(w.skillId)?.title ?? w.skillId}</td>
+            <td className="p-2">{chapterOfAnySkill(w.skillId)?.grade ?? '—'}</td>
+            <td className="p-2 text-right">{Math.round((100 * w.errors) / w.answers)} %</td>
+            <td className="p-2 text-right">{w.answers}</td>
+            <td className="p-2 text-right">{w.players}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }

@@ -60,3 +60,16 @@ export const AnomalySchema = z.object({
   at: z.string().nullable(),
 });
 export type Anomaly = z.infer<typeof AnomalySchema>;
+
+/**
+ * Points faibles (statistiques anonymes) : notions les plus ratées sur les 90 derniers jours,
+ * premières réponses individuelles (entraînement, défis, combats). Aucun nom d'enfant.
+ */
+export const WeakSkillStatSchema = z.object({
+  skillId: z.string(),
+  answers: z.number().int().nonnegative(),
+  errors: z.number().int().nonnegative(),
+  /** Nombre d'élèves différents qui l'ont travaillée. */
+  players: z.number().int().nonnegative(),
+});
+export type WeakSkillStat = z.infer<typeof WeakSkillStatSchema>;

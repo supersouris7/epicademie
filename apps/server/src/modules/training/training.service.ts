@@ -69,13 +69,13 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
    * sans-faute du premier coup améliore le tirage.
    */
   const openChest = async (tx: Tx, profileId: string, series: SeriesResult): Promise<Chest | null> => {
-    const rolled = trainingChest(series, random.float, new Set(await profilesRepo(tx).heroes(profileId)));
+    const rolled = trainingChest(series, random.float);
     return rolled && grantChest(tx, profileId, rolled);
   };
 
   /** Coffre de fin de défi : selon le nombre de bonnes réponses (aucun sous le minimum). */
   const openDefiChest = async (tx: Tx, profileId: string, kind: DefiKind, correct: number): Promise<Chest | null> => {
-    const rolled = defiChest(kind, correct, random.float, new Set(await profilesRepo(tx).heroes(profileId)));
+    const rolled = defiChest(kind, correct, random.float);
     return rolled && grantChest(tx, profileId, rolled);
   };
 

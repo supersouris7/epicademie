@@ -29,21 +29,23 @@ export function MainNav({ profile }: { readonly profile: Profile }) {
           <button type="button" onClick={() => void navigate('/')} aria-label="Changer de joueur" className="shrink-0">
             <CharacterAvatar avatar={profile.avatar} size={44} />
           </button>
-          {/* Pseudo, puis niveau et barre d'XP (même barre segmentée que celles du combat). */}
-          <span className="font-display text-toon max-w-[34%] shrink truncate text-lg leading-tight tracking-wide">
+          {/* Avatar et pseudo à gauche ; niveau, barre d'XP, pièces et rubis collés à droite. */}
+          <span className="font-display text-toon min-w-0 shrink truncate text-lg leading-tight tracking-wide">
             {profile.name}
           </span>
+          <span className="flex-1" />
           <span className="font-display text-toon shrink-0 text-sm text-[var(--gold)] italic">Niv. {level}</span>
-          <HudBar
-            side="right"
-            kind="xp"
-            role="progressbar"
-            className="min-w-16 flex-1 sm:max-w-48"
-            value={xpInLevel}
-            max={xpForNext}
-            segments={10}
-            label={`Niveau ${level}, ${xpInLevel} XP sur ${xpForNext}`}
-          />
+          <span className="w-20 shrink-0 sm:w-40">
+            <HudBar
+              side="right"
+              kind="xp"
+              role="progressbar"
+              value={xpInLevel}
+              max={xpForNext}
+              segments={10}
+              label={`Niveau ${level}, ${xpInLevel} XP sur ${xpForNext}`}
+            />
+          </span>
           <span
             className="font-display text-toon flex shrink-0 items-center gap-1 pr-1 text-lg"
             role="status"

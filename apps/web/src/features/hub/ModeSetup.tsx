@@ -79,8 +79,8 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
         <div className="cartoon bg-surface-2 flex items-center gap-3 p-3" role="note">
           <GameIcon id={RELICS.maths.icon} size={64} />
           <p className="text-lg font-bold">
-            Chaque boss vaincu te donne un <strong>éclat de relique</strong> de sa matière (le {RELICS.maths.name} en
-            maths). Retrouve tes reliques dans <strong>Mes progrès</strong> !
+            Chaque boss vaincu te donne un <strong>éclat de relique</strong> de sa matière. Retrouve tes reliques dans{' '}
+            <strong>Mes progrès</strong> !
           </p>
         </div>
       )}

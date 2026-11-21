@@ -381,6 +381,7 @@ function battleHandlers(ctx: {
         newBest: won,
         chest: won ? { rarity: 'epique', items: { soin: 1 }, coins: 40, rubies: 1, hero: null } : null,
         weakSkill: won ? null : (b.state.misses[0] ?? null),
+        skills: [],
         levelBefore: levelFromXp(xp).level,
         levelAfter: levelFromXp(xp + gained).level,
       };

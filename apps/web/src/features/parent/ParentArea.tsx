@@ -10,6 +10,7 @@ import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { confirmParent, useMe, useSetMe } from '../account/index.ts';
 import { useProfiles } from '../profiles/index.ts';
 import { FamilyFriends } from './FamilyFriends.tsx';
+import { WeakPoints } from './WeakPoints.tsx';
 import {
   chapterTitle,
   skillTitle,
@@ -158,6 +159,7 @@ function ReportView({ report: r, child }: { readonly report: LearningReport; rea
         </ul>
         <WeekChart report={r} />
       </section>
+      <WeakPoints report={r} />
       <TargetedSession report={r} child={child} />
       <section aria-labelledby="matieres" className="flex flex-col gap-3">
         <h2 id="matieres" className="font-display text-2xl tracking-wide">

@@ -59,7 +59,14 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   if (s.summary && s.retry) return <RetryCountdown hero={profile.hero} onRetry={replay} onSkip={act.skipRetry} />;
   if (s.summary)
     return (
-      <BattleResults summary={s.summary} chapter={chapter} gender={profile.gender} hero={profile.hero} onExit={exit} />
+      <BattleResults
+        profileId={profile.id}
+        summary={s.summary}
+        chapter={chapter}
+        gender={profile.gender}
+        hero={profile.hero}
+        onExit={exit}
+      />
     );
 
   const stage = { screen: s, hero: profile.hero, boss, arena };

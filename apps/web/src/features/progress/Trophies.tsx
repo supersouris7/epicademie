@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getChapter } from '@questeo/content';
-import { api, AVAILABLE_HEROES, BOSS_MEDAL_LABELS, HERO_NAMES, type BossRecord } from '@questeo/shared';
+import { api, BOSS_MEDAL_LABELS, type BossRecord } from '@questeo/shared';
 import { request } from '../../shared/api/client.ts';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
 import { BadgeList } from '../../shared/ui/game/BadgeList.tsx';
@@ -8,7 +8,7 @@ import { BOSS_MEDAL_ICONS } from '../../design/bosses.ts';
 
 /**
  * Trophées et badges du joueur (dans « Mes progrès ») : boss vaincus avec leur meilleure
- * médaille, Acad-Héros trouvés dans les coffres, puis les badges.
+ * médaille, puis les badges.
  */
 export function TrophiesSection({
   profileId,
@@ -17,11 +17,6 @@ export function TrophiesSection({
   readonly profileId: string;
   readonly records: readonly BossRecord[];
 }) {
-  const { data } = useQuery({
-    queryKey: ['heroes', profileId],
-    queryFn: () => request(api.ownedHeroes, { params: { id: profileId } }),
-  });
-  const heroes = data?.heroes ?? [];
   return (
     <section aria-labelledby="trophees" className="cartoon bg-surface flex flex-col gap-3 p-3">
       <h2 id="trophees" className="font-display text-2xl tracking-wide">
@@ -45,16 +40,6 @@ export function TrophiesSection({
           ))}
         </ul>
       )}
-      <h3 className="font-display text-xl tracking-wide">
-        Acad-Héros trouvés ({heroes.length} sur {AVAILABLE_HEROES.length})
-      </h3>
-      <ul className="flex flex-wrap gap-2" aria-label="Acad-Héros trouvés">
-        {heroes.map((h) => (
-          <li key={h} className="bg-surface-2 rounded-full px-3 py-1 font-bold">
-            {HERO_NAMES[h]}
-          </li>
-        ))}
-      </ul>
       <BadgesBlock profileId={profileId} />
     </section>
   );

@@ -1,3 +1,4 @@
+import { GameRecap } from '../training/index.ts';
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate, useSearchParams } from 'react-router';
@@ -237,6 +238,7 @@ export function Countdown({ deadline }: { readonly deadline: number }) {
 function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly arena: ArenaView }) {
   const navigate = useNavigate();
   const answer = useRealtime((s) => s.answerArena);
+  const tally = useRealtime((s) => s.tally);
   const createArena = useRealtime((s) => s.createArena);
   const leave = useRealtime((s) => s.leaveArena);
   const q = arena.question;
@@ -272,6 +274,9 @@ function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly are
           </div>
           <div className="w-full max-w-lg text-left">
             <HeroSays hero={profile.hero} face={line.face} text={line.text} delay={0.3} />
+          </div>
+          <div className="w-full max-w-lg">
+            <GameRecap profileId={profile.id} rows={tally} />
           </div>
           <div className="flex flex-wrap justify-center gap-2">
             {/* Rejouer : les mêmes joueurs sont réinvités tout de suite (même chapitre, même mode). */}

@@ -108,6 +108,7 @@ function Game(setup: TrainingSetup) {
   if (s.summary)
     return (
       <Results
+        profileId={profile.id}
         summary={s.summary}
         missed={s.missed}
         gender={profile.gender}

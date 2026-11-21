@@ -4,7 +4,7 @@ import { MathText } from './MathText.tsx';
 import { applyKey } from './numpad.ts';
 import { typeKey } from './keyboard.ts';
 import { Keyboard } from './tools/Keyboard.tsx';
-import { NumPad } from './NumPad.tsx';
+import { NumPad, SubmitKey } from './NumPad.tsx';
 
 interface AnswerInputProps {
   readonly question: Question;
@@ -16,6 +16,8 @@ interface AnswerInputProps {
   readonly initialText?: string;
   /** Option de QCM déjà essayée : grisée au 2e essai. */
   readonly excluded?: number;
+  /** Rien de saisi : le bouton OK devient « ? » (aide au lieu d'une réponse au hasard). */
+  readonly onUnknown?: () => void;
 }
 
 function unitLabel(unit?: string) {
@@ -23,7 +25,18 @@ function unitLabel(unit?: string) {
 }
 
 /** Saisie adaptée au type de réponse : pavé numérique, fraction, QCM, point. */
-export function AnswerInput({ question, disabled, onSubmit, picked, initialText, excluded }: AnswerInputProps) {
+export function AnswerInput({
+  question,
+  disabled,
+  onSubmit,
+  picked,
+  initialText,
+  excluded,
+  onUnknown,
+}: AnswerInputProps) {
+  const help = disabled ? undefined : onUnknown;
+  /** « ? » seulement tant que rien n'est saisi. */
+  const helpIf = (empty: boolean) => (empty ? help : undefined);
   const a = question.answer;
   const [text, setText] = useState(initialText ?? '');
   const [num, setNum] = useState('');
@@ -48,43 +61,10 @@ export function AnswerInput({ question, disabled, onSubmit, picked, initialText,
     [focus],
   );
 
-  if (a.kind === 'choice') {
-    return (
-      <div
-        className={`grid h-full auto-rows-[minmax(3.5rem,6.5rem)] content-center gap-3 overflow-y-auto ${a.options.length > 2 ? 'sm:grid-cols-2' : 'grid-cols-2'}`}
-      >
-        {a.options.map((o, i) => (
-          <button
-            key={o}
-            type="button"
-            disabled={disabled || excluded === i}
-            onClick={() => onSubmit({ kind: 'choice', index: i })}
-            className={`cartoon cartoon-press bg-surface min-h-14 px-4 py-2 text-2xl font-bold disabled:opacity-40 ${excluded === i ? 'line-through' : ''}`}
-          >
-            <MathText text={o} />
-          </button>
-        ))}
-      </div>
-    );
-  }
-
-  if (a.kind === 'point') {
-    return (
-      <div className="flex h-full flex-col items-center justify-center gap-3">
-        <p className="text-muted text-lg font-bold">
-          {picked ? 'Touche OK pour valider, ou touche un autre nœud.' : 'Touche un nœud du quadrillage.'}
-        </p>
-        <button
-          type="button"
-          disabled={disabled || !picked}
-          onClick={() => picked && onSubmit({ kind: 'point', ...picked })}
-          className="cartoon cartoon-press bg-success font-display min-h-16 w-48 text-2xl text-white disabled:opacity-40"
-        >
-          OK
-        </button>
-      </div>
-    );
-  }
+  if (a.kind === 'choice')
+    return <ChoiceAnswer options={a.options} disabled={disabled} excluded={excluded} onSubmit={onSubmit} />;
+  if (a.kind === 'point')
+    return <PointAnswer picked={picked} disabled={disabled} onSubmit={onSubmit} onUnknown={help} />;
 
   if (a.kind === 'fraction') {
     const box = (which: 'num' | 'den', value: string) => (
@@ -114,6 +94,7 @@ export function AnswerInput({ question, disabled, onSubmit, picked, initialText,
           }}
           onSubmit={() => onSubmit({ kind: 'fraction', num, den })}
           canSubmit={!disabled && num !== '' && num !== '−' && den !== ''}
+          onUnknown={helpIf(num === '' && den === '')}
           allowComma={false}
         />
       </div>
@@ -135,6 +116,7 @@ export function AnswerInput({ question, disabled, onSubmit, picked, initialText,
           onKey={onLetter}
           onSubmit={() => onSubmit({ kind: 'text', text })}
           canSubmit={!disabled && text.trim() !== ''}
+          onUnknown={helpIf(text.trim() === '')}
           upper={upper}
           onShift={() => setUpper((u) => !u)}
         />
@@ -157,6 +139,56 @@ export function AnswerInput({ question, disabled, onSubmit, picked, initialText,
         onKey={onNumberKey}
         onSubmit={() => onSubmit({ kind: 'number', text })}
         canSubmit={!disabled && text !== '' && text !== '−'}
+        onUnknown={helpIf(text === '')}
+      />
+    </div>
+  );
+}
+
+/** QCM : une option par bouton (celle déjà essayée est grisée au 2e essai). */
+function ChoiceAnswer(p: {
+  readonly options: readonly string[];
+  readonly disabled: boolean;
+  readonly excluded?: number;
+  readonly onSubmit: (r: Response) => void;
+}) {
+  return (
+    <div
+      className={`grid h-full auto-rows-[minmax(3.5rem,6.5rem)] content-center gap-3 overflow-y-auto ${p.options.length > 2 ? 'sm:grid-cols-2' : 'grid-cols-2'}`}
+    >
+      {p.options.map((o, i) => (
+        <button
+          key={o}
+          type="button"
+          disabled={p.disabled || p.excluded === i}
+          onClick={() => p.onSubmit({ kind: 'choice', index: i })}
+          className={`cartoon cartoon-press bg-surface min-h-14 px-4 py-2 text-2xl font-bold disabled:opacity-40 ${p.excluded === i ? 'line-through' : ''}`}
+        >
+          <MathText text={o} />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** Point sur un quadrillage : OK une fois un nœud touché (« ? » avant, si permis). */
+function PointAnswer(p: {
+  readonly picked: { x: number; y: number } | null;
+  readonly disabled: boolean;
+  readonly onSubmit: (r: Response) => void;
+  readonly onUnknown?: () => void;
+}) {
+  const { picked } = p;
+  return (
+    <div className="flex h-full flex-col items-center justify-center gap-3">
+      <p className="text-muted text-lg font-bold">
+        {picked ? 'Touche OK pour valider, ou touche un autre nœud.' : 'Touche un nœud du quadrillage.'}
+      </p>
+      <SubmitKey
+        className="cartoon cartoon-press font-display min-h-16 w-48 text-2xl"
+        canSubmit={!p.disabled && picked !== null}
+        onSubmit={() => picked && p.onSubmit({ kind: 'point', ...picked })}
+        onUnknown={p.onUnknown}
       />
     </div>
   );
