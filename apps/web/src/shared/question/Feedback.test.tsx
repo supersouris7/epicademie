@@ -9,12 +9,12 @@ const question = generate('m5-tables', 1, 7);
 const base = { question, xp: 10, streak: 1, gender: null, onMemo: () => undefined } as const;
 
 describe('Feedback', () => {
-  it('bonne réponse : aucun bouton, la suite arrive toute seule après 2,7 s', () => {
+  it('bonne réponse : aucun bouton, la suite arrive toute seule après 1,2 s', () => {
     vi.useFakeTimers();
     const onNext = vi.fn();
     render(<Feedback {...base} correct onNext={onNext} />);
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
-    vi.advanceTimersByTime(2600);
+    vi.advanceTimersByTime(1100);
     expect(onNext).not.toHaveBeenCalled();
     vi.advanceTimersByTime(200);
     expect(onNext).toHaveBeenCalledOnce();

@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { HERO_NAMES, type HeroId } from '@questeo/shared';
-import { assetSrc, deliveredSrc } from '../../../design/assets.ts';
+import { CharacterSprite } from './CharacterSprite.tsx';
 import { useEntrance } from '../../lib/entrance.ts';
 
 interface CharacterCardProps {
@@ -15,6 +15,8 @@ interface CharacterCardProps {
   readonly radio?: boolean;
   readonly index?: number;
   readonly className?: string;
+  /** Illustration centrée dans la carte (avatar) ; sinon posée en bas (personnage en pied). */
+  readonly centered?: boolean;
 }
 
 /**
@@ -30,6 +32,7 @@ export function CharacterCard({
   radio,
   index = 0,
   className = '',
+  centered = false,
 }: CharacterCardProps) {
   const enter = useEntrance();
   return (
@@ -53,7 +56,11 @@ export function CharacterCard({
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-white/35 to-transparent"
       />
-      <span className="relative flex w-full flex-1 items-end justify-center px-3 pt-3">{portrait}</span>
+      <span
+        className={`relative flex w-full flex-1 justify-center px-3 ${centered ? 'items-center py-2' : 'items-end pt-3'}`}
+      >
+        {portrait}
+      </span>
       <span className="relative w-full border-t-[3px] border-[var(--outline)] bg-gradient-to-b from-[var(--af-gray-500)] to-[var(--af-gray-700)] px-2 py-1.5 text-center">
         <span className="font-display text-toon block truncate text-xl tracking-wide">{name}</span>
         {caption && <span className="text-on-color block text-sm font-bold">{caption}</span>}
@@ -62,22 +69,9 @@ export function CharacterCard({
   );
 }
 
-/** Héros en entier (pose d'attente), sinon portrait, sinon silhouette provisoire. */
+/** Héros en entier, dans son animation sur place (bande de 8 images). */
 export function HeroPortrait({ hero, size = 120 }: { readonly hero: HeroId; readonly size?: number }) {
-  const src = deliveredSrc(`characters-${hero}-pose-idle`) ?? assetSrc(`characters-${hero}-portrait`);
-  return src ? (
-    <img
-      src={src}
-      alt=""
-      aria-hidden
-      width={size}
-      height={size}
-      draggable={false}
-      decoding="async"
-      className="object-contain"
-      style={{ width: size, height: size }}
-    />
-  ) : null;
+  return <CharacterSprite hero={hero} state="idle" height={size} />;
 }
 
 /** Carte d'un héros jouable. */
