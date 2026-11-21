@@ -45,6 +45,42 @@ describe('outils de réponse', () => {
     expect(onSubmit).toHaveBeenCalledWith({ kind: 'number', text: '4' });
   });
 
+  it('clavier physique : chiffres et Entrée, « ? » quand rien n’est saisi', async () => {
+    const q = generate('m5-tables', 1, 1);
+    const onUnknown = vi.fn();
+    const onSubmit = vi.fn();
+    render(
+      <QuestionTools
+        question={q}
+        skill={getSkill(q.skillId)}
+        picked={null}
+        onSubmit={onSubmit}
+        onUnknown={onUnknown}
+      />,
+    );
+    const user = userEvent.setup();
+    await user.keyboard('?');
+    expect(onUnknown).toHaveBeenCalledOnce();
+    await user.keyboard('42{Enter}');
+    expect(onSubmit).toHaveBeenCalledWith({ kind: 'number', text: '42' });
+  });
+
+  it('clavier physique : QCM avec 1, 2, 3… ou A, B, C…', async () => {
+    const q = find((x) => x.answer.kind === 'choice' && x.answer.options.length >= 3);
+    const { user, onSubmit } = tools(q);
+    await user.keyboard('2');
+    expect(onSubmit).toHaveBeenLastCalledWith({ kind: 'choice', index: 1 });
+    await user.keyboard('c');
+    expect(onSubmit).toHaveBeenLastCalledWith({ kind: 'choice', index: 2 });
+  });
+
+  it('clavier physique : fraction, « / » passe au dénominateur', async () => {
+    const q = find((x) => x.answer.kind === 'fraction');
+    const { user, onSubmit } = tools(q);
+    await user.keyboard('3/4{Enter}');
+    expect(onSubmit).toHaveBeenCalledWith({ kind: 'fraction', num: '3', den: '4' });
+  });
+
   it('calculatrice : calcul puis résultat envoyé dans la réponse', async () => {
     const q = generate('m5-disque', 1, 1);
     const { user } = tools(q);

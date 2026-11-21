@@ -99,6 +99,10 @@ export function QuestionTools({
             initialText={fill?.value}
             onUnknown={onUnknown}
           />
+          {/* Sur ordinateur (souris) : rappel que le clavier marche aussi. */}
+          <p className="text-muted mt-1 hidden shrink-0 text-center text-xs font-bold [@media(pointer:fine)]:block">
+            {keyboardTip(question)}
+          </p>
         </div>
         {activeTab === 'calculatrice' && (
           <Calculator state={calc} onChange={setCalc} grade={gradeOfSkill(question.skillId)} onUse={sendToAnswer} />
@@ -166,4 +170,18 @@ function BigDraft({
       </div>
     </div>
   );
+}
+
+/** Rappel du clavier physique, selon le type de réponse. */
+function keyboardTip(question: Question): string {
+  switch (question.answer.kind) {
+    case 'choice':
+      return 'Au clavier : 1, 2, 3… (ou A, B, C…) pour choisir.';
+    case 'fraction':
+      return 'Au clavier : chiffres, « / » pour passer au dénominateur, Entrée pour valider.';
+    case 'point':
+      return 'Touche un nœud du quadrillage, puis OK.';
+    default:
+      return 'Au clavier : tape ta réponse puis Entrée (« ? » pour un indice).';
+  }
 }

@@ -1,4 +1,5 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { keyIsForGame } from '../lib/keys.ts';
 import type { Question, Response } from '@questeo/content';
 import { MathText } from './MathText.tsx';
 import { applyKey } from './numpad.ts';
@@ -145,13 +146,26 @@ export function AnswerInput({
   );
 }
 
-/** QCM : une option par bouton (celle déjà essayée est grisée au 2e essai). */
+/** QCM : une option par bouton (celle déjà essayée est grisée au 2e essai). Au clavier : 1, 2, 3… ou A, B, C… */
 function ChoiceAnswer(p: {
   readonly options: readonly string[];
   readonly disabled: boolean;
   readonly excluded?: number;
   readonly onSubmit: (r: Response) => void;
 }) {
+  const { options, disabled, excluded, onSubmit } = p;
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (!keyIsForGame(e) || disabled || e.ctrlKey || e.metaKey || e.altKey) return;
+      const k = e.key.toLowerCase();
+      const i = /^[1-9]$/.test(k) ? Number(k) - 1 : /^[a-i]$/.test(k) ? k.charCodeAt(0) - 97 : -1;
+      if (i < 0 || i >= options.length || i === excluded) return;
+      e.preventDefault();
+      onSubmit({ kind: 'choice', index: i });
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [options, disabled, excluded, onSubmit]);
   return (
     <div
       className={`grid h-full auto-rows-[minmax(3.5rem,6.5rem)] content-center gap-3 overflow-y-auto ${p.options.length > 2 ? 'sm:grid-cols-2' : 'grid-cols-2'}`}
