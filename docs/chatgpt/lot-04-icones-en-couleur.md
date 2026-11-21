@@ -192,7 +192,7 @@ Style, fond et interdits : ceux du message de départ (une seule couleur de fond
 
 #### 24. Planche « medailles » (9 éléments)
 Enregistrer sous `assets-src/originals/sheets/medailles.png` · 1024×1024, grille 3×3 → chaque case finale 256×256
-Cases : 1 → `rewards/medals/bronze` · 2 → `rewards/medals/argent` · 3 → `rewards/medals/or` · 4 → `rewards/medals/platine` · 5 → `rewards/medals/none` · 6 → `rewards/collectibles/trophy` · 7 → `rewards/collectibles/record` · 8 → `rewards/collectibles/crown` · 9 → `rewards/collectibles/key`
+Cases : 1 → `rewards/medals/bronze` · 2 → `rewards/medals/argent` · 3 → `rewards/medals/or` · 4 → `rewards/medals/diamant` · 5 → `rewards/medals/none` · 6 → `rewards/collectibles/trophy` · 7 → `rewards/collectibles/record` · 8 → `rewards/collectibles/crown` · 9 → `rewards/collectibles/key`
 
 ```text
 Image 1024×1024 : planche de 9 éléments de jeu disposés sur une grille invisible de 3 colonnes × 3 lignes (cases de 341×341 px).
@@ -200,10 +200,10 @@ Ordre : de gauche à droite, puis de haut en bas. Chaque élément est centré d
 Cadrage de chaque élément : objet seul, centré, vu de face, marge de 10 % autour.
 Tous les éléments ont la même épaisseur de contour, la même lumière et la même échelle visuelle.
 
-1. médaille de bronze à ruban rouge, un galon gravé
-2. médaille d’argent à ruban cyan, deux galons gravés
-3. médaille d’or à ruban violet, trois galons gravés
-4. médaille de platine bleu glacé à ruban rose, diamant au centre
+1. médaille de bronze, atome gravé, lauriers, ruban rouge et or
+2. médaille d’argent, atome gravé, lauriers, ruban rouge et or
+3. médaille d’or, atome gravé, lauriers, ruban rouge et or
+4. médaille de diamant bleu-violet, cristal au sommet, lauriers de glace
 5. emplacement de médaille vide : cercle gris en pointillés
 6. trophée doré sur socle violet
 7. badge rond doré à bordure crantée (record battu)

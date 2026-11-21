@@ -144,10 +144,15 @@ export const ICONS: readonly (readonly [sheet: string, rows: readonly IconRow[]]
   [
     'medailles',
     [
-      ['rewards/medals/bronze', 'médaille de bronze à ruban rouge, un galon gravé', 1, 'medal-bronze'],
-      ['rewards/medals/argent', 'médaille d’argent à ruban cyan, deux galons gravés', 1, 'medal-argent'],
-      ['rewards/medals/or', 'médaille d’or à ruban violet, trois galons gravés', 1, 'medal-or'],
-      ['rewards/medals/platine', 'médaille de platine bleu glacé à ruban rose, diamant au centre', 1, 'medal-platine'],
+      ['rewards/medals/bronze', 'médaille de bronze, atome gravé, lauriers, ruban rouge et or', 1, 'medal-bronze'],
+      ['rewards/medals/argent', 'médaille d’argent, atome gravé, lauriers, ruban rouge et or', 1, 'medal-argent'],
+      ['rewards/medals/or', 'médaille d’or, atome gravé, lauriers, ruban rouge et or', 1, 'medal-or'],
+      [
+        'rewards/medals/diamant',
+        'médaille de diamant bleu-violet, cristal au sommet, lauriers de glace',
+        1,
+        'medal-platine',
+      ],
       ['rewards/medals/none', 'emplacement de médaille vide : cercle gris en pointillés', 1, 'medal-none'],
       ['rewards/collectibles/trophy', 'trophée doré sur socle violet', 1, 'trophy'],
       ['rewards/collectibles/record', 'badge rond doré à bordure crantée (record battu)', 2],
