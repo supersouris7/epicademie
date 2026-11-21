@@ -3,14 +3,22 @@ import { allSkillEntries, generate } from './catalog.ts';
 
 /** Statistiques des schémas ajoutés, sur tout le catalogue (3 niveaux × 10 graines). */
 function survey() {
-  const counts = { division: 0, unites: 0, rangs: 0, conversion: 0, none: 0 };
+  const counts: Record<string, number> = {
+    division: 0,
+    unites: 0,
+    rangs: 0,
+    conversion: 0,
+    fraction: 0,
+    droite: 0,
+    none: 0,
+  };
   const wrongDivision: string[] = [];
   for (const { skill } of allSkillEntries()) {
     for (const level of [1, 2, 3] as const) {
       for (let seed = 1; seed <= 10; seed++) {
         const q = generate(skill.id, level, seed);
         const kind = q.demo?.kind ?? 'none';
-        counts[kind]++;
+        counts[kind] = (counts[kind] ?? 0) + 1;
         if (q.demo?.kind === 'division' && q.demo.dividend < q.demo.divisor) wrongDivision.push(q.skillId);
       }
     }
@@ -25,6 +33,8 @@ describe('schémas d’explication', () => {
     expect(counts.division).toBeGreaterThan(50);
     expect(counts.unites).toBeGreaterThan(200);
     expect(counts.rangs).toBeGreaterThan(30);
+    expect(counts.fraction).toBeGreaterThan(200);
+    expect(counts.droite).toBeGreaterThan(100);
     expect(wrongDivision).toEqual([]);
   });
 
@@ -40,6 +50,6 @@ describe('schémas d’explication', () => {
         }
       }
     }
-    expect(found || counts.division > 0).toBe(true);
+    expect(found || (counts.division ?? 0) > 0).toBe(true);
   });
 });

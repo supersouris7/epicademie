@@ -1,6 +1,8 @@
 import type { Demo } from '@questeo/content';
 import { ConversionDemoView } from '../ConversionDemoView.tsx';
 import { DivisionDemo } from './DivisionDemo.tsx';
+import { FractionDemo } from './FractionDemo.tsx';
+import { NumberLineDemo } from './NumberLineDemo.tsx';
 import { PlaceValueDemo } from './PlaceValueDemo.tsx';
 import { UnitsDemo } from './UnitsDemo.tsx';
 
@@ -15,5 +17,9 @@ export function DemoView({ demo }: { readonly demo: Demo }) {
       return <UnitsDemo focus={demo.focus} />;
     case 'rangs':
       return <PlaceValueDemo value={demo.value} />;
+    case 'fraction':
+      return <FractionDemo parts={demo.parts} />;
+    case 'droite':
+      return <NumberLineDemo values={demo.values} />;
   }
 }

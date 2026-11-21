@@ -10,7 +10,13 @@ import type { Chapter, Demo, QuestionDraft } from './types.ts';
  */
 export function autoDemo(draft: QuestionDraft, chapter: Chapter): Demo | undefined {
   const text = `${draft.prompt} ${draft.steps.join(' ')}`.toLowerCase();
-  return divisionDemo(draft.prompt, text) ?? unitsDemo(text, chapter) ?? placeValueDemo(draft.prompt, text);
+  return (
+    divisionDemo(draft.prompt, text) ??
+    unitsDemo(text, chapter) ??
+    placeValueDemo(draft.prompt, text) ??
+    fractionDemo(draft.prompt, chapter) ??
+    numberLineDemo(draft.prompt, chapter)
+  );
 }
 
 const N = '(\\d[\\d\u202f ]*?)';
@@ -52,4 +58,25 @@ function placeValueDemo(prompt: string, text: string): Demo | undefined {
   const m = /(\d{1,4}),(\d{1,3})(?!\d)/.exec(prompt);
   if (!m) return undefined;
   return { kind: 'rangs', value: `${m[1]},${m[2]}` };
+}
+
+/** Fractions de l'énoncé ({3/4}, au plus 3), dessinées en parts (dénominateur jusqu'à 12, au plus une unité). */
+function fractionDemo(prompt: string, chapter: Chapter): Demo | undefined {
+  if (!chapter.id.includes('fraction')) return undefined;
+  const parts = [...prompt.matchAll(/\{(\d+)\/(\d+)\}/g)]
+    .map((m) => ({ num: Number(m[1]), den: Number(m[2]) }))
+    .filter((f) => f.den >= 2 && f.den <= 12 && f.num >= 1 && f.num <= f.den);
+  if (parts.length === 0 || parts.length > 3) return undefined;
+  return { kind: 'fraction', parts };
+}
+
+/** Nombres relatifs de l'énoncé, sur une droite graduée (chapitres des relatifs, entiers de −20 à 20). */
+function numberLineDemo(prompt: string, chapter: Chapter): Demo | undefined {
+  if (!chapter.id.includes('relatif')) return undefined;
+  const values = [...prompt.matchAll(/(?<![\d,])([−-]?\d+)(?![\d,])/g)].map((m) =>
+    Number((m[1] ?? '').replace('−', '-')),
+  );
+  const usable = [...new Set(values)].filter((v) => Number.isInteger(v) && Math.abs(v) <= 20);
+  if (usable.length < 1 || usable.length > 4 || !usable.some((v) => v < 0)) return undefined;
+  return { kind: 'droite', values: usable };
 }
