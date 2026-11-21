@@ -77,6 +77,8 @@ interface Battle {
 }
 
 export interface FakeApiOptions {
+  /** Compte admin dont la session d'administration n'est pas encore ouverte. */
+  readonly adminLocked?: boolean;
   /** Code PIN parent déjà choisi (null : aucun). */
   readonly pin?: string | null;
   readonly profiles?: readonly Profile[];
@@ -157,6 +159,8 @@ function authHandlers(options: FakeApiOptions) {
     parent: options.parent ?? true,
     email: 'parent@famille.test',
     pin: options.pin ?? null,
+    // Compte admin : session d'administration déjà ouverte, sauf si `adminLocked`.
+    adminOpen: Boolean(options.admin) && !options.adminLocked,
   };
   const me = () => {
     if (!session.loggedIn) throw new FakeError(401, 'UNAUTHORIZED', 'Connecte-toi pour continuer.');
@@ -170,6 +174,7 @@ function authHandlers(options: FakeApiOptions) {
       parent: session.parent,
       parentUntil: session.parent ? '2099-01-01T00:00:00.000Z' : null,
       hasPin: session.pin !== null,
+      adminUntil: session.adminOpen ? '2099-01-01T00:00:00.000Z' : null,
     };
   };
   const requireParent = () => {
@@ -204,6 +209,16 @@ function authHandlers(options: FakeApiOptions) {
       if ((body as { pin: string }).pin !== session.pin)
         throw new FakeError(401, 'UNAUTHORIZED', 'Code PIN incorrect.');
       session.parent = true;
+      return me();
+    },
+    openAdmin: ({ body }) => {
+      if ((body as { password: string }).password !== FAKE_PASSWORD)
+        throw new FakeError(401, 'UNAUTHORIZED', 'Mot de passe incorrect.');
+      session.adminOpen = true;
+      return me();
+    },
+    closeAdmin: () => {
+      session.adminOpen = false;
       return me();
     },
     lockParent: () => {

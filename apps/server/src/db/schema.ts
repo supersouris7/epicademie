@@ -94,6 +94,8 @@ export const authSessions = pgTable(
       .references(() => accounts.id, { onDelete: 'cascade' }),
     expiresAt: at('expires_at').notNull(),
     parentUntil: at('parent_until'),
+    /** Fin de la session d'administration (mot de passe redemandé à chaque ouverture, 15 min). */
+    adminUntil: at('admin_until'),
     createdAt: createdAt(),
   },
   (t) => [index('auth_sessions_account_idx').on(t.accountId), index('auth_sessions_expires_idx').on(t.expiresAt)],

@@ -54,6 +54,7 @@ export function accountsRepo(db: Executor) {
           tokenHash: authSessions.tokenHash,
           expiresAt: authSessions.expiresAt,
           parentUntil: authSessions.parentUntil,
+          adminUntil: authSessions.adminUntil,
           accountId: accounts.id,
           familyId: accounts.familyId,
           email: accounts.email,
@@ -67,6 +68,10 @@ export function accountsRepo(db: Executor) {
 
     async extendSession(tokenHash: string, expiresAt: Date): Promise<void> {
       await db.update(authSessions).set({ expiresAt }).where(eq(authSessions.tokenHash, tokenHash));
+    },
+
+    async setAdminUntil(tokenHash: string, adminUntil: Date | null): Promise<void> {
+      await db.update(authSessions).set({ adminUntil }).where(eq(authSessions.tokenHash, tokenHash));
     },
 
     async setParentPin(accountId: string, pinHash: string): Promise<void> {

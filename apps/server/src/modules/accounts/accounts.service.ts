@@ -18,6 +18,8 @@ export const PARENT_UNLOCK_MINUTES = 10;
 /** Code PIN parent : erreurs d'affilée permises avant blocage, et durée du blocage. */
 const PIN_MAX_FAILURES = 5;
 const PIN_LOCK_MINUTES = 15;
+/** Session d'administration : durée après confirmation du mot de passe. */
+const ADMIN_SESSION_MINUTES = 15;
 /** Validité d'un lien de réinitialisation. */
 export const RESET_LINK_MINUTES = 60;
 const MINUTE = 60_000;
@@ -53,14 +55,17 @@ export function createAccountsService({ db, clock, mailer, appUrl, sessionDays }
       parentPinHash?: string | null;
     },
     parentUntil: Date | null,
+    adminUntil: Date | null = null,
   ): Me => {
     const parent = parentUntil !== null && parentUntil > clock.now();
+    const admin = a.role === 'admin' && adminUntil !== null && adminUntil > clock.now();
     return {
       account: { id: a.id, email: a.email, role: a.role },
       family: { id: a.familyId },
       parent,
       parentUntil: parent ? parentUntil.toISOString() : null,
       hasPin: Boolean(a.parentPinHash),
+      adminUntil: admin ? adminUntil.toISOString() : null,
     };
   };
 
@@ -114,6 +119,8 @@ export function createAccountsService({ db, clock, mailer, appUrl, sessionDays }
         role: s.role,
         parentUntil: s.parentUntil,
         parent: s.parentUntil !== null && s.parentUntil > now,
+        adminUntil: s.adminUntil,
+        admin: s.role === 'admin' && s.adminUntil !== null && s.adminUntil > now,
         sessionHash: s.tokenHash,
       };
     },
@@ -123,6 +130,7 @@ export function createAccountsService({ db, clock, mailer, appUrl, sessionDays }
       return meOf(
         { id: actor.accountId, email: actor.email, role: actor.role, familyId: actor.familyId, ...account },
         actor.parentUntil,
+        actor.adminUntil,
       );
     },
 
@@ -157,6 +165,24 @@ export function createAccountsService({ db, clock, mailer, appUrl, sessionDays }
       const until = later(PARENT_UNLOCK_MINUTES * MINUTE);
       await repo.setParentUntil(actor.sessionHash, until);
       return meOf(account, until);
+    },
+
+    /** Ouvre une session d'administration (compte admin) : mot de passe redemandé, 15 minutes. */
+    async openAdmin(actor: Actor, password: string): Promise<Me> {
+      const account = await repo.findById(actor.accountId);
+      if (account?.role !== 'admin') throw new AppError('FORBIDDEN', 'Accès réservé à l’administration.');
+      if (!(await verifyPassword(password, account.passwordHash))) {
+        throw new AppError('UNAUTHORIZED', 'Mot de passe incorrect.');
+      }
+      const until = later(ADMIN_SESSION_MINUTES * MINUTE);
+      await repo.setAdminUntil(actor.sessionHash, until);
+      return meOf(account, actor.parentUntil, until);
+    },
+
+    /** Ferme la session d'administration. */
+    async closeAdmin(actor: Actor): Promise<Me> {
+      await repo.setAdminUntil(actor.sessionHash, null);
+      return this.me({ ...actor, admin: false, adminUntil: null });
     },
 
     /** Quitte l'Espace parent : les actions parent sont de nouveau verrouillées sur cet appareil. */
