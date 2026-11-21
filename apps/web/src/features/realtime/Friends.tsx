@@ -72,7 +72,7 @@ export function Friends({ profile }: { readonly profile: Profile }) {
             onChange={(e) => setCode(e.target.value.toUpperCase())}
             maxLength={8}
             autoComplete="off"
-            placeholder="Son code (6 caractères)"
+            placeholder="Son code"
             className="cartoon bg-surface font-display min-h-14 px-4 text-2xl tracking-[0.15em] outline-none focus:ring-4 focus:ring-[var(--primary)]"
           />
         </label>
