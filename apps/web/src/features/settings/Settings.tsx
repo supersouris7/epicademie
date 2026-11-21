@@ -1,3 +1,4 @@
+import { PinSettings } from './PinSettings.tsx';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import type { Profile } from '@questeo/shared';
@@ -90,7 +91,8 @@ export function Settings({ profile }: { readonly profile: Profile }) {
         {confirming ? (
           <div className="cartoon bg-surface flex flex-col gap-3 p-4">
             <p className="text-lg font-bold">
-              Supprimer {profile.name} ? Toute sa progression sera perdue définitivement.
+              Supprimer {profile.name} ? Toute sa progression sera perdue définitivement. (Réservé au parent : le code
+              PIN sera demandé.)
             </p>
             <div className="flex gap-3">
               <GameButton variant="danger" disabled={remove.isPending} onClick={() => void deleteProfile()}>
@@ -111,6 +113,11 @@ export function Settings({ profile }: { readonly profile: Profile }) {
             Supprimer ce profil
           </GameButton>
         )}
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <h2 className="font-display text-2xl tracking-wide">Espace parent</h2>
+        <PinSettings />
       </section>
 
       <section className="flex flex-col gap-3">

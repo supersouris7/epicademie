@@ -32,6 +32,13 @@ export function accountsRoutes(
       reply.header('set-cookie', serializeCookie(SESSION_COOKIE, '', { secure: cookie.secure, maxAge: 0 }));
     });
     route(app, api.me, async ({ actor }) => service.me(actor()));
+    route(app, api.setParentPin, ({ actor, body }) => service.setParentPin(actor(), body.password, body.pin), {
+      config: STRICT,
+    });
+    route(app, api.unlockParentPin, ({ actor, body }) => service.unlockParentPin(actor(), body.pin), {
+      config: STRICT,
+    });
+    route(app, api.lockParent, ({ actor }) => service.lockParent(actor()));
     route(app, api.confirmParent, ({ actor, body }) => service.confirmParent(actor(), body.password), {
       config: STRICT,
     });

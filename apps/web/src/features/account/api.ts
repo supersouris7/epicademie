@@ -12,6 +12,9 @@ export const signup = (input: Signup) => request(api.signup, { body: input });
 export const login = (input: Login) => request(api.login, { body: input });
 export const logout = () => request(api.logout);
 export const confirmParent = (password: string) => request(api.confirmParent, { body: { password } });
+export const unlockParentPin = (pin: string) => request(api.unlockParentPin, { body: { pin } });
+export const setParentPin = (password: string, pin: string) => request(api.setParentPin, { body: { password, pin } });
+export const lockParent = () => request(api.lockParent);
 export const forgotPassword = (email: string) => request(api.forgotPassword, { body: { email } });
 export const resetPassword = (token: string, password: string) =>
   request(api.resetPassword, { body: { token, password } });

@@ -31,6 +31,10 @@ export const LoginSchema = z.object({ email: EmailSchema, password: z.string().m
 export type Login = z.infer<typeof LoginSchema>;
 
 export const PasswordConfirmSchema = z.object({ password: z.string().min(1).max(200) });
+/** Code PIN de l'Espace parent : 4 chiffres. */
+export const ParentPinSchema = z.string().regex(/^\d{4}$/, 'Le code PIN a 4 chiffres.');
+export const ParentPinSetSchema = z.object({ password: z.string().min(1).max(200), pin: ParentPinSchema });
+export const ParentPinUnlockSchema = z.object({ pin: ParentPinSchema });
 export const PasswordForgotSchema = z.object({ email: EmailSchema });
 export const PasswordResetSchema = z.object({ token: z.string().min(20).max(200), password: PasswordSchema });
 
@@ -42,5 +46,7 @@ export const MeSchema = z.object({
   parent: z.boolean(),
   /** Fin du déverrouillage parent (ISO), ou null. */
   parentUntil: z.string().nullable(),
+  /** Un code PIN parent est choisi (sinon : mot de passe du compte). */
+  hasPin: z.boolean(),
 });
 export type Me = z.infer<typeof MeSchema>;

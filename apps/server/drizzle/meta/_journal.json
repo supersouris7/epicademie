@@ -99,6 +99,13 @@
       "when": 1795320000000,
       "tag": "0013_avatars",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1795330000000,
+      "tag": "0014_pin_parent",
+      "breakpoints": true
     }
   ]
 }

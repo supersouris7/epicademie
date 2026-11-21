@@ -91,19 +91,30 @@ describe('lecture du suivi pour un parent', () => {
 describe('espace parent', () => {
   it('mot de passe demandé, puis carte de chaque enfant et détail', async () => {
     const { user } = renderApp('/parent', { parent: false, learning: report });
-    await user.type(await screen.findByLabelText('Mot de passe'), FAKE_PASSWORD);
-    await user.click(screen.getByRole('button', { name: 'Ouvrir l’espace parent' }));
+    await user.type(await screen.findByLabelText(/Mot de passe/), FAKE_PASSWORD);
+    await user.click(screen.getByRole('button', { name: 'Ouvrir l’Espace parent' }));
     const card = await screen.findByRole('listitem', { name: 'Progrès de Léa' });
-    expect(card).toHaveTextContent('Matières travaillées : Maths');
+    expect(card).toHaveTextContent('Matières : Maths');
     expect(card).toHaveTextContent('À retravailler : Priorités opératoires');
     // Amis d'autres familles : validés ici par le parent.
     expect(screen.getByRole('heading', { name: 'Amis d’autres familles' })).toBeInTheDocument();
     expect(await screen.findByText('Aucune demande pour l’instant.')).toBeInTheDocument();
-    await user.click(within(card).getByRole('link', { name: /Voir le détail/ }));
+    await user.click(within(card).getByRole('link', { name: /Voir le suivi/ }));
     expect(await screen.findByRole('heading', { name: 'Bilan de la semaine' })).toBeInTheDocument();
     await user.click(screen.getByText(/Maths —/));
     expect(screen.getByText(/Erreur fréquente : La multiplication/)).toBeInTheDocument();
     expect(screen.getByText(/en baisse/)).toBeInTheDocument();
+  });
+
+  it('code PIN : l’Espace parent s’ouvre avec les 4 chiffres, et « Se déconnecter » le referme', async () => {
+    const { user } = renderApp('/parent', { parent: false, pin: '2580', learning: report });
+    expect(await screen.findByText('Code PIN parent')).toBeInTheDocument();
+    for (const k of ['1', '1', '1', '1']) await user.click(screen.getByRole('button', { name: k }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('incorrect');
+    for (const k of ['2', '5', '8', '0']) await user.click(screen.getByRole('button', { name: k }));
+    expect(await screen.findByRole('listitem', { name: 'Progrès de Léa' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Se déconnecter' }));
+    expect(await screen.findByRole('button', { name: /Nouveau joueur/ })).toBeInTheDocument();
   });
 
   it('séance ciblée : les notions choisies deviennent une série pour l’enfant', async () => {

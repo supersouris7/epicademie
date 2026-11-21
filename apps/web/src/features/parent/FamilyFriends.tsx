@@ -36,8 +36,8 @@ export function FamilyFriends() {
     onError: fail,
   });
   return (
-    <section aria-labelledby="amis" className="cartoon bg-surface flex flex-col gap-3 p-4">
-      <h2 id="amis" className="font-display text-2xl tracking-wide">
+    <section aria-labelledby="amis" className="bg-surface rounded-2xl shadow-sm flex flex-col gap-3 p-4">
+      <h2 id="amis" className="text-lg font-bold">
         Amis d’autres familles
       </h2>
       <p className="text-muted text-sm font-bold">

@@ -72,12 +72,12 @@ describe('verrou parent', () => {
     await user.click(screen.getByRole('button', { name: /C’est parti/ }));
 
     const gate = await screen.findByRole('dialog', { name: 'Espace parent' });
-    await user.type(within(gate).getByLabelText('Mot de passe'), 'faux');
-    await user.click(within(gate).getByRole('button', { name: 'Valider' }));
+    await user.type(within(gate).getByLabelText(/Mot de passe/), 'faux');
+    await user.click(within(gate).getByRole('button', { name: 'Ouvrir l’Espace parent' }));
     expect(await within(gate).findByRole('alert')).toHaveTextContent('incorrect');
-    await user.clear(within(gate).getByLabelText('Mot de passe'));
-    await user.type(within(gate).getByLabelText('Mot de passe'), FAKE_PASSWORD);
-    await user.click(within(gate).getByRole('button', { name: 'Valider' }));
+    await user.clear(within(gate).getByLabelText(/Mot de passe/));
+    await user.type(within(gate).getByLabelText(/Mot de passe/), FAKE_PASSWORD);
+    await user.click(within(gate).getByRole('button', { name: 'Ouvrir l’Espace parent' }));
 
     await waitFor(() => expect([...server.profiles.values()].some((p) => p.name === 'Noé')).toBe(true));
     expect(screen.queryByRole('dialog', { name: 'Espace parent' })).not.toBeInTheDocument();

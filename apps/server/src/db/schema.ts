@@ -65,6 +65,11 @@ export const accounts = pgTable(
     email: text('email').notNull(),
     passwordHash: text('password_hash').notNull(),
     role: text('role').$type<AccountRole>().notNull().default('parent'),
+    /** Code PIN de l'Espace parent (empreinte scrypt), null tant qu'il n'est pas choisi. */
+    parentPinHash: text('parent_pin_hash'),
+    /** Erreurs de PIN d'affilée, et blocage après 5 erreurs. */
+    pinFailures: integer('pin_failures').notNull().default(0),
+    pinLockedUntil: timestamp('pin_locked_until', { withTimezone: true }),
     createdAt: createdAt(),
   },
   (t) => [

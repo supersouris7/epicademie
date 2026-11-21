@@ -6,13 +6,13 @@ export function WeakPoints({ report }: { readonly report: LearningReport }) {
   const weak = weakPoints(report);
   return (
     <section aria-labelledby="points-faibles" className="flex flex-col gap-2">
-      <h2 id="points-faibles" className="font-display text-2xl tracking-wide">
+      <h2 id="points-faibles" className="text-lg font-bold">
         Points faibles
       </h2>
       {weak.length === 0 ? (
         <p>Aucun point faible marqué pour l’instant.</p>
       ) : (
-        <table className="cartoon bg-surface w-full overflow-hidden text-left">
+        <table className="bg-surface rounded-2xl shadow-sm w-full overflow-hidden text-left">
           <thead className="bg-surface-2">
             <tr>
               <th className="p-2">Notion</th>
