@@ -11,14 +11,16 @@ import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import { SpeechBubble } from '../../shared/ui/SpeechBubble.tsx';
 import { useToast } from '../../shared/ui/Toast.tsx';
+import { ChestReveal } from '../../shared/ui/game/ChestReveal.tsx';
 import { bestScore, SURVIE_HEARTS, type DefiId } from './rules.ts';
 import { useDefi } from './useDefi.ts';
 
 const TITLES: Record<DefiId, string> = { chrono: 'Contre-la-montre', survie: 'Survie' };
 const RULES: Record<DefiId, string> = {
-  chrono: '60 secondes pour donner un maximum de bonnes réponses. Une erreur ne coûte rien : on passe à la suivante !',
+  chrono:
+    '60 secondes pour donner un maximum de bonnes réponses. Une erreur ne coûte rien : on passe à la suivante ! Coffre dès 8 bonnes réponses, meilleur à 15, 22 et 30.',
   survie:
-    '3 cœurs. Chaque erreur coûte un cœur, et ça devient plus dur toutes les 5 bonnes réponses. Tiens le plus longtemps possible !',
+    '3 cœurs. Chaque erreur coûte un cœur, et ça devient plus dur toutes les 5 bonnes réponses. Coffre dès 5 bonnes réponses, meilleur à 10, 15 et 20.',
 };
 
 /**
@@ -163,6 +165,7 @@ function Results(p: {
         </p>
       )}
       {p.saving && <p>Enregistrement…</p>}
+      {p.summary?.chest && <ChestReveal chest={p.summary.chest} />}
       <div className="flex flex-wrap justify-center gap-2">
         <GameButton onClick={() => window.location.reload()}>Rejouer</GameButton>
         <GameButton variant="surface" onClick={() => void navigate('/hub')}>

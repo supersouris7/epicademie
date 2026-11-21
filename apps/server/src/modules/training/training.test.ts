@@ -29,12 +29,15 @@ beforeEach(async () => {
   profileId = res.json<Profile>().id;
 });
 
-const start = async (skillId: string | null = 'm5-tables') =>
+const start = async (
+  skillId: string | null = 'm5-tables',
+  mode: 'entrainement' | 'chrono' | 'survie' = 'entrainement',
+) =>
   (
     await app.inject({
       method: 'POST',
       url: '/api/v1/sessions',
-      payload: { profileId, mode: 'entrainement', subject: 'maths', chapterId: 'm5-calcul', skillId },
+      payload: { profileId, mode, subject: 'maths', chapterId: 'm5-calcul', skillId },
     })
   ).json<{ id: string }>().id;
 
@@ -141,6 +144,21 @@ describe('parties d’entraînement', () => {
     ).json<SessionSummary>();
     expect(got.perfect).toBe(false);
     expect(got.chest).not.toBeNull();
+  });
+
+  it('défis : coffre selon le score et bonus d’XP de fin (Survie : 5 bonnes réponses = coffre commun)', async () => {
+    const few = await start('m5-tables', 'survie');
+    for (let seed = 1; seed <= 4; seed++) await answer(few, seed, true);
+    const none = (await app.inject({ method: 'POST', url: `/api/v1/sessions/${few}/finish` })).json<SessionSummary>();
+    expect(none.chest).toBeNull();
+
+    const id = await start('m5-tables', 'survie');
+    let perAnswer = 0;
+    for (let seed = 1; seed <= 6; seed++) perAnswer += (await answer(id, seed, true)).xp;
+    await answer(id, 7, false);
+    const got = (await app.inject({ method: 'POST', url: `/api/v1/sessions/${id}/finish` })).json<SessionSummary>();
+    expect(got.chest?.rarity).toBe('commun');
+    expect(got.xpGained).toBe(perAnswer + 12);
   });
 
   it('« Je ne sais pas » : compté comme une erreur', async () => {

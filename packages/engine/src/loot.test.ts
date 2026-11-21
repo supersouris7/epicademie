@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { bossChest, bossRarity, fillChest, rollRarity, trainingChest } from './loot.ts';
+import {
+  bossChest,
+  bossRarity,
+  defiBonusXp,
+  defiChest,
+  defiRarity,
+  fillChest,
+  rollRarity,
+  trainingChest,
+} from './loot.ts';
 
 const seq = (...values: number[]) => {
   let i = 0;
@@ -60,5 +69,19 @@ describe('coffres d’équipement', () => {
     const chest = fillChest('epique', seq(0, 0, 0.1, 0), new Set(['alex', 'lina']));
     expect(chest.hero).toMatchObject({ duplicate: true });
     expect(chest.coins).toBe(40 + 60);
+  });
+
+  it('défis : coffre selon le score (Contre-la-montre 8/15/22/30, Survie 5/10/15/20) et bonus d’XP', () => {
+    expect(defiRarity('chrono', 7)).toBeNull();
+    expect(defiRarity('chrono', 8)).toBe('commun');
+    expect(defiRarity('chrono', 15)).toBe('rare');
+    expect(defiRarity('chrono', 29)).toBe('epique');
+    expect(defiRarity('chrono', 40)).toBe('legendaire');
+    expect(defiRarity('survie', 4)).toBeNull();
+    expect(defiRarity('survie', 10)).toBe('rare');
+    expect(defiChest('survie', 20, seq(0.5, 0.99))?.rarity).toBe('legendaire');
+    expect(defiChest('chrono', 3, seq(0.5))).toBeNull();
+    expect(defiBonusXp(10)).toBe(20);
+    expect(defiBonusXp(100)).toBe(60);
   });
 });

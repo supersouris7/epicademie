@@ -6,6 +6,9 @@ import {
   newSkillState,
   PERFECT_BONUS,
   trainingChest,
+  defiBonusXp,
+  defiChest,
+  type DefiKind,
   type SeriesResult,
   scoreOn20,
   seriesLength,
@@ -40,6 +43,12 @@ import { disabledSkills } from '../pedagogy/index.ts';
  */
 
 export const SESSION_NOT_FOUND = 'Partie introuvable';
+
+/** Défi joué (Contre-la-montre, Survie), sinon null. */
+const defiOf = (mode: string): DefiKind | null => (mode === 'chrono' || mode === 'survie' ? mode : null);
+/** Bonus d'XP de fin : selon le score pour un défi, sinon le bonus du sans-faute. */
+const finishBonus = (defi: DefiKind | null, perfect: boolean, correct: number) =>
+  defi ? defiBonusXp(correct) : perfect ? PERFECT_BONUS : 0;
 const UNKNOWN_SKILL = 'Notion inconnue';
 const BOSS_ELSEWHERE = 'Combat de boss : utiliser /battles';
 
@@ -62,6 +71,44 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
   const openChest = async (tx: Tx, profileId: string, series: SeriesResult): Promise<Chest | null> => {
     const rolled = trainingChest(series, random.float, new Set(await profilesRepo(tx).heroes(profileId)));
     return rolled && grantChest(tx, profileId, rolled);
+  };
+
+  /** Coffre de fin de défi : selon le nombre de bonnes réponses (aucun sous le minimum). */
+  const openDefiChest = async (tx: Tx, profileId: string, kind: DefiKind, correct: number): Promise<Chest | null> => {
+    const rolled = defiChest(kind, correct, random.float, new Set(await profilesRepo(tx).heroes(profileId)));
+    return rolled && grantChest(tx, profileId, rolled);
+  };
+
+  /**
+   * Coffre de fin de partie : défi → selon le score ; entraînement → seulement une série complète
+   * entièrement juste (une question rattrapée au 2e essai compte comme trouvée).
+   */
+  const chestOf = async (
+    tx: Tx,
+    profileId: string,
+    p: {
+      readonly sessionId: string;
+      readonly defi: DefiKind | null;
+      readonly regular: readonly { readonly correct: boolean; readonly skillId: string; readonly seed: number }[];
+      readonly correct: number;
+      readonly complete: boolean;
+    },
+  ): Promise<Chest | null> => {
+    if (p.defi) return openDefiChest(tx, profileId, p.defi, p.correct);
+    if (!p.complete) return null;
+    const solved = await solvedCount(trainingRepo(tx), p.sessionId, p.regular);
+    return openChest(tx, profileId, { total: p.regular.length, solved, firstTry: p.correct });
+  };
+
+  /** Questions de la série trouvées : justes du 1er coup, ou rattrapées au 2e essai (indice). */
+  const solvedCount = async (
+    repo: ReturnType<typeof trainingRepo>,
+    sessionId: string,
+    regular: readonly { readonly correct: boolean; readonly skillId: string; readonly seed: number }[],
+  ) => {
+    const secondTries = (await repo.attemptsOf(sessionId)).filter((a) => a.attempt === 2 && a.correct);
+    return regular.filter((r) => r.correct || secondTries.some((a) => a.skillId === r.skillId && a.seed === r.seed))
+      .length;
   };
 
   return {
@@ -162,7 +209,10 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
         // Série de 5 en calcul de tête (toutes les notions « mental »), sinon de 4.
         const length = seriesLength(regular.every((r) => getSkill(r.skillId)?.mental === true));
         const perfect = regular.length >= length && regularCorrect === regular.length;
-        const xpGained = rows.reduce((s, r) => s + r.xp, 0) + (perfect ? PERFECT_BONUS : 0);
+        // Défis : bonus de fin selon le score (le sans-faute n'y a pas de sens, la série est sans fin).
+        const defi = defiOf(session.mode);
+        const bonus = finishBonus(defi, perfect, regularCorrect);
+        const xpGained = rows.reduce((s, r) => s + r.xp, 0) + bonus;
         const coinsGained = coinsForXp(xpGained);
 
         // Répétition espacée : une mise à jour par notion jouée.
@@ -201,14 +251,13 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
         const profiles = profilesRepo(tx);
         const profile = await profiles.findForUpdate(session.profileId);
         if (!profile) throw notFound(PROFILE_NOT_FOUND);
-        const secondTries = (await repo.attemptsOf(sessionId)).filter((a) => a.attempt === 2 && a.correct);
-        const solved = regular.filter(
-          (r) => r.correct || secondTries.some((a) => a.skillId === r.skillId && a.seed === r.seed),
-        ).length;
-        const chest =
-          regular.length >= length
-            ? await openChest(tx, profile.id, { total: regular.length, solved, firstTry: regularCorrect })
-            : null;
+        const chest = await chestOf(tx, profile.id, {
+          sessionId,
+          defi,
+          regular,
+          correct: regularCorrect,
+          complete: regular.length >= length,
+        });
         await profiles.credit(profile.id, {
           xp: xpGained,
           coins: coinsGained + (chest?.coins ?? 0),

@@ -86,3 +86,34 @@ export function trainingChest(
 export function bossChest(medal: BossMedal, random: () => number, owned: ReadonlySet<HeroId> = new Set()): Chest {
   return fillChest(bossRarity(medal, random()), random, owned);
 }
+
+/**
+ * Défis (décision du 21/11/2026) : un coffre dès un score minimum, meilleur avec le score.
+ * Contre-la-montre : 8 / 15 / 22 / 30 bonnes réponses ; Survie : 5 / 10 / 15 / 20.
+ */
+export const DEFI_CHEST_STEPS = {
+  chrono: [8, 15, 22, 30],
+  survie: [5, 10, 15, 20],
+} as const satisfies Record<string, readonly [number, number, number, number]>;
+
+export type DefiKind = keyof typeof DEFI_CHEST_STEPS;
+
+/** Rareté du coffre d'un défi selon le nombre de bonnes réponses (null sous le minimum). */
+export function defiRarity(kind: DefiKind, correct: number): ChestRarity | null {
+  const reached = DEFI_CHEST_STEPS[kind].filter((step) => correct >= step).length;
+  return reached === 0 ? null : (CHEST_RARITIES[reached - 1] ?? 'commun');
+}
+
+/** Coffre de fin de défi (null sous le score minimum). */
+export function defiChest(
+  kind: DefiKind,
+  correct: number,
+  random: () => number,
+  owned: ReadonlySet<HeroId> = new Set(),
+): Chest | null {
+  const rarity = defiRarity(kind, correct);
+  return rarity ? fillChest(rarity, random, owned) : null;
+}
+
+/** Bonus d'XP de fin de défi : 2 par bonne réponse, au plus 60. */
+export const defiBonusXp = (correct: number) => Math.min(60, 2 * correct);

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { assetSrc } from '../../design/assets.ts';
 import { markEmperorSeen } from './emperor.ts';
@@ -9,13 +9,10 @@ const LINES = {
   reliques: '…et avec ce savoir, je vais conquérir le monde ! Mouahahaha !',
 } as const;
 
-/** Durée de chaque temps avant de passer tout seul au suivant (un toucher avance plus vite). */
-const STAGE_MS = 4500;
-
 /**
  * L'Empereur du Savoir, grand boss final, maître des boss des matières : plein écran en deux temps
  * (lui seul, puis entouré des symboles des matières qui apparaissent). Sans bouton : un toucher
- * avance, sinon chaque temps passe tout seul.
+ * sur l'écran fait passer chaque étape (rien ne passe tout seul).
  */
 export function EmperorScene({ profileId, onDone }: { readonly profileId: string; readonly onDone: () => void }) {
   const reduce = useReducedMotion();
@@ -25,15 +22,8 @@ export function EmperorScene({ profileId, onDone }: { readonly profileId: string
     markEmperorSeen(profileId);
     onDone();
   };
+  // On avance seulement en touchant l'écran (aux deux étapes) : le temps de lire.
   const next = () => (stage === 'seul' ? setStage('reliques') : done());
-  const latest = useRef(next);
-  useEffect(() => {
-    latest.current = next;
-  });
-  useEffect(() => {
-    const t = window.setTimeout(() => latest.current(), STAGE_MS);
-    return () => window.clearTimeout(t);
-  }, [stage]);
   const seul = assetSrc('bosses-empereur-empereur');
   const avec = assetSrc('bosses-empereur-empereur-reliques');
   const img = 'max-h-[58dvh] w-[min(92vw,560px)] object-contain';
@@ -98,6 +88,15 @@ export function EmperorScene({ profileId, onDone }: { readonly profileId: string
           {LINES[stage]}
         </Bubble>
       </motion.div>
+      <motion.p
+        key={`touche-${stage}`}
+        initial={{ opacity: 0 }}
+        animate={reduce ? { opacity: 1 } : { opacity: [0.4, 1, 0.4] }}
+        transition={{ delay: 1.2, duration: 1.6, repeat: reduce ? 0 : Infinity }}
+        className="font-display text-toon pointer-events-none relative text-xl"
+      >
+        Touche l’écran pour continuer
+      </motion.p>
     </div>
   );
 }

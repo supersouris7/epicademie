@@ -192,7 +192,7 @@ export const JOBS: readonly Job[] = [
     board: 'sorcier-pi-anim-attente.png',
     cols: 4,
     rows: 2,
-    mirror: true,
+    // Dessinée tournée vers la gauche : pas de miroir.
     target: 'bosses/sorcier-pi/anim-idle',
     height: 512,
   },
@@ -223,7 +223,7 @@ export const JOBS: readonly Job[] = [
     cols: 1,
     rows: 1,
     size: 640,
-    mirror: true,
+    // Dessinée tournée vers la gauche : pas de miroir.
     targets: ['bosses/sorcier-pi/portrait'],
   },
 ];
