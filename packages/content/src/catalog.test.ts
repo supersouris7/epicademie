@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CHAPTERS, generate } from './catalog.ts';
+import { battlePools, CHAPTERS, generate } from './catalog.ts';
 import { check } from './check.ts';
 import { eq, fmt, frac, toNumber } from './rational.ts';
 import type { Figure, Level, Question, Response } from './types.ts';
@@ -47,14 +47,16 @@ const withBoss = (c: (typeof CHAPTERS)[number]) => [...c.skills, ...(c.boss?.pro
 const cases = CHAPTERS.flatMap((c) => withBoss(c).map((s) => [c.id, s.id] as const));
 
 describe('catalogue', () => {
-  it('combat de boss : un boss par chapitre de maths, dans toutes les classes', () => {
-    const withB = CHAPTERS.filter((c) => c.boss);
-    // Les pilotes hors maths n'ont pas encore de boss (« À venir »).
-    for (const c of CHAPTERS.filter((x) => x.subject === 'maths')) expect(c.boss, c.id).toBeDefined();
-    for (const c of withB) {
+  it('combat de boss : dans chaque chapitre, toutes matières et toutes classes', () => {
+    for (const c of CHAPTERS) expect(c.boss, c.id).toBeDefined();
+    // Maths : problèmes et pièges écrits pour le boss.
+    for (const c of CHAPTERS.filter((x) => x.subject === 'maths')) {
       expect(c.boss?.problems.length, c.id).toBeGreaterThanOrEqual(2);
       expect(c.boss?.traps.length, c.id).toBeGreaterThanOrEqual(1);
     }
+    // Ailleurs : le boss pose les notions du chapitre (pas encore de questions dédiées).
+    const anglais = CHAPTERS.find((c) => c.subject === 'anglais');
+    expect(battlePools(anglais?.id ?? '')?.problems).toEqual(anglais?.skills.map((s) => s.id));
   });
 
   it('chaque chapitre porte le préfixe de sa matière et de sa classe (m5-, m6-, a5-…)', () => {

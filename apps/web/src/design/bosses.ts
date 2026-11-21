@@ -20,13 +20,31 @@ const SORCIER: BossIdentity = {
   sky: ['#3b1d6e', '#8a5cd6'],
 };
 
-/** Boss de chaque matière : le Sorcier π partout pour l'instant. */
-export const SUBJECT_BOSSES: Record<string, BossIdentity> = { maths: SORCIER };
+/**
+ * Boss de chaque matière (décision du 21/11/2026) : le Sorcier π et son π-bot seulement en maths.
+ * Les autres matières ont leur boss et leur mob, affichés en cadre provisoire tant que leurs
+ * planches ne sont pas livrées (noms à changer librement).
+ */
+const boss = (id: string, name: string, mob: string, sky: readonly [string, string]): BossIdentity => ({
+  id,
+  name,
+  mobs: [mob],
+  sky,
+});
+export const SUBJECT_BOSSES: Record<string, BossIdentity> = {
+  maths: SORCIER,
+  anglais: boss('lord-blabla', 'Lord Blablabla', 'pipelette', ['#1d3b6e', '#5c8ad6']),
+  espagnol: boss('senor-siesta', 'Señor Siesta', 'chili-bot', ['#6e1d1d', '#d6875c']),
+  physique: boss('professeur-kaboum', 'Professeur Kaboum', 'electron-zinzin', ['#1d4f6e', '#5cc4d6']),
+  geographie: boss('capitaine-boussole', 'Capitaine Boussole-Folle', 'globule-perdu', ['#1d6e3b', '#7ed65c']),
+  histoire: boss('chronos-grognon', 'Chronos le Grognon', 'sablier-fou', ['#5a3b1d', '#d6b35c']),
+};
 
 export const bossOfSubject = (subject: string): BossIdentity => SUBJECT_BOSSES[subject] ?? SORCIER;
 export const bossOf = (chapter: Pick<Chapter, 'subject'>) => bossOfSubject(chapter.subject);
 
-/** Tête du boss pour une expression (identifiant d'asset) ; le portrait si elle n'est pas livrée. */
+/** Tête du boss pour une expression (identifiant d'asset) ; le portrait si elle n'est pas livrée
+ * (et le cadre provisoire, via `characterSrc`, si le boss n'est pas encore dessiné). */
 export function bossHeadId(bossId: string, expression: BossExpression): string {
   const id = `bosses-${bossId}-head-${BOSS_FACE[expression]}`;
   return assetSrc(id) ? id : `bosses-${bossId}-portrait`;
@@ -49,9 +67,17 @@ export const randomArena = (): string => ARENAS[Math.floor(Math.random() * ARENA
 /** Mob affiché pour la question n°`turn` (cosmétique). */
 export const mobOf = (boss: BossIdentity, turn: number) => boss.mobs[turn % boss.mobs.length] ?? 'pi-bot';
 
+const MOB_NAMES: Record<string, string> = {
+  'pi-bot': 'π-bot',
+  pipelette: 'Pipelette',
+  'chili-bot': 'Chili-bot',
+  'electron-zinzin': 'Électron Zinzin',
+  'globule-perdu': 'Globule Perdu',
+  'sablier-fou': 'Sablier Fou',
+};
+
 /** Nom affiché d'un mob. */
-export const mobName = (mob: string) =>
-  mob === 'pi-bot' ? 'π-bot' : mob.charAt(0).toUpperCase() + mob.slice(1).replace(/-/g, ' ');
+export const mobName = (mob: string) => MOB_NAMES[mob] ?? mob.charAt(0).toUpperCase() + mob.slice(1).replace(/-/g, ' ');
 
 /** Tête d'un mob avec une expression (si elle est livrée), sinon son image entière. */
 export function mobHeadId(mob: string, face: PiBotHead): string {

@@ -1,6 +1,6 @@
 import type { BattleView } from '@questeo/shared';
 import type { ArenaEnemy, EnemyState } from '../../../shared/battle/BattleArena.tsx';
-import type { BossExpression, PiBotHead } from '../../../design/assets.ts';
+import { assetSrc, type BossExpression, type PiBotHead } from '../../../design/assets.ts';
 import {
   bossHeadId,
   bossIdleRange,
@@ -27,7 +27,10 @@ export const bossEnemy = (boss: BossIdentity, lives = 3): ArenaEnemy => ({
     ko: bossPoseId(boss.id, 'defeat'),
     shield: bossPoseId(boss.id, 'shield'),
   },
-  idleAnim: { anim: `bosses/${boss.id}/anim-idle`, range: bossIdleRange(lives) },
+  // Animation sur place seulement si le boss est dessiné (sinon : cadre provisoire).
+  ...(assetSrc(`bosses-${boss.id}-anim-idle`)
+    ? { idleAnim: { anim: `bosses/${boss.id}/anim-idle`, range: bossIdleRange(lives) } }
+    : {}),
 });
 
 /**

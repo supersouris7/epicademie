@@ -129,3 +129,9 @@ export function assetSrc(id: string): string | null {
   if (available.has(p.file)) return versioned(`/assets/${p.file}`);
   return p.fallback ? SVG_ASSETS[p.fallback].path : null;
 }
+
+/** Cadre provisoire d'un personnage dont l'image n'est pas encore livrée (boss, mob). */
+export const PLACEHOLDER_SRC = SVG_ASSETS['placeholder-boss'].path;
+
+/** Image d'un personnage, ou le cadre provisoire s'il n'est pas encore dessiné. */
+export const characterSrc = (id: string): string => assetSrc(id) ?? PLACEHOLDER_SRC;

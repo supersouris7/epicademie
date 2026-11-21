@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { AnimatePresence, motion, useReducedMotion, type TargetAndTransition } from 'motion/react';
 import { HERO_NAMES, type HeroId } from '@questeo/shared';
-import { assetSrc, type AnimationState } from '../../design/assets.ts';
+import { assetSrc, characterSrc, type AnimationState } from '../../design/assets.ts';
 import { CharacterSprite } from '../ui/game/CharacterSprite.tsx';
 import { Sprite } from '../ui/game/Sprite.tsx';
 import { useArenaImage } from './arena.ts';
@@ -236,7 +236,7 @@ function EnemyFigure({ enemy, state }: { readonly enemy: ArenaEnemy; readonly st
   // Une image par état quand elle est livrée ; sinon l'image d'attente, animée selon l'état.
   const src =
     (state !== 'idle' ? assetSrc(enemy.poses?.[state] ?? `${enemy.image}-${state}`) : null) ??
-    assetSrc(enemy.poses?.idle ?? enemy.image);
+    characterSrc(enemy.poses?.idle ?? enemy.image);
   return (
     <motion.div
       key={state}

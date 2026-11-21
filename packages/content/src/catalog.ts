@@ -9,13 +9,20 @@ import { GEOGRAPHIE_CHAPTERS } from './geographie/index.ts';
 import { HISTOIRE_CHAPTERS } from './histoire/index.ts';
 import type { Chapter, Level, Question, Skill } from './types.ts';
 
+/**
+ * Hors maths, pas encore de problèmes ni de pièges écrits pour les boss (décision du 21/11/2026) :
+ * le combat est ouvert quand même, le boss pose les notions du chapitre (voir `battlePools`).
+ */
+const withBattle = (chapters: readonly Chapter[]): Chapter[] =>
+  chapters.map((c) => (c.boss ? c : { ...c, boss: { problems: [], traps: [] } }));
+
 export const CHAPTERS: readonly Chapter[] = [
   ...MATHS_CHAPTERS,
-  ...ANGLAIS_CHAPTERS,
-  ...ESPAGNOL_CHAPTERS,
-  ...PHYSIQUE_CHAPTERS,
-  ...GEOGRAPHIE_CHAPTERS,
-  ...HISTOIRE_CHAPTERS,
+  ...withBattle(ANGLAIS_CHAPTERS),
+  ...withBattle(ESPAGNOL_CHAPTERS),
+  ...withBattle(PHYSIQUE_CHAPTERS),
+  ...withBattle(GEOGRAPHIE_CHAPTERS),
+  ...withBattle(HISTOIRE_CHAPTERS),
 ];
 
 const skills = new Map<string, { skill: Skill; chapter: Chapter }>();
@@ -109,11 +116,10 @@ export const bossChapters = () => CHAPTERS.filter((c) => c.boss);
 export function battlePools(chapterId: string) {
   const chapter = getChapter(chapterId);
   if (!chapter?.boss) return null;
-  return {
-    mobs: chapter.skills.map((s) => s.id),
-    problems: chapter.boss.problems.map((s) => s.id),
-    traps: chapter.boss.traps.map((s) => s.id),
-  };
+  const mobs = chapter.skills.map((s) => s.id);
+  const own = (list: readonly Skill[]) => (list.length > 0 ? list.map((s) => s.id) : mobs);
+  // Sans problèmes ni pièges écrits pour ce boss : il pose les notions du chapitre.
+  return { mobs, problems: own(chapter.boss.problems), traps: own(chapter.boss.traps) };
 }
 
 /** Génère la question (déterministe pour un triplet notion / niveau / graine). */

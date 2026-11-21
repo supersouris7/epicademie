@@ -26,7 +26,8 @@ import { useChapterAccess } from '../parent/index.ts';
 
 /** Chapitre réservé à l'abonnement familial. */
 const LOCKED = 'Ce chapitre fait partie de l’abonnement familial : demande à tes parents !';
-import { BOSS_MEDAL_ICONS, bossOfSubject } from '../../design/bosses.ts';
+import { BOSS_MEDAL_ICONS, bossHeadId, bossOfSubject } from '../../design/bosses.ts';
+import { characterSrc } from '../../design/assets.ts';
 import { BossCloseUp } from '../../shared/battle/BattleScenes.tsx';
 import { subjectTaunt } from '../../shared/lib/battleLines.ts';
 
@@ -165,7 +166,7 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
         <BossCloseUp
           bossId={boss.id}
           name={boss.name}
-          text={subjectTaunt(wins, profile.gender, roll)}
+          text={subjectTaunt(wins, profile.gender, roll, subject)}
           expression={wins === 0 ? 'moqueur' : 'colere'}
           onDone={() => setCloseUp(false)}
         />
@@ -187,8 +188,16 @@ interface BossRowProps {
 function BossRow({ chapter, index, record, locked, onFight, onSoon }: BossRowProps) {
   const enter = useEntrance();
   const ready = Boolean(chapter.boss);
+  const boss = bossOfSubject(chapter.subject);
   const body = (
     <>
+      {/* La tête du boss du chapitre (cadre provisoire s'il n'est pas encore dessiné), puis la médaille. */}
+      <img
+        src={characterSrc(bossHeadId(boss.id, 'menace'))}
+        alt=""
+        aria-hidden
+        className="h-14 w-14 shrink-0 object-contain"
+      />
       {record ? (
         <GameIcon
           id={BOSS_MEDAL_ICONS[record.bestMedal]}

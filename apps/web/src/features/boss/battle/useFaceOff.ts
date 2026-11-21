@@ -3,6 +3,7 @@ import type { Chapter } from '@questeo/content';
 import type { Profile } from '@questeo/shared';
 import { useBosses } from '../api.ts';
 import { faceOffTaunt } from '../../../shared/lib/battleLines.ts';
+import { bossOf } from '../../../design/bosses.ts';
 import { faceOffExchange, HERO_GENDER, type Exchange } from '../../../shared/lib/dialogue.ts';
 
 /**
@@ -13,8 +14,9 @@ export function useFaceOff(profile: Profile, chapter: Chapter): readonly Exchang
   const [roll] = useState(Math.random);
   const { data: overview } = useBosses(profile.id);
   const beaten = (overview?.records ?? []).some((r) => r.chapterId === chapter.id && r.wins > 0);
+  const bossId = bossOf(chapter).id;
   return useMemo(
-    () => faceOffExchange(profile.hero, faceOffTaunt(chapter.title, beaten, HERO_GENDER[profile.hero], roll)),
-    [profile.hero, chapter.title, beaten, roll],
+    () => faceOffExchange(profile.hero, faceOffTaunt(chapter.title, beaten, HERO_GENDER[profile.hero], roll), bossId),
+    [profile.hero, chapter.title, beaten, roll, bossId],
   );
 }

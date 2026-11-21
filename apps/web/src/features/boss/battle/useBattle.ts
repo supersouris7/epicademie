@@ -1,3 +1,4 @@
+import { bossOf } from '../../../design/bosses.ts';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { check, generate, getAnySkill, type Chapter, type Response } from '@questeo/content';
@@ -40,11 +41,11 @@ export function useBattle(profile: Profile, chapter: Chapter, notify: (message: 
     () =>
       createBattleReducer({
         hero: (moment) => heroSays(profile.hero, moment),
-        boss: bossSays,
+        boss: (moment) => bossSays(moment, bossOf(chapter).id),
         mob: mobSays,
         questy: questySays,
       }),
-    [profile.hero],
+    [profile.hero, chapter],
   );
   const [state, dispatch] = useReducer(reducer, initialBattleScreen);
   // Dernier état affiché, lu par les actions et les minuteurs (qui survivent aux rendus).
