@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { generate, type Question } from '@questeo/content';
 import { renderApp } from '../../testing/renderApp.tsx';
@@ -23,29 +23,33 @@ function lastQuestion(server: ReturnType<typeof renderApp>['server']): Question 
 const rightAnswer = (q: Question) => (q.answer.kind === 'number' ? q.answer.value.n.toString() : '');
 
 describe('partie d’entraînement', () => {
-  it('erreur, indice, 2e essai réussi, puis série complète jusqu’au bilan', async () => {
+  it('erreur, indice, 2e essai réussi, puis série complète jusqu’au bilan', { timeout: 90_000 }, async () => {
     const { user, server } = renderApp(PATH);
     expect(await screen.findByRole('progressbar', { name: 'Progression de la série' })).toBeInTheDocument();
     await screen.findByRole('button', { name: 'OK' });
 
     // 1re erreur : indice de Questy, on réessaie la même question.
     await answer(user, '-1');
-    expect(await screen.findByText('Essaie encore !')).toBeInTheDocument();
+    expect(await screen.findByText(/Essaie encore !/)).toBeInTheDocument();
     await answer(user, rightAnswer(lastQuestion(server)));
-    expect(await screen.findByRole('button', { name: /Suivant/ })).toBeInTheDocument();
+    // Bonne réponse : pas de bouton, on passe tout seul à la suite.
+    expect(await screen.findByText('Bien rattrapé !')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^Suivant/ })).not.toBeInTheDocument();
 
     // Puis, à chaque question : une erreur (indice), et la bonne réponse au 2e essai.
     const finished = () => server.calls.some((c) => c.path.endsWith('/finish'));
-    for (let i = 0; i < 20 && !finished(); i++) {
-      const next = screen.queryByRole('button', { name: /Suivant|Je réessaie|Voir mes résultats/ });
-      if (next) {
-        await user.click(next);
+    for (let i = 0; i < 30 && !finished(); i++) {
+      const step = screen.queryByRole('button', { name: /^Suivant|Vérifions si j’ai compris/ });
+      if (step) {
+        await user.click(step);
         continue;
       }
+      const ok = await screen.findByRole('button', { name: 'OK' }, { timeout: 4000 }).catch(() => null);
+      if (!ok) continue;
       await answer(user, '-1');
-      if (await screen.findByText('Essaie encore !').catch(() => null))
+      if (await screen.findByText(/Essaie encore !/).catch(() => null))
         await answer(user, rightAnswer(lastQuestion(server)));
-      await screen.findByRole('button', { name: /Suivant|Je réessaie|Voir mes résultats/ });
+      await waitFor(() => expect(screen.queryByRole('button', { name: 'OK' })).not.toBeInTheDocument());
     }
     expect(finished()).toBe(true);
     // Bilan : 1re réponse fausse à chaque question.

@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { HERO_NAMES, type HeroId } from '@questeo/shared';
 import { assetSrc, type HeroExpression } from '../../design/assets.ts';
 import { HeroFace } from './HeroFace.tsx';
+import { HUD_FRAME, HudBar as LifeBar, HudPortrait as Portrait } from '../ui/game/Hud.tsx';
 
 interface BattleBarProps {
   readonly hero: HeroId;
@@ -38,7 +39,7 @@ export function BattleBar(p: BattleBarProps) {
   const shake = (key: number, dir: 1 | -1) => (key && !reduce ? { x: [0, 8 * dir, -8 * dir, 4 * dir, 0] } : undefined);
   return (
     <header
-      className="border-outline relative flex shrink-0 items-center gap-2 rounded-2xl border-[3px] bg-[linear-gradient(180deg,#1b0f33,#2a1650)] px-2 py-1.5 text-white shadow-[0_4px_0_rgb(0_0_0/0.35)] sm:gap-3 sm:px-3"
+      className={`${HUD_FRAME} relative flex shrink-0 items-center gap-2 px-2 py-1.5 sm:gap-3 sm:px-3`}
       aria-label="Combat"
     >
       {/* Héros : portrait (tremble quand il est touché), nom, barre de vie, bouclier. */}
@@ -98,7 +99,7 @@ export function BattleBar(p: BattleBarProps) {
           role="progressbar"
           label={onBoss ? `Vies de ${p.enemyName}` : 'Mobs restants'}
           hit={p.shot}
-          boss={onBoss}
+          kind={onBoss ? 'boss' : 'life'}
         />
       </div>
       <motion.div
@@ -121,81 +122,5 @@ export function BattleBar(p: BattleBarProps) {
         </Portrait>
       </motion.div>
     </header>
-  );
-}
-
-/** Cadre du portrait, incliné vers le centre comme dans les jeux de combat. */
-function Portrait({ side, children }: { readonly side: 'left' | 'right'; readonly children: React.ReactNode }) {
-  return (
-    <div
-      className={`border-gold flex h-[60px] w-[60px] items-center justify-center overflow-hidden rounded-xl border-[3px] bg-[radial-gradient(circle_at_50%_35%,#5b3a9e,#1b0f33)] ${side === 'left' ? '-skew-x-6' : 'skew-x-6'}`}
-      style={{ borderColor: 'var(--gold)' }}
-    >
-      <div className={side === 'left' ? 'skew-x-6' : '-skew-x-6'}>{children}</div>
-    </div>
-  );
-}
-
-/**
- * Barre de vie de jeu de combat : segments, remplissage jaune→orange (rouge au dernier point),
- * traînée blanche qui rattrape la vie restante après un coup. Se vide vers le centre.
- */
-function LifeBar({
-  side,
-  value,
-  max,
-  label,
-  role,
-  hit,
-  boss = false,
-}: {
-  readonly side: 'left' | 'right';
-  readonly value: number;
-  readonly max: number;
-  readonly label: string;
-  readonly role: 'img' | 'progressbar';
-  readonly hit: number;
-  readonly boss?: boolean;
-}) {
-  const reduce = useReducedMotion();
-  const pct = max > 0 ? Math.max(0, Math.min(1, value / max)) * 100 : 0;
-  const low = value <= 1;
-  const fill = boss
-    ? 'linear-gradient(180deg,#ff6b6b,#c2183a)'
-    : low
-      ? 'linear-gradient(180deg,#ff8a7a,#e23b2e)'
-      : 'linear-gradient(180deg,#ffe066,#f59f00)';
-  const origin = side === 'left' ? 'right-0' : 'left-0';
-  const a11y =
-    role === 'progressbar'
-      ? { role, 'aria-label': label, 'aria-valuemin': 0, 'aria-valuemax': max, 'aria-valuenow': value }
-      : { role, 'aria-label': label };
-  return (
-    <div
-      {...a11y}
-      className={`relative h-4 w-full overflow-hidden rounded-sm border-2 border-black/70 bg-black/60 sm:h-5 ${side === 'left' ? '-skew-x-12' : 'skew-x-12'}`}
-    >
-      {/* Traînée des dégâts : rattrape la vie restante un peu après le coup. */}
-      <motion.div
-        key={`trail-${hit}`}
-        className={`absolute inset-y-0 ${origin} bg-white/80`}
-        initial={false}
-        animate={{ width: `${pct}%` }}
-        transition={{ delay: reduce ? 0 : 0.6, duration: reduce ? 0 : 0.5 }}
-      />
-      <motion.div
-        className={`absolute inset-y-0 ${origin} ${low && !reduce ? 'animate-pulse' : ''}`}
-        style={{ background: fill }}
-        initial={false}
-        animate={{ width: `${pct}%` }}
-        transition={{ duration: reduce ? 0 : 0.2 }}
-      />
-      {/* Séparations entre les points de vie. */}
-      <div className="absolute inset-0 flex" aria-hidden>
-        {Array.from({ length: max }, (_, i) => (
-          <span key={i} className="h-full flex-1 border-r-2 border-black/50 last:border-r-0" />
-        ))}
-      </div>
-    </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Sprite } from '../ui/game/Sprite.tsx';
 import { bossPoseId } from '../../design/bosses.ts';
 import { motion, useReducedMotion } from 'motion/react';
@@ -188,6 +188,9 @@ export function BossSays({
  * il provoque (son nom n'est pas écrit).
  * Un toucher n'importe où (ou le bouton) passe au choix du chapitre.
  */
+/** Durée du gros plan sur le boss avant fermeture automatique. */
+const CLOSE_UP_MS = 4000;
+
 export function BossCloseUp({
   bossId,
   name,
@@ -202,6 +205,15 @@ export function BossCloseUp({
   readonly onDone: () => void;
 }) {
   const reduce = useReducedMotion();
+  // Sans bouton : toucher l'écran passe le gros plan, sinon il se ferme tout seul.
+  const done = useRef(onDone);
+  useEffect(() => {
+    done.current = onDone;
+  }, [onDone]);
+  useEffect(() => {
+    const t = setTimeout(() => done.current(), CLOSE_UP_MS);
+    return () => clearTimeout(t);
+  }, []);
   // Le boss en grand (illustration en pied) ; sa tête si l'illustration n'est pas livrée.
   const src = assetSrc(bossPoseId(bossId, 'charge')) ?? bossPortrait(bossId, expression);
   return (
@@ -212,7 +224,7 @@ export function BossCloseUp({
       className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 overflow-hidden bg-[radial-gradient(circle_at_50%_38%,#7a1238_0%,#2a0b2e_45%,#0d0618_80%)] px-4 py-6 text-center"
     >
       {/* Toucher n'importe où passe le gros plan. */}
-      <button type="button" aria-label="Passer" onClick={onDone} className="absolute inset-0 cursor-pointer" />
+      <button type="button" aria-label="Passer" onClick={onDone} className="absolute inset-0 z-10 cursor-pointer" />
       <motion.div
         initial={reduce ? false : { scale: 1.8, opacity: 0 }}
         animate={reduce ? { opacity: 1 } : { scale: [1.8, 1, 1.04, 1], opacity: 1, x: [0, 0, -8, 8, -4, 0] }}
@@ -239,12 +251,6 @@ export function BossCloseUp({
           {text}
         </Bubble>
       </motion.p>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.3 }} className="relative">
-        {/* Le bouton se remplit en 5 s, puis appuie tout seul. */}
-        <AutoPress seconds={3} onDone={onDone}>
-          Choisir mon chapitre
-        </AutoPress>
-      </motion.div>
     </div>
   );
 }
@@ -427,42 +433,5 @@ export function QuipRow({
         </motion.div>
       )}
     </div>
-  );
-}
-
-/** Bouton qui se remplit pendant `seconds` puis s'appuie tout seul (on peut appuyer avant). */
-export function AutoPress({
-  seconds,
-  onDone,
-  children,
-}: {
-  readonly seconds: number;
-  readonly onDone: () => void;
-  readonly children: React.ReactNode;
-}) {
-  const [left, setLeft] = useState(seconds);
-  useEffect(() => {
-    if (left <= 0) {
-      onDone();
-      return;
-    }
-    const t = window.setTimeout(() => setLeft((n) => n - 1), 1000);
-    return () => window.clearTimeout(t);
-  }, [left, onDone]);
-  return (
-    <span className="relative inline-flex">
-      <GameButton variant="danger" size="lg" icon="icons-navigation-play" onClick={onDone}>
-        {children}
-      </GameButton>
-      {/* Jauge du temps restant, sous le bouton. */}
-      <span aria-hidden className="absolute inset-x-3 -bottom-2 h-1.5 overflow-hidden rounded-full bg-black/40">
-        <motion.span
-          className="bg-gold block h-full origin-left"
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: seconds, ease: 'linear' }}
-        />
-      </span>
-    </span>
   );
 }
