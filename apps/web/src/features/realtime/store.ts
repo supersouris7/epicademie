@@ -11,6 +11,7 @@ import type {
   OnlinePlayer,
   ServerToClientEvents,
 } from '@questeo/shared';
+import { REALTIME_REFUSALS } from '@questeo/shared';
 
 type RealtimeSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -80,6 +81,12 @@ export const useRealtime = create<RealtimeState>((set, get) => ({
       set({ refused: err.message, socket: null, profileId: null });
       socket.disconnect();
       // Retour à l'écran des profils.
+      window.dispatchEvent(new CustomEvent('questeo:refused'));
+    });
+    // Profil ouvert sur un autre appareil : cette connexion est fermée, retour au choix du joueur.
+    socket.on('replaced', () => {
+      set({ refused: REALTIME_REFUSALS.replaced, socket: null, profileId: null, arena: null });
+      socket.disconnect();
       window.dispatchEvent(new CustomEvent('questeo:refused'));
     });
     socket.on('chat', (message) =>

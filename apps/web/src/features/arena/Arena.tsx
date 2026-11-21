@@ -237,6 +237,7 @@ export function Countdown({ deadline }: { readonly deadline: number }) {
 function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly arena: ArenaView }) {
   const navigate = useNavigate();
   const answer = useRealtime((s) => s.answerArena);
+  const createArena = useRealtime((s) => s.createArena);
   const leave = useRealtime((s) => s.leaveArena);
   const q = arena.question;
   const question = useMemo(() => (q ? generate(q.skillId, q.level, q.seed) : null), [q]);
@@ -272,15 +273,31 @@ function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly are
           <div className="w-full max-w-lg text-left">
             <HeroSays hero={profile.hero} face={line.face} text={line.text} delay={0.3} />
           </div>
-          <GameButton
-            icon="icons-navigation-next"
-            onClick={() => {
-              leave();
-              void navigate('/multi');
-            }}
-          >
-            Retour
-          </GameButton>
+          <div className="flex flex-wrap justify-center gap-2">
+            {/* Rejouer : les mêmes joueurs sont réinvités tout de suite (même chapitre, même mode). */}
+            <GameButton
+              icon="icons-navigation-retry"
+              onClick={() =>
+                createArena(
+                  arena.chapterId,
+                  arena.players.filter((p) => p.id !== profile.id).map((p) => p.id),
+                  arena.kind,
+                )
+              }
+            >
+              Rejouer
+            </GameButton>
+            <GameButton
+              variant="surface"
+              icon="icons-navigation-next"
+              onClick={() => {
+                leave();
+                void navigate('/multi');
+              }}
+            >
+              Retour
+            </GameButton>
+          </div>
         </div>
       </PageShell>
     );
@@ -310,7 +327,7 @@ function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly are
       )}
       <div className="flex items-center gap-2">
         <span className="font-display flex-1 text-xl tracking-wide">
-          {turnLabel(quiz, canAnswer, myTurn, turnName)}
+          {arena.waitingFor ? `En attente de ${turnName} (déconnecté)…` : turnLabel(quiz, canAnswer, myTurn, turnName)}
         </span>
         {arena.deadline && <Countdown deadline={arena.deadline} />}
         <GameButton size="sm" variant="surface" onClick={leave}>

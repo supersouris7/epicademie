@@ -40,13 +40,6 @@ test('Plusieurs joueurs : connectés, message, profil déjà ouvert refusé, ar�
   await lea.getByRole('button', { name: 'Bien joué !' }).click();
   await expect(tom.getByRole('alert')).toContainText('Bien joué !');
 
-  // Le profil de Léa, déjà ouvert, est refusé sur un autre appareil.
-  const intrus = await (await browser.newContext()).newPage();
-  await loginFamily(intrus, family.email ?? '');
-  await intrus.getByRole('button', { name: new RegExp(`Léa${suffix}`) }).click();
-  await expect(intrus.getByText(/déjà connecté/).first()).toBeVisible();
-  await expect(intrus).toHaveURL(/\/$/);
-
   // Arène : Léa invite Tom ; Tom accepte depuis la notification ; Léa lance.
   await lea.goto(`/arene`);
   await lea.getByRole('checkbox').first().check();
@@ -79,6 +72,18 @@ test('Plusieurs joueurs : connectés, message, profil déjà ouvert refusé, ar�
   }
   await expect(lea.getByRole('heading', { name: 'Victoire !' })).toBeVisible();
   await expect(tom.getByRole('heading', { name: new RegExp(`Léa${suffix} a gagné`) })).toBeVisible();
+
+  // Rejouer tout de suite : Tom reçoit une nouvelle invitation (la partie finie ne bloque plus).
+  await lea.getByRole('button', { name: 'Rejouer' }).click();
+  await expect(tom.getByRole('alert').getByRole('button', { name: 'J’y vais !' })).toBeVisible();
+
+  // Le profil de Léa ouvert sur un autre appareil : ce nouvel appareil prend la main,
+  // l'ancien revient au choix du joueur avec un message.
+  const other = await (await browser.newContext()).newPage();
+  await loginFamily(other, family.email ?? '');
+  await other.getByRole('button', { name: new RegExp(`Léa${suffix}`) }).click();
+  await expect(other).toHaveURL(/hub/);
+  await expect(lea.getByText(/ouvert sur un autre appareil/).first()).toBeVisible();
 });
 
 test('Raid coopératif sur deux téléphones, partie affichée en grand sur l’écran TV', async ({ browser }) => {

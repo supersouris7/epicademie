@@ -118,7 +118,6 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
       .authorize(socket.handshake.headers.cookie, auth.data.profileId)
       .then((found) => {
         if (!found) next(new Error(REALTIME_REFUSALS.unknownProfile));
-        else if (presence.isOnline(found.profile.id)) next(new Error(REALTIME_REFUSALS.alreadyConnected));
         else {
           socket.data.profile = found.profile;
           socket.data.familyId = found.familyId;
@@ -147,12 +146,14 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
       return;
     }
     const profile = socket.data.profile;
-    // Deux connexions simultanées ont pu passer l'authentification : la seconde est refusée.
-    if (presence.isOnline(profile.id)) {
-      socket.disconnect(true);
-      return;
-    }
+    // Le dernier appareil prend la main (nouvel appareil, ou reconnexion après une coupure dont
+    // l'ancienne connexion n'est pas encore tombée) : l'ancienne est prévenue puis fermée.
+    const previous = presence.socketOf(profile.id);
     presence.join(socket, profile, socket.data.familyId, socket.data.friendIds);
+    if (previous && previous !== socket) {
+      previous.emit('replaced');
+      previous.disconnect(true);
+    }
     broadcastPresence();
     // Reconnexion pendant une arène : le joueur reprend sa place et reçoit l'état en cours.
     arenas.reconnected(profile.id);
@@ -216,8 +217,9 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
 
     socket.on('disconnect', () => {
       presence.leave(socket, profile.id);
-      // Pas d'élimination immédiate : quelques secondes pour revenir (voir ARENA_GRACE_MS).
-      arenas.disconnected(profile.id);
+      // Connexion remplacée par un autre appareil : le joueur est toujours là.
+      // Sinon, pas d'élimination immédiate : le temps de revenir (voir ARENA_GRACE_MS).
+      if (!presence.isOnline(profile.id)) arenas.disconnected(profile.id);
       metrics?.realtimeDisconnects.inc();
       broadcastPresence();
     });

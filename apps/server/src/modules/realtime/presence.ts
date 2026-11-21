@@ -37,6 +37,8 @@ export function createPresence() {
 
   return {
     isOnline: (profileId: string) => online.get(profileId)?.socket.connected === true,
+    /** Connexion actuelle du joueur (pour la remplacer par un autre appareil). */
+    socketOf: (profileId: string) => online.get(profileId)?.socket,
     /** Joueurs connectés d'une famille. */
     onlineIds: (familyId: string) => inFamily(familyId).map((e) => e.profile.id),
     /** Tous les joueurs connectés. */
