@@ -25,7 +25,6 @@ export const bossEnemy = (boss: BossIdentity, lives = 3): ArenaEnemy => ({
     attack: bossPoseId(boss.id, 'attack'),
     hurt: bossPoseId(boss.id, 'hurt'),
     ko: bossPoseId(boss.id, 'defeat'),
-    summon: bossPoseId(boss.id, 'cast'),
     shield: bossPoseId(boss.id, 'shield'),
   },
   idleAnim: { anim: `bosses/${boss.id}/anim-idle`, range: bossIdleRange(lives) },
@@ -55,6 +54,11 @@ export function enemyHead(
   return enemy.boss ? bossHeadId(boss.id, faces.boss) : mobHeadId(mobOf(boss, battle?.mobsDefeated ?? 0), faces.mob);
 }
 
-/** Adversaire des scènes en grand : le boss au face-à-face, puis celui du moment (1er mob, boss qui arrive). */
-export const stagedEnemy = (boss: BossIdentity, s: BattleScreen): ArenaEnemy | null =>
-  !s.arrival && s.introStage !== 'mob' ? bossEnemy(boss) : currentEnemy(boss, s.battle, s.enemyState);
+/**
+ * Adversaire des scènes en grand : le boss au face-à-face ; il disparaît (« exit »), puis le 1er
+ * mob entre ; plus tard, le boss qui arrive après le dernier mob.
+ */
+export function stagedEnemy(boss: BossIdentity, s: BattleScreen): ArenaEnemy | null {
+  if (s.arrival || s.introStage === 'mob') return currentEnemy(boss, s.battle, s.enemyState);
+  return s.introStage === 'boss' ? bossEnemy(boss) : null;
+}

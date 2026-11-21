@@ -57,9 +57,8 @@ export function BattleIntro({
           arena={arena}
           sky={boss.sky}
           heroEntrance={!arrival}
-          entrance={arrival || introStage !== 'summon'}
+          entrance={arrival || introStage !== 'exit'}
           entranceSeconds={arrival ? 1.8 : 0.9}
-          height={arrival ? 'min(46dvh, 460px)' : 'min(34dvh, 420px)'}
         />
       </Shake>
       {arrival && <BossLivesBadge lives={BOSS_LIVES} />}

@@ -17,7 +17,7 @@ const isAnim = (s: AnimationState): s is (typeof HERO_ANIMS)[number] => (HERO_AN
 
 /**
  * Héros en pied : animation dessinée pour « sur place » et « victoire » (bande de 8 images),
- * pose fixe pour le reste (course, tir, bouclier, touché, K.-O.) avec un mouvement court.
+ * pose fixe pour le reste (course, tir, bouclier, touché, K.-O.), avec seulement une secousse aux impacts.
  * Point d'ancrage : bas centre (pieds).
  */
 export function CharacterSprite({ hero, state, height = 240, flip = false }: CharacterSpriteProps) {
@@ -43,8 +43,10 @@ export function CharacterSprite({ hero, state, height = 240, flip = false }: Cha
       alt=""
       aria-hidden
       draggable={false}
-      className="object-contain object-bottom"
-      style={{ height, aspectRatio: '1 / 1', originX: 0.5, originY: 1, scaleX: flip ? -1 : 1 }}
+      // Même hauteur que l'animation : toutes les poses partagent le même cadre (même échelle,
+      // pieds sur la même ligne), la largeur suit.
+      className="block w-auto max-w-none"
+      style={{ height, originX: 0.5, originY: 1, scaleX: flip ? -1 : 1 }}
       animate={reduce ? undefined : CHARACTER_MOTION[state]}
     />
   );

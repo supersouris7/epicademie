@@ -6,7 +6,13 @@ import { CharacterSprite } from '../ui/game/CharacterSprite.tsx';
 import { Sprite } from '../ui/game/Sprite.tsx';
 import { useArenaImage } from './arena.ts';
 
-export type EnemyState = 'idle' | 'attack' | 'hurt' | 'ko' | 'summon' | 'shield';
+/**
+ * Hauteur unique de l'arène, à toutes les phases (face-à-face, arrivée du boss, coups) : les
+ * personnages gardent la même taille d'une scène à l'autre.
+ */
+export const ARENA_HEIGHT = 'min(44dvh, 440px)';
+
+export type EnemyState = 'idle' | 'attack' | 'hurt' | 'ko' | 'shield';
 
 export interface ArenaEnemy {
   /** Clé d'affichage : change à chaque nouvel adversaire (entrée en scène). */
@@ -41,8 +47,6 @@ interface BattleArenaProps {
   readonly sky: readonly [string, string];
   /** Entrée en scène en courant (début du combat) ; non pour les scènes d'action en cours de combat. */
   readonly entrance?: boolean;
-  /** Hauteur de la scène (CSS). */
-  readonly height?: string;
 }
 
 /**
@@ -63,7 +67,7 @@ export function BattleArena(props: BattleArenaProps) {
       ref={frame}
       className="cartoon relative w-full shrink-0 overflow-hidden"
       style={{
-        height: props.height ?? 'min(62dvh, 560px)',
+        height: ARENA_HEIGHT,
         background: bg
           ? `center 62% / cover no-repeat url(${bg})`
           : `linear-gradient(180deg, ${sky[0]}, ${sky[1]} 70%, color-mix(in srgb, ${sky[1]} 50%, black))`,
@@ -99,7 +103,14 @@ export function BattleArena(props: BattleArenaProps) {
               initial={reduce || !run ? false : { x: '140%', opacity: 1 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: props.entranceSeconds ?? 0.9, ease: 'easeOut' }}
-              exit={reduce ? undefined : { scale: 0.2, opacity: 0, rotate: 20, transition: { duration: 0.35 } }}
+              // Un mob vaincu s'envole ; le boss, lui, disparaît simplement (fondu) avant l'entrée du mob.
+              exit={
+                reduce
+                  ? undefined
+                  : enemy.boss
+                    ? { opacity: 0, transition: { duration: 0.5 } }
+                    : { scale: 0.2, opacity: 0, rotate: 20, transition: { duration: 0.35 } }
+              }
             >
               <EnemyFigure enemy={enemy} state={enemyState} />
             </motion.div>
@@ -203,13 +214,13 @@ function HeroFigure({ hero, state }: { readonly hero: HeroId; readonly state: An
   );
 }
 
+/** Poses fixes : seulement une secousse aux impacts (élan de l'attaque, coup reçu). */
 const ENEMY_MOTION: Record<EnemyState, TargetAndTransition> = {
-  idle: { y: [0, -5, 0], transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' } },
+  idle: {},
   attack: { x: [0, -30, 0], transition: { duration: 0.4 } },
-  hurt: { x: [0, 16, -6, 0], opacity: [1, 0.4, 1, 0.7, 1], transition: { duration: 0.45 } },
-  ko: { y: 8, transition: { duration: 0.5 } },
-  summon: { y: [0, -14, 0], transition: { duration: 1.2, repeat: Infinity, ease: 'easeInOut' } },
-  shield: { scale: [1, 1.04, 1], transition: { duration: 1.4, repeat: Infinity } },
+  hurt: { x: [0, 16, -6, 0], transition: { duration: 0.45 } },
+  ko: {},
+  shield: {},
 };
 
 function EnemyFigure({ enemy, state }: { readonly enemy: ArenaEnemy; readonly state: EnemyState }) {
@@ -229,17 +240,18 @@ function EnemyFigure({ enemy, state }: { readonly enemy: ArenaEnemy; readonly st
   return (
     <motion.div
       key={state}
-      className="relative h-full w-full"
+      className="relative flex h-full w-full items-end justify-center"
       style={{ originX: 0.5, originY: 1 }}
       animate={reduce ? undefined : ENEMY_MOTION[state]}
     >
       {src && (
+        // Poses du boss : même cadre que son animation, affichées à la même hauteur (pieds au sol).
         <img
           src={src}
           alt=""
           aria-hidden
           draggable={false}
-          className="h-full w-full object-contain"
+          className={enemy.idleAnim ? 'block h-full w-auto max-w-none' : 'h-full w-full object-contain'}
           style={{ filter: enemy.filter }}
         />
       )}

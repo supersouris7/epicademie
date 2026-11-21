@@ -52,8 +52,8 @@ export function useBattle(profile: Profile, chapter: Chapter, notify: (message: 
   useLayoutEffect(() => {
     latest.current = state;
   }, [state]);
-  /** Invocation des mobs déjà lancée (bouton et minuteur peuvent arriver dans le même rendu). */
-  const summoned = useRef(false);
+  /** Sortie du boss déjà lancée (bouton et minuteur peuvent arriver dans le même rendu). */
+  const bossLeft = useRef(false);
   /** Moment où la question en cours est apparue (temps de réponse envoyé au serveur). */
   const shownAt = useRef(0);
   const started = useRef(false);
@@ -62,11 +62,11 @@ export function useBattle(profile: Profile, chapter: Chapter, notify: (message: 
   const question = useMemo(() => (q ? generate(q.skillId, q.level, q.seed) : null), [q]);
   const skill = q ? getAnySkill(q.skillId) : undefined;
 
-  /** Le boss invoque ses mobs (une seule fois), puis le 1er mob entre et la 1re question arrive. */
+  /** Le boss disparaît (une seule fois), puis le 1er mob entre et la 1re question arrive. */
   const sendMobs = useCallback(() => {
-    if (summoned.current) return;
-    summoned.current = true;
-    dispatch({ type: 'summoned' });
+    if (bossLeft.current) return;
+    bossLeft.current = true;
+    dispatch({ type: 'bossLeft' });
     playSound('reveal');
     later(1400, () => dispatch({ type: 'mobEntered' }));
     later(2700, () => dispatch({ type: 'introEnded' }));
@@ -126,8 +126,6 @@ export function useBattle(profile: Profile, chapter: Chapter, notify: (message: 
     }
     if (bossArrives(prev, next)) {
       playSound('reveal');
-      later(1800, () => dispatch({ type: 'arrivalSummon' }));
-      later(4500, () => dispatch({ type: 'arrivalIdle' }));
       later(ARRIVAL_MS, () => dispatch({ type: 'arrivalEnded' }));
     }
     dispatch({ type: 'advanced', next });
