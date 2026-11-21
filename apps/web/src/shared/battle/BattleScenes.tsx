@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { Sprite } from '../ui/game/Sprite.tsx';
-import { bossPoseId } from '../../design/bosses.ts';
 import { motion, useReducedMotion } from 'motion/react';
 import type { HeroId } from '@questeo/shared';
 import type { HeroExpression } from '../../design/assets.ts';
@@ -214,8 +213,8 @@ export function BossCloseUp({
     const t = setTimeout(() => done.current(), CLOSE_UP_MS);
     return () => clearTimeout(t);
   }, []);
-  // Le boss en grand (illustration en pied) ; sa tête si l'illustration n'est pas livrée.
-  const src = assetSrc(bossPoseId(bossId, 'charge')) ?? bossPortrait(bossId, expression);
+  // Le boss de face (portrait en pied, le plus propre) ; sa tête si le portrait n'est pas livré.
+  const src = assetSrc(`bosses-${bossId}-portrait`) ?? bossPortrait(bossId, expression);
   return (
     <div
       role="dialog"
@@ -237,7 +236,7 @@ export function BossCloseUp({
             src={src}
             alt=""
             aria-hidden
-            className="relative max-h-[52dvh] w-[min(96vw,640px)] object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)]"
+            className="relative max-h-[35dvh] w-[min(70vw,420px)] object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)]"
           />
         )}
       </motion.div>

@@ -62,7 +62,6 @@ export function ActionScene({ screen: s, hero, boss, arena }: StageProps) {
         arena={arena}
         sky={boss.sky}
         entrance={false}
-        height="min(58dvh, 520px)"
       />
     </div>
   );

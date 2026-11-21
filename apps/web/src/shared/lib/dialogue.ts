@@ -231,10 +231,11 @@ const SORCIER: Record<BossMoment, readonly BossLine[]> = {
     L('rire', 'Même mon π-bot savait celle-là !'),
   ],
   onShield: [L('perplexe', 'Un bouclier ?! Ça ne compte pas !'), L('colere', 'Tricheur ! Enfin… malin.')],
+  // Arrivée après le dernier mob : vexé qu'on ait battu ses π-bots, il vient régler ça lui-même.
   arrival: [
-    L('moqueur', 'Bravo pour mes petits robots. Maintenant… c’est MOI !'),
-    L('menace', 'Tu as battu mes mobs ? Ils n’étaient que l’échauffement.'),
-    L('clin-oeil', 'Tiens, tiens… le héros a survécu. Plus pour longtemps !'),
+    L('colere', 'Mes π-bots… tous battus ?! Bon. Je vais m’en occuper MOI-MÊME !'),
+    L('menace', 'Tu as battu mes mobs ? Tu vas le payer !'),
+    L('furieux', 'Assez joué avec mes robots. Place au maître des maths !'),
   ],
   rageDebut: [
     L('colere', 'Grrr… Tu m’as touché deux fois ? Tu vas le regretter…'),

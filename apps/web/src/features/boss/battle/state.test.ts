@@ -89,11 +89,11 @@ describe('entrée en scène', () => {
     expect(run([{ type: 'started', battle: view() }, { type: 'heroReady' }]).heroState).toBe('idle');
   });
 
-  it('le boss invoque ses mobs une seule fois, puis le 1er mob entre', () => {
-    const summoned = run([{ type: 'summoned' }]);
-    expect(summoned).toMatchObject({ introStage: 'summon', enemyState: 'summon' });
-    expect(reducer(summoned, { type: 'summoned' })).toBe(summoned);
-    const mob = reducer(summoned, { type: 'mobEntered' });
+  it('le boss disparaît une seule fois (sans invocation), puis le 1er mob entre', () => {
+    const left = run([{ type: 'bossLeft' }]);
+    expect(left).toMatchObject({ introStage: 'exit', enemyState: 'idle' });
+    expect(reducer(left, { type: 'bossLeft' })).toBe(left);
+    const mob = reducer(left, { type: 'mobEntered' });
     expect(mob).toMatchObject({ introStage: 'mob', enemyState: 'idle' });
     expect(reducer(mob, { type: 'introEnded' }).intro).toBe(false);
   });
@@ -193,7 +193,7 @@ describe('suite du combat', () => {
     expect(reducer(before, { type: 'advanced', next: view({ turn: 1 }) }).heroFace).toBe('confiant');
   });
 
-  it('dernier mob battu : le boss arrive, moqueur, en gardant sa pose', () => {
+  it('dernier mob battu : le boss arrive menaçant, en attente (jamais avec la pose « touché » du mob)', () => {
     const s = reducer(
       { ...fighting({ mobsDefeated: 3 }), enemyState: 'hurt' },
       {
@@ -201,17 +201,14 @@ describe('suite du combat', () => {
         next: view({ mobsDefeated: 4 }),
       },
     );
-    expect(s).toMatchObject({ arrival: true, bossFace: 'moqueur', enemyState: 'hurt' });
+    expect(s).toMatchObject({ arrival: true, bossFace: 'menace', enemyState: 'idle' });
     expect(s.arrivalLines).toEqual({
       boss: { text: 'boss:arrival', face: 'moqueur' },
       hero: { text: 'héros:bossArrives', face: 'joie' },
       questy: 'questy:arrival',
     });
-    const summoning = run([{ type: 'arrivalSummon' }], s);
-    expect(summoning.enemyState).toBe('summon');
-    expect(run([{ type: 'arrivalIdle' }], summoning).enemyState).toBe('idle');
     expect(run([{ type: 'arrivalEnded' }], s)).toMatchObject({ arrival: false, bossFace: 'menace' });
-    expect(run([{ type: 'arrivalSkipped' }], s)).toMatchObject({ arrival: false, bossFace: 'moqueur' });
+    expect(run([{ type: 'arrivalSkipped' }], s)).toMatchObject({ arrival: false, bossFace: 'menace' });
   });
 
   it('contre le boss, son humeur suit ses vies', () => {

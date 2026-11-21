@@ -36,6 +36,11 @@ export interface StillJob {
   readonly silhouetteOnly?: readonly number[];
   /** Retourner en miroir (le boss, dessiné tourné vers la droite, doit regarder le héros à sa gauche). */
   readonly mirror?: boolean;
+  /**
+   * Toutes les images dans le même cadre (le plus grand), pieds sur la même ligne et centrées :
+   * même échelle d'une pose à l'autre (sinon une pose large paraît plus petite).
+   */
+  readonly sameFrame?: boolean;
 }
 
 export interface AnimJob {
@@ -120,6 +125,7 @@ export const JOBS: readonly Job[] = [
   {
     kind: 'stills',
     board: 'alex-poses.png',
+    sameFrame: true,
     cols: 3,
     rows: 2,
     size: 640,
@@ -145,6 +151,7 @@ export const JOBS: readonly Job[] = [
   {
     kind: 'stills',
     board: 'lina-poses.png',
+    sameFrame: true,
     cols: 3,
     rows: 2,
     size: 640,
@@ -171,6 +178,7 @@ export const JOBS: readonly Job[] = [
   {
     kind: 'stills',
     board: 'sorcier-pi-poses.png',
+    sameFrame: true,
     cols: 4,
     rows: 2,
     size: 640,
@@ -298,10 +306,22 @@ async function writeWebp(img: Rgba, target: string, resize: { width?: number; he
   return dest;
 }
 
+/** Image posée en bas au centre d'un cadre transparent `width` × `height`. */
+export function placeBottom(img: Rgba, width: number, height: number): Rgba {
+  const data = Buffer.alloc(width * height * 4);
+  const left = Math.floor((width - img.width) / 2);
+  const top = height - img.height;
+  for (let y = 0; y < img.height; y++) {
+    const from = y * img.width * 4;
+    data.set(img.data.subarray(from, from + img.width * 4), ((top + y) * width + left) * 4);
+  }
+  return { data, width, height };
+}
+
 async function stills(job: StillJob): Promise<string[]> {
   const board = clean(await load(join(BOARDS, job.board)));
   const cells = gridCells(board.width, board.height, job.cols, job.rows);
-  const out: string[] = [];
+  const parts: { target: string; img: Rgba }[] = [];
   for (const [i, target] of job.targets.entries()) {
     const cellBox = cells[i];
     if (target === '-' || !cellBox) continue;
@@ -310,9 +330,16 @@ async function stills(job: StillJob): Promise<string[]> {
     if (job.silhouetteOnly?.includes(i)) cell = largestShape(cell);
     const box = contentBox(cell, 0);
     if (!box) throw new Error(`${job.board} : case ${i + 1} vide (${target})`);
-    out.push(
-      await writeWebp(crop(cell, withMargin(box, cell)), target, { width: job.size, height: job.size }, job.mirror),
-    );
+    parts.push({ target, img: crop(cell, withMargin(box, cell)) });
+  }
+  if (job.sameFrame) {
+    const width = Math.max(...parts.map((p) => p.img.width));
+    const height = Math.max(...parts.map((p) => p.img.height));
+    for (const p of parts) p.img = placeBottom(p.img, width, height);
+  }
+  const out: string[] = [];
+  for (const { target, img } of parts) {
+    out.push(await writeWebp(img, target, { width: job.size, height: job.size }, job.mirror));
   }
   return out;
 }

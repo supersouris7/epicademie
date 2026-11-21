@@ -32,8 +32,8 @@ import type { Missed } from './constants.ts';
  * Les répliques sont tirées par `voices` (injectées) : des tests peuvent fixer le texte.
  */
 
-/** Début du combat : le boss provoque (« boss »), invoque ses mobs (« summon »), le 1er mob entre (« mob »). */
-export type IntroStage = 'boss' | 'summon' | 'mob';
+/** Début du combat : le boss provoque (« boss »), disparaît (« exit »), le 1er mob entre (« mob »). */
+export type IntroStage = 'boss' | 'exit' | 'mob';
 /** Passage en rage du boss (dernière vie) : trois temps en plein écran. */
 export type RageStage = 'debut' | 'montee' | 'rage';
 export type RageLines = Readonly<Record<RageStage, string>>;
@@ -135,7 +135,7 @@ export type BattleEvent =
   | { readonly type: 'started'; readonly battle: BattleView }
   | { readonly type: 'failed'; readonly error: BattleError }
   | { readonly type: 'heroReady' }
-  | { readonly type: 'summoned' }
+  | { readonly type: 'bossLeft' }
   | { readonly type: 'mobEntered' }
   | { readonly type: 'introEnded' }
   | { readonly type: 'sent' }
@@ -150,8 +150,6 @@ export type BattleEvent =
   | { readonly type: 'rageTimer'; readonly from: RageStage }
   | { readonly type: 'rageTapped' }
   | { readonly type: 'rageAnswered' }
-  | { readonly type: 'arrivalSummon' }
-  | { readonly type: 'arrivalIdle' }
   | { readonly type: 'arrivalEnded' }
   | { readonly type: 'arrivalSkipped' }
   | { readonly type: 'itemUsed'; readonly item: ItemId; readonly battle: BattleView }
@@ -226,7 +224,8 @@ export function createBattleReducer(voices: BattleVoices) {
       };
     }
     if (arrives) {
-      // Il arrive en invoquant ses opérations, l'air moqueur.
+      // Il arrive en courant, l'air menaçant, dans son animation sur place (jamais dans la pose
+      // « touché » du dernier mob).
       out = {
         ...out,
         arrival: true,
@@ -235,7 +234,7 @@ export function createBattleReducer(voices: BattleVoices) {
           hero: voices.hero('bossArrives'),
           questy: voices.questy('arrival'),
         },
-        bossFace: 'moqueur',
+        bossFace: 'menace',
       };
     }
     if (next.status === 'won') {
@@ -249,8 +248,7 @@ export function createBattleReducer(voices: BattleVoices) {
     return {
       ...out,
       heroState: 'idle',
-      // Le boss qui vient d'arriver garde sa pose d'invocation.
-      enemyState: arrives ? out.enemyState : 'idle',
+      enemyState: 'idle',
       bossFace: onBoss(prev) && onBoss(next) ? bossMood(next.bossLives) : out.bossFace,
       heroFace: next.hearts === 1 ? 'determine' : 'confiant',
       busy: false,
@@ -266,9 +264,9 @@ export function createBattleReducer(voices: BattleVoices) {
       case 'heroReady':
       case 'heroIdle':
         return { ...s, heroState: 'idle' };
-      case 'summoned':
-        // Une seule invocation (le bouton et le minuteur peuvent arriver tous les deux).
-        return s.introStage === 'boss' ? { ...s, introStage: 'summon', enemyState: 'summon' } : s;
+      case 'bossLeft':
+        // Une seule sortie (le bouton et le minuteur peuvent arriver tous les deux).
+        return s.introStage === 'boss' ? { ...s, introStage: 'exit', enemyState: 'idle' } : s;
       case 'mobEntered':
         return { ...s, introStage: 'mob', enemyState: 'idle' };
       case 'introEnded':
@@ -311,10 +309,6 @@ export function createBattleReducer(voices: BattleVoices) {
         const l = voices.hero('rage');
         return quip({ ...s, heroFace: l.face }, 'hero', l.text);
       }
-      case 'arrivalSummon':
-        return { ...s, enemyState: 'summon' };
-      case 'arrivalIdle':
-        return { ...s, enemyState: 'idle' };
       case 'arrivalEnded':
         return { ...s, arrival: false, bossFace: 'menace' };
       case 'arrivalSkipped':
