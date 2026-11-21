@@ -44,9 +44,10 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
     return { value: gold, max: ids.length };
   };
   const back = mode.category === 'multi' ? '/multi' : '/hub';
-  const playable = (mode.id === 'entrainement' || mode.id === 'boss') && mode.available;
+  const playable = ['entrainement', 'boss', 'chrono', 'survie'].includes(mode.id) && mode.available;
   const pickSubject = (subject: string, name: string, available: boolean) => {
     if (!available || chaptersOf(subject).length === 0) showToast(`${name} arrive bientôt !`);
+    else if (mode.id === 'chrono' || mode.id === 'survie') void navigate(`/partie/defi/${mode.id}/${subject}`);
     else if (playable) void navigate(`/jouer/${mode.id}/${subject}`);
     else showToast(`${mode.name} arrive bientôt !`);
   };

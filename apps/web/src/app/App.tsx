@@ -24,6 +24,7 @@ import { Dictionary } from '../features/dictionary/index.ts';
 import { Term } from '../shared/question/Term.tsx';
 import { TermContext } from '../shared/question/termContext.ts';
 import { TvScreen } from '../features/tv/index.ts';
+import { DefiPlay } from '../features/defis/index.ts';
 import { Notifications, Online, RealtimeLink } from '../features/realtime/index.ts';
 import { About, Settings } from '../features/settings/index.ts';
 import { Chapters, Notions, TrainingPlay } from '../features/training/index.ts';
@@ -101,6 +102,10 @@ export function App() {
               <Route path="/multi" element={<WithProfile>{(p) => <MultiModes profile={p} />}</WithProfile>} />
               <Route path="/arene" element={<WithProfile>{(p) => <Arena profile={p} />}</WithProfile>} />
               <Route path="/connectes" element={<WithProfile>{(p) => <Online profile={p} />}</WithProfile>} />
+              <Route
+                path="/partie/defi/:defi/:subject"
+                element={<WithProfile>{(p) => <DefiPlay profile={p} />}</WithProfile>}
+              />
               <Route path="/jouer/:modeId" element={<WithProfile>{(p) => <ModeSetup profile={p} />}</WithProfile>} />
               <Route
                 path="/jouer/entrainement/:subject"
