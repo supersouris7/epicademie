@@ -9,6 +9,7 @@ import {
   type ArenaKind,
   type ArenaView,
   type Profile,
+  type QuizStatus,
   type RaidStatus,
 } from '@questeo/shared';
 import { HeroFace } from '../../shared/battle/HeroFace.tsx';
@@ -40,12 +41,42 @@ export function Arena({ profile }: { readonly profile: Profile }) {
   return <ArenaGame profile={profile} arena={arena} />;
 }
 
+/** Textes du salon selon le mode. */
+const SETUP: Record<
+  ArenaKind,
+  { title: string; mood: 'angry' | 'wink' | 'wow'; pitch: string; others: string; group: string }
+> = {
+  duel: {
+    title: 'Arène',
+    mood: 'angry',
+    pitch: 'Chacun son tour : bonne réponse, tu attaques ! Le dernier debout gagne.',
+    others: '2. Tes adversaires (1 à 3)',
+    group: 'Adversaires',
+  },
+  raid: {
+    title: 'Raid',
+    mood: 'wink',
+    pitch: 'Toute l’équipe contre le boss ! Chaque bonne réponse le frappe ; chaque erreur coûte un cœur à l’équipe.',
+    others: '2. Tes équipiers (1 à 3)',
+    group: 'Équipiers',
+  },
+  quiz: {
+    title: 'Quiz plateau',
+    mood: 'wow',
+    pitch:
+      'Tout le monde répond en même temps sur son téléphone : le plus rapide gagne la manche ! Mets le mode TV sur un grand écran.',
+    others: '2. Les joueurs (1 à 3)',
+    group: 'Joueurs',
+  },
+};
+
 function ArenaSetup({ profile }: { readonly profile: Profile }) {
   const [params] = useSearchParams();
   const online = useRealtime((s) => s.online);
   const others = online.filter((p) => p.id !== profile.id && !p.busy);
   const create = useRealtime((s) => s.createArena);
-  const kind: ArenaKind = params.get('mode') === 'raid' ? 'raid' : 'duel';
+  const mode = params.get('mode');
+  const kind: ArenaKind = mode === 'raid' || mode === 'quiz' ? mode : 'duel';
   const { grade, grades, own, setGrade } = useGradeChoice(profile, 'maths');
   const chapters = chaptersOf('maths', grade);
   const [chapterId, setChapterId] = useState<string | null>(null);
@@ -57,14 +88,10 @@ function ArenaSetup({ profile }: { readonly profile: Profile }) {
     setInvite((l) => (l.includes(id) ? l.filter((x) => x !== id) : l.length < ARENA_MAX_PLAYERS - 1 ? [...l, id] : l));
   const chosen = chapters.find((c) => c.id === chapterId) ?? chapters[0];
   return (
-    <PageShell title={kind === 'raid' ? 'Raid' : 'Arène'} back="/multi">
+    <PageShell title={SETUP[kind].title} back="/multi">
       <div className="flex items-center gap-3">
-        <Questy mood={kind === 'raid' ? 'wink' : 'angry'} size={80} />
-        <SpeechBubble>
-          {kind === 'raid'
-            ? 'Toute l’équipe contre le boss ! Chaque bonne réponse le frappe ; chaque erreur coûte un cœur à l’équipe.'
-            : 'Chacun son tour : bonne réponse, tu attaques ! Le dernier debout gagne.'}
-        </SpeechBubble>
+        <Questy mood={SETUP[kind].mood} size={80} />
+        <SpeechBubble>{SETUP[kind].pitch}</SpeechBubble>
       </div>
       <section className="flex flex-col gap-2">
         <h2 className="font-display text-2xl tracking-wide">1. Le chapitre</h2>
@@ -85,13 +112,11 @@ function ArenaSetup({ profile }: { readonly profile: Profile }) {
         </div>
       </section>
       <section className="flex flex-col gap-2">
-        <h2 className="font-display text-2xl tracking-wide">
-          {kind === 'raid' ? '2. Tes équipiers (1 à 3)' : '2. Tes adversaires (1 à 3)'}
-        </h2>
+        <h2 className="font-display text-2xl tracking-wide">{SETUP[kind].others}</h2>
         {others.length === 0 && (
           <p className="text-muted font-bold">Personne n’est disponible : attends qu’un ami se connecte.</p>
         )}
-        <div className="flex flex-col gap-2" role="group" aria-label={kind === 'raid' ? 'Équipiers' : 'Adversaires'}>
+        <div className="flex flex-col gap-2" role="group" aria-label={SETUP[kind].group}>
           {others.map((p) => (
             <label key={p.id} className="cartoon bg-surface flex cursor-pointer items-center gap-3 p-2.5">
               <input
@@ -140,6 +165,10 @@ export function PlayerChip({ arena, id, me }: { readonly arena: ArenaView; reado
       )}
       {arena.phase === 'lobby' ? (
         <span className="text-xs font-bold">{p.ready ? 'Prêt !' : 'Invité…'}</span>
+      ) : arena.quiz ? (
+        <span className="font-display text-lg" aria-label={`${arena.quiz.scores[p.id] ?? 0} points`}>
+          ★ {arena.quiz.scores[p.id] ?? 0}
+        </span>
       ) : (
         <span className="flex" aria-label={`${p.hearts} cœurs`} role="img">
           {Array.from({ length: ARENA_HEARTS }, (_, i) => (
@@ -211,7 +240,10 @@ function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly are
   const leave = useRealtime((s) => s.leaveArena);
   const q = arena.question;
   const question = useMemo(() => (q ? generate(q.skillId, q.level, q.seed) : null), [q]);
+  const quiz = arena.quiz ?? null;
   const myTurn = arena.turnId === profile.id;
+  // Quiz : tout le monde répond, sauf qui s'est déjà trompé dans la manche.
+  const canAnswer = quiz ? !quiz.locked.includes(profile.id) : myTurn;
   const name = (id: string | null) => arena.players.find((p) => p.id === id)?.name ?? '?';
   const turnName = name(arena.turnId);
   const last = arena.last;
@@ -278,7 +310,7 @@ function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly are
       )}
       <div className="flex items-center gap-2">
         <span className="font-display flex-1 text-xl tracking-wide">
-          {myTurn ? 'À toi de jouer !' : `Au tour de ${turnName}…`}
+          {turnLabel(quiz, canAnswer, myTurn, turnName)}
         </span>
         {arena.deadline && <Countdown deadline={arena.deadline} />}
         <GameButton size="sm" variant="surface" onClick={leave}>
@@ -293,7 +325,7 @@ function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly are
             </h1>
             {question.figure && <Figure figure={question.figure} maxHeight="var(--figure-max)" />}
           </section>
-          {myTurn ? (
+          {canAnswer ? (
             <section
               className={`side:h-[min(100%,520px)] side:self-center flex ${DOCK_HEIGHT} min-h-0 shrink-0 flex-col`}
             >
@@ -348,4 +380,11 @@ export function RaidBars({ raid }: { readonly raid: RaidStatus }) {
       </div>
     </div>
   );
+}
+
+/** Ce que voit le joueur au-dessus de la question. */
+function turnLabel(quiz: QuizStatus | null, canAnswer: boolean, myTurn: boolean, turnName: string): string {
+  if (quiz)
+    return `Manche ${quiz.round} / ${quiz.rounds} : ${canAnswer ? 'réponds vite !' : 'raté, attends la manche suivante.'}`;
+  return myTurn ? 'À toi de jouer !' : `Au tour de ${turnName}…`;
 }

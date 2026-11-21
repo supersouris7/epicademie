@@ -3,17 +3,23 @@ import { check, generate, getChapter } from '@questeo/content';
 import {
   duelHandicaps,
   duelLevel,
+  answerQuiz,
+  isQuiz,
   isRaid,
+  leaveQuiz,
   leaveRaid,
   playArenaTurn,
   playRaidTurn,
   startArena,
+  startQuiz,
   startRaid,
+  timeoutQuiz,
   type ArenaState,
 } from '@questeo/engine';
 import {
   ageOn,
   ARENA_TURN_SECONDS,
+  QUIZ_SECONDS,
   type ArenaKind,
   type ArenaCreate,
   type ArenaInvite,
@@ -81,20 +87,76 @@ type Emit = <E extends keyof ServerToClientEvents>(
 /** Vue diffusée aux joueurs (et à l'écran TV de la famille). */
 function view(a: Arena): ArenaView {
   const s = a.state;
+  // Partie en cours (ni salon ni fin) : question, minuteur et tour affichés.
+  const live = s && !s.over ? s : null;
   return {
     id: a.id,
     kind: a.kind,
-    raid: s && isRaid(s) ? s.raid : null,
+    ...modeStatus(s),
     hostId: a.hostId,
     chapterId: a.chapterId,
     phase: s ? (s.over ? 'over' : 'playing') : 'lobby',
     players: (s ? s.players : a.players).map((p) => (a.away.has(p.id) ? { ...p, away: true } : p)),
-    turnId: s && !s.over ? (s.players[s.current]?.id ?? null) : null,
+    // Quiz : tout le monde répond en même temps, pas de tour.
+    turnId: live && !isQuiz(live) ? (live.players[live.current]?.id ?? null) : null,
     turn: s?.turn ?? 0,
-    question: s && !s.over ? a.question : null,
-    deadline: s && !s.over ? a.deadline : null,
+    question: live ? a.question : null,
+    deadline: live ? a.deadline : null,
     last: s?.last ?? null,
     winnerId: s?.winnerId ?? null,
+  };
+}
+
+/** État propre au mode : boss et équipe (raid), manches et scores (quiz). */
+const modeStatus = (s: ArenaState | null) => ({
+  raid: s && isRaid(s) ? s.raid : null,
+  quiz: s && isQuiz(s) ? s.quiz : null,
+});
+
+/** Question suivante : notion du chapitre, niveau et durée selon le mode (pur, hors minuteurs). */
+function drawQuestion(a: Arena, s: ArenaState, skillId: string, seed: number): { question: ArenaQuestion; ms: number } {
+  if (isQuiz(s)) {
+    // Quiz : même question pour tous ; niveau 1 puis 2 à mi-partie, sans handicap.
+    const level: 1 | 2 = s.quiz.round <= s.quiz.rounds / 2 ? 1 : 2;
+    return { question: { skillId, level, seed }, ms: QUIZ_SECONDS * 1000 };
+  }
+  const handicaps = duelHandicaps(s.players.map((p) => a.ages.get(p.id) ?? null));
+  const h = handicaps[s.current] ?? { levelBonus: 0, timeFactor: 1 };
+  // Deux premiers tours de table au niveau 1, ensuite niveau 2 (avant handicap).
+  const base: 1 | 2 = s.turn < s.players.length * 2 ? 1 : 2;
+  return {
+    question: { skillId, level: duelLevel(base, h), seed },
+    ms: Math.round(ARENA_TURN_SECONDS * h.timeFactor * 1000),
+  };
+}
+
+/** Salon tout neuf : l'hôte (prêt) et les invités (en attente de réponse). */
+function newArena(
+  host: Profile,
+  kind: ArenaKind,
+  chapterId: string,
+  invite: readonly string[],
+  presence: Presence,
+): Arena {
+  return {
+    id: randomUUID(),
+    kind,
+    hostId: host.id,
+    chapterId,
+    players: [
+      { id: host.id, name: host.name, hero: host.hero, hearts: 0, ready: true },
+      ...invite.map((id) => {
+        const p = presence.profile(id);
+        return { id, name: p?.name ?? '?', hero: p?.hero ?? 'alex', hearts: 0, ready: false };
+      }),
+    ],
+    state: null,
+    question: null,
+    deadline: null,
+    timer: null,
+    ages: new Map(),
+    away: new Map(),
+    lobbyTimer: null,
   };
 }
 
@@ -132,19 +194,30 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
   const nextQuestion = (a: Arena) => {
     const s = a.state;
     const chapter = getChapter(a.chapterId);
-    if (!s || s.over || !chapter) return;
-    const ids = s.players.map((p) => p.id);
-    const handicaps = duelHandicaps(ids.map((id) => a.ages.get(id) ?? null));
-    const h = handicaps[s.current] ?? { levelBonus: 0, timeFactor: 1 };
-    const skill = chapter.skills[random.int(chapter.skills.length)];
-    if (!skill) return;
-    // Deux premiers tours de table au niveau 1, ensuite niveau 2 (avant handicap).
-    const base: 1 | 2 = s.turn < s.players.length * 2 ? 1 : 2;
-    a.question = { skillId: skill.id, level: duelLevel(base, h), seed: random.seed() };
-    const ms = Math.round(ARENA_TURN_SECONDS * h.timeFactor * 1000);
+    const skill = chapter?.skills[random.int(chapter.skills.length)];
+    if (!s || s.over || !skill) return;
+    const { question, ms } = drawQuestion(a, s, skill.id, random.seed());
+    a.question = question;
     a.deadline = clock.now().getTime() + ms;
     if (a.timer) clearTimeout(a.timer);
-    a.timer = setTimeout(() => play(a, false, true), ms);
+    a.timer = setTimeout(() => (isQuiz(s) ? settle(a, timeoutQuiz(s)) : play(a, false, true)), ms);
+  };
+
+  /** Nouvel état du quiz : nouvelle question si la manche a changé, fin de partie sinon. */
+  const settle = (a: Arena, next: ArenaState) => {
+    const before = a.state?.turn;
+    a.state = next;
+    if (next.over) {
+      if (a.timer) clearTimeout(a.timer);
+      a.question = null;
+      a.deadline = null;
+      push(a);
+      onBusyChange();
+      a.timer = setTimeout(() => remove(a), FINISHED_ARENA_TTL_MS);
+      return;
+    }
+    if (next.turn !== before) nextQuestion(a);
+    push(a);
   };
 
   const play = (a: Arena, correct: boolean, timeout = false) => {
@@ -179,26 +252,7 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
       if (!getChapter(msg.chapterId) || arenaOf(host.id)) return;
       const invite = [...new Set(msg.invite)].filter((id) => id !== host.id && presence.isOnline(id) && !arenaOf(id));
       if (invite.length === 0) return;
-      const a: Arena = {
-        id: randomUUID(),
-        kind: msg.kind ?? 'duel',
-        hostId: host.id,
-        chapterId: msg.chapterId,
-        players: [
-          { id: host.id, name: host.name, hero: host.hero, hearts: 0, ready: true },
-          ...invite.map((id) => {
-            const p = presence.profile(id);
-            return { id, name: p?.name ?? '?', hero: p?.hero ?? 'alex', hearts: 0, ready: false };
-          }),
-        ],
-        state: null,
-        question: null,
-        deadline: null,
-        timer: null,
-        ages: new Map(),
-        away: new Map(),
-        lobbyTimer: null,
-      };
+      const a = newArena(host, msg.kind ?? 'duel', msg.chapterId, invite, presence);
       a.lobbyTimer = setTimeout(() => {
         if (!a.state) closeLobby(a);
       }, LOBBY_TTL_MS);
@@ -230,7 +284,7 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
       const ready = a.players.filter((p) => p.ready);
       let state: ArenaState;
       try {
-        state = a.kind === 'raid' ? startRaid(ready) : startArena(ready);
+        state = a.kind === 'raid' ? startRaid(ready) : a.kind === 'quiz' ? startQuiz(ready) : startArena(ready);
       } catch {
         return; // Pas assez de joueurs prêts.
       }
@@ -253,11 +307,15 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
     answer(profileId: string, response: Parameters<typeof check>[1]): void {
       const a = arenaOf(profileId);
       const s = a?.state;
-      if (!a || !s || s.over || s.players[s.current]?.id !== profileId || !a.question) return;
+      if (!a || !s || s.over || !a.question) return;
+      const quiz = isQuiz(s);
+      // Quiz : chacun répond ; sinon, seulement le joueur dont c'est le tour.
+      if (!quiz && s.players[s.current]?.id !== profileId) return;
       const q = a.question;
       const result = check(generate(q.skillId, q.level, q.seed), response);
       if (result.invalid) return;
-      play(a, result.correct);
+      if (quiz) settle(a, answerQuiz(s, profileId, result.correct));
+      else play(a, result.correct);
     },
 
     /** Le joueur quitte (ou se déconnecte). */
@@ -272,17 +330,17 @@ export function createArenas({ presence, clock, random, onBusyChange, onCountCha
           a.players = a.players.filter((p) => p.id !== profileId);
           push(a);
         }
+      } else if (isQuiz(a.state) && !a.state.over) {
+        settle(a, leaveQuiz(a.state, profileId));
       } else if (isRaid(a.state) && !a.state.over) {
         // Raid : le joueur sort du tour de table, l'équipe continue (sans pénalité).
         const wasTurn = a.state.players[a.state.current]?.id === profileId;
-        a.state = leaveRaid(a.state, profileId);
-        if (a.state.over) {
-          a.question = null;
-          a.deadline = null;
-          if (a.timer) clearTimeout(a.timer);
-          a.timer = setTimeout(() => remove(a), FINISHED_ARENA_TTL_MS);
-        } else if (wasTurn) nextQuestion(a);
-        push(a);
+        const next = leaveRaid(a.state, profileId);
+        settle(a, next);
+        if (wasTurn && !next.over) {
+          nextQuestion(a);
+          push(a);
+        }
       } else if (!a.state.over) {
         // En partie : le joueur qui part est éliminé (s'il jouait, son tour compte comme raté).
         const s = a.state;

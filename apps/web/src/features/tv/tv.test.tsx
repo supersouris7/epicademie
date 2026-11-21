@@ -43,3 +43,26 @@ describe('mode TV', () => {
     expect(screen.getByRole('heading', { name: 'Boss vaincu ! Bravo l’équipe !' })).toBeInTheDocument();
   });
 });
+
+describe('mode TV : quiz plateau', () => {
+  it('manche en cours et scores des joueurs', async () => {
+    renderApp('/tv');
+    await screen.findByText(/la partie s’affichera ici/);
+    // Connexion du dernier écran ouvert (les tests précédents en ont ouvert d'autres).
+    const tv = sockets.filter((s) => 'tv' in s.auth).at(-1);
+    if (!tv) throw new Error('pas de connexion TV');
+    act(() =>
+      tv.fire('arena', {
+        ...raid,
+        kind: 'quiz',
+        raid: null,
+        quiz: { round: 3, rounds: 10, scores: { p1: 2, p2: 0 }, locked: [] },
+        turnId: null,
+        last: { playerId: 'p1', correct: true, targetId: null, timeout: false },
+      }),
+    );
+    expect(screen.getByText('Manche 3 / 10 : à vos téléphones !')).toBeInTheDocument();
+    expect(screen.getByLabelText('2 points')).toBeInTheDocument();
+    expect(screen.getByText('⚡ Léa a été le plus rapide : +1 point !')).toBeInTheDocument();
+  });
+});
