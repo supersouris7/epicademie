@@ -505,6 +505,7 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     learningReport: () => options.learning ?? emptyLearning(),
     ...billingHandlers(options.premium ?? true, uuid),
     ownedHeroes: () => ({ heroes: [...STARTING_HEROES] }),
+    ...friendHandlers(),
     badges: () => badgeProgress({ boss: 2, parfait: 3, perseverance: 0, chapitres: 0, consolidees: 0, coffres: 1 }),
     ...adminHandlers(reports, disabledSet),
   };
@@ -562,3 +563,37 @@ export function createFakeApi(options: FakeApiOptions = {}) {
 }
 
 export type FakeApi = ReturnType<typeof createFakeApi>;
+
+/** Amis : un copain de l'autre famille, Tom (code TOM234), qui accepte et dont le parent valide. */
+function friendHandlers(): Partial<Record<keyof typeof api, Handler>> {
+  const tom = { id: '99999999-9999-4999-8999-999999999999', name: 'Tom', hero: 'alex' as const };
+  let status: 'none' | 'envoyee' | 'parents' | 'active' = 'none';
+  let myParentOk = false;
+  const friends = () =>
+    status === 'none' ? [] : [{ ...tom, avatar: { style: 'pixelbot' as const, seed: 'tom' }, status, myParentOk }];
+  const view = () => ({ code: 'LEA7K2', friends: friends() });
+  return {
+    friends: view,
+    requestFriend: ({ body }) => {
+      if ((body as { code: string }).code !== 'TOM234')
+        throw new FakeError(404, 'NOT_FOUND', 'Aucun joueur avec ce code.');
+      status = 'envoyee';
+      return view();
+    },
+    removeFriend: () => {
+      status = 'none';
+      return view();
+    },
+    familyFriends: () => friends().map((f) => ({ ...f, profileId: makeProfile().id, profileName: 'Léa' })),
+    approveFriend: () => {
+      myParentOk = true;
+      status = 'active';
+      return friends().map((f) => ({ ...f, profileId: makeProfile().id, profileName: 'Léa' }));
+    },
+    /** Raccourci de test : Tom a accepté. */
+    acceptFriend: () => {
+      status = 'parents';
+      return view();
+    },
+  };
+}

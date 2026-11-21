@@ -18,3 +18,4 @@ export * from './pedagogy.ts';
 export * from './billing.ts';
 export * from './api/contract.ts';
 export * from './insights.ts';
+export * from './friends.ts';

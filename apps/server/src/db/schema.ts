@@ -131,6 +131,8 @@ export const profiles = pgTable(
     musicOn: boolean('music_on').notNull().default(true),
     /** Objets équipés pour les combats de boss (3 au plus, pris dans l'inventaire). */
     equipped: jsonb('equipped').$type<ItemId[]>().notNull().default([]),
+    /** Code ami (6 caractères), à donner en vrai à un copain d'une autre famille. */
+    friendCode: text('friend_code'),
     createdAt: createdAt(),
   },
   (t) => [
@@ -139,6 +141,7 @@ export const profiles = pgTable(
     check('profiles_rubies_nonnegative', sql`${t.rubies} >= 0`),
     index('profiles_created_at_idx').on(t.createdAt),
     index('profiles_family_idx').on(t.familyId),
+    uniqueIndex('profiles_friend_code_idx').on(t.friendCode),
   ],
 );
 
@@ -374,6 +377,33 @@ export const ownedHeroes = pgTable(
     obtainedAt: createdAt(),
   },
   (t) => [primaryKey({ columns: [t.profileId, t.hero] })],
+);
+
+/**
+ * Amitiés entre joueurs de familles différentes : une ligne par paire (profil A < profil B).
+ * Active quand l'ami a accepté et que le parent de chaque famille a validé.
+ */
+export const friendships = pgTable(
+  'friendships',
+  {
+    profileA: uuid('profile_a')
+      .notNull()
+      .references(() => profiles.id, { onDelete: 'cascade' }),
+    profileB: uuid('profile_b')
+      .notNull()
+      .references(() => profiles.id, { onDelete: 'cascade' }),
+    /** Celui qui a saisi le code de l'autre. */
+    requestedBy: uuid('requested_by').notNull(),
+    acceptedAt: timestamp('accepted_at', { withTimezone: true }),
+    parentAAt: timestamp('parent_a_at', { withTimezone: true }),
+    parentBAt: timestamp('parent_b_at', { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.profileA, t.profileB] }),
+    index('friendships_b_idx').on(t.profileB),
+    check('friendships_ordered', sql`${t.profileA} < ${t.profileB}`),
+  ],
 );
 
 /**

@@ -16,6 +16,8 @@ export interface OnlinePlayer {
   readonly avatar: AvatarConfig;
   /** En partie d'arène (ne peut pas être invité). */
   readonly busy: boolean;
+  /** Ami d'une autre famille (sinon : joueur de la famille). */
+  readonly friend?: boolean;
 }
 
 /** Messages prédéfinis entre joueurs (pas de texte libre : sûr pour les enfants). */

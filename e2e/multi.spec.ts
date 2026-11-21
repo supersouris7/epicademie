@@ -26,9 +26,13 @@ test('Plusieurs joueurs : connectés, message, profil déjà ouvert refusé, ar�
   const lea = await newPlayer(browser, `Léa${suffix}`, family);
   const tom = await newPlayer(browser, `Tom${suffix}`, family);
 
-  // Questy annonce les joueurs connectés sur l'accueil.
+  // Tom arrive : petite bulle chez Léa (elle était déjà connectée).
+  await expect(lea.getByRole('status').filter({ hasText: `Tom${suffix} vient de se connecter` })).toBeVisible();
+  // Questy annonce les joueurs connectés dans le menu Multijoueur (plus sur l'accueil).
+  await expect(lea.getByRole('button', { name: /Joueurs connectés/ })).toHaveCount(0);
+  await lea.getByRole('navigation', { name: 'Menu principal' }).getByRole('button', { name: 'Multi' }).click();
   await expect(lea.getByRole('button', { name: /Joueurs connectés : [1-9]/ })).toBeVisible();
-  await expect(lea.getByText(new RegExp(`Tom${suffix}`))).toBeVisible();
+  await expect(lea.getByText(new RegExp(`Tom${suffix}`)).first()).toBeVisible();
 
   // Message prédéfini : notification en haut de l'écran de Tom.
   await lea.getByRole('button', { name: /Joueurs connectés/ }).click();

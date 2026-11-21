@@ -34,6 +34,7 @@ import { createShopService, inventoryRoutes } from './modules/inventory/index.ts
 import { createInsightsService, insightsRoutes } from './modules/insights/index.ts';
 import { createPresence, type Presence } from './modules/realtime/index.ts';
 import { opsRoutes, systemRoutes } from './modules/system/index.ts';
+import { createFriendsService, friendsRoutes, type FriendsService } from './modules/friends/index.ts';
 import { telemetryRoutes } from './modules/telemetry/index.ts';
 
 /**
@@ -88,6 +89,7 @@ export interface App {
   readonly profiles: ProfilesService;
   readonly accounts: AccountsService;
   readonly billing: BillingService;
+  readonly friends: FriendsService;
 }
 
 /** Corps de requête maximal (les réponses d'exercice font quelques centaines d'octets). */
@@ -136,6 +138,17 @@ export async function buildApp(deps: AppDeps): Promise<App> {
 
   // Services métier (un par module), partagés par les routes HTTP et le temps réel.
   const { db } = database;
+  // Amitiés validées ou retirées : la liste des connectés des deux joueurs change tout de suite.
+  const friends = createFriendsService({
+    db,
+    clock,
+    random,
+    onChange: (ids) => {
+      void Promise.all(ids.map(async (id) => presence.setFriends(id, await friends.activeIds(id))))
+        .then(() => presence.changed())
+        .catch((err: unknown) => reporter.capture(err, { source: 'server' }));
+    },
+  });
   const appUrl = () => config.publicUrl ?? `http://localhost:${config.port}`;
   const accounts = createAccountsService({
     db,
@@ -208,6 +221,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
       await v1.register(battlesRoutes(battles, owns, billing));
       await v1.register(billingRoutes(billing, config.billing.stripeWebhookSecret));
       await v1.register(inventoryRoutes(shop, owns));
+      await v1.register(friendsRoutes(friends, owns));
       await v1.register(insightsRoutes(createInsightsService({ db, clock }), () => reporter.recent()));
       await v1.register(telemetryRoutes(reporter));
     },
@@ -215,7 +229,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
   );
 
   await registerWeb(http, config.webDir);
-  return { http, presence, metrics, reporter, clock, random, profiles, accounts, billing };
+  return { http, presence, metrics, reporter, clock, random, profiles, accounts, billing, friends };
 }
 
 /**

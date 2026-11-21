@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router';
 import { MODES, type Profile } from '@questeo/shared';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
-import { SpeechBubble } from '../../shared/ui/SpeechBubble.tsx';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import { OnlineBanner } from '../realtime/index.ts';
@@ -22,11 +21,11 @@ export function MultiModes({ profile }: { readonly profile: Profile }) {
   const modes = MODES.filter((m) => m.category === 'multi');
   return (
     <PageShell title="Multijoueur" nav={profile}>
-      <div className="flex items-center gap-3">
-        <Questy mood="wink" size={88} />
-        <SpeechBubble>Chacun sur sa tablette ou son ordi : défie tes amis connectés !</SpeechBubble>
-      </div>
+      {/* Une seule mascotte : Questy annonce les joueurs connectés (liste et messages en touchant). */}
       <OnlineBanner meId={profile.id} />
+      <GameButton variant="accent" icon="icons-navigation-team" onClick={() => void navigate('/amis')}>
+        Mes amis
+      </GameButton>
       <ul className="grid gap-3 sm:grid-cols-2" aria-label="Modes multijoueur">
         {modes.map((mode) => {
           const icon = assetSrc(`icons-modes-${mode.id}`) ? (

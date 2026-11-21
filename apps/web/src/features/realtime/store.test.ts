@@ -56,6 +56,26 @@ describe('connexion temps réel', () => {
     expect(sockets.length).toBe(count);
   });
 
+  it('un joueur (famille ou ami) se connecte : « X vient de se connecter », pas pour la 1re liste', () => {
+    useRealtime.getState().connect('p1');
+    const lea: OnlinePlayer = {
+      id: 'p1',
+      name: 'Léa',
+      hero: 'lina',
+      avatar: { style: 'pixelbot', seed: 'x' },
+      busy: false,
+    };
+    const tom: OnlinePlayer = { ...lea, id: 'p9', name: 'Tom', friend: true };
+    const zoe: OnlinePlayer = { ...lea, id: 'p2', name: 'Zoé' };
+    last().fire('presence', [lea, zoe]);
+    expect(useRealtime.getState().notices).toEqual([]);
+    last().fire('presence', [lea, zoe, tom]);
+    expect(useRealtime.getState().notices).toMatchObject([{ kind: 'online', player: { name: 'Tom', friend: true } }]);
+    // Quelqu'un part : pas d'annonce.
+    last().fire('presence', [lea, tom]);
+    expect(useRealtime.getState().notices).toHaveLength(1);
+  });
+
   it('change de joueur : coupe l’ancienne connexion', () => {
     useRealtime.getState().connect('p1');
     const first = last();
