@@ -69,16 +69,16 @@ export function ProfilePicker() {
         </div>
       )}
 
-      <ul className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+      <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-5">
         {profiles?.map((p, i) => (
           <li key={p.id}>
             <CharacterCard
               index={i}
               name={p.name}
               caption={busy.has(p.id) ? 'Déjà connecté' : `Niveau ${levelFromXp(p.xp).level}`}
-              portrait={<CharacterAvatar avatar={p.avatar} size={120} />}
+              portrait={<CharacterAvatar avatar={p.avatar} size={76} />}
               onClick={() => choose(p.id)}
-              className="min-h-52 pt-2"
+              centered
             />
           </li>
         ))}
@@ -87,7 +87,7 @@ export function ProfilePicker() {
             variant="primary"
             icon="icons-navigation-plus"
             onClick={() => void navigate('/profils/nouveau')}
-            className="h-full min-h-52 w-full flex-col"
+            className="h-full min-h-32 w-full flex-col"
           >
             Nouveau joueur
           </GameButton>

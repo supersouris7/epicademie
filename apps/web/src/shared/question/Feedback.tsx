@@ -41,8 +41,8 @@ export function Feedback(props: FeedbackProps) {
   return props.correct ? <Success {...props} /> : <Explanation {...props} />;
 }
 
-/** Après une bonne réponse, on enchaîne tout seul après l'annonce des XP : aucun bouton. */
-export const AUTO_NEXT_MS = 2700;
+/** Après une bonne réponse, on enchaîne vite tout seul après l'annonce des XP : aucun bouton. */
+export const AUTO_NEXT_MS = 1200;
 
 function Success({ question, retried, xp, streak, gender, onNext }: FeedbackProps) {
   const short = isShort();
@@ -83,15 +83,6 @@ function Success({ question, retried, xp, streak, gender, onNext }: FeedbackProp
           </p>
         </div>
       </div>
-      {/* Jauge qui se remplit jusqu'au passage automatique à la question suivante. */}
-      <span aria-hidden className="h-1.5 shrink-0 overflow-hidden rounded-full bg-black/10">
-        <motion.span
-          className="bg-success block h-full"
-          initial={{ width: '0%' }}
-          animate={{ width: '100%' }}
-          transition={{ duration: AUTO_NEXT_MS / 1000, ease: 'linear' }}
-        />
-      </span>
     </motion.section>
   );
 }
