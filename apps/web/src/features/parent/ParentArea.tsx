@@ -9,6 +9,7 @@ import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { confirmParent, useMe, useSetMe } from '../account/index.ts';
 import { useProfiles } from '../profiles/index.ts';
+import { FamilyFriends } from './FamilyFriends.tsx';
 import {
   chapterTitle,
   skillTitle,
@@ -90,6 +91,7 @@ export function ParentHome() {
             <ChildCard key={p.id} profile={p} />
           ))}
         </ul>
+        <FamilyFriends />
       </PageShell>
     </ParentGate>
   );

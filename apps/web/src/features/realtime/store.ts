@@ -14,10 +14,15 @@ import type {
 
 type RealtimeSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
-/** Notification en haut de l'écran : message reçu ou invitation à l'arène. */
+/** Notification en haut de l'écran : message reçu, invitation à l'arène, ou joueur qui arrive. */
 export type Notice =
   | { readonly id: number; readonly kind: 'chat'; readonly message: ChatMessage }
-  | { readonly id: number; readonly kind: 'invite'; readonly invite: ArenaInvite };
+  | { readonly id: number; readonly kind: 'invite'; readonly invite: ArenaInvite }
+  | { readonly id: number; readonly kind: 'online'; readonly player: OnlinePlayer };
+
+/** Joueurs (famille ou amis) arrivés entre deux listes de connectés. */
+export const arrivals = (before: readonly OnlinePlayer[], after: readonly OnlinePlayer[], me: string | null) =>
+  after.filter((p) => p.id !== me && !before.some((b) => b.id === p.id));
 
 interface RealtimeState {
   readonly socket: RealtimeSocket | null;
@@ -58,7 +63,16 @@ export const useRealtime = create<RealtimeState>((set, get) => ({
     set({ socket: null, profileId, online: [], arena: null });
     if (!profileId || typeof window === 'undefined') return;
     const socket: RealtimeSocket = io({ auth: { profileId }, transports: ['websocket', 'polling'] });
-    socket.on('presence', (online) => set({ online }));
+    // La 1re liste après la connexion ne s'annonce pas ; ensuite, chaque arrivée : « X est connecté ».
+    let first = true;
+    socket.on('presence', (online) =>
+      set((s) => {
+        const joined = first ? [] : arrivals(s.online, online, s.profileId);
+        first = false;
+        const added = joined.map((player) => ({ id: ++seq, kind: 'online' as const, player }));
+        return { online, notices: added.length ? [...s.notices, ...added].slice(-4) : s.notices };
+      }),
+    );
     // Connexion refusée par le serveur (profil déjà ouvert ailleurs, profil inconnu) : le
     // client ne réessaie pas tout seul. Les coupures réseau, elles, se reconnectent seules.
     socket.on('connect_error', (err) => {

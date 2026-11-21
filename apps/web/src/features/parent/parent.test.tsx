@@ -96,6 +96,9 @@ describe('espace parent', () => {
     const card = await screen.findByRole('listitem', { name: 'Progrès de Léa' });
     expect(card).toHaveTextContent('Matières travaillées : Maths');
     expect(card).toHaveTextContent('À retravailler : Priorités opératoires');
+    // Amis d'autres familles : validés ici par le parent.
+    expect(screen.getByRole('heading', { name: 'Amis d’autres familles' })).toBeInTheDocument();
+    expect(await screen.findByText('Aucune demande pour l’instant.')).toBeInTheDocument();
     await user.click(within(card).getByRole('link', { name: /Voir le détail/ }));
     expect(await screen.findByRole('heading', { name: 'Bilan de la semaine' })).toBeInTheDocument();
     await user.click(screen.getByText(/Maths —/));

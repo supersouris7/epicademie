@@ -26,6 +26,7 @@ export function startRealtime(app: App, corsOrigins: readonly string[] | null) {
       const token = readCookie(cookieHeader, SESSION_COOKIE);
       return token ? ((await app.accounts.resolve(token))?.familyId ?? null) : null;
     },
+    friendsOf: (profileId) => app.friends.activeIds(profileId),
     clock: app.clock,
     random: app.random,
     canPlayChapter: (familyId, chapterId) =>

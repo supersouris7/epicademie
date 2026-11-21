@@ -30,6 +30,7 @@ import {
 import { BadgeProgressSchema, LearningReportSchema } from '../learning.ts';
 import { BillingSchema, CheckoutSchema, SimulatePaymentSchema } from '../billing.ts';
 import { AdminErrorSchema, AdminStatsSchema, AnomalySchema } from '../insights.ts';
+import { FamilyFriendSchema, FriendRequestSchema, FriendsViewSchema } from '../friends.ts';
 import {
   ContentEventSchema,
   ContentSkillSchema,
@@ -98,6 +99,7 @@ export const API_TAGS = [
   'entrainement',
   'combats',
   'inventaire',
+  'amis',
   'telemetrie',
 ] as const;
 export type ApiTag = (typeof API_TAGS)[number];
@@ -111,6 +113,7 @@ const endpoint = <
 ) => e;
 
 export const IdParamsSchema = z.object({ id: z.uuid() });
+export const FriendParamsSchema = z.object({ id: z.uuid(), friendId: z.uuid() });
 
 /** Codes d'erreur stables (le message, lui, est destiné à l'affichage et peut changer). */
 export const ERROR_CODES = [
@@ -289,6 +292,67 @@ export const api = {
     status: 204,
     params: IdParamsSchema,
     response: null,
+  }),
+
+  friends: endpoint({
+    method: 'GET',
+    path: '/profiles/:id/friends',
+    tag: 'amis',
+    summary: 'Code ami du joueur et ses amitiés (demandes, attente des parents, amis)',
+    access: 'family',
+    status: 200,
+    params: IdParamsSchema,
+    response: FriendsViewSchema,
+  }),
+  requestFriend: endpoint({
+    method: 'POST',
+    path: '/profiles/:id/friends',
+    tag: 'amis',
+    summary: 'Demande d’ami avec le code d’un joueur d’une autre famille',
+    access: 'family',
+    status: 201,
+    params: IdParamsSchema,
+    body: FriendRequestSchema,
+    response: FriendsViewSchema,
+  }),
+  acceptFriend: endpoint({
+    method: 'POST',
+    path: '/profiles/:id/friends/:friendId/accept',
+    tag: 'amis',
+    summary: 'Accepte une demande d’ami reçue',
+    access: 'family',
+    status: 200,
+    params: FriendParamsSchema,
+    response: FriendsViewSchema,
+  }),
+  removeFriend: endpoint({
+    method: 'DELETE',
+    path: '/profiles/:id/friends/:friendId',
+    tag: 'amis',
+    summary: 'Refuse une demande ou retire un ami',
+    access: 'family',
+    status: 200,
+    params: FriendParamsSchema,
+    response: FriendsViewSchema,
+  }),
+  familyFriends: endpoint({
+    method: 'GET',
+    path: '/family/friends',
+    tag: 'amis',
+    summary: 'Espace parent : amitiés des enfants de la famille',
+    access: 'parent',
+    status: 200,
+    response: z.array(FamilyFriendSchema),
+  }),
+  approveFriend: endpoint({
+    method: 'POST',
+    path: '/profiles/:id/friends/:friendId/approve',
+    tag: 'amis',
+    summary: 'Espace parent : valide une amitié de son enfant',
+    access: 'parent',
+    status: 200,
+    params: FriendParamsSchema,
+    response: z.array(FamilyFriendSchema),
   }),
 
   ownedHeroes: endpoint({

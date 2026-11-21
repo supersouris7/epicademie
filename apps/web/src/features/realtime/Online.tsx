@@ -26,7 +26,7 @@ export function Online({ profile }: { readonly profile: Profile }) {
   };
 
   return (
-    <PageShell title="Joueurs connectés" back="/hub" nav={profile}>
+    <PageShell title="Joueurs connectés" back="/multi" nav={profile}>
       <div className="flex items-center gap-3">
         <Questy mood={others.length ? 'wow' : 'happy'} size={80} />
         <SpeechBubble>
@@ -43,6 +43,11 @@ export function Online({ profile }: { readonly profile: Profile }) {
             <HeroFace hero={p.hero} expression="joie" size={44} />
             <span className="font-display min-w-0 flex-1 text-xl tracking-wide">
               {p.name}
+              {p.friend && (
+                <span role="img" aria-label="ami d’une autre famille" className="ml-1 text-base">
+                  🤝
+                </span>
+              )}
               {p.busy && <span className="text-muted block text-sm font-bold">en arène</span>}
             </span>
             <GameButton size="sm" variant="surface" onClick={() => setTo(p)} aria-label={`Message à ${p.name}`}>

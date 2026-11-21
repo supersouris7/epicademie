@@ -44,6 +44,8 @@ export interface RealtimeDeps {
   readonly authorizeFamily: (cookieHeader: string | undefined) => Promise<string | null>;
   readonly clock: Clock;
   readonly random: Random;
+  /** Amis actifs d'un profil (amitié acceptée et validée par les parents). */
+  readonly friendsOf: (profileId: string) => Promise<string[]>;
   /** La famille peut-elle jouer ce chapitre (gratuit, ou abonnement) ? */
   readonly canPlayChapter: (familyId: string, chapterId: string) => Promise<boolean>;
   readonly logger: FastifyBaseLogger;
@@ -79,14 +81,12 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
   const arenaFamily = new Map<string, string>();
   const tvRoom = (familyId: string) => `tv:${familyId}`;
 
-  /** Chaque famille reçoit la liste de ses joueurs connectés (jamais celle des autres). */
+  /** Chaque joueur reçoit la liste de ses connectés : sa famille et ses amis actifs (jamais les autres). */
   const broadcastPresence = () => {
-    for (const familyId of presence.families()) {
-      const players = presence.players(familyId, arenas.isBusy);
-      for (const p of players) presence.emit(p.id, 'presence', players);
-    }
+    for (const id of presence.allIds()) presence.emit(id, 'presence', presence.visibleTo(id, arenas.isBusy));
     metrics?.onlinePlayers.set(presence.count());
   };
+  presence.onChanged(broadcastPresence);
 
   // Authentification de la connexion : session de la famille (cookie), profil de cette famille,
   // pas déjà ouvert ailleurs.
@@ -122,7 +122,10 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
         else {
           socket.data.profile = found.profile;
           socket.data.familyId = found.familyId;
-          next();
+          return deps.friendsOf(found.profile.id).then((ids) => {
+            socket.data.friendIds = ids;
+            next();
+          });
         }
       })
       .catch((err: unknown) => {
@@ -149,7 +152,7 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
       socket.disconnect(true);
       return;
     }
-    presence.join(socket, profile, socket.data.familyId);
+    presence.join(socket, profile, socket.data.familyId, socket.data.friendIds);
     broadcastPresence();
     // Reconnexion pendant une arène : le joueur reprend sa place et reçoit l'état en cours.
     arenas.reconnected(profile.id);
@@ -186,7 +189,7 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
       ChatSendSchema,
       ({ to, payload }) => {
         const text = chatText(payload);
-        if (!text || to === profile.id || !presence.sameFamily(profile.id, to)) return;
+        if (!text || to === profile.id || !presence.linked(profile.id, to)) return;
         const out: ChatMessage = {
           from: { id: profile.id, name: profile.name, hero: profile.hero },
           text,
@@ -196,13 +199,13 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
       },
       chatLimit,
     );
-    // On n'invite que des joueurs de sa famille, sur un chapitre que la famille peut jouer.
+    // On n'invite que des joueurs de sa famille ou ses amis, sur un chapitre que la famille peut jouer.
     on('arena:create', ArenaCreateSchema, (msg) => {
       deps
         .canPlayChapter(socket.data.familyId, msg.chapterId)
         .then((ok) => {
           if (ok)
-            arenas.create(profile, { ...msg, invite: msg.invite.filter((id) => presence.sameFamily(profile.id, id)) });
+            arenas.create(profile, { ...msg, invite: msg.invite.filter((id) => presence.linked(profile.id, id)) });
         })
         .catch((err: unknown) => reporter.capture(err, { source: 'realtime', event: 'arena:create' }));
     });

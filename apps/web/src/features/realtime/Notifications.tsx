@@ -25,12 +25,30 @@ function NoticeCard({ notice }: { readonly notice: Notice }) {
   const dismiss = useRealtime((s) => s.dismiss);
   const respond = useRealtime((s) => s.respondArena);
   const navigate = useNavigate();
-  // Un message s'efface seul ; une invitation attend une réponse.
+  // Un message ou une arrivée s'efface seul ; une invitation attend une réponse.
   useEffect(() => {
-    if (notice.kind !== 'chat') return;
-    const t = window.setTimeout(() => dismiss(notice.id), 6000);
+    if (notice.kind === 'invite') return;
+    const t = window.setTimeout(() => dismiss(notice.id), notice.kind === 'online' ? 3500 : 6000);
     return () => window.clearTimeout(t);
   }, [notice, dismiss]);
+  if (notice.kind === 'online') {
+    const p = notice.player;
+    return (
+      <motion.div
+        layout
+        initial={{ y: -40, opacity: 0, scale: 0.9 }}
+        animate={{ y: 0, opacity: 1, scale: 1 }}
+        exit={{ y: -40, opacity: 0 }}
+        role="status"
+        className="cartoon bg-surface pointer-events-auto flex items-center gap-2 self-center px-3 py-1.5 shadow-xl"
+      >
+        <HeroFace hero={p.hero} expression="joie" size={32} />
+        <p className="font-bold">
+          <span className="font-display tracking-wide">{p.name}</span> vient de se connecter !
+        </p>
+      </motion.div>
+    );
+  }
   const from = notice.kind === 'chat' ? notice.message.from : notice.invite.from;
   return (
     <motion.div
