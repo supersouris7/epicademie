@@ -121,6 +121,7 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
       await expect(arrival.getByRole('status')).toHaveCount(3, { timeout: 8000 }); // boss, héros, Questy
       await expect(arrival).not.toContainText('3 vies');
       await expect(arrival.getByText('Touche l’écran pour continuer')).toBeVisible({ timeout: 8000 });
+      await page.waitForTimeout(700); // anti double-toucher (le texte est dans le DOM dès l'arrivée)
       await arrival.getByRole('button', { name: 'Passer' }).click();
       await expect(page.getByRole('progressbar', { name: /Vies de/ })).toBeVisible();
       sawBoss = true;
