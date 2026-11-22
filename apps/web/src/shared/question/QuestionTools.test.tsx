@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { CHAPTERS, generate, getSkill, type Question } from '@questeo/content';
@@ -106,6 +106,29 @@ describe('outils de réponse', () => {
     const full = screen.getByRole('dialog', { name: 'Brouillon pleine page' });
     await user.click(within(full).getByRole('button', { name: 'Réduire' }));
     expect(screen.queryByRole('dialog', { name: 'Brouillon pleine page' })).not.toBeInTheDocument();
+  });
+
+  it('brouillon : texte au clavier, retour à la ligne, couleur, persistance, annulation', async () => {
+    const q = generate('m5-disque', 1, 1);
+    const { user } = tools(q);
+    const open = async () => {
+      await user.click(screen.getByRole('tab', { name: 'Brouillon' }));
+      await user.click(screen.getByRole('button', { name: 'Texte au clavier' }));
+    };
+    await open();
+    const zone = screen.getByRole('img', { name: /Zone de brouillon/ });
+    fireEvent.pointerDown(zone, { clientX: 40, clientY: 40, isPrimary: true, pointerId: 1 });
+    await user.keyboard('2 x 3{Enter}= 6');
+    const area = screen.getByRole('textbox', { name: 'Saisie de texte du brouillon' });
+    expect(area).toHaveFocus();
+    expect(area).toHaveValue('2 x 3\n= 6');
+    // Valider (autre onglet) puis revenir : le texte est conservé comme les traits.
+    await user.click(screen.getByRole('button', { name: 'Stylo rouge' }));
+    await user.click(screen.getByRole('tab', { name: 'Répondre' }));
+    await user.click(screen.getByRole('tab', { name: 'Brouillon' }));
+    expect(screen.getByRole('button', { name: 'Annuler' })).toBeEnabled();
+    await user.click(screen.getByRole('button', { name: 'Tout effacer' }));
+    expect(screen.getByRole('button', { name: 'Annuler' })).toBeDisabled();
   });
 
   it('tableau de conversion : chiffres et virgule placés, résultat envoyé', async () => {

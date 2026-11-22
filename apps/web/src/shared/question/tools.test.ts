@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CHAPTERS, generate, getSkill } from '@questeo/content';
 import { toolTabs } from './tools.ts';
+import { erasedBy, textBox } from './tools/brouillonDraw.ts';
 
 const tabs = (skillId: string) => toolTabs(generate(skillId, 2, 3), getSkill(skillId));
 
@@ -31,5 +32,23 @@ describe('outils proposés', () => {
       'm5-pourcentages',
     ])
       expect(tabs(id), id).toContain('calculatrice');
+  });
+});
+
+describe('brouillon : texte et gomme', () => {
+  const texte = { color: '#000', text: 'abc\ndef', points: [[100, 100, 0.5]] as const };
+  const trait = { color: '#000', points: [[10, 10, 0.5]] as const };
+
+  it('la gomme efface un texte touché, pas un texte éloigné', () => {
+    expect(erasedBy(texte, [[110, 110, 0.5]])).toBe(true);
+    expect(erasedBy(texte, [[300, 300, 0.5]])).toBe(false);
+  });
+  it('la gomme efface toujours les traits à proximité', () => {
+    expect(erasedBy(trait, [[12, 12, 0.5]])).toBe(true);
+    expect(erasedBy(trait, [[200, 200, 0.5]])).toBe(false);
+  });
+  it('un texte occupe autant de lignes que de retours à la ligne', () => {
+    expect(textBox(texte)?.h).toBe(2 * 19);
+    expect(textBox(trait)).toBeNull();
   });
 });
