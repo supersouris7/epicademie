@@ -4,7 +4,7 @@ Exercices de mathématiques du **CM1 à la 3e** (programmes officiels), gamifié
 avec répétition espacée, combats de boss par chapitre, arène multijoueur tour par tour. Pensé
 tablette et smartphone. Mascotte : **Questy**.
 
-- Produit et règles du jeu : [`docs/SPEC.md`](docs/SPEC.md)
+- Produit et règles du jeu : spécification tenue dans le dépôt privé de pilotage
 - Architecture : [`docs/architecture/`](docs/architecture/README.md) — décisions : [`docs/adr/`](docs/adr/README.md)
 - Exploitation : [configuration](docs/operations/configuration.md), [déploiement](docs/operations/deploiement.md), [observabilité](docs/operations/observabilite.md)
 - Contribuer : [`CONTRIBUTING.md`](CONTRIBUTING.md)
