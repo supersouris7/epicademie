@@ -117,4 +117,30 @@ describe('pilotage', () => {
     await user.click(screen.getByRole('tab', { name: 'Erreurs' }));
     expect(await screen.findByText('Cannot read properties of undefined')).toBeInTheDocument();
   });
+
+  it('thème sombre local à la console et indicateurs clés en tête', async () => {
+    const { container } = renderApp('/admin', { admin: true });
+    const kpis = await screen.findByRole('region', { name: 'Indicateurs clés' });
+    expect(container.querySelector('.admin-dark')).not.toBeNull();
+    expect(within(kpis).getByText('Comptes')).toBeInTheDocument();
+    expect(within(kpis).getByText('Profils enfants')).toBeInTheDocument();
+    expect(within(kpis).getByText('Abonnements actifs · Famille, à l’année')).toBeInTheDocument();
+    expect(within(kpis).getByText('Revenus (mode test)')).toBeInTheDocument();
+    expect(within(kpis).getByText(/124,95/)).toBeInTheDocument();
+  });
+
+  it('graphiques : décrits en texte et valeurs en tableau', async () => {
+    const { user } = renderApp('/admin', { admin: true });
+    const bars = await screen.findByRole('img', { name: /Comptes créés par jour\. 3 comptes sur 30 jours/ });
+    expect(bars).toBeInTheDocument();
+    expect(
+      screen.getByRole('img', { name: /Abonnements actifs par jour\. 5 abonnements aujourd’hui/ }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('5 (100 %)')).toBeInTheDocument();
+    const [first] = screen.getAllByText('Voir les valeurs');
+    await user.click(first!);
+    const table = screen.getByRole('table', { name: 'Comptes créés par jour' });
+    expect(within(table).getAllByRole('row')).toHaveLength(31);
+    expect(within(table).getByRole('row', { name: '30/11 3' })).toBeInTheDocument();
+  });
 });

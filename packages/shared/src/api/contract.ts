@@ -31,7 +31,13 @@ import {
 } from '../account.ts';
 import { BadgeProgressSchema, LearningReportSchema } from '../learning.ts';
 import { BillingSchema, CheckoutSchema, SimulatePaymentSchema } from '../billing.ts';
-import { AdminErrorSchema, AdminStatsSchema, AnomalySchema, WeakSkillStatSchema } from '../insights.ts';
+import {
+  AdminErrorSchema,
+  AdminStatsSchema,
+  AdminTrendsSchema,
+  AnomalySchema,
+  WeakSkillStatSchema,
+} from '../insights.ts';
 import { FamilyFriendSchema, FriendRequestSchema, FriendsViewSchema, RankingRowSchema } from '../friends.ts';
 import {
   ContentEventSchema,
@@ -641,6 +647,15 @@ export const api = {
     access: 'admin',
     status: 200,
     response: AdminStatsSchema,
+  }),
+  adminTrends: endpoint({
+    method: 'GET',
+    path: '/admin/trends',
+    tag: 'admin',
+    summary: 'Courbes sur 30 jours : comptes créés, abonnements actifs (agrégés, aucune donnée personnelle)',
+    access: 'admin',
+    status: 200,
+    response: AdminTrendsSchema,
   }),
   adminWeakSkills: endpoint({
     method: 'GET',

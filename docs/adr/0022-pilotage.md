@@ -11,6 +11,11 @@
     séries, réponses, réussite sans aide, réponses par matière, boss vaincus, familles
     abonnées, paiements par issue, signalements ouverts). Aucune donnée personnelle (ni nom, ni
     e-mail, ni date de naissance).
+  - **Courbes** (`GET /admin/trends`, mêmes contrôles d'accès) : comptes créés par jour et
+    abonnements actifs par jour sur 30 jours, abonnements actifs par formule, revenus du mode
+    test. Comptes agrégés seulement. Affichées en SVG inline avec leurs valeurs en tableau ;
+    la console `/admin` est en thème sombre (classe `admin-dark`, variables locales dans
+    `index.css`).
   - **Anomalies de récompenses**, avec des seuils larges (`ANOMALY_THRESHOLDS`) : on signale
     l'impossible, pas l'excellent. Quatre règles :
     - gain de plus de 300 pièces en une partie (maximum théorique ≈ 110) ;

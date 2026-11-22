@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
-import type { WeakSkillStat, AdminError, AdminStats, Anomaly, Profile } from '@questeo/shared';
-import { attempts, profiles, sessions } from '../../db/schema.ts';
+import type { AdminTrends, WeakSkillStat, AdminError, AdminStats, Anomaly, Profile } from '@questeo/shared';
+import { accounts, attempts, profiles, sessions, subscriptions } from '../../db/schema.ts';
 import { createTestApp, profileInput, TEST_PASSWORD } from '../../testing/harness.ts';
 import { setAccountRole } from '../accounts/index.ts';
 import { ANOMALY_THRESHOLDS } from './insights.service.ts';
@@ -86,6 +86,7 @@ describe('pilotage (administration)', () => {
   it('réservé à l’administration', async () => {
     for (const url of [
       '/api/v1/admin/stats',
+      '/api/v1/admin/trends',
       '/api/v1/admin/errors',
       '/api/v1/admin/anomalies',
       '/api/v1/admin/weak-skills',
@@ -113,6 +114,40 @@ describe('pilotage (administration)', () => {
     });
     expect(res.body).not.toContain(profile.name);
     expect(res.body).not.toContain('@');
+  });
+
+  it('courbes sur 30 jours : comptes créés et abonnements actifs, agrégés', async () => {
+    const db = t.database.db;
+    await db.update(accounts).set({ createdAt: new Date('2026-11-18T10:00:00Z') });
+    await db.delete(subscriptions);
+    const [fam] = await db.select({ id: accounts.familyId }).from(accounts).limit(1);
+    await db.insert(subscriptions).values({
+      familyId: fam?.id ?? '',
+      offer: 'famille-annee',
+      status: 'payee',
+      amountCents: 2499,
+      currency: 'eur',
+      periodEnd: '2026-11-19',
+      provider: 'simulateur',
+      paidAt: new Date('2026-11-17T09:00:00Z'),
+    });
+    const res = await admin.inject('/api/v1/admin/trends');
+    expect(res.statusCode).toBe(200);
+    const trends = res.json<AdminTrends>();
+    expect(trends.day).toBe('2026-11-20');
+    expect(trends.accountsByDay).toHaveLength(30);
+    expect(trends.accountsByDay.at(-1)?.day).toBe('2026-11-20');
+    expect(trends.accountsByDay[0]?.day).toBe('2026-10-22');
+    const at = (rows: { day: string; count: number }[], day: string) => rows.find((r) => r.day === day)?.count;
+    expect(at(trends.accountsByDay, '2026-11-18')).toBe(2);
+    expect(at(trends.accountsByDay, '2026-11-19')).toBe(0);
+    expect(at(trends.activeSubscriptionsByDay, '2026-11-16')).toBe(0);
+    expect(at(trends.activeSubscriptionsByDay, '2026-11-18')).toBe(1);
+    expect(at(trends.activeSubscriptionsByDay, '2026-11-20')).toBe(0);
+    expect(trends.activeByOffer).toEqual([{ offer: 'famille-annee', count: 0 }]);
+    expect(trends.revenueCents).toBe(2499);
+    expect(res.body).not.toContain('@');
+    expect(res.body).not.toContain(fam?.id ?? 'x');
   });
 
   it('anomalies : gain impossible, réponses éclair, solde hors norme ; une partie normale ne sort pas', async () => {

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { SUBSCRIPTION_STATUSES } from './billing.ts';
+import { OFFERS, SUBSCRIPTION_STATUSES } from './billing.ts';
 import { SUBJECT_IDS } from './subjects.ts';
 
 /**
@@ -73,3 +73,20 @@ export const WeakSkillStatSchema = z.object({
   players: z.number().int().nonnegative(),
 });
 export type WeakSkillStat = z.infer<typeof WeakSkillStatSchema>;
+
+/**
+ * Courbes du pilotage : comptes créés et abonnements actifs jour par jour (30 derniers jours,
+ * du plus ancien au jour courant), répartition des abonnements actifs par formule. Comptes
+ * agrégés seulement.
+ */
+export const TREND_DAYS = 30;
+export const AdminTrendsSchema = z.object({
+  /** Jour du calcul (AAAA-MM-JJ). */
+  day: z.string(),
+  accountsByDay: z.array(z.object({ day: z.string(), count })),
+  activeSubscriptionsByDay: z.array(z.object({ day: z.string(), count })),
+  activeByOffer: z.array(z.object({ offer: z.enum(OFFERS), count })),
+  /** Total encaissé en mode test (paiements « payés »), en centimes. */
+  revenueCents: count,
+});
+export type AdminTrends = z.infer<typeof AdminTrendsSchema>;

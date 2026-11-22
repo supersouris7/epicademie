@@ -1,5 +1,14 @@
 import { and, count, desc, eq, gt, gte, isNotNull, or, sql, sum } from 'drizzle-orm';
-import { SUBJECT_IDS, type AdminStats, type Anomaly, type SubjectId, type WeakSkillStat } from '@questeo/shared';
+import {
+  OFFERS,
+  SUBJECT_IDS,
+  TREND_DAYS,
+  type AdminStats,
+  type AdminTrends,
+  type Anomaly,
+  type SubjectId,
+  type WeakSkillStat,
+} from '@questeo/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import {
@@ -9,6 +18,7 @@ import {
   profiles,
   questionReports,
   sessions,
+  accounts,
   subscriptions,
 } from '../../db/schema.ts';
 
@@ -34,6 +44,10 @@ export const ANOMALY_THRESHOLDS = {
 const DAY_MS = 86_400_000;
 /** Réponses minimales pour classer une notion dans les points faibles. */
 export const WEAK_MIN_ANSWERS = 10;
+
+function addDays(day: string, delta: number): string {
+  return new Date(Date.parse(`${day}T00:00:00Z`) + delta * DAY_MS).toISOString().slice(0, 10);
+}
 
 export function createInsightsService({ db, clock }: { db: Db; clock: Clock }) {
   const since = (days: number) => new Date(clock.now().getTime() - days * DAY_MS);
@@ -104,6 +118,46 @@ export function createInsightsService({ db, clock }: { db: Db; clock: Clock }) {
         premiumFamilies: num(premium[0]?.n),
         payments: payments.map((p) => ({ status: p.status, count: num(p.count), amountCents: num(p.amountCents) })),
         openReports: num(reports[0]?.n),
+      };
+    },
+
+    /**
+     * Courbes sur 30 jours (jour courant inclus). Un abonnement est actif du jour de son paiement
+     * à sa fin d'accès ; une famille n'est comptée qu'une fois par jour.
+     */
+    async trends(): Promise<AdminTrends> {
+      const today = clock.today();
+      const days = Array.from({ length: TREND_DAYS }, (_, i) => addDays(today, i - (TREND_DAYS - 1)));
+      const created = await db
+        .select({ day: sql<string>`to_char(${accounts.createdAt}, 'YYYY-MM-DD')`, n: count() })
+        .from(accounts)
+        .where(gte(accounts.createdAt, since(TREND_DAYS + 1)))
+        .groupBy(sql`to_char(${accounts.createdAt}, 'YYYY-MM-DD')`);
+      const paid = await db
+        .select({
+          familyId: subscriptions.familyId,
+          offer: subscriptions.offer,
+          start: sql<string>`to_char(coalesce(${subscriptions.paidAt}, ${subscriptions.createdAt}), 'YYYY-MM-DD')`,
+          end: subscriptions.periodEnd,
+          amountCents: subscriptions.amountCents,
+        })
+        .from(subscriptions)
+        .where(eq(subscriptions.status, 'payee'));
+      const createdBy = new Map(created.map((c) => [c.day, num(c.n)]));
+      const activeOn = (d: string) => paid.filter((p) => p.start <= d && d <= p.end);
+      const familiesByOffer = new Map<string, Set<string>>();
+      for (const p of activeOn(today)) {
+        familiesByOffer.set(p.offer, (familiesByOffer.get(p.offer) ?? new Set()).add(p.familyId));
+      }
+      return {
+        day: today,
+        accountsByDay: days.map((day) => ({ day, count: createdBy.get(day) ?? 0 })),
+        activeSubscriptionsByDay: days.map((day) => ({
+          day,
+          count: new Set(activeOn(day).map((p) => p.familyId)).size,
+        })),
+        activeByOffer: OFFERS.map((offer) => ({ offer, count: familiesByOffer.get(offer)?.size ?? 0 })),
+        revenueCents: paid.reduce((total, p) => total + p.amountCents, 0),
       };
     },
 
