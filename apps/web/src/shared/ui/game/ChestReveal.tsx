@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { ITEMS, ITEM_INFO, type Chest, type ChestRarity, HERO_NAMES } from '@questeo/shared';
 import { chestIcon, ITEM_ICONS } from '../../../design/items.ts';
 import { playSound } from '../../lib/sound.ts';
+import { BlinkText } from './BlinkText.tsx';
 import { GameIcon } from './GameIcon.tsx';
 
 /** Coffre générique (icônes, notes) : le coffre rare. */
@@ -260,7 +261,9 @@ export function ChestReveal({ chest }: { readonly chest: Chest | null }) {
             className="pointer-events-none relative z-10 flex flex-col items-center gap-2"
           >
             <p className="font-bold text-white">Ton équipement t’attend pour les combats de boss !</p>
-            <p className="text-sm font-bold text-white/70">Touche l’écran pour continuer</p>
+            <BlinkText delay={0} className="text-sm font-bold text-white/70">
+              Touche l’écran pour continuer
+            </BlinkText>
           </motion.div>
         </>
       )}
