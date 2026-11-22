@@ -4,7 +4,7 @@ import { renderApp } from '../../testing/renderApp.tsx';
 
 // Tirage figé : la question est toujours « Calcule 3 × 2. » (réponse 6).
 const answer = async (user: ReturnType<typeof renderApp>['user'], digit: string) => {
-  await user.click(screen.getByRole('button', { name: digit, exact: true }));
+  await user.click(screen.getByRole('button', { name: new RegExp(`^${digit}$`) }));
   await user.click(screen.getByRole('button', { name: 'OK' }));
 };
 
