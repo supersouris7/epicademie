@@ -11,8 +11,20 @@ const o = (id: string, ...prerequisites: string[]): Competence => ({ id, essenti
  */
 export const MATHS_REFERENTIAL: Referential = {
   subject: 'maths',
-  version: 1,
+  version: 2,
   grades: {
+    // CE2 : fondamentaux d'évaluation (Origines, prérequis), jamais jouables. Contenu : `maths/ce2/`.
+    ce2: [
+      E('mce2-nombres'),
+      E('mce2-calcul-mental'),
+      E('mce2-operations', 'mce2-calcul-mental'),
+      E('mce2-problemes', 'mce2-operations'),
+      o('mce2-fractions', 'mce2-nombres'),
+      E('mce2-mesures', 'mce2-nombres'),
+      o('mce2-durees'),
+      E('mce2-geometrie'),
+      o('mce2-donnees', 'mce2-nombres'),
+    ],
     cm1: [
       E('mcm1-nombres', 'mce2-nombres'),
       E('mcm1-fractions', 'mce2-fractions', 'mce2-nombres'),
