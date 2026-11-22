@@ -11,6 +11,8 @@ export const objective = (text: string) => `${BO_MATHS} — « ${text} »`;
  * CM2 depuis 2026). 4e et 3e : objectifs par année du programme du cycle 4 publié au BO n°10 du 5 mars 2026.
  */
 const BO_BY_GRADE = {
+  // CE2 : arrêté du 22 octobre 2024 ; fondamentaux d'évaluation seulement (ADR 0030), jamais jouables en Entraînement.
+  ce2: 'Programme de mathématiques du cycle 2, CE2 (BO n°41 du 31 octobre 2024)',
   cm1: 'Programme de mathématiques du cycle 3, CM1 (BO n°16 du 17 avril 2025)',
   cm2: 'Programme de mathématiques du cycle 3, CM2 (BO n°16 du 17 avril 2025)',
   '6e': 'Programme de mathématiques du cycle 3, classe de 6e (BO n°16 du 17 avril 2025)',

@@ -6,4 +6,5 @@ export * from './catalog.ts';
 export * from './diagnose.ts';
 export * from './validate.ts';
 export * from './glossary.ts';
+export * from './ce2.ts';
 export * from './referentiel/index.ts';

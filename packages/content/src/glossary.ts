@@ -393,6 +393,51 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
     visual: { kind: 'unites', focus: 'volume' },
     family: 'mesures',
   },
+  // ——— Fondamentaux du CE2 (programme du cycle 2) ———
+  {
+    id: 'double',
+    word: 'double',
+    forms: ['double', 'doubles'],
+    definition: 'Deux fois le nombre : on l’ajoute à lui-même.',
+    example: 'Le double de 35 est 70 : 35 + 35 = 70.',
+    family: 'operations',
+  },
+  {
+    id: 'moitie',
+    word: 'moitié',
+    forms: ['moitié', 'moitiés'],
+    definition: 'Une des deux parts égales quand on partage en 2. C’est la fraction {1/2}.',
+    example: 'La moitié de 20 est 10, car 10 + 10 = 20.',
+    visual: { kind: 'fraction', parts: [{ num: 1, den: 2 }] },
+    family: 'fractions',
+  },
+  {
+    id: 'tiers',
+    word: 'tiers',
+    forms: ['tiers'],
+    definition: 'Une des trois parts égales quand on partage en 3. C’est la fraction {1/3}.',
+    example: 'Le tiers de 12 est 4, car 3 × 4 = 12.',
+    visual: { kind: 'fraction', parts: [{ num: 1, den: 3 }] },
+    family: 'fractions',
+  },
+  {
+    id: 'quart',
+    word: 'quart',
+    forms: ['quart', 'quarts'],
+    definition: 'Une des quatre parts égales quand on partage en 4. C’est la fraction {1/4}.',
+    example: 'Le quart de 20 est 5, car 4 × 5 = 20.',
+    visual: { kind: 'fraction', parts: [{ num: 1, den: 4 }] },
+    family: 'fractions',
+  },
+  {
+    id: 'symetrique',
+    word: 'symétrique',
+    forms: ['symétrique', 'symétriques', 'symétrie'],
+    definition:
+      'Deux points sont symétriques par rapport à une droite (l’**axe**) s’ils sont à la même distance de l’axe, de part et d’autre.',
+    example: 'Si A est à 3 carreaux à gauche de l’axe, son symétrique est à 3 carreaux à droite.',
+    family: 'geometrie',
+  },
 ];
 
 export const glossaryEntry = (id: string) => GLOSSARY.find((g) => g.id === id);
