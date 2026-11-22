@@ -4,17 +4,17 @@ import type { EvalChapter, Figure } from '../../types.ts';
 import { chapter, skill } from './kit.ts';
 
 /**
- * Domaines « Espace et géométrie » et données du CE2. Programme du cycle 2 (CE2), BO n°16 du
- * 17 avril 2025 : figures usuelles, angle droit, symétrie, solides, lecture de tableaux et de graphiques.
+ * Domaines « Espace et géométrie » et données du CE2. Programme du cycle 2 (CE2), BO n°41 du
+ * 31 octobre 2024 : figures usuelles, angle droit, symétrie, solides, lecture de tableaux et de graphiques.
  */
 
 const figures = skill(
   'mce2-figures',
   'Reconnaître les figures usuelles',
-  'Reconnaître, nommer, décrire, reproduire, construire quelques figures géométriques : carré, rectangle, triangle rectangle, cercle',
+  'Reconnaitre, nommer et décrire le carré, le rectangle, le triangle, le triangle rectangle et le losange ; connaitre les propriétés des angles et les égalités de longueur pour les carrés, les rectangles et les losanges',
   [
     'Un **carré** : 4 côtés de même longueur et 4 angles droits. Un **rectangle** : 4 angles droits, côtés opposés de même longueur.',
-    'Un triangle rectangle : 3 côtés et 1 angle droit. Un cercle : tous ses points sont à la même distance du centre.',
+    'Un **losange** : 4 côtés de même longueur (mais pas forcément des angles droits). Un triangle rectangle : 3 côtés et 1 angle droit.',
   ],
   (rng, level) => {
     if (level === 1) {
@@ -22,7 +22,7 @@ const figures = skill(
         { name: 'carré', d: 'quatre côtés de même longueur et quatre angles droits' },
         { name: 'rectangle', d: 'quatre angles droits et deux longueurs différentes de ses deux largeurs' },
         { name: 'triangle rectangle', d: 'trois côtés dont deux forment un angle droit' },
-        { name: 'cercle', d: 'tous ses points à la même distance de son centre' },
+        { name: 'losange', d: 'quatre côtés de même longueur et aucun angle droit' },
       ];
       const it = rng.pick(items);
       const { answer, traps: t } = choice(
@@ -53,6 +53,20 @@ const figures = skill(
               { name: 'D', x: 0, y: 4 },
             ],
             rightAngles: [0, 1, 2, 3],
+            ticks: [1, 1, 1, 1],
+          },
+        },
+        {
+          name: 'losange',
+          n: 0,
+          fig: {
+            kind: 'polygon',
+            vertices: [
+              { name: 'P', x: 0, y: 2 },
+              { name: 'Q', x: 3, y: 0 },
+              { name: 'R', x: 6, y: 2 },
+              { name: 'S', x: 3, y: 4 },
+            ],
             ticks: [1, 1, 1, 1],
           },
         },
@@ -127,13 +141,31 @@ const figures = skill(
 
 const solides = skill(
   'mce2-solides',
-  'Cubes et pavés',
-  'Reconnaître, nommer, décrire des solides : cube, pavé droit ; faces, arêtes, sommets',
+  'Cubes, pavés et pyramides',
+  'Nommer un cube, un pavé, une pyramide ou un cylindre ; décrire un cube, un pavé ou une pyramide avec les termes « face », « sommet » et « arête » ; connaitre le nombre et la nature des faces d’un cube ou d’un pavé',
   [
     'Le cube et le pavé droit ont 6 faces, 12 arêtes et 8 sommets.',
-    'Les faces d’un cube sont toutes des carrés égaux ; celles d’un pavé sont des rectangles.',
+    'Les faces d’un cube sont toutes des carrés égaux ; celles d’un pavé sont des rectangles. Une pyramide a des faces triangulaires et une base.',
   ],
   (rng, level) => {
+    if (level === 3 && rng.int(0, 2) === 2) {
+      const asked = rng.pick([
+        ['faces', 5],
+        ['sommets', 5],
+        ['arêtes', 8],
+      ] as const);
+      return {
+        prompt: `Une pyramide a pour base un carré. Combien de ${asked[0]} a-t-elle ?`,
+        answer: num(asked[1]),
+        traps: traps(r(asked[1]), [[4, 'N’oublie pas la base, ni les éléments de la base.']]),
+        hint: 'Compte ceux de la base, puis ceux qui montent vers le sommet.',
+        steps: [
+          'La base carrée a 4 sommets et 4 côtés ; 4 faces triangulaires montent vers le sommet.',
+          `Une pyramide à base carrée a **${asked[1]}** ${asked[0]}.`,
+        ],
+        targetSeconds: 30,
+      };
+    }
     if (level === 3) {
       const cube = rng.int(0, 1) === 0;
       const { answer, traps: t } = choice(rng, cube ? 'cube' : 'pavé droit', [
@@ -187,7 +219,7 @@ const solides = skill(
 const symetrie = skill(
   'mce2-symetrie',
   'Symétrie par rapport à un axe',
-  'Reconnaître et utiliser les notions d’alignement, d’angle droit, d’égalité de longueurs, de symétrie axiale',
+  'Compléter, sur une feuille quadrillée, une figure simple pour la rendre symétrique par rapport à un axe donné (vertical ou horizontal)',
   [
     'Deux points sont symétriques par rapport à un axe quand l’axe est « au milieu » : même distance de chaque côté.',
     'On compte les carreaux entre le point et l’axe, puis autant de l’autre côté.',
@@ -230,7 +262,7 @@ const symetrie = skill(
 const diagramme = skill(
   'mce2-diagramme',
   'Lire un diagramme en barres',
-  'Organisation et gestion de données : lire ou compléter un graphique simple (diagramme en barres)',
+  'Lire et interpréter les données d’un diagramme en barres ; résoudre des problèmes en utilisant les données d’un diagramme en barres',
   [
     'Dans un diagramme en barres, la **hauteur** de la barre donne le nombre.',
     'Pour comparer, on lit les deux barres puis on calcule la différence.',
@@ -284,62 +316,61 @@ const diagramme = skill(
 
 const tableau = skill(
   'mce2-tableau',
-  'Lire un tableau',
-  'Organisation et gestion de données : prélever des données numériques, lire ou compléter un tableau',
+  'Lire un tableau à double entrée',
+  'Lire et interpréter les données d’un tableau à double entrée ; résoudre des problèmes en utilisant les données d’un tableau à double entrée',
   [
-    'Dans un tableau, on lit la ligne et la colonne qui nous intéressent.',
-    'Pour un total, on additionne toute la ligne.',
+    'Dans un tableau à double entrée, une ligne et une colonne donnent la case à leur croisement.',
+    'Pour un total, on additionne les cases utiles.',
   ],
   (rng, level) => {
-    const days = ['Lundi', 'Mardi', 'Jeudi', 'Vendredi'];
-    const values = distinct(rng, 4, () => rng.int(3, 30));
+    const modes = ['À pied', 'En vélo', 'En bus'];
+    const girls = distinct(rng, 3, () => rng.int(8, 40));
+    const boys = distinct(rng, 3, () => rng.int(8, 40));
     const figure: Figure = {
       kind: 'table',
       header: true,
-      rows: [
-        ['Jour', ...days],
-        ['Livres prêtés', ...values.map(String)],
-      ],
+      rows: [['', 'Filles', 'Garçons'], ...modes.map((m, i) => [m, String(girls[i] ?? 0), String(boys[i] ?? 0)])],
     };
-    const i = rng.int(0, 3);
-    if (level === 1)
+    const i = rng.int(0, 2);
+    const mode = (modes[i] ?? '').toLowerCase();
+    if (level === 1) {
+      const girl = rng.int(0, 1) === 0;
+      const v = (girl ? girls : boys)[i] ?? 0;
       return {
-        prompt: `Combien de livres ont été prêtés le ${days[i]?.toLowerCase()} ?`,
+        prompt: `Combien de ${girl ? 'filles' : 'garçons'} viennent à l’école ${mode} ?`,
         figure,
-        answer: num(values[i] ?? 0),
-        traps: [],
-        hint: 'Cherche la colonne du bon jour.',
-        steps: [`On lit la colonne « ${days[i]} ».`, `**${values[i]}** livres.`],
+        answer: num(v),
+        traps: traps(r(v), [[(girl ? boys : girls)[i] ?? 0, 'Regarde bien la colonne : filles ou garçons ?']]),
+        hint: 'Cherche la ligne du moyen de transport et la colonne demandée.',
+        steps: [
+          `On lit la case à la croisée de la ligne « ${modes[i]} » et de la colonne « ${girl ? 'Filles' : 'Garçons'} ».`,
+          `**${v}** ${girl ? 'filles' : 'garçons'}.`,
+        ],
         targetSeconds: 15,
       };
+    }
     if (level === 2) {
-      const total = values.reduce((a, b) => a + b, 0);
+      const total = (girls[i] ?? 0) + (boys[i] ?? 0);
       return {
-        prompt: 'Combien de livres ont été prêtés dans la semaine ?',
+        prompt: `Combien d’élèves viennent à l’école ${mode} ?`,
         figure,
         answer: num(total),
-        traps: traps(r(total), [[Math.max(...values), 'Additionne tous les jours.']]),
-        hint: 'Additionne tous les nombres de la ligne.',
-        steps: [`${values.join(' + ')}.`, `= **${total}**.`],
-        targetSeconds: 30,
+        traps: traps(r(total), [[Math.max(girls[i] ?? 0, boys[i] ?? 0), 'Il faut compter les filles et les garçons.']]),
+        hint: 'Additionne les deux cases de la ligne.',
+        steps: [`Filles : ${girls[i]} ; garçons : ${boys[i]}.`, `${girls[i]} + ${boys[i]} = **${total}**.`],
+        targetSeconds: 25,
       };
     }
-    const best = days[values.indexOf(Math.max(...values))] ?? '';
-    const { answer, traps: t } = choice(
-      rng,
-      best,
-      days
-        .filter((d) => d !== best)
-        .map((label) => ({ label, why: 'Compare tous les nombres : cherche le plus grand.' })),
-    );
+    const all = [...girls, ...boys].reduce((a, b) => a + b, 0);
+    const here = (girls[i] ?? 0) + (boys[i] ?? 0);
     return {
-      prompt: 'Quel jour a-t-on prêté le plus de livres ?',
+      prompt: `Combien d’élèves ne viennent pas à l’école ${mode} ?`,
       figure,
-      answer,
-      traps: t,
-      hint: 'Compare les nombres de la ligne et repère le plus grand.',
-      steps: [`Le plus grand nombre est ${Math.max(...values)}.`, `C’est le **${best.toLowerCase()}**.`],
-      targetSeconds: 25,
+      answer: num(all - here),
+      traps: traps(r(all - here), [[here, 'On cherche ceux qui ne viennent PAS ' + mode + '.']]),
+      hint: 'Calcule d’abord le nombre total d’élèves du tableau.',
+      steps: [`Total du tableau : ${all} élèves ; ${mode} : ${here}.`, `${all} − ${here} = **${all - here}**.`],
+      targetSeconds: 50,
     };
   },
 );

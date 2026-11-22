@@ -20,7 +20,7 @@ export const MATHS_REFERENTIAL: Referential = {
       E('mce2-operations', 'mce2-calcul-mental'),
       E('mce2-problemes', 'mce2-operations'),
       o('mce2-fractions', 'mce2-nombres'),
-      E('mce2-mesures', 'mce2-nombres'),
+      E('mce2-mesures', 'mce2-operations'),
       o('mce2-durees'),
       E('mce2-geometrie'),
       o('mce2-donnees', 'mce2-nombres'),

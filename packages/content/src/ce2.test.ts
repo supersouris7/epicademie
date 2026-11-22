@@ -49,7 +49,7 @@ describe('fondamentaux du CE2', () => {
     for (const c of CE2_CHAPTERS)
       for (const s of c.skills) {
         expect(s.id.startsWith('mce2-'), s.id).toBe(true);
-        expect(s.lesson.source, s.id).toMatch(/cycle 2, CE2 \(BO n°16 du 17 avril 2025\) — « .{15,}/);
+        expect(s.lesson.source, s.id).toMatch(/cycle 2, CE2 \(BO n°41 du 31 octobre 2024\) — « .{15,}/);
         expect(s.lesson.memo.length, s.id).toBeGreaterThan(0);
         expect(s.lesson.memo.length, s.id).toBeLessThanOrEqual(3);
       }

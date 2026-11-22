@@ -3,7 +3,7 @@ import type { Rng } from '../../rng.ts';
 import type { Advice, DomainId, EvalChapter, Level, QuestionDraft, Rich, Skill } from '../../types.ts';
 
 /**
- * Outils des fondamentaux du CE2. Programme du cycle 2 (CE2), BO n°16 du 17 avril 2025 : chaque notion
+ * Outils des fondamentaux du CE2. Programme du cycle 2 (CE2), BO n°41 du 31 octobre 2024 : chaque notion
  * cite l'objectif officiel dont elle relève (domaine entre crochets dans le commentaire du chapitre).
  */
 const objective = objectiveOf('ce2');
