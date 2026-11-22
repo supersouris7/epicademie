@@ -55,12 +55,10 @@ body {
 
 body {
   min-height: 100dvh;
-  /* Halo violet doux en haut de l'écran, sans motif. */
-  background-image: radial-gradient(
-    ellipse 90% 45% at 50% 0%,
-    color-mix(in srgb, var(--accent) 22%, transparent),
-    transparent
-  );
+  /* Halo violet lumineux en haut, lueur orange discrète en bas, sans motif. */
+  background-image:
+    radial-gradient(ellipse 90% 45% at 50% 0%, color-mix(in srgb, var(--af-violet-500) 55%, transparent), transparent),
+    radial-gradient(ellipse 80% 35% at 50% 100%, color-mix(in srgb, var(--af-orange-500) 14%, transparent), transparent);
   background-attachment: fixed;
 }
 

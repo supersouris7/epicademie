@@ -24,7 +24,7 @@ apps/web/
 │   └── image.ts      détourage magenta, découpe en grille, contrôles (testé)
 └── src/design/
     ├── palette.ts            couleurs (source unique)
-    ├── tokens.css            variables CSS : palette, sémantique (thème sombre unique), contours, rayons, ombres, icônes, durées
+    ├── tokens.css            variables CSS : palette, sémantique (thème violet lumineux unique), contours, rayons, ombres, icônes, durées
     ├── assets.ts             catalogue : 327 images prévues (type, taille, prompt, priorité, remplaçant) + manifeste
     ├── assets.generated.ts   SVG provisoires (généré)
     ├── assets.available.ts   images finales présentes (généré)
