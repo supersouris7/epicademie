@@ -30,7 +30,7 @@ export const MODES: readonly ModeInfo[] = [
   },
   {
     id: 'boss',
-    name: 'Combat de boss',
+    name: 'Mode Histoire',
     pitch: '4 mobs puis le boss du chapitre',
     category: 'apprendre',
     available: true,
@@ -45,7 +45,7 @@ export const MODES: readonly ModeInfo[] = [
   { id: 'survie', name: 'Survie', pitch: 'Ça monte sans arrêt, 3 vies', category: 'defis', available: true },
   {
     id: 'arene',
-    name: 'Arène',
+    name: 'Duels',
     pitch: 'Tes bonnes réponses attaquent les autres',
     category: 'multi',
     available: true,

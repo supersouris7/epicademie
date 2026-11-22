@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
 
-/** Bannière 3:1 (cadre cartoon, phrase en surimpression sur dégradé) des menus Combat de boss et Entraînement. */
+/** Bannière 3:1 (cadre cartoon, phrase en surimpression sur dégradé) des menus Mode Histoire et Entraînement. */
 export function ModeBanner({ src, tagline }: { readonly src: string; readonly tagline: string }) {
   return (
     <div className="cartoon relative overflow-hidden">

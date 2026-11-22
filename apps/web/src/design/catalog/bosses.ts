@@ -161,9 +161,9 @@ export const empereurAssets = [
   a(
     'banner',
     'bosses/empereur/banniere.webp',
-    'Bannière du Combat de boss',
+    'Bannière du Mode Histoire',
     'l’Empereur du Savoir en buste, mains lumineuses, ciel violet étoilé et cristaux flottants',
-    'Bannière de l’écran Combat de boss.',
+    'Bannière de l’écran Mode Histoire.',
     2,
   ),
 ];

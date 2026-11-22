@@ -9,7 +9,7 @@ describe('modes de jeu', () => {
     for (const c of MODE_CATEGORIES) expect(MODES.some((m) => m.category === c.id)).toBe(true);
   });
   it('getMode retrouve un mode ou renvoie undefined', () => {
-    expect(getMode('boss')?.name).toBe('Combat de boss');
+    expect(getMode('boss')?.name).toBe('Mode Histoire');
     expect(getMode('inconnu')).toBeUndefined();
   });
 });

@@ -31,7 +31,7 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
   const { data: skills } = useSkills(profile.id);
   const relicOf = useRelicProgress(profile);
-  // L'Empereur du Savoir se présente en plein écran une fois par jour, à l'entrée du Combat de boss.
+  // L'Empereur du Savoir se présente en plein écran une fois par jour, à l'entrée du Mode Histoire.
   const [emperor, setEmperor] = useState(() => modeId === 'boss' && emperorDue(profile.id));
   if (!mode) return <Navigate to="/hub" replace />;
   const isBoss = mode.id === 'boss';
@@ -79,7 +79,7 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
       )}
       {isBoss && emperor && <EmperorScene profileId={profile.id} onDone={() => setEmperor(false)} />}
       {isBoss && (
-        // Combat de boss : chaque boss vaincu donne un éclat de la relique de sa matière.
+        // Mode Histoire : chaque boss vaincu donne un éclat de la relique de sa matière.
         <ModeNote icon={RELICS.maths.icon}>
           Chaque boss vaincu te donne un <strong>éclat de relique</strong> de sa matière. Retrouve tes reliques dans{' '}
           <strong>Mes progrès</strong> !

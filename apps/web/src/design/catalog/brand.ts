@@ -42,7 +42,7 @@ export const brandAssets = [
     'environments/equipement-fond.webp',
     'Fond du rectangle Équipement',
     'arène violette aux anneaux dorés lumineux au centre, rubans de lumière et cristaux flottants',
-    'Fond du rectangle Équipement (Combat de boss).',
+    'Fond du rectangle Équipement (Mode Histoire).',
     2,
   ),
   a(

@@ -19,7 +19,7 @@ const TAG_DESCRIPTIONS: Record<(typeof API_TAGS)[number], string> = {
   profils: 'Profils des joueurs',
   recommandations: 'Recommandations de travail d’un parent à son enfant',
   entrainement: 'Parties d’entraînement et progression par notion',
-  combats: 'Combats de boss',
+  combats: 'Mode Histoire (combats de boss)',
   inventaire: 'Équipement et boutique',
   amis: 'Amis d’autres familles : code ami, demandes, validation par les parents',
   telemetrie: 'Erreurs remontées par le navigateur',

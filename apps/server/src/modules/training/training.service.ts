@@ -55,7 +55,7 @@ const defiOf = (mode: string): DefiKind | null => (mode === 'chrono' || mode ===
 const finishBonus = (defi: DefiKind | null, perfect: boolean, correct: number) =>
   defi ? defiBonusXp(correct) : perfect ? PERFECT_BONUS : 0;
 const UNKNOWN_SKILL = 'Notion inconnue';
-const BOSS_ELSEWHERE = 'Combat de boss : utiliser /battles';
+const BOSS_ELSEWHERE = 'Mode Histoire : utiliser /battles';
 
 /** Notion la plus ratée (part d'erreurs la plus forte, puis le plus d'erreurs), null sans erreur. */
 const weakestSkill = (skills: readonly SessionSkillSummary[]): string | null => {
@@ -217,7 +217,7 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
     },
 
     async start(input: SessionCreate): Promise<{ id: string }> {
-      if (input.mode === 'boss') throw badRequest('Le combat de boss se lance par /battles');
+      if (input.mode === 'boss') throw badRequest('Le Mode Histoire se lance par /battles');
       if (input.skillId && !getSkill(input.skillId)) throw badRequest(UNKNOWN_SKILL);
       if (input.skillId && (await disabledSkills(db)).includes(input.skillId)) {
         throw conflict('Cette notion est en maintenance : choisis-en une autre.');

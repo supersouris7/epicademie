@@ -382,7 +382,7 @@ Image 1024×1024. Le même grand boss entouré des symboles des six matières da
 Cadrage : personnage en pied centré, de face, fond transparent, halo et effets autour de lui.
 ```
 
-### Demande 46 — Bannière du Combat de boss
+### Demande 46 — Bannière du Mode Histoire
 
 ```text
 Image 1536×1024, plein cadre avec décor (pas de fond magenta). L’Empereur du Savoir en buste, mains lumineuses, ciel violet étoilé et cristaux flottants.

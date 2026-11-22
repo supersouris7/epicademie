@@ -65,7 +65,7 @@ function NoticeCard({ notice }: { readonly notice: Notice }) {
         {notice.kind === 'chat' ? (
           <p className="text-lg leading-snug font-bold">{notice.message.text}</p>
         ) : (
-          <p className="font-bold">t’invite dans l’arène : {getChapter(notice.invite.chapterId)?.title ?? 'maths'}</p>
+          <p className="font-bold">t’invite en Duel : {getChapter(notice.invite.chapterId)?.title ?? 'maths'}</p>
         )}
       </div>
       {notice.kind === 'invite' ? (

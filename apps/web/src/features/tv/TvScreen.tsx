@@ -39,7 +39,7 @@ export function TvScreen() {
           <p className="font-display text-3xl tracking-wide">
             {arena
               ? 'La partie va commencer…'
-              : 'Lancez une Arène ou un Raid sur les téléphones : la partie s’affichera ici.'}
+              : 'Lancez un Duel ou un Raid sur les téléphones : la partie s’affichera ici.'}
           </p>
           {error && (
             <p role="alert" className="text-danger font-bold">

@@ -58,9 +58,9 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByRole('heading', { name: 'Calcul mental' })).toBeVisible();
   await nav.getByRole('button', { name: 'Accueil' }).click();
 
-  // Modes : Entraînement, Combat de boss et les défis (Contre-la-montre, Survie) sont jouables.
+  // Modes : Entraînement, Mode Histoire et les défis (Contre-la-montre, Survie) sont jouables.
   await expect(page.getByRole('button', { name: /^Entraînement/ })).toBeVisible();
-  await expect(page.getByRole('button', { name: /^Combat de boss/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /^Mode Histoire/ })).toBeVisible();
   for (const gone of ['Révisions du jour', 'Atelier des erreurs', 'Défi du jour', 'Bilan']) {
     await expect(page.getByRole('button', { name: new RegExp(gone) })).toHaveCount(0);
   }
@@ -118,8 +118,8 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByRole('button', { name: /à venir/ })).toHaveCount(0);
   await page.getByRole('button', { name: 'Retour' }).click();
   await nav.getByRole('button', { name: 'Multi' }).click();
-  // Multi : l'Arène et le Raid sont jouables, les autres modes « À venir ».
-  await expect(page.getByRole('button', { name: /Arène/ })).toBeVisible();
+  // Multi : les Duels et le Raid sont jouables, les autres modes « À venir ».
+  await expect(page.getByRole('button', { name: /Duels/ })).toBeVisible();
   await expect(page.getByRole('button', { name: /Raid/ })).toBeVisible();
   await expect(page.getByRole('list', { name: 'Modes multijoueur' })).toContainText('À venir');
 

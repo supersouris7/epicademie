@@ -94,7 +94,7 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
   const sorted = [...chapters.filter((c) => c.boss), ...chapters.filter((c) => !c.boss)];
 
   return (
-    <PageShell title="Combat de boss" back="/jouer/boss">
+    <PageShell title="Mode Histoire" back="/jouer/boss">
       {/* Équipement : la tête du héros et ses 3 emplacements ; dessous, la réserve (ce qui n'est pas équipé). */}
       <section
         aria-labelledby="equipement"

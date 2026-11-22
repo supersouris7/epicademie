@@ -25,7 +25,7 @@ export const PRESET_MESSAGES = [
   'Salut !',
   'Bien joué !',
   'Bravo, champion·ne !',
-  'Viens en arène !',
+  'Viens en Duel !',
   'Prêt·e pour un défi ?',
   'J’arrive !',
   'Je fais un boss, je reviens.',
