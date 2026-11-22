@@ -26,16 +26,16 @@
 
 ## 1. Vocabulaire et principes
 
-| Terme | Sens |
-| --- | --- |
-| **Notion** | Exercice générable existant (`Skill` de `packages/content`), 3 niveaux de difficulté. |
-| **Compétence** | Un **chapitre** du contenu (ex. `m6-fractions`), avec son domaine. C'est l'unité évaluée, déclarée « vue en classe » et rapportée aux parents. |
-| **Référentiel** | Pour une matière et une classe : la liste de ses compétences, avec « essentielle » et prérequis, et une version. |
-| **Programme concerné** | Compétences sur lesquelles porte la couverture d'un bilan (voir §7). |
-| **Observation** | Une **première réponse individuelle sans aide** à une question d'une notion de la compétence (règle de l'ADR 0013). Second essai, indice, réponse collective : jamais une observation. |
-| **Bilan** | Résultat figé d'une épreuve terminée. |
-| **Classe N** | Classe actuelle de l'élève (`profiles.grade`). N−1 : classe précédente. |
-| **Année scolaire** | Du 1er septembre au 31 août (fuseau de la famille), notée par son année de rentrée (2026 = 2026-2027). |
+| Terme                  | Sens                                                                                                                                                                                   |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Notion**             | Exercice générable existant (`Skill` de `packages/content`), 3 niveaux de difficulté.                                                                                                  |
+| **Compétence**         | Un **chapitre** du contenu (ex. `m6-fractions`), avec son domaine. C'est l'unité évaluée, déclarée « vue en classe » et rapportée aux parents.                                         |
+| **Référentiel**        | Pour une matière et une classe : la liste de ses compétences, avec « essentielle » et prérequis, et une version.                                                                       |
+| **Programme concerné** | Compétences sur lesquelles porte la couverture d'un bilan (voir §7).                                                                                                                   |
+| **Observation**        | Une **première réponse individuelle sans aide** à une question d'une notion de la compétence (règle de l'ADR 0013). Second essai, indice, réponse collective : jamais une observation. |
+| **Bilan**              | Résultat figé d'une épreuve terminée.                                                                                                                                                  |
+| **Classe N**           | Classe actuelle de l'élève (`profiles.grade`). N−1 : classe précédente.                                                                                                                |
+| **Année scolaire**     | Du 1er septembre au 31 août (fuseau de la famille), notée par son année de rentrée (2026 = 2026-2027).                                                                                 |
 
 Principes non négociables (cahier des charges §9) : non étudiée ≠ échec ; une seule bonne réponse
 ne prouve rien ; maîtrise et couverture toujours affichées ensemble ; aucune aide ni correction
@@ -50,13 +50,13 @@ Fichier de données `packages/content/src/referentiel/maths.ts` (un par matière
 
 ```ts
 interface Competence {
-  readonly id: string;            // = id du chapitre (m6-fractions) ou mce2-* pour le CE2
-  readonly essential: boolean;    // « fondamentale » : vérifiée par Origines et Maîtres
+  readonly id: string; // = id du chapitre (m6-fractions) ou mce2-* pour le CE2
+  readonly essential: boolean; // « fondamentale » : vérifiée par Origines et Maîtres
   readonly prerequisites: readonly string[]; // compétences de N−1 (ou de la même classe)
 }
 interface Referential {
   readonly subject: SubjectId;
-  readonly version: number;       // +1 à tout découpage, ajout ou retrait de compétence
+  readonly version: number; // +1 à tout découpage, ajout ou retrait de compétence
   readonly grades: Partial<Record<'ce2' | Grade, readonly Competence[]>>;
 }
 ```
@@ -85,122 +85,122 @@ contenu (#99 pour le CE2, ticket référentiel pour le reste) le source compéte
 **CE2** (fondamentaux à écrire dans #99 ; sources du programme du cycle 2 à citer par compétence) —
 évaluation seulement.
 
-| Compétence | Dom. | E | Contenu attendu (indicatif) |
-| --- | --- | --- | --- |
-| `mce2-nombres` | N | E | Entiers jusqu'à 10 000 : lire, écrire, décomposer, comparer, ranger, droite graduée |
-| `mce2-calcul-mental` | N | E | Tables d'addition et de multiplication (2 à 9), compléments, doubles et moitiés |
-| `mce2-operations` | N | E | Addition et soustraction posées, multiplication par un nombre à un chiffre |
-| `mce2-problemes` | N | E | Problèmes additifs et multiplicatifs à une ou deux étapes |
-| `mce2-fractions` | N | – | Fractions simples (moitié, tiers, quart) d'une figure ou d'une longueur |
-| `mce2-mesures` | G | E | Longueurs (km, m, cm, mm), masses (kg, g), contenances (L), monnaie |
-| `mce2-durees` | G | – | Lire l'heure, heures et minutes |
-| `mce2-geometrie` | E | E | Carré, rectangle, triangle rectangle, cercle ; angle droit ; symétrie ; solides usuels |
-| `mce2-donnees` | D | – | Lire un tableau, un diagramme en barres |
+| Compétence           | Dom. | E   | Contenu attendu (indicatif)                                                            |
+| -------------------- | ---- | --- | -------------------------------------------------------------------------------------- |
+| `mce2-nombres`       | N    | E   | Entiers jusqu'à 10 000 : lire, écrire, décomposer, comparer, ranger, droite graduée    |
+| `mce2-calcul-mental` | N    | E   | Tables d'addition et de multiplication (2 à 9), compléments, doubles et moitiés        |
+| `mce2-operations`    | N    | E   | Addition et soustraction posées, multiplication par un nombre à un chiffre             |
+| `mce2-problemes`     | N    | E   | Problèmes additifs et multiplicatifs à une ou deux étapes                              |
+| `mce2-fractions`     | N    | –   | Fractions simples (moitié, tiers, quart) d'une figure ou d'une longueur                |
+| `mce2-mesures`       | G    | E   | Longueurs (km, m, cm, mm), masses (kg, g), contenances (L), monnaie                    |
+| `mce2-durees`        | G    | –   | Lire l'heure, heures et minutes                                                        |
+| `mce2-geometrie`     | E    | E   | Carré, rectangle, triangle rectangle, cercle ; angle droit ; symétrie ; solides usuels |
+| `mce2-donnees`       | D    | –   | Lire un tableau, un diagramme en barres                                                |
 
 **CM1** (`mcm1-*`) et **CM2** (`mcm2-*`) : même liste de chapitres. Pour le CM2, chaque compétence
 a pour prérequis sa jumelle du CM1 (`mcm2-x ← mcm1-x`) en plus des liens indiqués.
 
-| Compétence | Dom. | E CM1 | E CM2 | Prérequis du CM1 |
-| --- | --- | --- | --- | --- |
-| `nombres` | N | E | E | mce2-nombres |
-| `fractions` | N | E | E | mce2-fractions, mce2-nombres |
-| `decimaux` | N | – | E | mcm1-fractions (même classe), mce2-mesures |
-| `calcul-mental` | N | E | – | mce2-calcul-mental |
-| `operations` | N | E | E | mce2-operations, mce2-calcul-mental |
-| `problemes` | N | E | E | mce2-problemes |
-| `algebre` | N | – | – | mce2-calcul-mental |
-| `mesures` | G | E | E | mce2-mesures |
-| `aires` | G | – | – | mce2-geometrie, mce2-mesures |
-| `durees` | G | – | – | mce2-durees |
-| `geometrie` | E | E | E | mce2-geometrie |
-| `angles` | E | – | – | mce2-geometrie |
-| `donnees` | D | – | – | mce2-donnees |
-| `probabilites` | D | – | – | aucun |
-| `proportionnalite` | F | – | E | mce2-problemes, mce2-calcul-mental |
+| Compétence         | Dom. | E CM1 | E CM2 | Prérequis du CM1                           |
+| ------------------ | ---- | ----- | ----- | ------------------------------------------ |
+| `nombres`          | N    | E     | E     | mce2-nombres                               |
+| `fractions`        | N    | E     | E     | mce2-fractions, mce2-nombres               |
+| `decimaux`         | N    | –     | E     | mcm1-fractions (même classe), mce2-mesures |
+| `calcul-mental`    | N    | E     | –     | mce2-calcul-mental                         |
+| `operations`       | N    | E     | E     | mce2-operations, mce2-calcul-mental        |
+| `problemes`        | N    | E     | E     | mce2-problemes                             |
+| `algebre`          | N    | –     | –     | mce2-calcul-mental                         |
+| `mesures`          | G    | E     | E     | mce2-mesures                               |
+| `aires`            | G    | –     | –     | mce2-geometrie, mce2-mesures               |
+| `durees`           | G    | –     | –     | mce2-durees                                |
+| `geometrie`        | E    | E     | E     | mce2-geometrie                             |
+| `angles`           | E    | –     | –     | mce2-geometrie                             |
+| `donnees`          | D    | –     | –     | mce2-donnees                               |
+| `probabilites`     | D    | –     | –     | aucun                                      |
+| `proportionnalite` | F    | –     | E     | mce2-problemes, mce2-calcul-mental         |
 
 CM1 : 7 essentielles ; CM2 : 8 (le calcul mental reste évalué via ses prérequis et la couverture).
 
 **6e** (prérequis en CM2)
 
-| Compétence | Dom. | E | Prérequis |
-| --- | --- | --- | --- |
-| `m6-numeration` | N | E | mcm2-nombres, mcm2-decimaux |
-| `m6-calcul` | N | E | mcm2-operations, mcm2-calcul-mental, mcm2-decimaux |
-| `m6-division` | N | E | mcm2-operations |
-| `m6-fractions` | N | E | mcm2-fractions |
-| `m6-pourcentages` | N | – | mcm2-proportionnalite, mcm2-fractions |
-| `m6-algebre` | N | – | mcm2-algebre |
-| `m6-longueurs` | G | E | mcm2-mesures, mcm2-aires |
-| `m6-aires` | G | E | mcm2-aires |
-| `m6-volumes` | G | – | mcm2-mesures |
-| `m6-durees` | G | – | mcm2-durees |
-| `m6-cercles` | E | – | mcm2-geometrie |
-| `m6-angles` | E | E | mcm2-angles |
-| `m6-symetrie` | E | – | mcm2-geometrie |
-| `m6-espace` | E | – | mcm2-geometrie |
-| `m6-donnees` | D | – | mcm2-donnees |
-| `m6-probabilites` | D | – | mcm2-probabilites |
-| `m6-proportionnalite` | F | E | mcm2-proportionnalite |
-| `m6-informatique` | I | – | aucun |
+| Compétence            | Dom. | E   | Prérequis                                          |
+| --------------------- | ---- | --- | -------------------------------------------------- |
+| `m6-numeration`       | N    | E   | mcm2-nombres, mcm2-decimaux                        |
+| `m6-calcul`           | N    | E   | mcm2-operations, mcm2-calcul-mental, mcm2-decimaux |
+| `m6-division`         | N    | E   | mcm2-operations                                    |
+| `m6-fractions`        | N    | E   | mcm2-fractions                                     |
+| `m6-pourcentages`     | N    | –   | mcm2-proportionnalite, mcm2-fractions              |
+| `m6-algebre`          | N    | –   | mcm2-algebre                                       |
+| `m6-longueurs`        | G    | E   | mcm2-mesures, mcm2-aires                           |
+| `m6-aires`            | G    | E   | mcm2-aires                                         |
+| `m6-volumes`          | G    | –   | mcm2-mesures                                       |
+| `m6-durees`           | G    | –   | mcm2-durees                                        |
+| `m6-cercles`          | E    | –   | mcm2-geometrie                                     |
+| `m6-angles`           | E    | E   | mcm2-angles                                        |
+| `m6-symetrie`         | E    | –   | mcm2-geometrie                                     |
+| `m6-espace`           | E    | –   | mcm2-geometrie                                     |
+| `m6-donnees`          | D    | –   | mcm2-donnees                                       |
+| `m6-probabilites`     | D    | –   | mcm2-probabilites                                  |
+| `m6-proportionnalite` | F    | E   | mcm2-proportionnalite                              |
+| `m6-informatique`     | I    | –   | aucun                                              |
 
 **5e** (prérequis en 6e, sauf mention)
 
-| Compétence | Dom. | E | Prérequis |
-| --- | --- | --- | --- |
-| `m5-calcul` | N | – | m6-calcul |
-| `m5-operations` | N | E | m6-calcul, m6-division |
-| `m5-relatifs` | N | E | m6-numeration |
-| `m5-fractions` | N | E | m6-fractions |
-| `m5-puissances` | N | – | m6-calcul |
-| `m5-litteral` | N | E | m6-algebre, m5-operations |
-| `m5-reperage` | E | – | m6-numeration |
-| `m5-espace` | E | – | m6-volumes, m6-espace |
-| `m5-symetries` | E | – | m6-symetrie |
-| `m5-angles` | E | – | m6-angles |
-| `m5-triangles` | E | E | m6-angles, m6-aires |
-| `m5-parallelogrammes` | E | – | m6-symetrie, m6-aires |
-| `m5-statistiques` | D | E | m6-donnees |
-| `m5-probabilites` | D | – | m6-probabilites |
-| `m5-proportionnalite` | F | E | m6-proportionnalite, m6-pourcentages |
-| `m5-fonctions` | F | – | m6-proportionnalite, m6-algebre |
-| `m5-algorithmique` | I | – | m6-informatique |
+| Compétence            | Dom. | E   | Prérequis                            |
+| --------------------- | ---- | --- | ------------------------------------ |
+| `m5-calcul`           | N    | –   | m6-calcul                            |
+| `m5-operations`       | N    | E   | m6-calcul, m6-division               |
+| `m5-relatifs`         | N    | E   | m6-numeration                        |
+| `m5-fractions`        | N    | E   | m6-fractions                         |
+| `m5-puissances`       | N    | –   | m6-calcul                            |
+| `m5-litteral`         | N    | E   | m6-algebre, m5-operations            |
+| `m5-reperage`         | E    | –   | m6-numeration                        |
+| `m5-espace`           | E    | –   | m6-volumes, m6-espace                |
+| `m5-symetries`        | E    | –   | m6-symetrie                          |
+| `m5-angles`           | E    | –   | m6-angles                            |
+| `m5-triangles`        | E    | E   | m6-angles, m6-aires                  |
+| `m5-parallelogrammes` | E    | –   | m6-symetrie, m6-aires                |
+| `m5-statistiques`     | D    | E   | m6-donnees                           |
+| `m5-probabilites`     | D    | –   | m6-probabilites                      |
+| `m5-proportionnalite` | F    | E   | m6-proportionnalite, m6-pourcentages |
+| `m5-fonctions`        | F    | –   | m6-proportionnalite, m6-algebre      |
+| `m5-algorithmique`    | I    | –   | m6-informatique                      |
 
 **4e** (prérequis en 5e)
 
-| Compétence | Dom. | E | Prérequis |
-| --- | --- | --- | --- |
-| `m4-relatifs` | N | E | m5-relatifs |
-| `m4-rationnels` | N | E | m5-fractions |
-| `m4-puissances` | N | E | m5-puissances |
-| `m4-racines` | N | – | m5-puissances |
-| `m4-litteral` | N | E | m5-litteral |
-| `m4-triangles` | E | E | m5-triangles |
-| `m4-parallelogrammes` | E | – | m5-parallelogrammes |
-| `m4-transformations` | E | – | m5-symetries |
-| `m4-espace` | E | – | m5-espace |
-| `m4-statistiques` | D | – | m5-statistiques |
-| `m4-probabilites` | D | – | m5-probabilites |
-| `m4-proportionnalite` | F | E | m5-proportionnalite |
-| `m4-fonctions` | F | E | m5-fonctions |
-| `m4-algorithmique` | I | – | m5-algorithmique |
+| Compétence            | Dom. | E   | Prérequis           |
+| --------------------- | ---- | --- | ------------------- |
+| `m4-relatifs`         | N    | E   | m5-relatifs         |
+| `m4-rationnels`       | N    | E   | m5-fractions        |
+| `m4-puissances`       | N    | E   | m5-puissances       |
+| `m4-racines`          | N    | –   | m5-puissances       |
+| `m4-litteral`         | N    | E   | m5-litteral         |
+| `m4-triangles`        | E    | E   | m5-triangles        |
+| `m4-parallelogrammes` | E    | –   | m5-parallelogrammes |
+| `m4-transformations`  | E    | –   | m5-symetries        |
+| `m4-espace`           | E    | –   | m5-espace           |
+| `m4-statistiques`     | D    | –   | m5-statistiques     |
+| `m4-probabilites`     | D    | –   | m5-probabilites     |
+| `m4-proportionnalite` | F    | E   | m5-proportionnalite |
+| `m4-fonctions`        | F    | E   | m5-fonctions        |
+| `m4-algorithmique`    | I    | –   | m5-algorithmique    |
 
 **3e** (prérequis en 4e, sauf mention)
 
-| Compétence | Dom. | E | Prérequis |
-| --- | --- | --- | --- |
-| `m3-arithmetique` | N | E | m5-operations, m4-rationnels |
-| `m3-puissances` | N | – | m4-puissances |
-| `m3-racines` | N | – | m4-racines |
-| `m3-litteral` | N | E | m4-litteral |
-| `m3-thales` | E | E | m4-triangles, m4-proportionnalite |
-| `m3-trigonometrie` | E | E | m4-triangles |
-| `m3-vecteurs` | E | – | m4-transformations |
-| `m3-espace` | E | – | m4-espace |
-| `m3-statistiques` | D | E | m4-statistiques |
-| `m3-probabilites` | D | E | m4-probabilites |
-| `m3-proportionnalite` | F | – | m4-proportionnalite |
-| `m3-fonctions` | F | E | m4-fonctions |
-| `m3-algorithmique` | I | – | m4-algorithmique |
+| Compétence            | Dom. | E   | Prérequis                         |
+| --------------------- | ---- | --- | --------------------------------- |
+| `m3-arithmetique`     | N    | E   | m5-operations, m4-rationnels      |
+| `m3-puissances`       | N    | –   | m4-puissances                     |
+| `m3-racines`          | N    | –   | m4-racines                        |
+| `m3-litteral`         | N    | E   | m4-litteral                       |
+| `m3-thales`           | E    | E   | m4-triangles, m4-proportionnalite |
+| `m3-trigonometrie`    | E    | E   | m4-triangles                      |
+| `m3-vecteurs`         | E    | –   | m4-transformations                |
+| `m3-espace`           | E    | –   | m4-espace                         |
+| `m3-statistiques`     | D    | E   | m4-statistiques                   |
+| `m3-probabilites`     | D    | E   | m4-probabilites                   |
+| `m3-proportionnalite` | F    | –   | m4-proportionnalite               |
+| `m3-fonctions`        | F    | E   | m4-fonctions                      |
+| `m3-algorithmique`    | I    | –   | m4-algorithmique                  |
 
 Volumétrie : CE2 9 compétences (6 E), CM1 15 (7 E), CM2 15 (8 E), 6e 18 (8 E), 5e 17 (7 E),
 4e 14 (7 E), 3e 13 (7 E).
@@ -213,19 +213,19 @@ Volumétrie : CE2 9 compétences (6 E), CM1 15 (7 E), CM2 15 (8 E), 6e 18 (8 E),
 
 `poids = source × fraîcheur`, calculé au jour de l'épreuve.
 
-| Source | Poids source |
-| --- | --- |
-| Arène d'évaluation (cette épreuve ou une précédente) | 1 |
-| Entraînement, Défis (Contre-la-montre, Survie), Mode Histoire (mobs, problèmes, pièges rattachés au chapitre) | 0,5 |
-| Duels, Quiz plateau (réponses individuelles) | 0,25 |
-| Second essai, réponse avec indice ou objet « indice », réponse collective (TV, raid) | 0 |
+| Source                                                                                                        | Poids source |
+| ------------------------------------------------------------------------------------------------------------- | ------------ |
+| Arène d'évaluation (cette épreuve ou une précédente)                                                          | 1            |
+| Entraînement, Défis (Contre-la-montre, Survie), Mode Histoire (mobs, problèmes, pièges rattachés au chapitre) | 0,5          |
+| Duels, Quiz plateau (réponses individuelles)                                                                  | 0,25         |
+| Second essai, réponse avec indice ou objet « indice », réponse collective (TV, raid)                          | 0            |
 
 | Âge de l'observation | Arène | Autres modes |
-| --- | --- | --- |
-| ≤ 30 jours | 1 | 1 |
-| 31 à 90 jours | 1 | 0,5 |
-| 91 à 180 jours | 0,5 | 0 |
-| > 180 jours | 0 | 0 |
+| -------------------- | ----- | ------------ |
+| ≤ 30 jours           | 1     | 1            |
+| 31 à 90 jours        | 1     | 0,5          |
+| 91 à 180 jours       | 0,5   | 0            |
+| > 180 jours          | 0     | 0            |
 
 Toutes les réponses restent dans l'historique ; la fraîcheur ne joue que sur les états du jour.
 Seules les **20 observations les plus récentes** d'une compétence sont lues (borne de calcul).
@@ -255,15 +255,15 @@ sont nombreux, récents et étalés ; sinon l'Arène pose des questions.
 
 Arbre de décision, évalué dans cet ordre (fonction pure `competenceState`) :
 
-| # | État | Condition |
-| --- | --- | --- |
-| 1 | **Non étudiée** | Chapitre déclaré « pas encore vu » cette année scolaire (Progression, Maîtres), et aucune observation d'exploration ne l'a montré acquis. N'est jamais un échec : exclue de la maîtrise, comptée « non couverte ». |
-| 2 | **Non évaluée** | `P = 0` (aucune observation valide), ou toutes ses notions désactivées (maintenance). |
-| 3 | **Évaluation insuffisante** | Observations présentes mais règle §3.3 non remplie. |
-| 4 | **En difficulté** | Suffisante et `R < 0,5`. |
-| 5 | **Maîtrisée** | Suffisante, `R ≥ 0,8`, au moins **2 observations justes**, `preuveNiveau2`, la dernière observation de l'Arène (s'il y en a) est juste, et `dernière` ≤ 120 jours. |
-| 6 | **À consolider** | Suffisante, non maîtrisée, et : `R ≥ 0,8` (une condition de « maîtrisée » manque : pas de preuve au niveau 2, dernière réponse fausse, preuve ancienne) **ou** `R ≥ 0,5` alors qu'elle était « maîtrisée » dans le dernier bilan comparable (acquis qui s'effrite). |
-| 7 | **En cours d'acquisition** | Suffisante et `0,5 ≤ R < 0,8`, sans maîtrise antérieure. |
+| #   | État                        | Condition                                                                                                                                                                                                                                                           |
+| --- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Non étudiée**             | Chapitre déclaré « pas encore vu » cette année scolaire (Progression, Maîtres), et aucune observation d'exploration ne l'a montré acquis. N'est jamais un échec : exclue de la maîtrise, comptée « non couverte ».                                                  |
+| 2   | **Non évaluée**             | `P = 0` (aucune observation valide), ou toutes ses notions désactivées (maintenance).                                                                                                                                                                               |
+| 3   | **Évaluation insuffisante** | Observations présentes mais règle §3.3 non remplie.                                                                                                                                                                                                                 |
+| 4   | **En difficulté**           | Suffisante et `R < 0,5`.                                                                                                                                                                                                                                            |
+| 5   | **Maîtrisée**               | Suffisante, `R ≥ 0,8`, au moins **2 observations justes**, `preuveNiveau2`, la dernière observation de l'Arène (s'il y en a) est juste, et `dernière` ≤ 120 jours.                                                                                                  |
+| 6   | **À consolider**            | Suffisante, non maîtrisée, et : `R ≥ 0,8` (une condition de « maîtrisée » manque : pas de preuve au niveau 2, dernière réponse fausse, preuve ancienne) **ou** `R ≥ 0,5` alors qu'elle était « maîtrisée » dans le dernier bilan comparable (acquis qui s'effrite). |
+| 7   | **En cours d'acquisition**  | Suffisante et `0,5 ≤ R < 0,8`, sans maîtrise antérieure.                                                                                                                                                                                                            |
 
 Garanties : une seule bonne réponse ne donne jamais « maîtrisée » (`n ≥ 2`, `P ≥ 2`, 2 justes) ;
 une compétence non étudiée ne baisse jamais un score.
@@ -282,12 +282,12 @@ reste celui de l'Entraînement ; les 7 états s'appliquent aux **compétences** 
 Fonctions pures dans `packages/engine/src/evaluation/` ; le serveur les appelle à chaque étape et
 stocke l'état. Paramètres réunis dans `EVALUATION` :
 
-| Paramètre | Valeur |
-| --- | --- |
-| Questions notées (cible / min / max) | 16 / 12 / 20 |
-| Questions d'exploration (prérequis + avancées), en plus, total ≤ 20 | ≤ 4 (prérequis) et ≤ 3 (avancées) |
-| Durée maximale | 15 min, puis fin à la question en cours |
-| Expiration d'une épreuve non terminée | 7 jours |
+| Paramètre                                                           | Valeur                                  |
+| ------------------------------------------------------------------- | --------------------------------------- |
+| Questions notées (cible / min / max)                                | 16 / 12 / 20                            |
+| Questions d'exploration (prérequis + avancées), en plus, total ≤ 20 | ≤ 4 (prérequis) et ≤ 3 (avancées)       |
+| Durée maximale                                                      | 15 min, puis fin à la question en cours |
+| Expiration d'une épreuve non terminée                               | 7 jours                                 |
 
 ### 5.1 Préparation (au lancement)
 
@@ -358,15 +358,15 @@ stocke l'état. Paramètres réunis dans `EVALUATION` :
 
 ## 6. Spécificités des épreuves
 
-| | Origines | Progression | Maîtres |
-| --- | --- | --- | --- |
-| Référentiel | classe N−1 (CM1 → CE2) | classe N | classe N |
-| Périmètre noté S | essentielles de N−1 | compétences de N déclarées « vues » | toutes les compétences de N sauf « pas encore vues » |
-| Programme concerné Π (couverture) | essentielles de N−1 | toutes les compétences de N | toutes les compétences de N |
-| Prérequis explorés | N−2 (aucun pour CM1) | N−1 | N−1 |
-| Avancées (hors score) | essentielles de N | chapitres de N « pas vus » ou « je ne sais pas » | essentielles de N+1 (sauf 3e : aucune) |
-| Répétition | libre ; récompensée 1 fois par année scolaire et matière | libre ; récompense de participation au plus tous les 14 jours | libre ; récompensée 1 fois par année scolaire |
-| Recommandée quand | aucun bilan Origines cette année scolaire | Origines déjà fait | à partir du 1er mai, ou ≥ 70 % des chapitres déclarés vus |
+|                                   | Origines                                                 | Progression                                                   | Maîtres                                                   |
+| --------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------- | --------------------------------------------------------- |
+| Référentiel                       | classe N−1 (CM1 → CE2)                                   | classe N                                                      | classe N                                                  |
+| Périmètre noté S                  | essentielles de N−1                                      | compétences de N déclarées « vues »                           | toutes les compétences de N sauf « pas encore vues »      |
+| Programme concerné Π (couverture) | essentielles de N−1                                      | toutes les compétences de N                                   | toutes les compétences de N                               |
+| Prérequis explorés                | N−2 (aucun pour CM1)                                     | N−1                                                           | N−1                                                       |
+| Avancées (hors score)             | essentielles de N                                        | chapitres de N « pas vus » ou « je ne sais pas »              | essentielles de N+1 (sauf 3e : aucune)                    |
+| Répétition                        | libre ; récompensée 1 fois par année scolaire et matière | libre ; récompense de participation au plus tous les 14 jours | libre ; récompensée 1 fois par année scolaire             |
+| Recommandée quand                 | aucun bilan Origines cette année scolaire                | Origines déjà fait                                            | à partir du 1er mai, ou ≥ 70 % des chapitres déclarés vus |
 
 **Origines.** 7 à 8 essentielles × 2 questions ≈ 14–16 questions + exploration. Jamais de
 compétence de N notée. Le bilan Origines le plus récent de l'année scolaire est le **niveau de
@@ -422,13 +422,13 @@ des M globaux.
 
 ### 7.3 Catégories de progrès (bilan B comparé au bilan comparable précédent A)
 
-| Catégorie | A | B |
-| --- | --- | --- |
-| Nouvelle compétence acquise | non maîtrisée ou absente | maîtrisée |
-| Difficulté résolue | en difficulté | en cours, à consolider ou maîtrisée |
-| Difficulté persistante | en difficulté | en difficulté |
-| Régression | maîtrisée ou à consolider | en difficulté ; ou maîtrisée → à consolider |
-| Stable | même état | même état |
+| Catégorie                   | A                         | B                                           |
+| --------------------------- | ------------------------- | ------------------------------------------- |
+| Nouvelle compétence acquise | non maîtrisée ou absente  | maîtrisée                                   |
+| Difficulté résolue          | en difficulté             | en cours, à consolider ou maîtrisée         |
+| Difficulté persistante      | en difficulté             | en difficulté                               |
+| Régression                  | maîtrisée ou à consolider | en difficulté ; ou maîtrisée → à consolider |
+| Stable                      | même état                 | même état                                   |
 
 « Nouvelle compétence acquise » peut aussi venir d'une compétence évaluée pour la première fois.
 
@@ -437,12 +437,12 @@ des M globaux.
 Paramètres dans `ECONOMY.evaluation` (ADR 0019), versés dans la transaction de clôture (ADR 0015),
 simulation `economy.test.ts` mise à jour. Aucune XP par bonne réponse ; aucun bonus de vitesse.
 
-| Récompense | Condition | Gain |
-| --- | --- | --- |
-| Participation | Épreuve terminée (y compris partielle), dans la période récompensée (§6) | 40 XP + coffre commun |
-| Persévérance | Épreuve terminée sans abandon, toutes les questions prévues répondues (« Je ne sais pas » compris) ; ou reprise d'une épreuve interrompue jusqu'au bout | coffre commun → rare |
-| Régularité | Progression terminée ≥ 21 jours après le bilan précédent de la matière | +30 XP |
-| Progrès | Chaque compétence qui devient « maîtrisée » pour la première fois de l'année scolaire | +15 XP chacune, 60 XP au plus |
+| Récompense    | Condition                                                                                                                                               | Gain                          |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| Participation | Épreuve terminée (y compris partielle), dans la période récompensée (§6)                                                                                | 40 XP + coffre commun         |
+| Persévérance  | Épreuve terminée sans abandon, toutes les questions prévues répondues (« Je ne sais pas » compris) ; ou reprise d'une épreuve interrompue jusqu'au bout | coffre commun → rare          |
+| Régularité    | Progression terminée ≥ 21 jours après le bilan précédent de la matière                                                                                  | +30 XP                        |
+| Progrès       | Chaque compétence qui devient « maîtrisée » pour la première fois de l'année scolaire                                                                   | +15 XP chacune, 60 XP au plus |
 
 Pièces : `coinsForXp` comme ailleurs ; le coffre suit `fillChest`. Hors période récompensée :
 20 XP, pas de coffre. Pourquoi ce barème : rien ne pousse à répondre faux (aucune récompense liée
@@ -453,7 +453,7 @@ route, prérequis retrouvés) avant les chiffres. Badges : aucun nouveau badge d
 ## 9. Intégration dans les Défis et parcours
 
 - `MODES` gagne `{ id: 'evaluation', name: 'Arène d'évaluation', pitch: 'Fais le point : d'où tu
-  pars, ce que tu sais, ce qui reste', category: 'defis' }`. Le Hub l'affiche dans la section
+pars, ce que tu sais, ce qui reste', category: 'defis' }`. Le Hub l'affiche dans la section
   Défis à côté de Contre-la-montre et Survie (aucune autre modification du Hub).
 - `/jouer/evaluation` → choix de la matière (ModeSetup existant ; matière sans référentiel :
   tuile « Bientôt ») → `/jouer/evaluation/:subject` : **accueil de l'Arène** pour cette matière :
@@ -473,54 +473,54 @@ rattachées au profil (`ON DELETE CASCADE`) : isolation par famille via le profi
 
 **`evaluations`** — une épreuve (en cours ou bilan figé)
 
-| Colonne | Type | Rôle |
-| --- | --- | --- |
-| id | uuid PK | |
-| profile_id | uuid FK profiles, cascade | |
-| session_id | uuid FK sessions, cascade, unique | partie de mode `evaluation` (réponses dans `attempts`) |
-| subject | text | |
-| kind | text check in (`origines`, `progression`, `maitres`) | |
-| profile_grade | text | classe de l'élève au lancement |
-| referential_grade | text | classe évaluée (`ce2`…`3e`) |
-| referential_version | smallint | |
-| school_year | smallint | année de rentrée |
-| status | text check in (`en-cours`, `terminee`, `expiree`) | |
-| state | jsonb `{v, state}` | état du moteur (null une fois terminée) |
-| partial | boolean | fin au temps/maximum, ou Maîtres partiel |
-| mastery, coverage, studied | smallint 0–100, null | valeurs non arrondies (arrondi à l'affichage) |
-| evaluated_count, mastered_count | smallint | |
-| xp, coins, chest | integer, integer, text | récompenses versées |
-| started_at, finished_at | timestamptz | |
+| Colonne                         | Type                                                 | Rôle                                                   |
+| ------------------------------- | ---------------------------------------------------- | ------------------------------------------------------ |
+| id                              | uuid PK                                              |                                                        |
+| profile_id                      | uuid FK profiles, cascade                            |                                                        |
+| session_id                      | uuid FK sessions, cascade, unique                    | partie de mode `evaluation` (réponses dans `attempts`) |
+| subject                         | text                                                 |                                                        |
+| kind                            | text check in (`origines`, `progression`, `maitres`) |                                                        |
+| profile_grade                   | text                                                 | classe de l'élève au lancement                         |
+| referential_grade               | text                                                 | classe évaluée (`ce2`…`3e`)                            |
+| referential_version             | smallint                                             |                                                        |
+| school_year                     | smallint                                             | année de rentrée                                       |
+| status                          | text check in (`en-cours`, `terminee`, `expiree`)    |                                                        |
+| state                           | jsonb `{v, state}`                                   | état du moteur (null une fois terminée)                |
+| partial                         | boolean                                              | fin au temps/maximum, ou Maîtres partiel               |
+| mastery, coverage, studied      | smallint 0–100, null                                 | valeurs non arrondies (arrondi à l'affichage)          |
+| evaluated_count, mastered_count | smallint                                             |                                                        |
+| xp, coins, chest                | integer, integer, text                               | récompenses versées                                    |
+| started_at, finished_at         | timestamptz                                          |                                                        |
 
 Index : `(profile_id, subject, finished_at desc)` ; unique partiel `(profile_id, subject) where
 status = 'en-cours'` (une seule épreuve ouverte par matière) ; checks de bornes 0–100.
 
 **`evaluation_competences`** — résultat figé par compétence
 
-| Colonne | Type |
-| --- | --- |
-| evaluation_id | uuid FK evaluations, cascade |
-| competence_id | text |
-| role | text check in (`score`, `prerequis`, `avance`) |
-| domain | text |
-| essential | boolean |
-| state | text check (7 états) |
-| rate | smallint 0–100, null (R × 100) |
-| weight | smallint (P × 10) |
-| arena_answers | smallint |
+| Colonne          | Type                                                         |
+| ---------------- | ------------------------------------------------------------ |
+| evaluation_id    | uuid FK evaluations, cascade                                 |
+| competence_id    | text                                                         |
+| role             | text check in (`score`, `prerequis`, `avance`)               |
+| domain           | text                                                         |
+| essential        | boolean                                                      |
+| state            | text check (7 états)                                         |
+| rate             | smallint 0–100, null (R × 100)                               |
+| weight           | smallint (P × 10)                                            |
+| arena_answers    | smallint                                                     |
 | weakest_skill_id | text null (notion la plus fragile, pour les recommandations) |
 
 PK `(evaluation_id, competence_id)`.
 
 **`studied_chapters`** — chapitres déclarés
 
-| Colonne | Type |
-| --- | --- |
-| profile_id | uuid FK profiles, cascade |
-| school_year | smallint |
-| chapter_id | text |
-| status | text check in (`vu`, `pas-vu`, `ne-sait-pas`) |
-| updated_at | timestamptz |
+| Colonne     | Type                                          |
+| ----------- | --------------------------------------------- |
+| profile_id  | uuid FK profiles, cascade                     |
+| school_year | smallint                                      |
+| chapter_id  | text                                          |
+| status      | text check in (`vu`, `pas-vu`, `ne-sait-pas`) |
+| updated_at  | timestamptz                                   |
 
 PK `(profile_id, school_year, chapter_id)`.
 
@@ -541,19 +541,19 @@ Schémas zod dans `packages/shared/src/evaluation.ts`, déclarés dans `api/cont
 `family` ; chaque route vérifie `owns.profile` (pour `/evaluations/:id`, via le profil de
 l'épreuve ; autre famille → 404, comme les autres ressources).
 
-| Méthode et chemin | Rôle | Réponse |
-| --- | --- | --- |
-| GET `/profiles/:id/evaluations/home?subject=` | Accueil de la matière : épreuves (disponible, recommandée + raison, récompense possible), épreuve ouverte, historique court | `EvaluationHome` |
-| GET `/profiles/:id/studied-chapters?subject=` | Déclaration de l'année en cours (avec pré-cochage) | `StudiedChapter[]` |
-| PUT `/profiles/:id/studied-chapters` | `{ subject, chapters: [{ chapterId, status }] }` | 204 |
-| POST `/evaluations` | `{ profileId, subject, kind }` ; reprend l'épreuve ouverte s'il y en a une (même `kind`), sinon 409 avec son id | 201 `{ id, resumed, plan: { questions, domains } }` |
-| GET `/evaluations/:id/next` | Question en attente (idempotent) ou fin | `{ question: { skillId, level, seed, index, planned, domain, role } }` ou `{ done: true, canExploreAdvanced }` |
-| POST `/evaluations/:id/answers` | `{ skillId, level, seed, response, durationMs }` ; doit correspondre à la question en attente, sinon 409 ; rejouée → même réponse | `{ recorded: true, progress: { index, planned, byDomain } }` (pas de juste/faux, voir décision client n°1) |
-| POST `/evaluations/:id/advanced` | `{ accept: boolean }` | 204 |
-| POST `/evaluations/:id/finish` | Clôture (idempotente) : bilan figé + récompenses | `EvaluationResult` |
-| GET `/evaluations/:id` | Bilan (et, si `?review=1`, les questions posées pour « Revoir mes réponses ») | `EvaluationResult` |
-| GET `/profiles/:id/evaluations?subject=` | Historique | `EvaluationListItem[]` |
-| GET `/profiles/:id/evaluation-summary` | Données de l'Espace parent (§12) | `EvaluationSummary` |
+| Méthode et chemin                             | Rôle                                                                                                                              | Réponse                                                                                                        |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| GET `/profiles/:id/evaluations/home?subject=` | Accueil de la matière : épreuves (disponible, recommandée + raison, récompense possible), épreuve ouverte, historique court       | `EvaluationHome`                                                                                               |
+| GET `/profiles/:id/studied-chapters?subject=` | Déclaration de l'année en cours (avec pré-cochage)                                                                                | `StudiedChapter[]`                                                                                             |
+| PUT `/profiles/:id/studied-chapters`          | `{ subject, chapters: [{ chapterId, status }] }`                                                                                  | 204                                                                                                            |
+| POST `/evaluations`                           | `{ profileId, subject, kind }` ; reprend l'épreuve ouverte s'il y en a une (même `kind`), sinon 409 avec son id                   | 201 `{ id, resumed, plan: { questions, domains } }`                                                            |
+| GET `/evaluations/:id/next`                   | Question en attente (idempotent) ou fin                                                                                           | `{ question: { skillId, level, seed, index, planned, domain, role } }` ou `{ done: true, canExploreAdvanced }` |
+| POST `/evaluations/:id/answers`               | `{ skillId, level, seed, response, durationMs }` ; doit correspondre à la question en attente, sinon 409 ; rejouée → même réponse | `{ recorded: true, progress: { index, planned, byDomain } }` (pas de juste/faux, voir décision client n°1)     |
+| POST `/evaluations/:id/advanced`              | `{ accept: boolean }`                                                                                                             | 204                                                                                                            |
+| POST `/evaluations/:id/finish`                | Clôture (idempotente) : bilan figé + récompenses                                                                                  | `EvaluationResult`                                                                                             |
+| GET `/evaluations/:id`                        | Bilan (et, si `?review=1`, les questions posées pour « Revoir mes réponses »)                                                     | `EvaluationResult`                                                                                             |
+| GET `/profiles/:id/evaluations?subject=`      | Historique                                                                                                                        | `EvaluationListItem[]`                                                                                         |
+| GET `/profiles/:id/evaluation-summary`        | Données de l'Espace parent (§12)                                                                                                  | `EvaluationSummary`                                                                                            |
 
 `EvaluationResult` : `{ id, kind, subject, referentialGrade, finishedAt, partial, mastery,
 coverage, studied, counts, domains: [{ domain, mastery, coverage }], competences: [{ id, title,
@@ -644,15 +644,15 @@ moyen des notions ≈ 25–40 s → 8 à 12 minutes.
 
 **Risques**
 
-| Risque | Mesure |
-| --- | --- |
+| Risque                                                                                             | Mesure                                                                                                                                                  |
+| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Diagnostic faussé par des questions mal calibrées (niveaux 1–3 hétérogènes d'une notion à l'autre) | Seuils prudents (2 observations, preuve de niveau 2) ; suivi en pilotage du taux de réussite par notion et niveau dans l'Arène ; signalements existants |
-| Contenu CE2 non sourcé (#99) | Pas d'Origines CM1 tant que #99 n'est pas livré (épreuve « Bientôt » pour le CM1) |
-| Parties `evaluation` comptées à tort (badges, records, classement) | Liste des requêtes à filtrer dans #100, test dédié |
-| Confusion des vocabulaires (5 états de notion, médailles, 7 états de compétence) | Le parent ne voit que les 7 états dans « Bilans » et les 4 réponses ; l'encart #94 cède la place quand un bilan existe |
-| Pourcentages mal lus | M jamais seule, arrondi à 5 %, M masquée sous 4 points de poids, comparaisons sur l'intersection |
-| Triche (réponse à une autre question, rejeu) | Le serveur choisit la question et refuse toute autre ; réponses rejouées idempotentes |
-| Retour arrière destructif | Voir §10 ; accord client en production |
+| Contenu CE2 non sourcé (#99)                                                                       | Pas d'Origines CM1 tant que #99 n'est pas livré (épreuve « Bientôt » pour le CM1)                                                                       |
+| Parties `evaluation` comptées à tort (badges, records, classement)                                 | Liste des requêtes à filtrer dans #100, test dédié                                                                                                      |
+| Confusion des vocabulaires (5 états de notion, médailles, 7 états de compétence)                   | Le parent ne voit que les 7 états dans « Bilans » et les 4 réponses ; l'encart #94 cède la place quand un bilan existe                                  |
+| Pourcentages mal lus                                                                               | M jamais seule, arrondi à 5 %, M masquée sous 4 points de poids, comparaisons sur l'intersection                                                        |
+| Triche (réponse à une autre question, rejeu)                                                       | Le serveur choisit la question et refuse toute autre ; réponses rejouées idempotentes                                                                   |
+| Retour arrière destructif                                                                          | Voir §10 ; accord client en production                                                                                                                  |
 
 **Dette existante qui gêne**
 
@@ -676,18 +676,18 @@ Corrections au découpage initial : (1) titres « Arène du Savoir » → « Ar�
 cohérence), séparé de #99 et prérequis de #100 ; (4) le livrable de #98 s'appelle
 `docs/ARENE-EVALUATION.md`.
 
-| Ordre | Ticket | Contenu | Dépend de | Risque |
-| --- | --- | --- | --- | --- |
-| 1 | #97 | Renommer « Arène » → « Duels » (libellés ; id `arene` et routes conservés ou redirigés) | — | faible |
-| 1 | #106 | « Combat de boss » → « Mode Histoire » (libellés) | — | faible |
-| 1 | #99 | Fondamentaux CE2 sourcés, registre « évaluation seulement » du catalogue | — | moyen (sourcing) |
-| 2 | nouveau | Référentiel maths CM1 → 3e (essentielles, prérequis, version) + tests | #98 validé | faible |
-| 3 | #100 | Moteur pur `engine/evaluation` (états, sélection, scores, comparaisons, tests exhaustifs des exemples §13) ; module serveur, migration 0020, API, exclusions badges/records, économie | référentiel | **élevé** (cœur) — prévoir 2 PR : moteur pur puis serveur |
-| 4 | #101 | Mode de jeu dans Défis : accueil de la matière, épreuve scénarisée, reprise, résultats, revoir mes réponses, historique, récompenses — livré avec l'épreuve Origines activée | #100 | moyen (UX) |
-| 5 | #102 | Origines : réglages §6, exploration des prérequis et avancées, « à consolider pour réussir en N » ; CM1 activé quand #99 est livré | #101 (#99 pour CM1) | faible |
-| 6 | #103 | Progression : déclaration des chapitres, conservation des acquis, progrès et régressions, entraînements proposés | #101 | moyen |
-| 7 | #104 | Maîtres : bilan partiel, recommandations N+1, comparabilité au changement de classe | #103 | faible |
-| 8 | #105 | Espace parent : 4 réponses + « Bilans » repliable | #94, #103 | moyen |
+| Ordre | Ticket  | Contenu                                                                                                                                                                               | Dépend de           | Risque                                                    |
+| ----- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | --------------------------------------------------------- |
+| 1     | #97     | Renommer « Arène » → « Duels » (libellés ; id `arene` et routes conservés ou redirigés)                                                                                               | —                   | faible                                                    |
+| 1     | #106    | « Combat de boss » → « Mode Histoire » (libellés)                                                                                                                                     | —                   | faible                                                    |
+| 1     | #99     | Fondamentaux CE2 sourcés, registre « évaluation seulement » du catalogue                                                                                                              | —                   | moyen (sourcing)                                          |
+| 2     | nouveau | Référentiel maths CM1 → 3e (essentielles, prérequis, version) + tests                                                                                                                 | #98 validé          | faible                                                    |
+| 3     | #100    | Moteur pur `engine/evaluation` (états, sélection, scores, comparaisons, tests exhaustifs des exemples §13) ; module serveur, migration 0020, API, exclusions badges/records, économie | référentiel         | **élevé** (cœur) — prévoir 2 PR : moteur pur puis serveur |
+| 4     | #101    | Mode de jeu dans Défis : accueil de la matière, épreuve scénarisée, reprise, résultats, revoir mes réponses, historique, récompenses — livré avec l'épreuve Origines activée          | #100                | moyen (UX)                                                |
+| 5     | #102    | Origines : réglages §6, exploration des prérequis et avancées, « à consolider pour réussir en N » ; CM1 activé quand #99 est livré                                                    | #101 (#99 pour CM1) | faible                                                    |
+| 6     | #103    | Progression : déclaration des chapitres, conservation des acquis, progrès et régressions, entraînements proposés                                                                      | #101                | moyen                                                     |
+| 7     | #104    | Maîtres : bilan partiel, recommandations N+1, comparabilité au changement de classe                                                                                                   | #103                | faible                                                    |
+| 8     | #105    | Espace parent : 4 réponses + « Bilans » repliable                                                                                                                                     | #94, #103           | moyen                                                     |
 
 #97, #106 et #99 peuvent avancer en parallèle dès maintenant. Les autres matières : un ticket par
 matière, qui n'écrit que son référentiel (l'anglais d'abord, quand son programme est rédigé).
