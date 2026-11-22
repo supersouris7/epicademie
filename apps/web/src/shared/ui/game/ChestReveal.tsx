@@ -103,7 +103,7 @@ export function ChestReveal({ chest }: { readonly chest: Chest | null }) {
   const open = () => {
     if (stage !== 'closed') return;
     setStage('open');
-    playSound('reveal');
+    playSound('chest');
   };
 
   return (

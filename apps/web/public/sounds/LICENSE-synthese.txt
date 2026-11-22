@@ -1,0 +1,5 @@
+Sons synthétisés par apps/web/scripts/sounds.mjs (click, wrong, combo, hit, hurt, victory,
+defeat, chest, levelup, appear) : créés pour le projet, versés au domaine public (CC0 1.0).
+https://creativecommons.org/publicdomain/zero/1.0/
+Les sons correct, finish et reveal viennent de Kenney Interface Sounds (CC0) : voir
+LICENSE-kenney-interface-sounds.txt.

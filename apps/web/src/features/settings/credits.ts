@@ -16,6 +16,13 @@ export const CREDITS: readonly Credit[] = [
     sourceUrl: 'https://kenney.nl/assets/interface-sounds',
   },
   {
+    work: 'Bruitages synthétisés (script apps/web/scripts/sounds.mjs)',
+    author: 'Academy Fighters',
+    license: 'CC0 1.0',
+    licenseUrl: 'https://creativecommons.org/publicdomain/zero/1.0/',
+    sourceUrl: 'https://github.com/supersouris7/questeo/blob/main/apps/web/scripts/sounds.mjs',
+  },
+  {
     work: 'Police Lilita One',
     author: 'Juan Montoreano',
     license: 'SIL OFL 1.1',

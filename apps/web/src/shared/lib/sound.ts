@@ -1,5 +1,22 @@
-/** Effets sonores (fichiers CC0 Kenney, voir public/sounds). Lecture via Web Audio, tolérante aux échecs. */
-export const SOUNDS = ['correct', 'wrong', 'combo', 'finish', 'levelup', 'click', 'reveal'] as const;
+/**
+ * Effets sonores CC0 (Kenney pour correct/finish/reveal, les autres synthétisés par
+ * scripts/sounds.mjs ; voir public/sounds). Lecture via Web Audio, tolérante aux échecs.
+ */
+export const SOUNDS = [
+  'correct',
+  'wrong',
+  'combo',
+  'finish',
+  'levelup',
+  'click',
+  'reveal',
+  'hit',
+  'hurt',
+  'victory',
+  'defeat',
+  'chest',
+  'appear',
+] as const;
 export type SoundName = (typeof SOUNDS)[number];
 
 let ctx: AudioContext | null = null;
