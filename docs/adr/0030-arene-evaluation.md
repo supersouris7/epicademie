@@ -84,3 +84,18 @@ rangées en chapitres qui portent un domaine du programme ; un journal de toutes
 - **Mettre à jour médailles et répétition espacée** pendant l'épreuve : une mauvaise journée ferait
   perdre de la progression de jeu, contraire au cahier des charges.
 - **Réutiliser l'identifiant `arene`** : collision avec l'historique du multijoueur.
+
+## Mise en œuvre (ticket #12, première partie)
+
+- Moteur pur : `packages/engine/src/evaluation/` (constante `EVALUATION`, observations et états,
+  maîtrise/couverture/comparaison, déroulé `createEvaluation` → `nextEvaluationQuestion` →
+  `recordEvaluationAnswer` → `summarize`). L'état est un JSON versionné (`EVALUATION_STATE_VERSION`).
+- Données : migration `0022_arene_evaluation` (numéro réel ; retour arrière dans son en-tête, testé).
+  Maîtrise, couverture et part étudiée sont stockées en entiers 0–100 (l'affichage arrondit à 5 %).
+- Interprétations tranchées : `questions.max` plafonne le total, explorations comprises ;
+  `questions.min` relève seulement le besoin des petits programmes (3 questions au plus par
+  compétence) ; à l'arrêt « découragement », une essentielle dont toutes les réponses sont fausses
+  déclenche l'exploration de son prérequis ; les avancées posent 2 questions sur la première
+  compétence puis 1 sur la suivante (3 au plus).
+- À venir (service) : routes, contrats `packages/shared`, `MODE_IDS`/`MODES`, filtres « série
+  parfaite »/records, récompenses `ECONOMY.evaluation`, isolation par famille.

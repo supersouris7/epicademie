@@ -23,11 +23,15 @@ import type {
   AvatarConfig,
   BossMedal,
   ChestRarity,
+  CompetenceState,
+  EvaluationKind,
+  EvaluationRole,
   Gender,
   Grade,
   HeroId,
   ItemId,
   ModeId,
+  StudiedStatus,
   SubjectId,
 } from '@questeo/shared';
 
@@ -531,3 +535,108 @@ export const ALL_TABLES = [
   'accounts',
   'families',
 ] as const;
+
+/**
+ * Arène d'évaluation (docs/adr/0030-arene-evaluation.md) : une épreuve, en cours ou bilan figé.
+ * Les réponses sont dans `attempts` via la partie `sessions` de mode `evaluation` ; l'épreuve ne
+ * touche jamais à `skill_states`.
+ */
+export const evaluations = pgTable(
+  'evaluations',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    profileId: uuid('profile_id')
+      .notNull()
+      .references(() => profiles.id, { onDelete: 'cascade' }),
+    sessionId: uuid('session_id')
+      .notNull()
+      .references(() => sessions.id, { onDelete: 'cascade' }),
+    subject: text('subject').$type<SubjectId>().notNull(),
+    kind: text('kind').$type<EvaluationKind>().notNull(),
+    /** Classe de l'élève au lancement, et classe du référentiel évalué (`ce2`…`3e`). */
+    profileGrade: text('profile_grade').notNull(),
+    referentialGrade: text('referential_grade').notNull(),
+    referentialVersion: smallint('referential_version').notNull(),
+    /** Année de rentrée (2026 = année scolaire 2026-2027). */
+    schoolYear: smallint('school_year').notNull(),
+    status: text('status').$type<'en-cours' | 'terminee' | 'expiree'>().notNull().default('en-cours'),
+    /** État du moteur `{ v, state }` (ADR 0009) ; nul une fois l'épreuve terminée. */
+    state: jsonb('state').$type<unknown>(),
+    partial: boolean('partial').notNull().default(false),
+    /** Valeurs non arrondies (0–100) ; l'arrondi se fait à l'affichage. */
+    mastery: smallint('mastery'),
+    coverage: smallint('coverage'),
+    studied: smallint('studied'),
+    evaluatedCount: smallint('evaluated_count').notNull().default(0),
+    masteredCount: smallint('mastered_count').notNull().default(0),
+    xp: integer('xp').notNull().default(0),
+    coins: integer('coins').notNull().default(0),
+    chest: text('chest').$type<ChestRarity>(),
+    startedAt: timestamp('started_at', { withTimezone: true }).notNull().defaultNow(),
+    finishedAt: timestamp('finished_at', { withTimezone: true }),
+  },
+  (t) => [
+    uniqueIndex('evaluations_session_idx').on(t.sessionId),
+    index('evaluations_profile_subject_idx').on(t.profileId, t.subject, t.finishedAt.desc()),
+    // Une seule épreuve ouverte par profil et par matière.
+    uniqueIndex('evaluations_open_idx')
+      .on(t.profileId, t.subject)
+      .where(sql`${t.status} = 'en-cours'`),
+    check('evaluations_kind', sql`${t.kind} in ('origines', 'progression', 'maitres')`),
+    check('evaluations_status', sql`${t.status} in ('en-cours', 'terminee', 'expiree')`),
+    check('evaluations_mastery_range', sql`${t.mastery} is null or ${t.mastery} between 0 and 100`),
+    check('evaluations_coverage_range', sql`${t.coverage} is null or ${t.coverage} between 0 and 100`),
+    check('evaluations_studied_range', sql`${t.studied} is null or ${t.studied} between 0 and 100`),
+  ],
+);
+
+export type EvaluationRow = typeof evaluations.$inferSelect;
+
+/** Résultat figé d'une compétence dans un bilan (jamais recalculé). */
+export const evaluationCompetences = pgTable(
+  'evaluation_competences',
+  {
+    evaluationId: uuid('evaluation_id')
+      .notNull()
+      .references(() => evaluations.id, { onDelete: 'cascade' }),
+    competenceId: text('competence_id').notNull(),
+    role: text('role').$type<EvaluationRole>().notNull(),
+    domain: text('domain').notNull(),
+    essential: boolean('essential').notNull(),
+    state: text('state').$type<CompetenceState>().notNull(),
+    /** Réussite pondérée × 100 ; nul sans observation. */
+    rate: smallint('rate'),
+    /** Poids des observations × 10. */
+    weight: smallint('weight').notNull().default(0),
+    arenaAnswers: smallint('arena_answers').notNull().default(0),
+    /** Notion la plus fragile, pour les recommandations. */
+    weakestSkillId: text('weakest_skill_id'),
+  },
+  (t) => [
+    primaryKey({ columns: [t.evaluationId, t.competenceId] }),
+    check('evaluation_competences_role', sql`${t.role} in ('score', 'prerequis', 'avance')`),
+    check(
+      'evaluation_competences_state',
+      sql`${t.state} in ('non-etudiee', 'non-evaluee', 'evaluation-insuffisante', 'en-difficulte', 'maitrisee', 'a-consolider', 'en-cours')`,
+    ),
+    check('evaluation_competences_rate_range', sql`${t.rate} is null or ${t.rate} between 0 and 100`),
+  ],
+);
+
+/** Chapitres déclarés « vus en classe » par l'élève, par année scolaire. */
+export const studiedChapters = pgTable(
+  'studied_chapters',
+  {
+    profileId: uuid('profile_id')
+      .notNull()
+      .references(() => profiles.id, { onDelete: 'cascade' }),
+    schoolYear: smallint('school_year').notNull(),
+    chapterId: text('chapter_id').notNull(),
+    status: text('status').$type<StudiedStatus>().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.profileId, t.schoolYear, t.chapterId] }),
+    check('studied_chapters_status', sql`${t.status} in ('vu', 'pas-vu', 'ne-sait-pas')`),
+  ],
+);
