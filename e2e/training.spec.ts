@@ -201,3 +201,64 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await page.goto('/partie/entrainement/m5-operations/m5-priorites');
   await expect(page.getByText('Je te conseille de faire un brouillon pour cette question.')).toBeVisible();
 });
+
+test('outil « Poser une opération » : addition décimale, état conservé, recommencer, division', async ({ page }) => {
+  test.setTimeout(60_000);
+  await signupFamily(page);
+  await page.getByPlaceholder('Ex. Léa').fill(`Pose${Date.now() % 10000}`);
+  await page.getByRole('button', { name: 'Un garçon' }).click();
+  await page.getByLabel('Date de naissance').fill('2013-05-20');
+  await expect(page.getByText('Tu es en 4e ?')).toBeVisible();
+  await page.getByRole('button', { name: 'Oui', exact: true }).click();
+  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await expect(page).toHaveURL(/\/hub$/);
+
+  await page.goto('/partie/entrainement/m5-calcul/m5-tables');
+  await page.getByRole('tab', { name: /Poser une opération/ }).click();
+  const panel = page.getByRole('tabpanel');
+  await expect(panel.getByRole('button', { name: 'Addition' })).toHaveAttribute('aria-pressed', 'true');
+
+  // Addition décimale : la virgule du second nombre tombe sous celle du premier.
+  await page.keyboard.type('12,5');
+  await page.keyboard.press('Enter');
+  await page.keyboard.type('3,25');
+  await page.keyboard.press('Enter');
+  const board = panel.getByRole('group', { name: 'Opération posée' });
+  await expect(board).toBeVisible();
+  const commas = board.getByText(',', { exact: true });
+  const boxes = await commas.evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().left)));
+  expect(boxes).toHaveLength(3); // nombre du haut, nombre du bas, résultat
+  expect(new Set(boxes).size).toBe(1);
+
+  // Retenue et chiffre de résultat saisis ; rien n'est donné d'avance.
+  await expect(board.getByRole('button', { name: 'Résultat, case 1 : vide' })).toBeVisible();
+  await page.keyboard.press('5');
+  await expect(board.getByRole('button', { name: 'Résultat, case 1 : 5' })).toBeVisible();
+  await board.getByRole('button', { name: 'Retenue, case 1 : vide' }).click();
+  await page.keyboard.press('1');
+  await expect(board.getByRole('button', { name: 'Retenue, case 1 : 1' })).toBeVisible();
+
+  // Changer d'onglet puis revenir : tout est conservé.
+  await page.getByRole('tab', { name: 'Brouillon' }).click();
+  await page.getByRole('tab', { name: /Poser une opération/ }).click();
+  await expect(board.getByRole('button', { name: 'Résultat, case 1 : 5' })).toBeVisible();
+  await expect(board.getByRole('button', { name: 'Retenue, case 1 : 1' })).toBeVisible();
+
+  // Recommencer : cases vides, nombres gardés.
+  await panel.getByRole('button', { name: 'Recommencer' }).click();
+  await expect(board.getByRole('button', { name: 'Résultat, case 1 : vide' })).toBeVisible();
+  await expect(panel.getByRole('button', { name: 'Premier nombre : 12,5' })).toBeVisible();
+
+  // Division posée : potence, quotient et reste vides au départ.
+  await panel.getByRole('button', { name: 'Division' }).click();
+  await panel.getByRole('button', { name: 'Premier nombre : 12,5' }).click();
+  for (let i = 0; i < 4; i++) await page.keyboard.press('Backspace');
+  await page.keyboard.type('125');
+  await page.keyboard.press('Enter');
+  await page.keyboard.type('4');
+  await page.keyboard.press('Enter');
+  await expect(board).toBeVisible();
+  await expect(board.getByRole('button', { name: /^Quotient, case \d : vide$/ }).first()).toBeVisible();
+  await expect(board.getByRole('button', { name: /^Reste, case \d : vide$/ }).first()).toBeVisible();
+  await expect(board.getByRole('button', { name: /^(Quotient|Reste), case \d : [^v]/ })).toHaveCount(0);
+});
