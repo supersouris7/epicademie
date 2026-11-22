@@ -37,6 +37,9 @@ test('Espace parent : navigation stable, chaque chemin reste dans l’espace, un
   await page.getByRole('link', { name: /Voir les progrès de/ }).click();
   await expect(page).toHaveURL(/\/parent\/enfant\//);
   await expect(tabs(page).getByRole('link', { name: 'Progrès' })).toHaveAttribute('aria-current', 'page');
+  // Avancement par matière (comme les menus du jeu) ; un toucher ouvre le détail par chapitre.
+  await page.getByRole('button', { name: /^Maths : \d+ notions? maîtrisées? sur \d+/ }).click();
+  await expect(page.getByRole('heading', { name: 'Maths, chapitre par chapitre' })).toBeVisible();
   await page.getByRole('link', { name: /Tous les enfants/ }).click();
   await expect(page).toHaveURL(/\/parent$/);
 

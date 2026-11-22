@@ -4,6 +4,7 @@ import type { LearningReport } from '@questeo/shared';
 import { emptyLearning, FAKE_PASSWORD } from '../../testing/fakeApi.ts';
 import { renderApp } from '../../testing/renderApp.tsx';
 import { weeklySummary, weekBars } from './summary.ts';
+import { masteredPhrase, subjectBars } from './subjectProgress.ts';
 
 vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.ts')).socketModule);
 
@@ -88,13 +89,56 @@ describe('lecture du suivi pour un parent', () => {
   });
 });
 
+const gold = {
+  skillId: 'm5-tables',
+  stage: 3,
+  due: null,
+  lastPracticed: '2026-11-19',
+  attempts: 10,
+  correct: 9,
+  recent: [true, true],
+  maintained: 1,
+  best: 5,
+} as const;
+
+describe('avancement par matière', () => {
+  it('mêmes calculs que les menus : notions or, chapitres, matières à venir masquées', () => {
+    const bars = subjectBars('5e', [gold], [], report);
+    expect(bars.map((b) => b.id)).not.toContain('histoire');
+    const maths = bars.find((b) => b.id === 'maths');
+    expect(maths?.acquired).toBe(1);
+    expect(maths?.total).toBeGreaterThan(1);
+    expect(maths?.chapters.find((c) => c.id === 'm5-calcul')?.acquired).toBe(1);
+    expect(maths?.toRework).toEqual(['Priorités opératoires']);
+    expect(maths?.relic.won).toBe(0);
+    expect(masteredPhrase(1, 12)).toBe('1 notion maîtrisée sur 12');
+    expect(masteredPhrase(3, 12)).toBe('3 notions maîtrisées sur 12');
+  });
+
+  it('carte matière, puis détail par chapitre au toucher', async () => {
+    const { user } = renderApp('/parent/enfant/11111111-1111-4111-8111-111111111111', {
+      learning: report,
+      skills: [gold],
+    });
+    const card = await screen.findByRole('button', { name: /^Maths/ });
+    expect(card).toHaveTextContent(/1 notion maîtrisée sur \d+/);
+    expect(screen.queryByText(/chapitre par chapitre/)).not.toBeInTheDocument();
+    await user.click(card);
+    expect(await screen.findByText('Maths, chapitre par chapitre')).toBeInTheDocument();
+    expect(screen.getAllByRole('progressbar', { name: /^Notions maîtrisées, chapitre/ }).length).toBeGreaterThan(0);
+    expect(screen.getByRole('region', { name: 'Détail Maths' })).toHaveTextContent(
+      'À retravailler : Priorités opératoires',
+    );
+  });
+});
+
 describe('espace parent', () => {
   it('mot de passe demandé, puis carte de chaque enfant et détail', async () => {
     const { user } = renderApp('/parent', { parent: false, learning: report });
     await user.type(await screen.findByLabelText(/Mot de passe/), FAKE_PASSWORD);
     await user.click(screen.getByRole('button', { name: 'Ouvrir l’Espace parent' }));
     const card = await screen.findByRole('listitem', { name: 'Progrès de Léa' });
-    expect(card).toHaveTextContent('Matières : Maths');
+    expect(await within(card).findByRole('button', { name: /Maths/ })).toBeInTheDocument();
     expect(card).toHaveTextContent('À retravailler : Priorités opératoires');
     await user.click(within(card).getByRole('link', { name: /Voir les progrès/ }));
     expect(await screen.findByRole('heading', { name: 'Bilan de la semaine' })).toBeInTheDocument();
