@@ -30,7 +30,7 @@ que l'application envoie quoi que ce soit à l'extérieur, et sans donnée d'enf
 - Aucune dépendance sortante ; l'export est piloté depuis l'hôte (cron, chef de projet).
 - Le filtrage des prénoms ne couvre que les pseudos de la famille : un prénom tiers dans un
   commentaire libre passe (l'interface invite à ne rien écrire de personnel).
-- Retour arrière de la migration 0016 : voir l'en-tête du fichier SQL.
+- Retour arrière de la migration 0018 : voir l'en-tête du fichier SQL.
 
 ## Options écartées
 
