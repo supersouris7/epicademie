@@ -27,13 +27,13 @@ ne collecte **rien de personnel** sous 15 ans, et on réserve à un parent tout 
 - **Accès restreint** : tant qu'aucun parent n'a rattaché le compte, `access: 'parent'` est refusé
   (« Demande à un parent »), donc ni paiement, ni création de profils, ni Espace parent ; le
   contenu gratuit reste jouable.
-- **Rattachement** : l'élève génère une invitation (`family_invites`) : code de 8 symboles
-  (≈ 40 bits), 24 h, usage unique, une seule active par famille, empreinte seule stockée. Le
+- **Rattachement** : l'élève génère une invitation (`family_invites`) : code de 10 symboles
+  (≈ 50 bits), 24 h, usage unique, une seule active par famille, empreinte seule stockée. Le
   parent la saisit dans son Espace parent (`POST /family/join`). Dans une transaction, les
   profils passent dans la famille du parent (progression intacte) puis la famille autonome
   (compte, sessions, invitations) est supprimée. L'appareil de l'élève perd alors sa session :
   il joue désormais depuis le compte du parent.
-- **Sécurité** : les routes de récupération, d'invitation et de rattachement utilisent la limite
+- **Sécurité** : 5 codes d'invitation faux d'affilée bloquent le rattachement du compte parent 1 h (`accounts.join_failures`) ; les réponses qui portent un code (inscription, nouveau code, invitation) sont en `Cache-Control: no-store` ; les routes de récupération, d'invitation et de rattachement utilisent la limite
   de débit par IP des routes sensibles (`authRateLimitMax`) ; réponse unique pour code faux,
   expiré ou déjà utilisé ; isolation par famille inchangée ; aucun code, pseudo ni donnée
   personnelle n'est journalisé.
@@ -44,7 +44,7 @@ ne collecte **rien de personnel** sous 15 ans, et on réserve à un parent tout 
 - `Me.account.email` devient nullable ; `Me.family.autonomous` indique le mode restreint.
 - Un code de récupération perdu = compte perdu (pas d'e-mail pour le renvoyer) : l'élève est
   invité à le noter ; la limite est assumée.
-- L'invitation de 40 bits repose sur la limite de débit et la durée de 24 h.
+- L'invitation de 50 bits repose sur la limite de débit, la limite par compte parent et la durée de 24 h.
 
 ## Options écartées
 

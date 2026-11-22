@@ -78,6 +78,9 @@ export const accounts = pgTable(
     /** Erreurs de PIN d'affilée, et blocage après 5 erreurs. */
     pinFailures: integer('pin_failures').notNull().default(0),
     pinLockedUntil: timestamp('pin_locked_until', { withTimezone: true }),
+    /** Rattachement d'un élève : erreurs de code d'invitation d'affilée, puis blocage temporaire. */
+    joinFailures: integer('join_failures').notNull().default(0),
+    joinLockedUntil: timestamp('join_locked_until', { withTimezone: true }),
     createdAt: createdAt(),
   },
   (t) => [

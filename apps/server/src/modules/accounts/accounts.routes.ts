@@ -20,6 +20,10 @@ export function accountsRoutes(
     );
     return opened.me;
   };
+  /** Réponse qui porte un secret (code montré une fois) : jamais mise en cache. */
+  const noStore = (reply: FastifyReply): void => {
+    reply.header('cache-control', 'no-store');
+  };
   return async (app: FastifyInstance) => {
     route(app, api.signup, async ({ body, reply }) => setSession(reply, await service.signup(body)), {
       config: STRICT,
@@ -29,6 +33,7 @@ export function accountsRoutes(
       api.signupStudent,
       async ({ body, reply }) => {
         const { me, recoveryCode, ...opened } = await service.signupStudent(body);
+        noStore(reply);
         return { me: setSession(reply, { ...opened, me }), recoveryCode };
       },
       { config: STRICT },
@@ -44,12 +49,23 @@ export function accountsRoutes(
     route(
       app,
       api.renewStudentRecovery,
-      async ({ actor }) => ({ recoveryCode: await service.renewRecovery(actor()) }),
+      async ({ actor, reply }) => {
+        noStore(reply);
+        return { recoveryCode: await service.renewRecovery(actor()) };
+      },
       {
         config: STRICT,
       },
     );
-    route(app, api.createInvite, ({ actor }) => service.createInvite(actor()), { config: STRICT });
+    route(
+      app,
+      api.createInvite,
+      async ({ actor, reply }) => {
+        noStore(reply);
+        return service.createInvite(actor());
+      },
+      { config: STRICT },
+    );
     route(app, api.joinFamily, ({ actor, body }) => service.joinFamily(actor(), body.code), { config: STRICT });
     route(app, api.login, async ({ body, reply }) => setSession(reply, await service.login(body)), {
       config: STRICT,

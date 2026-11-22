@@ -55,11 +55,11 @@ test('élève de moins de 15 ans : compte sans e-mail, récupération, rattachem
   const parentContext = await browser.newContext();
   const parent = await parentContext.newPage();
   await signupFamily(parent, uniqueEmail(), { premium: false });
-  await parent.goto('/parent');
+  await parent.goto('/parent/profils');
   await parent.getByLabel('Code d’invitation').fill(invitation);
   await parent.getByRole('button', { name: 'Rattacher', exact: true }).click();
   await expect(parent.getByRole('status')).toContainText(`Rattaché : ${pseudo}`);
-  await expect(parent.getByRole('listitem', { name: `Progrès de ${pseudo}` })).toBeVisible();
+  await expect(parent.getByRole('listitem').filter({ hasText: pseudo })).toBeVisible();
   // Le code est à usage unique.
   await parent.getByLabel('Code d’invitation').fill(invitation);
   await parent.getByRole('button', { name: 'Rattacher', exact: true }).click();

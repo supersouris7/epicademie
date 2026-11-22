@@ -120,6 +120,13 @@
       "when": 1795350000000,
       "tag": "0016_eleve_autonome",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1795360000000,
+      "tag": "0017_rattachement_limite",
+      "breakpoints": true
     }
   ]
 }

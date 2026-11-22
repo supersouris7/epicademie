@@ -13,6 +13,9 @@ import { accountsRepo } from './accounts.repo.ts';
 
 /** Invitation d'un élève autonome : durée de validité (usage unique). */
 export const INVITE_HOURS = 24;
+/** Rattachement : erreurs de code permises avant blocage du compte, et durée du blocage. */
+const JOIN_MAX_FAILURES = 5;
+const JOIN_LOCK_HOURS = 1;
 export const BAD_CODE = 'Ce code n’est pas valable : vérifie-le ou demande-en un nouveau.';
 
 /** Session ouverte : jeton à poser en cookie (jamais renvoyé dans le corps) et vue « me ». */
@@ -79,7 +82,7 @@ export function createStudentService({ db, clock, createStudentProfile, open }: 
     /** Code d'invitation (24 h, usage unique) à donner à un parent. Remplace le précédent. */
     async createInvite(actor: Actor): Promise<InviteResult> {
       if (!actor.autonomous) throw new AppError('FORBIDDEN', 'Ton compte est déjà rattaché à un parent.');
-      const code = newCode(8);
+      const code = newCode(10);
       const expiresAt = later(INVITE_HOURS * 3_600_000);
       await repo.replaceInvite({ codeHash: codeHash(code), familyId: actor.familyId, expiresAt });
       return { code, expiresAt: expiresAt.toISOString() };
@@ -90,14 +93,28 @@ export function createStudentService({ db, clock, createStudentProfile, open }: 
      * toute leur progression, puis la famille autonome (compte, sessions) est supprimée.
      */
     async joinFamily(actor: Actor, code: string): Promise<FamilyJoinResult> {
+      // Limite par compte parent (en plus de la limite par IP) : 5 erreurs d'affilée, 1 h de blocage.
+      const now = clock.now();
+      const account = await repo.findById(actor.accountId);
+      if (account?.joinLockedUntil && account.joinLockedUntil > now) {
+        throw new AppError('RATE_LIMITED', 'Trop d’essais : réessaie plus tard (dans moins d’une heure).');
+      }
       const joined = await db.transaction(async (tx) => {
         const r = accountsRepo(tx);
-        const invite = await r.findInviteForUpdate(codeHash(code), clock.now());
-        if (!invite) throw new AppError('BAD_REQUEST', BAD_CODE);
+        const invite = await r.findInviteForUpdate(codeHash(code), now);
+        if (!invite) return null;
         const names = await r.moveProfiles(invite.familyId, actor.familyId);
         await r.deleteFamily(invite.familyId);
         return names;
       });
+      // Hors transaction : le compteur d'échecs doit survivre à l'erreur renvoyée.
+      if (!joined) {
+        const failures = (account?.joinFailures ?? 0) + 1;
+        const locked = failures >= JOIN_MAX_FAILURES ? later(JOIN_LOCK_HOURS * 3_600_000) : null;
+        await repo.setJoinFailures(actor.accountId, locked ? 0 : failures, locked);
+        throw new AppError('BAD_REQUEST', BAD_CODE);
+      }
+      await repo.setJoinFailures(actor.accountId, 0, null);
       return { joined };
     },
   };

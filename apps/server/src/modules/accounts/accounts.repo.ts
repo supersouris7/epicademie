@@ -161,6 +161,13 @@ export function accountsRepo(db: Executor) {
         .where(eq(accounts.id, accountId));
     },
 
+    async setJoinFailures(accountId: string, failures: number, lockedUntil: Date | null): Promise<void> {
+      await db
+        .update(accounts)
+        .set({ joinFailures: failures, joinLockedUntil: lockedUntil })
+        .where(eq(accounts.id, accountId));
+    },
+
     async setParentUntil(tokenHash: string, parentUntil: Date | null): Promise<void> {
       await db.update(authSessions).set({ parentUntil }).where(eq(authSessions.tokenHash, tokenHash));
     },

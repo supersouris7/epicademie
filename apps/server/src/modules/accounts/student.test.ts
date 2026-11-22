@@ -35,6 +35,8 @@ describe('inscription d’un élève de moins de 15 ans', () => {
     const s = await newStudent();
     expect(s.me).toMatchObject({ account: { email: null }, family: { autonomous: true }, parent: false });
     expect(s.recoveryCode).toMatch(/^([A-Z2-9]{4}-){3}[A-Z2-9]{4}$/);
+    // Réponses qui portent un code secret : jamais mises en cache.
+    expect((await signupStudent()).headers['cache-control']).toBe('no-store');
     const profiles = (await t.as(s.cookie).inject('/api/v1/profiles')).json<Profile[]>();
     expect(profiles).toEqual([
       expect.objectContaining({ name: 'Capucine', grade: '5e', gender: null, birthDate: null }),
@@ -90,7 +92,9 @@ describe('récupération sur un autre appareil', () => {
     const recover = (code: string) =>
       t.http.inject({ method: 'POST', url: '/api/v1/auth/student/recover', headers: anonymous, payload: { code } });
     expect((await recover('AAAA-BBBB-CCCC-DDDD')).statusCode).toBe(401);
-    const renewed = (await post('/auth/student/recovery-code', s.cookie)).json<{ recoveryCode: string }>();
+    const renewedRes = await post('/auth/student/recovery-code', s.cookie);
+    expect(renewedRes.headers['cache-control']).toBe('no-store');
+    const renewed = renewedRes.json<{ recoveryCode: string }>();
     expect((await recover(s.recoveryCode)).statusCode).toBe(401);
     expect((await recover(renewed.recoveryCode)).statusCode).toBe(200);
   });
@@ -124,8 +128,10 @@ describe('rattachement à un parent', () => {
     const [child] = (await t.as(s.cookie).inject('/api/v1/profiles')).json<Profile[]>();
     await t.database.db.execute(sql`update profiles set coins = 420 where id = ${child?.id}`);
 
-    const inv = await invite(s.cookie);
-    expect(inv.code).toMatch(/^[A-Z2-9]{4}-[A-Z2-9]{4}$/);
+    const invRes = await post('/auth/student/invite', s.cookie);
+    expect(invRes.headers['cache-control']).toBe('no-store');
+    const inv = invRes.json<InviteResult>();
+    expect(inv.code.replaceAll('-', '')).toMatch(/^[A-Z2-9]{10}$/); // 10 symboles, environ 50 bits
     expect(Date.parse(inv.expiresAt) - t.clock.now().getTime()).toBe(24 * 3_600_000);
 
     const res = await join(inv.code.toLowerCase());
@@ -136,6 +142,22 @@ describe('rattachement à un parent', () => {
     // Famille autonome supprimée : l'ancien appareil n'a plus de session, le code ne marche plus.
     expect((await t.as(s.cookie).inject('/api/v1/auth/me')).statusCode).toBe(401);
     expect((await join(inv.code)).statusCode).toBe(400);
+  });
+
+  it('limite par compte : 5 codes faux bloquent le rattachement une heure, même avec le bon code', async () => {
+    const s = await newStudent();
+    const inv = await invite(s.cookie);
+    for (let i = 0; i < 5; i++) expect((await join('AAAAA-BBBBB')).statusCode).toBe(400);
+    const blocked = await join(inv.code);
+    expect(blocked.statusCode).toBe(429);
+    expect(blocked.json()).toMatchObject({ code: 'RATE_LIMITED' });
+    // Un autre compte parent n'est pas touché ; le blocage tombe après une heure.
+    const other = await t.signup('autre.parent@famille.test');
+    expect((await join('AAAAA-BBBBB', other.cookie)).statusCode).toBe(400);
+    t.clock.set('2026-11-21');
+    await t.http.inject({ method: 'POST', url: '/api/v1/auth/parent', payload: { password: TEST_PASSWORD } });
+    const fresh = await invite(s.cookie);
+    expect((await join(fresh.code)).statusCode).toBe(200);
   });
 
   it('usage unique : un second parent ne peut pas réutiliser le code', async () => {
