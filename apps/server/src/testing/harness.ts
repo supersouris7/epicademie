@@ -158,7 +158,7 @@ export async function createTestApp(options: TestHarnessOptions = {}) {
       payload: { email, password: TEST_PASSWORD },
     });
     if (res.statusCode !== 201) throw new Error(`inscription de test refusée : ${res.body}`);
-    return { cookie: sessionCookie(res), me: res.json<Me>() };
+    return { cookie: sessionCookie(res), me: res.json<Me>(), email };
   };
   /** Paiement réussi enregistré directement (abonnement de la famille de test). */
   const subscribe = async (familyId: string) => {

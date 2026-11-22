@@ -24,6 +24,33 @@ export function accountsRoutes(
     route(app, api.signup, async ({ body, reply }) => setSession(reply, await service.signup(body)), {
       config: STRICT,
     });
+    route(
+      app,
+      api.signupStudent,
+      async ({ body, reply }) => {
+        const { me, recoveryCode, ...opened } = await service.signupStudent(body);
+        return { me: setSession(reply, { ...opened, me }), recoveryCode };
+      },
+      { config: STRICT },
+    );
+    route(
+      app,
+      api.recoverStudent,
+      async ({ body, reply }) => setSession(reply, await service.recoverStudent(body.code)),
+      {
+        config: STRICT,
+      },
+    );
+    route(
+      app,
+      api.renewStudentRecovery,
+      async ({ actor }) => ({ recoveryCode: await service.renewRecovery(actor()) }),
+      {
+        config: STRICT,
+      },
+    );
+    route(app, api.createInvite, ({ actor }) => service.createInvite(actor()), { config: STRICT });
+    route(app, api.joinFamily, ({ actor, body }) => service.joinFamily(actor(), body.code), { config: STRICT });
     route(app, api.login, async ({ body, reply }) => setSession(reply, await service.login(body)), {
       config: STRICT,
     });

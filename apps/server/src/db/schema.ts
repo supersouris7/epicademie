@@ -48,6 +48,11 @@ const at = (name: string) => timestamp(name, { withTimezone: true });
 /** Famille : regroupe le compte parent et les profils enfants (unité d'isolation des données). */
 export const families = pgTable('families', {
   id: uuid('id').primaryKey().defaultRandom(),
+  /**
+   * Famille « autonome » : élève de moins de 15 ans sans parent rattaché (RGPD art. 8). Son
+   * compte n'a ni e-mail ni mot de passe ; elle disparaît quand un parent rattache le profil.
+   */
+  autonomous: boolean('autonomous').notNull().default(false),
   createdAt: createdAt(),
 });
 
@@ -62,8 +67,11 @@ export const accounts = pgTable(
     familyId: uuid('family_id')
       .notNull()
       .references(() => families.id, { onDelete: 'cascade' }),
-    email: text('email').notNull(),
-    passwordHash: text('password_hash').notNull(),
+    /** Nuls pour le compte d'un élève autonome (aucune donnée personnelle). */
+    email: text('email'),
+    passwordHash: text('password_hash'),
+    /** Empreinte SHA-256 du code de récupération d'un élève autonome (jamais le code). */
+    recoveryHash: text('recovery_hash'),
     role: text('role').$type<AccountRole>().notNull().default('parent'),
     /** Code PIN de l'Espace parent (empreinte scrypt), null tant qu'il n'est pas choisi. */
     parentPinHash: text('parent_pin_hash'),
@@ -74,6 +82,7 @@ export const accounts = pgTable(
   },
   (t) => [
     uniqueIndex('accounts_email_unique').on(t.email),
+    uniqueIndex('accounts_recovery_unique').on(t.recoveryHash),
     index('accounts_family_idx').on(t.familyId),
     check('accounts_email_lowercase', sql`${t.email} = lower(${t.email})`),
     check('accounts_role_valid', sql`${t.role} in ('parent', 'admin')`),
@@ -99,6 +108,24 @@ export const authSessions = pgTable(
     createdAt: createdAt(),
   },
   (t) => [index('auth_sessions_account_idx').on(t.accountId), index('auth_sessions_expires_idx').on(t.expiresAt)],
+);
+
+/**
+ * Invitation d'un élève autonome : code court (empreinte seule), durée limitée, usage unique.
+ * Un parent la saisit dans son Espace parent pour rattacher le profil à sa famille.
+ */
+export const familyInvites = pgTable(
+  'family_invites',
+  {
+    codeHash: text('code_hash').primaryKey(),
+    familyId: uuid('family_id')
+      .notNull()
+      .references(() => families.id, { onDelete: 'cascade' }),
+    expiresAt: at('expires_at').notNull(),
+    usedAt: at('used_at'),
+    createdAt: createdAt(),
+  },
+  (t) => [index('family_invites_family_idx').on(t.familyId)],
 );
 
 /** Lien de réinitialisation du mot de passe : empreinte du jeton, usage unique, courte durée. */

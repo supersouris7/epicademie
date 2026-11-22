@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { GRADES } from './grades.ts';
+import { AvatarConfigSchema, ProfileNameSchema } from './profile.ts';
 
 /**
  * Comptes familiaux : un compte parent (e-mail + mot de passe) par famille, des profils enfants
@@ -40,8 +42,10 @@ export const PasswordResetSchema = z.object({ token: z.string().min(20).max(200)
 
 /** Session courante : le compte, sa famille, et si les actions « parent » sont déverrouillées. */
 export const MeSchema = z.object({
-  account: z.object({ id: z.uuid(), email: z.string(), role: z.enum(ACCOUNT_ROLES) }),
-  family: z.object({ id: z.uuid() }),
+  /** `email` est nul pour un compte élève autonome (moins de 15 ans : aucune donnée personnelle). */
+  account: z.object({ id: z.uuid(), email: z.string().nullable(), role: z.enum(ACCOUNT_ROLES) }),
+  /** `autonomous` : famille d'un élève de moins de 15 ans, sans parent rattaché. */
+  family: z.object({ id: z.uuid(), autonomous: z.boolean() }),
   /** Mot de passe confirmé récemment : actions réservées au parent permises (voir `parentUntil`). */
   parent: z.boolean(),
   /** Fin du déverrouillage parent (ISO), ou null. */
@@ -52,3 +56,30 @@ export const MeSchema = z.object({
   adminUntil: z.string().nullable(),
 });
 export type Me = z.infer<typeof MeSchema>;
+
+/**
+ * Élève de moins de 15 ans (RGPD art. 8, loi française) : compte sans donnée personnelle
+ * (pseudo + avatar + classe). L'âge sert à orienter l'inscription et n'est pas conservé.
+ */
+export const STUDENT_AUTONOMOUS_MAX_AGE = 14;
+export const StudentSignupSchema = z.object({
+  name: ProfileNameSchema,
+  avatar: AvatarConfigSchema,
+  grade: z.enum(GRADES),
+  age: z.number().int().min(3).max(STUDENT_AUTONOMOUS_MAX_AGE, 'À partir de 15 ans, crée un compte avec ton e-mail.'),
+});
+export type StudentSignup = z.infer<typeof StudentSignupSchema>;
+
+/** Code de récupération (montré une seule fois) : 16 caractères, avec ou sans tirets. */
+export const RecoveryCodeSchema = z.string().trim().min(8).max(40);
+export const StudentRecoverSchema = z.object({ code: RecoveryCodeSchema });
+export const StudentSignupResultSchema = z.object({ me: MeSchema, recoveryCode: z.string() });
+export type StudentSignupResult = z.infer<typeof StudentSignupResultSchema>;
+export const RecoveryCodeResultSchema = z.object({ recoveryCode: z.string() });
+
+/** Invitation : code court à durée limitée et à usage unique, saisi par un parent. */
+export const InviteResultSchema = z.object({ code: z.string(), expiresAt: z.string() });
+export type InviteResult = z.infer<typeof InviteResultSchema>;
+export const FamilyJoinSchema = z.object({ code: z.string().trim().min(4).max(20) });
+export const FamilyJoinResultSchema = z.object({ joined: z.array(z.string()) });
+export type FamilyJoinResult = z.infer<typeof FamilyJoinResultSchema>;

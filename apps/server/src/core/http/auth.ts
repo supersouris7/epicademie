@@ -12,7 +12,10 @@ import { readCookie, SESSION_COOKIE } from '../auth/cookies.ts';
 export interface Actor {
   readonly accountId: string;
   readonly familyId: string;
-  readonly email: string;
+  /** Nul pour un élève autonome (moins de 15 ans). */
+  readonly email: string | null;
+  /** Famille d'un élève autonome : ni paiement, ni Espace parent tant qu'aucun parent n'est rattaché. */
+  readonly autonomous: boolean;
   readonly role: AccountRole;
   /** Fin du déverrouillage parent (mot de passe confirmé récemment), ou null. */
   readonly parentUntil: Date | null;
@@ -63,10 +66,13 @@ export function registerAuth(app: FastifyInstance, options: AuthOptions): void {
   });
 }
 
+export const AUTONOMOUS_MESSAGE = 'Demande à un parent : il doit d’abord rattacher ton compte au sien.';
+
 /** Lève l'erreur adaptée si l'acteur n'a pas le niveau d'accès demandé. */
 export function checkAccess(access: Access, actor: Actor | null): void {
   if (access === 'public') return;
   if (!actor) throw new AppError('UNAUTHORIZED', 'Connecte-toi pour continuer.');
+  if (access === 'parent' && actor.autonomous) throw new AppError('FORBIDDEN', AUTONOMOUS_MESSAGE);
   if (access === 'parent' && !actor.parent) {
     throw new AppError('FORBIDDEN', 'Action réservée au parent : confirme le mot de passe du compte.');
   }

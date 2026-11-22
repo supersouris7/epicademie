@@ -120,7 +120,7 @@ describe('paiement (simulateur)', () => {
       method: 'POST',
       url: '/api/v1/auth/login',
       headers: { cookie: '' },
-      payload: { email: t.family().me.account.email, password: TEST_PASSWORD },
+      payload: { email: t.family().email, password: TEST_PASSWORD },
     });
     const device = t.as(sessionCookie(login));
     const status = (await device.inject('/api/v1/billing')).json<Billing>();

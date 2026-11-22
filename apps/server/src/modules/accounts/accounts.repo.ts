@@ -1,7 +1,15 @@
 import { and, eq, gt, isNull, ne } from 'drizzle-orm';
 import type { AccountRole } from '@questeo/shared';
 import type { Executor } from '../../db/client.ts';
-import { accounts, authSessions, families, passwordResets, profiles, sessions } from '../../db/schema.ts';
+import {
+  accounts,
+  authSessions,
+  familyInvites,
+  families,
+  passwordResets,
+  profiles,
+  sessions,
+} from '../../db/schema.ts';
 
 /** Accès aux comptes, familles, sessions d'appareil et liens de réinitialisation. */
 export function accountsRepo(db: Executor) {
@@ -16,6 +24,69 @@ export function accountsRepo(db: Executor) {
         .returning();
       if (!account) throw new Error('création de compte sans retour');
       return account;
+    },
+
+    /** Famille autonome (élève de moins de 15 ans) et son compte sans e-mail, ni mot de passe. */
+    async createAutonomousAccount(recoveryHash: string) {
+      const [family] = await db.insert(families).values({ autonomous: true }).returning({ id: families.id });
+      if (!family) throw new Error('création de famille sans retour');
+      const [account] = await db.insert(accounts).values({ familyId: family.id, recoveryHash }).returning();
+      if (!account) throw new Error('création de compte sans retour');
+      return account;
+    },
+
+    async findByRecovery(recoveryHash: string) {
+      const [row] = await db.select().from(accounts).where(eq(accounts.recoveryHash, recoveryHash));
+      return row;
+    },
+
+    async setRecovery(accountId: string, recoveryHash: string): Promise<void> {
+      await db.update(accounts).set({ recoveryHash }).where(eq(accounts.id, accountId));
+    },
+
+    async isAutonomous(familyId: string): Promise<boolean> {
+      const [row] = await db.select({ a: families.autonomous }).from(families).where(eq(families.id, familyId));
+      return row?.a ?? false;
+    },
+
+    async deleteFamily(familyId: string): Promise<void> {
+      await db.delete(families).where(eq(families.id, familyId));
+    },
+
+    // ——— Invitations de rattachement ———
+
+    /** Une seule invitation à la fois par famille : la nouvelle remplace les précédentes. */
+    async replaceInvite(i: { codeHash: string; familyId: string; expiresAt: Date }): Promise<void> {
+      await db.delete(familyInvites).where(eq(familyInvites.familyId, i.familyId));
+      await db.insert(familyInvites).values(i);
+    },
+
+    /** Invitation valide (non utilisée, non expirée) d'une famille encore autonome, verrouillée. */
+    async findInviteForUpdate(codeHash: string, now: Date) {
+      const [row] = await db
+        .select({ codeHash: familyInvites.codeHash, familyId: familyInvites.familyId })
+        .from(familyInvites)
+        .innerJoin(families, eq(families.id, familyInvites.familyId))
+        .where(
+          and(
+            eq(familyInvites.codeHash, codeHash),
+            isNull(familyInvites.usedAt),
+            gt(familyInvites.expiresAt, now),
+            eq(families.autonomous, true),
+          ),
+        )
+        .for('update', { of: familyInvites });
+      return row;
+    },
+
+    /** Déplace les profils vers la famille du parent ; renvoie leurs pseudos. */
+    async moveProfiles(fromFamilyId: string, toFamilyId: string): Promise<string[]> {
+      const rows = await db
+        .update(profiles)
+        .set({ familyId: toFamilyId })
+        .where(eq(profiles.familyId, fromFamilyId))
+        .returning({ name: profiles.name });
+      return rows.map((r) => r.name);
     },
 
     async findByEmail(email: string) {
@@ -59,9 +130,11 @@ export function accountsRepo(db: Executor) {
           familyId: accounts.familyId,
           email: accounts.email,
           role: accounts.role,
+          autonomous: families.autonomous,
         })
         .from(authSessions)
         .innerJoin(accounts, eq(accounts.id, authSessions.accountId))
+        .innerJoin(families, eq(families.id, accounts.familyId))
         .where(and(eq(authSessions.tokenHash, tokenHash), gt(authSessions.expiresAt, now)));
       return row;
     },
