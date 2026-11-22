@@ -21,6 +21,34 @@ import { RELICS } from '../../../design/relics.ts';
 
 import { FROM_BATTLE } from './constants.ts';
 
+/** Après une défaite : entraînement de la notion la plus fragile (ou du chapitre). */
+function TrainButton({
+  chapter,
+  weak,
+  onExit,
+}: {
+  readonly chapter: Chapter;
+  readonly weak: ReturnType<typeof getSkill>;
+  readonly onExit: (to: string, state?: unknown) => void;
+}) {
+  return (
+    <GameButton
+      variant="success"
+      size="lg"
+      icon="icons-navigation-lesson"
+      onClick={() =>
+        onExit(
+          weak
+            ? `/partie/entrainement/${chapter.id}/${weak.id}`
+            : `/jouer/entrainement/${chapter.subject}/${chapter.id}`,
+        )
+      }
+    >
+      {weak ? `On s’entraîne : ${weak.title}` : 'On s’entraîne'}
+    </GameButton>
+  );
+}
+
 /** Écran 2 du bilan : récap des notions, entraînement conseillé et suite proposée. */
 function BattleRecap({
   profileId,
@@ -39,22 +67,7 @@ function BattleRecap({
   const location = useLocation();
   return (
     <RecapScreen profileId={profileId} rows={summary.skills}>
-      {!summary.won && (
-        <GameButton
-          variant="success"
-          size="lg"
-          icon="icons-navigation-lesson"
-          onClick={() =>
-            onExit(
-              weak
-                ? `/partie/entrainement/${chapter.id}/${weak.id}`
-                : `/jouer/entrainement/${chapter.subject}/${chapter.id}`,
-            )
-          }
-        >
-          {weak ? `On s’entraîne : ${weak.title}` : 'On s’entraîne'}
-        </GameButton>
-      )}
+      {!summary.won && <TrainButton chapter={chapter} weak={weak} onExit={onExit} />}
       <GameButton
         icon="icons-navigation-retry"
         onClick={() => void navigate(location.pathname, { replace: true, state: { replay: Date.now() } })}
@@ -191,7 +204,9 @@ export function BattleResults({
         </div>
       )}
 
-      <div className="flex justify-center">
+      {/* Après une défaite, l'entraînement est proposé tout de suite (pas de récompense à voir). */}
+      <div className="flex flex-wrap justify-center gap-3">
+        {!summary.won && <TrainButton chapter={chapter} weak={weak} onExit={onExit} />}
         <GameButton size="lg" icon="icons-navigation-next" onClick={() => setScreen('recap')}>
           Suite
         </GameButton>
