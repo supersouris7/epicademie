@@ -215,7 +215,8 @@ jobs:
   docker:
     name: Image Docker → Docker Hub
     needs: [ci]
-    if: github.event_name == 'push' && needs.ci.result == 'success'
+    # !cancelled() : sinon le job est sauté dès qu'un job en amont l'a été (contrôles non rejoués).
+    if: ${{ !cancelled() && github.event_name == 'push' && needs.ci.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
