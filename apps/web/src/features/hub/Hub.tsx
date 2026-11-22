@@ -7,7 +7,6 @@ import { useToast } from '../../shared/ui/Toast.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
 import { CharacterSprite } from '../../shared/ui/game/CharacterSprite.tsx';
-import { ChildRecommendations } from '../recommendations/index.ts';
 import { useEntrance } from '../../shared/lib/entrance.ts';
 
 /** Les deux grands modes jouables, chacun sa couleur. */
@@ -40,8 +39,6 @@ export function Hub({ profile }: { readonly profile: Profile }) {
           <span aria-hidden>→</span>
         </button>
       )}
-
-      <ChildRecommendations profile={profile} />
 
       <div className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] items-center gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
         {/* Le héros en pied : toucher pour ouvrir « Mon héros ». */}

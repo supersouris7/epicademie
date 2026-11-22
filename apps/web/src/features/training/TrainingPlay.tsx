@@ -22,32 +22,24 @@ import { useTraining, type TrainingSetup } from './useTraining.ts';
 
 /** Identifiant de « chapitre » des séries de révision (plusieurs chapitres d'une matière). */
 export const REVIEW_CHAPTER = 'revisions';
-/** Identifiant de « chapitre » des séances ciblées préparées par le parent (notions choisies). */
-export const TARGETED_CHAPTER = 'seance';
 
 /**
  * Partie d’Entraînement : 4 questions (5 en calcul de tête) + variantes, correction après chaque
  * réponse. `/partie/entrainement/<chapitre>/<notion | epreuve>`, ou
- * `/partie/entrainement/revisions/<matière>` pour les révisions du jour (moteur adaptatif), ou
- * `/partie/entrainement/seance/<notion+notion…>` pour une séance ciblée préparée par le parent.
+ * `/partie/entrainement/revisions/<matière>` pour les révisions du jour (moteur adaptatif).
  */
 export function TrainingPlay({ profile }: { readonly profile: Profile }) {
   const { chapterId = '', skillId = '' } = useParams();
   const reviews = chapterId === REVIEW_CHAPTER;
-  const targeted = chapterId === TARGETED_CHAPTER;
   const chapter = getChapter(chapterId);
   const { data: disabled, isPending: disabledPending } = useDisabledSkills();
   const { data: progress, isPending } = useSkills(profile.id);
   const location = useLocation();
-  const exitTo = targeted
-    ? '/hub'
-    : reviews
-      ? `/jouer/entrainement/${skillId}`
-      : `/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`;
+  const exitTo = reviews
+    ? `/jouer/entrainement/${skillId}`
+    : `/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`;
   const { left } = useGameExit(exitTo);
   const skills = useMemo(() => {
-    // Séance ciblée : les notions choisies par le parent (notions d'entraînement existantes).
-    if (targeted) return skillId.split('+').filter((id) => getSkill(id) && !disabled?.has(id));
     if (reviews) {
       // Révisions du jour de la matière (notions déjà étudiées, dues ou fragiles).
       const states = (progress ?? []).filter((p) => getChapterOfSkill(p.skillId)?.subject === skillId);
@@ -59,16 +51,15 @@ export function TrainingPlay({ profile }: { readonly profile: Profile }) {
     if (!chapter) return [];
     // Épreuve du chapitre : toutes ses notions, sans celles en maintenance.
     return skillId === EPREUVE_SKILL ? chapter.skills.map((s) => s.id).filter((id) => !disabled?.has(id)) : [skillId];
-  }, [targeted, reviews, progress, chapter, skillId, disabled]);
+  }, [reviews, progress, chapter, skillId, disabled]);
   // Partie déjà quittée, revenue par « précédent » : on ne la relance pas (redirection en cours).
   if (left) return null;
   // La série se compose une fois la progression et les notions en maintenance connues.
   if (isPending || !progress || disabledPending) return <p className="p-8 text-xl">Chargement…</p>;
-  const valid =
-    reviews || targeted
-      ? skills.length > 0
-      : chapter !== undefined && skills.length > 0 && skills.every((id) => chapter.skills.some((s) => s.id === id));
-  if (!valid) return <Navigate to={reviews || targeted ? exitTo : '/jouer/entrainement'} replace />;
+  const valid = reviews
+    ? skills.length > 0
+    : chapter !== undefined && skills.length > 0 && skills.every((id) => chapter.skills.some((s) => s.id === id));
+  if (!valid) return <Navigate to={reviews ? exitTo : '/jouer/entrainement'} replace />;
   const states = new Map(progress.map((p) => [p.skillId, p]));
   return (
     <Game
@@ -78,7 +69,7 @@ export function TrainingPlay({ profile }: { readonly profile: Profile }) {
       skills={skills}
       states={states}
       exitTo={exitTo}
-      epreuve={!reviews && !targeted && skillId === EPREUVE_SKILL}
+      epreuve={!reviews && skillId === EPREUVE_SKILL}
     />
   );
 }

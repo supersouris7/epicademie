@@ -1,0 +1,13 @@
+-- Suppression des recommandations parent (22/11/2026, #94) : le parent ne crée plus d'entraînement.
+-- Retour arrière : recrée la table vide, telle que définie en 0019 :
+--   CREATE TABLE "recommendations" (
+--     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+--     "profile_id" uuid NOT NULL REFERENCES "profiles"("id") ON DELETE cascade,
+--     "skill_id" text NOT NULL, "note" text,
+--     "status" text DEFAULT 'en-attente' NOT NULL,
+--     "created_at" timestamp with time zone DEFAULT now() NOT NULL,
+--     "closed_at" timestamp with time zone, "correct" integer, "answered" integer,
+--     CONSTRAINT "recommendations_note_len" CHECK ("note" is null or char_length("note") <= 140),
+--     CONSTRAINT "recommendations_status" CHECK ("status" in ('en-attente', 'faite', 'annulee')));
+--   CREATE INDEX "recommendations_profile_status_idx" ON "recommendations" ("profile_id","status");
+DROP TABLE "recommendations";

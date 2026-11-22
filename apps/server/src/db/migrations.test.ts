@@ -126,30 +126,31 @@ describe('migrations', () => {
     }
   });
 
-  it('recommandations : depuis une base en 0018, profils intacts ; contraintes ; retour arrière par DROP TABLE', async () => {
-    const dir = migrationsUpTo(19); // jusqu'à 0018
+  it('suppression des recommandations : depuis une base en 0020, profils intacts ; le retour arrière recrée la table vide', async () => {
+    const dir = migrationsUpTo(21); // jusqu'à 0020 : la table existe encore
     try {
       database = await openDatabase('pglite://memory');
       await runMigrations(database, dir);
       const { db } = database;
       await db.execute(sql`insert into profiles (id, name, avatar, hero) values
         ('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa', 'Léa', '{"style":"pixelbot","seed":"l"}', 'alex')`);
-      await runMigrations(database, MIGRATIONS_DIR);
-      expect((await schemaStatus(database, MIGRATIONS_DIR)).upToDate).toBe(true);
       await db.execute(sql`insert into recommendations (profile_id, skill_id, note)
         values ('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa', 'm5-tables', 'Courage !')`);
-      // Mot trop long ou statut inconnu : refusés par la base.
-      await expect(
-        db.execute(sql`insert into recommendations (profile_id, skill_id, note)
-          values ('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa', 'm5-tables', ${'x'.repeat(141)})`),
-      ).rejects.toThrow();
-      await expect(
-        db.execute(sql`insert into recommendations (profile_id, skill_id, status)
-          values ('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa', 'm5-tables', 'inconnu')`),
-      ).rejects.toThrow();
-      // Retour arrière documenté dans la migration : le reste des données est intact.
-      await db.execute(sql`drop table "recommendations"`);
+      await runMigrations(database, MIGRATIONS_DIR);
+      expect((await schemaStatus(database, MIGRATIONS_DIR)).upToDate).toBe(true);
+      await expect(db.execute(sql`select 1 from recommendations`)).rejects.toThrow();
       expect(await db.select().from(profiles)).toHaveLength(1);
+      // Retour arrière documenté dans la migration (lignes commentées « --   ») : table recréée, vide.
+      const file = readFileSync(path.join(MIGRATIONS_DIR, '0021_suppression_recommandations.sql'), 'utf8');
+      const rollback = file
+        .split('\n')
+        .filter((l) => l.startsWith('--   '))
+        .map((l) => l.slice(5))
+        .join('\n');
+      for (const statement of rollback.split(';').filter((q) => q.trim())) await db.execute(sql.raw(statement));
+      expect(await db.execute(sql`select count(*)::int as n from recommendations`)).toMatchObject({
+        rows: [{ n: 0 }],
+      });
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
