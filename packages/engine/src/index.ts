@@ -12,3 +12,4 @@ export * from './learning.ts';
 export * from './adaptive.ts';
 export * from './badges.ts';
 export * from './economy.ts';
+export * from './evaluation/index.ts';
