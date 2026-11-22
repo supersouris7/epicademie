@@ -4,7 +4,7 @@ import { HERO_NAMES, type HeroId } from '@questeo/shared';
 import { assetSrc, characterSrc, type AnimationState } from '../../design/assets.ts';
 import { CharacterSprite } from '../ui/game/CharacterSprite.tsx';
 import { Sprite } from '../ui/game/Sprite.tsx';
-import { useArenaImage } from './arena.ts';
+import { STAGE_MAX_RATIO, useArenaImage, type ArenaImage } from './arena.ts';
 
 /**
  * Hauteur unique de l'arène, à toutes les phases (face-à-face, arrivée du boss, coups) : les
@@ -59,7 +59,7 @@ export function BattleArena(props: BattleArenaProps) {
   const run = props.entrance !== false;
   const heroRun = props.heroEntrance ?? run;
   const reduce = useReducedMotion();
-  // Variante de l'arène (portrait, 16:9, panorama) la plus proche des proportions du cadre.
+  // Variante de l'arène (portrait, 16:9, large, panorama) la plus proche des proportions du cadre.
   const frame = useRef<HTMLDivElement>(null);
   const bg = useArenaImage(frame, arena);
   return (
@@ -69,57 +69,102 @@ export function BattleArena(props: BattleArenaProps) {
       style={{
         height: ARENA_HEIGHT,
         background: bg
-          ? `center 62% / cover no-repeat url(${bg})`
+          ? '#0b0a1f'
           : `linear-gradient(180deg, ${sky[0]}, ${sky[1]} 70%, color-mix(in srgb, ${sky[1]} 50%, black))`,
       }}
       role="img"
       aria-label={`${HERO_NAMES[hero]} contre ${enemy?.name ?? '…'}`}
     >
+      {bg && <ArenaBackdrop image={bg} />}
       {/* Sol */}
       <div className="absolute inset-x-0 bottom-0 h-[14%] bg-black/25" />
 
-      {/* Entrée en scène : le héros arrive en courant depuis la gauche. Il est plus petit que le boss
-          (le boss mesure 1,4 fois sa taille) et de la même taille que les mobs. */}
-      <motion.div
-        className="absolute bottom-[6%] left-[6%] h-[61%]"
-        style={{ aspectRatio: '1', maxWidth: '44%' }}
-        initial={reduce || !heroRun ? false : { x: '-140%' }}
-        animate={{ x: 0 }}
-        transition={{ duration: 0.9, ease: 'easeOut' }}
-      >
-        <HeroFigure hero={hero} state={heroState} />
-        <ShieldBubble shield={shield} />
-      </motion.div>
-
+      {/* Scène : les combattants restent groupés au centre, même sur un écran très large. */}
       <div
-        className={`absolute right-[6%] bottom-[6%] ${enemy?.boss ? 'h-[86%]' : 'h-[61%]'}`}
-        style={{ aspectRatio: '1', maxWidth: enemy?.boss ? '50%' : '44%' }}
+        className="absolute inset-y-0 left-1/2 w-full -translate-x-1/2"
+        style={{ maxWidth: `calc(${ARENA_HEIGHT} * ${STAGE_MAX_RATIO})`, containerType: 'size' }}
       >
-        <AnimatePresence mode="wait">
-          {enemy && (
-            <motion.div
-              key={enemy.key}
-              className="h-full w-full"
-              initial={reduce || !run ? false : { x: '140%', opacity: 1 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: props.entranceSeconds ?? 0.9, ease: 'easeOut' }}
-              // Un mob vaincu s'envole ; le boss, lui, disparaît simplement (fondu) avant l'entrée du mob.
-              exit={
-                reduce
-                  ? undefined
-                  : enemy.boss
-                    ? { opacity: 0, transition: { duration: 0.5 } }
-                    : { scale: 0.2, opacity: 0, rotate: 20, transition: { duration: 0.35 } }
-              }
-            >
-              <EnemyFigure enemy={enemy} state={enemyState} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+        {/* Entrée en scène : le héros arrive en courant depuis la gauche. Il est plus petit que le boss
+          (le boss mesure 1,4 fois sa taille) et de la même taille que les mobs. */}
+        <motion.div
+          className="absolute bottom-[6%] left-[4%] h-[min(61%,44cqw)]"
+          style={{ aspectRatio: '1', maxWidth: '44%' }}
+          initial={reduce || !heroRun ? false : { x: '-140%' }}
+          animate={{ x: 0 }}
+          transition={{ duration: 0.9, ease: 'easeOut' }}
+        >
+          <HeroFigure hero={hero} state={heroState} />
+          <ShieldBubble shield={shield} />
+        </motion.div>
 
-      <Projectiles shot={shot} riposte={riposte} reduce={reduce === true} />
+        <div
+          className={`absolute right-[4%] bottom-[6%] ${enemy?.boss ? 'h-[min(86%,50cqw)]' : 'h-[min(61%,44cqw)]'}`}
+          style={{ aspectRatio: '1', maxWidth: enemy?.boss ? '50%' : '44%' }}
+        >
+          <AnimatePresence mode="wait">
+            {enemy && (
+              <motion.div
+                key={enemy.key}
+                className="h-full w-full"
+                initial={reduce || !run ? false : { x: '140%', opacity: 1 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: props.entranceSeconds ?? 0.9, ease: 'easeOut' }}
+                // Un mob vaincu s'envole ; le boss, lui, disparaît simplement (fondu) avant l'entrée du mob.
+                exit={
+                  reduce
+                    ? undefined
+                    : enemy.boss
+                      ? { opacity: 0, transition: { duration: 0.5 } }
+                      : { scale: 0.2, opacity: 0, rotate: 20, transition: { duration: 0.35 } }
+                }
+              >
+                <EnemyFigure enemy={enemy} state={enemyState} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <Projectiles shot={shot} riposte={riposte} reduce={reduce === true} />
+      </div>
     </div>
+  );
+}
+
+/**
+ * Décor : l'image garde toujours ses proportions (jamais étirée). Si le cadre est plus large que la
+ * plus large variante, elle est centrée avec des bords fondus sur un fond d'ambiance flouté de la
+ * même image ; un voile léger (haut, bords) garde l'interface lisible sur tous les décors.
+ */
+function ArenaBackdrop({ image }: { readonly image: ArenaImage }) {
+  const url = `url(${image.src})`;
+  const fade = 'linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent)';
+  return (
+    <>
+      {image.extended && (
+        <div
+          aria-hidden
+          className="absolute inset-0 scale-110"
+          style={{ background: `center / cover no-repeat ${url}`, filter: 'blur(44px) brightness(0.6) saturate(1.15)' }}
+        />
+      )}
+      <div
+        aria-hidden
+        className="absolute inset-y-0 left-1/2 -translate-x-1/2"
+        style={{
+          width: image.extended ? `calc(${ARENA_HEIGHT} * ${image.ratio})` : '100%',
+          background: `center 62% / cover no-repeat ${url}`,
+          ...(image.extended ? { maskImage: fade, WebkitMaskImage: fade } : {}),
+        }}
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          background:
+            'linear-gradient(180deg, rgba(8,6,24,0.38), transparent 28%), radial-gradient(ellipse at center, transparent 62%, rgba(8,6,24,0.35))',
+        }}
+      />
+    </>
   );
 }
 

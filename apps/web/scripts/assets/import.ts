@@ -44,7 +44,9 @@ const TRIM: ReadonlySet<KindId> = new Set([
 const MARGIN = 0.04;
 
 const findSource = (base: string) => EXTENSIONS.map((e) => base + e).find((f) => existsSync(f));
-const individualSource = (asset: PlannedAsset) => findSource(join(ORIGINALS, asset.file.replace(/\.webp$/, '')));
+// Les arènes ont leur propre script (assets:arenas : plusieurs cadrages tirés d'un même original).
+const individualSource = (asset: PlannedAsset) =>
+  asset.kind.startsWith('arena') ? undefined : findSource(join(ORIGINALS, asset.file.replace(/\.webp$/, '')));
 
 async function load(file: string): Promise<Rgba> {
   const { data, info } = await sharp(file).ensureAlpha().raw().toBuffer({ resolveWithObject: true });

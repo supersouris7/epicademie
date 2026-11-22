@@ -60,9 +60,25 @@ export const bossIdleRange = (lives: number): readonly [number, number] => (live
 export const bossMood = (lives: number): BossExpression =>
   lives >= 3 ? 'menace' : lives === 2 ? 'inquiet' : lives === 1 ? 'furieux' : 'ko';
 
-/** Arènes du combat (environments/arenas), une tirée au hasard à chaque combat. */
-export const ARENAS = ['espace', 'academie', 'volcan'] as const;
-export const randomArena = (): string => ARENAS[Math.floor(Math.random() * ARENAS.length)] ?? 'academie';
+/** Les 5 arènes du combat (environments/arenas, images du client). */
+export const ARENAS = ['jungle', 'espace', 'volcan', 'glace', 'academie'] as const;
+export type ArenaId = (typeof ARENAS)[number];
+
+/** Deux arènes par matière (décor cohérent avec le boss) ; les 5 arènes sont toutes utilisées. */
+export const SUBJECT_ARENAS: Record<string, readonly ArenaId[] | undefined> = {
+  maths: ['academie', 'espace'],
+  anglais: ['glace', 'academie'],
+  espagnol: ['volcan', 'jungle'],
+  physique: ['espace', 'volcan'],
+  geographie: ['jungle', 'glace'],
+  histoire: ['jungle', 'academie'],
+};
+
+/** Arène d'un combat : tirée au hasard parmi celles de la matière (toutes si elle est inconnue). */
+export function randomArena(subject?: string): ArenaId {
+  const pool = (subject ? SUBJECT_ARENAS[subject] : undefined) ?? ARENAS;
+  return pool[Math.floor(Math.random() * pool.length)] ?? 'academie';
+}
 
 /** Mob affiché pour la question n°`turn` (cosmétique). */
 export const mobOf = (boss: BossIdentity, turn: number) => boss.mobs[turn % boss.mobs.length] ?? 'pi-bot';

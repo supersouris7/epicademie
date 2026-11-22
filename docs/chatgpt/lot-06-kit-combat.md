@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Lot 6 — Kit combat
 
-112 images, demandes 48 à 141 (94 messages à envoyer).
+123 images, demandes 48 à 152 (105 messages à envoyer).
 
 ## Marche à suivre
 
@@ -853,94 +853,187 @@ Tous les éléments ont la même épaisseur de contour, la même lumière et la 
 Style, fond et interdits : ceux du message de départ (une seule couleur de fond pour toute la planche).
 ```
 
-#### 132. Arène de la station spatiale
-Enregistrer sous `assets-src/originals/environments/arenas/espace.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
+#### 132. Arène de la jungle-portrait
+Enregistrer sous `assets-src/originals/environments/arenas/jungle-portrait.png` · 1024×1536 → final 1080×1200 · plein cadre (pas de fond magenta)
 
 ```text
-Image 1536×1024. Plateforme d’une station spatiale de l’académie, planète et vaisseaux dans le ciel étoilé.
-Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
+Image 1024×1536. Temple en ruine, cascades, pont de corde et portail de cristal violet.
+Cadrage : cadrage 9:10 (smartphone, fenêtre étroite) : image pleine hauteur, rognée sur les côtés.
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 133. Arène de la station spatiale (portrait)
-Enregistrer sous `assets-src/originals/environments/arenas/espace-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
-> 📎 Joindre l'image validée `environments/arenas/espace.png`.
+#### 133. Arène de la jungle
+Enregistrer sous `assets-src/originals/environments/arenas/jungle.png` · 1536×1024 → final 1600×900 · plein cadre (pas de fond magenta)
 
 ```text
-Image 1024×1536. Plateforme d’une station spatiale de l’académie, planète et vaisseaux dans le ciel étoilé.
-Cadrage : même décor recomposé en hauteur (format portrait, écran de téléphone), vu de face à hauteur de personnage ; sol plat et dégagé sur le tiers inférieur (les deux combattants y seront posés côte à côte, chacun sur près de la moitié de la largeur) ; le point d’intérêt du décor (planète, volcan, palais…) dans la moitié haute ; rien d’important à moins de 6 % du haut et du bas (rogné) ; aucun personnage.
+Image 1536×1024. Temple en ruine, cascades, pont de corde et portail de cristal violet.
+Cadrage : décor 16:9 fourni par le client, sol dégagé au centre ; image entière.
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 134. Arène de la station spatiale (panorama)
-Enregistrer sous `assets-src/originals/environments/arenas/espace-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
-> 📎 Joindre l'image validée `environments/arenas/espace.png`.
+#### 134. Arène de la jungle-large
+Enregistrer sous `assets-src/originals/environments/arenas/jungle-large.png` · 1536×1024 → final 1920×738 · plein cadre (pas de fond magenta)
 
 ```text
-Image 1536×1024. Plateforme d’une station spatiale de l’académie, planète et vaisseaux dans le ciel étoilé.
-Cadrage : même décor en panorama très large (tablette en paysage) : seule la bande entre 20 % et 80 % de la hauteur sera gardée ; sol plat et dégagé entre 60 % et 80 % de la hauteur, sur toute la largeur ; horizon et point d’intérêt entre 20 % et 55 % de la hauteur ; le haut et le bas de l’image ne contiennent que du ciel et du sol ; aucun personnage.
+Image 1536×1024. Temple en ruine, cascades, pont de corde et portail de cristal violet.
+Cadrage : cadrage 2,6:1 (tablette, ordinateur) : bande centrée sur l’horizon et le sol.
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 135. Arène de l’académie
-Enregistrer sous `assets-src/originals/environments/arenas/academie.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
+#### 135. Arène de la jungle-pano
+Enregistrer sous `assets-src/originals/environments/arenas/jungle-pano.png` · 1536×1024 → final 2640×600 · plein cadre (pas de fond magenta)
 
 ```text
-Image 1536×1024. Terrasse de l’académie au milieu des collines, cascades et observatoires.
-Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
+Image 1536×1024. Temple en ruine, cascades, pont de corde et portail de cristal violet.
+Cadrage : panorama 4,4:1 (écran large) : cadrage 2,6:1 prolongé de chaque côté par miroir, flou progressif et assombrissement.
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 136. Arène de l’académie (portrait)
-Enregistrer sous `assets-src/originals/environments/arenas/academie-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
-> 📎 Joindre l'image validée `environments/arenas/academie.png`.
+#### 136. Arène de la station spatiale-portrait
+Enregistrer sous `assets-src/originals/environments/arenas/espace-portrait.png` · 1024×1536 → final 1080×1200 · plein cadre (pas de fond magenta)
 
 ```text
-Image 1024×1536. Terrasse de l’académie au milieu des collines, cascades et observatoires.
-Cadrage : même décor recomposé en hauteur (format portrait, écran de téléphone), vu de face à hauteur de personnage ; sol plat et dégagé sur le tiers inférieur (les deux combattants y seront posés côte à côte, chacun sur près de la moitié de la largeur) ; le point d’intérêt du décor (planète, volcan, palais…) dans la moitié haute ; rien d’important à moins de 6 % du haut et du bas (rogné) ; aucun personnage.
+Image 1024×1536. Pont d’une station spatiale, planète et vaisseaux dans le ciel étoilé.
+Cadrage : cadrage 9:10 (smartphone, fenêtre étroite) : image pleine hauteur, rognée sur les côtés.
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 137. Arène de l’académie (panorama)
-Enregistrer sous `assets-src/originals/environments/arenas/academie-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
-> 📎 Joindre l'image validée `environments/arenas/academie.png`.
+#### 137. Arène de la station spatiale
+Enregistrer sous `assets-src/originals/environments/arenas/espace.png` · 1536×1024 → final 1600×900 · plein cadre (pas de fond magenta)
 
 ```text
-Image 1536×1024. Terrasse de l’académie au milieu des collines, cascades et observatoires.
-Cadrage : même décor en panorama très large (tablette en paysage) : seule la bande entre 20 % et 80 % de la hauteur sera gardée ; sol plat et dégagé entre 60 % et 80 % de la hauteur, sur toute la largeur ; horizon et point d’intérêt entre 20 % et 55 % de la hauteur ; le haut et le bas de l’image ne contiennent que du ciel et du sol ; aucun personnage.
+Image 1536×1024. Pont d’une station spatiale, planète et vaisseaux dans le ciel étoilé.
+Cadrage : décor 16:9 fourni par le client, sol dégagé au centre ; image entière.
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 138. Arène du volcan
-Enregistrer sous `assets-src/originals/environments/arenas/volcan.png` · 1536×1024 → final 1536×864 · plein cadre (pas de fond magenta)
+#### 138. Arène de la station spatiale-large
+Enregistrer sous `assets-src/originals/environments/arenas/espace-large.png` · 1536×1024 → final 1920×738 · plein cadre (pas de fond magenta)
 
 ```text
-Image 1536×1024. Plateforme de pierre fissurée de lave, volcan en éruption et forteresse.
-Cadrage : décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage.
+Image 1536×1024. Pont d’une station spatiale, planète et vaisseaux dans le ciel étoilé.
+Cadrage : cadrage 2,6:1 (tablette, ordinateur) : bande centrée sur l’horizon et le sol.
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 139. Arène du volcan (portrait)
-Enregistrer sous `assets-src/originals/environments/arenas/volcan-portrait.png` · 1024×1536 → final 960×1280 · plein cadre (pas de fond magenta)
-> 📎 Joindre l'image validée `environments/arenas/volcan.png`.
+#### 139. Arène de la station spatiale-pano
+Enregistrer sous `assets-src/originals/environments/arenas/espace-pano.png` · 1536×1024 → final 2640×600 · plein cadre (pas de fond magenta)
 
 ```text
-Image 1024×1536. Plateforme de pierre fissurée de lave, volcan en éruption et forteresse.
-Cadrage : même décor recomposé en hauteur (format portrait, écran de téléphone), vu de face à hauteur de personnage ; sol plat et dégagé sur le tiers inférieur (les deux combattants y seront posés côte à côte, chacun sur près de la moitié de la largeur) ; le point d’intérêt du décor (planète, volcan, palais…) dans la moitié haute ; rien d’important à moins de 6 % du haut et du bas (rogné) ; aucun personnage.
+Image 1536×1024. Pont d’une station spatiale, planète et vaisseaux dans le ciel étoilé.
+Cadrage : panorama 4,4:1 (écran large) : cadrage 2,6:1 prolongé de chaque côté par miroir, flou progressif et assombrissement.
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 140. Arène du volcan (panorama)
-Enregistrer sous `assets-src/originals/environments/arenas/volcan-large.png` · 1536×1024 → final 1536×640 · plein cadre (pas de fond magenta)
-> 📎 Joindre l'image validée `environments/arenas/volcan.png`.
+#### 140. Arène du volcan-portrait
+Enregistrer sous `assets-src/originals/environments/arenas/volcan-portrait.png` · 1024×1536 → final 1080×1200 · plein cadre (pas de fond magenta)
 
 ```text
-Image 1536×1024. Plateforme de pierre fissurée de lave, volcan en éruption et forteresse.
-Cadrage : même décor en panorama très large (tablette en paysage) : seule la bande entre 20 % et 80 % de la hauteur sera gardée ; sol plat et dégagé entre 60 % et 80 % de la hauteur, sur toute la largeur ; horizon et point d’intérêt entre 20 % et 55 % de la hauteur ; le haut et le bas de l’image ne contiennent que du ciel et du sol ; aucun personnage.
+Image 1024×1536. Plateforme de pierre fissurée de lave, volcan en éruption.
+Cadrage : cadrage 9:10 (smartphone, fenêtre étroite) : image pleine hauteur, rognée sur les côtés.
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 141. Illustration principale
+#### 141. Arène du volcan
+Enregistrer sous `assets-src/originals/environments/arenas/volcan.png` · 1536×1024 → final 1600×900 · plein cadre (pas de fond magenta)
+
+```text
+Image 1536×1024. Plateforme de pierre fissurée de lave, volcan en éruption.
+Cadrage : décor 16:9 fourni par le client, sol dégagé au centre ; image entière.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 142. Arène du volcan-large
+Enregistrer sous `assets-src/originals/environments/arenas/volcan-large.png` · 1536×1024 → final 1920×738 · plein cadre (pas de fond magenta)
+
+```text
+Image 1536×1024. Plateforme de pierre fissurée de lave, volcan en éruption.
+Cadrage : cadrage 2,6:1 (tablette, ordinateur) : bande centrée sur l’horizon et le sol.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 143. Arène du volcan-pano
+Enregistrer sous `assets-src/originals/environments/arenas/volcan-pano.png` · 1536×1024 → final 2640×600 · plein cadre (pas de fond magenta)
+
+```text
+Image 1536×1024. Plateforme de pierre fissurée de lave, volcan en éruption.
+Cadrage : panorama 4,4:1 (écran large) : cadrage 2,6:1 prolongé de chaque côté par miroir, flou progressif et assombrissement.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 144. Arène des glaces-portrait
+Enregistrer sous `assets-src/originals/environments/arenas/glace-portrait.png` · 1024×1536 → final 1080×1200 · plein cadre (pas de fond magenta)
+
+```text
+Image 1024×1536. Lac gelé cerné de cristaux, ruines de glace sous les aurores boréales.
+Cadrage : cadrage 9:10 (smartphone, fenêtre étroite) : image pleine hauteur, rognée sur les côtés.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 145. Arène des glaces
+Enregistrer sous `assets-src/originals/environments/arenas/glace.png` · 1536×1024 → final 1600×900 · plein cadre (pas de fond magenta)
+
+```text
+Image 1536×1024. Lac gelé cerné de cristaux, ruines de glace sous les aurores boréales.
+Cadrage : décor 16:9 fourni par le client, sol dégagé au centre ; image entière.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 146. Arène des glaces-large
+Enregistrer sous `assets-src/originals/environments/arenas/glace-large.png` · 1536×1024 → final 1920×738 · plein cadre (pas de fond magenta)
+
+```text
+Image 1536×1024. Lac gelé cerné de cristaux, ruines de glace sous les aurores boréales.
+Cadrage : cadrage 2,6:1 (tablette, ordinateur) : bande centrée sur l’horizon et le sol.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 147. Arène des glaces-pano
+Enregistrer sous `assets-src/originals/environments/arenas/glace-pano.png` · 1536×1024 → final 2640×600 · plein cadre (pas de fond magenta)
+
+```text
+Image 1536×1024. Lac gelé cerné de cristaux, ruines de glace sous les aurores boréales.
+Cadrage : panorama 4,4:1 (écran large) : cadrage 2,6:1 prolongé de chaque côté par miroir, flou progressif et assombrissement.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 148. Arène de l’académie-portrait
+Enregistrer sous `assets-src/originals/environments/arenas/academie-portrait.png` · 1024×1536 → final 1080×1200 · plein cadre (pas de fond magenta)
+
+```text
+Image 1024×1536. Parvis de l’académie, bâtiments, banderoles et collines.
+Cadrage : cadrage 9:10 (smartphone, fenêtre étroite) : image pleine hauteur, rognée sur les côtés.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 149. Arène de l’académie
+Enregistrer sous `assets-src/originals/environments/arenas/academie.png` · 1536×1024 → final 1600×900 · plein cadre (pas de fond magenta)
+
+```text
+Image 1536×1024. Parvis de l’académie, bâtiments, banderoles et collines.
+Cadrage : décor 16:9 fourni par le client, sol dégagé au centre ; image entière.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 150. Arène de l’académie-large
+Enregistrer sous `assets-src/originals/environments/arenas/academie-large.png` · 1536×1024 → final 1920×738 · plein cadre (pas de fond magenta)
+
+```text
+Image 1536×1024. Parvis de l’académie, bâtiments, banderoles et collines.
+Cadrage : cadrage 2,6:1 (tablette, ordinateur) : bande centrée sur l’horizon et le sol.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 151. Arène de l’académie-pano
+Enregistrer sous `assets-src/originals/environments/arenas/academie-pano.png` · 1536×1024 → final 2640×600 · plein cadre (pas de fond magenta)
+
+```text
+Image 1536×1024. Parvis de l’académie, bâtiments, banderoles et collines.
+Cadrage : panorama 4,4:1 (écran large) : cadrage 2,6:1 prolongé de chaque côté par miroir, flou progressif et assombrissement.
+Style, fond et interdits : ceux du message de départ.
+```
+
+#### 152. Illustration principale
 Enregistrer sous `assets-src/originals/branding/key-art.png` · 1536×1024 → final 1536×1024 · plein cadre (pas de fond magenta)
 > 📎 Joindre l'image validée `characters/questy/model-sheet.png`.
 
