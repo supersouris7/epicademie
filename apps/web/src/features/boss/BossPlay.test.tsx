@@ -28,7 +28,9 @@ async function answer(user: User, server: FakeApi) {
 
 /** Passe l'entrée en scène : face-à-face, invocation des mobs, 1re question. */
 async function skipIntro(user: User) {
-  await user.click(await screen.findByRole('button', { name: 'C’est parti !' }));
+  const pass = await screen.findByRole('button', { name: 'Passer' });
+  await wait(700); // anti double-toucher
+  await user.click(pass);
   await wait(3000);
   expect(await screen.findByRole('progressbar', { name: 'Mobs restants' })).toBeInTheDocument();
 }
@@ -49,13 +51,19 @@ describe('combat de boss', () => {
       const arrival = screen.queryByTestId('boss-arrival');
       if (arrival) {
         sawArrival = true;
-        expect(arrival).toHaveTextContent('3 vies');
-        await user.click(screen.getByRole('button', { name: 'Au combat !' }));
+        expect(arrival).not.toHaveTextContent('3 vies');
+        expect(within(arrival).queryByRole('button', { name: /Au combat/ })).not.toBeInTheDocument();
+        await wait(6500); // répliques, puis « Touche l’écran pour continuer »
+        expect(within(arrival).getByText(/Touche l’écran pour continuer/)).toBeInTheDocument();
+        await user.click(within(arrival).getByRole('button', { name: 'Passer' }));
       }
       const rage = screen.queryByRole('dialog', { name: /passe en rage/ });
       if (rage) {
         sawRage = true;
-        for (let k = 0; k < 3; k++) await user.click(within(rage).getByRole('button', { name: 'Passer' }));
+        for (let k = 0; k < 3; k++) {
+          await wait(700); // anti double-toucher
+          await user.click(within(rage).getByRole('button', { name: 'Passer' }));
+        }
         await wait(10_000); // réplique du héros, fin des minuteurs de la rage
       }
     }
@@ -110,7 +118,7 @@ describe('combat de boss', () => {
     expect(labels).toEqual(['Reprendre', 'Recommencer', 'Quitter le combat']);
     await user.click(screen.getByRole('button', { name: 'Recommencer' }));
     await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument());
-    expect(await screen.findByRole('button', { name: 'C’est parti !' })).toBeInTheDocument();
+    expect(await screen.findByTestId('battle-intro')).toBeInTheDocument();
     await waitFor(() => expect(server.battles.size).toBe(before + 1));
   });
 

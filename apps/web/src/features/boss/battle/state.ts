@@ -150,7 +150,6 @@ export type BattleEvent =
   | { readonly type: 'rageTimer'; readonly from: RageStage }
   | { readonly type: 'rageTapped' }
   | { readonly type: 'rageAnswered' }
-  | { readonly type: 'arrivalEnded' }
   | { readonly type: 'arrivalSkipped' }
   | { readonly type: 'itemUsed'; readonly item: ItemId; readonly battle: BattleView }
   | { readonly type: 'heroIdle' }
@@ -309,8 +308,6 @@ export function createBattleReducer(voices: BattleVoices) {
         const l = voices.hero('rage');
         return quip({ ...s, heroFace: l.face }, 'hero', l.text);
       }
-      case 'arrivalEnded':
-        return { ...s, arrival: false, bossFace: 'menace' };
       case 'arrivalSkipped':
         return { ...s, arrival: false };
       case 'itemUsed':

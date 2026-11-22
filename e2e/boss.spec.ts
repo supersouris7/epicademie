@@ -34,8 +34,10 @@ async function answer(page: Page, view: BattleView, right: boolean) {
 async function skipEmperor(page: Page) {
   const emperor = page.getByRole('dialog', { name: 'L’Empereur du Savoir' });
   await expect(emperor).toBeVisible();
-  for (let k = 0; k < 2 && (await emperor.isVisible()); k++)
+  for (let k = 0; k < 2 && (await emperor.isVisible()); k++) {
+    await page.waitForTimeout(700); // anti double-toucher
     await emperor.getByRole('button', { name: 'Passer' }).click();
+  }
   await expect(emperor).toHaveCount(0);
 }
 
@@ -57,6 +59,7 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   const closeUp = page.getByRole('dialog', { name: 'Sorcier π te provoque' });
   await expect(closeUp).toContainText(/challenger|Aucun chapitre|n’ont pas mangé|cube/);
   // On passe le gros plan en touchant l'écran.
+  await page.waitForTimeout(700); // anti double-toucher
   await closeUp.getByRole('button', { name: 'Passer' }).click();
   await expect(closeUp).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Combat de boss' })).toBeVisible();
@@ -77,7 +80,9 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   await expect(page.getByRole('status', { name: /^Sorcier π : .*relatifs/ })).toBeVisible();
   // Échange de vannes : boss, héros, boss, héros.
   await expect(page.getByTestId('battle-intro').getByRole('status')).toHaveCount(4, { timeout: 10_000 });
-  await page.getByRole('button', { name: 'C’est parti !' }).click();
+  await page.getByRole('button', { name: 'Passer' }).waitFor();
+  await page.waitForTimeout(700); // anti double-toucher
+  await page.getByRole('button', { name: 'Passer' }).click();
   // Bandeau : mobs restants en barre segmentée, comme des vies.
   await expect(page.getByRole('progressbar', { name: 'Mobs restants' })).toBeVisible({ timeout: 5000 });
   await expect(page.getByRole('img', { name: '3 cœurs sur 3' })).toBeVisible();
@@ -103,16 +108,21 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
       const rage = page.getByRole('dialog', { name: /passe en rage/ });
       await expect(rage).toBeVisible();
       // Trois paliers : début, montée, rage ; un toucher avance.
-      for (let k = 0; k < 3; k++) await rage.getByRole('button', { name: 'Passer' }).click();
+      for (let k = 0; k < 3; k++) {
+        await page.waitForTimeout(700); // anti double-toucher
+        await rage.getByRole('button', { name: 'Passer' }).click();
+      }
       await expect(rage).toHaveCount(0);
       sawRage = true;
     }
     if (view.mobsDefeated === 4 && !sawBoss) {
-      // Arrivée du boss en grand : Questy félicite, 3 vies annoncées.
+      // Arrivée du boss en grand : Questy félicite, sans bouton, un toucher passe.
       const arrival = page.getByTestId('boss-arrival');
       await expect(arrival.getByRole('status')).toHaveCount(3, { timeout: 8000 }); // boss, héros, Questy
-      await expect(arrival).toContainText('3 vies');
-      await page.getByRole('button', { name: 'Au combat !' }).click();
+      await expect(arrival).not.toContainText('3 vies');
+      await expect(arrival.getByText('Touche l’écran pour continuer')).toBeVisible({ timeout: 8000 });
+      await page.waitForTimeout(700); // anti double-toucher (le texte est dans le DOM dès l'arrivée)
+      await arrival.getByRole('button', { name: 'Passer' }).click();
       await expect(page.getByRole('progressbar', { name: /Vies de/ })).toBeVisible();
       sawBoss = true;
     }
@@ -165,6 +175,7 @@ test('Défaite : 5 secondes pour recommencer, puis l’entraînement', async ({ 
   await skipEmperor(page);
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   const provoke = page.getByRole('dialog', { name: /te provoque/ });
+  await page.waitForTimeout(700); // anti double-toucher
   await provoke.getByRole('button', { name: 'Passer' }).click();
   await expect(provoke).toHaveCount(0);
   const started = page.waitForResponse((r) => r.url().endsWith('/api/v1/battles'));
@@ -174,7 +185,9 @@ test('Défaite : 5 secondes pour recommencer, puis l’entraînement', async ({ 
     .getByRole('button', { name: 'Combattre' })
     .click();
   let view = (await (await started).json()) as BattleView;
-  await page.getByRole('button', { name: 'C’est parti !' }).click();
+  await page.getByRole('button', { name: 'Passer' }).waitFor();
+  await page.waitForTimeout(700); // anti double-toucher
+  await page.getByRole('button', { name: 'Passer' }).click();
   while (view.status === 'fighting') {
     view = await answer(page, view, false);
     await page.getByRole('button', { name: /Suivant|Voir le résultat/ }).click();

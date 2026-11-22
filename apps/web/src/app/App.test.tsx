@@ -94,14 +94,18 @@ describe('accueil et choix du jeu', () => {
 
   it('combat de boss : l’Empereur en deux temps, puis la matière, le Sorcier π et le choix du chapitre', async () => {
     const { user } = renderApp('/jouer/boss');
+    const pass = () => new Promise((r) => setTimeout(r, 700)); // anti double-toucher
     const emperor = await screen.findByRole('dialog', { name: 'L’Empereur du Savoir' });
     expect(within(emperor).getByRole('status')).toHaveTextContent(/protègent le savoir de toutes les matières/);
+    await pass();
     await user.click(within(emperor).getByRole('button', { name: 'Passer' }));
     expect(await within(emperor).findByText(/avec ce savoir, je vais conquérir le monde/)).toBeInTheDocument();
+    await pass();
     await user.click(within(emperor).getByRole('button', { name: 'Passer' }));
     expect(screen.queryByRole('dialog', { name: 'L’Empereur du Savoir' })).not.toBeInTheDocument();
     await user.click(await screen.findByRole('button', { name: 'Maths' }));
     const closeUp = await screen.findByRole('dialog', { name: /te provoque/ });
+    await pass();
     await user.click(within(closeUp).getByRole('button', { name: 'Passer' }));
     expect(await screen.findByRole('heading', { name: 'Combat de boss' })).toBeInTheDocument();
   });

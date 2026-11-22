@@ -208,7 +208,6 @@ describe('suite du combat', () => {
       hero: { text: 'héros:bossArrives', face: 'joie' },
       questy: 'questy:arrival',
     });
-    expect(run([{ type: 'arrivalEnded' }], s)).toMatchObject({ arrival: false, bossFace: 'menace' });
     expect(run([{ type: 'arrivalSkipped' }], s)).toMatchObject({ arrival: false, bossFace: 'menace' });
   });
 
