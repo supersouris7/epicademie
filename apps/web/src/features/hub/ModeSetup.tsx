@@ -9,7 +9,7 @@ import { EmperorScene, emperorDue, useBosses } from '../boss/index.ts';
 import { assetSrc } from '../../design/assets.ts';
 import { ProgressBar } from '../../shared/ui/game/ProgressBar.tsx';
 import { RELICS } from '../../design/relics.ts';
-import { MODE_MOODS } from '../../shared/lib/modes.ts';
+import { MODE_MOODS, setupBubble } from '../../shared/lib/modes.ts';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { SpeechBubble } from '../../shared/ui/SpeechBubble.tsx';
 import { useToast } from '../../shared/ui/Toast.tsx';
@@ -78,13 +78,10 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
               // Entraînement : c'est ici qu'on gagne son équipement (coffres).
               <span className="flex items-center gap-2">
                 <GameIcon id={CHEST_ICON} size={48} className="shrink-0" />
-                <span>
-                  {mode.pitch}. Une série toute juste t’offre un <strong>coffre</strong> (équipement, pièces) ; sans
-                  faute du premier coup, il est souvent meilleur. Choisis ta matière !
-                </span>
+                <span>{setupBubble(mode)}</span>
               </span>
             ) : (
-              `${mode.pitch}. Choisis ta matière !`
+              setupBubble(mode)
             )}
           </SpeechBubble>
         </div>
