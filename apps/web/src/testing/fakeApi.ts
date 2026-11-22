@@ -349,7 +349,7 @@ function billingHandlers(premium: boolean, uuid: () => string): Partial<Record<k
         createdAt: '2026-11-20T10:00:00.000Z',
         paidAt: null,
       });
-      return { url: `/abonnement/simulateur?paiement=${id}` };
+      return { url: `/parent/abonnement/simulateur?paiement=${id}` };
     },
     simulatePayment: ({ params, body }) => {
       const sub = state.history.find((h) => h.id === params.id);

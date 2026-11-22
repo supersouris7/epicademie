@@ -107,15 +107,15 @@ export function createBillingService({ db, clock, config, appUrl, fetcher, onSet
         periodEnd: end,
         provider: config.provider,
       });
-      if (config.provider === 'simulateur') return { url: `/abonnement/simulateur?paiement=${id}` };
+      if (config.provider === 'simulateur') return { url: `/parent/abonnement/simulateur?paiement=${id}` };
       const stripe = stripeClient(config.stripeSecretKey ?? '', fetcher);
       const session = await stripe.createCheckout({
         subscriptionId: id,
         amountCents: config.priceCents,
         currency: config.currency,
         label: `Academy Fighters — abonnement familial jusqu’au ${end}`,
-        successUrl: `${appUrl()}/abonnement?paiement=ok`,
-        cancelUrl: `${appUrl()}/abonnement?paiement=annule`,
+        successUrl: `${appUrl()}/parent/abonnement?paiement=ok`,
+        cancelUrl: `${appUrl()}/parent/abonnement?paiement=annule`,
       });
       await repo.setProviderRef(id, session.id);
       return { url: session.url };

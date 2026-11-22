@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from 'react-router';
 import { isBossSkill } from '@questeo/content';
@@ -6,11 +6,9 @@ import { api, gradeInfo, type LearningReport, type Profile, type SkillLearning }
 import { request } from '../../shared/api/client.ts';
 import { useSession } from '../../shared/lib/session.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
-import { ParentCard, ParentShell } from './ParentShell.tsx';
+import { ParentPage } from './ParentShell.tsx';
 import { CharacterAvatar } from '../../shared/ui/game/CharacterAvatar.tsx';
-import { ParentUnlock, useMe } from '../account/index.ts';
 import { useProfiles } from '../profiles/index.ts';
-import { FamilyFriends } from './FamilyFriends.tsx';
 import { WeakPoints } from './WeakPoints.tsx';
 import {
   chapterTitle,
@@ -25,9 +23,8 @@ import {
 } from './summary.ts';
 
 /**
- * Espace parent : vue de chaque enfant, puis détail par matière, chapitre et notion, bilan de la
- * semaine et séance ciblée. Réservé au parent : le mot de passe du compte est demandé (verrou
- * parent, 10 minutes). Écrit pour un parent non technicien : des mots, peu de chiffres.
+ * Espace parent, rubrique Progrès : vue de chaque enfant, puis détail par matière, chapitre et notion,
+ * bilan de la semaine et séance ciblée. Réservé au parent (code PIN ou mot de passe, verrou de 10 minutes). Écrit pour un parent non technicien : des mots, peu de chiffres.
  */
 
 const useLearning = (profileId: string) =>
@@ -36,54 +33,25 @@ const useLearning = (profileId: string) =>
     queryFn: () => request(api.learningReport, { params: { id: profileId } }),
   });
 
-/** Garde : sans déverrouillage parent récent, demande le code PIN (ou le mot de passe). */
-function ParentGate({ children }: { readonly children: ReactNode }) {
-  const { data: me } = useMe();
-  if (me?.parent) return <>{children}</>;
-  return (
-    <ParentShell title="Espace parent" back="/">
-      <div className="bg-surface mx-auto flex w-full max-w-sm flex-col gap-4 rounded-2xl p-6 shadow-sm">
-        <p className="text-center">Le suivi des enfants et les réglages du compte sont réservés au parent.</p>
-        <ParentUnlock onUnlocked={() => undefined} />
-      </div>
-    </ParentShell>
-  );
-}
-
 export function ParentHome() {
   const { data: profiles, isPending } = useProfiles();
   return (
-    <ParentGate>
-      <ParentShell title="Espace parent" back="/">
-        {isPending && <p>Chargement…</p>}
-        <section aria-labelledby="enfants" className="flex flex-col gap-3">
-          <h2 id="enfants" className="text-lg font-bold">
-            Vos enfants
-          </h2>
-          {profiles?.length === 0 && <p>Aucun profil enfant pour l’instant : créez-en un depuis le choix du joueur.</p>}
-          <ul className="grid gap-4 md:grid-cols-2">
-            {profiles?.map((p) => (
-              <ChildCard key={p.id} profile={p} />
-            ))}
-          </ul>
-        </section>
-        <ParentCard title="Compte familial" id="compte">
-          <ul className="divide-y divide-[var(--outline)]/10">
-            <li>
-              <Link to="/abonnement" className="flex items-center justify-between py-3 font-bold">
-                Abonnement familial <span aria-hidden>›</span>
-              </Link>
-            </li>
-            <li>
-              <Link to="/parametres" className="flex items-center justify-between py-3 font-bold">
-                Code PIN parent et réglages <span aria-hidden>›</span>
-              </Link>
-            </li>
-          </ul>
-        </ParentCard>
-        <FamilyFriends />
-      </ParentShell>
-    </ParentGate>
+    <ParentPage title="Progrès de vos enfants">
+      {isPending && <p>Chargement…</p>}
+      {profiles?.length === 0 && (
+        <p>
+          Aucun profil enfant pour l’instant.{' '}
+          <Link to="/parent/profils/nouveau" className="text-accent font-bold underline">
+            Ajouter un enfant
+          </Link>
+        </p>
+      )}
+      <ul className="grid gap-4 md:grid-cols-2">
+        {profiles?.map((p) => (
+          <ChildCard key={p.id} profile={p} />
+        ))}
+      </ul>
+    </ParentPage>
   );
 }
 
@@ -137,10 +105,10 @@ function ChildCard({ profile: p }: { readonly profile: Profile }) {
         </>
       )}
       <Link
-        to={`/parent/${p.id}`}
+        to={`/parent/enfant/${p.id}`}
         className="bg-accent mt-auto rounded-xl px-4 py-2.5 text-center font-bold text-white"
       >
-        Voir le suivi de {p.name}
+        Voir les progrès de {p.name}
       </Link>
     </li>
   );
@@ -152,12 +120,13 @@ export function ChildReport() {
   const child = profiles?.find((p) => p.id === profileId);
   const { data: r, isPending } = useLearning(profileId);
   return (
-    <ParentGate>
-      <ParentShell title={child ? `Suivi de ${child.name}` : 'Suivi'} back="/parent">
-        {isPending && <p>Chargement…</p>}
-        {r && child && <ReportView report={r} child={child} />}
-      </ParentShell>
-    </ParentGate>
+    <ParentPage
+      title={child ? `Progrès de ${child.name}` : 'Progrès'}
+      back={{ to: '/parent', label: 'Tous les enfants' }}
+    >
+      {isPending && <p>Chargement…</p>}
+      {r && child && <ReportView report={r} child={child} />}
+    </ParentPage>
   );
 }
 
@@ -302,7 +271,7 @@ function TargetedSession({ report: r, child }: { readonly report: LearningReport
           void navigate(`/partie/entrainement/seance/${[...chosen].join('+')}`);
         }}
       >
-        Lancer la séance pour {child.name}
+        Lancer la séance dans le jeu pour {child.name}
       </GameButton>
     </section>
   );

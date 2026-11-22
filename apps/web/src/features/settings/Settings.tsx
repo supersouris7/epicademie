@@ -1,4 +1,3 @@
-import { PinSettings } from './PinSettings.tsx';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import type { Profile } from '@questeo/shared';
@@ -113,11 +112,6 @@ export function Settings({ profile }: { readonly profile: Profile }) {
             Supprimer ce profil
           </GameButton>
         )}
-      </section>
-
-      <section className="flex flex-col gap-3">
-        <h2 className="font-display text-2xl tracking-wide">Espace parent</h2>
-        <PinSettings />
       </section>
 
       <section className="flex flex-col gap-3">

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import {
   AVATAR_IDS,
@@ -22,14 +22,29 @@ import { useParentGate } from '../account/index.ts';
 const randomPortrait = () => AVATAR_IDS[Math.floor(Math.random() * AVATAR_IDS.length)] ?? '01';
 
 /** Création (`/profils/nouveau`) ou modification (`/profils/:id/modifier`) d'un profil. */
-export function ProfileEditor() {
+export function ProfileEditor({ parentSpace }: { readonly parentSpace?: ParentSpace } = {}) {
   const { id } = useParams();
   const { data: existing, isPending } = useProfile(id ?? null);
   if (id && isPending) return <PageShell back="/parametres">Chargement…</PageShell>;
-  return <EditorForm key={existing?.id ?? 'new'} existing={existing} />;
+  return <EditorForm key={existing?.id ?? 'new'} existing={existing} parentSpace={parentSpace} />;
 }
 
-function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
+/**
+ * Éditeur ouvert depuis l'Espace parent : il y reste (cadre et retour fournis par l'espace),
+ * revient à `doneTo` une fois fini et ne lance pas le jeu avec le profil créé.
+ */
+export interface ParentSpace {
+  readonly shell: (props: { readonly title: string; readonly children: ReactNode }) => ReactNode;
+  readonly doneTo: string;
+}
+
+function EditorForm({
+  existing,
+  parentSpace,
+}: {
+  readonly existing: Profile | undefined;
+  readonly parentSpace: ParentSpace | undefined;
+}) {
   const navigate = useNavigate();
   const selectProfile = useSession((s) => s.selectProfile);
   const withParent = useParentGate();
@@ -71,11 +86,15 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
       await withParent(async () => {
         if (existing) {
           await update.mutateAsync(payload);
-          void navigate('/parametres');
+          void navigate(parentSpace?.doneTo ?? '/parametres');
         } else {
           const profile = await create.mutateAsync(payload);
-          selectProfile(profile.id);
-          void navigate('/hub');
+          if (parentSpace) {
+            void navigate(parentSpace.doneTo);
+          } else {
+            selectProfile(profile.id);
+            void navigate('/hub');
+          }
         }
       });
     } catch (err) {
@@ -83,8 +102,8 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
     }
   };
 
-  return (
-    <PageShell title={existing ? 'Modifier mon profil' : 'Nouveau joueur'} back={existing ? '/parametres' : '/'}>
+  const body = (
+    <>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -186,9 +205,17 @@ function EditorForm({ existing }: { readonly existing: Profile | undefined }) {
         </fieldset>
 
         <GameButton type="submit" size="lg" disabled={saving} className="self-stretch sm:self-end">
-          {existing ? 'Enregistrer' : 'C’est parti !'}
+          {existing ? 'Enregistrer' : parentSpace ? 'Ajouter cet enfant' : 'C’est parti !'}
         </GameButton>
       </form>
+    </>
+  );
+  if (parentSpace) {
+    return <>{parentSpace.shell({ title: existing ? 'Modifier le profil' : 'Ajouter un enfant', children: body })}</>;
+  }
+  return (
+    <PageShell title={existing ? 'Modifier mon profil' : 'Nouveau joueur'} back={existing ? '/parametres' : '/'}>
+      {body}
     </PageShell>
   );
 }

@@ -4,8 +4,8 @@ import { useNavigate, useSearchParams } from 'react-router';
 import { api, SUBSCRIPTION_STATUS_LABELS } from '@questeo/shared';
 import { ApiError, request } from '../../shared/api/client.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
-import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { useParentGate } from '../account/index.ts';
+import { ParentPage } from './ParentShell.tsx';
 import { billingKey, formatDay, formatPrice, useBilling } from './billing.ts';
 
 /**
@@ -27,7 +27,7 @@ export function Subscription() {
     }).catch((err: unknown) => setError(err instanceof ApiError ? err.message : 'Paiement impossible pour le moment.'));
   const returned = params.get('paiement');
   return (
-    <PageShell title="Abonnement familial" back="/parent">
+    <ParentPage title="Abonnement familial">
       {returned === 'ok' && <p role="status">Merci ! Le paiement est en cours de validation.</p>}
       {returned === 'annule' && <p role="status">Paiement annulé : rien n’a été débité.</p>}
       {isPending && <p>Chargement…</p>}
@@ -82,7 +82,7 @@ export function Subscription() {
           )}
         </>
       )}
-    </PageShell>
+    </ParentPage>
   );
 }
 
@@ -95,10 +95,10 @@ export function PaymentSimulator() {
   const settle = async (outcome: 'succes' | 'echec') => {
     await request(api.simulatePayment, { params: { id }, body: { outcome } });
     await qc.invalidateQueries({ queryKey: billingKey });
-    void navigate('/abonnement');
+    void navigate('/parent/abonnement');
   };
   return (
-    <PageShell title="Simulateur de paiement" back="/abonnement">
+    <ParentPage title="Simulateur de paiement" back={{ to: '/parent/abonnement', label: 'Abonnement' }}>
       <p>Aucun paiement réel : choisis l’issue du paiement pour tester l’application.</p>
       <div className="flex flex-wrap gap-3">
         <GameButton variant="success" onClick={() => void settle('succes')}>
@@ -108,6 +108,6 @@ export function PaymentSimulator() {
           Paiement refusé
         </GameButton>
       </div>
-    </PageShell>
+    </ParentPage>
   );
 }

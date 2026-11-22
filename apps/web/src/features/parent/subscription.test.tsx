@@ -24,7 +24,7 @@ describe('version gratuite et abonnement', () => {
   });
 
   it('paiement de l’année (simulateur) : accès complet, historique des paiements', async () => {
-    const { user } = renderApp('/abonnement', { premium: false });
+    const { user } = renderApp('/parent/abonnement', { premium: false });
     expect(await screen.findByRole('heading', { name: 'Version gratuite' })).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /Payer l’année scolaire — 24,99/ }));
     expect(await screen.findByRole('heading', { name: 'Simulateur de paiement' })).toBeInTheDocument();
@@ -35,11 +35,17 @@ describe('version gratuite et abonnement', () => {
   });
 
   it('paiement refusé : reste en version gratuite, l’échec est dans l’historique', async () => {
-    const { user } = renderApp('/abonnement', { premium: false });
+    const { user } = renderApp('/parent/abonnement', { premium: false });
     await user.click(await screen.findByRole('button', { name: /Payer l’année scolaire/ }));
     await user.click(await screen.findByRole('button', { name: 'Paiement refusé' }));
     expect(await screen.findByRole('heading', { name: 'Version gratuite' })).toBeInTheDocument();
     // L'historique se met à jour après le retour du simulateur.
     expect(await screen.findByText(/Paiement refusé \(accès/)).toBeInTheDocument();
+  });
+
+  it('ancienne adresse et retour de paiement : on reste dans l’Espace parent', async () => {
+    renderApp('/abonnement?paiement=annule', { premium: false });
+    expect(await screen.findByText(/Paiement annulé/)).toBeInTheDocument();
+    expect(screen.getByRole('navigation', { name: 'Rubriques de l’Espace parent' })).toBeInTheDocument();
   });
 });

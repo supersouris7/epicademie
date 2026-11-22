@@ -78,7 +78,7 @@ describe('version gratuite', () => {
 describe('paiement (simulateur)', () => {
   it('paiement accepté : accès complet jusqu’à la fin de l’année scolaire, historique', async () => {
     const { url } = await checkout();
-    expect(url).toMatch(/^\/abonnement\/simulateur\?paiement=/);
+    expect(url).toMatch(/^\/parent\/abonnement\/simulateur\?paiement=/);
     expect((await billing()).history).toEqual([expect.objectContaining({ status: 'en-attente', amountCents: 2499 })]);
     const paid = (await simulate(paymentId(url), 'succes')).json<Billing>();
     expect(paid).toMatchObject({ premium: true, until: '2027-08-31' });
