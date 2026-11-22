@@ -49,10 +49,6 @@ export function weeklySummary(report: LearningReport): {
   return { answered: t.answered, lines };
 }
 
-/** Matières travaillées, de la plus pratiquée à la moins pratiquée. */
-export const subjectsWorked = (report: LearningReport) =>
-  [...report.subjects].sort((a, b) => b.tally.answered - a.tally.answered).map((s) => subjectName(s.subject));
-
 /** Les 8 semaines, pour un petit histogramme accessible (valeur la plus haute = 100 %). */
 export function weekBars(report: LearningReport) {
   const max = Math.max(1, ...report.weeks.map((w) => w.tally.answered));

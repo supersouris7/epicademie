@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Link, useNavigate, useParams } from 'react-router';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 import { isBossSkill } from '@questeo/content';
 import { api, gradeInfo, type LearningReport, type Profile, type SkillLearning } from '@questeo/shared';
 import { request } from '../../shared/api/client.ts';
@@ -10,13 +10,14 @@ import { ParentPage } from './ParentShell.tsx';
 import { CharacterAvatar } from '../../shared/ui/game/CharacterAvatar.tsx';
 import { useProfiles } from '../profiles/index.ts';
 import { WeakPoints } from './WeakPoints.tsx';
+import { SubjectCards, SubjectDetail } from './SubjectCards.tsx';
+import { useSubjectBars } from './useSubjectBars.ts';
 import {
   chapterTitle,
   skillTitle,
   STATUS_ORDER,
   statusLabel,
   subjectName,
-  subjectsWorked,
   successPhrase,
   weekBars,
   weeklySummary,
@@ -67,6 +68,8 @@ function Metric({ value, label }: { readonly value: string; readonly label: stri
 
 function ChildCard({ profile: p }: { readonly profile: Profile }) {
   const { data: r } = useLearning(p.id);
+  const bars = useSubjectBars(p, r);
+  const navigate = useNavigate();
   const week = r && weeklySummary(r);
   const current = r?.weeks.at(-1)?.tally;
   const rate = current && current.answered > 0 ? `${Math.round((100 * current.autonomous) / current.answered)} %` : '—';
@@ -82,6 +85,9 @@ function ChildCard({ profile: p }: { readonly profile: Profile }) {
           <p className="text-muted text-sm">{p.grade ? gradeInfo(p.grade).name : 'Classe non renseignée'}</p>
         </div>
       </div>
+      {bars && bars.length > 0 && (
+        <SubjectCards bars={bars} onPick={(id) => void navigate(`/parent/enfant/${p.id}?matiere=${id}`)} />
+      )}
       {r && (
         <>
           <div className="grid grid-cols-3 gap-2">
@@ -89,12 +95,6 @@ function ChildCard({ profile: p }: { readonly profile: Profile }) {
             <Metric value={rate} label="réussite sans aide" />
             <Metric value={last} label="dernière activité" />
           </div>
-          {r.subjects.length > 0 && (
-            <p className="text-sm">
-              <span className="text-muted font-bold">Matières : </span>
-              {subjectsWorked(r).join(', ')}
-            </p>
-          )}
           {r.toRework.length > 0 && (
             <p className="text-sm">
               <span className="text-muted font-bold">À retravailler : </span>
@@ -132,8 +132,24 @@ export function ChildReport() {
 
 function ReportView({ report: r, child }: { readonly report: LearningReport; readonly child: Profile }) {
   const week = weeklySummary(r);
+  const bars = useSubjectBars(child, r);
+  const [params, setParams] = useSearchParams();
+  const picked = bars?.find((b) => b.id === params.get('matiere'));
   return (
     <div className="flex flex-col gap-6">
+      {bars && bars.length > 0 && (
+        <section aria-labelledby="avancement" className="flex flex-col gap-2">
+          <h2 id="avancement" className="text-lg font-bold">
+            Avancement
+          </h2>
+          <SubjectCards
+            bars={bars}
+            selected={picked?.id}
+            onPick={(id) => setParams(id === picked?.id ? {} : { matiere: id }, { replace: true })}
+          />
+          {picked && <SubjectDetail bar={picked} />}
+        </section>
+      )}
       <section aria-labelledby="bilan">
         <h2 id="bilan" className="text-lg font-bold">
           Bilan de la semaine
