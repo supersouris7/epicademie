@@ -15,6 +15,7 @@ import {
 } from '@questeo/shared';
 import { bossesKey, equipItems, useBosses } from './api.ts';
 import { HeroFace } from '../../shared/battle/HeroFace.tsx';
+import { BlinkText } from '../../shared/ui/game/BlinkText.tsx';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
 import { SoonBadge } from '../../shared/ui/game/SoonBadge.tsx';
@@ -27,7 +28,7 @@ import { useChapterAccess } from '../parent/index.ts';
 /** Chapitre réservé à l'abonnement familial. */
 const LOCKED = 'Ce chapitre fait partie de l’abonnement familial : demande à tes parents !';
 import { BOSS_MEDAL_ICONS, bossHeadId, bossOfSubject } from '../../design/bosses.ts';
-import { characterSrc } from '../../design/assets.ts';
+import { assetSrc, characterSrc } from '../../design/assets.ts';
 import { BossCloseUp } from '../../shared/battle/BattleScenes.tsx';
 import { subjectTaunt } from '../../shared/lib/battleLines.ts';
 
@@ -38,6 +39,7 @@ import { useEntrance } from '../../shared/lib/entrance.ts';
 
 /** Combat de boss : un boss par chapitre, tous ouverts d'emblée ; l'équipement se gagne à l'entraînement. */
 export function BossChapters({ profile }: { readonly profile: Profile }) {
+  const equipBg = assetSrc('environments-equipement-fond');
   const { subject = '' } = useParams();
   const navigate = useNavigate();
   const qc = useQueryClient();
@@ -94,10 +96,25 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
   return (
     <PageShell title="Combat de boss" back="/jouer/boss">
       {/* Équipement : la tête du héros et ses 3 emplacements ; dessous, la réserve (ce qui n'est pas équipé). */}
-      <section aria-labelledby="equipement" className="cartoon bg-surface flex flex-col gap-3 p-3">
-        <h2 id="equipement" className="font-display text-xl tracking-wide">
+      <section
+        aria-labelledby="equipement"
+        className="cartoon bg-surface-2 relative isolate flex flex-col gap-3 overflow-hidden p-3"
+      >
+        {equipBg && (
+          <>
+            <img
+              src={equipBg}
+              alt=""
+              aria-hidden
+              className="absolute inset-0 -z-10 h-full w-full object-cover object-center"
+            />
+            {/* Voile léger : textes et emplacements restent lisibles. */}
+            <div aria-hidden className="absolute inset-0 -z-10 bg-[#1b0a3d]/45" />
+          </>
+        )}
+        <BlinkText as="h2" id="equipement" delay={0} className="font-display text-toon text-xl tracking-wide">
           Équipe-toi pour ce combat
-        </h2>
+        </BlinkText>
         <div className="flex items-center gap-3">
           <HeroFace hero={profile.hero} expression="determine" size={64} />
           <div className="flex gap-2" aria-label="Objets équipés">
@@ -119,14 +136,14 @@ export function BossChapters({ profile }: { readonly profile: Profile }) {
                   key={`vide-${i}`}
                   role="img"
                   aria-label="Emplacement vide"
-                  className="border-outline/60 h-16 w-16 rounded-2xl border-[3px] border-dashed"
+                  className="h-16 w-16 rounded-2xl border-[3px] border-dashed border-white/70"
                 />
               );
             })}
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-muted font-bold">Réserve :</span>
+          <span className="font-bold text-white">Réserve :</span>
           {ITEMS.map((item) => {
             const left = reserve[item];
             const full = equipped.length >= MAX_ITEMS_PER_BATTLE;
