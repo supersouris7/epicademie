@@ -301,6 +301,7 @@ Catalogue typé dans `packages/shared/src/modes.ts`.
 - **Mon tableau de bord** : niveau, XP, série, maîtrise par matière (radar), progression dans le temps (courbe), notions à retravailler, records, trophées.
 - **Historique** : liste des sessions filtrable, détail question par question (erreurs revoyables).
 - **Vue famille** : tous les profils côte à côte, activité de la semaine, comparaison de records (ouvert à tous).
+- **Recommandation du parent** (22/11/2026, #75) : le parent recommande à son enfant une notion + un petit mot facultatif (140 caractères), 3 en attente au plus par enfant ; l'enfant la voit à l'accueil (Questy, bouton qui lance l'entraînement) ; faite = marquée avec date et score, visible du parent, annulable tant qu'elle attend. Voir `docs/adr/0028-recommandation-parent.md`.
 
 ---
 

@@ -9,6 +9,7 @@ import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { ParentPage } from './ParentShell.tsx';
 import { CharacterAvatar } from '../../shared/ui/game/CharacterAvatar.tsx';
 import { useProfiles } from '../profiles/index.ts';
+import { RecommendTraining } from '../recommendations/index.ts';
 import { WeakPoints } from './WeakPoints.tsx';
 import { SubjectCards, SubjectDetail } from './SubjectCards.tsx';
 import { useSubjectBars } from './useSubjectBars.ts';
@@ -162,6 +163,7 @@ function ReportView({ report: r, child }: { readonly report: LearningReport; rea
         <WeekChart report={r} />
       </section>
       <WeakPoints report={r} />
+      <RecommendTraining report={r} child={child} />
       <TargetedSession report={r} child={child} />
       <section aria-labelledby="matieres" className="flex flex-col gap-3">
         <h2 id="matieres" className="text-lg font-bold">

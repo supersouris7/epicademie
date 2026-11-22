@@ -33,6 +33,7 @@ et les options écartées. Une ADR acceptée ne se modifie pas : une nouvelle AD
 | [0025](0025-vocabulaire-et-schemas.md)     | Vocabulaire expliqué et schémas dans les explications                                 | Acceptée            |
 | [0026](0026-eleve-autonome.md)             | Élève de moins de 15 ans : compte autonome sans donnée personnelle                    | Acceptée            |
 | [0027](0027-signalements-et-export.md)     | Signalements généraux, erreurs agrégées, anonymisation et export                      | Acceptée            |
+| [0028](0028-recommandation-parent.md)      | Recommandation de travail d'un parent à son enfant (une notion + un mot)              | Acceptée            |
 
 ## Modèle
 
