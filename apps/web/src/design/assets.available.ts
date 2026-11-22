@@ -2,6 +2,7 @@
 export const AVAILABLE: readonly string[] = [
   "branding/logo.webp",
   "branding/emblem.webp",
+  "environments/equipement-fond.webp",
   "hud/frames/panel.webp",
   "hud/frames/panel-tab.webp",
   "hud/frames/bubble.webp",

@@ -202,6 +202,13 @@ export const KINDS = {
     framing: 'bannière très large, sujet au centre, fond peint jusqu’aux bords, sans texte',
     opaque: true,
   },
+  /** Fond large (3:1) d'un rectangle de l'interface, affiché en object-cover. */
+  panelBackdrop: {
+    gen: '1536x1024',
+    final: [1086, 362],
+    framing: 'fond peint très large, motif centré, sans texte',
+    opaque: true,
+  },
   bossArt: {
     gen: '1536x1024',
     final: [1200, 800],
