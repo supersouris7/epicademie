@@ -1,6 +1,8 @@
 # 0028 — Recommandation de travail d'un parent à son enfant
 
-- Statut : Acceptée
+- Statut : Remplacée — décision du client du 22/11/2026 (#94) : le parent ne crée plus aucun entraînement
+  (ni recommandation, ni séance ciblée). Table supprimée par la migration 0021 ; l'Espace parent est en lecture
+  seule (synthèse, cartes matière, « À réviser »).
 - Date : 2026-11-22
 - Ticket : #75
 

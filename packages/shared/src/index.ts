@@ -19,4 +19,3 @@ export * from './billing.ts';
 export * from './api/contract.ts';
 export * from './insights.ts';
 export * from './friends.ts';
-export * from './recommendations.ts';

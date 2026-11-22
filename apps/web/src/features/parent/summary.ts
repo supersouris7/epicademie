@@ -1,80 +1,70 @@
-import { chapterOfAnySkill, getAnySkill } from '@questeo/content';
-import { SKILL_STATUS_LABELS, SUBJECTS, type LearningReport, type SkillStatus, type Tally } from '@questeo/shared';
+import { getAnySkill } from '@questeo/content';
+import { SUBJECTS, type LearningReport, type Tally } from '@questeo/shared';
 
 /**
- * Lecture du suivi pour un parent : phrases simples et chiffres utiles seulement (pas de
- * pourcentage de maîtrise). Fonctions pures, testées.
+ * Lecture du suivi pour un parent : une phrase de synthèse et les notions à réviser, sans
+ * pourcentage de maîtrise. Fonctions pures, testées.
  */
 
 export const subjectName = (id: string) => SUBJECTS.find((s) => s.id === id)?.name ?? id;
 export const skillTitle = (id: string) => getAnySkill(id)?.title ?? id;
-export const chapterTitle = (skillId: string) => chapterOfAnySkill(skillId)?.title ?? '';
 
-/** « 7 réussites sans aide sur 10 » ; null sans réponse. */
-export function successPhrase(t: Tally): string | null {
-  if (t.answered === 0) return null;
-  return `${t.autonomous} réussite${t.autonomous > 1 ? 's' : ''} sans aide sur ${t.answered}`;
+const successPhrase = (t: Tally) =>
+  t.answered === 0
+    ? 'pas encore réussie'
+    : `${t.autonomous} réussite${t.autonomous > 1 ? 's' : ''} sans aide sur ${t.answered}`;
+
+/** Phrase de synthèse : où en est l'enfant, à partir de la matière où il a le plus avancé. */
+export function synthesis(
+  name: string,
+  bars: readonly { readonly name: string; readonly acquired: number; readonly total: number }[],
+): string {
+  const best = [...bars].sort((a, b) => b.acquired - a.acquired)[0];
+  if (!best || best.acquired === 0) return `${name} commence son aventure : aucune notion maîtrisée pour l’instant.`;
+  const verb = best.acquired * 3 >= best.total ? 'avance bien' : 'avance';
+  return `${name} ${verb} en ${best.name.toLowerCase()} : ${best.acquired} notion${best.acquired > 1 ? 's' : ''} maîtrisée${best.acquired > 1 ? 's' : ''} sur ${best.total}.`;
 }
 
-/** Notions par état, dans l'ordre de lecture d'un parent (ce qui demande de l'attention d'abord). */
-export const STATUS_ORDER: readonly SkillStatus[] = ['a-travailler', 'en-progression', 'a-consolider', 'acquise'];
-export const statusLabel = (s: SkillStatus) => SKILL_STATUS_LABELS[s];
-
-/** Bilan de la semaine en cours comparée à la précédente (texte prêt à afficher). */
-export function weeklySummary(report: LearningReport): {
-  readonly answered: number;
-  readonly lines: readonly string[];
-} {
-  const [previous, current] = report.weeks.slice(-2);
-  if (!current || current.tally.answered === 0) {
-    return { answered: 0, lines: ['Pas encore de séance cette semaine.'] };
-  }
-  const lines: string[] = [];
-  const t = current.tally;
-  lines.push(
-    `${t.answered} question${t.answered > 1 ? 's' : ''} cette semaine, dont ${t.autonomous} réussie${t.autonomous > 1 ? 's' : ''} sans aide.`,
-  );
-  if (t.helped > 0) lines.push(`${t.helped} réussite${t.helped > 1 ? 's' : ''} avec un indice ou au second essai.`);
-  if (previous && previous.tally.answered > 0) {
-    const before = previous.tally.autonomous / previous.tally.answered;
-    const now = t.autonomous / t.answered;
-    if (now - before > 0.15) lines.push('Plus de réussites sans aide que la semaine dernière : bravo !');
-    else if (before - now > 0.15)
-      lines.push('Un peu moins de réussites sans aide que la semaine dernière : une révision peut aider.');
-  }
-  if (t.collective > 0)
-    lines.push(
-      `${t.collective} réponse${t.collective > 1 ? 's' : ''} données en équipe (non comptées dans sa progression).`,
-    );
-  return { answered: t.answered, lines };
-}
-
-/** Les 8 semaines, pour un petit histogramme accessible (valeur la plus haute = 100 %). */
-export function weekBars(report: LearningReport) {
-  const max = Math.max(1, ...report.weeks.map((w) => w.tally.answered));
-  return report.weeks.map((w) => ({
-    week: w.week,
-    label: new Date(`${w.week}T00:00:00Z`).toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'short',
-      timeZone: 'UTC',
-    }),
-    answered: w.tally.answered,
-    autonomous: w.tally.autonomous,
-    height: w.tally.answered / max,
-  }));
-}
-
-/** Seuil : en dessous de 80 % de réussite sans aide (au moins 3 réponses), c'est un point faible. */
+/** Seuil : en dessous de 80 % de réussite sans aide (au moins 3 réponses), la notion est fragile. */
 const WEAK_RATE = 0.8;
 const MIN_ANSWERS = 3;
+const REVIEW_COUNT = 3;
 
-/** Points faibles de l'enfant : notions travaillées où il réussit le moins seul (5 au plus). */
-export function weakPoints(r: LearningReport) {
+export interface ReviewItem {
+  readonly skillId: string;
+  readonly title: string;
+  readonly subject: string;
+  /** Raison courte, lisible par un parent. */
+  readonly reason: string;
+}
+
+const reasonFor = (s: LearningReport['skills'][number]): string => {
+  const error = s.recurringErrors[0]?.text;
+  if (error) return `Erreur fréquente : ${error}`;
+  if (s.trend === 'baisse') return `En baisse récemment (${successPhrase(s.tally)})`;
+  return s.tally.answered === 0 ? 'Pas encore réussie' : `Souvent besoin d’aide (${successPhrase(s.tally)})`;
+};
+
+/** « À réviser » : les 3 notions les plus fragiles (à travailler d'abord, puis les moins réussies seul). */
+export function toReview(r: LearningReport): ReviewItem[] {
+  const rank = (id: string) => {
+    const i = r.toRework.indexOf(id);
+    return i < 0 ? r.toRework.length : i;
+  };
+  const rate = (s: LearningReport['skills'][number]) => (s.tally.answered ? s.tally.autonomous / s.tally.answered : 0);
   return r.skills
-    .filter((s) => s.tally.answered >= MIN_ANSWERS)
-    .map((s) => ({ skillId: s.skillId, answered: s.tally.answered, rate: s.tally.autonomous / s.tally.answered }))
-    .filter((s) => s.rate < WEAK_RATE)
-    .sort((a, b) => a.rate - b.rate || b.answered - a.answered)
-    .slice(0, 5);
+    .filter((s) => s.status === 'a-travailler' || (s.tally.answered >= MIN_ANSWERS && rate(s) < WEAK_RATE))
+    .sort(
+      (a, b) =>
+        Number(b.status === 'a-travailler') - Number(a.status === 'a-travailler') ||
+        rank(a.skillId) - rank(b.skillId) ||
+        rate(a) - rate(b),
+    )
+    .slice(0, REVIEW_COUNT)
+    .map((s) => ({
+      skillId: s.skillId,
+      title: skillTitle(s.skillId),
+      subject: subjectName(s.subject),
+      reason: reasonFor(s),
+    }));
 }

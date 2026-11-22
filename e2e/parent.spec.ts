@@ -72,38 +72,24 @@ test('Espace parent : navigation stable, chaque chemin reste dans l’espace, un
   await expect(page).toHaveURL(/\/$/);
 });
 
-test('Recommandation : le parent recommande une notion avec un mot, l’enfant la voit à l’accueil et la lance', async ({
+test('Page d’un enfant épurée : synthèse, cartes matière, À réviser ; aucune création d’entraînement', async ({
   page,
 }) => {
   test.setTimeout(60_000);
   await signupFamily(page);
-  await page.getByPlaceholder('Ex. Léa').fill(`Rec${Date.now() % 10000}`);
+  await page.getByPlaceholder('Ex. Léa').fill(`Epu${Date.now() % 10000}`);
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
   await page.getByRole('button', { name: /C’est parti/ }).click();
   await expect(page).toHaveURL(/hub/);
-  // Pas de recommandation : rien à l'accueil.
+  // Côté enfant : plus d'encart « Ton parent te recommande ».
   await expect(page.getByRole('region', { name: 'Ton parent te recommande' })).toHaveCount(0);
 
-  // Espace parent : matière, notion, petit mot (140 caractères au plus).
   await page.goto('/parent');
   await page.getByRole('link', { name: /Voir les progrès de/ }).click();
-  await page.getByRole('button', { name: 'Recommander un entraînement' }).click();
-  const form = page.getByRole('form', { name: 'Nouvelle recommandation' });
-  await form.getByLabel('Matière').selectOption({ label: 'Maths' });
-  await form.getByLabel('Notion').selectOption('m5-tables');
-  await expect(form.getByLabel(/Un petit mot/)).toHaveAttribute('maxlength', '140');
-  await form.getByLabel(/Un petit mot/).fill('Courage, tu vas y arriver !');
-  await form.getByRole('button', { name: /^Envoyer à/ }).click();
-  const pending = page.getByRole('list', { name: 'Recommandations en attente' });
-  await expect(pending).toContainText('Courage, tu vas y arriver !');
-
-  // Côté enfant : le mot de son parent, et un bouton qui lance l'entraînement de la notion.
-  await page.getByRole('button', { name: 'Retour au jeu' }).click();
-  await page.goto('/hub');
-  const reco = page.getByRole('region', { name: 'Ton parent te recommande' });
-  await expect(reco).toContainText('Courage, tu vas y arriver !');
-  await reco.getByRole('button', { name: 'S’entraîner' }).click();
-  await expect(page).toHaveURL(/\/partie\/entrainement\/m5-calcul\/m5-tables$/);
+  await expect(page.getByRole('heading', { name: 'Avancement' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'À réviser' })).toBeVisible();
+  for (const gone of ['Recommander un entraînement', 'Lancer la séance', 'Bilan de la semaine'])
+    await expect(page.getByText(gone)).toHaveCount(0);
 });

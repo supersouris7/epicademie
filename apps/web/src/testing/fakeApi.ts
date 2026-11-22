@@ -16,7 +16,6 @@ import {
   type AnyEndpoint,
   type BattleView,
   type BossOverview,
-  type FamilyRecommendation,
   type Inventory,
   type LearningReport,
   type ItemId,
@@ -101,8 +100,6 @@ export interface FakeApiOptions {
   readonly admin?: boolean;
   /** Rapport de suivi renvoyé pour chaque profil (par défaut : vide). */
   readonly learning?: LearningReport;
-  /** Recommandations déjà envoyées à Léa (en attente ou faites). */
-  readonly recommendations?: readonly FamilyRecommendation[];
   /** Abonnement familial en cours (par défaut : oui, tous les chapitres jouables). */
   readonly premium?: boolean;
 }
@@ -610,7 +607,6 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     ...billingHandlers(options.premium ?? true, uuid),
     ownedHeroes: () => ({ heroes: [...STARTING_HEROES] }),
     ...friendHandlers(),
-    ...recommendationHandlers(options.recommendations ?? []),
     badges: () => badgeProgress({ boss: 2, parfait: 3, perseverance: 0, chapitres: 0, consolidees: 0, coffres: 1 }),
     ...adminHandlers(reports, disabledSet),
   };
@@ -735,51 +731,6 @@ function friendHandlers(): Partial<Record<keyof typeof api, Handler>> {
     acceptFriend: () => {
       status = 'parents';
       return view();
-    },
-  };
-}
-
-/** Recommandations des parents : stockées en mémoire, 3 en attente au plus (comme le serveur). */
-function recommendationHandlers(initial: readonly FamilyRecommendation[]): Partial<Record<keyof typeof api, Handler>> {
-  const list = [...initial];
-  let n = 0;
-  const pending = () => list.filter((r) => r.status === 'en-attente');
-  const plain = ({ id, profileId, skillId, note, createdAt }: FamilyRecommendation) => ({
-    id,
-    profileId,
-    skillId,
-    note,
-    createdAt,
-  });
-  return {
-    recommendations: ({ params }) =>
-      pending()
-        .filter((r) => r.profileId === params.id)
-        .map(plain),
-    familyRecommendations: () => list.filter((r) => r.status !== 'annulee'),
-    createRecommendation: ({ params, body }) => {
-      const input = body as { skillId: string; note: string | null };
-      if (pending().filter((r) => r.profileId === params.id).length >= 3)
-        throw new FakeError(409, 'CONFLICT', 'Déjà 3 recommandations en attente.');
-      const reco: FamilyRecommendation = {
-        id: `aaaaaaaa-0000-4000-8000-${String(++n).padStart(12, '0')}`,
-        profileId: params.id ?? '',
-        profileName: 'Léa',
-        skillId: input.skillId,
-        note: input.note,
-        status: 'en-attente',
-        createdAt: '2026-11-22T10:00:00.000Z',
-        doneAt: null,
-        correct: null,
-        answered: null,
-      };
-      list.push(reco);
-      return plain(reco);
-    },
-    cancelRecommendation: ({ params }) => {
-      const reco = list.find((r) => r.id === params.recommendationId);
-      if (reco) list[list.indexOf(reco)] = { ...reco, status: 'annulee' };
-      return undefined;
     },
   };
 }

@@ -34,7 +34,6 @@ import { createShopService, inventoryRoutes } from './modules/inventory/index.ts
 import { createInsightsService, insightsRoutes } from './modules/insights/index.ts';
 import { createPresence, type Presence } from './modules/realtime/index.ts';
 import { opsRoutes, systemRoutes } from './modules/system/index.ts';
-import { createRecommendationsService, recommendationsRoutes } from './modules/recommendations/index.ts';
 import { createFriendsService, friendsRoutes, type FriendsService } from './modules/friends/index.ts';
 import { createTelemetryService, telemetryRoutes } from './modules/telemetry/index.ts';
 
@@ -224,7 +223,6 @@ export async function buildApp(deps: AppDeps): Promise<App> {
       await v1.register(billingRoutes(billing, config.billing.stripeWebhookSecret));
       await v1.register(inventoryRoutes(shop, owns));
       await v1.register(friendsRoutes(friends, owns, (ids) => learning.ranking(ids)));
-      await v1.register(recommendationsRoutes(createRecommendationsService({ db, clock }), owns));
       await v1.register(insightsRoutes(createInsightsService({ db, clock }), () => reporter.recent()));
       await v1.register(telemetryRoutes(reporter, createTelemetryService({ db, clock })));
     },
