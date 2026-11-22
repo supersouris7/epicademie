@@ -15,6 +15,21 @@ export function About() {
           change de tête selon l’humeur, est un personnage original créé pour Academy Fighters.
         </p>
       </div>
+      <GamePanel title="Données personnelles" className="flex flex-col gap-2">
+        <p>
+          <strong>Moins de 15 ans</strong> : ton compte ne contient ni nom ni e-mail, seulement un pseudo, un avatar, ta
+          classe et ta progression. Pour payer ou donner accès à un suivi, un parent doit rattacher ton compte au sien :
+          c’est la règle pour protéger les enfants (consentement d’un parent avant 15 ans).
+        </p>
+        <p>
+          <strong>15 ans et plus, et parents</strong> : nous gardons l’e-mail et le mot de passe (chiffré) pour te
+          connecter. Rien n’est envoyé à des tiers et aucune publicité n’est affichée.
+        </p>
+        <p className="text-muted text-sm">
+          Ton code de récupération et les codes d’invitation sont chiffrés chez nous : personne ne peut les relire. Tu
+          peux demander à un parent de supprimer ton profil à tout moment.
+        </p>
+      </GamePanel>
       <GamePanel title="Crédits" className="flex flex-col gap-3">
         <ul className="flex flex-col gap-2">
           {CREDITS.map((c) => (

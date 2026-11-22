@@ -17,7 +17,7 @@ test('Compte : déconnexion de l’appareil, reconnexion, profils et progrès re
   await createProfile(page, name);
   await page.goto('/parametres');
   await page.getByRole('button', { name: 'Déconnecter cet appareil' }).click();
-  await expect(page).toHaveURL(/connexion/);
+  await expect(page).toHaveURL(/bienvenue/);
   await loginFamily(page, email);
   await expect(page.getByRole('button', { name: new RegExp(name) })).toBeVisible();
 });

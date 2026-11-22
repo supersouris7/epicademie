@@ -14,12 +14,14 @@ import { useSession } from '../../shared/lib/session.ts';
 import { useQuery } from '@tanstack/react-query';
 import { request } from '../../shared/api/client.ts';
 import { useRealtime } from '../realtime/index.ts';
+import { StudentSpace, useMe } from '../account/index.ts';
 import { useToast } from '../../shared/ui/Toast.tsx';
 
 export function ProfilePicker() {
   const { data: profiles, isPending, isError, refetch } = useProfiles();
   const selectProfile = useSession((s) => s.selectProfile);
   const navigate = useNavigate();
+  const autonomous = useMe().data?.family.autonomous === true;
 
   const keyArt = assetSrc('branding-key-art');
   const [toast, showToast] = useToast(3500);
@@ -78,20 +80,26 @@ export function ProfilePicker() {
             />
           </li>
         ))}
-        <li>
-          <GameButton
-            variant="primary"
-            icon="icons-navigation-plus"
-            onClick={() => void navigate('/profils/nouveau')}
-            className="h-full min-h-32 w-full flex-col"
-          >
-            Nouveau joueur
-          </GameButton>
-        </li>
+        {!autonomous && (
+          <li>
+            <GameButton
+              variant="primary"
+              icon="icons-navigation-plus"
+              onClick={() => void navigate('/profils/nouveau')}
+              className="h-full min-h-32 w-full flex-col"
+            >
+              Nouveau joueur
+            </GameButton>
+          </li>
+        )}
       </ul>
-      <GameButton variant="surface" icon="icons-navigation-team" onClick={() => void navigate('/parent')}>
-        Espace parent
-      </GameButton>
+      {autonomous ? (
+        <StudentSpace />
+      ) : (
+        <GameButton variant="surface" icon="icons-navigation-team" onClick={() => void navigate('/parent')}>
+          Espace parent
+        </GameButton>
+      )}
       {toast}
     </PageShell>
   );

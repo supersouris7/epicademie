@@ -56,7 +56,7 @@ describe('inscription et connexion', () => {
     expect((await me('')).statusCode).toBe(401);
     expect((await t.http.inject({ url: '/api/v1/profiles', headers: anonymous })).statusCode).toBe(401);
     expect((await me('af_session=jeton-invente')).statusCode).toBe(401);
-    const cookie = sessionCookie(await loginRes(t.family().me.account.email));
+    const cookie = sessionCookie(await loginRes(t.family().email));
     expect((await me(cookie)).statusCode).toBe(200);
     const out = await t.as(cookie).inject({ method: 'POST', url: '/api/v1/auth/logout' });
     expect(out.statusCode).toBe(204);
@@ -134,8 +134,7 @@ describe('actions réservées au parent', () => {
 
 describe('mot de passe oublié', () => {
   it('lien par e-mail, usage unique, ferme les anciennes sessions', async () => {
-    const { cookie, me: account } = t.family();
-    const email = account.account.email;
+    const { cookie, email } = t.family();
     const forgot = await t.http.inject({
       method: 'POST',
       url: '/api/v1/auth/password/forgot',
@@ -178,7 +177,7 @@ describe('mot de passe oublié', () => {
       method: 'POST',
       url: '/api/v1/auth/password/forgot',
       headers: anonymous,
-      payload: { email: t.family().me.account.email },
+      payload: { email: t.family().email },
     });
     const token = /jeton=([\w-]+)/.exec(t.mailer.outbox.at(-1)?.text ?? '')?.[1] ?? '';
     t.clock.set('2026-11-21');

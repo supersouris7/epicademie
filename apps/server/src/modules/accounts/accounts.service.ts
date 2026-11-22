@@ -1,12 +1,13 @@
-import type { Me, Signup, Login } from '@questeo/shared';
+import type { Login, Me, Signup, StudentSignup } from '@questeo/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import { AppError, conflict } from '../../core/errors.ts';
-import type { Actor } from '../../core/http/auth.ts';
+import { AUTONOMOUS_MESSAGE, type Actor } from '../../core/http/auth.ts';
 import { dummyHash, hashPassword, verifyPassword } from '../../core/auth/password.ts';
 import { newToken, tokenHash } from '../../core/auth/tokens.ts';
 import type { Mailer } from '../../core/mail/mailer.ts';
 import { accountsRepo } from './accounts.repo.ts';
+import { createStudentService, type OpenedSession } from './student.service.ts';
 
 /**
  * Comptes familiaux : inscription, connexion, sessions d'appareil, déverrouillage parent,
@@ -34,24 +35,26 @@ export interface AccountsDeps {
   /** Adresse publique du site (liens envoyés par e-mail). */
   readonly appUrl: () => string;
   readonly sessionDays: number;
+  /** Crée le profil de l'élève (module « profils ») dans la famille autonome. */
+  readonly createStudentProfile: (
+    input: Pick<StudentSignup, 'name' | 'avatar' | 'grade'>,
+    familyId: string,
+  ) => Promise<unknown>;
 }
 
-/** Session ouverte : jeton à poser en cookie (jamais renvoyé dans le corps) et vue « me ». */
-export interface OpenedSession {
-  readonly token: string;
-  readonly me: Me;
-}
+export type { OpenedSession };
 
-export function createAccountsService({ db, clock, mailer, appUrl, sessionDays }: AccountsDeps) {
+export function createAccountsService({ db, clock, mailer, appUrl, sessionDays, createStudentProfile }: AccountsDeps) {
   const repo = accountsRepo(db);
   const later = (ms: number) => new Date(clock.now().getTime() + ms);
 
   const meOf = (
     a: {
       id: string;
-      email: string;
+      email: string | null;
       role: Me['account']['role'];
       familyId: string;
+      autonomous: boolean;
       parentPinHash?: string | null;
     },
     parentUntil: Date | null,
@@ -61,7 +64,7 @@ export function createAccountsService({ db, clock, mailer, appUrl, sessionDays }
     const admin = a.role === 'admin' && adminUntil !== null && adminUntil > clock.now();
     return {
       account: { id: a.id, email: a.email, role: a.role },
-      family: { id: a.familyId },
+      family: { id: a.familyId, autonomous: a.autonomous },
       parent,
       parentUntil: parent ? parentUntil.toISOString() : null,
       hasPin: Boolean(a.parentPinHash),
@@ -72,7 +75,8 @@ export function createAccountsService({ db, clock, mailer, appUrl, sessionDays }
   /** Ouvre une session d'appareil. Après saisie du mot de passe, le parent est déverrouillé. */
   const open = async (a: Parameters<typeof meOf>[0]): Promise<OpenedSession> => {
     const token = newToken();
-    const parentUntil = later(PARENT_UNLOCK_MINUTES * MINUTE);
+    // Élève autonome : jamais de déverrouillage parent (aucun parent n'est rattaché).
+    const parentUntil = a.autonomous ? null : later(PARENT_UNLOCK_MINUTES * MINUTE);
     await repo.createSession({
       tokenHash: tokenHash(token),
       accountId: a.id,
@@ -82,20 +86,32 @@ export function createAccountsService({ db, clock, mailer, appUrl, sessionDays }
     return { token, me: meOf(a, parentUntil) };
   };
 
+  /** Vrai si le mot de passe correspond ; faux pour un compte sans mot de passe (élève autonome). */
+  const passwordMatches = async (hash: string | null, password: string): Promise<boolean> =>
+    hash !== null && (await verifyPassword(password, hash));
+
+  /** Les actions parent n'existent pas tant qu'aucun parent n'a rattaché le compte. */
+  const refuseAutonomous = (actor: Actor): void => {
+    if (actor.autonomous) throw new AppError('FORBIDDEN', AUTONOMOUS_MESSAGE);
+  };
+
+  const student = createStudentService({ db, clock, createStudentProfile, open });
+
   return {
+    ...student,
     async signup({ email, password }: Signup): Promise<OpenedSession> {
       if (await repo.findByEmail(email)) throw conflict('Un compte existe déjà avec cette adresse : connecte-toi.');
       const hash = await hashPassword(password);
       const account = await db.transaction((tx) => accountsRepo(tx).createFamilyAccount(email, hash));
-      return open(account);
+      return open({ ...account, autonomous: false });
     },
 
     async login({ email, password }: Login): Promise<OpenedSession> {
       const account = await repo.findByEmail(email);
       // Même travail si le compte n'existe pas : le temps de réponse ne trahit rien.
       const ok = await verifyPassword(password, account?.passwordHash ?? (await dummyHash()));
-      if (!account || !ok) throw new AppError('UNAUTHORIZED', BAD_CREDENTIALS);
-      return open(account);
+      if (!account?.passwordHash || !ok) throw new AppError('UNAUTHORIZED', BAD_CREDENTIALS);
+      return open({ ...account, autonomous: false });
     },
 
     async logout(token: string | null): Promise<void> {
@@ -116,6 +132,7 @@ export function createAccountsService({ db, clock, mailer, appUrl, sessionDays }
         accountId: s.accountId,
         familyId: s.familyId,
         email: s.email,
+        autonomous: s.autonomous,
         role: s.role,
         parentUntil: s.parentUntil,
         parent: s.parentUntil !== null && s.parentUntil > now,
@@ -128,7 +145,14 @@ export function createAccountsService({ db, clock, mailer, appUrl, sessionDays }
     async me(actor: Actor): Promise<Me> {
       const account = await repo.findById(actor.accountId);
       return meOf(
-        { id: actor.accountId, email: actor.email, role: actor.role, familyId: actor.familyId, ...account },
+        {
+          id: actor.accountId,
+          email: actor.email,
+          role: actor.role,
+          familyId: actor.familyId,
+          autonomous: actor.autonomous,
+          ...account,
+        },
         actor.parentUntil,
         actor.adminUntil,
       );
@@ -136,16 +160,18 @@ export function createAccountsService({ db, clock, mailer, appUrl, sessionDays }
 
     /** Choisit ou change le code PIN parent : le mot de passe du compte est demandé. */
     async setParentPin(actor: Actor, password: string, pin: string): Promise<Me> {
+      refuseAutonomous(actor);
       const account = await repo.findById(actor.accountId);
-      if (!account || !(await verifyPassword(password, account.passwordHash))) {
+      if (!account || !(await passwordMatches(account.passwordHash, password))) {
         throw new AppError('UNAUTHORIZED', 'Mot de passe incorrect.');
       }
       await repo.setParentPin(account.id, await hashPassword(pin));
-      return meOf({ ...account, parentPinHash: 'défini' }, actor.parentUntil);
+      return meOf({ ...account, autonomous: false, parentPinHash: 'défini' }, actor.parentUntil);
     },
 
     /** Ouvre l'Espace parent avec le PIN ; 5 erreurs d'affilée bloquent le PIN 15 minutes. */
     async unlockParentPin(actor: Actor, pin: string): Promise<Me> {
+      refuseAutonomous(actor);
       const account = await repo.findById(actor.accountId);
       if (!account?.parentPinHash)
         throw new AppError('CONFLICT', 'Aucun code PIN : utilise le mot de passe du compte.');
@@ -164,19 +190,19 @@ export function createAccountsService({ db, clock, mailer, appUrl, sessionDays }
       await repo.setPinFailures(account.id, 0, null);
       const until = later(PARENT_UNLOCK_MINUTES * MINUTE);
       await repo.setParentUntil(actor.sessionHash, until);
-      return meOf(account, until);
+      return meOf({ ...account, autonomous: false }, until);
     },
 
     /** Ouvre une session d'administration (compte admin) : mot de passe redemandé, 15 minutes. */
     async openAdmin(actor: Actor, password: string): Promise<Me> {
       const account = await repo.findById(actor.accountId);
       if (account?.role !== 'admin') throw new AppError('FORBIDDEN', 'Accès réservé à l’administration.');
-      if (!(await verifyPassword(password, account.passwordHash))) {
+      if (!(await passwordMatches(account.passwordHash, password))) {
         throw new AppError('UNAUTHORIZED', 'Mot de passe incorrect.');
       }
       const until = later(ADMIN_SESSION_MINUTES * MINUTE);
       await repo.setAdminUntil(actor.sessionHash, until);
-      return meOf(account, actor.parentUntil, until);
+      return meOf({ ...account, autonomous: false }, actor.parentUntil, until);
     },
 
     /** Ferme la session d'administration. */
@@ -193,19 +219,20 @@ export function createAccountsService({ db, clock, mailer, appUrl, sessionDays }
 
     /** Le parent confirme son mot de passe : actions parent permises quelques minutes. */
     async confirmParent(actor: Actor, password: string): Promise<Me> {
+      refuseAutonomous(actor);
       const account = await repo.findById(actor.accountId);
-      if (!account || !(await verifyPassword(password, account.passwordHash))) {
+      if (!account || !(await passwordMatches(account.passwordHash, password))) {
         throw new AppError('UNAUTHORIZED', 'Mot de passe incorrect.');
       }
       const until = later(PARENT_UNLOCK_MINUTES * MINUTE);
       await repo.setParentUntil(actor.sessionHash, until);
-      return meOf(account, until);
+      return meOf({ ...account, autonomous: false }, until);
     },
 
     /** Envoie un lien de réinitialisation ; ne dit jamais si l'adresse existe. */
     async forgotPassword(email: string): Promise<void> {
       const account = await repo.findByEmail(email);
-      if (!account) return;
+      if (!account?.email) return;
       const token = newToken();
       await repo.createReset({
         tokenHash: tokenHash(token),

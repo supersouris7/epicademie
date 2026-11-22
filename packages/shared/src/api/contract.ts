@@ -20,6 +20,9 @@ import {
 } from '../play.ts';
 import { HEROES, ProfileCreateSchema, ProfileSchema, ProfileUpdateSchema } from '../profile.ts';
 import {
+  FamilyJoinResultSchema,
+  FamilyJoinSchema,
+  InviteResultSchema,
   LoginSchema,
   MeSchema,
   ParentPinSetSchema,
@@ -27,7 +30,11 @@ import {
   PasswordConfirmSchema,
   PasswordForgotSchema,
   PasswordResetSchema,
+  RecoveryCodeResultSchema,
   SignupSchema,
+  StudentRecoverSchema,
+  StudentSignupResultSchema,
+  StudentSignupSchema,
 } from '../account.ts';
 import { BadgeProgressSchema, LearningReportSchema } from '../learning.ts';
 import { BillingSchema, CheckoutSchema, SimulatePaymentSchema } from '../billing.ts';
@@ -180,6 +187,54 @@ export const api = {
     status: 200,
     body: LoginSchema,
     response: MeSchema,
+  }),
+  signupStudent: endpoint({
+    method: 'POST',
+    path: '/auth/student/signup',
+    tag: 'comptes',
+    summary: 'Élève de moins de 15 ans : compte sans donnée personnelle ; renvoie le code de récupération (une fois)',
+    access: 'public',
+    status: 201,
+    body: StudentSignupSchema,
+    response: StudentSignupResultSchema,
+  }),
+  recoverStudent: endpoint({
+    method: 'POST',
+    path: '/auth/student/recover',
+    tag: 'comptes',
+    summary: 'Reconnecte un élève autonome sur un autre appareil avec son code de récupération',
+    access: 'public',
+    status: 200,
+    body: StudentRecoverSchema,
+    response: MeSchema,
+  }),
+  renewStudentRecovery: endpoint({
+    method: 'POST',
+    path: '/auth/student/recovery-code',
+    tag: 'comptes',
+    summary: 'Élève autonome : nouveau code de récupération (l’ancien ne marche plus)',
+    access: 'family',
+    status: 200,
+    response: RecoveryCodeResultSchema,
+  }),
+  createInvite: endpoint({
+    method: 'POST',
+    path: '/auth/student/invite',
+    tag: 'comptes',
+    summary: 'Élève autonome : code d’invitation pour un parent (24 h, usage unique)',
+    access: 'family',
+    status: 201,
+    response: InviteResultSchema,
+  }),
+  joinFamily: endpoint({
+    method: 'POST',
+    path: '/family/join',
+    tag: 'comptes',
+    summary: 'Espace parent : rattache le profil d’un élève autonome à la famille avec son code d’invitation',
+    access: 'parent',
+    status: 200,
+    body: FamilyJoinSchema,
+    response: FamilyJoinResultSchema,
   }),
   logout: endpoint({
     method: 'POST',

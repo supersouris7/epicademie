@@ -44,7 +44,7 @@ export function Settings({ profile }: { readonly profile: Profile }) {
     await logout();
     selectProfile(null);
     setMe(null);
-    void navigate('/connexion');
+    void navigate('/bienvenue');
   };
 
   return (

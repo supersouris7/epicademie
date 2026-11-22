@@ -71,7 +71,10 @@ export function profilesRepo(db: Executor) {
       return row !== undefined;
     },
 
-    async insert(input: ProfileCreate & { readonly rubies: number; readonly familyId: string }): Promise<ProfileRow> {
+    async insert(
+      input: Omit<ProfileCreate, 'gender' | 'birthDate'> &
+        Partial<Pick<ProfileCreate, 'gender' | 'birthDate'>> & { readonly rubies: number; readonly familyId: string },
+    ): Promise<ProfileRow> {
       const [row] = await db
         .insert(profiles)
         .values({ ...input, hero: input.hero ?? defaultHero(input.gender) })

@@ -97,6 +97,35 @@ describe('migrations', () => {
     }
   });
 
+  it('élève autonome : depuis une base en 0015, comptes existants intacts (famille non autonome)', async () => {
+    const dir = migrationsUpTo(16); // jusqu'à 0015
+    try {
+      database = await openDatabase('pglite://memory');
+      await runMigrations(database, dir);
+      const { db } = database;
+      await db.execute(sql`insert into families (id) values ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa')`);
+      await db.execute(sql`insert into accounts (family_id, email, password_hash) values
+        ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'parent@exemple.fr', 'hash')`);
+      await runMigrations(database, MIGRATIONS_DIR);
+      const rows = JSON.stringify(
+        await db.execute(
+          sql`select f.autonomous, a.email, a.recovery_hash from accounts a join families f on f.id = a.family_id`,
+        ),
+      );
+      expect(rows).toContain('"autonomous":false');
+      expect(rows).toContain('"email":"parent@exemple.fr"');
+      // Un compte sans e-mail ni mot de passe est désormais possible (élève autonome).
+      await db.execute(
+        sql`insert into families (id, autonomous) values ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', true)`,
+      );
+      await db.execute(
+        sql`insert into accounts (family_id, recovery_hash) values ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', 'h')`,
+      );
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it('refuse une URL de base inconnue', async () => {
     await expect(openDatabase('mysql://x')).rejects.toThrow(/DATABASE_URL/);
   });

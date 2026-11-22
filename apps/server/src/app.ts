@@ -150,6 +150,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
     },
   });
   const appUrl = () => config.publicUrl ?? `http://localhost:${config.port}`;
+  const profiles = createProfilesService(db);
   const accounts = createAccountsService({
     db,
     clock,
@@ -157,10 +158,10 @@ export async function buildApp(deps: AppDeps): Promise<App> {
     mailer: deps.mailer ?? logMailer(http.log, { revealContent: config.env === 'development' }),
     appUrl,
     sessionDays: config.sessionDays,
+    createStudentProfile: (input, familyId) => profiles.createStudent(input, familyId),
   });
   const owns = createOwnership(db);
   registerAuth(http, { resolve: (token) => accounts.resolve(token), allowedOrigins: config.corsOrigins });
-  const profiles = createProfilesService(db);
   const training = createTrainingService({
     db,
     clock,

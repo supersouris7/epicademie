@@ -3,6 +3,7 @@ import { gradeInfo } from '@questeo/shared';
 import { CharacterAvatar } from '../../shared/ui/game/CharacterAvatar.tsx';
 import { ProfileEditor, useProfiles } from '../profiles/index.ts';
 import { FamilyFriends } from './FamilyFriends.tsx';
+import { JoinStudent } from './JoinStudent.tsx';
 import { ParentCard, ParentPage } from './ParentShell.tsx';
 import { PinSettings } from './PinSettings.tsx';
 
@@ -40,6 +41,7 @@ export function ParentProfiles() {
       >
         Ajouter un enfant
       </Link>
+      <JoinStudent />
       <FamilyFriends />
     </ParentPage>
   );

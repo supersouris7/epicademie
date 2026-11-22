@@ -15,6 +15,16 @@ const IDENTITY_FIELDS = ['name', 'birthDate', 'grade', 'gender'] as const;
 /** Règles métier des profils. */
 export function createProfilesService(db: Db) {
   const repo = profilesRepo(db);
+  const createWithHeroes = (
+    input: Omit<ProfileCreate, 'gender' | 'birthDate'> & Partial<Pick<ProfileCreate, 'gender' | 'birthDate'>>,
+    familyId: string,
+  ): Promise<Profile> =>
+    db.transaction(async (tx) => {
+      const r = profilesRepo(tx);
+      const row = await r.insert({ ...input, rubies: STARTING_RUBIES, familyId });
+      for (const hero of new Set([row.hero, ...STARTING_HEROES])) await r.addHero(row.id, hero, 'depart');
+      return toProfile(row);
+    });
   return {
     list: (familyId: string): Promise<Profile[]> => repo.list(familyId),
 
@@ -31,14 +41,11 @@ export function createProfilesService(db: Db) {
     },
 
     /** Nouveau profil : Alex et Lina débloqués d'emblée ; Lina portée par défaut pour une fille. */
-    async create(input: ProfileCreate, familyId: string): Promise<Profile> {
-      return db.transaction(async (tx) => {
-        const r = profilesRepo(tx);
-        const row = await r.insert({ ...input, rubies: STARTING_RUBIES, familyId });
-        for (const hero of new Set([row.hero, ...STARTING_HEROES])) await r.addHero(row.id, hero, 'depart');
-        return toProfile(row);
-      });
-    },
+    create: (input: ProfileCreate, familyId: string): Promise<Profile> => createWithHeroes(input, familyId),
+
+    /** Profil d'un élève autonome (moins de 15 ans) : pseudo, avatar, classe ; ni genre ni naissance. */
+    createStudent: (input: Pick<ProfileCreate, 'name' | 'avatar' | 'grade'>, familyId: string): Promise<Profile> =>
+      createWithHeroes(input, familyId),
 
     heroes: (profileId: string) => repo.heroes(profileId),
 
