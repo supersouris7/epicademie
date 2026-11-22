@@ -258,6 +258,12 @@ export interface Chapter {
   readonly boss?: BossContent;
 }
 
+/**
+ * Chapitre de fondamentaux du CE2 : utilisé seulement par l'Épreuve des Origines et l'exploration des
+ * prérequis (ADR 0030). Absent de `CHAPTERS` : aucune classe CE2 jouable, aucun menu.
+ */
+export type EvalChapter = Omit<Chapter, 'grade' | 'boss'> & { readonly grade: 'ce2' };
+
 export interface CheckResult {
   readonly correct: boolean;
   /** Saisie illisible (ex. « 3,,2 ») : on redemande sans compter d'erreur. */
