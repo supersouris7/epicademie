@@ -17,7 +17,7 @@ import { useToast } from '../../shared/ui/Toast.tsx';
 import { SoonBadge } from '../../shared/ui/game/SoonBadge.tsx';
 import { SubjectIcon } from '../../shared/ui/game/SubjectIcon.tsx';
 import { bestScore } from '../defis/index.ts';
-import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
+import { ModeBanner, ModeNote } from './ModeBanner.tsx';
 import { CHEST_ICON } from '../../shared/ui/game/ChestReveal.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import { useEntrance } from '../../shared/lib/entrance.ts';
@@ -34,8 +34,9 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
   // L'Empereur du Savoir se présente en plein écran une fois par jour, à l'entrée du Combat de boss.
   const [emperor, setEmperor] = useState(() => modeId === 'boss' && emperorDue(profile.id));
   if (!mode) return <Navigate to="/hub" replace />;
-  const bannerSrc = assetSrc('bosses-empereur-banniere');
   const isBoss = mode.id === 'boss';
+  const isTraining = mode.id === 'entrainement';
+  const bannerSrc = assetSrc(isBoss ? 'bosses-empereur-banniere' : 'environments-entrainement-banniere');
   const isDefi = mode.id === 'chrono' || mode.id === 'survie';
   // Barre sous chaque matière (classe du joueur) : notions acquises (Entraînement) ou boss vaincus (Combat).
   const grade = playedGrade(profile.grade);
@@ -61,40 +62,32 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
 
   return (
     <PageShell title={mode.name} back={back}>
-      {isBoss && bannerSrc ? (
-        // Combat de boss : bannière de l'Empereur du Savoir, maître des boss des matières.
-        <div className="cartoon relative overflow-hidden">
-          <img src={bannerSrc} alt="" aria-hidden className="block aspect-[3/1] w-full object-cover" />
-          <p className="font-display text-toon absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-4 pt-6 pb-2 text-xl tracking-wide sm:text-2xl">
-            Bats les boss des matières, reprends le savoir à l’Empereur !
-          </p>
-        </div>
+      {bannerSrc && (isBoss || isTraining) ? (
+        <ModeBanner
+          src={bannerSrc}
+          tagline={
+            isBoss
+              ? 'Bats les boss des matières, reprends le savoir à l’Empereur !'
+              : 'Entraîne-toi, gagne des médailles et des coffres !'
+          }
+        />
       ) : (
         <div className="flex items-center gap-4">
           <Questy size={130} mood={MODE_MOODS[mode.id]} />
-          <SpeechBubble>
-            {mode.id === 'entrainement' ? (
-              // Entraînement : c'est ici qu'on gagne son équipement (coffres).
-              <span className="flex items-center gap-2">
-                <GameIcon id={CHEST_ICON} size={48} className="shrink-0" />
-                <span>{setupBubble(mode)}</span>
-              </span>
-            ) : (
-              setupBubble(mode)
-            )}
-          </SpeechBubble>
+          <SpeechBubble>{setupBubble(mode)}</SpeechBubble>
         </div>
       )}
       {isBoss && emperor && <EmperorScene profileId={profile.id} onDone={() => setEmperor(false)} />}
-      {/* Combat de boss : chaque boss vaincu donne un éclat de la relique de sa matière. */}
       {isBoss && (
-        <div className="cartoon bg-surface-2 flex items-center gap-3 p-3" role="note">
-          <GameIcon id={RELICS.maths.icon} size={64} />
-          <p className="text-lg font-bold">
-            Chaque boss vaincu te donne un <strong>éclat de relique</strong> de sa matière. Retrouve tes reliques dans{' '}
-            <strong>Mes progrès</strong> !
-          </p>
-        </div>
+        // Combat de boss : chaque boss vaincu donne un éclat de la relique de sa matière.
+        <ModeNote icon={RELICS.maths.icon}>
+          Chaque boss vaincu te donne un <strong>éclat de relique</strong> de sa matière. Retrouve tes reliques dans{' '}
+          <strong>Mes progrès</strong> !
+        </ModeNote>
+      )}
+      {isTraining && (
+        // Entraînement : c'est ici qu'on gagne son équipement (coffres et médailles).
+        <ModeNote icon={CHEST_ICON}>Une série sans faute t’offre un coffre ! Choisis ta matière.</ModeNote>
       )}
 
       <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -120,7 +113,7 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
                 return (
                   <>
                     {/* Relique de la matière : grise, se remplit avec les boss vaincus (tous les modes). */}
-                    <SubjectIcon subject={s.id} name={s.name} {...relic} size={isBoss ? 80 : 72} />
+                    <SubjectIcon subject={s.id} name={s.name} {...relic} size={isBoss || isTraining ? 80 : 72} />
                     <span className="font-display text-toon text-xl tracking-wide sm:text-2xl">{s.name}</span>
                     {isDefi ? (
                       // Défis : le record à battre plutôt qu'une barre.

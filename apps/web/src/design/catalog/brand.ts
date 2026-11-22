@@ -45,4 +45,12 @@ export const brandAssets = [
     'Fond du rectangle Équipement (Combat de boss).',
     2,
   ),
+  a(
+    'banner',
+    'environments/entrainement-banniere.webp',
+    'Bannière du menu Entraînement',
+    'les deux héros face à face autour de Questy, livre ouvert lumineux et médailles dans une salle de classe violette',
+    'Bannière de l’écran Entraînement (choix de la matière).',
+    2,
+  ),
 ];
