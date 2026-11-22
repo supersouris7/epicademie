@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { ITEMS, ITEM_INFO, type Chest, type ChestRarity, HERO_NAMES } from '@questeo/shared';
 import { chestIcon, ITEM_ICONS } from '../../../design/items.ts';
 import { playSound } from '../../lib/sound.ts';
-import { GameButton } from './GameButton.tsx';
 import { GameIcon } from './GameIcon.tsx';
 
 /** Coffre générique (icônes, notes) : le coffre rare. */
@@ -44,14 +43,68 @@ function Bolts({ color }: { readonly color: string }) {
 }
 
 /**
+ * Lumière qui SORT du coffre ouvert : origine à l'ouverture du couvercle, un faisceau jaillit vers
+ * le haut, puis les rayons s'étendent en tournant. Avec prefers-reduced-motion : l'état final, fixe.
+ */
+function ChestLight({ color }: { readonly color: string }) {
+  const reduce = useReducedMotion();
+  return (
+    <div
+      data-testid="chest-light"
+      aria-hidden
+      className="pointer-events-none absolute top-[30%] left-1/2 -z-10 h-0 w-0"
+    >
+      {/* Faisceau qui monte de l'ouverture. */}
+      <motion.div
+        className="absolute bottom-0 left-1/2 h-[260px] w-24 origin-bottom -translate-x-1/2 mix-blend-screen blur-md"
+        style={{ background: `linear-gradient(to top, #fff 0%, ${color} 40%, transparent 100%)` }}
+        initial={reduce ? false : { scaleY: 0, scaleX: 0.4, opacity: 0 }}
+        animate={reduce ? { opacity: 0.7 } : { scaleY: [0, 1, 0.7], scaleX: [0.4, 1, 1.3], opacity: [0, 1, 0.7] }}
+        transition={{ duration: 0.9, ease: 'easeOut' }}
+      />
+      {/* Rayons qui s'étendent depuis l'ouverture, puis tournent. */}
+      <motion.div
+        className="absolute top-1/2 left-1/2 h-[620px] w-[620px] -translate-x-1/2 -translate-y-1/2"
+        initial={reduce ? false : { scale: 0.05, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.1, ease: 'easeOut' }}
+      >
+        <motion.div
+          className="h-full w-full"
+          style={{
+            background: `repeating-conic-gradient(from 0deg, ${color}66 0deg 10deg, transparent 10deg 24deg)`,
+            maskImage: 'radial-gradient(circle, black 10%, transparent 62%)',
+          }}
+          animate={reduce ? undefined : { rotate: 360 }}
+          transition={{ duration: 14, repeat: Infinity, ease: 'linear' }}
+        />
+      </motion.div>
+      {/* Éclat au cœur de l'ouverture. */}
+      <motion.span
+        className="absolute top-1/2 left-1/2 h-24 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full mix-blend-screen blur-md"
+        style={{ background: `radial-gradient(ellipse, #fff 0%, ${color} 45%, transparent 75%)` }}
+        animate={reduce ? { opacity: 0.9 } : { opacity: [0.6, 1, 0.6], scale: [0.9, 1.15, 0.9] }}
+        transition={{ duration: 1.8, repeat: reduce ? 0 : Infinity, ease: 'easeInOut' }}
+      />
+    </div>
+  );
+}
+
+/**
  * Coffre d'équipement (fin de série entièrement juste, victoire contre un boss), en plein écran :
- * le coffre de sa rareté tremble entouré d'éclairs ; un toucher l'ouvre dans un flash (image du
- * coffre ouvert), des rayons tournent et le butin jaillit objet par objet.
+ * le coffre de sa rareté tremble entouré d'éclairs ; un toucher n'importe où l'ouvre dans un flash,
+ * la lumière jaillit du coffre et le butin sort objet par objet ; un nouveau toucher continue
+ * (Entrée et Espace aussi : un bouton invisible couvre l'écran).
  * Pas de coffre cette fois : un mot pour dire comment en gagner un.
  */
 export function ChestReveal({ chest }: { readonly chest: Chest | null }) {
   const reduce = useReducedMotion();
   const [stage, setStage] = useState<'closed' | 'open' | 'done'>('closed');
+  const target = useRef<HTMLButtonElement>(null);
+  // Entrée et Espace marchent dès l'affichage : le bouton plein écran prend le focus.
+  useEffect(() => {
+    target.current?.focus();
+  }, [chest]);
   if (!chest) {
     return (
       <p className="cartoon bg-surface-2 flex items-center justify-center gap-2 p-3 text-center font-bold">
@@ -100,10 +153,13 @@ export function ChestReveal({ chest }: { readonly chest: Chest | null }) {
     );
   }
 
-  const open = () => {
-    if (stage !== 'closed') return;
-    setStage('open');
-    playSound('chest');
+  const advance = () => {
+    if (stage === 'closed') {
+      setStage('open');
+      playSound('chest');
+    } else {
+      setStage('done');
+    }
   };
 
   return (
@@ -113,62 +169,50 @@ export function ChestReveal({ chest }: { readonly chest: Chest | null }) {
       aria-label={stage === 'closed' ? 'Un coffre d’équipement !' : r.name}
       className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-6 overflow-hidden bg-[radial-gradient(circle_at_50%_45%,#3b1d6e_0%,#160b2e_60%,#08040f_100%)] px-4 text-center"
     >
+      {/* Cible de tout l'écran : toucher, clic, Entrée ou Espace font avancer. */}
+      <button
+        type="button"
+        ref={target}
+        onClick={advance}
+        aria-label={stage === 'closed' ? 'Ouvrir le coffre' : 'Continuer'}
+        className="absolute inset-0 z-0 cursor-pointer"
+      />
       <motion.h2
         key={stage}
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="font-display text-toon text-4xl tracking-wide sm:text-5xl"
+        className="font-display text-toon pointer-events-none relative z-10 text-4xl tracking-wide sm:text-5xl"
       >
         {stage === 'closed' ? 'Un coffre d’équipement !' : r.name}
       </motion.h2>
 
-      <div className="relative flex h-[min(52vw,300px)] w-[min(80vw,420px)] items-center justify-center">
+      <div className="pointer-events-none relative z-10 flex h-[min(52vw,300px)] w-[min(80vw,420px)] items-center justify-center">
         {stage === 'closed' ? (
           <>
             <Bolts color={r.glow} />
-            <motion.button
-              type="button"
-              onClick={open}
-              aria-label="Ouvrir le coffre"
+            <motion.div
               animate={reduce ? undefined : { rotate: [0, -7, 7, -5, 5, 0], scale: [1, 1.04, 1] }}
               transition={{ duration: 0.7, repeat: Infinity, repeatDelay: 0.35 }}
-              className="relative z-10 flex cursor-pointer flex-col items-center gap-2"
+              className="relative z-10 flex flex-col items-center gap-2"
               style={{ filter: `drop-shadow(0 0 28px ${r.glow})` }}
             >
               <GameIcon id={chestIcon(chest.rarity)} size={190} />
-            </motion.button>
+            </motion.div>
           </>
         ) : (
           <>
-            {/* Rayons de lumière qui tournent derrière le coffre ouvert. */}
-            <motion.div
-              aria-hidden
-              className="pointer-events-none absolute inset-[-60%]"
-              style={{
-                background: `repeating-conic-gradient(from 0deg, ${r.glow}55 0deg 10deg, transparent 10deg 24deg)`,
-                maskImage: 'radial-gradient(circle, black 15%, transparent 60%)',
-              }}
-              animate={reduce ? undefined : { rotate: 360 }}
-              transition={{ duration: 14, repeat: Infinity, ease: 'linear' }}
-            />
             <motion.div
               initial={{ scale: 0.4, rotate: -10 }}
               animate={{ scale: [0.4, 1.25, 1], rotate: 0 }}
               transition={{ duration: 0.6, ease: 'easeOut' }}
-              style={{ filter: `drop-shadow(0 0 30px ${r.glow})` }}
-              className="relative"
+              className="relative isolate"
             >
+              {/* La lumière sort de l'ouverture du coffre, derrière lui. */}
+              <ChestLight color={r.glow} />
               {/* Le même coffre, ouvert, qui bondit dans la lumière. */}
-              <GameIcon id={chestIcon(chest.rarity, true)} size={190} />
-              {/* Halo lumineux qui sort de l'intérieur du coffre ouvert. */}
-              <motion.span
-                aria-hidden
-                className="pointer-events-none absolute left-1/2 top-[30%] h-[45%] w-[70%] -translate-x-1/2 rounded-full mix-blend-screen blur-md"
-                style={{ background: `radial-gradient(ellipse at 50% 60%, #fff 0%, ${r.glow} 35%, transparent 70%)` }}
-                initial={{ opacity: 0, scale: 0.6 }}
-                animate={reduce ? { opacity: 0.9 } : { opacity: [0.6, 1, 0.6], scale: [0.9, 1.08, 0.9] }}
-                transition={{ duration: 1.8, repeat: reduce ? 0 : Infinity, ease: 'easeInOut' }}
-              />
+              <div style={{ filter: `drop-shadow(0 0 30px ${r.glow})` }}>
+                <GameIcon id={chestIcon(chest.rarity, true)} size={190} />
+              </div>
             </motion.div>
             {/* Flash blanc de l'ouverture. */}
             <motion.div
@@ -186,13 +230,16 @@ export function ChestReveal({ chest }: { readonly chest: Chest | null }) {
         <motion.p
           animate={reduce ? undefined : { opacity: [0.5, 1, 0.5] }}
           transition={{ duration: 1.4, repeat: Infinity }}
-          className="font-display text-toon text-2xl"
+          className="font-display text-toon pointer-events-none relative z-10 text-2xl"
         >
           Touche le coffre pour l’ouvrir !
         </motion.p>
       ) : (
         <>
-          <div className="flex flex-wrap items-end justify-center gap-5" aria-live="polite">
+          <div
+            className="pointer-events-none relative z-10 flex flex-wrap items-end justify-center gap-5"
+            aria-live="polite"
+          >
             {loot.map((l, k) => (
               <motion.span
                 key={l.id}
@@ -210,12 +257,10 @@ export function ChestReveal({ chest }: { readonly chest: Chest | null }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 + 0.3 * loot.length }}
-            className="flex flex-col items-center gap-3"
+            className="pointer-events-none relative z-10 flex flex-col items-center gap-2"
           >
             <p className="font-bold text-white">Ton équipement t’attend pour les combats de boss !</p>
-            <GameButton icon="icons-navigation-next" onClick={() => setStage('done')}>
-              Super !
-            </GameButton>
+            <p className="text-sm font-bold text-white/70">Touche l’écran pour continuer</p>
           </motion.div>
         </>
       )}

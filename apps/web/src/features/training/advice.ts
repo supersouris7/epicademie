@@ -1,4 +1,5 @@
 import { getChapterOfSkill } from '@questeo/content';
+import { RECENT_ANSWERS } from '@questeo/engine';
 import type { SkillProgress } from '@questeo/shared';
 
 /** Réponses d'une partie pour une notion. */
@@ -8,32 +9,39 @@ export interface RecapRow {
   readonly correct: number;
 }
 
-/** Notion conseillée et d'où vient le conseil (cette partie, ou l'historique de l'élève). */
+/** Notion souvent ratée, à proposer à l'entraînement. */
 export interface Advice {
   readonly skillId: string;
   readonly chapterId: string;
-  readonly from: 'partie' | 'historique';
+  /** Erreurs parmi les dernières réponses (premier essai) de l'élève sur la notion. */
+  readonly errors: number;
 }
 
-/** En dessous de 80 % de réussite (au moins 3 réponses), une notion de l'historique est à reprendre. */
-const WEAK_RATE = 0.8;
+/** Nombre d'erreurs, parmi les `RECENT_ANSWERS` (10) dernières réponses, à partir duquel une notion est « souvent ratée ». */
+export const OFTEN_MISSED = 3;
+
+/** Erreurs de l'élève parmi ses 10 dernières réponses (premier essai) sur une notion. */
+export function recentErrors(progress: SkillProgress): number {
+  return progress.recent.slice(-RECENT_ANSWERS).filter((ok) => !ok).length;
+}
 
 /**
- * Entraînement conseillé en fin de partie (décision du 21/11/2026) : la notion la plus ratée de
- * la partie ; sans erreur, la notion la plus faible de l'élève (historique) ; sinon, rien.
- * Seules les notions d'entraînement comptent (pas les questions propres aux boss).
+ * Notion à proposer en fin de partie (décision du 22/11/2026) : une notion est « souvent ratée »
+ * quand l'élève a fait au moins 3 erreurs sur ses 10 dernières réponses (historique à jour, partie
+ * comprise). On prend en priorité une notion jouée dans la partie, puis la plus ratée. Seules les
+ * notions d'entraînement comptent (pas les questions propres aux boss). Sinon : rien.
  */
-export function adviceFor(rows: readonly RecapRow[], history: readonly SkillProgress[] = []): Advice | null {
-  const trainable = (id: string) => getChapterOfSkill(id)?.id;
-  const missed = rows
-    .filter((r) => r.correct < r.answered && trainable(r.skillId))
+export function oftenMissed(rows: readonly RecapRow[], history: readonly SkillProgress[] = []): Advice | null {
+  const played = new Set(rows.map((r) => r.skillId));
+  const candidates = history
+    .map((s) => ({ s, errors: recentErrors(s), chapterId: getChapterOfSkill(s.skillId)?.id }))
+    .filter((c) => c.errors >= OFTEN_MISSED && c.chapterId !== undefined)
     .sort(
-      (a, b) => b.answered - b.correct - (a.answered - a.correct) || a.correct / a.answered - b.correct / b.answered,
+      (a, b) =>
+        Number(played.has(b.s.skillId)) - Number(played.has(a.s.skillId)) ||
+        b.errors - a.errors ||
+        a.s.skillId.localeCompare(b.s.skillId),
     );
-  const fromGame = missed[0];
-  if (fromGame) return { skillId: fromGame.skillId, chapterId: trainable(fromGame.skillId) ?? '', from: 'partie' };
-  const weakest = history
-    .filter((s) => s.attempts >= 3 && s.correct / s.attempts < WEAK_RATE && trainable(s.skillId))
-    .sort((a, b) => a.correct / a.attempts - b.correct / b.attempts)[0];
-  return weakest ? { skillId: weakest.skillId, chapterId: trainable(weakest.skillId) ?? '', from: 'historique' } : null;
+  const best = candidates[0];
+  return best ? { skillId: best.s.skillId, chapterId: best.chapterId ?? '', errors: best.errors } : null;
 }

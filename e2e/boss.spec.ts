@@ -127,12 +127,13 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   await chest.getByRole('button', { name: 'Ouvrir le coffre' }).click();
   await page
     .getByRole('dialog', { name: /Coffre (rare|épique)/ })
-    .getByRole('button', { name: 'Super !' })
+    .getByRole('button', { name: 'Continuer' })
     .click();
   await expect(page.getByText('1re victoire : un éclat de relique !')).toBeVisible();
   // Un cœur perdu : médaille d'argent.
   await expect(page.getByRole('heading', { name: 'Médaille Argent' })).toBeVisible();
 
+  await page.getByRole('button', { name: 'Suite' }).click();
   await page.getByRole('button', { name: 'Autres boss' }).click();
   await expect(relatifs.getByRole('button', { name: 'Rejouer' })).toBeVisible();
   await expect(relatifs).toContainText('vaincu 1 fois');
