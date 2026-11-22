@@ -10,6 +10,10 @@
   collectionnés), quatre grades (bronze, argent, or, diamant) par seuils.
 - Les badges se **calculent** à partir d'événements déjà enregistrés : aucune table d'attribution,
   donc aucune récompense en double possible, et un changement de seuil s'applique à tous.
+- Images : 24 médailles (planche du client du 21/11/2026, original dans
+  `apps/web/assets-src/originals/rewards/badges/`), `rewards/badges/<badge>-<rang>.webp`, même
+  canevas, détourées par `pnpm --filter @questeo/web assets:badges`. Un badge non obtenu affiche
+  la médaille de bronze grisée.
 - Les badges ne donnent ni pièces ni objets (pas d'économie à protéger).
 - **Pas d'encouragement à la répétition facile** : une série parfaite compte une fois par notion
   et par jour ; la persévérance compte les erreurs corrigées au second essai ; une notion
