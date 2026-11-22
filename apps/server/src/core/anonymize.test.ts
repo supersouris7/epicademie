@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { anonymizeText } from './anonymize.ts';
+import { anonymizeText, maskTokens, neutralizeGithub } from './anonymize.ts';
 
 describe('anonymisation des textes libres', () => {
   it('masque e-mails, liens et numéros de téléphone', () => {
@@ -18,5 +18,18 @@ describe('anonymisation des textes libres', () => {
 
   it('laisse intact un texte sans donnée personnelle (nombres courts compris)', () => {
     expect(anonymizeText('6 × 7 = 42, pas 43 (page 12)', ['Zoé'])).toBe('6 × 7 = 42, pas 43 (page 12)');
+  });
+});
+
+describe('jetons et mentions', () => {
+  it('masque Bearer, JWT et chaînes de 16 caractères ou plus', () => {
+    expect(maskTokens('Bearer abc eyJhbGciOi.x.y ABCDEFGHIJKLMNOP court')).toBe('[masqué] [masqué] [masqué] court');
+  });
+
+  it('neutralise @ et #n sans changer le texte affiché', () => {
+    const out = neutralizeGithub('@a #12 #x');
+    expect(out).not.toContain('@a');
+    expect(out).not.toContain('#12');
+    expect(out.replaceAll('\u200b', '')).toBe('@a #12 #x');
   });
 });

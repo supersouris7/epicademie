@@ -25,6 +25,13 @@ que l'application envoie quoi que ce soit à l'extérieur, et sans donnée d'enf
   « exporté » est une commande distincte, lancée après la création des tickets. Une erreur déjà
   exportée dont le compteur augmente ensuite n'est pas ré-exportée.
 
+- **Durcissement (revue sécurité)** : l'export ré-applique l'anonymisation à chaque ligne (lignes
+  antérieures à 0018 comprises) et neutralise `@` et `#<n>` (mentions/références GitHub) ; l'écran
+  est limité aux routes connues de l'appli (sinon `/autre`) et la version à un jeton court ; les
+  messages et piles d'erreur sont purgés des jetons (Bearer, JWT, chaînes de 16 caractères ou
+  plus), plafonnés à 300 caractères ; 50 signalements par jour et par famille (429 au-delà) ;
+  `client_errors` bornée à 5000 empreintes non exportées (ensuite, seuls les compteurs montent).
+
 ## Conséquences
 
 - Aucune dépendance sortante ; l'export est piloté depuis l'hôte (cron, chef de projet).

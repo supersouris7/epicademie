@@ -1,5 +1,9 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { Profile, Report } from '@questeo/shared';
+import { sql } from 'drizzle-orm';
+import { AppError } from '../../core/errors.ts';
+import { createTelemetryService } from '../telemetry/index.ts';
+import { createPedagogyService } from './pedagogy.service.ts';
 import { createTestApp, profileInput, TEST_PASSWORD } from '../../testing/harness.ts';
 import { runReports } from '../../cli/reports.ts';
 import { setAccountRole } from '../accounts/index.ts';
@@ -50,14 +54,17 @@ const exported = async () =>
 
 describe('signalement général', () => {
   it('est enregistré avec écran normalisé et version, et visible dans la vue admin', async () => {
-    const res = await general({ screen: '/boss/3f2b1c9e-1111-4222-8333-444455556666?x=1', comment: 'plus de son' });
+    const res = await general({
+      screen: '/parent/enfant/3f2b1c9e-1111-4222-8333-444455556666?x=1',
+      comment: 'plus de son',
+    });
     expect(res.statusCode).toBe(201);
     expect(await adminList()).toEqual([
       expect.objectContaining({
         kind: 'general',
         reason: 'bug',
         skillId: null,
-        screen: '/boss/:id',
+        screen: '/parent/enfant/:profileId',
         appVersion: '1.2.3',
         comment: 'plus de son',
       }),
@@ -146,5 +153,70 @@ describe('export en ligne de commande', () => {
   it('refuse une commande inconnue', async () => {
     await expect(runReports(t.database, ['supprimer'])).rejects.toThrow(/Usage/);
     await expect(runReports(t.database, ['mark-exported'])).rejects.toThrow(/Usage/);
+  });
+});
+
+describe('durcissement (revue sécurité)', () => {
+  const clock = { today: () => '2026-11-22', now: () => new Date('2026-11-22T10:00:00Z') };
+
+  it('export : un ancien signalement enregistré brut est ré-anonymisé', async () => {
+    const familyId = t.family().me.family.id;
+    await t.database.db.execute(
+      sql`insert into question_reports (family_id, skill_id, level, seed, skill_version, reason, comment)
+          values (${familyId}, 'm5-tables', 1, 4, 1, 'ambigue', 'Léa dit : écrire à papa@mail.fr ou 06 12 34 56 78')`,
+    );
+    const { reports } = await exported();
+    expect(reports[0]?.comments).toEqual(['[masqué] dit : écrire à [masqué] ou [masqué]']);
+  });
+
+  it('écran : seules les routes connues sont gardées, sinon « /autre »', async () => {
+    await general({ screen: '/jean.dupont@x.fr' });
+    await general({ screen: '/hub', reason: 'son' });
+    const screens = (await exported()).reports.map((r) => r.screen);
+    expect(screens.sort()).toEqual(['/autre', '/hub']);
+    expect(JSON.stringify(await exported())).not.toContain('jean');
+  });
+
+  it('erreurs : jetons masqués, message plafonné à 300 caractères', async () => {
+    await clientError({
+      message: `Échec Bearer abc.def eyJhbGciOiJIUzI1NiJ9.payload.sig clé=sk_live_AAAAAAAAAAAAAAAAAAAAAAAA ${'x '.repeat(150)}`,
+    });
+    const { errors } = await exported();
+    const text = JSON.stringify(errors);
+    expect(text).not.toMatch(/abc\.def|eyJ|sk_live|AAAAAAAA/);
+    expect(errors[0]?.message.length).toBeLessThanOrEqual(300);
+  });
+
+  it('export : mentions et références GitHub neutralisées dans les textes libres', async () => {
+    await question({ comment: 'merci @octocat, voir #12' });
+    const [group] = (await exported()).reports;
+    const comment = group?.comments[0] ?? '';
+    expect(comment).not.toContain('@octocat');
+    expect(comment).not.toContain('#12');
+    expect(comment.replaceAll('\u200b', '')).toBe('merci @octocat, voir #12');
+  });
+
+  it('plafond : au-delà de la limite quotidienne, 429 pour la famille', async () => {
+    const service = createPedagogyService({ db: t.database.db, clock, dailyLimit: 2 });
+    const familyId = t.family().me.family.id;
+    const input = { reason: 'bug', screen: '/hub', appVersion: '1' } as const;
+    await service.reportGeneral(input, familyId);
+    await service.reportGeneral(input, familyId);
+    await expect(service.reportGeneral(input, familyId)).rejects.toMatchObject({ code: 'RATE_LIMITED' });
+    await expect(service.reportGeneral(input, familyId)).rejects.toBeInstanceOf(AppError);
+  });
+
+  it('erreurs : table pleine, plus de nouvelle empreinte mais les compteurs montent', async () => {
+    const service = createTelemetryService({ db: t.database.db, clock, maxPending: 2 });
+    const err = (message: string) => ({ message, path: '/hub', release: 'v1' });
+    await service.record(err('une'));
+    await service.record(err('deux'));
+    await service.record(err('trois'));
+    await service.record(err('une'));
+    const pending = await service.pendingExport();
+    expect(pending.map((e) => [e.message, e.count]).sort()).toEqual([
+      ['deux', 1],
+      ['une', 2],
+    ]);
   });
 });

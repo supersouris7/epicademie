@@ -10,8 +10,8 @@ import type {
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import { anonymizeText } from '../../core/anonymize.ts';
-import { badRequest, notFound } from '../../core/errors.ts';
-import { normalizeScreen } from '../../core/screen.ts';
+import { AppError, badRequest, notFound } from '../../core/errors.ts';
+import { normalizeScreen, normalizeVersion } from '../../core/screen.ts';
 import { pendingReportGroups } from './report-export.ts';
 import { pedagogyRepo } from './pedagogy.repo.ts';
 
@@ -69,7 +69,18 @@ function stateOf(e: {
   return e.reviewed ? 'relue' : 'validee-auto';
 }
 
-export function createPedagogyService({ db, clock }: { db: Db; clock: Clock }) {
+/** Signalements par famille et par jour : au-delà, 429 (une famille ne peut pas inonder le suivi). */
+const DAILY_REPORT_LIMIT = 50;
+
+export function createPedagogyService({
+  db,
+  clock,
+  dailyLimit = DAILY_REPORT_LIMIT,
+}: {
+  db: Db;
+  clock: Clock;
+  dailyLimit?: number;
+}) {
   const repo = pedagogyRepo(db);
 
   const contentList = async (): Promise<ContentSkill[]> => {
@@ -106,10 +117,21 @@ export function createPedagogyService({ db, clock }: { db: Db; clock: Clock }) {
     return anonymizeText(comment, await repo.familyNames(familyId));
   };
 
+  const assertQuota = async (familyId: string) => {
+    const since = new Date(clock.now().getTime() - 24 * 3600 * 1000);
+    if ((await repo.countSince(familyId, since)) >= dailyLimit) {
+      throw new AppError(
+        'RATE_LIMITED',
+        'Tu as déjà envoyé beaucoup de signalements aujourd’hui : merci, réessaie demain.',
+      );
+    }
+  };
+
   return {
     async report(input: ReportCreate, familyId: string): Promise<{ id: string }> {
       const skill = getAnySkill(input.skillId);
       if (!skill) throw badRequest('Notion inconnue');
+      await assertQuota(familyId);
       return {
         id: await repo.insertReport({
           familyId,
@@ -123,19 +145,32 @@ export function createPedagogyService({ db, clock }: { db: Db; clock: Clock }) {
 
     /** Signalement général : écran (sans identifiant) et version, aucun profil rattaché. */
     async reportGeneral(input: GeneralReportCreate, familyId: string): Promise<{ id: string }> {
+      await assertQuota(familyId);
       return {
         id: await repo.insertReport({
           familyId,
           reason: input.reason,
           comment: await cleanComment(input.comment, familyId),
-          general: { screen: normalizeScreen(input.screen), appVersion: input.appVersion },
+          general: { screen: normalizeScreen(input.screen), appVersion: normalizeVersion(input.appVersion) },
         }),
       };
     },
 
     /** Signalements non exportés, anonymisés et regroupés (commande `reports:export`). */
     async pendingExport() {
-      return pendingReportGroups(await repo.pendingExport());
+      // Ré-anonymise chaque ligne : couvre les signalements enregistrés bruts avant la migration 0018.
+      const names = new Map<string, string[]>();
+      const rows = await repo.pendingExport();
+      for (const r of rows) {
+        if (r.familyId && !names.has(r.familyId)) names.set(r.familyId, await repo.familyNames(r.familyId));
+      }
+      return pendingReportGroups(
+        rows.map((r) => ({
+          ...r,
+          comment: r.comment === null ? null : anonymizeText(r.comment, names.get(r.familyId ?? '') ?? []),
+          screen: r.screen === null ? null : anonymizeText(r.screen),
+        })),
+      );
     },
 
     markExported: (ids: readonly string[]) => repo.markExported(ids, clock.now()),

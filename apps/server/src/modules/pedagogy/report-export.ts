@@ -1,3 +1,4 @@
+import { neutralizeGithub } from '../../core/anonymize.ts';
 import type { questionReports } from '../../db/schema.ts';
 
 /**
@@ -36,7 +37,7 @@ export function pendingReportGroups(rows: readonly ReportRow[]): ReportGroup[] {
     const key = keyOf(r);
     const at = r.createdAt.toISOString();
     const g = groups.get(key);
-    const comment = r.comment?.trim();
+    const comment = r.comment?.trim() ? neutralizeGithub(r.comment.trim()) : undefined;
     if (!g) {
       groups.set(key, {
         ids: [r.id],
@@ -44,7 +45,7 @@ export function pendingReportGroups(rows: readonly ReportRow[]): ReportGroup[] {
         reason: r.reason,
         count: 1,
         question: r.skillId ? { skillId: r.skillId, level: r.level, seed: r.seed, version: r.skillVersion } : null,
-        screen: r.screen,
+        screen: r.screen === null ? null : neutralizeGithub(r.screen),
         appVersion: r.appVersion,
         comments: comment ? [comment] : [],
         firstAt: at,

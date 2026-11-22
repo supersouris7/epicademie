@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, isNull, sql } from 'drizzle-orm';
+import { and, desc, eq, gte, inArray, isNull, sql } from 'drizzle-orm';
 import type { ReportReason, ReportStatus } from '@questeo/shared';
 import type { Executor } from '../../db/client.ts';
 import { contentEvents, contentStates, profiles, questionReports } from '../../db/schema.ts';
@@ -28,6 +28,15 @@ export function pedagogyRepo(db: Executor) {
         .returning({ id: questionReports.id });
       if (!row) throw new Error('signalement sans retour');
       return row.id;
+    },
+
+    /** Signalements d'une famille depuis une date (quota quotidien). */
+    async countSince(familyId: string, since: Date): Promise<number> {
+      const [row] = await db
+        .select({ n: sql<number>`count(*)::int` })
+        .from(questionReports)
+        .where(and(eq(questionReports.familyId, familyId), gte(questionReports.createdAt, since)));
+      return row?.n ?? 0;
     },
 
     /** Pseudos des profils d'une famille (pour masquer les noms dans les commentaires). */
