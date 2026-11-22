@@ -1,4 +1,4 @@
-import { act, screen, within } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { generate } from '@questeo/content';
 import { renderApp } from '../../testing/renderApp.tsx';
@@ -97,6 +97,21 @@ describe('combat de boss', () => {
     expect(screen.getByRole('alertdialog', { name: 'Pause' })).toHaveTextContent('le boss garde ses vies');
     await user.click(screen.getByRole('button', { name: 'Reprendre' }));
     expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+  });
+
+  it('pause : Recommencer relance un combat identique', async () => {
+    const { user, server } = renderApp(PATH, { fakeTimers: true });
+    await skipIntro(user);
+    const before = server.battles.size;
+    await user.click(screen.getByRole('button', { name: 'Pause' }));
+    const labels = within(screen.getByRole('alertdialog', { name: 'Pause' }))
+      .getAllByRole('button')
+      .map((b) => b.textContent);
+    expect(labels).toEqual(['Reprendre', 'Recommencer', 'Quitter le combat']);
+    await user.click(screen.getByRole('button', { name: 'Recommencer' }));
+    await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument());
+    expect(await screen.findByRole('button', { name: 'C’est parti !' })).toBeInTheDocument();
+    await waitFor(() => expect(server.battles.size).toBe(before + 1));
   });
 
   it('combat expiré par une mise à jour : message et relance possible', async () => {

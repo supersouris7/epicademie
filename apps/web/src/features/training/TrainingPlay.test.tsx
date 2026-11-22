@@ -25,6 +25,24 @@ function lastQuestion(server: ReturnType<typeof renderApp>['server']): Question 
 const rightAnswer = (q: Question) => (q.answer.kind === 'number' ? q.answer.value.n.toString() : '');
 
 describe('partie d’entraînement', () => {
+  it('pause : Recommencer relance la même série, sans bilan ni confirmation', async () => {
+    const { user, server } = renderApp(PATH);
+    await screen.findByRole('button', { name: ANSWER_KEY });
+    const starts = () => server.calls.filter((c) => c.path.endsWith('/sessions') && c.method === 'POST').length;
+    const before = starts();
+    await user.click(screen.getByRole('button', { name: 'Pause' }));
+    const dialog = screen.getByRole('alertdialog', { name: 'Pause' });
+    const names = within(dialog)
+      .getAllByRole('button')
+      .map((b) => b.textContent);
+    expect(names).toEqual(['Reprendre', 'Recommencer', 'Quitter la série']);
+    await user.click(within(dialog).getByRole('button', { name: 'Recommencer' }));
+    await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument());
+    await screen.findByRole('button', { name: ANSWER_KEY });
+    await waitFor(() => expect(starts()).toBe(before + 1));
+    expect(server.calls.some((c) => c.path.endsWith('/finish'))).toBe(false);
+  });
+
   it('erreur, indice, 2e essai réussi, puis série complète jusqu’au bilan', { timeout: 90_000 }, async () => {
     const { user, server } = renderApp(PATH);
     expect(await screen.findByRole('progressbar', { name: 'Progression de la série' })).toBeInTheDocument();

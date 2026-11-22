@@ -10,6 +10,8 @@ interface ConfirmDialogProps {
   readonly cancel: string;
   readonly onConfirm: () => void;
   readonly onCancel: () => void;
+  /** Choix intermédiaire (ex. « Recommencer »), entre annuler et confirmer. */
+  readonly extra?: { readonly label: string; readonly onClick: () => void };
   /** Humeur de Questy (triste par défaut ; « pause » plus neutre). */
   readonly mood?: MoodId;
   /** Choix positif (aide, rappel) : bouton de confirmation vert, l'autre neutre. Sinon : quitter. */
@@ -24,6 +26,7 @@ export function ConfirmDialog({
   cancel,
   onConfirm,
   onCancel,
+  extra,
   mood = 'sad',
   positive = false,
 }: ConfirmDialogProps) {
@@ -50,6 +53,11 @@ export function ConfirmDialog({
           >
             {cancel}
           </GameButton>
+          {extra && (
+            <GameButton variant="surface" icon="icons-navigation-replay" onClick={extra.onClick}>
+              {extra.label}
+            </GameButton>
+          )}
           <GameButton
             variant={positive ? 'success' : 'danger'}
             icon={positive ? 'icons-navigation-check' : 'icons-navigation-close'}
