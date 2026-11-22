@@ -3,6 +3,7 @@ import { Sprite } from '../ui/game/Sprite.tsx';
 import { motion, useReducedMotion } from 'motion/react';
 import type { HeroId } from '@questeo/shared';
 import type { HeroExpression } from '../../design/assets.ts';
+import { BlinkText } from '../ui/game/BlinkText.tsx';
 import { GameButton } from '../ui/game/GameButton.tsx';
 import { GameIcon } from '../ui/game/GameIcon.tsx';
 import { QuestyPose } from '../ui/mascot/QuestyPose.tsx';
@@ -247,14 +248,7 @@ export function BossCloseUp({
           {text}
         </Bubble>
       </motion.p>
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={reduce ? { opacity: 1 } : { opacity: [0.4, 1, 0.4] }}
-        transition={{ delay: 1.2, duration: 1.6, repeat: reduce ? 0 : Infinity }}
-        className="font-display text-toon pointer-events-none relative text-xl"
-      >
-        Touche l’écran pour continuer
-      </motion.p>
+      <BlinkText>Touche l’écran pour continuer</BlinkText>
     </div>
   );
 }

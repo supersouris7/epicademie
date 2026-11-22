@@ -37,4 +37,12 @@ export const brandAssets = [
     'Fond des combats de boss.',
     2,
   ),
+  a(
+    'panelBackdrop',
+    'environments/equipement-fond.webp',
+    'Fond du rectangle Équipement',
+    'arène violette aux anneaux dorés lumineux au centre, rubans de lumière et cristaux flottants',
+    'Fond du rectangle Équipement (Combat de boss).',
+    2,
+  ),
 ];

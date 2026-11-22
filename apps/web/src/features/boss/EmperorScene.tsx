@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { assetSrc } from '../../design/assets.ts';
 import { markEmperorSeen } from './emperor.ts';
+import { BlinkText } from '../../shared/ui/game/BlinkText.tsx';
 import { Bubble } from '../../shared/ui/Bubble.tsx';
 
 const LINES = {
@@ -88,15 +89,7 @@ export function EmperorScene({ profileId, onDone }: { readonly profileId: string
           {LINES[stage]}
         </Bubble>
       </motion.div>
-      <motion.p
-        key={`touche-${stage}`}
-        initial={{ opacity: 0 }}
-        animate={reduce ? { opacity: 1 } : { opacity: [0.4, 1, 0.4] }}
-        transition={{ delay: 1.2, duration: 1.6, repeat: reduce ? 0 : Infinity }}
-        className="font-display text-toon pointer-events-none relative text-xl"
-      >
-        Touche l’écran pour continuer
-      </motion.p>
+      <BlinkText key={`touche-${stage}`}>Touche l’écran pour continuer</BlinkText>
     </div>
   );
 }

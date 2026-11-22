@@ -1,7 +1,7 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
 # Academy Fighters — Kit combat (à joindre à ChatGPT)
 
-66 demandes · 84 images finales.
+67 demandes · 85 images finales.
 
 ## Pour toi (à lire avant de commencer)
 
@@ -16,7 +16,7 @@
 
 ```text
 Je te joins le fichier « kit-combat.md » et des images de référence de style (Questy, la mascotte, et l'interface du jeu).
-Lis tout le fichier : il fixe le style du jeu et contient 66 demandes d'images numérotées (héros, boss, ennemis, effets, arènes).
+Lis tout le fichier : il fixe le style du jeu et contient 67 demandes d'images numérotées (héros, boss, ennemis, effets, arènes).
 Règles :
 - Génère maintenant UNIQUEMENT l'image de la demande 1, puis attends.
 - Chaque fois que j'écris « suivant », génère la demande suivante. Une seule image par réponse, précédée seulement de « Demande N ».
@@ -67,315 +67,322 @@ COHÉRENCE DU KIT COMBAT
 
 ## Demandes
 
-### Demande 1 — Lina — animation sur place
+### Demande 1 — Fond du rectangle Équipement
+
+```text
+Image 1536×1024, plein cadre avec décor (pas de fond magenta). Arène violette aux anneaux dorés lumineux au centre, rubans de lumière et cristaux flottants.
+Cadrage : fond peint très large, motif centré, sans texte.
+```
+
+### Demande 2 — Lina — animation sur place
 
 ```text
 Image 1536×1024. Lina, fille aux longs cheveux violets en queue de cheval, barrette étoile dorée, veste violette et blanche à liserés dorés, jupe plissée violette, chaussettes rayées, baskets blanches à étoile. Animation idle en 8 images.
 Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
 ```
 
-### Demande 2 — Lina — animation victoire
+### Demande 3 — Lina — animation victoire
 
 ```text
 Image 1536×1024. Lina, fille aux longs cheveux violets en queue de cheval, barrette étoile dorée, veste violette et blanche à liserés dorés, jupe plissée violette, chaussettes rayées, baskets blanches à étoile. Animation victory en 8 images.
 Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
 ```
 
-### Demande 3 — Lina — pose course
+### Demande 4 — Lina — pose course
 
 ```text
 Image 1536×1024. Lina, fille aux longs cheveux violets en queue de cheval, barrette étoile dorée, veste violette et blanche à liserés dorés, jupe plissée violette, chaussettes rayées, baskets blanches à étoile. Pose course.
 Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
 ```
 
-### Demande 4 — Lina — pose tir
+### Demande 5 — Lina — pose tir
 
 ```text
 Image 1536×1024. Lina, fille aux longs cheveux violets en queue de cheval, barrette étoile dorée, veste violette et blanche à liserés dorés, jupe plissée violette, chaussettes rayées, baskets blanches à étoile. Pose tir.
 Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
 ```
 
-### Demande 5 — Lina — pose bouclier
+### Demande 6 — Lina — pose bouclier
 
 ```text
 Image 1536×1024. Lina, fille aux longs cheveux violets en queue de cheval, barrette étoile dorée, veste violette et blanche à liserés dorés, jupe plissée violette, chaussettes rayées, baskets blanches à étoile. Pose bouclier.
 Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
 ```
 
-### Demande 6 — Lina — pose touché
+### Demande 7 — Lina — pose touché
 
 ```text
 Image 1536×1024. Lina, fille aux longs cheveux violets en queue de cheval, barrette étoile dorée, veste violette et blanche à liserés dorés, jupe plissée violette, chaussettes rayées, baskets blanches à étoile. Pose touché.
 Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
 ```
 
-### Demande 7 — Lina — pose K.-O.
+### Demande 8 — Lina — pose K.-O.
 
 ```text
 Image 1536×1024. Lina, fille aux longs cheveux violets en queue de cheval, barrette étoile dorée, veste violette et blanche à liserés dorés, jupe plissée violette, chaussettes rayées, baskets blanches à étoile. Pose K.-O..
 Cadrage : personnage en pied, trois quarts tourné vers la droite, pieds à 92 % de la hauteur de sa case, tête vers 8 %, même échelle et même ligne de sol dans toutes les cases.
 ```
 
-### Demande 8 — Lina — joie
+### Demande 9 — Lina — joie
 
 ```text
 Image 1024×1024. Lina, tête seule, expression joie.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 9 — Lina — rire
+### Demande 10 — Lina — rire
 
 ```text
 Image 1024×1024. Lina, tête seule, expression rire.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 10 — Lina — enthousiaste
+### Demande 11 — Lina — enthousiaste
 
 ```text
 Image 1024×1024. Lina, tête seule, expression enthousiaste.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 11 — Lina — confiant
+### Demande 12 — Lina — confiant
 
 ```text
 Image 1024×1024. Lina, tête seule, expression confiant.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 12 — Lina — determine
+### Demande 13 — Lina — determine
 
 ```text
 Image 1024×1024. Lina, tête seule, expression determine.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 13 — Lina — clin-oeil
+### Demande 14 — Lina — clin-oeil
 
 ```text
 Image 1024×1024. Lina, tête seule, expression clin-oeil.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 14 — Lina — surprise
+### Demande 15 — Lina — surprise
 
 ```text
 Image 1024×1024. Lina, tête seule, expression surprise.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 15 — Lina — reflexion
+### Demande 16 — Lina — reflexion
 
 ```text
 Image 1024×1024. Lina, tête seule, expression reflexion.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 16 — Lina — affection
+### Demande 17 — Lina — affection
 
 ```text
 Image 1024×1024. Lina, tête seule, expression affection.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 17 — Lina — colere
+### Demande 18 — Lina — colere
 
 ```text
 Image 1024×1024. Lina, tête seule, expression colere.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 18 — Lina — triste
+### Demande 19 — Lina — triste
 
 ```text
 Image 1024×1024. Lina, tête seule, expression triste.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 19 — Lina — etourdi
+### Demande 20 — Lina — etourdi
 
 ```text
 Image 1024×1024. Lina, tête seule, expression etourdi.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 20 — Sorcier π — animation sur place
+### Demande 21 — Sorcier π — animation sur place
 
 ```text
 Image 1536×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, 8 images du calme à la rage.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 21 — Sorcier π — pose idle
+### Demande 22 — Sorcier π — pose idle
 
 ```text
 Image 1536×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, pose idle.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 22 — Sorcier π — pose attack
+### Demande 23 — Sorcier π — pose attack
 
 ```text
 Image 1536×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, pose attack.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 23 — Sorcier π — pose shield
+### Demande 24 — Sorcier π — pose shield
 
 ```text
 Image 1536×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, pose shield.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 24 — Sorcier π — pose hurt
+### Demande 25 — Sorcier π — pose hurt
 
 ```text
 Image 1536×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, pose hurt.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 25 — Sorcier π — pose defeat
+### Demande 26 — Sorcier π — pose defeat
 
 ```text
 Image 1536×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, pose defeat.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 26 — Sorcier π — pose cast
+### Demande 27 — Sorcier π — pose cast
 
 ```text
 Image 1536×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, pose cast.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 27 — Sorcier π — pose charge
+### Demande 28 — Sorcier π — pose charge
 
 ```text
 Image 1536×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, pose charge.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 28 — Sorcier π — pose victory
+### Demande 29 — Sorcier π — pose victory
 
 ```text
 Image 1536×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, pose victory.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 29 — Sorcier π — menace
+### Demande 30 — Sorcier π — menace
 
 ```text
 Image 1024×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, tête seule, yeux bleus plissés.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 30 — Sorcier π — concentre
+### Demande 31 — Sorcier π — concentre
 
 ```text
 Image 1024×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, tête seule, yeux bleus grands ouverts.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 31 — Sorcier π — surprise
+### Demande 32 — Sorcier π — surprise
 
 ```text
 Image 1024×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, tête seule, yeux bleus ronds.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 32 — Sorcier π — moqueur
+### Demande 33 — Sorcier π — moqueur
 
 ```text
 Image 1024×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, tête seule, yeux bleus mi-clos.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 33 — Sorcier π — perplexe
+### Demande 34 — Sorcier π — perplexe
 
 ```text
 Image 1024×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, tête seule, yeux bleus ronds, regard fixe.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 34 — Sorcier π — colere
+### Demande 35 — Sorcier π — colere
 
 ```text
 Image 1024×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, tête seule, yeux bleus en colère.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 35 — Sorcier π — inquiet
+### Demande 36 — Sorcier π — inquiet
 
 ```text
 Image 1024×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, tête seule, yeux rouges ronds.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 36 — Sorcier π — rage-menace
+### Demande 37 — Sorcier π — rage-menace
 
 ```text
 Image 1024×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, tête seule, yeux rouges plissés.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 37 — Sorcier π — rage-surprise
+### Demande 38 — Sorcier π — rage-surprise
 
 ```text
 Image 1024×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, tête seule, yeux rouges ronds, lueur.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 38 — Sorcier π — furieux
+### Demande 39 — Sorcier π — furieux
 
 ```text
 Image 1024×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, tête seule, yeux rouges furieux.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 39 — Sorcier π — rage-cri
+### Demande 40 — Sorcier π — rage-cri
 
 ```text
 Image 1024×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, tête seule, yeux rouges grands ouverts.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 40 — Sorcier π — rage-plisse
+### Demande 41 — Sorcier π — rage-plisse
 
 ```text
 Image 1024×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or, tête seule, yeux rouges mi-clos.
 Cadrage : même cadrage exact que le portrait de référence, seule l’expression change.
 ```
 
-### Demande 41 — Sorcier π — portrait
+### Demande 42 — Sorcier π — portrait
 
 ```text
 Image 1024×1024. Sorcier en armure dorée, capuche violette marquée π, visage d’ombre aux yeux lumineux, cube violet aux signes + − × ÷ sur la poitrine, cape violette et or.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 42 — L’Empereur du Savoir
+### Demande 43 — L’Empereur du Savoir
 
 ```text
 Image 1024×1024. Grand boss en armure violette et dorée, couronne à pointes, crinière blanche, cœur de galaxie, cape violette.
 Cadrage : personnage en pied centré, de face, fond transparent, halo et effets autour de lui.
 ```
 
-### Demande 43 — L’Empereur du Savoir et les matières
+### Demande 44 — L’Empereur du Savoir et les matières
 
 ```text
 Image 1024×1024. Le même grand boss entouré des symboles des six matières dans un anneau violet.
 Cadrage : personnage en pied centré, de face, fond transparent, halo et effets autour de lui.
 ```
 
-### Demande 44 — Bannière du Combat de boss
+### Demande 45 — Bannière du Combat de boss
 
 ```text
 Image 1536×1024, plein cadre avec décor (pas de fond magenta). L’Empereur du Savoir en buste, mains lumineuses, ciel violet étoilé et cristaux flottants.
 Cadrage : bannière très large, sujet au centre, fond peint jusqu’aux bords, sans texte.
 ```
 
-### Demande 45 — Planche « mobs » (9 éléments)
+### Demande 46 — Planche « mobs » (9 éléments)
 
 ```text
 Image 1024×1024 : planche de 9 éléments sur une grille invisible de 3 colonnes × 3 lignes (cases de 341×341 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
@@ -391,133 +398,133 @@ Cadrage de chaque élément : petit ennemi en pied, tourné vers la gauche, base
 9. Bloc de programmation orange arrondi et vivant (comme une brique de code), yeux blancs. Mignon mais espiègle.
 ```
 
-### Demande 46 — Mob π-bot — idle
+### Demande 47 — Mob π-bot — idle
 
 ```text
 Image 1536×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, pose idle.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 47 — Mob π-bot — attack
+### Demande 48 — Mob π-bot — attack
 
 ```text
 Image 1536×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, pose attack.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 48 — Mob π-bot — shield
+### Demande 49 — Mob π-bot — shield
 
 ```text
 Image 1536×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, pose shield.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 49 — Mob π-bot — run
+### Demande 50 — Mob π-bot — run
 
 ```text
 Image 1536×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, pose run.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 50 — Mob π-bot — jump
+### Demande 51 — Mob π-bot — jump
 
 ```text
 Image 1536×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, pose jump.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 51 — Mob π-bot — victory
+### Demande 52 — Mob π-bot — victory
 
 ```text
 Image 1536×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, pose victory.
 Cadrage : boss en pied, trois quarts face tourné vers la gauche (il fait face au héros), base à 92 % de la hauteur de sa case, occupe 85 % de la case, même échelle dans toutes les cases.
 ```
 
-### Demande 52 — Mob π-bot — tête menace
+### Demande 53 — Mob π-bot — tête menace
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, menace.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 53 — Mob π-bot — tête moqueur
+### Demande 54 — Mob π-bot — tête moqueur
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, moqueur.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 54 — Mob π-bot — tête joie
+### Demande 55 — Mob π-bot — tête joie
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, joie.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 55 — Mob π-bot — tête rire
+### Demande 56 — Mob π-bot — tête rire
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, rire.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 56 — Mob π-bot — tête surprise
+### Demande 57 — Mob π-bot — tête surprise
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, surprise.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 57 — Mob π-bot — tête triste
+### Demande 58 — Mob π-bot — tête triste
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, triste.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 58 — Mob π-bot — tête etourdi
+### Demande 59 — Mob π-bot — tête etourdi
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, etourdi.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 59 — Mob π-bot — tête colere
+### Demande 60 — Mob π-bot — tête colere
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, colere.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 60 — Mob π-bot — tête reflexion
+### Demande 61 — Mob π-bot — tête reflexion
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, reflexion.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 61 — Mob π-bot — tête idee
+### Demande 62 — Mob π-bot — tête idee
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, idee.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 62 — Mob π-bot — tête amour
+### Demande 63 — Mob π-bot — tête amour
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, amour.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 63 — Mob π-bot — tête dort
+### Demande 64 — Mob π-bot — tête dort
 
 ```text
 Image 1024×1024. Cube-robot violet et doré à visage noir aux yeux cyan lumineux, π doré sur le côté, × sur le dessus, ÷ sur la poitrine, gros poings, dort.
 Cadrage : tête et haut des épaules, trois quarts face, visage centré dans un cercle imaginaire de 80 % de la largeur (recadrage rond).
 ```
 
-### Demande 64 — Planche « effets-1 » (9 éléments)
+### Demande 65 — Planche « effets-1 » (9 éléments)
 
 ```text
 Image 1024×1024 : planche de 9 éléments sur une grille invisible de 3 colonnes × 3 lignes (cases de 341×341 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
@@ -533,7 +540,7 @@ Cadrage de chaque élément : effet centré, bords nets (pas de grand halo flou)
 9. Trois petites spirales dorées en orbite (étourdi).
 ```
 
-### Demande 65 — Planche « effets-2 » (3 éléments)
+### Demande 66 — Planche « effets-2 » (3 éléments)
 
 ```text
 Image 1024×1024 : planche de 3 éléments sur une grille invisible de 3 colonnes × 3 lignes (cases de 341×341 px), de gauche à droite puis de haut en bas. Chaque élément est centré dans sa case et ne déborde jamais ; les cases en trop restent vides.
@@ -543,7 +550,7 @@ Cadrage de chaque élément : effet centré, bords nets (pas de grand halo flou)
 3. Tourbillon de portail violet vu de face.
 ```
 
-### Demande 66 — Illustration principale
+### Demande 67 — Illustration principale
 
 ```text
 Image 1536×1024, plein cadre avec décor (pas de fond magenta). Scène de combat épique et joyeuse : les cinq héros alignés de gauche à droite (Alex avec son canon à plasma, Lina avec son lance-ballons, Pixel le chat avec son canon-poisson au premier plan, Ayla avec sa bombe-blaster, Tao avec son arbalète) et Questy qui lève le poing au milieu, tous face au Golem des Équations tout à droite ; en arrière-plan un château-académie violet flottant aux bannières à livre, ciel lavande, îles flottantes.
@@ -556,69 +563,70 @@ Cadrage : illustration plein cadre, composition lisible en petit, sans aucun tex
 
 | Demande | Fichiers produits (ordre des cases) |
 |---|---|
-| 1 | `characters/lina/anim-idle` |
-| 2 | `characters/lina/anim-victory` |
-| 3 | `characters/lina/pose-run` |
-| 4 | `characters/lina/pose-shoot` |
-| 5 | `characters/lina/pose-shield` |
-| 6 | `characters/lina/pose-hurt` |
-| 7 | `characters/lina/pose-defeat` |
-| 8 | `characters/lina/head-joie` |
-| 9 | `characters/lina/head-rire` |
-| 10 | `characters/lina/head-enthousiaste` |
-| 11 | `characters/lina/head-confiant` |
-| 12 | `characters/lina/head-determine` |
-| 13 | `characters/lina/head-clin-oeil` |
-| 14 | `characters/lina/head-surprise` |
-| 15 | `characters/lina/head-reflexion` |
-| 16 | `characters/lina/head-affection` |
-| 17 | `characters/lina/head-colere` |
-| 18 | `characters/lina/head-triste` |
-| 19 | `characters/lina/head-etourdi` |
-| 20 | `bosses/sorcier-pi/anim-idle` |
-| 21 | `bosses/sorcier-pi/pose-idle` |
-| 22 | `bosses/sorcier-pi/pose-attack` |
-| 23 | `bosses/sorcier-pi/pose-shield` |
-| 24 | `bosses/sorcier-pi/pose-hurt` |
-| 25 | `bosses/sorcier-pi/pose-defeat` |
-| 26 | `bosses/sorcier-pi/pose-cast` |
-| 27 | `bosses/sorcier-pi/pose-charge` |
-| 28 | `bosses/sorcier-pi/pose-victory` |
-| 29 | `bosses/sorcier-pi/head-menace` |
-| 30 | `bosses/sorcier-pi/head-concentre` |
-| 31 | `bosses/sorcier-pi/head-surprise` |
-| 32 | `bosses/sorcier-pi/head-moqueur` |
-| 33 | `bosses/sorcier-pi/head-perplexe` |
-| 34 | `bosses/sorcier-pi/head-colere` |
-| 35 | `bosses/sorcier-pi/head-inquiet` |
-| 36 | `bosses/sorcier-pi/head-rage-menace` |
-| 37 | `bosses/sorcier-pi/head-rage-surprise` |
-| 38 | `bosses/sorcier-pi/head-furieux` |
-| 39 | `bosses/sorcier-pi/head-rage-cri` |
-| 40 | `bosses/sorcier-pi/head-rage-plisse` |
-| 41 | `bosses/sorcier-pi/portrait` |
-| 42 | `bosses/empereur/empereur` |
-| 43 | `bosses/empereur/empereur-reliques` |
-| 44 | `bosses/empereur/banniere` |
-| 45 | `bosses/minions/calculatrice`<br>`bosses/minions/cube-bot`<br>`bosses/minions/equerre`<br>`bosses/minions/compas`<br>`bosses/minions/de`<br>`bosses/minions/camembert`<br>`bosses/minions/courbe`<br>`bosses/minions/bug`<br>`bosses/minions/bloc-code` |
-| 46 | `bosses/minions/pi-bot` |
-| 47 | `bosses/minions/pi-bot-attack` |
-| 48 | `bosses/minions/pi-bot-shield` |
-| 49 | `bosses/minions/pi-bot-run` |
-| 50 | `bosses/minions/pi-bot-jump` |
-| 51 | `bosses/minions/pi-bot-victory` |
-| 52 | `bosses/minions/pi-bot-head-menace` |
-| 53 | `bosses/minions/pi-bot-head-moqueur` |
-| 54 | `bosses/minions/pi-bot-head-joie` |
-| 55 | `bosses/minions/pi-bot-head-rire` |
-| 56 | `bosses/minions/pi-bot-head-surprise` |
-| 57 | `bosses/minions/pi-bot-head-triste` |
-| 58 | `bosses/minions/pi-bot-head-etourdi` |
-| 59 | `bosses/minions/pi-bot-head-colere` |
-| 60 | `bosses/minions/pi-bot-head-reflexion` |
-| 61 | `bosses/minions/pi-bot-head-idee` |
-| 62 | `bosses/minions/pi-bot-head-amour` |
-| 63 | `bosses/minions/pi-bot-head-dort` |
-| 64 | `effects/impacts/hit-burst`<br>`effects/impacts/anneau`<br>`effects/impacts/etincelles`<br>`effects/impacts/flash`<br>`effects/impacts/explosion`<br>`effects/particles/puff`<br>`effects/particles/bouclier`<br>`effects/particles/soin`<br>`effects/particles/etourdi` |
-| 65 | `effects/impacts/onde-boss`<br>`effects/particles/confettis`<br>`effects/transitions/portail` |
-| 66 | `branding/key-art` |
+| 1 | `environments/equipement-fond` |
+| 2 | `characters/lina/anim-idle` |
+| 3 | `characters/lina/anim-victory` |
+| 4 | `characters/lina/pose-run` |
+| 5 | `characters/lina/pose-shoot` |
+| 6 | `characters/lina/pose-shield` |
+| 7 | `characters/lina/pose-hurt` |
+| 8 | `characters/lina/pose-defeat` |
+| 9 | `characters/lina/head-joie` |
+| 10 | `characters/lina/head-rire` |
+| 11 | `characters/lina/head-enthousiaste` |
+| 12 | `characters/lina/head-confiant` |
+| 13 | `characters/lina/head-determine` |
+| 14 | `characters/lina/head-clin-oeil` |
+| 15 | `characters/lina/head-surprise` |
+| 16 | `characters/lina/head-reflexion` |
+| 17 | `characters/lina/head-affection` |
+| 18 | `characters/lina/head-colere` |
+| 19 | `characters/lina/head-triste` |
+| 20 | `characters/lina/head-etourdi` |
+| 21 | `bosses/sorcier-pi/anim-idle` |
+| 22 | `bosses/sorcier-pi/pose-idle` |
+| 23 | `bosses/sorcier-pi/pose-attack` |
+| 24 | `bosses/sorcier-pi/pose-shield` |
+| 25 | `bosses/sorcier-pi/pose-hurt` |
+| 26 | `bosses/sorcier-pi/pose-defeat` |
+| 27 | `bosses/sorcier-pi/pose-cast` |
+| 28 | `bosses/sorcier-pi/pose-charge` |
+| 29 | `bosses/sorcier-pi/pose-victory` |
+| 30 | `bosses/sorcier-pi/head-menace` |
+| 31 | `bosses/sorcier-pi/head-concentre` |
+| 32 | `bosses/sorcier-pi/head-surprise` |
+| 33 | `bosses/sorcier-pi/head-moqueur` |
+| 34 | `bosses/sorcier-pi/head-perplexe` |
+| 35 | `bosses/sorcier-pi/head-colere` |
+| 36 | `bosses/sorcier-pi/head-inquiet` |
+| 37 | `bosses/sorcier-pi/head-rage-menace` |
+| 38 | `bosses/sorcier-pi/head-rage-surprise` |
+| 39 | `bosses/sorcier-pi/head-furieux` |
+| 40 | `bosses/sorcier-pi/head-rage-cri` |
+| 41 | `bosses/sorcier-pi/head-rage-plisse` |
+| 42 | `bosses/sorcier-pi/portrait` |
+| 43 | `bosses/empereur/empereur` |
+| 44 | `bosses/empereur/empereur-reliques` |
+| 45 | `bosses/empereur/banniere` |
+| 46 | `bosses/minions/calculatrice`<br>`bosses/minions/cube-bot`<br>`bosses/minions/equerre`<br>`bosses/minions/compas`<br>`bosses/minions/de`<br>`bosses/minions/camembert`<br>`bosses/minions/courbe`<br>`bosses/minions/bug`<br>`bosses/minions/bloc-code` |
+| 47 | `bosses/minions/pi-bot` |
+| 48 | `bosses/minions/pi-bot-attack` |
+| 49 | `bosses/minions/pi-bot-shield` |
+| 50 | `bosses/minions/pi-bot-run` |
+| 51 | `bosses/minions/pi-bot-jump` |
+| 52 | `bosses/minions/pi-bot-victory` |
+| 53 | `bosses/minions/pi-bot-head-menace` |
+| 54 | `bosses/minions/pi-bot-head-moqueur` |
+| 55 | `bosses/minions/pi-bot-head-joie` |
+| 56 | `bosses/minions/pi-bot-head-rire` |
+| 57 | `bosses/minions/pi-bot-head-surprise` |
+| 58 | `bosses/minions/pi-bot-head-triste` |
+| 59 | `bosses/minions/pi-bot-head-etourdi` |
+| 60 | `bosses/minions/pi-bot-head-colere` |
+| 61 | `bosses/minions/pi-bot-head-reflexion` |
+| 62 | `bosses/minions/pi-bot-head-idee` |
+| 63 | `bosses/minions/pi-bot-head-amour` |
+| 64 | `bosses/minions/pi-bot-head-dort` |
+| 65 | `effects/impacts/hit-burst`<br>`effects/impacts/anneau`<br>`effects/impacts/etincelles`<br>`effects/impacts/flash`<br>`effects/impacts/explosion`<br>`effects/particles/puff`<br>`effects/particles/bouclier`<br>`effects/particles/soin`<br>`effects/particles/etourdi` |
+| 66 | `effects/impacts/onde-boss`<br>`effects/particles/confettis`<br>`effects/transitions/portail` |
+| 67 | `branding/key-art` |
