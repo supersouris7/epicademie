@@ -9,6 +9,8 @@ import { SUBJECT_IDS } from './subjects.ts';
  */
 
 export const REPORT_REASONS = [
+  'bug',
+  'son',
   'mauvaise-reponse',
   'ambigue',
   'correction-incomprehensible',
@@ -19,6 +21,8 @@ export const REPORT_REASONS = [
 export type ReportReason = (typeof REPORT_REASONS)[number];
 
 export const REPORT_REASON_LABELS: Record<ReportReason, string> = {
+  bug: 'Ça ne marche pas (bug)',
+  son: 'Problème de son',
   'mauvaise-reponse': 'La réponse attendue est fausse',
   ambigue: 'La question n’est pas claire',
   'correction-incomprehensible': 'L’explication est difficile à comprendre',
@@ -26,6 +30,12 @@ export const REPORT_REASON_LABELS: Record<ReportReason, string> = {
   affichage: 'Problème d’affichage',
   autre: 'Autre problème',
 };
+
+/** Motifs du signalement général (hors question), formulés simplement pour les enfants. */
+export const GENERAL_REPORT_REASONS = ['bug', 'affichage', 'son', 'difficulte', 'autre'] as const;
+
+/** Nature d'un signalement : sur une question précise, ou général (écran, bug, son…). */
+export const REPORT_KINDS = ['question', 'general'] as const;
 
 export const REPORT_STATUSES = ['nouveau', 'en-cours', 'resolu', 'rejete'] as const;
 export type ReportStatus = (typeof REPORT_STATUSES)[number];
@@ -49,12 +59,28 @@ export const ReportCreateSchema = z.object({
 });
 export type ReportCreate = z.infer<typeof ReportCreateSchema>;
 
+/**
+ * Signalement général, depuis n'importe quel écran. L'écran (route sans identifiant) et la version
+ * de l'appli sont ajoutés automatiquement par l'appli ; aucun identifiant de profil n'est envoyé.
+ */
+export const GeneralReportCreateSchema = z.object({
+  reason: z.enum(GENERAL_REPORT_REASONS),
+  comment: z.string().trim().max(500).optional(),
+  screen: z.string().max(200),
+  appVersion: z.string().max(40),
+});
+export type GeneralReportCreate = z.infer<typeof GeneralReportCreateSchema>;
+
 export const ReportSchema = z.object({
   id: z.uuid(),
-  skillId: z.string(),
-  level: LevelSchema,
-  seed: z.number().int().nonnegative(),
-  skillVersion: z.number().int().positive(),
+  kind: z.enum(REPORT_KINDS),
+  /** Notion, niveau, graine et version : seulement pour un signalement de question. */
+  skillId: z.string().nullable(),
+  level: LevelSchema.nullable(),
+  seed: z.number().int().nonnegative().nullable(),
+  skillVersion: z.number().int().positive().nullable(),
+  screen: z.string().nullable(),
+  appVersion: z.string().nullable(),
   reason: z.enum(REPORT_REASONS),
   comment: z.string().nullable(),
   status: z.enum(REPORT_STATUSES),

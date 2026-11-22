@@ -327,22 +327,52 @@ export const questionReports = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     familyId: uuid('family_id').references(() => families.id, { onDelete: 'set null' }),
     profileId: uuid('profile_id').references(() => profiles.id, { onDelete: 'set null' }),
-    skillId: text('skill_id').notNull(),
-    level: smallint('level').notNull(),
-    seed: integer('seed').notNull(),
-    skillVersion: smallint('skill_version').notNull(),
+    /** Nature : question précise ou signalement général (alors notion, niveau, graine nuls). */
+    kind: text('kind').$type<'question' | 'general'>().notNull().default('question'),
+    skillId: text('skill_id'),
+    level: smallint('level'),
+    seed: integer('seed'),
+    skillVersion: smallint('skill_version'),
+    /** Écran (route sans identifiant) et version de l'appli, pour un signalement général. */
+    screen: text('screen'),
+    appVersion: text('app_version'),
     reason: text('reason').$type<ReportReason>().notNull(),
+    /** Commentaire déjà anonymisé (e-mails, téléphones, liens, prénoms de la famille masqués). */
     comment: text('comment'),
     status: text('status').$type<ReportStatus>().notNull().default('nouveau'),
     adminNote: text('admin_note'),
     createdAt: createdAt(),
     resolvedAt: at('resolved_at'),
+    /** Date de l'export vers le suivi (commande `reports:export`) ; nulle : pas encore exporté. */
+    exportedAt: at('exported_at'),
   },
   (t) => [
     index('question_reports_status_idx').on(t.status, t.createdAt),
     index('question_reports_skill_idx').on(t.skillId),
-    check('question_reports_level_range', sql`${t.level} between 1 and 3`),
+    check('question_reports_level_range', sql`${t.level} is null or ${t.level} between 1 and 3`),
+    check('question_reports_question_fields', sql`${t.kind} = 'general' or ${t.skillId} is not null`),
   ],
+);
+
+/**
+ * Erreurs techniques du navigateur, agrégées par empreinte (message normalisé + première ligne de
+ * pile + version) avec un compteur. Aucune donnée personnelle ni lien avec une famille.
+ */
+export const clientErrors = pgTable(
+  'client_errors',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    fingerprint: text('fingerprint').notNull(),
+    message: text('message').notNull(),
+    stackTop: text('stack_top'),
+    release: text('release'),
+    path: text('path'),
+    count: integer('count').notNull().default(1),
+    firstSeen: at('first_seen').notNull().defaultNow(),
+    lastSeen: at('last_seen').notNull().defaultNow(),
+    exportedAt: at('exported_at'),
+  },
+  (t) => [uniqueIndex('client_errors_fingerprint_uq').on(t.fingerprint)],
 );
 
 /** État d'une notion décidé par l'administration (désactivation, relecture). */
@@ -467,6 +497,7 @@ export const ALL_TABLES = [
   'owned_heroes',
   'idempotent_requests',
   'question_reports',
+  'client_errors',
   'content_events',
   'content_states',
   'attempts',
