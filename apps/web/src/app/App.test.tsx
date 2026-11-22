@@ -76,7 +76,10 @@ describe('accueil et choix du jeu', () => {
     expect(await screen.findByRole('group', { name: 'Mon joueur' })).toHaveTextContent('Léa');
     expect(sockets.at(-1)?.auth).toEqual({ profileId: makeProfile().id });
     await user.click(screen.getByRole('button', { name: /Entraînement/ }));
-    expect(await screen.findByText(/Une série sans faute t’offre un coffre/)).toBeInTheDocument();
+    // Même présentation que le Combat de boss : accroche sur la bannière, encart d'information, plus de Questy.
+    expect(await screen.findByText('Entraîne-toi, gagne des médailles et des coffres !')).toBeInTheDocument();
+    expect(screen.getByRole('note')).toHaveTextContent(/Une série sans faute t’offre un coffre/);
+    expect(screen.getByRole('button', { name: /Notions acquises en Maths|Maths/ })).toBeInTheDocument();
   });
 
   it('entraînement : matières, chapitres de la classe, notions', async () => {

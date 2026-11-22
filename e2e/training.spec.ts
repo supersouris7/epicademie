@@ -12,7 +12,8 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
 
   await page.getByRole('button', { name: /Entraînement/ }).click();
   // C'est ici qu'on gagne son équipement (dès le choix de la matière).
-  await expect(page.getByText(/Une série sans faute t’offre un coffre/)).toBeVisible();
+  await expect(page.getByText('Entraîne-toi, gagne des médailles et des coffres !')).toBeVisible();
+  await expect(page.getByRole('note')).toContainText(/Une série sans faute t’offre un coffre/);
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   await expect(page.getByRole('heading', { name: /Entraînement · Maths/ })).toBeVisible();
   // On peut s'entraîner sur le programme d'une autre classe ; la sienne (5e) est cochée par défaut.
