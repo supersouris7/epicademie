@@ -46,6 +46,7 @@ import {
   WeakSkillStatSchema,
 } from '../insights.ts';
 import { FamilyFriendSchema, FriendRequestSchema, FriendsViewSchema, RankingRowSchema } from '../friends.ts';
+import { FamilyRecommendationSchema, RecommendationCreateSchema, RecommendationSchema } from '../recommendations.ts';
 import {
   ContentEventSchema,
   ContentSkillSchema,
@@ -116,6 +117,7 @@ export const API_TAGS = [
   'combats',
   'inventaire',
   'amis',
+  'recommandations',
   'telemetrie',
 ] as const;
 export type ApiTag = (typeof API_TAGS)[number];
@@ -129,6 +131,7 @@ const endpoint = <
 ) => e;
 
 export const IdParamsSchema = z.object({ id: z.uuid() });
+export const RecommendationParamsSchema = z.object({ id: z.uuid(), recommendationId: z.uuid() });
 export const FriendParamsSchema = z.object({ id: z.uuid(), friendId: z.uuid() });
 
 /** Codes d'erreur stables (le message, lui, est destiné à l'affichage et peut changer). */
@@ -475,6 +478,47 @@ export const api = {
     status: 200,
     params: FriendParamsSchema,
     response: z.array(FamilyFriendSchema),
+  }),
+
+  recommendations: endpoint({
+    method: 'GET',
+    path: '/profiles/:id/recommendations',
+    tag: 'recommandations',
+    summary: 'Recommandations de travail en attente pour ce joueur (mot du parent compris)',
+    access: 'family',
+    status: 200,
+    params: IdParamsSchema,
+    response: z.array(RecommendationSchema),
+  }),
+  familyRecommendations: endpoint({
+    method: 'GET',
+    path: '/family/recommendations',
+    tag: 'recommandations',
+    summary: 'Espace parent : recommandations envoyées aux enfants (en attente et faites)',
+    access: 'parent',
+    status: 200,
+    response: z.array(FamilyRecommendationSchema),
+  }),
+  createRecommendation: endpoint({
+    method: 'POST',
+    path: '/profiles/:id/recommendations',
+    tag: 'recommandations',
+    summary: 'Espace parent : recommande une notion à un enfant, avec un petit mot (3 en attente au plus)',
+    access: 'parent',
+    status: 201,
+    params: IdParamsSchema,
+    body: RecommendationCreateSchema,
+    response: RecommendationSchema,
+  }),
+  cancelRecommendation: endpoint({
+    method: 'DELETE',
+    path: '/profiles/:id/recommendations/:recommendationId',
+    tag: 'recommandations',
+    summary: 'Espace parent : annule une recommandation en attente',
+    access: 'parent',
+    status: 204,
+    params: RecommendationParamsSchema,
+    response: null,
   }),
 
   ownedHeroes: endpoint({

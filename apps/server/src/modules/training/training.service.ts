@@ -32,6 +32,7 @@ import { PROFILE_NOT_FOUND, profilesRepo } from '../profiles/index.ts';
 import { grantChest } from '../inventory/index.ts';
 import { trainingRepo } from './training.repo.ts';
 import { disabledSkills } from '../pedagogy/index.ts';
+import { completeRecommendation } from '../recommendations/index.ts';
 
 /**
  * Entraînement (toutes les parties hors combat de boss).
@@ -271,6 +272,17 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
           coins: coinsGained,
           chest: chest?.rarity ?? null,
         });
+
+        // Entraînement sur une seule notion : la recommandation d'un parent pour cette notion est « faite ».
+        if (session.mode === 'entrainement' && session.skillId && regular.length > 0) {
+          await completeRecommendation(
+            tx,
+            session.profileId,
+            session.skillId,
+            { correct: regularCorrect, answered: regular.length },
+            clock.now(),
+          );
+        }
 
         return {
           regular: { answered: regular.length, correct: regularCorrect },
