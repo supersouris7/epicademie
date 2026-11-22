@@ -1,7 +1,7 @@
 import { assetSrc } from '../../../design/assets.ts';
 
 /**
- * Décor de fond des menus (château-académie) une fois livré ; sinon le motif à pois du thème reste visible.
+ * Décor de fond des menus (château-académie) une fois livré ; sinon le dégradé uni du thème reste visible.
  * Un voile aux couleurs du thème garde les textes lisibles.
  */
 export function GameBackdrop({ id = 'environments-backgrounds-accueil' }: { readonly id?: string }) {

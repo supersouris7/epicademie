@@ -55,14 +55,13 @@ body {
 
 body {
   min-height: 100dvh;
-  /* Halo violet doux en haut de l'écran, motif à pois discret. */
-  background-image:
-    radial-gradient(ellipse 90% 45% at 50% 0%, color-mix(in srgb, var(--accent) 22%, transparent), transparent),
-    radial-gradient(var(--bg-pattern) 2px, transparent 2px);
-  background-size:
-    100% 100%,
-    28px 28px;
-  background-attachment: fixed, scroll;
+  /* Halo violet doux en haut de l'écran, sans motif. */
+  background-image: radial-gradient(
+    ellipse 90% 45% at 50% 0%,
+    color-mix(in srgb, var(--accent) 22%, transparent),
+    transparent
+  );
+  background-attachment: fixed;
 }
 
 button {
