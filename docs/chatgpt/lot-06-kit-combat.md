@@ -637,7 +637,7 @@ Cadrage : personnage en pied centré, de face, fond transparent, halo et effets 
 Style, fond et interdits : ceux du message de départ.
 ```
 
-#### 112. Bannière du Combat de boss
+#### 112. Bannière du Mode Histoire
 Enregistrer sous `assets-src/originals/bosses/empereur/banniere.png` · 1536×1024 → final 1536×512 · plein cadre (pas de fond magenta)
 
 ```text
