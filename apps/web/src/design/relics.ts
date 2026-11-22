@@ -2,7 +2,7 @@ import type { SubjectId } from '@questeo/shared';
 
 /**
  * Relique de chaque matière : chaque boss de chapitre vaincu en donne un éclat. Son icône sert aussi
- * d'icône de la matière en Combat de boss.
+ * d'icône de la matière en Mode Histoire.
  */
 export const RELICS: Record<SubjectId, { readonly name: string; readonly icon: string }> = {
   maths: { name: 'Cristal des maths', icon: 'icons-subjects-boss-maths' },

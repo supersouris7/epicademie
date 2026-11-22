@@ -76,7 +76,7 @@ describe('accueil et choix du jeu', () => {
     expect(await screen.findByRole('group', { name: 'Mon joueur' })).toHaveTextContent('Léa');
     expect(sockets.at(-1)?.auth).toEqual({ profileId: makeProfile().id });
     await user.click(screen.getByRole('button', { name: /Entraînement/ }));
-    // Même présentation que le Combat de boss : accroche sur la bannière, encart d'information, plus de Questy.
+    // Même présentation que le Mode Histoire : accroche sur la bannière, encart d'information, plus de Questy.
     expect(await screen.findByText('Entraîne-toi, gagne des médailles et des coffres !')).toBeInTheDocument();
     expect(screen.getByRole('note')).toHaveTextContent(/Une série sans faute t’offre un coffre/);
     expect(screen.getByRole('button', { name: /Notions acquises en Maths|Maths/ })).toBeInTheDocument();
@@ -107,7 +107,7 @@ describe('accueil et choix du jeu', () => {
     const closeUp = await screen.findByRole('dialog', { name: /te provoque/ });
     await pass();
     await user.click(within(closeUp).getByRole('button', { name: 'Passer' }));
-    expect(await screen.findByRole('heading', { name: 'Combat de boss' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Mode Histoire' })).toBeInTheDocument();
   });
 
   it('liste des boss : équipement depuis la réserve', async () => {
@@ -129,7 +129,7 @@ describe('accueil et choix du jeu', () => {
 
   it('modes à plusieurs et joueurs connectés', async () => {
     renderApp('/multi');
-    expect(await screen.findByRole('button', { name: /Arène/ })).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: /Duels/ })).toBeInTheDocument();
   });
 });
 

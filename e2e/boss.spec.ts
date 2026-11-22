@@ -30,7 +30,7 @@ async function answer(page: Page, view: BattleView, right: boolean) {
   return ((await (await sent).json()) as BattleAnswerResult).battle;
 }
 
-/** L'Empereur du Savoir se présente (une fois par jour) à l'entrée du Combat de boss : deux touchers. */
+/** L'Empereur du Savoir se présente (une fois par jour) à l'entrée du Mode Histoire : deux touchers. */
 async function skipEmperor(page: Page) {
   const emperor = page.getByRole('dialog', { name: 'L’Empereur du Savoir' });
   await expect(emperor).toBeVisible();
@@ -41,7 +41,7 @@ async function skipEmperor(page: Page) {
   await expect(emperor).toHaveCount(0);
 }
 
-test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', async ({ page }) => {
+test('Mode Histoire : ouvert d’emblée, mobs, riposte, victoire et coffre', async ({ page }) => {
   test.setTimeout(90_000);
   const name = `Boss${Date.now() % 10000}`;
   await signupFamily(page);
@@ -52,7 +52,7 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   await page.getByRole('button', { name: /C’est parti/ }).click();
   await expect(page).toHaveURL(/\/hub$/);
 
-  await page.getByRole('button', { name: /^Combat de boss/ }).click();
+  await page.getByRole('button', { name: /^Mode Histoire/ }).click();
   await skipEmperor(page);
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   // Gros plan du boss de la matière qui provoque, puis choix du chapitre.
@@ -62,7 +62,7 @@ test('Combat de boss : ouvert d’emblée, mobs, riposte, victoire et coffre', a
   await page.waitForTimeout(700); // anti double-toucher
   await closeUp.getByRole('button', { name: 'Passer' }).click();
   await expect(closeUp).toHaveCount(0);
-  await expect(page.getByRole('heading', { name: 'Combat de boss' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Mode Histoire' })).toBeVisible();
   // Tous les boss sont ouverts d'emblée ; chapitres sans boss « À venir ». Panneau « Équipement ».
   const relatifs = page.getByRole('listitem').filter({ hasText: 'Nombres relatifs' });
   await expect(page.getByRole('heading', { name: 'Équipe-toi pour ce combat' })).toBeVisible();
@@ -171,7 +171,7 @@ test('Défaite : 5 secondes pour recommencer, puis l’entraînement', async ({ 
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
   await page.getByRole('button', { name: /C’est parti/ }).click();
   await expect(page).toHaveURL(/\/hub$/);
-  await page.getByRole('button', { name: /^Combat de boss/ }).click();
+  await page.getByRole('button', { name: /^Mode Histoire/ }).click();
   await skipEmperor(page);
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   const provoke = page.getByRole('dialog', { name: /te provoque/ });

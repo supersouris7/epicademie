@@ -117,7 +117,7 @@ export const ICONS: readonly (readonly [sheet: string, rows: readonly IconRow[]]
     ],
   ],
   [
-    // Combat de boss : icône de chaque matière, qui est aussi sa relique (gagnée en battant ses boss).
+    // Mode Histoire : icône de chaque matière, qui est aussi sa relique (gagnée en battant ses boss).
     'reliques',
     [
       ['icons/subjects/boss-maths', 'cristal violet au π et aux signes + − × ÷ sur socle doré', 1],

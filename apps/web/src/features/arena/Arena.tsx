@@ -48,7 +48,7 @@ const SETUP: Record<
   { title: string; mood: 'angry' | 'wink' | 'wow'; pitch: string; others: string; group: string }
 > = {
   duel: {
-    title: 'Arène',
+    title: 'Duels',
     mood: 'angry',
     pitch: 'Chacun son tour : bonne réponse, tu attaques ! Le dernier debout gagne.',
     others: '2. Tes adversaires (1 à 3)',
@@ -187,7 +187,7 @@ function ArenaLobby({ profile, arena }: { readonly profile: Profile; readonly ar
   const host = arena.hostId === profile.id;
   const ready = arena.players.filter((p) => p.ready).length;
   return (
-    <PageShell title="Arène · salon" back="/multi">
+    <PageShell title="Duels · salon" back="/multi">
       <p className="font-display text-xl tracking-wide">{getChapter(arena.chapterId)?.title}</p>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {arena.players.map((p) => (
@@ -292,7 +292,7 @@ function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly are
       );
     }
     return (
-      <PageShell title={arena.raid ? 'Raid' : 'Arène'} back="/multi">
+      <PageShell title={arena.raid ? 'Raid' : 'Duels'} back="/multi">
         {won && <Confetti />}
         <div className="flex flex-col items-center gap-3 text-center">
           <h1 className="font-display text-toon text-4xl tracking-wide">{overTitle(arena, profile.id)}</h1>

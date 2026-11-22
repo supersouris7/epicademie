@@ -31,7 +31,7 @@ export function Online({ profile }: { readonly profile: Profile }) {
         <Questy mood={others.length ? 'wow' : 'happy'} size={80} />
         <SpeechBubble>
           {others.length
-            ? 'Envoie un message ou invite tes amis dans l’arène !'
+            ? 'Envoie un message ou invite tes amis dans les Duels !'
             : 'Personne d’autre pour l’instant. Ouvre l’appli sur une autre tablette !'}
         </SpeechBubble>
       </div>
@@ -48,7 +48,7 @@ export function Online({ profile }: { readonly profile: Profile }) {
                   🤝
                 </span>
               )}
-              {p.busy && <span className="text-muted block text-sm font-bold">en arène</span>}
+              {p.busy && <span className="text-muted block text-sm font-bold">en duel</span>}
             </span>
             <GameButton size="sm" variant="surface" onClick={() => setTo(p)} aria-label={`Message à ${p.name}`}>
               💬 Message
@@ -58,9 +58,9 @@ export function Online({ profile }: { readonly profile: Profile }) {
               variant="danger"
               disabled={p.busy}
               onClick={() => void navigate(`/arene?invite=${p.id}`)}
-              aria-label={`Inviter ${p.name} dans l’arène`}
+              aria-label={`Inviter ${p.name} dans les Duels`}
             >
-              ⚔️ Arène
+              ⚔️ Duels
             </GameButton>
           </li>
         ))}
