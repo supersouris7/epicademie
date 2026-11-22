@@ -58,7 +58,8 @@ const STATUS_TONE: Record<ReportStatus, 'red' | 'amber' | 'green' | 'slate'> = {
 function Reports() {
   const [status, setStatus] = useState<ReportStatus>('nouveau');
   const { data, isPending } = useReports(status);
-  const title = (r: Report) => getAnySkill(r.skillId)?.title ?? r.skillId;
+  const title = (r: Report) =>
+    r.skillId ? (getAnySkill(r.skillId)?.title ?? r.skillId) : `Général${r.screen ? ` · ${r.screen}` : ''}`;
   return (
     <Panel
       title="Signalements des familles"
@@ -82,7 +83,7 @@ function Reports() {
           label="Signalements"
           rows={data ?? []}
           rowKey={(r) => r.id}
-          searchText={(r) => `${title(r)} ${r.skillId} ${r.comment ?? ''} ${REPORT_REASON_LABELS[r.reason]}`}
+          searchText={(r) => `${title(r)} ${r.skillId ?? ''} ${r.comment ?? ''} ${REPORT_REASON_LABELS[r.reason]}`}
           empty="Aucun signalement dans cet état."
           columns={[
             {
@@ -98,7 +99,7 @@ function Reports() {
               sort: title,
             },
             { key: 'motif', label: 'Motif', render: (r) => REPORT_REASON_LABELS[r.reason], sort: (r) => r.reason },
-            { key: 'niveau', label: 'Niv.', render: (r) => r.level, sort: (r) => r.level, align: 'right' },
+            { key: 'niveau', label: 'Niv.', render: (r) => r.level ?? '', sort: (r) => r.level ?? 0, align: 'right' },
             {
               key: 'etat',
               label: 'État',
@@ -138,15 +139,23 @@ function ReportDetail({ report: r }: { readonly report: Report }) {
   const update = useUpdateReport();
   const disable = useUpdateContent();
   const [note, setNote] = useState(r.adminNote ?? '');
+  const skillId = r.skillId;
   const set = (status: ReportStatus) => update.mutate({ id: r.id, status, adminNote: note || undefined });
   return (
-    <div className="grid gap-3 lg:grid-cols-2" aria-label={`Signalement ${getAnySkill(r.skillId)?.title ?? r.skillId}`}>
+    <div
+      className="grid gap-3 lg:grid-cols-2"
+      aria-label={`Signalement ${r.skillId ? (getAnySkill(r.skillId)?.title ?? r.skillId) : 'général'}`}
+    >
       <div className="flex flex-col gap-2">
         <p className="text-xs text-slate-500">
-          {r.skillId} · version {r.skillVersion} · graine {r.seed}
+          {r.skillId
+            ? `${r.skillId} · version ${r.skillVersion} · graine ${r.seed}`
+            : `Écran ${r.screen ?? '?'} · appli ${r.appVersion ?? '?'}`}
         </p>
         {r.comment && <p className="text-sm italic">« {r.comment} »</p>}
-        <QuestionPreview skillId={r.skillId} level={r.level} seed={r.seed} />
+        {r.skillId && r.level && r.seed !== null && (
+          <QuestionPreview skillId={r.skillId} level={r.level} seed={r.seed} />
+        )}
       </div>
       <div className="flex flex-col gap-2">
         <label className="flex flex-col gap-1 text-xs font-medium text-slate-600">
@@ -159,15 +168,15 @@ function ReportDetail({ report: r }: { readonly report: Report }) {
               {REPORT_STATUS_LABELS[s]}
             </AdminButton>
           ))}
-          <AdminButton
-            tone="danger"
-            disabled={disable.isPending}
-            onClick={() =>
-              disable.mutate({ skillId: r.skillId, disabled: true, note: note || REPORT_REASON_LABELS[r.reason] })
-            }
-          >
-            Désactiver la notion
-          </AdminButton>
+          {skillId && (
+            <AdminButton
+              tone="danger"
+              disabled={disable.isPending}
+              onClick={() => disable.mutate({ skillId, disabled: true, note: note || REPORT_REASON_LABELS[r.reason] })}
+            >
+              Désactiver la notion
+            </AdminButton>
+          )}
         </div>
       </div>
     </div>

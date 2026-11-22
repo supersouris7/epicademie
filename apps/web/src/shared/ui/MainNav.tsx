@@ -4,6 +4,7 @@ import type { Profile } from '@questeo/shared';
 import { CharacterAvatar } from './game/CharacterAvatar.tsx';
 import { GameIcon } from './game/GameIcon.tsx';
 import { HUD_FRAME, HudBar } from './game/Hud.tsx';
+import { GeneralReportButton } from '../question/GeneralReportButton.tsx';
 
 const ITEMS = [
   { to: '/hub', label: 'Accueil', icon: 'icons-navigation-home' },
@@ -61,6 +62,7 @@ export function MainNav({ profile }: { readonly profile: Profile }) {
             <GameIcon id="icons-resources-gem" size={24} />
             {profile.rubies.toLocaleString('fr-FR')}
           </span>
+          <GeneralReportButton />
         </div>
 
         <nav aria-label="Menu principal" className="w-full lg:w-auto">

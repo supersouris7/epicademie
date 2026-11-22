@@ -552,11 +552,32 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     },
     ...battleHandlers({ battles, overview, dice, profile, battleOf, uuid, battleAnswers: options.battleAnswers }),
     reportClientError: () => null,
+    reportGeneral: ({ body }) => {
+      const id = uuid();
+      reports.push({
+        ...(body as object),
+        id,
+        kind: 'general',
+        skillId: null,
+        level: null,
+        seed: null,
+        skillVersion: null,
+        comment: (body as { comment?: string }).comment ?? null,
+        status: 'nouveau',
+        adminNote: null,
+        createdAt: '2026-11-20T10:00:00.000Z',
+        resolvedAt: null,
+      });
+      return { id };
+    },
     reportQuestion: ({ body }) => {
       const id = uuid();
       reports.push({
         ...(body as object),
         id,
+        kind: 'question',
+        screen: null,
+        appVersion: null,
         skillVersion: 1,
         comment: (body as { comment?: string }).comment ?? null,
         status: 'nouveau',

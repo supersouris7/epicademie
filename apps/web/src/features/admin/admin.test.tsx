@@ -73,10 +73,13 @@ describe('administration', () => {
     server.reports.push({
       id: '99999999-9999-4999-8999-999999999999',
       profileId: null,
+      kind: 'question',
       skillId: 'm5-tables',
       level: 1,
       seed: 3,
       skillVersion: 1,
+      screen: null,
+      appVersion: null,
       reason: 'ambigue',
       comment: 'pas clair',
       status: 'nouveau',
@@ -84,10 +87,34 @@ describe('administration', () => {
       createdAt: '2026-11-20T10:00:00.000Z',
       resolvedAt: null,
     });
+    server.reports.push({
+      id: '88888888-8888-4888-8888-888888888888',
+      kind: 'general',
+      skillId: null,
+      level: null,
+      seed: null,
+      skillVersion: null,
+      screen: '/hub',
+      appVersion: '1.2.3',
+      reason: 'son',
+      comment: null,
+      status: 'en-cours',
+      adminNote: null,
+      createdAt: '2026-11-20T10:00:00.000Z',
+      resolvedAt: null,
+    });
     await user.click(await screen.findByRole('tab', { name: 'Signalements' }));
     const table = await screen.findByRole('table', { name: 'Signalements' });
     expect(await within(table).findByText('La question n’est pas claire')).toBeInTheDocument();
-    await user.click(within(table).getByRole('button', { name: 'Détail' }));
+    // Les signalements généraux (sans notion) s'affichent aussi, avec leur écran.
+    await user.selectOptions(screen.getByLabelText('État'), 'en-cours');
+    expect(
+      await within(await screen.findByRole('table', { name: 'Signalements' })).findByText('Général · /hub'),
+    ).toBeInTheDocument();
+    await user.selectOptions(screen.getByLabelText('État'), 'nouveau');
+    await user.click(
+      within(await screen.findByRole('table', { name: 'Signalements' })).getByRole('button', { name: 'Détail' }),
+    );
     const card = screen.getByLabelText(/Signalement Tables de multiplication/);
     expect(card).toHaveTextContent('Réponse attendue');
     await user.type(within(card).getByLabelText('Note de l’équipe'), 'Énoncé reformulé');

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
+import { GeneralReportButton } from '../../shared/question/GeneralReportButton.tsx';
 import { lockParent, ParentUnlock, useMe, useSetMe } from '../account/index.ts';
 
 /** Onglets de l'Espace parent, par utilité : progrès des enfants d'abord, puis le compte. */
@@ -41,6 +42,7 @@ export function ParentPage({
           <button type="button" onClick={() => void navigate('/')} className={SMALL_BUTTON}>
             Retour au jeu
           </button>
+          <GeneralReportButton className="hover:bg-[var(--surface-2)]" />
           {unlocked && (
             <button type="button" onClick={() => void lock()} className={SMALL_BUTTON}>
               Verrouiller
