@@ -187,6 +187,85 @@ describe('migrations', () => {
     }
   });
 
+  it('arène d’évaluation : depuis une base en 0021, rien n’est perdu ; contraintes, cascade et retour arrière', async () => {
+    const dir = migrationsUpTo(22); // jusqu'à 0021
+    try {
+      database = await openDatabase('pglite://memory');
+      await runMigrations(database, dir);
+      const { db } = database;
+      const leo = 'aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa';
+      const ana = 'bbbbbbbb-2222-4222-8222-bbbbbbbbbbbb';
+      await db.execute(sql`insert into profiles (id, name, avatar, hero) values
+        (${leo}, 'Léo', '{"style":"pixelbot","seed":"l"}', 'alex'),
+        (${ana}, 'Ana', '{"style":"pixelbot","seed":"a"}', 'lina')`);
+      await db.execute(sql`insert into sessions (profile_id, mode, subject, chapter_id)
+        values (${leo}, 'entrainement', 'maths', 'm5-calcul')`);
+      await runMigrations(database, MIGRATIONS_DIR);
+      expect((await schemaStatus(database, MIGRATIONS_DIR)).upToDate).toBe(true);
+      expect(await db.select().from(sessions)).toHaveLength(1);
+
+      const session = async (profile: string) =>
+        rows<{ id: string }>(
+          await db.execute(sql`insert into sessions (profile_id, mode, subject, chapter_id)
+            values (${profile}, 'evaluation', 'maths', 'ref-maths-5e') returning id`),
+        )[0]?.id;
+      const evaluation = async (profile: string, status = 'en-cours') => {
+        const sessionId = await session(profile);
+        return rows<{ id: string }>(
+          await db.execute(sql`insert into evaluations
+            (profile_id, session_id, subject, kind, profile_grade, referential_grade, referential_version, school_year, status)
+            values (${profile}, ${sessionId}, 'maths', 'origines', '5e', '6e', 1, 2026, ${status}) returning id`),
+        )[0]?.id;
+      };
+      const first = await evaluation(leo);
+      // Une seule épreuve ouverte par profil et par matière ; une terminée ne bloque pas ; un autre profil non plus.
+      await expect(evaluation(leo)).rejects.toThrow();
+      await expect(evaluation(leo, 'terminee')).resolves.toBeTruthy();
+      await expect(evaluation(ana)).resolves.toBeTruthy();
+      // Bornes et vocabulaire refusés par la base.
+      await expect(db.execute(sql`update evaluations set mastery = 101 where id = ${first}`)).rejects.toThrow();
+      await expect(db.execute(sql`update evaluations set kind = 'autre' where id = ${first}`)).rejects.toThrow();
+      await db.execute(sql`insert into evaluation_competences (evaluation_id, competence_id, role, domain, essential, state)
+        values (${first}, 'm6-fractions', 'score', 'nombres', true, 'maitrisee')`);
+      await expect(
+        db.execute(sql`insert into evaluation_competences (evaluation_id, competence_id, role, domain, essential, state)
+          values (${first}, 'm6-fractions', 'score', 'nombres', true, 'maitrisee')`),
+      ).rejects.toThrow();
+      await expect(
+        db.execute(sql`insert into evaluation_competences (evaluation_id, competence_id, role, domain, essential, state)
+          values (${first}, 'm6-calcul', 'score', 'nombres', true, 'inconnu')`),
+      ).rejects.toThrow();
+      await db.execute(sql`insert into studied_chapters (profile_id, school_year, chapter_id, status)
+        values (${leo}, 2026, 'm5-calcul', 'vu')`);
+      await expect(
+        db.execute(sql`insert into studied_chapters (profile_id, school_year, chapter_id, status)
+          values (${leo}, 2026, 'm5-calcul', 'pas-vu')`),
+      ).rejects.toThrow();
+
+      // L'effacement d'un profil emporte ses épreuves, résultats et déclarations.
+      await db.execute(sql`delete from profiles where id = ${leo}`);
+      const left = await db.execute(
+        sql`select (select count(*)::int from evaluations) as e, (select count(*)::int from evaluation_competences) as c,
+          (select count(*)::int from studied_chapters) as s`,
+      );
+      expect(left).toMatchObject({ rows: [{ e: 1, c: 0, s: 0 }] });
+
+      // Retour arrière documenté dans l'en-tête de la migration : le reste des données est intact.
+      const file = readFileSync(path.join(MIGRATIONS_DIR, '0022_arene_evaluation.sql'), 'utf8');
+      const rollback = file
+        .split('\n')
+        .filter((l) => l.startsWith('--   '))
+        .map((l) => l.slice(5))
+        .join('\n');
+      for (const statement of rollback.split(';').filter((q) => q.trim())) await db.execute(sql.raw(statement));
+      await expect(db.execute(sql`select 1 from evaluations`)).rejects.toThrow();
+      expect(await db.select().from(profiles)).toHaveLength(1);
+      expect(await db.select({ mode: sessions.mode }).from(sessions)).toEqual([]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it('refuse une URL de base inconnue', async () => {
     await expect(openDatabase('mysql://x')).rejects.toThrow(/DATABASE_URL/);
   });
@@ -323,3 +402,5 @@ function migrationsUpTo(count: number): string {
   writeFileSync(journalPath, JSON.stringify({ ...journal, entries: journal.entries.slice(0, count) }));
   return dir;
 }
+
+const rows = <T>(result: unknown): T[] => (result as { rows: T[] }).rows;
