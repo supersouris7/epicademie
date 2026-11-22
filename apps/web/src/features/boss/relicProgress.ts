@@ -22,9 +22,9 @@ export function relicProgressOf(
   return { won: records.filter((r) => ids.has(r.chapterId) && r.wins > 0).length, max: ids.size };
 }
 
-/** Progression des boss par matière, pour la classe jouée du profil. */
-export function useRelicProgress(profile: Profile): (subject: string) => RelicProgress {
+/** Progression des boss par matière, pour la classe donnée (par défaut la classe jouée du profil). */
+export function useRelicProgress(profile: Profile): (subject: string, grade?: Grade) => RelicProgress {
   const { data } = useBosses(profile.id);
-  const grade = playedGrade(profile.grade);
-  return (subject) => relicProgressOf(subject, grade, data?.records ?? []);
+  const played = playedGrade(profile.grade);
+  return (subject, grade = played) => relicProgressOf(subject, grade, data?.records ?? []);
 }
