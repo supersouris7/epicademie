@@ -304,6 +304,16 @@ Catalogue typé dans `packages/shared/src/modes.ts`.
 
 ---
 
+## 8bis. Signalements et erreurs (retours des familles)
+
+- **Signalement général** « Signaler un souci » : bouton dans le menu principal, l'Espace parent et (lien « Autre souci ») sur chaque question d'entraînement ou de combat. Motifs simples : ça ne marche pas, affichage, son, trop facile/difficile, autre ; précision facultative. L'écran (route sans identifiant) et la version de l'appli sont ajoutés automatiquement.
+- **Question** : le signalement existant (motif, notion, niveau, graine) reste ; même stockage et même vue admin « Signalements » que le général.
+- **Erreurs techniques** : agrégées par empreinte (message normalisé + première ligne de pile + version) avec compteur, sans donnée personnelle.
+- **Anonymisation côté serveur** avant stockage : e-mails, téléphones, liens et pseudos des profils de la famille de l'auteur remplacés par « [masqué] » ; jamais de pseudo, d'identifiant de profil ou de famille, ni d'IP dans l'export.
+- **Export** (aucun envoi automatique vers l'extérieur) : `docker exec questeo node server/dist/reports.js export` (JSON : signalements et erreurs non exportés, doublons fusionnés avec compteur), puis `... reports.js mark-exported <id…>` après création des tickets. Voir `docs/adr/0027-signalements-et-export.md`.
+
+---
+
 ## 9. Multijoueur
 
 ### 9.1 Connexion

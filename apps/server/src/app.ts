@@ -35,7 +35,7 @@ import { createInsightsService, insightsRoutes } from './modules/insights/index.
 import { createPresence, type Presence } from './modules/realtime/index.ts';
 import { opsRoutes, systemRoutes } from './modules/system/index.ts';
 import { createFriendsService, friendsRoutes, type FriendsService } from './modules/friends/index.ts';
-import { telemetryRoutes } from './modules/telemetry/index.ts';
+import { createTelemetryService, telemetryRoutes } from './modules/telemetry/index.ts';
 
 /**
  * Racine de composition : construit l'application HTTP à partir de ses dépendances.
@@ -224,7 +224,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
       await v1.register(inventoryRoutes(shop, owns));
       await v1.register(friendsRoutes(friends, owns, (ids) => learning.ranking(ids)));
       await v1.register(insightsRoutes(createInsightsService({ db, clock }), () => reporter.recent()));
-      await v1.register(telemetryRoutes(reporter));
+      await v1.register(telemetryRoutes(reporter, createTelemetryService({ db, clock })));
     },
     { prefix: API_PREFIX },
   );

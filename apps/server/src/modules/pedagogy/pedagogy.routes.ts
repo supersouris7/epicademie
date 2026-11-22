@@ -19,6 +19,9 @@ export function pedagogyRoutes(service: PedagogyService, owns: Ownership) {
       },
       { config: REPORT_LIMIT },
     );
+    route(app, api.reportGeneral, ({ body, actor }) => service.reportGeneral(body, actor().familyId), {
+      config: REPORT_LIMIT,
+    });
     route(app, api.disabledContent, () => service.disabled());
 
     route(app, api.adminReports, ({ params }) => service.reports(params.status));

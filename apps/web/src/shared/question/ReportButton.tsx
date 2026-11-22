@@ -4,6 +4,7 @@ import type { Question } from '@questeo/content';
 import { ApiError, request } from '../api/client.ts';
 import { useSession } from '../lib/session.ts';
 import { GameButton } from '../ui/game/GameButton.tsx';
+import { GeneralReportDialog } from './GeneralReportButton.tsx';
 
 /**
  * « Signaler un problème » sur une question : un motif à choisir (et une précision facultative),
@@ -37,6 +38,7 @@ function ReportDialog({ question, onClose }: { readonly question: Question; read
   const [comment, setComment] = useState('');
   const [state, setState] = useState<'edit' | 'sending' | 'sent'>('edit');
   const [error, setError] = useState<string | null>(null);
+  const [general, setGeneral] = useState(false);
 
   const send = async () => {
     if (!reason || !profileId) return;
@@ -59,6 +61,7 @@ function ReportDialog({ question, onClose }: { readonly question: Question; read
     }
   };
 
+  if (general) return <GeneralReportDialog onClose={onClose} />;
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
@@ -107,6 +110,9 @@ function ReportDialog({ question, onClose }: { readonly question: Question; read
                 Annuler
               </GameButton>
             </div>
+            <button type="button" className="self-start underline" onClick={() => setGeneral(true)}>
+              Autre souci (son, bug, écran…) ?
+            </button>
           </>
         )}
       </div>

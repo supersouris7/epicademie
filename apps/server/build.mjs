@@ -5,9 +5,14 @@ const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 
 // Les paquets npm restent externes (installés par `pnpm deploy`), les paquets @questeo/* sont inclus.
 const external = Object.keys(pkg.dependencies).filter((d) => !d.startsWith('@questeo/'));
 
-// Points d'entrée : le serveur, la migration (conteneur « migrate ») et la commande d'administration.
+// Points d'entrée : le serveur, la migration (conteneur « migrate »), l'administration et l'export des signalements.
 await build({
-  entryPoints: { main: 'src/main.ts', migrate: 'src/cli/migrate.ts', admin: 'src/cli/admin.ts' },
+  entryPoints: {
+    main: 'src/main.ts',
+    migrate: 'src/cli/migrate.ts',
+    admin: 'src/cli/admin.ts',
+    reports: 'src/cli/reports.ts',
+  },
   outdir: 'dist',
   bundle: true,
   platform: 'node',
