@@ -7,7 +7,7 @@
     },
     "apps/server": {},
     "apps/web": {
-      "entry": ["scripts/**/*.{ts,tsx}"]
+      "entry": ["scripts/**/*.{ts,tsx,mjs}"]
     },
     "packages/*": {}
   }

@@ -14,7 +14,8 @@
     "assets:import": "tsx scripts/assets/import.ts",
     "assets:cut": "tsx scripts/assets/cut.ts",
     "assets:kit": "tsx scripts/assets/kit.ts",
-    "assets:sprites": "tsx scripts/assets/sprites.ts"
+    "assets:sprites": "tsx scripts/assets/sprites.ts",
+    "sounds:build": "node scripts/sounds.mjs"
   },
   "dependencies": {
     "@fontsource-variable/nunito": "^5.3.0",

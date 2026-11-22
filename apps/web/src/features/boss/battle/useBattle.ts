@@ -68,7 +68,7 @@ export function useBattle(profile: Profile, chapter: Chapter, notify: (message: 
     if (bossLeft.current) return;
     bossLeft.current = true;
     dispatch({ type: 'bossLeft' });
-    playSound('reveal');
+    playSound('appear');
     later(1400, () => dispatch({ type: 'mobEntered' }));
     later(2700, () => dispatch({ type: 'introEnded' }));
   }, [later]);
@@ -105,7 +105,7 @@ export function useBattle(profile: Profile, chapter: Chapter, notify: (message: 
   const finish = async (b: BattleView) => {
     try {
       const summary = await finishBattle(b.id);
-      playSound(summary.won ? (summary.levelAfter > summary.levelBefore ? 'levelup' : 'finish') : 'wrong');
+      playSound(summary.won ? (summary.levelAfter > summary.levelBefore ? 'levelup' : 'victory') : 'defeat');
       dispatch({ type: 'finished', summary });
       void qc.invalidateQueries({ queryKey: bossesKey(profile.id) });
       void qc.invalidateQueries({ queryKey: ['profiles'] });
@@ -118,7 +118,7 @@ export function useBattle(profile: Profile, chapter: Chapter, notify: (message: 
   const advance = (next: BattleView) => {
     const prev = latest.current.battle;
     if (bossEnrages(prev, next)) {
-      playSound('reveal');
+      playSound('appear');
       later(RAGE_STEP_MS, () => dispatch({ type: 'rageTimer', from: 'debut' }));
       later(RAGE_STEP_MS * 2, () => dispatch({ type: 'rageTimer', from: 'montee' }));
       later(RAGE_STEP_MS * 3, () => dispatch({ type: 'rageTimer', from: 'rage' }));
@@ -126,7 +126,7 @@ export function useBattle(profile: Profile, chapter: Chapter, notify: (message: 
       later(RAGE_STEP_MS * 3 + 300, () => dispatch({ type: 'rageAnswered' }));
     }
     if (bossArrives(prev, next)) {
-      playSound('reveal');
+      playSound('appear');
       later(ARRIVAL_MS, () => dispatch({ type: 'arrivalEnded' }));
     }
     dispatch({ type: 'advanced', next });
@@ -157,13 +157,19 @@ export function useBattle(profile: Profile, chapter: Chapter, notify: (message: 
       } else if (result.correct) {
         playSound('correct');
         dispatch({ type: 'shot' });
-        later(HIT_MS, () => dispatch({ type: 'shotLanded', next: result.battle }));
+        later(HIT_MS, () => {
+          playSound('hit');
+          dispatch({ type: 'shotLanded', next: result.battle });
+        });
         later(NEXT_MS, () => advance(result.battle));
       } else {
         playSound('wrong');
         dispatch({ type: 'missed', result, given: response, why: local.why });
         later(MISS_SCENE_MS, () => dispatch({ type: 'missSceneEnded' }));
-        later(HIT_MS, () => dispatch({ type: 'riposteLanded', result }));
+        later(HIT_MS, () => {
+          playSound('hurt');
+          dispatch({ type: 'riposteLanded', result });
+        });
       }
     } catch (err) {
       if (err instanceof ApiError && err.code === 'GONE') dispatch({ type: 'failed', error: blocking(err, '') });
