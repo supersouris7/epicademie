@@ -31,6 +31,7 @@ et les options écartées. Une ADR acceptée ne se modifie pas : une nouvelle AD
 | [0023](0023-raid-et-tv.md)                 | Raid coopératif et mode TV                                                            | Acceptée            |
 | [0024](0024-contenus-hors-maths.md)        | Contenus hors maths et parcours Adulte                                                | Acceptée (en cours) |
 | [0025](0025-vocabulaire-et-schemas.md)     | Vocabulaire expliqué et schémas dans les explications                                 | Acceptée            |
+| [0026](0026-eleve-autonome.md)             | Élève de moins de 15 ans : compte autonome sans donnée personnelle                    | Acceptée            |
 
 ## Modèle
 
