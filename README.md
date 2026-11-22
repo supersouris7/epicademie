@@ -52,7 +52,7 @@ Commits au format [Conventional Commits](https://www.conventionalcommits.org/fr/
 git tag v1.0.1 && git push origin v1.0.1
 ```
 
-La CI (lint, types, tests, E2E) doit passer avant la publication des images `linux/amd64` + `linux/arm64`. Secrets GitHub requis : `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`.
+La CI (lint, types, tests, E2E ; seuls les contrôles concernés par la PR sont lancés, rien n'est rejoué après fusion) doit passer avant la publication des images `linux/amd64` + `linux/arm64`. Secrets GitHub requis : `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`.
 
 ## Licence
 

@@ -5,6 +5,10 @@ on:
     branches: [main]
     tags: ['v*.*.*']
   pull_request:
+  # Analyse hebdomadaire de l'image : nouvelles failles publiées sans changement de code.
+  schedule:
+    - cron: '0 5 * * 1'
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -18,27 +22,79 @@ permissions:
 
 # Actions tierces épinglées par empreinte de commit (version en commentaire) : une étiquette
 # déplacée ne peut pas injecter de code dans la CI. Dependabot propose les mises à jour.
+#
+# Rapidité et pas de sur-test (#68) :
+#  - contrôles statiques, tests et E2E (un job par appareil) en parallèle ;
+#  - seuls les contrôles concernés par les fichiers modifiés de la PR sont lancés ;
+#  - après la fusion d'une PR dont la CI était verte, rien n'est rejoué sur main : publication seule ;
+#  - commit direct sur main, tag de version, lancement manuel ou modification de la CI : tout est lancé.
 
 jobs:
-  quality:
-    name: Lint, types, tests, build, E2E
+  changements:
+    name: Contrôles à lancer
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+      actions: read
+    outputs:
+      statique: ${{ steps.c.outputs.statique }}
+      tests: ${{ steps.c.outputs.tests }}
+      e2e: ${{ steps.c.outputs.e2e }}
+      postgres: ${{ steps.c.outputs.postgres }}
+      image: ${{ steps.c.outputs.image }}
+    steps:
+      - id: c
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          EVENT: ${{ github.event_name }}
+          PR: ${{ github.event.pull_request.number }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          out() { echo "$1=true" >> "$GITHUB_OUTPUT"; echo "→ $1"; }
+          tout() { for k in statique tests e2e postgres image; do out "$k"; done; }
+          case "$EVENT" in
+            schedule) out image; exit 0 ;;
+            workflow_dispatch) tout; exit 0 ;;
+            push)
+              if [[ $GITHUB_REF == refs/tags/* ]]; then tout; exit 0; fi
+              pr=$(gh api "repos/$REPO/commits/$SHA/pulls" --jq "[.[] | select(.merge_commit_sha == \"$SHA\")][0].number // empty")
+              if [[ -n $pr ]]; then
+                head=$(gh api "repos/$REPO/pulls/$pr" --jq .head.sha)
+                ok=$(gh api "repos/$REPO/actions/workflows/ci.yml/runs?head_sha=$head&event=pull_request&status=success" --jq .total_count)
+                if (( ok > 0 )); then
+                  echo "::notice::PR #$pr déjà validée par la CI : contrôles non rejoués, publication seule."
+                  exit 0
+                fi
+                echo "::warning::PR #$pr fusionnée sans CI verte sur son dernier commit : CI complète."
+              fi
+              tout; exit 0 ;;
+          esac
+          files=$(gh api --paginate "repos/$REPO/pulls/$PR/files?per_page=100" --jq '.[].filename')
+          printf '%s\n' "$files" | sed 's/^/  /'
+          has() { grep -qE "$1" <<<"$files"; }
+          if has '^\.github/(workflows|actions)/'; then echo "CI modifiée : tous les contrôles."; tout; exit 0; fi
+          if ! grep -qvE '^(docs/|LICENSE$|\.github/ISSUE_TEMPLATE/|\.github/dependabot\.yml$)|\.md$' <<<"$files"; then
+            echo "Documentation uniquement : aucun contrôle."; exit 0
+          fi
+          out statique; out tests
+          has '^(apps|packages|e2e)/|^playwright\.config|^package\.json$|^pnpm-(lock|workspace)\.yaml$|^tsconfig' && out e2e
+          has '^(apps/server|packages)/|^package\.json$|^pnpm-lock\.yaml$|^vitest\.' && out postgres
+          has '^(Dockerfile|\.dockerignore)$|(^|/)package\.json$|^pnpm-lock\.yaml$' && out image
+          exit 0
+
+  statique:
+    name: Format, lint, types, architecture, code mort
+    needs: changements
+    if: needs.changements.outputs.statique == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: 24
-      - run: corepack enable
-      - id: pnpm-store
-        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
-      - name: Cache pnpm
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ${{ steps.pnpm-store.outputs.path }}
-          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: pnpm-${{ runner.os }}-
-      - run: pnpm install --frozen-lockfile
+      - uses: ./.github/actions/preparer
       - run: pnpm format:check
       - run: pnpm lint
       - run: pnpm typecheck
@@ -46,20 +102,56 @@ jobs:
       - run: pnpm arch
       # Code mort : fichiers, exports et dépendances inutilisés.
       - run: pnpm deadcode
+
+  tests:
+    name: Tests et couverture
+    needs: changements
+    if: needs.changements.outputs.tests == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/preparer
       # Tests unitaires et d'intégration (PostgreSQL embarqué), seuils de couverture bloquants.
       - run: pnpm test:coverage
-      - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm e2e
+
+  e2e:
+    name: E2E (${{ matrix.appareil }})
+    needs: changements
+    if: needs.changements.outputs.e2e == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        appareil: [tablette, smartphone, ordinateur-tv]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/preparer
+      - name: Cache des navigateurs Playwright
+        id: navigateurs
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - if: steps.navigateurs.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium
+      - if: steps.navigateurs.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium
+      - run: pnpm e2e --project=${{ matrix.appareil }}
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure()
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.appareil }}
           path: playwright-report
           retention-days: 7
 
-  # Les tests du serveur rejoués sur un vrai PostgreSQL (même version que la production).
+  # Les tests du serveur rejoués sur un vrai PostgreSQL (même version que la production),
+  # seulement si le serveur, les paquets partagés ou les dépendances changent.
   postgres:
     name: Intégration PostgreSQL
+    needs: changements
+    if: needs.changements.outputs.postgres == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     services:
@@ -76,25 +168,16 @@ jobs:
       TEST_DATABASE_URL: postgres://questeo:questeo@localhost:5432/questeo
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: 24
-      - run: corepack enable
-      - id: pnpm-store
-        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
-      - name: Cache pnpm
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ${{ steps.pnpm-store.outputs.path }}
-          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: pnpm-${{ runner.os }}-
-      - run: pnpm install --frozen-lockfile
+      - uses: ./.github/actions/preparer
       - run: pnpm exec vitest run --project @questeo/server
 
   # Analyse de sécurité de l'image de production (paquets système et dépendances Node) :
   # bloquante s'il reste une faille grave ou critique pour laquelle un correctif existe.
+  # Lancée si l'image ou les dépendances changent, et chaque semaine.
   image-scan:
     name: Analyse de sécurité de l'image
+    needs: changements
+    if: needs.changements.outputs.image == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -114,10 +197,25 @@ jobs:
           exit-code: '1'
           format: table
 
+  # Synthèse unique (contrôle obligatoire possible) : échoue si un contrôle lancé a échoué.
+  ci:
+    name: CI
+    needs: [changements, statique, tests, e2e, postgres, image-scan]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Résultat
+        env:
+          RESULTATS: ${{ toJSON(needs.*.result) }}
+        run: |
+          echo "$RESULTATS"
+          if grep -qE '"(failure|cancelled)"' <<<"$RESULTATS"; then exit 1; fi
+
   docker:
     name: Image Docker → Docker Hub
-    needs: [quality, postgres, image-scan]
-    if: github.event_name == 'push'
+    needs: [ci]
+    if: github.event_name == 'push' && needs.ci.result == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
