@@ -23,7 +23,7 @@ export function RequireAccount({ children }: { readonly children?: ReactNode }) 
   const location = useLocation();
   if (isPending) return <p className="p-8 text-xl">Chargement…</p>;
   if (error instanceof ApiError && error.status === 401) {
-    return <Navigate to="/connexion" replace state={{ from: location.pathname }} />;
+    return <Navigate to="/bienvenue" replace state={{ from: location.pathname }} />;
   }
   if (!data) {
     return (
@@ -162,14 +162,20 @@ export function LoginScreen() {
 
 export function SignupScreen() {
   const navigate = useNavigate();
+  // Élève de 15 ans ou plus (parcours « Je suis un élève ») : même compte, libellés adaptés.
+  const student = useSearchParams()[0].get('eleve') === '1';
   const setMe = useSetMe();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   return (
     <AuthForm
-      title="Compte familial"
-      intro="Un compte pour toute la famille : le parent le crée, puis ajoute le profil de chaque enfant."
+      title={student ? 'Ton compte' : 'Compte familial'}
+      intro={
+        student
+          ? 'Crée ton compte avec ton e-mail, puis choisis ton profil de joueur.'
+          : 'Un compte pour toute la famille : le parent le crée, puis ajoute le profil de chaque enfant.'
+      }
       submit="Créer le compte"
       error={error}
       onSubmit={async () => {
@@ -190,7 +196,13 @@ export function SignupScreen() {
         </Link>
       }
     >
-      <Field label="E-mail du parent" type="email" autoComplete="email" value={email} onChange={setEmail} />
+      <Field
+        label={student ? 'Ton e-mail' : 'E-mail du parent'}
+        type="email"
+        autoComplete="email"
+        value={email}
+        onChange={setEmail}
+      />
       <Field
         label="Mot de passe"
         type="password"

@@ -152,6 +152,9 @@ const view = (id: string, b: Battle, inventory: Inventory): BattleView => ({
   inventory,
 });
 
+/** Code de récupération renvoyé par le faux serveur à l'inscription d'un élève. */
+export const STUDENT_CODE = 'ABCD-EFGH-JKMN-PQRS';
+
 /** Compte familial du faux serveur : session de l'appareil et verrou parent. */
 function authHandlers(options: FakeApiOptions) {
   const session = {
@@ -170,7 +173,7 @@ function authHandlers(options: FakeApiOptions) {
         email: session.email,
         role: options.admin ? 'admin' : 'parent',
       },
-      family: { id: '33333333-3333-4333-8333-333333333333' },
+      family: { id: '33333333-3333-4333-8333-333333333333', autonomous: false },
       parent: session.parent,
       parentUntil: session.parent ? '2099-01-01T00:00:00.000Z' : null,
       hasPin: session.pin !== null,
@@ -186,6 +189,15 @@ function authHandlers(options: FakeApiOptions) {
     signup: ({ body }) => {
       Object.assign(session, { loggedIn: true, parent: true, email: credentials(body).email });
       return me();
+    },
+    signupStudent: ({ body }) => {
+      const b = body as { name: string; avatar: unknown; grade: string };
+      Object.assign(session, { loggedIn: true, parent: false, email: null });
+      return {
+        me: { ...me(), family: { id: '33333333-3333-4333-8333-333333333333', autonomous: true } },
+        recoveryCode: STUDENT_CODE,
+        name: b.name,
+      };
     },
     login: ({ body }) => {
       if (credentials(body).password !== FAKE_PASSWORD) {

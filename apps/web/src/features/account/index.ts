@@ -9,6 +9,14 @@ export {
   ResetPasswordScreen,
   SignupScreen,
 } from './AuthScreens.tsx';
+export {
+  StudentAgeScreen,
+  StudentRecoverScreen,
+  StudentSignupScreen,
+  StudentSpace,
+  WelcomeScreen,
+} from './StudentScreens.tsx';
+export { joinFamily } from './api.ts';
 export { ParentGateProvider } from './ParentGate.tsx';
 export { useParentGate } from './parentGate.ts';
 export { lockParent, logout, setParentPin, useMe, useSetMe } from './api.ts';

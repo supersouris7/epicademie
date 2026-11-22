@@ -12,6 +12,10 @@ import {
   RequireAccount,
   ResetPasswordScreen,
   SignupScreen,
+  StudentAgeScreen,
+  StudentRecoverScreen,
+  StudentSignupScreen,
+  WelcomeScreen,
 } from '../features/account/index.ts';
 import { AdminPage } from '../features/admin/index.ts';
 import { Arena } from '../features/arena/index.ts';
@@ -93,6 +97,10 @@ export function App() {
         <ParentGateProvider>
           <Routes>
             {/* Pages publiques : compte familial et informations. */}
+            <Route path="/bienvenue" element={<WelcomeScreen />} />
+            <Route path="/eleve" element={<StudentAgeScreen />} />
+            <Route path="/eleve/inscription" element={<StudentSignupScreen />} />
+            <Route path="/eleve/code" element={<StudentRecoverScreen />} />
             <Route path="/connexion" element={<LoginScreen />} />
             <Route path="/inscription" element={<SignupScreen />} />
             <Route path="/mot-de-passe-oublie" element={<ForgotPasswordScreen />} />
