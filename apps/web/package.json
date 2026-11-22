@@ -15,6 +15,7 @@
     "assets:arenas": "tsx scripts/assets/arenas.ts",
     "assets:cut": "tsx scripts/assets/cut.ts",
     "assets:kit": "tsx scripts/assets/kit.ts",
+    "assets:badges": "tsx scripts/assets/badges.ts",
     "assets:sprites": "tsx scripts/assets/sprites.ts",
     "sounds:build": "node scripts/sounds.mjs"
   },

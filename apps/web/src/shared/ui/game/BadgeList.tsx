@@ -1,12 +1,9 @@
 import { BOSS_MEDAL_LABELS, type BadgeProgress } from '@questeo/shared';
-import { versioned } from '../../../design/assets.ts';
-
-/** Image du badge (une par badge pour l'instant ; une par grade quand les planches seront livrées). */
-const badgeSrc = (category: string) => versioned(`/assets/rewards/badges/${category}.webp`);
+import { badgeSrc } from '../../../design/badges.ts';
 
 /**
- * Badges du joueur : image du badge (grisée tant qu'aucun grade n'est atteint), grade atteint
- * (bronze, argent, or, diamant) et prochain objectif. Utilisé dans « Mes progrès ».
+ * Badges du joueur : médaille du grade atteint (bronze, argent, or, diamant), ou celle du bronze
+ * grisée tant qu'aucun grade n'est atteint, puis prochain objectif. Utilisé dans « Mes progrès ».
  */
 export function BadgeList({ badges }: { readonly badges: readonly BadgeProgress[] }) {
   return (
@@ -18,10 +15,10 @@ export function BadgeList({ badges }: { readonly badges: readonly BadgeProgress[
           aria-label={`Badge ${b.title} : ${b.tier ? BOSS_MEDAL_LABELS[b.tier] : 'pas encore gagné'}`}
         >
           <img
-            src={badgeSrc(b.category)}
+            src={badgeSrc(b.category, b.tier ?? 'bronze')}
             alt=""
             aria-hidden
-            className={`h-16 w-16 shrink-0 object-contain ${b.tier ? '' : 'grayscale'}`}
+            className={`h-20 w-20 shrink-0 object-contain ${b.tier ? '' : 'grayscale'}`}
           />
           <span className="flex min-w-0 flex-col">
             <span className="font-display text-lg tracking-wide">

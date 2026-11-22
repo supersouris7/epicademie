@@ -138,19 +138,6 @@ export const JOBS: readonly Job[] = [
     targets: CHESTS.map((c) => `rewards/chests/${c}-ouvert`),
     byShape: true,
   },
-  // Badges (« Mes progrès ») : une image par badge, planche sur fond opaque.
-  {
-    kind: 'stills',
-    board: 'badges.png',
-    cols: 3,
-    rows: 2,
-    size: 256,
-    targets: ['boss', 'parfait', 'perseverance', 'chapitres', 'consolidees', 'coffres'].map(
-      (b) => `rewards/badges/${b}`,
-    ),
-    byShape: true,
-    opaqueBackground: true,
-  },
   // Médailles : bronze, argent, or, diamant.
   {
     kind: 'stills',
