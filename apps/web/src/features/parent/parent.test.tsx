@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import type { LearningReport } from '@questeo/shared';
 import { emptyLearning, FAKE_PASSWORD } from '../../testing/fakeApi.ts';
 import { renderApp } from '../../testing/renderApp.tsx';
-import { weeklySummary, weekBars } from './summary.ts';
+import { synthesis, toReview } from './summary.ts';
 import { masteredPhrase, subjectBars } from './subjectProgress.ts';
 
 vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.ts')).socketModule);
@@ -73,19 +73,35 @@ const report: LearningReport = {
 };
 
 describe('lecture du suivi pour un parent', () => {
-  it('bilan de la semaine en phrases, comparé à la semaine précédente', () => {
-    const { lines } = weeklySummary(report);
-    expect(lines).toEqual([
-      '10 questions cette semaine, dont 8 réussies sans aide.',
-      '2 réussites avec un indice ou au second essai.',
-      'Plus de réussites sans aide que la semaine dernière : bravo !',
-      '1 réponse données en équipe (non comptées dans sa progression).',
+  it('« À réviser » : notions fragiles d’abord, 3 au plus, avec matière et raison courte', () => {
+    expect(toReview(report)).toEqual([
+      {
+        skillId: 'm5-priorites',
+        title: 'Priorités opératoires',
+        subject: 'Maths',
+        reason: 'Erreur fréquente : La multiplication passe avant l’addition.',
+      },
     ]);
-    expect(weeklySummary(emptyLearning()).lines).toEqual(['Pas encore de séance cette semaine.']);
+    expect(toReview(emptyLearning())).toEqual([]);
+    const many: LearningReport = {
+      ...report,
+      skills: ['a', 'b', 'c', 'd'].map((id) => ({
+        ...report.skills[0]!,
+        skillId: id,
+        recurringErrors: [],
+        trend: null,
+      })),
+    };
+    expect(toReview(many)).toHaveLength(3);
+    expect(toReview(many)[0]?.reason).toBe('Souvent besoin d’aide (2 réussites sans aide sur 6)');
   });
 
-  it('histogramme : hauteur relative à la semaine la plus remplie', () => {
-    expect(weekBars(report).map((b) => b.height)).toEqual([0.4, 1]);
+  it('synthèse : une phrase à partir de la matière la plus avancée', () => {
+    const bar = (acquired: number, total: number) => ({ name: 'Maths', acquired, total });
+    expect(synthesis('Léa', [bar(12, 30)])).toBe('Léa avance bien en maths : 12 notions maîtrisées sur 30.');
+    expect(synthesis('Léa', [bar(1, 30)])).toBe('Léa avance en maths : 1 notion maîtrisée sur 30.');
+    expect(synthesis('Léa', [bar(0, 30)])).toContain('aucune notion maîtrisée');
+    expect(synthesis('Léa', [])).toContain('aucune notion maîtrisée');
   });
 });
 
@@ -134,17 +150,22 @@ describe('avancement par matière', () => {
 
 describe('espace parent', () => {
   it('mot de passe demandé, puis carte de chaque enfant et détail', async () => {
-    const { user } = renderApp('/parent', { parent: false, learning: report });
+    const { user } = renderApp('/parent', { parent: false, learning: report, skills: [gold] });
     await user.type(await screen.findByLabelText(/Mot de passe/), FAKE_PASSWORD);
     await user.click(screen.getByRole('button', { name: 'Ouvrir l’Espace parent' }));
     const card = await screen.findByRole('listitem', { name: 'Progrès de Léa' });
     expect(await within(card).findByRole('button', { name: /Maths/ })).toBeInTheDocument();
-    expect(card).toHaveTextContent('À retravailler : Priorités opératoires');
+    expect(card).toHaveTextContent('À réviser : Priorités opératoires');
     await user.click(within(card).getByRole('link', { name: /Voir les progrès/ }));
-    expect(await screen.findByRole('heading', { name: 'Bilan de la semaine' })).toBeInTheDocument();
-    await user.click(screen.getByText(/Maths —/));
+    expect(
+      await screen.findByText('Léa avance en maths : 1 notion maîtrisée sur', { exact: false }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'À réviser' })).toBeInTheDocument();
     expect(screen.getByText(/Erreur fréquente : La multiplication/)).toBeInTheDocument();
-    expect(screen.getByText(/en baisse/)).toBeInTheDocument();
+    // Lecture seule : ni graphique, ni détail par notion, ni création d'entraînement.
+    for (const gone of [/Bilan de la semaine/, /Préparer une séance/, /Par matière/, /recommand/i])
+      expect(screen.queryByText(gone)).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /séance|recommand/i })).not.toBeInTheDocument();
   });
 
   it('code PIN : l’Espace parent s’ouvre avec les 4 chiffres, et « Verrouiller » le referme', async () => {
@@ -207,17 +228,5 @@ describe('espace parent', () => {
   it('réglages : le code PIN se choisit dans l’Espace parent', async () => {
     renderApp('/parent/reglages');
     expect(await screen.findByRole('button', { name: 'Choisir un code PIN' })).toBeInTheDocument();
-  });
-
-  it('séance ciblée : les notions choisies deviennent une série pour l’enfant', async () => {
-    const { user, server } = renderApp('/parent/enfant/11111111-1111-4111-8111-111111111111', { learning: report });
-    const box = await screen.findByRole('checkbox', { name: /Priorités opératoires/ });
-    expect(box).toBeChecked();
-    await user.click(screen.getByRole('button', { name: 'Lancer la séance dans le jeu pour Léa' }));
-    await screen.findByRole('progressbar', { name: 'Progression de la série' });
-    expect(server.calls.find((c) => c.path === '/sessions')?.body).toMatchObject({
-      chapterId: 'seance',
-      skillId: 'm5-priorites',
-    });
   });
 });
