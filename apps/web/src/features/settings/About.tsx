@@ -38,6 +38,7 @@ export function About() {
           </p>
         )}
       </GamePanel>
+      <p className="text-muted text-center text-sm">© 2026 Academy Fighters — tous droits réservés.</p>
     </PageShell>
   );
 }

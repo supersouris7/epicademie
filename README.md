@@ -54,6 +54,11 @@ git tag v1.0.1 && git push origin v1.0.1
 
 La CI (lint, types, tests, E2E) doit passer avant la publication des images `linux/amd64` + `linux/arm64`. Secrets GitHub requis : `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`.
 
+## Licence
+
+Logiciel propriétaire — © 2026 supersouris7, tous droits réservés (voir [`LICENSE`](LICENSE)).
+Code non open source : aucune réutilisation sans autorisation écrite.
+
 ## Crédits
 
-Avatars générés avec [DiceBear](https://www.dicebear.com) (styles sous CC BY 4.0 et licences libres) et polices sous SIL OFL — détail dans l'application (Paramètres → À propos) et dans [`apps/web/src/credits.ts`](apps/web/src/credits.ts).
+Avatars générés avec [DiceBear](https://www.dicebear.com) (styles sous CC BY 4.0 et licences libres) et polices sous SIL OFL — détail dans l'application (Paramètres → À propos) et dans [`apps/web/src/features/settings/credits.ts`](apps/web/src/features/settings/credits.ts).

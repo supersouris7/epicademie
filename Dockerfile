@@ -21,7 +21,8 @@ FROM ${NODE_IMAGE}
 ARG VERSION=dev
 LABEL org.opencontainers.image.title="Questeo" \
       org.opencontainers.image.description="Academy Fighters — exercices gamifiés du CM1 à la 3e" \
-      org.opencontainers.image.version="${VERSION}"
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.licenses="LicenseRef-Proprietary"
 ENV NODE_ENV=production PORT=3000 QUESTEO_VERSION=${VERSION}
 WORKDIR /app
 # npm, npx et corepack ne servent qu'à installer : absents de l'image d'exécution (surface
