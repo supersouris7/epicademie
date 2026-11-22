@@ -14,7 +14,7 @@ import {
   type SubjectId,
 } from '@questeo/shared';
 import { TrophiesSection } from './Trophies.tsx';
-import { useBosses } from '../boss/index.ts';
+import { useBosses, useRelicProgress } from '../boss/index.ts';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
 import { SubjectIcon } from '../../shared/ui/game/SubjectIcon.tsx';
 import { ProgressBar } from '../../shared/ui/game/ProgressBar.tsx';
@@ -75,6 +75,7 @@ function subjectTotals(subject: SubjectId, grade: Grade | undefined, states: Rea
 export function Progress({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
   const { data } = useSkills(profile.id);
+  const relicOf = useRelicProgress(profile);
   const states = new Map((data ?? []).map((s) => [s.skillId, s]));
   const grade = playedGrade(profile.grade);
   const subjects = SUBJECTS.filter((s) => chaptersOf(s.id, grade).length > 0);
@@ -98,7 +99,7 @@ export function Progress({ profile }: { readonly profile: Profile }) {
               className="cartoon cartoon-press bg-surface flex w-full items-center gap-3 p-3 text-left"
               aria-label={`${s.name} : ${ids.length - counts.aucune} notions médaillées sur ${ids.length}`}
             >
-              <SubjectIcon subject={s.id} size={48} />
+              <SubjectIcon subject={s.id} name={s.name} {...relicOf(s.id)} size={48} />
               <span className="flex min-w-0 flex-1 flex-col gap-1">
                 <span className="font-display text-xl tracking-wide">{s.name}</span>
                 <ProgressBar
@@ -203,6 +204,7 @@ export function SubjectProgress({ profile }: { readonly profile: Profile }) {
   const { subject: param = 'maths' } = useParams();
   const subject = SUBJECTS.find((s) => s.id === param)?.id ?? 'maths';
   const { data } = useSkills(profile.id);
+  const relicOf = useRelicProgress(profile);
   // Domaines ouverts (tous repliés à l'arrivée : la page reste courte sur téléphone).
   const [open, setOpen] = useState<ReadonlySet<DomainId>>(new Set());
   const toggle = (d: DomainId) =>
@@ -228,7 +230,7 @@ export function SubjectProgress({ profile }: { readonly profile: Profile }) {
   return (
     <PageShell title={`Mes progrès · ${name}`} back="/progres" nav={profile}>
       <section className="cartoon bg-surface flex flex-wrap items-center gap-4 p-4">
-        <SubjectIcon subject={subject} size={64} />
+        <SubjectIcon subject={subject} name={name} {...relicOf(subject)} size={64} />
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <p className="font-display text-2xl tracking-wide">
             {allIds.length - total.aucune} / {allIds.length} notions médaillées
