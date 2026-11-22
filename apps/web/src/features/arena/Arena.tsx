@@ -1,4 +1,4 @@
-import { GameRecap } from '../training/index.ts';
+import { RecapScreen } from '../training/index.ts';
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate, useSearchParams } from 'react-router';
@@ -243,6 +243,7 @@ function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly are
   const leave = useRealtime((s) => s.leaveArena);
   const q = arena.question;
   const question = useMemo(() => (q ? generate(q.skillId, q.level, q.seed) : null), [q]);
+  const [recap, setRecap] = useState(false);
   const quiz = arena.quiz ?? null;
   const myTurn = arena.turnId === profile.id;
   // Quiz : tout le monde répond, sauf qui s'est déjà trompé dans la manche.
@@ -261,6 +262,35 @@ function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly are
   if (arena.phase === 'over') {
     const won = arena.raid ? arena.raid.won === true : arena.winnerId === profile.id;
     const line = heroSays(profile.hero, won ? 'victory' : 'defeat');
+    if (recap) {
+      return (
+        <RecapScreen profileId={profile.id} rows={tally}>
+          {/* Rejouer : les mêmes joueurs sont réinvités tout de suite (même chapitre, même mode). */}
+          <GameButton
+            icon="icons-navigation-retry"
+            onClick={() =>
+              createArena(
+                arena.chapterId,
+                arena.players.filter((p) => p.id !== profile.id).map((p) => p.id),
+                arena.kind,
+              )
+            }
+          >
+            Rejouer
+          </GameButton>
+          <GameButton
+            variant="surface"
+            icon="icons-navigation-next"
+            onClick={() => {
+              leave();
+              void navigate('/multi');
+            }}
+          >
+            Retour
+          </GameButton>
+        </RecapScreen>
+      );
+    }
     return (
       <PageShell title={arena.raid ? 'Raid' : 'Arène'} back="/multi">
         {won && <Confetti />}
@@ -275,34 +305,9 @@ function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly are
           <div className="w-full max-w-lg text-left">
             <HeroSays hero={profile.hero} face={line.face} text={line.text} delay={0.3} />
           </div>
-          <div className="w-full max-w-lg">
-            <GameRecap profileId={profile.id} rows={tally} />
-          </div>
-          <div className="flex flex-wrap justify-center gap-2">
-            {/* Rejouer : les mêmes joueurs sont réinvités tout de suite (même chapitre, même mode). */}
-            <GameButton
-              icon="icons-navigation-retry"
-              onClick={() =>
-                createArena(
-                  arena.chapterId,
-                  arena.players.filter((p) => p.id !== profile.id).map((p) => p.id),
-                  arena.kind,
-                )
-              }
-            >
-              Rejouer
-            </GameButton>
-            <GameButton
-              variant="surface"
-              icon="icons-navigation-next"
-              onClick={() => {
-                leave();
-                void navigate('/multi');
-              }}
-            >
-              Retour
-            </GameButton>
-          </div>
+          <GameButton size="lg" icon="icons-navigation-next" onClick={() => setRecap(true)}>
+            Suite
+          </GameButton>
         </div>
       </PageShell>
     );

@@ -74,6 +74,7 @@ test('Plusieurs joueurs : connectés, message, profil déjà ouvert refusé, ar�
   await expect(tom.getByRole('heading', { name: new RegExp(`Léa${suffix} a gagné`) })).toBeVisible();
 
   // Rejouer tout de suite : Tom reçoit une nouvelle invitation (la partie finie ne bloque plus).
+  await lea.getByRole('button', { name: 'Suite' }).click();
   await lea.getByRole('button', { name: 'Rejouer' }).click();
   await expect(tom.getByRole('alert').getByRole('button', { name: 'J’y vais !' })).toBeVisible();
 

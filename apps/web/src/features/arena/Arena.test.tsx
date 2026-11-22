@@ -97,6 +97,7 @@ describe('arène', () => {
 
     serverSays('arena', arena({ phase: 'over', winnerId: me.id }));
     expect(await screen.findByRole('heading', { name: 'Victoire !' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Suite' }));
     // Bouton du bilan (le dernier ; le premier est la flèche retour de la page).
     await user.click(screen.getAllByRole('button', { name: 'Retour' }).at(-1)!);
     expect(emitted('arena:leave').length).toBeGreaterThan(0);

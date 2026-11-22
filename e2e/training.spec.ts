@@ -83,14 +83,15 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   const opened = page.getByRole('dialog', { name: 'Coffre rare' });
   await expect(opened).toContainText('Bouclier +1');
   await expect(opened).toContainText('+10 pièces');
-  await opened.getByRole('button', { name: 'Super !' }).click();
+  await opened.getByRole('button', { name: 'Continuer' }).click();
   await expect(opened).toHaveCount(0);
   await expect(page.getByText(/On s’accroche/)).toBeVisible();
   await expect(page.getByText('0/5')).toBeVisible();
   await expect(page.getByText(/À revoir dès/)).toBeVisible();
-  // Récapitulatif des erreurs avec la bonne réponse.
-  await page.getByText(/Tes erreurs \(\d+\)/).click();
-  await expect(page.getByText(/Réponse :/).first()).toBeVisible();
+  // Écran suivant : récapitulatif des erreurs avec la bonne réponse.
+  await page.getByRole('button', { name: 'Suite' }).click();
+  await expect(page.getByText(/Tes erreurs \(\d+\)/)).toBeVisible();
+  await expect(page.getByText(/Bonne réponse :/).first()).toBeVisible();
 
   // La notion apparaît « à revoir » demain : pas encore échue aujourd'hui, mais évaluée.
   await page.getByRole('button', { name: 'Autre notion' }).click();

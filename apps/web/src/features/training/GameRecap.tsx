@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 import { getAnySkill, glossaryEntry } from '@questeo/content';
 import { MathText } from '../../shared/question/MathText.tsx';
@@ -5,25 +6,30 @@ import { useTermReminders } from '../../shared/question/termReminders.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import { useSkills } from './api.ts';
-import { adviceFor, type RecapRow } from './advice.ts';
+import { oftenMissed, type RecapRow } from './advice.ts';
+import type { Missed } from './types.ts';
 
 /**
- * Récap de fin de partie, commun à tous les modes : tableau des notions (réponses, justes) et
- * entraînement conseillé (« Tu devrais t'entraîner sur… ») avec un bouton qui le lance.
+ * Récap de fin de partie (écran qui suit celui des récompenses), commun à tous les modes : tableau
+ * des notions, erreurs commises (énoncé et bonne réponse) et, si une notion est souvent ratée, le
+ * mot de Questy avec un bouton qui lance directement son entraînement.
  */
 export function GameRecap({
   profileId,
   rows,
   table = true,
+  missed = [],
 }: {
   readonly profileId: string;
   readonly rows: readonly RecapRow[];
   /** Tableau des notions (sauf quand l'écran a déjà le sien, comme l'entraînement). */
   readonly table?: boolean;
+  /** Questions ratées pendant la partie, avec la bonne réponse. */
+  readonly missed?: readonly Missed[];
 }) {
   const navigate = useNavigate();
   const { data: history } = useSkills(profileId);
-  const advice = adviceFor(rows, history);
+  const advice = oftenMissed(rows, history);
   const words = useTermReminders();
   const title = (id: string) => getAnySkill(id)?.title ?? id;
   return (
@@ -53,6 +59,21 @@ export function GameRecap({
           </tbody>
         </table>
       )}
+      {missed.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <h3 className="font-display text-lg tracking-wide">Tes erreurs ({missed.length})</h3>
+          <ul className="flex flex-col gap-2">
+            {missed.map((m, i) => (
+              <li key={i} className="bg-surface-2 rounded-2xl p-3 text-lg">
+                <MathText text={m.prompt} />
+                <span className="text-muted mt-1 block font-bold">
+                  Bonne réponse : <MathText text={m.answer} className="text-ink" />
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       {/* Mots touchés pendant la partie (combat, défi) : leur définition, comme promis. */}
       {words.length > 0 && (
         <div className="flex flex-col gap-2">
@@ -77,8 +98,8 @@ export function GameRecap({
         <div className="bg-surface-2 flex flex-wrap items-center gap-3 rounded-2xl p-3">
           <Questy mood="wink" size={56} />
           <p className="min-w-0 flex-1 font-bold">
-            Tu devrais t’entraîner sur <span className="font-display tracking-wide">{title(advice.skillId)}</span>
-            {advice.from === 'historique' ? ' : c’est ta notion la plus fragile en ce moment.' : '.'}
+            Tu fais souvent des erreurs sur <span className="font-display tracking-wide">{title(advice.skillId)}</span>.
+            Tu devrais faire cet entraînement pour ne plus jamais hésiter !
           </p>
           <GameButton
             icon="icons-navigation-play"
@@ -91,5 +112,30 @@ export function GameRecap({
         <p className="font-bold">Rien à retravailler pour l’instant : bravo !</p>
       )}
     </section>
+  );
+}
+
+/**
+ * Écran « Ton récap » (2e écran de fin de partie, tous modes) : le récap puis les actions
+ * proposées (`children`). Le 1er écran ne montre que les récompenses.
+ */
+export function RecapScreen({
+  children,
+  title = 'Ton récap',
+  ...recap
+}: {
+  readonly profileId: string;
+  readonly rows: readonly RecapRow[];
+  readonly table?: boolean;
+  readonly missed?: readonly Missed[];
+  readonly title?: string;
+  readonly children: ReactNode;
+}) {
+  return (
+    <div className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col gap-5 px-4 py-6">
+      <h1 className="font-display text-3xl tracking-wide">{title}</h1>
+      <GameRecap {...recap} />
+      <div className="flex flex-wrap justify-center gap-3">{children}</div>
+    </div>
   );
 }

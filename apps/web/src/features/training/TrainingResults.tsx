@@ -1,4 +1,5 @@
-import { GameRecap } from './GameRecap.tsx';
+import { useState } from 'react';
+import { RecapScreen } from './GameRecap.tsx';
 import { motion } from 'motion/react';
 import { getChapter, getSkill } from '@questeo/content';
 import { accord, type Gender, type SessionSummary } from '@questeo/shared';
@@ -8,7 +9,6 @@ import { MedalBadge, RewardBadge } from '../../shared/ui/game/RewardBadge.tsx';
 import { medal } from '@questeo/engine';
 import { QuestyPose } from '../../shared/ui/mascot/QuestyPose.tsx';
 import type { QuestyPoseId } from '../../shared/ui/mascot/poses.ts';
-import { MathText } from '../../shared/question/MathText.tsx';
 import type { MoodId } from '../../shared/ui/mascot/moods.ts';
 import { medalMessage } from '../../shared/question/answers.ts';
 import { ChestReveal } from '../../shared/ui/game/ChestReveal.tsx';
@@ -16,8 +16,9 @@ import { ChestReveal } from '../../shared/ui/game/ChestReveal.tsx';
 import type { Missed } from './types.ts';
 
 /**
- * Bilan d'une partie d'entraînement : note sur 20, XP et pièces, coffre éventuel, médailles par
- * notion, récapitulatif des erreurs avec la bonne réponse, puis rejouer ou changer de notion.
+ * Bilan d'une partie d'entraînement en deux écrans : 1) récompenses seulement (note, XP, pièces,
+ * coffre, médailles) ; 2) récap (erreurs avec la bonne réponse, conseil de Questy) puis rejouer ou
+ * changer de notion.
  */
 export function Results({
   profileId,
@@ -40,6 +41,7 @@ export function Results({
   onReplay: () => void;
 }) {
   const chapter = getChapter(chapterId);
+  const [screen, setScreen] = useState<'rewards' | 'recap'>('rewards');
   const { regular } = summary;
   const mood: MoodId = summary.perfect
     ? 'proud'
@@ -63,6 +65,30 @@ export function Results({
       : summary.scoreOn20 >= 10
         ? 'C’est en bonne voie !'
         : 'On s’accroche, ça va venir !';
+  if (screen === 'recap') {
+    return (
+      <RecapScreen profileId={profileId} rows={summary.skills} table={false} missed={missed}>
+        {summary.variants.answered > 0 && (
+          <p className="w-full text-center text-lg font-bold">
+            Questions similaires après erreur : {summary.variants.correct}/{summary.variants.answered} réussies.
+          </p>
+        )}
+        <GameButton icon="icons-navigation-retry" onClick={onReplay}>
+          Rejouer
+        </GameButton>
+        <GameButton
+          variant="accent"
+          icon="icons-navigation-next"
+          onClick={() => onExit(exitTo ?? `/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`)}
+        >
+          Autre notion
+        </GameButton>
+        <GameButton variant="accent" icon="icons-navigation-home" onClick={() => onExit('/hub')}>
+          Accueil
+        </GameButton>
+      </RecapScreen>
+    );
+  }
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-5 px-4 py-6">
       {(summary.perfect || levelUp) && <Confetti />}
@@ -114,12 +140,6 @@ export function Results({
 
       <ChestReveal chest={summary.chest} />
 
-      {summary.variants.answered > 0 && (
-        <p className="text-center text-lg font-bold">
-          Questions similaires après erreur : {summary.variants.correct}/{summary.variants.answered} réussies.
-        </p>
-      )}
-
       <section className="flex flex-col gap-3">
         <h2 className="font-display text-2xl tracking-wide">Tes notions</h2>
         {summary.skills.map((s) => (
@@ -135,40 +155,9 @@ export function Results({
         ))}
       </section>
 
-      {/* Entraînement conseillé (la notion la plus ratée, sinon la plus fragile de l'historique). */}
-      <GameRecap profileId={profileId} rows={summary.skills} table={false} />
-
-      {missed.length > 0 && (
-        <details className="cartoon bg-surface p-4">
-          <summary className="font-display cursor-pointer text-2xl tracking-wide">
-            Tes erreurs ({missed.length}) : la bonne réponse
-          </summary>
-          <ul className="mt-3 flex flex-col gap-2">
-            {missed.map((m, i) => (
-              <li key={i} className="bg-surface-2 rounded-2xl p-3 text-lg">
-                <MathText text={m.prompt} />
-                <span className="text-muted mt-1 block font-bold">
-                  Réponse : <MathText text={m.answer} className="text-ink" />
-                </span>
-              </li>
-            ))}
-          </ul>
-        </details>
-      )}
-
-      <div className="flex flex-wrap justify-center gap-3">
-        <GameButton icon="icons-navigation-retry" onClick={onReplay}>
-          Rejouer
-        </GameButton>
-        <GameButton
-          variant="accent"
-          icon="icons-navigation-next"
-          onClick={() => onExit(exitTo ?? `/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`)}
-        >
-          Autre notion
-        </GameButton>
-        <GameButton variant="accent" icon="icons-navigation-home" onClick={() => onExit('/hub')}>
-          Accueil
+      <div className="flex justify-center">
+        <GameButton size="lg" icon="icons-navigation-next" onClick={() => setScreen('recap')}>
+          Suite
         </GameButton>
       </div>
     </div>

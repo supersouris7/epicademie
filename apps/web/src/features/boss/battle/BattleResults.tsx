@@ -7,7 +7,7 @@ import { BossSays, HeroSays } from '../../../shared/battle/BattleScenes.tsx';
 import { bossSays, heroSays } from '../../../shared/lib/dialogue.ts';
 import { Confetti } from '../../../shared/ui/Confetti.tsx';
 import { ChestReveal } from '../../../shared/ui/game/ChestReveal.tsx';
-import { GameRecap } from '../../training/index.ts';
+import { RecapScreen } from '../../training/index.ts';
 import { GameButton } from '../../../shared/ui/game/GameButton.tsx';
 import { GameIcon } from '../../../shared/ui/game/GameIcon.tsx';
 import { RewardBadge } from '../../../shared/ui/game/RewardBadge.tsx';
@@ -20,6 +20,73 @@ import { BOSS_MEDAL_ICONS, bossOf } from '../../../design/bosses.ts';
 import { RELICS } from '../../../design/relics.ts';
 
 import { FROM_BATTLE } from './constants.ts';
+
+/** Après une défaite : entraînement de la notion la plus fragile (ou du chapitre). */
+function TrainButton({
+  chapter,
+  weak,
+  onExit,
+}: {
+  readonly chapter: Chapter;
+  readonly weak: ReturnType<typeof getSkill>;
+  readonly onExit: (to: string, state?: unknown) => void;
+}) {
+  return (
+    <GameButton
+      variant="success"
+      size="lg"
+      icon="icons-navigation-lesson"
+      onClick={() =>
+        onExit(
+          weak
+            ? `/partie/entrainement/${chapter.id}/${weak.id}`
+            : `/jouer/entrainement/${chapter.subject}/${chapter.id}`,
+        )
+      }
+    >
+      {weak ? `On s’entraîne : ${weak.title}` : 'On s’entraîne'}
+    </GameButton>
+  );
+}
+
+/** Écran 2 du bilan : récap des notions, entraînement conseillé et suite proposée. */
+function BattleRecap({
+  profileId,
+  chapter,
+  summary,
+  weak,
+  onExit,
+}: {
+  readonly profileId: string;
+  readonly chapter: Chapter;
+  readonly summary: BattleSummary;
+  readonly weak: ReturnType<typeof getSkill>;
+  readonly onExit: (to: string, state?: unknown) => void;
+}) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  return (
+    <RecapScreen profileId={profileId} rows={summary.skills}>
+      {!summary.won && <TrainButton chapter={chapter} weak={weak} onExit={onExit} />}
+      <GameButton
+        icon="icons-navigation-retry"
+        onClick={() => void navigate(location.pathname, { replace: true, state: { replay: Date.now() } })}
+      >
+        Rejouer
+      </GameButton>
+      <GameButton
+        variant="accent"
+        icon="icons-navigation-next"
+        onClick={() => onExit(`/jouer/boss/${chapter.subject}?classe=${chapter.grade}`, FROM_BATTLE)}
+      >
+        Autres boss
+      </GameButton>
+      <GameButton variant="accent" icon="icons-navigation-home" onClick={() => onExit('/hub')}>
+        Accueil
+      </GameButton>
+    </RecapScreen>
+  );
+}
 
 /** Bilan du combat : victoire ou défaite, médaille, gains, et la suite proposée. */
 export function BattleResults({
@@ -37,8 +104,7 @@ export function BattleResults({
   readonly hero: Profile['hero'];
   readonly onExit: (to: string, state?: unknown) => void;
 }) {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [screen, setScreen] = useState<'rewards' | 'recap'>('rewards');
   const boss = bossOf(chapter);
   const weak = summary.weakSkill ? getSkill(summary.weakSkill) : undefined;
   const bossPose = characterSrc(bossPoseId(boss.id, summary.won ? 'defeat' : 'victory'));
@@ -47,6 +113,9 @@ export function BattleResults({
     hero: heroSays(hero, summary.won ? 'victory' : 'defeat'),
     boss: bossSays(summary.won ? 'ko' : 'wins', boss.id),
   }));
+  if (screen === 'recap') {
+    return <BattleRecap profileId={profileId} chapter={chapter} summary={summary} weak={weak} onExit={onExit} />;
+  }
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-5 px-4 py-6">
       {summary.won && <Confetti />}
@@ -126,9 +195,6 @@ export function BattleResults({
         </motion.section>
       )}
 
-      {/* Récap des notions et entraînement conseillé. */}
-      <GameRecap profileId={profileId} rows={summary.skills} />
-
       {/* Coffre de victoire, de la rareté de la médaille (parfois mieux). */}
       {summary.chest && <ChestReveal chest={summary.chest} />}
 
@@ -138,38 +204,11 @@ export function BattleResults({
         </div>
       )}
 
+      {/* Après une défaite, l'entraînement est proposé tout de suite (pas de récompense à voir). */}
       <div className="flex flex-wrap justify-center gap-3">
-        {!summary.won && (
-          <GameButton
-            variant="success"
-            size="lg"
-            icon="icons-navigation-lesson"
-            onClick={() =>
-              onExit(
-                weak
-                  ? `/partie/entrainement/${chapter.id}/${weak.id}`
-                  : `/jouer/entrainement/${chapter.subject}/${chapter.id}`,
-              )
-            }
-          >
-            {weak ? `On s’entraîne : ${weak.title}` : 'On s’entraîne'}
-          </GameButton>
-        )}
-        <GameButton
-          icon="icons-navigation-retry"
-          onClick={() => void navigate(location.pathname, { replace: true, state: { replay: Date.now() } })}
-        >
-          Rejouer
-        </GameButton>
-        <GameButton
-          variant="accent"
-          icon="icons-navigation-next"
-          onClick={() => onExit(`/jouer/boss/${chapter.subject}?classe=${chapter.grade}`, FROM_BATTLE)}
-        >
-          Autres boss
-        </GameButton>
-        <GameButton variant="accent" icon="icons-navigation-home" onClick={() => onExit('/hub')}>
-          Accueil
+        {!summary.won && <TrainButton chapter={chapter} weak={weak} onExit={onExit} />}
+        <GameButton size="lg" icon="icons-navigation-next" onClick={() => setScreen('recap')}>
+          Suite
         </GameButton>
       </div>
     </div>
