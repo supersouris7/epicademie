@@ -237,7 +237,7 @@ export const JOBS: readonly Job[] = [
     cols: 4,
     rows: 3,
     size: 320,
-    mirror: true,
+    // Dessinées tournées vers la gauche (comme les poses) : pas de miroir.
     targets: SORCIER_HEADS.map((h) => `bosses/sorcier-pi/head-${h}`),
   },
   {
