@@ -44,4 +44,4 @@ packages/engine   règles du jeu (purs)
 - [Décisions (ADR)](../adr/README.md).
 - Exploitation : [configuration](../operations/configuration.md),
   [déploiement](../operations/deploiement.md), [observabilité](../operations/observabilite.md).
-- Produit et règles du jeu : [SPEC](../SPEC.md) ; design : [DESIGN-SYSTEM](../DESIGN-SYSTEM.md).
+- Produit et règles du jeu : spécification dans le dépôt privé de pilotage ; design : [DESIGN-SYSTEM](../DESIGN-SYSTEM.md).

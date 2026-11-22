@@ -1,12 +1,13 @@
 # Academy Fighters — règles du projet
 
 > Complète le socle commun de la fabrique (`~/.claude/CLAUDE.md`, `~/.claude/fabrique/standards/`),
-> sans jamais l'affaiblir en sécurité. Point de reprise : `docs/projet/ETAT.md`.
+> sans jamais l'affaiblir en sécurité. Point de reprise : `~/opencode/questeo-pilotage/ETAT.md` (dépôt privé de pilotage).
 
 ## Produit
 
-- Vision : `docs/projet/VISION.md` (local, non versionné : le dépôt est public). Spécifications : `docs/SPEC.md` (les décisions validées y sont consignées :
-  spec avant code). Identité visuelle : `docs/DESIGN-SYSTEM.md`, `docs/ASSETS-CHATGPT.md`, `docs/PLANCHES-BOSS.md`.
+- Vision, spécifications produit (spec avant code) et Arène d'évaluation : dépôt privé de pilotage, clone local
+  `~/opencode/questeo-pilotage/specs/` (SPEC.md, VISION.md, ARENE-EVALUATION.md). Identité visuelle :
+  `docs/DESIGN-SYSTEM.md`, `docs/ASSETS-CHATGPT.md`, `docs/PLANCHES-BOSS.md`.
 - Décisions d'architecture : `docs/adr/`.
 
 ## Pile et commandes de contrôle
@@ -40,8 +41,11 @@
 
 ## Suivi
 
-- Dépôt : GitHub supersouris7/questeo · Tableau : à créer (gh-projet.sh) · Branche principale : main
-- Branches : `feat|fix|chore/<n° ticket>-<slug>` ; une PR par ticket, `Closes #n`.
+- Dépôt de code : supersouris7/questeo (PUBLIC, temporairement). **Tickets, jalons et roadmap : uniquement dans le dépôt
+  PRIVÉ supersouris7/academy-fighters-pilotage** (tableau privé #2). Ne jamais créer d'issue ni écrire de stratégie, de tarif ou de
+  spécification détaillée dans ce dépôt public ; PR sobres et techniques, `Closes supersouris7/academy-fighters-pilotage#N`.
+- Branche principale : main
+- Branches : `feat|fix|chore/<n° ticket>-<slug>` ; une PR par ticket, `Closes supersouris7/academy-fighters-pilotage#n`.
 
 ## Règles spécifiques
 
