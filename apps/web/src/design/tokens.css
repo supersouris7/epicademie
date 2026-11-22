@@ -47,10 +47,10 @@
   --af-gray-500: #8e86a8;
   --af-gray-700: #5d5680;
 
-  /* ── Sémantique : thème sombre unique (violet profond, comme les planches) ── */
-  --bg: var(--af-violet-950);
-  --surface: var(--af-violet-900);
-  --surface-2: var(--af-violet-800);
+  /* ── Sémantique : thème unique violet lumineux (contrastes AA vérifiés dans design.test.ts) ── */
+  --bg: var(--af-violet-800);
+  --surface: var(--af-violet-700);
+  --surface-2: var(--af-violet-600);
   --text: var(--af-cream-50);
   --text-muted: var(--af-violet-100);
   --text-on-color: var(--af-white);
@@ -74,7 +74,7 @@
   --gold: var(--af-gold-400);
   --locked: var(--af-gray-700);
   --locked-text: var(--af-gray-300);
-  --track: var(--af-violet-950);
+  --track: var(--af-violet-900);
 
   /* Ressources et barres de HUD */
   --health: var(--af-red-500);

@@ -20,6 +20,49 @@ describe('tokens', () => {
   });
 });
 
+describe('contrastes AA du thème', () => {
+  const lum = (hex: string) => {
+    const [r, g, b] = [1, 3, 5].map((i) => {
+      const v = parseInt(hex.slice(i, i + 2), 16) / 255;
+      return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+    }) as [number, number, number];
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const ratio = (a: string, b: string) => {
+    const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x) as [number, number];
+    return (hi + 0.05) / (lo + 0.05);
+  };
+  const css = read('./tokens.css');
+  const raw = (name: string): string => new RegExp(`--af-${name}:\\s*(#[0-9a-f]{6})`).exec(css)?.[1] ?? '';
+  const sem = (name: string): string =>
+    raw(new RegExp(`\\s--${name}:\\s*var\\(--af-([\\w-]+)\\)`).exec(css)?.[1] ?? '');
+  // Pire cas du halo du haut de page : violet-500 à 55 % sur le fond.
+  const halo =
+    '#' +
+    [1, 3, 5]
+      .map((i) =>
+        Math.round(
+          parseInt(sem('bg').slice(i, i + 2), 16) * 0.45 + parseInt(raw('violet-500').slice(i, i + 2), 16) * 0.55,
+        )
+          .toString(16)
+          .padStart(2, '0'),
+      )
+      .join('');
+
+  it.each(['bg', 'surface', 'surface-2'])('textes principal, secondaire et blanc lisibles (4,5:1) sur %s', (fond) => {
+    for (const t of ['text', 'text-muted', 'text-on-color'])
+      expect(ratio(sem(t), sem(fond)), `${t} / ${fond}`).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('les textes restent lisibles sur le halo le plus clair du fond', () => {
+    for (const t of ['text', 'text-muted']) expect(ratio(sem(t), halo), t).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('le fond est nettement plus clair qu’avant (violet-950)', () => {
+    expect(lum(sem('bg'))).toBeGreaterThan(lum(raw('violet-950')) * 3);
+  });
+});
+
 describe('SVG générés', () => {
   it('sont à jour (relancer `pnpm --filter @questeo/web assets:svg`)', () => {
     for (const [file, content] of outputs()) {
