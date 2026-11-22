@@ -19,7 +19,7 @@ test('Version gratuite puis abonnement (simulateur) : chapitres débloqués, his
     .click();
   await expect(page.getByText(/demande à tes parents/)).toBeVisible();
 
-  await page.goto('/abonnement');
+  await page.goto('/parent/abonnement');
   await expect(page.getByRole('heading', { name: 'Version gratuite' })).toBeVisible();
   await page.getByRole('button', { name: /Payer l’année scolaire/ }).click();
   await page.getByRole('button', { name: 'Paiement accepté' }).click();

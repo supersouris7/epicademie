@@ -1,5 +1,5 @@
 import { lazy, Suspense, type ReactNode } from 'react';
-import { Navigate, Route, Routes } from 'react-router';
+import { Navigate, Route, Routes, useLocation } from 'react-router';
 import type { Profile } from '@questeo/shared';
 import { ApiError } from '../shared/api/client.ts';
 import { useSession } from '../shared/lib/session.ts';
@@ -15,7 +15,15 @@ import {
 } from '../features/account/index.ts';
 import { AdminPage } from '../features/admin/index.ts';
 import { Arena } from '../features/arena/index.ts';
-import { ChildReport, ParentHome, PaymentSimulator, Subscription } from '../features/parent/index.ts';
+import {
+  ChildReport,
+  ParentHome,
+  ParentProfileEditor,
+  ParentProfiles,
+  ParentSettings,
+  PaymentSimulator,
+  Subscription,
+} from '../features/parent/index.ts';
 import { BossChapters, BossPlay, Shop } from '../features/boss/index.ts';
 import { Hub, ModeSetup, MultiModes } from '../features/hub/index.ts';
 import { Heroes, ProfileEditor, ProfilePicker, useProfile } from '../features/profiles/index.ts';
@@ -72,6 +80,11 @@ function ConnectedShell({ profileId }: { readonly profileId: string | null }) {
   );
 }
 
+function LegacyAbonnement() {
+  const { pathname, search } = useLocation();
+  return <Navigate to={`/parent${pathname}${search}`} replace />;
+}
+
 export function App() {
   const profileId = useSession((s) => s.profileId);
   return (
@@ -91,9 +104,15 @@ export function App() {
               <Route path="/admin" element={<AdminPage />} />
               <Route path="/parent" element={<ParentHome />} />
               <Route path="/tv" element={<TvScreen />} />
-              <Route path="/parent/:profileId" element={<ChildReport />} />
-              <Route path="/abonnement" element={<Subscription />} />
-              <Route path="/abonnement/simulateur" element={<PaymentSimulator />} />
+              <Route path="/parent/enfant/:profileId" element={<ChildReport />} />
+              <Route path="/parent/abonnement" element={<Subscription />} />
+              <Route path="/parent/abonnement/simulateur" element={<PaymentSimulator />} />
+              <Route path="/parent/profils" element={<ParentProfiles />} />
+              <Route path="/parent/profils/nouveau" element={<ParentProfileEditor />} />
+              <Route path="/parent/profils/:id/modifier" element={<ParentProfileEditor />} />
+              <Route path="/parent/reglages" element={<ParentSettings />} />
+              {/* Anciennes adresses (favoris, retours de paiement déjà émis) : on reste dans l'Espace parent. */}
+              <Route path="/abonnement/*" element={<LegacyAbonnement />} />
               <Route path="/profils/nouveau" element={<ProfileEditor />} />
               <Route path="/profils/:id/modifier" element={<ProfileEditor />} />
               <Route path="/hub" element={<WithProfile>{(p) => <Hub profile={p} />}</WithProfile>} />

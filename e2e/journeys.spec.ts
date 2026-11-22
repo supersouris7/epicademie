@@ -27,22 +27,22 @@ test('Espace parent : enfant listé, accès à l’abonnement familial', async (
   const name = `Par${Date.now() % 10000}`;
   await createProfile(page, name);
   await page.goto('/parent');
-  await expect(page.getByRole('heading', { name: 'Espace parent' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Progrès de vos enfants' })).toBeVisible();
   await expect(page.getByRole('listitem', { name: `Progrès de ${name}` })).toBeVisible();
-  await page.getByRole('link', { name: 'Abonnement familial' }).click();
+  await page.getByRole('link', { name: 'Abonnement', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Abonnement actif' })).toBeVisible();
 
-  // Code PIN : choisi dans les Paramètres (mot de passe du compte), puis l'Espace parent s'ouvre avec.
-  await page.goto('/parametres');
+  // Code PIN : choisi dans les Réglages parent (mot de passe du compte), puis l'Espace parent s'ouvre avec.
+  await page.getByRole('link', { name: 'Réglages' }).click();
   await page.getByRole('button', { name: 'Choisir un code PIN' }).click();
   await page.getByLabel('Mot de passe du compte').fill(PASSWORD);
   await page.getByLabel(/Nouveau code PIN/).fill('2580');
   await page.getByRole('button', { name: 'Enregistrer' }).click();
   await expect(page.getByText('Code PIN enregistré.')).toBeVisible();
-  await page.goto('/parent');
-  await page.getByRole('button', { name: 'Se déconnecter' }).click();
-  await page.goto('/parent');
+  await page.getByRole('button', { name: 'Verrouiller' }).click();
   for (const k of ['2', '5', '8', '0']) await page.getByRole('button', { name: k, exact: true }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Réglages' })).toBeVisible();
+  await page.getByRole('link', { name: 'Progrès', exact: true }).click();
   await expect(page.getByRole('listitem', { name: `Progrès de ${name}` })).toBeVisible();
 });
 
@@ -98,8 +98,10 @@ test('Mise en page : aucun défilement horizontal sur les écrans principaux', a
     '/heros',
     '/multi',
     '/jouer/entrainement/maths',
-    '/abonnement',
+    '/parent/abonnement',
     '/parent',
+    '/parent/profils',
+    '/parent/reglages',
     '/tv',
   ]) {
     await page.goto(path);

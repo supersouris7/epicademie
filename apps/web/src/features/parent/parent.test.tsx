@@ -96,32 +96,80 @@ describe('espace parent', () => {
     const card = await screen.findByRole('listitem', { name: 'Progrès de Léa' });
     expect(card).toHaveTextContent('Matières : Maths');
     expect(card).toHaveTextContent('À retravailler : Priorités opératoires');
-    // Amis d'autres familles : validés ici par le parent.
-    expect(screen.getByRole('heading', { name: 'Amis d’autres familles' })).toBeInTheDocument();
-    expect(await screen.findByText('Aucune demande pour l’instant.')).toBeInTheDocument();
-    await user.click(within(card).getByRole('link', { name: /Voir le suivi/ }));
+    await user.click(within(card).getByRole('link', { name: /Voir les progrès/ }));
     expect(await screen.findByRole('heading', { name: 'Bilan de la semaine' })).toBeInTheDocument();
     await user.click(screen.getByText(/Maths —/));
     expect(screen.getByText(/Erreur fréquente : La multiplication/)).toBeInTheDocument();
     expect(screen.getByText(/en baisse/)).toBeInTheDocument();
   });
 
-  it('code PIN : l’Espace parent s’ouvre avec les 4 chiffres, et « Se déconnecter » le referme', async () => {
+  it('code PIN : l’Espace parent s’ouvre avec les 4 chiffres, et « Verrouiller » le referme', async () => {
     const { user } = renderApp('/parent', { parent: false, pin: '2580', learning: report });
     expect(await screen.findByText('Code PIN parent')).toBeInTheDocument();
     for (const k of ['1', '1', '1', '1']) await user.click(screen.getByRole('button', { name: k }));
     expect(await screen.findByRole('alert')).toHaveTextContent('incorrect');
     for (const k of ['2', '5', '8', '0']) await user.click(screen.getByRole('button', { name: k }));
     expect(await screen.findByRole('listitem', { name: 'Progrès de Léa' })).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: 'Se déconnecter' }));
+    await user.click(screen.getByRole('button', { name: 'Verrouiller' }));
+    // Reste dans l'Espace parent : le code est redemandé, sans retour au jeu.
+    expect(await screen.findByText('Code PIN parent')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Nouveau joueur/ })).not.toBeInTheDocument();
+  });
+
+  it('onglets : où suis-je, et chaque rubrique reste dans l’Espace parent', async () => {
+    const { user } = renderApp('/parent', { learning: report });
+    const tabs = await screen.findByRole('navigation', { name: 'Rubriques de l’Espace parent' });
+    expect(
+      within(tabs)
+        .getAllByRole('link')
+        .map((l) => l.textContent),
+    ).toEqual(['Progrès', 'Abonnement', 'Profils', 'Réglages']);
+    expect(within(tabs).getByRole('link', { name: 'Progrès' })).toHaveAttribute('aria-current', 'page');
+    for (const [name, heading] of [
+      ['Abonnement', 'Abonnement familial'],
+      ['Profils', 'Profils des enfants'],
+      ['Réglages', 'Réglages'],
+    ] as const) {
+      await user.click(
+        within(screen.getByRole('navigation', { name: 'Rubriques de l’Espace parent' })).getByRole('link', { name }),
+      );
+      expect(await screen.findByRole('heading', { level: 1, name: heading })).toBeInTheDocument();
+      const nav = screen.getByRole('navigation', { name: 'Rubriques de l’Espace parent' });
+      expect(within(nav).getByRole('link', { name })).toHaveAttribute('aria-current', 'page');
+      expect(screen.getByRole('button', { name: 'Retour au jeu' })).toBeInTheDocument();
+    }
+  });
+
+  it('« Retour au jeu » est le seul bouton qui quitte l’Espace parent', async () => {
+    const { user } = renderApp('/parent', { learning: report });
+    await user.click(await screen.findByRole('button', { name: 'Retour au jeu' }));
     expect(await screen.findByRole('button', { name: /Nouveau joueur/ })).toBeInTheDocument();
   });
 
+  it('profils : amis validés ici ; ajouter un enfant ramène à la liste des profils, pas au jeu', async () => {
+    const { user } = renderApp('/parent/profils', { learning: report });
+    expect(await screen.findByRole('heading', { name: 'Amis d’autres familles' })).toBeInTheDocument();
+    await user.click(screen.getByRole('link', { name: 'Ajouter un enfant' }));
+    expect(await screen.findByRole('heading', { level: 1, name: 'Ajouter un enfant' })).toBeInTheDocument();
+    await user.type(screen.getByPlaceholderText('Ex. Léa'), 'Tom');
+    await user.click(screen.getByRole('button', { name: 'Un garçon' }));
+    await user.type(screen.getByLabelText('Date de naissance'), '2014-03-09');
+    await user.click(await screen.findByRole('button', { name: 'Oui' }));
+    await user.click(screen.getByRole('button', { name: 'Ajouter cet enfant' }));
+    expect(await screen.findByRole('heading', { level: 1, name: 'Profils des enfants' })).toBeInTheDocument();
+    expect(await screen.findByText('Tom')).toBeInTheDocument();
+  });
+
+  it('réglages : le code PIN se choisit dans l’Espace parent', async () => {
+    renderApp('/parent/reglages');
+    expect(await screen.findByRole('button', { name: 'Choisir un code PIN' })).toBeInTheDocument();
+  });
+
   it('séance ciblée : les notions choisies deviennent une série pour l’enfant', async () => {
-    const { user, server } = renderApp('/parent/11111111-1111-4111-8111-111111111111', { learning: report });
+    const { user, server } = renderApp('/parent/enfant/11111111-1111-4111-8111-111111111111', { learning: report });
     const box = await screen.findByRole('checkbox', { name: /Priorités opératoires/ });
     expect(box).toBeChecked();
-    await user.click(screen.getByRole('button', { name: 'Lancer la séance pour Léa' }));
+    await user.click(screen.getByRole('button', { name: 'Lancer la séance dans le jeu pour Léa' }));
     await screen.findByRole('progressbar', { name: 'Progression de la série' });
     expect(server.calls.find((c) => c.path === '/sessions')?.body).toMatchObject({
       chapterId: 'seance',
