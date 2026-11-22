@@ -1,8 +1,18 @@
 import { allSkillEntries, generate, getAnySkill, skillVersion, validateVariants, type Level } from '@questeo/content';
-import type { ContentSkill, Report, ReportCreate, ReportStatus, ValidationState } from '@questeo/shared';
+import type {
+  ContentSkill,
+  GeneralReportCreate,
+  Report,
+  ReportCreate,
+  ReportStatus,
+  ValidationState,
+} from '@questeo/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
+import { anonymizeText } from '../../core/anonymize.ts';
 import { badRequest, notFound } from '../../core/errors.ts';
+import { normalizeScreen } from '../../core/screen.ts';
+import { pendingReportGroups } from './report-export.ts';
 import { pedagogyRepo } from './pedagogy.repo.ts';
 
 /**
@@ -15,10 +25,13 @@ const VARIANTS_CHECKED = 20;
 
 const toReport = (r: Awaited<ReturnType<ReturnType<typeof pedagogyRepo>['reports']>>[number]): Report => ({
   id: r.id,
+  kind: r.kind,
   skillId: r.skillId,
-  level: r.level === 3 ? 3 : r.level === 2 ? 2 : 1,
+  level: r.level === null ? null : r.level === 3 ? 3 : r.level === 2 ? 2 : 1,
   seed: r.seed,
   skillVersion: r.skillVersion,
+  screen: r.screen,
+  appVersion: r.appVersion,
   reason: r.reason,
   comment: r.comment,
   status: r.status,
@@ -87,12 +100,45 @@ export function createPedagogyService({ db, clock }: { db: Db; clock: Clock }) {
     });
   };
 
+  /** Commentaire libre filtré (e-mails, téléphones, liens, pseudos de la famille) avant stockage. */
+  const cleanComment = async (comment: string | undefined, familyId: string): Promise<string | null> => {
+    if (!comment) return null;
+    return anonymizeText(comment, await repo.familyNames(familyId));
+  };
+
   return {
     async report(input: ReportCreate, familyId: string): Promise<{ id: string }> {
       const skill = getAnySkill(input.skillId);
       if (!skill) throw badRequest('Notion inconnue');
-      return { id: await repo.insertReport({ ...input, familyId, skillVersion: skillVersion(skill) }) };
+      return {
+        id: await repo.insertReport({
+          familyId,
+          profileId: input.profileId,
+          reason: input.reason,
+          comment: await cleanComment(input.comment, familyId),
+          question: { skillId: input.skillId, level: input.level, seed: input.seed, skillVersion: skillVersion(skill) },
+        }),
+      };
     },
+
+    /** Signalement général : écran (sans identifiant) et version, aucun profil rattaché. */
+    async reportGeneral(input: GeneralReportCreate, familyId: string): Promise<{ id: string }> {
+      return {
+        id: await repo.insertReport({
+          familyId,
+          reason: input.reason,
+          comment: await cleanComment(input.comment, familyId),
+          general: { screen: normalizeScreen(input.screen), appVersion: input.appVersion },
+        }),
+      };
+    },
+
+    /** Signalements non exportés, anonymisés et regroupés (commande `reports:export`). */
+    async pendingExport() {
+      return pendingReportGroups(await repo.pendingExport());
+    },
+
+    markExported: (ids: readonly string[]) => repo.markExported(ids, clock.now()),
 
     disabled: async () => ({ skills: await repo.disabledSkills() }),
 
