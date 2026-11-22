@@ -34,7 +34,7 @@ export interface StillJob {
   readonly size: number;
   /** Cases dont on ne garde que la plus grande forme (effets séparés retirés). */
   readonly silhouetteOnly?: readonly number[];
-  /** Retourner en miroir (le boss, dessiné tourné vers la droite, doit regarder le héros à sa gauche). */
+  /** Retourner en miroir (à réserver aux planches dessinées tournées vers la droite ; le boss est dessiné vers la gauche). */
   readonly mirror?: boolean;
   /**
    * Toutes les images dans le même cadre (le plus grand), pieds sur la même ligne et centrées :
@@ -237,7 +237,7 @@ export const JOBS: readonly Job[] = [
     cols: 4,
     rows: 3,
     size: 320,
-    mirror: true,
+    // Dessinées tournées vers la gauche (comme les poses) : pas de miroir.
     targets: SORCIER_HEADS.map((h) => `bosses/sorcier-pi/head-${h}`),
   },
   {
