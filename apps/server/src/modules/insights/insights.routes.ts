@@ -7,6 +7,7 @@ import type { InsightsService } from './insights.service.ts';
 export function insightsRoutes(service: InsightsService, recentErrors: () => AdminError[]) {
   return async (app: FastifyInstance) => {
     route(app, api.adminStats, () => service.stats());
+    route(app, api.adminTrends, () => service.trends());
     route(app, api.adminAnomalies, () => service.anomalies());
     route(app, api.adminWeakSkills, () => service.weakSkills());
     route(app, api.adminErrors, async () => recentErrors());

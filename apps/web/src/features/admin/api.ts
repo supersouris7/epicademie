@@ -11,6 +11,8 @@ const keys = {
 export const useReports = (status: ReportStatus) =>
   useQuery({ queryKey: keys.reports(status), queryFn: () => request(api.adminReports, { params: { status } }) });
 
+export const useTrends = () => useQuery({ queryKey: ['admin', 'trends'], queryFn: () => request(api.adminTrends) });
+
 export const useContent = () => useQuery({ queryKey: keys.content, queryFn: () => request(api.adminContent) });
 
 export const useContentHistory = (skillId: string) =>

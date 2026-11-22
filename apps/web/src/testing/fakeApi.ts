@@ -267,6 +267,19 @@ function adminHandlers(
       return r;
     },
     adminContent: () => ['m5-tables', 'm5-priorites'].map(skill),
+    adminTrends: () => ({
+      day: '2026-11-20',
+      accountsByDay: Array.from({ length: 30 }, (_, i) => ({
+        day: `2026-11-${String(i + 1).padStart(2, '0')}`,
+        count: i === 29 ? 3 : 0,
+      })),
+      activeSubscriptionsByDay: Array.from({ length: 30 }, (_, i) => ({
+        day: `2026-11-${String(i + 1).padStart(2, '0')}`,
+        count: i < 20 ? 4 : 5,
+      })),
+      activeByOffer: [{ offer: 'famille-annee', count: 5 }],
+      revenueCents: 12495,
+    }),
     adminStats: () => ({
       day: '2026-11-20',
       families: 12,

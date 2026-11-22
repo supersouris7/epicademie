@@ -5,9 +5,8 @@ import { ApiError, request } from '../../shared/api/client.ts';
 import { useMe, useSetMe } from '../account/index.ts';
 import { AdminButton, inputClass } from './ui.tsx';
 
-/** Police système, thème clair : la console ne reprend rien du style du jeu. */
+/** Police système, thème sombre (classe `admin-dark`) : la console ne reprend rien du style du jeu. */
 const FRAME_STYLE = {
-  colorScheme: 'light',
   fontFamily: 'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
 } as const;
 
@@ -42,7 +41,7 @@ export function AdminShell({
     void navigate('/');
   };
   return (
-    <div className="min-h-dvh bg-slate-100 text-slate-900" style={FRAME_STYLE}>
+    <div className="admin-dark min-h-dvh bg-slate-100 text-slate-900" style={FRAME_STYLE}>
       <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-slate-200 bg-white px-4 py-2.5">
         <span className="rounded-[4px] bg-slate-900 px-2 py-0.5 text-xs font-bold tracking-wider text-white">
           ADMIN
@@ -55,7 +54,7 @@ export function AdminShell({
         </span>
         <AdminButton onClick={() => void close()}>Fermer la session</AdminButton>
       </header>
-      <div className="mx-auto flex max-w-7xl flex-col gap-4 p-4 md:flex-row">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 p-4 md:flex-row md:p-6">
         <nav aria-label="Rubriques" className="md:w-52 md:shrink-0">
           <select
             className={`${inputClass} w-full md:hidden`}
@@ -108,7 +107,10 @@ export function AdminGate({ children }: { readonly children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   if (isPending) return null;
   const frame = (content: ReactNode) => (
-    <div className="flex min-h-dvh items-center justify-center bg-slate-100 p-4 text-slate-900" style={FRAME_STYLE}>
+    <div
+      className="admin-dark flex min-h-dvh items-center justify-center bg-slate-100 p-4 text-slate-900"
+      style={FRAME_STYLE}
+    >
       <div className="w-full max-w-sm rounded-[4px]-[8px] border border-slate-200 bg-white p-6 shadow-sm">
         {content}
       </div>
