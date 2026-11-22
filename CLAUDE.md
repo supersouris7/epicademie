@@ -5,7 +5,7 @@
 
 ## Produit
 
-- Vision : `docs/projet/VISION.md`. Spécifications : `docs/SPEC.md` (les décisions validées y sont consignées :
+- Vision : `docs/projet/VISION.md` (local, non versionné : le dépôt est public). Spécifications : `docs/SPEC.md` (les décisions validées y sont consignées :
   spec avant code). Identité visuelle : `docs/DESIGN-SYSTEM.md`, `docs/ASSETS-CHATGPT.md`, `docs/PLANCHES-BOSS.md`.
 - Décisions d'architecture : `docs/adr/`.
 
