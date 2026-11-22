@@ -1,0 +1,14 @@
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@questeo/shared';
+import { request } from './client.ts';
+
+/** Lectures partagées entre fonctionnalités (menus du jeu et Espace parent) : notions et boss d'un profil. */
+export const skillsKey = (profileId: string) => ['skills', profileId] as const;
+
+export const useSkills = (profileId: string) =>
+  useQuery({ queryKey: skillsKey(profileId), queryFn: () => request(api.listSkills, { params: { id: profileId } }) });
+
+export const bossesKey = (profileId: string) => ['bosses', profileId] as const;
+
+export const useBosses = (profileId: string) =>
+  useQuery({ queryKey: bossesKey(profileId), queryFn: () => request(api.bossOverview, { params: { id: profileId } }) });

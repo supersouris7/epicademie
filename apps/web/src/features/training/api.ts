@@ -3,10 +3,7 @@ import { api, type AnswerSubmit, type SessionCreate } from '@questeo/shared';
 import { request } from '../../shared/api/client.ts';
 
 /** Appels au serveur pour l'entraînement : progression par notion, partie, réponses, bilan. */
-export const skillsKey = (profileId: string) => ['skills', profileId] as const;
-
-export const useSkills = (profileId: string) =>
-  useQuery({ queryKey: skillsKey(profileId), queryFn: () => request(api.listSkills, { params: { id: profileId } }) });
+export { skillsKey, useSkills } from '../../shared/api/queries.ts';
 
 export const startSession = (input: SessionCreate) => request(api.startSession, { body: input });
 

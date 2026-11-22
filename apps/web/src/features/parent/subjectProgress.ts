@@ -1,7 +1,7 @@
 import { chaptersOf } from '@questeo/content';
 import { playedGrade, SUBJECTS, type Grade, type LearningReport, type SkillProgress } from '@questeo/shared';
 import { chapterProgress } from '../../shared/lib/progress.ts';
-import { relicProgressOf, type RelicProgress } from '../boss/index.ts';
+import { relicProgressOf, type RelicProgress } from '../../shared/lib/relicProgress.ts';
 import { skillTitle } from './summary.ts';
 
 /**

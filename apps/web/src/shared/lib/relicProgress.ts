@@ -1,6 +1,6 @@
 import { chaptersOf } from '@questeo/content';
 import { playedGrade, type Grade, type Profile } from '@questeo/shared';
-import { useBosses } from './api.ts';
+import { useBosses } from '../api/queries.ts';
 
 /** Boss vaincus d'une matière (sur ceux de la classe jouée). Source unique du remplissage des reliques. */
 export interface RelicProgress {

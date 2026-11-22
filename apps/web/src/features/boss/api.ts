@@ -1,11 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
 import { api, type BattleAnswer, type ItemId } from '@questeo/shared';
 import { request } from '../../shared/api/client.ts';
 
-export const bossesKey = (profileId: string) => ['bosses', profileId] as const;
-
-export const useBosses = (profileId: string) =>
-  useQuery({ queryKey: bossesKey(profileId), queryFn: () => request(api.bossOverview, { params: { id: profileId } }) });
+export { bossesKey, useBosses } from '../../shared/api/queries.ts';
 
 export const startBattle = (profileId: string, chapterId: string) =>
   request(api.startBattle, { body: { profileId, chapterId } });

@@ -14,7 +14,8 @@ import {
   type SubjectId,
 } from '@questeo/shared';
 import { TrophiesSection } from './Trophies.tsx';
-import { relicProgressOf, useBosses, useRelicProgress } from '../boss/index.ts';
+import { useBosses } from '../boss/index.ts';
+import { relicProgressOf, useRelicProgress } from '../../shared/lib/relicProgress.ts';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
 import { SubjectIcon } from '../../shared/ui/game/SubjectIcon.tsx';
 import { ProgressBar } from '../../shared/ui/game/ProgressBar.tsx';
