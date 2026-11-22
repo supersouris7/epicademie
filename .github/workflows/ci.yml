@@ -78,7 +78,7 @@ jobs:
           has() { grep -qE "$1" <<<"$files"; }
           if has '^\.github/(workflows|actions)/'; then echo "CI modifiée : tous les contrôles."; tout; exit 0; fi
           if ! grep -qvE '^(docs/|LICENSE$|\.github/ISSUE_TEMPLATE/|\.github/dependabot\.yml$)|\.md$' <<<"$files"; then
-            echo "Documentation uniquement : aucun contrôle."; exit 0
+            echo "Documentation uniquement : format et contrôles statiques seulement."; out statique; exit 0
           fi
           out statique; out tests
           has '^(apps|packages|e2e)/|^playwright\.config|^package\.json$|^pnpm-(lock|workspace)\.yaml$|^tsconfig' && out e2e
