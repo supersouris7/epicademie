@@ -10,11 +10,6 @@ describe('outils proposés', () => {
     for (const id of ['m5-tables', 'm5-carres', 'm5-relatifs-addition', 'm5-fractions-addition', 'm5-priorites'])
       expect(tabs(id), id).not.toContain('calculatrice');
   });
-  it('opération posée : en maths seulement, à côté du brouillon', () => {
-    expect(tabs('m5-tables')).toContain('poser');
-    expect(tabs('m5-tables').indexOf('poser')).toBe(tabs('m5-tables').indexOf('brouillon') + 1);
-    expect(tabs('p5-unites')).not.toContain('poser');
-  });
   it('langues, histoire, géographie : la réponse seule, sans calculatrice ni brouillon', () => {
     for (const subject of ['anglais', 'espagnol', 'histoire', 'geographie'])
       for (const chapter of CHAPTERS.filter((c) => c.subject === subject))

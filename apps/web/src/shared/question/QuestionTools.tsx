@@ -3,8 +3,6 @@ import { gradeOfSkill, type Advice, type Question, type Response, type Skill } f
 import { MathText } from './MathText.tsx';
 import { Figure } from './figures/Figure.tsx';
 import { Brouillon, type Stroke } from './tools/Brouillon.tsx';
-import { PosedOperation } from './tools/PosedOperation.tsx';
-import { EMPTY_POSED, type PosedState } from './posedState.ts';
 import { Calculator } from './tools/Calculator.tsx';
 import { ConversionTable } from './tools/ConversionTable.tsx';
 import { EMPTY_CALC, type CalcState } from './calcState.ts';
@@ -41,7 +39,7 @@ interface QuestionToolsProps {
 }
 
 /**
- * Zone « Répondre » (pavé, clavier ou choix) et outils d'une question : calculatrice, brouillon (agrandissable en pleine page), opération posée,
+ * Zone « Répondre » (pavé, clavier ou choix) et outils d'une question : calculatrice, brouillon (agrandissable en pleine page),
  * tableau de conversion. À monter avec une `key` propre à la question pour repartir de zéro.
  */
 export function QuestionTools({
@@ -62,7 +60,6 @@ export function QuestionTools({
   const [bigDraft, setBigDraft] = useState(false);
   const [strokes, setStrokes] = useState<readonly Stroke[]>([]);
   const [calc, setCalc] = useState<CalcState>(EMPTY_CALC);
-  const [posed, setPosed] = useState<PosedState>(EMPTY_POSED);
   const [conv, setConv] = useState<ConversionState | null>(null);
   const [fill, setFill] = useState<{ value: string; nonce: number } | null>(null);
 
@@ -119,7 +116,6 @@ export function QuestionTools({
         {activeTab === 'brouillon' && !bigDraft && (
           <Brouillon strokes={strokes} onChange={setStrokes} onToggleExpand={() => setBigDraft(true)} />
         )}
-        {activeTab === 'poser' && <PosedOperation state={posed} onChange={setPosed} />}
         {activeTab === 'conversion' && (
           <ConversionTable
             kind={kind}

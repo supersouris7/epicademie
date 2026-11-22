@@ -9,7 +9,7 @@ const NUMERIC_SUBJECTS: readonly SubjectId[] = ['maths', 'physique'];
 /**
  * Onglets d'une question (audit du 21/11/2026) :
  * - langues, histoire, géographie : la réponse seule (pas d'outil de calcul) ;
- * - maths et physique-chimie : brouillon ; opération posée en maths seulement ; calculatrice quand l'énoncé contient des nombres, sauf
+ * - maths et physique-chimie : brouillon ; calculatrice quand l'énoncé contient des nombres, sauf
  *   quand calculer est l'objectif de la notion (calcul mental) ; tableau de conversion quand la
  *   notion le prévoit ou que la question mêle deux unités d'une même grandeur.
  */
@@ -23,7 +23,6 @@ export function toolTabs(question: Question, skill: Skill | undefined): DockTab[
     'reponse',
     ...(skill?.mental || !withNumbers ? [] : (['calculatrice'] as const)),
     'brouillon',
-    ...(subject === 'maths' ? (['poser'] as const) : []),
     ...(tools.length > 0 || measured ? (['conversion'] as const) : []),
   ];
 }
