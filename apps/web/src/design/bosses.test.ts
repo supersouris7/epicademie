@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { bossMood, bossOf, bossOfSubject, mobName, mobOf, randomArena, ARENAS, SUBJECT_ARENAS } from './bosses.ts';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { bossMood, bossOf, bossOfSubject, mobName, mobOf, randomArena, ARENAS } from './bosses.ts';
 
 describe('boss et mobs', () => {
   it('un boss par matière (Sorcier π par défaut)', () => {
@@ -16,14 +16,38 @@ describe('boss et mobs', () => {
 });
 
 describe('arènes', () => {
-  it('les 5 arènes du client, toutes réparties entre les matières', () => {
+  beforeEach(() => localStorage.clear());
+
+  it('les 5 arènes du client', () => {
     expect([...ARENAS].sort()).toEqual(['academie', 'espace', 'glace', 'jungle', 'volcan']);
-    expect(new Set(Object.values(SUBJECT_ARENAS).flatMap((l) => l ?? []))).toEqual(new Set(ARENAS));
   });
-  it('tirage parmi les arènes de la matière, sinon parmi toutes', () => {
-    for (let i = 0; i < 20; i++) {
-      expect(SUBJECT_ARENAS.physique).toContain(randomArena('physique'));
-      expect(ARENAS).toContain(randomArena('inconnue'));
-    }
+  it('5 tirages = 5 arènes distinctes', () => {
+    const draws = Array.from({ length: 5 }, () => randomArena('p1'));
+    expect(new Set(draws).size).toBe(5);
+  });
+  it('jamais deux identiques de suite sur 1 000 tirages, paquets complets', () => {
+    const draws = Array.from({ length: 1000 }, () => randomArena('p1'));
+    draws.forEach((a, i) => i > 0 && expect(a).not.toBe(draws[i - 1]));
+    for (let i = 0; i < 1000; i += 5) expect(new Set(draws.slice(i, i + 5)).size).toBe(5);
+  });
+  it('état séparé par profil', () => {
+    const a = randomArena('a');
+    expect(randomArena('b', () => 0)).toBeDefined();
+    expect(randomArena('a')).not.toBe(a);
+  });
+  it.each([[null], ['{pas du json'], ['"x"'], ['{"deck":["nope"],"last":3}'], ['{"deck":["jungle","jungle"]}']])(
+    "stockage illisible (%s) : repart d'un paquet neuf",
+    (raw) => {
+      if (raw !== null) localStorage.setItem('questeo.arenes.p1', raw);
+      const draws = Array.from({ length: 5 }, () => randomArena('p1'));
+      expect(new Set(draws).size).toBe(5);
+    },
+  );
+  it('stockage bloqué : ne plante pas', () => {
+    const spy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('bloqué');
+    });
+    expect(ARENAS).toContain(randomArena('p1'));
+    spy.mockRestore();
   });
 });

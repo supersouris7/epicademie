@@ -1,6 +1,7 @@
 import type { Chapter } from '@questeo/content';
 import { assetSrc, BOSS_FACE, type BossExpression, type PiBotHead, type SorcierPose } from './assets.ts';
 import type { BossMedal } from '@questeo/shared';
+import { safeStorage } from '../shared/lib/storage.ts';
 
 /** Un boss par matière, le même pour tous ses chapitres et toutes les classes (docs/SPEC.md §6.2 bis). */
 export interface BossIdentity {
@@ -64,20 +65,48 @@ export const bossMood = (lives: number): BossExpression =>
 export const ARENAS = ['jungle', 'espace', 'volcan', 'glace', 'academie'] as const;
 export type ArenaId = (typeof ARENAS)[number];
 
-/** Deux arènes par matière (décor cohérent avec le boss) ; les 5 arènes sont toutes utilisées. */
-export const SUBJECT_ARENAS: Record<string, readonly ArenaId[] | undefined> = {
-  maths: ['academie', 'espace'],
-  anglais: ['glace', 'academie'],
-  espagnol: ['volcan', 'jungle'],
-  physique: ['espace', 'volcan'],
-  geographie: ['jungle', 'glace'],
-  histoire: ['jungle', 'academie'],
-};
+const arenaKey = (profileId: string) => `questeo.arenes.${profileId}`;
+const isArena = (v: unknown): v is ArenaId => ARENAS.includes(v as ArenaId);
 
-/** Arène d'un combat : tirée au hasard parmi celles de la matière (toutes si elle est inconnue). */
-export function randomArena(subject?: string): ArenaId {
-  const pool = (subject ? SUBJECT_ARENAS[subject] : undefined) ?? ARENAS;
-  return pool[Math.floor(Math.random() * pool.length)] ?? 'academie';
+/** Lit le paquet restant et la dernière arène ; tolère un stockage absent ou illisible. */
+function readDeck(profileId: string): { deck: ArenaId[]; last: ArenaId | null } {
+  try {
+    const raw: unknown = JSON.parse(safeStorage.get(arenaKey(profileId)) ?? 'null');
+    if (raw && typeof raw === 'object') {
+      const { deck, last } = raw as { deck?: unknown; last?: unknown };
+      const lastOk = isArena(last) ? last : null;
+      if (Array.isArray(deck) && deck.every(isArena) && new Set(deck).size === deck.length) {
+        return { deck, last: lastOk };
+      }
+      return { deck: [], last: lastOk };
+    }
+  } catch {
+    /* JSON illisible : on repart d'un paquet neuf */
+  }
+  return { deck: [], last: null };
+}
+
+/**
+ * Arène d'un combat, en rotation « paquet de cartes » par profil : les 5 passent avant qu'une
+ * revienne, et jamais la même deux fois de suite (y compris entre deux paquets). Toutes matières.
+ */
+export function randomArena(profileId: string, rng: () => number = Math.random): ArenaId {
+  const { deck: saved, last } = readDeck(profileId);
+  let deck = saved;
+  if (deck.length === 0) {
+    // Nouveau paquet : mélange des 4 autres ; la dernière jouée ferme le paquet (jamais en tête).
+    deck = ARENAS.filter((a) => a !== last);
+    for (let i = deck.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      const [a, b] = [deck[i], deck[j]];
+      if (a && b) [deck[i], deck[j]] = [b, a];
+    }
+    if (last !== null) deck.push(last);
+  }
+  const [next, ...rest] = deck;
+  const arena = next ?? 'academie';
+  safeStorage.set(arenaKey(profileId), JSON.stringify({ deck: rest, last: arena }));
+  return arena;
 }
 
 /** Mob affiché pour la question n°`turn` (cosmétique). */

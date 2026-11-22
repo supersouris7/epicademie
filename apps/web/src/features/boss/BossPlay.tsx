@@ -40,8 +40,8 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   const location = useLocation();
   const [toast, showToast] = useToast(2500);
   const boss = bossOf(chapter);
-  // Arène tirée une fois par combat, parmi celles de la matière.
-  const [arena] = useState(() => randomArena(chapter.subject));
+  // Arène tirée une fois par combat, en rotation par profil.
+  const [arena] = useState(() => randomArena(profile.id));
   const [memo, setMemo] = useState(false);
   const [confirmQuit, setConfirmQuit] = useState(false);
   const { state: s, question, skill, ...act } = useBattle(profile, chapter, showToast);
