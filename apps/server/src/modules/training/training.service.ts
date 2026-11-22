@@ -273,8 +273,9 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
           chest: chest?.rarity ?? null,
         });
 
-        // Entraînement sur une seule notion : la recommandation d'un parent pour cette notion est « faite ».
-        if (session.mode === 'entrainement' && session.skillId && regular.length > 0) {
+        // Série COMPLÈTE sur une seule notion (même règle que la fin normale d'un entraînement) : la
+        // recommandation d'un parent pour cette notion est « faite ». Une série incomplète ne compte pas.
+        if (session.mode === 'entrainement' && session.skillId && regular.length >= length) {
           await completeRecommendation(
             tx,
             session.profileId,

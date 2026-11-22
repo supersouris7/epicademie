@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { fmt, generate } from '@questeo/content';
+import { fmt, generate, getSkill } from '@questeo/content';
+import { seriesLength } from '@questeo/engine';
 import type { FamilyRecommendation, Profile, Recommendation } from '@questeo/shared';
 import { createTestApp, profileInput } from '../../testing/harness.ts';
 
@@ -26,6 +27,9 @@ const recommend = (c: Client, profileId: string, payload: object) =>
 const pending = async (c: Client, profileId: string) =>
   (await c.inject(`/api/v1/profiles/${profileId}/recommendations`)).json<Recommendation[]>();
 const family = async (c: Client) => (await c.inject('/api/v1/family/recommendations')).json<FamilyRecommendation[]>();
+
+/** Longueur d'une série complète sur cette notion. */
+const fullSeries = (skillId: string) => seriesLength(getSkill(skillId)?.mental === true);
 
 /** Série d'entraînement sur m5-tables : `right` réponses justes sur `total`. */
 async function play(c: Client, profileId: string, skillId: string, right: number, total: number) {
@@ -72,11 +76,23 @@ describe('recommandations de travail', () => {
     await play(t.http, lea.id, 'm5-relatifs-vocab', 2, 2);
     expect(await pending(t.http, lea.id)).toHaveLength(1);
 
-    await play(t.http, lea.id, 'm5-tables', 3, 4);
+    const total = fullSeries('m5-tables');
+    await play(t.http, lea.id, 'm5-tables', total - 1, total);
     expect(await pending(t.http, lea.id)).toEqual([]);
     expect(await family(t.http)).toMatchObject([
-      { status: 'faite', correct: 3, answered: 4, doneAt: expect.any(String) as string, note: MOT },
+      { status: 'faite', correct: total - 1, answered: total, doneAt: expect.any(String) as string, note: MOT },
     ]);
+  });
+
+  it('une série incomplète (abandonnée en route) ne marque pas la recommandation « faite »', async () => {
+    const lea = await child(t.http);
+    await recommend(t.http, lea.id, { skillId: 'm5-tables' });
+    const total = fullSeries('m5-tables');
+    await play(t.http, lea.id, 'm5-tables', total - 1, total - 1);
+    expect(await pending(t.http, lea.id)).toHaveLength(1);
+    expect(await family(t.http)).toMatchObject([{ status: 'en-attente', correct: null }]);
+    await play(t.http, lea.id, 'm5-tables', total, total);
+    expect(await pending(t.http, lea.id)).toEqual([]);
   });
 
   it('le mot est facultatif (vide = pas de mot) et limité à 140 caractères', async () => {
@@ -119,12 +135,12 @@ describe('recommandations de travail', () => {
     expect((await t.http.inject({ method: 'DELETE', url })).statusCode).toBe(404);
 
     // Une recommandation annulée n'est pas « faite » par un entraînement ultérieur.
-    await play(t.http, lea.id, SKILLS[0], 2, 2);
+    await play(t.http, lea.id, SKILLS[0], fullSeries(SKILLS[0]), fullSeries(SKILLS[0]));
     expect(await family(t.http)).toEqual([]);
 
     // Faite : ne peut plus être annulée.
     const b = (await recommend(t.http, lea.id, { skillId: SKILLS[0] })).json<Recommendation>();
-    await play(t.http, lea.id, SKILLS[0], 2, 2);
+    await play(t.http, lea.id, SKILLS[0], fullSeries(SKILLS[0]), fullSeries(SKILLS[0]));
     const del = await t.http.inject({ method: 'DELETE', url: `/api/v1/profiles/${lea.id}/recommendations/${b.id}` });
     expect(del.statusCode).toBe(404);
     expect(await family(t.http)).toMatchObject([{ status: 'faite' }]);
@@ -174,7 +190,7 @@ describe('recommandations de travail', () => {
     expect(await pending(t.http, lea.id)).toHaveLength(1);
 
     // L'entraînement de Tom sur la même notion ne touche pas la recommandation de Léa.
-    await play(other, tom.id, SKILLS[0], 2, 2);
+    await play(other, tom.id, SKILLS[0], fullSeries(SKILLS[0]), fullSeries(SKILLS[0]));
     expect(await family(t.http)).toMatchObject([{ status: 'en-attente' }]);
   });
 

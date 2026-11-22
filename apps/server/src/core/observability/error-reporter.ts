@@ -1,4 +1,5 @@
 import type { FastifyBaseLogger } from 'fastify';
+import { scrubError } from './scrub.ts';
 
 /**
  * Suivi d'erreurs : interface unique, branchable sur un service externe (Sentry, GlitchTip…)
@@ -23,7 +24,7 @@ export interface ErrorReporter {
 export function logErrorReporter(logger: FastifyBaseLogger): ErrorReporter {
   return {
     capture(error, context = {}) {
-      logger.error({ err: error, report: true, source: 'server', ...context }, 'erreur signalée');
+      logger.error({ err: scrubError(error), report: true, source: 'server', ...context }, 'erreur signalée');
     },
   };
 }

@@ -3,6 +3,7 @@ import { hasZodFastifySchemaValidationErrors, isResponseSerializationError } fro
 import type { ErrorBody, ErrorCode } from '@questeo/shared';
 import { AppError, statusOf } from '../errors.ts';
 import type { ErrorReporter } from '../observability/error-reporter.ts';
+import { scrubError } from '../observability/scrub.ts';
 
 /**
  * Traduction uniforme des erreurs en réponses `{ code, error, requestId }`.
@@ -29,8 +30,8 @@ export function registerErrorHandling(app: FastifyInstance, reporter: ErrorRepor
 
     if (isResponseSerializationError(err)) {
       // La réponse ne respecte pas le contrat : bug serveur.
-      request.log.error({ err, issues: err.cause.issues }, 'réponse hors contrat');
-      reporter.capture(err, { requestId: request.id, route: request.routeOptions.url });
+      request.log.error({ err: scrubError(err), issues: err.cause.issues }, 'réponse hors contrat');
+      reporter.capture(scrubError(err), { requestId: request.id, route: request.routeOptions.url });
       return send(reply, request, 'INTERNAL', 'Oups, le serveur a rencontré un problème.');
     }
 
@@ -39,8 +40,9 @@ export function registerErrorHandling(app: FastifyInstance, reporter: ErrorRepor
     if (status === 413) return send(reply, request, 'PAYLOAD_TOO_LARGE', 'Requête trop volumineuse.');
     if (status >= 400 && status < 500) return send(reply, request, 'BAD_REQUEST', 'Requête invalide.', status);
 
-    request.log.error({ err }, 'erreur interne');
-    reporter.capture(err, { requestId: request.id, route: request.routeOptions.url });
+    const safe = scrubError(err);
+    request.log.error({ err: safe }, 'erreur interne');
+    reporter.capture(safe, { requestId: request.id, route: request.routeOptions.url });
     return send(reply, request, 'INTERNAL', 'Oups, le serveur a rencontré un problème.');
   });
 }
