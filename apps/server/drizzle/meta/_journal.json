@@ -141,6 +141,13 @@
       "when": 1795380000000,
       "tag": "0019_recommandations_parent",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1795390000000,
+      "tag": "0020_epreuve_chapitre",
+      "breakpoints": true
     }
   ]
 }

@@ -139,7 +139,7 @@ export function TrophiesPage({ profile }: { readonly profile: Profile }) {
   const { data: bosses } = useBosses(profile.id);
   return (
     <PageShell title="Trophées et badges" back="/progres" nav={profile}>
-      <TrophiesSection profileId={profile.id} records={bosses?.records ?? []} />
+      <TrophiesSection profileId={profile.id} grade={playedGrade(profile.grade)} records={bosses?.records ?? []} />
       <section aria-labelledby="inventaire" className="cartoon bg-surface flex flex-col gap-3 p-3">
         <h2 id="inventaire" className="font-display text-2xl tracking-wide">
           Mon inventaire

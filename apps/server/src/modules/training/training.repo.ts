@@ -2,7 +2,7 @@ import { and, asc, eq, inArray, sql } from 'drizzle-orm';
 import { toStage, type SkillState } from '@questeo/engine';
 import type { AnswerSubmit, ModeId, SkillProgress, SubjectId } from '@questeo/shared';
 import type { Executor } from '../../db/client.ts';
-import { attempts, sessions, skillStates, type SkillStateRow } from '../../db/schema.ts';
+import { attempts, chapterRewards, sessions, skillStates, type SkillStateRow } from '../../db/schema.ts';
 
 /** Accès aux parties, réponses et états de répétition espacée. */
 
@@ -23,6 +23,8 @@ export interface NewSession {
   readonly subject: SubjectId;
   readonly chapterId: string;
   readonly skillId: string | null;
+  /** Épreuve du chapitre. */
+  readonly epreuve?: boolean;
   /** État d'un combat de boss, déjà mis au format stocké par le module « combats ». */
   readonly battle?: unknown;
 }
@@ -97,6 +99,28 @@ export function trainingRepo(db: Executor) {
         .from(attempts)
         .where(and(eq(attempts.sessionId, sessionId), eq(attempts.attempt, 1)))
         .orderBy(asc(attempts.id));
+    },
+
+    /**
+     * Enregistre la validation du chapitre ; false si le profil l'avait déjà validé (la clé
+     * primaire garantit une seule récompense, même avec deux requêtes simultanées).
+     */
+    async insertChapterReward(profileId: string, chapterId: string, sessionId: string): Promise<boolean> {
+      const rows = await db
+        .insert(chapterRewards)
+        .values({ profileId, chapterId, sessionId })
+        .onConflictDoNothing()
+        .returning({ chapterId: chapterRewards.chapterId });
+      return rows.length > 0;
+    },
+
+    async chapterTrophies(profileId: string) {
+      const rows = await db
+        .select({ chapterId: chapterRewards.chapterId, obtainedAt: chapterRewards.obtainedAt })
+        .from(chapterRewards)
+        .where(eq(chapterRewards.profileId, profileId))
+        .orderBy(asc(chapterRewards.obtainedAt));
+      return rows.map((r) => ({ chapterId: r.chapterId, obtainedAt: r.obtainedAt.toISOString() }));
     },
 
     /** Progression par notion, avec le jour de dernière pratique (fuseau de la famille). */

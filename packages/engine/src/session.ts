@@ -11,6 +11,13 @@ export const SHORT_TRAINING_LENGTH = 4;
 
 /** Longueur d'une série : 5 si toutes les notions sont du calcul de tête, sinon 4. */
 export const seriesLength = (allMental: boolean) => (allMental ? TRAINING_LENGTH : SHORT_TRAINING_LENGTH);
+
+/** Épreuve du chapitre : série mélangée de 10 questions, réussie à 80 % ou plus (8 sur 10). */
+export const EPREUVE_LENGTH = 10;
+export const EPREUVE_PASS_RATE = 0.8;
+/** Épreuve réussie : série complète et au moins 80 % de bonnes réponses du premier coup. */
+export const epreuvePassed = (correct: number, answered: number) =>
+  answered >= EPREUVE_LENGTH && correct >= EPREUVE_PASS_RATE * answered;
 export const MAX_VARIANTS = 3;
 
 export interface PlannedQuestion {

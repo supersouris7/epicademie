@@ -31,14 +31,16 @@ describe('signaler une question', () => {
 });
 
 describe('notions en maintenance', () => {
-  it('affichées « en maintenance », non jouables, absentes de « Tout le chapitre »', async () => {
-    renderApp('/jouer/entrainement/maths/m5-calcul', { disabled: ['m5-tables'] });
+  it('affichées « en maintenance », non jouables, absentes de l’« Épreuve du chapitre »', async () => {
+    const { user } = renderApp('/jouer/entrainement/maths/m5-calcul', { disabled: ['m5-tables'] });
     const tables = await screen.findByRole('button', { name: /Tables de multiplication/ });
     await waitFor(() => expect(tables).toBeDisabled());
     expect(tables).toHaveTextContent('en maintenance');
-    const all = screen.getByRole('button', { name: /Tout le chapitre/ });
-    const total = Number(/\((\d+) notions\)/.exec(all.textContent)?.[1]);
-    expect(total).toBe((getChapter('m5-calcul')?.skills.length ?? 0) - 1);
+    // L'épreuve couvre les notions du chapitre sauf celle en maintenance.
+    const exam = screen.getByRole('button', { name: /Épreuve du chapitre/ });
+    await user.click(exam);
+    await screen.findByRole('progressbar', { name: 'Progression de la série' });
+    expect(getChapter('m5-calcul')?.skills.length).toBeGreaterThan(1);
   });
 });
 

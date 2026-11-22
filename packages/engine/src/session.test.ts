@@ -7,6 +7,8 @@ import {
   regularCount,
   startTraining,
   TRAINING_LENGTH,
+  EPREUVE_LENGTH,
+  epreuvePassed,
 } from './session.ts';
 import { newSkillState, type SkillState } from './srs.ts';
 
@@ -83,5 +85,15 @@ describe('série d’entraînement', () => {
     s = recordAnswer(s, { skillId: 'b', level: 1, seed: 2, variant: false }, false);
     expect(perSkill(s).get('a')).toEqual({ answered: 1, correct: 1, answers: [true] });
     expect(perSkill(s).get('b')).toEqual({ answered: 1, correct: 0, answers: [false] });
+  });
+});
+
+describe('épreuve du chapitre', () => {
+  it('réussie à 80 % ou plus, série complète seulement', () => {
+    expect(EPREUVE_LENGTH).toBe(10);
+    expect(epreuvePassed(8, 10)).toBe(true);
+    expect(epreuvePassed(10, 10)).toBe(true);
+    expect(epreuvePassed(7, 10)).toBe(false);
+    expect(epreuvePassed(4, 4)).toBe(false);
   });
 });

@@ -72,7 +72,7 @@ test('Anglais : chapitre des verbes irréguliers jouable', async ({ page }) => {
     .last()
     .click();
   await page
-    .getByRole('button', { name: /Tout le chapitre|prétérit/i })
+    .getByRole('button', { name: /Épreuve du chapitre|prétérit/i })
     .first()
     .click();
   await expect(page.getByRole('progressbar', { name: 'Progression de la série' })).toBeVisible();

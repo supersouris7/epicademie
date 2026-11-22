@@ -132,4 +132,41 @@ describe('partie d’entraînement', () => {
     expect(await screen.findByRole('heading', { name: /Entraînement · Maths/ })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /Révisions du jour/ })).not.toBeInTheDocument();
   });
+
+  it('Épreuve du chapitre : bouton expliqué, série de 10 questions, démarrée comme épreuve', async () => {
+    const { user, server } = renderApp('/jouer/entrainement/maths/m5-calcul');
+    const exam = await screen.findByRole('button', { name: /Épreuve du chapitre/ });
+    expect(exam).toHaveTextContent('Réussis 80 % pour valider le chapitre et gagner son coffre');
+    expect(screen.queryByText(/Tout le chapitre/)).not.toBeInTheDocument();
+    await user.click(exam);
+    await screen.findByRole('progressbar', { name: 'Progression de la série' });
+    const started = server.calls.find((c) => c.path === '/sessions');
+    expect(started?.body).toMatchObject({ chapterId: 'm5-calcul', skillId: null, epreuve: true });
+  });
+
+  it('Épreuve ratée : pas de coffre, conseil sur la notion la plus ratée', { timeout: 90_000 }, async () => {
+    const { user, server } = renderApp('/partie/entrainement/m5-calcul/epreuve', {
+      epreuve: { passed: false, weakestSkillId: 'm5-tables' },
+    });
+    await screen.findByRole('button', { name: ANSWER_KEY });
+    const finished = () => server.calls.some((c) => c.path.endsWith('/finish'));
+    for (let i = 0; i < 80 && !finished(); i++) {
+      const step = screen.queryByRole('button', { name: /^Suivant|Vérifions si j’ai compris/ });
+      if (step) {
+        await user.click(step);
+        continue;
+      }
+      const ok = await screen.findByRole('button', { name: ANSWER_KEY }, { timeout: 4000 }).catch(() => null);
+      if (!ok) continue;
+      await answer(user, '-1');
+      if (await screen.findByText(/Essaie encore !/).catch(() => null)) await answer(user, '-1');
+      await waitFor(() => expect(screen.queryByRole('button', { name: ANSWER_KEY })).not.toBeInTheDocument());
+    }
+    expect(finished()).toBe(true);
+    expect(await screen.findByText(/Pas encore 80 %/)).toBeInTheDocument();
+    expect(screen.getByText(/pas de coffre cette fois/)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Suite' }));
+    expect(await screen.findByText(/c’est la notion la plus ratée/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /S’entraîner sur cette notion/ })).toBeInTheDocument();
+  });
 });

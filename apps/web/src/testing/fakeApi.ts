@@ -93,6 +93,10 @@ export interface FakeApiOptions {
   readonly parent?: boolean;
   /** Notions désactivées (en maintenance). */
   readonly disabled?: readonly string[];
+  /** Chapitres déjà validés par l'Épreuve du chapitre. */
+  readonly trophies?: readonly string[];
+  /** Résultat d'épreuve renvoyé en fin de partie d'une Épreuve du chapitre. */
+  readonly epreuve?: { readonly passed: boolean; readonly weakestSkillId: string | null };
   /** Le compte connecté est administrateur. */
   readonly admin?: boolean;
   /** Rapport de suivi renvoyé pour chaque profil (par défaut : vide). */
@@ -527,6 +531,8 @@ export function createFakeApi(options: FakeApiOptions = {}) {
       }
       return { correct: result.correct, invalid: result.invalid === true, xp: result.correct ? 10 : 0 };
     },
+    chapterTrophies: () =>
+      (options.trophies ?? []).map((chapterId) => ({ chapterId, obtainedAt: '2026-11-20T10:00:00.000Z' })),
     markConfused: () => null,
     finishSession: ({ params }) => {
       const s = sessions.get(params.id ?? '') ?? { answered: 0, correct: 0 };
@@ -541,6 +547,15 @@ export function createFakeApi(options: FakeApiOptions = {}) {
         levelAfter: 1,
         skills: [],
         chest: null,
+        ...(options.epreuve && {
+          epreuve: {
+            chapterId: 'm5-calcul',
+            passed: options.epreuve.passed,
+            rewarded: options.epreuve.passed,
+            alreadyValidated: false,
+            weakestSkillId: options.epreuve.weakestSkillId,
+          },
+        }),
       };
     },
     bossOverview: () => overview,

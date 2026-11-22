@@ -209,6 +209,8 @@ export const sessions = pgTable(
     battle: jsonb('battle').$type<unknown>(),
     /** Rareté du coffre reçu à la fin de la partie (null : pas de coffre). */
     chest: text('chest').$type<ChestRarity>(),
+    /** Épreuve du chapitre (série mélangée de toutes ses notions, validée à 80 %). */
+    epreuve: boolean('epreuve').notNull().default(false),
   },
   (t) => [index('sessions_profile_mode_chapter_idx').on(t.profileId, t.mode, t.chapterId)],
 );
@@ -501,6 +503,24 @@ export const recommendations = pgTable(
     check('recommendations_note_len', sql`${t.note} is null or char_length(${t.note}) <= 140`),
     check('recommendations_status', sql`${t.status} in ('en-attente', 'faite', 'annulee')`),
   ],
+);
+
+/**
+ * Chapitres validés par l'Épreuve du chapitre (80 % ou plus) : une seule récompense (coffre et
+ * trophée) par chapitre et par profil, garantie par la clé primaire. Supprimée avec le profil.
+ */
+export const chapterRewards = pgTable(
+  'chapter_rewards',
+  {
+    profileId: uuid('profile_id')
+      .notNull()
+      .references(() => profiles.id, { onDelete: 'cascade' }),
+    chapterId: text('chapter_id').notNull(),
+    /** Partie qui a validé le chapitre (conservée pour l'historique, sans clé étrangère). */
+    sessionId: uuid('session_id'),
+    obtainedAt: timestamp('obtained_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.profileId, t.chapterId] })],
 );
 
 /**

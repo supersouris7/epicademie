@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef } 
 import { useQueryClient } from '@tanstack/react-query';
 import { check, getChapter, getChapterOfSkill, getSkill, type Response } from '@questeo/content';
 import {
+  EPREUVE_LENGTH,
   isFinished,
   nextQuestion,
   regularCount,
@@ -11,7 +12,7 @@ import {
 } from '@questeo/engine';
 import type { Profile, SkillProgress } from '@questeo/shared';
 import { ApiError } from '../../shared/api/client.ts';
-import { finishSession, markConfused, skillsKey, startSession, submitAnswer } from './api.ts';
+import { chapterTrophiesKey, finishSession, markConfused, skillsKey, startSession, submitAnswer } from './api.ts';
 import { localToday, randomSeed } from '../../shared/lib/dates.ts';
 import { heroSays } from '../../shared/lib/dialogue.ts';
 import { freshQuestion, recentPrompts, rememberPrompt } from '../../shared/lib/recent.ts';
@@ -41,9 +42,14 @@ export interface TrainingSetup {
   readonly states: ReadonlyMap<string, SkillProgress>;
   /** Page où revenir en quittant la série (liste des notions, ou matière pour les révisions). */
   readonly exitTo: string;
+  /** Épreuve du chapitre : série mélangée plus longue, validée côté serveur à 80 %. */
+  readonly epreuve?: boolean;
 }
 
-export function useTraining({ profile, chapterId, skills, states }: TrainingSetup, notify: (message: string) => void) {
+export function useTraining(
+  { profile, chapterId, skills, states, epreuve = false }: TrainingSetup,
+  notify: (message: string) => void,
+) {
   const qc = useQueryClient();
   const chapter = getChapter(chapterId);
   const today = localToday();
@@ -54,7 +60,11 @@ export function useTraining({ profile, chapterId, skills, states }: TrainingSetu
   const reducer = useMemo(() => createTrainingReducer((moment) => heroSays(profile.hero, moment)), [profile.hero]);
   const [state, dispatch] = useReducer(reducer, undefined, () =>
     initialTrainingScreen(
-      startTraining([...skills], states, seriesLength(skills.every((id) => getSkill(id)?.mental === true))),
+      startTraining(
+        [...skills],
+        states,
+        epreuve ? EPREUVE_LENGTH : seriesLength(skills.every((id) => getSkill(id)?.mental === true)),
+      ),
       heroSays(profile.hero, 'start'),
     ),
   );
@@ -115,7 +125,8 @@ export function useTraining({ profile, chapterId, skills, states }: TrainingSetu
       // Révisions : plusieurs chapitres ; la matière est celle de la 1re notion.
       subject,
       chapterId,
-      skillId: skills.length === 1 ? (skills[0] ?? null) : null,
+      skillId: !epreuve && skills.length === 1 ? (skills[0] ?? null) : null,
+      ...(epreuve && { epreuve: true }),
     })
       .then(({ id }) => {
         dispatch({ type: 'started', sessionId: id });
@@ -131,7 +142,7 @@ export function useTraining({ profile, chapterId, skills, states }: TrainingSetu
               : 'Impossible de démarrer la partie. Le serveur est-il joignable ?',
         }),
       );
-  }, [subject, chapterId, draw, profile.id, skills]);
+  }, [subject, chapterId, draw, profile.id, skills, epreuve]);
 
   const submit = (response: Response) => {
     const s = latest.current;
@@ -181,6 +192,7 @@ export function useTraining({ profile, chapterId, skills, states }: TrainingSetu
       playSound(summary.levelAfter > summary.levelBefore ? 'levelup' : 'finish');
       void qc.invalidateQueries({ queryKey: skillsKey(profile.id) });
       void qc.invalidateQueries({ queryKey: ['profiles'] });
+      if (summary.epreuve) void qc.invalidateQueries({ queryKey: chapterTrophiesKey(profile.id) });
     } catch {
       dispatch({ type: 'failed', error: 'Impossible d’enregistrer la fin de partie.' });
     }

@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { openDatabase, type Database } from './client.ts';
 import { assertSchemaUpToDate, runMigrations, schemaStatus } from './migrations.ts';
 import { MIGRATIONS_DIR } from '../testing/harness.ts';
-import { profiles, skillStates } from './schema.ts';
+import { profiles, sessions, skillStates } from './schema.ts';
 
 let database: Database | null = null;
 afterEach(async () => {
@@ -149,6 +149,37 @@ describe('migrations', () => {
       ).rejects.toThrow();
       // Retour arrière documenté dans la migration : le reste des données est intact.
       await db.execute(sql`drop table "recommendations"`);
+      expect(await db.select().from(profiles)).toHaveLength(1);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('épreuve du chapitre : depuis une base en 0019, parties intactes ; une seule récompense ; retour arrière', async () => {
+    const dir = migrationsUpTo(20); // jusqu'à 0019
+    try {
+      database = await openDatabase('pglite://memory');
+      await runMigrations(database, dir);
+      const { db } = database;
+      await db.execute(sql`insert into profiles (id, name, avatar, hero) values
+        ('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa', 'Léa', '{"style":"pixelbot","seed":"l"}', 'alex')`);
+      await db.execute(sql`insert into sessions (profile_id, mode, subject, chapter_id)
+        values ('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa', 'entrainement', 'maths', 'm5-calcul')`);
+      await runMigrations(database, MIGRATIONS_DIR);
+      expect((await schemaStatus(database, MIGRATIONS_DIR)).upToDate).toBe(true);
+      // Les parties existantes ne sont pas des épreuves.
+      const rows = await db.select({ epreuve: sessions.epreuve }).from(sessions);
+      expect(rows).toEqual([{ epreuve: false }]);
+      await db.execute(sql`insert into chapter_rewards (profile_id, chapter_id)
+        values ('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa', 'm5-calcul')`);
+      // Un chapitre ne se récompense qu'une fois par profil.
+      await expect(
+        db.execute(sql`insert into chapter_rewards (profile_id, chapter_id)
+          values ('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa', 'm5-calcul')`),
+      ).rejects.toThrow();
+      // Retour arrière documenté dans la migration : le reste des données est intact.
+      await db.execute(sql`drop table "chapter_rewards"`);
+      await db.execute(sql`alter table "sessions" drop column "epreuve"`);
       expect(await db.select().from(profiles)).toHaveLength(1);
     } finally {
       rmSync(dir, { recursive: true, force: true });

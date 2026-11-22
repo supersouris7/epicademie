@@ -28,6 +28,8 @@ export const SessionCreateSchema = z.object({
   chapterId: ContentIdSchema,
   /** null = tout le chapitre. */
   skillId: ContentIdSchema.nullable(),
+  /** Épreuve du chapitre : série mélangée de toutes ses notions (mode entraînement, skillId null). */
+  epreuve: z.boolean().optional(),
 });
 export type SessionCreate = z.infer<typeof SessionCreateSchema>;
 
@@ -94,6 +96,23 @@ export const SessionSkillSummarySchema = z.object({
 });
 export type SessionSkillSummary = z.infer<typeof SessionSkillSummarySchema>;
 
+/** Résultat d'une Épreuve du chapitre (calculé par le serveur sur les réponses enregistrées). */
+export const EpreuveResultSchema = z.object({
+  chapterId: z.string(),
+  passed: z.boolean(),
+  /** Première validation du chapitre : coffre « chapitre » et trophée gagnés maintenant. */
+  rewarded: z.boolean(),
+  /** Chapitre déjà validé avant cette épreuve. */
+  alreadyValidated: z.boolean(),
+  /** Notion la plus ratée (conseil d'entraînement), null si aucune erreur. */
+  weakestSkillId: z.string().nullable(),
+});
+export type EpreuveResult = z.infer<typeof EpreuveResultSchema>;
+
+/** Trophée de chapitre (épreuve réussie). */
+export const ChapterTrophySchema = z.object({ chapterId: z.string(), obtainedAt: z.iso.datetime() });
+export type ChapterTrophy = z.infer<typeof ChapterTrophySchema>;
+
 export const SessionSummarySchema = z.object({
   regular: Tally,
   variants: Tally,
@@ -106,5 +125,7 @@ export const SessionSummarySchema = z.object({
   skills: z.array(SessionSkillSummarySchema).readonly(),
   /** Coffre d'équipement tiré au hasard (plus probable avec un bon score), ou null. */
   chest: ChestSchema.nullable(),
+  /** Présent seulement pour une Épreuve du chapitre. */
+  epreuve: EpreuveResultSchema.optional(),
 });
 export type SessionSummary = z.infer<typeof SessionSummarySchema>;

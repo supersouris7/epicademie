@@ -3,7 +3,7 @@ import { api, type AnswerSubmit, type SessionCreate } from '@questeo/shared';
 import { request } from '../../shared/api/client.ts';
 
 /** Appels au serveur pour l'entraînement : progression par notion, partie, réponses, bilan. */
-export { skillsKey, useSkills } from '../../shared/api/queries.ts';
+export { chapterTrophiesKey, skillsKey, useSkills } from '../../shared/api/queries.ts';
 
 export const startSession = (input: SessionCreate) => request(api.startSession, { body: input });
 
