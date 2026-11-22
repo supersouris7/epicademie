@@ -1,42 +1,42 @@
 import { a } from './kinds.ts';
 
-/** Catalogue des images — Kit combat : arènes (livrées le 18/11/2026, une tirée au hasard à chaque combat) */
+/**
+ * Catalogue des images — Arènes du combat (images du client, 22/11/2026). Une arène est tirée au hasard
+ * à chaque combat ; chacune existe en 4 cadrages tirés de la même image (`assets:arenas`).
+ */
 
 export const ARENAS = [
-  [
-    'espace',
-    'Arène de la station spatiale',
-    'plateforme d’une station spatiale de l’académie, planète et vaisseaux dans le ciel étoilé',
-  ],
-  ['academie', 'Arène de l’académie', 'terrasse de l’académie au milieu des collines, cascades et observatoires'],
-  ['volcan', 'Arène du volcan', 'plateforme de pierre fissurée de lave, volcan en éruption et forteresse'],
+  ['jungle', 'Arène de la jungle', 'temple en ruine, cascades, pont de corde et portail de cristal violet'],
+  ['espace', 'Arène de la station spatiale', 'pont d’une station spatiale, planète et vaisseaux dans le ciel étoilé'],
+  ['volcan', 'Arène du volcan', 'plateforme de pierre fissurée de lave, volcan en éruption'],
+  ['glace', 'Arène des glaces', 'lac gelé cerné de cristaux, ruines de glace sous les aurores boréales'],
+  ['academie', 'Arène de l’académie', 'parvis de l’académie, bâtiments, banderoles et collines'],
 ] as const;
 
-export const envAssets = ARENAS.flatMap(([id, name, look]) => [
-  a('arena', `environments/arenas/${id}.webp`, name, look, 'Décor du combat de boss.', 2),
-  a(
-    'arenaTall',
-    `environments/arenas/${id}-portrait.webp`,
-    `${name} (portrait)`,
-    look,
-    'Décor du combat sur téléphone (cadre plus haut que large).',
-    2,
-    { reference: `environments-arenas-${id}` },
-  ),
-  a(
-    'arenaWide',
-    `environments/arenas/${id}-large.webp`,
-    `${name} (panorama)`,
-    look,
-    'Décor du combat sur tablette en paysage (cadre très large).',
-    2,
-    { reference: `environments-arenas-${id}` },
-  ),
-]);
-
-/** Variantes d'une arène et leurs proportions (largeur / hauteur), de la plus haute à la plus large. */
+/** Variantes d'une arène : proportions (largeur / hauteur), de la plus haute à la plus large. */
 export const ARENA_VARIANTS = [
-  { suffix: '-portrait', ratio: 960 / 1280 },
-  { suffix: '', ratio: 1536 / 864 },
-  { suffix: '-large', ratio: 1536 / 640 },
+  { suffix: '-portrait', kind: 'arenaTall', ratio: 1080 / 1200 },
+  { suffix: '', kind: 'arena', ratio: 1600 / 900 },
+  { suffix: '-large', kind: 'arenaWide', ratio: 1920 / 738 },
+  { suffix: '-pano', kind: 'arenaPano', ratio: 2640 / 600 },
 ] as const;
+
+const USE: Record<string, string> = {
+  arenaTall: 'smartphone et fenêtres étroites',
+  arena: 'tablette et ordinateur',
+  arenaWide: 'ordinateur, TV (cadre large)',
+  arenaPano: 'écrans très larges',
+};
+
+export const envAssets = ARENAS.flatMap(([id, name, look]) =>
+  ARENA_VARIANTS.map((v) =>
+    a(
+      v.kind,
+      `environments/arenas/${id}${v.suffix}.webp`,
+      `${name}${v.suffix}`,
+      look,
+      `Décor du combat : ${USE[v.kind]}.`,
+      2,
+    ),
+  ),
+);

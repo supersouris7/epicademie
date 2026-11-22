@@ -1,88 +1,25 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
-# Academy Fighters — Variantes des arènes (à utiliser avec ChatGPT)
+# Academy Fighters — Arènes
 
-6 images : chaque arène livrée (16:9) est déclinée en 3 formats, pour que le décor ne soit jamais écrasé ni trop rogné.
+5 décors fournis par le client (paysage 16:9, style cartoon, sol dégagé au centre), aucun à générer :
 
-| Format | Généré | Final | Proportions | Où |
-|---|---|---|---|---|
-| Plein cadre (livré) | 1536×1024 | 1536×864 | 16:9 | scène du combat, tablette en portrait et ordinateur |
-| Portrait | 1024×1536 | 960×1280 | 3:4 | scène du combat sur téléphone |
-| Panorama | 1536×1024 | 1536×640 | 12:5 | scène du combat sur tablette en paysage |
-| Bandeau | 1536×1024 | 1536×384 | 4:1, répété en largeur | bandeau du haut pendant les questions |
+- `environments/arenas/jungle.png` — Arène de la jungle : temple en ruine, cascades, pont de corde et portail de cristal violet
+- `environments/arenas/espace.png` — Arène de la station spatiale : pont d’une station spatiale, planète et vaisseaux dans le ciel étoilé
+- `environments/arenas/volcan.png` — Arène du volcan : plateforme de pierre fissurée de lave, volcan en éruption
+- `environments/arenas/glace.png` — Arène des glaces : lac gelé cerné de cristaux, ruines de glace sous les aurores boréales
+- `environments/arenas/academie.png` — Arène de l’académie : parvis de l’académie, bâtiments, banderoles et collines
 
-Le jeu mesure le cadre et prend la variante dont les proportions sont les plus proches ; tant qu'une variante manque, il garde l'image plein cadre.
-Le bandeau est répété horizontalement à la hauteur du bandeau : il n'est ni étiré ni écrasé, quelle que soit la largeur de l'écran.
+Chaque décor est décliné en 4 cadrages par `pnpm --filter @questeo/web assets:arenas` (jamais d'étirement) :
 
-## Mode d'emploi
+| Suffixe | Final | Proportions | Cadrage |
+|---|---|---|---|
+| `-portrait` | 1080×1200 | 0.90:1 | cadrage 9:10 (smartphone, fenêtre étroite) : image pleine hauteur, rognée sur les côtés |
+| `(aucun)` | 1600×900 | 1.78:1 | décor 16:9 fourni par le client, sol dégagé au centre ; image entière |
+| `-large` | 1920×738 | 2.60:1 | cadrage 2,6:1 (tablette, ordinateur) : bande centrée sur l’horizon et le sol |
+| `-pano` | 2640×600 | 4.40:1 | panorama 4,4:1 (écran large) : cadrage 2,6:1 prolongé de chaque côté par miroir, flou progressif et assombrissement |
 
-1. Une **conversation ChatGPT par arène** : joins l'image de l'arène livrée indiquée, puis envoie les 3 demandes une par une.
-2. Télécharge chaque image en PNG et enregistre-la au chemin indiqué.
-3. Dis-moi quand c'est déposé : je lance l'import (recadrage, WebP) et le jeu les utilise aussitôt.
+Le jeu mesure le cadre et prend le cadrage dont les proportions sont les plus proches. Au-delà du panorama
+(21:9, 32:9, fenêtre très étirée), l'image garde ses proportions, centrée, avec des bords fondus sur un fond
+d'ambiance flouté de la même image ; les combattants restent groupés au centre.
 
-## Demandes
-
-### Arène de la station spatiale
-
-> 📎 Joindre l'arène livrée `apps/web/assets-src/originals/environments/arenas/espace.png`.
-
-#### 1. Arène de la station spatiale (portrait) — scène du combat sur téléphone
-Enregistrer sous `apps/web/assets-src/originals/environments/arenas/espace-portrait.png` · 1024×1536 → final 960×1280
-
-```text
-Image 1024×1536, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : plateforme d’une station spatiale de l’académie, planète et vaisseaux dans le ciel étoilé.
-Cadrage : même décor recomposé en hauteur (format portrait, écran de téléphone), vu de face à hauteur de personnage ; sol plat et dégagé sur le tiers inférieur (les deux combattants y seront posés côte à côte, chacun sur près de la moitié de la largeur) ; le point d’intérêt du décor (planète, volcan, palais…) dans la moitié haute ; rien d’important à moins de 6 % du haut et du bas (rogné) ; aucun personnage.
-Pas de texte, pas de personnage, pas de bordure.
-```
-
-#### 2. Arène de la station spatiale (panorama) — scène du combat sur tablette en paysage
-Enregistrer sous `apps/web/assets-src/originals/environments/arenas/espace-large.png` · 1536×1024 → final 1536×640
-
-```text
-Image 1536×1024, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : plateforme d’une station spatiale de l’académie, planète et vaisseaux dans le ciel étoilé.
-Cadrage : même décor en panorama très large (tablette en paysage) : seule la bande entre 20 % et 80 % de la hauteur sera gardée ; sol plat et dégagé entre 60 % et 80 % de la hauteur, sur toute la largeur ; horizon et point d’intérêt entre 20 % et 55 % de la hauteur ; le haut et le bas de l’image ne contiennent que du ciel et du sol ; aucun personnage.
-Pas de texte, pas de personnage, pas de bordure.
-```
-
-### Arène de l’académie
-
-> 📎 Joindre l'arène livrée `apps/web/assets-src/originals/environments/arenas/academie.png`.
-
-#### 1. Arène de l’académie (portrait) — scène du combat sur téléphone
-Enregistrer sous `apps/web/assets-src/originals/environments/arenas/academie-portrait.png` · 1024×1536 → final 960×1280
-
-```text
-Image 1024×1536, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : terrasse de l’académie au milieu des collines, cascades et observatoires.
-Cadrage : même décor recomposé en hauteur (format portrait, écran de téléphone), vu de face à hauteur de personnage ; sol plat et dégagé sur le tiers inférieur (les deux combattants y seront posés côte à côte, chacun sur près de la moitié de la largeur) ; le point d’intérêt du décor (planète, volcan, palais…) dans la moitié haute ; rien d’important à moins de 6 % du haut et du bas (rogné) ; aucun personnage.
-Pas de texte, pas de personnage, pas de bordure.
-```
-
-#### 2. Arène de l’académie (panorama) — scène du combat sur tablette en paysage
-Enregistrer sous `apps/web/assets-src/originals/environments/arenas/academie-large.png` · 1536×1024 → final 1536×640
-
-```text
-Image 1536×1024, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : terrasse de l’académie au milieu des collines, cascades et observatoires.
-Cadrage : même décor en panorama très large (tablette en paysage) : seule la bande entre 20 % et 80 % de la hauteur sera gardée ; sol plat et dégagé entre 60 % et 80 % de la hauteur, sur toute la largeur ; horizon et point d’intérêt entre 20 % et 55 % de la hauteur ; le haut et le bas de l’image ne contiennent que du ciel et du sol ; aucun personnage.
-Pas de texte, pas de personnage, pas de bordure.
-```
-
-### Arène du volcan
-
-> 📎 Joindre l'arène livrée `apps/web/assets-src/originals/environments/arenas/volcan.png`.
-
-#### 1. Arène du volcan (portrait) — scène du combat sur téléphone
-Enregistrer sous `apps/web/assets-src/originals/environments/arenas/volcan-portrait.png` · 1024×1536 → final 960×1280
-
-```text
-Image 1024×1536, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : plateforme de pierre fissurée de lave, volcan en éruption et forteresse.
-Cadrage : même décor recomposé en hauteur (format portrait, écran de téléphone), vu de face à hauteur de personnage ; sol plat et dégagé sur le tiers inférieur (les deux combattants y seront posés côte à côte, chacun sur près de la moitié de la largeur) ; le point d’intérêt du décor (planète, volcan, palais…) dans la moitié haute ; rien d’important à moins de 6 % du haut et du bas (rogné) ; aucun personnage.
-Pas de texte, pas de personnage, pas de bordure.
-```
-
-#### 2. Arène du volcan (panorama) — scène du combat sur tablette en paysage
-Enregistrer sous `apps/web/assets-src/originals/environments/arenas/volcan-large.png` · 1536×1024 → final 1536×640
-
-```text
-Image 1536×1024, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : plateforme de pierre fissurée de lave, volcan en éruption et forteresse.
-Cadrage : même décor en panorama très large (tablette en paysage) : seule la bande entre 20 % et 80 % de la hauteur sera gardée ; sol plat et dégagé entre 60 % et 80 % de la hauteur, sur toute la largeur ; horizon et point d’intérêt entre 20 % et 55 % de la hauteur ; le haut et le bas de l’image ne contiennent que du ciel et du sol ; aucun personnage.
-Pas de texte, pas de personnage, pas de bordure.
-```
+Pour changer un décor : déposer le nouveau PNG 16:9 au même nom dans `assets-src/originals/environments/arenas/`, puis relancer le script.

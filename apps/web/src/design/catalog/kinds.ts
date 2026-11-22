@@ -155,27 +155,32 @@ export const KINDS = {
     framing: 'effet centré, bords nets (pas de grand halo flou)',
     grid: { gen: '1024x1024', cols: 3, rows: 3 },
   },
+  // Arènes : 5 décors fournis par le client (paysage 16:9). Les autres cadrages sont tirés de la
+  // même image par `pnpm --filter @questeo/web assets:arenas` (jamais d'étirement ; voir ARENA_VARIANTS).
+  // L'affichage prend la variante dont les proportions sont les plus proches du cadre.
   arena: {
     gen: '1536x1024',
-    final: [1536, 864],
-    framing:
-      'décor de combat plein cadre vu de face, à hauteur de personnage, sol plat et dégagé sur le quart inférieur (les combattants seront posés à gauche et à droite), centre calme et lisible, aucun personnage',
+    final: [1600, 900],
+    framing: 'décor 16:9 fourni par le client, sol dégagé au centre ; image entière',
     opaque: true,
   },
-  // Variantes de l'arène, une par forme de cadre : l'affichage prend celle dont les proportions
-  // sont les plus proches du cadre, pour ne jamais rogner fort ni déformer le décor.
   arenaTall: {
     gen: '1024x1536',
-    final: [960, 1280],
-    framing:
-      'même décor recomposé en hauteur (format portrait, écran de téléphone), vu de face à hauteur de personnage ; sol plat et dégagé sur le tiers inférieur (les deux combattants y seront posés côte à côte, chacun sur près de la moitié de la largeur) ; le point d’intérêt du décor (planète, volcan, palais…) dans la moitié haute ; rien d’important à moins de 6 % du haut et du bas (rogné) ; aucun personnage',
+    final: [1080, 1200],
+    framing: 'cadrage 9:10 (smartphone, fenêtre étroite) : image pleine hauteur, rognée sur les côtés',
     opaque: true,
   },
   arenaWide: {
     gen: '1536x1024',
-    final: [1536, 640],
+    final: [1920, 738],
+    framing: 'cadrage 2,6:1 (tablette, ordinateur) : bande centrée sur l’horizon et le sol',
+    opaque: true,
+  },
+  arenaPano: {
+    gen: '1536x1024',
+    final: [2640, 600],
     framing:
-      'même décor en panorama très large (tablette en paysage) : seule la bande entre 20 % et 80 % de la hauteur sera gardée ; sol plat et dégagé entre 60 % et 80 % de la hauteur, sur toute la largeur ; horizon et point d’intérêt entre 20 % et 55 % de la hauteur ; le haut et le bas de l’image ne contiennent que du ciel et du sol ; aucun personnage',
+      'panorama 4,4:1 (écran large) : cadrage 2,6:1 prolongé de chaque côté par miroir, flou progressif et assombrissement',
     opaque: true,
   },
   floor: {

@@ -8,7 +8,14 @@
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { KINDS, PLANNED_ASSETS, QUESTY_LOOK, type AssetKind, type PlannedAsset } from '../../src/design/assets.ts';
+import {
+  ARENA_VARIANTS,
+  KINDS,
+  PLANNED_ASSETS,
+  QUESTY_LOOK,
+  type AssetKind,
+  type PlannedAsset,
+} from '../../src/design/assets.ts';
 import { PALETTE } from '../../src/design/palette.ts';
 
 const WEB = fileURLToPath(new URL('../../', import.meta.url));
@@ -383,56 +390,32 @@ COHÉRENCE DU KIT COMBAT
   return `${HEADER}\n${head}\n${body}\n\n---\n\n## Correspondance pour l'import (ne concerne pas ChatGPT)\n\n| Demande | Fichiers produits (ordre des cases) |\n|---|---|\n${map}\n`;
 }
 
-const VARIANT_USE: Record<string, string> = {
-  arenaTall: 'scène du combat sur téléphone',
-  arenaWide: 'scène du combat sur tablette en paysage',
-};
-
-/** Fichier autonome des variantes d'arène : une conversation par arène, l'arène livrée jointe. */
+/** Fichier des arènes : décors fournis par le client, cadrages tirés par script (rien à demander à ChatGPT). */
 export function arenaFile(): string {
   const bases = PLANNED_ASSETS.filter((p) => p.kind === 'arena');
-  const sections = bases.map((base) => {
-    const variants = PLANNED_ASSETS.filter((p) => p.reference === base.id);
-    const reqs = variants.map((p, i) => {
-      const k: AssetKind = KINDS[p.kind];
-      return [
-        `#### ${i + 1}. ${p.name} — ${VARIANT_USE[p.kind] ?? ''}`,
-        `Enregistrer sous \`apps/web/assets-src/originals/${original(p)}\` · ${size(k.gen)} → final ${k.final.join('×')}`,
-        '',
-        '```text',
-        `Image ${size(k.gen)}, plein cadre. Reprends EXACTEMENT le décor de l'image jointe (mêmes lieux, couleurs, lumière et style), recomposé pour un autre format : ${base.prompt}.`,
-        `Cadrage : ${k.framing}.`,
-        'Pas de texte, pas de personnage, pas de bordure.',
-        '```',
-      ].join('\n');
-    });
-    return `### ${base.name}\n\n> 📎 Joindre l'arène livrée \`apps/web/assets-src/originals/${original(base)}\`.\n\n${reqs.join('\n\n')}`;
-  });
-  const count = PLANNED_ASSETS.filter((p) => p.kind.startsWith('arena') && p.kind !== 'arena').length;
+  const rows = ARENA_VARIANTS.map((v) => {
+    const k: AssetKind = KINDS[v.kind];
+    return `| \`${v.suffix || '(aucun)'}\` | ${k.final.join('×')} | ${v.ratio.toFixed(2)}:1 | ${k.framing} |`;
+  }).join('\n');
+  const list = bases.map((b) => `- \`${original(b)}\` — ${b.name} : ${b.prompt}`).join('\n');
   return `${HEADER}
-# Academy Fighters — Variantes des arènes (à utiliser avec ChatGPT)
+# Academy Fighters — Arènes
 
-${count} images : chaque arène livrée (16:9) est déclinée en 3 formats, pour que le décor ne soit jamais écrasé ni trop rogné.
+${bases.length} décors fournis par le client (paysage 16:9, style cartoon, sol dégagé au centre), aucun à générer :
 
-| Format | Généré | Final | Proportions | Où |
-|---|---|---|---|---|
-| Plein cadre (livré) | 1536×1024 | 1536×864 | 16:9 | scène du combat, tablette en portrait et ordinateur |
-| Portrait | 1024×1536 | 960×1280 | 3:4 | scène du combat sur téléphone |
-| Panorama | 1536×1024 | 1536×640 | 12:5 | scène du combat sur tablette en paysage |
-| Bandeau | 1536×1024 | 1536×384 | 4:1, répété en largeur | bandeau du haut pendant les questions |
+${list}
 
-Le jeu mesure le cadre et prend la variante dont les proportions sont les plus proches ; tant qu'une variante manque, il garde l'image plein cadre.
-Le bandeau est répété horizontalement à la hauteur du bandeau : il n'est ni étiré ni écrasé, quelle que soit la largeur de l'écran.
+Chaque décor est décliné en ${ARENA_VARIANTS.length} cadrages par \`pnpm --filter @questeo/web assets:arenas\` (jamais d'étirement) :
 
-## Mode d'emploi
+| Suffixe | Final | Proportions | Cadrage |
+|---|---|---|---|
+${rows}
 
-1. Une **conversation ChatGPT par arène** : joins l'image de l'arène livrée indiquée, puis envoie les 3 demandes une par une.
-2. Télécharge chaque image en PNG et enregistre-la au chemin indiqué.
-3. Dis-moi quand c'est déposé : je lance l'import (recadrage, WebP) et le jeu les utilise aussitôt.
+Le jeu mesure le cadre et prend le cadrage dont les proportions sont les plus proches. Au-delà du panorama
+(21:9, 32:9, fenêtre très étirée), l'image garde ses proportions, centrée, avec des bords fondus sur un fond
+d'ambiance flouté de la même image ; les combattants restent groupés au centre.
 
-## Demandes
-
-${sections.join('\n\n')}
+Pour changer un décor : déposer le nouveau PNG 16:9 au même nom dans \`assets-src/originals/environments/arenas/\`, puis relancer le script.
 `;
 }
 

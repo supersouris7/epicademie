@@ -12,6 +12,7 @@
     "assets:svg": "tsx scripts/assets/build.ts",
     "assets:plan": "tsx scripts/assets/plan.ts",
     "assets:import": "tsx scripts/assets/import.ts",
+    "assets:arenas": "tsx scripts/assets/arenas.ts",
     "assets:cut": "tsx scripts/assets/cut.ts",
     "assets:kit": "tsx scripts/assets/kit.ts",
     "assets:sprites": "tsx scripts/assets/sprites.ts",
