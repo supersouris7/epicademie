@@ -16,6 +16,7 @@
 ## En cours
 
 - Intégration à la fabrique logicielle (branche `chore/fabrique-integration`).
+- #44 Élève autonome sous 15 ans : PR #55 (CI verte, à recetter ; ADR 0026).
 
 ## En attente du client
 
