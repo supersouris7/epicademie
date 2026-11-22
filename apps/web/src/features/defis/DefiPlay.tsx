@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { getAnySkill } from '@questeo/content';
 import { SUBJECT_IDS, type Profile, type SessionSummary, type SubjectId } from '@questeo/shared';
@@ -14,7 +15,7 @@ import { useToast } from '../../shared/ui/Toast.tsx';
 import { ChestReveal } from '../../shared/ui/game/ChestReveal.tsx';
 import { bestScore, SURVIE_HEARTS, type DefiId } from './rules.ts';
 import { useDefi } from './useDefi.ts';
-import { GameRecap } from '../training/index.ts';
+import { RecapScreen } from '../training/index.ts';
 
 const TITLES: Record<DefiId, string> = { chrono: 'Contre-la-montre', survie: 'Survie' };
 const RULES: Record<DefiId, string> = {
@@ -158,7 +159,18 @@ function Results(p: {
   readonly saving: boolean;
 }) {
   const navigate = useNavigate();
+  const [recap, setRecap] = useState(false);
   const s = p.correct > 1 ? 's' : '';
+  if (recap && p.summary) {
+    return (
+      <RecapScreen profileId={p.profileId} rows={p.summary.skills}>
+        <GameButton onClick={() => window.location.reload()}>Rejouer</GameButton>
+        <GameButton variant="surface" onClick={() => void navigate('/hub')}>
+          Accueil
+        </GameButton>
+      </RecapScreen>
+    );
+  }
   return (
     <div className="flex flex-col items-center gap-3 text-center">
       <Questy mood={p.record ? 'proud' : 'happy'} size={110} />
@@ -174,13 +186,20 @@ function Results(p: {
       )}
       {p.saving && <p>Enregistrement…</p>}
       {p.summary?.chest && <ChestReveal chest={p.summary.chest} />}
-      {p.summary && <GameRecap profileId={p.profileId} rows={p.summary.skills} />}
-      <div className="flex flex-wrap justify-center gap-2">
-        <GameButton onClick={() => window.location.reload()}>Rejouer</GameButton>
-        <GameButton variant="surface" onClick={() => void navigate('/hub')}>
-          Accueil
+      {p.summary ? (
+        <GameButton size="lg" icon="icons-navigation-next" onClick={() => setRecap(true)}>
+          Suite
         </GameButton>
-      </div>
+      ) : (
+        !p.saving && (
+          <div className="flex flex-wrap justify-center gap-2">
+            <GameButton onClick={() => window.location.reload()}>Rejouer</GameButton>
+            <GameButton variant="surface" onClick={() => void navigate('/hub')}>
+              Accueil
+            </GameButton>
+          </div>
+        )
+      )}
     </div>
   );
 }

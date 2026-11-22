@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 import { getAnySkill, glossaryEntry } from '@questeo/content';
 import { MathText } from '../../shared/question/MathText.tsx';
@@ -111,5 +112,30 @@ export function GameRecap({
         <p className="font-bold">Rien à retravailler pour l’instant : bravo !</p>
       )}
     </section>
+  );
+}
+
+/**
+ * Écran « Ton récap » (2e écran de fin de partie, tous modes) : le récap puis les actions
+ * proposées (`children`). Le 1er écran ne montre que les récompenses.
+ */
+export function RecapScreen({
+  children,
+  title = 'Ton récap',
+  ...recap
+}: {
+  readonly profileId: string;
+  readonly rows: readonly RecapRow[];
+  readonly table?: boolean;
+  readonly missed?: readonly Missed[];
+  readonly title?: string;
+  readonly children: ReactNode;
+}) {
+  return (
+    <div className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col gap-5 px-4 py-6">
+      <h1 className="font-display text-3xl tracking-wide">{title}</h1>
+      <GameRecap {...recap} />
+      <div className="flex flex-wrap justify-center gap-3">{children}</div>
+    </div>
   );
 }

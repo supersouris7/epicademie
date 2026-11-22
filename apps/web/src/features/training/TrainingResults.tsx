@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { GameRecap } from './GameRecap.tsx';
+import { RecapScreen } from './GameRecap.tsx';
 import { motion } from 'motion/react';
 import { getChapter, getSkill } from '@questeo/content';
 import { accord, type Gender, type SessionSummary } from '@questeo/shared';
@@ -67,31 +67,26 @@ export function Results({
         : 'On s’accroche, ça va venir !';
   if (screen === 'recap') {
     return (
-      <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-5 px-4 py-6">
-        <h1 className="font-display text-3xl tracking-wide">Ton récap</h1>
+      <RecapScreen profileId={profileId} rows={summary.skills} table={false} missed={missed}>
         {summary.variants.answered > 0 && (
-          <p className="text-lg font-bold">
+          <p className="w-full text-center text-lg font-bold">
             Questions similaires après erreur : {summary.variants.correct}/{summary.variants.answered} réussies.
           </p>
         )}
-        {/* Erreurs avec la bonne réponse, puis le mot de Questy si une notion est souvent ratée. */}
-        <GameRecap profileId={profileId} rows={summary.skills} table={false} missed={missed} />
-        <div className="flex flex-wrap justify-center gap-3">
-          <GameButton icon="icons-navigation-retry" onClick={onReplay}>
-            Rejouer
-          </GameButton>
-          <GameButton
-            variant="accent"
-            icon="icons-navigation-next"
-            onClick={() => onExit(exitTo ?? `/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`)}
-          >
-            Autre notion
-          </GameButton>
-          <GameButton variant="accent" icon="icons-navigation-home" onClick={() => onExit('/hub')}>
-            Accueil
-          </GameButton>
-        </div>
-      </div>
+        <GameButton icon="icons-navigation-retry" onClick={onReplay}>
+          Rejouer
+        </GameButton>
+        <GameButton
+          variant="accent"
+          icon="icons-navigation-next"
+          onClick={() => onExit(exitTo ?? `/jouer/entrainement/${chapter?.subject ?? 'maths'}/${chapterId}`)}
+        >
+          Autre notion
+        </GameButton>
+        <GameButton variant="accent" icon="icons-navigation-home" onClick={() => onExit('/hub')}>
+          Accueil
+        </GameButton>
+      </RecapScreen>
     );
   }
   return (
