@@ -200,11 +200,18 @@ Catalogue typé dans `packages/shared/src/modes.ts`.
 | ----------- | ---------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | Apprendre   | Entraînement     | matière → thème | 5 questions, difficulté adaptative, coffres d’équipement à gagner                                                           |
 | Apprendre   | Combat de boss   | matière → thème | boss du thème, bonne réponse = dégâts, erreur = −1 cœur (3 cœurs) ; boss final de matière quand tous les thèmes sont acquis |
-| Défis       | Contre-la-montre | matière → thème | max de bonnes réponses en 60 s, record par thème                                                                            |
-| Défis       | Survie           | matière → thème | difficulté croissante, 3 vies, record de vagues                                                                             |
+| Défis       | Contre-la-montre | matière → thème | max de points en 60 s (+2 s par bonne réponse, −5 s par erreur), record en points par matière et classe (§6.2 ter)          |
+| Défis       | Survie           | matière → thème | difficulté croissante, 3 vies, mêmes points, record en points par matière et classe (§6.2 ter)                              |
 | Multijoueur | voir §9.2        |                 |                                                                                                                             |
 
 **Boss et adversaires** : univers moderne (aliens, ninjas, gunners, robots, hackers…), jamais médiéval-fantastique. Rendu **écran LED comme Questy** : visage pixel, plus une silhouette et un équipement propres (antennes, bandeau, visière), avec leurs couleurs et leurs grimaces de boss. Personnages originaux.
+
+### 6.2 ter Défis : barème en points (22/11/2026, ticket #79)
+
+- **Points d'une bonne réponse** = (base + bonus de rapidité) × multiplicateur de série. Base selon le niveau réel de la question : 10 / 20 / 30 (niveaux 1 / 2 / 3), **+5** si la réponse est saisie (clavier, point) plutôt que choisie parmi des propositions. Bonus de rapidité : **+10 au plus** (réponse en 2 s ou moins), décroissant jusqu'à 0 à 10 s. Multiplicateur de série : **×1, puis +1 toutes les 3 bonnes réponses d'affilée, plafonné à ×5** (affiché « COMBO ×n »). Une erreur remet la série à ×1.
+- **Contre-la-montre** : 60 s au départ, **+2 s par bonne réponse, −5 s par erreur** ; fin à 0 s. Barre de temps qui se vide ; sur les 10 dernières secondes : barre et chiffres rouges qui pulsent, battement sonore qui s'accélère (réglage du son respecté) et légère vibration, le tout supprimé avec « réduire les animations ». **Survie** : 3 cœurs, une erreur coûte un cœur, difficulté croissante, mêmes points.
+- **Records** en points, par défi, matière et classe, stockés sur l'appareil sous la clé `af:defi-pts:<défi>:<profil>:<classe>:<matière>` ; les anciens records en bonnes réponses (`af:defi:…`) ne sont pas repris.
+- **Bilan** : score en points, record, « Revoir mes erreurs » (question, réponse donnée, bonne réponse, explication courte), puis récap commun avec l'entraînement conseillé. Le visage du héros change selon la situation (concentré, content, surpris ou vexé, inquiet, fier d'un record).
 
 ### 6.2 bis Combat de boss (livré le 17/11/2026, v1)
 

@@ -125,8 +125,8 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
                       // Défis : le record à battre plutôt qu'une barre.
                       <span className="font-display text-toon rounded-full bg-black/25 px-3 py-0.5 text-base">
                         {(() => {
-                          const best = bestScore(mode.id, profile.id, s.id);
-                          return best > 0 ? `Record : ${best}` : 'Pas encore de record';
+                          const best = bestScore(mode.id, profile.id, s.id, grade);
+                          return best > 0 ? `Record : ${best} pts` : 'Pas encore de record';
                         })()}
                       </span>
                     ) : (

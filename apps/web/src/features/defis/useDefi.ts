@@ -2,18 +2,42 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { chaptersOf, check, generate, type Question, type Response } from '@questeo/content';
 import { playedGrade, type Profile, type SessionSummary, type SubjectId } from '@questeo/shared';
+import { playSound } from '../../shared/lib/sound.ts';
+import { formatAnswer, formatResponse } from '../../shared/question/answers.ts';
 import { useChapterAccess } from '../parent/index.ts';
 import { finishSession, startSession, submitAnswer, useDisabledSkills } from '../training/index.ts';
 import {
-  CHRONO_MS,
+  comboOf,
+  INITIAL_SCORE,
   isOver,
   levelFor,
+  pointsFor,
+  remainingMs,
   saveBest,
   scoreAfter,
-  SURVIE_HEARTS,
+  bestScore,
   type DefiId,
   type DefiScore,
 } from './rules.ts';
+
+/** Question ratée, pour « Revoir mes erreurs ». */
+export interface DefiMiss {
+  readonly prompt: string;
+  readonly given: string;
+  readonly answer: string;
+  readonly why: string;
+}
+
+/** Retour instantané après une réponse (points gagnés, combo, temps). */
+export interface Feedback {
+  readonly id: number;
+  readonly correct: boolean;
+  readonly gained: number;
+  readonly combo: number;
+}
+
+/** Durée du retour instantané avant la question suivante. */
+const FEEDBACK_MS = 350;
 
 export type Phase = 'intro' | 'playing' | 'finishing' | 'done';
 
@@ -32,13 +56,17 @@ export function useDefi(profile: Profile, kind: DefiId, subject: SubjectId, noti
   );
 
   const [phase, setPhase] = useState<Phase>('intro');
-  const [score, setScore] = useState<DefiScore>({ correct: 0, answered: 0, hearts: SURVIE_HEARTS });
+  const [score, setScore] = useState<DefiScore>(INITIAL_SCORE);
   const [question, setQuestion] = useState<Question | null>(null);
-  const [flash, setFlash] = useState<boolean | null>(null);
+  const [flash, setFlash] = useState<Feedback | null>(null);
+  const [misses, setMisses] = useState<readonly DefiMiss[]>([]);
   const [summary, setSummary] = useState<SessionSummary | null>(null);
   const [record, setRecord] = useState(false);
   const [startedAt, setStartedAt] = useState(0);
   const [now, setNow] = useState(0);
+  const grade = playedGrade(profile.grade);
+  const [previousBest, setPreviousBest] = useState(0);
+  const feedbackId = useRef(0);
   const session = useRef<string | null>(null);
   const shownAt = useRef(0);
   const pending = useRef<Promise<unknown>[]>([]);
@@ -61,7 +89,9 @@ export function useDefi(profile: Profile, kind: DefiId, subject: SubjectId, noti
     } catch {
       notify('Fin de partie non enregistrée (problème de connexion).');
     }
-    setRecord(saveBest(kind, profile.id, subject, final.correct));
+    const isRecord = saveBest(kind, profile.id, subject, grade, final.points);
+    setRecord(isRecord);
+    playSound(isRecord ? 'victory' : 'finish');
     setPhase('done');
     void qc.invalidateQueries({ queryKey: ['profiles'] });
   };
@@ -69,12 +99,13 @@ export function useDefi(profile: Profile, kind: DefiId, subject: SubjectId, noti
   // Contre-la-montre : l'horloge tourne pendant la partie, et la termine à 60 s.
   useEffect(() => {
     if (phase !== 'playing' || kind !== 'chrono') return;
-    const t = window.setInterval(() => setNow(performance.now()), 250);
+    const t = window.setInterval(() => setNow(performance.now()), 100);
     return () => window.clearInterval(t);
   }, [phase, kind]);
   const elapsed = phase === 'playing' ? now - startedAt : 0;
+  const leftMs = remainingMs(score, elapsed);
   useEffect(() => {
-    if (phase === 'playing' && kind === 'chrono' && elapsed >= CHRONO_MS) void finish(score);
+    if (phase === 'playing' && kind === 'chrono' && isOver(kind, score, elapsed)) void finish(score);
   });
 
   const start = async () => {
@@ -89,6 +120,7 @@ export function useDefi(profile: Profile, kind: DefiId, subject: SubjectId, noti
         skillId: null,
       });
       session.current = id;
+      setPreviousBest(bestScore(kind, profile.id, subject, grade));
       const t = performance.now();
       setStartedAt(t);
       setNow(t);
@@ -117,14 +149,31 @@ export function useDefi(profile: Profile, kind: DefiId, subject: SubjectId, noti
         attempt: 1,
       }).catch(() => undefined),
     );
-    const next = scoreAfter(kind, score, result.correct);
+    const duration = performance.now() - shownAt.current;
+    const gained = result.correct ? pointsFor(question.level, question.answer.kind, duration, score.streak + 1) : 0;
+    const next = scoreAfter(kind, score, result.correct, gained);
     setScore(next);
-    setFlash(result.correct);
+    setNow(performance.now());
+    feedbackId.current += 1;
+    setFlash({ id: feedbackId.current, correct: result.correct, gained, combo: comboOf(next.streak) });
+    if (result.correct) playSound(next.streak >= 3 ? 'combo' : 'correct');
+    else {
+      playSound('wrong');
+      setMisses((m) => [
+        ...m,
+        {
+          prompt: question.prompt,
+          given: formatResponse(question, response),
+          answer: formatAnswer(question),
+          why: result.why ?? question.steps[question.steps.length - 1] ?? '',
+        },
+      ]);
+    }
     window.setTimeout(() => {
       setFlash(null);
       if (isOver(kind, next, performance.now() - startedAt)) void finish(next);
       else draw(next.correct);
-    }, 500);
+    }, FEEDBACK_MS);
   };
 
   return {
@@ -135,7 +184,10 @@ export function useDefi(profile: Profile, kind: DefiId, subject: SubjectId, noti
     summary,
     record,
     available: pool.length > 0,
-    secondsLeft: Math.max(0, Math.ceil((CHRONO_MS - elapsed) / 1000)),
+    misses,
+    previousBest,
+    leftMs,
+    secondsLeft: Math.ceil(leftMs / 1000),
     start,
     submit,
     stop: () => void finish(score),

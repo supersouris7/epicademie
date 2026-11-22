@@ -66,11 +66,11 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   }
   await page.getByRole('button', { name: /^Survie/ }).click();
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
-  await expect(page.getByText(/3 cœurs. Chaque erreur coûte un cœur/)).toBeVisible();
+  await expect(page.getByText(/3 cœurs. Chaque erreur coûte un cœur et casse ta série/)).toBeVisible();
   await page.getByRole('button', { name: /C’est parti/ }).click();
   await expect(page.getByRole('img', { name: '3 cœurs sur 3' })).toBeVisible();
   await page.getByRole('button', { name: 'Arrêter' }).click();
-  await expect(page.getByRole('heading', { name: /bonne réponse/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /points/ })).toBeVisible();
   await page.goto('/hub');
   // Mode d'abord, matière ensuite.
   await page.getByRole('button', { name: /^Entraînement/ }).click();
