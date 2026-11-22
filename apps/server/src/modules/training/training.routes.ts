@@ -15,6 +15,10 @@ export function trainingRoutes(service: TrainingService, owns: Ownership, billin
       await owns.profile(actor(), params.id);
       return service.skills(params.id);
     });
+    route(app, api.chapterTrophies, async ({ params, actor }) => {
+      await owns.profile(actor(), params.id);
+      return service.chapterTrophies(params.id);
+    });
     route(app, api.startSession, async ({ body, actor }) => {
       await owns.profile(actor(), body.profileId);
       // Chapitre payant : abonnement familial requis (le 1er chapitre de chaque classe est gratuit).

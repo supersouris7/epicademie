@@ -1,7 +1,10 @@
-import { check, generate, getSkill, skillVersion } from '@questeo/content';
+import { check, generate, getChapter, getSkill, skillVersion } from '@questeo/content';
 import {
   applySession,
   coinsForXp,
+  EPREUVE_LENGTH,
+  epreuvePassed,
+  fillChest,
   levelFromXp,
   newSkillState,
   PERFECT_BONUS,
@@ -18,6 +21,8 @@ import {
 import type {
   AnswerResult,
   Chest,
+  ChapterTrophy,
+  EpreuveResult,
   AnswerSubmit,
   SessionCreate,
   SessionSkillSummary,
@@ -52,6 +57,97 @@ const finishBonus = (defi: DefiKind | null, perfect: boolean, correct: number) =
   defi ? defiBonusXp(correct) : perfect ? PERFECT_BONUS : 0;
 const UNKNOWN_SKILL = 'Notion inconnue';
 const BOSS_ELSEWHERE = 'Combat de boss : utiliser /battles';
+
+/** Notion la plus ratée (part d'erreurs la plus forte, puis le plus d'erreurs), null sans erreur. */
+const weakestSkill = (skills: readonly SessionSkillSummary[]): string | null => {
+  const missed = skills.filter((s) => s.correct < s.answered);
+  const rate = (s: SessionSkillSummary) => (s.answered - s.correct) / s.answered;
+  const worst = missed.sort((a, b) => rate(b) - rate(a) || b.answered - b.correct - (a.answered - a.correct))[0];
+  return worst?.skillId ?? null;
+};
+
+type FirstAttempt = Awaited<ReturnType<ReturnType<typeof trainingRepo>['firstAttemptsOf']>>[number];
+
+interface SeriesInput {
+  readonly rows: readonly FirstAttempt[];
+  readonly regular: readonly FirstAttempt[];
+  readonly length: number;
+  readonly day: string;
+}
+
+/** Répétition espacée : met à jour l'état de chaque notion jouée et en résume le bilan. */
+async function updateSkills(
+  repo: ReturnType<typeof trainingRepo>,
+  session: { readonly profileId: string; readonly confused: readonly string[] },
+  { rows, regular, length, day }: SeriesInput,
+): Promise<SessionSkillSummary[]> {
+  const bySkill = new Map<string, boolean[]>();
+  for (const r of rows) bySkill.set(r.skillId, [...(bySkill.get(r.skillId) ?? []), r.correct]);
+  const skills: SessionSkillSummary[] = [];
+  const states = await repo.skillStatesOf(session.profileId, [...bySkill.keys()]);
+  for (const [skillId, answers] of bySkill) {
+    const before = states.get(skillId) ?? newSkillState(skillId);
+    const correct = answers.filter(Boolean).length;
+    // Série complète sur cette seule notion : ses erreurs du 1er coup fixent la médaille.
+    const firsts = regular.filter((r) => r.skillId === skillId);
+    const series =
+      firsts.length >= length ? seriesScore(firsts.filter((r) => r.correct).length, firsts.length) : undefined;
+    const after = applySession(before, { answered: answers.length, correct }, day, {
+      answers,
+      forceFail: session.confused.includes(skillId),
+      series,
+    });
+    await repo.saveSkillState(session.profileId, after);
+    skills.push({
+      skillId,
+      answered: answers.length,
+      correct,
+      stageBefore: before.stage,
+      stageAfter: after.stage,
+      bestBefore: before.best,
+      bestAfter: after.best,
+      due: after.due,
+    });
+  }
+  return skills;
+}
+
+/** Épreuve : seules les notions du chapitre comptent (le score ne peut pas être gonflé ailleurs). */
+const assertInEpreuve = (chapterId: string, skillId: string) => {
+  if (!getChapter(chapterId)?.skills.some((s) => s.id === skillId)) {
+    throw badRequest('Cette notion ne fait pas partie du chapitre de l’épreuve');
+  }
+};
+
+/**
+ * Issue d'une Épreuve du chapitre, calculée sur les réponses enregistrées. Réussie, la première
+ * fois seulement (clé primaire profil + chapitre), elle rapporte le coffre « chapitre » (meilleure
+ * rareté) ; les fois suivantes, aucune nouvelle récompense « chapitre ».
+ */
+async function settleEpreuve(
+  tx: Tx,
+  random: Random,
+  p: {
+    readonly profileId: string;
+    readonly chapterId: string;
+    readonly sessionId: string;
+    readonly correct: number;
+    readonly answered: number;
+    readonly skills: readonly SessionSkillSummary[];
+  },
+): Promise<{ epreuve: EpreuveResult; chest: Chest | null }> {
+  const passed = epreuvePassed(p.correct, p.answered);
+  const rewarded = passed && (await trainingRepo(tx).insertChapterReward(p.profileId, p.chapterId, p.sessionId));
+  const chest = rewarded ? await grantChest(tx, p.profileId, fillChest('legendaire', random.float)) : null;
+  const epreuve = {
+    chapterId: p.chapterId,
+    passed,
+    rewarded,
+    alreadyValidated: passed && !rewarded,
+    weakestSkillId: weakestSkill(p.skills),
+  };
+  return { epreuve, chest };
+}
 
 export interface TrainingDeps {
   readonly db: Db;
@@ -117,11 +213,22 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
       return trainingRepo(db).skillProgress(profileId, timeZone);
     },
 
+    chapterTrophies(profileId: string): Promise<ChapterTrophy[]> {
+      return trainingRepo(db).chapterTrophies(profileId);
+    },
+
     async start(input: SessionCreate): Promise<{ id: string }> {
       if (input.mode === 'boss') throw badRequest('Le combat de boss se lance par /battles');
       if (input.skillId && !getSkill(input.skillId)) throw badRequest(UNKNOWN_SKILL);
       if (input.skillId && (await disabledSkills(db)).includes(input.skillId)) {
         throw conflict('Cette notion est en maintenance : choisis-en une autre.');
+      }
+      if (input.epreuve) {
+        // Épreuve : une série d'entraînement sur tout un chapitre existant de la matière annoncée.
+        const chapter = getChapter(input.chapterId);
+        if (input.mode !== 'entrainement' || input.skillId || chapter?.subject !== input.subject) {
+          throw badRequest('Épreuve du chapitre : mode, matière ou chapitre invalide');
+        }
       }
       if (!(await profilesRepo(db).exists(input.profileId))) throw notFound(PROFILE_NOT_FOUND);
       return { id: await trainingRepo(db).insertSession(input) };
@@ -136,6 +243,8 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
         if (!session) throw notFound(SESSION_NOT_FOUND);
         if (session.finishedAt) throw conflict('Partie terminée');
         if (session.mode === 'boss') throw conflict(BOSS_ELSEWHERE);
+        // Épreuve : seules les notions du chapitre comptent (le score ne peut pas être gonflé ailleurs).
+        if (session.epreuve) assertInEpreuve(session.chapterId, a.skillId);
         const question = generate(a.skillId, a.level, a.seed);
         const result = check(question, a.response);
         if (result.invalid) return { correct: false, invalid: true, xp: 0 };
@@ -208,7 +317,9 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
         const variants = rows.filter((r) => r.variant);
         const regularCorrect = regular.filter((r) => r.correct).length;
         // Série de 5 en calcul de tête (toutes les notions « mental »), sinon de 4.
-        const length = seriesLength(regular.every((r) => getSkill(r.skillId)?.mental === true));
+        const length = session.epreuve
+          ? EPREUVE_LENGTH
+          : seriesLength(regular.every((r) => getSkill(r.skillId)?.mental === true));
         const perfect = regular.length >= length && regularCorrect === regular.length;
         // Défis : bonus de fin selon le score (le sans-faute n'y a pas de sens, la série est sans fin).
         const defi = defiOf(session.mode);
@@ -217,48 +328,32 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
         const coinsGained = coinsForXp(xpGained);
 
         // Répétition espacée : une mise à jour par notion jouée.
-        const day = clock.today();
-        const bySkill = new Map<string, boolean[]>();
-        for (const r of rows) bySkill.set(r.skillId, [...(bySkill.get(r.skillId) ?? []), r.correct]);
-        const skills: SessionSkillSummary[] = [];
-        const states = await repo.skillStatesOf(session.profileId, [...bySkill.keys()]);
-        for (const [skillId, answers] of bySkill) {
-          const before = states.get(skillId) ?? newSkillState(skillId);
-          const correct = answers.filter(Boolean).length;
-          // Série complète sur cette seule notion : ses erreurs du 1er coup fixent la médaille.
-          const firsts = regular.filter((r) => r.skillId === skillId);
-          const series =
-            firsts.length >= length ? seriesScore(firsts.filter((r) => r.correct).length, firsts.length) : undefined;
-          const after = applySession(before, { answered: answers.length, correct }, day, {
-            answers,
-            forceFail: session.confused.includes(skillId),
-            series,
-          });
-          await repo.saveSkillState(session.profileId, after);
-          skills.push({
-            skillId,
-            answered: answers.length,
-            correct,
-            stageBefore: before.stage,
-            stageAfter: after.stage,
-            bestBefore: before.best,
-            bestAfter: after.best,
-            due: after.due,
-          });
-        }
+        const skills = await updateSkills(repo, session, { rows, regular, length, day: clock.today() });
 
         // Coffre d'équipement : seulement pour une série complète entièrement juste (une question
         // ratée puis trouvée avec l'indice compte comme trouvée).
         const profiles = profilesRepo(tx);
         const profile = await profiles.findForUpdate(session.profileId);
         if (!profile) throw notFound(PROFILE_NOT_FOUND);
-        const chest = await chestOf(tx, profile.id, {
-          sessionId,
-          defi,
-          regular,
-          correct: regularCorrect,
-          complete: regular.length >= length,
-        });
+        const settled = session.epreuve
+          ? await settleEpreuve(tx, random, {
+              profileId: profile.id,
+              chapterId: session.chapterId,
+              sessionId,
+              correct: regularCorrect,
+              answered: regular.length,
+              skills,
+            })
+          : null;
+        const chest =
+          settled?.chest ??
+          (await chestOf(tx, profile.id, {
+            sessionId,
+            defi,
+            regular,
+            correct: regularCorrect,
+            complete: regular.length >= length,
+          }));
         await profiles.credit(profile.id, {
           xp: xpGained,
           coins: coinsGained + (chest?.coins ?? 0),
@@ -296,6 +391,7 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
           levelAfter: levelFromXp(profile.xp + xpGained).level,
           skills,
           chest,
+          ...(settled && { epreuve: settled.epreuve }),
         };
       });
       onFinished?.({ coins: summary.coinsGained + (summary.chest?.coins ?? 0), rubies: summary.chest?.rubies ?? 0 });

@@ -25,4 +25,14 @@ describe('Mes progrès : trophées et badges', () => {
     const trophies = await screen.findByRole('region', { name: 'Trophées et badges' });
     expect(within(trophies).getByText(/Bats un boss de chapitre/)).toBeInTheDocument();
   });
+
+  it('trophées de chapitre : obtenu en couleur, les autres grisés', async () => {
+    renderApp('/progres/trophees', { trophies: ['m5-calcul'] });
+    const list = await screen.findByRole('list', { name: 'Trophées de chapitre' });
+    expect(await within(list).findByLabelText(/Calcul mental : obtenu/)).toHaveTextContent('Validé');
+    const other = within(list)
+      .getAllByRole('listitem')
+      .find((li) => (li.getAttribute('aria-label') ?? '').includes('pas encore gagné'));
+    expect(other).toHaveTextContent('Épreuve à réussir');
+  });
 });

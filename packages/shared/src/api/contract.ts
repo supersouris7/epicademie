@@ -16,6 +16,7 @@ import {
   SessionCreatedSchema,
   SessionCreateSchema,
   SessionSummarySchema,
+  ChapterTrophySchema,
   SkillProgressSchema,
 } from '../play.ts';
 import { HEROES, ProfileCreateSchema, ProfileSchema, ProfileUpdateSchema } from '../profile.ts';
@@ -607,6 +608,17 @@ export const api = {
     status: 200,
     params: IdParamsSchema,
     response: SessionSummarySchema,
+  }),
+
+  chapterTrophies: endpoint({
+    method: 'GET',
+    path: '/profiles/:id/chapter-trophies',
+    tag: 'entrainement',
+    summary: 'Trophées de chapitre (Épreuves du chapitre réussies) du profil',
+    access: 'family',
+    status: 200,
+    params: IdParamsSchema,
+    response: z.array(ChapterTrophySchema),
   }),
 
   // ——— Combats de boss ———

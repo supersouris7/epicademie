@@ -17,6 +17,7 @@ import { HeroBubble } from '../../shared/battle/HeroBubble.tsx';
 import { PauseButton } from '../../shared/question/PauseButton.tsx';
 import { Results } from './TrainingResults.tsx';
 import { TrainingQuestion } from './TrainingQuestion.tsx';
+import { EPREUVE_SKILL } from './epreuve.ts';
 import { useTraining, type TrainingSetup } from './useTraining.ts';
 
 /** Identifiant de « chapitre » des séries de révision (plusieurs chapitres d'une matière). */
@@ -26,7 +27,7 @@ export const TARGETED_CHAPTER = 'seance';
 
 /**
  * Partie d’Entraînement : 4 questions (5 en calcul de tête) + variantes, correction après chaque
- * réponse. `/partie/entrainement/<chapitre>/<notion | tout>`, ou
+ * réponse. `/partie/entrainement/<chapitre>/<notion | epreuve>`, ou
  * `/partie/entrainement/revisions/<matière>` pour les révisions du jour (moteur adaptatif), ou
  * `/partie/entrainement/seance/<notion+notion…>` pour une séance ciblée préparée par le parent.
  */
@@ -56,8 +57,8 @@ export function TrainingPlay({ profile }: { readonly profile: Profile }) {
         .filter((id) => !disabled?.has(id));
     }
     if (!chapter) return [];
-    // « Tout le chapitre » : sans les notions en maintenance.
-    return skillId === 'tout' ? chapter.skills.map((s) => s.id).filter((id) => !disabled?.has(id)) : [skillId];
+    // Épreuve du chapitre : toutes ses notions, sans celles en maintenance.
+    return skillId === EPREUVE_SKILL ? chapter.skills.map((s) => s.id).filter((id) => !disabled?.has(id)) : [skillId];
   }, [targeted, reviews, progress, chapter, skillId, disabled]);
   // Partie déjà quittée, revenue par « précédent » : on ne la relance pas (redirection en cours).
   if (left) return null;
@@ -70,7 +71,15 @@ export function TrainingPlay({ profile }: { readonly profile: Profile }) {
   if (!valid) return <Navigate to={reviews || targeted ? exitTo : '/jouer/entrainement'} replace />;
   const states = new Map(progress.map((p) => [p.skillId, p]));
   return (
-    <Game key={location.key} profile={profile} chapterId={chapterId} skills={skills} states={states} exitTo={exitTo} />
+    <Game
+      key={location.key}
+      profile={profile}
+      chapterId={chapterId}
+      skills={skills}
+      states={states}
+      exitTo={exitTo}
+      epreuve={!reviews && !targeted && skillId === EPREUVE_SKILL}
+    />
   );
 }
 
@@ -113,6 +122,7 @@ function Game(setup: TrainingSetup) {
         missed={s.missed}
         gender={profile.gender}
         chapterId={chapterId}
+        epreuve={setup.epreuve === true}
         exitTo={exitTo}
         onExit={exit}
         onReplay={() => void navigate(location.pathname, { replace: true, state: { replay: Date.now() } })}

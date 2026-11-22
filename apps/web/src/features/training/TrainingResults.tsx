@@ -26,6 +26,7 @@ export function Results({
   missed,
   gender,
   chapterId,
+  epreuve = false,
   exitTo,
   onExit,
   onReplay,
@@ -35,6 +36,8 @@ export function Results({
   missed: readonly Missed[];
   gender: Gender | null;
   chapterId: string;
+  /** Partie = Épreuve du chapitre. */
+  epreuve?: boolean;
   /** Page « Autre notion » (révisions : la matière) ; par défaut, la liste des notions du chapitre. */
   exitTo?: string;
   onExit: (to: string) => void;
@@ -43,28 +46,10 @@ export function Results({
   const chapter = getChapter(chapterId);
   const [screen, setScreen] = useState<'rewards' | 'recap'>('rewards');
   const { regular } = summary;
-  const mood: MoodId = summary.perfect
-    ? 'proud'
-    : summary.scoreOn20 >= 14
-      ? 'happy'
-      : summary.scoreOn20 >= 10
-        ? 'ok'
-        : 'sad';
-  const pose: QuestyPoseId = summary.perfect
-    ? 'hero'
-    : summary.scoreOn20 >= 14
-      ? 'bravo'
-      : summary.scoreOn20 >= 10
-        ? 'pouce'
-        : 'triste';
+  const result = epreuve ? summary.epreuve : undefined;
+  const failedEpreuve = result !== undefined && !result.passed;
   const levelUp = summary.levelAfter > summary.levelBefore;
-  const message = summary.perfect
-    ? `Sans-faute, ${accord(gender, 'champion', 'championne')} !`
-    : summary.scoreOn20 >= 14
-      ? 'Très bien !'
-      : summary.scoreOn20 >= 10
-        ? 'C’est en bonne voie !'
-        : 'On s’accroche, ça va venir !';
+  const { mood, pose, message } = tone(summary, result, gender);
   if (screen === 'recap') {
     return (
       <RecapScreen profileId={profileId} rows={summary.skills} table={false} missed={missed}>
@@ -72,6 +57,9 @@ export function Results({
           <p className="w-full text-center text-lg font-bold">
             Questions similaires après erreur : {summary.variants.correct}/{summary.variants.answered} réussies.
           </p>
+        )}
+        {failedEpreuve && (
+          <EpreuveAdvice weakest={summary.epreuve?.weakestSkillId ?? null} chapterId={chapterId} onGo={onExit} />
         )}
         <GameButton icon="icons-navigation-retry" onClick={onReplay}>
           Rejouer
@@ -91,7 +79,7 @@ export function Results({
   }
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-5 px-4 py-6">
-      {(summary.perfect || levelUp) && <Confetti />}
+      {(summary.perfect || levelUp || result?.passed === true) && <Confetti />}
       <div className="flex flex-col items-center gap-3 text-center">
         <motion.div
           initial={{ scale: 0 }}
@@ -138,7 +126,7 @@ export function Results({
         </motion.div>
       )}
 
-      <ChestReveal chest={summary.chest} />
+      <ChestOutcome summary={summary} chapterTitle={chapter?.title} />
 
       <section className="flex flex-col gap-3">
         <h2 className="font-display text-2xl tracking-wide">Tes notions</h2>
@@ -161,5 +149,90 @@ export function Results({
         </GameButton>
       </div>
     </div>
+  );
+}
+
+/** Humeur de Questy, pose et message du bilan selon le score (et l'issue d'une épreuve). */
+function tone(
+  summary: SessionSummary,
+  result: SessionSummary['epreuve'],
+  gender: Gender | null,
+): { mood: MoodId; pose: QuestyPoseId; message: string } {
+  const mood: MoodId = summary.perfect
+    ? 'proud'
+    : summary.scoreOn20 >= 14
+      ? 'happy'
+      : summary.scoreOn20 >= 10
+        ? 'ok'
+        : 'sad';
+  const pose: QuestyPoseId = summary.perfect
+    ? 'hero'
+    : summary.scoreOn20 >= 14
+      ? 'bravo'
+      : summary.scoreOn20 >= 10
+        ? 'pouce'
+        : 'triste';
+  const message = result?.passed
+    ? 'Chapitre validé !'
+    : result && !result.passed
+      ? 'Pas encore 80 %, tu y es presque !'
+      : summary.perfect
+        ? `Sans-faute, ${accord(gender, 'champion', 'championne')} !`
+        : summary.scoreOn20 >= 14
+          ? 'Très bien !'
+          : summary.scoreOn20 >= 10
+            ? 'C’est en bonne voie !'
+            : 'On s’accroche, ça va venir !';
+  return { mood, pose, message };
+}
+
+/** Coffre de fin de série ; pour une Épreuve du chapitre, sa validation (ou son échec) en plus. */
+function ChestOutcome({ summary, chapterTitle }: { summary: SessionSummary; chapterTitle: string | undefined }) {
+  const result = summary.epreuve;
+  if (result && !result.passed) {
+    return (
+      <p className="cartoon bg-surface-2 p-3 text-center font-bold">
+        Il faut 80 % de bonnes réponses pour valider le chapitre et gagner son coffre : pas de coffre cette fois.
+      </p>
+    );
+  }
+  return (
+    <>
+      {result && (
+        <p className="cartoon bevel bg-accent font-display text-toon p-3 text-center text-2xl" role="status">
+          {result.rewarded
+            ? `Épreuve réussie : « ${chapterTitle ?? 'le chapitre'} » est validé, son trophée est à toi !`
+            : 'Épreuve réussie ! Ce chapitre était déjà validé : pas de nouveau coffre « chapitre ».'}
+        </p>
+      )}
+      <ChestReveal chest={summary.chest} />
+    </>
+  );
+}
+
+/** Épreuve ratée : conseil d'entraînement sur la notion la plus ratée (ou la liste des notions). */
+function EpreuveAdvice({
+  weakest,
+  chapterId,
+  onGo,
+}: {
+  readonly weakest: string | null;
+  readonly chapterId: string;
+  readonly onGo: (to: string) => void;
+}) {
+  const skill = weakest ? getSkill(weakest) : undefined;
+  return (
+    <section className="cartoon bg-surface flex w-full flex-col items-center gap-2 p-3 text-center">
+      <p className="text-lg font-bold">
+        {skill
+          ? `Conseil de Questy : entraîne-toi sur « ${skill.title} », c’est la notion la plus ratée.`
+          : 'Conseil de Questy : reprends les notions une par une.'}
+      </p>
+      {skill && (
+        <GameButton icon="icons-navigation-next" onClick={() => onGo(`/partie/entrainement/${chapterId}/${skill.id}`)}>
+          S’entraîner sur cette notion
+        </GameButton>
+      )}
+    </section>
   );
 }

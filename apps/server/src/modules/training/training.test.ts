@@ -270,3 +270,101 @@ describe('concurrence', () => {
     expect(summary.regular).toEqual({ answered: 4, correct: 4 });
   });
 });
+
+describe('Épreuve du chapitre', () => {
+  const startEpreuve = async (profile = profileId, extra: Record<string, unknown> = {}) =>
+    app.inject({
+      method: 'POST',
+      url: '/api/v1/sessions',
+      payload: {
+        profileId: profile,
+        mode: 'entrainement',
+        subject: 'maths',
+        chapterId: 'm5-calcul',
+        skillId: null,
+        epreuve: true,
+        ...extra,
+      },
+    });
+  /** Joue une épreuve de 10 questions dont `right` sont justes ; renvoie le bilan. */
+  const play = async (profile: string, right: number) => {
+    const id = (await startEpreuve(profile)).json<{ id: string }>().id;
+    for (let seed = 1; seed <= 10; seed++) await answer(id, seed, seed <= right);
+    return (await app.inject({ method: 'POST', url: `/api/v1/sessions/${id}/finish` })).json<SessionSummary>();
+  };
+  const trophies = async (profile = profileId) =>
+    (await app.inject(`/api/v1/profiles/${profile}/chapter-trophies`)).json<{ chapterId: string }[]>();
+
+  it('80 % pile (8 sur 10) : chapitre validé, coffre légendaire, trophée', async () => {
+    const summary = await play(profileId, 8);
+    expect(summary.epreuve).toMatchObject({ chapterId: 'm5-calcul', passed: true, rewarded: true });
+    expect(summary.chest?.rarity).toBe('legendaire');
+    expect(await trophies()).toHaveLength(1);
+    const profile = (await app.inject(`/api/v1/profiles/${profileId}`)).json<Profile>();
+    expect(profile.coins).toBe(summary.coinsGained + (summary.chest?.coins ?? 0));
+  });
+
+  it('moins de 80 % (7 sur 10) : pas de récompense, notion à travailler indiquée', async () => {
+    const summary = await play(profileId, 7);
+    expect(summary.epreuve).toMatchObject({ passed: false, rewarded: false, weakestSkillId: 'm5-tables' });
+    expect(summary.chest).toBeNull();
+    expect(await trophies()).toEqual([]);
+  });
+
+  it('épreuve trop courte : jamais validée', async () => {
+    const id = (await startEpreuve()).json<{ id: string }>().id;
+    for (let seed = 1; seed <= 4; seed++) await answer(id, seed, true);
+    const summary = (await app.inject({ method: 'POST', url: `/api/v1/sessions/${id}/finish` })).json<SessionSummary>();
+    expect(summary.epreuve?.passed).toBe(false);
+    expect(await trophies()).toEqual([]);
+  });
+
+  it('double validation : un seul coffre « chapitre », un seul trophée', async () => {
+    const first = await play(profileId, 10);
+    const second = await play(profileId, 10);
+    expect(first.epreuve?.rewarded).toBe(true);
+    expect(second.epreuve).toMatchObject({ passed: true, rewarded: false, alreadyValidated: true });
+    expect(second.chest?.rarity).not.toBe('legendaire');
+    expect(await trophies()).toHaveLength(1);
+  });
+
+  it('isolation : la validation d’un profil ne touche pas celui d’un autre', async () => {
+    const other = (
+      await app.inject({
+        method: 'POST',
+        url: '/api/v1/profiles',
+        payload: {
+          name: 'Tom',
+          avatar: { style: 'portrait', seed: '02' },
+          gender: 'garcon',
+          birthDate: '2014-05-01',
+          grade: '5e',
+        },
+      })
+    ).json<Profile>().id;
+    await play(profileId, 9);
+    expect(await trophies(other)).toEqual([]);
+    expect((await play(other, 9)).epreuve?.rewarded).toBe(true);
+    expect(await trophies(other)).toHaveLength(1);
+  });
+
+  it('refuse une épreuve mal formée ou une notion hors chapitre', async () => {
+    expect((await startEpreuve(profileId, { skillId: 'm5-tables' })).statusCode).toBe(400);
+    expect((await startEpreuve(profileId, { chapterId: 'inconnu' })).statusCode).toBe(400);
+    expect((await startEpreuve(profileId, { mode: 'chrono' })).statusCode).toBe(400);
+    const id = (await startEpreuve()).json<{ id: string }>().id;
+    const res = await app.inject({
+      method: 'POST',
+      url: `/api/v1/sessions/${id}/answers`,
+      payload: {
+        skillId: 'm5-blocs-valeur',
+        level: 1,
+        seed: 1,
+        variant: false,
+        response: { kind: 'number', text: '1' },
+        durationMs: 1000,
+      },
+    });
+    expect(res.statusCode).toBe(400);
+  });
+});

@@ -8,9 +8,10 @@ import { MedalBadge } from '../../shared/ui/game/RewardBadge.tsx';
 import { medal } from '@questeo/engine';
 import { localToday } from '../../shared/lib/dates.ts';
 import { masteryOf } from '../../shared/lib/progress.ts';
+import { EPREUVE_SKILL } from './epreuve.ts';
 import { useEntrance } from '../../shared/lib/entrance.ts';
 
-/** Entraînement : « Tout le chapitre » ou une notion précise. */
+/** Entraînement : « Épreuve du chapitre » ou une notion précise. */
 export function Notions({ profile }: { readonly profile: Profile }) {
   const enter = useEntrance();
   const { subject = '', chapterId = '' } = useParams();
@@ -26,10 +27,13 @@ export function Notions({ profile }: { readonly profile: Profile }) {
     <PageShell title={chapter.title} back={`/jouer/entrainement/${subject}?classe=${chapter.grade}`}>
       <button
         type="button"
-        onClick={() => play('tout')}
-        className="cartoon cartoon-press bg-primary font-display min-h-20 text-2xl tracking-wide text-white"
+        onClick={() => play(EPREUVE_SKILL)}
+        className="cartoon cartoon-press bg-primary font-display flex min-h-20 flex-col items-center justify-center gap-1 p-2 text-2xl tracking-wide text-white"
       >
-        Tout le chapitre ({chapter.skills.filter((s) => !disabled?.has(s.id)).length} notions)
+        <span>Épreuve du chapitre</span>
+        <span className="font-body text-base font-bold tracking-normal">
+          Réussis 80 % pour valider le chapitre et gagner son coffre
+        </span>
       </button>
       <ul className="flex flex-col gap-3">
         {chapter.skills.map((s, i) => {
