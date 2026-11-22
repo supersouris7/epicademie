@@ -1,12 +1,9 @@
 import type { ReactNode } from 'react';
 import { GameIcon } from '../ui/game/GameIcon.tsx';
 
-export type DockTab = 'reponse' | 'calculatrice' | 'brouillon' | 'poser' | 'conversion';
+export type DockTab = 'reponse' | 'calculatrice' | 'brouillon' | 'conversion';
 
-/** Onglets sans image au catalogue : un signe écrit tient lieu d'icône. */
-const GLYPHS: Partial<Record<DockTab, string>> = { poser: '+−×÷' };
-
-const ICONS: Partial<Record<DockTab, string>> = {
+const ICONS: Record<DockTab, string> = {
   reponse: 'icons-navigation-check',
   calculatrice: 'icons-tools-calculator',
   brouillon: 'icons-tools-pencil',
@@ -27,7 +24,6 @@ const LABELS: Record<DockTab, string> = {
   reponse: 'Répondre',
   calculatrice: 'Calculatrice',
   brouillon: 'Brouillon',
-  poser: 'Poser une opération',
   conversion: 'Conversion',
 };
 
@@ -54,13 +50,7 @@ export function PlayDock({ tabs, active, glow, onSelect, children }: PlayDockPro
               onClick={() => onSelect(t)}
               className={`cartoon cartoon-press font-display flex h-12 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-1 text-xs leading-none [@media(max-height:500px)]:h-10 ${active === t ? 'bg-accent gloss text-toon' : 'bg-surface-2'} ${glow === t && active !== t ? 'glow' : ''}`}
             >
-              {ICONS[t] ? (
-                <GameIcon id={ICONS[t]} size="xs" />
-              ) : (
-                <span aria-hidden className="text-sm leading-none font-bold">
-                  {GLYPHS[t]}
-                </span>
-              )}
+              <GameIcon id={ICONS[t]} size="xs" />
               {/* Sur téléphone, juste l'icône (le nom reste lu par les lecteurs d'écran). */}
               <span className="hidden truncate sm:inline" aria-hidden>
                 {LABELS[t]}
