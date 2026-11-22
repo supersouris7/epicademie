@@ -5,7 +5,7 @@ import { chaptersOf } from '@questeo/content';
 import { SUBJECTS, getMode, playedGrade, type Profile } from '@questeo/shared';
 import { acquired } from '@questeo/engine';
 import { useSkills } from '../training/index.ts';
-import { EmperorScene, emperorDue, useBosses } from '../boss/index.ts';
+import { EmperorScene, emperorDue, useRelicProgress } from '../boss/index.ts';
 import { assetSrc } from '../../design/assets.ts';
 import { ProgressBar } from '../../shared/ui/game/ProgressBar.tsx';
 import { RELICS } from '../../design/relics.ts';
@@ -15,7 +15,6 @@ import { SpeechBubble } from '../../shared/ui/SpeechBubble.tsx';
 import { useToast } from '../../shared/ui/Toast.tsx';
 import { SoonBadge } from '../../shared/ui/game/SoonBadge.tsx';
 import { SubjectIcon } from '../../shared/ui/game/SubjectIcon.tsx';
-import { ProgressIcon } from '../../shared/ui/game/ProgressIcon.tsx';
 import { bestScore } from '../defis/index.ts';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
 import { CHEST_ICON } from '../../shared/ui/game/ChestReveal.tsx';
@@ -30,7 +29,7 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
   const [toast, showToast] = useToast();
   const navigate = useNavigate();
   const { data: skills } = useSkills(profile.id);
-  const { data: bosses } = useBosses(profile.id);
+  const relicOf = useRelicProgress(profile);
   // L'Empereur du Savoir se présente en plein écran une fois par jour, à l'entrée du Combat de boss.
   const [emperor, setEmperor] = useState(() => modeId === 'boss' && emperorDue(profile.id));
   if (!mode) return <Navigate to="/hub" replace />;
@@ -42,9 +41,8 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
   const progressOf = (subject: string) => {
     const chapters = chaptersOf(subject, grade);
     if (isBoss) {
-      const ids = new Set(chapters.filter((c) => c.boss).map((c) => c.id));
-      const won = (bosses?.records ?? []).filter((r) => ids.has(r.chapterId) && r.wins > 0).length;
-      return { value: won, max: ids.size };
+      const { won, max } = relicOf(subject);
+      return { value: won, max };
     }
     const ids = chapters.flatMap((c) => c.skills.map((k) => k.id));
     const states = new Map((skills ?? []).map((k) => [k.skillId, k]));
@@ -117,21 +115,11 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
               {(() => {
                 // Progression de la classe (0 pour une matière à venir) ; la relique se colore avec elle.
                 const p = s.available && chaptersOf(s.id).length > 0 ? progressOf(s.id) : { value: 0, max: 1 };
-                const ratio = p.max > 0 ? p.value / p.max : 0;
+                const relic = s.available ? relicOf(s.id) : { won: 0, max: 0 };
                 return (
                   <>
-                    {/* Combat de boss : la relique se remplit de couleur (du bas vers le haut) avec les boss
-                        vaincus ; ailleurs, l'icône de la matière est en couleur. */}
-                    {isBoss ? (
-                      <ProgressIcon
-                        id={RELICS[s.id].icon}
-                        ratio={ratio}
-                        size={80}
-                        label={`${p.value} boss vaincus sur ${p.max} en ${s.name}`}
-                      />
-                    ) : (
-                      <SubjectIcon subject={s.id} size={72} />
-                    )}
+                    {/* Relique de la matière : grise, se remplit avec les boss vaincus (tous les modes). */}
+                    <SubjectIcon subject={s.id} name={s.name} {...relic} size={isBoss ? 80 : 72} />
                     <span className="font-display text-toon text-xl tracking-wide sm:text-2xl">{s.name}</span>
                     {isDefi ? (
                       // Défis : le record à battre plutôt qu'une barre.

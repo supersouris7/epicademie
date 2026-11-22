@@ -14,7 +14,7 @@ import {
   type SubjectId,
 } from '@questeo/shared';
 import { TrophiesSection } from './Trophies.tsx';
-import { useBosses } from '../boss/index.ts';
+import { relicProgressOf, useBosses, useRelicProgress } from '../boss/index.ts';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
 import { SubjectIcon } from '../../shared/ui/game/SubjectIcon.tsx';
 import { ProgressBar } from '../../shared/ui/game/ProgressBar.tsx';
@@ -75,6 +75,7 @@ function subjectTotals(subject: SubjectId, grade: Grade | undefined, states: Rea
 export function Progress({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
   const { data } = useSkills(profile.id);
+  const relicOf = useRelicProgress(profile);
   const states = new Map((data ?? []).map((s) => [s.skillId, s]));
   const grade = playedGrade(profile.grade);
   const subjects = SUBJECTS.filter((s) => chaptersOf(s.id, grade).length > 0);
@@ -98,7 +99,7 @@ export function Progress({ profile }: { readonly profile: Profile }) {
               className="cartoon cartoon-press bg-surface flex w-full items-center gap-3 p-3 text-left"
               aria-label={`${s.name} : ${ids.length - counts.aucune} notions médaillées sur ${ids.length}`}
             >
-              <SubjectIcon subject={s.id} size={48} />
+              <SubjectIcon subject={s.id} name={s.name} {...relicOf(s.id)} size={48} />
               <span className="flex min-w-0 flex-1 flex-col gap-1">
                 <span className="font-display text-xl tracking-wide">{s.name}</span>
                 <ProgressBar
@@ -144,34 +145,22 @@ export function TrophiesPage({ profile }: { readonly profile: Profile }) {
         </h2>
         <div className="flex flex-wrap gap-3" aria-label="Reliques de boss">
           {SUBJECTS.filter((s) => s.available && chaptersOf(s.id).some((c) => c.boss)).map((s) => {
-            const ids = new Set(
-              chaptersOf(s.id)
-                .filter((c) => c.boss)
-                .map((c) => c.id),
-            );
-            const shards = (bosses?.records ?? []).filter((r) => ids.has(r.chapterId) && r.wins > 0).length;
+            // Toutes classes confondues : l'inventaire compte tous les éclats gagnés.
+            const { won: shards, max } = relicProgressOf(s.id, undefined, bosses?.records ?? []);
             return (
-              <div
-                key={s.id}
-                className="bg-surface-2 flex min-w-0 flex-1 basis-60 items-center gap-3 rounded-2xl p-2"
-                role="img"
-                aria-label={`${RELICS[s.id].name} : ${shards} éclats sur ${ids.size}`}
-              >
-                {/* Relique grise au départ, qui se colore avec les éclats gagnés. */}
-                <span style={{ filter: `grayscale(${ids.size ? 1 - shards / ids.size : 1})` }}>
-                  <GameIcon id={RELICS[s.id].icon} size={60} />
-                </span>
+              <div key={s.id} className="bg-surface-2 flex min-w-0 flex-1 basis-60 items-center gap-3 rounded-2xl p-2">
+                <SubjectIcon subject={s.id} name={s.name} won={shards} max={max} size={60} />
                 <span className="flex min-w-0 flex-1 flex-col gap-1">
                   <span className="font-display text-lg leading-tight tracking-wide">{RELICS[s.id].name}</span>
                   <ProgressBar
                     value={shards}
-                    max={ids.size}
+                    max={max}
                     color="var(--boss)"
                     label={`Éclats du ${RELICS[s.id].name}`}
                     size="sm"
                   />
                   <span className="text-muted text-xs font-bold">
-                    {shards} éclat{shards > 1 ? 's' : ''} sur {ids.size} · un par boss vaincu
+                    {shards} éclat{shards > 1 ? 's' : ''} sur {max} · un par boss vaincu
                   </span>
                 </span>
               </div>
@@ -203,6 +192,7 @@ export function SubjectProgress({ profile }: { readonly profile: Profile }) {
   const { subject: param = 'maths' } = useParams();
   const subject = SUBJECTS.find((s) => s.id === param)?.id ?? 'maths';
   const { data } = useSkills(profile.id);
+  const relicOf = useRelicProgress(profile);
   // Domaines ouverts (tous repliés à l'arrivée : la page reste courte sur téléphone).
   const [open, setOpen] = useState<ReadonlySet<DomainId>>(new Set());
   const toggle = (d: DomainId) =>
@@ -228,7 +218,7 @@ export function SubjectProgress({ profile }: { readonly profile: Profile }) {
   return (
     <PageShell title={`Mes progrès · ${name}`} back="/progres" nav={profile}>
       <section className="cartoon bg-surface flex flex-wrap items-center gap-4 p-4">
-        <SubjectIcon subject={subject} size={64} />
+        <SubjectIcon subject={subject} name={name} {...relicOf(subject, grade)} size={64} />
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <p className="font-display text-2xl tracking-wide">
             {allIds.length - total.aucune} / {allIds.length} notions médaillées

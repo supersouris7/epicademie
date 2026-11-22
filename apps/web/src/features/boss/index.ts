@@ -7,3 +7,4 @@ export * from './Shop.tsx';
 export * from './api.ts';
 export * from './EmperorScene.tsx';
 export { emperorDue } from './emperor.ts';
+export * from './relicProgress.ts';
