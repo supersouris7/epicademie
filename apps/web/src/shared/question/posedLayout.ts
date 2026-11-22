@@ -15,8 +15,9 @@ export interface ParsedNumber {
 }
 
 export function parseNumber(text: string): ParsedNumber | null {
-  const [head = '', tail] = text.replace('.', ',').split(',');
-  if (!/^\d*$/.test(head) || !/^\d*$/.test(tail ?? '') || (head === '' && !tail)) return null;
+  const parts = text.replace('.', ',').split(',');
+  const [head = '', tail] = parts;
+  if (parts.length > 2 || !/^\d*$/.test(head) || !/^\d*$/.test(tail ?? '') || (head === '' && !tail)) return null;
   return { int: head.replace(/^0+(?=\d)/, '') || '0', frac: tail ?? '', comma: tail !== undefined };
 }
 

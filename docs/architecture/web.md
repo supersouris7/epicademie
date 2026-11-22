@@ -26,7 +26,7 @@ React 19, Vite, Tailwind 4, motion (animations), React Query (données serveur),
   `ApiError` (statut, `code` stable, message affichable, `requestId`).
 - `shared/ui/` : composants d'interface (GameButton, Bubble, PageShell, ProgressBar, Questy…).
 - `shared/question/` : tout ce qui sert à afficher une question et saisir une réponse
-  (figures, pavé numérique, clavier, calculatrice, brouillon, tableau de conversion).
+  (figures, pavé numérique, clavier, calculatrice, brouillon, opération posée (colonnes et potence, ne donne jamais la réponse), tableau de conversion).
 - `shared/battle/` : mise en scène des combats (arène, barre de vie, répliques), partagée par le
   combat de boss, l'arène et l'entraînement.
 - `shared/lib/` : stockage sûr, sons, dates, sortie de partie (`gameExit`), dialogues,
