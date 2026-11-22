@@ -4,8 +4,8 @@ import { motion, useReducedMotion } from 'motion/react';
 import type { HeroId } from '@questeo/shared';
 import type { HeroExpression } from '../../design/assets.ts';
 import { BlinkText } from '../ui/game/BlinkText.tsx';
+import { PassZone } from '../ui/game/PassZone.tsx';
 import { GameButton } from '../ui/game/GameButton.tsx';
-import { GameIcon } from '../ui/game/GameIcon.tsx';
 import { QuestyPose } from '../ui/mascot/QuestyPose.tsx';
 import type { QuestyPoseId } from '../ui/mascot/poses.ts';
 import type { MoodId } from '../ui/mascot/moods.ts';
@@ -41,34 +41,6 @@ export function QuestySays({
       <Bubble tail="left" className="flex-1 px-4 py-3 text-lg sm:text-xl">
         {text}
       </Bubble>
-    </motion.div>
-  );
-}
-
-/** Les vies du boss annoncées à son arrivée : 3 cœurs qui tombent un à un. */
-export function BossLivesBadge({ lives }: { readonly lives: number }) {
-  return (
-    <motion.div
-      initial={{ scale: 0.4, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ delay: 1.2, type: 'spring', stiffness: 260, damping: 12 }}
-      className="cartoon bg-surface flex items-center gap-3 self-center px-4 py-2"
-    >
-      <span className="flex gap-1" aria-hidden>
-        {Array.from({ length: lives }, (_, i) => (
-          <motion.span
-            key={i}
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 1.4 + i * 0.2, type: 'spring' }}
-          >
-            <GameIcon id="icons-resources-life" size="sm" />
-          </motion.span>
-        ))}
-      </span>
-      <span className="font-display text-lg tracking-wide">
-        {lives} vies : {lives} bonnes réponses pour le battre
-      </span>
     </motion.div>
   );
 }
@@ -186,7 +158,7 @@ export function BossSays({
 /**
  * Gros plan du boss à l'entrée d'une matière : son illustration en grand arrive en zoom, l'écran tremble,
  * il provoque (son nom n'est pas écrit).
- * Un toucher n'importe où (ou le bouton) passe au choix du chapitre.
+ * Un toucher n'importe où passe au choix du chapitre.
  */
 export function BossCloseUp({
   bossId,
@@ -213,7 +185,7 @@ export function BossCloseUp({
       className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 overflow-hidden bg-[radial-gradient(circle_at_50%_38%,#7a1238_0%,#2a0b2e_45%,#0d0618_80%)] px-4 py-6 text-center"
     >
       {/* Toucher n'importe où passe le gros plan. */}
-      <button type="button" aria-label="Passer" onClick={onDone} className="absolute inset-0 z-10 cursor-pointer" />
+      <PassZone onPass={onDone} />
       {/* Le nom du méchant en titre, comme pour l'Empereur du Savoir. */}
       <motion.h1
         initial={{ y: -20, opacity: 0 }}
@@ -287,7 +259,7 @@ export function RageScene({
       aria-label={`${name} passe en rage`}
       className={`fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 overflow-hidden px-4 py-6 text-center transition-colors duration-1000 ${bg}`}
     >
-      <button type="button" aria-label="Passer" onClick={onNext} className="absolute inset-0 cursor-pointer" />
+      <PassZone step={stage} onPass={onNext} className="absolute inset-0" />
       <motion.div
         className="pointer-events-none relative"
         animate={
@@ -355,6 +327,7 @@ export function RageScene({
           {lines[stage]}
         </Bubble>
       </motion.p>
+      <BlinkText key={`touche-${stage}`}>Touche l’écran pour continuer</BlinkText>
     </div>
   );
 }

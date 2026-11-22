@@ -1,17 +1,17 @@
 import type { HeroId } from '@questeo/shared';
-import { BOSS_LIVES } from '@questeo/shared';
 import { BattleArena, type ArenaEnemy, type EnemyState } from '../../../shared/battle/BattleArena.tsx';
-import { BossLivesBadge, BossSays, HeroSays, QuestySays, Shake } from '../../../shared/battle/BattleScenes.tsx';
+import { BossSays, HeroSays, QuestySays, Shake } from '../../../shared/battle/BattleScenes.tsx';
 import type { ArrivalLines, IntroStage } from './state.ts';
 import type { Exchange } from '../../../shared/lib/dialogue.ts';
-import { GameButton } from '../../../shared/ui/game/GameButton.tsx';
+import { BlinkText } from '../../../shared/ui/game/BlinkText.tsx';
+import { PassZone } from '../../../shared/ui/game/PassZone.tsx';
 import type { AnimationState } from '../../../design/assets.ts';
 import { bossOf } from '../../../design/bosses.ts';
 
 /**
  * Mise en scène en grand, personnages entiers : entrée en scène (face-à-face boss ↔ héros,
  * vannes aller-retour) ou arrivée du boss après le dernier mob (il se présente, le héros réagit,
- * Questy encourage). Un bouton fait avancer.
+ * Questy encourage). Sans bouton : un toucher sur l'écran (ou Entrée/Espace) fait avancer.
  */
 export function BattleIntro({
   hero,
@@ -61,7 +61,6 @@ export function BattleIntro({
           entranceSeconds={arrival ? 1.8 : 0.9}
         />
       </Shake>
-      {arrival && <BossLivesBadge lives={BOSS_LIVES} />}
       {/* Face-à-face : 4 répliques qui arrivent l'une après l'autre (vannes aller-retour). */}
       {!arrival &&
         exchange.map((e, i) =>
@@ -93,9 +92,15 @@ export function BattleIntro({
       )}
       {arrival && arrivalLines && <QuestySays text={arrivalLines.questy} pose="bravo" mood="proud" delay={4.8} />}
       {(arrival || introStage === 'boss') && (
-        <GameButton className="self-center" icon="icons-navigation-next" onClick={onContinue}>
-          {arrival ? 'Au combat !' : 'C’est parti !'}
-        </GameButton>
+        <>
+          <PassZone onPass={onContinue} />
+          <BlinkText
+            className="font-display text-toon pointer-events-none self-center text-xl"
+            delay={arrival ? 5.6 : 1 + exchange.length * 1.9}
+          >
+            Touche l’écran pour continuer
+          </BlinkText>
+        </>
       )}
     </div>
   );

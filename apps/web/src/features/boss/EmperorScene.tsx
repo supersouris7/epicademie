@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { assetSrc } from '../../design/assets.ts';
 import { markEmperorSeen } from './emperor.ts';
 import { BlinkText } from '../../shared/ui/game/BlinkText.tsx';
+import { PassZone } from '../../shared/ui/game/PassZone.tsx';
 import { Bubble } from '../../shared/ui/Bubble.tsx';
 
 const LINES = {
@@ -35,7 +36,7 @@ export function EmperorScene({ profileId, onDone }: { readonly profileId: string
       aria-label="L’Empereur du Savoir"
       className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 overflow-hidden bg-[radial-gradient(circle_at_50%_40%,#5a1f9a_0%,#24104a_50%,#0b0518_90%)] px-4 py-6 text-center"
     >
-      <button type="button" aria-label="Passer" onClick={next} className="absolute inset-0 z-10 cursor-pointer" />
+      <PassZone step={stage} onPass={next} />
       <motion.h1
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}

@@ -21,7 +21,6 @@ export const NEXT_MS = 1500;
 export const MISS_SCENE_MS = 1400;
 /** Entrée en scène avec le mot de Questy, puis arrivée du boss (le temps de lire). */
 export const INTRO_MS = 11000;
-export const ARRIVAL_MS = 6500;
 /** Rage : début, montée progressive (flashs blancs), rage ; 3 s chacune. */
 export const RAGE_STEP_MS = 3000;
 /** Pose finale (KO du boss ou défaite du héros) avant le bilan. */

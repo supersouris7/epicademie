@@ -9,7 +9,7 @@ import { ApiError } from '../../../shared/api/client.ts';
 import { bossSays, heroSays, mobSays, questySays } from '../../../shared/lib/dialogue.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../../shared/lib/sound.ts';
 import { useTimers } from '../../../shared/lib/timers.ts';
-import { ARRIVAL_MS, FINAL_POSE_MS, HIT_MS, INTRO_MS, MISS_SCENE_MS, NEXT_MS, RAGE_STEP_MS } from './constants.ts';
+import { FINAL_POSE_MS, HIT_MS, INTRO_MS, MISS_SCENE_MS, NEXT_MS, RAGE_STEP_MS } from './constants.ts';
 import {
   bossArrives,
   bossEnrages,
@@ -127,7 +127,7 @@ export function useBattle(profile: Profile, chapter: Chapter, notify: (message: 
     }
     if (bossArrives(prev, next)) {
       playSound('appear');
-      later(ARRIVAL_MS, () => dispatch({ type: 'arrivalEnded' }));
+      // Pas de minuteur : l'arrivée attend un toucher (comme l'Empereur), le temps de lire.
     }
     dispatch({ type: 'advanced', next });
     shownAt.current = performance.now();
