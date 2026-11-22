@@ -1,6 +1,6 @@
 # 0030 — Arène d'évaluation : compétence = chapitre, moteur déterministe, bilans figés
 
-- Statut : Proposée
+- Statut : Acceptée (décisions client du 22/11/2026 : rien de montré pendant l'épreuve, récompenses Origines/Maîtres 1×/an et Progression 14 j, profils Adulte au niveau 3e, compétences essentielles validées)
 - Date : 2026-11-22
 - Ticket : #98 (épopée #96)
 

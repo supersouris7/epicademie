@@ -40,7 +40,7 @@
 Principes non négociables (cahier des charges §9) : non étudiée ≠ échec ; une seule bonne réponse
 ne prouve rien ; maîtrise et couverture toujours affichées ensemble ; aucune aide ni correction
 pendant l'épreuve (explications à la fin) ; une mauvaise performance ne bloque rien et ne retire
-rien ; les profils Adulte n'ont pas accès à l'Arène d'évaluation (pas de programme scolaire).
+rien ; les profils Adulte ont accès à l'Arène d'évaluation au niveau 3e (décision client du 22/11).
 
 ## 2. Référentiel
 
@@ -463,7 +463,7 @@ route, prérequis retrouvés) avant les chiffres. Badges : aucun nouveau badge d
   (assets existants : héros, arènes, animations d'attaque) ; une barre de progression par domaine
   (bannières), pas de cœurs ni de chrono visible ; chaque réponse fait avancer le héros.
 - `/evaluation/:id` : résultats puis « Revoir mes réponses » ; consultable depuis l'historique.
-- Profil sans classe : « Indique ta classe dans ton profil » ; profil Adulte : mode masqué.
+- Profil sans classe : « Indique ta classe dans ton profil » ; profil Adulte : épreuves du niveau 3e (Origines sur la 4e, Progression et Maîtres sur la 3e).
 - Le mode n'apparaît pas dans les records de Défis ni dans « Se comparer ».
 
 ## 10. Modèle de données et migrations
