@@ -89,7 +89,7 @@ function Game(setup: TrainingSetup) {
 
   const quit = () => setConfirmQuit(true);
   // Sorties : la partie est remplacée dans l'historique (« précédent » ne la relance pas).
-  const { exit } = useGameExit(exitTo);
+  const { exit, restart } = useGameExit(exitTo);
   // Quitter la partie ramène au menu principal.
   const leave = () => exit('/hub');
   // « Précédent » pendant la série : même confirmation que la Pause.
@@ -162,6 +162,7 @@ function Game(setup: TrainingSetup) {
           confirm="Quitter la série"
           mood="ok"
           cancel="Reprendre"
+          extra={{ label: 'Recommencer', onClick: restart }}
           onConfirm={leave}
           onCancel={() => {
             setConfirmQuit(false);

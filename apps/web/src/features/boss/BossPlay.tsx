@@ -48,7 +48,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   const exchange = useFaceOff(profile, chapter);
 
   // Sorties : le combat est remplacé dans l'historique (« précédent » ne le relance pas).
-  const { exit } = useGameExit(`/jouer/boss/${chapter.subject}?classe=${chapter.grade}`, FROM_BATTLE);
+  const { exit, restart } = useGameExit(`/jouer/boss/${chapter.subject}?classe=${chapter.grade}`, FROM_BATTLE);
   // Quitter la partie ramène au menu principal.
   const leave = () => exit('/hub');
   // « Précédent » pendant le combat : même confirmation que la Pause.
@@ -127,6 +127,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
           confirm="Quitter le combat"
           mood="ok"
           cancel="Reprendre"
+          extra={{ label: 'Recommencer', onClick: restart }}
           onConfirm={leave}
           onCancel={() => {
             setConfirmQuit(false);

@@ -82,9 +82,11 @@ export function useGameExit(fallback: string, fallbackState?: unknown) {
   }, [left, navigate, fallback, fallbackState]);
 
   const exit = useCallback(
-    (to: string, state?: unknown) => {
-      markLeft(location.key);
-      markLeftPath(location.pathname);
+    (to: string, state?: unknown, keepGame = false) => {
+      if (!keepGame) {
+        markLeft(location.key);
+        markLeftPath(location.pathname);
+      }
       // Entrée de garde au-dessus de la partie : on revient d'abord sur l'entrée de la partie, puis on
       // la remplace par la destination. La partie disparaît de l'historique : « précédent » ne peut
       // plus y revenir.
@@ -105,7 +107,9 @@ export function useGameExit(fallback: string, fallbackState?: unknown) {
     },
     [location.key, location.pathname, navigate],
   );
-  return { left, exit };
+  // Recommencer : même adresse, nouvelle partie (nouvelle clé d'historique), sans marquer la partie quittée.
+  const restart = useCallback(() => exit(location.pathname, { replay: Date.now() }, true), [exit, location.pathname]);
+  return { left, exit, restart };
 }
 
 /** Pendant `active`, « précédent » appelle `onBack` au lieu de quitter ; `rearm` remet la garde. */
