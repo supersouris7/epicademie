@@ -28,6 +28,7 @@ import type {
   HeroId,
   ItemId,
   ModeId,
+  RecommendationStatus,
   SubjectId,
 } from '@questeo/shared';
 
@@ -474,6 +475,35 @@ export const friendships = pgTable(
 );
 
 /**
+ * Recommandations de travail d'un parent à son enfant (une notion + un petit mot, #75).
+ * Rattachées au profil de l'enfant ; supprimées avec lui. Le mot n'est jamais journalisé.
+ */
+export const recommendations = pgTable(
+  'recommendations',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    profileId: uuid('profile_id')
+      .notNull()
+      .references(() => profiles.id, { onDelete: 'cascade' }),
+    skillId: text('skill_id').notNull(),
+    /** Petit mot du parent (140 caractères au plus), facultatif. */
+    note: text('note'),
+    status: text('status').$type<RecommendationStatus>().notNull().default('en-attente'),
+    createdAt: createdAt(),
+    /** Fin de l'entraînement (« faite ») ou annulation. */
+    closedAt: timestamp('closed_at', { withTimezone: true }),
+    /** Résultat de l'entraînement : réponses justes du premier coup sur réponses (si « faite »). */
+    correct: integer('correct'),
+    answered: integer('answered'),
+  },
+  (t) => [
+    index('recommendations_profile_status_idx').on(t.profileId, t.status),
+    check('recommendations_note_len', sql`${t.note} is null or char_length(${t.note}) <= 140`),
+    check('recommendations_status', sql`${t.status} in ('en-attente', 'faite', 'annulee')`),
+  ],
+);
+
+/**
  * Requêtes idempotentes (achats) : la même clé, rejouée par un double clic ou un réseau qui
  * renvoie la requête, rend la réponse déjà donnée au lieu de recommencer l'opération.
  */
@@ -495,6 +525,7 @@ export const idempotentRequests = pgTable(
 export const ALL_TABLES = [
   'subscriptions',
   'owned_heroes',
+  'recommendations',
   'idempotent_requests',
   'question_reports',
   'client_errors',

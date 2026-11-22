@@ -1,5 +1,6 @@
 import type { Counter } from '@prometheus-io/client';
 import type { ErrorContext, ErrorReporter } from './error-reporter.ts';
+import { scrubError } from './scrub.ts';
 
 /**
  * Journal des erreurs récentes pour l'administration : se place devant le suivi d'erreurs
@@ -27,7 +28,7 @@ export function withErrorJournal(
   const groups = new Map<string, JournalEntry>();
   return {
     capture(error: unknown, context: ErrorContext = {}) {
-      inner.capture(error, context);
+      inner.capture(scrubError(error), context);
       const source = context.source ?? 'server';
       counter?.inc({ source });
       const message = cleanMessage(error instanceof Error ? error.message : String(error));

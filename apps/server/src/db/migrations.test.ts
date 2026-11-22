@@ -126,6 +126,35 @@ describe('migrations', () => {
     }
   });
 
+  it('recommandations : depuis une base en 0018, profils intacts ; contraintes ; retour arrière par DROP TABLE', async () => {
+    const dir = migrationsUpTo(19); // jusqu'à 0018
+    try {
+      database = await openDatabase('pglite://memory');
+      await runMigrations(database, dir);
+      const { db } = database;
+      await db.execute(sql`insert into profiles (id, name, avatar, hero) values
+        ('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa', 'Léa', '{"style":"pixelbot","seed":"l"}', 'alex')`);
+      await runMigrations(database, MIGRATIONS_DIR);
+      expect((await schemaStatus(database, MIGRATIONS_DIR)).upToDate).toBe(true);
+      await db.execute(sql`insert into recommendations (profile_id, skill_id, note)
+        values ('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa', 'm5-tables', 'Courage !')`);
+      // Mot trop long ou statut inconnu : refusés par la base.
+      await expect(
+        db.execute(sql`insert into recommendations (profile_id, skill_id, note)
+          values ('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa', 'm5-tables', ${'x'.repeat(141)})`),
+      ).rejects.toThrow();
+      await expect(
+        db.execute(sql`insert into recommendations (profile_id, skill_id, status)
+          values ('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa', 'm5-tables', 'inconnu')`),
+      ).rejects.toThrow();
+      // Retour arrière documenté dans la migration : le reste des données est intact.
+      await db.execute(sql`drop table "recommendations"`);
+      expect(await db.select().from(profiles)).toHaveLength(1);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it('refuse une URL de base inconnue', async () => {
     await expect(openDatabase('mysql://x')).rejects.toThrow(/DATABASE_URL/);
   });

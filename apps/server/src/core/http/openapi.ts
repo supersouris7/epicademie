@@ -17,6 +17,7 @@ const TAG_DESCRIPTIONS: Record<(typeof API_TAGS)[number], string> = {
   abonnement: 'Abonnement familial et paiements',
   admin: 'Administration (rôle administrateur)',
   profils: 'Profils des joueurs',
+  recommandations: 'Recommandations de travail d’un parent à son enfant',
   entrainement: 'Parties d’entraînement et progression par notion',
   combats: 'Combats de boss',
   inventaire: 'Équipement et boutique',
