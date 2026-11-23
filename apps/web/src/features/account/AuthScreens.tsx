@@ -106,6 +106,24 @@ function GoogleButton() {
   );
 }
 
+/**
+ * Recette : lien vers la boîte mail de test, affiché seulement si le serveur simule l'envoi des e-mails
+ * (jamais en production).
+ */
+function TestMailboxLink({ email }: { readonly email?: string }) {
+  const { data } = useAuthOptions();
+  if (!data?.simulatedMail) return null;
+  const to = `/recette/boite-mail${email ? `?email=${encodeURIComponent(email)}` : ''}`;
+  return (
+    <p className="text-sm">
+      Version de test : aucun e-mail n’est envoyé.{' '}
+      <Link to={to} className="font-bold underline">
+        Ouvrir la boîte mail de test
+      </Link>
+    </p>
+  );
+}
+
 /** Chemin interne d'un lien absolu (simulation : le lien de validation est affiché pour la recette). */
 const internalPath = (link: string) => {
   try {
@@ -223,7 +241,14 @@ export function LoginScreen() {
           setError(message(err, 'Connexion impossible pour le moment.'));
         }
       }}
-      extra={unverified ? <ResendVerification email={email} /> : undefined}
+      extra={
+        unverified ? (
+          <>
+            <ResendVerification email={email} />
+            <TestMailboxLink email={email} />
+          </>
+        ) : undefined
+      }
       footer={
         <>
           <Link to="/inscription" className="underline">
@@ -266,6 +291,7 @@ export function SignupScreen() {
       }
       submit="Créer le compte"
       error={error}
+      extra={<TestMailboxLink />}
       onSubmit={async () => {
         if (password.length < PASSWORD_MIN) {
           setError(`Le mot de passe doit faire au moins ${PASSWORD_MIN} caractères.`);
@@ -321,6 +347,7 @@ function CheckMailScreen({ email, link }: { readonly email: string; readonly lin
           Rien dans la boîte ? Regarde les courriers indésirables, ou demande un nouveau lien.
         </p>
         <ResendVerification email={email} />
+        <TestMailboxLink email={email} />
         {link && (
           <Link to={internalPath(link)} className="font-bold underline">
             Ouvrir le lien (mode simulation, sans envoi réel)
@@ -361,6 +388,7 @@ export function VerifyEmailScreen() {
           <p>Un lien ne marche qu’une fois et pendant 24 heures. Indique ton adresse pour en recevoir un nouveau.</p>
           <Field label="Ton e-mail" type="email" autoComplete="email" value={email} onChange={setEmail} />
           <ResendVerification email={email} />
+          <TestMailboxLink email={email} />
           <Link to="/connexion" className="text-center font-bold underline">
             J’ai déjà validé : me connecter
           </Link>
@@ -374,13 +402,15 @@ export function VerifyEmailScreen() {
       intro="Dernière étape : saisis le mot de passe choisi à l’inscription pour activer le compte."
       submit="Valider mon adresse"
       error={error}
+      extra={<TestMailboxLink />}
       onSubmit={async () => {
         try {
           setMe(await verifyEmail(token, password));
           void navigate('/profils/nouveau', { replace: true });
         } catch (err) {
           // Mot de passe refusé : le lien reste valable, on réessaie ici. Autre refus : lien à renouveler.
-          if (err instanceof ApiError && err.status === 401) setError(err.message);
+          if (err instanceof ApiError && err.status === 401)
+            setError('Ce n’est pas le mot de passe choisi à l’inscription.');
           else setDead(message(err, 'Validation impossible pour le moment.'));
         }
       }}
@@ -401,6 +431,7 @@ export function VerifyEmailScreen() {
         autoComplete="current-password"
         value={password}
         onChange={setPassword}
+        hint="Saisissez le mot de passe choisi à l’inscription"
       />
     </AuthForm>
   );
@@ -413,10 +444,13 @@ export function ForgotPasswordScreen() {
   if (sent) {
     return (
       <PageShell title="Mot de passe oublié" back="/connexion">
-        <p className="text-lg" role="status">
-          Si un compte existe pour {email}, un e-mail vient de partir avec un lien pour choisir un nouveau mot de passe.
-          Il est valable une heure.
-        </p>
+        <div className="flex flex-col gap-4">
+          <p className="text-lg" role="status">
+            Si un compte existe pour {email}, un e-mail vient de partir avec un lien pour choisir un nouveau mot de
+            passe. Il est valable une heure.
+          </p>
+          <TestMailboxLink email={email} />
+        </div>
       </PageShell>
     );
   }
@@ -426,6 +460,7 @@ export function ForgotPasswordScreen() {
       intro="Indique l’adresse du compte : tu recevras un lien pour choisir un nouveau mot de passe."
       submit="Recevoir le lien"
       error={error}
+      extra={<TestMailboxLink />}
       onSubmit={async () => {
         try {
           await forgotPassword(email);

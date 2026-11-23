@@ -17,7 +17,7 @@ import { logErrorReporter, type ErrorReporter } from './core/observability/error
 import { withErrorJournal } from './core/observability/error-journal.ts';
 import { createMetrics, instrumentHttp, type Metrics } from './core/observability/metrics.ts';
 import { registerAuth } from './core/http/auth.ts';
-import { brevoMailer, detachedMailer, simulationMailer, type Mailer } from './core/mail/mailer.ts';
+import { brevoMailer, createTestMailbox, detachedMailer, simulationMailer, type Mailer } from './core/mail/mailer.ts';
 import { createGoogle, type Google } from './core/auth/google.ts';
 import {
   accountsRoutes,
@@ -160,21 +160,22 @@ export async function buildApp(deps: AppDeps): Promise<App> {
   const appUrl = () => config.publicUrl ?? `http://localhost:${config.port}`;
   const profiles = createProfilesService(db);
   // Envois détachés : le temps de réponse ne dépend pas du fournisseur d'e-mail.
-  const mailer = detachedMailer(
+  // Simulation (sans fournisseur) hors production : liens renvoyés dans la réponse et boîte mail de test.
+  const simulatedMail = !config.mail.production && !config.mail.brevoApiKey;
+  const testMailbox = simulatedMail ? createTestMailbox(() => clock.now()) : null;
+  const baseMailer =
     deps.mailer ??
-      (config.mail.brevoApiKey
-        ? brevoMailer({ apiKey: config.mail.brevoApiKey, from: config.mail.from, fetcher: deps.fetcher })
-        : simulationMailer(http.log)),
-    http.log,
-  );
+    (config.mail.brevoApiKey
+      ? brevoMailer({ apiKey: config.mail.brevoApiKey, from: config.mail.from, fetcher: deps.fetcher })
+      : simulationMailer(http.log));
+  const mailer = detachedMailer(testMailbox ? testMailbox.wrap(baseMailer) : baseMailer, http.log);
   const accounts = createAccountsService({
     db,
     clock,
     mailer,
     appUrl,
     sessionDays: config.sessionDays,
-    // Simulation (sans fournisseur) hors production : le lien est renvoyé dans la réponse, pour la recette.
-    exposeLinks: !config.mail.production && !config.mail.brevoApiKey,
+    exposeLinks: simulatedMail,
     createStudentProfile: (input, familyId) => profiles.createStudent(input, familyId),
     // `billing` est créé plus bas : résolu à l'appel, jamais à la construction.
     cancelPayments: (familyId) => billing.cancelPending(familyId),
@@ -249,6 +250,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
             rateLimitMax: config.authRateLimitMax,
           },
           google,
+          testMailbox,
         ),
       );
       await v1.register(profilesRoutes(profiles, owns));

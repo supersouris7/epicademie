@@ -16,7 +16,7 @@ export const RESEND_COOLDOWN_SECONDS = 60;
 const MINUTE = 60_000;
 
 export const WRONG_PASSWORD_AT_VERIFICATION =
-  'Mot de passe incorrect : saisis celui choisi à l’inscription. Si tu ne le connais pas, utilise « Mot de passe oublié ».';
+  'Ce n’est pas le mot de passe choisi à l’inscription. Si tu ne le connais pas, utilise « Mot de passe oublié ».';
 
 export interface VerificationDeps {
   readonly db: Db;
