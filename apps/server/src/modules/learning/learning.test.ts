@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm';
 import { fmt, generate } from '@questeo/content';
 import type { LearningReport, Profile, SessionSummary } from '@questeo/shared';
 import { attempts } from '../../db/schema.ts';
+import { dayIn } from '../../core/clock.ts';
 import { createTestApp, profileInput } from '../../testing/harness.ts';
 
 let t: Awaited<ReturnType<typeof createTestApp>>;
@@ -13,6 +14,7 @@ beforeAll(async () => {
 });
 afterAll(() => t.close());
 beforeEach(async () => {
+  t.clock.set('2026-11-20');
   await t.reset();
   profileId = (
     await t.http.inject({ method: 'POST', url: '/api/v1/profiles', payload: profileInput() })
@@ -103,6 +105,9 @@ describe('enregistrement des réponses', () => {
 
 describe('rapport de suivi', () => {
   it('distingue réussite autonome et réussite avec aide, par notion, chapitre et matière', async () => {
+    // Les réponses sont horodatées par la base (heure réelle) : l'horloge du service doit être au même jour,
+    // sinon le découpage par semaine dépend du jour d'exécution (ex. lundi).
+    t.clock.set(dayIn('Europe/Paris', new Date()));
     const id = await start();
     await answer(id, 1, false);
     await answer(id, 1, true, 2);
