@@ -15,7 +15,7 @@ describe('défis', () => {
 
   it('Contre-la-montre : règles, chronomètre, arrêt et résultats', async () => {
     const { user } = renderApp('/partie/defi/chrono/maths');
-    expect(await screen.findByText(/60 secondes, et \+2 s à chaque bonne réponse/)).toBeInTheDocument();
+    expect(await screen.findByText(/60 secondes, et chaque bonne réponse te rend du temps/)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /C’est parti/ }));
     expect(await screen.findByRole('timer')).toHaveTextContent(/⏱ (60|59) s/);
     expect(screen.getByRole('progressbar', { name: 'Temps restant' })).toBeInTheDocument();

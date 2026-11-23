@@ -12,6 +12,8 @@ import {
   isOver,
   levelFor,
   pointsFor,
+  referenceSeconds,
+  timeGainMs,
   remainingMs,
   saveBest,
   scoreAfter,
@@ -33,6 +35,8 @@ export interface Feedback {
   readonly id: number;
   readonly correct: boolean;
   readonly gained: number;
+  /** Temps gagné (ms) sur une bonne réponse. */
+  readonly timeGainMs: number;
   readonly combo: number;
 }
 
@@ -150,12 +154,21 @@ export function useDefi(profile: Profile, kind: DefiId, subject: SubjectId, noti
       }).catch(() => undefined),
     );
     const duration = performance.now() - shownAt.current;
-    const gained = result.correct ? pointsFor(question.level, question.answer.kind, duration, score.streak + 1) : 0;
-    const next = scoreAfter(kind, score, result.correct, gained);
+    const gained = result.correct
+      ? pointsFor(question.level, question.answer.kind, duration, score.streak + 1, referenceSeconds(question))
+      : 0;
+    const gainMs = result.correct ? timeGainMs(question) : 0;
+    const next = scoreAfter(kind, score, result.correct, gained, gainMs);
     setScore(next);
     setNow(performance.now());
     feedbackId.current += 1;
-    setFlash({ id: feedbackId.current, correct: result.correct, gained, combo: comboOf(next.streak) });
+    setFlash({
+      id: feedbackId.current,
+      correct: result.correct,
+      gained,
+      timeGainMs: gainMs,
+      combo: comboOf(next.streak),
+    });
     if (result.correct) playSound(next.streak >= 3 ? 'combo' : 'correct');
     else {
       playSound('wrong');

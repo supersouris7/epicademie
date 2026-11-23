@@ -76,7 +76,7 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.goto('/hub');
   await page.getByRole('button', { name: /^Contre-la-montre/ }).click();
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
-  await expect(page.getByText(/\+2 s à chaque bonne réponse/)).toBeVisible();
+  await expect(page.getByText(/chaque bonne réponse te rend du temps/)).toBeVisible();
   await page.evaluate(() => {
     Math.random = () => 0;
   });
@@ -88,18 +88,18 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
     await page.getByRole('button', { name: digit, exact: true }).click();
     await page.getByRole('button', { name: 'OK' }).click();
   };
-  // Bonne réponse : des points et +2 s.
+  // Bonne réponse : des points et du temps gagné (selon la durée de référence de la question).
   await answer('6');
-  await expect(page.getByText('+2 s', { exact: true })).toBeVisible();
+  await expect(page.getByText(/^\+\d+(,\d)? s$/)).toBeVisible();
   await expect(page.getByRole('status')).toContainText(/Bonne réponse ! \+\d+/);
   await expect(page.getByLabel(/^[1-9]\d* points$/)).toBeVisible();
-  await expect(page.getByRole('timer')).toHaveText(/⏱ 6[12] s/);
+  await expect(page.getByRole('timer')).toHaveText(/⏱ 6\d s/);
   await expect(page.getByRole('status')).toBeHidden();
   // Erreur : −5 s et série perdue.
   await answer('1');
   await expect(page.getByText('−5 s', { exact: true })).toBeVisible();
   await expect(page.getByRole('status')).toContainText('−5 s, série perdue');
-  await expect(page.getByRole('timer')).toHaveText(/⏱ 5\d s/);
+  await expect(page.getByRole('timer')).toHaveText(/⏱ [56]\d s/);
   // Fin de partie : l'horloge saute au-delà du temps restant.
   await page.clock.fastForward(70_000);
   await expect(page.getByRole('heading', { name: /\d+ points/ })).toBeVisible();
