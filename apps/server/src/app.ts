@@ -28,6 +28,7 @@ import { createProfilesService, profilesRoutes, type ProfilesService } from './m
 import { createLearningService, learningRoutes } from './modules/learning/index.ts';
 import { createPedagogyService, pedagogyRoutes } from './modules/pedagogy/index.ts';
 import { billingRoutes, createBillingService, type BillingService } from './modules/billing/index.ts';
+import { createEvaluationService, evaluationRoutes } from './modules/evaluation/index.ts';
 import { createTrainingService, trainingRoutes } from './modules/training/index.ts';
 import { battlesRoutes, createBattlesService } from './modules/battles/index.ts';
 import { createShopService, inventoryRoutes } from './modules/inventory/index.ts';
@@ -172,6 +173,16 @@ export async function buildApp(deps: AppDeps): Promise<App> {
       rewarded(r);
     },
   });
+  const evaluation = createEvaluationService({
+    db,
+    clock,
+    random,
+    timeZone: config.timeZone,
+    onFinished: (r) => {
+      metrics.finishedGames.inc({ kind: 'evaluation' });
+      rewarded(r);
+    },
+  });
   const battles = createBattlesService({
     db,
     clock,
@@ -217,6 +228,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
       );
       await v1.register(profilesRoutes(profiles, owns));
       await v1.register(trainingRoutes(training, owns, billing));
+      await v1.register(evaluationRoutes(evaluation, owns));
       await v1.register(learningRoutes(learning, owns));
       await v1.register(pedagogyRoutes(pedagogy, owns));
       await v1.register(battlesRoutes(battles, owns, billing));

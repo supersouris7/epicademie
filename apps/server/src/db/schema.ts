@@ -518,6 +518,9 @@ export const idempotentRequests = pgTable(
 /** Toutes les tables, de la plus dépendante à la moins dépendante (remise à zéro des tests). */
 export const ALL_TABLES = [
   'subscriptions',
+  'evaluation_competences',
+  'evaluations',
+  'studied_chapters',
   'owned_heroes',
   'idempotent_requests',
   'question_reports',

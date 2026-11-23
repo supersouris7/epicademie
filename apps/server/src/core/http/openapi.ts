@@ -18,6 +18,7 @@ const TAG_DESCRIPTIONS: Record<(typeof API_TAGS)[number], string> = {
   admin: 'Administration (rôle administrateur)',
   profils: 'Profils des joueurs',
   recommandations: 'Recommandations de travail d’un parent à son enfant',
+  evaluation: 'Arène d’évaluation (épreuves, bilans, chapitres vus en classe)',
   entrainement: 'Parties d’entraînement et progression par notion',
   combats: 'Mode Histoire (combats de boss)',
   inventaire: 'Équipement et boutique',

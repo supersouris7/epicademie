@@ -8,6 +8,7 @@ import {
   families,
   passwordResets,
   profiles,
+  evaluations,
   sessions,
 } from '../../db/schema.ts';
 
@@ -223,6 +224,16 @@ export function accountsRepo(db: Executor) {
         .from(sessions)
         .innerJoin(profiles, eq(profiles.id, sessions.profileId))
         .where(eq(sessions.id, gameId));
+      return row?.familyId;
+    },
+
+    /** Famille du joueur d'une épreuve d'évaluation. */
+    async familyOfEvaluation(evaluationId: string): Promise<string | null | undefined> {
+      const [row] = await db
+        .select({ familyId: profiles.familyId })
+        .from(evaluations)
+        .innerJoin(profiles, eq(profiles.id, evaluations.profileId))
+        .where(eq(evaluations.id, evaluationId));
       return row?.familyId;
     },
   };
