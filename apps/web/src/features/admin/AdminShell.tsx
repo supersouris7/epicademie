@@ -1,8 +1,9 @@
 import { useState, type ReactNode } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { api } from '@questeo/shared';
 import { ApiError, request } from '../../shared/api/client.ts';
-import { useMe, useSetMe } from '../account/index.ts';
+import { LoginScreen, logout, useMe, useSetMe } from '../account/index.ts';
 import { AdminButton, inputClass } from './ui.tsx';
 
 /** Police système, thème sombre (classe `admin-dark`) : la console ne reprend rien du style du jeu. */
@@ -101,11 +102,14 @@ export function AdminShell({
 
 /** Garde : compte administrateur, puis mot de passe redemandé (session de 15 minutes). */
 export function AdminGate({ children }: { readonly children: ReactNode }) {
-  const { data: me, isPending } = useMe();
+  const { data: me, error: meError, isPending } = useMe();
   const setMe = useSetMe();
+  const qc = useQueryClient();
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   if (isPending) return null;
+  // Sans session : connexion directement sur /admin (pas de barre d'adresse dans l'onglet de pilotage).
+  if (meError instanceof ApiError && meError.status === 401) return <LoginScreen redirectTo="/admin" />;
   const frame = (content: ReactNode) => (
     <div
       className="admin-dark flex min-h-dvh items-center justify-center bg-slate-100 p-4 text-slate-900"
@@ -116,7 +120,14 @@ export function AdminGate({ children }: { readonly children: ReactNode }) {
       </div>
     </div>
   );
-  if (me?.account.role !== 'admin') return frame(<p className="text-sm">Accès réservé à l’administration.</p>);
+  if (me?.account.role !== 'admin') {
+    return frame(
+      <div className="flex flex-col gap-3">
+        <p className="text-sm">Ce compte n’a pas accès à l’administration.</p>
+        <AdminButton onClick={() => void logout().then(() => qc.resetQueries())}>Se déconnecter</AdminButton>
+      </div>,
+    );
+  }
   if (me.adminUntil && new Date(me.adminUntil) > new Date()) return <>{children}</>;
   return frame(
     <form

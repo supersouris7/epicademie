@@ -67,7 +67,27 @@ describe('administration', () => {
 
   it('non administrateur : accès refusé', async () => {
     renderApp('/admin', { admin: false });
-    expect(await screen.findByText('Accès réservé à l’administration.')).toBeInTheDocument();
+    expect(await screen.findByText('Ce compte n’a pas accès à l’administration.')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Se déconnecter' })).toBeInTheDocument();
+  });
+
+  it('non administrateur : « Se déconnecter » ramène au formulaire de connexion', async () => {
+    const { user } = renderApp('/admin', { admin: false });
+    await user.click(await screen.findByRole('button', { name: 'Se déconnecter' }));
+    expect(await screen.findByLabelText('E-mail du parent')).toBeInTheDocument();
+  });
+
+  it('sans session : connexion sur /admin, puis ouverture de la console, sans choix de profil', async () => {
+    const { user } = renderApp('/admin', { admin: true, adminLocked: true, loggedIn: false });
+    await user.type(await screen.findByLabelText('E-mail du parent'), 'admin@famille.test');
+    expect(screen.queryByRole('button', { name: 'Nouveau joueur' })).not.toBeInTheDocument();
+    await user.type(screen.getByLabelText('Mot de passe'), FAKE_PASSWORD);
+    await user.click(screen.getByRole('button', { name: 'Se connecter' }));
+    expect(await screen.findByRole('heading', { name: 'Ouvrir la console d’administration' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Nouveau joueur' })).not.toBeInTheDocument();
+    await user.type(screen.getByLabelText('Mot de passe'), FAKE_PASSWORD);
+    await user.click(screen.getByRole('button', { name: 'Ouvrir la session' }));
+    expect(await screen.findByRole('heading', { name: /Console d’administration/ })).toBeInTheDocument();
   });
 
   it('signalement traité, notion désactivée depuis la console', async () => {

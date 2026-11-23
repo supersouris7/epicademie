@@ -213,7 +213,8 @@ function AuthForm(props: {
   );
 }
 
-export function LoginScreen() {
+/** `redirectTo` : destination après connexion (page qui affiche elle-même ce formulaire, ex. /admin). */
+export function LoginScreen({ redirectTo }: { readonly redirectTo?: string } = {}) {
   const navigate = useNavigate();
   const location = useLocation();
   const setMe = useSetMe();
@@ -225,7 +226,7 @@ export function LoginScreen() {
       : null,
   );
   const [unverified, setUnverified] = useState(false);
-  const from = (location.state as { from?: string } | null)?.from ?? '/';
+  const from = redirectTo ?? (location.state as { from?: string } | null)?.from ?? '/';
   return (
     <AuthForm
       title="Connexion"

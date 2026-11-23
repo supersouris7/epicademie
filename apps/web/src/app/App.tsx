@@ -112,10 +112,11 @@ export function App() {
             <Route path="/mot-de-passe-oublie" element={<ForgotPasswordScreen />} />
             <Route path="/mot-de-passe/nouveau" element={<ResetPasswordScreen />} />
             <Route path="/a-propos" element={<About />} />
+            {/* Console d'administration : gère elle-même la connexion (pas de choix de profil ni de navigation du jeu). */}
+            <Route path="/admin" element={<AdminPage />} />
             {/* Tout le reste demande un appareil connecté au compte de la famille. */}
             <Route element={<ConnectedShell profileId={profileId} />}>
               <Route path="/" element={<ProfilePicker />} />
-              <Route path="/admin" element={<AdminPage />} />
               <Route path="/parent" element={<ParentHome />} />
               <Route path="/tv" element={<TvScreen />} />
               <Route path="/parent/enfant/:profileId" element={<ChildReport />} />
