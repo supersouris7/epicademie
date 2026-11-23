@@ -66,6 +66,21 @@ export function accountsRoutes(
       },
       { config: STRICT },
     );
+    route(app, api.exportFamily, async ({ actor, reply }) => {
+      noStore(reply);
+      return service.exportFamily(actor());
+    });
+    route(
+      app,
+      api.deleteFamily,
+      async ({ actor, body, request, reply }) => {
+        await service.deleteFamily(actor(), body);
+        // Aucun identifiant ni e-mail dans le journal : l'événement seul.
+        request.log.info({ event: 'family_deleted' }, 'compte famille supprimé');
+        reply.header('set-cookie', serializeCookie(SESSION_COOKIE, '', { secure: cookie.secure, maxAge: 0 }));
+      },
+      { config: STRICT },
+    );
     route(app, api.joinFamily, ({ actor, body }) => service.joinFamily(actor(), body.code), { config: STRICT });
     route(app, api.login, async ({ body, reply }) => setSession(reply, await service.login(body)), {
       config: STRICT,

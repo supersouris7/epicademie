@@ -19,5 +19,5 @@ export {
 export { joinFamily } from './api.ts';
 export { ParentGateProvider } from './ParentGate.tsx';
 export { useParentGate } from './parentGate.ts';
-export { lockParent, logout, setParentPin, useMe, useSetMe } from './api.ts';
+export { deleteFamily, exportFamily, lockParent, logout, setParentPin, useMe, useSetMe } from './api.ts';
 export { ParentUnlock } from './ParentUnlock.tsx';

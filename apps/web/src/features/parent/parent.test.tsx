@@ -229,4 +229,36 @@ describe('espace parent', () => {
     renderApp('/parent/reglages');
     expect(await screen.findByRole('button', { name: 'Choisir un code PIN' })).toBeInTheDocument();
   });
+
+  describe('suppression du compte famille', () => {
+    it('liste ce qui est effacé, propose le téléchargement, puis double confirmation', async () => {
+      const created = vi.fn(() => 'blob:export');
+      vi.stubGlobal('URL', Object.assign(URL, { createObjectURL: created, revokeObjectURL: vi.fn() }));
+      const { user, server } = renderApp('/parent/reglages');
+      await user.click(await screen.findByRole('link', { name: 'Supprimer le compte famille' }));
+      expect(await screen.findByRole('heading', { level: 1, name: 'Supprimer le compte famille' })).toBeInTheDocument();
+      expect(screen.getByText(/les profils des enfants/)).toBeInTheDocument();
+      const submit = screen.getByRole('button', { name: 'Supprimer définitivement' });
+      expect(submit).toBeDisabled();
+      await user.click(screen.getByRole('button', { name: 'Télécharger les données' }));
+      expect(await screen.findByText('Données téléchargées.')).toBeInTheDocument();
+      expect(created).toHaveBeenCalled();
+      await user.type(screen.getByLabelText(/Écris SUPPRIMER/), 'supprimer');
+      await user.type(screen.getByLabelText('Mot de passe du compte'), FAKE_PASSWORD);
+      expect(submit).toBeDisabled();
+      await user.clear(screen.getByLabelText(/Écris SUPPRIMER/));
+      await user.type(screen.getByLabelText(/Écris SUPPRIMER/), 'SUPPRIMER');
+      await user.click(submit);
+      expect(await screen.findByRole('heading', { name: /Academy Fighters|Bienvenue/i })).toBeInTheDocument();
+      expect(server.calls.some((c) => c.path === '/family/delete')).toBe(true);
+    });
+
+    it('mauvais mot de passe : message d’erreur, le compte reste', async () => {
+      const { user } = renderApp('/parent/reglages/supprimer');
+      await user.type(await screen.findByLabelText(/Écris SUPPRIMER/), 'SUPPRIMER');
+      await user.type(screen.getByLabelText('Mot de passe du compte'), 'mauvais');
+      await user.click(screen.getByRole('button', { name: 'Supprimer définitivement' }));
+      expect(await screen.findByRole('alert')).toHaveTextContent('Mot de passe incorrect.');
+    });
+  });
 });

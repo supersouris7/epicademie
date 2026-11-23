@@ -70,6 +70,12 @@ export function ParentSettings() {
       <ParentCard title="Code PIN parent" id="pin">
         <PinSettings />
       </ParentCard>
+      <ParentCard title="Supprimer le compte famille" id="suppression">
+        <p>Efface définitivement le compte, les profils et toute la progression.</p>
+        <Link to="/parent/reglages/supprimer" className="text-danger min-h-11 self-start py-2 font-bold underline">
+          Supprimer le compte famille
+        </Link>
+      </ParentCard>
     </ParentPage>
   );
 }

@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { api, type Login, type Me, type Signup, type StudentSignup } from '@questeo/shared';
+import { api, type FamilyDelete, type Login, type Me, type Signup, type StudentSignup } from '@questeo/shared';
 import { request } from '../../shared/api/client.ts';
 
 /** Session de l'appareil : compte connecté (401 si aucun, jamais retenté). */
@@ -19,6 +19,8 @@ export const logout = () => request(api.logout);
 export const confirmParent = (password: string) => request(api.confirmParent, { body: { password } });
 export const unlockParentPin = (pin: string) => request(api.unlockParentPin, { body: { pin } });
 export const setParentPin = (password: string, pin: string) => request(api.setParentPin, { body: { password, pin } });
+export const exportFamily = () => request(api.exportFamily);
+export const deleteFamily = (input: FamilyDelete) => request(api.deleteFamily, { body: input });
 export const lockParent = () => request(api.lockParent);
 export const forgotPassword = (email: string) => request(api.forgotPassword, { body: { email } });
 export const resetPassword = (token: string, password: string) =>

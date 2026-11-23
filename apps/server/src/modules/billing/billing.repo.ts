@@ -29,6 +29,21 @@ export function billingRepo(db: Executor) {
       return row?.end;
     },
 
+    /** Références Stripe des paiements encore en attente d'une famille. */
+    async pendingStripeRefs(familyId: string): Promise<string[]> {
+      const rows = await db
+        .select({ ref: subscriptions.providerRef })
+        .from(subscriptions)
+        .where(
+          and(
+            eq(subscriptions.familyId, familyId),
+            eq(subscriptions.status, 'en-attente'),
+            eq(subscriptions.provider, 'stripe'),
+          ),
+        );
+      return rows.flatMap((r) => (r.ref ? [r.ref] : []));
+    },
+
     async create(s: typeof subscriptions.$inferInsert): Promise<string> {
       const [row] = await db.insert(subscriptions).values(s).returning({ id: subscriptions.id });
       if (!row) throw new Error('paiement sans retour');

@@ -37,6 +37,30 @@ export const PasswordConfirmSchema = z.object({ password: z.string().min(1).max(
 export const ParentPinSchema = z.string().regex(/^\d{4}$/, 'Le code PIN a 4 chiffres.');
 export const ParentPinSetSchema = z.object({ password: z.string().min(1).max(200), pin: ParentPinSchema });
 export const ParentPinUnlockSchema = z.object({ pin: ParentPinSchema });
+/** Mot à saisir pour confirmer la suppression du compte famille. */
+export const DELETE_CONFIRMATION = 'SUPPRIMER';
+/** Suppression du compte famille : mot de confirmation + mot de passe OU code PIN parent (un seul). */
+export const FamilyDeleteSchema = z
+  .object({
+    confirmation: z.literal(DELETE_CONFIRMATION),
+    password: z.string().min(1).max(200).optional(),
+    pin: ParentPinSchema.optional(),
+  })
+  .refine((v) => (v.password === undefined) !== (v.pin === undefined), {
+    message: 'Donne le mot de passe ou le code PIN (un seul).',
+  });
+export type FamilyDelete = z.infer<typeof FamilyDeleteSchema>;
+
+/** Export des données de la famille (droit d'accès et portabilité) : lignes de chaque table concernée. */
+export const FamilyExportSchema = z.object({
+  exportedAt: z.string(),
+  account: z.array(z.record(z.string(), z.unknown())),
+  profiles: z.array(z.record(z.string(), z.unknown())),
+  progression: z.record(z.string(), z.array(z.record(z.string(), z.unknown()))),
+  subscriptions: z.array(z.record(z.string(), z.unknown())),
+});
+export type FamilyExport = z.infer<typeof FamilyExportSchema>;
+
 export const PasswordForgotSchema = z.object({ email: EmailSchema });
 export const PasswordResetSchema = z.object({ token: z.string().min(20).max(200), password: PasswordSchema });
 

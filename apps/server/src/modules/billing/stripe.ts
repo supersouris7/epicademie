@@ -56,6 +56,18 @@ export function stripeClient(secretKey: string, fetcher: typeof fetch = fetch) {
       if (!res.ok || !body.id || !body.url) throw new Error(`Stripe : ${body.error?.message ?? res.status}`);
       return { id: body.id, url: body.url };
     },
+
+    /**
+     * Ferme une session Checkout encore ouverte (aucun paiement ne pourra plus aboutir). Une
+     * réponse 4xx (session déjà payée ou expirée) n'est pas une erreur ; le reste en est une.
+     */
+    async expireCheckout(sessionId: string): Promise<void> {
+      const res = await fetcher(`https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(sessionId)}/expire`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${secretKey}` },
+      });
+      if (!res.ok && (res.status < 400 || res.status >= 500)) throw new Error(`Stripe : ${res.status}`);
+    },
   };
 }
 
