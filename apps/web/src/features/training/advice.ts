@@ -28,14 +28,19 @@ export function recentErrors(progress: SkillProgress): number {
 /**
  * Notion à proposer en fin de partie (décision du 22/11/2026) : une notion est « souvent ratée »
  * quand l'élève a fait au moins 3 erreurs sur ses 10 dernières réponses (historique à jour, partie
- * comprise). On prend en priorité une notion jouée dans la partie, puis la plus ratée. Seules les
+ * comprise), et seulement dans la ou les matières de la partie jouée (retour #47 : jamais Fractions après
+ * un test d'anglais). On prend en priorité une notion jouée dans la partie, puis la plus ratée. Seules les
  * notions d'entraînement comptent (pas les questions propres aux boss). Sinon : rien.
  */
 export function oftenMissed(rows: readonly RecapRow[], history: readonly SkillProgress[] = []): Advice | null {
   const played = new Set(rows.map((r) => r.skillId));
+  const subjects = new Set(rows.map((r) => getChapterOfSkill(r.skillId)?.subject));
   const candidates = history
-    .map((s) => ({ s, errors: recentErrors(s), chapterId: getChapterOfSkill(s.skillId)?.id }))
-    .filter((c) => c.errors >= OFTEN_MISSED && c.chapterId !== undefined)
+    .map((s) => {
+      const chapter = getChapterOfSkill(s.skillId);
+      return { s, errors: recentErrors(s), chapterId: chapter?.id, subject: chapter?.subject };
+    })
+    .filter((c) => c.errors >= OFTEN_MISSED && c.chapterId !== undefined && subjects.has(c.subject))
     .sort(
       (a, b) =>
         Number(played.has(b.s.skillId)) - Number(played.has(a.s.skillId)) ||
