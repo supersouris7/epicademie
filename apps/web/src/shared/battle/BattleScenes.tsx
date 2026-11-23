@@ -13,6 +13,7 @@ import { HeroFace } from './HeroFace.tsx';
 import { Bubble } from '../ui/Bubble.tsx';
 import { assetSrc, PLACEHOLDER_SRC, type BossExpression } from '../../design/assets.ts';
 import { bossHeadId } from '../../design/bosses.ts';
+import { mustFlip } from '../../design/orientation.ts';
 import { RETRY_SECONDS } from '../lib/battleLines.ts';
 
 /** Questy en pied qui parle, bulle à sa droite (au-dessus de l'arène). */
@@ -150,7 +151,16 @@ export function BossSays({
       <Bubble tail="right" tone="villain" className="flex-1 px-4 py-3 text-lg sm:text-xl">
         {text}
       </Bubble>
-      {src && <img src={src} alt="" aria-hidden className="h-20 w-20 shrink-0 object-contain" />}
+      {src && (
+        // Posée à droite : la tête regarde vers le centre (le héros), à gauche.
+        <img
+          src={src}
+          alt=""
+          aria-hidden
+          className="h-20 w-20 shrink-0 object-contain"
+          style={{ transform: mustFlip(bossHeadId(bossId, expression), 'left') ? 'scaleX(-1)' : undefined }}
+        />
+      )}
     </motion.div>
   );
 }

@@ -27,6 +27,7 @@ import { useChapterAccess } from '../parent/index.ts';
 
 /** Chapitre réservé à l'abonnement familial. */
 const LOCKED = 'Ce chapitre fait partie de l’abonnement familial : demande à tes parents !';
+import { mustFlip } from '../../design/orientation.ts';
 import { BOSS_MEDAL_ICONS, bossHeadId, bossOfSubject } from '../../design/bosses.ts';
 import { assetSrc, characterSrc } from '../../design/assets.ts';
 import { BossCloseUp } from '../../shared/battle/BattleScenes.tsx';
@@ -214,6 +215,8 @@ function BossRow({ chapter, index, record, locked, onFight, onSoon }: BossRowPro
         alt=""
         aria-hidden
         className="h-14 w-14 shrink-0 object-contain"
+        // Posée à gauche de la ligne : la tête regarde vers le centre de l'écran, à droite.
+        style={{ transform: mustFlip(bossHeadId(boss.id, 'menace'), 'right') ? 'scaleX(-1)' : undefined }}
       />
       {record ? (
         <GameIcon
