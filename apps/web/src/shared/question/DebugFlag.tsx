@@ -19,9 +19,11 @@ export function DebugFlag() {
         onClick={() => setOpen(true)}
         aria-label="Signaler un problème sur cet écran"
         title="Signaler un problème sur cet écran"
-        className="fixed bottom-1 left-1 z-40 flex h-8 w-8 items-center justify-center rounded-full bg-black/30 text-white opacity-40 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-4 focus-visible:outline-offset-2"
+        // Languette collée au bord gauche, au tiers de la hauteur : hors du dock de réponse, du HUD
+        // et du héros ; sous le brouillon et les modales (z-30) ; contrastée et assez grande (40 px).
+        className="fixed top-1/3 left-0 z-30 flex h-10 w-10 items-center justify-center rounded-r-full bg-slate-800 text-white opacity-70 ring-2 ring-white/70 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
       >
-        <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden>
+        <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
           <path d="M6 3v18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
           <path d="M6 4h11l-2.5 4L17 12H6z" fill="currentColor" />
         </svg>
