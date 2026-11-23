@@ -17,7 +17,7 @@ describe('outils proposés', () => {
   });
   it('physique-chimie : calculatrice et brouillon quand il y a des nombres ; question de cours : brouillon seul', () => {
     expect(tabs('p5-unites')).toEqual(['reponse', 'brouillon']);
-    const skill = CHAPTERS.filter((c) => c.subject === 'physique')
+    const skill = CHAPTERS.filter((c) => c.subject === 'sciences')
       .flatMap((c) => c.skills)
       .find((s) => /\d/.test(generate(s.id, 2, 3).prompt));
     expect(skill).toBeDefined();

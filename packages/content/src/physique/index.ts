@@ -265,9 +265,9 @@ const energy = relation({
 
 const chapter = (id: string, grade: Chapter['grade'], title: string, skills: readonly Skill[]): Chapter => ({
   id,
-  subject: 'physique',
+  subject: 'sciences',
   grade,
-  domain: 'grandeurs',
+  domain: 'physique-chimie',
   title,
   skills,
 });

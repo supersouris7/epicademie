@@ -115,10 +115,10 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.goto('/hub');
   // Mode d'abord, matière ensuite.
   await page.getByRole('button', { name: /^Entraînement/ }).click();
-  // Matières : toutes jouables (maths, anglais, espagnol, physique-chimie, géographie, histoire).
+  // Matières : toutes jouables (maths, anglais, espagnol, sciences, géographie, histoire).
   await expect(page.getByRole('button', { name: 'Maths', exact: true })).toBeVisible();
   // Toutes les matières sont jouables.
-  for (const subject of ['Anglais', 'Espagnol', 'Physique-Chimie', 'Géographie', 'Histoire']) {
+  for (const subject of ['Anglais', 'Espagnol', 'Sciences', 'Géographie', 'Histoire']) {
     await expect(page.getByRole('button', { name: subject, exact: true })).toBeVisible();
   }
   await expect(page.getByRole('button', { name: /à venir/ })).toHaveCount(0);

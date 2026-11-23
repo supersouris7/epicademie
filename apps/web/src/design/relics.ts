@@ -6,7 +6,7 @@ import type { SubjectId } from '@questeo/shared';
  */
 export const RELICS: Record<SubjectId, { readonly name: string; readonly icon: string }> = {
   maths: { name: 'Cristal des maths', icon: 'icons-subjects-boss-maths' },
-  physique: { name: 'Fiole des sciences', icon: 'icons-subjects-boss-physique' },
+  sciences: { name: 'Fiole des sciences', icon: 'icons-subjects-boss-physique' },
   anglais: { name: 'Grimoire d’anglais', icon: 'icons-subjects-boss-anglais' },
   espagnol: { name: 'Éventail d’Espagne', icon: 'icons-subjects-boss-espagnol' },
   histoire: { name: 'Casque du légionnaire', icon: 'icons-subjects-boss-histoire' },

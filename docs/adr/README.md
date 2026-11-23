@@ -36,6 +36,7 @@ et les options écartées. Une ADR acceptée ne se modifie pas : une nouvelle AD
 | [0028](0028-recommandation-parent.md)      | Recommandation de travail d'un parent à son enfant (une notion + un mot)                    | Remplacée (#94)     |
 | [0029](0029-epreuve-du-chapitre.md)        | Épreuve du chapitre : validation à 80 %, coffre « chapitre » et trophée (récompense unique) | Acceptée            |
 | [0030](0030-arene-evaluation.md)           | Arène d'évaluation : compétence = chapitre, moteur déterministe, bilans figés               | Proposée            |
+| [0031](0031-matiere-sciences.md)           | Matière unique « Sciences » : trois domaines, libellé selon la classe                       | Acceptée            |
 
 ## Modèle
 

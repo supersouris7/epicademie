@@ -238,8 +238,16 @@ export const DOMAINS = {
   informatique: 'Pensée informatique',
   langue: 'Langue : grammaire et vocabulaire',
   reperes: 'Repères (lieux et dates)',
+  // Matière « Sciences » (collège) : un domaine par discipline.
+  'physique-chimie': 'Physique-chimie',
+  svt: 'Sciences de la vie et de la Terre',
+  technologie: 'Technologie',
 } as const;
 export type DomainId = keyof typeof DOMAINS;
+
+/** Domaines de la matière Sciences : physique-chimie, SVT et technologie (une matière, trois domaines). */
+export const SCIENCES_DOMAINS = ['physique-chimie', 'svt', 'technologie'] as const satisfies readonly DomainId[];
+export type SciencesDomain = (typeof SCIENCES_DOMAINS)[number];
 
 /** Combat de boss d'un chapitre : 2 problèmes en contexte puis 1 piège (docs/SPEC.md §6.2 bis). */
 export interface BossContent {

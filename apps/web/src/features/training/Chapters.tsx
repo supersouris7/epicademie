@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import { Navigate, useNavigate, useParams } from 'react-router';
 import { chaptersOf, getChapterOfSkill } from '@questeo/content';
-import { gradeInfo, SUBJECTS, type Profile } from '@questeo/shared';
+import { gradeInfo, SUBJECTS, subjectLabel, type Profile } from '@questeo/shared';
 import { useSkills } from './api.ts';
 import { GradeTabs } from '../../shared/ui/GradeTabs.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
@@ -40,7 +40,7 @@ export function Chapters({ profile }: { readonly profile: Profile }) {
     { lastPracticed: new Map([...states.values()].map((s) => [s.skillId, s.lastPracticed])) },
   );
   return (
-    <PageShell title={`Entraînement · ${info.name}`} back="/jouer/entrainement">
+    <PageShell title={`Entraînement · ${subjectLabel(info.id, grade)}`} back="/jouer/entrainement">
       <GradeTabs grades={grades} value={grade} own={own} onChange={setGrade} />
       {reviews.length > 0 && (
         <button

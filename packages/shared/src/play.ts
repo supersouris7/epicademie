@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ChestSchema } from './items.ts';
 import { MODE_IDS } from './modes.ts';
-import { SUBJECT_IDS } from './subjects.ts';
+import { SubjectInputSchema } from './subjects.ts';
 
 /** Contrats de l'entraînement (parties hors boss) : création, réponses, bilan, progression. */
 
@@ -24,7 +24,7 @@ export const ResponseSchema = z.discriminatedUnion('kind', [
 export const SessionCreateSchema = z.object({
   profileId: z.uuid(),
   mode: z.enum(MODE_IDS),
-  subject: z.enum(SUBJECT_IDS),
+  subject: SubjectInputSchema,
   chapterId: ContentIdSchema,
   /** null = tout le chapitre. */
   skillId: ContentIdSchema.nullable(),
