@@ -215,7 +215,8 @@ export const JOBS: readonly Job[] = [
     board: 'sorcier-pi-anim-attente.png',
     cols: 4,
     rows: 2,
-    // Dessinée tournée vers la gauche : pas de miroir.
+    // Dessinée de FACE (ni vers le héros ni de dos) : pas de miroir, et jamais utilisée dans l'arène de combat
+    // (la pose d'attente, tournée vers le héros, y sert) ; réservée à la scène de rage en plein écran.
     target: 'bosses/sorcier-pi/anim-idle',
     height: 512,
   },

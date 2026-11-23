@@ -1,21 +1,13 @@
 import type { BattleView } from '@questeo/shared';
-import type { ArenaEnemy, EnemyState } from '../../../shared/battle/BattleArena.tsx';
-import { assetSrc, type BossExpression, type PiBotHead } from '../../../design/assets.ts';
-import {
-  bossHeadId,
-  bossIdleRange,
-  bossPoseId,
-  mobHeadId,
-  mobName,
-  mobOf,
-  type BossIdentity,
-} from '../../../design/bosses.ts';
+import type { ArenaEnemy } from '../../../shared/battle/BattleArena.tsx';
+import { type BossExpression, type PiBotHead } from '../../../design/assets.ts';
+import { bossHeadId, bossPoseId, mobHeadId, mobName, mobOf, type BossIdentity } from '../../../design/bosses.ts';
 import { onBoss, type BattleScreen } from './state.ts';
 
 /** Adversaires affichés pendant un combat de boss (fonctions pures, sans état). */
 
 /** Le boss en personne (entrée en scène). */
-export const bossEnemy = (boss: BossIdentity, lives = 3): ArenaEnemy => ({
+export const bossEnemy = (boss: BossIdentity): ArenaEnemy => ({
   key: 'boss',
   name: boss.name,
   boss: true,
@@ -27,20 +19,13 @@ export const bossEnemy = (boss: BossIdentity, lives = 3): ArenaEnemy => ({
     ko: bossPoseId(boss.id, 'defeat'),
     shield: bossPoseId(boss.id, 'shield'),
   },
-  // Animation sur place seulement si le boss est dessiné (sinon : cadre provisoire).
-  ...(assetSrc(`bosses-${boss.id}-anim-idle`)
-    ? { idleAnim: { anim: `bosses/${boss.id}/anim-idle`, range: bossIdleRange(lives) } }
-    : {}),
 });
 
-/**
- * Adversaire du moment : le mob de la question, puis le boss. En rage (dernière vie), son
- * animation sur place passe aux images rouges.
- */
-export function currentEnemy(boss: BossIdentity, battle: BattleView | null, state: EnemyState): ArenaEnemy | null {
+/** Adversaire du moment : le mob de la question, puis le boss (toujours en pose tournée vers le héros). */
+export function currentEnemy(boss: BossIdentity, battle: BattleView | null): ArenaEnemy | null {
   if (!battle) return null;
   if (onBoss(battle)) {
-    return bossEnemy(boss, state === 'ko' ? 3 : battle.bossLives);
+    return bossEnemy(boss);
   }
   const mob = mobOf(boss, battle.mobsDefeated);
   return { key: `mob-${battle.mobsDefeated}`, name: mobName(mob), boss: false, image: `bosses-minions-${mob}` };
@@ -62,6 +47,6 @@ export function enemyHead(
  * mob entre ; plus tard, le boss qui arrive après le dernier mob.
  */
 export function stagedEnemy(boss: BossIdentity, s: BattleScreen): ArenaEnemy | null {
-  if (s.arrival || s.introStage === 'mob') return currentEnemy(boss, s.battle, s.enemyState);
+  if (s.arrival || s.introStage === 'mob') return currentEnemy(boss, s.battle);
   return s.introStage === 'boss' ? bossEnemy(boss) : null;
 }

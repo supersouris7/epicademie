@@ -54,9 +54,6 @@ export function bossHeadId(bossId: string, expression: BossExpression): string {
 /** Pose fixe du boss (identifiant d'asset). */
 export const bossPoseId = (bossId: string, pose: SorcierPose) => `bosses-${bossId}-pose-${pose}`;
 
-/** Animation sur place : 4 images calmes (vies pleines), 4 images en rage (dernière vie). */
-export const bossIdleRange = (lives: number): readonly [number, number] => (lives <= 1 ? [4, 4] : [0, 4]);
-
 /** Expression du boss selon les vies qui lui restent (3 : menaçant, 2 : inquiet, 1 : furieux, en rage). */
 export const bossMood = (lives: number): BossExpression =>
   lives >= 3 ? 'menace' : lives === 2 ? 'inquiet' : lives === 1 ? 'furieux' : 'ko';

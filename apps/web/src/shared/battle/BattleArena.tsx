@@ -3,7 +3,6 @@ import { AnimatePresence, motion, useReducedMotion, type TargetAndTransition } f
 import { HERO_NAMES, type HeroId } from '@questeo/shared';
 import { assetSrc, characterSrc, type AnimationState } from '../../design/assets.ts';
 import { CharacterSprite } from '../ui/game/CharacterSprite.tsx';
-import { Sprite } from '../ui/game/Sprite.tsx';
 import { STAGE_MAX_RATIO, useArenaImage, type ArenaImage } from './arena.ts';
 
 /**
@@ -24,8 +23,6 @@ export interface ArenaEnemy {
   readonly filter?: string;
   /** Image par état (boss : poses fixes du Sorcier π) ; sinon `${image}-${état}`. */
   readonly poses?: Partial<Record<EnemyState, string>>;
-  /** Animation sur place (bande d'images) et partie jouée (calme ou rage). */
-  readonly idleAnim?: { readonly anim: string; readonly range: readonly [number, number] };
 }
 
 interface BattleArenaProps {
@@ -268,16 +265,17 @@ const ENEMY_MOTION: Record<EnemyState, TargetAndTransition> = {
   shield: {},
 };
 
+/**
+ * Respiration du boss à l'attente : la pose d'attente (tournée vers le héros) respire sur place.
+ * La bande d'animation d'attente est dessinée de face : elle n'est jamais utilisée dans l'arène.
+ */
+const BOSS_BREATH: TargetAndTransition = {
+  scaleY: [1, 1.025, 1],
+  transition: { duration: 1.6, repeat: Infinity, ease: 'easeInOut' },
+};
+
 function EnemyFigure({ enemy, state }: { readonly enemy: ArenaEnemy; readonly state: EnemyState }) {
   const reduce = useReducedMotion();
-  // Boss : animation dessinée sur place, pose fixe pour chaque action.
-  if (state === 'idle' && enemy.idleAnim) {
-    return (
-      <div className="flex h-full w-full items-end justify-center" style={{ filter: enemy.filter }}>
-        <Sprite anim={enemy.idleAnim.anim} range={enemy.idleAnim.range} height="100%" fps={6} />
-      </div>
-    );
-  }
   // Une image par état quand elle est livrée ; sinon l'image d'attente, animée selon l'état.
   const src =
     (state !== 'idle' ? assetSrc(enemy.poses?.[state] ?? `${enemy.image}-${state}`) : null) ??
@@ -287,7 +285,7 @@ function EnemyFigure({ enemy, state }: { readonly enemy: ArenaEnemy; readonly st
       key={state}
       className="relative flex h-full w-full items-end justify-center"
       style={{ originX: 0.5, originY: 1 }}
-      animate={reduce ? undefined : ENEMY_MOTION[state]}
+      animate={reduce ? undefined : state === 'idle' && enemy.boss ? BOSS_BREATH : ENEMY_MOTION[state]}
     >
       {src && (
         // Poses du boss : même cadre que son animation, affichées à la même hauteur (pieds au sol).
@@ -296,7 +294,7 @@ function EnemyFigure({ enemy, state }: { readonly enemy: ArenaEnemy; readonly st
           alt=""
           aria-hidden
           draggable={false}
-          className={enemy.idleAnim ? 'block h-full w-auto max-w-none' : 'h-full w-full object-contain'}
+          className="h-full w-full object-contain"
           style={{ filter: enemy.filter }}
         />
       )}
