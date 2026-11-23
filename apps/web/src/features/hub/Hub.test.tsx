@@ -1,0 +1,41 @@
+import { screen, within } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import { renderApp } from '../../testing/renderApp.tsx';
+
+vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.ts')).socketModule);
+
+const GROUPS: readonly [string, readonly string[]][] = [
+  ['Apprendre', ['Entraînement', 'Mode Histoire']],
+  ['Défis', ['Contre-la-montre', 'Survie', 'Arène d’évaluation, à venir']],
+  ['En famille', ['Duels']],
+];
+
+describe('menu principal à 6 tuiles', () => {
+  it('affiche exactement 6 tuiles en 3 groupes, sans mode retiré', async () => {
+    renderApp('/hub');
+    for (const [group, names] of GROUPS) {
+      const section = (await screen.findByRole('heading', { name: group })).closest('section')!;
+      const labels = within(section)
+        .getAllByRole('button')
+        .map((b) => b.getAttribute('aria-label') ?? b.textContent.trim());
+      expect(labels).toEqual(names);
+    }
+    for (const gone of ['Raid', 'Quiz', 'Course']) {
+      expect(screen.queryByRole('button', { name: new RegExp(gone) })).not.toBeInTheDocument();
+    }
+  });
+
+  it('l’Arène d’évaluation (sans écran) est signalée « à venir » et n’ouvre rien', async () => {
+    const { user } = renderApp('/hub');
+    const tile = await screen.findByRole('button', { name: 'Arène d’évaluation, à venir' });
+    expect(tile).toHaveAttribute('aria-disabled', 'true');
+    await user.click(tile);
+    expect(screen.getByRole('heading', { name: 'Défis' })).toBeInTheDocument();
+  });
+
+  it('Duels mène à l’écran des duels', async () => {
+    const { user } = renderApp('/hub');
+    await user.click(await screen.findByRole('button', { name: /Duels/ }));
+    expect(await screen.findByRole('heading', { name: 'Duels' })).toBeInTheDocument();
+  });
+});

@@ -26,7 +26,8 @@ export function ModeTile({ mode, index = 0, badge, onClick }: ModeTileProps) {
     >
       <button
         type="button"
-        onClick={onClick}
+        onClick={mode.available ? onClick : undefined}
+        aria-disabled={mode.available ? undefined : true}
         aria-label={mode.available ? undefined : `${mode.name}, à venir`}
         className={`cartoon bevel cartoon-press gloss flex min-h-20 w-full flex-col items-center justify-center gap-1 p-2.5 text-center text-white sm:flex-row sm:justify-start sm:gap-3 sm:p-3 sm:text-left ${mode.available ? 'hover:brightness-110' : 'saturate-[0.55] brightness-[0.8]'}`}
         style={{ backgroundColor: CATEGORY_COLORS[mode.category] }}
