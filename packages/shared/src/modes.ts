@@ -16,7 +16,7 @@ export interface ModeInfo {
 export const MODE_CATEGORIES: readonly { id: ModeCategory; name: string }[] = [
   { id: 'apprendre', name: 'Apprendre' },
   { id: 'defis', name: 'Défis' },
-  { id: 'multi', name: 'Multijoueur' },
+  { id: 'multi', name: 'En famille' },
 ];
 
 /** Chaque mode se joue sur une matière, choisie après le mode. */
