@@ -20,6 +20,9 @@ describe('défis', () => {
     expect(await screen.findByRole('timer')).toHaveTextContent(/⏱ (60|59) s/);
     expect(screen.getByRole('progressbar', { name: 'Temps restant' })).toBeInTheDocument();
     expect(screen.getByLabelText('0 points')).toBeInTheDocument();
+    // HUD de combat réutilisé : cadre, portrait et jauge segmentée (10 cases) ; record lisible.
+    expect(screen.getByRole('progressbar', { name: 'Temps restant' })).toHaveAttribute('aria-valuenow', '100');
+    expect(screen.getByText(/^Record \d+$/)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Arrêter' }));
     expect(await screen.findByRole('heading', { name: /0 points/ })).toBeInTheDocument();
   });
@@ -28,6 +31,7 @@ describe('défis', () => {
     const { user } = renderApp('/partie/defi/survie/maths');
     await user.click(await screen.findByRole('button', { name: /C’est parti/ }));
     expect(await screen.findByRole('img', { name: '3 cœurs sur 3' })).toBeInTheDocument();
+    expect(screen.queryByRole('timer')).not.toBeInTheDocument();
   });
 
   it('depuis l’accueil : les défis sont jouables', async () => {
