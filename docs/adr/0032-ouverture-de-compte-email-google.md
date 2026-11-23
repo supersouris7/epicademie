@@ -1,4 +1,4 @@
-# 0031 — Ouverture de compte : e-mail validé ou Google
+# 0032 — Ouverture de compte : e-mail validé ou Google
 
 Statut : proposée
 

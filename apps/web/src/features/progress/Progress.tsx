@@ -8,6 +8,7 @@ import {
   ITEMS,
   playedGrade,
   SUBJECTS,
+  subjectLabel,
   type Grade,
   type Profile,
   type SkillProgress,
@@ -42,6 +43,9 @@ const DOMAIN_SHORT: Record<DomainId, string> = {
   informatique: 'Programmation',
   langue: 'Langue',
   reperes: 'Repères',
+  'physique-chimie': 'Physique-chimie',
+  svt: 'SVT',
+  technologie: 'Techno',
 };
 
 function countMedals(ids: readonly string[], states: ReadonlyMap<string, SkillProgress>) {
@@ -98,16 +102,16 @@ export function Progress({ profile }: { readonly profile: Profile }) {
               type="button"
               onClick={() => void navigate(`/progres/${s.id}`)}
               className="cartoon cartoon-press bg-surface flex w-full items-center gap-3 p-3 text-left"
-              aria-label={`${s.name} : ${ids.length - counts.aucune} notions médaillées sur ${ids.length}`}
+              aria-label={`${subjectLabel(s.id, grade)} : ${ids.length - counts.aucune} notions médaillées sur ${ids.length}`}
             >
-              <SubjectIcon subject={s.id} name={s.name} {...relicOf(s.id)} size={48} />
+              <SubjectIcon subject={s.id} name={subjectLabel(s.id, grade)} {...relicOf(s.id)} size={48} />
               <span className="flex min-w-0 flex-1 flex-col gap-1">
-                <span className="font-display text-xl tracking-wide">{s.name}</span>
+                <span className="font-display text-xl tracking-wide">{subjectLabel(s.id, grade)}</span>
                 <ProgressBar
                   value={ids.length - counts.aucune}
                   max={ids.length}
                   color={`var(--subject-${s.color})`}
-                  label={`Progrès en ${s.name}`}
+                  label={`Progrès en ${subjectLabel(s.id, grade)}`}
                   size="sm"
                 />
                 <MedalCounts counts={counts} />
@@ -214,7 +218,7 @@ export function SubjectProgress({ profile }: { readonly profile: Profile }) {
     const st = states.get(id);
     return st?.due != null && st.due <= today;
   }).length;
-  const name = SUBJECTS.find((s) => s.id === subject)?.name ?? subject;
+  const name = subjectLabel(subject, grade);
 
   return (
     <PageShell title={`Mes progrès · ${name}`} back="/progres" nav={profile}>

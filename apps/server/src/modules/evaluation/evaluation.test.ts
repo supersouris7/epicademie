@@ -108,6 +108,14 @@ describe('accueil et lancement', () => {
     expect(res.body).toContain('classe');
   });
 
+  it('ancien client : « physique » est normalisé en « sciences » (chemin et création)', async () => {
+    const home = await t.http.inject(`/api/v1/profiles/${profileId}/evaluations/physique/home`);
+    expect(home.json<EvaluationHome>().subject).toBe('sciences');
+    expect(
+      (await post('/api/v1/evaluations', { profileId, subject: 'physique', kind: 'origines' })).body,
+    ).not.toContain('physique');
+  });
+
   it('matière sans référentiel : pas encore d’épreuve', async () => {
     const res = await post('/api/v1/evaluations', { profileId, subject: 'anglais', kind: 'origines' });
     expect(res.statusCode).toBe(400);

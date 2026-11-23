@@ -1,5 +1,12 @@
 import { chaptersOf } from '@questeo/content';
-import { playedGrade, SUBJECTS, type Grade, type LearningReport, type SkillProgress } from '@questeo/shared';
+import {
+  playedGrade,
+  SUBJECTS,
+  subjectLabel,
+  type Grade,
+  type LearningReport,
+  type SkillProgress,
+} from '@questeo/shared';
 import { chapterProgress } from '../../shared/lib/progress.ts';
 import { relicProgressOf, type RelicProgress } from '../../shared/lib/relicProgress.ts';
 import { skillTitle } from './summary.ts';
@@ -61,7 +68,7 @@ export function subjectBars(
     return [
       {
         id: s.id,
-        name: s.name,
+        name: subjectLabel(s.id, played),
         color: s.color,
         acquired: bars.reduce((n, c) => n + c.acquired, 0),
         total: bars.reduce((n, c) => n + c.total, 0),

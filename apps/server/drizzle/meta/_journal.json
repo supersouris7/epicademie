@@ -167,7 +167,14 @@
       "idx": 23,
       "version": "7",
       "when": 1795600000000,
-      "tag": "0023_verification_email",
+      "tag": "0023_matiere_sciences",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1795700000000,
+      "tag": "0024_verification_email",
       "breakpoints": true
     }
   ]

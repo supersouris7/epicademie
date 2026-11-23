@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { CHEST_RARITIES, ChestSchema } from './items.ts';
 import { DaySchema, LevelSchema, ResponseSchema } from './play.ts';
-import { SUBJECT_IDS } from './subjects.ts';
+import { SUBJECT_IDS, SubjectInputSchema } from './subjects.ts';
 
 /**
  * Arène d'évaluation (docs/adr/0030-arene-evaluation.md) : vocabulaire commun au moteur, au
@@ -40,11 +40,11 @@ const SubjectSchema = z.enum(SUBJECT_IDS);
 const Percent = z.number().min(0).max(100);
 
 /** Chemin : profil et matière. */
-export const EvaluationSubjectParamsSchema = z.object({ id: z.uuid(), subject: SubjectSchema });
+export const EvaluationSubjectParamsSchema = z.object({ id: z.uuid(), subject: SubjectInputSchema });
 
 export const EvaluationCreateSchema = z.object({
   profileId: z.uuid(),
-  subject: SubjectSchema,
+  subject: SubjectInputSchema,
   kind: EvaluationKindSchema,
 });
 export type EvaluationCreate = z.infer<typeof EvaluationCreateSchema>;

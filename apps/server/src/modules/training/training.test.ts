@@ -1,4 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { sql } from 'drizzle-orm';
 import { fmt, generate } from '@questeo/content';
 import type { AnswerResult, Profile, SessionSummary, SkillProgress } from '@questeo/shared';
 import { createTestApp } from '../../testing/harness.ts';
@@ -321,10 +322,12 @@ describe('Épreuve du chapitre', () => {
 
   it('double validation : un seul coffre « chapitre », un seul trophée', async () => {
     const first = await play(profileId, 10);
-    const second = await play(profileId, 10);
+    // 9 sur 10 : validé (≥ 80 %) mais pas de sans-faute, donc aucun coffre d'entraînement aléatoire
+    // (un sans-faute peut tirer « légendaire » au hasard et rendre le test instable).
+    const second = await play(profileId, 9);
     expect(first.epreuve?.rewarded).toBe(true);
     expect(second.epreuve).toMatchObject({ passed: true, rewarded: false, alreadyValidated: true });
-    expect(second.chest?.rarity).not.toBe('legendaire');
+    expect(second.chest).toBeNull();
     expect(await trophies()).toHaveLength(1);
   });
 
@@ -366,5 +369,21 @@ describe('Épreuve du chapitre', () => {
       },
     });
     expect(res.statusCode).toBe(400);
+  });
+});
+
+describe('compatibilité ascendante : matière « physique »', () => {
+  it('un ancien client envoyant « physique » est accepté et enregistré en « sciences »', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: '/api/v1/sessions',
+      payload: { profileId, mode: 'entrainement', subject: 'physique', chapterId: 'p4-mouvement', skillId: null },
+    });
+    expect(res.statusCode).toBe(201);
+    const rows = await t.database.db.execute(
+      sql`select subject from sessions where id = ${res.json<{ id: string }>().id}`,
+    );
+    expect(JSON.stringify(rows)).toContain('sciences');
+    expect(JSON.stringify(rows)).not.toContain('physique');
   });
 });
