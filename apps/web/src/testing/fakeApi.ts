@@ -215,6 +215,22 @@ function authHandlers(options: FakeApiOptions) {
       return null;
     },
     me,
+    exportFamily: () => ({
+      exportedAt: '2026-11-20T10:00:00.000Z',
+      account: [{ email: session.email, role: 'parent' }],
+      profiles: (options.profiles ?? []).map((p) => ({ ...p })),
+      progression: { skillStates: [] },
+      subscriptions: [],
+    }),
+    deleteFamily: ({ body }) => {
+      const b = body as { password?: string; pin?: string };
+      if (b.password !== undefined && b.password !== FAKE_PASSWORD) {
+        throw new FakeError(401, 'UNAUTHORIZED', 'Mot de passe incorrect.');
+      }
+      if (b.pin !== undefined && b.pin !== session.pin) throw new FakeError(401, 'UNAUTHORIZED', 'Code PIN incorrect.');
+      session.loggedIn = false;
+      return null;
+    },
     setParentPin: ({ body }) => {
       const b = body as { password: string; pin: string };
       if (b.password !== FAKE_PASSWORD) throw new FakeError(401, 'UNAUTHORIZED', 'Mot de passe incorrect.');

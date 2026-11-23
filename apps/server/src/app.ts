@@ -160,6 +160,8 @@ export async function buildApp(deps: AppDeps): Promise<App> {
     appUrl,
     sessionDays: config.sessionDays,
     createStudentProfile: (input, familyId) => profiles.createStudent(input, familyId),
+    // `billing` est créé plus bas : résolu à l'appel, jamais à la construction.
+    cancelPayments: (familyId) => billing.cancelPending(familyId),
   });
   const owns = createOwnership(db);
   registerAuth(http, { resolve: (token) => accounts.resolve(token), allowedOrigins: config.corsOrigins });

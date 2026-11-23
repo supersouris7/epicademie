@@ -21,6 +21,8 @@ import {
 } from '../play.ts';
 import { HEROES, ProfileCreateSchema, ProfileSchema, ProfileUpdateSchema } from '../profile.ts';
 import {
+  FamilyDeleteSchema,
+  FamilyExportSchema,
   FamilyJoinResultSchema,
   FamilyJoinSchema,
   InviteResultSchema,
@@ -245,6 +247,25 @@ export const api = {
     access: 'family',
     status: 201,
     response: InviteResultSchema,
+  }),
+  exportFamily: endpoint({
+    method: 'GET',
+    path: '/family/export',
+    tag: 'comptes',
+    summary: 'Espace parent : export JSON des données de la famille (comptes, profils, progression)',
+    access: 'parent',
+    status: 200,
+    response: FamilyExportSchema,
+  }),
+  deleteFamily: endpoint({
+    method: 'POST',
+    path: '/family/delete',
+    tag: 'comptes',
+    summary: 'Espace parent : supprime définitivement le compte famille et toutes ses données (RGPD, effacement)',
+    access: 'parent',
+    status: 204,
+    body: FamilyDeleteSchema,
+    response: null,
   }),
   joinFamily: endpoint({
     method: 'POST',

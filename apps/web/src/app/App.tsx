@@ -24,6 +24,7 @@ import {
   ParentHome,
   ParentProfileEditor,
   ParentProfiles,
+  DeleteFamily,
   ParentSettings,
   PaymentSimulator,
   Subscription,
@@ -120,6 +121,7 @@ export function App() {
               <Route path="/parent/profils/nouveau" element={<ParentProfileEditor />} />
               <Route path="/parent/profils/:id/modifier" element={<ParentProfileEditor />} />
               <Route path="/parent/reglages" element={<ParentSettings />} />
+              <Route path="/parent/reglages/supprimer" element={<DeleteFamily />} />
               {/* Anciennes adresses (favoris, retours de paiement déjà émis) : on reste dans l'Espace parent. */}
               <Route path="/abonnement/*" element={<LegacyAbonnement />} />
               <Route path="/profils/nouveau" element={<ProfileEditor />} />

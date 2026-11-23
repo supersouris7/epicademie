@@ -121,6 +121,17 @@ export function createBillingService({ db, clock, config, appUrl, fetcher, onSet
       return { url: session.url };
     },
 
+    /**
+     * Avant l'effacement d'une famille : ferme les sessions de paiement Stripe encore ouvertes.
+     * Le paiement est unique (aucun renouvellement à résilier). Une erreur du prestataire
+     * interrompt la suppression : mieux vaut réessayer que laisser un paiement possible.
+     */
+    async cancelPending(familyId: string): Promise<void> {
+      if (config.provider !== 'stripe') return;
+      const stripe = stripeClient(config.stripeSecretKey ?? '', fetcher);
+      for (const ref of await repo.pendingStripeRefs(familyId)) await stripe.expireCheckout(ref);
+    },
+
     /** Simulateur (hors production) : le parent choisit l'issue du paiement. */
     async simulate(familyId: string, id: string, outcome: 'succes' | 'echec'): Promise<Billing> {
       if (config.provider !== 'simulateur') throw notFound('Simulateur indisponible');

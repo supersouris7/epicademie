@@ -7,6 +7,8 @@ import { dummyHash, hashPassword, verifyPassword } from '../../core/auth/passwor
 import { newToken, tokenHash } from '../../core/auth/tokens.ts';
 import type { Mailer } from '../../core/mail/mailer.ts';
 import { accountsRepo } from './accounts.repo.ts';
+import { pinChecker } from './pin.ts';
+import { createErasureService } from './erasure.service.ts';
 import { createStudentService, type OpenedSession } from './student.service.ts';
 
 /**
@@ -17,8 +19,6 @@ import { createStudentService, type OpenedSession } from './student.service.ts';
 /** Durée du déverrouillage parent après confirmation du mot de passe. */
 export const PARENT_UNLOCK_MINUTES = 10;
 /** Code PIN parent : erreurs d'affilée permises avant blocage, et durée du blocage. */
-const PIN_MAX_FAILURES = 5;
-const PIN_LOCK_MINUTES = 15;
 /** Session d'administration : durée après confirmation du mot de passe. */
 const ADMIN_SESSION_MINUTES = 15;
 /** Validité d'un lien de réinitialisation. */
@@ -40,11 +40,21 @@ export interface AccountsDeps {
     input: Pick<StudentSignup, 'name' | 'avatar' | 'grade'>,
     familyId: string,
   ) => Promise<unknown>;
+  /** Annule chez le prestataire les paiements en cours de la famille (avant son effacement). */
+  readonly cancelPayments?: (familyId: string) => Promise<void>;
 }
 
 export type { OpenedSession };
 
-export function createAccountsService({ db, clock, mailer, appUrl, sessionDays, createStudentProfile }: AccountsDeps) {
+export function createAccountsService({
+  db,
+  clock,
+  mailer,
+  appUrl,
+  sessionDays,
+  createStudentProfile,
+  cancelPayments,
+}: AccountsDeps) {
   const repo = accountsRepo(db);
   const later = (ms: number) => new Date(clock.now().getTime() + ms);
 
@@ -95,6 +105,16 @@ export function createAccountsService({ db, clock, mailer, appUrl, sessionDays, 
     if (actor.autonomous) throw new AppError('FORBIDDEN', AUTONOMOUS_MESSAGE);
   };
 
+  const checkPin = pinChecker(clock, repo);
+
+  const erasure = createErasureService({
+    db,
+    clock,
+    cancelPayments,
+    refuseAutonomous,
+    passwordMatches,
+    checkPin,
+  });
   const student = createStudentService({ db, clock, createStudentProfile, open });
 
   return {
@@ -175,23 +195,14 @@ export function createAccountsService({ db, clock, mailer, appUrl, sessionDays, 
       const account = await repo.findById(actor.accountId);
       if (!account?.parentPinHash)
         throw new AppError('CONFLICT', 'Aucun code PIN : utilise le mot de passe du compte.');
-      if (account.pinLockedUntil && account.pinLockedUntil > clock.now()) {
-        throw new AppError('UNAUTHORIZED', 'Trop d’erreurs : réessaie dans 15 minutes, ou utilise le mot de passe.');
-      }
-      if (!(await verifyPassword(pin, account.parentPinHash))) {
-        const failures = account.pinFailures + 1;
-        const locked = failures >= PIN_MAX_FAILURES ? later(PIN_LOCK_MINUTES * MINUTE) : null;
-        await repo.setPinFailures(account.id, locked ? 0 : failures, locked);
-        throw new AppError(
-          'UNAUTHORIZED',
-          locked ? 'Trop d’erreurs : le code PIN est bloqué 15 minutes.' : 'Code PIN incorrect.',
-        );
-      }
+      await checkPin(account, account.parentPinHash, pin);
       await repo.setPinFailures(account.id, 0, null);
       const until = later(PARENT_UNLOCK_MINUTES * MINUTE);
       await repo.setParentUntil(actor.sessionHash, until);
       return meOf({ ...account, autonomous: false }, until);
     },
+
+    ...erasure,
 
     /** Ouvre une session d'administration (compte admin) : mot de passe redemandé, 15 minutes. */
     async openAdmin(actor: Actor, password: string): Promise<Me> {
