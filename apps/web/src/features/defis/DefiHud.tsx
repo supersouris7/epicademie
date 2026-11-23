@@ -18,7 +18,7 @@ function ComboBadge({ combo, reduce }: { readonly combo: number; readonly reduce
       key={combo}
       initial={reduce ? false : { scale: 1.8, rotate: -8 }}
       animate={{ scale: 1, rotate: 0 }}
-      className="font-display text-toon bg-primary rounded-xl px-2 py-0.5 text-lg tracking-wider whitespace-nowrap text-white sm:px-3 sm:text-2xl"
+      className="font-display text-toon bg-primary-strong rounded-xl px-2 py-0.5 text-lg tracking-wider whitespace-nowrap text-white sm:px-3 sm:text-2xl"
     >
       COMBO ×{combo}
     </motion.span>
@@ -58,8 +58,8 @@ export function DefiHud(p: DefiHudProps) {
         <HeroFace hero={p.hero} expression={p.expression} size={52} />
       </HudPortrait>
       <div className="flex min-w-0 flex-1 flex-col gap-1">
-        <div className="flex items-baseline gap-2">
-          <span className="font-display text-toon truncate text-sm tracking-wide sm:text-base">
+        <div className="flex items-baseline gap-x-2 gap-y-0 sm:gap-x-3">
+          <span className="font-display text-toon hidden truncate text-base tracking-wide sm:inline">
             {HERO_NAMES[p.hero]}
           </span>
           <span
@@ -68,14 +68,19 @@ export function DefiHud(p: DefiHudProps) {
           >
             {p.points} <span className="text-sm">pts</span>
           </span>
-          <span className="text-sm font-bold text-white/90">{p.correct} bonnes réponses</span>
+          <span className="text-sm font-bold whitespace-nowrap text-white/90">
+            <span aria-hidden className="sm:hidden">
+              ✓ {p.correct}
+            </span>
+            <span className="sr-only sm:not-sr-only">{p.correct} bonnes réponses</span>
+          </span>
           <span className="ml-auto text-sm font-bold whitespace-nowrap text-[var(--gold)]">Record {p.best}</span>
         </div>
         {p.kind === 'chrono' ? (
           <HudBar
             side="left"
             kind="time"
-            value={timePct}
+            value={Math.round(timePct)}
             max={100}
             segments={10}
             role="progressbar"
@@ -98,7 +103,7 @@ export function DefiHud(p: DefiHudProps) {
         {p.kind === 'chrono' ? (
           <span
             role="timer"
-            className={`font-display min-w-20 rounded-full px-3 py-1 text-center text-xl tabular-nums ${p.pressure ? `bg-danger text-white ${pulse}` : 'bg-black/40 text-white'}`}
+            className={`font-display min-w-20 rounded-full px-3 py-1 text-center text-xl tabular-nums ${p.pressure ? `bg-danger-strong text-white ${pulse}` : 'bg-black/40 text-white'}`}
           >
             ⏱ {p.seconds} s
           </span>
