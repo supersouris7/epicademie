@@ -54,7 +54,7 @@ export function ConfirmDialog({
             {cancel}
           </GameButton>
           {extra && (
-            <GameButton variant="surface" icon="icons-navigation-replay" onClick={extra.onClick}>
+            <GameButton variant="surface" icon="icons-navigation-retry" onClick={extra.onClick}>
               {extra.label}
             </GameButton>
           )}
