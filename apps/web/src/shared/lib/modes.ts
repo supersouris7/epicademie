@@ -8,9 +8,6 @@ export const MODE_MOODS: Record<ModeId, MoodId> = {
   chrono: 'wow',
   survie: 'cool',
   arene: 'angry',
-  raid: 'proud',
-  quiz: 'laugh',
-  course: 'wow',
   evaluation: 'proud',
 };
 

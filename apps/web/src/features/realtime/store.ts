@@ -2,7 +2,6 @@ import { create } from 'zustand';
 import { io, type Socket } from 'socket.io-client';
 import type { Response } from '@questeo/content';
 import type {
-  ArenaKind,
   ArenaInvite,
   ArenaView,
   ChatMessage,
@@ -39,7 +38,7 @@ interface RealtimeState {
   readonly dismiss: (id: number) => void;
   readonly clearRefused: () => void;
   readonly sendChat: (to: string, payload: ChatPayload) => void;
-  readonly createArena: (chapterId: string, invite: readonly string[], kind?: ArenaKind) => void;
+  readonly createArena: (chapterId: string, invite: readonly string[]) => void;
   readonly respondArena: (arenaId: string, accept: boolean) => void;
   readonly startArena: () => void;
   readonly answerArena: (response: Response) => void;
@@ -138,8 +137,7 @@ export const useRealtime = create<RealtimeState>((set, get) => ({
   dismiss: (id) => set((s) => ({ notices: s.notices.filter((n) => n.id !== id) })),
   clearRefused: () => set({ refused: null }),
   sendChat: (to, payload) => get().socket?.emit('chat', { to, payload }),
-  createArena: (chapterId, invite, kind = 'duel') =>
-    get().socket?.emit('arena:create', { kind, chapterId, invite: [...invite] }),
+  createArena: (chapterId, invite) => get().socket?.emit('arena:create', { chapterId, invite: [...invite] }),
   respondArena: (arenaId, accept) => get().socket?.emit('arena:respond', { arenaId, accept }),
   startArena: () => get().socket?.emit('arena:start'),
   answerArena: (response) => get().socket?.emit('arena:answer', { response }),
