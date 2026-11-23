@@ -17,6 +17,10 @@ export function createOwnership(db: Db) {
     async game(actor: Actor, gameId: string, message = 'Partie introuvable'): Promise<void> {
       if ((await repo.familyOfGame(gameId)) !== actor.familyId) throw notFound(message);
     },
+    /** Une épreuve appartient à la famille de son profil (sinon 404). */
+    async evaluation(actor: Actor, evaluationId: string): Promise<void> {
+      if ((await repo.familyOfEvaluation(evaluationId)) !== actor.familyId) throw notFound('Épreuve introuvable');
+    },
   };
 }
 

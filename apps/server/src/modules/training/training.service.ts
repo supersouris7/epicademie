@@ -56,6 +56,7 @@ const finishBonus = (defi: DefiKind | null, perfect: boolean, correct: number) =
   defi ? defiBonusXp(correct) : perfect ? PERFECT_BONUS : 0;
 const UNKNOWN_SKILL = 'Notion inconnue';
 const BOSS_ELSEWHERE = 'Mode Histoire : utiliser /battles';
+const EVALUATION_ELSEWHERE = 'Arène d’évaluation : utiliser /evaluations';
 
 /** Notion la plus ratée (part d'erreurs la plus forte, puis le plus d'erreurs), null sans erreur. */
 const weakestSkill = (skills: readonly SessionSkillSummary[]): string | null => {
@@ -218,6 +219,7 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
 
     async start(input: SessionCreate): Promise<{ id: string }> {
       if (input.mode === 'boss') throw badRequest('Le Mode Histoire se lance par /battles');
+      if (input.mode === 'evaluation') throw badRequest(EVALUATION_ELSEWHERE);
       if (input.skillId && !getSkill(input.skillId)) throw badRequest(UNKNOWN_SKILL);
       if (input.skillId && (await disabledSkills(db)).includes(input.skillId)) {
         throw conflict('Cette notion est en maintenance : choisis-en une autre.');
@@ -242,6 +244,7 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
         if (!session) throw notFound(SESSION_NOT_FOUND);
         if (session.finishedAt) throw conflict('Partie terminée');
         if (session.mode === 'boss') throw conflict(BOSS_ELSEWHERE);
+        if (session.mode === 'evaluation') throw conflict(EVALUATION_ELSEWHERE);
         // Épreuve : seules les notions du chapitre comptent (le score ne peut pas être gonflé ailleurs).
         if (session.epreuve) assertInEpreuve(session.chapterId, a.skillId);
         const question = generate(a.skillId, a.level, a.seed);
@@ -309,6 +312,7 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
         if (!session) throw notFound(SESSION_NOT_FOUND);
         if (session.finishedAt) throw conflict('Partie déjà terminée');
         if (session.mode === 'boss') throw conflict(BOSS_ELSEWHERE);
+        if (session.mode === 'evaluation') throw conflict(EVALUATION_ELSEWHERE);
 
         // Score, médailles et répétition espacée : premières réponses seulement.
         const rows = await repo.firstAttemptsOf(sessionId);

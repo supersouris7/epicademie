@@ -1,7 +1,11 @@
-import { and, desc, eq, gt, gte, isNotNull, ne, sql } from 'drizzle-orm';
+import { and, desc, eq, gt, gte, isNotNull, notInArray, sql } from 'drizzle-orm';
 import type { AnswerFact } from '@questeo/engine';
 import type { Executor } from '../../db/client.ts';
+import type { ModeId } from '@questeo/shared';
 import { attempts, bossRecords, sessions, skillStates } from '../../db/schema.ts';
+
+/** Parties qui ne sont pas de l'entraînement : jamais comptées dans les badges de série parfaite. */
+const NOT_PRACTICE_MODES: ModeId[] = ['boss', 'evaluation'];
 
 /** Réponses lues par le suivi : au plus un an, et au plus ce nombre (les plus récentes). */
 const MAX_FACTS = 5_000;
@@ -47,7 +51,8 @@ export function learningRepo(db: Executor) {
         .where(
           and(
             eq(sessions.profileId, profileId),
-            ne(sessions.mode, 'boss'),
+            // Ni boss, ni Arène d'évaluation : une épreuve mesure, elle ne compte pas comme série parfaite.
+            notInArray(sessions.mode, NOT_PRACTICE_MODES),
             isNotNull(sessions.finishedAt),
             gte(sessions.answered, 4),
             eq(sessions.correct, sessions.answered),

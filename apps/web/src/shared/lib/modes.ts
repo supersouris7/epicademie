@@ -11,6 +11,7 @@ export const MODE_MOODS: Record<ModeId, MoodId> = {
   raid: 'proud',
   quiz: 'laugh',
   course: 'wow',
+  evaluation: 'proud',
 };
 
 export const CATEGORY_COLORS: Record<ModeCategory, string> = {
