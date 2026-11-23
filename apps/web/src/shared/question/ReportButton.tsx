@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import { api, REPORT_REASON_LABELS, REPORT_REASONS, type ReportReason } from '@questeo/shared';
+import { api, QUESTION_REPORT_REASONS, REPORT_REASON_LABELS, type ReportReason } from '@questeo/shared';
 import type { Question } from '@questeo/content';
 import { ApiError, request } from '../api/client.ts';
 import { useSession } from '../lib/session.ts';
 import { GameButton } from '../ui/game/GameButton.tsx';
-import { GeneralReportDialog } from './GeneralReportButton.tsx';
 
 /**
- * « Signaler un problème » sur une question : un motif à choisir (et une précision facultative),
+ * « Signaler cette question » : un motif à choisir (et une précision facultative),
  * envoyé à l'équipe avec la notion, le niveau et la graine (la question exacte se régénère).
  * Petit bouton discret, à côté de la pause.
  */
@@ -18,8 +17,8 @@ export function ReportButton({ question }: { readonly question: Question }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="Signaler un problème"
-        title="Signaler un problème"
+        aria-label="Signaler cette question"
+        title="Signaler cette question"
         className="cartoon cartoon-press bg-surface-2 flex h-11 w-11 shrink-0 items-center justify-center hover:brightness-110 focus-visible:outline-4 focus-visible:outline-offset-2"
       >
         <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden>
@@ -38,7 +37,6 @@ function ReportDialog({ question, onClose }: { readonly question: Question; read
   const [comment, setComment] = useState('');
   const [state, setState] = useState<'edit' | 'sending' | 'sent'>('edit');
   const [error, setError] = useState<string | null>(null);
-  const [general, setGeneral] = useState(false);
 
   const send = async () => {
     if (!reason || !profileId) return;
@@ -61,16 +59,15 @@ function ReportDialog({ question, onClose }: { readonly question: Question; read
     }
   };
 
-  if (general) return <GeneralReportDialog onClose={onClose} />;
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       role="dialog"
       aria-modal="true"
-      aria-label="Signaler un problème"
+      aria-label="Signaler cette question"
     >
       <div className="cartoon bg-surface flex max-h-[90dvh] w-full max-w-md flex-col gap-3 overflow-y-auto p-5">
-        <h2 className="font-display text-2xl tracking-wide">Signaler un problème</h2>
+        <h2 className="font-display text-2xl tracking-wide">Signaler cette question</h2>
         {state === 'sent' ? (
           <>
             <p role="status">Merci ! L’équipe va regarder cette question.</p>
@@ -80,7 +77,7 @@ function ReportDialog({ question, onClose }: { readonly question: Question; read
           <>
             <fieldset className="flex flex-col gap-2">
               <legend className="mb-1 font-bold">Qu’est-ce qui ne va pas ?</legend>
-              {REPORT_REASONS.map((r) => (
+              {QUESTION_REPORT_REASONS.map((r) => (
                 <label key={r} className="flex items-center gap-2">
                   <input type="radio" name="motif" checked={reason === r} onChange={() => setReason(r)} />
                   {REPORT_REASON_LABELS[r]}
@@ -110,9 +107,6 @@ function ReportDialog({ question, onClose }: { readonly question: Question; read
                 Annuler
               </GameButton>
             </div>
-            <button type="button" className="self-start underline" onClick={() => setGeneral(true)}>
-              Autre souci (son, bug, écran…) ?
-            </button>
           </>
         )}
       </div>

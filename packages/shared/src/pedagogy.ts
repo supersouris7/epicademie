@@ -34,6 +34,15 @@ export const REPORT_REASON_LABELS: Record<ReportReason, string> = {
 /** Motifs du signalement général (hors question), formulés simplement pour les enfants. */
 export const GENERAL_REPORT_REASONS = ['bug', 'affichage', 'son', 'difficulte', 'autre'] as const;
 
+/** Motifs du signalement d'une question précise (le reste relève du signalement général). */
+export const QUESTION_REPORT_REASONS = [
+  'mauvaise-reponse',
+  'ambigue',
+  'correction-incomprehensible',
+  'difficulte',
+  'autre',
+] as const;
+
 /** Nature d'un signalement : sur une question précise, ou général (écran, bug, son…). */
 export const REPORT_KINDS = ['question', 'general'] as const;
 

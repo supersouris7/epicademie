@@ -5,8 +5,8 @@ import { ApiError, request } from '../api/client.ts';
 import { GameButton } from '../ui/game/GameButton.tsx';
 
 /**
- * « Signaler un souci » général (bug, affichage, son, trop difficile…), accessible depuis le menu
- * principal, l'Espace parent et les combats. L'écran (route sans identifiant) et la version de
+ * « Signaler un problème sur cet écran » (bug, affichage, son, trop difficile…), accessible depuis le menu
+ * principal, l'Espace parent et, en mode debug, le drapeau de chaque écran. L'écran (route sans identifiant) et la version de
  * l'appli sont ajoutés automatiquement ; seule la précision facultative est saisie.
  */
 export function GeneralReportButton({ className = '' }: { readonly className?: string }) {
@@ -16,8 +16,8 @@ export function GeneralReportButton({ className = '' }: { readonly className?: s
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="Signaler un souci"
-        title="Signaler un souci"
+        aria-label="Signaler un problème sur cet écran"
+        title="Signaler un problème sur cet écran"
         className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full hover:bg-white/10 focus-visible:outline-4 focus-visible:outline-offset-2 ${className}`}
       >
         <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
@@ -61,13 +61,13 @@ export function GeneralReportDialog({ onClose }: { readonly onClose: () => void 
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       role="dialog"
       aria-modal="true"
-      aria-label="Signaler un souci"
+      aria-label="Signaler un problème sur cet écran"
     >
       <div className="cartoon bg-surface flex max-h-[90dvh] w-full max-w-md flex-col gap-3 overflow-y-auto p-5">
-        <h2 className="font-display text-2xl tracking-wide">Un souci ?</h2>
+        <h2 className="font-display text-2xl tracking-wide">Un problème sur cet écran ?</h2>
         {state === 'sent' ? (
           <>
-            <p role="status">Merci ! On va regarder ça.</p>
+            <p role="status">Merci ! On va regarder cet écran.</p>
             <GameButton onClick={onClose}>Fermer</GameButton>
           </>
         ) : (

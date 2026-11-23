@@ -15,6 +15,7 @@ import { formatAnswer } from '../../shared/question/answers.ts';
 import { MathText } from '../../shared/question/MathText.tsx';
 import { AdminGate, AdminShell, type AdminSection } from './AdminShell.tsx';
 import { Anomalies, Errors, Stats, WeakSkills } from './Insights.tsx';
+import { DebugMode } from './DebugMode.tsx';
 import { AdminButton, Badge, DataTable, inputClass, Panel } from './ui.tsx';
 import { useContent, useContentHistory, useReports, useUpdateContent, useUpdateReport } from './api.ts';
 
@@ -31,6 +32,7 @@ const SECTIONS = [
   { id: 'content', label: 'Notions', group: 'Contenu', panel: Contents },
   { id: 'anomalies', label: 'Anomalies', group: 'Surveillance', panel: Anomalies },
   { id: 'errors', label: 'Erreurs', group: 'Surveillance', panel: Errors },
+  { id: 'debug', label: 'Mode debug', group: 'Réglages', panel: DebugMode },
 ] as const satisfies readonly (AdminSection & { panel: () => React.ReactNode })[];
 
 export function AdminPage() {
