@@ -17,7 +17,8 @@ import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import { SpeechBubble } from '../../shared/ui/SpeechBubble.tsx';
 import { useToast } from '../../shared/ui/Toast.tsx';
 import { ChestReveal } from '../../shared/ui/game/ChestReveal.tsx';
-import { bestScore, CHRONO_MS, comboOf, PRESSURE_S, SURVIE_HEARTS, type DefiId } from './rules.ts';
+import { bestScore, comboOf, PRESSURE_S, type DefiId } from './rules.ts';
+import { DefiHud } from './DefiHud.tsx';
 import { useDefi, type DefiMiss, type Feedback } from './useDefi.ts';
 import { RecapScreen } from '../training/index.ts';
 
@@ -119,24 +120,23 @@ export function DefiPlay({ profile }: { readonly profile: Profile }) {
       className="mx-auto flex h-dvh max-w-6xl flex-col gap-2 px-3 py-3 sm:px-4"
     >
       <FlashOverlay flash={d.flash} reduce={reduce} />
-      <header className="flex items-center gap-3">
-        <HeroFace hero={profile.hero} expression={expression} size={52} />
-        <div className="flex flex-col leading-none">
-          <span className="font-display text-3xl tabular-nums" aria-label={`${d.score.points} points`}>
-            {points} <span className="text-base">pts</span>
-          </span>
-          <span className="text-muted text-sm font-bold">{d.score.correct} bonnes réponses</span>
-        </div>
-        <ComboBadge combo={combo} reduce={reduce} />
-        <span className="flex-1" />
-        {kind === 'survie' && <Hearts hearts={d.score.hearts} />}
-        <GameButton size="sm" variant="surface" onClick={d.stop}>
-          Arrêter
-        </GameButton>
-      </header>
-      {kind === 'chrono' && (
-        <TimeBar leftMs={d.leftMs} seconds={d.secondsLeft} pressure={pressure} flash={d.flash} reduce={reduce} />
-      )}
+      <DefiHud
+        kind={kind}
+        hero={profile.hero}
+        expression={expression}
+        points={points}
+        totalPoints={d.score.points}
+        correct={d.score.correct}
+        best={Math.max(d.previousBest, d.score.points)}
+        combo={combo}
+        hearts={d.score.hearts}
+        leftMs={d.leftMs}
+        seconds={d.secondsLeft}
+        pressure={pressure}
+        flash={d.flash}
+        reduce={reduce}
+        onStop={d.stop}
+      />
       <FeedbackLine kind={kind} flash={d.flash} reduce={reduce} />
       {d.question && (
         <motion.main
@@ -188,31 +188,6 @@ function heroExpression(
 const shakes = (reduce: boolean | null, pressure: boolean, flash: Feedback | null) =>
   !reduce && (pressure || flash?.correct === false);
 
-/** Gros « COMBO ×n » dès ×2. */
-function ComboBadge({ combo, reduce }: { readonly combo: number; readonly reduce: boolean | null }) {
-  if (combo <= 1) return null;
-  return (
-    <motion.span
-      key={combo}
-      initial={reduce ? false : { scale: 1.8, rotate: -8 }}
-      animate={{ scale: 1, rotate: 0 }}
-      className="font-display text-toon bg-primary rounded-xl px-3 py-1 text-2xl tracking-wider text-white"
-    >
-      COMBO ×{combo}
-    </motion.span>
-  );
-}
-
-function Hearts({ hearts }: { readonly hearts: number }) {
-  return (
-    <span role="img" aria-label={`${hearts} cœurs sur ${SURVIE_HEARTS}`} className="flex gap-0.5">
-      {Array.from({ length: SURVIE_HEARTS }, (_, i) => (
-        <GameIcon key={i} id={i < hearts ? 'icons-resources-life' : 'icons-resources-life-empty'} size="sm" />
-      ))}
-    </span>
-  );
-}
-
 /** Retour instantané : points gagnés, ou coût de l'erreur. */
 function FeedbackLine(p: { readonly kind: DefiId; readonly flash: Feedback | null; readonly reduce: boolean | null }) {
   const f = p.flash;
@@ -251,58 +226,6 @@ function FlashOverlay({ flash, reduce }: { readonly flash: Feedback | null; read
         />
       )}
     </AnimatePresence>
-  );
-}
-
-/** Gain de temps en secondes, au dixième près, virgule française (« 2 », « 4,5 »). */
-const formatGain = (ms: number) => String(Math.round(ms / 100) / 10).replace('.', ',');
-
-/** Chrono : barre qui se vide (inverse de la progression) et secondes ; +N s / −5 s animés. */
-function TimeBar(p: {
-  readonly leftMs: number;
-  readonly seconds: number;
-  readonly pressure: boolean;
-  readonly flash: Feedback | null;
-  readonly reduce: boolean | null;
-}) {
-  const pct = Math.min(100, (p.leftMs / Math.max(CHRONO_MS, p.leftMs)) * 100);
-  const pulse = p.pressure && !p.reduce ? 'animate-pulse' : '';
-  return (
-    <div className="relative flex items-center gap-3">
-      <div
-        role="progressbar"
-        aria-label="Temps restant"
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={Math.round(pct)}
-        className="bg-surface-2 border-outline h-5 flex-1 overflow-hidden rounded-full border-2"
-      >
-        <div
-          className={`h-full rounded-full transition-[width] duration-200 ease-linear ${p.pressure ? 'bg-danger' : 'bg-primary'} ${pulse}`}
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-      <span
-        role="timer"
-        className={`font-display min-w-20 rounded-full px-3 py-1 text-center text-xl tabular-nums ${p.pressure ? `bg-danger text-white ${pulse}` : 'bg-surface-2'}`}
-      >
-        ⏱ {p.seconds} s
-      </span>
-      <AnimatePresence>
-        {p.flash && !p.reduce && (
-          <motion.span
-            key={p.flash.id}
-            aria-hidden
-            initial={{ y: 0, opacity: 1, scale: 1.4 }}
-            animate={{ y: -18, opacity: 0, scale: 1 }}
-            transition={{ duration: 0.8 }}
-            className={`font-display absolute right-24 -bottom-1 text-2xl ${p.flash.correct ? 'text-success' : 'text-danger'}`}
-          >
-            {p.flash.correct ? `+${formatGain(p.flash.timeGainMs)} s` : '−5 s'}
-          </motion.span>
-        )}
-      </AnimatePresence>
-    </div>
   );
 }
 

@@ -1,15 +1,5 @@
 /** Modes de jeu : on choisit le mode, puis la matière. */
-export const MODE_IDS = [
-  'entrainement',
-  'boss',
-  'chrono',
-  'survie',
-  'arene',
-  'raid',
-  'quiz',
-  'course',
-  'evaluation',
-] as const;
+export const MODE_IDS = ['entrainement', 'boss', 'chrono', 'survie', 'arene', 'evaluation'] as const;
 export type ModeId = (typeof MODE_IDS)[number];
 
 export type ModeCategory = 'apprendre' | 'defis' | 'multi';
@@ -67,21 +57,6 @@ export const MODES: readonly ModeInfo[] = [
     pitch: 'Tes bonnes réponses attaquent les autres',
     category: 'multi',
     available: true,
-  },
-  { id: 'raid', name: 'Raid', pitch: 'Toute l’équipe contre un boss géant', category: 'multi', available: true },
-  {
-    id: 'quiz',
-    name: 'Quiz plateau',
-    pitch: 'Buzzer sur le téléphone, le plus rapide gagne',
-    category: 'multi',
-    available: true,
-  },
-  {
-    id: 'course',
-    name: 'Course de calcul',
-    pitch: 'Le premier à 20 bonnes réponses',
-    category: 'multi',
-    available: false,
   },
 ];
 

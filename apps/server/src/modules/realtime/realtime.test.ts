@@ -226,7 +226,7 @@ describe('temps réel', () => {
     });
   });
 
-  it('écran TV : voit le raid de sa famille, jamais celui d’une autre famille', async () => {
+  it('écran TV : voit le duel de sa famille, jamais celui d’une autre famille', async () => {
     const lea = await profile('Léa');
     const tom = await profile('Tom');
     const tvSocket = (cookie: string) => {
@@ -248,13 +248,13 @@ describe('temps réel', () => {
     const a = join(lea.id);
     const b = join(tom.id);
     await once<OnlinePlayer[]>(a, 'presence', (l) => l.length === 2);
-    a.emit('arena:create', { kind: 'raid', chapterId: 'm5-calcul', invite: [tom.id] });
+    a.emit('arena:create', { chapterId: 'm5-calcul', invite: [tom.id] });
     const invite = await once<ArenaInvite>(b, 'arena:invite');
     b.emit('arena:respond', { arenaId: invite.arenaId, accept: true });
     await once<ArenaView>(a, 'arena', (v) => v.players.every((p) => p.ready));
     a.emit('arena:start');
     const onTv = await once<ArenaView>(tv, 'arena', (v) => v.phase === 'playing');
-    expect(onTv).toMatchObject({ kind: 'raid', raid: { bossHp: 6, teamHearts: 4 } });
+    expect(onTv).toMatchObject({ phase: 'playing', players: [{ hearts: 3 }, { hearts: 3 }] });
     expect(onTv.question).not.toBeNull();
     // Un écran TV ne peut pas jouer, et une autre famille ne voit rien.
     tv.emit('arena:answer', { response: { kind: 'number', text: '1' } });

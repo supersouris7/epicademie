@@ -8,13 +8,8 @@ import { OnlineBanner } from '../realtime/index.ts';
 import { assetSrc } from '../../design/assets.ts';
 import { CATEGORY_COLORS, MODE_MOODS } from '../../shared/lib/modes.ts';
 
-/** Multijoueur : l'Arène (jouable) et les modes à venir ; les joueurs connectés en tête. */
-/** Écran de chaque mode multijoueur disponible. */
-const MULTI_ROUTES: Partial<Record<string, string>> = {
-  arene: '/arene',
-  raid: '/arene?mode=raid',
-  quiz: '/arene?mode=quiz',
-};
+/** Multijoueur : les Duels ; les joueurs connectés en tête. */
+const MULTI_ROUTES: Partial<Record<string, string>> = { arene: '/arene' };
 
 export function MultiModes({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();

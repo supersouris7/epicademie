@@ -118,10 +118,9 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByRole('button', { name: /à venir/ })).toHaveCount(0);
   await page.getByRole('button', { name: 'Retour' }).click();
   await nav.getByRole('button', { name: 'Multi' }).click();
-  // Multi : les Duels et le Raid sont jouables, les autres modes « À venir ».
+  // Multi : seuls les Duels sont proposés.
   await expect(page.getByRole('button', { name: /Duels/ })).toBeVisible();
-  await expect(page.getByRole('button', { name: /Raid/ })).toBeVisible();
-  await expect(page.getByRole('list', { name: 'Modes multijoueur' })).toContainText('À venir');
+  await expect(page.getByRole('list', { name: 'Modes multijoueur' }).getByRole('listitem')).toHaveCount(1);
 
   await nav.getByRole('button', { name: 'Paramètres' }).click();
   await expect(page.getByRole('button', { name: 'Mon héros' })).toHaveCount(0); // le héros se choisit dans l'onglet Héros

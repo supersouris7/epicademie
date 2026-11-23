@@ -2,6 +2,8 @@
 
 - Statut : Acceptée
 - Date : 2026-11-20
+- Mise à jour 2026-11-23 : le Raid (et le Quiz plateau, la Course de calcul) sont retirés du produit ;
+  seuls les Duels et le mode TV restent. Le texte « Raid » ci-dessous est conservé comme historique.
 
 ## Décision
 

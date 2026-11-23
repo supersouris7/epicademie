@@ -25,7 +25,6 @@ export const sourceOf = (mode: string): Observation['source'] => {
     case 'survie':
       return 'solo';
     case 'arene':
-    case 'quiz':
       return 'versus';
     default:
       return 'none';
