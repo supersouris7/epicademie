@@ -27,4 +27,28 @@ export const ECONOMY = {
     /** Boss : la médaille fixe la rareté, avec une chance de monter d'un cran (jamais de descendre). */
     bossUpgradeChance: 0.25,
   },
+  /**
+   * Arène d'évaluation (docs/adr/0030) : récompenses forfaitaires, jamais liées aux bonnes
+   * réponses ni à la vitesse. Origines et Maîtres : 1 fois par année scolaire et matière ;
+   * Progression : tous les 14 jours.
+   */
+  evaluation: {
+    participationXp: 40,
+    /** Hors période récompensée : pas de coffre. */
+    reducedXp: 20,
+    /** Progression refaite au moins 21 jours après le bilan précédent de la matière. */
+    regularityXp: 30,
+    regularityDays: 21,
+    /** Compétence « maîtrisée » pour la première fois de l'année scolaire. */
+    masteredXp: 15,
+    masteredCapXp: 60,
+    progressionCooldownDays: 14,
+    chest: 'commun',
+    /** Épreuve menée à son terme (aucune fin partielle) : le coffre monte d'un cran. */
+    chestPersevering: 'rare',
+  } as const satisfies {
+    chest: ChestRarity;
+    chestPersevering: ChestRarity;
+    [key: string]: number | string;
+  },
 } as const;

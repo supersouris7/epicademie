@@ -1,5 +1,15 @@
 /** Modes de jeu : on choisit le mode, puis la matière. */
-export const MODE_IDS = ['entrainement', 'boss', 'chrono', 'survie', 'arene', 'raid', 'quiz', 'course'] as const;
+export const MODE_IDS = [
+  'entrainement',
+  'boss',
+  'chrono',
+  'survie',
+  'arene',
+  'raid',
+  'quiz',
+  'course',
+  'evaluation',
+] as const;
 export type ModeId = (typeof MODE_IDS)[number];
 
 export type ModeCategory = 'apprendre' | 'defis' | 'multi';
@@ -43,6 +53,14 @@ export const MODES: readonly ModeInfo[] = [
     available: true,
   },
   { id: 'survie', name: 'Survie', pitch: 'Ça monte sans arrêt, 3 vies', category: 'defis', available: true },
+  {
+    id: 'evaluation',
+    name: 'Arène d’évaluation',
+    pitch: 'Fais le point : d’où tu pars, ce que tu sais, ce qui reste',
+    category: 'defis',
+    // L'écran du mode arrive avec le ticket suivant : tuile « À venir » d'ici là.
+    available: false,
+  },
   {
     id: 'arene',
     name: 'Duels',
