@@ -24,7 +24,7 @@ import { RecapScreen } from '../training/index.ts';
 const TITLES: Record<DefiId, string> = { chrono: 'Contre-la-montre', survie: 'Survie' };
 const RULES: Record<DefiId, string> = {
   chrono:
-    '60 secondes, et +2 s à chaque bonne réponse ! Une erreur coûte 5 s et casse ta série. Plus la question est difficile et plus tu réponds vite, plus tu marques de points ; enchaîne les bonnes réponses pour un COMBO jusqu’à ×5.',
+    '60 secondes, et chaque bonne réponse te rend du temps : un peu pour une question rapide, jusqu’à +10 s pour un problème long. Une erreur coûte 5 s et casse ta série. Plus la question est difficile et plus tu réponds vite, plus tu marques de points ; enchaîne les bonnes réponses pour un COMBO jusqu’à ×5.',
   survie:
     '3 cœurs. Chaque erreur coûte un cœur et casse ta série, et ça devient plus dur toutes les 5 bonnes réponses. Plus la question est difficile et plus tu réponds vite, plus tu marques de points ; enchaîne les bonnes réponses pour un COMBO jusqu’à ×5.',
 };
@@ -254,7 +254,10 @@ function FlashOverlay({ flash, reduce }: { readonly flash: Feedback | null; read
   );
 }
 
-/** Chrono : barre qui se vide (inverse de la progression) et secondes ; +2 s / −5 s animés. */
+/** Gain de temps en secondes, au dixième près, virgule française (« 2 », « 4,5 »). */
+const formatGain = (ms: number) => String(Math.round(ms / 100) / 10).replace('.', ',');
+
+/** Chrono : barre qui se vide (inverse de la progression) et secondes ; +N s / −5 s animés. */
 function TimeBar(p: {
   readonly leftMs: number;
   readonly seconds: number;
@@ -295,7 +298,7 @@ function TimeBar(p: {
             transition={{ duration: 0.8 }}
             className={`font-display absolute right-24 -bottom-1 text-2xl ${p.flash.correct ? 'text-success' : 'text-danger'}`}
           >
-            {p.flash.correct ? '+2 s' : '−5 s'}
+            {p.flash.correct ? `+${formatGain(p.flash.timeGainMs)} s` : '−5 s'}
           </motion.span>
         )}
       </AnimatePresence>
