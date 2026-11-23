@@ -11,8 +11,8 @@ vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.
 describe('signaler une question', () => {
   it('depuis l’entraînement : motif obligatoire, envoi avec la question exacte', async () => {
     const { user, server } = renderApp('/partie/entrainement/m5-calcul/m5-tables');
-    await user.click(await screen.findByRole('button', { name: 'Signaler un problème' }));
-    const dialog = screen.getByRole('dialog', { name: 'Signaler un problème' });
+    await user.click(await screen.findByRole('button', { name: 'Signaler cette question' }));
+    const dialog = screen.getByRole('dialog', { name: 'Signaler cette question' });
     const send = within(dialog).getByRole('button', { name: 'Envoyer' });
     expect(send).toBeDisabled();
     await user.click(within(dialog).getByRole('radio', { name: 'La réponse attendue est fausse' }));

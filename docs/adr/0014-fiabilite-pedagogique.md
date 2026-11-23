@@ -24,9 +24,11 @@ réponse ou un QCM aux propositions en double ferait douter l'enfant et le paren
   l'autre. Premier passage : 60 problèmes signalés, dont 2 vraies contradictions corrigées dans
   l'aire du disque et le volume du cylindre (rayon 2 : 2πr = πr² ; rayon 10 : 314 accepté et
   « non arrondi » à la fois).
-- **Signalements** : bouton « Signaler un problème » sur chaque question (entraînement, combat),
-  motif à choisir parmi six, précision facultative ; la question exacte (notion, niveau, graine,
+- **Signalements** : bouton « Signaler cette question » sur chaque question (entraînement, combat),
+  motif à choisir parmi cinq, précision facultative ; la question exacte (notion, niveau, graine,
   version) est enregistrée et régénérée dans la console.
+  Signalement général distinct (« Signaler un problème sur cet écran », menu, Espace parent, drapeau du mode debug
+  activable dans /admin, réglage propre à l’appareil).
 - **Administration** (`/admin`, rôle administrateur) : traitement des signalements, liste des
   notions et de leur état, désactivation/réactivation, marquage « relue » de la version, et
   **historique** de chaque décision (`content_events`).

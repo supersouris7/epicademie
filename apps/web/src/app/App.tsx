@@ -41,6 +41,7 @@ import { DefiPlay } from '../features/defis/index.ts';
 import { Notifications, Friends, Online, Ranking, RealtimeLink } from '../features/realtime/index.ts';
 import { About, Settings } from '../features/settings/index.ts';
 import { Chapters, Notions, TrainingPlay } from '../features/training/index.ts';
+import { DebugFlag } from '../shared/question/DebugFlag.tsx';
 import { ErrorBoundary } from './ErrorBoundary.tsx';
 
 /**
@@ -188,6 +189,7 @@ export function App() {
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
           </Routes>
+          <DebugFlag />
         </ParentGateProvider>
       </TermContext.Provider>
     </ErrorBoundary>

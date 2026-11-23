@@ -1,5 +1,6 @@
 import { screen, within } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { useDebugMode } from '../lib/debugMode.ts';
 import { renderApp } from '../../testing/renderApp.tsx';
 
 vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.ts')).socketModule);
@@ -7,7 +8,7 @@ vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.
 /** Signalement général : accessible depuis le menu principal, l'Espace parent et la question en cours. */
 
 async function sendFrom(user: ReturnType<typeof renderApp>['user'], reasonLabel: string) {
-  const dialog = await screen.findByRole('dialog', { name: 'Signaler un souci' });
+  const dialog = await screen.findByRole('dialog', { name: 'Signaler un problème sur cet écran' });
   const send = within(dialog).getByRole('button', { name: 'Envoyer' });
   expect(send).toBeDisabled();
   await user.click(within(dialog).getByRole('radio', { name: reasonLabel }));
@@ -19,7 +20,7 @@ async function sendFrom(user: ReturnType<typeof renderApp>['user'], reasonLabel:
 describe('signaler un souci', () => {
   it('depuis le menu principal : écran et version ajoutés automatiquement', async () => {
     const { user, server } = renderApp('/parametres');
-    await user.click(await screen.findByRole('button', { name: 'Signaler un souci' }));
+    await user.click(await screen.findByRole('button', { name: 'Signaler un problème sur cet écran' }));
     await sendFrom(user, 'Problème de son');
     expect(server.reports).toEqual([
       expect.objectContaining({
@@ -34,16 +35,51 @@ describe('signaler un souci', () => {
 
   it('depuis l’Espace parent', async () => {
     const { user, server } = renderApp('/parent', { parent: true });
-    await user.click(await screen.findByRole('button', { name: 'Signaler un souci' }));
+    await user.click(await screen.findByRole('button', { name: 'Signaler un problème sur cet écran' }));
     await sendFrom(user, 'Ça ne marche pas (bug)');
     expect(server.reports).toEqual([expect.objectContaining({ reason: 'bug', screen: '/parent' })]);
   });
 
-  it('depuis une question (entraînement, combat) : « Autre souci » ouvre le signalement général', async () => {
+  it('une question n’offre que le signalement de la question, sans « Autre souci »', async () => {
+    const { user } = renderApp('/partie/entrainement/m5-calcul/m5-tables');
+    await user.click(await screen.findByRole('button', { name: 'Signaler cette question' }));
+    const dialog = screen.getByRole('dialog', { name: 'Signaler cette question' });
+    expect(within(dialog).queryByRole('button', { name: /Autre souci/ })).toBeNull();
+    expect(within(dialog).queryByRole('radio', { name: 'Problème de son' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Signaler un problème sur cet écran' })).toBeNull();
+  });
+});
+
+describe('mode debug', () => {
+  afterEach(() => useDebugMode.getState().setEnabled(false));
+
+  it('désactivé par défaut : aucun drapeau', async () => {
+    renderApp('/partie/entrainement/m5-calcul/m5-tables');
+    await screen.findByRole('button', { name: 'Signaler cette question' });
+    expect(screen.queryByRole('button', { name: 'Signaler un problème sur cet écran' })).toBeNull();
+  });
+
+  it('activé : le drapeau ouvre le signalement de l’écran courant, y compris en partie', async () => {
+    useDebugMode.getState().setEnabled(true);
     const { user, server } = renderApp('/partie/entrainement/m5-calcul/m5-tables');
-    await user.click(await screen.findByRole('button', { name: 'Signaler un problème' }));
-    await user.click(screen.getByRole('button', { name: /Autre souci/ }));
+    await screen.findByRole('button', { name: 'Signaler cette question' });
+    await user.click(screen.getByRole('button', { name: 'Signaler un problème sur cet écran' }));
     await sendFrom(user, 'Problème d’affichage');
-    expect(server.reports).toEqual([expect.objectContaining({ kind: 'general', reason: 'affichage' })]);
+    expect(server.reports).toEqual([
+      expect.objectContaining({
+        kind: 'general',
+        reason: 'affichage',
+        screen: '/partie/entrainement/m5-calcul/m5-tables',
+      }),
+    ]);
+  });
+
+  it('s’active depuis l’administration', async () => {
+    const { user } = renderApp('/admin', { admin: true });
+    await user.click(await screen.findByRole('tab', { name: /Mode debug/ }));
+    const box = await screen.findByRole('checkbox', { name: /drapeau de signalement/ });
+    expect(box).not.toBeChecked();
+    await user.click(box);
+    expect(useDebugMode.getState().enabled).toBe(true);
   });
 });
