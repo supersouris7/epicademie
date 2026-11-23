@@ -10,7 +10,7 @@ let n = 0;
 export const uniqueEmail = () => `famille-${Date.now()}-${++n}@e2e.test`;
 
 /**
- * Inscription : arrive sur la création du 1er profil enfant. Par défaut, la famille prend
+ * Inscription puis validation de l'adresse par le lien (simulation) : arrive sur la création du 1er profil enfant. Par défaut, la famille prend
  * l'abonnement via le simulateur de paiement (tous les chapitres jouables) ; `premium: false`
  * garde la version gratuite.
  */
@@ -23,6 +23,8 @@ export async function signupFamily(
   await page.getByLabel('E-mail du parent').fill(email);
   await page.getByLabel('Mot de passe').fill(PASSWORD);
   await page.getByRole('button', { name: 'Créer le compte' }).click();
+  // Mode simulation (hors production, sans fournisseur d'e-mail) : le lien de validation est affiché.
+  await page.getByRole('link', { name: /Ouvrir le lien/ }).click();
   await expect(page).toHaveURL(/\/profils\/nouveau$/);
   if (premium) await subscribe(page);
   return email;

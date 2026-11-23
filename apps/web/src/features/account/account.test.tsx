@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { FAKE_PASSWORD, STUDENT_CODE } from '../../testing/fakeApi.ts';
+import { FAKE_PASSWORD, FAKE_VERIFICATION_TOKEN, STUDENT_CODE, UNVERIFIED_EMAIL } from '../../testing/fakeApi.ts';
 import { renderApp } from '../../testing/renderApp.tsx';
 
 vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.ts')).socketModule);
@@ -26,15 +26,66 @@ describe('connexion de l’appareil', () => {
     expect(server.calls.some((c) => c.path === '/auth/login')).toBe(true);
   });
 
-  it('inscription : mot de passe trop court refusé, puis création du 1er profil', async () => {
-    const { user } = renderApp('/inscription', { loggedIn: false, profiles: [] });
+  it('inscription : mot de passe trop court refusé, puis « vérifie ta boîte mail », puis lien → 1er profil', async () => {
+    const { user, server } = renderApp('/inscription', { loggedIn: false, profiles: [] });
     await user.type(await screen.findByLabelText('E-mail du parent'), 'nouveau@famille.test');
     await user.type(screen.getByLabelText('Mot de passe'), 'court');
     await user.click(screen.getByRole('button', { name: 'Créer le compte' }));
     expect(screen.getByRole('alert')).toHaveTextContent('au moins 12 caractères');
     await user.type(screen.getByLabelText('Mot de passe'), ' et assez long maintenant');
     await user.click(screen.getByRole('button', { name: 'Créer le compte' }));
+    // Aucune session à l'inscription : il faut ouvrir le lien reçu par e-mail.
+    expect(await screen.findByRole('heading', { name: 'Vérifie ta boîte mail' })).toBeInTheDocument();
+    expect(screen.getByRole('status')).toHaveTextContent('nouveau@famille.test');
+    await user.click(screen.getByRole('button', { name: 'Renvoyer le lien' }));
+    expect(await screen.findByText(/nouveau lien vient de partir/)).toBeInTheDocument();
+    expect(server.calls.find((c) => c.path === '/auth/email/resend')?.body).toEqual({ email: 'nouveau@famille.test' });
+    await user.click(screen.getByRole('link', { name: /Ouvrir le lien/ }));
     expect(await screen.findByRole('heading', { name: 'Nouveau joueur' })).toBeInTheDocument();
+    expect(server.calls.find((c) => c.path === '/auth/email/verify')?.body).toEqual({ token: FAKE_VERIFICATION_TOKEN });
+  });
+
+  it('connexion refusée tant que l’adresse n’est pas validée : message clair et « Renvoyer le lien »', async () => {
+    const { user, server } = renderApp('/connexion', { loggedIn: false });
+    await user.type(await screen.findByLabelText('E-mail du parent'), UNVERIFIED_EMAIL);
+    await user.type(screen.getByLabelText('Mot de passe'), FAKE_PASSWORD);
+    await user.click(screen.getByRole('button', { name: 'Se connecter' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('pas encore validée');
+    await user.click(screen.getByRole('button', { name: 'Renvoyer le lien' }));
+    await waitFor(() =>
+      expect(server.calls.find((c) => c.path === '/auth/email/resend')?.body).toEqual({ email: UNVERIFIED_EMAIL }),
+    );
+  });
+
+  it('lien déjà utilisé ou expiré : message, et demande d’un nouveau lien', async () => {
+    const { user, server } = renderApp('/email/verification?jeton=ancien-jeton-0123456789abcdefghijk', {
+      loggedIn: false,
+    });
+    expect(await screen.findByRole('heading', { name: 'Lien non valable' })).toBeInTheDocument();
+    expect(screen.getByRole('alert')).toHaveTextContent('déjà été utilisé');
+    await user.type(screen.getByLabelText('Ton e-mail'), 'moi@famille.test');
+    await user.click(screen.getByRole('button', { name: 'Renvoyer le lien' }));
+    await waitFor(() => expect(server.calls.some((c) => c.path === '/auth/email/resend')).toBe(true));
+    // Le lien n'a été présenté qu'une fois au serveur (usage unique).
+    expect(server.calls.filter((c) => c.path === '/auth/email/verify')).toHaveLength(1);
+  });
+
+  it('« Continuer avec Google » : proposé seulement si le serveur l’a configuré', async () => {
+    const off = renderApp('/connexion', { loggedIn: false });
+    await screen.findByLabelText('E-mail du parent');
+    await waitFor(() => expect(off.server.calls.some((c) => c.path === '/auth/options')).toBe(true));
+    expect(screen.queryByRole('link', { name: 'Continuer avec Google' })).not.toBeInTheDocument();
+    off.unmount();
+    renderApp('/inscription', { loggedIn: false, google: true });
+    expect(await screen.findByRole('link', { name: 'Continuer avec Google' })).toHaveAttribute(
+      'href',
+      '/api/v1/auth/google/start',
+    );
+  });
+
+  it('retour de Google en échec : message sur la page de connexion', async () => {
+    renderApp('/connexion?erreur=google', { loggedIn: false });
+    expect(await screen.findByRole('alert')).toHaveTextContent('Google impossible');
   });
 
   it('mot de passe oublié, puis nouveau mot de passe par le lien', async () => {

@@ -16,12 +16,22 @@ import {
 export function accountsRepo(db: Executor) {
   return {
     /** Crée la famille et son compte parent (dans la transaction de l'appelant). */
-    async createFamilyAccount(email: string, passwordHash: string, role: AccountRole = 'parent') {
+    async createFamilyAccount(
+      email: string,
+      passwordHash: string | null,
+      options: { verifiedAt?: Date | null; googleSub?: string } = {},
+    ) {
       const [family] = await db.insert(families).values({}).returning({ id: families.id });
       if (!family) throw new Error('création de famille sans retour');
       const [account] = await db
         .insert(accounts)
-        .values({ familyId: family.id, email, passwordHash, role })
+        .values({
+          familyId: family.id,
+          email,
+          passwordHash,
+          emailVerifiedAt: options.verifiedAt ?? null,
+          googleSub: options.googleSub ?? null,
+        })
         .returning();
       if (!account) throw new Error('création de compte sans retour');
       return account;

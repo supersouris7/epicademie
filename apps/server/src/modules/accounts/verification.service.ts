@@ -1,0 +1,130 @@
+import type { Signup, SignupResult } from '@questeo/shared';
+import type { Db } from '../../db/client.ts';
+import type { Clock } from '../../core/clock.ts';
+import { AppError, conflict } from '../../core/errors.ts';
+import { hashPassword } from '../../core/auth/password.ts';
+import { newToken, tokenHash } from '../../core/auth/tokens.ts';
+import type { Mailer } from '../../core/mail/mailer.ts';
+import { accountsRepo } from './accounts.repo.ts';
+import { verificationRepo } from './verification.repo.ts';
+import type { OpenedSession } from './student.service.ts';
+
+/** Validité d'un lien de validation d'adresse. */
+export const VERIFICATION_LINK_HOURS = 24;
+/** Délai minimal entre deux envois du lien de validation pour un même compte. */
+export const RESEND_COOLDOWN_SECONDS = 60;
+const MINUTE = 60_000;
+
+export interface VerificationDeps {
+  readonly db: Db;
+  readonly clock: Clock;
+  readonly mailer: Mailer;
+  readonly appUrl: () => string;
+  /** Simulation d'envoi hors production : le lien est aussi renvoyé dans la réponse (recette). */
+  readonly exposeLinks: boolean;
+  /** Ouvre la session d'appareil d'un compte. */
+  readonly open: (a: {
+    id: string;
+    email: string | null;
+    role: 'parent' | 'admin';
+    familyId: string;
+    autonomous: boolean;
+  }) => Promise<OpenedSession>;
+}
+
+/**
+ * Ouverture d'un compte avec e-mail : adresse validée par un lien (jeton à usage unique, haché en
+ * base) ou Google. Voir docs/operations/configuration.md.
+ */
+export function createVerificationService({ db, clock, mailer, appUrl, exposeLinks, open }: VerificationDeps) {
+  const repo = accountsRepo(db);
+  const vRepo = verificationRepo(db);
+  const later = (ms: number) => new Date(clock.now().getTime() + ms);
+
+  /** Émet un lien de validation (remplace le précédent), l'envoie, et renvoie le lien à exposer en simulation. */
+  const sendVerification = async (accountId: string, email: string): Promise<string | undefined> => {
+    const token = newToken();
+    await vRepo.replaceVerification({
+      tokenHash: tokenHash(token),
+      accountId,
+      expiresAt: later(VERIFICATION_LINK_HOURS * 60 * MINUTE),
+      createdAt: clock.now(),
+    });
+    const link = `${appUrl()}/email/verification?jeton=${token}`;
+    await mailer.send({
+      to: email,
+      subject: 'Academy Fighters : valide ton adresse e-mail',
+      text:
+        `Bonjour,\n\nPour valider ton adresse et ouvrir ton compte, ouvre ce lien (valable ${VERIFICATION_LINK_HOURS} heures, une seule fois) :\n` +
+        `${link}\n\nSi tu n’as rien demandé, ignore ce message : aucun compte ne sera utilisable.`,
+      link,
+    });
+    return exposeLinks ? link : undefined;
+  };
+
+  return {
+    /** Crée un compte NON vérifié : aucune session tant que le lien envoyé par e-mail n'est pas ouvert. */
+    async signup({ email, password }: Signup): Promise<SignupResult> {
+      if (await repo.findByEmail(email)) throw conflict('Un compte existe déjà avec cette adresse : connecte-toi.');
+      const hash = await hashPassword(password);
+      const account = await db.transaction((tx) => accountsRepo(tx).createFamilyAccount(email, hash));
+      const verificationLink = await sendVerification(account.id, email);
+      return { status: 'verification_required', email, ...(verificationLink ? { verificationLink } : {}) };
+    },
+
+    /** Ouvre le lien reçu (usage unique, 24 h) : adresse validée et session ouverte. */
+    async verifyEmail(token: string): Promise<OpenedSession> {
+      const account = await db.transaction(async (tx) => {
+        const v = await verificationRepo(tx).findVerificationForUpdate(tokenHash(token));
+        if (!v) throw new AppError('BAD_REQUEST', 'Ce lien n’est pas valide : demande-en un nouveau.');
+        if (v.usedAt) throw new AppError('GONE', 'Ce lien a déjà été utilisé : connecte-toi avec ton mot de passe.');
+        if (v.expiresAt <= clock.now()) throw new AppError('GONE', 'Ce lien a expiré : demande-en un nouveau.');
+        await verificationRepo(tx).markVerificationUsed(v.tokenHash, clock.now());
+        await verificationRepo(tx).markEmailVerified(v.accountId, clock.now());
+        return accountsRepo(tx).findById(v.accountId);
+      });
+      if (!account) throw new AppError('BAD_REQUEST', 'Ce lien n’est pas valide : demande-en un nouveau.');
+      return open({ ...account, autonomous: false });
+    },
+
+    /** Renvoie le lien ; réponse identique que l'adresse existe, soit déjà validée ou non (pas de fuite). */
+    async resendVerification(email: string): Promise<{ verificationLink?: string }> {
+      const account = await repo.findByEmail(email);
+      if (!account?.email || account.emailVerifiedAt) return {};
+      const last = await vRepo.lastVerificationAt(account.id);
+      if (last && clock.now().getTime() - last.getTime() < RESEND_COOLDOWN_SECONDS * 1000) return {};
+      const verificationLink = await sendVerification(account.id, account.email);
+      return verificationLink ? { verificationLink } : {};
+    },
+
+    /**
+     * Connexion Google (e-mail déjà vérifié par Google, contrôlé par l'appelant). Même e-mail = même
+     * compte. Un compte créé par mot de passe mais jamais validé perd ce mot de passe : sa
+     * propriétaire réelle est celle que Google vient d'authentifier.
+     */
+    async loginWithGoogle(identity: { sub: string; email: string }): Promise<OpenedSession & { created: boolean }> {
+      const now = clock.now();
+      const known = await vRepo.findByGoogleSub(identity.sub);
+      if (known) return { ...(await open({ ...known, autonomous: false })), created: false };
+      const sameEmail = await repo.findByEmail(identity.email);
+      if (sameEmail) {
+        if (sameEmail.googleSub) throw conflict('Cette adresse est déjà reliée à un autre compte Google.');
+        await db.transaction(async (tx) => {
+          await verificationRepo(tx).linkGoogle(
+            sameEmail.id,
+            identity.sub,
+            sameEmail.emailVerifiedAt ?? now,
+            !sameEmail.emailVerifiedAt,
+          );
+          await verificationRepo(tx).deleteVerificationsOf(sameEmail.id);
+        });
+        const linked = await repo.findById(sameEmail.id);
+        return { ...(await open({ ...(linked ?? sameEmail), autonomous: false })), created: false };
+      }
+      const account = await db.transaction((tx) =>
+        accountsRepo(tx).createFamilyAccount(identity.email, null, { verifiedAt: now, googleSub: identity.sub }),
+      );
+      return { ...(await open({ ...account, autonomous: false })), created: true };
+    },
+  };
+}

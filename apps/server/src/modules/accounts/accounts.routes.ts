@@ -2,6 +2,8 @@ import type { FastifyInstance, FastifyReply } from 'fastify';
 import { api } from '@questeo/shared';
 import { route } from '../../core/http/route.ts';
 import { readCookie, serializeCookie, SESSION_COOKIE } from '../../core/auth/cookies.ts';
+import type { Google } from '../../core/auth/google.ts';
+import { googleRoutes } from './google.routes.ts';
 import type { AccountsService, OpenedSession } from './accounts.service.ts';
 
 /**
@@ -11,6 +13,7 @@ import type { AccountsService, OpenedSession } from './accounts.service.ts';
 export function accountsRoutes(
   service: AccountsService,
   cookie: { secure: boolean; maxAgeDays: number; rateLimitMax: number },
+  google: Google | null = null,
 ) {
   const STRICT = { rateLimit: { max: cookie.rateLimitMax, timeWindow: '1 minute' } };
   const setSession = (reply: FastifyReply, opened: OpenedSession) => {
@@ -25,9 +28,13 @@ export function accountsRoutes(
     reply.header('cache-control', 'no-store');
   };
   return async (app: FastifyInstance) => {
-    route(app, api.signup, async ({ body, reply }) => setSession(reply, await service.signup(body)), {
+    route(app, api.signup, ({ body }) => service.signup(body), { config: STRICT });
+    route(app, api.verifyEmail, async ({ body, reply }) => setSession(reply, await service.verifyEmail(body.token)), {
       config: STRICT,
     });
+    route(app, api.resendVerification, ({ body }) => service.resendVerification(body.email), { config: STRICT });
+    route(app, api.authOptions, async () => ({ google: google !== null }));
+    if (google) googleRoutes(app, { service, google, secure: cookie.secure, strict: STRICT, setSession });
     route(
       app,
       api.signupStudent,

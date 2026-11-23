@@ -2,7 +2,7 @@ import path from 'node:path';
 import { randomBytes } from 'node:crypto';
 import { sql } from 'drizzle-orm';
 import pg from 'pg';
-import { buildApp, type App, type AppConfig } from '../app.ts';
+import { buildApp, type App, type AppConfig, type AppDeps } from '../app.ts';
 import { openDatabase, type Database } from '../db/client.ts';
 import { runMigrations } from '../db/migrations.ts';
 import { ALL_TABLES, subscriptions } from '../db/schema.ts';
@@ -38,6 +38,8 @@ export const testConfig = (overrides: Partial<AppConfig> = {}): AppConfig => ({
   cookieSecure: false,
   corsOrigins: null,
   sessionDays: 30,
+  mail: { production: false, brevoApiKey: null, from: 'Academy Fighters <noreply@test>' },
+  google: null,
   billing: {
     provider: 'simulateur',
     priceCents: 2499,
@@ -115,10 +117,15 @@ export interface TestHarnessOptions {
   readonly premium?: boolean;
   /** Appels HTTP sortants (prestataire de paiement simulé). */
   readonly fetcher?: typeof fetch;
+  /** Clés publiques de Google (tests de « Continuer avec Google »). */
+  readonly googleKeys?: AppDeps['googleKeys'];
 }
 
 /** Mot de passe des comptes de test. */
 export const TEST_PASSWORD = 'mot de passe de test 42';
+
+/** Jeton d'un lien `…?jeton=…` (validation d'e-mail, réinitialisation). */
+export const tokenOf = (link: string | undefined): string => /jeton=([\w-]+)/.exec(link ?? '')?.[1] ?? '';
 
 /** Valeur du cookie de session posé par une réponse (`af_session=…`), ou `''`. */
 export const sessionCookie = (res: LightMyRequestResponse): string => {
@@ -146,11 +153,12 @@ export async function createTestApp(options: TestHarnessOptions = {}) {
     random: options.random ?? systemRandom,
     mailer,
     fetcher: options.fetcher,
+    googleKeys: options.googleKeys,
   });
   options.routes?.(app.http);
   let accounts = 0;
 
-  /** Crée une famille (compte parent) et renvoie le cookie de sa session. */
+  /** Crée une famille (compte parent), ouvre le lien de validation reçu, et renvoie le cookie de sa session. */
   const signup = async (email = `parent${++accounts}@famille.test`) => {
     const res = await app.http.inject({
       method: 'POST',
@@ -158,7 +166,10 @@ export async function createTestApp(options: TestHarnessOptions = {}) {
       payload: { email, password: TEST_PASSWORD },
     });
     if (res.statusCode !== 201) throw new Error(`inscription de test refusée : ${res.body}`);
-    return { cookie: sessionCookie(res), me: res.json<Me>(), email };
+    const token = tokenOf(mailer.outbox.at(-1)?.link);
+    const verified = await app.http.inject({ method: 'POST', url: '/api/v1/auth/email/verify', payload: { token } });
+    if (verified.statusCode !== 200) throw new Error(`validation de test refusée : ${verified.body}`);
+    return { cookie: sessionCookie(verified), me: verified.json<Me>(), email };
   };
   /** Paiement réussi enregistré directement (abonnement de la famille de test). */
   const subscribe = async (familyId: string) => {

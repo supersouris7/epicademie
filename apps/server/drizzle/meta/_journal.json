@@ -162,6 +162,13 @@
       "when": 1795500000000,
       "tag": "0022_arene_evaluation",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1795600000000,
+      "tag": "0023_verification_email",
+      "breakpoints": true
     }
   ]
 }

@@ -67,6 +67,21 @@ const EnvSchema = z.object({
   BILLING_PROVIDER: z.enum(['stripe', 'simulateur', 'aucun']).optional(),
   STRIPE_SECRET_KEY: z.string().startsWith('sk_').optional(),
   STRIPE_WEBHOOK_SECRET: z.string().startsWith('whsec_').optional(),
+  /**
+   * Environnement applicatif : `production` (par défaut si NODE_ENV=production) impose un
+   * fournisseur d'e-mails et ne renvoie jamais de lien secret dans une réponse. Toute autre
+   * valeur (ex. `recette`) autorise la simulation d'envoi.
+   */
+  APP_ENV: z.string().trim().min(1).max(30).optional(),
+  /** Clé de l'API transactionnelle Brevo ; absente : simulation (interdite en production). */
+  BREVO_API_KEY: z.string().min(10).optional(),
+  /** Expéditeur des e-mails : `adresse@domaine` ou `Nom <adresse@domaine>`. */
+  MAIL_FROM: z.string().min(3).max(200).optional(),
+  /** « Continuer avec Google » (OpenID Connect) ; bouton masqué si l'une des deux manque. */
+  GOOGLE_CLIENT_ID: z.string().min(5).optional(),
+  GOOGLE_CLIENT_SECRET: z.string().min(5).optional(),
+  /** URL de retour déclarée chez Google (défaut : PUBLIC_URL + /api/v1/auth/google/callback). */
+  GOOGLE_REDIRECT_URI: z.url().optional(),
 });
 
 export interface ServerConfig {
@@ -92,6 +107,22 @@ export interface ServerConfig {
   readonly cookieSecure: boolean;
   readonly sessionDays: number;
   readonly billing: BillingConfig;
+  readonly mail: MailConfig;
+  readonly google: GoogleConfig | null;
+}
+
+export interface MailConfig {
+  /** Vrai en production : les liens secrets ne sortent jamais du serveur. */
+  readonly production: boolean;
+  /** `null` : mode simulation (lien journalisé ; renvoyé dans la réponse hors production). */
+  readonly brevoApiKey: string | null;
+  readonly from: string;
+}
+
+export interface GoogleConfig {
+  readonly clientId: string;
+  readonly clientSecret: string;
+  readonly redirectUri: string;
 }
 
 export interface BillingConfig {
@@ -140,6 +171,38 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
     cookieSecure: e.COOKIE_SECURE ?? production,
     sessionDays: e.SESSION_DAYS,
     billing: billingConfig(e, production),
+    mail: mailConfig(e),
+    google: googleConfig(e),
+  };
+}
+
+const isProduction = (e: z.infer<typeof EnvSchema>) => (e.APP_ENV ?? e.NODE_ENV) === 'production';
+
+/** E-mails : sans clé Brevo, simulation ; en production, démarrage refusé. */
+function mailConfig(e: z.infer<typeof EnvSchema>): MailConfig {
+  const production = isProduction(e);
+  if (production && !e.BREVO_API_KEY) {
+    throw new ConfigError(
+      'BREVO_API_KEY est obligatoire en production (envoi des liens de validation d’e-mail) : ' +
+        'définissez-la, ou APP_ENV=recette pour une recette sans fournisseur (liens simulés).',
+    );
+  }
+  if (e.BREVO_API_KEY && !e.MAIL_FROM) throw new ConfigError('BREVO_API_KEY exige MAIL_FROM (adresse expéditrice)');
+  return {
+    production,
+    brevoApiKey: e.BREVO_API_KEY ?? null,
+    from: e.MAIL_FROM ?? 'Academy Fighters <noreply@localhost>',
+  };
+}
+
+/** Google : actif seulement si identifiant et secret sont tous deux fournis. */
+function googleConfig(e: z.infer<typeof EnvSchema>): GoogleConfig | null {
+  if (!e.GOOGLE_CLIENT_ID || !e.GOOGLE_CLIENT_SECRET) return null;
+  const base = (e.PUBLIC_URL ?? `http://localhost:${e.PORT}`).replace(/\/+$/, '');
+  return {
+    clientId: e.GOOGLE_CLIENT_ID,
+    clientSecret: e.GOOGLE_CLIENT_SECRET,
+    redirectUri: e.GOOGLE_REDIRECT_URI ?? `${base}/api/v1/auth/google/callback`,
   };
 }
 
