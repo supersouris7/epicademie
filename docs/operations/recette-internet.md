@@ -84,3 +84,19 @@ Pour couper un testeur : supprimer sa ligne et recharger Caddy.
 Utiliser un nom basé sur l'adresse (`<IP-avec-tirets>.sslip.io`) : remplacer l'adresse en tête du
 `Caddyfile` par ce nom (certificat ordinaire), rediriger l'adresse nue vers ce nom, et mettre
 `PUBLIC_URL` à jour dans `.env`.
+
+## Contrôles de sécurité (audit du 23/11/2026)
+
+Vérifié : ports exposés (22, 80, 443/tcp, 443/udp seulement ; 2019 et 3000 en local), TLS 1.2/1.3,
+certificat d'adresse IP valide (renouvellement seul), porte d'accès sur toutes les routes (chemins
+encodés, `//`, `..`, méthodes inhabituelles), limites de débit avec adresse réelle (en-tête
+`X-Forwarded-For` du client ignoré), conteneur applicatif sans privilège, Docker sans privilèges
+sans accès à l'hôte, `/home/ubuntu` illisible pour `caddy` et `recette`.
+
+Points connus, acceptés (risque faible) :
+
+- une requête dont l'en-tête `Host` n'est pas l'adresse du site reçoit un `200` vide de Caddy
+  (aucune transmission à l'application) ;
+- la redirection automatique 80→443 renvoie `Server: Caddy` (sans version) ;
+- le fail2ban ignore l'adresse de l'atelier lui-même : un test de bannissement doit venir d'ailleurs
+  (le filtre se vérifie avec `fail2ban-regex /var/log/caddy/access.log caddy-auth`).
