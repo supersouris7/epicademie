@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { ProgressBar } from './ProgressBar.tsx';
 import { GameIcon } from './GameIcon.tsx';
+import { mustFlip } from '../../../design/orientation.ts';
 
 const nf = (n: number) => n.toLocaleString('fr-FR');
 
@@ -97,7 +98,13 @@ export function BossHealthBar({ name, hp, maxHp, portrait }: BossHealthBarProps)
   return (
     <div className="flex items-center">
       <div className="cartoon bg-accent-strong relative z-10 -mr-4 h-16 w-16 shrink-0 overflow-hidden rounded-full">
-        <GameIcon id={portrait} size={64} />
+        {/* Posé à gauche : le visage regarde vers le centre de l'écran, à droite. */}
+        <span
+          className="block h-full w-full"
+          style={{ transform: mustFlip(portrait, 'right') ? 'scaleX(-1)' : undefined }}
+        >
+          <GameIcon id={portrait} size={64} />
+        </span>
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <span className="bg-accent-strong font-display text-toon w-fit rounded-r-full py-0.5 pr-5 pl-6 text-lg">

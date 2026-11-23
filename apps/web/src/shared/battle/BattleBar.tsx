@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { HERO_NAMES, type HeroId } from '@questeo/shared';
 import { characterSrc, type HeroExpression } from '../../design/assets.ts';
+import { mustFlip } from '../../design/orientation.ts';
 import { HeroFace } from './HeroFace.tsx';
 import { HUD_FRAME, HudBar as LifeBar, HudPortrait as Portrait } from '../ui/game/Hud.tsx';
 
@@ -116,7 +117,8 @@ export function BattleBar(p: BattleBarProps) {
               alt=""
               aria-hidden
               className="h-[52px] w-[52px] object-contain"
-              style={{ filter: p.enemyFilter }}
+              // Posé à droite : le visage regarde vers le centre (donc le héros), à gauche.
+              style={{ filter: p.enemyFilter, transform: mustFlip(p.enemyImage, 'left') ? 'scaleX(-1)' : undefined }}
             />
           )}
         </Portrait>

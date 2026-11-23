@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { AnimatePresence, motion, useReducedMotion, type TargetAndTransition } from 'motion/react';
 import { HERO_NAMES, type HeroId } from '@questeo/shared';
 import { assetSrc, characterSrc, type AnimationState } from '../../design/assets.ts';
+import { mustFlip } from '../../design/orientation.ts';
 import { CharacterSprite } from '../ui/game/CharacterSprite.tsx';
 import { STAGE_MAX_RATIO, useArenaImage, type ArenaImage } from './arena.ts';
 
@@ -277,9 +278,9 @@ const BOSS_BREATH: TargetAndTransition = {
 function EnemyFigure({ enemy, state }: { readonly enemy: ArenaEnemy; readonly state: EnemyState }) {
   const reduce = useReducedMotion();
   // Une image par état quand elle est livrée ; sinon l'image d'attente, animée selon l'état.
-  const src =
-    (state !== 'idle' ? assetSrc(enemy.poses?.[state] ?? `${enemy.image}-${state}`) : null) ??
-    characterSrc(enemy.poses?.idle ?? enemy.image);
+  const stateId = enemy.poses?.[state] ?? `${enemy.image}-${state}`;
+  const shownId = state !== 'idle' && assetSrc(stateId) ? stateId : (enemy.poses?.idle ?? enemy.image);
+  const src = characterSrc(shownId);
   return (
     <motion.div
       key={state}
@@ -295,7 +296,8 @@ function EnemyFigure({ enemy, state }: { readonly enemy: ArenaEnemy; readonly st
           aria-hidden
           draggable={false}
           className="h-full w-full object-contain"
-          style={{ filter: enemy.filter }}
+          // L'adversaire regarde toujours le héros (à gauche).
+          style={{ filter: enemy.filter, transform: mustFlip(shownId, 'left') ? 'scaleX(-1)' : undefined }}
         />
       )}
       {state === 'hurt' && (
