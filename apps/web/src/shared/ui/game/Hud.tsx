@@ -34,12 +34,14 @@ const FILLS = {
   low: 'linear-gradient(180deg,#ff8a7a,#e23b2e)',
   boss: 'linear-gradient(180deg,#ff6b6b,#c2183a)',
   xp: 'linear-gradient(180deg,#9ff0ff,#2bb3e6)',
+  time: 'linear-gradient(180deg,#9ff0ff,#2bb3e6)',
 } as const;
 
 /**
  * Barre de jeu de combat : segments, remplissage jaune→orange (rouge au dernier point de vie),
  * traînée blanche qui rattrape la valeur restante après un coup. Se vide vers le centre.
  * `kind="xp"` : barre d'expérience (bleue, sans alerte), découpée en `segments` cases.
+ * `kind="time"` : jauge de temps (bleue), rouge et pulsante quand `alert` ; `hit` rejoue la traînée.
  */
 export function HudBar({
   side,
@@ -49,6 +51,7 @@ export function HudBar({
   role,
   hit = 0,
   kind = 'life',
+  alert,
   segments,
   className = '',
 }: {
@@ -58,14 +61,16 @@ export function HudBar({
   readonly label: string;
   readonly role: 'img' | 'progressbar';
   readonly hit?: number;
-  readonly kind?: 'life' | 'boss' | 'xp';
+  readonly kind?: 'life' | 'boss' | 'xp' | 'time';
+  /** Force l'état d'alerte (rouge) ; par défaut : dernier point d'une barre de vie. */
+  readonly alert?: boolean;
   /** Nombre de cases ; par défaut une par point (vies). */
   readonly segments?: number;
   readonly className?: string;
 }) {
   const reduce = useReducedMotion();
   const pct = max > 0 ? Math.max(0, Math.min(1, value / max)) * 100 : 0;
-  const low = kind === 'life' && value <= 1;
+  const low = alert ?? (kind === 'life' && value <= 1);
   const fill = low ? FILLS.low : FILLS[kind];
   const origin = side === 'left' ? 'right-0' : 'left-0';
   const a11y =
