@@ -36,13 +36,27 @@ describe('connexion de l’appareil', () => {
     await user.click(screen.getByRole('button', { name: 'Créer le compte' }));
     // Aucune session à l'inscription : il faut ouvrir le lien reçu par e-mail.
     expect(await screen.findByRole('heading', { name: 'Vérifie ta boîte mail' })).toBeInTheDocument();
+    // Message identique que l'adresse soit libre ou déjà prise (pas d'énumération).
     expect(screen.getByRole('status')).toHaveTextContent('nouveau@famille.test');
+    expect(screen.getByRole('status')).toHaveTextContent('Si l’adresse');
+    expect(screen.getByRole('status')).toHaveTextContent('peut être utilisée');
     await user.click(screen.getByRole('button', { name: 'Renvoyer le lien' }));
     expect(await screen.findByText(/nouveau lien vient de partir/)).toBeInTheDocument();
     expect(server.calls.find((c) => c.path === '/auth/email/resend')?.body).toEqual({ email: 'nouveau@famille.test' });
     await user.click(screen.getByRole('link', { name: /Ouvrir le lien/ }));
+    // Le lien seul ne suffit pas : le mot de passe est exigé ; un mauvais mot de passe laisse réessayer.
+    await user.type(await screen.findByLabelText('Mot de passe du compte'), 'pas le bon');
+    await user.click(screen.getByRole('button', { name: 'Valider mon adresse' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Mot de passe incorrect');
+    expect(screen.getByRole('link', { name: /Mot de passe oublié/ })).toHaveAttribute('href', '/mot-de-passe-oublie');
+    await user.clear(screen.getByLabelText('Mot de passe du compte'));
+    await user.type(screen.getByLabelText('Mot de passe du compte'), FAKE_PASSWORD);
+    await user.click(screen.getByRole('button', { name: 'Valider mon adresse' }));
     expect(await screen.findByRole('heading', { name: 'Nouveau joueur' })).toBeInTheDocument();
-    expect(server.calls.find((c) => c.path === '/auth/email/verify')?.body).toEqual({ token: FAKE_VERIFICATION_TOKEN });
+    expect(server.calls.filter((c) => c.path === '/auth/email/verify').at(-1)?.body).toEqual({
+      token: FAKE_VERIFICATION_TOKEN,
+      password: FAKE_PASSWORD,
+    });
   });
 
   it('connexion refusée tant que l’adresse n’est pas validée : message clair et « Renvoyer le lien »', async () => {
@@ -61,6 +75,8 @@ describe('connexion de l’appareil', () => {
     const { user, server } = renderApp('/email/verification?jeton=ancien-jeton-0123456789abcdefghijk', {
       loggedIn: false,
     });
+    await user.type(await screen.findByLabelText('Mot de passe du compte'), FAKE_PASSWORD);
+    await user.click(screen.getByRole('button', { name: 'Valider mon adresse' }));
     expect(await screen.findByRole('heading', { name: 'Lien non valable' })).toBeInTheDocument();
     expect(screen.getByRole('alert')).toHaveTextContent('déjà été utilisé');
     await user.type(screen.getByLabelText('Ton e-mail'), 'moi@famille.test');

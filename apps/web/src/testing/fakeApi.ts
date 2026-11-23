@@ -205,6 +205,9 @@ function authHandlers(options: FakeApiOptions) {
       if ((body as { token: string }).token !== FAKE_VERIFICATION_TOKEN) {
         throw new FakeError(410, 'GONE', 'Ce lien a déjà été utilisé : connecte-toi avec ton mot de passe.');
       }
+      if ((body as { password: string }).password !== FAKE_PASSWORD) {
+        throw new FakeError(401, 'UNAUTHORIZED', 'Mot de passe incorrect : saisis celui choisi à l’inscription.');
+      }
       Object.assign(session, { loggedIn: true, parent: true });
       return me();
     },

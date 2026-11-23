@@ -6,7 +6,7 @@ import { buildApp, type App, type AppConfig, type AppDeps } from '../app.ts';
 import { openDatabase, type Database } from '../db/client.ts';
 import { runMigrations } from '../db/migrations.ts';
 import { ALL_TABLES, subscriptions } from '../db/schema.ts';
-import { memoryMailer } from '../core/mail/mailer.ts';
+import { memoryMailer, type Mailer } from '../core/mail/mailer.ts';
 import { systemRandom, type Random } from '../core/random.ts';
 import type { Clock } from '../core/clock.ts';
 import type { InjectOptions, LightMyRequestResponse } from 'fastify';
@@ -115,6 +115,8 @@ export interface TestHarnessOptions {
   readonly routes?: (http: App['http']) => void;
   /** La famille de test a l'abonnement (par défaut : oui, tous les chapitres sont jouables). */
   readonly premium?: boolean;
+  /** Enveloppe de la boîte d'envoi en mémoire (ex. un fournisseur lent pour certaines adresses). */
+  readonly wrapMailer?: (inner: Mailer) => Mailer;
   /** Appels HTTP sortants (prestataire de paiement simulé). */
   readonly fetcher?: typeof fetch;
   /** Clés publiques de Google (tests de « Continuer avec Google »). */
@@ -151,7 +153,7 @@ export async function createTestApp(options: TestHarnessOptions = {}) {
     database,
     clock,
     random: options.random ?? systemRandom,
-    mailer,
+    mailer: options.wrapMailer?.(mailer) ?? mailer,
     fetcher: options.fetcher,
     googleKeys: options.googleKeys,
   });
@@ -166,8 +168,13 @@ export async function createTestApp(options: TestHarnessOptions = {}) {
       payload: { email, password: TEST_PASSWORD },
     });
     if (res.statusCode !== 201) throw new Error(`inscription de test refusée : ${res.body}`);
+    await app.mailIdle();
     const token = tokenOf(mailer.outbox.at(-1)?.link);
-    const verified = await app.http.inject({ method: 'POST', url: '/api/v1/auth/email/verify', payload: { token } });
+    const verified = await app.http.inject({
+      method: 'POST',
+      url: '/api/v1/auth/email/verify',
+      payload: { token, password: TEST_PASSWORD },
+    });
     if (verified.statusCode !== 200) throw new Error(`validation de test refusée : ${verified.body}`);
     return { cookie: sessionCookie(verified), me: verified.json<Me>(), email };
   };
@@ -217,7 +224,10 @@ export async function createTestApp(options: TestHarnessOptions = {}) {
       await database.reset();
       family = await defaultFamily();
     },
+    /** Attend les e-mails détachés en cours (envoi hors réponse). */
+    mailIdle: app.mailIdle,
     async close() {
+      await app.mailIdle();
       await app.http.close();
       await database.close();
     },

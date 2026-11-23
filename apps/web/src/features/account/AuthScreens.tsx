@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { useId, useState, type ReactNode } from 'react';
 import { Link, Navigate, Outlet, useLocation, useNavigate, useSearchParams } from 'react-router';
 import { PASSWORD_MIN } from '@questeo/shared';
 import { ApiError } from '../../shared/api/client.ts';
@@ -312,8 +312,9 @@ function CheckMailScreen({ email, link }: { readonly email: string; readonly lin
         <div className="flex items-center gap-3">
           <Questy mood="happy" size={72} />
           <p className="text-lg" role="status">
-            Un e-mail vient de partir vers <strong>{email}</strong>. Ouvre le lien qu’il contient (valable 24 heures)
-            pour activer le compte.
+            Si l’adresse <strong>{email}</strong> peut être utilisée, un lien de confirmation vient d’être envoyé.
+            Ouvre-le (valable 24 heures), puis saisis le mot de passe choisi pour activer le compte. Si un compte existe
+            déjà avec cette adresse, tu reçois un message qui l’explique.
           </p>
         </div>
         <p className="text-muted">
@@ -333,51 +334,75 @@ function CheckMailScreen({ email, link }: { readonly email: string; readonly lin
   );
 }
 
-/** Page du lien reçu par e-mail : valide l'adresse (une seule fois) et ouvre la session. */
+/**
+ * Page du lien reçu par e-mail : pour valider l'adresse, on saisit aussi le mot de passe choisi à
+ * l'inscription (preuve que c'est bien la personne qui a créé le compte). Qui ne le connaît pas passe
+ * par « Mot de passe oublié », qui valide aussi l'adresse.
+ */
 export function VerifyEmailScreen() {
   const token = useSearchParams()[0].get('jeton') ?? '';
   const navigate = useNavigate();
   const setMe = useSetMe();
-  const [error, setError] = useState<string | null>(token ? null : 'Ce lien n’est pas valide : demande-en un nouveau.');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  /** Lien inutilisable (périmé, déjà utilisé, absent) : on propose d'en demander un autre. */
+  const [dead, setDead] = useState<string | null>(token ? null : 'Ce lien n’est pas valide : demande-en un nouveau.');
   const [email, setEmail] = useState('');
-  // Le lien est à usage unique : un seul appel, même si React rejoue l'effet en développement.
-  const started = useRef(false);
-  useEffect(() => {
-    if (!token || started.current) return;
-    started.current = true;
-    verifyEmail(token)
-      .then((me) => {
-        setMe(me);
-        void navigate('/profils/nouveau', { replace: true });
-      })
-      .catch((err: unknown) => setError(message(err, 'Validation impossible pour le moment.')));
-  }, [token, navigate, setMe]);
-  if (!error) {
+  if (dead) {
     return (
-      <PageShell title="Validation de l’adresse">
-        <p className="text-lg" role="status">
-          Validation en cours…
-        </p>
+      <PageShell title="Lien non valable" back="/connexion">
+        <div className="mx-auto flex w-full max-w-md flex-col gap-4">
+          <div className="flex items-center gap-3">
+            <Questy mood="sad" size={72} />
+            <p role="alert" className="text-lg font-bold">
+              {dead}
+            </p>
+          </div>
+          <p>Un lien ne marche qu’une fois et pendant 24 heures. Indique ton adresse pour en recevoir un nouveau.</p>
+          <Field label="Ton e-mail" type="email" autoComplete="email" value={email} onChange={setEmail} />
+          <ResendVerification email={email} />
+          <Link to="/connexion" className="text-center font-bold underline">
+            J’ai déjà validé : me connecter
+          </Link>
+        </div>
       </PageShell>
     );
   }
   return (
-    <PageShell title="Lien non valable" back="/connexion">
-      <div className="mx-auto flex w-full max-w-md flex-col gap-4">
-        <div className="flex items-center gap-3">
-          <Questy mood="sad" size={72} />
-          <p role="alert" className="text-lg font-bold">
-            {error}
+    <AuthForm
+      title="Validation de l’adresse"
+      intro="Dernière étape : saisis le mot de passe choisi à l’inscription pour activer le compte."
+      submit="Valider mon adresse"
+      error={error}
+      onSubmit={async () => {
+        try {
+          setMe(await verifyEmail(token, password));
+          void navigate('/profils/nouveau', { replace: true });
+        } catch (err) {
+          // Mot de passe refusé : le lien reste valable, on réessaie ici. Autre refus : lien à renouveler.
+          if (err instanceof ApiError && err.status === 401) setError(err.message);
+          else setDead(message(err, 'Validation impossible pour le moment.'));
+        }
+      }}
+      footer={
+        <>
+          <p className="text-muted text-sm font-normal">
+            Tu ne connais pas ce mot de passe (ce n’est pas toi qui as créé le compte) ?
           </p>
-        </div>
-        <p>Un lien ne marche qu’une fois et pendant 24 heures. Indique ton adresse pour en recevoir un nouveau.</p>
-        <Field label="Ton e-mail" type="email" autoComplete="email" value={email} onChange={setEmail} />
-        <ResendVerification email={email} />
-        <Link to="/connexion" className="text-center font-bold underline">
-          J’ai déjà validé : me connecter
-        </Link>
-      </div>
-    </PageShell>
+          <Link to="/mot-de-passe-oublie" className="underline">
+            Mot de passe oublié : valider l’adresse et choisir un mot de passe
+          </Link>
+        </>
+      }
+    >
+      <Field
+        label="Mot de passe du compte"
+        type="password"
+        autoComplete="current-password"
+        value={password}
+        onChange={setPassword}
+      />
+    </AuthForm>
   );
 }
 

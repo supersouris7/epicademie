@@ -25,6 +25,9 @@ export async function signupFamily(
   await page.getByRole('button', { name: 'Créer le compte' }).click();
   // Mode simulation (hors production, sans fournisseur d'e-mail) : le lien de validation est affiché.
   await page.getByRole('link', { name: /Ouvrir le lien/ }).click();
+  // Le lien seul ne suffit pas : le mot de passe choisi à l'inscription est demandé.
+  await page.getByLabel('Mot de passe du compte').fill(PASSWORD);
+  await page.getByRole('button', { name: 'Valider mon adresse' }).click();
   await expect(page).toHaveURL(/\/profils\/nouveau$/);
   if (premium) await subscribe(page);
   return email;

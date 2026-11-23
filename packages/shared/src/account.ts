@@ -73,7 +73,9 @@ export const SignupResultSchema = z.object({
 export type SignupResult = z.infer<typeof SignupResultSchema>;
 export const EmailResendSchema = z.object({ email: EmailSchema });
 export const EmailResendResultSchema = z.object({ verificationLink: z.string().optional() });
-export const EmailVerifySchema = z.object({ token: z.string().min(20).max(200) });
+/** Validation de l'adresse : le lien seul ne suffit pas, le mot de passe du compte est exigé. */
+export const EmailVerifySchema = z.object({ token: z.string().min(20).max(200), password: z.string().min(1).max(200) });
+export type EmailVerify = z.infer<typeof EmailVerifySchema>;
 /** Modes d'ouverture de compte proposés par ce serveur (bouton Google masqué si non configuré). */
 export const AuthOptionsSchema = z.object({ google: z.boolean() });
 

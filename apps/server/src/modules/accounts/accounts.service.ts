@@ -275,6 +275,7 @@ export function createAccountsService({
         await r.setPassword(reset.accountId, hash);
         // Le lien reçu par e-mail prouve aussi que l'adresse est bien celle du titulaire.
         await verificationRepo(tx).markEmailVerified(reset.accountId, clock.now());
+        await verificationRepo(tx).deleteVerificationsOf(reset.accountId);
         await r.markResetUsed(reset.tokenHash, clock.now());
         await r.deleteSessionsOf(reset.accountId);
       });

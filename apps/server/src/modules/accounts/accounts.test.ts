@@ -33,9 +33,9 @@ describe('inscription et connexion', () => {
     expect(t.mailer.outbox.at(-1)?.to).toBe('parent.durand@exemple.fr');
   });
 
-  it('refus : adresse déjà prise, mot de passe trop court, adresse invalide', async () => {
+  it('refus : mot de passe trop court, adresse invalide ; adresse déjà prise → même réponse qu’une adresse libre', async () => {
     await signupRes('a@exemple.fr');
-    expect((await signupRes('A@exemple.fr')).statusCode).toBe(409);
+    expect((await signupRes('A@exemple.fr')).statusCode).toBe(201);
     expect((await signupRes('b@exemple.fr', 'court')).statusCode).toBe(400);
     expect((await signupRes('pas-une-adresse')).statusCode).toBe(400);
   });

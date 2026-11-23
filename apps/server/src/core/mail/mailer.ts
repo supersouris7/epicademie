@@ -67,3 +67,31 @@ export function memoryMailer(): Mailer & { readonly outbox: Mail[] } {
     },
   };
 }
+
+/**
+ * Envoi détaché : `send` rend la main aussitôt, sans attendre le fournisseur, pour que le temps de
+ * réponse d'une route ne dépende ni de lui ni de l'existence de l'adresse. Une erreur d'envoi est
+ * journalisée (nature seulement : ni destinataire, ni contenu, ni lien). `idle()` attend les envois en cours.
+ */
+export function detachedMailer(
+  mailer: Mailer,
+  log: Pick<FastifyBaseLogger, 'warn'>,
+): Mailer & { readonly idle: () => Promise<void> } {
+  const pending = new Set<Promise<void>>();
+  return {
+    send: async (mail) => {
+      const task: Promise<void> = (async () => mailer.send(mail))()
+        .catch((err: unknown) => {
+          log.warn(
+            { event: 'mail_send_failed', reason: err instanceof Error ? err.name : 'inconnue' },
+            'envoi d’e-mail échoué',
+          );
+        })
+        .finally(() => pending.delete(task));
+      pending.add(task);
+    },
+    idle: async () => {
+      while (pending.size > 0) await Promise.all([...pending]);
+    },
+  };
+}

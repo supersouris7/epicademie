@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { brevoMailer, maskEmail, parseSender, simulationMailer } from './mailer.ts';
+import { brevoMailer, detachedMailer, maskEmail, parseSender, simulationMailer } from './mailer.ts';
 
 describe('mailer', () => {
   it('Brevo : API HTTP transactionnelle, clé en en-tête, expéditeur analysé', async () => {
@@ -47,5 +47,23 @@ describe('mailer', () => {
     expect(info).toHaveBeenCalledWith({ link: 'http://x/lien?jeton=abc' }, expect.any(String));
     expect(JSON.stringify(info.mock.calls)).not.toContain('parent@');
     expect(maskEmail('lea@exemple.fr')).toBe('l***@exemple.fr');
+  });
+});
+
+describe('detachedMailer', () => {
+  it('rend la main avant le fournisseur ; l’échec est journalisé sans destinataire ni contenu', async () => {
+    const warn = vi.fn();
+    let release: () => void = () => undefined;
+    const gate = new Promise<void>((resolve) => (release = resolve));
+    const mailer = detachedMailer(
+      { send: () => gate.then(() => Promise.reject(new Error('refus pour lea@exemple.fr'))) },
+      { warn },
+    );
+    await mailer.send({ to: 'lea@exemple.fr', subject: 's', text: 'lien secret' });
+    expect(warn).not.toHaveBeenCalled();
+    release();
+    await mailer.idle();
+    expect(warn).toHaveBeenCalledOnce();
+    expect(JSON.stringify(warn.mock.calls)).not.toMatch(/lea@|secret/);
   });
 });

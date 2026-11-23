@@ -200,7 +200,8 @@ export const api = {
     method: 'POST',
     path: '/auth/signup',
     tag: 'comptes',
-    summary: 'Crée un compte parent (non vérifié) et envoie le lien de validation de l’adresse e-mail',
+    summary:
+      'Crée un compte parent (non vérifié) et envoie le lien de validation ; réponse identique si l’adresse est déjà prise (e-mail d’information)',
     access: 'public',
     status: 201,
     body: SignupSchema,
@@ -210,7 +211,8 @@ export const api = {
     method: 'POST',
     path: '/auth/email/verify',
     tag: 'comptes',
-    summary: 'Valide l’adresse e-mail avec le lien reçu (usage unique) et ouvre la session',
+    summary:
+      'Valide l’adresse e-mail avec le lien reçu (usage unique) et le mot de passe du compte, puis ouvre la session',
     access: 'public',
     status: 200,
     body: EmailVerifySchema,

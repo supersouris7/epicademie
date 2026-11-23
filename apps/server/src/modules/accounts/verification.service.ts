@@ -1,8 +1,8 @@
-import type { Signup, SignupResult } from '@questeo/shared';
+import type { EmailVerify, Signup, SignupResult } from '@questeo/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import { AppError, conflict } from '../../core/errors.ts';
-import { hashPassword } from '../../core/auth/password.ts';
+import { dummyHash, hashPassword, verifyPassword } from '../../core/auth/password.ts';
 import { newToken, tokenHash } from '../../core/auth/tokens.ts';
 import type { Mailer } from '../../core/mail/mailer.ts';
 import { accountsRepo } from './accounts.repo.ts';
@@ -14,6 +14,9 @@ export const VERIFICATION_LINK_HOURS = 24;
 /** Délai minimal entre deux envois du lien de validation pour un même compte. */
 export const RESEND_COOLDOWN_SECONDS = 60;
 const MINUTE = 60_000;
+
+export const WRONG_PASSWORD_AT_VERIFICATION =
+  'Mot de passe incorrect : saisis celui choisi à l’inscription. Si tu ne le connais pas, utilise « Mot de passe oublié ».';
 
 export interface VerificationDeps {
   readonly db: Db;
@@ -63,27 +66,49 @@ export function createVerificationService({ db, clock, mailer, appUrl, exposeLin
   };
 
   return {
-    /** Crée un compte NON vérifié : aucune session tant que le lien envoyé par e-mail n'est pas ouvert. */
+    /**
+     * Crée un compte NON vérifié : aucune session tant que le lien envoyé par e-mail n'est pas ouvert.
+     * Réponse identique que l'adresse soit libre, en attente ou déjà prise (pas d'énumération) : si le
+     * compte existe, c'est un e-mail d'information qui part, sans toucher au compte existant.
+     */
     async signup({ email, password }: Signup): Promise<SignupResult> {
-      if (await repo.findByEmail(email)) throw conflict('Un compte existe déjà avec cette adresse : connecte-toi.');
+      // Même travail dans tous les cas (hachage compris) : le temps de réponse ne trahit rien.
       const hash = await hashPassword(password);
+      const existing = await repo.findByEmail(email);
+      if (existing) {
+        await mailer.send({
+          to: email,
+          subject: 'Academy Fighters : une inscription avec ton adresse',
+          text:
+            'Bonjour,\n\nQuelqu’un vient d’essayer de créer un compte Academy Fighters avec cette adresse.\n' +
+            `${existing.emailVerifiedAt ? 'Un compte existe déjà : connecte-toi, ou choisis « Mot de passe oublié » si tu ne t’en souviens plus.' : 'Ce compte attend encore sa validation : ouvre le lien reçu à l’inscription, ou choisis « Mot de passe oublié » pour le valider et choisir ton mot de passe.'}\n\n` +
+            'Si ce n’était pas toi, ignore ce message : rien n’a été modifié.',
+        });
+        return { status: 'verification_required', email };
+      }
       const account = await db.transaction((tx) => accountsRepo(tx).createFamilyAccount(email, hash));
       const verificationLink = await sendVerification(account.id, email);
       return { status: 'verification_required', email, ...(verificationLink ? { verificationLink } : {}) };
     },
 
-    /** Ouvre le lien reçu (usage unique, 24 h) : adresse validée et session ouverte. */
-    async verifyEmail(token: string): Promise<OpenedSession> {
+    /**
+     * Ouvre le lien reçu (usage unique, 24 h) ET exige le mot de passe du compte : une personne qui a posé
+     * une adresse qui n'est pas la sienne ne peut pas la faire valider, et le titulaire réel, qui ne
+     * connaît pas ce mot de passe, passe par « Mot de passe oublié ». Un mot de passe faux ne consomme pas le lien.
+     */
+    async verifyEmail({ token, password }: EmailVerify): Promise<OpenedSession> {
       const account = await db.transaction(async (tx) => {
         const v = await verificationRepo(tx).findVerificationForUpdate(tokenHash(token));
         if (!v) throw new AppError('BAD_REQUEST', 'Ce lien n’est pas valide : demande-en un nouveau.');
         if (v.usedAt) throw new AppError('GONE', 'Ce lien a déjà été utilisé : connecte-toi avec ton mot de passe.');
         if (v.expiresAt <= clock.now()) throw new AppError('GONE', 'Ce lien a expiré : demande-en un nouveau.');
+        const target = await accountsRepo(tx).findById(v.accountId);
+        const ok = await verifyPassword(password, target?.passwordHash ?? (await dummyHash()));
+        if (!target?.passwordHash || !ok) throw new AppError('UNAUTHORIZED', WRONG_PASSWORD_AT_VERIFICATION);
         await verificationRepo(tx).markVerificationUsed(v.tokenHash, clock.now());
         await verificationRepo(tx).markEmailVerified(v.accountId, clock.now());
-        return accountsRepo(tx).findById(v.accountId);
+        return target;
       });
-      if (!account) throw new AppError('BAD_REQUEST', 'Ce lien n’est pas valide : demande-en un nouveau.');
       return open({ ...account, autonomous: false });
     },
 

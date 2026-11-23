@@ -17,7 +17,7 @@ import { logErrorReporter, type ErrorReporter } from './core/observability/error
 import { withErrorJournal } from './core/observability/error-journal.ts';
 import { createMetrics, instrumentHttp, type Metrics } from './core/observability/metrics.ts';
 import { registerAuth } from './core/http/auth.ts';
-import { brevoMailer, simulationMailer, type Mailer } from './core/mail/mailer.ts';
+import { brevoMailer, detachedMailer, simulationMailer, type Mailer } from './core/mail/mailer.ts';
 import { createGoogle, type Google } from './core/auth/google.ts';
 import {
   accountsRoutes,
@@ -94,6 +94,8 @@ export interface App {
   readonly random: Random;
   readonly profiles: ProfilesService;
   readonly accounts: AccountsService;
+  /** Résolu quand les e-mails détachés en cours sont partis (tests, arrêt propre). */
+  readonly mailIdle: () => Promise<void>;
   readonly billing: BillingService;
   readonly friends: FriendsService;
 }
@@ -157,14 +159,18 @@ export async function buildApp(deps: AppDeps): Promise<App> {
   });
   const appUrl = () => config.publicUrl ?? `http://localhost:${config.port}`;
   const profiles = createProfilesService(db);
-  const accounts = createAccountsService({
-    db,
-    clock,
-    mailer:
-      deps.mailer ??
+  // Envois détachés : le temps de réponse ne dépend pas du fournisseur d'e-mail.
+  const mailer = detachedMailer(
+    deps.mailer ??
       (config.mail.brevoApiKey
         ? brevoMailer({ apiKey: config.mail.brevoApiKey, from: config.mail.from, fetcher: deps.fetcher })
         : simulationMailer(http.log)),
+    http.log,
+  );
+  const accounts = createAccountsService({
+    db,
+    clock,
+    mailer,
     appUrl,
     sessionDays: config.sessionDays,
     // Simulation (sans fournisseur) hors production : le lien est renvoyé dans la réponse, pour la recette.
@@ -261,7 +267,19 @@ export async function buildApp(deps: AppDeps): Promise<App> {
   );
 
   await registerWeb(http, config.webDir);
-  return { http, presence, metrics, reporter, clock, random, profiles, accounts, billing, friends };
+  return {
+    http,
+    presence,
+    metrics,
+    reporter,
+    clock,
+    random,
+    profiles,
+    accounts,
+    billing,
+    friends,
+    mailIdle: mailer.idle,
+  };
 }
 
 /**

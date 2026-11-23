@@ -17,7 +17,7 @@ export const useMe = () =>
   useQuery({ queryKey: meKey, queryFn: () => request(api.me), retry: false, staleTime: 60_000 });
 
 export const signup = (input: Signup) => request(api.signup, { body: input });
-export const verifyEmail = (token: string) => request(api.verifyEmail, { body: { token } });
+export const verifyEmail = (token: string, password: string) => request(api.verifyEmail, { body: { token, password } });
 export const resendVerification = (email: string) => request(api.resendVerification, { body: { email } });
 /** Page de départ de « Continuer avec Google » (redirection du navigateur, hors appel JSON). */
 export const GOOGLE_START_URL = `${API_PREFIX}/auth/google/start`;

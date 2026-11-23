@@ -29,7 +29,7 @@ export function accountsRoutes(
   };
   return async (app: FastifyInstance) => {
     route(app, api.signup, ({ body }) => service.signup(body), { config: STRICT });
-    route(app, api.verifyEmail, async ({ body, reply }) => setSession(reply, await service.verifyEmail(body.token)), {
+    route(app, api.verifyEmail, async ({ body, reply }) => setSession(reply, await service.verifyEmail(body)), {
       config: STRICT,
     });
     route(app, api.resendVerification, ({ body }) => service.resendVerification(body.email), { config: STRICT });
