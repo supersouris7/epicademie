@@ -404,7 +404,7 @@ export function nextEvaluationQuestion(state: EvaluationState, nowMs: number): E
   }
   if (s.phase === 'prerequis') {
     const c = s.queue
-      .map((id) => s.competences.find((x) => x.id === id))
+      .map((id) => s.competences.find((x) => x.id === id && x.role === 'prerequis'))
       .find((x) => x && x.answers.length < EVALUATION.exploration.questionsPerPrerequisite);
     if (c && s.asked < EVALUATION.questions.max) {
       const q = question(s, c, c.answers.length === 0 ? 1 : 2);
@@ -470,7 +470,7 @@ export function recordEvaluationAnswer(state: EvaluationState, given: Evaluation
     dontKnow: given.dontKnow ?? false,
   };
   const competences = state.competences.map((c) => {
-    if (c.id !== q.competenceId) return c;
+    if (c.id !== q.competenceId || c.role !== q.role) return c;
     const extra = isScoreRole(c) && needMet(c) && c.answers.length > 0;
     return { ...c, answers: [...c.answers, answer], proofAsked: c.proofAsked || extra };
   });
@@ -495,6 +495,8 @@ export interface CompetenceResult {
   readonly role: EvaluationRole;
   readonly domain: string;
   readonly essential: boolean;
+  /** Dans le périmètre noté S (sinon, simple élément du programme). */
+  readonly scored: boolean;
   readonly state: CompetenceState;
   /** R × 100 ; null sans observation. */
   readonly rate: number | null;
@@ -528,7 +530,7 @@ function weakest(c: EvalCompetence): string | null {
 /** Bilan d'une épreuve terminée, ou arrêtée (l'appelant décide quand clore). */
 export function summarize(state: EvaluationState): EvaluationOutcome {
   const rows: CompetenceResult[] = state.competences
-    .filter((c) => (c.role === 'score' && c.scored) || c.answers.length > 0)
+    .filter((c) => c.role === 'score' || c.answers.length > 0)
     .map((c) => {
       const stats = statsOf(c, state.today);
       const st = stateOf(c, state.today);
@@ -537,6 +539,7 @@ export function summarize(state: EvaluationState): EvaluationOutcome {
         role: c.role,
         domain: c.domain,
         essential: c.essential,
+        scored: c.scored,
         state: st,
         rate: stats.rate === null ? null : Math.round(stats.rate * 100),
         weight: Math.round(stats.weight * 10),

@@ -519,7 +519,7 @@ describe('bilan (§4, §7)', () => {
     expect(out.scores.studied).toBeCloseTo((6 / 9) * 100);
     expect(out.scores.coverage).toBeCloseTo((6 / 9) * 100);
     expect(out.scores.counts.struggling).toBe(1);
-    expect(out.competences.some((c) => c.id === 'np')).toBe(false);
+    expect(out.competences.find((c) => c.id === 'np')).toMatchObject({ scored: false, state: 'non-etudiee' });
   });
   it('conservation des acquis : « maîtrisée » dans le bilan précédent et qui s’effrite → à consolider', () => {
     const program = [comp('a', 'nombres', true, { priorState: 'maitrisee' })];
