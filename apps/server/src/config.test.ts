@@ -38,6 +38,8 @@ describe('configuration', () => {
     expect(() => loadConfig(base)).toThrow(/BREVO_API_KEY/);
     expect(() => loadConfig({ ...base, BREVO_API_KEY: 'xkeysib-test-0000' })).toThrow(/MAIL_FROM/);
     expect(() => loadConfig({ ...base, APP_ENV: 'production' })).toThrow(/BREVO_API_KEY/);
+    // Casse et espaces sans effet : « Production » reste la production.
+    expect(() => loadConfig({ ...base, APP_ENV: ' Production ' })).toThrow(/BREVO_API_KEY/);
     const recette = loadConfig({ ...base, APP_ENV: 'recette' });
     expect(recette.mail).toMatchObject({ production: false, brevoApiKey: null });
     expect(loadConfig({ ...base, ...PROD }).mail).toMatchObject({ production: true, brevoApiKey: 'xkeysib-test-0000' });

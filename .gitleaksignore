@@ -1,3 +1,5 @@
 # Faux positifs Gitleaks justifiés (fabrique). Format : fichier:règle:ligne
 # Jeton fictif de test (createTestApp metricsToken), aucune valeur réelle.
 apps/server/src/app.test.ts:generic-api-key:9
+# Jeton fictif du faux serveur web (recette de la validation d'e-mail), aucune valeur réelle.
+apps/web/src/testing/fakeApi.ts:generic-api-key:125

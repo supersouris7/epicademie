@@ -72,7 +72,7 @@ const EnvSchema = z.object({
    * fournisseur d'e-mails et ne renvoie jamais de lien secret dans une réponse. Toute autre
    * valeur (ex. `recette`) autorise la simulation d'envoi.
    */
-  APP_ENV: z.string().trim().min(1).max(30).optional(),
+  APP_ENV: z.string().trim().toLowerCase().min(1).max(30).optional(),
   /** Clé de l'API transactionnelle Brevo ; absente : simulation (interdite en production). */
   BREVO_API_KEY: z.string().min(10).optional(),
   /** Expéditeur des e-mails : `adresse@domaine` ou `Nom <adresse@domaine>`. */
