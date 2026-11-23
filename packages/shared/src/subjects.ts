@@ -1,8 +1,18 @@
+import { z } from 'zod';
 import type { Grade } from './grades.ts';
 
 export const SUBJECT_IDS = ['maths', 'sciences', 'anglais', 'espagnol', 'histoire', 'geographie'] as const;
 
 export type SubjectId = (typeof SUBJECT_IDS)[number];
+
+/**
+ * Matière reçue en entrée : l'ancien identifiant « physique » (anciens clients installés) est
+ * normalisé en « sciences ». Jamais réexposé en sortie.
+ */
+export const SubjectInputSchema = z.union([
+  z.enum(SUBJECT_IDS),
+  z.literal('physique').transform((): SubjectId => 'sciences'),
+]);
 
 export interface SubjectInfo {
   readonly id: SubjectId;
