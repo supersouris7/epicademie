@@ -44,7 +44,7 @@ export function Hub({ profile }: { readonly profile: Profile }) {
           initial={enter ? { x: -40, opacity: 0 } : false}
           animate={{ x: 0, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 160, damping: 16 }}
-          className="flex flex-col items-center"
+          className="focus-visible:outline-gold flex flex-col items-center rounded-lg focus-visible:outline-4 focus-visible:outline-offset-4"
         >
           {/* Le héros en pied, animé sur place (bande de 8 images). */}
           <CharacterSprite hero={profile.hero} state="idle" height="min(18rem, 40vw)" />
