@@ -20,7 +20,7 @@ interface StageProps {
 /** HUD de combat (portraits, barres de vie, VS et manches) et répliques dessous. */
 export function BattleHud({ screen: s, hero, boss }: StageProps) {
   const battle = s.battle;
-  const enemy = currentEnemy(boss, battle, s.enemyState);
+  const enemy = currentEnemy(boss, battle);
   const mobsDefeated = Math.min(battle?.mobsDefeated ?? 0, BATTLE_MOBS);
   return (
     <>
@@ -53,7 +53,7 @@ export function ActionScene({ screen: s, hero, boss, arena }: StageProps) {
       <BattleArena
         hero={hero}
         heroState={s.heroState}
-        enemy={currentEnemy(boss, s.battle, s.enemyState)}
+        enemy={currentEnemy(boss, s.battle)}
         enemyState={s.enemyState}
         // Seul le dernier coup se rejoue (sinon l'ancien tir repart avec la riposte).
         shot={s.lastHit === 'shot' ? s.shot : 0}

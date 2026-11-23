@@ -29,14 +29,19 @@ describe('adversaires du combat', () => {
       name: boss.name,
       boss: true,
       image: 'bosses-sorcier-pi-pose-idle',
-      poses: { attack: 'bosses-sorcier-pi-pose-attack', ko: 'bosses-sorcier-pi-pose-defeat' },
-      idleAnim: { anim: 'bosses/sorcier-pi/anim-idle', range: [0, 4] },
+      poses: {
+        idle: 'bosses-sorcier-pi-pose-idle',
+        attack: 'bosses-sorcier-pi-pose-attack',
+        ko: 'bosses-sorcier-pi-pose-defeat',
+      },
     });
+    // La bande d'attente est dessinée de face : jamais dans l'arène (retour #46, boss « de dos » à l'intro).
+    expect(bossEnemy(boss)).not.toHaveProperty('idleAnim');
   });
 
   it('un mob par question tant qu’il en reste', () => {
-    expect(currentEnemy(boss, null, 'idle')).toBeNull();
-    expect(currentEnemy(boss, view({ mobsDefeated: 2 }), 'idle')).toEqual({
+    expect(currentEnemy(boss, null)).toBeNull();
+    expect(currentEnemy(boss, view({ mobsDefeated: 2 }))).toEqual({
       key: 'mob-2',
       name: 'π-bot',
       boss: false,
@@ -44,19 +49,20 @@ describe('adversaires du combat', () => {
     });
   });
 
-  it('en rage (dernière vie), l’animation passe aux images rouges, sauf au KO', () => {
-    const calm = currentEnemy(boss, view({ mobsDefeated: 4, bossLives: 2 }), 'idle');
-    expect(calm?.idleAnim?.range).toEqual([0, 4]);
-    expect(currentEnemy(boss, view({ mobsDefeated: 4, bossLives: 1 }), 'idle')?.idleAnim?.range).toEqual([4, 4]);
-    expect(currentEnemy(boss, view({ mobsDefeated: 4, bossLives: 1 }), 'ko')?.idleAnim?.range).toEqual([0, 4]);
+  it('à toute vie, le boss reste en pose tournée vers le héros (pas de bande de face)', () => {
+    for (const bossLives of [3, 2, 1]) {
+      const e = currentEnemy(boss, view({ mobsDefeated: 4, bossLives }));
+      expect(e?.image).toBe('bosses-sorcier-pi-pose-idle');
+      expect(e).not.toHaveProperty('idleAnim');
+    }
   });
 
   it('tête dans le bandeau : boss ou mob avec son expression', () => {
     const faces = { boss: 'menace', mob: 'menace' } as const;
     expect(enemyHead(boss, null, null, faces)).toBe('placeholder-boss');
     const mob = view({ mobsDefeated: 1 });
-    expect(enemyHead(boss, mob, currentEnemy(boss, mob, 'idle'), faces)).toMatch(/^bosses-minions-pi-bot/);
+    expect(enemyHead(boss, mob, currentEnemy(boss, mob), faces)).toMatch(/^bosses-minions-pi-bot/);
     const atBoss = view({ mobsDefeated: 4 });
-    expect(enemyHead(boss, atBoss, currentEnemy(boss, atBoss, 'idle'), faces)).toBe('bosses-sorcier-pi-head-menace');
+    expect(enemyHead(boss, atBoss, currentEnemy(boss, atBoss), faces)).toBe('bosses-sorcier-pi-head-menace');
   });
 });
