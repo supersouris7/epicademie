@@ -28,6 +28,10 @@ services:
     command: ['node', 'server/dist/migrate.js']
     environment:
       DATABASE_URL: postgres://questeo:${POSTGRES_PASSWORD}@db:5432/questeo
+      # La configuration est validée aussi ici : mêmes règles de production que le serveur.
+      APP_ENV: ${APP_ENV:-}
+      BREVO_API_KEY: ${BREVO_API_KEY:-}
+      MAIL_FROM: ${MAIL_FROM:-}
     depends_on:
       db:
         condition: service_healthy
