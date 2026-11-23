@@ -81,8 +81,9 @@ jobs:
             echo "Documentation uniquement : format et contrôles statiques seulement."; out statique; exit 0
           fi
           out statique; out tests
-          has '^(apps|packages|e2e)/|^playwright\.config|^package\.json$|^pnpm-(lock|workspace)\.yaml$|^tsconfig' && out e2e
-          has '^(apps/server|packages)/|^package\.json$|^pnpm-lock\.yaml$|^vitest\.' && out postgres
+          # Contenu pédagogique seul (packages/content) : couvert par les tests de cohérence, ni e2e ni PostgreSQL.
+          has '^(apps|e2e)/|^packages/(shared|engine)/|^playwright\.config|^package\.json$|^pnpm-(lock|workspace)\.yaml$|^tsconfig' && out e2e
+          has '^(apps/server|packages/(shared|engine))/|^package\.json$|^pnpm-lock\.yaml$|^vitest\.' && out postgres
           has '^(Dockerfile|\.dockerignore)$|(^|/)package\.json$|^pnpm-lock\.yaml$' && out image
           exit 0
 
