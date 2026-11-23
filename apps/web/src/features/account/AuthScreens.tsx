@@ -5,7 +5,18 @@ import { ApiError } from '../../shared/api/client.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
-import { forgotPassword, login, resetPassword, signup, useMe, useSetMe } from './api.ts';
+import {
+  forgotPassword,
+  GOOGLE_START_URL,
+  login,
+  resendVerification,
+  resetPassword,
+  signup,
+  useAuthOptions,
+  useMe,
+  useSetMe,
+  verifyEmail,
+} from './api.ts';
 
 /**
  * Écrans du compte familial (connexion, inscription, mot de passe oublié) et garde des pages
@@ -76,6 +87,72 @@ function Field(props: {
   );
 }
 
+/** « Continuer avec Google » : lien (redirection du navigateur), affiché seulement si le serveur l'a configuré. */
+function GoogleButton() {
+  const { data } = useAuthOptions();
+  if (!data?.google) return null;
+  return (
+    <>
+      <a
+        href={GOOGLE_START_URL}
+        className="cartoon bg-surface focus-visible:outline-primary flex min-h-14 items-center justify-center px-5 text-xl font-bold"
+      >
+        Continuer avec Google
+      </a>
+      <p className="text-muted text-center text-sm" aria-hidden="true">
+        ou avec ton e-mail
+      </p>
+    </>
+  );
+}
+
+/** Chemin interne d'un lien absolu (simulation : le lien de validation est affiché pour la recette). */
+const internalPath = (link: string) => {
+  try {
+    const u = new URL(link, window.location.origin);
+    return `${u.pathname}${u.search}`;
+  } catch {
+    return link;
+  }
+};
+
+/** Demande d'un nouveau lien de validation (le serveur limite le débit et ne dit rien sur l'adresse). */
+function ResendVerification({ email }: { readonly email: string }) {
+  const [state, setState] = useState<{ done: boolean; link?: string; error?: string }>({ done: false });
+  const [busy, setBusy] = useState(false);
+  return (
+    <div className="flex flex-col gap-2">
+      <GameButton
+        type="button"
+        variant="surface"
+        disabled={busy || email === ''}
+        onClick={() => {
+          setBusy(true);
+          resendVerification(email)
+            .then((r) => setState({ done: true, link: r.verificationLink }))
+            .catch((err: unknown) => setState({ done: false, error: message(err, 'Envoi impossible pour le moment.') }))
+            .finally(() => setBusy(false));
+        }}
+      >
+        Renvoyer le lien
+      </GameButton>
+      {state.done && (
+        <p role="status">Si cette adresse attend sa validation, un nouveau lien vient de partir. Pense aux spams.</p>
+      )}
+      {state.error && (
+        <p role="alert" className="text-danger font-bold">
+          {state.error}
+        </p>
+      )}
+      {state.link && (
+        <Link to={internalPath(state.link)} className="underline">
+          Ouvrir le lien (mode simulation, sans envoi réel)
+        </Link>
+      )}
+    </div>
+  );
+}
+
 function AuthForm(props: {
   readonly title: string;
   readonly intro: ReactNode;
@@ -84,6 +161,8 @@ function AuthForm(props: {
   readonly error: string | null;
   readonly children: ReactNode;
   readonly footer?: ReactNode;
+  /** Sous le message d'erreur (ex. renvoi du lien de validation). */
+  readonly extra?: ReactNode;
 }) {
   const [busy, setBusy] = useState(false);
   return (
@@ -106,6 +185,7 @@ function AuthForm(props: {
             {props.error}
           </p>
         )}
+        {props.extra}
         <GameButton type="submit" size="lg" disabled={busy}>
           {props.submit}
         </GameButton>
@@ -121,7 +201,12 @@ export function LoginScreen() {
   const setMe = useSetMe();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(
+    useSearchParams()[0].get('erreur') === 'google'
+      ? 'Connexion avec Google impossible : réessaie, ou utilise ton e-mail.'
+      : null,
+  );
+  const [unverified, setUnverified] = useState(false);
   const from = (location.state as { from?: string } | null)?.from ?? '/';
   return (
     <AuthForm
@@ -134,9 +219,11 @@ export function LoginScreen() {
           setMe(await login({ email, password }));
           void navigate(from, { replace: true });
         } catch (err) {
+          setUnverified(err instanceof ApiError && err.code === 'EMAIL_NOT_VERIFIED');
           setError(message(err, 'Connexion impossible pour le moment.'));
         }
       }}
+      extra={unverified ? <ResendVerification email={email} /> : undefined}
       footer={
         <>
           <Link to="/inscription" className="underline">
@@ -148,6 +235,7 @@ export function LoginScreen() {
         </>
       }
     >
+      <GoogleButton />
       <Field label="E-mail du parent" type="email" autoComplete="email" value={email} onChange={setEmail} />
       <Field
         label="Mot de passe"
@@ -161,13 +249,13 @@ export function LoginScreen() {
 }
 
 export function SignupScreen() {
-  const navigate = useNavigate();
   // Élève de 15 ans ou plus (parcours « Je suis un élève ») : même compte, libellés adaptés.
   const student = useSearchParams()[0].get('eleve') === '1';
-  const setMe = useSetMe();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [sent, setSent] = useState<{ email: string; link?: string } | null>(null);
+  if (sent) return <CheckMailScreen email={sent.email} link={sent.link} />;
   return (
     <AuthForm
       title={student ? 'Ton compte' : 'Compte familial'}
@@ -184,8 +272,8 @@ export function SignupScreen() {
           return;
         }
         try {
-          setMe(await signup({ email, password }));
-          void navigate('/profils/nouveau', { replace: true });
+          const result = await signup({ email, password });
+          setSent({ email: result.email, link: result.verificationLink });
         } catch (err) {
           setError(message(err, 'Création impossible pour le moment.'));
         }
@@ -196,6 +284,7 @@ export function SignupScreen() {
         </Link>
       }
     >
+      <GoogleButton />
       <Field
         label={student ? 'Ton e-mail' : 'E-mail du parent'}
         type="email"
@@ -210,6 +299,108 @@ export function SignupScreen() {
         value={password}
         onChange={setPassword}
         hint={`Au moins ${PASSWORD_MIN} caractères. Une phrase facile à retenir fonctionne très bien.`}
+      />
+    </AuthForm>
+  );
+}
+
+/** Après l'inscription : le compte existe mais n'ouvre qu'avec le lien envoyé par e-mail. */
+function CheckMailScreen({ email, link }: { readonly email: string; readonly link?: string }) {
+  return (
+    <PageShell title="Vérifie ta boîte mail" back="/connexion">
+      <div className="mx-auto flex w-full max-w-md flex-col gap-4">
+        <div className="flex items-center gap-3">
+          <Questy mood="happy" size={72} />
+          <p className="text-lg" role="status">
+            Si l’adresse <strong>{email}</strong> peut être utilisée, un lien de confirmation vient d’être envoyé.
+            Ouvre-le (valable 24 heures), puis saisis le mot de passe choisi pour activer le compte. Si un compte existe
+            déjà avec cette adresse, tu reçois un message qui l’explique.
+          </p>
+        </div>
+        <p className="text-muted">
+          Rien dans la boîte ? Regarde les courriers indésirables, ou demande un nouveau lien.
+        </p>
+        <ResendVerification email={email} />
+        {link && (
+          <Link to={internalPath(link)} className="font-bold underline">
+            Ouvrir le lien (mode simulation, sans envoi réel)
+          </Link>
+        )}
+        <Link to="/connexion" className="text-center font-bold underline">
+          Retour à la connexion
+        </Link>
+      </div>
+    </PageShell>
+  );
+}
+
+/**
+ * Page du lien reçu par e-mail : pour valider l'adresse, on saisit aussi le mot de passe choisi à
+ * l'inscription (preuve que c'est bien la personne qui a créé le compte). Qui ne le connaît pas passe
+ * par « Mot de passe oublié », qui valide aussi l'adresse.
+ */
+export function VerifyEmailScreen() {
+  const token = useSearchParams()[0].get('jeton') ?? '';
+  const navigate = useNavigate();
+  const setMe = useSetMe();
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  /** Lien inutilisable (périmé, déjà utilisé, absent) : on propose d'en demander un autre. */
+  const [dead, setDead] = useState<string | null>(token ? null : 'Ce lien n’est pas valide : demande-en un nouveau.');
+  const [email, setEmail] = useState('');
+  if (dead) {
+    return (
+      <PageShell title="Lien non valable" back="/connexion">
+        <div className="mx-auto flex w-full max-w-md flex-col gap-4">
+          <div className="flex items-center gap-3">
+            <Questy mood="sad" size={72} />
+            <p role="alert" className="text-lg font-bold">
+              {dead}
+            </p>
+          </div>
+          <p>Un lien ne marche qu’une fois et pendant 24 heures. Indique ton adresse pour en recevoir un nouveau.</p>
+          <Field label="Ton e-mail" type="email" autoComplete="email" value={email} onChange={setEmail} />
+          <ResendVerification email={email} />
+          <Link to="/connexion" className="text-center font-bold underline">
+            J’ai déjà validé : me connecter
+          </Link>
+        </div>
+      </PageShell>
+    );
+  }
+  return (
+    <AuthForm
+      title="Validation de l’adresse"
+      intro="Dernière étape : saisis le mot de passe choisi à l’inscription pour activer le compte."
+      submit="Valider mon adresse"
+      error={error}
+      onSubmit={async () => {
+        try {
+          setMe(await verifyEmail(token, password));
+          void navigate('/profils/nouveau', { replace: true });
+        } catch (err) {
+          // Mot de passe refusé : le lien reste valable, on réessaie ici. Autre refus : lien à renouveler.
+          if (err instanceof ApiError && err.status === 401) setError(err.message);
+          else setDead(message(err, 'Validation impossible pour le moment.'));
+        }
+      }}
+      footer={
+        <>
+          <p className="text-muted text-sm font-normal">
+            Tu ne connais pas ce mot de passe (ce n’est pas toi qui as créé le compte) ?
+          </p>
+          <Link to="/mot-de-passe-oublie" className="underline">
+            Mot de passe oublié : valider l’adresse et choisir un mot de passe
+          </Link>
+        </>
+      }
+    >
+      <Field
+        label="Mot de passe du compte"
+        type="password"
+        autoComplete="current-password"
+        value={password}
+        onChange={setPassword}
       />
     </AuthForm>
   );

@@ -8,6 +8,7 @@ export {
   RequireAccount,
   ResetPasswordScreen,
   SignupScreen,
+  VerifyEmailScreen,
 } from './AuthScreens.tsx';
 export {
   StudentAgeScreen,

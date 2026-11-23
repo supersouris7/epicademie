@@ -17,7 +17,8 @@ import { logErrorReporter, type ErrorReporter } from './core/observability/error
 import { withErrorJournal } from './core/observability/error-journal.ts';
 import { createMetrics, instrumentHttp, type Metrics } from './core/observability/metrics.ts';
 import { registerAuth } from './core/http/auth.ts';
-import { logMailer, type Mailer } from './core/mail/mailer.ts';
+import { brevoMailer, detachedMailer, simulationMailer, type Mailer } from './core/mail/mailer.ts';
+import { createGoogle, type Google } from './core/auth/google.ts';
 import {
   accountsRoutes,
   createAccountsService,
@@ -64,6 +65,8 @@ export type AppConfig = Pick<
   | 'cookieSecure'
   | 'sessionDays'
   | 'billing'
+  | 'mail'
+  | 'google'
 >;
 
 export interface AppDeps {
@@ -76,8 +79,10 @@ export interface AppDeps {
   readonly metrics?: Metrics;
   /** Envoi d'e-mails ; par défaut, journal sans contenu (aucun fournisseur configuré). */
   readonly mailer?: Mailer;
-  /** Appels HTTP sortants (prestataire de paiement) ; remplaçable en test. */
+  /** Appels HTTP sortants (paiement, Brevo, Google) ; remplaçable en test. */
   readonly fetcher?: typeof fetch;
+  /** Clés publiques de Google pour vérifier l'id_token ; remplaçables en test (aucun appel réseau). */
+  readonly googleKeys?: Parameters<typeof createGoogle>[0]['keys'];
 }
 
 export interface App {
@@ -89,6 +94,8 @@ export interface App {
   readonly random: Random;
   readonly profiles: ProfilesService;
   readonly accounts: AccountsService;
+  /** Résolu quand les e-mails détachés en cours sont partis (tests, arrêt propre). */
+  readonly mailIdle: () => Promise<void>;
   readonly billing: BillingService;
   readonly friends: FriendsService;
 }
@@ -152,17 +159,29 @@ export async function buildApp(deps: AppDeps): Promise<App> {
   });
   const appUrl = () => config.publicUrl ?? `http://localhost:${config.port}`;
   const profiles = createProfilesService(db);
+  // Envois détachés : le temps de réponse ne dépend pas du fournisseur d'e-mail.
+  const mailer = detachedMailer(
+    deps.mailer ??
+      (config.mail.brevoApiKey
+        ? brevoMailer({ apiKey: config.mail.brevoApiKey, from: config.mail.from, fetcher: deps.fetcher })
+        : simulationMailer(http.log)),
+    http.log,
+  );
   const accounts = createAccountsService({
     db,
     clock,
-    // Le lien de réinitialisation n'apparaît dans les journaux qu'en développement.
-    mailer: deps.mailer ?? logMailer(http.log, { revealContent: config.env === 'development' }),
+    mailer,
     appUrl,
     sessionDays: config.sessionDays,
+    // Simulation (sans fournisseur) hors production : le lien est renvoyé dans la réponse, pour la recette.
+    exposeLinks: !config.mail.production && !config.mail.brevoApiKey,
     createStudentProfile: (input, familyId) => profiles.createStudent(input, familyId),
     // `billing` est créé plus bas : résolu à l'appel, jamais à la construction.
     cancelPayments: (familyId) => billing.cancelPending(familyId),
   });
+  const google: Google | null = config.google
+    ? createGoogle({ ...config.google, fetcher: deps.fetcher, keys: deps.googleKeys })
+    : null;
   const owns = createOwnership(db);
   registerAuth(http, { resolve: (token) => accounts.resolve(token), allowedOrigins: config.corsOrigins });
   const training = createTrainingService({
@@ -222,11 +241,15 @@ export async function buildApp(deps: AppDeps): Promise<App> {
         }),
       );
       await v1.register(
-        accountsRoutes(accounts, {
-          secure: config.cookieSecure,
-          maxAgeDays: config.sessionDays,
-          rateLimitMax: config.authRateLimitMax,
-        }),
+        accountsRoutes(
+          accounts,
+          {
+            secure: config.cookieSecure,
+            maxAgeDays: config.sessionDays,
+            rateLimitMax: config.authRateLimitMax,
+          },
+          google,
+        ),
       );
       await v1.register(profilesRoutes(profiles, owns));
       await v1.register(trainingRoutes(training, owns, billing));
@@ -244,7 +267,19 @@ export async function buildApp(deps: AppDeps): Promise<App> {
   );
 
   await registerWeb(http, config.webDir);
-  return { http, presence, metrics, reporter, clock, random, profiles, accounts, billing, friends };
+  return {
+    http,
+    presence,
+    metrics,
+    reporter,
+    clock,
+    random,
+    profiles,
+    accounts,
+    billing,
+    friends,
+    mailIdle: mailer.idle,
+  };
 }
 
 /**

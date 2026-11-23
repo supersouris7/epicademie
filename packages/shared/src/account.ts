@@ -61,6 +61,24 @@ export const FamilyExportSchema = z.object({
 });
 export type FamilyExport = z.infer<typeof FamilyExportSchema>;
 
+/**
+ * Validation de l'adresse e-mail : l'inscription ne connecte pas, elle envoie un lien à usage
+ * unique. `verificationLink` n'est présent qu'en simulation hors production (recette, tests).
+ */
+export const SignupResultSchema = z.object({
+  status: z.literal('verification_required'),
+  email: z.string(),
+  verificationLink: z.string().optional(),
+});
+export type SignupResult = z.infer<typeof SignupResultSchema>;
+export const EmailResendSchema = z.object({ email: EmailSchema });
+export const EmailResendResultSchema = z.object({ verificationLink: z.string().optional() });
+/** Validation de l'adresse : le lien seul ne suffit pas, le mot de passe du compte est exigé. */
+export const EmailVerifySchema = z.object({ token: z.string().min(20).max(200), password: z.string().min(1).max(200) });
+export type EmailVerify = z.infer<typeof EmailVerifySchema>;
+/** Modes d'ouverture de compte proposés par ce serveur (bouton Google masqué si non configuré). */
+export const AuthOptionsSchema = z.object({ google: z.boolean() });
+
 export const PasswordForgotSchema = z.object({ email: EmailSchema });
 export const PasswordResetSchema = z.object({ token: z.string().min(20).max(200), password: PasswordSchema });
 

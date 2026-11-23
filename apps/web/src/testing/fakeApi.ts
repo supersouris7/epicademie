@@ -88,6 +88,8 @@ export interface FakeApiOptions {
   readonly battleAnswers?: boolean;
   /** Appareil connecté au compte familial (par défaut : oui). */
   readonly loggedIn?: boolean;
+  /** Le serveur propose « Continuer avec Google ». */
+  readonly google?: boolean;
   /** Actions parent déverrouillées (par défaut : oui). */
   readonly parent?: boolean;
   /** Notions désactivées (en maintenance). */
@@ -119,6 +121,9 @@ export const emptyLearning = (): LearningReport => ({
 
 /** Mot de passe du compte du faux serveur. */
 export const FAKE_PASSWORD = 'mot de passe parent';
+/** Jeton du lien de validation d'e-mail du faux serveur, et adresse dont l'e-mail n'est pas encore validé. */
+export const FAKE_VERIFICATION_TOKEN = 'jeton-de-validation-0123456789abcdefghij';
+export const UNVERIFIED_EMAIL = 'attente@famille.test';
 
 /** Point d'accès du contrat correspondant à la requête, avec ses paramètres de chemin. */
 function route(
@@ -190,10 +195,24 @@ function authHandlers(options: FakeApiOptions) {
   const credentials = (body: unknown) => body as { email: string; password: string };
 
   const handlers: Partial<Record<keyof typeof api, Handler>> = {
-    signup: ({ body }) => {
-      Object.assign(session, { loggedIn: true, parent: true, email: credentials(body).email });
+    // Inscription : compte non vérifié, aucune session ; le lien (simulation) ouvre `verifyEmail`.
+    signup: ({ body }) => ({
+      status: 'verification_required',
+      email: credentials(body).email,
+      verificationLink: `http://localhost/email/verification?jeton=${FAKE_VERIFICATION_TOKEN}`,
+    }),
+    verifyEmail: ({ body }) => {
+      if ((body as { token: string }).token !== FAKE_VERIFICATION_TOKEN) {
+        throw new FakeError(410, 'GONE', 'Ce lien a déjà été utilisé : connecte-toi avec ton mot de passe.');
+      }
+      if ((body as { password: string }).password !== FAKE_PASSWORD) {
+        throw new FakeError(401, 'UNAUTHORIZED', 'Mot de passe incorrect : saisis celui choisi à l’inscription.');
+      }
+      Object.assign(session, { loggedIn: true, parent: true });
       return me();
     },
+    resendVerification: () => ({}),
+    authOptions: () => ({ google: options.google ?? false }),
     signupStudent: ({ body }) => {
       const b = body as { name: string; avatar: unknown; grade: string };
       Object.assign(session, { loggedIn: true, parent: false, email: null });
@@ -204,6 +223,9 @@ function authHandlers(options: FakeApiOptions) {
       };
     },
     login: ({ body }) => {
+      if (credentials(body).email === UNVERIFIED_EMAIL && credentials(body).password === FAKE_PASSWORD) {
+        throw new FakeError(403, 'EMAIL_NOT_VERIFIED', 'Ton adresse e-mail n’est pas encore validée.');
+      }
       if (credentials(body).password !== FAKE_PASSWORD) {
         throw new FakeError(401, 'UNAUTHORIZED', 'E-mail ou mot de passe incorrect.');
       }

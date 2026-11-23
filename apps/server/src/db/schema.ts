@@ -85,10 +85,15 @@ export const accounts = pgTable(
     /** Rattachement d'un élève : erreurs de code d'invitation d'affilée, puis blocage temporaire. */
     joinFailures: integer('join_failures').notNull().default(0),
     joinLockedUntil: timestamp('join_locked_until', { withTimezone: true }),
+    /** Adresse validée (lien reçu, ou e-mail vérifié par Google) ; nul : connexion refusée. */
+    emailVerifiedAt: timestamp('email_verified_at', { withTimezone: true }),
+    /** Identifiant stable (`sub`) du compte Google relié. */
+    googleSub: text('google_sub'),
     createdAt: createdAt(),
   },
   (t) => [
     uniqueIndex('accounts_email_unique').on(t.email),
+    uniqueIndex('accounts_google_sub_unique').on(t.googleSub),
     uniqueIndex('accounts_recovery_unique').on(t.recoveryHash),
     index('accounts_family_idx').on(t.familyId),
     check('accounts_email_lowercase', sql`${t.email} = lower(${t.email})`),
@@ -148,6 +153,21 @@ export const passwordResets = pgTable(
     createdAt: createdAt(),
   },
   (t) => [index('password_resets_account_idx').on(t.accountId)],
+);
+
+/** Liens de validation d'adresse e-mail : seule l'empreinte du jeton est gardée. */
+export const emailVerifications = pgTable(
+  'email_verifications',
+  {
+    tokenHash: text('token_hash').primaryKey(),
+    accountId: uuid('account_id')
+      .notNull()
+      .references(() => accounts.id, { onDelete: 'cascade' }),
+    expiresAt: at('expires_at').notNull(),
+    usedAt: at('used_at'),
+    createdAt: createdAt(),
+  },
+  (t) => [index('email_verifications_account_idx').on(t.accountId)],
 );
 
 export const profiles = pgTable(
@@ -518,6 +538,7 @@ export const idempotentRequests = pgTable(
 /** Toutes les tables, de la plus dépendante à la moins dépendante (remise à zéro des tests). */
 export const ALL_TABLES = [
   'subscriptions',
+  'email_verifications',
   'evaluation_competences',
   'evaluations',
   'studied_chapters',

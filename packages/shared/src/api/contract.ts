@@ -21,6 +21,10 @@ import {
 } from '../play.ts';
 import { HEROES, ProfileCreateSchema, ProfileSchema, ProfileUpdateSchema } from '../profile.ts';
 import {
+  AuthOptionsSchema,
+  EmailResendResultSchema,
+  EmailResendSchema,
+  EmailVerifySchema,
   FamilyDeleteSchema,
   FamilyExportSchema,
   FamilyJoinResultSchema,
@@ -34,6 +38,7 @@ import {
   PasswordForgotSchema,
   PasswordResetSchema,
   RecoveryCodeResultSchema,
+  SignupResultSchema,
   SignupSchema,
   StudentRecoverSchema,
   StudentSignupResultSchema,
@@ -163,6 +168,7 @@ export const ERROR_CODES = [
   'RATE_LIMITED',
   'PAYLOAD_TOO_LARGE',
   'UNAUTHORIZED',
+  'EMAIL_NOT_VERIFIED',
   'INTERNAL',
   'UNAVAILABLE',
 ] as const;
@@ -194,11 +200,42 @@ export const api = {
     method: 'POST',
     path: '/auth/signup',
     tag: 'comptes',
-    summary: 'Crée un compte parent et sa famille, et ouvre la session',
+    summary:
+      'Crée un compte parent (non vérifié) et envoie le lien de validation ; réponse identique si l’adresse est déjà prise (e-mail d’information)',
     access: 'public',
     status: 201,
     body: SignupSchema,
+    response: SignupResultSchema,
+  }),
+  verifyEmail: endpoint({
+    method: 'POST',
+    path: '/auth/email/verify',
+    tag: 'comptes',
+    summary:
+      'Valide l’adresse e-mail avec le lien reçu (usage unique) et le mot de passe du compte, puis ouvre la session',
+    access: 'public',
+    status: 200,
+    body: EmailVerifySchema,
     response: MeSchema,
+  }),
+  resendVerification: endpoint({
+    method: 'POST',
+    path: '/auth/email/resend',
+    tag: 'comptes',
+    summary: 'Renvoie le lien de validation (réponse identique que l’adresse existe ou non ; débit limité)',
+    access: 'public',
+    status: 200,
+    body: EmailResendSchema,
+    response: EmailResendResultSchema,
+  }),
+  authOptions: endpoint({
+    method: 'GET',
+    path: '/auth/options',
+    tag: 'comptes',
+    summary: 'Modes d’ouverture de compte disponibles (Google configuré ou non)',
+    access: 'public',
+    status: 200,
+    response: AuthOptionsSchema,
   }),
   login: endpoint({
     method: 'POST',

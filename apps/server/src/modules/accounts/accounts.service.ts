@@ -1,7 +1,7 @@
-import type { Login, Me, Signup, StudentSignup } from '@questeo/shared';
+import type { Login, Me, StudentSignup } from '@questeo/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
-import { AppError, conflict } from '../../core/errors.ts';
+import { AppError } from '../../core/errors.ts';
 import { AUTONOMOUS_MESSAGE, type Actor } from '../../core/http/auth.ts';
 import { dummyHash, hashPassword, verifyPassword } from '../../core/auth/password.ts';
 import { newToken, tokenHash } from '../../core/auth/tokens.ts';
@@ -10,6 +10,8 @@ import { accountsRepo } from './accounts.repo.ts';
 import { pinChecker } from './pin.ts';
 import { createErasureService } from './erasure.service.ts';
 import { createStudentService, type OpenedSession } from './student.service.ts';
+import { createVerificationService } from './verification.service.ts';
+import { verificationRepo } from './verification.repo.ts';
 
 /**
  * Comptes familiaux : inscription, connexion, sessions d'appareil, déverrouillage parent,
@@ -27,6 +29,8 @@ const MINUTE = 60_000;
 const DAY = 24 * 60 * MINUTE;
 
 export const BAD_CREDENTIALS = 'E-mail ou mot de passe incorrect.';
+export const NOT_VERIFIED =
+  'Ton adresse e-mail n’est pas encore validée : ouvre le lien reçu par e-mail, ou demande-en un nouveau.';
 
 export interface AccountsDeps {
   readonly db: Db;
@@ -35,6 +39,8 @@ export interface AccountsDeps {
   /** Adresse publique du site (liens envoyés par e-mail). */
   readonly appUrl: () => string;
   readonly sessionDays: number;
+  /** Simulation d'envoi hors production : le lien est aussi renvoyé dans la réponse (recette). */
+  readonly exposeLinks: boolean;
   /** Crée le profil de l'élève (module « profils ») dans la famille autonome. */
   readonly createStudentProfile: (
     input: Pick<StudentSignup, 'name' | 'avatar' | 'grade'>,
@@ -52,6 +58,7 @@ export function createAccountsService({
   mailer,
   appUrl,
   sessionDays,
+  exposeLinks,
   createStudentProfile,
   cancelPayments,
 }: AccountsDeps) {
@@ -117,20 +124,18 @@ export function createAccountsService({
   });
   const student = createStudentService({ db, clock, createStudentProfile, open });
 
+  const verification = createVerificationService({ db, clock, mailer, appUrl, exposeLinks, open });
+
   return {
     ...student,
-    async signup({ email, password }: Signup): Promise<OpenedSession> {
-      if (await repo.findByEmail(email)) throw conflict('Un compte existe déjà avec cette adresse : connecte-toi.');
-      const hash = await hashPassword(password);
-      const account = await db.transaction((tx) => accountsRepo(tx).createFamilyAccount(email, hash));
-      return open({ ...account, autonomous: false });
-    },
-
+    ...verification,
     async login({ email, password }: Login): Promise<OpenedSession> {
       const account = await repo.findByEmail(email);
       // Même travail si le compte n'existe pas : le temps de réponse ne trahit rien.
       const ok = await verifyPassword(password, account?.passwordHash ?? (await dummyHash()));
       if (!account?.passwordHash || !ok) throw new AppError('UNAUTHORIZED', BAD_CREDENTIALS);
+      // Après le contrôle du mot de passe seulement : l'état d'une adresse n'est dit qu'à son titulaire.
+      if (!account.emailVerifiedAt) throw new AppError('EMAIL_NOT_VERIFIED', NOT_VERIFIED);
       return open({ ...account, autonomous: false });
     },
 
@@ -268,6 +273,9 @@ export function createAccountsService({
         const reset = await r.findResetForUpdate(tokenHash(token), clock.now());
         if (!reset) throw new AppError('BAD_REQUEST', 'Ce lien n’est plus valable : demande-en un nouveau.');
         await r.setPassword(reset.accountId, hash);
+        // Le lien reçu par e-mail prouve aussi que l'adresse est bien celle du titulaire.
+        await verificationRepo(tx).markEmailVerified(reset.accountId, clock.now());
+        await verificationRepo(tx).deleteVerificationsOf(reset.accountId);
         await r.markResetUsed(reset.tokenHash, clock.now());
         await r.deleteSessionsOf(reset.accountId);
       });

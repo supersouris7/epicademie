@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { BattleView, Me, Profile } from '@questeo/shared';
-import { createTestApp, profileInput, sessionCookie, TEST_PASSWORD } from '../../testing/harness.ts';
+import { createTestApp, profileInput, sessionCookie, TEST_PASSWORD, tokenOf } from '../../testing/harness.ts';
 
 let t: Awaited<ReturnType<typeof createTestApp>>;
 
@@ -23,27 +23,25 @@ const createProfile = (cookie: string, name = 'Léa') =>
   t.as(cookie).inject({ method: 'POST', url: '/api/v1/profiles', payload: profileInput(name) });
 
 describe('inscription et connexion', () => {
-  it('inscription : session ouverte par cookie HttpOnly, parent déverrouillé, e-mail normalisé', async () => {
+  it('inscription : aucun cookie de session, compte non vérifié, e-mail normalisé, lien en simulation', async () => {
     const res = await signupRes('  Parent.Durand@Exemple.FR ');
     expect(res.statusCode).toBe(201);
-    const setCookie = String(res.headers['set-cookie']);
-    expect(setCookie).toMatch(/^af_session=[\w-]{43}; Path=\/; HttpOnly; SameSite=Lax; Max-Age=2592000$/);
-    const body = res.json<Me>();
-    expect(body).toMatchObject({ account: { email: 'parent.durand@exemple.fr', role: 'parent' }, parent: true });
-    // Le jeton n'apparaît jamais dans le corps.
-    expect(res.body).not.toContain(sessionCookie(res).split('=')[1]);
-    expect((await me(sessionCookie(res))).json<Me>().family.id).toBe(body.family.id);
+    expect(res.headers['set-cookie']).toBeUndefined();
+    const body = res.json<{ status: string; email: string; verificationLink?: string }>();
+    expect(body).toMatchObject({ status: 'verification_required', email: 'parent.durand@exemple.fr' });
+    expect(tokenOf(body.verificationLink)).toHaveLength(43);
+    expect(t.mailer.outbox.at(-1)?.to).toBe('parent.durand@exemple.fr');
   });
 
-  it('refus : adresse déjà prise, mot de passe trop court, adresse invalide', async () => {
+  it('refus : mot de passe trop court, adresse invalide ; adresse déjà prise → même réponse qu’une adresse libre', async () => {
     await signupRes('a@exemple.fr');
-    expect((await signupRes('A@exemple.fr')).statusCode).toBe(409);
+    expect((await signupRes('A@exemple.fr')).statusCode).toBe(201);
     expect((await signupRes('b@exemple.fr', 'court')).statusCode).toBe(400);
     expect((await signupRes('pas-une-adresse')).statusCode).toBe(400);
   });
 
   it('connexion : bon mot de passe ; mauvais mot de passe ou adresse inconnue → même message', async () => {
-    await signupRes('c@exemple.fr');
+    await t.signup('c@exemple.fr');
     expect((await loginRes('c@exemple.fr')).statusCode).toBe(200);
     const wrong = await loginRes('c@exemple.fr', 'mauvais mot de passe');
     const unknown = await loginRes('personne@exemple.fr');
