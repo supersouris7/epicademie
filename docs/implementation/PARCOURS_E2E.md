@@ -19,7 +19,6 @@ Commande : `pnpm e2e`. Elle est bloquante en CI.
 | 5   | `boss.spec.ts`     | Combat de boss : mobs, riposte, victoire, coffre                                              |
 | 6   | `boss.spec.ts`     | Défaite : 5 secondes pour recommencer, puis l'entraînement                                    |
 | 7   | `multi.spec.ts`    | Plusieurs appareils : présence, message, profil déjà ouvert refusé, arène jusqu'à la victoire |
-| 8   | `multi.spec.ts`    | Raid coopératif sur deux téléphones, partie affichée sur l'écran TV                           |
 | 9   | `billing.spec.ts`  | Version gratuite (cadenas), paiement simulé, chapitres débloqués, historique                  |
 | 11  | `journeys.spec.ts` | Compte : déconnexion de l'appareil, reconnexion, profils retrouvés                            |
 | 12  | `journeys.spec.ts` | Espace parent : enfant listé, abonnement familial                                             |

@@ -6,11 +6,11 @@ import { Figure } from '../../shared/question/figures/Figure.tsx';
 import { MathText } from '../../shared/question/MathText.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
-import { Countdown, eventText, overTitle, PlayerChip, RaidBars } from '../arena/index.ts';
+import { Countdown, eventText, overTitle, PlayerChip } from '../arena/index.ts';
 
 /**
  * Mode TV (docs/adr/0023-raid-et-tv.md) : un écran partagé (télévision, ordinateur branché)
- * affiche en grand l'arène ou le raid de la famille ; chacun répond sur son téléphone, qui sert
+ * affiche en grand l'arène de la famille ; chacun répond sur son téléphone, qui sert
  * de manette. L'écran n'a pas de profil et ne peut pas jouer : il regarde seulement.
  */
 export function TvScreen() {
@@ -37,9 +37,7 @@ export function TvScreen() {
         <div className="flex flex-col items-center gap-4 text-center">
           <Questy mood="wink" size={160} />
           <p className="font-display text-3xl tracking-wide">
-            {arena
-              ? 'La partie va commencer…'
-              : 'Lancez un Duel ou un Raid sur les téléphones : la partie s’affichera ici.'}
+            {arena ? 'La partie va commencer…' : 'Lancez un Duel sur les téléphones : la partie s’affichera ici.'}
           </p>
           {error && (
             <p role="alert" className="text-danger font-bold">
@@ -58,7 +56,6 @@ export function TvScreen() {
           <PlayerChip key={p.id} arena={arena} id={p.id} me="" />
         ))}
       </div>
-      {arena.raid && <RaidBars raid={arena.raid} />}
       {arena.phase === 'over' ? (
         <h1 className="font-display text-toon text-center text-6xl tracking-wide">{overTitle(arena, null)}</h1>
       ) : (
@@ -70,11 +67,7 @@ export function TvScreen() {
           )}
           <div className="flex items-center gap-3">
             <span className="font-display flex-1 text-4xl tracking-wide">
-              {arena.waitingFor
-                ? `En attente de ${turnName} (déconnecté)…`
-                : arena.quiz
-                  ? `Manche ${arena.quiz.round} / ${arena.quiz.rounds} : à vos téléphones !`
-                  : `Au tour de ${turnName} !`}
+              {arena.waitingFor ? `En attente de ${turnName} (déconnecté)…` : `Au tour de ${turnName} !`}
             </span>
             {arena.deadline && <Countdown deadline={arena.deadline} />}
           </div>

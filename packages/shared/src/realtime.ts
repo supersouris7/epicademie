@@ -100,36 +100,6 @@ export const ARENA_TURN_SECONDS = 45;
 /** Tours au plus : ensuite, le joueur qui a le plus de cœurs gagne. */
 export const ARENA_MAX_TURNS = 30;
 
-/**
- * Raid coopératif : toute l'équipe contre un boss (points de vie et cœurs partagés). Le boss
- * a 3 points de vie par joueur, l'équipe 2 cœurs par joueur (au moins 3) : environ 3 bonnes
- * réponses sur 5 suffisent à gagner.
- */
-export const RAID_MAX_TURNS = 40;
-export const ARENA_KINDS = ['duel', 'raid', 'quiz'] as const;
-export type ArenaKind = (typeof ARENA_KINDS)[number];
-export const raidSize = (players: number) => ({ bossHp: 3 * players, teamHearts: Math.max(3, 2 * players) });
-
-export interface RaidStatus {
-  readonly bossHp: number;
-  readonly bossMaxHp: number;
-  readonly teamHearts: number;
-  readonly teamMaxHearts: number;
-  /** null : en cours ; true : boss vaincu ; false : défaite. */
-  readonly won: boolean | null;
-}
-
-/** Quiz plateau : manches, scores, joueurs bloqués (mauvaise réponse) pour la manche. */
-export const QUIZ_ROUNDS = 10;
-/** Quiz plateau : secondes pour répondre à une manche. */
-export const QUIZ_SECONDS = 30;
-export interface QuizStatus {
-  readonly round: number;
-  readonly rounds: number;
-  readonly scores: Readonly<Record<string, number>>;
-  readonly locked: readonly string[];
-}
-
 export interface ArenaPlayer {
   readonly id: string;
   readonly name: string;
@@ -160,11 +130,6 @@ export type ArenaPhase = 'lobby' | 'playing' | 'over';
 
 export interface ArenaView {
   readonly id: string;
-  readonly kind: ArenaKind;
-  /** Raid : état du boss et de l'équipe ; null en duel. */
-  readonly raid: RaidStatus | null;
-  /** Quiz plateau : manche et scores ; null sinon. */
-  readonly quiz?: QuizStatus | null;
   readonly hostId: string;
   readonly chapterId: string;
   readonly phase: ArenaPhase;
@@ -184,7 +149,6 @@ export interface ArenaView {
 /** Invitation reçue. */
 export interface ArenaInvite {
   readonly arenaId: string;
-  readonly kind: ArenaKind;
   readonly from: Pick<OnlinePlayer, 'id' | 'name' | 'hero'>;
   readonly chapterId: string;
 }
@@ -195,8 +159,6 @@ export const ChatSendSchema = z.object({ to: z.uuid(), payload: ChatPayloadSchem
 export type ChatSend = z.infer<typeof ChatSendSchema>;
 
 export const ArenaCreateSchema = z.object({
-  /** Duel (chacun pour soi) ou raid (toute l'équipe contre un boss). */
-  kind: z.enum(ARENA_KINDS).default('duel'),
   chapterId: ContentIdSchema,
   invite: z
     .array(z.uuid())
