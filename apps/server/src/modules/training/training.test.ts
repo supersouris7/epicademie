@@ -322,10 +322,12 @@ describe('Épreuve du chapitre', () => {
 
   it('double validation : un seul coffre « chapitre », un seul trophée', async () => {
     const first = await play(profileId, 10);
-    const second = await play(profileId, 10);
+    // 9 sur 10 : validé (≥ 80 %) mais pas de sans-faute, donc aucun coffre d'entraînement aléatoire
+    // (un sans-faute peut tirer « légendaire » au hasard et rendre le test instable).
+    const second = await play(profileId, 9);
     expect(first.epreuve?.rewarded).toBe(true);
     expect(second.epreuve).toMatchObject({ passed: true, rewarded: false, alreadyValidated: true });
-    expect(second.chest?.rarity).not.toBe('legendaire');
+    expect(second.chest).toBeNull();
     expect(await trophies()).toHaveLength(1);
   });
 
