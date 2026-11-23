@@ -47,7 +47,7 @@ describe('connexion de l’appareil', () => {
     // Le lien seul ne suffit pas : le mot de passe est exigé ; un mauvais mot de passe laisse réessayer.
     await user.type(await screen.findByLabelText('Mot de passe du compte'), 'pas le bon');
     await user.click(screen.getByRole('button', { name: 'Valider mon adresse' }));
-    expect(await screen.findByRole('alert')).toHaveTextContent('Mot de passe incorrect');
+    expect(await screen.findByRole('alert')).toHaveTextContent('Ce n’est pas le mot de passe choisi à l’inscription.');
     expect(screen.getByRole('link', { name: /Mot de passe oublié/ })).toHaveAttribute('href', '/mot-de-passe-oublie');
     await user.clear(screen.getByLabelText('Mot de passe du compte'));
     await user.type(screen.getByLabelText('Mot de passe du compte'), FAKE_PASSWORD);
@@ -205,5 +205,62 @@ describe('parcours de l’élève', () => {
     expect(JSON.stringify(server.calls.find((c) => c.path === '/auth/student/signup')?.body)).not.toMatch(
       /mail|password/,
     );
+  });
+});
+
+describe('boîte mail de test (recette)', () => {
+  it('lien proposé seulement si le serveur simule l’envoi', async () => {
+    const off = renderApp('/mot-de-passe-oublie', { loggedIn: false });
+    await off.user.type(await screen.findByLabelText('E-mail du parent'), 'a@famille.test');
+    await waitFor(() => expect(off.server.calls.some((c) => c.path === '/auth/options')).toBe(true));
+    expect(screen.queryByRole('link', { name: /boîte mail de test/ })).not.toBeInTheDocument();
+  });
+
+  it('écrans de connexion refusée, de validation et de mot de passe oublié : lien vers la boîte', async () => {
+    const forgot = renderApp('/mot-de-passe-oublie', { loggedIn: false, simulatedMail: true });
+    expect(await screen.findByRole('link', { name: /boîte mail de test/ })).toHaveAttribute(
+      'href',
+      '/recette/boite-mail',
+    );
+    expect(screen.getByText(/aucun e-mail n’est envoyé/)).toBeInTheDocument();
+    forgot.unmount();
+    const verify = renderApp('/email/verification?jeton=jeton-0123456789abcdefghijk', {
+      loggedIn: false,
+      simulatedMail: true,
+    });
+    expect(await screen.findByRole('link', { name: /boîte mail de test/ })).toBeInTheDocument();
+    expect(screen.getByText('Saisissez le mot de passe choisi à l’inscription')).toBeInTheDocument();
+    verify.unmount();
+    const { user } = renderApp('/connexion', { loggedIn: false, simulatedMail: true });
+    await user.type(await screen.findByLabelText('E-mail du parent'), UNVERIFIED_EMAIL);
+    await user.type(screen.getByLabelText('Mot de passe'), FAKE_PASSWORD);
+    await user.click(screen.getByRole('button', { name: 'Se connecter' }));
+    const link = await screen.findByRole('link', { name: /boîte mail de test/ });
+    expect(link).toHaveAttribute('href', `/recette/boite-mail?email=${encodeURIComponent(UNVERIFIED_EMAIL)}`);
+  });
+
+  it('la page liste les e-mails de l’adresse avec des liens cliquables', async () => {
+    renderApp('/recette/boite-mail?email=a@famille.test', {
+      loggedIn: false,
+      simulatedMail: true,
+      testMails: [
+        {
+          to: 'a@famille.test',
+          subject: 'Valide ton adresse',
+          text: 'Ouvre ce lien :\nhttp://localhost/email/verification?jeton=abc\nMerci',
+          sentAt: '2026-11-23T10:00:00.000Z',
+        },
+        { to: 'b@famille.test', subject: 'Autre', text: 'x', sentAt: '2026-11-23T10:01:00.000Z' },
+      ],
+    });
+    expect(await screen.findByText('Valide ton adresse')).toBeInTheDocument();
+    expect(screen.queryByText('Autre')).not.toBeInTheDocument();
+    expect(screen.getByText(/Retrouvez ici les messages que vous auriez reçus/)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /jeton=abc/ })).toHaveAttribute('href', '/email/verification?jeton=abc');
+  });
+
+  it('serveur sans simulation : message clair', async () => {
+    renderApp('/recette/boite-mail', { loggedIn: false });
+    expect(await screen.findByRole('alert')).toHaveTextContent('pas disponible');
   });
 });

@@ -24,6 +24,15 @@ export const GOOGLE_START_URL = `${API_PREFIX}/auth/google/start`;
 /** Modes d'ouverture de compte du serveur : le bouton Google n'apparaît que s'il est configuré. */
 export const useAuthOptions = () =>
   useQuery({ queryKey: ['auth-options'], queryFn: () => request(api.authOptions), retry: false, staleTime: Infinity });
+/** Boîte mail de test (recette seulement : 404 ailleurs). */
+export const useTestMailbox = (enabled: boolean) =>
+  useQuery({
+    queryKey: ['test-mailbox'],
+    queryFn: () => request(api.testMailbox),
+    enabled,
+    retry: false,
+    staleTime: 0,
+  });
 export const login = (input: Login) => request(api.login, { body: input });
 export const signupStudent = (input: StudentSignup) => request(api.signupStudent, { body: input });
 export const recoverStudent = (code: string) => request(api.recoverStudent, { body: { code } });

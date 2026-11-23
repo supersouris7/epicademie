@@ -38,3 +38,11 @@ qu'elle appartienne à la personne. Les enfants de moins de 15 ans restent sans 
   actions parent et le PIN).
 - Une adresse inscrite mais jamais validée reste réservée jusqu'à validation, Google ou réinitialisation du mot de passe
   (nettoyage des comptes jamais validés : à prévoir).
+
+## Addendum — boîte mail de test (recette)
+
+En simulation d'envoi (hors production, sans clé Brevo : même garde que le lien renvoyé dans la réponse), chaque e-mail
+est aussi conservé en mémoire (50 derniers, perdus au redémarrage) et consultable via `GET /api/v1/recette/boite-mail`
+(filtre `?email=`, 404 si la simulation est inactive) et la page `/recette/boite-mail`. Cela évite qu'un testeur reste
+bloqué quand le lien n'est plus renvoyé dans la réponse (deuxième inscription neutre, mot de passe oublié). Le serveur
+l'annonce par `simulatedMail` dans `/auth/options` ; en production, la route n'existe pas et rien n'est conservé.

@@ -22,6 +22,7 @@ import {
 import { HEROES, ProfileCreateSchema, ProfileSchema, ProfileUpdateSchema } from '../profile.ts';
 import {
   AuthOptionsSchema,
+  TestMailboxSchema,
   EmailResendResultSchema,
   EmailResendSchema,
   EmailVerifySchema,
@@ -236,6 +237,15 @@ export const api = {
     access: 'public',
     status: 200,
     response: AuthOptionsSchema,
+  }),
+  testMailbox: endpoint({
+    method: 'GET',
+    path: '/recette/boite-mail',
+    tag: 'comptes',
+    summary: 'Boîte mail de test : e-mails simulés (404 hors simulation ; filtre facultatif ?email=)',
+    access: 'public',
+    status: 200,
+    response: TestMailboxSchema,
   }),
   login: endpoint({
     method: 'POST',

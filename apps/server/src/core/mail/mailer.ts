@@ -95,3 +95,35 @@ export function detachedMailer(
     },
   };
 }
+
+/** Nombre d'e-mails simulés conservés (les plus récents). */
+export const TEST_MAILBOX_SIZE = 50;
+
+export interface TestMailRecord extends Mail {
+  readonly sentAt: Date;
+}
+
+/**
+ * Boîte mail de test (recette) : les e-mails simulés sont gardés en mémoire (50 derniers, perdus au
+ * redémarrage) pour que le testeur retrouve ses liens. À n'activer que si la simulation d'envoi est
+ * active, jamais en production (même garde que le lien renvoyé dans la réponse).
+ */
+export function createTestMailbox(now: () => Date) {
+  const records: TestMailRecord[] = [];
+  return {
+    /** Enveloppe un envoi : le message est conservé avant d'être confié au mailer. */
+    wrap: (inner: Mailer): Mailer => ({
+      send: async (mail) => {
+        records.unshift({ ...mail, sentAt: now() });
+        records.length = Math.min(records.length, TEST_MAILBOX_SIZE);
+        await inner.send(mail);
+      },
+    }),
+    /** Plus récent d'abord ; filtre facultatif sur le destinataire (sans tenir compte de la casse). */
+    list: (email?: string): TestMailRecord[] => {
+      const wanted = email?.trim().toLowerCase();
+      return records.filter((m) => !wanted || m.to.toLowerCase() === wanted);
+    },
+  };
+}
+export type TestMailbox = ReturnType<typeof createTestMailbox>;

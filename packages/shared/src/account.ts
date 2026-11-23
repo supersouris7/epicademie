@@ -77,7 +77,22 @@ export const EmailResendResultSchema = z.object({ verificationLink: z.string().o
 export const EmailVerifySchema = z.object({ token: z.string().min(20).max(200), password: z.string().min(1).max(200) });
 export type EmailVerify = z.infer<typeof EmailVerifySchema>;
 /** Modes d'ouverture de compte proposés par ce serveur (bouton Google masqué si non configuré). */
-export const AuthOptionsSchema = z.object({ google: z.boolean() });
+export const AuthOptionsSchema = z.object({
+  google: z.boolean(),
+  /** Recette : e-mails simulés, consultables dans la « boîte mail de test » (jamais en production). */
+  simulatedMail: z.boolean(),
+});
+
+/** E-mail simulé conservé pour la recette (aucun envoi réel). */
+export const TestMailSchema = z.object({
+  to: z.string(),
+  subject: z.string(),
+  text: z.string(),
+  sentAt: z.string(),
+  link: z.string().optional(),
+});
+export const TestMailboxSchema = z.object({ messages: z.array(TestMailSchema) });
+export type TestMail = z.infer<typeof TestMailSchema>;
 
 export const PasswordForgotSchema = z.object({ email: EmailSchema });
 export const PasswordResetSchema = z.object({ token: z.string().min(20).max(200), password: PasswordSchema });

@@ -12,6 +12,7 @@ import {
   RequireAccount,
   ResetPasswordScreen,
   SignupScreen,
+  TestMailboxScreen,
   VerifyEmailScreen,
   StudentAgeScreen,
   StudentRecoverScreen,
@@ -107,6 +108,7 @@ export function App() {
             <Route path="/connexion" element={<LoginScreen />} />
             <Route path="/inscription" element={<SignupScreen />} />
             <Route path="/email/verification" element={<VerifyEmailScreen />} />
+            <Route path="/recette/boite-mail" element={<TestMailboxScreen />} />
             <Route path="/mot-de-passe-oublie" element={<ForgotPasswordScreen />} />
             <Route path="/mot-de-passe/nouveau" element={<ResetPasswordScreen />} />
             <Route path="/a-propos" element={<About />} />

@@ -10,6 +10,7 @@ export {
   SignupScreen,
   VerifyEmailScreen,
 } from './AuthScreens.tsx';
+export { TestMailboxScreen } from './TestMailboxScreen.tsx';
 export {
   StudentAgeScreen,
   StudentRecoverScreen,

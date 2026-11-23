@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
 import type { Me, Profile } from '@questeo/shared';
 import { createTestApp, profileInput, sessionCookie, TEST_PASSWORD, tokenOf } from '../../testing/harness.ts';
@@ -289,6 +289,90 @@ describe('production : le lien ne sort jamais du serveur', () => {
         payload: { email: 'prod@exemple.fr' },
       });
       expect(again.json()).toEqual({});
+    } finally {
+      await prod.close();
+    }
+  });
+});
+
+describe('boîte mail de test (recette)', () => {
+  // Application dédiée : la boîte est en mémoire et survit à `reset()`.
+  let m: Awaited<ReturnType<typeof createTestApp>>;
+  beforeEach(async () => {
+    m = await createTestApp({ today: '2026-11-20' });
+  });
+  afterEach(() => m.close());
+  const signup = async (email: string) => {
+    await m.http.inject({
+      method: 'POST',
+      url: '/api/v1/auth/signup',
+      headers: anonymous,
+      payload: { email, password: TEST_PASSWORD },
+    });
+    await m.mailIdle();
+  };
+  const box = (email?: string) =>
+    m.http.inject({
+      url: `/api/v1/recette/boite-mail${email ? `?email=${encodeURIComponent(email)}` : ''}`,
+      headers: anonymous,
+    });
+  type Box = { messages: { to: string; subject: string; text: string; sentAt: string; link?: string }[] };
+
+  it('simulation active : garde les e-mails, y compris après renvoi, 2e inscription et mot de passe oublié', async () => {
+    await signup('a@famille.test');
+    await signup('a@famille.test'); // réponse neutre : aucun lien dans la réponse
+    await m.http.inject({
+      method: 'POST',
+      url: '/api/v1/auth/password/forgot',
+      headers: anonymous,
+      payload: { email: 'a@famille.test' },
+    });
+    await m.mailIdle();
+    const { messages } = (await box('A@famille.test')).json<Box>();
+    expect(messages).toHaveLength(3);
+    expect(messages[0]?.subject).toContain('nouveau mot de passe');
+    expect(messages.at(-1)?.link).toContain('/email/verification?jeton=');
+    expect(messages[0]).toMatchObject({ to: 'a@famille.test', sentAt: '2026-11-20T12:00:00.000Z' });
+  });
+
+  it('filtre par adresse', async () => {
+    await signup('x@famille.test');
+    await signup('y@famille.test');
+    expect((await box('y@famille.test')).json<Box>().messages.map((m) => m.to)).toEqual(['y@famille.test']);
+    // Sans filtre : tous les messages (la famille de test du harnais compte aussi).
+    expect((await box()).json<Box>().messages.map((m) => m.to)).toEqual(
+      expect.arrayContaining(['x@famille.test', 'y@famille.test']),
+    );
+    expect((await box('personne@famille.test')).json<Box>().messages).toEqual([]);
+  });
+
+  it('ne garde que les 50 derniers', async () => {
+    for (let i = 0; i < 52; i++) await signup(`n${i}@famille.test`);
+    const { messages } = (await box()).json<Box>();
+    expect(messages).toHaveLength(50);
+    expect(messages[0]?.to).toBe('n51@famille.test');
+  });
+
+  it('options : la simulation est annoncée', async () => {
+    const res = await m.http.inject({ url: '/api/v1/auth/options', headers: anonymous });
+    expect(res.json()).toMatchObject({ simulatedMail: true });
+  });
+
+  it('production ou fournisseur réel : route introuvable, rien n’est conservé', async () => {
+    const prod = await createTestApp({
+      config: { mail: { production: true, brevoApiKey: 'xkeysib-test-0000', from: 'noreply@exemple.fr' } },
+    });
+    try {
+      await prod.http.inject({
+        method: 'POST',
+        url: '/api/v1/auth/signup',
+        headers: anonymous,
+        payload: { email: 'prod@exemple.fr', password: TEST_PASSWORD },
+      });
+      await prod.mailIdle();
+      expect((await prod.http.inject({ url: '/api/v1/recette/boite-mail', headers: anonymous })).statusCode).toBe(404);
+      const options = await prod.http.inject({ url: '/api/v1/auth/options', headers: anonymous });
+      expect(options.json()).toMatchObject({ simulatedMail: false });
     } finally {
       await prod.close();
     }

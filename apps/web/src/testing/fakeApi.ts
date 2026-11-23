@@ -14,6 +14,7 @@ import {
   API_PREFIX,
   api,
   type AnyEndpoint,
+  type TestMail,
   type BattleView,
   type BossOverview,
   type Inventory,
@@ -90,6 +91,9 @@ export interface FakeApiOptions {
   readonly loggedIn?: boolean;
   /** Le serveur propose « Continuer avec Google ». */
   readonly google?: boolean;
+  /** Recette : e-mails simulés, boîte mail de test disponible. */
+  readonly simulatedMail?: boolean;
+  readonly testMails?: readonly TestMail[];
   /** Actions parent déverrouillées (par défaut : oui). */
   readonly parent?: boolean;
   /** Notions désactivées (en maintenance). */
@@ -206,13 +210,17 @@ function authHandlers(options: FakeApiOptions) {
         throw new FakeError(410, 'GONE', 'Ce lien a déjà été utilisé : connecte-toi avec ton mot de passe.');
       }
       if ((body as { password: string }).password !== FAKE_PASSWORD) {
-        throw new FakeError(401, 'UNAUTHORIZED', 'Mot de passe incorrect : saisis celui choisi à l’inscription.');
+        throw new FakeError(401, 'UNAUTHORIZED', 'Ce n’est pas le mot de passe choisi à l’inscription.');
       }
       Object.assign(session, { loggedIn: true, parent: true });
       return me();
     },
     resendVerification: () => ({}),
-    authOptions: () => ({ google: options.google ?? false }),
+    authOptions: () => ({ google: options.google ?? false, simulatedMail: options.simulatedMail ?? false }),
+    testMailbox: () => {
+      if (!options.simulatedMail) throw new FakeError(404, 'NOT_FOUND', 'Introuvable.');
+      return { messages: options.testMails ?? [] };
+    },
     signupStudent: ({ body }) => {
       const b = body as { name: string; avatar: unknown; grade: string };
       Object.assign(session, { loggedIn: true, parent: false, email: null });
