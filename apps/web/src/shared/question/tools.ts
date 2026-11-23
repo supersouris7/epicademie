@@ -4,7 +4,7 @@ import type { DockTab } from './PlayDock.tsx';
 import { conversionNeeded } from './conversion.ts';
 
 /** Matières où l'on calcule : seules à proposer calculatrice, brouillon et tableau de conversion. */
-const NUMERIC_SUBJECTS: readonly SubjectId[] = ['maths', 'physique'];
+const NUMERIC_SUBJECTS: readonly SubjectId[] = ['maths', 'sciences'];
 
 /**
  * Onglets d'une question (audit du 21/11/2026) :

@@ -75,6 +75,31 @@ describe('migrations', () => {
     }
   });
 
+  it('sciences : la matière physique devient sciences, notions et parties conservées', async () => {
+    const dir = migrationsUpTo(23); // jusqu'à 0022
+    try {
+      database = await openDatabase('pglite://memory');
+      await runMigrations(database, dir);
+      const { db } = database;
+      await db.execute(sql`insert into profiles (id, name, avatar, hero) values
+        ('66666666-6666-4666-8666-666666666666', 'Zoé', '{"style":"portrait","seed":"03"}', 'alex')`);
+      await db.execute(sql`insert into sessions (profile_id, mode, subject, chapter_id, answered, correct) values
+        ('66666666-6666-4666-8666-666666666666', 'boss', 'physique', 'p4-mouvement', 9, 7),
+        ('66666666-6666-4666-8666-666666666666', 'entrainement', 'maths', 'm5-calcul', 4, 4)`);
+      await runMigrations(database, MIGRATIONS_DIR);
+      expect((await schemaStatus(database, MIGRATIONS_DIR)).upToDate).toBe(true);
+      const result = await db.execute(
+        sql`select subject, chapter_id, answered, correct from sessions order by chapter_id`,
+      );
+      expect(rows<{ subject: string; chapter_id: string; answered: number; correct: number }>(result)).toEqual([
+        { subject: 'maths', chapter_id: 'm5-calcul', answered: 4, correct: 4 },
+        { subject: 'sciences', chapter_id: 'p4-mouvement', answered: 9, correct: 7 },
+      ]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it('avatars : les anciens avatars générés deviennent un des 25 portraits, toujours le même', async () => {
     const dir = migrationsUpTo(13); // jusqu'à 0012
     try {

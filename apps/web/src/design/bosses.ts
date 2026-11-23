@@ -36,7 +36,7 @@ export const SUBJECT_BOSSES: Record<string, BossIdentity> = {
   maths: SORCIER,
   anglais: boss('lord-blabla', 'Lord Blablabla', 'pipelette', ['#1d3b6e', '#5c8ad6']),
   espagnol: boss('senor-siesta', 'Señor Siesta', 'chili-bot', ['#6e1d1d', '#d6875c']),
-  physique: boss('professeur-kaboum', 'Professeur Kaboum', 'electron-zinzin', ['#1d4f6e', '#5cc4d6']),
+  sciences: boss('professeur-kaboum', 'Professeur Kaboum', 'electron-zinzin', ['#1d4f6e', '#5cc4d6']),
   geographie: boss('capitaine-boussole', 'Capitaine Boussole-Folle', 'globule-perdu', ['#1d6e3b', '#7ed65c']),
   histoire: boss('chronos-grognon', 'Chronos le Grognon', 'sablier-fou', ['#5a3b1d', '#d6b35c']),
 };

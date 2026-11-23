@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Navigate, useNavigate, useParams } from 'react-router';
 import { chaptersOf } from '@questeo/content';
-import { SUBJECTS, getMode, playedGrade, type Profile } from '@questeo/shared';
+import { SUBJECTS, getMode, playedGrade, subjectLabel, type Profile } from '@questeo/shared';
 import { acquired } from '@questeo/engine';
 import { useSkills } from '../training/index.ts';
 import { EmperorScene, emperorDue } from '../boss/index.ts';
@@ -101,8 +101,8 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
           >
             <button
               type="button"
-              onClick={() => pickSubject(s.id, s.name, s.available)}
-              aria-label={s.available ? s.name : `${s.name}, à venir`}
+              onClick={() => pickSubject(s.id, subjectLabel(s.id, grade), s.available)}
+              aria-label={s.available ? subjectLabel(s.id, grade) : `${s.name}, à venir`}
               className={`cartoon bevel cartoon-press gloss relative flex min-h-36 w-full flex-col items-center justify-center gap-2 p-4 hover:brightness-110 ${s.available ? '' : 'opacity-60 grayscale'}`}
               style={{ backgroundColor: `var(--subject-${s.color})` }}
             >
@@ -113,8 +113,15 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
                 return (
                   <>
                     {/* Relique de la matière : grise, se remplit avec les boss vaincus (tous les modes). */}
-                    <SubjectIcon subject={s.id} name={s.name} {...relic} size={isBoss || isTraining ? 80 : 72} />
-                    <span className="font-display text-toon text-xl tracking-wide sm:text-2xl">{s.name}</span>
+                    <SubjectIcon
+                      subject={s.id}
+                      name={subjectLabel(s.id, grade)}
+                      {...relic}
+                      size={isBoss || isTraining ? 80 : 72}
+                    />
+                    <span className="font-display text-toon text-xl tracking-wide sm:text-2xl">
+                      {subjectLabel(s.id, grade)}
+                    </span>
                     {isDefi ? (
                       // Défis : le record à battre plutôt qu'une barre.
                       <span className="font-display text-toon rounded-full bg-black/25 px-3 py-0.5 text-base">

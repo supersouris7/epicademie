@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { battlePools, CHAPTERS, generate } from './catalog.ts';
+import { battlePools, CHAPTERS, chaptersOf, generate } from './catalog.ts';
+import { DOMAINS, SCIENCES_DOMAINS } from './types.ts';
 import { check } from './check.ts';
 import { eq, fmt, frac, toNumber } from './rational.ts';
 import type { Figure, Level, Question, Response } from './types.ts';
@@ -61,16 +62,18 @@ describe('catalogue', () => {
 
   it('chaque chapitre porte le préfixe de sa matière et de sa classe (m5-, m6-, a5-…)', () => {
     const grade = { cm1: 'cm1-', cm2: 'cm2-', '6e': '6-', '5e': '5-', '4e': '4-', '3e': '3-', adulte: 'a-' };
+    // Sciences : une lettre par domaine (p physique-chimie, v SVT, t technologie).
+    const sciences: Record<string, string> = { 'physique-chimie': 'p', svt: 'v', technologie: 't' };
     const subject: Record<string, string> = {
       maths: 'm',
       anglais: 'a',
       espagnol: 'e',
-      physique: 'p',
       geographie: 'g',
       histoire: 'h',
     };
     for (const c of CHAPTERS) {
-      const prefix = `${subject[c.subject] ?? '?'}${grade[c.grade]}`;
+      const letter = c.subject === 'sciences' ? sciences[c.domain] : subject[c.subject];
+      const prefix = `${letter ?? '?'}${grade[c.grade]}`;
       expect(c.id.startsWith(prefix), c.id).toBe(true);
       for (const s of withBoss(c)) expect(s.id.startsWith(prefix), s.id).toBe(true);
     }
@@ -145,5 +148,31 @@ describe('parcours Adulte', () => {
     expect(isFreeChapter(chapters[0]?.id ?? '')).toBe(true);
     // Les chapitres ne sont pas dupliqués dans le catalogue complet.
     expect(chaptersOf('maths').filter((c) => c.id === 'm6-numeration')).toHaveLength(1);
+  });
+});
+
+describe('matière Sciences (#76)', () => {
+  it('les chapitres de physique-chimie sont dans la matière sciences, domaine physique-chimie', () => {
+    const chapters = chaptersOf('sciences');
+    expect(chapters.map((c) => c.id)).toEqual([
+      'p5-unites',
+      'p5-matiere',
+      'p4-mouvement',
+      'p4-electricite',
+      'p3-energie',
+    ]);
+    for (const c of chapters) expect(c.domain).toBe('physique-chimie');
+    expect(chaptersOf('physique')).toHaveLength(0);
+  });
+
+  it('seule la matière sciences utilise les domaines physique-chimie, svt et technologie', () => {
+    for (const c of CHAPTERS) {
+      expect(SCIENCES_DOMAINS.includes(c.domain as never), c.id).toBe(c.subject === 'sciences');
+    }
+    for (const d of SCIENCES_DOMAINS) expect(DOMAINS[d]).toBeTruthy();
+  });
+
+  it('un seul boss de matière : les chapitres de sciences ont tous un combat', () => {
+    for (const c of chaptersOf('sciences')) expect(battlePools(c.id), c.id).not.toBeNull();
   });
 });
