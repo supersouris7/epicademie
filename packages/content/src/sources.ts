@@ -262,7 +262,8 @@ export const SOURCES: readonly Source[] = [
   },
   {
     id: 'bc-british-american',
-    title: 'LearnEnglish, Grammar reference : British English and American English',
+    title:
+      'LearnEnglish, Grammar reference : British English and American English (page archivée, web.archive.org, 2012)',
     publisher: 'British Council',
     url: 'https://learnenglish.britishcouncil.org/en/grammar-reference/british-english-and-american-english',
     textDate: '2011',

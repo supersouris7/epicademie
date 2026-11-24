@@ -299,8 +299,9 @@ const days: Skill = {
     const opposite = at(DAYS, (i - step + DAYS.length) % DAYS.length);
     const dish = at(soups, i);
     const when = step === 1 ? 'le lendemain' : 'la veille';
+    const meaning = step === 1 ? 'le jour juste après' : 'le jour juste avant';
     return {
-      prompt: `Lis le menu (les lignes sont mélangées). Quel jour vient ${when} du jour où l’on mange « ${dish} » ? Écris-le en anglais.`,
+      prompt: `Lis le menu (les lignes sont mélangées). Cherche ${when} (${meaning}) du jour où l’on mange « ${dish} ». Écris ce jour en anglais.`,
       figure: {
         kind: 'document',
         title: 'Lunch menu',
@@ -388,7 +389,11 @@ const CLUES: readonly { readonly season: string; readonly en: string; readonly f
   { season: 'spring', en: 'New green leaves grow on the trees.', fr: 'de nouvelles feuilles vertes poussent' },
   { season: 'summer', en: 'We swim in the sea in the hot sun.', fr: 'on nage dans la mer sous un soleil chaud' },
   { season: 'summer', en: 'We eat ice cream. The days are long.', fr: 'on mange des glaces, les jours sont longs' },
-  { season: 'autumn', en: 'The leaves fall on the ground.', fr: 'les feuilles tombent par terre' },
+  {
+    season: 'autumn',
+    en: 'The leaves turn brown and drop to the ground.',
+    fr: 'les feuilles deviennent marron et tombent par terre',
+  },
   { season: 'autumn', en: 'Squirrels collect their nuts.', fr: 'les écureuils ramassent leurs noisettes' },
   { season: 'winter', en: 'We wait for snow. It is very cold.', fr: 'on attend la neige, il fait très froid' },
   { season: 'winter', en: 'The lake is freezing and my nose is red.', fr: 'le lac gèle et mon nez est rouge' },

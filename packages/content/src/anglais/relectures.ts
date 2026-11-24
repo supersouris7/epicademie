@@ -19,4 +19,9 @@ export const RELECTURES: readonly Relecture[] = [
     verdict: 'ok' as const,
   })),
   { skillId: 'acm1-mois', version: 1, lot: 'an-cm1-03', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'acm1-couleurs', version: 1, lot: 'an-cm1-03', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'acm1-jours', version: 1, lot: 'an-cm1-03', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'acm1-saisons', version: 1, lot: 'an-cm1-03', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'acm1-date', version: 1, lot: 'an-cm1-03', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'acm1-meteo', version: 1, lot: 'an-cm1-03', date: '2026-11-24', verdict: 'ok' },
 ];
