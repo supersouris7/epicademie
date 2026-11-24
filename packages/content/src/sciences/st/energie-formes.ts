@@ -55,7 +55,7 @@ const FORMES: Record<Forme, Def> = {
 };
 const CLES = Object.keys(FORMES) as Forme[];
 const sans = (f: Forme) => CLES.filter((x) => x !== f);
-const faux = (x: Forme) => ({ label: FORMES[x].nom, why: `Ce n’est pas ${FORMES[x].nom} : ${FORMES[x].regle}.` });
+const faux = (x: Forme) => ({ label: FORMES[x].nom, why: `Rien n’indique ${FORMES[x].nom} ici (${FORMES[x].regle}).` });
 
 const niveau1 = (rng: Rng): QuestionDraft => {
   const f = rng.pick(CLES);
@@ -136,7 +136,9 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   const f = rng.pick(CLES);
   const { answer, traps } = saisie(
     FORMES[f].accepte,
-    sans(f).map((x) => [FORMES[x].accepte[1] ?? '', `Ce n’est pas ${FORMES[x].nom} : ${FORMES[x].regle}.`] as const),
+    sans(f).map(
+      (x) => [FORMES[x].accepte[1] ?? '', `Rien n’indique ${FORMES[x].nom} ici (${FORMES[x].regle}).`] as const,
+    ),
   );
   return {
     prompt: `${FORMES[f].def} s’appelle comment ? Écris son nom.`,

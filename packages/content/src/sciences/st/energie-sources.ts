@@ -72,7 +72,10 @@ const SOURCES: Record<Cle, Source> = {
 const CLES = Object.keys(SOURCES) as Cle[];
 
 const sans = (c: Cle) => CLES.filter((x) => x !== c);
-const faux = (x: Cle) => ({ label: SOURCES[x].nom, why: `Ce n’est pas ${SOURCES[x].nom} : ${SOURCES[x].regle}.` });
+const faux = (x: Cle) => ({
+  label: SOURCES[x].nom,
+  why: `Rien n’indique ${SOURCES[x].nom} ici (${SOURCES[x].regle}).`,
+});
 
 const niveau1 = (rng: Rng): QuestionDraft => {
   const c = rng.pick(CLES);
@@ -159,7 +162,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
       (x) =>
         [
           SOURCES[x].accepte[SOURCES[x].accepte.length - 1] ?? '',
-          `Ce n’est pas ${SOURCES[x].nom} : ${SOURCES[x].regle}.`,
+          `Rien n’indique ${SOURCES[x].nom} ici (${SOURCES[x].regle}).`,
         ] as const,
     ),
   );
@@ -202,7 +205,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       parts: ['La Terre reçoit de l’énergie du ', ' par la ', ' qu’il émet.'],
       blanks: [
         { mode: 'text', accepted: ['soleil'] },
-        { mode: 'text', accepted: ['lumière'] },
+        { mode: 'text', accepted: ['lumière', 'lumiere'] },
       ],
     },
     hint: 'C’est l’astre qui éclaire le jour et qui chauffe la Terre.',
@@ -286,7 +289,7 @@ export const sourcesEnergie: Skill = {
   lesson: {
     memo: [
       'Une **source d’énergie**, c’est ce dont on tire de l’**énergie** : le Soleil, le vent, l’eau, le bois, le charbon, le pétrole. Une éolienne utilise le vent, un barrage utilise l’eau !',
-      'Le Soleil est la source la plus importante : la Terre reçoit son énergie par la lumière. Il fait vivre les êtres vivants et aide aussi les activités humaines.',
+      'Le Soleil joue un rôle essentiel : la Terre reçoit de l’énergie du Soleil par la lumière qu’il émet. Cette énergie est importante pour la vie sur Terre et pour les activités humaines.',
     ],
     source: `${PROGRAMME} : « différentes ressources en énergie (Soleil, eau, vent, pétrole, bois, charbon, dihydrogène, combustible nucléaire (uranium), etc.) » ; « L’importance de l’énergie reçue du Soleil pour la vie sur Terre et pour les activités humaines est mentionnée » ; « la Terre reçoit de l’énergie du Soleil par la lumière qu’il émet ».`,
     sources: [PROGRAMME],

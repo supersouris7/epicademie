@@ -86,8 +86,8 @@ const niveau2 = (rng: Rng): QuestionDraft => {
   const c = rng.pick(POINTS_DE_VUE);
   const train = c.bon.startsWith('tu');
   const options = train
-    ? ['tu avances en ligne droite', 'tu ne bouges pas', 'tu tournes en cercle', 'tu recules en ligne droite']
-    : ['il tourne en cercle', 'il ne bouge pas', 'il avance en ligne droite', 'il recule en cercle'];
+    ? ['tu avances en ligne droite', 'tu ne bouges pas', 'tu tournes en cercle']
+    : ['il tourne en cercle', 'il ne bouge pas', 'il avance en ligne droite'];
   const { answer, traps: tr } = choice(
     rng,
     c.bon,
@@ -201,7 +201,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       bon: 135,
       e: [
         [215, 'On ne colle pas 2 et 15 : 2 h = 120 min, puis on ajoute 15 min.'],
-        [30, 'Il faut convertir les heures en minutes (× 60), pas les ajouter.'],
+        [17, 'Il faut convertir les heures en minutes (× 60), pas ajouter 2 et 15.'],
       ],
     },
     {
@@ -218,8 +218,8 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       un: 'cm',
       bon: 320,
       e: [
-        [50, 'Il faut convertir les mètres en centimètres (× 100), pas les ajouter.'],
-        [3020, '3 m = 300 cm, pas 3 000 cm.'],
+        [23, 'Il faut convertir les mètres en centimètres (× 100), pas ajouter 3 et 20.'],
+        [3020, 'On ne colle pas 3 000 et 20 : 3 m = 300 cm, puis on additionne 300 + 20.'],
       ],
     },
     {
@@ -227,8 +227,8 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       un: 'm',
       bon: 2500,
       e: [
-        [700, 'Il faut convertir les kilomètres en mètres (× 1 000).'],
-        [2000500, '2 km = 2 000 m, puis on ajoute 500 m.'],
+        [502, 'Il faut convertir les kilomètres en mètres (× 1 000), pas ajouter 2 et 500.'],
+        [2000500, 'On ne colle pas 2 000 et 500 : 2 km = 2 000 m, puis on additionne 2 000 + 500.'],
       ],
     },
   ] as const);
@@ -322,7 +322,7 @@ export const mouvement: Skill = {
   lesson: {
     memo: [
       'Un **mouvement** se décrit toujours **par rapport à** quelque chose : c’est le **point de vue**. Un train va en ligne droite (**rectiligne**) vu du quai ; un point d’une toupie tourne en cercle (**circulaire**).',
-      'On le mesure : la **distance** parcourue (en m, km…) et la **durée** (le temps entre deux instants). Attention aux conversions : 1 km = 1 000 m et 1 h = 60 min.',
+      'On le mesure : la **distance** parcourue (en m, km…) et la **durée** (le temps entre deux instants). Attention aux conversions : 1 km = 1 000 m, 1 m = 100 cm, 1 h = 60 min et 1 min = 60 s.',
     ],
     source: `${PROGRAMME} : « Observer et identifier le mouvement rectiligne ou circulaire d’un objet, en précisant le point de vue » ; « Mesurer une distance lors du déplacement d’un objet » ; « Mesurer une durée, comme intervalle entre deux instants » ; « Effectuer des conversions d’unités de distance et de temps ».`,
     sources: [PROGRAMME],

@@ -72,7 +72,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
       why:
         f === c.de
           ? 'C’est l’énergie de départ : elle est convertie en une autre forme.'
-          : `Ce n’est pas ${NOM[f]} : ${c.phrase}`,
+          : `Ce n’est pas l’${NOM[f]} : ${c.phrase.replace(/^./, (m) => m.toLowerCase())}`,
     })),
   );
   return {
@@ -112,12 +112,13 @@ const niveau2 = (rng: Rng): QuestionDraft => {
       targetSeconds: 40,
     };
   }
-  const c = rng.pick(CONVERSIONS);
+  // La chaîne complète (turbine) a deux conversions vraies : on ne la propose qu'au niveau 1, où le départ est donné.
+  const c = rng.pick(CONVERSIONS.slice(0, 4));
   const bonne = texteConv(c);
   const { answer, traps } = choice(
     rng,
     bonne,
-    TOUTES.filter((x) => x !== bonne).map((x) => ({ label: x, why: `Pas dans ce sens : ${c.phrase}` })),
+    TOUTES.filter((x) => x !== bonne).map((x) => ({ label: x, why: `Ce n’est pas la bonne conversion : ${c.phrase}` })),
   );
   return {
     prompt: `${c.scene} Quelle conversion d’énergie a lieu ?`,
@@ -167,12 +168,21 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     };
   }
   const monte = rng.int(0, 1) === 0;
-  const { answer, traps } = saisie(monte ? ['cinétique', 'énergie cinétique'] : ['électrique', 'énergie électrique'], [
+  const { answer, traps } = saisie(
+    monte
+      ? ['cinétique', 'énergie cinétique', 'cinetique', 'energie cinetique', 'l’énergie cinétique']
+      : ['électrique', 'énergie électrique', 'electrique', 'energie electrique', 'l’énergie électrique'],
     [
-      monte ? 'électrique' : 'cinétique',
-      'Relis la scène : cherche si l’énergie finale est du mouvement ou du courant.',
+      [
+        monte ? 'électrique' : 'cinétique',
+        'Relis la scène : cherche si l’énergie finale est du mouvement ou du courant.',
+      ],
+      [
+        'pesanteur',
+        'L’énergie de pesanteur dépend de l’altitude : ici on cherche la forme d’énergie obtenue à la fin de la scène.',
+      ],
     ],
-  ]);
+  );
   return {
     prompt: monte
       ? 'Un enfant glisse sur un toboggan. À la fin, il va vite. Quelle forme d’énergie a-t-il gagnée ? Écris son nom (un mot suffit).'
@@ -193,11 +203,15 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   const t = rng.int(0, 2);
   if (t === 0) {
     const { answer, traps } = saisie(
-      ['électrique', 'énergie électrique'],
+      ['électrique', 'énergie électrique', 'electrique', 'energie electrique', 'l’énergie électrique'],
       [
         [
           'cinétique',
           'Le mouvement de la turbine est la forme du milieu : à la sortie, du courant circule dans les fils.',
+        ],
+        [
+          'pesanteur',
+          'L’énergie de pesanteur est celle du départ, quand l’eau est en haut : pas celle produite pour la maison.',
         ],
       ],
     );
@@ -219,7 +233,9 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   const { answer, traps } = saisie(monte ? ['diminue'] : ['augmente'], [
     [
       monte ? 'augmente' : 'diminue',
-      'Regarde l’altitude : elle baisse quand l’objet tombe, et c’est elle qui décide de l’énergie de pesanteur.',
+      monte
+        ? 'Regarde l’altitude : elle baisse quand l’objet tombe, et c’est elle qui décide de l’énergie de pesanteur.'
+        : 'Regarde la vitesse : la bille va de plus en plus vite, donc son énergie cinétique augmente.',
     ],
   ]);
   return {
@@ -289,7 +305,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
   const { answer, traps } = choice(
     rng,
     d.bonne,
-    TOUTES.filter((x) => x !== d.bonne).map((x) => ({ label: x, why: `Pas dans ce sens : ${d.why}` })),
+    TOUTES.filter((x) => x !== d.bonne).map((x) => ({ label: x, why: `Ce n’est pas la bonne conversion : ${d.why}` })),
   );
   return {
     prompt: `Lis le texte. ${d.q}`,
