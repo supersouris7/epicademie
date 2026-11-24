@@ -62,11 +62,21 @@ export interface Entree {
   /** Petit mot qui introduit un COI. */
   readonly prep?: 'à' | 'de';
   readonly circ: string;
-  /** Le groupe circonstanciel dit où (sinon, il dit quand). */
-  readonly lieu: boolean;
+  /**
+   * Renseigné quand le groupe circonstanciel dit où (sinon, il dit quand) : les repères de temps compatibles avec la
+   * phrase, à placer devant elle. Seules ces phrases peuvent aussi recevoir « souvent ».
+   */
+  readonly avant?: readonly string[];
   /** Un autre groupe circonstanciel du même genre (substitution). */
   readonly autre: string;
 }
+
+/** Repères de temps compatibles avec un verbe au présent (jamais un repère passé). */
+const TOUS = ['Ce matin', 'Chaque dimanche', 'Le mardi'];
+/** Jour de classe ou de travail : pas de dimanche. */
+const SEMAINE = ['Ce matin', 'Le mardi'];
+/** Le goûter ne se prépare pas le matin. */
+const GOUTER = ['Chaque dimanche', 'Le mardi'];
 
 export const ENTREES: readonly Entree[] = [
   {
@@ -76,7 +86,7 @@ export const ENTREES: readonly Entree[] = [
     type: 'cod',
     q: 'mange quoi',
     circ: 'dans le jardin',
-    lieu: true,
+    avant: TOUS,
     autre: 'sur la terrasse',
   },
   {
@@ -86,7 +96,6 @@ export const ENTREES: readonly Entree[] = [
     type: 'cod',
     q: 'prépare quoi',
     circ: 'chaque matin',
-    lieu: false,
     autre: 'tous les jours',
   },
   {
@@ -96,7 +105,6 @@ export const ENTREES: readonly Entree[] = [
     type: 'cod',
     q: 'range quoi',
     circ: 'le samedi',
-    lieu: false,
     autre: 'le dimanche',
   },
   {
@@ -106,7 +114,7 @@ export const ENTREES: readonly Entree[] = [
     type: 'cod',
     q: 'lisent quoi',
     circ: 'à la bibliothèque',
-    lieu: true,
+    avant: SEMAINE,
     autre: 'dans la classe',
   },
   {
@@ -116,7 +124,7 @@ export const ENTREES: readonly Entree[] = [
     type: 'cod',
     q: 'écrit quoi',
     circ: 'au tableau',
-    lieu: true,
+    avant: SEMAINE,
     autre: 'sur le cahier',
   },
   {
@@ -126,7 +134,6 @@ export const ENTREES: readonly Entree[] = [
     type: 'cod',
     q: 'cueillons quoi',
     circ: 'en été',
-    lieu: false,
     autre: 'au printemps',
   },
   {
@@ -136,7 +143,7 @@ export const ENTREES: readonly Entree[] = [
     type: 'cod',
     q: 'répare quoi',
     circ: 'dans le garage',
-    lieu: true,
+    avant: TOUS,
     autre: 'dans la cour',
   },
   {
@@ -146,7 +153,6 @@ export const ENTREES: readonly Entree[] = [
     type: 'cod',
     q: 'dessinent quoi',
     circ: 'pendant la récréation',
-    lieu: false,
     autre: 'après la classe',
   },
   {
@@ -156,7 +162,6 @@ export const ENTREES: readonly Entree[] = [
     type: 'cod',
     q: 'arrose quoi',
     circ: 'tous les soirs',
-    lieu: false,
     autre: 'le matin',
   },
   {
@@ -166,7 +171,7 @@ export const ENTREES: readonly Entree[] = [
     type: 'cod',
     q: 'prépare quoi',
     circ: 'dans la cuisine',
-    lieu: true,
+    avant: GOUTER,
     autre: 'dans le salon',
   },
   {
@@ -177,7 +182,7 @@ export const ENTREES: readonly Entree[] = [
     q: 'parle à qui',
     prep: 'à',
     circ: 'dans la rue',
-    lieu: true,
+    avant: TOUS,
     autre: 'dans le parc',
   },
   {
@@ -188,7 +193,6 @@ export const ENTREES: readonly Entree[] = [
     q: 'téléphone à qui',
     prep: 'à',
     circ: 'tous les dimanches',
-    lieu: false,
     autre: 'chaque soir',
   },
   {
@@ -199,7 +203,7 @@ export const ENTREES: readonly Entree[] = [
     q: 'obéissent à qui',
     prep: 'à',
     circ: 'en classe',
-    lieu: true,
+    avant: SEMAINE,
     autre: 'dans la cour',
   },
   {
@@ -210,7 +214,6 @@ export const ENTREES: readonly Entree[] = [
     q: 'pense à quoi',
     prep: 'à',
     circ: 'le soir',
-    lieu: false,
     autre: 'le matin',
   },
   {
@@ -221,7 +224,6 @@ export const ENTREES: readonly Entree[] = [
     q: 'parle de quoi',
     prep: 'de',
     circ: 'ce matin',
-    lieu: false,
     autre: 'ce soir',
   },
   {
@@ -232,7 +234,6 @@ export const ENTREES: readonly Entree[] = [
     q: 'téléphones à qui',
     prep: 'à',
     circ: 'après le repas',
-    lieu: false,
     autre: 'avant le dîner',
   },
   {
@@ -243,7 +244,7 @@ export const ENTREES: readonly Entree[] = [
     q: 'rêvent de quoi',
     prep: 'de',
     circ: 'en classe',
-    lieu: true,
+    avant: SEMAINE,
     autre: 'dans leur lit',
   },
   {
@@ -254,13 +255,54 @@ export const ENTREES: readonly Entree[] = [
     q: 'pense à quoi',
     prep: 'à',
     circ: 'dans le train',
-    lieu: true,
+    avant: SEMAINE,
     autre: 'dans la voiture',
   },
+  {
+    gs: 'Le chien',
+    verbe: 'obéit',
+    obj: 'à son maître',
+    type: 'coi',
+    q: 'obéit à qui',
+    prep: 'à',
+    circ: 'dans le parc',
+    avant: TOUS,
+    autre: 'dans la cour',
+  },
+  {
+    gs: 'Ma mère',
+    verbe: 'téléphone',
+    obj: 'à son frère',
+    type: 'coi',
+    q: 'téléphone à qui',
+    prep: 'à',
+    circ: 'dans le bureau',
+    avant: SEMAINE,
+    autre: 'dans le salon',
+  },
+  {
+    gs: 'Les enfants',
+    verbe: 'parlent',
+    obj: 'de leur sortie',
+    type: 'coi',
+    q: 'parlent de quoi',
+    prep: 'de',
+    circ: 'dans le car',
+    avant: SEMAINE,
+    autre: 'sur le chemin',
+  },
+  {
+    gs: 'Mon voisin',
+    verbe: 'pense',
+    obj: 'à son jardin',
+    type: 'coi',
+    q: 'pense à quoi',
+    prep: 'à',
+    circ: 'dans le bus',
+    avant: SEMAINE,
+    autre: 'dans le métro',
+  },
 ];
-
-/** Groupes circonstanciels (temps) placés devant une phrase dont le groupe circonstanciel dit où. */
-export const AVANT: readonly string[] = ['Ce matin', 'Hier soir', 'Chaque dimanche', 'Le mardi'];
 
 // ───────────────────────── Constructions ─────────────────────────
 
@@ -278,6 +320,13 @@ export const deux = (e: Entree, avant: string): string =>
 
 export type Manip = 'deplacer' | 'supprimer' | 'remplacer' | 'ajouter' | 'encadrer';
 export const MANIPS: readonly Manip[] = ['deplacer', 'supprimer', 'remplacer', 'ajouter', 'encadrer'];
+
+/** « souvent » ne s'ajoute qu'aux phrases sans repère de fréquence ou de moment. */
+export const manipsDe = (e: Entree): readonly Manip[] => MANIPS.filter((m) => m !== 'ajouter' || e.avant !== undefined);
+
+/** Écritures acceptées d'une phrase : avec ou sans point ; la virgule après un groupe placé en tête est facultative. */
+export const ecritures = (phrase: string): string[] =>
+  [...new Set([phrase, phrase.replace(',', '')])].flatMap((s) => [s, s.replace(/\.$/, '')]);
 
 /** Résultat d'une manipulation sur la phrase de base. */
 export function resultat(e: Entree, m: Manip): string {

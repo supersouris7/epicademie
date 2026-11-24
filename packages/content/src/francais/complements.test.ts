@@ -3,7 +3,7 @@ import { generate } from '../catalog.ts';
 import { check } from '../check.ts';
 import { getSource } from '../sources.ts';
 import { FCM1_COMPLEMENTS } from './complements.ts';
-import { AVANT, ENTREES, FAITS_COMPL, MANIPS, resultat } from './complements.donnees.ts';
+import { ENTREES, FAITS_COMPL, MANIPS, base, devant, resultat } from './complements.donnees.ts';
 
 const skills = FCM1_COMPLEMENTS;
 
@@ -70,6 +70,72 @@ describe('banque de phrases', () => {
 
   it('chaque manipulation donne une phrase différente', () => {
     for (const e of ENTREES) expect(new Set(MANIPS.map((m) => resultat(e, m))).size).toBe(MANIPS.length);
-    expect(AVANT.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('aucun repère passé avec le présent, pas de dimanche à l’école', () => {
+    for (const e of ENTREES)
+      for (const a of e.avant ?? []) {
+        expect(a, e.gs).not.toMatch(/hier|dernier|dernière|veille|autrefois/i);
+        if (/classe|bibliothèque|tableau/.test(e.circ)) expect(a, e.circ).not.toMatch(/dimanche/i);
+      }
+  });
+});
+
+/** Toutes les questions d'une notion à un niveau, sur de nombreuses graines. */
+const tirages = (id: string, level: 1 | 2 | 3 | 4 | 5) =>
+  Array.from({ length: 200 }, (_, seed) => generate(id, level, seed));
+
+describe('corrections de relecture', () => {
+  it('le critère « déplacer ou supprimer » n’est jamais employé', () => {
+    for (const s of skills)
+      for (let level = 1; level <= 5; level++)
+        for (const q of tirages(s.id, level as 1))
+          expect(JSON.stringify([q, s.lesson.memo])).not.toMatch(
+            /(déplac\w*|déplacé) ou (se |le )?(supprim|disparaître)/,
+          );
+  });
+
+  it('une phrase déplacée est acceptée avec ou sans virgule, avec ou sans point', () => {
+    let vus = 0;
+    for (const q of tirages('fcm1-manipulations', 3)) {
+      const e = ENTREES.find((x) => q.prompt.includes(`« ${base(x)} » Consigne : déplace`));
+      if (!e) continue;
+      vus++;
+      const sansVirgule = devant(e).replace(',', '');
+      for (const text of [devant(e), sansVirgule, sansVirgule.replace(/\.$/, '')])
+        expect(check(q, { kind: 'text', text }).correct, text).toBe(true);
+    }
+    expect(vus).toBeGreaterThan(0);
+  });
+
+  it('« souvent » n’est jamais ajouté à une phrase qui porte déjà un moment ou une fréquence', () => {
+    const interdites = ENTREES.filter((e) => !e.avant);
+    for (let level = 1; level <= 5; level++)
+      for (const q of tirages('fcm1-manipulations', level as 1)) {
+        const texte = JSON.stringify(q);
+        for (const e of interdites) expect(texte).not.toContain(resultat(e, 'ajouter'));
+      }
+  });
+
+  it('au niveau 5, les deux manipulations enchaînées donnent une phrase juste', () => {
+    for (const q of tirages('fcm1-manipulations', 5)) {
+      expect(q.answer.kind).toBe('text');
+      if (q.answer.kind !== 'text') continue;
+      for (const text of q.answer.accepted) expect(check(q, { kind: 'text', text }).correct).toBe(true);
+      for (const t of q.traps) if ('text' in t) expect(check(q, { kind: 'text', text: t.text }).correct).toBe(false);
+    }
+  });
+
+  it('COD ou COI, niveau 3 : il faut trouver le groupe et son type parmi quatre propositions', () => {
+    for (const q of tirages('fcm1-cod-coi', 3)) {
+      expect(q.answer.kind === 'choice' && q.answer.options.length).toBe(4);
+    }
+  });
+
+  it('groupes circonstanciels : N3 vise la fin de la phrase, N5 contient une phrase à deux groupes', () => {
+    for (const q of tirages('fcm1-groupes-circonstanciels', 3)) expect(q.prompt).toContain('à la fin');
+    for (const q of tirages('fcm1-groupes-circonstanciels', 5)) {
+      expect(q.answer.kind === 'number' && q.answer.value.n >= 4).toBeTruthy();
+    }
   });
 });

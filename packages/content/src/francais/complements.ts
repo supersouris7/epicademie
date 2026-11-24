@@ -3,7 +3,6 @@ import { r } from '../rational.ts';
 import type { Rng } from '../rng.ts';
 import type { Level, QuestionDraft, Skill } from '../types.ts';
 import {
-  AVANT,
   CONSTAT,
   DEFINITION,
   EN_FAISANT,
@@ -14,7 +13,9 @@ import {
   consigne,
   deux,
   devant,
+  ecritures,
   faitCompl,
+  manipsDe,
   resultat,
   sansCirc,
   type Entree,
@@ -30,11 +31,10 @@ const PROGRAMME = 'francais-cycle3-2025';
 const programme = (id: string) =>
   `Programme de français du cycle 3 (BO du 17 avril 2025), CM1 — « ${faitCompl(id).citation} »`;
 
-const sansPoint = (s: string): string => s.replace(/\.$/, '');
-/** Une phrase, avec ou sans point final. */
-const accepte = (s: string): string[] => [s, sansPoint(s)];
 const cods = ENTREES.filter((e) => e.type === 'cod');
 const cois = ENTREES.filter((e) => e.type === 'coi');
+/** Les phrases dont le groupe circonstanciel dit où : on peut leur ajouter un repère de temps ou « souvent ». */
+const deLieu = ENTREES.flatMap((e) => (e.avant ? [{ ...e, avant: e.avant }] : []));
 /** Le groupe circonstanciel à la fin ou déplacé au début (tirage). */
 const avecCirc = (rng: Rng, e: Entree): string => (rng.int(0, 1) === 0 ? base(e) : devant(e));
 
@@ -100,10 +100,10 @@ function objetCircDraft(rng: Rng, level: Level): QuestionDraft {
     case 3: {
       const e = rng.pick(ENTREES);
       return {
-        prompt: `Écris le groupe qu’on peut déplacer ou supprimer : « ${base(e)} »`,
+        prompt: `Écris le groupe qu’on peut à la fois déplacer et supprimer : « ${base(e)} »`,
         answer: { kind: 'text', accepted: [e.circ] },
         traps: [textTrap(e.obj, whyObjet(e)), textTrap(e.gs, whySujet(e))],
-        hint: 'Cherche le groupe qui peut aller au début de la phrase, ou disparaître, sans casser la phrase.',
+        hint: 'Cherche le groupe qui peut aller au début de la phrase et aussi disparaître, sans casser la phrase.',
         steps: [
           TEST_DEPLACER,
           `« ${devant(e)} » est correcte. Et sans lui : « ${sansCirc(e)} » l’est aussi.`,
@@ -118,7 +118,7 @@ function objetCircDraft(rng: Rng, level: Level): QuestionDraft {
         prompt: `Écris le complément d’objet de cette phrase : « ${s} »`,
         answer: { kind: 'text', accepted: [e.obj] },
         traps: [
-          textTrap(e.circ, `« ${e.circ} » peut se déplacer ou se supprimer : c’est un groupe circonstanciel.`),
+          textTrap(e.circ, `« ${e.circ} » peut se déplacer et se supprimer : c’est un groupe circonstanciel.`),
           textTrap(e.gs, whySujet(e)),
           ...sansPrep(e).map((t) => ({
             ...t,
@@ -146,9 +146,9 @@ function objetCircDraft(rng: Rng, level: Level): QuestionDraft {
           [k + 1, 'Tu en as compté un de trop : un complément d’objet ne se déplace pas.'],
           [k - 1, 'Il t’en manque un : cherche aussi les groupes placés au début, avant la virgule.'],
         ]),
-        hint: 'Dans chaque phrase, cherche un groupe qui peut être déplacé ou supprimé.',
+        hint: 'Dans chaque phrase, cherche un groupe qui peut être déplacé et supprimé.',
         steps: [
-          'Pour chaque phrase, je cherche un groupe qui peut être déplacé ou supprimé.',
+          'Pour chaque phrase, je cherche un groupe qui peut être déplacé et supprimé.',
           'Je ne compte pas les compléments d’objet : ils restent collés au verbe.',
           `Je compte les phrases avec un groupe circonstanciel : **${k}**.`,
         ],
@@ -162,11 +162,6 @@ function objetCircDraft(rng: Rng, level: Level): QuestionDraft {
 const COD = 'un COD (complément d’objet direct)';
 const COI = 'un COI (complément d’objet indirect)';
 const CIRC = 'un groupe circonstanciel';
-const ACCEPTE_TYPE = {
-  cod: ['COD', 'le COD', 'un COD', 'complément d’objet direct'],
-  coi: ['COI', 'le COI', 'un COI', 'complément d’objet indirect'],
-} as const;
-
 const whyCod = (e: Entree) =>
   `Il n’y a pas de petit mot (à, de) entre « ${e.verbe} » et « ${e.obj} » : c’est un COD, pas un COI.`;
 const whyCoi = (e: Entree) =>
@@ -232,13 +227,20 @@ function codCoiDraft(rng: Rng, level: Level): QuestionDraft {
     }
     case 3: {
       const e = rng.pick(ENTREES);
-      const autre = e.type === 'cod' ? 'coi' : 'cod';
+      const s = avecCirc(rng, e);
+      const [bon, autre] = e.type === 'cod' ? ['COD', 'COI'] : ['COI', 'COD'];
+      const whyHorsVerbe = `« ${e.circ} » peut se déplacer et se supprimer : c’est un groupe circonstanciel, pas un complément d’objet.`;
+      const { answer, traps } = choice(rng, `« ${e.obj} » : ${bon}`, [
+        { label: `« ${e.obj} » : ${autre}`, why: whyType(e) },
+        { label: `« ${e.circ} » : ${bon}`, why: whyHorsVerbe },
+        { label: `« ${e.circ} » : ${autre}`, why: whyHorsVerbe },
+      ]);
       return {
-        prompt: `Dans « ${sansCirc(e)} », le complément d’objet est-il un COD ou un COI ? Écris COD ou COI.`,
-        answer: { kind: 'text', accepted: [...ACCEPTE_TYPE[e.type]] },
-        traps: [textTrap(autre.toUpperCase(), whyType(e))],
-        hint: 'Pose la question après le verbe, puis regarde s’il y a « à » ou « de » devant la réponse.',
-        steps: stepsCodCoi(e),
+        prompt: `Dans « ${s} », quel est le complément d’objet, et de quel type est-il ?`,
+        answer,
+        traps,
+        hint: 'Mets d’abord de côté le groupe qui se déplace. Regarde ensuite s’il y a « à » ou « de » après le verbe.',
+        steps: [`Je mets de côté « ${e.circ} » : il se déplace, c’est un groupe circonstanciel.`, ...stepsCodCoi(e)],
       };
     }
     case 4: {
@@ -251,7 +253,7 @@ function codCoiDraft(rng: Rng, level: Level): QuestionDraft {
         traps: [
           textTrap(
             e.circ,
-            `« ${e.circ} » peut se déplacer ou se supprimer : c’est un groupe circonstanciel, pas un complément d’objet.`,
+            `« ${e.circ} » peut se déplacer et se supprimer : c’est un groupe circonstanciel, pas un complément d’objet.`,
           ),
           textTrap(e.gs, whySujet(e)),
           ...sansPrep(e),
@@ -316,20 +318,19 @@ function circonstancielsDraft(rng: Rng, level: Level): QuestionDraft {
         prompt: `Quel groupe est un groupe circonstanciel dans « ${base(e)} » ?`,
         answer,
         traps,
-        hint: 'Il donne un détail : où ou quand. On peut le supprimer.',
+        hint: 'Il donne un détail : où ou quand. On peut le déplacer et le supprimer.',
         steps: [
-          'Un groupe circonstanciel donne un détail (où ? quand ?). On peut le supprimer.',
-          `Sans « ${e.circ} », il reste « ${sansCirc(e)} » : la phrase est toujours correcte.`,
+          'Un groupe circonstanciel donne un détail (où ? quand ?). On peut le déplacer et le supprimer.',
+          `« ${devant(e)} » et « ${sansCirc(e)} » restent correctes.`,
           `Le groupe circonstanciel est **${e.circ}**.`,
         ],
       };
     }
     case 2: {
       const e = rng.pick(ENTREES);
-      const avant = rng.pick(AVANT);
-      const deuxGroupes = e.lieu && rng.int(0, 1) === 1;
-      const juste = deuxGroupes ? 2 : 1;
-      const s = deuxGroupes ? deux(e, avant) : base(e);
+      const avant = e.avant && rng.int(0, 1) === 1 ? rng.pick(e.avant) : undefined;
+      const juste = avant ? 2 : 1;
+      const s = avant ? deux(e, avant) : base(e);
       const { answer, traps } = choice(
         rng,
         NOMBRE[juste],
@@ -339,10 +340,10 @@ function circonstancielsDraft(rng: Rng, level: Level): QuestionDraft {
         prompt: `Combien de groupes circonstanciels cette phrase contient-elle ? « ${s} »`,
         answer,
         traps,
-        hint: 'Cherche les groupes qui donnent un détail et que tu peux déplacer ou supprimer. Regarde le début et la fin.',
+        hint: 'Cherche les groupes qui donnent un détail et que tu peux déplacer et supprimer. Regarde le début et la fin.',
         steps: [
-          'Je cherche les groupes qui disent où ou quand, et qu’on peut déplacer ou supprimer.',
-          deuxGroupes
+          'Je cherche les groupes qui disent où ou quand, et qu’on peut déplacer et supprimer.',
+          avant
             ? `Il y en a un au début, « ${avant} », et un à la fin, « ${e.circ} ».`
             : `Il y en a un seul : « ${e.circ} ». « ${e.obj} » complète le verbe, il ne compte pas.`,
           `Il y en a **${NOMBRE[juste]}**.`,
@@ -350,20 +351,24 @@ function circonstancielsDraft(rng: Rng, level: Level): QuestionDraft {
       };
     }
     case 3: {
-      const e = rng.pick(ENTREES.filter((x) => x.lieu));
-      const avant = rng.pick(AVANT);
+      const e = rng.pick(deLieu);
+      const avant = rng.pick(e.avant);
       return {
-        prompt: `Écris le groupe circonstanciel qui est au début de cette phrase : « ${deux(e, avant)} »`,
-        answer: { kind: 'text', accepted: [avant, `${avant},`] },
+        prompt: `Écris le groupe circonstanciel qui est à la fin de cette phrase : « ${deux(e, avant)} »`,
+        answer: { kind: 'text', accepted: [e.circ] },
         traps: [
-          textTrap(e.circ, `« ${e.circ} » est aussi un groupe circonstanciel, mais il est à la fin de la phrase.`),
-          textTrap(e.gs, whySujet(e)),
+          textTrap(avant, `« ${avant} » est aussi un groupe circonstanciel, mais il est au début de la phrase.`),
+          textTrap(e.obj, whyObjet(e)),
+          textTrap(
+            `${e.obj} ${e.circ}`,
+            `Tu as pris deux groupes : « ${e.obj} » complète le verbe, il ne fait pas partie du groupe circonstanciel.`,
+          ),
         ],
-        hint: 'Le groupe du début est séparé du sujet par une virgule.',
+        hint: 'Regarde la fin de la phrase : où s’arrête le complément d’objet ? Ce qui suit peut se déplacer.',
         steps: [
-          'Le groupe circonstanciel du début est suivi d’une virgule. On peut le supprimer.',
-          `Sans lui : « ${base(e)} » La phrase marche toujours.`,
-          `Le groupe du début est **${avant}**.`,
+          `Le complément d’objet est « ${e.obj} » : il reste avec le verbe.`,
+          `Après lui, « ${e.circ} » peut se déplacer et se supprimer.`,
+          `Le groupe de la fin est **${e.circ}**.`,
         ],
       };
     }
@@ -382,19 +387,26 @@ function circonstancielsDraft(rng: Rng, level: Level): QuestionDraft {
           ),
           textTrap(e.gs, whySujet(e)),
         ],
-        hint: 'Un petit mot comme « à » ou « dans » ne suffit pas. Teste : quel groupe peut se déplacer ou disparaître ?',
+        hint: 'Un petit mot comme « à » ou « dans » ne suffit pas. Teste : quel groupe peut se déplacer et disparaître ?',
         steps: [
-          'Je teste chaque groupe : lequel peut se déplacer ou se supprimer ?',
-          `« ${e.circ} » peut : « ${devant(e)} » ou « ${sansCirc(e)} » restent correctes.`,
+          'Je teste chaque groupe : lequel peut se déplacer et se supprimer ?',
+          `« ${e.circ} » peut : « ${devant(e)} » et « ${sansCirc(e)} » restent correctes.`,
           `Le groupe circonstanciel est **${e.circ}**.`,
         ],
       };
     }
     default: {
-      const lignes = pickN(rng, ENTREES, 3).map((e) => {
-        const avant = e.lieu && rng.int(0, 1) === 1 ? rng.pick(AVANT) : undefined;
+      // Au moins une phrase à deux groupes : sinon, compter les phrases suffirait.
+      const double = rng.pick(deLieu);
+      const autres = pickN(
+        rng,
+        ENTREES.filter((e) => e.gs !== double.gs || e.obj !== double.obj),
+        2,
+      ).map((e) => {
+        const avant = e.avant && rng.int(0, 1) === 1 ? rng.pick(e.avant) : undefined;
         return { texte: avant ? deux(e, avant) : avecCirc(rng, e), n: avant ? 2 : 1 };
       });
+      const lignes = rng.shuffle([{ texte: deux(double, rng.pick(double.avant)), n: 2 }, ...autres]);
       const total = lignes.reduce((n, l) => n + l.n, 0);
       return {
         prompt: 'Lis ce texte. Combien de groupes circonstanciels contient-il en tout ?',
@@ -408,9 +420,9 @@ function circonstancielsDraft(rng: Rng, level: Level): QuestionDraft {
           [total + 1, 'Tu en as compté un de trop : un complément d’objet reste collé au verbe, il ne compte pas.'],
           [3, 'Tu as compté un groupe par phrase. Certaines phrases en ont deux.'],
         ]),
-        hint: 'Phrase par phrase, cherche les groupes qu’on peut déplacer ou supprimer, au début comme à la fin.',
+        hint: 'Phrase par phrase, cherche les groupes qu’on peut déplacer et supprimer, au début comme à la fin.',
         steps: [
-          'Pour chaque phrase, je cherche les groupes qu’on peut déplacer ou supprimer.',
+          'Pour chaque phrase, je cherche les groupes qu’on peut déplacer et supprimer.',
           'Je ne compte pas le complément d’objet, collé au verbe.',
           `Je compte : **${total}**.`,
         ],
@@ -422,9 +434,17 @@ function circonstancielsDraft(rng: Rng, level: Level): QuestionDraft {
 // ───────────────────────── 4. Les manipulations ─────────────────────────
 
 const phraseDe = (e: Entree, m: Manip) => resultat(e, m);
+/** Deux manipulations enchaînées (niveau 5). */
+const ENCHAINEMENTS: readonly (readonly [Manip, Manip])[] = [
+  ['remplacer', 'deplacer'],
+  ['remplacer', 'encadrer'],
+  ['ajouter', 'deplacer'],
+  ['ajouter', 'supprimer'],
+];
 
 function manipulationsDraft(rng: Rng, level: Level): QuestionDraft {
-  const e = rng.pick(ENTREES);
+  // « ajouter » peut apparaître aux niveaux 2, 4 et 5 : seules les phrases qui acceptent « souvent » y servent.
+  const e = rng.pick(level === 1 || level === 3 ? ENTREES : deLieu);
   const depart = base(e);
   switch (level) {
     case 1: {
@@ -476,16 +496,15 @@ function manipulationsDraft(rng: Rng, level: Level): QuestionDraft {
       const m = rng.pick(['deplacer', 'supprimer', 'remplacer'] as const);
       const autres = pickN(
         rng,
-        MANIPS.filter((x) => x !== m),
+        manipsDe(e).filter((x) => x !== m),
         2,
       );
       return {
         prompt: `Phrase de départ : « ${depart} » Consigne : ${consigne(e, m)}. Écris la nouvelle phrase.`,
-        answer: { kind: 'text', accepted: accepte(phraseDe(e, m)) },
-        traps: autres.map((x) =>
-          textTrap(
-            phraseDe(e, x),
-            `Cette phrase est obtenue ${EN_FAISANT[x]}. La consigne demande de ${NOM_MANIP[m]}.`,
+        answer: { kind: 'text', accepted: ecritures(phraseDe(e, m)) },
+        traps: autres.flatMap((x) =>
+          ecritures(phraseDe(e, x)).map((t) =>
+            textTrap(t, `Cette phrase est obtenue ${EN_FAISANT[x]}. La consigne demande de ${NOM_MANIP[m]}.`),
           ),
         ),
         hint: 'Recopie la phrase en changeant seulement ce que la consigne demande.',
@@ -501,9 +520,11 @@ function manipulationsDraft(rng: Rng, level: Level): QuestionDraft {
       const pieges =
         m === 'encadrer'
           ? [
-              textTrap(
-                phraseDe(e, 'deplacer'),
-                'Tu as déplacé le groupe, mais tu n’as pas écrit « C’est… que » : ce n’est pas un encadrement.',
+              ...ecritures(phraseDe(e, 'deplacer')).map((t) =>
+                textTrap(
+                  t,
+                  'Tu as déplacé le groupe, mais tu n’as pas écrit « C’est… que » : ce n’est pas un encadrement.',
+                ),
               ),
               textTrap(
                 `C’est ${e.circ} ${lowerFirst(e.gs)} ${e.verbe} ${e.obj}.`,
@@ -519,7 +540,7 @@ function manipulationsDraft(rng: Rng, level: Level): QuestionDraft {
             ];
       return {
         prompt: `Phrase de départ : « ${depart} » Consigne : ${consigne(e, m)}. Écris la nouvelle phrase.`,
-        answer: { kind: 'text', accepted: accepte(phraseDe(e, m)) },
+        answer: { kind: 'text', accepted: ecritures(phraseDe(e, m)) },
         traps: pieges,
         hint:
           m === 'encadrer'
@@ -533,39 +554,28 @@ function manipulationsDraft(rng: Rng, level: Level): QuestionDraft {
       };
     }
     default: {
-      const m = rng.pick(MANIPS);
-      const autres = pickN(
-        rng,
-        MANIPS.filter((x) => x !== m),
-        2,
-      );
-      const manips = rng.shuffle([m, ...autres]);
-      const lignes = [depart, ...manips.map((x) => phraseDe(e, x))];
-      const index = manips.indexOf(m);
-      const { answer, traps } = choice(
-        rng,
-        `ligne ${index + 2}`,
-        manips.flatMap((x, i) =>
-          x === m
-            ? []
-            : [
-                {
-                  label: `ligne ${i + 2}`,
-                  why: `La ligne ${i + 2} a été obtenue ${EN_FAISANT[x]}.`,
-                },
-              ],
-        ),
-      );
+      const [m1, m2] = rng.pick(ENCHAINEMENTS);
+      // La seconde manipulation porte sur la phrase déjà transformée.
+      const apres = m1 === 'remplacer' ? { ...e, circ: e.autre } : e;
+      const milieu = phraseDe(e, m1);
+      const fin = m1 === 'remplacer' ? phraseDe(apres, m2) : phraseDe(e, m2).replace(e.verbe, `${e.verbe} souvent`);
+      const attendu = ecritures(fin);
       return {
-        prompt: `Lis ce texte. La ligne 1 est la phrase de départ. Chaque autre ligne vient d’une seule manipulation. Quelle ligne a été obtenue ${EN_FAISANT[m]} ?`,
-        figure: document('Une phrase et ses transformations', lignes),
-        answer,
-        traps,
-        hint: 'Compare chaque ligne avec la ligne 1 : qu’est-ce qui a bougé, disparu, changé ou été ajouté ?',
+        prompt: `Phrase de départ : « ${depart} » Fais les deux consignes, l’une après l’autre : 1) ${consigne(e, m1)} ; 2) ${consigne(apres, m2)}. Écris la phrase obtenue à la fin.`,
+        answer: { kind: 'text', accepted: attendu },
+        traps: [
+          ...ecritures(milieu).map((t) =>
+            textTrap(t, 'Tu as suivi la première consigne seulement : fais aussi la seconde.'),
+          ),
+          ...ecritures(phraseDe(e, m2)).map((t) =>
+            textTrap(t, 'Tu as suivi la seconde consigne seulement : commence par la première.'),
+          ),
+        ],
+        hint: 'Écris au brouillon la phrase après la première consigne, puis transforme cette nouvelle phrase.',
         steps: [
-          'Je compare chaque ligne avec la ligne 1.',
-          `Je cherche celle où ${CONSTAT[m]}.`,
-          `C’est la **ligne ${index + 2}**.`,
+          `Première consigne : « ${milieu} »`,
+          `Seconde consigne, sur cette nouvelle phrase : ${DEFINITION[m2]}`,
+          `La phrase obtenue est : **${fin}**`,
         ],
       };
     }
@@ -599,6 +609,7 @@ export const FCM1_COMPLEMENTS: readonly Skill[] = [
       'Un **complément d’objet** complète le verbe : il reste collé à lui. Un **groupe circonstanciel** donne un détail (où ? quand ?) : il se déplace.',
       'Teste en déplaçant : « Dans le jardin, ma cousine mange une pomme. » marche. Mais « Une pomme, ma cousine mange » ne marche pas.',
       'Tu peux aussi supprimer le groupe circonstanciel : « Ma cousine mange une pomme. » reste une phrase.',
+      'Supprimer ne suffit pas : certains compléments d’objet se suppriment aussi (« Ma voisine parle dans la rue. »), mais ils ne se déplacent pas.',
     ],
     factId: 'objet-circ',
     generate: objetCircDraft,
@@ -618,8 +629,9 @@ export const FCM1_COMPLEMENTS: readonly Skill[] = [
     id: 'fcm1-groupes-circonstanciels',
     title: 'Repérer les groupes circonstanciels',
     memo: [
-      'Un **groupe circonstanciel** donne un détail sur l’action, par exemple où elle se passe, ou quand. On peut le supprimer, la phrase reste correcte.',
-      'Il peut changer de place. Au début de la phrase, une virgule le sépare du sujet : « Ce matin, ma cousine mange une pomme. »',
+      'Un **groupe circonstanciel** donne un détail sur l’action, par exemple où elle se passe, ou quand. On peut le déplacer et le supprimer, la phrase reste correcte.',
+      'Supprimer ne suffit pas : certains compléments d’objet se suppriment aussi (« Ma voisine parle dans la rue. »), mais ils ne se déplacent pas.',
+      'Il peut changer de place. Au début de la phrase, on met souvent une virgule après lui : « Ce matin, ma cousine mange une pomme. »',
       'Une phrase peut en avoir plusieurs : « Ce matin, ma cousine mange une pomme dans le jardin. »',
     ],
     factId: 'circonstanciels',
