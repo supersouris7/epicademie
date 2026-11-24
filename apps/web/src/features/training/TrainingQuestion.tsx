@@ -80,6 +80,7 @@ export function TrainingQuestion({
                 reveal={revealedPoint(current.question, explaining)}
               />
             )}
+            <ZoneReveal question={current.question} explaining={explaining} />
           </section>
 
           {/* Écran coupé : pavé et outils en bas (portrait) ou sur le côté (paysage). */}
@@ -230,4 +231,11 @@ function AnswerDock({
       )}
     </section>
   );
+}
+
+/** Après une erreur sur une zone : la carte s'affiche avec la bonne zone surlignée. */
+function ZoneReveal({ question, explaining }: { readonly question: Question; readonly explaining: boolean }) {
+  const a = question.answer;
+  if (!explaining || a.kind !== 'zone') return null;
+  return <Figure figure={{ kind: 'map', map: a.map, highlight: [a.zone] }} maxHeight="var(--figure-max)" />;
 }

@@ -23,4 +23,12 @@ describe('ResponseSchema : réponses structurées', () => {
     expect(ResponseSchema.safeParse({ kind: 'text', text: 'a' }).success).toBe(true);
     expect(ResponseSchema.safeParse({ kind: 'unknown' }).success).toBe(true);
   });
+
+  it('zone : un identifiant de zone, rien d’autre', () => {
+    expect(ResponseSchema.safeParse({ kind: 'zone', zone: '53' }).success).toBe(true);
+    expect(ResponseSchema.safeParse({ kind: 'zone', zone: 'amerique-nord' }).success).toBe(true);
+    expect(ResponseSchema.safeParse({ kind: 'zone', zone: '' }).success).toBe(false);
+    expect(ResponseSchema.safeParse({ kind: 'zone', zone: '<script>' }).success).toBe(false);
+    expect(ResponseSchema.safeParse({ kind: 'zone' }).success).toBe(false);
+  });
 });

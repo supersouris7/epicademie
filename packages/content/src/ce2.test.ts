@@ -20,6 +20,8 @@ function perfect(q: Question): Response {
       return { kind: 'choice', index: a.correct };
     case 'point':
       return { kind: 'point', x: a.x, y: a.y };
+    case 'zone':
+      return { kind: 'zone', zone: a.zone };
     case 'text':
       return { kind: 'text', text: a.accepted[0] ?? '' };
     case 'order':
