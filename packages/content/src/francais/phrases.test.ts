@@ -5,7 +5,7 @@ import { getSource } from '../sources.ts';
 import { FAITS } from './phrases.donnees.ts';
 import { FRANCAIS_CHAPTERS } from './index.ts';
 
-const skills = FRANCAIS_CHAPTERS.flatMap((c) => c.skills);
+const skills = FRANCAIS_CHAPTERS.filter((c) => c.id === 'fcm1-phrases').flatMap((c) => c.skills);
 
 describe('francais cm1 — types et formes de phrases', () => {
   it('le chapitre compte les cinq notions du lot, à 5 niveaux', () => {
