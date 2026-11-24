@@ -66,7 +66,8 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
     'aria-disabled',
     'true',
   );
-  await expect(page.locator('section[aria-labelledby^="groupe-"] button')).toHaveCount(6);
+  await expect(page.getByRole('list', { name: 'Jouer' }).getByRole('button')).toHaveCount(2);
+  await expect(page.locator('section[aria-labelledby^="groupe-"] button')).toHaveCount(4);
   for (const gone of ['Révisions du jour', 'Atelier des erreurs', 'Défi du jour', 'Bilan']) {
     await expect(page.getByRole('button', { name: new RegExp(gone) })).toHaveCount(0);
   }
