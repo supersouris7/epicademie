@@ -87,6 +87,7 @@
 
   /* Matières */
   --subject-maths: var(--af-blue-500);
+  --subject-francais: var(--af-pink-700);
   --subject-sciences: var(--af-violet-500);
   --subject-anglais: var(--af-cyan-700);
   --subject-espagnol: var(--af-pink-500);

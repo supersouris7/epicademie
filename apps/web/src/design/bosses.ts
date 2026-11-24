@@ -34,6 +34,7 @@ const boss = (id: string, name: string, mob: string, sky: readonly [string, stri
 });
 export const SUBJECT_BOSSES: Record<string, BossIdentity> = {
   maths: SORCIER,
+  francais: boss('comtesse-virgule', 'Comtesse Virgule', 'point-final', ['#6e1d4f', '#d65cae']),
   anglais: boss('lord-blabla', 'Lord Blablabla', 'pipelette', ['#1d3b6e', '#5c8ad6']),
   espagnol: boss('senor-siesta', 'Señor Siesta', 'chili-bot', ['#6e1d1d', '#d6875c']),
   sciences: boss('professeur-kaboum', 'Professeur Kaboum', 'electron-zinzin', ['#1d4f6e', '#5cc4d6']),

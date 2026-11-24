@@ -242,6 +242,18 @@ export const DOMAINS = {
   'physique-chimie': 'Physique-chimie',
   svt: 'Sciences de la vie et de la Terre',
   technologie: 'Technologie',
+  // Matière « Français » et domaines ajoutés par l'ADR 0034 (l'EMC est un domaine de la matière histoire).
+  grammaire: 'Grammaire',
+  conjugaison: 'Conjugaison',
+  orthographe: 'Orthographe',
+  vocabulaire: 'Vocabulaire',
+  lecture: 'Lecture',
+  litterature: 'Littérature',
+  histoire: 'Histoire',
+  geographie: 'Géographie',
+  emc: 'Enseignement moral et civique',
+  'comprehension-orale': 'Compréhension orale',
+  culture: 'Culture',
 } as const;
 export type DomainId = keyof typeof DOMAINS;
 

@@ -46,6 +46,17 @@ const DOMAIN_SHORT: Record<DomainId, string> = {
   'physique-chimie': 'Physique-chimie',
   svt: 'SVT',
   technologie: 'Techno',
+  grammaire: 'Grammaire',
+  conjugaison: 'Conjugaison',
+  orthographe: 'Orthographe',
+  vocabulaire: 'Vocabulaire',
+  lecture: 'Lecture',
+  litterature: 'Littérature',
+  histoire: 'Histoire',
+  geographie: 'Géographie',
+  emc: 'EMC',
+  'comprehension-orale': 'Écoute',
+  culture: 'Culture',
 };
 
 function countMedals(ids: readonly string[], states: ReadonlyMap<string, SkillProgress>) {

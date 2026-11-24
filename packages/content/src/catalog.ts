@@ -7,6 +7,11 @@ import { ESPAGNOL_CHAPTERS } from './espagnol/index.ts';
 import { PHYSIQUE_CHAPTERS } from './physique/index.ts';
 import { GEOGRAPHIE_CHAPTERS } from './geographie/index.ts';
 import { HISTOIRE_CHAPTERS } from './histoire/index.ts';
+import { FRANCAIS_CHAPTERS } from './francais/index.ts';
+import { EMC_CHAPTERS } from './emc/index.ts';
+import { ST_CHAPTERS } from './sciences/st/index.ts';
+import { SVT_CHAPTERS } from './sciences/svt/index.ts';
+import { TECHNO_CHAPTERS } from './sciences/techno/index.ts';
 import type { Chapter, Level, Question, Skill } from './types.ts';
 
 /**
@@ -23,6 +28,11 @@ export const CHAPTERS: readonly Chapter[] = [
   ...withBattle(PHYSIQUE_CHAPTERS),
   ...withBattle(GEOGRAPHIE_CHAPTERS),
   ...withBattle(HISTOIRE_CHAPTERS),
+  ...withBattle(FRANCAIS_CHAPTERS),
+  ...withBattle(EMC_CHAPTERS),
+  ...withBattle(ST_CHAPTERS),
+  ...withBattle(SVT_CHAPTERS),
+  ...withBattle(TECHNO_CHAPTERS),
 ];
 
 const skills = new Map<string, { skill: Skill; chapter: Chapter }>();
