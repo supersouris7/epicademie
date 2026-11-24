@@ -201,7 +201,9 @@ function haveGotWrite(rng: Rng): QuestionDraft {
     ],
     hint: 'Regarde le sujet. Peux-tu le remplacer par « he » ou « she » ?',
     steps: [
-      s.has === 'has' ? `« ${s.en} » = une seule personne (he ou she).` : `Avec « ${s.en} », on prend « have ».`,
+      s.has === 'has'
+        ? `« ${s.en} » = une seule personne (he ou she).`
+        : `I, you, we, they vont avec « have ». Donc avec « ${s.en} », on prend « have ».`,
       `Réponse : **${s.has}**`,
     ],
   };
@@ -264,7 +266,9 @@ function haveGotOrder(rng: Rng): QuestionDraft {
   const right = [aux, subject, 'got', o];
   const items = shuffledOther(rng, right);
   return {
-    prompt: `Remets les mots dans l’ordre pour poser une question : ${items.join(' / ')} ?`,
+    prompt: `Remets les mots dans l’ordre pour poser une question : ${items.join(' / ')} ?${
+      o === 'any pets' ? ' (any pets = des animaux de compagnie)' : ''
+    }`,
     answer: { kind: 'order', items, correct: right.map((x) => items.indexOf(x)) },
     hint: 'Dans une question, le petit verbe passe devant la personne.',
     steps: [`Pour une question, « ${aux} » vient avant « ${subject} ».`, `Réponse : **${right.join(' ')} ?**`],
@@ -298,7 +302,7 @@ const haveGot: Skill = {
           prompt: `Complète : « ${s.en} … got ${o}. »`,
           answer,
           traps,
-          hint: 'Peux-tu remplacer le sujet par « he » ou « she » ? Sinon, prends l’autre forme.',
+          hint: 'Le sujet est-il une seule personne, comme he ou she ?',
           steps: [whyHave(s), `Réponse : **${s.has}**`],
         };
       }
@@ -306,7 +310,7 @@ const haveGot: Skill = {
       const { answer, traps } = choice(rng, good, [
         { label: `${wrongHave(s.has)} got`, why: whyHave(s) },
         { label: 'is got', why: '« is » est le verbe « être ». On ne dit jamais « is got ».' },
-        { label: 'got', why: 'Il manque have ou has devant « got ».' },
+        { label: `${s.has} get`, why: `Après « ${s.has} », on écrit « got », jamais « get ».` },
       ]);
       return {
         prompt: `Quel groupe de mots complète « ${s.en} … ${o}. » ?`,
@@ -470,6 +474,13 @@ const ONE_CLOTHES = ['t-shirt', 'skirt', 'dress', 'shirt', 'jumper', 'jacket', '
 const MANY_CLOTHES = ['trousers', 'shorts', 'jeans', 'socks', 'shoes', 'trainers', 'boots', 'slippers', 'sandals'];
 /** Couleurs sans « an » devant (orange écarté). */
 const PLAIN_COLOURS = COLOURS.filter((c) => c.en !== 'orange' && c.en !== 'purple');
+/** Un mot et ses variantes acceptées. */
+const names = (w: Word): string[] => [w.en, ...(w.alt ?? [])];
+/** Réponses « (a) couleur vêtement » : toutes les variantes de couleur et de vêtement. */
+const coloured = (w: Word, c: Word, article: string) =>
+  names(c).flatMap((col) => names(w).map((name) => `${article}${col} ${name}`));
+/** « un pull » → « le pull », « une jupe » → « la jupe ». */
+const definite = (fr: string) => fr.replace(/^une /, 'la ').replace(/^un /, 'le ');
 
 const clothes: Skill = {
   id: 'acm1-vetements',
@@ -515,7 +526,9 @@ const clothes: Skill = {
     if (level === 3)
       return write(
         rng,
-        CLOTHES.map((w) => (ONE_CLOTHES.includes(w.en) ? { ...w, alt: [`a ${w.en}`, ...(w.alt ?? [])] } : w)),
+        CLOTHES.map((w) =>
+          ONE_CLOTHES.includes(w.en) ? { ...w, alt: [...(w.alt ?? []), ...names(w).map((n) => `a ${n}`)] } : w,
+        ),
         'un vêtement',
       );
     if (level === 4) {
@@ -523,7 +536,7 @@ const clothes: Skill = {
       const w = word(CLOTHES, rng.pick(many ? MANY_CLOTHES : ONE_CLOTHES));
       const c = rng.pick(PLAIN_COLOURS);
       const good = many ? `${c.en} ${w.en}` : `a ${c.en} ${w.en}`;
-      const forms = [c.en, ...(c.alt ?? [])].map((col) => (many ? `${col} ${w.en}` : `a ${col} ${w.en}`));
+      const forms = coloured(w, c, many ? '' : 'a ');
       const frPhrase = `${w.fr} de couleur « ${c.fr} »`;
       return {
         prompt: `Écris en anglais : ${frPhrase}${many ? ' (sans « a »)' : ' (avec « a »)'}.`,
@@ -547,44 +560,43 @@ const clothes: Skill = {
         ],
       };
     }
-    // Niveau 5 : deux valises, un seul vêtement en commun.
-    const [common, a, b, c, d] = some(rng, ['jumper', 'coat', 'skirt', 'dress', 'jacket', 'shirt', 'cardigan'], 5) as [
-      string,
-      string,
-      string,
-      string,
-      string,
-    ];
-    const [first, second, third] = some(rng, ['Ana', 'Emir', 'Yuna', 'Paul', 'Lisa', 'Tom'], 3) as [
-      string,
-      string,
-      string,
-    ];
-    const list = (x: string, y: string) => {
-      const [p, q] = rng.shuffle([x, y]) as [string, string];
-      return `a ${p} and a ${q}`;
+    // Niveau 5 : retrouver une couleur (le vêtement n’est nommé qu’en français), puis écrire le groupe.
+    const kids = some(rng, ['Ana', 'Emir', 'Yuna', 'Paul', 'Lisa', 'Tom'], 3);
+    const garments = some(rng, ['jumper', 'coat', 'skirt', 'dress', 'jacket', 'shirt', 'cardigan'], 3);
+    const [c1, c2, c3, c4, c5, c6] = some(rng, PLAIN_COLOURS, 6) as [Word, Word, Word, Word, Word, Word];
+    const kid = at(kids, 0);
+    const asked = at(garments, 0);
+    const mate = at(garments, 1);
+    const third = at(garments, 2);
+    const line = (name: string, x: readonly [string, Word], y: readonly [string, Word]) => {
+      const [p, q] = rng.shuffle([x, y]) as [readonly [string, Word], readonly [string, Word]];
+      return `${name}: My ${p[0]} is ${p[1].en} and my ${q[0]} is ${q[1].en}.`;
     };
+    // Le même vêtement existe chez un autre enfant, d’une autre couleur : il faut trouver la bonne ligne.
     const lines = rng.shuffle([
-      `${first}: I’ve got ${list(common, a)}.`,
-      `${second}: I’ve got ${list(common, b)}.`,
-      `${third}: I’ve got ${list(c, d)}.`,
+      line(kid, [asked, c1], [mate, c2]),
+      line(at(kids, 1), [asked, c3], [third, c4]),
+      line(at(kids, 2), [mate, c5], [third, c6]),
     ]);
-    const w = word(CLOTHES, common);
+    const w = word(CLOTHES, asked);
+    const good = `a ${c1.en} ${asked}`;
     return {
-      prompt: `Lis les messages. Quel vêtement trouve-t-on chez ${first} et aussi chez ${second} ? Écris-le en anglais avec « a ».`,
-      figure: { kind: 'document', title: 'In my bag', lines, credit: 'Écrit pour l’exercice.' },
-      answer: { kind: 'text', accepted: full([`a ${common}`]) },
+      prompt: `Lis les messages. De quelle couleur est ${definite(w.fr)} ${de(kid)} ? Réponds en anglais : a + couleur + vêtement.`,
+      figure: { kind: 'document', title: 'My clothes', lines, credit: 'Écrit pour l’exercice.' },
+      answer: { kind: 'text', accepted: full(coloured(w, c1, 'a ')) },
       traps: [
-        { text: common, why: 'Le bon vêtement ! Ajoute le petit mot « a » devant.' },
-        { text: `a ${a}`, why: `Ce vêtement est écrit pour ${first}, mais pas pour ${second}.` },
-        { text: `a ${b}`, why: `Ce vêtement est écrit pour ${second}, mais pas pour ${first}.` },
-        { text: w.fr, why: 'C’est la traduction française. Écris le mot anglais.' },
+        { text: `a ${c3.en} ${asked}`, why: `C’est la couleur écrite pour ${at(kids, 1)}, pas pour ${kid}.` },
+        { text: `a ${c2.en} ${asked}`, why: `« ${c2.en} » est la couleur d’un autre habit ${de(kid)}.` },
+        { text: `a ${asked} ${c1.en}`, why: 'En anglais, la couleur se place avant le nom.' },
+        { text: `${c1.en} ${asked}`, why: 'Il manque le petit mot « a » au début.' },
+        { text: c1.en, why: 'La bonne couleur ! Écris aussi « a » devant et le vêtement après.' },
       ],
-      hint: 'Lis les deux lignes de ces enfants. Quel mot revient dans les deux ?',
+      hint: `Comment dit-on « ${w.fr} » en anglais ? Cherche ce mot sur la ligne ${de(kid)}.`,
       steps: [
-        `${first} : « ${common} » et « ${a} ». ${second} : « ${common} » et « ${b} ».`,
-        `Le vêtement commun est « ${common} » (${w.fr}).`,
-        `Réponse : **a ${common}**`,
+        `« ${w.fr} » se dit « ${asked} ».`,
+        `Sur la ligne ${de(kid)} : « ${asked} is ${c1.en} » (${c1.fr}).`,
+        'Pour la réponse, la couleur passe avant le nom.',
+        `Réponse : **${good}**`,
       ],
     };
   },

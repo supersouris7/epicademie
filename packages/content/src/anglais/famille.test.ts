@@ -76,17 +76,39 @@ describe('anglais cm1 : famille, corps, vêtements', () => {
     }
   });
 
-  it('vêtements, niveau 5 : un seul vêtement commun aux deux enfants demandés', () => {
+  it('have got, niveau 2 : aucune proposition « got » seule (phrase juste au prétérit)', () => {
+    for (const q of questions('acm1-have-got', 2)) {
+      if (q.answer.kind !== 'choice') throw new Error('choix attendu');
+      expect(q.answer.options).not.toContain('got');
+    }
+  });
+
+  it('vêtements, niveaux 3 et 4 : les variantes courantes sont acceptées', () => {
+    const accepted = ([3, 4] as const).map(
+      (l) =>
+        new Set(
+          Array.from({ length: 600 }, (_, i) => generate('acm1-vetements', l, i + 1)).flatMap((q) =>
+            q.answer.kind === 'text' ? q.answer.accepted : [],
+          ),
+        ),
+    );
+    for (const text of ['sweater', 'a sweater', 'a pullover', 'sneakers', 'pants', 'a tee-shirt'])
+      expect(accepted[0], text).toContain(text);
+    for (const text of ['a pink tshirt', 'a pink tee-shirt', 'a pink sweater', 'red sneakers', 'gray pants'])
+      expect(accepted[1], text).toContain(text);
+  });
+
+  it('vêtements, niveau 5 : couleur lue sur la ligne du bon enfant, réponse absente du texte', () => {
     for (const q of questions('acm1-vetements', 5)) {
       if (q.figure?.kind !== 'document' || q.answer.kind !== 'text') throw new Error('document attendu');
-      const kids = /chez (\w+) et aussi chez (\w+) \?/.exec(q.prompt)?.slice(1) ?? [];
+      const good = q.answer.accepted[0] ?? '';
+      const [, colour, garment] = /^a (\w+) (\w+)$/.exec(good) ?? [];
+      const kid = /(?:de |d’)([A-Z]\w+) \?/.exec(q.prompt)?.[1] ?? '';
       const lines = q.figure.lines;
-      const [x, y] = kids.map((k) =>
-        [...(lines.find((l) => l.startsWith(`${k}:`)) ?? '').matchAll(/\ba (\w+)/g)].map((m) => m[1]),
-      );
-      const common = (x ?? []).filter((w) => y?.includes(w));
-      expect(common).toHaveLength(1);
-      expect(q.answer.accepted[0]).toBe(`a ${common[0] ?? ''}`);
+      expect(q.prompt).not.toMatch(new RegExp(`\\b${garment}\\b`));
+      expect(lines.join(' ')).not.toContain(`${colour} ${garment}`);
+      expect(lines.find((l) => l.startsWith(`${kid}:`))).toMatch(new RegExp(`my ${garment} is ${colour}\\b`, 'i'));
+      expect(lines.filter((l) => new RegExp(`my ${garment} is`, 'i').test(l))).toHaveLength(2);
     }
   });
 });

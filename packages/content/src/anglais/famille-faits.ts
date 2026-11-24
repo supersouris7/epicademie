@@ -66,12 +66,12 @@ export const PLURALS: readonly {
 
 /** Les vêtements : fiches « Clothes flashcards » (séries 1 et 2). */
 export const CLOTHES: readonly Word[] = [
-  { en: 't-shirt', fr: 'un tee-shirt', alt: ['t shirt', 'tshirt'], typo: 't-shurt' },
-  { en: 'trousers', fr: 'un pantalon', typo: 'trouser' },
+  { en: 't-shirt', fr: 'un tee-shirt', alt: ['t shirt', 'tshirt', 'tee-shirt', 'tee shirt'], typo: 't-shurt' },
+  { en: 'trousers', fr: 'un pantalon', alt: ['pants'], typo: 'trouser' },
   { en: 'skirt', fr: 'une jupe', typo: 'skurt' },
   { en: 'dress', fr: 'une robe', typo: 'dres' },
   { en: 'shirt', fr: 'une chemise', typo: 'shurt' },
-  { en: 'jumper', fr: 'un pull', typo: 'jumpper' },
+  { en: 'jumper', fr: 'un pull', alt: ['sweater', 'pullover'], typo: 'jumpper' },
   { en: 'shorts', fr: 'un short', typo: 'short' },
   { en: 'jeans', fr: 'un jean', typo: 'jean' },
   { en: 'jacket', fr: 'une veste', typo: 'jaket' },
@@ -79,7 +79,7 @@ export const CLOTHES: readonly Word[] = [
   { en: 'shoes', fr: 'des chaussures', typo: 'shoose' },
   { en: 'coat', fr: 'un manteau', typo: 'cote' },
   { en: 'cardigan', fr: 'un gilet', typo: 'cardigane' },
-  { en: 'trainers', fr: 'des baskets', typo: 'traners' },
+  { en: 'trainers', fr: 'des baskets', alt: ['sneakers'], typo: 'traners' },
   { en: 'boots', fr: 'des bottes', typo: 'bouts' },
   { en: 'tights', fr: 'un collant', typo: 'tites' },
   { en: 'pyjamas', fr: 'un pyjama', alt: ['pajamas'], typo: 'pyjama' },
