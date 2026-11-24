@@ -40,6 +40,10 @@ export interface Notion {
   readonly paires3: readonly (readonly [string, string])[];
   readonly paires5: readonly (readonly [string, string])[];
   readonly libres: readonly Libre[];
+  /** Classe et chapitre cités dans la source (défaut : CM1, « Faire société »). */
+  readonly programme?: string;
+  /** Crédit du texte à lire (défaut : programme de CM1). */
+  readonly credit?: string;
   readonly docs: readonly {
     readonly title: string;
     readonly lines: readonly string[];
@@ -149,7 +153,7 @@ function level5(rng: Rng, n: Notion): QuestionDraft {
     kind: 'document',
     title: d.title,
     lines: d.lines,
-    credit: 'Texte écrit pour l’exercice, d’après le programme de CM1.',
+    credit: n.credit ?? 'Texte écrit pour l’exercice, d’après le programme de CM1.',
   };
   return {
     prompt: `Lis le texte, puis réponds. ${dq.q}`,
@@ -168,7 +172,7 @@ export function notion(n: Notion): Skill {
     title: n.title,
     levels: 5,
     version: 1,
-    lesson: { memo: n.memo, source: PROG, sources: [SOURCE] },
+    lesson: { memo: n.memo, source: n.programme ?? PROG, sources: [SOURCE] },
     generate: (rng: Rng, level: Level): QuestionDraft => {
       switch (level) {
         case 1:
