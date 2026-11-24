@@ -15,5 +15,6 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'pcm1-energie-quotidien', version: 1, lot: 'st-cm1-02', date: DATE, verdict: 'ok' },
   { skillId: 'vcm1-classer', version: 1, lot: 'st-cm1-03', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'vcm1-besoins-animaux', version: 1, lot: 'st-cm1-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'vcm1-besoins-vegetaux', version: 1, lot: 'st-cm1-03', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'vcm1-developpement', version: 1, lot: 'st-cm1-03', date: '2026-11-25', verdict: 'ok' },
 ];

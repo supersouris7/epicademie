@@ -69,7 +69,13 @@ const compatibles = (b: Besoin): readonly Besoin[] => (b === 'lumiere' ? ['eau',
 
 /** Quand les sels sont testés, la terre fausserait l’expérience : elle en apporte. Même support partout. */
 const SABLE = 'le même sable lavé, sans sels minéraux';
-const support = (...testes: readonly Besoin[]) => (testes.includes('sels') ? ` Chaque pot contient ${SABLE}.` : '');
+const support = (b: Besoin, ...autres: readonly Besoin[]) => {
+  if (b === 'sels') return ` Chaque pot contient ${SABLE}.`;
+  // Sels changés dans un autre pot seulement : le témoin doit en recevoir.
+  return autres.includes('sels')
+    ? ` Chaque pot contient ${SABLE}. Sauf mention contraire, on arrose avec de l’eau qui contient des sels minéraux.`
+    : '';
+};
 
 /** « Soleil » au lieu de « lumière » : erreur fréquente, expliquée. */
 const soleil = (b: Besoin) =>
@@ -157,7 +163,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
 
 const PROTOCOLE = (b: Besoin) => [
   `Préparer deux pots avec la même plante${b === 'sels' ? `, dans ${SABLE}` : ''}`,
-  `Changer une seule chose : un pot est ${BESOINS[b].test}`,
+  `Changer une seule chose : un pot ${b === 'eau' ? 'n’est' : 'est'} ${BESOINS[b].test}`,
   'Attendre plusieurs jours en observant',
   'Comparer les deux plantes et conclure',
 ];
