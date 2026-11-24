@@ -5,7 +5,8 @@ import { SubjectInputSchema } from './subjects.ts';
 
 /** Contrats de l'entraînement (parties hors boss) : création, réponses, bilan, progression. */
 
-export const LevelSchema = z.union([z.literal(1), z.literal(2), z.literal(3)]);
+/** Niveaux de difficulté : 1 à 3 (notions existantes), jusqu'à 5 pour les nouvelles (docs/adr/0034). */
+export const LevelSchema = z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)]);
 export type Level = z.infer<typeof LevelSchema>;
 
 /** Identifiant de notion ou de chapitre du contenu (`maths-5e-fractions`…). */

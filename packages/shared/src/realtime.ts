@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ContentIdSchema, ResponseSchema } from './play.ts';
+import { ContentIdSchema, ResponseSchema, type Level } from './play.ts';
 import type { AvatarConfig, HeroId } from './profile.ts';
 
 /**
@@ -113,7 +113,7 @@ export interface ArenaPlayer {
 
 export interface ArenaQuestion {
   readonly skillId: string;
-  readonly level: 1 | 2 | 3;
+  readonly level: Level;
   readonly seed: number;
 }
 

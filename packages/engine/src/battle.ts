@@ -10,6 +10,7 @@ import {
   type BattleStage,
   type BattleStatus,
   type ItemId,
+  type Level,
 } from '@epicademie/shared';
 
 /**
@@ -24,7 +25,7 @@ export interface BattlePools {
   readonly problems: readonly string[];
   readonly traps: readonly string[];
   /** Énoncé d'une question (pour éviter les doublons) ; absent : pas de contrôle. */
-  readonly prompt?: (skillId: string, level: 1 | 2 | 3, seed: number) => string;
+  readonly prompt?: (skillId: string, level: Level, seed: number) => string;
 }
 
 export interface BattleState {
@@ -55,7 +56,7 @@ export interface BattleState {
 const SEEN_MAX = 300;
 
 /** Graine dont l'énoncé n'a pas encore été vu (sinon la dernière essayée, si la notion en propose peu). */
-function freshSeed(pools: BattlePools, skillId: string, level: 1 | 2 | 3, dice: BattleDice, seen: readonly string[]) {
+function freshSeed(pools: BattlePools, skillId: string, level: Level, dice: BattleDice, seen: readonly string[]) {
   let seed = dice.seed();
   const { prompt } = pools;
   if (!prompt) return seed;

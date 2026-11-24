@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { check, getChapter, getChapterOfSkill, getSkill, type Response } from '@epicademie/content';
+import { check, getChapter, getChapterOfSkill, getSkill, maxLevelOf, type Response } from '@epicademie/content';
 import {
   EPREUVE_LENGTH,
   isFinished,
@@ -64,6 +64,7 @@ export function useTraining(
         [...skills],
         states,
         epreuve ? EPREUVE_LENGTH : seriesLength(skills.every((id) => getSkill(id)?.mental === true)),
+        maxLevelOf,
       ),
       heroSays(profile.hero, 'start'),
     ),

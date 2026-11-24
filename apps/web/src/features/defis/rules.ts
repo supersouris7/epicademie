@@ -24,7 +24,7 @@ export const WRONG_PENALTY_MS = 5_000;
 export const PRESSURE_S = 10;
 
 /** Barème (docs/SPEC.md, Défis) : points de base selon le niveau de la question. */
-export const BASE_BY_LEVEL: Readonly<Record<Level, number>> = { 1: 10, 2: 20, 3: 30 };
+export const BASE_BY_LEVEL: Readonly<Record<Level, number>> = { 1: 10, 2: 20, 3: 30, 4: 40, 5: 50 };
 /** Supplément pour une réponse saisie (clavier, point) plutôt que choisie parmi des propositions. */
 export const TYPED_BONUS = 5;
 /**
@@ -44,9 +44,9 @@ export const SURVIE_HEARTS = 3;
 export const SURVIE_STEP = 5;
 
 /** Niveau de la question : Contre-la-montre alterne 1 et 2 ; Survie monte avec les bonnes réponses. */
-export function levelFor(defi: DefiId, correct: number, random: number): Level {
+export function levelFor(defi: DefiId, correct: number, random: number, maxLevel: Level = 3): Level {
   if (defi === 'chrono') return random < 0.5 ? 1 : 2;
-  return Math.min(3, 1 + Math.floor(correct / SURVIE_STEP)) as Level;
+  return Math.min(maxLevel, 1 + Math.floor(correct / SURVIE_STEP)) as Level;
 }
 
 export interface DefiScore {

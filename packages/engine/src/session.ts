@@ -38,6 +38,8 @@ export interface TrainingState {
   readonly skills: readonly string[];
   readonly answers: readonly AnswerRecord[];
   readonly levels: Readonly<Record<string, Level>>;
+  /** Niveau maximal de chaque notion (3 si absent). */
+  readonly maxLevels?: Readonly<Record<string, Level>>;
   /** Variante à proposer juste après une erreur. */
   readonly pendingVariant: { skillId: string; level: Level } | null;
   /** Questions régulières de la série (4, ou 5 en calcul de tête). */
@@ -48,11 +50,16 @@ export function startTraining(
   skills: readonly string[],
   states: ReadonlyMap<string, SkillState>,
   length: number = TRAINING_LENGTH,
+  maxLevelOf: (skillId: string) => Level = () => 3,
 ): TrainingState {
   if (skills.length === 0) throw new Error('Aucune notion à travailler');
   const levels: Record<string, Level> = {};
-  for (const id of skills) levels[id] = startLevel(states.get(id));
-  return { skills, answers: [], levels, pendingVariant: null, length };
+  const maxLevels: Record<string, Level> = {};
+  for (const id of skills) {
+    maxLevels[id] = maxLevelOf(id);
+    levels[id] = startLevel(states.get(id), maxLevels[id]);
+  }
+  return { skills, answers: [], levels, maxLevels, pendingVariant: null, length };
 }
 
 export const regularCount = (s: TrainingState) => s.answers.filter((a) => !a.variant).length;
@@ -97,9 +104,9 @@ export function nextQuestion(
   return { skillId, level: s.levels[skillId] ?? 1, seed, variant: false };
 }
 
-/** Niveau après une série réussie / ratée (bornés à 1–3). */
-const LEVEL_UP: Record<Level, Level> = { 1: 2, 2: 3, 3: 3 };
-const LEVEL_DOWN: Record<Level, Level> = { 1: 1, 2: 1, 3: 2 };
+/** Niveau après une série réussie / ratée (borné à 1 et au niveau maximal de la notion). */
+const levelUp = (level: Level, max: Level): Level => Math.min(max, level + 1) as Level;
+const levelDown = (level: Level): Level => Math.max(1, level - 1) as Level;
 
 /** Enregistre une réponse : adapte le niveau (3 justes → +1, 2 fausses → −1) et prévoit la variante. */
 export function recordAnswer(s: TrainingState, q: PlannedQuestion, correct: boolean): TrainingState {
@@ -110,8 +117,9 @@ export function recordAnswer(s: TrainingState, q: PlannedQuestion, correct: bool
   // Niveau 1 vite passé (2 réussites d'affilée), niveau 2 → 3 après 3 réussites.
   const needed = level === 1 ? 2 : 3;
   const streak = ofSkill.slice(-needed);
-  if (streak.length === needed && streak.every((a) => a.correct && a.level === level)) level = LEVEL_UP[level];
-  else if (lastTwo.length === 2 && lastTwo.every((a) => !a.correct)) level = LEVEL_DOWN[level];
+  if (streak.length === needed && streak.every((a) => a.correct && a.level === level))
+    level = levelUp(level, s.maxLevels?.[q.skillId] ?? 3);
+  else if (lastTwo.length === 2 && lastTwo.every((a) => !a.correct)) level = levelDown(level);
   const pendingVariant =
     !correct && !q.variant && variantCount({ ...s, answers }) < MAX_VARIANTS
       ? { skillId: q.skillId, level: q.level }

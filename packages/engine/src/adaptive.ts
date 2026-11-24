@@ -29,18 +29,23 @@ export function planningStatus(state: SkillState | undefined): SkillStatus {
  * consolider, 3 pour une notion acquise (défi d'entretien). Dans la série, le niveau monte après
  * des réussites et descend après deux erreurs (session.ts).
  */
-export function startLevel(state: SkillState | undefined): Level {
-  switch (planningStatus(state)) {
-    case 'non-commencee':
-    case 'a-travailler':
-      return 1;
-    case 'en-progression':
-      return (state?.stage ?? 0) >= 2 ? 2 : 1;
-    case 'a-consolider':
-      return 2;
-    case 'acquise':
-      return 3;
-  }
+export function startLevel(state: SkillState | undefined, maxLevel: Level = 3): Level {
+  // Notion à 5 niveaux : à consolider → 3, acquise → 4 (docs/adr/0034) ; à 3 niveaux, comme avant.
+  const shift = maxLevel > 3 ? 1 : 0;
+  const level = ((): number => {
+    switch (planningStatus(state)) {
+      case 'non-commencee':
+      case 'a-travailler':
+        return 1;
+      case 'en-progression':
+        return (state?.stage ?? 0) >= 2 ? 2 : 1;
+      case 'a-consolider':
+        return 2 + shift;
+      case 'acquise':
+        return 3 + shift;
+    }
+  })();
+  return Math.min(level, maxLevel) as Level;
 }
 
 /** Poids de base selon l'état : les notions fragiles reviennent plus souvent. */

@@ -277,7 +277,7 @@ export const attempts = pgTable(
     index('attempts_session_idx').on(t.sessionId),
     index('attempts_profile_skill_idx').on(t.profileId, t.skillId),
     index('attempts_profile_created_idx').on(t.profileId, t.createdAt),
-    check('attempts_level_range', sql`${t.level} between 1 and 3`),
+    check('attempts_level_range', sql`${t.level} between 1 and 5`),
     check('attempts_attempt_range', sql`${t.attempt} between 1 and 2`),
   ],
 );
@@ -374,7 +374,7 @@ export const questionReports = pgTable(
   (t) => [
     index('question_reports_status_idx').on(t.status, t.createdAt),
     index('question_reports_skill_idx').on(t.skillId),
-    check('question_reports_level_range', sql`${t.level} is null or ${t.level} between 1 and 3`),
+    check('question_reports_level_range', sql`${t.level} is null or ${t.level} between 1 and 5`),
     check('question_reports_question_fields', sql`${t.kind} = 'general' or ${t.skillId} is not null`),
   ],
 );
