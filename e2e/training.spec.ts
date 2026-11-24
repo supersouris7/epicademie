@@ -173,7 +173,7 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   await page.getByRole('button', { name: /^Multiplier et diviser des relatifs \d/ }).click();
   await page
-    .getByRole('button', { name: /^Produit de deux relatifs|^Multiplier/ })
+    .getByRole('button', { name: /Produit de deux relatifs|Multiplier/ })
     .first()
     .click();
   await expect(page.getByRole('progressbar', { name: 'Progression de la série' })).toBeVisible();
