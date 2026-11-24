@@ -56,7 +56,7 @@ export function ZoneAnswer({ spec, disabled, onSubmit, onUnknown }: Props) {
     }
   };
   const focusZone = focused ?? picked ?? fond?.zones[0]?.id ?? null;
-  const centre = fond?.zones.find((z) => z.id === (picked ?? focused));
+  const centre = fond?.zones.find((z) => z.id === (focused ?? picked));
   const zoom = ZOOMS[zoomAt] ?? 1;
   return (
     <div className="flex h-full min-h-0 flex-col items-center gap-2 overflow-y-auto">
@@ -80,7 +80,7 @@ export function ZoneAnswer({ spec, disabled, onSubmit, onUnknown }: Props) {
           Chargement de la carte…
         </p>
       )}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center justify-center gap-3">
         <button
           type="button"
           disabled={disabled || zoomAt === 0}
