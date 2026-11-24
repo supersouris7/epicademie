@@ -62,7 +62,7 @@ export const MONTHS: readonly Word[] = [
 export const SEASONS: readonly Word[] = [
   { en: 'spring', fr: 'le printemps', typo: 'sprint' },
   { en: 'summer', fr: 'l’été', typo: 'sumer' },
-  { en: 'autumn', fr: 'l’automne', typo: 'autum' },
+  { en: 'autumn', fr: 'l’automne', alt: ['fall'], typo: 'autum' },
   { en: 'winter', fr: 'l’hiver', typo: 'winther' },
 ];
 
@@ -74,8 +74,8 @@ export const WEATHER: readonly Word[] = [
   { en: 'windy', fr: 'venteux', typo: 'windi' },
   { en: 'snowy', fr: 'neigeux', alt: ['snowing'], typo: 'snowey' },
   { en: 'stormy', fr: 'orageux', typo: 'stormi' },
-  { en: 'foggy', fr: 'brumeux (avec du brouillard)', typo: 'fogy' },
-  { en: 'hot', fr: 'très chaud', typo: 'hote' },
+  { en: 'foggy', fr: 'avec du brouillard', typo: 'fogy' },
+  { en: 'hot', fr: 'chaud', typo: 'hote' },
   { en: 'cold', fr: 'froid', typo: 'colde' },
 ];
 
@@ -201,6 +201,12 @@ export const FAITS: readonly Fait[] = [
     claim: 'En hiver (winter), on espère la neige.',
   },
   {
+    id: 'saisons-fall',
+    sourceId: 'bc-british-american',
+    quote: 'autumn = fall',
+    claim: 'En anglais américain, autumn (l’automne) se dit aussi fall.',
+  },
+  {
     id: 'preposition-saisons',
     sourceId: 'bc-prepositions-time',
     quote: 'seasons in (the) spring/summer/autumn/winter',
@@ -252,7 +258,7 @@ export const FAITS: readonly Fait[] = [
     id: 'meteo-cartes-2',
     sourceId: 'bck-flashcards-weather',
     quote: 'stormy foggy freezing',
-    claim: 'stormy = orageux, foggy = brumeux.',
+    claim: 'stormy = orageux, foggy = avec du brouillard.',
   },
   {
     id: 'meteo-chaud-froid',

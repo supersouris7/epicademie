@@ -179,7 +179,8 @@ const colours: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'Rouge se dit red, bleu se dit blue, vert se dit green, jaune se dit yellow.',
+      'Les couleurs : red (rouge), yellow (jaune), blue (bleu), green (vert), pink (rose), purple (violet).',
+      'Aussi : orange (orange), brown (marron), black (noir), white (blanc), grey (gris).',
       'La couleur est un **adjectif** : elle se place avant le nom et ne prend pas de s. Exemple : three black cats.',
     ],
     source: source('Mots : British Council, « Colours flashcards » et « Adjectives ».'),
@@ -187,7 +188,12 @@ const colours: Skill = {
   },
   generate: (rng, level): QuestionDraft => {
     if (level === 1)
-      return pickEnglish(rng, COLOURS.slice(0, 6), 'une couleur', 'Pense aux feutres : red, blue, green…');
+      return pickEnglish(
+        rng,
+        COLOURS.slice(0, 6),
+        'une couleur',
+        'Pense à la couleur, puis au mot entendu en classe ou en chanson.',
+      );
     if (level === 2) return understand(rng, COLOURS, 'une couleur');
     if (level === 3) return write(rng, COLOURS, 'une couleur');
     if (level === 4) {
@@ -210,7 +216,7 @@ const colours: Skill = {
           { text: `${num} ${c.en}s ${thing.many}`, why: 'Un adjectif anglais ne prend jamais de s au pluriel.' },
           { text: `${num} ${c.en} ${thing.one}`, why: 'Il y en a plusieurs : le nom prend un s.' },
         ],
-        hint: 'Dans l’ordre : le nombre, la couleur, puis le nom au pluriel.',
+        hint: `« ${thing.fr} » se dit « ${thing.many} ». Dans l’ordre : le nombre, la couleur, puis le nom.`,
         steps: [
           `On écrit le nombre : « ${num} ».`,
           `Puis la couleur sans s : « ${c.en} ». Puis le nom : « ${thing.many} ».`,
@@ -218,36 +224,44 @@ const colours: Skill = {
         ],
       };
     }
-    const names = ['Emir', 'Ana', 'Yuna', 'Paul'];
     const things = some(rng, ['bag', 'ball', 'car', 'bike'], 3);
-    const picked = some(rng, COLOURS, 3);
-    const kids = some(rng, names, 3);
+    // « orange » demanderait « an » : on l'écarte de la question.
+    const picked = some(
+      rng,
+      COLOURS.filter((x) => x.en !== 'orange'),
+      3,
+    );
+    const kids = some(rng, ['Emir', 'Ana', 'Yuna', 'Paul'], 3);
     const i = rng.int(0, 2);
     const thing = at(things, i);
     const c = at(picked, i);
-    const lines = kids.map((k, j) => `${k}: My ${at(things, j)} is ${at(picked, j).en}.`);
-    const { answer, traps } = choice(rng, c.fr, [
-      ...picked
-        .filter((x) => x !== c)
-        .map((x) => ({ label: x.fr, why: `« ${x.en} » est la couleur d’un autre objet. Relis la bonne ligne.` })),
-      {
-        label: at(
-          others(rng, COLOURS, c, 11).filter((x) => !picked.includes(x)),
-          0,
-        ).fr,
-        why: 'Cette couleur n’apparaît pas dans les messages.',
-      },
-    ]);
+    const good = `a ${c.en} ${thing}`;
+    const forms = accepted(c).map((colour) => `a ${colour} ${thing}`);
     return {
-      prompt: `Lis les messages. De quelle couleur est « the ${thing} » ${de(at(kids, i))} ?`,
-      figure: { kind: 'document', title: 'Our things', lines, credit: 'Écrit pour l’exercice.' },
-      answer,
-      traps,
-      hint: `Cherche la ligne ${de(at(kids, i))}, puis le mot après « is ».`,
+      prompt: `Lis les messages. Un des objets est ${c.fr}. Écris-le en anglais avec sa couleur, en commençant par « a ».`,
+      figure: {
+        kind: 'document',
+        title: 'Our things',
+        lines: kids.map((k, j) => `${k}: My ${at(things, j)} is ${at(picked, j).en}.`),
+        credit: 'Écrit pour l’exercice.',
+      },
+      answer: { kind: 'text', accepted: forms.flatMap((f) => [f, `${f}.`]) },
+      traps: [
+        { text: `a ${thing} ${c.en}`, why: 'En anglais, la couleur se place avant le nom.' },
+        { text: `${c.en} ${thing}`, why: 'Il manque le petit mot « a » au début.' },
+        ...[0, 1, 2]
+          .filter((j) => j !== i)
+          .map((j) => ({
+            text: `a ${at(picked, j).en} ${at(things, j)}`,
+            why: `Cet objet est ${at(picked, j).fr}. Cherche l’objet ${c.fr}.`,
+          })),
+      ],
+      hint: 'Traduis d’abord la couleur et cherche-la dans les messages. En anglais, la place-t-on avant ou après l’objet ?',
       steps: [
-        `Ligne ${de(at(kids, i))} : « My ${thing} is ${c.en}. »`,
-        `« ${c.en} » veut dire « ${c.fr} ».`,
-        `Réponse : **${c.fr}**`,
+        `« ${c.fr} » se dit « ${c.en} ».`,
+        `On lit : « My ${thing} is ${c.en}. »`,
+        'La couleur se place avant le nom.',
+        `Réponse : **${good}**`,
       ],
     };
   },
@@ -272,31 +286,43 @@ const days: Skill = {
     sources: ['cycle3-2020', 'bck-lunch-menu', 'bck-prepositions-time', 'anglais-college-2025'],
   },
   generate: (rng, level): QuestionDraft => {
-    if (level === 1) return pickEnglish(rng, DAYS, 'un jour', 'Récite : Monday, Tuesday, Wednesday…');
+    if (level === 1) return pickEnglish(rng, DAYS, 'un jour', 'Pense à la date écrite au tableau le matin.');
     if (level === 2) return understand(rng, DAYS, 'un jour');
     if (level === 3) return write(rng, DAYS, 'un jour');
     if (level === 4) return rng.int(0, 1) === 0 ? neighbour(rng, DAYS, 'le jour') : ordering(rng, DAYS, 5, 'ces jours');
     const soups = rng.shuffle(MENU);
-    const i = rng.int(0, 3);
-    const today = at(DAYS, i);
-    const wanted = at(DAYS, i + 1);
-    const dish = at(soups, i + 1);
+    // Menu du lundi au vendredi : on part d'un plat et on avance (ou recule) d'un jour, sans sortir du menu.
+    const step = rng.int(0, 1) === 0 ? 1 : -1;
+    const i = step === 1 ? rng.int(0, 3) : rng.int(1, 4);
+    const from = at(DAYS, i);
+    const wanted = at(DAYS, i + step);
+    const opposite = at(DAYS, (i - step + DAYS.length) % DAYS.length);
+    const dish = at(soups, i);
+    const when = step === 1 ? 'le lendemain' : 'la veille';
     return {
-      prompt: `Lis le menu. Aujourd’hui, c’est « ${today.en} ». Quel jour mange-t-on « ${dish} » ? Écris-le en anglais.`,
+      prompt: `Lis le menu (les lignes sont mélangées). Quel jour vient ${when} du jour où l’on mange « ${dish} » ? Écris-le en anglais.`,
       figure: {
         kind: 'document',
         title: 'Lunch menu',
-        lines: soups.map((s, j) => `${at(DAYS, j).en}: ${s}`),
+        lines: shuffledOther(
+          rng,
+          soups.map((s, j) => `${at(DAYS, j).en}: ${s}`),
+        ),
         credit: 'Écrit pour l’exercice, d’après un menu d’école du British Council.',
       },
       answer: { kind: 'text', accepted: accepted(wanted) },
       traps: [
-        { text: today.en, why: `« ${today.en} », c’est aujourd’hui. Cherche la ligne de « ${dish} ».` },
+        { text: from.en, why: `« ${from.en} » est le jour de « ${dish} ». On demande ${when}.` },
+        { text: opposite.en, why: `Attention au sens : on demande ${when}.` },
         { text: wanted.fr, why: 'C’est le bon jour, mais il faut l’écrire en anglais.' },
-        { text: wanted.typo, why: `Regarde les lettres sur le menu : « ${wanted.en} ».` },
+        { text: wanted.typo, why: `Regarde bien les lettres : « ${wanted.en} ».` },
       ],
-      hint: 'Cherche le plat dans le menu, puis lis le jour au début de la ligne.',
-      steps: [`Le plat « ${dish} » est sur la ligne de « ${wanted.en} ».`, `Réponse : **${wanted.en}**`],
+      hint: `Trouve d’abord le jour du plat. Puis ${step === 1 ? 'avance' : 'recule'} d’un jour dans la semaine.`,
+      steps: [
+        `« ${dish} » est sur la ligne de « ${from.en} » (${from.fr}).`,
+        `${cap(when)} de ce jour, c’est ${wanted.fr}.`,
+        `Réponse : **${wanted.en}**`,
+      ],
     };
   },
 };
@@ -382,12 +408,19 @@ const seasons: Skill = {
     memo: [
       'Les quatre saisons : spring (printemps), summer (été), autumn (automne), winter (hiver).',
       'Pour dire « en été », « en hiver », on met **in** : in summer, in winter.',
+      'En anglais américain, l’automne se dit aussi fall.',
     ],
     source: source('Saisons : British Council, poème « Spring to winter » et « Prepositions of time ».'),
-    sources: ['cycle3-2020', 'bck-spring-winter', 'bc-prepositions-time', 'bck-song-year'],
+    sources: ['cycle3-2020', 'bck-spring-winter', 'bc-prepositions-time', 'bck-song-year', 'bc-british-american'],
   },
   generate: (rng, level): QuestionDraft => {
-    if (level === 1) return pickEnglish(rng, SEASONS, 'une saison', 'Pense à « summer » : les grandes vacances.');
+    if (level === 1)
+      return pickEnglish(
+        rng,
+        SEASONS,
+        'une saison',
+        'Pense au temps qu’il fait et à ce que tu fais à ce moment de l’année.',
+      );
     if (level === 2) return understand(rng, SEASONS, 'une saison');
     if (level === 3) return write(rng, SEASONS, 'une saison');
     if (level === 4) {
@@ -396,7 +429,7 @@ const seasons: Skill = {
       const fr = { spring: 'au printemps', summer: 'en été', autumn: 'en automne', winter: 'en hiver' }[w.en];
       return {
         prompt: `Écris en anglais, en deux mots : « ${fr ?? ''} ».`,
-        answer: { kind: 'text', accepted: [`in ${w.en}`, `in the ${w.en}`] },
+        answer: { kind: 'text', accepted: accepted(w).flatMap((s) => [`in ${s}`, `in the ${s}`]) },
         traps: [
           { text: `on ${w.en}`, why: '« on » va avec un jour ou une date. Pour une saison, on met « in ».' },
           { text: `at ${w.en}`, why: '« at » va avec une heure. Pour une saison, on met « in ».' },
@@ -406,15 +439,14 @@ const seasons: Skill = {
         steps: ['Devant une saison, on met « in ».', `Réponse : **in ${w.en}**`],
       };
     }
-    const clues = some(rng, CLUES, 2);
-    const first = at(clues, 0);
+    const first = rng.pick(CLUES);
     const good = season(first.season);
     return {
-      prompt: `Lis le texte qui commence par « ${first.en} » De quelle saison parle-t-il ? Écris-la en anglais.`,
+      prompt: 'Lis le texte. De quelle saison parle-t-il ? Écris-la en anglais.',
       figure: {
         kind: 'document',
         title: 'Which season?',
-        lines: [first.en, `My favourite colour is ${at(COLOURS, rng.int(0, 3)).en}.`],
+        lines: [first.en],
         credit: 'Écrit pour l’exercice, d’après un poème du British Council.',
       },
       answer: { kind: 'text', accepted: accepted(good) },
@@ -446,8 +478,14 @@ const dateAccepted = ({ day, month }: SourcedDate): string[] => {
     `${o} of ${month}`,
     `${month} ${day}`,
     `${month} ${o}`,
+    `${month} the ${o}`,
   ];
 };
+/** Date précédée (ou non) de « on ». */
+const withOn = (forms: readonly string[]): string[] => forms.flatMap((f) => [f, `on ${f}`]);
+/** Date avec son jour de la semaine : « Friday 5 July », « Friday, July 5th ». */
+const withDay = (weekday: string, forms: readonly string[]): string[] =>
+  forms.flatMap((f) => [`${weekday} ${f}`, `${weekday}, ${f}`]);
 const otherMonth = (rng: Rng, month: string): string => rng.pick(MONTHS.filter((m) => m.en !== month)).en;
 
 const date: Skill = {
@@ -457,7 +495,7 @@ const date: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'Pour écrire la date : le numéro du jour, puis le mois. Exemple : 19 October (le 19 octobre).',
+      'Pour écrire la date : le numéro, puis le mois (19 October = 19 octobre). Avec le jour : Friday 31 October.',
       'Devant un jour ou une date, on met **on**. Devant un mois seul, on met **in** : on 19 October, in October.',
     ],
     source: source('Dates : British Council, « Prepositions of time » ; programme d’anglais du collège (ordinaux).'),
@@ -491,10 +529,10 @@ const date: Skill = {
     }
     if (level === 2) {
       const [kind, text, good] = rng.pick([
-        ['date', `My birthday is … ${dateEn(d)}.`, 'on'],
-        ['jour', `The party is … ${rng.pick(DAYS).en}.`, 'on'],
-        ['mois', `My birthday is … ${d.month}.`, 'in'],
-        ['saison', `We swim in the sea … ${rng.pick(['summer', 'spring'])}.`, 'in'],
+        ['une date', `My birthday is … ${dateEn(d)}.`, 'on'],
+        ['un jour', `The party is … ${rng.pick(DAYS).en}.`, 'on'],
+        ['un mois', `My birthday is … ${d.month}.`, 'in'],
+        ['une saison', `We swim in the sea … ${rng.pick(['summer', 'spring'])}.`, 'in'],
       ] as const);
       const why: Readonly<Record<string, string>> = {
         on: '« on » va avec un jour ou une date.',
@@ -506,21 +544,21 @@ const date: Skill = {
         good,
         ['on', 'in', 'at']
           .filter((x) => x !== good)
-          .map((x) => ({ label: x, why: `${why[x] ?? ''} Ici, il y a un autre cas : ${kind}.` })),
+          .map((x) => ({ label: x, why: `${why[x] ?? ''} Ici, après le trou, on lit ${kind}.` })),
       );
       return {
         prompt: `Complète : « ${text} »`,
         answer,
         traps,
         hint: 'Regarde le mot après le trou : un jour, une date, un mois ou une saison ?',
-        steps: [`Après le trou, on lit : ${kind}.`, why[good] ?? '', `Réponse : **${good}**`],
+        steps: [`Après le trou, on lit ${kind}.`, why[good] ?? '', `Réponse : **${good}**`],
       };
     }
     if (level === 3) {
       const m = otherMonth(rng, d.month);
       return {
         prompt: `Écris en anglais la date : « le ${dateFr(d)} ».`,
-        answer: { kind: 'text', accepted: dateAccepted(d) },
+        answer: { kind: 'text', accepted: withOn(dateAccepted(d)) },
         traps: [
           { text: `${d.day} ${frMonth(d.month)}`, why: `Écris le mois en anglais : « ${d.month} ».` },
           { text: `${d.day} ${m}`, why: `« ${m} » veut dire « ${frMonth(m)} ».` },
@@ -550,14 +588,22 @@ const date: Skill = {
           ],
         };
       }
-      const day = rng.pick(DAYS).en;
-      const right = ['on', day, String(d.day), d.month];
-      const items = shuffledOther(rng, right);
+      const day = rng.pick(DAYS);
+      const good = `on ${day.en} ${dateEn(d)}`;
       return {
-        prompt: `Remets la date dans l’ordre (jour, numéro, mois) : ${items.join(' / ')}.`,
-        answer: { kind: 'order', items, correct: right.map((x) => items.indexOf(x)) },
-        hint: 'Le petit mot « on » ouvre la date. Le mois vient en dernier.',
-        steps: ['Ordre : on, le jour de la semaine, le numéro, le mois.', `Réponse : **${right.join(' ')}**`],
+        prompt: `Écris en anglais, avec le petit mot qui va devant : « le ${day.fr} ${dateFr(d)} ».`,
+        answer: { kind: 'text', accepted: withDay(day.en, dateAccepted(d)).map((f) => `on ${f}`) },
+        traps: [
+          { text: `${day.en} ${dateEn(d)}`, why: 'Il manque le petit mot qui va devant une date.' },
+          { text: `in ${day.en} ${dateEn(d)}`, why: '« in » va avec un mois seul. Devant une date, on met « on ».' },
+          { text: `on ${day.en} ${d.day} ${frMonth(d.month)}`, why: `Écris le mois en anglais : « ${d.month} ».` },
+        ],
+        hint: 'Trouve d’abord le petit mot qui va devant une date. Chaque jour et chaque mois prend une majuscule.',
+        steps: [
+          'Devant une date, on met « on ».',
+          `Le jour : « ${day.en} ». Le numéro : ${d.day}. Le mois : « ${d.month} ».`,
+          `Réponse : **${good}**`,
+        ],
       };
     }
     const start = rng.int(1, 20);
@@ -573,7 +619,10 @@ const date: Skill = {
         lines: [`Week beginning: Monday ${start} ${month}`, `${asked.en}: class trip!`],
         credit: 'Écrit pour l’exercice.',
       },
-      answer: { kind: 'text', accepted: dateAccepted(good) },
+      answer: {
+        kind: 'text',
+        accepted: withOn([...dateAccepted(good), ...withDay(asked.en, dateAccepted(good))]),
+      },
       traps: [
         { text: `${start} ${month}`, why: `C’est la date de « Monday ». Compte les jours jusqu’à « ${asked.en} ».` },
         { text: `${good.day + 1} ${month}`, why: 'Tu as compté un jour de trop.' },
@@ -599,6 +648,8 @@ const weather: Skill = {
     memo: [
       'Pour demander le temps qu’il fait : « What’s the weather like today? ».',
       'Réponds avec **it’s** et un mot de la météo. Exemple : It’s hot and sunny. (Il fait chaud et beau.)',
+      'Le ciel : sunny (ensoleillé), rainy (pluvieux), cloudy (nuageux), windy (venteux), snowy (neigeux).',
+      'Aussi : stormy (orageux), foggy (avec du brouillard), hot (chaud), cold (froid).',
     ],
     source: source('Météo : British Council, « Weather flashcards » et « The weather where I live ».'),
     sources: ['cycle3-2020', 'bck-flashcards-weather', 'bck-weather-live', 'bck-weather-your-turn'],
@@ -609,7 +660,7 @@ const weather: Skill = {
         rng,
         WEATHER.slice(0, 5),
         'la météo',
-        'Cherche le petit mot caché : sun (soleil), rain (pluie)…',
+        'Imagine le ciel de ce jour-là, puis pense au mot entendu en classe ou en chanson.',
       );
     if (level === 2) {
       if (rng.int(0, 2) === 0) {
@@ -650,36 +701,47 @@ const weather: Skill = {
         steps: [`Le temps « ${w.fr} » se dit « ${w.en} ».`, `Réponse : **It’s ${w.en}.**`],
       };
     }
-    const towns = some(rng, ['London', 'Glasgow', 'Cardiff', 'Belfast'], 3);
-    const sky = some(rng, WEATHER, 3);
+    // Deux villes ont un seul mot en commun : il faut comparer, puis écrire la phrase.
+    const common = rng.pick(['cold', 'windy', 'cloudy']);
+    const [a, b, c, d] = rng.shuffle(['cold', 'windy', 'cloudy', 'rainy', 'snowy'].filter((x) => x !== common)) as [
+      string,
+      string,
+      string,
+      string,
+    ];
+    const [first, second, third] = some(rng, ['London', 'Glasgow', 'Cardiff', 'Belfast'], 3) as [
+      string,
+      string,
+      string,
+    ];
     const day = rng.pick(DAYS).en;
-    const i = rng.int(0, 2);
-    const w = at(sky, i);
-    const { answer, traps } = choice(
-      rng,
-      at(towns, i),
-      towns
-        .filter((_, j) => j !== i)
-        .map((t) => ({
-          label: t,
-          why: `À ${t}, il fait « ${at(sky, towns.indexOf(t)).en} » : relis chaque ligne.`,
-        })),
-    );
+    const pair = (x: string, y: string) => rng.shuffle([x, y]).join(' and ');
+    const lines = rng.shuffle([
+      `In ${first}, it’s ${pair(common, a)}.`,
+      `In ${second}, it’s ${pair(common, b)}.`,
+      `In ${third}, it’s ${pair(c, d)}.`,
+    ]);
+    const frWord = WEATHER.find((w) => w.en === common)?.fr ?? common;
     return {
-      prompt: `Lis le bulletin de « ${day} ». Dans quelle ville le temps est-il « ${w.fr} » ?`,
+      prompt: `Lis le bulletin. Quel temps fait-il à la fois à ${first} et à ${second} ? Réponds en anglais avec « it’s » et un seul mot.`,
       figure: {
         kind: 'document',
         title: `Weather on ${day}`,
-        lines: towns.map((t, j) => `In ${t}, it’s ${at(sky, j).en}.`),
+        lines,
         credit: 'Bulletin imaginaire, écrit pour l’exercice.',
       },
-      answer,
-      traps,
-      hint: `Pense au mot anglais pour « ${w.fr} », puis cherche-le dans le bulletin.`,
+      answer: { kind: 'text', accepted: [`It’s ${common}`, `It’s ${common}.`, `It is ${common}`, `It is ${common}.`] },
+      traps: [
+        { text: common, why: 'Le mot est bon. Fais une phrase : commence par « It’s ».' },
+        { text: `It’s ${a}.`, why: `Ce temps est écrit pour ${first}, mais pas pour ${second}.` },
+        { text: `It’s ${b}.`, why: `Ce temps est écrit pour ${second}, mais pas pour ${first}.` },
+        { text: `Its ${common}.`, why: '« its » veut dire « son » ou « sa ». Il faut « it’s », avec une apostrophe.' },
+      ],
+      hint: 'Lis les lignes de ces deux villes. Quel mot revient dans les deux ?',
       steps: [
-        `« ${w.fr} » se dit « ${w.en} ».`,
-        `${cap(w.en)} est écrit sur la ligne de ${at(towns, i)}.`,
-        `Réponse : **${at(towns, i)}**`,
+        `${first} : « ${common} » et « ${a} ». ${second} : « ${common} » et « ${b} ».`,
+        `Le mot commun est « ${common} » (${frWord}).`,
+        `Réponse : **It’s ${common}.**`,
       ],
     };
   },
