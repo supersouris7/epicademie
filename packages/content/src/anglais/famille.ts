@@ -302,7 +302,7 @@ const haveGot: Skill = {
           prompt: `Complète : « ${s.en} … got ${o}. »`,
           answer,
           traps,
-          hint: 'Le sujet est-il une seule personne, comme he ou she ?',
+          hint: 'Peux-tu remplacer le sujet par « he » ou « she » ? Ta réponse en dépend.',
           steps: [whyHave(s), `Réponse : **${s.has}**`],
         };
       }
@@ -526,9 +526,11 @@ const clothes: Skill = {
     if (level === 3)
       return write(
         rng,
-        CLOTHES.map((w) =>
-          ONE_CLOTHES.includes(w.en) ? { ...w, alt: [...(w.alt ?? []), ...names(w).map((n) => `a ${n}`)] } : w,
-        ),
+        CLOTHES.map((w) => {
+          // « a skirt » ; « a pair of jeans » quand le français dit « un » pour un mot anglais pluriel.
+          const article = ONE_CLOTHES.includes(w.en) ? 'a ' : w.fr.startsWith('un ') ? 'a pair of ' : '';
+          return article ? { ...w, alt: [...(w.alt ?? []), ...names(w).map((n) => `${article}${n}`)] } : w;
+        }),
         'un vêtement',
       );
     if (level === 4) {

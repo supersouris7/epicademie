@@ -92,7 +92,7 @@ describe('anglais cm1 : famille, corps, vêtements', () => {
           ),
         ),
     );
-    for (const text of ['sweater', 'a sweater', 'a pullover', 'sneakers', 'pants', 'a tee-shirt'])
+    for (const text of ['sweater', 'a sweater', 'a pullover', 'sneakers', 'pants', 'a tee-shirt', 'a pair of jeans'])
       expect(accepted[0], text).toContain(text);
     for (const text of ['a pink tshirt', 'a pink tee-shirt', 'a pink sweater', 'red sneakers', 'gray pants'])
       expect(accepted[1], text).toContain(text);
