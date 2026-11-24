@@ -1,15 +1,22 @@
 import { describe, expect, it } from 'vitest';
+import type { SubjectId } from '@epicademie/shared';
 import { CHAPTERS } from '../catalog.ts';
 import { CE2_CHAPTERS } from '../ce2.ts';
-import { MATHS_REFERENTIAL, competencesOf } from './index.ts';
+import { MATHS_REFERENTIAL, REFERENTIALS, competencesOf } from './index.ts';
 
 const GRADES = ['cm1', 'cm2', '6e', '5e', '4e', '3e'] as const;
 const ORDER: readonly string[] = ['ce2', ...GRADES];
-const all = (['ce2', ...GRADES] as const).flatMap((g) => competencesOf('maths', g).map((c) => ({ ...c, grade: g })));
-const byId = new Map(all.map((c) => [c.id, c]));
-const chapters = [...CHAPTERS.filter((c) => c.subject === 'maths'), ...CE2_CHAPTERS];
+const ALL_GRADES = ['ce2', ...GRADES] as const;
+const chaptersOf = (subject: SubjectId) => [
+  ...CHAPTERS.filter((c) => c.subject === subject),
+  ...(subject === 'maths' ? CE2_CHAPTERS : []),
+];
 
-describe('référentiel de maths', () => {
+describe.each(REFERENTIALS.map((r) => r.subject))('référentiel : %s', (subject) => {
+  const all = ALL_GRADES.flatMap((g) => competencesOf(subject, g).map((c) => ({ ...c, grade: g })));
+  const byId = new Map(all.map((c) => [c.id, c]));
+  const chapters = chaptersOf(subject);
+  const grades = ALL_GRADES.filter((g) => competencesOf(subject, g).length > 0);
   it('rattache chaque chapitre exactement une fois, dans sa classe', () => {
     expect(all.map((c) => c.id).sort()).toEqual(chapters.map((c) => c.id).sort());
     for (const c of chapters) expect(byId.get(c.id)?.grade).toBe(c.grade);
@@ -19,14 +26,9 @@ describe('référentiel de maths', () => {
 
   it('a des identifiants uniques et une version entière positive', () => {
     expect(new Set(all.map((c) => c.id)).size).toBe(all.length);
-    expect(Number.isInteger(MATHS_REFERENTIAL.version)).toBe(true);
-    expect(MATHS_REFERENTIAL.version).toBeGreaterThan(0);
-  });
-
-  it('fige les identifiants et les effectifs attendus (changer = incrémenter la version)', () => {
-    const counts = Object.fromEntries((['ce2', ...GRADES] as const).map((g) => [g, competencesOf('maths', g).length]));
-    expect(counts).toEqual({ ce2: 9, cm1: 15, cm2: 15, '6e': 18, '5e': 17, '4e': 14, '3e': 13 });
-    expect(MATHS_REFERENTIAL.version).toBe(2);
+    const version = REFERENTIALS.find((r) => r.subject === subject)?.version ?? 0;
+    expect(Number.isInteger(version)).toBe(true);
+    expect(version).toBeGreaterThan(0);
   });
 
   it('ne pointe que vers des compétences connues de la même classe ou antérieures', () => {
@@ -56,8 +58,8 @@ describe('référentiel de maths', () => {
 
   it('compte 6 à 9 essentielles par classe, sur au moins 3 domaines', () => {
     const domainOf = new Map(chapters.map((c) => [c.id, c.domain]));
-    for (const g of ['ce2', ...GRADES] as const) {
-      const essentials = competencesOf('maths', g).filter((c) => c.essential);
+    for (const g of grades) {
+      const essentials = competencesOf(subject, g).filter((c) => c.essential);
       expect(essentials.length, g).toBeGreaterThanOrEqual(6);
       expect(essentials.length, g).toBeLessThanOrEqual(9);
       expect(new Set(essentials.map((c) => domainOf.get(c.id))).size, g).toBeGreaterThanOrEqual(3);
@@ -67,10 +69,25 @@ describe('référentiel de maths', () => {
   it('couvre chaque domaine présent dans une classe par au moins une compétence', () => {
     // Les essentielles ne couvrent pas tous les domaines (liste validée) : seul le rattachement est exigé.
     const domainOf = new Map(chapters.map((c) => [c.id, c.domain]));
-    for (const g of ['ce2', ...GRADES] as const) {
+    for (const g of grades) {
       const domains = new Set(chapters.filter((c) => c.grade === g).map((c) => c.domain));
-      const covered = new Set(competencesOf('maths', g).map((c) => domainOf.get(c.id)));
+      const covered = new Set(competencesOf(subject, g).map((c) => domainOf.get(c.id)));
       expect(covered).toEqual(domains);
     }
+  });
+});
+
+describe('référentiel de maths (effectifs figés)', () => {
+  it('fige les identifiants et les effectifs attendus (changer = incrémenter la version)', () => {
+    const counts = Object.fromEntries(ALL_GRADES.map((g) => [g, competencesOf('maths', g).length]));
+    expect(counts).toEqual({ ce2: 9, cm1: 15, cm2: 15, '6e': 18, '5e': 17, '4e': 14, '3e': 13 });
+    expect(MATHS_REFERENTIAL.version).toBe(2);
+  });
+});
+
+describe('référentiels enregistrés', () => {
+  it('compte une seule entrée par matière', () => {
+    const subjects = REFERENTIALS.map((r) => r.subject);
+    expect(new Set(subjects).size).toBe(subjects.length);
   });
 });
