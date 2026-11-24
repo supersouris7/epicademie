@@ -6,6 +6,7 @@ import { ParentPage } from './ParentShell.tsx';
 import { CharacterAvatar } from '../../shared/ui/game/CharacterAvatar.tsx';
 import { useProfiles } from '../profiles/index.ts';
 import { ToReview } from './ToReview.tsx';
+import { EvaluationLine, EvaluationNotes } from './Evaluations.tsx';
 import { SubjectCards, SubjectDetail } from './SubjectCards.tsx';
 import { useSubjectBars } from './useSubjectBars.ts';
 import { synthesis, toReview } from './summary.ts';
@@ -60,6 +61,7 @@ function ChildCard({ profile: p }: { readonly profile: Profile }) {
       {bars && bars.length > 0 && (
         <SubjectCards bars={bars} onPick={(id) => void navigate(`/parent/enfant/${p.id}?matiere=${id}`)} />
       )}
+      <EvaluationLine profileId={p.id} grade={p.grade} />
       {review.length > 0 && (
         <p className="text-sm">
           <span className="text-muted font-bold">À réviser : </span>
@@ -96,11 +98,11 @@ function ReportView({ report: r, child }: { readonly report: LearningReport; rea
   const bars = useSubjectBars(child, r);
   const [params, setParams] = useSearchParams();
   const picked = bars?.find((b) => b.id === params.get('matiere'));
-  // Ordre de la page : synthèse, avancement, à réviser. Les sections de l'Arène d'évaluation (réponses,
-  // « Bilans » repliable) viendront s'ajouter ici, avant la synthèse, comme des blocs indépendants.
+  // Ordre de la page : synthèse, notes des évaluations, avancement, à réviser.
   return (
     <div className="flex flex-col gap-6">
       {bars && <p className="text-lg font-bold">{synthesis(child.name, bars)}</p>}
+      <EvaluationNotes profileId={child.id} grade={child.grade} />
       {bars && bars.length > 0 && (
         <section aria-labelledby="avancement" className="flex flex-col gap-2">
           <h2 id="avancement" className="text-lg font-bold">

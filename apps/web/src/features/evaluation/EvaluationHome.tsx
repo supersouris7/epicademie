@@ -16,6 +16,7 @@ import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import { SpeechBubble } from '../../shared/ui/SpeechBubble.tsx';
 import { useToast } from '../../shared/ui/Toast.tsx';
 import { evaluationHomeKey, startEvaluation, useEvaluationHome } from './api.ts';
+import { appreciation } from './appreciation.ts';
 import { competenceTitle, gradeName, formatNote, KIND_INFO } from './texts.ts';
 
 const KINDS: readonly EvaluationKind[] = ['origines', 'progression', 'maitres'];
@@ -164,7 +165,9 @@ export function EvaluationHome({ profile }: { readonly profile: Profile }) {
                         {h.partial ? ' (arrêtée en cours de route)' : ''}
                       </span>
                       <span>
-                        {h.mastery !== null ? `Note ${formatNote(h.mastery)}` : 'Note : pas assez de questions'}
+                        {h.mastery !== null
+                          ? `Note ${formatNote(h.mastery)} · ${appreciation(h.mastery, h.id)?.label ?? ''}`
+                          : 'Note : pas assez de questions'}
                       </span>
                     </Link>
                   </li>
