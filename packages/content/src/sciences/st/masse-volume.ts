@@ -75,7 +75,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
     traps: t,
     hint: 'Imagine l’objet dans ta main : est-il aussi léger qu’une plume, ou plus lourd qu’un sac ?',
     steps: [
-      'Les unités de masse, de la plus petite à la plus grande : mg, g, kg, t.',
+      'Les unités de masse, de la plus petite à la plus grande : mg, g, kg, t (la tonne : 1 t = 1 000 kg).',
       'On choisit celle qui donne un nombre raisonnable pour cet objet.',
       `Unité : **${o.unite}**.`,
     ],
@@ -277,8 +277,8 @@ export const masseVolume: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'La **masse** dit combien ça pèse : on la mesure avec une **balance**, en kg, g ou mg. Pour ne peser que le contenu d’un bol, on appuie sur « **tare** » avec le bol posé.',
-      '1 kg = 1 000 g et 1 g = 1 000 mg. Le **volume** dit la place occupée : on le trouve par **déplacement de liquide** (le niveau monte quand on plonge un caillou).',
+      'La **masse** dit combien ça pèse : on la mesure avec une **balance**, en t (tonne), kg, g ou mg. Pour ne peser que le contenu d’un bol, on appuie sur « **tare** » avec le bol posé.',
+      '1 t = 1 000 kg, 1 kg = 1 000 g et 1 g = 1 000 mg. Le **volume** dit la place occupée : on le trouve par **déplacement de liquide** (le niveau monte quand on plonge un caillou).',
     ],
     source: `${PROGRAMME} : « Mesurer la masse d’un solide ou d’un liquide à l’aide d’une balance, en tarant la balance le cas échéant » ; « Mesurer le volume d’un liquide et mesurer celui d’un solide par déplacement de liquide ». Préfixes kilo (10³) et milli (10⁻³) : BIPM.`,
     sources: [PROGRAMME, SI],

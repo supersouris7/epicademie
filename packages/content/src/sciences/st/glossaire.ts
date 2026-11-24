@@ -49,7 +49,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     word: 'masse',
     forms: ['masse', 'masses'],
     definition:
-      'Ce qui dit combien un corps pèse. Elle se mesure avec une balance, en kilogrammes, grammes ou milligrammes.',
+      'Ce qui dit combien un corps pèse. Elle se mesure avec une balance, en tonnes, kilogrammes, grammes ou milligrammes.',
     example: 'Une pomme a une masse d’environ 150 g.',
   },
   {
@@ -100,7 +100,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'st-decantation',
     word: 'décantation',
     forms: ['décantation', 'décanter'],
-    definition: 'Technique qui laisse un solide tomber au fond d’un liquide au repos, puis on verse le liquide.',
+    definition:
+      'Technique qui consiste à laisser un solide tomber au fond d’un liquide au repos, puis à verser le liquide.',
     example: 'La terre d’une eau boueuse tombe au fond du seau.',
   },
   {

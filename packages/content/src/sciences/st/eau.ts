@@ -12,7 +12,7 @@ const ETATS: readonly Etat[] = ['solide', 'liquide', 'gazeux'];
 const EAU: Record<Etat, readonly string[]> = {
   solide: ['la glace d’un glaçon', 'la neige', 'la glace d’une patinoire'],
   liquide: ['l’eau d’un lac', 'l’eau du robinet', 'la pluie'],
-  gazeux: ['la vapeur d’eau au-dessus d’une casserole qui bout'],
+  gazeux: ['la vapeur d’eau qui se forme quand l’eau d’une casserole bout'],
 };
 
 interface Changement {

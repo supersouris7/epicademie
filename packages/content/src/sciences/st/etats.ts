@@ -219,7 +219,7 @@ export const etats: Skill = {
     const inconnu = 'On ne peut pas savoir avec ces observations';
     const { answer, traps } = choice(rng, vrai, [
       ...ETATS.filter((e) => e !== vrai).map((e) => ({ label: e, why: POURQUOI[vrai][e] })),
-      { label: inconnu, why: 'Si : la forme et le volume suffisent pour reconnaître l’état.' },
+      { label: inconnu, why: 'Non : la forme et le volume suffisent pour reconnaître l’état.' },
     ]);
     return {
       prompt: 'Lis les observations. Dans quel état physique est le corps mystère ?',
