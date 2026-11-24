@@ -248,4 +248,11 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
       'Situation où une personne est forcée de travailler et appartient à un maître : c’est une grande injustice.',
     example: 'Des Africains ont été réduits en esclavage.',
   },
+  {
+    id: 'regicide',
+    word: 'régicide',
+    forms: ['régicide', 'regicide'],
+    definition: 'Le fait de tuer un roi.',
+    example: 'Le régicide est la mort violente d’un roi.',
+  },
 ];

@@ -19,7 +19,7 @@ const Q_COLONIAL = 'une présentation de la formation du premier empire colonial
 const louisIx: Notion = {
   id: 'hcm1-louis-ix',
   title: 'Louis IX, le roi chrétien',
-  hint: 'Relis le mémo : cherche son surnom et son siècle.',
+  hint: 'Relis le mémo : cherche le surnom, le siècle et les violences citées.',
   memo: [
     'Louis IX est surnommé le « **roi chrétien** » : il règne au XIIIe siècle, il y a très longtemps !',
     'À cette époque, on étudie surtout le **pouvoir royal** : le roi gouverne le royaume de France.',
@@ -197,7 +197,7 @@ const louisIx: Notion = {
 const francoisIer: Notion = {
   id: 'hcm1-francois-ier',
   title: 'François Ier, protecteur des arts',
-  hint: 'Pense à la Renaissance : que protège le roi ?',
+  hint: 'Relis le mémo : la Renaissance, ce que protège le roi, et les femmes citées.',
   memo: [
     'François Ier est un **protecteur** des Arts et des Lettres : il aide les peintres, les écrivains et les savants.',
     'Il vit à l’époque de la **Renaissance**, quand on redécouvre les idées et les œuvres de l’Antiquité.',
@@ -360,7 +360,7 @@ const francoisIer: Notion = {
 const henriIv: Notion = {
   id: 'hcm1-henri-iv',
   title: 'Henri IV et l’édit de Nantes',
-  hint: 'Relis le mémo : un roi, une ville et un texte.',
+  hint: 'Relis le mémo : un roi, une ville, un texte et les guerres citées.',
   memo: [
     'Henri IV est le roi de l’**édit de Nantes** : un texte officiel du roi, signé à Nantes.',
     'Le programme cite aussi les **guerres de religion** parmi les violences que l’on étudie avec sérieux.',
@@ -519,7 +519,7 @@ const henriIv: Notion = {
 const louisXiv: Notion = {
   id: 'hcm1-louis-xiv',
   title: 'Louis XIV, le roi Soleil à Versailles',
-  hint: 'Pense au roi qui brille comme un astre, dans un grand château.',
+  hint: 'Relis le mémo : le roi Soleil, son château, et qui porte l’empire colonial.',
   memo: [
     'Louis XIV est surnommé le « roi **Soleil** » : il brille comme un astre et il règne à **Versailles**.',
     'Le programme dit aussi que le **pouvoir royal** porte la formation du premier **empire colonial** français.',
