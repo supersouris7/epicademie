@@ -2,34 +2,37 @@ import type { Figure, Level, QuestionDraft, Skill, Trap } from '../types.ts';
 import type { Rng } from '../rng.ts';
 import { choice } from '../build.ts';
 
-/** Fait cité du programme : question à choix, texte à trous, citation exacte. */
-export interface Fait {
+/** Citation exacte d'un texte officiel. Sans `from`, elle vient du programme d'EMC. */
+export interface Citation {
+  readonly quote: string;
+  /** Texte cité s'il ne s'agit pas du programme : identifiant du registre des sources et nom lu par l'élève. */
+  readonly from?: { readonly id: string; readonly label: string };
+}
+
+/** Fait cité : question à choix, texte à trous, citation exacte. */
+export interface Fait extends Citation {
   readonly q: string;
   readonly a: string;
   /** Erreurs typiques : les deux premières sont très différentes (niveau 1), les trois servent au niveau 2. */
   readonly wrong: readonly { readonly label: string; readonly why: string }[];
   /** Avant le trou, après le trou, réponses acceptées. */
   readonly gap: readonly [string, string, readonly string[]];
-  /** Citation exacte du programme. */
-  readonly quote: string;
   readonly explain: string;
   /** Fait exigeant (numéro d'article…) : non proposé au niveau 1. */
   readonly avance?: boolean;
 }
 
-export interface Libre {
+export interface Libre extends Citation {
   readonly q: string;
   readonly accepted: readonly string[];
   readonly traps: readonly { readonly text: string; readonly why: string }[];
-  readonly quote: string;
   readonly explain: string;
 }
 
-export interface DocQuestion {
+export interface DocQuestion extends Citation {
   readonly q: string;
   readonly a: string;
   readonly wrong: readonly { readonly label: string; readonly why: string }[];
-  readonly quote: string;
   readonly explain: string;
 }
 
@@ -67,9 +70,9 @@ function shuffled<T>(rng: Rng, items: readonly T[]): T[] {
   return out;
 }
 
-const steps = (quote: string, explain: string, answer: string) => [
-  `Cherchons ce que dit le programme : « ${quote} ».`,
-  explain,
+const steps = (c: Citation & { readonly explain: string }, answer: string) => [
+  `Cherchons ce que dit ${c.from?.label ?? 'le programme'} : « ${c.quote} ».`,
+  c.explain,
   `La réponse est donc **${answer}**.`,
 ];
 
@@ -98,7 +101,7 @@ function level1(rng: Rng, n: Notion): QuestionDraft {
     prompt: f.q,
     ...choice(rng, f.a, f.wrong.slice(0, 2)),
     hint: n.hint,
-    steps: steps(f.quote, f.explain, f.a),
+    steps: steps(f, f.a),
     targetSeconds: 20,
   };
 }
@@ -112,7 +115,7 @@ function level2(rng: Rng, n: Notion): QuestionDraft {
     prompt: `Attention aux pièges ! ${f.q}`,
     ...choice(rng, f.a, f.wrong),
     hint: n.hint,
-    steps: steps(f.quote, f.explain, f.a),
+    steps: steps(f, f.a),
     targetSeconds: 25,
   };
 }
@@ -124,7 +127,7 @@ function level3(rng: Rng, n: Notion): QuestionDraft {
     prompt: `Complète la phrase : « ${before}…${after} »`,
     answer: { kind: 'cloze', parts: [before, after], blanks: [{ mode: 'text', accepted }] },
     hint: n.hint,
-    steps: steps(f.quote, f.explain, accepted[0] ?? ''),
+    steps: steps(f, accepted[0] ?? ''),
     targetSeconds: 30,
   };
 }
@@ -145,7 +148,7 @@ function level4(rng: Rng, n: Notion): QuestionDraft {
     answer: { kind: 'text', accepted: l.accepted },
     traps,
     hint: n.hint,
-    steps: steps(l.quote, l.explain, l.accepted[0] ?? ''),
+    steps: steps(l, l.accepted[0] ?? ''),
     targetSeconds: 30,
   };
 }
@@ -164,9 +167,15 @@ function level5(rng: Rng, n: Notion): QuestionDraft {
     figure,
     ...choice(rng, dq.a, dq.wrong),
     hint: 'Relis le texte ligne par ligne : la réponse s’y appuie.',
-    steps: steps(dq.quote, dq.explain, dq.a),
+    steps: steps(dq, dq.a),
     targetSeconds: 60,
   };
+}
+
+/** Programme, sources déclarées et textes cités par les faits, sans doublon. */
+function sourcesOf(n: Notion): string[] {
+  const cited: readonly Citation[] = [...n.faits, ...n.libres, ...n.docs.flatMap((d) => d.qs)];
+  return [...new Set([SOURCE, ...(n.sources ?? []), ...cited.flatMap((c) => (c.from ? [c.from.id] : []))])];
 }
 
 /** Notion à 5 niveaux (grille de docs/contenus/README.md §1). */
@@ -176,7 +185,7 @@ export function notion(n: Notion): Skill {
     title: n.title,
     levels: 5,
     version: 1,
-    lesson: { memo: n.memo, source: n.programme ?? PROG, sources: [SOURCE, ...(n.sources ?? [])] },
+    lesson: { memo: n.memo, source: n.programme ?? PROG, sources: sourcesOf(n) },
     generate: (rng: Rng, level: Level): QuestionDraft => {
       switch (level) {
         case 1:
