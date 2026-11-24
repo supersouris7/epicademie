@@ -69,6 +69,14 @@ export const SOURCES: readonly Source[] = [
     consultedOn: CONSULTED,
   },
   {
+    id: 'maths-cycle3-2025',
+    title: 'Programme de mathématiques du cycle 3 (CM1, CM2, 6e)',
+    publisher: 'Ministère de l’Éducation nationale',
+    url: 'https://www.education.gouv.fr/sites/default/files/ensel620_annexe2-v2.pdf',
+    textDate: '2025-04-17',
+    consultedOn: CONSULTED,
+  },
+  {
     id: 'emc-2024',
     title: 'Programme d’enseignement moral et civique du CP à la terminale',
     publisher: 'Ministère de l’Éducation nationale',
