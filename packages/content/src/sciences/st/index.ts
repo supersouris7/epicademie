@@ -1,4 +1,8 @@
 import type { Chapter } from '../../types.ts';
+import { besoinsAnimaux } from './besoins-animaux.ts';
+import { besoinsVegetaux } from './besoins-vegetaux.ts';
+import { classer } from './classer.ts';
+import { developpement } from './developpement.ts';
 import { eau } from './eau.ts';
 import { energieQuotidien } from './energie-quotidien.ts';
 import { formesEnergie } from './energie-formes.ts';
@@ -9,7 +13,7 @@ import { melanges } from './melanges.ts';
 import { mouvement } from './mouvement.ts';
 
 /**
- * Sciences et technologie, CM1 à 6e (préfixe `p…` pour le domaine physique-chimie, ADR 0034).
+ * Sciences et technologie, CM1 à 6e (préfixe `p…` pour le domaine physique-chimie, `v…` pour la SVT, ADR 0034).
  * Le lot de contenu ajoute ses chapitres ici, sans toucher à catalog.ts.
  */
 export const ST_CHAPTERS: readonly Chapter[] = [
@@ -28,5 +32,13 @@ export const ST_CHAPTERS: readonly Chapter[] = [
     domain: 'physique-chimie',
     title: 'Mouvement et énergie',
     skills: [sourcesEnergie, formesEnergie, mouvement, energieQuotidien],
+  },
+  {
+    id: 'vcm1-vivant',
+    subject: 'sciences',
+    grade: 'cm1',
+    domain: 'svt',
+    title: 'Le vivant',
+    skills: [classer, besoinsVegetaux, besoinsAnimaux, developpement],
   },
 ];

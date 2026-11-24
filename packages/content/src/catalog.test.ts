@@ -176,7 +176,8 @@ describe('matière Sciences (#76)', () => {
       'p4-electricite',
       'p3-energie',
     ]);
-    for (const c of chapters) expect(c.domain).toBe('physique-chimie');
+    // La SVT du CM1 à la 6e (préfixe « v ») relève du domaine « svt ».
+    for (const c of chapters.filter((x) => x.id.startsWith('p'))) expect(c.domain).toBe('physique-chimie');
     expect(chaptersOf('physique')).toHaveLength(0);
   });
 
