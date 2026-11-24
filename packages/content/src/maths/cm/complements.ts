@@ -252,13 +252,16 @@ export function buildComplements({ S, id, g }: Contexte): Readonly<Record<string
         prompt: `Une recette demande ${f} L ${what}. Les bouteilles contiennent 1 L chacune. Combien de bouteilles faut-il ouvrir, au minimum ?`,
         answer: num(k + 1),
         traps: traps(r(k + 1), [
-          [k, `${k} bouteilles ne donnent que ${k} L : il manque ${rawFrac(rest, d)} L.`],
+          [
+            k,
+            `${k} bouteille${k > 1 ? 's' : ''} ne donne${k > 1 ? 'nt' : ''} que ${k} L : il manque ${rawFrac(rest, d)} L.`,
+          ],
           [n, `${n} est le numérateur : on ne compte pas ${n} L, mais ${n} parts de ${rawFrac(1, d)} L.`],
         ]),
         hint: 'Entre quels entiers est la fraction ? Il faut assez de litres entiers pour la dépasser.',
         steps: [
           `${f} = ${k} + ${rawFrac(rest, d)} : c’est entre ${k} et ${k + 1} L.`,
-          `Avec ${k} bouteilles, il manque un peu : il en faut **${k + 1}**.`,
+          `Avec ${k} bouteille${k > 1 ? 's' : ''}, il manque un peu : il en faut **${k + 1}**.`,
         ],
         targetSeconds: 45,
       };
@@ -313,7 +316,7 @@ export function buildComplements({ S, id, g }: Contexte): Readonly<Record<string
           hint: `Entre 0 et 1, combien de parts ? Puis compte les graduations depuis 0 jusqu’à A.`,
           steps: [
             `Chaque unité est coupée en ${d} parts : le dénominateur est ${d}.`,
-            `A est à ${n} graduations de 0 : **${rawFrac(n, d)}**.`,
+            `A est à ${n} graduation${n > 1 ? 's' : ''} de 0 : **${rawFrac(n, d)}**.`,
           ],
           targetSeconds: 25,
         };
@@ -329,7 +332,7 @@ export function buildComplements({ S, id, g }: Contexte): Readonly<Record<string
           ]),
           hint: 'Compte toutes les graduations depuis 0 jusqu’à A.',
           steps: [
-            `Depuis 0, il y a ${k} unités de ${d} parts, puis ${n - k * d} part(s).`,
+            `Depuis 0, il y a ${k} unité${k > 1 ? 's' : ''} entière${k > 1 ? 's' : ''} de ${d} parts, puis ${n - k * d} part${n - k * d > 1 ? 's' : ''}.`,
             `${k} × ${d} + ${n - k * d} = **${n}**.`,
           ],
           targetSeconds: 30,
@@ -342,12 +345,15 @@ export function buildComplements({ S, id, g }: Contexte): Readonly<Record<string
           answer: fraction(r(n, d)),
           traps: traps(r(n, d), [
             [r(d, n), 'Tu as inversé : en haut, les graduations depuis 0 ; en bas, les parts par unité.'],
-            [r(n - k * d, d), `Il manque les ${k} unité(s) entière(s) avant le dernier entier.`],
+            [
+              r(n - k * d, d),
+              `Il manque les ${k} unité${k > 1 ? 's' : ''} entière${k > 1 ? 's' : ''} avant le dernier entier.`,
+            ],
           ]),
           hint: 'Combien de parts dans une unité ? Combien de graduations de 0 à A ?',
           steps: [
             `Dénominateur : ${d} parts par unité.`,
-            `Numérateur : ${n} graduations depuis 0. **${rawFrac(n, d)}**.`,
+            `Numérateur : ${n} graduation${n > 1 ? 's' : ''} depuis 0. **${rawFrac(n, d)}**.`,
           ],
           targetSeconds: 35,
         };
@@ -395,11 +401,11 @@ export function buildComplements({ S, id, g }: Contexte): Readonly<Record<string
         const wrong = [
           {
             label: big(a * b),
-            why: `${a} × ${b} = ${a * b}, mais il reste le ${unit === 10 ? 'zéro des dizaines' : 'zéros des centaines'} à remettre.`,
+            why: `${a} × ${b} = ${a * b}, mais il reste ${unit === 10 ? 'le zéro des dizaines' : 'les zéros des centaines'} à remettre.`,
           },
           {
             label: big(a * b * unit * 10),
-            why: `Trop de zéros : ${b * unit} a ${unit === 10 ? 'un zéro' : 'deux zéros'}, qui se retrouvent dans le résultat.`,
+            why: `Trop de zéros : ${b * unit} a ${unit === 10 ? 'un zéro' : 'deux zéros'}, à retrouver dans le résultat (pas un de plus).`,
           },
           { label: big(a * b * (unit === 10 ? 1000 : 10)), why: `Compte bien les zéros de ${b * unit}.` },
         ];
