@@ -95,6 +95,15 @@ export type Figure =
       readonly line: boolean;
     }
   | { readonly kind: 'blocks'; readonly program: readonly Block[] }
+  /** Extrait de texte numéroté ligne par ligne (lecture, source historique). */
+  | {
+      readonly kind: 'document';
+      readonly title?: string;
+      /** Une chaîne par ligne ; le rendu les numérote à partir de 1. */
+      readonly lines: readonly string[];
+      /** Origine de l'extrait (auteur, œuvre, date), affichée sous le texte. */
+      readonly credit?: string;
+    }
   | { readonly kind: 'pattern'; readonly steps: readonly (readonly [number, number][])[] };
 
 /** Programme par blocs (façon Scratch) pour la pensée informatique. */
@@ -123,7 +132,29 @@ export type AnswerSpec =
   | { readonly kind: 'choice'; readonly options: readonly Rich[]; readonly correct: number }
   | { readonly kind: 'point'; readonly x: number; readonly y: number }
   /** Réponse écrite (clavier) : comparée sans tenir compte de la casse, des espaces doublés ni de l'apostrophe typographique. */
-  | { readonly kind: 'text'; readonly accepted: readonly string[] };
+  | { readonly kind: 'text'; readonly accepted: readonly string[] }
+  /**
+   * Remettre dans l'ordre : `items` est l'ordre présenté à l'élève, `correct` donne les indices de `items`
+   * dans l'ordre juste (une permutation). Les éléments doivent être distincts : un seul ordre juste.
+   */
+  | { readonly kind: 'order'; readonly items: readonly Rich[]; readonly correct: readonly number[] }
+  /**
+   * Associer deux colonnes : `pairs[i]` est l'indice de `right` associé à `left[i]` (une permutation).
+   * `right` est présenté tel quel (déjà mélangé par le générateur).
+   */
+  | {
+      readonly kind: 'match';
+      readonly left: readonly Rich[];
+      readonly right: readonly Rich[];
+      readonly pairs: readonly number[];
+    }
+  /** Texte à trous : `parts` compte un segment de plus que `blanks` ; le trou i s'insère entre parts[i] et parts[i+1]. */
+  | { readonly kind: 'cloze'; readonly parts: readonly Rich[]; readonly blanks: readonly ClozeBlank[] };
+
+/** Un trou : saisie courte (variantes acceptées) ou liste de propositions. */
+export type ClozeBlank =
+  | { readonly mode: 'text'; readonly accepted: readonly string[] }
+  | { readonly mode: 'list'; readonly options: readonly string[]; readonly correct: number };
 
 export type Response =
   | { readonly kind: 'number'; readonly text: string }
@@ -131,6 +162,12 @@ export type Response =
   | { readonly kind: 'choice'; readonly index: number }
   | { readonly kind: 'point'; readonly x: number; readonly y: number }
   | { readonly kind: 'text'; readonly text: string }
+  /** Ordre : indices de `items` dans l'ordre choisi par l'élève (tous les éléments). */
+  | { readonly kind: 'order'; readonly order: readonly number[] }
+  /** Association : `pairs[i]` est l'indice de `right` choisi pour `left[i]`. */
+  | { readonly kind: 'match'; readonly pairs: readonly number[] }
+  /** Texte à trous : une saisie par trou (le texte de la proposition choisie pour une liste). */
+  | { readonly kind: 'cloze'; readonly answers: readonly string[] }
   /** « Je ne sais pas » : compte comme une erreur (indice, puis explication). */
   | { readonly kind: 'unknown' };
 
@@ -298,6 +335,8 @@ export interface CheckResult {
   readonly correct: boolean;
   /** Saisie illisible (ex. « 3,,2 ») : on redemande sans compter d'erreur. */
   readonly invalid?: boolean;
+  /** Texte à trous, association : réussite de chaque trou ou de chaque paire (correction une à une). */
+  readonly parts?: readonly boolean[];
   /** Explication de l'erreur typique reconnue, le cas échéant. */
   readonly why?: Rich;
 }

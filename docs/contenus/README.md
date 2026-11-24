@@ -49,6 +49,21 @@ Exemples :
 | Écoute                              | `audio` + tout type             | synthèse vocale de l'appareil ; le texte écouté n'apparaît pas avant la réponse                      |
 | Lecture de document                 | figure `document`               | extrait court ; texte original du domaine public ou écrit pour l'exercice                            |
 
+### Forme des réponses structurées
+
+- `order` : `items` dans l'ordre présenté (jamais déjà rangé), `correct` = indices de `items` dans l'ordre juste.
+  Réponse : `{ kind: 'order', order: [indices] }`.
+- `match` : `left`, `right` (déjà mélangée), `pairs[i]` = indice de `right` associé à `left[i]`.
+  Réponse : `{ kind: 'match', pairs: [indices] }`.
+- `cloze` : `parts` (un segment de plus que de trous) et `blanks` : `{ mode: 'text', accepted }` ou
+  `{ mode: 'list', options, correct }`. Réponse : `{ kind: 'cloze', answers: [texte par trou] }`.
+- Les éléments d'une même colonne sont distincts (sans tenir compte de la casse) : `validate.ts` énumère toutes les
+  permutations (6 éléments au plus) et exige qu'une seule soit jugée juste.
+- `check` renvoie `parts` (réussite par place, paire ou trou) pour la correction une à une.
+- Figure `document` : `{ kind: 'document', title?, lines, credit? }`, chaque ligne est numérotée à l'affichage.
+- Saisie : toucher (numéros, OK), clavier physique (chiffres, lettres, Retour arrière, Entrée) et télécommande
+  (flèches pour passer d'un bouton à l'autre, OK pour valider).
+
 ## 3. Explications, indices, corrections
 
 - **Mémo** de la notion (`lesson.memo`) : 2 ou 3 phrases de coach, avec un mini-exemple. Chaque mot difficile
