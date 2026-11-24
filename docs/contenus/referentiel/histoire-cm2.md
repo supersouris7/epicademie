@@ -12,7 +12,7 @@
 
 | Lot         | Chapitre                                   | Notions                                                                                                                                   | État actuel              |
 | ----------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| `hi-cm2-01` | Le temps de la République                  | 1892 : la République fête ses cent ans ; l'école au temps de Jules Ferry ; des républicains, des républicaines ; droit de vote des femmes | partielle (hcm2-reperes) |
+| `hi-cm2-01` | Le temps de la République                  | 1892 : la République fête ses cent ans ; l'école au temps de Jules Ferry ; des républicains, des républicaines ; droit de vote des femmes | couverte, en relecture   |
 | `hi-cm2-02` | L'âge industriel en France                 | énergies et machines ; travail à la mine, à l'usine, à l'atelier ; la ville industrielle ; le monde rural                                 | partielle (hcm2-reperes) |
 | `hi-cm2-03` | Des guerres mondiales à l'Union européenne | la Première Guerre mondiale ; la Seconde Guerre mondiale ; la construction européenne ; lieux de mémoire                                  | partielle (hcm2-reperes) |
 | `hi-cm2-04` | Se repérer dans le temps                   | frise des périodes ; ordonner ; durées entre deux dates ; repères du cycle 3                                                              | absente                  |
