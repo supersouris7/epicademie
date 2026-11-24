@@ -138,9 +138,9 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
   {
     id: 'rupture',
     word: 'rupture',
-    forms: ['rupture'],
-    definition: 'Une coupure : quand quelque chose s’arrête net.',
-    example: 'Il n’y a pas de rupture brusque : la civilisation gauloise continue.',
+    forms: ['rupture', 'ruptures'],
+    definition: 'Un grand changement qui casse ce qui existait avant : quelque chose s’arrête net.',
+    example: 'La Révolution est une rupture avec l’ordre du roi ; chez les Gaulois, il n’y a pas de rupture brusque.',
   },
   {
     id: 'judaisme',
@@ -282,13 +282,6 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['ancien régime', 'ancien regime'],
     definition: 'La façon de diriger le pays avant la Révolution : c’est le roi qui gouverne.',
     example: 'Louis XVI est le dernier roi de l’Ancien Régime.',
-  },
-  {
-    id: 'rupture',
-    word: 'rupture',
-    forms: ['rupture', 'ruptures'],
-    definition: 'Un grand changement qui casse ce qui existait avant.',
-    example: 'La Révolution est une rupture avec l’ordre du roi.',
   },
   {
     id: 'nation',

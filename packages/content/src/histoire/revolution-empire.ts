@@ -219,7 +219,11 @@ const nation: Notion = {
         { label: 'les croisades', why: 'Les croisades sont citées pour le temps des rois, pas pour la Révolution.' },
         { label: 'le roi Soleil', why: 'Le roi Soleil est Louis XIV, au temps des rois.' },
       ],
-      gap: ['Louis XVI, la Révolution, ', '.', ['la Nation', 'Nation', 'nation', 'la nation']],
+      gap: [
+        'Le peuple d’un pays, au centre du programme, s’appelle la ',
+        '.',
+        ['Nation', 'nation', 'la Nation', 'la nation'],
+      ],
       quote: Q_THEME,
       explain: 'Le programme cite Louis XVI, la Révolution et la Nation.',
     },
@@ -519,18 +523,12 @@ const heritages: Notion = {
       explain: 'Napoléon conserve certains des acquis révolutionnaires.',
     },
     {
-      q: 'Comment le programme présente-t-il le passage de la Révolution à l’Empire ?',
-      a: 'de la Révolution à l’Empire',
+      q: 'Quelle période vient juste après la Révolution dans le parcours de Napoléon ?',
+      a: 'l’Empire',
       wrong: [
-        {
-          label: 'de l’Empire à la Révolution',
-          why: 'L’ordre est inverse : la Révolution vient d’abord, puis l’Empire.',
-        },
-        {
-          label: 'de l’Antiquité à l’Empire',
-          why: 'L’Antiquité est bien plus ancienne : le programme part de la Révolution.',
-        },
-        { label: 'de la préhistoire à la Révolution', why: 'La préhistoire n’est pas dans ce thème.' },
+        { label: 'l’Ancien Régime', why: 'L’Ancien Régime est avant la Révolution : le roi gouvernait encore.' },
+        { label: 'l’Antiquité', why: 'L’Antiquité est bien plus ancienne : le programme part de la Révolution.' },
+        { label: 'la préhistoire', why: 'La préhistoire n’est pas dans ce thème.' },
       ],
       gap: ['Napoléon va de la Révolution à ', '.', ['l’Empire', 'l’empire', 'Empire', 'empire', 'lempire']],
       quote: Q_NAPOLEON,
@@ -589,7 +587,7 @@ const heritages: Notion = {
   libres: [
     {
       q: 'Napoléon … certains des acquis de la Révolution (un verbe, au présent).',
-      accepted: ['conserve', 'garde'],
+      accepted: ['conserve', 'garde', 'maintient', 'préserve', 'preserve'],
       traps: [
         { text: 'détruit', why: 'Le programme dit l’inverse : il conserve certains acquis.' },
         { text: 'oublie', why: 'Le programme dit qu’il conserve certains acquis.' },
