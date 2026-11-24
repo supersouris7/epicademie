@@ -114,8 +114,8 @@ async function audit(page: Page, path: string): Promise<void> {
 }
 
 test.describe('tablette : aucun débordement', () => {
-  test.beforeEach((_fixtures, testInfo) => {
-    test.skip(testInfo.project.name !== 'tablette', 'profil tablette uniquement');
+  test.beforeEach(({ viewport }, testInfo) => {
+    test.skip(testInfo.project.name !== 'tablette' || !viewport, 'profil tablette uniquement');
   });
 
   for (const vp of VIEWPORTS) {
