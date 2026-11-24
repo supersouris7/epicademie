@@ -12,7 +12,7 @@ describe('modes de jeu', () => {
     expect(getMode('boss')?.name).toBe('Mode Histoire');
     expect(getMode('inconnu')).toBeUndefined();
   });
-  it('l’Arène d’évaluation est dans les Défis, sans écran de jeu pour l’instant', () => {
-    expect(getMode('evaluation')).toMatchObject({ category: 'defis', available: false });
+  it('l’Arène d’évaluation est dans les Défis et jouable', () => {
+    expect(getMode('evaluation')).toMatchObject({ category: 'defis', available: true });
   });
 });

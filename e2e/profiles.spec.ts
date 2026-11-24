@@ -62,10 +62,9 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByRole('button', { name: /^Entraînement/ })).toBeVisible();
   await expect(page.getByRole('button', { name: /^Mode Histoire/ })).toBeVisible();
   await expect(page.getByRole('button', { name: /^Duels/ })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Arène d’évaluation, à venir' })).toHaveAttribute(
-    'aria-disabled',
-    'true',
-  );
+  const arene = page.getByRole('button', { name: /^Arène d’évaluation/ });
+  await expect(arene).toBeVisible();
+  await expect(arene).not.toHaveAttribute('aria-disabled', 'true');
   await expect(page.getByRole('list', { name: 'Jouer' }).getByRole('button')).toHaveCount(2);
   await expect(page.locator('section[aria-labelledby^="groupe-"] button')).toHaveCount(4);
   for (const gone of ['Révisions du jour', 'Atelier des erreurs', 'Défi du jour', 'Bilan']) {

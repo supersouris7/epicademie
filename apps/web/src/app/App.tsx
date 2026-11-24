@@ -41,6 +41,7 @@ import { NoDefinitions } from '../shared/question/TermLocked.tsx';
 import { TermContext } from '../shared/question/termContext.ts';
 import { TvScreen } from '../features/tv/index.ts';
 import { DefiPlay } from '../features/defis/index.ts';
+import { EvaluationHome, EvaluationPlay, EvaluationResults } from '../features/evaluation/index.ts';
 import { Notifications, Friends, Online, Ranking, RealtimeLink } from '../features/realtime/index.ts';
 import { About, Settings } from '../features/settings/index.ts';
 import { Chapters, Notions, TrainingPlay } from '../features/training/index.ts';
@@ -183,6 +184,22 @@ export function App() {
                     <WithProfile>{(p) => <DefiPlay profile={p} />}</WithProfile>
                   </NoDefinitions>
                 }
+              />
+              <Route
+                path="/jouer/evaluation/:subject"
+                element={<WithProfile>{(p) => <EvaluationHome profile={p} />}</WithProfile>}
+              />
+              <Route
+                path="/partie/evaluation/:id"
+                element={
+                  <NoDefinitions>
+                    <WithProfile>{(p) => <EvaluationPlay profile={p} />}</WithProfile>
+                  </NoDefinitions>
+                }
+              />
+              <Route
+                path="/evaluation/:id/resultat"
+                element={<WithProfile>{(p) => <EvaluationResults profile={p} />}</WithProfile>}
               />
               <Route path="/jouer/:modeId" element={<WithProfile>{(p) => <ModeSetup profile={p} />}</WithProfile>} />
               <Route

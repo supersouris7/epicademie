@@ -5,7 +5,7 @@ import { renderApp } from '../../testing/renderApp.tsx';
 vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.ts')).socketModule);
 
 const GROUPS: readonly [string, readonly string[]][] = [
-  ['Défis', ['Contre-la-montre', 'Survie', 'Arène d’évaluation, à venir']],
+  ['Défis', ['Contre-la-montre', 'Survie', 'Arène d’évaluation']],
   ['En famille', ['Duels']],
 ];
 
@@ -30,13 +30,13 @@ describe('accueil : deux grands modes, Défis et En famille dessous', () => {
     }
   });
 
-  it('l’Arène d’évaluation (sans écran) est signalée « à venir » et n’ouvre rien', async () => {
+  it('l’Arène d’évaluation est disponible (plus de « À venir ») et mène au choix de la matière', async () => {
     const { user } = renderApp('/hub');
-    const tile = await screen.findByRole('button', { name: 'Arène d’évaluation, à venir' });
-    expect(tile).toHaveAttribute('aria-disabled', 'true');
+    const tile = await screen.findByRole('button', { name: /Arène d’évaluation/ });
+    expect(tile).not.toHaveAttribute('aria-disabled');
+    expect(tile).not.toHaveTextContent(/À venir/);
     await user.click(tile);
-    expect(screen.getByRole('heading', { name: 'Défis' })).toBeInTheDocument();
-    expect(screen.queryByText(/Bientôt disponible/)).not.toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Arène d’évaluation' })).toBeInTheDocument();
   });
 
   it('Duels mène à l’écran des duels', async () => {
