@@ -91,7 +91,7 @@ const family: Skill = {
   lesson: {
     memo: [
       'La famille : mother (mum) = mère, father (dad) = père, sister = sœur, brother = frère, baby = bébé.',
-      'Les grands-parents : grandmother (grandma) et grandfather (grandad). Les **parents** de maman, ce sont eux !',
+      'Les grands-parents sont les **parents** de tes parents : grandmother (grandma) et grandfather (grandad).',
       'Aussi : uncle (oncle), auntie (tante), cousin (cousin ou cousine), son (fils).',
     ],
     source: source('Mots : British Council, « Family flashcards » et chanson « What is a family? ».'),
@@ -369,7 +369,11 @@ const haveGot: Skill = {
 // ——— 3. Le corps ———
 
 /** Mots à écrire : l’article est accepté (« la tête » → head, the head). */
-const withArticle = (w: Word): Word => ({ ...w, alt: [...(w.alt ?? []), `the ${w.en}`, `a ${w.en}`] });
+const withArticle = (w: Word): Word => {
+  // « les cheveux » : pas de « a hair » ; devant une voyelle, « an » (an eye, an ear, an arm).
+  const one = w.en === 'hair' ? [] : [`${/^[aeiou]/.test(w.en) ? 'an' : 'a'} ${w.en}`];
+  return { ...w, alt: [...(w.alt ?? []), `the ${w.en}`, ...one] };
+};
 
 const NUMBERS = ['two', 'three', 'four', 'five'] as const;
 
@@ -380,7 +384,7 @@ const body: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'La tête : head, face, eye (œil), ear (oreille), nose (nez), mouth (bouche), hair (cheveux), neck (cou).',
+      'Le haut : head (tête), face (visage), eye (œil), ear (oreille), nose (nez), mouth (bouche), hair (cheveux), neck (cou).',
       'Le corps : arm (bras), hand (main), leg (jambe), foot (pied), knee (genou), back (dos).',
       'Au **pluriel** : eye → eyes. Attention aux surprises : foot → feet, tooth → teeth !',
     ],
@@ -433,7 +437,7 @@ const body: Skill = {
       figure: {
         kind: 'document',
         title: 'My monster',
-        lines: parts.map((p, j) => `It has got ${at(nums, j)} ${p}.`),
+        lines: parts.map((p, j) => `My monster has got ${at(nums, j)} ${p}.`),
         credit: 'Écrit pour l’exercice.',
       },
       answer: { kind: 'text', accepted: full([good, `It has got ${n} ${asked}`]) },
@@ -450,7 +454,11 @@ const body: Skill = {
         { text: `It’s got ${n} ${asked.slice(0, -1)}.`, why: `Il y en a plusieurs : écris « ${asked} » avec un s.` },
       ],
       hint: 'Trouve la ligne qui parle de cette partie du corps. Recopie son nombre.',
-      steps: [`La ligne dit : « It has got ${n} ${asked}. »`, `Réponse : **${good}.**`],
+      steps: [
+        `La ligne dit : « My monster has got ${n} ${asked}. »`,
+        'Dans la réponse, « it » remplace « my monster ». « It has got » devient « It’s got ».',
+        `Réponse : **${good}.**`,
+      ],
     };
   },
 };
@@ -607,12 +615,15 @@ const phrase = (owner: string, thing: string) => `${owner}’s ${thing}`;
 const HARD: readonly {
   readonly fr: string;
   readonly good: readonly string[];
+  /** Mots anglais donnés à l’élève (ordre alphabétique) : la question porte sur l’apostrophe. */
+  readonly words: string;
   /** La règle qui explique la réponse. */
   readonly rule: string;
   readonly traps: readonly (readonly [string, string])[];
 }[] = [
   {
     fr: 'La maison de mes parents',
+    words: 'house, my, parents',
     good: ['my parents’ house'],
     rule: 'Le propriétaire est un pluriel qui finit par s : on ajoute seulement l’apostrophe.',
     traps: [
@@ -622,6 +633,7 @@ const HARD: readonly {
   },
   {
     fr: 'Le chien de mes grands-parents',
+    words: 'dog, grandparents, my',
     good: ['my grandparents’ dog'],
     rule: 'Le propriétaire est un pluriel qui finit par s : on ajoute seulement l’apostrophe.',
     traps: [
@@ -631,6 +643,7 @@ const HARD: readonly {
   },
   {
     fr: 'L’école de nos enfants',
+    words: 'children, our, school',
     good: ['our children’s school'],
     rule: 'Le propriétaire est un pluriel sans s : on ajoute ’s.',
     traps: [
@@ -640,6 +653,7 @@ const HARD: readonly {
   },
   {
     fr: 'Le fils d’Anne et Gary',
+    words: 'and, Anne, Gary, son',
     good: ['Anne and Gary’s son'],
     rule: 'Il y a deux propriétaires ensemble : ’s va après le dernier nom.',
     traps: [
@@ -649,6 +663,7 @@ const HARD: readonly {
   },
   {
     fr: 'La voiture de mes cousins',
+    words: 'car, cousins, my',
     good: ['my cousins’ car'],
     rule: 'Le propriétaire est un pluriel qui finit par s : on ajoute seulement l’apostrophe.',
     traps: [
@@ -658,6 +673,7 @@ const HARD: readonly {
   },
   {
     fr: 'Les chaussures des femmes',
+    words: 'shoes, the, women',
     good: ['the women’s shoes', 'women’s shoes'],
     rule: 'Le propriétaire est un pluriel sans s : on ajoute ’s.',
     traps: [
@@ -667,6 +683,7 @@ const HARD: readonly {
   },
   {
     fr: 'Le sac de James',
+    words: 'bag, James',
     good: ['James’ bag', 'James’s bag'],
     rule: 'Le prénom finit par s : on peut ajouter l’apostrophe seule, ou ’s.',
     traps: [
@@ -685,6 +702,7 @@ const genitive: Skill = {
     memo: [
       'Pour dire à qui est une chose, on utilise le **génitif** : le propriétaire, puis **’s**, puis la chose.',
       'Exemple : Tom’s dog (le chien de Tom). Pluriel en s : my parents’ house. Pluriel sans s : children’s.',
+      'Prénom en s : James’ bag ou James’s bag. Deux propriétaires ensemble : Anne and Gary’s son.',
     ],
     source: source('Règles : British Council, LearnEnglish, « Possessive ’s » et « Possessives: nouns ».'),
     sources: ['cycle3-2020', 'bc-possessive-s', 'bc-possessives-nouns'],
@@ -729,7 +747,7 @@ const genitive: Skill = {
       const h = rng.pick(HARD);
       const answer = at(h.good, 0);
       return {
-        prompt: `Écris en anglais, avec l’apostrophe : « ${h.fr} ».`,
+        prompt: `Écris en anglais, avec l’apostrophe : « ${h.fr} ». Mots à utiliser : ${h.words}.`,
         answer: { kind: 'text', accepted: full(h.good) },
         traps: h.traps.map(([text, why]) => ({ text, why })),
         hint: 'Le propriétaire finit-il par un s ? Est-ce un seul nom ou plusieurs ?',

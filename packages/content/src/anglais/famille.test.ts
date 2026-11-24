@@ -72,7 +72,7 @@ describe('anglais cm1 : famille, corps, vêtements', () => {
     for (const q of questions('acm1-corps', 5)) {
       if (q.figure?.kind !== 'document' || q.answer.kind !== 'text') throw new Error('document attendu');
       const [, n, part] = /It’s got (\w+) (\w+)/.exec(q.answer.accepted[0] ?? '') ?? [];
-      expect(q.figure.lines).toContain(`It has got ${n} ${part}.`);
+      expect(q.figure.lines).toContain(`My monster has got ${n} ${part}.`);
     }
   });
 
