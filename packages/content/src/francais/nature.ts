@@ -936,8 +936,7 @@ export const FCM1_NATURE: readonly Skill[] = [
     title: 'Pronoms personnels sujets et compléments',
     memo: [
       'Un **pronom personnel sujet** dit qui fait l’action : je, tu, il, elle, nous, vous, ils, elles.',
-      'Un **pronom personnel complément** complète le verbe : me, te, le, la, les, lui, leur. Il se met souvent avant le verbe.',
-      'Pour un groupe qui commence par « à », on prend « lui » (un seul) ou « leur » (plusieurs).',
+      'Un **pronom personnel complément** complète le verbe : me, te, le, la, les, lui, leur. Il se met souvent avant le verbe. Pour un groupe avec « à » : « lui » (un seul) ou « leur » (plusieurs).',
       'Exemple : « Ma sœur lit le livre. » → « Elle le lit. »',
     ],
     factId: 'pronoms',
