@@ -3,17 +3,22 @@ import { notion, type Notion } from './kit.ts';
 
 /**
  * CM2, thème 1 « Se déplacer » (lot ge-cm2-01). Chaque fait cite une source du registre avec sa citation exacte :
- * programme du cycle 3, INSEE (déplacements domicile-travail, données 2017), ADEME, Union européenne, CNRTL.
+ * programme du cycle 3, INSEE (déplacements domicile-travail, données 2017), ADEME, Union européenne, CNRTL,
+ * ministère chargé des transports (lignes à grande vitesse).
  * Les textes à lire du niveau 5 sont écrits pour l’exercice.
  */
 
 const INSEE = 'insee-domicile-travail';
 const ADEME = 'ademe-trajets';
+const LGV = 'ecologie-lgv';
 
-// Programme du cycle 3, classe de CM2.
-const Q_INFRA = 'L’élève découvre aussi les aménagements liés aux infrastructures de communication';
-const Q_DURABLE =
-  'On étudie les déplacements dans le cadre du développement durable : la lutte contre la pollution, le recyclage, les moyens de transport';
+// Ministère chargé des transports.
+const Q_RESEAU_FER =
+  'La France dispose d’un important réseau ferroviaire, comprenant 30 000 km de voies dont 2 800 km de lignes à grande vitesse';
+const Q_ATLANTIQUE =
+  'Le projet de LGV Bretagne-Pays de la Loire prolonge en direction de Rennes la LGV Atlantique mise en service en 1989 entre Paris et Le Mans';
+const Q_BORDEAUX =
+  'Le tronçon central Tours-Bordeaux de la LGV SEA permet de diffuser la grande vitesse ferroviaire au grand Sud-Ouest de la France avec Bordeaux à 2h04 de Paris';
 
 // INSEE.
 const Q_VOITURE =
@@ -33,13 +38,17 @@ const Q_GARE =
 const Q_AUTOROUTE = 'Voie de circulation automobile à double chaussée séparée, conçue pour un trafic rapide et intense';
 const Q_AEROPORT = "Lieu aménagé pour le départ, l'arrivée, les escales des lignes aériennes";
 const Q_PORT =
-  "Lieu aménagé sur le littoral maritime, sur le bord d'un lac ou en certains endroits d'un cours d'eau important, pour recevoir et abriter les bateaux";
+  "Lieu aménagé sur le littoral maritime, sur le bord d'un lac ou en certains endroits d'un cours d'eau important, pour recevoir et abriter les bateaux et leur permettre de charger et de décharger ce qu'ils transportent";
 const Q_PAQUEBOT =
   'Grand navire de la marine marchande assurant, généralement de façon régulière, le transport de passagers';
 const Q_AUTOBUS = "Grand véhicule automobile destiné au transport en commun à l'intérieur d'une agglomération";
-const Q_TRAMWAY = 'moyen de transport public urbain constitué de voitures roulant sur des rails';
+const Q_TRAMWAY =
+  'moyen de transport public urbain constitué de voitures roulant sur des rails affleurant au niveau du sol';
 const Q_TELEPHERIQUE =
   "Dispositif de transport de personnes ou de marchandises constitué d'un câble tracteur et d'un ou de plusieurs câbles porteurs";
+const Q_LONG_COURRIER =
+  'Avion de transport destiné à voler sur de très longues distances pour assurer notamment les vols transatlantiques et transcontinentaux';
+const Q_TRANSATLANTIQUE = "Qui traverse l'océan Atlantique";
 
 // Union européenne.
 const Q_SCHENGEN =
@@ -49,7 +58,8 @@ const Q_CONTROLES =
 const Q_PASSAGERS =
   'droits des passagers à l’échelle de l’UE pour entrer dans l’UE ou en sortir ou vous déplacer sur son territoire en avion, en train, en autobus/autocar ou en bateau';
 const Q_RESEAU = 'en développant un réseau d’infrastructures modernes qui accélère et sécurise les déplacements';
-const Q_CEINTURE = 'le port de la ceinture de sécurité est obligatoire dans tous les véhicules';
+const Q_CEINTURE =
+  'certaines règles s’appliquent dans tous les pays de l’UE, telles que: le port de la ceinture de sécurité est obligatoire dans tous les véhicules, y compris les autocars et les minibus';
 
 // ADEME.
 const Q_TIERS = 'Les transports émettent 1/3 des gaz à effet de serre de la France';
@@ -59,7 +69,7 @@ const Q_TGV =
 const Q_NOUVELLES =
   'de nouvelles mobilités se dessinent, notamment avec le développement des pistes cyclables, du covoiturage, de l’autopartage';
 const Q_BOUGER =
-  'cela permet aussi de réduire les émissions de gaz à effet de serre et les pollutions générées par les transports';
+  'Bouger davantage n’est pas seulement bon pour la santé mais cela permet aussi de réduire les émissions de gaz à effet de serre et les pollutions générées par les transports';
 
 // ——— Notion 1 : au quotidien ———
 
@@ -137,7 +147,7 @@ const quotidien: Notion = {
       q: 'À Paris et dans la zone sous son influence, qu’utilisent 44 actifs sur 100 pour aller travailler ?',
       a: 'les transports en commun',
       wrong: [
-        { label: 'le cheval', why: 'Le cheval n’est pas cité : on parle du métro, du bus et du train.' },
+        { label: 'le vélo', why: 'Le vélo n’est pas cité ici : on parle du métro, du bus et du train.' },
         { label: 'le bateau', why: 'Les transports cités sont le métro, le bus, le tramway, le RER et le train.' },
         {
           label: 'l’avion',
@@ -261,8 +271,9 @@ const villes: Notion = {
   hint: 'Pense au chemin : une voie ferrée, une grande route ? Et l’endroit où l’on monte.',
   memo: [
     'Pour aller d’une ville à une autre, on utilise des **réseaux** : voies ferrées et routes.',
-    'La **gare** sert à monter dans le train ou à en descendre. L’**autoroute** est faite pour rouler vite, en deux sens séparés.',
-    'Ces aménagements sont des **infrastructures**. Exemple : le train est utilisé pour les longues distances.',
+    'La **gare** sert à monter dans le train ou à en descendre. L’**autoroute** est faite pour rouler vite, sur deux **chaussées** séparées.',
+    'Voies ferrées, gares et autoroutes sont des **infrastructures**. Le train est utilisé pour les longues distances.',
+    'Le **réseau** ferroviaire français a des lignes à grande vitesse. L’une relie Paris au Mans depuis 1989, puis a été prolongée vers Rennes. Une autre met Bordeaux à 2h04 de Paris.',
   ],
   faits: [
     {
@@ -273,7 +284,7 @@ const villes: Notion = {
         { label: 'sur l’autoroute', why: 'L’autoroute est réservée à la circulation automobile.' },
         { label: 'à l’aéroport', why: 'L’aéroport sert aux lignes aériennes.' },
       ],
-      gap: ['Les voyageurs montent dans le train à la ', '.', ['gare']],
+      gap: ['Les voyageurs montent dans le train à la ', '.', ['gare', 'station', 'halte']],
       quote: Q_GARE,
       explain: 'La gare permet aux voyageurs et aux marchandises de monter et de descendre.',
       src: 'cnrtl-gare',
@@ -299,9 +310,15 @@ const villes: Notion = {
       q: 'Selon l’INSEE, pour quelles distances le train est-il utilisé ?',
       a: 'les longues distances',
       wrong: [
-        { label: 'les trajets de quelques pas', why: 'Pour quelques pas, on marche. Le train sert loin.' },
-        { label: 'aucune distance', why: 'Le train transporte bien des voyageurs, surtout loin.' },
-        { label: 'seulement la cour de l’école', why: 'Aucun train ne va d’un bout à l’autre d’une cour !' },
+        {
+          label: 'les très petites distances',
+          why: 'Pour les très petites distances, on utilise surtout la marche ou le vélo.',
+        },
+        { label: 'les traversées de la mer en bateau', why: 'Le train roule sur des rails : ce n’est pas un bateau.' },
+        {
+          label: 'seulement les trajets dans un même quartier',
+          why: 'Le train est au contraire utilisé pour aller loin.',
+        },
       ],
       gap: ['Le train est un mode de transport utilisé pour les longues ', '.', ['distances', 'distance']],
       quote: Q_TRAIN,
@@ -309,16 +326,51 @@ const villes: Notion = {
       src: INSEE,
     },
     {
-      q: 'Au CM2, quels aménagements découvre-t-on avec les déplacements ?',
-      a: 'les infrastructures de communication',
+      q: 'Que comprend le réseau ferroviaire de la France ?',
+      a: 'des voies ferrées, dont des lignes à grande vitesse',
       wrong: [
-        { label: 'les terrains de jeux', why: 'Les jeux ne servent pas à aller de ville en ville.' },
-        { label: 'les salles de cinéma', why: 'Le cinéma est un lieu de loisirs, pas une voie de transport.' },
-        { label: 'les piscines', why: 'Une piscine ne sert pas à se déplacer entre les villes.' },
+        { label: 'seulement des autoroutes', why: 'Ferroviaire veut dire « du chemin de fer » : ce sont des rails.' },
+        {
+          label: 'seulement des lignes à grande vitesse',
+          why: 'Les lignes à grande vitesse ne sont qu’une partie des voies ferrées.',
+        },
+        { label: 'des lignes aériennes', why: 'Les lignes aériennes sont celles des avions, pas du chemin de fer.' },
       ],
-      gap: ['On découvre les aménagements liés aux ', ' de communication.', ['infrastructures', 'infrastructure']],
-      quote: Q_INFRA,
-      explain: 'Routes, voies ferrées et gares sont des infrastructures de communication.',
+      gap: ['Les voies ferrées de la France forment un ', ' ferroviaire.', ['réseau', 'reseau']],
+      quote: Q_RESEAU_FER,
+      explain:
+        'Le réseau ferroviaire compte 30 000 km de voies, dont 2 800 km à grande vitesse (page mise à jour en 2023).',
+      src: LGV,
+    },
+    {
+      q: 'Entre quelles villes la ligne à grande vitesse Atlantique a-t-elle été mise en service en 1989 ?',
+      a: 'Paris et Le Mans',
+      wrong: [
+        { label: 'Paris et Bordeaux', why: 'La grande vitesse jusqu’à Bordeaux passe par un tronçon ouvert en 2017.' },
+        { label: 'Le Mans et Rennes', why: 'Ce morceau est le prolongement vers Rennes, venu plus tard.' },
+        { label: 'Nîmes et Montpellier', why: 'Ces deux villes sont dans le sud, loin de la ligne Atlantique.' },
+      ],
+      gap: [
+        'En 1989, la ligne à grande vitesse Atlantique est mise en service entre Paris et ',
+        '.',
+        ['Le Mans', 'Mans'],
+      ],
+      quote: Q_ATLANTIQUE,
+      explain: 'La ligne Atlantique reliait Paris au Mans ; elle a ensuite été prolongée vers Rennes.',
+      src: LGV,
+    },
+    {
+      q: 'Avec la grande vitesse, quelle ville du Sud-Ouest est à 2h04 de Paris ?',
+      a: 'Bordeaux',
+      wrong: [
+        { label: 'Rennes', why: 'Rennes est à l’ouest, en Bretagne.' },
+        { label: 'Le Mans', why: 'Le Mans n’est pas dans le Sud-Ouest.' },
+        { label: 'Montpellier', why: 'Montpellier est au sud, mais le texte cite Bordeaux pour 2h04.' },
+      ],
+      gap: ['Grâce à la grande vitesse, la ville de ', ' est à 2h04 de Paris.', ['Bordeaux']],
+      quote: Q_BORDEAUX,
+      explain: 'La ligne passant par Tours met Bordeaux à 2h04 de Paris.',
+      src: LGV,
     },
   ],
   paires3: [
@@ -330,13 +382,23 @@ const villes: Notion = {
     ['Gare', 'On y monte dans le train'],
     ['Autoroute', 'Voie rapide pour les automobiles'],
     ['Aéroport', 'Départ et arrivée des avions de ligne'],
-    ['Port', 'Il reçoit et abrite les bateaux'],
-    ['Trajet', 'Aller d’un lieu à un autre'],
+    ['Bordeaux', 'À 2h04 de Paris en grande vitesse'],
+    ['Le Mans', 'Relié à Paris à grande vitesse dès 1989'],
   ],
   libres: [
     {
       q: 'Comment appelle-t-on le lieu d’une ligne de chemin de fer où l’on monte dans le train ?',
-      accepted: ['gare', 'la gare', 'une gare'],
+      accepted: [
+        'gare',
+        'la gare',
+        'une gare',
+        'station',
+        'la station',
+        'une station',
+        'halte',
+        'la halte',
+        'une halte',
+      ],
       traps: [
         { text: 'port', why: 'Le port est pour les bateaux.' },
         { text: 'aéroport', why: 'L’aéroport est pour les avions.' },
@@ -346,11 +408,12 @@ const villes: Notion = {
       src: 'cnrtl-gare',
     },
     {
-      q: 'Quelle route à deux chaussées séparées est faite pour rouler vite ?',
+      q: 'Quelle route à deux chaussées séparées, dont le nom commence par « auto », est faite pour rouler vite ?',
       accepted: ['autoroute', 'l’autoroute', 'une autoroute'],
       traps: [
         { text: 'sentier', why: 'Un sentier est un petit chemin : on n’y roule pas vite.' },
         { text: 'rue', why: 'Une rue traverse la ville. La voie rapide à deux chaussées est l’autoroute.' },
+        { text: 'voie rapide', why: 'Son nom ne commence pas par « auto » : on cherche l’autoroute.' },
       ],
       quote: Q_AUTOROUTE,
       explain: 'C’est l’autoroute.',
@@ -367,8 +430,61 @@ const villes: Notion = {
       explain: 'Le train est utilisé pour les longues distances.',
       src: INSEE,
     },
+    {
+      q: 'Les voies ferrées reliées entre elles forment un … ferroviaire (un mot qui commence par « ré »).',
+      accepted: ['réseau', 'un réseau', 'le réseau', 'reseau'],
+      traps: [
+        { text: 'région', why: 'Une région est un territoire. Des voies reliées forment un réseau.' },
+        { text: 'rail', why: 'Le rail est la barre sur laquelle roule le train. L’ensemble est un réseau.' },
+      ],
+      quote: Q_RESEAU_FER,
+      explain: 'On parle du réseau ferroviaire.',
+      src: LGV,
+    },
+    {
+      q: 'Vers quelle ville de l’ouest la ligne à grande vitesse Atlantique a-t-elle été prolongée après Le Mans ?',
+      accepted: ['Rennes', 'à Rennes', 'vers Rennes'],
+      traps: [
+        { text: 'Bordeaux', why: 'Bordeaux est dans le Sud-Ouest. Le prolongement après Le Mans va vers la Bretagne.' },
+        { text: 'Paris', why: 'Paris est le point de départ de la ligne.' },
+      ],
+      quote: Q_ATLANTIQUE,
+      explain: 'La ligne a été prolongée en direction de Rennes.',
+      src: LGV,
+    },
   ],
   docs: [
+    {
+      title: 'De Paris vers l’ouest',
+      lines: [
+        'Un garçon part de Paris en train à grande vitesse pour voir sa cousine à Rennes.',
+        'Son train suit d’abord la ligne qui va vers Le Mans, puis continue vers Rennes.',
+      ],
+      qs: [
+        {
+          q: 'Parmi les villes du texte, laquelle est reliée à Paris à grande vitesse depuis 1989 ?',
+          a: 'Le Mans',
+          wrong: [
+            { label: 'Rennes', why: 'La ligne a été prolongée vers Rennes plus tard.' },
+            { label: 'Bordeaux', why: 'Bordeaux n’est pas dans le texte.' },
+          ],
+          quote: Q_ATLANTIQUE,
+          explain: 'En 1989, la ligne Atlantique allait de Paris au Mans.',
+          src: LGV,
+        },
+        {
+          q: 'Les voies que suit ce train font partie de quel ensemble ?',
+          a: 'du réseau ferroviaire',
+          wrong: [
+            { label: 'du réseau des autoroutes', why: 'Un train roule sur des rails, pas sur une autoroute.' },
+            { label: 'des lignes aériennes', why: 'Il s’agit d’un train, pas d’un avion.' },
+          ],
+          quote: Q_RESEAU_FER,
+          explain: 'Les lignes à grande vitesse font partie du réseau ferroviaire.',
+          src: LGV,
+        },
+      ],
+    },
     {
       title: 'Voyage chez les grands-parents',
       lines: [
@@ -434,6 +550,7 @@ const europeMonde: Notion = {
     'Pour aller loin, on part souvent d’un **aéroport** (avions) ou d’un **port** (bateaux).',
     'Dans l’**espace Schengen**, on passe d’un pays à l’autre sans contrôles aux **frontières**. La police peut tout de même en faire.',
     'L’Union européenne protège les droits des **passagers**. Exemple : en avion, en train, en car ou en bateau.',
+    'Pour aller très loin, hors d’Europe, il existe des avions **long-courriers**. Un vol **transatlantique** traverse l’océan Atlantique, par exemple vers l’Amérique.',
   ],
   faits: [
     {
@@ -459,7 +576,7 @@ const europeMonde: Notion = {
       ],
       gap: ['Les bateaux sont reçus et abrités dans un ', '.', ['port']],
       quote: Q_PORT,
-      explain: 'Le port reçoit les bateaux et leur permet de charger et décharger.',
+      explain: 'Le port reçoit les bateaux et leur permet de charger et de décharger.',
       src: 'cnrtl-port',
     },
     {
@@ -479,9 +596,9 @@ const europeMonde: Notion = {
       q: 'Qu’est-ce que l’espace Schengen ?',
       a: 'une zone où l’on circule sans frontières entre ses pays',
       wrong: [
-        { label: 'une fusée qui part dans l’espace', why: 'Ici, « espace » veut dire une zone sur la Terre.' },
+        { label: 'la monnaie commune à des pays', why: 'Schengen concerne la circulation, pas la monnaie.' },
         { label: 'une gare en Europe', why: 'C’est une zone formée de plusieurs pays.' },
-        { label: 'un pays sans habitants', why: 'Il réunit 29 pays, avec leurs habitants.' },
+        { label: 'un seul grand pays', why: 'L’espace Schengen réunit 29 pays différents.' },
       ],
       gap: [
         'Dans l’espace Schengen, on circule librement, sans ',
@@ -497,10 +614,17 @@ const europeMonde: Notion = {
       a: 'oui, elle peut en effectuer',
       wrong: [
         { label: 'non, jamais', why: 'Les autorités nationales peuvent effectuer des contrôles de police.' },
-        { label: 'seulement dans les avions vides', why: 'Rien de tel : la police peut contrôler aux frontières.' },
-        { label: 'non, la police n’existe pas là', why: 'La police existe et peut contrôler.' },
+        {
+          label: 'oui, mais seulement dans les aéroports',
+          why: 'Les contrôles visent les frontières et les zones proches.',
+        },
+        { label: 'non, seulement à l’entrée en Europe', why: 'La police peut aussi contrôler entre ces pays.' },
       ],
-      gap: ['Les autorités peuvent effectuer des contrôles de ', ' aux frontières.', ['police']],
+      gap: [
+        'La ',
+        ' (mot qui commence par « pol ») peut faire des contrôles aux frontières entre ces pays.',
+        ['police'],
+      ],
       quote: Q_CONTROLES,
       explain: 'Les voyages sont libres, mais des contrôles de police restent possibles.',
       src: 'ue-voyager',
@@ -523,6 +647,32 @@ const europeMonde: Notion = {
       quote: Q_CEINTURE,
       explain: 'Tous les pays de l’Union européenne imposent la ceinture de sécurité.',
       src: 'ue-route',
+    },
+    {
+      q: 'Quel avion est destiné à voler sur de très longues distances ?',
+      a: 'le long-courrier',
+      wrong: [
+        { label: 'le paquebot', why: 'Le paquebot va loin, mais c’est un navire, pas un avion.' },
+        { label: 'le planeur', why: 'Un planeur n’a pas de moteur : ce n’est pas un avion de transport lointain.' },
+        { label: 'l’hélicoptère', why: 'Un hélicoptère n’est pas un avion.' },
+      ],
+      gap: ['Un avion fait pour voler sur de très longues distances est un ', '.', ['long-courrier', 'long courrier']],
+      quote: Q_LONG_COURRIER,
+      explain: 'Le long-courrier assure par exemple des vols au-dessus de l’océan Atlantique.',
+      src: 'cnrtl-long-courrier',
+    },
+    {
+      q: 'Que fait un vol transatlantique ?',
+      a: 'il traverse l’océan Atlantique',
+      wrong: [
+        { label: 'il reste au-dessus de la France', why: '« Trans » veut dire à travers : il traverse un océan.' },
+        { label: 'il fait le tour d’une seule ville', why: 'C’est un très long voyage au-dessus de l’océan.' },
+        { label: 'il traverse la mer Méditerranée', why: '« Atlantique » désigne l’océan, pas la Méditerranée.' },
+      ],
+      gap: ['Un vol qui traverse l’océan Atlantique est un vol ', '.', ['transatlantique']],
+      quote: Q_TRANSATLANTIQUE,
+      explain: 'Transatlantique veut dire : qui traverse l’océan Atlantique.',
+      src: 'cnrtl-transatlantique',
     },
   ],
   paires3: [
@@ -614,27 +764,28 @@ const europeMonde: Notion = {
     {
       title: 'Les droits du voyageur',
       lines: [
-        'Une élève voyage en bateau dans l’Union européenne avec son père.',
-        'Son père dit : « Les passagers ont des droits. »',
+        'Une élève voyage dans l’Union européenne avec son père : d’abord en train, puis en bateau.',
+        'Son père explique : « Dans ces deux transports, les passagers ont des droits, comme en avion ou en car. »',
+        'Il ajoute : « L’Union développe un réseau d’infrastructures modernes : les trajets deviennent plus rapides et plus sûrs. »',
       ],
       qs: [
         {
-          q: 'Dans quels transports l’Union européenne prévoit-elle des droits pour les passagers ?',
-          a: 'en avion, en train, en car et en bateau',
+          q: 'Dans quels transports de son voyage l’élève a-t-elle des droits de passagère ?',
+          a: 'dans le train et dans le bateau',
           wrong: [
-            { label: 'seulement en avion', why: 'Le train, le car et le bateau sont aussi concernés.' },
-            { label: 'seulement à vélo', why: 'Les droits cités concernent l’avion, le train, le car et le bateau.' },
+            { label: 'dans le train seulement', why: 'Le père parle des deux transports de ce voyage.' },
+            { label: 'dans le bateau seulement', why: 'Le train donne aussi des droits aux passagers.' },
           ],
           quote: Q_PASSAGERS,
           explain: 'Les droits des passagers couvrent l’avion, le train, l’autobus ou autocar et le bateau.',
           src: 'ue-voyager',
         },
         {
-          q: 'À quoi sert un réseau d’infrastructures modernes, d’après l’Union européenne ?',
-          a: 'à rendre les déplacements plus rapides et plus sûrs',
+          q: 'D’après le père, à quoi sert le réseau d’infrastructures modernes ?',
+          a: 'à rendre les trajets plus rapides et plus sûrs',
           wrong: [
-            { label: 'à empêcher tous les voyages', why: 'Au contraire, il accélère les déplacements.' },
-            { label: 'à rallonger les trajets', why: 'Il accélère les déplacements : il ne les rallonge pas.' },
+            { label: 'à donner des billets gratuits', why: 'Le texte parle de vitesse et de sécurité, pas du prix.' },
+            { label: 'à supprimer les bateaux', why: 'Le texte ne dit pas qu’un transport est supprimé.' },
           ],
           quote: Q_RESEAU,
           explain: 'Un tel réseau accélère et sécurise les déplacements.',
@@ -708,7 +859,7 @@ const transports: Notion = {
         { label: 'la moto', why: 'Une moto ne transporte pas beaucoup de voyageurs.' },
         { label: 'le vélo', why: 'Un vélo n’est pas un grand véhicule de transport en commun.' },
       ],
-      gap: ['L’', ' est un grand véhicule de transport en commun.', ['autobus', 'bus']],
+      gap: ['L’', ' est un grand véhicule de transport en commun qui circule en ville.', ['autobus', 'bus']],
       quote: Q_AUTOBUS,
       explain: 'L’autobus est un grand véhicule destiné au transport en commun dans une agglomération.',
       src: 'cnrtl-autobus',
@@ -721,7 +872,7 @@ const transports: Notion = {
         { label: 'le paquebot', why: 'Le paquebot est un navire.' },
         { label: 'l’autocar', why: 'Un car roule sur la route, sans rails.' },
       ],
-      gap: ['Le ', ' roule sur des rails dans la ville.', ['tramway', 'tram']],
+      gap: ['Le ', ' roule en ville sur des rails au niveau du sol.', ['tramway', 'tram']],
       quote: Q_TRAMWAY,
       explain: 'Le tramway est un transport public urbain sur rails.',
       src: 'cnrtl-tramway',
@@ -734,7 +885,11 @@ const transports: Notion = {
         { label: 'l’autobus', why: 'L’autobus roule sur la route.' },
         { label: 'le ferry', why: 'Un ferry est un bateau.' },
       ],
-      gap: ['Une cabine suspendue à des câbles forme un ', '.', ['téléphérique', 'telepherique', 'téléférique']],
+      gap: [
+        'Le ',
+        ' (mot qui commence par « téléph ») transporte une cabine suspendue à des câbles.',
+        ['téléphérique', 'telepherique'],
+      ],
       quote: Q_TELEPHERIQUE,
       explain: 'Un câble tire la cabine et d’autres câbles la portent.',
       src: 'cnrtl-telepherique',
@@ -815,7 +970,7 @@ const transports: Notion = {
             { label: 'allonger la piste cyclable', why: 'Rouler ne rallonge pas la piste.' },
           ],
           quote: Q_BOUGER,
-          explain: 'Bouger davantage réduit les émissions et les pollutions des transports.',
+          explain: 'Remplacer la voiture par le vélo réduit les émissions et les pollutions des transports.',
           src: ADEME,
         },
       ],
@@ -840,14 +995,21 @@ const transports: Notion = {
           src: ADEME,
         },
         {
-          q: 'Au CM2, que veut-on combattre en étudiant les déplacements durables ?',
-          a: 'la pollution',
+          q: 'D’après le texte, pourquoi y a-t-il autant de voitures le matin ?',
+          a: 'la plupart ne transportent qu’une seule personne',
           wrong: [
-            { label: 'la lecture', why: 'La lecture n’a rien à voir avec les déplacements.' },
-            { label: 'les vacances', why: 'On cherche à moins polluer, pas à supprimer les vacances.' },
+            {
+              label: 'chaque voiture est pleine de passagers',
+              why: 'Le texte dit le contraire : le plus souvent, une seule personne.',
+            },
+            {
+              label: 'la mairie demande à chacun de rouler',
+              why: 'La mairie veut agir pour le développement durable.',
+            },
           ],
-          quote: Q_DURABLE,
-          explain: 'Le programme cite la lutte contre la pollution.',
+          quote: Q_SEUL,
+          explain: 'Quand chacun roule seul, il faut une voiture par personne.',
+          src: ADEME,
         },
       ],
     },

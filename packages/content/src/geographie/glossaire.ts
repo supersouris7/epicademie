@@ -317,4 +317,32 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'La façon de se déplacer et la possibilité de le faire.',
     example: 'La piste cyclable change la mobilité du quartier.',
   },
+  {
+    id: 'chaussee',
+    word: 'chaussée',
+    forms: ['chaussée', 'chaussées', 'chaussee'],
+    definition: 'La partie d’une route ou d’une rue où roulent les véhicules.',
+    example: 'Le piéton marche sur le trottoir, pas sur la chaussée.',
+  },
+  {
+    id: 'escale',
+    word: 'escale',
+    forms: ['escale', 'escales'],
+    definition: 'Un arrêt en cours de voyage, surtout en bateau ou en avion.',
+    example: 'L’avion fait une escale avant d’arriver.',
+  },
+  {
+    id: 'long-courrier',
+    word: 'long-courrier',
+    forms: ['long-courrier', 'long-courriers'],
+    definition: 'Un avion ou un navire fait pour les très longs voyages.',
+    example: 'Un long-courrier traverse un océan.',
+  },
+  {
+    id: 'transatlantique',
+    word: 'transatlantique',
+    forms: ['transatlantique', 'transatlantiques'],
+    definition: 'Qui traverse l’océan Atlantique.',
+    example: 'Un vol transatlantique relie l’Europe à l’Amérique.',
+  },
 ];

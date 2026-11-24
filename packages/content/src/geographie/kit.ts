@@ -76,6 +76,7 @@ const lookup = (src: string): string => {
   if (src.startsWith('insee-domicile')) return 'Cherchons ce que dit l’INSEE';
   if (src.startsWith('ademe-')) return 'Cherchons ce que dit l’ADEME';
   if (src.startsWith('ue-')) return 'Cherchons ce que dit l’Union européenne';
+  if (src.startsWith('ecologie-')) return 'Cherchons ce que dit le ministère chargé des transports';
   return 'Cherchons dans le dictionnaire';
 };
 

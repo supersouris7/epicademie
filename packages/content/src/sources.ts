@@ -38,6 +38,7 @@ export const ALLOWED_DOMAINS: readonly string[] = [
   'mnhn.fr',
   'cnes.fr',
   'ademe.fr',
+  'ecologie.gouv.fr',
   'brgm.fr',
 ];
 
@@ -297,6 +298,14 @@ export const SOURCES: readonly Source[] = [
     consultedOn: CONSULTED_GE_CM2,
   },
   {
+    id: 'ecologie-lgv',
+    title: '« Les projets de lignes à grande vitesse »',
+    publisher: 'Ministère chargé des transports (ecologie.gouv.fr)',
+    url: 'https://www.ecologie.gouv.fr/politiques-publiques/projets-lignes-grande-vitesse',
+    textDate: '2023-10-25',
+    consultedOn: CONSULTED_GE_CM2,
+  },
+  {
     id: 'ue-voyager',
     title: '« Voyager dans l’UE »',
     publisher: 'Union européenne',
@@ -330,6 +339,8 @@ export const SOURCES: readonly Source[] = [
   tlfi('autobus', 'autobus'),
   tlfi('tramway', 'tramway'),
   tlfi('telepherique', 'téléphérique', 't%C3%A9l%C3%A9ph%C3%A9rique'),
+  tlfi('long-courrier', 'long-courrier'),
+  tlfi('transatlantique', 'transatlantique'),
 ];
 
 export const getSource = (id: string): Source | undefined => SOURCES.find((s) => s.id === id);
