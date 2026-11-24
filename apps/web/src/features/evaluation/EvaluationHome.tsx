@@ -165,7 +165,6 @@ export function EvaluationHome({ profile }: { readonly profile: Profile }) {
                       </span>
                       <span>
                         {h.mastery !== null ? `Maîtrise ${round5(h.mastery)} %` : 'Maîtrise : pas assez de questions'}
-                        {' · '}Couverture {h.coverage !== null ? `${round5(h.coverage)} %` : '–'}
                       </span>
                     </Link>
                   </li>
