@@ -3,19 +3,23 @@ import { RELECTURES as MATHS } from './maths/relectures.ts';
 import { RELECTURES as ANGLAIS } from './anglais/relectures.ts';
 import { RELECTURES as EMC } from './emc/relectures.ts';
 import { RELECTURES as ESPAGNOL } from './espagnol/relectures.ts';
+import { RELECTURES as FRANCAIS } from './francais/relectures.ts';
 import { RELECTURES as GEOGRAPHIE } from './geographie/relectures.ts';
 import { RELECTURES as HISTOIRE } from './histoire/relectures.ts';
 import { RELECTURES as PHYSIQUE } from './physique/relectures.ts';
+import { RELECTURES as ST } from './sciences/st/relectures.ts';
 
 /** Registre des relectures pédagogiques (docs/adr/0034, point 7) ; chaque matière tient le sien. */
 export const RELECTURES: readonly Relecture[] = [
   ...MATHS,
   ...ANGLAIS,
   ...ESPAGNOL,
+  ...FRANCAIS,
   ...GEOGRAPHIE,
   ...HISTOIRE,
   ...EMC,
   ...PHYSIQUE,
+  ...ST,
 ];
 
 /** Une relecture « ok » existe pour cette notion à cette version. */

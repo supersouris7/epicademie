@@ -21,6 +21,8 @@ function perfect(q: Question): Response {
       return { kind: 'choice', index: a.correct };
     case 'point':
       return { kind: 'point', x: a.x, y: a.y };
+    case 'zone':
+      return { kind: 'zone', zone: a.zone };
     case 'text':
       return { kind: 'text', text: a.accepted[0] ?? '' };
     case 'order':
@@ -76,6 +78,7 @@ describe('catalogue', () => {
     const sciences: Record<string, string> = { 'physique-chimie': 'p', svt: 'v', technologie: 't' };
     const subject: Record<string, string> = {
       maths: 'm',
+      francais: 'f',
       anglais: 'a',
       espagnol: 'e',
       geographie: 'g',
@@ -165,7 +168,8 @@ describe('parcours Adulte', () => {
 describe('matière Sciences (#76)', () => {
   it('les chapitres de physique-chimie sont dans la matière sciences, domaine physique-chimie', () => {
     const chapters = chaptersOf('sciences');
-    expect(chapters.map((c) => c.id)).toEqual([
+    // Les chapitres des lots de contenu (ADR 0034, ex. « pcm1-matiere ») s'ajoutent à ceux du cycle 4.
+    expect(chapters.map((c) => c.id).filter((id) => /^p[345]-/.test(id))).toEqual([
       'p5-unites',
       'p5-matiere',
       'p4-mouvement',
@@ -207,9 +211,9 @@ describe('matière français et domaines (ADR 0034)', () => {
     for (const d of NEW_DOMAINS) expect(DOMAINS[d], d).toBeTruthy();
   });
 
-  it('toute matière publiée a au moins un chapitre, le français non publié n’en a aucun', () => {
-    for (const s of SUBJECTS) expect(chaptersOf(s.id).length > 0, s.id).toBe(s.available);
-    expect(chaptersOf('francais')).toHaveLength(0);
+  it('toute matière publiée a au moins un chapitre (le français se remplit lot par lot, avant sa publication)', () => {
+    for (const s of SUBJECTS.filter((x) => x.available)) expect(chaptersOf(s.id).length, s.id).toBeGreaterThan(0);
+    for (const c of chaptersOf('francais')) expect(c.id.startsWith('f'), c.id).toBe(true);
   });
 
   it('les identifiants de chapitres restent uniques', () => {

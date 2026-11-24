@@ -25,8 +25,7 @@ const reglesLois: Notion = {
   memo: [
     'Le **civisme**, c’est agir pour le **bien public** en respectant les **règles**. Exemple : ranger la salle avec ta classe.',
     'Dans une **démocratie**, les **citoyens** participent aux décisions grâce au **vote**. À l’école, le conseil d’élèves te fait vivre ça !',
-    'Une **loi** est une règle pour tout le pays. Avec l’**égalité devant la loi**, elle est la même pour tous.',
-    'La **DDHC** (Déclaration des droits de l’homme et du citoyen) est un texte sur les droits de chacun : en CM1, on en étudie les articles 3, 6 et 16.',
+    'Une **loi** est une règle pour tout le pays, la même pour tous (**égalité devant la loi**). La **DDHC** (Déclaration des droits de l’homme et du citoyen) en fixe les principes : en CM1, articles 3, 6 et 16.',
   ],
   faits: [
     {

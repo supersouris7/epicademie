@@ -17,6 +17,8 @@ export const ResponseSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('fraction'), num: z.string().max(20), den: z.string().max(20) }),
   z.object({ kind: z.literal('choice'), index: z.number().int().min(0).max(20) }),
   z.object({ kind: z.literal('point'), x: z.number().int().min(-50).max(50), y: z.number().int().min(-50).max(50) }),
+  /** Zone touchée sur une carte (identifiant de zone, ex. `53`, `fra`, `atlantique`). */
+  z.object({ kind: z.literal('zone'), zone: z.string().regex(/^[a-z0-9-]{1,30}$/i) }),
   z.object({ kind: z.literal('text'), text: z.string().max(80) }),
   /** Ordre : indices des éléments dans l'ordre choisi (6 éléments au plus). */
   z.object({ kind: z.literal('order'), order: z.array(z.number().int().min(0).max(11)).min(2).max(12).readonly() }),

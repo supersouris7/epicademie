@@ -35,7 +35,7 @@ function Chips({ ids, empty }: { readonly ids: readonly string[]; readonly empty
   );
 }
 
-/** Bilan d'une épreuve : maîtrise et couverture toujours ensemble, domaines, forces, points à travailler, suite. */
+/** Bilan d'une épreuve : maîtrise, domaines, forces, points à travailler, suite. */
 export function EvaluationResults({ profile }: { readonly profile: Profile }) {
   const { id = '' } = useParams();
   const location = useLocation();
@@ -56,10 +56,9 @@ export function EvaluationResults({ profile }: { readonly profile: Profile }) {
 
 function Scores({ r, grade }: { readonly r: EvaluationResult; readonly grade: string }) {
   return (
-    <Section title="Maîtrise et couverture">
+    <Section title="Ma maîtrise">
       <p className="text-muted text-lg">
-        La <strong>maîtrise</strong> : ce que tu réussis dans ce qui a été évalué. La <strong>couverture</strong> : la
-        part du programme de {grade} que cette épreuve a pu regarder.
+        La <strong>maîtrise</strong> : ce que tu réussis dans ce qui a été évalué du programme de {grade}.
       </p>
       <ProgressBar
         value={r.masteryDisplayable && r.mastery !== null ? round5(r.mastery) : 0}
@@ -71,13 +70,6 @@ function Scores({ r, grade }: { readonly r: EvaluationResult; readonly grade: st
             ? `Maîtrise ${round5(r.mastery)} %`
             : 'Maîtrise : pas encore mesurable'
         }
-      />
-      <ProgressBar
-        value={round5(r.coverage)}
-        max={100}
-        label="Couverture"
-        color="var(--gold)"
-        text={`Couverture ${round5(r.coverage)} %`}
       />
       {!r.masteryDisplayable && (
         <p className="text-lg">
@@ -148,8 +140,7 @@ function Body(p: {
                 />
                 <p className="text-lg">
                   <strong>{domainLabel(d.domain)}</strong> ·{' '}
-                  {d.mastery === null ? 'pas évalué' : `maîtrise ${round5(d.mastery)} %`} · couverture{' '}
-                  {round5(d.coverage)} %
+                  {d.mastery === null ? 'pas évalué' : `maîtrise ${round5(d.mastery)} %`}
                 </p>
               </li>
             ))}

@@ -188,6 +188,8 @@ function keyboardTip(question: Question): string {
       return 'Au clavier : chiffres, « / » pour passer au dénominateur, Entrée pour valider.';
     case 'point':
       return 'Touche un nœud du quadrillage, puis OK.';
+    case 'zone':
+      return 'Au clavier : flèches pour passer d’une zone à l’autre, Entrée pour choisir, Entrée encore pour valider.';
     default:
       return 'Au clavier : tape ta réponse puis Entrée (« ? » pour un indice).';
   }

@@ -2,6 +2,7 @@ export * from './rng.ts';
 export * from './rational.ts';
 export * from './types.ts';
 export * from './check.ts';
+export * from './cartes.ts';
 export * from './catalog.ts';
 export * from './diagnose.ts';
 export * from './validate.ts';

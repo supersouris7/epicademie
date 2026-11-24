@@ -12,7 +12,7 @@
 
 | Lot         | Chapitre                  | Notions                                                                                                              | État actuel                          |
 | ----------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `an-cm1-01` | Se présenter et saluer    | saluer et prendre congé ; What's your name? ; How old are you? ; nombres de 0 à 31 ; Where do you live?              | absente                              |
+| `an-cm1-01` | Se présenter et saluer    | saluer et prendre congé ; What's your name? ; How old are you? ; nombres de 0 à 31 ; Where do you live?              | couverte, en relecture               |
 | `an-cm1-02` | Be et possessifs          | be au présent ; pronoms sujets ; adjectifs possessifs ; questions avec be                                            | partielle (acm1-be, acm1-possessifs) |
 | `an-cm1-03` | Le temps qui passe        | couleurs ; jours ; mois ; saisons ; la date ; la météo                                                               | absente                              |
 | `an-cm1-04` | Famille, corps, vêtements | la famille ; have got ; le corps ; les vêtements ; le génitif 's                                                     | absente                              |

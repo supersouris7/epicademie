@@ -45,6 +45,7 @@ function perfect(q: Question): Response {
   if (a.kind === 'fraction') return { kind: 'fraction', num: String(a.value.n), den: String(a.value.d) };
   if (a.kind === 'choice') return { kind: 'choice', index: a.correct };
   if (a.kind === 'point') return { kind: 'point', x: a.x, y: a.y };
+  if (a.kind === 'zone') return { kind: 'zone', zone: a.zone };
   if (a.kind === 'order') return { kind: 'order', order: a.correct };
   if (a.kind === 'match') return { kind: 'match', pairs: a.pairs };
   if (a.kind === 'cloze') return { kind: 'cloze', answers: a.blanks.map(() => 'x') };

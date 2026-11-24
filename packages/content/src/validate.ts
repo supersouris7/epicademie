@@ -1,3 +1,4 @@
+import { zoneName } from './cartes.ts';
 import { check, normalizeText } from './check.ts';
 import { eq, fmt, isDecimal, type Rational } from './rational.ts';
 import type { Figure, Level, Question, Response, Trap } from './types.ts';
@@ -83,6 +84,8 @@ function rightResponses(q: Question): Response[] {
       return [{ kind: 'choice', index: a.correct }];
     case 'point':
       return [{ kind: 'point', x: a.x, y: a.y }];
+    case 'zone':
+      return [{ kind: 'zone', zone: a.zone }];
     case 'text':
       return a.accepted.map((text) => ({ kind: 'text', text: ` ${text.toUpperCase()} ` }));
     case 'order':
@@ -223,6 +226,8 @@ function answerChecks(q: Question, fail: Check): void {
   if (a.kind === 'match') matchChecks(a, q, fail);
   if (a.kind === 'cloze') clozeChecks(a, fail);
   if (a.kind === 'point' && (!Number.isInteger(a.x) || !Number.isInteger(a.y))) fail('point', 'Point hors des nœuds');
+  if (a.kind === 'zone' && zoneName(a.map, a.zone) === undefined)
+    fail('zone-inconnue', `Zone « ${a.zone} » absente de la carte ${a.map}`);
   if (a.kind === 'text' && (a.accepted.length === 0 || a.accepted.some((t) => !t.trim()))) {
     fail('texte-attendu', 'Aucune réponse écrite acceptée');
   }
@@ -235,6 +240,21 @@ function answerChecks(q: Question, fail: Check): void {
 const isRightValue = (a: Question['answer'], v: Rational) =>
   (a.kind === 'number' || a.kind === 'fraction') &&
   (eq(v, a.value) || (a.kind === 'number' && (a.accept ?? []).some((x) => eq(x, v))));
+
+/** Erreur typique sur une zone : jamais la bonne zone, toujours une zone de la carte. */
+function zoneTrapResponse(
+  a: Question['answer'],
+  t: { readonly zone: string },
+): { response: Response; problem?: [string, string] } {
+  const same = a.kind === 'zone' && t.zone === a.zone;
+  const known = a.kind === 'zone' && zoneName(a.map, t.zone) !== undefined;
+  const problem: [string, string] | undefined = same
+    ? ['piege-juste', 'Erreur typique = bonne zone']
+    : known
+      ? undefined
+      : ['piege-zone', `Erreur typique sur une zone inconnue (${t.zone})`];
+  return { response: { kind: 'zone', zone: t.zone }, problem };
+}
 
 /** Saisie correspondant à une erreur typique, et problème de cohérence éventuel. */
 function trapResponse(a: Question['answer'], t: Trap): { response: Response | null; problem?: [string, string] } {
@@ -262,6 +282,7 @@ function trapResponse(a: Question['answer'], t: Trap): { response: Response | nu
       problem: same ? ['piege-juste', 'Erreur typique = bon point'] : undefined,
     };
   }
+  if ('zone' in t) return zoneTrapResponse(a, t);
   const accepted = a.kind === 'text' && a.accepted.some((x) => normalizeText(x) === normalizeText(t.text));
   return {
     response: { kind: 'text', text: t.text },
@@ -282,6 +303,17 @@ function trapChecks(q: Question, fail: Check): void {
 }
 
 const finite = (...values: number[]) => values.every(Number.isFinite);
+
+/** Carte : zones surlignées et repères connus de la carte, repères non vides, distincts, un par zone. */
+function mapFigureChecks(f: Extract<Figure, { kind: 'map' }>, fail: Check): void {
+  const marks = f.marks ?? [];
+  const unknown = [...(f.highlight ?? []), ...marks.map((m) => m.zone)].filter((z) => zoneName(f.map, z) === undefined);
+  if (unknown.length > 0) fail('figure', `Carte ${f.map} : zone inconnue (${unknown.join(', ')})`);
+  const labels = marks.map((m) => m.label.trim());
+  if (labels.some((l) => !l) || new Set(labels).size !== labels.length)
+    fail('figure', 'Carte : repères vides ou en double');
+  if (new Set(marks.map((m) => m.zone)).size !== labels.length) fail('figure', 'Carte : deux repères sur la même zone');
+}
 
 function figureChecks(f: Figure | undefined, q: Question, fail: Check): void {
   if (!f) return;
@@ -309,6 +341,9 @@ function figureChecks(f: Figure | undefined, q: Question, fail: Check): void {
       return;
     case 'table':
       if (f.rows.length === 0) fail('figure', 'Tableau vide');
+      return;
+    case 'map':
+      mapFigureChecks(f, fail);
       return;
     case 'document':
       if (f.lines.length === 0 || f.lines.some((l) => !l.trim())) fail('figure', 'Document vide ou à ligne vide');
@@ -352,6 +387,8 @@ function answerKey(q: Question): string {
       return `choice:${normalizeText(a.options[a.correct] ?? '')}`;
     case 'point':
       return `point:${a.x},${a.y}`;
+    case 'zone':
+      return `zone:${a.map}:${a.zone}`;
     case 'text':
       return `text:${a.accepted.map(normalizeText).sort().join('|')}`;
     case 'order':

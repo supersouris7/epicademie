@@ -1,8 +1,5 @@
-import type { Competence, Referential } from './types.ts';
-
-/** Compétence essentielle (`E`) ou non (`o`) avec ses prérequis. */
-const E = (id: string, ...prerequisites: string[]): Competence => ({ id, essential: true, prerequisites });
-const o = (id: string, ...prerequisites: string[]): Competence => ({ id, essential: false, prerequisites });
+import { E, o } from './gabarit.ts';
+import type { Referential } from './types.ts';
 
 /**
  * Référentiel de mathématiques, CM1 → 3e. Une compétence par chapitre de `maths/`.
