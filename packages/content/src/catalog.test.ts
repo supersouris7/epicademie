@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { battlePools, CHAPTERS, chaptersOf, generate } from './catalog.ts';
 import { SUBJECTS } from '@epicademie/shared';
+import { battlePools, CHAPTERS, chaptersOf, generate, maxLevelOf } from './catalog.ts';
 import { DOMAINS, SCIENCES_DOMAINS } from './types.ts';
 import { check } from './check.ts';
 import { eq, fmt, frac, toNumber } from './rational.ts';
@@ -205,5 +205,15 @@ describe('matière français et domaines (ADR 0034)', () => {
   it('les identifiants de chapitres restent uniques', () => {
     const ids = CHAPTERS.map((c) => c.id);
     expect(new Set(ids).size).toBe(ids.length);
+  });
+});
+
+describe('niveaux maximaux', () => {
+  it('3 par défaut ; une notion inconnue vaut 3 ; un niveau demandé au-delà est ramené au maximum', () => {
+    const id = CHAPTERS[0]!.skills[0]!.id;
+    expect(maxLevelOf(id)).toBe(3);
+    expect(maxLevelOf('inconnue')).toBe(3);
+    expect(generate(id, 5, 7).level).toBe(3);
+    expect(generate(id, 2, 7).level).toBe(2);
   });
 });

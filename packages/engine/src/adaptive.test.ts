@@ -32,6 +32,12 @@ describe('niveau de départ', () => {
     expect(startLevel(state('a', '1111111111', 2))).toBe(2);
     expect(startLevel(state('a', '1111111111', 3))).toBe(3);
   });
+  it('notion à 5 niveaux : à consolider → 3, acquise → 4 ; jamais au-delà du maximum', () => {
+    expect(startLevel(state('a', '1111111111', 2), 5)).toBe(3);
+    expect(startLevel(state('a', '1111111111', 3), 5)).toBe(4);
+    expect(startLevel(state('a', '1111111111', 3), 3)).toBe(3);
+    expect(startLevel(undefined, 5)).toBe(1);
+  });
 });
 
 describe('poids de tirage', () => {

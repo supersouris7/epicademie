@@ -2,6 +2,7 @@ import {
   allSkillEntries,
   generate,
   getAnySkill,
+  skillLevels,
   skillVersion,
   validateVariants,
   type Level,
@@ -53,11 +54,13 @@ function autoIssuesOf(skillId: string): string[] {
   if (!autoIssues) {
     autoIssues = new Map();
     for (const { skill } of allSkillEntries()) {
-      const codes = ([1, 2, 3] as const satisfies readonly Level[]).flatMap((level) =>
-        validateVariants(Array.from({ length: VARIANTS_CHECKED }, (_, seed) => generate(skill.id, level, seed))).map(
-          (i) => `${i.code} (niveau ${level}, graine ${i.seed}) : ${i.message}`,
-        ),
-      );
+      const codes = ([1, 2, 3, 4, 5] as const satisfies readonly Level[])
+        .filter((level) => level <= skillLevels(skill))
+        .flatMap((level) =>
+          validateVariants(Array.from({ length: VARIANTS_CHECKED }, (_, seed) => generate(skill.id, level, seed))).map(
+            (i) => `${i.code} (niveau ${level}, graine ${i.seed}) : ${i.message}`,
+          ),
+        );
       autoIssues.set(skill.id, codes.slice(0, 10));
     }
   }

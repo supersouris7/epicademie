@@ -416,6 +416,48 @@ describe('migrations', () => {
       rmSync(dir, { recursive: true, force: true });
     }
   });
+  it('niveaux 1 à 5 : depuis une base en 0025, réponses conservées ; 4 et 5 acceptés, 6 refusé ; retour arrière', async () => {
+    const dir = migrationsUpTo(26); // jusqu'à 0025
+    try {
+      database = await openDatabase('pglite://memory');
+      await runMigrations(database, dir);
+      const { db } = database;
+      const leo = 'aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa';
+      await db.execute(sql`insert into profiles (id, name, avatar, hero) values
+        (${leo}, 'Léo', '{"style":"pixelbot","seed":"l"}', 'alex')`);
+      const session = rows<{ id: string }>(
+        await db.execute(sql`insert into sessions (profile_id, mode, subject, chapter_id)
+          values (${leo}, 'entrainement', 'maths', 'm5-calcul') returning id`),
+      )[0]?.id;
+      const attempt = (level: number) =>
+        db.execute(sql`insert into attempts (session_id, profile_id, skill_id, level, seed, variant, response, correct, duration_ms, xp)
+          values (${session}, ${leo}, 'm5-tables', ${level}, 1, false, '{}', true, 1000, 5)`);
+      await attempt(3);
+      await expect(attempt(4)).rejects.toThrow();
+      await runMigrations(database, MIGRATIONS_DIR);
+      expect((await schemaStatus(database, MIGRATIONS_DIR)).upToDate).toBe(true);
+      await attempt(4);
+      await attempt(5);
+      await expect(attempt(6)).rejects.toThrow();
+      await db.execute(
+        sql`insert into question_reports (kind, skill_id, level, reason) values ('question', 'm5-tables', 5, 'bug')`,
+      );
+      // Retour arrière documenté dans la migration, après avoir retiré les niveaux 4 et 5.
+      const file = readFileSync(path.join(MIGRATIONS_DIR, '0026_niveaux_1_a_5.sql'), 'utf8');
+      const rollback = file
+        .split('\n')
+        .filter((l) => l.startsWith('--   '))
+        .map((l) => l.slice(5))
+        .join('\n');
+      await db.execute(sql`delete from attempts where level > 3`);
+      await db.execute(sql`delete from question_reports where level > 3`);
+      for (const statement of rollback.split(';').filter((q) => q.trim())) await db.execute(sql.raw(statement));
+      await expect(attempt(4)).rejects.toThrow();
+      expect(await db.execute(sql`select count(*)::int as n from attempts`)).toMatchObject({ rows: [{ n: 1 }] });
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
 });
 
 /** Copie des `count` premières migrations (base d'une version antérieure). */

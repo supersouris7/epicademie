@@ -10,7 +10,7 @@ import type { Rng } from './rng.ts';
  */
 export type Rich = string;
 
-export type Level = 1 | 2 | 3;
+export type Level = 1 | 2 | 3 | 4 | 5;
 
 /** Figures décrites par des données ; le rendu SVG est fait par l'application. */
 export type Figure =
@@ -217,6 +217,8 @@ export interface Skill {
   /** Conseil de Questy à la 1re question de la notion (aucun par défaut). */
   readonly advice?: Advice;
   readonly lesson: Lesson;
+  /** Niveau maximal de la notion : 3 par défaut, 5 pour les nouvelles notions (docs/adr/0034). */
+  readonly levels?: 3 | 5;
   readonly generate: (rng: Rng, level: Level) => QuestionDraft;
   /**
    * Version de la notion (1 par défaut). À incrémenter quand le générateur change les énoncés ou
@@ -224,6 +226,9 @@ export interface Skill {
    */
   readonly version?: number;
 }
+
+/** Niveau maximal d'une notion (3 si non précisé). */
+export const skillLevels = (skill: Pick<Skill, 'levels'> | undefined): 3 | 5 => skill?.levels ?? 3;
 
 /** Version d'une notion (1 si non précisée). */
 export const skillVersion = (skill: Pick<Skill, 'version'> | undefined) => skill?.version ?? 1;

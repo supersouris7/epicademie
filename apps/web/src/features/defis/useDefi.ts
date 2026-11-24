@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { chaptersOf, check, generate, type Question, type Response } from '@epicademie/content';
+import { chaptersOf, check, generate, maxLevelOf, type Question, type Response } from '@epicademie/content';
 import { playedGrade, type Profile, type SessionSummary, type SubjectId } from '@epicademie/shared';
 import { playSound } from '../../shared/lib/sound.ts';
 import { formatAnswer, formatResponse } from '../../shared/question/answers.ts';
@@ -79,7 +79,9 @@ export function useDefi(profile: Profile, kind: DefiId, subject: SubjectId, noti
   const draw = (correct: number) => {
     const skillId = pool[Math.floor(Math.random() * pool.length)];
     if (!skillId) return;
-    setQuestion(generate(skillId, levelFor(kind, correct, Math.random()), Math.floor(Math.random() * 1e9)));
+    setQuestion(
+      generate(skillId, levelFor(kind, correct, Math.random(), maxLevelOf(skillId)), Math.floor(Math.random() * 1e9)),
+    );
     shownAt.current = performance.now();
   };
 

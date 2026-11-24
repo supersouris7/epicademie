@@ -1,9 +1,11 @@
+import type { Level } from '@epicademie/shared';
+
 /**
  * Équilibrage des duels selon l'âge : le plus jeune joue au niveau de référence ;
  * les plus âgés reçoivent des questions plus difficiles et/ou moins de temps.
  */
 export interface DuelHandicap {
-  /** Niveaux ajoutés au niveau de référence (le résultat est borné à 3). */
+  /** Niveaux ajoutés au niveau de référence (le résultat est borné au niveau maximal de la notion). */
   readonly levelBonus: 0 | 1 | 2;
   /** Multiplicateur du temps de réponse (1 = normal). */
   readonly timeFactor: number;
@@ -27,4 +29,6 @@ export function duelHandicaps(ages: readonly (number | null)[]): DuelHandicap[] 
   return ages.map((a) => (a === null ? { levelBonus: 0, timeFactor: 1 } : handicapFor(a, youngest)));
 }
 
-export const duelLevel = (base: 1 | 2 | 3, h: DuelHandicap) => Math.min(3, base + h.levelBonus) as 1 | 2 | 3;
+/** Niveau d'un joueur : base + bonus d'écart d'âge, borné au niveau maximal de la notion (3 par défaut). */
+export const duelLevel = (base: Level, h: DuelHandicap, maxLevel: Level = 3): Level =>
+  Math.min(maxLevel, base + h.levelBonus) as Level;

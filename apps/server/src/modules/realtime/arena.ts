@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { check, generate, getChapter } from '@epicademie/content';
+import { check, generate, getChapter, maxLevelOf, type Level } from '@epicademie/content';
 import { duelHandicaps, duelLevel, playArenaTurn, startArena, type ArenaState } from '@epicademie/engine';
 import {
   ageOn,
@@ -101,9 +101,9 @@ function drawQuestion(a: Arena, s: ArenaState, skillId: string, seed: number): {
   const handicaps = duelHandicaps(s.players.map((p) => a.ages.get(p.id) ?? null));
   const h = handicaps[s.current] ?? { levelBonus: 0, timeFactor: 1 };
   // Deux premiers tours de table au niveau 1, ensuite niveau 2 (avant handicap).
-  const base: 1 | 2 = s.turn < s.players.length * 2 ? 1 : 2;
+  const base: Level = s.turn < s.players.length * 2 ? 1 : 2;
   return {
-    question: { skillId, level: duelLevel(base, h), seed },
+    question: { skillId, level: duelLevel(base, h, maxLevelOf(skillId)), seed },
     ms: Math.round(ARENA_TURN_SECONDS * h.timeFactor * 1000),
   };
 }

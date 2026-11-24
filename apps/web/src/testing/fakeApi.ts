@@ -1,4 +1,4 @@
-import { battlePools, check, generate } from '@epicademie/content';
+import { battlePools, check, generate, type Level } from '@epicademie/content';
 import {
   answerBattle,
   applyItem,
@@ -660,7 +660,7 @@ export function createFakeApi(options: FakeApiOptions = {}) {
       return { id };
     },
     answerSession: ({ params, body }) => {
-      const a = body as { skillId: string; level: 1 | 2 | 3; seed: number; response: Parameters<typeof check>[1] };
+      const a = body as { skillId: string; level: Level; seed: number; response: Parameters<typeof check>[1] };
       const result = check(generate(a.skillId, a.level, a.seed), a.response);
       const s = sessions.get(params.id ?? '');
       // Seule la 1re réponse compte au score (le second essai est « avec aide »).

@@ -71,7 +71,7 @@ export const IRREGULAR_VERBS: readonly IrregularVerb[] = [
 ];
 
 /** Verbes d'un niveau : le niveau 1 garde les plus courants, le niveau 3 les prend tous. */
-export const verbsFor = (level: 1 | 2 | 3) => IRREGULAR_VERBS.filter((v) => v.tier <= level);
+export const verbsFor = (level: number) => IRREGULAR_VERBS.filter((v) => v.tier <= level);
 
 /** Erreur typique : le verbe traité comme régulier (« goed », « eated »). */
 export const regularised = (base: string) => (base.endsWith('e') ? `${base}d` : `${base}ed`);

@@ -27,6 +27,10 @@ permissions:
 #  - contrôles statiques, tests et E2E (un job par appareil) en parallèle ;
 #  - seuls les contrôles concernés par les fichiers modifiés de la PR sont lancés ;
 #  - après la fusion d'une PR dont la CI était verte, rien n'est rejoué sur main : publication seule ;
+#    exception (#96) : une PR de contenu (packages/content), dont les e2e n'ont pas tourné, les rejoue sur main
+#    (les e2e restent obligatoires après fusion) ;
+#  - une PR qui ne touche que packages/content et docs : typage, lint, format, architecture, code mort, tests du
+#    paquet content (validation des notions comprise), ni e2e, ni PostgreSQL, ni image ;
 #  - commit direct sur main, tag de version, lancement manuel ou modification de la CI : tout est lancé.
 
 jobs:
@@ -41,6 +45,7 @@ jobs:
     outputs:
       statique: ${{ steps.c.outputs.statique }}
       tests: ${{ steps.c.outputs.tests }}
+      tests_contenu: ${{ steps.c.outputs.tests_contenu }}
       e2e: ${{ steps.c.outputs.e2e }}
       postgres: ${{ steps.c.outputs.postgres }}
       image: ${{ steps.c.outputs.image }}
@@ -56,6 +61,24 @@ jobs:
           set -euo pipefail
           out() { echo "$1=true" >> "$GITHUB_OUTPUT"; echo "→ $1"; }
           tout() { for k in statique tests e2e postgres image; do out "$k"; done; }
+          # Changements qui exigent les e2e (3 appareils) : application, e2e, moteur et types partagés, outillage.
+          E2E_RE='^(apps|e2e)/|^packages/(shared|engine)/|^playwright\.config|^package\.json$|^pnpm-(lock|workspace)\.yaml$|^tsconfig'
+          # Contenu pédagogique et documentation seulement : le reste du dépôt n'est pas touché.
+          CONTENU_RE='^(packages/content/|docs/)|^LICENSE$|^\.github/ISSUE_TEMPLATE/|^\.github/dependabot\.yml$|\.md$'
+          # classe : lit des noms de fichiers ; écrit les sorties « statique », « tests », « tests_contenu », « e2e », … à lancer.
+          classe() {
+            local files; files=$(cat)
+            if ! grep -qvE '^(docs/|LICENSE$|\.github/ISSUE_TEMPLATE/|\.github/dependabot\.yml$)|\.md$' <<<"$files"; then
+              echo "Documentation uniquement : format et contrôles statiques seulement."; out statique; return
+            fi
+            out statique; out tests
+            # Contenu seul : seuls les tests du paquet content (validation des notions, sources, relectures) ; ni e2e ni PostgreSQL.
+            if ! grep -qvE "$CONTENU_RE" <<<"$files"; then echo "Contenu et documentation seulement : tests du paquet content, ni e2e ni PostgreSQL."; out tests_contenu; fi
+            grep -qE "$E2E_RE" <<<"$files" && out e2e
+            grep -qE '^(apps/server|packages/(shared|engine))/|^package\.json$|^pnpm-lock\.yaml$|^vitest\.' <<<"$files" && out postgres
+            grep -qE '^(Dockerfile|\.dockerignore)$|(^|/)package\.json$|^pnpm-lock\.yaml$' <<<"$files" && out image
+            return 0
+          }
           case "$EVENT" in
             schedule) out image; exit 0 ;;
             workflow_dispatch) tout; exit 0 ;;
@@ -66,7 +89,15 @@ jobs:
                 head=$(gh api "repos/$REPO/pulls/$pr" --jq .head.sha)
                 ok=$(gh api "repos/$REPO/actions/workflows/ci.yml/runs?head_sha=$head&event=pull_request&status=success" --jq .total_count)
                 if (( ok > 0 )); then
-                  echo "::notice::PR #$pr déjà validée par la CI : contrôles non rejoués, publication seule."
+                  pfiles=$(gh api --paginate "repos/$REPO/pulls/$pr/files?per_page=100" --jq '.[].filename')
+                  if grep -qE "$E2E_RE" <<<"$pfiles"; then
+                    echo "::notice::PR #$pr déjà validée par la CI, e2e compris : contrôles non rejoués, publication seule."
+                  elif grep -q '^packages/content/' <<<"$pfiles"; then
+                    echo "::notice::PR #$pr de contenu : ses e2e n'avaient pas tourné, ils sont rejoués sur main (obligatoires après fusion)."
+                    out e2e
+                  else
+                    echo "::notice::PR #$pr de documentation déjà validée : publication seule."
+                  fi
                   exit 0
                 fi
                 echo "::warning::PR #$pr fusionnée sans CI verte sur son dernier commit : CI complète."
@@ -77,14 +108,7 @@ jobs:
           printf '%s\n' "$files" | sed 's/^/  /'
           has() { grep -qE "$1" <<<"$files"; }
           if has '^\.github/(workflows|actions)/'; then echo "CI modifiée : tous les contrôles."; tout; exit 0; fi
-          if ! grep -qvE '^(docs/|LICENSE$|\.github/ISSUE_TEMPLATE/|\.github/dependabot\.yml$)|\.md$' <<<"$files"; then
-            echo "Documentation uniquement : format et contrôles statiques seulement."; out statique; exit 0
-          fi
-          out statique; out tests
-          # Contenu pédagogique seul (packages/content) : couvert par les tests de cohérence, ni e2e ni PostgreSQL.
-          has '^(apps|e2e)/|^packages/(shared|engine)/|^playwright\.config|^package\.json$|^pnpm-(lock|workspace)\.yaml$|^tsconfig' && out e2e
-          has '^(apps/server|packages/(shared|engine))/|^package\.json$|^pnpm-lock\.yaml$|^vitest\.' && out postgres
-          has '^(Dockerfile|\.dockerignore)$|(^|/)package\.json$|^pnpm-lock\.yaml$' && out image
+          classe <<<"$files"
           exit 0
 
   statique:
@@ -114,7 +138,13 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/preparer
       # Tests unitaires et d'intégration (PostgreSQL embarqué), seuils de couverture bloquants.
-      - run: pnpm test:coverage
+      - if: needs.changements.outputs.tests_contenu != 'true'
+        run: pnpm test:coverage
+      # PR de contenu seul (#96) : tests du paquet content seulement (validation des notions, sources, relectures ;
+      # environ 1 min contre plusieurs avec serveur et web). Pas de mesure de couverture dans ce mode : les seuils
+      # restent contrôlés par toute PR qui touche autre chose que le contenu.
+      - if: needs.changements.outputs.tests_contenu == 'true'
+        run: pnpm exec vitest run --project @epicademie/content
 
   e2e:
     name: E2E (${{ matrix.appareil }})

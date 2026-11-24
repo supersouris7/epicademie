@@ -15,6 +15,8 @@ describe('handicap de duel selon l’âge', () => {
     expect(enfant).toEqual({ levelBonus: 0, timeFactor: 1 });
     expect(parent).toEqual({ levelBonus: 2, timeFactor: 0.5 });
     expect(duelLevel(2, parent!)).toBe(3);
+    expect(duelLevel(2, parent!, 5)).toBe(4);
+    expect(duelLevel(4, parent!, 5)).toBe(5);
   });
   it('âge inconnu : neutre', () => {
     expect(duelHandicaps([null, 12])[0]).toEqual({ levelBonus: 0, timeFactor: 1 });
