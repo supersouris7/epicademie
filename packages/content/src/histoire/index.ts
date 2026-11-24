@@ -2,6 +2,7 @@ import type { Chapter, Skill } from '../types.ts';
 import { choice } from '../build.ts';
 import { SKILLS as AVANT_LA_FRANCE } from './avant-la-france.ts';
 import { SKILLS as TEMPS_DES_ROIS } from './le-temps-des-rois.ts';
+import { SKILLS as REVOLUTION_EMPIRE } from './revolution-empire.ts';
 
 /**
  * Histoire, cycle 3 (docs/adr/0024-contenus-hors-maths.md). Source institutionnelle unique :
@@ -199,6 +200,7 @@ export const HISTOIRE_CHAPTERS: readonly Chapter[] = [
   chapter('hcm1-reperes', 'cm1', 'Des Gaulois à Napoléon', [skillOf('hcm1-reperes', 'Repères de CM1', CM1, 'CM1')]),
   chapter('hcm1-avant-la-france', 'cm1', 'Et avant la France ?', AVANT_LA_FRANCE),
   chapter('hcm1-temps-des-rois', 'cm1', 'Le temps des rois', TEMPS_DES_ROIS),
+  chapter('hcm1-revolution-empire', 'cm1', 'Révolution et Empire', REVOLUTION_EMPIRE),
   chapter('hcm2-reperes', 'cm2', 'La République et le XXe siècle', [
     skillOf('hcm2-reperes', 'Repères de CM2', CM2, 'CM2'),
   ]),
