@@ -85,6 +85,22 @@ describe('sécurité', () => {
     expect(res.headers['content-security-policy']).toContain("default-src 'self'");
     expect(res.headers['content-security-policy']).toContain("frame-ancestors 'none'");
     expect(res.headers['x-content-type-options']).toBe('nosniff');
+    expect(res.headers['content-security-policy']).toMatch(/script-src 'self'(;|$)/);
+    expect(res.headers['referrer-policy']).toBe('no-referrer');
+    expect(res.headers['cross-origin-opener-policy']).toBe('same-origin');
+    expect(res.headers['permissions-policy']).toContain('camera=()');
+    // Réseau local en HTTP : pas de HSTS.
+    expect(res.headers['strict-transport-security']).toBeUndefined();
+  });
+
+  it('HSTS actif derrière HTTPS (cookies Secure)', async () => {
+    const secure = await createTestApp({ config: { cookieSecure: true } });
+    try {
+      const res = await secure.http.inject('/api/health');
+      expect(res.headers['strict-transport-security']).toContain('max-age=31536000');
+    } finally {
+      await secure.close();
+    }
   });
 
   it('limite le débit par IP', async () => {

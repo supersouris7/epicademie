@@ -96,9 +96,13 @@ export function registerAuth(app: FastifyInstance, options: AuthOptions): void {
     if (UNSAFE.has(request.method) && !sameOrigin(request, options.allowedOrigins)) {
       throw new AppError('FORBIDDEN', 'Origine de la requête refusée.');
     }
-    // Vérification d'origine conservée pour l'opérateur (ci-dessus). Un opérateur n'a ni famille,
-    // ni profil, ni session : le cookie de jeu est ignoré.
+    // Un opérateur n'a ni famille, ni profil, ni session : le cookie de jeu est ignoré.
     request.operator = readOperator(request, options.operatorSecret);
+    // Requête d'opérateur qui modifie quelque chose : l'en-tête Origin est obligatoire (il doit
+    // égaler l'origine de la page de pilotage ; sameOrigin l'a déjà comparé s'il est présent).
+    if (request.operator && UNSAFE.has(request.method) && !request.headers.origin) {
+      throw new AppError('FORBIDDEN', 'Origine de la requête manquante.');
+    }
     if (request.operator) return;
     const token = readCookie(request.headers.cookie, SESSION_COOKIE);
     request.actor = token ? await options.resolve(token) : null;

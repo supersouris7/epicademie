@@ -296,6 +296,8 @@ export function adminRepo(db: Executor) {
     /** Remplace le mot de passe et ferme toutes les sessions d'appareil du compte. */
     async resetPassword(accountId: string, passwordHash: string): Promise<number> {
       await db.update(accounts).set({ passwordHash }).where(eq(accounts.id, accountId));
+      // Les liens de réinitialisation en attente ne doivent pas écraser le mot de passe temporaire.
+      await db.delete(passwordResets).where(eq(passwordResets.accountId, accountId));
       const closed = await db
         .delete(authSessions)
         .where(eq(authSessions.accountId, accountId))

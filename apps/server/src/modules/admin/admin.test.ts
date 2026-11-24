@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { count, eq } from 'drizzle-orm';
 import type { AccountDetail, AccountPage, AuditPage, Profile, TemporaryPassword } from '@questeo/shared';
-import { accounts, adminAudit, authSessions, contentEvents, profiles } from '../../db/schema.ts';
+import { accounts, adminAudit, authSessions, contentEvents, passwordResets, profiles } from '../../db/schema.ts';
 import { loadConfig } from '../../config.ts';
 import { sanitizeOperatorName } from '../../core/http/auth.ts';
 import { createTestApp, profileInput, TEST_OPERATOR_SECRET, TEST_PASSWORD } from '../../testing/harness.ts';
@@ -73,6 +73,24 @@ describe('opérateur d’administration', () => {
       headers: { origin: 'https://autre-site.example', host: 'recette.example' },
     });
     expect(res.statusCode).toBe(403);
+  });
+
+  it('opérateur : en-tête Origin obligatoire pour les requêtes non sûres', async () => {
+    const send = (headers: Record<string, string | undefined>) =>
+      t.raw.inject({
+        method: 'POST',
+        url: '/api/v1/admin/accounts/search',
+        payload: {},
+        headers: { 'x-questeo-operateur': TEST_OPERATOR_SECRET, host: 'pilotage.test', ...headers },
+      } as never);
+    expect((await send({})).statusCode).toBe(403);
+    expect((await send({ origin: 'http://pilotage.test' })).statusCode).toBe(200);
+    // Lecture : pas d'Origin requise.
+    const read = await t.raw.inject({
+      url: '/api/v1/admin/stats',
+      headers: { 'x-questeo-operateur': TEST_OPERATOR_SECRET },
+    });
+    expect(read.statusCode).toBe(200);
   });
 
   it('l’ancien accès par compte de jeu n’existe plus', async () => {
@@ -230,6 +248,19 @@ describe('mot de passe temporaire', () => {
     const [entry] = await t.database.db.select().from(adminAudit).where(eq(adminAudit.accountId, id));
     expect(entry).toMatchObject({ operator: 'Marie Dupont', action: 'reinitialisation-mot-de-passe' });
     expect(JSON.stringify(entry)).not.toContain(password);
+  });
+
+  it('les liens de réinitialisation en attente du compte sont invalidés', async () => {
+    const email = 'lien@famille.test';
+    const other = await t.signup(email);
+    const id = other.me.account.id;
+    await t.database.db.insert(passwordResets).values({
+      tokenHash: 'hash-en-attente',
+      accountId: id,
+      expiresAt: new Date('2099-01-01T00:00:00Z'),
+    });
+    await op.inject({ method: 'POST', url: `/api/v1/admin/accounts/${id}/password-reset` });
+    expect(await t.database.db.select().from(passwordResets).where(eq(passwordResets.accountId, id))).toEqual([]);
   });
 
   it('refusé pour un élève autonome ou un compte inconnu ; réservé à l’opérateur', async () => {

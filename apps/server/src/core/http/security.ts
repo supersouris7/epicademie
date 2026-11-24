@@ -14,6 +14,8 @@ import type { ErrorBody } from '@questeo/shared';
 export interface SecurityOptions {
   /** Requêtes par minute et par IP. */
   readonly rateLimitMax: number;
+  /** HSTS (HTTPS de production) ; absent en HTTP local, où il serait inapplicable. */
+  readonly hsts?: boolean;
 }
 
 export async function registerSecurity(app: FastifyInstance, options: SecurityOptions): Promise<void> {
@@ -37,10 +39,19 @@ export async function registerSecurity(app: FastifyInstance, options: SecurityOp
         frameAncestors: ["'none'"],
       },
     },
-    // Le front est servi en HTTP sur le réseau local en bêta : pas de HSTS imposé ici (le
-    // proxy TLS de production l'ajoute).
-    hsts: false,
+    // HSTS seulement derrière HTTPS (cookies Secure) ; le réseau local de test reste en HTTP.
+    hsts: options.hsts ? { maxAge: 31_536_000, includeSubDomains: true } : false,
+    referrerPolicy: { policy: 'no-referrer' },
+    crossOriginOpenerPolicy: { policy: 'same-origin' },
     crossOriginEmbedderPolicy: false,
+  });
+
+  // Fonctions du navigateur inutiles à l'application : toutes refusées.
+  app.addHook('onSend', async (_request, reply) => {
+    reply.header(
+      'permissions-policy',
+      'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()',
+    );
   });
 
   await app.register(rateLimit, {

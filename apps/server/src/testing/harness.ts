@@ -232,6 +232,9 @@ export async function createTestApp(options: TestHarnessOptions = {}) {
           headers: {
             'x-questeo-operateur': TEST_OPERATOR_SECRET,
             'x-questeo-operateur-nom': name,
+            // Le frontal de pilotage envoie toujours l'origine de la page (obligatoire hors lecture).
+            origin: 'http://pilotage.test',
+            host: 'pilotage.test',
             ...o.headers,
           },
         });

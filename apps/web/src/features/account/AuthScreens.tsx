@@ -70,14 +70,14 @@ function Field(props: {
       <label htmlFor={id} className="font-bold">
         {props.label}
       </label>
-      <div className="flex gap-2">
+      <div className="relative flex">
         <input
           id={id}
           type={secret && shown ? 'text' : props.type}
           autoComplete={props.autoComplete}
           required
           aria-describedby={props.hint ? `${id}-aide` : undefined}
-          className="cartoon bg-surface min-w-0 flex-1 px-3 py-3 text-lg"
+          className={`cartoon bg-surface min-w-0 flex-1 px-3 py-3 text-lg ${secret ? 'pr-14' : ''}`}
           value={props.value}
           onChange={(e) => props.onChange(e.target.value)}
         />
@@ -88,9 +88,9 @@ function Field(props: {
             aria-label={shown ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
             aria-controls={id}
             onClick={() => setShown(!shown)}
-            className="cartoon bg-surface focus-visible:outline-primary min-h-12 px-3 font-bold"
+            className="focus-visible:outline-primary absolute inset-y-0 right-0 flex min-h-11 min-w-11 items-center justify-center rounded-lg px-2 focus-visible:outline-2 focus-visible:outline-offset-[-2px]"
           >
-            {shown ? 'Masquer' : 'Afficher'}
+            <EyeIcon crossed={shown} />
           </button>
         )}
       </div>
@@ -536,5 +536,26 @@ export function ResetPasswordScreen() {
         hint={`Au moins ${min} caractères.`}
       />
     </AuthForm>
+  );
+}
+
+/** Œil (mot de passe masqué) ou œil barré (mot de passe affiché), décoratif : le bouton porte le nom. */
+function EyeIcon({ crossed }: { readonly crossed: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      width="24"
+      height="24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+      <circle cx="12" cy="12" r="3" />
+      {crossed && <path d="M4 4l16 16" />}
+    </svg>
   );
 }
