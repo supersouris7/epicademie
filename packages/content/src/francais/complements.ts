@@ -608,8 +608,7 @@ export const FCM1_COMPLEMENTS: readonly Skill[] = [
     memo: [
       'Un **complément d’objet** complète le verbe : il reste collé à lui. Un **groupe circonstanciel** donne un détail (où ? quand ?) : il se déplace.',
       'Teste en déplaçant : « Dans le jardin, ma cousine mange une pomme. » marche. Mais « Une pomme, ma cousine mange » ne marche pas.',
-      'Tu peux aussi supprimer le groupe circonstanciel : « Ma cousine mange une pomme. » reste une phrase.',
-      'Supprimer ne suffit pas : certains compléments d’objet se suppriment aussi (« Ma voisine parle dans la rue. »), mais ils ne se déplacent pas.',
+      'Supprimer ne suffit pas : certains compléments d’objet se suppriment aussi (« Ma voisine parle à son chien. » → « Ma voisine parle. »), mais ils ne se déplacent pas.',
     ],
     factId: 'objet-circ',
     generate: objetCircDraft,
@@ -630,9 +629,8 @@ export const FCM1_COMPLEMENTS: readonly Skill[] = [
     title: 'Repérer les groupes circonstanciels',
     memo: [
       'Un **groupe circonstanciel** donne un détail sur l’action, par exemple où elle se passe, ou quand. On peut le déplacer et le supprimer, la phrase reste correcte.',
-      'Supprimer ne suffit pas : certains compléments d’objet se suppriment aussi (« Ma voisine parle dans la rue. »), mais ils ne se déplacent pas.',
-      'Il peut changer de place. Au début de la phrase, on met souvent une virgule après lui : « Ce matin, ma cousine mange une pomme. »',
-      'Une phrase peut en avoir plusieurs : « Ce matin, ma cousine mange une pomme dans le jardin. »',
+      'Supprimer ne suffit pas : certains compléments d’objet se suppriment aussi (« Ma voisine parle à son chien. » → « Ma voisine parle. »), mais ils ne se déplacent pas.',
+      'Au début de la phrase, on met souvent une virgule après lui. Une phrase peut en avoir plusieurs : « Ce matin, ma cousine mange une pomme dans le jardin. »',
     ],
     factId: 'circonstanciels',
     generate: circonstancielsDraft,
@@ -642,8 +640,7 @@ export const FCM1_COMPLEMENTS: readonly Skill[] = [
     title: 'Manipuler une phrase : déplacer, supprimer, remplacer, ajouter, encadrer',
     memo: [
       'Une **manipulation** est un petit test pour mieux comprendre une phrase. Il y en a cinq : déplacer, supprimer, remplacer, ajouter, **encadrer**.',
-      'Exemples : déplacer → « Dans le jardin, ma cousine mange une pomme. » ; supprimer → « Ma cousine mange une pomme. »',
-      'Remplacer : « Ma cousine mange une pomme sur la terrasse. » ; ajouter : « Ma cousine mange souvent une pomme dans le jardin. »',
+      'Exemples : déplacer → « Dans le jardin, ma cousine mange une pomme. » ; supprimer → « Ma cousine mange une pomme. » ; remplacer → « Ma cousine mange une pomme sur la terrasse. » ; ajouter → « Ma cousine mange souvent une pomme dans le jardin. »',
       'Encadrer : on entoure le groupe avec « C’est… que » : « C’est dans le jardin que ma cousine mange une pomme. »',
     ],
     factId: 'manipulations',
