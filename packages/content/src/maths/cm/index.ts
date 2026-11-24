@@ -16,6 +16,7 @@ import { buildAngles } from './angles.ts';
 import { buildDonnees } from './donnees.ts';
 import { buildProbabilites } from './probabilites.ts';
 import { buildProportionnalite } from './proportionnalite.ts';
+import { buildComplements } from './complements.ts';
 
 /**
  * Programmes du CM1 et du CM2 (cycle 3, BO n°16 du 17 avril 2025). Les deux années ont la même structure ;
@@ -24,7 +25,8 @@ import { buildProportionnalite } from './proportionnalite.ts';
  */
 function build(g: CM): Chapter[] {
   const k = contexte(g);
-  return [
+  const extra = buildComplements(k);
+  const chapters = [
     buildNombres(k),
     buildFractions(k),
     buildDecimaux(k),
@@ -41,6 +43,11 @@ function build(g: CM): Chapter[] {
     buildProbabilites(k),
     buildProportionnalite(k),
   ];
+  // Notions ajoutées par l'audit du programme (complements.ts), rangées dans leur chapitre (m<classe>-<clé>).
+  return chapters.map((c) => {
+    const more = extra[c.id.replace(`m${g}-`, '')];
+    return more ? { ...c, skills: [...c.skills, ...more] } : c;
+  });
 }
 
 export const CM1: readonly Chapter[] = build('cm1');
