@@ -185,7 +185,7 @@ function typesDraft(rng: Rng, level: Level): QuestionDraft {
       ]);
       return {
         prompt: 'Lis ce texte. Combien de phrases impératives contient-il ?',
-        figure: document('Dans la classe', lines),
+        figure: document('Quelques phrases', lines),
         answer: num(k),
         traps: numTraps(r(k), [
           [q, 'Tu as compté les phrases interrogatives : ce sont les questions, elles se terminent par « ? ».'],
@@ -278,6 +278,14 @@ function questionDraft(rng: Rng, level: Level): QuestionDraft {
             `${item.intonation} ?`,
             'Cette question est posée avec l’intonation seulement. Ici, il fallait « est-ce que ».',
           ),
+          ...(item.estCeQue.includes('qu’')
+            ? [
+                textTrap(
+                  `${item.estCeQue.replace('qu’', 'que ')} ?`,
+                  'Devant « il », « elle », « ils » ou « elles », « que » devient « qu’ » : on écrit « est-ce qu’ ».',
+                ),
+              ]
+            : []),
         ],
         hint: 'Commence la phrase par « est-ce que », puis recopie le sujet et le verbe sans les déplacer.',
         steps: [
@@ -299,6 +307,14 @@ function questionDraft(rng: Rng, level: Level): QuestionDraft {
             `${item.intonation} ?`,
             'Ici, le sujet n’a pas changé de place : c’est la seule intonation. Il fallait inverser le sujet.',
           ),
+          ...(item.inversion.includes('-t-')
+            ? [
+                textTrap(
+                  `${item.inversion.replace('-t-', '-')} ?`,
+                  'Quand le verbe finit par une voyelle et que le sujet est « il » ou « elle », on ajoute un « t » entre deux traits d’union pour que ça sonne bien.',
+                ),
+              ]
+            : []),
         ],
         hint: 'Place le verbe avant le sujet, et relie-les par un trait d’union.',
         steps: [
@@ -315,7 +331,7 @@ function questionDraft(rng: Rng, level: Level): QuestionDraft {
       return {
         prompt: 'Lis ces questions. Combien sont posées avec l’inversion du sujet ?',
         figure: document(
-          'À la récréation',
+          'Quelques questions',
           items.map((it, i) => `${it[at(forms, i)]} ?`),
         ),
         answer: num(k),
@@ -448,7 +464,7 @@ function negationDraft(rng: Rng, level: Level): QuestionDraft {
       const lines = rng.shuffle([...pickN(rng, negatives, k), ...pickN(rng, affirmatives, 5 - k)]).map((l) => l.text);
       return {
         prompt: 'Lis ce texte. Combien de phrases sont à la forme négative ?',
-        figure: document('Le matin', lines),
+        figure: document('Quelques phrases', lines),
         answer: num(k),
         traps: numTraps(r(k), [
           [5 - k, 'Tu as compté les phrases affirmatives.'],
@@ -568,7 +584,7 @@ function exclamativeDraft(rng: Rng, level: Level): QuestionDraft {
       return {
         prompt: 'Une seule ligne de ce texte est à la forme exclamative. Quel est son numéro ?',
         figure: document(
-          'Au zoo',
+          'Quelques phrases',
           lines.map((l) => l.text),
         ),
         answer: num(k),
@@ -643,7 +659,7 @@ function ponctuationDraft(rng: Rng, level: Level): QuestionDraft {
       const { answer, traps } = choice(
         rng,
         withSign(phrase, fin),
-        wrongs.map((w) => ({ label: `${phrase}${w === ',' || w === ';' ? w : ` ${w}`}`, why: whyWrongMark(w, fin) })),
+        wrongs.map((w) => ({ label: `${phrase}${w === ',' ? w : ` ${w}`}`, why: whyWrongMark(w, fin) })),
       );
       return {
         prompt: 'Quelle phrase est bien ponctuée ?',
@@ -699,7 +715,7 @@ function ponctuationDraft(rng: Rng, level: Level): QuestionDraft {
       const targetMark = MARK[targetFin];
       return {
         prompt: `Un signe de fin manque à la ligne ${target + 1} de ce texte. Écris-le.`,
-        figure: document('Une conversation', lines),
+        figure: document('Quelques phrases', lines),
         answer: { kind: 'text', accepted: [targetMark] },
         traps: WRONG_MARKS[targetFin].slice(0, 2).map((w) => textTrap(w, whyWrongMark(w, targetFin))),
         hint: 'Lis la ligne : informe-t-elle, pose-t-elle une question, ou exprime-t-elle une émotion vive ?',

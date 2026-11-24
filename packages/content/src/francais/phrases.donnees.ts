@@ -213,10 +213,10 @@ export const NEGATIONS: readonly Negation[] = [
     plus: 'Elle n’ouvre plus la fenêtre',
   },
   {
-    affirmative: 'Tu parles fort',
-    pas: 'Tu ne parles pas fort',
-    jamais: 'Tu ne parles jamais fort',
-    plus: 'Tu ne parles plus fort',
+    affirmative: 'Tu parles anglais',
+    pas: 'Tu ne parles pas anglais',
+    jamais: 'Tu ne parles jamais anglais',
+    plus: 'Tu ne parles plus anglais',
   },
   {
     affirmative: 'Ils finissent leur travail',
