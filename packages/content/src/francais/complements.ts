@@ -43,6 +43,12 @@ const whyObjet = (e: Entree) =>
 const whyCirc = (e: Entree) => `« ${e.circ} » se déplace (« ${devant(e)} ») : ce n’est pas un complément d’objet.`;
 const whySujet = (e: Entree) => `« ${e.gs} » est le sujet : il dit qui fait l’action. Ce n’est pas ce groupe-là.`;
 
+/** COI écrit sans sa préposition (« son chien » au lieu de « à son chien »). */
+const sansPrep = (e: Entree) =>
+  e.prep
+    ? [textTrap(e.obj.slice(e.prep.length + 1), `Il manque « ${e.prep} » : cette préposition fait partie du COI.`)]
+    : [];
+
 // ───────────────────────── 1. Complément d'objet ou circonstanciel ─────────────────────────
 
 const TEST_DEPLACER = 'Je teste : je déplace le groupe au début de la phrase.';
@@ -114,6 +120,10 @@ function objetCircDraft(rng: Rng, level: Level): QuestionDraft {
         traps: [
           textTrap(e.circ, `« ${e.circ} » peut se déplacer ou se supprimer : c’est un groupe circonstanciel.`),
           textTrap(e.gs, whySujet(e)),
+          ...sansPrep(e).map((t) => ({
+            ...t,
+            why: `Il manque « ${e.prep} » : ce petit mot fait partie du complément.`,
+          })),
         ],
         hint: 'Cherche le groupe qui reste collé au verbe, même quand on essaie de déplacer les autres.',
         steps: [
@@ -160,13 +170,13 @@ const ACCEPTE_TYPE = {
 const whyCod = (e: Entree) =>
   `Il n’y a pas de petit mot (à, de) entre « ${e.verbe} » et « ${e.obj} » : c’est un COD, pas un COI.`;
 const whyCoi = (e: Entree) =>
-  `« ${e.obj} » est relié au verbe par « ${e.prep ?? 'à'} » : c’est un COI. Un COD n’a pas de petit mot devant lui.`;
+  `« ${e.obj} » est relié au verbe par « ${e.prep ?? 'à'} » : c’est un COI. Un COD n’a ni « à » ni « de » pour le relier au verbe.`;
 const whyType = (e: Entree) => (e.type === 'cod' ? whyCod(e) : whyCoi(e));
 
 const stepsCodCoi = (e: Entree) => [
   `Je pose la question après le verbe : « ${e.gs} ${e.q} ? » — ${e.obj}.`,
   e.type === 'cod'
-    ? `Entre « ${e.verbe} » et « ${e.obj} », il n’y a pas de petit mot : c’est un COD.`
+    ? `Entre « ${e.verbe} » et « ${e.obj} », il n’y a ni « à » ni « de » : c’est un COD.`
     : `Entre « ${e.verbe} » et le nom, il y a « ${e.prep ?? 'à'} » : c’est un COI.`,
   `Le groupe « ${e.obj} » est **${e.type === 'cod' ? 'un COD' : 'un COI'}**.`,
 ];
@@ -208,14 +218,14 @@ function codCoiDraft(rng: Rng, level: Level): QuestionDraft {
                   why:
                     cible === 'cod'
                       ? `Dans cette phrase, « ${e.obj} » est relié au verbe par « ${e.prep ?? 'à'} » : c’est un COI.`
-                      : `Dans cette phrase, « ${e.obj} » suit le verbe sans petit mot : c’est un COD.`,
+                      : `Dans cette phrase, « ${e.obj} » suit le verbe sans « à » ni « de » : c’est un COD.`,
                 },
               ],
         ),
         hint: 'Pour chaque phrase, regarde ce qui suit le verbe : un petit mot (à, de) ou rien.',
         steps: [
           'Dans chaque phrase, je cherche ce qui suit le verbe.',
-          'Un COD suit le verbe sans petit mot. Un COI est relié au verbe par « à » ou « de ».',
+          'Un COD suit le verbe sans « à » ni « de ». Un COI est relié au verbe par « à » ou « de ».',
           `La bonne phrase est : **${sansCirc(bon)}**`,
         ],
       };
@@ -244,6 +254,7 @@ function codCoiDraft(rng: Rng, level: Level): QuestionDraft {
             `« ${e.circ} » peut se déplacer ou se supprimer : c’est un groupe circonstanciel, pas un complément d’objet.`,
           ),
           textTrap(e.gs, whySujet(e)),
+          ...sansPrep(e),
         ],
         hint: 'Mets de côté le groupe qui peut se déplacer. Pose ensuite la question après le verbe.',
         steps: [
@@ -291,7 +302,7 @@ const whyNombre = (w: number, juste: number): string =>
     ? 'Il y en a : un groupe qui dit où ou quand se déplace et se supprime.'
     : w < juste
       ? 'Tu en as oublié un : relis le début et la fin de la phrase.'
-      : 'Tu en as compté un de trop : le complément d’objet ne se déplace pas, ce n’est pas un groupe circonstanciel.';
+      : 'Tu en as compté trop : le complément d’objet ne se déplace pas, ce n’est pas un groupe circonstanciel.';
 
 function circonstancielsDraft(rng: Rng, level: Level): QuestionDraft {
   switch (level) {
@@ -393,10 +404,7 @@ function circonstancielsDraft(rng: Rng, level: Level): QuestionDraft {
         ),
         answer: num(total),
         traps: numTraps(r(total), [
-          [
-            total - 1,
-            'Il t’en manque un : une phrase peut avoir un groupe circonstanciel au début et un autre à la fin.',
-          ],
+          [total - 1, 'Il t’en manque un : relis chaque phrase, au début comme à la fin.'],
           [total + 1, 'Tu en as compté un de trop : un complément d’objet reste collé au verbe, il ne compte pas.'],
           [3, 'Tu as compté un groupe par phrase. Certaines phrases en ont deux.'],
         ]),
@@ -599,9 +607,9 @@ export const FCM1_COMPLEMENTS: readonly Skill[] = [
     id: 'fcm1-cod-coi',
     title: 'COD ou COI dans des phrases simples',
     memo: [
-      'Le **COD** suit le verbe sans petit mot. Pose « quoi ? » après le verbe : « Ma cousine mange quoi ? Une pomme. »',
-      'Le **COI** est relié au verbe par une **préposition**, « à » ou « de ». Pose « à qui ? » ou « de quoi ? » : « Ma voisine parle à son chien. »',
-      'Pour t’entraîner, les phrases sont simples : un verbe, un complément, pas de piège de sens.',
+      'Le **COD** suit le verbe sans « à » ni « de ». Pose « qui ? » ou « quoi ? » après le verbe : « Ma cousine mange quoi ? Une pomme. »',
+      'Le **COI** est relié au verbe par une **préposition**, souvent « à » ou « de ». Pose « à qui ? », « à quoi ? », « de qui ? » ou « de quoi ? » : « Ma voisine parle à son chien. »',
+      'Méthode : trouve le verbe, pose la question, puis regarde s’il y a « à » ou « de » devant la réponse.',
     ],
     factId: 'cod-coi',
     generate: codCoiDraft,
@@ -610,7 +618,7 @@ export const FCM1_COMPLEMENTS: readonly Skill[] = [
     id: 'fcm1-groupes-circonstanciels',
     title: 'Repérer les groupes circonstanciels',
     memo: [
-      'Un **groupe circonstanciel** donne un détail sur l’action : où elle se passe, ou quand. On peut le supprimer, la phrase reste correcte.',
+      'Un **groupe circonstanciel** donne un détail sur l’action, par exemple où elle se passe, ou quand. On peut le supprimer, la phrase reste correcte.',
       'Il peut changer de place. Au début de la phrase, une virgule le sépare du sujet : « Ce matin, ma cousine mange une pomme. »',
       'Une phrase peut en avoir plusieurs : « Ce matin, ma cousine mange une pomme dans le jardin. »',
     ],
@@ -623,6 +631,7 @@ export const FCM1_COMPLEMENTS: readonly Skill[] = [
     memo: [
       'Une **manipulation** est un petit test pour mieux comprendre une phrase. Il y en a cinq : déplacer, supprimer, remplacer, ajouter, **encadrer**.',
       'Exemples : déplacer → « Dans le jardin, ma cousine mange une pomme. » ; supprimer → « Ma cousine mange une pomme. »',
+      'Remplacer : « Ma cousine mange une pomme sur la terrasse. » ; ajouter : « Ma cousine mange souvent une pomme dans le jardin. »',
       'Encadrer : on entoure le groupe avec « C’est… que » : « C’est dans le jardin que ma cousine mange une pomme. »',
     ],
     factId: 'manipulations',

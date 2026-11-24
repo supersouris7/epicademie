@@ -198,7 +198,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'cod',
     word: 'COD',
     forms: ['complément d’objet direct', "complément d'objet direct", 'compléments d’objet directs'],
-    definition: 'Complément d’objet direct : il suit le verbe sans petit mot entre les deux.',
+    definition: 'Complément d’objet direct : il suit le verbe sans « à » ni « de » pour le relier.',
     example: 'Ma cousine mange une pomme.',
   },
   {
