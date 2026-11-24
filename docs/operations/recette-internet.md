@@ -60,17 +60,19 @@ sauvegarde la plus récente de `~recette/backups/` (`pg_restore --clean`), puis 
 
 ## Ajouter / retirer un testeur
 
-Les comptes sont dans `/etc/caddy/testeurs.conf` (une ligne `nom empreinte-bcrypt`).
+Script de la fabrique (sur l'atelier) : `porte-testeur.sh ajouter <nom>` (affiche le mot de passe),
+`porte-testeur.sh retirer <nom>` (coupe l'accès immédiatement), `porte-testeur.sh liste`.
 
-```bash
-caddy hash-password                       # saisir le mot de passe, copier l'empreinte
-sudoedit /etc/caddy/testeurs.conf         # ajouter « nom <empreinte> » ou supprimer la ligne
-sudo systemctl reload caddy               # effet immédiat, sans coupure
-```
+Fichiers : `/etc/caddy/testeurs.conf` (une ligne `nom empreinte-bcrypt`), `/etc/caddy/porte-jetons.txt`
+(une ligne `nom jeton`) et `/etc/caddy/porte.conf`, généré à partir des jetons.
+
+**Cookie de la porte** : une fois identifié, le testeur reçoit un cookie `porte` (jeton propre à lui, 30 jours,
+`Secure; HttpOnly; SameSite=Lax`) qui ouvre la porte sans redemander l'identifiant. Raison : Safari sur
+iPhone oublie l'identifiant HTTP à la fermeture et ne l'envoie pas sur le temps réel (WebSocket), d'où des
+demandes répétées. Retirer un testeur invalide aussi son cookie.
 
 Les accès en clair sont conservés **hors dépôt**, dans le dossier secrets de la fabrique
 (`recette-acces.txt`, mode 600). Les transmettre par un canal privé, jamais par ticket ou PR.
-Pour couper un testeur : supprimer sa ligne et recharger Caddy.
 
 ## En cas d'alerte
 
