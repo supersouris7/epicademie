@@ -5,14 +5,19 @@ import { renderApp } from '../../testing/renderApp.tsx';
 vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.ts')).socketModule);
 
 const GROUPS: readonly [string, readonly string[]][] = [
-  ['Apprendre', ['Entraînement', 'Mode Histoire']],
   ['Défis', ['Contre-la-montre', 'Survie', 'Arène d’évaluation, à venir']],
   ['En famille', ['Duels']],
 ];
 
-describe('menu principal à 6 tuiles', () => {
-  it('affiche exactement 6 tuiles en 3 groupes, sans mode retiré', async () => {
+describe('accueil : deux grands modes, Défis et En famille dessous', () => {
+  it('affiche les deux gros boutons puis les groupes Défis et En famille, sans mode retiré', async () => {
     renderApp('/hub');
+    const play = await screen.findByRole('list', { name: 'Jouer' });
+    expect(
+      within(play)
+        .getAllByRole('button')
+        .map((b) => b.textContent.trim()),
+    ).toEqual(['Entraînement', 'Mode Histoire']);
     for (const [group, names] of GROUPS) {
       const section = (await screen.findByRole('heading', { name: group })).closest('section')!;
       const labels = within(section)
@@ -31,6 +36,7 @@ describe('menu principal à 6 tuiles', () => {
     expect(tile).toHaveAttribute('aria-disabled', 'true');
     await user.click(tile);
     expect(screen.getByRole('heading', { name: 'Défis' })).toBeInTheDocument();
+    expect(screen.queryByText(/Bientôt disponible/)).not.toBeInTheDocument();
   });
 
   it('Duels mène à l’écran des duels', async () => {

@@ -19,7 +19,7 @@ export function PageShell({ title, back, actions, children, nav }: PageShellProp
   const navigate = useNavigate();
   const hasHeader = title !== undefined || back !== undefined || actions !== undefined;
   return (
-    <div className="mx-auto flex min-h-dvh max-w-5xl flex-col gap-5 px-4 pb-6 sm:px-6 sm:pb-8">
+    <div className="mx-auto flex min-h-dvh max-w-5xl flex-col gap-5 overflow-x-clip px-4 pb-6 sm:px-6 sm:pb-8">
       <GameBackdrop />
       {nav && <MainNav profile={nav} />}
       {hasHeader && (
