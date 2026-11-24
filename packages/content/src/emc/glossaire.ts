@@ -290,7 +290,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'republique',
     'République',
     ['republique', 'la République'],
-    'Le pays où le peuple choisit ceux qui le dirigent, avec des lois pour tous.',
+    'Une façon d’organiser un pays : le peuple choisit ceux qui le dirigent, avec des lois pour tous.',
     'La France est une République.',
   ),
   t(
@@ -348,8 +348,22 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'droits-civils',
     'droits civils',
     ['droit civil'],
-    'Les droits de tous : aller à l’école, être soigné, être protégé.',
-    'Être soigné est un droit civil.',
+    'Les droits qui protègent la liberté de chacun : dire ce qu’on pense, être en sûreté, être propriétaire.',
+    'La liberté d’opinion est un droit civil.',
+  ),
+  t(
+    'droits-sociaux',
+    'droits sociaux',
+    ['droit social'],
+    'Les droits qui aident chacun à bien vivre : aller à l’école, être soigné, travailler.',
+    'Être soigné est un droit social.',
+  ),
+  t(
+    'convention-droits-enfant',
+    'Convention des droits de l’enfant',
+    ['Convention internationale des droits de l’enfant'],
+    'Un texte signé par de nombreux pays qui donne des droits aux enfants. Son article 7 parle de la nationalité.',
+    'Grâce à la Convention, un enfant a le droit d’avoir une nationalité.',
   ),
   t(
     'droits-politiques',

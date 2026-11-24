@@ -85,6 +85,22 @@ export const SOURCES: readonly Source[] = [
     consultedOn: CONSULTED,
   },
   {
+    id: 'vie-publique-maire',
+    title: 'Fiche « Quelles sont les fonctions d’un maire ? »',
+    publisher: 'Vie publique (DILA)',
+    url: 'https://www.vie-publique.fr/fiches/19617-les-fonctions-les-pouvoirs-dun-maire',
+    textDate: '2026-07-15',
+    consultedOn: CONSULTED,
+  },
+  {
+    id: 'vie-publique-citoyen',
+    title: 'Fiche « Quel est le statut juridique d’un citoyen ? »',
+    publisher: 'Vie publique (DILA)',
+    url: 'https://www.vie-publique.fr/fiches/23856-quel-est-le-statut-juridique-dun-citoyen',
+    textDate: '2026-01-05',
+    consultedOn: CONSULTED,
+  },
+  {
     id: 'francais-cycle3-2025',
     title: 'Programme de français du cycle 3 (CM1, CM2, 6e)',
     publisher: 'Ministère de l’Éducation nationale',

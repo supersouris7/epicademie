@@ -13,6 +13,8 @@ export interface Fait {
   /** Citation exacte du programme. */
   readonly quote: string;
   readonly explain: string;
+  /** Fait exigeant (numéro d'article…) : non proposé au niveau 1. */
+  readonly avance?: boolean;
 }
 
 export interface Libre {
@@ -44,6 +46,8 @@ export interface Notion {
   readonly programme?: string;
   /** Crédit du texte à lire (défaut : programme de CM1). */
   readonly credit?: string;
+  /** Sources du registre en plus du programme. */
+  readonly sources?: readonly string[];
   readonly docs: readonly {
     readonly title: string;
     readonly lines: readonly string[];
@@ -89,7 +93,7 @@ function match(rng: Rng, prompt: string, pairs: readonly (readonly [string, stri
 }
 
 function level1(rng: Rng, n: Notion): QuestionDraft {
-  const f = rng.pick(n.faits);
+  const f = rng.pick(n.faits.filter((x) => !x.avance));
   return {
     prompt: f.q,
     ...choice(rng, f.a, f.wrong.slice(0, 2)),
@@ -172,7 +176,7 @@ export function notion(n: Notion): Skill {
     title: n.title,
     levels: 5,
     version: 1,
-    lesson: { memo: n.memo, source: n.programme ?? PROG, sources: [SOURCE] },
+    lesson: { memo: n.memo, source: n.programme ?? PROG, sources: [SOURCE, ...(n.sources ?? [])] },
     generate: (rng: Rng, level: Level): QuestionDraft => {
       switch (level) {
         case 1:

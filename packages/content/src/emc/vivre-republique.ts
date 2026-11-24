@@ -7,6 +7,7 @@ import { notion, type Notion } from './kit.ts';
  * (personnages inventés). Les rôles du maire (élu local, représentant de l'État, état civil, école, environnement)
  * figurent dans le programme de CE2 : ils sont repris ici comme rappel pour la notion « la commune et ses élus »,
  * que le programme de CM2 aborde par la rencontre avec les élus locaux et les conseillers municipaux juniors.
+ * Compléments vie-publique.fr (registre) : élection du maire par le conseil municipal ; droits civils, sociaux et politiques.
  */
 
 const PROGRAMME = 'classe de CM2 : « Vivre en République »';
@@ -16,26 +17,24 @@ const CREDIT = 'Texte écrit pour l’exercice, d’après le programme de CM2.'
 
 const SYMBOLES =
   'connaître et comprendre les symboles républicains mentionnés par la Constitution : drapeau, hymne, devise, et d’autres coutumiers comme Marianne';
+/** Registre des sources : fiches de vie-publique.fr. */
+const VP_MAIRE = 'vie-publique-maire';
+const VP_CITOYEN = 'vie-publique-citoyen';
+const COUTUMIERS = '« Coutumiers » veut dire « d’usage ».';
 const FETE = 'connaître la fête nationale du 14 juillet (héritière de la Fête de la Fédération de 1790)';
 const RESPECT_SYMBOLES = 'comprendre la nécessité de respecter ces symboles';
-const UE = 'savoir que la République française est membre de l’Union européenne (UE)';
 const EUROPE =
   'Connaître le drapeau européen, comprendre pourquoi il est associé au drapeau tricolore sur les bâtiments publics et reconnaitre l’hymne européen';
-const ONZE_NOV = 'Participer à la commémoration du 11 novembre';
 const DEVISE = 'comprendre la devise « Liberté, Égalité, Fraternité »';
 
 const NATIONALITE =
   'À partir de l’article 7 de la Convention internationale des droits de l’enfant, faire comprendre que tout enfant possède dès sa naissance des droits, dont celui d’acquérir une nationalité';
 const DROITS_FRANCE =
   'Par des exemples choisis illustrant des droits, comprendre qu’en France, tout individu bénéficie de droits comme celui à l’éducation, d’être soigné, etc.';
-const CIVILS_POLITIQUES =
-  'Un citoyen bénéficie de droits civils, puis politiques à sa majorité, et tout individu bénéficie de droits civils';
 const DDHC =
   'citer quelques droits individuels et collectifs comme le droit à la liberté d’expression (art. 11), d’opinion (art. 10), le droit à la sûreté (art. 2)';
 const POLITIQUES =
   'les distinguer des droits politiques comme le droit de vote et d’éligibilité qui permettent de participer aux décisions de la vie publique';
-const IMPOT =
-  'caractériser différents devoirs du citoyen, comme sa participation au financement des charges supportées par l’État par le paiement de l’impôt (art. 13)';
 const DEVOIRS =
   'connaître les devoirs du citoyen et de toute personne résidant sur le territoire national : respecter les lois, contribuer à financer les dépenses publiques';
 const DROITS_AUTRES = 'Chaque citoyen doit respecter les droits des autres qui sont identiques aux siens';
@@ -49,7 +48,8 @@ const CANDIDATS =
   'citoyennes et de citoyens actifs qui se sont portés candidats à une élection municipale, et de comprendre les modalités d’exercice de leur mandat local';
 const JUNIORS =
   'L’expérience des conseillers municipaux juniors est considérée en vue d’expliquer le rôle politique du citoyen qui, par le vote, participe à la vie de sa cité';
-const ENQUETE = 'Faire une enquête sur les compétences des élus de la commune';
+const DELEGUE =
+  'À partir de l’organisation d’une élection (délégué de classe par exemple), comprendre les règles et le fonctionnement de l’élection présidentielle';
 
 const VOTE_ROLE =
   'connaître le rôle politique des citoyennes et des citoyens : ils ont vocation à participer à la vie politique du pays et à l’évolution des institutions';
@@ -64,7 +64,7 @@ const BON_FONCTIONNEMENT = 'par leur vote citoyennes et citoyens assurent le bon
 const valeursSymboles: Notion = {
   id: 'emcm2-valeurs-symboles',
   title: 'Les valeurs et les symboles de la République',
-  hint: 'Pense à ce que tu vois sur une mairie ou dans ta classe : le drapeau, la devise…',
+  hint: 'Pense à ce qui représente la France : ce qu’on voit, ce qu’on chante, ce qu’on lit.',
   programme: PROGRAMME,
   credit: CREDIT,
   memo: [
@@ -78,11 +78,11 @@ const valeursSymboles: Notion = {
       a: 'Liberté, Égalité, Fraternité',
       wrong: [
         { label: 'Courage, Force, Victoire', why: 'Ce n’est pas la devise de la République.' },
-        {
-          label: 'Travail, Famille, Patrie',
-          why: 'Ce n’est pas la devise de la République : la bonne est « Liberté, Égalité, Fraternité ».',
-        },
         { label: 'Paix, Argent, Pouvoir', why: 'La devise ne parle ni d’argent ni de pouvoir.' },
+        {
+          label: 'Liberté, Sécurité, Amitié',
+          why: 'Deux mots ne sont pas dans la devise : la bonne est « Liberté, Égalité, Fraternité ».',
+        },
       ],
       gap: ['La devise de la République est « Liberté, Égalité, ', ' ».', ['Fraternité', 'fraternité', 'Fraternite']],
       quote: DEVISE,
@@ -120,7 +120,7 @@ const valeursSymboles: Notion = {
         ['hymne'],
       ],
       quote: SYMBOLES,
-      explain: 'La Constitution cite le drapeau, l’hymne et la devise. Marianne est un symbole d’usage courant.',
+      explain: `La Constitution cite le drapeau, l’hymne et la devise. Marianne est un symbole coutumier. ${COUTUMIERS}`,
     },
     {
       q: 'Pourquoi faut-il respecter les symboles de la République ?',
@@ -130,7 +130,11 @@ const valeursSymboles: Notion = {
         { label: 'parce qu’ils sont très anciens', why: 'L’ancienneté n’est pas la raison : ils nous rassemblent.' },
         { label: 'parce qu’ils appartiennent au maire', why: 'Ils appartiennent à tous, pas à une seule personne.' },
       ],
-      gap: ['On respecte les symboles de la République car ils nous ', '.', ['rassemblent', 'unissent']],
+      gap: [
+        'Les symboles de la République représentent ce que nous avons en commun : il faut les ',
+        '.',
+        ['respecter', 'honorer'],
+      ],
       quote: RESPECT_SYMBOLES,
       explain:
         'Les symboles rendent la République visible. Les respecter, c’est respecter ce que nous avons en commun.',
@@ -171,7 +175,7 @@ const valeursSymboles: Notion = {
     ['Devise', 'Liberté, Égalité, Fraternité'],
     ['Fête nationale', 'Le 14 juillet'],
     ['Marianne', 'Visage de la République'],
-    ['Union européenne', 'Les pays d’Europe dont la France est membre'],
+    ['Union européenne', 'Groupe de pays d’Europe dont la France fait partie'],
   ],
   libres: [
     {
@@ -182,7 +186,7 @@ const valeursSymboles: Notion = {
         { text: 'devise', why: 'La devise est une phrase de trois mots, pas un chant.' },
       ],
       quote: SYMBOLES,
-      explain: 'L’hymne national s’appelle la Marseillaise.',
+      explain: `L’hymne national s’appelle la Marseillaise. ${COUTUMIERS}`,
     },
     {
       q: 'Quel est le visage qui symbolise la République, un prénom de femme (un mot) ?',
@@ -192,7 +196,7 @@ const valeursSymboles: Notion = {
         { text: 'liberté', why: 'La liberté est un mot de la devise, pas le nom du visage de la République.' },
       ],
       quote: SYMBOLES,
-      explain: 'Marianne est un symbole coutumier de la République.',
+      explain: `Marianne est un symbole coutumier de la République. ${COUTUMIERS}`,
     },
   ],
   docs: [
@@ -212,11 +216,11 @@ const valeursSymboles: Notion = {
             { label: 'la ville', why: 'Le texte dit que la France fait partie de l’Union européenne.' },
             {
               label: 'l’école de Léa',
-              why: 'Le drapeau d’un bâtiment public est celui de l’Europe, pas celui de l’école.',
+              why: 'Ce drapeau est celui de l’Union européenne, pas celui de l’école.',
             },
             { label: 'un club de sport', why: 'Un club n’est pas un symbole d’un bâtiment public.' },
           ],
-          quote: UE,
+          quote: EUROPE,
           explain:
             'La France est membre de l’Union européenne. Le drapeau européen est associé au drapeau tricolore sur les bâtiments publics.',
         },
@@ -229,7 +233,7 @@ const valeursSymboles: Notion = {
             { label: 'l’hymne', why: 'L’hymne se chante, il ne se hisse pas au mât.' },
           ],
           quote: SYMBOLES,
-          explain: 'Le drapeau tricolore est un symbole de la République, cité par la Constitution.',
+          explain: `Le drapeau tricolore est un symbole de la République, cité par la Constitution. ${COUTUMIERS}`,
         },
       ],
     },
@@ -237,6 +241,7 @@ const valeursSymboles: Notion = {
       title: 'La cérémonie du 11 novembre',
       lines: [
         'Le 11 novembre, la classe de Samir va devant le monument aux morts.',
+        'Ce monument porte les noms de soldats morts à la guerre. Il garde la mémoire collective : les souvenirs que tout un pays partage.',
         'Le maire est là. Tout le monde se tait quand la Marseillaise est jouée.',
         'Samir demande : « Pourquoi on reste debout et silencieux ? »',
       ],
@@ -250,7 +255,7 @@ const valeursSymboles: Notion = {
             { label: 'Marianne', why: 'Marianne est un visage, pas un air de musique.' },
           ],
           quote: SYMBOLES,
-          explain: 'La Marseillaise est l’hymne national : on la joue pendant les cérémonies.',
+          explain: `La Marseillaise est l’hymne national : on la joue pendant les cérémonies. ${COUTUMIERS}`,
         },
         {
           q: 'Pourquoi reste-t-on silencieux pendant la cérémonie ?',
@@ -263,9 +268,8 @@ const valeursSymboles: Notion = {
               why: 'Le silence montre le respect de tous, pas l’ordre d’une seule personne.',
             },
           ],
-          quote: ONZE_NOV,
-          explain:
-            'On participe à la commémoration du 11 novembre : se taire montre le respect, comme pour les symboles.',
+          quote: RESPECT_SYMBOLES,
+          explain: 'Pendant la cérémonie du 11 novembre, se taire montre qu’on respecte les symboles et la mémoire.',
         },
       ],
     },
@@ -279,11 +283,12 @@ const droitsDeTous: Notion = {
   title: 'Les droits et les devoirs de tous',
   hint: 'Demande-toi : est-ce un droit qu’on a, ou une chose qu’on doit faire ?',
   programme: PROGRAMME,
+  sources: [VP_CITOYEN],
   credit: CREDIT,
   memo: [
-    'Un **droit** te protège ou te permet d’agir. Un **devoir** est ce que tu dois faire. En France, tout le monde a des **droits civils** : aller à l’école, être soigné.',
-    'Les **droits politiques**, comme voter, viennent à la majorité. La **DDHC** (1789) en cite plusieurs : liberté d’expression, liberté d’opinion, sûreté.',
-    'Chacun doit respecter les lois, payer l’**impôt** et respecter les droits des autres. Il faut aussi combattre les **préjugés**.',
+    'Un **droit** te protège ou te permet d’agir. En France, tout le monde a des **droits sociaux** (aller à l’école, être soigné) et des **droits civils** : la **DDHC** (1789) cite la liberté d’expression, d’opinion et la sûreté (être protégé contre une arrestation injuste).',
+    'Les **droits politiques**, comme voter, viennent à la majorité. La **Convention des droits de l’enfant** (article 7) donne à chaque enfant le droit d’avoir une nationalité.',
+    'Un **devoir** est ce que tu dois faire : respecter les lois et les droits des autres, payer l’**impôt**. Il faut aussi combattre les **préjugés**.',
   ],
   faits: [
     {
@@ -298,22 +303,27 @@ const droitsDeTous: Notion = {
           label: 'le droit de faire ce qu’on veut aux autres',
           why: 'Chaque citoyen doit respecter les droits des autres.',
         },
-        { label: 'le droit de choisir ses voisins', why: 'Ce n’est pas un droit cité par le programme.' },
+        {
+          label: 'le droit de choisir ses voisins',
+          why: 'Ce droit n’existe pas : on ne choisit pas qui habite à côté.',
+        },
       ],
-      gap: ['En France, tout individu a droit à l’', ' et d’être soigné.', ['éducation', 'education']],
+      gap: [
+        'En France, chaque enfant a droit à l’',
+        ' : il peut aller à l’école.',
+        ['éducation', 'education', 'instruction'],
+      ],
       quote: DROITS_FRANCE,
       explain: 'En France, tout individu a des droits, comme celui à l’éducation et celui d’être soigné.',
     },
     {
+      avance: true,
       q: 'Quel article de la Convention internationale des droits de l’enfant parle de la nationalité ?',
       a: 'l’article 7',
       wrong: [
-        {
-          label: 'l’article 11',
-          why: 'L’article 11 est un article de la DDHC sur la liberté d’expression, pas de la Convention.',
-        },
-        { label: 'l’article 13', why: 'L’article 13 de la DDHC parle de l’impôt.' },
-        { label: 'l’article 3', why: 'L’article 3 de la DDHC parle de la souveraineté.' },
+        { label: 'l’article 11', why: 'Dans la Convention, l’article sur la nationalité est le 7, pas le 11.' },
+        { label: 'l’article 13', why: 'Dans la Convention, l’article sur la nationalité est le 7, pas le 13.' },
+        { label: 'l’article 3', why: 'Dans la Convention, l’article sur la nationalité est le 7, pas le 3.' },
       ],
       gap: [
         'Tout enfant a des droits dès sa naissance, dont celui d’acquérir une ',
@@ -327,19 +337,23 @@ const droitsDeTous: Notion = {
       q: 'Quel est un droit politique ?',
       a: 'le droit de vote',
       wrong: [
-        { label: 'le droit d’être soigné', why: 'C’est un droit civil, qui bénéficie à tout individu.' },
-        { label: 'le droit d’aller à l’école', why: 'C’est un droit civil, pour tous les enfants.' },
+        { label: 'le droit d’être soigné', why: 'C’est un droit social, pour tout le monde : il ne sert pas à voter.' },
+        {
+          label: 'le droit d’aller à l’école',
+          why: 'C’est un droit social, pour tous les enfants : il ne sert pas à voter.',
+        },
         {
           label: 'le droit de jouer à la récré',
           why: 'Ce n’est pas un droit politique : il ne sert pas à décider de la vie publique.',
         },
       ],
-      gap: ['Le droit de vote est un droit ', ' : il permet de participer aux décisions.', ['politique']],
+      gap: ['Le droit de vote est un droit ', ' : il permet de participer aux décisions.', ['politique', 'civique']],
       quote: POLITIQUES,
       explain:
         'Les droits politiques, comme voter et être candidat, permettent de participer aux décisions de la vie publique.',
     },
     {
+      avance: true,
       q: 'Quel article de la DDHC protège la liberté d’expression ?',
       a: 'l’article 11',
       wrong: [
@@ -374,37 +388,47 @@ const droitsDeTous: Notion = {
     },
   ],
   paires3: [
-    ['Droit civil', 'Aller à l’école, être soigné'],
+    ['Droit civil', 'Dire ce qu’on pense'],
+    ['Droit social', 'Aller à l’école, être soigné'],
     ['Droit politique', 'Voter, être candidat'],
-    ['Devoir', 'Respecter les lois'],
   ],
   paires5: [
-    ['Droit civil', 'Aller à l’école, être soigné'],
+    ['Droit civil', 'Dire ce qu’on pense, être en sûreté'],
+    ['Droit social', 'Aller à l’école, être soigné'],
     ['Droit politique', 'Voter, être candidat'],
     ['Devoir', 'Respecter les lois'],
-    ['Article 11 de la DDHC', 'Liberté d’expression'],
     ['Article 13 de la DDHC', 'Impôt pour financer l’État'],
   ],
   libres: [
     {
-      q: 'Chaque citoyen paie l’… pour financer les dépenses publiques (un mot).',
-      accepted: ['impôt', 'impot', 'impôts', 'impots', 'l’impôt', 'l’impot'],
+      q: 'Lina répète que « les garçons ne savent pas cuisiner » sans l’avoir vérifié. Cette idée toute faite est un … (un mot).',
+      accepted: ['préjugé', 'prejuge', 'un préjugé', 'stéréotype', 'stereotype', 'un stéréotype'],
       traps: [
-        { text: 'vote', why: 'Voter est un droit et un devoir civique, mais ça ne finance rien.' },
-        { text: 'loi', why: 'Une loi est une règle, elle ne finance pas les dépenses.' },
+        { text: 'droit', why: 'Un droit protège ou permet d’agir : ici, c’est une idée sur un groupe.' },
+        { text: 'devoir', why: 'Un devoir est une chose à faire : ici, c’est une idée toute faite.' },
       ],
-      quote: IMPOT,
-      explain: 'L’impôt finance les dépenses publiques : c’est un devoir du citoyen.',
+      quote: PREJUGES,
+      explain: 'Une idée toute faite sur un groupe est un préjugé, ou un stéréotype. Il faut la combattre.',
     },
     {
-      q: 'Les droits civils s’adressent à tout individu. Les droits … s’exercent à la majorité, comme voter (un mot).',
-      accepted: ['politiques', 'politique', 'droits politiques'],
+      q: 'L’article 2 de la DDHC cite un droit qui protège contre les arrestations injustes : la … (un mot).',
+      accepted: ['sûreté', 'surete', 'la sûreté', 'la surete'],
       traps: [
-        { text: 'sociaux', why: 'Le programme de CM2 parle de droits civils, puis politiques.' },
-        { text: 'jeunes', why: 'Il n’existe pas de « droits jeunes » dans le programme.' },
+        { text: 'devise', why: 'La devise est une phrase de trois mots, pas un droit de l’article 2.' },
+        { text: 'majorité', why: 'La majorité est un âge, pas un droit de l’article 2.' },
       ],
-      quote: CIVILS_POLITIQUES,
-      explain: 'Un citoyen bénéficie de droits civils, puis politiques à sa majorité.',
+      quote: DDHC,
+      explain: 'La sûreté, citée à l’article 2, protège chacun contre une arrestation injuste.',
+    },
+    {
+      q: 'Devenue majeure, une citoyenne peut se présenter à une élection. Ce droit d’être élue s’appelle l’… (un mot).',
+      accepted: ['éligibilité', 'eligibilite', 'l’éligibilité', 'l’eligibilite'],
+      traps: [
+        { text: 'éducation', why: 'L’éducation est un droit d’apprendre, pas le droit d’être élu.' },
+        { text: 'élection', why: 'L’élection est le vote lui-même : cherche le nom du droit de s’y présenter.' },
+      ],
+      quote: POLITIQUES,
+      explain: 'Le droit de vote et d’éligibilité sont des droits politiques.',
     },
   ],
   docs: [
@@ -492,10 +516,11 @@ const communeElus: Notion = {
   title: 'La commune et ses élus',
   hint: 'Pense à ta mairie : qui la dirige ? Qui l’aide ?',
   programme: PROGRAMME,
+  sources: [VP_MAIRE],
   credit: CREDIT,
   memo: [
-    'Ta **commune** est la ville ou le village où tu vis. Des **élus** la dirigent : le **maire** et les **conseillers municipaux**.',
-    'Le maire est un élu local. Il représente aussi l’État dans la commune. Il s’occupe de l’**état civil**, de l’école et de l’environnement.',
+    'Ta **commune** est la ville ou le village où tu vis. Les électeurs élisent les **conseillers municipaux**. Ensuite, le conseil municipal élit le **maire**.',
+    'Le maire est un élu local. Il représente aussi l’État dans la commune. Rappel du CE2 : il s’occupe de l’**état civil**, de l’école et de l’environnement.',
     'Les élus ont été **candidats** à une élection. Leur **mandat** dure un temps donné. Les conseillers municipaux juniors s’exercent à ce rôle.',
   ],
   faits: [
@@ -505,7 +530,10 @@ const communeElus: Notion = {
       wrong: [
         { label: 'un élève de la classe', why: 'Le maire est un adulte élu, pas un élève.' },
         { label: 'un policier qui vit dans la commune', why: 'Le maire n’est pas policier : c’est un élu.' },
-        { label: 'le chef des commerçants', why: 'Le maire est élu par les habitants, pas par les commerçants.' },
+        {
+          label: 'le chef des commerçants',
+          why: 'Le maire est élu par le conseil municipal, pas par les commerçants.',
+        },
       ],
       gap: ['Le maire est un élu ', ' et le représentant de l’État dans la commune.', ['local']],
       quote: MAIRE_ELU,
@@ -516,7 +544,10 @@ const communeElus: Notion = {
       a: 'l’état civil, l’école et l’environnement',
       wrong: [
         { label: 'l’armée, la monnaie et les prisons', why: 'Ces domaines dépendent de l’État, pas du maire.' },
-        { label: 'le cinéma, le foot et la météo', why: 'Ce ne sont pas ses domaines cités par le programme.' },
+        {
+          label: 'le cinéma, le foot et la météo',
+          why: 'Pense à la mairie : le maire ne s’occupe pas du temps qu’il fait.',
+        },
         {
           label: 'les lois du pays et les impôts nationaux',
           why: 'Les lois sont votées au Parlement, pas par le maire.',
@@ -524,7 +555,7 @@ const communeElus: Notion = {
       ],
       gap: ['Le maire s’occupe de l’état civil, de l’école et de l’', '.', ['environnement']],
       quote: MAIRE_ROLE,
-      explain: 'Le programme cite trois domaines du maire : l’état civil, l’école et l’environnement.',
+      explain: 'À la tête de la commune, le maire a un rôle pour l’état civil, l’école et l’environnement.',
     },
     {
       q: 'Qui sont les élus locaux que ta classe peut rencontrer ?',
@@ -543,9 +574,10 @@ const communeElus: Notion = {
           why: 'Ils habitent la commune, mais ils ne sont pas élus pour la diriger.',
         },
       ],
-      gap: ['Les élus locaux sont le maire et les conseillers ', '.', ['municipaux']],
+      gap: ['Dans la commune, les élus locaux sont le maire et les conseillers ', '.', ['municipaux']],
       quote: ELUS_LOCAUX,
-      explain: 'Le maire et les conseillers municipaux sont des élus locaux : ils sont choisis par les habitants.',
+      explain:
+        'Ce sont des élus locaux : les électeurs choisissent les conseillers municipaux, puis le conseil élit le maire.',
     },
     {
       q: 'Que fait une personne avant d’être élue au conseil municipal ?',
@@ -558,7 +590,7 @@ const communeElus: Notion = {
         { label: 'elle achète le poste', why: 'On ne peut pas acheter un poste d’élu.' },
         {
           label: 'elle tire au sort dans la classe',
-          why: 'Il s’agit d’une élection par les habitants, pas d’un tirage au sort.',
+          why: 'Les électeurs votent pour choisir les conseillers municipaux : ce n’est pas un tirage au sort.',
         },
       ],
       gap: ['Une personne se porte ', ' à une élection municipale pour être élue.', ['candidate', 'candidat']],
@@ -576,7 +608,7 @@ const communeElus: Notion = {
       gap: [
         'Les conseillers municipaux ',
         ' permettent de comprendre le rôle du citoyen dans sa commune.',
-        ['juniors', 'junior'],
+        ['juniors', 'junior', 'jeunes', 'enfants'],
       ],
       quote: JUNIORS,
       explain: 'Cette expérience aide à comprendre que, par son vote, le citoyen participe à la vie de sa cité.',
@@ -596,24 +628,34 @@ const communeElus: Notion = {
   ],
   libres: [
     {
-      q: 'Le maire est un élu … (un mot qui commence par « l »).',
-      accepted: ['local', 'locale'],
+      q: 'À la mairie, les naissances et les mariages sont enregistrés par le service de l’état … (un mot).',
+      accepted: ['civil', 'état civil', 'etat civil'],
       traps: [
-        { text: 'national', why: 'Un élu national travaille pour tout le pays, pas pour la commune.' },
-        { text: 'étranger', why: 'Le maire est élu dans la commune, pas à l’étranger.' },
-      ],
-      quote: MAIRE_ELU,
-      explain: 'Le maire est un élu local, il dirige la commune.',
-    },
-    {
-      q: 'Le maire est à la tête de l’école, de l’environnement et de l’… (deux mots : état …).',
-      accepted: ['état civil', 'etat civil', 'l’état civil', 'l’etat civil'],
-      traps: [
-        { text: 'état major', why: 'L’état-major est une affaire militaire, pas communale.' },
-        { text: 'armée', why: 'L’armée dépend de l’État, pas du maire.' },
+        { text: 'major', why: 'L’état-major est une affaire militaire, pas communale.' },
+        { text: 'national', why: 'Le service qui note les naissances porte un autre nom.' },
       ],
       quote: MAIRE_ROLE,
-      explain: 'L’état civil, l’école et l’environnement sont les trois domaines cités du maire.',
+      explain: 'L’état civil enregistre les naissances, les mariages et les décès.',
+    },
+    {
+      q: 'Madame Roux est élue pour un temps donné. Cette durée pendant laquelle elle exerce son rôle est son … (un mot).',
+      accepted: ['mandat', 'un mandat', 'le mandat'],
+      traps: [
+        { text: 'vote', why: 'Le vote sert à élire : cherche le nom du temps passé dans le rôle.' },
+        { text: 'métier', why: 'Pour un élu, ce temps porte un nom précis.' },
+      ],
+      quote: CANDIDATS,
+      explain: 'Un élu exerce un mandat : un rôle confié par un vote pour un temps donné.',
+    },
+    {
+      q: 'Après les élections municipales, qui élit le maire ? Le … municipal (un mot).',
+      accepted: ['conseil', 'le conseil'],
+      traps: [
+        { text: 'bulletin', why: 'Le bulletin sert à voter : ce n’est pas lui qui élit le maire.' },
+        { text: 'préfet', why: 'Le préfet n’élit pas le maire.' },
+      ],
+      quote: MAIRE_ELU,
+      explain: 'Les électeurs élisent les conseillers municipaux, puis le conseil municipal élit le maire.',
     },
   ],
   docs: [
@@ -623,22 +665,23 @@ const communeElus: Notion = {
         'La classe de Zoé rencontre le maire de la commune.',
         'Il explique qu’il a été candidat à une élection municipale.',
         'Il dit : « Je m’occupe de l’école, de l’état civil et de l’environnement. »',
-        'Zoé demande : « Qui vous a choisi ? » Il répond : « Les habitants, par leur vote. »',
+        'Zoé demande : « Qui vous a choisi comme maire ? »',
+        'Il répond : « Les électeurs ont élu le conseil municipal, puis le conseil m’a élu maire. »',
       ],
       qs: [
         {
-          q: 'Comment le maire a-t-il été choisi ?',
-          a: 'par le vote des habitants',
+          q: 'Qui a élu le maire de la commune ?',
+          a: 'le conseil municipal',
           wrong: [
+            { label: 'le tirage au sort', why: 'Le maire dit que le conseil municipal l’a élu.' },
             {
-              label: 'par tirage au sort',
-              why: 'Le maire dit que ce sont les habitants qui l’ont choisi par leur vote.',
+              label: 'tous les habitants, directement',
+              why: 'Les électeurs élisent le conseil municipal ; c’est le conseil qui élit le maire.',
             },
-            { label: 'par l’école', why: 'L’école ne choisit pas le maire.' },
-            { label: 'par ses amis seulement', why: 'Tous les habitants peuvent voter, pas seulement ses amis.' },
+            { label: 'l’école', why: 'L’école ne choisit pas le maire.' },
           ],
-          quote: ELUS_LOCAUX,
-          explain: 'Le maire est élu local : il a été choisi par un vote, après avoir été candidat.',
+          quote: MAIRE_ELU,
+          explain: 'Le maire est élu par le conseil municipal, lui-même élu par les électeurs.',
         },
         {
           q: 'Quel domaine le maire cite-t-il dans son rôle ?',
@@ -658,6 +701,7 @@ const communeElus: Notion = {
       lines: [
         'Dans la commune de Karl, des enfants sont conseillers municipaux juniors.',
         'Ils proposent d’installer un composteur près de l’école.',
+        'Un composteur est un bac où les restes de fruits et de légumes deviennent de l’engrais.',
         'Le maire écoute leur idée, puis les élus en discutent ensemble.',
       ],
       qs: [
@@ -683,7 +727,7 @@ const communeElus: Notion = {
             { label: 'la justice', why: 'Un composteur n’a pas de lien avec la justice.' },
             { label: 'l’armée', why: 'Un composteur n’a pas de lien avec l’armée.' },
           ],
-          quote: ENQUETE,
+          quote: MAIRE_ROLE,
           explain:
             'Les élus de la commune ont des compétences, par exemple l’environnement. Le composteur réduit les déchets : c’est une action pour l’environnement, domaine du maire.',
         },
@@ -701,8 +745,8 @@ const leVote: Notion = {
   programme: PROGRAMME,
   credit: CREDIT,
   memo: [
-    'Voter est un **droit** et un **devoir civique**. Par son **vote**, chacun choisit ses **représentants** et participe aux décisions.',
-    'La **souveraineté** nationale appartient au peuple (article 3 de la DDHC). Les électeurs sont à l’origine des lois par leurs représentants élus.',
+    'Voter est un **droit** et un **devoir civique**. Par leur **vote**, les électeurs choisissent leurs **représentants** et participent aux décisions.',
+    'La Constitution (article 3) dit que la **souveraineté** nationale appartient au peuple. Les électeurs sont à l’origine des lois par leurs représentants élus.',
     'Un citoyen **éligible** peut aussi se présenter à une élection. Voter aide la démocratie à bien fonctionner.',
   ],
   faits: [
@@ -716,11 +760,12 @@ const leVote: Notion = {
       ],
       gap: ['La souveraineté nationale appartient au ', '.', ['peuple']],
       quote: SOUVERAINETE,
-      explain: 'La DDHC (art. 3) et la Constitution (art. 3) disent que la souveraineté appartient au peuple.',
+      explain:
+        'La Constitution (art. 3) dit que la souveraineté nationale appartient au peuple. La DDHC (art. 3), elle, la place dans la Nation.',
     },
     {
       q: 'Que signifie la mention « Voter est un droit, c’est aussi un devoir civique » ?',
-      a: 'chacun peut voter et doit y penser pour la démocratie',
+      a: 'les électeurs ont le droit de voter, et c’est important de le faire pour la démocratie',
       wrong: [
         { label: 'voter est interdit', why: 'Le vote est un droit : personne ne l’interdit aux électeurs.' },
         {
@@ -731,7 +776,7 @@ const leVote: Notion = {
       ],
       gap: ['Voter est un droit, c’est aussi un ', ' civique.', ['devoir']],
       quote: DEVOIR_CIVIQUE,
-      explain: 'Le vote est un droit pour chacun et un devoir civique : il aide la démocratie à fonctionner.',
+      explain: 'Le vote est un droit des électeurs et un devoir civique : il aide la démocratie à fonctionner.',
     },
     {
       q: 'Qui est à l’origine des lois par l’intermédiaire de ses représentants ?',
@@ -747,7 +792,7 @@ const leVote: Notion = {
       gap: [
         'Les ',
         ' sont à l’origine des lois par leurs représentants élus.',
-        ['électeurs', 'electeurs', 'électrices', 'electrices'],
+        ['électeurs', 'electeurs', 'électrices', 'electrices', 'citoyens', 'citoyennes'],
       ],
       quote: ELECTEURS,
       explain:
@@ -767,7 +812,7 @@ const leVote: Notion = {
           why: 'Le vote sert à décider avec les autres, pas tout seul.',
         },
       ],
-      gap: ['Le droit de vote permet de participer aux décisions de la vie ', '.', ['publique']],
+      gap: ['Le droit de vote permet de participer aux décisions de la vie ', '.', ['publique', 'politique']],
       quote: POLITIQUES,
       explain: 'Le droit de vote et d’éligibilité permettent de participer aux décisions de la vie publique.',
     },
@@ -798,24 +843,34 @@ const leVote: Notion = {
   ],
   libres: [
     {
-      q: 'Voter est un droit et un … civique (un mot).',
-      accepted: ['devoir', 'un devoir'],
+      q: 'Les citoyens élisent des personnes qui décident en leur nom : ce sont leurs … (un mot).',
+      accepted: ['représentants', 'representants', 'représentant', 'representant', 'élus', 'elus'],
       traps: [
-        { text: 'jeu', why: 'Voter n’est pas un jeu : c’est une chose sérieuse pour la démocratie.' },
-        { text: 'cadeau', why: 'Un cadeau est offert : voter est un devoir civique.' },
+        { text: 'voisins', why: 'Les voisins habitent à côté : ils ne sont pas élus pour décider.' },
+        { text: 'candidats', why: 'Avant le vote, ils sont candidats ; une fois élus, ils portent un autre nom.' },
       ],
-      quote: DEVOIR_CIVIQUE,
-      explain: 'La carte électorale dit : « Voter est un droit, c’est aussi un devoir civique ».',
+      quote: ELECTEURS,
+      explain: 'Les représentants sont élus pour décider au nom des électeurs.',
     },
     {
-      q: 'La souveraineté nationale appartient au … (un mot).',
-      accepted: ['peuple', 'au peuple'],
+      q: 'Nadia remplit les conditions pour se présenter à une élection : on dit qu’elle est … (un mot).',
+      accepted: ['éligible', 'eligible'],
       traps: [
-        { text: 'président', why: 'La souveraineté appartient au peuple, pas à une seule personne.' },
-        { text: 'maire', why: 'Le maire est élu par le peuple : il n’est pas souverain.' },
+        { text: 'élue', why: 'Elle n’est pas encore élue : elle peut seulement se présenter.' },
+        { text: 'mineure', why: 'Les droits politiques s’exercent à la majorité.' },
       ],
-      quote: SOUVERAINETE,
-      explain: 'L’article 3 de la DDHC et celui de la Constitution disent que la souveraineté appartient au peuple.',
+      quote: POLITIQUES,
+      explain: 'Être éligible, c’est avoir le droit de se présenter à une élection.',
+    },
+    {
+      q: 'Trois élèves se présentent à l’élection des délégués : ils sont … (un mot).',
+      accepted: ['candidats', 'candidat', 'candidates'],
+      traps: [
+        { text: 'élus', why: 'Le vote n’a pas encore eu lieu : ils ne sont pas élus.' },
+        { text: 'maires', why: 'Un maire dirige une commune, pas une classe.' },
+      ],
+      quote: DELEGUE,
+      explain: 'Comme tu l’as vu en CE2 avec les délégués, une personne qui se présente à une élection est candidate.',
     },
   ],
   docs: [
@@ -859,7 +914,7 @@ const leVote: Notion = {
       lines: [
         'La classe de Théo élit son délégué. Trois élèves sont candidats.',
         'Chaque élève vote avec un bulletin. Le résultat est lu à voix haute.',
-        'Le délégué élu portera la parole de la classe au conseil d’école.',
+        'Le délégué élu portera la parole de la classe au conseil des élèves.',
       ],
       qs: [
         {
@@ -870,8 +925,8 @@ const leVote: Notion = {
             { label: 'par la maîtresse seule', why: 'Chaque élève vote : la maîtresse ne choisit pas seule.' },
             { label: 'par le premier arrivé', why: 'Le texte parle d’un vote, pas d’une course.' },
           ],
-          quote: ELECTEURS,
-          explain: 'Comme pour les élus de la République, le délégué est choisi par ses électeurs.',
+          quote: DELEGUE,
+          explain: 'Rappel du CE2 : le délégué de classe est choisi par une élection, comme d’autres représentants.',
         },
         {
           q: 'Que fait un élève qui se présente à l’élection ?',
