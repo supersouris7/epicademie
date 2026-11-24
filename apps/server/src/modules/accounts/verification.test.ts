@@ -124,6 +124,25 @@ describe('validation de l’adresse e-mail', () => {
     expect(t.mailer.outbox).toHaveLength(before);
   });
 
+  it.each([
+    ['/auth/login', { email: 'x@exemple.fr', password: 'mauvais-mot-de-passe-12' }],
+    ['/auth/password/forgot', { email: 'x@exemple.fr' }],
+    ['/auth/password/reset', { token: 'jeton-invalide-'.padEnd(43, 'a'), password: 'nouveau-mot-de-passe-12' }],
+  ])('limite de débit par IP sur %s', async (url, payload) => {
+    const limited = await createTestApp({ config: { authRateLimitMax: 2 } });
+    try {
+      const codes: number[] = [];
+      for (let i = 0; i < 4; i++) {
+        const res = await limited.http.inject({ method: 'POST', url: `/api/v1${url}`, headers: anonymous, payload });
+        codes.push(res.statusCode);
+      }
+      expect(codes.slice(2)).toEqual([429, 429]);
+      expect(codes.slice(0, 2)).not.toContain(429);
+    } finally {
+      await limited.close();
+    }
+  });
+
   it('la limite de débit des routes s’applique (inscription, renvoi, validation)', async () => {
     const limited = await createTestApp({ config: { authRateLimitMax: 2 } });
     try {
