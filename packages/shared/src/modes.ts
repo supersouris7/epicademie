@@ -48,8 +48,7 @@ export const MODES: readonly ModeInfo[] = [
     name: 'Arène d’évaluation',
     pitch: 'Fais le point : d’où tu pars, ce que tu sais, ce qui reste',
     category: 'defis',
-    // L'écran du mode arrive avec le ticket suivant : tuile « À venir » d'ici là.
-    available: false,
+    available: true,
   },
   {
     id: 'arene',

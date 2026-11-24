@@ -38,6 +38,7 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
   const isTraining = mode.id === 'entrainement';
   const bannerSrc = assetSrc(isBoss ? 'bosses-empereur-banniere' : 'environments-entrainement-banniere');
   const isDefi = mode.id === 'chrono' || mode.id === 'survie';
+  const isEvaluation = mode.id === 'evaluation';
   // Barre sous chaque matière (classe du joueur) : notions acquises (Entraînement) ou boss vaincus (Combat).
   const grade = playedGrade(profile.grade);
   const progressOf = (subject: string) => {
@@ -52,7 +53,7 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
     return { value: gold, max: ids.length };
   };
   const back = mode.category === 'multi' ? '/multi' : '/hub';
-  const playable = ['entrainement', 'boss', 'chrono', 'survie'].includes(mode.id) && mode.available;
+  const playable = ['entrainement', 'boss', 'chrono', 'survie', 'evaluation'].includes(mode.id) && mode.available;
   const pickSubject = (subject: string, name: string, available: boolean) => {
     if (!available || chaptersOf(subject).length === 0) showToast(`${name} arrive bientôt !`);
     else if (mode.id === 'chrono' || mode.id === 'survie') void navigate(`/partie/defi/${mode.id}/${subject}`);
@@ -131,7 +132,8 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
                         })()}
                       </span>
                     ) : (
-                      !isBoss && (
+                      !isBoss &&
+                      !isEvaluation && (
                         <ProgressBar
                           className="w-full"
                           value={p.value}
