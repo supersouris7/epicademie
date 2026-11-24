@@ -85,6 +85,22 @@ export const SOURCES: readonly Source[] = [
     consultedOn: CONSULTED,
   },
   {
+    id: 'cnrtl-exclamation',
+    title: 'Trésor de la langue française informatisé, article « exclamation »',
+    publisher: 'CNRTL (CNRS, ATILF)',
+    url: 'https://www.cnrtl.fr/definition/exclamation',
+    textDate: '2026',
+    consultedOn: CONSULTED,
+  },
+  {
+    id: 'cnrtl-interrogation',
+    title: 'Trésor de la langue française informatisé, article « interrogation »',
+    publisher: 'CNRTL (CNRS, ATILF)',
+    url: 'https://www.cnrtl.fr/definition/interrogation',
+    textDate: '2026',
+    consultedOn: CONSULTED,
+  },
+  {
     id: 'lv-college-2025',
     title: 'Programmes de langues vivantes étrangères du collège (arrêté du 5 mai 2025, BO n° 22)',
     publisher: 'Ministère de l’Éducation nationale',

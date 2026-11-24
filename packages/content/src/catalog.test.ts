@@ -76,6 +76,7 @@ describe('catalogue', () => {
     const sciences: Record<string, string> = { 'physique-chimie': 'p', svt: 'v', technologie: 't' };
     const subject: Record<string, string> = {
       maths: 'm',
+      francais: 'f',
       anglais: 'a',
       espagnol: 'e',
       geographie: 'g',
@@ -206,9 +207,9 @@ describe('matière français et domaines (ADR 0034)', () => {
     for (const d of NEW_DOMAINS) expect(DOMAINS[d], d).toBeTruthy();
   });
 
-  it('toute matière publiée a au moins un chapitre, le français non publié n’en a aucun', () => {
-    for (const s of SUBJECTS) expect(chaptersOf(s.id).length > 0, s.id).toBe(s.available);
-    expect(chaptersOf('francais')).toHaveLength(0);
+  it('toute matière publiée a au moins un chapitre (le français se remplit lot par lot, avant sa publication)', () => {
+    for (const s of SUBJECTS.filter((x) => x.available)) expect(chaptersOf(s.id).length, s.id).toBeGreaterThan(0);
+    for (const c of chaptersOf('francais')) expect(c.id.startsWith('f'), c.id).toBe(true);
   });
 
   it('les identifiants de chapitres restent uniques', () => {

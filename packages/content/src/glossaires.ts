@@ -1,5 +1,6 @@
 import { GLOSSAIRE as ANGLAIS } from './anglais/glossaire.ts';
 import { GLOSSAIRE as ESPAGNOL } from './espagnol/glossaire.ts';
+import { GLOSSAIRE as FRANCAIS } from './francais/glossaire.ts';
 import { GLOSSAIRE as GEOGRAPHIE } from './geographie/glossaire.ts';
 import { GLOSSAIRE as HISTOIRE } from './histoire/glossaire.ts';
 import { GLOSSAIRE as PHYSIQUE } from './physique/glossaire.ts';
@@ -16,6 +17,7 @@ export const SUBJECT_GLOSSARIES: Readonly<Record<string, readonly SubjectTerm[]>
     example: g.example,
   })),
   anglais: ANGLAIS,
+  francais: FRANCAIS,
   espagnol: ESPAGNOL,
   geographie: GEOGRAPHIE,
   histoire: HISTOIRE,
