@@ -441,6 +441,16 @@ describe('arrêt, reprise et expiration (§5.5)', () => {
     expect(p.asked.some((q) => q.role === 'prerequis')).toBe(true);
     expect(p.asked).toHaveLength(s.planned);
   });
+  it('une note sur 20 existe toujours, même épreuve écourtée ou découragée', () => {
+    const program = Array.from({ length: 12 }, (_, i) => comp(`c${i}`, 'nombres', i % 2 === 0));
+    const policies = [() => false, () => true, (q: EvaluationQuestion) => q.index % 2 === 0];
+    for (const policy of policies) {
+      const p = play(createEvaluation(plan(program)), policy);
+      expect(summarize(p.state).scores.masteryDisplayable).toBe(true);
+    }
+    const short = play(createEvaluation(plan(eight())), () => true, { max: 1 });
+    expect(summarize({ ...short.state, endReason: 'time' }).scores.mastery).not.toBeNull();
+  });
   it('nombre atteint : fin conclue, sans nouvelle question', () => {
     const forced = play({ ...createEvaluation(plan(eight())), asked: 16 }, () => true);
     expect(forced.asked).toHaveLength(0);

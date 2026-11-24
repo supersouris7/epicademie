@@ -11,6 +11,9 @@ import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
 import { ProgressBar } from '../../shared/ui/game/ProgressBar.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { useEvaluationResult, useEvaluationReview } from './api.ts';
+import { appreciation } from './appreciation.ts';
+import { Questy } from '../../shared/ui/mascot/Questy.tsx';
+import { SpeechBubble } from '../../shared/ui/SpeechBubble.tsx';
 import { competenceTitle, domainLabel, formatNote, generateEvaluation, gradeName, KIND_INFO, note20 } from './texts.ts';
 
 function Section({ title, children }: { readonly title: string; readonly children: ReactNode }) {
@@ -72,15 +75,8 @@ function Scores({ r, grade }: { readonly r: EvaluationResult; readonly grade: st
         max={20}
         label="Note"
         color="var(--success)"
-        text={
-          r.masteryDisplayable && r.mastery !== null ? `Note ${formatNote(r.mastery)}` : 'Note : pas encore mesurable'
-        }
+        text={r.masteryDisplayable && r.mastery !== null ? `Note ${formatNote(r.mastery)}` : 'Note : –'}
       />
-      {!r.masteryDisplayable && (
-        <p className="text-lg">
-          Pas assez de questions sur l’essentiel pour donner une note fiable : ce n’est pas un échec.
-        </p>
-      )}
       <p className="text-lg">
         {r.counts.mastered} maîtrisée{r.counts.mastered > 1 ? 's' : ''} · {r.counts.inProgress} en progrès ·{' '}
         {r.counts.struggling} à travailler · {r.questions} questions
@@ -118,6 +114,7 @@ function Body(p: {
   const grade = gradeName(r.referentialGrade);
   const adv = r.competences.filter((c) => c.role === 'avance' && c.state === 'maitrisee');
   const title = (cid: string) => r.competences.find((c) => c.id === cid)?.title ?? competenceTitle(cid);
+  const mood = appreciation(r.masteryDisplayable ? r.mastery : null, r.id, r.partial);
   return (
     <PageShell title={`Mon bilan · ${info.name}`} back={p.back}>
       <div className="flex items-center gap-3">
@@ -128,6 +125,15 @@ function Body(p: {
             : 'Bravo, l’épreuve est terminée ! Voilà où tu en es.'}
         </p>
       </div>
+
+      {mood && (
+        <div className="flex items-center gap-3" aria-label="Appréciation de Questy">
+          <Questy size={90} mood={mood.mood} />
+          <SpeechBubble>
+            <strong>{mood.label} !</strong> {mood.line}
+          </SpeechBubble>
+        </div>
+      )}
 
       <Scores r={r} grade={grade} />
 

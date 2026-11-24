@@ -14,6 +14,8 @@ export interface StoredCompetence {
   readonly state: CompetenceState;
   readonly weakestSkillId: string | null;
   readonly arenaAnswers: number;
+  /** Réussite pondérée × 100 (nul sans observation). */
+  readonly rate?: number | null;
 }
 
 const WEAK: readonly CompetenceState[] = ['en-difficulte', 'a-consolider', 'evaluation-insuffisante'];
@@ -32,6 +34,7 @@ function programOf(row: EvaluationRow, stored: ReadonlyMap<string, StoredCompete
       essential: c.essential,
       scored: true,
       state: known ? s.state : 'non-evaluee',
+      rate: known && s.arenaAnswers > 0 && s.rate != null ? s.rate / 100 : null,
     };
   });
 }

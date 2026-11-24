@@ -83,9 +83,18 @@ describe('maîtrise et couverture', () => {
     expect(s.studied).toBeCloseTo(37.5);
     expect(roundDisplay(s.coverage)).toBe(40);
   });
-  it('la maîtrise est masquée sous 4 points de poids évalués et n’est jamais un échec pour une non-étudiée', () => {
+  it('la note existe toujours dès une réponse notée, et n’est jamais un échec pour une non-étudiée', () => {
     const few = computeScores([c('a', 'nombres', true, 'maitrisee'), c('b', 'nombres', false, 'en-cours')]);
-    expect(few.masteryDisplayable).toBe(false);
+    expect(few.masteryDisplayable).toBe(true);
+    const thin = computeScores([
+      { ...c('a', 'nombres', true, 'evaluation-insuffisante'), rate: 0.5 },
+      { ...c('b', 'nombres', false, 'evaluation-insuffisante'), rate: 1 },
+    ]);
+    expect(thin.mastery).toBeCloseTo(((2 * 0.5 + 1) / 3) * 100);
+    expect(thin.masteryDisplayable).toBe(true);
+    expect(thin.counts.evaluated).toBe(0);
+    expect(thin.coverage).toBe(0);
+    expect(computeScores([c('z', 'nombres', true, 'non-evaluee')]).masteryDisplayable).toBe(false);
     const withUnstudied = computeScores([
       c('a', 'nombres', true, 'maitrisee'),
       c('b', 'nombres', true, 'maitrisee'),
