@@ -51,6 +51,16 @@ export function isAllowedUrl(url: string): boolean {
 
 const CONSULTED = '2026-11-24';
 
+/** Article du Trésor de la langue française informatisé (CNRTL). */
+const tlfi = (id: string, word: string, path: string): Source => ({
+  id: `cnrtl-${id}`,
+  title: `Trésor de la langue française informatisé, article « ${word} »`,
+  publisher: 'CNRTL (CNRS, ATILF)',
+  url: `https://www.cnrtl.fr/definition/${path}`,
+  textDate: '2026',
+  consultedOn: '2026-11-25',
+});
+
 export const SOURCES: readonly Source[] = [
   {
     id: 'maths-cycle4-2026',
@@ -108,6 +118,45 @@ export const SOURCES: readonly Source[] = [
     textDate: '2025-04-17',
     consultedOn: CONSULTED,
   },
+  tlfi('fonction', 'fonction', 'fonction'),
+  tlfi('article-defini', 'le (article)', 'le/article'),
+  tlfi('article-indefini', 'un (article)', 'un/article'),
+  tlfi('possessif', 'possessif', 'possessif/adjectif'),
+  tlfi('mon', 'mon', 'mon/adjectif'),
+  tlfi('ton', 'ton', 'ton/adjectif'),
+  tlfi('son', 'son', 'son/adjectif'),
+  tlfi('notre', 'notre', 'notre/adjectif'),
+  tlfi('votre', 'votre', 'votre/adjectif'),
+  tlfi('leur', 'leur', 'leur/adjectif'),
+  tlfi('ce', 'ce (démonstratif)', 'ce/adjectif'),
+  tlfi('et', 'et', 'et'),
+  tlfi('ou', 'ou', 'ou'),
+  tlfi('mais', 'mais', 'mais/conjonction'),
+  tlfi('car', 'car', 'car/conjonction'),
+  tlfi('donc', 'donc', 'donc'),
+  tlfi('ni', 'ni', 'ni/conjonction'),
+  tlfi('or', 'or', 'or/conjonction'),
+  tlfi('adverbe', 'adverbe', 'adverbe'),
+  tlfi('toujours', 'toujours', 'toujours'),
+  tlfi('souvent', 'souvent', 'souvent/adverbe'),
+  tlfi('hier', 'hier', 'hier/adverbe'),
+  tlfi('demain', 'demain', 'demain'),
+  tlfi('aujourdhui', 'aujourd’hui', 'aujourd%27hui'),
+  tlfi('deja', 'déjà', 'd%C3%A9j%C3%A0'),
+  tlfi('ensuite', 'ensuite', 'ensuite/adverbe'),
+  tlfi('ici', 'ici', 'ici'),
+  tlfi('tres', 'très', 'tr%C3%A8s/adverbe'),
+  tlfi('trop', 'trop', 'trop/adverbe'),
+  tlfi('beaucoup', 'beaucoup', 'beaucoup/adverbe'),
+  tlfi('bien', 'bien', 'bien/adverbe'),
+  tlfi('vite', 'vite', 'vite/adverbe'),
+  tlfi('je', 'je', 'je/pronom'),
+  tlfi('tu', 'tu', 'tu/pronom'),
+  tlfi('il', 'il', 'il/pronom'),
+  tlfi('me', 'me', 'me/pronom'),
+  tlfi('te', 'te', 'te/pronom'),
+  tlfi('le', 'le (pronom)', 'le/pronom'),
+  tlfi('lui', 'lui', 'lui/pronom'),
   {
     id: 'cnrtl-exclamation',
     title: 'Trésor de la langue française informatisé, article « exclamation »',
