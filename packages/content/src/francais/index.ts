@@ -1,5 +1,6 @@
 import type { Chapter } from '../types.ts';
 import { FCM1_COMPLEMENTS } from './complements.ts';
+import { FCM1_NATURE } from './nature.ts';
 import { FCM1_PHRASES } from './phrases.ts';
 import { FCM1_VERBE_SUJET } from './verbe-sujet.ts';
 
@@ -28,5 +29,13 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'grammaire',
     title: 'Les compléments',
     skills: FCM1_COMPLEMENTS,
+  },
+  {
+    id: 'fcm1-nature-mots',
+    subject: 'francais',
+    grade: 'cm1',
+    domain: 'grammaire',
+    title: 'Nature des mots',
+    skills: FCM1_NATURE,
   },
 ];

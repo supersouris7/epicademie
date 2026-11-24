@@ -37,4 +37,24 @@ describe('sciences CM1 : données citées', () => {
       expect(s.lesson.source, s.id).toContain('«');
     }
   });
+
+  it('le chapitre « Le vivant » porte les quatre notions du lot, en SVT, à 5 niveaux, sourcées', () => {
+    const chapitre = ST_CHAPTERS.find((c) => c.id === 'vcm1-vivant');
+    expect(chapitre?.domain).toBe('svt');
+    expect(chapitre?.skills.map((s) => s.id)).toEqual([
+      'vcm1-classer',
+      'vcm1-besoins-vegetaux',
+      'vcm1-besoins-animaux',
+      'vcm1-developpement',
+    ]);
+    for (const s of chapitre?.skills ?? []) {
+      expect(s.levels, s.id).toBe(5);
+      expect(s.lesson.source, s.id).toContain('«');
+      for (const id of s.lesson.sources ?? [])
+        expect(
+          FAITS.some((f) => f.source === id),
+          `${s.id} ${id}`,
+        ).toBe(true);
+    }
+  });
 });
