@@ -8,11 +8,12 @@ import {
   type DomainId,
   type Question,
 } from '@epicademie/content';
-import type { EvaluationKind } from '@epicademie/shared';
+import type { EvaluationKind, Level } from '@epicademie/shared';
 
 /** Question d'une épreuve : les notions du CE2 (prérequis) viennent d'un registre à part. */
-export const generateEvaluation = (skillId: string, level: 1 | 2 | 3, seed: number): Question =>
-  getCe2Skill(skillId) ? generateCe2(skillId, level, seed) : generate(skillId, level, seed);
+export const generateEvaluation = (skillId: string, level: Level, seed: number): Question =>
+  // Les notions du CE2 n'ont que 3 niveaux : un niveau supérieur est ramené à 3.
+  getCe2Skill(skillId) ? generateCe2(skillId, Math.min(level, 3) as 1 | 2 | 3, seed) : generate(skillId, level, seed);
 
 /** Titre d'une compétence (= chapitre du contenu). */
 export const competenceTitle = (id: string): string => getChapter(id)?.title ?? getCe2Chapter(id)?.title ?? id;
