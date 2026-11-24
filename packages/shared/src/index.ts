@@ -20,3 +20,4 @@ export * from './api/contract.ts';
 export * from './insights.ts';
 export * from './friends.ts';
 export * from './evaluation.ts';
+export * from './admin.ts';

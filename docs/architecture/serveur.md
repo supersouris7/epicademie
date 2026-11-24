@@ -82,7 +82,8 @@ de `pnpm --filter @questeo/server db:generate`.
 ## Accès et isolation
 
 Chaque point d'accès du contrat déclare son niveau d'accès (`public`, `family`, `parent`,
-`admin`), vérifié par `route()` avant le gestionnaire à partir de la session (cookie). Une route
+`admin`), vérifié par `route()` avant le gestionnaire à partir de la session (cookie) ; `admin` = opérateur
+reconnu à l'en-tête secret du frontal de pilotage, sans compte de jeu (module `admin`, [ADR 0033](../adr/0033-administration-par-operateur.md)). Une route
 qui désigne un profil, une partie ou un combat appelle d'abord `owns.profile()` / `owns.game()`
 (module `accounts`) : 404 si la donnée n'est pas à la famille connectée. Voir
 [ADR 0012](../adr/0012-comptes-familiaux.md).

@@ -4,9 +4,8 @@ import { sql } from 'drizzle-orm';
 import { AppError } from '../../core/errors.ts';
 import { createTelemetryService } from '../telemetry/index.ts';
 import { createPedagogyService } from './pedagogy.service.ts';
-import { createTestApp, profileInput, TEST_PASSWORD } from '../../testing/harness.ts';
+import { createTestApp, profileInput } from '../../testing/harness.ts';
 import { runReports } from '../../cli/reports.ts';
-import { setAccountRole } from '../accounts/index.ts';
 
 let t: Awaited<ReturnType<typeof createTestApp>>;
 let profileId: string;
@@ -20,10 +19,7 @@ beforeEach(async () => {
   await t.reset();
   const created = await t.http.inject({ method: 'POST', url: '/api/v1/profiles', payload: profileInput('Léa') });
   profileId = created.json<Profile>().id;
-  const account = await t.signup('admin@questeo.test');
-  await setAccountRole(t.database.db, 'admin@questeo.test', 'admin');
-  admin = t.as(account.cookie);
-  await admin.inject({ method: 'POST', url: '/api/v1/auth/admin', payload: { password: TEST_PASSWORD } });
+  admin = t.operator();
 });
 
 const general = (over: object = {}, client = t.http) =>

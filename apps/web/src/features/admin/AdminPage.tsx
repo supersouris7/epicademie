@@ -15,6 +15,7 @@ import { formatAnswer } from '../../shared/question/answers.ts';
 import { MathText } from '../../shared/question/MathText.tsx';
 import { AdminGate, AdminShell, type AdminSection } from './AdminShell.tsx';
 import { Anomalies, Errors, Stats, WeakSkills } from './Insights.tsx';
+import { Accounts, AuditLog } from './Accounts.tsx';
 import { DebugMode } from './DebugMode.tsx';
 import { AdminButton, Badge, DataTable, inputClass, Panel } from './ui.tsx';
 import { useContent, useContentHistory, useReports, useUpdateContent, useUpdateReport } from './api.ts';
@@ -22,12 +23,14 @@ import { useContent, useContentHistory, useReports, useUpdateContent, useUpdateR
 /**
  * Console d'administration (pédagogie et pilotage) : signalements des familles avec la question
  * exacte régénérée, état de validation de chaque notion, statistiques agrégées, points faibles,
- * anomalies, erreurs. Réservée aux comptes administrateurs, mot de passe redemandé à chaque
- * ouverture ; aucun bouton n'y mène depuis l'application (adresse /admin).
+ * anomalies, erreurs, comptes (recherche, fiche, audit). Réservée à l'opérateur de la page de
+ * pilotage (en-tête secret du frontal) : aucun compte de jeu, aucun bouton depuis l'application.
  */
 const SECTIONS = [
   { id: 'stats', label: 'Vue d’ensemble', group: 'Pilotage', panel: Stats },
   { id: 'weak', label: 'Points faibles', group: 'Pilotage', panel: WeakSkills },
+  { id: 'accounts', label: 'Comptes', group: 'Utilisateurs', panel: Accounts },
+  { id: 'audit', label: 'Journal d’audit', group: 'Utilisateurs', panel: AuditLog },
   { id: 'reports', label: 'Signalements', group: 'Contenu', panel: Reports },
   { id: 'content', label: 'Notions', group: 'Contenu', panel: Contents },
   { id: 'anomalies', label: 'Anomalies', group: 'Surveillance', panel: Anomalies },

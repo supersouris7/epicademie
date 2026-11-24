@@ -41,6 +41,12 @@ const EnvSchema = z.object({
   AUTH_RATE_LIMIT_MAX: z.coerce.number().int().min(1).default(10),
   /** Si défini, /api/metrics exige l'en-tête `Authorization: Bearer <jeton>`. */
   METRICS_TOKEN: z.string().min(16).optional(),
+  /**
+   * Secret de l'« opérateur » : le frontal de la page de pilotage l'ajoute (en-tête
+   * X-Questeo-Operateur) aux requêtes d'administration. Absent : aucune administration.
+   * Moins de 32 caractères : démarrage refusé.
+   */
+  ADMIN_OPERATOR_SECRET: z.string().min(32).optional(),
   /** Documentation interactive de l'API (/api/docs) ; par défaut hors production. */
   API_DOCS: bool,
   /** Fuseau horaire des jours de révision (répétition espacée). */
@@ -103,6 +109,8 @@ export interface ServerConfig {
   readonly rateLimitMax: number;
   readonly authRateLimitMax: number;
   readonly metricsToken: string | null;
+  /** `null` : administration désactivée. */
+  readonly adminOperatorSecret: string | null;
   readonly apiDocs: boolean;
   readonly timeZone: string;
   readonly version: string;
@@ -173,6 +181,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
     rateLimitMax: e.RATE_LIMIT_MAX,
     authRateLimitMax: e.AUTH_RATE_LIMIT_MAX,
     metricsToken: e.METRICS_TOKEN ?? null,
+    adminOperatorSecret: e.ADMIN_OPERATOR_SECRET ?? null,
     apiDocs: e.API_DOCS ?? !production,
     timeZone: e.TZ_FAMILY,
     version: e.QUESTEO_VERSION,

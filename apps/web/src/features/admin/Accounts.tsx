@@ -1,0 +1,389 @@
+import { useState } from 'react';
+import {
+  ACCOUNT_STATE_LABELS,
+  ACCOUNT_STATES,
+  ACCOUNT_TYPE_LABELS,
+  ACCOUNT_TYPES,
+  AUDIT_ACTION_LABELS,
+  type AccountDetail,
+  type AccountRow,
+  type AccountSearch,
+} from '@questeo/shared';
+import { ApiError } from '../../shared/api/client.ts';
+import { useAccount, useAccounts, useAudit, useResetPassword } from './api.ts';
+import { AdminButton, Badge, inputClass, Panel } from './ui.tsx';
+
+/**
+ * Comptes : recherche et liste paginées côté serveur (25 par page), fiche détaillée d'un compte,
+ * mot de passe temporaire, journal d'audit. Aucune liste complète n'est jamais chargée ; ouvrir une
+ * fiche est journalisé (RGPD : traçabilité des accès aux données d'enfants).
+ */
+
+const date = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString('fr-FR') : '—');
+const dateTime = (iso: string | null) =>
+  iso ? new Date(iso).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' }) : '—';
+
+const DEFAULT_SEARCH: AccountSearch = { q: '', type: 'tous', state: 'tous', sort: 'creation', order: 'desc', page: 0 };
+
+export function Accounts() {
+  const [search, setSearch] = useState<AccountSearch>(DEFAULT_SEARCH);
+  const [typed, setTyped] = useState('');
+  const [openId, setOpenId] = useState<string | null>(null);
+  const { data, isPending, error, isFetching } = useAccounts(search);
+  if (openId) return <AccountSheet id={openId} onBack={() => setOpenId(null)} />;
+  const change = (patch: Partial<AccountSearch>) => setSearch((s) => ({ ...s, page: 0, ...patch }));
+  return (
+    <Panel title="Comptes">
+      <div className="flex flex-col gap-3">
+        <form
+          className="flex flex-wrap items-end gap-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            change({ q: typed.trim() });
+          }}
+        >
+          <label className="flex flex-col gap-1 text-xs font-medium text-slate-600">
+            Recherche
+            <input
+              type="search"
+              className={`${inputClass} w-72`}
+              placeholder="E-mail, identifiant de famille ou prénom"
+              value={typed}
+              onChange={(e) => setTyped(e.target.value)}
+            />
+          </label>
+          <AdminButton type="submit" tone="primary">
+            Rechercher
+          </AdminButton>
+          <label className="flex flex-col gap-1 text-xs font-medium text-slate-600">
+            Type
+            <select
+              className={inputClass}
+              value={search.type}
+              onChange={(e) => change({ type: e.target.value as AccountSearch['type'] })}
+            >
+              {ACCOUNT_TYPES.map((t) => (
+                <option key={t} value={t}>
+                  {ACCOUNT_TYPE_LABELS[t]}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-xs font-medium text-slate-600">
+            État
+            <select
+              className={inputClass}
+              value={search.state}
+              onChange={(e) => change({ state: e.target.value as AccountSearch['state'] })}
+            >
+              {ACCOUNT_STATES.map((s) => (
+                <option key={s} value={s}>
+                  {ACCOUNT_STATE_LABELS[s]}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-xs font-medium text-slate-600">
+            Tri
+            <select
+              className={inputClass}
+              value={`${search.sort}:${search.order}`}
+              onChange={(e) => {
+                const [sort, order] = e.target.value.split(':') as [AccountSearch['sort'], AccountSearch['order']];
+                change({ sort, order });
+              }}
+            >
+              <option value="creation:desc">Création : récents d’abord</option>
+              <option value="creation:asc">Création : anciens d’abord</option>
+              <option value="activite:desc">Activité : récents d’abord</option>
+              <option value="activite:asc">Activité : anciens d’abord</option>
+            </select>
+          </label>
+        </form>
+        {error && (
+          <p role="alert" className="text-sm text-red-700">
+            {error.message}
+          </p>
+        )}
+        {isPending ? (
+          <p className="text-sm text-slate-500">Chargement…</p>
+        ) : (
+          data && (
+            <>
+              <p className="text-xs text-slate-500" role="status">
+                {data.total} compte{data.total > 1 ? 's' : ''} · page {data.page + 1}
+                {isFetching ? ' · mise à jour…' : ''}
+              </p>
+              <AccountTable rows={data.items} onOpen={setOpenId} />
+              <div className="flex items-center gap-2">
+                <AdminButton
+                  disabled={search.page === 0}
+                  onClick={() => setSearch((s) => ({ ...s, page: s.page - 1 }))}
+                >
+                  Précédent
+                </AdminButton>
+                <AdminButton disabled={!data.hasMore} onClick={() => setSearch((s) => ({ ...s, page: s.page + 1 }))}>
+                  Suivant
+                </AdminButton>
+              </div>
+            </>
+          )
+        )}
+      </div>
+    </Panel>
+  );
+}
+
+function AccountTable({
+  rows,
+  onOpen,
+}: {
+  readonly rows: readonly AccountRow[];
+  readonly onOpen: (id: string) => void;
+}) {
+  if (rows.length === 0) return <p className="text-sm text-slate-500">Aucun compte ne correspond.</p>;
+  return (
+    <div className="overflow-x-auto">
+      <table aria-label="Comptes" className="w-full text-left text-sm">
+        <thead className="text-xs text-slate-500 uppercase">
+          <tr>
+            <th className="py-1.5 pr-3">Compte</th>
+            <th className="pr-3">Type</th>
+            <th className="pr-3">Profils</th>
+            <th className="pr-3">Créé le</th>
+            <th className="pr-3">Dernière activité</th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r.id} className="border-t border-slate-100">
+              <td className="py-1.5 pr-3 font-medium">
+                {r.email ?? 'Élève autonome (sans e-mail)'}
+                {r.email && !r.emailVerified && (
+                  <>
+                    {' '}
+                    <Badge tone="amber">E-mail à valider</Badge>
+                  </>
+                )}
+              </td>
+              <td className="pr-3">{r.type === 'autonome' ? 'Élève autonome' : 'Famille'}</td>
+              <td className="pr-3">{r.profileNames.join(', ') || '—'}</td>
+              <td className="pr-3">{date(r.createdAt)}</td>
+              <td className="pr-3">{date(r.lastActivityAt)}</td>
+              <td className="text-right">
+                <AdminButton onClick={() => onOpen(r.id)}>Ouvrir la fiche</AdminButton>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function Field({ label, children }: { readonly label: string; readonly children: React.ReactNode }) {
+  return (
+    <div>
+      <dt className="text-xs text-slate-500">{label}</dt>
+      <dd className="text-sm font-medium">{children}</dd>
+    </div>
+  );
+}
+
+const METHOD_LABELS = { 'mot-de-passe': 'Mot de passe', google: 'Google', 'code-recuperation': 'Code de récupération' };
+
+function AccountSheet({ id, onBack }: { readonly id: string; readonly onBack: () => void }) {
+  const { data, isPending, error } = useAccount(id);
+  return (
+    <Panel title="Fiche du compte" actions={<AdminButton onClick={onBack}>Retour à la liste</AdminButton>}>
+      {isPending && <p className="text-sm text-slate-500">Chargement…</p>}
+      {error && (
+        <p role="alert" className="text-sm text-red-700">
+          {error.message}
+        </p>
+      )}
+      {data && <Sheet d={data} />}
+    </Panel>
+  );
+}
+
+function Sheet({ d }: { readonly d: AccountDetail }) {
+  const a = d.account;
+  return (
+    <div className="flex flex-col gap-5">
+      <p className="text-xs text-slate-500">Cette consultation est enregistrée dans le journal d’audit.</p>
+      <section aria-label="Compte">
+        <h3 className="mb-2 text-sm font-semibold">Compte</h3>
+        <dl className="grid gap-3 sm:grid-cols-3">
+          <Field label="E-mail">{a.email ?? 'Aucun (élève autonome)'}</Field>
+          <Field label="Type">{a.type === 'autonome' ? 'Élève autonome' : 'Famille'}</Field>
+          <Field label="Identifiant de famille">
+            <code className="text-xs">{a.familyId}</code>
+          </Field>
+          <Field label="Création">{dateTime(a.createdAt)}</Field>
+          <Field label="Dernière connexion">{dateTime(a.lastLoginAt)}</Field>
+          <Field label="Dernière activité">{dateTime(a.lastActivityAt)}</Field>
+          <Field label="E-mail validé">{a.emailVerifiedAt ? `Oui, le ${date(a.emailVerifiedAt)}` : 'Non'}</Field>
+          <Field label="Méthodes de connexion">{a.methods.map((m) => METHOD_LABELS[m]).join(', ') || 'Aucune'}</Field>
+          <Field label="Code PIN parent">{a.hasPin ? 'Défini' : 'Non défini'}</Field>
+        </dl>
+      </section>
+      <section aria-label="Profils">
+        <h3 className="mb-2 text-sm font-semibold">Profils enfants ({d.profiles.length})</h3>
+        {d.profiles.length === 0 && <p className="text-sm text-slate-500">Aucun profil.</p>}
+        <ul className="flex flex-col gap-2">
+          {d.profiles.map((p) => (
+            <li key={p.id} className="rounded-[4px] border border-slate-200 p-3 text-sm">
+              <p className="font-semibold">
+                {p.name} <span className="font-normal text-slate-500">· {p.grade ?? 'classe non renseignée'}</span>
+              </p>
+              <p className="text-xs text-slate-600">
+                Créé le {date(p.createdAt)} · dernière activité {date(p.lastActivityAt)} · {p.xp} XP · {p.coins} pièces
+                · {p.rubies} rubis
+              </p>
+              <p className="text-xs text-slate-600">
+                {p.games} partie{p.games > 1 ? 's' : ''} · {p.correctAnswers}/{p.answers} bonnes réponses ·{' '}
+                {p.skillsMastered}/{p.skillsStudied} notions maîtrisées · {p.heroesOwned} héros · {p.bossWins} victoire
+                {p.bossWins > 1 ? 's' : ''} de boss
+              </p>
+              <p className="text-xs text-slate-600">
+                Objets : {p.items.length ? p.items.map((i) => `${i.item} ×${i.count}`).join(', ') : 'aucun'}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <section aria-label="Activité récente">
+        <h3 className="mb-2 text-sm font-semibold">Activité récente</h3>
+        {d.recentGames.length === 0 && <p className="text-sm text-slate-500">Aucune partie.</p>}
+        <ul className="flex flex-col gap-0.5 text-xs text-slate-700">
+          {d.recentGames.map((g, i) => (
+            <li key={i}>
+              {dateTime(g.startedAt)} — {g.profileName} · {g.mode} · {g.subject} · {g.chapterId} ({g.correct}/
+              {g.answered})
+            </li>
+          ))}
+        </ul>
+      </section>
+      <section aria-label="Signalements">
+        <h3 className="mb-2 text-sm font-semibold">Signalements envoyés</h3>
+        {d.reports.length === 0 && <p className="text-sm text-slate-500">Aucun signalement.</p>}
+        <ul className="flex flex-col gap-0.5 text-xs text-slate-700">
+          {d.reports.map((r) => (
+            <li key={r.id}>
+              {date(r.createdAt)} — {r.skillId ?? 'général'} · {r.reason} · {r.status}
+              {r.comment ? ` : « ${r.comment} »` : ''}
+            </li>
+          ))}
+        </ul>
+      </section>
+      <section aria-label="Démarches en cours">
+        <h3 className="mb-2 text-sm font-semibold">Consentements et suppression (RGPD)</h3>
+        <p className="text-xs text-slate-700">
+          Invitation de rattachement parent : {d.pending.invitation ? 'en cours' : 'aucune'} · lien de réinitialisation
+          : {d.pending.passwordReset ? 'en cours' : 'aucun'} · lien de validation d’e-mail :{' '}
+          {d.pending.emailVerification ? 'en cours' : 'aucun'}. La suppression d’un compte est immédiate : aucune
+          demande ne reste en attente.
+        </p>
+      </section>
+      <section aria-label="Abonnement">
+        <h3 className="mb-2 text-sm font-semibold">Abonnement</h3>
+        {d.subscriptions.length === 0 && <p className="text-sm text-slate-500">Aucun abonnement.</p>}
+        <ul className="flex flex-col gap-0.5 text-xs text-slate-700">
+          {d.subscriptions.map((s, i) => (
+            <li key={i}>
+              {s.offer} · {s.status} · {(s.amountCents / 100).toFixed(2).replace('.', ',')} {s.currency.toUpperCase()} ·
+              jusqu’au {date(s.periodEnd)} ({s.provider})
+            </li>
+          ))}
+        </ul>
+      </section>
+      {a.type === 'famille' && <ResetPassword id={a.id} />}
+    </div>
+  );
+}
+
+function ResetPassword({ id }: { readonly id: string }) {
+  const reset = useResetPassword(id);
+  const [confirming, setConfirming] = useState(false);
+  return (
+    <section aria-label="Mot de passe" className="rounded-[4px] border border-slate-200 p-3">
+      <h3 className="mb-2 text-sm font-semibold">Réinitialiser le mot de passe</h3>
+      {reset.data ? (
+        <div role="status" className="flex flex-col gap-1 text-sm">
+          <p>
+            Mot de passe temporaire (affiché une seule fois) :{' '}
+            <code className="rounded bg-slate-100 px-1.5 py-0.5 text-base font-bold">{reset.data.password}</code>
+          </p>
+          <p className="text-xs text-slate-600">
+            {reset.data.sessionsClosed} session{reset.data.sessionsClosed > 1 ? 's' : ''} fermée
+            {reset.data.sessionsClosed > 1 ? 's' : ''}. À transmettre au parent, qui le changera à sa connexion.
+          </p>
+        </div>
+      ) : confirming ? (
+        <div className="flex flex-wrap items-center gap-2 text-sm">
+          <span>Cela ferme toutes les sessions du compte et change son mot de passe. Continuer ?</span>
+          <AdminButton tone="danger" disabled={reset.isPending} onClick={() => reset.mutate()}>
+            Oui, générer un mot de passe
+          </AdminButton>
+          <AdminButton onClick={() => setConfirming(false)}>Annuler</AdminButton>
+        </div>
+      ) : (
+        <AdminButton onClick={() => setConfirming(true)}>Générer un mot de passe temporaire</AdminButton>
+      )}
+      {reset.error && (
+        <p role="alert" className="mt-2 text-sm text-red-700">
+          {reset.error instanceof ApiError ? reset.error.message : 'Réinitialisation impossible.'}
+        </p>
+      )}
+    </section>
+  );
+}
+
+/** Journal d'audit : consultations de fiches et réinitialisations (opérateur, action, compte, date). */
+export function AuditLog() {
+  const [page, setPage] = useState(0);
+  const { data, isPending } = useAudit(page);
+  return (
+    <Panel title="Journal d’audit">
+      {isPending || !data ? (
+        <p className="text-sm text-slate-500">Chargement…</p>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {data.items.length === 0 && <p className="text-sm text-slate-500">Aucun accès enregistré.</p>}
+          <table aria-label="Journal d’audit" className="w-full text-left text-sm">
+            <thead className="text-xs text-slate-500 uppercase">
+              <tr>
+                <th className="py-1.5 pr-3">Date</th>
+                <th className="pr-3">Opérateur</th>
+                <th className="pr-3">Action</th>
+                <th>Compte</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.items.map((e) => (
+                <tr key={e.id} className="border-t border-slate-100">
+                  <td className="py-1.5 pr-3">{dateTime(e.at)}</td>
+                  <td className="pr-3">{e.operator}</td>
+                  <td className="pr-3">{AUDIT_ACTION_LABELS[e.action]}</td>
+                  <td>
+                    <code className="text-xs">{e.accountId}</code>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="flex gap-2">
+            <AdminButton disabled={page === 0} onClick={() => setPage(page - 1)}>
+              Précédent
+            </AdminButton>
+            <AdminButton disabled={!data.hasMore} onClick={() => setPage(page + 1)}>
+              Suivant
+            </AdminButton>
+          </div>
+        </div>
+      )}
+    </Panel>
+  );
+}

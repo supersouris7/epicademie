@@ -61,7 +61,7 @@ export const families = pgTable('families', {
 });
 
 /**
- * Compte de connexion (parent ou administrateur). E-mail stocké en minuscules (unique) ; mot de
+ * Compte de connexion (parent). E-mail stocké en minuscules (unique) ; mot de
  * passe haché (scrypt, sel aléatoire, voir core/auth/password.ts), jamais en clair.
  */
 export const accounts = pgTable(
@@ -96,8 +96,9 @@ export const accounts = pgTable(
     uniqueIndex('accounts_google_sub_unique').on(t.googleSub),
     uniqueIndex('accounts_recovery_unique').on(t.recoveryHash),
     index('accounts_family_idx').on(t.familyId),
+    index('accounts_created_at_idx').on(t.createdAt),
     check('accounts_email_lowercase', sql`${t.email} = lower(${t.email})`),
-    check('accounts_role_valid', sql`${t.role} in ('parent', 'admin')`),
+    check('accounts_role_valid', sql`${t.role} = 'parent'`),
   ],
 );
 
@@ -115,8 +116,6 @@ export const authSessions = pgTable(
       .references(() => accounts.id, { onDelete: 'cascade' }),
     expiresAt: at('expires_at').notNull(),
     parentUntil: at('parent_until'),
-    /** Fin de la session d'administration (mot de passe redemandé à chaque ouverture, 15 min). */
-    adminUntil: at('admin_until'),
     createdAt: createdAt(),
   },
   (t) => [index('auth_sessions_account_idx').on(t.accountId), index('auth_sessions_expires_idx').on(t.expiresAt)],
@@ -419,10 +418,28 @@ export const contentEvents = pgTable(
     action: text('action').$type<'desactivation' | 'reactivation' | 'relecture'>().notNull(),
     version: smallint('version').notNull(),
     note: text('note'),
-    accountId: uuid('account_id').references(() => accounts.id, { onDelete: 'set null' }),
+    /** Nom assaini de l'opérateur d'administration qui a pris la décision. */
+    operator: text('operator'),
     at: at('at').notNull().defaultNow(),
   },
   (t) => [index('content_events_skill_idx').on(t.skillId, t.at)],
+);
+
+/**
+ * Journal d'audit de l'administration (RGPD : traçabilité des accès aux données d'enfants) :
+ * qui (opérateur), quoi, quel compte, quand. Aucun lien de clé étrangère : la trace survit à la
+ * suppression du compte consulté.
+ */
+export const adminAudit = pgTable(
+  'admin_audit',
+  {
+    id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+    at: at('at').notNull().defaultNow(),
+    operator: text('operator').notNull(),
+    action: text('action').$type<'consultation' | 'reinitialisation-mot-de-passe'>().notNull(),
+    accountId: uuid('account_id').notNull(),
+  },
+  (t) => [index('admin_audit_at_idx').on(t.at), index('admin_audit_account_idx').on(t.accountId, t.at)],
 );
 
 /**
@@ -548,6 +565,7 @@ export const ALL_TABLES = [
   'client_errors',
   'content_events',
   'content_states',
+  'admin_audit',
   'attempts',
   'skill_states',
   'inventory',

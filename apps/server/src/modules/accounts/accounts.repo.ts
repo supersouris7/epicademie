@@ -1,5 +1,4 @@
 import { and, eq, gt, isNull, ne } from 'drizzle-orm';
-import type { AccountRole } from '@questeo/shared';
 import type { Executor } from '../../db/client.ts';
 import {
   accounts,
@@ -110,15 +109,6 @@ export function accountsRepo(db: Executor) {
       return row;
     },
 
-    async setRole(email: string, role: AccountRole): Promise<boolean> {
-      const rows = await db
-        .update(accounts)
-        .set({ role })
-        .where(eq(accounts.email, email))
-        .returning({ id: accounts.id });
-      return rows.length > 0;
-    },
-
     async setPassword(accountId: string, passwordHash: string): Promise<void> {
       await db.update(accounts).set({ passwordHash }).where(eq(accounts.id, accountId));
     },
@@ -136,7 +126,6 @@ export function accountsRepo(db: Executor) {
           tokenHash: authSessions.tokenHash,
           expiresAt: authSessions.expiresAt,
           parentUntil: authSessions.parentUntil,
-          adminUntil: authSessions.adminUntil,
           accountId: accounts.id,
           familyId: accounts.familyId,
           email: accounts.email,
@@ -152,10 +141,6 @@ export function accountsRepo(db: Executor) {
 
     async extendSession(tokenHash: string, expiresAt: Date): Promise<void> {
       await db.update(authSessions).set({ expiresAt }).where(eq(authSessions.tokenHash, tokenHash));
-    },
-
-    async setAdminUntil(tokenHash: string, adminUntil: Date | null): Promise<void> {
-      await db.update(authSessions).set({ adminUntil }).where(eq(authSessions.tokenHash, tokenHash));
     },
 
     async setParentPin(accountId: string, pinHash: string): Promise<void> {
@@ -248,10 +233,6 @@ export function accountsRepo(db: Executor) {
     },
   };
 }
-
-/** Donne un rôle à un compte existant (commande d'exploitation `admin`, jamais par l'API). */
-export const setAccountRole = (db: Executor, email: string, role: AccountRole) =>
-  accountsRepo(db).setRole(email.trim().toLowerCase(), role);
 
 /**
  * Rattache les profils de la bêta (créés avant les comptes, sans famille) à la famille d'un

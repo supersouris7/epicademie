@@ -51,6 +51,9 @@ services:
       # 1 si un proxy (nginx…) est placé devant : IP client réelle pour la limite de débit.
       TRUST_PROXY: ${TRUST_PROXY:-0}
       METRICS_TOKEN: ${METRICS_TOKEN:-}
+      # Administration : secret (32 caractères min.) que le frontal de la page de pilotage ajoute
+      # (en-tête X-Questeo-Operateur). Vide : aucune administration. Voir docs/adr/0033-….
+      ADMIN_OPERATOR_SECRET: ${ADMIN_OPERATOR_SECRET:-}
       # E-mails de validation (Brevo) et connexion Google : voir docs/operations/configuration.md.
       # Production : BREVO_API_KEY obligatoire ; recette sans fournisseur : APP_ENV=recette.
       APP_ENV: ${APP_ENV:-}

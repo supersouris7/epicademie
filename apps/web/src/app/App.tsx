@@ -95,6 +95,16 @@ function LegacyAbonnement() {
 
 export function App() {
   const profileId = useSession((s) => s.profileId);
+  const { pathname } = useLocation();
+  // Console d'administration : route autonome, rendue avant toute logique de session de jeu
+  // (aucune redirection vers /bienvenue, aucun choix de profil, aucune navigation du jeu).
+  if (pathname === '/admin' || pathname.startsWith('/admin/')) {
+    return (
+      <ErrorBoundary>
+        <AdminPage />
+      </ErrorBoundary>
+    );
+  }
   return (
     <ErrorBoundary>
       <TermContext.Provider value={Term}>
@@ -143,7 +153,6 @@ export function App() {
             {/* Tout le reste demande un appareil connecté au compte de la famille. */}
             <Route element={<ConnectedShell profileId={profileId} />}>
               <Route path="/" element={<ProfilePicker />} />
-              <Route path="/admin" element={<AdminPage />} />
               <Route path="/parent" element={<ParentHome />} />
               <Route path="/tv" element={<TvScreen />} />
               <Route path="/parent/enfant/:profileId" element={<ChildReport />} />

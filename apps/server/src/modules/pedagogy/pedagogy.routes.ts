@@ -29,8 +29,8 @@ export function pedagogyRoutes(service: PedagogyService, owns: Ownership) {
       service.updateReport(params.id, body.status, body.adminNote),
     );
     route(app, api.adminContent, () => service.content());
-    route(app, api.adminUpdateContent, ({ params, body, actor }) =>
-      service.updateContent(params.skillId, body, actor().accountId),
+    route(app, api.adminUpdateContent, ({ params, body, operator }) =>
+      service.updateContent(params.skillId, body, operator()),
     );
     route(app, api.adminContentHistory, ({ params }) => service.history(params.skillId));
   };

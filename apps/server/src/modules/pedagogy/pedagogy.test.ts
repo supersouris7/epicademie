@@ -1,8 +1,7 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { battlePools } from '@questeo/content';
 import type { ContentSkill, Profile, Report } from '@questeo/shared';
-import { createTestApp, profileInput, TEST_PASSWORD } from '../../testing/harness.ts';
-import { setAccountRole } from '../accounts/index.ts';
+import { createTestApp, profileInput } from '../../testing/harness.ts';
 
 let t: Awaited<ReturnType<typeof createTestApp>>;
 let profileId: string;
@@ -17,11 +16,7 @@ beforeEach(async () => {
   profileId = (
     await t.http.inject({ method: 'POST', url: '/api/v1/profiles', payload: profileInput() })
   ).json<Profile>().id;
-  const account = await t.signup('admin@questeo.test');
-  await setAccountRole(t.database.db, 'admin@questeo.test', 'admin');
-  admin = t.as(account.cookie);
-  // Session d'administration : mot de passe redemandé à l'ouverture.
-  await admin.inject({ method: 'POST', url: '/api/v1/auth/admin', payload: { password: TEST_PASSWORD } });
+  admin = t.operator();
 });
 
 const report = (over: object = {}) =>
@@ -74,11 +69,11 @@ describe('signalements des familles', () => {
     expect((await admin.inject('/api/v1/admin/reports/nouveau')).json()).toEqual([]);
   });
 
-  it('l’administration est réservée au rôle administrateur', async () => {
+  it('l’administration est réservée à l’opérateur', async () => {
     for (const url of ['/api/v1/admin/reports/nouveau', '/api/v1/admin/content']) {
       expect((await t.http.inject(url)).statusCode).toBe(403);
     }
-    expect((await t.http.inject({ url: '/api/v1/admin/content', headers: { cookie: '' } })).statusCode).toBe(401);
+    expect((await t.http.inject({ url: '/api/v1/admin/content', headers: { cookie: '' } })).statusCode).toBe(403);
   });
 });
 

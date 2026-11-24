@@ -1,9 +1,6 @@
-import { useState, type ReactNode } from 'react';
-import { useNavigate } from 'react-router';
-import { api } from '@questeo/shared';
-import { ApiError, request } from '../../shared/api/client.ts';
-import { useMe, useSetMe } from '../account/index.ts';
-import { AdminButton, inputClass } from './ui.tsx';
+import type { ReactNode } from 'react';
+import { useAdminSession } from './api.ts';
+import { inputClass } from './ui.tsx';
 
 /** Police système, thème sombre (classe `admin-dark`) : la console ne reprend rien du style du jeu. */
 const FRAME_STYLE = {
@@ -17,9 +14,8 @@ export interface AdminSection {
 }
 
 /**
- * Cadre de la console d'administration : menu latéral par groupes, en-tête avec la session
- * (compte, fin de session, fermer). Accès : compte administrateur ET mot de passe redemandé à
- * chaque ouverture (session de 15 minutes, côté serveur).
+ * Cadre de la console d'administration : menu latéral par groupes, en-tête avec l'opérateur.
+ * Aucun compte de jeu : l'accès vient de l'en-tête que le frontal de la page de pilotage ajoute.
  */
 export function AdminShell({
   sections,
@@ -32,14 +28,8 @@ export function AdminShell({
   readonly onSelect: (id: string) => void;
   readonly children: ReactNode;
 }) {
-  const { data: me } = useMe();
-  const setMe = useSetMe();
-  const navigate = useNavigate();
+  const { data: session } = useAdminSession();
   const groups = [...new Set(sections.map((s) => s.group))];
-  const close = async () => {
-    setMe(await request(api.closeAdmin));
-    void navigate('/');
-  };
   return (
     <div className="admin-dark min-h-dvh bg-slate-100 text-slate-900" style={FRAME_STYLE}>
       <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-slate-200 bg-white px-4 py-2.5">
@@ -47,12 +37,7 @@ export function AdminShell({
           ADMIN
         </span>
         <h1 className="flex-1 text-sm font-semibold">Questeo · Console d’administration</h1>
-        <span className="hidden text-xs text-slate-500 sm:inline">
-          {me?.account.email}
-          {me?.adminUntil &&
-            ` · session jusqu’à ${new Date(me.adminUntil).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`}
-        </span>
-        <AdminButton onClick={() => void close()}>Fermer la session</AdminButton>
+        <span className="text-xs text-slate-500">Opérateur : {session?.operator}</span>
       </header>
       <div className="mx-auto flex max-w-7xl flex-col gap-6 p-4 md:flex-row md:p-6">
         <nav aria-label="Rubriques" className="md:w-52 md:shrink-0">
@@ -99,60 +84,19 @@ export function AdminShell({
   );
 }
 
-/** Garde : compte administrateur, puis mot de passe redemandé (session de 15 minutes). */
+/** Garde : la console s'ouvre seulement si le serveur reconnaît l'opérateur (sinon, un message). */
 export function AdminGate({ children }: { readonly children: ReactNode }) {
-  const { data: me, isPending } = useMe();
-  const setMe = useSetMe();
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const { data, isPending } = useAdminSession();
   if (isPending) return null;
-  const frame = (content: ReactNode) => (
+  if (data) return <>{children}</>;
+  return (
     <div
       className="admin-dark flex min-h-dvh items-center justify-center bg-slate-100 p-4 text-slate-900"
       style={FRAME_STYLE}
     >
       <div className="w-full max-w-sm rounded-[4px]-[8px] border border-slate-200 bg-white p-6 shadow-sm">
-        {content}
+        <p className="text-sm">Administration accessible uniquement depuis la page de pilotage.</p>
       </div>
     </div>
-  );
-  if (me?.account.role !== 'admin') return frame(<p className="text-sm">Accès réservé à l’administration.</p>);
-  if (me.adminUntil && new Date(me.adminUntil) > new Date()) return <>{children}</>;
-  return frame(
-    <form
-      className="flex flex-col gap-3"
-      onSubmit={(e) => {
-        e.preventDefault();
-        request(api.openAdmin, { body: { password } })
-          .then(setMe)
-          .catch((err: unknown) => setError(err instanceof ApiError ? err.message : 'Connexion impossible.'));
-      }}
-    >
-      <span className="w-fit rounded-[4px] bg-slate-900 px-2 py-0.5 text-xs font-bold tracking-wider text-white">
-        ADMIN
-      </span>
-      <h1 className="text-base font-semibold">Ouvrir la console d’administration</h1>
-      <p className="text-xs text-slate-500">
-        Mot de passe redemandé à chaque ouverture. Session de 15 minutes. Compte : {me.account.email}
-      </p>
-      <label className="flex flex-col gap-1 text-sm font-medium">
-        Mot de passe
-        <input
-          type="password"
-          autoComplete="current-password"
-          className={inputClass}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </label>
-      {error && (
-        <p role="alert" className="text-sm text-red-700">
-          {error}
-        </p>
-      )}
-      <AdminButton type="submit" tone="primary" disabled={password === ''}>
-        Ouvrir la session
-      </AdminButton>
-    </form>,
   );
 }

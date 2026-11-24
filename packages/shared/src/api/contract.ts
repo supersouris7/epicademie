@@ -61,6 +61,15 @@ import {
   StudiedChaptersUpdateSchema,
 } from '../evaluation.ts';
 import { BadgeProgressSchema, LearningReportSchema } from '../learning.ts';
+import {
+  AccountDetailSchema,
+  AccountPageSchema,
+  AccountSearchSchema,
+  AdminSessionSchema,
+  AuditPageSchema,
+  AuditSearchSchema,
+  TemporaryPasswordSchema,
+} from '../admin.ts';
 import { BillingSchema, CheckoutSchema, SimulatePaymentSchema } from '../billing.ts';
 import {
   AdminErrorSchema,
@@ -103,7 +112,7 @@ export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
  * - `public` : tout le monde (connexion, inscription, télémétrie) ;
  * - `family` : un appareil connecté au compte de la famille (les enfants y jouent) ;
  * - `parent` : idem, mot de passe confirmé récemment (actions réservées au parent) ;
- * - `admin` : compte administrateur.
+ * - `admin` : opérateur de la page de pilotage (en-tête secret ajouté par le frontal ; aucun compte de jeu).
  * Les données d'une autre famille restent invisibles : le serveur vérifie aussi l'appartenance
  * de chaque profil, partie ou combat désigné (réponse 404 sinon).
  */
@@ -360,25 +369,6 @@ export const api = {
     access: 'family',
     status: 200,
     body: ParentPinUnlockSchema,
-    response: MeSchema,
-  }),
-  openAdmin: endpoint({
-    method: 'POST',
-    path: '/auth/admin',
-    tag: 'admin',
-    summary: 'Ouvre une session d’administration (compte admin, mot de passe, 15 minutes)',
-    access: 'family',
-    status: 200,
-    body: PasswordConfirmSchema,
-    response: MeSchema,
-  }),
-  closeAdmin: endpoint({
-    method: 'POST',
-    path: '/auth/admin/close',
-    tag: 'admin',
-    summary: 'Ferme la session d’administration',
-    access: 'family',
-    status: 200,
     response: MeSchema,
   }),
   lockParent: endpoint({
@@ -919,6 +909,55 @@ export const api = {
   }),
 
   // ——— Administration ———
+  adminSession: endpoint({
+    method: 'GET',
+    path: '/admin/session',
+    tag: 'admin',
+    summary: 'Opérateur reconnu (403 sinon)',
+    access: 'admin',
+    status: 200,
+    response: AdminSessionSchema,
+  }),
+  adminAccounts: endpoint({
+    method: 'POST',
+    path: '/admin/accounts/search',
+    tag: 'admin',
+    summary: 'Recherche paginée de comptes (25 par page, jamais de liste complète)',
+    access: 'admin',
+    status: 200,
+    body: AccountSearchSchema,
+    response: AccountPageSchema,
+  }),
+  adminAccount: endpoint({
+    method: 'GET',
+    path: '/admin/accounts/:id',
+    tag: 'admin',
+    summary: 'Fiche d’un compte (consultation journalisée)',
+    access: 'admin',
+    status: 200,
+    params: IdParamsSchema,
+    response: AccountDetailSchema,
+  }),
+  adminResetPassword: endpoint({
+    method: 'POST',
+    path: '/admin/accounts/:id/password-reset',
+    tag: 'admin',
+    summary: 'Mot de passe temporaire (montré une fois), sessions du compte fermées',
+    access: 'admin',
+    status: 200,
+    params: IdParamsSchema,
+    response: TemporaryPasswordSchema,
+  }),
+  adminAudit: endpoint({
+    method: 'POST',
+    path: '/admin/audit',
+    tag: 'admin',
+    summary: 'Journal d’audit (consultations de fiches, réinitialisations), 25 par page',
+    access: 'admin',
+    status: 200,
+    body: AuditSearchSchema,
+    response: AuditPageSchema,
+  }),
   adminStats: endpoint({
     method: 'GET',
     path: '/admin/stats',

@@ -39,7 +39,7 @@ export interface VerificationDeps {
   readonly open: (a: {
     id: string;
     email: string | null;
-    role: 'parent' | 'admin';
+    role: 'parent';
     familyId: string;
     autonomous: boolean;
   }) => Promise<OpenedSession>;
