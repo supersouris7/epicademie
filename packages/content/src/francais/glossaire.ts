@@ -307,4 +307,25 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Pronom qui complète le verbe.',
     example: 'Elle le chante.',
   },
+  {
+    id: 'h-muet',
+    word: 'h muet',
+    forms: [],
+    definition: 'Un h qu’on n’entend pas : le mot se prononce comme s’il commençait par une voyelle.',
+    example: 'l’homme, cet hôpital',
+  },
+  {
+    id: 'opposition',
+    word: 'opposition',
+    forms: ['oppositions'],
+    definition: 'Deux idées qui vont en sens contraire.',
+    example: 'Il est petit mais fort.',
+  },
+  {
+    id: 'consequence',
+    word: 'conséquence',
+    forms: ['conséquences'],
+    definition: 'Ce qui arrive à cause d’autre chose.',
+    example: 'Il pleut, donc je prends un parapluie.',
+  },
 ];

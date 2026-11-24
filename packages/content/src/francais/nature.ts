@@ -38,7 +38,9 @@ import {
   sourcesDe,
   type Groupe,
   type Nature,
+  type Objet,
   type ObjetPhrase,
+  type Possesseur,
   type PronomObjet,
 } from './nature.donnees.ts';
 import { at, document, pickN, same, textTrap } from './outils.ts';
@@ -94,7 +96,7 @@ const FONCTION = 'une fonction';
 const DEF_NATURE = 'La nature, c’est la sorte de mot : nom, verbe, adjectif, déterminant, pronom…';
 const DEF_FONCTION = 'La fonction, c’est le rôle dans la phrase : sujet, complément…';
 
-const SUJET_OK = ['sujet', 'le sujet', 'sujet du verbe', 'le sujet du verbe'];
+const SUJET_OK = ['sujet', 'le sujet', 'sujet du verbe', 'le sujet du verbe', 'groupe sujet', 'le groupe sujet'];
 const OBJET_OK = [
   'complément d’objet',
   'complément d’objet direct',
@@ -346,7 +348,7 @@ function articlesDraft(rng: Rng, level: Level): QuestionDraft {
         traps: numTraps(r(k), [
           [autres, `Tu as compté les articles ${defini ? 'indéfinis' : 'définis'}. Relis la question.`],
           [k + autres, 'Tu as compté tous les articles. Garde seulement la sorte demandée.'],
-          [k + 1, 'Tu en as un de trop : « mon », « ce » ou « notre » ne sont pas des articles.'],
+          [k + 1, 'Tu en as un de trop : recompte. Les mots « mon », « ce » ou « notre » ne sont pas des articles.'],
         ]),
         hint: 'Relève ligne par ligne les petits mots devant les noms.',
         steps: [
@@ -387,6 +389,17 @@ const NOMS_SIMPLES: Record<string, string> = {
   cette: 'table',
   ces: 'jouets',
 };
+
+/** Genre et nombre de l’objet, et la règle de la voyelle quand « mon, ton, son » remplacent « ma, ta, sa ». */
+function accordPossessif(p: Possesseur, o: Objet) {
+  const [masculin, feminin] = FORMES_POSSESSIF[p];
+  const det = possessif(p, o);
+  const devantVoyelle = !o.pluriel && o.genre === 'f' && det === masculin && masculin !== feminin;
+  return {
+    genre: `${o.genre === 'm' ? 'masculin' : 'féminin'} ${o.pluriel ? 'pluriel' : 'singulier'}`,
+    regle: devantVoyelle ? ' Devant une voyelle, on écrit « mon, ton, son » même au féminin.' : '',
+  };
+}
 
 function determinantsDraft(rng: Rng, level: Level): QuestionDraft {
   const poss = rng.int(0, 1) === 0;
@@ -457,6 +470,7 @@ function determinantsDraft(rng: Rng, level: Level): QuestionDraft {
       const det = possessif(p, o);
       const bon = `${det} ${o.nom}`;
       const formes = [...new Set(FORMES_POSSESSIF[p])];
+      const { genre, regle } = accordPossessif(p, o);
       const autre = FORMES_POSSESSIF[p === 'moi' ? 'toi' : 'moi'][o.pluriel ? 2 : 0];
       return {
         prompt: `Remplace « ${o.groupe} qui ${o.pluriel ? 'sont' : 'est'} à ${p} » par un groupe avec un déterminant possessif.`,
@@ -465,22 +479,14 @@ function determinantsDraft(rng: Rng, level: Level): QuestionDraft {
           [bon],
           [
             ...formes.map(
-              (d) =>
-                [
-                  `${d} ${o.nom}`,
-                  'Vérifie le genre et le nombre. Devant une voyelle, on écrit « mon, ton, son » même au féminin.',
-                ] as const,
+              (d) => [`${d} ${o.nom}`, `Vérifie le genre et le nombre : « ${o.nom} » est ${genre}.${regle}`] as const,
             ),
             [`${autre} ${o.nom}`, `Ce possessif ne dit pas « à ${p} ».`],
             [o.groupe, 'Il manque le possessif : il dit à qui c’est.'],
           ],
         ),
         hint: `Quel petit mot veut dire « à ${p} » ? Accorde-le avec le nom.`,
-        steps: [
-          DEF_POSS,
-          `C’est à ${p}, et « ${o.nom} » est ${o.genre === 'm' ? 'masculin' : 'féminin'} ${o.pluriel ? 'pluriel' : 'singulier'}.`,
-          `On écrit **${bon}**.`,
-        ],
+        steps: [DEF_POSS, `C’est à ${p}, et « ${o.nom} » est ${genre}.${regle}`, `On écrit **${bon}**.`],
       };
     }
     default: {
@@ -579,7 +585,8 @@ function conjonctionsDraft(rng: Rng, level: Level): QuestionDraft {
       const lignes = troisLignes(rng, LIGNES_CONJ, (l) => l.n);
       const k = total(lignes, (l) => l.n);
       return {
-        prompt: 'Lis ce texte. Combien de conjonctions de coordination contient-il en tout ?',
+        prompt:
+          'Lis ce texte. Combien de conjonctions de coordination contient-il en tout ? Un mot répété compte à chaque fois.',
         figure: document(
           'Quelques phrases',
           lignes.map((l) => l.texte),
@@ -587,7 +594,12 @@ function conjonctionsDraft(rng: Rng, level: Level): QuestionDraft {
         answer: num(k),
         traps: numTraps(r(k), [
           [k + 1, 'Tu en as un de trop : « est », « où » ou « puis » ne sont pas dans la liste.'],
-          [k - 1, 'Il t’en manque une : « ni… ni » compte pour deux mots.'],
+          [
+            k - 1,
+            lignes.some((l) => l.texte.includes(' ni '))
+              ? 'Il t’en manque une : « ni… ni » compte pour deux mots.'
+              : 'Il t’en manque une : relis chaque ligne avec la liste des sept mots.',
+          ],
           [lignes.filter((l) => l.n > 0).length, 'Tu as compté les lignes. Une ligne peut avoir deux conjonctions.'],
         ]),
         hint: 'Cherche les sept mots de la liste. Attention : « est » n’est pas « et ».',
@@ -601,7 +613,7 @@ function conjonctionsDraft(rng: Rng, level: Level): QuestionDraft {
 
 const DEF_ADVERBE = 'L’adverbe précise un verbe, un adjectif ou un autre adverbe. Il ne change jamais.';
 const NOMS_PIEGE = ['chien', 'maison', 'gâteau', 'vélo', 'jardin'];
-const VERBES_PIEGE = ['chante', 'mange', 'court', 'dessine', 'saute'];
+const VERBES_PIEGE = ['chante', 'mange', 'dort', 'dessine', 'saute'];
 const whyNonAdverbe = (m: string) => `« ${m} » n’est pas un adverbe : ce mot ne précise pas comment, quand ou où.`;
 
 function adverbesDraft(rng: Rng, level: Level): QuestionDraft {
@@ -701,7 +713,7 @@ function adverbesDraft(rng: Rng, level: Level): QuestionDraft {
         ),
         answer: num(k),
         traps: numTraps(r(k), [
-          [k + 1, 'Tu en as un de trop : un adjectif comme « rouge » ou « long » n’est pas un adverbe.'],
+          [k + 1, 'Tu en as un de trop : recompte. Un adjectif, comme « rouge » ou « long », n’est pas un adverbe.'],
           [k - 1, 'Il t’en manque un : une ligne peut en avoir deux.'],
           [lignes.filter((l) => l.n > 0).length, 'Tu as compté les lignes. Compte chaque adverbe.'],
         ]),
@@ -723,7 +735,7 @@ const PRONOMS_OBJETS: readonly PronomObjet[] = ['le', 'la', 'les', 'lui', 'leur'
 
 const whyObjet = (o: ObjetPhrase) =>
   o.groupe.startsWith('à') || o.groupe.startsWith('aux')
-    ? `« ${o.groupe} » est introduit par « à » : on le remplace par « lui » (un seul) ou « leur » (plusieurs).`
+    ? `« ${o.groupe} » est introduit par « à »${o.groupe.startsWith('aux') ? ' (« aux » veut dire « à les »)' : ''} : on le remplace par « lui » (un seul) ou « leur » (plusieurs).`
     : `« ${o.groupe} » suit le verbe sans « à » : on le remplace par « le », « la » ou « les », selon le genre et le nombre.`;
 
 function pronomsDraft(rng: Rng, level: Level): QuestionDraft {
@@ -873,7 +885,7 @@ export const FCM1_NATURE: readonly Skill[] = [
     memo: [
       'Le **déterminant possessif** dit à qui c’est : mon vélo, ta trousse, leurs billes.',
       'Le **déterminant démonstratif** montre : ce chien, cet arbre, cette fleur, ces amis.',
-      'Astuce : devant une voyelle, on écrit « mon école » (et pas « ma ») et « cet arbre ».',
+      'Astuce : devant une voyelle ou un **h muet**, on écrit « mon école » (et pas « ma ») et « cet arbre », « cet homme ».',
     ],
     factId: 'determinants',
     faits: ['possessif', 'mon', 'ton', 'son', 'notre', 'votre', 'leur', 'ce'],
@@ -884,7 +896,7 @@ export const FCM1_NATURE: readonly Skill[] = [
     title: 'Conjonctions de coordination',
     memo: [
       'Une **conjonction de coordination** relie des mots ou des phrases. Il y en a sept : mais, ou, et, donc, or, ni, car.',
-      '« et » ajoute, « ou » propose un choix, « mais » oppose, « car » explique, « donc » annonce la conséquence.',
+      '« et » ajoute, « ou » propose un choix, « mais » marque une **opposition**, « car » explique, « donc » annonce la **conséquence**, « ni » sert dans une phrase négative.',
       'Exemple : « Je mets un manteau car il fait froid. » Attention : « et » (et puis) n’est pas « est » (verbe être).',
     ],
     factId: 'conjonctions',
@@ -897,7 +909,7 @@ export const FCM1_NATURE: readonly Skill[] = [
     memo: [
       'Un **adverbe** précise un verbe, un adjectif ou un autre adverbe : il court vite, très grand.',
       'Il est **invariable** : il ne change jamais. « Il court vite. » → « Ils courent vite. »',
-      'Range-les : quand ? (hier, demain), où ? (ici), combien ? (beaucoup, très, trop).',
+      'Range-les : quand ? (hier, demain), où ? (ici), combien ? (beaucoup, très, trop), comment ? (vite, bien).',
     ],
     factId: 'adverbes',
     faits: [
@@ -925,6 +937,7 @@ export const FCM1_NATURE: readonly Skill[] = [
     memo: [
       'Un **pronom personnel sujet** dit qui fait l’action : je, tu, il, elle, nous, vous, ils, elles.',
       'Un **pronom personnel complément** complète le verbe : me, te, le, la, les, lui, leur. Il se met souvent avant le verbe.',
+      'Pour un groupe qui commence par « à », on prend « lui » (un seul) ou « leur » (plusieurs).',
       'Exemple : « Ma sœur lit le livre. » → « Elle le lit. »',
     ],
     factId: 'pronoms',

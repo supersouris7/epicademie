@@ -51,7 +51,10 @@ export const FAITS_NATURE: readonly Fait[] = [
   tlfi('donc', 'Conjonction de coordination exprimant la conséquence ou la conclusion'),
   tlfi('ni', 'conjonction de coordination négative'),
   tlfi('or', 'conjonction de coordination'),
-  tlfi('adverbe', 'Partie invariable du discours qui modifie les verbes ou les adjectifs.'),
+  tlfi(
+    'adverbe',
+    'Partie du discours neutre et invariable qui peut être rapportée à un verbe, à un adjectif, à une préposition ou à un autre adverbe',
+  ),
   tlfi('toujours', 'TOUJOURSadverbe'),
   tlfi('souvent', 'SOUVENTadverbe'),
   tlfi('hier', "Dans le jour qui précède immédiatement celui où l'on est"),
