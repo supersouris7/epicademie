@@ -6,6 +6,7 @@ import { RELECTURES as FRANCAIS } from './francais/relectures.ts';
 import { RELECTURES as GEOGRAPHIE } from './geographie/relectures.ts';
 import { RELECTURES as HISTOIRE } from './histoire/relectures.ts';
 import { RELECTURES as PHYSIQUE } from './physique/relectures.ts';
+import { RELECTURES as ST } from './sciences/st/relectures.ts';
 
 /** Registre des relectures pédagogiques (docs/adr/0034, point 7) ; chaque matière tient le sien. */
 export const RELECTURES: readonly Relecture[] = [
@@ -16,6 +17,7 @@ export const RELECTURES: readonly Relecture[] = [
   ...GEOGRAPHIE,
   ...HISTOIRE,
   ...PHYSIQUE,
+  ...ST,
 ];
 
 /** Une relecture « ok » existe pour cette notion à cette version. */

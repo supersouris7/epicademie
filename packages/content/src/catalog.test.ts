@@ -167,7 +167,8 @@ describe('parcours Adulte', () => {
 describe('matière Sciences (#76)', () => {
   it('les chapitres de physique-chimie sont dans la matière sciences, domaine physique-chimie', () => {
     const chapters = chaptersOf('sciences');
-    expect(chapters.map((c) => c.id)).toEqual([
+    // Les chapitres des lots de contenu (ADR 0034, ex. « pcm1-matiere ») s'ajoutent à ceux du cycle 4.
+    expect(chapters.map((c) => c.id).filter((id) => /^p[345]-/.test(id))).toEqual([
       'p5-unites',
       'p5-matiere',
       'p4-mouvement',
