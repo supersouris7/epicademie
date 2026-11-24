@@ -18,4 +18,5 @@ export const RELECTURES: readonly Relecture[] = [
     date: '2026-11-24',
     verdict: 'ok' as const,
   })),
+  { skillId: 'acm1-mois', version: 1, lot: 'an-cm1-03', date: '2026-11-24', verdict: 'ok' },
 ];

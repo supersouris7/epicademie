@@ -320,11 +320,8 @@ const months: Skill = {
       return pickEnglish(rng, MONTHS, 'un mois', 'Beaucoup de mois ressemblent au français. Compare les débuts.');
     if (level === 2) return understand(rng, MONTHS, 'un mois');
     if (level === 3) return write(rng, MONTHS, 'un mois');
-    if (level === 4) {
-      const kind = rng.int(0, 2);
-      if (kind === 0) return neighbour(rng, MONTHS, 'le mois');
-      return kind === 1 ? ordering(rng, MONTHS, 5, 'ces mois') : pairs(rng, MONTHS, 5);
-    }
+    if (level === 4)
+      return rng.int(0, 1) === 0 ? neighbour(rng, MONTHS, 'le mois') : ordering(rng, MONTHS, 5, 'ces mois');
     const kids = some(rng, ['Emir', 'Ana', 'Yuna', 'Paul'], 3);
     const i = rng.int(0, 10);
     const wanted = at(MONTHS, i + 1);
@@ -341,7 +338,7 @@ const months: Skill = {
       `${at(kids, 2)}: My birthday is in ${extra2.en}.`,
     ]);
     return {
-      prompt: `Lis les messages. En quel mois est l’anniversaire ${de(owner)}, avec « after ${before.en} » ? Écris le mois en anglais.`,
+      prompt: `Lis les messages. En quel mois est l’anniversaire ${de(owner)} ? Écris le mois en anglais.`,
       figure: { kind: 'document', title: 'Birthdays', lines, credit: 'Écrit pour l’exercice.' },
       answer: { kind: 'text', accepted: accepted(wanted) },
       traps: [
