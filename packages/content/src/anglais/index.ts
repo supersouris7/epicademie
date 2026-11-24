@@ -2,6 +2,7 @@ import type { Chapter, Level, Skill } from '../types.ts';
 import { choice } from '../build.ts';
 import { IRREGULAR_VERBS, regularised, verbsFor } from './verbs.ts';
 import { ENGLISH_GRAMMAR_CHAPTERS, REGULAR_PAST_SKILL } from './grammaire.ts';
+import { ENGLISH_PRESENTATION_CHAPTER } from './presentation.ts';
 
 /**
  * Anglais — pilote (docs/adr/0024-contenus-hors-maths.md) : verbes irréguliers, classe de 5e
@@ -117,6 +118,7 @@ const sentence: Skill = {
 
 export const ANGLAIS_CHAPTERS: readonly Chapter[] = [
   ...ENGLISH_GRAMMAR_CHAPTERS.filter((c) => ['cm1', 'cm2', '6e'].includes(c.grade)),
+  ENGLISH_PRESENTATION_CHAPTER,
   {
     id: 'a5-verbes-irreguliers',
     subject: 'anglais',
