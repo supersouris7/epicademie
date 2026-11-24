@@ -6,4 +6,9 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'emcm1-respect-autrui', version: 1, lot: 'em-cm1-01', date: '2026-11-24', verdict: 'ok' },
   { skillId: 'emcm1-egalite-dignite', version: 1, lot: 'em-cm1-01', date: '2026-11-24', verdict: 'ok' },
   { skillId: 'emcm1-fraternite-empathie', version: 1, lot: 'em-cm1-01', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'emcm1-regles-en-ligne', version: 1, lot: 'em-cm1-02', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'emcm1-chercher-information', version: 1, lot: 'em-cm1-02', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'emcm1-respect-en-ligne', version: 1, lot: 'em-cm1-02', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'emcm1-signaler', version: 1, lot: 'em-cm1-02', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'emcm1-sobriete-numerique', version: 1, lot: 'em-cm1-02', date: '2026-11-24', verdict: 'ok' },
 ];
