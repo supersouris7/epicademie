@@ -86,7 +86,7 @@ export const SOURCES: readonly Source[] = [
   },
   {
     id: 'vie-publique-maire',
-    title: 'Fiche « Quelles sont les fonctions d’un maire ? »',
+    title: 'Fiche « Les fonctions, les pouvoirs d’un maire »',
     publisher: 'Vie publique (DILA)',
     url: 'https://www.vie-publique.fr/fiches/19617-les-fonctions-les-pouvoirs-dun-maire',
     textDate: '2026-07-15',

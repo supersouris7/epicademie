@@ -131,9 +131,9 @@ const valeursSymboles: Notion = {
         { label: 'parce qu’ils appartiennent au maire', why: 'Ils appartiennent à tous, pas à une seule personne.' },
       ],
       gap: [
-        'Les symboles de la République représentent ce que nous avons en commun : il faut les ',
+        'Rester silencieux pendant l’hymne national, c’est une façon de montrer qu’on le ',
         '.',
-        ['respecter', 'honorer'],
+        ['respecte', 'honore'],
       ],
       quote: RESPECT_SYMBOLES,
       explain:
@@ -311,7 +311,7 @@ const droitsDeTous: Notion = {
       gap: [
         'En France, chaque enfant a droit à l’',
         ' : il peut aller à l’école.',
-        ['éducation', 'education', 'instruction'],
+        ['éducation', 'education', 'instruction', 'enseignement'],
       ],
       quote: DROITS_FRANCE,
       explain: 'En France, tout individu a des droits, comme celui à l’éducation et celui d’être soigné.',
@@ -402,7 +402,17 @@ const droitsDeTous: Notion = {
   libres: [
     {
       q: 'Lina répète que « les garçons ne savent pas cuisiner » sans l’avoir vérifié. Cette idée toute faite est un … (un mot).',
-      accepted: ['préjugé', 'prejuge', 'un préjugé', 'stéréotype', 'stereotype', 'un stéréotype'],
+      accepted: [
+        'préjugé',
+        'prejuge',
+        'un préjugé',
+        'stéréotype',
+        'stereotype',
+        'un stéréotype',
+        'cliché',
+        'cliche',
+        'un cliché',
+      ],
       traps: [
         { text: 'droit', why: 'Un droit protège ou permet d’agir : ici, c’est une idée sur un groupe.' },
         { text: 'devoir', why: 'Un devoir est une chose à faire : ici, c’est une idée toute faite.' },
@@ -414,6 +424,11 @@ const droitsDeTous: Notion = {
       q: 'L’article 2 de la DDHC cite un droit qui protège contre les arrestations injustes : la … (un mot).',
       accepted: ['sûreté', 'surete', 'la sûreté', 'la surete'],
       traps: [
+        { text: 'sécurité', why: 'L’idée est proche, mais le mot écrit dans l’article 2 est un autre : « sû… ».' },
+        {
+          text: 'liberté',
+          why: 'L’article 2 cite aussi la liberté, mais le droit contre les arrestations injustes a son propre nom.',
+        },
         { text: 'devise', why: 'La devise est une phrase de trois mots, pas un droit de l’article 2.' },
         { text: 'majorité', why: 'La majorité est un âge, pas un droit de l’article 2.' },
       ],
@@ -655,7 +670,8 @@ const communeElus: Notion = {
         { text: 'préfet', why: 'Le préfet n’élit pas le maire.' },
       ],
       quote: MAIRE_ELU,
-      explain: 'Les électeurs élisent les conseillers municipaux, puis le conseil municipal élit le maire.',
+      explain:
+        'Les électeurs élisent les conseillers municipaux, puis le conseil municipal élit le maire. Le site public Vie publique écrit : « Le maire est élu parmi les conseillers municipaux ».',
     },
   ],
   docs: [
@@ -681,7 +697,8 @@ const communeElus: Notion = {
             { label: 'l’école', why: 'L’école ne choisit pas le maire.' },
           ],
           quote: MAIRE_ELU,
-          explain: 'Le maire est élu par le conseil municipal, lui-même élu par les électeurs.',
+          explain:
+            'Le maire est élu par le conseil municipal, lui-même élu par les électeurs. Le site public Vie publique écrit : « Le maire est élu parmi les conseillers municipaux ».',
         },
         {
           q: 'Quel domaine le maire cite-t-il dans son rôle ?',
@@ -848,6 +865,10 @@ const leVote: Notion = {
       traps: [
         { text: 'voisins', why: 'Les voisins habitent à côté : ils ne sont pas élus pour décider.' },
         { text: 'candidats', why: 'Avant le vote, ils sont candidats ; une fois élus, ils portent un autre nom.' },
+        {
+          text: 'députés',
+          why: 'Les députés sont des représentants, mais il y en a d’autres : cherche le mot général.',
+        },
       ],
       quote: ELECTEURS,
       explain: 'Les représentants sont élus pour décider au nom des électeurs.',
@@ -858,6 +879,8 @@ const leVote: Notion = {
       traps: [
         { text: 'élue', why: 'Elle n’est pas encore élue : elle peut seulement se présenter.' },
         { text: 'mineure', why: 'Les droits politiques s’exercent à la majorité.' },
+        { text: 'candidate', why: 'Remplir les conditions ne suffit pas : on est candidate quand on se présente.' },
+        { text: 'majeure', why: 'La majorité est un âge : cherche le mot qui veut dire « qui peut être élue ».' },
       ],
       quote: POLITIQUES,
       explain: 'Être éligible, c’est avoir le droit de se présenter à une élection.',
@@ -940,7 +963,8 @@ const leVote: Notion = {
             { label: 'il est président', why: 'Un président dirige le pays, pas une classe.' },
           ],
           quote: POLITIQUES,
-          explain: 'Se présenter à une élection, c’est être candidat : c’est le droit d’éligibilité.',
+          explain:
+            'Se présenter à une élection, c’est être candidat. Pour les élections de la vie publique, le droit de se présenter s’appelle l’éligibilité.',
         },
       ],
     },
