@@ -265,6 +265,22 @@ const siecles2: Generator = (rng) => {
   };
 };
 
+/** Découpage d’un nombre, pour expliquer son écriture : « 14 = 10 + 4, soit X puis IV ». */
+function decoupage(n: number): string {
+  const values: number[] = [];
+  const letters: string[] = [];
+  let rest = n;
+  for (const [value, l] of ROMAINS) {
+    while (rest >= value) {
+      values.push(value);
+      letters.push(l);
+      rest -= value;
+    }
+  }
+  if (values.length === 1) return `${n} s’écrit avec un seul bloc : ${letters.join('')}.`;
+  return `${n} = ${values.join(' + ')}, soit ${letters.join(' puis ')}.`;
+}
+
 const siecles3: Generator = (rng) => {
   const n = rng.int(2, 21);
   const r = toRoman(n);
@@ -278,7 +294,7 @@ const siecles3: Generator = (rng) => {
         [toRoman(n - 1), `Tu as écrit ${n - 1}. Il en manque un.`],
       ],
       'Découpe le nombre avec des 10, des 5 et des 1.',
-      [LETTRES, AJOUTER, fin(r)],
+      [LETTRES, AJOUTER, decoupage(n), fin(r)],
     );
   }
   return saisie(
@@ -287,10 +303,15 @@ const siecles3: Generator = (rng) => {
     [
       [String(n + 1), 'Tu as compté un de trop. Relis lettre par lettre.'],
       [String(n - 1), 'Il t’en manque un. Relis lettre par lettre.'],
-      [String(n + 2), 'Une petite lettre placée avant une grande s’enlève.'],
+      [
+        String(n + 2),
+        /I[VX]/.test(r)
+          ? 'Une petite lettre placée avant une grande s’enlève.'
+          : 'Tu as compté deux de trop. Relis lettre par lettre.',
+      ],
     ],
     'Lis de gauche à droite : ajoute, ou enlève si la petite lettre est devant.',
-    [LETTRES, AJOUTER, fin(String(n))],
+    [LETTRES, AJOUTER, decoupage(n), fin(String(n))],
   );
 };
 
@@ -301,7 +322,7 @@ const siecles4: Generator = (rng) => {
   const traps = [c - 1, c + 1].flatMap((wrong) => {
     const why =
       wrong < c
-        ? 'Tu as gardé un siècle de moins. Les années 1 à 100 forment déjà le Ier siècle.'
+        ? 'Tu as compté un siècle de moins. Les années 1 à 100 forment déjà le Ier siècle.'
         : year % 100 === 0
           ? 'C’est un siècle trop loin. Une année qui finit par 00 termine son siècle.'
           : 'C’est un siècle trop loin. Compte à partir du Ier siècle : années 1 à 100.';
@@ -940,7 +961,7 @@ export const SKILLS: readonly Skill[] = [
     [
       'Un **siècle** dure cent ans. Son numéro s’écrit en **chiffres romains** : I vaut 1, V vaut 5, X vaut 10.',
       'Petite lettre après, on ajoute : VI = 6. Petite lettre avant, on enlève : IV = 4.',
-      'Le Ier siècle va de 1 à 100. Ainsi, 1789 est au XVIIIe siècle, et 1800 aussi !',
+      'Le Ier siècle va de 1 à 100. Le XVIIIe va de 1701 à 1800 : 1789 en fait partie, et 1800 aussi !',
     ],
     [
       PREUVES.siecle,
