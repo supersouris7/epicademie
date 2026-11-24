@@ -303,12 +303,27 @@ function infinitifDraft(rng: Rng, level: Level): QuestionDraft {
 
 // ───────────────────────── 3. Trouver le groupe sujet ─────────────────────────
 
+/** « Qui est-ce qui » appelle un verbe à la 3e personne du singulier : « qui est-ce qui habite… ? ». */
+const SINGULIER: Record<string, string> = {
+  mangeons: 'mange',
+  cours: 'court',
+  lis: 'lit',
+  partez: 'part',
+  partent: 'part',
+  dorment: 'dort',
+};
+const quiReste = (reste: string): string => {
+  const [mot = '', ...suite] = reste.split(' ');
+  const sing = SINGULIER[mot] ?? (mot.endsWith('ent') ? mot.slice(0, -1) : mot);
+  return [sing, ...suite].join(' ');
+};
+
 const phraseGs = (g: GroupeSujet, pre?: string) =>
   pre ? `${pre} ${lowerFirst(g.gs)} ${g.reste}.` : `${g.gs} ${g.reste}.`;
 
 const stepsGs = (g: GroupeSujet) => [
   'Le sujet dit qui fait l’action. Je pose la question « Qui est-ce qui… ? » devant le verbe.',
-  `Qui est-ce qui ${g.reste} ? C’est ${lowerFirst(g.gs)}.`,
+  `Qui est-ce qui ${quiReste(g.reste)} ? C’est ${lowerFirst(g.gs)}.`,
   `Le groupe sujet est **${g.gs}**.`,
 ];
 
@@ -381,7 +396,7 @@ function sujetDraft(rng: Rng, level: Level): QuestionDraft {
         hint: 'Un groupe placé avant le sujet, avec une virgule, dit quand. Supprime-le pour voir ce qui reste.',
         steps: [
           `« ${preSansVirgule} » dit quand : je peux le supprimer, ce n’est pas le sujet.`,
-          `Il reste : ${phraseGs(g)} Qui est-ce qui ${g.reste} ? C’est ${lowerFirst(g.gs)}.`,
+          `Il reste : ${phraseGs(g)} Qui est-ce qui ${quiReste(g.reste)} ? C’est ${lowerFirst(g.gs)}.`,
           `Le groupe sujet est **${g.gs}**.`,
         ],
       };
@@ -406,7 +421,7 @@ function sujetDraft(rng: Rng, level: Level): QuestionDraft {
         hint: 'Lis seulement la bonne ligne, puis pose la question « Qui est-ce qui… ? » devant son verbe.',
         steps: [
           `Je lis la ligne ${t + 1} : « ${phraseGs(g, pres[t])} »`,
-          `Qui est-ce qui ${g.reste} ? C’est ${lowerFirst(g.gs)}.`,
+          `Qui est-ce qui ${quiReste(g.reste)} ? C’est ${lowerFirst(g.gs)}.`,
           `Le groupe sujet est **${g.gs}**.`,
         ],
       };
@@ -452,7 +467,7 @@ const phraseS = (s: Sujet, pre?: string) => (pre ? `${pre} ${lowerFirst(s.s)} ${
 const byType = (type: TypeSujet) => SUJETS.filter((s) => s.type === type);
 
 const stepsType = (s: Sujet) => [
-  `Je trouve le sujet : qui est-ce qui ${s.reste} ? C’est « ${lowerFirst(s.s)} ».`,
+  `Je trouve le sujet : qui est-ce qui ${quiReste(s.reste)} ? C’est « ${lowerFirst(s.s)} ».`,
   s.type === 'pronom'
     ? 'C’est un petit mot qui remplace un nom (il, elle, nous…) : un pronom personnel.'
     : s.type === 'gn'
