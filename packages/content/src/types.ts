@@ -196,6 +196,11 @@ export interface Lesson {
   readonly memo: readonly Rich[];
   /** Référence : objectif du programme officiel et éventuelle source complémentaire. */
   readonly source: string;
+  /**
+   * Identifiants du registre des sources (`sources.ts`) : programme de la classe et sources des faits.
+   * Obligatoire pour toute notion à 5 niveaux (docs/adr/0034) ; facultatif pour les notions historiques.
+   */
+  readonly sources?: readonly string[];
 }
 
 /** Outils d'aide en plus du pavé, du brouillon et de la calculatrice (toujours là sauf `mental`). */
@@ -283,4 +288,28 @@ export interface CheckResult {
   readonly invalid?: boolean;
   /** Explication de l'erreur typique reconnue, le cas échéant. */
   readonly why?: Rich;
+}
+
+/**
+ * Relecture pédagogique d'une notion à une version (docs/adr/0034, point 7) : une ligne par notion et version relue.
+ */
+export interface Relecture {
+  readonly skillId: string;
+  /** Version de la notion relue (`Skill.version`, 1 par défaut). */
+  readonly version: number;
+  /** Lot de production (ex. `fr-cm1-01`). */
+  readonly lot: string;
+  /** AAAA-MM-JJ. */
+  readonly date: string;
+  readonly verdict: 'ok' | 'corriger';
+}
+
+/** Mot défini dans le glossaire d'une matière (docs/adr/0034, point 8). */
+export interface SubjectTerm {
+  readonly id: string;
+  readonly word: string;
+  /** Formes reconnues (minuscules, pluriels compris). */
+  readonly forms: readonly string[];
+  readonly definition: Rich;
+  readonly example: Rich;
 }
