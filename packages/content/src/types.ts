@@ -1,4 +1,5 @@
 import type { Grade, SubjectId } from '@epicademie/shared';
+import type { MapId } from './cartes.ts';
 import type { Rational } from './rational.ts';
 import type { Rng } from './rng.ts';
 
@@ -104,6 +105,16 @@ export type Figure =
       /** Origine de l'extrait (auteur, œuvre, date), affichée sous le texte. */
       readonly credit?: string;
     }
+  /**
+   * Carte (France régions ou départements, Europe, monde) : `highlight` colore des zones, `marks` pose un repère
+   * (numéro ou lettre) au centre d'une zone. Les identifiants de zones sont ceux de `cartes-zones.ts`.
+   */
+  | {
+      readonly kind: 'map';
+      readonly map: MapId;
+      readonly highlight?: readonly string[];
+      readonly marks?: readonly { readonly zone: string; readonly label: string }[];
+    }
   | { readonly kind: 'pattern'; readonly steps: readonly (readonly [number, number][])[] };
 
 /** Programme par blocs (façon Scratch) pour la pensée informatique. */
@@ -131,6 +142,8 @@ export type AnswerSpec =
   | { readonly kind: 'fraction'; readonly value: Rational }
   | { readonly kind: 'choice'; readonly options: readonly Rich[]; readonly correct: number }
   | { readonly kind: 'point'; readonly x: number; readonly y: number }
+  /** Toucher une zone d'une carte (identifiant de `cartes-zones.ts`). */
+  | { readonly kind: 'zone'; readonly map: MapId; readonly zone: string }
   /** Réponse écrite (clavier) : comparée sans tenir compte de la casse, des espaces doublés ni de l'apostrophe typographique. */
   | { readonly kind: 'text'; readonly accepted: readonly string[] }
   /**
@@ -161,6 +174,7 @@ export type Response =
   | { readonly kind: 'fraction'; readonly num: string; readonly den: string }
   | { readonly kind: 'choice'; readonly index: number }
   | { readonly kind: 'point'; readonly x: number; readonly y: number }
+  | { readonly kind: 'zone'; readonly zone: string }
   | { readonly kind: 'text'; readonly text: string }
   /** Ordre : indices de `items` dans l'ordre choisi par l'élève (tous les éléments). */
   | { readonly kind: 'order'; readonly order: readonly number[] }
@@ -176,6 +190,7 @@ export type Trap =
   | { readonly value: Rational; readonly why: Rich }
   | { readonly option: number; readonly why: Rich }
   | { readonly point: { x: number; y: number }; readonly why: Rich }
+  | { readonly zone: string; readonly why: Rich }
   | { readonly text: string; readonly why: Rich };
 
 /** Texte à écouter et sa langue (code BCP 47 : `fr-FR`, `en-GB`, `es-ES`…). */

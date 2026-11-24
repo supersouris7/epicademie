@@ -1,4 +1,4 @@
-import { fmt, frac, type Question, type Response } from '@epicademie/content';
+import { fmt, frac, zoneName, type Question, type Response } from '@epicademie/content';
 
 /** Bonne réponse en texte enrichi (pour la correction). */
 export function formatAnswer(q: Question): string {
@@ -14,6 +14,8 @@ export function formatAnswer(q: Question): string {
       return q.figure?.kind === 'grid' && q.figure.axes
         ? `le point de coordonnées (${fmt(a.x)} ; ${fmt(a.y)}), entouré en vert`
         : 'le nœud entouré en vert';
+    case 'zone':
+      return `**${zoneName(a.map, a.zone) ?? a.zone}**`;
     case 'text':
       return a.accepted[0] ?? '';
     case 'order':
@@ -42,6 +44,8 @@ export function formatResponse(q: Question, r: Response): string {
       return q.answer.kind === 'choice' ? (q.answer.options[r.index] ?? '') : '';
     case 'point':
       return q.figure?.kind === 'grid' && q.figure.axes ? `le point (${fmt(r.x)} ; ${fmt(r.y)})` : 'ce nœud';
+    case 'zone':
+      return q.answer.kind === 'zone' ? (zoneName(q.answer.map, r.zone) ?? r.zone) : r.zone;
     case 'text':
       return r.text;
     case 'order': {
