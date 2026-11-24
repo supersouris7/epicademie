@@ -74,6 +74,8 @@ const EnvSchema = z.object({
    */
   APP_ENV: z.string().trim().toLowerCase().min(1).max(30).optional(),
   /** Clé de l'API transactionnelle Brevo ; absente : simulation (interdite en production). */
+  /** Longueur minimale d'un nouveau mot de passe (défaut : 12 ; 8 en recette). */
+  PASSWORD_MIN_LENGTH: z.coerce.number().int().min(6).max(64).optional(),
   BREVO_API_KEY: z.string().min(10).optional(),
   /** Expéditeur des e-mails : `adresse@domaine` ou `Nom <adresse@domaine>`. */
   MAIL_FROM: z.string().min(3).max(200).optional(),
@@ -108,6 +110,12 @@ export interface ServerConfig {
   readonly sessionDays: number;
   readonly billing: BillingConfig;
   readonly mail: MailConfig;
+  /**
+   * Plateforme de test (APP_ENV=recette) : compte actif dès l'inscription, aucun e-mail envoyé,
+   * « mot de passe oublié » remplacé par une consigne. Jamais en production.
+   */
+  readonly recette: boolean;
+  readonly passwordMinLength: number;
   readonly google: GoogleConfig | null;
 }
 
@@ -172,6 +180,8 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
     sessionDays: e.SESSION_DAYS,
     billing: billingConfig(e, production),
     mail: mailConfig(e),
+    recette: e.APP_ENV === 'recette',
+    passwordMinLength: e.PASSWORD_MIN_LENGTH ?? (e.APP_ENV === 'recette' ? 8 : 12),
     google: googleConfig(e),
   };
 }
@@ -184,7 +194,7 @@ function mailConfig(e: z.infer<typeof EnvSchema>): MailConfig {
   if (production && !e.BREVO_API_KEY) {
     throw new ConfigError(
       'BREVO_API_KEY est obligatoire en production (envoi des liens de validation d’e-mail) : ' +
-        'définissez-la, ou APP_ENV=recette pour une recette sans fournisseur (liens simulés).',
+        'définissez-la, ou APP_ENV=recette pour une plateforme de test sans e-mail.',
     );
   }
   if (e.BREVO_API_KEY && !e.MAIL_FROM) throw new ConfigError('BREVO_API_KEY exige MAIL_FROM (adresse expéditrice)');

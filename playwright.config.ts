@@ -30,6 +30,9 @@ export default defineConfig({
     // interdit en production). Limites de débit relevées : tous les tests viennent de la même IP.
     env: {
       NODE_ENV: 'test',
+      // Plateforme de test : compte actif dès l'inscription, aucun e-mail (le parcours de production
+      // avec lien reçu par e-mail est couvert par les tests du serveur et de l'interface).
+      APP_ENV: 'recette',
       WEB_DIR: 'apps/web/dist',
       BILLING_PROVIDER: 'simulateur',
       PORT: String(PORT),

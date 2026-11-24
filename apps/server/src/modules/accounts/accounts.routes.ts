@@ -2,8 +2,6 @@ import type { FastifyInstance, FastifyReply } from 'fastify';
 import { api } from '@questeo/shared';
 import { route } from '../../core/http/route.ts';
 import { readCookie, serializeCookie, SESSION_COOKIE } from '../../core/auth/cookies.ts';
-import type { TestMailbox } from '../../core/mail/mailer.ts';
-import { AppError } from '../../core/errors.ts';
 import type { Google } from '../../core/auth/google.ts';
 import { googleRoutes } from './google.routes.ts';
 import type { AccountsService, OpenedSession } from './accounts.service.ts';
@@ -16,8 +14,7 @@ export function accountsRoutes(
   service: AccountsService,
   cookie: { secure: boolean; maxAgeDays: number; rateLimitMax: number },
   google: Google | null = null,
-  /** Boîte mail de test : non nulle seulement si la simulation d'envoi est active (jamais en production). */
-  testMailbox: TestMailbox | null = null,
+  options: { recette: boolean; passwordMinLength: number } = { recette: false, passwordMinLength: 12 },
 ) {
   const STRICT = { rateLimit: { max: cookie.rateLimitMax, timeWindow: '1 minute' } };
   const setSession = (reply: FastifyReply, opened: OpenedSession) => {
@@ -32,21 +29,25 @@ export function accountsRoutes(
     reply.header('cache-control', 'no-store');
   };
   return async (app: FastifyInstance) => {
-    route(app, api.signup, ({ body }) => service.signup(body), { config: STRICT });
+    route(
+      app,
+      api.signup,
+      async ({ body, reply }) => {
+        const { session, ...result } = await service.signup(body);
+        if (session) setSession(reply, session);
+        return result;
+      },
+      { config: STRICT },
+    );
     route(app, api.verifyEmail, async ({ body, reply }) => setSession(reply, await service.verifyEmail(body)), {
       config: STRICT,
     });
     route(app, api.resendVerification, ({ body }) => service.resendVerification(body.email), { config: STRICT });
-    route(app, api.authOptions, async () => ({ google: google !== null, simulatedMail: testMailbox !== null }));
-    route(app, api.testMailbox, async ({ request }) => {
-      if (!testMailbox) throw new AppError('NOT_FOUND', 'Introuvable.');
-      const email = (request.query as { email?: unknown } | undefined)?.email;
-      return {
-        messages: testMailbox
-          .list(typeof email === 'string' ? email : undefined)
-          .map(({ sentAt, ...m }) => ({ ...m, sentAt: sentAt.toISOString() })),
-      };
-    });
+    route(app, api.authOptions, async () => ({
+      google: google !== null,
+      passwordMinLength: options.passwordMinLength,
+      recette: options.recette,
+    }));
     if (google) googleRoutes(app, { service, google, secure: cookie.secure, strict: STRICT, setSession });
     route(
       app,

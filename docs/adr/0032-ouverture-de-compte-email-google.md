@@ -20,12 +20,12 @@ qu'elle appartienne à la personne. Les enfants de moins de 15 ans restent sans 
 - Pas d'énumération : l'inscription répond pareil (201, même corps, même message d'interface « Si cette adresse peut
   être utilisée… ») que l'adresse soit libre, en attente ou déjà validée. Si le compte existe, l'adresse reçoit un e-mail
   d'information (sans lien) et le compte n'est pas modifié ; le hachage du mot de passe est fait dans tous les cas.
-  Seule la simulation hors production renvoie le lien dans la réponse (recette).
+  Aucune réponse ne contient jamais de lien (retiré avec la boîte mail de test).
 - Temps de réponse : tous les e-mails (inscription, renvoi, mot de passe oublié) partent en tâche détachée
   (`detachedMailer`) : la route n'attend pas Brevo. Une erreur d'envoi est journalisée (`mail_send_failed`, nature de
   l'erreur seulement : ni adresse, ni lien, ni contenu).
 - Envoi derrière l'interface `Mailer` : adaptateur Brevo (API HTTP, clé en variable d'environnement), simulation sans clé
-  (lien journalisé ; renvoyé dans la réponse seulement si `APP_ENV` n'est pas `production`). Production sans clé : démarrage refusé.
+  (lien journalisé seulement, développement). Production sans clé : démarrage refusé.
 - Google : OpenID Connect, code + PKCE S256 + `state` + `nonce` (gardés dans un cookie HttpOnly de 10 min), `id_token`
   vérifié avec `jose` contre les clés publiques de Google (`iss`, `aud`, `exp`, `nonce`), `email_verified` exigé. Même
   e-mail = même compte ; un compte jamais validé relié à Google perd son mot de passe (pas de prise de compte par
@@ -39,10 +39,17 @@ qu'elle appartienne à la personne. Les enfants de moins de 15 ans restent sans 
 - Une adresse inscrite mais jamais validée reste réservée jusqu'à validation, Google ou réinitialisation du mot de passe
   (nettoyage des comptes jamais validés : à prévoir).
 
-## Addendum — boîte mail de test (recette)
+## Addendum — plateforme de test sans e-mail (ticket #90, remplace la boîte mail de test #88)
 
-En simulation d'envoi (hors production, sans clé Brevo : même garde que le lien renvoyé dans la réponse), chaque e-mail
-est aussi conservé en mémoire (50 derniers, perdus au redémarrage) et consultable via `GET /api/v1/recette/boite-mail`
-(filtre `?email=`, 404 si la simulation est inactive) et la page `/recette/boite-mail`. Cela évite qu'un testeur reste
-bloqué quand le lien n'est plus renvoyé dans la réponse (deuxième inscription neutre, mot de passe oublié). Le serveur
-l'annonce par `simulatedMail` dans `/auth/options` ; en production, la route n'existe pas et rien n'est conservé.
+`APP_ENV=recette` : aucun e-mail n'existe (le `Mailer` est un garde-fou qui échoue s'il est appelé). L'inscription crée
+un compte déjà validé (`email_verified_at` posé) et ouvre la session (`status: 'active'`) ; la connexion d'un compte
+antérieur non validé l'active. « Mot de passe oublié » et la réinitialisation répondent 403 avec la consigne
+« demandez votre nouveau mot de passe à l'administrateur ». La boîte mail de test (route, page, mémoire, `simulatedMail`,
+lien dans les réponses) est supprimée.
+
+**Choix assumé** : l'anti-énumération ci-dessus ne s'applique **qu'en production**. Sur la plateforme de test (testeurs
+connus, données fictives), une adresse déjà prise répond 409 « Cette adresse a déjà un compte : connectez-vous. » :
+c'est plus utile qu'un message neutre sans e-mail pour l'expliquer. En production, rien ne change.
+
+La longueur minimale du mot de passe est réglable (`PASSWORD_MIN_LENGTH`, défaut 12 ; 8 en recette), contrôlée par le
+serveur (inscription, réinitialisation) ; `/auth/options` expose `passwordMinLength` et `recette` à l'interface.

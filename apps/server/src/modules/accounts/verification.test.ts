@@ -1,9 +1,10 @@
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
 import type { Me, Profile } from '@questeo/shared';
 import { createTestApp, profileInput, sessionCookie, TEST_PASSWORD, tokenOf } from '../../testing/harness.ts';
 import { tokenHash } from '../../core/auth/tokens.ts';
-import { accounts, emailVerifications } from '../../db/schema.ts';
+import { hashPassword } from '../../core/auth/password.ts';
+import { accounts, emailVerifications, families } from '../../db/schema.ts';
 
 let t: Awaited<ReturnType<typeof createTestApp>>;
 beforeAll(async () => {
@@ -21,7 +22,7 @@ const post = (url: string, payload: object) =>
 const signup = async (email: string) => {
   const res = await post('/auth/signup', { email, password: TEST_PASSWORD });
   await t.mailIdle();
-  return { res, token: tokenOf(res.json<{ verificationLink?: string }>().verificationLink) };
+  return { res, token: tokenOf(t.mailer.outbox.at(-1)?.link) };
 };
 const verify = (token: string, password = TEST_PASSWORD) => post('/auth/email/verify', { token, password });
 const login = (email: string, password = TEST_PASSWORD) => post('/auth/login', { email, password });
@@ -110,8 +111,8 @@ describe('validation de l’adresse e-mail', () => {
     expect(t.mailer.outbox).toHaveLength(sent);
 
     t.clock.set('2026-11-21');
-    const second = await resend('renvoi@exemple.fr');
-    const link = second.json<{ verificationLink?: string }>().verificationLink;
+    await resend('renvoi@exemple.fr');
+    const link = t.mailer.outbox.at(-1)?.link;
     expect(t.mailer.outbox).toHaveLength(sent + 1);
     expect((await verify(first.token)).statusCode).toBe(400);
     expect((await verify(tokenOf(link))).statusCode).toBe(200);
@@ -198,7 +199,7 @@ describe('validation de l’adresse e-mail', () => {
     const res = await post('/auth/signup', { email: 'pris@exemple.fr', password: 'un autre mot de passe 99' });
     await t.mailIdle();
     expect(res.statusCode).toBe(201);
-    expect(res.json<{ verificationLink?: string }>().verificationLink).toBeUndefined();
+    expect(JSON.stringify(res.json())).not.toContain('jeton');
     expect(t.mailer.outbox).toHaveLength(sent + 1);
     const mail = t.mailer.outbox.at(-1);
     expect(mail?.to).toBe('pris@exemple.fr');
@@ -295,86 +296,90 @@ describe('production : le lien ne sort jamais du serveur', () => {
   });
 });
 
-describe('boîte mail de test (recette)', () => {
-  // Application dédiée : la boîte est en mémoire et survit à `reset()`.
-  let m: Awaited<ReturnType<typeof createTestApp>>;
-  beforeEach(async () => {
-    m = await createTestApp({ today: '2026-11-20' });
+describe('plateforme de test (APP_ENV=recette)', () => {
+  let r: Awaited<ReturnType<typeof createTestApp>>;
+  beforeAll(async () => {
+    r = await createTestApp({ config: { recette: true, passwordMinLength: 8 } });
   });
-  afterEach(() => m.close());
-  const signup = async (email: string) => {
-    await m.http.inject({
-      method: 'POST',
-      url: '/api/v1/auth/signup',
-      headers: anonymous,
-      payload: { email, password: TEST_PASSWORD },
+  afterAll(() => r.close());
+  const rpost = (url: string, payload: object) =>
+    r.http.inject({ method: 'POST', url: `/api/v1${url}`, headers: anonymous, payload });
+
+  it('inscription : compte actif et connecté d’emblée, aucun e-mail', async () => {
+    const sent = r.mailer.outbox.length;
+    const res = await rpost('/auth/signup', { email: 'Test@Exemple.fr', password: 'huit car' });
+    expect(res.statusCode).toBe(201);
+    expect(res.json()).toMatchObject({ status: 'active', email: 'test@exemple.fr', me: { parent: true } });
+    expect(JSON.stringify(res.json())).not.toMatch(/lien|jeton|verificationLink/);
+    const cookie = sessionCookie(res);
+    expect(cookie).toMatch(/^af_session=/);
+    expect((await r.as(cookie).inject('/api/v1/auth/me')).statusCode).toBe(200);
+    expect(
+      (await r.database.db.select().from(accounts).where(eq(accounts.email, 'test@exemple.fr')))[0]?.emailVerifiedAt,
+    ).not.toBeNull();
+    // Connexion directe ensuite.
+    expect((await rpost('/auth/login', { email: 'test@exemple.fr', password: 'huit car' })).statusCode).toBe(200);
+    await r.mailIdle();
+    expect(r.mailer.outbox).toHaveLength(sent);
+  });
+
+  it('longueur minimale réglable : 7 refusé, 8 accepté', async () => {
+    const short = await rpost('/auth/signup', { email: 'court@exemple.fr', password: '1234567' });
+    expect(short.statusCode).toBe(400);
+    expect(short.json<{ error: string }>().error).toContain('au moins 8 caractères');
+    expect((await rpost('/auth/signup', { email: 'court@exemple.fr', password: '12345678' })).statusCode).toBe(201);
+  });
+
+  it('adresse déjà utilisée : message clair (pas d’anti-énumération sur la plateforme de test)', async () => {
+    await rpost('/auth/signup', { email: 'deux@exemple.fr', password: 'premier mot de passe' });
+    const again = await rpost('/auth/signup', { email: 'deux@exemple.fr', password: 'autre mot de passe' });
+    expect(again.statusCode).toBe(409);
+    expect(again.json<{ error: string }>().error).toBe('Cette adresse a déjà un compte : connectez-vous.');
+  });
+
+  it('mot de passe oublié et réinitialisation : refusés, aucun e-mail', async () => {
+    const sent = r.mailer.outbox.length;
+    const forgot = await rpost('/auth/password/forgot', { email: 'deux@exemple.fr' });
+    expect(forgot.statusCode).toBe(403);
+    expect(forgot.json<{ error: string }>().error).toContain('Plateforme de test');
+    expect(
+      (await rpost('/auth/password/reset', { token: 'x'.repeat(43), password: 'nouveau mot de passe' })).statusCode,
+    ).toBe(403);
+    await r.mailIdle();
+    expect(r.mailer.outbox).toHaveLength(sent);
+  });
+
+  it('un compte créé avant ce mode (adresse non validée) peut se connecter', async () => {
+    const [family] = await r.database.db.insert(families).values({}).returning();
+    await r.database.db.insert(accounts).values({
+      familyId: family!.id,
+      email: 'ancien@exemple.fr',
+      passwordHash: await hashPassword('ancien mot de passe'),
     });
-    await m.mailIdle();
-  };
-  const box = (email?: string) =>
-    m.http.inject({
-      url: `/api/v1/recette/boite-mail${email ? `?email=${encodeURIComponent(email)}` : ''}`,
-      headers: anonymous,
+    expect(
+      (await rpost('/auth/login', { email: 'ancien@exemple.fr', password: 'ancien mot de passe' })).statusCode,
+    ).toBe(200);
+  });
+
+  it('options : longueur et mode annoncés ; la boîte mail de test n’existe plus', async () => {
+    expect((await r.http.inject({ url: '/api/v1/auth/options', headers: anonymous })).json()).toEqual({
+      google: false,
+      passwordMinLength: 8,
+      recette: true,
     });
-  type Box = { messages: { to: string; subject: string; text: string; sentAt: string; link?: string }[] };
-
-  it('simulation active : garde les e-mails, y compris après renvoi, 2e inscription et mot de passe oublié', async () => {
-    await signup('a@famille.test');
-    await signup('a@famille.test'); // réponse neutre : aucun lien dans la réponse
-    await m.http.inject({
-      method: 'POST',
-      url: '/api/v1/auth/password/forgot',
-      headers: anonymous,
-      payload: { email: 'a@famille.test' },
-    });
-    await m.mailIdle();
-    const { messages } = (await box('A@famille.test')).json<Box>();
-    expect(messages).toHaveLength(3);
-    expect(messages[0]?.subject).toContain('nouveau mot de passe');
-    expect(messages.at(-1)?.link).toContain('/email/verification?jeton=');
-    expect(messages[0]).toMatchObject({ to: 'a@famille.test', sentAt: '2026-11-20T12:00:00.000Z' });
+    expect((await r.http.inject({ url: '/api/v1/recette/boite-mail', headers: anonymous })).statusCode).toBe(404);
   });
+});
 
-  it('filtre par adresse', async () => {
-    await signup('x@famille.test');
-    await signup('y@famille.test');
-    expect((await box('y@famille.test')).json<Box>().messages.map((m) => m.to)).toEqual(['y@famille.test']);
-    // Sans filtre : tous les messages (la famille de test du harnais compte aussi).
-    expect((await box()).json<Box>().messages.map((m) => m.to)).toEqual(
-      expect.arrayContaining(['x@famille.test', 'y@famille.test']),
-    );
-    expect((await box('personne@famille.test')).json<Box>().messages).toEqual([]);
-  });
-
-  it('ne garde que les 50 derniers', async () => {
-    for (let i = 0; i < 52; i++) await signup(`n${i}@famille.test`);
-    const { messages } = (await box()).json<Box>();
-    expect(messages).toHaveLength(50);
-    expect(messages[0]?.to).toBe('n51@famille.test');
-  });
-
-  it('options : la simulation est annoncée', async () => {
-    const res = await m.http.inject({ url: '/api/v1/auth/options', headers: anonymous });
-    expect(res.json()).toMatchObject({ simulatedMail: true });
-  });
-
-  it('production ou fournisseur réel : route introuvable, rien n’est conservé', async () => {
-    const prod = await createTestApp({
-      config: { mail: { production: true, brevoApiKey: 'xkeysib-test-0000', from: 'noreply@exemple.fr' } },
-    });
-    try {
-      await prod.http.inject({
-        method: 'POST',
-        url: '/api/v1/auth/signup',
-        headers: anonymous,
-        payload: { email: 'prod@exemple.fr', password: TEST_PASSWORD },
-      });
-      await prod.mailIdle();
-      expect((await prod.http.inject({ url: '/api/v1/recette/boite-mail', headers: anonymous })).statusCode).toBe(404);
-      const options = await prod.http.inject({ url: '/api/v1/auth/options', headers: anonymous });
-      expect(options.json()).toMatchObject({ simulatedMail: false });
-    } finally {
-      await prod.close();
-    }
+describe('production : comportement inchangé', () => {
+  it('options : 12 caractères, pas de mode recette ; 8 caractères refusés ; lien jamais dans la réponse', async () => {
+    const options = await t.http.inject({ url: '/api/v1/auth/options', headers: anonymous });
+    expect(options.json()).toEqual({ google: false, passwordMinLength: 12, recette: false });
+    const short = await post('/auth/signup', { email: 'p8@exemple.fr', password: '12345678' });
+    expect(short.statusCode).toBe(400);
+    expect(short.json<{ error: string }>().error).toContain('au moins 12 caractères');
+    const ok = await signup('p12@exemple.fr');
+    expect(ok.res.json()).toEqual({ status: 'verification_required', email: 'p12@exemple.fr' });
+    expect(ok.token).toHaveLength(43);
   });
 });

@@ -1,6 +1,12 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { FAKE_PASSWORD, FAKE_VERIFICATION_TOKEN, STUDENT_CODE, UNVERIFIED_EMAIL } from '../../testing/fakeApi.ts';
+import {
+  FAKE_PASSWORD,
+  FAKE_VERIFICATION_TOKEN,
+  STUDENT_CODE,
+  TAKEN_EMAIL,
+  UNVERIFIED_EMAIL,
+} from '../../testing/fakeApi.ts';
 import { renderApp } from '../../testing/renderApp.tsx';
 
 vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.ts')).socketModule);
@@ -26,7 +32,7 @@ describe('connexion de l’appareil', () => {
     expect(server.calls.some((c) => c.path === '/auth/login')).toBe(true);
   });
 
-  it('inscription : mot de passe trop court refusé, puis « vérifie ta boîte mail », puis lien → 1er profil', async () => {
+  it('production — inscription : mot de passe trop court refusé, puis « vérifie ta boîte mail »', async () => {
     const { user, server } = renderApp('/inscription', { loggedIn: false, profiles: [] });
     await user.type(await screen.findByLabelText('E-mail du parent'), 'nouveau@famille.test');
     await user.type(screen.getByLabelText('Mot de passe'), 'court');
@@ -43,7 +49,13 @@ describe('connexion de l’appareil', () => {
     await user.click(screen.getByRole('button', { name: 'Renvoyer le lien' }));
     expect(await screen.findByText(/nouveau lien vient de partir/)).toBeInTheDocument();
     expect(server.calls.find((c) => c.path === '/auth/email/resend')?.body).toEqual({ email: 'nouveau@famille.test' });
-    await user.click(screen.getByRole('link', { name: /Ouvrir le lien/ }));
+  });
+
+  it('lien reçu par e-mail : le mot de passe est exigé ; un mauvais mot de passe laisse réessayer', async () => {
+    const { user, server } = renderApp(`/email/verification?jeton=${FAKE_VERIFICATION_TOKEN}`, {
+      loggedIn: false,
+      profiles: [],
+    });
     // Le lien seul ne suffit pas : le mot de passe est exigé ; un mauvais mot de passe laisse réessayer.
     await user.type(await screen.findByLabelText('Mot de passe du compte'), 'pas le bon');
     await user.click(screen.getByRole('button', { name: 'Valider mon adresse' }));
@@ -208,59 +220,78 @@ describe('parcours de l’élève', () => {
   });
 });
 
-describe('boîte mail de test (recette)', () => {
-  it('lien proposé seulement si le serveur simule l’envoi', async () => {
-    const off = renderApp('/mot-de-passe-oublie', { loggedIn: false });
-    await off.user.type(await screen.findByLabelText('E-mail du parent'), 'a@famille.test');
-    await waitFor(() => expect(off.server.calls.some((c) => c.path === '/auth/options')).toBe(true));
-    expect(screen.queryByRole('link', { name: /boîte mail de test/ })).not.toBeInTheDocument();
+describe('plateforme de test (recette)', () => {
+  const recette = { loggedIn: false, recette: true } as const;
+
+  it('« / » mène directement à « Se connecter », avec « Créer un compte » bien visible', async () => {
+    renderApp('/', recette);
+    expect(await screen.findByRole('heading', { name: 'Connexion' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Créer un compte' })).toHaveAttribute('href', '/inscription');
+    expect(screen.queryByRole('button', { name: 'Je suis un élève' })).not.toBeInTheDocument();
   });
 
-  it('écrans de connexion refusée, de validation et de mot de passe oublié : lien vers la boîte', async () => {
-    const forgot = renderApp('/mot-de-passe-oublie', { loggedIn: false, simulatedMail: true });
-    expect(await screen.findByRole('link', { name: /boîte mail de test/ })).toHaveAttribute(
-      'href',
-      '/recette/boite-mail',
+  it('/bienvenue et le parcours élève autonome sont masqués', async () => {
+    for (const path of ['/bienvenue', '/eleve', '/eleve/code']) {
+      const view = renderApp(path, recette);
+      expect(await screen.findByRole('heading', { name: 'Connexion' })).toBeInTheDocument();
+      view.unmount();
+    }
+  });
+
+  it('inscription : 8 caractères suffisent, compte actif et connecté, aucun message sur un lien ou une boîte mail', async () => {
+    const { user, server } = renderApp('/inscription', { ...recette, profiles: [] });
+    await user.type(await screen.findByLabelText('E-mail du parent'), 'nouveau@famille.test');
+    await user.type(screen.getByLabelText('Mot de passe'), 'court');
+    await user.click(screen.getByRole('button', { name: 'Créer le compte' }));
+    expect(screen.getByRole('alert')).toHaveTextContent('au moins 8 caractères');
+    await user.type(screen.getByLabelText('Mot de passe'), '1234');
+    expect(screen.getByRole('link', { name: 'Se connecter' })).toHaveAttribute('href', '/connexion');
+    await user.click(screen.getByRole('button', { name: 'Créer le compte' }));
+    expect(await screen.findByRole('heading', { name: 'Nouveau joueur' })).toBeInTheDocument();
+    expect(server.calls.some((c) => c.path === '/auth/email/resend')).toBe(false);
+    expect(document.body).not.toHaveTextContent(/lien|boîte mail|valid/i);
+  });
+
+  it('adresse déjà utilisée : message clair', async () => {
+    const { user } = renderApp('/inscription', recette);
+    await user.type(await screen.findByLabelText('E-mail du parent'), TAKEN_EMAIL);
+    await user.type(screen.getByLabelText('Mot de passe'), 'huit caractères au moins');
+    await user.click(screen.getByRole('button', { name: 'Créer le compte' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Cette adresse a déjà un compte : connectez-vous.');
+  });
+
+  it('mot de passe oublié : consigne à la place du formulaire', async () => {
+    renderApp('/mot-de-passe-oublie', recette);
+    expect(await screen.findByRole('status')).toHaveTextContent(
+      'Plateforme de test : demandez votre nouveau mot de passe à l’administrateur qui vous a fourni les accès.',
     );
-    expect(screen.getByText(/aucun e-mail n’est envoyé/)).toBeInTheDocument();
-    forgot.unmount();
-    const verify = renderApp('/email/verification?jeton=jeton-0123456789abcdefghijk', {
-      loggedIn: false,
-      simulatedMail: true,
-    });
-    expect(await screen.findByRole('link', { name: /boîte mail de test/ })).toBeInTheDocument();
-    expect(screen.getByText('Saisissez le mot de passe choisi à l’inscription')).toBeInTheDocument();
-    verify.unmount();
-    const { user } = renderApp('/connexion', { loggedIn: false, simulatedMail: true });
-    await user.type(await screen.findByLabelText('E-mail du parent'), UNVERIFIED_EMAIL);
-    await user.type(screen.getByLabelText('Mot de passe'), FAKE_PASSWORD);
-    await user.click(screen.getByRole('button', { name: 'Se connecter' }));
-    const link = await screen.findByRole('link', { name: /boîte mail de test/ });
-    expect(link).toHaveAttribute('href', `/recette/boite-mail?email=${encodeURIComponent(UNVERIFIED_EMAIL)}`);
+    expect(screen.queryByRole('button', { name: /Recevoir/ })).not.toBeInTheDocument();
   });
+});
 
-  it('la page liste les e-mails de l’adresse avec des liens cliquables', async () => {
-    renderApp('/recette/boite-mail?email=a@famille.test', {
-      loggedIn: false,
-      simulatedMail: true,
-      testMails: [
-        {
-          to: 'a@famille.test',
-          subject: 'Valide ton adresse',
-          text: 'Ouvre ce lien :\nhttp://localhost/email/verification?jeton=abc\nMerci',
-          sentAt: '2026-11-23T10:00:00.000Z',
-        },
-        { to: 'b@famille.test', subject: 'Autre', text: 'x', sentAt: '2026-11-23T10:01:00.000Z' },
-      ],
-    });
-    expect(await screen.findByText('Valide ton adresse')).toBeInTheDocument();
-    expect(screen.queryByText('Autre')).not.toBeInTheDocument();
-    expect(screen.getByText(/Retrouvez ici les messages que vous auriez reçus/)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /jeton=abc/ })).toHaveAttribute('href', '/email/verification?jeton=abc');
+describe('production : accueil et mot de passe', () => {
+  it('le bouton « Créer un compte » de recette n’existe pas ; la longueur vient du serveur', async () => {
+    const { user } = renderApp('/inscription', { loggedIn: false, passwordMinLength: 14 });
+    await user.type(await screen.findByLabelText('E-mail du parent'), 'a@famille.test');
+    await user.type(screen.getByLabelText('Mot de passe'), 'douze car. 12');
+    await user.click(screen.getByRole('button', { name: 'Créer le compte' }));
+    expect(screen.getByRole('alert')).toHaveTextContent('au moins 14 caractères');
+    expect(screen.queryByRole('link', { name: 'Se connecter' })).not.toBeInTheDocument();
   });
+});
 
-  it('serveur sans simulation : message clair', async () => {
-    renderApp('/recette/boite-mail', { loggedIn: false });
-    expect(await screen.findByRole('alert')).toHaveTextContent('pas disponible');
+describe('afficher / masquer le mot de passe', () => {
+  it('connexion et inscription : bouton accessible qui bascule le champ', async () => {
+    for (const path of ['/connexion', '/inscription']) {
+      const { user, unmount } = renderApp(path, { loggedIn: false });
+      const field = await screen.findByLabelText('Mot de passe');
+      expect(field).toHaveAttribute('type', 'password');
+      const toggle = screen.getByRole('button', { name: /Afficher le mot de passe/ });
+      expect(toggle).toHaveAttribute('aria-pressed', 'false');
+      await user.click(toggle);
+      expect(field).toHaveAttribute('type', 'text');
+      expect(screen.getByRole('button', { name: /Masquer le mot de passe/ })).toHaveAttribute('aria-pressed', 'true');
+      unmount();
+    }
   });
 });

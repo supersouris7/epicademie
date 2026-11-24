@@ -10,7 +10,7 @@ import { accountsRepo } from './accounts.repo.ts';
 import { pinChecker } from './pin.ts';
 import { createErasureService } from './erasure.service.ts';
 import { createStudentService, type OpenedSession } from './student.service.ts';
-import { createVerificationService } from './verification.service.ts';
+import { checkPasswordLength, createVerificationService } from './verification.service.ts';
 import { verificationRepo } from './verification.repo.ts';
 
 /**
@@ -28,6 +28,8 @@ export const RESET_LINK_MINUTES = 60;
 const MINUTE = 60_000;
 const DAY = 24 * 60 * MINUTE;
 
+export const RECETTE_FORGOT =
+  'Plateforme de test : demandez votre nouveau mot de passe à l’administrateur qui vous a fourni les accès.';
 export const BAD_CREDENTIALS = 'E-mail ou mot de passe incorrect.';
 export const NOT_VERIFIED =
   'Ton adresse e-mail n’est pas encore validée : ouvre le lien reçu par e-mail, ou demande-en un nouveau.';
@@ -39,8 +41,10 @@ export interface AccountsDeps {
   /** Adresse publique du site (liens envoyés par e-mail). */
   readonly appUrl: () => string;
   readonly sessionDays: number;
-  /** Simulation d'envoi hors production : le lien est aussi renvoyé dans la réponse (recette). */
-  readonly exposeLinks: boolean;
+  /** Plateforme de test (APP_ENV=recette) : compte actif dès l'inscription, aucun e-mail. */
+  readonly recette: boolean;
+  /** Longueur minimale d'un nouveau mot de passe. */
+  readonly passwordMinLength: number;
   /** Crée le profil de l'élève (module « profils ») dans la famille autonome. */
   readonly createStudentProfile: (
     input: Pick<StudentSignup, 'name' | 'avatar' | 'grade'>,
@@ -58,7 +62,8 @@ export function createAccountsService({
   mailer,
   appUrl,
   sessionDays,
-  exposeLinks,
+  recette,
+  passwordMinLength,
   createStudentProfile,
   cancelPayments,
 }: AccountsDeps) {
@@ -124,7 +129,7 @@ export function createAccountsService({
   });
   const student = createStudentService({ db, clock, createStudentProfile, open });
 
-  const verification = createVerificationService({ db, clock, mailer, appUrl, exposeLinks, open });
+  const verification = createVerificationService({ db, clock, mailer, appUrl, recette, passwordMinLength, open });
 
   return {
     ...student,
@@ -135,7 +140,10 @@ export function createAccountsService({
       const ok = await verifyPassword(password, account?.passwordHash ?? (await dummyHash()));
       if (!account?.passwordHash || !ok) throw new AppError('UNAUTHORIZED', BAD_CREDENTIALS);
       // Après le contrôle du mot de passe seulement : l'état d'une adresse n'est dit qu'à son titulaire.
-      if (!account.emailVerifiedAt) throw new AppError('EMAIL_NOT_VERIFIED', NOT_VERIFIED);
+      // Plateforme de test : pas de validation d'adresse (un compte créé avant ce mode est simplement activé).
+      if (!account.emailVerifiedAt && recette) {
+        await verificationRepo(db).markEmailVerified(account.id, clock.now());
+      } else if (!account.emailVerifiedAt) throw new AppError('EMAIL_NOT_VERIFIED', NOT_VERIFIED);
       return open({ ...account, autonomous: false });
     },
 
@@ -247,6 +255,7 @@ export function createAccountsService({
 
     /** Envoie un lien de réinitialisation ; ne dit jamais si l'adresse existe. */
     async forgotPassword(email: string): Promise<void> {
+      if (recette) throw new AppError('FORBIDDEN', RECETTE_FORGOT);
       const account = await repo.findByEmail(email);
       if (!account?.email) return;
       const token = newToken();
@@ -267,6 +276,8 @@ export function createAccountsService({
 
     /** Nouveau mot de passe par lien (usage unique) ; toutes les sessions du compte sont fermées. */
     async resetPassword(token: string, password: string): Promise<void> {
+      if (recette) throw new AppError('FORBIDDEN', RECETTE_FORGOT);
+      checkPasswordLength(password, passwordMinLength);
       const hash = await hashPassword(password);
       await db.transaction(async (tx) => {
         const r = accountsRepo(tx);

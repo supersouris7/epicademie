@@ -18,13 +18,23 @@ const MINUTE = 60_000;
 export const WRONG_PASSWORD_AT_VERIFICATION =
   'Ce n’est pas le mot de passe choisi à l’inscription. Si tu ne le connais pas, utilise « Mot de passe oublié ».';
 
+export const ADDRESS_TAKEN = 'Cette adresse a déjà un compte : connectez-vous.';
+
+/** Longueur minimale d'un nouveau mot de passe (réglable : PASSWORD_MIN_LENGTH). */
+export function checkPasswordLength(password: string, min: number): void {
+  if (password.length < min)
+    throw new AppError('BAD_REQUEST', `Le mot de passe doit faire au moins ${min} caractères.`);
+}
+
 export interface VerificationDeps {
   readonly db: Db;
   readonly clock: Clock;
   readonly mailer: Mailer;
   readonly appUrl: () => string;
-  /** Simulation d'envoi hors production : le lien est aussi renvoyé dans la réponse (recette). */
-  readonly exposeLinks: boolean;
+  /** Plateforme de test : compte actif dès l'inscription, aucun e-mail. */
+  readonly recette: boolean;
+  /** Longueur minimale d'un nouveau mot de passe. */
+  readonly passwordMinLength: number;
   /** Ouvre la session d'appareil d'un compte. */
   readonly open: (a: {
     id: string;
@@ -39,13 +49,21 @@ export interface VerificationDeps {
  * Ouverture d'un compte avec e-mail : adresse validée par un lien (jeton à usage unique, haché en
  * base) ou Google. Voir docs/operations/configuration.md.
  */
-export function createVerificationService({ db, clock, mailer, appUrl, exposeLinks, open }: VerificationDeps) {
+export function createVerificationService({
+  db,
+  clock,
+  mailer,
+  appUrl,
+  recette,
+  passwordMinLength,
+  open,
+}: VerificationDeps) {
   const repo = accountsRepo(db);
   const vRepo = verificationRepo(db);
   const later = (ms: number) => new Date(clock.now().getTime() + ms);
 
-  /** Émet un lien de validation (remplace le précédent), l'envoie, et renvoie le lien à exposer en simulation. */
-  const sendVerification = async (accountId: string, email: string): Promise<string | undefined> => {
+  /** Émet un lien de validation (remplace le précédent) et l'envoie par e-mail. */
+  const sendVerification = async (accountId: string, email: string): Promise<void> => {
     const token = newToken();
     await vRepo.replaceVerification({
       tokenHash: tokenHash(token),
@@ -62,7 +80,6 @@ export function createVerificationService({ db, clock, mailer, appUrl, exposeLin
         `${link}\n\nSi tu n’as rien demandé, ignore ce message : aucun compte ne sera utilisable.`,
       link,
     });
-    return exposeLinks ? link : undefined;
   };
 
   return {
@@ -71,7 +88,18 @@ export function createVerificationService({ db, clock, mailer, appUrl, exposeLin
      * Réponse identique que l'adresse soit libre, en attente ou déjà prise (pas d'énumération) : si le
      * compte existe, c'est un e-mail d'information qui part, sans toucher au compte existant.
      */
-    async signup({ email, password }: Signup): Promise<SignupResult> {
+    async signup({ email, password }: Signup): Promise<SignupResult & { session?: OpenedSession }> {
+      checkPasswordLength(password, passwordMinLength);
+      if (recette) {
+        // Plateforme de test : pas d'anti-énumération (ADR 0032), l'adresse prise est dite clairement.
+        if (await repo.findByEmail(email)) throw conflict(ADDRESS_TAKEN);
+        const hash = await hashPassword(password);
+        const created = await db.transaction((tx) =>
+          accountsRepo(tx).createFamilyAccount(email, hash, { verifiedAt: clock.now() }),
+        );
+        const session = await open({ ...created, autonomous: false });
+        return { status: 'active', email, me: session.me, session };
+      }
       // Même travail dans tous les cas (hachage compris) : le temps de réponse ne trahit rien.
       const hash = await hashPassword(password);
       const existing = await repo.findByEmail(email);
@@ -87,8 +115,8 @@ export function createVerificationService({ db, clock, mailer, appUrl, exposeLin
         return { status: 'verification_required', email };
       }
       const account = await db.transaction((tx) => accountsRepo(tx).createFamilyAccount(email, hash));
-      const verificationLink = await sendVerification(account.id, email);
-      return { status: 'verification_required', email, ...(verificationLink ? { verificationLink } : {}) };
+      await sendVerification(account.id, email);
+      return { status: 'verification_required', email };
     },
 
     /**
@@ -113,13 +141,14 @@ export function createVerificationService({ db, clock, mailer, appUrl, exposeLin
     },
 
     /** Renvoie le lien ; réponse identique que l'adresse existe, soit déjà validée ou non (pas de fuite). */
-    async resendVerification(email: string): Promise<{ verificationLink?: string }> {
+    async resendVerification(email: string): Promise<Record<string, never>> {
+      if (recette) return {};
       const account = await repo.findByEmail(email);
       if (!account?.email || account.emailVerifiedAt) return {};
       const last = await vRepo.lastVerificationAt(account.id);
       if (last && clock.now().getTime() - last.getTime() < RESEND_COOLDOWN_SECONDS * 1000) return {};
-      const verificationLink = await sendVerification(account.id, account.email);
-      return verificationLink ? { verificationLink } : {};
+      await sendVerification(account.id, account.email);
+      return {};
     },
 
     /**
