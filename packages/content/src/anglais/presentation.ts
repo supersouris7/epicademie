@@ -55,7 +55,7 @@ const saluer: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'Pour **saluer**, tu dis « Hello! » ou « Hi! ». Quand tu rencontres quelqu’un : « Nice to meet you. », et il répond « You too. ».',
+      'Pour **saluer**, tu dis « Hello! » ou « Hi! ». Quand tu rencontres quelqu’un : « Nice to meet you. », et il répond « You too. » (« toi aussi »).',
       'Pour **prendre congé** (partir), tu dis « Bye for now! ».',
     ],
     source: source('Expressions : British Council, LearnEnglish, Speaking A1 « Meeting new people ».'),
@@ -125,14 +125,14 @@ const saluer: Skill = {
         };
       }
       return {
-        prompt: 'Ana te dit : « Nice to meet you. ». Écris ta réponse en anglais (2 mots) pour dire « moi aussi ».',
+        prompt: 'Ana te dit : « Nice to meet you. ». Écris ta réponse en anglais (2 mots) pour dire « toi aussi ».',
         answer: { kind: 'text', accepted: PHRASES.repondre.accepted },
         traps: [
-          { text: 'Hello', why: '« Hello » sert à saluer. Ici on répond « moi aussi ».' },
+          { text: 'Hello', why: '« Hello » sert à saluer. Ici on répond « toi aussi ».' },
           { text: 'Bye', why: '« Bye » sert à partir. Ici on vient de se rencontrer.' },
         ],
         hint: 'C’est la réponse de Emir dans la vidéo : 2 petits mots, « toi » et « aussi ».',
-        steps: ['Ana est contente de te rencontrer. Tu réponds « moi aussi ».', 'Réponse : **You too.**'],
+        steps: ['Ana est contente de te rencontrer. Tu réponds « toi aussi ».', 'Réponse : **You too.**'],
       };
     }
     if (level === 4) {
@@ -144,7 +144,7 @@ const saluer: Skill = {
           text: PHRASES[r].en,
           why: `« ${PHRASES[r].en} » veut dire « ${PHRASES[r].fr} » : ça ne va pas dans cette situation.`,
         })),
-        hint: 'Retrouve la phrase de la rencontre : bonjour, enchanté, moi aussi ou au revoir ?',
+        hint: 'Retrouve la phrase de la rencontre : bonjour, enchanté, toi aussi ou au revoir ?',
         steps: steps(`On l’écrit sans aide : « ${p.en} » veut dire « ${p.fr} ».`),
       };
     }
@@ -153,7 +153,7 @@ const saluer: Skill = {
     const g2 = g1 === 'Hello!' ? 'Hi!' : 'Hello!';
     const slots = [
       { line: 3, role: 'rencontre' as const, desc: 'Ana dit qu’elle est contente de rencontrer Emir.' },
-      { line: 4, role: 'repondre' as const, desc: 'Emir répond « moi aussi ».' },
+      { line: 4, role: 'repondre' as const, desc: 'Emir répond « toi aussi ».' },
       { line: 5, role: 'conge' as const, desc: 'Ana s’en va.' },
     ];
     const slot = rng.pick(slots);
@@ -261,7 +261,7 @@ const yourName: Skill = {
       );
       const missing = at(['What’s', 'your', 'name'], slot);
       return {
-        prompt: `Complète la question pour demander son prénom : « ${['… your name?', 'What’s … name?', 'What’s your …?'][slot]} »`,
+        prompt: `Complète la question que tu poses à un copain pour connaître son prénom : « ${['… your name?', 'What’s … name?', 'What’s your …?'][slot]} »`,
         answer: { kind: 'cloze', ...spec },
         hint: 'Relis la question en entier : What’s … ? Il faut le mot qui manque.',
         steps: ['La question complète est « What’s your name? ».', `Le mot qui manque est **${missing}**.`],

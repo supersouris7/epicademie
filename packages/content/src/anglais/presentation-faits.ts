@@ -43,8 +43,8 @@ export const PHRASES: Readonly<Record<Role, Phrase>> = {
   repondre: {
     role: 'repondre',
     en: 'You too.',
-    fr: 'moi aussi',
-    situation: 'Quelqu’un te dit « Nice to meet you. ». Tu réponds « moi aussi ».',
+    fr: 'toi aussi',
+    situation: 'Quelqu’un te dit « Nice to meet you. ». Tu réponds « toi aussi ».',
     accepted: ['You too', 'You too.', 'You too!'],
   },
   conge: {
