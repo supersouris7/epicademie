@@ -103,7 +103,7 @@ const reglesEnLigne: Notion = {
       ],
       gap: [
         'En ligne, on fait ce qu’on te demande de faire ',
-        ' : c’est une déclinaison de la vie de tous les jours.',
+        ' : ce sont les mêmes règles que dans la vie de tous les jours.',
         ['hors ligne', 'hors-ligne'],
       ],
       quote: HORS_LIGNE,
@@ -139,7 +139,7 @@ const reglesEnLigne: Notion = {
   ],
   libres: [
     {
-      q: 'Un texte qui rappelle les bons comportements en ligne s’appelle une … (un mot).',
+      q: 'Un texte qui rappelle les bons comportements en ligne s’appelle une … (un mot qui commence par « ch »).',
       accepted: ['charte', 'une charte', 'la charte'],
       traps: [
         { text: 'blog', why: 'Un blog publie des textes. Il ne rappelle pas les règles.' },
@@ -350,7 +350,7 @@ const chercherInformation: Notion = {
     },
     {
       q: 'D’où vient une information : c’est sa … (un mot).',
-      accepted: ['source', 'la source'],
+      accepted: ['source', 'la source', 'origine', 'l’origine'],
       traps: [
         { text: 'photo', why: 'Une photo peut illustrer l’information, mais elle ne dit pas d’où elle vient.' },
         { text: 'taille', why: 'La taille d’un texte ne dit rien de son origine.' },
@@ -637,7 +637,11 @@ const alerter: Notion = {
         { label: 'faire semblant de ne rien voir', why: 'Ne rien faire laisse le danger continuer. Il faut alerter.' },
         { label: 'attendre que ça passe', why: 'Attendre ne règle pas le danger. Il faut prévenir quelqu’un.' },
       ],
-      gap: ['Face à un danger, on doit reconnaître la situation, ', ' et se mettre en sécurité.', ['alerter']],
+      gap: [
+        'Face à un danger, on doit reconnaître la situation, ',
+        ' et se mettre en sécurité.',
+        ['alerter', 'prévenir', 'prevenir', 'avertir', 'signaler'],
+      ],
       quote: ALERTER,
       explain: 'Alerter, c’est prévenir quelqu’un qui peut aider. C’est le deuxième geste face au danger.',
     },
@@ -699,7 +703,7 @@ const alerter: Notion = {
   libres: [
     {
       q: 'Reconnaître le danger, … et se mettre en sécurité : quel verbe manque ? (un mot)',
-      accepted: ['alerter'],
+      accepted: ['alerter', 'prévenir', 'prevenir', 'avertir', 'signaler'],
       traps: [
         { text: 'attendre', why: 'Attendre ne protège pas. Il faut prévenir quelqu’un.' },
         { text: 'jouer', why: 'Jouer ne règle pas le danger.' },
