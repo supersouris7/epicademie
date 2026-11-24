@@ -96,7 +96,7 @@ function OrderAnswer({ spec, disabled, onSubmit, onUnknown }: CommonProps & { re
     [disabled, n, complete, order, onSubmit, onUnknown, toggle],
   );
   return (
-    <Frame hint="Touche les éléments dans le bon ordre. Touche-en un autre fois pour le retirer.">
+    <Frame hint="Touche les éléments dans le bon ordre. Touche un élément une deuxième fois pour le retirer.">
       <ArrowGroup label="Éléments à remettre dans l’ordre" className="grid w-full max-w-2xl gap-2 sm:grid-cols-2">
         {spec.items.map((item, i) => {
           const rank = order.indexOf(i);
@@ -347,7 +347,7 @@ function ClozeAnswer({ spec, disabled, onSubmit, onUnknown }: CommonProps & { re
                 aria-label={`Trou ${i + 1}${answers[i] ? ` : ${answers[i]}` : ' (vide)'}`}
                 aria-pressed={active === i}
                 onClick={() => setActive(i)}
-                className={`font-display mx-1 inline-block min-w-20 rounded-xl border-4 px-2 align-middle ${active === i ? 'border-primary bg-surface' : 'border-outline/40 bg-surface-2'}`}
+                className={`font-display mx-1 inline-block min-h-11 min-w-20 rounded-xl border-4 px-2 align-middle ${active === i ? 'border-primary bg-surface' : 'border-outline/40 bg-surface-2'}`}
               >
                 {(answers[i] ?? '') === '' ? <span className="text-muted">…</span> : answers[i]}
               </button>
