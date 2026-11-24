@@ -769,16 +769,16 @@ const fraternite: Notion = {
       explain: 'On exprime son opinion en nuançant son propos et en modérant son attitude.',
     },
     {
-      q: 'Dans une société où chacun ne pense qu’à soi, que manque-t-il ?',
-      a: 'la fraternité',
+      q: 'Comment appelle-t-on le fait de se soucier des autres, à l’opposé de l’égoïsme ?',
+      a: 'l’altruisme',
       wrong: [
-        { label: 'le vote', why: 'Le vote ne règle pas le fait de ne penser qu’à soi.' },
-        { label: 'la vitesse', why: 'La vitesse n’a rien à voir avec ce sujet.' },
-        { label: 'la taille', why: 'La taille n’a rien à voir avec ce sujet.' },
+        { label: 'l’égoïsme', why: 'L’égoïsme, c’est ne penser qu’à soi : c’est le contraire.' },
+        { label: 'la rivalité', why: 'La rivalité, c’est la compétition, pas le souci des autres.' },
+        { label: 'la timidité', why: 'La timidité n’a rien à voir avec le souci des autres.' },
       ],
-      gap: ['Sans ', ', c’est une société où chacun ne pense qu’à soi.', ['fraternité']],
-      quote: 'la liberté et l’égalité sans la fraternité, c’est une société où chacun ne pense qu’à soi',
-      explain: 'Sans la fraternité, chacun ne pense qu’à soi : la fraternité, c’est se soucier des autres.',
+      gap: ['Se soucier des autres, c’est l’', '.', ['altruisme']],
+      quote: 'amener les élèves à définir égoïsme et altruisme',
+      explain: 'L’égoïsme, c’est ne penser qu’à soi ; l’altruisme, c’est se soucier des autres.',
     },
     {
       q: 'Entre élèves, à qui doit-on de la tolérance ?',
@@ -814,7 +814,7 @@ const fraternite: Notion = {
   libres: [
     {
       q: 'quel mot désigne le fait de ne penser qu’à soi ?',
-      accepted: ['égoïsme', 'l’égoïsme', 'egoisme'],
+      accepted: ['égoïsme', 'l’égoïsme', 'egoisme', 'individualisme', 'l’individualisme'],
       traps: [
         { text: 'altruisme', why: 'L’altruisme, c’est se soucier des autres : c’est le contraire.' },
         {
@@ -822,18 +822,18 @@ const fraternite: Notion = {
           why: 'L’empathie, c’est se mettre à la place de l’autre : c’est le contraire de ne penser qu’à soi.',
         },
       ],
-      quote: 'la liberté et l’égalité sans la fraternité, c’est une société où chacun ne pense qu’à soi',
+      quote: 'amener les élèves à définir égoïsme et altruisme',
       explain: 'Ne penser qu’à soi, c’est de l’égoïsme.',
     },
     {
-      q: 'complète : liberté, égalité, … (un mot)',
-      accepted: ['fraternité', 'fraternite'],
+      q: 'quel mot désigne le fait de se soucier des autres, à l’opposé de l’égoïsme ?',
+      accepted: ['altruisme', 'l’altruisme'],
       traps: [
-        { text: 'solidarité', why: 'La solidarité est proche, mais le troisième mot est « fraternité ».' },
-        { text: 'amitié', why: 'L’amitié lie des amis. La fraternité concerne tout le monde.' },
+        { text: 'égoïsme', why: 'L’égoïsme, c’est ne penser qu’à soi : c’est le contraire.' },
+        { text: 'rivalité', why: 'La rivalité, c’est la compétition, pas le souci des autres.' },
       ],
-      quote: 'la liberté et l’égalité sans la fraternité, c’est une société où chacun ne pense qu’à soi',
-      explain: 'Après liberté et égalité vient la fraternité.',
+      quote: 'amener les élèves à définir égoïsme et altruisme',
+      explain: 'Se soucier des autres, c’est l’altruisme.',
     },
     {
       q: 'quel mot désigne le fait de se mettre à la place de l’autre pour comprendre ce qu’il ressent ?',
