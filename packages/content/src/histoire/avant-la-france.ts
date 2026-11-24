@@ -16,6 +16,7 @@ const traces: Notion = {
   memo: [
     'Une **trace** est ce qui reste du passé : un outil, un mur, une route. Près de chez toi, il y en a peut-être déjà !',
     'Des traces de la **préhistoire** et de l’histoire montrent que des gens vivent ici depuis très longtemps : c’est l’ancienneté du **peuplement**.',
+    'Si tu compares avec un autre lieu de France, les traces sont différentes : c’est la **pluralité** des **héritages**, c’est-à-dire qu’il y en a beaucoup et de plusieurs sortes.',
   ],
   faits: [
     {
@@ -35,7 +36,7 @@ const traces: Notion = {
           why: 'Un château est bien plus récent. On cherche l’ancienneté de la présence des habitants.',
         },
       ],
-      gap: ['Les traces anciennes montrent l’ancienneté du ', '.', ['peuplement']],
+      gap: ['Les traces de la préhistoire montrent l’ancienneté du ', ' (la présence d’habitants).', ['peuplement']],
       quote: 'pour montrer l’ancienneté du peuplement et la pluralité des héritages',
       explain:
         'Les traces du passé montrent que des gens vivent ici depuis très longtemps : l’ancienneté du peuplement.',
@@ -54,7 +55,7 @@ const traces: Notion = {
         },
         { label: 'pour effacer les traces les plus anciennes', why: 'On étudie les traces, on ne les efface pas.' },
       ],
-      gap: ['Comparer deux lieux montre la pluralité des ', ' du passé.', ['héritages']],
+      gap: ['Comparer deux lieux montre la pluralité des ', ' : ce que le passé nous a laissé.', ['héritages']],
       quote:
         'On confronte rapidement ces traces proches à des traces préhistoriques et historiques différentes relevées dans un autre lieu en France',
       explain: 'Deux lieux de France ont des traces différentes : cela montre la pluralité des héritages.',
@@ -70,7 +71,11 @@ const traces: Notion = {
         },
         { label: 'uniquement des photographies', why: 'La photographie n’existe pas encore à cette époque.' },
       ],
-      gap: ['De la civilisation gauloise, on garde des traces ', '.', ['matérielles', 'materielles']],
+      gap: [
+        'Un mur ou un outil gaulois, que l’on peut toucher, est une trace ',
+        '.',
+        ['matérielles', 'materielles', 'matérielle'],
+      ],
       quote: 'la civilisation gauloise, dont on garde des traces matérielles, ne connaît pas de rupture brusque',
       explain: 'Une trace matérielle se touche et se voit. On en garde de la civilisation gauloise.',
     },
@@ -88,7 +93,11 @@ const traces: Notion = {
         },
         { label: 'au fond de l’océan', why: 'Ce n’est pas le point de départ : on part de ton environnement proche.' },
       ],
-      gap: ['On repère des traces dans ton environnement ', '.', ['proche']],
+      gap: [
+        'On commence par chercher des traces dans ton environnement ',
+        ', c’est-à-dire près de chez toi.',
+        ['proche'],
+      ],
       quote: 'on identifie des traces spécifiques de la préhistoire et de l’histoire dans leur environnement proche',
       explain: 'On part de ce qui est proche de toi : ton environnement proche.',
     },
@@ -102,7 +111,7 @@ const traces: Notion = {
     ['Préhistoire', 'Époque avant l’écriture'],
     ['Trace', 'Ce qui reste du passé'],
     ['Peuplement', 'Présence d’habitants sur un territoire'],
-    ['Héritage', 'Ce que le passé nous a laissé'],
+    ['Héritage', 'Ce que les gens du passé ont transmis et que l’on garde aujourd’hui'],
     ['Trace matérielle', 'Une trace que l’on peut voir et toucher'],
   ],
   libres: [
@@ -191,11 +200,11 @@ const traces: Notion = {
 
 const heritages: Notion = {
   id: 'hcm1-heritages',
-  hint: 'Relis le mémo : brassage, villes, routes… et pas de rupture brusque.',
+  hint: 'Relis le mémo : il dit ce qui se passe dans les Gaules et ce que Rome y a laissé.',
   title: 'Celtes, Gaulois, Grecs et Romains : des héritages',
   memo: [
     'Les **Gaules** sont un lieu de **brassage** : les populations se mélangent, et les Celtes et les Gaulois rencontrent les civilisations de la Méditerranée.',
-    'La **romanité** laisse beaucoup d’**héritages** : des villes, des routes, la religion chrétienne. Mais la civilisation gauloise ne disparaît pas d’un coup.',
+    'Avec la **colonisation** romaine, Rome s’installe dans les Gaules. La **romanité** laisse beaucoup d’**héritages** : des villes, des routes, la religion chrétienne (mais aussi le judaïsme). Mais la civilisation gauloise ne connaît pas de **rupture** brusque : elle ne disparaît pas d’un coup.',
   ],
   faits: [
     {
@@ -209,7 +218,7 @@ const heritages: Notion = {
         { label: 'un désert sans habitants', why: 'Les Gaules sont peuplées : on y trouve Celtes et Gaulois.' },
         { label: 'un seul peuple isolé', why: 'Il y a un brassage, c’est-à-dire un mélange de populations.' },
       ],
-      gap: ['Les Gaules se caractérisent par le ', ' de leurs populations.', ['brassage']],
+      gap: ['Les Gaules se caractérisent par le ', ' de leurs populations.', ['brassage', 'mélange', 'melange']],
       quote: 'caractérisées par le brassage de leurs populations',
       explain: 'Brasser, c’est mélanger : les Gaules sont un lieu de brassage des populations.',
     },
@@ -221,10 +230,14 @@ const heritages: Notion = {
         { label: 'les trains', why: 'Le train arrive bien plus tard. L’apport romain, ce sont les routes.' },
         {
           label: 'l’imprimerie',
-          why: 'L’imprimerie n’est pas dans la liste du programme : villes, routes, religion chrétienne.',
+          why: 'L’imprimerie apparaît bien plus tard, au XVe siècle. Les Romains ont apporté des villes, des routes…',
         },
       ],
-      gap: ['Parmi les apports de la romanité : les villes, les ', ' et la religion chrétienne.', ['routes']],
+      gap: [
+        'Parmi les apports de la romanité cités par le programme : les villes, les ',
+        ' et la religion chrétienne.',
+        ['routes'],
+      ],
       quote:
         'Les apports de la romanité sont néanmoins nombreux : villes, routes, religion chrétienne (mais aussi judaïsme) en sont des exemples.',
       explain: 'Villes, routes, religion chrétienne : ce sont des apports de la romanité.',
@@ -243,7 +256,7 @@ const heritages: Notion = {
           why: 'Rien de tel : la civilisation gauloise continue sans coupure brutale.',
         },
       ],
-      gap: ['La civilisation gauloise ne connaît pas de rupture ', '.', ['brusque']],
+      gap: ['La civilisation gauloise ne connaît pas de rupture ', ' (d’un coup).', ['brusque', 'soudaine']],
       quote: 'la civilisation gauloise, dont on garde des traces matérielles, ne connaît pas de rupture brusque',
       explain: 'La colonisation romaine ne fait pas disparaître d’un coup la civilisation gauloise.',
     },
@@ -265,7 +278,7 @@ const heritages: Notion = {
       ],
       quote:
         'On se centrera ensuite sur les Gaules, caractérisées par le brassage de leurs populations et les contacts entre Celtes, Gaulois et civilisations méditerranéennes.',
-      explain: 'Les Gaules sont en contact avec les civilisations de la Méditerranée, comme les Grecs et les Romains.',
+      explain: 'Les Gaules sont en contact avec les civilisations de la Méditerranée.',
     },
   ],
   paires3: [
@@ -277,23 +290,26 @@ const heritages: Notion = {
     ['Brassage', 'Mélange de populations'],
     ['Romanité', 'Ce qui vient du monde romain'],
     ['Colonisation', 'Installation d’un peuple sur le territoire d’un autre'],
-    ['Héritage', 'Ce que le passé nous a laissé'],
-    ['Les Gaules', 'Territoire où se mélangent des populations'],
+    ['Héritage', 'Ce que les gens du passé ont transmis et que l’on garde aujourd’hui'],
+    ['Les Gaules', 'Pays des Gaulois'],
   ],
   libres: [
     {
       q: 'Villes, routes, religion … : c’est un apport de la romanité (un mot).',
-      accepted: ['chrétienne', 'chretienne', 'la religion chrétienne'],
+      accepted: ['chrétienne', 'chretienne', 'la religion chrétienne', 'juive', 'la religion juive'],
       traps: [
         {
           text: 'gauloise',
-          why: 'La religion chrétienne est l’exemple cité dans la liste des apports de la romanité.',
+          why: 'La religion des Gaulois existait avant Rome : ce n’est pas un apport de la romanité.',
         },
-        { text: 'grecque', why: 'Ce n’est pas l’exemple cité par le programme. Il parle de la religion chrétienne.' },
+        {
+          text: 'grecque',
+          why: 'Ce n’est pas l’exemple cité par le programme. Il parle de la religion chrétienne (et du judaïsme).',
+        },
       ],
       quote:
         'Les apports de la romanité sont néanmoins nombreux : villes, routes, religion chrétienne (mais aussi judaïsme) en sont des exemples.',
-      explain: 'Villes, routes, religion chrétienne : les exemples d’apports de la romanité.',
+      explain: 'Villes, routes, religion chrétienne (mais aussi judaïsme) : les exemples d’apports de la romanité.',
     },
     {
       q: 'Les populations des Gaules se mélangent : quel nom donne-t-on à ce mélange (un mot) ?',
@@ -307,10 +323,13 @@ const heritages: Notion = {
     },
     {
       q: 'La civilisation gauloise ne connaît pas de rupture … (un mot).',
-      accepted: ['brusque'],
+      accepted: ['brusque', 'soudaine'],
       traps: [
         { text: 'lente', why: 'Le programme dit que la rupture n’est pas brusque, c’est-à-dire pas soudaine.' },
-        { text: 'violente', why: 'Le programme parle d’une coupure soudaine : « brusque ».' },
+        {
+          text: 'violente',
+          why: 'Violente parle de la force, pas du rythme. Le mot du programme est « brusque » : qui arrive d’un coup.',
+        },
       ],
       quote: 'la civilisation gauloise, dont on garde des traces matérielles, ne connaît pas de rupture brusque',
       explain: 'Elle continue : pas de rupture brusque.',
@@ -346,12 +365,12 @@ const heritages: Notion = {
     {
       title: 'Une route, une ville, une église',
       lines: [
-        'Dans un village ancien, une route traverse les champs.',
-        'Plus loin, une ville née à l’époque romaine compte une église.',
+        'Dans une région de l’ancienne Gaule, une route construite à l’époque romaine traverse les champs.',
+        'Plus loin, une ville née à l’époque romaine compte une église, où l’on pratique la religion chrétienne.',
       ],
       qs: [
         {
-          q: 'Ces trois éléments sont des exemples de quoi ?',
+          q: 'La route, la ville et la religion chrétienne sont des exemples de quoi ?',
           a: 'des apports de la romanité',
           wrong: [
             {
@@ -376,7 +395,7 @@ const heritages: Notion = {
 
 const mouvements: Notion = {
   id: 'hcm1-mouvements',
-  hint: 'Pense à la frise : IVe siècle, puis fin du Ve siècle. Les peuples viennent de l’est.',
+  hint: 'Relis le mémo : il dit quand et d’où arrivent ces peuples, puis ce qui arrive à l’empire.',
   title: 'Grands mouvements de populations (IVe-Xe siècles)',
   memo: [
     'À partir du IVe siècle, des peuples venus de l’est, comme les **Francs** et les **Wisigoths**, s’installent dans l’**empire romain d’Occident**.',
@@ -413,20 +432,23 @@ const mouvements: Notion = {
       explain: 'Ils viennent de l’est.',
     },
     {
-      q: 'Quels sont deux de ces peuples cités par le programme ?',
+      q: 'Quels sont deux peuples venus de l’est qui s’installent dans l’empire romain d’Occident ?',
       a: 'les Francs et les Wisigoths',
       wrong: [
-        { label: 'les Grecs et les Égyptiens', why: 'Les Francs et les Wisigoths sont cités pour ces arrivées.' },
+        {
+          label: 'les Grecs et les Égyptiens',
+          why: 'Ce ne sont pas des peuples venus de l’est dans l’empire romain d’Occident : le programme cite les Francs et les Wisigoths.',
+        },
         {
           label: 'les Gaulois et les Celtes',
           why: 'Gaulois et Celtes sont déjà sur place : ce sont d’autres peuples qui arrivent.',
         },
         {
           label: 'les Vikings et les Aztèques',
-          why: 'Ils ne sont pas cités par le programme : ce sont les Francs et les Wisigoths.',
+          why: 'Les Aztèques vivent en Amérique et les Vikings viennent du nord : le programme cite les Francs et les Wisigoths, venus de l’est.',
         },
       ],
-      gap: ['Deux de ces peuples sont les Francs et les ', '.', ['Wisigoths']],
+      gap: ['Deux peuples venus de l’est, cités par le programme, sont les Francs et les ', '.', ['Wisigoths']],
       quote:
         "à partir du IVe siècle, des peuples venus de l'est, notamment les Francs et les Wisigoths, s'installent sur plusieurs siècles dans l'empire romain d'Occident",
       explain: 'Les Francs et les Wisigoths s’installent dans l’empire romain d’Occident.',
@@ -459,8 +481,8 @@ const mouvements: Notion = {
     ['Fin du Ve siècle', 'Effondrement de l’empire romain d’Occident'],
   ],
   paires5: [
-    ['Francs', 'Peuple venu de l’est, cité avec les Wisigoths'],
-    ['Wisigoths', 'Peuple venu de l’est, cité avec les Francs'],
+    ['Francs', 'Peuple venu de l’est, dont Clovis est le roi'],
+    ['Wisigoths', 'Autre peuple venu de l’est, cité avec les Francs'],
     ['IVe siècle', 'Début de l’installation des peuples de l’est'],
     ['Fin du Ve siècle', 'Effondrement de l’empire romain d’Occident'],
     ['Mouvement de population', 'Déplacement d’un peuple vers un autre territoire'],
@@ -473,7 +495,7 @@ const mouvements: Notion = {
   ],
   libres: [
     {
-      q: 'Les Francs et les … s’installent dans l’empire romain d’Occident (un mot).',
+      q: 'Les Francs et les … sont les deux peuples venus de l’est cités par le programme (un mot).',
       accepted: ['wisigoths', 'les wisigoths'],
       traps: [
         { text: 'gaulois', why: 'Les Gaulois sont déjà là. Le programme cite les Wisigoths avec les Francs.' },
@@ -511,7 +533,7 @@ const mouvements: Notion = {
       lines: [
         'Au IVe siècle, des familles venues de l’est arrivent par petits groupes.',
         'Elles s’installent dans l’empire romain d’Occident.',
-        'D’autres groupes les suivent pendant de nombreuses années.',
+        'D’autres groupes les suivent pendant des siècles.',
       ],
       qs: [
         {
@@ -520,7 +542,7 @@ const mouvements: Notion = {
           wrong: [
             {
               label: 'tous en une seule journée',
-              why: 'Le texte dit « par petits groupes » et « pendant de nombreuses années ».',
+              why: 'Le texte dit « par petits groupes » et « pendant des siècles ».',
             },
             { label: 'par avion', why: 'Il n’y a pas d’avion à cette époque. Ils arrivent peu à peu.' },
           ],
@@ -560,7 +582,7 @@ const mouvements: Notion = {
 
 const rois: Notion = {
   id: 'hcm1-clovis-charlemagne',
-  hint: 'Clovis est lié au baptême ; Charlemagne à l’an 800.',
+  hint: 'Relis le mémo : un roi des Francs, un baptême, puis une couronne d’empereur.',
   title: 'Clovis et Charlemagne, Mérovingiens et Carolingiens',
   memo: [
     '**Clovis** est un roi des Francs. Son **baptême** est un geste politique : il montre la continuité entre le monde romain et le monde mérovingien.',
@@ -609,7 +631,10 @@ const rois: Notion = {
       wrong: [
         { label: '1789', why: '1789 est le début de la Révolution. Charlemagne est couronné en 800.' },
         { label: '1515', why: 'Cette date est bien trop tardive pour Charlemagne. Il est couronné en 800.' },
-        { label: '476', why: 'Cette date n’est pas dans le programme : Charlemagne est couronné empereur en 800.' },
+        {
+          label: '476',
+          why: 'On place vers 476 la chute de l’empire romain d’Occident (fin du Ve siècle). Charlemagne vient bien plus tard : 800.',
+        },
       ],
       gap: ['Charlemagne est couronné empereur en l’an ', '.', ['800']],
       quote:
@@ -653,7 +678,7 @@ const rois: Notion = {
   ],
   libres: [
     {
-      q: 'En quelle année Charlemagne est-il couronné empereur ? (4 chiffres ou moins)',
+      q: 'En quelle année Charlemagne est-il couronné empereur ? (un nombre)',
       accepted: ['800'],
       traps: [
         { text: '1789', why: '1789 est le début de la Révolution, bien plus tard.' },
@@ -675,7 +700,7 @@ const rois: Notion = {
       explain: 'Clovis est le roi des Francs.',
     },
     {
-      q: 'Charlemagne est roi des Francs et des … (un mot).',
+      q: 'D’après le programme, Charlemagne est roi des Francs et des … (un mot).',
       accepted: ['lombards', 'les lombards'],
       traps: [
         {
@@ -718,7 +743,7 @@ const rois: Notion = {
       ],
     },
     {
-      title: 'Une couronne à Noël',
+      title: 'Une couronne d’empereur',
       lines: [
         'Un roi des Francs et des Lombards est couronné empereur.',
         'Il veut reconstituer un empire romain et chrétien.',
@@ -729,7 +754,7 @@ const rois: Notion = {
           q: 'De quel roi parle ce texte ?',
           a: 'Charlemagne',
           wrong: [
-            { label: 'Clovis', why: 'Clovis est roi des Francs, sans couronne d’empereur en 800.' },
+            { label: 'Clovis', why: 'Clovis vit bien avant l’an 800 : il est roi des Francs, pas empereur.' },
             { label: 'Henri IV', why: 'Henri IV est lié à l’édit de Nantes, bien plus tard.' },
           ],
           quote:

@@ -101,7 +101,7 @@ function level2(rng: Rng, n: Notion): QuestionDraft {
   }
   const f = rng.pick(n.faits);
   return {
-    prompt: `Attention aux faux amis ! ${f.q}`,
+    prompt: `Attention aux pièges ! ${f.q}`,
     ...choice(rng, f.a, f.wrong),
     hint: n.hint,
     steps: steps(f.quote, f.explain, f.a),
