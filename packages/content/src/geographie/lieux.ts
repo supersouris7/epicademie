@@ -247,7 +247,7 @@ const COMMUNE_DEF =
 const commune: Notion = {
   id: 'gcm1-commune',
   title: 'La commune',
-  hint: 'Pense au village ou à la ville où tu habites, et à son maire.',
+  hint: 'Pense au village ou à la ville où tu habites, et à la personne qui la dirige.',
   memo: [
     'Ta **commune** est ton village ou ta ville. Elle est dirigée par un **maire**.',
     'Le maire est aidé par des adjoints et par un **conseil municipal**.',
@@ -582,7 +582,7 @@ const franceCarte: Notion = {
       q: 'Quel est le plus vaste de ces territoires ?',
       a: 'le monde',
       wrong: [
-        { label: 'la région', why: 'La région est le plus petit des quatre. Le monde les contient tous.' },
+        { label: 'la région', why: 'La région est le plus petit de ces territoires. Le monde les contient tous.' },
         { label: 'la France', why: 'La France est plus petite que l’Europe et que le monde.' },
         { label: 'l’Europe', why: 'L’Europe est plus petite que le monde.' },
       ],
@@ -756,7 +756,7 @@ const PROG_REPERES = 'Nommer et localiser les grands repères géographiques.';
 const grandsReperes: Notion = {
   id: 'gcm1-grands-reperes',
   title: 'Grands repères (fleuves, massifs)',
-  hint: 'Un fleuve, c’est de l’eau qui coule. Un massif, ce sont des montagnes groupées.',
+  hint: 'Un fleuve et un massif n’ont rien à voir : l’un parle d’eau, l’autre de hauteurs du sol. Lis bien la question.',
   memo: [
     'Un **fleuve** est un grand cours d’eau qui se jette le plus souvent dans la mer.',
     'Un **massif** est un ensemble de montagnes. Exemple : le massif du Mont-Blanc.',
