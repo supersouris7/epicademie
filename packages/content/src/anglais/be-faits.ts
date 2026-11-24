@@ -62,17 +62,20 @@ export const SUBJECTS: readonly Subject[] = [
 
 /** Propriétaires pour les adjectifs possessifs : `fr` complète « appartient à … ». */
 export interface Owner {
+  /** Complète « La maison appartient … » (préposition comprise). */
   readonly fr: string;
+  /** Le propriétaire, sans préposition (pour les explications). */
+  readonly who: string;
   readonly pro: Pronoun;
 }
 export const OWNERS: readonly Owner[] = [
-  { fr: 'moi', pro: 'I' },
-  { fr: 'toi', pro: 'you' },
-  { fr: 'Emir', pro: 'he' },
-  { fr: 'Ana', pro: 'she' },
-  { fr: 'au chat', pro: 'it' },
-  { fr: 'Emir et moi', pro: 'we' },
-  { fr: 'Ana et Emir', pro: 'they' },
+  { fr: 'à moi', who: 'moi', pro: 'I' },
+  { fr: 'à toi', who: 'toi', pro: 'you' },
+  { fr: 'à Emir', who: 'Emir', pro: 'he' },
+  { fr: 'à Ana', who: 'Ana', pro: 'she' },
+  { fr: 'au chat', who: 'le chat', pro: 'it' },
+  { fr: 'à Emir et moi', who: 'Emir et moi', pro: 'we' },
+  { fr: 'à Ana et Emir', who: 'Ana et Emir', pro: 'they' },
 ];
 
 /** Objets possédés : mot anglais et mot français (avec son article). */
