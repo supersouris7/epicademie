@@ -383,6 +383,12 @@ export const FAITS: readonly Fait[] = [
     citation: 'Jeune plante renfermée dans la graine.',
   },
   {
+    id: 'embryon-oeuf',
+    source: 'cnrtl-embryon',
+    citation:
+      "L'œuf à partir du moment où commence sa segmentation jusqu'au moment où il se libère des enveloppes vitellines.",
+  },
+  {
     id: 'plantule-def',
     source: 'cnrtl-plantule',
     citation:

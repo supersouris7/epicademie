@@ -155,23 +155,26 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   };
 };
 
-const RESEAUX: readonly { texte: string; base: string; pieges: readonly string[] }[] = [
+const RESEAUX: readonly { texte: string; base: string; variantes: readonly string[]; pieges: readonly string[] }[] = [
   {
     texte:
       'La buse mange le mulot et le lézard. Le mulot mange des graines de blé. Le lézard mange des sauterelles. La sauterelle mange des feuilles de blé.',
     base: 'le blé',
+    variantes: ['blé', 'du blé', 'ble', 'le ble'],
     pieges: ['la buse', 'le mulot', 'la sauterelle'],
   },
   {
     texte:
       'La mésange mange des chenilles. La chenille mange les feuilles du chêne. L’épervier mange la mésange. L’écureuil mange les glands du chêne.',
     base: 'le chêne',
+    variantes: ['chêne', 'un chêne', 'du chêne', 'chene', 'le chene'],
     pieges: ['l’épervier', 'la chenille', 'la mésange'],
   },
   {
     texte:
       'Le brochet mange le gardon. Le gardon mange de petits animaux de la mare. Ces petits animaux mangent des algues.',
     base: 'les algues',
+    variantes: ['algues', 'des algues', 'algue', 'une algue'],
     pieges: ['le brochet', 'le gardon'],
   },
 ];
@@ -180,9 +183,8 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   const t = rng.int(0, 2);
   if (t === 0) {
     const n = rng.pick(RESEAUX);
-    const nu = n.base.replace(/^(le |la |les |l’)/, '');
     const { answer, traps: tr } = saisie(
-      [n.base, nu],
+      [n.base, ...n.variantes],
       n.pieges.map(
         (p) => [p, `${maj(p)} mange un autre être vivant : la base, c’est le végétal, en début de chaîne.`] as const,
       ),
@@ -212,7 +214,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       prompt: `Piège possible ! ${m.qui} mange ${m.menu}. Quel est son régime ? Écris un mot.`,
       answer,
       traps: tr,
-      hint: 'Les petites bêtes aussi sont des animaux.',
+      hint: 'Les petites bêtes, comme les vers, sont aussi des animaux.',
       steps: explique(m),
       targetSeconds: 35,
     };
@@ -232,7 +234,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
         { mode: 'text', accepted: ['activité', 'activite'] },
       ],
     },
-    hint: 'Qui dépense le plus en bougeant ? Le second mot commence par « acti ».',
+    hint: 'Qui dépense le plus en bougeant ? Le second mot commence par « ac ».',
     steps: [
       'Les besoins alimentaires changent avec la croissance et avec l’activité physique.',
       'Moka bouge beaucoup plus.',
@@ -299,15 +301,15 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     ['herbivore', 'La pâtée contient des végétaux, mais aussi de la viande.'],
   ]);
   return {
-    prompt: `${sujet} D’après la composition de sa pâtée seulement, quel mot décrit ce menu : herbivore, carnivore ou omnivore ?`,
+    prompt: `${sujet} Un animal qui mange tout ce qu’il y a dans cette pâtée est-il herbivore, carnivore ou omnivore ?`,
     figure,
     answer,
     traps: tr,
     hint: 'Relis la dernière ligne : d’où viennent les aliments ?',
     steps: [
       'La viande vient d’un animal ; les carottes et le riz viennent de végétaux.',
-      'Manger les deux, c’est être omnivore.',
-      'Ce menu est **omnivore**.',
+      'Un animal qui mange les deux est omnivore.',
+      'Réponse : **omnivore**.',
     ],
     targetSeconds: 50,
   };
@@ -323,7 +325,7 @@ export const besoinsAnimaux: Skill = {
   lesson: {
     memo: [
       'Un animal fabrique sa matière grâce à sa nourriture, prise à d’autres êtres vivants. Il est **herbivore** (végétaux), **carnivore** (animaux) ou **omnivore** (les deux).',
-      'Les liens « qui mange qui » forment des **chaînes alimentaires**, avec un végétal à la base. Et les besoins changent avec la **croissance** et l’activité physique : qui court beaucoup mange plus !',
+      'Les liens « qui mange qui » forment des **chaînes alimentaires**, avec un végétal à la base. Plusieurs chaînes reliées forment un **réseau alimentaire**. Et les besoins changent avec la **croissance** et l’activité physique : qui court beaucoup a besoin de manger plus !',
     ],
     source: `${PROGRAMME} : « Relier la production de matière par les animaux à leur consommation de nourriture provenant d’autres êtres vivants » ; « Représenter les liens alimentaires entre les êtres vivants par des chaînes formant un réseau » ; « Exploiter des données pour expliquer la variation des besoins alimentaires au cours de la croissance et selon l’activité physique » ; régimes : CNRTL et Académie française.`,
     sources: [PROGRAMME, 'cnrtl-herbivore', 'cnrtl-carnivore', 'cnrtl-omnivore'],

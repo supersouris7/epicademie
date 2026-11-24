@@ -12,6 +12,7 @@ interface Mot {
   readonly accepte: readonly string[];
   readonly sens: string;
   readonly scene: string;
+  readonly question: string;
 }
 
 const MOTS: readonly Mot[] = [
@@ -20,36 +21,42 @@ const MOTS: readonly Mot[] = [
     accepte: ['germination', 'la germination'],
     sens: 'le moment où la graine développe sa jeune plante',
     scene: 'Dans le coton humide, une graine de haricot se réveille et développe une nouvelle plante.',
+    question: 'Comment s’appelle ce moment ?',
   },
   {
     mot: 'la plantule',
     accepte: ['plantule', 'la plantule', 'une plantule'],
     sens: 'la jeune plante qui sort de la graine',
     scene: 'Une toute jeune plante, avec ses premières feuilles, est sortie de la graine.',
+    question: 'Comment s’appelle cette jeune plante ?',
   },
   {
     mot: 'le têtard',
     accepte: ['têtard', 'le têtard', 'un têtard', 'tetard', 'le tetard'],
     sens: 'la larve de la grenouille',
     scene: 'Dans la mare, un petit de grenouille nage avec une grosse tête et ne vit que dans l’eau.',
+    question: 'Comment s’appelle ce petit ?',
   },
   {
     mot: 'la chenille',
     accepte: ['chenille', 'la chenille', 'une chenille'],
     sens: 'la larve du papillon',
     scene: 'Sur une feuille, une larve de papillon au corps allongé, formé d’anneaux, grignote.',
+    question: 'Comment s’appelle cette larve ?',
   },
   {
     mot: 'la chrysalide',
     accepte: ['chrysalide', 'la chrysalide', 'une chrysalide'],
     sens: 'l’état entre la chenille et le papillon',
     scene: 'Avant de devenir un papillon, la chenille passe par un état intermédiaire.',
+    question: 'Comment s’appelle cet état ?',
   },
   {
     mot: 'le fruit',
     accepte: ['fruit', 'le fruit', 'un fruit'],
     sens: 'ce que la plante produit après la fleur',
     scene: 'La fleur du pommier a disparu. À sa place, la plante a produit quelque chose qui grossit.',
+    question: 'Comment s’appelle ce qui grossit ?',
   },
 ];
 
@@ -72,7 +79,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
       .map(faux),
   );
   return {
-    prompt: `${m.scene} Quel est le bon mot ?`,
+    prompt: `${m.scene} ${m.question}`,
     answer,
     traps: tr,
     hint: 'Plante ou animal ? Élimine d’abord les mots qui ne conviennent pas.',
@@ -141,7 +148,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     MOTS.filter((x) => x !== m).map((x) => [x.accepte[0] ?? '', faux(x).why] as const),
   );
   return {
-    prompt: `${m.scene} Écris le mot qui convient.`,
+    prompt: `${m.scene} ${m.question} Écris le mot.`,
     answer,
     traps: tr,
     hint: `Le mot commence par « ${(m.accepte[0] ?? '').slice(0, 2)} ».`,
@@ -168,12 +175,31 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     {
       avant: 'la chenille',
       apres: 'le papillon adulte',
+      quoi: 'forme',
       bon: 'chrysalide',
       pieges: ['têtard', 'plantule'] as const,
     },
-    { avant: 'l’œuf', apres: 'la grenouille adulte', bon: 'têtard', pieges: ['chenille', 'chrysalide'] as const },
-    { avant: 'la graine', apres: 'la plante fleurie', bon: 'plantule', pieges: ['fruit', 'chrysalide'] as const },
-    { avant: 'l’œuf de papillon', apres: 'la chrysalide', bon: 'chenille', pieges: ['têtard', 'plantule'] as const },
+    {
+      avant: 'l’œuf',
+      apres: 'la grenouille adulte',
+      quoi: 'larve',
+      bon: 'têtard',
+      pieges: ['chenille', 'chrysalide'] as const,
+    },
+    {
+      avant: 'la graine',
+      apres: 'la plante fleurie',
+      quoi: 'forme',
+      bon: 'plantule',
+      pieges: ['fruit', 'chrysalide'] as const,
+    },
+    {
+      avant: 'l’œuf de papillon',
+      apres: 'la chrysalide',
+      quoi: 'larve',
+      bon: 'chenille',
+      pieges: ['têtard', 'plantule'] as const,
+    },
   ]);
   const juste = motDe(cas.bon);
   const { answer, traps: tr } = saisie(
@@ -181,7 +207,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     cas.pieges.map((p) => [p, `Cette forme ne se place pas entre ${cas.avant} et ${cas.apres}.`] as const),
   );
   return {
-    prompt: `Quelle forme manque entre ${cas.avant} et ${cas.apres} ? Écris son nom.`,
+    prompt: `Quelle ${cas.quoi} manque entre ${cas.avant} et ${cas.apres} ? Écris son nom.`,
     answer,
     traps: tr,
     hint: 'Récite le cycle de vie dans ta tête, sans sauter d’étape.',
@@ -277,7 +303,7 @@ export const developpement: Skill = {
   lesson: {
     memo: [
       'Un **cycle de vie** passe par la naissance, la **croissance** (on grandit), la reproduction, le vieillissement et la mort. Pour grandir, un être vivant a besoin de matière.',
-      'La forme change parfois ! Graine → **germination** → **plantule** → plante fleurie. Œuf → **larve** (têtard, chenille) ou jeune → adulte.',
+      'La forme change parfois ! Graine → **germination** → **plantule** → plante fleurie. Œuf → **embryon** (il se forme dans l’œuf) → **larve** (têtard, chenille) ou jeune → adulte.',
     ],
     source: `${PROGRAMME} : « les différentes étapes d’un cycle de vie (naissance, croissance, reproduction, vieillissement, mort) et les formes associées (graine-plantule-plante fleurie, œuf-embryon-larve ou jeune-adulte) » ; « le besoin de matière pour la croissance et le développement des êtres vivants » ; définitions : Trésor de la langue française (CNRTL).`,
     sources: [

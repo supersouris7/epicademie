@@ -12,7 +12,16 @@ type Groupe = 'mammifere' | 'oiseau' | 'poisson' | 'batracien' | 'insecte' | 'ar
 const GROUPES: Record<Groupe, { nom: string; accepte: readonly string[]; attribut: string }> = {
   mammifere: {
     nom: 'les mammifères',
-    accepte: ['mammifère', 'mammifères', 'les mammifères', 'un mammifère', 'mammifere', 'mammiferes'],
+    accepte: [
+      'mammifère',
+      'mammifères',
+      'les mammifères',
+      'un mammifère',
+      'mammifere',
+      'mammiferes',
+      'les mammiferes',
+      'un mammifere',
+    ],
     attribut: 'des mamelles',
   },
   oiseau: {
@@ -27,7 +36,16 @@ const GROUPES: Record<Groupe, { nom: string; accepte: readonly string[]; attribu
   },
   batracien: {
     nom: 'les batraciens',
-    accepte: ['batracien', 'batraciens', 'les batraciens', 'un batracien', 'amphibien', 'amphibiens', 'un amphibien'],
+    accepte: [
+      'batracien',
+      'batraciens',
+      'les batraciens',
+      'un batracien',
+      'amphibien',
+      'amphibiens',
+      'les amphibiens',
+      'un amphibien',
+    ],
     attribut: 'une peau nue et humide, et des têtards comme petits',
   },
   insecte: {
@@ -52,7 +70,7 @@ interface Animal {
   readonly nom: string;
   readonly groupe: Groupe;
   readonly fiche: string;
-  /** Groupe que l’on pourrait croire à tort (habitat, façon de se déplacer). */
+  /** Groupe que l’on pourrait croire à tort (habitat, façon de se déplacer, ressemblance). */
   readonly leurre?: Groupe;
 }
 
@@ -92,7 +110,7 @@ const pourquoi = (a: Animal) =>
 const faux = (a: Animal, g: Groupe) => ({
   label: GROUPES[g].nom,
   why:
-    g === a.leurre
+    g === a.leurre && (g === 'oiseau' || g === 'poisson')
       ? `Attention au piège ! Où vit l’animal, ou comment il bouge, ne suffit pas. ${pourquoi(a)}`
       : `Ce groupe réunit les animaux qui ont ${GROUPES[g].attribut}. Relis la fiche.`,
 });
@@ -301,8 +319,9 @@ export const classer: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'Pour **classer** un animal, regarde ce qu’il **possède** : des plumes → oiseau, des mamelles → mammifère, six pattes → insecte. Voler ou nager ne suffit pas !',
-      'Les groupes sont des **groupes emboîtés**, comme des boîtes : les mammifères sont rangés dans la boîte des **vertébrés** (ils ont des vertèbres).',
+      'Pour **classer** un animal, regarde ce qu’il **possède** : des plumes → oiseau, des **mamelles** → mammifère, six pattes → insecte. Voler ou nager ne suffit pas !',
+      'Les groupes sont des **groupes emboîtés**, comme des boîtes : les mammifères sont rangés dans la boîte des **vertébrés** (ils ont des vertèbres). Sans vertèbres, c’est un **invertébré**.',
+      'Retiens aussi : nageoires et vertèbres → poisson ; peau nue et petits têtards → **batracien** ; huit pattes sans antennes → **arachnide** ; corps mou sans squelette → **mollusque**.',
     ],
     source: `${PROGRAMME} : « Réaliser une classification en groupes emboités pour mettre en évidence des liens de parenté à partir d'un petit nombre d’espèces possédant des attributs identifiés » ; attributs des groupes et des espèces : Trésor de la langue française (CNRTL).`,
     sources: [
