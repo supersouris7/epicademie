@@ -23,7 +23,6 @@ export const PREUVES = {
   louisIx: programme('Louis IX, le « roi chrétien » au XIIIe siècle'),
   revolution: programme('De l’année 1789 à l’exécution du roi : Louis XVI, la Révolution, la Nation'),
   napoleon: programme('est proclamé empereur des Français en 1804'),
-  routeSoie: programme('Un commerce régulier entre Rome et la Chine existe depuis le IIe siècle avant J.-C.'),
   siecle: {
     source: 'academie-siecle',
     quote:
@@ -55,6 +54,6 @@ export const PREUVES = {
   },
   jc: {
     source: 'tlfi-siecle',
-    quote: 'de Jésus-Christ (J.-C.), avant notre ère, avant l’ère chrétienne',
+    quote: 'avant, après, de Jésus-Christ (J.-C.), avant notre ère, avant l’ère chrétienne',
   },
 } satisfies Record<string, Preuve>;

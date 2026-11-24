@@ -377,6 +377,7 @@ const siecles5: Generator = (rng) => {
 // ——— Notion 2 : la frise chronologique ———
 
 const SENS = 'Sur nos frises, le temps avance de haut en bas : en haut, c’est le plus ancien.';
+const CROISSANT = 'Après J.-C., plus le nombre est petit, plus l’année est ancienne.';
 
 const FAITS_FRISE: readonly QcmFait[] = [
   {
@@ -445,7 +446,7 @@ const frise2: Generator = (rng) => {
   const k = rng.int(0, 3);
   const year = at(years, k);
   return {
-    prompt: `Attention aux pièges ! Sur la frise, quel repère est placé entre ${year - 100} et ${year + 100} ?`,
+    prompt: `Sur la frise, quel repère est placé entre ${year - 100} et ${year + 100} ?`,
     figure: frise(
       'Frise des repères',
       LETTRES_FRISE.map((l, i) => `${years[i]} : repère ${l}`),
@@ -458,7 +459,12 @@ const frise2: Generator = (rng) => {
       ),
     ),
     hint: 'Lis le nombre écrit devant chaque repère.',
-    steps: [SENS, `On cherche une année entre ${year - 100} et ${year + 100}.`, fin(`le repère ${LETTRES_FRISE[k]}`)],
+    steps: [
+      SENS,
+      `On cherche une année entre ${year - 100} et ${year + 100}.`,
+      `Le repère ${LETTRES_FRISE[k]} est en ${year}, entre ${year - 100} et ${year + 100}.`,
+      fin(`le repère ${LETTRES_FRISE[k]}`),
+    ],
     targetSeconds: 30,
   };
 };
@@ -471,7 +477,7 @@ const frise3: Generator = (rng) => {
       `Place ces années sur la frise, de la plus ancienne à la plus récente : ${liste(years.map(String))}.`,
       years.map((y) => ({ label: String(y), t: y })),
       'Cherche d’abord le plus petit nombre.',
-      SENS,
+      `${SENS} ${CROISSANT}`,
     );
   }
   const start = rng.int(1, 14) * 100;
@@ -504,7 +510,7 @@ const frise4: Generator = (rng) => {
   const gap = b - a;
   if (rng.int(0, 1) === 0) {
     return saisie(
-      `Sans proposition : sur la frise, combien d’années séparent ${a} et ${b} ?`,
+      `Sans proposition : combien d’années séparent ${a} et ${b} ?`,
       [String(gap), `${gap} ans`],
       [
         [String(a + b), 'Tu as ajouté. Pour une durée, on soustrait la date ancienne de la date récente.'],
@@ -521,7 +527,7 @@ const frise4: Generator = (rng) => {
     [String(siecles), `${siecles} siècles`],
     [
       [String(gap), 'Ce sont des années. Un siècle vaut 100 ans.'],
-      [String(siecles + 1), 'Tu as compté les graduations au lieu des intervalles.'],
+      [String(siecles + 1), 'Tu as compté un bond de trop.'],
       [String(siecles - 1), 'Il manque un siècle : compte chaque bond de 100 ans.'],
     ],
     'Avance de 100 ans en 100 ans et compte les bonds.',
@@ -529,59 +535,118 @@ const frise4: Generator = (rng) => {
   );
 };
 
-const FRISE_PROGRAMME = [
-  { year: 800, text: 'Charlemagne est couronné empereur', preuve: PREUVES.charlemagne },
-  { year: 1789, text: 'La Révolution commence', preuve: PREUVES.revolution },
-  { year: 1804, text: 'Napoléon est proclamé empereur des Français', preuve: PREUVES.napoleon },
+/** Repères inventés d’un village imaginaire (signalés comme tels dans le document). */
+const REPERES_INVENTES = [
+  'Le pont de pierre est construit',
+  'Le moulin du village ouvre',
+  'La halle du marché est bâtie',
+  'La fontaine est creusée',
+  'Le grand chêne est planté',
+  'La tour de guet est élevée',
+  'La chapelle est terminée',
 ] as const;
 
-const frise5: Generator = (rng) => {
+const CHARLEMAGNE_FRISE = 'Charlemagne est couronné empereur';
+
+interface Marque {
+  readonly year: number;
+  readonly text: string;
+}
+
+/** Frise de 4 à 6 repères, un seul par siècle ; `rondes` fixe les années qui finissent par 00. */
+function friseVillage(rng: Rng, siecles: readonly number[], rondes: readonly number[]) {
+  const noms = rng.shuffle([...REPERES_INVENTES]);
+  const marques: Marque[] = [...siecles]
+    .sort((a, b) => a - b)
+    .map((c, i) => {
+      const year = rondes.includes(c) ? c * 100 : (c - 1) * 100 + rng.int(11, 89);
+      return { year, text: year === 800 ? CHARLEMAGNE_FRISE : at(noms, i) };
+    });
+  const charlemagne = marques.some((m) => m.year === 800);
   const figure = frise(
-    'La frise de la classe',
-    FRISE_PROGRAMME.map((e) => `${e.year} : ${e.text}`),
+    'La frise d’un village imaginaire',
+    marques.map((m) => `${m.year} : ${m.text}`),
   );
-  if (rng.int(0, 1) === 0) {
-    const [i, j] = rng.pick([
-      [0, 1],
-      [0, 2],
-      [1, 2],
-    ] as const);
-    const from = FRISE_PROGRAMME[i];
-    const to = FRISE_PROGRAMME[j];
-    const gap = to.year - from.year;
-    return {
-      prompt: `Lis la frise, puis réponds. Combien d’années séparent les repères ${from.year} et ${to.year} ?`,
-      figure,
-      ...choice(rng, `${gap} ans`, [
-        { label: `${gap + 100} ans`, why: 'Un siècle de trop : refais la soustraction.' },
-        { label: `${gap + 10} ans`, why: 'Dix ans de trop : attention à la retenue.' },
-        { label: `${from.year + to.year} ans`, why: 'Tu as ajouté les dates. Il faut les soustraire.' },
-      ]),
-      hint: 'Soustrais la date la plus ancienne de la plus récente.',
-      steps: [cite(from.preuve), cite(to.preuve), `${to.year} − ${from.year} = ${gap}.`, fin(`${gap} ans`)],
-      targetSeconds: 60,
-    };
-  }
-  const k = rng.int(0, 2);
-  const e = at(FRISE_PROGRAMME, k);
-  const c = centuryOf(e.year);
+  const note = charlemagne
+    ? 'Sauf Charlemagne (programme), ces repères sont inventés pour l’exercice.'
+    : 'Ces repères sont inventés pour l’exercice.';
+  return { marques, figure: { ...figure, lines: [note, ...figure.lines] } };
+}
+
+const bornes = (c: number) => `Le ${siecle(c)} siècle va de ${(c - 1) * 100 + 1} à ${c * 100}.`;
+
+/** Niveau 5, en deux temps : trouver les années par le nom des repères, puis calculer la durée. */
+function friseDuree(rng: Rng): QuestionDraft {
+  const siecles = rng.shuffle([8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]).slice(0, rng.int(4, 6));
+  const { marques, figure } = friseVillage(rng, siecles, siecles.includes(8) ? [8] : []);
+  const i = rng.int(0, marques.length - 3);
+  const from = at(marques, i);
+  const to = at(marques, rng.int(i + 2, marques.length - 1));
+  const gap = to.year - from.year;
+  const q = saisie(
+    `Lis la frise, puis réponds. Combien d’années s’écoulent entre « ${from.text} » et « ${to.text} » ?`,
+    [String(gap), `${gap} ans`],
+    [
+      [String(from.year + to.year), 'Tu as ajouté les dates. Pour une durée, on soustrait.'],
+      [String(gap + 100), 'Un siècle de trop : refais la soustraction.'],
+      [String(gap + 10), 'Dix ans de trop : attention à la retenue.'],
+      [String(gap - 100), 'Un siècle de moins : refais la soustraction.'],
+    ],
+    'Trouve d’abord l’année de chaque repère sur la frise.',
+    [
+      `« ${from.text} » : ${from.year}. « ${to.text} » : ${to.year}.`,
+      ...(from.year === 800 ? [cite(PREUVES.charlemagne)] : []),
+      'Durée = date récente − date ancienne.',
+      `${to.year} − ${from.year} = ${gap}.`,
+      fin(`${gap} ans`),
+    ],
+  );
+  return { ...q, figure, targetSeconds: 70 };
+}
+
+/** Niveau 5 : retrouver le repère d’un siècle, avec une année en 00 juste à la frontière. */
+function friseSiecle(rng: Rng): QuestionDraft {
+  const c = rng.int(8, 17);
+  const autres = rng.shuffle([8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].filter((x) => x < c - 1 || x > c + 1));
+  const siecles = [c - 1, c, c + 1, ...autres.slice(0, rng.int(1, 3))];
+  // L’année en 00 du siècle d’avant est toujours là ; la réponse finit parfois aussi par 00.
+  const rondes = c === 8 || rng.int(0, 1) === 0 ? [c - 1, c] : [c - 1];
+  const { marques, figure } = friseVillage(rng, siecles, rondes);
+  const cible = at(
+    marques.filter((m) => centuryOf(m.year) === c),
+    0,
+  );
   return {
-    prompt: `Lis la frise, puis réponds. Quel événement se place au ${siecle(c)} siècle ?`,
+    prompt: `Lis la frise, puis réponds. Quel repère se place au ${siecle(c)} siècle ?`,
     figure,
     ...choice(
       rng,
-      e.text,
-      FRISE_PROGRAMME.flatMap((o, i) =>
-        i === k
-          ? []
-          : [{ label: o.text, why: `Cet événement date de ${o.year}, au ${siecle(centuryOf(o.year))} siècle.` }],
-      ),
+      cible.text,
+      marques
+        .filter((m) => m !== cible)
+        .map((m) => ({
+          label: m.text,
+          why:
+            m.year % 100 === 0
+              ? `${m.year} finit par 00 : cette année termine le ${siecle(centuryOf(m.year))} siècle.`
+              : `Ce repère date de ${m.year}, au ${siecle(centuryOf(m.year))} siècle.`,
+        })),
     ),
-    hint: 'Trouve le siècle de chaque année de la frise.',
-    steps: [cite(e.preuve), `L’année ${e.year} est au ${siecle(c)} siècle.`, fin(e.text)],
-    targetSeconds: 60,
+    hint: 'Écris la première et la dernière année du siècle, puis cherche sur la frise.',
+    steps: [
+      cite(PREUVES.bornes),
+      bornes(c),
+      ...(cible.year === 800 ? [cite(PREUVES.charlemagne)] : []),
+      cible.year % 100 === 0
+        ? `${cible.year} finit par 00 : cette année termine le ${siecle(c)} siècle.`
+        : `${cible.year} est entre ces deux années.`,
+      fin(cible.text),
+    ],
+    targetSeconds: 70,
   };
-};
+}
+
+const frise5: Generator = (rng) => (rng.int(0, 1) === 0 ? friseDuree(rng) : friseSiecle(rng));
 
 // ——— Notion 3 : avant et après J.-C. ———
 
@@ -602,7 +667,7 @@ const FAITS_JC: readonly QcmFait[] = [
   },
   {
     q: 'À quel moment commence l’ère chrétienne ?',
-    a: 'à la date présumée de la naissance de Jésus-Christ',
+    a: 'à la date supposée de la naissance de Jésus-Christ',
     wrong: [
       {
         label: 'au couronnement de Charlemagne',
@@ -611,7 +676,7 @@ const FAITS_JC: readonly QcmFait[] = [
       { label: 'au début de la Révolution', why: 'La Révolution commence en 1789, bien après le début de l’ère.' },
     ],
     preuve: PREUVES.ere,
-    explain: 'C’est le point de départ du compte des années. « Présumée » veut dire supposée.',
+    explain: 'C’est le point de départ du compte des années. Dans la source, « présumée » veut dire supposée.',
     hint: 'Pense à ce que veut dire le mot « chrétienne ».',
   },
   {
@@ -632,6 +697,14 @@ function datesMelangees(rng: Rng): number[] {
   const avant = distinctYears(rng, 2, 100, 200).map((y) => -y);
   return rng.shuffle([...avant, ...distinctYears(rng, 2, 100, 200)]);
 }
+
+const siecleAvantForms = (c: number) => siecleForms(c).flatMap((f) => [f, `${f} av. J.-C.`, `${f} avant J.-C.`]);
+
+/** Siècles voisins, la confusion classique. */
+const siecleAvantPieges = (c: number, why: string) =>
+  [c - 1, c + 1].flatMap((w) =>
+    [siecle(w), `${w}e`, `${siecle(w)} siècle`, `${siecle(w)} siècle av. J.-C.`].map((t) => [t, why] as const),
+  );
 
 const jc1: Generator = (rng) => qcm(rng, rng.pick(FAITS_JC));
 
@@ -687,15 +760,10 @@ const jc4: Generator = (rng) => {
   }
   const year = rng.int(0, 2) === 0 ? rng.int(2, 9) * 100 : rng.int(101, 999);
   const c = centuryOf(year);
-  const accepted = siecleForms(c).flatMap((f) => [f, `${f} av. J.-C.`, `${f} avant J.-C.`]);
   return saisie(
     `Sans aide : dans quel siècle avant J.-C. se trouve l’année ${year} av. J.-C. ?`,
-    accepted,
-    [c - 1, c + 1].flatMap((w) =>
-      [siecle(w), `${w}e`, `${siecle(w)} siècle`, `${siecle(w)} siècle av. J.-C.`].map(
-        (t) => [t, 'Ce n’est pas ce siècle. Avant J.-C., le Ier va de 100 à 1, le IIe de 200 à 101.'] as const,
-      ),
-    ),
+    siecleAvantForms(c),
+    siecleAvantPieges(c, 'Ce n’est pas ce siècle. Avant J.-C., le Ier va de 100 à 1, le IIe de 200 à 101.'),
     'Avant J.-C., les siècles se comptent aussi à partir du point de départ.',
     [
       cite(PREUVES.siecle),
@@ -705,97 +773,144 @@ const jc4: Generator = (rng) => {
   );
 };
 
+interface Objet {
+  readonly nom: string;
+  /** Année avant J.-C. (nombre positif). */
+  readonly year: number;
+}
+
+/**
+ * Niveau 5 : une seule date est donnée, les autres se déduisent du texte. Tout reste avant J.-C. : aucune durée
+ * n’est calculée à cheval sur le changement d’ère.
+ */
 const jc5: Generator = (rng) => {
-  const dates = datesMelangees(rng);
-  const objets = ['L’amphore', 'La statue', 'Le bijou', 'La tablette'];
-  const mode = rng.pick(['ancien', 'recent', 'soie'] as const);
-  const lines = [
-    'Au musée, la guide présente quatre objets imaginaires.',
-    ...objets.map((o, i) => point(`${o} date de ${apresJc(at(dates, i))}`)),
-  ];
-  if (mode === 'soie') {
-    const year = rng.int(101, 200);
-    return {
-      prompt: 'Lis le texte, puis réponds. Quelle date est dans le siècle où commence ce commerce ?',
-      figure: {
-        kind: 'document',
-        title: 'La route entre Rome et la Chine',
-        lines: [
-          'Un commerce régulier relie Rome et la Chine.',
-          'Il existe depuis le IIe siècle avant J.-C.',
-          'Des marchandises voyagent très loin.',
-        ],
-        credit: 'Texte écrit pour l’exercice, d’après le programme du cycle 3.',
-      },
-      ...choice(rng, `${year} av. J.-C.`, [
-        { label: `${year} apr. J.-C.`, why: 'Cette date est après J.-C. Le texte dit avant J.-C.' },
-        { label: `${year - 100} av. J.-C.`, why: 'Cette date est au Ier siècle avant J.-C.' },
-        { label: `${year + 100} av. J.-C.`, why: 'Cette date est au IIIe siècle avant J.-C.' },
-      ]),
-      hint: 'Repère les mots « avant J.-C. » et le numéro du siècle.',
-      steps: [cite(PREUVES.routeSoie), 'Le IIe siècle av. J.-C. va de 200 à 101 av. J.-C.', fin(`${year} av. J.-C.`)],
-      targetSeconds: 60,
-    };
-  }
-  const target = mode === 'ancien' ? Math.min(...dates) : Math.max(...dates);
-  const k = dates.indexOf(target);
-  return {
-    prompt: `Lis le texte, puis réponds. Quel objet est le plus ${mode === 'ancien' ? 'ancien' : 'récent'} ?`,
-    figure: { kind: 'document', title: 'La visite au musée', lines, credit: CREDIT },
-    ...choice(
-      rng,
-      at(objets, k),
-      objets.flatMap((label, i) =>
-        i === k
-          ? []
-          : [{ label, why: `${point(`${label} date de ${apresJc(at(dates, i))}`)} Compare avec les autres dates.` }],
-      ),
-    ),
-    hint: 'Sépare les dates avant J.-C. et les dates après J.-C.',
-    steps: [REBOURS, DEPART, fin(at(objets, k))],
-    targetSeconds: 60,
+  const [n0, n1, n2, n3] = rng.shuffle([
+    'l’amphore',
+    'la statue',
+    'le vase',
+    'la tablette',
+    'la lampe',
+    'la coupe',
+  ]) as [string, string, string, string];
+  const base = rng.int(5, 9) * 50;
+  const d1 = rng.int(1, 4) * 50;
+  const d2 = rng.int(1, 4) * 50;
+  const d3 = rng.int(1, 3) * 50;
+  const repere: Objet = { nom: n0, year: base };
+  const avant: Objet = { nom: n1, year: base + d1 };
+  const apres: Objet = { nom: n2, year: base - d2 };
+  // Deux calculs à enchaîner.
+  const chaine: Objet = { nom: n3, year: base + d1 + d3 };
+  const maj = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
+  const av = (y: number) => `${y} av. J.-C.`;
+  const figure = {
+    kind: 'document' as const,
+    title: 'Quatre objets imaginaires au musée',
+    lines: rng.shuffle([
+      point(`${maj(repere.nom)} date de ${av(repere.year)}`),
+      `On a fabriqué ${avant.nom} ${d1} ans avant ${repere.nom}.`,
+      `On a fabriqué ${apres.nom} ${d2} ans après ${repere.nom}.`,
+      `On a fabriqué ${chaine.nom} ${d3} ans avant ${avant.nom}.`,
+    ]),
+    credit: CREDIT,
   };
+  const calculAvant = `${maj(avant.nom)} : ${base} + ${d1} = ${av(avant.year)}`;
+  const calculApres = `${maj(apres.nom)} : ${base} − ${d2} = ${av(apres.year)}`;
+  const calculChaine = `${maj(chaine.nom)} : ${avant.year} + ${d3} = ${av(chaine.year)}`;
+  const regle = 'Avant J.-C., « plus tôt » veut dire un nombre plus grand : on ajoute. « Plus tard » : on enlève.';
+  const hint = 'Pars de la seule date donnée. Avant J.-C., les années se comptent à rebours.';
+  const mode = rng.pick(['annee', 'siecle', 'ranger'] as const);
+  if (mode === 'ranger') {
+    const q = ranger(
+      rng,
+      'Lis le texte, puis range ces objets, du plus ancien au plus récent.',
+      [repere, avant, apres, chaine].map((o) => ({ label: maj(o.nom), t: -o.year })),
+      hint,
+      `${regle} ${point(calculAvant)} ${point(calculApres)} ${point(calculChaine)} ${REBOURS}`,
+    );
+    return { ...q, figure, targetSeconds: 90 };
+  }
+  if (mode === 'annee') {
+    const y = chaine.year;
+    const q = saisie(
+      `Lis le texte, puis réponds. En quelle année avant J.-C. a-t-on fabriqué ${chaine.nom} ?`,
+      [String(y), av(y), `${y} avant J.-C.`],
+      [
+        [String(avant.year - d3), regle],
+        [String(avant.year), `C’est la date pour ${avant.nom}. Il reste un calcul.`],
+        [String(base + d3), `Tu es parti de ${repere.nom}. Le texte compare avec ${avant.nom}.`],
+      ],
+      hint,
+      [cite(PREUVES.jc), regle, point(calculAvant), point(calculChaine), fin(av(y))],
+    );
+    return { ...q, figure, targetSeconds: 90 };
+  }
+  const target = rng.pick([avant, chaine]);
+  const c = centuryOf(target.year);
+  const q = saisie(
+    `Lis le texte, puis réponds. Dans quel siècle avant J.-C. a-t-on fabriqué ${target.nom} ?`,
+    siecleAvantForms(c),
+    siecleAvantPieges(c, `Calcule d’abord l’année. Avant J.-C., le Ier siècle va de 100 à 1, le IIe de 200 à 101.`),
+    hint,
+    [
+      cite(PREUVES.siecle),
+      regle,
+      point(calculAvant),
+      ...(target === chaine ? [point(calculChaine)] : []),
+      `${target.year} av. J.-C. : le ${siecle(c)} siècle av. J.-C. va de ${c * 100} à ${(c - 1) * 100 + 1} av. J.-C.`,
+      fin(`${siecle(c)} siècle av. J.-C.`),
+    ],
+  );
+  return { ...q, figure, targetSeconds: 90 };
 };
 
 // ——— Notion 4 : ordonner des événements ———
 
 interface Evenement extends Repere {
+  /** Nom court, pour l’énoncé. */
+  readonly court: string;
   /** Date écrite comme dans le programme. */
   readonly date: string;
   readonly preuve: Preuve;
 }
 
 const MIGRATIONS: Evenement = {
+  court: 'les peuples venus de l’est',
   label: 'Des peuples venus de l’est commencent à s’installer dans l’empire romain',
   date: 'à partir du IVe siècle',
   t: 350,
   preuve: PREUVES.migrations,
 };
 const CHUTE: Evenement = {
+  court: 'la fin de l’empire',
   label: 'L’empire romain d’Occident s’effondre',
   date: 'vers la fin du Ve siècle',
   t: 480,
   preuve: PREUVES.migrations,
 };
 const CHARLEMAGNE: Evenement = {
+  court: 'Charlemagne',
   label: 'Charlemagne est couronné empereur',
   date: 'en 800',
   t: 800,
   preuve: PREUVES.charlemagne,
 };
 const LOUIS_IX: Evenement = {
+  court: 'Louis IX',
   label: 'Louis IX est roi',
   date: 'au XIIIe siècle',
   t: 1250,
   preuve: PREUVES.louisIx,
 };
 const REVOLUTION: Evenement = {
+  court: 'la Révolution',
   label: 'La Révolution commence',
   date: 'en 1789',
   t: 1789,
   preuve: PREUVES.revolution,
 };
 const NAPOLEON: Evenement = {
+  court: 'Napoléon',
   label: 'Napoléon est proclamé empereur des Français',
   date: 'en 1804',
   t: 1804,
@@ -868,23 +983,23 @@ const ordre2: Generator = (rng) => {
 
 const ordre3: Generator = (rng) => {
   const choisis = rng.shuffle([...EVENEMENTS]).slice(0, 4);
+  const louis = choisis.includes(LOUIS_IX) ? ' Le XIIIe siècle va de 1201 à 1300.' : '';
   return ranger(
     rng,
-    `Range ces quatre événements, du plus ancien au plus récent. Dates à placer : ${choisis.map((e) => e.date).join(' ; ')}.`,
+    `Range du plus ancien au plus récent : ${liste(choisis.map((e) => e.court))}.`,
     choisis.map((e) => ({ label: dated(e), t: e.t })),
     'Lis les dates : un siècle en chiffres romains se compare aux années.',
-    'On range selon les dates. Le XIIIe siècle va de 1201 à 1300.',
+    `On range selon les dates.${louis}`,
   );
 };
 
 const ordre4: Generator = (rng) => {
-  const melange = rng.shuffle([...EVENEMENTS]);
-  const ecarte = at(melange, 0).label;
-  const choisis = melange.slice(1);
+  const choisis = rng.shuffle([...EVENEMENTS]).slice(1);
+  const noms = liste(choisis.map((e) => e.court));
   if (rng.int(0, 1) === 0) {
     return ranger(
       rng,
-      `Sans les dates, remets en ordre cinq événements. On met de côté « ${ecarte} ».`,
+      `Sans les dates, remets en ordre : ${noms}.`,
       choisis.map((e) => ({ label: e.label, t: e.t })),
       'Souviens-toi : les temps anciens, puis les rois, puis la Révolution.',
       `On retrouve les dates : ${[...choisis]
@@ -895,60 +1010,76 @@ const ordre4: Generator = (rng) => {
   }
   return association(
     rng,
-    `Sans aide, associe cinq événements à leur date. On met de côté « ${ecarte} ».`,
+    `Sans aide, associe chaque événement à sa date : ${noms}.`,
     choisis.map((e) => [e.label, e.date] as const),
     'Commence par les dates dont tu es sûr.',
     ['Chaque événement a un repère dans le temps.', ...choisis.map((e) => cite(e.preuve))],
   );
 };
 
+/** Événements inventés du récit (signalés comme tels). */
+const INVENTIONS = [
+  'Le moulin du village ouvre',
+  'La halle du marché est bâtie',
+  'Le pont de pierre est construit',
+  'La fontaine est creusée',
+  'La tour de guet est élevée',
+  'Le grand chêne est planté',
+] as const;
+
+/** Intervalle entre deux repères du programme, où un seul événement inventé peut se placer. */
+interface Creux {
+  /** Position dans le temps. */
+  readonly t: number;
+  /** Siècles entièrement compris dans l’intervalle. */
+  readonly siecles: readonly number[];
+  /** Indice par comparaison avec les repères voisins. */
+  readonly relatif: string;
+}
+
+const CREUX: readonly Creux[] = [
+  { t: 650, siecles: [6, 7], relatif: 'avant le couronnement de Charlemagne' },
+  { t: 1050, siecles: [10, 11, 12], relatif: 'après le couronnement de Charlemagne, mais avant le règne de Louis IX' },
+  { t: 1500, siecles: [14, 15, 16, 17], relatif: 'après le règne de Louis IX, mais avant la Révolution' },
+];
+
 const ordre5: Generator = (rng) => {
-  // Le récit raconte les événements dans le désordre : il faut s'appuyer sur les dates.
-  const choisis = rng.shuffle([...EVENEMENTS]).slice(0, 4);
-  const sorted = [...choisis].sort((a, b) => a.t - b.t);
-  const debuts = [
-    'La guide parle d’abord de ceci',
-    'Elle raconte ensuite ceci',
-    'Puis elle ajoute ceci',
-    'Elle finit par ceci',
+  // Les dates des repères du programme sont à retrouver de mémoire ; les autres se déduisent d’indices.
+  const programme = [CHARLEMAGNE, LOUIS_IX, REVOLUTION, ...(rng.int(0, 1) === 0 ? [NAPOLEON] : [])];
+  const [creuxSiecle, creuxRelatif] = rng.shuffle([...CREUX]) as [Creux, Creux, Creux];
+  const [nomSiecle, nomRelatif] = rng.shuffle([...INVENTIONS]) as [string, string, ...string[]];
+  const c = rng.pick(creuxSiecle.siecles);
+  const recit = [
+    ...programme.map((e) => `Repère du programme : « ${e.label} ».`),
+    `Événement inventé : « ${nomSiecle} », au ${siecle(c)} siècle.`,
+    `Événement inventé : « ${nomRelatif} », ${creuxRelatif.relatif}.`,
   ];
-  const figure = {
-    kind: 'document' as const,
-    title: 'Le récit dans le désordre',
-    lines: choisis.map((e, i) => `${debuts[i]} : ${e.date}, « ${e.label} ».`),
-    credit: 'Texte écrit pour l’exercice, d’après le programme du cycle 3.',
-  };
-  if (rng.int(0, 1) === 0) {
-    return {
-      ...ranger(
-        rng,
-        'Lis le récit : la guide mélange tout ! Remets les événements dans l’ordre du temps.',
-        choisis.map((e) => ({ label: e.label, t: e.t })),
-        'Ne suis pas l’ordre du texte : suis les dates.',
-        'On cherche la date de chaque événement dans le récit.',
-      ),
-      figure,
-      targetSeconds: 70,
-    };
-  }
-  const rang = rng.int(1, 2);
-  const target = at(sorted, rang);
-  const nom = rang === 1 ? 'deuxième' : 'troisième';
+  const tous: readonly Repere[] = [
+    ...programme,
+    { label: nomSiecle, t: creuxSiecle.t },
+    { label: nomRelatif, t: creuxRelatif.t },
+  ];
+  const q = ranger(
+    rng,
+    'Lis le récit : la guide mélange tout ! Remets les événements dans l’ordre du temps.',
+    tous,
+    'Retrouve les dates que tu connais. Place ensuite les événements inventés grâce aux indices.',
+    [
+      `Repères à connaître : ${programme.map((e) => `« ${e.label} » ${e.date}`).join(' ; ')}.`,
+      `« ${nomSiecle} » est au ${siecle(c)} siècle. ${bornes(c)}`,
+      `« ${nomRelatif} » se place ${creuxRelatif.relatif}.`,
+    ].join(' '),
+  );
   return {
-    prompt: `Lis le récit, puis réponds. Dans l’ordre du temps, quel événement vient en ${nom} ?`,
-    figure,
-    ...choice(
-      rng,
-      target.label,
-      sorted.flatMap((e, i) =>
-        i === rang
-          ? []
-          : [{ label: e.label, why: `Dans l’ordre du temps, il vient en position ${i + 1} (${e.date}).` }],
-      ),
-    ),
-    hint: 'Ne suis pas l’ordre du texte : numérote les dates.',
-    steps: [cite(target.preuve), `Dans l’ordre : ${sorted.map((e) => e.date).join(', ')}.`, fin(target.label)],
-    targetSeconds: 70,
+    ...q,
+    steps: [...programme.map((e) => cite(e.preuve)), ...q.steps],
+    figure: {
+      kind: 'document',
+      title: 'Le récit dans le désordre',
+      lines: rng.shuffle(recit),
+      credit: 'Texte écrit pour l’exercice ; les repères viennent du programme du cycle 3.',
+    },
+    targetSeconds: 90,
   };
 };
 
@@ -993,7 +1124,7 @@ export const SKILLS: readonly Skill[] = [
       '**J.-C.** veut dire Jésus-Christ. On écrit « av. J.-C. » avant ce point, « apr. J.-C. » après.',
       'Avant J.-C., on compte à rebours : 500 av. J.-C. est plus ancien que 100 av. J.-C.',
     ],
-    [PREUVES.ere, PREUVES.jc, PREUVES.siecle, PREUVES.routeSoie, PREUVES.charlemagne, PREUVES.revolution],
+    [PREUVES.ere, PREUVES.jc, PREUVES.siecle, PREUVES.charlemagne, PREUVES.revolution],
     [jc1, jc2, jc3, jc4, jc5],
   ),
   skill(
