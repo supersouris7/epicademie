@@ -50,6 +50,17 @@ export function isAllowedUrl(url: string): boolean {
 }
 
 const CONSULTED = '2026-11-24';
+/** Textes relevés pour le lot ge-cm2-01 (copies d’archive web.archive.org des pages officielles). */
+const CONSULTED_GE_CM2 = '2026-11-25';
+
+const tlfi = (id: string, mot: string, chemin: string = id): Source => ({
+  id: `cnrtl-${id}`,
+  title: `Trésor de la langue française informatisé, article « ${mot} »`,
+  publisher: 'CNRTL (CNRS, ATILF)',
+  url: `https://www.cnrtl.fr/definition/${chemin}`,
+  textDate: '2026',
+  consultedOn: CONSULTED_GE_CM2,
+});
 
 export const SOURCES: readonly Source[] = [
   {
@@ -268,6 +279,57 @@ export const SOURCES: readonly Source[] = [
     textDate: '2025-01-01',
     consultedOn: CONSULTED,
   },
+  {
+    id: 'insee-domicile-travail',
+    title:
+      'La voiture reste majoritaire pour les déplacements domicile-travail, même pour de courtes distances (Insee Première n° 1835, données 2017)',
+    publisher: 'INSEE',
+    url: 'https://www.insee.fr/fr/statistiques/5013868',
+    textDate: '2021-01-19',
+    consultedOn: CONSULTED_GE_CM2,
+  },
+  {
+    id: 'ademe-trajets',
+    title: 'Agir pour la transition écologique, « Calculez les émissions de carbone de vos trajets »',
+    publisher: 'ADEME',
+    url: 'https://agirpourlatransition.ademe.fr/particuliers/evaluer-son-impact/calculer-empreinte-carbone/calculer-emissions-carbone-trajets',
+    textDate: '2025-11-12',
+    consultedOn: CONSULTED_GE_CM2,
+  },
+  {
+    id: 'ue-voyager',
+    title: '« Voyager dans l’UE »',
+    publisher: 'Union européenne',
+    url: 'https://european-union.europa.eu/live-work-study/travelling-eu_fr',
+    textDate: '2026',
+    consultedOn: CONSULTED_GE_CM2,
+  },
+  {
+    id: 'ue-transports',
+    title: '« Transports : des transports sûrs, durables et connectés »',
+    publisher: 'Union européenne',
+    url: 'https://european-union.europa.eu/priorities-and-actions/actions-topic/transport_fr',
+    textDate: '2026',
+    consultedOn: CONSULTED_GE_CM2,
+  },
+  {
+    id: 'ue-route',
+    title: 'L’Europe est à vous, « Règles de circulation et sécurité routière »',
+    publisher: 'Union européenne',
+    url: 'https://europa.eu/youreurope/citizens/travel/driving-abroad/road-rules-and-safety/index_fr.htm',
+    textDate: '2026',
+    consultedOn: CONSULTED_GE_CM2,
+  },
+  tlfi('trajet', 'trajet'),
+  tlfi('gare', 'gare'),
+  tlfi('autoroute', 'autoroute'),
+  tlfi('aeroport', 'aéroport'),
+  tlfi('port', 'port'),
+  tlfi('paquebot', 'paquebot'),
+  tlfi('vaporetto', 'vaporetto'),
+  tlfi('autobus', 'autobus'),
+  tlfi('tramway', 'tramway'),
+  tlfi('telepherique', 'téléphérique', 't%C3%A9l%C3%A9ph%C3%A9rique'),
 ];
 
 export const getSource = (id: string): Source | undefined => SOURCES.find((s) => s.id === id);
