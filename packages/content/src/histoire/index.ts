@@ -1,5 +1,6 @@
 import type { Chapter, Skill } from '../types.ts';
 import { choice } from '../build.ts';
+import { SKILLS as AVANT_LA_FRANCE } from './avant-la-france.ts';
 
 /**
  * Histoire, cycle 3 (docs/adr/0024-contenus-hors-maths.md). Source institutionnelle unique :
@@ -195,6 +196,7 @@ const chapter = (id: string, grade: Chapter['grade'], title: string, skills: rea
 
 export const HISTOIRE_CHAPTERS: readonly Chapter[] = [
   chapter('hcm1-reperes', 'cm1', 'Des Gaulois à Napoléon', [skillOf('hcm1-reperes', 'Repères de CM1', CM1, 'CM1')]),
+  chapter('hcm1-avant-la-france', 'cm1', 'Et avant la France ?', AVANT_LA_FRANCE),
   chapter('hcm2-reperes', 'cm2', 'La République et le XXe siècle', [
     skillOf('hcm2-reperes', 'Repères de CM2', CM2, 'CM2'),
   ]),
