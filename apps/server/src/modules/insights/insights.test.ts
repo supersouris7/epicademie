@@ -2,8 +2,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
 import type { AdminTrends, WeakSkillStat, AdminError, AdminStats, Anomaly, Profile } from '@questeo/shared';
 import { accounts, attempts, profiles, sessions, subscriptions } from '../../db/schema.ts';
-import { createTestApp, profileInput, TEST_PASSWORD } from '../../testing/harness.ts';
-import { setAccountRole } from '../accounts/index.ts';
+import { createTestApp, profileInput } from '../../testing/harness.ts';
 import { ANOMALY_THRESHOLDS } from './insights.service.ts';
 import { cleanMessage } from '../../core/observability/error-journal.ts';
 
@@ -25,11 +24,7 @@ afterAll(() => t.close());
 beforeEach(async () => {
   await t.reset();
   profile = (await t.http.inject({ method: 'POST', url: '/api/v1/profiles', payload: profileInput() })).json<Profile>();
-  const account = await t.signup('admin@questeo.test');
-  await setAccountRole(t.database.db, 'admin@questeo.test', 'admin');
-  admin = t.as(account.cookie);
-  // Session d'administration : mot de passe redemandé à l'ouverture.
-  await admin.inject({ method: 'POST', url: '/api/v1/auth/admin', payload: { password: TEST_PASSWORD } });
+  admin = t.operator();
 });
 
 const answer = (sessionId: string, durationMs: number, correct = true, skillId = 'm5-tables') => ({
@@ -63,26 +58,6 @@ const session = async (coins = 10) => {
 };
 
 describe('pilotage (administration)', () => {
-  it('session d’administration : compte admin et mot de passe redemandé', async () => {
-    const other = await t.signup('autre-admin@questeo.test');
-    await setAccountRole(t.database.db, 'autre-admin@questeo.test', 'admin');
-    const c = t.as(other.cookie);
-    // Compte admin, mais session d'administration pas encore ouverte : refusé.
-    expect((await c.inject('/api/v1/admin/stats')).statusCode).toBe(403);
-    expect(
-      (await c.inject({ method: 'POST', url: '/api/v1/auth/admin', payload: { password: 'mauvais' } })).statusCode,
-    ).toBe(401);
-    await c.inject({ method: 'POST', url: '/api/v1/auth/admin', payload: { password: TEST_PASSWORD } });
-    expect((await c.inject('/api/v1/admin/stats')).statusCode).toBe(200);
-    // Un parent non admin ne peut pas ouvrir de session d'administration.
-    expect(
-      (await t.http.inject({ method: 'POST', url: '/api/v1/auth/admin', payload: { password: TEST_PASSWORD } }))
-        .statusCode,
-    ).toBe(403);
-    await c.inject({ method: 'POST', url: '/api/v1/auth/admin/close' });
-    expect((await c.inject('/api/v1/admin/stats')).statusCode).toBe(403);
-  });
-
   it('réservé à l’administration', async () => {
     for (const url of [
       '/api/v1/admin/stats',
@@ -103,7 +78,7 @@ describe('pilotage (administration)', () => {
     const stats = res.json<AdminStats>();
     expect(stats).toMatchObject({
       day: '2026-11-20',
-      families: 2,
+      families: 1,
       profiles: 1,
       activeProfiles7d: 1,
       finishedSeries7d: 1,
@@ -139,7 +114,7 @@ describe('pilotage (administration)', () => {
     expect(trends.accountsByDay.at(-1)?.day).toBe('2026-11-20');
     expect(trends.accountsByDay[0]?.day).toBe('2026-10-22');
     const at = (rows: { day: string; count: number }[], day: string) => rows.find((r) => r.day === day)?.count;
-    expect(at(trends.accountsByDay, '2026-11-18')).toBe(2);
+    expect(at(trends.accountsByDay, '2026-11-18')).toBe(1);
     expect(at(trends.accountsByDay, '2026-11-19')).toBe(0);
     expect(at(trends.activeSubscriptionsByDay, '2026-11-16')).toBe(0);
     expect(at(trends.activeSubscriptionsByDay, '2026-11-18')).toBe(1);

@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api, type ReportStatus } from '@questeo/shared';
+import { api, type AccountSearch, type ReportStatus } from '@questeo/shared';
+
+export type AccountSearchInput = AccountSearch;
 import { request } from '../../shared/api/client.ts';
 
 /** Administration : signalements et état des notions (rôle administrateur, vérifié par le serveur). */
@@ -41,3 +43,35 @@ export function useUpdateContent() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['admin'] }),
   });
 }
+
+/** Opérateur reconnu par le serveur (403 : la console n'est pas ouverte depuis la page de pilotage). */
+export const useAdminSession = () =>
+  useQuery({
+    queryKey: ['admin', 'session'],
+    queryFn: () => request(api.adminSession),
+    retry: false,
+    staleTime: Infinity,
+  });
+
+/** Liste paginée côté serveur : 25 comptes par page, filtres et tri envoyés au serveur. */
+export const useAccounts = (search: AccountSearchInput) =>
+  useQuery({
+    queryKey: ['admin', 'accounts', search],
+    queryFn: () => request(api.adminAccounts, { body: search }),
+    placeholderData: (previous) => previous,
+  });
+
+/** Ouvrir une fiche est journalisé côté serveur : pas de rafraîchissement automatique. */
+export const useAccount = (id: string) =>
+  useQuery({
+    queryKey: ['admin', 'account', id],
+    queryFn: () => request(api.adminAccount, { params: { id } }),
+    staleTime: Infinity,
+    gcTime: 0,
+  });
+
+export const useResetPassword = (id: string) =>
+  useMutation({ mutationFn: () => request(api.adminResetPassword, { params: { id } }) });
+
+export const useAudit = (page: number) =>
+  useQuery({ queryKey: ['admin', 'audit', page], queryFn: () => request(api.adminAudit, { body: { page } }) });

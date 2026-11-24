@@ -7,8 +7,11 @@ import { AvatarConfigSchema, ProfileNameSchema } from './profile.ts';
  * rattachés à la famille. Voir docs/adr/0012-comptes-familiaux.md.
  */
 
-/** Rôles d'un compte : parent (famille), administrateur (contenus, signalements). */
-export const ACCOUNT_ROLES = ['parent', 'admin'] as const;
+/**
+ * Rôles d'un compte de jeu : parent (famille). L'administration n'est pas un rôle de compte :
+ * elle relève d'un « opérateur » authentifié par le frontal (docs/adr/0033-…).
+ */
+export const ACCOUNT_ROLES = ['parent'] as const;
 export type AccountRole = (typeof ACCOUNT_ROLES)[number];
 
 export const EmailSchema = z
@@ -109,8 +112,6 @@ export const MeSchema = z.object({
   parentUntil: z.string().nullable(),
   /** Un code PIN parent est choisi (sinon : mot de passe du compte). */
   hasPin: z.boolean(),
-  /** Fin de la session d'administration (compte admin, ISO), ou null si fermée. */
-  adminUntil: z.string().nullable(),
 });
 export type Me = z.infer<typeof MeSchema>;
 

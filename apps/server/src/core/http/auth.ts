@@ -1,4 +1,5 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
+import { createHash, timingSafeEqual } from 'node:crypto';
 import type { Access, AccountRole } from '@questeo/shared';
 import { AppError } from '../errors.ts';
 import { readCookie, SESSION_COOKIE } from '../auth/cookies.ts';
@@ -6,6 +7,8 @@ import { readCookie, SESSION_COOKIE } from '../auth/cookies.ts';
 /**
  * Qui fait la requête : résolu une fois par requête à partir du cookie de session, puis vérifié
  * par `route()` selon le niveau d'accès du contrat (`public`, `family`, `parent`, `admin`).
+ * L'administration n'est pas un compte de jeu : c'est un « opérateur » reconnu à l'en-tête secret
+ * que le frontal de la page de pilotage ajoute (docs/adr/0033-…).
  * Les services reçoivent la famille de l'acteur ; l'appartenance de chaque profil, partie ou
  * combat désigné est vérifiée par le module « comptes » (`ownership`).
  */
@@ -21,9 +24,6 @@ export interface Actor {
   readonly parentUntil: Date | null;
   /** Déverrouillage parent en cours, évalué à la lecture de la session (horloge du serveur). */
   readonly parent: boolean;
-  /** Session d'administration ouverte (compte admin, mot de passe redemandé récemment). */
-  readonly admin: boolean;
-  readonly adminUntil: Date | null;
   /** Empreinte du jeton de la session (déconnexion, déverrouillage parent). */
   readonly sessionHash: string;
 }
@@ -31,6 +31,8 @@ export interface Actor {
 declare module 'fastify' {
   interface FastifyRequest {
     actor: Actor | null;
+    /** Nom assaini de l'opérateur d'administration (secret valide), sinon `null`. */
+    operator: string | null;
   }
 }
 
@@ -39,6 +41,38 @@ export interface AuthOptions {
   readonly resolve: (token: string) => Promise<Actor | null>;
   /** Origines autorisées en plus de la page elle-même (CORS_ORIGINS). */
   readonly allowedOrigins: readonly string[] | null;
+  /** Secret de l'opérateur (ADMIN_OPERATOR_SECRET) ; `null` : aucune administration. */
+  readonly operatorSecret: string | null;
+}
+
+export const OPERATOR_HEADER = 'x-questeo-operateur';
+export const OPERATOR_NAME_HEADER = 'x-questeo-operateur-nom';
+const OPERATOR_NAME_MAX = 40;
+
+/** Nom d'opérateur sûr pour les journaux : sans caractère de contrôle, 40 caractères au plus. */
+export function sanitizeOperatorName(raw: unknown): string {
+  const text = typeof raw === 'string' ? raw : '';
+  const clean = Array.from(text, (c) => {
+    const code = c.codePointAt(0) ?? 0;
+    return code < 32 || (code >= 127 && code <= 159) ? ' ' : c;
+  })
+    .join('')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return clean.slice(0, OPERATOR_NAME_MAX) || 'operateur';
+}
+
+/** Comparaison en temps constant (empreintes de même longueur). */
+function sameSecret(given: string, expected: string): boolean {
+  const digest = (v: string) => createHash('sha256').update(v).digest();
+  return timingSafeEqual(digest(given), digest(expected));
+}
+
+/** Opérateur reconnu : secret correct (aucun cookie ni compte de jeu n'entre en jeu). */
+function readOperator(request: FastifyRequest, secret: string | null): string | null {
+  const given = request.headers[OPERATOR_HEADER];
+  if (secret === null || typeof given !== 'string' || !sameSecret(given, secret)) return null;
+  return sanitizeOperatorName(request.headers[OPERATOR_NAME_HEADER]);
 }
 
 const UNSAFE = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
@@ -57,29 +91,41 @@ function sameOrigin(request: FastifyRequest, allowed: readonly string[] | null):
 
 export function registerAuth(app: FastifyInstance, options: AuthOptions): void {
   app.decorateRequest('actor', null);
+  app.decorateRequest('operator', null);
   app.addHook('onRequest', async (request) => {
     if (UNSAFE.has(request.method) && !sameOrigin(request, options.allowedOrigins)) {
       throw new AppError('FORBIDDEN', 'Origine de la requête refusée.');
     }
+    // Vérification d'origine conservée pour l'opérateur (ci-dessus). Un opérateur n'a ni famille,
+    // ni profil, ni session : le cookie de jeu est ignoré.
+    request.operator = readOperator(request, options.operatorSecret);
+    if (request.operator) return;
     const token = readCookie(request.headers.cookie, SESSION_COOKIE);
     request.actor = token ? await options.resolve(token) : null;
   });
 }
 
+export const ADMIN_ONLY_MESSAGE = 'Administration accessible uniquement depuis la page de pilotage.';
 export const AUTONOMOUS_MESSAGE = 'Demande à un parent : il doit d’abord rattacher ton compte au sien.';
 
 /** Lève l'erreur adaptée si l'acteur n'a pas le niveau d'accès demandé. */
-export function checkAccess(access: Access, actor: Actor | null): void {
+export function checkAccess(access: Access, actor: Actor | null, operator: string | null = null): void {
   if (access === 'public') return;
+  if (access === 'admin') {
+    if (!operator) throw new AppError('FORBIDDEN', ADMIN_ONLY_MESSAGE);
+    return;
+  }
   if (!actor) throw new AppError('UNAUTHORIZED', 'Connecte-toi pour continuer.');
   if (access === 'parent' && actor.autonomous) throw new AppError('FORBIDDEN', AUTONOMOUS_MESSAGE);
   if (access === 'parent' && !actor.parent) {
     throw new AppError('FORBIDDEN', 'Action réservée au parent : confirme le mot de passe du compte.');
   }
-  if (access === 'admin' && actor.role !== 'admin')
-    throw new AppError('FORBIDDEN', 'Accès réservé à l’administration.');
-  if (access === 'admin' && !actor.admin)
-    throw new AppError('FORBIDDEN', 'Session d’administration fermée : confirme le mot de passe.');
+}
+
+/** Opérateur d'une route `admin` (garanti par `route()`). */
+export function operatorOf(request: FastifyRequest): string {
+  if (!request.operator) throw new AppError('FORBIDDEN', ADMIN_ONLY_MESSAGE);
+  return request.operator;
 }
 
 /** Acteur d'une route `family` ou plus (garanti par `route()`). */

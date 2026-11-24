@@ -33,6 +33,7 @@ import { createEvaluationService, evaluationRoutes } from './modules/evaluation/
 import { createTrainingService, trainingRoutes } from './modules/training/index.ts';
 import { battlesRoutes, createBattlesService } from './modules/battles/index.ts';
 import { createShopService, inventoryRoutes } from './modules/inventory/index.ts';
+import { adminRoutes, createAdminService } from './modules/admin/index.ts';
 import { createInsightsService, insightsRoutes } from './modules/insights/index.ts';
 import { createPresence, type Presence } from './modules/realtime/index.ts';
 import { opsRoutes, systemRoutes } from './modules/system/index.ts';
@@ -58,6 +59,7 @@ export type AppConfig = Pick<
   | 'rateLimitMax'
   | 'authRateLimitMax'
   | 'metricsToken'
+  | 'adminOperatorSecret'
   | 'apiDocs'
   | 'corsOrigins'
   | 'timeZone'
@@ -184,7 +186,11 @@ export async function buildApp(deps: AppDeps): Promise<App> {
     ? createGoogle({ ...config.google, fetcher: deps.fetcher, keys: deps.googleKeys })
     : null;
   const owns = createOwnership(db);
-  registerAuth(http, { resolve: (token) => accounts.resolve(token), allowedOrigins: config.corsOrigins });
+  registerAuth(http, {
+    resolve: (token) => accounts.resolve(token),
+    allowedOrigins: config.corsOrigins,
+    operatorSecret: config.adminOperatorSecret,
+  });
   const training = createTrainingService({
     db,
     clock,
@@ -262,6 +268,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
       await v1.register(billingRoutes(billing, config.billing.stripeWebhookSecret));
       await v1.register(inventoryRoutes(shop, owns));
       await v1.register(friendsRoutes(friends, owns, (ids) => learning.ranking(ids)));
+      await v1.register(adminRoutes(createAdminService({ db, clock })));
       await v1.register(insightsRoutes(createInsightsService({ db, clock }), () => reporter.recent()));
       await v1.register(telemetryRoutes(reporter, createTelemetryService({ db, clock })));
     },

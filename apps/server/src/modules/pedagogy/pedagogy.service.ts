@@ -191,7 +191,7 @@ export function createPedagogyService({
     async updateContent(
       skillId: string,
       change: { disabled?: boolean; reviewed?: boolean; note?: string },
-      accountId: string,
+      operator: string,
     ): Promise<ContentSkill> {
       const skill = getAnySkill(skillId);
       if (!skill) throw notFound('Notion inconnue');
@@ -207,12 +207,12 @@ export function createPedagogyService({
             action: change.disabled ? 'desactivation' : 'reactivation',
             version,
             note,
-            accountId,
+            operator,
           });
         }
         if (change.reviewed) {
           await r.upsertState(skillId, { reviewedVersion: version }, now);
-          await r.addEvent({ skillId, action: 'relecture', version, note, accountId });
+          await r.addEvent({ skillId, action: 'relecture', version, note, operator });
         }
       });
       const updated = (await contentList()).find((c) => c.skillId === skillId);

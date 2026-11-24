@@ -40,8 +40,11 @@ si la base est à jour, avant le redémarrage du serveur).
 
 ## Comptes
 
-- **Premier administrateur** : créer le compte depuis l'application, puis
-  `docker compose run --rm questeo node server/dist/admin.js role <email> admin`.
+- **Administration** : plus de compte administrateur. Définir `ADMIN_OPERATOR_SECRET` (32 caractères
+  min.) et faire ajouter par le frontal de la page de pilotage (port réservé, authentifié) les
+  en-têtes `X-Questeo-Operateur: <secret>` et `X-Questeo-Operateur-Nom: <identifiant>` ; le frontal
+  public doit bloquer `/admin` et `/api/v1/admin` (404) et ne jamais transmettre ces en-têtes reçus
+  d'Internet. Voir [ADR 0033](../adr/0033-administration-par-operateur.md).
 - **Profils de la bêta** (créés avant les comptes) : conservés en base, sans famille, invisibles
   tant qu'ils ne sont pas rattachés. Après la migration, créer le compte familial depuis
   l'application, puis :

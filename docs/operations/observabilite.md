@@ -36,5 +36,5 @@ journaux avec `report: true`. Pour un service externe : implémenter `ErrorRepor
 
 ## Console d'administration
 
-Rubriques Statistiques, Anomalies et Erreurs : voir docs/adr/0022-pilotage.md. Le journal des
+Rubriques Statistiques, Anomalies et Erreurs : voir docs/adr/0022-pilotage.md. Accès par l'opérateur de la page de pilotage et rubrique Comptes : docs/adr/0033-administration-par-operateur.md. Le journal des
 erreurs est en mémoire (il repart de zéro au redémarrage) ; les journaux restent la référence.

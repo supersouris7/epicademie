@@ -5,5 +5,5 @@
  */
 export { createAccountsService, type AccountsService } from './accounts.service.ts';
 export { accountsRoutes } from './accounts.routes.ts';
-export { attachOrphanProfiles, setAccountRole } from './accounts.repo.ts';
+export { attachOrphanProfiles } from './accounts.repo.ts';
 export { createOwnership, type Ownership } from './ownership.ts';

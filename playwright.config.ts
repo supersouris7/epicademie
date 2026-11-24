@@ -36,6 +36,8 @@ export default defineConfig({
       DATABASE_URL: 'pglite://memory',
       RATE_LIMIT_MAX: '100000',
       AUTH_RATE_LIMIT_MAX: '1000',
+      // Secret fictif de l'opérateur d'administration (e2e/admin.spec.ts envoie l'en-tête).
+      ADMIN_OPERATOR_SECRET: 'secret-operateur-e2e-0123456789-abcdefghij',
     },
   },
 });

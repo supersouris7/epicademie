@@ -22,6 +22,9 @@ import type { Me } from '@questeo/shared';
 
 export const MIGRATIONS_DIR = path.resolve(import.meta.dirname, '../../drizzle');
 
+/** Secret d'opérateur des tests (≥ 32 caractères, valeur fictive). */
+export const TEST_OPERATOR_SECRET = 'secret-operateur-de-test-0123456789-abcdef';
+
 export const testConfig = (overrides: Partial<AppConfig> = {}): AppConfig => ({
   env: 'test',
   port: 3000,
@@ -32,6 +35,7 @@ export const testConfig = (overrides: Partial<AppConfig> = {}): AppConfig => ({
   rateLimitMax: 100_000,
   authRateLimitMax: 100_000,
   metricsToken: null,
+  adminOperatorSecret: TEST_OPERATOR_SECRET,
   apiDocs: false,
   timeZone: 'Europe/Paris',
   version: 'test',
@@ -213,6 +217,20 @@ export async function createTestApp(options: TestHarnessOptions = {}) {
     /** Requêtes au nom de la famille de test connectée. */
     http: as(() => family.cookie),
     as: (cookie: string) => as(() => cookie),
+    /** Requêtes de l'opérateur d'administration (en-têtes du frontal de pilotage, aucun cookie). */
+    operator: (name = 'Marie Dupont') => ({
+      inject: (opts: InjectOptions | string) => {
+        const o = typeof opts === 'string' ? { url: opts } : opts;
+        return app.http.inject({
+          ...o,
+          headers: {
+            'x-questeo-operateur': TEST_OPERATOR_SECRET,
+            'x-questeo-operateur-nom': name,
+            ...o.headers,
+          },
+        });
+      },
+    }),
     signup,
     /** Famille de test connectée (cookie, compte). */
     family: () => family,

@@ -14,6 +14,7 @@ refuse de démarrer si une valeur est invalide. Une variable vide vaut « non d�
 | `CORS_ORIGINS`          | même origine                                  | origines autorisées pour le temps réel, séparées par des virgules                                                              |
 | `RATE_LIMIT_MAX`        | `600`                                         | requêtes HTTP par minute et par IP                                                                                             |
 | `METRICS_TOKEN`         | aucun                                         | jeton (16 caractères min.) exigé par `/api/metrics`                                                                            |
+| `ADMIN_OPERATOR_SECRET` | aucun (administration désactivée)             | secret de l'opérateur (32 caractères min., sinon le serveur refuse de démarrer) ; voir ADR 0033                                |
 | `API_DOCS`              | `true` hors production                        | Swagger UI sur `/api/docs`                                                                                                     |
 | `LOG_LEVEL`             | `info` (`silent` en test)                     | niveau des journaux                                                                                                            |
 | `TZ_FAMILY`             | `Europe/Paris`                                | fuseau des jours de révision                                                                                                   |

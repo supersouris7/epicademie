@@ -78,8 +78,6 @@ interface Battle {
 }
 
 export interface FakeApiOptions {
-  /** Compte admin dont la session d'administration n'est pas encore ouverte. */
-  readonly adminLocked?: boolean;
   /** Code PIN parent déjà choisi (null : aucun). */
   readonly pin?: string | null;
   readonly profiles?: readonly Profile[];
@@ -102,7 +100,7 @@ export interface FakeApiOptions {
   readonly trophies?: readonly string[];
   /** Résultat d'épreuve renvoyé en fin de partie d'une Épreuve du chapitre. */
   readonly epreuve?: { readonly passed: boolean; readonly weakestSkillId: string | null };
-  /** Le compte connecté est administrateur. */
+  /** La requête vient de l'opérateur de la page de pilotage (sinon l'administration répond 403). */
   readonly admin?: boolean;
   /** Rapport de suivi renvoyé pour chaque profil (par défaut : vide). */
   readonly learning?: LearningReport;
@@ -175,8 +173,6 @@ function authHandlers(options: FakeApiOptions) {
     parent: options.parent ?? true,
     email: 'parent@famille.test',
     pin: options.pin ?? null,
-    // Compte admin : session d'administration déjà ouverte, sauf si `adminLocked`.
-    adminOpen: Boolean(options.admin) && !options.adminLocked,
   };
   const me = () => {
     if (!session.loggedIn) throw new FakeError(401, 'UNAUTHORIZED', 'Connecte-toi pour continuer.');
@@ -184,13 +180,12 @@ function authHandlers(options: FakeApiOptions) {
       account: {
         id: '22222222-2222-4222-8222-222222222222',
         email: session.email,
-        role: options.admin ? 'admin' : 'parent',
+        role: 'parent',
       },
       family: { id: '33333333-3333-4333-8333-333333333333', autonomous: false },
       parent: session.parent,
       parentUntil: session.parent ? '2099-01-01T00:00:00.000Z' : null,
       hasPin: session.pin !== null,
-      adminUntil: session.adminOpen ? '2099-01-01T00:00:00.000Z' : null,
     };
   };
   const requireParent = () => {
@@ -273,16 +268,6 @@ function authHandlers(options: FakeApiOptions) {
       session.parent = true;
       return me();
     },
-    openAdmin: ({ body }) => {
-      if ((body as { password: string }).password !== FAKE_PASSWORD)
-        throw new FakeError(401, 'UNAUTHORIZED', 'Mot de passe incorrect.');
-      session.adminOpen = true;
-      return me();
-    },
-    closeAdmin: () => {
-      session.adminOpen = false;
-      return me();
-    },
     lockParent: () => {
       session.parent = false;
       return me();
@@ -304,6 +289,7 @@ function authHandlers(options: FakeApiOptions) {
 function adminHandlers(
   reports: Record<string, unknown>[],
   disabled: Set<string>,
+  operator: boolean,
 ): Partial<Record<keyof typeof api, Handler>> {
   const skill = (skillId: string) => ({
     skillId,
@@ -320,7 +306,111 @@ function adminHandlers(
     openReports: reports.filter((r) => r.skillId === skillId && r.status === 'nouveau').length,
     autoIssues: [],
   });
+  const operatorOnly = () => {
+    if (!operator)
+      throw new FakeError(403, 'FORBIDDEN', 'Administration accessible uniquement depuis la page de pilotage.');
+  };
+  const accountRow = (i: number) => ({
+    id: `aaaaaaaa-aaaa-4aaa-8aaa-${String(i).padStart(12, '0')}`,
+    familyId: `bbbbbbbb-bbbb-4bbb-8bbb-${String(i).padStart(12, '0')}`,
+    email: `parent${i}@famille.test`,
+    type: 'famille',
+    emailVerified: true,
+    createdAt: '2026-11-01T10:00:00.000Z',
+    lastActivityAt: '2026-11-20T10:00:00.000Z',
+    profileCount: 1,
+    profileNames: [`Enfant ${i}`],
+  });
   return {
+    adminSession: () => {
+      operatorOnly();
+      return { operator: 'Marie Dupont' };
+    },
+    adminAccounts: ({ body }) => {
+      operatorOnly();
+      const b = body as { q: string; page: number };
+      const all = Array.from({ length: 30 }, (_, i) => accountRow(i + 1)).filter(
+        (r) =>
+          !b.q ||
+          r.email.includes(b.q.toLowerCase()) ||
+          r.profileNames.some((n) => n.toLowerCase().includes(b.q.toLowerCase())),
+      );
+      const items = all.slice(b.page * 25, b.page * 25 + 25);
+      return { items, page: b.page, pageSize: 25, total: all.length, hasMore: (b.page + 1) * 25 < all.length };
+    },
+    adminAccount: ({ params }) => {
+      operatorOnly();
+      const row = accountRow(Number((params.id ?? '').slice(-2)));
+      return {
+        account: {
+          id: row.id,
+          familyId: row.familyId,
+          email: row.email,
+          type: 'famille',
+          createdAt: row.createdAt,
+          lastLoginAt: '2026-11-20T09:00:00.000Z',
+          lastActivityAt: row.lastActivityAt,
+          emailVerifiedAt: row.createdAt,
+          methods: ['mot-de-passe'],
+          hasPin: true,
+        },
+        profiles: [
+          {
+            id: 'cccccccc-cccc-4ccc-8ccc-cccccccccccc',
+            name: row.profileNames[0],
+            hero: 'alex',
+            grade: '6e',
+            xp: 120,
+            coins: 45,
+            rubies: 2,
+            createdAt: row.createdAt,
+            lastActivityAt: row.lastActivityAt,
+            games: 7,
+            answers: 80,
+            correctAnswers: 60,
+            skillsStudied: 6,
+            skillsMastered: 2,
+            heroesOwned: 1,
+            bossWins: 1,
+            items: [{ item: 'bouclier', count: 2 }],
+          },
+        ],
+        recentGames: [
+          {
+            profileName: row.profileNames[0],
+            mode: 'entrainement',
+            subject: 'maths',
+            chapterId: 'm5-calcul',
+            startedAt: '2026-11-20T10:00:00.000Z',
+            answered: 10,
+            correct: 8,
+          },
+        ],
+        reports: [],
+        pending: { invitation: false, passwordReset: false, emailVerification: false },
+        subscriptions: [],
+      };
+    },
+    adminResetPassword: () => {
+      operatorOnly();
+      return { password: 'Temp0raireXy7', sessionsClosed: 2 };
+    },
+    adminAudit: () => {
+      operatorOnly();
+      return {
+        items: [
+          {
+            id: 1,
+            at: '2026-11-24T08:00:00.000Z',
+            operator: 'Marie Dupont',
+            action: 'consultation',
+            accountId: 'aaaaaaaa-aaaa-4aaa-8aaa-000000000001',
+          },
+        ],
+        page: 0,
+        hasMore: false,
+      };
+    },
     adminReports: ({ params }) => reports.filter((r) => r.status === params.status),
     adminUpdateReport: ({ params, body }) => {
       const r = reports.find((x) => x.id === params.id);
@@ -654,7 +744,7 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     ownedHeroes: () => ({ heroes: [...STARTING_HEROES] }),
     ...friendHandlers(),
     badges: () => badgeProgress({ boss: 2, parfait: 3, perseverance: 0, chapitres: 0, consolidees: 0, coffres: 1 }),
-    ...adminHandlers(reports, disabledSet),
+    ...adminHandlers(reports, disabledSet, Boolean(options.admin)),
   };
 
   function reply(method: string, url: string, body: unknown): Reply {
@@ -664,8 +754,8 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     calls.push({ method, path: apiPath, body });
     const match = route(method, apiPath);
     const handler = match && handlers[match.name];
-    // Comme le vrai serveur : sans session, seules les routes publiques répondent.
-    if (match && match.endpoint.access !== 'public' && !session.loggedIn) {
+    // Comme le vrai serveur : sans session, seules les routes publiques répondent (l'administration dépend de l'opérateur, pas d'une session).
+    if (match && match.endpoint.access !== 'public' && match.endpoint.access !== 'admin' && !session.loggedIn) {
       return { status: 401, body: { code: 'UNAUTHORIZED', error: 'Connecte-toi pour continuer.' } };
     }
     if (!match || !handler)

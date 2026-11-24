@@ -1,7 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { getChapter } from '@questeo/content';
-import { FAKE_PASSWORD } from '../../testing/fakeApi.ts';
 import { renderApp } from '../../testing/renderApp.tsx';
 
 vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.ts')).socketModule);
@@ -51,23 +50,28 @@ describe('administration', () => {
     expect(screen.queryByRole('button', { name: 'Administration' })).not.toBeInTheDocument();
   });
 
-  it('mot de passe redemandé à l’ouverture, puis « Fermer la session »', async () => {
-    const { user } = renderApp('/admin', { admin: true, adminLocked: true });
-    const password = await screen.findByLabelText('Mot de passe');
-    await user.type(password, 'faux');
-    await user.click(screen.getByRole('button', { name: 'Ouvrir la session' }));
-    expect(await screen.findByRole('alert')).toHaveTextContent('incorrect');
-    await user.clear(password);
-    await user.type(password, FAKE_PASSWORD);
-    await user.click(screen.getByRole('button', { name: 'Ouvrir la session' }));
+  it('/admin : console directe pour l’opérateur, sans compte ni choix de profil', async () => {
+    renderApp('/admin', { admin: true, loggedIn: false });
     expect(await screen.findByRole('heading', { name: /Console d’administration/ })).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: 'Fermer la session' }));
-    expect(await screen.findByRole('button', { name: 'Nouveau joueur' })).toBeInTheDocument();
+    expect(screen.getByText('Opérateur : Marie Dupont')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Mot de passe')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Fermer la session' })).not.toBeInTheDocument();
   });
 
-  it('non administrateur : accès refusé', async () => {
+  it('hors page de pilotage : message, jamais de renvoi vers « Je suis un élève / un parent »', async () => {
+    renderApp('/admin', { admin: false, loggedIn: false });
+    expect(
+      await screen.findByText('Administration accessible uniquement depuis la page de pilotage.'),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/Je suis un élève/)).not.toBeInTheDocument();
+  });
+
+  it('même connecté en parent, /admin ne montre pas le choix du profil', async () => {
     renderApp('/admin', { admin: false });
-    expect(await screen.findByText('Accès réservé à l’administration.')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Administration accessible uniquement depuis la page de pilotage.'),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Nouveau joueur' })).not.toBeInTheDocument();
   });
 
   it('signalement traité, notion désactivée depuis la console', async () => {
@@ -131,6 +135,40 @@ describe('administration', () => {
     expect(within(row).getByText(/Programme :/)).toBeInTheDocument();
     await user.click(within(row).getByRole('button', { name: 'Désactiver' }));
     await waitFor(() => expect(server.calls.some((c) => c.method === 'PUT')).toBe(true));
+  });
+});
+
+describe('comptes', () => {
+  it('liste paginée côté serveur, recherche, fiche, mot de passe temporaire et journal', async () => {
+    const { user, server } = renderApp('/admin', { admin: true });
+    await user.click(await screen.findByRole('tab', { name: 'Comptes' }));
+    const table = await screen.findByRole('table', { name: 'Comptes' });
+    // 30 comptes côté serveur : une seule page de 25 lignes est affichée.
+    expect(within(table).getAllByRole('row')).toHaveLength(26);
+    expect(screen.getByRole('status')).toHaveTextContent('30 comptes');
+    await user.click(screen.getByRole('button', { name: 'Suivant' }));
+    await waitFor(() =>
+      expect(within(screen.getByRole('table', { name: 'Comptes' })).getAllByRole('row')).toHaveLength(6),
+    );
+    expect(screen.getByRole('button', { name: 'Suivant' })).toBeDisabled();
+    await user.type(screen.getByRole('searchbox'), 'enfant 7');
+    await user.click(screen.getByRole('button', { name: 'Rechercher' }));
+    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('1 compte '));
+    expect(server.calls.some((c) => c.path.endsWith('/admin/accounts/search'))).toBe(true);
+
+    await user.click(screen.getByRole('button', { name: 'Ouvrir la fiche' }));
+    const profiles = await screen.findByRole('region', { name: 'Profils' });
+    expect(within(profiles).getByText(/Enfant 7/)).toBeInTheDocument();
+    expect(screen.getByText('Cette consultation est enregistrée dans le journal d’audit.')).toBeInTheDocument();
+    expect(screen.getByText('Défini')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Générer un mot de passe temporaire' }));
+    await user.click(screen.getByRole('button', { name: 'Oui, générer un mot de passe' }));
+    expect(await screen.findByText('Temp0raireXy7')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Retour à la liste' }));
+    await user.click(screen.getByRole('tab', { name: 'Journal d’audit' }));
+    expect(await screen.findByText('Consultation de la fiche')).toBeInTheDocument();
   });
 });
 

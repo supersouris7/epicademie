@@ -117,8 +117,6 @@ export function accountsRoutes(
       config: STRICT,
     });
     route(app, api.lockParent, ({ actor }) => service.lockParent(actor()));
-    route(app, api.openAdmin, ({ actor, body }) => service.openAdmin(actor(), body.password), { config: STRICT });
-    route(app, api.closeAdmin, ({ actor }) => service.closeAdmin(actor()));
     route(app, api.confirmParent, ({ actor, body }) => service.confirmParent(actor(), body.password), {
       config: STRICT,
     });

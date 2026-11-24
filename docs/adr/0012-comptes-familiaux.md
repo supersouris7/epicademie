@@ -30,8 +30,8 @@ familles, et empêcher qu'un enfant fasse seul les actions du parent sur l'appar
 - **Mot de passe oublié** : lien à usage unique (1 h) envoyé par l'interface `Mailer`. Aucun
   fournisseur d'e-mails n'est branché (décision humaine) : en production, l'envoi est journalisé
   sans contenu.
-- **Administrateur** : rôle donné uniquement par la commande d'exploitation
-  `node server/dist/admin.js role <email> admin`.
+- **Administrateur** : _remplacé_ par l'« opérateur » de la page de pilotage, sans compte de jeu
+  ([ADR 0033](0033-administration-par-operateur.md)).
 - **Protection CSRF** : en plus de `SameSite`, toute modification dont l'en-tête `Origin` n'est
   pas le site (ou `CORS_ORIGINS`) est refusée.
 - **Profils de la bêta** (sans famille) : conservés, invisibles de toutes les familles.
