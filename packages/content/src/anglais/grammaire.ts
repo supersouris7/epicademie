@@ -39,77 +39,10 @@ const BE_PAST: Record<Pronoun, string> = {
   we: 'were',
   they: 'were',
 };
-const POSSESSIVE: Record<Pronoun, string> = {
-  I: 'my',
-  you: 'your',
-  he: 'his',
-  she: 'her',
-  it: 'its',
-  we: 'our',
-  they: 'their',
-};
-const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /** Pronoms du niveau : I/you/he/she d'abord, puis tous. */
 const pronounFor = (rng: Pick, level: Level): Pronoun =>
   rng.pick(level === 1 ? (['I', 'you', 'he', 'she'] as const) : PRONOUNS);
-
-// ——— CM1 : be au présent ———
-const beForms = (table: Record<Pronoun, string>, values: readonly string[]) =>
-  values.map((v) => ({ label: v, why: `Avec ce pronom, be ne se dit pas « ${v} ».` }));
-
-const bePresent: Skill = {
-  id: 'acm1-be-present',
-  title: 'Le verbe be au présent',
-  lesson: {
-    memo: ['Le verbe be (être) au présent : I **am**, you **are**, he / she / it **is**, we **are**, they **are**.'],
-    source: src('verb-be', 'be au présent'),
-  },
-  generate: (rng, level) => {
-    const p = pronounFor(rng, level);
-    const right = BE_PRESENT[p];
-    const { answer, traps } = choice(rng, right, beForms(BE_PRESENT, ['am', 'is', 'are']));
-    return {
-      prompt: `Complète : ${cap(p)} … happy.`,
-      answer,
-      traps,
-      hint: 'Pense au tableau : I am, you are, he/she/it is, we are, they are.',
-      steps: [`Avec « ${p} », be devient « ${right} ».`, `${cap(p)} **${right}** happy.`],
-    };
-  },
-};
-
-const possessives: Skill = {
-  id: 'acm1-possessifs',
-  title: 'Les adjectifs possessifs',
-  lesson: {
-    memo: [
-      'Chaque pronom a son possessif : I → **my**, you → **your**, he → **his**, she → **her**, it → **its**, we → **our**, they → **their**.',
-      '**its** (possessif) n’a jamais d’apostrophe : « it’s » veut dire « it is ».',
-    ],
-    source: src('possessives-adjectives', 'adjectifs possessifs'),
-  },
-  generate: (rng, level) => {
-    const p = pronounFor(rng, level);
-    const right = POSSESSIVE[p];
-    const others = Object.values(POSSESSIVE).filter((x) => x !== right);
-    const { answer, traps } = choice(
-      rng,
-      right,
-      [rng.pick(others), rng.pick(others), rng.pick(others)].map((o) => ({
-        label: o,
-        why: `« ${o} » va avec un autre pronom.`,
-      })),
-    );
-    return {
-      prompt: `Quel possessif va avec « ${p} » ?`,
-      answer,
-      traps,
-      hint: 'my, your, his, her, its, our, their : dans l’ordre des pronoms.',
-      steps: ['Chaque pronom a son possessif : my, your, his, her, its, our, their.', `« ${p} » → **${right}**.`],
-    };
-  },
-};
 
 // ——— CM2 : le pluriel des noms ———
 /** Exemples et règles de la page count-nouns du British Council. */
@@ -326,8 +259,6 @@ const chapter = (id: string, grade: Chapter['grade'], title: string, skills: rea
 });
 
 export const ENGLISH_GRAMMAR_CHAPTERS: readonly Chapter[] = [
-  chapter('acm1-be', 'cm1', 'Le verbe be', [bePresent]),
-  chapter('acm1-possessifs', 'cm1', 'Les possessifs', [possessives]),
   chapter('acm2-pluriel', 'cm2', 'Le pluriel', [plural]),
   chapter('a6-be-preterit', '6e', 'Be au passé', [bePast]),
   chapter('a6-present-simple', '6e', 'Le présent simple', [thirdPerson]),
