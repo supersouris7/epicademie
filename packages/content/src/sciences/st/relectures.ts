@@ -9,4 +9,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'pcm1-eau', version: 1, lot: LOT, date: DATE, verdict: 'ok' },
   { skillId: 'pcm1-masse-volume', version: 1, lot: LOT, date: DATE, verdict: 'ok' },
   { skillId: 'pcm1-melanges', version: 1, lot: LOT, date: DATE, verdict: 'ok' },
+  { skillId: 'pcm1-sources-energie', version: 1, lot: 'st-cm1-02', date: DATE, verdict: 'ok' },
+  { skillId: 'pcm1-formes-energie', version: 1, lot: 'st-cm1-02', date: DATE, verdict: 'ok' },
+  { skillId: 'pcm1-mouvement', version: 1, lot: 'st-cm1-02', date: DATE, verdict: 'ok' },
+  { skillId: 'pcm1-energie-quotidien', version: 1, lot: 'st-cm1-02', date: DATE, verdict: 'ok' },
 ];
