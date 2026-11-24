@@ -13,6 +13,8 @@ export interface Fait {
   /** Citation exacte du programme. */
   readonly quote: string;
   readonly explain: string;
+  /** Fait exigeant (numéro d'article…) : non proposé au niveau 1. */
+  readonly avance?: boolean;
 }
 
 export interface Libre {
@@ -40,6 +42,12 @@ export interface Notion {
   readonly paires3: readonly (readonly [string, string])[];
   readonly paires5: readonly (readonly [string, string])[];
   readonly libres: readonly Libre[];
+  /** Classe et chapitre cités dans la source (défaut : CM1, « Faire société »). */
+  readonly programme?: string;
+  /** Crédit du texte à lire (défaut : programme de CM1). */
+  readonly credit?: string;
+  /** Sources du registre en plus du programme. */
+  readonly sources?: readonly string[];
   readonly docs: readonly {
     readonly title: string;
     readonly lines: readonly string[];
@@ -85,7 +93,7 @@ function match(rng: Rng, prompt: string, pairs: readonly (readonly [string, stri
 }
 
 function level1(rng: Rng, n: Notion): QuestionDraft {
-  const f = rng.pick(n.faits);
+  const f = rng.pick(n.faits.filter((x) => !x.avance));
   return {
     prompt: f.q,
     ...choice(rng, f.a, f.wrong.slice(0, 2)),
@@ -149,7 +157,7 @@ function level5(rng: Rng, n: Notion): QuestionDraft {
     kind: 'document',
     title: d.title,
     lines: d.lines,
-    credit: 'Texte écrit pour l’exercice, d’après le programme de CM1.',
+    credit: n.credit ?? 'Texte écrit pour l’exercice, d’après le programme de CM1.',
   };
   return {
     prompt: `Lis le texte, puis réponds. ${dq.q}`,
@@ -168,7 +176,7 @@ export function notion(n: Notion): Skill {
     title: n.title,
     levels: 5,
     version: 1,
-    lesson: { memo: n.memo, source: PROG, sources: [SOURCE] },
+    lesson: { memo: n.memo, source: n.programme ?? PROG, sources: [SOURCE, ...(n.sources ?? [])] },
     generate: (rng: Rng, level: Level): QuestionDraft => {
       switch (level) {
         case 1:
