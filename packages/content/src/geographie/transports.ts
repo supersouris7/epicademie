@@ -271,8 +271,7 @@ const villes: Notion = {
   hint: 'Pense au chemin : une voie ferrée, une grande route ? Et l’endroit où l’on monte.',
   memo: [
     'Pour aller d’une ville à une autre, on utilise des **réseaux** : voies ferrées et routes.',
-    'La **gare** sert à monter dans le train ou à en descendre. L’**autoroute** est faite pour rouler vite, sur deux **chaussées** séparées.',
-    'Voies ferrées, gares et autoroutes sont des **infrastructures**. Le train est utilisé pour les longues distances.',
+    'Voies ferrées, **gares** (on y prend le train) et **autoroutes** (pour rouler vite, sur deux **chaussées** séparées) sont des **infrastructures**. Le train sert pour les longues distances.',
     'Le **réseau** ferroviaire français a des lignes à grande vitesse. L’une relie Paris au Mans depuis 1989, puis a été prolongée vers Rennes. Une autre met Bordeaux à 2h04 de Paris.',
   ],
   faits: [
@@ -299,7 +298,7 @@ const villes: Notion = {
       ],
       gap: [
         'Une ',
-        ' est une voie rapide pour les automobiles, à deux chaussées séparées.',
+        ' (mot qui commence par « auto ») est une voie rapide à deux chaussées séparées.',
         ['autoroute', 'auto-route'],
       ],
       quote: Q_AUTOROUTE,
@@ -365,7 +364,7 @@ const villes: Notion = {
       wrong: [
         { label: 'Rennes', why: 'Rennes est à l’ouest, en Bretagne.' },
         { label: 'Le Mans', why: 'Le Mans n’est pas dans le Sud-Ouest.' },
-        { label: 'Montpellier', why: 'Montpellier est au sud, mais le texte cite Bordeaux pour 2h04.' },
+        { label: 'Montpellier', why: 'Montpellier est au sud, mais la ville à 2h04 de Paris est Bordeaux.' },
       ],
       gap: ['Grâce à la grande vitesse, la ville de ', ' est à 2h04 de Paris.', ['Bordeaux']],
       quote: Q_BORDEAUX,
@@ -462,7 +461,7 @@ const villes: Notion = {
       ],
       qs: [
         {
-          q: 'Parmi les villes du texte, laquelle est reliée à Paris à grande vitesse depuis 1989 ?',
+          q: 'Quelle ville la ligne à grande vitesse mise en service en 1989 relie-t-elle à Paris ?',
           a: 'Le Mans',
           wrong: [
             { label: 'Rennes', why: 'La ligne a été prolongée vers Rennes plus tard.' },
@@ -547,10 +546,9 @@ const europeMonde: Notion = {
   title: 'En Europe et dans le monde',
   hint: 'Pense au grand voyage : par les airs ou sur l’eau ? Y a-t-il une frontière à passer ?',
   memo: [
-    'Pour aller loin, on part souvent d’un **aéroport** (avions) ou d’un **port** (bateaux).',
+    'Pour aller loin, on part souvent d’un **aéroport** (avions) ou d’un **port** (bateaux). Hors d’Europe, des avions **long-courriers** font de très longs voyages : un vol **transatlantique** traverse l’océan Atlantique, par exemple vers l’Amérique.',
     'Dans l’**espace Schengen**, on passe d’un pays à l’autre sans contrôles aux **frontières**. La police peut tout de même en faire.',
     'L’Union européenne protège les droits des **passagers**. Exemple : en avion, en train, en car ou en bateau.',
-    'Pour aller très loin, hors d’Europe, il existe des avions **long-courriers**. Un vol **transatlantique** traverse l’océan Atlantique, par exemple vers l’Amérique.',
   ],
   faits: [
     {
@@ -872,7 +870,7 @@ const transports: Notion = {
         { label: 'le paquebot', why: 'Le paquebot est un navire.' },
         { label: 'l’autocar', why: 'Un car roule sur la route, sans rails.' },
       ],
-      gap: ['Le ', ' roule en ville sur des rails au niveau du sol.', ['tramway', 'tram']],
+      gap: ['Le ', ' roule en ville, dans les rues, sur des rails au niveau du sol.', ['tramway', 'tram']],
       quote: Q_TRAMWAY,
       explain: 'Le tramway est un transport public urbain sur rails.',
       src: 'cnrtl-tramway',
@@ -948,7 +946,7 @@ const transports: Notion = {
       lines: [
         'Chaque matin, deux voisines partaient seules, chacune dans sa voiture.',
         'Elles font maintenant le trajet ensemble, dans une seule voiture.',
-        'Leur enfant va au sport à vélo sur la piste cyclable.',
+        'L’enfant de l’une d’elles va au sport à vélo sur la piste cyclable.',
       ],
       qs: [
         {

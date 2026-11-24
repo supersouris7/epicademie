@@ -345,4 +345,18 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Qui traverse l’océan Atlantique.',
     example: 'Un vol transatlantique relie l’Europe à l’Amérique.',
   },
+  {
+    id: 'ferroviaire',
+    word: 'ferroviaire',
+    forms: ['ferroviaire', 'ferroviaires'],
+    definition: 'Qui concerne le chemin de fer, c’est-à-dire les trains et les rails.',
+    example: 'Le réseau ferroviaire relie des villes.',
+  },
+  {
+    id: 'affleurer',
+    word: 'affleurer',
+    forms: ['affleurer', 'affleurant', 'affleurent'],
+    definition: 'Arriver juste au niveau d’une surface, sans dépasser.',
+    example: 'Les rails du tramway affleurent au sol de la rue.',
+  },
 ];
