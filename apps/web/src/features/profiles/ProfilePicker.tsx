@@ -1,7 +1,7 @@
-import { api } from '@questeo/shared';
+import { api } from '@epicademie/shared';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
-import { levelFromXp } from '@questeo/engine';
+import { levelFromXp } from '@epicademie/engine';
 import { useProfiles } from './api.ts';
 import { CharacterAvatar } from '../../shared/ui/game/CharacterAvatar.tsx';
 import { CharacterCard } from '../../shared/ui/game/CharacterCard.tsx';
@@ -46,7 +46,7 @@ export function ProfilePicker() {
   return (
     <PageShell>
       <h1 className="flex justify-center">
-        <img src={assetSrc('branding-logo') ?? ''} alt="Academy Fighters" className="w-72 max-w-full sm:w-96" />
+        <img src={assetSrc('branding-logo') ?? ''} alt="Épicadémie" className="w-72 max-w-full sm:w-96" />
       </h1>
       {keyArt && <img src={keyArt} alt="" aria-hidden className="cartoon w-full object-cover" decoding="async" />}
 

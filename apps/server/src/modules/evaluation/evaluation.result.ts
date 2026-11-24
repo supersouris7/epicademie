@@ -1,6 +1,6 @@
-import { getReferential, type ReferentialGrade } from '@questeo/content';
-import { compareBilans, computeScores, scoresByDomain, type ScoredCompetence } from '@questeo/engine';
-import type { CompetenceState, EvaluationResult } from '@questeo/shared';
+import { getReferential, type ReferentialGrade } from '@epicademie/content';
+import { compareBilans, computeScores, scoresByDomain, type ScoredCompetence } from '@epicademie/engine';
+import type { CompetenceState, EvaluationResult } from '@epicademie/shared';
 import type { EvaluationRow } from '../../db/schema.ts';
 import { chapterLite, gradeCompetences, nextGrade } from './evaluation.plan.ts';
 

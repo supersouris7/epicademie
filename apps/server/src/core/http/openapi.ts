@@ -2,10 +2,10 @@ import type { FastifyInstance } from 'fastify';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import { jsonSchemaTransform } from 'fastify-type-provider-zod';
-import { API_TAGS } from '@questeo/shared';
+import { API_TAGS } from '@epicademie/shared';
 
 /**
- * Documentation OpenAPI générée à partir du contrat (schémas Zod de `@questeo/shared`).
+ * Documentation OpenAPI générée à partir du contrat (schémas Zod de `@epicademie/shared`).
  * - /api/openapi.json : la spécification (toujours disponible, utile aux outils) ;
  * - /api/docs : interface Swagger UI (activée par API_DOCS, par défaut hors production).
  */
@@ -30,9 +30,9 @@ export async function registerOpenApi(app: FastifyInstance, options: { ui: boole
   await app.register(swagger, {
     openapi: {
       info: {
-        title: 'Academy Fighters — API',
+        title: 'Épicadémie — API',
         description:
-          'API HTTP de Questeo / Academy Fighters. Erreurs : corps `{ code, error, requestId }`. ' +
+          'API HTTP de Épicadémie. Erreurs : corps `{ code, error, requestId }`. ' +
           'Contrat source : packages/shared/src/api/contract.ts.',
         version: options.version,
       },

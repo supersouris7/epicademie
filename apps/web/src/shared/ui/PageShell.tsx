@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router';
-import type { Profile } from '@questeo/shared';
+import type { Profile } from '@epicademie/shared';
 import { MainNav } from './MainNav.tsx';
 import { GameButton } from './game/GameButton.tsx';
 import { GameBackdrop } from './game/GameBackdrop.tsx';

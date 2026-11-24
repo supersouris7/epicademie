@@ -19,7 +19,7 @@ refuse de démarrer si une valeur est invalide. Une variable vide vaut « non d�
 | `LOG_LEVEL`             | `info` (`silent` en test)                     | niveau des journaux                                                                                                                 |
 | `TZ_FAMILY`             | `Europe/Paris`                                | fuseau des jours de révision                                                                                                        |
 | `WEB_DIR`               | `../web/dist` (production)                    | front buildé ; hors production, servi seulement si la variable est donnée (e2e)                                                     |
-| `QUESTEO_VERSION`       | `dev` (image : tag de version)                | version affichée par les sondes et l'OpenAPI                                                                                        |
+| `EPICADEMIE_VERSION`    | `dev` (image : tag de version)                | version affichée par les sondes et l'OpenAPI                                                                                        |
 | `PUBLIC_URL`            | (voir plus haut)                              | aussi l'adresse des liens envoyés par e-mail (validation, mot de passe oublié)                                                      |
 | `COOKIE_SECURE`         | `true` en production                          | cookie de session réservé à HTTPS (mettre `false` seulement en HTTP local)                                                          |
 | `SESSION_DAYS`          | `30`                                          | durée d'une session d'appareil sans activité                                                                                        |

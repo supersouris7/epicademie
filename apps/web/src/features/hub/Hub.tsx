@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router';
-import { getMode, gradeInfo, HERO_NAMES, MODE_CATEGORIES, MODES, type ModeId, type Profile } from '@questeo/shared';
+import { getMode, gradeInfo, HERO_NAMES, MODE_CATEGORIES, MODES, type ModeId, type Profile } from '@epicademie/shared';
 import { comingSoon } from '../../shared/lib/grades.ts';
 import { ModeTile } from '../../shared/ui/ModeTile.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';

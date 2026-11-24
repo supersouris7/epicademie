@@ -260,13 +260,13 @@ importers:
       '@prometheus-io/client':
         specifier: 0.16.1
         version: 0.16.1
-      '@questeo/content':
+      '@epicademie/content':
         specifier: workspace:*
         version: link:../../packages/content
-      '@questeo/engine':
+      '@epicademie/engine':
         specifier: workspace:*
         version: link:../../packages/engine
-      '@questeo/shared':
+      '@epicademie/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       drizzle-orm:
@@ -318,13 +318,13 @@ importers:
       '@fontsource/lilita-one':
         specifier: ^5.3.0
         version: 5.3.0
-      '@questeo/content':
+      '@epicademie/content':
         specifier: workspace:*
         version: link:../../packages/content
-      '@questeo/engine':
+      '@epicademie/engine':
         specifier: workspace:*
         version: link:../../packages/engine
-      '@questeo/shared':
+      '@epicademie/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       '@tanstack/react-query':
@@ -397,13 +397,13 @@ importers:
 
   packages/content:
     dependencies:
-      '@questeo/shared':
+      '@epicademie/shared':
         specifier: workspace:*
         version: link:../shared
 
   packages/engine:
     dependencies:
-      '@questeo/shared':
+      '@epicademie/shared':
         specifier: workspace:*
         version: link:../shared
 

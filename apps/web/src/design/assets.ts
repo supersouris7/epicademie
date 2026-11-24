@@ -1,5 +1,5 @@
 /**
- * Catalogue central des assets graphiques d'Academy Fighters.
+ * Catalogue central des assets graphiques d'Épicadémie.
  *
  * Source unique pour :
  * - l'arborescence (public/assets et assets-src/originals) ;

@@ -1,4 +1,4 @@
-import { chaptersOf } from '@questeo/content';
+import { chaptersOf } from '@epicademie/content';
 import { describe, expect, it } from 'vitest';
 import { relicProgressOf } from './relicProgress.ts';
 

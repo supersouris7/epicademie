@@ -1,4 +1,4 @@
-import type { Grade } from '@questeo/shared';
+import type { Grade } from '@epicademie/shared';
 import { createRng } from './rng.ts';
 import { autoDemo } from './explain.ts';
 import { MATHS_CHAPTERS } from './maths/index.ts';

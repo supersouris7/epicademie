@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react';
-import type { Question, Response, Skill } from '@questeo/content';
-import type { Profile } from '@questeo/shared';
+import type { Question, Response, Skill } from '@epicademie/content';
+import type { Profile } from '@epicademie/shared';
 import { Feedback } from '../../shared/question/Feedback.tsx';
 import { Figure } from '../../shared/question/figures/Figure.tsx';
 import { MathText } from '../../shared/question/MathText.tsx';

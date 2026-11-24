@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { SkillProgress } from '@questeo/shared';
+import type { SkillProgress } from '@epicademie/shared';
 import { chapterProgress, masteryOf, suggestChapter } from './progress.ts';
 
 const state = (skillId: string, over: Partial<SkillProgress> = {}): SkillProgress => ({

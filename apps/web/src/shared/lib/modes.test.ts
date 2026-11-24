@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { MODES } from '@questeo/shared';
+import { MODES } from '@epicademie/shared';
 import { SETUP_BUBBLE_MAX, setupBubble } from './modes.ts';
 
 describe('bulle de Questy au choix de la matière', () => {

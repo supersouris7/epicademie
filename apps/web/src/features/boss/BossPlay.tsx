@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router';
-import { getChapter, type Chapter } from '@questeo/content';
-import type { Profile } from '@questeo/shared';
+import { getChapter, type Chapter } from '@epicademie/content';
+import type { Profile } from '@epicademie/shared';
 import { RageScene, RetryCountdown } from '../../shared/battle/BattleScenes.tsx';
 import { useBackGuard, useGameExit } from '../../shared/lib/gameExit.ts';
 import { ConfirmDialog } from '../../shared/ui/ConfirmDialog.tsx';

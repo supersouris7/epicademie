@@ -1,4 +1,4 @@
-# @questeo/shared — contrats partagés
+# @epicademie/shared — contrats partagés
 
 Types, constantes et **schémas Zod** communs au serveur, au web et au moteur. Aucune dépendance
 interne, aucun effet de bord.

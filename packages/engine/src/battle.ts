@@ -10,7 +10,7 @@ import {
   type BattleStage,
   type BattleStatus,
   type ItemId,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 
 /**
  * Combat de boss (docs/SPEC.md §6.2 bis) : 4 mobs (questions du chapitre, niveau 1 puis 2), puis le boss

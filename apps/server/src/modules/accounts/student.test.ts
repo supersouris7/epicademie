@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { eq, sql } from 'drizzle-orm';
-import type { InviteResult, Me, Profile, StudentSignupResult } from '@questeo/shared';
+import type { InviteResult, Me, Profile, StudentSignupResult } from '@epicademie/shared';
 import { accounts, familyInvites } from '../../db/schema.ts';
 import { createTestApp, profileInput, sessionCookie, TEST_PASSWORD } from '../../testing/harness.ts';
 

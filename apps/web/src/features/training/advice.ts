@@ -1,6 +1,6 @@
-import { getChapterOfSkill } from '@questeo/content';
-import { RECENT_ANSWERS } from '@questeo/engine';
-import type { SkillProgress } from '@questeo/shared';
+import { getChapterOfSkill } from '@epicademie/content';
+import { RECENT_ANSWERS } from '@epicademie/engine';
+import type { SkillProgress } from '@epicademie/shared';
 
 /** Réponses d'une partie pour une notion. */
 export interface RecapRow {

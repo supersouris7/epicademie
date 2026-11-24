@@ -159,18 +159,18 @@ jobs:
       postgres:
         image: postgres:17-alpine@sha256:526f86d93c6ea08fd3f1fe5605650cacc781b2c6013169a0ad8f42c7d3d84f32
         env:
-          POSTGRES_USER: questeo
-          POSTGRES_PASSWORD: questeo
-          POSTGRES_DB: questeo
+          POSTGRES_USER: epicademie
+          POSTGRES_PASSWORD: epicademie
+          POSTGRES_DB: epicademie
         ports: ['5432:5432']
         options: >-
-          --health-cmd "pg_isready -U questeo" --health-interval 5s --health-timeout 3s --health-retries 20
+          --health-cmd "pg_isready -U epicademie" --health-interval 5s --health-timeout 3s --health-retries 20
     env:
-      TEST_DATABASE_URL: postgres://questeo:questeo@localhost:5432/questeo
+      TEST_DATABASE_URL: postgres://epicademie:epicademie@localhost:5432/epicademie
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/preparer
-      - run: pnpm exec vitest run --project @questeo/server
+      - run: pnpm exec vitest run --project @epicademie/server
 
   # Analyse de sécurité de l'image de production (paquets système et dépendances Node) :
   # bloquante s'il reste une faille grave ou critique pour laquelle un correctif existe.
@@ -188,11 +188,11 @@ jobs:
         with:
           context: .
           load: true
-          tags: questeo:scan
+          tags: epicademie:scan
           cache-from: type=gha
       - uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
-          image-ref: questeo:scan
+          image-ref: epicademie:scan
           severity: CRITICAL,HIGH
           ignore-unfixed: true
           exit-code: '1'
@@ -241,7 +241,7 @@ jobs:
         if: env.HAS_DOCKERHUB == 'true'
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
-          images: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/questeo
+          images: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/epicademie
           # main → unstable (+ sha) ; tag v1.0.1 → 1.0.1, 1.0, 1, latest
           tags: |
             type=raw,value=unstable,enable={{is_default_branch}}

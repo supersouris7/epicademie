@@ -5,7 +5,7 @@
 
 ## Contexte
 
-Questeo devient un produit vendu en abonnement (année scolaire, familles). Le code doit rester
+Épicadémie devient un produit vendu en abonnement (année scolaire, familles). Le code doit rester
 compréhensible par une personne qui le découvre, évoluer sans régression et accueillir de
 nouvelles fonctionnalités (comptes parents, paiement, autres matières) sans réécriture.
 

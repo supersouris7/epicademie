@@ -1,4 +1,4 @@
-import type { ChestRarity } from '@questeo/shared';
+import type { ChestRarity } from '@epicademie/shared';
 
 /** Icônes des objets de combat. */
 export const ITEM_ICONS = {

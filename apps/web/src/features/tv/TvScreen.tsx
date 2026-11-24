@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { io, type Socket } from 'socket.io-client';
-import { generate } from '@questeo/content';
-import type { ArenaView, ClientToServerEvents, ServerToClientEvents } from '@questeo/shared';
+import { generate } from '@epicademie/content';
+import type { ArenaView, ClientToServerEvents, ServerToClientEvents } from '@epicademie/shared';
 import { Figure } from '../../shared/question/figures/Figure.tsx';
 import { MathText } from '../../shared/question/MathText.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Navigate, useNavigate, useParams } from 'react-router';
-import { chaptersOf } from '@questeo/content';
-import { SUBJECTS, getMode, playedGrade, subjectLabel, type Profile } from '@questeo/shared';
-import { acquired } from '@questeo/engine';
+import { chaptersOf } from '@epicademie/content';
+import { SUBJECTS, getMode, playedGrade, subjectLabel, type Profile } from '@epicademie/shared';
+import { acquired } from '@epicademie/engine';
 import { useSkills } from '../training/index.ts';
 import { EmperorScene, emperorDue } from '../boss/index.ts';
 import { useRelicProgress } from '../../shared/lib/relicProgress.ts';

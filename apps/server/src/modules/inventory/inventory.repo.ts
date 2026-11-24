@@ -1,5 +1,5 @@
 import { and, eq, gt, sql } from 'drizzle-orm';
-import { ITEMS, MAX_ITEM_STOCK, sanitizeEquipped, type Inventory, type ItemId } from '@questeo/shared';
+import { ITEMS, MAX_ITEM_STOCK, sanitizeEquipped, type Inventory, type ItemId } from '@epicademie/shared';
 import type { Executor } from '../../db/client.ts';
 import { inventory, profiles } from '../../db/schema.ts';
 

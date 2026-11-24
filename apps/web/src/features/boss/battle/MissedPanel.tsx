@@ -3,7 +3,7 @@ import { GameButton } from '../../../shared/ui/game/GameButton.tsx';
 import { MathText } from '../../../shared/question/MathText.tsx';
 import { formatAnswer, formatResponse } from '../../../shared/question/answers.ts';
 
-import type { Question } from '@questeo/content';
+import type { Question } from '@epicademie/content';
 import type { Missed } from './constants.ts';
 
 /** Après une erreur : la réponse donnée, la bonne, pourquoi, et la méthode pas à pas. */

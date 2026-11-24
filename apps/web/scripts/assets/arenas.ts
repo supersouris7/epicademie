@@ -8,7 +8,7 @@
  * - panorama (4,4:1) : la bande large prolongée de chaque côté par miroir, flou progressif et
  *   assombrissement (bords harmonieux, aucun étirement).
  *
- * Usage : pnpm --filter @questeo/web assets:arenas
+ * Usage : pnpm --filter @epicademie/web assets:arenas
  */
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';

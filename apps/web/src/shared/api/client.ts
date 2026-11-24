@@ -7,10 +7,10 @@ import {
   type ErrorCode,
   type ParamsOf,
   type ResponseOf,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 
 /**
- * Client HTTP typé par le contrat de l'API (`api` de @questeo/shared) : chemin, paramètres,
+ * Client HTTP typé par le contrat de l'API (`api` de @epicademie/shared) : chemin, paramètres,
  * corps et réponse sont vérifiés à la compilation ; aucune URL écrite à la main.
  *
  *   const profile = await request(api.getProfile, { params: { id } });

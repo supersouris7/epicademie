@@ -1,7 +1,7 @@
 import { act, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { generate } from '@questeo/content';
-import type { ArenaView, OnlinePlayer } from '@questeo/shared';
+import { generate } from '@epicademie/content';
+import type { ArenaView, OnlinePlayer } from '@epicademie/shared';
 import { makeProfile } from '../../testing/fakeApi.ts';
 import { sockets } from '../../testing/fakeSocket.ts';
 import { renderApp } from '../../testing/renderApp.tsx';

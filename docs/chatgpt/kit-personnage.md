@@ -1,4 +1,4 @@
-# Academy Fighters — Kit d’un personnage (héros, boss ou mob)
+# Épicadémie — Kit d’un personnage (héros, boss ou mob)
 
 Chaque personnage est livré en **deux planches 1536 × 1024**, au même gabarit que le kit d’Alex :
 
@@ -61,9 +61,9 @@ Règles :
 ## Découpage (fait de mon côté)
 
 ```bash
-pnpm --filter @questeo/web assets:kit decouper <poses.png> <tetes.png> <heros|ennemi> <dossier>
+pnpm --filter @epicademie/web assets:kit decouper <poses.png> <tetes.png> <heros|ennemi> <dossier>
 ```
 
 Chaque forme est rattachée à la case qui contient son centre, même si elle déborde un peu ; les poussières sont ignorées. Un fond magenta est retiré automatiquement. On obtient `pose-<état>.png` et `head-<expression>.png`, rangés ensuite aux chemins du catalogue, puis importés avec `assets:import`.
 
-Pour refaire le gabarit à partir des originaux d’Alex : `pnpm --filter @questeo/web assets:kit gabarit`.
+Pour refaire le gabarit à partir des originaux d’Alex : `pnpm --filter @epicademie/web assets:kit gabarit`.

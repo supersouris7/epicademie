@@ -6,7 +6,7 @@ import {
   type Chest,
   type ChestRarity,
   type Inventory,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import { ECONOMY } from './economy.ts';
 
 /**

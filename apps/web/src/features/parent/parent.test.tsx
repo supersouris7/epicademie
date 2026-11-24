@@ -1,6 +1,6 @@
 import { screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import type { LearningReport } from '@questeo/shared';
+import type { LearningReport } from '@epicademie/shared';
 import { emptyLearning, FAKE_PASSWORD } from '../../testing/fakeApi.ts';
 import { renderApp } from '../../testing/renderApp.tsx';
 import { synthesis, toReview } from './summary.ts';
@@ -249,7 +249,7 @@ describe('espace parent', () => {
       await user.clear(screen.getByLabelText(/Écris SUPPRIMER/));
       await user.type(screen.getByLabelText(/Écris SUPPRIMER/), 'SUPPRIMER');
       await user.click(submit);
-      expect(await screen.findByRole('heading', { name: /Academy Fighters|Bienvenue/i })).toBeInTheDocument();
+      expect(await screen.findByRole('heading', { name: /Épicadémie|Bienvenue/i })).toBeInTheDocument();
       expect(server.calls.some((c) => c.path === '/family/delete')).toBe(true);
     });
 

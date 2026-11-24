@@ -420,7 +420,7 @@ describe('migrations', () => {
 
 /** Copie des `count` premières migrations (base d'une version antérieure). */
 function migrationsUpTo(count: number): string {
-  const dir = mkdtempSync(path.join(tmpdir(), 'questeo-migrations-'));
+  const dir = mkdtempSync(path.join(tmpdir(), 'epicademie-migrations-'));
   cpSync(MIGRATIONS_DIR, dir, { recursive: true });
   const journalPath = path.join(dir, 'meta', '_journal.json');
   const journal = JSON.parse(readFileSync(journalPath, 'utf8')) as { entries: unknown[] };

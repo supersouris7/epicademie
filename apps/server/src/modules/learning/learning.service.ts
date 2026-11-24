@@ -1,6 +1,6 @@
-import { CHAPTERS, chapterOfAnySkill } from '@questeo/content';
-import { badgeProgress, learningReport } from '@questeo/engine';
-import type { BadgeProgress, LearningReport } from '@questeo/shared';
+import { CHAPTERS, chapterOfAnySkill } from '@epicademie/content';
+import { badgeProgress, learningReport } from '@epicademie/engine';
+import type { BadgeProgress, LearningReport } from '@epicademie/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import { trainingRepo } from '../training/index.ts';
@@ -12,7 +12,7 @@ const HISTORY_DAYS = 365;
 
 /**
  * Suivi des apprentissages d'un joueur : rassemble ses réponses et sa répétition espacée, puis
- * calcule le rapport (règles pures dans @questeo/engine/learning).
+ * calcule le rapport (règles pures dans @epicademie/engine/learning).
  */
 export function createLearningService({ db, clock, timeZone }: { db: Db; clock: Clock; timeZone: string }) {
   const service = {
@@ -33,7 +33,7 @@ export function createLearningService({ db, clock, timeZone }: { db: Db; clock: 
       });
     },
 
-    /** Badges : grade atteint et prochain objectif (conditions dans @questeo/engine). */
+    /** Badges : grade atteint et prochain objectif (conditions dans @epicademie/engine). */
     async badges(profileId: string): Promise<BadgeProgress[]> {
       const c = await learningRepo(db).badgeCounters(profileId, timeZone);
       const bronze = new Set(c.medals.filter((m) => m.best >= 3).map((m) => m.skillId));

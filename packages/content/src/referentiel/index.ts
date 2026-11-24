@@ -1,4 +1,4 @@
-import type { SubjectId } from '@questeo/shared';
+import type { SubjectId } from '@epicademie/shared';
 import { MATHS_REFERENTIAL } from './maths.ts';
 import type { Competence, Referential, ReferentialGrade } from './types.ts';
 

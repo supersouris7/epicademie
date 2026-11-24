@@ -13,7 +13,7 @@ import {
   type ClientToServerEvents,
   type Profile,
   type ServerToClientEvents,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import type { Clock } from '../../core/clock.ts';
 import type { Random } from '../../core/random.ts';
 import type { ErrorReporter } from '../../core/observability/error-reporter.ts';
@@ -24,7 +24,7 @@ import { tokenBucket } from './rate-limiter.ts';
 
 /**
  * Passerelle temps réel (socket.io) : authentifie la connexion, valide chaque message avec les
- * schémas de @questeo/shared, limite le débit, puis délègue à la présence et à l'arène.
+ * schémas de @epicademie/shared, limite le débit, puis délègue à la présence et à l'arène.
  *
  * - Présence : un profil n'est ouvert que sur un seul appareil (2e connexion refusée).
  * - Messages : prédéfinis ou emoji seulement (pas de texte libre : sûr pour des enfants).

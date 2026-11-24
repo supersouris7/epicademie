@@ -7,7 +7,7 @@ import {
   type Me,
   type Signup,
   type StudentSignup,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import { request } from '../../shared/api/client.ts';
 
 /** Session de l'appareil : compte connecté (401 si aucun, jamais retenté). */

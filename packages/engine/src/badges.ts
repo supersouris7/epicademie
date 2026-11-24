@@ -1,5 +1,5 @@
-import type { BadgeCategory, BadgeProgress, BadgeTier } from '@questeo/shared';
-import { BADGE_TIERS } from '@questeo/shared';
+import type { BadgeCategory, BadgeProgress, BadgeTier } from '@epicademie/shared';
+import { BADGE_TIERS } from '@epicademie/shared';
 
 /**
  * Badges : TOUTES les conditions de déblocage sont ici (docs/adr/0018-badges.md). Un badge se

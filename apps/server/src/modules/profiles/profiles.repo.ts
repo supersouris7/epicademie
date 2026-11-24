@@ -1,5 +1,5 @@
 import { asc, eq, gte, and, sql } from 'drizzle-orm';
-import { defaultHero, type HeroId, type Profile, type ProfileCreate, type ProfileUpdate } from '@questeo/shared';
+import { defaultHero, type HeroId, type Profile, type ProfileCreate, type ProfileUpdate } from '@epicademie/shared';
 import type { Executor } from '../../db/client.ts';
 import { ownedHeroes, profiles, type ProfileRow } from '../../db/schema.ts';
 

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { ITEMS, ITEM_INFO, type Chest, type ChestRarity, HERO_NAMES } from '@questeo/shared';
+import { ITEMS, ITEM_INFO, type Chest, type ChestRarity, HERO_NAMES } from '@epicademie/shared';
 import { chestIcon, ITEM_ICONS } from '../../../design/items.ts';
 import { playSound } from '../../lib/sound.ts';
 import { BlinkText } from './BlinkText.tsx';

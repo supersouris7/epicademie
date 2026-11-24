@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { keyIsForGame } from '../lib/keys.ts';
-import type { Question, Response } from '@questeo/content';
+import type { Question, Response } from '@epicademie/content';
 import { MathText } from './MathText.tsx';
 import { applyKey } from './numpad.ts';
 import { typeKey } from './keyboard.ts';

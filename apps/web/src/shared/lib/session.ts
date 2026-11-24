@@ -2,7 +2,7 @@
 import { create } from 'zustand';
 import { safeStorage } from './storage.ts';
 
-const KEY = 'questeo.currentProfile';
+const KEY = 'epicademie.currentProfile';
 
 interface SessionState {
   readonly profileId: string | null;

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { generate, getAnySkill, type Level } from '@questeo/content';
+import { generate, getAnySkill, type Level } from '@epicademie/content';
 import {
   REPORT_REASON_LABELS,
   REPORT_STATUS_LABELS,
@@ -10,7 +10,7 @@ import {
   type Report,
   type ReportStatus,
   type ValidationState,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import { formatAnswer } from '../../shared/question/answers.ts';
 import { MathText } from '../../shared/question/MathText.tsx';
 import { AdminGate, AdminShell, type AdminSection } from './AdminShell.tsx';

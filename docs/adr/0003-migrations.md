@@ -11,8 +11,8 @@ courses (deux instances migrent en même temps) et mêle déploiement du schéma
 ## Décision
 
 - Les migrations SQL sont **générées** par drizzle-kit depuis `apps/server/src/db/schema.ts`
-  (`pnpm --filter @questeo/server db:generate`), relues et versionnées dans `apps/server/drizzle`.
-- Elles s'appliquent par une **commande dédiée** : `pnpm --filter @questeo/server db:migrate`
+  (`pnpm --filter @epicademie/server db:generate`), relues et versionnées dans `apps/server/drizzle`.
+- Elles s'appliquent par une **commande dédiée** : `pnpm --filter @epicademie/server db:migrate`
   (dev) ou `node server/dist/migrate.js` (image Docker, service `migrate` de `compose.yml`),
   protégée par un verrou consultatif PostgreSQL (idempotente, sûre en parallèle).
 - Au démarrage, le serveur **vérifie** que la base est au niveau du code et **refuse de démarrer**

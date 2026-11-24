@@ -1,6 +1,6 @@
-# Academy Fighters — système graphique
+# Épicadémie — système graphique
 
-Direction artistique : planches « Academy Fighters » (novembre 2026). Jeu cartoon pour tablette, violet, orange et crème
+Direction artistique : planches « Épicadémie » (novembre 2026). Jeu cartoon pour tablette, violet, orange et crème
 dominants, contours épais, relief franc. Les illustrations sont générées avec ChatGPT Images (voir
 [ASSETS-CHATGPT.md](ASSETS-CHATGPT.md)) puis importées par script.
 
@@ -17,7 +17,7 @@ apps/web/
 │   ├── hud/{frames,buttons,tiles}/  rewards/{medals,chests,collectibles}/
 │   └── environments/{backgrounds,arenas,tiles,props}/  effects/{impacts,particles,transitions}/
 ├── scripts/assets/
-│   ├── build.ts      SVG provisoires (générés en code, palette imposée) → `pnpm --filter @questeo/web assets:svg`
+│   ├── build.ts      SVG provisoires (générés en code, palette imposée) → `pnpm --filter @epicademie/web assets:svg`
 │   ├── plan.ts       arborescence + guide ChatGPT + liste des images livrées → `assets:plan`
 │   ├── import.ts     import des PNG → WebP détourés → `assets:import [--force] [filtre]`
 │   ├── cut.ts        planche hors catalogue → originaux individuels → `assets:cut <png> 3x3 <chemin|-> …`

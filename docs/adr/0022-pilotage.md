@@ -31,9 +31,9 @@
     paramètres des requêtes SQL échouées sont retirés du message (ils pourraient contenir des
     données). Les journaux structurés restent la source complète et durable.
 - **Métriques Prometheus ajoutées** :
-  - `questeo_errors_total{source}` ;
-  - `questeo_rewards_total{currency}` (pièces et rubis distribués : dérive de l'économie) ;
-  - `questeo_payments_total{status}`.
+  - `epicademie_errors_total{source}` ;
+  - `epicademie_rewards_total{currency}` (pièces et rubis distribués : dérive de l'économie) ;
+  - `epicademie_payments_total{status}`.
 
 ## Conséquences
 

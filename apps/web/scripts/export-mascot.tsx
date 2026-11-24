@@ -1,6 +1,6 @@
 /**
  * Exporte l'icône statique de Questy (favicon) depuis le composant React, pour garder une source unique.
- * Usage : pnpm --filter @questeo/web mascot:export
+ * Usage : pnpm --filter @epicademie/web mascot:export
  */
 import { rmSync, writeFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
-import type { Chest } from '@questeo/shared';
+import type { Chest } from '@epicademie/shared';
 import { ChestReveal } from './ChestReveal.tsx';
 
 const chest: Chest = { rarity: 'rare', items: { bouclier: 1 }, coins: 10, rubies: 0, hero: null };

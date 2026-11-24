@@ -1,4 +1,4 @@
-import type { SubjectId } from '@questeo/shared';
+import type { SubjectId } from '@epicademie/shared';
 import { RELICS } from '../../../design/relics.ts';
 import { type IconSize } from './GameIcon.tsx';
 import { ProgressIcon } from './ProgressIcon.tsx';

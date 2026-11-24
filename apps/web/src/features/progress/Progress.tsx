@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate, useParams } from 'react-router';
-import { chaptersOf, DOMAINS, type DomainId } from '@questeo/content';
-import { MEDAL_LABELS, MEDALS, medal, type Medal as MedalId } from '@questeo/engine';
+import { chaptersOf, DOMAINS, type DomainId } from '@epicademie/content';
+import { MEDAL_LABELS, MEDALS, medal, type Medal as MedalId } from '@epicademie/engine';
 import {
   ITEM_INFO,
   ITEMS,
@@ -13,7 +13,7 @@ import {
   type Profile,
   type SkillProgress,
   type SubjectId,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import { TrophiesSection } from './Trophies.tsx';
 import { useBosses } from '../boss/index.ts';
 import { relicProgressOf, useRelicProgress } from '../../shared/lib/relicProgress.ts';

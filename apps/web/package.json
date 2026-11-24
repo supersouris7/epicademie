@@ -1,5 +1,5 @@
 {
-  "name": "@questeo/web",
+  "name": "@epicademie/web",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -22,9 +22,9 @@
   "dependencies": {
     "@fontsource-variable/nunito": "^5.3.0",
     "@fontsource/lilita-one": "^5.3.0",
-    "@questeo/content": "workspace:*",
-    "@questeo/engine": "workspace:*",
-    "@questeo/shared": "workspace:*",
+    "@epicademie/content": "workspace:*",
+    "@epicademie/engine": "workspace:*",
+    "@epicademie/shared": "workspace:*",
     "@tanstack/react-query": "^5.107.1",
     "motion": "^14.14.0",
     "react": "^19.3.1",

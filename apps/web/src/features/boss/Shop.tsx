@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { ITEM_INFO, ITEM_PRICES, ITEMS, RUBY_PRICE, type Profile } from '@questeo/shared';
+import { ITEM_INFO, ITEM_PRICES, ITEMS, RUBY_PRICE, type Profile } from '@epicademie/shared';
 import { buyItem, bossesKey, useBosses } from './api.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';

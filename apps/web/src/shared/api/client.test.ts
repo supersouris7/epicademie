@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { api } from '@questeo/shared';
+import { api } from '@epicademie/shared';
 import { ApiError, request } from './client.ts';
 
 const reply = (status: number, body?: unknown) =>

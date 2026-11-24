@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
-import type { Profile } from '@questeo/shared';
+import type { Profile } from '@epicademie/shared';
 import { profiles } from '../../db/schema.ts';
 import { createTestApp, profileInput } from '../../testing/harness.ts';
 import { attachOrphanProfiles } from './index.ts';

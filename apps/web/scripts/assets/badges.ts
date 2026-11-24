@@ -1,7 +1,7 @@
 /**
  * Badges : 24 médailles (6 badges × 4 rangs) à partir de la planche du client (21/11/2026).
  *
- *   pnpm --filter @questeo/web assets:badges
+ *   pnpm --filter @epicademie/web assets:badges
  *
  * Planche : 6 lignes (un badge par ligne, dans l'ordre de `BADGES`) × 4 colonnes (bronze, argent,
  * or, diamant), déjà transparente. Chaque médaille est localisée par sa forme (composantes

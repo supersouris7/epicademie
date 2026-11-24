@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router';
-import { getAnySkill, glossaryEntry } from '@questeo/content';
+import { getAnySkill, glossaryEntry } from '@epicademie/content';
 import { MathText } from '../../shared/question/MathText.tsx';
 import { useTermReminders } from '../../shared/question/termReminders.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';

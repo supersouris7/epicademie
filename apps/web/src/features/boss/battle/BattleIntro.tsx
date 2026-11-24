@@ -1,4 +1,4 @@
-import type { HeroId } from '@questeo/shared';
+import type { HeroId } from '@epicademie/shared';
 import { BattleArena, type ArenaEnemy, type EnemyState } from '../../../shared/battle/BattleArena.tsx';
 import { BossSays, HeroSays, QuestySays, Shake } from '../../../shared/battle/BattleScenes.tsx';
 import type { ArrivalLines, IntroStage } from './state.ts';

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { check, getChapter, getChapterOfSkill, getSkill, type Response } from '@questeo/content';
+import { check, getChapter, getChapterOfSkill, getSkill, type Response } from '@epicademie/content';
 import {
   EPREUVE_LENGTH,
   isFinished,
@@ -9,8 +9,8 @@ import {
   seriesLength,
   startTraining,
   type TrainingState,
-} from '@questeo/engine';
-import type { Profile, SkillProgress } from '@questeo/shared';
+} from '@epicademie/engine';
+import type { Profile, SkillProgress } from '@epicademie/shared';
 import { ApiError } from '../../shared/api/client.ts';
 import { chapterTrophiesKey, finishSession, markConfused, skillsKey, startSession, submitAnswer } from './api.ts';
 import { localToday, randomSeed } from '../../shared/lib/dates.ts';

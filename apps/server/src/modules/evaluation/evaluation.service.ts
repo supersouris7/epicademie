@@ -1,4 +1,4 @@
-import { check, getAnySkill, getCe2Skill, skillVersion } from '@questeo/content';
+import { check, getAnySkill, getCe2Skill, skillVersion } from '@epicademie/content';
 import {
   EVALUATION_STATE_VERSION,
   assignSeed,
@@ -10,7 +10,7 @@ import {
   pickSeed,
   recordEvaluationAnswer,
   type EvaluationState,
-} from '@questeo/engine';
+} from '@epicademie/engine';
 import type {
   EvaluationAnswer,
   EvaluationAnswerResult,
@@ -18,7 +18,7 @@ import type {
   EvaluationNext,
   EvaluationResult,
   EvaluationStarted,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import type { Db, Tx } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import type { Random } from '../../core/random.ts';
@@ -32,7 +32,7 @@ import { DAY_MS, EVALUATION_NOT_FOUND, createEvaluationReads } from './evaluatio
 
 /**
  * Arène d'évaluation (docs/adr/0030-arene-evaluation.md). Le serveur choisit chaque question
- * (le moteur pur de @questeo/engine) et n'accepte que la réponse à la question attendue ; il ne
+ * (le moteur pur de @epicademie/engine) et n'accepte que la réponse à la question attendue ; il ne
  * montre jamais juste/faux pendant l'épreuve. Les réponses vont dans `attempts` (parties de mode
  * `evaluation`) sans toucher à `skill_states` ; le bilan est figé à la clôture, avec ses
  * récompenses, dans une seule transaction.

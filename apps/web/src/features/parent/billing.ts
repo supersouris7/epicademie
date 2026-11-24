@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { isFreeChapter } from '@questeo/content';
-import { api } from '@questeo/shared';
+import { isFreeChapter } from '@epicademie/content';
+import { api } from '@epicademie/shared';
 import { request } from '../../shared/api/client.ts';
 
 /** Abonnement de la famille (accès premium, prix, historique). */

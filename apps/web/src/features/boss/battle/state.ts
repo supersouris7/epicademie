@@ -1,11 +1,11 @@
-import type { Response } from '@questeo/content';
+import type { Response } from '@epicademie/content';
 import {
   BATTLE_MOBS,
   type BattleAnswerResult,
   type BattleSummary,
   type BattleView,
   type ItemId,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import type { EnemyState } from '../../../shared/battle/BattleArena.tsx';
 import type {
   BossLine,

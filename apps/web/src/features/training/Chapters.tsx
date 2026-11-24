@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import { Navigate, useNavigate, useParams } from 'react-router';
-import { chaptersOf, getChapterOfSkill } from '@questeo/content';
-import { gradeInfo, SUBJECTS, subjectLabel, type Profile } from '@questeo/shared';
+import { chaptersOf, getChapterOfSkill } from '@epicademie/content';
+import { gradeInfo, SUBJECTS, subjectLabel, type Profile } from '@epicademie/shared';
 import { useSkills } from './api.ts';
 import { GradeTabs } from '../../shared/ui/GradeTabs.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
@@ -9,7 +9,7 @@ import { localToday } from '../../shared/lib/dates.ts';
 import { useGradeChoice } from '../../shared/lib/grades.ts';
 import { chapterProgress, suggestChapter } from '../../shared/lib/progress.ts';
 import { useEntrance } from '../../shared/lib/entrance.ts';
-import { recommendedReviews } from '@questeo/engine';
+import { recommendedReviews } from '@epicademie/engine';
 import { useToast } from '../../shared/ui/Toast.tsx';
 import { PremiumLock } from '../../shared/ui/game/PremiumLock.tsx';
 import { useChapterAccess } from '../parent/index.ts';

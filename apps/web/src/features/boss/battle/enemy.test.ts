@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { BattleView } from '@questeo/shared';
+import type { BattleView } from '@epicademie/shared';
 import { bossOfSubject } from '../../../design/bosses.ts';
 import { bossEnemy, currentEnemy, enemyHead } from './enemy.ts';
 

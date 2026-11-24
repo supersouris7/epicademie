@@ -1,6 +1,6 @@
 import { act, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import type { ArenaView } from '@questeo/shared';
+import type { ArenaView } from '@epicademie/shared';
 import { renderApp } from '../../testing/renderApp.tsx';
 import { sockets } from '../../testing/fakeSocket.ts';
 

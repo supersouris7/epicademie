@@ -1,4 +1,4 @@
-import { fmt, frac, type Question, type Response } from '@questeo/content';
+import { fmt, frac, type Question, type Response } from '@epicademie/content';
 
 /** Bonne réponse en texte enrichi (pour la correction). */
 export function formatAnswer(q: Question): string {

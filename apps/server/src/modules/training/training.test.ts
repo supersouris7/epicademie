@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { sql } from 'drizzle-orm';
-import { fmt, generate } from '@questeo/content';
-import type { AnswerResult, Profile, SessionSummary, SkillProgress } from '@questeo/shared';
+import { fmt, generate } from '@epicademie/content';
+import type { AnswerResult, Profile, SessionSummary, SkillProgress } from '@epicademie/shared';
 import { createTestApp } from '../../testing/harness.ts';
 
 let t: Awaited<ReturnType<typeof createTestApp>>;

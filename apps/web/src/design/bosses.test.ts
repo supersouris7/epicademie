@@ -38,7 +38,7 @@ describe('arènes', () => {
   it.each([[null], ['{pas du json'], ['"x"'], ['{"deck":["nope"],"last":3}'], ['{"deck":["jungle","jungle"]}']])(
     "stockage illisible (%s) : repart d'un paquet neuf",
     (raw) => {
-      if (raw !== null) localStorage.setItem('questeo.arenes.p1', raw);
+      if (raw !== null) localStorage.setItem('epicademie.arenes.p1', raw);
       const draws = Array.from({ length: 5 }, () => randomArena('p1'));
       expect(new Set(draws).size).toBe(5);
     },

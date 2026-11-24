@@ -1,5 +1,5 @@
 /**
- * @questeo/shared — types, constantes et contrats (schémas Zod) partagés par le serveur, le web
+ * @epicademie/shared — types, constantes et contrats (schémas Zod) partagés par le serveur, le web
  * et le moteur. Aucune dépendance interne, aucun effet de bord : seulement des données et des
  * fonctions pures.
  */

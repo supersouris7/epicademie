@@ -1,6 +1,6 @@
 import { and, gte, inArray, isNotNull, sql } from 'drizzle-orm';
-import { levelFromXp } from '@questeo/engine';
-import type { BadgeProgress, RankingRow } from '@questeo/shared';
+import { levelFromXp } from '@epicademie/engine';
+import type { BadgeProgress, RankingRow } from '@epicademie/shared';
 import type { Db } from '../../db/client.ts';
 import { bossRecords, profiles, sessions, skillStates } from '../../db/schema.ts';
 

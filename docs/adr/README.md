@@ -1,5 +1,10 @@
 # Décisions d'architecture (ADR)
 
+> **Renommage (novembre 2026)** : le produit, appelé « Academy Fighters » (nom de code « questeo ») au moment de ces
+> décisions, s'appelle désormais **Épicadémie** (identifiant technique `epicademie`). Les ADR ont été mises à jour pour
+> les noms de paquets et d'identifiants ; le sens des décisions n'a pas changé. Conservés volontairement : base,
+> utilisateur et volume PostgreSQL `questeo`, cookie de session `af_session`.
+
 Chaque décision structurante est consignée ici, avec son contexte, la décision, ses conséquences
 et les options écartées. Une ADR acceptée ne se modifie pas : une nouvelle ADR la remplace
 (statut « Remplacée par NNNN »).

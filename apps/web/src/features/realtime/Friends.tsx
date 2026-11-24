@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api, type Friend, type FriendsView, type Profile } from '@questeo/shared';
+import { api, type Friend, type FriendsView, type Profile } from '@epicademie/shared';
 import { ApiError, request } from '../../shared/api/client.ts';
 import { CharacterAvatar } from '../../shared/ui/game/CharacterAvatar.tsx';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';

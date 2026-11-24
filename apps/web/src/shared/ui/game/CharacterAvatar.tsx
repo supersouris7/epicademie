@@ -1,4 +1,4 @@
-import type { AvatarConfig } from '@questeo/shared';
+import type { AvatarConfig } from '@epicademie/shared';
 import { Avatar } from '../Avatar.tsx';
 import { GameIcon } from './GameIcon.tsx';
 

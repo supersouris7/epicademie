@@ -1,4 +1,4 @@
-import { BATTLE_MOBS, BOSS_LIVES, type HeroId } from '@questeo/shared';
+import { BATTLE_MOBS, BOSS_LIVES, type HeroId } from '@epicademie/shared';
 import { BattleArena } from '../../../shared/battle/BattleArena.tsx';
 import { BattleBar } from '../../../shared/battle/BattleBar.tsx';
 import { QuipRow } from '../../../shared/battle/BattleScenes.tsx';

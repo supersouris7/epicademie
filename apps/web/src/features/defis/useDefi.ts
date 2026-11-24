@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { chaptersOf, check, generate, type Question, type Response } from '@questeo/content';
-import { playedGrade, type Profile, type SessionSummary, type SubjectId } from '@questeo/shared';
+import { chaptersOf, check, generate, type Question, type Response } from '@epicademie/content';
+import { playedGrade, type Profile, type SessionSummary, type SubjectId } from '@epicademie/shared';
 import { playSound } from '../../shared/lib/sound.ts';
 import { formatAnswer, formatResponse } from '../../shared/question/answers.ts';
 import { useChapterAccess } from '../parent/index.ts';

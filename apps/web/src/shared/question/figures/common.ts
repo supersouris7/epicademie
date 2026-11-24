@@ -1,4 +1,4 @@
-import type { Figure as FigureSpec } from '@questeo/content';
+import type { Figure as FigureSpec } from '@epicademie/content';
 
 /** Socle commun des figures : couleurs du thème, nombres à la française, props. */
 

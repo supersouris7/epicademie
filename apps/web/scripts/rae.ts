@@ -3,7 +3,7 @@
  * Española (https://dle.rae.es/<verbe>, tableaux « Indicativo »). Source institutionnelle
  * (règle du 21/11/2026). Écrit src/espagnol/conjugaisons.generated.ts.
  *
- *   pnpm --filter @questeo/web exec tsx scripts/rae.ts
+ *   pnpm --filter @epicademie/web exec tsx scripts/rae.ts
  */
 import { execFileSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';

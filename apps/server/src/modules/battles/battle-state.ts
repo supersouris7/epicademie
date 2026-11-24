@@ -1,13 +1,13 @@
 import { z } from 'zod';
-import type { BattleState } from '@questeo/engine';
-import { BATTLE_STATUSES, BattleQuestionSchema, ItemIdSchema } from '@questeo/shared';
+import type { BattleState } from '@epicademie/engine';
+import { BATTLE_STATUSES, BattleQuestionSchema, ItemIdSchema } from '@epicademie/shared';
 
 /**
  * Format de l'état d'un combat stocké en base (`sessions.battle`, jsonb).
  *
  * L'état est écrit par une version du serveur et relu par une autre (déploiement pendant un
  * combat) : il est donc VERSIONNÉ et VALIDÉ à la lecture, jamais simplement « casté ».
- * - Toute évolution du type `BattleState` (@questeo/engine) qui change ce format doit
+ * - Toute évolution du type `BattleState` (@epicademie/engine) qui change ce format doit
  *   incrémenter `BATTLE_STATE_VERSION` ; le contrôle de type ci-dessous rappelle de mettre le
  *   schéma à jour.
  * - Un état d'une autre version, ou illisible, n'est pas converti : le combat est clos sans

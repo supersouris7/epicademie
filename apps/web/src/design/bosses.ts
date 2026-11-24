@@ -1,6 +1,6 @@
-import type { Chapter } from '@questeo/content';
+import type { Chapter } from '@epicademie/content';
 import { assetSrc, BOSS_FACE, type BossExpression, type PiBotHead, type SorcierPose } from './assets.ts';
-import type { BossMedal } from '@questeo/shared';
+import type { BossMedal } from '@epicademie/shared';
 import { safeStorage } from '../shared/lib/storage.ts';
 
 /** Un boss par matière, le même pour tous ses chapitres et toutes les classes (docs/SPEC.md §6.2 bis). */
@@ -62,7 +62,7 @@ export const bossMood = (lives: number): BossExpression =>
 export const ARENAS = ['jungle', 'espace', 'volcan', 'glace', 'academie'] as const;
 export type ArenaId = (typeof ARENAS)[number];
 
-const arenaKey = (profileId: string) => `questeo.arenes.${profileId}`;
+const arenaKey = (profileId: string) => `epicademie.arenes.${profileId}`;
 const isArena = (v: unknown): v is ArenaId => ARENAS.includes(v as ArenaId);
 
 /** Lit le paquet restant et la dernière arène ; tolère un stockage absent ou illisible. */

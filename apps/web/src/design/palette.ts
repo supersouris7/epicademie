@@ -1,5 +1,5 @@
 /**
- * Palette Academy Fighters : source unique des couleurs.
+ * Palette Épicadémie : source unique des couleurs.
  *
  * Valeurs relevées sur les planches de direction artistique (violet, orange et crème dominants,
  * puis cyan, vert et rose), harmonisées en rampes de luminosité régulières.

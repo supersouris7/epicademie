@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { getChapter } from '@questeo/content';
+import { getChapter } from '@epicademie/content';
 import { renderApp } from '../../testing/renderApp.tsx';
 
 vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.ts')).socketModule);

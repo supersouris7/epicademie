@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
-import type { AdminTrends, WeakSkillStat, AdminError, AdminStats, Anomaly, Profile } from '@questeo/shared';
+import type { AdminTrends, WeakSkillStat, AdminError, AdminStats, Anomaly, Profile } from '@epicademie/shared';
 import { accounts, attempts, profiles, sessions, subscriptions } from '../../db/schema.ts';
 import { createTestApp, profileInput } from '../../testing/harness.ts';
 import { ANOMALY_THRESHOLDS } from './insights.service.ts';

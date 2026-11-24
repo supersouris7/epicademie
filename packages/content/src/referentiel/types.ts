@@ -1,4 +1,4 @@
-import type { Grade, SubjectId } from '@questeo/shared';
+import type { Grade, SubjectId } from '@epicademie/shared';
 
 /** Classe d'un référentiel : les classes jouables, plus le CE2 (évaluation seulement, ADR 0030). */
 export type ReferentialGrade = 'ce2' | Grade;

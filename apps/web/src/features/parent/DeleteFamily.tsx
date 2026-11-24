@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { DELETE_CONFIRMATION, ParentPinSchema, type FamilyDelete } from '@questeo/shared';
+import { DELETE_CONFIRMATION, ParentPinSchema, type FamilyDelete } from '@epicademie/shared';
 import { ApiError } from '../../shared/api/client.ts';
 import { useSession } from '../../shared/lib/session.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
@@ -22,7 +22,7 @@ function saveJson(data: unknown): void {
   const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
   const link = document.createElement('a');
   link.href = url;
-  link.download = 'academy-fighters-donnees-famille.json';
+  link.download = 'epicademie-donnees-famille.json';
   link.click();
   URL.revokeObjectURL(url);
 }

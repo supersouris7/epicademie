@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from 'motion/react';
-import { HERO_NAMES, type HeroId } from '@questeo/shared';
+import { HERO_NAMES, type HeroId } from '@epicademie/shared';
 import { characterSrc, type HeroExpression } from '../../design/assets.ts';
 import { mustFlip } from '../../design/orientation.ts';
 import { HeroFace } from './HeroFace.tsx';

@@ -1,4 +1,4 @@
-import { ARENA_HEARTS, ARENA_MAX_TURNS, type ArenaEvent, type ArenaPlayer } from '@questeo/shared';
+import { ARENA_HEARTS, ARENA_MAX_TURNS, type ArenaEvent, type ArenaPlayer } from '@epicademie/shared';
 
 /**
  * Arène (2 à 4 joueurs, chacun sur son appareil) : à son tour, un joueur répond à une question du

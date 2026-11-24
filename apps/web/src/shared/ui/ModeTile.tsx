@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import type { ModeInfo } from '@questeo/shared';
+import type { ModeInfo } from '@epicademie/shared';
 import { CATEGORY_COLORS, MODE_MOODS } from '../lib/modes.ts';
 import { assetSrc } from '../../design/assets.ts';
 import { GameIcon } from './game/GameIcon.tsx';

@@ -1,5 +1,5 @@
 import { and, desc, eq, sql } from 'drizzle-orm';
-import { LevelSchema, type BattleQuestion, type BossMedal, type BossRecord } from '@questeo/shared';
+import { LevelSchema, type BattleQuestion, type BossMedal, type BossRecord } from '@epicademie/shared';
 import type { Executor } from '../../db/client.ts';
 import { attempts, bossRecords, sessions } from '../../db/schema.ts';
 

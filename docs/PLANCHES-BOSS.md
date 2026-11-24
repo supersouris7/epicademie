@@ -2,7 +2,7 @@
 
 Un boss par matière, sur le modèle exact du Sorcier π (maths). Pour chaque boss, **4 planches
 déjà détourées (fond transparent)**, dans cet ordre de cases. La découpe
-(`pnpm --filter @questeo/web assets:sprites`) les prend telles quelles.
+(`pnpm --filter @epicademie/web assets:sprites`) les prend telles quelles.
 
 | Planche                   | Grille | Contenu, dans l'ordre de lecture                                                                 |
 | ------------------------- | ------ | ------------------------------------------------------------------------------------------------ |

@@ -65,7 +65,7 @@ async function main(): Promise<void> {
   process.on('SIGTERM', () => void shutdown());
 
   await app.http.listen({ port: config.port, host: config.host });
-  log.info({ database: database.kind, version: config.version }, 'Questeo prêt');
+  log.info({ database: database.kind, version: config.version }, 'Épicadémie prêt');
 }
 
 main().catch((err: unknown) => {

@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router';
-import { getChapter, getChapterOfSkill, getSkill } from '@questeo/content';
-import { recommendedReviews, regularCount } from '@questeo/engine';
+import { getChapter, getChapterOfSkill, getSkill } from '@epicademie/content';
+import { recommendedReviews, regularCount } from '@epicademie/engine';
 import { localToday } from '../../shared/lib/dates.ts';
-import type { Profile } from '@questeo/shared';
+import type { Profile } from '@epicademie/shared';
 import { useDisabledSkills, useSkills } from './api.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { ProgressBar } from '../../shared/ui/game/ProgressBar.tsx';

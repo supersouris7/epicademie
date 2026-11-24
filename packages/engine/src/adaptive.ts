@@ -1,4 +1,4 @@
-import type { Level, SkillStatus } from '@questeo/shared';
+import type { Level, SkillStatus } from '@epicademie/shared';
 import { MIN_ANSWERS_FOR_RATE, RECENT_ANSWERS, SOLID_RATE, WEAK_RATE } from './learning.ts';
 import { isDue, type SkillState } from './srs.ts';
 

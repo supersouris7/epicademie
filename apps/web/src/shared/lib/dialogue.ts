@@ -1,5 +1,5 @@
 /**
- * Banque de dialogues d'Academy Fighters : chaque réplique porte son expression de visage.
+ * Banque de dialogues d'Épicadémie : chaque réplique porte son expression de visage.
  * Personnalités :
  * - Alex, l'inventeur : geek enthousiaste, jeux de mots techno et maths.
  * - Lina, l'électrique : survoltée, compétitive, tout fait des étincelles.
@@ -7,7 +7,7 @@
  * - Le π-bot : petit robot fayot du Sorcier, bip-bip et zèle.
  * Pour tous les âges : drôle, jamais méchant envers le joueur.
  */
-import { indexFor, type HeroId, type RandomSource } from '@questeo/shared';
+import { indexFor, type HeroId, type RandomSource } from '@epicademie/shared';
 import type { BossExpression, HeroExpression, PiBotHead } from '../../design/assets.ts';
 
 export interface Line<F extends string = string> {

@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router';
-import { levelFromXp } from '@questeo/engine';
-import type { Profile } from '@questeo/shared';
+import { levelFromXp } from '@epicademie/engine';
+import type { Profile } from '@epicademie/shared';
 import { CharacterAvatar } from './game/CharacterAvatar.tsx';
 import { GameIcon } from './game/GameIcon.tsx';
 import { HUD_FRAME, HudBar } from './game/Hud.tsx';

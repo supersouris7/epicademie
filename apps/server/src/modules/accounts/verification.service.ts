@@ -1,4 +1,4 @@
-import type { EmailVerify, Signup, SignupResult } from '@questeo/shared';
+import type { EmailVerify, Signup, SignupResult } from '@epicademie/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import { AppError, conflict } from '../../core/errors.ts';
@@ -74,7 +74,7 @@ export function createVerificationService({
     const link = `${appUrl()}/email/verification?jeton=${token}`;
     await mailer.send({
       to: email,
-      subject: 'Academy Fighters : valide ton adresse e-mail',
+      subject: 'Épicadémie : valide ton adresse e-mail',
       text:
         `Bonjour,\n\nPour valider ton adresse et ouvrir ton compte, ouvre ce lien (valable ${VERIFICATION_LINK_HOURS} heures, une seule fois) :\n` +
         `${link}\n\nSi tu n’as rien demandé, ignore ce message : aucun compte ne sera utilisable.`,
@@ -106,9 +106,9 @@ export function createVerificationService({
       if (existing) {
         await mailer.send({
           to: email,
-          subject: 'Academy Fighters : une inscription avec ton adresse',
+          subject: 'Épicadémie : une inscription avec ton adresse',
           text:
-            'Bonjour,\n\nQuelqu’un vient d’essayer de créer un compte Academy Fighters avec cette adresse.\n' +
+            'Bonjour,\n\nQuelqu’un vient d’essayer de créer un compte Épicadémie avec cette adresse.\n' +
             `${existing.emailVerifiedAt ? 'Un compte existe déjà : connecte-toi, ou choisis « Mot de passe oublié » si tu ne t’en souviens plus.' : 'Ce compte attend encore sa validation : ouvre le lien reçu à l’inscription, ou choisis « Mot de passe oublié » pour le valider et choisir ton mot de passe.'}\n\n` +
             'Si ce n’était pas toi, ignore ce message : rien n’a été modifié.',
         });

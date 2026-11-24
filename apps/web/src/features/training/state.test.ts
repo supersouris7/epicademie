@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { generate, type CheckResult, type Question, type Response } from '@questeo/content';
-import { startTraining } from '@questeo/engine';
-import type { SessionSummary } from '@questeo/shared';
+import { generate, type CheckResult, type Question, type Response } from '@epicademie/content';
+import { startTraining } from '@epicademie/engine';
+import type { SessionSummary } from '@epicademie/shared';
 import {
   answerSound,
   canRetry,

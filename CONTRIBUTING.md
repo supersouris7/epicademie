@@ -53,7 +53,7 @@ Le crochet `pre-commit` formate et corrige les fichiers indexés ; `commit-msg` 
 - **Données relues en base** : jamais de cast d'un `jsonb` ; un schéma Zod le valide (exemple :
   `modules/battles/battle-state.ts`, [ADR 0009](docs/adr/0009-etat-des-combats.md)).
 - **Base de données** : modifier `apps/server/src/db/schema.ts`, puis
-  `pnpm --filter @questeo/server db:generate` ; relire le SQL généré ; migrations compatibles avec
+  `pnpm --filter @epicademie/server db:generate` ; relire le SQL généré ; migrations compatibles avec
   la version précédente du code (voir [ADR 0003](docs/adr/0003-migrations.md)).
 - **API** : toute évolution passe par le contrat (`packages/shared/src/api/contract.ts`) et suit
   les règles de compatibilité de l'[ADR 0004](docs/adr/0004-api-versionnee.md).

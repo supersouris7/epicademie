@@ -3,7 +3,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
-const api = process.env.QUESTEO_API ?? 'http://localhost:3000';
+const api = process.env.EPICADEMIE_API ?? 'http://localhost:3000';
 
 /**
  * Version des images (horodatage du build) : ajoutée aux adresses des images, elle force les

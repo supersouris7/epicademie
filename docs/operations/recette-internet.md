@@ -12,7 +12,7 @@ le réinitialise en base). Le parcours élève autonome est masqué. Adresse dé
 ## Architecture
 
 ```
-Internet ──443/80──▶ Caddy (service système)  ──127.0.0.1:3000──▶ questeo (conteneur)
+Internet ──443/80──▶ Caddy (service système)  ──127.0.0.1:3000──▶ epicademie (conteneur)
                      · TLS Let's Encrypt (adresse IP,           └─▶ postgres (réseau interne, jamais publié)
                        profil « shortlived », renouvelé seul)
                      · porte d'accès basic_auth (tout le site, /api, temps réel)
@@ -75,7 +75,7 @@ Pour couper un testeur : supprimer sa ligne et recharger Caddy.
 ## En cas d'alerte
 
 - **« ne répond plus »** : `systemctl status caddy` ; `sudo -u recette docker compose -f ~recette/stack/compose.yml ps`
-  (avec `DOCKER_HOST=unix:///run/user/<uid de recette>/docker.sock`) ; journaux : `docker compose logs --tail 50 questeo`.
+  (avec `DOCKER_HOST=unix:///run/user/<uid de recette>/docker.sock`) ; journaux : `docker compose logs --tail 50 epicademie`.
   Application bloquée : `deployer-atelier.sh` (redéploie) ou `--retour`. Certificat : `journalctl -u caddy | grep -i acme`
   (le certificat d'adresse IP dure une semaine et se renouvelle seul ; les ports 80/443 doivent rester ouverts).
 - **« bannissement »** : `sudo fail2ban-client status caddy-auth` ; lever un bannissement :

@@ -1,4 +1,4 @@
-import { BOSS_MEDAL_LABELS, type BadgeProgress } from '@questeo/shared';
+import { BOSS_MEDAL_LABELS, type BadgeProgress } from '@epicademie/shared';
 import { badgeSrc } from '../../../design/badges.ts';
 
 /**

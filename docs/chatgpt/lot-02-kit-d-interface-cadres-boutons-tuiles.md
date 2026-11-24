@@ -1,5 +1,5 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
-# Academy Fighters — Lot 2 — Kit d’interface : cadres, boutons, tuiles
+# Épicadémie — Lot 2 — Kit d’interface : cadres, boutons, tuiles
 
 23 images, demandes 5 à 14 (10 messages à envoyer).
 
@@ -18,7 +18,7 @@
 ## Message de départ
 
 ```text
-Tu es directeur artistique et illustrateur d'un jeu vidéo éducatif pour tablette, « Academy Fighters », destiné aux élèves de 5e (11-13 ans).
+Tu es directeur artistique et illustrateur d'un jeu vidéo éducatif pour tablette, « Épicadémie », destiné aux élèves de 5e (11-13 ans).
 Je joins les planches de référence : elles fixent la direction artistique (personnages, mascotte, boss, interface). Toutes les images que je vais te demander doivent appartenir à cet univers et à ce style, comme si un seul illustrateur les avait dessinées. Ne recopie pas le texte des planches.
 
 STYLE (à respecter pour CHAQUE image)

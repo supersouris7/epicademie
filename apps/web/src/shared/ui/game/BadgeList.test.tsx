@@ -1,4 +1,4 @@
-import type { BadgeProgress } from '@questeo/shared';
+import type { BadgeProgress } from '@epicademie/shared';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { BadgeList } from './BadgeList.tsx';

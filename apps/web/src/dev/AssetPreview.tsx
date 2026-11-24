@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Keyboard } from '../shared/question/tools/Keyboard.tsx';
 import { typeKey } from '../shared/question/keyboard.ts';
-import { HEROES } from '@questeo/shared';
-import { MEDALS } from '@questeo/engine';
+import { HEROES } from '@epicademie/shared';
+import { MEDALS } from '@epicademie/engine';
 import { BossCard } from '../shared/ui/game/BossCard.tsx';
 import { CharacterAvatar } from '../shared/ui/game/CharacterAvatar.tsx';
 import { HeroCard } from '../shared/ui/game/CharacterCard.tsx';

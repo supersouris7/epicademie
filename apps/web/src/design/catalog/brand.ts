@@ -6,7 +6,7 @@ export const brandAssets = [
   a(
     'logo',
     'branding/logo.webp',
-    'Logo Academy Fighters',
+    'Logo Épicadémie',
     'logo de jeu vidéo : grand blason-bouclier violet à bordure orange et liseré cyan, livre ouvert doré posé sur le haut du blason ; lettrage « ACADEMY » en blanc à contour violet foncé sur la première ligne, « FIGHTERS » plus grand en dégradé jaune-orange à contour violet foncé sur la seconde, lettres très épaisses légèrement inclinées, effet de relief',
     'Écran de choix du joueur, À propos.',
     1,

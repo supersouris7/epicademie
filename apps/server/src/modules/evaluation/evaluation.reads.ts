@@ -1,5 +1,5 @@
-import { getReferential } from '@questeo/content';
-import { inRewardPeriod, type EarlierEvaluation, type Observation } from '@questeo/engine';
+import { getReferential } from '@epicademie/content';
+import { inRewardPeriod, type EarlierEvaluation, type Observation } from '@epicademie/engine';
 import type {
   EvaluationHome,
   EvaluationKind,
@@ -10,8 +10,8 @@ import type {
   StudiedChapterView,
   StudiedChaptersUpdate,
   SubjectId,
-} from '@questeo/shared';
-import { EVALUATION_KINDS } from '@questeo/shared';
+} from '@epicademie/shared';
+import { EVALUATION_KINDS } from '@epicademie/shared';
 import type { Db, Tx } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import { badRequest, conflict, notFound } from '../../core/errors.ts';
@@ -34,7 +34,7 @@ import { buildResult, type StoredCompetence } from './evaluation.result.ts';
 
 /**
  * Arène d'évaluation (docs/adr/0030-arene-evaluation.md). Le serveur choisit chaque question
- * (le moteur pur de @questeo/engine) et n'accepte que la réponse à la question attendue ; il ne
+ * (le moteur pur de @epicademie/engine) et n'accepte que la réponse à la question attendue ; il ne
  * montre jamais juste/faux pendant l'épreuve. Les réponses vont dans `attempts` (parties de mode
  * `evaluation`) sans toucher à `skill_states` ; le bilan est figé à la clôture, avec ses
  * récompenses, dans une seule transaction.

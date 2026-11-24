@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ParentPinSchema } from '@questeo/shared';
+import { ParentPinSchema } from '@epicademie/shared';
 import { ApiError } from '../../shared/api/client.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { setParentPin, useMe, useSetMe } from '../account/index.ts';

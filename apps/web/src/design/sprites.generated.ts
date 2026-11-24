@@ -1,4 +1,4 @@
-// Fichier généré par scripts/assets/sprites.ts (pnpm --filter @questeo/web assets:sprites) : ne pas modifier.
+// Fichier généré par scripts/assets/sprites.ts (pnpm --filter @epicademie/web assets:sprites) : ne pas modifier.
 
 /** Bandes d'animation : nombre d'images et taille d'une image, en pixels. */
 export const SPRITE_ANIMS: Readonly<Record<string, { frames: number; width: number; height: number }>> = {

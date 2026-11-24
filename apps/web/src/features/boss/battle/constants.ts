@@ -1,5 +1,5 @@
-import type { Response } from '@questeo/content';
-import type { BattleView } from '@questeo/shared';
+import type { Response } from '@epicademie/content';
+import type { BattleView } from '@epicademie/shared';
 
 /** Réglages de la mise en scène du combat de boss (durées en millisecondes). */
 

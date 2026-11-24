@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import type { FamilyFriend, FriendsView, Profile, RankingRow } from '@questeo/shared';
+import type { FamilyFriend, FriendsView, Profile, RankingRow } from '@epicademie/shared';
 import { createTestApp, profileInput } from '../../testing/harness.ts';
 
 let t: Awaited<ReturnType<typeof createTestApp>>;

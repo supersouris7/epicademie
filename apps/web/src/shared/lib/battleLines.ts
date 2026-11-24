@@ -1,5 +1,5 @@
 /** Textes et durées des scènes du combat de boss. */
-import { accord, pickAt, type Profile } from '@questeo/shared';
+import { accord, pickAt, type Profile } from '@epicademie/shared';
 
 type Gender = Profile['gender'];
 
