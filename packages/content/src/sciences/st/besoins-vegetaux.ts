@@ -50,9 +50,12 @@ const BESOINS: Record<Besoin, Fiche> = {
       'sel minéral',
       'sels mineraux',
       'les sels mineraux',
+      'des sels mineraux',
+      'de sels mineraux',
+      'sel mineral',
     ],
     scenes: [
-      'La plante a de la lumière et de l’eau. Mais cette eau est pure : elle ne contient aucune substance dissoute.',
+      'La plante pousse dans du sable lavé, sans sels minéraux. Elle a de la lumière et de l’eau pure, sans aucune substance dissoute.',
       'Les racines trempent dans de l’eau pure, qui ne contient rien d’autre. La plante est près de la fenêtre.',
     ],
     temoin: 'arrosé avec de l’eau qui contient des sels minéraux',
@@ -63,6 +66,18 @@ const CLES = Object.keys(BESOINS) as Besoin[];
 
 /** Autre besoin que l’on peut changer en même temps (« jamais arrosé » et « eau pure » se contrediraient). */
 const compatibles = (b: Besoin): readonly Besoin[] => (b === 'lumiere' ? ['eau', 'sels'] : ['lumiere']);
+
+/** Quand les sels sont testés, la terre fausserait l’expérience : elle en apporte. Même support partout. */
+const SABLE = 'le même sable lavé, sans sels minéraux';
+const support = (...testes: readonly Besoin[]) => (testes.includes('sels') ? ` Chaque pot contient ${SABLE}.` : '');
+
+/** « Soleil » au lieu de « lumière » : erreur fréquente, expliquée. */
+const soleil = (b: Besoin) =>
+  b === 'lumiere'
+    ? ['soleil', 'le soleil', 'du soleil', 'de soleil'].map(
+        (t) => [t, 'Le Soleil est un astre. La plante a besoin de ce qu’il envoie : écris ce mot.'] as const,
+      )
+    : [];
 
 const ANIMAL = {
   label: 'de nourriture prise à un animal',
@@ -116,7 +131,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
 };
 
 const experience = (b: Besoin) =>
-  `Deux pots avec la même plante. Pot A : ${BESOINS[b].temoin}. Pot B : ${BESOINS[b].test}. Tout le reste est pareil.`;
+  `Deux pots avec la même plante.${support(b)} Pot A : ${BESOINS[b].temoin}. Pot B : ${BESOINS[b].test}. Tout le reste est pareil.`;
 
 const niveau2 = (rng: Rng): QuestionDraft => {
   if (rng.int(0, 1) === 0) {
@@ -125,7 +140,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
   }
   const ordreAleatoire = rng.shuffle(CLES);
   return {
-    prompt: `Associe chaque pot au besoin testé : ${ordreAleatoire.map((b) => BESOINS[b].test).join(' ; ')}.`,
+    prompt: `Chaque pot contient ${SABLE}. Associe chaque pot au besoin testé : ${ordreAleatoire.map((b) => BESOINS[b].test).join(' ; ')}.`,
     answer: association(
       rng,
       ordreAleatoire.map((b) => [`Pot ${BESOINS[b].test}`, `Besoin ${BESOINS[b].nom}`] as const),
@@ -141,7 +156,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
 };
 
 const PROTOCOLE = (b: Besoin) => [
-  'Préparer deux pots avec la même plante',
+  `Préparer deux pots avec la même plante${b === 'sels' ? `, dans ${SABLE}` : ''}`,
   `Changer une seule chose : un pot est ${BESOINS[b].test}`,
   'Attendre plusieurs jours en observant',
   'Comparer les deux plantes et conclure',
@@ -171,7 +186,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
           { mode: 'text', accepted: ['minéraux', 'mineraux'] },
         ],
       },
-      hint: 'Le premier mot : on arrose avec. Le second : ces sels portent le nom des « minéraux ».',
+      hint: 'Que boit la plante ? Et quels sels trouve-t-on dans le sol ? Relis le mémo.',
       steps: [
         'Les racines servent à la fixation et à l’alimentation de la plante.',
         'Les racines prennent l’**eau** et les sels **minéraux**.',
@@ -179,10 +194,10 @@ const niveau3 = (rng: Rng): QuestionDraft => {
       targetSeconds: 35,
     };
   }
-  const { answer, traps: tr } = saisie(
-    BESOINS[b].accepte,
-    CLES.filter((x) => x !== b).map((x) => [BESOINS[x].accepte[0] ?? '', mauvais(x).why] as const),
-  );
+  const { answer, traps: tr } = saisie(BESOINS[b].accepte, [
+    ...CLES.filter((x) => x !== b).map((x) => [BESOINS[x].accepte[0] ?? '', mauvais(x).why] as const),
+    ...soleil(b),
+  ]);
   return {
     prompt: `${rng.pick(BESOINS[b].scenes)} Écris ce qui manque à la plante.`,
     answer,
@@ -196,19 +211,19 @@ const niveau3 = (rng: Rng): QuestionDraft => {
 const niveau4 = (rng: Rng): QuestionDraft => {
   const b = rng.pick(CLES);
   if (rng.int(0, 1) === 0) {
-    const { answer, traps: tr } = saisie(
-      BESOINS[b].accepte,
-      CLES.filter((x) => x !== b).map(
+    const { answer, traps: tr } = saisie(BESOINS[b].accepte, [
+      ...CLES.filter((x) => x !== b).map(
         (x) =>
           [
             BESOINS[x].accepte[0] ?? '',
             `C’est pareil pour les deux pots sur ce point : on ne teste pas le besoin ${BESOINS[x].nom}.`,
           ] as const,
       ),
-    );
+      ...soleil(b),
+    ]);
     const plante = rng.pick(['des haricots', 'des radis', 'des lentilles']);
     return {
-      prompt: `Lina sème ${plante} dans deux pots de même taille, avec la même terre. Pot A : ${BESOINS[b].temoin}. Pot B : ${BESOINS[b].test}. Quel besoin teste-t-elle ? Écris-le.`,
+      prompt: `Lina sème ${plante} dans deux pots de même taille, avec ${b === 'sels' ? SABLE : 'la même terre'}. Pot A : ${BESOINS[b].temoin}. Pot B : ${BESOINS[b].test}. Quel besoin teste-t-elle ? Écris-le.`,
       answer,
       traps: tr,
       hint: 'Barre tout ce qui est pareil. Que reste-t-il ?',
@@ -238,7 +253,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     },
   ]);
   return {
-    prompt: `Le pot témoin est ${BESOINS[b].temoin}, avec tout ce qu’il faut. Pour tester le besoin ${BESOINS[b].nom}, avec quel pot le comparer ?`,
+    prompt: `Le pot témoin est ${BESOINS[b].temoin}, avec tout ce qu’il faut.${support(b, x, y)} Pour tester le besoin ${BESOINS[b].nom}, avec quel pot le comparer ?`,
     answer,
     traps: tr,
     hint: 'Une bonne expérience ne change qu’une seule chose.',
@@ -252,22 +267,25 @@ const niveau4 = (rng: Rng): QuestionDraft => {
 };
 
 const niveau5 = (rng: Rng): QuestionDraft => {
-  const b = rng.pick(CLES);
+  const t = rng.int(0, 2);
+  // À l’obscurité, une plante peut s’allonger plus que le témoin : la hauteur ne compare que l’eau et les sels.
+  const b = rng.pick(t === 0 ? CLES.filter((k) => k !== 'lumiere') : CLES);
   const x = rng.pick(compatibles(b));
   const bas = rng.pick([4, 5, 6]);
   const haut = bas + rng.pick([7, 9, 11]);
+  const etatA = `${haut} cm, feuilles vertes`;
+  const etatB = b === 'lumiere' ? 'tige longue et fine, feuilles jaunes' : `${bas} cm, plante abîmée`;
   const figure = {
     kind: 'document' as const,
     title: 'Carnet d’expérience (exemple inventé)',
     lines: [
-      'Trois pots avec la même plante, de 3 cm au départ.',
-      `Pot A : ${BESOINS[b].temoin}, avec tout ce qu’il faut. Après 15 jours : ${haut} cm, feuilles vertes.`,
-      `Pot B : ${BESOINS[b].test}, le reste comme A. Après 15 jours : ${bas} cm, plante abîmée.`,
-      `Pot C : ${BESOINS[b].test} et ${BESOINS[x].test}. Après 15 jours : 3 cm, plante abîmée.`,
+      `Trois pots avec la même plante, de 3 cm au départ.${support(b, x)}`,
+      `Pot A : ${BESOINS[b].temoin}, avec tout ce qu’il faut. Après 15 jours : ${etatA}.`,
+      `Pot B : ${BESOINS[b].test}, le reste comme A. Après 15 jours : ${etatB}.`,
+      `Pot C : ${BESOINS[b].test} et ${BESOINS[x].test}. Après 15 jours : plante abîmée.`,
     ],
   };
-  const sujet = `Lis le carnet (pot B ${BESOINS[b].test} ; après 15 jours, A : ${haut} cm et B : ${bas} cm).`;
-  const t = rng.int(0, 2);
+  const sujet = `Lis le carnet (pot B ${BESOINS[b].test} ; après 15 jours, A : ${etatA} ; B : ${etatB}).${support(b, x)}`;
   if (t === 0) {
     return {
       prompt: `${sujet} De combien de centimètres la plante A dépasse-t-elle la plante B ?`,
@@ -290,7 +308,10 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     const bon = `La plante a besoin ${BESOINS[b].nom}`;
     const { answer, traps: tr } = choice(rng, bon, [
       ...wrong,
-      { label: 'La plante n’a aucun besoin', why: 'La plante B s’est abîmée : il lui manquait quelque chose.' },
+      {
+        label: 'La plante n’a aucun besoin',
+        why: 'La plante B va moins bien que la plante A : il lui manquait quelque chose.',
+      },
     ]);
     return {
       prompt: `${sujet} Que peux-tu conclure en comparant A et B ?`,
@@ -298,7 +319,11 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       answer,
       traps: tr,
       hint: 'Cherche la seule différence entre A et B.',
-      steps: ['Entre A et B, une seule chose change.', 'La plante B pousse moins bien.', `Conclusion : **${bon}**.`],
+      steps: [
+        'Entre A et B, une seule chose change.',
+        'La plante B va moins bien que la plante A.',
+        `Conclusion : **${bon}**.`,
+      ],
       targetSeconds: 60,
     };
   }
@@ -330,11 +355,11 @@ export const besoinsVegetaux: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'Un **végétal** a des besoins pour fabriquer sa matière : de la lumière, de l’eau, des **sels minéraux** et un gaz de l’air, le **dioxyde de carbone**. Ses **racines** prennent l’eau et les sels minéraux.',
+      'Un **végétal** a notamment besoin de lumière, d’eau et de **sels minéraux**. Ses **racines** prennent l’eau et les sels minéraux.',
       'Pour vérifier un besoin, fais une expérience : deux pots pareils, et une seule chose qui change. Tu compares avec le **pot témoin** !',
     ],
-    source: `${PROGRAMME} : « Expérimenter pour identifier quelques besoins des végétaux » ; « leurs besoins (lumière, eau, sels minéraux, dioxyde de carbone) » ; racines : Trésor de la langue française (CNRTL).`,
-    sources: [PROGRAMME, 'cnrtl-racine'],
+    source: `${PROGRAMME} : « Expérimenter pour identifier quelques besoins des végétaux » ; racines, eau et sels minéraux ; plante privée de lumière (« étioler ») : Trésor de la langue française (CNRTL).`,
+    sources: [PROGRAMME, 'cnrtl-racine', 'cnrtl-etioler'],
   },
   generate: (rng, level) => (NIVEAUX[level - 1] ?? niveau1)(rng),
 };

@@ -357,6 +357,11 @@ export const FAITS: readonly Fait[] = [
       "Partie inférieure, le plus souvent souterraine, d'une plante vasculaire, qui permet la fixation du végétal dans le sol tout en assurant son alimentation en eau et en sels minéraux.",
   },
   {
+    id: 'etioler-def',
+    source: 'cnrtl-etioler',
+    citation: "Se décolorer, devenir grêle et moins amer en poussant à l'abri de l'air, de la lumière",
+  },
+  {
     id: 'herbivore-def',
     source: 'cnrtl-herbivore',
     citation: "Qui se nourrit d'herbes ou d'autres substances végétales.",

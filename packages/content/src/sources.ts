@@ -429,6 +429,14 @@ export const SOURCES: readonly Source[] = [
     consultedOn: CONSULTED,
   },
   {
+    id: 'cnrtl-etioler',
+    title: 'Trésor de la langue française informatisé, article « étioler »',
+    publisher: 'CNRTL (CNRS, ATILF)',
+    url: 'https://www.cnrtl.fr/definition/%C3%A9tioler',
+    textDate: '2026',
+    consultedOn: CONSULTED,
+  },
+  {
     id: 'cnrtl-herbivore',
     title: 'Trésor de la langue française informatisé, article « herbivore »',
     publisher: 'CNRTL (CNRS, ATILF)',
