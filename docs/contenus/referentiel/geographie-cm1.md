@@ -13,7 +13,7 @@
 | ----------- | --------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------ |
 | `ge-cm1-01` | Les lieux où j'habite                   | mon espace proche ; la commune ; la France sur la carte ; grands repères (fleuves, massifs) | couverte, en relecture   |
 | `ge-cm1-02` | Se loger, travailler, avoir des loisirs | espaces urbains ; espaces touristiques ; logement ; travail                                 | couverte, en relecture   |
-| `ge-cm1-03` | Consommer en France                     | l'eau ; l'énergie ; l'alimentation ; circuits courts et longs                               | absente                  |
+| `ge-cm1-03` | Consommer en France                     | l'eau ; l'énergie ; l'alimentation ; circuits courts et longs                               | couverte, en relecture   |
 | `ge-cm1-04` | Repères : la France                     | régions et chefs-lieux ; fleuves ; massifs ; mers et océans bordant la France               | partielle (gcm1-regions) |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),

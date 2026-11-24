@@ -47,6 +47,13 @@ export interface Notion {
   readonly paires5: readonly (readonly [string, string])[];
   /** Repères dans l'ordre (au moins 4). */
   readonly ordre?: readonly string[];
+  /** Consigne de la remise en ordre (par défaut : du plus petit au plus grand territoire). */
+  readonly ordreTexte?: {
+    readonly prompt: string;
+    readonly hint: string;
+    readonly intro: string;
+    readonly fin: string;
+  };
   readonly libres: readonly Libre[];
   readonly docs: readonly {
     readonly title: string;
@@ -67,10 +74,21 @@ function shuffled<T>(rng: Rng, items: readonly T[]): T[] {
   return out;
 }
 
+const ORDRE_TERRITOIRES = {
+  prompt: 'Remets ces repères dans l’ordre, du plus petit au plus grand.',
+  hint: 'Commence par le lieu où tu habites : il est le plus petit.',
+  intro: 'On range du plus petit au plus grand territoire, comme dans le programme.',
+  fin: 'Le plus petit est',
+};
+
+/** Où lire la citation : programme, règle européenne ou dictionnaire. */
+function lieuDe(src: string): string {
+  if (src === PROGRAMME) return 'ce que dit le programme';
+  return src.startsWith('ue-') ? 'dans la règle européenne' : 'dans le dictionnaire';
+}
+
 const steps = (quote: string, explain: string, answer: string, src: string = PROGRAMME) => [
-  src === PROGRAMME
-    ? `Cherchons ce que dit le programme : « ${quote} ».`
-    : `Cherchons dans le dictionnaire : « ${quote} ».`,
+  `Cherchons ${lieuDe(src)} : « ${quote} ».`,
   explain,
   `La réponse est donc **${answer}**.`,
 ];
@@ -122,15 +140,12 @@ function level2(rng: Rng, n: Notion): QuestionDraft {
 function level3(rng: Rng, n: Notion): QuestionDraft {
   if (n.ordre && rng.int(0, 1) === 0) {
     const items = shuffled(rng, n.ordre);
+    const texte = n.ordreTexte ?? ORDRE_TERRITOIRES;
     return {
-      prompt: 'Remets ces repères dans l’ordre, du plus petit au plus grand.',
+      prompt: texte.prompt,
       answer: { kind: 'order', items, correct: n.ordre.map((o) => items.indexOf(o)) },
-      hint: 'Commence par le lieu où tu habites : il est le plus petit.',
-      steps: [
-        'On range du plus petit au plus grand territoire, comme dans le programme.',
-        ...n.ordre.map((o, i) => `${i + 1}. ${o}.`),
-        `Le plus petit est **${n.ordre[0]}**.`,
-      ],
+      hint: texte.hint,
+      steps: [texte.intro, ...n.ordre.map((o, i) => `${i + 1}. ${o}.`), `${texte.fin} **${n.ordre[0]}**.`],
       targetSeconds: 40,
     };
   }
