@@ -88,6 +88,30 @@ describe('série d’entraînement', () => {
   });
 });
 
+describe('niveaux 1 à 5', () => {
+  const play = (max: 3 | 5, rounds: number) => {
+    let s = startTraining(['a'], none, 30, () => max);
+    for (let i = 0; i < rounds; i++) {
+      const q = nextQuestion(s, none, today, { random: 0, seed: i });
+      s = recordAnswer(s, q, true);
+    }
+    return s.levels.a;
+  };
+  it('notion à 3 niveaux : le niveau ne dépasse jamais 3', () => {
+    expect(play(3, 20)).toBe(3);
+  });
+  it('notion à 5 niveaux : monte jusqu’à 5 puis s’arrête', () => {
+    expect(play(5, 20)).toBe(5);
+    expect(play(5, 3)).toBe(2);
+  });
+  it('deux erreurs d’affilée font descendre d’un niveau', () => {
+    let s = startTraining(['a'], none, 30, () => 5);
+    for (let i = 0; i < 20; i++) s = recordAnswer(s, nextQuestion(s, none, today, { random: 0, seed: i }), true);
+    for (let i = 0; i < 2; i++) s = recordAnswer(s, nextQuestion(s, none, today, { random: 0, seed: 99 + i }), false);
+    expect(s.levels.a).toBe(4);
+  });
+});
+
 describe('épreuve du chapitre', () => {
   it('réussie à 80 % ou plus, série complète seulement', () => {
     expect(EPREUVE_LENGTH).toBe(10);

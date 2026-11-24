@@ -68,6 +68,8 @@ describe('défis : déroulé', () => {
   it('niveaux : Contre-la-montre alterne 1 et 2 ; Survie monte toutes les 5 bonnes réponses', () => {
     expect([levelFor('chrono', 0, 0.1), levelFor('chrono', 0, 0.9)]).toEqual([1, 2]);
     expect([0, 5, 10, 99].map((n) => levelFor('survie', n, 0))).toEqual([1, 2, 3, 3]);
+    expect([0, 5, 10, 15, 20, 99].map((n) => levelFor('survie', n, 0, 5))).toEqual([1, 2, 3, 4, 5, 5]);
+    expect(levelFor('chrono', 0, 0.9, 5)).toBe(2);
   });
 
   it('Survie : 3 cœurs, une erreur coûte un cœur et casse la série, sans toucher au chrono', () => {

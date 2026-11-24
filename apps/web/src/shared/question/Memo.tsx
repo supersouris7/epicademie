@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { useState } from 'react';
-import { generate, glossaryEntry, termsIn, type Skill } from '@epicademie/content';
+import { generate, glossaryEntry, termsIn, skillLevels, type Skill } from '@epicademie/content';
 import { GameButton } from '../ui/game/GameButton.tsx';
 import { MathText } from './MathText.tsx';
 import { Questy } from '../ui/mascot/Questy.tsx';
@@ -9,7 +9,7 @@ import { TermDialog } from './Term.tsx';
 /** Mots du glossaire de la notion : titre, mémo et énoncés types (niveaux 1 à 3). */
 function skillTerms(skill: Skill): string[] {
   const samples: string[] = [];
-  for (const level of [1, 2, 3] as const) {
+  for (const level of ([1, 2, 3, 4, 5] as const).filter((l) => l <= skillLevels(skill))) {
     try {
       const q = generate(skill.id, level, 1);
       samples.push(q.prompt, ...q.steps);

@@ -7,7 +7,7 @@ import { ESPAGNOL_CHAPTERS } from './espagnol/index.ts';
 import { PHYSIQUE_CHAPTERS } from './physique/index.ts';
 import { GEOGRAPHIE_CHAPTERS } from './geographie/index.ts';
 import { HISTOIRE_CHAPTERS } from './histoire/index.ts';
-import type { Chapter, Level, Question, Skill } from './types.ts';
+import { skillLevels, type Chapter, type Level, type Question, type Skill } from './types.ts';
 
 /**
  * Hors maths, pas encore de problèmes ni de pièges écrits pour les boss (décision du 21/11/2026) :
@@ -122,10 +122,15 @@ export function battlePools(chapterId: string) {
   return { mobs, problems: own(chapter.boss.problems), traps: own(chapter.boss.traps) };
 }
 
-/** Génère la question (déterministe pour un triplet notion / niveau / graine). */
+/** Niveau maximal d'une notion (3 si elle est inconnue). */
+export const maxLevelOf = (skillId: string): Level =>
+  skillLevels((skills.get(skillId) ?? bossSkills.get(skillId))?.skill);
+
+/** Génère la question (déterministe pour un triplet notion / niveau / graine ; niveau borné à celui de la notion). */
 export function generate(skillId: string, level: Level, seed: number): Question {
   const entry = skills.get(skillId) ?? bossSkills.get(skillId);
   if (!entry) throw new Error(`Notion inconnue : ${skillId}`);
+  level = Math.min(level, skillLevels(entry.skill)) as Level;
   const draft = entry.skill.generate(createRng(seed), level);
   const demo = draft.demo ?? autoDemo(draft, entry.chapter);
   return { traps: [], targetSeconds: 20, ...draft, ...(demo ? { demo } : {}), skillId, level, seed };
