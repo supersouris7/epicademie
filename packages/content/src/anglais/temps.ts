@@ -653,8 +653,7 @@ const weather: Skill = {
     memo: [
       'Pour demander le temps qu’il fait : « What’s the weather like today? ».',
       'Réponds avec **it’s** et un mot de la météo. Exemple : It’s hot and sunny. (Il fait chaud et beau.)',
-      'Le ciel : sunny (ensoleillé), rainy (pluvieux), cloudy (nuageux), windy (venteux), snowy (neigeux).',
-      'Aussi : stormy (orageux), foggy (avec du brouillard), hot (chaud), cold (froid).',
+      'Le ciel : sunny (ensoleillé), rainy (pluvieux), cloudy (nuageux), windy (venteux), snowy (neigeux), stormy (orageux), foggy (avec du brouillard) ; et hot (chaud), cold (froid).',
     ],
     source: source('Météo : British Council, « Weather flashcards » et « The weather where I live ».'),
     sources: ['cycle3-2020', 'bck-flashcards-weather', 'bck-weather-live', 'bck-weather-your-turn'],
