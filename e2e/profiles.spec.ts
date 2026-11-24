@@ -143,9 +143,9 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByRole('button', { name: new RegExp(name) })).toHaveCount(0);
 });
 
-test('sans compte, toute page mène à l’accueil (parent ou élève) ; l’API reste en JSON', async ({ page, request }) => {
+test('sans compte, toute page mène à la connexion ; l’API reste en JSON', async ({ page, request }) => {
   await page.goto('/nimporte-quoi');
-  await expect(page).toHaveURL(/\/bienvenue$/);
+  await expect(page).toHaveURL(/\/connexion$/);
   const res = await request.get('/api/inconnu');
   expect(res.status()).toBe(404);
 });

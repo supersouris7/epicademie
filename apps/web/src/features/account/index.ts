@@ -4,13 +4,13 @@
  */
 export {
   ForgotPasswordScreen,
+  HiddenInRecette,
   LoginScreen,
   RequireAccount,
   ResetPasswordScreen,
   SignupScreen,
   VerifyEmailScreen,
 } from './AuthScreens.tsx';
-export { TestMailboxScreen } from './TestMailboxScreen.tsx';
 export {
   StudentAgeScreen,
   StudentRecoverScreen,

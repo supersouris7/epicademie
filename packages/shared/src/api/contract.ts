@@ -22,7 +22,6 @@ import {
 import { HEROES, ProfileCreateSchema, ProfileSchema, ProfileUpdateSchema } from '../profile.ts';
 import {
   AuthOptionsSchema,
-  TestMailboxSchema,
   EmailResendResultSchema,
   EmailResendSchema,
   EmailVerifySchema,
@@ -211,7 +210,7 @@ export const api = {
     path: '/auth/signup',
     tag: 'comptes',
     summary:
-      'Crée un compte parent (non vérifié) et envoie le lien de validation ; réponse identique si l’adresse est déjà prise (e-mail d’information)',
+      'Crée un compte parent. Production : non vérifié, lien envoyé par e-mail, réponse identique si l’adresse est prise. Plateforme de test : compte actif et connecté, refus clair si l’adresse est prise',
     access: 'public',
     status: 201,
     body: SignupSchema,
@@ -242,19 +241,10 @@ export const api = {
     method: 'GET',
     path: '/auth/options',
     tag: 'comptes',
-    summary: 'Modes d’ouverture de compte disponibles (Google configuré ou non)',
+    summary: 'Réglages d’ouverture de compte : Google, longueur du mot de passe, plateforme de test',
     access: 'public',
     status: 200,
     response: AuthOptionsSchema,
-  }),
-  testMailbox: endpoint({
-    method: 'GET',
-    path: '/recette/boite-mail',
-    tag: 'comptes',
-    summary: 'Boîte mail de test : e-mails simulés (404 hors simulation ; filtre facultatif ?email=)',
-    access: 'public',
-    status: 200,
-    response: TestMailboxSchema,
   }),
   login: endpoint({
     method: 'POST',
@@ -394,7 +384,8 @@ export const api = {
     method: 'POST',
     path: '/auth/password/forgot',
     tag: 'comptes',
-    summary: 'Envoie un lien de réinitialisation (réponse identique que l’adresse existe ou non)',
+    summary:
+      'Envoie un lien de réinitialisation (réponse identique que l’adresse existe ou non) ; refusé sur la plateforme de test',
     access: 'public',
     status: 204,
     body: PasswordForgotSchema,

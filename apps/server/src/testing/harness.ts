@@ -42,6 +42,8 @@ export const testConfig = (overrides: Partial<AppConfig> = {}): AppConfig => ({
   cookieSecure: false,
   corsOrigins: null,
   sessionDays: 30,
+  recette: false,
+  passwordMinLength: 12,
   mail: { production: false, brevoApiKey: null, from: 'Academy Fighters <noreply@test>' },
   google: null,
   billing: {
@@ -172,6 +174,10 @@ export async function createTestApp(options: TestHarnessOptions = {}) {
       payload: { email, password: TEST_PASSWORD },
     });
     if (res.statusCode !== 201) throw new Error(`inscription de test refusée : ${res.body}`);
+    // Plateforme de test : le compte est déjà actif et connecté.
+    if (res.json<{ status: string }>().status === 'active') {
+      return { cookie: sessionCookie(res), me: res.json<{ me: Me }>().me, email };
+    }
     await app.mailIdle();
     const token = tokenOf(mailer.outbox.at(-1)?.link);
     const verified = await app.http.inject({

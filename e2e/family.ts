@@ -10,9 +10,9 @@ let n = 0;
 export const uniqueEmail = () => `famille-${Date.now()}-${++n}@e2e.test`;
 
 /**
- * Inscription puis validation de l'adresse par le lien (simulation) : arrive sur la création du 1er profil enfant. Par défaut, la famille prend
- * l'abonnement via le simulateur de paiement (tous les chapitres jouables) ; `premium: false`
- * garde la version gratuite.
+ * Inscription sur la plateforme de test : le compte est actif et connecté aussitôt (aucun e-mail) et
+ * arrive sur la création du 1er profil enfant. Par défaut, la famille prend l'abonnement via le
+ * simulateur de paiement (tous les chapitres jouables) ; `premium: false` garde la version gratuite.
  */
 export async function signupFamily(
   page: Page,
@@ -21,13 +21,8 @@ export async function signupFamily(
 ): Promise<string> {
   await page.goto('/inscription');
   await page.getByLabel('E-mail du parent').fill(email);
-  await page.getByLabel('Mot de passe').fill(PASSWORD);
+  await page.getByLabel('Mot de passe', { exact: true }).fill(PASSWORD);
   await page.getByRole('button', { name: 'Créer le compte' }).click();
-  // Mode simulation (hors production, sans fournisseur d'e-mail) : le lien de validation est affiché.
-  await page.getByRole('link', { name: /Ouvrir le lien/ }).click();
-  // Le lien seul ne suffit pas : le mot de passe choisi à l'inscription est demandé.
-  await page.getByLabel('Mot de passe du compte').fill(PASSWORD);
-  await page.getByRole('button', { name: 'Valider mon adresse' }).click();
   await expect(page).toHaveURL(/\/profils\/nouveau$/);
   if (premium) await subscribe(page);
   return email;
@@ -49,7 +44,7 @@ async function subscribe(page: Page): Promise<void> {
 export async function loginFamily(page: Page, email: string): Promise<void> {
   await page.goto('/connexion');
   await page.getByLabel('E-mail du parent').fill(email);
-  await page.getByLabel('Mot de passe').fill(PASSWORD);
+  await page.getByLabel('Mot de passe', { exact: true }).fill(PASSWORD);
   await page.getByRole('button', { name: 'Se connecter' }).click();
   await expect(page).toHaveURL(/\/$/);
 }

@@ -23,9 +23,11 @@ export const EmailSchema = z
 
 /** Longueur minimale recommandée (ANSSI : 12 caractères pour un mot de passe seul). */
 export const PASSWORD_MIN = 12;
+/** Plancher absolu du schéma ; la longueur exigée (PASSWORD_MIN_LENGTH, 12 par défaut) est contrôlée par le serveur. */
+export const PASSWORD_FLOOR = 6;
 export const PasswordSchema = z
   .string()
-  .min(PASSWORD_MIN, `Au moins ${PASSWORD_MIN} caractères`)
+  .min(PASSWORD_FLOOR, `Au moins ${PASSWORD_FLOOR} caractères`)
   .max(200, '200 caractères maximum');
 
 export const SignupSchema = z.object({ email: EmailSchema, password: PasswordSchema });
@@ -65,37 +67,28 @@ export const FamilyExportSchema = z.object({
 export type FamilyExport = z.infer<typeof FamilyExportSchema>;
 
 /**
- * Validation de l'adresse e-mail : l'inscription ne connecte pas, elle envoie un lien à usage
- * unique. `verificationLink` n'est présent qu'en simulation hors production (recette, tests).
+ * Inscription. Production : `verification_required` (lien envoyé par e-mail, aucune session).
+ * Plateforme de test (recette) : `active`, le compte est déjà ouvert et connecté (`me`).
  */
 export const SignupResultSchema = z.object({
-  status: z.literal('verification_required'),
+  status: z.enum(['verification_required', 'active']),
   email: z.string(),
-  verificationLink: z.string().optional(),
+  me: z.lazy(() => MeSchema).optional(),
 });
 export type SignupResult = z.infer<typeof SignupResultSchema>;
 export const EmailResendSchema = z.object({ email: EmailSchema });
-export const EmailResendResultSchema = z.object({ verificationLink: z.string().optional() });
+export const EmailResendResultSchema = z.object({});
 /** Validation de l'adresse : le lien seul ne suffit pas, le mot de passe du compte est exigé. */
 export const EmailVerifySchema = z.object({ token: z.string().min(20).max(200), password: z.string().min(1).max(200) });
 export type EmailVerify = z.infer<typeof EmailVerifySchema>;
 /** Modes d'ouverture de compte proposés par ce serveur (bouton Google masqué si non configuré). */
 export const AuthOptionsSchema = z.object({
   google: z.boolean(),
-  /** Recette : e-mails simulés, consultables dans la « boîte mail de test » (jamais en production). */
-  simulatedMail: z.boolean(),
+  /** Longueur minimale d'un mot de passe (12 en production, 8 sur la plateforme de test). */
+  passwordMinLength: z.number().int(),
+  /** Plateforme de test : pas d'e-mail, parcours élève autonome masqué, « mot de passe oublié » = consigne. */
+  recette: z.boolean(),
 });
-
-/** E-mail simulé conservé pour la recette (aucun envoi réel). */
-export const TestMailSchema = z.object({
-  to: z.string(),
-  subject: z.string(),
-  text: z.string(),
-  sentAt: z.string(),
-  link: z.string().optional(),
-});
-export const TestMailboxSchema = z.object({ messages: z.array(TestMailSchema) });
-export type TestMail = z.infer<typeof TestMailSchema>;
 
 export const PasswordForgotSchema = z.object({ email: EmailSchema });
 export const PasswordResetSchema = z.object({ token: z.string().min(20).max(200), password: PasswordSchema });

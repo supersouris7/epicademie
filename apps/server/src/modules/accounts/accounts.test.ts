@@ -23,13 +23,13 @@ const createProfile = (cookie: string, name = 'Léa') =>
   t.as(cookie).inject({ method: 'POST', url: '/api/v1/profiles', payload: profileInput(name) });
 
 describe('inscription et connexion', () => {
-  it('inscription : aucun cookie de session, compte non vérifié, e-mail normalisé, lien en simulation', async () => {
+  it('inscription : aucun cookie de session, compte non vérifié, e-mail normalisé, lien envoyé par e-mail seulement', async () => {
     const res = await signupRes('  Parent.Durand@Exemple.FR ');
     expect(res.statusCode).toBe(201);
     expect(res.headers['set-cookie']).toBeUndefined();
-    const body = res.json<{ status: string; email: string; verificationLink?: string }>();
-    expect(body).toMatchObject({ status: 'verification_required', email: 'parent.durand@exemple.fr' });
-    expect(tokenOf(body.verificationLink)).toHaveLength(43);
+    expect(res.json()).toEqual({ status: 'verification_required', email: 'parent.durand@exemple.fr' });
+    await t.mailIdle();
+    expect(tokenOf(t.mailer.outbox.at(-1)?.link)).toHaveLength(43);
     expect(t.mailer.outbox.at(-1)?.to).toBe('parent.durand@exemple.fr');
   });
 

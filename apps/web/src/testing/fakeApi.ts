@@ -14,7 +14,6 @@ import {
   API_PREFIX,
   api,
   type AnyEndpoint,
-  type TestMail,
   type BattleView,
   type BossOverview,
   type Inventory,
@@ -89,9 +88,10 @@ export interface FakeApiOptions {
   readonly loggedIn?: boolean;
   /** Le serveur propose « Continuer avec Google ». */
   readonly google?: boolean;
-  /** Recette : e-mails simulés, boîte mail de test disponible. */
-  readonly simulatedMail?: boolean;
-  readonly testMails?: readonly TestMail[];
+  /** Plateforme de test (recette) : compte actif dès l'inscription, aucun e-mail. */
+  readonly recette?: boolean;
+  /** Longueur minimale du mot de passe annoncée par le serveur (défaut : 12 ; 8 en recette). */
+  readonly passwordMinLength?: number;
   /** Actions parent déverrouillées (par défaut : oui). */
   readonly parent?: boolean;
   /** Notions désactivées (en maintenance). */
@@ -122,6 +122,8 @@ export const emptyLearning = (): LearningReport => ({
 });
 
 /** Mot de passe du compte du faux serveur. */
+/** Adresse qui a déjà un compte (inscription refusée en recette). */
+export const TAKEN_EMAIL = 'deja@famille.test';
 export const FAKE_PASSWORD = 'mot de passe parent';
 /** Jeton du lien de validation d'e-mail du faux serveur, et adresse dont l'e-mail n'est pas encore validé. */
 export const FAKE_VERIFICATION_TOKEN = 'jeton-de-validation-0123456789abcdefghij';
@@ -194,12 +196,16 @@ function authHandlers(options: FakeApiOptions) {
   const credentials = (body: unknown) => body as { email: string; password: string };
 
   const handlers: Partial<Record<keyof typeof api, Handler>> = {
-    // Inscription : compte non vérifié, aucune session ; le lien (simulation) ouvre `verifyEmail`.
-    signup: ({ body }) => ({
-      status: 'verification_required',
-      email: credentials(body).email,
-      verificationLink: `http://localhost/email/verification?jeton=${FAKE_VERIFICATION_TOKEN}`,
-    }),
+    // Production : compte non vérifié, aucune session (le lien reçu par e-mail ouvre `verifyEmail`).
+    // Recette : compte actif et connecté.
+    signup: ({ body }) => {
+      if (!options.recette) return { status: 'verification_required', email: credentials(body).email };
+      if (credentials(body).email === TAKEN_EMAIL) {
+        throw new FakeError(409, 'CONFLICT', 'Cette adresse a déjà un compte : connectez-vous.');
+      }
+      Object.assign(session, { loggedIn: true, parent: true, email: credentials(body).email });
+      return { status: 'active', email: credentials(body).email, me: me() };
+    },
     verifyEmail: ({ body }) => {
       if ((body as { token: string }).token !== FAKE_VERIFICATION_TOKEN) {
         throw new FakeError(410, 'GONE', 'Ce lien a déjà été utilisé : connecte-toi avec ton mot de passe.');
@@ -211,11 +217,11 @@ function authHandlers(options: FakeApiOptions) {
       return me();
     },
     resendVerification: () => ({}),
-    authOptions: () => ({ google: options.google ?? false, simulatedMail: options.simulatedMail ?? false }),
-    testMailbox: () => {
-      if (!options.simulatedMail) throw new FakeError(404, 'NOT_FOUND', 'Introuvable.');
-      return { messages: options.testMails ?? [] };
-    },
+    authOptions: () => ({
+      google: options.google ?? false,
+      recette: options.recette ?? false,
+      passwordMinLength: options.passwordMinLength ?? (options.recette ? 8 : 12),
+    }),
     signupStudent: ({ body }) => {
       const b = body as { name: string; avatar: unknown; grade: string };
       Object.assign(session, { loggedIn: true, parent: false, email: null });
