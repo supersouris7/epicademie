@@ -14,7 +14,7 @@ async function newPlayer(browser: Browser, name: string, family: { email?: strin
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
   await expect(page).toHaveURL(/hub/);
   return page;
 }

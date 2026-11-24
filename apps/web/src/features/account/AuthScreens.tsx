@@ -298,7 +298,7 @@ export function SignupScreen() {
     <AuthForm
       title={student ? 'Ton compte' : 'Compte familial'}
       intro={
-        recette
+        recette && student
           ? 'Crée ton compte : e-mail et mot de passe, et tu peux jouer.'
           : student
             ? 'Crée ton compte avec ton e-mail, puis choisis ton profil de joueur.'
@@ -315,7 +315,9 @@ export function SignupScreen() {
           const result = await signup({ email, password });
           if (result.status === 'active' && result.me) {
             setMe(result.me);
-            void navigate('/profils/nouveau', { replace: true });
+            void navigate(student ? '/profils/nouveau' : '/profils/nouveau?pour=enfant&bienvenue=1', {
+              replace: true,
+            });
           } else setSent(result.email);
         } catch (err) {
           setError(message(err, 'Création impossible pour le moment.'));
@@ -419,7 +421,7 @@ export function VerifyEmailScreen() {
       onSubmit={async () => {
         try {
           setMe(await verifyEmail(token, password));
-          void navigate('/profils/nouveau', { replace: true });
+          void navigate('/profils/nouveau?pour=enfant&bienvenue=1', { replace: true });
         } catch (err) {
           // Mot de passe refusé : le lien reste valable, on réessaie ici. Autre refus : lien à renouveler.
           if (err instanceof ApiError && err.status === 401)

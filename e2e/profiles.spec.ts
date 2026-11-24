@@ -5,19 +5,19 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   const name = `E2E${Date.now() % 100000}`;
   // Le parent crée le compte familial, puis le 1er profil enfant.
   await signupFamily(page);
-  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
   await expect(page.getByRole('alert')).toHaveText('Le prénom est obligatoire');
   await page.getByPlaceholder('Ex. Léa').fill('X');
-  await page.getByRole('button', { name: /C’est parti/ }).click();
-  await expect(page.getByRole('alert')).toHaveText('Choisis fille ou garçon.');
+  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
+  await expect(page.getByRole('alert')).toHaveText('Choisissez fille ou garçon.');
 
   await page.getByPlaceholder('Ex. Léa').fill(name);
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   // Classe déduite de l'âge : Questy demande de confirmer dans une fenêtre au premier plan ;
   // « Non » ouvre la liste (du CM1 à la 3e, et Adulte).
-  const gradeDialog = page.getByRole('dialog', { name: 'Ta classe' });
-  await expect(gradeDialog).toContainText('Tu es en 5e ?');
+  const gradeDialog = page.getByRole('dialog', { name: 'Sa classe' });
+  await expect(gradeDialog).toContainText('Votre enfant est en 5e ?');
   await gradeDialog.getByRole('button', { name: 'Non', exact: true }).click();
   await expect(gradeDialog).toHaveCount(0);
   await expect(page.getByRole('radio', { name: 'CM1', exact: true })).toBeVisible();
@@ -28,7 +28,7 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByRole('button', { name: 'Avatar 05' })).toHaveAttribute('aria-pressed', 'true');
   // Le héros ne se choisit plus dans le profil : il a son propre menu.
   await expect(page.getByRole('radiogroup', { name: 'Ton héros' })).toHaveCount(0);
-  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
 
   await expect(page).toHaveURL(/\/hub$/);
   // Barre du haut : le joueur en bref (prénom, niveau, pièces).
@@ -73,7 +73,7 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.getByRole('button', { name: /^Survie/ }).click();
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   await expect(page.getByText(/3 cœurs. Chaque erreur coûte un cœur et casse ta série/)).toBeVisible();
-  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
   await expect(page.getByRole('img', { name: '3 cœurs sur 3' })).toBeVisible();
   await page.getByRole('button', { name: 'Arrêter' }).click();
   await expect(page.getByRole('heading', { name: /points/ })).toBeVisible();
@@ -87,7 +87,7 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
     Math.random = () => 0;
   });
   await page.clock.install();
-  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
   await expect(page.getByText('Calcule 3 × 2.')).toBeVisible();
   await expect(page.getByRole('progressbar', { name: 'Temps restant' })).toBeVisible();
   const answer = async (digit: string) => {
