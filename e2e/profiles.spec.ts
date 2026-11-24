@@ -117,11 +117,12 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.getByRole('button', { name: /^Entraînement/ }).click();
   // Matières : toutes jouables (maths, anglais, espagnol, sciences, géographie, histoire).
   await expect(page.getByRole('button', { name: 'Maths', exact: true })).toBeVisible();
-  // Toutes les matières sont jouables.
+  // Les matières avec contenu sont jouables ; le français (dossiers encore vides) est signalé « à venir ».
   for (const subject of ['Anglais', 'Espagnol', 'Sciences', 'Géographie', 'Histoire']) {
     await expect(page.getByRole('button', { name: subject, exact: true })).toBeVisible();
   }
-  await expect(page.getByRole('button', { name: /à venir/ })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /à venir/ })).toHaveCount(1);
+  await expect(page.getByRole('button', { name: 'Français, à venir' })).toBeVisible();
   await page.getByRole('button', { name: 'Retour' }).click();
   await nav.getByRole('button', { name: 'Multi' }).click();
   // Multi : seuls les Duels sont proposés.

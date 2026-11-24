@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { SUBJECTS } from '@epicademie/shared';
 import { battlePools, CHAPTERS, chaptersOf, generate, maxLevelOf } from './catalog.ts';
 import { DOMAINS, SCIENCES_DOMAINS } from './types.ts';
 import { check } from './check.ts';
@@ -174,6 +175,36 @@ describe('matière Sciences (#76)', () => {
 
   it('un seul boss de matière : les chapitres de sciences ont tous un combat', () => {
     for (const c of chaptersOf('sciences')) expect(battlePools(c.id), c.id).not.toBeNull();
+  });
+});
+
+describe('matière français et domaines (ADR 0034)', () => {
+  const NEW_DOMAINS = [
+    'grammaire',
+    'conjugaison',
+    'orthographe',
+    'vocabulaire',
+    'lecture',
+    'litterature',
+    'histoire',
+    'geographie',
+    'emc',
+    'comprehension-orale',
+    'culture',
+  ] as const;
+
+  it('chaque nouveau domaine a un libellé', () => {
+    for (const d of NEW_DOMAINS) expect(DOMAINS[d], d).toBeTruthy();
+  });
+
+  it('toute matière publiée a au moins un chapitre, le français non publié n’en a aucun', () => {
+    for (const s of SUBJECTS) expect(chaptersOf(s.id).length > 0, s.id).toBe(s.available);
+    expect(chaptersOf('francais')).toHaveLength(0);
+  });
+
+  it('les identifiants de chapitres restent uniques', () => {
+    const ids = CHAPTERS.map((c) => c.id);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 });
 
