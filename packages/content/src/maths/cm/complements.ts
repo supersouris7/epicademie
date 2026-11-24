@@ -713,7 +713,9 @@ export function buildComplements({ S, id, g }: Contexte): Readonly<Record<string
       const d = level === 1 ? 1 : level === 2 ? rng.int(1, 2) : 2;
       const x = exactDecimal(rng, level <= 2 ? 1 : 2, level <= 2 ? 9 : 49, d);
       const res = mul(x, r(k));
-      const digits = x.n * k;
+      const rawDigits = Math.round(toNumber(x) * 10 ** d);
+      const digits = rawDigits * k;
+      const approx = Math.round(toNumber(x));
       const wrongPos = mul(res, r(10));
       const wrongPos2 = mul(res, r(1, 10));
       if (level <= 2) {
@@ -724,16 +726,16 @@ export function buildComplements({ S, id, g }: Contexte): Readonly<Record<string
           },
           {
             label: fmt(wrongPos2),
-            why: 'Le résultat est trop petit : estime-le avec des entiers (ex. 2,5 × 3 est proche de 3 × 3).',
+            why: `Le résultat est trop petit : estime-le avec des entiers. ${fmt(x)} est proche de ${approx}, et ${approx} × ${k} = ${approx * k} : le résultat doit être de cet ordre.`,
           },
           { label: fmt(mul(res, r(100))), why: 'Beaucoup trop grand : compare avec une estimation en entiers.' },
         ];
         return {
           prompt: `Combien font ${fmt(x)} × ${k} ?`,
           ...choice(rng, fmt(res), level === 1 ? wrong.slice(0, 2) : wrong),
-          hint: `Multiplie ${x.n} par ${k} comme des entiers, puis place la virgule.`,
+          hint: `Multiplie ${rawDigits} par ${k} comme des entiers, puis place la virgule.`,
           steps: [
-            `${x.n} × ${k} = ${digits}.`,
+            `${rawDigits} × ${k} = ${digits}.`,
             `Il y a ${d} chiffre${d > 1 ? 's' : ''} après la virgule : ${fmt(x)} × ${k} = **${fmt(res)}**.`,
           ],
           targetSeconds: 25,
@@ -747,26 +749,28 @@ export function buildComplements({ S, id, g }: Contexte): Readonly<Record<string
             [wrongPos, 'La virgule n’est pas au bon endroit : compte les chiffres après la virgule de départ.'],
             [wrongPos2, 'La virgule est trop à gauche.'],
           ]),
-          hint: `Calcule ${x.n} × ${k}, puis place la virgule pour qu’il y ait ${d} chiffres après.`,
-          steps: [`${x.n} × ${k} = ${digits}.`, `Avec ${d} décimales : **${fmt(res)}**.`],
+          hint: `Calcule ${rawDigits} × ${k}, puis place la virgule pour qu’il y ait ${d} chiffres après.`,
+          steps: [`${rawDigits} × ${k} = ${digits}.`, `Avec ${d} décimales : **${fmt(res)}**.`],
           targetSeconds: 40,
         };
       }
       if (level === 4) {
         const unit = exactDecimal(rng, 1, 9, 2);
         const total = mul(unit, r(k));
+        const unitDigits = Math.round(toNumber(unit) * 100);
+        const unitApprox = Math.round(toNumber(unit));
         return {
           prompt: `Estime d’abord, puis calcule : ${fmt(unit)} × ${k}. (Réponds avec le résultat exact.)`,
           answer: num(total),
           traps: traps(total, [
             [
               mul(total, r(10)),
-              `Estime : ${Math.round(unit.n / 100)} × ${k} fait environ ${Math.round(unit.n / 100) * k}. Le résultat doit être de cet ordre.`,
+              `Estime : ${fmt(unit)} est proche de ${unitApprox}, et ${unitApprox} × ${k} fait environ ${unitApprox * k}. Le résultat doit être de cet ordre.`,
             ],
             [mul(total, r(1, 10)), 'Trop petit : compare avec l’estimation.'],
           ]),
-          hint: `Pose ${unit.n} × ${k} sans virgule, puis place-la : 2 chiffres après.`,
-          steps: [`${unit.n} × ${k} = ${unit.n * k}.`, `Avec 2 décimales : **${fmt(total)}**.`],
+          hint: `Pose ${unitDigits} × ${k} sans virgule, puis place-la : 2 chiffres après.`,
+          steps: [`${unitDigits} × ${k} = ${unitDigits * k}.`, `Avec 2 décimales : **${fmt(total)}**.`],
           targetSeconds: 40,
         };
       }
@@ -791,11 +795,12 @@ export function buildComplements({ S, id, g }: Contexte): Readonly<Record<string
     },
     { mental: true },
   );
+  const multiplierDecimalV2 = { ...multiplierDecimal, version: 2 };
 
   return {
     nombres: [unitesNumeration],
     fractions: [encadrerFraction, fractionDroite],
     'calcul-mental': [foisDizaines, decimalFois10, distributivite],
-    operations: [multiplierDecimal],
+    operations: [multiplierDecimalV2],
   };
 }

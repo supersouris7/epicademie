@@ -8,4 +8,5 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'mcm1-fois-dizaines', version: 1, lot: 'ma-cm1-audit', date: '2026-11-24', verdict: 'ok' },
   { skillId: 'mcm1-decimal-fois-10', version: 1, lot: 'ma-cm1-audit', date: '2026-11-24', verdict: 'ok' },
   { skillId: 'mcm1-distributivite', version: 1, lot: 'ma-cm1-audit', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'mcm1-multiplier-decimal', version: 2, lot: 'ma-cm1-audit', date: '2026-11-24', verdict: 'ok' },
 ];
