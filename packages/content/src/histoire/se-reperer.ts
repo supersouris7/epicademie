@@ -474,7 +474,7 @@ const frise3: Generator = (rng) => {
     const years = distinctYears(rng, 4, 101, 300);
     return ranger(
       rng,
-      `Place ces années sur la frise, de la plus ancienne à la plus récente : ${liste(years.map(String))}.`,
+      `Comme sur une frise, range ces années de la plus ancienne à la plus récente : ${liste(years.map(String))}.`,
       years.map((y) => ({ label: String(y), t: y })),
       'Cherche d’abord le plus petit nombre.',
       `${SENS} ${CROISSANT}`,
@@ -838,10 +838,10 @@ const jc5: Generator = (rng) => {
       [
         [String(avant.year - d3), regle],
         [String(avant.year), `C’est la date pour ${avant.nom}. Il reste un calcul.`],
-        [String(base + d3), `Tu es parti de ${repere.nom}. Le texte compare avec ${avant.nom}.`],
+        [String(base + d3), `Tu n’es pas parti du bon objet. Le texte compare avec ${avant.nom}.`],
       ],
       hint,
-      [cite(PREUVES.jc), regle, point(calculAvant), point(calculChaine), fin(av(y))],
+      [regle, point(calculAvant), point(calculChaine), fin(av(y))],
     );
     return { ...q, figure, targetSeconds: 90 };
   }
@@ -1066,7 +1066,7 @@ const ordre5: Generator = (rng) => {
     'Retrouve les dates que tu connais. Place ensuite les événements inventés grâce aux indices.',
     [
       `Repères à connaître : ${programme.map((e) => `« ${e.label} » ${e.date}`).join(' ; ')}.`,
-      `« ${nomSiecle} » est au ${siecle(c)} siècle. ${bornes(c)}`,
+      `« ${nomSiecle} » est au ${siecle(c)} siècle. ${bornes(c)} On le place donc ${creuxSiecle.relatif}.`,
       `« ${nomRelatif} » se place ${creuxRelatif.relatif}.`,
     ].join(' '),
   );

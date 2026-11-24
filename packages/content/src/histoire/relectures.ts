@@ -15,4 +15,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'hcm1-napoleon', version: 1, lot: 'hi-cm1-03', date: '2026-11-24', verdict: 'ok' },
   { skillId: 'hcm1-heritages-revolution', version: 1, lot: 'hi-cm1-03', date: '2026-11-24', verdict: 'ok' },
   { skillId: 'hcm1-siecles-romains', version: 1, lot: 'hi-cm1-04', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'hcm1-frise-chronologique', version: 1, lot: 'hi-cm1-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'hcm1-avant-apres-jc', version: 1, lot: 'hi-cm1-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'hcm1-ordonner-evenements', version: 1, lot: 'hi-cm1-04', date: '2026-11-25', verdict: 'ok' },
 ];
