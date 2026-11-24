@@ -12,4 +12,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm1-groupe-sujet', version: 1, lot: 'fr-cm1-02', date: '2026-11-24', verdict: 'ok' },
   { skillId: 'fcm1-types-sujets', version: 1, lot: 'fr-cm1-02', date: '2026-11-24', verdict: 'ok' },
   { skillId: 'fcm1-nom-ou-verbe', version: 1, lot: 'fr-cm1-02', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'fcm1-objet-circonstanciel', version: 1, lot: 'fr-cm1-03', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'fcm1-cod-coi', version: 1, lot: 'fr-cm1-03', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'fcm1-groupes-circonstanciels', version: 1, lot: 'fr-cm1-03', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'fcm1-manipulations', version: 1, lot: 'fr-cm1-03', date: '2026-11-24', verdict: 'ok' },
 ];

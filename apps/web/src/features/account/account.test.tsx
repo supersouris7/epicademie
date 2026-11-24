@@ -64,7 +64,9 @@ describe('connexion de l’appareil', () => {
     await user.clear(screen.getByLabelText('Mot de passe du compte'));
     await user.type(screen.getByLabelText('Mot de passe du compte'), FAKE_PASSWORD);
     await user.click(screen.getByRole('button', { name: 'Valider mon adresse' }));
-    expect(await screen.findByRole('heading', { name: 'Nouveau joueur' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Profil de votre enfant' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Compte créé' })).toBeInTheDocument();
+    expect(screen.getByText('Prénom de votre enfant (ou un pseudo)')).toBeInTheDocument();
     expect(server.calls.filter((c) => c.path === '/auth/email/verify').at(-1)?.body).toEqual({
       token: FAKE_VERIFICATION_TOKEN,
       password: FAKE_PASSWORD,
@@ -247,7 +249,9 @@ describe('plateforme de test (recette)', () => {
     await user.type(screen.getByLabelText('Mot de passe'), '1234');
     expect(screen.getByRole('link', { name: 'Se connecter' })).toHaveAttribute('href', '/connexion');
     await user.click(screen.getByRole('button', { name: 'Créer le compte' }));
-    expect(await screen.findByRole('heading', { name: 'Nouveau joueur' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Profil de votre enfant' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Compte créé' })).toBeInTheDocument();
+    expect(screen.getByText('Prénom de votre enfant (ou un pseudo)')).toBeInTheDocument();
     expect(server.calls.some((c) => c.path === '/auth/email/resend')).toBe(false);
     expect(document.body).not.toHaveTextContent(/lien|boîte mail|valid/i);
   });

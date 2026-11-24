@@ -8,7 +8,7 @@ test('Version gratuite puis abonnement (simulateur) : chapitres débloqués, his
   await page.getByRole('button', { name: 'Un garçon' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
   // Le joueur est choisi une fois l'accueil affiché : on l'attend avant de naviguer.
   await expect(page).toHaveURL(/hub/);
 
