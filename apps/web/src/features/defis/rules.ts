@@ -1,4 +1,4 @@
-import type { Level, Question } from '@questeo/content';
+import type { Level, Question } from '@epicademie/content';
 import { formatAnswer } from '../../shared/question/answers.ts';
 
 /** Défis (docs/adr/0026-defis.md) : règles pures, testées. */

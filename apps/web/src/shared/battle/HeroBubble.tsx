@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
-import type { HeroId } from '@questeo/shared';
+import type { HeroId } from '@epicademie/shared';
 import type { HeroExpression } from '../../design/assets.ts';
 import { HeroFace } from './HeroFace.tsx';
 import { Bubble } from '../ui/Bubble.tsx';

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router';
-import { MODES, type Profile } from '@questeo/shared';
+import { MODES, type Profile } from '@epicademie/shared';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';

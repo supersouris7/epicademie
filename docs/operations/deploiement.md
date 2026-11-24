@@ -2,7 +2,7 @@
 
 ## Image
 
-`docker.io/<compte>/questeo` — `unstable` (chaque commit de `main` dont la CI passe), `X.Y.Z`,
+`docker.io/<compte>/epicademie` — `unstable` (chaque commit de `main` dont la CI passe), `X.Y.Z`,
 `X.Y`, `X`, `latest` (tags `vX.Y.Z`). Une seule image pour deux usages :
 
 - serveur : commande par défaut (`node server/dist/main.js`) ;
@@ -16,7 +16,7 @@ nouvelle image de base, accepter la PR Dependabot correspondante.
 
 ```bash
 cp .env.example .env    # POSTGRES_PASSWORD obligatoire
-docker compose up -d    # db (sain) → migrate (terminé) → questeo
+docker compose up -d    # db (sain) → migrate (terminé) → epicademie
 curl -s http://localhost:3000/api/ready
 ```
 
@@ -34,21 +34,21 @@ si la base est à jour, avant le redémarrage du serveur).
 
 ## Sauvegardes
 
-- Compose : `docker compose exec db pg_dump -U questeo -Fc questeo > questeo-$(date +%F).dump` ;
-  restauration : `pg_restore -U questeo -d questeo --clean questeo-AAAA-MM-JJ.dump`.
+- Compose : `docker compose exec db pg_dump -U questeo -Fc questeo > epicademie-$(date +%F).dump` ;
+  restauration : `pg_restore -U questeo -d questeo --clean epicademie-AAAA-MM-JJ.dump`.
 - Tester la restauration régulièrement (une sauvegarde non restaurée n'est pas une sauvegarde).
 
 ## Comptes
 
 - **Administration** : plus de compte administrateur. Définir `ADMIN_OPERATOR_SECRET` (32 caractères
   min.) et faire ajouter par le frontal de la page de pilotage (port réservé, authentifié) les
-  en-têtes `X-Questeo-Operateur: <secret>` et `X-Questeo-Operateur-Nom: <identifiant>` ; le frontal
+  en-têtes `X-Epicademie-Operateur: <secret>` et `X-Epicademie-Operateur-Nom: <identifiant>` ; le frontal
   public doit bloquer `/admin` et `/api/v1/admin` (404) et ne jamais transmettre ces en-têtes reçus
   d'Internet. Voir [ADR 0033](../adr/0033-administration-par-operateur.md).
 - **Profils de la bêta** (créés avant les comptes) : conservés en base, sans famille, invisibles
   tant qu'ils ne sont pas rattachés. Après la migration, créer le compte familial depuis
   l'application, puis :
-  `docker compose run --rm questeo node server/dist/admin.js rattacher <email>`.
+  `docker compose run --rm epicademie node server/dist/admin.js rattacher <email>`.
   Tous les profils sans famille (avec leurs progrès) rejoignent cette famille ; les profils des
   autres familles ne sont pas touchés.
 - **E-mails** : aucun fournisseur branché ; les demandes de mot de passe oublié sont journalisées

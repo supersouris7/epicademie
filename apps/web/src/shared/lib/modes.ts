@@ -1,4 +1,4 @@
-import type { ModeCategory, ModeId, ModeInfo } from '@questeo/shared';
+import type { ModeCategory, ModeId, ModeInfo } from '@epicademie/shared';
 import type { MoodId } from '../ui/mascot/moods.ts';
 
 /** L'humeur de Questy sert d'icône à chaque mode. */

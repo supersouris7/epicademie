@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { useNavigate, useParams } from 'react-router';
-import { getAnySkill, getCe2Skill, type Response } from '@questeo/content';
-import type { EvaluationQuestion, Profile } from '@questeo/shared';
+import { getAnySkill, getCe2Skill, type Response } from '@epicademie/content';
+import type { EvaluationQuestion, Profile } from '@epicademie/shared';
 import { ApiError } from '../../shared/api/client.ts';
 import { HeroFace } from '../../shared/battle/HeroFace.tsx';
 import { assetSrc } from '../../design/assets.ts';

@@ -15,7 +15,7 @@ module.exports = {
     {
       name: 'shared-autonome',
       severity: 'error',
-      comment: '@questeo/shared (contrats) ne dépend d’aucun autre paquet du dépôt.',
+      comment: '@epicademie/shared (contrats) ne dépend d’aucun autre paquet du dépôt.',
       from: { path: '^packages/shared/' },
       to: { path: '^(packages/(content|engine)|apps)/' },
     },

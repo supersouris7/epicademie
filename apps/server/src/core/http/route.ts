@@ -1,11 +1,11 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest, RouteShorthandOptions } from 'fastify';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 import type { z } from 'zod';
-import { ErrorBodySchema, type AnyEndpoint, type ResponseOf } from '@questeo/shared';
+import { ErrorBodySchema, type AnyEndpoint, type ResponseOf } from '@epicademie/shared';
 import { actorOf, checkAccess, operatorOf, type Actor } from './auth.ts';
 
 /**
- * Branche un point d'accès du contrat (`@questeo/shared` → `api`) sur Fastify.
+ * Branche un point d'accès du contrat (`@epicademie/shared` → `api`) sur Fastify.
  *
  * Le contrat fournit méthode, chemin, schémas d'entrée et de sortie : Fastify valide les
  * paramètres et le corps AVANT le gestionnaire, puis la réponse APRÈS (un champ en trop est

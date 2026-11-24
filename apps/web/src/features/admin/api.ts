@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api, type AccountSearch, type ReportStatus } from '@questeo/shared';
+import { api, type AccountSearch, type ReportStatus } from '@epicademie/shared';
 
 export type AccountSearchInput = AccountSearch;
 import { request } from '../../shared/api/client.ts';

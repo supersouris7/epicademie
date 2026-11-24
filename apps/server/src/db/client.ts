@@ -67,7 +67,7 @@ export async function openDatabase(url: string, options: DatabaseOptions = {}): 
     const pool = new pg.Pool({
       connectionString: url,
       max: options.poolMax ?? 10,
-      application_name: options.applicationName ?? 'questeo',
+      application_name: options.applicationName ?? 'epicademie',
       // Une requête bloquée ne doit pas immobiliser le serveur.
       statement_timeout: 15_000,
       connectionTimeoutMillis: 5_000,

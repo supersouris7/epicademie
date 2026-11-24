@@ -1,4 +1,4 @@
-import type { CompetenceState, EvaluationKind, EvaluationRole, Level, StudiedStatus } from '@questeo/shared';
+import type { CompetenceState, EvaluationKind, EvaluationRole, Level, StudiedStatus } from '@epicademie/shared';
 import { DOMAIN_ORDER, EVALUATION } from './constants.ts';
 import {
   competenceState,

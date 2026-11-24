@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
-import { api, gradeInfo, type LearningReport, type Profile } from '@questeo/shared';
+import { api, gradeInfo, type LearningReport, type Profile } from '@epicademie/shared';
 import { request } from '../../shared/api/client.ts';
 import { ParentPage } from './ParentShell.tsx';
 import { CharacterAvatar } from '../../shared/ui/game/CharacterAvatar.tsx';

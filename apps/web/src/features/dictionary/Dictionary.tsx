@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { GLOSSARY, GLOSSARY_FAMILIES, type GlossaryFamily } from '@questeo/content';
-import type { Profile } from '@questeo/shared';
+import { GLOSSARY, GLOSSARY_FAMILIES, type GlossaryFamily } from '@epicademie/content';
+import type { Profile } from '@epicademie/shared';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import { SpeechBubble } from '../../shared/ui/SpeechBubble.tsx';

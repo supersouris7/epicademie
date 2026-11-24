@@ -1,6 +1,6 @@
 import { useSearchParams } from 'react-router';
-import { gradesOf } from '@questeo/content';
-import { FALLBACK_GRADE, gradeInfo, playedGrade, type Grade, type Profile } from '@questeo/shared';
+import { gradesOf } from '@epicademie/content';
+import { FALLBACK_GRADE, gradeInfo, playedGrade, type Grade, type Profile } from '@epicademie/shared';
 
 /** Message quand la classe n'a pas encore de contenu. */
 export function comingSoon(grade: Grade): string {

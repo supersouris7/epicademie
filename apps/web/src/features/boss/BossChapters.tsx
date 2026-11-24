@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Navigate, NavigationType, useLocation, useNavigate, useNavigationType, useParams } from 'react-router';
-import { chaptersOf, type Chapter } from '@questeo/content';
+import { chaptersOf, type Chapter } from '@epicademie/content';
 import {
   BOSS_MEDAL_LABELS,
   ITEM_INFO,
@@ -12,7 +12,7 @@ import {
   type ItemId,
   type BossRecord,
   type Profile,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import { bossesKey, equipItems, useBosses } from './api.ts';
 import { HeroFace } from '../../shared/battle/HeroFace.tsx';
 import { BlinkText } from '../../shared/ui/game/BlinkText.tsx';

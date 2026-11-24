@@ -19,7 +19,7 @@ En famille, les tablettes passent en veille et le Wi-Fi saute. Jusqu'ici, une co
 - **Un profil, un appareil** : une seconde connexion du même profil reste refusée tant que la
   première est active.
 - **Récompenses** : l'arène n'en distribue pas (aucune duplication possible à la reconnexion).
-- Métrique `questeo_realtime_disconnects_total` (déconnexions temps réel).
+- Métrique `epicademie_realtime_disconnects_total` (déconnexions temps réel).
 
 ## Conséquences
 

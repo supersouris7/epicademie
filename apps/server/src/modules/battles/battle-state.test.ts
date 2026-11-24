@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createBattle } from '@questeo/engine';
+import { createBattle } from '@epicademie/engine';
 import { BATTLE_STATE_VERSION, readBattle, storeBattle } from './battle-state.ts';
 
 const state = createBattle(

@@ -1,7 +1,7 @@
 import { and, desc, eq, gt, gte, isNotNull, notInArray, sql } from 'drizzle-orm';
-import type { AnswerFact } from '@questeo/engine';
+import type { AnswerFact } from '@epicademie/engine';
 import type { Executor } from '../../db/client.ts';
-import type { ModeId } from '@questeo/shared';
+import type { ModeId } from '@epicademie/shared';
 import { attempts, bossRecords, sessions, skillStates } from '../../db/schema.ts';
 
 /** Parties qui ne sont pas de l'entraînement : jamais comptées dans les badges de série parfaite. */
@@ -35,7 +35,7 @@ export function learningRepo(db: Executor) {
       return rows.map((r) => ({ ...r, attempt: r.attempt === 2 ? 2 : 1, at: r.at.toISOString() }));
     },
 
-    /** Compteurs des badges (voir @questeo/engine/badges.ts), tirés des événements enregistrés. */
+    /** Compteurs des badges (voir @epicademie/engine/badges.ts), tirés des événements enregistrés. */
     async badgeCounters(profileId: string, timeZone: string) {
       const [boss] = await db
         .select({ n: sql<number>`count(*)::int` })

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Profile } from '@questeo/shared';
+import type { Profile } from '@epicademie/shared';
 import { createPresence, type PlayerSocket } from './presence.ts';
 
 const socket = () => ({ connected: true, emit: () => true }) as unknown as PlayerSocket;

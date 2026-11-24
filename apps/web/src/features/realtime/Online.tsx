@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { CHAT_EMOJIS, PRESET_MESSAGES, type OnlinePlayer, type Profile } from '@questeo/shared';
+import { CHAT_EMOJIS, PRESET_MESSAGES, type OnlinePlayer, type Profile } from '@epicademie/shared';
 import { HeroFace } from '../../shared/battle/HeroFace.tsx';
 import { CharacterAvatar } from '../../shared/ui/game/CharacterAvatar.tsx';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';

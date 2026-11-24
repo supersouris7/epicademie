@@ -1,5 +1,5 @@
 import type { Socket } from 'socket.io';
-import type { ClientToServerEvents, OnlinePlayer, Profile, ServerToClientEvents } from '@questeo/shared';
+import type { ClientToServerEvents, OnlinePlayer, Profile, ServerToClientEvents } from '@epicademie/shared';
 
 /** Données attachées à une connexion authentifiée. */
 export interface SocketData {

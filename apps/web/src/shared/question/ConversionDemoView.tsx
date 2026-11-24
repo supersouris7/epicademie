@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { LayoutGroup } from 'motion/react';
-import { fmt, type Demo } from '@questeo/content';
+import { fmt, type Demo } from '@epicademie/content';
 import { conversionDemo, unitsIn } from './conversion.ts';
 import { MathText } from './MathText.tsx';
 import { ConversionGrid } from './tools/ConversionTable.tsx';

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Sprite } from '../ui/game/Sprite.tsx';
 import { motion, useReducedMotion } from 'motion/react';
-import type { HeroId } from '@questeo/shared';
+import type { HeroId } from '@epicademie/shared';
 import type { HeroExpression } from '../../design/assets.ts';
 import { BlinkText } from '../ui/game/BlinkText.tsx';
 import { PassZone } from '../ui/game/PassZone.tsx';

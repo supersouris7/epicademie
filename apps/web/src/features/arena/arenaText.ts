@@ -1,4 +1,4 @@
-import type { ArenaEvent, ArenaView } from '@questeo/shared';
+import type { ArenaEvent, ArenaView } from '@epicademie/shared';
 
 /** Textes de l'arène, partagés par les téléphones et l'écran TV. */
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { generate } from '@questeo/content';
+import { generate } from '@epicademie/content';
 import { freshQuestion } from './recent.ts';
 
 describe('questions sans doublon', () => {

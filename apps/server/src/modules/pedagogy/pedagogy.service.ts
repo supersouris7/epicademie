@@ -1,4 +1,11 @@
-import { allSkillEntries, generate, getAnySkill, skillVersion, validateVariants, type Level } from '@questeo/content';
+import {
+  allSkillEntries,
+  generate,
+  getAnySkill,
+  skillVersion,
+  validateVariants,
+  type Level,
+} from '@epicademie/content';
 import type {
   ContentSkill,
   GeneralReportCreate,
@@ -6,7 +13,7 @@ import type {
   ReportCreate,
   ReportStatus,
   ValidationState,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import { anonymizeText } from '../../core/anonymize.ts';

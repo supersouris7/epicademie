@@ -1,6 +1,6 @@
-import type { CheckResult, Question, Response } from '@questeo/content';
-import { recordAnswer, xpForAnswer, type PlannedQuestion, type TrainingState } from '@questeo/engine';
-import type { SessionSummary } from '@questeo/shared';
+import type { CheckResult, Question, Response } from '@epicademie/content';
+import { recordAnswer, xpForAnswer, type PlannedQuestion, type TrainingState } from '@epicademie/engine';
+import type { SessionSummary } from '@epicademie/shared';
 import type { HeroLine, HeroMoment } from '../../shared/lib/dialogue.ts';
 import type { SoundName } from '../../shared/lib/sound.ts';
 import { formatAnswer } from '../../shared/question/answers.ts';
@@ -9,7 +9,7 @@ import type { Missed } from './types.ts';
 /**
  * État de l'écran d'entraînement et ses transitions (fonction `reducer` pure).
  *
- * La série (questions prévues, niveaux adaptés, variantes) suit les règles de @questeo/engine ;
+ * La série (questions prévues, niveaux adaptés, variantes) suit les règles de @epicademie/engine ;
  * ce module ajoute ce que l'écran en fait : question affichée, 2e essai avec indice, correction,
  * série de bonnes réponses, XP gagnée, réaction du héros. Tirages, sons et appels au serveur
  * sont dans `useTraining.ts` ; l'affichage dans `TrainingPlay.tsx`.

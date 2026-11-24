@@ -374,8 +374,8 @@ function book(x: number, y: number, s: number): string {
 }
 
 export function brandAssets(): SvgAsset[] {
-  const academy = textPath('ACADEMY', 160, 122, 50, 1.5);
-  const fighters = textPath('FIGHTERS', 160, 184, 60, 1.5);
+  const epic = textPath('ÉPIC', 160, 120, 48, 1.5);
+  const academie = textPath('ADÉMIE', 160, 186, 58, 1.5);
   const gradient =
     `<linearGradient id="af-logo-g" x1="0" y1="0" x2="0" y2="1">` +
     `<stop offset="0" stop-color="${c('gold-400')}"/>` +
@@ -395,25 +395,25 @@ export function brandAssets(): SvgAsset[] {
     {
       id: 'brand-emblem',
       file: 'branding/emblem.svg',
-      title: 'Academy Fighters',
+      title: 'Épicadémie',
       usage: 'Emblème de l’application (icône d’onglet, écran d’accueil de l’appareil).',
       body:
         `<g transform="translate(-28.5 2) scale(0.6)">${shield('emb-a', 7)}</g>` +
         book(14, 15, 0.75) +
-        lettering(textPath('AF', 32, 50, 17, 0.5).d, 'gold-400', 4),
+        lettering(textPath('É', 32, 50, 17, 0.5).d, 'gold-400', 4),
     },
     {
       id: 'brand-logo',
       file: 'branding/logo.svg',
-      title: 'Academy Fighters',
+      title: 'Épicadémie',
       usage: 'Logo principal (écran de choix du joueur, À propos).',
       viewBox: '0 0 320 200',
       body:
         `<defs>${gradient}</defs>` +
         `<g transform="translate(30 -2) scale(1.3)">${shield('logo-a', 5)}</g>` +
         book(130, 20, 1.3) +
-        word(academy.d, 'violet-700', c('white')) +
-        word(fighters.d, 'violet-800', 'url(#af-logo-g)'),
+        word(epic.d, 'violet-700', c('white')) +
+        word(academie.d, 'violet-800', 'url(#af-logo-g)'),
     },
   ];
 }

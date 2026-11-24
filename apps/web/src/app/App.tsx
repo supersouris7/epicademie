@@ -1,6 +1,6 @@
 import { lazy, Suspense, type ReactNode } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router';
-import type { Profile } from '@questeo/shared';
+import type { Profile } from '@epicademie/shared';
 import { ApiError } from '../shared/api/client.ts';
 import { useSession } from '../shared/lib/session.ts';
 import { GameButton } from '../shared/ui/game/GameButton.tsx';

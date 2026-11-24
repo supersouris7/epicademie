@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from 'motion/react';
-import type { HeroId } from '@questeo/shared';
+import type { HeroId } from '@epicademie/shared';
 import { assetSrc, HERO_ANIMS, type AnimationState } from '../../../design/assets.ts';
 import { CHARACTER_MOTION } from '../../../design/motion.ts';
 import { Sprite } from './Sprite.tsx';

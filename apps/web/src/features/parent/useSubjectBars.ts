@@ -1,4 +1,4 @@
-import type { LearningReport, Profile } from '@questeo/shared';
+import type { LearningReport, Profile } from '@epicademie/shared';
 import { useBosses, useSkills } from '../../shared/api/queries.ts';
 import { subjectBars, type SubjectBar } from './subjectProgress.ts';
 

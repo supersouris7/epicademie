@@ -1,4 +1,4 @@
-# @questeo/content — contenu pédagogique
+# @epicademie/content — contenu pédagogique
 
 Générateurs d'exercices **purs et déterministes** : `(notion, niveau, graine) → question`, toujours
 la même. Le serveur s'en sert pour régénérer et corriger chaque réponse (il ne fait jamais

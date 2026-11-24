@@ -4,7 +4,7 @@ import {
   type Friend,
   type FriendsView,
   type FriendStatus,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import type { Random } from '../../core/random.ts';

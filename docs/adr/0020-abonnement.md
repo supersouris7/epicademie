@@ -6,7 +6,7 @@
 ## Décision
 
 - **Version gratuite** : le 1er chapitre de chaque classe dans chaque matière (`isFreeChapter`,
-  `@questeo/content`), sans limite d'exercices. Décision produit du 20/11/2026.
+  `@epicademie/content`), sans limite d'exercices. Décision produit du 20/11/2026.
 - **Abonnement familial** : un paiement unique couvre toute la famille (tous les profils) jusqu'à
   la fin de l'année scolaire (`SCHOOL_YEAR_END`, 31 août par défaut). Payer à moins de
   `PREMIUM_MIN_DAYS` jours (60) de la fin donne l'année suivante. Prix configurable

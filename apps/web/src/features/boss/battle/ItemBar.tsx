@@ -1,5 +1,5 @@
-import { itemRefusal } from '@questeo/engine';
-import { ITEM_INFO, MAX_ITEMS_PER_BATTLE, type BattleView, type ItemId } from '@questeo/shared';
+import { itemRefusal } from '@epicademie/engine';
+import { ITEM_INFO, MAX_ITEMS_PER_BATTLE, type BattleView, type ItemId } from '@epicademie/shared';
 import { GameIcon } from '../../../shared/ui/game/GameIcon.tsx';
 import { ITEM_ICONS } from '../../../design/items.ts';
 

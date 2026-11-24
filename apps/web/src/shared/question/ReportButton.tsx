@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { api, QUESTION_REPORT_REASONS, REPORT_REASON_LABELS, type ReportReason } from '@questeo/shared';
-import type { Question } from '@questeo/content';
+import { api, QUESTION_REPORT_REASONS, REPORT_REASON_LABELS, type ReportReason } from '@epicademie/shared';
+import type { Question } from '@epicademie/content';
 import { ApiError, request } from '../api/client.ts';
 import { useSession } from '../lib/session.ts';
 import { GameButton } from '../ui/game/GameButton.tsx';

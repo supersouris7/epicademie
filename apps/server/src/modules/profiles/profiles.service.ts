@@ -1,4 +1,4 @@
-import { STARTING_HEROES, type Profile, type ProfileCreate, type ProfileUpdate } from '@questeo/shared';
+import { STARTING_HEROES, type Profile, type ProfileCreate, type ProfileUpdate } from '@epicademie/shared';
 import type { Actor } from '../../core/http/auth.ts';
 import type { Db } from '../../db/client.ts';
 import { AppError, conflict, notFound } from '../../core/errors.ts';

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { glossaryEntry } from '@questeo/content';
+import { glossaryEntry } from '@epicademie/content';
 import { ConfirmDialog } from '../ui/ConfirmDialog.tsx';
 import { clearTermReminders, remindTerm } from './termReminders.ts';
 import { TermContext } from './termContext.ts';

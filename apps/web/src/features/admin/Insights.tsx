@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { chapterOfAnySkill, getAnySkill } from '@questeo/content';
-import { ANOMALY_LABELS, api, SUBJECTS, SUBSCRIPTION_STATUS_LABELS } from '@questeo/shared';
+import { chapterOfAnySkill, getAnySkill } from '@epicademie/content';
+import { ANOMALY_LABELS, api, SUBJECTS, SUBSCRIPTION_STATUS_LABELS } from '@epicademie/shared';
 import { request } from '../../shared/api/client.ts';
 import { useTrends } from './api.ts';
 import { BarChart, LineChart, ShareChart } from './Charts.tsx';

@@ -1,5 +1,5 @@
 /**
- * Briques communes des SVG Academy Fighters.
+ * Briques communes des SVG Épicadémie.
  *
  * Règles de dessin (documentées dans docs/DESIGN-SYSTEM.md) :
  * - grille 64 × 64, contour encre de 4 unités, jointures et extrémités arrondies ;

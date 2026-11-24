@@ -1,6 +1,6 @@
 /**
- * Génère les SVG d'Academy Fighters dans public/assets et leur catalogue dans src/design/assets.generated.ts.
- * Usage : pnpm --filter @questeo/web assets:svg  (ou `assets:svg --check` pour vérifier sans écrire).
+ * Génère les SVG d'Épicadémie dans public/assets et leur catalogue dans src/design/assets.generated.ts.
+ * Usage : pnpm --filter @epicademie/web assets:svg  (ou `assets:svg --check` pour vérifier sans écrire).
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';

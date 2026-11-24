@@ -1,6 +1,6 @@
 import type { FastifyError, FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { hasZodFastifySchemaValidationErrors, isResponseSerializationError } from 'fastify-type-provider-zod';
-import type { ErrorBody, ErrorCode } from '@questeo/shared';
+import type { ErrorBody, ErrorCode } from '@epicademie/shared';
 import { AppError, statusOf } from '../errors.ts';
 import type { ErrorReporter } from '../observability/error-reporter.ts';
 import { scrubError } from '../observability/scrub.ts';

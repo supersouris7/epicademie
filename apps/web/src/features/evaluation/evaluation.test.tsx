@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { api } from '@questeo/shared';
+import { api } from '@epicademie/shared';
 import { renderApp } from '../../testing/renderApp.tsx';
 import { evaluationHandlers, FAKE_EVALUATION_ID } from '../../testing/fakeEvaluation.ts';
 import type { FakeApi } from '../../testing/fakeApi.ts';

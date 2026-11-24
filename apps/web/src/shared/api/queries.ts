@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { api } from '@questeo/shared';
+import { api } from '@epicademie/shared';
 import { request } from './client.ts';
 
 /** Lectures partagées entre fonctionnalités (menus du jeu et Espace parent) : notions et boss d'un profil. */

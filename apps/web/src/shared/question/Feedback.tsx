@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
-import type { Question, Response } from '@questeo/content';
-import { accord, type Gender } from '@questeo/shared';
+import type { Question, Response } from '@epicademie/content';
+import { accord, type Gender } from '@epicademie/shared';
 import { formatAnswer, formatResponse } from './answers.ts';
 import { GameButton } from '../ui/game/GameButton.tsx';
 import { GameIcon } from '../ui/game/GameIcon.tsx';

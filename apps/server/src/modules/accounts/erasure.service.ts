@@ -1,4 +1,4 @@
-import type { FamilyDelete, FamilyExport } from '@questeo/shared';
+import type { FamilyDelete, FamilyExport } from '@epicademie/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import { AppError } from '../../core/errors.ts';

@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import type { Profile, Report } from '@questeo/shared';
+import type { Profile, Report } from '@epicademie/shared';
 import { sql } from 'drizzle-orm';
 import { AppError } from '../../core/errors.ts';
 import { createTelemetryService } from '../telemetry/index.ts';

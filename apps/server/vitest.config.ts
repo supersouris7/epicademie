@@ -6,7 +6,7 @@ import { defineProject } from 'vitest/config';
  */
 export default defineProject({
   test: {
-    name: '@questeo/server',
+    name: '@epicademie/server',
     testTimeout: 30_000,
     hookTimeout: 60_000,
   },

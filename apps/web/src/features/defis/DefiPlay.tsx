@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useNavigate, useParams } from 'react-router';
-import { getAnySkill } from '@questeo/content';
-import { playedGrade, SUBJECT_IDS, type Profile, type SessionSummary, type SubjectId } from '@questeo/shared';
+import { getAnySkill } from '@epicademie/content';
+import { playedGrade, SUBJECT_IDS, type Profile, type SessionSummary, type SubjectId } from '@epicademie/shared';
 import { HeroFace } from '../../shared/battle/HeroFace.tsx';
 import { playSound } from '../../shared/lib/sound.ts';
 import type { HeroExpression } from '../../design/assets.ts';

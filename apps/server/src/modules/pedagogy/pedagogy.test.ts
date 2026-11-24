@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { battlePools } from '@questeo/content';
-import type { ContentSkill, Profile, Report } from '@questeo/shared';
+import { battlePools } from '@epicademie/content';
+import type { ContentSkill, Profile, Report } from '@epicademie/shared';
 import { createTestApp, profileInput } from '../../testing/harness.ts';
 
 let t: Awaited<ReturnType<typeof createTestApp>>;

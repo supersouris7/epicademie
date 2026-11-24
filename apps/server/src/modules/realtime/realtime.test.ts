@@ -1,8 +1,8 @@
 import type { AddressInfo } from 'node:net';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { io as connect, type Socket } from 'socket.io-client';
-import { fmt, generate } from '@questeo/content';
-import type { ArenaInvite, ArenaView, ChatMessage, OnlinePlayer, Profile } from '@questeo/shared';
+import { fmt, generate } from '@epicademie/content';
+import type { ArenaInvite, ArenaView, ChatMessage, OnlinePlayer, Profile } from '@epicademie/shared';
 import { createTestApp, profileInput } from '../../testing/harness.ts';
 import { startRealtime } from '../../realtime.ts';
 

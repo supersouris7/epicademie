@@ -8,7 +8,7 @@ import {
   type Profile,
   SUBJECT_IDS,
   type SubjectId,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import { ApiError } from '../../shared/api/client.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';

@@ -1,11 +1,11 @@
 import type { FastifyInstance } from 'fastify';
-import { api } from '@questeo/shared';
+import { api } from '@epicademie/shared';
 import { route } from '../../core/http/route.ts';
 import type { Ownership } from '../accounts/index.ts';
 import type { ProfilesService } from './profiles.service.ts';
 
 /**
- * Routes HTTP des profils (contrat : `api.*Profile*` dans @questeo/shared). Seuls les profils de
+ * Routes HTTP des profils (contrat : `api.*Profile*` dans @epicademie/shared). Seuls les profils de
  * la famille connectée sont visibles ; création et suppression réservées au parent (contrat).
  */
 export function profilesRoutes(service: ProfilesService, owns: Ownership) {

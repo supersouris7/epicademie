@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { api } from '@questeo/shared';
+import { api } from '@epicademie/shared';
 import { createTestApp, profileInput } from './testing/harness.ts';
 
 /** Comportements transverses : système, erreurs, sécurité, observabilité, documentation. */
@@ -29,10 +29,10 @@ describe('routes d’exploitation', () => {
       headers: { authorization: 'Bearer jeton-de-test-0123456789' },
     });
     expect(res.statusCode).toBe(200);
-    expect(res.body).toContain('questeo_http_request_duration_seconds');
+    expect(res.body).toContain('epicademie_http_request_duration_seconds');
     // Route paramétrée, jamais l'URL brute (pas d'identifiant dans les métriques).
     expect(res.body).toContain('route="/api/v1/profiles"');
-    expect(res.body).toContain('questeo_online_players');
+    expect(res.body).toContain('epicademie_online_players');
   });
 });
 

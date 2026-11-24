@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 import { z } from 'zod';
-import { api } from '@questeo/shared';
+import { api } from '@epicademie/shared';
 import { route } from '../../core/http/route.ts';
 import { send } from '../../core/http/errors.ts';
 import type { Metrics } from '../../core/observability/metrics.ts';

@@ -3,7 +3,7 @@
  * - crée l'arborescence public/assets/** et assets-src/originals/** ;
  * - recense les images finales déjà livrées (src/design/assets.available.ts) ;
  * - génère le guide de génération ChatGPT (docs/ASSETS-CHATGPT.md).
- * Usage : pnpm --filter @questeo/web assets:plan
+ * Usage : pnpm --filter @epicademie/web assets:plan
  */
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -54,7 +54,7 @@ export function sheets(): Sheet[] {
 
 const hex = (k: keyof typeof PALETTE) => PALETTE[k].toUpperCase();
 
-const MASTER = `Tu es directeur artistique et illustrateur d'un jeu vidéo éducatif pour tablette, « Academy Fighters », destiné aux élèves de 5e (11-13 ans).
+const MASTER = `Tu es directeur artistique et illustrateur d'un jeu vidéo éducatif pour tablette, « Épicadémie », destiné aux élèves de 5e (11-13 ans).
 Je joins les planches de référence : elles fixent la direction artistique (personnages, mascotte, boss, interface). Toutes les images que je vais te demander doivent appartenir à cet univers et à ce style, comme si un seul illustrateur les avait dessinées. Ne recopie pas le texte des planches.
 
 STYLE (à respecter pour CHAQUE image)
@@ -245,7 +245,7 @@ export function lotFiles(): Map<string, string> {
     files.set(
       lot.file,
       `${HEADER}
-# Academy Fighters — ${lot.title}
+# Épicadémie — ${lot.title}
 
 ${lot.images} images, demandes ${lot.first} à ${lot.last} (${lot.last - lot.first + 1} messages à envoyer).
 
@@ -348,7 +348,7 @@ Règles :
 /** Fichier autonome à joindre à ChatGPT pour le kit combat (avec le prompt à copier en tête). */
 export function kitFile(): string {
   const reqs = kitRequests();
-  const head = `# Academy Fighters — Kit combat (à joindre à ChatGPT)
+  const head = `# Épicadémie — Kit combat (à joindre à ChatGPT)
 
 ${reqs.length} demandes · ${reqs.reduce((n, r) => n + r.files.length, 0)} images finales.
 
@@ -399,13 +399,13 @@ export function arenaFile(): string {
   }).join('\n');
   const list = bases.map((b) => `- \`${original(b)}\` — ${b.name} : ${b.prompt}`).join('\n');
   return `${HEADER}
-# Academy Fighters — Arènes
+# Épicadémie — Arènes
 
 ${bases.length} décors fournis par le client (paysage 16:9, style cartoon, sol dégagé au centre), aucun à générer :
 
 ${list}
 
-Chaque décor est décliné en ${ARENA_VARIANTS.length} cadrages par \`pnpm --filter @questeo/web assets:arenas\` (jamais d'étirement) :
+Chaque décor est décliné en ${ARENA_VARIANTS.length} cadrages par \`pnpm --filter @epicademie/web assets:arenas\` (jamais d'étirement) :
 
 | Suffixe | Final | Proportions | Cadrage |
 |---|---|---|---|
@@ -428,7 +428,7 @@ export function guide(): string {
   );
   const lots = built.map((l) => l.body);
   return `<!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
-# Academy Fighters — génération des images avec ChatGPT
+# Épicadémie — génération des images avec ChatGPT
 
 ${PLANNED_ASSETS.length} images finales, produites en ${n} demandes.
 

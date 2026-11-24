@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CHAPTERS, generate, getSkill } from '@questeo/content';
+import { CHAPTERS, generate, getSkill } from '@epicademie/content';
 import { toolTabs } from './tools.ts';
 import { erasedBy, textBox } from './tools/brouillonDraw.ts';
 

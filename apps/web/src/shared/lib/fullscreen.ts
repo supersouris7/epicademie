@@ -1,22 +1,12 @@
 import { useState } from 'react';
+import { safeStorage } from './storage.ts';
 
 /** Préférence « plein écran » (Paramètres), gardée sur l'appareil. */
-const KEY = 'questeo.fullscreen';
+const KEY = 'epicademie.fullscreen';
 
-const read = () => {
-  try {
-    return localStorage.getItem(KEY) === '1';
-  } catch {
-    return false;
-  }
-};
-const write = (on: boolean) => {
-  try {
-    localStorage.setItem(KEY, on ? '1' : '0');
-  } catch {
-    // Stockage indisponible : la préférence ne survivra pas au rechargement.
-  }
-};
+const read = () => safeStorage.get(KEY) === '1';
+// Stockage indisponible : la préférence ne survivra pas au rechargement.
+const write = (on: boolean) => safeStorage.set(KEY, on ? '1' : '0');
 
 export const fullscreenSupported = () => typeof document !== 'undefined' && document.fullscreenEnabled;
 

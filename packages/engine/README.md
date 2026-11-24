@@ -1,4 +1,4 @@
-# @questeo/engine — règles du jeu
+# @epicademie/engine — règles du jeu
 
 Fonctions **pures** (aucune entrée/sortie, aucun état global, hasard injecté) : le serveur les
 applique et persiste le résultat ; le web s'en sert pour afficher des prévisions cohérentes.
@@ -14,4 +14,4 @@ applique et persiste le résultat ; le web s'en sert pour afficher des prévisio
 | `duel.ts`    | handicap d'âge entre joueurs (niveau, temps de réponse)        |
 | `loot.ts`    | coffres d'équipement                                           |
 
-Dépend uniquement de `@questeo/shared` (vérifié par `pnpm arch`). Couverture minimale : 85 %.
+Dépend uniquement de `@epicademie/shared` (vérifié par `pnpm arch`). Couverture minimale : 85 %.

@@ -1,5 +1,5 @@
-import { chaptersOf } from '@questeo/content';
-import { playedGrade, type Grade, type Profile } from '@questeo/shared';
+import { chaptersOf } from '@epicademie/content';
+import { playedGrade, type Grade, type Profile } from '@epicademie/shared';
 import { useBosses } from '../api/queries.ts';
 
 /** Boss vaincus d'une matière (sur ceux de la classe jouée). Source unique du remplissage des reliques. */

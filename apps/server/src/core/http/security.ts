@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
-import type { ErrorBody } from '@questeo/shared';
+import type { ErrorBody } from '@epicademie/shared';
 
 /**
  * Défenses HTTP communes :

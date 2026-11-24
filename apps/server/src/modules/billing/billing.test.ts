@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import type { Billing, LearningReport, Profile } from '@questeo/shared';
+import type { Billing, LearningReport, Profile } from '@epicademie/shared';
 import { createTestApp, profileInput, sessionCookie, TEST_PASSWORD } from '../../testing/harness.ts';
 import { signStripePayload } from './stripe.ts';
 

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { AVAILABLE_HEROES, HERO_NAMES, type HeroId, type Profile } from '@questeo/shared';
+import { AVAILABLE_HEROES, HERO_NAMES, type HeroId, type Profile } from '@epicademie/shared';
 import { useUpdateProfile } from './api.ts';
 import { HeroFace } from '../../shared/battle/HeroFace.tsx';
 import { HeroCard } from '../../shared/ui/game/CharacterCard.tsx';

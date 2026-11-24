@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api, type ProfileCreate, type ProfileUpdate } from '@questeo/shared';
+import { api, type ProfileCreate, type ProfileUpdate } from '@epicademie/shared';
 import { request } from '../../shared/api/client.ts';
 
 const keys = {

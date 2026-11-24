@@ -1,9 +1,9 @@
-import { generate, type Level, type Question } from '@questeo/content';
+import { generate, type Level, type Question } from '@epicademie/content';
 import { safeStorage } from './storage.ts';
 
 /** Énoncés retenus par notion et par profil (sur l'appareil), pour ne pas les reposer de sitôt. */
 const KEEP = 40;
-const key = (profileId: string, skillId: string) => `questeo:recent:${profileId}:${skillId}`;
+const key = (profileId: string, skillId: string) => `epicademie:recent:${profileId}:${skillId}`;
 
 export function recentPrompts(profileId: string, skillId: string): string[] {
   try {

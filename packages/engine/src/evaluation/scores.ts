@@ -1,4 +1,4 @@
-import type { CompetenceState } from '@questeo/shared';
+import type { CompetenceState } from '@epicademie/shared';
 import { DOMAIN_ORDER, EVALUATION } from './constants.ts';
 
 /** Compétence d'un bilan, pour les calculs de maîtrise et de couverture (§7). */

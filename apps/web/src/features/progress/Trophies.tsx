@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { chaptersOf, getChapter } from '@questeo/content';
-import { api, BOSS_MEDAL_LABELS, SUBJECTS, type BossRecord, type Grade } from '@questeo/shared';
+import { chaptersOf, getChapter } from '@epicademie/content';
+import { api, BOSS_MEDAL_LABELS, SUBJECTS, type BossRecord, type Grade } from '@epicademie/shared';
 import { useChapterTrophies } from '../../shared/api/queries.ts';
 import { request } from '../../shared/api/client.ts';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';

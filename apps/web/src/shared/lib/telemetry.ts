@@ -1,4 +1,4 @@
-import { api } from '@questeo/shared';
+import { api } from '@epicademie/shared';
 import { request } from '../api/client.ts';
 
 /**

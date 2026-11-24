@@ -156,7 +156,7 @@ export const KINDS = {
     grid: { gen: '1024x1024', cols: 3, rows: 3 },
   },
   // Arènes : 5 décors fournis par le client (paysage 16:9). Les autres cadrages sont tirés de la
-  // même image par `pnpm --filter @questeo/web assets:arenas` (jamais d'étirement ; voir ARENA_VARIANTS).
+  // même image par `pnpm --filter @epicademie/web assets:arenas` (jamais d'étirement ; voir ARENA_VARIANTS).
   // L'affichage prend la variante dont les proportions sont les plus proches du cadre.
   arena: {
     gen: '1536x1024',

@@ -1,9 +1,9 @@
 import { bossOf } from '../../../design/bosses.ts';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { check, generate, getAnySkill, type Chapter, type Response } from '@questeo/content';
-import { itemRefusal } from '@questeo/engine';
-import type { BattleView, ItemId, Profile } from '@questeo/shared';
+import { check, generate, getAnySkill, type Chapter, type Response } from '@epicademie/content';
+import { itemRefusal } from '@epicademie/engine';
+import type { BattleView, ItemId, Profile } from '@epicademie/shared';
 import { answerBattle, bossesKey, finishBattle, sendBattleItem, startBattle } from '../api.ts';
 import { ApiError } from '../../../shared/api/client.ts';
 import { bossSays, heroSays, mobSays, questySays } from '../../../shared/lib/dialogue.ts';

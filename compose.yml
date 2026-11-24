@@ -1,4 +1,6 @@
-# Questeo / Academy Fighters — déploiement de référence (une machine).
+# Épicadémie — déploiement de référence (une machine).
+# Base, utilisateur PostgreSQL et volume « questeo » (ancien nom) conservés : les renommer casserait les
+# déploiements existants (migration de données nécessaire).
 #
 #   cp .env.example .env   # puis renseigner POSTGRES_PASSWORD (et PUBLIC_URL)
 #   docker compose up -d
@@ -23,7 +25,7 @@ services:
 
   # Applique les migrations puis s'arrête (même image que le serveur).
   migrate:
-    image: ${QUESTEO_IMAGE:-questeo:local}
+    image: ${EPICADEMIE_IMAGE:-epicademie:local}
     build: .
     command: ['node', 'server/dist/migrate.js']
     environment:
@@ -37,12 +39,12 @@ services:
         condition: service_healthy
     restart: 'no'
 
-  questeo:
-    image: ${QUESTEO_IMAGE:-questeo:local}
+  epicademie:
+    image: ${EPICADEMIE_IMAGE:-epicademie:local}
     build: .
     restart: unless-stopped
     ports:
-      - '${QUESTEO_PORT:-3000}:3000'
+      - '${EPICADEMIE_PORT:-3000}:3000'
     environment:
       DATABASE_URL: postgres://questeo:${POSTGRES_PASSWORD}@db:5432/questeo
       # URL utilisée dans le QR code de connexion des appareils.
@@ -52,7 +54,7 @@ services:
       TRUST_PROXY: ${TRUST_PROXY:-0}
       METRICS_TOKEN: ${METRICS_TOKEN:-}
       # Administration : secret (32 caractères min.) que le frontal de la page de pilotage ajoute
-      # (en-tête X-Questeo-Operateur). Vide : aucune administration. Voir docs/adr/0033-….
+      # (en-tête X-Epicademie-Operateur). Vide : aucune administration. Voir docs/adr/0033-….
       ADMIN_OPERATOR_SECRET: ${ADMIN_OPERATOR_SECRET:-}
       # E-mails de validation (Brevo) et connexion Google : voir docs/operations/configuration.md.
       # Production : BREVO_API_KEY obligatoire ; recette sans fournisseur : APP_ENV=recette.

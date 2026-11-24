@@ -8,7 +8,7 @@ import {
   type AccountDetail,
   type AccountRow,
   type AccountSearch,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import { ApiError } from '../../shared/api/client.ts';
 import { useAccount, useAccounts, useAudit, useResetPassword } from './api.ts';
 import { AdminButton, Badge, inputClass, Panel } from './ui.tsx';

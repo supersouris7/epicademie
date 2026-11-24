@@ -70,7 +70,7 @@ export async function assertSchemaUpToDate(database: Database, migrationsFolder:
   if (!status.upToDate) {
     throw new Error(
       `Base non migrée (${status.applied}/${status.expected} migrations) : lancez d'abord ` +
-        '`pnpm --filter @questeo/server db:migrate` (ou le conteneur « migrate »).',
+        '`pnpm --filter @epicademie/server db:migrate` (ou le conteneur « migrate »).',
     );
   }
 }

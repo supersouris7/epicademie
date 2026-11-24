@@ -1,11 +1,11 @@
 import { motion } from 'motion/react';
 import { Navigate, useNavigate, useParams } from 'react-router';
-import { getChapter } from '@questeo/content';
-import type { Profile } from '@questeo/shared';
+import { getChapter } from '@epicademie/content';
+import type { Profile } from '@epicademie/shared';
 import { useDisabledSkills, useSkills } from './api.ts';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { MedalBadge } from '../../shared/ui/game/RewardBadge.tsx';
-import { medal } from '@questeo/engine';
+import { medal } from '@epicademie/engine';
 import { localToday } from '../../shared/lib/dates.ts';
 import { masteryOf } from '../../shared/lib/progress.ts';
 import { EPREUVE_SKILL } from './epreuve.ts';

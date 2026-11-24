@@ -14,7 +14,7 @@ vi.mock('socket.io-client', async () => (await import('../testing/fakeSocket.ts'
 describe('profils', () => {
   it('choix du joueur : la liste vient du serveur', async () => {
     const { user } = renderApp('/', { profileId: null });
-    expect(await screen.findByRole('heading', { name: 'Academy Fighters' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Épicadémie' })).toBeInTheDocument();
     await user.click(await screen.findByRole('button', { name: /Léa/ }));
     expect(await screen.findByRole('group', { name: 'Mon joueur' })).toHaveTextContent('Léa');
   });
@@ -46,7 +46,7 @@ describe('profils', () => {
 
   it('profil inconnu : retour au choix du joueur', async () => {
     renderApp('/hub', { profileId: '99999999-9999-4999-8999-999999999999' });
-    expect(await screen.findByRole('heading', { name: 'Academy Fighters' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Épicadémie' })).toBeInTheDocument();
   });
 
   it('serveur injoignable : on peut réessayer', async () => {
@@ -176,6 +176,6 @@ describe('suivi et réglages', () => {
 
   it('adresse inconnue : retour à l’accueil', async () => {
     renderApp('/nulle-part', { profileId: null });
-    expect(await screen.findByRole('heading', { name: 'Academy Fighters' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Épicadémie' })).toBeInTheDocument();
   });
 });

@@ -7,8 +7,8 @@ import {
   DOMAINS,
   type DomainId,
   type Question,
-} from '@questeo/content';
-import type { EvaluationKind } from '@questeo/shared';
+} from '@epicademie/content';
+import type { EvaluationKind } from '@epicademie/shared';
 
 /** Question d'une épreuve : les notions du CE2 (prérequis) viennent d'un registre à part. */
 export const generateEvaluation = (skillId: string, level: 1 | 2 | 3, seed: number): Question =>

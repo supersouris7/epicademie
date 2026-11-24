@@ -1,6 +1,6 @@
 import { fireEvent, render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { CHAPTERS, generate, type Question } from '@questeo/content';
+import { CHAPTERS, generate, type Question } from '@epicademie/content';
 import { Figure } from './Figure.tsx';
 
 /**

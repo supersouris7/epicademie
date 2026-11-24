@@ -1,4 +1,4 @@
-import type { Chest } from '@questeo/shared';
+import type { Chest } from '@epicademie/shared';
 import type { Executor } from '../../db/client.ts';
 import { profilesRepo } from '../profiles/index.ts';
 import { inventoryRepo } from './inventory.repo.ts';

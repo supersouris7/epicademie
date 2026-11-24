@@ -1,6 +1,6 @@
-import { generate } from '@questeo/content';
+import { generate } from '@epicademie/content';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import type { Profile, SessionSummary } from '@questeo/shared';
+import type { Profile, SessionSummary } from '@epicademie/shared';
 import { createTestApp, profileInput, sequenceRandom } from '../../testing/harness.ts';
 
 const avatar = { style: 'portrait', seed: '07' } as const;

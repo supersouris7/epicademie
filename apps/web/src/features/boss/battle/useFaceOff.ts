@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import type { Chapter } from '@questeo/content';
-import type { Profile } from '@questeo/shared';
+import type { Chapter } from '@epicademie/content';
+import type { Profile } from '@epicademie/shared';
 import { useBosses } from '../api.ts';
 import { faceOffTaunt } from '../../../shared/lib/battleLines.ts';
 import { bossOf } from '../../../design/bosses.ts';

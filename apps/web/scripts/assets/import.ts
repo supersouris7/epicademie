@@ -3,7 +3,7 @@
  * détourage du fond magenta, découpe des planches en grille, recadrage, redimensionnement,
  * conversion WebP, contrôle de la transparence, puis mise à jour du manifeste.
  *
- * Usage : pnpm --filter @questeo/web assets:import [--force] [filtre…]
+ * Usage : pnpm --filter @epicademie/web assets:import [--force] [filtre…]
  *   filtre : morceau d'identifiant, de chemin ou de nom de planche (ex. « questy », « boutons »).
  * Les originaux ne sont jamais modifiés.
  */

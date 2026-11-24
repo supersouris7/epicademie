@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { generate } from '@questeo/content';
+import { generate } from '@epicademie/content';
 import { Feedback } from './Feedback.tsx';
 
 const question = generate('m5-tables', 1, 7);

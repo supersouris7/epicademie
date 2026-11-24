@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { AnimatePresence, motion, useReducedMotion, type TargetAndTransition } from 'motion/react';
-import { HERO_NAMES, type HeroId } from '@questeo/shared';
+import { HERO_NAMES, type HeroId } from '@epicademie/shared';
 import { assetSrc, characterSrc, type AnimationState } from '../../design/assets.ts';
 import { mustFlip } from '../../design/orientation.ts';
 import { CharacterSprite } from '../ui/game/CharacterSprite.tsx';

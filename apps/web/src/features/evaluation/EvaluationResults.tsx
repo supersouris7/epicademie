@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router';
-import { check } from '@questeo/content';
-import type { EvaluationResult, Profile } from '@questeo/shared';
+import { check } from '@epicademie/content';
+import type { EvaluationResult, Profile } from '@epicademie/shared';
 import { HeroFace } from '../../shared/battle/HeroFace.tsx';
 import { formatAnswer, formatResponse } from '../../shared/question/answers.ts';
 import { MathText } from '../../shared/question/MathText.tsx';

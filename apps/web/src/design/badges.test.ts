@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { BADGE_CATEGORIES, BADGE_TIERS } from '@questeo/shared';
+import { BADGE_CATEGORIES, BADGE_TIERS } from '@epicademie/shared';
 import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 import { BADGE_IMAGES, badgeSrc } from './badges.ts';

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { BattleAnswerResult, BattleSummary, BattleView } from '@questeo/shared';
+import type { BattleAnswerResult, BattleSummary, BattleView } from '@epicademie/shared';
 import {
   bossArrives,
   bossEnrages,

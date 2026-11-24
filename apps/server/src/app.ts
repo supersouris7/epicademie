@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto';
 import Fastify, { LogController, type FastifyInstance } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
-import { API_PREFIX } from '@questeo/shared';
+import { API_PREFIX } from '@epicademie/shared';
 import type { ServerConfig } from './config.ts';
 import type { Database } from './db/client.ts';
 import { systemClock, type Clock } from './core/clock.ts';

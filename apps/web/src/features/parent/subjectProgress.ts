@@ -1,4 +1,4 @@
-import { chaptersOf } from '@questeo/content';
+import { chaptersOf } from '@epicademie/content';
 import {
   playedGrade,
   SUBJECTS,
@@ -6,7 +6,7 @@ import {
   type Grade,
   type LearningReport,
   type SkillProgress,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import { chapterProgress } from '../../shared/lib/progress.ts';
 import { relicProgressOf, type RelicProgress } from '../../shared/lib/relicProgress.ts';
 import { skillTitle } from './summary.ts';

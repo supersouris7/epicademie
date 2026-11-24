@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { sql } from 'drizzle-orm';
-import { fmt, getCe2Skill, gradeOfSkill, type Question } from '@questeo/content';
+import { fmt, getCe2Skill, gradeOfSkill, type Question } from '@epicademie/content';
 import type {
   BadgeProgress,
   EvaluationAnswerResult,
@@ -9,7 +9,7 @@ import type {
   EvaluationResult,
   EvaluationStarted,
   Profile,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import { createTestApp, profileInput } from '../../testing/harness.ts';
 import { generateAny } from './evaluation.plan.ts';
 

@@ -1,4 +1,4 @@
-import type { SubjectId } from '@questeo/shared';
+import type { SubjectId } from '@epicademie/shared';
 
 /**
  * Relique de chaque matière : chaque boss de chapitre vaincu en donne un éclat. Son icône sert aussi

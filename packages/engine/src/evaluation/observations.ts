@@ -1,4 +1,4 @@
-import type { CompetenceState, Level } from '@questeo/shared';
+import type { CompetenceState, Level } from '@epicademie/shared';
 import { EVALUATION } from './constants.ts';
 
 /** Origine d'une observation : l'épreuve, un mode solo, un mode à plusieurs, ou écartée (poids 0). */

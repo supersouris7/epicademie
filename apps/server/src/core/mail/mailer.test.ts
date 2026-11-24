@@ -4,7 +4,7 @@ import { brevoMailer, detachedMailer, maskEmail, parseSender, simulationMailer }
 describe('mailer', () => {
   it('Brevo : API HTTP transactionnelle, clé en en-tête, expéditeur analysé', async () => {
     const fetcher = vi.fn(async () => new Response('{}', { status: 201 }));
-    await brevoMailer({ apiKey: 'xkeysib-secret', from: 'Academy Fighters <noreply@exemple.fr>', fetcher }).send({
+    await brevoMailer({ apiKey: 'xkeysib-secret', from: 'Épicadémie <noreply@exemple.fr>', fetcher }).send({
       to: 'parent@exemple.fr',
       subject: 'Sujet',
       text: 'Corps',
@@ -13,7 +13,7 @@ describe('mailer', () => {
     expect(url).toBe('https://api.brevo.com/v3/smtp/email');
     expect((init.headers as Record<string, string>)['api-key']).toBe('xkeysib-secret');
     expect(JSON.parse(init.body as string)).toEqual({
-      sender: { name: 'Academy Fighters', email: 'noreply@exemple.fr' },
+      sender: { name: 'Épicadémie', email: 'noreply@exemple.fr' },
       to: [{ email: 'parent@exemple.fr' }],
       subject: 'Sujet',
       textContent: 'Corps',

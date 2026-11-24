@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { ArenaView, ChatMessage, OnlinePlayer } from '@questeo/shared';
+import type { ArenaView, ChatMessage, OnlinePlayer } from '@epicademie/shared';
 
 /** Fausse connexion socket.io : enregistre les écouteurs et les messages émis. */
 class FakeSocket {
@@ -86,7 +86,7 @@ describe('connexion temps réel', () => {
 
   it('refus du serveur : message gardé, retour au choix du profil', () => {
     const onRefused = vi.fn();
-    window.addEventListener('questeo:refused', onRefused);
+    window.addEventListener('epicademie:refused', onRefused);
     useRealtime.getState().connect('p1');
     const s = last();
     s.active = false;

@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { gradeInfo } from '@questeo/shared';
+import { gradeInfo } from '@epicademie/shared';
 import { CharacterAvatar } from '../../shared/ui/game/CharacterAvatar.tsx';
 import { ProfileEditor, useProfiles } from '../profiles/index.ts';
 import { FamilyFriends } from './FamilyFriends.tsx';

@@ -1,5 +1,5 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
-# Academy Fighters — génération des images avec ChatGPT
+# Épicadémie — génération des images avec ChatGPT
 
 292 images finales, produites en 154 demandes.
 
@@ -48,7 +48,7 @@ Aucune image ne contient de texte, sauf le logo et le badge « XP ». Les libell
 ## Message de départ (à coller dans chaque conversation)
 
 ```text
-Tu es directeur artistique et illustrateur d'un jeu vidéo éducatif pour tablette, « Academy Fighters », destiné aux élèves de 5e (11-13 ans).
+Tu es directeur artistique et illustrateur d'un jeu vidéo éducatif pour tablette, « Épicadémie », destiné aux élèves de 5e (11-13 ans).
 Je joins les planches de référence : elles fixent la direction artistique (personnages, mascotte, boss, interface). Toutes les images que je vais te demander doivent appartenir à cet univers et à ce style, comme si un seul illustrateur les avait dessinées. Ne recopie pas le texte des planches.
 
 STYLE (à respecter pour CHAQUE image)
@@ -89,7 +89,7 @@ Réponds simplement « Prêt » si tu as compris.
 
 ### Lot 1 — Marque et fonds de menu
 
-#### 1. Logo Academy Fighters
+#### 1. Logo Épicadémie
 Enregistrer sous `assets-src/originals/branding/logo.png` · 1536×1024 → final 1200×800
 
 ```text

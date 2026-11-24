@@ -1,4 +1,4 @@
-import type { EvaluationHome, EvaluationQuestion, EvaluationResult } from '@questeo/shared';
+import type { EvaluationHome, EvaluationQuestion, EvaluationResult } from '@epicademie/shared';
 
 /** Question de l'épreuve fictive : une notion de la classe, une du CE2 (prérequis). */
 const SCRIPT: readonly Pick<EvaluationQuestion, 'skillId' | 'level' | 'seed' | 'domain' | 'role'>[] = [

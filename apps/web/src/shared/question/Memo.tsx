@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { useState } from 'react';
-import { generate, glossaryEntry, termsIn, type Skill } from '@questeo/content';
+import { generate, glossaryEntry, termsIn, type Skill } from '@epicademie/content';
 import { GameButton } from '../ui/game/GameButton.tsx';
 import { MathText } from './MathText.tsx';
 import { Questy } from '../ui/mascot/Questy.tsx';

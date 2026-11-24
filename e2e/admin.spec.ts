@@ -2,8 +2,8 @@ import { expect, test } from '@playwright/test';
 
 /** En-têtes que le frontal de la page de pilotage ajoute (secret fictif défini dans playwright.config.ts). */
 const OPERATOR = {
-  'X-Questeo-Operateur': 'secret-operateur-e2e-0123456789-abcdefghij',
-  'X-Questeo-Operateur-Nom': 'Recette',
+  'X-Epicademie-Operateur': 'secret-operateur-e2e-0123456789-abcdefghij',
+  'X-Epicademie-Operateur-Nom': 'Recette',
 };
 
 test.describe('console d’administration (opérateur)', () => {

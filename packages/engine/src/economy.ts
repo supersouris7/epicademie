@@ -1,4 +1,4 @@
-import type { ChestRarity } from '@questeo/shared';
+import type { ChestRarity } from '@epicademie/shared';
 
 /**
  * Paramètres d'équilibrage de l'économie, réunis ici (docs/adr/0019-economie.md) : un seul

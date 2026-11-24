@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import type { BattleView, Me, Profile } from '@questeo/shared';
+import type { BattleView, Me, Profile } from '@epicademie/shared';
 import { createTestApp, profileInput, sessionCookie, TEST_PASSWORD, tokenOf } from '../../testing/harness.ts';
 
 let t: Awaited<ReturnType<typeof createTestApp>>;
@@ -273,7 +273,7 @@ describe('requêtes venues d’un autre site', () => {
     const sameSite = await t.http.inject({
       method: 'POST',
       url: '/api/v1/profiles',
-      headers: { origin: 'http://questeo.test:3000', host: 'questeo.test:3000' },
+      headers: { origin: 'http://epicademie.test:3000', host: 'epicademie.test:3000' },
       payload: profileInput('Léa'),
     });
     expect(sameSite.statusCode).toBe(201);

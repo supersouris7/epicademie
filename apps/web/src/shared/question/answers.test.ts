@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Question } from '@questeo/content';
+import type { Question } from '@epicademie/content';
 import { formatAnswer, formatResponse, medalMessage } from './answers.ts';
 
 const q = (answer: unknown, figure?: unknown) => ({ answer, figure }) as unknown as Question;

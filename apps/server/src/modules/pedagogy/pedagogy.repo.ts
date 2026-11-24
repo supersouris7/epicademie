@@ -1,5 +1,5 @@
 import { and, desc, eq, gte, inArray, isNull, sql } from 'drizzle-orm';
-import type { ReportReason, ReportStatus } from '@questeo/shared';
+import type { ReportReason, ReportStatus } from '@epicademie/shared';
 import type { Executor } from '../../db/client.ts';
 import { contentEvents, contentStates, profiles, questionReports } from '../../db/schema.ts';
 

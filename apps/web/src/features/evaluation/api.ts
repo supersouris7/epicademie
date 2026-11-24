@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { api, type EvaluationAnswer, type EvaluationCreate, type SubjectId } from '@questeo/shared';
+import { api, type EvaluationAnswer, type EvaluationCreate, type SubjectId } from '@epicademie/shared';
 import { request } from '../../shared/api/client.ts';
 
 /** Appels au serveur pour l'Arène d'évaluation : accueil, déroulé de l'épreuve, bilan, historique. */

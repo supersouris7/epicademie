@@ -1,4 +1,4 @@
-import { MEDAL_LABELS, type Medal } from '@questeo/engine';
+import { MEDAL_LABELS, type Medal } from '@epicademie/engine';
 import { GameIcon } from './GameIcon.tsx';
 
 const MEDAL_ICONS: Record<Medal, string> = {

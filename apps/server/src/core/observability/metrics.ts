@@ -23,45 +23,45 @@ export interface Metrics {
 
 export function createMetrics(): Metrics {
   const registry = new Registry();
-  registry.setDefaultLabels({ app: 'questeo' });
+  registry.setDefaultLabels({ app: 'epicademie' });
   collectDefaultMetrics({ register: registry });
   return {
     registry,
     onlinePlayers: new Gauge({
-      name: 'questeo_online_players',
+      name: 'epicademie_online_players',
       help: 'Joueurs connectés en temps réel',
       registers: [registry],
     }),
     openArenas: new Gauge({
-      name: 'questeo_open_arenas',
+      name: 'epicademie_open_arenas',
       help: 'Arènes ouvertes (salon ou partie)',
       registers: [registry],
     }),
     realtimeDisconnects: new Counter({
-      name: 'questeo_realtime_disconnects_total',
+      name: 'epicademie_realtime_disconnects_total',
       help: 'Déconnexions temps réel (réseau, veille, départ)',
       registers: [registry],
     }),
     errors: new Counter({
-      name: 'questeo_errors_total',
+      name: 'epicademie_errors_total',
       help: 'Erreurs signalées',
       labelNames: ['source'],
       registers: [registry],
     }),
     rewards: new Counter({
-      name: 'questeo_rewards_total',
+      name: 'epicademie_rewards_total',
       help: 'Monnaie distribuée en fin de partie',
       labelNames: ['currency'],
       registers: [registry],
     }),
     payments: new Counter({
-      name: 'questeo_payments_total',
+      name: 'epicademie_payments_total',
       help: 'Paiements clos',
       labelNames: ['status'],
       registers: [registry],
     }),
     finishedGames: new Counter({
-      name: 'questeo_finished_games_total',
+      name: 'epicademie_finished_games_total',
       help: 'Parties terminées',
       labelNames: ['kind'],
       registers: [registry],
@@ -72,7 +72,7 @@ export function createMetrics(): Metrics {
 /** Mesure chaque requête HTTP (route paramétrée, jamais l'URL brute : pas d'identifiants). */
 export function instrumentHttp(app: FastifyInstance, metrics: Metrics): void {
   const duration = new Histogram({
-    name: 'questeo_http_request_duration_seconds',
+    name: 'epicademie_http_request_duration_seconds',
     help: 'Durée des requêtes HTTP',
     labelNames: ['method', 'route', 'status'],
     buckets: [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],

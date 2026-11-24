@@ -1,4 +1,4 @@
-import type { Grade } from '@questeo/shared';
+import type { Grade } from '@epicademie/shared';
 import { CALC_FUNCTIONS, CalcError, evaluate, formatResult } from './calc.ts';
 
 export interface CalcState {

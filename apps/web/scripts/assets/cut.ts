@@ -3,7 +3,7 @@
  * en originaux individuels détourés, rangés aux chemins du catalogue. `assets:import` les prend
  * ensuite en priorité sur la planche prévue.
  *
- * Usage : pnpm --filter @questeo/web assets:cut <planche.png> <colonnes>x<lignes> <chemin|-> …
+ * Usage : pnpm --filter @epicademie/web assets:cut <planche.png> <colonnes>x<lignes> <chemin|-> …
  *   un chemin par case, dans l'ordre de lecture, relatif à public/assets et sans extension
  *   (ex. icons/modes/chrono) ; « - » ignore la case.
  */

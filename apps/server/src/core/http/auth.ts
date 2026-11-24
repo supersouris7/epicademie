@@ -1,6 +1,6 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { createHash, timingSafeEqual } from 'node:crypto';
-import type { Access, AccountRole } from '@questeo/shared';
+import type { Access, AccountRole } from '@epicademie/shared';
 import { AppError } from '../errors.ts';
 import { readCookie, SESSION_COOKIE } from '../auth/cookies.ts';
 
@@ -45,8 +45,8 @@ export interface AuthOptions {
   readonly operatorSecret: string | null;
 }
 
-export const OPERATOR_HEADER = 'x-questeo-operateur';
-export const OPERATOR_NAME_HEADER = 'x-questeo-operateur-nom';
+export const OPERATOR_HEADER = 'x-epicademie-operateur';
+export const OPERATOR_NAME_HEADER = 'x-epicademie-operateur-nom';
 const OPERATOR_NAME_MAX = 40;
 
 /** Nom d'opérateur sûr pour les journaux : sans caractère de contrôle, 40 caractères au plus. */

@@ -9,9 +9,9 @@ import {
   type Competence,
   type Question,
   type ReferentialGrade,
-} from '@questeo/content';
-import type { Observation, PlanCompetence, PlanInput } from '@questeo/engine';
-import type { CompetenceState, EvaluationKind, Grade, Level, StudiedStatus, SubjectId } from '@questeo/shared';
+} from '@epicademie/content';
+import type { Observation, PlanCompetence, PlanInput } from '@epicademie/engine';
+import type { CompetenceState, EvaluationKind, Grade, Level, StudiedStatus, SubjectId } from '@epicademie/shared';
 
 /**
  * Construction du plan d'une épreuve : périmètre noté S, programme concerné Π, prérequis et

@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { check, generate, getChapter } from '@questeo/content';
-import { duelHandicaps, duelLevel, playArenaTurn, startArena, type ArenaState } from '@questeo/engine';
+import { check, generate, getChapter } from '@epicademie/content';
+import { duelHandicaps, duelLevel, playArenaTurn, startArena, type ArenaState } from '@epicademie/engine';
 import {
   ageOn,
   ARENA_TURN_SECONDS,
@@ -11,7 +11,7 @@ import {
   type ArenaView,
   type Profile,
   type ServerToClientEvents,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import type { Clock } from '../../core/clock.ts';
 import type { Random } from '../../core/random.ts';
 import type { Presence } from './presence.ts';
@@ -21,7 +21,7 @@ import type { Presence } from './presence.ts';
  *
  * Cycle de vie : salon (invitations, l'hôte lance) → partie (tour par tour, minuteur par
  * question) → terminée (consultable une minute, puis effacée). Les règles (cœurs, attaques,
- * fin de partie, handicap d'âge) sont dans @questeo/engine ; ici, l'orchestration et les
+ * fin de partie, handicap d'âge) sont dans @epicademie/engine ; ici, l'orchestration et les
  * minuteurs. L'état vit en mémoire de l'instance (voir docs/adr/0006-temps-reel.md).
  */
 
