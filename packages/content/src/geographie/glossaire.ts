@@ -1,4 +1,103 @@
 import type { SubjectTerm } from '../types.ts';
 
 /** Glossaire de la matière : chaque mot difficile ou terme en gras d'un mémo y est défini. */
-export const GLOSSAIRE: readonly SubjectTerm[] = [];
+export const GLOSSAIRE: readonly SubjectTerm[] = [
+  {
+    id: 'habiter',
+    word: 'habiter',
+    forms: ['habiter', 'habite', 'habiter un lieu'],
+    definition: 'Vivre dans des lieux et s’en servir tous les jours, pas seulement y avoir son adresse.',
+    example: 'Tu habites ton village : tu y vas à l’école, tu y joues, tu y fais les courses.',
+  },
+  {
+    id: 'pratiquer-un-lieu',
+    word: 'pratiquer un lieu',
+    forms: ['pratiquer un lieu', 'pratiquer', 'pratiquer les lieux'],
+    definition: 'S’en servir pour des actes de tous les jours : travailler, acheter, jouer.',
+    example: 'Aller au stade chaque mercredi, c’est pratiquer le stade.',
+  },
+  {
+    id: 'paysage',
+    word: 'paysage',
+    forms: ['paysage', 'paysages'],
+    definition: 'Ce que tu vois d’un lieu quand tu regardes au loin.',
+    example: 'Depuis ma fenêtre, le paysage montre des champs et une colline.',
+  },
+  {
+    id: 'relief',
+    word: 'relief',
+    forms: ['relief', 'reliefs'],
+    definition: 'Les hauteurs et les creux du sol : colline, montagne, vallée, plaine.',
+    example: 'Une colline est une forme de relief.',
+  },
+  {
+    id: 'hydrologie',
+    word: 'hydrologie',
+    forms: ['hydrologie', 'l’hydrologie'],
+    definition: 'Tout ce qui concerne l’eau d’un lieu : rivière, fleuve, lac, mer.',
+    example: 'Une rivière fait partie de l’hydrologie d’un lieu.',
+  },
+  {
+    id: 'commune',
+    word: 'commune',
+    forms: ['commune', 'communes'],
+    definition: 'Le village ou la ville où tu habites : c’est la division administrative de base.',
+    example: 'Ma commune a une mairie et un maire.',
+  },
+  {
+    id: 'maire',
+    word: 'maire',
+    forms: ['maire', 'maires'],
+    definition: 'La personne qui a l’autorité sur une commune.',
+    example: 'Le maire est aidé par des adjoints.',
+  },
+  {
+    id: 'conseil-municipal',
+    word: 'conseil municipal',
+    forms: ['conseil municipal', 'conseils municipaux'],
+    definition: 'Le groupe de personnes qui aide le maire à diriger la commune.',
+    example: 'Le conseil municipal aide le maire.',
+  },
+  {
+    id: 'region',
+    word: 'région',
+    forms: ['région', 'régions', 'region'],
+    definition: 'Un grand territoire de la France, qui regroupe beaucoup de communes.',
+    example: 'La Bretagne est une région.',
+  },
+  {
+    id: 'localiser',
+    word: 'localiser',
+    forms: ['localiser', 'localise', 'situer'],
+    definition: 'Dire ou montrer où se trouve un lieu.',
+    example: 'Localiser Paris sur une carte de France.',
+  },
+  {
+    id: 'echelle',
+    word: 'échelle',
+    forms: ['échelle', 'échelles', 'echelle', 'echelles'],
+    definition: 'La taille à laquelle on regarde un lieu : la commune, la région, la France, l’Europe, le monde.',
+    example: 'À l’échelle de la France, ta commune est un tout petit point.',
+  },
+  {
+    id: 'repere',
+    word: 'repère',
+    forms: ['repère', 'repères', 'repere', 'reperes'],
+    definition: 'Un lieu qu’on sait nommer et placer sur une carte.',
+    example: 'Le mont Blanc est un repère.',
+  },
+  {
+    id: 'fleuve',
+    word: 'fleuve',
+    forms: ['fleuve', 'fleuves'],
+    definition: 'Un grand cours d’eau qui se jette le plus souvent dans la mer.',
+    example: 'Un fleuve traverse souvent plusieurs villes.',
+  },
+  {
+    id: 'massif',
+    word: 'massif',
+    forms: ['massif', 'massifs'],
+    definition: 'Un ensemble de montagnes groupées.',
+    example: 'Le massif du Mont-Blanc réunit les hauteurs autour du mont Blanc.',
+  },
+];
