@@ -99,3 +99,17 @@ rangées en chapitres qui portent un domaine du programme ; un journal de toutes
   compétence puis 1 sur la suivante (3 au plus).
 - À venir (service) : routes, contrats `packages/shared`, `MODE_IDS`/`MODES`, filtres « série
   parfaite »/records, récompenses `ECONOMY.evaluation`, isolation par famille.
+
+## Mise en œuvre (tickets #13 et #14 : écran du mode et Épreuve des Origines en maths)
+
+- Web : `apps/web/src/features/evaluation/` (accueil `/jouer/evaluation/:subject`, épreuve
+  `/partie/evaluation/:id`, bilan `/evaluation/:id/resultat`). La tuile du menu Défis est disponible ;
+  le choix de la matière précède celui de l'épreuve. Seule l'Épreuve des Origines est ouverte
+  (Progression et Maîtres : « Bientôt »).
+- L'écran génère la question avec (notion, niveau, graine) du serveur et n'affiche jamais juste ou faux ;
+  aucune définition ni indice (`NoDefinitions`) ; « ? » = « je ne sais pas » après confirmation. Recharger
+  ou quitter garde l'épreuve (reprise depuis l'accueil). Les corrections n'apparaissent que dans le bilan.
+- Bilan : maîtrise et couverture toujours côte à côte, arrondies à 5 % ; récompenses forfaitaires ; le
+  coffre n'est montré qu'à la clôture (le bilan clos est transmis à l'écran par l'état de navigation).
+- Tests : web (`evaluation.test.tsx`, faux serveur `testing/fakeEvaluation.ts`), serveur (Origines pour
+  chaque classe CM1 → 3e), e2e `evaluation.spec.ts`.

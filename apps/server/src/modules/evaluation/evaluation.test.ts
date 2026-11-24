@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { sql } from 'drizzle-orm';
-import { fmt, type Question } from '@questeo/content';
+import { fmt, getCe2Skill, gradeOfSkill, type Question } from '@questeo/content';
 import type {
   BadgeProgress,
   EvaluationAnswerResult,
@@ -133,6 +133,27 @@ describe('accueil et lancement', () => {
     const res = await start('origines', id);
     expect(res.statusCode).toBe(201);
     expect(res.json<EvaluationStarted>().plan.questions).toBeGreaterThanOrEqual(12);
+  });
+
+  it.each([
+    ['cm1', 'ce2'],
+    ['cm2', 'cm1'],
+    ['6e', 'cm2'],
+    ['5e', '6e'],
+    ['4e', '5e'],
+    ['3e', '4e'],
+  ])('Origines de la classe %s : fondamentaux de %s, jamais de notion de l’année en cours', async (grade, before) => {
+    const id = await createProfile(t.http, grade);
+    const home = (await t.http.inject(`/api/v1/profiles/${id}/evaluations/maths/home`)).json<EvaluationHome>();
+    expect(home.kinds.find((k) => k.kind === 'origines')).toMatchObject({ available: true, referentialGrade: before });
+    const started = (await start('origines', id)).json<EvaluationStarted>();
+    expect(started.plan.questions).toBeGreaterThanOrEqual(12);
+    const next = (await t.http.inject(`/api/v1/evaluations/${started.id}/next`)).json<EvaluationNext>();
+    if (next.done) throw new Error('une question était attendue');
+    // Les premières questions portent sur la classe précédente (CE2 : registre à part), jamais sur la classe actuelle.
+    const { skillId } = next.question;
+    if (before === 'ce2') expect(getCe2Skill(skillId)).toBeDefined();
+    else expect(gradeOfSkill(skillId)).toBe(before);
   });
 
   it('reprend l’épreuve ouverte du même type ; un autre type : 409', async () => {
