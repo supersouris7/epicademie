@@ -17,11 +17,11 @@ const Q_DURABLE =
 
 // INSEE.
 const Q_VOITURE =
-  '74 % des actifs en emploi qui déclarent se déplacer pour rejoindre leur lieu de travail utilisent leur voiture, 16 % prennent les transports en commun et 8 % ont recours aux modes de transport doux (6 % à la marche et 2 % au vélo)';
+  'En 2017, 74 % des actifs en emploi qui déclarent se déplacer pour rejoindre leur lieu de travail utilisent leur voiture, 16 % prennent les transports en commun et 8 % ont recours aux modes de transport doux (6 % à la marche et 2 % au vélo)';
 const Q_DOUX =
   'Le recours aux modes de transport doux (marche et vélo) est spécifique aux petites et très petites distances';
 const Q_PARIS =
-  '44 % des actifs en emploi y résidant utilisent métro, bus, tramway, RER ou train pour aller travailler';
+  'Le recours massif aux transports en commun est très spécifique à l’aire d’attraction de Paris puisque 44 % des actifs en emploi y résidant utilisent métro, bus, tramway, RER ou train pour aller travailler';
 const Q_TRAIN = 'Le train est en effet un mode de transport utilisé pour les longues distances';
 const Q_HORS = 'hors des aires d’attraction des villes, 90 % des actifs utilisent leur voiture';
 
@@ -82,7 +82,7 @@ const quotidien: Notion = {
         { label: 'la marche', why: 'La marche concerne 6 actifs sur 100.' },
         { label: 'les transports en commun', why: 'Ils concernent 16 actifs sur 100, bien moins que la voiture.' },
       ],
-      gap: ['En 2017, la plupart des actifs vont travailler en ', '.', ['voiture', 'automobile', 'auto']],
+      gap: ['En France, en 2017, la plupart des actifs vont travailler en ', '.', ['voiture', 'automobile', 'auto']],
       quote: Q_VOITURE,
       explain: 'La voiture concerne 74 actifs sur 100, loin devant les autres transports.',
       src: INSEE,
@@ -124,13 +124,17 @@ const quotidien: Notion = {
         { label: 'un bus à deux étages', why: 'Un bus roule sur la route. Le vaporetto est un bateau.' },
         { label: 'un petit avion', why: 'Le vaporetto ne vole pas : il navigue.' },
       ],
-      gap: ['À Venise, le vaporetto est un petit ', ' pour les voyageurs.', ['bateau', 'navire']],
+      gap: [
+        'À Venise, le vaporetto est un petit ',
+        ' pour les voyageurs.',
+        ['bateau', 'navire', 'vapeur', 'bateau-bus'],
+      ],
       quote: Q_VAPORETTO,
       explain: 'Le dictionnaire parle d’un petit « vapeur », un bateau, qui assure le service des voyageurs.',
       src: 'cnrtl-vaporetto',
     },
     {
-      q: 'Dans l’aire de Paris, qu’utilisent 44 actifs sur 100 pour aller travailler ?',
+      q: 'À Paris et dans la zone sous son influence, qu’utilisent 44 actifs sur 100 pour aller travailler ?',
       a: 'les transports en commun',
       wrong: [
         { label: 'le cheval', why: 'Le cheval n’est pas cité : on parle du métro, du bus et du train.' },
@@ -140,7 +144,7 @@ const quotidien: Notion = {
           why: 'Pour aller travailler chaque jour, ces actifs prennent métro, bus, tramway ou train.',
         },
       ],
-      gap: ['Près de Paris, beaucoup d’actifs prennent les transports en ', ' : métro, bus, train.', ['commun']],
+      gap: ['À Paris et autour, beaucoup d’actifs prennent les transports en ', ' : métro, bus, train.', ['commun']],
       quote: Q_PARIS,
       explain: 'Métro, bus, tramway, RER et train sont des transports en commun.',
       src: INSEE,
@@ -198,7 +202,7 @@ const quotidien: Notion = {
       title: 'Deux trajets du matin',
       lines: [
         'Un garçon habite tout près de son école. Il y va à pied.',
-        'Sa tante habite hors de la zone d’attraction des villes. Son travail est loin.',
+        'Sa tante habite à l’écart, loin de l’influence des villes. Son travail est loin.',
       ],
       qs: [
         {
@@ -216,7 +220,7 @@ const quotidien: Notion = {
           q: 'Dans sa zone, comment la plupart des actifs vont-ils travailler ?',
           a: 'en voiture',
           wrong: [
-            { label: 'en métro', why: 'Le métro sert surtout dans l’aire de Paris et les grandes villes.' },
+            { label: 'en métro', why: 'Le métro sert surtout à Paris et dans les grandes villes.' },
             { label: 'à pied', why: 'Le travail de la tante est loin : la marche sert surtout tout près.' },
           ],
           quote: Q_HORS,
