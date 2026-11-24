@@ -16,13 +16,18 @@ export function ListenButton({
   readonly readPrompt?: boolean;
   readonly size?: 'sm' | 'md';
 }) {
-  const [missing, setMissing] = useState(false);
+  const [missingFor, setMissingFor] = useState<Question | null>(null);
+  const missing = missingFor === question;
   const target = listenTarget(question, readPrompt);
   useEffect(() => stopSpeaking, [question]);
   if (!target) return null;
   return (
     <span className="inline-flex items-center gap-2">
-      <GameButton size={size} variant="surface" onClick={() => setMissing(!speak(target.text, target.lang))}>
+      <GameButton
+        size={size}
+        variant="surface"
+        onClick={() => setMissingFor(speak(target.text, target.lang) ? null : question)}
+      >
         Écouter
       </GameButton>
       {missing && (
