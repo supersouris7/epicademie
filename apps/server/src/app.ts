@@ -145,7 +145,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
 
   registerErrorHandling(http, reporter);
   instrumentHttp(http, metrics);
-  await registerSecurity(http, { rateLimitMax: config.rateLimitMax });
+  await registerSecurity(http, { rateLimitMax: config.rateLimitMax, hsts: config.cookieSecure });
   await registerOpenApi(http, { ui: config.apiDocs, version: config.version });
 
   // Services métier (un par module), partagés par les routes HTTP et le temps réel.

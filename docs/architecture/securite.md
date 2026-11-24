@@ -30,4 +30,6 @@ données de mineurs), robustesse face aux abus, aucune fuite d'information inter
 
 ## Limites connues (chantiers suivants)
 
-- HSTS ajouté par le proxy TLS de production (pas par l'application, servie en HTTP en local).
+- HSTS : envoyé par l'application seulement quand les cookies sont `Secure` (HTTPS de production) ; absent en HTTP local. Politiques `Referrer-Policy: no-referrer`, `Permissions-Policy` restrictive et COOP `same-origin` toujours envoyées.
+- Administration (opérateur) : en-tête `Origin` obligatoire pour POST/PUT/PATCH/DELETE ; réinitialisation d'un mot de passe : liens de réinitialisation en attente supprimés, limite de 20 requêtes/minute.
+- Inscriptions parent jamais validées : familles supprimées après 7 jours (production seulement, au démarrage puis toutes les 24 h, nombre supprimé journalisé).

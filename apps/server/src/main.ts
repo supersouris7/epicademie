@@ -3,6 +3,7 @@ import { ConfigError, loadConfig } from './config.ts';
 import { openDatabase } from './db/client.ts';
 import { assertSchemaUpToDate, runMigrations } from './db/migrations.ts';
 import { startRealtime } from './realtime.ts';
+import { purgeUnverifiedAccounts } from './modules/accounts/index.ts';
 
 /**
  * Point d'entrée du serveur : configuration → base (vérifiée) → application → temps réel →
@@ -11,6 +12,9 @@ import { startRealtime } from './realtime.ts';
 
 /** Délai maximal d'arrêt propre avant arrêt forcé. */
 const SHUTDOWN_TIMEOUT_MS = 10_000;
+
+/** Intervalle de la purge des inscriptions non validées. */
+const PURGE_INTERVAL_MS = 24 * 3600 * 1000;
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -23,6 +27,18 @@ async function main(): Promise<void> {
   const app = await buildApp({ config, database });
   const realtime = startRealtime(app, config.corsOrigins);
   const log = app.http.log;
+
+  // Production seulement (en recette, les comptes sont validés à la création) : purge au démarrage
+  // puis toutes les 24 h des inscriptions jamais validées après 7 jours. Journal sans donnée personnelle.
+  if (!config.recette) {
+    const purge = (): void => {
+      purgeUnverifiedAccounts(database.db, app.clock.now())
+        .then((removed) => log.info({ removed }, 'purge des inscriptions non validées'))
+        .catch((err: unknown) => app.reporter.capture(err, { source: 'process' }));
+    };
+    purge();
+    setInterval(purge, PURGE_INTERVAL_MS).unref();
+  }
 
   process.on('unhandledRejection', (reason) => app.reporter.capture(reason, { source: 'process' }));
   process.on('uncaughtException', (err) => {

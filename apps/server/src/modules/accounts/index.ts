@@ -7,3 +7,4 @@ export { createAccountsService, type AccountsService } from './accounts.service.
 export { accountsRoutes } from './accounts.routes.ts';
 export { attachOrphanProfiles } from './accounts.repo.ts';
 export { createOwnership, type Ownership } from './ownership.ts';
+export { purgeUnverifiedAccounts } from './purge.ts';
