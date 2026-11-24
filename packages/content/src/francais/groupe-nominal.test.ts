@@ -103,7 +103,50 @@ describe('banques de phrases du groupe nominal', () => {
         true,
       );
     }
-    for (const e of EPITHETES_PIEGES) expect(e.texte).toContain(`${e.verbe} ${e.separe}.`);
+    for (const e of EPITHETES_PIEGES) {
+      expect(e.texte).toContain(`${e.verbe} ${e.separe}`);
+      const verbe = e.texte.indexOf(` ${e.verbe} `);
+      expect(e.texte.indexOf(e.adjectif) > verbe, e.texte).toBe(e.place === 'apres');
+      // L'adjectif écarté est toujours de l'autre côté du verbe par rapport à son nom.
+      expect(e.texte.indexOf(e.nomSepare)).toBeLessThan(verbe);
+      expect(e.texte.indexOf(e.separe)).toBeGreaterThan(verbe);
+    }
+  });
+
+  it('épithète au niveau 5 : au moins une ligne avec l’épithète avant le verbe et une après', () => {
+    for (const q of tirages('fcm1-adjectif-epithete', 5)) {
+      if (q.figure?.kind !== 'document') throw new Error('forme inattendue');
+      const places = q.figure.lines.map((l) => EPITHETES_PIEGES.find((e) => e.texte === l)?.place);
+      expect(new Set(places)).toEqual(new Set(['avant', 'apres']));
+      expect(new Set(q.figure.lines).size).toBe(3);
+    }
+  });
+
+  it('nom noyau : le nom seul est juste, le déterminant devant le nom est refusé et expliqué', () => {
+    const groupes = [...OBJETS_SIMPLES, ...GROUPES_LONGS];
+    for (const level of [3, 4] as const) {
+      for (const q of tirages('fcm1-gn-noyau', level)) {
+        const p = groupes.find((g) => q.prompt.includes(texteDe(g)));
+        if (!p || q.answer.kind !== 'text') throw new Error('forme inattendue');
+        expect(q.answer.accepted).toEqual([p.nom]);
+        const faux = check(q, { kind: 'text', text: `${p.det} ${p.nom}` });
+        expect(faux.correct).toBe(false);
+        expect(JSON.stringify(faux)).toContain('écris le nom seul');
+        if (p.autre) {
+          const autre = check(q, { kind: 'text', text: p.autre.nom });
+          expect(autre.correct).toBe(false);
+          expect(JSON.stringify(autre)).toContain('un autre groupe nominal');
+        }
+      }
+    }
+    for (const q of tirages('fcm1-gn-noyau', 5)) {
+      if (q.answer.kind !== 'cloze') throw new Error('forme inattendue');
+      for (const b of q.answer.blanks) {
+        if (b.mode !== 'text') throw new Error('forme inattendue');
+        expect(b.accepted).toHaveLength(1);
+        expect(b.accepted[0]).not.toContain(' ');
+      }
+    }
   });
 
   it('pronoms compléments : les verbes commencent par une consonne', () => {

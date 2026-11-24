@@ -43,9 +43,6 @@ const maj = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 /** Une réponse écrite avec ou sans point final. */
 const avecOuSansPoint = (s: string) => [s, s.replace(/\.$/, '')];
 
-/** Un mot écrit seul, ou avec un déterminant devant le nom. */
-const motAccepte = (mot: string, det?: string) => (det ? [mot, `${det} ${mot}`] : [mot]);
-
 /** Pièges écrits, sans doublon ni écriture qui serait une réponse juste. */
 function textTraps(accepted: readonly string[], list: readonly (readonly [string, Rich])[]): Trap[] {
   const out: Trap[] = [];
@@ -64,6 +61,8 @@ const DEF_DET = 'Le déterminant est le petit mot placé au début du groupe : l
 const DEF_NOM = 'Le nom désigne une personne, un animal ou une chose.';
 const DEF_ADJ = 'L’adjectif dit comment est le nom. Il change avec lui en genre et en nombre.';
 const DEF_EPITHETE = 'L’adjectif épithète est collé au nom, dans le groupe nominal, sans verbe entre eux.';
+
+const WHY_DET_NOM = 'Le déterminant ne fait pas partie du nom noyau : écris le nom seul.';
 
 const whyDet = (det: string) => `« ${det} » est le déterminant : il accompagne le nom.`;
 const whyAdj = (adj: string) => `« ${adj} » est un adjectif : il dit comment est le nom.`;
@@ -117,7 +116,7 @@ function noyauDraft(rng: Rng, level: Level): QuestionDraft {
     case 3: {
       const p = rng.pick(OBJETS_SIMPLES);
       const adj = adjectifDe(p);
-      const accepted = motAccepte(p.nom, p.det);
+      const accepted = [p.nom];
       const verbe = p.debut.split(' ')[1] ?? '';
       return {
         prompt: `Écris le nom noyau du groupe nominal dans : « ${texteDe(p)} »`,
@@ -126,6 +125,7 @@ function noyauDraft(rng: Rng, level: Level): QuestionDraft {
           [adj, whyAdj(adj)],
           [p.det, whyDet(p.det)],
           [verbe, `« ${verbe} » est le verbe : il dit ce qu’on fait.`],
+          [`${p.det} ${p.nom}`, WHY_DET_NOM],
           [texteGn(p), 'Tu as écrit tout le groupe. Garde seulement le nom principal.'],
         ]),
         hint: 'Repère le groupe après le verbe, puis demande-toi de quoi il parle.',
@@ -134,19 +134,28 @@ function noyauDraft(rng: Rng, level: Level): QuestionDraft {
     }
     case 4: {
       const p = rng.pick(GROUPES_LONGS);
-      const accepted = motAccepte(p.nom, p.det);
+      const accepted = [p.nom];
+      const autre: (readonly [string, Rich])[] = p.autre
+        ? [p.autre.nom, `${p.autre.det} ${p.autre.nom}`].map((t) => [
+            t,
+            `« ${p.autre?.det} ${p.autre?.nom} » est un autre groupe nominal, sans adjectif : cherche celui qui en a deux.`,
+          ])
+        : [];
       return {
-        prompt: `Un nom est entouré de deux adjectifs. Écris le nom noyau de « ${texteGn(p)} ».`,
+        prompt: `Écris le nom noyau du groupe nominal qui a deux adjectifs : « ${texteDe(p)} »`,
         answer: { kind: 'text', accepted },
         traps: textTraps(accepted, [
           [p.avant ?? '', whyAdj(p.avant ?? '')],
           [p.apres ?? '', whyAdj(p.apres ?? '')],
           [p.det, whyDet(p.det)],
+          [`${p.det} ${p.nom}`, WHY_DET_NOM],
+          ...autre,
         ]),
-        hint: 'Enlève un à un les mots qui disent comment c’est. Que reste-t-il avec le déterminant ?',
+        hint: 'Trouve les deux mots qui disent comment c’est. Quel nom décrivent-ils ?',
         steps: [
           DEF_NOYAU,
-          `Je peux dire « ${p.det} ${p.nom} » : les adjectifs se retirent.`,
+          `Le groupe qui a deux adjectifs est « ${texteGn(p)} ».`,
+          `Je retire « ${p.avant} » et « ${p.apres} » : il reste « ${p.det} ${p.nom} », et le nom est « ${p.nom} ».`,
           `Le nom noyau est **${p.nom}**.`,
         ],
       };
@@ -161,7 +170,7 @@ function noyauDraft(rng: Rng, level: Level): QuestionDraft {
         answer: {
           kind: 'cloze',
           parts: ['Ligne 1 : ', '. Ligne 2 : ', '. Ligne 3 : ', '.'],
-          blanks: melange.map((p) => ({ mode: 'text' as const, accepted: motAccepte(p.nom, p.det) })),
+          blanks: melange.map((p) => ({ mode: 'text' as const, accepted: [p.nom] })),
         },
         hint: 'Cherche d’abord l’adjectif de la ligne, puis le nom qu’il décrit.',
         steps: [
@@ -371,20 +380,25 @@ function epitheteDraft(rng: Rng, level: Level): QuestionDraft {
         prompt: `Il y a deux adjectifs. Écris seulement l’adjectif épithète : « ${e.texte} »`,
         answer: { kind: 'text', accepted },
         traps: textTraps(accepted, [
-          [e.separe, `Le verbe « ${e.verbe} » sépare « ${e.separe} » du nom : il n’est pas épithète.`],
+          [e.separe, `Le verbe « ${e.verbe} » sépare « ${e.separe} » de « ${e.nomSepare} » : il n’est pas épithète.`],
           [e.nom, whyNom(e.nom)],
+          [e.nomSepare, whyNom(e.nomSepare)],
           [e.verbe, `« ${e.verbe} » est le verbe, pas un adjectif.`],
         ]),
-        hint: 'Barre l’adjectif qui se trouve de l’autre côté du verbe.',
+        hint: 'Barre l’adjectif qui est de l’autre côté du verbe par rapport à son nom.',
         steps: [
           DEF_EPITHETE,
-          `« ${e.separe} » vient après le verbe « ${e.verbe} » : je l’écarte.`,
-          `L’épithète est **${e.adjectif}**.`,
+          `Le verbe « ${e.verbe} » sépare « ${e.separe} » de son nom « ${e.nomSepare} » : je l’écarte.`,
+          `« ${e.adjectif} » est dans le même groupe que « ${e.nom} » : l’épithète est **${e.adjectif}**.`,
         ],
       };
     }
     default: {
-      const lignes = pickN(rng, EPITHETES_PIEGES, 3);
+      // Au moins une ligne de chaque forme : épithète avant le verbe, puis après lui.
+      const avant = rng.pick(EPITHETES_PIEGES.filter((e) => e.place === 'avant'));
+      const apres = rng.pick(EPITHETES_PIEGES.filter((e) => e.place === 'apres'));
+      const reste = EPITHETES_PIEGES.filter((e) => e !== avant && e !== apres);
+      const lignes = rng.shuffle([avant, apres, rng.pick(reste)]);
       return {
         prompt: 'Lis le texte. Pour chaque ligne, écris l’adjectif épithète du nom indiqué.',
         figure: document(
@@ -401,10 +415,11 @@ function epitheteDraft(rng: Rng, level: Level): QuestionDraft {
           ],
           blanks: lignes.map((e) => ({ mode: 'text' as const, accepted: [e.adjectif] })),
         },
-        hint: 'Sur chaque ligne, l’adjectif cherché n’est pas séparé du nom par le verbe.',
+        hint: 'Sur chaque ligne, cherche l’adjectif dans le même groupe que le nom indiqué, sans verbe entre eux.',
         steps: [
           DEF_EPITHETE,
-          'Les adjectifs placés après le verbe ne comptent pas.',
+          'Un adjectif séparé de son nom par un verbe n’est pas épithète.',
+          'Placé après le verbe, il peut l’être s’il est dans le même groupe que son nom.',
           `Les épithètes sont : **${lignes.map((e) => e.adjectif).join(', ')}**.`,
         ],
       };
@@ -581,7 +596,7 @@ export const FCM1_GROUPE_NOMINAL: readonly Skill[] = [
     memo: [
       'Un **groupe nominal**, c’est une équipe autour d’un nom : le petit chien.',
       'Le chef de l’équipe est le **nom noyau** : ici, « chien ». Il dit de qui ou de quoi on parle.',
-      'Astuce : retire les mots qui décrivent. « le petit chien » → « le chien ». Le noyau reste !',
+      'Astuce : retire les mots qui décrivent. Il reste « le chien » : le noyau, c’est le nom « chien ».',
     ],
     factId: 'noyau',
     faits: ['elements', 'groupe-nominal'],

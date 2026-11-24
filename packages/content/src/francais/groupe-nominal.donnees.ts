@@ -77,10 +77,14 @@ export interface Gn {
 
 export const texteGn = (g: Gn): string => [g.det, g.avant, g.nom, g.apres].filter(Boolean).join(' ');
 
-/** Une phrase : début, groupe nominal, fin. Elle ne contient qu'un seul groupe nominal. */
+/**
+ * Une phrase : début, groupe nominal étudié, fin. C'est son seul groupe nominal, sauf si `autre` en signale un
+ * second, sans adjectif, placé dans le début.
+ */
 export interface PhraseGn extends Gn {
   readonly debut: string;
   readonly fin: string;
+  readonly autre?: { readonly det: string; readonly nom: string };
 }
 
 export const texteDe = (p: PhraseGn): string => {
@@ -124,11 +128,11 @@ export const OBJETS_SIMPLES: readonly PhraseGn[] = [
 /** Pièges : le groupe a deux adjectifs, et parfois le sujet vient après le verbe. */
 export const GROUPES_LONGS: readonly PhraseGn[] = [
   p('au loin brille', 'une|immense|étoile|bleue', ''),
-  p('dans le ciel passe', 'un|petit|avion|blanc', ''),
+  { ...p('dans le ciel passe', 'un|petit|avion|blanc', ''), autre: { det: 'le', nom: 'ciel' } },
   p('nous admirons', 'un|immense|navire|gris', ''),
   p('elle caresse', 'un|gros|lapin|gris', ''),
   p('tu ramasses', 'une|jolie|feuille|jaune', ''),
-  p('sous le lit dort', 'un|vieux|matou|roux', ''),
+  { ...p('sous le lit dort', 'un|vieux|matou|roux', ''), autre: { det: 'le', nom: 'lit' } },
   p('ils réparent', 'la|vieille|barque|verte', ''),
   p('je choisis', 'une|petite|valise|noire', ''),
 ];
@@ -223,15 +227,32 @@ export const EPITHETES: readonly Epithete[] = [
   ep('Le vieux pêcheur répare son filet.', 'pêcheur', 'vieux', 'répare'),
 ];
 
-/** Deux adjectifs : l'un est épithète du nom, l'autre est séparé de lui par un verbe. */
+/**
+ * Deux adjectifs : l'un est épithète du nom indiqué, l'autre est séparé de son propre nom (`nomSepare`) par un verbe.
+ * `place` dit si l'épithète se trouve avant ou après le verbe.
+ */
 export interface EpithetePiege extends Epithete {
   readonly separe: string;
+  readonly nomSepare: string;
+  readonly place: 'avant' | 'apres';
 }
 
+/** Épithète avant le verbe : les deux adjectifs se rapportent au même nom. */
 const piege = (texte: string, nom: string, adjectif: string, verbe: string, separe: string): EpithetePiege => ({
   ...ep(texte, nom, adjectif, verbe),
   separe,
+  nomSepare: nom,
+  place: 'avant',
 });
+
+/** Épithète après le verbe : l'autre adjectif, placé avant elle, se rapporte au sujet. */
+const piegeApres = (
+  texte: string,
+  nom: string,
+  adjectif: string,
+  verbe: string,
+  [separe, nomSepare]: readonly [string, string],
+): EpithetePiege => ({ ...ep(texte, nom, adjectif, verbe), separe, nomSepare, place: 'apres' });
 
 export const EPITHETES_PIEGES: readonly EpithetePiege[] = [
   piege('La vieille tour paraît solide.', 'tour', 'vieille', 'paraît', 'solide'),
@@ -242,6 +263,17 @@ export const EPITHETES_PIEGES: readonly EpithetePiege[] = [
   piege('La robe neuve est élégante.', 'robe', 'neuve', 'est', 'élégante'),
   piege('Le grand sapin paraît triste.', 'sapin', 'grand', 'paraît', 'triste'),
   piege('Une rivière profonde devient dangereuse.', 'rivière', 'profonde', 'devient', 'dangereuse'),
+  piegeApres('Le chaton est ravi de sa balle rouge.', 'balle', 'rouge', 'est', ['ravi', 'chaton']),
+  piegeApres('La rue devient calme après le dernier bus.', 'bus', 'dernier', 'devient', ['calme', 'rue']),
+  piegeApres('Le jardin semble joli avec ce grand arbre.', 'arbre', 'grand', 'semble', ['joli', 'jardin']),
+  piegeApres('La classe reste silencieuse devant le film passionnant.', 'film', 'passionnant', 'reste', [
+    'silencieuse',
+    'classe',
+  ]),
+  piegeApres('Le chien est content de son os énorme.', 'os', 'énorme', 'est', ['content', 'chien']),
+  piegeApres('La salle paraît gaie grâce aux rideaux jaunes.', 'rideaux', 'jaunes', 'paraît', ['gaie', 'salle']),
+  piegeApres('Le marin est fier de son nouveau bateau.', 'bateau', 'nouveau', 'est', ['fier', 'marin']),
+  piegeApres('Le gâteau devient joli avec des fraises mûres.', 'fraises', 'mûres', 'devient', ['joli', 'gâteau']),
 ];
 
 // ───────────────────────── Remplacer par un pronom ─────────────────────────
