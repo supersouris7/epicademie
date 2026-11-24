@@ -32,6 +32,13 @@ describe('le validateur repère les questions cassées', () => {
     expect(codes(base({ targetSeconds: 0 }))).toContain('duree');
   });
 
+  it('audio : texte, langue, et texte écouté absent de l’énoncé', () => {
+    expect(codes(base({ audio: { text: 'Seven times six', lang: 'en-GB' } }))).toEqual([]);
+    expect(codes(base({ audio: { text: ' ', lang: 'en-GB' } }))).toContain('audio');
+    expect(codes(base({ audio: { text: 'Seven', lang: 'anglais' } }))).toContain('audio');
+    expect(codes(base({ audio: { text: 'Calcule 6 × 7', lang: 'fr-FR' } }))).toContain('audio');
+  });
+
   it('réponse attendue impossible ou contradictoire', () => {
     expect(codes(base({ answer: { kind: 'number', value: r(1, 3) } }))).toContain('decimal-infini');
     expect(codes(base({ answer: { kind: 'number', value: { n: 1, d: 0 } } }))).toContain('nombre-invalide');

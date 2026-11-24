@@ -318,6 +318,16 @@ function figureChecks(f: Figure | undefined, q: Question, fail: Check): void {
   }
 }
 
+/** Audio : texte et langue valides, texte écouté absent de l'énoncé (question d'écoute). */
+function audioChecks(q: Question, fail: Check): void {
+  const a = q.audio;
+  if (!a) return;
+  if (!a.text.trim()) fail('audio', 'Audio sans texte');
+  if (!/^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$/.test(a.lang)) fail('audio', `Langue d'audio invalide : ${a.lang}`);
+  if (a.text.trim() && normalizeText(q.prompt).includes(normalizeText(a.text)))
+    fail('audio', 'Le texte à écouter apparaît dans l’énoncé');
+}
+
 /** Contrôles d'une question générée. */
 export function validateQuestion(q: Question): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
@@ -327,6 +337,7 @@ export function validateQuestion(q: Question): ValidationIssue[] {
   answerChecks(q, fail);
   trapChecks(q, fail);
   figureChecks(q.figure, q, fail);
+  audioChecks(q, fail);
   return issues;
 }
 

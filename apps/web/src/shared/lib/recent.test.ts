@@ -1,6 +1,15 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import * as content from '@epicademie/content';
 import { generate } from '@epicademie/content';
+
+vi.mock('@epicademie/content', async (orig) => {
+  const actual = await orig<typeof import('@epicademie/content')>();
+  return { ...actual, generate: vi.fn(actual.generate) };
+});
+
 import { freshQuestion } from './recent.ts';
+
+afterEach(() => vi.unstubAllGlobals());
 
 describe('questions sans doublon', () => {
   it('évite les énoncés de la partie, puis ceux des dernières parties', () => {
@@ -25,5 +34,19 @@ describe('questions sans doublon', () => {
       expect(seen.has(q.question.prompt)).toBe(false);
       seen.add(q.question.prompt);
     }
+  });
+
+  it('une question d’écoute sans voix est remplacée par une autre de la notion', () => {
+    vi.stubGlobal('speechSynthesis', { getVoices: () => [], cancel: vi.fn(), speak: vi.fn() });
+    const audio = { text: 'Seven', lang: 'en-GB' };
+    const real = vi.mocked(content.generate).getMockImplementation();
+    vi.mocked(content.generate).mockImplementation((skillId, level, seed) => {
+      const q = real!(skillId, level, seed);
+      return seed === 1 ? { ...q, audio } : q;
+    });
+    const q = freshQuestion({ skillId: 'm5-tables', level: 1, seed: 1 }, { seen: new Set(), recent: [] }, () => 2);
+    expect(q.seed).toBe(2);
+    expect(q.question.audio).toBeUndefined();
+    vi.mocked(content.generate).mockImplementation(real!);
   });
 });

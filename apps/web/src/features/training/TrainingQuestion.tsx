@@ -1,8 +1,10 @@
 import { AnimatePresence, motion } from 'motion/react';
-import type { Question, Response, Skill } from '@epicademie/content';
+import { getChapterOfSkill, type Question, type Response, type Skill } from '@epicademie/content';
 import type { Profile } from '@epicademie/shared';
 import { Feedback } from '../../shared/question/Feedback.tsx';
 import { Figure } from '../../shared/question/figures/Figure.tsx';
+import { ListenButton } from '../../shared/question/ListenButton.tsx';
+import { READ_ALOUD_GRADES } from '../../shared/lib/speech.ts';
 import { MathText } from '../../shared/question/MathText.tsx';
 import { QuestionTools } from '../../shared/question/QuestionTools.tsx';
 import { ReportButton } from '../../shared/question/ReportButton.tsx';
@@ -61,6 +63,10 @@ export function TrainingQuestion({
             <h1 className="text-2xl leading-snug font-bold sm:text-3xl xl:text-4xl">
               <MathText text={current.question.prompt} terms />
             </h1>
+            <ListenButton
+              question={current.question}
+              readPrompt={READ_ALOUD_GRADES.includes(getChapterOfSkill(current.question.skillId)?.grade ?? '')}
+            />
             {retry && !answered && <RetryHint retry={retry} hint={current.question.hint} />}
             {advice && !answered && !retry && toolTabs(current.question, skill).includes(advice) && (
               <AdviceNote advice={advice} />
