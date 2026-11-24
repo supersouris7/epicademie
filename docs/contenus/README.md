@@ -49,6 +49,13 @@ Exemples :
 | Écoute                              | `audio` + tout type             | synthèse vocale de l'appareil ; le texte écouté n'apparaît pas avant la réponse                      |
 | Lecture de document                 | figure `document`               | extrait court ; texte original du domaine public ou écrit pour l'exercice                            |
 
+### Audio
+
+`Question.audio = { text, lang }` (`lang` BCP 47 : `fr-FR`, `en-GB`, `es-ES`). Le texte lu n'apparaît pas dans l'énoncé
+(contrôle `audio` du validateur). Lecture par la voix locale de l'appareil (bouton « Écouter ») ; rien n'est envoyé à
+l'extérieur. Sans voix pour la langue, l'entraînement remplace la question par une autre de la notion : prévoir
+plusieurs variantes sans audio ou avec une autre langue. Au CM1 et CM2, le bouton lit aussi l'énoncé des autres questions.
+
 ### Forme des réponses structurées
 
 - `order` : `items` dans l'ordre présenté (jamais déjà rangé), `correct` = indices de `items` dans l'ordre juste.

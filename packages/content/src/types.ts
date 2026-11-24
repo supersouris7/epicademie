@@ -178,12 +178,23 @@ export type Trap =
   | { readonly point: { x: number; y: number }; readonly why: Rich }
   | { readonly text: string; readonly why: Rich };
 
+/** Texte à écouter et sa langue (code BCP 47 : `fr-FR`, `en-GB`, `es-ES`…). */
+export interface Audio {
+  readonly text: string;
+  readonly lang: string;
+}
+
 export interface Question {
   readonly skillId: string;
   readonly level: Level;
   readonly seed: number;
   readonly prompt: Rich;
   readonly figure?: Figure;
+  /**
+   * Audio lu par la synthèse vocale de l'appareil (jamais envoyé à l'extérieur). Le texte lu n'apparaît pas
+   * dans l'énoncé : question d'écoute. Sans voix pour `lang`, la question est remplacée par une autre.
+   */
+  readonly audio?: Audio;
   readonly answer: AnswerSpec;
   readonly traps: readonly Trap[];
   /**

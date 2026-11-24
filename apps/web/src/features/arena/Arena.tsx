@@ -8,6 +8,7 @@ import { ARENA_HEARTS, ARENA_MAX_PLAYERS, type ArenaView, type Profile } from '@
 import { HeroFace } from '../../shared/battle/HeroFace.tsx';
 import { HeroSays } from '../../shared/battle/BattleScenes.tsx';
 import { Confetti } from '../../shared/ui/Confetti.tsx';
+import { ListenButton } from '../../shared/question/ListenButton.tsx';
 import { Figure } from '../../shared/question/figures/Figure.tsx';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
@@ -305,6 +306,7 @@ function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly are
             <h1 className="text-2xl leading-snug font-bold sm:text-3xl">
               <MathText text={question.prompt} terms />
             </h1>
+            <ListenButton question={question} />
             {question.figure && <Figure figure={question.figure} maxHeight="var(--figure-max)" />}
           </section>
           {myTurn ? (
