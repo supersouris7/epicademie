@@ -8,3 +8,8 @@ export * from './validate.ts';
 export * from './glossary.ts';
 export * from './ce2.ts';
 export * from './referentiel/index.ts';
+export * from './sources.ts';
+export * from './relectures.ts';
+export * from './glossaires.ts';
+export * from './couverture.ts';
+export * from './apercu.ts';

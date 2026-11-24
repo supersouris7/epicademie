@@ -134,3 +134,14 @@ ou des textes écrits pour l'exercice.
 - Notions existantes reprises : identifiants conservés (progression des élèves), `version` incrémentée si les
   énoncés ou réponses changent.
 - Aperçu de relecture joint à la PR (extrait), état du référentiel mis à jour (`couverte`).
+
+## 7. Outils du moteur (lot mo-03)
+
+- **Sources** : `packages/content/src/sources.ts` (registre, liste des domaines autorisés) ; une notion cite ses
+  sources par identifiant dans `lesson.sources` (obligatoire pour les notions à 5 niveaux).
+- **Relectures** : `<matiere>/relectures.ts`, une ligne `{ skillId, version, lot, date, verdict }` par relecture.
+- **Glossaire** : `<matiere>/glossaire.ts` (maths : `glossary.ts`) ; les termes en gras d'un mémo y sont définis.
+- **Contrôles** : `couverture.test.ts` applique ces règles aux notions à 5 niveaux ; le nombre de notions
+  historiques (3 niveaux) ne peut que diminuer (constante `HISTORIQUES_MAX`, à abaisser à chaque lot).
+- **Aperçu de relecture** : `node apps/server/scripts/apercu.ts <chapitre|notion>… [--out aperçu.md]`
+  (niveaux × 3 graines : énoncé, réponse, pièges, indice, étapes, sources).
