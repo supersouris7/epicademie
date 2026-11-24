@@ -125,6 +125,14 @@ export const SOURCES: readonly Source[] = [
     consultedOn: CONSULTED,
   },
   {
+    id: 'si-prefixes-bipm',
+    title: 'Les préfixes du SI (multiples et sous-multiples décimaux des unités)',
+    publisher: 'Bureau international des poids et mesures (BIPM)',
+    url: 'https://www.bipm.org/fr/measurement-units/si-prefixes',
+    textDate: '2026',
+    consultedOn: CONSULTED,
+  },
+  {
     id: 'british-council-irregular-verbs',
     title: 'LearnEnglish, Irregular verbs',
     publisher: 'British Council',

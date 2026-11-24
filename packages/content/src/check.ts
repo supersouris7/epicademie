@@ -1,4 +1,5 @@
 import { abs, cmp, dec, eq, fmt, isInteger, mul, parseDecimal, r, sub, type Rational } from './rational.ts';
+import { zoneName } from './cartes.ts';
 import { diagnose } from './diagnose.ts';
 import type { CheckResult, Question, Response } from './types.ts';
 
@@ -70,6 +71,13 @@ function checkPoint(answer: AnswerOf<'point'>, response: ResponseOf<'point'>, tr
   return { correct: false, why };
 }
 
+/** Zone : la zone touchée doit exister sur la carte (sinon réponse à refaire) ; la mauvaise peut avoir son piège. */
+function checkZone(answer: AnswerOf<'zone'>, response: ResponseOf<'zone'>, traps: readonly Trap[]): CheckResult {
+  if (zoneName(answer.map, response.zone) === undefined) return INVALID;
+  if (response.zone === answer.zone) return RIGHT;
+  return { correct: false, why: trapWhy(traps, (t) => 'zone' in t && t.zone === response.zone) };
+}
+
 function checkText(answer: AnswerOf<'text'>, response: ResponseOf<'text'>, traps: readonly Trap[]): CheckResult {
   if (!response.text.trim()) return INVALID;
   const given = normalizeText(response.text);
@@ -126,6 +134,8 @@ export function check(question: Question, response: Response): CheckResult {
       return response.kind === 'choice' ? checkChoice(answer, response, traps) : INVALID;
     case 'point':
       return response.kind === 'point' ? checkPoint(answer, response, traps) : INVALID;
+    case 'zone':
+      return response.kind === 'zone' ? checkZone(answer, response, traps) : INVALID;
     case 'text':
       return response.kind === 'text' ? checkText(answer, response, traps) : INVALID;
     case 'order':

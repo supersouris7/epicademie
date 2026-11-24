@@ -68,6 +68,18 @@ plusieurs variantes sans audio ou avec une autre langue. Au CM1 et CM2, le bouto
   permutations (6 éléments au plus) et exige qu'une seule soit jugée juste.
 - `check` renvoie `parts` (réussite par place, paire ou trou) pour la correction une à une.
 - Figure `document` : `{ kind: 'document', title?, lines, credit? }`, chaque ligne est numérotée à l'affichage.
+- Figure `map` : `{ kind: 'map', map, highlight?, marks? }`. `map` : `france-regions`, `france-departements`
+  (France métropolitaine), `europe` ou `monde` (continents, océans, grands fleuves). `highlight` colore des zones,
+  `marks` pose un repère (`{ zone, label }`) au centre d'une zone. Les identifiants de zones sont ceux du registre
+  `packages/content/src/cartes-zones.ts` (INSEE pour les régions et départements, code pays à 3 lettres en minuscules pour
+  l'Europe, `afrique`, `atlantique`, `nil`… pour le monde) ; le validateur refuse toute zone inconnue.
+- Réponse `zone` : `{ kind: 'zone', map, zone }`, réponse `{ kind: 'zone', zone }`. L'élève touche la zone sur la carte
+  (boutons ＋/－ pour les petites zones). Erreur typique : `{ zone, why }`. Après une erreur, l'entraînement affiche la
+  carte avec la bonne zone surlignée. Pour « quelle est la zone surlignée ? », utiliser la figure `map` + `choice`.
+- Fonds de carte : simplifiés par `apps/web/scripts/fonds-cartes.mjs` (IGN Admin Express, Licence Ouverte 2.0, et Natural
+  Earth, domaine public), chargés à la demande ; ne pas les modifier à la main. Aucune zone contestée dans le registre
+  (ni Kosovo, ni Chypre, ni Turquie en Europe) ; la frontière Europe/Asie du monde est approchée par le méridien 60° E ;
+  les limites des océans sont des conventions simplifiées (pas d'océan Austral).
 - Saisie : toucher (numéros, OK), clavier physique (chiffres, lettres, Retour arrière, Entrée) et télécommande
   (flèches pour passer d'un bouton à l'autre, OK pour valider).
 
@@ -167,3 +179,8 @@ ou des textes écrits pour l'exercice.
   historiques (3 niveaux) ne peut que diminuer (constante `HISTORIQUES_MAX`, à abaisser à chaque lot).
 - **Aperçu de relecture** : `node apps/server/scripts/apercu.ts <chapitre|notion>… [--out aperçu.md]`
   (niveaux × 3 graines : énoncé, réponse, pièges, indice, étapes, sources).
+
+## Référentiel d'évaluation d'une nouvelle matière (Arène)
+
+Gabarit et règles : `packages/content/src/referentiel/gabarit.ts`. Enregistrer le référentiel dans `REFERENTIALS` :
+`referentiel.test.ts` le contrôle alors automatiquement (rattachement des chapitres, prérequis, cycles, essentielles).

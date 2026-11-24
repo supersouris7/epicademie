@@ -1,4 +1,5 @@
 import { generate, getSkill, chapterOfAnySkill, getChapter } from './catalog.ts';
+import { zoneName } from './cartes.ts';
 import { getSource } from './sources.ts';
 import { skillLevels, skillVersion, type AnswerSpec, type Level, type Question, type Trap } from './types.ts';
 
@@ -15,6 +16,8 @@ const answerText = (a: AnswerSpec): string => {
       return String(a.options[a.correct]);
     case 'point':
       return `(${a.x} ; ${a.y})`;
+    case 'zone':
+      return `${zoneName(a.map, a.zone) ?? a.zone} (${a.map})`;
     case 'text':
       return a.accepted.join(' / ');
     case 'order':
@@ -40,7 +43,9 @@ const trapText = (t: Trap): string => {
         ? `proposition ${t.option + 1}`
         : 'point' in t
           ? `(${t.point.x} ; ${t.point.y})`
-          : t.text;
+          : 'zone' in t
+            ? `zone ${t.zone}`
+            : t.text;
   return `${what} → ${t.why}`;
 };
 

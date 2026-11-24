@@ -79,14 +79,14 @@ export const basePoints = (level: Level, answerKind: string) =>
 
 /**
  * Durée de référence (s) : temps qu'un élève à l'aise met pour lire, réfléchir et répondre, calculée depuis le
- * contenu de la question. Choix multiple 3 s, saisie 6 s, point à placer 7 s ; +1,5 s par niveau au-dessus du 1er ;
+ * contenu de la question. Choix multiple 3 s, saisie 6 s, point à placer ou zone à toucher 7 s ; +1,5 s par niveau au-dessus du 1er ;
  * +0,05 s par caractère de l'énoncé (lecture) ; +0,15 s par caractère de la réponse saisie ; +2 s avec une figure ;
  * +1 s par étape d'explication au-delà de 2 (problème en plusieurs étapes). Bornée à 3-25 s.
  */
 export function referenceSeconds(q: Question): number {
   const kind = q.answer.kind;
-  const base = kind === 'choice' ? 3 : kind === 'point' ? 7 : 6;
-  const typedLen = kind === 'choice' || kind === 'point' ? 0 : formatAnswer(q).length;
+  const base = kind === 'choice' ? 3 : kind === 'point' || kind === 'zone' ? 7 : 6;
+  const typedLen = kind === 'choice' || kind === 'point' || kind === 'zone' ? 0 : formatAnswer(q).length;
   const t =
     base +
     1.5 * (q.level - 1) +

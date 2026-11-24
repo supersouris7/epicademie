@@ -4,6 +4,7 @@ import { GLOSSAIRE as FRANCAIS } from './francais/glossaire.ts';
 import { GLOSSAIRE as GEOGRAPHIE } from './geographie/glossaire.ts';
 import { GLOSSAIRE as HISTOIRE } from './histoire/glossaire.ts';
 import { GLOSSAIRE as PHYSIQUE } from './physique/glossaire.ts';
+import { GLOSSAIRE as ST } from './sciences/st/glossaire.ts';
 import { GLOSSARY } from './glossary.ts';
 import type { SubjectTerm } from './types.ts';
 
@@ -21,7 +22,7 @@ export const SUBJECT_GLOSSARIES: Readonly<Record<string, readonly SubjectTerm[]>
   espagnol: ESPAGNOL,
   geographie: GEOGRAPHIE,
   histoire: HISTOIRE,
-  sciences: PHYSIQUE,
+  sciences: [...PHYSIQUE, ...ST],
 };
 
 const norm = (s: string) => s.toLowerCase().replace(/[’']/g, '’').trim();
