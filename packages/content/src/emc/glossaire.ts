@@ -508,6 +508,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'Des personnes y partagent des photos et des messages.',
   ),
   t(
+    'non-droit',
+    'non-droit',
+    ['non droit'],
+    'Une situation sans loi. Un « espace de non-droit » serait un lieu où aucune loi ne s’applique.',
+    'Internet n’est pas un espace de non-droit : insulter y est aussi interdit.',
+  ),
+  t(
     'liberte-information',
     'liberté de l’information',
     ['liberte de l’information', 'liberté d’information'],

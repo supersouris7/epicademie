@@ -15,4 +15,5 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'emcm2-droits-de-tous', version: 1, lot: 'em-cm2-01', date: '2026-11-24', verdict: 'ok' },
   { skillId: 'emcm2-commune-elus', version: 1, lot: 'em-cm2-01', date: '2026-11-24', verdict: 'ok' },
   { skillId: 'emcm2-vote', version: 1, lot: 'em-cm2-01', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'emcm2-liberte-expression', version: 1, lot: 'em-cm2-02', date: '2026-11-25', verdict: 'ok' },
 ];

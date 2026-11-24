@@ -41,7 +41,7 @@ const PILIERS =
   'La liberté de la presse et la liberté de s’informer constituent deux piliers fondamentaux de la démocratie';
 
 const ART4 = 'La liberté consiste à pouvoir faire tout ce qui ne nuit pas à autrui';
-const ART11 = 'tout citoyen peut donc parler, écrire, imprimer librement, sauf à répondre de l’abus de cette liberté';
+const ART11 = 'tout Citoyen peut donc parler, écrire, imprimer librement, sauf à répondre de l’abus de cette liberté';
 const ART11_DEBUT = 'La libre communication des pensées et des opinions est un des droits les plus précieux de l’homme';
 
 const EXPRIMER = 'le droit d’exprimer ses opinions (sous la forme écrite, orale, audiovisuelle...)';
@@ -80,7 +80,7 @@ const libreExpression: Notion = {
   memo: [
     'La **liberté d’expression**, c’est ton droit de donner ton **opinion** : parler, écrire, dessiner. La **DDHC** la protège à l’article 11.',
     'Elle a des limites fixées par la **loi** : tu ne peux pas nuire aux autres. Une loi de 1881 encadre aussi la **liberté de la presse**.',
-    'Sur un **réseau social**, même avec un **pseudonyme**, les règles restent : internet n’est pas une zone sans loi !',
+    'Sur un **réseau social**, même avec un **pseudonyme**, la loi reste : internet n’est pas un espace de **non-droit**, c’est-à-dire sans loi !',
   ],
   faits: [
     {
@@ -142,7 +142,7 @@ const libreExpression: Notion = {
       gap: [
         'Les libertés ont des ',
         ' pour protéger la liberté des autres.',
-        ['limites', 'limite', 'bornes', 'règles', 'regles'],
+        ['limites', 'limite', 'bornes', 'règles', 'regles', 'lois'],
       ],
       quote: LIMITES,
       explain: 'Les limites évitent que la liberté d’une personne écrase celle d’une autre.',
@@ -163,7 +163,7 @@ const libreExpression: Notion = {
   paires3: [
     ['Opinion', 'Ce que tu penses'],
     ['Pseudonyme', 'Faux nom que l’on choisit'],
-    ['Limite', 'Ce que la loi empêche de dépasser'],
+    ['Limite', 'Ce que la loi interdit de dépasser'],
   ],
   paires5: [
     ['Opinion', 'Ce que tu penses'],
