@@ -26,6 +26,7 @@ const reglesLois: Notion = {
     'Le **civisme**, c’est agir pour le **bien public** en respectant les **règles**. Exemple : ranger la salle avec ta classe.',
     'Dans une **démocratie**, les **citoyens** participent aux décisions grâce au **vote**. À l’école, le conseil d’élèves te fait vivre ça !',
     'Une **loi** est une règle pour tout le pays. Avec l’**égalité devant la loi**, elle est la même pour tous.',
+    'La **DDHC** (Déclaration des droits de l’homme et du citoyen) est un texte sur les droits de chacun : en CM1, on en étudie les articles 3, 6 et 16.',
   ],
   faits: [
     {
@@ -159,7 +160,7 @@ const reglesLois: Notion = {
     },
     {
       q: 'dans une démocratie, comment appelle-t-on le fait de choisir ou de décider avec les autres citoyens ? (un mot)',
-      accepted: ['vote', 'le vote', 'voter'],
+      accepted: ['vote', 'le vote', 'voter', 'élection', 'une élection', 'élire', 'suffrage'],
       traps: [
         { text: 'sondage', why: 'Un sondage demande un avis mais ne décide rien. Le vote, lui, décide.' },
         { text: 'tirage au sort', why: 'Le tirage au sort laisse le hasard décider. Dans notre démocratie, on vote.' },
@@ -357,7 +358,7 @@ const respectAutrui: Notion = {
         { label: 'ressemblance parfaite', why: 'On n’est pas tous pareils : on respecte les différences.' },
         {
           label: 'richesse',
-          why: 'La richesse n’est pas ce que dit le programme : il parle de la diversité (croyances, convictions).',
+          why: 'On ne respecte pas quelqu’un pour son argent : on respecte ses différences (croyances, convictions…).',
         },
         { label: 'popularité', why: 'On respecte chacun, populaire ou pas.' },
       ],
@@ -394,7 +395,7 @@ const respectAutrui: Notion = {
   libres: [
     {
       q: 'quel mot désigne un geste impoli qui gêne les autres et nuit à la vie en commun ?',
-      accepted: ['incivilité', 'une incivilité', 'incivilités', 'des incivilités'],
+      accepted: ['incivilité', 'une incivilité', 'incivilités', 'des incivilités', 'impolitesse', 'une impolitesse'],
       traps: [
         { text: 'civisme', why: 'Le civisme, c’est le contraire : agir pour le bien public.' },
         { text: 'politesse', why: 'La politesse respecte les autres. Ici, le geste les gêne.' },
