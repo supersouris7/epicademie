@@ -1,4 +1,4 @@
-import { gradeInfo, type Grade } from '@questeo/shared';
+import { gradeInfo, type Grade } from '@epicademie/shared';
 
 interface GradeTabsProps {
   readonly grades: readonly Grade[];

@@ -1,4 +1,4 @@
-import type { Grade, SubjectId } from '@questeo/shared';
+import type { Grade, SubjectId } from '@epicademie/shared';
 import type { Rational } from './rational.ts';
 import type { Rng } from './rng.ts';
 

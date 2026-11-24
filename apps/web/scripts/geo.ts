@@ -6,7 +6,7 @@
  *   capitale et monnaie de chacun des 27 États membres.
  * Écrit packages/content/src/geographie/donnees.generated.ts.
  *
- *   pnpm --filter @questeo/web exec tsx scripts/geo.ts
+ *   pnpm --filter @epicademie/web exec tsx scripts/geo.ts
  */
 import { execFileSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';

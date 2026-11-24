@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router';
-import { api, GENERAL_REPORT_REASONS, REPORT_REASON_LABELS, type ReportReason } from '@questeo/shared';
+import { api, GENERAL_REPORT_REASONS, REPORT_REASON_LABELS, type ReportReason } from '@epicademie/shared';
 import { ApiError, request } from '../api/client.ts';
 import { GameButton } from '../ui/game/GameButton.tsx';
 

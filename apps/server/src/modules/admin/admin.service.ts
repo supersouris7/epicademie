@@ -6,7 +6,7 @@ import {
   type AccountSearch,
   type AuditPage,
   type TemporaryPassword,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import { conflict, notFound } from '../../core/errors.ts';

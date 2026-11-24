@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useNavigate } from 'react-router';
-import { getChapter } from '@questeo/content';
+import { getChapter } from '@epicademie/content';
 import { useRealtime, type Notice } from './store.ts';
 import { useSession } from '../../shared/lib/session.ts';
 import { HeroFace } from '../../shared/battle/HeroFace.tsx';
@@ -118,8 +118,8 @@ export function RealtimeLink({ profileId }: { readonly profileId: string | null 
       useSession.getState().selectProfile(null);
       void navigate('/', { replace: true });
     };
-    window.addEventListener('questeo:refused', onRefused);
-    return () => window.removeEventListener('questeo:refused', onRefused);
+    window.addEventListener('epicademie:refused', onRefused);
+    return () => window.removeEventListener('epicademie:refused', onRefused);
   }, [navigate]);
   return null;
 }

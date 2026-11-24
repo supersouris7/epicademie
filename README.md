@@ -1,4 +1,4 @@
-# Questeo — Academy Fighters
+# Épicadémie
 
 Exercices de mathématiques du **CM1 à la 3e** (programmes officiels), gamifiés : entraînement
 avec répétition espacée, combats de boss par chapitre, arène multijoueur tour par tour. Pensé
@@ -16,7 +16,7 @@ cp .env.example .env      # renseigner POSTGRES_PASSWORD (et PUBLIC_URL)
 docker compose up -d      # PostgreSQL → migration → serveur sur :3000
 ```
 
-Images publiées : `docker.io/<utilisateur>/questeo` — `unstable` (dernier commit sur `main`),
+Images publiées : `docker.io/<utilisateur>/epicademie` — `unstable` (dernier commit sur `main`),
 `1.0.1` / `1.0` / `1` / `latest` (versions taguées).
 
 ## Développement
@@ -40,8 +40,8 @@ pnpm lint && pnpm typecheck && pnpm arch && pnpm format:check
 | `packages/content` | Générateurs d'exercices (purs, déterministes)                           |
 | `packages/engine`  | Règles du jeu : XP, répétition espacée, combats, arène, coffres (purs)  |
 
-Migrations : modifier `apps/server/src/db/schema.ts` puis `pnpm --filter @questeo/server db:generate`.
-Mascotte : la source est `apps/web/src/shared/ui/mascot/` ; `pnpm --filter @questeo/web mascot:export`
+Migrations : modifier `apps/server/src/db/schema.ts` puis `pnpm --filter @epicademie/server db:generate`.
+Mascotte : la source est `apps/web/src/shared/ui/mascot/` ; `pnpm --filter @epicademie/web mascot:export`
 régénère `public/questy.svg`.
 
 Commits au format [Conventional Commits](https://www.conventionalcommits.org/fr/) (vérifié par commitlint).

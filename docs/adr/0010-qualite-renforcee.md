@@ -39,7 +39,7 @@ Pour tenir ces règles côté front, un écran de jeu se découpe en trois couch
 
 Les écrans sont testés sur l'application complète avec un **faux serveur** construit sur le
 contrat d'API (`apps/web/src/testing/`) : chaque réponse est validée par le schéma du contrat,
-et les règles du jeu sont les vraies (`@questeo/content`, `@questeo/engine`).
+et les règles du jeu sont les vraies (`@epicademie/content`, `@epicademie/engine`).
 
 ## Conséquences
 

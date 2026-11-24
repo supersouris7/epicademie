@@ -11,8 +11,8 @@ export function About() {
       <div className="flex flex-col items-center gap-4 sm:flex-row">
         <Questy size={140} mood="cool" />
         <p className="text-lg">
-          <strong>Academy Fighters</strong> — l’aventure des maths, du CM1 à la 3e. Questy, le robot à écran LED qui
-          change de tête selon l’humeur, est un personnage original créé pour Academy Fighters.
+          <strong>Épicadémie</strong> — l’aventure des maths, du CM1 à la 3e. Questy, le robot à écran LED qui change de
+          tête selon l’humeur, est un personnage original créé pour Épicadémie.
         </p>
       </div>
       <GamePanel title="Données personnelles" className="flex flex-col gap-2">
@@ -53,7 +53,7 @@ export function About() {
           </p>
         )}
       </GamePanel>
-      <p className="text-muted text-center text-sm">© 2026 Academy Fighters — tous droits réservés.</p>
+      <p className="text-muted text-center text-sm">© 2026 Épicadémie — tous droits réservés.</p>
     </PageShell>
   );
 }

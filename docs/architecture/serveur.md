@@ -41,7 +41,7 @@ src/
 
 - **Routes** : aucune logique ; `route(app, api.xxx, ({ params, body }) => service.f(...))`.
   La validation d'entrée et de sortie est faite par le contrat.
-- **Services** : règles métier (souvent déléguées à `@questeo/engine`), erreurs métier par
+- **Services** : règles métier (souvent déléguées à `@epicademie/engine`), erreurs métier par
   `AppError` (`notFound`, `conflict`, `badRequest`), **frontière transactionnelle** :
   `db.transaction(async (tx) => { … })` ; chaque dépôt est construit sur `tx`.
 - **Dépôts** : fonctions `xxxRepo(executor)` acceptant la base ou une transaction ; requêtes
@@ -77,7 +77,7 @@ src/
 
 Créer `modules/<nom>/` avec `index.ts`, `<nom>.routes.ts`, `<nom>.service.ts`, `<nom>.repo.ts`,
 `<nom>.test.ts`, puis l'enregistrer dans `app.ts`. Les tables vont dans `db/schema.ts`, suivies
-de `pnpm --filter @questeo/server db:generate`.
+de `pnpm --filter @epicademie/server db:generate`.
 
 ## Accès et isolation
 

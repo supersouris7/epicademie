@@ -6,7 +6,7 @@ import {
   ITEM_INFO,
   type Buy,
   type Purchase,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import { idempotencyRepo } from '../../db/idempotency.ts';
 import type { Db } from '../../db/client.ts';
 import { conflict, notFound } from '../../core/errors.ts';

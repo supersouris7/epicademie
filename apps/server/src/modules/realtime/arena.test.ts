@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { fmt, generate } from '@questeo/content';
-import type { ArenaView, Profile } from '@questeo/shared';
+import { fmt, generate } from '@epicademie/content';
+import type { ArenaView, Profile } from '@epicademie/shared';
 import { ARENA_GRACE_MS, createArenas, LOBBY_TTL_MS, type Arenas } from './arena.ts';
 import type { Presence } from './presence.ts';
 import { fixedClock } from '../../testing/harness.ts';

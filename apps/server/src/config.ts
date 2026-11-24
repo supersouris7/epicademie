@@ -43,7 +43,7 @@ const EnvSchema = z.object({
   METRICS_TOKEN: z.string().min(16).optional(),
   /**
    * Secret de l'« opérateur » : le frontal de la page de pilotage l'ajoute (en-tête
-   * X-Questeo-Operateur) aux requêtes d'administration. Absent : aucune administration.
+   * X-Epicademie-Operateur) aux requêtes d'administration. Absent : aucune administration.
    * Moins de 32 caractères : démarrage refusé.
    */
   ADMIN_OPERATOR_SECRET: z.string().min(32).optional(),
@@ -51,7 +51,7 @@ const EnvSchema = z.object({
   API_DOCS: bool,
   /** Fuseau horaire des jours de révision (répétition espacée). */
   TZ_FAMILY: z.string().min(1).default('Europe/Paris'),
-  QUESTEO_VERSION: z.string().default('dev'),
+  EPICADEMIE_VERSION: z.string().default('dev'),
   /** Cookie de session réservé à HTTPS ; par défaut en production. */
   COOKIE_SECURE: bool,
   /** Durée d'une session d'appareil sans activité, en jours. */
@@ -184,7 +184,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
     adminOperatorSecret: e.ADMIN_OPERATOR_SECRET ?? null,
     apiDocs: e.API_DOCS ?? !production,
     timeZone: e.TZ_FAMILY,
-    version: e.QUESTEO_VERSION,
+    version: e.EPICADEMIE_VERSION,
     cookieSecure: e.COOKIE_SECURE ?? production,
     sessionDays: e.SESSION_DAYS,
     billing: billingConfig(e, production),
@@ -210,7 +210,7 @@ function mailConfig(e: z.infer<typeof EnvSchema>): MailConfig {
   return {
     production,
     brevoApiKey: e.BREVO_API_KEY ?? null,
-    from: e.MAIL_FROM ?? 'Academy Fighters <noreply@localhost>',
+    from: e.MAIL_FROM ?? 'Épicadémie <noreply@localhost>',
   };
 }
 

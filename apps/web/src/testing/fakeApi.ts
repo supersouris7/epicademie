@@ -1,4 +1,4 @@
-import { battlePools, check, generate } from '@questeo/content';
+import { battlePools, check, generate } from '@epicademie/content';
 import {
   answerBattle,
   applyItem,
@@ -9,7 +9,7 @@ import {
   levelFromXp,
   type BattleDice,
   type BattleState,
-} from '@questeo/engine';
+} from '@epicademie/engine';
 import {
   API_PREFIX,
   api,
@@ -22,12 +22,12 @@ import {
   type Profile,
   type SkillProgress,
   STARTING_HEROES,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 
 /**
  * Faux serveur pour les tests du front : répond aux appels `fetch` de l'API v1 à partir d'un
- * état en mémoire, avec les VRAIES règles du jeu (correction par @questeo/content, combat par
- * @questeo/engine). Chaque réponse est validée par le schéma du contrat : le faux serveur ne
+ * état en mémoire, avec les VRAIES règles du jeu (correction par @epicademie/content, combat par
+ * @epicademie/engine). Chaque réponse est validée par le schéma du contrat : le faux serveur ne
  * peut pas dériver de l'API réelle sans que les tests échouent.
  *
  * Usage : `const server = createFakeApi(); vi.stubGlobal('fetch', server.fetch);`
@@ -633,7 +633,7 @@ export function createFakeApi(options: FakeApiOptions = {}) {
   const { session, requireParent, handlers: auth } = authHandlers(options);
   const handlers: Partial<Record<keyof typeof api, Handler>> = {
     ...auth,
-    network: () => ({ publicUrl: 'http://questeo.test' }),
+    network: () => ({ publicUrl: 'http://epicademie.test' }),
     presence: () => ({ online: [] }),
     listProfiles: () => [...profiles.values()],
     getProfile: ({ params }) => profile(params.id),

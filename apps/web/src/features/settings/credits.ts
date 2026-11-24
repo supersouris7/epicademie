@@ -17,7 +17,7 @@ export const CREDITS: readonly Credit[] = [
   },
   {
     work: 'Bruitages synthétisés (script apps/web/scripts/sounds.mjs)',
-    author: 'Academy Fighters',
+    author: 'Épicadémie',
     license: 'CC0 1.0',
     licenseUrl: 'https://creativecommons.org/publicdomain/zero/1.0/',
     sourceUrl: 'https://github.com/supersouris7/questeo/blob/main/apps/web/scripts/sounds.mjs',

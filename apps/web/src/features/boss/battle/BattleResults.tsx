@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { useLocation, useNavigate } from 'react-router';
-import { getSkill, type Chapter } from '@questeo/content';
-import { accord, BOSS_MEDAL_LABELS, type BattleSummary, type Profile } from '@questeo/shared';
+import { getSkill, type Chapter } from '@epicademie/content';
+import { accord, BOSS_MEDAL_LABELS, type BattleSummary, type Profile } from '@epicademie/shared';
 import { BossSays, HeroSays } from '../../../shared/battle/BattleScenes.tsx';
 import { bossSays, heroSays } from '../../../shared/lib/dialogue.ts';
 import { Confetti } from '../../../shared/ui/Confetti.tsx';

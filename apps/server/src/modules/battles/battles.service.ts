@@ -1,4 +1,4 @@
-import { battlePools, check, generate, getChapter, getSkill, skillVersion } from '@questeo/content';
+import { battlePools, check, generate, getChapter, getSkill, skillVersion } from '@epicademie/content';
 import {
   answerBattle,
   applyItem,
@@ -12,7 +12,7 @@ import {
   weakestSkill,
   type BattleDice,
   type BattleState,
-} from '@questeo/engine';
+} from '@epicademie/engine';
 import {
   bestMedal,
   bossMedal,
@@ -24,7 +24,7 @@ import {
   type Inventory,
   type ItemId,
   type Level,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import type { Db, Executor, Tx } from '../../db/client.ts';
 import type { SessionRow } from '../../db/schema.ts';
 import type { Clock } from '../../core/clock.ts';
@@ -40,7 +40,7 @@ import { battlesRepo } from './battles.repo.ts';
 /**
  * Combats de boss. L'état complet du combat (questions tirées, cœurs, vies du boss, objets)
  * vit sur le serveur, dans la partie (`sessions.battle`) ; le client ne reçoit qu'une vue
- * (`BattleView`) et envoie ses réponses. Les règles du combat sont dans @questeo/engine
+ * (`BattleView`) et envoie ses réponses. Les règles du combat sont dans @epicademie/engine
  * (fonctions pures) ; ce service les applique et persiste le résultat.
  */
 

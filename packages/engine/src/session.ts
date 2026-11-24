@@ -1,4 +1,4 @@
-import type { Level } from '@questeo/shared';
+import type { Level } from '@epicademie/shared';
 import type { SkillState } from './srs.ts';
 import { skillWeight, startLevel } from './adaptive.ts';
 

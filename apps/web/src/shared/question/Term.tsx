@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion } from 'motion/react';
-import { glossaryEntry } from '@questeo/content';
+import { glossaryEntry } from '@epicademie/content';
 import { GameButton } from '../ui/game/GameButton.tsx';
 import { DemoView } from './demos/DemoView.tsx';
 import { MathText } from './MathText.tsx';

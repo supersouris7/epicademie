@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify';
-import { api, type AdminError } from '@questeo/shared';
+import { api, type AdminError } from '@epicademie/shared';
 import { route } from '../../core/http/route.ts';
 import type { InsightsService } from './insights.service.ts';
 

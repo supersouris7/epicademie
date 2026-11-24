@@ -14,7 +14,7 @@ Retour terrain d'un parent :
 
 ## Décision
 
-- **Glossaire** (`@questeo/content/glossary.ts`) : 27 mots en cinq familles (opérations,
+- **Glossaire** (`@epicademie/content/glossary.ts`) : 27 mots en cinq familles (opérations,
   division, nombres décimaux, fractions, longueurs/aires/volumes). Chaque mot a :
   - une définition courte ;
   - un exemple chiffré, vérifié par les tests ;

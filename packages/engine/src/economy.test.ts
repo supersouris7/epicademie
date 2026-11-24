@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { AVAILABLE_HEROES, ITEM_PRICES, ITEMS, MAX_ITEM_STOCK, RUBY_PRICE } from '@questeo/shared';
+import { AVAILABLE_HEROES, ITEM_PRICES, ITEMS, MAX_ITEM_STOCK, RUBY_PRICE } from '@epicademie/shared';
 import { trainingChest } from './loot.ts';
 import { coinsForXp, PERFECT_BONUS, xpForAnswer } from './xp.ts';
 

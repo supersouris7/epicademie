@@ -1,5 +1,5 @@
 import { and, asc, count, desc, eq, exists, gt, gte, inArray, isNull, or, sql, type SQL } from 'drizzle-orm';
-import { ADMIN_PAGE_SIZE, type AccountSearch } from '@questeo/shared';
+import { ADMIN_PAGE_SIZE, type AccountSearch } from '@epicademie/shared';
 import type { Executor } from '../../db/client.ts';
 import {
   accounts,

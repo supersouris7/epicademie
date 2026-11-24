@@ -8,7 +8,7 @@ import {
   type Gender,
   type Grade,
   type Profile,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import { useCreateProfile, useProfile, useUpdateProfile } from './api.ts';
 import { Avatar } from '../../shared/ui/Avatar.tsx';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';

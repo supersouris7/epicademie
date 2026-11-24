@@ -14,7 +14,7 @@
   - la **personnalisation**.
 - **Trophées déduits** des données déjà enregistrées (boss vaincus, badges, collection de héros).
   Rien n'est attribué en double, rien n'est à tenir à jour.
-- **Cosmétiques** (catalogue `COSMETICS`, `@questeo/shared/hq.ts`) : décors, cadres et titres,
+- **Cosmétiques** (catalogue `COSMETICS`, `@epicademie/shared/hq.ts`) : décors, cadres et titres,
   **sans aucun avantage de jeu**. On les obtient de trois façons :
   - offerts au départ ;
   - **achetés en rubis ou en pièces gagnés en jouant**, jamais avec de l'argent réel. Cela donne

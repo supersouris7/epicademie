@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { gradeOfSkill, type Advice, type Question, type Response, type Skill } from '@questeo/content';
+import { gradeOfSkill, type Advice, type Question, type Response, type Skill } from '@epicademie/content';
 import { MathText } from './MathText.tsx';
 import { Figure } from './figures/Figure.tsx';
 import { Brouillon, type Stroke } from './tools/Brouillon.tsx';

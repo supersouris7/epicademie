@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { CompetenceState } from '@questeo/shared';
+import type { CompetenceState } from '@epicademie/shared';
 import { EVALUATION } from './constants.ts';
 import type { Observation } from './observations.ts';
 import {

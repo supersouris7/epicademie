@@ -1,6 +1,6 @@
 import { and, desc, eq, gte, lt, ne, sql } from 'drizzle-orm';
-import type { Observation } from '@questeo/engine';
-import type { CompetenceState, EvaluationKind, EvaluationRole, StudiedStatus, SubjectId } from '@questeo/shared';
+import type { Observation } from '@epicademie/engine';
+import type { CompetenceState, EvaluationKind, EvaluationRole, StudiedStatus, SubjectId } from '@epicademie/shared';
 import type { Executor } from '../../db/client.ts';
 import { dayIn } from '../../core/clock.ts';
 import {

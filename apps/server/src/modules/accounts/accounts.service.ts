@@ -1,4 +1,4 @@
-import type { Login, Me, StudentSignup } from '@questeo/shared';
+import type { Login, Me, StudentSignup } from '@epicademie/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import { AppError } from '../../core/errors.ts';
@@ -240,7 +240,7 @@ export function createAccountsService({
       });
       await mailer.send({
         to: account.email,
-        subject: 'Academy Fighters : nouveau mot de passe',
+        subject: 'Épicadémie : nouveau mot de passe',
         text:
           `Bonjour,\n\nPour choisir un nouveau mot de passe, ouvre ce lien (valable ${RESET_LINK_MINUTES} minutes) :\n` +
           `${appUrl()}/mot-de-passe/nouveau?jeton=${token}\n\n` +

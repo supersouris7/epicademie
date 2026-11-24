@@ -1,8 +1,8 @@
 // Fichier généré par scripts/assets/build.ts — ne pas modifier à la main.
 // prettier-ignore
 export const SVG_ASSETS = {
-  "brand-emblem": { category: "branding", path: "/assets/branding/emblem.svg", viewBox: "0 0 64 64", title: "Academy Fighters", usage: "Emblème de l’application (icône d’onglet, écran d’accueil de l’appareil).", status: "disponible" },
-  "brand-logo": { category: "branding", path: "/assets/branding/logo.svg", viewBox: "0 0 320 200", title: "Academy Fighters", usage: "Logo principal (écran de choix du joueur, À propos).", status: "disponible" },
+  "brand-emblem": { category: "branding", path: "/assets/branding/emblem.svg", viewBox: "0 0 64 64", title: "Épicadémie", usage: "Emblème de l’application (icône d’onglet, écran d’accueil de l’appareil).", status: "disponible" },
+  "brand-logo": { category: "branding", path: "/assets/branding/logo.svg", viewBox: "0 0 320 200", title: "Épicadémie", usage: "Logo principal (écran de choix du joueur, À propos).", status: "disponible" },
   "resource-coin": { category: "icons/resources", path: "/assets/icons/resources/coin.svg", viewBox: "0 0 64 64", title: "Pièce", usage: "Monnaie du joueur (compteur de ressources, récompenses de fin de partie).", status: "disponible" },
   "resource-gem": { category: "icons/resources", path: "/assets/icons/resources/gem.svg", viewBox: "0 0 64 64", title: "Gemme", usage: "Monnaie rare (réservée aux futures récompenses).", status: "disponible" },
   "resource-energy": { category: "icons/resources", path: "/assets/icons/resources/energy.svg", viewBox: "0 0 64 64", title: "Énergie", usage: "Jauge d’énergie (modes à venir), bonus de rapidité.", status: "disponible" },

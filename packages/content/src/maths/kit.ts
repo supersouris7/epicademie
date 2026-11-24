@@ -1,4 +1,4 @@
-import type { Grade } from '@questeo/shared';
+import type { Grade } from '@epicademie/shared';
 import { objectiveOf } from '../build.ts';
 import { fmt } from '../rational.ts';
 import type { Rng } from '../rng.ts';

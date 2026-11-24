@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import type { Grade } from '@questeo/shared';
+import type { Grade } from '@epicademie/shared';
 import { calcRows, pressCalc, sendable, type CalcState } from '../calcState.ts';
 import { keyIsForGame } from '../../lib/keys.ts';
 

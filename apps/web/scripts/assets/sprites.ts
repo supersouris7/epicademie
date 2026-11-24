@@ -3,7 +3,7 @@
  * (poses, têtes, portrait) et en bandes d'animation (8 images côte à côte, même cadre pour
  * chaque image afin que le personnage ne « saute » pas d'une image à l'autre).
  *
- *   pnpm --filter @questeo/web assets:sprites
+ *   pnpm --filter @epicademie/web assets:sprites
  *
  * Nettoyage : le voile semi-transparent laissé par le détourage (fond dégradé) est retiré ;
  * pour la course de Lina, seule la silhouette est gardée (fumée blanche retirée, décision du
@@ -519,7 +519,7 @@ export async function run(jobs: readonly Job[] = JOBS): Promise<string[]> {
     .map(([k, v]) => `  '${k}': { frames: ${v.frames}, width: ${v.width}, height: ${v.height} },`);
   writeFileSync(
     GENERATED,
-    `// Fichier généré par scripts/assets/sprites.ts (pnpm --filter @questeo/web assets:sprites) : ne pas modifier.\n\n/** Bandes d'animation : nombre d'images et taille d'une image, en pixels. */\nexport const SPRITE_ANIMS: Readonly<Record<string, { frames: number; width: number; height: number }>> = {\n${entries.join('\n')}\n};\n`,
+    `// Fichier généré par scripts/assets/sprites.ts (pnpm --filter @epicademie/web assets:sprites) : ne pas modifier.\n\n/** Bandes d'animation : nombre d'images et taille d'une image, en pixels. */\nexport const SPRITE_ANIMS: Readonly<Record<string, { frames: number; width: number; height: number }>> = {\n${entries.join('\n')}\n};\n`,
   );
   out.push(GENERATED);
   return out;

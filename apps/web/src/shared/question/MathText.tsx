@@ -1,5 +1,5 @@
 import { useContext, type ComponentType, type ReactNode } from 'react';
-import { normalizeUnits, splitTerms } from '@questeo/content';
+import { normalizeUnits, splitTerms } from '@epicademie/content';
 import { TermContext } from './termContext.ts';
 
 /**

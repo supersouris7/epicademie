@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { eq, inArray, isNull, sql } from 'drizzle-orm';
-import type { ClientError } from '@questeo/shared';
+import type { ClientError } from '@epicademie/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import { anonymizeText, maskTokens, neutralizeGithub } from '../../core/anonymize.ts';

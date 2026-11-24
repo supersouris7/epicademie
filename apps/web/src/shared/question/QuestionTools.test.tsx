@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { CHAPTERS, generate, getSkill, type Question } from '@questeo/content';
+import { CHAPTERS, generate, getSkill, type Question } from '@epicademie/content';
 import { QuestionTools } from './QuestionTools.tsx';
 
 /**

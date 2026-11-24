@@ -1,4 +1,4 @@
-import { indexFor, shuffleWith } from '@questeo/shared';
+import { indexFor, shuffleWith } from '@epicademie/shared';
 
 /** Générateur pseudo-aléatoire déterministe (mulberry32), pour des exercices reproductibles par graine. */
 export interface Rng {

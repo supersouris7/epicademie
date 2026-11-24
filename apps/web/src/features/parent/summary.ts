@@ -1,5 +1,5 @@
-import { getAnySkill } from '@questeo/content';
-import { SUBJECTS, type LearningReport, type Tally } from '@questeo/shared';
+import { getAnySkill } from '@epicademie/content';
+import { SUBJECTS, type LearningReport, type Tally } from '@epicademie/shared';
 
 /**
  * Lecture du suivi pour un parent : une phrase de synthèse et les notions à réviser, sans

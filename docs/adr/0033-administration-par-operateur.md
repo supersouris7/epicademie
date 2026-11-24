@@ -10,8 +10,8 @@ des échecs répétés) qui affiche la console dans un onglet de même origine.
 
 ## Décision
 
-- **Opérateur** : le frontal du port de pilotage ajoute `X-Questeo-Operateur: <secret>` et
-  `X-Questeo-Operateur-Nom: <identifiant>`. Le serveur reconnaît l'opérateur si le secret
+- **Opérateur** : le frontal du port de pilotage ajoute `X-Epicademie-Operateur: <secret>` et
+  `X-Epicademie-Operateur-Nom: <identifiant>`. Le serveur reconnaît l'opérateur si le secret
   (`ADMIN_OPERATOR_SECRET`, 32 caractères min., comparaison en temps constant) correspond. L'opérateur
   n'a **que** les droits d'administration : aucune famille, aucun profil, aucun cookie lu. Secret
   absent = aucune administration ; trop court = refus de démarrer. Le nom est assaini (contrôles

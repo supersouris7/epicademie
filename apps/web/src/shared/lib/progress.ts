@@ -1,5 +1,5 @@
-import { acquired as isAcquired, medal } from '@questeo/engine';
-import type { SkillProgress } from '@questeo/shared';
+import { acquired as isAcquired, medal } from '@epicademie/engine';
+import type { SkillProgress } from '@epicademie/shared';
 
 export interface ChapterProgress {
   readonly total: number;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { HEROES } from '@questeo/shared';
+import { HEROES } from '@epicademie/shared';
 import { bossSays, faceOffExchange, heroSays, mobSays, pick, questySays } from './dialogue.ts';
 
 describe('répliques', () => {

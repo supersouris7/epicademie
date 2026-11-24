@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
-import { fmt, generate } from '@questeo/content';
-import type { LearningReport, Profile, SessionSummary } from '@questeo/shared';
+import { fmt, generate } from '@epicademie/content';
+import type { LearningReport, Profile, SessionSummary } from '@epicademie/shared';
 import { attempts } from '../../db/schema.ts';
 import { dayIn } from '../../core/clock.ts';
 import { createTestApp, profileInput } from '../../testing/harness.ts';

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BATTLE_MOBS } from '@questeo/shared';
+import { BATTLE_MOBS } from '@epicademie/shared';
 import {
   answerBattle,
   applyItem,

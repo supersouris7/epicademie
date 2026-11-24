@@ -10,7 +10,7 @@ import { memoryMailer, type Mailer } from '../core/mail/mailer.ts';
 import { systemRandom, type Random } from '../core/random.ts';
 import type { Clock } from '../core/clock.ts';
 import type { InjectOptions, LightMyRequestResponse } from 'fastify';
-import type { Me } from '@questeo/shared';
+import type { Me } from '@epicademie/shared';
 
 /**
  * Outillage des tests du serveur.
@@ -44,7 +44,7 @@ export const testConfig = (overrides: Partial<AppConfig> = {}): AppConfig => ({
   sessionDays: 30,
   recette: false,
   passwordMinLength: 12,
-  mail: { production: false, brevoApiKey: null, from: 'Academy Fighters <noreply@test>' },
+  mail: { production: false, brevoApiKey: null, from: 'Épicadémie <noreply@test>' },
   google: null,
   billing: {
     provider: 'simulateur',
@@ -83,7 +83,7 @@ export async function createTestDatabase(): Promise<Database & { reset(): Promis
   let database: Database;
   let drop: (() => Promise<void>) | null = null;
   if (adminUrl) {
-    const name = `questeo_test_${randomBytes(6).toString('hex')}`;
+    const name = `epicademie_test_${randomBytes(6).toString('hex')}`;
     const admin = new pg.Client({ connectionString: adminUrl });
     await admin.connect();
     await admin.query(`create database ${name}`);
@@ -230,8 +230,8 @@ export async function createTestApp(options: TestHarnessOptions = {}) {
         return app.http.inject({
           ...o,
           headers: {
-            'x-questeo-operateur': TEST_OPERATOR_SECRET,
-            'x-questeo-operateur-nom': name,
+            'x-epicademie-operateur': TEST_OPERATOR_SECRET,
+            'x-epicademie-operateur-nom': name,
             // Le frontal de pilotage envoie toujours l'origine de la page (obligatoire hors lecture).
             origin: 'http://pilotage.test',
             host: 'pilotage.test',

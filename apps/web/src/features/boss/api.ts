@@ -1,4 +1,4 @@
-import { api, type BattleAnswer, type ItemId } from '@questeo/shared';
+import { api, type BattleAnswer, type ItemId } from '@epicademie/shared';
 import { request } from '../../shared/api/client.ts';
 
 export { bossesKey, useBosses } from '../../shared/api/queries.ts';

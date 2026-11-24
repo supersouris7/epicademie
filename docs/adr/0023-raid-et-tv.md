@@ -14,7 +14,7 @@
   - Victoire **de toute l'équipe** quand le boss tombe. Défaite sans cœurs, ou après 40 tours.
   - Personne n'est éliminé. Un joueur qui part sort du tour de table **sans pénalité** pour
     l'équipe.
-  - Règles pures dans `@questeo/engine/raid.ts`. L'orchestration reste dans
+  - Règles pures dans `@epicademie/engine/raid.ts`. L'orchestration reste dans
     `modules/realtime/arena.ts` (`kind: 'duel' | 'raid'`).
 - **Mode TV** (`/tv`) : un écran partagé (télévision, ordinateur branché), connecté au compte
   familial **sans profil**. Il affiche en grand :

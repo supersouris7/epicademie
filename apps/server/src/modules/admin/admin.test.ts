@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { count, eq } from 'drizzle-orm';
-import type { AccountDetail, AccountPage, AuditPage, Profile, TemporaryPassword } from '@questeo/shared';
+import type { AccountDetail, AccountPage, AuditPage, Profile, TemporaryPassword } from '@epicademie/shared';
 import { accounts, adminAudit, authSessions, contentEvents, passwordResets, profiles } from '../../db/schema.ts';
 import { loadConfig } from '../../config.ts';
 import { sanitizeOperatorName } from '../../core/http/auth.ts';
@@ -28,7 +28,7 @@ describe('opérateur d’administration', () => {
     expect((await t.http.inject('/api/v1/admin/stats')).statusCode).toBe(403);
     const wrong = await t.raw.inject({
       url: '/api/v1/admin/stats',
-      headers: { 'x-questeo-operateur': `${TEST_OPERATOR_SECRET}x` },
+      headers: { 'x-epicademie-operateur': `${TEST_OPERATOR_SECRET}x` },
     });
     expect(wrong.statusCode).toBe(403);
     expect((await t.raw.inject('/api/v1/admin/session')).statusCode).toBe(403);
@@ -81,14 +81,14 @@ describe('opérateur d’administration', () => {
         method: 'POST',
         url: '/api/v1/admin/accounts/search',
         payload: {},
-        headers: { 'x-questeo-operateur': TEST_OPERATOR_SECRET, host: 'pilotage.test', ...headers },
+        headers: { 'x-epicademie-operateur': TEST_OPERATOR_SECRET, host: 'pilotage.test', ...headers },
       } as never);
     expect((await send({})).statusCode).toBe(403);
     expect((await send({ origin: 'http://pilotage.test' })).statusCode).toBe(200);
     // Lecture : pas d'Origin requise.
     const read = await t.raw.inject({
       url: '/api/v1/admin/stats',
-      headers: { 'x-questeo-operateur': TEST_OPERATOR_SECRET },
+      headers: { 'x-epicademie-operateur': TEST_OPERATOR_SECRET },
     });
     expect(read.statusCode).toBe(200);
   });

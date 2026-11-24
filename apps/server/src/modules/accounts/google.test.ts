@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
 import { generateKeyPair, SignJWT, type CryptoKey } from 'jose';
-import type { Me, Profile } from '@questeo/shared';
+import type { Me, Profile } from '@epicademie/shared';
 import { createTestApp, profileInput, TEST_PASSWORD } from '../../testing/harness.ts';
 import { accounts } from '../../db/schema.ts';
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useSearchParams } from 'react-router';
-import { api, SUBSCRIPTION_STATUS_LABELS } from '@questeo/shared';
+import { api, SUBSCRIPTION_STATUS_LABELS } from '@epicademie/shared';
 import { ApiError, request } from '../../shared/api/client.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { useParentGate } from '../account/index.ts';

@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react';
-import { HERO_NAMES, type HeroId } from '@questeo/shared';
+import { HERO_NAMES, type HeroId } from '@epicademie/shared';
 import type { HeroExpression } from '../../design/assets.ts';
 import { HeroFace } from '../../shared/battle/HeroFace.tsx';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';

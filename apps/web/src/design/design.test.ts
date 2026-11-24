@@ -64,7 +64,7 @@ describe('contrastes AA du thème', () => {
 });
 
 describe('SVG générés', () => {
-  it('sont à jour (relancer `pnpm --filter @questeo/web assets:svg`)', () => {
+  it('sont à jour (relancer `pnpm --filter @epicademie/web assets:svg`)', () => {
     for (const [file, content] of outputs()) {
       expect(existsSync(file), file).toBe(true);
       expect(readFileSync(file, 'utf8'), file).toBe(content);

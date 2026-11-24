@@ -12,7 +12,7 @@ import { createTelemetryService } from '../modules/telemetry/index.ts';
  *                                                         erreurs pas encore exportés, anonymisés, doublons fusionnés
  *   node server/dist/reports.js mark-exported <id…>    — marque comme exportés (ids du JSON), après les tickets
  *
- * Ex. : `docker exec questeo node server/dist/reports.js export > signalements.json`.
+ * Ex. : `docker exec epicademie node server/dist/reports.js export > signalements.json`.
  * (Alias acceptés : `reports:export`, `reports:mark-exported`.) Rien n'est envoyé à l'extérieur.
  */
 const USAGE = 'Usage : reports export  |  reports mark-exported <id…>';
@@ -36,7 +36,7 @@ export async function runReports(database: Database, args: readonly string[], no
 async function main(args: readonly string[]): Promise<void> {
   const command = (args[0] ?? '').replace(/^reports:/, '');
   const config = loadConfig();
-  const database = await openDatabase(config.databaseUrl, { poolMax: 1, applicationName: 'questeo-reports' });
+  const database = await openDatabase(config.databaseUrl, { poolMax: 1, applicationName: 'epicademie-reports' });
   try {
     await assertSchemaUpToDate(database, config.migrationsDir);
     console.log(await runReports(database, [command, ...args.slice(1)], systemClock(config.timeZone).now()));

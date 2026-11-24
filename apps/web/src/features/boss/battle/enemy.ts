@@ -1,4 +1,4 @@
-import type { BattleView } from '@questeo/shared';
+import type { BattleView } from '@epicademie/shared';
 import type { ArenaEnemy } from '../../../shared/battle/BattleArena.tsx';
 import { type BossExpression, type PiBotHead } from '../../../design/assets.ts';
 import { bossHeadId, bossPoseId, mobHeadId, mobName, mobOf, type BossIdentity } from '../../../design/bosses.ts';

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { SkillProgress } from '@questeo/shared';
+import type { SkillProgress } from '@epicademie/shared';
 import { OFTEN_MISSED, oftenMissed, recentErrors } from './advice.ts';
 
 const progress = (skillId: string, recent: boolean[]): SkillProgress => ({

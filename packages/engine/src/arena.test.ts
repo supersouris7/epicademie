@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { ArenaPlayer } from '@questeo/shared';
+import type { ArenaPlayer } from '@epicademie/shared';
 import { arenaTarget, playArenaTurn, startArena } from './arena.ts';
 
 const p = (id: string, ready = true): ArenaPlayer => ({ id, name: id, hero: 'alex', hearts: 0, ready });

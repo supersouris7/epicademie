@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { Block } from '@questeo/content';
+import type { Block } from '@epicademie/content';
 
 /** Programme par blocs. */
 const BLOCK_COLORS = {

@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react';
-import type { Question, Response, Skill } from '@questeo/content';
-import type { BattleView, ItemId } from '@questeo/shared';
+import type { Question, Response, Skill } from '@epicademie/content';
+import type { BattleView, ItemId } from '@epicademie/shared';
 import { Figure } from '../../../shared/question/figures/Figure.tsx';
 import { MathText } from '../../../shared/question/MathText.tsx';
 import { PauseButton } from '../../../shared/question/PauseButton.tsx';
@@ -10,7 +10,7 @@ import { DOCK_HEIGHT } from '../../../shared/question/tools.ts';
 import { GameIcon } from '../../../shared/ui/game/GameIcon.tsx';
 import { STAGE_LABEL, type Missed } from './constants.ts';
 import { ItemBar } from './ItemBar.tsx';
-import { itemRefusal } from '@questeo/engine';
+import { itemRefusal } from '@epicademie/engine';
 import { MissedPanel } from './MissedPanel.tsx';
 
 type Point = { readonly x: number; readonly y: number };

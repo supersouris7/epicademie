@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api, type FamilyFriend } from '@questeo/shared';
+import { api, type FamilyFriend } from '@epicademie/shared';
 import { ApiError, request } from '../../shared/api/client.ts';
 import { CharacterAvatar } from '../../shared/ui/game/CharacterAvatar.tsx';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';

@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { chaptersOf, fmt, generate, getChapter, type Question, type Response } from '@questeo/content';
+import { chaptersOf, fmt, generate, getChapter, type Question, type Response } from '@epicademie/content';
 import type {
   BattleAnswerResult,
   BattleSummary,
@@ -7,7 +7,7 @@ import type {
   BossOverview,
   Profile,
   SessionSummary,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import { eq } from 'drizzle-orm';
 import { attempts, inventory, profiles, sessions } from '../../db/schema.ts';
 import { createTestApp, fixedRandom } from '../../testing/harness.ts';

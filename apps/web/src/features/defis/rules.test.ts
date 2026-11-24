@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { allSkillIds, generate, type Level, type Question } from '@questeo/content';
+import { allSkillIds, generate, type Level, type Question } from '@epicademie/content';
 import {
   basePoints,
   bestScore,

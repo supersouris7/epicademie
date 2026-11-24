@@ -6,7 +6,7 @@ import {
   summarize,
   type EvaluationOutcome,
   type EvaluationState,
-} from '@questeo/engine';
+} from '@epicademie/engine';
 import type { Tx } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import type { Random } from '../../core/random.ts';

@@ -1,4 +1,4 @@
-import { check, generate, getChapter, getSkill, skillVersion } from '@questeo/content';
+import { check, generate, getChapter, getSkill, skillVersion } from '@epicademie/content';
 import {
   applySession,
   coinsForXp,
@@ -17,7 +17,7 @@ import {
   seriesLength,
   seriesScore,
   xpForAnswer,
-} from '@questeo/engine';
+} from '@epicademie/engine';
 import type {
   AnswerResult,
   Chest,
@@ -28,7 +28,7 @@ import type {
   SessionSkillSummary,
   SessionSummary,
   SkillProgress,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import type { Db, Tx } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import type { Random } from '../../core/random.ts';
@@ -42,7 +42,7 @@ import { disabledSkills } from '../pedagogy/index.ts';
  * Entraînement (toutes les parties hors combat de boss).
  *
  * Le serveur fait foi : le client envoie la notion, le niveau, la graine et la réponse ; le
- * serveur régénère la question (générateurs déterministes de @questeo/content), corrige et
+ * serveur régénère la question (générateurs déterministes de @epicademie/content), corrige et
  * enregistre. À la fin de la partie : répétition espacée par notion, médailles, XP, pièces et
  * coffre, le tout dans UNE transaction (pas de gain partiel en cas d'erreur).
  */

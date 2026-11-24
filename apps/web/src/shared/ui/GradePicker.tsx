@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { useState } from 'react';
-import { BirthDateSchema, GRADE_INFO, gradeFromBirthDate, gradeInfo, type Grade } from '@questeo/shared';
+import { BirthDateSchema, GRADE_INFO, gradeFromBirthDate, gradeInfo, type Grade } from '@epicademie/shared';
 import { localToday } from '../lib/dates.ts';
 import { comingSoon } from '../lib/grades.ts';
 import { GameButton } from './game/GameButton.tsx';

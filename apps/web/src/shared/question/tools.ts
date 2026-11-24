@@ -1,5 +1,5 @@
-import { chapterOfAnySkill, type Question, type Skill } from '@questeo/content';
-import type { SubjectId } from '@questeo/shared';
+import { chapterOfAnySkill, type Question, type Skill } from '@epicademie/content';
+import type { SubjectId } from '@epicademie/shared';
 import type { DockTab } from './PlayDock.tsx';
 import { conversionNeeded } from './conversion.ts';
 

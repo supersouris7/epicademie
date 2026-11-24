@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
-import { HERO_NAMES, type HeroId } from '@questeo/shared';
+import { HERO_NAMES, type HeroId } from '@epicademie/shared';
 import { CharacterSprite } from './CharacterSprite.tsx';
 import { useEntrance } from '../../lib/entrance.ts';
 

@@ -8,7 +8,7 @@ import {
   type Anomaly,
   type SubjectId,
   type WeakSkillStat,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import {

@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { sql } from 'drizzle-orm';
-import type { FamilyExport, Me } from '@questeo/shared';
+import type { FamilyExport, Me } from '@epicademie/shared';
 import { createTestApp, profileInput, TEST_PASSWORD } from '../../testing/harness.ts';
 
 let t: Awaited<ReturnType<typeof createTestApp>>;

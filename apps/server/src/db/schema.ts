@@ -33,10 +33,10 @@ import type {
   ModeId,
   StudiedStatus,
   SubjectId,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 
 /**
- * Schéma PostgreSQL (source des migrations : `pnpm --filter @questeo/server db:generate`).
+ * Schéma PostgreSQL (source des migrations : `pnpm --filter @epicademie/server db:generate`).
  *
  * Conventions :
  * - identifiants `uuid`, horodatages `timestamptz`, jours (révision, naissance) en `date` ;
@@ -321,7 +321,7 @@ export const inventory = pgTable(
   },
   (t) => [
     primaryKey({ columns: [t.profileId, t.item] }),
-    // Stock maximal : MAX_ITEM_STOCK (@questeo/shared).
+    // Stock maximal : MAX_ITEM_STOCK (@epicademie/shared).
     check('inventory_count_range', sql`${t.count} between 0 and 9`),
   ],
 );

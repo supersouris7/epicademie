@@ -1,6 +1,6 @@
 import { useId, useState, type ReactNode } from 'react';
 import { Link, Navigate, Outlet, useLocation, useNavigate, useSearchParams } from 'react-router';
-import { PASSWORD_MIN } from '@questeo/shared';
+import { PASSWORD_MIN } from '@epicademie/shared';
 import { ApiError } from '../../shared/api/client.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';

@@ -1,5 +1,5 @@
-import type { BadgeCategory, BadgeTier } from '@questeo/shared';
-import { BADGE_CATEGORIES, BADGE_TIERS } from '@questeo/shared';
+import type { BadgeCategory, BadgeTier } from '@epicademie/shared';
+import { BADGE_CATEGORIES, BADGE_TIERS } from '@epicademie/shared';
 import { versioned } from './assets.ts';
 
 /** Une médaille par badge et par rang : `rewards/badges/<badge>-<rang>.webp` (planche du 21/11/2026). */

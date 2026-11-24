@@ -7,7 +7,7 @@ import {
   STUDENT_AUTONOMOUS_MAX_AGE,
   type Grade,
   type InviteResult,
-} from '@questeo/shared';
+} from '@epicademie/shared';
 import { ApiError } from '../../shared/api/client.ts';
 import { Avatar } from '../../shared/ui/Avatar.tsx';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';

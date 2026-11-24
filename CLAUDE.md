@@ -1,4 +1,4 @@
-# Academy Fighters — règles du projet
+# Épicadémie — règles du projet
 
 > Complète le socle commun de la fabrique (`~/.claude/CLAUDE.md`, `~/.claude/fabrique/standards/`),
 > sans jamais l'affaiblir en sécurité. Point de reprise : `~/opencode/questeo-pilotage/ETAT.md` (dépôt privé de pilotage).
@@ -21,7 +21,7 @@
   - `pnpm run arch`
   - `pnpm run build`
 - Tests web avec `--maxWorkers=2` ; e2e Playwright sur 3 profils (tablette, smartphone, ordinateur-tv), port 3100.
-- Docker : image `supersouris7/questeo`, tag `unstable` publié par la CI à chaque push sur `main`.
+- Docker : image `supersouris7/epicademie`, tag `unstable` publié par la CI à chaque push sur `main`.
 - CI GitHub Actions : `ci.yml` (lint, types, tests, build, e2e, intégration PostgreSQL, Trivy).
 - Commits : commitlint (sujet en minuscules, lignes ≤ 100).
 - Migrations Drizzle : `when` du journal strictement croissant (test de garde), réversibles, testées sur données fictives.
@@ -32,6 +32,9 @@
 - End-to-end : Playwright (parcours utilisateur)
 
 ## Environnements
+
+> Renommage (Épicadémie) : l'hôte de test, son dossier et ses sauvegardes gardent l'ancien nom technique, comme la base,
+> l'utilisateur PostgreSQL et le volume (les renommer imposerait une migration de données).
 
 - Test (déploiement autorisé aux agents) : **questeo.lan** — `/home/lenovo/docker-data/questeo`.
   Procédure : `docker exec questeo-db pg_dump -U questeo -Fc questeo > /home/lenovo/docker-data/questeo-backups/questeo-<date>.dump`
@@ -50,7 +53,7 @@
 ## Règles spécifiques
 
 - Conventions de contribution : `CONTRIBUTING.md`.
-- Nom affiché du produit : **Academy Fighters** (nom de code technique : questeo).
+- Nom affiché du produit : **Épicadémie** (nom de code technique : epicademie).
 - Public : élèves (collège, puis toutes matières) et adultes ; parents = clients payants (Espace parent).
 - Contenu pédagogique : pas de relecture humaine → chaque fait est sourcé (sources institutionnelles :
   Éduscol / BO…) et vérifié par des tests de cohérence.

@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react';
-import type { HeroId } from '@questeo/shared';
+import type { HeroId } from '@epicademie/shared';
 import { assetSrc, deliveredSrc, type HeroExpression } from '../../design/assets.ts';
 
 /** Tête du héros dans le HUD du combat : son expression suit ce qui se passe (joie, colère, étourdi…). */

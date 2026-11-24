@@ -1,5 +1,5 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
-# Academy Fighters — Lot 3 — Pictogrammes blancs (boutons)
+# Épicadémie — Lot 3 — Pictogrammes blancs (boutons)
 
 27 images, demandes 15 à 17 (3 messages à envoyer).
 
@@ -18,7 +18,7 @@
 ## Message de départ
 
 ```text
-Tu es directeur artistique et illustrateur d'un jeu vidéo éducatif pour tablette, « Academy Fighters », destiné aux élèves de 5e (11-13 ans).
+Tu es directeur artistique et illustrateur d'un jeu vidéo éducatif pour tablette, « Épicadémie », destiné aux élèves de 5e (11-13 ans).
 Je joins les planches de référence : elles fixent la direction artistique (personnages, mascotte, boss, interface). Toutes les images que je vais te demander doivent appartenir à cet univers et à ce style, comme si un seul illustrateur les avait dessinées. Ne recopie pas le texte des planches.
 
 STYLE (à respecter pour CHAQUE image)

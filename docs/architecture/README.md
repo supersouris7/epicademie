@@ -1,6 +1,6 @@
 # Architecture — vue d'ensemble
 
-Academy Fighters (dépôt « questeo ») : exercices de maths du CM1 à la 3e, gamifiés (entraînement,
+Épicadémie : exercices de maths du CM1 à la 3e, gamifiés (entraînement,
 combats de boss, arène multijoueur), pensés tablette et smartphone.
 
 ```

@@ -1,4 +1,4 @@
-import type { ChestRarity, EvaluationKind } from '@questeo/shared';
+import type { ChestRarity, EvaluationKind } from '@epicademie/shared';
 import { ECONOMY } from '../economy.ts';
 
 /** Bilan terminé et récompensé d'une même matière, vu depuis l'épreuve qu'on clôt. */

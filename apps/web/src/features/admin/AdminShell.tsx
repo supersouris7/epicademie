@@ -36,7 +36,7 @@ export function AdminShell({
         <span className="rounded-[4px] bg-slate-900 px-2 py-0.5 text-xs font-bold tracking-wider text-white">
           ADMIN
         </span>
-        <h1 className="flex-1 text-sm font-semibold">Questeo · Console d’administration</h1>
+        <h1 className="flex-1 text-sm font-semibold">Épicadémie · Console d’administration</h1>
         <span className="text-xs text-slate-500">Opérateur : {session?.operator}</span>
       </header>
       <div className="mx-auto flex max-w-7xl flex-col gap-6 p-4 md:flex-row md:p-6">

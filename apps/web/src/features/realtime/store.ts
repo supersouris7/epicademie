@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { io, type Socket } from 'socket.io-client';
-import type { Response } from '@questeo/content';
+import type { Response } from '@epicademie/content';
 import type {
   ArenaInvite,
   ArenaView,
@@ -9,8 +9,8 @@ import type {
   ClientToServerEvents,
   OnlinePlayer,
   ServerToClientEvents,
-} from '@questeo/shared';
-import { REALTIME_REFUSALS } from '@questeo/shared';
+} from '@epicademie/shared';
+import { REALTIME_REFUSALS } from '@epicademie/shared';
 
 type RealtimeSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -112,13 +112,13 @@ export const useRealtime = create<RealtimeState>((set, get) => ({
       set({ refused: err.message, socket: null, profileId: null });
       socket.disconnect();
       // Retour à l'écran des profils.
-      window.dispatchEvent(new CustomEvent('questeo:refused'));
+      window.dispatchEvent(new CustomEvent('epicademie:refused'));
     });
     // Profil ouvert sur un autre appareil : cette connexion est fermée, retour au choix du joueur.
     socket.on('replaced', () => {
       set({ refused: REALTIME_REFUSALS.replaced, socket: null, profileId: null, arena: null });
       socket.disconnect();
-      window.dispatchEvent(new CustomEvent('questeo:refused'));
+      window.dispatchEvent(new CustomEvent('epicademie:refused'));
     });
     socket.on('chat', (message) =>
       set((s) => ({ notices: [...s.notices, { id: ++seq, kind: 'chat' as const, message }].slice(-4) })),

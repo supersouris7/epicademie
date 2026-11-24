@@ -1,4 +1,4 @@
-import type { ErrorCode } from '@questeo/shared';
+import type { ErrorCode } from '@epicademie/shared';
 
 /**
  * Erreur métier attendue (profil introuvable, combat déjà terminé…).

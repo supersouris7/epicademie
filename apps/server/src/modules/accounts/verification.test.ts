@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
-import type { Me, Profile } from '@questeo/shared';
+import type { Me, Profile } from '@epicademie/shared';
 import { createTestApp, profileInput, sessionCookie, TEST_PASSWORD, tokenOf } from '../../testing/harness.ts';
 import { tokenHash } from '../../core/auth/tokens.ts';
 import { hashPassword } from '../../core/auth/password.ts';

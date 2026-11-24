@@ -1,6 +1,6 @@
 import { and, asc, eq, inArray, sql } from 'drizzle-orm';
-import { toStage, type SkillState } from '@questeo/engine';
-import type { AnswerSubmit, ModeId, SkillProgress, SubjectId } from '@questeo/shared';
+import { toStage, type SkillState } from '@epicademie/engine';
+import type { AnswerSubmit, ModeId, SkillProgress, SubjectId } from '@epicademie/shared';
 import type { Executor } from '../../db/client.ts';
 import { attempts, chapterRewards, sessions, skillStates, type SkillStateRow } from '../../db/schema.ts';
 

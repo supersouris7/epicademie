@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { RecapScreen } from './GameRecap.tsx';
 import { motion } from 'motion/react';
-import { getChapter, getSkill } from '@questeo/content';
-import { accord, type Gender, type SessionSummary } from '@questeo/shared';
+import { getChapter, getSkill } from '@epicademie/content';
+import { accord, type Gender, type SessionSummary } from '@epicademie/shared';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { Confetti } from '../../shared/ui/Confetti.tsx';
 import { MedalBadge, RewardBadge } from '../../shared/ui/game/RewardBadge.tsx';
-import { medal } from '@questeo/engine';
+import { medal } from '@epicademie/engine';
 import { QuestyPose } from '../../shared/ui/mascot/QuestyPose.tsx';
 import type { QuestyPoseId } from '../../shared/ui/mascot/poses.ts';
 import type { MoodId } from '../../shared/ui/mascot/moods.ts';

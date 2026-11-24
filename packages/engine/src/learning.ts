@@ -1,5 +1,5 @@
-import type { LearningReport, ModeId, SkillLearning, SkillStatus, SubjectId, Tally, Trend } from '@questeo/shared';
-import { SKILL_STATUSES } from '@questeo/shared';
+import type { LearningReport, ModeId, SkillLearning, SkillStatus, SubjectId, Tally, Trend } from '@epicademie/shared';
+import { SKILL_STATUSES } from '@epicademie/shared';
 import type { Stage } from './srs.ts';
 
 /**

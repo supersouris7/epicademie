@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { api, type Profile, type RankingRow } from '@questeo/shared';
+import { api, type Profile, type RankingRow } from '@epicademie/shared';
 import { request } from '../../shared/api/client.ts';
 import { CharacterAvatar } from '../../shared/ui/game/CharacterAvatar.tsx';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';

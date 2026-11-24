@@ -1,5 +1,5 @@
 <!-- Fichier généré par apps/web/scripts/assets/plan.ts à partir de apps/web/src/design/assets.ts — ne pas modifier à la main. -->
-# Academy Fighters — Arènes
+# Épicadémie — Arènes
 
 5 décors fournis par le client (paysage 16:9, style cartoon, sol dégagé au centre), aucun à générer :
 
@@ -9,7 +9,7 @@
 - `environments/arenas/glace.png` — Arène des glaces : lac gelé cerné de cristaux, ruines de glace sous les aurores boréales
 - `environments/arenas/academie.png` — Arène de l’académie : parvis de l’académie, bâtiments, banderoles et collines
 
-Chaque décor est décliné en 4 cadrages par `pnpm --filter @questeo/web assets:arenas` (jamais d'étirement) :
+Chaque décor est décliné en 4 cadrages par `pnpm --filter @epicademie/web assets:arenas` (jamais d'étirement) :
 
 | Suffixe | Final | Proportions | Cadrage |
 |---|---|---|---|

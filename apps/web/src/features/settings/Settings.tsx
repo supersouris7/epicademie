@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import type { Profile } from '@questeo/shared';
+import type { Profile } from '@epicademie/shared';
 import { useDeleteProfile, useUpdateProfile } from '../profiles/index.ts';
 import { logout, useParentGate, useSetMe } from '../account/index.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';

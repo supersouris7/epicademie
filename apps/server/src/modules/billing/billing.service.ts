@@ -1,5 +1,5 @@
-import { chapterOfAnySkill, getChapter, isFreeChapter } from '@questeo/content';
-import { premiumEndFor, type Billing } from '@questeo/shared';
+import { chapterOfAnySkill, getChapter, isFreeChapter } from '@epicademie/content';
+import { premiumEndFor, type Billing } from '@epicademie/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import type { BillingConfig } from '../../config.ts';
@@ -113,7 +113,7 @@ export function createBillingService({ db, clock, config, appUrl, fetcher, onSet
         subscriptionId: id,
         amountCents: config.priceCents,
         currency: config.currency,
-        label: `Academy Fighters — abonnement familial jusqu’au ${end}`,
+        label: `Épicadémie — abonnement familial jusqu’au ${end}`,
         successUrl: `${appUrl()}/parent/abonnement?paiement=ok`,
         cancelUrl: `${appUrl()}/parent/abonnement?paiement=annule`,
       });

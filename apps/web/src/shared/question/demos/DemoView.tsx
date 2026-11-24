@@ -1,4 +1,4 @@
-import type { Demo } from '@questeo/content';
+import type { Demo } from '@epicademie/content';
 import { ConversionDemoView } from '../ConversionDemoView.tsx';
 import { DivisionDemo } from './DivisionDemo.tsx';
 import { FractionDemo } from './FractionDemo.tsx';
