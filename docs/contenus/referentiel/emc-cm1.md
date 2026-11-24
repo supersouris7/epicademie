@@ -9,10 +9,10 @@
 
 ## Chapitres et notions
 
-| Lot         | Chapitre          | Notions                                                                                 | État actuel |
-| ----------- | ----------------- | --------------------------------------------------------------------------------------- | ----------- |
-| `em-cm1-01` | Faire société     | règles et lois ; respect d'autrui ; égalité dans la dignité ; symboles de la République | absente     |
-| `em-cm1-02` | Civisme numérique | règles en ligne ; protéger ses données ; respect en ligne ; signaler                    | absente     |
+| Lot         | Chapitre          | Notions                                                                                                                                        | État actuel            |
+| ----------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `em-cm1-01` | Faire société     | règles et lois ; respect d'autrui ; égalité dans la dignité ; fraternité et empathie (les symboles de la République relèvent du CE1 et du CM2) | couverte, en relecture |
+| `em-cm1-02` | Civisme numérique | règles en ligne ; protéger ses données ; respect en ligne ; signaler                                                                           | absente                |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).

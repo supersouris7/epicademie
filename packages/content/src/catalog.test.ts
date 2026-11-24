@@ -82,7 +82,8 @@ describe('catalogue', () => {
       histoire: 'h',
     };
     for (const c of CHAPTERS) {
-      const letter = c.subject === 'sciences' ? sciences[c.domain] : subject[c.subject];
+      // EMC : domaine de la matière histoire, préfixe « em » (ADR 0034).
+      const letter = c.domain === 'emc' ? 'em' : c.subject === 'sciences' ? sciences[c.domain] : subject[c.subject];
       const prefix = `${letter ?? '?'}${grade[c.grade]}`;
       expect(c.id.startsWith(prefix), c.id).toBe(true);
       for (const s of withBoss(c)) expect(s.id.startsWith(prefix), s.id).toBe(true);

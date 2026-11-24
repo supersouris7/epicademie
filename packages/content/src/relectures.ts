@@ -1,6 +1,7 @@
 import type { Relecture } from './types.ts';
 import { RELECTURES as MATHS } from './maths/relectures.ts';
 import { RELECTURES as ANGLAIS } from './anglais/relectures.ts';
+import { RELECTURES as EMC } from './emc/relectures.ts';
 import { RELECTURES as ESPAGNOL } from './espagnol/relectures.ts';
 import { RELECTURES as GEOGRAPHIE } from './geographie/relectures.ts';
 import { RELECTURES as HISTOIRE } from './histoire/relectures.ts';
@@ -13,6 +14,7 @@ export const RELECTURES: readonly Relecture[] = [
   ...ESPAGNOL,
   ...GEOGRAPHIE,
   ...HISTOIRE,
+  ...EMC,
   ...PHYSIQUE,
 ];
 

@@ -1,4 +1,5 @@
 import { GLOSSAIRE as ANGLAIS } from './anglais/glossaire.ts';
+import { GLOSSAIRE as EMC } from './emc/glossaire.ts';
 import { GLOSSAIRE as ESPAGNOL } from './espagnol/glossaire.ts';
 import { GLOSSAIRE as GEOGRAPHIE } from './geographie/glossaire.ts';
 import { GLOSSAIRE as HISTOIRE } from './histoire/glossaire.ts';
@@ -18,7 +19,7 @@ export const SUBJECT_GLOSSARIES: Readonly<Record<string, readonly SubjectTerm[]>
   anglais: ANGLAIS,
   espagnol: ESPAGNOL,
   geographie: GEOGRAPHIE,
-  histoire: HISTOIRE,
+  histoire: [...HISTOIRE, ...EMC],
   sciences: PHYSIQUE,
 };
 
