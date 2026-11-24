@@ -11,7 +11,7 @@ import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
 import { ProgressBar } from '../../shared/ui/game/ProgressBar.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { useEvaluationResult, useEvaluationReview } from './api.ts';
-import { competenceTitle, domainLabel, generateEvaluation, gradeName, KIND_INFO, round5 } from './texts.ts';
+import { competenceTitle, domainLabel, formatNote, generateEvaluation, gradeName, KIND_INFO, note20 } from './texts.ts';
 
 function Section({ title, children }: { readonly title: string; readonly children: ReactNode }) {
   return (
@@ -35,7 +35,7 @@ function Chips({ ids, empty }: { readonly ids: readonly string[]; readonly empty
   );
 }
 
-/** Bilan d'une épreuve : maîtrise, domaines, forces, points à travailler, suite. */
+/** Bilan d'une épreuve : note sur 20, domaines, forces, points à travailler, suite. */
 export function EvaluationResults({ profile }: { readonly profile: Profile }) {
   const { id = '' } = useParams();
   const location = useLocation();
@@ -56,24 +56,29 @@ export function EvaluationResults({ profile }: { readonly profile: Profile }) {
 
 function Scores({ r, grade }: { readonly r: EvaluationResult; readonly grade: string }) {
   return (
-    <Section title="Ma maîtrise">
-      <p className="text-muted text-lg">
-        La <strong>maîtrise</strong> : ce que tu réussis dans ce qui a été évalué du programme de {grade}.
-      </p>
+    <Section title="Ma note">
+      {r.masteryDisplayable && r.mastery !== null && (
+        <p
+          className="font-display text-toon text-5xl text-[var(--gold)]"
+          aria-label={`Note : ${note20(r.mastery)} sur 20`}
+        >
+          {note20(r.mastery)}
+          <span className="text-muted text-2xl"> /20</span>
+        </p>
+      )}
+      <p className="text-muted text-lg">Ta note sur 20 dit ce que tu réussis dans le programme de {grade} évalué.</p>
       <ProgressBar
-        value={r.masteryDisplayable && r.mastery !== null ? round5(r.mastery) : 0}
-        max={100}
-        label="Maîtrise"
+        value={r.masteryDisplayable && r.mastery !== null ? note20(r.mastery) : 0}
+        max={20}
+        label="Note"
         color="var(--success)"
         text={
-          r.masteryDisplayable && r.mastery !== null
-            ? `Maîtrise ${round5(r.mastery)} %`
-            : 'Maîtrise : pas encore mesurable'
+          r.masteryDisplayable && r.mastery !== null ? `Note ${formatNote(r.mastery)}` : 'Note : pas encore mesurable'
         }
       />
       {!r.masteryDisplayable && (
         <p className="text-lg">
-          Pas assez de questions sur l’essentiel pour afficher une maîtrise fiable : ce n’est pas un échec.
+          Pas assez de questions sur l’essentiel pour donner une note fiable : ce n’est pas un échec.
         </p>
       )}
       <p className="text-lg">
@@ -132,15 +137,14 @@ function Body(p: {
             {r.domains.map((d) => (
               <li key={d.domain}>
                 <ProgressBar
-                  value={d.mastery === null ? 0 : round5(d.mastery)}
-                  max={100}
+                  value={d.mastery === null ? 0 : note20(d.mastery)}
+                  max={20}
                   label={domainLabel(d.domain)}
                   color="var(--success)"
                   size="sm"
                 />
                 <p className="text-lg">
-                  <strong>{domainLabel(d.domain)}</strong> ·{' '}
-                  {d.mastery === null ? 'pas évalué' : `maîtrise ${round5(d.mastery)} %`}
+                  <strong>{domainLabel(d.domain)}</strong> · {d.mastery === null ? 'pas évalué' : formatNote(d.mastery)}
                 </p>
               </li>
             ))}

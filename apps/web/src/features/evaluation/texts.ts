@@ -44,3 +44,9 @@ export const KIND_INFO: Record<EvaluationKind, { name: string; pitch: (grade: st
 
 /** Pourcentage d'un bilan : arrondi à 5 % (ADR 0030). */
 export const round5 = (value: number): number => Math.min(100, Math.max(0, Math.round(value / 5) * 5));
+
+/** Note sur 20 d'une maîtrise en % (pas d'un point, comme l'affichage par pas de 5 %). */
+export const note20 = (mastery: number): number => round5(mastery) / 5;
+
+/** « 13/20 ». */
+export const formatNote = (mastery: number): string => `${note20(mastery)}/20`;
