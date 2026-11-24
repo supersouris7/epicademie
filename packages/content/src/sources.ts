@@ -157,6 +157,11 @@ export const SOURCES: readonly Source[] = [
   tlfi('te', 'te', 'te/pronom'),
   tlfi('le', 'le (pronom)', 'le/pronom'),
   tlfi('lui', 'lui', 'lui/pronom'),
+  tlfi('nominal', 'nominal', 'nominal'),
+  tlfi('determinant', 'déterminant', 'd%C3%A9terminant'),
+  tlfi('adjectif', 'adjectif', 'adjectif/nom'),
+  tlfi('epithete', 'épithète', '%C3%A9pith%C3%A8te'),
+  tlfi('pronom', 'pronom', 'pronom'),
   {
     id: 'cnrtl-exclamation',
     title: 'Trésor de la langue française informatisé, article « exclamation »',
