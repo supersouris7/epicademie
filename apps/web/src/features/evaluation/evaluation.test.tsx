@@ -23,7 +23,7 @@ async function answer(user: ReturnType<typeof renderApp>['user'], text: string) 
 
 describe('Arène d’évaluation', () => {
   it(
-    'de la tuile au bilan : épreuve sans juste ni faux, puis maîtrise et couverture ensemble',
+    'de la tuile au bilan : épreuve sans juste ni faux, puis maîtrise, sans couverture',
     { timeout: 60_000 },
     async () => {
       const { user, server } = renderApp('/hub', { setup: setup() });
@@ -49,7 +49,7 @@ describe('Arène d’évaluation', () => {
       // Bilan : les deux pourcentages arrondis à 5 %, côte à côte.
       expect(await screen.findByRole('heading', { name: /Mon bilan/ })).toBeInTheDocument();
       expect(screen.getByText('Maîtrise 60 %')).toBeInTheDocument();
-      expect(screen.getByText('Couverture 70 %')).toBeInTheDocument();
+      expect(screen.queryByText(/couverture/i)).not.toBeInTheDocument();
       expect(screen.getByRole('heading', { name: 'À consolider pour réussir dans ta classe' })).toBeInTheDocument();
       expect(screen.getByRole('heading', { name: 'Récompenses' })).toBeInTheDocument();
       expect(server.calls.some((c) => c.path === `/evaluations/${FAKE_EVALUATION_ID}/finish`)).toBe(true);
@@ -109,8 +109,8 @@ describe('Arène d’évaluation', () => {
       await answer(user, '1');
     }
     await user.click(await screen.findByRole('link', { name: 'Mes épreuves' }));
-    const entry = await screen.findByRole('link', { name: /Épreuve des Origines · .*Maîtrise 60 %.*Couverture 70 %/ });
+    const entry = await screen.findByRole('link', { name: /Épreuve des Origines · .*Maîtrise 60 %/ });
     await user.click(entry);
-    expect(await screen.findByText('Couverture 70 %')).toBeInTheDocument();
+    expect(screen.queryByText(/couverture/i)).not.toBeInTheDocument();
   });
 });
