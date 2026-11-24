@@ -146,7 +146,7 @@ export const NOM_CONSTRUCTION: Record<Construction, string> = {
 
 export const GROUPES_PAR_CONSTRUCTION: Record<Construction, readonly string[]> = {
   dn: ['un cahier', 'la porte', 'des cerises', 'mon vélo', 'cette rivière', 'les bottes'],
-  dan: ['un petit cahier', 'la grande porte', 'de belles cerises', 'mon vieux vélo', 'cette longue rivière'],
+  dan: ['un petit cahier', 'la grande porte', 'deux belles cerises', 'mon vieux vélo', 'cette longue rivière'],
   dna: ['un cahier rouge', 'la porte étroite', 'des cerises mûres', 'mon vélo vert', 'cette rivière calme'],
   dana: ['un petit cahier rouge', 'la grande porte étroite', 'mon vieux vélo vert', 'cette longue rivière calme'],
 };
@@ -322,7 +322,7 @@ export const OBJETS_PRONOMS: readonly ObjetPronom[] = [
   ob('Je', 'parle', 'à la nouvelle voisine', 'lui'),
   ob('Tu', 'souris', 'au petit garçon', 'lui'),
   ob('Nous', 'téléphonons', 'à nos grands cousins', 'leur'),
-  ob('Elle', 'raconte', 'aux jeunes élèves', 'leur'),
+  ob('Elle', 'répond', 'aux jeunes élèves', 'leur'),
 ];
 
 export const phraseAvecGroupe = (o: ObjetPronom): string => `${o.sujet} ${o.verbe} ${o.groupe}.`;

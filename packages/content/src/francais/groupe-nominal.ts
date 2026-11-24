@@ -185,6 +185,15 @@ const AVEC_ARTICLE: Record<Place, string> = {
 };
 const PLACES: readonly Place[] = ['déterminant', 'nom', 'adjectif'];
 
+/** « un » : déterminant, « cahier » : nom… pour un groupe d’une construction donnée. */
+const natures = (groupe: string, c: Construction): string => {
+  const places = NOM_CONSTRUCTION[c].split(' + ');
+  return `${groupe
+    .split(' ')
+    .map((mot, i) => `« ${mot} » : ${at(places, i)}`)
+    .join(', ')}.`;
+};
+
 const motDe = (p: PhraseGn, place: Place): string =>
   place === 'déterminant' ? p.det : place === 'nom' ? p.nom : adjectifDe(p);
 
@@ -229,7 +238,11 @@ function compositionDraft(rng: Rng, level: Level): QuestionDraft {
         answer,
         traps,
         hint: 'Compte les mots, puis regarde où se place l’adjectif : avant ou après le nom.',
-        steps: [DEF_ADJ, 'Je donne sa nature à chaque mot, dans l’ordre.', `C’est **${bon}**.`],
+        steps: [
+          'Je donne sa nature à chaque mot, dans l’ordre.',
+          natures(bon, voulue),
+          `C’est **${bon}** : ${NOM_CONSTRUCTION[voulue]}.`,
+        ],
       };
     }
     case 3: {
@@ -285,8 +298,15 @@ function compositionDraft(rng: Rng, level: Level): QuestionDraft {
           [5 - k, 'Tu as compté les autres groupes. Relis la construction demandée.'],
           [k + 1, 'Tu en as un de trop : vérifie la place de chaque adjectif.'],
         ]),
-        hint: 'Souligne le groupe nominal de chaque ligne, puis donne la nature de ses mots.',
-        steps: [DEF_GN, `Je garde seulement : ${NOM_CONSTRUCTION[voulue]}.`, `Il y en a **${k}**.`],
+        hint: 'Repère le groupe nominal de chaque ligne, puis donne la nature de ses mots.',
+        steps: [
+          DEF_GN,
+          `Je garde seulement : ${NOM_CONSTRUCTION[voulue]}.`,
+          `Les phrases qui conviennent : ${lignes
+            .filter(([, c]) => c === voulue)
+            .map(([t]) => `« ${t} »`)
+            .join(', ')}. Il y en a **${k}**.`,
+        ],
       };
     }
   }
@@ -398,8 +418,20 @@ const DEF_PRONOM_SUJET = 'Le pronom prend la place de tout le groupe nominal, av
 
 const whyObjet = (o: Pick<ObjetPronom, 'groupe'>) =>
   /^(à|au|aux) /.test(o.groupe)
-    ? `« ${o.groupe} » commence par « à », « au » ou « aux » : on le remplace par « lui » (un seul) ou « leur » (plusieurs).`
+    ? `« ${o.groupe} » désigne des personnes et commence par « à », « au » ou « aux » : on le remplace par « lui » (une seule personne) ou « leur » (plusieurs).`
     : `« ${o.groupe} » complète le verbe sans « à » : on le remplace par « le », « la » ou « les ».`;
+
+/** Bonne famille (« le, la, les ») mais mauvais genre ou nombre : on le dit ; sinon, on rappelle la règle. */
+const whyMauvaisObjet = (o: ObjetPronom, p: string): string => {
+  const directs = ['le', 'la', 'les'];
+  return directs.includes(o.pronom) && directs.includes(p)
+    ? `« ${p} » n’a pas le bon genre ou le bon nombre : regarde le nom dans « ${o.groupe} ».`
+    : whyObjet(o);
+};
+
+/** Chaque piège écrit vaut avec et sans point final. */
+const pieges = (list: readonly (readonly [string, Rich])[]): (readonly [string, Rich])[] =>
+  list.flatMap(([text, why]) => avecOuSansPoint(text).map((t) => [t, why] as const));
 
 function pronomDraft(rng: Rng, level: Level): QuestionDraft {
   switch (level) {
@@ -458,15 +490,18 @@ function pronomDraft(rng: Rng, level: Level): QuestionDraft {
       return {
         prompt: `Réécris la phrase en remplaçant « ${groupe} » par un pronom : « ${groupe} ${suite}. »`,
         answer: { kind: 'text', accepted },
-        traps: textTraps(accepted, [
-          ...faux,
-          [`${groupe} ${pronom} ${suite}.`, 'Tu as gardé le groupe et ajouté un pronom. Le pronom prend sa place.'],
-        ]),
+        traps: textTraps(
+          accepted,
+          pieges([
+            ...faux,
+            [`${groupe} ${pronom} ${suite}.`, 'Tu as gardé le groupe et ajouté un pronom. Le pronom prend sa place.'],
+          ]),
+        ),
         hint: 'Compte les personnes ou les choses, regarde leur genre, puis retire tout le groupe.',
         steps: [
           DEF_PRONOM_SUJET,
           double
-            ? 'Deux personnes réunies par « et » : pluriel. S’il y a du masculin, même avec du féminin, on dit « ils ».'
+            ? 'Deux personnes réunies par « et » : pluriel. Deux féminins : « elles ». Au moins un masculin : « ils ».'
             : `Je remplace « ${groupe} » en entier.`,
           `La phrase est : **${bon}**`,
         ],
@@ -479,10 +514,13 @@ function pronomDraft(rng: Rng, level: Level): QuestionDraft {
       return {
         prompt: `Réécris la phrase en remplaçant « ${o.groupe} » par un pronom : « ${phraseAvecGroupe(o)} »`,
         answer: { kind: 'text', accepted },
-        traps: textTraps(accepted, [
-          [`${o.sujet} ${o.verbe} ${o.pronom}.`, 'Ici, le pronom complément se place avant le verbe.'],
-          ...PRONOMS_OBJETS_GN.map((p) => [phraseAvecPronom(o, p), whyObjet(o)] as const),
-        ]),
+        traps: textTraps(
+          accepted,
+          pieges([
+            [`${o.sujet} ${o.verbe} ${o.pronom}.`, 'Ici, le pronom complément se place avant le verbe.'],
+            ...PRONOMS_OBJETS_GN.map((p) => [phraseAvecPronom(o, p), whyMauvaisObjet(o, p)] as const),
+          ]),
+        ),
         hint: 'Regarde si le groupe commence par « à ». Puis place le pronom près du verbe.',
         steps: [whyObjet(o), 'Le pronom se place devant le verbe.', `La phrase est : **${bon}**`],
       };
@@ -497,11 +535,14 @@ function pronomDraft(rng: Rng, level: Level): QuestionDraft {
         prompt: 'Le texte se répète. Réécris la ligne 2 avec deux pronoms.',
         figure: document('Un petit récit', [ligne1, ligne2]),
         answer: { kind: 'text', accepted },
-        traps: textTraps(accepted, [
-          [`${maj(x.pronomSujet)} ${x.verbe} ${x.reprise}.`, 'Le groupe sujet est remplacé, mais pas le complément.'],
-          [`${x.sujet} ${x.pronom} ${x.verbe}.`, 'Le complément est remplacé, mais pas le groupe sujet.'],
-          [`${maj(x.pronomSujet)} ${x.verbe} ${x.pronom}.`, 'Le pronom complément se place avant le verbe.'],
-        ]),
+        traps: textTraps(
+          accepted,
+          pieges([
+            [`${maj(x.pronomSujet)} ${x.verbe} ${x.reprise}.`, 'Le groupe sujet est remplacé, mais pas le complément.'],
+            [`${x.sujet} ${x.pronom} ${x.verbe}.`, 'Le complément est remplacé, mais pas le groupe sujet.'],
+            [`${maj(x.pronomSujet)} ${x.verbe} ${x.pronom}.`, 'Le pronom complément se place avant le verbe.'],
+          ]),
+        ),
         hint: 'Remplace d’abord le groupe du début, puis le groupe après le verbe.',
         steps: [
           `« ${x.sujet} » devient « ${x.pronomSujet} ».`,
@@ -573,7 +614,8 @@ export const FCM1_GROUPE_NOMINAL: readonly Skill[] = [
     title: 'Remplacer un groupe nominal par un pronom',
     memo: [
       'Un **pronom** prend la place de tout un groupe nominal : « La petite fille chante. » → « Elle chante. »',
-      'Sujet : il, elle, ils, elles. Complément : le, la, les, placés devant le verbe. Avec « à » : lui, leur.',
+      'Sujet : il, elle, ils, elles (masculin et féminin ensemble : ils).',
+      'Complément : le, la, les, devant le verbe. Pour des personnes après « à » : lui, leur.',
       'Bonus : le pronom évite de répéter le même groupe dans ton texte.',
     ],
     factId: 'remplacer-sujet',
