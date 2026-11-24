@@ -652,7 +652,7 @@ const questionsBe: Skill = {
         hint: 'Repère le pronom : la question garde le même, mais be change de place.',
         steps: [
           'Dans chaque question, be passe devant le pronom.',
-          ...rows.map((x) => `${sentence(x.en, x.be, pred)} → ${askBe(x, pred)}`),
+          ...rows.map((x) => `${sentence(x.en, x.be, pred)} → **${askBe(x, pred)}**`),
         ],
       };
     }
@@ -772,7 +772,7 @@ const possessives: Skill = {
             pairs: rows.map((x) => right.indexOf(x.poss)),
           },
           hint: 'Commence par les plus faciles : I → my, you → your.',
-          steps: ['On relie chaque pronom à son possessif.', ...rows.map((x) => `${x.en} → ${x.poss}`)],
+          steps: ['On relie chaque pronom à son possessif.', ...rows.map((x) => `${x.en} → **${x.poss}**`)],
         };
       }
       const o = ownerOf(rng);
