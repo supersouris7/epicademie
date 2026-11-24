@@ -1,4 +1,5 @@
 import type { Chapter } from '../types.ts';
+import { FCM1_COMPLEMENTS } from './complements.ts';
 import { FCM1_PHRASES } from './phrases.ts';
 import { FCM1_VERBE_SUJET } from './verbe-sujet.ts';
 
@@ -19,5 +20,13 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'grammaire',
     title: 'Le verbe et le sujet',
     skills: FCM1_VERBE_SUJET,
+  },
+  {
+    id: 'fcm1-complements',
+    subject: 'francais',
+    grade: 'cm1',
+    domain: 'grammaire',
+    title: 'Les compléments',
+    skills: FCM1_COMPLEMENTS,
   },
 ];
