@@ -52,7 +52,7 @@ export interface Notion {
 const PROG = 'Programme du cycle 3 (BOEN n° 31 du 30 juillet 2020, version 2023), histoire, classe de CM1';
 
 /** Mélange jusqu'à ce que l'ordre ne soit pas déjà le bon (validate.ts l'exige). */
-function shuffled<T>(rng: Rng, items: readonly T[]): T[] {
+export function shuffled<T>(rng: Rng, items: readonly T[]): T[] {
   let out = rng.shuffle([...items]);
   for (let i = 0; i < 20 && out.every((x, k) => x === items[k]); i++) out = rng.shuffle([...items]);
   if (out.every((x, k) => x === items[k])) out = [...items.slice(1), items[0] as T];
