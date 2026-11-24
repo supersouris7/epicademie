@@ -193,13 +193,15 @@ describe('Continuer avec Google', () => {
   it('bouton : proposé seulement si Google est configuré', async () => {
     expect((await t.http.inject({ url: '/api/v1/auth/options', headers: anonymous })).json()).toEqual({
       google: true,
-      simulatedMail: true,
+      passwordMinLength: 12,
+      recette: false,
     });
     const plain = await createTestApp();
     try {
       expect((await plain.http.inject({ url: '/api/v1/auth/options', headers: anonymous })).json()).toEqual({
         google: false,
-        simulatedMail: true,
+        passwordMinLength: 12,
+        recette: false,
       });
       expect((await plain.http.inject({ url: '/api/v1/auth/google/start', headers: anonymous })).statusCode).toBe(404);
     } finally {

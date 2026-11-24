@@ -21,18 +21,9 @@ export const verifyEmail = (token: string, password: string) => request(api.veri
 export const resendVerification = (email: string) => request(api.resendVerification, { body: { email } });
 /** Page de départ de « Continuer avec Google » (redirection du navigateur, hors appel JSON). */
 export const GOOGLE_START_URL = `${API_PREFIX}/auth/google/start`;
-/** Modes d'ouverture de compte du serveur : le bouton Google n'apparaît que s'il est configuré. */
+/** Réglages du serveur : bouton Google (si configuré), longueur du mot de passe, plateforme de test. */
 export const useAuthOptions = () =>
   useQuery({ queryKey: ['auth-options'], queryFn: () => request(api.authOptions), retry: false, staleTime: Infinity });
-/** Boîte mail de test (recette seulement : 404 ailleurs). */
-export const useTestMailbox = (enabled: boolean) =>
-  useQuery({
-    queryKey: ['test-mailbox'],
-    queryFn: () => request(api.testMailbox),
-    enabled,
-    retry: false,
-    staleTime: 0,
-  });
 export const login = (input: Login) => request(api.login, { body: input });
 export const signupStudent = (input: StudentSignup) => request(api.signupStudent, { body: input });
 export const recoverStudent = (code: string) => request(api.recoverStudent, { body: { code } });

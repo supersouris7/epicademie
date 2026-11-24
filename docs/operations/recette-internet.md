@@ -1,8 +1,13 @@
 # Recette sur Internet (serveur « atelier »)
 
 Une instance de recette, réservée à quelques testeurs, joignable en HTTPS à l'adresse
-`https://<IP de l'atelier>`. **Données fictives uniquement** (prénoms inventés, e-mails simulés :
-`APP_ENV=recette`). Ce n'est pas la production.
+`https://<IP de l'atelier>`. **Données fictives uniquement** (prénoms inventés). Ce n'est pas la production.
+
+**Mode plateforme de test** (`APP_ENV=recette`, `PASSWORD_MIN_LENGTH=8` dans le `.env`) : on arrive sur
+« Se connecter » avec un bouton « Créer un compte » ; l'inscription (e-mail + mot de passe d'au moins 8 caractères)
+ouvre un compte actif, connecté aussitôt. **Aucun e-mail** n'est envoyé ni simulé : pas de lien, pas de boîte mail
+de test. « Mot de passe oublié » affiche la consigne de demander un nouveau mot de passe à l'administrateur (qui
+le réinitialise en base). Le parcours élève autonome est masqué. Adresse déjà utilisée : message clair.
 
 ## Architecture
 

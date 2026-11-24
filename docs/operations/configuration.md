@@ -3,39 +3,40 @@
 Le serveur lit son environnement **une fois** au démarrage (`apps/server/src/config.ts`) et
 refuse de démarrer si une valeur est invalide. Une variable vide vaut « non définie ».
 
-| Variable                | Défaut                                        | Rôle                                                                                                                           |
-| ----------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `NODE_ENV`              | `development`                                 | `production` : front servi, documentation API coupée, base obligatoire                                                         |
-| `PORT` / `HOST`         | `3000` / `0.0.0.0`                            | écoute HTTP                                                                                                                    |
-| `DATABASE_URL`          | dev : `pglite://apps/server/data/pglite`      | `postgres://…`, `pglite://memory` ou `pglite://<dossier>`                                                                      |
-| `DATABASE_POOL_MAX`     | `10`                                          | connexions PostgreSQL par instance                                                                                             |
-| `PUBLIC_URL`            | IP du réseau local détectée                   | URL du QR code de connexion des appareils                                                                                      |
-| `TRUST_PROXY`           | `0`                                           | nombre de proxys devant le serveur (nginx : `1`)                                                                               |
-| `CORS_ORIGINS`          | même origine                                  | origines autorisées pour le temps réel, séparées par des virgules                                                              |
-| `RATE_LIMIT_MAX`        | `600`                                         | requêtes HTTP par minute et par IP                                                                                             |
-| `METRICS_TOKEN`         | aucun                                         | jeton (16 caractères min.) exigé par `/api/metrics`                                                                            |
-| `API_DOCS`              | `true` hors production                        | Swagger UI sur `/api/docs`                                                                                                     |
-| `LOG_LEVEL`             | `info` (`silent` en test)                     | niveau des journaux                                                                                                            |
-| `TZ_FAMILY`             | `Europe/Paris`                                | fuseau des jours de révision                                                                                                   |
-| `WEB_DIR`               | `../web/dist` (production)                    | front buildé ; hors production, servi seulement si la variable est donnée (e2e)                                                |
-| `QUESTEO_VERSION`       | `dev` (image : tag de version)                | version affichée par les sondes et l'OpenAPI                                                                                   |
-| `PUBLIC_URL`            | (voir plus haut)                              | aussi l'adresse des liens envoyés par e-mail (validation, mot de passe oublié)                                                 |
-| `COOKIE_SECURE`         | `true` en production                          | cookie de session réservé à HTTPS (mettre `false` seulement en HTTP local)                                                     |
-| `SESSION_DAYS`          | `30`                                          | durée d'une session d'appareil sans activité                                                                                   |
-| `PREMIUM_PRICE_CENTS`   | `2499`                                        | prix de l'année scolaire, en centimes                                                                                          |
-| `PREMIUM_CURRENCY`      | `eur`                                         | devise du paiement                                                                                                             |
-| `SCHOOL_YEAR_END`       | `08-31`                                       | fin d'année scolaire (MM-JJ) : fin de l'accès payé                                                                             |
-| `PREMIUM_MIN_DAYS`      | `60`                                          | durée minimale d'un accès : payer trop près de la fin donne l'année suivante                                                   |
-| `BILLING_PROVIDER`      | `aucun` (production), `simulateur` (ailleurs) | `stripe`, `simulateur` (interdit en production) ou `aucun` (paiement fermé, version gratuite seule)                            |
-| `STRIPE_SECRET_KEY`     | —                                             | clé secrète Stripe (`sk_…`, mode test tant que le compte marchand n'est pas validé)                                            |
-| `STRIPE_WEBHOOK_SECRET` | —                                             | secret de signature des notifications (`whsec_…`) ; webhook : `POST /api/v1/billing/webhook/stripe`                            |
-| `AUTH_RATE_LIMIT_MAX`   | `10`                                          | tentatives par minute et par IP : connexion, inscription, mot de passe                                                         |
-| `APP_ENV`               | `production` si `NODE_ENV=production`         | `production` impose Brevo et ne renvoie jamais de lien secret dans une réponse ; autre valeur (`recette`) : simulation permise |
-| `BREVO_API_KEY`         | —                                             | clé de l'API transactionnelle Brevo (secret) ; absente : simulation, **démarrage refusé en production**                        |
-| `MAIL_FROM`             | —                                             | expéditeur (`adresse@domaine` ou `Nom <adresse@domaine>`), exigé avec `BREVO_API_KEY`                                          |
-| `GOOGLE_CLIENT_ID`      | —                                             | identifiant client OAuth Google ; avec le secret, active « Continuer avec Google »                                             |
-| `GOOGLE_CLIENT_SECRET`  | —                                             | secret client OAuth Google                                                                                                     |
-| `GOOGLE_REDIRECT_URI`   | `PUBLIC_URL` + `/api/v1/auth/google/callback` | URL de retour, à déclarer à l'identique chez Google                                                                            |
+| Variable                | Défaut                                        | Rôle                                                                                                                                |
+| ----------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `NODE_ENV`              | `development`                                 | `production` : front servi, documentation API coupée, base obligatoire                                                              |
+| `PORT` / `HOST`         | `3000` / `0.0.0.0`                            | écoute HTTP                                                                                                                         |
+| `DATABASE_URL`          | dev : `pglite://apps/server/data/pglite`      | `postgres://…`, `pglite://memory` ou `pglite://<dossier>`                                                                           |
+| `DATABASE_POOL_MAX`     | `10`                                          | connexions PostgreSQL par instance                                                                                                  |
+| `PUBLIC_URL`            | IP du réseau local détectée                   | URL du QR code de connexion des appareils                                                                                           |
+| `TRUST_PROXY`           | `0`                                           | nombre de proxys devant le serveur (nginx : `1`)                                                                                    |
+| `CORS_ORIGINS`          | même origine                                  | origines autorisées pour le temps réel, séparées par des virgules                                                                   |
+| `RATE_LIMIT_MAX`        | `600`                                         | requêtes HTTP par minute et par IP                                                                                                  |
+| `METRICS_TOKEN`         | aucun                                         | jeton (16 caractères min.) exigé par `/api/metrics`                                                                                 |
+| `API_DOCS`              | `true` hors production                        | Swagger UI sur `/api/docs`                                                                                                          |
+| `LOG_LEVEL`             | `info` (`silent` en test)                     | niveau des journaux                                                                                                                 |
+| `TZ_FAMILY`             | `Europe/Paris`                                | fuseau des jours de révision                                                                                                        |
+| `WEB_DIR`               | `../web/dist` (production)                    | front buildé ; hors production, servi seulement si la variable est donnée (e2e)                                                     |
+| `QUESTEO_VERSION`       | `dev` (image : tag de version)                | version affichée par les sondes et l'OpenAPI                                                                                        |
+| `PUBLIC_URL`            | (voir plus haut)                              | aussi l'adresse des liens envoyés par e-mail (validation, mot de passe oublié)                                                      |
+| `COOKIE_SECURE`         | `true` en production                          | cookie de session réservé à HTTPS (mettre `false` seulement en HTTP local)                                                          |
+| `SESSION_DAYS`          | `30`                                          | durée d'une session d'appareil sans activité                                                                                        |
+| `PREMIUM_PRICE_CENTS`   | `2499`                                        | prix de l'année scolaire, en centimes                                                                                               |
+| `PREMIUM_CURRENCY`      | `eur`                                         | devise du paiement                                                                                                                  |
+| `SCHOOL_YEAR_END`       | `08-31`                                       | fin d'année scolaire (MM-JJ) : fin de l'accès payé                                                                                  |
+| `PREMIUM_MIN_DAYS`      | `60`                                          | durée minimale d'un accès : payer trop près de la fin donne l'année suivante                                                        |
+| `BILLING_PROVIDER`      | `aucun` (production), `simulateur` (ailleurs) | `stripe`, `simulateur` (interdit en production) ou `aucun` (paiement fermé, version gratuite seule)                                 |
+| `STRIPE_SECRET_KEY`     | —                                             | clé secrète Stripe (`sk_…`, mode test tant que le compte marchand n'est pas validé)                                                 |
+| `STRIPE_WEBHOOK_SECRET` | —                                             | secret de signature des notifications (`whsec_…`) ; webhook : `POST /api/v1/billing/webhook/stripe`                                 |
+| `AUTH_RATE_LIMIT_MAX`   | `10`                                          | tentatives par minute et par IP : connexion, inscription, mot de passe                                                              |
+| `APP_ENV`               | `production` si `NODE_ENV=production`         | `production` impose Brevo et ne renvoie jamais de lien secret dans une réponse ; `recette` : plateforme de test sans aucun e-mail   |
+| `PASSWORD_MIN_LENGTH`   | `12` (`8` si `APP_ENV=recette`)               | longueur minimale d'un nouveau mot de passe (6 à 64), contrôlée par le serveur et affichée par l'interface (`/api/v1/auth/options`) |
+| `BREVO_API_KEY`         | —                                             | clé de l'API transactionnelle Brevo (secret) ; absente : pas d'envoi (journal seulement), **démarrage refusé en production**        |
+| `MAIL_FROM`             | —                                             | expéditeur (`adresse@domaine` ou `Nom <adresse@domaine>`), exigé avec `BREVO_API_KEY`                                               |
+| `GOOGLE_CLIENT_ID`      | —                                             | identifiant client OAuth Google ; avec le secret, active « Continuer avec Google »                                                  |
+| `GOOGLE_CLIENT_SECRET`  | —                                             | secret client OAuth Google                                                                                                          |
+| `GOOGLE_REDIRECT_URI`   | `PUBLIC_URL` + `/api/v1/auth/google/callback` | URL de retour, à déclarer à l'identique chez Google                                                                                 |
 
 ## Ouverture de compte avec e-mail
 
@@ -44,10 +45,12 @@ Un compte avec e-mail (parent, élève de 15 ans ou plus) ne naît que de deux f
 par Google). Les enfants de moins de 15 ans restent sans e-mail, rattachés au parent.
 
 - **E-mails** : interface `Mailer` (`core/mail/mailer.ts`), adaptateur Brevo (`POST /v3/smtp/email`).
-  Sans `BREVO_API_KEY`, mode **simulation** : le lien est journalisé (niveau info, rien d'autre) et,
-  hors production seulement, renvoyé dans la réponse d'inscription (l'écran affiche « Ouvrir le lien »).
-  La recette sans fournisseur se déclare avec `APP_ENV=recette` ; en production sans clé, le
-  serveur refuse de démarrer.
+  Sans `BREVO_API_KEY` (développement), mode **simulation** : le lien est journalisé (niveau info,
+  rien d'autre) ; il n'est jamais renvoyé dans une réponse. En production sans clé, le serveur refuse
+  de démarrer.
+- **Plateforme de test** (`APP_ENV=recette`) : aucun e-mail n'existe (ni envoyé, ni simulé). L'inscription
+  ouvre un compte actif et connecté ; « mot de passe oublié » est refusé (consigne : demander un nouveau
+  mot de passe à l'administrateur) ; le parcours élève autonome est masqué. `PASSWORD_MIN_LENGTH` y vaut 8.
 - **Google** : console Google Cloud → identifiants OAuth « Application Web », URI de redirection =
   `GOOGLE_REDIRECT_URI`. Flux code + PKCE (S256) + `state` + `nonce` ; l'`id_token` est vérifié
   (signature par les clés publiques de Google, `iss`, `aud`, expiration, `nonce`) et l'e-mail doit

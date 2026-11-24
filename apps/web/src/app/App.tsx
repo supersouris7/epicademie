@@ -7,12 +7,12 @@ import { GameButton } from '../shared/ui/game/GameButton.tsx';
 import { Questy } from '../shared/ui/mascot/Questy.tsx';
 import {
   ForgotPasswordScreen,
+  HiddenInRecette,
   LoginScreen,
   ParentGateProvider,
   RequireAccount,
   ResetPasswordScreen,
   SignupScreen,
-  TestMailboxScreen,
   VerifyEmailScreen,
   StudentAgeScreen,
   StudentRecoverScreen,
@@ -101,14 +101,42 @@ export function App() {
         <ParentGateProvider>
           <Routes>
             {/* Pages publiques : compte familial et informations. */}
-            <Route path="/bienvenue" element={<WelcomeScreen />} />
-            <Route path="/eleve" element={<StudentAgeScreen />} />
-            <Route path="/eleve/inscription" element={<StudentSignupScreen />} />
-            <Route path="/eleve/code" element={<StudentRecoverScreen />} />
+            {/* Plateforme de test : ces parcours mènent directement à « Se connecter ». */}
+            <Route
+              path="/bienvenue"
+              element={
+                <HiddenInRecette>
+                  <WelcomeScreen />
+                </HiddenInRecette>
+              }
+            />
+            <Route
+              path="/eleve"
+              element={
+                <HiddenInRecette>
+                  <StudentAgeScreen />
+                </HiddenInRecette>
+              }
+            />
+            <Route
+              path="/eleve/inscription"
+              element={
+                <HiddenInRecette>
+                  <StudentSignupScreen />
+                </HiddenInRecette>
+              }
+            />
+            <Route
+              path="/eleve/code"
+              element={
+                <HiddenInRecette>
+                  <StudentRecoverScreen />
+                </HiddenInRecette>
+              }
+            />
             <Route path="/connexion" element={<LoginScreen />} />
             <Route path="/inscription" element={<SignupScreen />} />
             <Route path="/email/verification" element={<VerifyEmailScreen />} />
-            <Route path="/recette/boite-mail" element={<TestMailboxScreen />} />
             <Route path="/mot-de-passe-oublie" element={<ForgotPasswordScreen />} />
             <Route path="/mot-de-passe/nouveau" element={<ResetPasswordScreen />} />
             <Route path="/a-propos" element={<About />} />

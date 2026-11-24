@@ -46,6 +46,15 @@ describe('configuration', () => {
     expect(loadConfig({}).mail.production).toBe(false);
   });
 
+  it('plateforme de test et longueur du mot de passe : 12 par défaut, 8 en recette, réglable', () => {
+    const base = { NODE_ENV: 'production', DATABASE_URL: 'postgres://u:p@h/db' };
+    expect(loadConfig({ ...base, ...PROD })).toMatchObject({ recette: false, passwordMinLength: 12 });
+    expect(loadConfig({ ...base, APP_ENV: 'recette' })).toMatchObject({ recette: true, passwordMinLength: 8 });
+    expect(loadConfig({ ...base, APP_ENV: 'recette', PASSWORD_MIN_LENGTH: '10' }).passwordMinLength).toBe(10);
+    expect(loadConfig({ ...base, ...PROD, PASSWORD_MIN_LENGTH: '8' }).passwordMinLength).toBe(8);
+    expect(() => loadConfig({ PASSWORD_MIN_LENGTH: '2' })).toThrow(/PASSWORD_MIN_LENGTH/);
+  });
+
   it('Google : actif seulement avec identifiant ET secret ; retour par défaut sous PUBLIC_URL', () => {
     expect(loadConfig({ GOOGLE_CLIENT_ID: 'id-google' }).google).toBeNull();
     const g = loadConfig({

@@ -63,21 +63,37 @@ function Field(props: {
   readonly hint?: string;
 }) {
   const id = useId();
+  const [shown, setShown] = useState(false);
+  const secret = props.type === 'password';
   return (
     <div className="flex flex-col gap-1">
       <label htmlFor={id} className="font-bold">
         {props.label}
       </label>
-      <input
-        id={id}
-        type={props.type}
-        autoComplete={props.autoComplete}
-        required
-        aria-describedby={props.hint ? `${id}-aide` : undefined}
-        className="cartoon bg-surface px-3 py-3 text-lg"
-        value={props.value}
-        onChange={(e) => props.onChange(e.target.value)}
-      />
+      <div className="flex gap-2">
+        <input
+          id={id}
+          type={secret && shown ? 'text' : props.type}
+          autoComplete={props.autoComplete}
+          required
+          aria-describedby={props.hint ? `${id}-aide` : undefined}
+          className="cartoon bg-surface min-w-0 flex-1 px-3 py-3 text-lg"
+          value={props.value}
+          onChange={(e) => props.onChange(e.target.value)}
+        />
+        {secret && (
+          <button
+            type="button"
+            aria-pressed={shown}
+            aria-label={shown ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+            aria-controls={id}
+            onClick={() => setShown(!shown)}
+            className="cartoon bg-surface focus-visible:outline-primary min-h-12 px-3 font-bold"
+          >
+            {shown ? 'Masquer' : 'Afficher'}
+          </button>
+        )}
+      </div>
       {props.hint && (
         <span id={`${id}-aide`} className="text-muted text-sm">
           {props.hint}
@@ -106,37 +122,32 @@ function GoogleButton() {
   );
 }
 
-/**
- * Recette : lien vers la boîte mail de test, affiché seulement si le serveur simule l'envoi des e-mails
- * (jamais en production).
- */
-function TestMailboxLink({ email }: { readonly email?: string }) {
-  const { data } = useAuthOptions();
-  if (!data?.simulatedMail) return null;
-  const to = `/recette/boite-mail${email ? `?email=${encodeURIComponent(email)}` : ''}`;
+/** Lien d'un écran à l'autre, bien visible (même gabarit que « Continuer avec Google »). */
+function BigLink({ to, children }: { readonly to: string; readonly children: ReactNode }) {
   return (
-    <p className="text-sm">
-      Version de test : aucun e-mail n’est envoyé.{' '}
-      <Link to={to} className="font-bold underline">
-        Ouvrir la boîte mail de test
-      </Link>
-    </p>
+    <Link
+      to={to}
+      className="cartoon bg-surface focus-visible:outline-primary flex min-h-14 items-center justify-center px-5 text-xl font-bold"
+    >
+      {children}
+    </Link>
   );
 }
 
-/** Chemin interne d'un lien absolu (simulation : le lien de validation est affiché pour la recette). */
-const internalPath = (link: string) => {
-  try {
-    const u = new URL(link, window.location.origin);
-    return `${u.pathname}${u.search}`;
-  } catch {
-    return link;
-  }
-};
+/**
+ * Parcours réservés à la production (accueil à plusieurs choix, élève autonome) : sur la plateforme
+ * de test, on arrive directement sur l'écran parent « Se connecter ».
+ */
+export function HiddenInRecette({ children }: { readonly children: ReactNode }) {
+  const { data, isPending } = useAuthOptions();
+  if (isPending) return <p className="p-8 text-xl">Chargement…</p>;
+  if (data?.recette) return <Navigate to="/connexion" replace />;
+  return children;
+}
 
 /** Demande d'un nouveau lien de validation (le serveur limite le débit et ne dit rien sur l'adresse). */
 function ResendVerification({ email }: { readonly email: string }) {
-  const [state, setState] = useState<{ done: boolean; link?: string; error?: string }>({ done: false });
+  const [state, setState] = useState<{ done: boolean; error?: string }>({ done: false });
   const [busy, setBusy] = useState(false);
   return (
     <div className="flex flex-col gap-2">
@@ -147,7 +158,7 @@ function ResendVerification({ email }: { readonly email: string }) {
         onClick={() => {
           setBusy(true);
           resendVerification(email)
-            .then((r) => setState({ done: true, link: r.verificationLink }))
+            .then(() => setState({ done: true }))
             .catch((err: unknown) => setState({ done: false, error: message(err, 'Envoi impossible pour le moment.') }))
             .finally(() => setBusy(false));
         }}
@@ -161,11 +172,6 @@ function ResendVerification({ email }: { readonly email: string }) {
         <p role="alert" className="text-danger font-bold">
           {state.error}
         </p>
-      )}
-      {state.link && (
-        <Link to={internalPath(state.link)} className="underline">
-          Ouvrir le lien (mode simulation, sans envoi réel)
-        </Link>
       )}
     </div>
   );
@@ -225,11 +231,16 @@ export function LoginScreen() {
       : null,
   );
   const [unverified, setUnverified] = useState(false);
+  const recette = useAuthOptions().data?.recette ?? false;
   const from = (location.state as { from?: string } | null)?.from ?? '/';
   return (
     <AuthForm
       title="Connexion"
-      intro="Connecte l’appareil au compte de la famille : les enfants pourront ensuite choisir leur profil."
+      intro={
+        recette
+          ? 'Connecte-toi avec ton e-mail et ton mot de passe.'
+          : 'Connecte l’appareil au compte de la famille : les enfants pourront ensuite choisir leur profil.'
+      }
       submit="Se connecter"
       error={error}
       onSubmit={async () => {
@@ -241,19 +252,16 @@ export function LoginScreen() {
           setError(message(err, 'Connexion impossible pour le moment.'));
         }
       }}
-      extra={
-        unverified ? (
-          <>
-            <ResendVerification email={email} />
-            <TestMailboxLink email={email} />
-          </>
-        ) : undefined
-      }
+      extra={unverified && !recette ? <ResendVerification email={email} /> : undefined}
       footer={
         <>
-          <Link to="/inscription" className="underline">
-            Pas encore de compte ? Créer le compte familial
-          </Link>
+          {recette ? (
+            <BigLink to="/inscription">Créer un compte</BigLink>
+          ) : (
+            <Link to="/inscription" className="underline">
+              Pas encore de compte ? Créer le compte familial
+            </Link>
+          )}
           <Link to="/mot-de-passe-oublie" className="underline">
             Mot de passe oublié
           </Link>
@@ -279,35 +287,48 @@ export function SignupScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [sent, setSent] = useState<{ email: string; link?: string } | null>(null);
-  if (sent) return <CheckMailScreen email={sent.email} link={sent.link} />;
+  const navigate = useNavigate();
+  const setMe = useSetMe();
+  const options = useAuthOptions().data;
+  const recette = options?.recette ?? false;
+  const min = options?.passwordMinLength ?? PASSWORD_MIN;
+  const [sent, setSent] = useState<string | null>(null);
+  if (sent) return <CheckMailScreen email={sent} />;
   return (
     <AuthForm
       title={student ? 'Ton compte' : 'Compte familial'}
       intro={
-        student
-          ? 'Crée ton compte avec ton e-mail, puis choisis ton profil de joueur.'
-          : 'Un compte pour toute la famille : le parent le crée, puis ajoute le profil de chaque enfant.'
+        recette
+          ? 'Crée ton compte : e-mail et mot de passe, et tu peux jouer.'
+          : student
+            ? 'Crée ton compte avec ton e-mail, puis choisis ton profil de joueur.'
+            : 'Un compte pour toute la famille : le parent le crée, puis ajoute le profil de chaque enfant.'
       }
       submit="Créer le compte"
       error={error}
-      extra={<TestMailboxLink />}
       onSubmit={async () => {
-        if (password.length < PASSWORD_MIN) {
-          setError(`Le mot de passe doit faire au moins ${PASSWORD_MIN} caractères.`);
+        if (password.length < min) {
+          setError(`Le mot de passe doit faire au moins ${min} caractères.`);
           return;
         }
         try {
           const result = await signup({ email, password });
-          setSent({ email: result.email, link: result.verificationLink });
+          if (result.status === 'active' && result.me) {
+            setMe(result.me);
+            void navigate('/profils/nouveau', { replace: true });
+          } else setSent(result.email);
         } catch (err) {
           setError(message(err, 'Création impossible pour le moment.'));
         }
       }}
       footer={
-        <Link to="/connexion" className="underline">
-          J’ai déjà un compte
-        </Link>
+        recette ? (
+          <BigLink to="/connexion">Se connecter</BigLink>
+        ) : (
+          <Link to="/connexion" className="underline">
+            J’ai déjà un compte
+          </Link>
+        )
       }
     >
       <GoogleButton />
@@ -324,14 +345,14 @@ export function SignupScreen() {
         autoComplete="new-password"
         value={password}
         onChange={setPassword}
-        hint={`Au moins ${PASSWORD_MIN} caractères. Une phrase facile à retenir fonctionne très bien.`}
+        hint={`Au moins ${min} caractères. Une phrase facile à retenir fonctionne très bien.`}
       />
     </AuthForm>
   );
 }
 
 /** Après l'inscription : le compte existe mais n'ouvre qu'avec le lien envoyé par e-mail. */
-function CheckMailScreen({ email, link }: { readonly email: string; readonly link?: string }) {
+function CheckMailScreen({ email }: { readonly email: string }) {
   return (
     <PageShell title="Vérifie ta boîte mail" back="/connexion">
       <div className="mx-auto flex w-full max-w-md flex-col gap-4">
@@ -347,12 +368,6 @@ function CheckMailScreen({ email, link }: { readonly email: string; readonly lin
           Rien dans la boîte ? Regarde les courriers indésirables, ou demande un nouveau lien.
         </p>
         <ResendVerification email={email} />
-        <TestMailboxLink email={email} />
-        {link && (
-          <Link to={internalPath(link)} className="font-bold underline">
-            Ouvrir le lien (mode simulation, sans envoi réel)
-          </Link>
-        )}
         <Link to="/connexion" className="text-center font-bold underline">
           Retour à la connexion
         </Link>
@@ -388,7 +403,6 @@ export function VerifyEmailScreen() {
           <p>Un lien ne marche qu’une fois et pendant 24 heures. Indique ton adresse pour en recevoir un nouveau.</p>
           <Field label="Ton e-mail" type="email" autoComplete="email" value={email} onChange={setEmail} />
           <ResendVerification email={email} />
-          <TestMailboxLink email={email} />
           <Link to="/connexion" className="text-center font-bold underline">
             J’ai déjà validé : me connecter
           </Link>
@@ -402,7 +416,6 @@ export function VerifyEmailScreen() {
       intro="Dernière étape : saisis le mot de passe choisi à l’inscription pour activer le compte."
       submit="Valider mon adresse"
       error={error}
-      extra={<TestMailboxLink />}
       onSubmit={async () => {
         try {
           setMe(await verifyEmail(token, password));
@@ -438,9 +451,19 @@ export function VerifyEmailScreen() {
 }
 
 export function ForgotPasswordScreen() {
+  const recette = useAuthOptions().data?.recette ?? false;
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  if (recette) {
+    return (
+      <PageShell title="Mot de passe oublié" back="/connexion">
+        <p className="text-lg" role="status">
+          Plateforme de test : demandez votre nouveau mot de passe à l’administrateur qui vous a fourni les accès.
+        </p>
+      </PageShell>
+    );
+  }
   if (sent) {
     return (
       <PageShell title="Mot de passe oublié" back="/connexion">
@@ -449,7 +472,6 @@ export function ForgotPasswordScreen() {
             Si un compte existe pour {email}, un e-mail vient de partir avec un lien pour choisir un nouveau mot de
             passe. Il est valable une heure.
           </p>
-          <TestMailboxLink email={email} />
         </div>
       </PageShell>
     );
@@ -460,7 +482,6 @@ export function ForgotPasswordScreen() {
       intro="Indique l’adresse du compte : tu recevras un lien pour choisir un nouveau mot de passe."
       submit="Recevoir le lien"
       error={error}
-      extra={<TestMailboxLink />}
       onSubmit={async () => {
         try {
           await forgotPassword(email);
@@ -481,6 +502,7 @@ export function ForgotPasswordScreen() {
 }
 
 export function ResetPasswordScreen() {
+  const min = useAuthOptions().data?.passwordMinLength ?? PASSWORD_MIN;
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
@@ -493,8 +515,8 @@ export function ResetPasswordScreen() {
       submit="Enregistrer"
       error={error}
       onSubmit={async () => {
-        if (password.length < PASSWORD_MIN) {
-          setError(`Le mot de passe doit faire au moins ${PASSWORD_MIN} caractères.`);
+        if (password.length < min) {
+          setError(`Le mot de passe doit faire au moins ${min} caractères.`);
           return;
         }
         try {
@@ -511,7 +533,7 @@ export function ResetPasswordScreen() {
         autoComplete="new-password"
         value={password}
         onChange={setPassword}
-        hint={`Au moins ${PASSWORD_MIN} caractères.`}
+        hint={`Au moins ${min} caractères.`}
       />
     </AuthForm>
   );
