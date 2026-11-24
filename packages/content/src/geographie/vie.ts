@@ -34,7 +34,7 @@ const espacesUrbains: Notion = {
   memo: [
     'Un **espace urbain**, c’est la ville. On y accomplit des actes du quotidien : se loger, travailler, avoir des loisirs.',
     'Chaque lieu a une **fonction** : l’école sert à apprendre, le marché à acheter. Pour passer de l’un à l’autre, on fait des **déplacements**.',
-    'Le géographe utilise des cartes et des photographies pour repérer ces fonctions. Exemple : sur un plan, la gare est le lieu des départs.',
+    'Le géographe utilise des cartes, des photographies et des **systèmes d’information géographique** (des cartes sur ordinateur) pour repérer ces fonctions. Exemple : sur un plan, la gare est le lieu des départs.',
   ],
   faits: [
     {
@@ -267,7 +267,7 @@ const espacesTouristiques: Notion = {
       ],
       gap: ['Un touriste habite le lieu de façon ', ', pas pour toujours.', ['temporaire', 'temporairement']],
       quote: Q_TOURIST,
-      explain: 'Le séjour est court : la famille habite le lieu de façon temporaire.',
+      explain: 'Le séjour est court : celui qui passe des vacances habite le lieu de façon temporaire.',
     },
     {
       q: 'Pour pratiquer un lieu touristique (une plage, un musée), il faut pouvoir…',
@@ -467,6 +467,10 @@ const logement: Notion = {
           text: 'visiter',
           why: 'Visiter, c’est passer un moment dans un lieu. Le mot cherché veut dire « avoir son domicile ».',
         },
+        {
+          text: 'habiter',
+          why: 'Habiter est plus large : c’est aussi pratiquer les lieux. Ici, on cherche seulement « avoir son domicile ».',
+        },
       ],
       quote: Q_HABITER,
       explain: 'Résider, c’est avoir son domicile quelque part.',
@@ -595,7 +599,10 @@ const travail: Notion = {
       a: 'se déplacer',
       wrong: [
         { label: 'ne plus bouger', why: 'Les actes du quotidien nécessitent des déplacements.' },
-        { label: 'changer de pays', why: 'Le plus souvent, on se déplace dans sa ville ou sa région.' },
+        {
+          label: 'changer de pays',
+          why: 'Le programme parle de déplacements du quotidien d’un lieu à un autre, pas de changer de pays.',
+        },
         { label: 'dormir sur place', why: 'Le programme parle de déplacements pour accomplir les actes du quotidien.' },
       ],
       gap: ['Les actes du quotidien, comme le travail, nécessitent des ', '.', ['déplacements', 'déplacement']],

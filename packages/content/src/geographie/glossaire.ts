@@ -184,4 +184,11 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Un lieu où l’on fabrique ou cultive des choses.',
     example: 'Un fournil est un espace de production.',
   },
+  {
+    id: 'sig',
+    word: 'système d’information géographique',
+    forms: ['système d’information géographique', 'systèmes d’information géographique'],
+    definition: 'Un outil sur ordinateur qui rassemble des cartes et des informations sur un lieu.',
+    example: 'Un site de cartes en ligne est un exemple de système d’information géographique.',
+  },
 ];
