@@ -17,6 +17,18 @@ const answerText = (a: AnswerSpec): string => {
       return `(${a.x} ; ${a.y})`;
     case 'text':
       return a.accepted.join(' / ');
+    case 'order':
+      return a.correct.map((i) => a.items[i]).join(' → ');
+    case 'match':
+      return a.left.map((l, i) => `${l} ↔ ${a.right[a.pairs[i] ?? 0]}`).join(' ; ');
+    case 'cloze':
+      return a.parts
+        .map((p, i) => {
+          const b = a.blanks[i];
+          const word = !b ? '' : b.mode === 'list' ? b.options[b.correct] : b.accepted[0];
+          return `${p}${b ? `[${word}]` : ''}`;
+        })
+        .join('');
   }
 };
 
@@ -35,6 +47,8 @@ const trapText = (t: Trap): string => {
 const one = (q: Question): string[] => [
   `- **Graine ${q.seed}** — ${q.prompt.replace(/\n/g, ' ')}`,
   ...(q.answer.kind === 'choice' ? [`  - Propositions : ${q.answer.options.join(' | ')}`] : []),
+  ...(q.answer.kind === 'order' ? [`  - Éléments présentés : ${q.answer.items.join(' | ')}`] : []),
+  ...(q.answer.kind === 'match' ? [`  - Colonne de droite : ${q.answer.right.join(' | ')}`] : []),
   `  - Réponse : ${answerText(q.answer)}`,
   ...(q.traps.length ? [`  - Pièges : ${q.traps.map(trapText).join(' ; ')}`] : ['  - Pièges : aucun']),
   `  - Indice : ${q.hint}`,

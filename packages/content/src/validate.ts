@@ -31,8 +31,24 @@ const MAX_MAGNITUDE = 1e9;
 
 type Check = (code: string, message: string) => void;
 
+/** Textes montrés à l'élève par la réponse elle-même (propositions, éléments, colonnes, segments). */
+function answerTexts(a: Question['answer']): readonly string[] {
+  switch (a.kind) {
+    case 'choice':
+      return a.options;
+    case 'order':
+      return a.items;
+    case 'match':
+      return [...a.left, ...a.right];
+    case 'cloze':
+      return [...a.parts, ...a.blanks.flatMap((b) => (b.mode === 'list' ? b.options : []))];
+    default:
+      return [];
+  }
+}
+
 function textChecks(q: Question, fail: Check): void {
-  const texts = [q.prompt, q.hint, ...q.steps, ...(q.answer.kind === 'choice' ? q.answer.options : [])];
+  const texts = [q.prompt, q.hint, ...q.steps, ...answerTexts(q.answer)];
   if (!q.prompt.trim()) fail('enonce-vide', 'Énoncé vide');
   if (!q.hint.trim()) fail('indice-vide', 'Indice vide');
   if (q.steps.length === 0 || q.steps.some((s) => !s.trim())) fail('correction-vide', 'Correction absente ou vide');
@@ -69,6 +85,24 @@ function rightResponses(q: Question): Response[] {
       return [{ kind: 'point', x: a.x, y: a.y }];
     case 'text':
       return a.accepted.map((text) => ({ kind: 'text', text: ` ${text.toUpperCase()} ` }));
+    case 'order':
+      return [{ kind: 'order', order: [...a.correct] }];
+    case 'match':
+      return [{ kind: 'match', pairs: [...a.pairs] }];
+    case 'cloze':
+      return [
+        {
+          kind: 'cloze',
+          answers: a.blanks.map((b) => (b.mode === 'list' ? (b.options[b.correct] ?? '') : (b.accepted[0] ?? ''))),
+        },
+        // Majuscules et espaces superflus : toujours acceptés.
+        {
+          kind: 'cloze',
+          answers: a.blanks.map(
+            (b) => ` ${(b.mode === 'list' ? (b.options[b.correct] ?? '') : (b.accepted[0] ?? '')).toUpperCase()} `,
+          ),
+        },
+      ];
   }
 }
 
@@ -100,10 +134,94 @@ function choiceChecks(q: Question, fail: Check): void {
   if (normalized.some((o) => o === '')) fail('qcm-vide', 'Proposition vide');
 }
 
+const MIN_ITEMS = 3;
+const MAX_ITEMS = 6;
+
+const isPermutation = (p: readonly number[], n: number) =>
+  p.length === n && new Set(p).size === n && p.every((i) => Number.isInteger(i) && i >= 0 && i < n);
+
+/** Toutes les permutations de 0..n-1 (n ≤ 6 : 720 au plus). */
+function permutations(n: number): number[][] {
+  const out: number[][] = [];
+  const walk = (cur: number[], rest: number[]) => {
+    if (rest.length === 0) out.push(cur);
+    for (const [k, x] of rest.entries()) walk([...cur, x], [...rest.slice(0, k), ...rest.slice(k + 1)]);
+  };
+  walk(
+    [],
+    Array.from({ length: n }, (_, i) => i),
+  );
+  return out;
+}
+
+/** Éléments sans doublon ni vide, sinon plusieurs ordres ou associations seraient justes. */
+function distinctItems(items: readonly string[], what: string, fail: Check): void {
+  const normalized = items.map((i) => normalizeText(i));
+  if (normalized.some((i) => i === '')) fail('element-vide', `${what} : élément vide`);
+  if (new Set(normalized).size !== normalized.length) fail('element-doublon', `${what} : éléments en double`);
+}
+
+/** Ordre : 3 à 6 éléments distincts, un seul ordre juste, jamais présenté déjà rangé. */
+function orderChecks(a: Extract<Question['answer'], { kind: 'order' }>, q: Question, fail: Check): void {
+  const n = a.items.length;
+  if (n < MIN_ITEMS || n > MAX_ITEMS) fail('ordre-taille', `Ordre : ${n} éléments (3 à 6 attendus)`);
+  if (!isPermutation(a.correct, n)) {
+    fail('ordre-permutation', 'Ordre : la solution n’est pas une permutation');
+    return;
+  }
+  distinctItems(a.items, 'Ordre', fail);
+  if (a.correct.every((c, i) => c === i)) fail('ordre-deja-range', 'Ordre : les éléments sont présentés déjà rangés');
+  if (n > MAX_ITEMS) return;
+  // Un seul ordre juste : toute autre permutation est jugée fausse.
+  const right = permutations(n).filter((p) => check(q, { kind: 'order', order: p }).correct);
+  if (right.length !== 1) fail('ordre-non-unique', `Ordre : ${right.length} ordres jugés justes (1 attendu)`);
+}
+
+/** Association : 3 à 6 paires, colonnes distinctes, une seule solution. */
+function matchChecks(a: Extract<Question['answer'], { kind: 'match' }>, q: Question, fail: Check): void {
+  const n = a.left.length;
+  if (n < MIN_ITEMS || n > MAX_ITEMS) fail('paires-taille', `Association : ${n} paires (3 à 6 attendues)`);
+  if (a.right.length !== n) {
+    fail('paires-colonnes', 'Association : colonnes de tailles différentes');
+    return;
+  }
+  if (!isPermutation(a.pairs, n)) {
+    fail('paires-permutation', 'Association : la solution n’est pas une bijection');
+    return;
+  }
+  distinctItems(a.left, 'Association (gauche)', fail);
+  distinctItems(a.right, 'Association (droite)', fail);
+  if (a.pairs.every((c, i) => c === i))
+    fail('paires-deja-rangees', 'Association : colonnes déjà en face l’une de l’autre');
+  if (n > MAX_ITEMS) return;
+  const right = permutations(n).filter((p) => check(q, { kind: 'match', pairs: p }).correct);
+  if (right.length !== 1)
+    fail('paires-non-unique', `Association : ${right.length} solutions jugées justes (1 attendue)`);
+}
+
+/** Texte à trous : segments et trous cohérents ; liste valide ; saisie courte avec au moins une variante. */
+function clozeChecks(a: Extract<Question['answer'], { kind: 'cloze' }>, fail: Check): void {
+  if (a.blanks.length === 0) fail('trou-aucun', 'Texte à trous sans trou');
+  if (a.parts.length !== a.blanks.length + 1) fail('trou-segments', 'Texte à trous : segments et trous incohérents');
+  for (const b of a.blanks) {
+    if (b.mode === 'text') {
+      if (b.accepted.length === 0 || b.accepted.some((t) => !t.trim()))
+        fail('trou-attendu', 'Trou sans réponse acceptée');
+      continue;
+    }
+    if (b.options.length < 2) fail('trou-options', 'Trou en liste avec moins de 2 propositions');
+    if (b.correct < 0 || b.correct >= b.options.length) fail('trou-correct', 'Bonne proposition hors de la liste');
+    distinctItems(b.options, 'Trou en liste', fail);
+  }
+}
+
 function answerChecks(q: Question, fail: Check): void {
   const a = q.answer;
   if (!numericChecks(q, fail)) return;
   choiceChecks(q, fail);
+  if (a.kind === 'order') orderChecks(a, q, fail);
+  if (a.kind === 'match') matchChecks(a, q, fail);
+  if (a.kind === 'cloze') clozeChecks(a, fail);
   if (a.kind === 'point' && (!Number.isInteger(a.x) || !Number.isInteger(a.y))) fail('point', 'Point hors des nœuds');
   if (a.kind === 'text' && (a.accepted.length === 0 || a.accepted.some((t) => !t.trim()))) {
     fail('texte-attendu', 'Aucune réponse écrite acceptée');
@@ -192,6 +310,9 @@ function figureChecks(f: Figure | undefined, q: Question, fail: Check): void {
     case 'table':
       if (f.rows.length === 0) fail('figure', 'Tableau vide');
       return;
+    case 'document':
+      if (f.lines.length === 0 || f.lines.some((l) => !l.trim())) fail('figure', 'Document vide ou à ligne vide');
+      return;
     default:
       return;
   }
@@ -222,6 +343,21 @@ function answerKey(q: Question): string {
       return `point:${a.x},${a.y}`;
     case 'text':
       return `text:${a.accepted.map(normalizeText).sort().join('|')}`;
+    case 'order':
+      return `order:${a.correct.map((i) => normalizeText(a.items[i] ?? '')).join('|')}`;
+    case 'match':
+      return `match:${a.left
+        .map((l, i) => `${normalizeText(l)}=${normalizeText(a.right[a.pairs[i] ?? 0] ?? '')}`)
+        .sort()
+        .join('|')}`;
+    case 'cloze':
+      return `cloze:${a.blanks
+        .map((b) =>
+          b.mode === 'list'
+            ? normalizeText(b.options[b.correct] ?? '')
+            : b.accepted.map(normalizeText).sort().join('/'),
+        )
+        .join('|')}`;
   }
 }
 

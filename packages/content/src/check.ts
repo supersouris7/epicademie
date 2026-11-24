@@ -77,6 +77,37 @@ function checkText(answer: AnswerOf<'text'>, response: ResponseOf<'text'>, traps
   return { correct: false, why: trapWhy(traps, (t) => 'text' in t && normalizeText(t.text) === given) };
 }
 
+/** Ordre : la séquence doit reprendre chaque élément une fois ; `parts` marque les places justes. */
+function checkOrder(answer: AnswerOf<'order'>, response: ResponseOf<'order'>): CheckResult {
+  const n = answer.items.length;
+  const o = response.order;
+  if (o.length !== n || new Set(o).size !== n || o.some((i) => !Number.isInteger(i) || i < 0 || i >= n)) return INVALID;
+  const parts = answer.correct.map((c, i) => o[i] === c);
+  return parts.every(Boolean) ? RIGHT : { correct: false, parts };
+}
+
+/** Association : une paire par élément de gauche, chaque élément de droite utilisé une fois. */
+function checkMatch(answer: AnswerOf<'match'>, response: ResponseOf<'match'>): CheckResult {
+  const n = answer.left.length;
+  const p = response.pairs;
+  const m = answer.right.length;
+  if (p.length !== n || new Set(p).size !== n || p.some((i) => !Number.isInteger(i) || i < 0 || i >= m)) return INVALID;
+  const parts = answer.pairs.map((c, i) => p[i] === c);
+  return parts.every(Boolean) ? RIGHT : { correct: false, parts };
+}
+
+/** Texte à trous : correction trou par trou ; un trou vide est une saisie à refaire. */
+function checkCloze(answer: AnswerOf<'cloze'>, response: ResponseOf<'cloze'>): CheckResult {
+  if (response.answers.length !== answer.blanks.length || response.answers.some((t) => !t.trim())) return INVALID;
+  const parts = answer.blanks.map((b, i) => {
+    const given = normalizeText(response.answers[i] ?? '');
+    return b.mode === 'list'
+      ? given === normalizeText(b.options[b.correct] ?? '')
+      : b.accepted.some((a) => normalizeText(a) === given);
+  });
+  return parts.every(Boolean) ? RIGHT : { correct: false, parts };
+}
+
 /**
  * Corrige une réponse. Pure et déterministe : utilisée à l'identique par l'appli et le serveur.
  * Une réponse d'une autre forme que celle attendue (ou illisible) est « invalide » : on la
@@ -97,5 +128,11 @@ export function check(question: Question, response: Response): CheckResult {
       return response.kind === 'point' ? checkPoint(answer, response, traps) : INVALID;
     case 'text':
       return response.kind === 'text' ? checkText(answer, response, traps) : INVALID;
+    case 'order':
+      return response.kind === 'order' ? checkOrder(answer, response) : INVALID;
+    case 'match':
+      return response.kind === 'match' ? checkMatch(answer, response) : INVALID;
+    case 'cloze':
+      return response.kind === 'cloze' ? checkCloze(answer, response) : INVALID;
   }
 }

@@ -18,6 +18,12 @@ export const ResponseSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('choice'), index: z.number().int().min(0).max(20) }),
   z.object({ kind: z.literal('point'), x: z.number().int().min(-50).max(50), y: z.number().int().min(-50).max(50) }),
   z.object({ kind: z.literal('text'), text: z.string().max(80) }),
+  /** Ordre : indices des éléments dans l'ordre choisi (6 éléments au plus). */
+  z.object({ kind: z.literal('order'), order: z.array(z.number().int().min(0).max(11)).min(2).max(12).readonly() }),
+  /** Association : indice de la colonne de droite choisi pour chaque élément de gauche. */
+  z.object({ kind: z.literal('match'), pairs: z.array(z.number().int().min(0).max(11)).min(2).max(12).readonly() }),
+  /** Texte à trous : une saisie par trou. */
+  z.object({ kind: z.literal('cloze'), answers: z.array(z.string().max(80)).min(1).max(12).readonly() }),
   /** « Je ne sais pas » : compte comme une erreur. */
   z.object({ kind: z.literal('unknown') }),
 ]);

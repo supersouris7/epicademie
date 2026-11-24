@@ -16,6 +16,17 @@ export function formatAnswer(q: Question): string {
         : 'le nœud entouré en vert';
     case 'text':
       return a.accepted[0] ?? '';
+    case 'order':
+      return a.correct.map((i) => a.items[i] ?? '').join(' → ');
+    case 'match':
+      return a.left.map((l, i) => `${l} ↔ ${a.right[a.pairs[i] ?? 0] ?? ''}`).join(' ; ');
+    case 'cloze':
+      return a.parts
+        .map((p, i) => {
+          const b = a.blanks[i];
+          return `${p}${b ? `**${b.mode === 'list' ? (b.options[b.correct] ?? '') : (b.accepted[0] ?? '')}**` : ''}`;
+        })
+        .join('');
   }
 }
 
@@ -33,6 +44,16 @@ export function formatResponse(q: Question, r: Response): string {
       return q.figure?.kind === 'grid' && q.figure.axes ? `le point (${fmt(r.x)} ; ${fmt(r.y)})` : 'ce nœud';
     case 'text':
       return r.text;
+    case 'order': {
+      const a = q.answer;
+      return a.kind === 'order' ? r.order.map((i) => a.items[i] ?? '').join(' → ') : '';
+    }
+    case 'match': {
+      const a = q.answer;
+      return a.kind === 'match' ? a.left.map((l, i) => `${l} ↔ ${a.right[r.pairs[i] ?? -1] ?? '?'}`).join(' ; ') : '';
+    }
+    case 'cloze':
+      return r.answers.join(' ; ');
     case 'unknown':
       return '';
   }
@@ -54,3 +75,6 @@ export function medalMessage(s: {
   if (s.bestAfter === 3) return 'Bronze (deux erreurs) : un sans-faute pour l’or !';
   return `À revoir ${when ? `dès ${when}` : 'bientôt'} : deux erreurs au plus pour le bronze.`;
 }
+
+/** Réponses saisies par les composants structurés (ordre, association, texte à trous). */
+export const isStructured = (a: Question['answer']) => a.kind === 'order' || a.kind === 'match' || a.kind === 'cloze';
