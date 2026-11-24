@@ -120,8 +120,9 @@ export function createAdminService({ db, clock }: { db: Db; clock: Clock }) {
         throw conflict('Cet élève autonome n’a pas de mot de passe : il utilise son code de récupération.');
       }
       const password = newTemporaryPassword();
-      const sessionsClosed = await repo.resetPassword(id, await hashPassword(password));
+      // Journal d'abord : aucune réinitialisation sans trace.
       await repo.audit({ operator, action: 'reinitialisation-mot-de-passe', accountId: id });
+      const sessionsClosed = await repo.resetPassword(id, await hashPassword(password));
       return { password, sessionsClosed };
     },
 
