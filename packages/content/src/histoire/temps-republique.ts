@@ -281,8 +281,7 @@ const ecole: Notion = {
   memo: [
     'À partir des années 1880, avec Jules Ferry, l’école publique devient **gratuite** (loi de 1881), puis **laïque** et l’enseignement **obligatoire** (loi de 1882).',
     'Les enfants, filles et garçons, doivent s’instruire de 6 à 13 ans. Les filles et les enfants des campagnes en profitent beaucoup.',
-    'La République compte sur l’école pour que les Français l’adoptent. Elle forme des **instituteurs** dans des **écoles normales** (loi de 1879).',
-    'À partir de 1886, les religieux qui enseignent dans les écoles publiques sont peu à peu remplacés.',
+    'La République compte sur l’école pour que les Français l’adoptent. Elle forme des **instituteurs** dans des **écoles normales** (loi de 1879). À partir de 1886, les religieux qui enseignent dans les écoles publiques sont peu à peu remplacés.',
   ],
   faits: [
     {
@@ -506,8 +505,7 @@ const democratie: Notion = {
   memo: [
     'Aujourd’hui, sous la Ve République, nous avons des **libertés** (s’exprimer, pratiquer un **culte**) et des droits, comme voter.',
     'Ils sont le fruit d’une **conquête** : la **démocratie** et la société ont changé peu à peu, et on en discute toujours.',
-    'Les citoyens ont aussi des **devoirs** : respecter les lois et payer l’**impôt**. La liberté des uns s’arrête là où commence celle des autres. La liberté de conscience permet de croire, de ne pas croire ou de changer de croyance.',
-    'Repères : 1789, Déclaration des droits de l’homme et du citoyen ; 1881, loi sur la liberté de la presse ; 1905, loi sur la laïcité et la liberté des cultes ; 1944, droit de vote des femmes.',
+    'Les citoyens ont aussi des **devoirs** : respecter les lois et payer l’**impôt**. La liberté des uns s’arrête là où commence celle des autres. La liberté de conscience permet de croire, de ne pas croire ou de changer de croyance. Repères : 1789, Déclaration des droits de l’homme et du citoyen ; 1881, loi sur la liberté de la presse ; 1905, loi sur la laïcité et la liberté des cultes ; 1944, droit de vote des femmes.',
   ],
   faits: [
     {
