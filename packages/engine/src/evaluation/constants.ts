@@ -49,7 +49,6 @@ export const EVALUATION = {
   stateValue: { maitrisee: 1, 'a-consolider': 0.75, 'en-cours': 0.5, 'en-difficulte': 0 },
   /** Maîtrise (§7) : poids d'une essentielle, seuil d'affichage, arrondi. */
   weights: { essential: 2, other: 1 },
-  minWeightForMastery: 4,
   displayStep: 5,
   /** Comparaison de deux bilans : compétences communes minimales. */
   minCommon: 3,

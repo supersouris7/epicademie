@@ -75,7 +75,7 @@ export function EvaluationNotes({ profileId, grade }: { readonly profileId: stri
               {s.history.map((h) => (
                 <li key={h.id}>
                   {dateOf(h.finishedAt)} · {KIND_INFO[h.kind].name} ·{' '}
-                  {h.mastery !== null ? formatNote(h.mastery) : 'pas assez de questions pour une note'}
+                  {h.mastery !== null ? formatNote(h.mastery) : 'sans note'}
                   {h.partial ? ' (épreuve écourtée)' : ''}
                 </li>
               ))}

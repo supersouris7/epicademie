@@ -167,7 +167,7 @@ export function EvaluationHome({ profile }: { readonly profile: Profile }) {
                       <span>
                         {h.mastery !== null
                           ? `Note ${formatNote(h.mastery)} · ${appreciation(h.mastery, h.id)?.label ?? ''}`
-                          : 'Note : pas assez de questions'}
+                          : 'Note : –'}
                       </span>
                     </Link>
                   </li>

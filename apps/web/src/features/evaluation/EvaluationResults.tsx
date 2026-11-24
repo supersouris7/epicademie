@@ -75,15 +75,8 @@ function Scores({ r, grade }: { readonly r: EvaluationResult; readonly grade: st
         max={20}
         label="Note"
         color="var(--success)"
-        text={
-          r.masteryDisplayable && r.mastery !== null ? `Note ${formatNote(r.mastery)}` : 'Note : pas encore mesurable'
-        }
+        text={r.masteryDisplayable && r.mastery !== null ? `Note ${formatNote(r.mastery)}` : 'Note : –'}
       />
-      {!r.masteryDisplayable && (
-        <p className="text-lg">
-          Pas assez de questions sur l’essentiel pour donner une note fiable : ce n’est pas un échec.
-        </p>
-      )}
       <p className="text-lg">
         {r.counts.mastered} maîtrisée{r.counts.mastered > 1 ? 's' : ''} · {r.counts.inProgress} en progrès ·{' '}
         {r.counts.struggling} à travailler · {r.questions} questions
