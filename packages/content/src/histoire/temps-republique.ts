@@ -15,9 +15,9 @@ const centenaire: Notion = {
   title: '1892 : la République fête ses cent ans',
   hint: 'Relis le mémo : cherche la grande fête, les secousses du passé et les symboles.',
   memo: [
-    'En 1892, la République fête ses cent ans : c’est son **centenaire** ! Les cérémonies montrent ses **symboles** : le drapeau, l’hymne et la **devise**.',
-    'Depuis la Révolution, les Français ont essayé plusieurs régimes, parfois dans la violence : en 1830, en 1848 et en 1870.',
-    'À la même époque, la France se lance aussi dans une nouvelle **colonisation** : elle prend le contrôle d’autres territoires.',
+    'En 1892, la République, née en 1792, fête ses cent ans : c’est son **centenaire** ! Les cérémonies montrent ses **symboles** : le drapeau tricolore, l’hymne (la Marseillaise) et la **devise** « Liberté, Égalité, Fraternité ». La fête nationale est le 14 juillet.',
+    'Depuis la Révolution de 1789, les Français ont essayé plusieurs régimes, parfois dans la violence : en 1830 (fin du régime du roi Charles X), en 1848 (la République est rétablie) et en 1870 (un gouvernement provisoire, mis en place pour un temps, est créé en septembre).',
+    'À la même époque, la France se lance aussi dans une nouvelle **colonisation** : elle prend le contrôle d’autres territoires et de leurs habitants.',
   ],
   faits: [
     {
@@ -53,7 +53,11 @@ const centenaire: Notion = {
         { label: 'les jeux des Romains', why: 'Les Romains vivent dans l’Antiquité, bien avant la République.' },
         { label: 'le château des chevaliers', why: 'Les chevaliers appartiennent au Moyen Âge.' },
       ],
-      gap: ['Les cérémonies mettent en scène les symboles ', '.', ['républicains', 'republicains']],
+      gap: [
+        'En 1892, les cérémonies de la République mettent en scène les symboles ',
+        '.',
+        ['républicains', 'republicains', 'de la République', 'de la république'],
+      ],
       explain: 'La fête montre les symboles de la République.',
     },
     {
@@ -70,7 +74,7 @@ const centenaire: Notion = {
     },
     {
       ...P.colonisation,
-      q: 'Quel nouveau processus commence pendant cette période de la République ?',
+      q: 'À l’époque du centenaire de 1892, quel nouveau processus la République engage-t-elle ?',
       a: 'un processus de colonisation',
       wrong: [
         { label: 'le retour de la royauté', why: 'La France reste une République à cette période.' },
@@ -80,7 +84,11 @@ const centenaire: Notion = {
         },
         { label: 'l’invention de l’écriture', why: 'L’écriture existe depuis l’Antiquité.' },
       ],
-      gap: ['Un nouveau processus de ', ' commence.', ['colonisation']],
+      gap: [
+        'La France prend le contrôle d’autres territoires : un nouveau processus de ',
+        ' commence.',
+        ['colonisation'],
+      ],
       explain: 'Un nouveau processus de colonisation commence : la France prend le contrôle d’autres territoires.',
     },
     {
@@ -185,7 +193,7 @@ const centenaire: Notion = {
     },
     {
       ...P.colonisation,
-      q: 'À cette période, la France se lance dans une nouvelle … (un mot).',
+      q: 'Vers 1892, la France prend le contrôle d’autres territoires : c’est une nouvelle … (un mot).',
       accepted: ['colonisation', 'la colonisation'],
       traps: [
         { text: 'monarchie', why: 'La France est une République : elle ne redevient pas une monarchie.' },
@@ -273,7 +281,8 @@ const ecole: Notion = {
   memo: [
     'À partir des années 1880, avec Jules Ferry, l’école publique devient **gratuite** (loi de 1881), puis **laïque** et l’enseignement **obligatoire** (loi de 1882).',
     'Les enfants, filles et garçons, doivent s’instruire de 6 à 13 ans. Les filles et les enfants des campagnes en profitent beaucoup.',
-    'La République compte sur l’école pour que les Français l’adoptent. Elle forme des **instituteurs** dans des **écoles normales**.',
+    'La République compte sur l’école pour que les Français l’adoptent. Elle forme des **instituteurs** dans des **écoles normales** (loi de 1879).',
+    'À partir de 1886, les religieux qui enseignent dans les écoles publiques sont peu à peu remplacés.',
   ],
   faits: [
     {
@@ -497,7 +506,8 @@ const democratie: Notion = {
   memo: [
     'Aujourd’hui, sous la Ve République, nous avons des **libertés** (s’exprimer, pratiquer un **culte**) et des droits, comme voter.',
     'Ils sont le fruit d’une **conquête** : la **démocratie** et la société ont changé peu à peu, et on en discute toujours.',
-    'Les citoyens ont aussi des **devoirs** : respecter les lois et payer l’**impôt**. La liberté des uns s’arrête là où commence celle des autres.',
+    'Les citoyens ont aussi des **devoirs** : respecter les lois et payer l’**impôt**. La liberté des uns s’arrête là où commence celle des autres. La liberté de conscience permet de croire, de ne pas croire ou de changer de croyance.',
+    'Repères : 1789, Déclaration des droits de l’homme et du citoyen ; 1881, loi sur la liberté de la presse ; 1905, loi sur la laïcité et la liberté des cultes ; 1944, droit de vote des femmes.',
   ],
   faits: [
     {
@@ -521,7 +531,7 @@ const democratie: Notion = {
         { label: 'respecter la loi', why: 'Respecter la loi est un devoir.' },
         { label: 'obéir à un roi', why: 'En République, il n’y a pas de roi.' },
       ],
-      gap: ['Dire son avis, c’est la liberté d’', '.', ['expression']],
+      gap: ['Pouvoir dire et publier son avis, c’est la liberté d’', '.', ['expression', 'l’expression']],
       explain: 'La liberté d’expression permet de dire son avis.',
     },
     {
@@ -559,11 +569,11 @@ const democratie: Notion = {
       q: 'Les libertés ont-elles des limites ?',
       a: 'oui, pour ne pas gêner la liberté des autres',
       wrong: [
-        { label: 'non, on peut tout faire', why: 'La liberté d’une personne ne doit pas entraver celle des autres.' },
+        { label: 'non, on peut tout faire', why: 'La liberté d’une personne ne doit pas gêner celle des autres.' },
         { label: 'oui, il faut la permission d’un roi', why: 'En République, aucun roi ne donne la permission.' },
         { label: 'oui, mais seulement pour les enfants', why: 'Les limites concernent tout le monde.' },
       ],
-      gap: ['La liberté des uns ne doit pas entraver celle des ', '.', ['autres']],
+      gap: ['La liberté des uns ne doit pas gêner celle des ', '.', ['autres']],
       explain: 'Les libertés ont des limites pour que chacun puisse en profiter.',
     },
     {
@@ -610,9 +620,13 @@ const democratie: Notion = {
     },
     {
       ...P.expression,
-      q: 'Dire son avis, c’est la liberté d’… (un mot).',
+      q: 'Pouvoir dire et publier son avis, c’est la liberté d’… (un mot).',
       accepted: ['expression', 'l’expression'],
       traps: [
+        {
+          text: 'opinion',
+          why: 'La liberté d’opinion, c’est le droit d’avoir un avis. Le dire et le publier, c’est une autre liberté.',
+        },
         { text: 'impôt', why: 'L’impôt est un devoir : ce n’est pas le nom d’une liberté.' },
         { text: 'obéissance', why: 'Obéir n’est pas la même chose que dire son avis.' },
       ],
@@ -669,7 +683,7 @@ const democratie: Notion = {
             },
             { label: 'les enfants n’ont aucun droit', why: 'Les enfants ont des droits.' },
           ],
-          explain: 'La liberté des uns ne doit pas entraver celle des autres.',
+          explain: 'La liberté des uns ne doit pas gêner celle des autres.',
         },
       ],
     },
@@ -714,7 +728,7 @@ const vote: Notion = {
   hint: 'Relis le mémo : cherche l’année de la grande décision et celle du premier vote.',
   memo: [
     'En 1848, le **suffrage universel** est instauré pour les hommes seulement : les femmes attendent encore.',
-    'Des femmes comme Hubertine Auclert se battent. La Chambre des députés dit oui en 1919, mais le Sénat refuse d’examiner le texte en 1922.',
+    'Des femmes comme Hubertine Auclert se battent : en 1881, elle lance le journal La Citoyenne. La Chambre des députés dit oui en 1919, mais le Sénat refuse d’examiner le texte en 1922.',
     'Le 21 avril 1944, les femmes deviennent **électrices** : comme les hommes, chacune est aussi **éligible**. Elles votent pour la première fois en 1945.',
   ],
   faits: [
@@ -787,7 +801,11 @@ const vote: Notion = {
         { label: 'le conseil municipal', why: 'Le texte était examiné au Parlement, pas à la mairie.' },
         { label: 'l’école', why: 'L’école ne vote pas les lois.' },
       ],
-      gap: ['En 1922, le ', ' refuse d’examiner le texte.', ['Sénat', 'sénat', 'Senat', 'senat']],
+      gap: [
+        'En 1922, le ',
+        ' refuse d’examiner le texte sur le vote des femmes.',
+        ['Sénat', 'sénat', 'Senat', 'senat'],
+      ],
       explain: 'Le Sénat bloque la proposition de loi.',
     },
   ],
@@ -811,7 +829,7 @@ const vote: Notion = {
       date: '1919',
     },
     { ...P.ordonnance, label: 'Les femmes deviennent électrices et éligibles', date: '1944' },
-    { ...P.national1945, label: 'Les femmes élisent leurs premiers députés', date: '1945' },
+    { ...P.national1945, label: 'Premier vote des femmes dans tout le pays', date: '1945' },
   ],
   libres: [
     {
@@ -857,7 +875,7 @@ const vote: Notion = {
   ],
   docs: [
     {
-      title: 'Une arrière-grand-mère raconte',
+      title: 'Le souvenir d’une électrice',
       lines: [
         'Avant 1944, je ne pouvais pas voter.',
         'Mon mari, lui, allait voter.',
