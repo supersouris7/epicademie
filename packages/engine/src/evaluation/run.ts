@@ -571,6 +571,7 @@ export function summarize(state: EvaluationState): EvaluationOutcome {
     scored: c.scored,
     state: stateOf(c, state.today),
     studied: c.studied === 'vu',
+    rate: c.answers.length > 0 ? statsOf(c, state.today).rate : null,
   }));
   const scores = computeScores(program, state.kind !== 'origines');
   const partialCoverage = state.endReason !== null && state.endReason !== 'concluded';

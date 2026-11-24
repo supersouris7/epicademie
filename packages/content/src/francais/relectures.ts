@@ -7,4 +7,9 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm1-forme-negative', version: 1, lot: 'fr-cm1-01', date: '2026-11-24', verdict: 'ok' },
   { skillId: 'fcm1-forme-exclamative', version: 1, lot: 'fr-cm1-01', date: '2026-11-24', verdict: 'ok' },
   { skillId: 'fcm1-ponctuation-fin', version: 1, lot: 'fr-cm1-01', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'fcm1-verbe-conjugue', version: 1, lot: 'fr-cm1-02', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'fcm1-infinitif', version: 1, lot: 'fr-cm1-02', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'fcm1-groupe-sujet', version: 1, lot: 'fr-cm1-02', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'fcm1-types-sujets', version: 1, lot: 'fr-cm1-02', date: '2026-11-24', verdict: 'ok' },
+  { skillId: 'fcm1-nom-ou-verbe', version: 1, lot: 'fr-cm1-02', date: '2026-11-24', verdict: 'ok' },
 ];

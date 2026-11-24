@@ -1,5 +1,6 @@
 import type { Chapter, Level, Skill } from '../types.ts';
 import { choice, trueFalse } from '../build.ts';
+import { SKILLS as LIEUX } from './lieux.ts';
 import { DEPARTEMENTS, GEO_FETCHED_ON, PAYS_UE, REGIONS } from './donnees.generated.ts';
 
 /**
@@ -192,6 +193,7 @@ const chapter = (id: string, grade: Chapter['grade'], title: string, skills: rea
 
 export const GEOGRAPHIE_CHAPTERS: readonly Chapter[] = [
   chapter('gcm1-regions', 'cm1', 'Les régions de France', [regions]),
+  chapter('gcm1-lieux', 'cm1', 'Les lieux où j’habite', LIEUX),
   chapter('gcm2-departements', 'cm2', 'Les départements', [departments]),
   chapter('g6-prefectures', '6e', 'Les préfectures', [prefectures]),
   chapter('g3-union-europeenne', '3e', 'L’Union européenne', [euCapitals, euro]),

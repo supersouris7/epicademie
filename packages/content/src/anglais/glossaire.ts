@@ -58,4 +58,33 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Le petit trait « - » qui relie deux mots.',
     example: 'twenty-one s’écrit avec un tiret entre twenty et one.',
   },
+  {
+    id: 'pronom-sujet',
+    word: 'pronom sujet',
+    forms: ['pronom sujet', 'pronoms sujets'],
+    definition: 'Petit mot qui remplace la personne ou la chose qui fait l’action : je, tu, il, elle, nous, ils.',
+    example: 'Ana is happy. → She is happy. « She » remplace Ana.',
+  },
+  {
+    id: 'its',
+    word: 'its',
+    forms: ['its'],
+    definition:
+      'L’adjectif possessif de « it » : il dit à qui appartient une chose, pour un animal ou un objet. Il n’a jamais d’apostrophe.',
+    example: 'The cat has a toy. Its toy is red.',
+  },
+  {
+    id: 'inverser',
+    word: 'inverser',
+    forms: ['inverser', 'inverse', 'inversion'],
+    definition: 'Changer deux mots de place.',
+    example: 'She is happy. → Is she happy ? On inverse « she » et « is ».',
+  },
+  {
+    id: 'mot-interrogatif',
+    word: 'mot interrogatif',
+    forms: ['mot interrogatif', 'mots interrogatifs'],
+    definition: 'Le mot qui ouvre une question : what (quoi), where (où), how (comment), why (pourquoi).',
+    example: 'Where is Emir ? « Where » est le mot interrogatif.',
+  },
 ];

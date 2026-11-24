@@ -1,5 +1,6 @@
 import type { Chapter } from '../types.ts';
 import { FCM1_PHRASES } from './phrases.ts';
+import { FCM1_VERBE_SUJET } from './verbe-sujet.ts';
 
 /** Français : chapitres publiés (ADR 0034). Le lot de contenu ajoute ses chapitres ici, sans toucher à catalog.ts. */
 export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
@@ -10,5 +11,13 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'grammaire',
     title: 'Types et formes de phrases',
     skills: FCM1_PHRASES,
+  },
+  {
+    id: 'fcm1-verbe-sujet',
+    subject: 'francais',
+    grade: 'cm1',
+    domain: 'grammaire',
+    title: 'Le verbe et le sujet',
+    skills: FCM1_VERBE_SUJET,
   },
 ];
