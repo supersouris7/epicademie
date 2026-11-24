@@ -23,7 +23,8 @@ export async function signupFamily(
   await page.getByLabel('E-mail du parent').fill(email);
   await page.getByLabel('Mot de passe', { exact: true }).fill(PASSWORD);
   await page.getByRole('button', { name: 'Créer le compte' }).click();
-  await expect(page).toHaveURL(/\/profils\/nouveau$/);
+  await expect(page).toHaveURL(/\/profils\/nouveau\?pour=enfant/);
+  await expect(page.getByRole('region', { name: 'Compte créé' })).toBeVisible();
   if (premium) await subscribe(page);
   return email;
 }

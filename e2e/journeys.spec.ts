@@ -7,7 +7,7 @@ async function createProfile(page: Page, name: string, birthDate = '2014-03-09')
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill(birthDate);
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
   await expect(page).toHaveURL(/hub/);
 }
 
@@ -51,9 +51,9 @@ test('Adulte : parcours de remise à niveau en maths', async ({ page }) => {
   await page.getByPlaceholder('Ex. Léa').fill(`Adu${Date.now() % 10000}`);
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('1985-05-01');
-  await expect(page.getByText('Tu es un adulte ?')).toBeVisible();
+  await expect(page.getByText('C’est un adulte ?')).toBeVisible();
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
   await expect(page).toHaveURL(/hub/);
   await page.goto('/jouer/entrainement/maths');
   const grades = page.getByRole('radiogroup', { name: 'Classe' });

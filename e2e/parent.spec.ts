@@ -12,7 +12,7 @@ test('Espace parent : navigation stable, chaque chemin reste dans l’espace, un
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
   await expect(page).toHaveURL(/hub/);
 
   await page.goto('/parent');
@@ -81,7 +81,7 @@ test('Page d’un enfant épurée : synthèse, cartes matière, À réviser ; au
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
   await expect(page).toHaveURL(/hub/);
   // Côté enfant : plus d'encart « Ton parent te recommande ».
   await expect(page.getByRole('region', { name: 'Ton parent te recommande' })).toHaveCount(0);

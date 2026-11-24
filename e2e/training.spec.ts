@@ -8,7 +8,7 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
 
   await page.getByRole('button', { name: /Entraînement/ }).click();
   // C'est ici qu'on gagne son équipement (dès le choix de la matière).
@@ -105,9 +105,9 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await page.getByPlaceholder('Ex. Léa').fill(`Outil${Date.now() % 10000}`);
   await page.getByRole('button', { name: 'Un garçon' }).click();
   await page.getByLabel('Date de naissance').fill('2013-05-20');
-  await expect(page.getByText('Tu es en 4e ?')).toBeVisible();
+  await expect(page.getByText('Votre enfant est en 4e ?')).toBeVisible();
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
   await expect(page).toHaveURL(/\/hub$/);
   // Toutes les classes du CM1 à la 3e ont leur programme : plus de message « arrive bientôt ».
   await expect(page.getByText(/arrive bientôt/)).toHaveCount(0);
