@@ -23,8 +23,5 @@ export const textTrap = (text: string, why: string): Trap => ({ text, why });
 /** Première lettre en minuscule (un groupe sujet placé après « Ce matin, »). */
 export const lowerFirst = (s: string): string => s.charAt(0).toLowerCase() + s.slice(1);
 
-/** Première lettre en majuscule. */
-export const upperFirst = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);
-
 /** Une écriture en minuscules, sans doublon, pour comparer des propositions. */
 export const same = (a: string, b: string): boolean => a.toLowerCase() === b.toLowerCase();
