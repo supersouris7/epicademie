@@ -64,7 +64,7 @@ export function createEvaluationService({ db, clock, random, timeZone, onFinishe
     for (const c of state.competences) {
       if (c.role === 'score' && c.answers.length > 0) byDomain[c.domain] = (byDomain[c.domain] ?? 0) + c.answers.length;
     }
-    return { index: state.asked, planned: Math.max(state.planned, state.asked), byDomain };
+    return { index: state.asked, planned: state.planned, byDomain };
   };
 
   /**

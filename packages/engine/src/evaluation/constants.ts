@@ -4,11 +4,11 @@
  */
 export const EVALUATION = {
   questions: {
-    /** Budget de questions notées visé au lancement. */
+    /** Nombre fixe de questions de l'épreuve, annoncé au lancement (moins si le programme est trop petit). */
     target: 16,
     /** Une épreuve ne se termine pas « conclue » avant ce nombre (borné par le programme choisi). */
     min: 12,
-    /** Plafond absolu, explorations comprises. */
+    /** Plafond absolu, défis bonus compris (les prérequis restent dans le nombre fixe). */
     max: 20,
   },
   /** Seuils d'un appui sur 3 niveaux. */

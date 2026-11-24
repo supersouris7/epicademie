@@ -17,6 +17,9 @@ test('Arène d’évaluation : Épreuve des Origines lancée, quittée puis repr
 
   // Épreuve : progression visible, jamais de juste ni de faux.
   await expect(page.getByRole('progressbar', { name: 'Progression de l’épreuve' })).toBeVisible();
+  // Nombre fixe de questions, annoncé dès le départ (jamais « environ »).
+  await expect(page.getByLabel(/^Question 1 sur \d+$/)).toBeVisible();
+  await expect(page.getByText(/environ/)).toHaveCount(0);
   await expect(page.getByText(/Bonne réponse|Essaie encore|Raté/)).toHaveCount(0);
 
   // Quitter garde l'épreuve : l'accueil de l'Arène propose de la reprendre.
