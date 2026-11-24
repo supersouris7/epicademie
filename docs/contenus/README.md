@@ -179,3 +179,8 @@ ou des textes écrits pour l'exercice.
   historiques (3 niveaux) ne peut que diminuer (constante `HISTORIQUES_MAX`, à abaisser à chaque lot).
 - **Aperçu de relecture** : `node apps/server/scripts/apercu.ts <chapitre|notion>… [--out aperçu.md]`
   (niveaux × 3 graines : énoncé, réponse, pièges, indice, étapes, sources).
+
+## Référentiel d'évaluation d'une nouvelle matière (Arène)
+
+Gabarit et règles : `packages/content/src/referentiel/gabarit.ts`. Enregistrer le référentiel dans `REFERENTIALS` :
+`referentiel.test.ts` le contrôle alors automatiquement (rattachement des chapitres, prérequis, cycles, essentielles).
