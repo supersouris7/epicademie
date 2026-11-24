@@ -100,7 +100,7 @@ function Rewards({ r, isNew }: { readonly r: EvaluationResult; readonly isNew: b
         <GameIcon id="icons-resources-coin" size={22} label="pièces" />
       </p>
       <p className="text-muted text-lg">
-        Les récompenses viennent d’avoir participé, jamais du nombre de bonnes réponses.
+        Ces récompenses disent merci pour ta participation : elles ne dépendent jamais du nombre de bonnes réponses.
         {!r.rewards.inPeriod && ' Cette épreuve était déjà faite sur la période : récompense réduite, sans coffre.'}
       </p>
       {isNew && r.rewards.chest && <ChestReveal chest={r.rewards.chestContent} />}
@@ -128,7 +128,7 @@ function Body(p: {
         <p className="min-w-0 flex-1 text-xl font-bold">
           {r.partial
             ? 'Tu as fait ce que tu pouvais, et c’est déjà utile : voilà ce qu’on a pu voir.'
-            : 'Bravo, tu es allé au bout ! Voilà où tu en es.'}
+            : 'Bravo, l’épreuve est terminée ! Voilà où tu en es.'}
         </p>
       </div>
 
@@ -247,8 +247,8 @@ function Review({ id }: { readonly id: string }) {
         return (
           <li key={i} className="cartoon bg-surface flex flex-col gap-1 p-3 text-lg">
             <MathText text={question.prompt} />
-            <span className={q.correct ? 'text-success font-bold' : 'text-danger font-bold'}>
-              {q.correct ? 'Réussie' : 'À revoir'} · ta réponse : <MathText text={given} />
+            <span className={q.correct ? 'text-success font-bold' : 'font-bold'}>
+              {q.correct ? 'Réussie' : 'À retravailler'} · ta réponse : <MathText text={given} />
             </span>
             {!q.correct && (
               <span className="font-bold">
