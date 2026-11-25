@@ -2073,4 +2073,11 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Mettre sous tutelle, c’est placer sous son contrôle et sa surveillance.',
     example: 'Le roi veut mettre la noblesse sous tutelle.',
   },
+  {
+    id: 'acteur-historique',
+    word: 'acteur',
+    forms: ['acteur', 'acteurs'],
+    definition: 'En histoire, une personne ou un groupe qui agit et pèse sur les événements.',
+    example: 'Jeanne d’Arc est un acteur de la guerre de Cent Ans.',
+  },
 ];
