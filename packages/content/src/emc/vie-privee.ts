@@ -5,9 +5,9 @@ import { notion, type Citation, type Notion } from './kit.ts';
  * 6e, « Vie privée et vie publique » (lot em-6e-02), partie « Avoir des droits en tant que personne et respecter
  * ceux des autres : l’exemple du droit à la vie privée » du programme d'EMC du 13 juin 2024, qui rattache le
  * harcèlement en ligne à ce chapitre (cyberharcèlement). Chaque fait cite le programme (registre `emc-2024`) ou
- * un texte du registre, avec sa citation exacte. La loi du 7 juillet 2023 n'a pas été appliquée et une loi du
- * 24 août 2026 est intervenue : les questions sur la majorité numérique datent chaque fait et ne décrivent pas
- * les conditions d'inscription en vigueur. Les textes à lire du niveau 5 sont écrits pour l'exercice.
+ * un texte du registre, avec sa citation exacte. La loi du 7 juillet 2023 n'a jamais pu être appliquée : les
+ * questions sur la majorité numérique le disent et ne décrivent pas les conditions d'inscription en vigueur.
+ * Les textes à lire du niveau 5 sont écrits pour l'exercice.
  */
 
 const PROGRAMME =
@@ -22,7 +22,6 @@ const prog = (quote: string): Citation => ({ quote });
 
 const vp = cite('vie-publique-vie-privee', 'le site Vie publique');
 const majorite = cite('vie-publique-majorite-numerique', 'le site Vie publique');
-const loi2026 = cite('senat-reseaux-mineurs-2026', 'le site du Sénat');
 const charte = cite('ue-charte-droits', 'la Charte des droits fondamentaux de l’Union européenne');
 const rgpd = cite('rgpd-2016-679', 'le règlement général sur la protection des données');
 const loiHarcelement = cite('an-loi-harcelement-2022', 'la loi du 2 mars 2022');
@@ -50,8 +49,9 @@ const MAJORITE_DEF = majorite(
   'La majorité numérique désigne l’âge à partir duquel un mineur peut s’inscrire seul sur un réseau social, sans autorisation parentale',
 );
 const MAJORITE_15 = majorite('Depuis juillet 2023, une loi établit la majorité numérique à 15 ans en France');
-const LOI_2026 = loi2026(
-  "Loi visant à protéger les mineurs des risques auxquels les expose l'utilisation des réseaux sociaux (n° 2026-813 du 24 août 2026)",
+const JAMAIS_APPLIQUEE = majorite("Mais cette loi instaurant une majorité numérique n'a jamais pu être appliquée");
+const QUINZE_PROGRAMME = prog(
+  'pour faire comprendre pourquoi l’âge de la majorité numérique a été fixé à quinze ans par le législateur (loi du 7 juillet 2023)',
 );
 
 const ARTICLE_7 = charte(
@@ -116,7 +116,7 @@ const viePriveeEnLigne: Notion = {
   memo: [
     'Le droit à la **vie privée** vaut aussi en ligne et sur les **réseaux sociaux**.',
     'Tes recherches, messages ou photos laissent des **traces numériques** qui agissent sur ta **réputation numérique** ; le **droit à l’oubli** est difficile à faire valoir.',
-    'La loi du 7 juillet 2023 a fixé la **majorité numérique** à 15 ans ; une loi d’août 2026 protège aussi les mineurs. Exemple : avant de publier une photo, demande-toi qui pourra la voir demain.',
+    'La loi du 7 juillet 2023 prévoyait une **majorité numérique** à 15 ans, mais elle n’a jamais pu être appliquée. Exemple : avant de publier une photo, demande-toi qui pourra la voir demain.',
   ],
   faits: [
     {
@@ -212,60 +212,60 @@ const viePriveeEnLigne: Notion = {
         ' désigne l’âge à partir duquel un mineur peut s’inscrire seul sur un réseau social.',
         ['numérique', 'numerique'],
       ],
-      explain: 'La majorité numérique concerne l’inscription sans autorisation parentale à un réseau social.',
+      explain: 'C’est la définition. La loi de 2023 prévoyait 15 ans, mais elle n’a jamais pu être appliquée.',
     },
     {
       ...MAJORITE_15,
-      q: 'À quel âge la loi de juillet 2023 a-t-elle établi la majorité numérique en France ?',
+      q: 'À quel âge la loi de juillet 2023 voulait-elle fixer la majorité numérique en France ?',
       a: '15 ans',
       wrong: [
         { label: '8 ans', why: 'C’est bien trop jeune : la loi retient un âge plus élevé.' },
         { label: '18 ans', why: '18 ans est l’âge de la majorité civile.' },
         { label: '12 ans', why: 'La loi de 2023 n’a pas retenu cet âge.' },
       ],
-      gap: ['La loi de juillet 2023 a établi la majorité numérique à ', ' ans.', ['15', 'quinze']],
-      explain: 'Le législateur a retenu quinze ans pour protéger les plus jeunes des risques en ligne.',
+      gap: ['La loi de juillet 2023 prévoyait une majorité numérique à ', ' ans.', ['15', 'quinze']],
+      explain: 'La loi de 2023 prévoyait quinze ans, mais elle n’a jamais pu être appliquée.',
     },
     {
-      ...LOI_2026,
+      ...JAMAIS_APPLIQUEE,
       avance: true,
-      q: 'Quel est le but annoncé par le titre de la loi du 24 août 2026 sur les réseaux sociaux ?',
-      a: 'protéger les mineurs des risques liés à leur utilisation',
+      q: 'Qu’est devenue la loi de 2023 sur la majorité numérique ?',
+      a: 'elle n’a jamais pu être appliquée',
       wrong: [
-        { label: 'obliger chaque élève à ouvrir un compte', why: 'La loi vise à protéger, pas à obliger.' },
-        { label: 'vendre les données des mineurs', why: 'C’est le contraire d’une protection.' },
-        { label: 'supprimer Internet dans les collèges', why: 'Le titre parle des risques des réseaux sociaux.' },
+        { label: 'elle s’applique depuis le jour de son vote', why: 'Elle n’est jamais entrée en application.' },
+        { label: 'elle a fixé la majorité civile à 15 ans', why: 'La majorité civile reste à 18 ans.' },
+        { label: 'elle a interdit Internet aux collégiens', why: 'Cette loi ne portait pas sur l’accès à Internet.' },
       ],
       gap: [
-        'La loi du 24 août 2026 vise à protéger les ',
-        ' des risques liés aux réseaux sociaux.',
-        ['mineurs', 'mineures', 'enfants', 'jeunes'],
+        'La loi de 2023 sur la majorité numérique n’a jamais pu être ',
+        '.',
+        ['appliquée', 'appliquee', 'mise en application', 'mise en œuvre', 'mise en oeuvre'],
       ],
-      explain: 'Le titre de la loi désigne les personnes protégées : les mineurs, c’est-à-dire les moins de 18 ans.',
+      explain: 'Une loi a été votée, mais elle n’a jamais pu être appliquée.',
     },
   ],
   paires3: [
     ['Traces numériques', 'Informations laissées en ligne'],
     ['Réputation numérique', 'Image qu’on se fait de quelqu’un d’après le web'],
-    ['Majorité numérique (loi de 2023)', '15 ans'],
+    ['Majorité numérique prévue en 2023', '15 ans, jamais appliquée'],
   ],
   paires5: [
     ['Traces numériques', 'Informations laissées en ligne'],
     ['Réputation numérique', 'Image qu’on se fait de quelqu’un d’après le web'],
-    ['Majorité numérique (loi de 2023)', '15 ans'],
+    ['Majorité numérique prévue en 2023', '15 ans, jamais appliquée'],
     ['Droit à l’oubli', 'Demander l’effacement d’informations sur soi'],
-    ['Loi d’août 2026', 'Protection des mineurs sur les réseaux sociaux'],
+    ['Réseaux sociaux', 'Lieux où le droit à la vie privée vaut aussi'],
   ],
   libres: [
     {
       ...MAJORITE_15,
-      q: 'Quel âge la loi de 2023 a-t-elle fixé pour la majorité numérique ? (un nombre)',
+      q: 'Quel âge la loi de 2023, jamais appliquée, prévoyait-elle pour la majorité numérique ? (un nombre)',
       accepted: ['15', '15 ans', 'quinze', 'quinze ans'],
       traps: [
         { text: '18', why: '18 ans est la majorité civile, pas la majorité numérique.' },
-        { text: '13', why: 'La loi de 2023 retient 15 ans.' },
+        { text: '13', why: 'La loi de 2023 prévoyait 15 ans.' },
       ],
-      explain: 'La majorité numérique a été établie à quinze ans en juillet 2023.',
+      explain: 'La loi de juillet 2023 prévoyait quinze ans, mais elle n’a jamais pu être appliquée.',
     },
     {
       ...TRACES,
@@ -336,37 +336,31 @@ const viePriveeEnLigne: Notion = {
       lines: [
         'Une élève de 11 ans veut s’inscrire seule sur un réseau social.',
         'Pour cela, elle pense indiquer une fausse date de naissance.',
-        'Son frère lui rappelle que la loi de 2023 a fixé un âge pour s’inscrire seul.',
+        'Son frère explique qu’une loi de 2023 prévoyait un âge pour s’inscrire seul, mais qu’elle n’a jamais pu être appliquée.',
         'Il lui propose d’en parler d’abord à un adulte de la famille.',
       ],
       qs: [
         {
-          ...MAJORITE_15,
-          q: 'Quel âge la loi de 2023 rappelée par le frère a-t-elle fixé ?',
+          ...QUINZE_PROGRAMME,
+          q: 'Quel âge la loi de 2023 dont parle le frère prévoyait-elle ?',
           a: '15 ans',
           wrong: [
             { label: '11 ans', why: 'C’est l’âge de l’élève, pas celui de la loi.' },
             { label: '18 ans', why: 'C’est la majorité civile.' },
             { label: '6 ans', why: 'La loi retient un âge bien plus élevé.' },
           ],
-          explain: 'La loi de 2023 établit la majorité numérique à 15 ans.',
+          explain: 'La loi du 7 juillet 2023 a retenu quinze ans, mais elle n’a jamais pu être appliquée.',
         },
         {
-          ...LOI_2026,
-          q: 'Quel est l’intérêt des lois qui encadrent les réseaux sociaux pour une élève de son âge ?',
-          a: 'la protéger des risques liés à ces réseaux',
+          ...TRACES,
+          q: 'Pourquoi est-il utile qu’elle parle à un adulte avant de s’inscrire ?',
+          a: 'pour réfléchir à la protection de ses traces numériques',
           wrong: [
-            { label: 'l’obliger à publier chaque jour', why: 'Aucune obligation de publier n’est en jeu.' },
-            {
-              label: 'lui retirer tout droit à la vie privée',
-              why: 'La loi vise au contraire à protéger les mineurs.',
-            },
-            {
-              label: 'rendre sa fausse date de naissance obligatoire',
-              why: 'Mentir sur son âge n’est pas une protection.',
-            },
+            { label: 'pour être obligée de publier chaque jour', why: 'Aucune obligation de publier n’est en jeu.' },
+            { label: 'pour renoncer à son droit à la vie privée', why: 'Ce droit la protège aussi en ligne.' },
+            { label: 'pour rendre sa fausse date obligatoire', why: 'Mentir sur son âge ne la protège pas.' },
           ],
-          explain: 'La loi de 2026 s’annonce comme une loi de protection des mineurs face aux risques des réseaux.',
+          explain: 'Une inscription laisse des traces : un adulte peut l’aider à les protéger.',
         },
       ],
     },

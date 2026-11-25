@@ -813,7 +813,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'majorité numérique',
     ['majorite numerique'],
     'L’âge à partir duquel un mineur peut s’inscrire seul sur un réseau social.',
-    'La loi de 2023 l’a fixée à 15 ans.',
+    'Une loi de 2023 prévoyait 15 ans, mais elle n’a jamais pu être appliquée.',
   ),
   t(
     'donnee-personnelle',

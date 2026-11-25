@@ -478,14 +478,6 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-25',
   },
   {
-    id: 'senat-reseaux-mineurs-2026',
-    title: 'Dossier législatif : loi n° 2026-813 du 24 août 2026 sur les mineurs et les réseaux sociaux',
-    publisher: 'Sénat',
-    url: 'https://www.senat.fr/dossier-legislatif/ppl25-304.html',
-    textDate: '2026-08-24',
-    consultedOn: '2026-11-25',
-  },
-  {
     id: 'ue-charte-droits',
     title: 'Charte des droits fondamentaux de l’Union européenne',
     publisher: 'EUR-Lex (Union européenne)',
