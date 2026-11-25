@@ -912,6 +912,13 @@ export const SOURCES: readonly Source[] = [
   academie('scruter', 'scruter'),
   academie('rassasier', 'rassasier'),
   academie('faufiler', 'faufiler'),
+  // Lot fr-cm2-05 : les accords (participes passés, pluriels et féminins particuliers).
+  tlfi('etre', 'être', '%C3%AAtre'),
+  tlfi('avoir', 'avoir', 'avoir'),
+  tlfi('travail', 'travail', 'travail'),
+  tlfi('pneu', 'pneu', 'pneu'),
+  tlfi('sec', 'sec', 'sec'),
+  ...['gros', 'long', 'nouveau', 'frais', 'public', 'fou', 'jumeau', 'loup'].map((w) => academie(w, w)),
   {
     id: 'eduscol-grammaire-francais',
     title: 'La grammaire du français. Terminologie grammaticale (les guides fondamentaux pour enseigner)',

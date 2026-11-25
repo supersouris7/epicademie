@@ -744,4 +744,18 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Idée qui aurait dû empêcher quelque chose, mais ne l’empêche pas.',
     example: 'Il sort bien que la nuit tombe.',
   },
+  {
+    id: 'sujet-inverse',
+    word: 'sujet inversé',
+    forms: ['sujets inversés'],
+    definition: 'Sujet placé après le verbe.',
+    example: 'Dans le ciel volent les hirondelles. (« les hirondelles »)',
+  },
+  {
+    id: 'plus-que-parfait',
+    word: 'plus-que-parfait',
+    forms: ['au plus-que-parfait'],
+    definition: 'Temps en deux mots : être ou avoir à l’imparfait, puis le participe passé.',
+    example: 'Elle était partie.',
+  },
 ];
