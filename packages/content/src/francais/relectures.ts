@@ -32,4 +32,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm1-accord-gn', version: 1, lot: 'fr-cm1-06', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-accord-sujet-verbe', version: 1, lot: 'fr-cm1-06', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-participe-etre', version: 1, lot: 'fr-cm1-06', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-epithete-attribut', version: 1, lot: 'fr-cm2-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-gn-expansions', version: 1, lot: 'fr-cm2-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-complement-du-nom', version: 1, lot: 'fr-cm2-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-chaine-accord-expansions', version: 1, lot: 'fr-cm2-03', date: '2026-11-25', verdict: 'ok' },
 ];

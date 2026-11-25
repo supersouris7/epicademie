@@ -26,4 +26,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'h6-avant-apres-jc', version: 1, lot: 'hi-6e-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'h6-millenaires-siecles', version: 1, lot: 'hi-6e-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'h6-reperes-annuels', version: 1, lot: 'hi-6e-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'hcm2-energies-machines', version: 1, lot: 'hi-cm2-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'hcm2-travail', version: 1, lot: 'hi-cm2-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'hcm2-ville-industrielle', version: 1, lot: 'hi-cm2-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'hcm2-monde-rural', version: 1, lot: 'hi-cm2-02', date: '2026-11-25', verdict: 'ok' },
 ];
