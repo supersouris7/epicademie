@@ -582,7 +582,7 @@ function adjectiveLevel5(rng: Rng): QuestionDraft {
   const who = elided ? `qu’${kid}` : `que ${kid}`;
   const of = elided ? `d’${kid}` : `de ${kid}`;
   return {
-    prompt: `Lis les messages. Résume en un seul groupe de mots anglais ce ${who} possède, sans oublier combien.`,
+    prompt: `Lis les messages. Résume en un seul groupe de mots anglais ce ${who} possède, avec le nombre en lettres.`,
     figure: { kind: 'document', title: 'What have you got?', lines, credit: 'Écrit pour l’exercice.' },
     answer: { kind: 'text', accepted: bigForms(number, g) },
     traps: groupTraps(number, g),

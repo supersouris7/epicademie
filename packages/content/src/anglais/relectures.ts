@@ -36,4 +36,5 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'acm2-pluriel', version: 2, lot: 'an-cm2-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'acm2-articles', version: 1, lot: 'an-cm2-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'acm2-this-that', version: 1, lot: 'an-cm2-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'acm2-adjectif', version: 1, lot: 'an-cm2-01', date: '2026-11-25', verdict: 'ok' },
 ];
