@@ -21,4 +21,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'pcm2-separer', version: 1, lot: 'st-cm2-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'pcm2-dissolution', version: 1, lot: 'st-cm2-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'p6-signal', version: 1, lot: 'st-cm2-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'pcm2-trajectoire', version: 1, lot: 'st-cm2-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'pcm2-vitesse', version: 1, lot: 'st-cm2-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'pcm2-renouvelables', version: 1, lot: 'st-cm2-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'pcm2-conversions-energie', version: 1, lot: 'st-cm2-02', date: '2026-11-25', verdict: 'ok' },
 ];
