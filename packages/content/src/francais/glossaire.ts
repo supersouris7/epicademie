@@ -50,7 +50,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'inversion',
     word: 'inversion du sujet',
     forms: ['inversion', 'sujet inversé'],
-    definition: 'Le sujet se place après le verbe, relié par un trait d’union.',
+    definition:
+      'Le sujet se place après le verbe. Dans une question, un trait d’union le relie au verbe s’il est un pronom.',
     example: 'Tu viens ? devient Viens-tu ?',
   },
   {
@@ -212,7 +213,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'groupe-circonstanciel',
     word: 'groupe circonstanciel',
     forms: ['groupes circonstanciels', 'circonstanciel', 'circonstanciels', 'complément circonstanciel'],
-    definition: 'Groupe de mots qui donne un détail sur l’action (où ? quand ?). On peut le déplacer et le supprimer.',
+    definition: 'Groupe de mots qui donne un détail sur l’action (où ? quand ? pourquoi ?). On peut le supprimer.',
     example: 'Ma cousine mange une pomme dans le jardin. (« dans le jardin » est circonstanciel)',
   },
   {
@@ -649,5 +650,26 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['sources'],
     definition: 'L’endroit d’où vient un document : qui l’a fait ou publié.',
     example: 'Source : affiche de la bibliothèque.',
+  },
+  {
+    id: 'phrase-simple',
+    word: 'phrase simple',
+    forms: ['phrases simples'],
+    definition: 'Phrase construite autour d’un seul verbe conjugué.',
+    example: '« Le chat dort. » est une phrase simple.',
+  },
+  {
+    id: 'groupe-verbal',
+    word: 'groupe verbal',
+    forms: ['groupes verbaux'],
+    definition: 'Le verbe avec les mots qui le complètent.',
+    example: 'Le facteur distribue le courrier. (le groupe verbal est « distribue le courrier »)',
+  },
+  {
+    id: 'cause',
+    word: 'cause',
+    forms: ['causes'],
+    definition: 'La raison pour laquelle une chose arrive. Elle répond à « Pourquoi ? ».',
+    example: '« Le match s’arrête à cause de l’orage. » : l’orage est la cause.',
   },
 ];
