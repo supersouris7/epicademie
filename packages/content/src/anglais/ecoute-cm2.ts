@@ -53,25 +53,25 @@ function listenOrRead(
 
 // ——— 1. L'heure entendue ———
 
-interface Time {
+export interface Time {
   readonly h: number;
   readonly m: number;
 }
-const next = (h: number) => (h === 12 ? 1 : h + 1);
+export const next = (h: number) => (h === 12 ? 1 : h + 1);
 const prev = (h: number) => (h === 1 ? 12 : h - 1);
-const hourWord = (h: number) => wordOf(h) ?? String(h);
+export const hourWord = (h: number) => wordOf(h) ?? String(h);
 /** Nombre en lettres, dizaine et unité réunies par un tiret au-delà des mots cités (thirty-five). */
 const numberWord = (n: number) => wordOf(n) ?? `${wordOf(n - (n % 10))}-${wordOf(n % 10)}`;
-const minuteWord = (m: number) => (m === 15 ? 'quarter' : (wordOf(m) ?? String(m)));
+export const minuteWord = (m: number) => (m === 15 ? 'quarter' : (wordOf(m) ?? String(m)));
 /** L'heure dite en anglais (British Council, « How to tell the time »). */
-function timeEn(t: Time): string {
+export function timeEn(t: Time): string {
   if (t.m === 0) return `${hourWord(t.h)} o’clock`;
   if (t.m === 30) return `half past ${hourWord(t.h)}`;
   if (t.m < 30) return `${minuteWord(t.m)} past ${hourWord(t.h)}`;
   return `${minuteWord(60 - t.m)} to ${hourWord(next(t.h))}`;
 }
 const pad = (m: number) => String(m).padStart(2, '0');
-const digital = (t: Time) => `${t.h}:${pad(t.m)}`;
+export const digital = (t: Time) => `${t.h}:${pad(t.m)}`;
 const digitalForms = (t: Time): string[] => {
   const mm = pad(t.m);
   const base = [`${t.h}:${mm}`, `${t.h}.${mm}`, `${t.h}h${mm}`, `${t.h} h ${mm}`];
@@ -80,7 +80,7 @@ const digitalForms = (t: Time): string[] => {
   return [...base, ...zero, ...pile];
 };
 /** Formes anglaises acceptées : avec ou sans « It’s », « a quarter », « minutes », « fifteen », tiret ou espace. */
-function timeForms(t: Time): string[] {
+export function timeForms(t: Time): string[] {
   const said = timeEn(t);
   const variants = [said];
   if (t.m !== 0 && t.m !== 30) {

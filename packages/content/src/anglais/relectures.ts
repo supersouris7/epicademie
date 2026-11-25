@@ -49,4 +49,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'acm2-prepositions', version: 1, lot: 'an-cm2-02', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'acm2-maison', version: 1, lot: 'an-cm2-02', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'acm2-ville', version: 1, lot: 'an-cm2-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'acm2-present-simple', version: 1, lot: 'an-cm2-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'acm2-heure', version: 1, lot: 'an-cm2-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'acm2-routine', version: 1, lot: 'an-cm2-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'acm2-frequence', version: 1, lot: 'an-cm2-03', date: '2026-11-25', verdict: 'ok' },
 ];
