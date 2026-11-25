@@ -12,7 +12,7 @@
 | Lot        | Chapitre                            | Notions                                                                        | État actuel |
 | ---------- | ----------------------------------- | ------------------------------------------------------------------------------ | ----------- |
 | `em-4e-01` | Défendre les droits et les libertés | l'État de droit ; libertés fondamentales ; la justice ; Déclaration des droits | couverte    |
-| `em-4e-02` | Liberté d'expression                | en ligne et hors ligne ; limites fixées par la loi ; médias ; information      | absente     |
+| `em-4e-02` | Liberté d'expression                | en ligne et hors ligne ; limites fixées par la loi ; médias ; information      | couverte    |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).
