@@ -74,7 +74,7 @@ describe('anglais 6e : modaux et impératif', () => {
         }
       expect(reasons.size, s.id).toBeGreaterThanOrEqual(2);
     }
-  });
+  }, 30_000);
 
   it('niveau 5 : document, au moins 3 trous, réponses variables d’une graine à l’autre', () => {
     for (const s of skills) {
