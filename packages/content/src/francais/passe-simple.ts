@@ -468,7 +468,7 @@ const DEF_5B = 'Passé simple : je chantai, il chanta, ils chantèrent ; il fini
 const pourquoiTemps = (t: Temps, f: string) =>
   t === 'imparfait'
     ? `« ${f} » finit comme l’imparfait (${FINS_IMPARFAIT}) : c’est l’imparfait.`
-    : `« ${f} » ne finit pas comme l’imparfait (${FINS_IMPARFAIT}) : c’est le passé simple.`;
+    : `« ${f} » ne finit pas comme l’imparfait (${FINS_IMPARFAIT}) : entre les deux temps, c’est le passé simple.`;
 
 const REGULIERS_5 = [...ER_REGULIERS, ...IR_DEUXIEME].filter(imparfaitOk);
 const DIFFICILES_5 = [...ETRE_AVOIR, ...HUIT_IRREGULIERS].filter(imparfaitOk);
@@ -508,6 +508,68 @@ function transformer(rng: Rng, verbes: readonly (VerbePs & VerbeTemps)[], sujets
     ],
   };
 }
+
+/** Une ligne de récit du niveau 5 : le verbe à l'infinitif et le temps demandé sont donnés entre parenthèses. */
+export interface LigneRecit {
+  readonly avant: string;
+  readonly p: Personne;
+  readonly v: VerbePs & VerbeTemps;
+  readonly t: Temps;
+  readonly apres: string;
+}
+
+/** Petits récits suivis (phrases écrites pour l'exercice) : l'imparfait pose le décor, le passé simple raconte. */
+export const RECITS_5: readonly { readonly titre: string; readonly lignes: readonly LigneRecit[] }[] = [
+  {
+    titre: 'Le trésor du vieux moulin',
+    lignes: [
+      { avant: 'Au bord de la rivière, il y', p: 'il', v: 'avoir', t: 'imparfait', apres: 'un vieux moulin.' },
+      { avant: 'Les enfants du village', p: 'ils', v: 'aimer', t: 'imparfait', apres: 'jouer près du moulin.' },
+      { avant: 'Un matin, Léa', p: 'il', v: 'voir', t: 'passé simple', apres: 'une lumière sous la roue.' },
+      { avant: 'Ses amis', p: 'ils', v: 'venir', t: 'passé simple', apres: 'aussitôt.' },
+      { avant: 'Ensemble, ils', p: 'ils', v: 'trouver', t: 'passé simple', apres: 'un coffre plein de pièces.' },
+      { avant: 'Le soir, les habitants', p: 'ils', v: 'applaudir', t: 'passé simple', apres: 'les enfants.' },
+    ],
+  },
+  {
+    titre: 'La nuit de l’orage',
+    lignes: [
+      { avant: 'Ce soir-là, il', p: 'il', v: 'faire', t: 'imparfait', apres: 'très froid.' },
+      { avant: 'Dans la cabane, Tom et Inès', p: 'ils', v: 'dessiner', t: 'imparfait', apres: 'près du feu.' },
+      { avant: 'Les deux amis', p: 'ils', v: 'être', t: 'imparfait', apres: 'bien au chaud.' },
+      { avant: 'Soudain, un chat trempé', p: 'il', v: 'sauter', t: 'passé simple', apres: 'par la fenêtre.' },
+      { avant: 'Tom', p: 'il', v: 'prendre', t: 'passé simple', apres: 'une couverture.' },
+      { avant: 'Les enfants', p: 'ils', v: 'remplir', t: 'passé simple', apres: 'un bol de lait.' },
+    ],
+  },
+  {
+    titre: 'La fête du village',
+    lignes: [
+      { avant: 'Ce samedi-là, la place', p: 'il', v: 'être', t: 'imparfait', apres: 'pleine de monde.' },
+      { avant: 'Des musiciens', p: 'ils', v: 'jouer', t: 'imparfait', apres: 'sous les arbres.' },
+      { avant: 'Nous', p: 'nous', v: 'vouloir', t: 'imparfait', apres: 'voir le magicien.' },
+      { avant: 'Tout à coup, le magicien', p: 'il', v: 'faire', t: 'passé simple', apres: 'disparaître un lapin.' },
+      { avant: 'Nous', p: 'nous', v: 'applaudir', t: 'passé simple', apres: 'très fort.' },
+      { avant: 'Puis nous', p: 'nous', v: 'aller', t: 'passé simple', apres: 'manger une crêpe.' },
+    ],
+  },
+];
+
+export const formeLigne = (l: LigneRecit): string => formeAu(l.t, l.v, l.p);
+
+const estRegulier = (l: LigneRecit) => REGULIERS_5.includes(l.v);
+
+/** Les choix de 4 lignes (dans l'ordre du récit) : les deux temps, un verbe régulier et un irrégulier au moins. */
+const choixLignes = (lignes: readonly LigneRecit[]): LigneRecit[][] => {
+  const choix: LigneRecit[][] = [];
+  for (let sans1 = 0; sans1 < lignes.length; sans1++)
+    for (let sans2 = sans1 + 1; sans2 < lignes.length; sans2++) {
+      const garde = lignes.filter((_, i) => i !== sans1 && i !== sans2);
+      const temps = new Set(garde.map((l) => l.t));
+      if (temps.size === 2 && garde.some(estRegulier) && !garde.every(estRegulier)) choix.push(garde);
+    }
+  return choix;
+};
 
 function passeSimpleImparfaitDraft(rng: Rng, level: Level): QuestionDraft {
   switch (level) {
@@ -563,41 +625,31 @@ function passeSimpleImparfaitDraft(rng: Rng, level: Level): QuestionDraft {
     case 4:
       return transformer(rng, DIFFICILES_5, [...SUJETS, ...SUJETS_GROUPES]);
     default: {
-      const verbes = pickN(rng, [...REGULIERS_5, ...DIFFICILES_5], 4);
-      const sujets = sujetsRecit(rng, 4);
-      const temps = rng.shuffle<Temps>(['passé simple', 'imparfait', rng.pick(TEMPS), rng.pick(TEMPS)]);
-      const lignes = verbes.map((v, i) => {
-        const s = at(sujets, i);
-        const p = clair(v, s.personne)
-          ? s
-          : at(
-              SANS_JE.filter((x) => clair(v, x.personne)),
-              0,
-            );
-        const t = at(temps, i);
-        return { v, s: p, t, f: formeAu(t, v, p.personne) };
-      });
+      const recit5 = rng.pick(RECITS_5);
+      const lignes = rng.pick(choixLignes(recit5.lignes));
+      const bonnes = lignes.map(formeLigne);
       return {
-        prompt: 'Lis le récit. Pour chaque ligne, dis à quel temps est le verbe.',
+        prompt: 'Lis le récit. Écris chaque verbe au temps demandé entre parenthèses, ligne par ligne.',
         figure: document(
-          'Le trésor du vieux moulin',
-          lignes.map((l) => phrase(l.s, l.v, l.f)),
+          recit5.titre,
+          lignes.map((l) => `${l.avant} (${l.v}, ${l.t}) ${l.apres}`),
         ),
         answer: {
           kind: 'cloze',
-          parts: [...lignes.map((l, i) => `${i === 0 ? '' : '. '}Ligne ${i + 1}, « ${l.f} » : `), '.'],
-          blanks: lignes.map((l) => ({
-            mode: 'list' as const,
-            options: [...TEMPS],
-            correct: TEMPS.indexOf(l.t),
-          })),
+          parts: [...lignes.map((_, i) => `${i === 0 ? '' : '. '}Ligne ${i + 1} : `), '.'],
+          blanks: bonnes.map((b) => ({ mode: 'text' as const, accepted: [b] })),
         },
-        hint: 'Sur chaque ligne, regarde la fin du verbe : -ais, -ait, -ions, -iez, -aient ?',
+        hint: 'Imparfait : -ais, -ait, -ions, -iez, -aient. Passé simple : pense au modèle (il chanta, il finit, il fut).',
         steps: [
           DEF_5,
           DEF_5B,
-          ...lignes.map((l, i) => `Ligne ${i + 1} : ${pourquoiTemps(l.t, l.f)}`),
-          `Réponses : **${lignes.map((l) => l.t).join(', ')}**.`,
+          ...lignes.map(
+            (l, i) =>
+              `Ligne ${i + 1} : le sujet va avec « ${PRONOMS[l.p]} ». ${
+                l.t === 'imparfait' ? `« ${l.v} » à l’imparfait : ${imparfait(l.v, l.p)}.` : regle(l.v, l.p)
+              }`,
+          ),
+          `Réponses : **${bonnes.join(', ')}**.`,
         ],
       };
     }
@@ -686,7 +738,7 @@ export const FCM2_PASSE_SIMPLE: readonly Skill[] = [
     id: 'fcm2-passe-simple-ou-imparfait',
     title: 'Passé simple ou imparfait ?',
     memo: [
-      'Regarde la **terminaison**. -ais, -ait, -ions, -iez, -aient ? C’est l’**imparfait** : il chantait.',
+      'Ici, on choisit entre deux temps. -ais, -ait, -ions, -iez, -aient ? C’est l’**imparfait** : il chantait.',
       'Sinon, c’est le **passé simple** : il chanta, ils finirent, il prit, nous fûmes.',
       'Attention : je chantai (passé simple), je chantais (imparfait). Une seule lettre change !',
     ],

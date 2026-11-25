@@ -8,6 +8,7 @@ import type { Level, Question } from '../types.ts';
 import { PERSONNES } from './present.donnees.ts';
 import {
   ER_GER,
+  ER_REGULIERS,
   ER_VARIANTES,
   FAITS_PASSE_SIMPLE,
   HUIT_IRREGULIERS,
@@ -17,8 +18,9 @@ import {
   VOYELLE_FAUTIVE,
   imparfait,
   passeSimple,
+  present,
 } from './passe-simple.donnees.ts';
-import { FCM2_PASSE_SIMPLE, FINALES, modele } from './passe-simple.ts';
+import { FCM2_PASSE_SIMPLE, FINALES, RECITS_5, formeLigne, modele } from './passe-simple.ts';
 
 const skills = FCM2_PASSE_SIMPLE;
 const LEVELS: readonly Level[] = [1, 2, 3, 4, 5];
@@ -159,15 +161,33 @@ describe('banques et réponses du passé simple', () => {
     const estImparfait = (texte: string) => texte.split(/[\s’.«»]+/).some((m) => imparfaits.has(m));
     for (const q of tirages('fcm2-passe-simple-ou-imparfait', 1))
       expect(juste(q), q.prompt).toBe(estImparfait(q.prompt) ? 'imparfait' : 'passé simple');
+  });
+
+  it('passé simple ou imparfait, niveau 5 : produire les formes demandées dans un récit suivi', () => {
+    const lignes = RECITS_5.flatMap((r) => r.lignes);
+    for (const l of lignes) {
+      // Jamais une forme identique au présent : la saisie prouve le temps demandé.
+      expect(formeLigne(l), l.avant).not.toBe(present(l.v, l.p));
+      expect(formeLigne(l)).toBe(l.t === 'imparfait' ? imparfait(l.v, l.p) : passeSimple(l.v, l.p));
+    }
+    const formes = new Map(lignes.map((l) => [`${l.avant} (${l.v}, ${l.t}) ${l.apres}`, formeLigne(l)]));
+    const reguliers = new Set<string>([...ER_REGULIERS, ...IR_DEUXIEME]);
+    const vus = new Set<string>();
     for (const q of tirages('fcm2-passe-simple-ou-imparfait', 5)) {
-      if (q.answer.kind !== 'cloze') throw new Error('forme inattendue');
-      const reponses = q.answer.blanks.map((b) => (b.mode === 'list' ? b.options[b.correct] : ''));
-      expect(reponses).toContain('passé simple');
-      expect(reponses).toContain('imparfait');
-      q.answer.parts.slice(0, -1).forEach((part, i) => {
-        const f = /« (.+) »/.exec(part)?.[1] ?? '';
-        expect(reponses[i], f).toBe(imparfaits.has(f) ? 'imparfait' : 'passé simple');
+      if (q.answer.kind !== 'cloze' || q.figure?.kind !== 'document') throw new Error('forme inattendue');
+      const { lines, title } = q.figure;
+      vus.add(title ?? '');
+      expect(lines).toHaveLength(4);
+      expect(lines.some((x) => x.includes(', imparfait)'))).toBe(true);
+      expect(lines.some((x) => x.includes(', passé simple)'))).toBe(true);
+      const verbes = lines.map((x) => /\((\S+), /.exec(x)?.[1] ?? '');
+      expect(verbes.some((v) => reguliers.has(v))).toBe(true);
+      expect(verbes.some((v) => !reguliers.has(v))).toBe(true);
+      q.answer.blanks.forEach((b, i) => {
+        if (b.mode !== 'text') throw new Error('saisie attendue');
+        expect(b.accepted).toEqual([formes.get(lines[i] ?? '')]);
       });
     }
+    expect(vus.size).toBe(RECITS_5.length);
   });
 });
