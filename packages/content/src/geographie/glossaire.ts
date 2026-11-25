@@ -433,7 +433,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'infrastructure',
     word: 'infrastructure',
     forms: ['infrastructure', 'infrastructures'],
-    definition: 'Un aménagement construit pour se déplacer : route, voie ferrée, gare, port, aéroport.',
+    definition:
+      'Un aménagement construit pour faire fonctionner un territoire : route, gare, port, aéroport, réseau d’eau…',
     example: 'Une autoroute est une infrastructure.',
   },
   {
@@ -1697,6 +1698,109 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'L’ODD 1 vise l’éradication de la pauvreté.',
   },
   {
+    id: 'changement-climatique',
+    word: 'changement climatique',
+    forms: ['changement climatique', 'changements climatiques'],
+    definition:
+      'Une modification durable du climat, mesurée sur de longues années ; aujourd’hui surtout causée par les activités humaines.',
+    example: 'Des vagues de chaleur plus fréquentes en sont un effet.',
+  },
+  {
+    id: 'giec',
+    word: 'GIEC',
+    forms: ['giec'],
+    definition:
+      'Le Groupe d’experts intergouvernemental sur l’évolution du climat : il évalue les connaissances scientifiques sur le climat.',
+    example: 'Les rapports du GIEC font le point sur le réchauffement.',
+  },
+  {
+    id: 'accord-de-paris',
+    word: 'Accord de Paris',
+    forms: ['accord de paris'],
+    definition: 'Le traité sur le climat adopté en 2015 pour limiter la hausse de la température mondiale.',
+    example: 'Il vise à rester sous 2 °C de hausse.',
+  },
+  {
+    id: 'enjeux',
+    word: 'enjeux',
+    forms: ['enjeux', 'enjeu'],
+    definition: 'Les personnes, les biens, les équipements et les milieux qu’un phénomène peut toucher.',
+    example: 'Les maisons au bord d’une rivière sont des enjeux.',
+  },
+  {
+    id: 'risque-technologique',
+    word: 'risque technologique',
+    forms: ['risque technologique', 'risques technologiques'],
+    definition:
+      'La possibilité qu’un phénomène lié à une activité humaine (usine, barrage…) touche des personnes ou des biens.',
+    example: 'Une fuite de produit toxique dans une usine.',
+  },
+  {
+    id: 'risque-sanitaire',
+    word: 'risque sanitaire',
+    forms: ['risque sanitaire', 'risques sanitaires'],
+    definition: 'La possibilité qu’un événement nuise à la santé d’une personne ou d’une population.',
+    example: 'La diffusion d’un virus.',
+  },
+  {
+    id: 'catastrophe',
+    word: 'catastrophe',
+    forms: ['catastrophe', 'catastrophes'],
+    definition: 'Un risque devenu réalité, avec de lourds dommages.',
+    example: 'Une crue qui détruit des quartiers entiers.',
+  },
+  {
+    id: 'seveso',
+    word: 'Seveso',
+    forms: ['seveso'],
+    definition:
+      'La directive européenne qui classe les sites industriels dangereux ; elle porte le nom d’une commune italienne touchée en 1976.',
+    example: 'Une usine chimique classée Seveso est surveillée.',
+  },
+  {
+    id: 'attenuation',
+    word: 'atténuation',
+    forms: ['atténuation'],
+    definition: 'Les actions qui réduisent les causes du réchauffement, surtout les émissions de gaz à effet de serre.',
+    example: 'Isoler les bâtiments pour consommer moins d’énergie.',
+  },
+  {
+    id: 'ilot-de-fraicheur',
+    word: 'îlot de fraîcheur',
+    forms: ['îlot de fraîcheur', 'îlots de fraîcheur'],
+    definition: 'Un endroit de la ville plus frais que le reste, grâce aux arbres ou à l’eau.',
+    example: 'Un parc ombragé avec un bassin.',
+  },
+  {
+    id: 'prevision',
+    word: 'prévision',
+    forms: ['prévision'],
+    definition: 'La connaissance à l’avance des aléas : leur fréquence, leur force et les lieux menacés.',
+    example: 'Annoncer la trajectoire possible d’un cyclone.',
+  },
+  {
+    id: 'principe-de-precaution',
+    word: 'principe de précaution',
+    forms: ['principe de précaution'],
+    definition: 'Agir avec prudence face à un danger grave mais encore incertain.',
+    example: 'Suspendre un produit en attendant des études.',
+  },
+  {
+    id: 'ppr',
+    word: 'PPR',
+    forms: ['ppr', 'plan de prévention des risques'],
+    definition:
+      'Le plan de prévention des risques : un document qui cartographie les zones exposées et fixe des règles.',
+    example: 'Interdire de construire en zone très inondable.',
+  },
+  {
+    id: 'culture-du-risque',
+    word: 'culture du risque',
+    forms: ['culture du risque'],
+    definition: 'La place du risque dans la mémoire et les connaissances d’une population.',
+    example: 'Des repères de crue rappellent les anciennes inondations.',
+  },
+  {
     id: 'effet-de-serre',
     word: 'effet de serre',
     forms: ['effet de serre'],
@@ -1768,9 +1872,16 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'L’électricité d’une centrale à gaz est une énergie secondaire.',
   },
   {
+    id: 'ges',
+    word: 'GES',
+    forms: ['ges'],
+    definition: 'Les gaz à effet de serre, qui retiennent la chaleur dans l’atmosphère.',
+    example: 'Le dioxyde de carbone est un GES.',
+  },
+  {
     id: 'anthropique',
     word: 'anthropique',
-    forms: ['anthropique'],
+    forms: ['anthropique', 'anthropiques'],
     definition: 'Dû à l’action des êtres humains.',
     example: 'La construction d’un barrage est une action anthropique.',
   },
@@ -1815,5 +1926,34 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['sous-alimentation'],
     definition: 'Le fait de ne pas avoir assez à manger pendant un certain temps.',
     example: 'La sous-alimentation peut menacer la santé.',
+  },
+  {
+    id: 'ere-preindustrielle',
+    word: 'ère préindustrielle',
+    forms: ['ère préindustrielle', 'ère pré-industrielle'],
+    definition:
+      'La période d’avant le développement des grandes usines, qui sert de point de comparaison pour la température.',
+    example: 'Limiter la hausse par rapport à l’ère préindustrielle.',
+  },
+  {
+    id: 'atoll',
+    word: 'atoll',
+    forms: ['atoll', 'atolls'],
+    definition: 'Une île basse en forme d’anneau, formée de corail, autour d’un lagon.',
+    example: 'Un atoll du Pacifique.',
+  },
+  {
+    id: 'typhon',
+    word: 'typhon',
+    forms: ['typhon', 'typhons'],
+    definition: 'Le nom donné à un cyclone dans l’ouest de l’océan Pacifique.',
+    example: 'Un typhon apporte des vents très violents.',
+  },
+  {
+    id: 'bacille',
+    word: 'bacille',
+    forms: ['bacille', 'bacilles'],
+    definition: 'Une bactérie en forme de bâtonnet, qui peut provoquer une maladie.',
+    example: 'La tuberculose est due à un bacille.',
   },
 ];

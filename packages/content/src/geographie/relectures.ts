@@ -54,4 +54,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'g5-eau', version: 1, lot: 'ge-5e-02', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'g5-alimentation', version: 1, lot: 'ge-5e-02', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'g5-gerer-renouveler', version: 1, lot: 'ge-5e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g5-changement-climatique', version: 1, lot: 'ge-5e-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g5-risques', version: 1, lot: 'ge-5e-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g5-adaptation', version: 1, lot: 'ge-5e-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g5-prevention', version: 1, lot: 'ge-5e-03', date: '2026-11-25', verdict: 'ok' },
 ];
