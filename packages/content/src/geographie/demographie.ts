@@ -933,7 +933,16 @@ const idh: Notion = {
     },
     {
       q: 'Quelle dimension de l’IDH est mesurée par les années de scolarisation ?',
-      accepted: ['éducation', 'l’éducation', 'la dimension éducation', 'education', 'l’education'],
+      accepted: [
+        'éducation',
+        'l’éducation',
+        'la dimension éducation',
+        'la dimension de l’éducation',
+        'instruction',
+        'l’instruction',
+        'education',
+        'l’education',
+      ],
       traps: [
         { text: 'santé', why: 'La santé est mesurée par l’espérance de vie.' },
         { text: 'niveau de vie', why: 'Le niveau de vie est mesuré par le revenu par habitant.' },
@@ -1080,7 +1089,7 @@ const richesses: Notion = {
   ],
   faits: [
     {
-      q: 'Selon le programme, dans quels pays observe-t-on des inégalités sociales ?',
+      q: 'Dans quels pays observe-t-on des inégalités sociales ?',
       a: 'dans tous les pays',
       wrong: [
         { label: 'dans aucun pays développé', why: 'Les pays développés connaissent aussi la pauvreté.' },
@@ -1203,7 +1212,7 @@ const richesses: Notion = {
   libres: [
     {
       q: 'En France, selon l’INSEE, le seuil de pauvreté est un revenu inférieur à quel pourcentage du revenu médian ? Écris le nombre.',
-      accepted: ['60', '60 %', '60%', 'soixante'],
+      accepted: ['60', '60 %', '60%', '60 pour cent', 'soixante'],
       traps: [
         {
           text: '100',
@@ -1242,7 +1251,16 @@ const richesses: Notion = {
     },
     {
       q: 'Quel mot désigne le caractère de ce qui n’est pas égal, par exemple des écarts de revenus ?',
-      accepted: ['inégalité', 'inégalités', 'une inégalité', 'les inégalités', 'inegalite', 'inegalites'],
+      accepted: [
+        'inégalité',
+        'inégalités',
+        'une inégalité',
+        'l’inégalité',
+        'des inégalités',
+        'les inégalités',
+        'inegalite',
+        'inegalites',
+      ],
       traps: [
         { text: 'pauvreté', why: 'La pauvreté est une situation ; l’inégalité est l’écart entre situations.' },
         { text: 'émergence', why: 'L’émergence désigne la forte croissance d’un pays.' },
@@ -1257,7 +1275,7 @@ const richesses: Notion = {
       title: 'Une même ville, deux quartiers (cas fictif)',
       lines: [
         'Dans une grande ville d’un pays émergent, un quartier d’affaires aligne tours de bureaux et résidences de luxe.',
-        'À quelques kilomètres, un quartier informel s’étend, sans eau courante dans tous les logements.',
+        'À quelques kilomètres, un quartier informel s’étend, où certains logements n’ont pas l’eau courante.',
         'Les habitants des deux quartiers n’ont pas le même accès aux soins ni à l’école.',
         'L’écart de richesse entre ces habitants s’est creusé avec la croissance du pays.',
       ],

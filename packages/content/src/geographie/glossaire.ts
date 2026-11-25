@@ -1529,9 +1529,23 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'pauvrete',
     word: 'pauvreté',
     forms: ['pauvreté', 'pauvre', 'pauvres'],
-    definition:
-      'Le fait d’avoir des revenus bien plus faibles que les autres ; en France, moins de 60 % du revenu médian.',
-    example: 'Une personne sous le seuil de pauvreté a du mal à payer son logement et sa nourriture.',
+    definition: 'Le manque de revenus et de moyens pour vivre ; on la juge souvent en se comparant aux autres.',
+    example: 'Une personne pauvre a du mal à payer son logement et sa nourriture.',
+  },
+  {
+    id: 'pib',
+    word: 'PIB',
+    forms: ['pib', 'produit intérieur brut'],
+    definition: 'Le produit intérieur brut : la valeur de toutes les richesses produites dans un pays en un an.',
+    example: 'Quand le PIB augmente, on parle de croissance économique.',
+  },
+  {
+    id: 'quartier-informel',
+    word: 'quartier informel',
+    forms: ['quartier informel', 'quartiers informels'],
+    definition: 'Un quartier construit sans autorisation, souvent mal relié à l’eau, à l’électricité ou aux égouts.',
+    example:
+      'Dans certaines grandes villes, des familles construisent elles-mêmes leur logement dans un quartier informel.',
   },
   {
     id: 'richesse',
