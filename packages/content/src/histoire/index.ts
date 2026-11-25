@@ -14,6 +14,7 @@ import { SKILLS as REPERES_6E } from './reperes-6e.ts';
 import { SKILLS as SE_REPERER_CM2 } from './se-reperer-cm2.ts';
 import { SKILLS as SE_REPERER } from './se-reperer.ts';
 import { SKILLS as TEMPS_REPUBLIQUE } from './temps-republique.ts';
+import { SKILLS as TRANSFORMATIONS_EUROPE } from './transformations-europe.ts';
 
 /**
  * Histoire, cycle 3 (docs/adr/0024-contenus-hors-maths.md). Source institutionnelle unique :
@@ -227,4 +228,5 @@ export const HISTOIRE_CHAPTERS: readonly Chapter[] = [
   chapter('h6-se-reperer', '6e', 'Se repérer dans le temps', REPERES_6E),
   chapter('h5-chretientes-islam', '5e', 'Chrétientés et islam (VIe-XIIIe s.)', CHRETIENTES_ISLAM),
   chapter('h5-occident-feodal', '5e', 'L’Occident féodal (XIe-XVe s.)', OCCIDENT_FEODAL),
+  chapter('h5-transformations-europe', '5e', 'Transformations de l’Europe (XVIe-XVIIe s.)', TRANSFORMATIONS_EUROPE),
 ];

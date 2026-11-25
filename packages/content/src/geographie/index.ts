@@ -11,6 +11,7 @@ import { SKILLS as LITTORAUX } from './littoraux.ts';
 import { SKILLS as REPERES } from './reperes.ts';
 import { SKILLS as MONDE_HABITE } from './monde-habite.ts';
 import { SKILLS as REPERES_MONDE } from './reperes-monde.ts';
+import { SKILLS as DEMOGRAPHIE } from './demographie.ts';
 import { SKILLS as RESSOURCES } from './ressources.ts';
 import { GEO_FETCHED_ON, PAYS_UE, REGIONS } from './donnees.generated.ts';
 
@@ -148,6 +149,7 @@ export const GEOGRAPHIE_CHAPTERS: readonly Chapter[] = [
   chapter('g6-littoraux', '6e', 'Habiter les littoraux', LITTORAUX),
   chapter('g6-monde-habite', '6e', 'Le monde habité', MONDE_HABITE),
   chapter('g6-prefectures', '6e', 'Repères : la France et le monde', REPERES_MONDE),
+  chapter('g5-demographie-developpement', '5e', 'Démographie et développement', DEMOGRAPHIE),
   chapter('g5-ressources-limitees', '5e', 'Des ressources limitées, à gérer et à renouveler', RESSOURCES),
   chapter('g3-union-europeenne', '3e', 'L’Union européenne', [euCapitals, euro]),
 ];
