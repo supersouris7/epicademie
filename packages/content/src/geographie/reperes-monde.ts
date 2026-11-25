@@ -306,7 +306,7 @@ const carteMonde = (rng: Rng, level: Level): QuestionDraft => {
   return toucher(
     rng,
     'monde',
-    lieux(level === 3 ? CONTINENTS : OCEANS),
+    lieux(level === 3 ? CONTINENTS : [...CONTINENTS, ...OCEANS]),
     (l) => (level === 3 ? `Sur le planisphère, touche ${l.cible}.` : `Sans aide : localise ${l.cible}.`),
     hint,
   );
@@ -319,8 +319,8 @@ const continents: Notion = {
   hint: 'Un continent est fait de terres émergées ; un océan est une vaste étendue d’eau salée.',
   memo: [
     'Un **continent** est une immense étendue de terres émergées ; l’**Océan mondial** couvre 70,8 % de la Terre.',
-    'La tradition compte cinq continents (Afrique, Amérique, Asie, Europe, Océanie) ; l’Antarctique est aussi considéré comme un continent.',
-    'Du plus vaste au plus petit : océan Pacifique, Atlantique, Indien, puis Arctique. Sur le **planisphère**, repère-les avant les pays.',
+    'La tradition compte cinq continents (Afrique, Amérique, Asie, Europe, Océanie) ; l’Antarctique est aussi considéré comme un continent. Notre carte sépare l’Amérique du Nord et l’Amérique du Sud.',
+    'On compte traditionnellement cinq océans : Pacifique, Atlantique et Indien sont les plus vastes, l’Arctique est le plus petit. Le cinquième, l’océan Antarctique, parfois vu comme leur prolongement, n’est pas dessiné à part sur notre **planisphère**.',
   ],
   faits: [
     {
@@ -344,7 +344,7 @@ const continents: Notion = {
         ['10 %', 'C’est beaucoup trop peu : l’Océan domine la surface.'],
         ['la totalité', 'Il reste les terres émergées.'],
       ),
-      gap: ['L’Océan mondial couvre ', ' % de la surface de la Terre.', ['70,8', '70.8']],
+      gap: ['L’Océan mondial couvre ', ' % de la surface de la Terre.', ['70,8', '70.8', '71']],
       quote: Q_COUVRE,
       explain: 'Les terres émergées occupent le reste de la surface.',
       src: G_OCEAN,
@@ -425,7 +425,7 @@ const continents: Notion = {
   libres: [
     libre(
       'quel est le plus vaste des océans ?',
-      noms('Pacifique', 'océan ', 'l’océan '),
+      noms('Pacifique', 'océan ', 'l’océan ', 'le '),
       [
         ['Atlantique', 'L’Atlantique est le deuxième.'],
         ['Indien', 'L’océan Indien est le troisième.'],
@@ -435,7 +435,7 @@ const continents: Notion = {
     ),
     libre(
       'quel est le deuxième océan par sa surface ?',
-      noms('Atlantique', 'océan ', 'l’océan '),
+      noms('Atlantique', 'océan ', 'l’océan ', 'l’'),
       [
         ['Pacifique', 'Le Pacifique est le premier.'],
         ['Indien', 'L’océan Indien vient en troisième.'],
@@ -445,7 +445,7 @@ const continents: Notion = {
     ),
     libre(
       'quel océan couvre environ 75 millions de km² ?',
-      noms('Indien', 'océan ', 'l’océan '),
+      noms('Indien', 'océan ', 'l’océan ', 'l’'),
       [
         ['Atlantique', 'L’Atlantique couvre 106 millions de km².'],
         ['Arctique', 'L’Arctique est bien plus petit.'],
@@ -455,7 +455,7 @@ const continents: Notion = {
     ),
     libre(
       'quel est le plus petit océan, situé au nord ?',
-      noms('Arctique', 'océan ', 'l’océan '),
+      noms('Arctique', 'océan ', 'l’océan ', 'l’'),
       [
         ['Antarctique', 'L’Antarctique est au sud : on le considère comme un continent.'],
         ['Indien', 'L’océan Indien couvre 75 millions de km² : il est bien plus grand.'],

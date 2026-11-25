@@ -1414,4 +1414,11 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Une métropole placée au sommet de la hiérarchie des villes du monde.',
     example: 'Londres est une ville mondiale.',
   },
+  {
+    id: 'peninsule',
+    word: 'péninsule',
+    forms: ['péninsule', 'péninsules'],
+    definition: 'Une grande avancée de terre entourée par la mer de presque tous les côtés.',
+    example: 'L’Italie est une péninsule.',
+  },
 ];
