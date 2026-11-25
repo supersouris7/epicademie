@@ -18,4 +18,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'hcm1-frise-chronologique', version: 1, lot: 'hi-cm1-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'hcm1-avant-apres-jc', version: 1, lot: 'hi-cm1-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'hcm1-ordonner-evenements', version: 1, lot: 'hi-cm1-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'hcm2-1892', version: 1, lot: 'hi-cm2-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'hcm2-ecole-ferry', version: 1, lot: 'hi-cm2-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'hcm2-democratie', version: 1, lot: 'hi-cm2-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'hcm2-vote-femmes', version: 1, lot: 'hi-cm2-01', date: '2026-11-25', verdict: 'ok' },
 ];
