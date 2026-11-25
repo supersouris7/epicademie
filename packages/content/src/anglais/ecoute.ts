@@ -234,7 +234,8 @@ const bang = (s: string) => `${cap(s)}!`;
 const dont = (o: Order) => `Don’t ${o.en}`;
 const verbs = (o: Order) => [o.en, ...(o.alt ?? [])];
 /** Écritures justes d'une consigne (variantes admises, avec ou sans « please »). */
-const forms = (o: Order) => full(verbs(o).flatMap((b) => [b, `${b} please`, `${b}, please`, `please ${b}`]));
+const forms = (o: Order) =>
+  full(verbs(o).flatMap((b) => [b, `${b} please`, `${b}, please`, `please ${b}`, `please, ${b}`]));
 /** Interdictions justes : « please » se place avant « don’t » ou à la fin, jamais après « don’t ». */
 const negativeForms = (o: Order) =>
   full(

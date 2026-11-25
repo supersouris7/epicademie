@@ -109,6 +109,7 @@ describe('anglais cm1 : écouter et comprendre', () => {
       ['Découpe', ['cut out']],
       ['Coche', ['check']],
       ['Lève-toi', ['get up']],
+      ['Fais un tour', ['turn round', 'please, turn around']],
     ] as const)
       for (const text of texts) expect(right(find('acm1-consignes', 3, `« ${fr}`), text), text).toBe(true);
     expect(right(find('acm1-consignes', 4, 'Ne colorie pas'), "Don't colour in")).toBe(true);
