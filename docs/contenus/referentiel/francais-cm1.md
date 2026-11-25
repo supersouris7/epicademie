@@ -20,8 +20,8 @@
 | `fr-cm1-07` | Conjuguer au présent              | radical et terminaison ; présent du 1er groupe ; présent du 2e groupe ; être et avoir ; faire, aller, dire, venir, pouvoir, voir, vouloir, prendre ; verbes en -cer, -ger, -yer, -eler, -eter              | couverte, en relecture |
 | `fr-cm1-08` | Imparfait, futur et passé composé | imparfait (marque -ai-/-i-) ; futur (marque -r-) ; passé composé : auxiliaire + participe passé ; retrouver l'infinitif d'un participe passé ; passé composé à la forme négative                           | couverte, en relecture |
 | `fr-cm1-09` | Vocabulaire                       | synonymes ; antonymes ; familles de mots ; préfixes et suffixes fréquents ; mots polysémiques en contexte ; sens d'un mot inconnu par le contexte                                                          | couverte, en relecture |
-| `fr-cm1-10` | Orthographe des mots              | a/à ; et/est ; son/sont ; on/ont ; ces/ses ; mots invariables fréquents                                                                                                                                    | absente                |
-| `fr-cm1-11` | Lire et comprendre                | qui, quoi, où, quand dans un texte court ; inférences simples ; sens d'un mot dans le texte ; ordre des événements d'un récit ; lire une consigne ou un document légendé                                   | absente                |
+| `fr-cm1-10` | Orthographe des mots              | a/à ; et/est ; son/sont ; on/ont ; ces/ses ; mots invariables fréquents                                                                                                                                    | couverte, en relecture |
+| `fr-cm1-11` | Lire et comprendre                | qui, quoi, où, quand dans un texte court ; inférences simples ; sens d'un mot dans le texte ; ordre des événements d'un récit ; lire une consigne ou un document légendé                                   | couverte, en relecture |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).

@@ -14,7 +14,7 @@ const PROG = 'Programme du cycle 3 (BOEN n° 31 du 30 juillet 2020, version 2023
 const CREDIT = 'Texte écrit pour l’exercice.';
 
 /** Élément d'indice connu (un indice hors liste serait un bug de génération). */
-function at<T>(items: readonly T[], i: number): T {
+export function at<T>(items: readonly T[], i: number): T {
   const item = items[i];
   if (item === undefined) throw new Error(`Indice hors liste : ${i}`);
   return item;
@@ -47,10 +47,10 @@ const additive = (n: number) => 'X'.repeat(Math.floor(n / 10)) + (n % 10 >= 5 ? 
 /** Siècle d'une année (avant comme après J.-C.) : le Ier va de 1 à 100. */
 export const centuryOf = (year: number) => Math.ceil(year / 100);
 
-const siecle = (c: number) => (c === 1 ? 'Ier' : `${toRoman(c)}e`);
+export const siecle = (c: number) => (c === 1 ? 'Ier' : `${toRoman(c)}e`);
 
 /** Écritures acceptées d'un siècle saisi (romain ou arabe, avec ou sans « siècle »). */
-function siecleForms(c: number): string[] {
+export function siecleForms(c: number): string[] {
   const roman = toRoman(c);
   const base =
     c === 1
@@ -63,14 +63,14 @@ function siecleForms(c: number): string[] {
 const annee = (y: number) => (y < 0 ? `${-y} av. J.-C.` : `${y}`);
 const apresJc = (y: number) => (y < 0 ? annee(y) : `${y} apr. J.-C.`);
 
-const liste = (items: readonly string[]) => `${items.slice(0, -1).join(', ')} et ${items.at(-1) ?? ''}`;
+export const liste = (items: readonly string[]) => `${items.slice(0, -1).join(', ')} et ${items.at(-1) ?? ''}`;
 
-const cite = (p: Preuve) => `La source dit : « ${p.quote} »`;
+export const cite = (p: Preuve) => `La source dit : « ${p.quote} »`;
 
 /** Termine une phrase par un point, sans le doubler après « J.-C. ». */
 const point = (text: string) => (text.endsWith('.') ? text : `${text}.`);
 
-const fin = (answer: string) =>
+export const fin = (answer: string) =>
   answer.endsWith('.') ? `La réponse est donc : **${answer}**` : `La réponse est donc **${answer}**.`;
 
 /** `n` entiers distincts, un par tranche (donc éloignés les uns des autres), dans un ordre au hasard. */
@@ -79,7 +79,7 @@ function distinctYears(rng: Rng, n: number, min: number, step: number): number[]
   return slots.map((s) => min + s * step + rng.int(0, step - 20));
 }
 
-interface QcmFait {
+export interface QcmFait {
   readonly q: string;
   readonly a: string;
   readonly wrong: readonly Option[];
@@ -88,7 +88,7 @@ interface QcmFait {
   readonly hint: string;
 }
 
-function qcm(rng: Rng, f: QcmFait): QuestionDraft {
+export function qcm(rng: Rng, f: QcmFait): QuestionDraft {
   return {
     prompt: f.q,
     ...choice(rng, f.a, f.wrong),
@@ -98,7 +98,7 @@ function qcm(rng: Rng, f: QcmFait): QuestionDraft {
   };
 }
 
-function association(
+export function association(
   rng: Rng,
   prompt: string,
   pairs: readonly (readonly [string, string])[],
@@ -119,14 +119,14 @@ function association(
   };
 }
 
-interface Repere {
+export interface Repere {
   readonly label: string;
   /** Valeur de tri (année, ou milieu de la période). */
   readonly t: number;
 }
 
 /** Remise en ordre, du plus ancien au plus récent. */
-function ranger(rng: Rng, prompt: string, reperes: readonly Repere[], hint: string, how: string): QuestionDraft {
+export function ranger(rng: Rng, prompt: string, reperes: readonly Repere[], hint: string, how: string): QuestionDraft {
   const sorted = [...reperes].sort((a, b) => a.t - b.t).map((r) => r.label);
   const items = shuffled(rng, sorted);
   return {
@@ -139,7 +139,7 @@ function ranger(rng: Rng, prompt: string, reperes: readonly Repere[], hint: stri
 }
 
 /** Saisie d'un nombre, avec ses erreurs typiques. */
-function saisie(
+export function saisie(
   prompt: string,
   accepted: readonly string[],
   traps: readonly (readonly [string, string])[],
@@ -158,7 +158,7 @@ function saisie(
   return { prompt, answer: { kind: 'text', accepted }, traps: out, hint, steps, targetSeconds: 40 };
 }
 
-type Generator = (rng: Rng) => QuestionDraft;
+export type Generator = (rng: Rng) => QuestionDraft;
 
 function skill(
   id: string,
