@@ -747,6 +747,9 @@ const SITUATIONS: readonly Situation[] = [
     'Be very careful',
     'Be cautious',
     'Be prudent',
+    'Take care',
+    'Watch out',
+    'Look out',
   ),
   situation(
     'Ton voisin parle pendant que le professeur explique : dis-lui d’être silencieux.',
@@ -764,6 +767,8 @@ const SITUATIONS: readonly Situation[] = [
     'Be nice',
     'Be kind',
     'Be friendly',
+    'Be nice to him',
+    'Be kind to him',
   ),
   situation(
     'Ton amie a peur de monter sur scène : dis-lui d’être courageuse.',
@@ -784,6 +789,7 @@ const SITUATIONS: readonly Situation[] = [
     '« être à l’heure » se dit be on time',
     'Be on time',
     'Be on time tomorrow',
+    'Tomorrow, be on time',
     'Be punctual',
   ),
   situation(
@@ -816,6 +822,7 @@ const SITUATIONS: readonly Situation[] = [
     '« venir avec moi » se dit come with me',
     'Come with me',
     'Come along with me',
+    'Come with me to the canteen',
   ),
   situation(
     'Ton voisin bavarde pendant que le professeur parle : dis-lui d’écouter le professeur.',
