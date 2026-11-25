@@ -423,8 +423,7 @@ const croissance: Notion = {
             { label: 'elle n’a jamais existé', why: 'Ligne 2 : elle a été imposée à partir des années 1980.' },
           ],
           quote: G_FIN_ENFANT_UNIQUE,
-          explain:
-            'Après plus de trente ans, la Chine a mis fin à l’enfant unique : chaque couple peut avoir deux enfants.',
+          explain: 'Après plus de trente ans, la Chine a mis fin à l’enfant unique.',
           src: CHINE_2015,
         },
       ],
