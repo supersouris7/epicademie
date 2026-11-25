@@ -4,6 +4,8 @@ import { choice } from '../build.ts';
 
 /** Source du programme (registre `sources.ts`) : valeur par défaut des faits. */
 export const PROGRAMME = 'cycle3-2020';
+/** Programme du cycle 4 : valeur citée par les notions de 5e. */
+export const PROGRAMME_CYCLE4 = 'cycle4-2020';
 
 /** Fait cité : question à choix, texte à trous, citation exacte de la source `src`. */
 export interface Fait {
@@ -45,7 +47,7 @@ export interface DocQuestion {
 
 export interface Notion {
   /** Classe citée dans la source de la leçon et sous les textes à lire (CM1 si absente). */
-  readonly classe?: 'CM1' | 'CM2' | '6e';
+  readonly classe?: 'CM1' | 'CM2' | '6e' | '5e';
   readonly id: string;
   readonly title: string;
   readonly hint: string;
@@ -77,10 +79,18 @@ export interface Notion {
   readonly carte?: (rng: Rng, level: Level) => QuestionDraft | undefined;
 }
 
-const nomClasse = (classe: string) => (classe === '6e' ? 'sixième' : classe);
+const NOMS: Readonly<Record<string, string>> = { '6e': 'sixième', '5e': 'cinquième' };
+const nomClasse = (classe: string) => NOMS[classe] ?? classe;
 
-const prog = (classe: string) =>
-  `Programme du cycle 3 (BOEN n° 31 du 30 juillet 2020, version 2023), géographie, classe de ${nomClasse(classe)}`;
+const programmeDe = (classe: string) => (classe === '5e' ? PROGRAMME_CYCLE4 : PROGRAMME);
+
+const prog = (classe: string) => {
+  const texte =
+    classe === '5e'
+      ? 'cycle 4 (BOEN n° 31 du 30 juillet 2020)'
+      : 'cycle 3 (BOEN n° 31 du 30 juillet 2020, version 2023)';
+  return `Programme du ${texte}, géographie, classe de ${nomClasse(classe)}`;
+};
 
 /** Mélange jusqu'à ce que l'ordre ne soit pas déjà le bon (validate.ts l'exige). */
 function shuffled<T>(rng: Rng, items: readonly T[]): T[] {
@@ -92,7 +102,7 @@ function shuffled<T>(rng: Rng, items: readonly T[]): T[] {
 
 /** Première bulle selon l’éditeur de la source (préfixe de son identifiant) ; dictionnaire par défaut. */
 const lookup = (src: string): string => {
-  if (src === PROGRAMME) return 'Cherchons ce que dit le programme';
+  if (src === PROGRAMME || src === PROGRAMME_CYCLE4) return 'Cherchons ce que dit le programme';
   if (src.startsWith('eduscol-')) return 'Cherchons ce que dit la ressource Éduscol';
   if (src.startsWith('ghsl-')) return 'Cherchons ce que dit l’atlas de la Commission européenne (en anglais)';
   if (src.startsWith('insee-')) return 'Cherchons ce que dit l’INSEE';
@@ -234,9 +244,10 @@ function level5(rng: Rng, n: Notion): QuestionDraft {
 
 /** Sources du registre citées par une notion (le programme, plus celles de ses faits). */
 export function sourcesOf(n: Notion): string[] {
-  const all = [...n.faits, ...n.libres, ...n.docs.flatMap((d) => d.qs)].map((f) => f.src ?? PROGRAMME);
+  const programme = programmeDe(n.classe ?? 'CM1');
+  const all = [...n.faits, ...n.libres, ...n.docs.flatMap((d) => d.qs)].map((f) => f.src ?? programme);
   if (n.consigne) all.push(n.consigne.src);
-  return [...new Set([PROGRAMME, ...all, ...(n.sources ?? [])])];
+  return [...new Set([programme, ...all, ...(n.sources ?? [])])];
 }
 
 /** Notion à 5 niveaux (grille de docs/contenus/README.md §1). */
