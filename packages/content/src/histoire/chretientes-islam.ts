@@ -290,7 +290,7 @@ const byzance: Notion = {
           explain: 'Ligne 3 : l’empereur byzantin nomme le patriarche, qui lui est soumis.',
         },
         {
-          ...P.palaisBasilique,
+          ...P.pouvoirReligion,
           q: 'Que montre la proximité entre le palais et la basilique ?',
           a: 'le lien étroit entre le pouvoir et la religion',
           wrong: [
@@ -315,7 +315,7 @@ const byzance: Notion = {
 const islam: Notion = {
   id: 'h5-islam-bagdad',
   title: 'De la naissance de l’islam à la prise de Bagdad',
-  hint: 'Repère la dynastie et sa capitale : Omeyyades à Damas, Abbassides à Bagdad. Puis vérifie la date.',
+  hint: 'Cherche si on demande un titre, une personne, un lieu ou une date, puis situe-le avant ou après le changement de dynastie.',
   memo: [
     'En 622, l’**Hégire** marque le début de l’ère musulmane. Le **calife** (« successeur ») se réclame de l’héritage de Muhammad. Calife, basileus, empereur : compare ces trois pouvoirs, tous liés à la religion.',
     'Très tôt, le monde musulman se divise : à propos d’Ali, quatrième calife, naît l’opposition entre **sunnites** et **chiites**. Les **Omeyyades** règnent depuis Damas jusqu’en 750 ; puis les **Abbassides** s’imposent et gouvernent depuis Bagdad.',
@@ -552,7 +552,7 @@ const islam: Notion = {
           explain: 'Ligne 1 : Damas est la capitale des Omeyyades.',
         },
         {
-          ...P.citadelle,
+          ...P.pouvoirReligion,
           q: 'Que suggère la proximité entre la mosquée et la citadelle ?',
           a: 'un lien fort entre pouvoir et religion',
           wrong: [
@@ -644,7 +644,7 @@ const contacts: Notion = {
           why: 'Le sac de Constantinople par les croisés date de 1204, pas de 1054.',
         },
       ],
-      gap: ['En 1054, le pape et le patriarche de Constantinople s’', ' mutuellement.', ['excommunient']],
+      gap: ['En ', ', le pape et le patriarche de Constantinople s’excommunient mutuellement.', ['1054', 'l’an 1054']],
       explain: 'En 1054, le pape et le patriarche de Constantinople s’excommunient mutuellement.',
     },
     {
@@ -696,7 +696,7 @@ const contacts: Notion = {
       ],
       gap: [
         'La ',
-        ' est un lieu d’échanges scientifiques, culturels et artistiques.',
+        ', sillonnée par des marins, des guerriers et des marchands, relie ces mondes.',
         ['Méditerranée', 'mer Méditerranée', 'Mediterranee', 'mer Mediterranee'],
       ],
       explain: 'La Méditerranée relie les trois mondes : on y fait la guerre, du commerce et des échanges de savoirs.',
@@ -756,14 +756,14 @@ const contacts: Notion = {
     },
     {
       ...P.jerusalem,
-      q: 'Quelle ville est prise en 1099, lors de la première croisade ?',
+      q: 'Quelle ville est prise en 1099 ?',
       a: 'Jérusalem',
       wrong: [
         { label: 'Bagdad', why: 'Bagdad est prise par les Mongols en 1258.' },
         { label: 'Cordoue', why: 'Cordoue est la ville d’un nouvel État omeyyade, en péninsule Ibérique.' },
         { label: 'Constantinople', why: 'Constantinople est prise et pillée par les croisés en 1204, pas en 1099.' },
       ],
-      gap: ['En 1099, les croisés prennent ', '.', ['Jérusalem', 'Jerusalem']],
+      gap: ['En 1099 a lieu la prise de ', '.', ['Jérusalem', 'Jerusalem']],
       explain: 'La prise de Jérusalem, en 1099, est un épisode guerrier des contacts entre les mondes.',
     },
   ],

@@ -62,7 +62,9 @@ export const PREUVES = {
   omeyyades: eduscol('La dynastie des Omeyyades domine le monde musulman jusqu’en 750 depuis leur capitale de Damas'),
   territoire: eduscol('un territoire immense qui va de l’Indus à la péninsule ibérique'),
   abbassides: eduscol('la dynastie des Abbassides s’impose, qui restera au pouvoir jusqu’en 1258'),
-  capitaleAbbassides: eduscol('l’éloignement plus important de la capitale des Abbassides'),
+  capitaleAbbassides: eduscol(
+    'Un travail identique peut être réalisé à partir de Bagdad même si l’éloignement plus important de la capitale des Abbassides',
+  ),
   cordoue: eduscol('c’est un Omeyyade, rescapé de cette défaite, qui fonde un nouvel État à Cordoue'),
   bagdad: eduscol('la prise de Bagdad par les Mongols (1258) qui sonne le glas de la puissance du califat abbasside'),
   mosquee: eduscol(
