@@ -41,23 +41,26 @@ export const PREUVES = {
     'bnf-travail-photo',
     'multiples unités de production, usines, ateliers, chantiers, qui constituent chacune un cadre de travail',
   ),
-  outils: bnf('bnf-travail-photo', 'détailler les machines et outils de production'),
+  outils: bnf(
+    'bnf-travail-photo',
+    'Pénétrer à l’intérieur des bâtiments lui permet alors de détailler les machines et outils de production',
+  ),
   metiers: bnf(
     'bnf-siecle-industrie',
     "Les transformations de l'économie entraînent l'apparition de nouveaux métiers, et d'un nouveau rapport au travail",
   ),
   berlines: {
-    source: 'bnf-mineur',
+    source: 'bnf-germinal',
     who: 'Émile Zola, cité par la Bibliothèque nationale de France,',
     quote: 'On entend brusquement un roulement lointain, c’est un train de berlines qui arrive',
   },
   enfant: {
-    source: 'bnf-mineur',
+    source: 'bnf-germinal',
     who: 'Émile Zola, cité par la Bibliothèque nationale de France,',
     quote: 'Un enfant est assis sur la première berline, c’est le conducteur',
   },
   cheval: {
-    source: 'bnf-mineur',
+    source: 'bnf-germinal',
     who: 'Émile Zola, cité par la Bibliothèque nationale de France,',
     quote: 'on aperçoit vaguement le cheval blanc qui traîne',
   },

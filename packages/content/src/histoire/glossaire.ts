@@ -572,6 +572,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'Haussmann est le préfet de la Seine.',
   },
   {
+    id: 'expulsion',
+    word: 'expulsion',
+    forms: ['expulsion'],
+    definition: 'Le fait d’être obligé de quitter son logement.',
+    example: 'La famille subit une expulsion.',
+  },
+  {
     id: 'banlieue',
     word: 'banlieue',
     forms: ['banlieue', 'banlieues'],
