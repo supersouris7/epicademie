@@ -5,6 +5,7 @@ import { SKILLS as VIE } from './vie.ts';
 import { SKILLS as TRANSPORTS } from './transports.ts';
 import { SKILLS as INTERNET } from './internet.ts';
 import { SKILLS as MIEUX_HABITER } from './habiter.ts';
+import { SKILLS as REPERES } from './reperes.ts';
 import { DEPARTEMENTS, GEO_FETCHED_ON, PAYS_UE, REGIONS } from './donnees.generated.ts';
 
 /**
@@ -61,34 +62,6 @@ const regions: Skill = {
 /** Numéros des départements : de l'Ain (01) au Val-d'Oise (95), puis l'outre-mer (971 à 976). */
 const departmentsFor = (level: Level) =>
   level === 1 ? DEPARTEMENTS.filter((d) => /^\d+$/.test(d.code) && Number(d.code) <= 30) : DEPARTEMENTS;
-
-const departments: Skill = {
-  id: 'gcm2-departements',
-  title: 'Les numéros des départements',
-  lesson: {
-    memo: [
-      'Chaque département a un numéro (code), souvent dans l’ordre alphabétique : 01 Ain, 02 Aisne, 03 Allier…',
-      'La Corse a deux départements : 2A (Corse-du-Sud) et 2B (Haute-Corse). L’outre-mer : 971 à 976.',
-    ],
-    source: `Géographie : les départements. ${INSEE}.`,
-  },
-  generate: (rng, level) => {
-    const pool = departmentsFor(level);
-    const d = rng.pick(pool);
-    const { answer, traps } = choice(
-      rng,
-      d.name,
-      others(rng, pool, d).map((o) => ({ label: o.name, why: `${o.name} porte le numéro ${o.code}.` })),
-    );
-    return {
-      prompt: `Quel département porte le numéro **${d.code}** ?`,
-      answer,
-      traps,
-      hint: 'Les premiers numéros suivent à peu près l’ordre alphabétique.',
-      steps: [`Le département n° ${d.code} est : ${d.name}.`, `Réponse : **${d.name}**.`],
-    };
-  },
-};
 
 const prefectures: Skill = {
   id: 'g6-prefectures',
@@ -202,7 +175,7 @@ export const GEOGRAPHIE_CHAPTERS: readonly Chapter[] = [
   chapter('gcm2-se-deplacer', 'cm2', 'Se déplacer', TRANSPORTS),
   chapter('gcm2-internet', 'cm2', 'Communiquer grâce à Internet', INTERNET),
   chapter('gcm2-mieux-habiter', 'cm2', 'Mieux habiter', MIEUX_HABITER),
-  chapter('gcm2-departements', 'cm2', 'Les départements', [departments]),
+  chapter('gcm2-departements', 'cm2', 'Repères : France et Europe', REPERES),
   chapter('g6-prefectures', '6e', 'Les préfectures', [prefectures]),
   chapter('g3-union-europeenne', '3e', 'L’Union européenne', [euCapitals, euro]),
 ];
