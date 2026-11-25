@@ -206,6 +206,7 @@ describe('correction des réponses', () => {
   it('synonymes et antonymes : autres réponses de même initiale et longueur', () => {
     for (const [consigne, mots] of [
       ['synonyme du verbe « encourager »', ['stimuler', 'soutenir']],
+      ['synonyme du verbe « monter »', ['grimper', 'grandir', 'grossir']],
       ['antonyme de l’adjectif « prudent »', ['imprudent', 'intrépide']],
       ['antonyme du nom « victoire »', ['défaite', 'déroute', 'débâcle']],
       ['synonyme de l’adjectif « fragile »', ['frêle', 'fluet']],

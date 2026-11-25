@@ -509,6 +509,7 @@ const DIFFICILES = PAIRES.filter((p) => RARES.has(p.reponse));
 const AUSSI: Readonly<Record<string, readonly string[]>> = {
   'victoire antonyme': ['déroute', 'débâcle'],
   'encourager synonyme': ['soutenir'],
+  'monter synonyme': ['grandir', 'grossir'],
   'prudent antonyme': ['intrépide'],
   'fragile synonyme': ['fluet'],
   'fragile antonyme': ['stable'],
