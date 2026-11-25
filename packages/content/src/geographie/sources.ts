@@ -49,13 +49,19 @@ const uePays = (code: string, nom: string, page: string): Source => ({
 });
 
 /** Article du glossaire de Géoconfluences (`textDate` : dernière modification affichée). */
-const geoconfluences = (id: string, mot: string, page: string, textDate: string): Source => ({
+const geoconfluences = (
+  id: string,
+  mot: string,
+  page: string,
+  textDate: string,
+  consultedOn = '2026-11-25',
+): Source => ({
   id: `geoconfluences-${id}`,
   title: `Glossaire de Géoconfluences, article « ${mot} »`,
   publisher: 'Géoconfluences (ENS de Lyon, DGESCO)',
   url: `https://geoconfluences.ens-lyon.fr/glossaire/${page}`,
   textDate,
-  consultedOn: '2026-11-25',
+  consultedOn,
 });
 
 /** Sources de géographie (registre : `sources.ts` à la racine du paquet). */
@@ -659,4 +665,46 @@ export const SOURCES: readonly Source[] = [
     textDate: '2026-11-25',
     consultedOn: '2026-11-25',
   },
+  // Lot ge-5e-04 : repères de 5e.
+  geoconfluences('carte-croquis-schema', 'Carte, croquis, schéma', 'carte-croquis-schema', '2026-05-06', '2026-11-26'),
+  geoconfluences('figure', 'Figuré (en cartographie)', 'figure', '2026-01-05', '2026-11-26'),
+  geoconfluences('projection', 'Projection', 'projection', '2026-05-06', '2026-11-26'),
+  geoconfluences('echelle', 'Échelle', 'echelle', '2025-09-08', '2026-11-26'),
+  geoconfluences('centrage', 'Centrage (cartographie)', 'centrage-cartographie', '2022-10', '2026-11-26'),
+  geoconfluences(
+    'choroplethe',
+    'Choroplèthe, choroisoplèthe (carte)',
+    'choroplethe-choroisoplethe',
+    '2025-04-04',
+    '2026-11-26',
+  ),
+  geoconfluences('equateur', 'Équateur', 'equateur', '2026-06-10', '2026-11-26'),
+  geoconfluences('coordonnees', 'Coordonnées (latitude, longitude)', 'coordonnees', '2025-08', '2026-11-26'),
+  geoconfluences('orientation', 'Orientation', 'orientation', '2026-05-06', '2026-11-26'),
+  geoconfluences(
+    'foyer-de-peuplement',
+    'Foyer de peuplement, foyer de population',
+    'foyer-de-peuplement-foyer-de-population',
+    '2026-06-11',
+    '2026-11-26',
+  ),
+  geoconfluences('petrole', 'Pétrole', 'petrole', '2026-11-13', '2026-11-26'),
+  geoconfluences('charbon', 'Charbon', 'charbon', '2025-12-17', '2026-11-26'),
+  geoconfluences('opep', 'Organisation des pays exportateurs de pétrole (OPEP)', 'opep', '2025-12-04', '2026-11-26'),
+  geoconfluences(
+    'reserves',
+    'Réserves probables, prouvées, possibles (géologie)',
+    'reserves-probables-prouvees',
+    '2026-11-13',
+    '2026-11-26',
+  ),
+  geoconfluences(
+    'malediction-des-ressources',
+    'Malédiction des ressources',
+    'malediction-des-ressources',
+    '2024-01-16',
+    '2026-11-26',
+  ),
+  geoconfluences('aquaculture', 'Aquaculture', 'aquaculture', '2026-06-19', '2026-11-26'),
+  geoconfluences('zee', 'Zone économique exclusive (ZEE)', 'zone-economique-exclusive-zee', '2026-11-18', '2026-11-26'),
 ];

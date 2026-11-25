@@ -14,6 +14,7 @@ import { SKILLS as REPERES_MONDE } from './reperes-monde.ts';
 import { SKILLS as DEMOGRAPHIE } from './demographie.ts';
 import { SKILLS as CHANGEMENT_GLOBAL } from './changement-global.ts';
 import { SKILLS as RESSOURCES } from './ressources.ts';
+import { SKILLS as REPERES_5E } from './reperes-5e.ts';
 import { GEO_FETCHED_ON, PAYS_UE, REGIONS } from './donnees.generated.ts';
 
 /**
@@ -153,5 +154,6 @@ export const GEOGRAPHIE_CHAPTERS: readonly Chapter[] = [
   chapter('g5-demographie-developpement', '5e', 'Démographie et développement', DEMOGRAPHIE),
   chapter('g5-ressources-limitees', '5e', 'Des ressources limitées, à gérer et à renouveler', RESSOURCES),
   chapter('g5-changement-global', '5e', 'Changement global et risques', CHANGEMENT_GLOBAL),
+  chapter('g5-reperes', '5e', 'Repères de 5e', REPERES_5E),
   chapter('g3-union-europeenne', '3e', 'L’Union européenne', [euCapitals, euro]),
 ];
