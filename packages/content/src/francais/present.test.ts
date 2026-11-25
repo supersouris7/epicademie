@@ -225,6 +225,23 @@ describe('correction des réponses', () => {
     }
   });
 
+  it('variations niveau 5 : au moins 3 lignes modifient le radical, chaque ligne est expliquée à juste titre', () => {
+    const terminaisons = ['e', 'es', 'e', 'ons', 'ez', 'ent'];
+    for (const q of tirages('fcm1-present-variations', 5)) {
+      const modifiees = trous(q).map((acceptes, i) => {
+        const x = VARIATIONS.find((y) => lignes(q)[i]?.includes(`(${y.verbe})`));
+        if (!x) throw new Error(lignes(q)[i]);
+        expect(lignes(q)[i]?.startsWith('Je ')).toBe(false);
+        const change = !terminaisons.some((t) => acceptes[0] === x.verbe.slice(0, -2) + t);
+        const etape = q.steps.map(String).find((s) => s.startsWith(`Ligne ${i + 1} :`));
+        expect(etape?.includes('le radical ne change pas'), etape).toBe(!change);
+        expect(etape?.includes('paie ou il paye'), etape).toBe(change && x.verbe === 'payer');
+        return change;
+      });
+      expect(modifiees.filter(Boolean).length, lignes(q).join(' ')).toBeGreaterThanOrEqual(3);
+    }
+  });
+
   it('2e groupe niveau 2 : un seul verbe du 2e groupe proposé', () => {
     const deuxieme = new Set<string>(EMPLOIS_IR.map(([v]) => v));
     for (const q of tirages('fcm1-present-ir', 2)) {

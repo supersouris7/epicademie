@@ -165,7 +165,11 @@ function associer(rng: Rng, v: Verbe, personnes: readonly Personne[], etapes: re
 }
 
 /** Texte à compléter : un verbe à conjuguer par ligne. */
-function texteATrous(lignes: readonly Ligne[], etapes: readonly Rich[]): QuestionDraft {
+function texteATrous<L extends Ligne>(
+  lignes: readonly L[],
+  etapes: readonly Rich[],
+  explication?: (l: L) => string,
+): QuestionDraft {
   const bonnes = lignes.map((l) => formes(l.verbe, l.sujet.personne));
   return {
     prompt: 'Lis le texte. Écris au présent le verbe entre parenthèses, ligne par ligne.',
@@ -182,10 +186,10 @@ function texteATrous(lignes: readonly Ligne[], etapes: readonly Rich[]): Questio
     steps: [
       ...etapes,
       ...new Set(lignes.flatMap((l) => remplacer(l.sujet))),
-      ...lignes.map(
-        (l, i) =>
-          `Ligne ${i + 1} : avec « ${PRONOMS[l.sujet.personne]} », « ${l.verbe} » s’écrit « ${forme(l.verbe, l.sujet.personne)} ».`,
-      ),
+      ...lignes.map((l, i) => {
+        const regle = explication ? ` ${explication(l)}` : '';
+        return `Ligne ${i + 1} : avec « ${PRONOMS[l.sujet.personne]} », « ${l.verbe} » s’écrit « ${forme(l.verbe, l.sujet.personne)} ».${regle}`;
+      }),
       `Les verbes : **${bonnes.map((b) => at(b, 0)).join(', ')}**.`,
     ],
   };
@@ -523,11 +527,18 @@ const personnesQuiChangent = (f: Famille): readonly Personne[] => (f === 'cer' |
 const change = (x: Variation, p: Personne) => personnesQuiChangent(x.famille).includes(p);
 const inchange = (p: Personne) => `Avec « ${PRONOMS[p]} », le radical ne change pas : c’est celui de l’infinitif.`;
 
+const doubleEcriture = (x: Variation, p: Personne): string[] =>
+  x.verbe === 'payer' && change(x, p) ? ['Avec « payer », on peut aussi garder le y : il paie ou il paye.'] : [];
+
 const etapesVariation = (x: Variation, p: Personne): Rich[] => [
   REGLES_FAMILLES[x.famille],
   ...(change(x, p) ? [] : [inchange(p)]),
-  ...(x.verbe === 'payer' && change(x, p) ? ['Avec « payer », on peut aussi garder le y : il paie ou il paye.'] : []),
+  ...doubleEcriture(x, p),
 ];
+
+/** Ce qui arrive au radical sur une ligne de texte : la règle si elle s'applique, sinon rien ne change. */
+const explicationVariation = (x: Variation, p: Personne): string =>
+  [change(x, p) ? REGLES_FAMILLES[x.famille] : inchange(p), ...doubleEcriture(x, p)].join(' ');
 
 /** Erreurs typiques : le radical de l'infinitif gardé à tort, ou la variation mise là où elle n'a rien à faire. */
 function piegesVariation(x: Variation, p: Personne): [string, string][] {
@@ -582,14 +593,15 @@ function variationsDraft(rng: Rng, level: Level): QuestionDraft {
     }
     default: {
       const familles = pickN(rng, ['cer', 'ger', 'yer', 'double', 'accent'] as const, 4);
-      const lignes = familles.map((f): Ligne => {
+      const sujets = [...SUJETS_GROUPES, ...SANS_JE];
+      // Trois lignes où la variation se voit ; la quatrième, au sujet libre, peut être un piège sans variation.
+      const tirees = familles.map((f, i) => {
         const x = rng.pick(VARIATIONS.filter((y) => y.famille === f));
-        return { sujet: rng.pick([...SUJETS_GROUPES, ...SANS_JE]), verbe: x.verbe, fin: x.fin };
+        const sujet = rng.pick(i < 3 ? sujets.filter((s) => personnesQuiChangent(f).includes(s.personne)) : sujets);
+        return { sujet, verbe: x.verbe, fin: x.fin, variation: x };
       });
-      return texteATrous(
-        lignes,
-        familles.map((f) => REGLES_FAMILLES[f]),
-      );
+      const lignes = rng.shuffle(tirees);
+      return texteATrous(lignes, [], (l) => explicationVariation(l.variation, l.sujet.personne));
     }
   }
 }
