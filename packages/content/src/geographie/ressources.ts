@@ -800,10 +800,8 @@ const alimentation: Notion = {
   hint: 'Pense à ce que l’on mange, à qui peut l’obtenir et à la façon de le produire.',
   memo: [
     'La **sécurité alimentaire** : chacun peut obtenir à tout moment une nourriture suffisante, saine et nutritive. Une partie de l’humanité reste sous-alimentée ou mal alimentée.',
-    'La **révolution verte** a augmenté les **rendements** avec de nouvelles semences, l’irrigation et les engrais.',
-    'Les espaces ruraux et agricoles fournissent notre nourriture. L’**agriculture vivrière** nourrit d’abord la famille ou le village.',
-    'La **transition alimentaire** dans les pays industrialisés : quand les revenus montent, on sort d’abord de la famine (plus de céréales), puis on mange plus de viande, de sucre et de graisses ; enfin, ces tendances commencent à s’inverser.',
-    'Même dans un pays riche, on peut manquer de nourriture saine (insécurité alimentaire), par exemple dans un **désert alimentaire**, où les aliments frais sont difficiles à trouver à bon prix.',
+    'La **révolution verte** a augmenté les **rendements** avec de nouvelles semences, l’irrigation et les engrais. Les espaces ruraux et agricoles fournissent notre nourriture. L’**agriculture vivrière** nourrit d’abord la famille ou le village.',
+    'La **transition alimentaire** dans les pays industrialisés : quand les revenus montent, on sort d’abord de la famine (plus de céréales), puis on mange plus de viande, de sucre et de graisses ; enfin, ces tendances commencent à s’inverser. Même dans un pays riche, certains habitent un **désert alimentaire** : les aliments frais y sont difficiles à trouver à bon prix.',
   ],
   faits: [
     {
@@ -1223,10 +1221,9 @@ const gererRenouveler: Notion = {
   title: 'Gérer et renouveler les ressources',
   hint: 'Pense au temps long : comment utiliser une ressource sans la gaspiller ?',
   memo: [
-    'Le **développement durable** répond aux besoins du présent sans compromettre ceux des générations futures. Il cherche un équilibre entre le social, l’économie et l’environnement.',
+    'Le **développement durable** répond aux besoins du présent sans compromettre ceux des générations futures. Il cherche un équilibre entre le social, l’économie et l’environnement. L’idée apparaît en 1987 (rapport Brundtland) et est adoptée au Sommet de la Terre de Rio en 1992. L’ONU a fixé en 2015 des objectifs pour 2030, les **ODD** (exemple : l’eau propre et l’**assainissement**).',
     'Pour ménager les ressources : consommer moins (**sobriété**), mieux utiliser, **recycler** et développer les énergies renouvelables.',
     'La **transition énergétique** : passer d’énergies tirées de stocks (pétrole, gaz, charbon, uranium) à des énergies de flux, qui se renouvellent (vent, soleil, **biomasse**), en consommant mieux.',
-    'L’idée de développement durable apparaît en 1987 (rapport Brundtland) et est adoptée au Sommet de la Terre de Rio en 1992. L’ONU a fixé en 2015 des objectifs à atteindre pour 2030, les **ODD**. Exemple : l’eau propre et l’**assainissement**.',
   ],
   faits: [
     {

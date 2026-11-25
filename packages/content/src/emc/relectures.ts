@@ -40,4 +40,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'em4-libertes-fondamentales', version: 1, lot: 'em-4e-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'em4-justice', version: 1, lot: 'em-4e-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'em4-declarations-droits', version: 1, lot: 'em-4e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'em4-expression-en-ligne', version: 1, lot: 'em-4e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'em4-limites-expression', version: 1, lot: 'em-4e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'em4-medias-presse', version: 1, lot: 'em-4e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'em4-information', version: 1, lot: 'em-4e-02', date: '2026-11-25', verdict: 'ok' },
 ];

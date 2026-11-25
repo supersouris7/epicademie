@@ -707,6 +707,30 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-25',
   },
   {
+    id: 'vie-publique-viginum-2022',
+    title: '« Viginum : des cas d’ingérences étrangères en ligne détectés lors des élections de 2022 »',
+    publisher: 'Vie publique (DILA)',
+    url: 'https://www.vie-publique.fr/en-bref/286939-viginum-cas-dingerences-etrangeres-en-ligne-detectes-elections-2022',
+    textDate: '2022-10-28',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'vie-publique-desinformation-2026',
+    title: '« Lutte contre la désinformation : bilan des moyens mis en œuvre par les plateformes »',
+    publisher: 'Vie publique (DILA)',
+    url: 'https://www.vie-publique.fr/en-bref/302599-lutte-contre-la-desinformation-quels-moyens-mis-en-place',
+    textDate: '2026-03-30',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'vie-publique-strategie-manipulation-2026',
+    title: '« Lutte contre les manipulations de l’information : quelle stratégie pour 2026-2030 ? »',
+    publisher: 'Vie publique (DILA)',
+    url: 'https://www.vie-publique.fr/en-bref/302121-lutte-contre-les-manipulations-de-linformation-la-strategie-2026-2030',
+    textDate: '2026-02-19',
+    consultedOn: '2026-11-25',
+  },
+  {
     id: 'cycle4-2020',
     title: 'Programme du cycle 4 (BOEN n° 31 du 30 juillet 2020)',
     publisher: 'Éduscol',
@@ -729,6 +753,15 @@ export const SOURCES: readonly Source[] = [
       'Ressources d’accompagnement, histoire 5e, thème 1 « Chrétientés et islam (VIe-XIIIe siècles), des mondes en contact » (consulté via la copie d’archive web.archive.org)',
     publisher: 'Éduscol',
     url: 'https://cache.media.eduscol.education.fr/file/Histoire/82/3/C4_HIS_5_Th1_Chretientes_et_islam-DM_593823.pdf',
+    textDate: '2016-03',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'eduscol-5e-occident-feodal',
+    title:
+      'Ressources d’accompagnement, histoire 5e, thème 2 « Société, Église et pouvoir politique dans l’occident féodal (XIe-XVe siècles) » (consulté via la copie d’archive web.archive.org)',
+    publisher: 'Éduscol',
+    url: 'https://cache.media.eduscol.education.fr/file/Histoire/82/5/C4_HIS_5_Th2_Societes,_Eglises_et_pouvoir_politique-DM_593825.pdf',
     textDate: '2016-03',
     consultedOn: '2026-11-25',
   },
@@ -3256,6 +3289,40 @@ export const SOURCES: readonly Source[] = [
   tlfi('aval', 'aval', 'aval'),
   geoconfluences('rendement', 'Rendement', 'rendement', '2025-09-26'),
   tlfi('sous-alimentation', 'sous-alimentation', 'sous-alimentation'),
+
+  // Lot an-6e-03 : modaux et impératif.
+  {
+    id: 'bck-must',
+    title: 'LearnEnglish Kids, Grammar practice : Modals, must and mustn’t',
+    publisher: 'British Council',
+    url: 'https://learnenglishkids.britishcouncil.org/grammar-vocabulary/grammar-practice/modals-must-mustnt',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'bck-imperatives',
+    title: 'LearnEnglish Kids, Grammar practice : Imperatives',
+    publisher: 'British Council',
+    url: 'https://learnenglishkids.britishcouncil.org/grammar-vocabulary/grammar-practice/imperatives',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'bc-permission',
+    title: 'LearnEnglish, English grammar reference : Permission',
+    publisher: 'British Council',
+    url: 'https://learnenglish.britishcouncil.org/free-resources/grammar/english-grammar-reference/permission',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'bc-modals-permission',
+    title: 'LearnEnglish, Grammar B1-B2 : Modals, permission and obligation',
+    publisher: 'British Council',
+    url: 'https://learnenglish.britishcouncil.org/free-resources/grammar/b1-b2/modals-permission-obligation',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
 ];
 
 export const getSource = (id: string): Source | undefined => SOURCES.find((s) => s.id === id);

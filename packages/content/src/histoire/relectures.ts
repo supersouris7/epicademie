@@ -51,4 +51,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'h5-byzance-carolingiens', version: 1, lot: 'hi-5e-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'h5-islam-bagdad', version: 1, lot: 'hi-5e-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'h5-mondes-contact', version: 1, lot: 'hi-5e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'h5-ordre-seigneurial', version: 1, lot: 'hi-5e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'h5-societe-urbaine', version: 1, lot: 'hi-5e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'h5-eglise-feodale', version: 1, lot: 'hi-5e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'h5-etat-monarchique', version: 1, lot: 'hi-5e-02', date: '2026-11-25', verdict: 'ok' },
 ];
