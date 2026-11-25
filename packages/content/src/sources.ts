@@ -3254,7 +3254,7 @@ export const SOURCES: readonly Source[] = [
   ),
   tlfi('amont', 'amont', 'amont'),
   tlfi('aval', 'aval', 'aval'),
-  tlfi('rendement', 'rendement', 'rendement'),
+  geoconfluences('rendement', 'Rendement', 'rendement', '2025-09-26'),
   tlfi('sous-alimentation', 'sous-alimentation', 'sous-alimentation'),
 ];
 

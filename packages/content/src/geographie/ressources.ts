@@ -26,7 +26,7 @@ const DESERT = 'geoconfluences-desert-alimentaire';
 const SOBRIETE = 'geoconfluences-sobriete';
 const AMONT = 'cnrtl-amont';
 const AVAL = 'cnrtl-aval';
-const RENDEMENT = 'cnrtl-rendement';
+const RENDEMENT = 'geoconfluences-rendement';
 const SOUS_ALIM = 'cnrtl-sous-alimentation';
 const DURABLE = 'geoconfluences-developpement-durable';
 const RECYCLAGE = 'geoconfluences-recyclage';
@@ -73,7 +73,8 @@ const G_SEL = 'Les apports excessifs d’eau sur le sol finissent par augmenter 
 
 const C_AMONT = 'Partie comprise entre ce point et la source';
 const C_AVAL = 'Partie comprise entre ce point et l’embouchure';
-const C_RENDEMENT = 'Production récoltée sur une culture relativement à la surface cultivée';
+const C_RENDEMENT =
+  'Aujourd’hui, on utilise plutôt (selon les types de production) le quintal (100 kilogrammes) ou la tonne par hectare (un carré de 100 mètres de côté)';
 const C_SOUS_ALIM = 'Situation d’insuffisance alimentaire pendant une durée plus ou moins longue';
 const G_NEGOCIATION =
   'La gestion de la ressource (réserves, bassins versants, cours des grands fleuves) implique nécessairement une négociation entre acteurs';
