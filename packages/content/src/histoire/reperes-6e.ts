@@ -25,7 +25,6 @@ const Q_THEME1 =
   'Thème 1 - La longue histoire de l’humanité et des migrations - Les débuts de l’humanité. - La « révolution » néolithique. - Premiers États, premières écritures.';
 const Q_THEME2 = 'Récits fondateurs, croyances et citoyenneté dans la Méditerranée antique au Ier millénaire avant J-C';
 const Q_THEME3 = 'Thème 3 - L’empire romain dans le monde antique';
-const Q_DEBUTS = 'Les débuts de l’humanité (qui s’inscrivent dans une chronologie qui les dépasse considérablement)';
 const Q_ETATS =
   'L’étude des premiers États et des premières écritures se place dans le cadre de l’Orient ancien et peut concerner l’Égypte ou la Mésopotamie.';
 const Q_ATHENES = 'Dans quelles conditions la démocratie naît-elle à Athènes ?';
@@ -47,6 +46,25 @@ function rang(roman: string, arabe: number, mots: readonly string[] = []): strin
   return [...new Set(out.map((x) => x.toLowerCase()))].map((x) => out.find((o) => o.toLowerCase() === x) ?? x);
 }
 
+/** Écritures acceptées de « avant » et « après J.-C. ». */
+const AV = ['av. J.-C.', 'av J.-C.', 'av. JC', 'av JC', 'avant J.-C.', 'avant JC', 'avant Jésus-Christ'];
+const APR = [
+  'apr. J.-C.',
+  'apr J.-C.',
+  'apr. JC',
+  'apr JC',
+  'après J.-C.',
+  'apres J.-C.',
+  'après JC',
+  'après Jésus-Christ',
+];
+
+/** Rang d'un siècle ou d'un millénaire, avec ou sans le mot et le côté du repère. */
+const rangDate = (roman: string, arabe: number, mot: 'siècle' | 'millénaire', cote: readonly string[]) => {
+  const mots = [mot, mot.replace('è', 'e').replace('é', 'e')];
+  return rang(roman, arabe, [...mots, ...mots.flatMap((m) => cote.map((c) => `${m} ${c}`))]);
+};
+
 // ——— Notion 1 : la frise de l'Antiquité ———
 
 const frise: Notion = {
@@ -55,12 +73,12 @@ const frise: Notion = {
   hint: 'Place d’abord le repère le plus ancien, puis avance vers le plus récent.',
   memo: [
     'Une **frise chronologique** représente le temps : on y range les faits du plus ancien au plus récent.',
-    'En 6e, la frise part des débuts de l’humanité, passe par les premiers États et les premières écritures, puis par la Méditerranée antique du Ier millénaire av. J.-C. et l’empire romain, dont la partie occidentale s’effondre vers la fin du Ve siècle : c’est l’**Antiquité**.',
-    'Choisis la bonne **échelle** : les débuts de l’humanité couvrent une durée immense, alors que le commerce entre Rome et la Chine se compte en siècles (depuis le IIe siècle av. J.-C.).',
+    'La frise de 6e commence par la **préhistoire** (les débuts de l’humanité, puis le néolithique) ; l’**Antiquité** vient ensuite, des premiers États et des premières écritures jusqu’à la fin de l’empire romain d’Occident, vers la fin du Ve siècle (vu en CM1).',
+    'Choisis la bonne **échelle** : selon la durée à montrer, une graduation peut valoir un siècle ou un millénaire.',
   ],
   faits: [
     {
-      q: 'Par quel thème commence la frise du programme d’histoire de 6e ?',
+      q: 'Quel repère se place au début de la frise d’histoire de 6e ?',
       a: 'les débuts de l’humanité',
       wrong: [
         {
@@ -154,31 +172,6 @@ const frise: Notion = {
         'Le programme indique que l’empire romain d’Occident « s’effondre définitivement vers la fin du Ve siècle ».',
     },
     {
-      q: 'Pourquoi faut-il une autre échelle pour placer les débuts de l’humanité sur une frise ?',
-      a: 'leur chronologie dépasse considérablement celle des autres thèmes',
-      wrong: [
-        {
-          label: 'ils sont plus récents que l’empire romain',
-          why: 'C’est l’inverse : les débuts de l’humanité sont le point de départ de la frise.',
-        },
-        {
-          label: 'ils durent exactement un siècle',
-          why: 'Un siècle, c’est cent ans : les débuts de l’humanité couvrent une durée bien plus longue.',
-        },
-        {
-          label: 'ils n’ont laissé aucune trace',
-          why: 'Faux : le programme cite des sites de fouilles. Le problème est la durée, immense.',
-        },
-      ],
-      gap: [
-        'Les débuts de l’humanité s’inscrivent dans une chronologie qui les ',
-        ' considérablement.',
-        ['dépasse', 'depasse'],
-      ],
-      quote: Q_DEBUTS,
-      explain: 'Les débuts de l’humanité s’inscrivent « dans une chronologie qui les dépasse considérablement ».',
-    },
-    {
       q: 'À quoi sert une frise chronologique ?',
       a: 'à représenter le temps',
       wrong: [
@@ -220,7 +213,7 @@ const frise: Notion = {
   libres: [
     {
       q: 'Vers la fin de quel siècle l’empire romain d’Occident s’effondre-t-il ? (chiffres romains)',
-      accepted: rang('V', 5, ['siècle', 'siecle']),
+      accepted: rangDate('V', 5, 'siècle', APR),
       traps: [
         {
           text: 'IVe',
@@ -233,7 +226,7 @@ const frise: Notion = {
     },
     {
       q: 'Les récits fondateurs de la Méditerranée antique se situent au … millénaire av. J.-C. (chiffres romains)',
-      accepted: rang('I', 1, ['millénaire', 'millenaire']),
+      accepted: rangDate('I', 1, 'millénaire', AV),
       traps: [
         { text: 'IIe', why: 'Le programme dit « Ier millénaire avant J-C », pas le IIe.' },
         { text: 'IIIe', why: 'Le IIIe millénaire est celui où nous vivons, après J.-C.' },
@@ -295,17 +288,17 @@ const frise: Notion = {
       ],
       qs: [
         {
-          q: 'Pourquoi la frise 1 a-t-elle des graduations bien plus grandes ?',
-          a: 'les débuts de l’humanité couvrent une durée immense',
+          q: 'Sur quelle frise une graduation représente-t-elle la plus longue durée ?',
+          a: 'la frise 1',
           wrong: [
-            { label: 'l’empire romain est plus ancien', why: 'Non : les débuts de l’humanité sont bien plus anciens.' },
+            { label: 'la frise 2', why: 'Sur la frise 2, une graduation vaut 100 ans, bien moins que 100 000 ans.' },
             {
-              label: 'les deux périodes durent autant',
-              why: 'Non : sinon les deux frises auraient la même graduation.',
+              label: 'les deux, c’est la même durée',
+              why: 'Non : 100 000 ans et 100 ans sont deux durées différentes.',
             },
           ],
-          quote: Q_DEBUTS,
-          explain: 'Les débuts de l’humanité s’inscrivent dans une chronologie immense : il faut une autre échelle.',
+          quote: Q_FRISE,
+          explain: 'Une graduation vaut 100 000 ans sur la frise 1 et 100 ans sur la frise 2 : les échelles diffèrent.',
         },
         {
           q: 'Combien de temps représente une graduation de la frise 2 ?',
@@ -331,7 +324,7 @@ const avantApres: Notion = {
   memo: [
     'Les années se comptent à partir de la naissance présumée du Christ : c’est l’**ère chrétienne**, aussi appelée **notre ère**.',
     'Avant ce repère, on écrit **av. J.-C.** et on compte à rebours : plus le nombre est grand, plus la date est ancienne. Exemple : 500 av. J.-C. est plus ancien que 200 av. J.-C.',
-    'Après ce repère, on écrit apr. J.-C. et on compte dans l’ordre habituel : le commerce entre Rome et la Chine (IIe siècle av. J.-C.) est plus ancien que la fin de l’empire romain d’Occident (fin du Ve siècle).',
+    'Après ce repère, on écrit apr. J.-C. et on compte dans l’ordre habituel : le commerce entre Rome et la Chine (IIe siècle av. J.-C.) est plus ancien que la fin de l’empire romain d’Occident (fin du Ve siècle apr. J.-C.).',
   ],
   faits: [
     {
@@ -367,7 +360,7 @@ const avantApres: Notion = {
           why: 'Avant J.-C., on compte à rebours : 500 av. J.-C. est plus ancien que 200 av. J.-C.',
         },
       ],
-      gap: ['Avant J.-C., plus le nombre est grand, plus la date est ', '.', ['ancienne']],
+      gap: ['Avant J.-C., plus le nombre est grand, plus la date est ', '.', ['ancienne', 'éloignée', 'eloignee']],
       ...P_ERE,
       explain:
         'Avant J.-C., on compte à rebours depuis le repère : plus le nombre est grand, plus la date est ancienne.',
@@ -392,7 +385,10 @@ const avantApres: Notion = {
       a: 'avant notre ère',
       wrong: [
         { label: 'au Moyen Âge', why: 'Le Moyen Âge est une période bien plus tardive, après J.-C.' },
-        { label: 'avant la préhistoire', why: 'Rien n’est avant la préhistoire : cette expression ne veut rien dire.' },
+        {
+          label: 'avant la préhistoire',
+          why: 'La préhistoire commence bien avant la naissance présumée du Christ : « avant J.-C. » ne veut pas dire « avant la préhistoire », mais « avant notre ère ».',
+        },
         { label: 'après notre ère', why: '« avant J.-C. » correspond à « avant notre ère », pas « après ».' },
       ],
       gap: ['« Avant J.-C. » a le même sens que « avant notre ', ' ».', ['ère', 'ere']],
@@ -466,7 +462,7 @@ const avantApres: Notion = {
     },
     {
       q: 'Quelle date est la plus ancienne : 300 av. J.-C. ou 100 av. J.-C. ? (écris le nombre)',
-      accepted: ['300', '300 av. J.-C.', '300 av J.-C.', '300 av. JC', '300 av JC', '300 avant J.-C.'],
+      accepted: ['300', ...AV.map((c) => `300 ${c}`)],
       traps: [
         {
           text: '100',
@@ -582,7 +578,7 @@ const avantApres: Notion = {
 const siecles: Notion = {
   id: 'h6-millenaires-siecles',
   title: 'Millénaires et siècles',
-  hint: 'Un siècle = 100 ans, un millénaire = 1 000 ans ; le premier siècle commence en l’an 1.',
+  hint: 'Demande-toi d’abord si l’on parle d’un siècle ou d’un millénaire, puis de quel côté du repère on se trouve ; attention aux années rondes.',
   memo: [
     'Un **siècle** dure cent ans ; un **millénaire** dure mille ans, soit dix siècles.',
     'Le XXIe siècle a commencé en 2001 et finira en 2100. Avant J.-C., on compte à rebours : le IIe siècle av. J.-C. va de 200 à 101 av. J.-C.',
@@ -688,7 +684,7 @@ const siecles: Notion = {
   libres: [
     {
       q: 'Dans quel siècle se situe l’année 450 av. J.-C. ? (chiffres romains)',
-      accepted: rang('V', 5, ['siècle', 'siecle', 'siècle av. J.-C.', 'siècle avant J.-C.']),
+      accepted: rangDate('V', 5, 'siècle', AV),
       traps: [
         { text: 'IVe', why: 'On ajoute 1 aux centaines : 4 + 1 = Ve siècle.' },
         { text: 'IVe siècle', why: 'Le IVe siècle av. J.-C. va de 400 à 301 av. J.-C. : 450 est avant.' },
@@ -698,7 +694,7 @@ const siecles: Notion = {
     },
     {
       q: 'Dans quel siècle se situe l’année 1900 ? (chiffres romains)',
-      accepted: rang('XIX', 19, ['siècle', 'siecle']),
+      accepted: rangDate('XIX', 19, 'siècle', APR),
       traps: [
         { text: 'XXe', why: 'Année ronde : 1900 est la dernière année du XIXe siècle (1801-1900).' },
         { text: 'XXe siècle', why: 'Le XXe siècle commence en 1901 : 1900 appartient encore au XIXe.' },
@@ -708,7 +704,7 @@ const siecles: Notion = {
     },
     {
       q: 'Combien d’années compte un millénaire ? (en chiffres)',
-      accepted: ['1000', '1 000', 'mille'],
+      accepted: ['1000', '1 000', 'mille', '1000 ans', '1 000 ans', 'mille ans'],
       traps: [
         { text: '100', why: '100 ans, c’est un siècle.' },
         { text: '10', why: '10, c’est le nombre de siècles dans un millénaire.' },
@@ -718,7 +714,7 @@ const siecles: Notion = {
     },
     {
       q: 'Le IIe siècle av. J.-C. commence en quelle année av. J.-C. ? (le nombre)',
-      accepted: ['200', '200 av. J.-C.', '200 av J.-C.', '200 av. JC', '200 avant J.-C.'],
+      accepted: ['200', ...AV.map((c) => `200 ${c}`)],
       traps: [
         { text: '101', why: '101 av. J.-C. est la dernière année de ce siècle : on compte à rebours.' },
         { text: '100', why: '100 av. J.-C. appartient au Ier siècle av. J.-C.' },
@@ -761,8 +757,8 @@ const siecles: Notion = {
     {
       title: 'Le calendrier de la classe',
       lines: [
-        'Sur l’affiche de la classe, on lit : « Nous sommes en 2026. »',
-        'Un camarade affirme : « Nous sommes au XXe siècle, car 2026 commence par 20. »',
+        'Sur une affiche faite en 2026, on lit l’année : « 2026 ».',
+        'Un camarade affirme : « Cette année est au XXe siècle, car 2026 commence par 20. »',
       ],
       qs: [
         {
@@ -782,7 +778,7 @@ const siecles: Notion = {
             { label: 'le IIe millénaire', why: 'Le IIe millénaire s’arrête en 2000.' },
             {
               label: 'le XXIe millénaire',
-              why: 'XXIe, c’est le siècle ; il n’y a eu que trois millénaires de notre ère.',
+              why: 'XXIe, c’est le siècle ; notre ère n’en est qu’à son troisième millénaire.',
             },
           ],
           ...P_MILLENAIRE,
@@ -799,7 +795,7 @@ const siecles: Notion = {
 const reperes: Notion = {
   id: 'h6-reperes-annuels',
   title: 'Les repères annuels de 6e',
-  hint: 'Pense aux trois thèmes de l’année : l’humanité, la Méditerranée antique, l’empire romain.',
+  hint: 'Demande-toi de quel thème de l’année il s’agit : le plus ancien, celui des cités, ou le dernier.',
   memo: [
     'L’histoire de 6e suit trois thèmes : la longue histoire de l’humanité et des migrations ; récits fondateurs, croyances et citoyenneté dans la Méditerranée antique ; l’empire romain dans le monde antique.',
     'Chaque thème a ses **repères** : premiers États et premières écritures dans l’Orient ancien (Égypte ou Mésopotamie), naissance de la démocratie à Athènes, route de la soie et Chine des Han.',

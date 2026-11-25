@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
+import { check } from '../check.ts';
 import { createRng } from '../rng.ts';
 import { getSource } from '../sources.ts';
 import type { Level, Question } from '../types.ts';
 import { validateVariants } from '../validate.ts';
+import { GLOSSAIRE } from './glossaire.ts';
 import { NOTIONS, SKILLS, SOURCE } from './reperes-6e.ts';
 
 const LEVELS: readonly Level[] = [1, 2, 3, 4, 5];
@@ -62,5 +64,41 @@ describe('histoire 6e — Se repérer dans le temps', () => {
       });
       expect(new Set(prompts).size, s.id).toBe(5);
     }
+  });
+
+  it('sépare préhistoire et Antiquité et ne cite plus de durée non sourcée', () => {
+    const [frise] = NOTIONS;
+    expect(frise!.memo[1]).toContain('commence par la **préhistoire**');
+    expect(frise!.memo[1]).toContain('vu en CM1');
+    expect(JSON.stringify(frise)).not.toMatch(/immense|dépasse/);
+    for (const f of frise!.faits) expect(f.wrong.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('donne des indices de méthode qui ne soufflent aucune réponse', () => {
+    const hint = (id: string) => NOTIONS.find((n) => n.id === id)!.hint;
+    expect(hint('h6-millenaires-siecles')).not.toMatch(/\d|cent|mille ans/);
+    expect(hint('h6-reperes-annuels')).not.toMatch(/humanité|antique|romain/);
+  });
+
+  it('accepte les écritures justes des réponses libres', () => {
+    const cases: [string, RegExp, string[]][] = [
+      ['h6-frise-antiquite', /empire romain/, ['Ve siècle apr. J.-C.', 'Ve siècle après J.-C.']],
+      ['h6-millenaires-siecles', /millénaire \?/, ['1000 ans', '1 000 ans', 'mille ans']],
+      ['h6-millenaires-siecles', /commence en quelle année/, ['200 av JC', '200 avant JC']],
+    ];
+    for (const [id, q, answers] of cases) {
+      const libre = NOTIONS.find((n) => n.id === id)!.libres.find((l) => q.test(l.q))!;
+      for (const text of answers) {
+        const question = questions(id, 4).find((x) => x.prompt.endsWith(libre.q))!;
+        expect(check(question, { kind: 'text', text }).correct, text).toBe(true);
+      }
+    }
+    const gap = NOTIONS[1]!.faits.find((f) => f.gap[0].includes('plus la date est'))!.gap[2];
+    expect(gap).toContain('éloignée');
+  });
+
+  it('définit les mots difficiles ajoutés au glossaire', () => {
+    const ids = GLOSSAIRE.map((g) => g.id);
+    for (const id of ['cite', 'democratie', 'citoyennete', 'han', 'route-soie']) expect(ids).toContain(id);
   });
 });
