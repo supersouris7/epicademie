@@ -51,6 +51,8 @@ export function isAllowedUrl(url: string): boolean {
 }
 
 const CONSULTED = '2026-11-24';
+/** Textes relevés pour le lot em-6e-01 (copies d’archive web.archive.org des pages officielles). */
+const CONSULTED_EM_6E = '2026-11-25';
 /** Textes relevés pour le lot ge-cm2-01 (copies d’archive web.archive.org des pages officielles). */
 const CONSULTED_GE_CM2 = '2026-11-25';
 
@@ -373,6 +375,78 @@ export const SOURCES: readonly Source[] = [
     url: 'https://www.legifrance.gouv.fr/loda/id/JORFTEXT000000877119',
     textDate: '1881-07-29',
     consultedOn: '2026-11-25',
+  },
+  {
+    id: 'vie-publique-laicite-journee',
+    title: '« Quatre questions sur le 9 décembre, journée de la laïcité »',
+    publisher: 'Vie publique (DILA)',
+    url: 'https://www.vie-publique.fr/questions-reponses/277613-quatre-questions-sur-le-9-decembre-journee-de-la-laicite',
+    textDate: '2023-12-05',
+    consultedOn: CONSULTED_EM_6E,
+  },
+  {
+    id: 'vie-publique-laicite-chrono',
+    title: '« La laïcité en France depuis la Révolution : chronologie »',
+    publisher: 'Vie publique (DILA)',
+    url: 'https://www.vie-publique.fr/eclairage/20200-la-laicite-en-france-depuis-la-revolution-chronologie',
+    textDate: '2025-12-04',
+    consultedOn: CONSULTED_EM_6E,
+  },
+  {
+    id: 'vie-publique-laicite-liberte',
+    title: '« L’État garant de la liberté religieuse » (laïcité, loi de 1905)',
+    publisher: 'Vie publique (DILA)',
+    url: 'https://www.vie-publique.fr/eclairage/20206-letat-garant-de-la-liberte-religieuse-laicite-loi-1905',
+    textDate: '2025-12-03',
+    consultedOn: CONSULTED_EM_6E,
+  },
+  {
+    id: 'vie-publique-commune',
+    title: 'Fiche « Qu’est-ce qu’une commune ? »',
+    publisher: 'Vie publique (DILA)',
+    url: 'https://www.vie-publique.fr/fiches/19613-quest-ce-quune-commune',
+    textDate: '2025-08-07',
+    consultedOn: CONSULTED_EM_6E,
+  },
+  {
+    id: 'vie-publique-conseil-municipal',
+    title: 'Fiche « Quel est le rôle du conseil municipal ? »',
+    publisher: 'Vie publique (DILA)',
+    url: 'https://www.vie-publique.fr/fiches/19615-quel-est-le-role-du-conseil-municipal',
+    textDate: '2025-08-07',
+    consultedOn: CONSULTED_EM_6E,
+  },
+  {
+    id: 'vie-publique-departement',
+    title: 'Fiche « Quelles sont les compétences exercées par les départements ? »',
+    publisher: 'Vie publique (DILA)',
+    url: 'https://www.vie-publique.fr/fiches/19620-quelles-sont-les-competences-exercees-par-les-departements',
+    textDate: '2025-11-03',
+    consultedOn: CONSULTED_EM_6E,
+  },
+  {
+    id: 'vie-publique-conseil-departemental',
+    title: 'Fiche « Qu’est-ce qu’un conseil départemental ? »',
+    publisher: 'Vie publique (DILA)',
+    url: 'https://www.vie-publique.fr/fiches/19623-quest-ce-quun-conseil-departemental',
+    textDate: '2022-12-05',
+    consultedOn: CONSULTED_EM_6E,
+  },
+  {
+    id: 'vie-publique-conseil-regional',
+    title: 'Fiche « Qu’est-ce qu’un conseil régional ? »',
+    publisher: 'Vie publique (DILA)',
+    url: 'https://www.vie-publique.fr/fiches/19627-quest-ce-quun-conseil-regional',
+    textDate: '2023-03-06',
+    consultedOn: CONSULTED_EM_6E,
+  },
+  {
+    id: 'vie-publique-cide',
+    title: '« La Convention internationale des droits de l’enfant (CIDE) en cinq questions »',
+    publisher: 'Vie publique (DILA)',
+    url: 'https://www.vie-publique.fr/questions-reponses/271821-droits-de-lenfant-5-questions-sur-la-convention-internationale-cide',
+    textDate: '2024-11-17',
+    consultedOn: CONSULTED_EM_6E,
   },
   {
     id: 'vie-publique-expression',

@@ -19,4 +19,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'emcm2-liberte-information', version: 1, lot: 'em-cm2-02', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'emcm2-verifier-information', version: 1, lot: 'em-cm2-02', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'emcm2-sources', version: 1, lot: 'em-cm2-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'em6-citoyennete', version: 1, lot: 'em-6e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'em6-laicite', version: 1, lot: 'em-6e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'em6-institutions-proximite', version: 1, lot: 'em-6e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'em6-droits-enfant', version: 1, lot: 'em-6e-01', date: '2026-11-25', verdict: 'ok' },
 ];
