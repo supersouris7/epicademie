@@ -106,6 +106,16 @@ const bnfLieu = (id: string, nom: string, ark: string): Source => ({
   consultedOn: CONSULTED_GE_6E,
 });
 
+/** Article du glossaire de Géoconfluences relevé pour le lot ge-6e-05 (`slug` : adresse de l’article). */
+const geoGlossaire = (id: string, mot: string, slug: string, textDate: string): Source => ({
+  id: `geoconfluences-${id}`,
+  title: `Glossaire de Géoconfluences, article « ${mot} »`,
+  publisher: 'Géoconfluences (ENS de Lyon, DGESCO)',
+  url: `https://geoconfluences.ens-lyon.fr/glossaire/${slug}`,
+  textDate,
+  consultedOn: '2026-11-25',
+});
+
 /** Article du Dictionnaire de l’Académie française (9e édition), publié par le CNRTL. */
 const academie = (id: string, word: string): Source => ({
   id: `academie-${id}`,
@@ -3110,6 +3120,41 @@ export const SOURCES: readonly Source[] = [
   academie('frissonner', 'frissonner'),
   tlfi('souligner', 'souligner', 'souligner'),
   tlfi('dissimuler', 'dissimuler', 'dissimuler'),
+  // Lot ge-6e-05 : repères, la France et le monde.
+  {
+    id: 'insee-cog-2025-communes',
+    title: 'Code officiel géographique au 1er janvier 2025, fichier « Communes » (CSV)',
+    publisher: 'INSEE',
+    url: 'https://www.insee.fr/fr/statistiques/fichier/8377162/v_commune_2025.csv',
+    textDate: '2025-01-01',
+    consultedOn: '2026-11-25',
+  },
+  geoGlossaire('continent', 'Continent', 'continent', '2025-12-04'),
+  geoGlossaire('ocean', 'Océan', 'ocean', '2026-04-29'),
+  geoGlossaire('fleuve-riviere', 'Fleuve et rivière', 'fleuve-et-riviere', '2026-06-18'),
+  geoGlossaire('confluence', 'Confluence', 'confluence', '2026-05-20'),
+  geoGlossaire('delta', 'Delta', 'delta', '2026-01-12'),
+  geoGlossaire('himalaya', 'Himalaya', 'himalaya', '2025-06-30'),
+  geoGlossaire('gange', 'Gange', 'gange', '2024-07-02'),
+  geoGlossaire('yangzi', 'Yangzi', 'yangzi', '2026-11-24'),
+  geoGlossaire('lithium', 'Lithium', 'lithium', '2025-02-06'),
+  geoGlossaire('amazonie', 'Amazonie', 'amazonie-bresilienne-legale', '2026-04-03'),
+  geoGlossaire('metropole', 'Métropole (échelle mondiale)', 'metropole', '2026-11-25'),
+  geoGlossaire('megapoles', 'Mégapole', 'megapoles', '2026-07-01'),
+  tlfi('prefecture', 'préfecture', 'pr%C3%A9fecture'),
+  tlfi('prefet', 'préfet', 'pr%C3%A9fet'),
+  tlfi('chaine', 'chaîne', 'cha%C3%AEne'),
+  tlfi('cordillere', 'cordillère', 'cordill%C3%A8re'),
+  {
+    id: 'cnrtl-alpes',
+    title: 'Dictionnaire de Littré, article « Alpes »',
+    publisher: 'Publié par le CNRTL (CNRS, ATILF)',
+    url: 'https://www.cnrtl.fr/definition/alpes',
+    textDate: '1877',
+    consultedOn: '2026-11-25',
+  },
+  academie('chef-lieu', 'chef-lieu'),
+  academie('rocheux', 'rocheux'),
 ];
 
 export const getSource = (id: string): Source | undefined => SOURCES.find((s) => s.id === id);
