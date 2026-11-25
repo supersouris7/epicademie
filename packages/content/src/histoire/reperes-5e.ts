@@ -42,8 +42,7 @@ const reperes: Notion = {
   memo: [
     'Un **repère** est un fait daté qu’on retient pour situer les autres. Chrétientés et islam (thème 1) : 622, 800, 1054, 1204, puis 1258, la fin de la période.',
     'L’Occident féodal (thème 2) : 987, 1214, 1337-1453, et la population européenne qui double du XIe au XIVe siècle. Les transformations de l’Europe (thème 3) : 1453, 1492, 1517, 1598, 1661-1715.',
-    'Astuce de coach : accroche chaque date à un acteur ou à un lieu. Exemple : 800, Charlemagne, couronnement impérial.',
-    'Attention aux dates voisines : 1204 (sac de Constantinople) n’est pas 1214 (bataille de Bouvines), et 1453 marque deux faits.',
+    'Astuce de coach : accroche chaque date à un acteur ou à un lieu (800, Charlemagne). Attention aux dates voisines : 1204 (sac de Constantinople) n’est pas 1214 (bataille de Bouvines), et 1453 marque deux faits.',
   ],
   faits: [
     {
