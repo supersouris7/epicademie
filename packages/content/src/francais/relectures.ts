@@ -24,4 +24,6 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm1-pronoms-personnels', version: 1, lot: 'fr-cm1-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-gn-composition', version: 1, lot: 'fr-cm1-05', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-gn-pronom', version: 1, lot: 'fr-cm1-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-gn-noyau', version: 1, lot: 'fr-cm1-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-adjectif-epithete', version: 1, lot: 'fr-cm1-05', date: '2026-11-25', verdict: 'ok' },
 ];
