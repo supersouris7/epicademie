@@ -577,7 +577,7 @@ const developpement: Notion = {
       choix: ['infantile', 'industrielle', 'urbaine'],
       quote: G_MORTALITE_AFRIQUE,
       explain:
-        'Un enfant sur 13 y meurt avant ses 5 ans : la santé des enfants montre l’inégal développement du monde.',
+        'En 2019, selon l’ONU, un enfant sur 13 y mourait avant ses 5 ans : la santé des enfants montre l’inégal développement du monde.',
       src: MORTALITE,
     },
     {

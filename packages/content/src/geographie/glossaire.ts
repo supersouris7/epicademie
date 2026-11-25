@@ -1469,7 +1469,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'mortalite-infantile',
     word: 'mortalité infantile',
     forms: ['mortalité infantile'],
-    definition: 'Les décès des jeunes enfants, rapportés au nombre de naissances.',
+    definition: 'Les décès d’enfants de moins d’un an, comptés pour 1 000 naissances.',
     example: 'Quand les vaccins et les soins progressent, la mortalité infantile recule.',
   },
   {
