@@ -493,4 +493,32 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Un petit mot qui dit combien de fois on fait une chose.',
     example: 'always (toujours), sometimes (parfois), never (jamais).',
   },
+  {
+    id: 'matiere-scolaire',
+    word: 'matière',
+    forms: ['matière', 'matières'],
+    definition: 'Ce qu’on étudie à l’école : les maths, l’histoire, la musique…',
+    example: 'English and maths : l’anglais et les maths.',
+  },
+  {
+    id: 'some-mot',
+    word: 'some',
+    forms: ['some'],
+    definition: 'Petit mot anglais qui veut dire « du, de la, des » : une quantité qu’on ne précise pas.',
+    example: 'There is some milk. = Il y a du lait.',
+  },
+  {
+    id: 'indenombrable',
+    word: 'nom indénombrable',
+    forms: ['nom indénombrable', 'noms indénombrables', 'indénombrable'],
+    definition: 'Nom d’une chose qu’on ne compte pas une par une, comme l’eau ou le riz.',
+    example: 'water, rice : on ne les compte pas : some water, some rice.',
+  },
+  {
+    id: 'i-d-like',
+    word: 'I’d like',
+    forms: ['I’d like'],
+    definition: 'Forme courte de « I would like » : je voudrais.',
+    example: 'I’d like some water, please. = Je voudrais de l’eau, s’il te plaît.',
+  },
 ];
