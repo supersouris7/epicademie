@@ -190,7 +190,8 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       `Après ${e.nom}, sans que rien ne s’échappe : volume ${ensuite} cm³.`,
     ],
   };
-  if (rng.int(0, 1) === 0) {
+  // La masse n’est demandée que si elle diffère du volume final : sinon, recopier le volume donnerait la réponse.
+  if (e.m !== e.ensuite && rng.int(0, 1) === 0) {
     return {
       prompt: `Lis l’expérience. Quelle est la masse de ${e.apres} après le changement d’état, en grammes ?`,
       figure,

@@ -26,6 +26,6 @@ export const SOURCES: readonly Source[] = [
   tlfi('sature', 'saturé', 'satur%C3%A9'),
   tlfi('solubilite', 'solubilité', 'solubilit%C3%A9'),
   tlfi('miscible', 'miscible', 'miscible'),
-  tlfi('limpide', 'limpide', 'limpide'),
   { ...academie('eutectique', 'eutectique'), consultedOn: '2026-11-26' },
+  { ...academie('limpide', 'limpide'), consultedOn: '2026-11-26' },
 ];

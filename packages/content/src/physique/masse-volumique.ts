@@ -30,7 +30,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
       prompt: `La masse volumique de la substance ${s} est de ${k} grammes pour 1 cm³. Que signifie cette phrase ?`,
       answer,
       traps: t,
-      hint: '« Volumique » : pour un volume de 1 cm³.',
+      hint: '« Volumique » parle de volume : à quel volume correspond la masse indiquée ?',
       steps: ['La masse volumique est la masse de 1 cm³.', `Donc **${bon}**.`],
       targetSeconds: 30,
     };
@@ -118,7 +118,8 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   if (type === 0) {
     const k = rng.int(2, 9);
     const v0 = rng.int(3, 8) * 10;
-    const v = rng.int(2, 12);
+    // Volume différent de la masse d’1 cm³ : recopier le volume ne doit pas donner la réponse.
+    const v = rng.pick([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].filter((x) => x !== k));
     const m = k * v;
     return {
       prompt: `Un objet a une masse de ${m} g. Dans une éprouvette, l’eau passe de ${v0} mL à ${v0 + v} mL quand on l’immerge (1 mL = 1 cm³). Quelle est la masse de 1 cm³ de sa substance, en grammes ?`,

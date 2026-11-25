@@ -78,7 +78,7 @@ export const FAITS: readonly Fait[] = [
   prog('identifier-corps-purs', 'exploiter la température de changement d’état pour identifier des corps purs.'),
   fait('paliers', PROGRAMME_C3, 'identifier les éventuels paliers de température lors des changements d’état.'),
   fait('palier-corps-pur', 'academie-eutectique', 'comme celle des corps purs, à température constante'),
-  tlfi('limpide', 'limpide', 'Qui est clair, transparent.'),
+  fait('limpide', 'academie-limpide', 'D’une clarté, d’une transparence que rien ne trouble.'),
   // Masse volumique.
   tlfi('masse-volumique', 'volumique', 'Masse volumique. Masse de l’unité de volume.'),
   prog(
