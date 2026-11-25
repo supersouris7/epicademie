@@ -1,5 +1,6 @@
 import type { Chapter, Skill } from '../types.ts';
 import { choice } from '../build.ts';
+import { SKILLS as AGE_INDUSTRIEL } from './age-industriel.ts';
 import { SKILLS as AVANT_LA_FRANCE } from './avant-la-france.ts';
 import { SKILLS as TEMPS_DES_ROIS } from './le-temps-des-rois.ts';
 import { SKILLS as REVOLUTION_EMPIRE } from './revolution-empire.ts';
@@ -208,5 +209,6 @@ export const HISTOIRE_CHAPTERS: readonly Chapter[] = [
     skillOf('hcm2-reperes', 'Repères de CM2', CM2, 'CM2'),
   ]),
   chapter('hcm2-temps-republique', 'cm2', 'Le temps de la République', TEMPS_REPUBLIQUE),
+  chapter('hcm2-age-industriel', 'cm2', 'L’âge industriel en France', AGE_INDUSTRIEL),
   chapter('h6-reperes', '6e', 'L’Antiquité', [skillOf('h6-reperes', 'Repères de 6e', SIXIEME, 'sixième')]),
 ];
