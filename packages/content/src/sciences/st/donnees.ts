@@ -676,6 +676,23 @@ export const FAITS: readonly Fait[] = [
     citation: 'Le chauffage individuel au bois représente la première source d’énergie renouvelable en France',
   },
   {
+    id: 'enr-bois-condition',
+    source: 'ecologie-energies-renouvelables',
+    citation:
+      'Il s’agit d’une source d’énergie considérée comme renouvelable, dans la mesure où la forêt est gérée de façon durable.',
+  },
+  {
+    id: 'enr-geothermie',
+    source: 'ecologie-energies-renouvelables',
+    citation: 'exploitent toutes la chaleur de la croûte terrestre',
+  },
+  { id: 'vent-def', source: 'cnrtl-vent', citation: 'Déplacement d’air plus ou moins important' },
+  {
+    id: 'maree-def',
+    source: 'cnrtl-maree',
+    citation: 'Mouvement alternatif, périodique et journalier du niveau de la mer',
+  },
+  {
     id: 'fossile-combustibles',
     source: 'academie-fossile',
     citation:

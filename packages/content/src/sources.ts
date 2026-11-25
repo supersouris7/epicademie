@@ -1120,6 +1120,8 @@ export const SOURCES: readonly Source[] = [
   },
   tlfi('trajectoire', 'trajectoire', 'trajectoire'),
   tlfi('vitesse', 'vitesse', 'vitesse'),
+  tlfi('vent', 'vent', 'vent'),
+  tlfi('maree', 'marée', 'mar%C3%A9e'),
   academie('fossile', 'fossile'),
   academie('charbon', 'charbon'),
   academie('petrole', 'pétrole'),

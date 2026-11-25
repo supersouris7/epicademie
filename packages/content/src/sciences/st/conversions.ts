@@ -13,9 +13,30 @@ const NOM: Record<Forme, string> = {
   electrique: 'énergie électrique',
 };
 const ADJ: Record<Forme, readonly string[]> = {
-  pesanteur: ['pesanteur', 'de pesanteur', 'énergie de pesanteur', 'l’énergie de pesanteur'],
-  cinetique: ['cinétique', 'cinetique', 'énergie cinétique', 'l’énergie cinétique'],
-  electrique: ['électrique', 'electrique', 'énergie électrique', 'l’énergie électrique'],
+  pesanteur: [
+    'pesanteur',
+    'de pesanteur',
+    'énergie de pesanteur',
+    'l’énergie de pesanteur',
+    'energie de pesanteur',
+    'de l’énergie de pesanteur',
+  ],
+  cinetique: [
+    'cinétique',
+    'cinetique',
+    'énergie cinétique',
+    'l’énergie cinétique',
+    'energie cinetique',
+    'de l’énergie cinétique',
+  ],
+  electrique: [
+    'électrique',
+    'electrique',
+    'énergie électrique',
+    'l’énergie électrique',
+    'energie electrique',
+    'de l’énergie électrique',
+  ],
 };
 const INDICE: Record<Forme, string> = {
   pesanteur: 'elle dépend de l’altitude',
@@ -197,8 +218,8 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   const bon = entree ? d.de : d.vers;
   const { answer, traps } = saisie(
     ADJ[bon],
-    FORMES.filter((f) => f !== bon).map(
-      (f) => [ADJ[f][0] ?? '', `L’${NOM[f]} ? Non : ${INDICE[f]}. Regarde bien ce montage. ${d.why}`] as const,
+    FORMES.filter((f) => f !== bon).flatMap((f) =>
+      ADJ[f].map((v) => [v, `L’${NOM[f]} ? Non : ${INDICE[f]}. Regarde bien ce montage. ${d.why}`] as const),
     ),
   );
   return {
@@ -214,6 +235,8 @@ const niveau4 = (rng: Rng): QuestionDraft => {
 const niveau5 = (rng: Rng): QuestionDraft => {
   const haut = rng.pick([80, 100, 120]);
   const bas = rng.pick([20, 30, 40]);
+  const rangHaut = rng.int(1, 2);
+  const [essai1, essai2] = rangHaut === 1 ? [haut, bas] : [bas, haut];
   const figure = {
     kind: 'document' as const,
     title: 'Notre maquette de barrage',
@@ -222,7 +245,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       'L’eau sort par un tuyau et tombe sur les pales d’une roue.',
       'La roue tourne et entraîne un petit générateur.',
       'Un voyant relié au générateur s’allume.',
-      `Essai 1 : bouteille à ${haut} cm du sol. Essai 2 : bouteille à ${bas} cm du sol.`,
+      `Essai 1 : bouteille à ${essai1} cm du sol. Essai 2 : bouteille à ${essai2} cm du sol.`,
       'La roue reste au même endroit pendant les deux essais.',
     ],
   };
@@ -243,10 +266,10 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     };
   }
   if (t === 1) {
-    const bon = `à l’essai 1, à ${haut} cm`;
+    const bon = `à l’essai ${rangHaut}, à ${haut} cm`;
     const { answer, traps } = choice(rng, bon, [
       {
-        label: `à l’essai 2, à ${bas} cm`,
+        label: `à l’essai ${3 - rangHaut}, à ${bas} cm`,
         why: 'L’énergie de pesanteur dépend de l’altitude : plus bas, il y en a moins.',
       },
       {
@@ -269,7 +292,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     ['électrique', 'L’énergie électrique apparaît après, grâce au générateur.'],
   ]);
   return {
-    prompt: 'Lis le compte rendu. Quelle forme d’énergie a la roue pendant qu’elle tourne ? Écris son nom.',
+    prompt: 'Lis le compte rendu. Quelle forme d’énergie la roue gagne-t-elle en se mettant à tourner ? Écris son nom.',
     figure,
     answer,
     traps,

@@ -26,7 +26,11 @@ const NON = [nonRenouvelable('le charbon'), nonRenouvelable('le pétrole'), nonR
 const POURQUOI_OUI =
   'C’est une ressource renouvelable : on la considère comme inépuisable à l’échelle d’une vie humaine.';
 const POURQUOI_NON = 'C’est un combustible fossile : ses stocks diminuent, il n’est pas renouvelable.';
-const pourquoi = (x: Ressource) => (x.renouvelable ? POURQUOI_OUI : POURQUOI_NON);
+const POURQUOI_BOIS = `${POURQUOI_OUI} Pour le bois, il faut que la forêt soit gérée de façon durable.`;
+const pourquoi = (x: Ressource) => {
+  if (!x.renouvelable) return POURQUOI_NON;
+  return x.nom === 'le bois' ? POURQUOI_BOIS : POURQUOI_OUI;
+};
 const maj = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 /** Le charbon et la houille désignent la même famille : jamais les deux dans une même question. */
 const deuxFossiles = (rng: Rng): Ressource[] => [rng.pick([NON[0], NON[2]]), NON[1]];
@@ -58,13 +62,24 @@ const RAISONS = [
   {
     q: 'Pourquoi dit-on que le vent est une ressource renouvelable ?',
     bon: 'on le considère comme inépuisable à l’échelle d’une vie humaine',
-    faux: ['il est invisible', 'il ne sert qu’à une seule personne', 'ses stocks diminuent sous la terre'],
-    why: 'Renouvelable veut dire : considérée comme inépuisable à l’échelle d’une vie humaine.',
+    faux: [
+      ['il est invisible', 'Voir ou ne pas voir une ressource ne dit rien sur la quantité disponible.'],
+      ['il ne sert qu’à une seule personne', 'Le nombre d’utilisateurs ne rend pas une ressource renouvelable.'],
+      ['ses stocks diminuent sous la terre', 'Des stocks qui diminuent, c’est le cas des énergies fossiles.'],
+    ],
+    why: 'Une ressource est renouvelable quand on la considère comme inépuisable à l’échelle d’une vie humaine.',
   },
   {
     q: 'Pourquoi dit-on que le pétrole n’est pas renouvelable ?',
     bon: 'ses stocks diminuent',
-    faux: ['il est liquide', 'il sert aux transports', 'il vient du sous-sol, donc il revient chaque jour'],
+    faux: [
+      ['il est liquide', 'L’eau d’une chute est liquide aussi, et elle est renouvelable.'],
+      ['il sert aux transports', 'L’usage d’une ressource ne dit pas si elle peut manquer.'],
+      [
+        'il vient du sous-sol, donc il revient chaque jour',
+        'Le pétrole ne revient pas chaque jour : ses stocks diminuent.',
+      ],
+    ],
     why: 'Le pétrole est une énergie fossile : ses stocks diminuent.',
   },
 ] as const;
@@ -76,7 +91,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
     const { answer, traps: tr } = choice(
       rng,
       bon.nom,
-      autres.map((f) => ({ label: f.nom, why: `${maj(f.nom)} : ${POURQUOI_OUI}` })),
+      autres.map((f) => ({ label: f.nom, why: `${maj(f.nom)} : ${pourquoi(f)}` })),
     );
     return {
       prompt: 'Parmi ces quatre ressources, laquelle est un combustible fossile ?',
@@ -95,7 +110,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
   const { answer, traps: tr } = choice(
     rng,
     x.bon,
-    x.faux.map((label) => ({ label, why: x.why })),
+    x.faux.map(([label, erreur]) => ({ label, why: `${erreur} ${x.why}` })),
   );
   return {
     prompt: x.q,
@@ -187,7 +202,7 @@ const USAGES: Record<string, string> = {
   'le bois': 'Au chalet, un poêle brûle le bois.',
   'le charbon': 'Une ancienne chaudière brûle le charbon.',
   'le pétrole': 'Le bus du village roule avec un carburant tiré du pétrole.',
-  'la houille': 'Dans le musée, une machine à vapeur brûlait la houille.',
+  'la houille': 'Au musée, une vieille machine à vapeur brûle encore de la houille.',
 };
 
 const niveau5 = (rng: Rng): QuestionDraft => {
@@ -221,7 +236,9 @@ const niveau5 = (rng: Rng): QuestionDraft => {
   const court = fossile.nom.replace(/^l[ea] /, '');
   const { answer, traps: tr } = saisie(
     court === 'houille' ? [court, fossile.nom, 'charbon', 'le charbon'] : [court, fossile.nom],
-    renouv.map((x) => [x.nom, `${maj(x.nom)} : ${POURQUOI_OUI}`] as const),
+    renouv.flatMap((x) =>
+      [x.nom, x.nom.replace(/^(le |la |les |une )/, '')].map((n) => [n, `${maj(x.nom)} : ${pourquoi(x)}`] as const),
+    ),
   );
   return {
     prompt: 'Lis le texte. Quelle ressource utilisée n’est pas renouvelable ? Écris son nom.',
@@ -243,10 +260,10 @@ export const renouvelables: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'Une ressource **renouvelable** est considérée comme inépuisable à l’échelle d’une vie humaine : le Soleil, le vent, les chutes d’eau, les **marées**, la chaleur de la Terre, le bois.',
+      'Une ressource **renouvelable** est considérée comme inépuisable à l’échelle d’une vie humaine : le Soleil, le vent, les chutes d’eau, les **marées**, la chaleur de la Terre, le bois d’une forêt gérée de façon durable.',
       'Le charbon et le pétrole sont des combustibles **fossiles** : leurs stocks diminuent. Ils ne sont pas renouvelables.',
     ],
-    source: `${PROGRAMME} : « sensibilisés au caractère renouvelable ou non, à l’échelle temporelle de la vie humaine, des ressources en énergie ». Ministère de la Transition écologique : « alimentées par le soleil, le vent, la chaleur de la terre, les chutes d’eau, les marées » ; « considérées comme inépuisables à l’échelle du temps humain » ; « énergies fossiles […] dont les stocks diminuent » ; « Le chauffage individuel au bois représente la première source d’énergie renouvelable en France ». Académie française : « La houille, le pétrole sont des combustibles fossiles » ; « Le charbon est une roche fossile » ; « Huile minérale d’origine naturelle, issue de l’accumulation et de la transformation de matière organique » (pétrole).`,
+    source: `${PROGRAMME} : « sensibilisés au caractère renouvelable ou non, à l’échelle temporelle de la vie humaine, des ressources en énergie ». Ministère de la Transition écologique : « alimentées par le soleil, le vent, la chaleur de la terre, les chutes d’eau, les marées » ; « considérées comme inépuisables à l’échelle du temps humain » ; « énergies fossiles […] dont les stocks diminuent » ; « Le chauffage individuel au bois représente la première source d’énergie renouvelable en France » ; bois : « considérée comme renouvelable, dans la mesure où la forêt est gérée de façon durable ». CNRTL : vent, « Déplacement d’air » ; marée, « Mouvement alternatif, périodique et journalier du niveau de la mer ». Ministère, géothermie : « exploitent toutes la chaleur de la croûte terrestre ». Académie française : « La houille, le pétrole sont des combustibles fossiles » ; « Le charbon est une roche fossile » ; « Huile minérale d’origine naturelle, issue de l’accumulation et de la transformation de matière organique » (pétrole).`,
     sources: [
       PROGRAMME,
       'ecologie-energies-renouvelables',
@@ -254,6 +271,8 @@ export const renouvelables: Skill = {
       'academie-fossile',
       'academie-charbon',
       'academie-petrole',
+      'cnrtl-vent',
+      'cnrtl-maree',
     ],
   },
   generate: (rng, level) => (NIVEAUX[level - 1] ?? niveau1)(rng),

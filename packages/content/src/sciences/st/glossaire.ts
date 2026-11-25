@@ -542,6 +542,20 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'Le charbon est un combustible.',
   },
   {
+    id: 'st-houille',
+    word: 'houille',
+    forms: ['houille'],
+    definition: 'Une sorte de charbon, que l’on extrait du sous-sol.',
+    example: 'La houille est un combustible fossile.',
+  },
+  {
+    id: 'st-durable',
+    word: 'de façon durable',
+    forms: ['de façon durable'],
+    definition: 'En prenant soin que la ressource reste disponible pour plus tard.',
+    example: 'Gérer une forêt de façon durable, c’est penser aux arbres de demain.',
+  },
+  {
     id: 'st-axe-rotation',
     word: 'axe de rotation',
     forms: ['axe de rotation', 'axe'],
