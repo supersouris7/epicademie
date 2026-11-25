@@ -315,15 +315,15 @@ const debuts: Notion = {
           explain: 'Les précipitations étaient plus régulièrement réparties : le climat a donc changé.',
         },
         {
-          q: 'Comment est la région décrite aujourd’hui ?',
+          q: 'Aujourd’hui, comment est la région dont parle le texte ?',
           a: 'dominée par des prairies arides',
           wrong: wrong(
             ['arrosée régulièrement toute l’année', 'C’était le cas il y a environ 200 000 ans.'],
             ['couverte de villes anciennes', 'Le texte ne parle pas de villes.'],
             ['recouverte par la mer', 'Le texte ne parle pas de la mer.'],
           ),
-          ...P.paysages,
-          explain: 'La ligne 2 décrit des prairies arides.',
+          ...P.prairies,
+          explain: 'La ligne 2 décrit des prairies arides, c’est-à-dire très sèches.',
         },
         {
           q: 'D’après le texte, que faisaient les premiers Homo sapiens face à ce milieu changeant ?',
@@ -349,7 +349,7 @@ const neolithique: Notion = {
   hint: 'Cherche ce qui change dans la vie des groupes : où ils habitent et comment ils se nourrissent.',
   memo: [
     'Au **néolithique**, des groupes humains se fixent : la **sédentarisation** remplace peu à peu la vie **nomade**.',
-    'Ils pratiquent l’**agriculture** et l’**élevage**, ce qui montre leur action sur l’environnement ; par exemple, des chèvres sont domestiquées au Proche et au Moyen-Orient il y a 10 500 ans. Plusieurs foyers se trouvaient dans le **Croissant fertile**.',
+    'Ils pratiquent l’**agriculture** et l’**élevage**, ce qui montre leur action sur l’environnement ; par exemple, des chèvres sont domestiquées au Proche et au Moyen-Orient il y a 10 500 ans. Les chercheurs ont repéré plusieurs foyers de domestication des chèvres dans le **Croissant fertile**.',
     'Ces changements ne se produisent pas au même moment partout : c’est une « révolution » très étalée dans le temps.',
   ],
   faits: [
@@ -431,7 +431,7 @@ const neolithique: Notion = {
       gap: [
         'L’agriculture arrive sur le territoire de la France actuelle avec des pionniers qui bâtissent les premiers ',
         '.',
-        ['villages'],
+        ['villages', 'village'],
       ],
       ...P.paysans,
       explain:
@@ -445,7 +445,11 @@ const neolithique: Notion = {
         ['que l’empire romain s’effondre', 'Cet événement est bien plus tardif.'],
         ['qu’Homo sapiens vient d’apparaître', 'Homo sapiens existe bien avant le néolithique.'],
       ),
-      gap: ['En cultivant et en élevant, les humains transforment leur ', '.', ['environnement', 'milieu']],
+      gap: [
+        'En coupant des arbres pour agrandir leurs champs, les humains transforment la nature qui les entoure : leur ',
+        '.',
+        ['environnement', 'milieu', 'paysage'],
+      ],
       ...P.environnement,
       explain: 'En cultivant et en élevant, les humains modifient leur environnement.',
     },
@@ -536,7 +540,7 @@ const neolithique: Notion = {
     },
     {
       q: 'Quel adjectif désigne un groupe attaché de manière fixe à un lieu ?',
-      accepted: ['sédentaire', 'sedentaire', 'sédentaires', 'sedentaires'],
+      accepted: ['sédentaire', 'sedentaire', 'sédentaires', 'sedentaires', 'sédentarisé'],
       traps: traps(
         ['nomade', 'Nomade veut dire le contraire.'],
         ['migrant', 'Un migrant se déplace d’un lieu à un autre.'],
@@ -683,7 +687,19 @@ const etats: Notion = {
       gap: [
         'L’écriture apparaît en Mésopotamie dans des villes qui se gouvernent elles-mêmes, appelées des ',
         '.',
-        ['cités-États', 'cités-etats', 'cités États', 'cités-Etats', 'cites-etats', 'cités états'],
+        [
+          'cités-États',
+          'cités-etats',
+          'cités États',
+          'cités-Etats',
+          'cites-etats',
+          'cités états',
+          'cites etats',
+          'cité-État',
+          'villes-États',
+          'villes-etats',
+          'villes États',
+        ],
       ],
       ...P.citesEtats,
       explain: 'Uruk, au pays de Sumer, est l’une de ces cités-États.',
@@ -775,7 +791,11 @@ const etats: Notion = {
         ['en Gaule', 'La Gaule ne comprend ni l’Égypte ni la Mésopotamie.'],
         ['dans la Chine des Han', 'La Chine est loin de l’Égypte et de la Mésopotamie.'],
       ),
-      gap: ['Les premiers États et les premières écritures s’étudient dans l’', ' ancien.', ['Orient']],
+      gap: [
+        'Les premiers États et les premières écritures s’étudient dans l’',
+        ' ancien.',
+        ['Orient', 'Proche-Orient'],
+      ],
       ...P.orient,
       explain: 'L’Égypte et la Mésopotamie appartiennent à l’Orient ancien.',
     },
@@ -878,7 +898,7 @@ const etats: Notion = {
     },
     {
       q: 'Quelle matière sert surtout de support à l’écriture en Mésopotamie ? (un mot)',
-      accepted: ['argile', 'l’argile', 'de l’argile'],
+      accepted: ['argile', 'l’argile', 'de l’argile', 'glaise', 'la glaise'],
       traps: traps(
         ['papyrus', 'Le papyrus est le support typique de l’Égypte.'],
         ['papier', 'Le papier n’est pas le support de la Mésopotamie.'],

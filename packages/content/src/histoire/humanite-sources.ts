@@ -52,6 +52,10 @@ export const PREUVES = {
     'cnrs-paysages-sapiens',
     'nos ancêtres adaptaient leurs pratiques aux contraintes de leur environnement changeant',
   ),
+  prairies: cnrs(
+    'cnrs-paysages-sapiens',
+    'le centre de l’Afrique du Sud est actuellement dominé par de vastes prairies arides',
+  ),
   pluies: cnrs(
     'cnrs-paysages-sapiens',
     'Les précipitations étaient aussi plus régulièrement réparties au cours de l’année',

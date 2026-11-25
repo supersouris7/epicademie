@@ -1109,7 +1109,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'domestication',
     word: 'domestication',
     forms: ['domestication'],
-    definition: 'L’apprivoisement des animaux.',
+    definition: 'L’apprivoisement des animaux : les habituer à vivre auprès des humains, qui les élèvent.',
     example: 'La domestication de la chèvre est très ancienne.',
   },
   {
@@ -1139,5 +1139,12 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['papyrus'],
     definition: 'Un support d’écriture très utilisé en Égypte ancienne, souvent en rouleau.',
     example: 'Le scribe déroule un papyrus.',
+  },
+  {
+    id: 'aride',
+    word: 'aride',
+    forms: ['aride', 'arides'],
+    definition: 'Très sec, parce qu’il pleut peu.',
+    example: 'Peu de plantes poussent sur un sol aride.',
   },
 ];
