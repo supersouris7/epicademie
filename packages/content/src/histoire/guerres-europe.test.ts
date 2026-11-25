@@ -60,6 +60,31 @@ describe('histoire cm2 — Des guerres mondiales à l’Union européenne', () =
     }
   });
 
+  it('accepte « Holocauste » et affiche la source qui nomme Pétain', () => {
+    const seconde = NOTIONS[1]!;
+    const shoah = seconde.libres.find((l) => l.accepted.includes('Shoah'))!;
+    expect(shoah.accepted).toContain('Holocauste');
+    expect(seconde.faits.find((f) => f.a === 'le maréchal Pétain')?.quote).toContain('maréchal Pétain');
+  });
+
+  it('pose des questions univoques et sobres', () => {
+    const [premiere, seconde] = NOTIONS as [(typeof NOTIONS)[number], (typeof NOTIONS)[number]];
+    const usa = premiere.libres.find((l) => l.accepted.includes('États-Unis'))!;
+    expect(usa.q).toContain('Washington');
+    expect(usa.traps.map((t) => t.text)).toEqual(['Royaume-Uni', 'Russie']);
+    expect(seconde.faits.find((f) => f.a === 'les Roms')!.gap[0]).toContain('En plus des Juifs');
+    const wrong = [...seconde.faits, ...seconde.docs.flatMap((d) => d.qs)].flatMap((q) => q.wrong.map((w) => w.label));
+    for (const w of wrong) expect(w).not.toMatch(/Gaulois|poilus|vol$/);
+  });
+
+  it('donne dans le mémo chaque date des frises de mémoire, et le 27 janvier', () => {
+    const memoire = NOTIONS[3]!;
+    const memo = memoire.memo.join(' ');
+    for (const r of memoire.frise!) expect(memo, r.date).toContain(r.date);
+    expect(memo).toContain('27 janvier');
+    expect(memo).toContain('Auschwitz');
+  });
+
   it('prévoit des erreurs typiques expliquées et assez de matière', () => {
     for (const n of NOTIONS) {
       expect(n.faits.length, n.id).toBeGreaterThanOrEqual(6);

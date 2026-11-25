@@ -40,7 +40,7 @@ const premiere: Notion = {
         { label: 'la guerre froide', why: 'Elle commence après la Seconde Guerre mondiale.' },
       ],
       gap: ['La Première Guerre mondiale est aussi appelée la Grande ', '.', ['Guerre', 'guerre']],
-      explain: 'Les contemporains l’ont appelée la Grande Guerre.',
+      explain: 'Les gens de l’époque l’ont appelée la Grande Guerre.',
     },
     {
       ...P.cessez,
@@ -158,11 +158,11 @@ const premiere: Notion = {
     },
     {
       ...P.etatsUnis,
-      q: 'en 1917, quel grand pays d’Amérique entre en guerre ? (deux mots)',
+      q: 'en 1917, quel pays, dont la capitale est Washington, entre en guerre ? (deux mots)',
       accepted: ['les États-Unis', 'États-Unis', 'Etats-Unis', 'les Etats-Unis'],
       traps: [
-        { text: 'Canada', why: 'Le grand pays attendu ici est le voisin du sud du Canada.' },
-        { text: 'Brésil', why: 'Cherche un pays d’Amérique du Nord.' },
+        { text: 'Royaume-Uni', why: 'Le Royaume-Uni est engagé dans la guerre dès 1914.' },
+        { text: 'Russie', why: 'La Russie est engagée dans la guerre dès 1914.' },
       ],
       explain: 'L’entrée en guerre des États-Unis date de 1917.',
     },
@@ -239,8 +239,8 @@ const seconde: Notion = {
   hint: 'Relis le mémo : repère les dates, la Résistance, la collaboration et le génocide des Juifs.',
   memo: [
     'La **Seconde Guerre mondiale** commence en 1939, quand l’Allemagne envahit la Pologne. En 1940, la France est battue et l’**Occupation** commence. Le **régime de Vichy**, dirigé par le maréchal Pétain, choisit la **collaboration** : il se met au service de l’occupant.',
-    'D’autres refusent. Le 18 juin 1940, le général de Gaulle appelle à continuer le combat : c’est la **France libre**, devenue la **France combattante**. En France, la **Résistance** lutte en secret. Jean Moulin cherche à l’unir.',
-    'L’Allemagne **nazie** commet un **génocide** contre les Juifs : la **Shoah**. D’autres populations, comme les **Roms**, sont persécutées. Les Alliés débarquent en Normandie en 1944. La guerre finit en Europe le 8 mai 1945, puis en Asie le 2 septembre.',
+    'D’autres refusent. Le 18 juin 1940, le général de Gaulle appelle à continuer le combat : c’est la **France libre**, devenue la **France combattante** en 1942. En France, la **Résistance** lutte en secret. Jean Moulin cherche à l’unir.',
+    'L’Allemagne **nazie** commet un **génocide** contre les Juifs : la **Shoah**. Les **Roms** sont eux aussi victimes d’un génocide, et d’autres populations sont persécutées. Les Alliés débarquent en Normandie en 1944. La guerre finit en Europe le 8 mai 1945, puis en Asie le 2 septembre, avec la **capitulation** du Japon : il s’avoue vaincu.',
   ],
   faits: [
     {
@@ -266,6 +266,18 @@ const seconde: Notion = {
       ],
       gap: ['Le 18 juin 1940, le général de ', ' lance un appel depuis Londres.', ['Gaulle', 'gaulle']],
       explain: 'Au micro de la BBC, à Londres, de Gaulle appelle les soldats à le rejoindre.',
+    },
+    {
+      ...P.vichy,
+      q: 'Quel maréchal est à la tête du gouvernement au début du régime de Vichy ?',
+      a: 'le maréchal Pétain',
+      wrong: [
+        { label: 'le général de Gaulle', why: 'De Gaulle refuse la défaite et agit depuis Londres.' },
+        { label: 'Jean Moulin', why: 'Jean Moulin est un résistant.' },
+        { label: 'Napoléon Bonaparte', why: 'Napoléon vit bien avant, au temps de la Révolution et de l’Empire.' },
+      ],
+      gap: ['Le régime de Vichy est dirigé par le maréchal ', '.', ['Pétain', 'pétain', 'Petain', 'petain']],
+      explain: 'En 1940, le gouvernement du maréchal Pétain met en place le régime de Vichy.',
     },
     {
       ...P.collaboration,
@@ -300,7 +312,7 @@ const seconde: Notion = {
         { label: 'le Débarquement', why: 'Le Débarquement est une opération des Alliés en 1944.' },
         { label: 'la collaboration', why: 'La collaboration est le fait de servir l’occupant.' },
       ],
-      gap: ['Le génocide des Juifs est appelé la ', '.', ['Shoah', 'shoah']],
+      gap: ['Pour le génocide des Juifs, l’école préfère au mot « Holocauste » le mot « ', ' ».', ['Shoah', 'shoah']],
       explain: 'Le génocide des Juifs par les nazis s’appelle la Shoah.',
     },
     {
@@ -309,10 +321,16 @@ const seconde: Notion = {
       a: 'les Roms',
       wrong: [
         { label: 'les soldats alliés', why: 'Ce sont des combattants : on cherche une population persécutée.' },
-        { label: 'les Gaulois', why: 'Les Gaulois vivent dans l’Antiquité.' },
-        { label: 'les poilus', why: 'Les poilus sont les soldats de 1914-1918.' },
+        {
+          label: 'les Britanniques',
+          why: 'Les Britanniques combattent l’Allemagne : ils ne subissent pas de génocide.',
+        },
+        {
+          label: 'les Américains',
+          why: 'Les Américains combattent avec les Alliés : ils ne subissent pas de génocide.',
+        },
       ],
-      gap: ['Des centaines de milliers de ', ' sont exterminés pendant la guerre.', ['Roms', 'roms']],
+      gap: ['En plus des Juifs, les nazis exterminent aussi des centaines de milliers de ', '.', ['Roms', 'roms']],
       explain: 'Les Roms sont eux aussi persécutés et exterminés.',
     },
     {
@@ -337,7 +355,7 @@ const seconde: Notion = {
         { label: 'l’Allemagne', why: 'L’Allemagne capitule plus tôt, en mai 1945.' },
       ],
       gap: ['Le 2 septembre 1945, la capitulation du ', ' met fin à la guerre.', ['Japon', 'japon']],
-      explain: 'La guerre continue en Asie jusqu’à la capitulation japonaise.',
+      explain: 'La guerre continue en Asie jusqu’à la capitulation du Japon : il s’avoue vaincu.',
     },
   ],
   paires3: [
@@ -393,12 +411,24 @@ const seconde: Notion = {
     {
       ...P.motShoah,
       q: 'quel mot désigne le génocide des Juifs ? (un mot)',
-      accepted: ['Shoah', 'la Shoah', 'shoah', 'la shoah'],
+      accepted: [
+        'Shoah',
+        'la Shoah',
+        'shoah',
+        'la shoah',
+        'Holocauste',
+        'l’Holocauste',
+        "l'Holocauste",
+        'holocauste',
+        'l’holocauste',
+        "l'holocauste",
+      ],
       traps: [
         { text: 'Occupation', why: 'L’Occupation est la présence de l’armée ennemie.' },
         { text: 'armistice', why: 'Un armistice arrête les combats.' },
       ],
-      explain: 'La Shoah est le génocide des Juifs par les nazis.',
+      explain:
+        'La Shoah est le génocide des Juifs par les nazis. On dit aussi « Holocauste », mais on préfère le mot « Shoah ».',
     },
     {
       ...P.france1939,
@@ -461,19 +491,20 @@ const seconde: Notion = {
           a: 'parce qu’elle est juive',
           wrong: [
             {
-              label: 'parce qu’elle a commis un vol',
-              why: 'Le texte ne parle d’aucune faute : la famille est visée parce qu’elle est juive.',
+              label: 'parce qu’elle a quitté Paris',
+              why: 'Le texte situe la famille à Paris : elle est arrêtée uniquement parce qu’elle est juive.',
             },
             {
-              label: 'parce qu’elle combat à l’armée',
-              why: 'Sarah est une enfant : la famille n’est pas arrêtée pour avoir combattu.',
+              label: 'parce qu’elle a distribué un journal interdit',
+              why: 'Le texte ne parle d’aucun journal : la famille est arrêtée uniquement parce qu’elle est juive.',
             },
           ],
-          explain: 'En juillet 1942, des milliers de Juifs sont arrêtés à Paris, dont des enfants.',
+          explain:
+            'La famille est arrêtée uniquement parce qu’elle est juive. En juillet 1942, des milliers de Juifs sont arrêtés à Paris, dont des enfants.',
         },
         {
           ...P.livrer,
-          q: 'D’après l’histoire, quel pouvoir aide l’occupant à arrêter les Juifs ?',
+          q: 'D’après ce que tu as appris, quel pouvoir aide l’occupant à arrêter les Juifs ?',
           a: 'le régime de Vichy, par sa police',
           wrong: [
             { label: 'la France libre', why: 'La France libre combat l’occupant depuis l’extérieur.' },
@@ -728,8 +759,8 @@ const memoire: Notion = {
   hint: 'Relis le mémo : quel lieu ou quelle date aide à se souvenir de quoi ?',
   memo: [
     'Un **lieu de mémoire** est un lieu dont on a choisi d’entretenir le souvenir. Par exemple : des **tranchées**, les plages du Débarquement, un camp, un musée. On y garde une attitude de **recueillement**.',
-    'Après 1918, des **monuments aux morts** sont construits dans les communes. On y grave les noms. À Paris, le **Soldat inconnu** repose sous l’Arc de Triomphe depuis 1921, et une flamme du souvenir y est allumée depuis 1923.',
-    'Des **dates de commémoration** rappellent le passé : le 11 novembre, le 8 mai, le 27 mai pour la Résistance, un jour de juillet pour les victimes des crimes racistes et antisémites (contre les Juifs), le dernier dimanche d’avril pour la **Déportation**.',
+    'Le 11 novembre 1918, un **armistice** arrête les combats. Ensuite, des **monuments aux morts** sont construits dans les communes. On y grave les noms. À Paris, le **Soldat inconnu** repose sous l’Arc de Triomphe depuis 1921, et une flamme du souvenir y est allumée depuis 1923. Plus tard viennent le débarquement en Normandie (1944), puis la victoire de 1945.',
+    'Des **dates de commémoration** rappellent le passé : le 11 novembre, le 8 mai, le 27 mai pour la Résistance, un jour de juillet pour les victimes des crimes racistes et antisémites (contre les Juifs), le dernier dimanche d’avril pour la **Déportation**. Le 27 janvier, journée de la mémoire des génocides, rappelle la découverte du camp nazi d’**Auschwitz** en 1945.',
   ],
   faits: [
     {
@@ -771,7 +802,7 @@ const memoire: Notion = {
       a: 'des monuments aux morts',
       wrong: [
         { label: 'des châteaux forts', why: 'Les châteaux forts datent du Moyen Âge.' },
-        { label: 'des grands magasins', why: 'Les grands magasins sont des lieux de commerce du XIXe siècle.' },
+        { label: 'des grands magasins', why: 'Les grands magasins sont des commerces apparus au XIXe siècle.' },
         { label: 'des arènes romaines', why: 'Les arènes datent de l’Antiquité.' },
       ],
       gap: ['Après 1918, les communes élèvent des monuments aux ', '.', ['morts', 'Morts']],
@@ -846,11 +877,11 @@ const memoire: Notion = {
     ['Dernier dimanche d’avril', 'le souvenir de la Déportation'],
   ],
   frise: [
+    { ...P.rethondes, label: 'L’armistice est signé à Rethondes', date: '1918' },
     { ...P.inconnu, label: 'Le Soldat inconnu est inhumé à Paris', date: '1921' },
     { ...P.flamme, label: 'La flamme du souvenir est allumée', date: '1923' },
-    { ...P.deportation, label: 'Une loi consacre un jour au souvenir de la Déportation', date: '1954' },
-    { ...P.tousMorts, label: 'Le 11 novembre honore tous les « morts pour la France »', date: '2012' },
-    { ...P.journeeResistance, label: 'La Journée de la Résistance est instaurée', date: '2013' },
+    { ...P.debarquement, label: 'Le débarquement allié en Normandie', date: '1944' },
+    { ...P.victoire, label: 'La victoire sur l’Allemagne nazie', date: '1945' },
   ],
   libres: [
     {
@@ -906,7 +937,7 @@ const memoire: Notion = {
       qs: [
         {
           ...P.noms,
-          q: 'À qui sert surtout ce monument ?',
+          q: 'À quoi sert surtout ce monument ?',
           a: 'à se souvenir des morts de la guerre',
           wrong: [
             { label: 'à indiquer le chemin de l’école', why: 'La liste de noms rappelle des personnes disparues.' },

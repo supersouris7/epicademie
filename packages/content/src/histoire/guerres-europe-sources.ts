@@ -94,7 +94,7 @@ export const PREUVES = {
   ),
   vichy: an(
     'an-1940-1958',
-    "Après l'effondrement de la IIIème République le 10 juillet 1940, le régime autoritaire de Vichy se met en place",
+    "Après l'adoption de la loi accordant les pleins pouvoirs constituants au Gouvernement du maréchal Pétain, le 10 juillet 1940, le régime de Vichy",
   ),
   collaboration: academie(
     'academie-collaboration',

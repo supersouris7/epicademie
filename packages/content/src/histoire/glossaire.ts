@@ -854,6 +854,20 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'La Shoah est un génocide.',
   },
   {
+    id: 'capitulation',
+    word: 'capitulation',
+    forms: ['capitulation', 'capitulations'],
+    definition: 'Le fait de s’avouer vaincu et d’arrêter de combattre.',
+    example: 'Le Japon signe sa capitulation le 2 septembre 1945.',
+  },
+  {
+    id: 'auschwitz',
+    word: 'Auschwitz',
+    forms: ['auschwitz'],
+    definition: 'Un camp nazi de la Seconde Guerre mondiale, découvert le 27 janvier 1945.',
+    example: 'Le 27 janvier rappelle la découverte du camp d’Auschwitz.',
+  },
+  {
     id: 'shoah',
     word: 'Shoah',
     forms: ['shoah', 'la shoah'],
