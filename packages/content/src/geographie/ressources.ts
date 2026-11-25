@@ -128,8 +128,7 @@ const energie: Notion = {
   memo: [
     'L’**énergie** sert à produire de la chaleur, de l’électricité ou du mouvement. Deux grandes familles : les **énergies fossiles** (pétrole, gaz, charbon) et les **énergies renouvelables** (soleil, vent). Le nucléaire utilise l’uranium, tiré lui aussi d’un stock.',
     'Les **hydrocarbures**, ce sont surtout le pétrole et le gaz naturel ; un **méthanier** est un navire qui transporte du gaz. Une **énergie primaire** vient directement d’une source ; une **énergie secondaire**, comme l’électricité, est fabriquée à partir d’une autre.',
-    'Le **bouquet énergétique** d’un pays, c’est la part de chaque source dans sa consommation. Exemple : du pétrole, du nucléaire, de l’éolien.',
-    'L’enjeu au programme : des ressources à ménager (économiser) et à mieux utiliser.',
+    'Le **bouquet énergétique** d’un pays, c’est la part de chaque source dans sa consommation. Exemple : du pétrole, du nucléaire, de l’éolien. L’enjeu au programme : des ressources à ménager (économiser) et à mieux utiliser.',
   ],
   faits: [
     {
@@ -1223,9 +1222,8 @@ const gererRenouveler: Notion = {
   title: 'Gérer et renouveler les ressources',
   hint: 'Pense au temps long : comment utiliser une ressource sans la gaspiller ?',
   memo: [
-    'Un élément de la nature devient une **ressource** quand une société en a besoin et l’utilise.',
     'Le **développement durable** répond aux besoins du présent sans compromettre ceux des générations futures. Il cherche un équilibre entre le social, l’économie et l’environnement. L’idée apparaît en 1987 (rapport Brundtland) et est adoptée au Sommet de la Terre de Rio en 1992. L’ONU a fixé en 2015 des objectifs pour 2030, les **ODD** (exemple : l’eau propre et l’**assainissement**).',
-    'Pour ménager les ressources : consommer moins (**sobriété**), mieux utiliser, **recycler** et développer les énergies renouvelables. Toutes les matières ne peuvent pas être recyclées.',
+    'Un élément de la nature devient une **ressource** quand une société en a besoin et l’utilise. Pour ménager les ressources : consommer moins (**sobriété**), mieux utiliser, **recycler** et développer les énergies renouvelables. Toutes les matières ne peuvent pas être recyclées.',
     'La **transition énergétique** : passer d’énergies tirées de stocks (pétrole, gaz, charbon, uranium) à des énergies de flux, qui se renouvellent (vent, soleil, **biomasse**), en consommant mieux.',
   ],
   faits: [
