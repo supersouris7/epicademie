@@ -12,6 +12,7 @@ import { SKILLS as REPERES } from './reperes.ts';
 import { SKILLS as MONDE_HABITE } from './monde-habite.ts';
 import { SKILLS as REPERES_MONDE } from './reperes-monde.ts';
 import { SKILLS as DEMOGRAPHIE } from './demographie.ts';
+import { SKILLS as CHANGEMENT_GLOBAL } from './changement-global.ts';
 import { GEO_FETCHED_ON, PAYS_UE, REGIONS } from './donnees.generated.ts';
 
 /**
@@ -149,5 +150,6 @@ export const GEOGRAPHIE_CHAPTERS: readonly Chapter[] = [
   chapter('g6-monde-habite', '6e', 'Le monde habité', MONDE_HABITE),
   chapter('g6-prefectures', '6e', 'Repères : la France et le monde', REPERES_MONDE),
   chapter('g5-demographie-developpement', '5e', 'Démographie et développement', DEMOGRAPHIE),
+  chapter('g5-changement-global', '5e', 'Changement global et risques', CHANGEMENT_GLOBAL),
   chapter('g3-union-europeenne', '3e', 'L’Union européenne', [euCapitals, euro]),
 ];
