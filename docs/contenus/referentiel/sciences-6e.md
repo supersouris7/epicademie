@@ -23,3 +23,8 @@
 
 Écart au plan : le chapitre « Signal et information » (colonne « fin de sixième » du programme, hors lots ci-dessus) est
 livré avec le lot `st-cm2-01` (couvert, relu).
+
+## À anticiper
+
+Le programme de sciences et technologie de l’arrêté du 5 juin 2026 (annexe 2) s’applique à cette classe à la rentrée
+2027 (article 3, <https://www.education.gouv.fr/sites/default/files/document/bulletin-officiel-ndeg-24-du-11-juin-2026-519026.pdf>). Le programme ci-dessus reste en vigueur en 2026-2027.
