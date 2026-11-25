@@ -690,8 +690,7 @@ const continents: Notion = {
   memo: [
     'Un **continent** est une très grande étendue de terre. Exemple : l’Afrique.',
     'Un **océan** est une immense étendue d’eau salée : Atlantique, Pacifique, Indien, Arctique.',
-    'La liste traditionnelle cite cinq continents : Europe, Asie, Afrique, Amérique, Océanie. L’Antarctique, au sud, est aussi un continent.',
-    'Sur certaines cartes, l’Amérique est montrée en deux parties : Amérique du Nord et Amérique du Sud.',
+    'La liste traditionnelle cite cinq continents : Europe, Asie, Afrique, Amérique (parfois montrée en deux parties, du Nord et du Sud), Océanie. L’Antarctique, au sud, est aussi un continent.',
   ],
   faits: [
     {
