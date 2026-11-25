@@ -13,12 +13,12 @@ export const SOURCE = 'cycle4-2020';
 
 const decouvertes: Notion = {
   id: 'h5-grandes-decouvertes',
-  title: 'Les grandes découvertes et les premiers empires (XVe-XVIe siècles)',
+  title: 'Le monde au temps de Charles Quint et Soliman le Magnifique',
   hint: 'Cherche si on demande un peuple, une personne, une date, un lieu ou un titre, puis situe la question sur la frise des XVe et XVIe siècles.',
   memo: [
-    'Les **grandes découvertes** sont d’abord le fait des Portugais et des Espagnols, qui cherchent le plus souvent de nouvelles routes maritimes vers les Indes, car l’**empire ottoman** contrôle les routes terrestres. Le prince portugais Henri le Navigateur fait explorer la côte ouest de l’Afrique ; Christophe Colomb, soutenu par Isabelle de Castille et Ferdinand d’Aragon, atteint l’Amérique en 1492 ; Vasco de Gama touche l’Inde en 1498.',
-    'En 1494, le traité de Tordesillas partage entre l’Espagne et le Portugal les terres découvertes et à découvrir ; le retour d’un navire de Magellan (1522) clôt les grandes découvertes. En Amérique, les **conquistadors**, attirés par l’or, conquièrent les territoires avec brutalité ; l’or et l’argent partent vers l’Espagne et la traite des esclaves noirs commence.',
-    'Deux grands souverains dominent ce monde. Charles Quint, à la tête du **Saint-Empire** à partir de 1519, est le souverain le plus puissant de la chrétienté. Soliman le Magnifique, qui porte le titre de **calife**, dirige l’empire ottoman à son apogée ; la défaite navale de Lépante (1571) marque souvent le début d’un lent déclin.',
+    'En 1453, les Turcs prennent Constantinople. Aux XVe et XVIe siècles, les voyages des Européens relient de plus en plus les continents : c’est une **première mondialisation**. Les **grandes découvertes** sont d’abord le fait des Portugais et des Espagnols, qui cherchent le plus souvent de nouvelles routes maritimes vers les Indes, car l’**empire ottoman** contrôle les routes terrestres. Le prince portugais Henri le Navigateur fait explorer la côte ouest de l’Afrique ; Christophe Colomb, soutenu par Isabelle de Castille et Ferdinand d’Aragon, atteint l’Amérique en 1492 ; Vasco de Gama touche l’Inde en 1498.',
+    'En 1494, le traité de Tordesillas partage entre l’Espagne et le Portugal les terres découvertes et à découvrir ; le retour d’un navire de Magellan (1522) clôt les grandes découvertes. En Amérique, les **conquistadors**, attirés par l’or, conquièrent les territoires avec brutalité ; l’or et l’argent partent vers l’Espagne et la traite des esclaves noirs vers l’Amérique commence.',
+    'Deux grands souverains dominent ce monde. Charles Quint, à la tête du **Saint-Empire** à partir de 1519, est le souverain le plus puissant de la chrétienté. Soliman le Magnifique, qui porte le titre de **calife** (successeur de Muhammad), dirige l’empire ottoman à son apogée ; la défaite navale de Lépante (1571) marque souvent le début d’un lent déclin.',
   ],
   faits: [
     {
@@ -28,7 +28,7 @@ const decouvertes: Notion = {
       wrong: [
         {
           label: 'les Français et les Anglais',
-          why: 'Les voyages français et anglais viennent ensuite, au XVIe siècle.',
+          why: 'Les voyages d’exploration français et anglais viennent après les premiers voyages portugais et espagnols.',
         },
         {
           label: 'les Russes et les Chinois',
@@ -149,7 +149,7 @@ const decouvertes: Notion = {
     },
     {
       ...P.traite,
-      q: 'Quel commerce d’êtres humains commence dès la conquête de l’Amérique ?',
+      q: 'Quel commerce d’êtres humains vers l’Amérique commence dès la conquête ?',
       a: 'la traite des esclaves noirs',
       wrong: [
         {
@@ -162,8 +162,9 @@ const decouvertes: Notion = {
           why: 'Un ambassadeur représente un roi : ce n’est pas un commerce.',
         },
       ],
-      gap: ['Dès la conquête commence la ', ' des esclaves noirs.', ['traite']],
-      explain: 'La conquête s’accompagne dès le début de la traite des esclaves noirs, un commerce d’êtres humains.',
+      gap: ['Dès la conquête commence la ', ' des esclaves noirs vers l’Amérique.', ['traite']],
+      explain:
+        'La conquête s’accompagne dès le début de la traite des esclaves noirs vers l’Amérique, un commerce d’êtres humains.',
     },
     {
       ...P.soliman,
@@ -323,7 +324,10 @@ const decouvertes: Notion = {
           q: 'Dans quel monde Charles Quint est-il le souverain le plus puissant ?',
           a: 'la chrétienté',
           wrong: [
-            { label: 'le monde musulman', why: 'Le monde musulman est uni sous Soliman.' },
+            {
+              label: 'le monde musulman',
+              why: 'Ligne 2 : Charles Quint est lié à la chrétienté, le monde des chrétiens.',
+            },
             { label: 'les Amériques des peuples autochtones', why: 'Ligne 2 : le texte parle de la chrétienté.' },
           ],
           explain: 'Ligne 2 : Charles Quint est le souverain le plus puissant de la chrétienté.',
@@ -356,8 +360,8 @@ const humanisme: Notion = {
   title: 'Humanisme, réformes et conflits religieux',
   hint: 'Cherche si on parle d’une idée, d’un objet technique, d’un homme ou d’une date, puis demande-toi si cela touche les savoirs ou la religion.',
   memo: [
-    'L’**humanisme** naît dans les milieux savants italiens au XIVe siècle : il veut faire renaître l’**Antiquité** en recherchant les manuscrits et en étudiant les textes, et, avec la Renaissance, il place l’homme au centre. L’**imprimerie** à caractères mobiles (en plomb) de Gutenberg, dont le premier livre est une Bible au milieu du XVe siècle, permet de diffuser les idées nouvelles.',
-    'Érasme voudrait réformer l’Église sans rupture. En 1517, Luther publie ses 95 thèses et condamne les **indulgences** ; la **Réforme** aboutit à de nouvelles Églises (luthériennes, réformées, anglicane) ; Calvin est un autre grand réformateur, installé à Genève. Au concile de Trente (1545-1563), l’Église catholique se réforme en gardant le lien avec la tradition et le pape : l’unité de la chrétienté est rompue.',
+    'L’**humanisme** naît dans les milieux savants italiens au XIVe siècle : il veut faire renaître l’**Antiquité** en recherchant les manuscrits et en étudiant les textes, et, avec la Renaissance, il place l’homme au centre. En Europe, l’**imprimerie** à caractères mobiles (en plomb) de Gutenberg, dont le premier livre est une Bible au milieu du XVe siècle, permet de diffuser les idées nouvelles.',
+    'Érasme voudrait réformer l’Église sans rupture. En 1517, Luther publie ses 95 thèses et condamne les **indulgences** ; la **Réforme** aboutit à de nouvelles Églises (luthériennes, réformées, anglicane) ; Calvin est un autre grand réformateur, installé à Genève. Au concile de Trente (1545-1563), l’Église catholique se réforme en gardant le lien avec la tradition et le pape. La chrétienté d’Occident a perdu son unité.',
     'En France, les **guerres de religion** déstabilisent le pouvoir royal de 1562 à 1598. Le pouvoir royal impose alors l’**édit de Nantes** (1598) pour rétablir la paix.',
   ],
   faits: [
@@ -479,7 +483,7 @@ const humanisme: Notion = {
       q: 'Quel concile permet à l’Église catholique de se réformer entre 1545 et 1563 ?',
       a: 'le concile de Trente',
       wrong: [
-        { label: 'le concile de Nicée', why: 'Le concile de Nicée date du IVe siècle.' },
+        { label: 'le concile de Nicée', why: 'Le premier concile de Nicée date du IVe siècle.' },
         {
           label: 'la diète de Worms',
           why: 'La diète de Worms est une assemblée où Luther fait face à Charles Quint : ce n’est pas un concile.',
@@ -523,8 +527,8 @@ const humanisme: Notion = {
   frise: [
     { ...P.bible, label: 'Gutenberg imprime une Bible', date: 'milieu du XVe siècle' },
     { ...P.theses, label: 'Luther publie ses 95 thèses', date: '1517' },
-    { ...P.trente, label: 'Ouverture du concile de Trente', date: '1545-1563' },
-    { ...P.guerres, label: 'Début des guerres de religion en France', date: '1562-1598' },
+    { ...P.trente, label: 'Ouverture du concile de Trente', date: '1545' },
+    { ...P.guerres, label: 'Début des guerres de religion en France', date: '1562' },
     { ...P.repereNantes, label: 'Édit de Nantes', date: '1598' },
   ],
   libres: [
@@ -553,7 +557,7 @@ const humanisme: Notion = {
       q: 'quel concile, réuni de 1545 à 1563, réforme l’Église catholique ? (concile de …)',
       accepted: ['Trente', 'concile de Trente', 'le concile de Trente', 'de Trente'],
       traps: [
-        { text: 'Nicée', why: 'Le concile de Nicée date du IVe siècle.' },
+        { text: 'Nicée', why: 'Le premier concile de Nicée date du IVe siècle.' },
         { text: 'Latran', why: 'Ce n’est pas le concile réuni de 1545 à 1563.' },
       ],
       explain: 'C’est le concile de Trente.',
@@ -573,7 +577,7 @@ const humanisme: Notion = {
     {
       title: 'Des livres et des idées',
       lines: [
-        'Au XVe siècle, Gutenberg met au point l’imprimerie à caractères mobiles.',
+        'Au XVe siècle, en Europe, Gutenberg met au point l’imprimerie à caractères mobiles.',
         'Son premier livre est une Bible.',
         'L’imprimerie permet la diffusion des idées nouvelles.',
         'Les humanistes cherchent des manuscrits pour retrouver les textes de l’Antiquité.',
@@ -676,9 +680,9 @@ const roi: Notion = {
   title: 'Du Prince de la Renaissance au roi absolu (François Ier, Henri IV, Louis XIV)',
   hint: 'Repère d’abord de quel roi il est question, puis demande-toi si l’on parle de combats, d’arts, de lois, de croyances ou de fêtes.',
   memo: [
-    'En 1515, à Reims, le nouveau roi François Ier jure sur la Bible de maintenir la paix du peuple chrétien. C’est un roi guerrier (victoire de Marignan en 1515, défaite de Pavie en 1525 qui le mène en captivité en Espagne) et un **Prince de la Renaissance**, protecteur des arts, qui accueille Léonard de Vinci. En 1539, l’**ordonnance** de Villers-Cotterêts impose le français pour certains textes juridiques ; contre Charles Quint, il s’allie à Soliman.',
+    'En 1515, à Reims, le nouveau roi François Ier jure sur la Bible de maintenir la paix du peuple chrétien. François Ier est présenté comme un « roi humaniste parmi les nobles ». C’est aussi un roi guerrier (victoire de Marignan en 1515, défaite de Pavie en 1525 qui le mène en captivité en Espagne) et un **Prince de la Renaissance**, protecteur des arts, qui accueille Léonard de Vinci. En 1539, l’**ordonnance** de Villers-Cotterêts impose le français pour certains textes juridiques ; contre Charles Quint, il s’allie à Soliman.',
     'Après les guerres de religion, le pouvoir royal impose l’édit de Nantes (1598), associé à Henri IV, « roi de consensus contre les factions », qui est ensuite assassiné. L’État est désormais seul à garantir l’ordre et un enjeu majeur est de mettre la **noblesse** sous tutelle, malgré la **Fronde** (1648-1653).',
-    'Louis XIV (repère : 1661-1715), « roi guerrier maître de la noblesse », se sert des fêtes de cour à Versailles pour contrôler les **courtisans** ; en 1685, il révoque l’édit de Nantes. Le pouvoir dit **absolu** est une idée : il faut le distinguer de la pratique réelle.',
+    'Louis XIV (repère : 1661-1715, années où il gouverne lui-même), « roi guerrier maître de la noblesse », se sert des fêtes de cour à Versailles pour contrôler les **courtisans** ; en 1685, il révoque l’édit de Nantes. Le pouvoir dit **absolu** est une idée : il faut le distinguer de la pratique réelle.',
   ],
   faits: [
     {
@@ -690,8 +694,8 @@ const roi: Notion = {
         { label: 'la bataille de Bouvines', why: 'Bouvines (1214) est une victoire de Philippe Auguste.' },
         { label: 'la bataille de Marignan', why: 'Marignan (1515) est une victoire de François Ier.' },
       ],
-      gap: ['En 1525, la bataille de ', ' vaut au roi plus d’un an de captivité en Espagne.', ['Pavie']],
-      explain: 'Après la défaite de Pavie, François Ier est prisonnier plus d’un an en Espagne.',
+      gap: ['En 1525, la défaite de ', ' conduit le roi en captivité en Espagne.', ['Pavie']],
+      explain: 'Après la défaite de Pavie, François Ier est fait prisonnier, puis emmené en Espagne.',
     },
     {
       ...P.villers,
@@ -777,7 +781,7 @@ const roi: Notion = {
       wrong: [
         { label: '1598', why: '1598 est l’année de l’édit lui-même.' },
         { label: '1715', why: '1715 est la fin du règne de Louis XIV.' },
-        { label: '1661', why: '1661 ouvre le repère du règne de Louis XIV, mais la révocation est plus tardive.' },
+        { label: '1661', why: 'En 1661, Louis XIV commence à gouverner lui-même ; la révocation est plus tardive.' },
       ],
       gap: ['Louis XIV révoque l’édit de Nantes en ', '.', ['1685']],
       explain: 'La révocation de 1685 revient sur l’édit de 1598.',
@@ -917,8 +921,8 @@ const roi: Notion = {
           q: 'Contre quoi Henri IV cherche-t-il un consensus, d’après la ligne 2 ?',
           a: 'contre les factions',
           wrong: [
-            { label: 'contre l’imprimerie', why: 'La ligne 2 parle des factions.' },
-            { label: 'contre les navigateurs', why: 'La ligne 2 parle des factions, des groupes rivaux.' },
+            { label: 'contre l’empire ottoman', why: 'La ligne 2 ne parle pas des Ottomans, mais des factions.' },
+            { label: 'contre les savants humanistes', why: 'La ligne 2 parle des factions, des groupes rivaux.' },
           ],
           explain: 'Ligne 2 : Henri IV est un roi de consensus contre les factions.',
         },

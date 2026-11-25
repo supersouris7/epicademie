@@ -47,7 +47,7 @@ export const PREUVES = {
   saintEmpire: eduscol('en 1519 il succède à son grand-père à la tête du Saint-Empire romain germanique'),
   soliman: eduscol('Ce dernier est à son apogée sous le règne de Soliman le Magnifique'),
   calife: eduscol(
-    'Soliman unifie le monde musulman et porte, comme son prédécesseur Sélim Ier depuis 1516, le titre de calife',
+    'porte, comme son prédécesseur Sélim Ier depuis 1516, le titre de calife qui fait de lui le successeur de Muhammad et le « commandeur des croyants »',
   ),
   lepante: eduscol(
     'c’est la défaite navale de Lépante (1571) que l’on retient souvent comme marquant le début d’un lent déclin',
@@ -105,7 +105,9 @@ export const PREUVES = {
   prince: eduscol('François Ier, roi humaniste parmi les nobles.'),
   consensus: eduscol('Henri IV, roi de consensus contre les factions.'),
   maitre: eduscol('Louis XIV, roi guerrier maître de la noblesse.'),
-  assassinat: eduscol('l’assassinat d’Henri IV, la révocation de l’Édit de Nantes en 1685'),
+  assassinat: eduscol(
+    'cette évolution ne se fait pas sans crises ni retours en arrière (l’assassinat d’Henri IV, la révocation de l’Édit de Nantes en 1685)',
+  ),
   revocation: eduscol('La révocation de l’Édit de Nantes par Louis XIV (1685)'),
   ordre: eduscol('l’État est désormais clairement seul à garantir l’ordre'),
   noblesse: eduscol('un enjeu essentiel du pouvoir royal sera la mise sous tutelle de la noblesse'),
@@ -115,7 +117,8 @@ export const PREUVES = {
     'bnf-fetes-versailles',
     'pour Louis XIV, la fête de cour est un acte à la fois esthétique et politique, un instrument au service du pouvoir qui lui permet d’exercer un contrôle sur les courtisans',
   ),
-  pratique: eduscol(
-    'Confondre idéologie absolutiste et la réalité de la pratique du pouvoir « absolu » sous Louis XIV.',
-  ),
+  pratique: {
+    ...eduscol('Confondre idéologie absolutiste et la réalité de la pratique du pouvoir « absolu » sous Louis XIV.'),
+    who: 'La ressource d’accompagnement d’Éduscol, dans sa liste des erreurs à éviter,',
+  },
 } satisfies Record<string, Preuve & { readonly source: string }>;

@@ -209,7 +209,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'edit-de-nantes',
     word: 'édit de Nantes',
     forms: ['édit de nantes', 'edit de nantes'],
-    definition: 'Texte officiel du roi Henri IV, signé à Nantes.',
+    definition:
+      'Texte du roi Henri IV (1598) qui accorde certains droits aux protestants pour rétablir la paix dans le royaume.',
     example: 'Henri IV et l’édit de Nantes.',
   },
   {
@@ -905,7 +906,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
   {
     id: 'traite',
     word: 'traité',
-    forms: ['traité', 'traite', 'traités'],
+    forms: ['traité', 'traités'],
     definition: 'Un accord écrit et signé entre plusieurs pays.',
     example: 'Le traité de Rome est signé en 1957.',
   },
@@ -1969,7 +1970,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     word: 'Réforme',
     forms: ['réforme', 'la réforme'],
     definition:
-      'Le mouvement religieux du XVIe siècle, lancé avec Luther, qui aboutit à de nouvelles Églises chrétiennes.',
+      'Une réforme est un changement pour améliorer quelque chose. La Réforme (avec une majuscule) est le mouvement religieux du XVIe siècle, lancé avec Luther, qui aboutit à de nouvelles Églises chrétiennes.',
     example: 'La Réforme rompt l’unité de la chrétienté.',
   },
   {
@@ -2022,5 +2023,54 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition:
       'L’idée d’un roi dont le pouvoir ne serait limité par personne ; dans la réalité, son pouvoir a des limites.',
     example: 'On parle de roi absolu à propos de Louis XIV.',
+  },
+  {
+    id: 'traite-esclaves',
+    word: 'traite des esclaves',
+    forms: ['traite des esclaves', 'traite négrière', 'traites négrières'],
+    definition: 'Le commerce d’êtres humains réduits en esclavage, achetés, transportés puis vendus.',
+    example: 'La traite des esclaves noirs vers l’Amérique.',
+  },
+  {
+    id: 'apogee',
+    word: 'apogée',
+    forms: ['apogée'],
+    definition: 'Le moment où un État ou un pouvoir est le plus fort.',
+    example: 'L’empire ottoman est à son apogée sous Soliman.',
+  },
+  {
+    id: 'premiere-mondialisation',
+    word: 'première mondialisation',
+    forms: ['première mondialisation'],
+    definition: 'La période des XVe et XVIe siècles où les échanges commencent à relier plusieurs continents.',
+    example: 'Les grandes découvertes participent à la première mondialisation.',
+  },
+  {
+    id: 'protestant',
+    word: 'protestant',
+    forms: ['protestant', 'protestants', 'protestante', 'protestantes'],
+    definition: 'Un chrétien d’une des Églises nées de la Réforme au XVIe siècle.',
+    example: 'Luther est à l’origine du premier mouvement protestant.',
+  },
+  {
+    id: 'consensus',
+    word: 'consensus',
+    forms: ['consensus'],
+    definition: 'Un accord accepté par le plus grand nombre.',
+    example: 'Henri IV cherche un consensus.',
+  },
+  {
+    id: 'factions',
+    word: 'factions',
+    forms: ['factions', 'faction'],
+    definition: 'Des groupes rivaux qui luttent pour le pouvoir ou leurs idées.',
+    example: 'Les factions s’opposent pendant les guerres de religion.',
+  },
+  {
+    id: 'tutelle',
+    word: 'tutelle',
+    forms: ['tutelle'],
+    definition: 'Mettre sous tutelle, c’est placer sous son contrôle et sa surveillance.',
+    example: 'Le roi veut mettre la noblesse sous tutelle.',
   },
 ];
