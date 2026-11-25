@@ -30,8 +30,10 @@ import {
  * Chapitre « Vocabulaire » (CM2). Programme de français du cycle 3 (BO du 17 avril 2025), vocabulaire :
  * « Approfondir les relations morphologiques et sémantiques entre les mots ».
  */
+/** Citations tirées des principes communs au cycle (et non des objectifs du cours moyen). */
+const PRINCIPES_DU_CYCLE = ['v2-prog-generique', 'v2-prog-expressions'];
 const programme = (id: string) =>
-  `Programme de français du cycle 3 (BO du 17 avril 2025), cours moyen — « ${faitVocabulaireCm2(id).citation} »`;
+  `Programme de français du cycle 3 (BO du 17 avril 2025), ${PRINCIPES_DU_CYCLE.includes(id) ? 'points de vigilance du cycle' : 'cours moyen'} — « ${faitVocabulaireCm2(id).citation} »`;
 
 /** Au plus `n` éléments tirés au hasard, jamais deux « confondables » ensemble. */
 function sansDoublon<T>(rng: Rng, items: readonly T[], n: number, confondus: (a: T, b: T) => boolean): T[] {
@@ -229,7 +231,7 @@ function choisirPrefixe(rng: Rng): QuestionDraft {
     })),
   );
   return {
-    prompt: `Quel préfixe ajoutes-tu à « ${p.base} » pour dire : « ${p.definition} » ?`,
+    prompt: `Quel préfixe ajoutes-tu à « ${p.base} » pour obtenir ce sens : ${p.definition} ?`,
     answer,
     traps,
     hint: 'Essaie chaque préfixe à voix haute. Lequel donne un vrai mot avec ce sens ?',
@@ -289,10 +291,14 @@ function construirePrefixe(p: Prefixe_, guide: boolean): QuestionDraft {
     ? `Avec « ${p.base} » et le préfixe « ${p.prefixe} », écris un seul mot.`
     : negatif(p.prefixe)
       ? `Écris le contraire de « ${p.base} » en ajoutant un préfixe.`
-      : `Avec « ${p.base} » et un préfixe, écris un seul mot qui veut dire : « ${p.definition} ».`;
+      : `Avec « ${p.base} » et un préfixe, écris un seul mot qui veut dire : ${p.definition}.`;
   return ecrire([p.mot], piegesPrefixe(p), {
     prompt,
-    hint: guide ? 'Colle les deux morceaux, sans espace.' : 'Regarde la première lettre du mot simple.',
+    hint: guide
+      ? 'Colle les deux morceaux, sans espace.'
+      : negatif(p.prefixe)
+        ? 'Regarde la première lettre du mot simple.'
+        : 'Faut-il dire « de nouveau » ou l’action contraire ?',
     steps: [DEF_PREFIXE, regleDe(p.prefixe), decoupePrefixe(p), `On écrit **${p.mot}**.`],
   });
 }
@@ -455,7 +461,18 @@ const DEF_RELATION = {
   antonyme: 'Un **antonyme** a un sens contraire. Il garde la même **classe grammaticale**.',
 } as const;
 const unDe = { synonyme: 'veut dire presque la même chose que', antonyme: 'est le contraire de' } as const;
-const juste = (p: Paire) => `« ${p.reponse} » ${unDe[p.relation]} « ${p.mot} » (deux ${p.classe}s).`;
+/** Mots rares donnés en réponse : leur sens est rappelé dans l'explication. */
+const GLOSES: Readonly<Record<string, string>> = {
+  prévoyant: ' « Prévoyant » veut dire qui pense à l’avance à ce qui peut arriver.',
+  indolent: ' « Indolent » veut dire mou, qui évite l’effort.',
+  frêle: ' « Frêle » veut dire mince et peu solide.',
+  stimuler: ' « Stimuler » veut dire donner de l’élan.',
+  audacieux: ' « Audacieux » veut dire qui ose beaucoup.',
+};
+const juste = (p: Paire) =>
+  `« ${p.reponse} » ${unDe[p.relation]} « ${p.mot} » (deux ${p.classe}s).${GLOSES[p.reponse] ?? ''}`;
+/** « du nom », « du verbe », « de l’adjectif ». */
+const deLaClasse = (p: Paire) => (p.classe === 'adjectif' ? 'de l’adjectif' : `du ${p.classe}`);
 /** Mots sans rapport avec les paires du chapitre, par classe. */
 const HORS_SUJET = {
   nom: ['fenêtre', 'chaussure', 'cahier', 'nuage'],
@@ -498,7 +515,7 @@ function choisirMot(rng: Rng, n: 2 | 3): QuestionDraft {
   const p = rng.pick(n === 2 ? COURANTES : PAIRES);
   const { answer, traps } = choice(rng, p.reponse, optionsDe(rng, p, n));
   return {
-    prompt: `Quel est un ${p.relation} du ${p.classe} « ${p.mot} » ?`,
+    prompt: `Quel est un ${p.relation} ${deLaClasse(p)} « ${p.mot} » ?`,
     answer,
     traps,
     hint: 'Cherche un mot de la même classe, puis vérifie le sens.',
@@ -534,7 +551,7 @@ function ecrirePaire(p: Paire): QuestionDraft {
     ...(opposee ? [[opposee.reponse, `C’est un ${opposee.relation} : on demande un ${p.relation}.`] as const] : []),
   ];
   return ecrire(accepted, pieges, {
-    prompt: `Écris un ${p.relation} du ${p.classe} « ${p.mot} ». ${lettres}`,
+    prompt: `Écris un ${p.relation} ${deLaClasse(p)} « ${p.mot} ». ${lettres}`,
     hint: 'Garde la même classe de mot. Teste ta réponse dans une phrase.',
     steps: [DEF_RELATION[p.relation], juste(p), `On écrit **${p.reponse}**.`],
   });
@@ -843,7 +860,7 @@ export const FCM2_VOCABULAIRE: readonly Skill[] = [
     title: 'Les familles de mots',
     memo: [
       'Une **famille de mots** partage un **radical** : grand, grandir, agrandir.',
-      'Le radical peut changer un peu : fleur donne « floral ». Attention : « grange » est un piège !',
+      'Le radical peut changer un peu : fleur donne « floral ». Piège : « grange » ne vient pas de « grand » !',
     ],
     factId: 'v2-prog-relations',
     faits: [

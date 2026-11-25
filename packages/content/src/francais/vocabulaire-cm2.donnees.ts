@@ -356,7 +356,7 @@ export const FAUX_PREFIXES: readonly Intrus[] = [
   intrus(
     'image',
     'Emprunté du latin imaginem',
-    'Dans « image », « im » ne veut pas dire « ne… pas ».',
+    '« Image » vient d’un mot latin qui désignait déjà une image. « im » n’y veut pas dire « ne… pas ».',
     'Je colle une « image ».',
   ),
   intrus(
@@ -503,7 +503,7 @@ export const SUFFIXES: readonly Suffixe[] = [
     "Qui a l'aspect, la consistance ou la couleur du lait.",
     [QUALITE, 'adjectif'],
     'qui a l’aspect du lait',
-    'La plante donne un suc {}.',
+    'De la tige coule un liquide {}.',
   ),
   suf(
     ['-ier', 'poire', 'poirier'],
@@ -712,7 +712,7 @@ export const PAIRES: readonly Paire[] = [
     ['paresseux', 'travailleur'],
     ['paresseux', 'anton. actif, bûcheur (fam.), laborieux, travailleur'],
     ['travail', 'nom'],
-    'Cet élève est {}.',
+    'Ce lutin est {}.',
   ),
   ant(
     'adjectif',
