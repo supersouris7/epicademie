@@ -66,4 +66,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'a6-present-3e-personne', version: 2, lot: 'an-6e-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'a6-present-negation', version: 1, lot: 'an-6e-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'a6-present-questions', version: 1, lot: 'an-6e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'a6-be-present', version: 1, lot: 'an-6e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'a6-have', version: 1, lot: 'an-6e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'a6-be-preterit', version: 2, lot: 'an-6e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'a6-there-was-were', version: 1, lot: 'an-6e-02', date: '2026-11-25', verdict: 'ok' },
 ];

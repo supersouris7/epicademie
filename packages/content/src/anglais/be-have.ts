@@ -297,7 +297,7 @@ const WHY_HAVE = '« have » va avec I, you, we, they (ou plusieurs personnes).'
 const WHY_HAS = '« has » va avec he, she, it (une seule personne ou chose).';
 const whyHave = (s: Subject) => (haveOf(s.pronoun) === 'has' ? WHY_HAS : WHY_HAVE);
 const otherHave = (s: Subject) => (haveOf(s.pronoun) === 'has' ? 'have' : 'has');
-const WHY_NOT_BE = 'Pour dire qu’on possède quelque chose, on prend have ou has, pas be (am, is, are).';
+const WHY_NOT_BE = 'Pour dire « avoir », on prend have ou has, pas be (am, is, are).';
 const WHY_GOT = 'Avec got, il faut toujours have ou has devant.';
 
 function haveSpot(rng: Rng): QuestionDraft {
@@ -309,7 +309,7 @@ function haveSpot(rng: Rng): QuestionDraft {
     { label: bePresentOf(s.pronoun), why: WHY_NOT_BE },
   ]);
   return {
-    prompt: `Complète pour dire ce que l’on possède : « ${s.text} … ${thing}. »`,
+    prompt: `Complète avec « avoir » : « ${s.text} … ${thing}. »`,
     answer,
     traps,
     hint: 'Il s’agit du verbe « avoir » : regarde le pronom devant le trou.',
@@ -328,7 +328,7 @@ function haveRecognise(rng: Rng): QuestionDraft {
     { label: `${s.text} got ${has} ${thing}.`, why: 'L’ordre est : sujet, have ou has, puis got.' },
   ]);
   return {
-    prompt: `Quelle phrase avec « got » est juste pour « ${s.text} » (posséder ${thing}) ?`,
+    prompt: `Avec « ${s.text} » et « ${thing} », quelle phrase avec « got » est juste ?`,
     answer,
     traps,
     hint: 'Deux contrôles : le verbe placé avant got, puis son accord avec le sujet.',
@@ -362,7 +362,9 @@ function haveNegatives(s: Subject, thing: string): string[] {
   const heads = [`${s.text} ${aux}n’t have`, `${s.text} ${aux} not have`];
   heads.push(`${s.text} ${has}n’t got`, `${s.text} ${has} not got`, `${s.text} ${has}n’t`, `${s.text} ${has} not`);
   if (PRONOUN_SUBJECTS.includes(s) || isOne(s)) heads.push(`${s.text}${has === 'has' ? '’s' : '’ve'} not got`);
-  return [...heads.map((h) => `${h} ${thing}`), `${s.text} ${has} no ${bare}`, `${s.text} ${has} got no ${bare}`];
+  const none = [`${s.text} ${has} no ${bare}`, `${s.text} ${has} got no ${bare}`];
+  if (PRONOUN_SUBJECTS.includes(s) || isOne(s)) none.push(`${s.text}${has === 'has' ? '’s' : '’ve'} got no ${bare}`);
+  return [...heads.map((h) => `${h} ${thing}`), ...none];
 }
 
 function haveNegative(rng: Rng): QuestionDraft {
@@ -421,7 +423,7 @@ function haveQuestion(rng: Rng): QuestionDraft {
       ]),
       '?',
     ),
-    hint: 'Commence soit par un auxiliaire qui va avec le sujet, soit par le verbe « avoir » suivi de got.',
+    hint: 'Deux débuts possibles : un auxiliaire accordé avec le sujet, ou le verbe « avoir », avec got après le sujet.',
     steps: [
       who(s),
       `Le plus courant : ${aux}, le sujet, puis have. Avec got : ${cap(has)}, le sujet, puis got.`,
@@ -451,7 +453,7 @@ function haveDocument(rng: Rng): QuestionDraft {
       parts: [`${k.name} `, ` got a ${yes}. ${He} `, ` got a ${no}. ${He} `, ` the ${yes} every day.`],
       blanks: [
         { mode: 'text', accepted: ['has'] },
-        { mode: 'text', accepted: ['hasn’t', 'has not'] },
+        { mode: 'text', accepted: ['hasn’t', 'has not', '’s not'] },
         { mode: 'text', accepted: ['feeds'] },
       ],
     },
@@ -474,7 +476,7 @@ const have: Skill = {
     memo: [
       '**Have** veut dire « avoir » : I, you, we, they have ; he, she, it **has**.',
       '**Have got** veut souvent dire la même chose : She has got a bike = She has a bike.',
-      'Non : She doesn’t have… ou She hasn’t got… Question : Does she have…? ou Has she got…?',
+      'La négation : She doesn’t have… ou She hasn’t got… La question : Does she have…? ou Has she got…?',
     ],
     source: source('auxiliaire have au présent', '« have got » et « Questions and negatives »'),
     sources: ['anglais-college-2025', 'bck-have-got', 'bc-have-got', 'bc-questions-negatives'],
@@ -489,7 +491,7 @@ const have: Skill = {
 };
 
 // ——— 3. was / were ———
-const PAST_TIMES = ['yesterday', 'last week', 'last Saturday', 'this morning'] as const;
+const PAST_TIMES = ['yesterday', 'last week', 'last Saturday'] as const;
 const PAST_ENDS = [
   'at home',
   'in the park',
@@ -792,6 +794,8 @@ function thereTransform(rng: Rng): QuestionDraft {
       `There ${be}n’t ${any} ${p.where}`,
       `There ${be} not ${any} ${p.where}`,
       `There ${be} no ${plural ? p.many : p.one} ${p.where}`,
+      // Pluriel sans déterminant : correct aussi, même si « any » est la forme attendue.
+      ...(plural ? [`There ${be}n’t ${p.many} ${p.where}`, `There ${be} not ${p.many} ${p.where}`] : []),
     ];
     return {
       prompt: `Écris toute la phrase à la forme négative : « ${statement} »`,
@@ -814,8 +818,8 @@ function thereTransform(rng: Rng): QuestionDraft {
       ],
     };
   }
-  const accepted = (plural ? ['any', 'some'] : ['a']).map(
-    (d) => `${cap(be)} there ${d} ${plural ? p.many : p.one} ${p.where}`,
+  const accepted = (plural ? [`any ${p.many}`, `some ${p.many}`, p.many] : [`a ${p.one}`]).map(
+    (group) => `${cap(be)} there ${group} ${p.where}`,
   );
   return {
     prompt: `Transforme en question (réponse attendue : oui ou non) : « ${statement} »`,
@@ -884,8 +888,8 @@ const thereWas: Skill = {
   version: 1,
   lesson: {
     memo: [
-      '**There was** et **there were** veulent dire « il y avait » : there was a fight, there were twenty people.',
-      'L’**accord** : was devant une seule chose, were devant plusieurs. Au présent : **there is**, **there are**.',
+      '**There was** et **there were** veulent dire « il y avait » : there was a park, there were two shops.',
+      'L’**accord** : was devant une seule chose, were devant plusieurs. Au présent (« il y a ») : **there is**, **there are**.',
       'La **négation** : There wasn’t a park, there weren’t any shops. La question : Was there a park?',
     ],
     source: source(
