@@ -12,7 +12,7 @@
 
 | Lot        | Chapitre                          | Notions                                                                                                           | État actuel                |
 | ---------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------- |
-| `an-6e-01` | Le présent simple                 | présent simple affirmatif ; 3e personne du singulier ; négation don't / doesn't ; questions do / does             | couverte, en relecture     |
+| `an-6e-01` | Le présent simple                 | présent simple affirmatif ; 3e personne du singulier ; négation don't / doesn't ; questions do / does             | couverte                   |
 | `an-6e-02` | Be et have                        | be au présent ; have ; was / were ; There was / There were                                                        | partielle (a6-be-preterit) |
 | `an-6e-03` | Modaux et impératif               | can / can't ; must / mustn't ; impératif affirmatif ; impératif négatif                                           | absente                    |
 | `an-6e-04` | Be + ing                          | présent be + ing ; reconnaître une action en cours ; be + ing pour un projet proche ; I want to / I would like to | absente                    |
