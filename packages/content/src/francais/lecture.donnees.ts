@@ -554,7 +554,7 @@ export const DEVINETTES: readonly Devinette[] = [
     'Quel temps fait-il ?',
     'Il pleut.',
     '« bottes » et « parapluie »',
-    ['Il fait très chaud.', 'Il neige dans la maison.', 'Le ciel est sans un nuage.'],
+    ['Il fait très chaud.', 'Il y a du brouillard.', 'Le ciel est sans un nuage.'],
   ),
   devinette(
     ['Malo souffle les huit bougies.', 'Tout le monde chante autour du gâteau.'],
@@ -607,16 +607,16 @@ export const DEVINETTES: readonly Devinette[] = [
   ),
 ];
 
-/** Phrase ↔ ce qu'on devine (déductions toutes différentes). */
+/** Phrase ↔ ce qu'on devine (déductions toutes différentes, sans aucun mot de la phrase). */
 export const PAIRES_DEVINEES: readonly (readonly [string, string])[] = [
   ['Max ouvre son parapluie.', 'Il pleut.'],
-  ['Ana bâille et frotte ses yeux.', 'Ana a sommeil.'],
-  ['Le ventre de Louis gargouille.', 'Louis a faim.'],
-  ['Nora grelotte sans son manteau.', 'Nora a froid.'],
-  ['Hugo boit trois verres d’eau d’un coup.', 'Hugo a soif.'],
-  ['Emma saute de joie en lisant la lettre.', 'La nouvelle est bonne.'],
+  ['Ana bâille et frotte ses yeux.', 'Quelqu’un a sommeil.'],
+  ['Le ventre de Louis gargouille.', 'Quelqu’un a faim.'],
+  ['Nora grelotte sans son manteau.', 'Quelqu’un a froid.'],
+  ['Hugo boit trois verres d’eau d’un coup.', 'Quelqu’un a soif.'],
+  ['Emma saute de joie en lisant la lettre.', 'Cette nouvelle fait plaisir.'],
   ['La salle applaudit longtemps les acteurs.', 'Le spectacle a plu.'],
-  ['Tom regarde sa montre et court vers l’arrêt.', 'Tom est en retard.'],
+  ['Tom regarde sa montre et court vers l’arrêt.', 'Quelqu’un est en retard.'],
 ];
 
 export interface Enigme {
@@ -642,7 +642,7 @@ export const ENIGMES: readonly Enigme[] = [
   {
     lignes: ['Sacha pose sa serviette au bord du bassin.', 'Il met son bonnet de bain, puis plonge.'],
     question: 'Dans quel lieu Sacha se trouve-t-il ? Écris-le.',
-    accepted: ['piscine', 'à la piscine', 'la piscine', 'une piscine'],
+    accepted: ['piscine', 'à la piscine', 'la piscine', 'une piscine', 'dans une piscine', 'dans la piscine'],
     pieges: [
       ['école', 'Rien ne parle de classe. Relis « plonge ».'],
       ['maison', 'Le bonnet de bain et le plongeon montrent un autre lieu.'],
@@ -662,7 +662,21 @@ export const ENIGMES: readonly Enigme[] = [
   {
     lignes: ['Inaya a les mains qui tremblent.', 'Dans le noir, elle n’ose pas avancer.'],
     question: 'Que ressent Inaya ? Écris un seul nom.',
-    accepted: ['peur', 'la peur', 'de la peur', 'frayeur', 'la frayeur', 'crainte', 'la crainte'],
+    accepted: [
+      'peur',
+      'la peur',
+      'de la peur',
+      'frayeur',
+      'la frayeur',
+      'crainte',
+      'la crainte',
+      'angoisse',
+      'de l’angoisse',
+      'l’angoisse',
+      'inquiétude',
+      'de l’inquiétude',
+      'l’inquiétude',
+    ],
     pieges: [
       ['joie', 'Quand on est joyeux, on n’hésite pas à avancer.'],
       ['colère', 'Rien ne montre qu’elle est fâchée. Pense au « noir ».'],
@@ -690,7 +704,7 @@ export const ENIGMES_PIEGES: readonly Enigme[] = [
       'Ali serre sa joue : sa dent lui fait mal.',
     ],
     question: 'Chez qui Ali attend-il ? Écris le métier.',
-    accepted: ['dentiste', 'un dentiste', 'le dentiste', 'chez le dentiste'],
+    accepted: ['dentiste', 'un dentiste', 'le dentiste', 'chez le dentiste', 'chez un dentiste'],
     pieges: [
       ['pêcheur', 'La mer est seulement sur l’affiche. Pense à la dent.'],
       ['coiffeur', 'On attend aussi chez le coiffeur, mais la dent fait mal.'],
@@ -717,7 +731,18 @@ export const ENIGMES_PIEGES: readonly Enigme[] = [
       'Elle ne regarde pas l’infirmier et retient ses larmes.',
     ],
     question: 'Que ressent vraiment Zélie ? Écris un seul nom.',
-    accepted: ['peur', 'la peur', 'de la peur', 'crainte', 'la crainte', 'inquiétude', 'de l’inquiétude'],
+    accepted: [
+      'peur',
+      'la peur',
+      'de la peur',
+      'crainte',
+      'la crainte',
+      'inquiétude',
+      'de l’inquiétude',
+      'angoisse',
+      'de l’angoisse',
+      'l’angoisse',
+    ],
     pieges: [
       ['joie', 'Ses paroles disent le contraire de ses gestes. Regarde ce qu’elle fait.'],
       ['colère', 'Elle ne crie pas et ne se fâche pas. Regarde ses larmes.'],
@@ -784,7 +809,7 @@ export const LONGS_INFERENCE: readonly TexteLong[] = [
       'Fanny ferme les volets et allume une lampe.',
     ],
     trous: [
-      trou('Dehors,', 'un orage arrive', ['la neige fond', 'le soleil brille'], '« ciel noir » et « grondement ».'),
+      trou('Dehors,', 'un orage arrive', ['la neige fond', 'le soleil brille'], '« tout noir » et « grondement ».'),
       trou('Le chien a', 'peur', ['faim', 'envie de jouer'], '« il tremble » et « se glisse sous la table ».'),
       trou(
         'Il se cache',
@@ -1011,41 +1036,127 @@ export const MOTS_RARES: readonly Mot[] = [
   }),
 ];
 
-/** Textes à mots multiples (niveau 5) : indices dans les lignes ; les mots viennent des listes ci-dessus. */
+/** Niveau 4 : texte plus long où d'autres mots du texte attirent vers une fausse piste. */
+export interface MotCherche {
+  readonly mot: string;
+  readonly lignes: readonly string[];
+  readonly indice: string;
+  readonly rivaux: readonly string[];
+}
+
+export const MOTS_CHERCHES: readonly MotCherche[] = [
+  {
+    mot: 'grue',
+    lignes: [
+      'Sur le chantier, une pelleteuse creuse un grand trou.',
+      'Un camion apporte de lourdes poutres.',
+      'Puis la grue les soulève jusqu’en haut du mur.',
+    ],
+    indice: '« les soulève jusqu’en haut du mur »',
+    rivaux: ['pelleteuse', 'camion', 'chantier'],
+  },
+  {
+    mot: 'baguette',
+    lignes: [
+      'La fée pose son chapeau près d’un vieux grimoire.',
+      'Elle prend sa baguette, fine et légère,',
+      'puis l’agite pour dessiner un cercle dans l’air.',
+    ],
+    indice: '« fine et légère » et « l’agite »',
+    rivaux: ['grimoire', 'chapeau', 'cercle'],
+  },
+  {
+    mot: 'addition',
+    lignes: [
+      'Au restaurant, Papa lit le menu et choisit un plat.',
+      'Après le dessert, il demande l’addition au serveur,',
+      'puis il sort sa carte pour payer.',
+    ],
+    indice: '« Après le dessert » et « pour payer »',
+    rivaux: ['menu', 'carte', 'dessert'],
+  },
+  {
+    mot: 'mine',
+    lignes: [
+      'Ce matin, Théo parle d’une petite voix et garde les yeux mi-clos.',
+      'Son père observe son visage pâle :',
+      '« Tu as mauvaise mine, reste au chaud. »',
+    ],
+    indice: '« observe son visage pâle »',
+    rivaux: ['voix', 'yeux', 'chaud'],
+  },
+  {
+    mot: 'bureau',
+    lignes: [
+      'Dans sa chambre, Lili tire sa chaise près de son bureau.',
+      'Elle pose son cahier dessus, à côté de la lampe,',
+      'puis se met à écrire.',
+    ],
+    indice: '« Elle pose son cahier dessus » et « écrire »',
+    rivaux: ['chaise', 'lampe', 'chambre'],
+  },
+  {
+    mot: 'pièce',
+    lignes: [
+      'Sam termine son puzzle sur le tapis du salon.',
+      'La boîte est vide, mais l’image a encore un trou :',
+      'il manque une pièce au milieu du ciel.',
+    ],
+    indice: '« puzzle » et « encore un trou »',
+    rivaux: ['boîte', 'image', 'tapis'],
+  },
+];
+
+/** Textes à mots multiples (niveau 5) : chaque mot (des listes ci-dessus) a son indice, cité du récit. */
 export const RECITS_MOTS: readonly {
   readonly titre: string;
   readonly lignes: readonly string[];
-  readonly mots: readonly string[];
+  readonly mots: readonly { readonly mot: string; readonly indice: string }[];
 }[] = [
   {
     titre: 'La promenade',
     lignes: [
       'Le matin, la forêt est paisible : on n’entend aucun bruit.',
-      'Lou et son grand-père suivent un sentier étroit entre les arbres.',
-      'Soudain, une averse éclate et les trempe jusqu’aux os.',
-      'Un renard, effrayé par le tonnerre, préfère déguerpir.',
+      'Lou et son grand-père suivent un sentier entre les arbres, l’un derrière l’autre.',
+      'Soudain, une averse éclate : en un instant, ils sont trempés.',
+      'Un renard entend un chien aboyer et préfère déguerpir : on ne le voit déjà plus.',
     ],
-    mots: ['paisible', 'sentier', 'averse', 'déguerpir'],
+    mots: [
+      { mot: 'paisible', indice: '« on n’entend aucun bruit »' },
+      { mot: 'sentier', indice: '« entre les arbres » et « l’un derrière l’autre »' },
+      { mot: 'averse', indice: '« Soudain » et « ils sont trempés »' },
+      { mot: 'déguerpir', indice: '« entend un chien aboyer » et « on ne le voit déjà plus »' },
+    ],
   },
   {
     titre: 'La surprise',
     lignes: [
       'Mila veut dissimuler le cadeau sous le lit, pour que personne ne le voie.',
-      'Elle attend son frère, assise, à contempler la pluie.',
-      'Quand il découvre le paquet, il est ravi et rit très fort.',
-      'Puis, épuisé par sa journée, il s’endort sur le tapis.',
+      'Puis elle reste à la fenêtre pour contempler la neige : pendant une heure, ses yeux ne quittent pas les flocons.',
+      'Quand son frère découvre le paquet, il est ravi : il rit et saute de joie.',
+      'Le soir, épuisé, il n’a plus la force de monter l’escalier et s’endort sur le tapis.',
     ],
-    mots: ['dissimuler', 'contempler', 'ravi', 'épuisé'],
+    mots: [
+      { mot: 'dissimuler', indice: '« sous le lit » et « pour que personne ne le voie »' },
+      { mot: 'contempler', indice: '« pendant une heure » et « ses yeux ne quittent pas les flocons »' },
+      { mot: 'ravi', indice: '« il rit et saute de joie »' },
+      { mot: 'épuisé', indice: '« n’a plus la force » et « s’endort sur le tapis »' },
+    ],
   },
   {
     titre: 'La nuit d’hiver',
     lignes: [
-      'Dehors, le vent glacé fait frissonner Basile.',
-      'Un cri dans le noir le remplit de frayeur.',
-      'Il court sur le sentier, sans regarder derrière lui.',
-      'Chez lui, près du feu, tout redevient paisible.',
+      'Dehors, le vent glacé fait frissonner Basile, et ses dents claquent.',
+      'Un cri soudain dans le noir le remplit de frayeur : son cœur bondit.',
+      'Il court sur le sentier, où les branches des deux côtés frôlent ses épaules.',
+      'Chez lui, près du feu, tout redevient paisible : plus un bruit, plus de danger.',
     ],
-    mots: ['frissonner', 'frayeur', 'sentier', 'paisible'],
+    mots: [
+      { mot: 'frissonner', indice: '« vent glacé » et « ses dents claquent »' },
+      { mot: 'frayeur', indice: '« Un cri soudain dans le noir » et « son cœur bondit »' },
+      { mot: 'sentier', indice: '« Il court sur le sentier » et « frôlent ses épaules »' },
+      { mot: 'paisible', indice: '« plus un bruit, plus de danger »' },
+    ],
   },
 ];
 
@@ -1156,7 +1267,7 @@ export const RECITS_QUATRE: readonly Recit[] = [
   },
 ];
 
-/** Le texte ne raconte pas dans l'ordre (niveaux 4 et 5). */
+/** Le texte ne raconte pas dans l'ordre (niveau 4). */
 export const RECITS_DESORDRE: readonly Recit[] = [
   {
     titre: 'La médaille',
@@ -1226,6 +1337,165 @@ export const RECITS_DESORDRE: readonly Recit[] = [
       'les voisins rangent les chaises',
     ],
     preuve: '« Au début », « Après le repas » et « À la fin » donnent l’ordre.',
+  },
+];
+
+/** Niveau 5 : récits longs, propres à ce niveau ; le premier fait arrivé est raconté en dernier. */
+export interface RecitLong {
+  readonly titre: string;
+  readonly lignes: readonly string[];
+  /** Dans l'ordre où ils se passent, avec la preuve (citée du récit) de leur place. */
+  readonly evenements: readonly { readonly fait: string; readonly raison: string }[];
+}
+
+export const RECITS_LONGS: readonly RecitLong[] = [
+  {
+    titre: 'Le spectacle',
+    lignes: [
+      'Samedi soir, Lila salue le public sous les applaudissements.',
+      'Le lendemain, elle range son costume dans une malle.',
+      'Une semaine après, elle prête cette malle à son cousin.',
+      'Avant de monter sur scène, ce samedi, elle s’était maquillée.',
+      'La veille du spectacle, elle avait répété une dernière fois.',
+      'Auparavant, elle avait cousu son costume.',
+      'Mais avant de le coudre, elle avait choisi un tissu rouge au marché.',
+    ],
+    evenements: [
+      { fait: 'Lila choisit un tissu', raison: '« avant de le coudre » : le tissu est choisi avant tout le reste.' },
+      {
+        fait: 'Lila coud son costume',
+        raison: '« Auparavant » : le costume est cousu avant la répétition, une fois le tissu choisi.',
+      },
+      {
+        fait: 'Lila répète une dernière fois',
+        raison: '« La veille du spectacle » : la répétition a lieu le vendredi, après la couture.',
+      },
+      {
+        fait: 'Lila se maquille',
+        raison: '« Avant de monter sur scène, ce samedi » : le maquillage vient après la répétition de la veille.',
+      },
+      {
+        fait: 'Lila salue le public',
+        raison: '« Samedi soir » : Lila salue après être montée sur scène, donc après le maquillage.',
+      },
+      {
+        fait: 'Lila range son costume',
+        raison: '« Le lendemain » : le costume est rangé le jour qui suit le spectacle.',
+      },
+      {
+        fait: 'Lila prête la malle',
+        raison: '« Une semaine après » : le prêt vient bien après le rangement du costume.',
+      },
+    ],
+  },
+  {
+    titre: 'Les tomates',
+    lignes: [
+      'En juillet, Adam croque sa première tomate.',
+      'Le lendemain, il en offre un panier à sa voisine.',
+      'Une semaine après, la voisine lui apporte une tarte.',
+      'Sa première tomate, il l’avait cueillie la veille du jour où il l’a croquée.',
+      'En mai, il avait planté les jeunes pieds dehors.',
+      'Auparavant, il les avait fait pousser dans des pots.',
+      'Tout cela avait commencé en mars, quand il avait acheté un sachet de graines.',
+    ],
+    evenements: [
+      {
+        fait: 'Adam achète des graines',
+        raison: '« Tout cela avait commencé en mars » : l’achat des graines est le premier fait.',
+      },
+      {
+        fait: 'les plants poussent dans des pots',
+        raison: '« Auparavant » : les plants poussent en pots avant d’aller dehors, une fois les graines achetées.',
+      },
+      { fait: 'Adam plante les pieds dehors', raison: '« En mai » : la plantation dehors vient après les pots.' },
+      {
+        fait: 'Adam cueille la tomate',
+        raison:
+          '« la veille » : la tomate est cueillie un jour avant d’être croquée, en juillet, après la plantation de mai.',
+      },
+      {
+        fait: 'Adam croque la tomate',
+        raison: '« En juillet, Adam croque » : il croque la tomate le lendemain de sa cueillette.',
+      },
+      {
+        fait: 'Adam offre un panier',
+        raison: '« Le lendemain » : le panier est offert le jour qui suit la première tomate.',
+      },
+      {
+        fait: 'la voisine apporte une tarte',
+        raison: '« Une semaine après » : la tarte arrive bien après le panier offert.',
+      },
+    ],
+  },
+  {
+    titre: 'Le colis',
+    lignes: [
+      'Jeudi, Inès ouvre enfin le colis de son grand-père.',
+      'Le lendemain, elle lui téléphone pour le remercier.',
+      'Une semaine après, elle lui envoie un dessin.',
+      'La veille de l’ouverture, le facteur avait déposé le colis chez la voisine.',
+      'Lundi, son grand-père l’avait porté à la poste.',
+      'Auparavant, il avait emballé un livre dans du carton.',
+      'Ce livre, il l’avait acheté la semaine précédente.',
+    ],
+    evenements: [
+      {
+        fait: 'le grand-père achète un livre',
+        raison: '« la semaine précédente » : l’achat du livre vient avant tout le reste.',
+      },
+      {
+        fait: 'le grand-père emballe le livre',
+        raison: '« Auparavant » : le livre est emballé avant d’être porté à la poste.',
+      },
+      { fait: 'le grand-père va à la poste', raison: '« Lundi » : le colis part à la poste une fois emballé.' },
+      {
+        fait: 'le facteur dépose le colis',
+        raison: '« La veille de l’ouverture » : le facteur passe le mercredi, après l’envoi de lundi.',
+      },
+      {
+        fait: 'Inès ouvre le colis',
+        raison: '« Jeudi » : Inès ouvre le colis le jour qui suit le passage du facteur.',
+      },
+      { fait: 'Inès téléphone', raison: '« Le lendemain » : l’appel a lieu après l’ouverture du colis.' },
+      { fait: 'Inès envoie un dessin', raison: '« Une semaine après » : le dessin part bien après l’appel.' },
+    ],
+  },
+  {
+    titre: 'Le bateau',
+    lignes: [
+      'Dimanche, le petit bateau de Noé flotte sur l’étang.',
+      'Le lendemain, Noé le fait sécher au soleil.',
+      'Une semaine après, il l’offre à sa petite sœur.',
+      'La veille de sa sortie sur l’étang, il avait fixé la voile au mât.',
+      'Auparavant, il avait peint la coque en bleu.',
+      'Avant de peindre, il avait collé les planches de la coque.',
+      'Mais tout au départ, il avait dessiné le bateau sur une feuille.',
+    ],
+    evenements: [
+      {
+        fait: 'Noé dessine le bateau',
+        raison: '« tout au départ » : le dessin est le premier fait, même s’il est raconté en dernier.',
+      },
+      {
+        fait: 'Noé colle les planches',
+        raison: '« Avant de peindre » : les planches sont collées avant la peinture, après le dessin.',
+      },
+      { fait: 'Noé peint la coque', raison: '« Auparavant » : la coque est peinte avant la pose de la voile.' },
+      {
+        fait: 'Noé fixe la voile',
+        raison: '« La veille de sa sortie sur l’étang » : la voile est fixée le samedi, après la peinture.',
+      },
+      {
+        fait: 'le bateau flotte sur l’étang',
+        raison: '« Dimanche » : le bateau flotte le jour qui suit la pose de la voile.',
+      },
+      {
+        fait: 'Noé fait sécher le bateau',
+        raison: '« Le lendemain » : le bateau sèche le lundi, après l’essai sur l’eau.',
+      },
+      { fait: 'Noé offre le bateau', raison: '« Une semaine après » : le cadeau vient bien après le séchage.' },
+    ],
   },
 ];
 

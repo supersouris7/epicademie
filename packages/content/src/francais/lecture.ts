@@ -10,6 +10,7 @@ import {
   HISTOIRES,
   LONGS_INFERENCE,
   LONGS_QUI,
+  MOTS_CHERCHES,
   MOTS_PLUSIEURS_SENS,
   MOTS_RARES,
   NATURES,
@@ -17,6 +18,7 @@ import {
   PLANS,
   RECITS_COURTS,
   RECITS_DESORDRE,
+  RECITS_LONGS,
   RECITS_MOTS,
   RECITS_QUATRE,
   SUITES,
@@ -29,8 +31,10 @@ import {
   type Enigme,
   type Histoire,
   type Mot,
+  type MotCherche,
   type Plan,
   type Recit,
+  type RecitLong,
   type TexteLong,
   type Trou,
   type Verbe,
@@ -285,7 +289,7 @@ function inferenceDraft(rng: Rng, level: Level): QuestionDraft {
       const t = rng.pick(LONGS_INFERENCE);
       return trous(rng, t, t.trous, {
         prompt: 'Lis cette histoire. Complète chaque phrase avec ce que tu devines.',
-        hint: 'Aucune réponse n’est écrite telle quelle. Cherche les indices.',
+        hint: 'Cherche les indices dans le texte et relie-les à ce que tu sais.',
         etapes: [DEF_INFERENCE],
       });
     }
@@ -297,7 +301,7 @@ function inferenceDraft(rng: Rng, level: Level): QuestionDraft {
 const DEF_CONTEXTE = 'Le **contexte**, ce sont les mots autour : ils aident à comprendre un mot.';
 const MOTS_TOUS: readonly Mot[] = [...MOTS_PLUSIEURS_SENS, ...MOTS_RARES];
 const MOTS_FACILES = MOTS_RARES.filter((m) => ['paisible', 'ravi', 'épuisé', 'sentier', 'averse'].includes(m.mot));
-const explique = (m: Mot) => `Ici, « ${m.mot} » veut dire **${m.sens}**. Indices : ${m.indice}.`;
+const explique = (m: Mot, indice = m.indice) => `Ici, « ${m.mot} » veut dire **${m.sens}**. Indices : ${indice}.`;
 const ARTICLES: Readonly<Record<string, readonly string[]>> = {
   sentier: ['un sentier', 'le sentier'],
   frayeur: ['la frayeur', 'de frayeur'],
@@ -347,6 +351,18 @@ function retrouver(m: Mot, prompt: string): QuestionDraft {
   );
 }
 
+/** Niveau 4 : le mot cherché est entouré d’autres mots plausibles. */
+function retrouverPiege(c: MotCherche, prompt: string): QuestionDraft {
+  const m: Mot = { ...motTexte(c.mot), lignes: c.lignes, indice: c.indice };
+  return {
+    ...retrouver(m, prompt),
+    traps: textTraps(
+      [m.mot],
+      c.rivaux.map((w) => [w, `« ${w} » est dans le texte, mais il ne veut pas dire « ${m.sens} ».`] as const),
+    ),
+  };
+}
+
 const apparierMots = (rng: Rng, n: 3 | 5, prompt: string): QuestionDraft => {
   const mots = pickN(rng, MOTS_RARES, n);
   return {
@@ -355,7 +371,7 @@ const apparierMots = (rng: Rng, n: 3 | 5, prompt: string): QuestionDraft => {
       `${prompt} Mots : ${mots.map((m) => m.mot).join(', ')}.`,
       mots.map((m) => [m.mot, m.sens]),
       'Lis la ligne de chaque mot. Commence par le plus sûr.',
-      [DEF_CONTEXTE, ...mots.map(explique)],
+      [DEF_CONTEXTE, ...mots.map((m) => explique(m))],
     ),
     figure: document(
       'Phrases',
@@ -365,7 +381,7 @@ const apparierMots = (rng: Rng, n: 3 | 5, prompt: string): QuestionDraft => {
 };
 
 function motTexte(nom: string): Mot {
-  const m = MOTS_RARES.find((x) => x.mot === nom);
+  const m = MOTS_TOUS.find((x) => x.mot === nom);
   if (!m) throw new RangeError(`mot inconnu : ${nom}`);
   return m;
 }
@@ -383,13 +399,13 @@ function sensDraft(rng: Rng, level: Level): QuestionDraft {
     case 4:
       return rng.int(0, 1) === 0
         ? apparierMots(rng, 5, 'Cinq mots à démêler. Associe chaque mot à son sens.')
-        : retrouver(
-            rng.pick(MOTS_PLUSIEURS_SENS),
-            'Ce mot a plusieurs sens. Écris le mot du texte qui veut dire ici :',
+        : retrouverPiege(
+            rng.pick(MOTS_CHERCHES),
+            'Méfie-toi des autres mots ! Écris le mot du texte qui veut dire ici :',
           );
     default: {
       const t = rng.pick(RECITS_MOTS);
-      const mots = t.mots.map(motTexte);
+      const mots = t.mots.map(({ mot, indice }) => ({ ...motTexte(mot), indice }));
       return trous(
         rng,
         t,
@@ -502,40 +518,54 @@ function ordreDraft(rng: Rng, level: Level): QuestionDraft {
         rng.pick(RECITS_DESORDRE),
         'Attention, le texte ne suit pas l’ordre ! Range les événements du premier au dernier.',
       );
-    default: {
-      const r = rng.pick(RECITS_DESORDRE);
-      const n = r.evenements.length;
-      const autres = (bon: string): [string, string] => {
-        const [a, b] = pickN(
-          rng,
-          r.evenements.filter((e) => e !== bon),
-          2,
-        );
-        return [a ?? '', b ?? ''];
-      };
-      const question = (etiquette: string, i: number): Trou => ({
-        etiquette,
-        bon: at(r.evenements, i),
-        faux: autres(at(r.evenements, i)),
-        preuve: `c’est « ${at(r.evenements, i)} ».`,
-      });
-      return trous(
-        rng,
-        r,
-        [
-          question('Tout au début :', 0),
-          question('En deuxième :', 1),
-          question('Juste avant la fin :', n - 2),
-          question('Tout à la fin :', n - 1),
-        ],
-        {
-          prompt: 'Les événements sont mélangés dans ce récit. Retrouve leur place dans le temps.',
-          hint: 'Dessine une ligne du temps dans ta tête, de gauche à droite.',
-          etapes: [DEF_ORDRE, `Dans l’ordre : ${suite(r)}.`],
-        },
-      );
-    }
+    default:
+      return enquete(rng, rng.pick(RECITS_LONGS));
   }
+}
+
+/**
+ * Rangs cherchés « juste avant » et « juste après » dans un récit de 7 faits : l’événement cité par une question n’est
+ * jamais la réponse d’une autre.
+ */
+const PLACES: readonly (readonly [number, number])[] = [
+  [1, 3],
+  [2, 4],
+  [3, 2],
+  [1, 4],
+];
+
+/** Niveau 5 : premier fait, juste avant, juste après, avant-dernier ; les propositions sont les faits voisins. */
+function enquete(rng: Rng, r: RecitLong): QuestionDraft {
+  const faits = r.evenements.map((e) => e.fait);
+  const n = faits.length;
+  const question = (etiquette: string, i: number, preuves: readonly number[], repere?: number): Trou => {
+    const [a, b] = rng
+      .shuffle(faits.map((_, j) => j).filter((j) => j !== i && j !== repere))
+      .sort((x, y) => Math.abs(x - i) - Math.abs(y - i));
+    return {
+      etiquette,
+      bon: at(faits, i),
+      faux: [at(faits, a ?? -1), at(faits, b ?? -1)],
+      preuve: preuves.map((p) => at(r.evenements, p).raison).join(' '),
+    };
+  };
+  const [avant, apres] = rng.pick(PLACES);
+  const reperes = [...new Set([avant + 1, apres - 1])].map((i) => `« ${at(faits, i)} »`);
+  return trous(
+    rng,
+    r,
+    [
+      question('Le premier fait arrivé :', 0, [0]),
+      question(`Juste avant « ${at(faits, avant + 1)} » :`, avant, [avant + 1], avant + 1),
+      question(`Juste après « ${at(faits, apres - 1)} » :`, apres, [apres], apres - 1),
+      question('Avant-dernier événement :', n - 2, [n - 2, n - 1]),
+    ],
+    {
+      prompt: `Le récit remonte le temps ! Mène l’enquête autour de ${reperes.join(' et de ')}.`,
+      hint: 'Surveille « la veille », « le lendemain » et « auparavant » : de quel moment partent-ils ?',
+      etapes: [DEF_ORDRE, `Dans l’ordre : ${faits.join(' ; ')}.`],
+    },
+  );
 }
 
 // ───────────────────────── 5. Consigne et document légendé ─────────────────────────
@@ -735,7 +765,7 @@ export const FCM1_LECTURE: readonly Skill[] = [
     title: 'Lire entre les lignes',
     memo: [
       'Le texte ne dit pas tout ! Une **inférence**, c’est deviner grâce à des **indices**.',
-      'Exemple : « Léo ouvre son parapluie. » Tu devines qu’il pleut.',
+      'Exemple : « Léo souffle sur sa soupe. » Tu devines qu’elle est chaude.',
     ],
     source: 'prog-explicite',
     faitsCites: ['prog-explicite', 'prog-strategies', ...ids('implicite', 'indice')],

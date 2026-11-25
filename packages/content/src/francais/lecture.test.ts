@@ -13,10 +13,13 @@ import {
   HISTOIRES,
   LONGS_INFERENCE,
   LONGS_QUI,
+  MOTS_CHERCHES,
   MOTS_PLUSIEURS_SENS,
   MOTS_RARES,
+  PAIRES_DEVINEES,
   PLANS,
   RECITS_DESORDRE,
+  RECITS_LONGS,
   RECITS_MOTS,
   RECITS_QUATRE,
   TEXTES_PIEGES,
@@ -137,7 +140,8 @@ describe('données', () => {
       expect(faits.has(m.faitId), m.mot).toBe(true);
       expect(new Set([m.sens, ...m.faux.map(([f]) => f)]).size, m.mot).toBe(4);
     }
-    for (const r of RECITS_MOTS) for (const m of r.mots) expect(r.lignes.join(' '), `${r.titre} ${m}`).toContain(m);
+    for (const r of RECITS_MOTS)
+      for (const { mot } of r.mots) expect(r.lignes.join(' '), `${r.titre} ${mot}`).toContain(mot);
   });
 
   it('récits : événements distincts', () => {
@@ -156,6 +160,87 @@ describe('données', () => {
     for (const e of [...ENIGMES, ...ENIGMES_PIEGES]) {
       const texte = normal(e.lignes.join(' '));
       for (const a of e.accepted) expect(texte.split(/[^a-zà-ÿœ’]+/), a).not.toContain(normal(a));
+    }
+  });
+});
+
+/** Expressions citées entre « ». */
+const citations = (t: string) => [...t.matchAll(/« ([^»]+) »/g)].map((m) => m[1] ?? '');
+const dansLeTexte = (citation: string, texte: string) => expect(normal(texte), citation).toContain(normal(citation));
+
+describe('relecture fr-cm1-11', () => {
+  it('inférences : aucune déduction ne reprend un mot de sa phrase (prénom compris)', () => {
+    const mots = (t: string): string[] => normal(t).match(/[\p{L}’-]+/gu) ?? [];
+    for (const [phrase, deduction] of PAIRES_DEVINEES)
+      expect(
+        mots(deduction).filter((m) => mots(phrase).includes(m)),
+        phrase,
+      ).toEqual([]);
+    expect(new Set(PAIRES_DEVINEES.map(([, d]) => d)).size).toBe(PAIRES_DEVINEES.length);
+  });
+
+  it('inférences : les indices cités des histoires longues sont dans le texte', () => {
+    for (const t of LONGS_INFERENCE)
+      for (const x of t.trous) for (const c of citations(x.preuve)) dansLeTexte(c, t.lignes.join(' '));
+  });
+
+  it('inférences : « angoisse » et « inquiétude » acceptés, « dans une piscine » aussi', () => {
+    const peur = trouve('fcm1-inferences', 3, 'Inaya');
+    for (const t of ['angoisse', 'inquiétude']) expect(check(peur, saisie(t)).correct).toBe(true);
+    expect(check(trouve('fcm1-inferences', 3, 'Sacha'), saisie('dans une piscine')).correct).toBe(true);
+  });
+
+  it('sens d’un mot, N5 : chaque expression citée dans les étapes figure dans le texte affiché', () => {
+    for (const q of tirages('fcm1-sens-mot-texte', 5))
+      for (const c of q.steps.flatMap(citations)) dansLeTexte(c, lignes(q));
+  });
+
+  it('sens d’un mot, N4 : le mot et au moins deux rivaux sont dans un texte plus long', () => {
+    for (const c of MOTS_CHERCHES) {
+      const texte = c.lignes.join(' ');
+      for (const w of [c.mot, ...c.rivaux]) expect(texte, `${c.mot} ${w}`).toContain(w);
+      expect(c.lignes.length).toBeGreaterThanOrEqual(3);
+      expect(c.rivaux.length).toBeGreaterThanOrEqual(2);
+      for (const x of citations(c.indice)) dansLeTexte(x, texte);
+    }
+  });
+
+  it('ordre : récits du N5 distincts de ceux du N4, longs, aux preuves citées du texte', () => {
+    expect(RECITS_LONGS.length).toBeGreaterThanOrEqual(4);
+    const n4 = new Set(RECITS_DESORDRE.flatMap((r) => [r.titre, ...r.lignes]));
+    for (const r of RECITS_LONGS) {
+      for (const t of [r.titre, ...r.lignes]) expect(n4.has(t), t).toBe(false);
+      expect(r.evenements.length).toBe(7);
+      expect(new Set(r.evenements.map((e) => e.fait)).size).toBe(r.evenements.length);
+      const texte = r.lignes.join(' ');
+      for (const mot of ['la veille', 'le lendemain', 'auparavant']) dansLeTexte(mot, texte);
+      for (const e of r.evenements) {
+        expect(citations(e.raison).length, e.fait).toBeGreaterThan(0);
+        for (const c of citations(e.raison)) dansLeTexte(c, texte);
+      }
+    }
+  });
+
+  it('ordre, N5 : seules les bonnes places sont justes et chaque trou est expliqué', () => {
+    for (const q of tirages('fcm1-ordre-recit', 5)) {
+      if (q.answer.kind !== 'cloze') throw new Error('forme inattendue');
+      const r = RECITS_LONGS.find((x) => x.lignes.join(' ') === lignes(q));
+      if (!r) throw new Error('récit du N5 attendu');
+      const faits = r.evenements.map((e) => e.fait);
+      const bons = q.answer.blanks.map((b) => {
+        if (b.mode !== 'list') throw new Error('liste attendue');
+        return faits.indexOf(b.options[b.correct] ?? '');
+      });
+      const parts = q.answer.parts.join('|');
+      const [, avant = ''] = /Juste avant « ([^»]+) »/.exec(parts) ?? [];
+      const [, apres = ''] = /Juste après « ([^»]+) »/.exec(parts) ?? [];
+      expect(bons).toEqual([0, faits.indexOf(avant) - 1, faits.indexOf(apres) + 1, faits.length - 2]);
+      expect(parts).toContain('Avant-dernier événement');
+      for (const repere of [avant, apres]) for (const b of bons) expect(faits[b], q.prompt).not.toBe(repere);
+      // La preuve relie la réponse à son voisin : « juste avant » s’explique par la place de l’événement suivant.
+      const preuves = [bons[0], (bons[1] ?? 0) + 1, bons[2], bons[3]];
+      for (const [i, p] of preuves.entries())
+        expect(q.steps.find((s) => s.startsWith(`Trou ${i + 1} :`))).toContain(r.evenements[p ?? -1]?.raison);
     }
   });
 });
