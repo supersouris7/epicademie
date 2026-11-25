@@ -100,12 +100,18 @@ describe('banques de phrases et de mots', () => {
     }
   });
 
-  it('ces / ses : chaque phrase porte l’indice qui tranche (on montre, ou c’est à quelqu’un)', () => {
-    const montre = /-là|-ci|là-bas|que je te montre|que tu vois/g;
-    const possede = /à lui|à elle|propres/g;
+  it('ces / ses : l’indice suit chaque trou (« -là » ou « -ci » : on montre ; « propres » : à soi)', () => {
+    const indices: Record<string, RegExp> = { ces: /^ \p{L}+-(là|ci)(?!\p{L})/u, ses: /^ propres / };
     for (const x of [...CES_SES.simples, ...CES_SES.doubles]) {
-      expect(x.texte.match(montre)?.length ?? 0, x.texte).toBe(x.mots.filter((m) => m === 'ces').length);
-      expect(x.texte.match(possede)?.length ?? 0, x.texte).toBe(x.mots.filter((m) => m === 'ses').length);
+      const suites = x.texte.split('…').slice(1);
+      suites.forEach((suite, i) => {
+        const mot = x.mots[i] ?? '';
+        expect(suite, x.texte).toMatch(indices[mot] ?? /(?!)/);
+      });
+      // Jamais l'indice d'un mot sur le trou de l'autre.
+      expect(x.texte.match(/-là|-ci/g)?.length ?? 0, x.texte).toBe(x.mots.filter((m) => m === 'ces').length);
+      expect(x.texte.match(/propres/g)?.length ?? 0, x.texte).toBe(x.mots.filter((m) => m === 'ses').length);
+      expect(x.texte).not.toMatch(/là-bas|à lui|à elle|que (je|tu) /);
     }
   });
 

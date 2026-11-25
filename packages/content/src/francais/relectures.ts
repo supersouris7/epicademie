@@ -36,5 +36,6 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm1-et-est', version: 1, lot: 'fr-cm1-10', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-son-sont', version: 1, lot: 'fr-cm1-10', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-on-ont', version: 1, lot: 'fr-cm1-10', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-ces-ses', version: 1, lot: 'fr-cm1-10', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-mots-invariables', version: 1, lot: 'fr-cm1-10', date: '2026-11-25', verdict: 'ok' },
 ];

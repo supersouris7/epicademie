@@ -347,6 +347,7 @@ export const FCM1_ORTHOGRAPHE_MOTS: readonly Skill[] = [
     memo: [
       '« ces » est un **déterminant démonstratif** : on montre. « Regarde ces nuages-là ! » (ce nuage).',
       '« ses » est un **déterminant possessif** : c’est à quelqu’un. « Il range ses jouets. » (son jouet).',
+      'Deux indices : « -là » ou « -ci » collé au nom, on montre. « propres » devant le nom veut dire « à soi ».',
     ],
     factId: 'determinants',
     faits: ['substitution', 'ce', 'son'],
