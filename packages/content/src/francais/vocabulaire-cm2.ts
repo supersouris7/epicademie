@@ -6,8 +6,10 @@ import { associer, ecrire, initiale, texteAChoix } from './vocabulaire.ts';
 import {
   EXPRESSIONS,
   FAMILLES,
+  FAITS_AUTRES_REPONSES,
   FAITS_PREFIXES,
   FAUX_PREFIXES,
+  FEMININS,
   GROUPES,
   PAIRES,
   PREFIXES,
@@ -120,10 +122,19 @@ function ecrireBase({ famille, membre }: Parent): QuestionDraft {
       ? [['boiser', 'Va plus loin : quel mot encore plus court reconnais-tu ?'] as const]
       : []),
   ];
-  return ecrire([famille.base], pieges, {
+  if (membre.mot === 'déboisement')
+    pieges.push(['déboiser', 'Va plus loin : quel mot encore plus court reconnais-tu ?']);
+  if (membre.mot === 'floral') pieges.push(['flore', '« Flore » est un autre mot. Le mot simple ici est « fleur ».']);
+  const aussi = membre.aussi ?? [];
+  return ecrire([famille.base, ...aussi], pieges, {
     prompt: `Écris le mot simple de la famille de « ${membre.mot} ».`,
     hint: 'Enlève ce qui est ajouté au début ou à la fin. Le radical peut changer un peu.',
-    steps: [DEF_FAMILLE, lien({ famille, membre }), `Le mot simple est **${famille.base}**.`],
+    steps: [
+      DEF_FAMILLE,
+      lien({ famille, membre }),
+      ...aussi.map((mot) => `Le verbe « ${mot} » est aussi accepté.`),
+      `Le mot simple est **${famille.base}**.`,
+    ],
   });
 }
 
@@ -290,9 +301,12 @@ function construirePrefixe(p: Prefixe_, guide: boolean): QuestionDraft {
   const prompt = guide
     ? `Avec « ${p.base} » et le préfixe « ${p.prefixe} », écris un seul mot.`
     : negatif(p.prefixe)
-      ? `Écris le contraire de « ${p.base} » en ajoutant un préfixe.`
+      ? `Écris le contraire de « ${p.base} » en ajoutant le préfixe « in- » ou « im- ».`
       : `Avec « ${p.base} » et un préfixe, écris un seul mot qui veut dire : ${p.definition}.`;
-  return ecrire([p.mot], piegesPrefixe(p), {
+  const mal: [string, string][] = negatif(p.prefixe)
+    ? [[`mal${p.base}`, 'Ici, on demande le préfixe « in- » ou « im- ».']]
+    : [];
+  return ecrire([p.mot], [...piegesPrefixe(p), ...mal], {
     prompt,
     hint: guide
       ? 'Colle les deux morceaux, sans espace.'
@@ -319,7 +333,8 @@ function prefixeDraft(rng: Rng, level: Level): QuestionDraft {
     default:
       return texteAEcrire(
         {
-          prompt: 'Lis le texte. Complète chaque ligne avec un mot à préfixe, formé sur le mot entre parenthèses.',
+          prompt:
+            'Lis le texte. Complète chaque ligne avec le mot entre parenthèses et un préfixe : re-, dé-, in- ou im-.',
           titre: 'L’atelier des préfixes',
           hint: 'Sur chaque ligne, faut-il « de nouveau », l’action contraire ou « ne… pas » ?',
           etape: DEF_PREFIXE,
@@ -418,12 +433,13 @@ function piegesSuffixe(s: Suffixe): [string, string][] {
 }
 
 function construireSuffixe(s: Suffixe, guide: boolean): QuestionDraft {
-  return ecrire([s.mot], piegesSuffixe(s), {
+  const feminin = guide ? undefined : FEMININS[s.mot];
+  return ecrire(feminin ? [s.mot, feminin] : [s.mot], piegesSuffixe(s), {
     prompt: guide
       ? `Avec « ${s.base} » et le suffixe « ${s.suffixe} », écris : ${s.definition}.`
       : `Écris un seul mot (un ${s.classe}), formé sur « ${s.base} », qui veut dire : ${s.definition}.`,
     hint: guide ? 'Colle les deux morceaux, puis vérifie l’orthographe.' : 'Quel morceau mettre à la fin ?',
-    steps: [DEF_SUFFIXE, decoupeSuffixe(s), `On écrit **${s.mot}**.`],
+    steps: [DEF_SUFFIXE, decoupeSuffixe(s), `On écrit **${s.mot}**${feminin ? ` ou **${feminin}**` : ''}.`],
   });
 }
 
@@ -486,8 +502,17 @@ const confondues = (a: Paire, b: Paire) =>
 const RARES = new Set(['prévoyant', 'indolent', 'frêle', 'stimuler', 'tapage', 'audacieux', 'menteur', 'lâcheté']);
 const COURANTES = PAIRES.filter((p) => !RARES.has(p.reponse));
 const DIFFICILES = PAIRES.filter((p) => RARES.has(p.reponse));
-/** Autre écriture citée, de mêmes initiale et longueur. */
-const AUSSI: Readonly<Record<string, readonly string[]>> = { 'victoire antonyme': ['déroute'] };
+/**
+ * Autres réponses acceptées, de mêmes initiale et longueur que la réponse principale : citées dans les données
+ * (« soutenir », « intrépide ») ou listées par le portail lexical du CNRTL (synonymie, antonymie).
+ */
+const AUSSI: Readonly<Record<string, readonly string[]>> = {
+  'victoire antonyme': ['déroute', 'débâcle'],
+  'encourager synonyme': ['soutenir'],
+  'prudent antonyme': ['intrépide'],
+  'fragile synonyme': ['fluet'],
+  'fragile antonyme': ['stable'],
+};
 
 function optionsDe(rng: Rng, p: Paire, n: 2 | 3): Option[] {
   const hors = rng.shuffle(HORS_SUJET[p.classe]).map((label) => ({
@@ -543,7 +568,6 @@ function associerPaires(rng: Rng, n: 3 | 5): QuestionDraft {
 function ecrirePaire(p: Paire): QuestionDraft {
   const accepted = [p.reponse, ...(AUSSI[`${p.mot} ${p.relation}`] ?? [])];
   const [autre, classe] = p.autreClasse;
-  const lettres = accepted.length > 1 ? `Il commence par « ${p.reponse.charAt(0)} ».` : initiale(p.reponse);
   const opposee = PAIRES.find((x) => x.mot === p.mot && x.relation !== p.relation);
   const pieges: (readonly [string, string])[] = [
     [p.mot, 'Tu as recopié le mot de départ.'],
@@ -551,7 +575,7 @@ function ecrirePaire(p: Paire): QuestionDraft {
     ...(opposee ? [[opposee.reponse, `C’est un ${opposee.relation} : on demande un ${p.relation}.`] as const] : []),
   ];
   return ecrire(accepted, pieges, {
-    prompt: `Écris un ${p.relation} ${deLaClasse(p)} « ${p.mot} ». ${lettres}`,
+    prompt: `Écris un ${p.relation} ${deLaClasse(p)} « ${p.mot} ». ${initiale(p.reponse)}`,
     hint: 'Garde la même classe de mot. Teste ta réponse dans une phrase.',
     steps: [DEF_RELATION[p.relation], juste(p), `On écrit **${p.reponse}**.`],
   });
@@ -664,8 +688,9 @@ function ecrireGenerique(rng: Rng): QuestionDraft {
     m,
     `« ${m} » est un mot particulier. Cherche le mot qui rassemble les trois.`,
   ]);
-  return ecrire(g.accepte, pieges, {
-    prompt: `Écris le mot générique qui rassemble ${liste(trois)}.`,
+  const larges = g.larges.map((m) => [m, `« ${m} » est trop large. Cherche le mot générique le plus précis.`] as const);
+  return ecrire(g.accepte, [...pieges, ...larges], {
+    prompt: `Écris le mot générique le plus précis qui rassemble ${liste(trois)}.`,
     hint: 'Complète : « ce sont des… ».',
     steps: [DEF_GENERIQUE, ...trois.map((m) => appartient(m, g)), `Le mot générique est **${g.generique}**.`],
   });
@@ -716,7 +741,8 @@ function generiqueDraft(rng: Rng, level: Level): QuestionDraft {
       return texteAChoix(
         rng,
         {
-          prompt: 'Lis le texte. Pour chaque ligne, choisis le mot générique des deux mots entre guillemets.',
+          prompt:
+            'Lis le texte. Pour chaque ligne, choisis le mot générique le plus précis des deux mots entre guillemets.',
           titre: 'Le grand rangement',
           hint: 'Sur chaque ligne, complète : « ce sont des… ».',
           etapes: [DEF_GENERIQUE],
@@ -900,8 +926,8 @@ export const FCM2_VOCABULAIRE: readonly Skill[] = [
       'Un **synonyme** a un sens proche, un **antonyme** un sens contraire : victoire, triomphe, défaite.',
       'Garde la même **classe grammaticale** : un nom avec un nom, un verbe avec un verbe.',
     ],
-    factId: 'v2-prog-classe',
-    faits: ['v2-prog-relations', 'v2-def-synonyme', 'v2-def-antonyme', ...faitsDes(PAIRES)],
+    factId: 'v2-prog-relations',
+    faits: ['v2-def-synonyme', 'v2-def-antonyme', ...FAITS_AUTRES_REPONSES, ...faitsDes(PAIRES)],
     generate: paireDraft,
   }),
   skill({

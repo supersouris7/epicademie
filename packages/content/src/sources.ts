@@ -1078,7 +1078,8 @@ export const SOURCES: readonly Source[] = [
   academie('floral', 'floral'),
   academie('fleurir', 'fleurir'),
   academie('denture', 'denture'),
-  academie('dentaire', 'dentaire'),
+  // L’adjectif (le nom féminin homonyme désigne une plante).
+  { ...academie('dentaire', 'dentaire'), url: 'https://www.cnrtl.fr/definition/academie9/dentaire/adjectif' },
   academie('chantonner', 'chantonner'),
   academie('chantier', 'chantier'),
   academie('camper', 'camper'),
@@ -1124,7 +1125,7 @@ export const SOURCES: readonly Source[] = [
   academie('honteux', 'honteux'),
   academie('poirier', 'poirier'),
   academie('cerisier', 'cerisier'),
-  academie('boulangerie', 'boulangerie'),
+  academie('fromagerie', 'fromagerie'),
   tlfi('victoire', 'victoire', 'victoire'),
   tlfi('richesse', 'richesse', 'richesse'),
   tlfi('courage', 'courage', 'courage'),

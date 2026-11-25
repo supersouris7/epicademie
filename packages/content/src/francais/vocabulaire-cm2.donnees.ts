@@ -28,11 +28,6 @@ fait(
   PROGRAMME,
   'Se servir du contexte et de la morphologie pour comprendre les mots inconnus rencontrés au cours de sa lecture',
 );
-fait(
-  'v2-prog-classe',
-  PROGRAMME,
-  'Donner des exemples de synonymes et d’antonymes qui respectent la classe grammaticale du mot cible',
-);
 fait('v2-prog-generique', PROGRAMME, 'siège est l’hyperonyme de tabouret, banc, chaise, etc. qui sont ses hyponymes');
 fait(
   'v2-prog-expressions',
@@ -70,6 +65,8 @@ export interface Membre {
   readonly mot: string;
   /** Facile : le mot simple se voit sans changement. */
   readonly visible: boolean;
+  /** Autres mots simples défendables, acceptés aussi (le verbe cité par la source). */
+  readonly aussi?: readonly string[];
   readonly phrase: string;
   readonly faitId: string;
 }
@@ -87,7 +84,14 @@ export interface Famille {
   readonly intrus?: Intrus;
 }
 
-const membre = (mot: string, citation: string, visible: boolean, phrase: string): Membre => ({
+const membre = (
+  mot: string,
+  citation: string,
+  visible: boolean,
+  phrase: string,
+  aussi?: readonly string[],
+): Membre => ({
+  ...(aussi ? { aussi } : {}),
   mot,
   visible,
   phrase,
@@ -158,14 +162,14 @@ export const FAMILLES: readonly Famille[] = [
     base: 'dent',
     membres: [
       membre('denture', 'Dérivé de dent.', true, 'Le chien a une belle « denture ».'),
-      membre('dentaire', 'de dens, dentis, « dent »', true, 'Voici le cabinet « dentaire ».'),
+      membre('dentaire', 'Qui a rapport aux dents.', true, 'Voici le cabinet « dentaire ».'),
     ],
   },
   {
     base: 'chant',
     membres: [
-      membre('chanteur', 'Personne qui chante.', true, 'Le « chanteur » salue le public.'),
-      membre('chantonner', 'Dérivé de chanter.', true, 'J’aime « chantonner » le matin.'),
+      membre('chanteur', 'Personne qui chante.', true, 'Le « chanteur » salue le public.', ['chanter']),
+      membre('chantonner', 'Dérivé de chanter.', true, 'J’aime « chantonner » le matin.', ['chanter']),
     ],
     intrus: intrus(
       'chantier',
@@ -178,8 +182,8 @@ export const FAMILLES: readonly Famille[] = [
     base: 'camp',
     membres: [
       membre('camper', 'Dérivé de camp.', true, 'Cet été, nous allons « camper ».'),
-      membre('campement', 'Dérivé de camper.', true, 'Les scouts montent leur « campement ».'),
-      membre('campeur', 'Dérivé de camper', true, 'Un « campeur » plie sa tente.'),
+      membre('campement', 'Dérivé de camper.', true, 'Les scouts montent leur « campement ».', ['camper']),
+      membre('campeur', 'Dérivé de camper', true, 'Un « campeur » plie sa tente.', ['camper']),
     ],
   },
   {
@@ -299,7 +303,7 @@ export const PREFIXES: readonly Prefixe_[] = [
     ['correct', 'incorrect'],
     "Qui n'est pas correct.",
     'le contraire de « correct »',
-    'Ce mot est mal accordé : la phrase est {}.',
+    'Ce mot est mal accordé : le groupe est {}.',
   ),
   prefixe(
     'in-',
@@ -390,6 +394,13 @@ const MANIERE = 'la manière (comment ?)';
 const QUALITE = 'comment est quelqu’un ou quelque chose';
 const ARBRE = 'l’arbre qui donne un fruit';
 const LIEU = 'le lieu où l’on vend ou fabrique';
+
+/** Féminins des noms de personnes : acceptés quand la consigne ne dit pas le genre. */
+export const FEMININS: Readonly<Record<string, string>> = {
+  coiffeur: 'coiffeuse',
+  chercheur: 'chercheuse',
+  patineur: 'patineuse',
+};
 
 const suf = (
   [suffixe, base, mot]: readonly [string, string, string],
@@ -527,11 +538,11 @@ export const SUFFIXES: readonly Suffixe[] = [
     'J’achète des crevettes à la {}.',
   ),
   suf(
-    ['-erie', 'boulanger', 'boulangerie'],
-    'Local où se fait et se vend le pain.',
+    ['-erie', 'fromage', 'fromagerie'],
+    "Lieu où l'on fabrique, où l'on conserve des fromages ; boutique où l'on vend des fromages.",
     [LIEU, 'nom'],
-    'le lieu où l’on fait et vend le pain',
-    'Je prends une baguette à la {}.',
+    'le lieu où l’on fabrique ou vend du fromage',
+    'J’achète un camembert à la {}.',
   ),
 ];
 
@@ -730,6 +741,12 @@ export const PAIRES: readonly Paire[] = [
   ),
 ];
 
+/** Autres réponses justes citées, de même initiale que la réponse principale. */
+export const FAITS_AUTRES_REPONSES: readonly string[] = [
+  tlf('synonyme-encourager-soutenir', 'encourager', 'Synon. protéger, soutenir'),
+  tlf('antonyme-prudent-intrepide', 'prudent', 'anton. imprudent, audacieux, hardi, intrépide'),
+];
+
 // ───────────────────────── Mot générique et mots particuliers ─────────────────────────
 
 export interface Groupe {
@@ -738,6 +755,8 @@ export interface Groupe {
   readonly accepte: readonly string[];
   /** Groupes à ne pas mêler dans une question : leurs sens se recouvrent. */
   readonly voisins?: readonly string[];
+  /** Mots justes mais trop larges : refusés avec une explication. */
+  readonly larges: readonly string[];
   readonly particuliers: readonly { readonly mot: string; readonly faitId: string }[];
 }
 
@@ -745,10 +764,12 @@ const groupe = (
   generique: string,
   accepte: readonly string[],
   particuliers: readonly (readonly [string, string])[],
+  larges: readonly string[],
   voisins?: readonly string[],
 ): Groupe => ({
   generique,
   accepte,
+  larges,
   ...(voisins ? { voisins } : {}),
   particuliers: particuliers.map(([mot, citation]) => ({ mot, faitId: acad(mot, citation, `gen-${mot}`) })),
 });
@@ -762,6 +783,7 @@ export const GROUPES: readonly Groupe[] = [
       ['fauteuil', 'Siège à dossier et à bras.'],
       ['banc', 'Siège étroit et allongé, avec ou sans dossier'],
     ],
+    ['meuble', 'meubles', 'objet', 'objets'],
     ['meuble'],
   ),
   groupe(
@@ -774,6 +796,7 @@ export const GROUPES: readonly Groupe[] = [
       ['banane', 'Fruit du bananier'],
       ['fraise', 'Fruit du fraisier'],
     ],
+    ['aliment', 'aliments', 'nourriture'],
   ),
   groupe(
     'arbre',
@@ -783,6 +806,7 @@ export const GROUPES: readonly Groupe[] = [
       ['bouleau', 'Arbre forestier de la famille des Bétulacées'],
       ['peuplier', 'Arbre de la famille des Salicacées'],
     ],
+    ['plante', 'plantes', 'végétal', 'végétaux'],
   ),
   groupe(
     'poisson',
@@ -792,6 +816,7 @@ export const GROUPES: readonly Groupe[] = [
       ['saumon', 'Poisson migrateur de la famille des Salmonidés'],
       ['carpe', "Poisson d'eau douce"],
     ],
+    ['animal', 'animaux', 'aliment', 'aliments'],
   ),
   groupe(
     'meuble',
@@ -801,6 +826,7 @@ export const GROUPES: readonly Groupe[] = [
       ['buffet', 'Meuble de salle à manger, de cuisine'],
       ['commode', "Meuble à hauteur d'appui"],
     ],
+    ['objet', 'objets'],
     ['siège'],
   ),
   groupe(
@@ -811,6 +837,7 @@ export const GROUPES: readonly Groupe[] = [
       ['autobus', 'Grand véhicule automobile qui sert à transporter des personnes'],
       ['bicyclette', "Véhicule à deux roues d'égale dimension"],
     ],
+    ['transport', 'transports', 'moyen de transport', 'moyens de transport', 'engin', 'engins'],
   ),
   groupe(
     'outil',
@@ -820,6 +847,7 @@ export const GROUPES: readonly Groupe[] = [
       ['marteau', "Outil composé d'une tête en métal fixée à un manche"],
       ['rabot', 'Outil de menuisier'],
     ],
+    ['objet', 'objets', 'instrument', 'instruments'],
     ['instrument de musique'],
   ),
   groupe(
@@ -831,6 +859,7 @@ export const GROUPES: readonly Groupe[] = [
       ['guitare', 'Instrument de musique à cordes pincées'],
       ['clarinette', 'Instrument à vent, de la famille des bois'],
     ],
+    ['objet', 'objets'],
     ['outil'],
   ),
 ];

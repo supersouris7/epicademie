@@ -132,6 +132,11 @@ describe('données', () => {
     for (const f of FAMILLES) expect(f.membres.map((m) => m.mot)).not.toContain(f.intrus?.mot);
   });
 
+  it('phrases à préfixe négatif : pas d’adjectif masculin après un sujet féminin', () => {
+    for (const p of PREFIXES.filter((x) => (x.prefixe === 'in-' || x.prefixe === 'im-') && !x.mot.endsWith('e')))
+      expect(p.phrase, p.mot).not.toMatch(/(\b[Ll]a \p{L}+|[Ee]lle) (est|reste) \{\}/u);
+  });
+
   it('expressions : le mot à retrouver figure dans le texte', () => {
     for (const e of EXPRESSIONS) {
       expect(e.texte, e.texte).toContain(e.trou);
@@ -169,6 +174,58 @@ describe('correction des réponses', () => {
   it('antonyme : « déroute » accepté pour « victoire »', () => {
     const q = trouve('fcm2-synonymes-antonymes', 3, 'antonyme du nom « victoire »');
     for (const mot of ['défaite', 'déroute']) expect(check(q, saisie(mot)).correct).toBe(true);
+  });
+
+  it('famille : le verbe défendable est accepté, « flore » est expliqué', () => {
+    for (const [mot, verbe] of [
+      ['chanteur', 'chanter'],
+      ['chantonner', 'chanter'],
+      ['campeur', 'camper'],
+    ] as const)
+      expect(check(trouve('fcm2-familles-de-mots', 3, `« ${mot} »`), saisie(verbe)).correct, mot).toBe(true);
+    expect(check(trouve('fcm2-familles-de-mots', 4, '« floral »'), saisie('flore')).why).toContain('fleur');
+  });
+
+  it('préfixe : la consigne impose in- ou im-, « malpoli » est expliqué', () => {
+    const q = trouve('fcm2-prefixes', 4, '« poli »');
+    expect(q.prompt).toContain('« in- » ou « im- »');
+    expect(check(q, saisie('malpoli')).why).toContain('in-');
+  });
+
+  it('suffixe : le féminin est accepté quand le genre n’est pas imposé', () => {
+    for (const [sens, mots] of [
+      ['qui coiffe', ['coiffeur', 'coiffeuse']],
+      ['qui cherche', ['chercheur', 'chercheuse']],
+      ['qui patine', ['patineur', 'patineuse']],
+    ] as const) {
+      const q = trouve('fcm2-suffixes', 4, sens);
+      for (const mot of mots) expect(check(q, saisie(mot)).correct, mot).toBe(true);
+    }
+  });
+
+  it('synonymes et antonymes : autres réponses de même initiale et longueur', () => {
+    for (const [consigne, mots] of [
+      ['synonyme du verbe « encourager »', ['stimuler', 'soutenir']],
+      ['antonyme de l’adjectif « prudent »', ['imprudent', 'intrépide']],
+      ['antonyme du nom « victoire »', ['défaite', 'déroute', 'débâcle']],
+      ['synonyme de l’adjectif « fragile »', ['frêle', 'fluet']],
+      ['antonyme de l’adjectif « fragile »', ['solide', 'stable']],
+    ] as const) {
+      const q = [3, 4]
+        .flatMap((n) => tirages('fcm2-synonymes-antonymes', n as Level))
+        .find((x) => x.prompt.startsWith(`Écris un ${consigne}`));
+      if (!q) throw new Error(consigne);
+      for (const mot of mots) {
+        expect(check(q, saisie(mot)).correct, mot).toBe(true);
+        expect([mot.charAt(0), mot.length]).toEqual([mots[0].charAt(0), mots[0].length]);
+      }
+    }
+  });
+
+  it('mot générique : un mot trop large est refusé et expliqué', () => {
+    const q = trouve('fcm2-mot-generique', 3, '« chaise »');
+    expect(q.prompt).toContain('le plus précis');
+    expect(check(q, saisie('meuble')).why).toContain('trop large');
   });
 
   it('mot générique : un mot particulier est refusé', () => {
