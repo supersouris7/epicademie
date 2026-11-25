@@ -12,7 +12,7 @@
 | Lot        | Chapitre                        | Notions                                                            | État actuel            |
 | ---------- | ------------------------------- | ------------------------------------------------------------------ | ---------------------- |
 | `em-5e-01` | Égalité, fraternité, solidarité | égalité femmes-hommes ; discriminations ; solidarité ; engagement  | couverte, en relecture |
-| `em-5e-02` | Discours de haine               | discours de haine en ligne ; ce que dit la loi ; réagir ; signaler | absente                |
+| `em-5e-02` | Discours de haine               | discours de haine en ligne ; ce que dit la loi ; réagir ; signaler | couverte, en relecture |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).
