@@ -1149,13 +1149,9 @@ const landmarks: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'Le **Royaume-Uni** (the UK) a quatre parties : England, Scotland, Wales, Northern Ireland.',
-      'England = Angleterre (plus grande que l’Écosse), Scotland = Écosse, Wales = pays de Galles, Northern Ireland = Irlande du Nord.',
-      'À Londres (London), capitale de l’Angleterre : Big Ben, Buckingham Palace, Tower Bridge.',
-      'Le drapeau gallois (du pays de Galles) porte un dragon. En Irlande du Nord, on visite la Chaussée des Géants (Giant’s Causeway). Le drapeau du Royaume-Uni est souvent appelé Union Jack.',
-      'Les fêtes : Halloween (31 October), **Bonfire Night** (5 November), Christmas (25 December), Easter (au printemps).',
-      'Halloween : pumpkin = citrouille, witch = sorcière, ghost = fantôme. « Trick or treat » : jouer un tour ou recevoir des bonbons.',
-      'Noël : on décore le sapin. Bonfire Night : grand feu et feux d’artifice. Pâques : chasse aux œufs cachés (egg hunt).',
+      'Le **Royaume-Uni** (the UK) a quatre parties : England = Angleterre (plus grande que l’Écosse), Scotland = Écosse, Wales = pays de Galles, Northern Ireland = Irlande du Nord.',
+      'À Londres (London), capitale de l’Angleterre : Big Ben, Buckingham Palace, Tower Bridge. Le drapeau gallois (du pays de Galles) porte un dragon. En Irlande du Nord : la Chaussée des Géants (Giant’s Causeway). Le drapeau du Royaume-Uni est souvent appelé Union Jack.',
+      'Fêtes : Halloween (31 October : pumpkin = citrouille, witch = sorcière, ghost = fantôme ; « Trick or treat » : jouer un tour ou recevoir des bonbons), **Bonfire Night** (5 November : grand feu, feux d’artifice), Christmas (25 December : on décore le sapin), Easter (Pâques, au printemps : chasse aux œufs cachés, egg hunt).',
     ],
     source: source(
       'Faits : British Council, LearnEnglish Kids (fiches sur le Royaume-Uni, Londres, Halloween, Noël, Bonfire Night et Pâques).',
