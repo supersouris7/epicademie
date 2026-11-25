@@ -77,4 +77,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm2-verbes-conjugues', version: 1, lot: 'fr-cm2-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm2-phrase-simple-complexe', version: 1, lot: 'fr-cm2-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm2-mots-qui-relient', version: 1, lot: 'fr-cm2-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-accord-sujet-verbe', version: 1, lot: 'fr-cm2-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-participe-etre', version: 1, lot: 'fr-cm2-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-participe-avoir-cod', version: 1, lot: 'fr-cm2-05', date: '2026-11-25', verdict: 'ok' },
 ];

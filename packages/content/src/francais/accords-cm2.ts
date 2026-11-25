@@ -599,7 +599,7 @@ function particuliersDraft(rng: Rng, level: Level): QuestionDraft {
     case 3:
       return ecrireForme(
         rng.pick(rng.pick([PLURIELS_COURANTS, FEMININS_COURANTS])),
-        'Pense à un mot qui finit pareil et que tu connais bien.',
+        'Dis le mot dans un petit groupe (« des… » ou « une… »), puis regarde bien sa fin.',
       );
     case 4:
       return ecrireForme(
@@ -712,7 +712,7 @@ export const FCM2_ACCORDS: readonly Skill[] = [
     title: 'Pluriels et féminins particuliers',
     memo: [
       'Au **pluriel**, -al devient souvent -aux (des chevaux). Mais : des bals, des festivals.',
-      'Autres cas à retenir : des travaux, des bijoux, des pneus, des bleus.',
+      'Les noms en -eau prennent un x : des bateaux. Autres cas à retenir : des travaux, des bijoux, des pneus, des bleus.',
       'Au **féminin**, certains mots changent : nouveau → nouvelle, public → publique, loup → louve.',
     ],
     factId: 'pluriels-irreguliers',

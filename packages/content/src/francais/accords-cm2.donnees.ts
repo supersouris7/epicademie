@@ -159,7 +159,7 @@ export const ELOIGNES: readonly PhraseVerbe[] = [
   pv(['Les wagons du petit train', 'lentement'], 'rouler', ROULER, ['pl', 'wagons'], ['train', 'petit', 'lentement']),
   pv(['La voix des enfants', 'dans le couloir'], 'chanter', CHANTER, ['sg', 'voix'], ['enfants', 'couloir', 'des']),
   pv(['Les feuilles du vieux chêne', 'sur l’eau'], 'flotter', FLOTTER, ['pl', 'feuilles'], ['chêne', 'vieux', 'eau']),
-  pv(['Les enfants de ma tante', 'en une année'], 'grandir', GRANDIR, ['pl', 'enfants'], ['tante', 'année', 'ma']),
+  pv(['Les enfants de ma tante', 'chaque année'], 'grandir', GRANDIR, ['pl', 'enfants'], ['tante', 'année', 'ma']),
   pv(['Le ballon des petits', 'par-dessus le mur'], 'passer', PASSER, ['sg', 'ballon'], ['petits', 'mur', 'des']),
 ];
 

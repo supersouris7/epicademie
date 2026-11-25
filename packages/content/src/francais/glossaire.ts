@@ -199,7 +199,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'cod',
     word: 'COD',
     forms: ['complément d’objet direct', "complément d'objet direct", 'compléments d’objet directs'],
-    definition: 'Complément d’objet direct : il suit le verbe sans « à » ni « de » pour le relier.',
+    definition:
+      'Complément d’objet direct : il complète le verbe sans « à » ni « de ». Il est souvent après le verbe ; un pronom comme « le » ou « les » le place avant.',
     example: 'Ma cousine mange une pomme.',
   },
   {
