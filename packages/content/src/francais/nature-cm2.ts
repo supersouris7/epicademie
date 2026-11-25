@@ -204,7 +204,7 @@ function subordinationNature(rng: Rng): QuestionDraft {
   const bon = p ? SUB : autre.nature;
   const why: Record<string, string> = {
     [SUB]: `${DEF_SUB} Ici, « ${mot} » n’ouvre pas de proposition subordonnée.`,
-    [COORD]: `${DEF_COORD} « ${mot} » n’est pas utilisé ainsi ici.`,
+    [COORD]: `${DEF_COORD} « ${mot} » n’est pas dans cette liste.`,
     [PREP]: `Une préposition introduit un groupe, souvent un nom. Regarde ce qui suit « ${mot} ».`,
     'un verbe': `« ${mot} » ne se conjugue pas : ce n’est pas un verbe.`,
   };
@@ -218,7 +218,7 @@ function subordinationNature(rng: Rng): QuestionDraft {
     answer,
     traps,
     hint: 'Regarde ce qui suit : un nom, ou un groupe avec un verbe conjugué ? Pense aussi à la liste de coordination.',
-    steps: [DEF_COORD, DEF_SUB, `« ${mot} » est **${bon}**.`],
+    steps: [DEF_COORD, DEF_SUB, ...(bon === PREP ? [DEF_PREP] : []), `« ${mot} » est **${bon}**.`],
   };
 }
 
@@ -262,11 +262,15 @@ function subordinationDraft(rng: Rng, level: Level): QuestionDraft {
     case 4: {
       if (rng.int(0, 1) === 0) {
         const p = rng.pick(SUBS_RARES);
+        const premier = p.texte.split(' ')[0] ?? '';
+        const pourquoi = p.conj.startsWith(`${premier.toLowerCase()} `)
+          ? 'Écris la conjonction en entier : elle a plusieurs mots.'
+          : 'La conjonction n’est pas toujours le premier mot : cherche la subordonnée.';
         return {
           prompt: `Écris la conjonction de subordination : « ${p.texte} »`,
           answer: { kind: 'text', accepted: p.accepted },
           traps: textTraps(p.accepted, [
-            [p.texte.split(' ')[0] ?? '', 'La conjonction n’est pas toujours le premier mot : cherche la subordonnée.'],
+            [premier, pourquoi],
             ['que', 'Écris la conjonction en entier : elle peut avoir plusieurs mots.'],
             ['et', `${DEF_COORD} Ici, on cherche une conjonction de subordination.`],
           ]),
@@ -285,7 +289,7 @@ function subordinationDraft(rng: Rng, level: Level): QuestionDraft {
       return {
         prompt: `Associe chaque phrase au sens de sa conjonction : ${phrases.map((p) => p.conj).join(', ')}.`,
         answer: { kind: 'match', left, right, pairs },
-        hint: 'Pour chaque phrase, pose la question : quand ? pourquoi ? dans quel but ?',
+        hint: 'Pose une question : quand ? pourquoi ? dans quel but ? à quelle condition ? malgré quoi ?',
         steps: [
           'Chaque conjonction apporte un sens : temps, cause, but, hypothèse ou concession.',
           'Je pose une question à la subordonnée.',
@@ -359,7 +363,10 @@ function pronomsComplementsDraft(rng: Rng, level: Level): QuestionDraft {
             : `Un pronom complément est devant un verbe. Ici, « ${p.mot} » est devant un nom.`,
         },
         { label: P_SUJET, why: `Ici, « ${p.mot} » ne fait pas l’action.` },
-        { label: 'un nom', why: `« ${p.mot} » ne désigne pas une chose : ce n’est pas un nom.` },
+        {
+          label: 'un nom',
+          why: `« ${p.mot} » est un petit mot qui change avec ce qu’il accompagne ou remplace : pas un nom.`,
+        },
       ]);
       return {
         prompt: `Dans « ${p.texte} », le mot « ${p.mot} » est…`,
@@ -442,7 +449,7 @@ const COI_VERBES: readonly string[] = VERBES_COI;
 type Fonction = 'sujet' | 'complément d’objet direct' | 'complément d’objet indirect';
 const FONCTIONS: readonly Fonction[] = ['sujet', 'complément d’objet direct', 'complément d’objet indirect'];
 
-const ELIDEES: Readonly<Record<string, string>> = { me: 'm’', te: 't’', le: 'l’', la: 'l’' };
+const ELIDEES: Readonly<Record<string, string>> = { je: 'j’', me: 'm’', te: 't’', le: 'l’', la: 'l’' };
 
 const formeSelon = (f: Forme, fonction: Fonction) =>
   fonction === 'sujet' ? f.sujet : fonction === 'complément d’objet direct' ? f.cod : f.coi;
@@ -545,10 +552,13 @@ function variationsDraft(rng: Rng, level: Level): QuestionDraft {
       const fonction = rng.pick(FONCTIONS);
       const bon = formeSelon(f, fonction);
       // Forme élidée devant une voyelle : « m’ », « t’ », « l’ » sont aussi justes.
-      const elidee = fonction === 'sujet' ? undefined : ELIDEES[bon];
-      const accepted = elidee ? [bon, elidee] : [bon];
+      const elidee = ELIDEES[bon];
+      // À la 3e personne, « se » (ou « s’ ») est aussi un pronom complément.
+      const reflechi = fonction !== 'sujet' && f.personne.startsWith('3e') ? ['se', 's’'] : [];
+      const accepted = [bon, ...(elidee ? [elidee] : []), ...reflechi];
+      const place = fonction === 'sujet' ? '' : ' (placé devant le verbe)';
       return {
-        prompt: `Écris le pronom personnel : ${f.personne}, ${fonction}.`,
+        prompt: `Écris le pronom personnel : ${f.personne}, ${fonction}${place}.`,
         answer: { kind: 'text', accepted },
         traps: textTraps(
           accepted,
@@ -681,7 +691,10 @@ function variablesDraft(rng: Rng, level: Level): QuestionDraft {
           ...a.trous
             .filter(([s]) => !s.endsWith('s') && (INVARIABLES as readonly string[]).includes(s))
             .map(([s]) => [bon.replace(` ${s} `, ` ${s}s `), 'Un mot invariable ne prend pas de s.'] as const),
-          [remplir(a.trous.map(([s, p], i) => (i === 0 ? s : p))), 'L’adjectif s’accorde avec le nom.'],
+          [
+            remplir(a.trous.map(([s, p], i) => (i === 0 ? s : p))),
+            'Au pluriel, le nom et son adjectif changent tous les deux.',
+          ],
         ]),
         hint: 'Le déterminant, le nom, l’adjectif et le verbe changent. Les autres mots ?',
         steps: [DEF_VARIABLE, CLASSES_INV, `La phrase est : **${bon}**`],
@@ -742,7 +755,7 @@ export const FCM2_NATURE: readonly Skill[] = [
     memo: [
       'Une **préposition** est un petit mot **invariable** : à, de, dans, sur, pour, avec, sans, chez…',
       'Elle ouvre un groupe : « Je joue dans la cour. » Elle peut avoir plusieurs mots : au-dessus de, à cause de.',
-      'Elle précise un lien : le lieu, le temps, la cause, le but ou l’opposition.',
+      'Elle précise un lien, par exemple : le lieu, le temps, la cause, le but ou l’opposition.',
     ],
     factId: 'prepositions',
     faits: [
@@ -783,7 +796,7 @@ export const FCM2_NATURE: readonly Skill[] = [
     id: 'fcm2-pronoms-complements',
     title: 'Pronoms personnels compléments',
     memo: [
-      'Un **pronom personnel complément** complète le verbe. Il se place souvent devant lui.',
+      'Un **pronom personnel complément** complète le verbe. Il se place souvent devant ce verbe.',
       '**Complément d’objet direct** : le, la, les. « Je lis le livre. » → « Je le lis. »',
       '**Complément d’objet indirect** (avec « à ») : lui, leur. « Je parle à mes amis. » → « Je leur parle. » Sans s !',
     ],
@@ -797,7 +810,7 @@ export const FCM2_NATURE: readonly Skill[] = [
     memo: [
       'Le **pronom personnel** change selon la **personne**, le **genre**, le **nombre** et la **fonction**.',
       'Sujet : je, tu, il, elle, nous, vous, ils, elles. Complément : me, te, le, la, les, lui, leur, nous, vous.',
-      'Exemple : « Je chante. » → « Tu me regardes. » C’est la même personne, mais le rôle a changé.',
+      'Exemple : « Je chante. » « Tu me regardes. » « je » et « me » : même personne, mais rôle différent.',
     ],
     factId: 'variations',
     faits: ['formes-variables', 'sujets', 'nous-vous', 'me-te', 'cod', 'coi'],

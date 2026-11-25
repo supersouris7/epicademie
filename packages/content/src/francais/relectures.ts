@@ -32,4 +32,9 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm1-accord-gn', version: 1, lot: 'fr-cm1-06', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-accord-sujet-verbe', version: 1, lot: 'fr-cm1-06', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-participe-etre', version: 1, lot: 'fr-cm1-06', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-prepositions', version: 1, lot: 'fr-cm2-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-conjonctions-subordination', version: 1, lot: 'fr-cm2-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-pronoms-complements', version: 1, lot: 'fr-cm2-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-variations-pronom', version: 1, lot: 'fr-cm2-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-mots-variables', version: 1, lot: 'fr-cm2-02', date: '2026-11-25', verdict: 'ok' },
 ];

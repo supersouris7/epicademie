@@ -407,6 +407,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: '« quand la nuit tombe » dans « Je rentre quand la nuit tombe. »',
   },
   {
+    id: 'proposition-principale',
+    word: 'proposition principale',
+    forms: ['propositions principales'],
+    definition: 'La partie de la phrase dont dépend la proposition subordonnée.',
+    example: '« Je rentre » dans « Je rentre quand la nuit tombe. »',
+  },
+  {
     id: 'personne-grammaire',
     word: 'personne',
     forms: ['personnes'],
