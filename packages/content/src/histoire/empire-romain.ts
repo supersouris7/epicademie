@@ -13,7 +13,7 @@ export const SOURCE = 'cycle3-2020';
 const romanisation: Notion = {
   id: 'h6-romanisation',
   title: 'Conquêtes, paix romaine et romanisation',
-  hint: 'Distingue les trois piliers de l’unité de l’empire : le pouvoir de l’empereur, la romanisation et le prestige de Rome.',
+  hint: 'Demande-toi si la question porte sur un empereur, une date, la vie dans les cités ou ce qui unit l’empire.',
   memo: [
     'Par l’enchaînement des conquêtes, Rome forme un vaste **empire** qui réunit des peuples et des cultures variés, répartis en **provinces**. En 27 avant J.-C., le **Sénat** donne à Octave le nom d’Auguste : il est le premier **empereur**.',
     'Aux Ier et IIe siècles, c’est la **paix romaine** (pax romana) : l’armée maintient l’ordre et protège les frontières. L’unité repose sur le pouvoir de l’empereur, sur le prestige de Rome, l’**Urbs**, et sur le **culte impérial**.',
@@ -99,8 +99,9 @@ const romanisation: Notion = {
         { label: 'des pyramides', why: 'Les pyramides évoquent l’Égypte ancienne, bien antérieure à l’empire romain.' },
         { label: 'des cathédrales gothiques', why: 'Les cathédrales gothiques sont construites au Moyen Âge.' },
       ],
-      gap: ['Dans une cité romanisée, on trouve un ', ', des thermes et un théâtre.', ['forum']],
-      explain: 'Forum, thermes et théâtres sont des monuments caractéristiques de la culture romaine.',
+      gap: ['La grande place d’une ville romaine, où l’on règle les affaires, s’appelle le ', '.', ['forum']],
+      explain:
+        'Forum, thermes et théâtres sont des monuments caractéristiques de la culture romaine ; le forum est la grande place où l’on traite les affaires de la cité.',
     },
     {
       ...P.rome,
@@ -673,14 +674,14 @@ const soie: Notion = {
   ],
   libres: [
     {
-      ...P.dynastie,
-      q: 'Quelle dynastie gouverne la Chine au temps de l’empereur romain Auguste ? (un nom)',
+      ...P.wudi,
+      q: 'À quelle dynastie appartient l’empereur Wudi ? (un nom)',
       accepted: ['Han', 'les Han', 'dynastie Han', 'la dynastie Han', 'dynastie des Han', 'la dynastie des Han'],
       traps: [
         { text: 'Qin', why: 'La dynastie Qin précède celle des Han.' },
         { text: 'Carolingiens', why: 'Les Carolingiens sont une dynastie franque, bien plus tardive.' },
       ],
-      explain: 'De 202 avant J.-C. à 220, la Chine est gouvernée par les Han : Auguste est leur contemporain.',
+      explain: 'Wudi est un empereur de la dynastie des Han, qui règne sur la Chine de 202 avant J.-C. à 220.',
     },
     {
       ...P.echanges,
