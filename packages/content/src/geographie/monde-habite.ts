@@ -100,11 +100,11 @@ const repartition: Notion = {
         },
         {
           label: 'uniquement dans les villes',
-          why: 'Des hommes vivent aussi dans des déserts et des régions froides.',
+          why: 'Beaucoup de personnes vivent aussi dans les campagnes.',
         },
         {
           label: 'uniquement dans les régions au climat doux',
-          why: 'Des régions au climat doux sont peu peuplées : le climat n’explique pas tout.',
+          why: 'Des hommes vivent aussi dans des déserts et des régions froides.',
         },
       ],
       gap: ['Il y a des espaces très densément peuplés et d’autres relativement vides d’', '.', ['hommes']],
