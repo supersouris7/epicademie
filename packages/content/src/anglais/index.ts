@@ -12,6 +12,7 @@ import { ENGLISH_NOUN_GROUP_CHAPTER } from './groupe-nominal.ts';
 import { ENGLISH_LISTENING_CM2_CHAPTER } from './ecoute-cm2.ts';
 import { ENGLISH_PLACES_CHAPTER } from './se-situer.ts';
 import { ENGLISH_DAY_CHAPTER } from './journee.ts';
+import { ENGLISH_SCHOOL_CHAPTER } from './ecole.ts';
 
 /**
  * Anglais — pilote (docs/adr/0024-contenus-hors-maths.md) : verbes irréguliers, classe de 5e
@@ -136,6 +137,7 @@ export const ANGLAIS_CHAPTERS: readonly Chapter[] = [
   ENGLISH_NOUN_GROUP_CHAPTER,
   ENGLISH_PLACES_CHAPTER,
   ENGLISH_DAY_CHAPTER,
+  ENGLISH_SCHOOL_CHAPTER,
   ENGLISH_LISTENING_CM2_CHAPTER,
   {
     id: 'a5-verbes-irreguliers',
