@@ -377,6 +377,13 @@ export const SOURCES: readonly Source[] = [
     textDate: '2026',
     consultedOn: CONSULTED,
   },
+  // Grandes périodes et durées (lot hi-cm2-04).
+  academie('age', 'âge'),
+  academie('histoire', 'histoire'),
+  academie('prehistoire', 'préhistoire'),
+  academie('duree', 'durée'),
+  tlfi('histoire', 'histoire', 'histoire'),
+  tlfi('moderne', 'moderne', 'moderne'),
   {
     id: 'academie-siecle',
     title: 'Dictionnaire de l’Académie française (9e édition), article « siècle »',
