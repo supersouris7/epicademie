@@ -509,7 +509,7 @@ const discriminations: Notion = {
   ],
   paires5: [
     ['Code pénal', 'Définit la discrimination'],
-    ['Loi du 27 mai 2008', 'Punit les discriminations'],
+    ['Inclusion scolaire', 'Accueil de tous les enfants'],
     ['Loi du 11 février 2005', 'Droits des personnes handicapées'],
     ['2022', 'Harcèlement scolaire reconnu comme délit'],
     ['Défenseur des droits', 'Peut intervenir dans des situations de discrimination'],
@@ -1196,7 +1196,11 @@ const engagement: Notion = {
         ['les vacances scolaires', 'Ce n’est pas un engagement.'],
         ['l’abonnement à une plateforme', 'Un abonnement est un achat.'],
       ],
-      ['Le service ', ' est une forme d’engagement pour la Nation.', ['civique', 'national universel']],
+      [
+        'Le service ',
+        ' propose à un jeune volontaire une mission d’intérêt général : c’est un engagement pour la Nation.',
+        ['civique'],
+      ],
       'Le service civique est une façon de s’engager pour la Nation.',
     ),
   ],
@@ -1235,11 +1239,11 @@ const engagement: Notion = {
     ),
     libre(
       PARCOURS,
-      'quel est le nom du service, qualifié de « civique », par lequel on peut s’engager ? Écris les deux mots.',
+      'comment s’appelle le dispositif qui permet à un jeune volontaire de s’engager pour la Nation en accomplissant une mission d’intérêt général ? Écris son nom en deux mots.',
       ['service civique', 'le service civique'],
       [
         ['service public', 'Un service public rend un service à tous ; on cherche une forme d’engagement.'],
-        ['service militaire', 'Le service cité ici est qualifié de « civique ».'],
+        ['service militaire', 'La mission décrite est d’intérêt général : ce n’est pas une activité des armées.'],
       ],
       'Il s’agit du service civique.',
     ),
