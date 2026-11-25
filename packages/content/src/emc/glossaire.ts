@@ -1207,4 +1207,18 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'L’autorité française de régulation de l’audiovisuel et du numérique, coordinatrice pour le DSA.',
     'L’Arcom veille au respect du DSA en France.',
   ),
+  t(
+    'hebergeur',
+    'hébergeur',
+    ['hébergeurs'],
+    'L’entreprise ou le service qui conserve des contenus pour les rendre accessibles en ligne.',
+    'L’hébergeur d’un site reçoit une notification.',
+  ),
+  t(
+    'recours',
+    'recours',
+    [],
+    'Un moyen de demander que l’on revienne sur une décision que l’on conteste.',
+    'La réponse de la plateforme indique les recours possibles.',
+  ),
 ];

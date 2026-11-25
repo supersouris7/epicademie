@@ -162,7 +162,7 @@ const ACCELERE = vpHarcelement(
 );
 
 const XENOPHOBIE = tlfi('Hostilité manifestée à l’égard des étrangers, de ce qui est étranger.');
-const SIGLE_DSA = prog('règlement européen sur les services numériques en ligne - Digital Services Act');
+const SIGLE_DSA = vpDsa('La législation sur les services numériques (DSA)');
 
 // ——— Notion 1 : le discours de haine en ligne ———
 
@@ -175,6 +175,7 @@ const discoursHaine: Notion = {
   memo: [
     'Un **discours de haine** peut être dit ou écrit. Il s’appuie sur des **stéréotypes** et des **préjugés** posés sur une identité.',
     'Il **réduit** une personne à son appartenance à un groupe que l’on **stigmatise** : c’est le cas du **racisme**, de l’**antisémitisme** et de la **xénophobie**.',
+    'Il peut mener à des injures, à du harcèlement ou à des violences, punis par la loi. Depuis 2022, le harcèlement scolaire est un délit.',
     'Diffuser ou **rediffuser** un tel contenu porte atteinte à la **dignité** et à la sécurité des personnes. Exemple : relayer une moquerie sur l’origine de quelqu’un.',
   ],
   faits: [
@@ -200,7 +201,7 @@ const discoursHaine: Notion = {
       [
         'La haine s’appuie sur des stéréotypes et des ',
         ' posés sur une identité.',
-        ['préjugés', 'prejugés', 'prejuges', 'préjugé'],
+        ['préjugés', 'prejugés', 'prejuges', 'préjugé', 'clichés', 'cliches'],
       ],
       'Stéréotypes et préjugés collent une idée toute faite sur des personnes.',
     ),
@@ -215,7 +216,11 @@ const discoursHaine: Notion = {
         ['il protège sa dignité', 'Stigmatiser porte atteinte à la dignité.'],
         ['il lui donne de nouveaux droits', 'L’exclusion prive de respect, elle n’ajoute aucun droit.'],
       ],
-      ['La personne est réduite à son appartenance à un groupe que l’on ', '.', ['stigmatise', 'stigmatisé']],
+      [
+        'La personne est réduite à son appartenance à un groupe que l’on ',
+        '.',
+        ['stigmatise', 'stigmatisé', 'rejette', 'discrimine'],
+      ],
       'La personne n’est plus vue comme un individu, mais comme un membre d’un groupe rejeté.',
     ),
     fait(
@@ -250,7 +255,7 @@ const discoursHaine: Notion = {
       [
         'Les mécanismes d’exclusion peuvent être à l’origine d’',
         ', de harcèlements ou de violences.',
-        ['injures', 'injure'],
+        ['injures', 'injure', 'insultes', 'insulte'],
       ],
       'Les mots peuvent mener aux actes : injures, harcèlements, violences sont punis par la loi.',
     ),
@@ -319,7 +324,7 @@ const discoursHaine: Notion = {
         ['antisémitisme', 'L’antisémitisme vise les Juifs.'],
         ['harcèlement', 'Le harcèlement désigne des agissements répétés.'],
       ],
-      'C’est la xénophobie.',
+      'La xénophobie vise des personnes parce qu’elles sont étrangères.',
     ),
     libre(
       DELIT_SCOLAIRE,
@@ -329,7 +334,7 @@ const discoursHaine: Notion = {
         ['jeu', 'Le harcèlement n’est pas un jeu.'],
         ['débat', 'Un débat respecte les personnes.'],
       ],
-      'C’est un délit.',
+      'Un délit est une infraction à la loi : harceler à l’école peut être puni par la justice.',
     ),
   ],
   docs: [
@@ -387,7 +392,7 @@ const discoursHaine: Notion = {
         ),
         lecture(
           ORAL_ECRIT,
-          'Le compte avait prononcé la même phrase dans une vidéo. Qu’est-ce que cela change à sa nature ?',
+          'Si le compte avait dit la même phrase dans une vidéo, qu’est-ce que cela changerait à sa nature ?',
           'rien : un discours haineux peut être oral ou écrit',
           [
             ['ce n’est plus haineux, car c’est oral', 'La forme orale est aussi concernée.'],
@@ -411,7 +416,9 @@ const loi: Notion = {
   credit: CREDIT,
   memo: [
     'La loi de 1881 punit la **provocation à la haine** et l’**injure** visant une origine, une religion, un sexe ou un handicap, aussi sur Internet.',
-    'Un harcèlement commis en ligne est puni plus sévèrement, même quand il vient d’un groupe où chacun n’agit qu’une fois.',
+    'L’injure méprise sans imputer (attribuer) de fait précis.',
+    'Un harcèlement en ligne est puni plus sévèrement. Un groupe qui se concerte peut harceler, même si chacun n’agit qu’une fois.',
+    'Depuis 2022, le harcèlement scolaire est un délit.',
     'Le droit s’adapte : **Observatoire de la haine en ligne** (loi de 2020) et règlement européen **DSA**. Idée clé : l’illégal hors ligne l’est aussi en ligne.',
   ],
   faits: [
@@ -432,7 +439,7 @@ const loi: Notion = {
     fait(
       INJURE,
       [
-        'Comment la loi de 1881 nomme-t-elle une expression outrageante ou méprisante qui n’impute aucun fait ?',
+        'Comment la loi de 1881 nomme-t-elle une expression outrageante ou méprisante qui n’impute (n’attribue) aucun fait ?',
         'une injure',
       ],
       [
@@ -525,7 +532,7 @@ const loi: Notion = {
       [
         'Le harcèlement peut venir de plusieurs personnes, même si chacune n’a pas agi de façon ',
         '.',
-        ['répétée', 'repetee', 'répété'],
+        ['répétée', 'repetee', 'répété', 'répétitive'],
       ],
       'La répétition peut venir de l’addition des messages de tout un groupe.',
     ),
@@ -544,7 +551,7 @@ const loi: Notion = {
         [
           'Un harcèlement commis par un support numérique est puni plus ',
           '.',
-          ['sévèrement', 'severement', 'lourdement', 'fortement', 'durement'],
+          ['sévèrement', 'severement', 'lourdement', 'fortement', 'durement', 'gravement'],
         ],
         'L’utilisation d’un service en ligne ou d’un support numérique fait partie des circonstances aggravantes.',
       ),
@@ -575,7 +582,7 @@ const loi: Notion = {
           ['rédiger seul les lois', 'Les lois sont votées par le Parlement.'],
           ['vendre des abonnements', 'Ce n’est pas une mission publique de ce type.'],
         ],
-        ['L’observatoire assure le suivi et l’', ' de l’évolution des contenus.', ['analyse']],
+        ['L’observatoire assure le suivi et l’', ' de l’évolution des contenus.', ['analyse', 'étude', 'etude']],
         'Il observe et analyse : il ne juge pas.',
       ),
     ),
@@ -595,13 +602,13 @@ const loi: Notion = {
   libres: [
     libre(
       INJURE,
-      'comment la loi nomme-t-elle une invective ou un terme de mépris qui n’impute aucun fait ?',
+      'comment la loi nomme-t-elle une invective (une parole violente) ou un terme de mépris qui n’impute (n’attribue) aucun fait ?',
       ['injure', 'une injure', 'l’injure', 'des injures'],
       [
         ['diffamation', 'La diffamation impute un fait qui porte atteinte à l’honneur.'],
         ['signalement', 'Un signalement sert à informer d’un contenu.'],
       ],
-      'C’est une injure.',
+      'L’injure méprise sans rien reprocher de précis ; accuser d’un fait serait une diffamation.',
     ),
     libre(
       OBSERVATOIRE,
@@ -611,17 +618,17 @@ const loi: Notion = {
         ['1881', '1881 est l’année de la loi sur la liberté de la presse.'],
         ['2022', '2022 est l’année à partir de laquelle le harcèlement scolaire est un délit.'],
       ],
-      'La loi date du 24 juin 2020.',
+      'La loi du 24 juin 2020 montre que le droit s’adapte à la haine en ligne.',
     ),
     libre(
       SIGLE_DSA,
-      'quel sigle de trois lettres désigne le règlement européen sur les services numériques (Digital Services Act) ?',
+      'quel sigle de trois lettres désigne le règlement européen sur les services numériques ?',
       ['DSA', 'le DSA'],
       [
         ['ODD', 'ODD signifie objectif de développement durable.'],
         ['DDHC', 'La DDHC est la Déclaration des droits de l’homme et du citoyen.'],
       ],
-      'Le sigle est DSA.',
+      'DSA reprend les initiales de son nom anglais, Digital Services Act.',
     ),
   ],
   docs: [
@@ -678,12 +685,12 @@ const loi: Notion = {
         ),
         lecture(
           PROVOCATION,
-          'De quoi cette page se rend-elle coupable selon les faits décrits ?',
-          'de provocation à la haine ou à la violence en raison de la religion',
+          'À quelle infraction prévue par la loi les faits décrits correspondent-ils ?',
+          'à la provocation à la haine ou à la violence en raison de la religion',
           [
-            ['d’une simple critique d’un film', 'Aucune œuvre n’est critiquée.'],
-            ['d’un oubli de signaler un contenu', 'La page publie elle-même l’appel.'],
-            ['de rien, car la cible est un groupe', 'La loi protège aussi les groupes de personnes.'],
+            ['à une simple critique d’un film', 'Aucune œuvre n’est critiquée.'],
+            ['à un oubli de signaler un contenu', 'La page publie elle-même l’appel.'],
+            ['à aucune, car la cible est un groupe', 'La loi protège aussi les groupes de personnes.'],
           ],
           'Appeler à rejeter et menacer un groupe religieux correspond à la provocation punie par la loi.',
         ),
@@ -938,7 +945,8 @@ const signaler: Notion = {
   credit: CREDIT,
   memo: [
     'Chaque **plateforme** doit offrir un outil simple pour **signaler** un **contenu illicite**, puis agir rapidement quand il est illégal.',
-    'Un bon signalement dit pourquoi, donne l’adresse exacte et se fait de **bonne foi**. La plateforme répond et indique les recours.',
+    'Un signalement (ou notification) dit pourquoi, donne l’adresse exacte (URL) et se fait de **bonne foi**.',
+    'L’**hébergeur**, qui garde les contenus en ligne, envoie un accusé de réception, puis sa décision et les **recours** (moyens de la contester).',
     'Hors de la plateforme : **Pharos** reçoit des signalements ; les signalements des **signaleurs de confiance** passent en priorité ; l’**Arcom** veille au **DSA** en France.',
   ],
   faits: [
@@ -953,7 +961,11 @@ const signaler: Notion = {
         ['rien : elles ne sont pas concernées', 'Le règlement européen leur impose des obligations.'],
         ['un moyen de les partager plus vite', 'Il s’agit de signaler, pas de diffuser.'],
       ],
-      ['Les plateformes doivent proposer un outil pour ', ' facilement les contenus illicites.', ['signaler']],
+      [
+        'Les plateformes doivent proposer un outil pour ',
+        ' facilement les contenus illicites.',
+        ['signaler', 'notifier'],
+      ],
       'Le bouton ou formulaire de signalement est une obligation des plateformes.',
     ),
     fait(
@@ -967,7 +979,11 @@ const signaler: Notion = {
         ['attendre indéfiniment', 'Le retrait doit être rapide.'],
         ['l’envoyer à tous les abonnés', 'Cela élargirait l’atteinte.'],
       ],
-      ['Elle doit rapidement retirer ou ', ' l’accès au contenu illégal.', ['bloquer']],
+      [
+        'Elle doit rapidement retirer ou ',
+        ' l’accès au contenu illégal.',
+        ['bloquer', 'couper', 'fermer', 'supprimer', 'interdire'],
+      ],
       'La plateforme doit agir vite sur un contenu illégal.',
     ),
     expert(
@@ -982,7 +998,11 @@ const signaler: Notion = {
           ['de vive voix au siège de l’entreprise', 'Aucun déplacement n’est demandé.'],
           ['par une annonce dans un journal', 'Un journal ne sert pas à notifier un contenu.'],
         ],
-        ['Les notifications se font exclusivement par voie ', '.', ['électronique', 'electronique']],
+        [
+          'Les notifications se font exclusivement par voie ',
+          '.',
+          ['électronique', 'electronique', 'numérique', 'numerique'],
+        ],
         'On signale directement en ligne, avec un mécanisme facile à utiliser.',
       ),
     ),
@@ -1005,7 +1025,11 @@ const signaler: Notion = {
         ['la note obtenue au dernier devoir', 'Aucun rapport avec le contenu.'],
         ['la liste de tous ses amis', 'Ces données n’ont pas à être données.'],
       ],
-      ['Il faut expliquer pour quelles raisons le contenu paraît ', '.', ['illicite', 'illégal', 'illegal']],
+      [
+        'Il faut expliquer pour quelles raisons le contenu paraît ',
+        '.',
+        ['illicite', 'illégal', 'illegal', 'interdit'],
+      ],
       'Des raisons claires aident la plateforme à décider.',
     ),
     expert(
@@ -1035,7 +1059,7 @@ const signaler: Notion = {
         ['le mot de passe de l’auteur', 'Un mot de passe ne se communique pas.'],
         ['l’obligation de retirer sa plainte', 'La décision ouvre au contraire des recours.'],
       ],
-      ['L’hébergeur communique sa décision et les possibilités de ', '.', ['recours']],
+      ['L’hébergeur communique sa décision et les possibilités de ', '.', ['recours', 'contestation']],
       'On sait ce qui a été décidé et on peut le contester.',
     ),
     expert(
@@ -1047,7 +1071,7 @@ const signaler: Notion = {
           ['jamais', 'Elles sont bien traitées.'],
           ['seulement une fois par an', 'Une fois par an, ils publient des rapports, sans retarder le traitement.'],
         ],
-        ['Les notifications des signaleurs de confiance sont traitées en ', '.', ['priorité', 'priorite']],
+        ['Les notifications des signaleurs de confiance sont traitées en ', '.', ['priorité', 'priorite', 'premier']],
         'Leur expertise explique ce traitement prioritaire.',
       ),
     ),
@@ -1100,7 +1124,7 @@ const signaler: Notion = {
         ['Arcom', 'L’Arcom est une autorité de contrôle.'],
         ['Phare', 'pHARe est un programme contre le harcèlement à l’école.'],
       ],
-      'Il s’agit de Pharos.',
+      'Pharos recueille les signalements et les oriente ; l’Arcom, elle, contrôle les plateformes.',
     ),
     libre(
       ADRESSE,
@@ -1110,7 +1134,7 @@ const signaler: Notion = {
         ['DSA', 'Le DSA est le règlement européen sur les services numériques.'],
         ['ONG', 'Une ONG est une organisation non gouvernementale.'],
       ],
-      'C’est l’URL.',
+      'L’URL permet de retrouver sans erreur le contenu visé.',
     ),
     libre(
       ACCUSE,
@@ -1120,7 +1144,7 @@ const signaler: Notion = {
         ['rediffusion', 'Rediffuser, c’est relayer un contenu.'],
         ['recours', 'Un recours sert à contester une décision.'],
       ],
-      'C’est un accusé de réception.',
+      'L’accusé de réception prouve que la notification est arrivée ; la décision vient ensuite.',
     ),
   ],
   docs: [
