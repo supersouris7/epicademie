@@ -13,8 +13,8 @@
 | Lot        | Chapitre                                    | Notions                                                                                                                       | État actuel            |
 | ---------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
 | `hi-5e-01` | Chrétientés et islam (VIe-XIIIe s.)         | Byzance et l'Europe carolingienne ; de la naissance de l'islam à la prise de Bagdad ; mondes en contact                       | couverte, en relecture |
-| `hi-5e-02` | L'Occident féodal (XIe-XVe s.)              | l'ordre seigneurial ; la société urbaine ; l'Église ; l'affirmation de l'État monarchique (Capétiens et Valois)               | absente                |
-| `hi-5e-03` | Transformations de l'Europe (XVIe-XVIIe s.) | grandes découvertes et premiers empires ; Humanisme, Réformes, conflits religieux ; du Prince de la Renaissance au roi absolu | absente                |
+| `hi-5e-02` | L'Occident féodal (XIe-XVe s.)              | l'ordre seigneurial ; la société urbaine ; l'Église ; l'affirmation de l'État monarchique (Capétiens et Valois)               | couverte, en relecture |
+| `hi-5e-03` | Transformations de l'Europe (XVIe-XVIIe s.) | grandes découvertes et premiers empires ; Humanisme, Réformes, conflits religieux ; du Prince de la Renaissance au roi absolu | couverte, en relecture |
 | `hi-5e-04` | Repères de 5e                               | repères chronologiques du programme ; frise ; acteurs et lieux ; vocabulaire historique                                       | absente                |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),

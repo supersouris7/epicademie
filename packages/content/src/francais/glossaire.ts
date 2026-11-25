@@ -391,7 +391,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'participe-passe',
     word: 'participe passé',
     forms: ['participes passés'],
-    definition: 'La deuxième partie du verbe au passé composé, après être ou avoir.',
+    definition: 'La deuxième partie d’un temps composé (passé composé, plus-que-parfait), après être ou avoir.',
     example: 'Elle est partie. (« partie »)',
   },
   {
@@ -526,6 +526,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['marques de personne'],
     definition: 'La fin du verbe qui va avec le sujet.',
     example: 'Dans « nous chantions », c’est « ons ».',
+  },
+  {
+    id: 'e-muet',
+    word: 'e muet',
+    forms: ['e muets'],
+    definition: 'Un e qu’on écrit mais qu’on n’entend pas, ou à peine.',
+    example: 'Dans « j’appellerai », le e après les deux l ne s’entend presque pas.',
   },
   {
     id: 'adverbe-de-negation',
@@ -772,5 +779,40 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['accents circonflexes', 'circonflexe'],
     definition: 'Le petit chapeau posé sur une voyelle : â, ê, î, ô, û.',
     example: 'nous chantâmes, vous finîtes',
+  },
+  {
+    id: 'mot-generique',
+    word: 'mot générique',
+    forms: ['mots génériques', 'générique'],
+    definition: 'Un mot qui rassemble toute une catégorie. On l’appelle aussi hyperonyme.',
+    example: '« Siège » rassemble chaise, banc et fauteuil.',
+  },
+  {
+    id: 'mot-particulier',
+    word: 'mot particulier',
+    forms: ['mots particuliers'],
+    definition: 'Un mot précis, rangé dans la catégorie d’un mot générique. On l’appelle aussi hyponyme.',
+    example: '« Banc » est un mot particulier de « siège ».',
+  },
+  {
+    id: 'expression-imagee',
+    word: 'expression',
+    forms: ['expressions', 'expression imagée', 'expressions imagées'],
+    definition: 'Un groupe de mots qui fait image. Son sens n’est pas toujours le sens mot à mot.',
+    example: '« Poser un lapin » : ne pas venir à un rendez-vous.',
+  },
+  {
+    id: 'locution',
+    word: 'locution',
+    forms: ['locutions'],
+    definition: 'Plusieurs mots toujours ensemble, qui agissent comme un seul mot.',
+    example: '« Tout à coup » veut dire « soudain ».',
+  },
+  {
+    id: 'classe-grammaticale',
+    word: 'classe grammaticale',
+    forms: ['classes grammaticales', 'classe', 'même classe'],
+    definition: 'La sorte de mot : nom, verbe, adjectif, adverbe… On dit aussi la nature du mot.',
+    example: '« Joie » est un nom, « joyeux » est un adjectif.',
   },
 ];
