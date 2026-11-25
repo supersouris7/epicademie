@@ -48,4 +48,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'h6-rome-mythe-histoire', version: 1, lot: 'hi-6e-02', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'h6-monotheisme-juif', version: 1, lot: 'hi-6e-02', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'h6-citoyennete-athenes', version: 1, lot: 'hi-6e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'h5-byzance-carolingiens', version: 1, lot: 'hi-5e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'h5-islam-bagdad', version: 1, lot: 'hi-5e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'h5-mondes-contact', version: 1, lot: 'hi-5e-01', date: '2026-11-25', verdict: 'ok' },
 ];
