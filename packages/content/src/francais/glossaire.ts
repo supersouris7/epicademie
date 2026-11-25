@@ -213,7 +213,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'groupe-circonstanciel',
     word: 'groupe circonstanciel',
     forms: ['groupes circonstanciels', 'circonstanciel', 'circonstanciels', 'complément circonstanciel'],
-    definition: 'Groupe de mots qui donne un détail sur l’action (où ? quand ? pourquoi ?). On peut le supprimer.',
+    definition:
+      'Groupe de mots qui donne un détail sur l’action (où ? quand ? pourquoi ?). On peut le déplacer ou le supprimer.',
     example: 'Ma cousine mange une pomme dans le jardin. (« dans le jardin » est circonstanciel)',
   },
   {

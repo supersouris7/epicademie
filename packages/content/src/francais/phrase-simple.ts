@@ -66,7 +66,7 @@ const NOM_ROLE: Record<Role, string> = {
 };
 const groupeDe = (p: Phrase, role: Role): string => (role === 'gs' ? p.gs : role === 'gv' ? gv(p) : p.gc);
 const COMMENT: Record<Role, (p: Phrase) => string> = {
-  gs: (p) => `« ${p.gs} » dit qui fait l’action : on peut l’encadrer avec « C’est… qui ».`,
+  gs: (p) => `« ${p.gs} » dit qui fait l’action : on peut l’encadrer avec « C’est… qui » ou « Ce sont… qui ».`,
   gv: (p) => `« ${gv(p)} » contient le verbe « ${p.verbe} » et ce qui le complète.`,
   gc: (p) => `« ${p.gc} » donne un détail en plus : on peut le déplacer ou le supprimer.`,
 };
@@ -183,6 +183,7 @@ function constituantsDraft(rng: Rng, level: Level): QuestionDraft {
 // ───────────────────────── 2. Le sujet inversé ─────────────────────────
 
 const DEF_INVERSION = 'Le sujet est inversé quand il est placé après le verbe.';
+const place = (i: Inversion) => `Ici, « ${i.sujet} » vient après « ${i.verbe} » : le sujet est inversé.`;
 const quiEstCeQui = (i: Inversion) =>
   `Je pose la question « Qui est-ce qui… ? » ou « Qu’est-ce qui… ? » avec le verbe « ${i.verbe} ».`;
 
@@ -200,7 +201,7 @@ const sujetEcrit = (i: Inversion): QuestionDraft => {
       [i.verbe, whyVerbe(i)],
     ]),
     hint: 'Ne regarde pas seulement avant le verbe. Demande qui fait l’action.',
-    steps: [quiEstCeQui(i), DEF_INVERSION, `Le sujet est **${i.sujet}**.`],
+    steps: [quiEstCeQui(i), place(i), `Le sujet est **${i.sujet}**.`],
   };
 };
 
@@ -217,7 +218,7 @@ function sujetInverseDraft(rng: Rng, level: Level): QuestionDraft {
         answer,
         traps,
         hint: 'Le sujet n’est pas toujours au début. Demande : qu’est-ce qui fait cette action ?',
-        steps: [quiEstCeQui(i), DEF_INVERSION, `Le sujet est **${i.sujet}**.`],
+        steps: [quiEstCeQui(i), place(i), `Le sujet est **${i.sujet}**.`],
       };
     }
     case 2: {
@@ -250,7 +251,12 @@ function sujetInverseDraft(rng: Rng, level: Level): QuestionDraft {
         hint: 'Le sujet peut être avant ou après le verbe. Pose la question à chaque verbe.',
         steps: [
           DEF_INVERSION,
-          lignes.map((l) => `Qui « ${l.verbe} » ? « ${l.sujet} ».`).join(' '),
+          lignes
+            .map((l) => {
+              const avant = ORDRE_HABITUEL.includes(l) ? 'avant' : 'après';
+              return `Avec « ${l.verbe} », le sujet « ${l.sujet} » est placé ${avant} le verbe.`;
+            })
+            .join(' '),
           `Réponses : **${lignes.map((l) => l.sujet).join(' ; ')}**.`,
         ],
       };
@@ -270,7 +276,7 @@ const phraseObjet = (o: Objet): string => `${sansCirc(o)} ${o.circ}.`;
 const circDevant = (o: Objet): string => `${maj(o.circ)}, ${lowerFirst(sansCirc(o))}.`;
 
 const DEF_COD =
-  'Le COD complète le verbe sans préposition. Le COI est introduit par une préposition, comme « à » ou « de ».';
+  'Le COD complète le verbe sans préposition. Le COI est introduit par une préposition, comme « à » (aussi dans « au », « aux ») ou « de ».';
 const whyDirect = (o: Objet) =>
   o.type === 'COD'
     ? `Aucune préposition entre « ${o.verbe} » et « ${o.obj} » : c’est un COD.`
@@ -403,10 +409,19 @@ const OBJET = 'un complément d’objet';
 const DEF_ATTRIBUT =
   'Après un verbe attributif (être, devenir, rester, sembler, paraître, avoir l’air), le groupe dit comment est le sujet ou ce qu’il est.';
 
+/** Genre et nombre du sujet, dans l’ordre des propositions d’accord. */
+const GENRES_NOMBRES = ['masculin singulier', 'féminin singulier', 'masculin pluriel', 'féminin pluriel'] as const;
+
+const INDICE_FONCTION: Record<string, string> = {
+  'attribut du sujet': 'verbe attributif',
+  COD: 'autre verbe, pas de préposition',
+  COI: 'autre verbe, avec une préposition',
+};
+
 const whyAttribut = (s: string, verbe: string, groupe: string) =>
   `« ${verbe} » est un verbe attributif : « ${groupe} » parle du sujet « ${s} ». C’est un attribut.`;
 const whyObjet = (s: string, verbe: string, groupe: string) =>
-  `« ${verbe} » n’est pas un verbe attributif : « ${s} » et « ${groupe} » désignent deux choses différentes.`;
+  `« ${verbe} » n’est pas un verbe attributif : « ${s} » et « ${groupe} » désignent deux personnes différentes.`;
 
 function attributDraft(rng: Rng, level: Level): QuestionDraft {
   switch (level) {
@@ -461,12 +476,16 @@ function attributDraft(rng: Rng, level: Level): QuestionDraft {
         answer: { kind: 'text', accepted },
         traps: textTraps(accepted, [
           [a.s, `« ${a.s} » est le sujet. L’attribut dit comment est ce sujet.`],
-          [a.verbe, `« ${a.verbe} » est le verbe attributif. L’attribut vient avec lui.`],
+          [a.verbe, `« ${a.verbe} » est le verbe attributif. L’attribut est ce qui vient après lui.`],
           [`${a.verbe} ${a.adj}`, `Enlève le verbe « ${a.verbe} » : il ne fait pas partie de l’attribut.`],
           [a.circ, `« ${a.circ} » est un complément circonstanciel.`],
         ]),
         hint: 'Trouve le verbe attributif. Cherche le mot qui décrit le sujet.',
-        steps: [DEF_ATTRIBUT, `Le verbe est « ${a.verbe} » et le sujet « ${a.s} ».`, `L’attribut est **${a.adj}**.`],
+        steps: [
+          DEF_ATTRIBUT,
+          `Le verbe est « ${a.verbe} ». « ${a.adj} » dit comment est le sujet « ${a.s} ».`,
+          `L’attribut est **${a.adj}**.`,
+        ],
       };
     }
     case 4: {
@@ -506,6 +525,7 @@ function attributDraft(rng: Rng, level: Level): QuestionDraft {
         steps: [
           DEF_ATTRIBUT,
           'Après les autres verbes, c’est un complément d’objet : COD sans préposition, COI avec.',
+          lignes.map((l, i) => `Ligne ${i + 1} : ${INDICE_FONCTION[l.nom]}.`).join(' '),
           `Réponses : **${lignes.map((l) => l.nom).join(' ; ')}**.`,
         ],
       };
@@ -534,7 +554,7 @@ function attributDraft(rng: Rng, level: Level): QuestionDraft {
         hint: 'Cherche le verbe attributif. À la ligne 3, l’attribut s’accorde avec le sujet.',
         steps: [
           DEF_ATTRIBUT,
-          `« ${j.attributif} » est attributif ; « ${direct.verbe} » ne l’est pas. L’attribut s’accorde avec « ${accord.sujet} ».`,
+          `« ${j.attributif} » est attributif ; « ${direct.verbe} » ne l’est pas. L’attribut s’accorde avec « ${accord.sujet} » (${at(GENRES_NOMBRES, accord.correct)}).`,
           `Réponses : **${j.groupe}** ; **${direct.obj}** ; **${bonAccord}**.`,
         ],
       };

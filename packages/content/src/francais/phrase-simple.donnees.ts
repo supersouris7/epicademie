@@ -99,7 +99,7 @@ export const PHRASES: readonly Phrase[] = [
   ph('Le facteur', 'distribue', 'le courrier', 'chaque matin'),
   ph('Les élèves de la classe', 'préparent', 'une exposition', 'depuis lundi'),
   ph('Ma voisine', 'arrose', 'ses tomates', 'le soir'),
-  ph('Le petit chien', 'cache', 'son os', 'sous le canapé'),
+  ph('Le petit chien', 'cache', 'son os', 'avant la sieste'),
   ph('Les pêcheurs', 'réparent', 'leurs filets', 'sur le quai'),
   ph('La boulangère', 'prépare', 'des brioches', 'avant l’ouverture'),
   ph('Les deux équipes', 'saluent', 'le public', 'à la fin du match'),
