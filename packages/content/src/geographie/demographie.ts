@@ -4,7 +4,7 @@ import { notion, PROGRAMME_C4, type Notion } from './kit.ts';
 /**
  * Cinquième, thème 1 « La question démographique et l’inégal développement » (lot ge-5e-01). Chaque fait cite
  * une source du registre avec sa citation exacte : programme du cycle 4 et glossaire de Géoconfluences
- * (ENS de Lyon, DGESCO). Les textes à lire du niveau 5 sont écrits pour l’exercice (pays fictifs A, B, X, Y).
+ * (ENS de Lyon, DGESCO). Les textes à lire du niveau 5 sont écrits pour l’exercice (pays fictifs A, B, L, M, N, X, Y).
  */
 
 const C4 = PROGRAMME_C4;
@@ -18,6 +18,9 @@ const DEV_HUMAIN = 'geoconfluences-developpement-humain';
 const IDH = 'geoconfluences-idh';
 const EMERGENCE = 'geoconfluences-emergence';
 const PMA = 'geoconfluences-pma';
+const MORTALITE = 'geoconfluences-mortalite';
+const DURABLE = 'geoconfluences-developpement-durable';
+const CHINE_2015 = 'geoconfluences-veille-enfant-unique';
 const INEGALITES = 'geoconfluences-inegalites';
 const PAUVRETE = 'geoconfluences-pauvrete-richesse';
 
@@ -26,8 +29,6 @@ const P_CROISSANCE =
   'la problématique posée par la croissance démographique, notamment dans les pays en développement et en émergence, où elle rend difficile le développement durable et équitable et l’accès de tous aux biens et aux services de base';
 const P_VIEILLISSEMENT = 'Mais on montrera aussi les points communs, comme, par exemple, celui du vieillissement';
 const P_ODD_DEMO = 'ODD mobilisés : lutte contre la faim (ODD2) ; accès à la santé (ODD3)';
-const P_DURABLE =
-  'un développement durable (au sens du mot anglais sustainable, dont il est la traduction) et équitable';
 const P_TOUS_PAYS =
   'les différents niveaux de richesse et de pauvreté et donc les inégalités sociales sont observables dans tous les pays';
 const P_ODD_RICHESSE =
@@ -69,7 +70,11 @@ const G_EMERGENCE =
 const G_BRICS =
   'Les pays émergents les plus connus sont certainement les BRICS (Brésil Russie Inde Chine et Afrique du Sud)';
 const G_SANS_DEV = "Pour grossir le trait, l'émergence pourrait être la croissance sans le développement";
-const G_PMA_AFRIQUE = '33 de ces pays sont situés en Afrique, 8 en Asie, 3 en Océanie et un dans les Antilles';
+const G_MORTALITE_AFRIQUE =
+  'L’Afrique subsaharienne affiche les taux de mortalité infantile les plus élevés au monde : un enfant sur 13 y meurt avant ses 5 ans';
+const G_DURABLE =
+  'mode de développement qui répond aux besoins du présent sans compromettre la capacité des générations futures de répondre aux leurs';
+const G_FIN_ENFANT_UNIQUE = 'En 2015, le gouvernement chinois a annoncé la fin de la politique de l’enfant unique';
 const G_PMA_SIGLE =
   'Les PMA, ou Least Developed Countries en anglais, sont le dernier étage de la fusée des pays en développement';
 const G_IDH_COMPOSITE = 'L’indice de développement humain (IDH) est un indice composite';
@@ -113,7 +118,7 @@ const croissance: Notion = {
   memo: [
     'La **croissance démographique** dépend d’abord du **solde naturel** : naissances moins décès. Exemple : 30 naissances et 10 décès pour 1 000 habitants donnent un solde de + 20 pour 1 000.',
     'La **transition démographique** explique les croissances rapides : la **mortalité** baisse d’abord, la **natalité** baisse plus tard.',
-    'Forte dans les pays en développement, la croissance y rend difficile l’accès de tous aux services de base ; l’Europe et les États-Unis connaissent surtout le **vieillissement**, qui gagne peu à peu tous les pays.',
+    'Forte dans les pays en développement, la croissance y rend difficile l’accès de tous aux services de base. Le **vieillissement** touche l’Europe, les États-Unis et, peu à peu, tous les pays, comme la Chine.',
   ],
   faits: [
     {
@@ -164,7 +169,7 @@ const croissance: Notion = {
       choix: ['mortalité', 'densité', 'superficie'],
       quote: G_DECALAGE,
       explain:
-        'Tant que les décès ont baissé et pas encore les naissances, le solde naturel est très positif : la population croît vite.',
+        'Tant que les décès ont fortement baissé et que les naissances restent élevées, le solde naturel est très positif : la population croît vite.',
       src: TRANSITION,
     },
     {
@@ -221,14 +226,18 @@ const croissance: Notion = {
           why: 'En Europe et aux États-Unis, la natalité est basse ; c’est ce qui fait vieillir la population.',
         },
       ],
-      gap: ['Le programme invite à montrer les points communs, comme celui du ', '.', ['vieillissement']],
+      gap: [
+        'L’Europe, les États-Unis et la Chine ont un point commun : le ',
+        ' de leur population.',
+        ['vieillissement'],
+      ],
       choix: ['vieillissement', 'rajeunissement', 'surpeuplement'],
       quote: P_VIEILLISSEMENT,
       explain: 'La question démographique se pose différemment selon les pays, mais le vieillissement les rapproche.',
       src: C4,
     },
     {
-      q: 'Selon le programme, dans quels pays la croissance démographique rend-elle surtout difficile l’accès de tous aux services de base ?',
+      q: 'Dans quels pays la croissance démographique rend-elle surtout difficile l’accès de tous aux services de base ?',
       a: 'dans les pays en développement et en émergence',
       wrong: [
         {
@@ -237,7 +246,7 @@ const croissance: Notion = {
         },
         {
           label: 'dans aucun pays',
-          why: 'Le programme souligne au contraire cette difficulté dans les pays en développement.',
+          why: 'Cette difficulté existe bien, surtout dans les pays en développement.',
         },
         {
           label: 'seulement aux États-Unis',
@@ -286,7 +295,7 @@ const croissance: Notion = {
     },
     {
       q: 'Un pays compte 12 naissances et 15 décès pour 1 000 habitants en un an. Son solde naturel est-il positif ou négatif ?',
-      accepted: ['négatif', 'negatif', 'il est négatif'],
+      accepted: ['négatif', 'negatif', 'il est négatif', 'solde négatif', 'solde naturel négatif'],
       traps: [
         { text: 'positif', why: '12 − 15 = − 3 : il y a plus de décès que de naissances.' },
         { text: 'nul', why: 'Il faudrait autant de naissances que de décès ; ici 12 − 15 = − 3.' },
@@ -297,13 +306,23 @@ const croissance: Notion = {
     },
     {
       q: 'Quel nombre d’enfants par femme sert de repère pour le renouvellement des générations ?',
-      accepted: ['2,05', '2.05', '2,05 enfants par femme', '2,05 enfants'],
+      accepted: [
+        '2,05',
+        '2.05',
+        '2,05 enfants par femme',
+        '2,05 enfants',
+        '2,1',
+        '2.1',
+        '2,1 enfants',
+        '2,1 enfants par femme',
+      ],
       traps: [
         { text: '1', why: 'Avec un enfant par femme, chaque génération serait deux fois moins nombreuse.' },
         { text: '10', why: 'C’est beaucoup trop : le repère est d’un peu plus de deux enfants par femme.' },
       ],
       quote: G_RENOUVELLEMENT,
-      explain: 'Un peu plus de deux enfants par femme : il faut remplacer les deux parents.',
+      explain:
+        'Environ 2,1 (2,05 exactement) : un peu plus de deux enfants par femme, pour remplacer les deux parents.',
       src: FECONDITE,
     },
     {
@@ -364,7 +383,7 @@ const croissance: Notion = {
         'Des années 1950 aux années 1970, la Chine connaît une très forte natalité.',
         'À partir des années 1980, l’État impose la politique de « l’enfant unique ».',
         'La natalité baisse fortement en une génération.',
-        'Les très nombreuses personnes nées entre 1950 et 1970 arrivent aujourd’hui à l’âge de la retraite.',
+        'En 2015, le gouvernement annonce la fin de cette politique ; les très nombreuses personnes nées entre 1950 et 1970 arrivent à l’âge de la retraite.',
       ],
       qs: [
         {
@@ -396,6 +415,18 @@ const croissance: Notion = {
             'Les nombreuses générations nées avant 1980 vieillissent : le rapport entre actifs et retraités se dégrade.',
           src: VIEILLISSEMENT,
         },
+        {
+          q: 'D’après la ligne 4, la politique de l’enfant unique s’applique-t-elle toujours ?',
+          a: 'non : sa fin a été annoncée en 2015',
+          wrong: [
+            { label: 'oui, elle s’applique toujours', why: 'Ligne 4 : le gouvernement en a annoncé la fin en 2015.' },
+            { label: 'elle n’a jamais existé', why: 'Ligne 2 : elle a été imposée à partir des années 1980.' },
+          ],
+          quote: G_FIN_ENFANT_UNIQUE,
+          explain:
+            'Après plus de trente ans, la Chine a mis fin à l’enfant unique : chaque couple peut avoir deux enfants.',
+          src: CHINE_2015,
+        },
       ],
     },
     {
@@ -409,7 +440,7 @@ const croissance: Notion = {
       qs: [
         {
           q: 'À quelle phase de la transition démographique se trouve ce pays ?',
-          a: 'la phase où la mortalité a baissé, mais pas encore la natalité',
+          a: 'la phase intermédiaire : la mortalité a fortement baissé, la natalité reste encore élevée',
           wrong: [
             {
               label: 'l’ancien régime : natalité et mortalité élevées',
@@ -421,7 +452,8 @@ const croissance: Notion = {
             },
           ],
           quote: G_DECALAGE,
-          explain: 'La natalité baisse avec retard sur la mortalité : c’est la phase de croissance rapide.',
+          explain:
+            'La natalité commence à peine à baisser, avec retard sur la mortalité : c’est la phase de croissance rapide.',
           src: TRANSITION,
         },
         {
@@ -456,8 +488,8 @@ const developpement: Notion = {
   hint: 'Le développement ne se résume pas à la richesse : pense à la santé, à l’instruction, aux conditions de vie.',
   memo: [
     'Le **développement** ne se résume pas à produire plus de richesses : il inclut la santé, l’instruction et les conditions de vie de tous.',
-    'Le monde est inégalement développé : pays développés, **pays émergents** à forte croissance (Chine, Inde, Brésil) et **pays les moins avancés**, dont 33 sur 44 en Afrique.',
-    'L’**espérance de vie** le montre : en 2022, 63 ans dans les pays à faibles revenus contre 80 ans dans les pays à hauts revenus. Le **développement durable** vise un progrès équitable, qui ne sacrifie pas l’avenir.',
+    'Le monde est inégalement développé : pays développés, **pays émergents** à forte croissance (Chine, Inde, Brésil) et **pays les moins avancés** (PMA), les plus pauvres selon l’ONU, situés pour la plupart en Afrique.',
+    'L’**espérance de vie** le montre : en 2022, 63 ans dans les pays à faibles revenus contre 80 ans dans les pays à hauts revenus. Le **développement durable** répond aux besoins d’aujourd’hui sans compromettre ceux des générations futures ; on le veut aussi **équitable** : ses fruits doivent profiter au plus grand nombre.',
   ],
   faits: [
     {
@@ -534,18 +566,19 @@ const developpement: Notion = {
       src: EMERGENCE,
     },
     {
-      q: 'Sur quel continent se trouvent la plupart des pays les moins avancés (PMA) ?',
-      a: 'l’Afrique',
+      q: 'Dans quelle région du monde la mortalité infantile est-elle la plus élevée ?',
+      a: 'l’Afrique subsaharienne',
       wrong: [
-        { label: 'l’Europe', why: 'Aucun pays d’Europe ne figure parmi les PMA.' },
-        { label: 'l’Amérique du Nord', why: 'Aucun pays d’Amérique du Nord ne figure parmi les PMA.' },
-        { label: 'l’Asie', why: 'L’Asie compte 8 PMA, contre 33 en Afrique.' },
+        { label: 'l’Europe', why: 'Les taux les plus élevés au monde se trouvent en Afrique subsaharienne.' },
+        { label: 'l’Amérique du Nord', why: 'Les taux les plus élevés au monde se trouvent en Afrique subsaharienne.' },
+        { label: 'l’Asie de l’Est', why: 'Les taux les plus élevés au monde se trouvent en Afrique subsaharienne.' },
       ],
-      gap: ['Sur les 44 pays les moins avancés, 33 sont situés en ', '.', ['Afrique']],
-      choix: ['Afrique', 'Europe', 'Océanie'],
-      quote: G_PMA_AFRIQUE,
-      explain: '33 PMA sur 44 sont africains, 8 asiatiques, 3 en Océanie et 1 dans les Antilles.',
-      src: PMA,
+      gap: ['L’Afrique subsaharienne affiche les taux de mortalité ', ' les plus élevés au monde.', ['infantile']],
+      choix: ['infantile', 'industrielle', 'urbaine'],
+      quote: G_MORTALITE_AFRIQUE,
+      explain:
+        'Un enfant sur 13 y meurt avant ses 5 ans : la santé des enfants montre l’inégal développement du monde.',
+      src: MORTALITE,
     },
     {
       q: 'En 2022, quelle était l’espérance de vie dans les pays à faibles revenus et dans les pays à hauts revenus ?',
@@ -566,24 +599,32 @@ const developpement: Notion = {
       src: ESPERANCE,
     },
     {
-      q: 'Dans le programme de 5e, que signifie « développement durable » ?',
-      a: 'la traduction de l’anglais sustainable : un développement qui peut durer et qui est équitable',
+      q: 'Qu’est-ce qu’un développement durable ?',
+      a: 'un développement qui répond aux besoins d’aujourd’hui sans compromettre ceux des générations futures',
       wrong: [
-        { label: 'un développement le plus rapide possible', why: 'Durable ne veut pas dire rapide.' },
+        {
+          label: 'un développement le plus rapide possible',
+          why: 'Durable ne veut pas dire rapide : il pense à l’avenir.',
+        },
         {
           label: 'un développement réservé aux pays riches',
-          why: 'Le programme le veut équitable : il concerne tous les pays.',
+          why: 'Il concerne tous les pays, et l’on veut aussi qu’il soit équitable.',
         },
         {
           label: 'un développement qui renonce à toute production',
-          why: 'Il s’agit de produire autrement, pas de ne plus produire.',
+          why: 'Il s’agit de répondre aux besoins, donc de produire autrement, pas de ne plus produire.',
         },
       ],
-      gap: ['« Développement durable » traduit le mot anglais ', '.', ['sustainable']],
-      choix: ['sustainable', 'fast', 'wealthy'],
-      quote: P_DURABLE,
-      explain: 'Le développement durable doit pouvoir durer et profiter équitablement à tous.',
-      src: C4,
+      gap: [
+        'Un développement durable répond aux besoins du présent sans compromettre ceux des générations ',
+        '.',
+        ['futures'],
+      ],
+      choix: ['futures', 'passées', 'voisines'],
+      quote: G_DURABLE,
+      explain:
+        'Durable : il pense aussi à ceux qui vivront après nous. On le veut en plus équitable : ses fruits doivent profiter au plus grand nombre.',
+      src: DURABLE,
     },
   ],
   paires3: [
@@ -643,7 +684,17 @@ const developpement: Notion = {
     },
     {
       q: 'Un pays produit chaque année plus de richesses, mais les plus pauvres n’en profitent pas. Selon Géoconfluences, est-ce de la croissance ou du développement ?',
-      accepted: ['croissance', 'la croissance', 'de la croissance', 'la croissance sans le développement'],
+      accepted: [
+        'croissance',
+        'la croissance',
+        'de la croissance',
+        'la croissance sans le développement',
+        'croissance économique',
+        'la croissance économique',
+        'de la croissance économique',
+        'c’est de la croissance',
+        "c'est de la croissance",
+      ],
       traps: [
         {
           text: 'développement',
@@ -700,12 +751,12 @@ const developpement: Notion = {
       ],
     },
     {
-      title: 'Une carte de l’espérance de vie',
+      title: 'Une carte de l’espérance de vie (pays fictifs)',
       lines: [
-        'La carte classe les pays du monde selon l’espérance de vie à la naissance.',
-        'La classe la plus haute (plus de 80 ans) domine en Europe, en Amérique du Nord et au Japon.',
-        'La classe la plus basse (moins de 65 ans) se concentre en Afrique subsaharienne.',
-        'Depuis 1950, l’espérance de vie a progressé partout, et plus vite dans les pays les moins développés.',
+        'La carte classe trois pays imaginaires, L, M et N, selon l’espérance de vie à la naissance.',
+        'Pays L et pays M : plus de 80 ans ; les hôpitaux y sont nombreux et presque tous les enfants vont à l’école.',
+        'Pays N : moins de 65 ans ; beaucoup d’habitants y ont peu accès aux soins.',
+        'Dans le monde, l’espérance de vie a fortement progressé depuis les années 1950, et plus vite dans les pays les moins développés.',
       ],
       qs: [
         {
@@ -735,7 +786,7 @@ const developpement: Notion = {
             },
             {
               label: 'l’espérance de vie a baissé depuis 1950',
-              why: 'Ligne 4 : elle a progressé partout.',
+              why: 'Ligne 4 : elle a fortement progressé dans le monde.',
             },
           ],
           quote: G_RATTRAPAGE,

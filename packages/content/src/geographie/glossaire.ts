@@ -1459,6 +1459,34 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'Pendant la transition démographique, la population augmente vite.',
   },
   {
+    id: 'indice-de-fecondite',
+    word: 'indice de fécondité',
+    forms: ['indice de fécondité', 'indices de fécondité'],
+    definition: 'Le nombre moyen d’enfants par femme dans un pays, une année donnée.',
+    example: 'Un indice de 1,5 : en moyenne, une femme a 1,5 enfant.',
+  },
+  {
+    id: 'mortalite-infantile',
+    word: 'mortalité infantile',
+    forms: ['mortalité infantile'],
+    definition: 'Les décès des jeunes enfants, rapportés au nombre de naissances.',
+    example: 'Quand les vaccins et les soins progressent, la mortalité infantile recule.',
+  },
+  {
+    id: 'afrique-subsaharienne',
+    word: 'Afrique subsaharienne',
+    forms: ['afrique subsaharienne'],
+    definition: 'La partie de l’Afrique située au sud du désert du Sahara.',
+    example: 'Le Mali et le Niger font partie de l’Afrique subsaharienne.',
+  },
+  {
+    id: 'equitable',
+    word: 'équitable',
+    forms: ['équitable', 'équitables'],
+    definition: 'Juste pour tous : chacun reçoit sa juste part, personne n’est laissé de côté.',
+    example: 'Un partage équitable des repas donne à chacun ce dont il a besoin.',
+  },
+  {
     id: 'vieillissement',
     word: 'vieillissement',
     forms: ['vieillissement', 'vieillissement démographique'],
@@ -1486,7 +1514,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     word: 'pays les moins avancés',
     forms: ['pays les moins avancés', 'pays moins avancé', 'pma'],
     definition: 'Les pays les plus pauvres du monde, selon une liste établie par l’ONU (PMA).',
-    example: 'La plupart des pays les moins avancés sont situés en Afrique.',
+    example: 'Haïti fait partie des pays les moins avancés.',
   },
   {
     id: 'esperance-de-vie',
@@ -1494,7 +1522,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['espérance de vie', 'espérances de vie'],
     definition:
       'Le nombre moyen d’années que peut espérer vivre un nouveau-né, dans les conditions de santé de son pays.',
-    example: 'En 2022, l’espérance de vie atteignait 80 ans dans les pays à hauts revenus.',
+    example: 'Une espérance de vie de 70 ans : un nouveau-né peut espérer vivre 70 ans en moyenne.',
   },
   {
     id: 'idh',

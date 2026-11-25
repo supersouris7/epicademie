@@ -3084,7 +3084,7 @@ export const SOURCES: readonly Source[] = [
   geoconfluences('habitat', 'Habitat (humain)', 'habitat', '2026-06'),
   // Lot ge-5e-01 (démographie et développement)
   geoconfluences('transition-demographique', 'Transition démographique', 'transition-demographique', '2024-07'),
-  geoconfluences('solde-naturel', 'Solde naturel, solde migratoire, solde démographique', 'solde-naturel', '2025-01'),
+  geoconfluences('solde-naturel', 'Solde démographique, migratoire, naturel', 'solde-naturel', '2025-01'),
   geoconfluences('mortalite', 'Mortalité', 'mortalite', '2023-03'),
   geoconfluences('fecondite', 'Fécondité', 'fecondite', '2024-10'),
   geoconfluences('vieillissement', 'Vieillissement démographique', 'vieillissement', '2025-06'),
@@ -3096,6 +3096,15 @@ export const SOURCES: readonly Source[] = [
   geoconfluences('pma', 'Pays les moins avancés (PMA)', 'pma-pays-les-moins-avances', '2026-01'),
   geoconfluences('inegalites', 'Inégalités', 'inegalites', '2025-06'),
   geoconfluences('pauvrete-richesse', 'Pauvreté et richesse', 'pauvrete-et-richesse', '2025-06'),
+  geoconfluences('developpement-durable', 'Développement durable', 'developpement-durable', '2024-12'),
+  {
+    id: 'geoconfluences-veille-enfant-unique',
+    title: 'Géoconfluences, veille « INED - La fin de l’enfant unique en Chine ? »',
+    publisher: 'Géoconfluences (ENS de Lyon, DGESCO)',
+    url: 'https://geoconfluences.ens-lyon.fr/actualites/veille/ined-la-fin-de-lenfant-unique-en-chine',
+    textDate: '2016-07-07',
+    consultedOn: '2026-11-25',
+  },
   // Lot fr-cm1-11 (lecture)
   academie('ou', 'où'),
   academie('quand', 'quand'),
