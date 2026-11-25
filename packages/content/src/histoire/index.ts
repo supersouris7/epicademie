@@ -2,6 +2,7 @@ import type { Chapter, Skill } from '../types.ts';
 import { choice } from '../build.ts';
 import { SKILLS as AGE_INDUSTRIEL } from './age-industriel.ts';
 import { SKILLS as AVANT_LA_FRANCE } from './avant-la-france.ts';
+import { SKILLS as EMPIRE_ROMAIN } from './empire-romain.ts';
 import { SKILLS as GUERRES_EUROPE } from './guerres-europe.ts';
 import { SKILLS as HUMANITE } from './humanite.ts';
 import { SKILLS as TEMPS_DES_ROIS } from './le-temps-des-rois.ts';
@@ -220,5 +221,6 @@ export const HISTOIRE_CHAPTERS: readonly Chapter[] = [
   chapter('h6-reperes', '6e', 'L’Antiquité', [skillOf('h6-reperes', 'Repères de 6e', SIXIEME, 'sixième')]),
   chapter('h6-humanite-migrations', '6e', 'L’humanité et ses migrations', HUMANITE),
   chapter('h6-recits-fondateurs', '6e', 'Récits fondateurs et citoyenneté', RECITS_FONDATEURS),
+  chapter('h6-empire-romain', '6e', 'L’empire romain dans le monde antique', EMPIRE_ROMAIN),
   chapter('h6-se-reperer', '6e', 'Se repérer dans le temps', REPERES_6E),
 ];

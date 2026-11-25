@@ -657,6 +657,15 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-25',
   },
   {
+    id: 'eduscol-6e-empire-romain',
+    title:
+      'Ressources d’accompagnement, histoire 6e, thème 3 « L’empire romain dans le monde antique » (consulté via la copie d’archive web.archive.org)',
+    publisher: 'Éduscol',
+    url: 'https://cache.media.eduscol.education.fr/file/Histoire/97/5/RA16_C3_HIS_6e_Th3_L_empire_romain_dans_le_monde_antique-DM_619975.pdf',
+    textDate: '2016-03',
+    consultedOn: '2026-11-25',
+  },
+  {
     id: 'francais-cycle3-2025',
     title: 'Programme de français du cycle 3 (CM1, CM2, 6e)',
     publisher: 'Ministère de l’Éducation nationale',
@@ -961,6 +970,14 @@ export const SOURCES: readonly Source[] = [
   academie('scruter', 'scruter'),
   academie('rassasier', 'rassasier'),
   academie('faufiler', 'faufiler'),
+  // Lot fr-cm2-05 : les accords (participes passés, pluriels et féminins particuliers).
+  tlfi('etre', 'être', '%C3%AAtre'),
+  tlfi('avoir', 'avoir', 'avoir'),
+  tlfi('travail', 'travail', 'travail'),
+  tlfi('pneu', 'pneu', 'pneu'),
+  tlfi('sec', 'sec', 'sec'),
+  ...['gros', 'long', 'nouveau', 'frais', 'public', 'fou', 'jumeau', 'loup'].map((w) => academie(w, w)),
+  academie('paraitre', 'paraître'),
   {
     id: 'eduscol-grammaire-francais',
     title: 'La grammaire du français. Terminologie grammaticale (les guides fondamentaux pour enseigner)',
@@ -2993,6 +3010,20 @@ export const SOURCES: readonly Source[] = [
   tlfi('vraquier', 'vraquier', 'vraquier'),
   tlfi('balneaire', 'balnéaire', 'baln%C3%A9aire'),
   tlfi('tsunami', 'tsunami', 'tsunami'),
+  // Lot ge-6e-04 (le monde habité)
+  {
+    id: 'eduscol-monde-habite',
+    title: 'Ressource d’accompagnement, géographie 6e, « Le monde habité » (thème 4)',
+    publisher: 'Éduscol, ministère de l’Éducation nationale',
+    url: 'https://cache.media.eduscol.education.fr/file/Geographie/74/2/RA16_C3_HIGE_GEO_6e_Th4_Monde_habite_616742.pdf',
+    textDate: '2016-03',
+    consultedOn: '2026-11-25',
+  },
+  geoconfluences('densite', 'Densité', 'densite', '2025-09'),
+  geoconfluences('ecoumene', 'Écoumène (ou œkoumène)', 'ecoumene', '2024-07'),
+  geoconfluences('population-peuplement', 'Population, peuplement', 'population-peuplement', '2026-03'),
+  geoconfluences('megalopole', 'Mégalopole', 'megalopole', '2024-07'),
+  geoconfluences('habitat', 'Habitat (humain)', 'habitat', '2026-06'),
   // Lot fr-cm1-11 (lecture)
   academie('ou', 'où'),
   academie('quand', 'quand'),
