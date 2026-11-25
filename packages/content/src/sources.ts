@@ -666,6 +666,15 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-25',
   },
   {
+    id: 'eduscol-5e-chretientes-islam',
+    title:
+      'Ressources d’accompagnement, histoire 5e, thème 1 « Chrétientés et islam (VIe-XIIIe siècles), des mondes en contact » (consulté via la copie d’archive web.archive.org)',
+    publisher: 'Éduscol',
+    url: 'https://cache.media.eduscol.education.fr/file/Histoire/82/3/C4_HIS_5_Th1_Chretientes_et_islam-DM_593823.pdf',
+    textDate: '2016-03',
+    consultedOn: '2026-11-25',
+  },
+  {
     id: 'francais-cycle3-2025',
     title: 'Programme de français du cycle 3 (CM1, CM2, 6e)',
     publisher: 'Ministère de l’Éducation nationale',

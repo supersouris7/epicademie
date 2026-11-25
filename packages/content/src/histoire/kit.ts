@@ -54,8 +54,12 @@ export interface Notion {
   }[];
 }
 
+const CYCLE4 = new Set(['cinquième', 'quatrième', 'troisième']);
+
 const prog = (classe: string) =>
-  `Programme du cycle 3 (BOEN n° 31 du 30 juillet 2020, version 2023), histoire, classe de ${classe}`;
+  CYCLE4.has(classe)
+    ? `Programme du cycle 4 (BOEN n° 31 du 30 juillet 2020), histoire, classe de ${classe}`
+    : `Programme du cycle 3 (BOEN n° 31 du 30 juillet 2020, version 2023), histoire, classe de ${classe}`;
 
 /** Mélange jusqu'à ce que l'ordre ne soit pas déjà le bon (validate.ts l'exige). */
 export function shuffled<T>(rng: Rng, items: readonly T[]): T[] {
