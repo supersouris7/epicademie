@@ -460,7 +460,15 @@ const ordre1: Generator = (rng) => {
       })),
     ),
     hint: 'Compare les dates entre parenthèses.',
-    steps: [cite(bon.preuve), CHRONO, fin(date(bon))],
+    steps: [
+      cite(bon.preuve),
+      CHRONO,
+      `Rangés : ${[...choisis]
+        .sort((a, b) => a.t - b.t)
+        .map((r) => r.date)
+        .join(', puis ')}.`,
+      fin(date(bon)),
+    ],
     targetSeconds: 25,
   };
 };
@@ -483,7 +491,7 @@ const ordre2: Generator = (rng) => {
       autres.map((r) => ({
         label: date(r),
         why:
-          r === avant
+          file.indexOf(r) < i
             ? `Ce fait ne vient pas ${mot} : il arrive ${r.date}.`
             : `Il vient bien ${mot}, mais un autre fait est plus proche.`,
       })),
@@ -549,16 +557,16 @@ const ordre5: Generator = (rng) => {
   const figure = document(
     'Le carnet de la guide, tout mélangé',
     rng.shuffle([
-      ...ancres.map((r) => `Fait du programme : « ${r.label} ».`),
+      ...ancres.map((r) => `Fait réel : « ${r.label} ».`),
       ...inventes.map((e) => `Fait inventé : « ${e.nom} » ${e.d} ans ${e.sens} ${e.ancre.court}.`),
     ]),
-    'Texte écrit pour l’exercice ; les faits du programme sont signalés.',
+    'Texte écrit pour l’exercice ; les faits réels sont signalés.',
   );
   const calculs = [
     `Dates à connaître : ${ancres.map((r) => `« ${r.label} » ${r.date}`).join(' ; ')}.`,
     ...inventes.map((e) => `« ${e.nom} » : ${e.ancre.t} ${e.sens === 'avant' ? '−' : '+'} ${e.d} = ${e.t}.`),
   ];
-  const hint = 'Retrouve les dates du programme, puis calcule celles des faits inventés.';
+  const hint = 'Retrouve les dates des faits réels, puis calcule celles des faits inventés.';
   if (rng.int(0, 1) === 0) {
     const q = ranger(
       rng,

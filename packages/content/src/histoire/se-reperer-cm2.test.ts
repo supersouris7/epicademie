@@ -142,12 +142,49 @@ describe('histoire cm2 — Se repérer dans le temps', () => {
     }
   });
 
-  it('niveau 5 ordonner : les faits inventés se calculent depuis les faits du programme, sans date écrite', () => {
+  it('niveau 2 ordonner : chaque piège concorde avec les dates, sur toutes les graines', () => {
+    const find = (text: string) => REPERES.find((r) => text.startsWith(r.label))!;
+    for (const q of questions('hcm2-ordonner', 2, 2000)) {
+      const [, mot, cited] = /juste (avant|après) celui-ci : « (.+) » \?$/.exec(q.prompt)!;
+      if (q.answer.kind !== 'choice') throw new Error(q.prompt);
+      const { options, correct } = q.answer;
+      const ref = find(cited!).t;
+      // Distance au repère, positive du côté demandé.
+      const gap = (label: string) => (find(label).t - ref) * (mot === 'après' ? 1 : -1);
+      const good = gap(options[correct]!);
+      expect(good, q.prompt).toBeGreaterThan(0);
+      expect(q.traps, q.prompt).toHaveLength(options.length - 1);
+      for (const trap of q.traps) {
+        if (!('option' in trap)) throw new Error(q.prompt);
+        const label = options[trap.option]!;
+        const wrongSide = gap(label) < 0;
+        if (!wrongSide) expect(gap(label), q.prompt).toBeGreaterThan(good);
+        expect(trap.why, `${q.prompt} → ${label}`).toBe(
+          wrongSide
+            ? `Ce fait ne vient pas ${mot} : il arrive ${find(label).date}.`
+            : `Il vient bien ${mot}, mais un autre fait est plus proche.`,
+        );
+      }
+    }
+  });
+
+  it('niveau 1 ordonner : les étapes rangent les trois dates avant la réponse', () => {
+    for (const q of questions('hcm2-ordonner', 1)) {
+      if (q.answer.kind !== 'choice') throw new Error(q.prompt);
+      const dates = q.answer.options
+        .map((o) => REPERES.find((r) => o.startsWith(r.label))!)
+        .sort((a, b) => a.t - b.t)
+        .map((r) => r.date);
+      expect(q.steps.at(-2), q.prompt).toBe(`Rangés : ${dates.join(', puis ')}.`);
+    }
+  });
+
+  it('niveau 5 ordonner : les faits inventés se calculent depuis les faits réels, sans date écrite', () => {
     const modes = new Set<string>();
     for (const q of questions('hcm2-ordonner', 5)) {
       const times = new Map<string, number>();
       for (const l of lines(q)) {
-        const known = /^Fait du programme : « (.+) »\.$/.exec(l);
+        const known = /^Fait réel : « (.+) »\.$/.exec(l);
         if (known) times.set(known[1]!, REPERES.find((r) => r.label === known[1])!.t);
         const made = /^Fait inventé : « (.+) » (\d+) ans (avant|après) (.+)\.$/.exec(l);
         if (made) {
