@@ -106,7 +106,12 @@ const initiale = (mot: string) => `Il commence par « ${mot.charAt(0)} » et com
 // ───────────────────────── 1. Synonymes ─────────────────────────
 
 const DEF_SYNONYME = 'Un **synonyme** est un mot de même sens, ou de sens voisin.';
-const juste = (s: Synonyme) => `« ${s.syn} » veut dire presque la même chose que « ${s.mot} ».`;
+/** Mots rares donnés en réponse : leur sens est rappelé dans l'explication. */
+const GLOSES: Readonly<Record<string, string>> = {
+  ardu: ' « Ardu » veut dire très difficile.',
+  hardi: ' « Hardi » veut dire qui ose, qui n’a pas peur.',
+};
+const juste = (s: Synonyme) => `« ${s.syn} » veut dire presque la même chose que « ${s.mot} ».${GLOSES[s.syn] ?? ''}`;
 const SYN_COURANTS = parMot(SYNONYMES, [
   'content',
   'triste',
@@ -204,7 +209,8 @@ function synonymeDraft(rng: Rng, level: Level): QuestionDraft {
 // ───────────────────────── 2. Antonymes ─────────────────────────
 
 const DEF_ANTONYME = 'Un **antonyme** est un mot de sens contraire.';
-const oppose = (a: Pick<Antonyme, 'mot' | 'contraire'>) => `« ${a.contraire} » est le contraire de « ${a.mot} ».`;
+const oppose = (a: Pick<Antonyme, 'mot' | 'contraire'>) =>
+  `« ${a.contraire} » est le contraire de « ${a.mot} ».${GLOSES[a.contraire] ?? ''}`;
 const ANT_COURANTS = parMot(ANTONYMES, [
   'froid',
   'lourd',
@@ -587,9 +593,11 @@ function reperer(rng: Rng): QuestionDraft {
   const c = rng.pick(CONSTRUITS);
   const autres = pickN(
     rng,
-    TOUS_AFFIXES.filter((a) => a !== AFFIXES.metier && a !== c.affixe && !contient(c.mot, a)),
+    TOUS_AFFIXES.filter(
+      (a) => a.place === c.affixe.place && a !== AFFIXES.metier && a !== c.affixe && !contient(c.mot, a),
+    ),
     2,
-  ).map((a) => ({ label: a.forme, why: `On n’entend pas « ${a.forme} » à cette place dans « ${c.mot} ».` }));
+  ).map((a) => ({ label: a.forme, why: `On ne voit pas « ${a.forme} » à cette place dans « ${c.mot} ».` }));
   const { answer, traps } = choice(rng, c.affixe.forme, [
     { label: c.base, why: `« ${c.base} » est le mot simple de départ, pas le morceau ajouté.` },
     ...autres,
@@ -683,6 +691,14 @@ const TOUS_POLYSEMES: readonly Polyseme[] = [...POLYSEMES, ...POLYSEMES_EXPERTS]
 const avecMot = (p: Polyseme, s: Sens) => s.phrase.replace('___', `« ${p.mot} »`);
 const sensIci = (p: Polyseme, s: Sens) => `Ici, « ${p.mot} » veut dire : ${s.sens}.`;
 
+/** Sens de mots différents trop proches pour être proposés ensemble. */
+const SENS_PROCHES: readonly (readonly [string, string])[] = [
+  ['un carton illustré qu’on envoie', 'un morceau de papier pour écrire'],
+  ['une plaque très mince', 'une plaque de verre, comme un miroir'],
+  ['un petit rond cousu qui ferme un habit', 'une partie d’un objet monté'],
+];
+const proches = (a: string, b: string) => SENS_PROCHES.some((paire) => paire.includes(a) && paire.includes(b));
+
 /** Propositions fausses : les autres sens du mot, puis des sens d'autres mots. */
 function autresSens(rng: Rng, p: Polyseme, s: Sens, n: number): Option[] {
   const memes = p.sens
@@ -690,7 +706,8 @@ function autresSens(rng: Rng, p: Polyseme, s: Sens, n: number): Option[] {
     .map((x) => ({ label: x.sens, why: `C’est un autre sens de « ${p.mot} ». Il ne va pas avec cette phrase.` }));
   const dehors = rng
     .shuffle(TOUS_POLYSEMES.filter((q) => q !== p))
-    .map((q) => ({ label: rng.pick(q.sens).sens, why: `Ce sens n’est pas un sens de « ${p.mot} ».` }));
+    .map((q) => ({ label: rng.pick(q.sens).sens, why: `Ce sens n’est pas un sens de « ${p.mot} ».` }))
+    .filter((o) => !proches(o.label, s.sens));
   // Toujours au moins un sens d'un autre mot, pour des propositions bien distinctes.
   return [...memes.slice(0, n - 1), ...dehors].slice(0, n);
 }
@@ -853,6 +870,7 @@ function motCache(rng: Rng): QuestionDraft {
     traps: textTraps(accepted, [
       [c.mot, 'Tu as recopié le mot. Cherche le petit mot caché dedans.'],
       [c.membre, 'Va plus loin : quel mot encore plus simple reconnais-tu ?'],
+      ...(c.mot === 'délavé' ? [['lavé', 'Tu es tout près : écris l’infinitif, le mot simple.'] as const] : []),
     ]),
     hint: 'Enlève le début et la fin du mot. Que reste-t-il ?',
     steps: [
@@ -976,7 +994,7 @@ export const FCM1_VOCABULAIRE: readonly Skill[] = [
     title: 'Les familles de mots',
     memo: [
       'Une **famille de mots** partage un même **radical** : dent, dentiste, dentier.',
-      'Attention aux faux amis : « terrible » ne vient pas de « terre » !',
+      'Attention aux pièges : « terrible » ne vient pas de « terre » !',
     ],
     factId: 'prog-relations',
     faits: ['def-famille', 'def-radical', ...FAITS_FAMILLES],

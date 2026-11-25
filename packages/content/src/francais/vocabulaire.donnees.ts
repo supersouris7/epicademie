@@ -77,7 +77,7 @@ const synonyme = ({ article, citation, ...s }: Omit<Synonyme, 'faitId'> & Cite):
 const contraire = (mot: string): string => `C’est le contraire : on cherche un mot de sens proche de « ${mot} ».`;
 const ailleurs = (faux: string, mot: string): string => `« ${faux} » parle d’autre chose que « ${mot} ».`;
 const famille = (faux: string, mot: string): string =>
-  `« ${faux} » ressemble à « ${mot} », mais ce n’est pas le même genre de mot.`;
+  `« ${faux} » ressemble à « ${mot} », mais ce n’est pas la même sorte de mot : il ne peut pas le remplacer.`;
 
 export const SYNONYMES: readonly Synonyme[] = [
   synonyme({
@@ -447,7 +447,7 @@ export const ANTONYMES: readonly Antonyme[] = [
     article: 'clair',
     citation: 'Anton. sombre, obscur.',
     proche: 'lumineux',
-    phrase: 'Ce passage est {}.',
+    phrase: 'Ce grenier est {}.',
   }),
   antonyme({
     mot: 'craintif',
@@ -707,7 +707,7 @@ export const CONSTRUITS: readonly Construit[] = [
     affixe: AFFIXES.de,
     faitId: 'defaire-faire',
     definition: 'faire le contraire de « faire »',
-    phrase: 'Ce nœud est trop serré : aide-moi à le {}.',
+    phrase: 'Ce nœud me gêne : pour libérer la corde, je dois le {}.',
   },
   {
     mot: 'démonter',
