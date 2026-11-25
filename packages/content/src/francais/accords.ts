@@ -499,7 +499,7 @@ function accordGnDraft(rng: Rng, level: Level): QuestionDraft {
         { label: `les ${accorderAdj(a, g, 'pl')} ${x.nom}`, why: 'Le nom doit aussi être au pluriel.' },
       ]);
       return {
-        prompt: `Quel groupe est le pluriel bien accordé de « ${un(g)} ${a[g]} ${x.nom} » ?`,
+        prompt: `Quel groupe est le pluriel bien accordé de « ${le(g, 'sg')} ${a[g]} ${x.nom} » ?`,
         answer,
         traps,
         hint: 'Cherche le genre du nom, puis vérifie chaque mot un par un.',

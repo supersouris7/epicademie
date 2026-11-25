@@ -10,6 +10,7 @@ import {
   FAITS_ACCORDS,
   FEMININS,
   NOMS_ANIMES,
+  NOMS_SIMPLES,
   PHRASES_PLURIEL,
   PLURIELS_ALS,
   PLURIELS_AUX,
@@ -153,6 +154,18 @@ describe('banques de mots et de phrases des accords', () => {
         return estPluriel === pluriel && estFeminin.includes(racine) === feminin;
       }).length;
       expect(check(q, { kind: 'number', text: String(n) }).correct, q.prompt).toBe(true);
+    }
+  });
+
+  it('genre et nombre : aucun nom à deux genres (« un livre », « une livre »)', () => {
+    expect(NOMS_SIMPLES.map((x) => x.nom)).not.toContain('livre');
+  });
+
+  it('groupe nominal niveau 2 : on part de « le » ou « la », dont le pluriel est « les »', () => {
+    for (const q of tirages('fcm1-accord-gn', 2)) {
+      expect(q.prompt).toMatch(/de « (le|la) /);
+      if (q.answer.kind !== 'choice') throw new Error('forme inattendue');
+      for (const choix of q.answer.options) expect(JSON.stringify(choix)).toContain('les ');
     }
   });
 

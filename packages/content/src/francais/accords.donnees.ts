@@ -263,7 +263,7 @@ const noms = (genre: Genre, liste: readonly string[]): NomSimple[] => liste.map(
 
 /** Noms au pluriel en s, dont le déterminant « un » ou « une » donne le genre. */
 export const NOMS_SIMPLES: readonly NomSimple[] = [
-  ...noms('m', ['lapin', 'ballon', 'cahier', 'stylo', 'livre', 'jardin', 'sac', 'nuage', 'robot', 'chien']),
+  ...noms('m', ['lapin', 'ballon', 'cahier', 'stylo', 'crayon', 'jardin', 'sac', 'nuage', 'robot', 'chien']),
   ...noms('f', ['table', 'fleur', 'porte', 'pomme', 'maison', 'robe', 'chaise', 'balle', 'lampe', 'valise']),
 ];
 
