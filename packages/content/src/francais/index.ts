@@ -13,6 +13,7 @@ import { FCM1_VERBE_SUJET } from './verbe-sujet.ts';
 import { FCM1_VOCABULAIRE } from './vocabulaire.ts';
 import { FCM2_GROUPE_NOMINAL } from './groupe-nominal-cm2.ts';
 import { FCM2_PHRASE_SIMPLE } from './phrase-simple.ts';
+import { FCM2_PHRASE_COMPLEXE } from './phrase-complexe.ts';
 
 /** Français : chapitres publiés (ADR 0034). Le lot de contenu ajoute ses chapitres ici, sans toucher à catalog.ts. */
 export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
@@ -127,5 +128,13 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'grammaire',
     title: 'Le groupe nominal enrichi',
     skills: FCM2_GROUPE_NOMINAL,
+  },
+  {
+    id: 'fcm2-phrase-complexe',
+    subject: 'francais',
+    grade: 'cm2',
+    domain: 'grammaire',
+    title: 'Phrase simple et phrase complexe',
+    skills: FCM2_PHRASE_COMPLEXE,
   },
 ];

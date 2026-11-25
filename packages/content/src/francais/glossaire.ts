@@ -278,7 +278,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'conjonction-de-coordination',
     word: 'conjonction de coordination',
     forms: ['conjonctions de coordination'],
-    definition: 'Petit mot qui relie des mots ou des phrases : mais, ou, et, donc, or, ni, car.',
+    definition: 'Petit mot qui relie des mots ou des phrases, par exemple : mais, ou, et, car.',
     example: 'Un sac et un cahier.',
   },
   {
@@ -665,6 +665,20 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['phrases simples'],
     definition: 'Phrase construite autour d’un seul verbe conjugué.',
     example: '« Le chat dort. » est une phrase simple.',
+  },
+  {
+    id: 'phrase-complexe',
+    word: 'phrase complexe',
+    forms: ['phrases complexes'],
+    definition: 'Phrase qui a au moins deux verbes conjugués.',
+    example: '« Le chat dort et le chien joue. » est une phrase complexe.',
+  },
+  {
+    id: 'temps-compose',
+    word: 'temps composé',
+    forms: ['temps composés'],
+    definition: 'Temps où le verbe s’écrit en deux parties : être ou avoir, puis le participe passé.',
+    example: 'Tu as chanté. Il est parti.',
   },
   {
     id: 'groupe-verbal',

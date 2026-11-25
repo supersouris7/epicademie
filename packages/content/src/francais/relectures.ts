@@ -74,4 +74,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm2-pronoms-complements', version: 1, lot: 'fr-cm2-02', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm2-variations-pronom', version: 1, lot: 'fr-cm2-02', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm2-mots-variables', version: 1, lot: 'fr-cm2-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-verbes-conjugues', version: 1, lot: 'fr-cm2-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-phrase-simple-complexe', version: 1, lot: 'fr-cm2-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-mots-qui-relient', version: 1, lot: 'fr-cm2-04', date: '2026-11-25', verdict: 'ok' },
 ];
