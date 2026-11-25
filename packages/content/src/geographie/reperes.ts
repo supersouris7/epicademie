@@ -133,7 +133,8 @@ const ecritures = (name: string): string[] => {
   return [...new Set([name, sansAccent].flatMap((n) => [n, n.replaceAll('-', ' ')]))];
 };
 
-const liste = (d: Departement) => `Dans la liste de l’INSEE : numéro ${d.code}, département « ${d.name} ».`;
+const liste = (d: Departement) =>
+  `Dans la liste officielle des départements : numéro ${d.code}, département « ${d.name} ».`;
 
 /** Fait « numéro → nom » ; les erreurs sont d’autres départements, avec leur vrai numéro. */
 const numero = (code: string, autres: readonly string[]): Fait => {
@@ -166,12 +167,14 @@ const code = (c: string, article: string, pieges: readonly [string, string]): Li
 
 /** Grands départements, faciles à repérer sur la carte (bords de mer, frontières, Paris). */
 const CARTE_DEPARTEMENTS = ['29', '33', '59', '13', '06', '64', '67', '50', '66', '56', '17', '40'];
+/** Départements travaillés par la notion : seuls tirés au niveau 2. */
+export const TRAVAILLES = ['75', '29', '33', '59', '13', '2A', '2B', '971', '972', '973', '974', '976', '03'];
 /** Tous les départements de la carte (France métropolitaine). */
 const METRO = zoneIds('france-departements');
 
-/** Numéro → nom, tirés dans toute la liste officielle. */
+/** Numéro → nom, tirés parmi les départements travaillés (distracteurs compris). */
 function numeroAuHasard(rng: Rng): QuestionDraft {
-  const [d, ...autres] = rng.shuffle([...DEPARTEMENTS_INSEE]).slice(0, 4) as [Departement, ...Departement[]];
+  const [d, ...autres] = rng.shuffle(TRAVAILLES.map(dep)).slice(0, 4) as [Departement, ...Departement[]];
   return {
     prompt: `Attention aux pièges ! Quel département porte le numéro ${d.code} ?`,
     ...choice(
@@ -228,12 +231,12 @@ const departements: Notion = {
   memo: [
     'La France est découpée en **départements**. Chacun a un nom et un numéro. Exemple : 29, c’est le Finistère.',
     'Beaucoup de numéros suivent l’ordre alphabétique : 01 Ain, 02 Aisne, 03 Allier. Paris porte le 75.',
-    'Deux cas à part : la Corse (2A et 2B) et les départements d’**outre-mer** (de 971 à 976).',
+    'Deux cas à part : la Corse (2A et 2B) et les départements d’**outre-mer** (971, 972, 973, 974 et 976).',
   ],
   faits: [
     {
       q: 'En France, qu’est-ce qu’un département ?',
-      a: 'une partie du territoire, pour l’administrer',
+      a: 'une partie du territoire, pour l’administrer (l’organiser, le gérer)',
       wrong: [
         { label: 'un pays voisin de la France', why: 'Un département fait partie de la France.' },
         { label: 'une rue d’une ville', why: 'Un département est bien plus grand : il contient des communes.' },
@@ -242,7 +245,7 @@ const departements: Notion = {
       gap: ['Un département est une division administrative du ', ' français.', ['territoire']],
       choix: ['territoire', 'continent', 'océan'],
       quote: Q_DEPARTEMENT,
-      explain: 'La France est divisée en départements pour être administrée.',
+      explain: 'La France est divisée en départements pour être administrée, c’est-à-dire organisée et gérée.',
       src: 'academie-departement',
     },
     numero('75', ['13', '59', '33']),
@@ -300,7 +303,7 @@ const departements: Notion = {
   ],
   docs: [
     {
-      title: 'La plaque du colis',
+      title: 'L’étiquette du colis',
       lines: [
         'Un colis part pour la Bretagne.',
         'Sur l’étiquette, le facteur lit le nom d’un département : Finistère.',

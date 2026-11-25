@@ -59,7 +59,7 @@ const regions: Skill = {
   },
 };
 
-/** Numéros des départements : de l'Ain (01) au Val-d'Oise (95), puis l'outre-mer (971 à 976). */
+/** Numéros des départements : de l'Ain (01) au Val-d'Oise (95), puis l'outre-mer (971 à 974 et 976). */
 const departmentsFor = (level: Level) =>
   level === 1 ? DEPARTEMENTS.filter((d) => /^\d+$/.test(d.code) && Number(d.code) <= 30) : DEPARTEMENTS;
 

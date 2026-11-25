@@ -5,7 +5,7 @@ import { getSource } from '../sources.ts';
 import type { Level } from '../types.ts';
 import { DEPARTEMENTS, PAYS_UE } from './donnees.generated.ts';
 import { PROGRAMME } from './kit.ts';
-import { DEPARTEMENTS_INSEE, NOTIONS, PAYS, SKILLS } from './reperes.ts';
+import { DEPARTEMENTS_INSEE, NOTIONS, PAYS, SKILLS, TRAVAILLES } from './reperes.ts';
 
 const questions = (id: string, level: Level) => {
   const skill = SKILLS.find((s) => s.id === id);
@@ -87,6 +87,25 @@ describe('géographie cm2 — Repères : France et Europe', () => {
       targetSeconds: 30,
     };
     expect(check(full, { kind: 'cloze', answers: ['finistere'] }).correct).toBe(true);
+  });
+
+  it('au niveau 2, ne propose que les départements travaillés', () => {
+    const noms = DEPARTEMENTS_INSEE.filter((d) => TRAVAILLES.includes(d.code)).map((d) => d.name);
+    expect(noms).toHaveLength(13);
+    // Tirage « numéro → nom » (les faits rédigés gardent leurs propres distracteurs).
+    const tirages = questions('gcm2-departements', 2).filter((q) => q.hint.includes('ordre alphabétique des noms'));
+    expect(tirages.length).toBeGreaterThan(0);
+    for (const q of tirages) {
+      expect(TRAVAILLES, q.prompt).toContain(/numéro (\w+) \?/.exec(q.prompt)?.[1]);
+      if (q.answer.kind !== 'choice') throw new Error(q.prompt);
+      for (const option of q.answer.options) expect(noms, q.prompt).toContain(option);
+    }
+  });
+
+  it('ne présente pas 975 comme un département', () => {
+    const memo = SKILLS.find((s) => s.id === 'gcm2-departements')!.lesson.memo.join(' ');
+    expect(memo).toContain('971, 972, 973, 974 et 976');
+    expect(memo).not.toContain('à 976');
   });
 
   it('ne montre pas de ligne de fichier brute à l’élève', () => {

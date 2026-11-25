@@ -713,7 +713,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'prefecture',
     word: 'préfecture',
     forms: ['préfecture', 'préfectures', 'prefecture'],
-    definition: 'La ville où réside le préfet d’un département.',
+    definition:
+      'La ville où réside le préfet d’un département. Le préfet est la personne qui y représente le gouvernement.',
     example: 'Lyon est la préfecture du département du Rhône.',
   },
   {
