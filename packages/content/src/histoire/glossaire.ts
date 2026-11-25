@@ -501,4 +501,25 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Une date ou un fait connu qui aide à se situer dans le temps.',
     example: 'L’année 1789 est un repère.',
   },
+  {
+    id: 'temoignage-ecrit',
+    word: 'témoignage',
+    forms: ['témoignage', 'témoignages', 'temoignage'],
+    definition: 'Ce qui nous renseigne sur ce qui s’est passé.',
+    example: 'Une lettre ancienne est un témoignage écrit.',
+  },
+  {
+    id: 'instaurer',
+    word: 'instaurer',
+    forms: ['instaurer', 'instauré', 'instaure'],
+    definition: 'Mettre en place pour la première fois ou de nouveau.',
+    example: 'En 1848, le suffrage universel des hommes est instauré.',
+  },
+  {
+    id: 'proclamer',
+    word: 'proclamer',
+    forms: ['proclamer', 'proclamé', 'proclamée', 'proclamation'],
+    definition: 'Annoncer officiellement à tous.',
+    example: 'Napoléon est proclamé empereur.',
+  },
 ];

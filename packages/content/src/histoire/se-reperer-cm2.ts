@@ -115,6 +115,7 @@ export const PERIODES: readonly Periode[] = [
       ...formes('les ', ['Temps modernes']),
       ...formes('le ', ['Temps moderne']),
       ...formes('l’', ['époque moderne']),
+      ...formes('la ', ['période moderne']),
     ],
     preuves: [PREUVES.modernes],
   },
@@ -161,6 +162,9 @@ function anneeAuHasard(rng: Rng): { periode: Periode; year: number } {
 }
 
 const preuvePeriode = (p: Periode) => p.preuves.map(cite);
+
+/** Les limites de la période, dites avec les mots de l'élève. */
+const limites = (p: Periode) => `${maj(p.le)} : ${p.bornes}.`;
 
 function choixPeriode(q: string, bonne: Periode, autres: readonly Periode[], hint: string): QcmFait {
   return {
@@ -222,7 +226,7 @@ const periodes2: Generator = (rng) => {
       PERIODES.filter((p) => p !== periode && p !== PREHISTOIRE).map((p) => ({ label: p.le, why: pasElle(p) })),
     ),
     hint: 'Compare l’année avec les grandes dates : 476, puis la fin du Moyen Âge, puis 1789.',
-    steps: [...preuvePeriode(periode), `L’année ${year} est dans cette période.`, fin(periode.le)],
+    steps: [...preuvePeriode(periode), limites(periode), `L’année ${year} est dans cette période.`, fin(periode.le)],
     targetSeconds: 35,
   };
 };
@@ -234,6 +238,8 @@ const BORNES_SAISIE = [
     traps: [
       [1789, 'C’est le début de l’époque contemporaine.'],
       [800, 'En 800, Charlemagne est couronné : le Moyen Âge a déjà commencé.'],
+      [1453, '1453 est une date choisie pour la fin du Moyen Âge, pas pour son début.'],
+      [1492, '1492 est une date choisie pour la fin du Moyen Âge, pas pour son début.'],
     ],
     preuve: PREUVES.moyenAge1453,
   },
@@ -243,6 +249,8 @@ const BORNES_SAISIE = [
     traps: [
       [476, 'C’est le début du Moyen Âge.'],
       [1892, 'En 1892, la République fête ses cent ans : la période a déjà commencé.'],
+      [1453, 'Après 1453, ce sont les Temps modernes qui commencent.'],
+      [1492, 'Après 1492, ce sont les Temps modernes qui commencent.'],
     ],
     preuve: PREUVES.contemporaine,
   },
@@ -252,6 +260,8 @@ const BORNES_SAISIE = [
     traps: [
       [1789, 'En 1789, c’est la fin des Temps modernes.'],
       [800, 'En 800, Charlemagne est couronné : l’Antiquité est finie.'],
+      [1453, 'En 1453, c’est le Moyen Âge qui se termine, selon des historiens.'],
+      [1492, 'En 1492, c’est le Moyen Âge qui se termine, selon des historiens.'],
     ],
     preuve: PREUVES.antiquite,
   },
@@ -264,7 +274,7 @@ const periodes3: Generator = (rng) => {
       rng,
       `Range ces périodes, de la plus ancienne à la plus récente : ${liste(choisies.map((p) => p.le))}.`,
       choisies.map((p) => ({ label: p.nom, t: rang(p) })),
-      'Commence par le temps d’avant l’écriture, finis par le nôtre.',
+      'Récite toute la frise, puis garde seulement les périodes demandées.',
       `${SENS} ${FRISE}`,
     );
   }
@@ -306,11 +316,9 @@ const periodes4: Generator = (rng) => {
   return saisie(
     `Sans proposition : écris le nom de la période de l’année ${year}.`,
     periode.accepted,
-    PERIODES.filter((p) => p !== periode && p !== PREHISTOIRE).flatMap((p) =>
-      p.accepted.map((t) => [t, pasElle(p)] as const),
-    ),
+    PERIODES.filter((p) => p !== periode).flatMap((p) => p.accepted.map((t) => [t, pasElle(p)] as const)),
     'Retrouve les grandes dates qui découpent la frise.',
-    [...preuvePeriode(periode), `L’année ${year} est dans cette période.`, fin(periode.le)],
+    [...preuvePeriode(periode), limites(periode), `L’année ${year} est dans cette période.`, fin(periode.le)],
   );
 };
 
@@ -332,6 +340,7 @@ const periodes5: Generator = (rng) => {
   const cible = rng.pick(vitrine);
   const preuves = [
     ...preuvePeriode(cible.periode),
+    limites(cible.periode),
     `${cible.nom} date du ${siecle(cible.c)} siècle : de ${(cible.c - 1) * 100 + 1} à ${cible.c * 100}.`,
   ];
   const hint = 'Transforme le siècle en années, puis place-le sur la frise.';
@@ -339,9 +348,7 @@ const periodes5: Generator = (rng) => {
     const q = saisie(
       `Lis le texte, puis réponds. Écris le nom de la période de cet objet : « ${cible.nom} ».`,
       cible.periode.accepted,
-      vitrine
-        .filter((o) => o !== cible)
-        .flatMap((o) => o.periode.accepted.map((t) => [t, pasElle(o.periode)] as const)),
+      PERIODES.filter((p) => p !== cible.periode).flatMap((p) => p.accepted.map((t) => [t, pasElle(p)] as const)),
       hint,
       [...preuves, fin(cible.periode.le)],
     );
@@ -703,12 +710,24 @@ const durees4: Generator = (rng) => {
     const a = rng.int(10, 18) * 100 + rng.int(3, 9) * 10 + rng.int(5, 9);
     const b = (Math.floor(a / 100) + rng.int(1, 2)) * 100 + rng.int(0, 2) * 10 + rng.int(0, 4);
     const gap = b - a;
+    const siecleSuivant = (Math.floor(a / 100) + 1) * 100;
+    // Erreur de retenue : le plus petit chiffre retiré du plus grand, colonne par colonne.
+    const chiffre = (n: number, rang: number) => Math.floor(n / rang) % 10;
+    const sansRetenue = [1000, 100, 10, 1].reduce((n, r) => n + r * Math.abs(chiffre(b, r) - chiffre(a, r)), 0);
     return saisie(
       `Sans proposition : combien d’années séparent ${a} et ${b} ?`,
       [String(gap), `${gap} ans`],
-      piegesDuree(a, b),
+      [
+        [String(sansRetenue), 'Attention à la retenue : retire l’année entière, pas chaque chiffre à part.'],
+        ...piegesDuree(a, b),
+      ],
       'Avance d’abord jusqu’au siècle suivant, puis continue.',
-      [SOUSTRAIRE, `${b} − ${a} = ${gap}.`, fin(`${gap} ans`)],
+      [
+        SOUSTRAIRE,
+        `Par bonds : de ${a} à ${siecleSuivant}, il y a ${siecleSuivant - a} ans ; de ${siecleSuivant} à ${b}, il y a ${b - siecleSuivant} ans.`,
+        `${siecleSuivant - a} + ${b - siecleSuivant} = ${gap}.`,
+        fin(`${gap} ans`),
+      ],
     );
   }
   // À l'envers : on connaît la durée, on cherche l'année.
@@ -769,10 +788,10 @@ const durees5: Generator = (rng) => {
     );
     return { ...q, figure, targetSeconds: 90 };
   }
-  // Dans combien d'années le premier bâtiment aura-t-il cent ans ?
+  // En quelle année la première construction a-t-elle cent ans ?
   const year = base - avant + 100;
   const q = saisie(
-    `Lis le texte, puis réponds. En quelle année cette construction a-t-elle cent ans : ${x} ?`,
+    `Lis le texte, puis réponds. En quelle année cette construction fête-t-elle ses cent ans : ${x} ?`,
     [String(year)],
     [
       [String(base + 100), 'C’est cent ans après la fête, pas après la construction.'],
@@ -800,7 +819,7 @@ const reperes1: Generator = (rng) => {
       String(r.t),
       loin.slice(0, 2).map((y) => ({ label: String(y), why: `${y} est très loin de la bonne date sur la frise.` })),
     ),
-    hint: 'Place le repère dans sa période : avant ou après la Révolution ?',
+    hint: 'Place le repère sur la frise : très loin dans le passé, ou plus près de nous ?',
     steps: [cite(r.preuve), `${r.label} ${r.date}.`, fin(String(r.t))],
     targetSeconds: 25,
   };
@@ -832,10 +851,8 @@ const reperes2: Generator = (rng) => {
   };
 };
 
-const FAMEUX: readonly Repere[] = [CHARLEMAGNE, REVOLUTION, NAPOLEON, CENT, FEMMES];
-
 const piegesRepere = (r: Repere) =>
-  autresReperes(r, 2).map((x) => [String(x.t), `${x.t}, c’est un autre repère : ${x.court}.`] as const);
+  autresReperes(r, 1).map((x) => [String(x.t), `${x.t}, c’est un autre repère : ${x.court}.`] as const);
 
 const reperes3: Generator = (rng) => {
   if (rng.int(0, 5) === 0) {
@@ -851,7 +868,7 @@ const reperes3: Generator = (rng) => {
       targetSeconds: 30,
     };
   }
-  const r = rng.pick(FAMEUX);
+  const r = rng.pick(DATES);
   return {
     prompt: `Complète la phrase : « ${r.label} en … »`,
     answer: { kind: 'cloze', parts: [`${r.label} en `, '.'], blanks: [{ mode: 'text', accepted: [String(r.t)] }] },
@@ -956,8 +973,8 @@ export const SKILLS: readonly Skill[] = [
     'Calculer des durées',
     [
       'Une **durée**, c’est le temps entre un début et une fin. Un **siècle** dure 100 ans.',
-      'Pour la trouver, soustrais : de 1789 à 1892, il y a 1892 − 1789 = 103 ans.',
-      'Tu peux avancer par bonds : de 1789 à 1800, puis de 1800 à 1892.',
+      'Pour trouver une durée, soustrais : de 1789 à 1892, il y a 1892 − 1789 = 103 ans.',
+      'Ou avance par bonds : de 1789 à 1800 (11 ans), puis de 1800 à 1892 (92 ans). 11 + 92 = 103.',
     ],
     [PREUVES.duree, PREUVES.siecle, PREUVES.millenaire, ...DATES.map((r) => r.preuve)],
     [durees1, durees2, durees3, durees4, durees5],
@@ -967,7 +984,7 @@ export const SKILLS: readonly Skill[] = [
     'Les repères du cycle 3',
     [
       'Un **repère** est une date à savoir par cœur. Il t’aide à placer les autres faits.',
-      'Retiens : 800 Charlemagne, 1789 la Révolution, 1804 Napoléon, 1848 le **suffrage universel** des hommes.',
+      'Retiens : 800 Charlemagne, XIIIe siècle Louis IX, 1789 la Révolution, 1804 Napoléon, 1848 le **suffrage universel** des hommes.',
       'Puis la République : 1881 et 1882 l’école, 1892 son **centenaire**, 1905 les cultes, 1944 le vote des femmes.',
     ],
     [PREUVES.memoriser, ...REPERES.map((r) => r.preuve)],
