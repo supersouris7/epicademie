@@ -679,7 +679,7 @@ const urbaine: Notion = {
 const eglise: Notion = {
   id: 'h5-eglise-feodale',
   title: 'L’Église dans l’Occident féodal',
-  hint: 'Demande-toi si la question porte sur les biens de l’Église, la vie des fidèles, la protection, les études ou le roi.',
+  hint: 'Repère le mot important de la question, puis pense au rôle de l’Église auprès des fidèles, des puissants et des rois.',
   memo: [
     'L’Église est à la fois plongée dans le monde féodal, par sa richesse **foncière** (il existe des seigneuries religieuses), et porteuse de valeurs différentes. La **paroisse** est le cadre de vie des paysans : l’Église encadre la vie quotidienne des fidèles.',
     'Au début de la période (vers le XIe siècle), la **réforme grégorienne** la rend plus cohérente et soudée. Aux Xe et XIe siècles, elle lance la **paix de Dieu** pour protéger ses biens et les populations, puis bénit la **chevalerie**, qu’elle entraîne dans les croisades.',
@@ -704,7 +704,11 @@ const eglise: Notion = {
           why: 'Les communes s’administrent elles-mêmes ; l’Église est féodale par ses terres.',
         },
       ],
-      gap: ['L’Église est plongée dans le monde féodal par sa richesse ', '.', ['foncière', 'fonciere', 'terrienne']],
+      gap: [
+        'L’Église est plongée dans le monde féodal par sa richesse ',
+        '.',
+        ['foncière', 'fonciere', 'terrienne', 'en terres'],
+      ],
       explain: 'Par sa richesse foncière (ses terres), l’Église fait partie du monde féodal.',
     },
     {
@@ -786,7 +790,7 @@ const eglise: Notion = {
       gap: [
         'Par une cérémonie avec de l’huile sainte, l’Église ',
         ' les rois de France, d’Angleterre et d’Aragon.',
-        ['sacre'],
+        ['sacre', 'consacre'],
       ],
       explain: 'L’Église sacre les rois d’Aragon, de France, d’Angleterre et les empereurs romains germaniques.',
     },
@@ -1082,7 +1086,7 @@ const etat: Notion = {
       gap: [
         'Le roi ',
         ', canonisé en 1297, a porté le prestige religieux de la monarchie à son apogée.',
-        ['Louis IX', 'Louis 9'],
+        ['Louis IX', 'Louis 9', 'saint Louis'],
       ],
       explain: 'Le prestige religieux de la monarchie est à son apogée sous Louis IX, canonisé en 1297.',
     },
@@ -1221,12 +1225,12 @@ const etat: Notion = {
     },
     {
       ...P.impot,
-      q: 'Comment qualifie-t-on l’impôt que le roi lève désormais chaque année, à partir de 1360 ? (un mot)',
+      q: 'Complète le nom de cet impôt royal, levé à partir de 1360 et qui n’est plus exceptionnel : l’impôt … (un mot)',
       accepted: ['permanent', 'impôt permanent', 'l’impôt permanent', 'impot permanent', 'l’impot permanent'],
       traps: [
         {
           text: 'seigneurial',
-          why: 'Cet impôt est levé par le roi, pas par un seigneur ; on le dit permanent car il est levé chaque année.',
+          why: 'Cet impôt est levé par le roi, pas par un seigneur ; on le dit permanent car il dure dans le temps.',
         },
         {
           text: 'exceptionnel',
