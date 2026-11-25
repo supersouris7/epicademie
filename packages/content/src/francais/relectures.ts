@@ -55,4 +55,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm1-sens-contexte', version: 1, lot: 'fr-cm1-09', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-lire-qui-quoi', version: 1, lot: 'fr-cm1-11', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-consigne-document', version: 1, lot: 'fr-cm1-11', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-inferences', version: 1, lot: 'fr-cm1-11', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-sens-mot-texte', version: 1, lot: 'fr-cm1-11', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-ordre-recit', version: 1, lot: 'fr-cm1-11', date: '2026-11-25', verdict: 'ok' },
 ];

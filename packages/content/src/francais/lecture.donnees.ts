@@ -1083,7 +1083,7 @@ export const MOTS_CHERCHES: readonly MotCherche[] = [
       '« Tu as mauvaise mine, reste au chaud. »',
     ],
     indice: '« observe son visage pâle »',
-    rivaux: ['voix', 'yeux', 'chaud'],
+    rivaux: ['visage', 'voix', 'yeux', 'chaud'],
   },
   {
     mot: 'bureau',
@@ -1395,7 +1395,7 @@ export const RECITS_LONGS: readonly RecitLong[] = [
       'Le lendemain, il en offre un panier à sa voisine.',
       'Une semaine après, la voisine lui apporte une tarte.',
       'Sa première tomate, il l’avait cueillie la veille du jour où il l’a croquée.',
-      'En mai, il avait planté les jeunes pieds dehors.',
+      'En mai, il avait planté les jeunes pieds de tomate dehors.',
       'Auparavant, il les avait fait pousser dans des pots.',
       'Tout cela avait commencé en mars, quand il avait acheté un sachet de graines.',
     ],
@@ -1408,7 +1408,10 @@ export const RECITS_LONGS: readonly RecitLong[] = [
         fait: 'les plants poussent dans des pots',
         raison: '« Auparavant » : les plants poussent en pots avant d’aller dehors, une fois les graines achetées.',
       },
-      { fait: 'Adam plante les pieds dehors', raison: '« En mai » : la plantation dehors vient après les pots.' },
+      {
+        fait: 'Adam plante les pieds de tomate dehors',
+        raison: '« En mai » : la plantation dehors vient après les pots.',
+      },
       {
         fait: 'Adam cueille la tomate',
         raison:

@@ -599,7 +599,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     word: 'inférence',
     forms: ['inférences'],
     definition: 'Ce que tu devines grâce au texte, même si ce n’est pas écrit.',
-    example: '« Il ouvre son parapluie » : tu devines qu’il pleut.',
+    example: '« Léo a du chocolat sur le nez » : tu devines qu’il en a mangé.',
   },
   {
     id: 'indice',
