@@ -43,6 +43,8 @@ export const FAITS_ORTHOGRAPHE: readonly Fait[] = [
     "Pronom personnel de troisième personne, exprimant l'idée d'animé humain et fonctionnant toujours comme sujet",
   ),
   tlfi('ce', 'ces devant un subst. plur.'),
+  f('ce-la', 'cnrtl-ce', 'Ce ...-là.'),
+  tlfi('propre', 'Souvent employé pour renforcer un possessif'),
   tlfi('preposition', 'Partie du discours invariable qui, placée devant un élément à valeur nominale'),
   tlfi(
     'adverbe',

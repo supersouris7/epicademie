@@ -350,7 +350,7 @@ export const FCM1_ORTHOGRAPHE_MOTS: readonly Skill[] = [
       'Deux indices : « -là » ou « -ci » collé au nom, on montre. « propres » devant le nom veut dire « à soi ».',
     ],
     factId: 'determinants',
-    faits: ['substitution', 'ce', 'son'],
+    faits: ['substitution', 'ce', 'son', 'ce-la', 'propre'],
     generate: paireDraft(CES_SES, ON_ONT),
   }),
   skill({

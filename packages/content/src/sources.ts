@@ -255,6 +255,7 @@ export const SOURCES: readonly Source[] = [
   tlfi('votre', 'votre', 'votre/adjectif'),
   tlfi('leur', 'leur', 'leur/adjectif'),
   tlfi('ce', 'ce (démonstratif)', 'ce/adjectif'),
+  tlfi('propre', 'propre', 'propre'),
   tlfi('et', 'et', 'et'),
   tlfi('ou', 'ou', 'ou'),
   tlfi('mais', 'mais', 'mais/conjonction'),
