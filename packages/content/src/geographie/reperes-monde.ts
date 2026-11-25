@@ -97,28 +97,34 @@ const ville = (num: string, autres: readonly string[]): Fait => {
   };
 };
 
-const villeLibre = (num: string, autres: readonly [string, string]): Libre => {
+const villeLibre = (num: string, autres: readonly [string, string], ...variantes: string[]): Libre => {
   const p = prefectureDe(num);
   return libre(
     `quelle est la préfecture du département « ${p.departement} » (${num}) ?`,
-    ecritures(p.ville.name),
+    [p.ville.name, ...variantes].flatMap((v) => ecritures(v)),
     autres.map((o) => piege(p, o)),
     source(p),
     pourquoi(p),
   );
 };
 
-/** Départements montrés sur la carte (France métropolitaine, bien séparés les uns des autres). */
-const CARTE_PREFECTURES = ['29', '33', '31', '13', '06', '59', '67', '35', '44', '34', '63', '21', '50', '66', '25'];
+/** Carte, niveau 3 : départements repérables (mer ou frontière). */
+const CARTE_REPERABLES = ['29', '33', '31', '13', '06', '59', '67', '35', '44', '34', '66'];
+/** Carte, niveau 4 : départements moins connus, absents du niveau 3. */
+const CARTE_MOINS_CONNUS = ['63', '21', '25', '50', '23', '48', '09', '07', '04', '70', '85', '76', '51', '83'];
 
 const cartePrefectures = (rng: Rng, level: Level): QuestionDraft | undefined => {
   if (level < 3) return undefined;
   const metro = zoneIds('france-departements');
-  const lieux = CARTE_PREFECTURES.filter((z) => metro.includes(z)).map((zone) => ({
-    zone,
-    cible: `le département dont la préfecture est ${prefectureDe(zone).ville.name}`,
-  }));
-  const hint = 'Trouve d’abord le nom du département, puis sa place près d’une mer ou d’une frontière.';
+  const numeros =
+    level === 3 ? CARTE_REPERABLES : level === 4 ? CARTE_MOINS_CONNUS : [...CARTE_REPERABLES, ...CARTE_MOINS_CONNUS];
+  const lieux = numeros
+    .filter((z) => metro.includes(z))
+    .map((zone) => ({ zone, cible: `le département dont la préfecture est ${prefectureDe(zone).ville.name}` }));
+  const hint =
+    level === 4
+      ? 'Retrouve d’abord le nom du département, puis situe-le par rapport à ses voisins.'
+      : 'Trouve d’abord le nom du département, puis sa place près d’une mer ou d’une frontière.';
   if (level === 5) return troisReperes(rng, 'france-departements', lieux, hint);
   return toucher(
     rng,
@@ -161,7 +167,10 @@ const prefectures: Notion = {
       wrong: faux(
         ['le maire', 'Le maire dirige une commune.'],
         ['le professeur', 'Il enseigne : il ne représente pas le gouvernement dans le département.'],
-        ['le voyageur', 'Un voyageur ne représente pas l’État.'],
+        [
+          'le président du conseil départemental',
+          'Il est à la tête du conseil départemental : le représentant de l’État est le préfet.',
+        ],
       ),
       gap: ['Le haut fonctionnaire qui représente l’État dans le département est le ', '.', ['préfet', 'prefet']],
       quote: "représentant l'État et le gouvernement dans chaque département français",
@@ -192,17 +201,6 @@ const prefectures: Notion = {
     ['Haute-Saône (70)', 'Vesoul'],
     ['Creuse (23)', 'Guéret'],
   ],
-  ordre: ['Gard', 'Haute-Garonne', 'Gers', 'Gironde'],
-  consigne: {
-    prompt: 'Range ces départements selon leur numéro, du plus petit au plus grand.',
-    hint: 'Ces numéros vont de 30 à 33 : ils ne suivent pas tous l’ordre alphabétique.',
-    why: 'Leurs numéros sont 30, 31, 32 et 33.',
-    fin: 'Le premier est',
-    quote: DEPARTEMENTS_INSEE.find((d) => d.code === '30')?.ligne ?? '',
-    montre:
-      'Listes officielles de l’INSEE : les numéros 30, 31, 32 et 33 désignent le Gard, la Haute-Garonne, le Gers et la Gironde.',
-    src: 'insee-cog-2025-departements',
-  },
   libres: [
     villeLibre('29', ['Brest', '56']),
     villeLibre('76', ['Le Havre', '14']),
@@ -214,7 +212,7 @@ const prefectures: Notion = {
     villeLibre('23', ['87', '19']),
     villeLibre('09', ['31', '65']),
     villeLibre('48', ['12', '07']),
-    villeLibre('04', ['05', '84']),
+    villeLibre('04', ['05', '84'], 'Digne'),
     villeLibre('07', ['26', '48']),
   ],
   docs: [
@@ -780,15 +778,6 @@ const fleuves: Notion = {
     ['Rocheuses', 'ouest des États-Unis et du Canada'],
     ['Andes', 'Chili, Argentine, Bolivie'],
   ],
-  ordre: ['Yangzi (6 300 km)', 'Gange (2 500 km)', 'Têt (115 km)', 'Dives (105 km)'],
-  consigne: {
-    prompt: 'Classe ces cours d’eau du plus long au plus court.',
-    hint: 'Les deux fleuves côtiers français sont les plus courts.',
-    why: 'Yangzi 6 300 km, Gange 2 500 km, Têt 115 km, Dives 105 km.',
-    fin: 'Le plus long est',
-    quote: 'la Dives, qui parcourt 105 kilomètres avant de se jeter dans la Manche ou la Têt, qui parcourt 115 km',
-    src: G_FLEUVE,
-  },
   libres: [
     libre(
       'comment s’appelle l’endroit où deux cours d’eau se rencontrent ?',
@@ -832,7 +821,19 @@ const fleuves: Notion = {
     ),
     libre(
       'quel fleuve chinois est le troisième du monde par sa longueur ?',
-      ['Yangzi', 'le Yangzi', 'Yangzi Jiang', 'Yang-Tsé-Kiang', 'Yang-Tsé'],
+      [
+        'Yangzi',
+        'Yangzi Jiang',
+        'Yangtsé',
+        'Yangtse',
+        'Yang Tsé',
+        'Yang Tse',
+        'Yang-Tsé',
+        'Yang-Tsé-Kiang',
+        'Yangtze',
+        'Chang Jiang',
+        'fleuve Bleu',
+      ].flatMap((n) => [n, `le ${n}`]),
       [
         ['Gange', 'Le Gange coule en Inde et au Bangladesh.'],
         ['Mékong', 'Le delta du Mékong est au Vietnam.'],
@@ -974,13 +975,16 @@ const preuve = (nom: string) => {
 /** « au Japon » → « Japon » : le nom du pays seul. */
 const paysDe = (nom: string) => metropoleDe(nom).pays.replace(/^(au|aux|en) /, '');
 
+/** « de Tokyo », mais « du Caire ». */
+const de = (nom: string) => (nom.startsWith('Le ') ? `du ${nom.slice(3)}` : `de ${nom}`);
+
 const situer = (nom: string, autres: readonly string[]): Fait => {
   const m = metropoleDe(nom);
   return {
-    q: `Dans quel pays se trouve la métropole de ${nom} ?`,
+    q: `Dans quel pays se trouve la métropole ${de(nom)} ?`,
     a: m.pays,
-    wrong: autres.map((o) => ({ label: metropoleDe(o).pays, why: `C’est le pays de ${o}.` })),
-    gap: [`La métropole de ${nom} se trouve ${m.pays.split(' ')[0]} `, '.', ecritures(paysDe(nom))],
+    wrong: autres.map((o) => ({ label: metropoleDe(o).pays, why: `C’est le pays ${de(o)}.` })),
+    gap: [`La métropole ${de(nom)} se trouve ${m.pays.split(' ')[0]} `, '.', ecritures(paysDe(nom))],
     explain: `${nom} est ${m.pays}.`,
     ...preuve(nom),
   };
@@ -990,19 +994,24 @@ const situer = (nom: string, autres: readonly string[]): Fait => {
 const paysLibre = (nom: string, autres: readonly [string, string], ...variantes: string[]): Libre => {
   const m = metropoleDe(nom);
   return libre(
-    `dans quel pays se trouve la métropole de ${nom} ?`,
+    `dans quel pays se trouve la métropole ${de(nom)} ?`,
     [paysDe(nom), m.pays, ...variantes].flatMap((p) => ecritures(p)),
-    autres.map((o) => [paysDe(o), `C’est le pays de ${o}.`]),
+    autres.map((o) => [paysDe(o), `C’est le pays ${de(o)}.`]),
     preuve(nom),
     `${nom} est ${m.pays}.`,
   );
 };
 
+/** Métropoles du mémo (carte, niveau 3) ; les autres sont réservées au niveau 4. */
+const REPERES_MEMO = ['Tokyo', 'Shanghai', 'New York', 'São Paulo', 'Londres', 'Paris', 'Le Caire'];
+
 const carteMetropoles = (rng: Rng, level: Level): QuestionDraft | undefined => {
   if (level < 3) return undefined;
-  const parContinent = ['asie', 'amerique-nord', 'amerique-sud', 'europe', 'afrique'].map((zone) => {
-    const m = rng.pick(METROPOLES.filter((x) => x.continent === zone));
-    return { zone, cible: `le continent de la métropole de ${m.nom}` };
+  const choisies = METROPOLES.filter((m) => level === 5 || REPERES_MEMO.includes(m.nom) === (level === 3));
+  // Une seule métropole par continent : les zones proposées restent distinctes.
+  const parContinent = [...new Set(choisies.map((m) => m.continent))].map((zone) => {
+    const m = rng.pick(choisies.filter((x) => x.continent === zone));
+    return { zone, cible: `le continent de la métropole ${de(m.nom)}` };
   });
   const hint = 'Retrouve d’abord le pays de la métropole, puis son continent.';
   if (level === 5) return troisReperes(rng, 'monde', parContinent, hint);
@@ -1019,7 +1028,7 @@ const grandesMetropoles: Notion = {
   classe: '6e',
   id: 'g6-grandes-metropoles',
   title: 'Localiser les grandes métropoles',
-  hint: 'Pense au pays de la ville, puis à son continent.',
+  hint: 'Distingue le rôle d’une métropole, la taille d’une mégapole et la place de chaque ville.',
   memo: [
     'Une **métropole** exerce des fonctions de commandement ; une **mégapole** compte au moins 10 millions d’habitants.',
     'Repères : Tokyo (Japon), New York (États-Unis), Londres (Royaume-Uni), Paris (France), Shanghai (Chine), São Paulo (Brésil), Le Caire (Égypte).',
@@ -1046,7 +1055,7 @@ const grandesMetropoles: Notion = {
         ['1 million', 'Le seuil est dix fois plus élevé.'],
         ['100 millions', 'C’est dix fois trop.'],
       ),
-      gap: ['Une mégapole compte au moins ', ' millions d’habitants.', ['10', 'dix']],
+      gap: ['Selon l’ONU, une mégapole compte au moins ', ' millions d’habitants.', ['10', 'dix']],
       explain: 'Certains géographes retiennent d’autres seuils, mais l’ONU fixe 10 millions.',
       ...M_MEGAPOLE,
     },
@@ -1081,14 +1090,6 @@ const grandesMetropoles: Notion = {
     ['Londres', 'Royaume-Uni'],
     ['Séoul', 'Corée du Sud'],
   ],
-  ordre: ['Asie', 'Amérique latine', 'Afrique', 'Europe', 'Amérique du Nord'],
-  consigne: {
-    prompt: 'En 2025, classe ces régions selon leur nombre de mégapoles, de la plus à la moins nombreuse.',
-    hint: 'L’Asie est largement en tête ; l’Amérique du Nord ferme la liste.',
-    why: 'Asie 19, Amérique latine 5, Afrique 4, Europe 3, Amérique du Nord 2.',
-    fin: 'La région qui en compte le plus est',
-    ...M_2025,
-  },
   libres: [
     paysLibre('Tokyo', ['Shanghai', 'Séoul'], 'le Japon'),
     paysLibre('Shanghai', ['Tokyo', 'Jakarta'], 'la Chine'),

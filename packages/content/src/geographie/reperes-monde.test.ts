@@ -125,4 +125,39 @@ describe('géographie 6e — Repères : la France et le monde', () => {
       for (const q of questions('g6-prefectures', level)) expect(q.steps.join(' ')).not.toContain('","');
     }
   });
+
+  it('ne propose aucun classement : le niveau 3 reste sur les repères enseignés', () => {
+    for (const s of SKILLS.filter((x) => x.id !== 'g6-continents-oceans')) {
+      expect(
+        questions(s.id, 3).some((q) => q.answer.kind === 'order'),
+        s.id,
+      ).toBe(false);
+    }
+  });
+
+  it('interroge d’autres cibles sur la carte au niveau 4 qu’au niveau 3', () => {
+    for (const id of ['g6-prefectures', 'g6-grandes-metropoles']) {
+      const cibles = (level: Level) =>
+        questions(id, level)
+          .filter((q) => q.answer.kind === 'zone')
+          .map((q) => q.prompt.replace(/^.*?(?=le (département|continent) )/, ''));
+      const niveau3 = new Set(cibles(3));
+      expect(niveau3.size, id).toBeGreaterThan(1);
+      expect(cibles(4).length, id).toBeGreaterThan(0);
+      expect(
+        cibles(4).filter((c) => niveau3.has(c)),
+        id,
+      ).toEqual([]);
+    }
+  });
+
+  it('écrit « du Caire » et accepte les autres écritures justes', () => {
+    const textes = JSON.stringify(LEVELS.flatMap((l) => questions('g6-grandes-metropoles', l)));
+    expect(textes).toContain('du Caire');
+    expect(textes).not.toContain('de Le Caire');
+    const acceptes = NOTIONS.flatMap((n) => n.libres.flatMap((l) => l.accepted));
+    for (const a of ['Digne', 'Yangtsé', 'Yang Tsé', 'Yangtze', 'Chang Jiang', 'fleuve Bleu']) {
+      expect(acceptes).toContain(a);
+    }
+  });
 });
