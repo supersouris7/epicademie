@@ -139,7 +139,7 @@ export const PREUVES = {
   ),
   salamine: odysseum(
     'odysseum-siecle-pericles',
-    "En 480, les Perses reviennent par terre et par mer, commandés cette fois-ci par Xerxès. Après avoir franchi le défilé des Thermopyles défendu par les Spartiates, ils envahissent et ravagent l'Attique. Abandonnant la ville, les Athéniens se replient sur leurs bateaux. C'est dans la baie de Salamine que se joue le destin de la guerre",
+    "En 480, les Perses reviennent par terre et par mer, commandés cette fois-ci par Xerxès. Après avoir franchi le défilé des Thermopyles défendu par les Spartiates, ils envahissent et ravagent l'Attique. Abandonnant la ville, les Athéniens se replient sur leurs bateaux. C'est dans la baie de Salamine que se joue le destin de la guerre. Là, les deux cents trières athéniennes construites dans la décennie précédente défont plus de 1000 navires ennemis",
   ),
   rameurs: odysseum(
     'odysseum-siecle-pericles',
@@ -155,7 +155,9 @@ export const PREUVES = {
   panathenees: eduscol(
     'La fête des Panathénées est la principale manifestation du culte poliade rendu à la déesse protectrice',
   ),
-  frise: eduscol('La frise éponyme, bas-relief qui décorait le temple du Parthénon sur l’Acropole'),
+  frise: eduscol(
+    'La frise éponyme, bas-relief qui décorait le temple du Parthénon sur l’Acropole, témoigne d’une pratique concrète de la citoyenneté à travers le culte civique au temps de Périclès',
+  ),
   pericles: eduscol('Ve siècle avant J.-C. : Athènes au temps de Périclès'),
   democratie: tlfi(
     'cnrtl-democratie',

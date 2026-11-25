@@ -521,7 +521,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     word: 'citoyenneté',
     forms: ['citoyenneté', 'citoyennete'],
     definition: 'Le fait d’être citoyen : membre d’une cité ou d’un État, avec des droits et des devoirs.',
-    example: 'La citoyenneté est étudiée à Athènes et à Rome.',
+    example: 'La citoyenneté est étudiée avec la cité d’Athènes.',
   },
   {
     id: 'han',
@@ -1349,6 +1349,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['tyrannie', 'tyrannies', 'tyran', 'tyrans'],
     definition: 'En Grèce antique, le pouvoir d’un seul homme, le tyran, qui s’en est emparé.',
     example: 'Athènes connaît la tyrannie au VIe siècle av. J.-C.',
+  },
+  {
+    id: 'constitution',
+    word: 'constitution',
+    forms: ['constitution', 'constitutions'],
+    definition: 'L’ensemble des règles qui organisent le pouvoir dans une cité ou un État.',
+    example: 'Clisthène donne à Athènes une nouvelle constitution.',
   },
   {
     id: 'poliade',

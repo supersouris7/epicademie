@@ -1058,7 +1058,7 @@ const citoyennete: Notion = {
       explain: 'La tyrannie est une parenthèse avant la constitution démocratique.',
     },
     {
-      q: 'Quel réformateur dote Athènes, à partir de 507 av. J.-C., une nouvelle constitution ?',
+      q: 'Quel réformateur dote Athènes, à partir de 507 av. J.-C., d’une nouvelle constitution ?',
       a: 'Clisthène',
       wrong: wrong(
         ['Pisistrate', 'Pisistrate est un tyran, qui prend le pouvoir bien avant 507.'],
@@ -1086,12 +1086,12 @@ const citoyennete: Notion = {
       explain: 'Les citoyens réunis en assemblée gouvernent la cité.',
     },
     {
-      q: 'En 480 av. J.-C., dans quelle baie les Athéniens remportent-ils la bataille navale décisive contre les Perses ?',
-      a: 'la baie de Salamine',
+      q: 'En 480 av. J.-C., où les Athéniens remportent-ils la bataille navale décisive contre les Perses ?',
+      a: 'à Salamine',
       wrong: wrong(
-        ['la baie de Delphes', 'Delphes est un sanctuaire, pas le lieu de cette bataille.'],
-        ['la baie d’Olympie', 'Olympie est un sanctuaire des jeux.'],
-        ['la baie de Troie', 'Troie est la ville du récit de l’Iliade.'],
+        ['à Delphes', 'Delphes est un sanctuaire, pas le lieu de cette bataille.'],
+        ['à Olympie', 'Olympie est un sanctuaire des jeux.'],
+        ['à Troie', 'Troie est la ville du récit de l’Iliade.'],
       ),
       gap: ['En 480 av. J.-C., la flotte d’Athènes l’emporte sur les Perses à ', '.', ['Salamine']],
       ...P.salamine,
@@ -1155,7 +1155,7 @@ const citoyennete: Notion = {
   libres: [
     {
       q: 'Quel mot désigne, à Athènes, un étranger installé qui n’est pas citoyen ?',
-      accepted: ['métèque', 'un métèque', 'meteque', 'metèque'],
+      accepted: ['métèque', 'un métèque', 'le métèque', 'meteque', 'metèque'],
       traps: traps(
         ['esclave', 'L’esclave n’est pas libre : le mot cherché désigne un étranger installé.'],
         ['citoyen', 'Le mot cherché désigne justement quelqu’un qui n’est pas citoyen.'],
