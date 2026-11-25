@@ -20,7 +20,7 @@ const debuts: Notion = {
   hint: 'Demande-toi d’abord de quand et d’où vient la trace, puis place-la dans la très longue durée.',
   memo: [
     'La **préhistoire** est la période d’avant l’écriture : on la connaît grâce aux **fossiles** et aux outils trouvés sur des **sites de fouilles**.',
-    'Notre espèce, **Homo sapiens**, apparaît en Afrique il y a environ 300 000 ans ; d’autres représentants de l’humanité sont bien plus anciens, comme au Tchad il y a environ 7 millions d’années.',
+    'Notre espèce, **Homo sapiens**, apparaît en Afrique il y a environ 300 000 ans ; d’autres représentants de l’humanité sont bien plus anciens, comme Sahelanthropus, au Tchad, il y a environ 7 millions d’années. Les fouilles livrent aussi des outils : en os en Tanzanie (plus de 1,5 million d’années), en silex taillé dans la Somme, en France (650 000 à 670 000 ans).',
     'Les groupes humains s’adaptent aux changements du **climat** et leurs **migrations** peuplent peu à peu le monde : par exemple, Homo sapiens est au nord de la Chine il y a environ 45 000 ans.',
   ],
   faits: [
@@ -58,14 +58,18 @@ const debuts: Notion = {
       explain: 'Le CNRS date l’apparition d’Homo sapiens d’environ 300 000 ans.',
     },
     {
-      q: 'Quel changement les débuts de l’humanité ont-ils connu, selon le programme ?',
+      q: 'Quel grand changement les débuts de l’humanité ont-ils connu ?',
       a: 'de fortes oscillations climatiques',
       wrong: wrong(
         ['l’invention de l’écriture', 'L’écriture apparaît bien plus tard, avec les premiers États.'],
         ['la construction des premières villes', 'Les villes arrivent bien après les débuts de l’humanité.'],
         ['un climat toujours identique', 'Au contraire : le climat a beaucoup varié et l’environnement a changé.'],
       ),
-      gap: ['Les débuts de l’humanité ont connu de fortes ', ' climatiques.', ['oscillations', 'variations']],
+      gap: [
+        'Les débuts de l’humanité ont connu de fortes ',
+        ' climatiques.',
+        ['oscillations', 'variations', 'fluctuations'],
+      ],
       ...P.oscillations,
       explain: 'Les fortes variations du climat ont transformé l’environnement des groupes humains.',
     },
@@ -77,13 +81,17 @@ const debuts: Notion = {
           'ils inventent aussitôt l’écriture',
           'L’écriture n’est pas une réponse au climat : elle apparaît bien plus tard.',
         ],
-        ['ils ne changent rien', 'Le programme dit au contraire que ces transformations les amènent à s’adapter.'],
+        ['ils ne changent rien', 'Au contraire, ces transformations les amènent à s’adapter.'],
         [
           'ils deviennent tous agriculteurs immédiatement',
           'L’agriculture apparaît bien plus tard, au néolithique, et pas partout en même temps.',
         ],
       ),
-      gap: ['Les groupes humains doivent ', ' leurs modes de vie quand l’environnement change.', ['adapter']],
+      gap: [
+        'Les groupes humains doivent ',
+        ' leurs modes de vie quand l’environnement change.',
+        ['adapter', 'changer', 'modifier', 'transformer'],
+      ],
       ...P.oscillations,
       explain: 'Le climat transforme l’environnement ; les groupes humains adaptent leurs modes de vie.',
     },
@@ -115,7 +123,7 @@ const debuts: Notion = {
       explain: 'Les premières grandes migrations expliquent le peuplement progressif du monde.',
     },
     {
-      q: 'Quel événement marque la fin de la préhistoire, d’après la définition du dictionnaire ?',
+      q: 'Quel événement marque la fin de la préhistoire ?',
       a: 'l’apparition de l’écriture (et l’emploi des métaux)',
       wrong: wrong(
         ['l’apparition d’Homo sapiens', 'Homo sapiens apparaît pendant la préhistoire, pas à sa fin.'],
@@ -136,7 +144,7 @@ const debuts: Notion = {
       ),
       gap: ['On étudie les premières migrations avec des cartes et des sites de ', '.', ['fouilles', 'fouille']],
       ...P.migrations,
-      explain: 'Le programme propose d’observer des cartes et de mentionner quelques sites de fouilles.',
+      explain: 'Les cartes et les sites de fouilles aident à suivre ces premières migrations.',
     },
   ],
   paires3: [
@@ -199,6 +207,26 @@ const debuts: Notion = {
       ...P.tchad,
       explain: 'Il a été découvert au Tchad.',
     },
+    {
+      q: 'Dans quel pays se trouvent les gorges d’Olduvai, où l’on a identifié de très anciens outils en os ?',
+      accepted: ['Tanzanie', 'la Tanzanie', 'en Tanzanie'],
+      traps: traps(
+        ['Tchad', 'Au Tchad, on a découvert Sahelanthropus.'],
+        ['Chine', 'Au nord de la Chine, on trouve des traces d’Homo sapiens.'],
+      ),
+      ...P.outils,
+      explain: 'Ces outils en os viennent de Tanzanie.',
+    },
+    {
+      q: 'Comment appelle-t-on la très longue période d’avant l’écriture ? (un mot)',
+      accepted: ['préhistoire', 'prehistoire', 'la préhistoire'],
+      traps: traps(
+        ['Antiquité', 'L’Antiquité commence après la préhistoire.'],
+        ['néolithique', 'Le néolithique n’est qu’une partie de la préhistoire.'],
+      ),
+      ...P.prehistoire,
+      explain: 'C’est la préhistoire.',
+    },
   ],
   docs: [
     {
@@ -232,6 +260,28 @@ const debuts: Notion = {
           ...P.sahel,
           explain: 'Plus le nombre d’années est grand, plus la trace est ancienne : 7 millions d’années ici.',
         },
+        {
+          q: 'Dans quel pays du carnet a-t-on trouvé des outils en os ?',
+          a: 'en Tanzanie',
+          wrong: wrong(
+            ['au Tchad', 'La ligne 1 parle d’un crâne, pas d’outils.'],
+            ['en Chine', 'La ligne 3 parle de traces d’Homo sapiens.'],
+            ['en France', 'Le carnet ne cite pas la France.'],
+          ),
+          ...P.outils,
+          explain: 'La ligne 2 situe les outils en os en Tanzanie.',
+        },
+        {
+          q: 'Quelle découverte du carnet est la plus récente ?',
+          a: 'les traces du nord de la Chine',
+          wrong: wrong(
+            ['le crâne du Tchad', '7 millions d’années : c’est la plus ancienne.'],
+            ['les outils en os de Tanzanie', 'Plus de 1,5 million d’années, c’est bien plus que 45 000 ans.'],
+            ['Homo sapiens en Afrique', '300 000 ans est plus ancien que 45 000 ans.'],
+          ),
+          ...P.chine,
+          explain: 'Le plus petit nombre d’années désigne la trace la plus récente : 45 000 ans.',
+        },
       ],
     },
     {
@@ -243,7 +293,7 @@ const debuts: Notion = {
       ],
       qs: [
         {
-          q: 'Quelle idée du texte rejoint la phrase du programme sur les oscillations climatiques ?',
+          q: 'Quelle idée ce texte montre-t-il ?',
           a: 'les humains s’adaptent à un environnement qui change',
           wrong: wrong(
             ['le climat est resté le même depuis 200 000 ans', 'La ligne 2 montre au contraire un paysage différent.'],
@@ -251,7 +301,7 @@ const debuts: Notion = {
             ['les prairies arides existaient déjà partout', 'La ligne 1 décrit des pluies plus régulières à l’époque.'],
           ),
           ...P.paysages,
-          explain: 'Le milieu change et les groupes humains adaptent leurs pratiques : c’est l’idée du programme.',
+          explain: 'Le milieu change et les groupes humains adaptent leurs pratiques.',
         },
         {
           q: 'D’après le texte, comment étaient les pluies il y a environ 200 000 ans ?',
@@ -263,6 +313,28 @@ const debuts: Notion = {
           ),
           ...P.pluies,
           explain: 'Les précipitations étaient plus régulièrement réparties : le climat a donc changé.',
+        },
+        {
+          q: 'Comment est la région décrite aujourd’hui ?',
+          a: 'dominée par des prairies arides',
+          wrong: wrong(
+            ['arrosée régulièrement toute l’année', 'C’était le cas il y a environ 200 000 ans.'],
+            ['couverte de villes anciennes', 'Le texte ne parle pas de villes.'],
+            ['recouverte par la mer', 'Le texte ne parle pas de la mer.'],
+          ),
+          ...P.paysages,
+          explain: 'La ligne 2 décrit des prairies arides.',
+        },
+        {
+          q: 'D’après le texte, que faisaient les premiers Homo sapiens face à ce milieu changeant ?',
+          a: 'ils adaptaient leurs pratiques',
+          wrong: wrong(
+            ['ils ne changeaient rien', 'La ligne 3 dit le contraire.'],
+            ['ils faisaient pleuvoir', 'Les humains ne commandent pas la pluie.'],
+            ['ils écrivaient leurs observations', 'L’écriture n’existe pas encore.'],
+          ),
+          ...P.paysages,
+          explain: 'La ligne 3 dit qu’ils adaptaient leurs pratiques.',
         },
       ],
     },
@@ -277,7 +349,7 @@ const neolithique: Notion = {
   hint: 'Cherche ce qui change dans la vie des groupes : où ils habitent et comment ils se nourrissent.',
   memo: [
     'Au **néolithique**, des groupes humains se fixent : la **sédentarisation** remplace peu à peu la vie **nomade**.',
-    'Ils pratiquent l’**agriculture** et l’**élevage**, ce qui montre leur action sur l’environnement ; par exemple, des chèvres sont domestiquées au Proche et au Moyen-Orient il y a 10 500 ans.',
+    'Ils pratiquent l’**agriculture** et l’**élevage**, ce qui montre leur action sur l’environnement ; par exemple, des chèvres sont domestiquées au Proche et au Moyen-Orient il y a 10 500 ans. Plusieurs foyers se trouvaient dans le **Croissant fertile**.',
     'Ces changements ne se produisent pas au même moment partout : c’est une « révolution » très étalée dans le temps.',
   ],
   faits: [
@@ -318,7 +390,7 @@ const neolithique: Notion = {
       explain: 'L’élevage concerne les animaux domestiques.',
     },
     {
-      q: 'Selon le programme, comment la sédentarisation, l’agriculture et l’élevage apparaissent-ils selon les régions ?',
+      q: 'Quand la sédentarisation, l’agriculture et l’élevage apparaissent-ils selon les régions ?',
       a: 'à des moments différents',
       wrong: wrong(
         ['partout le même jour', 'Aucun changement de ce genre ne se fait au même instant partout.'],
@@ -328,7 +400,7 @@ const neolithique: Notion = {
       gap: [
         'La sédentarisation, l’agriculture et l’élevage apparaissent à des moments ',
         ' selon les espaces.',
-        ['différents', 'differents', 'divers'],
+        ['différents', 'differents', 'divers', 'variés', 'varies', 'distincts'],
       ],
       ...P.moments,
       explain: 'Chaque espace géographique connaît ces changements à son rythme.',
@@ -356,20 +428,24 @@ const neolithique: Notion = {
         ['par les Romains', 'Les Romains arrivent bien plus tard, à l’Antiquité.'],
         ['grâce à l’écriture', 'L’agriculture est plus ancienne que l’écriture.'],
       ),
-      gap: ['Les premiers paysans français sont des pionniers venus de ', '.', ['loin']],
+      gap: [
+        'L’agriculture arrive sur le territoire de la France actuelle avec des pionniers qui bâtissent les premiers ',
+        '.',
+        ['villages'],
+      ],
       ...P.paysans,
       explain:
         'Le CNRS parle de pionniers venus de loin, qui implantent l’agriculture et bâtissent les premiers villages.',
     },
     {
-      q: 'Qu’étudie-t-on à propos du néolithique, selon le programme ?',
-      a: 'l’action des femmes et des hommes sur leur environnement',
+      q: 'Que montrent l’agriculture et l’élevage au néolithique ?',
+      a: 'que les femmes et les hommes agissent sur leur environnement',
       wrong: wrong(
-        ['la naissance de la démocratie', 'La démocratie à Athènes relève d’un autre thème de 6e.'],
-        ['la chute de l’empire romain', 'Cet événement est bien plus tardif.'],
-        ['l’apparition d’Homo sapiens', 'Homo sapiens existe bien avant le néolithique.'],
+        ['que la démocratie est née', 'La démocratie apparaît bien plus tard, à Athènes.'],
+        ['que l’empire romain s’effondre', 'Cet événement est bien plus tardif.'],
+        ['qu’Homo sapiens vient d’apparaître', 'Homo sapiens existe bien avant le néolithique.'],
       ),
-      gap: ['Le néolithique interroge l’action des humains sur leur ', '.', ['environnement']],
+      gap: ['En cultivant et en élevant, les humains transforment leur ', '.', ['environnement', 'milieu']],
       ...P.environnement,
       explain: 'En cultivant et en élevant, les humains modifient leur environnement.',
     },
@@ -448,6 +524,26 @@ const neolithique: Notion = {
       ...P.neolithique,
       explain: 'La période de la pierre polie est le néolithique.',
     },
+    {
+      q: 'Comment appelle-t-on l’apprivoisement des animaux ? (un mot)',
+      accepted: ['domestication', 'la domestication'],
+      traps: traps(
+        ['chasse', 'La chasse capture des animaux sauvages sans les apprivoiser.'],
+        ['agriculture', 'L’agriculture désigne d’abord la culture des terres.'],
+      ),
+      ...P.domestication,
+      explain: 'C’est la domestication.',
+    },
+    {
+      q: 'Quel adjectif désigne un groupe attaché de manière fixe à un lieu ?',
+      accepted: ['sédentaire', 'sedentaire', 'sédentaires', 'sedentaires'],
+      traps: traps(
+        ['nomade', 'Nomade veut dire le contraire.'],
+        ['migrant', 'Un migrant se déplace d’un lieu à un autre.'],
+      ),
+      ...P.sedentaire,
+      explain: 'Ce groupe est sédentaire.',
+    },
   ],
   docs: [
     {
@@ -476,9 +572,32 @@ const neolithique: Notion = {
           wrong: wrong(
             ['la ligne 1', 'La ligne 1 parle de déplacements, pas d’une transformation du milieu.'],
             ['la ligne 2', 'La ligne 2 dit où l’on habite, sans transformer le milieu.'],
+            ['la ligne 3', 'La ligne 3 montre une action, mais la ligne 4 montre le milieu transformé.'],
           ),
           ...P.environnement,
           explain: 'Couper des arbres pour agrandir les champs transforme le milieu.',
+        },
+        {
+          q: 'Quelle ligne montre une vie nomade ?',
+          a: 'la ligne 1',
+          wrong: wrong(
+            ['la ligne 2', 'Des maisons qui restent au même endroit : c’est la sédentarité.'],
+            ['la ligne 3', 'La ligne 3 montre l’agriculture et l’élevage.'],
+            ['la ligne 4', 'La ligne 4 montre des champs agrandis.'],
+          ),
+          ...P.nomade,
+          explain: 'Changer souvent de campement, c’est être nomade.',
+        },
+        {
+          q: 'Quelles activités la ligne 3 montre-t-elle ?',
+          a: 'l’agriculture et l’élevage',
+          wrong: wrong(
+            ['la chasse et la cueillette', 'Ici on sème et on garde des animaux.'],
+            ['l’écriture et le commerce', 'La ligne 3 ne parle ni d’écrire ni de vendre.'],
+            ['la pêche et la chasse', 'La ligne 3 parle de blé et de chèvres.'],
+          ),
+          ...P.agriculture,
+          explain: 'Semer du blé, c’est cultiver ; garder des chèvres, c’est élever.',
         },
       ],
     },
@@ -507,6 +626,7 @@ const neolithique: Notion = {
           wrong: wrong(
             ['sur le territoire de la France actuelle', 'Il y a 7 500 ans est plus récent que 10 500 ans.'],
             ['en Afrique', '5000 ans avant notre ère, soit environ 7 000 ans : c’est plus récent que 10 500 ans.'],
+            ['à la même date partout', 'Les trois lignes donnent des dates différentes.'],
           ),
           ...P.chevres,
           explain: 'La ligne 1 donne la plus grande ancienneté : 10 500 ans.',
@@ -517,6 +637,7 @@ const neolithique: Notion = {
           wrong: wrong(
             ['les chèvres du Proche et Moyen-Orient', 'La ligne 1 ne contient aucun verbe au conditionnel.'],
             ['les premiers paysans en France', 'La ligne 2 donne une date sans employer « aurait ».'],
+            ['aucune des trois', 'La ligne 3 emploie « aurait ».'],
           ),
           ...P.ane,
           explain:
@@ -535,7 +656,7 @@ const etats: Notion = {
   hint: 'Sépare bien la Mésopotamie et l’Égypte : chacune a son support, ses signes et ses dates.',
   memo: [
     'Les premiers **États** et les premières écritures s’étudient dans l’**Orient ancien** : en Mésopotamie et en Égypte.',
-    'En Mésopotamie, l’écriture apparaît dans des **cités-États** comme Uruk, sur des **tablettes d’argile** : les signes deviennent **cunéiformes**.',
+    'En Mésopotamie, l’écriture apparaît dans des **cités-États** comme Uruk, sur des **tablettes d’argile** : les signes, imprimés avec un **calame** de roseau, deviennent **cunéiformes**.',
     'En Égypte, gouvernée par un **pharaon**, les **scribes** peuvent écrire avec des **hiéroglyphes** : par exemple, pour noter des informations administratives.',
   ],
   faits: [
@@ -559,7 +680,11 @@ const etats: Notion = {
         ['dans l’empire romain', 'L’empire romain est bien plus tardif.'],
         ['dans des grottes préhistoriques', 'On y trouve des dessins, pas ce système d’écriture.'],
       ),
-      gap: ['L’écriture apparaît dans plusieurs ', ' de Mésopotamie.', ['cités-États', 'cités-etats', 'cités États']],
+      gap: [
+        'L’écriture apparaît en Mésopotamie dans des villes qui se gouvernent elles-mêmes, appelées des ',
+        '.',
+        ['cités-États', 'cités-etats', 'cités États', 'cités-Etats', 'cites-etats', 'cités états'],
+      ],
       ...P.citesEtats,
       explain: 'Uruk, au pays de Sumer, est l’une de ces cités-États.',
     },
@@ -598,7 +723,7 @@ const etats: Notion = {
         ['un burin sur du bois', 'La source décrit un calame de roseau sur de l’argile.'],
         ['une machine à imprimer', 'Aucune machine n’existe à cette époque.'],
       ),
-      gap: ['L’écriture cunéiforme est tracée avec un ', ' de roseau.', ['calame']],
+      gap: ['L’écriture cunéiforme est tracée avec un ', ' de roseau.', ['calame', 'stylet']],
       ...P.calame,
       explain: 'Le calame à bout triangulaire laisse des impressions en forme de coins.',
     },
@@ -634,21 +759,25 @@ const etats: Notion = {
         ['des cartes postales', 'La poste moderne n’existe pas.'],
         ['de simples décorations', 'Les tablettes sont des documents de gestion.'],
       ),
-      gap: ['Les tablettes d’Uruk sont des archives ', '.', ['administratives', 'administrative']],
+      gap: [
+        'Les tablettes d’Uruk servent à gérer les affaires de la cité : ce sont des archives ',
+        '.',
+        ['administratives', 'administrative', 'comptables', 'comptable'],
+      ],
       ...P.archives,
       explain: 'Les tablettes d’Uruk représentent des archives administratives : l’écriture sert à gérer.',
     },
     {
-      q: 'Dans quel cadre le programme place-t-il l’étude des premiers États et des premières écritures ?',
-      a: 'l’Orient ancien',
+      q: 'Dans quelle grande région du passé trouve-t-on l’Égypte et la Mésopotamie des premiers États ?',
+      a: 'dans l’Orient ancien',
       wrong: wrong(
-        ['l’empire romain', 'L’empire romain est étudié dans un autre thème de 6e.'],
-        ['la Gaule', 'La Gaule n’est pas le cadre de cette étude.'],
-        ['la Chine des Han', 'La Chine des Han est étudiée avec la route de la soie.'],
+        ['dans l’empire romain', 'L’empire romain est bien plus tardif.'],
+        ['en Gaule', 'La Gaule ne comprend ni l’Égypte ni la Mésopotamie.'],
+        ['dans la Chine des Han', 'La Chine est loin de l’Égypte et de la Mésopotamie.'],
       ),
       gap: ['Les premiers États et les premières écritures s’étudient dans l’', ' ancien.', ['Orient']],
       ...P.orient,
-      explain: 'L’étude se place dans l’Orient ancien : Égypte ou Mésopotamie.',
+      explain: 'L’Égypte et la Mésopotamie appartiennent à l’Orient ancien.',
     },
     {
       q: 'Quel support reste essentiel pour le livre en Égypte ?',
@@ -670,17 +799,21 @@ const etats: Notion = {
         ['des recettes de cuisine modernes', 'Rien de moderne à cette époque.'],
         ['des cartes du monde entier', 'Les Égyptiens ne notent pas là une carte du monde.'],
       ),
-      gap: ['Ces inscriptions livrent des dates et des informations ', '.', ['administratives', 'administrative']],
+      gap: [
+        'En Égypte, les premiers hiéroglyphes gravés sur des tablettes livrent des dates et des informations qui servent à gérer le pays : des informations ',
+        '.',
+        ['administratives', 'administrative'],
+      ],
       ...P.administratif,
       explain: 'Comme en Mésopotamie, l’écriture sert à gérer.',
     },
     {
-      q: 'D’après la BnF, à l’émergence de quelle notion l’invention de l’écriture est-elle liée ?',
-      a: 'la notion d’État',
+      q: 'L’invention de l’écriture va de pair avec la naissance de quoi ?',
+      a: 'de la notion d’État',
       wrong: wrong(
-        ['la notion de nomadisme', 'L’écriture naît dans des villes, pas de la vie nomade.'],
-        ['la notion de préhistoire', 'La préhistoire désigne justement la période d’avant l’écriture.'],
-        ['la notion de cueillette', 'La cueillette existait bien avant l’écriture.'],
+        ['de la vie nomade', 'L’écriture naît dans des villes, pas de la vie nomade.'],
+        ['de la préhistoire', 'La préhistoire désigne justement la période d’avant l’écriture.'],
+        ['de la cueillette', 'La cueillette existait bien avant l’écriture.'],
       ),
       gap: ['L’invention de l’écriture est liée à l’émergence de la notion d’', '.', ['État', 'Etat']],
       ...P.etat,
@@ -743,6 +876,26 @@ const etats: Notion = {
       ...P.scribe,
       explain: 'C’est le scribe.',
     },
+    {
+      q: 'Quelle matière sert surtout de support à l’écriture en Mésopotamie ? (un mot)',
+      accepted: ['argile', 'l’argile', 'de l’argile'],
+      traps: traps(
+        ['papyrus', 'Le papyrus est le support typique de l’Égypte.'],
+        ['papier', 'Le papier n’est pas le support de la Mésopotamie.'],
+      ),
+      ...P.argile,
+      explain: 'On écrit surtout sur l’argile.',
+    },
+    {
+      q: 'Avec quel instrument de roseau imprime-t-on les signes cunéiformes ? (un mot)',
+      accepted: ['calame', 'le calame', 'un calame', 'stylet', 'un stylet'],
+      traps: traps(
+        ['plume', 'Les signes sont imprimés dans l’argile, pas écrits à la plume.'],
+        ['burin', 'L’instrument cherché est un roseau taillé.'],
+      ),
+      ...P.calame,
+      explain: 'C’est le calame.',
+    },
   ],
   docs: [
     {
@@ -770,39 +923,79 @@ const etats: Notion = {
           wrong: wrong(
             ['en Égypte', 'Uruk est une cité de Mésopotamie, pas d’Égypte.'],
             ['en Chine', 'Uruk est en Irak actuel.'],
+            ['en Gaule', 'Uruk n’est pas en Gaule.'],
           ),
           ...P.citesEtats,
           explain: 'Uruk est une cité-État de Mésopotamie.',
         },
+        {
+          q: 'Sur quel support l’homme écrit-il ?',
+          a: 'une tablette d’argile',
+          wrong: wrong(
+            ['un rouleau de papyrus', 'La ligne 1 parle d’argile fraîche.'],
+            ['un mur de pierre', 'La ligne 1 ne parle pas de mur.'],
+            ['une feuille de papier', 'La ligne 1 parle d’argile fraîche.'],
+          ),
+          ...P.argile,
+          explain: 'La ligne 1 cite la tablette d’argile.',
+        },
+        {
+          q: 'Quel instrument le « roseau taillé » de la ligne 1 désigne-t-il ?',
+          a: 'un calame',
+          wrong: wrong(
+            ['un pinceau de métal', 'Le texte parle d’un roseau, pas de métal.'],
+            ['un burin de pierre', 'Le texte parle d’un roseau, pas de pierre.'],
+            ['un sceptre', 'Un sceptre est un bâton de roi : il ne sert pas à écrire.'],
+          ),
+          ...P.calame,
+          explain: 'Le calame est le roseau qui sert à imprimer les signes.',
+        },
       ],
     },
     {
-      title: 'Deux écritures (texte imaginé)',
+      title: 'Deux scribes (texte imaginé)',
       lines: [
-        'Ahmès, en Égypte, copie un texte avec des signes qui représentent souvent des êtres ou des objets.',
-        'Il travaille sur un rouleau de papyrus.',
-        'Ibni, en Mésopotamie, imprime des signes en forme de coins dans l’argile.',
+        'Ahmès copie un texte sur un rouleau de papyrus.',
+        'Il trace des signes qui représentent souvent des êtres ou des objets.',
+        'Ibni tient un roseau taillé et une tablette d’argile fraîche.',
+        'Il appuie le bout triangulaire du roseau pour marquer chaque signe.',
       ],
       qs: [
+        {
+          q: 'Lequel des deux scribes travaille en Mésopotamie, et quel indice le montre ?',
+          a: 'Ibni, car il imprime des signes dans l’argile',
+          wrong: wrong(
+            ['Ahmès, car il écrit sur du papyrus', 'Le papyrus est le support typique de l’Égypte.'],
+            ['Ahmès, car ses signes représentent des objets', 'Ces signes font penser aux hiéroglyphes d’Égypte.'],
+            ['Ibni, car il copie un texte sur un rouleau', 'C’est Ahmès qui utilise un rouleau.'],
+          ),
+          ...P.argile,
+          explain: 'L’argile et le roseau désignent l’écriture cunéiforme, donc la Mésopotamie.',
+        },
         {
           q: 'Quelle écriture Ahmès emploie-t-il probablement ?',
           a: 'les hiéroglyphes',
           wrong: wrong(
-            ['le cunéiforme', 'Le cunéiforme est celui d’Ibni, en Mésopotamie.'],
-            ['l’alphabet latin', 'L’alphabet latin n’est pas l’écriture de l’Égypte ancienne.'],
+            ['le cunéiforme', 'Le cunéiforme s’imprime dans l’argile, comme chez Ibni.'],
+            ['l’alphabet latin', 'L’alphabet latin est bien plus tardif.'],
+            ['les chiffres arabes', 'Ce ne sont pas des signes représentant des êtres ou des objets.'],
           ),
           ...P.egypte,
-          explain: 'En Égypte, les signes de base sont les hiéroglyphes.',
+          explain: 'Papyrus et signes figurant des êtres ou des objets : on pense aux hiéroglyphes.',
         },
         {
-          q: 'Quel indice de la ligne 3 désigne l’écriture cunéiforme ?',
-          a: 'les signes en forme de coins',
+          q: 'Quelle forme les signes d’Ibni prennent-ils sans doute ?',
+          a: 'des formes de coins',
           wrong: wrong(
-            ['le rouleau de papyrus', 'Le papyrus est cité à la ligne 2, pour l’Égypte.'],
-            ['le nom d’Ahmès', 'Un prénom n’indique pas le type d’écriture.'],
+            ['des dessins d’êtres vivants', 'Un bout triangulaire appuyé dans l’argile ne dessine pas des êtres.'],
+            [
+              'de longues courbes à l’encre',
+              'Ibni n’emploie pas d’encre et les courbes sont difficiles dans l’argile.',
+            ],
+            ['des lettres de l’alphabet latin', 'L’alphabet latin est bien plus tardif.'],
           ),
           ...P.calame,
-          explain: 'Cunéiforme désigne une écriture aux signes en forme de coins.',
+          explain: 'Le bout triangulaire laisse des impressions en forme de coins : c’est le cunéiforme.',
         },
       ],
     },

@@ -19,3 +19,8 @@
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).
+
+## À anticiper
+
+Le programme de l’arrêté du 22/04/2026 s’appliquerait à la 6e à la rentrée 2027 (sources concordantes ; article
+d’application non lu directement). Son thème 1 devient « Du Paléolithique au Néolithique » : revoir alors `hi-6e-01`.
