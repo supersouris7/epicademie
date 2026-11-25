@@ -628,10 +628,9 @@ export const FCM1_GROUPE_NOMINAL: readonly Skill[] = [
     id: 'fcm1-gn-pronom',
     title: 'Remplacer un groupe nominal par un pronom',
     memo: [
-      'Un **pronom** prend la place de tout un groupe nominal : « La petite fille chante. » → « Elle chante. »',
+      'Un **pronom** prend la place de tout un groupe nominal, pour éviter de le répéter : « La petite fille chante. » → « Elle chante. »',
       'Sujet : il, elle, ils, elles (masculin et féminin ensemble : ils).',
       'Complément : le, la, les, devant le verbe. Pour des personnes après « à » : lui, leur.',
-      'Bonus : le pronom évite de répéter le même groupe dans ton texte.',
     ],
     factId: 'remplacer-sujet',
     faits: ['remplacer-objet', 'pronom', 'ils', 'le', 'lui'],
