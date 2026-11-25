@@ -22,7 +22,7 @@ const cites: Notion = {
   memo: [
     'Au Ier millénaire av. J.-C., le monde grec est **morcelé** en **cités** rivales, qui ont pourtant une culture commune : une langue, des dieux et des récits.',
     'L’Iliade et l’Odyssée, deux **épopées** attribuées au poète Homère, chantées par des **aèdes**, font partie de cet univers commun ; l’**alphabet** grec vient de l’alphabet phénicien, auquel les Grecs ajoutent des voyelles.',
-    'Les Grecs se retrouvent dans des **sanctuaires** **panhelléniques** : à Olympie (jeux dès 776 av. J.-C.) et à Delphes, où l’on honore Apollon.',
+    'Les Grecs se retrouvent dans des **sanctuaires** **panhelléniques** : à Olympie (jeux dès 776 av. J.-C.) et à Delphes, où l’on honore Apollon. Repères : alphabet adopté vers 800 av. J.-C. ; jeux d’Olympie dès 776 ; l’écrit entre dans la cité vers 650 ; Athènes au temps de Périclès, au Ve siècle av. J.-C.',
   ],
   faits: [
     {
@@ -271,9 +271,12 @@ const cites: Notion = {
           q: 'D’après la ligne 4, comment ces récits peuvent-ils circuler ?',
           a: 'à l’oral, chantés par des poètes',
           wrong: wrong(
-            ['seulement dans des journaux', 'Les journaux n’existent pas dans l’Antiquité.'],
-            ['seulement par la radio', 'La radio est une invention récente.'],
-            ['gravés sur des écrans', 'Les écrans n’existent pas dans l’Antiquité.'],
+            ['seulement dans des livres, lus en silence', 'La ligne 4 montre un aède qui chante : on écoute le récit.'],
+            ['seulement gravés sur les murs des sanctuaires', 'La ligne 4 parle d’un chant, pas d’une inscription.'],
+            [
+              'seulement par des lettres envoyées entre cités',
+              'La ligne 4 ne parle d’aucune lettre : le récit est chanté.',
+            ],
           ),
           ...P.oral,
           explain: 'Les poèmes homériques ont leur origine dans la tradition orale.',
@@ -339,7 +342,7 @@ const rome: Notion = {
   memo: [
     'Un **mythe** raconte des faits imaginaires transmis par la tradition ; la **légende** de Rome dit que Romulus, fils du dieu Mars, fonde la ville le 21 avril 753 av. J.-C. et tue son frère jumeau Rémus.',
     'Un autre récit rattache Rome au prince troyen Énée, que Virgile met en scène dans l’**Énéide**.',
-    'L’**archéologie** montre que le site de Rome est peuplé dès le Xe siècle av. J.-C. et se transforme au VIIIe siècle : on compare les récits aux traces.',
+    'L’**archéologie** montre que le site de Rome est peuplé dès le Xe siècle av. J.-C. et se transforme au VIIIe siècle : on compare les récits aux traces. Repères : au Ve siècle av. J.-C., le Grec Hellanicos raconte l’origine troyenne de Rome ; bien plus tard, à l’époque d’Auguste, l’historien Tite-Live rapporte la légende de Romulus avec **scepticisme** (il en doute) ; en 1988, un archéologue découvre une muraille ancienne.',
   ],
   faits: [
     {
@@ -422,7 +425,11 @@ const rome: Notion = {
         ['il est fondé après l’an 476', 'Le site est habité bien avant cette date.'],
         ['il n’a jamais été habité avant 753 av. J.-C.', 'Des habitants sont déjà là avant la date de la légende.'],
       ),
-      gap: ['L’archéologie montre un peuplement du site de Rome dès le ', ' siècle av. J.-C.', ['Xe', 'X', '10e']],
+      gap: [
+        'L’archéologie montre un peuplement du site de Rome dès le ',
+        ' siècle av. J.-C.',
+        ['Xe', 'X', '10e', '10ème', 'Xème', 'dixième'],
+      ],
       ...P.peuplement,
       explain: 'Les fouilles montrent des habitants avant la date légendaire.',
     },
@@ -510,7 +517,7 @@ const rome: Notion = {
       explain: 'C’est l’Énéide.',
     },
     {
-      q: 'Quelle science, à partir de fouilles, permet de vérifier les récits sur les origines ? (un mot)',
+      q: 'Quelle science, à partir de fouilles, permet de confronter les récits sur les origines à des traces ? (un mot)',
       accepted: ['archéologie', 'l’archéologie', 'archeologie', 'l’archeologie'],
       traps: traps(
         ['mythologie', 'La mythologie étudie les mythes, pas les traces du sol.'],
@@ -619,10 +626,13 @@ const rome: Notion = {
           wrong: wrong(
             ['ils remplacent les fouilles des archéologues', 'Un récit ne remplace pas les traces.'],
             ['ils empêchent Rome de dominer d’autres peuples', 'Ils servent au contraire sa puissance.'],
-            ['ils ne servent qu’à amuser les enfants', 'La question du programme porte sur la domination de Rome.'],
+            [
+              'ils ne servent qu’à amuser les enfants',
+              'La ligne 3 leur donne un rôle politique : présenter Rome en héritière.',
+            ],
           ),
-          ...P.dominer,
-          explain: 'Le mythe de fondation permet à Rome d’asseoir sa domination.',
+          ...P.fonction,
+          explain: 'En donnant à Rome un passé prestigieux, ces récits servent à asseoir (renforcer) son pouvoir.',
         },
       ],
     },
@@ -638,7 +648,7 @@ const monotheisme: Notion = {
   memo: [
     'Dans un monde **polythéiste**, où l’on honore plusieurs dieux, les Hébreux en viennent au **monothéisme**, la croyance en un seul dieu.',
     'Les historiens situent ce passage de la **monolâtrie** au monothéisme au moment de l’**exil** à Babylone, après la prise de Jérusalem en 587 av. J.-C. ; le retour a lieu en 538 av. J.-C.',
-    'La **Bible** hébraïque est rédigée au Ier millénaire av. J.-C. ; son cœur est la **Torah** : les croyants y voient une parole sacrée, les historiens étudient sa rédaction.',
+    'La **Bible** hébraïque est rédigée au Ier millénaire av. J.-C. ; son cœur est la **Torah**, les cinq livres du **Pentateuque** : les croyants y voient une parole sacrée, les historiens étudient sa rédaction. La tradition croyante l’attribue à Moïse ; les historiens la datent de plusieurs siècles plus tard. Repères : l’archéologie confirme les royaumes d’Israël et de Juda à partir du VIIIe siècle av. J.-C. ; le plus ancien manuscrit d’un livre de la Bible hébraïque, trouvé à Qumran, date du 3e siècle av. J.-C.',
   ],
   faits: [
     {
@@ -688,7 +698,7 @@ const monotheisme: Notion = {
         ['pendant les jeux olympiques', 'Les jeux sont une fête grecque.'],
         ['à l’époque des premiers outils', 'Ce passage a lieu au Ier millénaire av. J.-C., bien plus tard.'],
       ),
-      gap: ['Les Hébreux passent au monothéisme au moment de l’exil à ', '.', ['Babylone']],
+      gap: ['Selon les historiens, les Hébreux passent au monothéisme au moment de l’exil à ', '.', ['Babylone']],
       ...P.passage,
       explain: 'L’exil à Babylone suit une défaite du royaume de Juda.',
     },
@@ -705,7 +715,7 @@ const monotheisme: Notion = {
       explain: 'La prise de 587 av. J.-C. ouvre l’exil ; le retour a lieu en 538 av. J.-C.',
     },
     {
-      q: 'Que désigne la Torah au sens des cinq premiers livres ?',
+      q: 'La Torah désigne les cinq premiers livres de la Bible hébraïque. Quel autre nom porte cet ensemble ?',
       a: 'le Pentateuque',
       wrong: wrong(
         ['l’Odyssée', 'L’Odyssée est une épopée grecque.'],
@@ -920,7 +930,7 @@ const monotheisme: Notion = {
             ['un monde sans écriture', 'L’écriture existe déjà.'],
           ),
           ...P.contexte,
-          explain: 'Le programme étudie la naissance du monothéisme juif dans un monde polythéiste.',
+          explain: 'Les peuples voisins honorent plusieurs dieux : le monothéisme juif naît dans un monde polythéiste.',
         },
       ],
     },

@@ -86,6 +86,8 @@ export const PREUVES = {
     'une glorification du devenir « futur » de la ville de Rome, et de l’extension de sa domination sur le monde méditerranéen',
   ),
 
+  fonction: eduscol('il peut avoir une fonction politique, et servir à asseoir la légitimité d’un pouvoir'),
+
   // La naissance du monothéisme juif
   monotheisme: eduscol('au monothéisme (l’idée qu’il n’existe qu’un seul dieu créateur du monde)'),
   monolatrie: eduscol(
@@ -97,7 +99,9 @@ export const PREUVES = {
   ),
   passage: eduscol('au moment de l’exil à Babylone, c’est-à-dire de la déportation des élites du royaume de Juda'),
   prise: eduscol('la prise de Jérusalem par les Babyloniens en 587 avant J.-C. et le retour à Jérusalem en 538'),
-  royaumes: eduscol('l’archéologie confirme l’existence des deux royaumes d’Israël et de Juda'),
+  royaumes: eduscol(
+    'le récit biblique ne rencontre l’histoire qu’au VIIIe siècle avant J.-C., puisque l’archéologie confirme l’existence des deux royaumes d’Israël et de Juda',
+  ),
   redaction: eduscol(
     'C’est pourtant au Ier millénaire avant J.-C. que les livres qui composent la Bible hébraïque ont été rédigés',
   ),

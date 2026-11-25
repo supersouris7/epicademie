@@ -1371,4 +1371,32 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Le fait de jouir des droits d’un citoyen.',
     example: 'Rome accorde le droit de cité.',
   },
+  {
+    id: 'scepticisme',
+    word: 'scepticisme',
+    forms: ['scepticisme'],
+    definition: 'Le fait de douter, de ne pas croire sans preuve.',
+    example: 'Tite-Live rapporte la légende avec scepticisme.',
+  },
+  {
+    id: 'pentateuque',
+    word: 'Pentateuque',
+    forms: ['Pentateuque', 'pentateuque'],
+    definition: 'Les cinq premiers livres de la Bible.',
+    example: 'Le Pentateuque est aussi appelé Torah.',
+  },
+  {
+    id: 'elites',
+    word: 'élites',
+    forms: ['élites', 'elites'],
+    definition: 'Les personnes les plus importantes d’une société, comme les chefs et les savants.',
+    example: 'Les élites de Juda sont emmenées à Babylone.',
+  },
+  {
+    id: 'treve',
+    word: 'trêve',
+    forms: ['trêve', 'trêves', 'treve'],
+    definition: 'Un arrêt provisoire des combats.',
+    example: 'Une trêve est respectée pendant les jeux.',
+  },
 ];
