@@ -16,7 +16,7 @@
 | ----------- | ---------------------------- | -------------------------------------------------------------------------------------------- | ----------------------------- |
 | `ge-cm2-01` | Se déplacer                  | au quotidien ; de ville en ville en France ; en Europe et dans le monde ; modes de transport | couverte, en relecture        |
 | `ge-cm2-02` | Communiquer grâce à Internet | réseau mondial ; câbles et centres de données ; inégalités d'accès ; usages                  | absente                       |
-| `ge-cm2-03` | Mieux habiter                | nature en ville ; recycler ; écoquartier ; transition                                        | absente                       |
+| `ge-cm2-03` | Mieux habiter                | nature en ville ; recycler ; écoquartier ; transition                                        | couverte, en relecture        |
 | `ge-cm2-04` | Repères : France et Europe   | départements ; pays et capitales d'Europe ; continents et océans                             | partielle (gcm2-departements) |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),

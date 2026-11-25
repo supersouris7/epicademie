@@ -14,4 +14,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'gcm2-ville-en-ville', version: 1, lot: 'ge-cm2-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'gcm2-europe-monde', version: 1, lot: 'ge-cm2-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'gcm2-modes-transport', version: 1, lot: 'ge-cm2-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'gcm2-nature-ville', version: 1, lot: 'ge-cm2-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'gcm2-recycler', version: 1, lot: 'ge-cm2-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'gcm2-ecoquartier', version: 1, lot: 'ge-cm2-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'gcm2-transition', version: 1, lot: 'ge-cm2-03', date: '2026-11-25', verdict: 'ok' },
 ];

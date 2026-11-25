@@ -1,4 +1,5 @@
 import type { Chapter } from '../types.ts';
+import { FCM1_ACCORDS } from './accords.ts';
 import { FCM1_COMPLEMENTS } from './complements.ts';
 import { FCM1_GROUPE_NOMINAL } from './groupe-nominal.ts';
 import { FCM1_NATURE } from './nature.ts';
@@ -46,5 +47,13 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'grammaire',
     title: 'Le groupe nominal',
     skills: FCM1_GROUPE_NOMINAL,
+  },
+  {
+    id: 'fcm1-accords',
+    subject: 'francais',
+    grade: 'cm1',
+    domain: 'grammaire',
+    title: 'Les accords',
+    skills: FCM1_ACCORDS,
   },
 ];

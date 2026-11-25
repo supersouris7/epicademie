@@ -26,4 +26,10 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm1-gn-pronom', version: 1, lot: 'fr-cm1-05', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-gn-noyau', version: 1, lot: 'fr-cm1-05', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-adjectif-epithete', version: 1, lot: 'fr-cm1-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-genre-nombre', version: 1, lot: 'fr-cm1-06', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-pluriels', version: 1, lot: 'fr-cm1-06', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-feminin', version: 1, lot: 'fr-cm1-06', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-accord-gn', version: 1, lot: 'fr-cm1-06', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-accord-sujet-verbe', version: 1, lot: 'fr-cm1-06', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-participe-etre', version: 1, lot: 'fr-cm1-06', date: '2026-11-25', verdict: 'ok' },
 ];
