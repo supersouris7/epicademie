@@ -66,6 +66,24 @@ const tlfi = (id: string, word: string, path: string): Source => ({
   consultedOn: '2026-11-25',
 });
 
+/** Articles et définitions relevés pour le lot ge-6e-01 (25/11/2026). */
+const CONSULTED_GE_6E = '2026-11-25';
+
+const tlfiLe6e = (id: string, word: string, path: string): Source => ({
+  ...tlfi(id, word, path),
+  consultedOn: CONSULTED_GE_6E,
+});
+
+/** Définition du glossaire de l’INSEE (`numero` : identifiant de la page). */
+const inseeDefinition = (id: string, mot: string, numero: number): Source => ({
+  id: `insee-${id}`,
+  title: `Définition « ${mot} »`,
+  publisher: 'INSEE',
+  url: `https://www.insee.fr/fr/metadonnees/definition/c${numero}`,
+  textDate: '2026',
+  consultedOn: CONSULTED_GE_6E,
+});
+
 /** Article du Dictionnaire de l’Académie française (9e édition), publié par le CNRTL. */
 const academie = (id: string, word: string): Source => ({
   id: `academie-${id}`,
@@ -1739,6 +1757,35 @@ export const SOURCES: readonly Source[] = [
   tlfi('recycler', 'recycler', 'recycler'),
   tlfi('compost', 'compost', 'compost'),
   tlfi('transition', 'transition', 'transition'),
+  {
+    id: 'eduscol-habiter-metropole',
+    title: 'Ressource d’accompagnement, géographie 6e, « Habiter une métropole » (thème 1)',
+    publisher: 'Éduscol, ministère de l’Éducation nationale',
+    url: 'https://cache.media.eduscol.education.fr/file/Geographie/73/4/RA16_C3_HIGE_GEO_6e_Th1_Habiter_metropole_616734.pdf',
+    textDate: '2016-03',
+    consultedOn: CONSULTED_GE_6E,
+  },
+  {
+    id: 'ghsl-atlas-2018',
+    title: 'Atlas of the Human Planet 2018 - A World of Cities',
+    publisher: 'Commission européenne, Centre commun de recherche (GHSL)',
+    url: 'https://ghsl.jrc.ec.europa.eu/documents/Atlas_2018.pdf',
+    textDate: '2018',
+    consultedOn: CONSULTED_GE_6E,
+  },
+  inseeDefinition('unite-urbaine', 'Unité urbaine', 1501),
+  inseeDefinition('ville-centre', 'Ville-centre et banlieue', 1441),
+  inseeDefinition('banlieue', 'Banlieue', 1546),
+  inseeDefinition('aire-attraction', 'Aire d’attraction des villes', 2173),
+  inseeDefinition('couronne', 'Couronne d’une aire d’attraction des villes', 2340),
+  tlfiLe6e('pendulaire', 'pendulaire', 'pendulaire'),
+  tlfiLe6e('urbanisation', 'urbanisation', 'urbanisation'),
+  tlfiLe6e('bidonville', 'bidonville', 'bidonville'),
+  tlfiLe6e('citadin', 'citadin', 'citadin'),
+  tlfiLe6e('gratte-ciel', 'gratte-ciel', 'gratte-ciel'),
+  tlfiLe6e('periurbain', 'périurbain', 'p%C3%A9riurbain'),
+  tlfiLe6e('rocade', 'rocade', 'rocade'),
+  tlfiLe6e('densite', 'densité', 'densit%C3%A9'),
 ];
 
 export const getSource = (id: string): Source | undefined => SOURCES.find((s) => s.id === id);
