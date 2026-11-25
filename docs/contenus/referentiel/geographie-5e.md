@@ -9,12 +9,12 @@
 
 ## Chapitres et notions
 
-| Lot        | Chapitre                     | Notions                                                                           | État actuel |
-| ---------- | ---------------------------- | --------------------------------------------------------------------------------- | ----------- |
-| `ge-5e-01` | Démographie et développement | croissance démographique ; inégal développement ; IDH ; répartition des richesses | absente     |
-| `ge-5e-02` | Des ressources limitées      | l'énergie ; l'eau ; l'alimentation ; gérer et renouveler                          | couverte    |
-| `ge-5e-03` | Changement global et risques | changement climatique ; risques ; s'adapter ; prévenir                            | absente     |
-| `ge-5e-04` | Repères de 5e                | cartes du programme ; grands foyers de population ; ressources ; vocabulaire      | absente     |
+| Lot        | Chapitre                     | Notions                                                                           | État actuel            |
+| ---------- | ---------------------------- | --------------------------------------------------------------------------------- | ---------------------- |
+| `ge-5e-01` | Démographie et développement | croissance démographique ; inégal développement ; IDH ; répartition des richesses | absente                |
+| `ge-5e-02` | Des ressources limitées      | l'énergie ; l'eau ; l'alimentation ; gérer et renouveler                          | couverte, en relecture |
+| `ge-5e-03` | Changement global et risques | changement climatique ; risques ; s'adapter ; prévenir                            | absente                |
+| `ge-5e-04` | Repères de 5e                | cartes du programme ; grands foyers de population ; ressources ; vocabulaire      | absente                |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).
