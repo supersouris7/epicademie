@@ -7,6 +7,7 @@ import { ENGLISH_BE_CHAPTERS } from './be.ts';
 import { ENGLISH_TIME_CHAPTER } from './temps.ts';
 import { ENGLISH_FAMILY_CHAPTER } from './famille.ts';
 import { ENGLISH_TASTES_CHAPTER } from './gouts.ts';
+import { ENGLISH_LISTENING_CHAPTER } from './ecoute.ts';
 import { ENGLISH_NOUN_GROUP_CHAPTER } from './groupe-nominal.ts';
 
 /**
@@ -128,6 +129,7 @@ export const ANGLAIS_CHAPTERS: readonly Chapter[] = [
   ENGLISH_TIME_CHAPTER,
   ENGLISH_FAMILY_CHAPTER,
   ENGLISH_TASTES_CHAPTER,
+  ENGLISH_LISTENING_CHAPTER,
   ENGLISH_NOUN_GROUP_CHAPTER,
   {
     id: 'a5-verbes-irreguliers',
