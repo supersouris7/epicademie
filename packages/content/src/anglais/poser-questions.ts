@@ -533,6 +533,8 @@ interface Habit {
   /** Verbe et complément, après « Do you ». */
   readonly en: string;
   readonly fr: string;
+  /** Autres façons correctes de le dire (sans l’article, anglais américain). */
+  readonly alt?: readonly string[];
 }
 const HABITS: readonly Habit[] = [
   { en: 'like apples', fr: 'Aimes-tu les pommes ?' },
@@ -540,9 +542,9 @@ const HABITS: readonly Habit[] = [
   { en: 'like chocolate', fr: 'Aimes-tu le chocolat ?' },
   { en: 'like cats', fr: 'Aimes-tu les chats ?' },
   { en: 'like music', fr: 'Aimes-tu la musique ?' },
-  { en: 'play football', fr: 'Joues-tu au foot ?' },
+  { en: 'play football', fr: 'Joues-tu au foot ?', alt: ['play soccer'] },
   { en: 'play tennis', fr: 'Joues-tu au tennis ?' },
-  { en: 'play the piano', fr: 'Joues-tu du piano ?' },
+  { en: 'play the piano', fr: 'Joues-tu du piano ?', alt: ['play piano'] },
   { en: 'speak English', fr: 'Parles-tu anglais ?' },
 ];
 const WHY_DO = 'Avec « you », la question au présent commence par « Do ».';
@@ -553,14 +555,14 @@ function doQuestionChoice(rng: Rng): QuestionDraft {
   const h = rng.pick(HABITS);
   const good = `Do you ${h.en}?`;
   const { answer, traps } = choice(rng, good, [
-    { label: `You ${h.en}.`, why: `C’est une affirmation, pas une question. ${WHY_DO}` },
+    { label: `You ${h.en}.`, why: `C’est une phrase qui dit quelque chose, pas une question. ${WHY_DO}` },
     { label: `Do they ${h.en}?`, why: '« they » veut dire « ils » ou « elles » : on ne parle pas à ton ami.' },
   ]);
   return {
     prompt: `Quelle phrase demande à un ami : « ${h.fr} » ?`,
     answer,
     traps,
-    hint: 'Cherche une question, pas une affirmation. Puis vérifie à qui elle s’adresse : « tu ».',
+    hint: 'Cherche une question, pas une phrase qui dit quelque chose. Puis vérifie à qui elle s’adresse : « tu ».',
     steps: [WHY_DO, `Réponse : **${good}**`],
   };
 }
@@ -644,9 +646,22 @@ function doShortWrite(rng: Rng): QuestionDraft {
   };
 }
 
-const WH_DO: readonly { readonly fr: string; readonly en: string; readonly wh: string; readonly trap: string }[] = [
+interface WhDo {
+  readonly fr: string;
+  readonly en: string;
+  readonly wh: Wh;
+  readonly trap: Wh;
+  readonly alt?: readonly string[];
+}
+const WH_DO: readonly WhDo[] = [
   { fr: 'Où habites-tu ?', en: 'Where do you live', wh: 'Where', trap: 'When' },
-  { fr: 'Où joues-tu au foot ?', en: 'Where do you play football', wh: 'Where', trap: 'What' },
+  {
+    fr: 'Où joues-tu au foot ?',
+    en: 'Where do you play football',
+    wh: 'Where',
+    trap: 'What',
+    alt: ['Where do you play soccer'],
+  },
   { fr: 'Quand joues-tu au tennis ?', en: 'When do you play tennis', wh: 'When', trap: 'Where' },
   { fr: 'Quand te lèves-tu ?', en: 'When do you get up', wh: 'When', trap: 'Where' },
   { fr: 'Que veux-tu ?', en: 'What do you want', wh: 'What', trap: 'Who' },
@@ -660,7 +675,7 @@ function doProduce(rng: Rng): QuestionDraft {
     const good = `Do you ${h.en}`;
     return {
       prompt: `Écris la question en anglais : « ${h.fr} »`,
-      answer: { kind: 'text', accepted: asked([good]) },
+      answer: { kind: 'text', accepted: asked([good, ...(h.alt ?? []).map((v) => `Do you ${v}`)]) },
       traps: [
         { text: `You ${h.en}?`, why: `Il manque « Do » au début. ${WHY_DO}` },
         { text: `Are you ${h.en}?`, why: '« Are » est le verbe be : ici, il faut « Do ».' },
@@ -675,10 +690,13 @@ function doProduce(rng: Rng): QuestionDraft {
     const rest = x.en.slice(x.wh.length + 4);
     return {
       prompt: `Écris la question en anglais : « ${x.fr} »`,
-      answer: { kind: 'text', accepted: asked([x.en]) },
+      answer: { kind: 'text', accepted: asked([x.en, ...(x.alt ?? [])]) },
       traps: [
         { text: `${x.wh} you ${rest.slice(4)}?`, why: 'Il manque « do » entre le mot interrogatif et « you ».' },
-        { text: `${x.trap} do ${rest}?`, why: 'Ce n’est pas le bon mot interrogatif.' },
+        {
+          text: `${x.trap} do ${rest}?`,
+          why: `« ${x.trap} » demande ${wh(x.trap).asks} ; ici on demande ${wh(x.wh).asks} : « ${x.wh} ».`,
+        },
         { text: `Do you ${rest.slice(4)} ${x.wh.toLowerCase()}?`, why: 'Le mot interrogatif se place au début.' },
       ],
       hint: 'Le mot interrogatif d’abord, puis la question habituelle avec « you ».',

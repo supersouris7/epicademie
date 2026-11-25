@@ -145,6 +145,24 @@ describe('anglais cm2 : poser des questions', () => {
     for (const t of ["No, I can't.", 'No I cannot', 'No, I can not']) expect(text(cant, t), t).toBe(true);
   });
 
+  it('do you, niveau 4 : « play piano » et « play soccer » acceptés, pièges toujours faux', () => {
+    const cases = [
+      ['« Joues-tu du piano ? »', 'Do you play piano'],
+      ['« Joues-tu du piano ? »', 'Do you play the piano'],
+      ['« Joues-tu au foot ? »', 'Do you play soccer'],
+      ['« Où joues-tu au foot ? »', 'Where do you play soccer'],
+      ['« Où joues-tu au foot ? »', 'Where do you play football'],
+    ] as const;
+    for (const [prompt, good] of cases) {
+      const found = questions('acm2-do-you', 4).filter((q) => q.prompt.endsWith(prompt));
+      expect(found.length, prompt).toBeGreaterThan(0);
+      for (const q of found) {
+        for (const t of [good, `${good}?`, `${good} ?`]) expect(text(q, t), t).toBe(true);
+        for (const trap of q.traps) expect('text' in trap && text(q, trap.text), q.prompt).toBe(false);
+      }
+    }
+  });
+
   it('do you, niveau 4 : we avec « toi et un ami », they avec deux autres', () => {
     const plural = questions('acm2-do-you', 4).filter((q) => /« Do (you and )?\w+ (and \w+ )?/.test(q.prompt));
     const short = plural.filter((q) => q.prompt.startsWith('Réponds'));
