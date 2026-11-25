@@ -96,7 +96,7 @@ const SECOURS = departement(
 );
 const SIX_ANS = conseilDepartemental('conseillers départementaux élus pour six ans');
 const LYCEES = conseilRegional('construction, entretien et équipement des lycées');
-const TRANSPORT = conseilRegional('le transport , qui est désormais le premier poste budgétaire des régions');
+const TRANSPORT = conseilRegional('le transport, qui est désormais le premier poste budgétaire des régions');
 const COLLEGE_INSTANCES = prog(
   'À partir des missions du délégué de classe et des autres fonctions représentatives au collège (éco-délégués, représentants au conseil de la vie collégienne)',
 );
@@ -125,7 +125,7 @@ const DEVOIRS = prog(
 const citoyennete: Notion = {
   id: 'em6-citoyennete',
   title: 'La citoyenneté : élire, représenter, servir l’intérêt général',
-  hint: 'Distingue celui qui vote, celui qui représente, et le but visé : l’intérêt de tous.',
+  hint: 'Repense au mémo : qui est citoyen, comment on désigne un représentant et pour qui il agit.',
   programme: PROGRAMME,
   credit: CREDIT,
   memo: [
@@ -152,7 +152,7 @@ const citoyennete: Notion = {
           why: 'Il représente tous ceux au nom de qui il a été choisi.',
         },
       ],
-      gap: ['Les représentants, choisis par un ', ', portent la parole des autres.', ['vote', 'scrutin']],
+      gap: ['Les représentants, choisis par un ', ', portent la parole des autres.', ['vote', 'scrutin', 'suffrage']],
       explain: 'Choisi par un vote, le représentant parle au nom des autres et participe aux décisions collectives.',
     },
     {
@@ -198,7 +198,7 @@ const citoyennete: Notion = {
       wrong: [
         { label: 'faire ce qu’ils veulent après l’élection', why: 'L’élection ne libère pas des règles.' },
         {
-          label: 'changer les règles de leur conseil quand ils le souhaitent seuls',
+          label: 'changer seuls les règles de leur conseil quand ils le souhaitent',
           why: 'Un élu suit les règles de son conseil, il ne les décide pas seul.',
         },
         {
@@ -209,7 +209,7 @@ const citoyennete: Notion = {
       gap: [
         'Les représentants élus expriment la parole des ',
         ' et suivent les règles de leur assemblée.',
-        ['électeurs', 'electeurs', 'électrices et électeurs'],
+        ['électeurs', 'electeurs', 'électrices et électeurs', 'citoyens', 'autres'],
       ],
       explain: 'Être responsable, c’est rendre fidèlement la parole des électeurs en respectant les règles.',
     },
@@ -237,7 +237,11 @@ const citoyennete: Notion = {
         { label: 'se marier', why: 'Se marier est un droit civil.' },
         { label: 'être propriétaire', why: 'Être propriétaire est un droit civil.' },
       ],
-      gap: ['Voter et se présenter à une élection sont des droits ', '.', ['politiques', 'politique']],
+      gap: [
+        'Voter et se présenter à une élection sont des droits ',
+        '.',
+        ['politiques', 'politique', 'civiques', 'civique'],
+      ],
       explain: 'Les droits politiques permettent de participer à la vie publique : voter et être candidat.',
     },
     {
@@ -308,7 +312,19 @@ const citoyennete: Notion = {
     {
       ...REPRESENTANTS,
       q: 'Par quel moyen les représentants sont-ils choisis ? (un mot)',
-      accepted: ['vote', 'le vote', 'un vote', 'scrutin', 'élection', 'élections', 'une élection'],
+      accepted: [
+        'vote',
+        'le vote',
+        'un vote',
+        'par un vote',
+        'scrutin',
+        'un scrutin',
+        'suffrage',
+        'élection',
+        'élections',
+        'une élection',
+        'election',
+      ],
       traps: [
         { text: 'tirage au sort', why: 'Le programme parle de représentants choisis par un vote.' },
         { text: 'impôt', why: 'L’impôt finance des dépenses : il ne désigne personne.' },
@@ -318,7 +334,14 @@ const citoyennete: Notion = {
     {
       ...NATIONALITE_CITOYEN,
       q: 'Quel lien juridique avec la France faut-il avoir pour être citoyen français ? (un mot)',
-      accepted: ['nationalité', 'la nationalité', 'nationalité française', 'la nationalité française'],
+      accepted: [
+        'nationalité',
+        'la nationalité',
+        'nationalité française',
+        'la nationalité française',
+        'nationalite',
+        'la nationalite',
+      ],
       traps: [
         { text: 'résidence', why: 'Résider en France ne suffit pas pour être citoyen français.' },
         { text: 'impôt', why: 'Payer l’impôt est un devoir, pas ce qui fait la citoyenneté.' },
@@ -401,7 +424,7 @@ const citoyennete: Notion = {
 const laicite: Notion = {
   id: 'em6-laicite',
   title: 'La laïcité à l’École',
-  hint: 'Demande-toi qui doit rester neutre, et quelle liberté est protégée.',
+  hint: 'Demande-toi ce que la loi permet à chaque personne et ce qu’elle demande à l’État.',
   programme: PROGRAMME,
   credit: CREDIT,
   memo: [
@@ -425,7 +448,11 @@ const laicite: Notion = {
           why: 'La loi s’applique à tous de la même façon.',
         },
       ],
-      gap: ['La laïcité garantit la liberté de ', ' et l’égalité de tous les citoyens.', ['conscience']],
+      gap: [
+        'La laïcité garantit la liberté de ',
+        ', c’est-à-dire le droit de croire, de ne pas croire ou de changer de religion.',
+        ['conscience'],
+      ],
       explain:
         'Chacun reste libre de ses croyances, et tous les citoyens sont égaux, quelles que soient leurs opinions.',
     },
@@ -476,7 +503,7 @@ const laicite: Notion = {
         { label: 'elle finance le culte majoritaire', why: 'Elle n’en subventionne aucun.' },
         { label: 'elle reconnaît un culte officiel', why: 'Elle n’en reconnaît aucun.' },
       ],
-      gap: ['La République ne reconnaît, ne salarie ni ne ', ' aucun culte.', ['subventionne']],
+      gap: ['La République ne reconnaît, ne salarie ni ne ', ' aucun culte.', ['subventionne', 'finance']],
       explain: 'C’est le principe de séparation : aucun culte n’est officiel ni financé par la République.',
     },
     {
@@ -502,7 +529,7 @@ const laicite: Notion = {
     },
     {
       ...LOI_2004,
-      q: 'Dans les collèges publics, que la loi de 2004 interdit-elle aux élèves ?',
+      q: 'Dans les collèges publics, qu’est-ce que la loi de 2004 interdit aux élèves ?',
       a: 'les signes religieux portés de façon ostensible',
       wrong: [
         { label: 'de croire en une religion', why: 'La liberté de conscience reste entière.' },
@@ -542,7 +569,11 @@ const laicite: Notion = {
         { label: 'une amende pour la famille', why: 'La loi ne parle pas d’amende : elle prévoit un dialogue.' },
         { label: 'un vote de la classe', why: 'La classe ne vote pas sur le cas d’un élève.' },
       ],
-      gap: ['La procédure disciplinaire est précédée d’un ', ' avec l’élève.', ['dialogue']],
+      gap: [
+        'La procédure disciplinaire est précédée d’un ',
+        ' avec l’élève.',
+        ['dialogue', 'échange', 'echange', 'entretien'],
+      ],
       explain: 'On commence par discuter avec l’élève avant toute sanction.',
     },
     {
@@ -577,7 +608,7 @@ const laicite: Notion = {
     {
       ...JOURNEE_LAICITE,
       q: 'Quel jour de l’année célèbre-t-on la journée de la laïcité à l’École ? (jour et mois)',
-      accepted: ['9 décembre', 'le 9 décembre', '9 decembre', '09/12', '9/12'],
+      accepted: ['9 décembre', 'le 9 décembre', '9 decembre', 'le 9 decembre', '09/12', '9/12'],
       traps: [
         { text: '14 juillet', why: 'Le 14 juillet est la fête nationale.' },
         { text: '20 novembre', why: 'Le 20 novembre est la journée des droits de l’enfant.' },
@@ -586,7 +617,7 @@ const laicite: Notion = {
     },
     {
       ...GARANTIE,
-      q: 'Quelle liberté la laïcité garantit-elle : la liberté de … ? (un mot)',
+      q: 'Croire, ne pas croire ou changer de religion : la laïcité garantit ce choix. C’est la liberté de … ? (un mot)',
       accepted: ['conscience', 'la conscience', 'liberté de conscience', 'la liberté de conscience'],
       traps: [
         { text: 'circulation', why: 'La liberté de circulation est un autre droit.' },
@@ -597,7 +628,7 @@ const laicite: Notion = {
     {
       ...ESPACE_NEUTRE,
       q: 'Quel mot désigne les pressions pour convertir quelqu’un, dont l’école protège les élèves ? (commence par « pro »)',
-      accepted: ['prosélytisme', 'proselytisme', 'le prosélytisme', 'prosélytismes'],
+      accepted: ['prosélytisme', 'proselytisme', 'le prosélytisme', 'le proselytisme', 'prosélytismes'],
       traps: [
         {
           text: 'protection',
@@ -643,7 +674,7 @@ const laicite: Notion = {
       ],
     },
     {
-      title: 'Une question au conseil de classe',
+      title: 'Une question en classe',
       lines: [
         'En classe, Lou demande : « La laïcité veut-elle dire que la religion est interdite en France ? »',
         'La professeure explique que l’État ne reconnaît aucun culte.',
@@ -710,7 +741,11 @@ const institutions: Notion = {
         { label: 'seulement dans la classe', why: 'Elle existe aussi dans la commune, le pays et au-delà.' },
         { label: 'seulement dans la commune', why: 'La commune n’est qu’une échelle parmi d’autres.' },
       ],
-      gap: ['À toutes les ', ', des représentants répondent à des besoins collectifs.', ['échelles', 'echelles']],
+      gap: [
+        'À toutes les ',
+        ', des représentants répondent à des besoins collectifs.',
+        ['échelles', 'echelles', 'niveaux'],
+      ],
       explain:
         'Classe, collège, commune, département, région, pays, Union européenne : chaque échelle a ses représentants.',
     },
@@ -762,7 +797,11 @@ const institutions: Notion = {
         { label: 'le groupe des employés de la mairie', why: 'Les employés ne sont pas des élus.' },
         { label: 'l’assemblée des élus de la région', why: 'C’est le conseil régional.' },
       ],
-      gap: ['Le conseil municipal est l’assemblée des élus représentant les ', ' de la commune.', ['habitants']],
+      gap: [
+        'Le conseil municipal est l’assemblée des élus représentant les ',
+        ' de la commune.',
+        ['habitants', 'citoyens', 'électeurs', 'electeurs'],
+      ],
       explain: 'Les conseillers municipaux représentent les habitants de la commune.',
     },
     {
@@ -786,7 +825,11 @@ const institutions: Notion = {
         { label: 'la région', why: 'La région gère les lycées.' },
         { label: 'la classe', why: 'Une classe n’est pas une collectivité.' },
       ],
-      gap: ['Les collèges sont construits et entretenus par le ', '.', ['département', 'departement']],
+      gap: [
+        'Les collèges sont construits et entretenus par le ',
+        '.',
+        ['département', 'departement', 'conseil départemental'],
+      ],
       explain: 'Les collèges relèvent du département.',
     },
     {
@@ -845,7 +888,7 @@ const institutions: Notion = {
       q: 'Pour combien de temps les conseillers départementaux sont-ils élus ?',
       a: 'six ans',
       wrong: [
-        { label: 'un an', why: 'Un an correspond à la durée d’une année scolaire, pas à ce mandat.' },
+        { label: 'un an', why: 'Ce mandat dure bien plus longtemps qu’une année.' },
         { label: 'dix ans', why: 'La durée du mandat est de six ans.' },
         { label: 'toute la vie', why: 'Un mandat est limité dans le temps.' },
       ],
@@ -869,7 +912,7 @@ const institutions: Notion = {
     {
       ...COLLEGES,
       q: 'Quelle collectivité territoriale s’occupe des bâtiments des collèges ?',
-      accepted: ['département', 'le département', 'departement', 'le conseil départemental'],
+      accepted: ['département', 'le département', 'departement', 'le departement', 'le conseil départemental'],
       traps: [
         { text: 'la commune', why: 'La commune gère les écoles maternelles et élémentaires.' },
         { text: 'la région', why: 'La région s’occupe des lycées.' },
@@ -889,7 +932,7 @@ const institutions: Notion = {
     {
       ...LYCEES,
       q: 'Quelle collectivité territoriale s’occupe des lycées ?',
-      accepted: ['région', 'la région', 'region', 'le conseil régional'],
+      accepted: ['région', 'la région', 'region', 'la region', 'le conseil régional'],
       traps: [
         { text: 'le département', why: 'Le département s’occupe des collèges.' },
         { text: 'la commune', why: 'La commune s’occupe des écoles primaires.' },
@@ -901,7 +944,7 @@ const institutions: Notion = {
     {
       title: 'Trois demandes d’habitants',
       lines: [
-        'Au collège, le toit du gymnase du collège fuit.',
+        'Au collège public, le toit d’une salle de classe fuit.',
         'Dans le village, des parents demandent des travaux à l’école maternelle publique.',
         'Une lycéenne signale que le toit de son lycée est abîmé.',
         'Chaque demande doit être envoyée à la bonne collectivité.',
@@ -1062,7 +1105,10 @@ const droitsEnfant: Notion = {
       q: 'Quel droit lié à l’identité la CIDE garantit-elle ?',
       a: 'avoir un nom et une nationalité',
       wrong: [
-        { label: 'changer de pays quand il le veut', why: 'Ce droit n’est pas celui énoncé.' },
+        {
+          label: 'changer de pays quand il le veut',
+          why: 'La Convention parle ici d’un nom, d’une nationalité et d’une identité, pas de voyager librement.',
+        },
         { label: 'choisir ses parents', why: 'Personne ne choisit ses parents.' },
         { label: 'garder un nom secret pour tous', why: 'Il s’agit d’avoir un nom reconnu.' },
       ],
@@ -1128,7 +1174,7 @@ const droitsEnfant: Notion = {
         { label: 'seuls les adultes ont des devoirs', why: 'Le lien vaut aussi pour les élèves.' },
         { label: 'droits et devoirs n’ont aucun rapport', why: 'Les devoirs découlent des droits.' },
       ],
-      gap: ['Des ', ' découlent des droits : respecter ceux des autres.', ['devoirs', 'devoir']],
+      gap: ['Des ', ' découlent des droits : respecter ceux des autres.', ['devoirs', 'devoir', 'obligations']],
       explain: 'Si tu as un droit, les autres l’ont aussi : tu as le devoir de le respecter.',
     },
   ],
@@ -1168,7 +1214,7 @@ const droitsEnfant: Notion = {
     {
       ...DEFINITION_ENFANT,
       q: 'Selon la CIDE, en dessous de quel âge est-on en général un enfant ? (un nombre)',
-      accepted: ['18', '18 ans', 'dix-huit', 'dix-huit ans'],
+      accepted: ['18', '18 ans', 'dix-huit', 'dix-huit ans', 'dix huit', 'dix huit ans'],
       traps: [
         { text: '16', why: 'La CIDE retient 18 ans.' },
         { text: '15', why: '15 ans est l’âge de la majorité numérique en France, pas la limite de la CIDE.' },

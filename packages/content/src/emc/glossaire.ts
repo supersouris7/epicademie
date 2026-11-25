@@ -731,4 +731,18 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'Ici : profiter d’une personne à son détriment, par exemple en la faisant travailler de force.',
     'La Convention protège l’enfant contre l’exploitation.',
   ),
+  t(
+    'ressortissant',
+    'ressortissant',
+    ['ressortissants', 'ressortissante'],
+    'Une personne qui a la nationalité d’un pays donné.',
+    'Un Italien qui vit en France est un ressortissant italien.',
+  ),
+  t(
+    'subventionner',
+    'subventionner',
+    ['subventionne'],
+    'Donner de l’argent public pour aider une activité.',
+    'La mairie peut subventionner un club de sport.',
+  ),
 ];
