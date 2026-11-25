@@ -495,7 +495,7 @@ function fridge(rng: Rng): QuestionDraft {
         noun,
         begin: yes ? 'There is' : 'There isn’t',
         small: yes ? 'some' : 'any',
-        why: `« ${noun}: ${yes ? 'yes' : 'no'} » : un nom qu’on ne compte pas.`,
+        why: `« ${noun}: ${yes ? 'yes' : 'no'} » : un nom qu’on ne compte pas, et ${yes ? 'il y en a : « some »' : 'il n’y en a pas : « n’t » puis « any »'}.`,
       };
     }
     const c = at(counted, countable++);
@@ -505,7 +505,7 @@ function fridge(rng: Rng): QuestionDraft {
         noun: c.one,
         begin: 'There is',
         small: c.article,
-        why: `« ${c.one}: 1 » : ${article(c)}`,
+        why: `« ${c.one}: 1 » : une seule chose. ${article(c)}`,
       };
     const n = kind === 'many' ? rng.int(2, 6) : 0;
     return {
@@ -513,7 +513,7 @@ function fridge(rng: Rng): QuestionDraft {
       noun: c.many,
       begin: n > 0 ? 'There are' : 'There aren’t',
       small: n > 0 ? 'some' : 'any',
-      why: `« ${c.many}: ${n} » : un pluriel.`,
+      why: `« ${c.many}: ${n} » : un pluriel, et ${n > 0 ? 'il y en a : « some »' : 'il n’y en a pas : « n’t » puis « any »'}.`,
     };
   });
   const asked = rng.shuffle(rows);
