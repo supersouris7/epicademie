@@ -34,4 +34,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'hcm2-seconde-guerre', version: 1, lot: 'hi-cm2-03', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'hcm2-construction-europeenne', version: 1, lot: 'hi-cm2-03', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'hcm2-lieux-memoire', version: 1, lot: 'hi-cm2-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'hcm2-frise-periodes', version: 1, lot: 'hi-cm2-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'hcm2-ordonner', version: 1, lot: 'hi-cm2-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'hcm2-durees', version: 1, lot: 'hi-cm2-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'hcm2-reperes-cycle3', version: 1, lot: 'hi-cm2-04', date: '2026-11-25', verdict: 'ok' },
 ];
