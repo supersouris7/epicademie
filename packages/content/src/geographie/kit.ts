@@ -99,6 +99,7 @@ const lookup = (src: string): string => {
   if (src.startsWith('geoconfluences-')) return 'Cherchons ce que dit le site de géographie Géoconfluences';
   if (src.startsWith('ademe-')) return 'Cherchons ce que dit l’ADEME';
   if (src.startsWith('ue-')) return 'Cherchons ce que dit l’Union européenne';
+  if (src.startsWith('bnf-')) return 'Cherchons dans la notice de la Bibliothèque nationale de France';
   if (src.startsWith('viepublique-')) return 'Cherchons ce que dit le site public vie-publique.fr';
   if (src === 'ecologie-lgv') return 'Cherchons ce que dit le ministère chargé des transports';
   if (src.startsWith('ecologie-')) return 'Cherchons ce que dit le ministère de la Transition écologique';
