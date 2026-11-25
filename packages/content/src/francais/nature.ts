@@ -1,7 +1,7 @@
 import { choice, num, traps as numTraps } from '../build.ts';
 import { r } from '../rational.ts';
 import type { Rng } from '../rng.ts';
-import type { Level, QuestionDraft, Rich, Skill, Trap } from '../types.ts';
+import type { Level, QuestionDraft, Skill } from '../types.ts';
 import {
   CATEGORIES,
   CONJONCTIONS,
@@ -43,7 +43,7 @@ import {
   type Possesseur,
   type PronomObjet,
 } from './nature.donnees.ts';
-import { at, document, pickN, same, textTrap } from './outils.ts';
+import { appariement, at, avecOuSansPoint, document, pickN, textTraps } from './outils.ts';
 
 /**
  * Chapitre « Nature des mots » (CM1). Programme de français du cycle 3 (BO du 17 avril 2025),
@@ -51,28 +51,6 @@ import { at, document, pickN, same, textTrap } from './outils.ts';
  */
 const programme = (id: string) =>
   `Programme de français du cycle 3 (BO du 17 avril 2025), CM1 — « ${faitNature(id).citation} »`;
-
-/** Une réponse écrite avec ou sans point final. */
-const avecOuSansPoint = (s: string) => [s, s.replace(/\.$/, '')];
-
-/** Pièges écrits, sans doublon ni écriture qui serait une réponse juste. */
-function textTraps(accepted: readonly string[], list: readonly (readonly [string, Rich])[]): Trap[] {
-  const out: Trap[] = [];
-  const seen = [...accepted];
-  for (const [text, why] of list) {
-    if (seen.some((s) => same(s, text))) continue;
-    seen.push(text);
-    out.push(textTrap(text, why));
-  }
-  return out;
-}
-
-/** Colonne de droite mélangée (jamais déjà en face) et paires attendues. */
-function appariement(rng: Rng, droite: readonly string[]) {
-  let order = rng.shuffle(droite.map((_, i) => i));
-  if (order.every((v, i) => v === i)) order = [...order.slice(1), at(order, 0)];
-  return { right: order.map((i) => at(droite, i)), pairs: droite.map((_, i) => order.indexOf(i)) };
-}
 
 /** Trois lignes dont une au moins compte pour la question. */
 function troisLignes<T>(rng: Rng, lignes: readonly T[], compte: (l: T) => number): T[] {

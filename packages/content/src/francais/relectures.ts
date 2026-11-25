@@ -69,4 +69,9 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm2-cod-coi', version: 1, lot: 'fr-cm2-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm2-attribut-ou-objet', version: 1, lot: 'fr-cm2-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm2-circonstanciels-temps-lieu-cause', version: 1, lot: 'fr-cm2-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-prepositions', version: 1, lot: 'fr-cm2-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-conjonctions-subordination', version: 1, lot: 'fr-cm2-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-pronoms-complements', version: 1, lot: 'fr-cm2-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-variations-pronom', version: 1, lot: 'fr-cm2-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-mots-variables', version: 1, lot: 'fr-cm2-02', date: '2026-11-25', verdict: 'ok' },
 ];

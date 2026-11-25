@@ -41,4 +41,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'hcm2-ordonner', version: 1, lot: 'hi-cm2-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'hcm2-durees', version: 1, lot: 'hi-cm2-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'hcm2-reperes-cycle3', version: 1, lot: 'hi-cm2-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'h6-cites-grecques', version: 1, lot: 'hi-6e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'h6-rome-mythe-histoire', version: 1, lot: 'hi-6e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'h6-monotheisme-juif', version: 1, lot: 'hi-6e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'h6-citoyennete-athenes', version: 1, lot: 'hi-6e-02', date: '2026-11-25', verdict: 'ok' },
 ];

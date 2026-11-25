@@ -26,6 +26,9 @@ export const lowerFirst = (s: string): string => s.charAt(0).toLowerCase() + s.s
 /** Une écriture en minuscules, sans doublon, pour comparer des propositions. */
 export const same = (a: string, b: string): boolean => a.toLowerCase() === b.toLowerCase();
 
+/** Une réponse écrite avec ou sans point final. */
+export const avecOuSansPoint = (s: string) => [s, s.replace(/\.$/, '')];
+
 /** Pièges écrits, sans doublon ni écriture qui serait une réponse juste. */
 export function textTraps(accepted: readonly string[], list: readonly (readonly [string, Rich])[]): Trap[] {
   const out: Trap[] = [];
@@ -36,4 +39,11 @@ export function textTraps(accepted: readonly string[], list: readonly (readonly 
     out.push(textTrap(text, why));
   }
   return out;
+}
+
+/** Colonne de droite mélangée (jamais déjà en face) et paires attendues. */
+export function appariement(rng: Rng, droite: readonly string[]) {
+  let order = rng.shuffle(droite.map((_, i) => i));
+  if (order.every((v, i) => v === i)) order = [...order.slice(1), at(order, 0)];
+  return { right: order.map((i) => at(droite, i)), pairs: droite.map((_, i) => order.indexOf(i)) };
 }
