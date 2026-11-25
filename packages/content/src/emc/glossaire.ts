@@ -889,7 +889,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'numero-3018',
     '3018',
     ['le 3018'],
-    'Le numéro national d’aide aux jeunes victimes de cyberharcèlement et à leurs parents.',
+    'Le numéro national unique pour alerter en cas de harcèlement et de cyberharcèlement.',
     'Elle appelle le 3018 avec sa mère.',
   ),
   t(
@@ -1159,11 +1159,11 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'Le DSA oblige les plateformes à proposer un outil de signalement.',
   ),
   t(
-    'numero-3020',
-    '3020',
-    ['le 3020'],
-    'Une ligne d’écoute contre le harcèlement.',
-    'Il appelle le 3020 avec son père.',
+    'desamorcer',
+    'désamorcer',
+    ['desamorcer', 'désamorce'],
+    'Faire retomber la tension pour empêcher qu’une situation s’aggrave.',
+    'En soutenant leur camarade, les témoins aident à désamorcer le harcèlement.',
   ),
   t(
     'plateforme',

@@ -599,6 +599,14 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-25',
   },
   {
+    id: 'education-politique-harcelement',
+    title: 'Politique de lutte contre le harcèlement à l’École',
+    publisher: 'Ministère de l’Éducation nationale',
+    url: 'https://www.education.gouv.fr/non-au-harcelement/politique-de-lutte-contre-le-harcelement-l-ecole-289530',
+    textDate: '2026-01',
+    consultedOn: '2026-11-25',
+  },
+  {
     id: 'senat-rapport-harcelement',
     title: 'Rapport n° 323 (2021-2022) sur la proposition de loi visant à combattre le harcèlement scolaire',
     publisher: 'Sénat',

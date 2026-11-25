@@ -29,6 +29,7 @@ const vpDsa = cite('vie-publique-dsa', 'le site Vie publique');
 const vpHarcelement = cite('vie-publique-harcelement-scolaire', 'le site Vie publique');
 const senatHaine = cite('senat-rapport-haine-2019', 'un rapport du Sénat');
 const senatHarcelement = cite('senat-rapport-harcelement', 'un rapport du Sénat');
+const education = cite('education-politique-harcelement', 'le ministère de l’Éducation nationale');
 
 type Wrong = readonly [label: string, why: string];
 const wrongs = (list: readonly Wrong[]) => list.map(([label, why]) => ({ label, why }));
@@ -147,8 +148,8 @@ const PHAROS = senatHaine(
 const AGIR_TEMOINS = senatHarcelement(
   'Agir sur les témoins est important afin de désamorcer une situation de harcèlement',
 );
-const LIGNES = vpHarcelement(
-  '3020 contre le harcèlement et plus récemment le 3018 spécifiquement créé pour les violences numériques',
+const UNIQUE = education(
+  'Le numéro d’alerte 3018, opéré par l’association e-Enfance, est le numéro national unique pour alerter en cas de situation de harcèlement et de cyberharcèlement.',
 );
 const NUMERO = vpHarcelement(
   'le numéro national d’assistance 3018 pour les jeunes victimes de cyberviolence et de cyberharcèlement et leurs parents',
@@ -704,13 +705,13 @@ const loi: Notion = {
 const reagir: Notion = {
   id: 'em5-haine-reagir',
   title: 'Face à la haine en ligne : réagir sans rester seul',
-  hint: 'Repense au mémo : ce qu’il ne faut pas relayer, le rôle du témoin, les preuves et les numéros d’aide.',
+  hint: 'Repense au mémo : ce qu’il ne faut pas relayer, le rôle du témoin, les preuves et le numéro d’aide.',
   programme: PROGRAMME,
   credit: CREDIT,
   memo: [
     'Face à un contenu haineux, ne le **rediffuse** pas : le relayer porte aussi atteinte aux personnes.',
-    'Un **témoin** peut aider : alerter, **signaler**, soutenir la victime. Garde des preuves, par exemple une capture d’écran et l’adresse de la page.',
-    'Le **3018** aide les jeunes victimes de **cyberviolence** et leurs parents ; le **3020** concerne le harcèlement. Parle aussi à un adulte de confiance.',
+    'Un **témoin** peut aider : alerter, **signaler**, soutenir la victime. Garde des preuves, par exemple une capture d’écran et l’adresse de la page. Agir sur les témoins aide à **désamorcer** un harcèlement, c’est-à-dire à faire retomber la tension.',
+    'Le **3018** est le numéro national unique pour alerter en cas de harcèlement et de cyberharcèlement ; il aide les jeunes victimes de **cyberviolence** et leurs parents. Parle aussi à un adulte de confiance.',
   ],
   faits: [
     fait(
@@ -735,7 +736,11 @@ const reagir: Notion = {
         ['encourager l’auteur', 'Encourager aggrave les faits.'],
         ['filmer pour amuser les autres', 'Diffuser fait du tort à la victime.'],
       ],
-      ['Le témoin comprend l’importance de ', ' une situation de discrimination.', ['signaler']],
+      [
+        'Le témoin comprend l’importance de ',
+        ' une situation de discrimination.',
+        ['signaler', 'dénoncer', 'denoncer'],
+      ],
       'Signaler permet à des personnes compétentes d’intervenir.',
     ),
     fait(
@@ -746,7 +751,22 @@ const reagir: Notion = {
         ['pour que plus de personnes regardent', 'Il s’agit de faire cesser, pas d’agrandir le public.'],
         ['pour garder les faits secrets', 'Le secret laisse le harcèlement continuer.'],
       ],
-      ['Agir sur les témoins aide à ', ' une situation de harcèlement.', ['désamorcer', 'desamorcer']],
+      [
+        'Agir sur les témoins aide à ',
+        ' une situation de harcèlement.',
+        [
+          'désamorcer',
+          'desamorcer',
+          'arrêter',
+          'arreter',
+          'stopper',
+          'faire cesser',
+          'calmer',
+          'apaiser',
+          'résoudre',
+          'resoudre',
+        ],
+      ],
       'Quand les témoins cessent d’approuver ou de se taire, le harcèlement perd son public.',
     ),
     fait(
@@ -762,18 +782,22 @@ const reagir: Notion = {
     ),
     expert(
       fait(
-        LIGNES,
+        UNIQUE,
         [
-          'Quelle ligne d’écoute contre le harcèlement est citée à côté du 3018, consacré aux violences numériques ?',
-          'le 3020',
+          'Pour quelles situations le 3018, numéro national unique, permet-il d’alerter ?',
+          'le harcèlement et le cyberharcèlement',
         ],
         [
-          ['le 1944', '1944 est une année, pas une ligne d’écoute.'],
-          ['le 3000', 'Ce n’est pas le numéro cité.'],
-          ['le 18', 'Ce n’est pas une ligne d’écoute contre le harcèlement citée ici.'],
+          ['seulement les violences en ligne', 'Le 3018 concerne aussi le harcèlement hors ligne.'],
+          ['les incendies', 'Le 3018 est consacré au harcèlement, pas au feu.'],
+          ['les pannes de connexion', 'Une panne n’est pas une situation de harcèlement.'],
         ],
-        ['La ligne d’écoute contre le harcèlement est le ', '.', ['3020', '30 20']],
-        'Retiens les deux : 3020 contre le harcèlement, 3018 pour les violences numériques.',
+        [
+          'Le 3018 permet d’alerter en cas de harcèlement et de ',
+          '.',
+          ['cyberharcèlement', 'cyberharcelement', 'cyber-harcèlement', 'cyber-harcelement'],
+        ],
+        'Un seul numéro à retenir, que le harcèlement ait lieu en ligne ou non.',
       ),
     ),
     fait(
@@ -823,25 +847,25 @@ const reagir: Notion = {
   paires3: [
     ['Témoin', 'Voit les faits et peut alerter'],
     ['Capture d’écran', 'Garde une preuve'],
-    ['3018', 'Aide face aux violences numériques'],
+    ['3018', 'Aide face au harcèlement et aux violences numériques'],
   ],
   paires5: [
-    ['3018', 'Ligne créée pour les violences numériques'],
-    ['3020', 'Ligne contre le harcèlement'],
+    ['3018', 'Numéro contre le harcèlement et les violences numériques'],
+    ['Désamorcer', 'Faire retomber la tension'],
     ['Capture d’écran', 'Trace d’un contenu publié'],
     ['Rediffusion', 'Geste qui aggrave l’atteinte'],
     ['Témoin', 'Personne qui voit et peut signaler'],
   ],
   libres: [
     libre(
-      NUMERO,
-      'quel numéro à quatre chiffres aide les jeunes victimes de cyberviolence et leurs parents ?',
+      UNIQUE,
+      'quel numéro à quatre chiffres permet d’alerter en cas de harcèlement et de cyberharcèlement ?',
       ['3018', 'le 3018', '30 18'],
       [
-        ['3020', 'Le 3020 est la ligne contre le harcèlement.'],
-        ['2018', '2018 n’est pas le numéro d’aide.'],
+        ['119', 'Le numéro cherché a quatre chiffres : ce n’est pas le 119.'],
+        ['2018', '2018 ressemble au bon numéro, mais il commence par un autre chiffre.'],
       ],
-      'C’est le 3018.',
+      'C’est le 3018 : un seul numéro national, que le harcèlement ait lieu en ligne ou non.',
     ),
     libre(
       TEMOIN,
