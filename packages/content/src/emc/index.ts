@@ -1,5 +1,6 @@
 import type { Chapter } from '../types.ts';
 import { CIVISME_NUMERIQUE_SKILLS } from './civisme-numerique.ts';
+import { DISCOURS_HAINE_SKILLS } from './discours-haine.ts';
 import { EGALITE_FRATERNITE_SKILLS } from './egalite-fraternite.ts';
 import { FAIRE_SOCIETE_SKILLS } from './faire-societe.ts';
 import { SINFORMER_SKILLS } from './sinformer-en-ligne.ts';
@@ -67,5 +68,13 @@ export const EMC_CHAPTERS: readonly Chapter[] = [
     domain: 'emc',
     title: 'Égalité, fraternité, solidarité',
     skills: EGALITE_FRATERNITE_SKILLS,
+  },
+  {
+    id: 'em5-discours-haine',
+    subject: 'histoire',
+    grade: '5e',
+    domain: 'emc',
+    title: 'Discours de haine',
+    skills: DISCOURS_HAINE_SKILLS,
   },
 ];
