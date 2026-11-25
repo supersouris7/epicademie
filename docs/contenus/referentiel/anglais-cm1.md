@@ -15,7 +15,7 @@
 | `an-cm1-01` | Se présenter et saluer    | saluer et prendre congé ; What's your name? ; How old are you? ; nombres de 0 à 31 ; Where do you live?              | couverte, en relecture |
 | `an-cm1-02` | Be et possessifs          | be au présent ; pronoms sujets ; adjectifs possessifs ; questions avec be                                            | couverte, en relecture |
 | `an-cm1-03` | Le temps qui passe        | couleurs ; jours ; mois ; saisons ; la date ; la météo                                                               | couverte, en relecture |
-| `an-cm1-04` | Famille, corps, vêtements | la famille ; have got ; le corps ; les vêtements ; le génitif 's                                                     | absente                |
+| `an-cm1-04` | Famille, corps, vêtements | la famille ; have got ; le corps ; les vêtements ; le génitif 's                                                     | couverte, en relecture |
 | `an-cm1-05` | Goûts et capacités        | I like / I don't like ; can / can't ; sports et loisirs ; animaux                                                    | absente                |
 | `an-cm1-06` | Écouter et comprendre     | nombres entendus ; consignes de classe (impératif) ; mots-clés d'une phrase ; repères culturels (Royaume-Uni, fêtes) | absente                |
 
