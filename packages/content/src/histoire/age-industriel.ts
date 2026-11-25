@@ -14,8 +14,8 @@ const energies: Notion = {
   hint: 'Relis le mémo : cherche les deux grandes énergies, les machines et leurs inventeurs.',
   memo: [
     'Entre dans l’**âge industriel** ! Pour faire tourner les **machines**, il faut de l’**énergie** : d’abord le **charbon**, puis le **pétrole**.',
-    'La **machine à vapeur** utilise la vapeur d’eau pour produire un mouvement. Denis Papin en donne la première description en 1687. L’Écossais James Watt l’améliore au XVIIIe siècle : elle devient le **pilier** de la révolution industrielle.',
-    'Puis arrivent d’autres inventions : le **moteur** de Lenoir en 1860 et une automobile à essence en 1884. Ces changements prennent beaucoup de temps.',
+    'La **machine à vapeur** utilise la vapeur d’eau pour produire un mouvement. Denis Papin en donne la première description en 1687. L’Écossais James Watt l’améliore au XVIIIe siècle et dépose un **brevet** en 1769. Elle devient le **pilier** de la révolution industrielle.',
+    'Puis arrivent d’autres inventions : le **moteur** de Lenoir en 1860 et, en 1884, l’une des premières automobiles à essence. Ces changements prennent beaucoup de temps.',
   ],
   faits: [
     {
@@ -23,11 +23,11 @@ const energies: Notion = {
       q: 'Quelle est la première grande énergie de l’âge industriel ?',
       a: 'le charbon',
       wrong: [
-        { label: 'l’énergie des fusées', why: 'Les fusées spatiales viennent bien plus tard.' },
         {
-          label: 'l’énergie des piles de télécommande',
-          why: 'Une petite pile ne peut pas faire tourner les grandes machines.',
+          label: 'l’électricité',
+          why: 'L’électricité n’est pas la première grande énergie citée : cherche une roche noire.',
         },
+        { label: 'l’énergie nucléaire', why: 'L’énergie nucléaire vient bien plus tard, au XXe siècle.' },
         { label: 'le pétrole', why: 'Le pétrole est important aussi, mais il vient après.' },
       ],
       gap: ['L’âge industriel utilise d’abord le ', ', puis le pétrole.', ['charbon']],
@@ -38,13 +38,10 @@ const energies: Notion = {
       q: 'Après le charbon, quelle grande énergie sert à l’âge industriel ?',
       a: 'le pétrole',
       wrong: [
+        { label: 'le bois', why: 'Le bois est utilisé depuis très longtemps : il ne vient pas après le charbon.' },
         {
-          label: 'le bois des cabanes',
-          why: 'Le bois est utilisé depuis très longtemps : il ne vient pas après le charbon.',
-        },
-        {
-          label: 'la force des chevaliers',
-          why: 'La force d’une personne n’est pas une des grandes énergies de cette époque.',
+          label: 'la force des chevaux',
+          why: 'On utilise la force des chevaux depuis bien avant le charbon des usines.',
         },
         { label: 'le vent des moulins', why: 'Les moulins à vent sont bien plus anciens que l’âge industriel.' },
       ],
@@ -56,8 +53,8 @@ const energies: Notion = {
       q: 'Qui donne, en 1687, la première description d’une machine à vapeur ?',
       a: 'Denis Papin',
       wrong: [
-        { label: 'Jules Ferry', why: 'Jules Ferry est connu pour les lois sur l’école.' },
-        { label: 'Louis XIV', why: 'Louis XIV est un roi, pas l’auteur de cette description.' },
+        { label: 'Louis XIV', why: 'Louis XIV est le roi de cette époque, pas l’auteur de cette description.' },
+        { label: 'Étienne Lenoir', why: 'Lenoir invente un moteur bien plus tard, en 1860.' },
         { label: 'James Watt', why: 'James Watt améliore la machine bien plus tard, au XVIIIe siècle.' },
       ],
       gap: ['En 1687, Denis ', ' décrit une machine à vapeur.', ['Papin', 'papin']],
@@ -69,7 +66,7 @@ const energies: Notion = {
       a: 'James Watt',
       wrong: [
         { label: 'Napoléon Bonaparte', why: 'Napoléon est un général devenu empereur.' },
-        { label: 'Jules Ferry', why: 'Jules Ferry s’occupe de l’école, pas des machines.' },
+        { label: 'Étienne Lenoir', why: 'Lenoir invente un moteur en 1860, près d’un siècle plus tard.' },
         { label: 'Denis Papin', why: 'Papin travaille avant : il décrit la machine en 1687.' },
       ],
       gap: ['L’ingénieur écossais James ', ' dépose un brevet en 1769.', ['Watt', 'watt']],
@@ -80,35 +77,38 @@ const energies: Notion = {
       q: 'Quelle machine est le pilier de la révolution industrielle ?',
       a: 'la machine à vapeur',
       wrong: [
-        { label: 'la machine à écrire', why: 'La machine à écrire sert à rédiger des textes.' },
-        { label: 'la console de jeux', why: 'La console de jeux est une invention bien plus récente.' },
         { label: 'le moulin à eau', why: 'Le moulin à eau existe depuis bien avant l’âge industriel.' },
+        { label: 'la machine à écrire', why: 'La machine à écrire sert à rédiger des textes.' },
+        {
+          label: 'la machine à coudre',
+          why: 'La machine à coudre est la vedette d’une exposition, mais elle n’est pas ce pilier.',
+        },
       ],
       gap: ['La machine à ', ' est le pilier de la révolution industrielle.', ['vapeur']],
       explain: 'La machine à vapeur est au cœur de la révolution industrielle.',
     },
     {
       ...P.essence,
-      q: 'En quelle année la première automobile à essence est-elle construite ?',
+      q: 'En quelle année Édouard Delamare-Debouteville construit-il son automobile à essence, l’une des premières ?',
       a: '1884',
       wrong: [
-        { label: '1789', why: '1789 est le début de la Révolution : pas encore d’automobile à essence.' },
         { label: '800', why: 'En 800, Charlemagne devient empereur.' },
         { label: '1687', why: '1687, c’est la machine à vapeur décrite par Papin.' },
+        { label: '1860', why: '1860, c’est le moteur de Lenoir : l’automobile à essence vient après.' },
       ],
-      gap: ['La première automobile à essence est construite en ', '.', ['1884']],
-      explain: 'En 1884, Édouard Delamare-Debouteville construit la première automobile à essence.',
+      gap: ['Delamare-Debouteville construit son automobile à essence en ', '.', ['1884']],
+      explain: 'En 1884, Édouard Delamare-Debouteville construit une automobile à essence, l’une des premières.',
     },
     {
       ...P.duree,
       q: 'L’industrialisation se fait-elle d’un seul coup ?',
       a: 'non, elle s’inscrit dans la durée',
       wrong: [
-        { label: 'oui, en une seule journée', why: 'Un si grand changement ne peut pas se faire en un jour.' },
-        { label: 'oui, pendant une seule fête', why: 'Une fête ne transforme pas les usines.' },
         { label: 'oui, en une seule année', why: 'Le changement dure bien plus qu’une année.' },
+        { label: 'oui, dès la première machine inventée', why: 'Une seule machine ne transforme pas tout d’un coup.' },
+        { label: 'non, elle ne touche qu’un seul métier', why: 'Elle touche tous les secteurs de la production.' },
       ],
-      gap: ['L’industrialisation est un processus qui s’inscrit dans la ', '.', ['durée', 'duree']],
+      gap: ['L’industrialisation est un long changement : elle s’inscrit dans la ', '.', ['durée', 'duree']],
       explain: 'C’est un changement long, qui touche tous les secteurs de la production.',
     },
   ],
@@ -128,7 +128,7 @@ const energies: Notion = {
     { ...P.papin, label: 'Papin décrit une machine à vapeur', date: '1687' },
     { ...P.watt, label: 'Watt dépose un brevet', date: '1769' },
     { ...P.lenoir, label: 'Lenoir invente un moteur', date: '1860' },
-    { ...P.essence, label: 'La première automobile à essence est construite', date: '1884' },
+    { ...P.essence, label: 'Delamare-Debouteville construit une automobile à essence', date: '1884' },
   ],
   libres: [
     {
@@ -187,8 +187,8 @@ const energies: Notion = {
           q: 'Quelle machine est la vedette de l’exposition ?',
           a: 'une machine à coudre',
           wrong: [
-            { label: 'une machine à laver', why: 'Le texte ne parle pas de lavage : relis la troisième ligne.' },
-            { label: 'une machine à voyager dans le temps', why: 'Cette machine n’existe pas dans le texte.' },
+            { label: 'une automobile à essence', why: 'La troisième ligne nomme une autre machine.' },
+            { label: 'une machine à vapeur', why: 'La vapeur n’est pas citée : relis la troisième ligne.' },
           ],
           explain: 'La troisième ligne cite la machine à coudre.',
         },
@@ -197,8 +197,8 @@ const energies: Notion = {
           q: 'Qu’est-ce qui triomphe dans cette exposition ?',
           a: 'la machine',
           wrong: [
-            { label: 'le cheval de course', why: 'Le texte parle d’une galerie réservée à autre chose.' },
-            { label: 'la couronne du roi', why: 'Aucune couronne dans ce texte.' },
+            { label: 'le travail fait à la main', why: 'La galerie montre des machines : relis la deuxième ligne.' },
+            { label: 'le moulin à vent', why: 'Aucun moulin dans ce texte.' },
           ],
           explain: 'La deuxième ligne dit que les machines triomphent.',
         },
@@ -218,18 +218,18 @@ const energies: Notion = {
           q: 'Avec quoi marchent les machines du chantier ?',
           a: 'à la vapeur',
           wrong: [
-            { label: 'à l’énergie solaire', why: 'Le texte ne parle pas du soleil.' },
-            { label: 'avec des piles', why: 'Le texte ne parle pas de piles.' },
+            { label: 'au pétrole', why: 'Le texte ne parle pas de pétrole : relis la troisième ligne.' },
+            { label: 'à la force des chevaux', why: 'Aucun cheval ne fait marcher les machines dans ce texte.' },
           ],
           explain: 'La troisième ligne dit que les machines marchent à la vapeur.',
         },
         {
           ...P.navigation,
-          q: 'Quel transport utilise lui aussi la vapeur ?',
+          q: 'Dans ce texte, quel transport utilise lui aussi la vapeur ?',
           a: 'les bateaux',
           wrong: [
-            { label: 'les fusées', why: 'Aucune fusée dans ce texte.' },
-            { label: 'les vélos', why: 'Le texte ne parle pas de vélos.' },
+            { label: 'les automobiles', why: 'Le texte ne parle pas d’automobiles.' },
+            { label: 'les charrettes', why: 'Le texte ne parle pas de charrettes.' },
           ],
           explain: 'La dernière ligne montre la navigation à vapeur.',
         },
