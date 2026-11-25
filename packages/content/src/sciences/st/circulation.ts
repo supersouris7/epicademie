@@ -26,19 +26,41 @@ const PARTIES: Record<Cle, Partie> = {
     nom: 'une artère',
     role: 'part du cœur et distribue le sang dans le corps',
     why: 'Une artère part du cœur et distribue le sang dans toutes les parties du corps.',
-    accepte: ['artère', 'artere', 'une artère', 'l’artère', 'artères', 'les artères'],
+    accepte: [
+      'artère',
+      'artere',
+      'une artère',
+      'une artere',
+      'l’artère',
+      'l’artere',
+      'artères',
+      'arteres',
+      'les artères',
+      'les arteres',
+      'des artères',
+    ],
   },
   capillaire: {
     nom: 'un capillaire',
-    role: 'très fin, permet les échanges entre le sang et les cellules',
+    role: 'très fin, permet les échanges entre le sang et le corps',
     why: 'Un capillaire est très fin : c’est là que se font les échanges entre le sang et le corps.',
-    accepte: ['capillaire', 'un capillaire', 'le capillaire', 'capillaires', 'les capillaires'],
+    accepte: [
+      'capillaire',
+      'un capillaire',
+      'le capillaire',
+      'capillaires',
+      'les capillaires',
+      'des capillaires',
+      'capillaire sanguin',
+      'capillaires sanguins',
+      'les capillaires sanguins',
+    ],
   },
   veine: {
     nom: 'une veine',
     role: 'ramène le sang vers le cœur',
     why: 'Une veine ramène le sang vers le cœur.',
-    accepte: ['veine', 'une veine', 'la veine', 'veines', 'les veines'],
+    accepte: ['veine', 'une veine', 'la veine', 'veines', 'les veines', 'des veines'],
   },
 };
 const CLES = Object.keys(PARTIES) as Cle[];
@@ -58,18 +80,21 @@ const niveau1 = (rng: Rng): QuestionDraft => {
       bon: 'le cœur',
       why: 'Le cœur est le principal moteur de la circulation du sang.',
       faux: ['les cheveux', 'les ongles'],
+      hint: 'Cherche ce qui bat dans ta poitrine, jour et nuit.',
     },
     {
       q: `Qu’est-ce qui apporte ${rng.pick(ORGANES)} ce qu’il faut pour fonctionner ?`,
       bon: 'le sang',
-      why: 'Le sang a un rôle nourricier : il approvisionne les organes.',
+      why: 'Le sang approvisionne les organes : il leur apporte ce qu’il faut.',
       faux: ['la salive', 'les larmes'],
+      hint: 'Pense au liquide qui voyage dans tout le corps.',
     },
     {
       q: 'Dans quoi le sang circule-t-il ?',
       bon: 'dans des vaisseaux sanguins',
-      why: 'Le sang circule dans un système fermé de vaisseaux.',
+      why: 'Le sang reste enfermé dans des tuyaux du corps : les vaisseaux sanguins.',
       faux: ['dans l’œsophage', 'sur la peau'],
+      hint: 'Pense à des tuyaux à l’intérieur du corps.',
     },
   ]);
   const { answer, traps } = choice(
@@ -81,8 +106,8 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     prompt: cas.q,
     answer,
     traps,
-    hint: 'Cherche ce qui travaille à l’intérieur du corps, jour et nuit.',
-    steps: ['On cherche qui travaille pour la circulation.', cas.why, `La réponse est **${cas.bon}**.`],
+    hint: cas.hint,
+    steps: ['On pense au voyage du sang dans le corps.', cas.why, `La réponse est **${cas.bon}**.`],
     targetSeconds: 20,
   };
 };
@@ -211,39 +236,46 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       prompt: `Dans ${organe}, comment s’appellent les vaisseaux très fins où se font les échanges avec le sang ? Écris un mot.`,
       answer,
       traps,
-      hint: 'Ces vaisseaux sont fins comme des cheveux. Le mot commence par « cap ».',
+      hint: 'Ce sont les plus petits vaisseaux, entre les artères et les veines.',
       steps: ['On cherche les vaisseaux les plus fins.', p.why, 'La réponse est le **capillaire**.'],
       targetSeconds: 40,
     };
   }
-  const bon = 'Du sang, qui y circule dans des vaisseaux';
-  const organe = rng.pick(['un muscle du bras', 'le cerveau', 'l’intestin']);
+  const bon = 'Le sang, qui y circule dans des vaisseaux';
+  const organe = rng.pick(['un muscle du bras', 'le cerveau', 'la peau du pied']);
   const { answer, traps } = choice(rng, bon, [
     {
-      label: 'Des aliments entiers, par l’œsophage',
-      why: 'L’œsophage mène seulement à l’estomac. Les organes sont approvisionnés par le sang.',
+      label: 'Les aliments, qui y vont tout droit depuis l’estomac',
+      why: 'Aucun conduit ne mène les aliments de l’estomac à cet organe. C’est le sang qui l’approvisionne.',
     },
     {
-      label: 'De la salive, par des veines',
-      why: 'La salive reste dans le tube digestif. C’est le sang qui approvisionne.',
+      label: 'Le sang, qui reste immobile à côté de lui',
+      why: 'Le sang ne reste pas sur place : il circule, poussé par le cœur.',
     },
-    { label: 'Rien : un organe n’a besoin de rien', why: 'Chaque organe doit être approvisionné pour fonctionner.' },
+    {
+      label: 'La salive, qui y circule dans des vaisseaux',
+      why: 'La salive mouille la bouche. C’est le sang qui circule dans les vaisseaux.',
+    },
   ]);
   return {
     prompt: `Piège possible ! Qu’est-ce qui approvisionne ${organe} ?`,
     answer,
     traps,
-    hint: 'Quel liquide fait le tour du corps ?',
-    steps: ['La circulation du sang approvisionne les organes.', `La réponse est : **${bon}**.`],
+    hint: 'Demande-toi quel liquide circule, et par où il passe.',
+    steps: [
+      'Le cœur pousse le sang dans les vaisseaux.',
+      'La circulation du sang approvisionne ainsi chaque organe.',
+      `La réponse est : **${bon}**.`,
+    ],
     targetSeconds: 35,
   };
 };
 
 const niveau5 = (rng: Rng): QuestionDraft => {
   const organe = rng.pick([
-    { nom: 'un muscle de la jambe', court: 'le muscle' },
-    { nom: 'le cerveau', court: 'le cerveau' },
-    { nom: 'un muscle du bras', court: 'le muscle du bras' },
+    { nom: 'un muscle de la jambe', court: 'le muscle', a: 'au muscle' },
+    { nom: 'le cerveau', court: 'le cerveau', a: 'au cerveau' },
+    { nom: 'un muscle du bras', court: 'le muscle du bras', a: 'au muscle du bras' },
   ]);
   const figure = {
     kind: 'document' as const,
@@ -252,16 +284,16 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       'Après le repas, une partie des aliments digérés passe de l’intestin grêle dans le sang.',
       'Un moteur pousse le sang.',
       `Le sang suit d’abord un gros vaisseau qui part de ce moteur vers ${organe.court}.`,
-      'Là, dans des vaisseaux très fins, le sang échange avec les cellules.',
+      `Là, dans des vaisseaux très fins, le sang fait des échanges avec ${organe.court}.`,
       'Le sang repart ensuite par un autre vaisseau, vers le moteur.',
     ],
   };
   const cas = rng.pick([
-    { ligne: 2, q: 'Quel est le moteur de la ligne 2 ?', cle: 'coeur' as Cle },
+    { ligne: 2, q: 'Quel organe est le moteur de la ligne 2 ?', cle: 'coeur' as Cle },
     { ligne: 3, q: 'Quel vaisseau est décrit à la ligne 3 ?', cle: 'artere' as Cle },
-    { ligne: 4, q: 'Quels vaisseaux sont décrits à la ligne 4 ?', cle: 'capillaire' as Cle },
+    { ligne: 4, q: 'Quel type de vaisseau est décrit à la ligne 4 ?', cle: 'capillaire' as Cle },
     { ligne: 5, q: 'Quel vaisseau est décrit à la ligne 5 ?', cle: 'veine' as Cle },
-    { ligne: 1, q: `D’après le texte, d’où vient ce que le sang porte à ${organe.court} après le repas ?`, cle: null },
+    { ligne: 1, q: `D’après le texte, d’où vient ce que le sang porte ${organe.a} après le repas ?`, cle: null },
   ]);
   const cle = cas.cle;
   const bon = cle ? PARTIES[cle].nom : 'des aliments digérés, par l’intestin grêle';
@@ -271,9 +303,12 @@ const niveau5 = (rng: Rng): QuestionDraft => {
   const faux = cle
     ? autres(cle)
     : [
-        { label: 'des cheveux', why },
-        { label: 'de la salive restée dans la bouche', why },
-        { label: 'du cœur lui-même, qui fabrique les aliments', why },
+        { label: 'des cheveux', why: `Les cheveux n’apportent rien au sang. ${why}` },
+        { label: 'de la salive restée dans la bouche', why: `Le texte ne parle pas de la salive. ${why}` },
+        {
+          label: 'du cœur lui-même, qui fabrique les aliments',
+          why: `Le cœur pousse le sang, sans fabriquer d’aliments. ${why}`,
+        },
       ];
   const { answer, traps } = choice(rng, bon, faux);
   return {
@@ -296,7 +331,7 @@ export const circulation: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'La **circulation sanguine** approvisionne chaque **organe**. Le cœur pousse le sang dans des **vaisseaux sanguins**.',
+      'La **circulation sanguine** approvisionne chaque **organe** : elle lui apporte ce qu’il faut. Le cœur pousse le sang dans des **vaisseaux sanguins**.',
       'Les **artères** partent du cœur, les **veines** y reviennent. Entre les deux, les **capillaires**, très fins, permettent les échanges. Aller par artère, retour par veine !',
     ],
     source: `${PROGRAMME} : « Identifier le rôle de la circulation sanguine dans l’approvisionnement des organes ». Académie française, « capillaire » : « permettent les échanges nutritifs et gazeux entre le sang et les cellules ».`,
