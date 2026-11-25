@@ -171,8 +171,10 @@ ou des textes écrits pour l'exercice.
 
 ## 7. Outils du moteur (lot mo-03)
 
-- **Sources** : `packages/content/src/sources.ts` (registre, liste des domaines autorisés) ; une notion cite ses
-  sources par identifiant dans `lesson.sources` (obligatoire pour les notions à 5 niveaux).
+- **Sources** : `<matiere>/sources.ts` (sciences : `sciences/<st|svt|techno>/sources.ts`) ; celles de plusieurs matières
+  dans `sources-communes.ts`, les fabriques partagées (`tlfi`, `academie`) dans `sources-outils.ts`. `sources.ts` les
+  réunit (registre et liste des domaines autorisés) ; les identifiants sont uniques dans tout le registre. Une notion
+  cite ses sources par identifiant dans `lesson.sources` (obligatoire pour les notions à 5 niveaux).
 - **Relectures** : `<matiere>/relectures.ts`, une ligne `{ skillId, version, lot, date, verdict }` par relecture.
 - **Glossaire** : `<matiere>/glossaire.ts` (maths : `glossary.ts`) ; les termes en gras d'un mémo y sont définis.
 - **Contrôles** : `couverture.test.ts` applique ces règles aux notions à 5 niveaux ; le nombre de notions
