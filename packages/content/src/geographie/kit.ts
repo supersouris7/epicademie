@@ -38,6 +38,8 @@ export interface DocQuestion {
 }
 
 export interface Notion {
+  /** Classe citée dans la source de la leçon et sous les textes à lire (CM1 si absente). */
+  readonly classe?: 'CM1' | 'CM2';
   readonly id: string;
   readonly title: string;
   readonly hint: string;
@@ -47,6 +49,15 @@ export interface Notion {
   readonly paires5: readonly (readonly [string, string])[];
   /** Repères dans l'ordre (au moins 4). */
   readonly ordre?: readonly string[];
+  /** Consigne et règle citée d'un ordre autre que « du plus petit au plus grand ». */
+  readonly consigne?: {
+    readonly prompt: string;
+    readonly hint: string;
+    readonly why: string;
+    readonly fin: string;
+    readonly quote: string;
+    readonly src: string;
+  };
   readonly libres: readonly Libre[];
   readonly docs: readonly {
     readonly title: string;
@@ -57,7 +68,8 @@ export interface Notion {
   readonly carte?: (rng: Rng, level: Level) => QuestionDraft | undefined;
 }
 
-const PROG = 'Programme du cycle 3 (BOEN n° 31 du 30 juillet 2020, version 2023), géographie, classe de CM1';
+const prog = (classe: string) =>
+  `Programme du cycle 3 (BOEN n° 31 du 30 juillet 2020, version 2023), géographie, classe de ${classe}`;
 
 /** Mélange jusqu'à ce que l'ordre ne soit pas déjà le bon (validate.ts l'exige). */
 function shuffled<T>(rng: Rng, items: readonly T[]): T[] {
@@ -67,10 +79,19 @@ function shuffled<T>(rng: Rng, items: readonly T[]): T[] {
   return out;
 }
 
+/** Première bulle selon l’éditeur de la source (préfixe de son identifiant) ; dictionnaire par défaut. */
+const lookup = (src: string): string => {
+  if (src === PROGRAMME) return 'Cherchons ce que dit le programme';
+  if (src.startsWith('insee-')) return 'Cherchons ce que dit l’INSEE';
+  if (src.startsWith('ademe-')) return 'Cherchons ce que dit l’ADEME';
+  if (src.startsWith('ue-')) return 'Cherchons ce que dit l’Union européenne';
+  if (src === 'ecologie-lgv') return 'Cherchons ce que dit le ministère chargé des transports';
+  if (src.startsWith('ecologie-')) return 'Cherchons ce que dit le ministère de la Transition écologique';
+  return 'Cherchons dans le dictionnaire';
+};
+
 const steps = (quote: string, explain: string, answer: string, src: string = PROGRAMME) => [
-  src === PROGRAMME
-    ? `Cherchons ce que dit le programme : « ${quote} ».`
-    : `Cherchons dans le dictionnaire : « ${quote} ».`,
+  `${lookup(src)} : « ${quote} ».`,
   explain,
   `La réponse est donc **${answer}**.`,
 ];
@@ -122,14 +143,16 @@ function level2(rng: Rng, n: Notion): QuestionDraft {
 function level3(rng: Rng, n: Notion): QuestionDraft {
   if (n.ordre && rng.int(0, 1) === 0) {
     const items = shuffled(rng, n.ordre);
+    const c = n.consigne;
     return {
-      prompt: 'Remets ces repères dans l’ordre, du plus petit au plus grand.',
+      prompt: c?.prompt ?? 'Remets ces repères dans l’ordre, du plus petit au plus grand.',
       answer: { kind: 'order', items, correct: n.ordre.map((o) => items.indexOf(o)) },
-      hint: 'Commence par le lieu où tu habites : il est le plus petit.',
+      hint: c?.hint ?? 'Commence par le lieu où tu habites : il est le plus petit.',
       steps: [
-        'On range du plus petit au plus grand territoire, comme dans le programme.',
+        ...(c ? [`${lookup(c.src)} : « ${c.quote} ».`] : []),
+        c?.why ?? 'On range du plus petit au plus grand territoire, comme dans le programme.',
         ...n.ordre.map((o, i) => `${i + 1}. ${o}.`),
-        `Le plus petit est **${n.ordre[0]}**.`,
+        `${c?.fin ?? 'Le plus petit est'} **${n.ordre[0]}**.`,
       ],
       targetSeconds: 40,
     };
@@ -173,7 +196,7 @@ function level5(rng: Rng, n: Notion): QuestionDraft {
     kind: 'document',
     title: d.title,
     lines: d.lines,
-    credit: 'Texte écrit pour l’exercice, d’après le programme de CM1.',
+    credit: `Texte écrit pour l’exercice, d’après le programme de ${n.classe ?? 'CM1'}.`,
   };
   return {
     prompt: `Lis le texte, puis réponds. ${dq.q}`,
@@ -188,6 +211,7 @@ function level5(rng: Rng, n: Notion): QuestionDraft {
 /** Sources du registre citées par une notion (le programme, plus celles de ses faits). */
 export function sourcesOf(n: Notion): string[] {
   const all = [...n.faits, ...n.libres, ...n.docs.flatMap((d) => d.qs)].map((f) => f.src ?? PROGRAMME);
+  if (n.consigne) all.push(n.consigne.src);
   return [...new Set([PROGRAMME, ...all])];
 }
 
@@ -198,7 +222,7 @@ export function notion(n: Notion): Skill {
     title: n.title,
     levels: 5,
     version: 1,
-    lesson: { memo: n.memo, source: PROG, sources: sourcesOf(n) },
+    lesson: { memo: n.memo, source: prog(n.classe ?? 'CM1'), sources: sourcesOf(n) },
     generate: (rng: Rng, level: Level): QuestionDraft => {
       const carte = n.carte && rng.int(0, 1) === 0 ? n.carte(rng, level) : undefined;
       if (carte) return carte;

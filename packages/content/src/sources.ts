@@ -38,6 +38,7 @@ export const ALLOWED_DOMAINS: readonly string[] = [
   'mnhn.fr',
   'cnes.fr',
   'ademe.fr',
+  'ecologie.gouv.fr',
   'brgm.fr',
 ];
 
@@ -50,6 +51,8 @@ export function isAllowedUrl(url: string): boolean {
 }
 
 const CONSULTED = '2026-11-24';
+/** Textes relevés pour le lot ge-cm2-01 (copies d’archive web.archive.org des pages officielles). */
+const CONSULTED_GE_CM2 = '2026-11-25';
 
 /** Article du Trésor de la langue française informatisé (CNRTL). */
 const tlfi = (id: string, word: string, path: string): Source => ({
@@ -57,6 +60,16 @@ const tlfi = (id: string, word: string, path: string): Source => ({
   title: `Trésor de la langue française informatisé, article « ${word} »`,
   publisher: 'CNRTL (CNRS, ATILF)',
   url: `https://www.cnrtl.fr/definition/${path}`,
+  textDate: '2026',
+  consultedOn: '2026-11-25',
+});
+
+/** Article du Dictionnaire de l’Académie française (9e édition), publié par le CNRTL. */
+const academie = (id: string, word: string): Source => ({
+  id: `academie-${id}`,
+  title: `Dictionnaire de l’Académie française (9e édition), article « ${word} »`,
+  publisher: 'Académie française, publié par le CNRTL',
+  url: `https://www.cnrtl.fr/definition/academie9/${encodeURIComponent(word)}`,
   textDate: '2026',
   consultedOn: '2026-11-25',
 });
@@ -275,6 +288,55 @@ export const SOURCES: readonly Source[] = [
   tlfi('adjectif', 'adjectif', 'adjectif/nom'),
   tlfi('epithete', 'épithète', '%C3%A9pith%C3%A8te'),
   tlfi('pronom', 'pronom', 'pronom'),
+  tlfi('voisin', 'voisin', 'voisin'),
+  tlfi('petit', 'petit', 'petit'),
+  tlfi('grand', 'grand', 'grand'),
+  tlfi('vert', 'vert', 'vert'),
+  tlfi('lourd', 'lourd', 'lourd'),
+  tlfi('content', 'content', 'content'),
+  tlfi('dernier', 'dernier', 'dernier'),
+  tlfi('vendeur', 'vendeur', 'vendeur'),
+  tlfi('peureux', 'peureux', 'peureux'),
+  tlfi('vif', 'vif', 'vif'),
+  tlfi('sportif', 'sportif', 'sportif'),
+  tlfi('vieux', 'vieux', 'vieux'),
+  academie('pluriel', 'pluriel'),
+  academie('feminin', 'féminin'),
+  ...['bateau', 'cadeau', 'oiseau', 'drapeau', 'bureau', 'cheveu', 'jeu', 'cheval', 'journal', 'animal', 'bocal'].map(
+    (w) => academie(w, w),
+  ),
+  ...[
+    'canal',
+    'signal',
+    'bal',
+    'carnaval',
+    'festival',
+    'chacal',
+    'ami',
+    'marchand',
+    'joli',
+    'noir',
+    'bleu',
+    'fort',
+  ].map((w) => academie(w, w)),
+  ...['lion', 'chien', 'chat', 'musicien', 'champion', 'fermier', 'chanteur', 'danseur', 'heureux', 'directeur'].map(
+    (w) => academie(w, w),
+  ),
+  ...['acteur', 'instituteur', 'blanc', 'doux'].map((w) => academie(w, w)),
+  academie('chateau', 'château'),
+  academie('hopital', 'hôpital'),
+  academie('metal', 'métal'),
+  academie('regal', 'régal'),
+  academie('ecolier', 'écolier'),
+  academie('leger', 'léger'),
+  {
+    id: 'eduscol-grammaire-francais',
+    title: 'La grammaire du français. Terminologie grammaticale (les guides fondamentaux pour enseigner)',
+    publisher: 'Ministère de l’Éducation nationale, Éduscol',
+    url: 'https://eduscol.education.fr/document/1872/download',
+    textDate: '2021-06',
+    consultedOn: '2026-11-25',
+  },
   {
     id: 'cnrtl-exclamation',
     title: 'Trésor de la langue française informatisé, article « exclamation »',
@@ -1156,6 +1218,118 @@ export const SOURCES: readonly Source[] = [
     textDate: '2025-01-01',
     consultedOn: CONSULTED,
   },
+  {
+    id: 'insee-domicile-travail',
+    title:
+      'La voiture reste majoritaire pour les déplacements domicile-travail, même pour de courtes distances (Insee Première n° 1835, données 2017)',
+    publisher: 'INSEE',
+    url: 'https://www.insee.fr/fr/statistiques/5013868',
+    textDate: '2021-01-19',
+    consultedOn: CONSULTED_GE_CM2,
+  },
+  {
+    id: 'ademe-trajets',
+    title: 'Agir pour la transition écologique, « Calculez les émissions de carbone de vos trajets »',
+    publisher: 'ADEME',
+    url: 'https://agirpourlatransition.ademe.fr/particuliers/evaluer-son-impact/calculer-empreinte-carbone/calculer-emissions-carbone-trajets',
+    textDate: '2025-11-12',
+    consultedOn: CONSULTED_GE_CM2,
+  },
+  {
+    id: 'ecologie-lgv',
+    title: '« Les projets de lignes à grande vitesse »',
+    publisher: 'Ministère chargé des transports (ecologie.gouv.fr)',
+    url: 'https://www.ecologie.gouv.fr/politiques-publiques/projets-lignes-grande-vitesse',
+    textDate: '2023-10-25',
+    consultedOn: CONSULTED_GE_CM2,
+  },
+  {
+    id: 'ue-voyager',
+    title: '« Voyager dans l’UE »',
+    publisher: 'Union européenne',
+    url: 'https://european-union.europa.eu/live-work-study/travelling-eu_fr',
+    textDate: '2026',
+    consultedOn: CONSULTED_GE_CM2,
+  },
+  {
+    id: 'ue-transports',
+    title: '« Transports : des transports sûrs, durables et connectés »',
+    publisher: 'Union européenne',
+    url: 'https://european-union.europa.eu/priorities-and-actions/actions-topic/transport_fr',
+    textDate: '2026',
+    consultedOn: CONSULTED_GE_CM2,
+  },
+  {
+    id: 'ue-route',
+    title: 'L’Europe est à vous, « Règles de circulation et sécurité routière »',
+    publisher: 'Union européenne',
+    url: 'https://europa.eu/youreurope/citizens/travel/driving-abroad/road-rules-and-safety/index_fr.htm',
+    textDate: '2026',
+    consultedOn: CONSULTED_GE_CM2,
+  },
+  tlfi('trajet', 'trajet', 'trajet'),
+  tlfi('gare', 'gare', 'gare'),
+  tlfi('autoroute', 'autoroute', 'autoroute'),
+  tlfi('aeroport', 'aéroport', 'aeroport'),
+  tlfi('port', 'port', 'port'),
+  tlfi('paquebot', 'paquebot', 'paquebot'),
+  tlfi('vaporetto', 'vaporetto', 'vaporetto'),
+  tlfi('autobus', 'autobus', 'autobus'),
+  tlfi('tramway', 'tramway', 'tramway'),
+  tlfi('telepherique', 'téléphérique', 't%C3%A9l%C3%A9ph%C3%A9rique'),
+  tlfi('long-courrier', 'long-courrier', 'long-courrier'),
+  tlfi('transatlantique', 'transatlantique', 'transatlantique'),
+  {
+    id: 'ecologie-trame-verte',
+    title: '« Trame verte et bleue »',
+    publisher: 'Ministère chargé de la transition écologique (ecologie.gouv.fr)',
+    url: 'https://www.ecologie.gouv.fr/politiques-publiques/trame-verte-bleue',
+    textDate: '2023-10-02',
+    consultedOn: CONSULTED_GE_CM2,
+  },
+  {
+    id: 'ecologie-nature-ville',
+    title: '« Plan Nature en Ville »',
+    publisher: 'Ministère chargé de la transition écologique (ecologie.gouv.fr)',
+    url: 'https://www.ecologie.gouv.fr/politiques-publiques/plan-nature-en-ville',
+    textDate: '2026-09-07',
+    consultedOn: CONSULTED_GE_CM2,
+  },
+  {
+    id: 'ecologie-ecoquartier',
+    title: '« Démarche ÉcoQuartier »',
+    publisher: 'Ministère chargé de la transition écologique (ecologie.gouv.fr)',
+    url: 'https://www.ecologie.gouv.fr/politiques-publiques/demarche-ecoquartier',
+    textDate: '2024-07-18',
+    consultedOn: CONSULTED_GE_CM2,
+  },
+  {
+    id: 'ecologie-biodechets',
+    title: '« Biodéchets »',
+    publisher: 'Ministère chargé de la transition écologique (ecologie.gouv.fr)',
+    url: 'https://www.ecologie.gouv.fr/politiques-publiques/biodechets',
+    textDate: '2026-09-15',
+    consultedOn: CONSULTED_GE_CM2,
+  },
+  {
+    id: 'ecologie-economie-circulaire',
+    title: '« L’économie circulaire »',
+    publisher: 'Ministère chargé de la transition écologique (ecologie.gouv.fr)',
+    url: 'https://www.ecologie.gouv.fr/politiques-publiques/leconomie-circulaire',
+    textDate: '2025-06-24',
+    consultedOn: CONSULTED_GE_CM2,
+  },
+  {
+    id: 'insee-developpement-durable',
+    title: '« Développement durable » (définition)',
+    publisher: 'INSEE',
+    url: 'https://www.insee.fr/fr/metadonnees/definition/c1644',
+    textDate: '2026',
+    consultedOn: CONSULTED_GE_CM2,
+  },
+  tlfi('recycler', 'recycler', 'recycler'),
+  tlfi('compost', 'compost', 'compost'),
+  tlfi('transition', 'transition', 'transition'),
 ];
 
 export const getSource = (id: string): Source | undefined => SOURCES.find((s) => s.id === id);
