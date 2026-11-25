@@ -22,6 +22,7 @@ import {
   texteComplement,
   texteGroupe,
   type Accord,
+  type Genre,
   type GroupeEnrichi,
   type Nombre,
   type PhraseComplement,
@@ -478,6 +479,32 @@ const justification = (a: Accord, n: Nombre) =>
     n === 'pl' ? 'pluriel' : 'singulier'
   }.`;
 
+/** Nouveau nom noyau d'une ligne, avec le genre et le nombre qu'il impose à la chaîne. */
+interface Remplacement {
+  readonly a: Accord;
+  readonly nom: string;
+  readonly genre: Genre;
+  readonly n: Nombre;
+}
+
+/**
+ * Deux lignes dans un ordre tiré au sort : l'une passe au pluriel avec un nom de l'autre genre, l'autre passe au
+ * singulier. Le nom du complément garde toujours un genre ou un nombre différent du nouveau nom noyau.
+ */
+function remplacements(rng: Rng): Remplacement[] {
+  const { a, nom } = rng.pick(
+    ACCORDS_GN.flatMap((x) => {
+      const autre = x.remplacants.autreGenre;
+      return autre && x.nomComplement.nombre === 'sg' ? [{ a: x, nom: autre }] : [];
+    }),
+  );
+  const b = rng.pick(ACCORDS_GN.filter((x) => x !== a && x.nom !== nom && x.remplacants.memeGenre !== a.nom));
+  return rng.shuffle<Remplacement>([
+    { a, nom: nomAu({ ...a, nom }, 'pl'), genre: a.genre === 'm' ? 'f' : 'm', n: 'pl' },
+    { a: b, nom: b.remplacants.memeGenre, genre: b.genre, n: 'sg' },
+  ]);
+}
+
 function accordDraft(rng: Rng, level: Level): QuestionDraft {
   switch (level) {
     case 1: {
@@ -561,35 +588,44 @@ function accordDraft(rng: Rng, level: Level): QuestionDraft {
       };
     }
     default: {
-      const lignes = pickN(rng, ACCORDS_GN, 2);
-      const formes = lignes.map((a) => [
-        accorder(a.avant, a.genre, 'pl'),
-        nomAu(a, 'pl'),
-        accorder(a.apres, a.genre, 'pl'),
+      const lignes = remplacements(rng);
+      const formes = lignes.map(({ a, genre, n }) => [
+        maj(determinant(genre, n)),
+        accorder(a.avant, genre, n),
+        accorder(a.apres, genre, n),
+        a.verbe[n === 'sg' ? 0 : 1],
+      ]);
+      const parts = lignes.flatMap(({ a, nom }, i) => [
+        `${i === 0 ? '' : '. '}Ligne ${i + 1} : `,
+        ' ',
+        ` ${nom} `,
+        ` ${a.complement} `,
       ]);
       return {
-        prompt: 'Lis le texte. Mets le nom noyau de chaque ligne au pluriel, avec toute sa chaîne d’accord.',
+        prompt: `Lis le texte. Remplace le nom noyau : ${lignes
+          .map((l, i) => `ligne ${i + 1}, « ${nomAu(l.a, autreNombre(l.n))} » devient « ${l.nom} »`)
+          .join(' ; ')}. Réécris chaque phrase avec toute sa chaîne d’accord.`,
         figure: document(
-          'Inventaire du grenier',
-          lignes.map((a) => phrase(groupeAccorde(a, 'sg'), a.verbe[0])),
+          'Carnet d’observation',
+          lignes.map(({ a, n }) => {
+            const avant = autreNombre(n);
+            return phrase(groupeAccorde(a, avant), a.verbe[avant === 'sg' ? 0 : 1]);
+          }),
         ),
         answer: {
           kind: 'cloze',
-          parts: [
-            'Ligne 1 : Les ',
-            ' ',
-            ' ',
-            ` ${at(lignes, 0).complement} ${at(lignes, 0).verbe[1]}. Ligne 2 : Les `,
-            ' ',
-            ' ',
-            ` ${at(lignes, 1).complement} ${at(lignes, 1).verbe[1]}.`,
-          ],
+          parts: [...parts, '.'],
           blanks: formes.flat().map((f) => ({ mode: 'text' as const, accepted: [f] })),
         },
-        hint: 'Pour chaque ligne : adjectif, nom, adjectif. Le complément, lui, ne bouge pas.',
+        hint: 'Trouve le genre et le nombre du nouveau nom. Le déterminant, les adjectifs et le verbe le suivent.',
         steps: [
           DEF_ACCORD,
-          'Le nom noyau passe au pluriel : ses deux adjectifs le suivent. Le complément du nom ne change pas ici.',
+          `${lignes
+            .map(
+              (l) =>
+                `« ${l.nom} » est ${l.genre === 'f' ? 'féminin' : 'masculin'} ${l.n === 'pl' ? 'pluriel' : 'singulier'}`,
+            )
+            .join(' ; ')}. Le complément du nom ne change pas.`,
           `Réponses : **${formes.flat().join(', ')}**.`,
         ],
       };

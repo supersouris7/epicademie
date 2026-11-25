@@ -142,9 +142,42 @@ describe('banques et réponses du groupe nominal enrichi', () => {
       expect(trous(q)).toEqual([accorder(avant, a.genre, n), accorder(apres, a.genre, n)]);
       expect(a.genre === a.nomComplement.genre && n === a.nomComplement.nombre).toBe(false);
     }
+  });
+
+  it('chaîne d’accord au niveau 5 : un nouveau nom noyau change le genre ou le nombre de toute la chaîne', () => {
     for (const q of tirages('fcm2-chaine-accord-expansions', 5)) {
-      expect(trous(q)).toHaveLength(6);
-      for (const forme of trous(q)) expect(forme).toMatch(/s$/);
+      const saisies = trous(q);
+      expect(saisies).toHaveLength(8);
+      let changementsDeGenre = 0;
+      const nombres = lignes(q).map((ligne, i) => {
+        const [, ancien = '', nouveau = ''] =
+          new RegExp(`ligne ${i + 1}, « ([^»]+) » devient « ([^»]+) »`).exec(q.prompt) ?? [];
+        const a = ACCORDS_GN.find((x) => ancien.replace(/s$/, '') === x.nom && ligne.includes(` ${x.complement} `));
+        if (!a) throw new Error(`ligne inconnue : ${ligne}`);
+        const n = ancien === a.nom ? 'pl' : 'sg';
+        const autre = nouveau.replace(/s$/, '') === a.remplacants.autreGenre;
+        if (!autre) expect(nouveau).toBe(a.remplacants.memeGenre);
+        const genre = autre === (a.genre === 'm') ? 'f' : 'm';
+        if (autre) changementsDeGenre++;
+        const attendu = [
+          { m: 'Le', f: 'La' }[genre],
+          accorder(a.avant, genre, n),
+          accorder(a.apres, genre, n),
+          a.verbe[n === 'sg' ? 0 : 1],
+        ];
+        if (n === 'pl') attendu[0] = 'Les';
+        const ecrits = saisies.slice(i * 4, i * 4 + 4);
+        expect(ecrits, q.prompt).toEqual(attendu);
+        // Au moins deux trous ne se déduisent pas d'un simple « s » ajouté au mot écrit dans le texte.
+        const mots = ligne.replace(/\.$/, '').split(' ');
+        const origine = [mots[0], mots[1], mots[3], mots.at(-1)];
+        expect(ecrits.filter((e, j) => e !== `${origine[j]}s`).length).toBeGreaterThanOrEqual(2);
+        // Le nom du complément reste un piège.
+        expect(genre === a.nomComplement.genre && n === a.nomComplement.nombre, q.prompt).toBe(false);
+        return n;
+      });
+      expect(changementsDeGenre).toBeGreaterThanOrEqual(1);
+      expect([...nombres].sort()).toEqual(['pl', 'sg']);
     }
   });
 });

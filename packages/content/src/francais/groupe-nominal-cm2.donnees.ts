@@ -86,7 +86,7 @@ export const GROUPES_ENRICHIS: readonly GroupeEnrichi[] = [
   ge('le|gros|ballon|', 'de mon cousin', 'rebondit'),
   ge('une||lampe|neuve', 'du salon', 'brille'),
   ge('la|jolie|robe|', 'de la poupée', 'sèche'),
-  ge('un||sac|lourd', 'de pommes', 'tombe'),
+  ge('un|vieux|sac|', 'de pommes', 'tombe'),
 ];
 
 export const adjectifGe = (g: GroupeEnrichi): string => g.avant ?? g.apres ?? '';
@@ -246,14 +246,16 @@ export interface Accord {
   /** Genre et nombre du nom placé dans le complément. */
   readonly nomComplement: { readonly nom: string; readonly genre: Genre; readonly nombre: Nombre };
   readonly verbe: readonly [string, string];
+  /** Noms (pluriel en s) qui peuvent remplacer le nom noyau : de même genre, ou de l'autre genre. */
+  readonly remplacants: { readonly memeGenre: string; readonly autreGenre?: string };
 }
 
 const ac = (
-  nom: string,
-  genre: Genre,
+  [nom, genre]: readonly [string, Genre],
   [avant, apres]: readonly [string, string],
   [complement, nomC, genreC, nombreC]: readonly [string, string, Genre, Nombre],
   verbe: readonly [string, string],
+  [memeGenre, autreGenre]: readonly [string, string?],
 ): Accord => ({
   nom,
   genre,
@@ -262,20 +264,57 @@ const ac = (
   complement,
   nomComplement: { nom: nomC, genre: genreC, nombre: nombreC },
   verbe,
+  remplacants: { memeGenre, ...(autreGenre ? { autreGenre } : {}) },
 });
 
 export const ACCORDS_GN: readonly Accord[] = [
-  ac('porte', 'f', ['petit', 'vert'], ['du chalet', 'chalet', 'm', 'sg'], ['grince', 'grincent']),
-  ac('roue', 'f', ['petit', 'noir'], ['du vélo', 'vélo', 'm', 'sg'], ['tourne', 'tournent']),
-  ac('clé', 'f', ['petit', 'doré'], ['du coffre', 'coffre', 'm', 'sg'], ['brille', 'brillent']),
-  ac('sac', 'm', ['grand', 'bleu'], ['de ma cousine', 'cousine', 'f', 'sg'], ['attend', 'attendent']),
-  ac('toit', 'm', ['grand', 'pointu'], ['de la maison', 'maison', 'f', 'sg'], ['dépasse', 'dépassent']),
-  ac('fenêtre', 'f', ['joli', 'rond'], ['du grenier', 'grenier', 'm', 'sg'], ['claque', 'claquent']),
-  ac('volet', 'm', ['grand', 'vert'], ['de la ferme', 'ferme', 'f', 'sg'], ['bat', 'battent']),
-  ac('botte', 'f', ['grand', 'noir'], ['du jardinier', 'jardinier', 'm', 'sg'], ['sèche', 'sèchent']),
-  ac('maillot', 'm', ['joli', 'bleu'], ['des joueuses', 'joueuses', 'f', 'pl'], ['sèche', 'sèchent']),
-  ac('dessin', 'm', ['joli', 'coloré'], ['de mes sœurs', 'sœurs', 'f', 'pl'], ['plaît', 'plaisent']),
-  ac('lanterne', 'f', ['petit', 'rond'], ['des marins', 'marins', 'm', 'pl'], ['éclaire', 'éclairent']),
+  ac(
+    ['porte', 'f'],
+    ['petit', 'vert'],
+    ['du chalet', 'chalet', 'm', 'sg'],
+    ['grince', 'grincent'],
+    ['fenêtre', 'volet'],
+  ),
+  ac(['roue', 'f'], ['petit', 'noir'], ['du vélo', 'vélo', 'm', 'sg'], ['tourne', 'tournent'], ['chaîne', 'pneu']),
+  ac(
+    ['clé', 'f'],
+    ['petit', 'doré'],
+    ['du coffre', 'coffre', 'm', 'sg'],
+    ['brille', 'brillent'],
+    ['serrure', 'bouton'],
+  ),
+  ac(
+    ['sac', 'm'],
+    ['grand', 'bleu'],
+    ['de ma cousine', 'cousine', 'f', 'sg'],
+    ['attend', 'attendent'],
+    ['panier', 'valise'],
+  ),
+  ac(
+    ['toit', 'm'],
+    ['grand', 'pointu'],
+    ['de la maison', 'maison', 'f', 'sg'],
+    ['dépasse', 'dépassent'],
+    ['sapin', 'cheminée'],
+  ),
+  ac(
+    ['fenêtre', 'f'],
+    ['joli', 'rond'],
+    ['du grenier', 'grenier', 'm', 'sg'],
+    ['claque', 'claquent'],
+    ['lucarne', 'volet'],
+  ),
+  ac(['volet', 'm'], ['grand', 'vert'], ['de la ferme', 'ferme', 'f', 'sg'], ['bat', 'battent'], ['portail', 'porte']),
+  ac(
+    ['botte', 'f'],
+    ['grand', 'noir'],
+    ['du jardinier', 'jardinier', 'm', 'sg'],
+    ['sèche', 'sèchent'],
+    ['veste', 'tablier'],
+  ),
+  ac(['maillot', 'm'], ['joli', 'bleu'], ['des joueuses', 'joueuses', 'f', 'pl'], ['sèche', 'sèchent'], ['short']),
+  ac(['dessin', 'm'], ['joli', 'coloré'], ['de mes sœurs', 'sœurs', 'f', 'pl'], ['plaît', 'plaisent'], ['collage']),
+  ac(['lanterne', 'f'], ['petit', 'rond'], ['des marins', 'marins', 'm', 'pl'], ['éclaire', 'éclairent'], ['lampe']),
 ];
 
 /** Accord régulier : e au féminin, s au pluriel. */
