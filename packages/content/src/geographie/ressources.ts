@@ -208,7 +208,7 @@ const energie: Notion = {
       src: HYDROCARBURE,
     },
     {
-      q: 'Quelle conséquence a le rejet massif des hydrocarbures brûlés dans l’atmosphère ?',
+      q: 'On brûle d’énormes quantités d’hydrocarbures : quelle conséquence ont les gaz rejetés dans l’atmosphère ?',
       a: 'il augmente l’effet de serre et change le climat',
       wrong: [
         {
@@ -224,7 +224,7 @@ const energie: Notion = {
           why: 'C’est l’inverse : ce rejet aggrave le changement climatique.',
         },
       ],
-      gap: ['Le rejet massif des hydrocarbures augmente l’effet de ', '.', ['serre']],
+      gap: ['Les rejets massifs liés aux hydrocarbures augmentent l’effet de ', '.', ['serre']],
       choix: ['serre', 'vent', 'marée'],
       quote: G_SERRE,
       explain: 'C’est une raison de ménager ces énergies et de développer d’autres sources.',
@@ -311,6 +311,10 @@ const energie: Notion = {
       accepted: ['hydrocarbures', 'les hydrocarbures', 'des hydrocarbures', 'hydrocarbure'],
       traps: [
         { text: 'charbon', why: 'Le charbon est une autre énergie fossile.' },
+        {
+          text: 'fossiles',
+          why: 'Les énergies fossiles comptent aussi le charbon : le mot cherché ne le désigne pas.',
+        },
         { text: 'biomasse', why: 'La biomasse désigne des matières comme le bois, qui se renouvellent.' },
       ],
       quote: G_HYDRO,
@@ -437,14 +441,15 @@ const energie: Notion = {
         },
         {
           q: 'Comment ce gaz a-t-il été transporté jusqu’au port ?',
-          a: 'par bateau, une des deux manières avec les conduites',
+          a: 'par bateau',
           wrong: [
             { label: 'par le vent', why: 'Le vent ne transporte pas le gaz.' },
             { label: 'par un câble électrique', why: 'Un câble transporte de l’électricité, pas du gaz.' },
             { label: 'par la forêt', why: 'La forêt n’est pas un moyen de transport.' },
           ],
           quote: G_TRANSPORT,
-          explain: 'La ligne 1 montre le navire ; les hydrocarbures voyagent par conduites ou par bateau.',
+          explain:
+            'La ligne 1 montre le navire. Les hydrocarbures voyagent par bateau ou par conduites (de longs tuyaux).',
           src: HYDROCARBURE,
         },
       ],
@@ -462,7 +467,7 @@ const eau: Notion = {
   memo: [
     'L’eau douce est rare face à l’eau salée et très inégalement répartie. L’**accès à l’eau** ne dépend pas seulement de la quantité : on peut vivre près de l’eau sans **eau potable**.',
     'L’agriculture est le premier secteur consommateur d’eau, surtout avec l’**irrigation**. Le **goutte-à-goutte** l’économise.',
-    'Un même fleuve peut opposer les territoires d’**amont** et d’**aval** : il faut partager.',
+    'Un **bassin versant** est l’espace dont toutes les eaux rejoignent le même cours d’eau, lac ou mer. Un même fleuve peut opposer les territoires d’**amont** et d’**aval** : il faut partager.',
   ],
   faits: [
     {
@@ -577,10 +582,10 @@ const eau: Notion = {
       src: IRRIGATION,
     },
     {
-      q: 'Quelle technique d’irrigation est plus économe et plus précise ?',
+      q: 'Quelle technique d’irrigation économise l’eau en l’apportant avec précision ?',
       a: 'le goutte-à-goutte',
       wrong: [
-        { label: 'l’apport excessif d’eau sur le sol', why: 'Un excès d’eau gaspille et peut saler le sol.' },
+        { label: 'l’apport excessif d’eau sur le sol', why: 'Un excès d’eau gaspille et peut rendre le sol salé.' },
         { label: 'l’inondation sans contrôle', why: 'Sans contrôle, l’eau est gaspillée.' },
         { label: 'l’arrêt de toute culture', why: 'Ce n’est pas une technique d’irrigation.' },
       ],
@@ -615,14 +620,14 @@ const eau: Notion = {
   ],
   paires5: [
     ['accès à l’eau', 'capacité d’obtenir assez d’eau potable'],
-    ['bassin versant', 'espace dont toute l’eau rejoint un même exutoire'],
+    ['bassin versant', 'espace dont toute l’eau rejoint un même fleuve, lac ou mer'],
     ['amont', 'partie d’un fleuve située vers sa source'],
     ['aval', 'partie d’un fleuve située vers son embouchure'],
     ['salinisation', 'augmentation du sel dans le sol'],
   ],
   libres: [
     {
-      q: 'quel mot désigne l’apport d’eau à une parcelle agricole ?',
+      q: 'quel mot de géographie, commençant par « i », désigne l’apport d’eau à une parcelle agricole ?',
       accepted: ['irrigation', 'l’irrigation', 'une irrigation'],
       traps: [
         { text: 'salinisation', why: 'La salinisation est l’augmentation du sel dans le sol.' },
@@ -651,7 +656,7 @@ const eau: Notion = {
         { text: 'embouchure', why: 'L’embouchure est l’endroit où le fleuve se jette.' },
       ],
       quote: C_AMONT,
-      explain: 'L’amont est du côté de la source : l’eau qu’on y prélève ne parvient plus à l’aval.',
+      explain: 'L’amont est du côté de la source : l’eau prélevée et consommée en amont peut manquer en aval.',
       src: AMONT,
     },
     {
@@ -691,7 +696,7 @@ const eau: Notion = {
           src: ACCES,
         },
         {
-          q: 'Quel facteur, d’après la géographie de l’accès à l’eau, peut expliquer la situation du quartier ?',
+          q: 'Qu’est-ce qui peut expliquer les difficultés d’accès à l’eau dans ce quartier ?',
           a: 'le faible revenu de ses habitants',
           wrong: [
             { label: 'la couleur des toits', why: 'La couleur des toits n’explique pas l’absence d’eau courante.' },
@@ -756,10 +761,10 @@ const eau: Notion = {
           q: 'Quel problème la ligne 3 illustre-t-elle ?',
           a: 'la salinisation du sol due à des apports d’eau excessifs',
           wrong: [
-            { label: 'la déprise agricole due au gel', why: 'Aucun gel dans le texte.' },
+            { label: 'l’abandon des champs à cause du gel', why: 'Aucun gel dans le texte.' },
             {
               label: 'la submersion par la mer',
-              why: 'L’oasis est loin de la mer et c’est l’eau d’arrosage qui agit.',
+              why: 'Rien dans le texte ne parle de la mer : c’est l’eau d’arrosage qui agit.',
             },
             { label: 'le recul du trait de côte', why: 'Il s’agit d’un sol agricole, pas d’une côte.' },
           ],
@@ -796,6 +801,8 @@ const alimentation: Notion = {
     'La **sécurité alimentaire** : chacun peut obtenir à tout moment une nourriture suffisante, saine et nutritive. Une partie de l’humanité reste sous-alimentée ou mal alimentée.',
     'La **révolution verte** a augmenté les **rendements** avec de nouvelles semences, l’irrigation et les engrais.',
     'Les espaces ruraux et agricoles fournissent notre nourriture. L’**agriculture vivrière** nourrit d’abord la famille ou le village.',
+    'La **transition alimentaire** dans les pays industrialisés : quand les revenus montent, on sort d’abord de la famine (plus de céréales), puis on mange plus de viande, de sucre et de graisses ; enfin, ces tendances commencent à s’inverser.',
+    'Même dans un pays riche, on peut manquer de nourriture saine (insécurité alimentaire), par exemple dans un **désert alimentaire**, où les aliments frais sont difficiles à trouver à bon prix.',
   ],
   faits: [
     {
@@ -981,8 +988,8 @@ const alimentation: Notion = {
       src: SOUS_ALIM,
     },
     {
-      q: 'Dans le modèle de la transition alimentaire, que se passe-t-il pendant la deuxième phase ?',
-      a: 'l’alimentation se diversifie et la part des céréales diminue',
+      q: 'Dans la transition alimentaire des pays industrialisés, que se passe-t-il pendant la deuxième phase, après la sortie de la famine ?',
+      a: 'l’alimentation se diversifie et on mange moins de céréales',
       wrong: [
         { label: 'la famine commence', why: 'La sortie de la famine correspond à la première phase.' },
         { label: 'les tendances commencent à s’inverser', why: 'Cette inversion caractérise la troisième phase.' },
@@ -998,7 +1005,7 @@ const alimentation: Notion = {
       src: ALIMENTATION,
     },
     {
-      q: 'Selon ce même modèle, qu’observe-t-on lors de la troisième phase ?',
+      q: 'Dans la transition alimentaire des pays industrialisés, qu’observe-t-on lors de la troisième phase ?',
       a: 'un début d’inversion des tendances précédentes',
       wrong: [
         { label: 'un retour immédiat à la famine', why: 'Le modèle ne décrit pas un retour à la famine.' },
@@ -1076,6 +1083,7 @@ const alimentation: Notion = {
       accepted: ['rendement', 'le rendement', 'un rendement', 'rendements'],
       traps: [
         { text: 'surface', why: 'La surface est l’étendue du champ, pas ce qu’on y récolte.' },
+        { text: 'production', why: 'La production est la quantité totale ; ici, on la rapporte à la surface.' },
         { text: 'revenu', why: 'Le revenu est de l’argent gagné.' },
       ],
       quote: C_RENDEMENT,
@@ -1126,7 +1134,7 @@ const alimentation: Notion = {
       ],
     },
     {
-      title: 'Le quartier sans primeur',
+      title: 'Un quartier sans produits frais',
       lines: [
         'Dans une grande ville imaginaire d’un pays riche, un quartier pauvre n’a aucun magasin de produits frais.',
         'Les fruits et légumes les plus proches se vendent loin et cher.',
@@ -1216,7 +1224,8 @@ const gererRenouveler: Notion = {
   memo: [
     'Le **développement durable** répond aux besoins du présent sans compromettre ceux des générations futures. Il cherche un équilibre entre le social, l’économie et l’environnement.',
     'Pour ménager les ressources : consommer moins (**sobriété**), mieux utiliser, **recycler** et développer les énergies renouvelables.',
-    'L’ONU a fixé en 2015 des objectifs à atteindre pour 2030, les **ODD**. Exemple : l’eau propre et l’assainissement.',
+    'La **transition énergétique** : passer d’énergies tirées de stocks (pétrole, gaz, charbon, uranium) à des énergies de flux, qui se renouvellent (vent, soleil, **biomasse**), en consommant mieux.',
+    'L’idée de développement durable apparaît en 1987 (rapport Brundtland) et est adoptée au Sommet de la Terre de Rio en 1992. L’ONU a fixé en 2015 des objectifs à atteindre pour 2030, les **ODD**. Exemple : l’eau propre et l’**assainissement**.',
   ],
   faits: [
     {
@@ -1376,9 +1385,9 @@ const gererRenouveler: Notion = {
   },
   ordre: [
     'le rapport Brundtland introduit le développement durable',
-    'le Sommet de la Terre de Rio l’adopte',
+    'le Sommet de la Terre de Rio adopte le développement durable',
     'l’ONU fixe les objectifs de développement durable',
-    'échéance prévue pour atteindre ces objectifs',
+    'année prévue pour atteindre les objectifs de l’ONU',
   ],
   libres: [
     {
@@ -1397,6 +1406,10 @@ const gererRenouveler: Notion = {
       accepted: ['recyclage', 'le recyclage', 'recycler'],
       traps: [
         { text: 'incinération', why: 'L’incinération brûle les déchets.' },
+        {
+          text: 'réemploi',
+          why: 'Le réemploi redonne un usage à l’objet ; ici, on cherche le mode qui récupère sa matière.',
+        },
         { text: 'décharge', why: 'La mise en décharge les entasse sans en récupérer la matière.' },
       ],
       quote: G_RECYCL,
@@ -1483,7 +1496,7 @@ const gererRenouveler: Notion = {
         },
         {
           q: 'Pourquoi ce projet relève-t-il de la transition énergétique ?',
-          a: 'il développe une énergie de flux, le solaire',
+          a: 'il développe une énergie qui se renouvelle sans cesse, le solaire',
           wrong: [
             { label: 'il extrait du pétrole', why: 'Aucun pétrole dans ce projet.' },
             { label: 'il augmente la part du charbon', why: 'Le charbon n’apparaît pas.' },

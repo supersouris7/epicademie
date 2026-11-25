@@ -1527,4 +1527,47 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Les objectifs de développement durable fixés par l’ONU en 2015 pour 2030.',
     example: 'L’accès à l’eau fait partie des ODD.',
   },
+  {
+    id: 'effet-de-serre',
+    word: 'effet de serre',
+    forms: ['effet de serre'],
+    definition:
+      'Le fait que certains gaz de l’atmosphère retiennent la chaleur ; quand ils augmentent, la planète se réchauffe.',
+    example: 'Brûler du charbon renforce l’effet de serre.',
+  },
+  {
+    id: 'transition-alimentaire',
+    word: 'transition alimentaire',
+    forms: ['transition alimentaire'],
+    definition: 'Le changement de la façon de produire et de consommer les aliments dans une société.',
+    example: 'Manger moins de céréales et plus de viande est une étape de cette transition.',
+  },
+  {
+    id: 'desert-alimentaire',
+    word: 'désert alimentaire',
+    forms: ['désert alimentaire', 'déserts alimentaires'],
+    definition: 'Un espace où les habitants ne peuvent pas trouver d’aliments sains à un prix abordable.',
+    example: 'Un quartier sans aucun magasin de fruits et légumes proche et peu cher.',
+  },
+  {
+    id: 'transition-energetique',
+    word: 'transition énergétique',
+    forms: ['transition énergétique'],
+    definition: 'Le passage à des énergies qui se renouvellent, en consommant moins et mieux.',
+    example: 'Installer des éoliennes et isoler les logements y participent.',
+  },
+  {
+    id: 'biomasse',
+    word: 'biomasse',
+    forms: ['biomasse'],
+    definition: 'Les matières venues d’êtres vivants, comme le bois, utilisées pour produire de l’énergie.',
+    example: 'Une chaudière à bois utilise la biomasse.',
+  },
+  {
+    id: 'assainissement',
+    word: 'assainissement',
+    forms: ['assainissement'],
+    definition: 'La collecte et le nettoyage des eaux sales pour protéger la santé et l’environnement.',
+    example: 'Les égouts et les stations d’épuration servent à l’assainissement.',
+  },
 ];
