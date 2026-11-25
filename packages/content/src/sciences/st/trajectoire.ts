@@ -231,7 +231,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   const { answer, traps } = saisie(
     c.bon === 'circulaire'
       ? ['circulaire', 'en cercle', 'cercle', 'un cercle']
-      : ['rectiligne', 'droite', 'en ligne droite'],
+      : ['rectiligne', 'droite', 'en ligne droite', 'une droite', 'ligne droite', 'une ligne droite'],
     [
       [c.bon === 'circulaire' ? 'rectiligne' : 'circulaire', c.why],
       ['immobile', `Par rapport à la référence choisie, l’objet change bien de place. ${c.why}`],
