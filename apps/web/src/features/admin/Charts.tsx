@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { mutedClass, tableClass, tdClass, thClass } from './ui.tsx';
 
 /**
  * Graphiques de la console en SVG pur (aucune dépendance). Chaque graphique est décrit en texte
@@ -19,28 +20,28 @@ const nb = (n: number) => n.toLocaleString('fr-FR');
 
 function Values({ caption, head, points }: { caption: string; head: string; points: readonly Point[] }) {
   return (
-    <details className="mt-3 text-xs text-slate-600">
-      <summary className="cursor-pointer font-medium text-slate-700">Voir les valeurs</summary>
+    <details className="mt-3 text-sm">
+      <summary className="cursor-pointer font-semibold text-pilot-acc">Voir les valeurs</summary>
       <div className="mt-2 max-h-48 overflow-auto">
-        <table className="w-full text-left">
+        <table className={tableClass}>
           <caption className="sr-only">{caption}</caption>
           <thead>
             <tr>
-              <th scope="col" className="py-1 pr-3 font-semibold">
+              <th scope="col" className={thClass}>
                 Jour
               </th>
-              <th scope="col" className="py-1 text-right font-semibold">
+              <th scope="col" className={`${thClass} text-right`}>
                 {head}
               </th>
             </tr>
           </thead>
           <tbody>
             {points.map((p) => (
-              <tr key={p.label} className="border-t border-slate-200">
-                <th scope="row" className="py-1 pr-3 font-normal">
+              <tr key={p.label}>
+                <th scope="row" className={`${tdClass} font-normal`}>
                   {shortDay(p.label)}
                 </th>
-                <td className="py-1 text-right tabular-nums">{nb(p.value)}</td>
+                <td className={`${tdClass} text-right tabular-nums`}>{nb(p.value)}</td>
               </tr>
             ))}
           </tbody>
@@ -64,12 +65,12 @@ function Axes({ max, points }: { max: number; points: readonly Point[] }) {
   const first = points[0];
   const last = points.at(-1);
   return (
-    <g fontSize="11" fill="var(--color-slate-500)">
+    <g fontSize="11" fill="var(--color-pilot-mut)">
       {[0, max / 2, max].map((t) => {
         const y = PAD.top + innerH - (t / max) * innerH;
         return (
           <g key={t}>
-            <line x1={PAD.left} x2={W - PAD.right} y1={y} y2={y} stroke="var(--admin-chart-grid)" strokeWidth="1" />
+            <line x1={PAD.left} x2={W - PAD.right} y1={y} y2={y} stroke="var(--color-pilot-line)" strokeWidth="1" />
             <text x={PAD.left - 4} y={y + 4} textAnchor="end">
               {nb(Math.round(t * 10) / 10)}
             </text>
@@ -121,14 +122,14 @@ export function BarChart({
               y={PAD.top + innerH - h}
               width={step * 0.7}
               height={h}
-              fill="var(--admin-chart-1)"
+              fill="var(--color-pilot-acc)"
             >
               <title>{`${shortDay(p.label)} : ${nb(p.value)}`}</title>
             </rect>
           );
         })}
       </Frame>
-      <figcaption className="text-xs text-slate-500">{summary}</figcaption>
+      <figcaption className={mutedClass}>{summary}</figcaption>
       <Values caption={title} head={unit} points={points} />
     </figure>
   );
@@ -156,14 +157,14 @@ export function LineChart({
     <figure>
       <Frame title={title} summary={summary}>
         <Axes max={max} points={points} />
-        <path d={path} fill="none" stroke="var(--admin-chart-2)" strokeWidth="2.5" strokeLinejoin="round" />
+        <path d={path} fill="none" stroke="var(--color-pilot-ok)" strokeWidth="2.5" strokeLinejoin="round" />
         {points.map((p, i) => (
-          <circle key={p.label} cx={x(i)} cy={y(p.value)} r="2.5" fill="var(--admin-chart-2)">
+          <circle key={p.label} cx={x(i)} cy={y(p.value)} r="2.5" fill="var(--color-pilot-ok)">
             <title>{`${shortDay(p.label)} : ${nb(p.value)}`}</title>
           </circle>
         ))}
       </Frame>
-      <figcaption className="text-xs text-slate-500">{summary}</figcaption>
+      <figcaption className={mutedClass}>{summary}</figcaption>
       <Values caption={title} head={unit} points={points} />
     </figure>
   );
@@ -183,11 +184,11 @@ export function ShareChart({ title, points }: { readonly title: string; readonly
                 {nb(p.value)} ({total === 0 ? 0 : Math.round((p.value / total) * 100)} %)
               </span>
             </div>
-            <div className="mt-1 h-3 rounded-[4px] bg-slate-200" aria-hidden="true">
-              <div
-                className="h-3 rounded-[4px]"
-                style={{ width: `${total === 0 ? 0 : (p.value / total) * 100}%`, background: 'var(--admin-chart-1)' }}
-              />
+            <div
+              className="mt-1 h-3.5 overflow-hidden rounded-full border border-pilot-line bg-pilot-bg"
+              aria-hidden="true"
+            >
+              <div className="h-full bg-pilot-acc" style={{ width: `${total === 0 ? 0 : (p.value / total) * 100}%` }} />
             </div>
           </li>
         ))}

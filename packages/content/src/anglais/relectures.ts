@@ -74,4 +74,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'a6-must', version: 1, lot: 'an-6e-03', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'a6-imperatif-affirmatif', version: 1, lot: 'an-6e-03', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'a6-imperatif-negatif', version: 1, lot: 'an-6e-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'a6-be-ing-present', version: 1, lot: 'an-6e-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'a6-be-ing-reconnaitre', version: 1, lot: 'an-6e-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'a6-be-ing-futur', version: 1, lot: 'an-6e-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'a6-want-would-like', version: 1, lot: 'an-6e-04', date: '2026-11-25', verdict: 'ok' },
 ];
