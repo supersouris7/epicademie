@@ -29,14 +29,11 @@ const ENCADRE =
   'la loi du 29 juillet 1881 sur la liberté de la presse, de l’imprimerie et de la librairie, encadrant cette liberté';
 const RESEAUX = 'réseaux sociaux (qui ne sont pas un espace de non-droit)';
 const PSEUDO = 'Aborder la notion de pseudonymes et d’anonymat';
-const PRESSE_MONDE =
-  'Aborder la question de la liberté d’expression par l’exemple de la liberté de la presse à travers le monde';
 const FIABLE = 'l’accès à une information fiable et vérifiée est essentiel en démocratie';
 const DESINFO = 'Appréhender la notion de « désinformation » avec les élèves (et ses possibles conséquences)';
 const BONNES =
   'Consolider les bonnes pratiques face à l’information (évoquer par exemple les lois de 2018 relatives à la manipulation de l’information)';
-const CIDE =
-  'liberté d’expression (art. 13), liberté d’association et de réunion (art. 15), liberté d’information (art. 17)';
+const ARTICLES_CIDE = 'En lien avec les articles 13 et 17 (CIDE)';
 const PILIERS =
   'La liberté de la presse et la liberté de s’informer constituent deux piliers fondamentaux de la démocratie';
 
@@ -53,13 +50,12 @@ const SECRET =
   'Le secret des sources des journalistes est protégé dans l’exercice de leur mission d’information du public';
 const JOURNALISTE = 'le recueil d’informations et leur diffusion au public';
 const NOUVELLES_FAUSSES =
-  'La publication, la diffusion ou la reproduction, par quelque moyen que ce soit, de nouvelles fausses';
+  'La publication, la diffusion ou la reproduction, par quelque moyen que ce soit, de nouvelles fausses, de pièces fabriquées, falsifiées ou mensongèrement attribuées à des tiers lorsque, faite de mauvaise foi, elle aura troublé la paix publique, ou aura été susceptible de la troubler, sera punie d’une amende de 45 000 euros';
 
 const CIRCULENT = 'Ces infox ou "fake news" circulent très facilement grâce aux réseaux sociaux';
 const VERIFICATEURS = 'le soutien à un réseau indépendant de vérificateurs de faits';
 const DIVERSITE = 'accéder à des informations correctes ainsi qu’à une diversité de points de vue';
-const DEFINITION =
-  'Toute allégation ou imputation d’un fait dépourvu d’éléments vérifiables de nature à la rendre vraisemblable';
+const DEFINITION = 'd’un fait dépourvu d’éléments vérifiables';
 
 const ORIGINE =
   'apprennent à chercher des informations et à interroger l’origine et la pertinence de ces informations dans l’univers du numérique';
@@ -286,8 +282,8 @@ const libreInformation: Notion = {
   credit: CREDIT,
   sources: [VP_PRESSE.id],
   memo: [
-    'La **liberté de l’information**, c’est pouvoir recevoir et partager des **informations**. La **Convention des droits de l’enfant** parle d’information à l’article 17.',
-    'La **liberté de la presse** permet aux **journalistes** de publier, dans le cadre de la loi de 1881. Cette liberté est très importante en **démocratie**.',
+    'La **liberté de l’information**, c’est pouvoir recevoir et partager des **informations**. La **Convention des droits de l’enfant** compte pour tes libertés : retiens ses articles 13 et 17.',
+    'La **liberté de la presse** permet aux **journalistes** de publier, dans le cadre de la loi de 1881, qui rend libres l’imprimerie et la librairie (la vente des livres). Cette liberté est très importante en **démocratie**.',
     'En démocratie, chacun doit pouvoir accéder à une information **fiable** et **vérifiée**.',
   ],
   faits: [
@@ -305,7 +301,7 @@ const libreInformation: Notion = {
       gap: [
         'On a la liberté de recevoir ou de communiquer des ',
         ' ou des idées.',
-        ['informations', 'information', 'infos'],
+        ['informations', 'information', 'infos', 'opinions'],
       ],
       quote: RECEVOIR,
       from: VP_EXPRESSION,
@@ -362,18 +358,6 @@ const libreInformation: Notion = {
       from: LOI_1881,
       explain: 'Imprimer et vendre des écrits est libre. La même loi fixe aussi des limites.',
     },
-    {
-      q: 'Quelle liberté, partout dans le monde, concerne les journaux qui publient des informations ?',
-      a: 'la liberté de la presse',
-      wrong: [
-        w('la liberté de circuler à vélo', 'Le vélo ne concerne pas les journaux.'),
-        w('le droit de choisir sa cantine', 'La cantine ne concerne pas les journaux.'),
-        w('le droit de ne pas aller à l’école', 'Ce droit n’existe pas et ne concerne pas la presse.'),
-      ],
-      gap: ['La liberté des journaux s’appelle la liberté de la ', '.', ['presse']],
-      quote: PRESSE_MONDE,
-      explain: 'La liberté de la presse montre la liberté d’expression à travers le monde.',
-    },
   ],
   paires3: [
     ['Presse', 'Les journaux et les magazines'],
@@ -384,8 +368,8 @@ const libreInformation: Notion = {
     ['Presse', 'Les journaux et les magazines'],
     ['Journaliste', 'Recueille et diffuse des informations'],
     ['Loi de 1881', 'Liberté de la presse'],
-    ['Article 17 de la Convention des droits de l’enfant', 'L’information'],
-    ['Article 13 de la Convention des droits de l’enfant', 'La liberté d’expression'],
+    ['Démocratie', 'Les citoyens participent aux décisions'],
+    ['Convention des droits de l’enfant', 'Texte qui contient les articles 13 et 17 sur tes libertés'],
   ],
   libres: [
     {
@@ -399,15 +383,14 @@ const libreInformation: Notion = {
       explain: 'Un pilier soutient un bâtiment. Ces deux libertés soutiennent la démocratie.',
     },
     {
-      q: 'Convention des droits de l’enfant : l’article 13 protège l’expression. Quel article protège la liberté d’information ? (en chiffres)',
+      q: 'Pour les libertés et les réseaux sociaux, ton programme cite deux articles de la Convention des droits de l’enfant : le 13 et le … (en chiffres).',
       accepted: ['17', 'article 17', 'l’article 17'],
       traps: [
         { text: '11', why: 'L’article 11 est celui de la DDHC sur les opinions.' },
-        { text: '7', why: 'L’article 7 de la Convention parle de la nationalité.' },
+        { text: '13', why: 'Le 13 est déjà cité : on cherche le second article.' },
       ],
-      quote: CIDE,
-      explain:
-        'Le programme de 4e précise : article 13 l’expression, article 15 l’association, article 17 l’information.',
+      quote: ARTICLES_CIDE,
+      explain: '« CIDE » désigne la Convention des droits de l’enfant. Les deux articles cités sont le 13 et le 17.',
     },
     {
       q: 'Les journalistes cherchent des informations et les diffusent au … (un mot).',
@@ -518,7 +501,7 @@ const verifierInformation: Notion = {
         w('la croire parce que le titre est écrit en gros', 'La taille des lettres ne prouve rien.'),
         w('la croire parce qu’elle est amusante', 'Ce qui amuse n’est pas forcément vrai.'),
       ],
-      gap: ['Comparer plusieurs sources pour vérifier une nouvelle, c’est les ', '.', ['recouper', 'croiser']],
+      gap: ['Comparer plusieurs sources, on appelle cela les ', ' (le mot commence par « re »).', ['recouper']],
       quote: RECOUPEMENT,
       from: CYCLE4,
       explain: 'Recouper, c’est regarder si plusieurs sources disent la même chose.',
@@ -553,21 +536,22 @@ const verifierInformation: Notion = {
       explain: 'Un clic suffit pour envoyer un message à beaucoup de personnes.',
     },
     {
-      q: 'Pour vérifier une information, qu’est-ce qui compte le plus ?',
-      a: 'des éléments qu’on peut vérifier',
+      q: 'Qu’est-ce qui permet de contrôler si une nouvelle est vraie ?',
+      a: 'des preuves',
       wrong: [
         w('le nombre de points d’exclamation', 'La ponctuation n’est pas une preuve.'),
         w('la couleur des images', 'La couleur ne prouve rien.'),
         w('le nombre d’amis qui la répètent', 'Une erreur répétée reste une erreur.'),
       ],
       gap: [
-        'Une information sans éléments ',
-        ' pour la rendre crédible doit te faire douter.',
-        ['vérifiables', 'verifiables', 'vérifiable', 'verifiable'],
+        'Une nouvelle sans aucune ',
+        ' qu’on peut contrôler doit te faire douter (le mot commence par « pr »).',
+        ['preuve', 'preuves'],
       ],
       quote: DEFINITION,
       from: VP_INFOX,
-      explain: 'Un texte officiel a proposé cette idée : une fausse information n’a pas de preuves vérifiables.',
+      explain:
+        '« Dépourvu » veut dire « sans ». Un texte de loi proposé décrit ainsi la fausse information : rien ne permet de la contrôler.',
     },
     {
       avance: true,
@@ -591,14 +575,14 @@ const verifierInformation: Notion = {
   paires5: [
     ['Infox', 'Fausse information'],
     ['Recouper', 'Comparer plusieurs sources'],
-    ['Désinformation', 'Informations trompeuses qui circulent'],
+    ['Source', 'D’où vient l’information'],
     ['Fiable', 'En qui on peut avoir confiance'],
     ['Lois de 2018', 'Contre la manipulation de l’information'],
   ],
   libres: [
     {
-      q: 'Un message annonce que l’école fermera demain, sans aucune preuve. C’est faux. Quel mot court désigne cette fausse nouvelle ?',
-      accepted: ['infox', 'une infox', 'fake news', 'une fake news', 'intox', 'une intox'],
+      q: 'Un message annonce que l’école fermera demain. C’est faux. Quel mot court, qui commence par « in », désigne cette fausse nouvelle ?',
+      accepted: ['infox', 'une infox', 'intox', 'une intox'],
       traps: [
         { text: 'source', why: 'La source dit d’où vient l’information. Ici, on nomme la fausse nouvelle.' },
         { text: 'opinion', why: 'Une opinion est un avis. Ici, on présente un faux fait.' },
@@ -608,8 +592,8 @@ const verifierInformation: Notion = {
       explain: 'Une fausse nouvelle qui circule s’appelle une infox.',
     },
     {
-      q: 'Une information en qui l’on peut avoir confiance est une information … (un mot).',
-      accepted: ['fiable', 'vérifiée', 'verifiee', 'sûre', 'sure'],
+      q: 'Une information à laquelle on peut faire confiance est une information … (un mot qui commence par « f »).',
+      accepted: ['fiable'],
       traps: [
         { text: 'amusante', why: 'Amusante ne veut pas dire vraie.' },
         { text: 'rapide', why: 'La vitesse ne prouve rien.' },
@@ -719,7 +703,7 @@ const lesSources: Notion = {
   memo: [
     'La **source**, c’est d’où vient une **information** : une personne, un journal, un livre, un site. Cherche son **origine** avant de la croire.',
     'Compare des sources **fiables** et variées. Un **journaliste** recueille des informations pour le public.',
-    'La loi protège le **secret des sources** des journalistes : ils peuvent garder pour eux qui leur a parlé.',
+    'La loi protège le **secret des sources** des journalistes : ils peuvent garder pour eux qui leur a parlé. Elle punit aussi les fausses nouvelles diffusées exprès qui troublent la paix publique.',
   ],
   faits: [
     {
@@ -737,16 +721,21 @@ const lesSources: Notion = {
     },
     {
       q: 'Pour un exposé, quelle façon de chercher est la meilleure ?',
-      a: 'utiliser différentes sources documentaires',
+      a: 'consulter plusieurs sources différentes',
       wrong: [
         w('recopier le premier message trouvé', 'Un seul message ne suffit pas : on compare.'),
         w('ne lire que des publicités', 'Une publicité cherche à vendre.'),
         w('inventer les informations manquantes', 'Inventer n’est pas chercher.'),
       ],
-      gap: ['Pour apprendre, on se familiarise avec différentes sources ', '.', ['documentaires', 'documentaire']],
+      gap: [
+        'Pour un exposé, une seule source ne suffit pas : consultes-en ',
+        ' (le mot commence par « pl »).',
+        ['plusieurs'],
+      ],
       quote: DOCUMENTS,
       from: CYCLE3,
-      explain: 'Livres, sites ou documents variés permettent de comparer.',
+      explain:
+        '« Sources documentaires » : des documents pour s’informer, comme des livres ou des sites. En avoir plusieurs permet de comparer.',
     },
     {
       q: 'Quelles sources d’informations faut-il apprendre à reconnaître ?',
@@ -795,7 +784,7 @@ const lesSources: Notion = {
   ],
   paires3: [
     ['Source', 'D’où vient l’information'],
-    ['Origine', 'Endroit de départ'],
+    ['Fiable', 'En qui on peut avoir confiance'],
     ['Secret des sources', 'Le journaliste peut taire qui lui a parlé'],
   ],
   paires5: [
