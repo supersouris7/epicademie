@@ -244,7 +244,7 @@ const travail: Notion = {
   hint: 'Relis le mémo : à quel lieu de travail la question te fait-elle penser ?',
   memo: [
     'À l’âge industriel, de nouveaux métiers apparaissent. On travaille à la **mine**, à l’**usine**, à l’**atelier** ou au **grand magasin**.',
-    'L’usine et l’atelier sont des lieux de travail où l’on produit, avec des **machines** et des outils.',
+    'L’usine et l’atelier sont des lieux de travail où l’on produit, avec des **machines** et des outils. Une usine est un grand bâtiment avec des machines. Un atelier est une pièce ou un petit bâtiment où l’on fabrique des objets avec des outils.',
     'À la mine, on extrait le charbon. Pour son roman Germinal, publié en 1885, Émile Zola enquête dans les mines d’Anzin. Il décrit des trains de **berlines**, un cheval qui les traîne et un enfant qui les conduit. En 1906, à Courrières, une **catastrophe** est très meurtrière. Au début du XXe siècle, la journée de huit heures est instaurée pour les mineurs.',
     'Les grands magasins se développent : La Belle Jardinière (1824), puis les Galeries du Louvre (1855). Au Bon Marché, un grand magasin de Paris, le patron Aristide Boucicaut donne droit à deux repas par jour à chaque employé. Dans Au Bonheur des dames, Zola montre un grand magasin : prix fixes et affichés, publicité.',
   ],
@@ -591,7 +591,7 @@ const ville: Notion = {
   memo: [
     'Les **villes** réunissent des usines, des commerces et des banques : elles grandissent comme jamais. C’est la **ville industrielle**. Les ouvriers ont du mal à s’y loger.',
     'À Paris, de 1853 à 1870, le **préfet** Haussmann transforme la ville : larges rues, réseaux d’eau et de gaz, parcs. Grâce à l’éclairage électrique, des travaux continuent la nuit. Mais des habitants pauvres subissent l’**expulsion** : ils doivent quitter leur logement. La misère s’installe dans les **banlieues**.',
-    'Souvent, de grands patrons construisent des cités pour loger les ouvriers. La loi de 1894 concerne les **HBM** (habitations à bon marché). Pour le **métro**, on pense à des abonnements ouvriers : les mal-logés pourraient habiter en banlieue. La première ligne ouvre à Paris en 1900.',
+    'Souvent, de grands patrons construisent des cités pour loger les ouvriers. La loi de 1894 concerne les **HBM** (habitations à bon marché). Pour le **métro**, on pense à des abonnements ouvriers : les mal-logés pourraient habiter en banlieue. Les travaux préparatoires commencent en 1898 et la première ligne ouvre à Paris en 1900.',
   ],
   faits: [
     {
@@ -650,7 +650,7 @@ const ville: Notion = {
           why: 'Les petites gens ne sont pas relogées gratuitement au centre.',
         },
         { label: 'une baisse de leur loyer', why: 'Beaucoup doivent au contraire partir.' },
-        { label: 'un emploi garanti sur les chantiers', why: 'Le texte parle d’habitants qui doivent partir.' },
+        { label: 'un emploi garanti sur les chantiers', why: 'Le mémo parle d’habitants qui doivent partir.' },
       ],
       gap: ['Des habitants pauvres sont chassés vers les ', '.', ['banlieues', 'banlieue']],
       explain: 'Beaucoup doivent partir et la misère s’installe dans les banlieues.',
