@@ -100,16 +100,46 @@ describe('anglais 6e : le présent simple', () => {
     for (const q of questions('a6-present-affirmatif', 5)) {
       const [verb, group, own] = blanks(q);
       const name = /seul le message (?:de |d’)(\w+)/.exec(q.prompt)![1]!;
+      const v = VERBS.find((x) => x.s === own)!;
       expect(lines(q).filter((l) => l.includes(`I ${verb} ${group}.`))).toHaveLength(2);
       const mine = lines(q).find((l) => l.startsWith(`${name}:`))!;
       const other = lines(q).find((l) => !l.startsWith(`${name}:`))!;
-      expect(mine).toContain(`I ${own} `);
       if (q.answer.kind !== 'cloze') throw new Error('texte à trous attendu');
-      const phrase = `I ${own}${q.answer.parts[3]!.replace('. »', '.')}`;
+      // Le verbe saisi se transforme : le message porte la base, jamais la forme attendue.
+      expect(mine).not.toContain(` ${own} `);
+      const phrase = `I ${v.base}${q.answer.parts[3]}`;
       expect(mine).toContain(phrase);
       expect(other).not.toContain(phrase);
       expect(filled(q)).toBe(true);
     }
+    const typed = new Set(questions('a6-present-affirmatif', 5).map((q) => blanks(q)[2]));
+    for (const form of ['rides', 'brushes', 'does', 'tidies', 'studies', 'has']) expect(typed).toContain(form);
+  });
+
+  it('niveau 3 : l’énoncé cite les éléments dans l’ordre mélangé, jamais la réponse', () => {
+    for (const id of ['a6-present-affirmatif', 'a6-present-questions'])
+      for (const q of questions(id, 3)) {
+        if (q.answer.kind !== 'order') throw new Error('ordre attendu');
+        const { items, correct } = q.answer;
+        const quoted = [...q.prompt.matchAll(/« (.+?) »/g)].map((m) => m[1]);
+        expect(quoted).toEqual(items);
+        expect(quoted).not.toEqual(correct.map((i) => items[i]));
+      }
+  });
+
+  it('questions, niveau 4 : « my… » ou « your… » sont acceptés', () => {
+    const seen = new Set<string>();
+    for (const q of questions('a6-present-questions', 4)) {
+      if (q.answer.kind !== 'text' || !q.prompt.includes('« My ')) continue;
+      const mine = q.answer.accepted.filter((a) => a.includes(' my '));
+      expect(mine.length, q.prompt).toBeGreaterThan(0);
+      for (const a of mine) expect(text(q, a.replace(' my ', ' your ')), a).toBe(true);
+      seen.add(q.prompt.startsWith('Pose') ? 'mot interrogatif' : 'transformation');
+    }
+    expect([...seen].sort()).toEqual(['mot interrogatif', 'transformation']);
+    const ride = find('a6-present-questions', 4, '« My brother rides');
+    expect(text(ride, 'Does your brother ride a bike after school?')).toBe(true);
+    expect(text(ride, 'Does your brother rides a bike after school?')).toBe(false);
   });
 
   it('3e personne, niveau 5 : chaque verbe est celui du message, mis à la 3e personne', () => {
@@ -175,14 +205,18 @@ describe('anglais 6e : le présent simple', () => {
       const name = /questions sur (\w+) :/.exec(q.prompt)![1]!;
       const mine = lines(q).find((l) => l.startsWith(`${name}:`))!;
       const a = blanks(q);
-      const verbs = [...q.prompt.matchAll(/« (\w+) »/g)].map((m) => m[1]!);
-      verbs.forEach((base, i) => {
-        const v = VERBS.find((x) => x.base === base)!;
+      const asked = [...q.prompt.matchAll(/« (.+?) »/g)].map((m) => VERBS.find((x) => x.fr === m[1])!);
+      // Blocs de trous : [Does, Yes/No, réponse] puis [Does, verbe, Yes/No, réponse].
+      asked.forEach((v, i) => {
+        const { base } = v;
+        // Le verbe à saisir n’est pas recopiable de l’énoncé.
+        expect(q.prompt).not.toContain(`« ${base} »`);
         const yes = mine.includes(`I ${base} ${v.obj} ${v.time}.`);
         if (!yes) expect(mine).toContain(`I don’t ${base} ${v.obj} ${v.time}.`);
-        expect([a[3 * i + 1], a[3 * i + 2]]).toEqual(yes ? ['Yes', 'does'] : ['No', 'doesn’t']);
+        expect(a.slice([1, 5][i], [3, 7][i])).toEqual(yes ? ['Yes', 'does'] : ['No', 'doesn’t']);
       });
-      expect([a[0], a[3]]).toEqual(['Does', verbs[1]]);
+      expect([a[0], a[3], a[4]]).toEqual(['Does', 'Does', asked[1]!.base]);
+      expect(q.answer.parts.join(' ')).not.toContain('Does');
       expect(filled(q)).toBe(true);
     }
   });

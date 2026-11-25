@@ -97,6 +97,8 @@ const upTo = (tier: number) => VERBS.filter((v) => v.tier <= tier);
 const DIRECT = VERBS.filter((v) => v.direct);
 const NOT_HAVE = VERBS.filter((v) => v.base !== 'have');
 const coin = (rng: Rng) => rng.int(0, 1) === 0;
+/** Éléments à ranger, cités dans leur ordre mélangé : l’énoncé reste distinct sans donner la réponse. */
+const listed = (items: readonly string[]) => items.map((w) => `« ${w} »`).join(' · ');
 
 /** Saisies acceptées : phrase avec ou sans point final. */
 const dotted = (forms: readonly string[]) => forms.flatMap((f) => [f, `${f}.`]);
@@ -118,6 +120,14 @@ const who = (s: Subject) =>
     ? `« ${s.text} » : une seule personne, c’est la 3e personne du singulier.`
     : `« ${s.text} » : ce n’est pas la 3e personne du singulier.`;
 
+/** Comment s'écrit la forme avec he, she, it. */
+const spelling = (v: Verb) => {
+  if (v.base === 'have') return 'have est irrégulier : have → **has**.';
+  if (v.base === 'do' || v.base === 'go') return `${v.base} est à part : ${v.base} → **${v.s}**.`;
+  if (v.s.endsWith('ies')) return `Ici le y devient i : ${v.base} → **${v.s}**.`;
+  if (v.s === `${v.base}es`) return `Ce verbe prend -es : ${v.base} → **${v.s}**.`;
+  return `On ajoute -s : ${v.base} → **${v.s}**.`;
+};
 /** Piège « ajoute ou enlève le -s ». */
 const swapped = (s: Subject, v: Verb) => ({ label: isThird(s) ? v.base : v.s, why: whyForm(s) });
 
@@ -165,9 +175,9 @@ function affirmativeOrder(rng: Rng): QuestionDraft {
   const words = [s.text, v.base, v.obj, v.time];
   const items = shuffledOther(rng, words);
   return {
-    prompt: `Remets la phrase dans l’ordre, en commençant par le sujet : « ${s.text} », « ${v.base} », « ${v.obj} », puis le moment.`,
+    prompt: `Remets la phrase affirmative dans l’ordre (qui, fait quoi, puis quand) : ${listed(items)}.`,
     answer: { kind: 'order', items, correct: words.map((w) => items.indexOf(w)) },
-    hint: 'En anglais, l’ordre est : qui, fait quoi, puis quand.',
+    hint: 'Cherche d’abord qui fait l’action, puis le verbe et ce qui le complète.',
     steps: [
       'La phrase affirmative suit l’ordre : sujet, verbe, complément, puis le moment.',
       `Réponse : **${sentence(s, v.base, v)}**`,
@@ -220,23 +230,24 @@ function affirmativeMessages(rng: Rng): QuestionDraft {
       .join(' ')}`;
   const objects = rng.shuffle([shared, onlyA, onlyB].map((v) => rest(v)));
   return {
-    prompt: `Lis les deux messages, puis complète au présent simple : l’activité commune, puis celle que seul le message ${de(a.text)} annonce.`,
+    prompt: `Lis les deux messages, puis complète au présent simple : l’activité commune, puis le verbe de l’activité que seul le message ${de(a.text)} annonce.`,
     figure: { kind: 'document', title: 'My week', lines: [line(a, onlyA), line(b, onlyB)], credit: ABOUT },
     answer: {
       kind: 'cloze',
-      parts: [`${a.text} and ${b.text} `, ' ', `. Only ${a.text} says: « I `, ` ${rest(onlyA)}. »`],
+      parts: [`${a.text} and ${b.text} `, ' ', `. ${a.text} also `, ` ${rest(onlyA)}.`],
       blanks: [
         { mode: 'text', accepted: [shared.base] },
         { mode: 'list', options: objects, correct: objects.indexOf(rest(shared)) },
-        { mode: 'text', accepted: [onlyA.base] },
+        { mode: 'text', accepted: [onlyA.s] },
       ],
     },
-    hint: 'Cherche la phrase écrite dans les deux messages. Les deux sujets réunis valent they.',
+    hint: 'Les deux sujets réunis valent they. Dans la seconde phrase, on ne parle que d’une personne : regarde la fin du verbe.',
     steps: [
       `Les deux messages disent « I ${shared.base} ${rest(shared)} ».`,
       `« ${a.text} and ${b.text} » = they ; après they comme après I, le verbe reste à la base.`,
       `Seul le message ${de(a.text)} dit « I ${onlyA.base} ${rest(onlyA)} ».`,
-      `Réponse : **${shared.base} ${rest(shared)}**, puis **${onlyA.base}**`,
+      `« ${a.text} » = ${a.pronoun}, 3e personne du singulier. ${spelling(onlyA)}`,
+      `Réponse : **${shared.base} ${rest(shared)}**, puis **${onlyA.s}**`,
     ],
   };
 }
@@ -250,7 +261,7 @@ const affirmative: Skill = {
     memo: [
       'Le **présent simple** dit une habitude ou ce qui est vrai : I play football every weekend.',
       'Après le **sujet**, on met la **base verbale** : we work, they live (sans am ni are devant).',
-      'Attention : avec he, she, it, le verbe change un peu : she works.',
+      'Attention : avec he, she, it, le verbe change : she works, he goes, she tidies, he has.',
     ],
     source: source('présent simple, phrases affirmatives'),
     sources: ['anglais-college-2025', 'bc-present-simple', 'bc-present-simple-a1'],
@@ -265,14 +276,6 @@ const affirmative: Skill = {
 };
 
 // ——— 2. 3e personne du singulier ———
-/** Comment s'écrit la forme avec he, she, it. */
-const spelling = (v: Verb) => {
-  if (v.base === 'have') return 'have est irrégulier : have → **has**.';
-  if (v.base === 'do' || v.base === 'go') return `${v.base} est à part : ${v.base} → **${v.s}**.`;
-  if (v.s.endsWith('ies')) return `Ici le y devient i : ${v.base} → **${v.s}**.`;
-  if (v.s === `${v.base}es`) return `Ce verbe prend -es : ${v.base} → **${v.s}**.`;
-  return `On ajoute -s : ${v.base} → **${v.s}**.`;
-};
 const thirdTraps = (v: Verb) => [
   { text: v.base, why: WHY_S },
   ...(v.bad ? [{ text: v.bad, why: `Vérifie l’orthographe. ${spelling(v)}` }] : []),
@@ -625,7 +628,7 @@ function questionOrder(rng: Rng): QuestionDraft {
   const words = [cap(doFor(s)), s.mid, v.base, v.obj, v.time];
   const items = shuffledOther(rng, words);
   return {
-    prompt: `Remets la question dans l’ordre, en commençant par Do ou Does : on interroge sur « ${s.mid} », avec « ${v.base} » et « ${v.obj} ». Le moment vient à la fin.`,
+    prompt: `Remets la question dans l’ordre : ${listed(items)}.`,
     answer: { kind: 'order', items, correct: words.map((w) => items.indexOf(w)) },
     hint: 'Après le premier petit mot, demande-toi : qui ? fait quoi ?',
     steps: [
@@ -642,21 +645,27 @@ const WH: readonly { readonly base: string; readonly wh: string; readonly keep: 
   { base: 'start', wh: 'What time', keep: ' work', asks: 'l’heure' },
 ];
 
+/** « My brother… » : la question posée à la personne qui parle (« your brother ») est aussi correcte. */
+const mids = (s: Subject): readonly Subject[] =>
+  s.mid.startsWith('my ') ? [s, { ...s, mid: s.mid.replace('my ', 'your ') }] : [s];
+
 function questionWh(rng: Rng): QuestionDraft {
   const s = rng.pick([...THIRD.slice(0, 6), ...PLURAL]);
   const w = rng.pick(WH);
   const v = VERBS.find((x) => x.base === w.base) ?? at(VERBS, 0);
   const statement = w.base === 'live' ? `${s.text} ${formFor(s, v)} in London.` : sentence(s, formFor(s, v), v);
-  const build = (aux: string, form: string) => `${w.wh} ${aux} ${s.mid} ${form}${w.keep}`;
-  const good = build(doFor(s), v.base);
+  const build = (to: Subject, aux: string, form: string) => `${w.wh} ${aux} ${to.mid} ${form}${w.keep}`;
+  const good = build(s, doFor(s), v.base);
   return {
     prompt: `Pose la question avec « ${w.wh} » pour demander ${w.asks} : « ${statement} »`,
-    answer: { kind: 'text', accepted: asked([good]) },
-    traps: askedTraps([
-      { text: build(isThird(s) ? 'do' : 'does', v.base), why: whyDo(s) },
-      { text: build(doFor(s), v.s), why: WHY_NO_S },
-      { text: `${w.wh} ${s.mid} ${formFor(s, v)}${w.keep}`, why: 'Après le mot interrogatif, il faut do ou does.' },
-    ]),
+    answer: { kind: 'text', accepted: asked(mids(s).map((to) => build(to, doFor(s), v.base))) },
+    traps: askedTraps(
+      mids(s).flatMap((to) => [
+        { text: build(to, isThird(s) ? 'do' : 'does', v.base), why: whyDo(s) },
+        { text: build(to, doFor(s), v.s), why: WHY_NO_S },
+        { text: `${w.wh} ${to.mid} ${formFor(s, v)}${w.keep}`, why: 'Après le mot interrogatif, il faut do ou does.' },
+      ]),
+    ),
     hint: 'Ordre : le mot interrogatif, le petit mot de la question, le sujet, puis le verbe.',
     steps: ['Le mot interrogatif se place devant do ou does.', whyDo(s), `Réponse : **${good}?**`],
   };
@@ -666,18 +675,24 @@ function questionTransform(rng: Rng): QuestionDraft {
   if (rng.int(0, 2) === 0) return questionWh(rng);
   const s = rng.pick([...THIRD, ...PLURAL]);
   const v = rng.pick(VERBS);
-  const good = `${cap(doFor(s))} ${s.mid} ${v.base} ${rest(v)}`;
+  const build = (to: Subject, aux: string, form: string) => `${aux} ${to.mid} ${form} ${rest(v)}`;
+  const good = build(s, cap(doFor(s)), v.base);
   // Avec have, la question sans do est aussi correcte (British Council, « Questions and negatives »).
-  const other = v.base === 'have' ? [`${isThird(s) ? 'Has' : 'Have'} ${s.mid} ${rest(v)}`] : [];
+  const accepted = mids(s).flatMap((to) => [
+    build(to, cap(doFor(s)), v.base),
+    ...(v.base === 'have' ? [`${isThird(s) ? 'Has' : 'Have'} ${to.mid} ${rest(v)}`] : []),
+  ]);
   return {
     prompt: `Transforme en question (réponse attendue : oui ou non) : « ${sentence(s, formFor(s, v), v)} »`,
-    answer: { kind: 'text', accepted: asked([good, ...other]) },
+    answer: { kind: 'text', accepted: asked(accepted) },
     traps: askedTraps(
-      [
-        { text: `${isThird(s) ? 'Do' : 'Does'} ${s.mid} ${v.base} ${rest(v)}`, why: whyDo(s) },
-        { text: `${cap(doFor(s))} ${s.mid} ${v.s} ${rest(v)}`, why: WHY_NO_S },
-        { text: `${cap(formFor(s, v))} ${s.mid} ${rest(v)}`, why: WHY_INVERT },
-      ].filter((t) => v.base !== 'have' || t.why !== WHY_INVERT),
+      mids(s)
+        .flatMap((to) => [
+          { text: build(to, isThird(s) ? 'Do' : 'Does', v.base), why: whyDo(s) },
+          { text: build(to, cap(doFor(s)), v.s), why: WHY_NO_S },
+          { text: `${cap(formFor(s, v))} ${to.mid} ${rest(v)}`, why: WHY_INVERT },
+        ])
+        .filter((t) => v.base !== 'have' || t.why !== WHY_INVERT),
     ),
     hint: 'Commence par le petit mot qui va avec le sujet, puis vérifie la fin du verbe.',
     steps: [whyDo(s), WHY_NO_S, `Réponse : **${good}?**`],
@@ -704,7 +719,7 @@ function questionInterview(rng: Rng): QuestionDraft {
   const answerList = (does: boolean) => ({ mode: 'list' as const, options: ['Yes', 'No'], correct: does ? 0 : 1 });
   const He = kid.pronoun;
   return {
-    prompt: `Lis les messages. Tu poses deux questions sur ${kid.text} : « ${first.v.base} », puis « ${second.v.base} ». Complète les questions et les réponses courtes.`,
+    prompt: `Lis les messages. Tu poses deux questions sur ${kid.text} : d’abord sur « ${first.v.fr} », puis sur « ${second.v.fr} ». Complète les questions et les réponses courtes.`,
     figure: { kind: 'document', title: 'About us', lines, credit: ABOUT },
     answer: {
       kind: 'cloze',
@@ -712,7 +727,8 @@ function questionInterview(rng: Rng): QuestionDraft {
         '« ',
         ` ${kid.text} ${first.v.base} ${rest(first.v)}? » « `,
         `, ${He} `,
-        `. » « Does ${kid.text} `,
+        '. » « ',
+        ` ${kid.text} `,
         ` ${rest(second.v)}? » « `,
         `, ${He} `,
         '. »',
@@ -721,6 +737,7 @@ function questionInterview(rng: Rng): QuestionDraft {
         { mode: 'text', accepted: ['Does'] },
         answerList(first.does),
         { mode: 'text', accepted: reply(first.does) },
+        { mode: 'text', accepted: ['Does'] },
         { mode: 'text', accepted: [second.v.base] },
         answerList(second.does),
         { mode: 'text', accepted: reply(second.does) },
@@ -732,7 +749,7 @@ function questionInterview(rng: Rng): QuestionDraft {
       ...rows.map(
         (r) => `Message ${de(kid.text)} : « ${says(r.v, r.does)} » → ${word(r.does)}, ${He} ${reply(r.does)[0]}.`,
       ),
-      `Réponse : **Does, ${word(first.does)}, ${reply(first.does)[0]} ; ${second.v.base}, ${word(second.does)}, ${reply(second.does)[0]}**`,
+      `Réponse : **Does, ${word(first.does)}, ${reply(first.does)[0]} ; Does, ${second.v.base}, ${word(second.does)}, ${reply(second.does)[0]}**`,
     ],
   };
 }
