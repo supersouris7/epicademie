@@ -49,7 +49,7 @@ const G_DEREGLEMENT =
   "le changement climatique n'est pas qu'un réchauffement : certaines régions peuvent connaître des saisons froides plus marquées, et les régimes de précipitation également sont modifiés";
 const G_CLIMAT = 'Le climat est une moyenne météorologique sur une période d’au moins trente ans';
 const G_CONSENSUS =
-  "les émissions de gaz à effet de serre par les activités humaines sont en grande partie responsable du réchauffement de l'atmosphère terrestre";
+  "les rejets de GES consécutifs à l'activité humaine conduisent à une amplification de l'effet de serre et accentuent fortement le réchauffement global moyen de l'atmosphère";
 const G_GIEC =
   'Organisme scientifique intergouvernemental, il collecte et interprète les données scientifiques mais ne les produit pas';
 const G_KYOTO = 'La réussite du protocole de Kyoto, adopté en 1997';
@@ -141,7 +141,7 @@ const climat: Notion = {
   memo: [
     'Le **changement climatique** modifie la moyenne du temps qu’il fait sur au moins trente ans. Aujourd’hui, il vient surtout des **gaz à effet de serre** émis par les activités humaines.',
     'Ses effets changent d’une région à l’autre : vagues de chaleur en Europe, fonte du **pergélisol** dans l’Arctique, montée des eaux qui menace des îles.',
-    'Le **GIEC** fait le point sur les connaissances ; l’**Accord de Paris** (2015) vise à limiter le réchauffement sous 2 °C.',
+    'Le **GIEC** fait le point sur les connaissances ; l’**Accord de Paris** (2015) vise à limiter le réchauffement sous 2 °C. L’**ODD** 13 de l’ONU appelle à agir contre les changements climatiques.',
   ],
   faits: [
     {
@@ -166,10 +166,11 @@ const climat: Notion = {
         ', en grande partie responsables du réchauffement.',
         ['serre'],
       ],
-      choix: ['serre', 'ombre', 'pluie'],
+      choix: ['serre', 'chaleur', 'pluie'],
       quote: G_CONSENSUS,
-      explain: 'Il existe un consensus scientifique : les gaz émis par les sociétés réchauffent l’atmosphère.',
-      src: CLIMAT,
+      explain:
+        'Il existe un consensus scientifique : les gaz à effet de serre (GES) émis par les sociétés réchauffent l’atmosphère.',
+      src: GES,
     },
     {
       q: 'Sur quelle durée au moins calcule-t-on la moyenne météorologique qui définit un climat ?',
@@ -180,7 +181,7 @@ const climat: Notion = {
         { label: 'un an', why: 'Une année peut être exceptionnelle : il faut au moins trente ans.' },
       ],
       gap: ['Le climat est une moyenne météorologique sur au moins ', ' ans.', ['trente']],
-      choix: ['trente', 'trois', 'deux'],
+      choix: ['trente', 'trois', 'dix'],
       quote: G_CLIMAT,
       explain: 'Un été chaud ne suffit pas : seule la moyenne sur de longues années montre un changement de climat.',
       src: CLIMAT,
@@ -214,7 +215,7 @@ const climat: Notion = {
         },
       ],
       gap: ['L’Accord de Paris vise à rester au-dessous de ', ' °C de hausse.', ['2']],
-      choix: ['2', '8', '15'],
+      choix: ['2', '4', '10'],
       quote: G_DEUX_DEGRES,
       explain: 'Les pays veulent rester sous 2 °C et tendre vers 1,5 °C.',
       src: PARIS,
@@ -233,8 +234,12 @@ const climat: Notion = {
           why: 'Ce n’est pas l’effet en cause : ici, ce sont les sols gelés qui fondent.',
         },
       ],
-      gap: ['Dans l’Arctique, le dérèglement climatique provoque la fonte du ', '.', ['pergélisol']],
-      choix: ['pergélisol', 'sable', 'béton'],
+      gap: [
+        'Dans l’Arctique, le sol gelé en permanence, appelé ',
+        ', fond avec le dérèglement climatique.',
+        ['pergélisol'],
+      ],
+      choix: ['pergélisol', 'littoral', 'atoll'],
       quote: G_PERGELISOL,
       explain: 'Le pergélisol est un sol gelé en permanence : en fondant, il peut aussi libérer des gaz.',
       src: PERGELISOL,
@@ -251,7 +256,7 @@ const climat: Notion = {
         },
       ],
       gap: ['En Europe, les vagues de ', ' sont la principale manifestation observée.', ['chaleur']],
-      choix: ['chaleur', 'froid', 'brouillard'],
+      choix: ['chaleur', 'froid', 'pluie'],
       quote: G_VAGUES,
       explain: 'Des périodes de plusieurs jours bien plus chaudes que la normale, plus fréquentes qu’autrefois.',
       src: CHALEUR,
@@ -277,7 +282,7 @@ const climat: Notion = {
   ],
   consigne: {
     prompt: 'Remets ces étapes de l’action internationale dans l’ordre, de la plus ancienne à la plus récente.',
-    hint: 'Commence par le groupe d’experts, créé à la fin des années 1980.',
+    hint: 'Un traité est d’abord adopté (le texte est voté), puis il entre en vigueur (il commence à s’appliquer).',
     why: 'GIEC : 1988 ; protocole de Kyoto : 1997 ; Accord de Paris : 2015 ; entrée en vigueur : 2016.',
     fin: 'La plus ancienne est',
     quote: G_KYOTO,
@@ -446,7 +451,7 @@ const climat: Notion = {
 const risques: Notion = {
   classe: '5e',
   id: 'g5-risques',
-  title: 'Les risques : naturels, technologiques et sanitaires',
+  title: 'Les risques : industriels, technologiques, sanitaires et climatiques',
   hint: 'Un risque réunit un phénomène possible (aléa) et des personnes ou des biens fragiles : cherche les deux.',
   memo: [
     'Un **risque** réunit un **aléa**, des **enjeux** (personnes, biens) et leur **vulnérabilité** : sans personne exposée, un cyclone n’est pas un risque.',
@@ -472,7 +477,7 @@ const risques: Notion = {
         },
       ],
       gap: ['Un risque naît quand un ', ' peut toucher une population vulnérable.', ['aléa']],
-      choix: ['aléa', 'atlas', 'relief'],
+      choix: ['aléa', 'enjeu', 'dommage'],
       quote: G_RISQUE,
       explain: 'Aléa et population vulnérable : les deux sont nécessaires.',
       src: RISQUE,
@@ -492,7 +497,7 @@ const risques: Notion = {
         },
       ],
       gap: ['L’aléa ne devient un risque qu’en présence d’', ' vulnérables.', ['enjeux']],
-      choix: ['enjeux', 'objectifs', 'îles'],
+      choix: ['enjeux', 'aléas', 'océans'],
       quote: G_ATOLL,
       explain: 'Sans personnes ni biens exposés, le phénomène existe mais le risque non.',
       src: ALEA,
@@ -540,18 +545,24 @@ const risques: Notion = {
       src: SANITAIRE,
     },
     {
-      q: 'D’après le glossaire Géoconfluences, à quoi sont surtout liés les facteurs sociaux de la vulnérabilité ?',
+      q: 'À quoi sont surtout liés les facteurs sociaux de la vulnérabilité face aux aléas ?',
       a: 'à la pauvreté',
       wrong: [
-        { label: 'au relief des océans', why: 'Il s’agit de facteurs liés aux sociétés.' },
         {
-          label: 'à la couleur des bâtiments',
-          why: 'La vulnérabilité sociale vient surtout des moyens des populations.',
+          label: 'à la richesse des habitants',
+          why: 'Des moyens importants aident plutôt à se protéger et à se relever.',
         },
-        { label: 'au nombre de musées', why: 'Les musées ne déterminent pas la fragilité face aux aléas.' },
+        {
+          label: 'à la seule force de l’aléa',
+          why: 'La force de l’aléa décrit le phénomène, pas la fragilité des sociétés.',
+        },
+        {
+          label: 'à l’éloignement des zones dangereuses',
+          why: 'S’éloigner d’une zone dangereuse réduit au contraire l’exposition.',
+        },
       ],
       gap: ['Les principaux facteurs de vulnérabilité sont souvent liés à la ', '.', ['pauvreté']],
-      choix: ['pauvreté', 'latitude', 'marée'],
+      choix: ['pauvreté', 'richesse', 'latitude'],
       quote: G_PAUVRETE,
       explain: 'Des familles pauvres s’installent parfois sur des pentes ou des zones inondables.',
       src: VULNERABILITE,
@@ -583,7 +594,7 @@ const risques: Notion = {
     },
     {
       q: 'Comment appelle-t-on, en géographie des risques, les personnes et les biens susceptibles d’être touchés ?',
-      accepted: ['enjeux', 'les enjeux', 'des enjeux', 'les enjeux exposés'],
+      accepted: ['enjeux', 'les enjeux', 'des enjeux', 'les enjeux exposés', 'enjeu', 'un enjeu'],
       traps: [
         { text: 'aléa', why: 'L’aléa est le phénomène, pas ce qu’il peut toucher.' },
         { text: 'catastrophe', why: 'La catastrophe est le risque réalisé.' },
@@ -615,6 +626,8 @@ const risques: Notion = {
         'le covid',
         'le covid-19',
         'covid19',
+        'coronavirus',
+        'le coronavirus',
       ],
       traps: [
         { text: 'la peste noire', why: 'La peste noire date du XIVe siècle.' },
@@ -739,6 +752,17 @@ const risques: Notion = {
           explain: 'Stocker des produits dangereux dans une usine crée un risque industriel et technologique.',
           src: SEVESO,
         },
+        {
+          q: 'Quelle ligne décrit un risque lié au changement climatique ?',
+          a: 'la ligne 4',
+          wrong: [
+            { label: 'la ligne 1', why: 'Un séisme vient des mouvements de la Terre, pas du climat.' },
+            { label: 'la ligne 2', why: 'L’explosion vient de l’activité d’une usine.' },
+          ],
+          quote: G_VAGUES,
+          explain: 'Les vagues de chaleur sont une conséquence observée du changement climatique.',
+          src: CHALEUR,
+        },
       ],
     },
   ],
@@ -754,7 +778,7 @@ const adapter: Notion = {
   memo: [
     'S’adapter, c’est ajuster ses activités et son territoire aux changements : l’**adaptation** se distingue de l’**atténuation**, qui réduit les émissions de gaz à effet de serre.',
     'La **résilience** est la capacité d’une société à se relever après un choc. En ville, des arbres et de l’eau créent des **îlots de fraîcheur** contre la chaleur.',
-    'Tous les territoires n’ont pas les mêmes moyens de s’adapter : la prospective aide à préparer l’avenir sans catastrophisme.',
+    'Tous les territoires n’ont pas les mêmes moyens de s’adapter : la **prospective** aide à préparer l’avenir sans dramatiser. L’**ODD** 9 de l’ONU demande des **infrastructures** capables de résister et de se relever.',
   ],
   faits: [
     {
@@ -768,8 +792,12 @@ const adapter: Notion = {
         { label: 'nier que le climat change', why: 'S’adapter suppose au contraire de tenir compte du changement.' },
         { label: 'réduire les émissions de gaz à effet de serre', why: 'C’est l’atténuation, qui agit sur la cause.' },
       ],
-      gap: ['S’adapter, c’est ajuster ses mécanismes pour tenir compte des changements ', '.', ['environnementaux']],
-      choix: ['environnementaux', 'électoraux', 'sportifs'],
+      gap: [
+        'Un territoire qui ajuste ses activités aux changements du climat fait le choix de l’',
+        '.',
+        ['adaptation'],
+      ],
+      choix: ['adaptation', 'atténuation', 'indemnisation'],
       quote: G_ADAPTABILITE,
       explain: 'On ajuste les territoires et les activités à ce qui change ou va changer.',
       src: ADAPTATION,
@@ -786,7 +814,7 @@ const adapter: Notion = {
         { label: 'installer des fontaines contre la chaleur', why: 'C’est une adaptation à la chaleur.' },
       ],
       gap: ['L’adaptation se distingue de l’', ', qui agit sur les causes.', ['atténuation']],
-      choix: ['atténuation', 'accélération', 'alimentation'],
+      choix: ['atténuation', 'adaptabilité', 'urbanisation'],
       quote: G_ATTENUATION,
       explain: 'Atténuer : agir sur les causes ; s’adapter : faire avec les effets.',
       src: POLITIQUES,
@@ -800,7 +828,7 @@ const adapter: Notion = {
         { label: 'le nom d’un gaz à effet de serre', why: 'La résilience n’est pas un gaz.' },
       ],
       gap: ['La ', ' est la capacité à se relever après un choc.', ['résilience']],
-      choix: ['résilience', 'résidence', 'ressource'],
+      choix: ['résilience', 'résistance', 'prévision'],
       quote: G_RESILIENCE,
       explain: 'Après une inondation, un quartier résilient retrouve vite son fonctionnement.',
       src: RESILIENCE,
@@ -831,7 +859,7 @@ const adapter: Notion = {
         },
       ],
       gap: ['Pour rafraîchir une ville, on favorise la ', ' et les plans d’eau.', ['végétalisation']],
-      choix: ['végétalisation', 'bétonisation', 'pollution'],
+      choix: ['végétalisation', 'bétonisation', 'climatisation'],
       quote: G_LEVIERS,
       explain: 'Arbres, eau et matériaux réfléchissants créent des îlots de fraîcheur.',
       src: ICU,
@@ -913,6 +941,9 @@ const adapter: Notion = {
         'l’îlot de fraîcheur',
         'ilot de fraicheur',
         'îlots de fraîcheur',
+        'îlot de fraicheur',
+        'un îlot de fraicheur',
+        'ilot de fraîcheur',
       ],
       traps: [
         { text: 'îlot de chaleur', why: 'L’îlot de chaleur est au contraire l’espace plus chaud.' },
@@ -924,7 +955,7 @@ const adapter: Notion = {
     },
     {
       q: 'À quel moment de la journée l’îlot de chaleur urbain est-il le plus fort ?',
-      accepted: ['la nuit', 'nuit', 'pendant la nuit', 'durant la nuit'],
+      accepted: ['la nuit', 'nuit', 'pendant la nuit', 'durant la nuit', 'dans la nuit'],
       traps: [
         { text: 'le matin', why: 'C’est la nuit que les bâtiments rendent la chaleur stockée.' },
         { text: 'à midi', why: 'L’écart avec la campagne est surtout nocturne.' },
@@ -1084,10 +1115,13 @@ const prevenir: Notion = {
           label: 'population, paysage, patrimoine',
           why: 'Ces mots sont géographiques mais ne forment pas les trois P des risques.',
         },
-        { label: 'pluie, plaine, plage', why: 'Ce sont des mots de géographie, sans lien avec les trois P.' },
+        {
+          label: 'prévention, précaution, protection',
+          why: 'La précaution n’est pas l’un des trois P : il manque la prévision.',
+        },
       ],
       gap: ['Les trois P : prévision, prévention et ', '.', ['protection']],
-      choix: ['protection', 'production', 'promenade'],
+      choix: ['protection', 'précaution', 'réparation'],
       quote: G_TROIS_P,
       explain: 'Connaître l’aléa, anticiper ses effets, protéger les personnes et les biens.',
       src: PREVENTION,
@@ -1122,10 +1156,13 @@ const prevenir: Notion = {
       wrong: [
         { label: 'les meilleurs restaurants d’une commune', why: 'Un PPR porte sur les risques.' },
         { label: 'les résultats des élections', why: 'Un PPR est un document d’urbanisme sur les risques.' },
-        { label: 'le trajet des transports scolaires', why: 'Un PPR ne sert pas à organiser les transports.' },
+        {
+          label: 'seulement les catastrophes passées, sans aucune règle',
+          why: 'Un PPR fixe aussi des règles pour chaque zone.',
+        },
       ],
       gap: ['Un PPR est un document d’', ' qui cartographie un aléa.', ['urbanisme']],
-      choix: ['urbanisme', 'identité', 'histoire'],
+      choix: ['urbanisme', 'assurance', 'identité'],
       quote: G_PPR,
       explain: 'Selon la zone, construire est libre, limité ou interdit.',
       src: PPR,
@@ -1137,12 +1174,12 @@ const prevenir: Notion = {
         { label: 'le seul assureur', why: 'L’assureur indemnise ; il ne protège pas à lui seul.' },
         { label: 'les touristes étrangers', why: 'Chaque habitant est concerné, pas seulement les visiteurs.' },
         {
-          label: 'personne, car rien ne peut être fait',
-          why: 'De nombreux moyens d’information et de prévention existent.',
+          label: 'le maire, à la place des habitants',
+          why: 'La mairie informe et agit, mais chaque citoyen doit d’abord veiller à sa sécurité.',
         },
       ],
       gap: ['Le ', ' doit être le premier acteur de sa sécurité.', ['citoyen']],
-      choix: ['citoyen', 'volcan', 'barrage'],
+      choix: ['citoyen', 'préfet', 'pompier'],
       quote: E_CITOYEN,
       explain: 'S’informer en mairie, connaître les consignes : chacun a un rôle.',
       src: ECOLOGIE,
@@ -1156,7 +1193,7 @@ const prevenir: Notion = {
         { label: 'des bornes kilométriques', why: 'Les bornes indiquent des distances.' },
       ],
       gap: ['Les communes inondables doivent poser des repères de ', '.', ['crue']],
-      choix: ['crue', 'sécheresse', 'neige'],
+      choix: ['crue', 'marée', 'sécheresse'],
       quote: E_REPERES,
       explain: 'Les repères de crue entretiennent la mémoire des inondations passées.',
       src: ECOLOGIE,
@@ -1199,7 +1236,16 @@ const prevenir: Notion = {
     },
     {
       q: 'Sous l’autorité de qui élabore-t-on le plan de prévention des risques naturels (PPRN) ?',
-      accepted: ['le préfet', 'préfet', 'la préfète', 'préfète', 'du préfet', 'sous l’autorité du préfet'],
+      accepted: [
+        'le préfet',
+        'préfet',
+        'la préfète',
+        'préfète',
+        'du préfet',
+        'sous l’autorité du préfet',
+        'prefet',
+        'le prefet',
+      ],
       traps: [
         { text: 'le maire', why: 'Les communes sont associées, mais c’est le préfet qui pilote le PPRN.' },
         { text: 'le professeur', why: 'Un PPRN est un document de l’État.' },
@@ -1304,7 +1350,10 @@ const prevenir: Notion = {
               label: 'la précaution',
               why: 'La précaution concerne un danger incertain ; ici, on suit un phénomène identifié.',
             },
-            { label: 'la réparation', why: 'La réparation viendrait après le passage.' },
+            {
+              label: 'la protection',
+              why: 'La protection met à l’abri les personnes et les biens, comme les toits renforcés de la ligne 3.',
+            },
           ],
           quote: G_PREVISION,
           explain: 'Connaître l’aléa, son intensité et son lieu probable, c’est la prévision.',

@@ -433,7 +433,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'infrastructure',
     word: 'infrastructure',
     forms: ['infrastructure', 'infrastructures'],
-    definition: 'Un aménagement construit pour se déplacer : route, voie ferrée, gare, port, aéroport.',
+    definition:
+      'Un aménagement construit pour faire fonctionner un territoire : route, gare, port, aéroport, réseau d’eau…',
     example: 'Une autoroute est une infrastructure.',
   },
   {
@@ -1699,5 +1700,56 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['culture du risque'],
     definition: 'La place du risque dans la mémoire et les connaissances d’une population.',
     example: 'Des repères de crue rappellent les anciennes inondations.',
+  },
+  {
+    id: 'effet-de-serre',
+    word: 'effet de serre',
+    forms: ['effet de serre'],
+    definition:
+      'Le phénomène naturel par lequel certains gaz de l’air retiennent la chaleur ; les rejets humains le renforcent.',
+    example: 'Sans effet de serre, la Terre serait glaciale.',
+  },
+  {
+    id: 'ges',
+    word: 'GES',
+    forms: ['ges'],
+    definition: 'Les gaz à effet de serre, qui retiennent la chaleur dans l’atmosphère.',
+    example: 'Le dioxyde de carbone est un GES.',
+  },
+  {
+    id: 'anthropique',
+    word: 'anthropique',
+    forms: ['anthropique', 'anthropiques'],
+    definition: 'Dû aux êtres humains et à leurs activités.',
+    example: 'La pollution d’une usine a une origine anthropique.',
+  },
+  {
+    id: 'ere-preindustrielle',
+    word: 'ère préindustrielle',
+    forms: ['ère préindustrielle', 'ère pré-industrielle'],
+    definition:
+      'La période d’avant le développement des grandes usines, qui sert de point de comparaison pour la température.',
+    example: 'Limiter la hausse par rapport à l’ère préindustrielle.',
+  },
+  {
+    id: 'atoll',
+    word: 'atoll',
+    forms: ['atoll', 'atolls'],
+    definition: 'Une île basse en forme d’anneau, formée de corail, autour d’un lagon.',
+    example: 'Un atoll du Pacifique.',
+  },
+  {
+    id: 'typhon',
+    word: 'typhon',
+    forms: ['typhon', 'typhons'],
+    definition: 'Le nom donné à un cyclone dans l’ouest de l’océan Pacifique.',
+    example: 'Un typhon apporte des vents très violents.',
+  },
+  {
+    id: 'bacille',
+    word: 'bacille',
+    forms: ['bacille', 'bacilles'],
+    definition: 'Une bactérie en forme de bâtonnet, qui peut provoquer une maladie.',
+    example: 'La tuberculose est due à un bacille.',
   },
 ];
