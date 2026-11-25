@@ -36,4 +36,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'em5-haine-loi', version: 1, lot: 'em-5e-02', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'em5-haine-reagir', version: 1, lot: 'em-5e-02', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'em5-haine-signaler', version: 1, lot: 'em-5e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'em4-etat-de-droit', version: 1, lot: 'em-4e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'em4-libertes-fondamentales', version: 1, lot: 'em-4e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'em4-justice', version: 1, lot: 'em-4e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'em4-declarations-droits', version: 1, lot: 'em-4e-01', date: '2026-11-25', verdict: 'ok' },
 ];
