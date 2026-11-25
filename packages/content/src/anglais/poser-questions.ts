@@ -349,7 +349,7 @@ function howMeaning(rng: Rng): QuestionDraft {
         : `Tu veux demander l’âge ${rng.pick(['d’un copain', 'd’une copine', 'de ton correspondant'])}. Par quels mots commences-tu ta question ?`,
     answer,
     traps,
-    hint: 'Un des groupes parle des années qu’on a, un autre d’un nombre de choses.',
+    hint: 'Un des choix parle des années qu’on a, un autre d’un nombre de choses.',
     steps: [form === 1 ? WHY_MANY : WHY_OLD, `Réponse : **${good}**`],
   };
 }
@@ -816,8 +816,8 @@ function canChoice(rng: Rng): QuestionDraft {
   const a = rng.pick(ABILITIES);
   const good = `Can you ${a.en}?`;
   const { answer, traps } = choice(rng, good, [
-    { label: `You can ${a.en}.`, why: `C’est une affirmation, pas une question. ${WHY_CAN}` },
-    { label: `Can I ${a.en}?`, why: '« I » veut dire « je » : la question parle de moi, pas de ton ami.' },
+    { label: `You can ${a.en}.`, why: `Cette phrase dit quelque chose, elle ne demande rien. ${WHY_CAN}` },
+    { label: `Can I ${a.en}?`, why: '« I » veut dire « je » : cette question parle de toi, pas de ton ami.' },
   ]);
   return {
     prompt: `Quelle phrase demande à un ami : « Sais-tu ${a.fr} ? » ?`,
