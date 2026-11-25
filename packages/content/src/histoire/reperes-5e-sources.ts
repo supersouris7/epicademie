@@ -28,6 +28,10 @@ export const PREUVES = {
 
   // Repères et périodisation
   repereBouvines: eduscol('occident-feodal', '1214 : bataille de Bouvines'),
+  philippeBouvines: eduscol(
+    'occident-feodal',
+    'La figure de Philippe Auguste permet d’illustrer ce renforcement autour de la bataille de Bouvines (1214)',
+  ),
   huitSiecles: eduscol('chretientes-islam', 'et une longue période de huit siècles.'),
   cinqSiecles: eduscol('occident-feodal', 'Les limites chronologiques qui couvrent cinq siècles'),
   ruptureCrises: eduscol(

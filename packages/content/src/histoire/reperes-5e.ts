@@ -40,13 +40,14 @@ const reperes: Notion = {
   title: 'Les repères chronologiques de 5e',
   hint: 'Demande-toi d’abord à quel thème appartient le fait : les empires, l’Occident féodal ou les temps modernes.',
   memo: [
-    'Un **repère** est un fait daté qu’on retient pour situer les autres. Thème 1 : 622, 800, 1054, 1204 ; thème 2 : 987, 1214, 1337-1453 ; thème 3 : 1453, 1492, 1517, 1598, 1661-1715.',
+    'Un **repère** est un fait daté qu’on retient pour situer les autres. Chrétientés et islam (thème 1) : 622, 800, 1054, 1204, puis 1258, la fin de la période.',
+    'L’Occident féodal (thème 2) : 987, 1214, 1337-1453, et la population européenne qui double du XIe au XIVe siècle. Les transformations de l’Europe (thème 3) : 1453, 1492, 1517, 1598, 1661-1715.',
     'Astuce de coach : accroche chaque date à un acteur ou à un lieu. Exemple : 800, Charlemagne, couronnement impérial.',
     'Attention aux dates voisines : 1204 (sac de Constantinople) n’est pas 1214 (bataille de Bouvines), et 1453 marque deux faits.',
   ],
   faits: [
     {
-      q: 'Quel repère le thème 1 place-t-il en 622 ?',
+      q: 'Quel événement date de 622 ?',
       a: 'l’Hégire, début de l’ère musulmane',
       wrong: [
         { label: 'les 95 thèses de Luther', why: 'Les 95 thèses datent de 1517, bien plus tard.' },
@@ -111,7 +112,7 @@ const reperes: Notion = {
         'En 1204, les croisés pillent Constantinople : la rupture entre les deux chrétientés devient définitive.',
     },
     {
-      q: 'Quel repère le thème 2 place-t-il en 987 ?',
+      q: 'Quel événement date de 987 ?',
       a: 'le couronnement et le sacre d’Hugues Capet',
       wrong: [
         { label: 'la révocation de l’Édit de Nantes', why: 'La révocation date de 1685, sous Louis XIV.' },
@@ -172,7 +173,7 @@ const reperes: Notion = {
         },
         {
           label: 'il se fait couronner empereur',
-          why: 'Le couronnement impérial du programme est celui de Charlemagne en 800.',
+          why: 'Luther est un réformateur religieux, pas un empereur : le couronnement à retenir est celui de Charlemagne, en 800.',
         },
       ],
       gap: ['En 1517, Luther publie ses ', ' thèses.', ['95', 'quatre-vingt-quinze']],
@@ -207,7 +208,7 @@ const reperes: Notion = {
       explain: 'La ressource d’Éduscol retient 1661-1715 comme repère du règne de Louis XIV.',
     },
     {
-      q: 'Quel événement de 1258 sonne le glas de la puissance du califat abbasside ?',
+      q: 'Quel événement de 1258 met fin à la puissance du califat abbasside ?',
       a: 'la prise de Bagdad par les Mongols',
       wrong: [
         { label: 'le sac de Constantinople', why: 'Le sac de Constantinople par les croisés date de 1204.' },
@@ -370,9 +371,9 @@ const frise: Notion = {
   title: 'La frise de 5e : siècles, périodes et ruptures',
   hint: 'Calcule d’abord le siècle de chaque date, puis compare la durée ou la place sur la frise.',
   memo: [
-    'Une **frise chronologique** range les faits du plus ancien au plus récent. La 5e va du **Moyen Âge** à la Renaissance, avec trois thèmes qui se chevauchent en partie : VIe-XIIIe, XIe-XVe, XVIe-XVIIe siècles.',
+    'Une **frise chronologique** range les faits du plus ancien au plus récent. La 5e va du **Moyen Âge** à la Renaissance, avec trois thèmes qui se chevauchent (ont des siècles en commun) en partie : thème 1, Chrétientés et islam (VIe-XIIIe siècles) ; thème 2, l’Occident féodal (XIe-XVe) ; thème 3, les transformations de l’Europe (XVIe-XVIIe).',
     'Un **siècle** dure cent ans et commence par une année finissant par 01 : le XIIIe siècle va de 1201 à 1300. Exemple : 800 appartient au VIIIe siècle.',
-    'Les **Temps modernes** ouvrent le thème 3 ; une **rupture** est un grand changement par rapport à l’époque précédente.',
+    'Avec le thème 3, on entre dans les **Temps modernes**. Une **rupture** est un grand changement par rapport à l’époque précédente ; une **continuité** est ce qui dure malgré les changements.',
   ],
   faits: [
     {
@@ -391,9 +392,9 @@ const frise: Notion = {
       q: 'Combien de siècles couvre le thème « Chrétientés et islam » (VIe-XIIIe siècles) ?',
       a: 'huit siècles',
       wrong: [
-        { label: 'sept siècles', why: 'Compte aussi le VIe siècle : 13 − 6 + 1 = 8.' },
         { label: 'treize siècles', why: 'XIIIe donne le dernier siècle, pas le nombre de siècles.' },
         { label: 'deux siècles', why: 'Du VIe au XIIIe siècle, la durée est bien plus longue.' },
+        { label: 'sept siècles', why: 'Compte aussi le VIe siècle : 13 − 6 + 1 = 8.' },
       ],
       gap: ['Le thème « Chrétientés et islam » couvre ', ' siècles.', ['huit', '8']],
       ...PREUVES.huitSiecles,
@@ -403,9 +404,9 @@ const frise: Notion = {
       q: 'Combien de siècles couvre le thème sur l’Occident féodal (XIe-XVe siècles) ?',
       a: 'cinq siècles',
       wrong: [
-        { label: 'quatre siècles', why: 'Il faut compter le XIe siècle : 15 − 11 + 1 = 5.' },
         { label: 'quinze siècles', why: 'XVe désigne le dernier siècle, pas la durée.' },
-        { label: 'huit siècles', why: 'Huit siècles est la durée du thème 1.' },
+        { label: 'huit siècles', why: 'Huit siècles est la durée de « Chrétientés et islam ».' },
+        { label: 'quatre siècles', why: 'Il faut compter le XIe siècle : 15 − 11 + 1 = 5.' },
       ],
       gap: ['Le thème sur l’Occident féodal couvre ', ' siècles.', ['cinq', '5']],
       ...PREUVES.cinqSiecles,
@@ -416,10 +417,13 @@ const frise: Notion = {
       a: 'les Temps modernes',
       wrong: [
         { label: 'l’Antiquité', why: 'L’Antiquité précède le Moyen Âge : elle est bien plus ancienne.' },
-        { label: 'la préhistoire', why: 'La préhistoire se termine avant l’invention de l’écriture.' },
+        {
+          label: 'la préhistoire',
+          why: 'La préhistoire s’achève avec l’invention de l’écriture, des milliers d’années plus tôt.',
+        },
         { label: 'le Moyen Âge', why: 'Le Moyen Âge est la période qui précède ce thème.' },
       ],
-      gap: ['Avec le thème 3, on entre dans les ', ' modernes.', ['temps']],
+      gap: ['Avec le thème des XVIe et XVIIe siècles, on entre dans les ', ' modernes.', ['temps']],
       ...PREUVES.tempsModernes,
       explain: 'La ressource d’Éduscol indique qu’avec ce thème on entre dans les « temps modernes ».',
     },
@@ -427,11 +431,15 @@ const frise: Notion = {
       q: 'Quelle année peut-on choisir pour faire commencer le thème sur les XVIe et XVIIe siècles ?',
       a: '1453',
       wrong: [
-        { label: '987', why: '987 est le sacre d’Hugues Capet, au début du thème 2.' },
-        { label: '1204', why: '1204 appartient au thème 1.' },
-        { label: '1598', why: '1598 se situe déjà au cœur du thème 3.' },
+        { label: '987', why: '987 est le sacre d’Hugues Capet, à l’époque de l’Occident féodal.' },
+        { label: '1204', why: '1204 appartient à la période « Chrétientés et islam ».' },
+        { label: '1598', why: '1598, date de l’Édit de Nantes, se situe déjà au cœur du thème.' },
       ],
-      gap: ['On peut faire commencer le thème 3 en ', ', avec la prise de Constantinople.', ['1453']],
+      gap: [
+        'On peut faire commencer le thème sur les XVIe et XVIIe siècles en ',
+        ', avec la prise de Constantinople.',
+        ['1453'],
+      ],
       ...PREUVES.debutTheme3,
       explain: 'La ressource d’Éduscol propose l’année 1453.',
     },
@@ -443,7 +451,11 @@ const frise: Notion = {
         { label: 'celui d’Henri IV', why: 'Henri IV vient avant Louis XIV.' },
         { label: 'celui de Louis IX', why: 'Louis IX règne au XIIIe siècle, dans le thème 2.' },
       ],
-      gap: ['Le thème 3 se termine avec la fin du règne de ', '.', ['Louis XIV', 'Louis 14']],
+      gap: [
+        'Le thème sur les XVIe et XVIIe siècles se termine avec la fin du règne de ',
+        '.',
+        ['Louis XIV', 'Louis 14'],
+      ],
       ...PREUVES.debutTheme3,
       explain: 'Le thème 3 se termine avec la fin du règne de Louis XIV, dont le repère est 1661-1715.',
     },
@@ -460,7 +472,7 @@ const frise: Notion = {
       explain: 'Un siècle dure cent ans : le VIIe va de 601 à 700, il contient 622.',
     },
     {
-      q: 'Dans le thème 2, quels siècles sont marqués par les crises ?',
+      q: 'Dans l’Occident féodal (XIe-XVe siècles), quels siècles sont marqués par les crises ?',
       a: 'les deux derniers de la période',
       wrong: [
         { label: 'les trois premiers de la période', why: 'Les premiers siècles sont ceux de la forte croissance.' },
@@ -468,7 +480,7 @@ const frise: Notion = {
         { label: 'seulement le XIe siècle', why: 'Le XIe siècle ouvre la période de croissance.' },
       ],
       gap: [
-        'Après trois siècles de croissance, les deux derniers siècles du thème 2 sont marqués par des ',
+        'Dans l’Occident féodal, après trois siècles de croissance, les deux derniers siècles sont marqués par des ',
         '.',
         ['crises', 'crise'],
       ],
@@ -528,13 +540,13 @@ const frise: Notion = {
       explain: '1453 − 1337 = 116 : la guerre dure 116 ans.',
     },
     {
-      q: 'Le thème 1 (VIe-XIIIe) et le thème 2 (XIe-XVe) se chevauchent du XIe siècle à quel siècle ? (chiffres romains)',
+      q: 'Le thème 1 (VIe-XIIIe siècles) et le thème 2 (XIe-XVe siècles) ont des siècles en commun, à partir du XIe. Quel est le dernier siècle commun ? (chiffres romains)',
       accepted: siecle('XIII', 13),
       traps: [
         { text: 'XVe', why: 'Le XVe siècle appartient au thème 2 seul : le thème 1 s’arrête plus tôt.' },
         { text: 'VIe', why: 'Le VIe siècle ouvre le thème 1, avant le début du thème 2.' },
       ],
-      ...PREUVES.huitSiecles,
+      ...T1.periode,
       explain: 'Le thème 1 s’arrête au XIIIe siècle : les deux thèmes ont en commun les XIe, XIIe et XIIIe siècles.',
     },
     {
@@ -634,14 +646,14 @@ const acteurs: Notion = {
   ],
   faits: [
     {
-      q: 'Quel empereur ouvre la période du thème 1, en tentant de reconstituer l’unité de l’empire romain ?',
+      q: 'Quel empereur ouvre la période « Chrétientés et islam », en tentant de reconstituer l’unité de l’empire romain ?',
       a: 'Justinien',
       wrong: [
         { label: 'Louis XIV', why: 'Louis XIV est un roi de France du XVIIe siècle.' },
         { label: 'Soliman le Magnifique', why: 'Soliman règne sur l’empire ottoman au XVIe siècle.' },
         { label: 'Otton Ier', why: 'Otton Ier restaure la dignité impériale en 962, bien après.' },
       ],
-      gap: ['La période du thème 1 s’ouvre avec le règne de l’empereur ', '.', ['Justinien']],
+      gap: ['La période « Chrétientés et islam » s’ouvre avec le règne de l’empereur ', '.', ['Justinien']],
       ...T1.justinien,
       explain: 'Le règne de Justinien (527-565) ouvre la période.',
     },
@@ -697,7 +709,7 @@ const acteurs: Notion = {
       explain: 'Charlemagne entretient des relations diplomatiques avec Haroun al-Rachid.',
     },
     {
-      q: 'Quel Capétien est « duc de France » avant de devenir roi en 987 ?',
+      q: 'Quel « duc de France » devient roi en 987 ?',
       a: 'Hugues Capet',
       wrong: [
         { label: 'Louis IX', why: 'Louis IX règne au XIIIe siècle.' },
@@ -757,7 +769,7 @@ const acteurs: Notion = {
       explain: 'L’empire ottoman atteint son apogée sous Soliman le Magnifique.',
     },
     {
-      q: 'Dans quel port indien la flotte de Vasco de Gama arrive-t-elle près de la côte en 1498 ?',
+      q: 'En 1498, près de quel port la flotte de Vasco de Gama touche-t-elle la côte indienne ?',
       a: 'Calicut',
       wrong: [
         { label: 'Istanbul', why: 'Istanbul est la capitale ottomane, pas un port des Indes.' },
@@ -770,7 +782,7 @@ const acteurs: Notion = {
     },
   ],
   paires3: [
-    ['Justinien', 'Empereur du VIe siècle qui ouvre le thème 1'],
+    ['Justinien', 'Empereur du VIe siècle qui ouvre la période « Chrétientés et islam »'],
     ['Hugues Capet', 'Roi de France sacré en 987'],
     ['Soliman le Magnifique', 'Souverain de l’empire ottoman'],
   ],
@@ -817,7 +829,7 @@ const acteurs: Notion = {
         { text: 'Philippe le Bel', why: 'Philippe le Bel règne de 1285 à 1314, après Bouvines.' },
         { text: 'Louis IX', why: 'Louis IX devient roi en 1226, après la bataille.' },
       ],
-      ...T2.bouvines,
+      ...PREUVES.philippeBouvines,
       explain: 'La figure de Philippe Auguste est liée à la bataille de Bouvines.',
     },
     {
@@ -845,7 +857,7 @@ const acteurs: Notion = {
     {
       title: 'Un récit de la première croisade',
       lines: [
-        'Dans le palais de Constantinople, l’empereur reçoit les principaux chefs francs.',
+        'Dans son palais, l’empereur byzantin reçoit les principaux chefs francs de la première croisade.',
         'Sa fille décrit ces visiteurs dans un livre appelé l’Alexiade.',
       ],
       qs: [
@@ -869,7 +881,7 @@ const acteurs: Notion = {
             { label: 'Aix-la-Chapelle', why: 'C’est le palais de Charlemagne.' },
           ],
           ...T1.alexiade,
-          explain: 'Le palais d’Alexis Comnène est à Constantinople.',
+          explain: 'Alexis Comnène, empereur byzantin, reçoit les chefs francs dans son palais de Constantinople.',
         },
       ],
     },
@@ -1057,12 +1069,12 @@ const vocabulaire: Notion = {
     ['Basileus', 'Titre de l’empereur à Constantinople'],
     ['Tenure', 'Terre confiée en héritage à des paysans'],
     ['Légiste', 'Juriste au service du roi'],
-    ['Indulgence', 'Achat pour le salut de l’âme, condamné par Luther'],
-    ['Hégire', 'Début de l’ère musulmane, en 622'],
+    ['Indulgence', 'Ce que certains achètent pour le salut de leur âme, condamné par Luther'],
+    ['Hégire', 'Événement de 622 qui ouvre l’ère musulmane'],
   ],
   libres: [
     {
-      q: 'Quel mot désigne le début de l’ère musulmane, en 622 ?',
+      q: 'Quel mot désigne l’événement de 622 qui marque le début de l’ère musulmane ?',
       accepted: [...mot('hégire', 'l’', "l'"), ...mot('hegire', 'l’', "l'")],
       traps: [
         { text: 'califat', why: 'Le califat est la fonction du calife, pas le début de l’ère.' },
@@ -1072,11 +1084,11 @@ const vocabulaire: Notion = {
       explain: 'L’Hégire marque le début de l’ère musulmane.',
     },
     {
-      q: 'Quel adjectif complète le nom des terres du roi capétien : le « domaine … » ?',
-      accepted: ['royal', 'domaine royal', 'le domaine royal'],
+      q: 'Comment appelle-t-on les terres que le roi capétien possède et gouverne lui-même ? (deux mots)',
+      accepted: [...mot('domaine royal', 'le ', 'un ')],
       traps: [
-        { text: 'féodal', why: 'On parle du domaine « royal » pour les terres du roi lui-même.' },
-        { text: 'impérial', why: 'Hugues Capet est roi, pas empereur.' },
+        { text: 'royaume', why: 'Le royaume est plus vaste : de grands princes y gouvernent leurs propres terres.' },
+        { text: 'empire', why: 'Hugues Capet est roi, pas empereur.' },
       ],
       ...T2.hugues,
       explain: 'Les terres du roi forment le domaine royal.',
@@ -1086,16 +1098,20 @@ const vocabulaire: Notion = {
       accepted: [...mot('vilains', 'les '), 'vilain', 'un vilain'],
       traps: [
         { text: 'serfs', why: 'Le servage est minoritaire : tous les paysans de la seigneurie ne sont pas des serfs.' },
-        { text: 'vassaux', why: 'Les vassaux reçoivent des bénéfices et sont des guerriers.' },
+        { text: 'vassaux', why: 'Les vassaux sont des guerriers liés à un seigneur plus puissant, pas des paysans.' },
       ],
       ...T2.vilains,
       explain: 'Les paysans de la seigneurie sont appelés vilains.',
     },
     {
-      q: 'Quel mot désigne le mouvement de savants qui veulent faire renaître l’Antiquité ?',
+      q: 'Quel mot en « -isme » désigne le mouvement des savants qui étudient les textes anciens pour faire renaître l’Antiquité ?',
       accepted: mot('humanisme', 'l’', "l'", 'le '),
       traps: [
         { text: 'christianisme', why: 'Le christianisme est une religion.' },
+        {
+          text: 'Renaissance',
+          why: 'La Renaissance est le nom de la période ; le mouvement des savants finit en « -isme ».',
+        },
         { text: 'protestantisme', why: 'C’est un courant religieux né de la Réforme.' },
       ],
       ...T3.humanisme,
