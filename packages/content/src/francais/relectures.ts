@@ -47,4 +47,10 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm1-passe-compose', version: 1, lot: 'fr-cm1-08', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-infinitif-participe', version: 1, lot: 'fr-cm1-08', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-passe-compose-negatif', version: 1, lot: 'fr-cm1-08', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-synonymes', version: 1, lot: 'fr-cm1-09', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-antonymes', version: 1, lot: 'fr-cm1-09', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-familles-de-mots', version: 1, lot: 'fr-cm1-09', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-prefixes-suffixes', version: 1, lot: 'fr-cm1-09', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-mots-polysemiques', version: 1, lot: 'fr-cm1-09', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-sens-contexte', version: 1, lot: 'fr-cm1-09', date: '2026-11-25', verdict: 'ok' },
 ];

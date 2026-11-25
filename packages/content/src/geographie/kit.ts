@@ -71,6 +71,8 @@ export interface Notion {
     readonly lines: readonly string[];
     readonly qs: readonly DocQuestion[];
   }[];
+  /** Sources citées hors des faits (carte). */
+  readonly sources?: readonly string[];
   /** Question de carte facultative (une fois sur deux, quand elle existe pour le niveau). */
   readonly carte?: (rng: Rng, level: Level) => QuestionDraft | undefined;
 }
@@ -92,7 +94,9 @@ function shuffled<T>(rng: Rng, items: readonly T[]): T[] {
 const lookup = (src: string): string => {
   if (src === PROGRAMME) return 'Cherchons ce que dit le programme';
   if (src.startsWith('eduscol-')) return 'Cherchons ce que dit la ressource Éduscol';
+  if (src.startsWith('ghsl-')) return 'Cherchons ce que dit l’atlas de la Commission européenne (en anglais)';
   if (src.startsWith('insee-')) return 'Cherchons ce que dit l’INSEE';
+  if (src.startsWith('geoconfluences-')) return 'Cherchons ce que dit le site de géographie Géoconfluences';
   if (src.startsWith('ademe-')) return 'Cherchons ce que dit l’ADEME';
   if (src.startsWith('ue-')) return 'Cherchons ce que dit l’Union européenne';
   if (src.startsWith('viepublique-')) return 'Cherchons ce que dit le site public vie-publique.fr';
@@ -231,7 +235,7 @@ function level5(rng: Rng, n: Notion): QuestionDraft {
 export function sourcesOf(n: Notion): string[] {
   const all = [...n.faits, ...n.libres, ...n.docs.flatMap((d) => d.qs)].map((f) => f.src ?? PROGRAMME);
   if (n.consigne) all.push(n.consigne.src);
-  return [...new Set([PROGRAMME, ...all])];
+  return [...new Set([PROGRAMME, ...all, ...(n.sources ?? [])])];
 }
 
 /** Notion à 5 niveaux (grille de docs/contenus/README.md §1). */

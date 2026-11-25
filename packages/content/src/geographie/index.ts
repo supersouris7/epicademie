@@ -5,6 +5,7 @@ import { SKILLS as VIE } from './vie.ts';
 import { SKILLS as TRANSPORTS } from './transports.ts';
 import { SKILLS as INTERNET } from './internet.ts';
 import { SKILLS as MIEUX_HABITER } from './habiter.ts';
+import { SKILLS as METROPOLE } from './metropole.ts';
 import { SKILLS as FAIBLE_DENSITE } from './faible-densite.ts';
 import { SKILLS as REPERES } from './reperes.ts';
 import { DEPARTEMENTS, GEO_FETCHED_ON, PAYS_UE, REGIONS } from './donnees.generated.ts';
@@ -177,6 +178,7 @@ export const GEOGRAPHIE_CHAPTERS: readonly Chapter[] = [
   chapter('gcm2-internet', 'cm2', 'Communiquer grâce à Internet', INTERNET),
   chapter('gcm2-mieux-habiter', 'cm2', 'Mieux habiter', MIEUX_HABITER),
   chapter('gcm2-departements', 'cm2', 'Repères : France et Europe', REPERES),
+  chapter('g6-habiter-metropole', '6e', 'Habiter une métropole', METROPOLE),
   chapter('g6-faible-densite', '6e', 'Habiter un espace de faible densité', FAIBLE_DENSITE),
   chapter('g6-prefectures', '6e', 'Les préfectures', [prefectures]),
   chapter('g3-union-europeenne', '3e', 'L’Union européenne', [euCapitals, euro]),
