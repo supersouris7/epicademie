@@ -1,6 +1,7 @@
 import type { Chapter } from '../types.ts';
 import { CIVISME_NUMERIQUE_SKILLS } from './civisme-numerique.ts';
 import { FAIRE_SOCIETE_SKILLS } from './faire-societe.ts';
+import { SINFORMER_SKILLS } from './sinformer-en-ligne.ts';
 import { VIVRE_REPUBLIQUE_SKILLS } from './vivre-republique.ts';
 
 /**
@@ -31,5 +32,13 @@ export const EMC_CHAPTERS: readonly Chapter[] = [
     domain: 'emc',
     title: 'Vivre en République',
     skills: VIVRE_REPUBLIQUE_SKILLS,
+  },
+  {
+    id: 'emcm2-sinformer-en-ligne',
+    subject: 'histoire',
+    grade: 'cm2',
+    domain: 'emc',
+    title: 'S’informer en ligne',
+    skills: SINFORMER_SKILLS,
   },
 ];
