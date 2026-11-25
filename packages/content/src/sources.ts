@@ -40,6 +40,7 @@ export const ALLOWED_DOMAINS: readonly string[] = [
   'ademe.fr',
   'ecologie.gouv.fr',
   'brgm.fr',
+  'geoconfluences.ens-lyon.fr',
 ];
 
 /** L'URL est en https et son domaine (ou un sous-domaine) est dans la liste autorisée. */
@@ -67,6 +68,34 @@ const tlfi = (id: string, word: string, path: string): Source => ({
   url: `https://www.cnrtl.fr/definition/${path}`,
   textDate: '2026',
   consultedOn: '2026-11-25',
+});
+
+/** Articles et définitions relevés pour le lot ge-6e-01 (25/11/2026). */
+const CONSULTED_GE_6E = '2026-11-25';
+
+const tlfiLe6e = (id: string, word: string, path: string): Source => ({
+  ...tlfi(id, word, path),
+  consultedOn: CONSULTED_GE_6E,
+});
+
+/** Définition du glossaire de l’INSEE (`numero` : identifiant de la page). */
+const inseeDefinition = (id: string, mot: string, numero: number): Source => ({
+  id: `insee-${id}`,
+  title: `Définition « ${mot} »`,
+  publisher: 'INSEE',
+  url: `https://www.insee.fr/fr/metadonnees/definition/c${numero}`,
+  textDate: '2026',
+  consultedOn: CONSULTED_GE_6E,
+});
+
+/** Notice d’autorité d’un lieu au catalogue de la BnF (`ark` : identifiant de la notice). */
+const bnfLieu = (id: string, nom: string, ark: string): Source => ({
+  id: `bnf-${id}`,
+  title: `Notice d’autorité « ${nom} »`,
+  publisher: 'Bibliothèque nationale de France',
+  url: `https://catalogue.bnf.fr/ark:/12148/${ark}`,
+  textDate: '2026',
+  consultedOn: CONSULTED_GE_6E,
 });
 
 /** Article du Dictionnaire de l’Académie française (9e édition), publié par le CNRTL. */
@@ -2003,6 +2032,68 @@ export const SOURCES: readonly Source[] = [
   tlfi('recycler', 'recycler', 'recycler'),
   tlfi('compost', 'compost', 'compost'),
   tlfi('transition', 'transition', 'transition'),
+  {
+    id: 'eduscol-habiter-metropole',
+    title: 'Ressource d’accompagnement, géographie 6e, « Habiter une métropole » (thème 1)',
+    publisher: 'Éduscol, ministère de l’Éducation nationale',
+    url: 'https://cache.media.eduscol.education.fr/file/Geographie/73/4/RA16_C3_HIGE_GEO_6e_Th1_Habiter_metropole_616734.pdf',
+    textDate: '2016-03',
+    consultedOn: CONSULTED_GE_6E,
+  },
+  {
+    id: 'ghsl-atlas-2018',
+    title: 'Atlas of the Human Planet 2018 - A World of Cities',
+    publisher: 'Commission européenne, Centre commun de recherche (GHSL)',
+    url: 'https://ghsl.jrc.ec.europa.eu/documents/Atlas_2018.pdf',
+    textDate: '2018',
+    consultedOn: CONSULTED_GE_6E,
+  },
+  {
+    id: 'geoconfluences-metropolisation',
+    title: 'Glossaire de Géoconfluences, article « Métropolisation »',
+    publisher: 'Géoconfluences (ENS de Lyon, DGESCO)',
+    url: 'https://geoconfluences.ens-lyon.fr/glossaire/metropolisation',
+    textDate: '2025-06-23',
+    consultedOn: CONSULTED_GE_6E,
+  },
+  {
+    id: 'geoconfluences-villes-mondiales',
+    title: 'Glossaire de Géoconfluences, article « Villes globales, villes mondiales »',
+    publisher: 'Géoconfluences (ENS de Lyon, DGESCO)',
+    url: 'https://geoconfluences.ens-lyon.fr/glossaire/globales-mondiales-villes',
+    textDate: '2023-01-16',
+    consultedOn: CONSULTED_GE_6E,
+  },
+  {
+    id: 'geoconfluences-ilot-chaleur',
+    title: 'Glossaire de Géoconfluences, article « Îlot de chaleur urbain »',
+    publisher: 'Géoconfluences (ENS de Lyon, DGESCO)',
+    url: 'https://geoconfluences.ens-lyon.fr/glossaire/ilot-de-chaleur-urbain',
+    textDate: '2025-05-26',
+    consultedOn: CONSULTED_GE_6E,
+  },
+  bnfLieu('tokyo', 'Tokyo (Japon)', 'cb15322935d'),
+  bnfLieu('shanghai', 'Shanghai (Chine)', 'cb15213593b'),
+  bnfLieu('jakarta', 'Jakarta (Indonésie)', 'cb11943398s'),
+  bnfLieu('seoul', 'Séoul (Corée du Sud)', 'cb15342184t'),
+  bnfLieu('bangkok', 'Bangkok (Thaïlande)', 'cb15284306q'),
+  bnfLieu('new-york', 'New York (New York, États-Unis)', 'cb15294963d'),
+  bnfLieu('los-angeles', 'Los Angeles (Calif., États-Unis)', 'cb11948658k'),
+  bnfLieu('sao-paulo', 'São Paulo (São Paulo, Brésil)', 'cb153033676'),
+  bnfLieu('paris', 'Paris (France)', 'cb11932931q'),
+  bnfLieu('londres', 'Londres (Royaume-Uni)', 'cb15282157k'),
+  bnfLieu('le-caire', 'Le Caire (Égypte)', 'cb119427096'),
+  inseeDefinition('ville-centre', 'Ville-centre et banlieue', 1441),
+  inseeDefinition('banlieue', 'Banlieue', 1546),
+  inseeDefinition('aire-attraction', 'Aire d’attraction des villes', 2173),
+  tlfiLe6e('pendulaire', 'pendulaire', 'pendulaire'),
+  tlfiLe6e('urbanisation', 'urbanisation', 'urbanisation'),
+  tlfiLe6e('bidonville', 'bidonville', 'bidonville'),
+  tlfiLe6e('citadin', 'citadin', 'citadin'),
+  tlfiLe6e('gratte-ciel', 'gratte-ciel', 'gratte-ciel'),
+  tlfiLe6e('periurbain', 'périurbain', 'p%C3%A9riurbain'),
+  tlfiLe6e('rocade', 'rocade', 'rocade'),
+  tlfiLe6e('densite', 'densité', 'densit%C3%A9'),
   {
     id: 'an-1914-chronologie',
     title: 'Chronologie 1914-1918',

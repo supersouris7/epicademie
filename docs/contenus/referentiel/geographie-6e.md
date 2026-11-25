@@ -11,7 +11,7 @@
 
 | Lot        | Chapitre                        | Notions                                                                                          | État actuel                |
 | ---------- | ------------------------------- | ------------------------------------------------------------------------------------------------ | -------------------------- |
-| `ge-6e-01` | Habiter une métropole           | métropoles du monde ; ville et périphéries ; mobilités ; vocabulaire urbain                      | absente                    |
+| `ge-6e-01` | Habiter une métropole           | métropoles du monde ; ville et périphéries ; mobilités ; vocabulaire urbain ; la ville de demain | couverte, en relecture     |
 | `ge-6e-02` | Espaces de faible densité       | espaces à fortes contraintes ; espaces agricoles ; habiter un espace rural ; vocabulaire         | absente                    |
 | `ge-6e-03` | Habiter les littoraux           | littoral industrialo-portuaire ; littoral touristique ; risques littoraux ; vocabulaire          | absente                    |
 | `ge-6e-04` | Le monde habité                 | répartition de la population mondiale ; foyers de peuplement ; densité ; vocabulaire             | absente                    |
