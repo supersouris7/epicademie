@@ -54,7 +54,8 @@ conflits entre lots.
      plus les chapitres « sciences et technologie » du CM1 à la 6e (préfixe `st`) ;
    - les boss des nouvelles matières restent « À venir » jusqu'à leurs dessins.
 6. **Sources vérifiables** :
-   - registre `sources.ts` (titre, éditeur, URL, date du texte, date de consultation) ;
+   - registre `sources.ts`, tenu par matière dans `<matiere>/sources.ts` (titre, éditeur, URL, dates du texte et de
+     consultation) ;
    - `Lesson.sources` : au moins une source par notion ;
    - chaque fait (date, lieu, définition, forme irrégulière) porte l'identifiant de sa source et la citation exacte ;
    - un test refuse toute URL hors de la liste des domaines institutionnels : education.gouv.fr, eduscol, legifrance,

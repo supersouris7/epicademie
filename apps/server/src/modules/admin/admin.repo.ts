@@ -318,5 +318,15 @@ export function adminRepo(db: Executor) {
         .offset(page * ADMIN_PAGE_SIZE);
       return { rows: rows.slice(0, ADMIN_PAGE_SIZE), hasMore: rows.length > ADMIN_PAGE_SIZE };
     },
+
+    /** E-mail et nature des comptes cités par le journal (absents : comptes supprimés). */
+    async accountNames(ids: readonly string[]) {
+      if (ids.length === 0) return [];
+      return db
+        .select({ id: accounts.id, email: accounts.email, autonomous: families.autonomous })
+        .from(accounts)
+        .innerJoin(families, eq(families.id, accounts.familyId))
+        .where(inArray(accounts.id, [...ids]));
+    },
   };
 }

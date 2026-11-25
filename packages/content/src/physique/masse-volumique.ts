@@ -4,10 +4,10 @@ import type { Rng } from '../rng.ts';
 import type { QuestionDraft, Skill } from '../types.ts';
 import { references } from './donnees-matiere.ts';
 
-// ——— Masse volumique : proportionnalité masse-volume, relation m = ρ × V (5e) ———
+// ——— Masse volumique : masse de 1 cm³, proportionnalité entre masse et volume (5e) ———
 
-/** Masse volumique « ronde » en dixièmes de g/cm³ (substance fictive, donnée de l'exercice). */
-const rho10 = (rng: Rng) => rng.pick([8, 12, 15, 25, 27, 45, 78, 89]);
+/** Masse de 1 cm³ en dixièmes de gramme (substance fictive, donnée de l'exercice). */
+const dixiemes = (rng: Rng) => rng.pick([8, 12, 15, 25, 27, 45, 78, 89]);
 const show = (x: Rational) => fmt(x);
 const subst = (rng: Rng) => rng.pick(['A', 'B', 'C', 'D', 'E']);
 
@@ -19,23 +19,23 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     const { answer, traps: t } = choice(rng, bon, [
       {
         label: `1 g de cette substance occupe ${k} cm³`,
-        why: 'La masse volumique donne la masse d’une unité de volume, pas le volume d’une unité de masse.',
+        why: 'La masse volumique donne la masse de 1 cm³, pas le volume de 1 g.',
       },
       {
-        label: `Tout objet fait de cette substance pèse ${k} g`,
-        why: 'La masse d’un objet dépend de son volume : seule la masse d’une unité de volume est fixée.',
+        label: `Tout objet fait de cette substance a une masse de ${k} g`,
+        why: 'La masse d’un objet dépend de son volume : la valeur donnée est celle de 1 cm³.',
       },
     ]);
     return {
-      prompt: `La substance ${s} a une masse volumique de ${k} g/cm³. Que signifie cette phrase ?`,
+      prompt: `La masse volumique de la substance ${s} est de ${k} grammes pour 1 cm³. Que signifie cette phrase ?`,
       answer,
       traps: t,
-      hint: '« Volumique » : pour une unité de volume.',
-      steps: ['La masse volumique est la masse de l’unité de volume.', `Donc **${bon}**.`],
+      hint: '« Volumique » : pour un volume de 1 cm³.',
+      steps: ['La masse volumique est la masse de 1 cm³.', `Donc **${bon}**.`],
       targetSeconds: 30,
     };
   }
-  const v = rng.int(2, 6);
+  const v = rng.int(3, 6);
   const { answer, traps: t } = choice(rng, `${k * v} g`, [
     { label: `${k} g`, why: 'C’est la masse d’un seul cm³ : il y en a plusieurs.' },
     { label: `${k + v} g`, why: 'On multiplie la masse d’un cm³ par le nombre de cm³ (on n’additionne pas).' },
@@ -79,34 +79,36 @@ const niveau2 = (rng: Rng): QuestionDraft => {
 const niveau3 = (rng: Rng): QuestionDraft => {
   const s = subst(rng);
   if (rng.int(0, 1) === 0) {
-    const d = rho10(rng);
-    const v = rng.int(2, 10) * 10;
-    const rho = dec(d, 1);
-    const m = mul(rho, r(v));
+    const k = rng.int(2, 9);
+    const v = rng.int(3, 25);
+    const m = k * v;
     return {
-      prompt: `La substance ${s} a une masse volumique de ${show(rho)} g/cm³. Quelle est la masse d’un objet de ${v} cm³ fait de cette substance, en grammes ?`,
-      answer: num(m, 'g'),
-      traps: traps(m, [
-        [r(v), 'C’est le volume, pas la masse : il faut multiplier par la masse volumique.'],
-        [dec(v * 10 + d, 1), 'On multiplie la masse volumique par le volume (on n’additionne pas).'],
+      prompt: `${v} cm³ de la substance ${s} ont une masse de ${m} g. Quelle est sa masse volumique, c’est-à-dire la masse de 1 cm³, en grammes ?`,
+      answer: num(k, 'g'),
+      traps: traps(r(k), [
+        [m * v, 'Un seul cm³ a une masse plus petite que celle de tout l’échantillon : on partage la masse.'],
+        [m - v, 'On partage la masse entre les cm³ : on divise, on ne soustrait pas.'],
       ]),
-      hint: 'La masse d’un cm³ est donnée : combien de cm³ y a-t-il ?',
-      steps: ['m = ρ × V.', `m = ${show(rho)} × ${v} = **${show(m)} g**.`],
+      hint: 'Partage la masse entre tous les cm³.',
+      steps: [`${v} cm³ → ${m} g.`, `Pour 1 cm³, on divise par ${v} : ${m} ÷ ${v} = **${k} g**.`],
       targetSeconds: 45,
     };
   }
-  const rho = rng.int(2, 9);
-  const v = rng.int(3, 25);
-  const m = rho * v;
+  const un = dec(dixiemes(rng), 1);
+  const v = rng.int(2, 10) * 10;
+  const m = mul(un, r(v));
   return {
-    prompt: `Un échantillon de la substance ${s} a une masse de ${m} g pour un volume de ${v} cm³. Quelle est la masse volumique, en g/cm³ ?`,
-    answer: num(rho, 'g/cm³'),
-    traps: traps(r(rho), [
-      [m * v, 'On divise la masse par le volume : ρ = m ÷ V (pas m × V).'],
-      [m - v, 'La masse d’un cm³ se trouve par un partage : on divise, on ne soustrait pas.'],
+    prompt: `1 cm³ de la substance ${s} a une masse de ${show(un)} g. Quelle est la masse d’un objet de ${v} cm³ fait de cette substance, en grammes ?`,
+    answer: num(m, 'g'),
+    traps: traps(m, [
+      [r(v), 'C’est le nombre de cm³ : chacun n’a pas une masse de 1 g ici.'],
+      [
+        dec(v * 10 + un.n * (10 / un.d), 1),
+        'On multiplie la masse de 1 cm³ par le nombre de cm³ (on n’additionne pas).',
+      ],
     ]),
-    hint: 'Combien de grammes pour un seul cm³ ?',
-    steps: ['ρ = m ÷ V : on cherche la masse d’un cm³.', `ρ = ${m} ÷ ${v} = **${rho} g/cm³**.`],
+    hint: 'La masse d’un cm³ est donnée : combien de cm³ y a-t-il ?',
+    steps: [`1 cm³ → ${show(un)} g.`, `${v} cm³ → ${v} × ${show(un)} = **${show(m)} g**.`],
     targetSeconds: 45,
   };
 };
@@ -114,40 +116,42 @@ const niveau3 = (rng: Rng): QuestionDraft => {
 const niveau4 = (rng: Rng): QuestionDraft => {
   const type = rng.int(0, 2);
   if (type === 0) {
-    const rho = rng.int(2, 9);
+    const k = rng.int(2, 9);
     const v0 = rng.int(3, 8) * 10;
     const v = rng.int(2, 12);
-    const m = rho * v;
+    const m = k * v;
     return {
-      prompt: `Un objet a une masse de ${m} g. Dans une éprouvette, l’eau passe de ${v0} mL à ${v0 + v} mL quand on l’immerge. Quelle est sa masse volumique, en g/mL ?`,
-      answer: num(rho, 'g/mL'),
-      traps: traps(r(rho), [
-        [m * v, 'Il faut diviser la masse par le volume, pas multiplier.'],
-        [v, 'C’est le volume de l’objet. Il faut ensuite diviser sa masse par ce volume.'],
+      prompt: `Un objet a une masse de ${m} g. Dans une éprouvette, l’eau passe de ${v0} mL à ${v0 + v} mL quand on l’immerge (1 mL = 1 cm³). Quelle est la masse de 1 cm³ de sa substance, en grammes ?`,
+      answer: num(k, 'g'),
+      traps: traps(r(k), [
+        [m * v, 'Un seul cm³ a une masse plus petite que celle de l’objet entier : on partage la masse.'],
+        [v, 'C’est le volume de l’objet. Il faut ensuite partager sa masse entre ces cm³.'],
       ]),
       hint: 'Le volume de l’objet est la différence entre les deux lectures.',
       steps: [
-        `Volume de l’objet (déplacement d’eau) : ${v0 + v} − ${v0} = ${v} mL.`,
-        'ρ = m ÷ V.',
-        `ρ = ${m} ÷ ${v} = **${rho} g/mL**.`,
+        `Volume de l’objet (déplacement d’eau) : ${v0 + v} − ${v0} = ${v} mL, soit ${v} cm³.`,
+        `${v} cm³ → ${m} g.`,
+        `1 cm³ → ${m} ÷ ${v} = **${k} g**.`,
       ],
       targetSeconds: 75,
     };
   }
   if (type === 1) {
-    const d = rng.pick([8, 12, 15, 25]);
+    const un = dec(rng.pick([8, 12, 15, 25]), 1);
     const v = rng.int(2, 20) * 10;
-    const rho = dec(d, 1);
-    const m = mul(rho, r(v));
+    const m = mul(un, r(v));
     return {
-      prompt: `Un liquide a une masse volumique de ${show(rho)} g/cm³. Quel volume, en cm³, faut-il prélever pour en avoir ${show(m)} g ?`,
+      prompt: `1 cm³ d’un liquide a une masse de ${show(un)} g. Quel volume, en cm³, faut-il prélever pour en avoir ${show(m)} g ?`,
       answer: num(v, 'cm³'),
       traps: traps(r(v), [
-        [mul(rho, m), 'Pour trouver un volume, on divise la masse par la masse volumique : V = m ÷ ρ.'],
-        [m, 'La masse n’est pas égale au volume quand ρ n’est pas 1 g/cm³.'],
+        [mul(un, m), 'Cherche combien de fois la masse de 1 cm³ est contenue dans la masse voulue : on divise.'],
+        [m, 'Le nombre de grammes n’est égal au nombre de cm³ que si 1 cm³ a une masse de 1 g.'],
       ]),
-      hint: 'Dans m = ρ × V, quelle opération donne V ?',
-      steps: ['m = ρ × V, donc V = m ÷ ρ.', `V = ${show(m)} ÷ ${show(rho)} = **${v} cm³**.`],
+      hint: 'Combien de fois la masse de 1 cm³ « rentre »-t-elle dans la masse voulue ?',
+      steps: [
+        `Chaque cm³ apporte ${show(un)} g.`,
+        `Nombre de cm³ : ${show(m)} ÷ ${show(un)} = ${v}, soit **${v} cm³**.`,
+      ],
       targetSeconds: 75,
     };
   }
@@ -157,23 +161,23 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   ]);
   const bon = sens.up ? 'augmente' : 'diminue';
   return {
-    prompt: `${sens.event} Sa masse volumique augmente-t-elle, diminue-t-elle ou reste-t-elle la même ? Complète la phrase.`,
+    prompt: `${sens.event} Que devient la masse de 1 cm³ de ce liquide (sa masse volumique) ? Complète la phrase.`,
     answer: {
       kind: 'cloze',
-      parts: ['La masse volumique ', '.'],
+      parts: ['La masse de 1 cm³ de ce liquide ', '.'],
       blanks: [{ mode: 'list', options: ['augmente', 'diminue', 'reste la même'], correct: sens.up ? 0 : 1 }],
     },
-    hint: 'La même masse est répartie dans un volume différent.',
+    hint: 'La même masse occupe un volume différent.',
     steps: [
-      'ρ = m ÷ V, avec la masse inchangée.',
-      sens.up ? 'On divise par un volume plus petit.' : 'On divise par un volume plus grand.',
-      `La masse volumique **${bon}** : elle dépend de la température.`,
+      `La même masse occupe un volume plus ${sens.up ? 'petit' : 'grand'}.`,
+      `Chaque cm³ en reçoit donc une part plus ${sens.up ? 'grande' : 'petite'}.`,
+      `La masse de 1 cm³ **${bon}** : la masse volumique dépend de la température.`,
     ],
     targetSeconds: 50,
   };
 };
 
-/** Substances de référence fictives (g/cm³, données de l'exercice). */
+/** Substances de référence fictives : masse de 1 cm³ en dixièmes de gramme (données de l'exercice). */
 const REFERENCES: readonly { nom: string; d: number }[] = [
   { nom: 'A', d: 27 },
   { nom: 'B', d: 45 },
@@ -191,7 +195,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     `Substance ${cible.nom}`,
     REFERENCES.filter((x) => x !== cible).map((x) => ({
       label: `Substance ${x.nom}`,
-      why: `La substance ${x.nom} a une masse volumique de ${show(dec(x.d, 1))} g/cm³ : ce n’est pas la valeur calculée.`,
+      why: `1 cm³ de la substance ${x.nom} a une masse de ${show(dec(x.d, 1))} g : ce n’est pas ce que l’on trouve pour l’objet.`,
     })),
     true,
   );
@@ -201,17 +205,17 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       kind: 'document',
       title: 'Compte rendu de mesure (données de l’exercice)',
       lines: [
-        ...REFERENCES.map((x) => `Substance ${x.nom} : masse volumique ${show(dec(x.d, 1))} g/cm³.`),
+        ...REFERENCES.map((x) => `Substance ${x.nom} : 1 cm³ a une masse de ${show(dec(x.d, 1))} g.`),
         `Masse de l’objet : ${show(m)} g.`,
         `Éprouvette : ${v0} mL avant immersion, ${v0 + v} mL après (1 mL = 1 cm³).`,
       ],
     },
     answer,
     traps: t,
-    hint: 'Trouve d’abord le volume de l’objet, puis calcule sa masse volumique.',
+    hint: 'Trouve d’abord le volume de l’objet, puis la masse de 1 cm³ de sa substance.',
     steps: [
       `Volume : ${v0 + v} − ${v0} = ${v} cm³.`,
-      `ρ = ${show(m)} ÷ ${v} = ${show(dec(cible.d, 1))} g/cm³.`,
+      `${v} cm³ → ${show(m)} g, donc 1 cm³ → ${show(m)} ÷ ${v} = ${show(dec(cible.d, 1))} g.`,
       `La mesure correspond à la **substance ${cible.nom}**.`,
     ],
     targetSeconds: 110,
@@ -226,9 +230,9 @@ export const masseVolumique: Skill = {
   advice: 'brouillon',
   lesson: {
     memo: [
-      'La **masse volumique** ρ est la masse d’une unité de volume : 2 g/cm³ veut dire que 1 cm³ a une masse de 2 g.',
-      'Pour une même substance, masse et volume sont proportionnels : m = ρ × V, donc ρ = m ÷ V et V = m ÷ ρ.',
-      'Elle aide à reconnaître une substance et dépend de la température.',
+      'La **masse volumique** d’une substance est la masse de 1 cm³ de cette substance : par exemple, 1 cm³ a une masse de 2 g.',
+      'Pour une même substance, la masse est proportionnelle au volume : 2 fois plus de volume, 2 fois plus de masse. Pour reconnaître une substance, cherche la masse de 1 cm³.',
+      'La masse volumique dépend de la température.',
     ],
     ...references(
       'masse-volumique',
@@ -236,7 +240,6 @@ export const masseVolumique: Skill = {
       'masse-volumique-especes',
       'masse-volumique-temperature',
       'proportionnalite',
-      'quotient-4e',
       'volume-deplacement',
     ),
   },

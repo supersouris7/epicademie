@@ -76,6 +76,9 @@ export const FAITS: readonly Fait[] = [
   tlfi('heterogene', 'heterogene', 'Dont les éléments sont de nature différente'),
   tlfi('azote', 'azote', 'qui entre pour environ 4/5 dans la composition de l’air atmosphérique'),
   prog('identifier-corps-purs', 'exploiter la température de changement d’état pour identifier des corps purs.'),
+  fait('paliers', PROGRAMME_C3, 'identifier les éventuels paliers de température lors des changements d’état.'),
+  fait('palier-corps-pur', 'academie-eutectique', 'comme celle des corps purs, à température constante'),
+  tlfi('limpide', 'limpide', 'Qui est clair, transparent.'),
   // Masse volumique.
   tlfi('masse-volumique', 'volumique', 'Masse volumique. Masse de l’unité de volume.'),
   prog(

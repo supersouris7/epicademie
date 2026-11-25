@@ -34,30 +34,37 @@ const niveau2 = (rng: Rng): QuestionDraft => {
   const [nom, sens] = rng.pick([
     ['la fusion', 'solide → liquide'],
     ['la solidification', 'liquide → solide'],
-    ['la vaporisation, dans un récipient fermé', 'liquide → gaz'],
-    ['la liquéfaction, dans un récipient fermé', 'gaz → liquide'],
+    ['la vaporisation', 'liquide → gaz, sans que rien ne s’échappe'],
+    ['la liquéfaction', 'gaz → liquide, sans que rien ne s’échappe'],
   ] as const);
-  const bon = 'La masse se conserve, mais pas forcément le volume';
-  const { answer, traps: t } = choice(rng, bon, [
-    {
-      label: 'Le volume se conserve, mais pas la masse',
-      why: 'C’est l’inverse : la masse se conserve, pas le volume.',
-    },
-    {
-      label: 'La masse et le volume se conservent toujours',
-      why: 'Le volume peut changer lors d’un changement d’état.',
-    },
-    {
-      label: 'Ni la masse ni le volume ne se conservent',
-      why: 'La masse, elle, se conserve : aucune matière ne se perd.',
-    },
-  ]);
+  const masse = rng.int(0, 1) === 0;
+  const bon = masse ? 'La masse reste la même' : 'Le volume peut changer';
+  const { answer, traps: t } = choice(
+    rng,
+    bon,
+    masse
+      ? [
+          { label: 'La masse augmente', why: 'Aucune matière n’est ajoutée au cours d’un changement d’état.' },
+          { label: 'La masse diminue', why: 'Si rien ne s’échappe, aucune matière ne se perd.' },
+        ]
+      : [
+          { label: 'Le volume reste forcément le même', why: 'C’est la masse qui se conserve, pas le volume.' },
+          {
+            label: 'Le volume reste le même puisque la masse se conserve',
+            why: 'La conservation de la masse ne dit pas que le volume se conserve.',
+          },
+        ],
+  );
+  const grandeur = masse ? 'la masse' : 'le volume';
   return {
-    prompt: `Que se passe-t-il pour la masse et le volume d’une substance pendant ${nom} (${sens}) ?`,
+    prompt: `Pendant ${nom} (${sens}), que peut-on dire sur ${grandeur} de la substance ?`,
     answer,
     traps: t,
     hint: 'Distingue ce qui compte la matière et ce qui mesure la place occupée.',
-    steps: ['Un changement d’état ne fait ni perdre ni gagner de matière.', `Réponse : **${bon.toLowerCase()}**.`],
+    steps: [
+      'Un changement d’état conserve la masse, mais pas forcément le volume.',
+      `Réponse : **${bon.toLowerCase()}**.`,
+    ],
     targetSeconds: 35,
   };
 };
@@ -67,7 +74,9 @@ const SOLIDES = ['sel', 'sucre'] as const;
 const niveau3 = (rng: Rng): QuestionDraft => {
   const solide = rng.pick(SOLIDES);
   const eau = rng.int(2, 18) * 25;
-  const s = rng.int(1, 8) * 5;
+  // Le sel reste sous 30 % de la masse d'eau : au-delà, il ne se dissoudrait pas entièrement.
+  const maxi = solide === 'sel' ? Math.min(8, Math.floor((eau * 3) / 50)) : 8;
+  const s = rng.int(1, maxi) * 5;
   if (rng.int(0, 2) === 0) {
     const m = rng.int(10, 90);
     return {
@@ -102,14 +111,17 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     const eau = rng.int(2, 9) * 50;
     const total = flacon + eau;
     return {
-      prompt: `Un flacon fermé vide pèse ${flacon} g. Avec de l’eau, il pèse ${total} g. On congèle toute l’eau. Quelle est la masse de la glace, en grammes ?`,
+      prompt: `Un flacon fermé vide a une masse de ${flacon} g. Avec de l’eau, sa masse est de ${total} g. On congèle toute l’eau. Quelle est la masse de la glace, en grammes ?`,
       answer: num(eau, 'g'),
       traps: traps(r(eau), [
         [total, 'C’est la masse du flacon et de son contenu : il faut retirer celle du flacon.'],
         [flacon, 'C’est la masse du flacon vide.'],
       ]),
       hint: 'La masse de l’eau ne change pas ; trouve-la avant la congélation.',
-      steps: [`Masse d’eau : ${total} − ${flacon} = ${eau} g.`, `La masse se conserve : la glace pèse **${eau} g**.`],
+      steps: [
+        `Masse d’eau : ${total} − ${flacon} = ${eau} g.`,
+        `La masse se conserve : la masse de la glace est de **${eau} g**.`,
+      ],
       targetSeconds: 60,
     };
   }
@@ -133,7 +145,8 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     { texte: 'En gelant, l’eau change de volume : sa masse change donc aussi.', rep: 'non' },
     { texte: 'Le sel dissous ne se voit plus : la masse du mélange est donc seulement celle de l’eau.', rep: 'non' },
     {
-      texte: 'Dans un récipient fermé, la masse est la même avant et après l’ébullition et la liquéfaction.',
+      texte:
+        'Si rien ne s’échappe du montage, la masse est la même après avoir fait bouillir l’eau puis liquéfié toute la vapeur.',
       rep: 'oui',
     },
   ]);
@@ -156,46 +169,69 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   };
 };
 
+/** Changements d'état à variation de volume réaliste (au plus 15 %) : masse et volumes pour une portion (données). */
+const EXPERIENCES = [
+  { corps: 'de la glace', nom: 'la fusion', apres: 'l’eau liquide', m: 92, avant: 100, ensuite: 92 },
+  { corps: 'de l’eau liquide', nom: 'la solidification', apres: 'la glace', m: 92, avant: 92, ensuite: 100 },
+  { corps: 'une cire solide', nom: 'la fusion', apres: 'la cire liquide', m: 90, avant: 100, ensuite: 110 },
+  { corps: 'une cire liquide', nom: 'la solidification', apres: 'la cire solide', m: 90, avant: 110, ensuite: 100 },
+] as const;
+
 const niveau5 = (rng: Rng): QuestionDraft => {
-  const rho = rng.int(2, 6);
-  const rho2 = rng.pick([1, 2, 3, 4, 5, 6].filter((x) => x !== rho));
-  const v2 = rng.int(2, 8) * rho;
-  const m = rho2 * v2;
-  const v1 = m / rho;
+  const e = rng.pick(EXPERIENCES);
+  const k = rng.int(1, 6);
+  const [m, avant, ensuite, boite] = [e.m * k, e.avant * k, e.ensuite * k, rng.int(4, 15) * 10];
   const figure = {
     kind: 'document' as const,
     title: 'Expérience (données de l’exercice)',
     lines: [
-      'Un récipient fermé contient une substance W, un corps pur.',
-      `Au départ, à l’état solide : masse volumique ${rho} g/cm³, volume ${v1} cm³.`,
-      `Après la fusion : volume ${v2} cm³.`,
+      `Un récipient vide a une masse de ${boite} g.`,
+      `Avec ${e.corps}, sa masse est de ${boite + m} g. Volume avant : ${avant} cm³.`,
+      `Après ${e.nom}, sans que rien ne s’échappe : volume ${ensuite} cm³.`,
     ],
   };
   if (rng.int(0, 1) === 0) {
     return {
-      prompt: 'Lis l’expérience. Quelle est la masse de la substance liquide, en grammes ?',
+      prompt: `Lis l’expérience. Quelle est la masse de ${e.apres} après le changement d’état, en grammes ?`,
       figure,
       answer: num(m, 'g'),
       traps: traps(r(m), [
-        [rho * v2, 'La masse volumique du solide ne vaut pas pour le liquide : calcule la masse avant la fusion.'],
-        [v2, 'C’est un volume : il faut la masse.'],
+        [boite + m, 'C’est la masse du récipient et de son contenu : retire celle du récipient.'],
+        [ensuite, 'C’est un volume en cm³ : on demande une masse.'],
       ]),
-      hint: 'Calcule la masse avant la fusion : elle ne change pas ensuite.',
-      steps: [`Avant : m = ${rho} × ${v1} = ${m} g.`, 'La fusion conserve la masse.', `Masse du liquide : **${m} g**.`],
+      hint: 'Trouve la masse du contenu avant le changement d’état.',
+      steps: [
+        `Masse avant : ${boite + m} − ${boite} = ${m} g.`,
+        'Le changement d’état conserve la masse, même si le volume change.',
+        `Masse obtenue : **${m} g**.`,
+      ],
       targetSeconds: 100,
     };
   }
+  const plus = ensuite < avant;
+  const bon = `Non : après, 1 cm³ a une masse plus ${plus ? 'grande' : 'petite'}`;
+  const { answer, traps: t } = choice(rng, bon, [
+    {
+      label: `Non : après, 1 cm³ a une masse plus ${plus ? 'petite' : 'grande'}`,
+      why: `La même masse occupe un volume plus ${plus ? 'petit' : 'grand'} : compare la part de chaque cm³.`,
+    },
+    {
+      label: 'Oui : la masse se conserve, donc 1 cm³ a la même masse',
+      why: 'La masse totale se conserve, mais elle n’occupe plus le même volume.',
+    },
+  ]);
   return {
-    prompt: 'Lis l’expérience. Quelle est la masse volumique de la substance après la fusion, en g/cm³ ?',
+    prompt: 'Lis l’expérience. 1 cm³ de la substance a-t-il la même masse avant et après ?',
     figure,
-    answer: num(rho2, 'g/cm³'),
-    traps: traps(r(rho2), [
-      [rho, 'Le volume a changé : la masse volumique change, même si la masse reste la même.'],
-      [m, 'C’est la masse : il faut encore la diviser par le nouveau volume.'],
-    ]),
-    hint: 'La masse reste la même ; divise-la par le nouveau volume.',
-    steps: [`Masse : ${rho} × ${v1} = ${m} g, conservée après la fusion.`, `ρ = ${m} ÷ ${v2} = **${rho2} g/cm³**.`],
-    targetSeconds: 120,
+    answer,
+    traps: t,
+    hint: 'La masse totale reste la même : dans combien de cm³ est-elle répartie, avant puis après ?',
+    steps: [
+      'La masse totale se conserve lors du changement d’état.',
+      `Elle occupe ${avant} cm³ avant et ${ensuite} cm³ après : un volume plus ${plus ? 'petit' : 'grand'}.`,
+      `**${bon}**.`,
+    ],
+    targetSeconds: 110,
   };
 };
 
@@ -210,7 +246,7 @@ export const conservationMasse: Skill = {
       'Lors d’un changement d’état, la **masse** se conserve, mais pas forcément le **volume** : 20 g de glace donnent 20 g d’eau liquide.',
       'Quand on mélange un solide dans un liquide, la masse totale se conserve : 100 g d’eau + 10 g de sel = 110 g, même si le sel ne se voit plus.',
     ],
-    ...references('conservation-changement', 'conservation-melange', 'masse-volumique'),
+    ...references('conservation-changement', 'conservation-melange'),
   },
   generate: (rng, level) => ([niveau1, niveau2, niveau3, niveau4, niveau5][level - 1] ?? niveau1)(rng),
 };

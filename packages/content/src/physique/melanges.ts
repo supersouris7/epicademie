@@ -6,7 +6,13 @@ import { references } from './donnees-matiere.ts';
 
 // ——— Corps purs et mélanges (5e) ———
 
-const PURS: readonly string[] = ['de l’eau pure', 'du fer pur', 'du dioxygène pur', 'du cuivre pur', 'de l’or pur'];
+const PURS: readonly string[] = [
+  'un liquide qui ne contient que de l’eau',
+  'un clou qui ne contient que du fer',
+  'un gaz qui ne contient que du dioxygène',
+  'un fil qui ne contient que du cuivre',
+  'un anneau qui ne contient que de l’or',
+];
 const MELANGES: readonly string[] = [
   'de l’eau salée',
   'de l’air',
@@ -45,7 +51,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
       label: maj(a),
       why: cherchePur
         ? 'C’est un mélange : plusieurs corps y sont associés.'
-        : 'Le mot « pur » l’indique : aucune autre matière n’y est mêlée.',
+        : 'Il ne contient qu’une seule matière : aucune autre n’y est mêlée.',
     })),
   );
   return {
@@ -107,7 +113,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     const homogene = rng.int(0, 1) === 0;
     const obs = rng.pick(homogene ? HOMOGENES : HETEROGENES);
     const bon = homogene ? 'homogène' : 'hétérogène';
-    const { answer, traps } = saisie(homogene ? ['homogène', 'homogene'] : ['hétérogène', 'heterogene', 'hétérogene'], [
+    const { answer, traps } = saisie(homogene ? ['homogène', 'homogene'] : ['hétérogène', 'heterogene'], [
       [
         homogene ? 'hétérogène' : 'homogène',
         homogene
@@ -162,15 +168,15 @@ const niveau3 = (rng: Rng): QuestionDraft => {
 const niveau4 = (rng: Rng): QuestionDraft => {
   const type = rng.int(0, 2);
   if (type === 0) {
-    const question = rng.pick([
-      'Une eau parfaitement limpide est-elle forcément un corps pur ?',
-      'Un liquide transparent et incolore est-il forcément un corps pur ?',
-      'Un liquide où l’on ne distingue rien est-il forcément un corps pur ?',
+    const limpide = 'L’aspect ne suffit pas : de l’eau salée est limpide et c’est pourtant un mélange.';
+    const { question, rep } = rng.pick([
+      { question: 'Une eau parfaitement limpide est-elle forcément un corps pur ?', rep: 'non' },
+      { question: 'Un liquide transparent et incolore est-il forcément un corps pur ?', rep: 'non' },
+      { question: 'Un liquide où l’on ne distingue rien est-il forcément un corps pur ?', rep: 'non' },
+      { question: 'Une eau parfaitement limpide peut-elle être un mélange ?', rep: 'oui' },
+      { question: 'Un liquide où l’on ne distingue rien peut-il contenir une matière dissoute ?', rep: 'oui' },
     ]);
-    const { answer, traps } = saisie(
-      ['non'],
-      [['oui', 'L’aspect ne suffit pas : de l’eau salée est limpide et c’est pourtant un mélange.']],
-    );
+    const { answer, traps } = saisie([rep], [[rep === 'oui' ? 'non' : 'oui', limpide]]);
     return {
       prompt: `${question} Réponds par oui ou non.`,
       answer,
@@ -179,7 +185,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       steps: [
         'Un mélange homogène a l’air uni : on ne voit pas ses constituants.',
         'Voir un liquide limpide ne prouve donc pas qu’il est pur.',
-        'La réponse est **non**.',
+        `La réponse est **${rep}**.`,
       ],
       targetSeconds: 40,
     };
@@ -227,76 +233,109 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   };
 };
 
-/** Substances de référence fictives : température d'ébullition (°C), données de l'exercice. */
-const REFERENCES: readonly { nom: string; te: number }[] = [
-  { nom: 'A', te: 57 },
-  { nom: 'B', te: 65 },
-  { nom: 'C', te: 78 },
-  { nom: 'D', te: 111 },
+/** Substances de référence fictives : température de fusion (°C), données de l'exercice. */
+const REFERENCES: readonly { nom: string; tf: number }[] = [
+  { nom: 'A', tf: 44 },
+  { nom: 'B', tf: 54 },
+  { nom: 'C', tf: 69 },
+  { nom: 'D', tf: 80 },
 ];
+/** Paliers qui ne figurent pas dans le tableau. */
+const HORS_TABLEAU: readonly number[] = [49, 61, 74];
+const CAS = ['reference', 'absent', 'melange'] as const;
 
-const niveau5 = (rng: Rng): QuestionDraft => {
-  const type = rng.int(0, 1);
-  if (type === 0) {
-    const cible = rng.pick(REFERENCES);
-    const { answer, traps } = choice(
-      rng,
-      `Substance ${cible.nom}`,
-      REFERENCES.filter((r) => r !== cible).map((r) => ({
-        label: `Substance ${r.nom}`,
-        why: `La substance ${r.nom} bout à ${r.te} °C : ce n’est pas la température mesurée (${cible.te} °C).`,
-      })),
-      true,
-    );
-    return {
-      prompt: `Lis le document. Un liquide pur inconnu bout à ${cible.te} °C. De quelle substance s’agit-il ?`,
-      figure: {
-        kind: 'document',
-        title: 'Tableau de référence (données de l’exercice)',
-        lines: REFERENCES.map((r) => `Substance ${r.nom} (corps pur) : ébullition à ${r.te} °C.`),
-      },
-      answer,
-      traps,
-      hint: 'La température de changement d’état permet de reconnaître un corps pur.',
-      steps: [
-        'La température de changement d’état sert à identifier un corps pur.',
-        `On cherche la ligne qui indique ${cible.te} °C.`,
-        `C’est la **substance ${cible.nom}**.`,
-      ],
-      targetSeconds: 60,
-    };
-  }
-  const sels = rng.shuffle(['calcium', 'magnésium', 'sodium', 'potassium', 'bicarbonate']).slice(0, 3);
-  const eau = rng.pick(['Source du Val', 'Source des Pins', 'Source du Roc']);
-  const { answer, traps } = choice(rng, 'Un mélange homogène', [
-    {
-      label: 'Un corps pur',
-      why: 'L’étiquette liste des matières dissoutes : l’eau n’est pas seule, ce n’est pas un corps pur.',
-    },
-    { label: 'Un mélange hétérogène', why: 'On ne distingue pas les constituants : le mélange est homogène.' },
-    {
-      label: 'Un gaz pur',
-      why: 'Le document décrit un liquide avec des matières dissoutes, pas un gaz seul.',
-    },
-  ]);
+/** Relevés pendant la fusion : palier constant, ou température qui continue de monter (en passant par `t`). */
+const releves = (cas: (typeof CAS)[number], t: number) =>
+  (cas === 'melange' ? [t - 3, t, t + 3, t + 6] : [t, t, t, t]).map((x) => `${x} °C`).join(' ; ');
+
+const releveDeFusion = (rng: Rng): QuestionDraft => {
+  const solides = (rng.int(0, 1) === 0 ? ['X', 'Y'] : ['X', 'Y', 'Z']).map((nom) => {
+    const cas = rng.pick(CAS);
+    const ref = rng.pick(REFERENCES);
+    return { nom, cas, ref, t: cas === 'absent' ? rng.pick(HORS_TABLEAU) : ref.tf };
+  });
+  const cible = rng.pick(solides);
+  const autre = rng.pick(REFERENCES.filter((x) => x !== cible.ref));
+  const corpsPur = (nom: string) => `Le corps pur ${nom}`;
+  const MELANGE = 'Un mélange';
+  const ABSENT = 'Un corps pur absent du tableau';
+  const bon = cible.cas === 'melange' ? MELANGE : cible.cas === 'absent' ? ABSENT : corpsPur(cible.ref.nom);
+  const why =
+    cible.cas === 'melange'
+      ? 'La température continue de monter pendant la fusion : il n’y a pas de palier, ce n’est pas un corps pur.'
+      : cible.cas === 'absent'
+        ? `Le solide fond à température constante (${cible.t} °C), une valeur qui n’est pas dans le tableau.`
+        : `Le solide fond à température constante : ce palier à ${cible.t} °C correspond à la substance ${cible.ref.nom}.`;
+  const { answer, traps } = choice(
+    rng,
+    bon,
+    [MELANGE, ABSENT, corpsPur(cible.ref.nom), corpsPur(autre.nom)]
+      .filter((label) => label !== bon)
+      .map((label) => ({ label, why })),
+  );
   return {
-    prompt: `Lis l’étiquette. L’eau « ${eau} » est limpide. Qu’est-elle ?`,
+    prompt: `Lis le document. Que peut-on conclure pour le solide ${cible.nom} ?`,
     figure: {
       kind: 'document',
-      title: 'Étiquette (inventée pour l’exercice)',
-      lines: [`Eau « ${eau} » : liquide limpide, on n’y voit aucun dépôt.`, `Matières dissoutes : ${sels.join(', ')}.`],
+      title: 'Relevés pendant la fusion, une mesure par minute (données de l’exercice)',
+      lines: [
+        ...REFERENCES.map((x) => `Substance ${x.nom} (corps pur) : fusion à ${x.tf} °C.`),
+        ...solides.map((s) => `Solide ${s.nom} : ${releves(s.cas, s.t)}.`),
+      ],
     },
+    answer,
+    traps,
+    hint: 'Regarde d’abord si la température reste constante pendant la fusion, puis compare avec le tableau.',
+    steps: ['Un corps pur fond à température constante : on cherche un palier.', why, `Conclusion : **${bon}**.`],
+    targetSeconds: 90,
+  };
+};
+
+const ETIQUETTES = [
+  {
+    bon: 'Un corps pur',
+    lignes: ['Liquide limpide, on n’y voit aucun dépôt.', 'Contenu : de l’eau, aucune autre matière détectée.'],
+    indice: 'Une seule matière est présente : c’est un corps pur.',
+  },
+  {
+    bon: 'Un mélange homogène',
+    lignes: ['Liquide limpide, on n’y voit aucun dépôt.', 'Contenu : eau ; matières dissoutes : calcium, sodium.'],
+    indice: 'Plusieurs matières sont associées et on ne les distingue pas.',
+  },
+  {
+    bon: 'Un mélange hétérogène',
+    lignes: ['Liquide avec un dépôt visible au fond.', 'Contenu : eau, pulpe de fruit, sucre.'],
+    indice: 'Plusieurs matières sont associées et on distingue un dépôt.',
+  },
+] as const;
+
+const etiquette = (rng: Rng): QuestionDraft => {
+  const e = rng.pick(ETIQUETTES);
+  const nom = rng.pick(['Source du Val', 'Les Pins', 'Le Roc']);
+  const { answer, traps } = choice(
+    rng,
+    e.bon,
+    ETIQUETTES.filter((x) => x !== e).map((x) => ({
+      label: x.bon,
+      why: `${e.indice} Ce n’est donc pas ${x.bon.toLowerCase()}.`,
+    })),
+  );
+  return {
+    prompt: `Lis l’étiquette du flacon « ${nom} ». De quel type de matière s’agit-il ?`,
+    figure: { kind: 'document', title: 'Étiquette (inventée pour l’exercice)', lines: [...e.lignes] },
     answer,
     traps,
     hint: 'Compare ce que l’on voit et ce que l’étiquette indique.',
     steps: [
-      'L’étiquette indique plusieurs matières dissoutes : c’est un mélange.',
-      'Elles ne se voient pas dans le liquide limpide : il est homogène.',
-      'C’est **un mélange homogène**.',
+      'On compte les matières présentes, puis on regarde si on les distingue.',
+      e.indice,
+      `C’est **${e.bon.toLowerCase()}**.`,
     ],
     targetSeconds: 70,
   };
 };
+
+const niveau5 = (rng: Rng): QuestionDraft => (rng.int(0, 2) === 0 ? etiquette(rng) : releveDeFusion(rng));
 
 export const corpsPurs: Skill = {
   id: 'p5-corps-purs-melanges',
@@ -307,9 +346,19 @@ export const corpsPurs: Skill = {
     memo: [
       'Un **corps pur** ne contient aucune matière étrangère. Un **mélange** associe plusieurs corps qui gardent leurs propriétés.',
       'Mélange **homogène** : on ne distingue pas les constituants (eau salée). Mélange **hétérogène** : on les voit (eau et sable). Limpide ne veut pas dire pur !',
-      'L’air est un mélange de gaz, dont environ 4/5 d’azote. La température de changement d’état aide à identifier un corps pur.',
+      'L’air est un mélange de gaz, dont environ 4/5 d’azote. Un corps pur fond à température constante (un palier), ce qui aide à l’identifier ; si la température monte encore pendant la fusion, il n’est pas pur.',
     ],
-    ...references('corps-pur', 'melange', 'homogene', 'heterogene', 'azote', 'identifier-corps-purs'),
+    ...references(
+      'corps-pur',
+      'melange',
+      'homogene',
+      'heterogene',
+      'azote',
+      'identifier-corps-purs',
+      'paliers',
+      'palier-corps-pur',
+      'limpide',
+    ),
   },
   generate: (rng, level) => ([niveau1, niveau2, niveau3, niveau4, niveau5][level - 1] ?? niveau1)(rng),
 };

@@ -34,7 +34,8 @@ des échecs répétés) qui affiche la console dans un onglet de même origine.
   sessions du compte fermées, refusé pour un élève autonome).
 - **Audit RGPD** : table `admin_audit` (opérateur, action, compte, date ; sans clé étrangère, la trace survit
   à la suppression du compte). Chaque ouverture de fiche et chaque réinitialisation y figure ; lecture
-  paginée par `POST /admin/audit`. Le mot de passe temporaire n'y est jamais écrit.
+  paginée par `POST /admin/audit`, qui renvoie un nom court (e-mail masqué) et non l'adresse.
+  Le mot de passe temporaire n'y est jamais écrit.
 
 ## Conséquences
 

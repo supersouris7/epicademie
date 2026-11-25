@@ -85,11 +85,25 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'L’eau avec du sable est un mélange hétérogène.',
   ),
   terme(
+    'limpide',
+    'limpide',
+    ['limpide', 'limpides'],
+    'Se dit d’un liquide clair et transparent, que rien ne trouble.',
+    'L’eau salée peut être limpide : limpide ne veut pas dire pure.',
+  ),
+  terme(
+    'palier',
+    'palier de température',
+    ['palier', 'paliers'],
+    'Moment où la température reste la même sur un relevé.',
+    '54 °C ; 54 °C ; 54 °C : la température fait un palier.',
+  ),
+  terme(
     'masse-volumique',
     'masse volumique',
     ['masse volumique', 'masses volumiques'],
-    'Masse d’une unité de volume d’une substance.',
-    '2 g/cm³ : un centimètre cube de la substance a une masse de 2 g.',
+    'Masse d’une unité de volume d’une substance, par exemple la masse de 1 cm³.',
+    'Si 1 cm³ d’une substance a une masse de 2 g, sa masse volumique est de 2 g pour 1 cm³.',
   ),
   terme(
     'solvant',

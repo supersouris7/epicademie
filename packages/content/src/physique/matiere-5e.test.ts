@@ -25,6 +25,14 @@ const tirages = (id: string, level: Level, n = 300): Question[] => {
   }));
 };
 
+/** Libellé de la bonne réponse (choix ou saisie). */
+const bonne = (q: Question): string =>
+  q.answer.kind === 'choice'
+    ? String(q.answer.options[q.answer.correct])
+    : q.answer.kind === 'text'
+      ? (q.answer.accepted[0] ?? '')
+      : '';
+
 const texte = (q: Question) => `${q.prompt} ${q.figure?.kind === 'document' ? q.figure.lines.join(' ') : ''}`;
 const nombres = (re: RegExp, s: string) => Number((re.exec(s)?.[1] ?? 'NaN').replace(',', '.'));
 
@@ -79,16 +87,15 @@ describe('physique-chimie 5e : « Organisation de la matière »', () => {
     for (const q of [...tirages('p5-masse-volumique', 3), ...tirages('p5-masse-volumique', 4)]) {
       if (q.answer.kind !== 'number') continue;
       const t = texte(q);
-      const rho = nombres(/masse volumique de ([\d,]+) g/, t);
-      const masse = nombres(/(?:masse de|avoir) ([\d,]+) g/, t);
-      const attendu =
-        q.answer.unit === 'g'
-          ? rho * nombres(/objet de (\d+) cm³/, t)
-          : q.answer.unit === 'cm³'
-            ? nombres(/en avoir ([\d,]+) g/, t) / nombres(/volumique de ([\d,]+) g/, t)
-            : q.answer.unit === 'g/mL'
-              ? masse / (nombres(/à (\d+) mL quand/, t) - nombres(/de (\d+) mL à/, t))
-              : masse / nombres(/volume de (\d+) cm³/, t);
+      const un = nombres(/1 cm³ (?:de la substance \w|d’un liquide) a une masse de ([\d,]+) g/, t);
+      const masse = nombres(/ont une masse de (\d+) g|a une masse de (\d+) g\. Dans/, t);
+      let attendu: number;
+      if (q.answer.unit === 'cm³') attendu = nombres(/en avoir ([\d,]+) g/, t) / un;
+      else if (t.includes('éprouvette'))
+        attendu =
+          nombres(/objet a une masse de (\d+) g/, t) / (nombres(/à (\d+) mL quand/, t) - nombres(/de (\d+) mL à/, t));
+      else if (t.includes('objet de')) attendu = un * nombres(/objet de (\d+) cm³/, t);
+      else attendu = masse / nombres(/^(\d+) cm³/, t);
       expect(q.answer.value.n / q.answer.value.d, t).toBeCloseTo(attendu, 8);
       vus += 1;
     }
@@ -96,22 +103,114 @@ describe('physique-chimie 5e : « Organisation de la matière »', () => {
     for (const q of tirages('p5-masse-volumique', 5)) {
       const t = texte(q);
       const volume = nombres(/mL avant immersion, (\d+) mL/, t) - nombres(/(\d+) mL avant/, t);
-      const rho = nombres(/Masse de l’objet : ([\d\s]+(?:,\d+)?) g/, t.replace(/(\d)\s(\d{3})/g, '$1$2')) / volume;
+      const un = nombres(/Masse de l’objet : (\d+(?:,\d+)?) g/, t) / volume;
       if (q.answer.kind !== 'choice') throw new Error('choix attendu');
       const lettre = q.answer.options[q.answer.correct]?.slice(-1) ?? '';
-      expect(nombres(new RegExp(`Substance ${lettre} : masse volumique ([\\d,]+)`), t), t).toBeCloseTo(rho, 8);
+      expect(nombres(new RegExp(`Substance ${lettre} : 1 cm³ a une masse de ([\\d,]+)`), t), t).toBeCloseTo(un, 8);
     }
   });
 
-  it('conservation : la masse se conserve, y compris après fusion (masse volumique recalculée)', () => {
+  it('masse volumique : ni symbole ρ, ni formule, ni unité quotient ; trois propositions au niveau 1', () => {
+    const s = notions.find((x) => x.id === 'p5-masse-volumique');
+    const tout = JSON.stringify([s?.lesson, ...LEVELS.map((l) => tirages('p5-masse-volumique', l))]);
+    expect(tout).not.toMatch(/ρ|m ÷ V|ρ × V|g\/cm³|g\/mL|grandeur quotient|pèse/);
+    for (const q of tirages('p5-masse-volumique', 1))
+      if (q.answer.kind === 'choice') expect(q.answer.options.length, q.prompt).toBe(3);
+  });
+
+  it('conservation : le sel ne dépasse jamais ce que l’eau peut dissoudre', () => {
+    let vus = 0;
+    for (const level of [3, 4] as const)
+      for (const q of tirages('p5-conservation-masse', level, 1000)) {
+        const m = /(\d+) g de sel dans (\d+) (k?)g d’eau/.exec(q.prompt);
+        if (!m) continue;
+        expect(Number(m[1]), q.prompt).toBeLessThanOrEqual(0.3 * Number(m[2]) * (m[3] ? 1000 : 1));
+        vus += 1;
+      }
+    expect(vus).toBeGreaterThan(300);
+  });
+
+  it('conservation : au niveau 2 la réponse varie ; au niveau 4 une affirmation est vraie', () => {
+    expect(new Set(tirages('p5-conservation-masse', 2).map(bonne)).size).toBe(2);
+    expect(new Set(tirages('p5-conservation-masse', 4).map(bonne))).toContain('oui');
+    expect(new Set(tirages('p5-corps-purs-melanges', 4).map(bonne))).toContain('oui');
+  });
+
+  it('conservation : au niveau 5, la masse se conserve et le volume varie d’au plus 15 %', () => {
     for (const q of tirages('p5-conservation-masse', 5)) {
       const t = texte(q);
-      const m = nombres(/masse volumique (\d+) g/, t) * nombres(/volume (\d+) cm³\. Après/, t);
-      const attendu = q.prompt.includes('en grammes') ? m : m / nombres(/Après la fusion : volume (\d+)/, t);
-      expect(check(q, { kind: 'number', text: String(attendu) }).correct, t).toBe(true);
+      const m = nombres(/sa masse est de (\d+) g/, t) - nombres(/vide a une masse de (\d+) g/, t);
+      const avant = nombres(/Volume avant : (\d+)/, t);
+      const apres = nombres(/échappe : volume (\d+)/, t);
+      expect(Math.abs(apres - avant) / avant, t).toBeLessThanOrEqual(0.15);
+      if (q.answer.kind === 'number') expect(check(q, { kind: 'number', text: String(m) }).correct, t).toBe(true);
+      else expect(bonne(q), t).toContain(m / apres > m / avant ? 'plus grande' : 'plus petite');
     }
   });
 
+  it('corps purs : au niveau 1 aucune proposition ne contient le mot « pur »', () => {
+    for (const q of tirages('p5-corps-purs-melanges', 1))
+      if (q.answer.kind === 'choice') expect(q.answer.options.join(' ')).not.toMatch(/\bpure?\b/);
+  });
+
+  it('corps purs : au niveau 5, la conclusion découle des relevés ou de l’étiquette', () => {
+    const conclusions = new Set<string>();
+    for (const q of tirages('p5-corps-purs-melanges', 5)) {
+      const t = texte(q);
+      const solide = /pour le solide (\w)/.exec(q.prompt)?.[1];
+      if (!solide) {
+        conclusions.add(bonne(q));
+        expect(bonne(q), t).toBe(
+          t.includes('dépôt visible')
+            ? 'Un mélange hétérogène'
+            : t.includes('dissoutes')
+              ? 'Un mélange homogène'
+              : 'Un corps pur',
+        );
+        continue;
+      }
+      const valeurs = [...(new RegExp(`Solide ${solide} : ([^.]+)\\.`).exec(t)?.[1] ?? '').matchAll(/\d+/g)].map(
+        Number,
+      );
+      expect(valeurs).toHaveLength(4);
+      const ref = new RegExp(`Substance (\\w) \\(corps pur\\) : fusion à ${valeurs[0]} °C`).exec(t)?.[1];
+      const attendu =
+        new Set(valeurs).size > 1 ? 'Un mélange' : ref ? `Le corps pur ${ref}` : 'Un corps pur absent du tableau';
+      expect(bonne(q), t).toBe(attendu);
+      conclusions.add(attendu.replace(/pur [A-D]$/, 'pur'));
+    }
+    for (const c of [
+      'Un mélange',
+      'Le corps pur',
+      'Un corps pur absent du tableau',
+      'Un corps pur',
+      'Un mélange homogène',
+    ])
+      expect(conclusions).toContain(c);
+  });
+
+  it('solubilité : au niveau 5, on compare à volume égal, avec égalités et plus grande masse trompeuse', () => {
+    let egalites = 0;
+    let trompeurs = 0;
+    for (const q of tirages('p5-solubilite', 5)) {
+      if (q.answer.kind !== 'choice') continue;
+      const t = texte(q);
+      const lire = (nom: string) => {
+        const m = new RegExp(`Solide ${nom} : au maximum (\\d+) g dissous dans (\\d+) mL`).exec(t);
+        return { masse: Number(m?.[1]), v: Number(m?.[2]) };
+      };
+      const p = lire('P');
+      const s = lire('Q');
+      expect(p.v).not.toBe(s.v);
+      const ecart = p.masse / p.v - s.masse / s.v;
+      const egal = Math.abs(ecart) < 1e-9;
+      expect(bonne(q), t).toBe(egal ? 'Les deux autant' : ecart > 0 ? 'Le solide P' : 'Le solide Q');
+      if (egal) egalites += 1;
+      else if (ecart * (p.masse - s.masse) < 0) trompeurs += 1;
+    }
+    expect(egalites).toBeGreaterThan(10);
+    expect(trompeurs).toBeGreaterThan(30);
+  });
   it('solubilité : masse maximale, dépôt et estimation recalculés', () => {
     let vus = 0;
     for (const level of [4, 5] as const)

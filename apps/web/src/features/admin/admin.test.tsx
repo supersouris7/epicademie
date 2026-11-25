@@ -1,11 +1,33 @@
 import { screen, waitFor, within } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { getChapter } from '@epicademie/content';
+import type { ReportStatus } from '@epicademie/shared';
 import { renderApp } from '../../testing/renderApp.tsx';
+import { plural } from './labels.ts';
+import { integerTicks } from './ticks.ts';
+import { PHONE_QUERY } from './useIsPhone.ts';
 
 vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.ts')).socketModule);
 
 /** Fiabilité pédagogique côté écran : signaler, notions en maintenance, administration. */
+
+const report = (n: string, status: ReportStatus) => ({
+  id: `99999999-9999-4999-8999-99999999999${n}`,
+  profileId: null,
+  kind: 'question',
+  skillId: 'm5-tables',
+  level: 1,
+  seed: Number(n),
+  skillVersion: 1,
+  screen: null,
+  appVersion: null,
+  reason: 'ambigue',
+  comment: null,
+  status,
+  adminNote: null,
+  createdAt: `2026-11-2${n}T10:00:00.000Z`,
+  resolvedAt: null,
+});
 
 describe('signaler une question', () => {
   it('depuis l’entraînement : motif obligatoire, envoi avec la question exacte', async () => {
@@ -52,8 +74,8 @@ describe('administration', () => {
 
   it('/admin : console directe pour l’opérateur, sans compte ni choix de profil', async () => {
     renderApp('/admin', { admin: true, loggedIn: false });
-    expect(await screen.findByRole('heading', { name: /Console d’administration/ })).toBeInTheDocument();
-    expect(screen.getByText('Opérateur : Marie Dupont')).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Gestion du jeu' })).toBeInTheDocument();
+    expect(screen.queryByText(/Opérateur :/)).not.toBeInTheDocument();
     expect(screen.queryByLabelText('Mot de passe')).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Fermer la session' })).not.toBeInTheDocument();
   });
@@ -109,15 +131,16 @@ describe('administration', () => {
       createdAt: '2026-11-20T10:00:00.000Z',
       resolvedAt: null,
     });
-    await user.click(await screen.findByRole('tab', { name: 'Signalements' }));
+    await user.click(await screen.findByRole('tab', { name: /^Signalements/ }));
     const table = await screen.findByRole('table', { name: 'Signalements' });
     expect(await within(table).findByText('La question n’est pas claire')).toBeInTheDocument();
     // Les signalements généraux (sans notion) s'affichent aussi, avec leur écran.
-    await user.selectOptions(screen.getByLabelText('État'), 'en-cours');
+    const states = screen.getByRole('group', { name: 'État des signalements' });
+    await user.click(within(states).getByRole('button', { name: /^En cours/ }));
     expect(
       await within(await screen.findByRole('table', { name: 'Signalements' })).findByText('Général · /hub'),
     ).toBeInTheDocument();
-    await user.selectOptions(screen.getByLabelText('État'), 'nouveau');
+    await user.click(within(states).getByRole('button', { name: /^Nouveau/ }));
     await user.click(
       within(await screen.findByRole('table', { name: 'Signalements' })).getByRole('button', { name: 'Détail' }),
     );
@@ -141,7 +164,7 @@ describe('administration', () => {
 describe('comptes', () => {
   it('liste paginée côté serveur, recherche, fiche, mot de passe temporaire et journal', async () => {
     const { user, server } = renderApp('/admin', { admin: true });
-    await user.click(await screen.findByRole('tab', { name: 'Comptes' }));
+    await user.click(await screen.findByRole('tab', { name: 'Familles' }));
     const table = await screen.findByRole('table', { name: 'Comptes' });
     // 30 comptes côté serveur : une seule page de 25 lignes est affichée.
     expect(within(table).getAllByRole('row')).toHaveLength(26);
@@ -167,47 +190,156 @@ describe('comptes', () => {
     expect(await screen.findByText('Temp0raireXy7')).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Retour à la liste' }));
-    await user.click(screen.getByRole('tab', { name: 'Journal d’audit' }));
+    await user.click(screen.getByRole('tab', { name: 'Technique' }));
+    await user.click(screen.getByRole('button', { name: 'Journal d’audit' }));
     expect(await screen.findByText('Consultation de la fiche')).toBeInTheDocument();
+    // E-mail masqué, jamais l'identifiant ; le nom court ouvre la fiche.
+    expect(screen.queryByText(/aaaaaaaa-aaaa/)).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'p…@famille.test' }));
+    expect(await screen.findByRole('region', { name: 'Profils' })).toBeInTheDocument();
   });
 });
 
 describe('pilotage', () => {
-  it('vue d’ensemble, anomalies et erreurs récentes en tableaux', async () => {
-    const { user } = renderApp('/admin', { admin: true });
-    expect(await screen.findByText('Réussite sans aide (7 j)')).toBeInTheDocument();
-    expect(screen.getByText('72 %')).toBeInTheDocument();
-    expect(screen.getByRole('cell', { name: 'Payé' })).toBeInTheDocument();
-    await user.click(screen.getByRole('tab', { name: 'Anomalies' }));
-    expect(await screen.findByText('Réponses trop rapides pour être lues')).toBeInTheDocument();
-    expect(screen.getByText('00000000…')).toBeInTheDocument();
-    await user.click(screen.getByRole('tab', { name: 'Erreurs' }));
-    expect(await screen.findByText('Cannot read properties of undefined')).toBeInTheDocument();
-  });
-
-  it('thème sombre local à la console et indicateurs clés en tête', async () => {
-    const { container } = renderApp('/admin', { admin: true });
+  it('vue d’ensemble : tuiles en tête, sections datées, anomalies visibles', async () => {
+    renderApp('/admin', { admin: true });
     const kpis = await screen.findByRole('region', { name: 'Indicateurs clés' });
-    expect(container.querySelector('.admin-dark')).not.toBeNull();
-    expect(within(kpis).getByText('Comptes')).toBeInTheDocument();
-    expect(within(kpis).getByText('Profils enfants')).toBeInTheDocument();
-    expect(within(kpis).getByText('Abonnements actifs · Famille, à l’année')).toBeInTheDocument();
-    expect(within(kpis).getByText('Revenus (mode test)')).toBeInTheDocument();
-    expect(within(kpis).getByText(/124,95/)).toBeInTheDocument();
+    for (const label of ['Familles', 'Enfants actifs', 'Abonnés', 'Signalements à traiter']) {
+      expect(within(kpis).getByText(label)).toBeInTheDocument();
+    }
+    expect(within(kpis).getByText('Famille, année scolaire')).toBeInTheDocument();
+    const week = screen.getByRole('region', { name: '7 derniers jours' });
+    expect(within(week).getByText('72 %')).toBeInTheDocument();
+    expect(within(week).queryByText('Boss vaincus')).not.toBeInTheDocument();
+    const all = screen.getByRole('region', { name: 'Depuis le début' });
+    expect(within(all).getByText('Encaissements d’essai, depuis le début')).toBeInTheDocument();
+    expect(await within(all).findByText('Prestataire : simulateur de paiement')).toBeInTheDocument();
+    expect(within(all).getAllByText(/124,95/)).toHaveLength(2);
+    expect(screen.getByRole('cell', { name: 'Payé' })).toBeInTheDocument();
+    expect(await screen.findByText('Réponses trop rapides pour être lues')).toBeInTheDocument();
+    for (const gone of [/Familles abonnées/, /Répartition/, /Stripe de test/]) {
+      expect(screen.queryByText(gone)).not.toBeInTheDocument();
+    }
   });
 
-  it('graphiques : décrits en texte et valeurs en tableau', async () => {
+  it('signalements à traiter : compteur sur l’onglet, regroupés par notion, lien', async () => {
+    const { user, server } = renderApp('/admin', { admin: true });
+    server.reports.push(report('1', 'nouveau'), report('2', 'nouveau'), report('3', 'en-cours'));
+    const todo = await screen.findByRole('list', { name: 'Signalements à traiter' });
+    await waitFor(() => expect(within(todo).getAllByRole('listitem')).toHaveLength(1));
+    expect(todo).toHaveTextContent('Tables de multiplication');
+    expect(todo).toHaveTextContent('3 signalements');
+    expect(screen.getByRole('tab', { name: /^Signalements/ })).toHaveTextContent('3 à traiter');
+    await user.click(within(screen.getByRole('region', { name: 'Indicateurs clés' })).getByRole('button'));
+    const table = await screen.findByRole('table', { name: 'Signalements' });
+    // Les deux « nouveaux » de la même notion font une seule ligne.
+    await waitFor(() => expect(within(table).getAllByRole('row')).toHaveLength(2));
+    expect(screen.getByRole('button', { name: /^Nouveau 2/ })).toHaveAttribute('aria-pressed', 'true');
+    await user.click(within(table).getByRole('button', { name: 'Détail' }));
+    expect(screen.getAllByLabelText('Signalement Tables de multiplication')).toHaveLength(2);
+  });
+
+  it('six rubriques ; « Technique » réunit les outils et les erreurs ont un libellé français', async () => {
+    const { user } = renderApp('/admin', { admin: true });
+    const nav = await screen.findByRole('navigation', { name: 'Rubriques' });
+    expect(
+      within(nav)
+        .getAllByRole('tab')
+        .map((t) => t.textContent),
+    ).toEqual(['Vue d’ensemble', 'Signalements', 'Familles', 'Notions', 'Points faibles', 'Technique']);
+    const technical = within(nav).getByRole('tab', { name: 'Technique' });
+    await user.click(technical);
+    expect(technical).toHaveAttribute('aria-selected', 'true');
+    const tools = screen.getByRole('group', { name: 'Outil' });
+    expect(within(tools).getAllByRole('button')).toHaveLength(4);
+    await user.click(within(tools).getByRole('button', { name: 'Anomalies' }));
+    expect(await screen.findByText('Réponses trop rapides pour être lues')).toBeInTheDocument();
+    expect(screen.queryByText(/00000000/)).not.toBeInTheDocument();
+    await user.click(within(tools).getByRole('button', { name: 'Erreurs' }));
+    expect(await screen.findByText('Erreur de programme (valeur manquante)')).toBeInTheDocument();
+    expect(screen.queryByText('Cannot read properties of undefined')).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Détail' }));
+    expect(screen.getByText('Cannot read properties of undefined')).toBeInTheDocument();
+  });
+
+  it('notions : total détaillé, type « notions » par défaut, badge court, noms de chapitre', async () => {
+    const { user } = renderApp('/admin', { admin: true });
+    await user.click(await screen.findByRole('tab', { name: 'Notions' }));
+    const table = await screen.findByRole('table', { name: 'Notions' });
+    expect(screen.getByText(/^\d+ notions? \+ \d+ questions? de boss$/)).toBeInTheDocument();
+    const types = screen.getByRole('group', { name: 'Type' });
+    expect(within(types).getByRole('button', { name: 'Notions' })).toHaveAttribute('aria-pressed', 'true');
+    expect(within(table).getAllByText(getChapter('m5-calcul')!.title).length).toBeGreaterThan(0);
+    expect(table).not.toHaveTextContent('m5-calcul');
+    expect(screen.getByRole('list', { name: 'Notions par état' })).toHaveTextContent(/OK : \d/);
+    await user.selectOptions(screen.getByLabelText('Matière'), 'anglais');
+    expect(await screen.findByText('Aucune notion avec ces filtres.')).toBeInTheDocument();
+    await user.selectOptions(screen.getByLabelText('Matière'), 'toutes');
+    await user.selectOptions(screen.getByLabelText('Classe'), 'cm1');
+    expect(screen.getByText('Aucune notion avec ces filtres.')).toBeInTheDocument();
+  });
+
+  it('thème sombre local à la console, texte sombre sur le violet actif', async () => {
+    const { container } = renderApp('/admin', { admin: true });
+    const tab = await screen.findByRole('tab', { name: 'Vue d’ensemble' });
+    expect(container.querySelector('.admin-dark')).not.toBeNull();
+    expect(tab).toHaveClass('bg-pilot-acc', 'text-pilot-bg');
+  });
+
+  it('graphiques : textes hors de l’échelle du dessin, accords, graduations entières', async () => {
     const { user } = renderApp('/admin', { admin: true });
     const bars = await screen.findByRole('img', { name: /Comptes créés par jour\. 3 comptes sur 30 jours/ });
-    expect(bars).toBeInTheDocument();
+    expect(bars.querySelector('text')).toBeNull();
     expect(
       screen.getByRole('img', { name: /Abonnements actifs par jour\. 5 abonnements aujourd’hui/ }),
     ).toBeInTheDocument();
-    expect(screen.getByText('5 (100 %)')).toBeInTheDocument();
     const [first] = screen.getAllByText('Voir les valeurs');
     await user.click(first!);
     const table = screen.getByRole('table', { name: 'Comptes créés par jour' });
     expect(within(table).getAllByRole('row')).toHaveLength(31);
     expect(within(table).getByRole('row', { name: '30/11 3' })).toBeInTheDocument();
+    expect(integerTicks(0)).toEqual([0, 1]);
+    expect(integerTicks(1)).toEqual([0, 1]);
+    expect(integerTicks(3)).toEqual([0, 2, 4]);
+    expect(plural(1, 'abonnement')).toBe('1 abonnement');
+    expect(plural(2, 'abonnement')).toBe('2 abonnements');
+  });
+});
+
+describe('téléphone (sous 700 px) : des cartes à la place des tableaux', () => {
+  beforeEach(() => {
+    vi.stubGlobal('matchMedia', (query: string) =>
+      Object.assign(new EventTarget(), { matches: query === PHONE_QUERY, media: query, onchange: null }),
+    );
+  });
+
+  it('comptes : carte entièrement touchable qui ouvre la fiche', async () => {
+    const { user } = renderApp('/admin', { admin: true });
+    await user.click(await screen.findByRole('tab', { name: 'Familles' }));
+    const list = await screen.findByRole('list', { name: 'Comptes' });
+    expect(screen.queryByRole('table', { name: 'Comptes' })).not.toBeInTheDocument();
+    expect(within(list).getAllByRole('button')).toHaveLength(25);
+    await user.click(within(list).getAllByRole('button')[0]!);
+    expect(await screen.findByRole('region', { name: 'Profils' })).toBeInTheDocument();
+  });
+
+  it('signalements, notions et erreurs en cartes qui déplient leur détail', async () => {
+    const { user, server } = renderApp('/admin', { admin: true });
+    server.reports.push(report('1', 'nouveau'));
+    await user.click(await screen.findByRole('tab', { name: /^Signalements/ }));
+    const reports = await screen.findByRole('list', { name: 'Signalements' });
+    await user.click(await within(reports).findByRole('button', { name: /Tables de multiplication/ }));
+    expect(screen.getByLabelText('Signalement Tables de multiplication')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('tab', { name: 'Notions' }));
+    const notions = await screen.findByRole('list', { name: 'Notions' });
+    await user.click(within(notions).getByRole('button', { name: /Tables de multiplication/ }));
+    expect(screen.getByLabelText('Notion Tables de multiplication')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('tab', { name: 'Technique' }));
+    await user.click(screen.getByRole('button', { name: 'Erreurs' }));
+    const errors = await screen.findByRole('list', { name: 'Erreurs' });
+    await user.click(within(errors).getByRole('button', { name: /Erreur de programme/ }));
+    expect(screen.getByText('Cannot read properties of undefined')).toBeInTheDocument();
   });
 });

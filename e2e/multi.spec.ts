@@ -1,11 +1,12 @@
 import { expect, test, type Browser, type Page } from '@playwright/test';
 import { fmt, generate } from '../packages/content/src/index.ts';
 import type { ArenaView } from '../packages/shared/src/index.ts';
-import { loginFamily, signupFamily } from './family.ts';
+import { createFirstProfile, loginFamily, signupFamily } from './family.ts';
 
 /** Un appareil de la famille : le 1er crée le compte, les suivants s'y connectent. */
 async function newPlayer(browser: Browser, name: string, family: { email?: string }): Promise<Page> {
   const page = await (await browser.newContext()).newPage();
+  const first = !family.email;
   if (family.email) {
     await loginFamily(page, family.email);
     await page.getByRole('button', { name: /Nouveau joueur/ }).click();
@@ -14,8 +15,11 @@ async function newPlayer(browser: Browser, name: string, family: { email?: strin
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
-  await expect(page).toHaveURL(/hub/);
+  if (first) await createFirstProfile(page);
+  else {
+    await page.getByRole('button', { name: /C’est parti/ }).click();
+    await expect(page).toHaveURL(/hub/);
+  }
   return page;
 }
 

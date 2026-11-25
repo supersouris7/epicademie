@@ -116,6 +116,15 @@ export const VALIDATION_STATE_LABELS: Record<ValidationState, string> = {
   desactivee: 'Désactivée',
 };
 
+/** Libellés courts (badges et compteurs de la console). */
+export const VALIDATION_STATE_SHORT_LABELS: Record<ValidationState, string> = {
+  relue: 'Relue',
+  'validee-auto': 'OK',
+  signalee: 'Signalée',
+  'problemes-auto': 'En échec',
+  desactivee: 'Désactivée',
+};
+
 export const ContentSkillSchema = z.object({
   skillId: z.string(),
   title: z.string(),

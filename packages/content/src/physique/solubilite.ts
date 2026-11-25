@@ -38,39 +38,72 @@ const niveau1 = (rng: Rng): QuestionDraft => {
   };
 };
 
-const OBSERVATIONS: readonly { texte: string; bon: string; pourquoi: string }[] = [
+const OBSERVATIONS: readonly {
+  texte: string;
+  bon: string;
+  pourquoi: string;
+  faux: readonly { label: string; why: string }[];
+}[] = [
   {
     texte: 'Après agitation, un solide ne se voit plus dans l’eau.',
     bon: 'Le solide est soluble dans l’eau',
     pourquoi: 'Le solide se dissout dans l’eau.',
+    faux: [
+      { label: 'Le solide est insoluble dans l’eau', why: 'Il ne se voit plus : il s’est dissous.' },
+      {
+        label: 'Le solide et l’eau sont deux liquides miscibles',
+        why: 'Ce qu’on ajoute ici est un solide : on dit qu’il est soluble.',
+      },
+      {
+        label: 'La solution est forcément saturée',
+        why: 'Saturée veut dire que plus rien ne peut se dissoudre : rien ne le montre ici.',
+      },
+    ],
   },
   {
-    texte: 'Après agitation, un solide reste au fond de l’eau sans changer.',
+    texte: 'Après agitation, un solide reste en entier au fond de l’eau, sans changer.',
     bon: 'Le solide est insoluble dans l’eau',
-    pourquoi: 'Le solide n’est pas dissous.',
+    pourquoi: 'Le solide ne se dissout pas.',
+    faux: [
+      { label: 'Le solide est soluble dans l’eau', why: 'Un solide soluble se dissout : celui-ci reste entier.' },
+      {
+        label: 'La solution est saturée : une partie du solide s’est dissoute',
+        why: 'Le solide reste en entier, sans changer : on n’en voit aucune partie se dissoudre.',
+      },
+      {
+        label: 'Le solide et l’eau sont miscibles',
+        why: 'Miscibles veut dire qu’ils forment un mélange homogène : on voit encore le solide.',
+      },
+    ],
   },
   {
     texte: 'On verse un liquide dans l’eau, on agite : on obtient un seul liquide homogène.',
     bon: 'Les deux liquides sont miscibles',
     pourquoi: 'Les deux liquides forment un mélange homogène.',
+    faux: [
+      { label: 'Les deux liquides ne sont pas miscibles', why: 'On verrait alors deux couches.' },
+      { label: 'Le liquide versé est insoluble dans l’eau', why: 'On le distinguerait encore de l’eau.' },
+      {
+        label: 'La solution est forcément saturée',
+        why: 'Saturée veut dire que plus rien ne peut se dissoudre : rien ne le montre ici.',
+      },
+    ],
   },
   {
     texte: 'On verse un liquide dans l’eau, on agite puis on laisse reposer : deux couches se forment.',
     bon: 'Les deux liquides ne sont pas miscibles',
     pourquoi: 'Les deux liquides ne forment pas un mélange homogène.',
+    faux: [
+      { label: 'Les deux liquides sont miscibles', why: 'Des liquides miscibles forment un seul liquide homogène.' },
+      { label: 'Le liquide versé s’est dissous entièrement', why: 'On verrait alors un seul liquide.' },
+      { label: 'On a obtenu un mélange homogène', why: 'Deux couches se distinguent : le mélange est hétérogène.' },
+    ],
   },
 ];
 
 const niveau2 = (rng: Rng): QuestionDraft => {
   const o = rng.pick(OBSERVATIONS);
-  const { answer, traps: t } = choice(
-    rng,
-    o.bon,
-    OBSERVATIONS.filter((x) => x !== o).map((x) => ({
-      label: x.bon,
-      why: `Cette conclusion correspond à une autre observation : « ${x.texte} »`,
-    })),
-  );
+  const { answer, traps: t } = choice(rng, o.bon, o.faux);
   return {
     prompt: `${o.texte} Quelle conclusion tires-tu ?`,
     answer,
@@ -210,38 +243,52 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       targetSeconds: 100,
     };
   }
-  const autre = sol + rng.int(2, 6) * 20;
-  const premier = rng.int(0, 1) === 0;
-  const [x, y] = premier ? [autre, sol] : [sol, autre];
-  const bon = premier ? 'Le solide P' : 'Le solide Q';
-  const { answer, traps: t } = choice(rng, bon, [
-    {
-      label: premier ? 'Le solide Q' : 'Le solide P',
-      why: 'Compare les deux masses maximales dissoutes pour le même volume d’eau.',
-    },
-    {
-      label: 'Les deux autant',
-      why: 'Les deux masses maximales ne sont pas égales pour un même volume d’eau.',
-    },
-  ]);
+  // Deux volumes d'eau différents : il faut ramener les masses au même volume (100 mL) avant de comparer.
+  const [petit, grand] = rng.pick([
+    [100, 200],
+    [100, 250],
+    [200, 250],
+    [200, 500],
+    [250, 500],
+  ] as const);
+  const base = rng.int(5, 15) * 20;
+  const cas = rng.int(0, 3);
+  // cas 0 : égalité ; cas 1 : le plus grand volume gagne ; cas 2 et 3 : le plus soluble a la plus petite masse.
+  const sPetit = cas === 0 ? base : cas === 1 ? base : base + 20;
+  const sGrand = cas === 0 ? base : cas === 1 ? base + 20 : base;
+  const a = { s: sPetit, v: petit };
+  const b = { s: sGrand, v: grand };
+  const [p, q] = rng.int(0, 1) === 0 ? [a, b] : [b, a];
+  const bon = p.s === q.s ? 'Les deux autant' : p.s > q.s ? 'Le solide P' : 'Le solide Q';
+  const { answer, traps: t } = choice(
+    rng,
+    bon,
+    ['Le solide P', 'Le solide Q', 'Les deux autant']
+      .filter((label) => label !== bon)
+      .map((label) => ({
+        label,
+        why: 'Les volumes d’eau sont différents : compare les masses dissoutes pour un même volume (100 mL).',
+      })),
+  );
+  const pour100 = (x: { s: number }) => x.s / 10;
   return {
     prompt: 'Lis les résultats. Lequel des deux solides est le plus soluble dans l’eau ?',
     figure: {
       kind: 'document',
       title: 'Résultats (données de l’exercice, même température)',
       lines: [
-        `Solide P : au maximum ${x / diviseur} g dissous dans ${volume} mL d’eau.`,
-        `Solide Q : au maximum ${y / diviseur} g dissous dans ${volume} mL d’eau.`,
+        `Solide P : au maximum ${(p.s * p.v) / 1000} g dissous dans ${p.v} mL d’eau.`,
+        `Solide Q : au maximum ${(q.s * q.v) / 1000} g dissous dans ${q.v} mL d’eau.`,
       ],
     },
     answer,
     traps: t,
-    hint: 'Pour un même volume d’eau, le plus soluble se dissout en plus grande quantité.',
+    hint: 'Compare les deux solides pour la même quantité d’eau.',
     steps: [
-      'Les volumes d’eau et la température sont identiques : on compare les masses maximales.',
-      `**${bon}** est le plus soluble.`,
+      `Pour 100 mL d’eau, P : ${pour100(p)} g ; Q : ${pour100(q)} g.`,
+      p.s === q.s ? 'Les deux masses sont égales : **les deux autant**.' : `**${bon}** est le plus soluble.`,
     ],
-    targetSeconds: 60,
+    targetSeconds: 100,
   };
 };
 
