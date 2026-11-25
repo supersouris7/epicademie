@@ -1926,4 +1926,101 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Un impôt levé chaque année par le roi, et non plus seulement en cas de besoin.',
     example: 'L’impôt permanent est levé à partir de 1360.',
   },
+  {
+    id: 'grandes-decouvertes',
+    word: 'grandes découvertes',
+    forms: ['grandes découvertes', 'grandes decouvertes'],
+    definition:
+      'Les voyages d’exploration des Européens, surtout aux XVe et XVIe siècles, qui font connaître de nouvelles terres et routes maritimes.',
+    example: 'Les grandes découvertes sont d’abord le fait des Portugais et des Espagnols.',
+  },
+  {
+    id: 'empire-ottoman',
+    word: 'empire ottoman',
+    forms: ['empire ottoman', 'ottomans', 'ottoman'],
+    definition:
+      'Un grand État dirigé par la dynastie ottomane, d’origine turque, autour de la Méditerranée orientale ; sa capitale est Istanbul.',
+    example: 'L’empire ottoman est à son apogée sous Soliman le Magnifique.',
+  },
+  {
+    id: 'conquistadors',
+    word: 'conquistadors',
+    forms: ['conquistadors', 'conquistador'],
+    definition: 'Mot espagnol : les conquérants espagnols de l’Amérique.',
+    example: 'Les conquistadors sont attirés par l’or.',
+  },
+  {
+    id: 'humanisme',
+    word: 'humanisme',
+    forms: ['humanisme', 'humaniste', 'humanistes'],
+    definition: 'Un mouvement de savants qui veulent faire renaître l’Antiquité en étudiant les textes anciens.',
+    example: 'Érasme est un humaniste.',
+  },
+  {
+    id: 'imprimerie',
+    word: 'imprimerie',
+    forms: ['imprimerie'],
+    definition:
+      'La technique qui reproduit des textes en grand nombre, ici avec des petites lettres de métal mobiles (en plomb).',
+    example: 'Gutenberg met l’imprimerie au service des livres.',
+  },
+  {
+    id: 'reforme-protestante',
+    word: 'Réforme',
+    forms: ['réforme', 'la réforme'],
+    definition:
+      'Le mouvement religieux du XVIe siècle, lancé avec Luther, qui aboutit à de nouvelles Églises chrétiennes.',
+    example: 'La Réforme rompt l’unité de la chrétienté.',
+  },
+  {
+    id: 'indulgences',
+    word: 'indulgences',
+    forms: ['indulgences', 'indulgence'],
+    definition:
+      'Dans l’Église catholique, le pardon accordé pour les peines dues aux péchés ; à l’époque de Luther, certaines pouvaient être achetées.',
+    example: 'Luther critique la vente des indulgences.',
+  },
+  {
+    id: 'ordonnance',
+    word: 'ordonnance',
+    forms: ['ordonnance', 'ordonnances'],
+    definition: 'Un texte par lequel le roi décide une règle pour le royaume.',
+    example: 'En 1539, une ordonnance impose le français pour certains textes juridiques.',
+  },
+  {
+    id: 'prince-renaissance',
+    word: 'Prince de la Renaissance',
+    forms: ['prince de la renaissance'],
+    definition: 'Un souverain de la Renaissance qui fait la guerre mais protège aussi les arts et les savants.',
+    example: 'François Ier est un Prince de la Renaissance.',
+  },
+  {
+    id: 'noblesse',
+    word: 'noblesse',
+    forms: ['noblesse'],
+    definition: 'Le groupe des nobles, familles puissantes qui ont des titres et des privilèges.',
+    example: 'Louis XIV est le maître de la noblesse.',
+  },
+  {
+    id: 'fronde',
+    word: 'Fronde',
+    forms: ['fronde', 'la fronde'],
+    definition: 'La révolte contre le pouvoir royal entre 1648 et 1653.',
+    example: 'La Fronde a lieu quand Louis XIV est jeune.',
+  },
+  {
+    id: 'courtisan',
+    word: 'courtisan',
+    forms: ['courtisans', 'courtisan'],
+    definition: 'Une personne qui vit à la cour, près du roi.',
+    example: 'Les courtisans assistent aux fêtes de Versailles.',
+  },
+  {
+    id: 'pouvoir-absolu',
+    word: 'pouvoir absolu',
+    forms: ['pouvoir absolu', 'absolu', 'monarchie absolue'],
+    definition:
+      'L’idée d’un roi dont le pouvoir ne serait limité par personne ; dans la réalité, son pouvoir a des limites.',
+    example: 'On parle de roi absolu à propos de Louis XIV.',
+  },
 ];
