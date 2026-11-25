@@ -96,9 +96,7 @@ export const PREUVES = {
     'L’Église est à la fois immergée dans le monde féodal, ne serait-ce que par sa richesse foncière, et porteuse de valeurs différentes.',
   ),
   gregorienne: eduscol('Rendue plus cohérente et soudée par la réforme grégorienne au début de la période'),
-  mendiants: eduscol(
-    'capable tant d’absorber certains discours apparemment hétérodoxes (celui des ordres mendiants du XIIIe siècle)',
-  ),
+  mendiants: eduscol('celui des ordres mendiants du XIIIe siècle'),
   premierOrdre: eduscol(
     'elle est seule capable de produire un discours global qui conforte sa situation de premier ordre',
   ),

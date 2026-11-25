@@ -14,10 +14,10 @@ export const SOURCE = 'cycle4-2020';
 const seigneurial: Notion = {
   id: 'h5-ordre-seigneurial',
   title: 'L’ordre seigneurial : la formation et la domination des campagnes',
-  hint: 'Demande-toi qui est concerné : le seigneur (la terre et le pouvoir) ou les paysans (tenures, chartes) ? Puis situe le moment : croissance (XIe-XIIIe siècles) ou crises (XIVe siècle).',
+  hint: 'Cherche si on demande une personne, un lieu, un document ou un événement, puis demande-toi qui commande et qui travaille aux champs.',
   memo: [
-    'Dans l’Occident féodal, la société, marquée par le christianisme, vit sous la domination des **seigneurs**, laïcs ou religieux. Le seigneur possède la terre, qu’il confie aux paysans en **tenures** héréditaires, et il détient le pouvoir : c’est son double pouvoir, sur la terre et sur les hommes (**banalités**, justice).',
-    'Ce pouvoir naît de la décomposition de l’autorité carolingienne, dès la seconde moitié du IXe siècle. Les paysans de la **seigneurie** sont appelés **vilains** ; le **servage** ne concerne qu’une minorité, puis disparaît peu à peu.',
+    'Dans l’Occident féodal, la société, marquée par le christianisme, vit sous la domination des **seigneurs**, laïcs (qui ne sont pas des hommes d’Église) ou religieux. Le seigneur possède la terre, qu’il confie aux paysans en **tenures** héréditaires, et il détient le pouvoir : c’est son double pouvoir, sur la terre et sur les hommes (**banalités**, justice).',
+    'Ce pouvoir naît de la décomposition de l’autorité carolingienne, qui commence dans la seconde moitié du IXe siècle, et des **fiefs** (on dit aussi bénéfices) accordés aux **vassaux**. Les paysans libres de la **seigneurie** sont appelés **vilains** ; le **servage** ne concerne qu’une minorité, puis disparaît peu à peu.',
     'Du XIe au XIVe siècle, la population européenne double : grâce aux **défrichements** et à des innovations (cheval, moulin), on cultive bien plus de terres. Les paysans négocient parfois des **chartes de franchises** (Prisches, 1158). La **peste noire** (1347-1352) brise cet élan ; la **jacquerie** de 1358 montre que la domination seigneuriale peut provoquer de violentes confrontations.',
   ],
   faits: [
@@ -33,12 +33,12 @@ const seigneurial: Notion = {
           why: 'Le fief (ou bénéfice) est accordé à un vassal, un guerrier ; la terre confiée au paysan est une tenure.',
         },
       ],
-      gap: ['Le seigneur confie la terre aux paysans en ', ' héréditaires.', ['tenures']],
+      gap: ['Le seigneur confie la terre aux paysans en ', ' héréditaires.', ['tenures', 'tenure']],
       explain: 'Le seigneur possède la terre et la confie aux paysans en tenures, qu’ils transmettent à leurs enfants.',
     },
     {
       ...P.servage,
-      q: 'Au début de la période, quelle part des paysans est soumise au servage ?',
+      q: 'Au début de la période (vers le XIe siècle), quelle part des paysans est soumise au servage ?',
       a: 'une minorité',
       wrong: [
         {
@@ -51,8 +51,12 @@ const seigneurial: Notion = {
           why: 'C’est le piège classique : la plupart des paysans sont des vilains, pas des serfs.',
         },
       ],
-      gap: ['Au début de la période, le servage est ', ', puis en voie d’extinction.', ['minoritaire']],
-      explain: 'Le servage est minoritaire au début de la période, puis en voie d’extinction.',
+      gap: [
+        'Au début de la période (vers le XIe siècle), seule une ',
+        ' des paysans est soumise au servage.',
+        ['minorité', 'minorite', 'petite partie'],
+      ],
+      explain: 'Le servage ne concerne qu’une minorité des paysans au début de la période, puis disparaît peu à peu.',
     },
     {
       ...P.tenures,
@@ -77,7 +81,7 @@ const seigneurial: Notion = {
     },
     {
       ...P.carolingien,
-      q: 'De quoi naît le pouvoir des seigneurs, dès la seconde moitié du IXe siècle ?',
+      q: 'De quoi naît le pouvoir des seigneurs, à partir de la seconde moitié du IXe siècle ?',
       a: 'de la décomposition de l’autorité carolingienne',
       wrong: [
         {
@@ -95,11 +99,11 @@ const seigneurial: Notion = {
       ],
       gap: [
         'Le pouvoir des seigneurs naît de la décomposition de l’autorité ',
-        ', dès la seconde moitié du IXe siècle.',
+        ', qui commence dans la seconde moitié du IXe siècle.',
         ['carolingienne'],
       ],
       explain:
-        'L’autorité carolingienne se décompose dès la seconde moitié du IXe siècle : les seigneurs prennent le pouvoir localement.',
+        'L’autorité carolingienne commence à se décomposer dans la seconde moitié du IXe siècle : les seigneurs prennent le pouvoir localement.',
     },
     {
       ...P.defrichements,
@@ -144,7 +148,7 @@ const seigneurial: Notion = {
       gap: [
         'Les paysans négocient parfois des chartes de ',
         ' qui fixent leurs droits et obligations.',
-        ['franchises'],
+        ['franchises', 'franchise'],
       ],
       explain:
         'Les chartes de franchises, négociées avec le seigneur, fixent par écrit les droits et obligations des paysans.',
@@ -170,13 +174,13 @@ const seigneurial: Notion = {
         { label: 'la jacquerie', why: 'La jacquerie est une violente confrontation de 1358, après l’épidémie.' },
         { label: 'les défrichements', why: 'Les défrichements font au contraire augmenter les terres cultivées.' },
       ],
-      gap: ['De 1347 à 1352, la ', ' brise la croissance de la population.', ['peste noire']],
+      gap: ['De 1347 à 1352, la ', ' brise la croissance de la population.', ['peste noire', 'peste']],
       explain: 'La peste noire (1347-1352) brise la dynamique démographique des siècles précédents.',
     },
   ],
   paires3: [
     ['Le seigneur', 'Possède la terre et détient le pouvoir'],
-    ['Le vilain', 'Paysan du territoire de la seigneurie'],
+    ['Le vilain', 'Paysan libre de la seigneurie'],
     ['La tenure', 'Terre confiée de façon héréditaire à un paysan'],
   ],
   paires5: [
@@ -200,7 +204,7 @@ const seigneurial: Notion = {
     {
       ...P.vilains,
       q: 'Comment appelle-t-on les paysans du territoire d’une seigneurie ? (un mot)',
-      accepted: ['vilains', 'les vilains', 'vilain', 'un vilain'],
+      accepted: ['vilains', 'les vilains', 'vilain', 'un vilain', 'manants', 'les manants'],
       traps: [
         {
           text: 'serfs',
@@ -368,7 +372,7 @@ const seigneurial: Notion = {
 const urbaine: Notion = {
   id: 'h5-societe-urbaine',
   title: 'L’émergence d’une nouvelle société urbaine',
-  hint: 'Pense à la ville : qui y vit (bourgeois, artisans), comment elle obtient ses libertés (charte, commune) et pourquoi elle grandit (commerce, centres religieux, universités).',
+  hint: 'Cherche si on demande une date, un groupe, un document ou une cause, puis pense à ce qui change quand on vit en ville.',
   memo: [
     'Le mouvement urbain s’amorce surtout au XIIe siècle : les villes croissent aux XIIe et XIIIe siècles et desserrent les liens de la domination féodale. Il s’explique par l’essor du commerce, des centres religieux, des **universités** et des lieux de pouvoir.',
     'Le plus souvent, les villes négocient avec le seigneur des **chartes de franchises** ; parfois, elles deviennent une **commune** qui s’administre elle-même, où s’affirme la **bourgeoisie** commerçante.',
@@ -387,7 +391,7 @@ const urbaine: Notion = {
         { label: 'le XIXe siècle', why: 'Le XIXe siècle est celui de l’âge industriel.' },
         {
           label: 'le XVe siècle',
-          why: 'Au XVe siècle, à la fin de la période, les villes ont déjà grandi : le mouvement a commencé au XIIe.',
+          why: 'Au XVe siècle, à la fin du Moyen Âge, les villes ont déjà grandi : le mouvement a commencé au XIIe.',
         },
       ],
       gap: ['Le mouvement urbain s’amorce principalement au ', ' siècle.', ['XIIe', '12e', 'douzième', 'XII']],
@@ -414,7 +418,7 @@ const urbaine: Notion = {
       a: 'la bourgeoisie commerçante',
       wrong: [
         { label: 'les vilains', why: 'Les vilains sont les paysans de la seigneurie, à la campagne.' },
-        { label: 'les moines', why: 'Les moines sont des religieux ; le texte parle d’un groupe de marchands.' },
+        { label: 'les moines', why: 'Les moines sont des religieux ; la bourgeoisie est un groupe de marchands.' },
         { label: 'les serfs', why: 'Les serfs, peu nombreux, vivent à la campagne sous la domination du seigneur.' },
       ],
       gap: ['Dans la commune s’affirme le groupe social de la ', ' commerçante.', ['bourgeoisie']],
@@ -429,7 +433,11 @@ const urbaine: Notion = {
         { label: 'la fin du commerce', why: 'Au contraire, le commerce et l’économie marchande se développent.' },
         { label: 'l’apparition des tenures', why: 'Les tenures sont des terres de paysans, à la campagne.' },
       ],
-      gap: ['La consommation de pain frais accompagne la naissance de la ', ' des boulangers.', ['corporation']],
+      gap: [
+        'La consommation de pain frais accompagne la naissance de la ',
+        ' des boulangers.',
+        ['corporation', 'guilde'],
+      ],
       explain: 'Les nouveaux modes de vie urbains font naître des corporations, comme celle des boulangers.',
     },
     {
@@ -453,7 +461,7 @@ const urbaine: Notion = {
     },
     {
       ...P.urbains,
-      q: 'À la fin de la période, quelle part de la population européenne vit en ville ?',
+      q: 'À la fin du Moyen Âge, quelle part de la population européenne vit en ville ?',
       a: 'environ 20 %',
       wrong: [
         {
@@ -464,12 +472,12 @@ const urbaine: Notion = {
         { label: 'environ 50 %', why: 'C’est trop : on estime que les urbains représentent 20 % de la population.' },
       ],
       gap: ['À la fin du Moyen Âge, les urbains représentent environ ', ' % de la population européenne.', ['20']],
-      explain: 'À la fin de la période, on estime que les urbains représentent 20 % de la population européenne.',
+      explain: 'À la fin du Moyen Âge, on estime que les urbains représentent 20 % de la population européenne.',
     },
     {
       ...P.regions,
       q: 'Dans quelles régions les citadins sont-ils surtout regroupés ?',
-      a: 'en Italie du Nord, en Flandre, dans l’axe rhénan et en France',
+      a: 'en Italie du Nord, en Flandre, le long du Rhin et en France',
       wrong: [
         {
           label: 'en Scandinavie et en Russie',
@@ -483,10 +491,11 @@ const urbaine: Notion = {
       ],
       gap: [
         'Les urbains sont regroupés surtout en Italie du Nord, en ',
-        ', dans l’axe rhénan et dans le royaume de France.',
+        ', dans l’axe rhénan (le long du Rhin) et dans le royaume de France.',
         ['Flandre', 'Flandres'],
       ],
-      explain: 'Les urbains se regroupent surtout en Italie du Nord, en Flandre, dans l’axe rhénan et en France.',
+      explain:
+        'Les urbains se regroupent surtout en Italie du Nord, en Flandre, dans l’axe rhénan (le long du Rhin) et en France.',
     },
     {
       ...P.causes,
@@ -512,7 +521,7 @@ const urbaine: Notion = {
   ],
   paires5: [
     ['Le XIIe siècle', 'Le mouvement urbain s’amorce'],
-    ['20 %', 'Part des urbains à la fin de la période'],
+    ['20 %', 'Part des urbains à la fin du Moyen Âge'],
     ['La charte de franchises', 'Libertés négociées avec le seigneur'],
     ['La foire', 'Grand marché qui procure des profits'],
     ['La Flandre', 'Région où se regroupent beaucoup d’urbains'],
@@ -541,7 +550,7 @@ const urbaine: Notion = {
     {
       ...P.corporations,
       q: 'Comment appelle-t-on le groupe qui réunit les boulangers, ou les bouchers, d’une ville ? (un mot)',
-      accepted: ['corporation', 'une corporation', 'la corporation', 'corporations'],
+      accepted: ['corporation', 'une corporation', 'la corporation', 'corporations', 'guilde', 'une guilde', 'métier'],
       traps: [
         { text: 'commune', why: 'La commune, c’est toute la ville qui s’administre elle-même, pas un métier.' },
         { text: 'paroisse', why: 'La paroisse est un cadre religieux, pas un groupe de métier.' },
@@ -550,13 +559,13 @@ const urbaine: Notion = {
     },
     {
       ...P.urbains,
-      q: 'Quel pourcentage de la population européenne vit en ville à la fin de la période ? (un nombre)',
+      q: 'Quel pourcentage de la population européenne vit en ville à la fin du Moyen Âge ? (un nombre)',
       accepted: ['20', '20 %', '20%', 'environ 20', 'environ 20 %', 'environ 20%'],
       traps: [
         { text: '50', why: 'C’est trop : la majorité vit encore à la campagne.' },
         { text: '90', why: 'C’est presque l’inverse : la grande majorité vit à la campagne.' },
       ],
-      explain: 'À la fin de la période, on estime que les urbains représentent 20 % de la population européenne.',
+      explain: 'À la fin du Moyen Âge, on estime que les urbains représentent 20 % de la population européenne.',
     },
   ],
   docs: [
@@ -564,7 +573,7 @@ const urbaine: Notion = {
       title: 'Une ville obtient ses libertés',
       lines: [
         'Au XIIe siècle, une ville marchande grandit autour de son marché.',
-        'Ses habitants, les bourgeois, vivent surtout du commerce et de l’artisanat.',
+        'Parmi ses habitants, les bourgeois vivent surtout du commerce.',
         'Ils négocient avec le seigneur une charte de franchises qui fixe leurs libertés.',
         'Plus tard, la ville devient une commune : elle s’administre elle-même.',
         'Les boulangers et les bouchers s’organisent en corporations.',
@@ -605,15 +614,15 @@ const urbaine: Notion = {
         {
           ...P.commune,
           q: 'De quoi vivent surtout les bourgeois de cette ville ?',
-          a: 'du commerce et de l’artisanat',
+          a: 'du commerce',
           wrong: [
             {
               label: 'de la culture de leurs tenures',
               why: 'Les tenures sont des terres de paysans ; relis la ligne 2.',
             },
-            { label: 'de la guerre', why: 'Ligne 2 : les bourgeois vivent du commerce et de l’artisanat.' },
+            { label: 'de la guerre', why: 'Ligne 2 : les bourgeois vivent surtout du commerce.' },
           ],
-          explain: 'Ligne 2 : la bourgeoisie des villes est d’abord commerçante.',
+          explain: 'Ligne 2 : les bourgeois vivent surtout du commerce ; la bourgeoisie des villes est commerçante.',
         },
       ],
     },
@@ -623,7 +632,7 @@ const urbaine: Notion = {
         'Au début du XIIe siècle, l’abbaye de Saint-Denis, près de Paris, contrôle une grande foire.',
         'Des marchands venus de loin y échangent leurs marchandises.',
         'L’abbaye tire de cette foire des profits importants.',
-        'Les échanges avec l’Orient s’accroissent, grâce à des comptoirs.',
+        'Les échanges avec l’Orient s’accroissent, grâce à des comptoirs (lieux de commerce installés au loin).',
         'Les villes grandissent et desserrent les liens de la domination féodale.',
       ],
       qs: [
@@ -670,11 +679,11 @@ const urbaine: Notion = {
 const eglise: Notion = {
   id: 'h5-eglise-feodale',
   title: 'L’Église dans l’Occident féodal',
-  hint: 'Repère le rôle de l’Église : dans le monde féodal (terres, paroisse), dans la société (paix de Dieu, universités) ou auprès du roi (sacre, Saint-Denis).',
+  hint: 'Demande-toi si la question porte sur les biens de l’Église, la vie des fidèles, la protection, les études ou le roi.',
   memo: [
     'L’Église est à la fois plongée dans le monde féodal, par sa richesse **foncière** (il existe des seigneuries religieuses), et porteuse de valeurs différentes. La **paroisse** est le cadre de vie des paysans : l’Église encadre la vie quotidienne des fidèles.',
-    'Au début de la période, la **réforme grégorienne** la rend plus cohérente et soudée. Aux Xe et XIe siècles, elle lance la **paix de Dieu** pour protéger ses biens et les populations, puis bénit la **chevalerie**, qu’elle entraîne dans les croisades.',
-    'Grâce à son quasi-monopole de l’écrit, elle contrôle les **universités**. Elle **sacre** les rois. Au XIIIe siècle naissent les **ordres mendiants**. L’**abbé** Suger, conseiller du roi Louis VI, construit la basilique gothique de Saint-Denis, **nécropole** des rois de France.',
+    'Au début de la période (vers le XIe siècle), la **réforme grégorienne** la rend plus cohérente et soudée. Aux Xe et XIe siècles, elle lance la **paix de Dieu** pour protéger ses biens et les populations, puis bénit la **chevalerie**, qu’elle entraîne dans les croisades.',
+    'Grâce à son quasi-monopole de l’écrit, elle contrôle les **universités**, où l’on apprend le droit canon (le droit de l’Église) et le droit romain. Elle **sacre** les rois. Au XIIIe siècle naissent les **ordres mendiants**. L’**abbé** Suger, conseiller du roi Louis VI, construit la basilique gothique de Saint-Denis, **nécropole** des rois de France.',
   ],
   faits: [
     {
@@ -695,7 +704,7 @@ const eglise: Notion = {
           why: 'Les communes s’administrent elles-mêmes ; l’Église est féodale par ses terres.',
         },
       ],
-      gap: ['L’Église est plongée dans le monde féodal par sa richesse ', '.', ['foncière', 'fonciere']],
+      gap: ['L’Église est plongée dans le monde féodal par sa richesse ', '.', ['foncière', 'fonciere', 'terrienne']],
       explain: 'Par sa richesse foncière (ses terres), l’Église fait partie du monde féodal.',
     },
     {
@@ -712,7 +721,7 @@ const eglise: Notion = {
     },
     {
       ...P.gregorienne,
-      q: 'Quelle réforme rend l’Église plus cohérente et soudée au début de la période ?',
+      q: 'Quelle réforme rend l’Église plus cohérente et soudée vers le XIe siècle ?',
       a: 'la réforme grégorienne',
       wrong: [
         {
@@ -726,7 +735,8 @@ const eglise: Notion = {
         { label: 'le traité de Verdun', why: 'Le traité de Verdun (843) partage l’empire carolingien.' },
       ],
       gap: ['La réforme ', ' rend l’Église plus cohérente et soudée.', ['grégorienne', 'gregorienne']],
-      explain: 'Au début de la période, la réforme grégorienne rend l’Église plus cohérente et soudée.',
+      explain:
+        'Au début de la période (vers le XIe siècle), la réforme grégorienne rend l’Église plus cohérente et soudée.',
     },
     {
       ...P.paixDieu,
@@ -773,7 +783,11 @@ const eglise: Notion = {
           why: 'Les rois ne sont pas choisis parmi les bourgeois ; l’Église les sacre.',
         },
       ],
-      gap: ['L’Église ', ' les rois de France, d’Angleterre et d’Aragon.', ['sacre']],
+      gap: [
+        'Par une cérémonie avec de l’huile sainte, l’Église ',
+        ' les rois de France, d’Angleterre et d’Aragon.',
+        ['sacre'],
+      ],
       explain: 'L’Église sacre les rois d’Aragon, de France, d’Angleterre et les empereurs romains germaniques.',
     },
     {
@@ -821,7 +835,7 @@ const eglise: Notion = {
           why: 'Une université est un lieu d’étude ; la basilique est la nécropole royale.',
         },
       ],
-      gap: ['La basilique de Saint-Denis est la ', ' des rois de France.', ['nécropole', 'necropole']],
+      gap: ['La basilique de Saint-Denis est la ', ' des rois de France.', ['nécropole', 'necropole', 'sépulture']],
       explain: 'La basilique de Saint-Denis est la nécropole des rois de France : ils y sont enterrés.',
     },
   ],
@@ -870,6 +884,10 @@ const eglise: Notion = {
       accepted: ['paix de Dieu', 'la paix de Dieu'],
       traps: [
         {
+          text: 'trêve de Dieu',
+          why: 'La trêve de Dieu interdit de combattre certains jours ; le mouvement de protection cité est la paix de Dieu.',
+        },
+        {
           text: 'croisade',
           why: 'L’Église entraîne ensuite la chevalerie dans les croisades, mais le mouvement de protection est la paix de Dieu.',
         },
@@ -883,7 +901,14 @@ const eglise: Notion = {
     {
       ...P.necropole,
       q: 'Quelle basilique, construite par l’abbé Suger, sert de nécropole aux rois de France ? (un nom)',
-      accepted: ['Saint-Denis', 'Saint Denis', 'basilique de Saint-Denis', 'la basilique de Saint-Denis'],
+      accepted: [
+        'Saint-Denis',
+        'Saint Denis',
+        'St-Denis',
+        'St Denis',
+        'basilique de Saint-Denis',
+        'la basilique de Saint-Denis',
+      ],
       traps: [
         { text: 'Aix-la-Chapelle', why: 'Aix-la-Chapelle est la ville du palais de Charlemagne.' },
         { text: 'Prisches', why: 'Prisches est connue pour sa charte de franchises de 1158.' },
@@ -999,11 +1024,11 @@ const eglise: Notion = {
 const etat: Notion = {
   id: 'h5-etat-monarchique',
   title: 'L’affirmation de l’État monarchique (Capétiens et Valois)',
-  hint: 'Situe d’abord le roi dans le temps (987, 1214, 1302, 1337-1453), puis demande-toi comment il renforce son pouvoir : Église, territoire, administration ou impôt.',
+  hint: 'Cherche si on demande un roi, une date, une assemblée ou une ressource, puis demande-toi comment le roi renforce son pouvoir.',
   memo: [
     'En 987, **Hugues Capet**, « duc de France », est couronné et sacré roi : son domaine, en Île-de-France et dans l’Orléanais, devient le **domaine royal**. Les rois **capétiens** construisent leur domination à partir de la féodalité et de l’appui de l’Église : le **sacre** donne au roi un caractère sacré.',
-    'D’abord roi faible, **suzerain** de puissants princes, le roi devient peu à peu **souverain**. Le règne de Philippe Auguste (1180-1223) est un tournant, avec la bataille de Bouvines (1214). Louis IX (1226-1270), canonisé en 1297, porte le prestige religieux de la monarchie à son apogée.',
-    'Philippe IV le Bel s’entoure de **légistes** et convoque des **états généraux** à partir de 1302. Le programme nomme deux dynasties : les Capétiens et les **Valois**. La **guerre de Cent Ans** (1337-1453) transforme le royaume en royaume national ; l’**impôt permanent** est levé à partir de 1360.',
+    'D’abord roi faible, **suzerain** de puissants princes, le roi devient peu à peu **souverain**. Le règne de Philippe Auguste (1180-1223) est un tournant, avec la bataille de Bouvines (1214). Louis IX (1226-1270), canonisé (déclaré saint) en 1297, porte le prestige religieux de la monarchie à son apogée.',
+    'Philippe IV le Bel s’entoure de **légistes** et convoque des **états généraux** à partir de 1302. Deux dynasties de rois de France sont étudiées : les Capétiens et les **Valois**. La **guerre de Cent Ans** (1337-1453) transforme le royaume en royaume national ; l’**impôt permanent** est levé à partir de 1360.',
   ],
   faits: [
     {
@@ -1054,7 +1079,11 @@ const etat: Notion = {
         { label: 'Philippe IV le Bel', why: 'Philippe IV le Bel est connu pour ses légistes et les états généraux.' },
         { label: 'Charles VII', why: 'Charles VII est un acteur de la guerre de Cent Ans.' },
       ],
-      gap: ['Le roi ', ', canonisé en 1297, devient saint Louis.', ['Louis IX', 'Louis 9']],
+      gap: [
+        'Le roi ',
+        ', canonisé en 1297, a porté le prestige religieux de la monarchie à son apogée.',
+        ['Louis IX', 'Louis 9'],
+      ],
       explain: 'Le prestige religieux de la monarchie est à son apogée sous Louis IX, canonisé en 1297.',
     },
     {
@@ -1107,7 +1136,7 @@ const etat: Notion = {
     },
     {
       ...P.capetiensValois,
-      q: 'Quelles dynasties le programme nomme-t-il pour le royaume de France ?',
+      q: 'Quelles sont les deux dynasties de rois de France étudiées dans l’affirmation de l’État, après 987 ?',
       a: 'les Capétiens et les Valois',
       wrong: [
         { label: 'les Omeyyades et les Abbassides', why: 'Ce sont des dynasties de califes, dans le monde musulman.' },
@@ -1117,8 +1146,8 @@ const etat: Notion = {
         },
         { label: 'les Han', why: 'Les Han sont une dynastie chinoise de l’Antiquité.' },
       ],
-      gap: ['Le programme étudie le royaume des Capétiens et des ', '.', ['Valois']],
-      explain: 'Le programme étudie l’affirmation de l’État monarchique dans le royaume des Capétiens et des Valois.',
+      gap: ['Le royaume étudié est celui des Capétiens et des ', '.', ['Valois']],
+      explain: 'L’État monarchique s’affirme dans le royaume des Capétiens et des Valois.',
     },
     {
       ...P.suzerain,
@@ -1132,7 +1161,11 @@ const etat: Notion = {
         },
         { label: 'leur serf', why: 'Le roi n’est pas un serf : il est au sommet de la hiérarchie féodale.' },
       ],
-      gap: ['Aux XIe et XIIe siècles, le roi est le ', ' de puissants princes.', ['suzerain']],
+      gap: [
+        'Le seigneur dont dépendent des vassaux est un ',
+        ' : c’est le cas du roi face aux grands princes.',
+        ['suzerain'],
+      ],
       explain: 'Le roi faible, suzerain de puissants princes, laisse place peu à peu au roi souverain.',
     },
   ],
@@ -1152,7 +1185,7 @@ const etat: Notion = {
     { ...P.repere987, label: 'Couronnement et sacre d’Hugues Capet', date: '987' },
     { ...P.bouvines, label: 'Bataille de Bouvines', date: '1214' },
     { ...P.louisIX, label: 'Louis IX est canonisé et devient saint Louis', date: '1297' },
-    { ...P.legistes, label: 'Premiers états généraux convoqués par Philippe IV le Bel', date: '1302' },
+    { ...P.legistes, label: 'États généraux convoqués par Philippe IV le Bel', date: '1302' },
     { ...P.centAns, label: 'Guerre de Cent Ans', date: '1337-1453' },
   ],
   libres: [
@@ -1188,11 +1221,17 @@ const etat: Notion = {
     },
     {
       ...P.impot,
-      q: 'Quel impôt royal est levé à partir de 1360 ? (deux mots)',
-      accepted: ['impôt permanent', 'l’impôt permanent', 'impot permanent', 'l’impot permanent'],
+      q: 'Comment qualifie-t-on l’impôt que le roi lève désormais chaque année, à partir de 1360 ? (un mot)',
+      accepted: ['permanent', 'impôt permanent', 'l’impôt permanent', 'impot permanent', 'l’impot permanent'],
       traps: [
-        { text: 'banalités', why: 'Les banalités sont des obligations dues au seigneur, pas un impôt royal.' },
-        { text: 'charte de franchises', why: 'Une charte de franchises fixe des droits ; ce n’est pas un impôt.' },
+        {
+          text: 'seigneurial',
+          why: 'Cet impôt est levé par le roi, pas par un seigneur ; on le dit permanent car il est levé chaque année.',
+        },
+        {
+          text: 'exceptionnel',
+          why: 'C’est l’inverse : l’impôt n’est plus exceptionnel, il devient permanent à partir de 1360.',
+        },
       ],
       explain: 'L’impôt permanent est levé à partir de 1360 : l’appareil administratif du roi se renforce.',
     },

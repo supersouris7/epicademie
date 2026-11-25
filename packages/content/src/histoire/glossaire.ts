@@ -1684,7 +1684,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'tenure',
     word: 'tenure',
     forms: ['tenure', 'tenures'],
-    definition: 'Une terre que le seigneur confie à un paysan, qui la transmet à ses enfants en échange de redevances.',
+    definition:
+      'Une terre que le seigneur confie à un paysan, qui la transmet à ses enfants en échange de paiements au seigneur.',
     example: 'Le paysan cultive sa tenure.',
   },
   {
@@ -1756,7 +1757,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'bourgeoisie',
     word: 'bourgeoisie',
     forms: ['bourgeoisie', 'bourgeois'],
-    definition: 'Le groupe des habitants des villes (les bourgeois), surtout des marchands et des artisans.',
+    definition: 'Au Moyen Âge, un groupe d’habitants des villes (les bourgeois), souvent des marchands.',
     example: 'La bourgeoisie commerçante s’affirme dans les communes.',
   },
   {
@@ -1793,7 +1794,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     word: 'réforme grégorienne',
     forms: ['réforme grégorienne', 'reforme gregorienne'],
     definition:
-      'La réforme de l’Église, au XIe siècle, qui renforce l’autorité du pape et la discipline des clercs ; elle porte le nom du pape Grégoire VII.',
+      'La réforme de l’Église, au XIe siècle, qui renforce l’autorité du pape et la discipline des hommes d’Église ; elle porte le nom du pape Grégoire VII.',
     example: 'La réforme grégorienne rend l’Église plus soudée.',
   },
   {
@@ -1802,7 +1803,21 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['paix de Dieu'],
     definition:
       'Un mouvement lancé par l’Église aux Xe et XIe siècles pour protéger ses biens et les populations sans armes contre les violences des guerriers.',
-    example: 'La paix de Dieu protège les paysans et les clercs.',
+    example: 'La paix de Dieu protège les paysans et les hommes d’Église.',
+  },
+  {
+    id: 'fief',
+    word: 'fief',
+    forms: ['fief', 'fiefs'],
+    definition: 'Au Moyen Âge, une terre qu’un seigneur donne à un vassal en échange de sa fidélité et de son aide.',
+    example: 'Le vassal reçoit un fief de son seigneur.',
+  },
+  {
+    id: 'vassal',
+    word: 'vassal',
+    forms: ['vassal', 'vassaux'],
+    definition: 'Au Moyen Âge, un guerrier qui jure fidélité à un seigneur plus puissant et reçoit de lui un fief.',
+    example: 'Les vassaux combattent aux côtés de leur seigneur.',
   },
   {
     id: 'chevalerie',
@@ -1895,7 +1910,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     word: 'Valois',
     forms: ['Valois'],
     definition: 'La dynastie de rois de France issue des Capétiens, qui leur succède au XIVe siècle.',
-    example: 'Le programme étudie le royaume des Capétiens et des Valois.',
+    example: 'Le royaume étudié est celui des Capétiens et des Valois.',
   },
   {
     id: 'guerre-cent-ans',
