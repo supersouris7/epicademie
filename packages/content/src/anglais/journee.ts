@@ -113,11 +113,12 @@ function presentNegative(rng: Rng): QuestionDraft {
 function presentQuestion(rng: Rng): QuestionDraft {
   const a = rng.pick(ACTIONS);
   return {
-    prompt: `Demande à un ami si c’est son cas : « ${a.fr} ». Écris le mot qui manque : « … you ${a.verb} ${a.rest}? »`,
+    prompt: `Au présent simple, demande à un ami si c’est son cas : « ${a.fr} ». Écris le mot qui manque : « … you ${a.verb} ${a.rest}? »`,
     answer: { kind: 'text', accepted: ['Do'] },
     traps: [
       { text: 'Does', why: '« Does » va avec he, she, it. Avec you : « Do ».' },
       { text: 'Are', why: '« Are » est le verbe be. Devant un autre verbe, la question commence par « Do ».' },
+      { text: 'Can', why: '« Can » demande si tu sais le faire. Au présent simple, la question commence par « Do ».' },
     ],
     hint: 'Au présent simple, un petit mot ouvre la question.',
     steps: ['Pour poser une question avec you : « Do you… ? ».', `Réponse : **Do you ${a.verb} ${a.rest}?**`],
@@ -207,8 +208,8 @@ const said = (t: Time) => `It’s ${timeEn(t)}.`;
 /** Règle qui s'applique à cette heure. */
 function rule(t: Time): string {
   if (t.m === 0) return 'Heure pile : le nombre, puis « o’clock ».';
-  if (t.m <= 30) return `Jusqu’à la demie : les minutes, « past » (après), puis l’heure ${hourWord(t.h)}.`;
-  return `Après la demie : les minutes qui restent, « to » (avant), puis l’heure qui arrive, ${hourWord(next(t.h))}.`;
+  if (t.m <= 30) return `Jusqu’à la demie : les minutes, « past » (après), puis l’heure : « ${hourWord(t.h)} ».`;
+  return `Après la demie : les minutes qui restent, « to » (avant), puis l’heure qui arrive : « ${hourWord(next(t.h))} ».`;
 }
 
 /** Heures fausses typiques (la bonne heure n'y figure jamais). */
@@ -303,7 +304,7 @@ function clockWrite(rng: Rng): QuestionDraft {
       { text: said(x.t), why: x.why },
     ]);
   return {
-    prompt: `Écris en anglais, en lettres : « Il est ${frenchTime(t)}. »`,
+    prompt: `Écris en anglais, en lettres, avec « o’clock », « past » ou « to » : « Il est ${frenchTime(t)}. »`,
     answer: { kind: 'text', accepted: right },
     traps: wrong.filter((w) => !right.includes(w.text)),
     hint: 'Commence par « It’s ». Puis choisis : « o’clock », « past » ou « to ».',
@@ -321,7 +322,7 @@ function clockLevel5(rng: Rng): QuestionDraft {
   const bed = rng.pick(EVENING);
   const kid = rng.pick(KIDS);
   return {
-    prompt: `Lis l’agenda ${de(kid)}. Réponds pour ${kid} en écrivant les heures en lettres.`,
+    prompt: `Lis l’agenda ${de(kid)}. Réponds pour ${kid} : heures en lettres, avec « o’clock », « past » ou « to ».`,
     figure: {
       kind: 'document',
       title: 'Mon agenda',
@@ -392,7 +393,7 @@ function routineOrder(rng: Rng): QuestionDraft {
   const right = DAY_CHAIN.filter((x) => picked.has(x));
   const items = shuffledOther(rng, right);
   return {
-    prompt: `Un jour d’école : remets les actions dans l’ordre, du matin au soir : ${items.join(', ')}.`,
+    prompt: `Un jour d’école, avec repas à la cantine : remets les actions dans l’ordre, du matin au soir : ${items.join(', ')}.`,
     answer: { kind: 'order', items, correct: right.map((x) => items.indexOf(x)) },
     hint: 'Imagine ta journée. Que fais-tu en premier, au réveil ?',
     steps: [

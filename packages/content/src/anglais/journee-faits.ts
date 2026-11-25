@@ -3,6 +3,8 @@
  * Chaque fait porte l'identifiant de sa source (registre `sources.ts`) et une citation exacte du texte consulté
  * le 25/11/2026 (copies d'archive web.archive.org des pages et de la fiche du British Council ; programme du
  * cycle 3). Les espaces et retours à la ligne sont réduits à une espace.
+ * La règle « bck-adverbs-frequency-rule » est celle de la version de 2019 de la page (copie d'archive
+ * 20191230121612) : la version actuelle ne contient plus l'exemple cité.
  *
  * Programme : le présent, les horaires et la vie quotidienne relèvent du cycle 3. « always, sometimes, never » n'y
  * sont pas nommés : ce sont des mots d'un répertoire simple pour parler de sa vie quotidienne.
@@ -140,13 +142,13 @@ export const ROUTINES: readonly Routine[] = [
     ['I go', 'school.', ['to'], 'at', '« at » dit où l’on est. Pour aller vers l’école : « go to school ».'],
   ),
   routine(
-    ['have lunch', 'déjeuner à midi', 'Je déjeune à midi.', 'have lonch'],
+    ['have lunch', 'déjeuner à midi', 'Je prends le repas de midi.', 'have lonch'],
     ['eat lunch'],
-    ['I', 'lunch at school.', ['have', 'eat'], 'do', 'On ne dit pas « do lunch » ici : on dit « have lunch ».'],
+    ['I', 'lunch.', ['have', 'eat'], 'do', 'On ne dit pas « do lunch » ici : on dit « have lunch ».'],
   ),
   routine(
     ['go home', 'rentrer à la maison', 'Je rentre à la maison.', 'go hom'],
-    ['go back home'],
+    ['go back home', 'come home', 'come back home', 'get home'],
     ['I go', '.', ['home', 'back home'], 'to home', 'Devant « home », pas de « to » : on dit « go home ».'],
   ),
   routine(
