@@ -129,7 +129,7 @@ const CLES: readonly Cle[] = ['qui', 'quoi', 'ou', 'quand'];
 const MOT_QUESTION: Readonly<Record<Cle, string>> = { qui: 'Qui ?', quoi: 'Quoi ?', ou: 'Où ?', quand: 'Quand ?' };
 const SENS_QUESTION: Readonly<Record<Cle, string>> = {
   qui: 'la personne ou l’animal qui agit',
-  quoi: 'la chose dont on parle',
+  quoi: 'la chose ou l’animal touché par l’action',
   ou: 'le **lieu**',
   quand: 'le **moment**',
 };
@@ -565,6 +565,9 @@ const compatibles = (rng: Rng): Verbe[] => {
   return VERBES.filter((v) => v.verbe !== ecarte);
 };
 
+/** « de barrer », mais « d’entourer ». */
+const de = (mot: string) => (/^[aeéè]/.test(mot) ? `d’${mot}` : `de ${mot}`);
+
 function gesteChoix(rng: Rng, v: Verbe): QuestionDraft {
   const { answer, traps } = choice(
     rng,
@@ -573,7 +576,7 @@ function gesteChoix(rng: Rng, v: Verbe): QuestionDraft {
       rng,
       VERBES.filter((x) => x !== v && !(PROCHES.includes(v.verbe) && PROCHES.includes(x.verbe))),
       2,
-    ).map((x) => ({ label: x.geste, why: `Ça, c’est « ${x.verbe} ». La consigne demande de ${v.verbe}.` })),
+    ).map((x) => ({ label: x.geste, why: `Ça, c’est « ${x.verbe} ». La consigne demande ${de(v.verbe)}.` })),
   );
   return {
     prompt: `La consigne dit : « ${v.consigne} » Que dois-tu faire ?`,
@@ -622,7 +625,7 @@ function ecrireCase(rng: Rng, p: Plan): QuestionDraft {
   const place = caseDe(p, o.signe);
   const [col, ligne] = [place.charAt(0), place.charAt(1)];
   return ecrire(
-    [place, `${col} ${ligne}`, `${ligne}${col}`, `case ${place}`],
+    [place, `${col} ${ligne}`, `${ligne}${col}`, `${ligne} ${col}`, `case ${place}`],
     p.legende
       .filter((x) => x !== o)
       .map((x) => [caseDe(p, x.signe), `Dans cette case, on voit ${x.nom}. Lis la légende.`] as const),
@@ -680,7 +683,7 @@ function consigneDraft(rng: Rng, level: Level): QuestionDraft {
           preuve: 'Regarde sa forme et ce qu’il sert à faire.',
         },
         {
-          etiquette: 'Il vient de la source :',
+          etiquette: 'Sa source est :',
           bon: d.source,
           faux: [autresSources[0] ?? '', autresSources[1] ?? ''],
           preuve: 'La source est écrite sous le document.',

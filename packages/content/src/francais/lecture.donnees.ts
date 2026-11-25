@@ -38,7 +38,7 @@ fait(
 // ───────────────────────── Définitions ─────────────────────────
 
 acad('ou', 'En quel lieu, en quel endroit ?');
-acad('quand', 'Lorsque, dans le temps que ; au moment où ; à chaque fois que.');
+acad('quand', 'À quel moment, dans combien de temps.');
 acad('lieu', 'Portion déterminée de l’espace.');
 acad('moment', 'Intervalle de temps.');
 acad(
@@ -176,7 +176,15 @@ export const HISTOIRES: readonly Histoire[] = [
       qui: info('Qui dessine un dragon ?', 'Aya', 'son frère'),
       quoi: info('Que dessine Aya ?', 'un dragon', 'un château', 'dragon', 'le dragon'),
       ou: info('Où Aya dessine-t-elle ?', 'dans sa chambre', 'dans le salon', 'sa chambre', 'chambre', 'la chambre'),
-      quand: info('Quand Aya dessine-t-elle ?', 'mercredi après-midi', 'jeudi matin', 'mercredi', 'le mercredi'),
+      quand: info(
+        'Quand Aya dessine-t-elle ?',
+        'mercredi après-midi',
+        'jeudi matin',
+        'mercredi',
+        'le mercredi',
+        'mercredi après midi',
+        'mercredi apres-midi',
+      ),
     },
   },
   {
@@ -244,7 +252,7 @@ export const TEXTES_PIEGES: readonly TextePiege[] = [
     ],
     questions: [
       {
-        question: 'Quel jour Inès est-elle allée au musée ?',
+        question: 'Quand Inès est-elle allée au musée ?',
         accepted: ['jeudi', 'le jeudi'],
         pieges: [['lundi', autreMoment('lundi')]],
         preuve: 'La ligne 2 dit : « Jeudi, elle est allée au musée ».',
@@ -316,7 +324,7 @@ export const TEXTES_PIEGES: readonly TextePiege[] = [
     ],
     questions: [
       {
-        question: 'En quel mois Jade visite-t-elle un phare ?',
+        question: 'Quand Jade visite-t-elle un phare ?',
         accepted: ['août', 'en août', 'aout', 'en aout'],
         pieges: [
           ['juillet', autreMoment('juillet')],
@@ -351,7 +359,7 @@ export const TEXTES_PIEGES: readonly TextePiege[] = [
       },
       {
         question: 'Quand un client emporte-t-il la dernière brioche ?',
-        accepted: ['à midi', 'midi'],
+        accepted: ['à midi', 'midi', 'a midi'],
         pieges: [
           ['à huit heures', autreMoment('à huit heures')],
           ['avant l’aube', autreMoment('avant l’aube')],
@@ -1413,7 +1421,7 @@ export const DOCUMENTS: readonly DocumentSource[] = [
     titre: 'Salade de fruits',
     lignes: [
       'Ingrédients : 2 pommes, 1 banane, 1 orange.',
-      '1. Lave les fruits. 2. Coupe-les. 3. Mélange-les.',
+      '1. Lave les fruits. 2. ★ Coupe-les. 3. Mélange-les.',
       'Légende : ★ = demande l’aide d’un adulte (étape 2).',
     ],
     source: 'La classe de CM1',
@@ -1439,14 +1447,14 @@ export const DOCUMENTS: readonly DocumentSource[] = [
         ['10 h', '17 h'],
         'La légende dit que ● est l’atelier : ● à 14 h.',
       ),
-      trou('Le prix de l’entrée est', 'gratuit', ['2 euros', '5 euros'], 'La ligne 2 dit : entrée gratuite.'),
+      trou('L’entrée est', 'gratuite', ['à 2 euros', 'à 5 euros'], 'La ligne 2 dit : « Entrée gratuite ».'),
     ],
   },
   {
     titre: 'Bus de la ligne 3',
     lignes: [
       'Mairie : 8 h 10. Gare : 8 h 25. Collège : 8 h 40.',
-      'Du lundi au samedi : ce passage. Dimanche : ★.',
+      'Le bus passe du lundi au samedi. Dimanche : ★.',
       'Légende : ★ = aucun bus.',
     ],
     source: 'La société de transport',

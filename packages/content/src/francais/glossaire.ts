@@ -637,6 +637,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'Une affiche est un document.',
   },
   {
+    id: 'nature-document',
+    word: 'nature d’un document',
+    forms: ['nature d’un document'],
+    definition: 'La sorte de document dont il s’agit : affiche, recette, lettre, horaire…',
+    example: 'La nature de ce document : une affiche.',
+  },
+  {
     id: 'source',
     word: 'source',
     forms: ['sources'],
