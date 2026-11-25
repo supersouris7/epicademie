@@ -411,6 +411,8 @@ function adminHandlers(
             operator: 'Marie Dupont',
             action: 'consultation',
             accountId: 'aaaaaaaa-aaaa-4aaa-8aaa-000000000001',
+            accountLabel: 'p…@famille.test',
+            accountExists: true,
           },
         ],
         page: 0,
@@ -437,6 +439,7 @@ function adminHandlers(
       })),
       activeByOffer: [{ offer: 'famille-annee', count: 5 }],
       revenueCents: 12495,
+      paymentProviders: ['simulateur'],
     }),
     adminStats: () => ({
       day: '2026-11-20',
@@ -450,7 +453,10 @@ function adminHandlers(
       bossWins: 21,
       premiumFamilies: 5,
       payments: [{ status: 'payee', count: 5, amountCents: 12495 }],
-      openReports: 1,
+      openReports: reports.filter((r) => r.status === 'nouveau' || r.status === 'en-cours').length,
+      reportCounts: Object.fromEntries(
+        ['nouveau', 'en-cours', 'resolu', 'rejete'].map((s) => [s, reports.filter((r) => r.status === s).length]),
+      ),
     }),
     adminAnomalies: () => [
       {

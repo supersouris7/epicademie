@@ -1,0 +1,100 @@
+import { tlfi, type Source } from '../../sources-outils.ts';
+
+/** Article du glossaire de Géoconfluences (`textDate` : dernière modification affichée). */
+const geoconfluences = (id: string, mot: string, page: string, textDate: string): Source => ({
+  id: `geoconfluences-${id}`,
+  title: `Glossaire de Géoconfluences, article « ${mot} »`,
+  publisher: 'Géoconfluences (ENS de Lyon, DGESCO)',
+  url: `https://geoconfluences.ens-lyon.fr/glossaire/${page}`,
+  textDate,
+  consultedOn: '2026-11-25',
+});
+
+/** Sources de SVT (registre : `sources.ts` à la racine du paquet). */
+export const SOURCES: readonly Source[] = [
+  // ——— SVT 5e (lot sv-5e-01) ———
+  {
+    id: 'meteofrance-meteo-climat',
+    title: 'Quelle différence entre météo et climat ?',
+    publisher: 'Météo-France',
+    url: 'https://meteofrance.com/comprendre-climat/quelle-difference-entre-meteo-et-climat',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'meteofrance-vent',
+    title: 'Qu’est-ce que le vent ?',
+    publisher: 'Météo-France',
+    url: 'https://meteofrance.com/comprendre-la-meteo/le-vent/quest-ce-que-le-vent',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'meteofrance-systeme-climatique',
+    title: 'Le système climatique mondial',
+    publisher: 'Météo-France',
+    url: 'https://meteofrance.com/comprendre-climat/monde/le-systeme-climatique-mondial',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'meteofrance-climat-hexagone',
+    title: 'Le climat en France métropolitaine',
+    publisher: 'Météo-France',
+    url: 'https://meteofrance.com/comprendre-climat/france/le-climat-en-france-metropolitaine',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'meteofrance-climats-outre-mer',
+    title: 'Les climats en outre-mer',
+    publisher: 'Météo-France',
+    url: 'https://meteofrance.com/comprendre-climat/france/les-climats-en-outre-mer',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'ecologie-changement-climatique',
+    title: 'Changement climatique : causes, effets et enjeux',
+    publisher: 'Ministère chargé de la transition écologique (ecologie.gouv.fr)',
+    url: 'https://www.ecologie.gouv.fr/politiques-publiques/changement-climatique-causes-effets-enjeux',
+    textDate: '2025-10-31',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'ecologie-seismes',
+    title: 'Tremblements de terre et séismes en France',
+    publisher: 'Ministère chargé de la transition écologique (ecologie.gouv.fr)',
+    url: 'https://www.ecologie.gouv.fr/politiques-publiques/tremblements-terre-seismes-france',
+    textDate: '2026-05-25',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'ecologie-risques-naturels',
+    title: 'Prévention des risques naturels',
+    publisher: 'Ministère chargé de la transition écologique (ecologie.gouv.fr)',
+    url: 'https://www.ecologie.gouv.fr/politiques-publiques/prevention-risques-naturels',
+    textDate: '2026-06-22',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'ecologie-risques-majeurs',
+    title: 'Prévention des risques majeurs',
+    publisher: 'Ministère chargé de la transition écologique (ecologie.gouv.fr)',
+    url: 'https://www.ecologie.gouv.fr/politiques-publiques/prevention-risques-majeurs',
+    textDate: '2024-06-21',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'brgm-seisme-9-questions',
+    title: 'La Terre tremble : 9 questions sur les séismes',
+    publisher: 'BRGM',
+    url: 'https://www.brgm.fr/fr/actualite/video/terre-tremble-9-questions-seismes',
+    textDate: '2021-05-27',
+    consultedOn: '2026-11-25',
+  },
+  geoconfluences('volcan', 'Volcan', 'volcan', '2025-08-29'),
+  tlfi('volcan', 'volcan', 'volcan'),
+  tlfi('lave', 'lave', 'lave'),
+  tlfi('sismographe', 'sismographe', 'sismographe'),
+];

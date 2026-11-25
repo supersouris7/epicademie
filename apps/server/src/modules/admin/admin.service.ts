@@ -28,6 +28,19 @@ export function newTemporaryPassword(): string {
   return Array.from({ length: TEMP_PASSWORD_LENGTH }, () => READABLE[randomInt(READABLE.length)]).join('');
 }
 
+/** « w…@exemple.fr » : de quoi reconnaître un compte sans réécrire son adresse. */
+export const maskEmail = (email: string): string => {
+  const at = email.lastIndexOf('@');
+  return `${email.slice(0, 1)}…${at < 0 ? '' : email.slice(at)}`;
+};
+
+/** Nom court d'un compte cité par le journal d'audit (aucun prénom d'enfant). */
+const shortName = (account: { email: string | null; autonomous: boolean } | undefined): string => {
+  if (!account) return 'Compte supprimé';
+  if (account.email) return maskEmail(account.email);
+  return account.autonomous ? 'Élève autonome' : 'Compte sans e-mail';
+};
+
 const iso = (d: Date | null) => (d ? d.toISOString() : null);
 const latest = (...dates: (Date | null)[]) => dates.reduce<Date | null>((a, b) => (b && (!a || b > a) ? b : a), null);
 
@@ -128,6 +141,8 @@ export function createAdminService({ db, clock }: { db: Db; clock: Clock }) {
 
     async auditPage(page: number): Promise<AuditPage> {
       const { rows, hasMore } = await repo.auditPage(page);
+      const names = await repo.accountNames([...new Set(rows.map((r) => r.accountId))]);
+      const byId = new Map(names.map((n) => [n.id, n]));
       return {
         items: rows.map((r) => ({
           id: r.id,
@@ -135,6 +150,8 @@ export function createAdminService({ db, clock }: { db: Db; clock: Clock }) {
           operator: r.operator,
           action: r.action,
           accountId: r.accountId,
+          accountLabel: shortName(byId.get(r.accountId)),
+          accountExists: byId.has(r.accountId),
         })),
         page,
         hasMore,

@@ -13,6 +13,11 @@ const keys = {
 export const useReports = (status: ReportStatus) =>
   useQuery({ queryKey: keys.reports(status), queryFn: () => request(api.adminReports, { params: { status } }) });
 
+export const useStats = () => useQuery({ queryKey: ['admin', 'stats'], queryFn: () => request(api.adminStats) });
+
+export const useAnomalies = () =>
+  useQuery({ queryKey: ['admin', 'anomalies'], queryFn: () => request(api.adminAnomalies) });
+
 export const useTrends = () => useQuery({ queryKey: ['admin', 'trends'], queryFn: () => request(api.adminTrends) });
 
 export const useContent = () => useQuery({ queryKey: keys.content, queryFn: () => request(api.adminContent) });
