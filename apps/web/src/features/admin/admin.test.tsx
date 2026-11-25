@@ -185,6 +185,18 @@ describe('pilotage', () => {
     expect(await screen.findByText('Cannot read properties of undefined')).toBeInTheDocument();
   });
 
+  it('rubriques en sélecteur segmenté : un onglet par rubrique, le choix actif est marqué', async () => {
+    const { user } = renderApp('/admin', { admin: true });
+    const nav = await screen.findByRole('navigation', { name: 'Rubriques' });
+    expect(within(nav).getAllByRole('tab')).toHaveLength(9);
+    expect(screen.queryByRole('combobox', { name: 'Rubrique' })).not.toBeInTheDocument();
+    const debug = within(nav).getByRole('tab', { name: 'Mode debug' });
+    expect(debug).toHaveAttribute('aria-selected', 'false');
+    await user.click(debug);
+    expect(debug).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('tabpanel', { name: 'Mode debug' })).toBeInTheDocument();
+  });
+
   it('thème sombre local à la console et indicateurs clés en tête', async () => {
     const { container } = renderApp('/admin', { admin: true });
     const kpis = await screen.findByRole('region', { name: 'Indicateurs clés' });

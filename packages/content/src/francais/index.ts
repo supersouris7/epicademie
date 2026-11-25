@@ -17,6 +17,7 @@ import { FCM2_PHRASE_COMPLEXE } from './phrase-complexe.ts';
 import { FCM2_ACCORDS } from './accords-cm2.ts';
 import { FCM2_PASSE_SIMPLE } from './passe-simple.ts';
 import { FCM2_TEMPS_COMPOSES } from './temps-composes.ts';
+import { FCM2_VOCABULAIRE } from './vocabulaire-cm2.ts';
 
 /** Français : chapitres publiés (ADR 0034). Le lot de contenu ajoute ses chapitres ici, sans toucher à catalog.ts. */
 export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
@@ -163,5 +164,13 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'conjugaison',
     title: 'Les temps composés',
     skills: FCM2_TEMPS_COMPOSES,
+  },
+  {
+    id: 'fcm2-vocabulaire',
+    subject: 'francais',
+    grade: 'cm2',
+    domain: 'vocabulaire',
+    title: 'Vocabulaire',
+    skills: FCM2_VOCABULAIRE,
   },
 ];

@@ -158,6 +158,10 @@ describe('espace parent', () => {
     await user.click(screen.getByRole('button', { name: 'Ouvrir l’Espace parent' }));
     const card = await screen.findByRole('listitem', { name: 'Progrès de Léa' });
     expect(await within(card).findByRole('button', { name: /Maths/ })).toBeInTheDocument();
+    // Colonnes réglées sur la largeur de la carte enfant (la mise en page elle-même est vérifiée en e2e tablette).
+    const list = within(card).getByRole('list', { name: 'Avancement par matière' });
+    expect(list).toHaveClass('@min-[26rem]:grid-cols-2');
+    expect(list.parentElement).toHaveClass('@container');
     expect(card).toHaveTextContent('À réviser : Priorités opératoires');
     await user.click(within(card).getByRole('link', { name: /Voir les progrès/ }));
     expect(

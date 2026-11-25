@@ -17,7 +17,7 @@ import { AdminGate, AdminShell, type AdminSection } from './AdminShell.tsx';
 import { Anomalies, Errors, Stats, WeakSkills } from './Insights.tsx';
 import { Accounts, AuditLog } from './Accounts.tsx';
 import { DebugMode } from './DebugMode.tsx';
-import { AdminButton, Badge, DataTable, inputClass, Panel } from './ui.tsx';
+import { AdminButton, Badge, cardClass, DataTable, errorClass, inputClass, mutedClass, Panel } from './ui.tsx';
 import { useContent, useContentHistory, useReports, useUpdateContent, useUpdateReport } from './api.ts';
 
 /**
@@ -27,15 +27,15 @@ import { useContent, useContentHistory, useReports, useUpdateContent, useUpdateR
  * pilotage (en-tête secret du frontal) : aucun compte de jeu, aucun bouton depuis l'application.
  */
 const SECTIONS = [
-  { id: 'stats', label: 'Vue d’ensemble', group: 'Pilotage', panel: Stats },
-  { id: 'weak', label: 'Points faibles', group: 'Pilotage', panel: WeakSkills },
-  { id: 'accounts', label: 'Comptes', group: 'Utilisateurs', panel: Accounts },
-  { id: 'audit', label: 'Journal d’audit', group: 'Utilisateurs', panel: AuditLog },
-  { id: 'reports', label: 'Signalements', group: 'Contenu', panel: Reports },
-  { id: 'content', label: 'Notions', group: 'Contenu', panel: Contents },
-  { id: 'anomalies', label: 'Anomalies', group: 'Surveillance', panel: Anomalies },
-  { id: 'errors', label: 'Erreurs', group: 'Surveillance', panel: Errors },
-  { id: 'debug', label: 'Mode debug', group: 'Réglages', panel: DebugMode },
+  { id: 'stats', label: 'Vue d’ensemble', panel: Stats },
+  { id: 'weak', label: 'Points faibles', panel: WeakSkills },
+  { id: 'accounts', label: 'Comptes', panel: Accounts },
+  { id: 'audit', label: 'Journal d’audit', panel: AuditLog },
+  { id: 'reports', label: 'Signalements', panel: Reports },
+  { id: 'content', label: 'Notions', panel: Contents },
+  { id: 'anomalies', label: 'Anomalies', panel: Anomalies },
+  { id: 'errors', label: 'Erreurs', panel: Errors },
+  { id: 'debug', label: 'Mode debug', panel: DebugMode },
 ] as const satisfies readonly (AdminSection & { panel: () => React.ReactNode })[];
 
 export function AdminPage() {
@@ -69,7 +69,7 @@ function Reports() {
     <Panel
       title="Signalements des familles"
       actions={
-        <label className="flex items-center gap-2 text-xs font-medium text-slate-600">
+        <label className={`flex items-center gap-2 ${mutedClass}`}>
           État
           <select className={inputClass} value={status} onChange={(e) => setStatus(e.target.value as ReportStatus)}>
             {REPORT_STATUSES.map((s) => (
@@ -82,7 +82,7 @@ function Reports() {
       }
     >
       {isPending ? (
-        <p className="text-sm text-slate-500">Chargement…</p>
+        <p className={mutedClass}>Chargement…</p>
       ) : (
         <DataTable
           label="Signalements"
@@ -127,13 +127,13 @@ function QuestionPreview({ skillId, level, seed }: { skillId: string; level: Lev
       return null;
     }
   }, [skillId, level, seed]);
-  if (!question) return <p className="text-sm text-red-700">Notion retirée du contenu.</p>;
+  if (!question) return <p className={errorClass}>Notion retirée du contenu.</p>;
   return (
-    <div className="rounded-[4px]-[6px] border border-slate-200 bg-white p-3 text-sm">
+    <div className={`${cardClass} p-3 text-sm`}>
       <p className="font-medium">
         <MathText text={question.prompt} />
       </p>
-      <p className="mt-1 text-slate-600">
+      <p className="mt-1 text-pilot-mut">
         Réponse attendue : <MathText text={formatAnswer(question)} />
       </p>
     </div>
@@ -152,7 +152,7 @@ function ReportDetail({ report: r }: { readonly report: Report }) {
       aria-label={`Signalement ${r.skillId ? (getAnySkill(r.skillId)?.title ?? r.skillId) : 'général'}`}
     >
       <div className="flex flex-col gap-2">
-        <p className="text-xs text-slate-500">
+        <p className={mutedClass}>
           {r.skillId
             ? `${r.skillId} · version ${r.skillVersion} · graine ${r.seed}`
             : `Écran ${r.screen ?? '?'} · appli ${r.appVersion ?? '?'}`}
@@ -163,7 +163,7 @@ function ReportDetail({ report: r }: { readonly report: Report }) {
         )}
       </div>
       <div className="flex flex-col gap-2">
-        <label className="flex flex-col gap-1 text-xs font-medium text-slate-600">
+        <label className={`flex flex-col gap-1 ${mutedClass}`}>
           Note de l’équipe
           <input className={inputClass} value={note} onChange={(e) => setNote(e.target.value)} />
         </label>
@@ -200,7 +200,7 @@ function Contents() {
     <Panel
       title="Notions du contenu"
       actions={
-        <label className="flex items-center gap-2 text-xs font-medium text-slate-600">
+        <label className={`flex items-center gap-2 ${mutedClass}`}>
           État
           <select
             className={inputClass}
@@ -218,7 +218,7 @@ function Contents() {
       }
     >
       {isPending ? (
-        <p className="text-sm text-slate-500">Chargement (contrôle de tout le contenu)…</p>
+        <p className={mutedClass}>Chargement (contrôle de tout le contenu)…</p>
       ) : (
         <DataTable
           label="Notions"
@@ -267,9 +267,9 @@ function ContentDetail({ skill: c }: { readonly skill: ContentSkill }) {
   return (
     <div className="grid gap-3 text-sm lg:grid-cols-2" aria-label={`Notion ${c.title}`}>
       <div className="flex flex-col gap-2">
-        <p className="text-xs text-slate-500">Programme : {c.source}</p>
+        <p className={mutedClass}>Programme : {c.source}</p>
         {c.autoIssues.length > 0 && (
-          <ul className="list-disc pl-5 text-red-700">
+          <ul className="list-disc pl-5 text-pilot-bad">
             {c.autoIssues.map((i) => (
               <li key={i}>{i}</li>
             ))}
@@ -293,9 +293,9 @@ function ContentDetail({ skill: c }: { readonly skill: ContentSkill }) {
             {c.reviewedVersion === c.version ? 'Relue' : 'Marquer relue'}
           </AdminButton>
         </div>
-        <p className="text-xs font-semibold text-slate-600">Historique</p>
-        {history?.length === 0 && <p className="text-xs text-slate-500">Aucune décision pour l’instant.</p>}
-        <ul className="flex flex-col gap-0.5 text-xs text-slate-700">
+        <p className="text-sm font-semibold">Historique</p>
+        {history?.length === 0 && <p className={mutedClass}>Aucune décision pour l’instant.</p>}
+        <ul className={`flex flex-col gap-0.5 ${mutedClass}`}>
           {history?.map((h, i) => (
             <li key={i}>
               {new Date(h.at).toLocaleDateString('fr-FR')} — {h.action} (v{h.version}){h.note ? ` : ${h.note}` : ''}

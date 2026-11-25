@@ -38,21 +38,24 @@ export function SubjectCards({
   readonly onPick: (id: SubjectBar['id']) => void;
 }) {
   return (
-    <ul className="grid grid-cols-1 gap-2 min-[480px]:grid-cols-2" aria-label="Avancement par matière">
-      {bars.map((b) => (
-        <li key={b.id}>
-          <button
-            type="button"
-            onClick={() => onPick(b.id)}
-            aria-pressed={selected === b.id}
-            aria-label={`${b.name} : ${masteredPhrase(b.acquired, b.total)}`}
-            className={`bg-surface-2 flex min-h-20 w-full items-center gap-3 rounded-2xl p-2 ${selected === b.id ? 'outline-accent outline-2' : ''}`}
-          >
-            <SubjectCardBody bar={b} />
-          </button>
-        </li>
-      ))}
-    </ul>
+    // Deux colonnes selon la largeur du bloc, pas de l'écran : en tablette, les cartes enfant sont côte à côte.
+    <div className="@container">
+      <ul className="grid grid-cols-1 gap-2 @min-[26rem]:grid-cols-2" aria-label="Avancement par matière">
+        {bars.map((b) => (
+          <li key={b.id}>
+            <button
+              type="button"
+              onClick={() => onPick(b.id)}
+              aria-pressed={selected === b.id}
+              aria-label={`${b.name} : ${masteredPhrase(b.acquired, b.total)}`}
+              className={`bg-surface-2 flex min-h-20 w-full items-center gap-3 rounded-2xl p-2 ${selected === b.id ? 'outline-accent outline-2' : ''}`}
+            >
+              <SubjectCardBody bar={b} />
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
