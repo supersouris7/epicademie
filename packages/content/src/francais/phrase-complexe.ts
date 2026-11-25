@@ -63,7 +63,12 @@ function piegesDeCompte(n: number, infinitifs: number, composes: number) {
       ? [[n + composes, 'Tu as compté deux fois un temps composé. Ses deux parties font un seul verbe.'] as const]
       : []),
     [n + 1, 'Tu en as compté un de trop. Change le sujet : seul un verbe conjugué change.'],
-    [n - 1, 'Tu en as oublié un. Un sujet peut servir à plusieurs verbes.'],
+    [
+      n - 1,
+      n === 1
+        ? 'Il y a au moins un verbe : cherche le mot qui change avec le sujet.'
+        : 'Tu en as oublié un. Un sujet peut servir à plusieurs verbes.',
+    ],
   ]);
 }
 
@@ -132,7 +137,7 @@ function compterDraft(rng: Rng, level: Level): QuestionDraft {
       const accepted = [verbe];
       const [aux = '', participe = ''] = verbe.split(' ');
       return {
-        prompt: `Cette phrase a un seul verbe conjugué. Écris-le en entier : « ${p.texte} »`,
+        prompt: `Cette phrase a un seul verbe conjugué. Écris-le (avec son auxiliaire s’il en a un) : « ${p.texte} »`,
         answer: { kind: 'text', accepted },
         traps: textTraps(
           accepted,
@@ -156,7 +161,8 @@ function compterDraft(rng: Rng, level: Level): QuestionDraft {
       // Un texte avec au moins un temps composé et un infinitif.
       const compose = rng.pick(PIEGES.filter((x) => x.verbes.some(estCompose)));
       const infinitif = rng.pick(PIEGES.filter((x) => x.infinitifs.length > 0 && x !== compose));
-      const autre = rng.pick(TOUTES.filter((x) => x !== compose && x !== infinitif));
+      // Au moins une ligne complexe : compter les lignes ne donne jamais la réponse.
+      const autre = rng.pick(TOUTES.filter((x) => estComplexe(x) && x !== compose && x !== infinitif));
       const lignes = rng.shuffle([compose, infinitif, autre]);
       const n = lignes.reduce((s, p) => s + p.verbes.length, 0);
       const inf = lignes.reduce((s, p) => s + p.infinitifs.length, 0);
@@ -241,6 +247,8 @@ function sorteDraft(rng: Rng, level: Level): QuestionDraft {
       const bon = texteReunion(x);
       const accepted = [...avecOuSansPoint(bon)];
       if (x.mot === 'mais' || x.mot === 'car') accepted.push(...avecOuSansPoint(`${x.a}, ${x.mot} ${x.b}.`));
+      // Le « œ » est difficile à taper : l’écriture « oe » est aussi acceptée.
+      accepted.push(...accepted.filter((t) => t.includes('œ')).map((t) => t.replaceAll('œ', 'oe')));
       return {
         prompt: `Fais une seule phrase complexe. Écris la première phrase, puis « ${x.mot} », puis la seconde : « ${x.a}. » « ${x.b.charAt(0).toUpperCase()}${x.b.slice(1)}. »`,
         answer: { kind: 'text', accepted },

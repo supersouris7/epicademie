@@ -203,4 +203,7 @@ export const LIENS_INTRUS: readonly Lien[] = [
   su('Je prends une pomme ou une poire si j’ai faim.', 'si', 'prends|poire|une'),
   su('Mon père et ma mère sourient lorsque je chante.', 'lorsque', 'sourient|mère|mon'),
   su('Les poules et les canards accourent dès que je siffle.', 'dès que', 'accourent|canards|les'),
+  co('Le coq et la poule picorent, mais le chat dort.', 'mais', 'picorent|poule|la'),
+  co('Tu prends un sac ou un panier, car nous partons.', 'car', 'prends|panier|un'),
+  co('Le matin et le soir, tu lis ou tu dessines.', 'ou', 'lis|soir|le'),
 ];
