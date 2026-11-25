@@ -139,6 +139,16 @@ const conjugaison = (verbe: string): Source => {
   };
 };
 
+/** Article du glossaire de Géoconfluences (`textDate` : dernière modification affichée). */
+const geoconfluences = (id: string, mot: string, page: string, textDate: string): Source => ({
+  id: `geoconfluences-${id}`,
+  title: `Glossaire de Géoconfluences, article « ${mot} »`,
+  publisher: 'Géoconfluences (ENS de Lyon, DGESCO)',
+  url: `https://geoconfluences.ens-lyon.fr/glossaire/${page}`,
+  textDate,
+  consultedOn: '2026-11-25',
+});
+
 export const SOURCES: readonly Source[] = [
   {
     id: 'maths-cycle4-2026',
@@ -2650,6 +2660,57 @@ export const SOURCES: readonly Source[] = [
   tlfi('paturage', 'pâturage', 'p%C3%A2turage'),
   tlfi('exode-rural', 'exode', 'exode'),
   tlfi('cerealier', 'céréale (dérivé « céréalier »)', 'c%C3%A9r%C3%A9ale'),
+  {
+    id: 'eduscol-habiter-littoraux',
+    title: 'Ressource d’accompagnement, géographie 6e, « Habiter les littoraux » (thème 3)',
+    publisher: 'Éduscol, ministère de l’Éducation nationale',
+    url: 'https://cache.media.eduscol.education.fr/file/Geographie/74/0/RA16_C3_HIGE_GEO_6e_Th3_Habiter_littoraux_616740.pdf',
+    textDate: '2016-03',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'ecologie-risques-littoraux',
+    title: '« La prévention des risques littoraux et des tsunamis en France »',
+    publisher: 'Ministère de la Transition écologique',
+    url: 'https://www.ecologie.gouv.fr/politiques-publiques/prevention-risques-littoraux-tsunamis-france',
+    textDate: '2023-04-06',
+    consultedOn: '2026-11-25',
+  },
+  geoconfluences('littoral', 'Littoral', 'littoral', '2026-01'),
+  geoconfluences('zip', 'Zone industrialo-portuaire (ZIP)', 'zip-zone-industrialo-portuaire', '2021-10'),
+  geoconfluences('port', 'Port', 'port', '2025-03'),
+  geoconfluences('conteneur', 'Conteneur, conteneurisation', 'conteneur-conteneurisation', '2025-09'),
+  geoconfluences(
+    'arriere-pays',
+    'Arrière-pays et avant-pays (hinterland, foreland)',
+    'arriere-pays-et-avant-pays-hinterland-foreland',
+    '2024-05',
+  ),
+  geoconfluences('littoralisation', 'Littoralisation', 'littoralisation-ou-maritimisation', '2021-03'),
+  geoconfluences('interface', 'Interface', 'interface-1', '2023-06'),
+  geoconfluences('station-touristique', 'Station touristique', 'station-touristique', '2021-07'),
+  geoconfluences('surtourisme', 'Surtourisme', 'surtourisme', '2025-06'),
+  geoconfluences(
+    'conservatoire-littoral',
+    'Conservatoire de l’espace littoral et des rivages lacustres',
+    'conservatoire-du-littoral-et-des-rivages-lacustres',
+    '2025-08',
+  ),
+  geoconfluences('alea', 'Aléa', 'alea', '2023-02'),
+  geoconfluences('vulnerabilite', 'Vulnérabilité', 'vulnerabilite', '2025-03'),
+  geoconfluences('enjeux', 'Enjeux', 'enjeux', '2024-05'),
+  geoconfluences('digue', 'Digue', 'digue', '2025-12'),
+  geoconfluences('trait-de-cote', 'Trait de côte', 'trait-de-cote', '2025-01'),
+  geoconfluences('estran', 'Estran', 'estran', '2024-08'),
+  geoconfluences('mangrove', 'Mangrove', 'mangrove', '2023-01'),
+  geoconfluences('polder', 'Polder, poldérisation, dépoldérisation', 'polder', '2018-09'),
+  tlfi('littoral', 'littoral', 'littoral'),
+  tlfi('estuaire', 'estuaire', 'estuaire'),
+  tlfi('rade', 'rade', 'rade'),
+  tlfi('docker', 'docker', 'docker'),
+  tlfi('vraquier', 'vraquier', 'vraquier'),
+  tlfi('balneaire', 'balnéaire', 'baln%C3%A9aire'),
+  tlfi('tsunami', 'tsunami', 'tsunami'),
   // Lot fr-cm1-11 (lecture)
   academie('ou', 'où'),
   academie('quand', 'quand'),
