@@ -3217,6 +3217,39 @@ export const SOURCES: readonly Source[] = [
   },
   academie('chef-lieu', 'chef-lieu'),
   academie('rocheux', 'rocheux'),
+  // Lot an-6e-03 : modaux et impératif.
+  {
+    id: 'bck-must',
+    title: 'LearnEnglish Kids, Grammar practice : Modals, must and mustn’t',
+    publisher: 'British Council',
+    url: 'https://learnenglishkids.britishcouncil.org/grammar-vocabulary/grammar-practice/modals-must-mustnt',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'bck-imperatives',
+    title: 'LearnEnglish Kids, Grammar practice : Imperatives',
+    publisher: 'British Council',
+    url: 'https://learnenglishkids.britishcouncil.org/grammar-vocabulary/grammar-practice/imperatives',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'bc-permission',
+    title: 'LearnEnglish, English grammar reference : Permission',
+    publisher: 'British Council',
+    url: 'https://learnenglish.britishcouncil.org/free-resources/grammar/english-grammar-reference/permission',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'bc-modals-permission',
+    title: 'LearnEnglish, Grammar B1-B2 : Modals, permission and obligation',
+    publisher: 'British Council',
+    url: 'https://learnenglish.britishcouncil.org/free-resources/grammar/b1-b2/modals-permission-obligation',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
 ];
 
 export const getSource = (id: string): Source | undefined => SOURCES.find((s) => s.id === id);
