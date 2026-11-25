@@ -382,6 +382,14 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-25',
   },
   {
+    id: 'loi-service-civique-2010',
+    title: 'Loi n° 2010-241 du 10 mars 2010 relative au service civique',
+    publisher: 'Légifrance',
+    url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000021954325',
+    textDate: '2010-03-10',
+    consultedOn: '2026-11-25',
+  },
+  {
     id: 'emc-2024',
     title: 'Programme d’enseignement moral et civique du CP à la terminale',
     publisher: 'Ministère de l’Éducation nationale',

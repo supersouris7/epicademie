@@ -1092,6 +1092,7 @@ const risques: Notion = {
 const engagement: Notion = {
   id: 'em5-engagement',
   title: 'S’engager : associations, jeunes élus, gestes solidaires',
+  sources: ['loi-service-civique-2010'],
   hint: 'Repense au mémo : s’engager, c’est agir pour les autres, seul ou à plusieurs, à ta portée.',
   programme: PROGRAMME,
   credit: CREDIT,
@@ -1243,7 +1244,7 @@ const engagement: Notion = {
       ['service civique', 'le service civique'],
       [
         ['service public', 'Un service public rend un service à tous ; on cherche une forme d’engagement.'],
-        ['service militaire', 'La mission décrite est d’intérêt général : ce n’est pas une activité des armées.'],
+        ['service militaire', 'Le service militaire se fait dans les armées ; on cherche ici un dispositif civil.'],
       ],
       'Il s’agit du service civique.',
     ),
