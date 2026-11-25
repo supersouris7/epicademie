@@ -159,7 +159,16 @@ const premiere: Notion = {
     {
       ...P.etatsUnis,
       q: 'en 1917, quel pays, dont la capitale est Washington, entre en guerre ? (deux mots)',
-      accepted: ['les États-Unis', 'États-Unis', 'Etats-Unis', 'les Etats-Unis'],
+      accepted: [
+        'les États-Unis',
+        'États-Unis',
+        'Etats-Unis',
+        'les Etats-Unis',
+        'États Unis',
+        'Etats Unis',
+        'les États Unis',
+        'les Etats Unis',
+      ],
       traps: [
         { text: 'Royaume-Uni', why: 'Le Royaume-Uni est engagé dans la guerre dès 1914.' },
         { text: 'Russie', why: 'La Russie est engagée dans la guerre dès 1914.' },
@@ -269,7 +278,7 @@ const seconde: Notion = {
     },
     {
       ...P.vichy,
-      q: 'Quel maréchal est à la tête du gouvernement au début du régime de Vichy ?',
+      q: 'Qui est à la tête du gouvernement au début du régime de Vichy ?',
       a: 'le maréchal Pétain',
       wrong: [
         { label: 'le général de Gaulle', why: 'De Gaulle refuse la défaite et agit depuis Londres.' },

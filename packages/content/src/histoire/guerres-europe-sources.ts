@@ -94,7 +94,7 @@ export const PREUVES = {
   ),
   vichy: an(
     'an-1940-1958',
-    "Après l'adoption de la loi accordant les pleins pouvoirs constituants au Gouvernement du maréchal Pétain, le 10 juillet 1940, le régime de Vichy",
+    "Après l'adoption de la loi accordant les pleins pouvoirs constituants au Gouvernement du maréchal Pétain, le 10 juillet 1940, le régime de Vichy fait rédiger un projet de loi constitutionnelle qui n'a jamais été promulguée",
   ),
   collaboration: academie(
     'academie-collaboration',
