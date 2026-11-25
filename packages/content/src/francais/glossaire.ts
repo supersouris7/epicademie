@@ -328,4 +328,11 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Ce qui arrive à cause d’autre chose.',
     example: 'Il pleut, donc je prends un parapluie.',
   },
+  {
+    id: 'adjectif-epithete',
+    word: 'adjectif épithète',
+    forms: ['adjectifs épithètes', 'épithète', 'épithètes'],
+    definition: 'Adjectif placé tout près du nom, dans le groupe nominal, sans verbe entre eux.',
+    example: 'Dans « un chien noir », « noir » est épithète de « chien ».',
+  },
 ];
