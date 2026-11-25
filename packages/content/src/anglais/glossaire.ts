@@ -224,8 +224,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'voyelle',
     word: 'voyelle',
     forms: ['voyelle', 'voyelles'],
-    definition: 'Les lettres a, e, i, o, u, y, et les sons comme au début de « apple ».',
-    example: 'Apple commence par un son de voyelle.',
+    definition: 'Les lettres a, e, i, o, u, y. En anglais, écoute surtout le son.',
+    example: 'Apple commence par un son de voyelle. University, non : on entend « you ».',
   },
   {
     id: 'irregulier',

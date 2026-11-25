@@ -38,6 +38,8 @@ const RULES: Readonly<Record<PluralRule, string>> = {
   ies: 'Consonne + y : le y s’en va et on écrit -ies.',
   irregulier: 'C’est un pluriel irrégulier : le mot change, il faut le connaître.',
 };
+const NO_APOSTROPHE = 'L’apostrophe ne sert pas à faire un pluriel.';
+const whyWrong = (n: Noun, w: string) => (w.includes('’') ? NO_APOSTROPHE : RULES[n.rule]);
 const byRule = (...rules: PluralRule[]) => NOUNS.filter((n) => rules.includes(n.rule));
 /** Noms demandés en saisie : « person » est écarté (voir les données). */
 const WRITABLE = NOUNS.filter((n) => n.one !== 'person');
@@ -50,16 +52,13 @@ const pluralSteps = (n: Noun) => [
 
 const pluralTraps = (n: Noun) => [
   { text: n.one, why: 'C’est le singulier : une seule chose. Il en faut plusieurs.' },
-  ...n.wrong.map((w) => ({ text: w, why: RULES[n.rule] })),
+  ...n.wrong.map((w) => ({ text: w, why: whyWrong(n, w) })),
 ];
 
 function pluralChoice(rng: Rng, n: Noun, count: 3 | 4): QuestionDraft {
   const wrong = [
     { label: n.one, why: 'C’est le singulier : une seule chose.' },
-    ...n.wrong.slice(0, count - 2).map((w) => ({
-      label: w,
-      why: w.includes('’') ? 'L’apostrophe ne sert pas à faire un pluriel.' : RULES[n.rule],
-    })),
+    ...n.wrong.slice(0, count - 2).map((w) => ({ label: w, why: whyWrong(n, w) })),
   ];
   const { answer, traps } = choice(rng, n.many, wrong);
   return {
@@ -89,12 +88,12 @@ function pluralLevel5(rng: Rng): QuestionDraft {
     figure: {
       kind: 'document',
       title: 'My picture',
-      lines: [`In my picture, I have got:`, ...list.map((x) => `one ${x.one}`)],
+      lines: [`In my picture, I can see:`, ...list.map((x) => `one ${x.one}`)],
       credit: 'Écrit pour l’exercice.',
     },
     answer: {
       kind: 'cloze',
-      parts: [`In picture two, I have got ${word} `, `, ${word} `, ` and ${word} `, '.'],
+      parts: [`In picture two, I can see ${word} `, `, ${word} `, ` and ${word} `, '.'],
       blanks: list.map((x) => ({ mode: 'text' as const, accepted: [x.many] })),
     },
     hint: 'Un mot après l’autre : regarde sa fin. Certains mots changent complètement.',
@@ -282,6 +281,7 @@ const articles: Skill = {
       hint: 'La première fois ou la deuxième fois ? Regarde si le mot a déjà été dit.',
       steps: [
         `La première fois : « ${first.article} ${first.word} » et « ${second.article} ${second.word} ».`,
+        `« ${first.word} » : ${SOUND[first.article]} « ${second.word} » : ${SOUND[second.article]}`,
         `« ${back.word} » revient : on en a déjà parlé, donc « the ».`,
         `Réponse : **${first.article}, ${second.article}, The**`,
       ],
@@ -410,7 +410,7 @@ function demonstrativeScene(rng: Rng): QuestionDraft {
         { mode: 'text', accepted: [y] },
       ],
     },
-    hint: 'Pour chaque trou, retrouve la chose dans la scène : près ou loin ? une ou plusieurs ?',
+    hint: '« next to » = à côté de, « far from » = loin de. Pour chaque trou : près ou loin ? une ou plusieurs ?',
     steps: [
       `« ${heldWord} » : juste à côté, tout près. ${MEANING[x]}`,
       `« ${farWord} » : au fond du jardin, loin. ${MEANING[y]}`,
