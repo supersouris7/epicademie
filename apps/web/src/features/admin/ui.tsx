@@ -1,7 +1,7 @@
 import { useMemo, useState, type ReactNode } from 'react';
 
 /**
- * Composants de la console d'administration : style « logiciel professionnel » (clair, dense,
+ * Composants de la console d'administration, au thème de la page de pilotage (sombre, dense,
  * lisible), indépendant du thème du jeu. Pensés pour des milliers de lignes : recherche, tri,
  * pagination.
  */
@@ -20,16 +20,16 @@ export function AdminButton({
   readonly type?: 'button' | 'submit';
 }) {
   const tones = {
-    default: 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50',
-    primary: 'border-indigo-600 bg-indigo-600 text-white hover:bg-indigo-700',
-    danger: 'border-red-200 bg-white text-red-700 hover:bg-red-50',
+    default: 'border-pilot-line text-pilot-fg hover:border-pilot-acc',
+    primary: 'border-pilot-acc bg-pilot-acc text-white hover:brightness-110',
+    danger: 'border-pilot-bad/50 text-pilot-bad hover:border-pilot-bad',
   };
   return (
     <button
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`rounded-[4px]-[6px] border px-2.5 py-1 text-xs font-semibold shadow-sm transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${tones[tone]}`}
+      className={`cursor-pointer rounded-full border px-3.5 py-1 text-[13px] font-semibold disabled:cursor-not-allowed disabled:opacity-40 ${tones[tone]}`}
     >
       {children}
     </button>
@@ -44,16 +44,14 @@ export function Badge({
   readonly tone?: 'slate' | 'green' | 'amber' | 'red' | 'indigo';
 }) {
   const tones = {
-    slate: 'bg-slate-100 text-slate-700 ring-slate-200',
-    green: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-    amber: 'bg-amber-50 text-amber-800 ring-amber-200',
-    red: 'bg-red-50 text-red-700 ring-red-200',
-    indigo: 'bg-indigo-50 text-indigo-700 ring-indigo-200',
+    slate: 'bg-pilot-line text-pilot-fg',
+    green: 'bg-pilot-ok/15 text-pilot-ok',
+    amber: 'bg-pilot-warn/15 text-pilot-warn',
+    red: 'bg-pilot-bad/15 text-pilot-bad',
+    indigo: 'bg-pilot-acc/20 text-pilot-acc',
   };
   return (
-    <span
-      className={`inline-flex items-center rounded-[4px] px-1.5 py-0.5 text-[11px] font-semibold ring-1 ring-inset ${tones[tone]}`}
-    >
+    <span className={`inline-flex items-center rounded-[10px] px-2 py-0.5 text-xs font-semibold ${tones[tone]}`}>
       {children}
     </span>
   );
@@ -69,12 +67,12 @@ export function Panel({
   readonly children: ReactNode;
 }) {
   return (
-    <section className="rounded-[4px]-[8px] border border-slate-200 bg-white shadow-sm">
-      <header className="flex flex-wrap items-center gap-2 border-b border-slate-200 px-4 py-2.5">
-        <h2 className="flex-1 text-sm font-semibold text-slate-900">{title}</h2>
+    <section className={`${cardClass} min-w-0 px-3.5 py-3`}>
+      <header className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <h2 className={titleClass}>{title}</h2>
         {actions}
       </header>
-      <div className="p-4">{children}</div>
+      {children}
     </section>
   );
 }
@@ -89,16 +87,25 @@ export function Kpi({
   readonly hint?: string;
 }) {
   return (
-    <div className="rounded-[4px]-[8px] border border-slate-200 bg-white px-4 py-3 shadow-sm">
-      <dt className="text-xs font-medium tracking-wide text-slate-500 uppercase">{label}</dt>
-      <dd className="mt-1 text-2xl font-semibold text-slate-900 tabular-nums">{value}</dd>
-      {hint && <p className="mt-0.5 text-xs text-slate-500">{hint}</p>}
+    <div className={`${cardClass} px-3 py-2.5`}>
+      <dt className="text-sm text-pilot-mut">{label}</dt>
+      <dd className="text-2xl font-bold tabular-nums">{value}</dd>
+      {hint && <dd className="text-sm text-pilot-mut">{hint}</dd>}
     </div>
   );
 }
 
 export const inputClass =
-  'rounded-[4px]-[6px] border border-slate-300 bg-white px-2.5 py-1.5 text-sm text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:outline-none';
+  'max-w-full rounded-[8px] border border-pilot-line bg-pilot-bg px-2.5 py-1.5 text-sm text-pilot-fg focus:border-pilot-acc focus:ring-2 focus:ring-pilot-acc/40 focus:outline-none';
+
+/* Styles partagés, repris de la page de pilotage. */
+export const cardClass = 'rounded-[12px] border border-pilot-line bg-pilot-card';
+export const titleClass = 'text-[1.1rem] font-bold';
+export const tableClass = 'w-full text-left text-sm';
+export const thClass = 'px-2 py-1.5 font-semibold text-pilot-mut';
+export const tdClass = 'border-t border-pilot-line px-2 py-1.5 align-top';
+export const mutedClass = 'text-sm text-pilot-mut';
+export const errorClass = 'text-sm text-pilot-bad';
 
 /** Colonne d'un tableau : libellé, valeur affichée et clé de tri. */
 export interface Column<T> {
@@ -169,29 +176,25 @@ export function DataTable<T>({
             }}
           />
         )}
-        <span className="text-xs text-slate-500">
+        <span className={mutedClass}>
           {shown.length.toLocaleString('fr-FR')} ligne{shown.length > 1 ? 's' : ''}
           {shown.length !== rows.length && ` sur ${rows.length.toLocaleString('fr-FR')}`}
         </span>
       </div>
-      <div className="overflow-x-auto rounded-[4px]-[6px] border border-slate-200">
-        <table className="w-full text-left text-sm" aria-label={label}>
-          <thead className="bg-slate-50 text-xs text-slate-600">
+      <div className="overflow-x-auto">
+        <table className={tableClass} aria-label={label}>
+          <thead>
             <tr>
               {columns.map((c) => (
-                <th
-                  key={c.key}
-                  scope="col"
-                  className={`px-3 py-2 font-semibold ${c.align === 'right' ? 'text-right' : ''}`}
-                >
+                <th key={c.key} scope="col" className={`${thClass} ${c.align === 'right' ? 'text-right' : ''}`}>
                   {c.sort ? (
                     <button
                       type="button"
-                      className="inline-flex items-center gap-1 hover:text-slate-900"
+                      className="inline-flex cursor-pointer items-center gap-1 hover:text-pilot-fg"
                       onClick={() => setSort((s) => ({ key: c.key, dir: s?.key === c.key && s.dir === 1 ? -1 : 1 }))}
                     >
                       {c.label}
-                      <span aria-hidden className="text-slate-400">
+                      <span aria-hidden className="opacity-70">
                         {sort?.key === c.key ? (sort.dir === 1 ? '▲' : '▼') : '↕'}
                       </span>
                     </button>
@@ -200,13 +203,16 @@ export function DataTable<T>({
                   )}
                 </th>
               ))}
-              {detail && <th scope="col" className="w-10 px-3 py-2" aria-label="Détail" />}
+              {detail && <th scope="col" className="w-10 px-2 py-1.5" aria-label="Détail" />}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody>
             {slice.length === 0 && (
               <tr>
-                <td colSpan={columns.length + (detail ? 1 : 0)} className="px-3 py-6 text-center text-slate-500">
+                <td
+                  colSpan={columns.length + (detail ? 1 : 0)}
+                  className="border-t border-pilot-line px-2 py-6 text-center text-pilot-mut"
+                >
                   {empty}
                 </td>
               </tr>
@@ -215,23 +221,20 @@ export function DataTable<T>({
               const k = rowKey(r);
               const isOpen = open === k;
               return [
-                <tr key={k} className="hover:bg-slate-50">
+                <tr key={k} className="hover:bg-pilot-line/40">
                   {columns.map((c) => (
-                    <td
-                      key={c.key}
-                      className={`px-3 py-2 align-top text-slate-800 ${c.align === 'right' ? 'text-right tabular-nums' : ''}`}
-                    >
+                    <td key={c.key} className={`${tdClass} ${c.align === 'right' ? 'text-right tabular-nums' : ''}`}>
                       {c.render(r)}
                     </td>
                   ))}
                   {detail && (
-                    <td className="px-3 py-2 text-right">
+                    <td className={`${tdClass} text-right`}>
                       <button
                         type="button"
                         aria-expanded={isOpen}
                         aria-label={isOpen ? 'Replier' : 'Détail'}
                         onClick={() => setOpen(isOpen ? null : k)}
-                        className="rounded-[4px] px-1.5 text-slate-500 hover:bg-slate-100"
+                        className="cursor-pointer rounded-full px-2 text-pilot-mut hover:bg-pilot-line"
                       >
                         {isOpen ? '▾' : '▸'}
                       </button>
@@ -239,9 +242,10 @@ export function DataTable<T>({
                   )}
                 </tr>,
                 detail && isOpen ? (
-                  <tr key={`${k}-detail`} className="bg-slate-50/60">
-                    <td colSpan={columns.length + 1} className="px-3 py-3">
-                      {detail(r)}
+                  <tr key={`${k}-detail`} className="bg-pilot-bg/60">
+                    <td colSpan={columns.length + 1} className="border-t border-pilot-line px-3 py-3">
+                      {/* Le détail reste lisible sur téléphone, même quand le tableau défile. */}
+                      <div className="sticky left-3 max-w-[calc(100vw-5rem)]">{detail(r)}</div>
                     </td>
                   </tr>
                 ) : null,
@@ -251,7 +255,7 @@ export function DataTable<T>({
         </table>
       </div>
       {pages > 1 && (
-        <div className="flex items-center justify-end gap-2 text-xs text-slate-600">
+        <div className={`flex items-center justify-end gap-2 ${mutedClass}`}>
           <AdminButton disabled={current === 0} onClick={() => setPage(current - 1)}>
             ← Précédent
           </AdminButton>
