@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { check } from '../check.ts';
+import { SUBJECT_GLOSSARIES } from '../glossaires.ts';
 import { createRng } from '../rng.ts';
 import { getSource } from '../sources.ts';
 import type { Level, Question } from '../types.ts';
 import { validateVariants } from '../validate.ts';
-import { GLOSSAIRE } from './glossaire.ts';
 import { NOTIONS, SKILLS, SOURCE } from './reperes-6e.ts';
 
 const LEVELS: readonly Level[] = [1, 2, 3, 4, 5];
@@ -98,7 +98,8 @@ describe('histoire 6e — Se repérer dans le temps', () => {
   });
 
   it('définit les mots difficiles ajoutés au glossaire', () => {
-    const ids = GLOSSAIRE.map((g) => g.id);
+    // « démocratie » est définie par le glossaire d’EMC, réuni à celui d’histoire : pas de doublon.
+    const ids = SUBJECT_GLOSSARIES.histoire!.map((g) => g.id);
     for (const id of ['cite', 'democratie', 'citoyennete', 'han', 'route-soie']) expect(ids).toContain(id);
   });
 });

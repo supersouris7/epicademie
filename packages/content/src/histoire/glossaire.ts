@@ -517,13 +517,6 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'Athènes est une cité grecque.',
   },
   {
-    id: 'democratie',
-    word: 'démocratie',
-    forms: ['démocratie', 'democratie'],
-    definition: 'Un régime politique où le pouvoir appartient aux citoyens.',
-    example: 'La démocratie naît à Athènes.',
-  },
-  {
     id: 'citoyennete',
     word: 'citoyenneté',
     forms: ['citoyenneté', 'citoyennete'],
@@ -534,7 +527,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'han',
     word: 'Han',
     forms: ['Han'],
-    definition: 'Nom de la dynastie (famille de souverains) qui dirige la Chine à l’époque de l’empire romain.',
+    definition:
+      'Nom de la dynastie (famille de souverains) qui dirige la Chine à l’époque où commence l’empire romain.',
     example: 'La Chine des Han commerce avec Rome.',
   },
   {
