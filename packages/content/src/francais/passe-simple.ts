@@ -286,7 +286,7 @@ function premierGroupeDraft(rng: Rng, level: Level): QuestionDraft {
         'Journal de la colonie',
         verbes.map((v, i) => ({ v, s: at(sujets, i) })),
         'Sur chaque ligne, trouve le sujet, puis la bonne fin. Attention au g et au c !',
-        DEF_1,
+        `${DEF_1} Devant a ou â, garde le son : un e après le g, une cédille sous le c. Devant è, non.`,
       );
     }
   }
@@ -306,7 +306,7 @@ function deuxiemeGroupeDraft(rng: Rng, level: Level): QuestionDraft {
         rng,
         v,
         rng.pick(plurielsPronoms),
-        'Cherche la forme sans -iss- et sans r avant la fin.',
+        'Écarte la forme avec -iss- (présent) et celle qui parle de plus tard (futur).',
         DEF_2,
       );
     }
@@ -320,10 +320,12 @@ function deuxiemeGroupeDraft(rng: Rng, level: Level): QuestionDraft {
     }
     case 4: {
       const v = rng.pick(IR_DEUXIEME);
-      return ecrire(v, rng.pick(SUJETS_GROUPES), 'Remplace le sujet par un pronom. Puis pense à l’accent !', [
-        DEF_2,
-        'Avec nous et vous, un accent circonflexe sur le i.',
-      ]);
+      return ecrire(
+        v,
+        rng.pick(SUJETS_GROUPES),
+        'Remplace le sujet par un pronom. Avec nous et vous, pense à l’accent !',
+        [DEF_2, 'Avec nous et vous, un accent circonflexe sur le i.'],
+      );
     }
     default: {
       const verbes = rng.shuffle([...pickN(rng, IR_DEUXIEME, 2), ...pickN(rng, ER_REGULIERS, 2)]);
@@ -352,7 +354,7 @@ function etreAvoirDraft(rng: Rng, level: Level): QuestionDraft {
         rng,
         v,
         rng.pick(SANS_JE),
-        'Le passé simple ne finit pas comme l’imparfait (-ais, -ait), et n’a pas le r du futur.',
+        'Écarte la forme en -ais, -ait, -ions (imparfait) et celle qui parle de plus tard (futur).',
         DEF_3,
       );
     case 2:
@@ -673,7 +675,7 @@ export const FCM2_PASSE_SIMPLE: readonly Skill[] = [
     memo: [
       'Huit **verbes irréguliers** à savoir par cœur. Avec « il » : il fit, il alla, il dit, il vint.',
       'Et aussi : il put, il vit, il voulut, il prit. Au pluriel : ils firent, ils vinrent, ils prirent.',
-      'Aller se conjugue comme chanter : il alla, ils allèrent.',
+      'Au passé simple, aller finit comme chanter : il alla, ils allèrent.',
     ],
     factId: 'ps-a-memoriser',
     faits: ['ps-aller', 'ps-plusieurs-radicaux'],
