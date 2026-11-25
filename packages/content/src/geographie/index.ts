@@ -9,6 +9,7 @@ import { SKILLS as METROPOLE } from './metropole.ts';
 import { SKILLS as FAIBLE_DENSITE } from './faible-densite.ts';
 import { SKILLS as LITTORAUX } from './littoraux.ts';
 import { SKILLS as REPERES } from './reperes.ts';
+import { SKILLS as MONDE_HABITE } from './monde-habite.ts';
 import { DEPARTEMENTS, GEO_FETCHED_ON, PAYS_UE, REGIONS } from './donnees.generated.ts';
 
 /**
@@ -182,6 +183,7 @@ export const GEOGRAPHIE_CHAPTERS: readonly Chapter[] = [
   chapter('g6-habiter-metropole', '6e', 'Habiter une métropole', METROPOLE),
   chapter('g6-faible-densite', '6e', 'Habiter un espace de faible densité', FAIBLE_DENSITE),
   chapter('g6-littoraux', '6e', 'Habiter les littoraux', LITTORAUX),
+  chapter('g6-monde-habite', '6e', 'Le monde habité', MONDE_HABITE),
   chapter('g6-prefectures', '6e', 'Les préfectures', [prefectures]),
   chapter('g3-union-europeenne', '3e', 'L’Union européenne', [euCapitals, euro]),
 ];

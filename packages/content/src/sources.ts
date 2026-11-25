@@ -2928,6 +2928,20 @@ export const SOURCES: readonly Source[] = [
   tlfi('vraquier', 'vraquier', 'vraquier'),
   tlfi('balneaire', 'balnéaire', 'baln%C3%A9aire'),
   tlfi('tsunami', 'tsunami', 'tsunami'),
+  // Lot ge-6e-04 (le monde habité)
+  {
+    id: 'eduscol-monde-habite',
+    title: 'Ressource d’accompagnement, géographie 6e, « Le monde habité » (thème 4)',
+    publisher: 'Éduscol, ministère de l’Éducation nationale',
+    url: 'https://cache.media.eduscol.education.fr/file/Geographie/74/2/RA16_C3_HIGE_GEO_6e_Th4_Monde_habite_616742.pdf',
+    textDate: '2016-03',
+    consultedOn: '2026-11-25',
+  },
+  geoconfluences('densite', 'Densité', 'densite', '2025-09'),
+  geoconfluences('ecoumene', 'Écoumène (ou œkoumène)', 'ecoumene', '2024-07'),
+  geoconfluences('population-peuplement', 'Population, peuplement', 'population-peuplement', '2026-03'),
+  geoconfluences('megalopole', 'Mégalopole', 'megalopole', '2024-07'),
+  geoconfluences('habitat', 'Habitat (humain)', 'habitat', '2026-06'),
   // Lot fr-cm1-11 (lecture)
   academie('ou', 'où'),
   academie('quand', 'quand'),
