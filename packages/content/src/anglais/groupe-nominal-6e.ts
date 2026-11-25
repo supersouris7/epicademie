@@ -77,13 +77,16 @@ const articleSteps = (s: ArticleSentence) => [
 const articlePrompt = (s: ArticleSentence) => `Complète : « ${gap(s)} » (${s.context})`;
 const ARTICLE_HINT =
   'La chose est-elle nouvelle, déjà connue, ou en parle-t-on en général ? Écoute aussi le son suivant.';
-const byArticle = (...list: Article[]) => ARTICLE_SENTENCES.filter((s) => list.includes(s.article));
+/** Phrases où « Ø » peut être proposé sans ambiguïté (associations, listes à trous). */
+const ZERO_SAFE = ARTICLE_SENTENCES.filter((s) => !s.noZero);
+const byArticle = (...list: Article[]) => ZERO_SAFE.filter((s) => list.includes(s.article));
 
 function articleChoice(rng: Rng, s: ArticleSentence, options: readonly Article[]): QuestionDraft {
+  const offered = s.noZero ? (['a', 'an', 'the'] as const) : options;
   const { answer, traps } = choice(
     rng,
     label(s.article),
-    options.filter((o) => o !== s.article).map((o) => ({ label: label(o), why: `${WHY_WRONG[o]} Ici : ${s.why}` })),
+    offered.filter((o) => o !== s.article).map((o) => ({ label: label(o), why: `${WHY_WRONG[o]} Ici : ${s.why}` })),
   );
   return { prompt: articlePrompt(s), answer, traps, hint: ARTICLE_HINT, steps: articleSteps(s) };
 }
@@ -116,7 +119,7 @@ const blankFor = (a: Article) => ({
 function articleCloze(rng: Rng): QuestionDraft {
   const list = some(
     rng,
-    ARTICLE_SENTENCES.filter((s) => !s.before.includes('.')),
+    ZERO_SAFE.filter((s) => !s.before.includes('.')),
     2,
   );
   const [x, y] = list as [ArticleSentence, ArticleSentence];
@@ -185,13 +188,7 @@ function articleDocument(rng: Rng): QuestionDraft {
       parts: ['I think ', ` ${pet.many} are great.`],
       articles: ['Ø'],
     },
-    coin(rng)
-      ? {
-          note: 'Il parle de l’instrument que joue sa sœur.',
-          parts: ['My sister plays ', ' piano.'],
-          articles: ['the'],
-        }
-      : { note: 'Il dit qu’il va en classe comme élève.', parts: ['I go to ', ' school by bus.'], articles: ['Ø'] },
+    { note: 'Il dit qu’il va en classe comme élève.', parts: ['I go to ', ' school by bus.'], articles: ['Ø'] },
   ] satisfies Block[]);
   const parts = blocks.reduce<string[]>((all, b) => {
     const [first = '', ...rest] = b.parts;
@@ -205,7 +202,7 @@ function articleDocument(rng: Rng): QuestionDraft {
     answer: { kind: 'cloze', parts, blanks: articles.map(blankFor) },
     hint: 'Suis les notes dans l’ordre : première fois, chose connue, métier ou idée générale ?',
     steps: [
-      'Première mention ou métier : a ou an. Chose connue ou instrument joué : the. Idée générale ou « go to school » : Ø.',
+      'Première mention ou métier : a ou an. Chose connue : the. Idée générale ou « go to school » : Ø.',
       `Réponse : **${articles.join(', ')}**`,
     ],
   };
@@ -229,7 +226,10 @@ const articles: Skill = {
     sources: ['anglais-college-2025', 'bc-articles-a-an-the', 'bc-definite-article', 'bc-articles-the-no-article'],
   },
   generate: (rng, level: Level): QuestionDraft => {
-    if (level === 1) return articleChoice(rng, rng.pick(byArticle('a', 'the', 'Ø')), ['a', 'the', 'Ø']);
+    if (level === 1) {
+      const list = ARTICLE_SENTENCES.filter((s) => s.article !== 'an');
+      return articleChoice(rng, rng.pick(list), ['a', 'the', 'Ø']);
+    }
     if (level === 2) return articleRecognise(rng);
     if (level === 3) return articleCloze(rng);
     if (level === 4) return articleTranslate(rng);

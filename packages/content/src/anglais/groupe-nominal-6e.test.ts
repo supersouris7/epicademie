@@ -112,6 +112,21 @@ describe('anglais 6e : le groupe nominal', () => {
     refuses(moon, 'Look at moon!', 'Look at a moon!');
   });
 
+  it('articles : « She plays piano » accepté ; « Ø » jamais proposé ni attendu faux pour un instrument', () => {
+    const piano = find('a6-articles', 4, 'Elle joue du piano');
+    accepts(piano, 'She plays the piano.', 'She plays piano', 'She plays piano.');
+    refuses(piano, 'She plays a piano.');
+    for (const level of [1, 2, 3, 5] as const)
+      for (const q of questions('a6-articles', level)) {
+        const text = JSON.stringify([q.prompt, q.answer]);
+        if (!text.includes('piano')) continue;
+        // Seul le choix simple garde la phrase, avec « a », « an » et « the ».
+        expect(q.answer.kind, q.prompt).toBe('choice');
+        expect(text, q.prompt).not.toContain('Ø');
+      }
+    for (const level of [1, 2] as const) find('a6-articles', level, 'She plays … piano');
+  });
+
   it('démonstratifs : nombre et distance décident ; la phrase entière est transformée', () => {
     const near = find('a6-demonstratifs', 3, '« Look at … mice here! »');
     accepts(near, 'these', 'These mice', 'Look at these mice here!');

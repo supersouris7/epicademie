@@ -222,6 +222,8 @@ export interface ArticleSentence {
   readonly context: string;
   /** Pourquoi cet article. */
   readonly why: string;
+  /** La forme sans article se rencontre aussi : « Ø » n'est jamais proposé pour cette phrase. */
+  readonly noZero?: boolean;
 }
 
 const sentence = (before: string, article: Article, after: string, context: string, why: string): ArticleSentence => ({
@@ -259,7 +261,10 @@ export const ARTICLE_SENTENCES: readonly ArticleSentence[] = [
     'la voiture de la famille',
     'On sait de quelle voiture il s’agit : the.',
   ),
-  sentence('She plays', 'the', 'piano very well.', 'un instrument de musique', 'Devant un instrument joué : the.'),
+  {
+    ...sentence('She plays', 'the', 'piano very well.', 'un instrument de musique', 'Devant un instrument joué : the.'),
+    noZero: true,
+  },
   sentence('They live in', 'the', 'United Kingdom.', 'le Royaume-Uni', 'Un nom de pays avec « Kingdom » prend the.'),
   sentence('', 'Ø', 'birds eat worms.', 'les oiseaux en général', GENERAL),
   sentence('', 'Ø', 'children need a lot of sleep.', 'les enfants en général', GENERAL),
@@ -363,11 +368,8 @@ export const TRANSLATIONS: readonly Translation[] = [
   translation(
     'Elle joue du piano.',
     'she / plays / piano',
-    ['She plays the piano'],
-    [
-      ['She plays piano', 'Devant un instrument de musique, la règle étudiée demande « the ».'],
-      ['She plays a piano', 'Devant un instrument joué, on emploie « the ».'],
-    ],
+    ['She plays the piano', 'She plays piano'],
+    [['She plays a piano', 'Devant un instrument joué, on emploie « the ».']],
     'Un instrument de musique joué : the.',
   ),
   translation(
