@@ -625,7 +625,7 @@ function accordDraft(rng: Rng, level: Level): QuestionDraft {
               (l) =>
                 `« ${l.nom} » est ${l.genre === 'f' ? 'féminin' : 'masculin'} ${l.n === 'pl' ? 'pluriel' : 'singulier'}`,
             )
-            .join(' ; ')}. Le complément du nom ne change pas.`,
+            .join(' ; ')}. Le verbe s’accorde aussi avec ce nom. Le complément du nom ne change pas.`,
           `Réponses : **${formes.flat().join(', ')}**.`,
         ],
       };
