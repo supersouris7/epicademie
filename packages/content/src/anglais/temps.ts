@@ -12,7 +12,7 @@ const PROGRAMME = 'Programme du cycle 3 (BOEN n° 31 du 30 juillet 2020, version
 const source = (detail: string) =>
   `${PROGRAMME} — lexique de l’environnement immédiat de l’élève ; brève annonce (date, anniversaire). ${detail}`;
 
-const at = <T>(list: readonly T[], i: number): T => {
+export const at = <T>(list: readonly T[], i: number): T => {
   const x = list[i];
   if (x === undefined) throw new Error(`indice ${i} hors liste`);
   return x;
@@ -20,15 +20,15 @@ const at = <T>(list: readonly T[], i: number): T => {
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 /** « de » élidé devant un prénom qui commence par une voyelle : d’Ana, d’Emir. */
 const de = (name: string) => (/^[AEIOU]/.test(name) ? `d’${name}` : `de ${name}`);
-const some = <T>(rng: Rng, list: readonly T[], n: number): T[] => rng.shuffle(list).slice(0, n);
-const others = <T>(rng: Rng, list: readonly T[], not: T, n: number): T[] =>
+export const some = <T>(rng: Rng, list: readonly T[], n: number): T[] => rng.shuffle(list).slice(0, n);
+export const others = <T>(rng: Rng, list: readonly T[], not: T, n: number): T[] =>
   some(
     rng,
     list.filter((x) => x !== not),
     n,
   );
 /** Mélange jusqu'à ce que l'ordre présenté ne soit plus l'ordre juste. */
-function shuffledOther<T>(rng: Rng, list: readonly T[]): T[] {
+export function shuffledOther<T>(rng: Rng, list: readonly T[]): T[] {
   let out = rng.shuffle(list);
   while (out.every((x, i) => x === list[i])) out = rng.shuffle(list);
   return out;
@@ -38,7 +38,7 @@ const accepted = (w: Word): string[] => [w.en, ...(w.alt ?? [])];
 // ——— Questions communes au vocabulaire ———
 
 /** Niveau 1 : le mot anglais parmi 3. */
-function pickEnglish(rng: Rng, list: readonly Word[], kind: string, hint: string): QuestionDraft {
+export function pickEnglish(rng: Rng, list: readonly Word[], kind: string, hint: string): QuestionDraft {
   const w = rng.pick(list);
   const { answer, traps } = choice(
     rng,
@@ -55,7 +55,7 @@ function pickEnglish(rng: Rng, list: readonly Word[], kind: string, hint: string
 }
 
 /** Niveau 2 : comprendre un mot (4 choix) ou relier 3 paires. */
-function understand(rng: Rng, list: readonly Word[], kind: string): QuestionDraft {
+export function understand(rng: Rng, list: readonly Word[], kind: string): QuestionDraft {
   if (rng.int(0, 1) === 0) {
     const w = rng.pick(list);
     const { answer, traps } = choice(
@@ -74,7 +74,7 @@ function understand(rng: Rng, list: readonly Word[], kind: string): QuestionDraf
   return pairs(rng, list, 3);
 }
 
-function pairs(rng: Rng, list: readonly Word[], n: number): QuestionDraft {
+export function pairs(rng: Rng, list: readonly Word[], n: number): QuestionDraft {
   const rows = some(rng, list, n);
   const left = rows.map((w) => w.en);
   const right = shuffledOther(
@@ -94,7 +94,7 @@ function pairs(rng: Rng, list: readonly Word[], n: number): QuestionDraft {
 }
 
 /** Niveau 3 : écrire le mot. */
-function write(rng: Rng, list: readonly Word[], kind: string): QuestionDraft {
+export function write(rng: Rng, list: readonly Word[], kind: string): QuestionDraft {
   const w = rng.pick(list);
   const other = at(others(rng, list, w, 1), 0);
   return {
