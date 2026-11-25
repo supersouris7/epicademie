@@ -859,7 +859,7 @@ const densite: Notion = {
           label: '5 100 hab./km²',
           why: 'Ce serait une densité de très grande ville : la moyenne mondiale est faible.',
         },
-        { label: '1 hab./km²', why: 'C’est trop peu : la moyenne mondiale est de 51 hab./km².' },
+        { label: '1 hab./km²', why: 'C’est beaucoup trop peu : en 2016, Éduscol donnait 51 hab./km² en moyenne.' },
         { label: '510 hab./km²', why: 'C’est dix fois trop : la moyenne mondiale reste faible.' },
       ],
       gap: ['Selon Éduscol (2016), la densité moyenne du monde est de ', ' hab./km².', ['51']],
@@ -873,7 +873,7 @@ const densite: Notion = {
       wrong: [
         { label: 'oui : une loi mondiale la fixe', why: 'Aucune loi ne fixe ce qu’est une densité élevée.' },
         {
-          label: 'oui : au-dessus de 10 habitants, c’est toujours élevé',
+          label: 'oui : au-dessus de 10 hab./km², c’est toujours élevé',
           why: 'Le même chiffre peut paraître élevé à la campagne et bas en ville.',
         },
         { label: 'non : la densité ne se mesure pas', why: 'La densité se mesure : habitants ÷ surface.' },
@@ -897,7 +897,7 @@ const densite: Notion = {
         '.',
         ['Île-de-France'],
       ],
-      choix: ['Île-de-France', 'Antarctique', 'Sahara'],
+      choix: ['Île-de-France', 'Antarctique', 'Amazonie'],
       quote: E_ETATS_UNIS,
       explain: 'Cet exemple montre que le monde, dans son ensemble, n’est pas surpeuplé.',
       src: EDUSCOL,
@@ -916,15 +916,15 @@ const densite: Notion = {
     ['4 000 habitants sur 1 km²', '4 000 hab./km²'],
   ],
   ordre: [
-    'Territoire A : 50 habitants sur 10 km²',
-    'Territoire B : 600 habitants sur 20 km²',
-    'Territoire C : 1 000 habitants sur 5 km²',
-    'Territoire D : 9 000 habitants sur 10 km²',
+    'Territoire C : 600 habitants sur 120 km²',
+    'Territoire A : 300 habitants sur 10 km²',
+    'Territoire D : 2 000 habitants sur 10 km²',
+    'Territoire B : 900 habitants sur 1 km²',
   ],
   consigne: {
     prompt: 'Range ces territoires de la densité la plus basse à la plus élevée.',
     hint: 'Calcule d’abord chaque densité : habitants ÷ km².',
-    why: 'On calcule chaque densité : A = 5, B = 30, C = 200, D = 900 hab./km².',
+    why: 'On calcule chaque densité : C = 5, A = 30, D = 200, B = 900 hab./km².',
     fin: 'La densité la plus basse est celle du',
     quote: G_UNITE,
     src: DENSITE,
@@ -942,7 +942,7 @@ const densite: Notion = {
       src: DENSITE,
     },
     {
-      q: 'Quelle opération fait-on pour obtenir une densité : addition, soustraction, multiplication ou division ?',
+      q: 'Quelle opération fait-on entre le nombre d’habitants et la surface pour obtenir une densité ?',
       accepted: ['division', 'une division', 'la division'],
       traps: [
         { text: 'multiplication', why: 'Multiplier habitants et surface ne donne pas une densité.' },
@@ -1149,7 +1149,7 @@ const vocabulaire: Notion = {
       src: MEGALOPOLE,
     },
     {
-      q: 'Quelles formes de peuplement la ressource Éduscol demande-t-elle de distinguer ?',
+      q: 'Quels mots les géographes utilisent-ils pour décrire les formes de peuplement ?',
       a: 'continu ou discontinu, dispersé ou groupé',
       wrong: [
         { label: 'chaud ou froid', why: 'Chaud ou froid décrit un climat, pas une forme de peuplement.' },
@@ -1159,7 +1159,8 @@ const vocabulaire: Notion = {
       gap: ['Un peuplement peut être continu ou discontinu, dispersé ou ', '.', ['groupé']],
       choix: ['groupé', 'salé', 'pentu'],
       quote: E_FORMES,
-      explain: 'Ces mots décrivent la façon dont les habitations occupent l’espace.',
+      explain:
+        'Continu : sans coupure ; discontinu : avec des vides ; groupé : rassemblé ; dispersé : éparpillé. Ces mots disent comment les habitants occupent l’espace.',
       src: EDUSCOL,
     },
     {
@@ -1304,7 +1305,7 @@ const vocabulaire: Notion = {
           src: PEUPLEMENT,
         },
         {
-          q: 'Quel indicateur décrit la ligne 4 ?',
+          q: 'Quelle mesure décrit la ligne 4 ?',
           a: 'la densité de population',
           wrong: [
             { label: 'la superficie', why: 'La superficie mesure la surface seule, sans les habitants.' },

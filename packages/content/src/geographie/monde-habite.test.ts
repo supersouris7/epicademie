@@ -6,7 +6,7 @@ import { validateVariants } from '../validate.ts';
 import { NOTIONS, SKILLS } from './monde-habite.ts';
 import { PROGRAMME } from './kit.ts';
 
-describe('géographie 6e — Habiter les monde-habite', () => {
+describe('géographie 6e — Le monde habité', () => {
   it('compte les quatre notions du lot, à 5 niveaux', () => {
     expect(NOTIONS.map((n) => n.id)).toEqual([
       'g6-repartition-population',
