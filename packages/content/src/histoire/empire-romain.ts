@@ -674,7 +674,7 @@ const soie: Notion = {
   ],
   libres: [
     {
-      ...P.wudi,
+      ...P.wudiHan,
       q: 'À quelle dynastie appartient l’empereur Wudi ? (un nom)',
       accepted: ['Han', 'les Han', 'dynastie Han', 'la dynastie Han', 'dynastie des Han', 'la dynastie des Han'],
       traps: [

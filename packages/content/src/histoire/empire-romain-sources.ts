@@ -76,6 +76,9 @@ export const PREUVES = {
   wudi: eduscol(
     'Le règne de l’empereur Wudi (Wu-Ti) (-140 / -87) est celui du renforcement du pouvoir impérial et de l’expansion territoriale, assurant aux Chinois le contrôle de la route de la soie.',
   ),
+  wudiHan: eduscol(
+    'La civilisation han, à l’époque correspondant à la fin de la République et au début du Haut-Empire romain, connaît une culture brillante appuyée sur un État puissant. On privilégiera le règne d’un empereur comme Wudi (141-87 av. J.-C.).',
+  ),
   echanges: eduscol(
     'Les échanges concernaient la soie chinoise, mais aussi les verreries, tissus et tapis de l’empire romain.',
   ),
