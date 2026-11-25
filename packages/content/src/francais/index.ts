@@ -15,6 +15,7 @@ import { FCM2_GROUPE_NOMINAL } from './groupe-nominal-cm2.ts';
 import { FCM2_PHRASE_SIMPLE } from './phrase-simple.ts';
 import { FCM2_PHRASE_COMPLEXE } from './phrase-complexe.ts';
 import { FCM2_ACCORDS } from './accords-cm2.ts';
+import { FCM2_PASSE_SIMPLE } from './passe-simple.ts';
 
 /** Français : chapitres publiés (ADR 0034). Le lot de contenu ajoute ses chapitres ici, sans toucher à catalog.ts. */
 export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
@@ -145,5 +146,13 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'orthographe',
     title: 'Les accords',
     skills: FCM2_ACCORDS,
+  },
+  {
+    id: 'fcm2-passe-simple',
+    subject: 'francais',
+    grade: 'cm2',
+    domain: 'conjugaison',
+    title: 'Le passé simple',
+    skills: FCM2_PASSE_SIMPLE,
   },
 ];
