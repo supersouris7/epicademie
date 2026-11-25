@@ -86,4 +86,5 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm2-passe-simple-2e-groupe', version: 1, lot: 'fr-cm2-06', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm2-passe-simple-etre-avoir', version: 1, lot: 'fr-cm2-06', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm2-passe-simple-irreguliers', version: 1, lot: 'fr-cm2-06', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-passe-simple-ou-imparfait', version: 1, lot: 'fr-cm2-06', date: '2026-11-25', verdict: 'ok' },
 ];
