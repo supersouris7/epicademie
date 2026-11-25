@@ -46,4 +46,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'g6-prefectures', version: 2, lot: 'ge-6e-05', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'g6-fleuves-montagnes', version: 1, lot: 'ge-6e-05', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'g6-grandes-metropoles', version: 1, lot: 'ge-6e-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g5-idh', version: 1, lot: 'ge-5e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g5-repartition-richesses', version: 1, lot: 'ge-5e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g5-inegal-developpement', version: 1, lot: 'ge-5e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g5-croissance-demographique', version: 1, lot: 'ge-5e-01', date: '2026-11-25', verdict: 'ok' },
 ];
