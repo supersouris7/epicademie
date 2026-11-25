@@ -19,6 +19,8 @@ export interface Fait {
   readonly explain: string;
   /** Identifiant du registre des sources (le programme si absent). */
   readonly src?: string;
+  /** Première bulle rédigée, quand la citation (ligne de fichier officiel) est illisible pour un élève. */
+  readonly montre?: string;
 }
 
 export interface Libre {
@@ -28,6 +30,7 @@ export interface Libre {
   readonly quote: string;
   readonly explain: string;
   readonly src?: string;
+  readonly montre?: string;
 }
 
 export interface DocQuestion {
@@ -37,6 +40,7 @@ export interface DocQuestion {
   readonly quote: string;
   readonly explain: string;
   readonly src?: string;
+  readonly montre?: string;
 }
 
 export interface Notion {
@@ -59,6 +63,7 @@ export interface Notion {
     readonly fin: string;
     readonly quote: string;
     readonly src: string;
+    readonly montre?: string;
   };
   readonly libres: readonly Libre[];
   readonly docs: readonly {
@@ -100,11 +105,13 @@ const lookup = (src: string): string => {
   return 'Cherchons dans le dictionnaire';
 };
 
-const steps = (quote: string, explain: string, answer: string, src: string = PROGRAMME) => [
-  `${lookup(src)} : « ${quote} ».`,
-  explain,
-  `La réponse est donc **${answer}**.`,
-];
+const firstStep = (f: { readonly quote: string; readonly src?: string; readonly montre?: string }) =>
+  f.montre ?? `${lookup(f.src ?? PROGRAMME)} : « ${f.quote} ».`;
+
+const steps = (
+  f: { readonly quote: string; readonly explain: string; readonly src?: string; readonly montre?: string },
+  answer: string,
+) => [firstStep(f), f.explain, `La réponse est donc **${answer}**.`];
 
 function match(rng: Rng, prompt: string, pairs: readonly (readonly [string, string])[], hint: string): QuestionDraft {
   const left = pairs.map((p) => p[0]);
@@ -131,7 +138,7 @@ function level1(rng: Rng, n: Notion): QuestionDraft {
     prompt: f.q,
     ...choice(rng, f.a, f.wrong.slice(0, 2)),
     hint: n.hint,
-    steps: steps(f.quote, f.explain, f.a, f.src),
+    steps: steps(f, f.a),
     targetSeconds: 20,
   };
 }
@@ -145,7 +152,7 @@ function level2(rng: Rng, n: Notion): QuestionDraft {
     prompt: `Attention aux pièges ! ${f.q}`,
     ...choice(rng, f.a, f.wrong),
     hint: n.hint,
-    steps: steps(f.quote, f.explain, f.a, f.src),
+    steps: steps(f, f.a),
     targetSeconds: 25,
   };
 }
@@ -165,7 +172,7 @@ function level3(rng: Rng, n: Notion): QuestionDraft {
       answer: { kind: 'order', items, correct: n.ordre.map((o) => items.indexOf(o)) },
       hint: c?.hint ?? 'Commence par le lieu où tu habites : il est le plus petit.',
       steps: [
-        ...(c ? [`${lookup(c.src)} : « ${c.quote} ».`] : []),
+        ...(c ? [firstStep(c)] : []),
         c?.why ?? 'On range du plus petit au plus grand territoire, comme dans le programme.',
         ...n.ordre.map((o, i) => `${i + 1}. ${o}.`),
         `${c?.fin ?? 'Le plus petit est'} **${n.ordre[0]}**.`,
@@ -179,7 +186,7 @@ function level3(rng: Rng, n: Notion): QuestionDraft {
     prompt: `Complète la phrase : « ${before}…${after} »`,
     answer: { kind: 'cloze', parts: [before, after], blanks: [blank(rng, accepted, f.choix)] },
     hint: n.hint,
-    steps: steps(f.quote, f.explain, accepted[0] ?? '', f.src),
+    steps: steps(f, accepted[0] ?? ''),
     targetSeconds: 30,
   };
 }
@@ -200,7 +207,7 @@ function level4(rng: Rng, n: Notion): QuestionDraft {
     answer: { kind: 'text', accepted: l.accepted },
     traps,
     hint: n.hint,
-    steps: steps(l.quote, l.explain, l.accepted[0] ?? '', l.src),
+    steps: steps(l, l.accepted[0] ?? ''),
     targetSeconds: 30,
   };
 }
@@ -219,7 +226,7 @@ function level5(rng: Rng, n: Notion): QuestionDraft {
     figure,
     ...choice(rng, dq.a, dq.wrong),
     hint: 'Relis le texte ligne par ligne : la réponse s’y appuie.',
-    steps: steps(dq.quote, dq.explain, dq.a, dq.src),
+    steps: steps(dq, dq.a),
     targetSeconds: 60,
   };
 }

@@ -37,4 +37,12 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'acm1-consignes', version: 1, lot: 'an-cm1-06', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'acm1-mots-cles', version: 1, lot: 'an-cm1-06', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'acm1-reperes-uk', version: 1, lot: 'an-cm1-06', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'acm2-pluriel', version: 2, lot: 'an-cm2-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'acm2-articles', version: 1, lot: 'an-cm2-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'acm2-this-that', version: 1, lot: 'an-cm2-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'acm2-adjectif', version: 1, lot: 'an-cm2-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'acm2-heure-entendue', version: 1, lot: 'an-cm2-06', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'acm2-prix-dates', version: 1, lot: 'an-cm2-06', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'acm2-dialogue', version: 1, lot: 'an-cm2-06', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'acm2-reperes-culturels', version: 1, lot: 'an-cm2-06', date: '2026-11-25', verdict: 'ok' },
 ];

@@ -27,4 +27,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'g6-metropoles-monde', version: 1, lot: 'ge-6e-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'g6-ville-peripheries', version: 1, lot: 'ge-6e-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'g6-ville-demain', version: 1, lot: 'ge-6e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'gcm2-departements', version: 2, lot: 'ge-cm2-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'gcm2-europe-capitales', version: 1, lot: 'ge-cm2-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'gcm2-continents-oceans', version: 1, lot: 'ge-cm2-04', date: '2026-11-25', verdict: 'ok' },
 ];
