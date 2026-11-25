@@ -90,7 +90,7 @@ function repereA(
   const wrong = rng
     .shuffle(pool.filter((z) => z !== zone))
     .slice(0, n - 1)
-    .map((z) => ({ label: nom(map, z), why: `${nom(map, z)} n’est pas à l’endroit du repère A.` }));
+    .map((z) => ({ label: nom(map, z), why: `Ce n’est pas ici : « ${nom(map, z)} » est ailleurs sur la carte.` }));
   return {
     prompt: `Sur cette carte, ${quoi} porte le repère A ?`,
     figure: { kind: 'map', map, highlight: [zone], marks: [{ zone, label: 'A' }] },
@@ -666,10 +666,10 @@ const carteMonde = (rng: Rng, level: Level): QuestionDraft => {
   const lieux = (zones: readonly string[]) =>
     zones.map((z) => ({
       zone: z,
-      cible: OCEANS.includes(z) ? `l’${nom('monde', z).replace('Océan', 'océan')}` : `« ${nom('monde', z)} »`,
+      cible: OCEANS.includes(z) ? `l’${nom('monde', z).replace('Océan', 'océan')}` : `la zone « ${nom('monde', z)} »`,
     }));
   if (level === 3) {
-    return toucher(rng, 'monde', lieux(CONTINENTS), (l) => `Touche le continent ${l.cible} sur le planisphère.`, hint);
+    return toucher(rng, 'monde', lieux(CONTINENTS), (l) => `Touche ${l.cible} sur le planisphère.`, hint);
   }
   if (level === 4) {
     return toucher(rng, 'monde', lieux(OCEANS), (l) => `Sans aide : touche ${l.cible} sur le planisphère.`, hint);
@@ -688,6 +688,7 @@ const continents: Notion = {
     'Un **continent** est une très grande étendue de terre. Exemple : l’Afrique.',
     'Un **océan** est une immense étendue d’eau salée : Atlantique, Pacifique, Indien, Arctique.',
     'La liste traditionnelle cite cinq continents : Europe, Asie, Afrique, Amérique, Océanie. L’Antarctique, au sud, est aussi un continent.',
+    'Sur certaines cartes, l’Amérique est montrée en deux parties : Amérique du Nord et Amérique du Sud.',
   ],
   faits: [
     {
@@ -699,8 +700,10 @@ const continents: Notion = {
         ['une grande ville', 'Une ville est bien plus petite qu’un continent.'],
       ),
       gap: ['Un continent est une vaste étendue de terres émergées, entourée par les ', '.', ['océans', 'oceans']],
+      choix: ['océans', 'déserts', 'montagnes'],
       quote: Q_CONTINENT,
-      explain: 'Un continent est fait de terre, avec des océans autour.',
+      explain:
+        'Les terres émergées sont celles qui dépassent de l’eau. Un continent est fait de ces terres, avec des océans autour.',
       src: CONTINENT,
     },
     {
@@ -785,7 +788,7 @@ const continents: Notion = {
   ],
   paires5: [
     ['Europe', 'Continent où se trouve la France métropolitaine'],
-    ['Pacifique', 'Océan nommé par Magellan'],
+    ['Pacifique', 'Océan nommé par le navigateur Magellan'],
     ['Antarctique', 'Continent de l’extrême sud'],
     ['Atlantique', 'Océan d’un voyage transatlantique'],
     ['Océanie', 'Partie du monde au nom proche du mot « océan »'],
@@ -803,7 +806,7 @@ const continents: Notion = {
       src: CONTINENT,
     },
     {
-      q: 'quel océan Magellan a-t-il nommé parce qu’il n’y avait pas rencontré de tempêtes ?',
+      q: 'quel océan le navigateur Magellan a-t-il nommé parce qu’il n’y avait pas rencontré de tempêtes ?',
       accepted: ['le Pacifique', 'Pacifique', 'océan Pacifique', 'l’océan Pacifique'],
       traps: [
         { text: 'Atlantique', why: 'Le nom donné par Magellan évoque le calme : c’est le Pacifique.' },
