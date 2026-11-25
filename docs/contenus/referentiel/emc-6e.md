@@ -9,10 +9,10 @@
 
 ## Chapitres et notions
 
-| Lot        | Chapitre                            | Notions                                                                       | État actuel |
-| ---------- | ----------------------------------- | ----------------------------------------------------------------------------- | ----------- |
-| `em-6e-01` | Vivre dans une société démocratique | citoyenneté ; laïcité ; institutions de proximité ; droits de l'enfant        | absente     |
-| `em-6e-02` | Vie privée et vie publique          | vie privée en ligne ; droit à l'intimité ; données personnelles ; harcèlement | absente     |
+| Lot        | Chapitre                            | Notions                                                                       | État actuel            |
+| ---------- | ----------------------------------- | ----------------------------------------------------------------------------- | ---------------------- |
+| `em-6e-01` | Vivre dans une société démocratique | citoyenneté ; laïcité ; institutions de proximité ; droits de l'enfant        | couverte, en relecture |
+| `em-6e-02` | Vie privée et vie publique          | vie privée en ligne ; droit à l'intimité ; données personnelles ; harcèlement | absente                |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).
