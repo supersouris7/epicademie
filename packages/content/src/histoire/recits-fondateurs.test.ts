@@ -28,7 +28,7 @@ describe('histoire 6e — Récits fondateurs et citoyenneté', () => {
       'h6-cites-grecques',
       'h6-rome-mythe-histoire',
       'h6-monotheisme-juif',
-      'h6-citoyennete-athenes-rome',
+      'h6-citoyennete-athenes',
     ]);
     for (const s of SKILLS) expect(s.levels, s.id).toBe(5);
     expect(HISTOIRE_CHAPTERS.find((c) => c.id === 'h6-recits-fondateurs')).toMatchObject({ grade: '6e' });
@@ -73,6 +73,18 @@ describe('histoire 6e — Récits fondateurs et citoyenneté', () => {
         for (const text of l.accepted) expect(check(question, { kind: 'text', text }).correct, text).toBe(true);
         for (const t of l.traps) expect(check(question, { kind: 'text', text: t.text }).correct, t.text).toBe(false);
       }
+    }
+  });
+
+  it('centre la citoyenneté sur Athènes, sans les institutions de la République romaine', () => {
+    const texte = JSON.stringify(NOTIONS.find((n) => n.id === 'h6-citoyennete-athenes'));
+    expect(texte).not.toMatch(/consul|sénat|plèbe|plébéien|patricien|tribuns?\b|comices|Caracalla|\bRome\b|romain/i);
+  });
+
+  it('traite à chaque niveau les conditions de la naissance de la démocratie à Athènes', () => {
+    for (const level of LEVELS) {
+      const texte = JSON.stringify(questions('h6-citoyennete-athenes', level));
+      expect(texte, `niveau ${level}`).toMatch(/Solon|Clisthène|tyrannie|Salamine/);
     }
   });
 

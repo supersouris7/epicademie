@@ -1,7 +1,7 @@
 /**
  * Faits du chapitre « Récits fondateurs et citoyenneté » : chacun cite un identifiant du registre (`sources.ts`) et la
- * citation exacte du texte (programme du cycle 3, ressource Éduscol du thème 2, BnF Essentiels, Vie-publique, TLFi et
- * Dictionnaire de l'Académie française publiés par le CNRTL).
+ * citation exacte (programme du cycle 3, ressource Éduscol du thème 2, dossier Odysseum d’Éduscol, BnF Essentiels,
+ * Vie-publique et TLFi publié par le CNRTL).
  */
 import type { Preuve } from './kit.ts';
 
@@ -14,11 +14,7 @@ const viePublique = (quote: string): Preuve => ({
   quote,
 });
 const tlfi = (source: string, quote: string): Preuve => ({ source, who: 'Le Trésor de la langue française', quote });
-const academie = (source: string, quote: string): Preuve => ({
-  source,
-  who: 'Le Dictionnaire de l’Académie française',
-  quote,
-});
+const odysseum = (source: string, quote: string): Preuve => ({ source, who: 'Le site Odysseum d’Éduscol', quote });
 
 export const PREUVES = {
   // Programme
@@ -119,16 +115,39 @@ export const PREUVES = {
   ),
   tables: bnf('bnf-livres-tradition-juive', 'les « Dix Paroles » furent révélées à Moïse sur le mont Sinaï'),
 
-  // La citoyenneté à Athènes et à Rome
+  // Citoyenneté et démocratie à Athènes
   invention: viePublique('la qualité de citoyen est une invention des cités grecques'),
   droit: viePublique('le droit de participer à la gestion des affaires publiques'),
   minorite: viePublique('à Athènes, seuls 10% des habitants ont la qualité de citoyens'),
   exclus: viePublique('Les femmes, les esclaves et les "métèques", c’est-à-dire les étrangers, en sont exclus'),
-  extension: viePublique(
-    'Au fur et à mesure de l’extension de son empire, Rome donne à un nombre d’individus toujours plus important le droit de cité',
+  dettes: odysseum('odysseum-avant-clisthene', 'La loi promulguée annule les dettes publiques et privées'),
+  liberte: odysseum(
+    'odysseum-avant-clisthene',
+    'autorise les victimes réduites en esclavage à retrouver leur liberté et leurs droits civils',
   ),
-  caracalla: viePublique(
-    'l’édit de Caracalla (212 ap. J-C), par lequel tous les habitants de l’Empire se voient reconnaître cette qualité',
+  solon: odysseum('odysseum-avant-clisthene', "L' eunomia de Solon (début du VI° siècle)"),
+  thetes: odysseum('odysseum-avant-clisthene', "la réforme fait entrer les thètes à l' Ecclesia"),
+  tyrannie: odysseum('odysseum-avant-clisthene', 'La tyrannie : 561 - 510'),
+  pisistrate: odysseum('odysseum-avant-clisthene', "Il devient officiellement tyran (τύραννος) d'Athènes de 561 à 528"),
+  clisthene: odysseum(
+    'odysseum-reformes-clisthene',
+    "de 507 à 501, la cité va se doter d'une constitution originale et radicale, sous l'impulsion d'un réformateur audacieux : Clisthène",
+  ),
+  pouvoir: odysseum(
+    'odysseum-reformes-clisthene',
+    "En l'espace de cinq ans, tout le pouvoir politique est transféré à l 'Ecclesia",
+  ),
+  salamine: odysseum(
+    'odysseum-siecle-pericles',
+    "En 480, les Perses reviennent par terre et par mer, commandés cette fois-ci par Xerxès. Après avoir franchi le défilé des Thermopyles défendu par les Spartiates, ils envahissent et ravagent l'Attique. Abandonnant la ville, les Athéniens se replient sur leurs bateaux. C'est dans la baie de Salamine que se joue le destin de la guerre",
+  ),
+  rameurs: odysseum(
+    'odysseum-siecle-pericles',
+    'Ce sont donc les plus pauvres de ses citoyens qui ont sauvé la cité sur les navires',
+  ),
+  ecclesia: tlfi(
+    'cnrtl-ecclesia',
+    'Assemblée du peuple dans les cités grecques et notamment à Athènes, réservée en principe aux seuls citoyens',
   ),
   devoirs: eduscol(
     'La citoyenneté athénienne se définit par la participation des citoyens à la vie politique, à la défense de la cité et à la religion civique',
@@ -146,26 +165,5 @@ export const PREUVES = {
   ostracisme: tlfi(
     'cnrtl-ostracisme',
     'Bannissement d’une durée de dix ans prononcé à la suite d’un jugement du peuple',
-  ),
-  consul: tlfi('cnrtl-consul', 'Magistrat élu par le peuple pour un an'),
-  senat: tlfi(
-    'cnrtl-senat',
-    'Assemblée de patriciens de la Rome antique qui détenait l’essentiel du pouvoir politique sous la République',
-  ),
-  patricien: tlfi(
-    'cnrtl-patricien',
-    'Personne qui appartenait, de par sa naissance, à la classe sociale la plus élevée chez les citoyens romains',
-  ),
-  plebe: tlfi(
-    'cnrtl-plebe',
-    'Élément de la population romaine ne jouissant aux origines que de droits très restreints',
-  ),
-  tribun: tlfi(
-    'cnrtl-tribun',
-    'Représentant élu de la plèbe chargé de la défense des droits et des intérêts des plébéiens',
-  ),
-  comices: academie(
-    'academie-comices',
-    'Assemblées du peuple, pour élire des magistrats, ou pour traiter des affaires importantes de la république',
   ),
 } satisfies Record<string, Preuve>;
