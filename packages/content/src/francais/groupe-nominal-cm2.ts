@@ -155,8 +155,10 @@ function expansionDraft(rng: Rng, level: Level): QuestionDraft {
       ] as const);
       const lignes = choisis.map((g: GroupeEnrichi, i) => {
         const [avecAdj, avecComp] = at(formes, i);
+        const trouvees = [avecAdj ? adjectifGe(g) : '', avecComp ? g.complement : ''].filter(Boolean);
         return {
           texte: phrase(texteGroupe(g, avecAdj, avecComp), g.verbe),
+          detail: `« ${g.nom} » : ${trouvees.map((t) => `« ${t} »`).join(' et ') || 'aucune expansion'}`,
           adjectifs: avecAdj ? 1 : 0,
           complements: avecComp ? 1 : 0,
         };
@@ -180,7 +182,7 @@ function expansionDraft(rng: Rng, level: Level): QuestionDraft {
         hint: 'Ligne par ligne : trouve le nom, puis les détails ajoutés avant et après lui.',
         steps: [
           DEF_EXPANSION,
-          `Je trouve ${nbAdj} adjectif(s) et ${nbComp} groupe(s) avec préposition.`,
+          `Ligne par ligne : ${lignes.map((l) => l.detail).join(' ; ')}.`,
           `En tout : **${total}**.`,
         ],
       };
@@ -376,7 +378,12 @@ function epitheteAttributDraft(rng: Rng, level: Level): QuestionDraft {
           blanks: [d.epithete, d.verbe, d.attribut].map((mot) => ({ mode: 'text' as const, accepted: [mot] })),
         },
         hint: 'Commence par le verbe. Puis regarde l’adjectif de chaque côté.',
-        steps: [DEF_EPITHETE, DEF_ATTRIBUT, `Réponses : **${d.epithete}**, **${d.verbe}**, **${d.attribut}**.`],
+        steps: [
+          DEF_EPITHETE,
+          DEF_ATTRIBUT,
+          `« ${d.epithete} » touche le nom « ${d.nom} ». Le verbe « ${d.verbe} » relie « ${d.attribut} » au sujet.`,
+          `Réponses : **${d.epithete}**, **${d.verbe}**, **${d.attribut}**.`,
+        ],
       };
     }
     default: {
@@ -384,13 +391,26 @@ function epitheteAttributDraft(rng: Rng, level: Level): QuestionDraft {
       const attribut = rng.pick(DEUX_ADJECTIFS);
       const autre = rng.pick(DEUX_ADJECTIFS.filter((d) => d !== attribut));
       const troisieme: Fonction = rng.pick(FONCTIONS);
-      const lignes = rng.shuffle<{ texte: string; adjectif: string; fonction: Fonction }>([
-        { texte: epithete.texte, adjectif: epithete.adjectif, fonction: 'épithète' },
-        { texte: attribut.texte, adjectif: attribut.attribut, fonction: 'attribut du sujet' },
+      const touche = (adjectif: string, nom: string) => `« ${adjectif} » touche le nom « ${nom} »`;
+      const relie = (d: { verbe: string; attribut: string }) => `« ${d.verbe} » relie « ${d.attribut} » au sujet`;
+      const lignes = rng.shuffle<{ texte: string; adjectif: string; fonction: Fonction; pourquoi: string }>([
+        {
+          texte: epithete.texte,
+          adjectif: epithete.adjectif,
+          fonction: 'épithète',
+          pourquoi: touche(epithete.adjectif, epithete.nom),
+        },
+        {
+          texte: attribut.texte,
+          adjectif: attribut.attribut,
+          fonction: 'attribut du sujet',
+          pourquoi: relie(attribut),
+        },
         {
           texte: autre.texte,
           adjectif: troisieme === 'épithète' ? autre.epithete : autre.attribut,
           fonction: troisieme,
+          pourquoi: troisieme === 'épithète' ? touche(autre.epithete, autre.nom) : relie(autre),
         },
       ]);
       return {
@@ -417,6 +437,7 @@ function epitheteAttributDraft(rng: Rng, level: Level): QuestionDraft {
         steps: [
           DEF_EPITHETE,
           DEF_ATTRIBUT,
+          `${lignes.map((l) => l.pourquoi).join(' ; ')}.`,
           `Réponses : **${lignes.map((l) => `${l.adjectif} : ${l.fonction}`).join(', ')}**.`,
         ],
       };
@@ -601,7 +622,7 @@ export const FCM2_GROUPE_NOMINAL: readonly Skill[] = [
     id: 'fcm2-gn-expansions',
     title: 'Les expansions du nom',
     memo: [
-      'Enrichis ton nom avec une **expansion** : un **adjectif** ou un **groupe nominal prépositionnel**.',
+      'Enrichis un nom avec une **expansion** : un **adjectif** ou un **groupe nominal prépositionnel**.',
       'Exemple : le petit chat de ma tante. « petit » et « de ma tante » complètent « chat ».',
       'Tu peux les effacer : « le chat » reste correct.',
     ],
@@ -615,7 +636,7 @@ export const FCM2_GROUPE_NOMINAL: readonly Skill[] = [
     memo: [
       'Le **complément du nom** complète un nom, le plus souvent avec une **préposition** : le chien du berger.',
       'Autres exemples : une malle en bois, un bateau à voiles.',
-      'Attention : « Dans le jardin » dit où. Il ne complète pas un nom !',
+      'Attention : dans « Dans le jardin, le chat dort. », « Dans le jardin » dit où. Ici, il ne complète pas un nom !',
     ],
     factId: 'complement-programme',
     faits: ['complement-gp', 'gnp', 'preposition', 'relations'],
