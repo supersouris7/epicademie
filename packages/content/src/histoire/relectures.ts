@@ -37,4 +37,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'h6-debuts-humanite', version: 1, lot: 'hi-6e-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'h6-revolution-neolithique', version: 1, lot: 'hi-6e-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'h6-premiers-etats-ecritures', version: 1, lot: 'hi-6e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'hcm2-frise-periodes', version: 1, lot: 'hi-cm2-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'hcm2-ordonner', version: 1, lot: 'hi-cm2-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'hcm2-durees', version: 1, lot: 'hi-cm2-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'hcm2-reperes-cycle3', version: 1, lot: 'hi-cm2-04', date: '2026-11-25', verdict: 'ok' },
 ];
