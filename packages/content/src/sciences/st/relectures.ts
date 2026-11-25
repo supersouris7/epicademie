@@ -17,4 +17,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'vcm1-besoins-animaux', version: 1, lot: 'st-cm1-03', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'vcm1-besoins-vegetaux', version: 1, lot: 'st-cm1-03', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'vcm1-developpement', version: 1, lot: 'st-cm1-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'pcm2-materiaux', version: 1, lot: 'st-cm2-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'pcm2-separer', version: 1, lot: 'st-cm2-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'pcm2-dissolution', version: 1, lot: 'st-cm2-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'p6-signal', version: 1, lot: 'st-cm2-01', date: '2026-11-25', verdict: 'ok' },
 ];
