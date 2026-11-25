@@ -3530,7 +3530,6 @@ export const SOURCES: readonly Source[] = [
   geoconfluences('agriculture-vivriere', 'Agriculture vivrière', 'agriculture-vivriere', '2026-03-06'),
   geoconfluences('transition-alimentaire', 'Transition alimentaire', 'transition-alimentaire', '2024-07-02'),
   geoconfluences('desert-alimentaire', 'Désert alimentaire', 'desert-alimentaire', '2024-11-15'),
-  geoconfluences('developpement-durable', 'Développement durable', 'developpement-durable', '2026-09-21'),
   geoconfluences('recyclage', 'Recyclage', 'recyclage', '2025-03-13'),
   geoconfluences(
     'odd',
