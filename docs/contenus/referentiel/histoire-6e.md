@@ -14,7 +14,7 @@
 | ---------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
 | `hi-6e-01` | L'humanité et ses migrations          | débuts de l'humanité ; révolution néolithique ; premiers États, premières écritures                                           | partielle (h6-reperes) |
 | `hi-6e-02` | Récits fondateurs et citoyenneté      | le monde des cités grecques ; Rome du mythe à l'histoire ; la naissance du monothéisme juif ; citoyenneté à Athènes et à Rome | partielle (h6-reperes) |
-| `hi-6e-03` | L'empire romain dans le monde antique | conquêtes, paix romaine et romanisation ; des chrétiens dans l'empire ; la route de la soie et la Chine des Han               | partielle (h6-reperes) |
+| `hi-6e-03` | L'empire romain dans le monde antique | conquêtes, paix romaine et romanisation ; des chrétiens dans l'empire ; la route de la soie et la Chine des Han               | couverte, en relecture |
 | `hi-6e-04` | Se repérer dans le temps              | frise de l'Antiquité ; avant et après J.-C. ; millénaires et siècles ; repères annuels de 6e                                  | absente                |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
