@@ -581,6 +581,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'Dans « La pie a dérobé ma bague », la suite explique « dérobé ».',
   },
   {
+    id: 'homophone',
+    word: 'homophone',
+    forms: ['homophones'],
+    definition: 'Mot qui se prononce comme un autre, mais s’écrit autrement et n’a pas le même sens.',
+    example: '« a » et « à »',
+  },
+  {
     id: 'lieu',
     word: 'lieu',
     forms: ['lieux'],

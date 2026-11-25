@@ -4,6 +4,7 @@ import { FCM1_COMPLEMENTS } from './complements.ts';
 import { FCM1_GROUPE_NOMINAL } from './groupe-nominal.ts';
 import { FCM1_LECTURE } from './lecture.ts';
 import { FCM1_NATURE } from './nature.ts';
+import { FCM1_ORTHOGRAPHE_MOTS } from './orthographe-mots.ts';
 import { FCM1_PHRASES } from './phrases.ts';
 import { FCM1_PRESENT } from './present.ts';
 import { FCM1_TEMPS } from './temps.ts';
@@ -84,6 +85,14 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'vocabulaire',
     title: 'Vocabulaire',
     skills: FCM1_VOCABULAIRE,
+  },
+  {
+    id: 'fcm1-orthographe-mots',
+    subject: 'francais',
+    grade: 'cm1',
+    domain: 'orthographe',
+    title: 'Orthographe des mots',
+    skills: FCM1_ORTHOGRAPHE_MOTS,
   },
   {
     id: 'fcm1-lecture',
