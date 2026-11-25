@@ -243,8 +243,7 @@ const travail: Notion = {
   title: 'Travailler à la mine, à l’usine, à l’atelier, au grand magasin',
   hint: 'Relis le mémo : à quel lieu de travail la question te fait-elle penser ?',
   memo: [
-    'À l’âge industriel, de nouveaux métiers apparaissent. On travaille à la **mine**, à l’**usine**, à l’**atelier** ou au **grand magasin**.',
-    'L’usine et l’atelier sont des lieux de travail où l’on produit, avec des **machines** et des outils. Une usine est un grand bâtiment avec des machines. Un atelier est une pièce ou un petit bâtiment où l’on fabrique des objets avec des outils.',
+    'À l’âge industriel, de nouveaux métiers apparaissent. On travaille à la **mine**, à l’**usine**, à l’**atelier** ou au **grand magasin**. L’usine et l’atelier sont des lieux de travail où l’on produit, avec des **machines** et des outils. Une usine est un grand bâtiment avec des machines. Un atelier est une pièce ou un petit bâtiment où l’on fabrique des objets avec des outils.',
     'À la mine, on extrait le charbon. Pour son roman Germinal, publié en 1885, Émile Zola enquête dans les mines d’Anzin. Il décrit des trains de **berlines**, un cheval qui les traîne et un enfant qui les conduit. En 1906, à Courrières, une **catastrophe** est très meurtrière. Au début du XXe siècle, la journée de huit heures est instaurée pour les mineurs.',
     'Les grands magasins se développent : La Belle Jardinière (1824), puis les Galeries du Louvre (1855). Au Bon Marché, un grand magasin de Paris, le patron Aristide Boucicaut donne droit à deux repas par jour à chaque employé. Dans Au Bonheur des dames, Zola montre un grand magasin : prix fixes et affichés, publicité.',
   ],
@@ -845,8 +844,7 @@ const rural: Notion = {
   memo: [
     'Le **monde rural**, c’est la **campagne**. En 1846, les statistiques distinguent les communes rurales des communes urbaines, autour d’un **seuil** de 2 000 habitants.',
     'En 1849, un tableau de Rosa Bonheur montre des bœufs qui tirent la **charrue**. L’industrialisation change aussi les champs : un **engrais**, le **guano**, augmente beaucoup les **rendements**.',
-    'À la fin du XIXe siècle, le train Scotte, à vapeur et sans rails, est conçu notamment pour les zones rurales.',
-    'La campagne nourrit l’industrie en **denrées** agricoles. La **main-d’œuvre** paysanne alimente aussi les villes et les usines.',
+    'À la fin du XIXe siècle, le train Scotte, à vapeur et sans rails, est conçu notamment pour les zones rurales. La campagne nourrit l’industrie en **denrées** agricoles. La **main-d’œuvre** paysanne alimente aussi les villes et les usines.',
   ],
   faits: [
     {
