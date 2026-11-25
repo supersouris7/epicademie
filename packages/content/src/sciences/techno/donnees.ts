@@ -74,6 +74,11 @@ export const FAITS: readonly Fait[] = [
       'prise en compte des exigences issues des normes ou d’un cahier des charges, labels et certifications ; l’ergonomie liée à l’usage',
   },
   {
+    id: 'cahier-def',
+    source: 'academie-cahier',
+    citation: 'Document indiquant les conditions d’exécution d’un marché de travaux',
+  },
+  {
     id: 'norme-def',
     source: 'cnrtl-norme',
     citation:

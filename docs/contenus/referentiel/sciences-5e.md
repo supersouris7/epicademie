@@ -20,7 +20,7 @@
 | `sv-5e-02` | Nutrition des êtres vivants   | besoins des végétaux ; respiration ; écosystèmes ; biodiversité                                                | absente                |
 | `sv-5e-03` | Le corps en activité          | respiration ; circulation sanguine ; digestion ; effort physique                                               | absente                |
 | `sv-5e-04` | Classer le vivant             | caractères partagés ; groupes emboîtés ; parentés ; espèce                                                     | absente                |
-| `te-5e-01` | Objets et systèmes techniques | besoin et fonction d'usage ; contraintes ; matériaux et procédés ; usages et environnement                     | couverte, en relecture |
+| `te-5e-01` | Objets et systèmes techniques | besoin et fonction d'usage ; contraintes ; matériaux et procédés ; usages et environnement                     | couverte               |
 | `te-5e-02` | Usages du numérique           | données ; réseaux ; règles et sécurité ; impacts sociétaux                                                     | absente                |
 | `te-5e-03` | Programmer                    | algorithme ; capteurs et actionneurs ; séquence et boucle ; tester un programme                                | absente                |
 

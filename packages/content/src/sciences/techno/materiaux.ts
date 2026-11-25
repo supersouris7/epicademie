@@ -133,8 +133,13 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   const p = rng.pick(PROCEDES.filter((x) => x.nom !== 'l’impression 3D'));
   const mot = sansArticle(p.nom);
   const { answer, traps } = saisie(
-    [mot, p.nom],
-    PROCEDES.filter((x) => x !== p).map((x) => [sansArticle(x.nom), pourquoiProcede(x)] as const),
+    [mot, p.nom, ...(p.nom === 'le soudage' ? ['soudure', 'la soudure'] : [])],
+    [
+      ...PROCEDES.filter((x) => x !== p).map((x) => [sansArticle(x.nom), pourquoiProcede(x)] as const),
+      ...(p.nom === 'le boulonnage'
+        ? [['vissage', 'Avec une vis et un écrou, le nom précis du procédé est le boulonnage.'] as const]
+        : []),
+    ],
   );
   return {
     prompt: `Écris le nom du procédé : ${p.description}.`,
@@ -219,25 +224,25 @@ const EXIGENCES: readonly { objet: string; exigence: string; bon: string; rivaux
   },
   {
     objet: 'le cadre d’un objet à porter souvent',
-    exigence: 'un métal blanc et très léger est demandé',
+    exigence: 'il faut un métal le plus léger possible, pour ne pas fatiguer la personne qui le porte',
     bon: 'aluminium',
     rivaux: ['acier', 'cuivre', 'verre'],
   },
   {
     objet: 'la vitre d’un présentoir',
-    exigence: 'la pièce doit être transparente',
+    exigence: 'on doit voir les objets à travers la pièce',
     bon: 'verre',
     rivaux: ['bois', 'acier', 'cuivre'],
   },
   {
     objet: 'l’axe d’une roue très sollicité',
-    exigence: 'un métal plus dur et plus résistant que le fer est demandé',
+    exigence: 'il faut un métal qui résiste mieux que le fer, car la pièce subit de gros efforts',
     bon: 'acier',
     rivaux: ['verre', 'bois', 'cuivre'],
   },
   {
     objet: 'les pieds d’un tabouret',
-    exigence: 'le matériau doit provenir du tronc d’un arbre',
+    exigence: 'le matériau doit provenir d’un arbre',
     bon: 'bois',
     rivaux: ['verre', 'acier', 'aluminium'],
   },

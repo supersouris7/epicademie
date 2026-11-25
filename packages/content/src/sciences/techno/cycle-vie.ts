@@ -24,15 +24,18 @@ const EXEMPLES: readonly { texte: string; etape: Etape }[] = [
   { texte: 'On extrait du minerai de fer dans une mine.', etape: 'extraction' },
   { texte: 'On coupe des arbres en forêt pour obtenir du bois brut.', etape: 'extraction' },
   { texte: 'Le minerai de fer est transformé en acier dans une usine.', etape: 'traitement' },
-  { texte: 'Les troncs sont transformés en planches prêtes à l’emploi.', etape: 'traitement' },
+  {
+    texte: 'Dans une scierie, les troncs sont transformés en planches, un matériau prêt à être travaillé.',
+    etape: 'traitement',
+  },
   { texte: 'On plie des tubes pour réaliser le cadre d’un vélo.', etape: 'fabrication' },
   { texte: 'On perce les trous d’une pièce de meuble.', etape: 'fabrication' },
   { texte: 'On visse les roues et la selle sur le cadre d’un vélo.', etape: 'assemblage' },
   { texte: 'On fixe la poignée sur le corps d’une valise.', etape: 'assemblage' },
-  { texte: 'Une élève se rend au collège à vélo.', etape: 'utilisation' },
+  { texte: 'Une élève pédale sur le vélo qu’elle a reçu.', etape: 'utilisation' },
   { texte: 'On fait chauffer de l’eau avec la bouilloire.', etape: 'utilisation' },
   { texte: 'Le vélo hors d’usage est démonté et son métal est recyclé.', etape: 'fin de vie' },
-  { texte: 'Une bouilloire en panne est apportée en déchèterie.', etape: 'fin de vie' },
+  { texte: 'Une bouilloire impossible à réparer est jetée dans la benne d’une déchèterie.', etape: 'fin de vie' },
   { texte: 'Des vélos voyagent en camion de l’usine au magasin.', etape: 'transport' },
   { texte: 'Un cargo achemine des pièces d’un pays à un autre.', etape: 'transport' },
 ];
@@ -75,7 +78,7 @@ const INTERACTEURS: readonly { systeme: string; element: string; type: Interacte
   { systeme: 'une montre connectée', element: 'la chaleur de l’air', type: 'élément de l’environnement' },
   { systeme: 'une montre connectée', element: 'la position géographique envoyée à une application', type: 'données' },
   { systeme: 'un lampadaire de rue', element: 'la lumière du jour', type: 'élément de l’environnement' },
-  { systeme: 'un lampadaire de rue', element: 'le piéton qui passe dessous', type: 'usager' },
+  { systeme: 'un lampadaire de rue', element: 'le piéton qui profite de son éclairage', type: 'usager' },
 ];
 
 const niveau2 = (rng: Rng): QuestionDraft => {
@@ -87,7 +90,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
       i.type,
       TYPES.filter((t) => t !== i.type).map((t) => ({
         label: t,
-        why: `« ${maj(t)} » désigne ${DEFINITION[t]}. Ce n’est pas le cas de « ${i.element} ».`,
+        why: `« ${maj(t)} » désigne ${DEFINITION[t]}. Cette description ne convient pas pour « ${i.element} ».`,
       })),
     ),
     hint: 'Est-ce une personne, une information, un objet ou quelque chose de la nature ?',
@@ -173,7 +176,8 @@ const niveau4 = (rng: Rng): QuestionDraft => {
 /** Choix de matériaux ou d'énergie : l'étape qu'ils influencent en premier lieu, désignée dans le texte. */
 const CHOIX: readonly { texte: string; etape: Etape; why: string }[] = [
   {
-    texte: 'Le fabricant remplace l’aluminium neuf par de l’aluminium recyclé : il faudra extraire moins de minerai.',
+    texte:
+      'Le fabricant remplace l’aluminium neuf par de l’aluminium recyclé : il faudra moins de minerai sorti des mines.',
     etape: 'extraction',
     why: 'Le choix évite de prélever de nouvelles matières premières.',
   },
@@ -212,7 +216,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     const c = rng.pick(CHOIX);
     const autres = rng.shuffle(ETAPES.filter((e) => e !== c.etape)).slice(0, 3);
     return {
-      prompt: `${c.texte} Quelle étape du cycle de vie ce choix influence-t-il avant tout ?`,
+      prompt: `${c.texte} À quelle étape du cycle de vie l’effet annoncé se produit-il ?`,
       ...qcm(
         rng,
         c.etape,
@@ -236,7 +240,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       : [
           {
             option: i,
-            why: `${a.nom} a ${sur10(a.note)}, moins que ${meilleur.nom} (${sur10(meilleur.note)}) : il est moins réparable.`,
+            why: `L’${a.nom.replace('A', 'a')} a ${sur10(a.note)}, moins que l’${meilleur.nom.replace('A', 'a')} (${sur10(meilleur.note)}) : il est moins réparable.`,
           },
         ],
   );
@@ -266,7 +270,7 @@ export const cycleVie = notion(
     title: 'Usages, interacteurs et environnement',
     memo: [
       'Autour d’un objet, les **interacteurs extérieurs** sont les usagers, les données, d’autres objets et l’environnement (la pluie sur un portail).',
-      'Son **cycle de vie** va de l’extraction à la fin de vie, avec des transports : chaque choix de matériau ou d’énergie a des effets. L’**indice de réparabilité** se note de 0 à 10.',
+      'Son **cycle de vie** : extraction, traitement, fabrication, assemblage, utilisation, fin de vie, avec des transports. Les choix de matériaux et d’énergie ont des effets. L’**indice de réparabilité** se note de 0 à 10.',
     ],
     attendu: 'Identifier les étapes du cycle de vie d’un OST influencées par les choix de matériaux et d’énergie',
     sources: ['ecologie-indice-reparabilite'],

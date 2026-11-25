@@ -3610,6 +3610,7 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-25',
   },
   academie('ergonomie', 'ergonomie'),
+  academie('cahier', 'cahier'),
   tlfi('besoin', 'besoin', 'besoin'),
   tlfi('usage', 'usage', 'usage'),
   tlfi('norme', 'norme', 'norme'),

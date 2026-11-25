@@ -25,18 +25,35 @@ interface Solution {
 
 /** La lampe de bureau est l'exemple du programme ; le vélo l'illustre. */
 const SOLUTIONS: readonly Solution[] = [
-  { objet: 'la lampe de bureau', solution: 'l’ampoule', fonction: 'éclairer', variantes: ['une ampoule'] },
+  {
+    objet: 'la lampe de bureau',
+    solution: 'l’ampoule',
+    fonction: 'éclairer',
+    variantes: ['une ampoule', 'led', 'la led', 'une led'],
+  },
   {
     objet: 'la lampe de bureau',
     solution: 'l’interrupteur',
     fonction: 'allumer et éteindre',
-    variantes: ['un interrupteur'],
+    variantes: ['un interrupteur', 'bouton', 'le bouton', 'un bouton'],
   },
   {
     objet: 'la lampe de bureau',
     solution: 'le cordon électrique',
     fonction: 'transporter l’énergie électrique',
-    variantes: ['un cordon électrique', 'cordon', 'le cordon'],
+    variantes: [
+      'un cordon électrique',
+      'cordon',
+      'le cordon',
+      'câble',
+      'le câble',
+      'câble électrique',
+      'le câble électrique',
+      'fil',
+      'le fil',
+      'fil électrique',
+      'le fil électrique',
+    ],
   },
   {
     objet: 'le vélo',
@@ -44,7 +61,12 @@ const SOLUTIONS: readonly Solution[] = [
     fonction: 'ralentir et arrêter le vélo',
     variantes: ['frein', 'le frein'],
   },
-  { objet: 'le vélo', solution: 'la sonnette', fonction: 'avertir les piétons', variantes: ['une sonnette'] },
+  {
+    objet: 'le vélo',
+    solution: 'la sonnette',
+    fonction: 'avertir les piétons',
+    variantes: ['une sonnette', 'avertisseur', 'l’avertisseur'],
+  },
   {
     objet: 'le vélo',
     solution: 'la chaîne',
@@ -55,12 +77,20 @@ const SOLUTIONS: readonly Solution[] = [
     objet: 'le vélo',
     solution: 'le porte-bagages',
     fonction: 'transporter un sac',
-    variantes: ['un porte-bagages', 'porte-bagage', 'le porte-bagage'],
+    variantes: [
+      'un porte-bagages',
+      'porte-bagage',
+      'le porte-bagage',
+      'porte bagages',
+      'le porte bagages',
+      'panier',
+      'le panier',
+    ],
   },
   {
     objet: 'le vélo',
     solution: 'le catadioptre',
-    fonction: 'rendre le vélo visible la nuit',
+    fonction: 'renvoyer la lumière des phares',
     variantes: ['un catadioptre', 'catadioptres', 'les catadioptres', 'réflecteur', 'le réflecteur'],
   },
 ];
@@ -68,13 +98,13 @@ const SOLUTIONS: readonly Solution[] = [
 const objetsAvecBesoin = BESOINS.flatMap((b) => b.objets.map((objet) => ({ objet, besoin: b.besoin })));
 
 const pourquoiBesoin = (objet: string, besoin: string) =>
-  `${maj(objet)} sert à ${besoin} : c’est le manque auquel il répond.`;
+  `${maj(objet)} sert à ${besoin} : c’est le besoin que cet objet vient combler.`;
 
 const niveau1 = (rng: Rng): QuestionDraft => {
   const cible = rng.pick(objetsAvecBesoin);
   const autres = rng.shuffle(BESOINS.filter((b) => b.besoin !== cible.besoin)).slice(0, 2);
   return {
-    prompt: `À quel besoin ${cible.objet} répond-il avant tout ?`,
+    prompt: `À quel besoin répond avant tout ${cible.objet} ?`,
     ...qcm(
       rng,
       cible.besoin,
@@ -134,9 +164,14 @@ const niveau2 = (rng: Rng): QuestionDraft => {
 type Mot = 'besoin' | 'fonction technique' | 'solution technique';
 
 const ACCEPTE: Record<Mot, readonly string[]> = {
-  besoin: formes('besoin', 'un'),
-  'fonction technique': [...formes('fonction technique', 'une'), 'fonction'],
-  'solution technique': [...formes('solution technique', 'une'), 'solution', 'solution technologique'],
+  besoin: [...formes('besoin', 'un'), 'le besoin'],
+  'fonction technique': [...formes('fonction technique', 'une'), 'la fonction technique', 'fonction'],
+  'solution technique': [
+    ...formes('solution technique', 'une'),
+    'la solution technique',
+    'solution',
+    'solution technologique',
+  ],
 };
 
 const DEFINITION: Record<Mot, string> = {
@@ -153,8 +188,8 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   const b = rng.pick(objetsAvecBesoin);
   const scene = {
     besoin: `${maj(b.objet)} permet à quelqu’un de ${b.besoin}. Que désigne « ${b.besoin} » ?`,
-    'fonction technique': `Dans ${s.objet}, un élément doit « ${s.fonction} ». Que désigne « ${s.fonction} » ?`,
-    'solution technique': `Dans ${s.objet}, on a choisi ${s.solution} pour « ${s.fonction} ». Que désigne « ${s.solution} » ?`,
+    'fonction technique': `Sur ${s.objet}, un élément doit « ${s.fonction} ». Que désigne « ${s.fonction} » ?`,
+    'solution technique': `Sur ${s.objet}, on a choisi ${s.solution} pour « ${s.fonction} ». Que désigne « ${s.solution} » ?`,
   }[mot];
   const { answer, traps } = saisie(
     ACCEPTE[mot],
@@ -178,6 +213,9 @@ const niveau3 = (rng: Rng): QuestionDraft => {
 
 const ligne = (s: Solution) => `${s.solution} (${s.objet})`;
 
+/** « sert » ou « servent », selon le nombre de la solution. */
+const role = (s: Solution) => `${s.solution} ${s.solution.startsWith('les ') ? 'servent' : 'sert'} à ${s.fonction}`;
+
 const niveau4 = (rng: Rng): QuestionDraft => {
   if (rng.int(0, 1) === 0) {
     const choisies = rng.shuffle(SOLUTIONS).slice(0, 5);
@@ -199,11 +237,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   const { answer, traps } = saisie(
     [s.solution, nom, ...s.variantes],
     memeObjet.map(
-      (x) =>
-        [
-          x.solution.replace(/^(l’|le |la |les )/, ''),
-          `${maj(x.solution)} sert à ${x.fonction}, pas à ${s.fonction}.`,
-        ] as const,
+      (x) => [x.solution.replace(/^(l’|le |la |les )/, ''), `${maj(role(x))}, pas à ${s.fonction}.`] as const,
     ),
   );
   return {
@@ -213,7 +247,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     hint: 'Passe en revue les éléments de l’objet et leur rôle, un par un.',
     steps: [
       `On cherche la solution technique qui réalise la fonction « ${s.fonction} ».`,
-      `Sur ${s.objet}, ce rôle est assuré par un élément précis.`,
+      `Les autres éléments ont un autre rôle : ${memeObjet.map(role).join(' ; ')}.`,
       `La réponse est **${s.solution}**.`,
     ],
     targetSeconds: 45,

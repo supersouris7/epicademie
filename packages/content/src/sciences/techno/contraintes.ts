@@ -10,7 +10,7 @@ const DOMAINES: readonly Domaine[] = ['l’ergonomie', 'la sécurité', 'le dév
 const IDEE: Record<Domaine, string> = {
   'l’ergonomie': 'rendre l’objet facile et confortable à utiliser',
   'la sécurité': 'protéger les personnes d’un danger',
-  'le développement durable': 'économiser les ressources et l’énergie, limiter les déchets',
+  'le développement durable': 'économiser les ressources et l’énergie, et à limiter les déchets',
 };
 
 const CHOIX: readonly { texte: string; domaine: Domaine }[] = [
@@ -29,7 +29,7 @@ const CHOIX: readonly { texte: string; domaine: Domaine }[] = [
 ];
 
 const explication = (c: (typeof CHOIX)[number]) =>
-  `« ${maj(c.texte)} » vise surtout ${c.domaine} : il s’agit de ${IDEE[c.domaine]}.`;
+  `« ${maj(c.texte)} » vise surtout ${c.domaine} : on cherche à ${IDEE[c.domaine]}.`;
 
 const niveau1 = (rng: Rng): QuestionDraft => {
   const c = rng.pick(CHOIX);
@@ -76,11 +76,11 @@ const TERMES: Record<Terme, { definition: string; accepte: readonly string[] }> 
   norme: {
     definition:
       'un ensemble de données (mesures, caractéristiques, qualités) qui définit un produit et sert de référence',
-    accepte: formes('norme', 'une'),
+    accepte: [...formes('norme', 'une'), 'la norme'],
   },
   label: {
     definition: 'une marque apposée sur un produit pour en garantir la qualité',
-    accepte: formes('label', 'un'),
+    accepte: [...formes('label', 'un'), 'le label'],
   },
   'cahier des charges': {
     definition: 'le document qui liste les exigences que le futur objet devra respecter',
@@ -104,14 +104,14 @@ const niveau3 = (rng: Rng): QuestionDraft => {
       MOTS.filter((m) => m !== mot).map((m) => [m, pourquoiTerme(m, mot)] as const),
     );
     return {
-      prompt: `Quel mot désigne ${TERMES[mot].definition} ? Écris norme, label, cahier des charges ou ergonomie.`,
+      prompt: `Quel terme désigne ${TERMES[mot].definition} ? Écris norme, label, cahier des charges ou ergonomie.`,
       answer,
       traps,
       hint: 'Est-ce un document, une marque sur le produit, une référence technique ou une qualité d’usage ?',
       steps: [
         'On repère le type de chose décrit : document, marque, référence ou qualité d’usage.',
         `Il s’agit de la définition : ${TERMES[mot].definition}.`,
-        `Le mot est **${mot}**.`,
+        `Le terme est **${mot}**.`,
       ],
       targetSeconds: 35,
     };
@@ -119,11 +119,11 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   const [a, b] = rng.shuffle(MOTS) as [Terme, Terme];
   const options = rng.shuffle(MOTS);
   return {
-    prompt: 'Quel mot correspond à chaque définition du document ? Complète les deux réponses.',
+    prompt: 'Quel terme correspond à chaque définition du document ? Complète les deux réponses.',
     figure: {
       kind: 'document',
       title: 'Définitions',
-      lines: [a, b].map((m) => `${maj(TERMES[m].definition)}.`),
+      lines: [a, b].map((m, i) => `Définition ${i + 1} : ${TERMES[m].definition}.`),
     },
     answer: {
       kind: 'cloze',
@@ -131,7 +131,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
       blanks: [a, b].map((m) => ({ mode: 'list' as const, options, correct: options.indexOf(m) })),
     },
     hint: 'Commence par la phrase que tu connais le mieux.',
-    steps: ['Chaque définition correspond à un seul mot.', `Réponse : **${a}**, puis **${b}**.`],
+    steps: ['Chaque définition correspond à un seul terme.', `Réponse : **${a}**, puis **${b}**.`],
     targetSeconds: 45,
   };
 };
@@ -144,7 +144,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       ['sécurité', 'une situation qui entraîne l’absence de dangers pour les personnes'] as const,
     ]);
     return {
-      prompt: `Associe chaque mot à sa définition : ${choisies.map((p) => p[0]).join(' ; ')}.`,
+      prompt: `Associe chaque terme à sa définition : ${choisies.map((p) => p[0]).join(' ; ')}.`,
       answer: association(rng, choisies),
       hint: 'Place d’abord les mots dont tu es sûr, puis termine par élimination.',
       steps: [
@@ -268,7 +268,14 @@ export const contraintes = notion(
     ],
     attendu:
       'Repérer et expliquer les choix de conception dans les domaines de l’ergonomie et de la sécurité ou en lien avec des objectifs de développement durable',
-    sources: ['cnrtl-norme', 'cnrtl-label', 'cnrtl-securite', 'academie-ergonomie', 'insee-developpement-durable'],
+    sources: [
+      'academie-cahier',
+      'cnrtl-norme',
+      'cnrtl-label',
+      'cnrtl-securite',
+      'academie-ergonomie',
+      'insee-developpement-durable',
+    ],
   },
   [niveau1, niveau2, niveau3, niveau4, niveau5],
 );
