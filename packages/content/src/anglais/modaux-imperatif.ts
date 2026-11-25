@@ -726,34 +726,147 @@ function orderWrite(rng: Rng): QuestionDraft {
   };
 }
 
-const DUTY_ORDERS = [
-  { end: 'quiet', base: 'be', wrong: 'Are' },
-  { end: 'on time', base: 'be', wrong: 'Are' },
-  { end: 'careful', base: 'be', wrong: 'Are' },
-  { end: 'ready at ten', base: 'be', wrong: 'Are' },
-  { end: 'to the board', base: 'come', wrong: 'Comes' },
-  { end: 'the window', base: 'open', wrong: 'Opens' },
-  { end: 'to the teacher', base: 'listen', wrong: 'Listens' },
-  { end: 'here', base: 'wait', wrong: 'Waits' },
-] as const;
+interface Situation {
+  /** La scène et ce qu'il faut demander, en français. */
+  readonly fr: string;
+  /** La partie de la demande à traduire et son équivalent. */
+  readonly gloss: string;
+  /** Consignes justes ; la première sert de correction. */
+  readonly answers: readonly [string, ...string[]];
+}
+const situation = (fr: string, gloss: string, ...answers: [string, ...string[]]): Situation => ({
+  fr,
+  gloss,
+  answers,
+});
+const SITUATIONS: readonly Situation[] = [
+  situation(
+    'Ton camarade va traverser sans regarder : dis-lui d’être prudent.',
+    '« être prudent » se dit be careful',
+    'Be careful',
+    'Be very careful',
+    'Be cautious',
+    'Be prudent',
+  ),
+  situation(
+    'Ton voisin parle pendant que le professeur explique : dis-lui d’être silencieux.',
+    '« être silencieux » se dit be quiet',
+    'Be quiet',
+    'Keep quiet',
+    'Stay quiet',
+    'Be silent',
+    'Keep silent',
+    'Stay silent',
+  ),
+  situation(
+    'Ton ami se moque d’un nouvel élève : dis-lui d’être gentil.',
+    '« être gentil » se dit be nice ou be kind',
+    'Be nice',
+    'Be kind',
+    'Be friendly',
+  ),
+  situation(
+    'Ton amie a peur de monter sur scène : dis-lui d’être courageuse.',
+    '« être courageuse » se dit be brave',
+    'Be brave',
+    'Be courageous',
+  ),
+  situation(
+    'Le bus arrive et ton camarade traîne : dis-lui d’être rapide.',
+    '« être rapide » se dit be quick',
+    'Be quick',
+    'Be fast',
+    'Hurry up',
+    'Hurry',
+  ),
+  situation(
+    'Ton ami arrive souvent en retard : pour demain, dis-lui d’être à l’heure.',
+    '« être à l’heure » se dit be on time',
+    'Be on time',
+    'Be on time tomorrow',
+    'Be punctual',
+  ),
+  situation(
+    'Le spectacle commence à dix heures : dis à ton camarade d’être prêt à dix heures.',
+    '« être prêt à dix heures » se dit be ready at ten',
+    'Be ready at ten',
+    'Be ready at 10',
+    'Be ready at ten o’clock',
+    'Be ready at 10 o’clock',
+  ),
+  situation(
+    'Tu dois partir chercher ton sac : dis à ton ami d’attendre ici.',
+    '« attendre ici » se dit wait here',
+    'Wait here',
+    'Wait over here',
+  ),
+  situation(
+    'Ton amie marche trop vite et te laisse derrière : dis-lui de t’attendre.',
+    '« m’attendre » se dit wait for me',
+    'Wait for me',
+  ),
+  situation(
+    'Tu veux montrer quelque chose à ton camarade, qui est loin : dis-lui de venir ici.',
+    '« venir ici » se dit come here',
+    'Come here',
+    'Come over here',
+  ),
+  situation(
+    'Tu pars à la cantine et ton ami hésite : dis-lui de venir avec toi.',
+    '« venir avec moi » se dit come with me',
+    'Come with me',
+    'Come along with me',
+  ),
+  situation(
+    'Ton voisin bavarde pendant que le professeur parle : dis-lui d’écouter le professeur.',
+    '« écouter le professeur » se dit listen to the teacher',
+    'Listen to the teacher',
+    'Listen to your teacher',
+    'Listen to our teacher',
+  ),
+  situation(
+    'La réponse est écrite au tableau, mais ton amie cherche ailleurs : dis-lui de regarder le tableau.',
+    '« regarder le tableau » se dit look at the board',
+    'Look at the board',
+    'Look at the blackboard',
+    'Look at the whiteboard',
+  ),
+  situation(
+    'Ton ami ne trouve pas sa page : dis-lui de regarder ton livre.',
+    '« regarder mon livre » se dit look at my book',
+    'Look at my book',
+  ),
+];
+/** Pour chaque premier mot : les formes fautives (accordée, puis en -ing). */
+const WRONG_FORMS: Readonly<Record<string, readonly [readonly string[], string]>> = {
+  Be: [['Are', 'Is'], 'Being'],
+  Wait: [['Waits'], 'Waiting'],
+  Come: [['Comes'], 'Coming'],
+  Listen: [['Listens'], 'Listening'],
+  Look: [['Looks'], 'Looking'],
+};
 
-function orderFromMust(rng: Rng): QuestionDraft {
-  const o = rng.pick(DUTY_ORDERS);
-  const good = `${cap(o.base)} ${o.end}`;
+function orderSituation(rng: Rng): QuestionDraft {
+  const { fr, gloss, answers } = rng.pick(SITUATIONS);
+  const [good] = answers;
+  const verb = first(good);
+  const tail = rest(good);
+  const [agreed, ing] = WRONG_FORMS[verb] ?? [[], verb];
   return {
-    prompt: `Transforme en consigne à l’impératif, sans ajouter de mot : « You must ${o.base} ${o.end}. »`,
-    answer: { kind: 'text', accepted: ended(polite([good]), ORDER_MARKS) },
+    prompt: `${fr} Écris cette consigne en anglais.`,
+    answer: { kind: 'text', accepted: ended(polite(answers), ORDER_MARKS) },
     traps: endedTraps(
       [
-        { text: `You ${o.base} ${o.end}`, why: WHY_IMP_YOU },
-        { text: `${o.wrong} ${o.end}`, why: IMP_RULE },
-        { text: `Must ${o.base} ${o.end}`, why: 'L’impératif se passe de must : le verbe suffit.' },
-        { text: `To ${o.base} ${o.end}`, why: WHY_IMP_TO },
+        { text: `You ${lower(good)}`, why: WHY_IMP_YOU },
+        ...(verb === 'Be' ? [{ text: `You are${tail}`, why: WHY_IMP_YOU }] : []),
+        ...agreed.map((w) => ({ text: `${w}${tail}`, why: verb === 'Be' ? IMP_RULE : WHY_IMP_S })),
+        { text: `To ${lower(good)}`, why: WHY_IMP_TO },
+        { text: `${ing}${tail}`, why: WHY_IMP_ING },
       ],
       ORDER_MARKS,
     ),
-    hint: 'La consigne est plus courte que la phrase de départ : quels mots disparaissent ?',
-    steps: [IMP_RULE, 'On retire « You must » : il reste la base verbale et la suite.', `Réponse : **${good}!**`],
+    hint: 'Repère dans la situation ce que tu demandes, puis commence ta phrase par le verbe anglais, à la base verbale.',
+    steps: [IMP_RULE, `Ici, ${gloss}.`, `Réponse : **${good}!**`],
   };
 }
 
@@ -820,7 +933,7 @@ const imperative: Skill = {
     if (level === 1) return orderSpot(rng);
     if (level === 2) return orderRecognise(rng);
     if (level === 3) return orderWrite(rng);
-    if (level === 4) return orderFromMust(rng);
+    if (level === 4) return orderSituation(rng);
     return orderDocument(rng);
   },
 };

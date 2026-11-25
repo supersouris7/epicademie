@@ -119,9 +119,22 @@ describe('anglais 6e : modaux et impératif', () => {
     const open = find('a6-imperatif-affirmatif', 3, '« Ouvre la fenêtre ! »');
     accepts(open, 'Open the window!', 'open the window', 'Please open the window.', 'Open the window, please !');
     refuses(open, 'You open the window!', 'Opens the window.', 'To open the window');
-    const be = find('a6-imperatif-affirmatif', 4, '« You must be quiet. »');
-    accepts(be, 'Be quiet!');
-    refuses(be, 'Are quiet!', 'You be quiet.', 'Must be quiet');
+  });
+
+  it('impératif, niveau 4 : situation en français, sans anglais donné, variantes acceptées', () => {
+    const all = questions('a6-imperatif-affirmatif', 4);
+    expect(new Set(all.map((q) => q.prompt)).size).toBeGreaterThanOrEqual(12);
+    for (const q of all) {
+      if (q.answer.kind !== 'text') throw new Error('saisie attendue');
+      expect(q.prompt).not.toMatch(/Vocabulaire|You must/);
+      for (const a of q.answer.accepted) expect(q.prompt.toLowerCase()).not.toContain(a.toLowerCase());
+    }
+    const be = find('a6-imperatif-affirmatif', 4, 'd’être prudent');
+    accepts(be, 'Be careful!', 'be careful', 'Please be careful.', 'Be careful, please !', 'Be cautious!');
+    refuses(be, 'Are careful!', 'You be careful.', 'You are careful.', 'To be careful', 'Being careful!');
+    const wait = find('a6-imperatif-affirmatif', 4, 'd’attendre ici');
+    accepts(wait, 'Wait here!', 'Please, wait here.');
+    refuses(wait, 'Waits here!', 'You wait here.', 'To wait here', 'Waiting here!');
   });
 
   it('impératif négatif : don’t ou do not, panneau accepté, be avec don’t', () => {
