@@ -3364,10 +3364,10 @@ export const SOURCES: readonly Source[] = [
   },
   {
     id: 'education-cvl',
-    title: 'Page « Le Conseil des délégués pour la vie lycéenne »',
+    title: 'Page « Vie lycéenne »',
     publisher: 'Ministère de l’Éducation nationale',
-    url: 'https://www.education.gouv.fr/le-conseil-des-delegues-pour-la-vie-lyceenne-9851',
-    textDate: '2021',
+    url: 'https://www.education.gouv.fr/reussir-au-lycee/vie-lyceenne-41546',
+    textDate: '2023',
     consultedOn: '2026-11-25',
   },
 ];

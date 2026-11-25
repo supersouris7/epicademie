@@ -77,7 +77,9 @@ const SOUVERAINETE = constitution(
   'La souveraineté nationale appartient au peuple qui l’exerce par ses représentants et par la voie du référendum',
 );
 const SUFFRAGE = constitution('Il est toujours universel, égal et secret');
-const ELECTEURS = constitution('tous les nationaux français majeurs des deux sexes, jouissant de leurs droits civils');
+const ELECTEURS = constitution(
+  'tous les nationaux français majeurs des deux sexes, jouissant de leurs droits civils et politiques',
+);
 const PARTIS = constitution('Les partis et groupements politiques concourent à l’expression du suffrage');
 const GARDIEN = constitution('Le Président de la République veille au respect de la Constitution');
 const MANDAT = constitution('Le Président de la République est élu pour cinq ans au suffrage universel direct');
@@ -170,7 +172,7 @@ const institutions: Notion = {
   title: 'Les institutions de la Ve République',
   hint: 'Demande-toi qui nomme, qui gouverne, qui vote la loi et qui la contrôle.',
   memo: [
-    'La **Constitution** de 1958 organise la Ve République : le président de la République veille à son respect et nomme le Premier ministre.',
+    'La **Constitution** de 1958 organise la Ve République : le président de la République veille à son respect et nomme le Premier ministre ; il peut prononcer la **dissolution** de l’Assemblée nationale.',
     'Le **Gouvernement**, dirigé par le Premier ministre, conduit la politique de la Nation ; le **Parlement** (Assemblée nationale et Sénat) vote la loi et contrôle le Gouvernement.',
     'Réflexe brevet : l’Assemblée nationale peut renverser le Gouvernement par une **motion de censure** ; avec la **question prioritaire de constitutionnalité**, un justiciable peut contester une loi.',
   ],
@@ -228,7 +230,7 @@ const institutions: Notion = {
           ['le Conseil constitutionnel', 'Ce n’est pas une assemblée élue que l’on dissout.'],
           ['le Parlement européen', 'C’est une institution de l’Union européenne, pas de la Ve République.'],
         ],
-        ['Le président peut prononcer la ', ' de l’Assemblée nationale.', ['dissolution']],
+        ['Le président de la République peut prononcer la ', ' de l’Assemblée nationale.', ['dissolution']],
         'La dissolution met fin au mandat des députés : de nouvelles élections sont organisées.',
       ),
     ),
@@ -245,11 +247,11 @@ const institutions: Notion = {
           ['l’Assemblée nationale', 'Elle vote la loi mais ne la juge pas au regard de la Constitution.'],
         ],
         [
-          'La question prioritaire de constitutionnalité est finalement examinée par le Conseil ',
+          'Quand une question prioritaire de constitutionnalité lui est transmise, la loi est jugée par le Conseil ',
           '.',
           ['constitutionnel'],
         ],
-        'C’est la question prioritaire de constitutionnalité (QPC).',
+        'C’est la question prioritaire de constitutionnalité (QPC) : si les juges la lui transmettent, le Conseil constitutionnel vérifie que la loi respecte la Constitution.',
       ),
     ),
   ],
@@ -299,7 +301,7 @@ const institutions: Notion = {
   ],
   docs: [
     {
-      title: 'Un vote à l’Assemblée',
+      title: 'Un vote décisif',
       lines: [
         'Des députés reprochent au Gouvernement sa politique.',
         'Ils déposent une motion, débattue quelques jours plus tard.',
@@ -376,7 +378,7 @@ const elections: Notion = {
   hint: 'Pour chaque vote, demande-toi : qui vote, pour qui, et pour combien de temps ?',
   memo: [
     'Le peuple exerce la **souveraineté** nationale par ses représentants et par le **référendum** ; le **suffrage universel** est égal et secret.',
-    'Au **suffrage direct**, les électeurs choisissent eux-mêmes (président, députés) ; au **suffrage indirect**, des grands électeurs choisissent (sénateurs).',
+    'Au **suffrage direct**, les électeurs choisissent eux-mêmes (président élu 5 ans, deux mandats de suite au plus ; députés) ; au **suffrage indirect**, des grands électeurs choisissent (sénateurs, élus 6 ans).',
     'Réflexe brevet : voter suppose d’être inscrit sur la **liste électorale** ; c’est un devoir civique, mais le vote n’est pas obligatoire.',
   ],
   faits: [
@@ -400,7 +402,7 @@ const elections: Notion = {
         ['neuf ans', 'Neuf ans est la durée du mandat des membres nommés du Conseil constitutionnel.'],
       ],
       ['Le président de la République est élu pour ', ' ans (en chiffres ou en lettres).', ['cinq', '5']],
-      'C’est le quinquennat.',
+      'C’est le **quinquennat** : un mandat de cinq ans, qui a remplacé en 2000 le septennat (sept ans).',
     ),
     fait(
       SENATEURS,
@@ -410,7 +412,11 @@ const elections: Notion = {
         ['par nomination du Premier ministre', 'Les sénateurs sont élus, pas nommés.'],
         ['par tirage au sort', 'Le tirage au sort concerne par exemple les jurés d’assises.'],
       ],
-      ['Les sénateurs sont élus au suffrage ', '.', ['indirect']],
+      [
+        'Les députés sont élus au suffrage direct ; les sénateurs, eux, au suffrage ',
+        '.',
+        ['indirect', 'universel indirect'],
+      ],
       'Des « grands électeurs », eux-mêmes souvent élus, choisissent les sénateurs.',
     ),
     fait(
@@ -464,7 +470,11 @@ const elections: Notion = {
           ['les seuls élus', 'Le suffrage est universel : il ne se limite pas aux élus.'],
           ['les personnes qui paient un impôt élevé', 'Ce serait un suffrage censitaire, contraire à l’universel.'],
         ],
-        ['Pour être électeur, il faut en principe être de nationalité française et ', '.', ['majeur', 'majeure']],
+        [
+          'Pour être électeur, il faut en principe être de nationalité française et ',
+          ', c’est-à-dire avoir au moins 18 ans.',
+          ['majeur', 'majeure'],
+        ],
         'La Constitution cite les nationaux français majeurs des deux sexes.',
       ),
     ),
@@ -508,7 +518,7 @@ const elections: Notion = {
     libre(
       DEVOIR,
       'voter est un droit, et aussi un devoir … (un adjectif)',
-      ['civique', 'un devoir civique'],
+      ['civique', 'un devoir civique', 'citoyen', 'un devoir citoyen'],
       [
         ['obligatoire', 'En France, le vote n’est pas obligatoire pour les citoyens.'],
         ['militaire', 'Le vote ne relève pas de l’armée.'],
@@ -552,7 +562,7 @@ const elections: Notion = {
       lines: [
         'Inès vient d’avoir 18 ans. Elle vérifie qu’elle figure sur la liste électorale de sa commune.',
         'En mars, elle vote pour choisir le conseil municipal.',
-        'Son oncle, conseiller municipal, lui explique qu’il votera aussi, plus tard, comme grand électeur.',
+        'Son oncle, conseiller municipal désigné grand électeur, lui explique qu’il votera lui aussi, plus tard.',
         'Ce second vote désignera des sénateurs.',
       ],
       qs: [
@@ -631,10 +641,7 @@ const citoyennete: Notion = {
   faits: [
     fait(
       ENGAGEMENT_EFFECTIF,
-      [
-        'Selon le programme, sur quoi repose essentiellement la vie démocratique ?',
-        'l’engagement effectif des citoyennes et des citoyens',
-      ],
+      ['Sur quoi repose essentiellement la vie démocratique ?', 'l’engagement effectif des citoyennes et des citoyens'],
       [
         [
           'le silence des citoyens entre les élections',
@@ -701,7 +708,10 @@ const citoyennete: Notion = {
     ),
     fait(
       CVL,
-      ['Dans quelle instance les lycéens sont-ils associés aux décisions de leur établissement ?', 'le CVL'],
+      [
+        'Dans quelle instance les lycéens sont-ils associés aux décisions de leur établissement ?',
+        'le conseil de la vie lycéenne (CVL)',
+      ],
       [
         ['le Sénat', 'Le Sénat est une assemblée du Parlement.'],
         ['le conseil municipal', 'Il règle les affaires de la commune.'],
@@ -717,9 +727,12 @@ const citoyennete: Notion = {
     expert(
       fait(
         IDEAL,
-        ['Comment le programme présente-t-il la démocratie ?', 'comme un idéal à atteindre, qui n’est pas figé'],
         [
-          ['comme un système achevé et immuable', 'Le programme dit l’inverse : elle n’est pas figée.'],
+          'Comment voir la démocratie pour comprendre que chacun peut encore l’améliorer ?',
+          'comme un idéal à atteindre, qui n’est pas figé',
+        ],
+        [
+          ['comme un système terminé, qui ne changera plus', 'La démocratie n’est pas figée : elle peut progresser.'],
           ['comme l’affaire des seuls élus', 'Chaque citoyen peut agir et participer.'],
           ['comme une tradition qui interdit le débat', 'La démocratie vit du débat.'],
         ],
@@ -778,7 +791,7 @@ const citoyennete: Notion = {
       lines: [
         'La mairie envisage de réduire les horaires de la bibliothèque.',
         'Hugo et une voisine créent une association pour la défendre, sans chercher à gagner d’argent.',
-        'Ils déclarent ensuite un rassemblement sur la place.',
+        'Avant de réunir des habitants sur la place, ils préviennent officiellement les autorités.',
         'Une délégation demande à rencontrer les élus.',
       ],
       qs: [
@@ -787,7 +800,7 @@ const citoyennete: Notion = {
           'Quel élément du texte montre le caractère non lucratif de leur groupe ?',
           'ils ne cherchent pas à gagner d’argent',
           [
-            ['ils déclarent un rassemblement', 'La déclaration concerne la manifestation.'],
+            ['ils préviennent les autorités', 'Cette démarche concerne le rassemblement, pas l’argent.'],
             ['ils rencontrent les élus', 'La rencontre est une démarche, pas le but financier.'],
             ['la mairie réduit des horaires', 'Ce fait explique leur action, pas leur statut.'],
           ],
@@ -851,7 +864,7 @@ const defense: Notion = {
   hint: 'Demande-toi qui décide pour la défense, et comment un citoyen peut s’engager.',
   memo: [
     'La **défense nationale** concerne tout le monde : les citoyens concourent à la défense et à la **cohésion** de la Nation.',
-    'Le président de la République est chef des armées, le Premier ministre est responsable de la défense, et le **Parlement** autorise la déclaration de guerre.',
+    'Le président de la République est chef des armées (article 15), le Premier ministre est responsable de la défense (article 21) ; le **Parlement** autorise la déclaration de guerre (article 35). À l’étranger, il est informé d’une intervention sous trois jours au plus et doit autoriser sa prolongation au-delà de quatre mois.',
     'On peut aussi s’engager dans les **institutions** : armée, police, justice, éducation. Au brevet, distingue qui décide et qui sert.',
   ],
   faits: [
@@ -904,7 +917,7 @@ const defense: Notion = {
           ['le président de l’Assemblée nationale', 'Il préside les députés, qui ne sont pas l’exécutif.'],
         ],
         ['Le Premier ministre est responsable de la Défense ', '.', ['nationale']],
-        'Il dirige l’action du Gouvernement et en est responsable en matière de défense.',
+        'L’article 21 charge le Premier ministre de diriger le Gouvernement et le rend responsable de la Défense nationale.',
       ),
     ),
     fait(
@@ -924,20 +937,23 @@ const defense: Notion = {
     fait(
       INSTITUTIONS,
       [
-        'Quelle liste ne contient que des institutions citées par le programme pour s’y engager ?',
+        'Quelle liste réunit uniquement des institutions de la République où l’on peut s’engager ?',
         'armée, police, justice, éducation',
       ],
       [
-        ['commerce, publicité, tourisme, loisirs', 'Ce sont des secteurs, pas les institutions citées.'],
-        ['armée, banque, publicité, mode', 'Seule l’armée figure dans la liste du programme.'],
-        ['club de sport, fan-club, magasin, marque', 'Aucune n’est une institution citée.'],
+        [
+          'commerce, publicité, tourisme, loisirs',
+          'Ce sont des secteurs d’activité, pas des institutions de la République.',
+        ],
+        ['armée, banque, publicité, mode', 'Dans cette liste, seule l’armée est une institution de la République.'],
+        ['club de sport, fan-club, magasin, marque', 'Aucun de ces éléments n’est une institution de la République.'],
       ],
       [
         'S’engager dans les institutions, c’est par exemple rejoindre l’armée, la police, la justice ou l’',
-        '.',
-        ['éducation', 'education'],
+        ' pour enseigner.',
+        ['éducation', 'education', 'éducation nationale', 'Éducation nationale', 'école', 'ecole'],
       ],
-      'Le programme donne ces quatre exemples d’engagement.',
+      'Armée, police, justice, éducation : quatre institutions au service de tous.',
     ),
     expert(
       fait(
@@ -988,11 +1004,17 @@ const defense: Notion = {
     ),
     libre(
       CHEF_ARMEES,
-      'qui est le chef des armées ? Le président de la …',
-      ['République', 'la République', 'republique'],
+      'qui est le chef des armées sous la Ve République ?',
       [
-        ['Défense', 'Il n’existe pas de « président de la Défense ».'],
-        ['Nation', 'Le titre exact est président de la République.'],
+        'le président de la République',
+        'président de la République',
+        'le president de la Republique',
+        'le président',
+        'président',
+      ],
+      [
+        ['le Premier ministre', 'Il est responsable de la défense, mais le chef des armées est le président.'],
+        ['le Parlement', 'Le Parlement autorise la déclaration de guerre, il ne commande pas les armées.'],
       ],
       'Le président de la République est le chef des armées.',
     ),
