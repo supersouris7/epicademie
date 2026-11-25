@@ -68,7 +68,7 @@ export function route<E extends AnyEndpoint>(
     preHandler: async (request) => {
       checkAccess(endpoint.access, request.actor, request.operator);
     },
-    handler: async (request, reply): Promise<void> => {
+    handler: async (request, reply) => {
       const result = await handler({
         actor: () => actorOf(request),
         operator: () => operatorOf(request),
@@ -81,6 +81,9 @@ export function route<E extends AnyEndpoint>(
       const raw = reply as unknown as { code(n: number): { send(body?: unknown): unknown } };
       if (endpoint.status === 204) raw.code(204).send();
       else raw.code(endpoint.status).send(result);
+      // `return reply` : sans lui, Fastify croit que rien n'est parti tant que les crochets
+      // `onSend` (asynchrones) tournent, et envoie une seconde fois (« Cannot write headers… »).
+      return reply;
     },
   });
 }
