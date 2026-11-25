@@ -1421,4 +1421,138 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Une grande avancée de terre entourée par la mer de presque tous les côtés.',
     example: 'L’Italie est une péninsule.',
   },
+  {
+    id: 'croissance-demographique',
+    word: 'croissance démographique',
+    forms: ['croissance démographique', 'croissances démographiques'],
+    definition: 'L’augmentation du nombre d’habitants d’un territoire.',
+    example: 'La population mondiale a fortement augmenté au XXe siècle : c’est une croissance démographique.',
+  },
+  {
+    id: 'natalite',
+    word: 'natalité',
+    forms: ['natalité', 'taux de natalité'],
+    definition: 'Le nombre de naissances dans une année, rapporté à 1 000 habitants.',
+    example: 'Une natalité de 20 pour 1 000 : 20 naissances pour 1 000 habitants en un an.',
+  },
+  {
+    id: 'mortalite',
+    word: 'mortalité',
+    forms: ['mortalité', 'taux de mortalité'],
+    definition: 'Le nombre de décès dans une année, rapporté à 1 000 habitants le plus souvent.',
+    example: 'Une mortalité de 9 pour 1 000 : 9 décès pour 1 000 habitants en un an.',
+  },
+  {
+    id: 'solde-naturel',
+    word: 'solde naturel',
+    forms: ['solde naturel', 'soldes naturels'],
+    definition:
+      'La différence entre la natalité et la mortalité ; il est négatif quand les décès dépassent les naissances.',
+    example: 'Natalité 20 pour 1 000, mortalité 9 pour 1 000 : solde naturel de + 11 pour 1 000.',
+  },
+  {
+    id: 'transition-demographique',
+    word: 'transition démographique',
+    forms: ['transition démographique', 'transitions démographiques'],
+    definition:
+      'Le passage d’une natalité et d’une mortalité élevées à une natalité et une mortalité basses ; la mortalité baisse la première.',
+    example: 'Pendant la transition démographique, la population augmente vite.',
+  },
+  {
+    id: 'vieillissement',
+    word: 'vieillissement',
+    forms: ['vieillissement', 'vieillissement démographique'],
+    definition: 'La hausse de la part des personnes âgées dans une population.',
+    example: 'En Europe, la part des plus de 65 ans augmente : c’est le vieillissement.',
+  },
+  {
+    id: 'developpement',
+    word: 'développement',
+    forms: ['développement'],
+    definition:
+      'L’amélioration des conditions de vie des habitants (santé, instruction, revenus), pas seulement la hausse de la production.',
+    example: 'Un pays où l’on vit plus longtemps et où tous les enfants vont à l’école se développe.',
+  },
+  {
+    id: 'pays-emergent',
+    word: 'pays émergent',
+    forms: ['pays émergent', 'pays émergents'],
+    definition:
+      'Un pays dont l’économie croît fortement depuis plusieurs années et qui s’intègre à l’économie mondiale.',
+    example: 'La Chine, l’Inde et le Brésil sont des pays émergents.',
+  },
+  {
+    id: 'pma',
+    word: 'pays les moins avancés',
+    forms: ['pays les moins avancés', 'pays moins avancé', 'pma'],
+    definition: 'Les pays les plus pauvres du monde, selon une liste établie par l’ONU (PMA).',
+    example: 'La plupart des pays les moins avancés sont situés en Afrique.',
+  },
+  {
+    id: 'esperance-de-vie',
+    word: 'espérance de vie',
+    forms: ['espérance de vie', 'espérances de vie'],
+    definition:
+      'Le nombre moyen d’années que peut espérer vivre un nouveau-né, dans les conditions de santé de son pays.',
+    example: 'En 2022, l’espérance de vie atteignait 80 ans dans les pays à hauts revenus.',
+  },
+  {
+    id: 'idh',
+    word: 'IDH',
+    forms: ['idh', 'indice de développement humain'],
+    definition: 'L’indice de développement humain : il combine la santé, l’éducation et le niveau de vie d’un pays.',
+    example: 'Un pays où l’on vit longtemps et où l’on étudie longtemps a un IDH élevé.',
+  },
+  {
+    id: 'niveau-de-vie',
+    word: 'niveau de vie',
+    forms: ['niveau de vie', 'niveaux de vie'],
+    definition:
+      'Ce que les revenus d’une personne lui permettent de consommer ; pour un pays, on le mesure par le revenu par habitant.',
+    example: 'Dans l’IDH, le niveau de vie se mesure par le revenu national brut par habitant.',
+  },
+  {
+    id: 'pnud',
+    word: 'PNUD',
+    forms: ['pnud'],
+    definition: 'Le Programme des Nations unies pour le développement, qui calcule l’IDH chaque année.',
+    example: 'Le PNUD publie chaque année le classement des pays selon l’IDH.',
+  },
+  {
+    id: 'indicateur-composite',
+    word: 'indicateur composite',
+    forms: ['indicateur composite', 'indice composite', 'indicateurs composites'],
+    definition: 'Un indicateur qui réunit plusieurs mesures différentes en un seul chiffre.',
+    example: 'L’IDH est un indicateur composite : il réunit trois mesures.',
+  },
+  {
+    id: 'pauvrete',
+    word: 'pauvreté',
+    forms: ['pauvreté', 'pauvre', 'pauvres'],
+    definition:
+      'Le fait d’avoir des revenus bien plus faibles que les autres ; en France, moins de 60 % du revenu médian.',
+    example: 'Une personne sous le seuil de pauvreté a du mal à payer son logement et sa nourriture.',
+  },
+  {
+    id: 'richesse',
+    word: 'richesse',
+    forms: ['richesse', 'richesses'],
+    definition:
+      'Les biens et les revenus dont dispose une personne ou un pays ; elle se comprend toujours par comparaison avec la pauvreté.',
+    example: 'La richesse produite par un pays se mesure par exemple par son PIB.',
+  },
+  {
+    id: 'revenu-median',
+    word: 'revenu médian',
+    forms: ['revenu médian', 'revenus médians', 'médiane des revenus'],
+    definition: 'Le revenu qui partage la population en deux : la moitié gagne plus, l’autre moitié gagne moins.',
+    example: 'Si le revenu médian est de 2 000 €, la moitié des gens gagnent moins de 2 000 €.',
+  },
+  {
+    id: 'odd',
+    word: 'ODD',
+    forms: ['odd', 'objectifs de développement durable', 'objectif de développement durable'],
+    definition: 'Les objectifs de développement durable fixés par l’ONU à tous les pays, chacun désigné par un numéro.',
+    example: 'L’ODD 1 vise l’éradication de la pauvreté.',
+  },
 ];
