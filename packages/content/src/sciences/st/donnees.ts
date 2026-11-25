@@ -1,5 +1,5 @@
 /**
- * Faits des chapitres « La matière », « Mouvement et énergie » et « Le vivant » (CM1), puis « Matériaux et mélanges » et « Mouvement et énergie » (CM2) et « Signal et information » (6e). Chaque fait cite son identifiant de source (registre `sources.ts`) et la
+ * Faits des chapitres « La matière », « Mouvement et énergie » et « Le vivant » (CM1), puis « Matériaux et mélanges » et « Mouvement et énergie » et « Le corps humain » (CM2) et « Signal et information » (6e). Chaque fait cite son identifiant de source (registre `sources.ts`) et la
  * citation exacte du texte officiel (programme du cycle 3, Éduscol, domaine « Matière, mouvement, énergie,
  * information »). Les exemples du quotidien (un caillou, une pomme, la buée…) illustrent ces faits : ils ne sont pas des faits.
  */
@@ -714,5 +714,165 @@ export const FAITS: readonly Fait[] = [
     id: 'conversion-attendu',
     source: PROGRAMME,
     citation: 'Identifier les formes d’énergie mises en jeu dans un dispositif de conversion d’énergie.',
+  },
+  // ——— Chapitre « Le corps humain » (CM2) : programme, CNRTL, Académie française, Santé publique France. ———
+  {
+    id: 'corps-role-aliments',
+    source: PROGRAMME,
+    citation: 'Expliquer le rôle des aliments pour le fonctionnement de l’organisme.',
+  },
+  {
+    id: 'corps-trajet',
+    source: PROGRAMME,
+    citation:
+      'Identifier et localiser la transformation des aliments dans l’appareil digestif (mastication par les dents, changements de texture lors du trajet).',
+  },
+  {
+    id: 'corps-circulation',
+    source: PROGRAMME,
+    citation: 'Identifier le rôle de la circulation sanguine dans l’approvisionnement des organes.',
+  },
+  {
+    id: 'corps-comportements',
+    source: PROGRAMME,
+    citation:
+      'Citer quelques comportements alimentaires et règles d’hygiène favorables à la santé (équilibre alimentaire, qualité sanitaire des aliments, brossage des dents, etc.).',
+  },
+  {
+    id: 'digestion-def',
+    source: 'cnrtl-digestion',
+    citation:
+      "Ensemble des transformations, d'ordre mécanique ou chimique, subies par les aliments dans le tube digestif avant de parvenir à l'état sous lequel ils sont assimilables par les cellules",
+  },
+  {
+    id: 'mastication-def',
+    source: 'cnrtl-mastication',
+    citation:
+      'Action de mastiquer, de broyer les aliments avec les dents de manière à en favoriser la déglutition et la digestion.',
+  },
+  { id: 'dent-role', source: 'cnrtl-dent', citation: 'destiné à saisir, retenir et broyer les aliments.' },
+  {
+    id: 'salive-def',
+    source: 'cnrtl-salive',
+    citation:
+      'Liquide physiologique incolore, alcalin, plus ou moins visqueux, qui humecte la bouche et qui sert principalement à la digestion buccale',
+  },
+  {
+    id: 'oesophage-def',
+    source: 'cnrtl-oesophage',
+    citation:
+      "Segment du tube digestif reliant le pharynx à l'estomac, et dont la fonction est de conduire les aliments dans l'estomac après la déglutition.",
+  },
+  {
+    id: 'estomac-def',
+    source: 'cnrtl-estomac',
+    citation: 'Organe en forme de poche dans lequel les aliments sont brassés, transformés en chyme',
+  },
+  { id: 'intestin-def', source: 'cnrtl-intestin', citation: "Partie du tube digestif qui va de l'estomac à l'anus." },
+  {
+    id: 'intestin-grele',
+    source: 'cnrtl-intestin',
+    citation: 'Segment du tube digestif allant du pylore au gros intestin',
+  },
+  { id: 'gros-intestin', source: 'cnrtl-intestin', citation: 'Dernière partie du tube digestif' },
+  {
+    id: 'chyle-sang',
+    source: 'cnrtl-chyle',
+    citation:
+      "Produit de la digestion d'apparence laiteuse qui est absorbé par la paroi de l'intestin grêle pour être conduit dans la circulation sanguine",
+  },
+  {
+    id: 'aliment-def',
+    source: 'cnrtl-aliment',
+    citation:
+      'Toute substance susceptible de fournir aux êtres vivants les éléments nécessaires à leur croissance ou à leur conservation',
+  },
+  {
+    id: 'aliment-jeunes',
+    source: 'cnrtl-aliment',
+    citation:
+      "chez les êtres jeunes, ils doivent en outre servir à l'édification, au développement de chaque partie du corps",
+  },
+  {
+    id: 'croissance-def',
+    source: 'cnrtl-croissance',
+    citation: 'Action de grandir (surtout en hauteur, largeur ou en nombre)',
+  },
+  {
+    id: 'activite-def',
+    source: 'spf-activite-physique-2017',
+    citation:
+      'L’activité physique correspond à tous les mouvements de notre corps produits par la contraction des muscles et qui entraînent une dépense en énergie supérieure à celle du repos.',
+  },
+  {
+    id: 'activite-exemples',
+    source: 'spf-activite-physique-2017',
+    citation:
+      'se déplacer à pied ou à vélo, porter une charge, monter ou descendre les escaliers, être actif à son domicile sont des pratiques d’activité physique.',
+  },
+  {
+    id: 'activite-enfants',
+    source: 'spf-activite-physique-2017',
+    citation: 'pratiquer au moins une heure par jour d’activité physique d’intensité modérée et élevée.',
+  },
+  {
+    id: 'ecrans-enfants',
+    source: 'spf-activite-physique-2017',
+    citation: 'limiter le temps de loisir passé devant un écran à deux heures par jour.',
+  },
+  { id: 'repas-fruits', source: 'spf-alimentation-2019', citation: 'Au moins 5 fruits et légumes par jour' },
+  {
+    id: 'repas-legumes-secs',
+    source: 'spf-alimentation-2019',
+    citation: 'Des légumes secs au moins 2 fois par semaine : lentilles, haricots secs, pois chiches, etc.',
+  },
+  { id: 'repas-eau', source: 'spf-alimentation-2019', citation: 'L’eau est la seule boisson recommandée' },
+  {
+    id: 'repas-sucrees',
+    source: 'spf-alimentation-2019',
+    citation:
+      'On entend par boissons sucrées : les jus de fruits, les boissons aux fruits, les sirops, les eaux aromatisées, les sodas même « light » et les boissons dites « énergisantes ».',
+  },
+  {
+    id: 'repas-sucrees-limite',
+    source: 'spf-alimentation-2019',
+    citation: 'Les boissons sucrées doivent être limitées le plus possible',
+  },
+  { id: 'repas-sel', source: 'spf-alimentation-2019', citation: 'Limiter la consommation de sel et de produits salés' },
+  {
+    id: 'repas-sel-origine',
+    source: 'spf-alimentation-2019',
+    citation:
+      'Le sel consommé provient surtout des produits transformés : charcuterie, plats préparés du commerce, soupes déshydratées, fromage, pain, etc.',
+  },
+  {
+    id: 'repas-gras',
+    source: 'spf-alimentation-2019',
+    citation: 'Réduire la consommation d’aliments gras, sucrés, salés et ultra-transformés',
+  },
+  { id: 'repas-variete', source: 'spf-alimentation-2019', citation: 'privilégier la variété, le fait maison' },
+  {
+    id: 'sang-def',
+    source: 'cnrtl-sang',
+    citation:
+      "propulsé par le cœur dans un système fermé de vaisseaux (appareil circulatoire), remplit de multiples fonctions essentielles à l'organisme (notamment la fonction nutritive, respiratoire, excrétoire, immunisante)",
+  },
+  { id: 'coeur-role', source: 'cnrtl-coeur', citation: 'agent principal de la circulation sanguine' },
+  {
+    id: 'artere-def',
+    source: 'cnrtl-artere',
+    citation:
+      'Chacun des vaisseaux qui, partant des ventricules du cœur, distribuent le sang dans toutes les parties du corps',
+  },
+  {
+    id: 'veine-def',
+    source: 'cnrtl-veine',
+    citation: 'Vaisseau sanguin dans lequel la circulation se fait de la périphérie vers le cœur.',
+  },
+  {
+    id: 'capillaire-def',
+    source: 'academie-capillaire',
+    citation:
+      'les très fins vaisseaux qui joignent les artérioles aux veinules et permettent les échanges nutritifs et gazeux entre le sang et les cellules.',
   },
 ];
