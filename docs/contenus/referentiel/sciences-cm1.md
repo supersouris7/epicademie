@@ -13,7 +13,7 @@
 | ----------- | -------------------------------- | -------------------------------------------------------------------------------------------------------- | ---------------------- |
 | `st-cm1-01` | La matière                       | états solide, liquide, gazeux ; l'eau et ses changements d'état ; masse et volume ; mélanges             | couverte, en relecture |
 | `st-cm1-02` | Mouvement et énergie             | sources d'énergie ; formes d'énergie ; décrire un mouvement ; énergie et vie quotidienne                 | couverte, en relecture |
-| `st-cm1-03` | Le vivant                        | classer les êtres vivants ; besoins des végétaux ; besoins des animaux ; développement et croissance     | absente                |
+| `st-cm1-03` | Le vivant                        | classer les êtres vivants ; besoins des végétaux ; besoins des animaux ; développement et croissance     | couverte, en relecture |
 | `st-cm1-04` | Matériaux et objets techniques   | familles de matériaux ; besoin et fonction d'un objet ; évolution d'un objet ; circuit électrique simple | absente                |
 | `st-cm1-05` | La Terre dans le système solaire | le système solaire ; jour et nuit ; les saisons ; la Lune                                                | absente                |
 

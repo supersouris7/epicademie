@@ -3,6 +3,8 @@ import { choice } from '../build.ts';
 import { SKILLS as AVANT_LA_FRANCE } from './avant-la-france.ts';
 import { SKILLS as TEMPS_DES_ROIS } from './le-temps-des-rois.ts';
 import { SKILLS as REVOLUTION_EMPIRE } from './revolution-empire.ts';
+import { SKILLS as SE_REPERER } from './se-reperer.ts';
+import { SKILLS as TEMPS_REPUBLIQUE } from './temps-republique.ts';
 
 /**
  * Histoire, cycle 3 (docs/adr/0024-contenus-hors-maths.md). Source institutionnelle unique :
@@ -201,8 +203,10 @@ export const HISTOIRE_CHAPTERS: readonly Chapter[] = [
   chapter('hcm1-avant-la-france', 'cm1', 'Et avant la France ?', AVANT_LA_FRANCE),
   chapter('hcm1-temps-des-rois', 'cm1', 'Le temps des rois', TEMPS_DES_ROIS),
   chapter('hcm1-revolution-empire', 'cm1', 'Révolution et Empire', REVOLUTION_EMPIRE),
+  chapter('hcm1-se-reperer', 'cm1', 'Se repérer dans le temps', SE_REPERER),
   chapter('hcm2-reperes', 'cm2', 'La République et le XXe siècle', [
     skillOf('hcm2-reperes', 'Repères de CM2', CM2, 'CM2'),
   ]),
+  chapter('hcm2-temps-republique', 'cm2', 'Le temps de la République', TEMPS_REPUBLIQUE),
   chapter('h6-reperes', '6e', 'L’Antiquité', [skillOf('h6-reperes', 'Repères de 6e', SIXIEME, 'sixième')]),
 ];

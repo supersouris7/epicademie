@@ -1,5 +1,5 @@
 /**
- * Faits des chapitres « La matière » et « Mouvement et énergie » (CM1). Chaque fait cite son identifiant de source (registre `sources.ts`) et la
+ * Faits des chapitres « La matière », « Mouvement et énergie » et « Le vivant » (CM1). Chaque fait cite son identifiant de source (registre `sources.ts`) et la
  * citation exacte du texte officiel (programme du cycle 3, Éduscol, domaine « Matière, mouvement, énergie,
  * information »). Les exemples du quotidien (un caillou, une pomme, la buée…) illustrent ces faits : ils ne sont pas des faits.
  */
@@ -166,5 +166,264 @@ export const FAITS: readonly Fait[] = [
     id: 'mouvement-conversions',
     source: PROGRAMME,
     citation: 'Effectuer des conversions d’unités de distance et de temps.',
+  },
+  // ——— Chapitre « Le vivant » : programme du cycle 3 et définitions du Trésor de la langue française (CNRTL). ———
+  {
+    id: 'vivant-classer',
+    source: PROGRAMME,
+    citation:
+      "Réaliser une classification en groupes emboités pour mettre en évidence des liens de parenté à partir d'un petit nombre d’espèces possédant des attributs identifiés.",
+  },
+  {
+    id: 'vivant-matiere',
+    source: PROGRAMME,
+    citation:
+      'Exploiter des données mettant en évidence le besoin de matière pour la croissance et le développement des êtres vivants.',
+  },
+  {
+    id: 'vivant-besoins-variation',
+    source: PROGRAMME,
+    citation:
+      'Exploiter des données pour expliquer la variation des besoins alimentaires au cours de la croissance et selon l’activité physique.',
+  },
+  {
+    id: 'vivant-animaux-nourriture',
+    source: PROGRAMME,
+    citation:
+      'Relier la production de matière par les animaux à leur consommation de nourriture provenant d’autres êtres vivants.',
+  },
+  {
+    id: 'vivant-vegetaux-besoins',
+    source: PROGRAMME,
+    citation: 'Expérimenter pour identifier quelques besoins des végétaux.',
+  },
+  {
+    id: 'vivant-vegetaux-liste',
+    source: PROGRAMME,
+    citation:
+      'Concevoir et mettre en œuvre des expériences pour relier la production de matière par les végétaux et leurs besoins (lumière, eau, sels minéraux, dioxyde de carbone).',
+  },
+  {
+    id: 'vivant-vegetaux-base',
+    source: PROGRAMME,
+    citation: 'Repérer la place singulière des végétaux positionnés à la base des réseaux alimentaires.',
+  },
+  {
+    id: 'vivant-chaines',
+    source: PROGRAMME,
+    citation: 'Représenter les liens alimentaires entre les êtres vivants par des chaînes formant un réseau.',
+  },
+  {
+    id: 'vivant-cycle',
+    source: PROGRAMME,
+    citation:
+      'Exploiter des observations issues de cultures ou d’élevages pour identifier les différentes étapes d’un cycle de vie (naissance, croissance, reproduction, vieillissement, mort) et les formes associées (graine-plantule-plante fleurie, œuf-embryon-larve ou jeune-adulte).',
+  },
+  {
+    id: 'vertebre-classes',
+    source: 'cnrtl-vertebre',
+    citation:
+      'Embranchement du règne animal comprenant tous les organismes constitués de vertèbres osseuses ou cartilagineuses, répartis en cinq classes: Batraciens, Mammifères, Oiseaux, Poissons, Reptiles.',
+  },
+  {
+    id: 'vertebre-def',
+    source: 'cnrtl-vertebre',
+    citation: 'Qui a des vertèbres, un squelette.',
+  },
+  {
+    id: 'invertebre-def',
+    source: 'cnrtl-invertebre',
+    citation: "Qui n'a ni vertèbres ni squelette intérieur.",
+  },
+  {
+    id: 'mammifere-def',
+    source: 'cnrtl-mammifere',
+    citation:
+      "Classe d'animaux vertébrés, vivipares, qui sont caractérisés essentiellement par la présence de mamelles, d'un cœur à quatre cavités, d'un système nerveux et encéphalique développé, par une température interne constante et une respiration de type pulmonaire.",
+  },
+  {
+    id: 'oiseau-def',
+    source: 'cnrtl-oiseau',
+    citation:
+      "Animal ovipare appartenant à la classe des vertébrés tétrapodes, à sang chaud, au corps couvert de plumes, dont la tête est munie d'un bec corné dépourvu de dents, dont les membres postérieurs sont des pattes et les membres antérieurs des ailes, ce qui le rend le plus souvent apte au vol.",
+  },
+  {
+    id: 'poisson-def',
+    source: 'cnrtl-poisson',
+    citation:
+      "Animal aquatique vertébré à peau non cornée, à température variable et à respiration généralement branchiale, pourvu de nageoires et possédant généralement une vessie natatoire, présentant souvent un corps fusiforme et couvert d'écailles, qui se reproduit selon le mode ovipare ou vivipare.",
+  },
+  {
+    id: 'batracien-def',
+    source: 'cnrtl-batracien',
+    citation:
+      'Animal à sang froid, à peau nue et humide, à respiration branchiale chez les larves (les têtards), presque toujours pulmo-cutanée chez les adultes, et dont le type est la grenouille.',
+  },
+  {
+    id: 'insecte-def',
+    source: 'cnrtl-insecte',
+    citation:
+      "Petit animal invertébré arthropode caractérisé par un corps formé de trois parties bien distinctes : la tête, le thorax, muni de trois paires de pattes, et l'abdomen.",
+  },
+  {
+    id: 'arachnide-def',
+    source: 'cnrtl-arachnide',
+    citation:
+      "Classe d'arthropodes terrestres à huit pattes, sans ailes ni antennes, comme les araignées, les faucheurs, les scorpions et dont le corps comprend en général deux segments : l'abdomen et le céphalothorax qui porte l'appareil buccal.",
+  },
+  {
+    id: 'mollusque-def',
+    source: 'cnrtl-mollusque',
+    citation:
+      "Embranchement d'animaux invertébrés, vivant en eau douce ou salée ou sur terre, dont le corps mou est souvent recouvert d'une coquille calcaire et comprend fondamentalement une région céphalique que prolonge la masse viscérale supportée par le pied, organe ventral musculeux.",
+  },
+  {
+    id: 'espece-chat',
+    source: 'cnrtl-chat',
+    citation:
+      'Genre de mammifères carnivores de la famille des Félidés comprenant le lion, le tigre, la panthère, le lynx, etc. Nom sc. felis.',
+  },
+  {
+    id: 'espece-chauve-souris',
+    source: 'cnrtl-chauve-souris',
+    citation:
+      'Petit mammifère de la famille des Chéiroptères ressemblant à une souris et volant grâce à des ailes membraneuses.',
+  },
+  {
+    id: 'espece-baleine',
+    source: 'cnrtl-baleine',
+    citation:
+      "Mammifère marin de très grande taille, de l'ordre des cétacés, qui présente à la machoire supérieure de grandes lames cornées appelées fanons :",
+  },
+  {
+    id: 'espece-pigeon',
+    source: 'cnrtl-pigeon',
+    citation: 'Oiseau domestique granivore de la famille des Colombidés',
+  },
+  {
+    id: 'espece-manchot',
+    source: 'cnrtl-manchot',
+    citation:
+      "Oiseau palmipède marin d'assez grande taille, souvent confondu avec le pingouin, auquel les membres antérieurs impropres au vol servent de nageoire, qui vit en colonies nombreuses dans les régions australes, notamment dans l'Antarctique, et qui se nourrit de poissons.",
+  },
+  {
+    id: 'espece-truite',
+    source: 'cnrtl-truite',
+    citation:
+      'Poisson physostome, de la famille des Salmonidés, comprenant plusieurs espèces, au corps fusiforme couvert de petites écailles argentées',
+  },
+  {
+    id: 'espece-grenouille',
+    source: 'cnrtl-grenouille',
+    citation: 'appartenant à la classe des Batraciens.',
+  },
+  {
+    id: 'espece-mouche',
+    source: 'cnrtl-mouche',
+    citation: 'Insecte volant.',
+  },
+  {
+    id: 'espece-coccinelle',
+    source: 'cnrtl-coccinelle',
+    citation:
+      'Insecte coléoptère cryptotétrame, de la famille des Coccinellidés au corps hémisphérique rouge avec des points noirs.',
+  },
+  {
+    id: 'espece-papillon',
+    source: 'cnrtl-papillon',
+    citation: "Insecte lépidoptère pourvu d'ailes colorées à écailles fines et poudreuses.",
+  },
+  {
+    id: 'espece-abeille',
+    source: 'cnrtl-abeille',
+    citation: 'Insecte hyménoptère vivant en colonie et produisant la cire et le miel.',
+  },
+  {
+    id: 'espece-escargot',
+    source: 'cnrtl-escargot',
+    citation:
+      'Mollusque gastéropode terrestre, hermaphrodite, à coquille calcaire spiralée, qui est herbivore et dont certaines espèces sont comestibles.',
+  },
+  {
+    id: 'espece-araignee',
+    source: 'cnrtl-araignee',
+    citation:
+      "Animal articulé de la classe des arachnides et de l'ordre des aranéides et qui tisse une toile où se prennent les insectes dont il se nourrit.",
+  },
+  {
+    id: 'racine-def',
+    source: 'cnrtl-racine',
+    citation:
+      "Partie inférieure, le plus souvent souterraine, d'une plante vasculaire, qui permet la fixation du végétal dans le sol tout en assurant son alimentation en eau et en sels minéraux.",
+  },
+  {
+    id: 'etioler-def',
+    source: 'cnrtl-etioler',
+    citation: "Se décolorer, devenir grêle et moins amer en poussant à l'abri de l'air, de la lumière",
+  },
+  {
+    id: 'herbivore-def',
+    source: 'cnrtl-herbivore',
+    citation: "Qui se nourrit d'herbes ou d'autres substances végétales.",
+  },
+  {
+    id: 'carnivore-def',
+    source: 'cnrtl-carnivore',
+    citation: "En parlant d'un animal. Qui se nourrit principalement de la chair d'autres animaux.",
+  },
+  {
+    id: 'omnivore-def',
+    source: 'cnrtl-omnivore',
+    citation: "Qui se nourrit indifféremment d'aliments d'origine animale ou végétale.",
+  },
+  {
+    id: 'germination-def',
+    source: 'cnrtl-germination',
+    citation:
+      'Ensemble des phénomènes au terme desquels une graine développe son embryon et donne naissance à une nouvelle plante de la même espèce que la sienne propre.',
+  },
+  {
+    id: 'embryon-graine',
+    source: 'cnrtl-embryon',
+    citation: 'Jeune plante renfermée dans la graine.',
+  },
+  {
+    id: 'embryon-oeuf',
+    source: 'cnrtl-embryon',
+    citation:
+      "L'œuf à partir du moment où commence sa segmentation jusqu'au moment où il se libère des enveloppes vitellines.",
+  },
+  {
+    id: 'plantule-def',
+    source: 'cnrtl-plantule',
+    citation:
+      'Jeune plante issue de la germination de la graine, qui se développe en utilisant les réserves des cotylédons.',
+  },
+  {
+    id: 'fruit-def',
+    source: 'cnrtl-fruit',
+    citation: 'Production du végétal qui succède à la fleur.',
+  },
+  {
+    id: 'larve-def',
+    source: 'cnrtl-larve',
+    citation:
+      "Forme intermédiaire qu'affectent certains animaux, notamment les insectes, au premier stade de leur développement, avant le stade adulte.",
+  },
+  {
+    id: 'tetard-def',
+    source: 'cnrtl-tetard',
+    citation:
+      'Larve des Batraciens, à grosse tête prolongée directement par le corps, à respiration branchiale et à vie exclusivement aquatique.',
+  },
+  {
+    id: 'chenille-def',
+    source: 'cnrtl-chenille',
+    citation: "Larve de papillon, au corps allongé, formé d'anneaux et généralement velu",
+  },
+  {
+    id: 'chrysalide-def',
+    source: 'cnrtl-chrysalide',
+    citation: "Nymphe des lépidoptères dont l'état est intermédiaire entre celui de chenille et celui de papillon",
   },
 ];
