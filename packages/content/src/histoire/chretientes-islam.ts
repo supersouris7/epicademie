@@ -16,9 +16,9 @@ const byzance: Notion = {
   title: 'Byzance et l’Europe carolingienne',
   hint: 'Situe d’abord la question : Constantinople (l’Orient) ou l’Occident de Charlemagne ? Puis cherche le titre, la date ou l’acteur.',
   memo: [
-    'De Justinien (527-565) à la prise de Bagdad (1258), on étudie comment des empires naissent, s’unissent ou se morcellent. À Constantinople, capitale de l’**empire byzantin**, l’empereur porte le titre de **basileus** ; il nomme le **patriarche** de Constantinople.',
+    'De Justinien (527-565) à la prise de Bagdad (1258), on étudie comment des empires naissent, s’unissent ou se morcellent. À Constantinople, capitale de l’**empire byzantin**, l’empereur porte le titre de **basileus** ; il nomme le **patriarche** de Constantinople. C’est l’empereur Héraclius (mort en 641) qui a pris le titre de basileus.',
     'En Occident, **Charlemagne** est couronné empereur en 800 : il reprend le titre d’Auguste, héritage des empereurs romains. Depuis son palais d’Aix-la-Chapelle, il gouverne avec des représentants du pouvoir central.',
-    'Mais l’empire **carolingien** se morcelle : le traité de Verdun le partage en 843. En 962, Otton Ier restaure la dignité impériale : c’est le début du **Saint-Empire romain germanique**.',
+    'Charlemagne n’a finalement qu’un héritier, Louis le Pieux. Mais l’empire **carolingien** se morcelle : le traité de Verdun le partage en 843. En 962, Otton Ier restaure la dignité impériale : c’est le début du **Saint-Empire romain germanique**.',
   ],
   faits: [
     {
@@ -45,7 +45,7 @@ const byzance: Notion = {
           why: 'Le patriarche est le chef religieux de l’Église de Constantinople ; il est nommé par l’empereur.',
         },
       ],
-      gap: ['À Constantinople, l’empereur porte le titre de ', '.', ['basileus']],
+      gap: ['À Constantinople, l’empereur porte le titre de ', '.', ['basileus', 'basiléus']],
       explain: 'Le titre romain d’Auguste devient, à Constantinople, celui de basileus.',
     },
     {
@@ -83,14 +83,14 @@ const byzance: Notion = {
     },
     {
       ...P.aix,
-      q: 'Dans quelle ville se trouve le palais où l’on étudie Charlemagne et le lien entre religion et pouvoir ?',
+      q: 'Dans quelle ville se trouve le palais de Charlemagne, qui montre le lien entre religion et pouvoir ?',
       a: 'Aix-la-Chapelle',
       wrong: [
         { label: 'Bagdad', why: 'Bagdad est la capitale des califes abbassides.' },
         { label: 'Constantinople', why: 'Constantinople est la ville du basileus, l’empereur byzantin.' },
         { label: 'Damas', why: 'Damas est la capitale des califes omeyyades.' },
       ],
-      gap: ['On étudie Charlemagne en son palais d’', '.', ['Aix-la-Chapelle', 'Aix la Chapelle', 'Aix']],
+      gap: ['Charlemagne gouverne depuis son palais d’', '.', ['Aix-la-Chapelle', 'Aix la Chapelle', 'Aix']],
       explain: 'Le palais d’Aix-la-Chapelle montre le lien entre la religion et le pouvoir de Charlemagne.',
     },
     {
@@ -108,7 +108,7 @@ const byzance: Notion = {
           why: 'Les évêques d’Occident sont liés au pape, à Rome, pas à Constantinople.',
         },
       ],
-      gap: ['Le patriarche de Constantinople est nommé par l’', ' byzantin, qui le soumet.', ['empereur']],
+      gap: ['Le patriarche de Constantinople, soumis au pouvoir, est nommé par l’', ' byzantin.', ['empereur']],
       explain:
         'L’empereur byzantin est le vrai chef religieux de l’Orient : il nomme le patriarche, qui lui est soumis.',
     },
@@ -137,7 +137,7 @@ const byzance: Notion = {
     {
       ...P.pertes,
       q: 'Quelles régions l’empire byzantin perd-il lors de la conquête arabe ?',
-      a: 'la Syrie, l’Égypte et l’Afrique',
+      a: 'la Syrie, l’Égypte et l’Afrique du Nord',
       wrong: [
         { label: 'la Chine et l’Inde', why: 'La Chine et l’Inde n’ont jamais fait partie de l’empire byzantin.' },
         {
@@ -151,10 +151,11 @@ const byzance: Notion = {
       ],
       gap: [
         'La conquête arabe fait perdre à l’empire byzantin la Syrie, l’',
-        ' et toute l’Afrique.',
+        ' et toute l’Afrique du Nord.',
         ['Égypte', 'Egypte'],
       ],
-      explain: 'La conquête arabe fait perdre à l’empire byzantin la Syrie, l’Égypte et toute l’Afrique.',
+      explain:
+        'La conquête arabe fait perdre à l’empire byzantin la Syrie, l’Égypte et toutes ses terres d’Afrique, au nord du continent.',
     },
   ],
   paires3: [
@@ -179,7 +180,7 @@ const byzance: Notion = {
     {
       ...P.basileus,
       q: 'Quel titre l’empereur porte-t-il à Constantinople ? (un mot)',
-      accepted: ['basileus', 'le basileus'],
+      accepted: ['basileus', 'le basileus', 'basiléus', 'le basiléus'],
       traps: [
         { text: 'calife', why: 'Le calife est le « successeur » de Muhammad, dans le monde musulman.' },
         {
@@ -275,7 +276,7 @@ const byzance: Notion = {
         'À Constantinople, l’empereur porte le titre de basileus.',
         'Son palais se dresse près d’une grande basilique.',
         'Le basileus nomme le patriarche de Constantinople, qui lui est soumis.',
-        'Avec la conquête arabe, l’empire perd la Syrie, l’Égypte et toute l’Afrique.',
+        'Avec la conquête arabe, l’empire perd la Syrie, l’Égypte et toute l’Afrique du Nord.',
       ],
       qs: [
         {
@@ -316,7 +317,7 @@ const islam: Notion = {
   title: 'De la naissance de l’islam à la prise de Bagdad',
   hint: 'Repère la dynastie et sa capitale : Omeyyades à Damas, Abbassides à Bagdad. Puis vérifie la date.',
   memo: [
-    'En 622, l’**Hégire** marque le début de l’ère musulmane. Le **calife** (« successeur ») se réclame de l’héritage de Muhammad. Le programme invite à comparer ses fonctions à celles du basileus et de l’empereur.',
+    'En 622, l’**Hégire** marque le début de l’ère musulmane. Le **calife** (« successeur ») se réclame de l’héritage de Muhammad. Calife, basileus, empereur : compare ces trois pouvoirs, tous liés à la religion.',
     'Très tôt, le monde musulman se divise : à propos d’Ali, quatrième calife, naît l’opposition entre **sunnites** et **chiites**. Les **Omeyyades** règnent depuis Damas jusqu’en 750 ; puis les **Abbassides** s’imposent et gouvernent depuis Bagdad.',
     'Un Omeyyade rescapé fonde un nouvel État à Cordoue. En 1258, la prise de Bagdad par les **Mongols** met fin à la puissance du **califat** abbasside. Retiens le couple : Damas (Omeyyades), puis Bagdad (Abbassides).',
   ],
@@ -624,7 +625,8 @@ const contacts: Notion = {
   memo: [
     'Chrétientés et islam sont en contact autour de la Méditerranée, sillonnée par des marins, des guerriers et des marchands. Ces contacts peuvent être pacifiques ou guerriers : il faut garder les deux en tête.',
     'Contacts pacifiques : Charlemagne noue des relations **diplomatiques** avec Haroun al-Rachid, calife de Bagdad ; à Tolède, des traducteurs aident au partage de l’héritage antique ; le commerce est d’abord dominé par Byzance, puis par les cités italiennes.',
-    'Contacts guerriers : les **croisades** (prise de Jérusalem en 1099). Les deux **chrétientés** s’écartent : **excommunication** mutuelle du pape et du patriarche en 1054, puis sac de Constantinople par les croisés en 1204.',
+    'Contacts guerriers : les **croisades** (prise de Jérusalem en 1099). Les deux **chrétientés** s’écartent : **excommunication** mutuelle du pape et du patriarche en 1054, puis **sac** de Constantinople par les croisés en 1204.',
+    'À retenir aussi : la bataille dite de Poitiers (732 ou 733), l’école d’astronomie de Cordoue, les lettres échangées entre Saladin et Richard Cœur de Lion, et l’empereur byzantin Alexis Comnène, qui voit passer les chefs de la première croisade.',
   ],
   faits: [
     {
@@ -676,7 +678,7 @@ const contacts: Notion = {
       gap: [
         'Charlemagne noue des relations diplomatiques avec le calife abbasside ',
         ', à Bagdad.',
-        ['Haroun al-Rachid', 'Haroun al Rachid', 'Haroun al-Rashid', 'Haroun'],
+        ['Haroun al-Rachid', 'Haroun al Rachid', 'Haroun al-Rashid', 'Haroun ar-Rachid', 'Harun al-Rashid', 'Haroun'],
       ],
       explain: 'Charlemagne noue des relations diplomatiques avec Haroun al-Rachid, calife abbasside de Bagdad.',
     },
@@ -733,7 +735,7 @@ const contacts: Notion = {
       gap: [
         'Le commerce méditerranéen est d’abord dominé par l’empire byzantin, puis par les cités ',
         '.',
-        ['italiennes'],
+        ['italiennes', 'd’Italie'],
       ],
       explain: 'Les échanges commerciaux sont d’abord dominés par l’empire byzantin, puis par les cités italiennes.',
     },
@@ -824,7 +826,14 @@ const contacts: Notion = {
     {
       ...P.haroun,
       q: 'Quel calife abbasside entretient des relations diplomatiques avec Charlemagne ? (un nom)',
-      accepted: ['Haroun al-Rachid', 'Haroun al Rachid', 'Haroun al-Rashid', 'Haroun'],
+      accepted: [
+        'Haroun al-Rachid',
+        'Haroun al Rachid',
+        'Haroun al-Rashid',
+        'Haroun ar-Rachid',
+        'Harun al-Rashid',
+        'Haroun',
+      ],
       traps: [
         { text: 'Saladin', why: 'Saladin vit au XIIe siècle et échange avec Richard Cœur de Lion.' },
         { text: 'Ali', why: 'Ali est le quatrième calife, bien avant Charlemagne.' },
