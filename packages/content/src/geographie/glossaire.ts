@@ -359,4 +359,32 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'La partie de la France située en Europe.',
     example: 'La Corse fait partie de la France métropolitaine.',
   },
+  {
+    id: 'web',
+    word: 'Web',
+    forms: ['Web'],
+    definition: 'Un service d’Internet : l’ensemble des pages que l’on consulte.',
+    example: 'Je lis une page du Web.',
+  },
+  {
+    id: 'ftp',
+    word: 'FTP',
+    forms: ['FTP'],
+    definition: 'Un service d’Internet qui sert à transférer des fichiers d’un ordinateur à un autre.',
+    example: 'Avec le FTP, un fichier passe d’une machine à une autre.',
+  },
+  {
+    id: 'services-publics',
+    word: 'services publics',
+    forms: ['services publics', 'service public'],
+    definition: 'Des services utiles à toute la population, assurés ou contrôlés par les pouvoirs publics.',
+    example: 'L’école est un service public.',
+  },
+  {
+    id: 'amerique-latine',
+    word: 'Amérique latine',
+    forms: ['Amérique latine'],
+    definition: 'La partie de l’Amérique où l’on parle surtout espagnol ou portugais.',
+    example: 'Le Brésil est en Amérique latine.',
+  },
 ];

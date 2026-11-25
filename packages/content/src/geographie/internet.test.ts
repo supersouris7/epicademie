@@ -45,4 +45,21 @@ describe('géographie cm2 — Communiquer grâce à Internet', () => {
       expect(n.docs.length, n.id).toBeGreaterThanOrEqual(2);
     }
   });
+
+  it('accepte les synonymes justes en saisie', () => {
+    const accepted = (id: string) => {
+      const n = NOTIONS.find((x) => x.id === id);
+      return [...(n?.faits.flatMap((f) => f.gap[2]) ?? []), ...(n?.libres.flatMap((l) => l.accepted) ?? [])];
+    };
+    expect(accepted('gcm2-internet-reseau')).toEqual(expect.arrayContaining(['planétaire', 'informations']));
+    expect(accepted('gcm2-internet-inegalites')).toContain('chuté');
+    expect(accepted('gcm2-internet-usages')).toEqual(expect.arrayContaining(['instantanéité', 'personnelle']));
+  });
+
+  it('place la réponse dans chaque trou à liste, et propose un texte à lire par notion de plus', () => {
+    for (const n of NOTIONS) {
+      for (const f of n.faits) if (f.choix) expect(f.choix, f.q).toContain(f.gap[2][0]);
+      expect(n.docs.length, n.id).toBeGreaterThanOrEqual(3);
+    }
+  });
 });

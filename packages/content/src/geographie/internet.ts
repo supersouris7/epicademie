@@ -35,6 +35,8 @@ const I_AGE = '62 % des 75 ans ou plus, contre seulement 2 % des 15-24 ans';
 const I_DOM =
   'les habitants des départements d’outre-mer (DOM) sont un peu plus concernés que ceux de France métropolitaine (20 % contre 15 %)';
 const VP_BAISSE = '5% n’utilisent pas internet (contre 10% en 2021)';
+const I_EUROPE =
+  'Le Danemark et le Luxembourg sont en tête avec moins de 5 % d’illectronisme, alors que la Bulgarie, la Roumanie, la Grèce ou encore l’Italie sont en bas du classement (de 22 % à 31 % d’illectronisme)';
 
 const P_USAGES =
   'Ses usages définissent un nouveau rapport à l’espace et au temps caractérisé par l’immédiateté et la proximité';
@@ -87,7 +89,11 @@ const reseauMondial: Notion = {
           why: 'Internet est mondial : il ne s’arrête pas aux limites d’une ville.',
         },
       ],
-      gap: ['Internet est un réseau ', ' qui relie des ordinateurs entre eux.', ['mondial']],
+      gap: [
+        'Internet est un réseau présent sur toute la planète : on dit qu’il est ',
+        '.',
+        ['mondial', 'planétaire', 'planetaire', 'international'],
+      ],
       quote: A_INTERNET,
       explain: 'Le dictionnaire parle d’un réseau mondial qui relie des ordinateurs.',
       src: ACADEMIE,
@@ -96,17 +102,21 @@ const reseauMondial: Notion = {
       q: 'Qu’est-ce qui voyage sur Internet ?',
       a: 'des données : messages, textes, images, sons',
       wrong: [
+        { label: 'seulement des textes écrits', why: 'Les textes voyagent, mais aussi les images et les sons.' },
         {
-          label: 'des colis en carton',
-          why: 'Un colis voyage par la route ou l’avion, pas sur un réseau d’ordinateurs.',
+          label: 'les objets que l’on commande en ligne',
+          why: 'La commande passe par Internet, mais l’objet voyage par la route ou l’avion.',
         },
-        { label: 'de l’eau potable', why: 'L’eau passe dans des canalisations. Internet transporte des données.' },
         {
-          label: 'des billets de train en papier',
-          why: 'Le papier ne circule pas dans le réseau : seules des données le font.',
+          label: 'seulement des sons, comme à la radio',
+          why: 'Les sons voyagent, mais aussi les textes et les images.',
         },
       ],
-      gap: ['Messages, textes, images et sons voyagent sous forme de ', ' numérisées.', ['données', 'donnees']],
+      gap: [
+        'Messages, textes, images et sons voyagent sous forme de ',
+        ' numérisées.',
+        ['données', 'donnees', 'informations', 'information'],
+      ],
       quote: A_INTERNET,
       explain: 'Internet achemine des données de toutes sortes. Acheminer, c’est faire arriver quelque part.',
       src: ACADEMIE,
@@ -125,7 +135,7 @@ const reseauMondial: Notion = {
         },
         { label: 'seulement s’ils sont dans la même pièce', why: 'Internet relie des machines très éloignées.' },
       ],
-      gap: ['Pour communiquer, les ordinateurs utilisent un ', ' de communication commun.', ['protocole']],
+      gap: ['Pour communiquer, les ordinateurs suivent une règle commune appelée ', '.', ['protocole', 'un protocole']],
       quote: I_PROTOCOLE,
       explain: 'Le protocole est la règle que toutes les machines suivent.',
       src: INSEE_DEF,
@@ -134,9 +144,18 @@ const reseauMondial: Notion = {
       q: 'Lequel est un service d’Internet ?',
       a: 'la messagerie',
       wrong: [
-        { label: 'le ramassage des déchets', why: 'Ce service passe par des camions dans les rues, pas par Internet.' },
-        { label: 'la distribution de l’eau', why: 'L’eau arrive par des tuyaux : ce n’est pas un service d’Internet.' },
-        { label: 'la boulangerie', why: 'Une boulangerie fabrique du pain : ce n’est pas un service du réseau.' },
+        {
+          label: 'la distribution du courrier par le facteur',
+          why: 'Le facteur apporte du papier dans les rues : ce n’est pas un service d’Internet.',
+        },
+        {
+          label: 'les émissions de radio reçues par antenne',
+          why: 'Ces émissions arrivent par une antenne, sans passer par Internet.',
+        },
+        {
+          label: 'la livraison de colis par camion',
+          why: 'Le camion roule sur la route : ce n’est pas un service du réseau.',
+        },
       ],
       gap: ['Parmi les services d’Internet, il y a le Web et la ', ', pour envoyer des messages.', ['messagerie']],
       quote: I_SERVICES,
@@ -152,7 +171,7 @@ const reseauMondial: Notion = {
           why: 'Ils guident les trains : ils servent au transport des voyageurs.',
         },
         { label: 'les canaux et les écluses', why: 'Ils servent aux bateaux, pas aux données.' },
-        { label: 'les pistes cyclables', why: 'Une piste cyclable sert aux vélos, pas aux données.' },
+        { label: 'les autoroutes et les péages', why: 'Elles servent aux voitures et aux camions, pas aux données.' },
       ],
       gap: ['Les réseaux numériques comprennent des câbles et des ', ', dans l’espace.', ['satellites', 'satellite']],
       quote: UE_RESEAUX,
@@ -175,7 +194,7 @@ const reseauMondial: Notion = {
   libres: [
     {
       q: 'Internet est un réseau … (un mot : à l’échelle de toute la planète).',
-      accepted: ['mondial'],
+      accepted: ['mondial', 'planétaire', 'planetaire', 'international'],
       traps: [
         { text: 'local', why: 'Un réseau local reste dans un petit espace. Internet couvre la planète.' },
         { text: 'national', why: 'National veut dire « d’un seul pays ». Internet va bien plus loin.' },
@@ -208,7 +227,7 @@ const reseauMondial: Notion = {
     },
     {
       q: 'Textes, images et sons voyagent sur Internet sous forme de … numérisées (un mot).',
-      accepted: ['données', 'donnees', 'des données'],
+      accepted: ['données', 'donnees', 'des données', 'informations', 'des informations'],
       traps: [
         { text: 'lettres', why: 'Les lettres ne sont qu’une partie. Le mot cherché réunit textes, images et sons.' },
         { text: 'ondes', why: 'Le dictionnaire emploie un autre mot : ce qui est acheminé, ce sont des données.' },
@@ -232,7 +251,7 @@ const reseauMondial: Notion = {
           q: 'Que montre ce voyage ?',
           a: 'qu’Internet relie des appareils très éloignés',
           wrong: [
-            { label: 'que la photo a pris le bateau', why: 'La photo voyage sous forme de données, par le réseau.' },
+            { label: 'qu’une photo part par la poste', why: 'La photo voyage sous forme de données, par le réseau.' },
             {
               label: 'qu’Internet s’arrête aux frontières',
               why: 'La photo va de France au Canada : le réseau est mondial.',
@@ -262,10 +281,39 @@ const reseauMondial: Notion = {
           wrong: [
             { label: 'un satellite', why: 'Un satellite est un relais dans l’espace, pas une règle.' },
             { label: 'une messagerie', why: 'La messagerie est un service. La règle commune est le protocole.' },
-            { label: 'un paysage', why: 'Un paysage est ce que tu vois d’un lieu : aucun rapport avec la règle.' },
+            { label: 'un serveur', why: 'Un serveur est un ordinateur : ce n’est pas une règle.' },
           ],
           quote: I_PROTOCOLE,
           explain: 'Grâce au même protocole, des machines différentes se comprennent.',
+          src: INSEE_DEF,
+        },
+      ],
+    },
+    {
+      title: 'Le message de la bibliothèque',
+      lines: [
+        'La bibliothécaire écrit à une classe qui habite dans un autre pays.',
+        'Son ordinateur est relié au réseau.',
+        'Elle utilise le service qui sert à envoyer des messages.',
+        'La classe reçoit le texte et une image.',
+      ],
+      qs: [
+        {
+          q: 'Quel service d’Internet la bibliothécaire utilise-t-elle ?',
+          a: 'la messagerie',
+          wrong: [
+            {
+              label: 'le protocole',
+              why: 'Le protocole est la règle commune des machines : ce n’est pas le service qui envoie.',
+            },
+            { label: 'le satellite', why: 'Le satellite est un équipement du réseau, pas un service pour écrire.' },
+            {
+              label: 'le Web',
+              why: 'Le Web est un autre service : pour envoyer un message, on utilise la messagerie.',
+            },
+          ],
+          quote: I_SERVICES,
+          explain: 'Le service qui sert à envoyer des messages est la messagerie.',
           src: INSEE_DEF,
         },
       ],
@@ -306,11 +354,11 @@ const cables: Notion = {
       q: 'Le câble sous-marin EllaLink relie l’Europe à…',
       a: 'l’Amérique latine',
       wrong: [
-        { label: 'la Lune', why: 'Un câble sous-marin est posé au fond de la mer : il ne va pas dans l’espace.' },
-        { label: 'l’Antarctique', why: 'EllaLink ne va pas vers le pôle Sud : il relie l’Europe à l’Amérique latine.' },
-        { label: 'l’Australie', why: 'L’Australie est un autre continent : EllaLink rejoint l’Amérique latine.' },
+        { label: 'l’Asie', why: 'EllaLink ne va pas vers l’Asie : il relie l’Europe à l’Amérique latine.' },
+        { label: 'l’Australie', why: 'L’Australie est très loin de ce trajet : EllaLink rejoint l’Amérique latine.' },
+        { label: 'l’Inde', why: 'EllaLink ne va pas vers l’Inde : il rejoint l’Amérique latine.' },
       ],
-      gap: ['EllaLink est un câble qui relie l’Europe à l’Amérique ', '.', ['latine']],
+      gap: ['EllaLink est un câble qui relie l’Europe à l’', ' latine.', ['Amérique', 'Amerique']],
       quote: UE_ELLALINK,
       explain: 'EllaLink est un câble à fibres optiques entre l’Europe et l’Amérique latine.',
       src: EU_ELLALINK,
@@ -326,7 +374,11 @@ const cables: Notion = {
         },
         { label: 'un satellite dans l’espace', why: 'Un centre de données est un bâtiment, construit sur Terre.' },
       ],
-      gap: ['Dans un centre de données, des ', ' stockent et traitent les données.', ['serveurs', 'serveur']],
+      gap: [
+        'Dans un centre de données, des ordinateurs puissants appelés ',
+        ' stockent les données.',
+        ['serveurs', 'serveur'],
+      ],
       quote: VP_CENTRE,
       explain: 'Un centre de données est un bâtiment qui contient des serveurs.',
       src: VIE_CENTRES,
@@ -335,12 +387,18 @@ const cables: Notion = {
       q: 'Certains centres de données consomment de l’eau. Pour quoi faire ?',
       a: 'refroidir les serveurs',
       wrong: [
-        { label: 'arroser des champs', why: 'L’eau du centre ne sert pas à l’agriculture : les serveurs chauffent.' },
         {
-          label: 'faire flotter les câbles',
-          why: 'Les câbles reposent au fond de la mer ; cette eau-là sert aux serveurs.',
+          label: 'produire l’électricité du centre',
+          why: 'L’eau citée ne sert pas à produire du courant : elle refroidit les serveurs.',
         },
-        { label: 'remplir une piscine', why: 'L’eau est nécessaire au refroidissement des serveurs.' },
+        {
+          label: 'nettoyer les câbles sous-marins',
+          why: 'Les câbles sont au fond de la mer ; cette eau-là sert aux serveurs.',
+        },
+        {
+          label: 'éteindre des incendies chaque jour',
+          why: 'L’eau est nécessaire au refroidissement des serveurs, qui chauffent.',
+        },
       ],
       gap: ['L’eau sert à ', ' les serveurs qui chauffent.', ['refroidir', 'rafraîchir', 'rafraichir']],
       quote: VP_EAU,
@@ -355,7 +413,8 @@ const cables: Notion = {
         { label: 'Clermont-Ferrand', why: 'Cette ville est loin de la mer, au centre de la France.' },
         { label: 'Orléans', why: 'Orléans est au bord de la Loire, pas au bord de la mer.' },
       ],
-      gap: ['Sur la mer Méditerranée, de nombreux câbles arrivent à ', '.', ['Marseille']],
+      gap: ['En France, de nombreux câbles sous-marins arrivent dans la ville de ', '.', ['Marseille']],
+      choix: ['Marseille', 'Dijon', 'Orléans'],
       quote: VP_LIEUX,
       explain: 'Marseille est un point d’arrivée de nombreux câbles sous-marins.',
       src: VIE_CENTRES,
@@ -386,7 +445,7 @@ const cables: Notion = {
       src: EU_CABLES,
     },
     {
-      q: 'Les machines qui stockent les données dans un centre sont des … (un mot).',
+      q: 'Dans un centre, les données sont stockées sur des ordinateurs puissants appelés des … (un mot).',
       accepted: ['serveurs', 'serveur', 'des serveurs'],
       traps: [
         { text: 'satellites', why: 'Les satellites sont dans l’espace, pas dans le bâtiment.' },
@@ -429,7 +488,7 @@ const cables: Notion = {
       ],
       qs: [
         {
-          q: 'Quelle ville a le plus d’atouts ?',
+          q: 'Quelle ville convient le mieux ?',
           a: 'la ville B',
           wrong: [
             { label: 'la ville A', why: 'La ville A manque de fibre optique et d’électricité.' },
@@ -480,6 +539,35 @@ const cables: Notion = {
         },
       ],
     },
+    {
+      title: 'Une salle qui chauffe',
+      lines: [
+        'Dans un bâtiment, des centaines de serveurs fonctionnent jour et nuit.',
+        'Ils gardent des photos et des vidéos.',
+        'En travaillant, les machines chauffent beaucoup.',
+        'Un technicien fait circuler de l’eau près d’elles.',
+      ],
+      qs: [
+        {
+          q: 'À quoi sert l’eau dans ce bâtiment ?',
+          a: 'à refroidir les serveurs',
+          wrong: [
+            { label: 'à transporter les vidéos', why: 'Les données voyagent par le réseau, pas dans l’eau.' },
+            {
+              label: 'à produire l’électricité',
+              why: 'Le texte dit que les machines chauffent : l’eau les refroidit.',
+            },
+            {
+              label: 'à protéger les photos de la poussière',
+              why: 'L’eau passe près des machines parce qu’elles chauffent.',
+            },
+          ],
+          quote: VP_EAU,
+          explain: 'Les serveurs chauffent : l’eau aide à les refroidir.',
+          src: VIE_CENTRES,
+        },
+      ],
+    },
   ],
 };
 
@@ -492,8 +580,8 @@ const inegalites: Notion = {
   hint: 'Tout le monde ne profite pas d’Internet de la même façon : compare les lieux, les âges et les dates.',
   memo: [
     'Dans le monde, tout le monde n’est pas **connecté** : en 2021, près de trois milliards de personnes ne l’étaient pas.',
-    'En France, l’**illectronisme** touche des personnes qui n’utilisent pas Internet ou manquent de bases. Exemple : 15 % en 2021.',
-    'Les inégalités dépendent de l’âge et du lieu : les **DOM** (outre-mer) sont un peu plus touchés que la métropole.',
+    'En France, l’**illectronisme** touche des personnes qui n’utilisent pas Internet ou manquent de bases : en 2021, environ 15 personnes de 15 ans ou plus sur 100. De 2021 à 2025, chez les 16-74 ans, le non-usage d’Internet est passé de 10 à 5 sur 100.',
+    'Les écarts dépendent de l’âge et du lieu : en 2021, les **DOM** étaient un peu plus touchés que la métropole, et la Bulgarie bien plus que le Danemark.',
   ],
   faits: [
     {
@@ -539,7 +627,11 @@ const inegalites: Notion = {
         { label: 'environ 90 sur 100', why: 'C’est bien trop : la plupart des personnes ne sont pas concernées.' },
         { label: 'environ 50 sur 100', why: 'La moitié serait beaucoup trop : l’Insee mesure environ 15 sur 100.' },
       ],
-      gap: ['En 2021, environ ', ' personnes sur 100 étaient en illectronisme.', ['15', 'quinze']],
+      gap: [
+        'En France, en 2021, environ ',
+        ' personnes de 15 ans ou plus sur 100 étaient en illectronisme.',
+        ['15', 'quinze'],
+      ],
       quote: I_TAUX,
       explain: '15,4 %, c’est environ 15 personnes sur 100.',
       src: INSEE,
@@ -552,20 +644,25 @@ const inegalites: Notion = {
         { label: 'tous les âges pareil', why: 'Les écarts sont grands selon l’âge.' },
         { label: 'les bébés', why: 'L’étude compte les personnes de 15 ans ou plus.' },
       ],
-      gap: ['En 2021, les personnes de ', ' ans ou plus étaient les plus touchées.', ['75', 'soixante-quinze']],
+      gap: ['En France, en 2021, l’illectronisme touchait surtout les personnes de ', ' ans ou plus.', ['75']],
+      choix: ['75', '15', '30'],
       quote: I_AGE,
       explain: '62 % des 75 ans ou plus, contre 2 % des 15-24 ans.',
       src: INSEE,
     },
     {
-      q: 'En 2021, où l’illectronisme était-il un peu plus fréquent ?',
+      q: 'En France, en 2021, où l’illectronisme était-il un peu plus fréquent ?',
       a: 'dans les départements d’outre-mer',
       wrong: [
         { label: 'en France métropolitaine', why: 'La métropole comptait 15 %, contre 20 % dans les DOM.' },
         { label: 'pareil partout', why: 'Il y a un écart : 20 % contre 15 %.' },
         { label: 'nulle part en France', why: 'L’illectronisme existe en métropole comme outre-mer.' },
       ],
-      gap: ['L’illectronisme est un peu plus fréquent dans les départements d’outre-', '.', ['mer']],
+      gap: [
+        'En France, en 2021, l’illectronisme était un peu plus fréquent dans les départements d’outre-',
+        '.',
+        ['mer'],
+      ],
       quote: I_DOM,
       explain: 'Les DOM : 20 %, la France métropolitaine : 15 %.',
       src: INSEE,
@@ -578,10 +675,28 @@ const inegalites: Notion = {
         { label: 'disparu complètement', why: 'En 2025, 5 % n’utilisaient toujours pas Internet.' },
         { label: 'doublé', why: 'C’est le contraire : la part a été divisée par deux.' },
       ],
-      gap: ['De 2021 à 2025, la part des non-utilisateurs est passée de 10 % à ', ' %.', ['5', 'cinq']],
+      gap: [
+        'En France, de 2021 à 2025, la part des 16-74 ans qui n’utilisent pas Internet est passée de 10 % à ',
+        ' %.',
+        ['5', 'cinq'],
+      ],
       quote: VP_BAISSE,
       explain: 'La part est passée de 10 % en 2021 à 5 % en 2025.',
       src: VIE_COMPETENCES,
+    },
+    {
+      q: 'En 2021, quel pays de l’Union européenne avait très peu d’illectronisme ?',
+      a: 'le Danemark',
+      wrong: [
+        { label: 'la Bulgarie', why: 'La Bulgarie était au contraire parmi les pays les plus touchés.' },
+        { label: 'la Roumanie', why: 'La Roumanie était en bas du classement : bien plus touchée.' },
+        { label: 'la Grèce', why: 'La Grèce était elle aussi parmi les pays les plus touchés.' },
+      ],
+      gap: ['En 2021, il y avait ', ' d’illectronisme au Danemark qu’en Bulgarie.', ['moins']],
+      choix: ['moins', 'plus', 'autant'],
+      quote: I_EUROPE,
+      explain: 'Chez les 16-74 ans : moins de 5 sur 100 au Danemark, au moins 22 sur 100 en Bulgarie.',
+      src: INSEE,
     },
   ],
   paires3: [
@@ -634,8 +749,8 @@ const inegalites: Notion = {
       src: INSEE,
     },
     {
-      q: 'Chez les 16-74 ans, de 2021 à 2025, le non-usage d’Internet a … (un verbe au participe passé).',
-      accepted: ['baissé', 'diminué', 'baisse', 'diminue', 'reculé'],
+      q: 'En France, chez les 16-74 ans, de 2021 à 2025, le non-usage d’Internet a … (un verbe au participe passé).',
+      accepted: ['baissé', 'diminué', 'baisse', 'diminue', 'reculé', 'chuté', 'chute', 'descendu'],
       traps: [
         { text: 'augmenté', why: 'La part est passée de 10 % à 5 % : elle a diminué.' },
         { text: 'grimpé', why: 'Grimper veut dire monter. La part est descendue.' },
@@ -699,6 +814,38 @@ const inegalites: Notion = {
         },
       ],
     },
+    {
+      title: 'Deux pays d’Europe',
+      lines: [
+        'En 2021, on compare des habitants de 16 à 74 ans.',
+        'Au Danemark, moins de 5 personnes sur 100 sont en illectronisme.',
+        'En Bulgarie, elles sont au moins 22 sur 100.',
+        'Les deux pays font partie de l’Union européenne.',
+      ],
+      qs: [
+        {
+          q: 'Que montre cette comparaison ?',
+          a: 'l’accès au numérique est inégal d’un pays à l’autre',
+          wrong: [
+            {
+              label: 'les deux pays sont dans la même situation',
+              why: 'Les nombres sont très différents : moins de 5 contre au moins 22 sur 100.',
+            },
+            {
+              label: 'le Danemark est le pays le plus en difficulté',
+              why: 'C’est l’inverse : il compte moins de personnes en illectronisme.',
+            },
+            {
+              label: 'la différence vient de l’âge des deux pays',
+              why: 'Le texte compare des lieux, avec la même tranche d’âge.',
+            },
+          ],
+          quote: I_EUROPE,
+          explain: 'Entre deux pays, les écarts sont grands : c’est une inégalité entre des lieux.',
+          src: INSEE,
+        },
+      ],
+    },
   ],
 };
 
@@ -723,7 +870,11 @@ const usages: Notion = {
         { label: 'le relief', why: 'Le relief décrit les hauteurs du sol, pas la vitesse d’un message.' },
         { label: 'la production', why: 'La production, c’est fabriquer ou cultiver : ce n’est pas le sujet.' },
       ],
-      gap: ['Ce qui arrive tout de suite, sans attendre, montre l’', '.', ['immédiateté', 'immediatete']],
+      gap: [
+        'Ce qui arrive tout de suite, sans attendre, montre l’',
+        '.',
+        ['immédiateté', 'immediatete', 'instantanéité', 'instantaneite'],
+      ],
       quote: P_USAGES,
       explain: 'Le programme parle d’immédiateté : on n’attend presque pas.',
     },
@@ -747,11 +898,15 @@ const usages: Notion = {
       q: 'Quel usage d’Internet permet d’apprendre à distance ?',
       a: 'suivre des cours en ligne',
       wrong: [
-        { label: 'faire du vélo', why: 'Le vélo est un mode de déplacement, pas un usage d’Internet.' },
-        { label: 'trier ses déchets', why: 'Trier les déchets se fait sans réseau.' },
-        { label: 'jardiner', why: 'Jardiner est une activité dehors, pas un usage d’Internet.' },
+        {
+          label: 'jouer à un jeu vidéo en ligne',
+          why: 'C’est un usage d’Internet, mais il ne sert pas à suivre un cours.',
+        },
+        { label: 'acheter des chaussures en ligne', why: 'C’est un achat : cela ne sert pas à apprendre une leçon.' },
+        { label: 'bloquer la géolocalisation', why: 'Cela protège ta position : ce n’est pas une façon d’apprendre.' },
       ],
       gap: ['Avec Internet, on peut suivre des cours en ', ', loin du professeur.', ['ligne']],
+      choix: ['ligne', 'classe', 'récréation'],
       quote: UE_COURS,
       explain: 'On peut suivre des cours en ligne.',
       src: EU_CONNECT,
@@ -765,6 +920,7 @@ const usages: Notion = {
         { label: 'construire une route', why: 'Un mail ne construit rien : il sert à échanger.' },
       ],
       gap: ['Envoyer un mail, c’est un moyen de ', ' avec les outils numériques.', ['communiquer']],
+      choix: ['communiquer', 'cultiver', 'se loger'],
       quote: VP_USAGES,
       explain: 'Mails et réseaux sociaux servent à communiquer.',
       src: VIE_COMPETENCES,
@@ -778,10 +934,11 @@ const usages: Notion = {
         { label: 'les services publics disparaissent', why: 'Ils changent de forme, mais ne disparaissent pas.' },
       ],
       gap: [
-        'Les démarches en ligne sont plus simples pour beaucoup, mais ',
+        'Les démarches en ligne sont plus simples pour beaucoup, mais elles ',
         ' certaines personnes.',
-        ['excluent', 'écartent'],
+        ['excluent'],
       ],
+      choix: ['excluent', 'aident', 'amusent'],
       quote: VP_DEMARCHES,
       explain: 'La démarche en ligne simplifie pour beaucoup, et exclut certains.',
       src: VIE_COMPETENCES,
@@ -802,7 +959,7 @@ const usages: Notion = {
   libres: [
     {
       q: 'Avec Internet, un message arrive presque aussitôt : c’est l’… (un mot).',
-      accepted: ['immédiateté', 'immediatete', 'l’immédiateté'],
+      accepted: ['immédiateté', 'immediatete', 'l’immédiateté', 'instantanéité', 'instantaneite', 'l’instantanéité'],
       traps: [
         { text: 'proximité', why: 'La proximité parle de la distance (se sentir près). Ici, on parle du temps.' },
         { text: 'attente', why: 'C’est l’inverse : on n’attend presque pas.' },
@@ -821,8 +978,8 @@ const usages: Notion = {
       explain: 'Se sentir près, c’est la proximité.',
     },
     {
-      q: 'Les usages d’Internet posent des questions sur la … : la vie du citoyen (un mot).',
-      accepted: ['citoyenneté', 'citoyennete', 'la citoyenneté'],
+      q: 'Droits, devoirs, respect des autres en ligne : Internet pose des questions de … (un mot qui commence par c).',
+      accepted: ['citoyenneté', 'citoyennete', 'la citoyenneté', 'civisme'],
       traps: [
         { text: 'météo', why: 'La météo parle du temps qu’il fait.' },
         { text: 'géographie', why: 'La géographie étudie les lieux. Le mot cherché concerne la vie du citoyen.' },
@@ -832,7 +989,7 @@ const usages: Notion = {
     },
     {
       q: 'Bloquer la géolocalisation aide à protéger sa vie … (un mot).',
-      accepted: ['privée', 'privee'],
+      accepted: ['privée', 'privee', 'personnelle'],
       traps: [
         { text: 'publique', why: 'La vie publique se voit par tous. On protège sa vie privée.' },
         { text: 'scolaire', why: 'La géolocalisation concerne ta position : elle touche à ta vie privée.' },
@@ -852,7 +1009,7 @@ const usages: Notion = {
       ],
       qs: [
         {
-          q: 'Quels deux mots du programme décrivent cet appel ?',
+          q: 'Quels deux mots décrivent cet appel ?',
           a: 'immédiateté et proximité',
           wrong: [
             { label: 'relief et climat', why: 'Ces mots décrivent un milieu, pas un échange sur Internet.' },
@@ -884,6 +1041,35 @@ const usages: Notion = {
           ],
           quote: VP_PRIVE,
           explain: 'Bloquer la géolocalisation protège des informations privées.',
+          src: VIE_COMPETENCES,
+        },
+      ],
+    },
+    {
+      title: 'La démarche de monsieur Martin',
+      lines: [
+        'Une mairie propose désormais une inscription sur Internet.',
+        'La voisine de monsieur Martin la remplit en dix minutes.',
+        'Monsieur Martin ne sait pas utiliser un ordinateur.',
+        'Sans aide, il n’arrive pas à s’inscrire.',
+      ],
+      qs: [
+        {
+          q: 'Que montre cette situation ?',
+          a: 'la démarche en ligne aide certains et en exclut d’autres',
+          wrong: [
+            {
+              label: 'la démarche en ligne est plus simple pour tout le monde',
+              why: 'Monsieur Martin n’y arrive pas : elle n’est pas simple pour tous.',
+            },
+            {
+              label: 'la mairie ne propose plus aucune inscription',
+              why: 'L’inscription existe toujours, sur Internet.',
+            },
+            { label: 'personne n’arrive à remplir la démarche', why: 'La voisine la remplit en dix minutes.' },
+          ],
+          quote: VP_DEMARCHES,
+          explain: 'La voisine est aidée, monsieur Martin est mis à l’écart.',
           src: VIE_COMPETENCES,
         },
       ],
