@@ -61,6 +61,16 @@ const tlfi = (id: string, word: string, path: string): Source => ({
   consultedOn: '2026-11-25',
 });
 
+/** Article du Dictionnaire de l’Académie française (9e édition), publié par le CNRTL. */
+const academie = (id: string, word: string): Source => ({
+  id: `academie-${id}`,
+  title: `Dictionnaire de l’Académie française (9e édition), article « ${word} »`,
+  publisher: 'Académie française, publié par le CNRTL',
+  url: `https://www.cnrtl.fr/definition/academie9/${encodeURIComponent(word)}`,
+  textDate: '2026',
+  consultedOn: '2026-11-25',
+});
+
 export const SOURCES: readonly Source[] = [
   {
     id: 'maths-cycle4-2026',
@@ -266,6 +276,55 @@ export const SOURCES: readonly Source[] = [
   tlfi('adjectif', 'adjectif', 'adjectif/nom'),
   tlfi('epithete', 'épithète', '%C3%A9pith%C3%A8te'),
   tlfi('pronom', 'pronom', 'pronom'),
+  tlfi('voisin', 'voisin', 'voisin'),
+  tlfi('petit', 'petit', 'petit'),
+  tlfi('grand', 'grand', 'grand'),
+  tlfi('vert', 'vert', 'vert'),
+  tlfi('lourd', 'lourd', 'lourd'),
+  tlfi('content', 'content', 'content'),
+  tlfi('dernier', 'dernier', 'dernier'),
+  tlfi('vendeur', 'vendeur', 'vendeur'),
+  tlfi('peureux', 'peureux', 'peureux'),
+  tlfi('vif', 'vif', 'vif'),
+  tlfi('sportif', 'sportif', 'sportif'),
+  tlfi('vieux', 'vieux', 'vieux'),
+  academie('pluriel', 'pluriel'),
+  academie('feminin', 'féminin'),
+  ...['bateau', 'cadeau', 'oiseau', 'drapeau', 'bureau', 'cheveu', 'jeu', 'cheval', 'journal', 'animal', 'bocal'].map(
+    (w) => academie(w, w),
+  ),
+  ...[
+    'canal',
+    'signal',
+    'bal',
+    'carnaval',
+    'festival',
+    'chacal',
+    'ami',
+    'marchand',
+    'joli',
+    'noir',
+    'bleu',
+    'fort',
+  ].map((w) => academie(w, w)),
+  ...['lion', 'chien', 'chat', 'musicien', 'champion', 'fermier', 'chanteur', 'danseur', 'heureux', 'directeur'].map(
+    (w) => academie(w, w),
+  ),
+  ...['acteur', 'instituteur', 'blanc', 'doux'].map((w) => academie(w, w)),
+  academie('chateau', 'château'),
+  academie('hopital', 'hôpital'),
+  academie('metal', 'métal'),
+  academie('regal', 'régal'),
+  academie('ecolier', 'écolier'),
+  academie('leger', 'léger'),
+  {
+    id: 'eduscol-grammaire-francais',
+    title: 'La grammaire du français. Terminologie grammaticale (les guides fondamentaux pour enseigner)',
+    publisher: 'Ministère de l’Éducation nationale, Éduscol',
+    url: 'https://eduscol.education.fr/document/1872/download',
+    textDate: '2021-06',
+    consultedOn: '2026-11-25',
+  },
   {
     id: 'cnrtl-exclamation',
     title: 'Trésor de la langue française informatisé, article « exclamation »',
