@@ -842,4 +842,19 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Une ville pensée pour répondre aux besoins d’aujourd’hui sans oublier ceux de demain.',
     example: 'Plus d’arbres et de transports partagés.',
   },
+  {
+    id: 'rocade',
+    word: 'rocade',
+    forms: ['rocade', 'rocades'],
+    definition: 'Une route rapide qui contourne ou longe une agglomération.',
+    example: 'Le camion prend la rocade pour éviter le centre.',
+  },
+  {
+    id: 'aire-attraction',
+    word: 'aire d’attraction',
+    forms: ['aire d’attraction', 'aires d’attraction'],
+    definition:
+      'Une ville qui offre des emplois, avec les communes autour dont beaucoup d’actifs viennent y travailler.',
+    example: 'Un village peut faire partie de l’aire d’attraction d’une grande ville.',
+  },
 ];

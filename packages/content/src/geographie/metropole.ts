@@ -693,7 +693,11 @@ const mobilites: Notion = {
         { label: 'seulement pour partir en voyage', why: 'Les déplacements du quotidien sont aussi concernés.' },
         { label: 'sans aucun motif', why: 'Un déplacement répond à un besoin : travail, achats, loisirs.' },
       ],
-      gap: ['On parcourt la métropole pour toute une palette de ', ', professionnels ou autres.', ['motifs', 'motif']],
+      gap: [
+        'On parcourt la métropole pour toute une palette de ',
+        ', professionnels ou autres.',
+        ['motifs', 'motif', 'raisons', 'raison'],
+      ],
       quote: E_MOTIFS,
       explain: 'Travailler, étudier, acheter, se divertir : les raisons sont multiples.',
       src: EDUSCOL,
@@ -706,7 +710,11 @@ const mobilites: Notion = {
         { label: 'la marche', why: 'La marche ne concernait que 6 % de ces actifs.' },
         { label: 'le vélo', why: 'Le vélo ne concernait que 2 % de ces actifs.' },
       ],
-      gap: ['En 2017, 74 % de ces actifs utilisaient leur ', ' pour rejoindre leur travail.', ['voiture']],
+      gap: [
+        'En 2017, 74 % de ces actifs utilisaient leur ',
+        ' pour rejoindre leur travail.',
+        ['voiture', 'automobile'],
+      ],
       quote: I_VOITURE,
       explain: 'La voiture dominait largement les trajets domicile-travail.',
       src: TRAVAIL,
@@ -764,7 +772,15 @@ const mobilites: Notion = {
   libres: [
     {
       q: 'Comment appelle-t-on une voie de circulation rapide qui contourne une agglomération ?',
-      accepted: ['rocade', 'une rocade', 'la rocade', 'périphérique', 'le périphérique'],
+      accepted: [
+        'rocade',
+        'une rocade',
+        'la rocade',
+        'périphérique',
+        'le périphérique',
+        'boulevard périphérique',
+        'le boulevard périphérique',
+      ],
       traps: [
         { text: 'rue', why: 'Une rue traverse un quartier et n’est pas une voie rapide de contournement.' },
         { text: 'piste cyclable', why: 'Une piste cyclable sert aux vélos.' },
@@ -775,18 +791,18 @@ const mobilites: Notion = {
     },
     {
       q: 'Quel adjectif décrit la migration quotidienne entre domicile et travail (il évoque le balancier d’une horloge) ?',
-      accepted: ['pendulaire', 'migration pendulaire'],
+      accepted: ['pendulaire', 'migration pendulaire', 'la migration pendulaire', 'pendulaires'],
       traps: [
         { text: 'saisonnière', why: 'Saisonnière désigne un déplacement lié à une saison.' },
         { text: 'internationale', why: 'Le trajet domicile-travail ne change pas forcément de pays.' },
       ],
       quote: C_PENDULAIRE,
-      explain: 'On parle de migration pendulaire.',
+      explain: 'Comme un pendule d’horloge, la personne va et revient : domicile, travail, puis domicile, chaque jour.',
       src: 'cnrtl-pendulaire',
     },
     {
       q: 'Quel nom désigne le partage d’une voiture entre plusieurs personnes pour un même trajet ?',
-      accepted: ['covoiturage', 'le covoiturage', 'du covoiturage'],
+      accepted: ['covoiturage', 'le covoiturage', 'du covoiturage', 'co-voiturage'],
       traps: [
         {
           text: 'autopartage',
@@ -863,7 +879,7 @@ const vocabulaire: Notion = {
   title: 'Le vocabulaire de la ville',
   hint: 'Lis le mot lentement : un préfixe (péri-, multi-) ou un mot connu à l’intérieur peut t’aider.',
   memo: [
-    'En géographie, on nomme les lieux avec précision : **urbanisation**, **périurbain**, **bidonville**, **gratte-ciel**.',
+    'L’**urbanisation**, c’est la population qui se concentre de plus en plus en ville. Un espace **périurbain** est dans les environs immédiats d’une ville. Un **bidonville** réunit des habitations de fortune ; un **gratte-ciel** est un immeuble très élevé.',
     'La **densité** est le nombre d’habitants par kilomètre carré. Exemple : 100 habitants sur 2 km², soit 50 habitants par km².',
     'Un **citadin** habite la ville.',
   ],
@@ -986,7 +1002,7 @@ const vocabulaire: Notion = {
         { text: 'superficie', why: 'La superficie est la taille d’un territoire.' },
       ],
       quote: C_DENSITE,
-      explain: 'C’est la densité.',
+      explain: 'La densité compare le nombre d’habitants à la surface : elle dit si l’on vit serré ou non.',
       src: 'cnrtl-densite',
     },
     {
@@ -1000,7 +1016,7 @@ const vocabulaire: Notion = {
         { text: 'lotissement', why: 'Un lotissement est un ensemble de terrains divisés pour construire.' },
       ],
       quote: C_BIDONVILLE,
-      explain: 'On parle de bidonville.',
+      explain: '« De fortune » veut dire fait avec les moyens du bord : ces habitations forment un bidonville.',
       src: 'cnrtl-bidonville',
     },
     {
@@ -1011,7 +1027,7 @@ const vocabulaire: Notion = {
         { text: 'métropole', why: 'Une métropole est une grande ville, pas le mouvement lui-même.' },
       ],
       quote: C_URBANISATION,
-      explain: 'Le mot est urbanisation.',
+      explain: '« Urbain » veut dire « de la ville » : l’urbanisation, c’est la population qui se concentre en ville.',
       src: 'cnrtl-urbanisation',
     },
   ],
@@ -1063,7 +1079,7 @@ const vocabulaire: Notion = {
       title: 'Une commune qui change',
       lines: [
         'En trente ans, la population de la ville de Belmonde a beaucoup augmenté.',
-        'Des villages voisins accueillent de nouveaux citadins venus des campagnes.',
+        'Beaucoup de ces nouveaux habitants ont quitté la campagne pour devenir des citadins.',
       ],
       qs: [
         {
