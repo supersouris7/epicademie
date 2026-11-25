@@ -224,6 +224,8 @@ describe('fiche d’un compte', () => {
       ['Marie Dupont', 'consultation', id],
     ]);
     expect(audit.hasMore).toBe(false);
+    // Nom court : e-mail masqué (jamais l'adresse entière), avec de quoi ouvrir la fiche.
+    expect(audit.items.every((a) => a.accountExists && /^.…@/.test(a.accountLabel))).toBe(true);
     expect(new Date(audit.items[0]?.at ?? '').getTime()).toBeGreaterThan(0);
   });
 });

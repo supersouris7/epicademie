@@ -35,6 +35,13 @@
   - `epicademie_rewards_total{currency}` (pièces et rubis distribués : dérive de l'économie) ;
   - `epicademie_payments_total{status}`.
 
+## Précisions (26/11/2026)
+
+- `GET /admin/stats` donne aussi le nombre de signalements par état (`reportCounts`) et
+  `GET /admin/trends` les prestataires des paiements encaissés (`paymentProviders`).
+- Sous 700 px, les listes de la console sont des cartes. Le texte des graphiques est en HTML,
+  hors de l'échelle du dessin SVG.
+
 ## Conséquences
 
 - Les tableaux de bord externes (Grafana…) et les alertes se branchent sur `/api/metrics`

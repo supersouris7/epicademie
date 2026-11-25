@@ -76,7 +76,8 @@ describe('mode debug', () => {
 
   it('s’active depuis l’administration', async () => {
     const { user } = renderApp('/admin', { admin: true });
-    await user.click(await screen.findByRole('tab', { name: /Mode debug/ }));
+    // Mode debug : premier outil de la rubrique « Technique ».
+    await user.click(await screen.findByRole('tab', { name: 'Technique' }));
     const box = await screen.findByRole('checkbox', { name: /drapeau de signalement/ });
     expect(box).not.toBeChecked();
     await user.click(box);
