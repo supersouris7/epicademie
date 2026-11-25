@@ -126,9 +126,10 @@ const energie: Notion = {
   title: 'L’énergie, une ressource à ménager',
   hint: 'Demande-toi d’où vient l’énergie : un stock qui s’épuise ou un phénomène naturel qui recommence ?',
   memo: [
-    'L’**énergie** sert à produire de la chaleur, de l’électricité ou du mouvement. Deux familles : les **énergies fossiles** (pétrole, gaz, charbon) et les **énergies renouvelables** (soleil, vent).',
+    'L’**énergie** sert à produire de la chaleur, de l’électricité ou du mouvement. Deux grandes familles : les **énergies fossiles** (pétrole, gaz, charbon) et les **énergies renouvelables** (soleil, vent). Le nucléaire utilise l’uranium, tiré lui aussi d’un stock.',
+    'Les **hydrocarbures**, ce sont surtout le pétrole et le gaz naturel ; un **méthanier** est un navire qui transporte du gaz. Une **énergie primaire** vient directement d’une source ; une **énergie secondaire**, comme l’électricité, est fabriquée à partir d’une autre.',
     'Le **bouquet énergétique** d’un pays, c’est la part de chaque source dans sa consommation. Exemple : du pétrole, du nucléaire, de l’éolien.',
-    'L’enjeu au programme : des ressources à ménager et à mieux utiliser.',
+    'L’enjeu au programme : des ressources à ménager (économiser) et à mieux utiliser.',
   ],
   faits: [
     {
@@ -210,18 +211,18 @@ const energie: Notion = {
     },
     {
       q: 'On brûle d’énormes quantités d’hydrocarbures : quelle conséquence ont les gaz rejetés dans l’atmosphère ?',
-      a: 'il augmente l’effet de serre et change le climat',
+      a: 'ils augmentent l’effet de serre et changent le climat',
       wrong: [
         {
-          label: 'il augmente la part d’eau douce',
+          label: 'ils augmentent la part d’eau douce',
           why: 'Brûler des hydrocarbures ne crée pas de réserve d’eau douce.',
         },
         {
-          label: 'il renouvelle les stocks de pétrole',
+          label: 'ils renouvellent les stocks de pétrole',
           why: 'Brûler du pétrole consomme le stock, sans le reconstituer.',
         },
         {
-          label: 'il fait reculer le changement climatique',
+          label: 'ils font reculer le changement climatique',
           why: 'C’est l’inverse : ce rejet aggrave le changement climatique.',
         },
       ],
@@ -273,7 +274,7 @@ const energie: Notion = {
   ],
   libres: [
     {
-      q: 'comment appelle-t-on les énergies comme le pétrole, le gaz et le charbon ?',
+      q: 'comment appelle-t-on les énergies comme le pétrole, le gaz et le charbon (un adjectif commençant par « f ») ?',
       accepted: [
         'énergies fossiles',
         'les énergies fossiles',
@@ -456,6 +457,7 @@ const energie: Notion = {
       ],
     },
   ],
+  sources: [TRANSITION],
 };
 
 // ——— Notion 2 : l’eau ———
@@ -467,7 +469,7 @@ const eau: Notion = {
   hint: 'Distingue la quantité d’eau présente sur place et la possibilité, pour les habitants, d’en boire sans danger.',
   memo: [
     'L’eau douce est rare face à l’eau salée et très inégalement répartie. L’**accès à l’eau** ne dépend pas seulement de la quantité : on peut vivre près de l’eau sans **eau potable**.',
-    'L’agriculture est le premier secteur consommateur d’eau, surtout avec l’**irrigation**. Le **goutte-à-goutte** l’économise.',
+    'L’agriculture est le premier secteur consommateur d’eau, surtout avec l’**irrigation**. Le **goutte-à-goutte** l’économise. Trop arroser peut saler le sol : c’est la **salinisation**.',
     'Un **bassin versant** est l’espace dont toutes les eaux rejoignent le même cours d’eau, lac ou mer. Un même fleuve peut opposer les territoires d’**amont** et d’**aval** : il faut partager.',
   ],
   faits: [
@@ -639,7 +641,7 @@ const eau: Notion = {
       src: IRRIGATION,
     },
     {
-      q: 'comment qualifie-t-on une eau que l’on peut boire sans danger ?',
+      q: 'comment qualifie-t-on une eau que l’on peut boire sans danger (un adjectif commençant par « p ») ?',
       accepted: ['potable', 'eau potable', 'une eau potable'],
       traps: [
         { text: 'douce', why: 'Une eau douce est peu salée, mais elle peut contenir des microbes.' },
@@ -799,7 +801,7 @@ const alimentation: Notion = {
   title: 'Nourrir une humanité en croissance',
   hint: 'Pense à ce que l’on mange, à qui peut l’obtenir et à la façon de le produire.',
   memo: [
-    'La **sécurité alimentaire** : chacun peut obtenir à tout moment une nourriture suffisante, saine et nutritive. Une partie de l’humanité reste sous-alimentée ou mal alimentée.',
+    'La **sécurité alimentaire** : chacun peut obtenir à tout moment une nourriture suffisante, saine et nutritive. Quand cet accès manque, on parle d’**insécurité alimentaire**. Une partie de l’humanité reste sous-alimentée (pas assez à manger : la **sous-alimentation**) ou mal alimentée (nourriture déséquilibrée).',
     'La **révolution verte** a augmenté les **rendements** avec de nouvelles semences, l’irrigation et les engrais. Les espaces ruraux et agricoles fournissent notre nourriture. L’**agriculture vivrière** nourrit d’abord la famille ou le village.',
     'La **transition alimentaire** dans les pays industrialisés : quand les revenus montent, on sort d’abord de la famine (plus de céréales), puis on mange plus de viande, de sucre et de graisses ; enfin, ces tendances commencent à s’inverser. Même dans un pays riche, certains habitent un **désert alimentaire** : les aliments frais y sont difficiles à trouver à bon prix.',
   ],
@@ -832,7 +834,7 @@ const alimentation: Notion = {
       src: SECURITE,
     },
     {
-      q: 'D’après le programme, quelle situation touche encore une partie de l’humanité ?',
+      q: 'En matière d’alimentation, quelle difficulté touche encore une partie de l’humanité ?',
       a: 'être sous-alimentée ou mal alimentée',
       wrong: [
         { label: 'ne plus avoir besoin de manger', why: 'Les êtres humains ont toujours besoin de nourriture.' },
@@ -1078,7 +1080,7 @@ const alimentation: Notion = {
       src: REVOLUTION,
     },
     {
-      q: 'comment nomme-t-on la quantité récoltée sur une surface donnée (un mot) ?',
+      q: 'comment nomme-t-on la quantité récoltée sur une surface donnée (un mot commençant par « r ») ?',
       accepted: ['rendement', 'le rendement', 'un rendement', 'rendements'],
       traps: [
         { text: 'surface', why: 'La surface est l’étendue du champ, pas ce qu’on y récolte.' },
@@ -1221,8 +1223,9 @@ const gererRenouveler: Notion = {
   title: 'Gérer et renouveler les ressources',
   hint: 'Pense au temps long : comment utiliser une ressource sans la gaspiller ?',
   memo: [
+    'Un élément de la nature devient une **ressource** quand une société en a besoin et l’utilise.',
     'Le **développement durable** répond aux besoins du présent sans compromettre ceux des générations futures. Il cherche un équilibre entre le social, l’économie et l’environnement. L’idée apparaît en 1987 (rapport Brundtland) et est adoptée au Sommet de la Terre de Rio en 1992. L’ONU a fixé en 2015 des objectifs pour 2030, les **ODD** (exemple : l’eau propre et l’**assainissement**).',
-    'Pour ménager les ressources : consommer moins (**sobriété**), mieux utiliser, **recycler** et développer les énergies renouvelables.',
+    'Pour ménager les ressources : consommer moins (**sobriété**), mieux utiliser, **recycler** et développer les énergies renouvelables. Toutes les matières ne peuvent pas être recyclées.',
     'La **transition énergétique** : passer d’énergies tirées de stocks (pétrole, gaz, charbon, uranium) à des énergies de flux, qui se renouvellent (vent, soleil, **biomasse**), en consommant mieux.',
   ],
   faits: [
@@ -1385,7 +1388,7 @@ const gererRenouveler: Notion = {
     'le rapport Brundtland introduit le développement durable',
     'le Sommet de la Terre de Rio adopte le développement durable',
     'l’ONU fixe les objectifs de développement durable',
-    'année prévue pour atteindre les objectifs de l’ONU',
+    'l’année prévue pour atteindre les objectifs de l’ONU',
   ],
   libres: [
     {
