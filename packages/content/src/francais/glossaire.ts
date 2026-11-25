@@ -391,4 +391,47 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'La deuxième partie du verbe au passé composé, après être ou avoir.',
     example: 'Elle est partie. (« partie »)',
   },
+  {
+    id: 'conjonction-de-subordination',
+    word: 'conjonction de subordination',
+    forms: ['conjonctions de subordination'],
+    definition: 'Mot qui ouvre une proposition subordonnée : quand, parce que, si, pour que… Il ne change jamais.',
+    example: 'Je rentre quand la nuit tombe.',
+  },
+  {
+    id: 'proposition-subordonnee',
+    word: 'proposition subordonnée',
+    forms: ['propositions subordonnées', 'subordonnée', 'subordonnées'],
+    definition:
+      'Partie d’une phrase, avec son verbe, qui dépend d’une autre partie. Elle commence souvent par une conjonction.',
+    example: '« quand la nuit tombe » dans « Je rentre quand la nuit tombe. »',
+  },
+  {
+    id: 'personne-grammaire',
+    word: 'personne',
+    forms: ['personnes'],
+    definition: 'En grammaire : qui parle (1re), qui écoute (2e), de qui on parle (3e).',
+    example: '« je » est la 1re personne.',
+  },
+  {
+    id: 'mot-variable',
+    word: 'variable',
+    forms: ['variables'],
+    definition: 'Qui peut changer : au pluriel, au féminin, avec la personne ou le temps.',
+    example: '« petit » devient « petites ».',
+  },
+  {
+    id: 'hypothese',
+    word: 'hypothèse',
+    forms: ['hypothèses'],
+    definition: 'Une condition : ce qui doit arriver pour qu’une autre chose arrive.',
+    example: 'Si la pluie cesse, nous sortirons.',
+  },
+  {
+    id: 'concession',
+    word: 'concession',
+    forms: ['concessions'],
+    definition: 'Idée qui aurait dû empêcher quelque chose, mais ne l’empêche pas.',
+    example: 'Il sort bien que la nuit tombe.',
+  },
 ];

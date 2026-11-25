@@ -4,6 +4,7 @@ import { FCM1_COMPLEMENTS } from './complements.ts';
 import { FCM1_GROUPE_NOMINAL } from './groupe-nominal.ts';
 import { FCM1_NATURE } from './nature.ts';
 import { FCM1_PHRASES } from './phrases.ts';
+import { FCM2_NATURE } from './nature-cm2.ts';
 import { FCM1_VERBE_SUJET } from './verbe-sujet.ts';
 
 /** Français : chapitres publiés (ADR 0034). Le lot de contenu ajoute ses chapitres ici, sans toucher à catalog.ts. */
@@ -55,5 +56,13 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'grammaire',
     title: 'Les accords',
     skills: FCM1_ACCORDS,
+  },
+  {
+    id: 'fcm2-nature-mots',
+    subject: 'francais',
+    grade: 'cm2',
+    domain: 'grammaire',
+    title: 'Nature des mots',
+    skills: FCM2_NATURE,
   },
 ];
