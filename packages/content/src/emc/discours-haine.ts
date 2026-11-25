@@ -176,8 +176,7 @@ const discoursHaine: Notion = {
   memo: [
     'Un **discours de haine** peut être dit ou écrit. Il s’appuie sur des **stéréotypes** et des **préjugés** posés sur une identité.',
     'Il **réduit** une personne à son appartenance à un groupe que l’on **stigmatise** : c’est le cas du **racisme**, de l’**antisémitisme** et de la **xénophobie**.',
-    'Il peut mener à des injures, à du harcèlement ou à des violences, punis par la loi. Depuis 2022, le harcèlement scolaire est un délit.',
-    'Diffuser ou **rediffuser** un tel contenu porte atteinte à la **dignité** et à la sécurité des personnes. Exemple : relayer une moquerie sur l’origine de quelqu’un.',
+    'Il peut mener à des injures, à du harcèlement (un délit à l’école depuis 2022) ou à des violences, punis par la loi. Diffuser ou **rediffuser** un tel contenu porte atteinte à la **dignité** et à la sécurité des personnes. Exemple : relayer une moquerie sur l’origine de quelqu’un.',
   ],
   faits: [
     fait(
@@ -416,10 +415,8 @@ const loi: Notion = {
   programme: PROGRAMME,
   credit: CREDIT,
   memo: [
-    'La loi de 1881 punit la **provocation à la haine** et l’**injure** visant une origine, une religion, un sexe ou un handicap, aussi sur Internet.',
-    'L’injure méprise sans imputer (attribuer) de fait précis.',
-    'Un harcèlement en ligne est puni plus sévèrement. Un groupe qui se concerte peut harceler, même si chacun n’agit qu’une fois.',
-    'Depuis 2022, le harcèlement scolaire est un délit.',
+    'La loi de 1881 punit la **provocation à la haine** et l’**injure** visant une origine, une religion, un sexe ou un handicap, aussi sur Internet. L’injure méprise sans imputer (attribuer) de fait précis.',
+    'Un harcèlement en ligne est puni plus sévèrement. Un groupe qui se concerte peut harceler, même si chacun n’agit qu’une fois. Depuis 2022, le harcèlement scolaire est un délit.',
     'Le droit s’adapte : **Observatoire de la haine en ligne** (loi de 2020) et règlement européen **DSA**. Idée clé : l’illégal hors ligne l’est aussi en ligne.',
   ],
   faits: [
@@ -973,8 +970,7 @@ const signaler: Notion = {
   credit: CREDIT,
   memo: [
     'Chaque **plateforme** doit offrir un outil simple pour **signaler** un **contenu illicite**, puis agir rapidement quand il est illégal.',
-    'Un signalement (ou notification) dit pourquoi, donne l’adresse exacte (URL) et se fait de **bonne foi**.',
-    'L’**hébergeur**, qui garde les contenus en ligne, envoie un accusé de réception, puis sa décision et les **recours** (moyens de la contester).',
+    'Un signalement (ou notification) dit pourquoi, donne l’adresse exacte (URL) et se fait de **bonne foi**. L’**hébergeur**, qui garde les contenus en ligne, envoie un accusé de réception, puis sa décision et les **recours** (moyens de la contester).',
     'Hors de la plateforme : **Pharos** reçoit des signalements ; les signalements des **signaleurs de confiance** passent en priorité ; l’**Arcom** veille au **DSA** en France.',
   ],
   faits: [
