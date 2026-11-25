@@ -1224,4 +1224,32 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'La bande tantôt couverte, tantôt découverte par la marée.',
     example: 'On y marche à marée basse.',
   },
+  {
+    id: 'embouchure',
+    word: 'embouchure',
+    forms: ['embouchure', 'embouchures'],
+    definition: 'L’endroit où un fleuve se jette dans la mer.',
+    example: 'L’embouchure d’un fleuve sur l’océan.',
+  },
+  {
+    id: 'houle',
+    word: 'houle',
+    forms: ['houle'],
+    definition: 'Le mouvement des vagues qui soulève la mer, même loin de la côte.',
+    example: 'La houle fait monter et descendre les bateaux.',
+  },
+  {
+    id: 'arbitrage',
+    word: 'arbitrage',
+    forms: ['arbitrage', 'arbitrages', 'arbitrer'],
+    definition: 'Une décision qui tranche entre des demandes différentes.',
+    example: 'La mairie choisit entre un projet de quais et la protection d’un marais.',
+  },
+  {
+    id: 'aquaculture',
+    word: 'aquaculture',
+    forms: ['aquaculture'],
+    definition: 'L’élevage de poissons, de coquillages ou d’autres êtres vivants dans l’eau.',
+    example: 'Un élevage d’huîtres.',
+  },
 ];

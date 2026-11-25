@@ -41,7 +41,8 @@ const E_AVAL =
   'Les fonctions portuaires, autrefois localisées au cœur des villes, dans des sites d’abri (fonds d’estuaires, grandes baies ou rades), se sont progressivement déplacées et étendues de l’amont vers l’aval';
 const E_NAVIRES =
   'la création de sites artificiels en pleine mer afin de développer leurs activités et accueillir des navires toujours plus grands (pétroliers, vraquiers, porte-conteneurs)';
-const E_MOTEUR = 'depuis plus d’un siècle et demi, un puissant moteur de transformation des littoraux';
+const E_MOTEUR =
+  'Le tourisme – littoral et balnéaire ; régional, national ou international – est ainsi, depuis plus d’un siècle et demi, un puissant moteur de transformation des littoraux';
 const E_REGARD =
   'un changement du regard porté par les sociétés sur leur littoral, désormais désiré et approprié, mis en valeur dans un but touristique ou résidentiel';
 const E_HABITER =
@@ -77,7 +78,8 @@ const G_PORT_SPECIAL = 'ports vraquiers, ports pétroliers ou encore ports à co
 const G_PORT_TRIPTYQUE = 'un lieu de contact entre un avant-pays (foreland) et un arrière-pays (hinterland)';
 const G_CONTENEUR = 'Les conteneurs sont des boîtes métalliques de dimensions normalisées';
 const G_ARRIERE = 'L’arrière-pays (hinterland) est l’aire d’attraction et de desserte continentale d’un port';
-const G_AVANT = 'desservis par les lignes ou dessertes régulières qui touchent un port ou un aéroport';
+const G_AVANT =
+  'L’avant-pays (foreland) désigne l’ensemble des pays desservis par les lignes ou dessertes régulières qui touchent un port ou un aéroport';
 const G_LITTORALISATION =
   'La littoralisation est un processus de concentration des populations et des activités humaines le long ou à proximité des littoraux';
 const G_INTERFACE =
@@ -89,21 +91,25 @@ const G_STATION_POP = 'habitée par une population permanente, dont l’activit�
 const G_SURTOURISME =
   'désigne les effets négatifs produits par une fréquentation touristique excessive dans certains lieux';
 const G_CONSERVATOIRE =
-  'une politique d’acquisition des sols pour préserver quelques-uns des espaces littoraux les plus fragiles et menacés';
+  'Le Conservatoire agit principalement grâce à ses capacités foncières : il acquiert des terrains littoraux ou peut les recevoir sous forme de donation';
+const G_CONSERVATOIRE_PUBLIC =
+  'Le Conservatoire de l’espace littoral et des rivages lacustres (souvent appelé simplement Conservatoire du littoral) est un établissement public de l’État à caractère administratif';
 const G_ALEA =
   'L’aléa ne devient un risque qu’en présence d’enjeux humains, économiques et environnementaux, possédant une certaine vulnérabilité (fragilité)';
 const G_ALEA_DEF =
   'L’aléa (hazard en anglais) est la possibilité que se produise un événement impliquant une perturbation de l’équilibre d’un milieu';
 const G_ILE =
-  'un typhon sur un atoll désert de l’océan Pacifique n’est pas un risque, mais un cyclone sur des secteurs habités de l’île de La Réunion est un risque majeur';
+  'un typhon sur un atoll désert de l’océan Pacifique n’est pas un risque, mais un cyclone sur des secteurs habités de l’île de La Réunion devient un risque majeur';
 const G_VULNERABILITE =
   'La vulnérabilité exprime le niveau d’effet prévisible d’un phénomène naturel (un aléa) sur des enjeux (les sociétés humaines et leurs activités)';
 const G_ENJEUX =
   'les enjeux recouvrent les personnes, biens, équipements, environnements, susceptibles d’être affectés par un phénomène';
-const G_DIGUE = 'à protéger des marées et de la houle';
+const G_DIGUE =
+  'Une digue est une construction longitudinale, parallèle à la rive d’un cours d’eau ou à un littoral, et surélevée par rapport au terrain environnant, destiné à contenir les eaux d’une crue pour limiter le risque inondation, à protéger des marées et de la houle';
 const G_TRAIT =
   'il peut reculer lorsque le littoral est soumis à des effets d’érosion ou avancer, dans le cas d’accumulation de sédiments';
-const G_ESTRAN = 'est l’espace alternativement couvert et découvert par la marée';
+const G_ESTRAN =
+  'L’estran ou bande intertidale ou zone de balancement des marées est l’espace alternativement couvert et découvert par la marée';
 const G_MANGROVE = 'La mangrove est une formation végétale des littoraux intertropicaux';
 const G_MANGROVE_UTILE =
   'Les mangroves sont des réservoirs de biodiversité et des milieux très utiles pour la protection des sols face à l’érosion';
@@ -376,7 +382,7 @@ const industrialoPortuaire: Notion = {
         { label: 'un port réservé aux skieurs', why: 'Le ski n’est pas une activité portuaire.' },
       ],
       gap: ['On distingue les ports vraquiers, les ports pétroliers et les ports à ', '.', ['conteneurs']],
-      choix: ['conteneurs', 'voyelles', 'skis'],
+      choix: ['conteneurs', 'avions', 'skieurs'],
       quote: G_PORT_SPECIAL,
       explain: 'Les navires se spécialisent, et les ports ou leurs terminaux aussi.',
       src: PORT,
@@ -396,7 +402,7 @@ const industrialoPortuaire: Notion = {
   ],
   libres: [
     {
-      q: 'Comment appelle-t-on l’ouvrier qui charge et décharge les navires sur les quais ?',
+      q: 'Comment appelle-t-on l’ouvrier qui charge et décharge les navires sur les quais (le mot commence par « do ») ?',
       accepted: ['docker', 'un docker', 'dockers', 'des dockers'],
       traps: [
         { text: 'vraquier', why: 'Le vraquier est un cargo, pas un ouvrier.' },
@@ -425,7 +431,9 @@ const industrialoPortuaire: Notion = {
       accepted: [
         'zone industrialo-portuaire',
         'zone industrialo portuaire',
+        'zone industrialoportuaire',
         'une zone industrialo-portuaire',
+        'la zone industrialo-portuaire',
         'industrialo-portuaire',
       ],
       traps: [
@@ -524,7 +532,7 @@ const industrialoPortuaire: Notion = {
           wrong: [
             {
               label: 'les marais attirent toujours plus d’usines',
-              why: 'Le texte oppose le projet d’usages industriels et la protection des animaux.',
+              why: 'Le texte oppose le projet de quais à la protection des animaux.',
             },
             {
               label: 'un port n’a jamais besoin d’espace',
@@ -811,7 +819,7 @@ const touristique: Notion = {
   ],
   libres: [
     {
-      q: 'Quel mot désigne les effets négatifs d’un nombre excessif de touristes dans un lieu ?',
+      q: 'Quel mot, formé à partir de « tourisme », désigne les effets négatifs d’un nombre excessif de visiteurs dans un lieu ?',
       accepted: ['surtourisme', 'le surtourisme', 'sur-tourisme'],
       traps: [
         { text: 'tourisme', why: 'Le tourisme est l’activité ; le préfixe « sur » indique l’excès.' },
@@ -842,16 +850,19 @@ const touristique: Notion = {
         },
         { text: 'musée', why: 'Un musée conserve des objets, pas des terrains du littoral.' },
       ],
-      quote: G_CONSERVATOIRE,
-      explain: 'Le Conservatoire achète des terrains pour les préserver.',
+      quote: G_CONSERVATOIRE_PUBLIC,
+      explain: 'Le Conservatoire du littoral est un établissement public : il achète des terrains pour les préserver.',
       src: CONSERVATOIRE,
     },
     {
-      q: 'Selon le programme, quelle richesse des littoraux, avec la flore, invite à les protéger (un mot) ?',
+      q: 'Les littoraux sont à protéger pour la richesse de leur flore (les plantes) et de leur … : quel mot désigne l’ensemble des animaux ?',
       accepted: ['faune', 'la faune'],
       traps: [
         { text: 'flore', why: 'La flore désigne les plantes : elle est déjà citée dans la question.' },
-        { text: 'houille', why: 'La houille est un charbon, pas un ensemble d’êtres vivants.' },
+        {
+          text: 'biodiversité',
+          why: 'La biodiversité réunit tous les êtres vivants ; on attend le mot des seuls animaux.',
+        },
       ],
       quote: P_PROTECTION,
       explain: 'La faune désigne les animaux d’un milieu, la flore ses plantes.',
@@ -1071,17 +1082,18 @@ const risques: Notion = {
       src: RISQUES,
     },
     {
-      q: 'Selon le ministère chargé de l’écologie, qu’est-ce qui cause les tsunamis ?',
+      q: 'Quelle cause des tsunamis le ministère chargé de l’écologie cite-t-il ?',
       a: 'un séisme sous-marin',
       wrong: [
         { label: 'une simple pluie d’été', why: 'Une pluie ne provoque pas la grande vague d’un tsunami.' },
         { label: 'le passage d’un navire', why: 'Un navire ne produit pas un tsunami.' },
         { label: 'la marée de chaque jour', why: 'La marée est un autre phénomène, régulier.' },
       ],
-      gap: ['Les tsunamis sont causés par des ', ' sous-marins.', ['séismes', 'seismes']],
+      gap: ['Les tsunamis sont souvent causés par des ', ' sous-marins.', ['séismes', 'seismes']],
       choix: ['séismes', 'navires', 'nuages'],
       quote: M_TSUNAMI,
-      explain: 'Un tremblement de terre sous la mer peut soulever des vagues qui atteignent les côtes.',
+      explain:
+        'Un tremblement de terre sous la mer peut soulever des vagues qui atteignent les côtes. Plus rarement, une éruption ou un grand éboulement en provoque aussi.',
       src: RISQUES,
     },
     {
@@ -1216,13 +1228,17 @@ const risques: Notion = {
       traps: [
         { text: 'enjeu', why: 'Les enjeux sont ce qui peut être touché.' },
         { text: 'prévention', why: 'La prévention est ce qu’on fait pour limiter les dommages.' },
+        {
+          text: 'risque',
+          why: 'Le risque suppose en plus des personnes ou des biens exposés : on attend le seul phénomène possible.',
+        },
       ],
       quote: G_ALEA_DEF,
       explain: 'L’aléa est le phénomène possible ; le risque demande en plus des enjeux exposés.',
       src: ALEA,
     },
     {
-      q: 'Quel ouvrage surélevé protège une côte contre les marées et la houle ?',
+      q: 'Quel ouvrage surélevé protège une côte contre les marées et la houle (le mouvement des vagues) ?',
       accepted: ['digue', 'une digue', 'la digue', 'des digues', 'digues'],
       traps: [
         { text: 'dune', why: 'La dune est un tas de sable naturel ; on attend un ouvrage construit.' },
@@ -1365,7 +1381,7 @@ const vocabulaire: Notion = {
   hint: 'Demande-toi si le mot désigne un espace, un port, un bateau ou un phénomène.',
   memo: [
     'Le **littoral** est l’espace de contact entre la terre et la mer : c’est une **interface**, où des échanges se font.',
-    'Un **estuaire** est la large embouchure d’un fleuve touchée par la marée ; une **rade** est un grand bassin où les navires s’abritent.',
+    'Un **estuaire** est la large embouchure (là où il rejoint la mer) d’un fleuve, touchée par la marée ; une **rade** est un grand bassin où les navires s’abritent.',
     'La **littoralisation** est la concentration des habitants et des activités près des côtes. L’**estran** est couvert puis découvert par la marée.',
   ],
   faits: [
@@ -1467,13 +1483,17 @@ const vocabulaire: Notion = {
     },
     {
       q: 'Qu’est-ce qu’un polder ?',
-      a: 'un espace conquis sur l’eau, endigué puis asséché',
+      a: 'un espace gagné sur l’eau, entouré de digues puis asséché',
       wrong: [
         { label: 'une plage laissée intacte', why: 'Le polder est un terrain aménagé et protégé par des digues.' },
         { label: 'un navire de marchandises', why: 'Un polder est un terrain, pas un navire.' },
-        { label: 'une forêt de palétuviers', why: 'Cette forêt des côtes tropicales est la mangrove.' },
+        { label: 'une forêt les pieds dans l’eau de mer', why: 'Cette forêt des côtes tropicales est la mangrove.' },
       ],
-      gap: ['Un ', ' est un terrain gagné sur l’eau grâce à des digues et au drainage.', ['polder']],
+      gap: [
+        'Un ',
+        ' est un terrain gagné sur l’eau grâce à des digues et au drainage (l’évacuation de l’eau).',
+        ['polder'],
+      ],
       choix: ['polder', 'lagon', 'estran'],
       quote: G_POLDER,
       explain: 'Les digues empêchent le retour de l’eau, et le drainage évacue ce qui reste.',
@@ -1487,14 +1507,14 @@ const vocabulaire: Notion = {
         { label: 'une roche qui forme les falaises', why: 'La mangrove est faite de plantes.' },
         { label: 'un port réservé aux navires de pêche', why: 'La mangrove est un milieu naturel.' },
       ],
-      gap: ['La ', ' est une formation végétale des littoraux intertropicaux.', ['mangrove']],
+      gap: ['La ', ' est une végétation des côtes situées entre les deux tropiques.', ['mangrove']],
       choix: ['mangrove', 'toundra', 'rade'],
       quote: G_MANGROVE,
-      explain: 'Les palétuviers de la mangrove abritent une riche faune.',
+      explain: 'Les arbres de la mangrove, les palétuviers, forment un milieu où vivent de nombreuses espèces.',
       src: MANGROVE,
     },
     {
-      q: 'Selon le programme, que concentrent de plus en plus les littoraux ?',
+      q: 'Que concentrent de plus en plus les littoraux dans le monde ?',
       a: 'une part accrue de la population mondiale',
       wrong: [
         { label: 'la totalité des glaciers de la planète', why: 'Les glaciers ne sont pas ce que le programme cite.' },
@@ -1543,6 +1563,10 @@ const vocabulaire: Notion = {
           why: 'L’urbanisation désigne la croissance des villes, pas précisément près des côtes.',
         },
         { text: 'métropolisation', why: 'La métropolisation concerne les très grandes villes.' },
+        {
+          text: 'maritimisation',
+          why: 'La maritimisation concerne la place croissante de la mer dans les échanges ; on attend le mot formé sur « littoral ».',
+        },
       ],
       quote: G_LITTORALISATION,
       explain: 'Le mot est formé sur « littoral ».',

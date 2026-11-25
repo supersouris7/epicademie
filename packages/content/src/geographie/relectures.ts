@@ -34,4 +34,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'g6-espaces-agricoles', version: 1, lot: 'ge-6e-02', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'g6-vocabulaire-faible-densite', version: 1, lot: 'ge-6e-02', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'g6-habiter-rural', version: 1, lot: 'ge-6e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g6-littoral-industrialo-portuaire', version: 1, lot: 'ge-6e-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g6-littoral-touristique', version: 1, lot: 'ge-6e-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g6-risques-littoraux', version: 1, lot: 'ge-6e-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g6-vocabulaire-littoraux', version: 1, lot: 'ge-6e-03', date: '2026-11-25', verdict: 'ok' },
 ];
