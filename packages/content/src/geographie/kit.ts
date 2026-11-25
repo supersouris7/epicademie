@@ -45,7 +45,7 @@ export interface DocQuestion {
 
 export interface Notion {
   /** Classe citée dans la source de la leçon et sous les textes à lire (CM1 si absente). */
-  readonly classe?: 'CM1' | 'CM2';
+  readonly classe?: 'CM1' | 'CM2' | '6e';
   readonly id: string;
   readonly title: string;
   readonly hint: string;
@@ -75,8 +75,10 @@ export interface Notion {
   readonly carte?: (rng: Rng, level: Level) => QuestionDraft | undefined;
 }
 
+const nomClasse = (classe: string) => (classe === '6e' ? 'sixième' : classe);
+
 const prog = (classe: string) =>
-  `Programme du cycle 3 (BOEN n° 31 du 30 juillet 2020, version 2023), géographie, classe de ${classe}`;
+  `Programme du cycle 3 (BOEN n° 31 du 30 juillet 2020, version 2023), géographie, classe de ${nomClasse(classe)}`;
 
 /** Mélange jusqu'à ce que l'ordre ne soit pas déjà le bon (validate.ts l'exige). */
 function shuffled<T>(rng: Rng, items: readonly T[]): T[] {
@@ -89,6 +91,7 @@ function shuffled<T>(rng: Rng, items: readonly T[]): T[] {
 /** Première bulle selon l’éditeur de la source (préfixe de son identifiant) ; dictionnaire par défaut. */
 const lookup = (src: string): string => {
   if (src === PROGRAMME) return 'Cherchons ce que dit le programme';
+  if (src.startsWith('eduscol-')) return 'Cherchons ce que dit la ressource Éduscol';
   if (src.startsWith('insee-')) return 'Cherchons ce que dit l’INSEE';
   if (src.startsWith('ademe-')) return 'Cherchons ce que dit l’ADEME';
   if (src.startsWith('ue-')) return 'Cherchons ce que dit l’Union européenne';
@@ -212,7 +215,7 @@ function level5(rng: Rng, n: Notion): QuestionDraft {
     kind: 'document',
     title: d.title,
     lines: d.lines,
-    credit: `Texte écrit pour l’exercice, d’après le programme de ${n.classe ?? 'CM1'}.`,
+    credit: `Texte écrit pour l’exercice, d’après le programme de ${nomClasse(n.classe ?? 'CM1')}.`,
   };
   return {
     prompt: `Lis le texte, puis réponds. ${dq.q}`,
