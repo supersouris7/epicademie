@@ -76,6 +76,16 @@ const academie = (id: string, word: string): Source => ({
   consultedOn: '2026-11-25',
 });
 
+/** Fiche d’un État membre sur le site de l’Union européenne (code pays à 3 lettres des cartes). */
+const uePays = (code: string, nom: string, page: string): Source => ({
+  id: `ue-pays-${code}`,
+  title: `Pays de l’UE, « ${nom} »`,
+  publisher: 'Union européenne',
+  url: `https://european-union.europa.eu/principles-countries-history/eu-countries/${page}_fr`,
+  textDate: '2026',
+  consultedOn: '2026-11-25',
+});
+
 /** Page de conjugaison d'un verbe (morphologie), publiée par le CNRTL. `id` : le verbe sans accent. */
 const conjugaison = (verbe: string): Source => {
   const id = verbe.replace(/[éèêç]/g, (c) => (c === 'ç' ? 'c' : 'e'));
@@ -656,6 +666,9 @@ export const SOURCES: readonly Source[] = [
   academie('avoir', 'avoir'),
   academie('faire', 'faire'),
   academie('aller', 'aller'),
+  academie('ne', 'ne'),
+  academie('jamais', 'jamais'),
+  academie('auxiliaire', 'auxiliaire'),
   {
     id: 'eduscol-grammaire-francais',
     title: 'La grammaire du français. Terminologie grammaticale (les guides fondamentaux pour enseigner)',
@@ -855,6 +868,54 @@ export const SOURCES: readonly Source[] = [
     url: 'https://learnenglishkids.britishcouncil.org/grammar-vocabulary/grammar-practice/adjectives',
     textDate: '2026',
     consultedOn: CONSULTED,
+  },
+  {
+    id: 'bc-count-nouns',
+    title: 'LearnEnglish, English grammar reference : Count nouns',
+    publisher: 'British Council',
+    url: 'https://learnenglish.britishcouncil.org/grammar/english-grammar-reference/count-nouns',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'bck-articles',
+    title: 'LearnEnglish Kids, Grammar practice : Articles',
+    publisher: 'British Council',
+    url: 'https://learnenglishkids.britishcouncil.org/grammar-vocabulary/grammar-practice/articles',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'bc-indefinite-article',
+    title: 'LearnEnglish, English grammar reference : The indefinite article, a and an',
+    publisher: 'British Council',
+    url: 'https://learnenglish.britishcouncil.org/grammar/english-grammar-reference/the-indefinite-article-a-and-an',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'bck-this-that',
+    title: 'LearnEnglish Kids, Grammar practice : This, that, these, those',
+    publisher: 'British Council',
+    url: 'https://learnenglishkids.britishcouncil.org/grammar-vocabulary/grammar-practice/this-that-these-those',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'bc-demonstratives',
+    title: 'LearnEnglish, English grammar reference : Demonstratives',
+    publisher: 'British Council',
+    url: 'https://learnenglish.britishcouncil.org/grammar/english-grammar-reference/demonstratives',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'bc-noun-phrases',
+    title: 'LearnEnglish, English grammar reference : Noun phrases',
+    publisher: 'British Council',
+    url: 'https://learnenglish.britishcouncil.org/grammar/english-grammar-reference/noun-phrases',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
   },
   {
     id: 'bck-prepositions-time',
@@ -1829,6 +1890,50 @@ export const SOURCES: readonly Source[] = [
   tlfi('recycler', 'recycler', 'recycler'),
   tlfi('compost', 'compost', 'compost'),
   tlfi('transition', 'transition', 'transition'),
+  // Lot ge-cm2-04 : repères sur la France, l’Europe et le monde.
+  {
+    id: 'insee-cog-2025-departements',
+    title: 'Code officiel géographique au 1er janvier 2025, fichier « Départements » (CSV)',
+    publisher: 'INSEE',
+    url: 'https://www.insee.fr/fr/statistiques/fichier/8377162/v_departement_2025.csv',
+    textDate: '2025-01-01',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'ue-faits',
+    title: '« Faits et chiffres sur l’Union européenne »',
+    publisher: 'Union européenne',
+    url: 'https://european-union.europa.eu/principles-countries-history/facts-and-figures-european-union_fr',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  ...(
+    [
+      ['fra', 'France', 'france'],
+      ['deu', 'Allemagne', 'germany'],
+      ['esp', 'Espagne', 'spain'],
+      ['ita', 'Italie', 'italy'],
+      ['bel', 'Belgique', 'belgium'],
+      ['prt', 'Portugal', 'portugal'],
+      ['pol', 'Pologne', 'poland'],
+      ['grc', 'Grèce', 'greece'],
+      ['aut', 'Autriche', 'austria'],
+      ['nld', 'Pays-Bas', 'netherlands'],
+      ['irl', 'Irlande', 'ireland'],
+      ['swe', 'Suède', 'sweden'],
+      ['dnk', 'Danemark', 'denmark'],
+      ['hun', 'Hongrie', 'hungary'],
+      ['cze', 'Tchéquie', 'czechia'],
+      ['rou', 'Roumanie', 'romania'],
+      ['bgr', 'Bulgarie', 'bulgaria'],
+      ['hrv', 'Croatie', 'croatia'],
+      ['fin', 'Finlande', 'finland'],
+    ] as const
+  ).map(([code, nom, page]) => uePays(code, nom, page)),
+  ...['continent', 'capitale', 'pacifique', 'antarctique'].map((w) => academie(w, w)),
+  academie('departement', 'département'),
+  academie('prefecture', 'préfecture'),
+  academie('ocean', 'océan'),
 ];
 
 export const getSource = (id: string): Source | undefined => SOURCES.find((s) => s.id === id);

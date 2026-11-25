@@ -8,6 +8,7 @@ import { ENGLISH_TIME_CHAPTER } from './temps.ts';
 import { ENGLISH_FAMILY_CHAPTER } from './famille.ts';
 import { ENGLISH_TASTES_CHAPTER } from './gouts.ts';
 import { ENGLISH_LISTENING_CHAPTER } from './ecoute.ts';
+import { ENGLISH_NOUN_GROUP_CHAPTER } from './groupe-nominal.ts';
 import { ENGLISH_LISTENING_CM2_CHAPTER } from './ecoute-cm2.ts';
 
 /**
@@ -123,13 +124,14 @@ const sentence: Skill = {
 };
 
 export const ANGLAIS_CHAPTERS: readonly Chapter[] = [
-  ...ENGLISH_GRAMMAR_CHAPTERS.filter((c) => ['cm1', 'cm2', '6e'].includes(c.grade)),
+  ...ENGLISH_GRAMMAR_CHAPTERS.filter((c) => ['cm1', '6e'].includes(c.grade)),
   ENGLISH_PRESENTATION_CHAPTER,
   ...ENGLISH_BE_CHAPTERS,
   ENGLISH_TIME_CHAPTER,
   ENGLISH_FAMILY_CHAPTER,
   ENGLISH_TASTES_CHAPTER,
   ENGLISH_LISTENING_CHAPTER,
+  ENGLISH_NOUN_GROUP_CHAPTER,
   ENGLISH_LISTENING_CM2_CHAPTER,
   {
     id: 'a5-verbes-irreguliers',

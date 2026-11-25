@@ -8,8 +8,9 @@ import { IRREGULAR_VERBS } from './verbs.ts';
  * - Choix et place des notions : Éduscol, « Repères de progressivité linguistique — Anglais »
  *   (Ministère de l'Éducation nationale, mars 2016) : impératif, déterminants, possessifs,
  *   présent simple (1re et 3e personne), pronoms sujets, be au présent et au prétérit, prétérit.
+ * - Le CM2 « Le groupe nominal » (à 5 niveaux) est dans groupe-nominal.ts.
  * - Formes et règles : British Council, LearnEnglish, English grammar reference (pages
- *   personal-pronouns, possessives-adjectives, verb-be, present-simple, past-simple, count-nouns,
+ *   personal-pronouns, possessives-adjectives, verb-be, present-simple, past-simple,
  *   comparative-superlative-adjectives, present-perfect), relues le 21/11/2026. On n'emploie
  *   que ce que ces pages disent explicitement (règles et exemples cités).
  */
@@ -43,54 +44,6 @@ const BE_PAST: Record<Pronoun, string> = {
 /** Pronoms du niveau : I/you/he/she d'abord, puis tous. */
 const pronounFor = (rng: Pick, level: Level): Pronoun =>
   rng.pick(level === 1 ? (['I', 'you', 'he', 'she'] as const) : PRONOUNS);
-
-// ——— CM2 : le pluriel des noms ———
-/** Exemples et règles de la page count-nouns du British Council. */
-const PLURALS: readonly {
-  readonly one: string;
-  readonly many: string;
-  readonly rule: string;
-  readonly tier: 1 | 2 | 3;
-}[] = [
-  { one: 'book', many: 'books', rule: 'En général, on ajoute -s.', tier: 1 },
-  { one: 'boy', many: 'boys', rule: 'Voyelle + y : on ajoute simplement -s.', tier: 1 },
-  { one: 'day', many: 'days', rule: 'Voyelle + y : on ajoute simplement -s.', tier: 1 },
-  { one: 'class', many: 'classes', rule: 'Après -s, -ch, -sh, -ss, -x ou -o : -es.', tier: 2 },
-  { one: 'watch', many: 'watches', rule: 'Après -s, -ch, -sh, -ss, -x ou -o : -es.', tier: 2 },
-  { one: 'box', many: 'boxes', rule: 'Après -s, -ch, -sh, -ss, -x ou -o : -es.', tier: 2 },
-  { one: 'potato', many: 'potatoes', rule: 'Après -s, -ch, -sh, -ss, -x ou -o : -es.', tier: 2 },
-  { one: 'lady', many: 'ladies', rule: 'Consonne + y : -y devient -ies.', tier: 2 },
-  { one: 'party', many: 'parties', rule: 'Consonne + y : -y devient -ies.', tier: 2 },
-  { one: 'man', many: 'men', rule: 'Pluriel irrégulier, à apprendre.', tier: 3 },
-  { one: 'woman', many: 'women', rule: 'Pluriel irrégulier, à apprendre.', tier: 3 },
-  { one: 'child', many: 'children', rule: 'Pluriel irrégulier, à apprendre.', tier: 3 },
-  { one: 'person', many: 'people', rule: 'Pluriel irrégulier, à apprendre.', tier: 3 },
-  { one: 'foot', many: 'feet', rule: 'Pluriel irrégulier, à apprendre.', tier: 3 },
-];
-
-const plural: Skill = {
-  id: 'acm2-pluriel',
-  title: 'Le pluriel des noms',
-  lesson: {
-    memo: [
-      'En général, on ajoute **-s** : book → books. Voyelle + y : -s (boy → boys).',
-      'Après -s, -ch, -sh, -ss, -x, -o : **-es** (box → boxes). Consonne + y : **-ies** (party → parties).',
-      'Quelques pluriels sont irréguliers : man → men, child → children, person → people, foot → feet.',
-    ],
-    source: src('count-nouns', 'le nom et son pluriel'),
-  },
-  generate: (rng, level) => {
-    const n = rng.pick(PLURALS.filter((x) => x.tier <= level));
-    const wrong = n.many === `${n.one}s` ? `${n.one}es` : `${n.one}s`;
-    return {
-      prompt: `Écris le pluriel de **${n.one}**.`,
-      answer: { kind: 'text', accepted: [n.many] },
-      traps: [{ text: wrong, why: n.rule }],
-      hint: 'Regarde la fin du mot : -y ? -x, -ch, -o ? ou un pluriel irrégulier ?',
-      steps: [n.rule, `${n.one} → **${n.many}**.`],
-    };
-  },
-};
 
 // ——— 6e : be au prétérit, 3e personne du présent simple ———
 const bePast: Skill = {
@@ -259,7 +212,6 @@ const chapter = (id: string, grade: Chapter['grade'], title: string, skills: rea
 });
 
 export const ENGLISH_GRAMMAR_CHAPTERS: readonly Chapter[] = [
-  chapter('acm2-pluriel', 'cm2', 'Le pluriel', [plural]),
   chapter('a6-be-preterit', '6e', 'Be au passé', [bePast]),
   chapter('a6-present-simple', '6e', 'Le présent simple', [thirdPerson]),
   chapter('a4-comparatif', '4e', 'Comparer', [comparative]),
