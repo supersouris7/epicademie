@@ -102,8 +102,7 @@ const RECONNAISSANCE = 'leur reconnaissance par l’État (intérêt public, exo
 const SANG = 'Sensibiliser au don de sang, acte de citoyenneté et de solidarité';
 const CADETS = 'S’appuyer sur le dispositif des cadets de la sécurité civile';
 const JEUNES = 'appui sur les élèves élus au conseil départemental, conseils municipaux de jeunes';
-const PARCOURS =
-  'engagement au sein d’institutions et d’associations ou pour la Nation (service civique, service national universel)';
+const PARCOURS = 'engagement au sein d’institutions et d’associations ou pour la Nation (service civique';
 
 // ——— Notion 1 : l'égalité entre les femmes et les hommes ———
 
@@ -160,7 +159,7 @@ const egaliteFemmesHommes: Notion = {
         ['1975', '1975 est l’année de la loi sur l’IVG.'],
       ],
       ['Les femmes obtiennent le droit de vote en ', '.', ['1944']],
-      'Le programme date le droit de vote des femmes de 1944.',
+      '1944 ouvre la série : les autres droits cités viennent après (1965, 1975, 1987, 2000).',
     ),
     fait(
       COMBATS,
@@ -173,7 +172,7 @@ const egaliteFemmesHommes: Notion = {
       [
         'En 1965, une femme peut exercer une profession sans ',
         ' de son mari.',
-        ['autorisation', 'l’autorisation', 'permission'],
+        ['autorisation', 'l’autorisation', 'permission', 'accord', 'l’accord', 'consentement'],
       ],
       'Depuis 1965, l’accord du mari n’est plus nécessaire pour travailler.',
     ),
@@ -198,8 +197,12 @@ const egaliteFemmesHommes: Notion = {
         ['aux vacances scolaires', 'Les vacances ne sont pas l’objet de cette loi.'],
         ['au permis de conduire', 'La loi vise les fonctions auxquelles on est élu.'],
       ],
-      ['La loi sur la parité vise un égal accès aux ', ' politiques.', ['mandats', 'mandat', 'fonctions']],
-      'On passe de l’égalité en droits à un égal accès aux mandats politiques.',
+      [
+        'La loi sur la parité vise un égal accès aux ',
+        ' politiques.',
+        ['mandats', 'mandat', 'fonctions', 'postes', 'responsabilités'],
+      ],
+      'Avoir les mêmes droits ne suffit pas toujours : la parité vise un égal accès réel aux mandats politiques.',
     ),
     fait(
       DEMEURENT,
@@ -271,7 +274,13 @@ const egaliteFemmesHommes: Notion = {
     libre(
       PRINCIPE,
       'quel texte fondamental de la République garantit l’égalité entre les femmes et les hommes ?',
-      ['la Constitution', 'Constitution'],
+      [
+        'la Constitution',
+        'Constitution',
+        'la Constitution française',
+        'la Constitution de 1958',
+        'le préambule de la Constitution de 1946',
+      ],
       [
         ['le Code de la route', 'Le Code de la route règle la circulation.'],
         ['le règlement intérieur', 'Il ne s’applique qu’à un établissement.'],
@@ -363,7 +372,7 @@ const discriminations: Notion = {
   memo: [
     'Une **discrimination** est un **délit** contraire à l’égalité : on distingue des personnes selon un critère (origine, sexe, handicap, religion, apparence…).',
     'Elle naît souvent de **stéréotypes** et de **préjugés**. Le **racisme**, l’**antisémitisme** et la **xénophobie** sont punis par la loi.',
-    'Le **harcèlement scolaire** est un délit depuis 2022. L’**inclusion** vise à accueillir chacun. Exemple : refuser un élève à cause de son handicap est une discrimination.',
+    'Le **harcèlement scolaire** est un délit depuis 2022. L’**inclusion** vise à accueillir chacun ; le **Défenseur des droits** peut intervenir. Exemple : refuser un élève à cause de son handicap est une discrimination.',
   ],
   faits: [
     fait(
@@ -482,10 +491,7 @@ const discriminations: Notion = {
     expert(
       fait(
         LOI_2008,
-        [
-          'Quel est l’objet de la loi du 27 mai 2008, utilisée pour étudier une condamnation en justice ?',
-          'une loi punissant les discriminations',
-        ],
+        ['Quel est l’objet de la loi du 27 mai 2008 ?', 'une loi punissant les discriminations'],
         [
           ['une loi sur la sécurité civile', 'La loi sur la sécurité civile date de 2004.'],
           ['une loi sur la parité en politique', 'La loi sur la parité date de 2000.'],
@@ -594,12 +600,12 @@ const discriminations: Notion = {
         ),
         lecture(
           'les agissements discriminatoires sont aussi à la racine du harcèlement',
-          'Les moqueries ont lieu chaque jour. À quoi cette situation peut-elle conduire ?',
-          'à un harcèlement, que la loi punit',
+          'Les moqueries ont lieu chaque jour. Comment qualifier cette situation répétée ?',
+          'un harcèlement, que la loi punit',
           [
-            ['à un débat réglé', 'Un débat respecte chacun ; ici un élève est visé.'],
-            ['à une élection de délégués', 'Il n’y a ni vote ni candidature.'],
-            ['à une simple plaisanterie sans effet', 'La répétition et la cible font la gravité.'],
+            ['un débat réglé', 'Un débat respecte chacun ; ici un élève est visé.'],
+            ['une élection de délégués', 'Il n’y a ni vote ni candidature.'],
+            ['une simple plaisanterie sans effet', 'La répétition et la cible font la gravité.'],
           ],
           'La discrimination peut être à la racine du harcèlement, reconnu comme un délit.',
         ),
@@ -740,6 +746,10 @@ const solidarite: Notion = {
       'comment nomme-t-on le principe selon lequel la Nation assure aux individus une protection ?',
       ['solidarité', 'la solidarité', 'solidarite', 'la solidarite', 'principe de solidarité'],
       [
+        [
+          'fraternité',
+          'La fraternité est l’idéal auquel ce principe est lié ; on cherche le nom du principe lui-même.',
+        ],
         ['laïcité', 'La laïcité garantit la liberté de conscience.'],
         ['parité', 'La parité vise un égal accès des femmes et des hommes.'],
       ],
@@ -748,7 +758,7 @@ const solidarite: Notion = {
     libre(
       IMPOT,
       'quel prélèvement, direct ou indirect, traduit la participation à la solidarité nationale ?',
-      ['impôt', 'l’impôt', 'les impôts', 'impôts', 'impot', 'impots'],
+      ['impôt', 'l’impôt', 'les impôts', 'impôts', 'impot', 'impots', 'impôts directs et indirects'],
       [
         ['amende', 'Une amende punit une infraction.'],
         ['salaire', 'Le salaire est une rémunération du travail.'],
@@ -931,7 +941,7 @@ const risques: Notion = {
         ['des élèves seulement', 'Elle ne concerne pas un seul groupe.'],
         ['de personne avant la catastrophe', 'La prévention commence avant.'],
       ],
-      ['La sécurité civile est l’affaire de ', '.', ['tous', 'tout le monde']],
+      ['La sécurité civile est l’affaire de ', '.', ['tous', 'tout le monde', 'chacun']],
       'La sécurité civile concerne chacun, d’où l’importance de la prévention.',
     ),
     expert(
@@ -1000,13 +1010,13 @@ const risques: Notion = {
     ),
     libre(
       CATASTROPHE,
-      'après une catastrophe, avec la police et la gendarmerie, quelle sécurité fait partie des forces de sécurité intérieure citées ?',
+      'après une catastrophe, la police et la gendarmerie interviennent, avec la sécurité … : quel mot manque ?',
       ['civile', 'sécurité civile', 'la sécurité civile', 'securite civile'],
       [
         ['sociale', 'La Sécurité sociale protège face aux risques sociaux.'],
-        ['routière', 'Le programme cite ici la sécurité civile.'],
+        ['routière', 'La sécurité routière concerne la circulation, pas les secours après une catastrophe.'],
       ],
-      'Le programme cite la sécurité civile, la police et la gendarmerie.',
+      'La sécurité civile secourt les victimes, avec la police et la gendarmerie.',
     ),
   ],
   docs: [
@@ -1088,7 +1098,7 @@ const engagement: Notion = {
   memo: [
     'L’**engagement**, c’est agir pour les autres. La **fraternité** fait de l’aide en cas de nécessité un devoir de chacun.',
     'Les **associations** contribuent à la solidarité ; l’État peut les reconnaître : **intérêt public**, **exonération** fiscale.',
-    'On s’engage aussi par le **don du sang**, le **service civique** ou, pour les jeunes, dans un **conseil municipal de jeunes** ou chez les **cadets de la sécurité civile**.',
+    'Dès ton âge : **conseil municipal de jeunes** ou **cadets de la sécurité civile** ; plus tard : **don du sang** ou **service civique**.',
   ],
   faits: [
     fait(
@@ -1187,7 +1197,7 @@ const engagement: Notion = {
         ['l’abonnement à une plateforme', 'Un abonnement est un achat.'],
       ],
       ['Le service ', ' est une forme d’engagement pour la Nation.', ['civique', 'national universel']],
-      'Service civique et service national universel sont des engagements pour la Nation.',
+      'Le service civique est une façon de s’engager pour la Nation.',
     ),
   ],
   paires3: [
