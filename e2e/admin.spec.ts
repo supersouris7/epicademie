@@ -14,10 +14,7 @@ test.describe('console d’administration (opérateur)', () => {
     await expect(page).toHaveURL(/\/admin$/);
     await expect(page.getByRole('heading', { name: /Console d’administration/ })).toBeVisible();
     await expect(page.getByText('Opérateur : Recette')).toBeVisible();
-    // Smartphone : le menu des rubriques est une liste déroulante ; sinon, des onglets.
-    const menu = page.getByRole('combobox', { name: 'Rubrique' });
-    if (await menu.isVisible()) await menu.selectOption({ label: 'Utilisateurs · Comptes' });
-    else await page.getByRole('tab', { name: 'Comptes' }).click();
+    await page.getByRole('tab', { name: 'Comptes' }).click();
     await page.getByRole('searchbox').fill('introuvable');
     await page.getByRole('button', { name: 'Rechercher' }).click();
     await expect(page.getByText('Aucun compte ne correspond.')).toBeVisible();
