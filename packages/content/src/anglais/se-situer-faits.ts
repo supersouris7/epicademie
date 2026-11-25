@@ -219,7 +219,7 @@ const w = (en: string, fr: string, typo: string, alt?: readonly string[]): Word 
 
 /** Mots des fiches « Home » et « Furniture » (« garage » et « table », écrits comme en français, restent hors des questions). */
 export const HOUSE: readonly Word[] = [
-  w('house', 'maison', 'hous'),
+  w('house', 'maison', 'hous', ['home']),
   w('bedroom', 'chambre', 'bedrom'),
   w('bathroom', 'salle de bains', 'bathrom'),
   w('kitchen', 'cuisine (la pièce)', 'kichen'),
@@ -230,9 +230,9 @@ export const HOUSE: readonly Word[] = [
   w('chair', 'chaise', 'chear'),
   w('living room', 'salon', 'living rom', ['sitting room', 'lounge']),
   w('dining room', 'salle à manger', 'dinning room'),
-  w('hall', 'entrée', 'haul', ['hallway', 'entrance hall']),
+  w('hall', 'entrée', 'haul', ['hallway', 'entrance hall', 'entrance', 'entryway']),
   w('balcony', 'balcon', 'balcon'),
-  w('stairs', 'escalier', 'sters', ['staircase']),
+  w('stairs', 'escalier', 'sters', ['staircase', 'stairway']),
   w('roof', 'toit', 'rouf'),
   w('wardrobe', 'armoire à vêtements', 'wardrob', ['closet']),
   w('shelf', 'étagère', 'shelv'),
@@ -240,7 +240,7 @@ export const HOUSE: readonly Word[] = [
   w('sofa', 'canapé', 'soffa', ['couch', 'settee']),
   w('armchair', 'fauteuil', 'armchear', ['arm chair']),
   w('bookcase', 'bibliothèque (le meuble)', 'bookase', ['bookshelf', 'book case']),
-  w('cupboard', 'placard', 'cubboard'),
+  w('cupboard', 'placard', 'cubboard', ['closet']),
   w('fridge', 'réfrigérateur', 'frige', ['refrigerator']),
   w('oven', 'four', 'ovan'),
   w('shower', 'douche', 'shouer'),
@@ -261,7 +261,7 @@ export const HOUSE_RIDDLES: readonly { readonly en: string; readonly clue: strin
   { en: 'wardrobe', clue: 'C’est le grand meuble où l’on suspend les vêtements.' },
   { en: 'armchair', clue: 'C’est un siège confortable avec des bras, pour une seule personne.' },
   { en: 'bookcase', clue: 'C’est un meuble à étagères pour ranger les livres.' },
-  { en: 'shower', clue: 'Tu te laves debout sous cette eau qui tombe.' },
+  { en: 'shower', clue: 'Tu t’y laves debout, sous l’eau qui tombe.' },
 ];
 
 /** Pièce à deviner (niveau 5) : indices en anglais, sans le nom de la pièce. */
@@ -306,8 +306,8 @@ export const TOWN: readonly Word[] = [
   w('stadium', 'stade', 'stadiom'),
   w('airport', 'aéroport', 'aeroport'),
   w('factory', 'usine', 'factori'),
-  w('town hall', 'mairie', 'town hal', ['townhall']),
-  w('sports centre', 'centre sportif', 'sport centre', ['sports center', 'sport center']),
+  w('town hall', 'mairie', 'town hal', ['townhall', 'city hall']),
+  w('sports centre', 'centre sportif', 'sports centr', ['sports center', 'sport centre', 'sport center']),
   w('train station', 'gare', 'train stasion', ['station', 'railway station']),
 ];
 

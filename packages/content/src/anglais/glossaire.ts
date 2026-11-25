@@ -444,4 +444,18 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Un mot anglais qui ressemble à un mot français mais n’a pas le même sens.',
     example: 'library veut dire « bibliothèque », pas « librairie ».',
   },
+  {
+    id: 'singulier',
+    word: 'singulier',
+    forms: ['singulier'],
+    definition: 'La forme d’un mot quand on parle d’une seule personne ou d’une seule chose.',
+    example: '« a park » (un parc) est au singulier.',
+  },
+  {
+    id: 'negation',
+    word: 'négation',
+    forms: ['négation', 'négations'],
+    definition: 'La partie de la phrase qui dit « non » ou « ne… pas ».',
+    example: 'Dans « There isn’t a park », « isn’t » porte la négation.',
+  },
 ];

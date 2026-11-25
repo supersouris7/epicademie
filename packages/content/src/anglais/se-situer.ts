@@ -173,7 +173,7 @@ function thereShortAnswer(rng: Rng, one: boolean): QuestionDraft {
       { text: one ? 'there are' : 'there is', why },
       { text: yes ? 'it is' : 'it isn’t', why: 'La question commence avec « there » : la réponse le reprend.' },
     ],
-    hint: 'Reprends les deux mots du début de la question, remis dans l’ordre normal.',
+    hint: `Reprends les deux mots du début de la question, remis dans l’ordre normal.${yes ? '' : ' Ajoute la marque du « ne… pas ».'}`,
     steps: [why, `Réponse : **${yes ? 'Yes' : 'No'}, ${good}.**`],
   };
 }
@@ -193,7 +193,7 @@ function thereLevel5(rng: Rng): QuestionDraft {
         { mode: 'text', accepted: THERE_ONE },
         { mode: 'text', accepted: THERE_MANY },
         { mode: 'text', accepted: [b.many] },
-        { mode: 'text', accepted: NOT_ONE },
+        { mode: 'text', accepted: NOT_ONE.map((f) => f.toLowerCase()) },
       ],
     },
     hint: 'Lis le nombre de chaque ligne : un, plusieurs ou aucun. Puis pense au pluriel du nom.',
@@ -215,7 +215,7 @@ const thereIs: Skill = {
     memo: [
       'Pour dire « il y a » : **there is** (une seule chose) ou **there are** (plusieurs). There’s = there is.',
       'Question : Is there…? Are there…? Pour « il n’y a pas » : There isn’t a…, There aren’t any….',
-      'Exemple : There is a park. There are two parks.',
+      'Réponse courte : Yes, there is. No, there isn’t. Exemple : There is a park. There are two parks.',
     ],
     source: source('Règles : British Council, LearnEnglish, « Using there is and there are ».'),
     sources: ['cycle3-2020', 'bc-there-is'],
@@ -311,7 +311,7 @@ function prepositionLevel4(rng: Rng): QuestionDraft {
     traps: (['at', 'in', 'on'] as const)
       .filter((x) => x !== f.en)
       .map((x) => ({ text: x, why: `Ici, « ${x} » ne va pas. ${f.why}` })),
-    hint: 'Ne traduis pas mot à mot. Pense à l’expression anglaise apprise : maison, travail, mur, étage…',
+    hint: 'Ne traduis pas mot à mot. Pense à l’expression anglaise apprise : maison, travail, adresse, mur, étage, monde…',
     steps: [f.why, `Réponse : **${before} ${f.en} ${after}**`],
   };
 }
@@ -368,8 +368,8 @@ const prepositions: Skill = {
   lesson: {
     memo: [
       'Une **préposition** de lieu dit où est une chose : in (dans), on (sur), under (sous), next to (à côté de).',
-      'Aussi : in front of (devant), behind (derrière), between (entre deux choses), opposite (en face de).',
-      'Pièges : at home (à la maison), at work (au travail), on the wall (au mur), on the fifth floor (au cinquième étage).',
+      'Aussi : in front of (devant), behind (derrière), between (entre deux choses), opposite (en face de, de l’autre côté).',
+      'Pièges : at home (à la maison), at work (au travail), on the wall (au mur), on the fifth floor (au cinquième étage), in the world (dans le monde), at 15 Craig Street (adresse avec un numéro).',
     ],
     source: source(
       'Règles : British Council, LearnEnglish, « Prepositions of place » ; LearnEnglish Kids, « Prepositions of place » et fiches.',
@@ -500,7 +500,7 @@ function townLevel5(rng: Rng): QuestionDraft {
     hint: 'Deux étapes. D’abord, trouve le lieu du milieu (between). Puis cherche la phrase qui parle de lui.',
     steps: [
       `Entre « ${a} » et « ${b} » : c’est « ${middle} ».`,
-      `${opposite ? '« opposite » veut dire « en face de »' : '« behind » veut dire « derrière »'}.`,
+      `Lis « The ${target.en} is ${opposite ? 'opposite' : 'behind'} the ${middle}. » : ${opposite ? '« opposite » veut dire « en face de »' : '« behind » veut dire « derrière »'}.`,
       `Réponse : **${target.en}**`,
     ],
   };
@@ -514,7 +514,7 @@ const town: Skill = {
   lesson: {
     memo: [
       'En ville : school (école), library, cinema, theatre, bank (banque), town hall (mairie), park (parc), street (rue).',
-      'Aussi : sports centre, stadium (stade), train station (gare), airport, factory (usine), bridge (pont).',
+      'Aussi : sports centre, stadium (stade), train station (gare), airport (aéroport), factory (usine), bridge (pont).',
       'Un **faux ami** : library veut dire « bibliothèque ». Une librairie, c’est a bookshop.',
     ],
     source: source('Mots : British Council, LearnEnglish Kids, fiches « Places in a town ».'),
