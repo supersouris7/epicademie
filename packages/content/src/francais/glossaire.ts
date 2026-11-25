@@ -524,4 +524,11 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'La fin du verbe qui va avec le sujet.',
     example: 'Dans « nous chantions », c’est « ons ».',
   },
+  {
+    id: 'adverbe-de-negation',
+    word: 'adverbe de négation',
+    forms: ['adverbes de négation'],
+    definition: 'Un mot comme pas, jamais ou plus : avec « ne », il rend la phrase négative.',
+    example: 'Je n’ai jamais vu la mer.',
+  },
 ];

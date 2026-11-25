@@ -136,7 +136,7 @@ const MEMORISER: Record<TempsSimple, string> = {
 
 const INDICE: Record<TempsSimple, string> = {
   imparfait: 'Cherche le sujet. Quelle marque de l’imparfait va avec lui ?',
-  futur: 'Cherche le sujet. Entends-tu un « r » juste avant la fin ?',
+  futur: 'Cherche le sujet. Quelle fin avec un « r » va avec lui ?',
 };
 
 /** À l'imparfait, « manger » et « avancer » modifient leur radical devant le a. */
@@ -144,9 +144,18 @@ const VARIATIONS_IMPARFAIT: Partial<Record<VerbeTemps, { juste: string; faux: st
   manger: { juste: 'mangea', faux: 'manga', regle: 'Devant le a, garde un e après le g : le son reste « j ».' },
   avancer: { juste: 'avança', faux: 'avanca', regle: 'Devant le a, le c prend une cédille : le son reste « s ».' },
 };
+/** Devant le i (nous, vous), ni e ni cédille. */
+const SANS_VARIATION: typeof VARIATIONS_IMPARFAIT = {
+  manger: { juste: 'mangi', faux: 'mangei', regle: 'Devant le i, pas de e après le g : le son reste déjà « j ».' },
+  avancer: { juste: 'avanci', faux: 'avançi', regle: 'Devant le i, pas de cédille : le c se prononce déjà « s ».' },
+};
+const orthographe = (t: TempsSimple, v: VerbeTemps, bon: string) =>
+  t === 'imparfait'
+    ? [VARIATIONS_IMPARFAIT[v], SANS_VARIATION[v]].find((x) => x && bon.startsWith(x.juste))
+    : undefined;
 const variationDe = (t: TempsSimple, v: VerbeTemps, bon: string): Rich[] => {
-  const x = VARIATIONS_IMPARFAIT[v];
-  return t === 'imparfait' && x && bon.startsWith(x.juste) ? [x.regle] : [];
+  const x = orthographe(t, v, bon);
+  return x ? [x.regle] : [];
 };
 
 /** Erreurs typiques : autre temps, autre personne, infinitif, lettre oubliée. */
@@ -164,8 +173,8 @@ function piegesSimples(t: TempsSimple, v: VerbeTemps, p: Personne): [string, str
       'Il manque le i : c’est la marque de l’imparfait avec nous et vous.',
     ]);
   }
-  const variation = VARIATIONS_IMPARFAIT[v];
-  if (t === 'imparfait' && variation && bon.startsWith(variation.juste)) {
+  const variation = orthographe(t, v, bon);
+  if (variation) {
     list.unshift([bon.replace(variation.juste, variation.faux), variation.regle]);
   }
   if (t === 'futur') {
@@ -244,10 +253,16 @@ function marque(rng: Rng, t: TempsSimple): QuestionDraft {
     prompt: `Dans « ${s.texte} ${conjugue(t, v, p)} », quelle est la marque de temps ?`,
     answer,
     traps,
-    hint: 'Enlève le radical, puis la fin qui change avec le sujet.',
+    hint:
+      t === 'futur'
+        ? 'Enlève la fin qui change avec le sujet. Quelle lettre vient juste avant ?'
+        : 'Enlève le radical, puis la fin qui change avec le sujet.',
     steps: [
       MEMORISER[t],
       'La marque de temps se place avant la marque de personne.',
+      ...(t === 'futur'
+        ? [`Le « e » avant le « r » vient de l’infinitif « ${v} » : il n’est pas la marque de temps.`]
+        : []),
       `La marque de temps est **${bon}**.`,
     ],
   };
@@ -366,12 +381,21 @@ const COMPOSE_IRREGULIERS: readonly VerbeTemps[] = IRREGULIERS_CITES;
 const sujetPour = (rng: Rng, v: VerbeTemps, simples: readonly Sujet[]): SujetAccorde =>
   rng.pick(prendEtre(v) ? SUJETS_ACCORDES : simples);
 
+/** Genre et nombre donnés au participe passé par le sujet (verbes avec « être » seulement). */
+function accordDe(v: VerbeTemps, s: SujetAccorde): string {
+  if (!prendEtre(v)) return '';
+  const genre = s.genre === 'f' ? 'féminin' : 'masculin';
+  const mixte =
+    s.texte === 'Le garçon et la fille' ? ' (un nom masculin et un nom féminin : on accorde au masculin)' : '';
+  return `« ${s.texte} » est au ${genre} ${s.personne === 'ils' ? 'pluriel' : 'singulier'}${mixte}.`;
+}
+
 const etapesCompose = (v: VerbeTemps, s: SujetAccorde): Rich[] => [
   DEF_COMPOSE,
   ...remplacer(s),
   `« ${v} » se conjugue avec « ${auxiliaireDe(v)} » : ${avecSujet(PRONOMS[s.personne], auxiliaire(v, s.personne))}.`,
   prendEtre(v)
-    ? `${DEF_ACCORD} On écrit « ${participeAccorde(v, s)} ».`
+    ? `${DEF_ACCORD} ${accordDe(v, s)} On écrit « ${participeAccorde(v, s)} ».`
     : `Le participe passé est « ${participe(v)} ».`,
 ];
 
@@ -488,7 +512,9 @@ function composeDraft(rng: Rng, level: Level): QuestionDraft {
         lignesComposees(rng).map(({ sujet: s, verbe: v }) => ({
           texte: `${s.texte} … (${v}) ${FINS[v]}.`,
           attendu: passeCompose(v, s),
-          pourquoi: `« ${v} » prend « ${auxiliaireDe(v)} ». On écrit « ${passeCompose(v, s)} ».`,
+          pourquoi: [`« ${v} » prend « ${auxiliaireDe(v)} ».`, accordDe(v, s), `On écrit « ${passeCompose(v, s)} ».`]
+            .filter(Boolean)
+            .join(' '),
         })),
         'Pour chaque verbe : être ou avoir ? Puis le participe passé.',
         [DEF_COMPOSE, DEF_ACCORD],
@@ -511,6 +537,9 @@ const proches = (rng: Rng, v: VerbeTemps): VerbeTemps[] => {
   );
 };
 
+/** Infinitifs fautifs qui ne sont pas des verbes. */
+const MOTS_INVENTES: readonly string[] = ['diter', 'faiter'];
+
 function etapesInfinitif(v: VerbeTemps, s: SujetAccorde): Rich[] {
   return [
     `Le verbe est « ${passeCompose(v, s)} » : l’auxiliaire, puis le participe passé « ${participeAccorde(v, s)} ».`,
@@ -528,7 +557,8 @@ function piegesInfinitif(v: VerbeTemps, s: SujetAccorde): [string, string][] {
     [conjugue('imparfait', v, s.personne), 'Ce verbe est conjugué. L’infinitif ne change pas avec le sujet.'],
   ];
   const faux = INFINITIFS_FAUTIFS[v];
-  if (faux) list.push([faux, `« ${faux} » est un autre mot. ${donne(v)}`]);
+  const nature = faux && MOTS_INVENTES.includes(faux) ? 'n’existe pas' : 'est un autre verbe';
+  if (faux) list.push([faux, `« ${faux} » ${nature}. ${donne(v)}`]);
   return list;
 }
 
@@ -621,7 +651,7 @@ function infinitifDraft(rng: Rng, level: Level): QuestionDraft {
         lignes.map(({ sujet: s, verbe: v }) => ({
           texte: phrasePositive(s, v),
           attendu: v,
-          pourquoi: `dans « ${passeCompose(v, s)} », le participe passé vient de « ${v} ».`,
+          pourquoi: `dans « ${passeCompose(v, s)} », « ${participeAccorde(v, s)} » est le participe passé. L’infinitif est « ${v} ».`,
         })),
         'Repère l’auxiliaire, puis le mot juste après.',
         [DEF_COMPOSE, ASTUCE],
@@ -632,7 +662,8 @@ function infinitifDraft(rng: Rng, level: Level): QuestionDraft {
 
 // ───────────────────────── 5. Passé composé à la forme négative ─────────────────────────
 
-const DEF_NEGATION = 'À la forme négative, « ne » (ou « n’ ») et le mot négatif encadrent l’auxiliaire.';
+const DEF_NEGATION =
+  'À la forme négative, « ne » (ou « n’ ») et l’adverbe de négation (pas, jamais, plus) encadrent l’auxiliaire.';
 const ADVERBES: readonly Negation[] = ['pas', 'jamais', 'plus'];
 
 const phraseNegative = (s: SujetAccorde, v: VerbeTemps, a: Negation) => `${s.texte} ${negatif(v, s, a)} ${FINS[v]}.`;
@@ -745,7 +776,13 @@ function negationDraft(rng: Rng, level: Level): QuestionDraft {
           return {
             texte: `${s.texte} … (${v}, ne … ${a}) ${FINS[v]}.`,
             attendu: negatif(v, s, a),
-            pourquoi: `« ${v} » prend « ${auxiliaireDe(v)} », entouré par la négation : « ${negatif(v, s, a)} ».`,
+            pourquoi: [
+              `« ${v} » prend « ${auxiliaireDe(v)} », entouré par la négation.`,
+              accordDe(v, s),
+              `On écrit « ${negatif(v, s, a)} ».`,
+            ]
+              .filter(Boolean)
+              .join(' '),
           };
         }),
         'Conjugue d’abord au passé composé, puis entoure l’auxiliaire.',
