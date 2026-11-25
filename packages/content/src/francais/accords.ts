@@ -203,7 +203,7 @@ function genreNombreDraft(rng: Rng, level: Level): QuestionDraft {
       return {
         prompt: `Lis le texte. Combien de groupes nominaux sont au ${nomCategorie(g, n)} ?`,
         figure: document(
-          'Dans le grenier',
+          'Ce que je trouve',
           groupes.map((x) => `Je trouve ${x}.`),
         ),
         answer: num(k),
@@ -229,11 +229,13 @@ function genreNombreDraft(rng: Rng, level: Level): QuestionDraft {
 const regleDe = (p: Pluriel): string => {
   switch (p.type) {
     case 's':
-      return 'La marque ordinaire du pluriel des noms est le **s**.';
+      return p.s.endsWith('ou')
+        ? `« ${p.s} » n’est pas dans la liste des sept noms en -ou qui prennent un x : il prend un **s**.`
+        : 'La marque ordinaire du pluriel des noms est le **s**.';
     case 'x':
       return p.fait === 'serie-ou'
         ? 'Sept noms en -ou prennent un **x** : bijou, caillou, chou, genou, hibou, joujou, pou.'
-        : `« ${p.s} » prend un **x** au pluriel : des ${p.p}.`;
+        : `Beaucoup de noms en -eau ou -eu prennent un **x** : « ${p.s} » donne des ${p.p}.`;
     case 'aux':
       return `« ${p.s} » change : -al devient **-aux**.`;
     case 'als':
@@ -333,7 +335,7 @@ function plurielsDraft(rng: Rng, level: Level): QuestionDraft {
         answer: lignesATrous(lignes.map((l) => l.p.p)),
         hint: 'Pour chaque nom, regarde sa fin : -al, -eau, -ou… puis cherche s’il fait partie d’une liste à part.',
         steps: [
-          'Les mots « les » et « des » annoncent un pluriel.',
+          'Les mots « les », « des » ou « deux » annoncent un pluriel.',
           ...new Set(lignes.map((l) => regleDe(l.p))),
           `Réponses : **${lignes.map((l) => l.p.p).join(', ')}**.`,
         ],
@@ -347,7 +349,7 @@ function plurielsDraft(rng: Rng, level: Level): QuestionDraft {
 const REGLES_FEMININ: Record<Regle, string> = {
   e: 'On ajoute souvent un **e** au masculin.',
   double: 'Ici, on double la dernière consonne et on ajoute un e.',
-  ere: 'Les mots en -er de cette famille font **-ère**.',
+  ere: 'Ici, la fin -er devient **-ère**.',
   euse: 'Ici, la fin devient **-euse**.',
   trice: 'Ici, -teur devient **-trice**.',
   ve: 'Ici, le -f devient **-ve**.',
@@ -374,7 +376,7 @@ function ecrireFeminin(x: Feminin): QuestionDraft {
     prompt: `Écris le féminin ${x.nature === 'nom' ? 'du nom' : 'de l’adjectif'} « ${x.m} ».`,
     answer: { kind: 'text', accepted },
     traps: textTraps(accepted, piegesFeminin(x)),
-    hint: `Dis la phrase avec « une » : une … Écoute et regarde la fin de « ${x.m} ».`,
+    hint: `Pense au mot avec « une » devant. Écoute sa fin, puis compare avec « ${x.m} ».`,
     steps: [`Je pars du masculin « ${x.m} ».`, REGLES_FEMININ[x.regle], `Le féminin est **${x.f}**.`],
   };
 }
@@ -409,7 +411,7 @@ function femininDraft(rng: Rng, level: Level): QuestionDraft {
             : `Choisis le féminin bien écrit de l’adjectif « ${x.m} ».`,
         answer,
         traps,
-        hint: 'La fin du mot change plus que d’une seule lettre ? Compare chaque proposition.',
+        hint: 'Regarde bien la fin du mot et compare chaque proposition.',
         steps: [`Je pars de « ${x.m} ».`, REGLES_FEMININ[x.regle], `C’est **${x.f}**.`],
       };
     }
@@ -475,7 +477,7 @@ function accordGnDraft(rng: Rng, level: Level): QuestionDraft {
         { label: `des ${x.nom} ${adj}`, why: 'Après « des », le nom prend la marque du pluriel.' },
       ]);
       return {
-        prompt: `Quel groupe est bien accordé avec le nom « ${x.nom} » au pluriel ?`,
+        prompt: `Le nom « ${x.nom} » est mis au pluriel. Quel groupe est bien accordé ?`,
         answer,
         traps,
         hint: 'Vérifie chaque mot : tous parlent-ils de plusieurs choses ?',
@@ -593,11 +595,11 @@ function accordGnDraft(rng: Rng, level: Level): QuestionDraft {
 const DEF_SUJET_VERBE = 'Le sujet commande le verbe : trouve le sujet, puis choisis la terminaison.';
 
 const MARQUES: Record<Personne, string> = {
-  tu: 'Avec « tu », le verbe prend **-es**.',
-  il: 'Avec un sujet singulier comme « il » ou « elle », le verbe prend **-e**.',
-  nous: 'Avec « nous », le verbe prend **-ons**.',
-  vous: 'Avec « vous », le verbe prend **-ez**.',
-  ils: 'Avec un sujet pluriel comme « ils » ou « elles », le verbe prend **-ent**.',
+  tu: 'Au présent, avec « tu », un verbe en -er prend **-es**.',
+  il: 'Au présent, avec un sujet singulier comme « il » ou « elle », un verbe en -er prend **-e**.',
+  nous: 'Au présent, avec « nous », un verbe en -er prend **-ons**.',
+  vous: 'Au présent, avec « vous », un verbe en -er prend **-ez**.',
+  ils: 'Au présent, avec un sujet pluriel comme « ils » ou « elles », un verbe en -er prend **-ent**.',
 };
 
 const PERSONNES: readonly Personne[] = ['tu', 'il', 'nous', 'vous', 'ils'];
@@ -682,14 +684,19 @@ function sujetVerbeDraft(rng: Rng, level: Level): QuestionDraft {
       const lignes = pickN(rng, SUJETS_PIEGES, 3);
       const justes = lignes.map((x) => conjuguer(x.infinitif, x.personne));
       return {
-        prompt: 'Lis le texte. Le verbe de chaque ligne est mal accordé. Écris-le correctement.',
+        prompt: 'Lis le texte. Le verbe de chaque ligne est mal accordé. Écris-le correctement, au présent.',
         figure: document(
           'Texte à corriger',
           lignes.map((x) => `${x.debut} ${conjuguer(x.infinitif, x.fausse)} ${x.fin}.`),
         ),
         answer: lignesATrous(justes),
         hint: 'Sur chaque ligne, cherche d’abord le sujet. Compte : un seul ou plusieurs ?',
-        steps: [DEF_SUJET_VERBE, ...lignes.map((x) => x.raison), `Les verbes corrigés : **${justes.join(', ')}**.`],
+        steps: [
+          DEF_SUJET_VERBE,
+          ...lignes.map((x) => x.raison),
+          ...new Set(lignes.map((x) => MARQUES[x.personne])),
+          `Les verbes corrigés : **${justes.join(', ')}**.`,
+        ],
       };
     }
   }
@@ -701,6 +708,8 @@ const DEF_PARTICIPE = 'Avec l’auxiliaire être, le participe passé s’accord
 
 const auxiliaire = (n: Nombre) => (n === 'pl' ? 'sont' : 'est');
 const analyse = (s: SujetAccorde) => `« ${s.texte} » est ${nomCategorie(s.genre, s.nombre)}.`;
+/** L'analyse du sujet, précédée de ce qui la justifie pour un sujet piège. */
+const explication = (s: SujetAccorde) => (s.raison ? `${s.raison} ${analyse(s)}` : analyse(s));
 
 const formes = (participe: string) =>
   CATEGORIES.map(([genre, nombre]) => ({ genre, nombre, mot: accorderParticipe(participe, { genre, nombre }) }));
@@ -757,7 +766,7 @@ function participeDraft(rng: Rng, level: Level): QuestionDraft {
         hint: negation
           ? 'Cherche le nom noyau du sujet, ou les deux noms. Le mot le plus proche du verbe peut te tromper.'
           : 'Cherche le sujet, puis ajoute au participe les marques de son genre et de son nombre.',
-        steps: [DEF_PARTICIPE, analyse(s), `On écrit **${s.texte} ${groupeVerbal} ${bon}**.`],
+        steps: [DEF_PARTICIPE, explication(s), `On écrit **${s.texte} ${groupeVerbal} ${bon}**.`],
       };
     }
     default: {
@@ -783,7 +792,7 @@ function participeDraft(rng: Rng, level: Level): QuestionDraft {
         steps: [
           'Le passé composé se fait en deux mots : l’auxiliaire, puis le participe passé.',
           DEF_PARTICIPE,
-          ...lignes.map((l) => analyse(l.s)),
+          ...lignes.map((l) => explication(l.s)),
           `Réponses : **${lignes.map((l) => `${l.aux} ${l.pp}`).join(', ')}**.`,
         ],
       };
@@ -843,7 +852,7 @@ export const FCM1_ACCORDS: readonly Skill[] = [
     title: 'Le féminin des noms et des adjectifs',
     memo: [
       'Pour le **féminin**, on ajoute souvent un e : un ami → une amie.',
-      'La fin peut changer plus : lion → lionne, fermier → fermière, chanteur → chanteuse, acteur → actrice.',
+      'Parfois, la fin change davantage : lion → lionne, fermier → fermière, chanteur → chanteuse, acteur → actrice.',
       'Certains mots sont à retenir : beau → belle, blanc → blanche, doux → douce.',
     ],
     factId: 'marques-feminin',
@@ -866,7 +875,7 @@ export const FCM1_ACCORDS: readonly Skill[] = [
     title: 'L’accord du sujet et du verbe',
     memo: [
       'Le **verbe** s’accorde avec son **sujet**. Cherche-le avec « qui est-ce qui ? ».',
-      'Au présent, pour un verbe en -er : tu chantes, il chante, nous chantons, vous chantez, ils chantent.',
+      'Au présent, pour un verbe en -er : je chante, tu chantes, il chante, nous chantons, vous chantez, ils chantent.',
       'Le chien de mes voisins saute : le nom noyau « chien » commande, pas « voisins ».',
     ],
     factId: 'sujet-noyau',
@@ -879,7 +888,7 @@ export const FCM1_ACCORDS: readonly Skill[] = [
     memo: [
       'Au passé composé, « elle est partie » : l’**auxiliaire** être, puis le **participe passé**.',
       'Avec être, le participe passé s’accorde avec le sujet : e pour le féminin, s pour le pluriel.',
-      'il est venu, elle est venue, ils sont venus, elles sont venues.',
+      'Il est venu, elle est venue, ils sont venus, elles sont venues.',
     ],
     factId: 'participe-etre',
     faits: ['temps-composes'],

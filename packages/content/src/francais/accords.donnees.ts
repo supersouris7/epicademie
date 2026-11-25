@@ -366,9 +366,16 @@ export interface SujetAccorde {
   readonly texte: string;
   readonly genre: Genre;
   readonly nombre: Nombre;
+  /** Sujet piège : pourquoi il a ce genre et ce nombre. */
+  readonly raison?: string;
 }
 
-const sa = (texte: string, genre: Genre, nombre: Nombre): SujetAccorde => ({ texte, genre, nombre });
+const sa = (texte: string, genre: Genre, nombre: Nombre, raison?: string): SujetAccorde => ({
+  texte,
+  genre,
+  nombre,
+  ...(raison ? { raison } : {}),
+});
 
 export const SUJETS_PARTICIPE: readonly SujetAccorde[] = [
   sa('Il', 'm', 'sg'),
@@ -387,14 +394,14 @@ export const SUJETS_PARTICIPE: readonly SujetAccorde[] = [
 
 /** Sujet éloigné du verbe ou double : le nom le plus proche du verbe n'est pas toujours le bon. */
 export const SUJETS_PARTICIPE_PIEGES: readonly SujetAccorde[] = [
-  sa('La sœur de mes voisins', 'f', 'sg'),
-  sa('Le frère de mes copines', 'm', 'sg'),
-  sa('Les copines de mon frère', 'f', 'pl'),
-  sa('Les cousins de ma voisine', 'm', 'pl'),
-  sa('La mère et la fille', 'f', 'pl'),
-  sa('Le père et le fils', 'm', 'pl'),
-  sa('La dame aux grands chapeaux', 'f', 'sg'),
-  sa('Les joueurs de l’équipe', 'm', 'pl'),
+  sa('La sœur de mes voisins', 'f', 'sg', 'Le nom noyau est « sœur ».'),
+  sa('Le frère de mes copines', 'm', 'sg', 'Le nom noyau est « frère ».'),
+  sa('Les copines de mon frère', 'f', 'pl', 'Le nom noyau est « copines ».'),
+  sa('Les cousins de ma voisine', 'm', 'pl', 'Le nom noyau est « cousins ».'),
+  sa('La mère et la fille', 'f', 'pl', 'Deux noms féminins réunis par « et ».'),
+  sa('Le père et le fils', 'm', 'pl', 'Deux noms masculins réunis par « et ».'),
+  sa('La dame aux grands chapeaux', 'f', 'sg', 'Le nom noyau est « dame ».'),
+  sa('Les joueurs de l’équipe', 'm', 'pl', 'Le nom noyau est « joueurs ».'),
 ];
 
 export interface VerbeEtre {
