@@ -32,4 +32,9 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm1-accord-gn', version: 1, lot: 'fr-cm1-06', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-accord-sujet-verbe', version: 1, lot: 'fr-cm1-06', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-participe-etre', version: 1, lot: 'fr-cm1-06', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-a-a', version: 1, lot: 'fr-cm1-10', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-et-est', version: 1, lot: 'fr-cm1-10', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-son-sont', version: 1, lot: 'fr-cm1-10', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-on-ont', version: 1, lot: 'fr-cm1-10', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-mots-invariables', version: 1, lot: 'fr-cm1-10', date: '2026-11-25', verdict: 'ok' },
 ];

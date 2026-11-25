@@ -171,12 +171,19 @@ const DIFFICILES = MOTS_INVARIABLES.filter((x) => x.niveau === 'difficile');
 export const ADVERBES_SURS = ['toujours', 'souvent', 'jamais', 'alors', 'encore', 'assez'];
 
 const INVARIABLE = 'Un mot invariable s’écrit toujours de la même façon.';
-const fauteWhy = (x: MotInvariable): Rich =>
-  `Compare lettre par lettre avec « ${x.mot} ». Ce mot ne change jamais : garde son image en tête.`;
-const piegesFautes = (x: MotInvariable): Trap[] => x.fautes.map((t) => textTrap(t, fauteWhy(x)));
+/** Fautes qui sont aussi de vrais mots : on dit lequel. */
+const VRAIS_MOTS: Readonly<Record<string, string>> = {
+  sens: '« sens » est un autre mot : le sens d’une phrase.',
+  sou: '« sou » est un autre mot : une petite pièce de monnaie.',
+  antre: '« antre » est un autre mot : la grotte d’une bête sauvage.',
+};
+const fauteWhy = (x: MotInvariable, faute: string): Rich =>
+  `${VRAIS_MOTS[faute] ?? `Compare lettre par lettre avec « ${x.mot} ».`} Ici, on écrit « ${x.mot} » : garde son image en tête.`;
+const piegesFautes = (x: MotInvariable): Trap[] => x.fautes.map((t) => textTrap(t, fauteWhy(x, t)));
+const nature = (x: MotInvariable) => (x.classe === 'adverbe' ? 'un adverbe' : 'une préposition');
 const etapesMot = (x: MotInvariable): string[] => [
   INVARIABLE,
-  `« ${x.mot} » est ${x.classe === 'adverbe' ? 'un adverbe' : 'une préposition'} : on l’apprend par cœur.`,
+  `« ${x.mot} » est ${nature(x)} : on l’apprend par cœur.`,
   `On écrit **${x.mot}**.`,
 ];
 
@@ -187,7 +194,7 @@ function invariableDraft(rng: Rng, level: Level): QuestionDraft {
       const { answer, traps } = choice(
         rng,
         x.mot,
-        x.fautes.map((label) => ({ label, why: fauteWhy(x) })),
+        x.fautes.map((label) => ({ label, why: fauteWhy(x, label) })),
       );
       return {
         prompt: `Quel mot est bien écrit ? « ${x.phrase} »`,
@@ -233,7 +240,7 @@ function invariableDraft(rng: Rng, level: Level): QuestionDraft {
       const x = rng.pick(DIFFICILES);
       const faute = rng.pick(x.fautes);
       return {
-        prompt: `Un mot est mal écrit. Écris-le bien : « ${x.phrase.replace('…', faute)} »`,
+        prompt: `Un mot est mal écrit. Écris seulement ce mot, sans faute : « ${x.phrase.replace('…', faute)} »`,
         answer: { kind: 'text', accepted: [x.mot] },
         traps: piegesFautes(x),
         hint: 'Cherche le petit mot qui ne change jamais, puis vérifie lettres et accents.',
@@ -254,7 +261,11 @@ function invariableDraft(rng: Rng, level: Level): QuestionDraft {
           blanks: choisis.map((x) => ({ mode: 'text' as const, accepted: [x.mot] })),
         },
         hint: 'Relis chaque ligne et cherche un petit mot qui ne change jamais.',
-        steps: [INVARIABLE, `Réponses : **${choisis.map((x) => x.mot).join(', ')}**.`],
+        steps: [
+          INVARIABLE,
+          ...choisis.map((x, i) => `Ligne ${i + 1} : « ${x.mot} » est ${nature(x)}, son écriture ne change jamais.`),
+          `Réponses : **${choisis.map((x) => x.mot).join(', ')}**.`,
+        ],
       };
     }
   }

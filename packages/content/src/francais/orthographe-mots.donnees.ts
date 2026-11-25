@@ -132,10 +132,10 @@ export const A_A: Paire = {
   intrus: { mot: 'as', why: '« as » va seulement avec « tu » : tu as.' },
   indice: 'Essaie de dire « avait » à la place du mot qui manque.',
   simples: [
-    p('Mon frère … un vélo rouge.', 'a'),
+    p('Mon frère … réparé un vélo rouge.', 'a'),
     p('Le chat … faim.', 'a'),
-    p('La voisine … deux chiens.', 'a'),
-    p('Ce livre … cent pages.', 'a'),
+    p('La voisine … adopté deux chiens.', 'a'),
+    p('Ce chien … peur de l’orage.', 'a'),
     p('Il … très froid ce matin.', 'a'),
     p('Nous allons … la piscine.', 'à'),
     p('Elle joue … la balle.', 'à'),
@@ -196,7 +196,7 @@ export const SON_SONT: Paire = {
   emplois: [
     {
       mot: 'son',
-      role: '« son » est un déterminant possessif : la chose est à quelqu’un.',
+      role: '« son » est un déterminant possessif : « son frère », c’est le frère de quelqu’un.',
       essai: 'On peut dire « mon » à la place.',
     },
     {
@@ -263,7 +263,7 @@ export const ON_ONT: Paire = {
     p('Les cousins … un jeu et … y joue tous ensemble.', 'ont', 'on'),
     p('Ce matin, … voit que les arbres … des bourgeons.', 'on', 'ont'),
     p('Les voisins … un chien : … l’entend aboyer.', 'ont', 'on'),
-    p('Si … cherche bien, les lunettes … sûrement une cachette.', 'on', 'ont'),
+    p('Dans la chambre, … cherche les lunettes qui … disparu.', 'on', 'ont'),
     p('Les pirates … une carte, mais … ne la voit pas.', 'ont', 'on'),
   ],
 };
@@ -338,7 +338,7 @@ export const MOTS_INVARIABLES: readonly MotInvariable[] = [
   mi('courant', 'adverbe', ['souvent', 'souvent', 'souv'], ['souvant', 'souven'], 'Nous allons … à la bibliothèque.'),
   mi('courant', 'adverbe', ['jamais', 'jamais', 'jam'], ['jamai', 'jamet'], 'Mon chat ne mord … personne.'),
   mi('courant', 'adverbe', ['alors', 'alors', 'al'], ['alor', 'allors'], 'La pluie tombe, … on rentre.'),
-  mi('courant', 'adverbe', ['encore', 'encore', 'enc'], ['encor', 'ancore'], 'Tu veux … un peu de soupe ?'),
+  mi('courant', 'adverbe', ['encore', 'encore', 'enc'], ['encorre', 'ancore'], 'Tu veux … un peu de soupe ?'),
   mi('courant', 'adverbe', ['assez', 'assez', 'ass'], ['asser', 'assé'], 'J’ai … mangé, merci.'),
   mi('courant', 'adverbe', ['demain', 'demain', 'dem'], ['demin', 'deumain'], 'Nous partirons … matin.'),
   mi('courant', 'préposition', ['chez', 'chez', 'ch'], ['ché', 'chés'], 'Je dors … ma tante.'),
