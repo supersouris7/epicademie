@@ -174,7 +174,7 @@ export const OU_OU: Serie = {
   doubles: [
     p('… vas-tu : à la piscine … au stade ?', 'où', 'ou'),
     p('Dis-moi … est le chat : dehors … dans la cave ?', 'où', 'ou'),
-    p('Le village … je dors a une rivière … un grand étang.', 'où', 'ou'),
+    p('Le village … je dors est-il près d’une rivière … d’un étang ?', 'où', 'ou'),
     p('Pomme … banane ? Choisis, puis dis-moi … tu la manges.', 'ou', 'où'),
     p('Tu pars à vélo … à pied jusqu’au lieu … on se retrouve ?', 'ou', 'où'),
     p('Le soir … la lune est ronde, on voit des chouettes … des hiboux.', 'où', 'ou'),
@@ -205,7 +205,8 @@ export const LA_LA_LA: Serie = {
       essai: 'On peut dire « ici » à la place.',
     },
   },
-  indice: 'Essaie « une », puis « l’avait », puis « ici » à la place du mot qui manque.',
+  indice:
+    'Essaie « une », « l’avait » ou « ici » à la place du trou. Aucun ne marche ? Regarde si le mot précède un verbe.',
   simples: [
     p('Ferme … porte, s’il te plaît.', 'article'),
     p('Le facteur sonne à … grille.', 'article'),
@@ -250,7 +251,7 @@ export const CE_SE: Serie = {
     },
   },
   intrus: { mot: 'ces', why: '« ces » montre plusieurs choses : ces livres.' },
-  indice: 'Regarde le mot qui suit : un nom, ou un verbe ? Essaie « je me … » avec le verbe.',
+  indice: 'Regarde ce qui suit : un nom, « qui » ou « que », ou un verbe ? Avec un verbe, essaie « je me … ».',
   simples: [
     p('J’aime beaucoup … dessin.', 'ce'),
     p('Nous partons … matin.', 'ce'),
@@ -283,12 +284,12 @@ export const LEUR_LEURS: Serie = {
     },
     un: {
       mot: 'leur',
-      role: '« leur » est un déterminant possessif : une seule chose pour plusieurs personnes.',
+      role: '« leur » est un déterminant possessif : ils sont plusieurs, et le nom désigne une seule chose ou un seul être.',
       essai: 'Le nom qui suit est au singulier, comme avec « son » ou « sa ».',
     },
     plusieurs: {
       mot: 'leurs',
-      role: '« leurs » est un déterminant possessif : plusieurs choses pour plusieurs personnes.',
+      role: '« leurs » est un déterminant possessif : ils sont plusieurs, et le nom désigne plusieurs choses ou êtres.',
       essai: 'Le nom qui suit est au pluriel, comme avec « ses ».',
     },
   },
@@ -305,7 +306,7 @@ export const LEUR_LEURS: Serie = {
     p('Les enfants rangent … jouets.', 'plusieurs'),
     p('Les joueurs mettent … chaussures.', 'plusieurs'),
     p('Les voisines arrosent … fleurs.', 'plusieurs'),
-    p('Les chevaux secouent … crinières.', 'plusieurs'),
+    p('Les chevaux frappent le sol avec … sabots.', 'plusieurs'),
   ],
   doubles: [
     p('Les élèves rangent … cahiers, puis le maître … dit au revoir.', 'plusieurs', 'pronom'),
@@ -336,7 +337,7 @@ export const QUEL_QUELLE: Serie = {
       essai: 'On peut dire « qu’il » à la place.',
     },
   },
-  indice: 'Essaie de dire « qu’il ». Si ça marche mal, cherche le nom : masculin ou féminin ?',
+  indice: 'Essaie de dire « qu’il ». Si ça ne marche pas, cherche le nom : masculin ou féminin ?',
   simples: [
     p('… beau soleil !', 'quel'),
     p('… âge as-tu ?', 'quel'),

@@ -181,7 +181,10 @@ const fin = (x: MotMuet) => x.mot.slice(-1);
 const trouee = (x: MotMuet) => x.phrase.replace('…', `${debut(x)}…`);
 const entiere = (x: MotMuet) => x.phrase.replace('…', x.mot);
 const MUETTE = 'Une **lettre muette** s’écrit, mais on ne l’entend pas.';
-const famille = (x: MotMuet) => `Dans « ${x.parent} », de la même famille, on entend le « ${fin(x)} ».`;
+/** Entre deux voyelles, le « s » s’entend « z » (grisaille, reposer). */
+const sonZ = (x: MotMuet) =>
+  /^[aeiouy]s[aeiouy]/.test(x.parent.slice(x.mot.length - 2)) ? ' (ici, il se prononce « z »)' : '';
+const famille = (x: MotMuet) => `Dans « ${x.parent} », de la même famille, on entend le « ${fin(x)} »${sonZ(x)}.`;
 const etapes = (x: MotMuet): string[] => [MUETTE, famille(x), `On écrit **${x.mot}**.`];
 /** Autres écritures : lettre oubliée, puis autres lettres finales. */
 const fautes = (x: MotMuet): { label: string; why: Rich }[] => [
@@ -207,7 +210,7 @@ function muetDraft(rng: Rng, level: Level): QuestionDraft {
         prompt: `Pense à « ${x.parent} ». Quel mot complète « ${x.phrase} » ?`,
         answer,
         traps,
-        hint: 'Dis tout haut le mot de la famille et écoute la fin.',
+        hint: 'Dis tout haut le mot de la famille : quel son entends-tu en plus ?',
         steps: etapes(x),
       };
     }
@@ -238,7 +241,7 @@ function muetDraft(rng: Rng, level: Level): QuestionDraft {
         prompt: `Sans aide ! Écris le mot en entier : « ${trouee(x)} »`,
         answer: { kind: 'text', accepted: [x.mot] },
         traps: piegesEcrits(x),
-        hint: 'Trouve toi-même un mot de la même famille, puis écoute la fin.',
+        hint: 'Trouve toi-même un mot de la même famille, puis écoute le son en plus.',
         steps: etapes(x),
       };
     }
