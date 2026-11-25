@@ -18,7 +18,7 @@
 | `an-cm1-03` | Le temps qui passe        | couleurs ; jours ; mois ; saisons ; la date ; la météo                                                               | couverte, en relecture |
 | `an-cm1-04` | Famille, corps, vêtements | la famille ; have got ; le corps ; les vêtements ; le génitif 's                                                     | couverte, en relecture |
 | `an-cm1-05` | Goûts et capacités        | I like / I don't like ; can / can't ; sports et loisirs ; animaux                                                    | couverte, en relecture |
-| `an-cm1-06` | Écouter et comprendre     | nombres entendus ; consignes de classe (impératif) ; mots-clés d'une phrase ; repères culturels (Royaume-Uni, fêtes) | absente                |
+| `an-cm1-06` | Écouter et comprendre     | nombres entendus ; consignes de classe (impératif) ; mots-clés d'une phrase ; repères culturels (Royaume-Uni, fêtes) | couverte, en relecture |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).

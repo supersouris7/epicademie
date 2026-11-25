@@ -6,20 +6,19 @@ import { getSource, isAllowedUrl } from '../sources.ts';
 import { skillLevels, type Level } from '../types.ts';
 import { validateVariants } from '../validate.ts';
 import { ENGLISH_LISTENING_CHAPTER } from './ecoute.ts';
-import { FAITS } from './ecoute-faits.ts';
+import { FAITS, numberWord } from './ecoute-faits.ts';
 
 const { skills } = ENGLISH_LISTENING_CHAPTER;
+const IDS = ['acm1-nombres-entendus', 'acm1-consignes', 'acm1-mots-cles', 'acm1-reperes-uk'];
 const LEVELS: readonly Level[] = [1, 2, 3, 4, 5];
-const IDS = ['acm2-heure-entendue', 'acm2-prix-dates', 'acm2-dialogue', 'acm2-reperes-culturels'];
 const questions = (id: string, level: Level) => Array.from({ length: 300 }, (_, i) => generate(id, level, i + 1));
 
-describe('anglais cm2 : écouter et comprendre', () => {
+describe('anglais cm1 : écouter et comprendre', () => {
   it('4 notions à 5 niveaux, sources valides et mots en gras définis', () => {
     expect(skills.map((s) => s.id)).toEqual(IDS);
     for (const s of skills) {
       expect(skillLevels(s)).toBe(5);
-      expect(s.lesson.sources).not.toContain('lve-cm-2026');
-      expect(s.lesson.sources).toContain('cycle3-2020');
+      expect(s.lesson.sources).toContain('lve-cm-2026');
       expect(sourceIssues(s)).toEqual([]);
       expect(glossaryIssues({ skill: s, chapter: ENGLISH_LISTENING_CHAPTER })).toEqual([]);
     }
@@ -34,7 +33,19 @@ describe('anglais cm2 : écouter et comprendre', () => {
     }
   });
 
-  it('questions valides (300 graines) et niveaux distincts', () => {
+  it('nombres de 1 à 100 : mots composés avec un tiret', () => {
+    expect([1, 13, 30, 47, 90, 100].map(numberWord)).toEqual([
+      'one',
+      'thirteen',
+      'thirty',
+      'forty-seven',
+      'ninety',
+      'a hundred',
+    ]);
+    for (let n = 1; n <= 100; n++) expect(numberWord(n)).not.toContain('undefined');
+  });
+
+  it('questions valides et niveaux distincts', () => {
     for (const s of skills) {
       const byLevel = LEVELS.map((l) => questions(s.id, l));
       for (const qs of byLevel) expect(validateVariants(qs), s.id).toEqual([]);
@@ -42,7 +53,34 @@ describe('anglais cm2 : écouter et comprendre', () => {
     }
   });
 
-  it('saisie : réponses justes acceptées, chaque piège jugé faux ; deux pièges expliqués au moins', () => {
+  it('écoute : voix anglaise, et une alternative à lire à chaque niveau (hors repères)', () => {
+    for (const id of IDS.slice(0, 3))
+      for (const l of LEVELS) {
+        const qs = questions(id, l);
+        expect(
+          qs.some((q) => !q.audio),
+          `${id} ${l}`,
+        ).toBe(true);
+        for (const q of qs) if (q.audio) expect(q.audio.lang).toBe('en-GB');
+      }
+    for (const id of IDS.slice(0, 2)) expect(questions(id, 1).some((q) => q.audio)).toBe(true);
+  });
+
+  it('une même phrase entendue avec les mêmes propositions attend toujours la même réponse', () => {
+    for (const id of IDS)
+      for (const l of LEVELS) {
+        const seen = new Map<string, string>();
+        for (const q of questions(id, l)) {
+          if (!q.audio || q.answer.kind !== 'choice') continue;
+          const key = `${q.prompt}|${[...q.answer.options].sort().join('|')}`;
+          const good = q.answer.options[q.answer.correct]!;
+          expect(seen.get(key) ?? good, key).toBe(good);
+          seen.set(key, good);
+        }
+      }
+  });
+
+  it('saisie : réponses justes acceptées, chaque piège jugé faux et expliqué ; deux pièges au moins', () => {
     for (const s of skills) {
       const reasons = new Set<string>();
       for (const l of LEVELS)
@@ -58,107 +96,75 @@ describe('anglais cm2 : écouter et comprendre', () => {
     }
   });
 
-  it('écoute : le texte entendu n’est jamais dans l’énoncé, et chaque notion d’écoute a des variantes à lire', () => {
-    for (const id of ['acm2-heure-entendue', 'acm2-prix-dates', 'acm2-dialogue']) {
-      const all = LEVELS.flatMap((l) => questions(id, l));
-      const audio = all.filter((q) => q.audio);
-      expect(audio.length, id).toBeGreaterThan(0);
-      for (const q of audio) {
-        expect(q.audio!.lang).toBe('en-GB');
-        expect(q.prompt).not.toContain(q.audio!.text);
-      }
-      expect(all.filter((q) => !q.audio).length, id).toBeGreaterThan(0);
-    }
-  });
+  const find = (id: string, level: Level, part: string) => questions(id, level).find((x) => x.prompt.includes(part))!;
+  const right = (q: ReturnType<typeof find>, text: string) => check(q, { kind: 'text', text }).correct;
 
-  it('heure : quarter to, half past et o’clock donnent la bonne heure', () => {
-    const qs = questions('acm2-heure-entendue', 2).filter((q) => q.audio);
-    const cases: Record<string, string> = {
-      'It’s quarter to six.': '5:45',
-      'It’s quarter past six.': '6:15',
-      'It’s half past twelve.': '12:30',
-    };
-    let seen = 0;
-    for (const q of qs) {
-      const good = cases[q.audio!.text];
-      if (!good || q.answer.kind !== 'choice') continue;
-      seen++;
-      expect(q.answer.options[q.answer.correct]).toBe(good);
-    }
-    expect(seen).toBeGreaterThan(0);
-    const say = questions('acm2-heure-entendue', 4).find((q) => q.prompt.includes(' 6:35.'))!;
-    for (const text of ['twenty-five to seven', 'It’s twenty five to seven.', "it's twenty-five to seven"])
-      expect(check(say, { kind: 'text', text }).correct, text).toBe(true);
-    expect(check(say, { kind: 'text', text: 'thirty-five past six' }).correct).toBe(false);
-    expect(check(say, { kind: 'text', text: 'twenty-five minutes to seven' }).correct).toBe(true);
-    expect(check(say, { kind: 'text', text: 'It is twenty five minutes to seven.' }).correct).toBe(true);
-    const quarter = questions('acm2-heure-entendue', 4).find((q) => q.prompt.includes(':45.'))!;
-    if (quarter.answer.kind !== 'text') throw new Error('saisie attendue');
-    expect(quarter.answer.accepted.some((a) => a.startsWith('fifteen to '))).toBe(true);
-    for (const q of questions('acm2-heure-entendue', 4))
-      for (const t of q.traps) if ('text' in t) expect(t.text, q.prompt).not.toMatch(/\d/);
-  });
-
-  it('version lue : elle pose la question et n’écrit pas la réponse en chiffres', () => {
-    for (const [id, levels] of [
-      ['acm2-heure-entendue', [1, 2]],
-      ['acm2-prix-dates', [1, 2]],
-      ['acm2-dialogue', [1]],
+  it('consignes : « please » bien placé, variantes courantes, jamais « Don’t be quiet »', () => {
+    const jump = find('acm1-consignes', 4, 'Ne saute pas');
+    for (const text of ["Please don't jump", 'Please do not jump!', "Don't jump, please", 'do not jump please'])
+      expect(right(jump, text), text).toBe(true);
+    for (const text of ["don't please jump", 'do not please jump']) expect(right(jump, text), text).toBe(false);
+    for (const [fr, texts] of [
+      ['Colorie', ['colour in', 'color in', 'color']],
+      ['Découpe', ['cut out']],
+      ['Coche', ['check']],
+      ['Lève-toi', ['get up']],
+      ['Fais un tour', ['turn round', 'please, turn around']],
     ] as const)
-      for (const l of levels) for (const q of questions(id, l)) expect(q.prompt, q.prompt).toMatch(/\?|Écris/);
-    for (const q of questions('acm2-prix-dates', 2)) if (!q.audio) expect(q.prompt).not.toContain('£');
-    const written = questions('acm2-prix-dates', 3).filter((q) => !q.audio);
-    expect(written.length).toBeGreaterThan(0);
-    for (const q of written) expect(q.prompt.split('«')[1], q.prompt).not.toMatch(/\d|£/);
-    for (const q of questions('acm2-heure-entendue', 5)) expect(q.audio?.text ?? '').not.toMatch(/\b[AB]:/);
+      for (const text of texts) expect(right(find('acm1-consignes', 3, `« ${fr}`), text), text).toBe(true);
+    expect(right(find('acm1-consignes', 4, 'Ne colorie pas'), "Don't colour in")).toBe(true);
+    for (const l of [4, 5] as const)
+      for (const q of questions('acm1-consignes', l))
+        expect(JSON.stringify(q).toLowerCase()).not.toMatch(/ne te tais pas|don[’']t be quiet\./);
+    for (const q of questions('acm1-consignes', 4))
+      if (q.answer.kind === 'choice') expect(q.answer.options).toHaveLength(4);
   });
 
-  it('dialogue : « get » et « want » sont aussi acceptés', () => {
-    const all = questions('acm2-dialogue', 4).flatMap((q) => (q.answer.kind === 'cloze' ? q.answer.blanks : []));
-    const accepted = all.map((b) => (b.mode === 'text' ? b.accepted.join('/') : ''));
-    expect(accepted).toContain('have/get');
-    expect(accepted).toContain('like/want');
+  it('mots-clés : mum, dad et « prénom’s » acceptés', () => {
+    const qs = questions('acm1-mots-cles', 4);
+    const yuna = qs.find((q) => q.prompt.includes('Yuna') && q.prompt.includes('un chien'))!;
+    for (const text of ['mom', 'Mummy', 'mommy', "Yuna's mum", 'Yuna’s mum'])
+      expect(right(yuna, text), text).toBe(true);
+    const dad = qs.find((q) => q.prompt.includes('Yuna') && q.prompt.includes('un chat'))!;
+    expect(right(dad, 'daddy')).toBe(true);
   });
 
-  it('fêtes : variantes acceptées, indices sans pays, date ni mois', () => {
-    const xmas = questions('acm2-reperes-culturels', 4).find((q) => q.prompt.includes('25 décembre'))!;
-    expect(check(xmas, { kind: 'text', text: 'Christmas Day' }).correct).toBe(true);
-    for (const l of [1, 2, 3] as const)
-      for (const q of questions('acm2-reperes-culturels', l))
-        expect(q.hint, q.prompt).not.toMatch(
-          /Royaume-Uni|Irlande|Australie|Canada|octobre|novembre|décembre|février|Halloween|Christmas|Bonfire|Pancake/,
-        );
-  });
-
-  it('dates : 1st, 2nd, 3rd, mais 11th, 12th, 13th', () => {
-    for (const q of questions('acm2-prix-dates', 4)) {
-      if (q.answer.kind !== 'text') throw new Error('saisie attendue');
-      const good = q.answer.accepted[0]!;
-      const day = Number(/the (\d+)/.exec(good)![1]);
-      const suffix = day >= 11 && day <= 13 ? 'th' : (['th', 'st', 'nd', 'rd'][day % 10] ?? 'th');
-      expect(good, q.prompt).toContain(`${day}${suffix}`);
+  it('repères : indices sans la réponse, variantes acceptées, faits évalués présents dans le mémo', () => {
+    for (const q of questions('acm1-reperes-uk', 1)) {
+      if (q.answer.kind !== 'choice') continue;
+      const good = q.answer.options[q.answer.correct]!.replace(/^(une?|le|des) /, '').split(' ')[0]!;
+      expect(q.hint.toLowerCase(), q.prompt).not.toContain(good.toLowerCase());
     }
+    for (const [part, text] of [
+      ['jouer un tour', 'trick-or-treat'],
+      ['drapeau du Royaume-Uni', 'the Union Flag'],
+      ['drapeau du Royaume-Uni', 'Union Flag'],
+    ] as const)
+      expect(right(find('acm1-reperes-uk', 4, part), text), text).toBe(true);
+    for (const [part, text] of [
+      ['fantôme', 'the ghost'],
+      ['sorcière', 'the witch'],
+      ['citrouille', 'the pumpkin'],
+    ] as const)
+      expect(right(find('acm1-reperes-uk', 3, part), text), text).toBe(true);
+    const memo = skills[3]!.lesson.memo.join(' ');
+    for (const word of [
+      'dragon',
+      'Giant’s Causeway',
+      'Union Jack',
+      'egg hunt',
+      'Trick or treat',
+      'pumpkin',
+      'witch',
+      'ghost',
+    ])
+      expect(memo).toContain(word);
   });
 
-  it('niveau 5 : la réponse vient du message ou du dialogue', () => {
-    for (const q of questions('acm2-reperes-culturels', 5)) {
-      if (q.figure?.kind !== 'document' || q.answer.kind !== 'choice') throw new Error('document attendu');
-      const kid = /préférée (?:de |d’)(\w+)/.exec(q.prompt)![1]!;
-      const line = q.figure.lines.find((l) => l.startsWith(`${kid}:`))!;
-      const fest = /festival is ([\w ]+)\./.exec(line)![1]!;
-      const dates: Record<string, string> = {
-        Halloween: '31 octobre',
-        'Bonfire Night': '5 novembre',
-        Christmas: '25 décembre',
-        'Pancake Day': 'un mardi de février ou de mars',
-      };
-      expect(q.answer.options[q.answer.correct]).toBe(dates[fest]);
-    }
-    for (const q of questions('acm2-prix-dates', 5)) {
-      if (q.answer.kind !== 'choice') throw new Error('QCM attendu');
-      const text = q.audio?.text ?? (q.figure?.kind === 'document' ? q.figure.lines.join(' ') : '');
-      const price = /£(\d+)\.(\d\d)/.exec(text)!;
-      expect(q.answer.options[q.answer.correct]).toContain(`${price[1]},${price[2]} £`);
-    }
+  it('interdiction : « Don’t » avec apostrophe droite ou « Do not » acceptés', () => {
+    const q = questions('acm1-consignes', 4).find((x) => x.prompt.includes('N’écris pas'))!;
+    for (const text of ["Don't write!", 'Do not write', 'don’t write.'])
+      expect(check(q, { kind: 'text', text }).correct, text).toBe(true);
+    expect(check(q, { kind: 'text', text: 'No write' }).correct).toBe(false);
   });
 });

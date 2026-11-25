@@ -2,6 +2,7 @@ import type { Chapter } from '../types.ts';
 import { CIVISME_NUMERIQUE_SKILLS } from './civisme-numerique.ts';
 import { FAIRE_SOCIETE_SKILLS } from './faire-societe.ts';
 import { SINFORMER_SKILLS } from './sinformer-en-ligne.ts';
+import { SOCIETE_DEMOCRATIQUE_SKILLS } from './societe-democratique.ts';
 import { VIVRE_REPUBLIQUE_SKILLS } from './vivre-republique.ts';
 
 /**
@@ -40,5 +41,13 @@ export const EMC_CHAPTERS: readonly Chapter[] = [
     domain: 'emc',
     title: 'S’informer en ligne',
     skills: SINFORMER_SKILLS,
+  },
+  {
+    id: 'em6-societe-democratique',
+    subject: 'histoire',
+    grade: '6e',
+    domain: 'emc',
+    title: 'Vivre dans une société démocratique',
+    skills: SOCIETE_DEMOCRATIQUE_SKILLS,
   },
 ];

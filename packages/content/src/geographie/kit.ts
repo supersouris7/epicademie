@@ -1,4 +1,4 @@
-import type { Figure, Level, QuestionDraft, Skill, Trap } from '../types.ts';
+import type { ClozeBlank, Figure, Level, QuestionDraft, Skill, Trap } from '../types.ts';
 import type { Rng } from '../rng.ts';
 import { choice } from '../build.ts';
 
@@ -13,6 +13,8 @@ export interface Fait {
   readonly wrong: readonly { readonly label: string; readonly why: string }[];
   /** Avant le trou, après le trou, réponses acceptées. */
   readonly gap: readonly [string, string, readonly string[]];
+  /** Trou à liste (quand la saisie libre admettrait des synonymes) : la première réponse acceptée y figure. */
+  readonly choix?: readonly string[];
   readonly quote: string;
   readonly explain: string;
   /** Identifiant du registre des sources (le programme si absent). */
@@ -85,6 +87,7 @@ const lookup = (src: string): string => {
   if (src.startsWith('insee-')) return 'Cherchons ce que dit l’INSEE';
   if (src.startsWith('ademe-')) return 'Cherchons ce que dit l’ADEME';
   if (src.startsWith('ue-')) return 'Cherchons ce que dit l’Union européenne';
+  if (src.startsWith('viepublique-')) return 'Cherchons ce que dit le site public vie-publique.fr';
   if (src === 'ecologie-lgv') return 'Cherchons ce que dit le ministère chargé des transports';
   if (src.startsWith('ecologie-')) return 'Cherchons ce que dit le ministère de la Transition écologique';
   return 'Cherchons dans le dictionnaire';
@@ -140,6 +143,12 @@ function level2(rng: Rng, n: Notion): QuestionDraft {
   };
 }
 
+function blank(rng: Rng, accepted: readonly string[], choix?: readonly string[]): ClozeBlank {
+  if (!choix) return { mode: 'text', accepted };
+  const options = rng.shuffle([...choix]);
+  return { mode: 'list', options, correct: options.indexOf(accepted[0] ?? '') };
+}
+
 function level3(rng: Rng, n: Notion): QuestionDraft {
   if (n.ordre && rng.int(0, 1) === 0) {
     const items = shuffled(rng, n.ordre);
@@ -161,7 +170,7 @@ function level3(rng: Rng, n: Notion): QuestionDraft {
   const [before, after, accepted] = f.gap;
   return {
     prompt: `Complète la phrase : « ${before}…${after} »`,
-    answer: { kind: 'cloze', parts: [before, after], blanks: [{ mode: 'text', accepted }] },
+    answer: { kind: 'cloze', parts: [before, after], blanks: [blank(rng, accepted, f.choix)] },
     hint: n.hint,
     steps: steps(f.quote, f.explain, accepted[0] ?? '', f.src),
     targetSeconds: 30,

@@ -1,323 +1,283 @@
 /**
- * Anglais CM2, « Écouter et comprendre » (lot an-cm2-06) : données citées.
+ * Anglais CM1, « Écouter et comprendre » (lot an-cm1-06) : données citées.
  * Chaque fait porte l'identifiant de sa source (registre `sources.ts`) et une citation exacte du texte consulté
- * le 25/11/2026 (copies d'archive web.archive.org des pages du British Council : LearnEnglish Kids et
- * LearnEnglish Teens ; programme du cycle 3, 2020 ; pages « Spain » et « Italy » de l'Union européenne ;
- * articles « brésilien » et « pence » du TLFi). Les espaces et retours à la ligne sont réduits à une espace.
+ * le 25/11/2026 (copies d'archive web.archive.org des pages et fiches PDF du British Council ; programme de langues
+ * vivantes du cours moyen, arrêté du 26 février 2026, annexe 2). Les espaces et retours à la ligne des fiches PDF et du
+ * programme sont réduits à une espace ; sur les cartes, les mots se suivent dans l'ordre de la fiche.
  */
-import type { Fait } from './presentation-faits.ts';
+import { wordOf, type Fait } from './presentation-faits.ts';
 
-/** Une fête des pays anglophones (pages « Read UK » de LearnEnglish Teens). */
-export interface Festival {
-  readonly en: string;
-  /** Autres noms anglais acceptés. */
-  readonly alt?: readonly string[];
-  /** Date ou période, en français. */
-  readonly date: string;
-  /** Jour et mois en anglais (fêtes à date fixe seulement). */
-  readonly day?: number;
-  readonly month?: string;
-  /** Ce que l'on fait ce jour-là, en français. */
-  readonly custom: string;
-  /** Faute d'écriture typique. */
-  readonly typo: string;
-  /** Indice qui aide à retrouver la fête ou sa date sans les dire (ni pays, ni date, ni mois). */
-  readonly clue: string;
+/** Nombre de 1 à 100 : cités jusqu'à 24 et pour les dizaines ; les autres suivent « dizaine-unité ». */
+export function numberWord(n: number): string {
+  if (n === 100) return 'a hundred';
+  const cited = wordOf(n);
+  if (cited) return cited;
+  const unit = n % 10;
+  return `${wordOf(n - unit)}-${wordOf(unit)}`;
 }
 
-export const FESTIVALS: readonly Festival[] = [
+export interface Order {
+  /** Consigne anglaise (impératif, sans point). */
+  readonly en: string;
+  /** Même consigne en français (tutoiement). */
+  readonly fr: string;
+  /** La même consigne, interdite (absente quand l’interdiction n’est pas naturelle). */
+  readonly not?: string;
+  /** Autres écritures ou traductions anglaises admises. */
+  readonly alt?: readonly string[];
+  /** Faute d'écriture typique. */
+  readonly typo: string;
+}
+
+/** Consignes : fiche « Classroom language flashcards » (British Council). */
+export const ORDERS: readonly Order[] = [
+  { en: 'listen', fr: 'Écoute !', not: 'N’écoute pas !', typo: 'lissen' },
+  { en: 'be quiet', fr: 'Tais-toi !', typo: 'be quite' },
+  { en: 'sit down', fr: 'Assieds-toi !', not: 'Ne t’assieds pas !', typo: 'sit doun' },
+  { en: 'stand up', fr: 'Lève-toi !', not: 'Ne te lève pas !', typo: 'stend up', alt: ['get up'] },
+  { en: 'jump', fr: 'Saute !', not: 'Ne saute pas !', typo: 'jomp' },
   {
-    en: 'Halloween',
-    alt: ['Hallowe’en'],
-    date: '31 octobre',
-    day: 31,
-    month: 'October',
-    custom: 'des citrouilles-lanternes et des déguisements',
-    typo: 'Haloween',
-    clue: 'Pense à la saison des citrouilles.',
+    en: 'turn around',
+    fr: 'Fais un tour sur toi-même !',
+    not: 'Ne tourne pas sur toi-même !',
+    typo: 'turn arond',
+    alt: ['turn round'],
   },
+  { en: 'clap', fr: 'Tape dans tes mains !', not: 'Ne tape pas dans tes mains !', typo: 'clapp' },
+  { en: 'point', fr: 'Montre du doigt !', not: 'Ne montre pas du doigt !', typo: 'poynt' },
+  { en: 'touch', fr: 'Touche !', not: 'Ne touche pas !', typo: 'toutch' },
+  { en: 'sing', fr: 'Chante !', not: 'Ne chante pas !', typo: 'singue' },
+  { en: 'write', fr: 'Écris !', not: 'N’écris pas !', typo: 'wite' },
   {
-    en: 'Bonfire Night',
-    alt: ['Guy Fawkes Night', 'Fireworks Night'],
-    date: '5 novembre',
-    day: 5,
-    month: 'November',
-    custom: 'des feux de joie et des feux d’artifice',
-    typo: 'Bonfir Night',
-    clue: 'Pense au soir où le ciel s’illumine au-dessus des grands feux.',
+    en: 'colour',
+    fr: 'Colorie !',
+    not: 'Ne colorie pas !',
+    typo: 'coulor',
+    alt: ['color', 'colour in', 'color in'],
   },
-  {
-    en: 'Christmas',
-    alt: ['Christmas Day'],
-    date: '25 décembre',
-    day: 25,
-    month: 'December',
-    custom: 'des cartes de vœux et des cadeaux',
-    typo: 'Chrismas',
-    clue: 'Pense au moment où l’on envoie des cartes de vœux et où les enfants attendent des cadeaux.',
-  },
-  {
-    en: 'Pancake Day',
-    alt: ['Shrove Tuesday'],
-    date: 'un mardi de février ou de mars',
-    custom: 'des crêpes et des courses de crêpes',
-    typo: 'Pancak Day',
-    clue: 'Pense à ce qui cuit dans la poêle.',
-  },
+  { en: 'cut', fr: 'Découpe !', not: 'Ne découpe pas !', typo: 'cutt', alt: ['cut out'] },
+  { en: 'tick', fr: 'Coche !', not: 'Ne coche pas !', typo: 'tik', alt: ['check'] },
+  { en: 'circle', fr: 'Entoure !', not: 'N’entoure pas !', typo: 'cirkle' },
+  { en: 'underline', fr: 'Souligne !', not: 'Ne souligne pas !', typo: 'underlign' },
 ];
 
-/** Pays anglophones cités par la page « Pancake Day », et pays cités comme « autres ». */
-export const ENGLISH_COUNTRIES: readonly { readonly en: string; readonly fr: string }[] = [
-  { en: 'the UK', fr: 'le Royaume-Uni' },
-  { en: 'Ireland', fr: 'l’Irlande' },
-  { en: 'Australia', fr: 'l’Australie' },
-  { en: 'Canada', fr: 'le Canada' },
-];
-export const OTHER_COUNTRIES: readonly { readonly fr: string; readonly why: string }[] = [
-  { fr: 'l’Espagne', why: 'En Espagne, la langue officielle est l’espagnol.' },
-  { fr: 'l’Italie', why: 'En Italie, la langue officielle est l’italien.' },
-  { fr: 'le Brésil', why: 'Au Brésil, on parle portugais.' },
-];
+const PROGRAMME = 'lve-cm-2026';
+const CARDS = 'bck-flashcards-classroom';
+const UK = 'bck-uk';
+const HALLOWEEN = 'bck-halloween-answers';
+const XMAS = 'bck-christmas-story';
+const BONFIRE = 'bck-bonfire';
 
-/** Questions d'un dialogue au café ou entre amis (transcriptions LearnEnglish Teens). */
-export const QUESTIONS: readonly { readonly en: string; readonly topic: string }[] = [
-  { en: 'How much is that?', topic: 'le prix' },
-  { en: 'What time is the film?', topic: 'l’heure du film' },
-  { en: 'What’s your table number?', topic: 'le numéro de la table' },
-  { en: 'Would you like a drink?', topic: 'si tu veux une boisson' },
-  { en: 'What would you like?', topic: 'ce que tu veux commander' },
-];
+const fait = (id: string, sourceId: string, quote: string, claim: string): Fait => ({ id, sourceId, quote, claim });
 
 export const FAITS: readonly Fait[] = [
-  {
-    id: 'programme-c3-ecoute',
-    sourceId: 'cycle3-2020',
-    quote:
-      "L'élève est capable de comprendre des mots familiers et des expressions très courantes sur lui-même, sa famille et son environnement immédiat",
-    claim: 'Au cycle 3, l’élève comprend des mots et des expressions très courants : notion « dialogue court ».',
-  },
-  {
-    id: 'programme-c3-information',
-    sourceId: 'cycle3-2020',
-    quote: "Comprendre et extraire l'information essentielle d'un message oral de courte durée.",
-    claim: 'L’élève relève une information (nombre, prix, heure) dans un message oral court.',
-  },
-  {
-    id: 'programme-c3-date',
-    sourceId: 'cycle3-2020',
-    quote:
-      "Faire une brève annonce (date, anniversaire, invitation, etc.) en situant l'événement dans le temps et l'espace.",
-    claim: 'Au cycle 3, l’élève situe un événement avec une date.',
-  },
-  {
-    id: 'programme-c3-culture',
-    sourceId: 'cycle3-2020',
-    quote:
-      'Identifier quelques grands repères culturels de l’environnement quotidien des élèves du même âge dans les pays ou régions étudiés.',
-    claim: 'Au cycle 3, l’élève repère des faits culturels des pays anglophones.',
-  },
-  {
-    id: 'programme-c3-fetes',
-    sourceId: 'cycle3-2020',
-    quote:
-      'Modes de vie, fêtes et traditions, quelques repères historiques et géographiques, quelques personnages de la culture de l’aire concernée',
-    claim: 'Le programme du cycle 3 fait découvrir les fêtes et traditions des pays de la langue.',
-  },
-  {
-    id: 'programme-c3-horaire-prix',
-    sourceId: 'cycle3-2020',
-    quote: 'Dialoguer pour échanger / obtenir des renseignements (itinéraire, horaire, prix, etc.).',
-    claim: 'Le programme du cycle 3 fait échanger sur un horaire ou un prix dans un dialogue.',
-  },
-  {
-    id: 'heure-o-clock',
-    sourceId: 'bck-tell-time',
-    quote: "When the big hand is pointing to the twelve, we say it's o'clock.",
-    claim: 'Heure pile : « o’clock » (four o’clock = 4:00).',
-  },
-  {
-    id: 'heure-quarter-past',
-    sourceId: 'bck-tell-time',
-    quote: "When the big hand is pointing to the three, we say it's quarter past.",
-    claim: '« quarter past » = et quart (quarter past five = 5:15).',
-  },
-  {
-    id: 'heure-half-past',
-    sourceId: 'bck-tell-time',
-    quote: "When the big hand is pointing to the six, we say it's half past.",
-    claim: '« half past » = et demie (half past five = 5:30).',
-  },
-  {
-    id: 'heure-quarter-to',
-    sourceId: 'bck-tell-time',
-    quote: "And, finally, when the big hand is on the nine, we say it's quarter to.",
-    claim: '« quarter to » = moins le quart, avant l’heure suivante (quarter to six = 5:45).',
-  },
-  {
-    id: 'heure-cinq-minutes',
-    sourceId: 'bck-tell-time',
-    quote: "Well, we count the minutes in fives. So, now it's five past six, it's ten past six, it's quarter past six",
-    claim: 'Avant la demie, on compte les minutes par cinq avec « past » : ten past six = 6:10.',
-  },
-  {
-    id: 'heure-to',
-    sourceId: 'bck-tell-time',
-    quote:
-      "After half past, it changes. Then we count how many minutes there are before the next hour. It's twenty-five to seven, it's twenty to seven",
-    claim: 'Après la demie, on compte les minutes avant l’heure suivante avec « to » : twenty to seven = 6:40.',
-  },
-  {
-    id: 'heure-film',
-    sourceId: 'bc-teens-cinema',
-    quote: "Jack: What time is the film? Ismael: At 8 o'clock. Let’s meet at 7:30 outside the cinema.",
-    claim: 'Dialogue : « What time is…? » demande l’heure ; « At … » donne l’heure d’un rendez-vous.',
-  },
-  {
-    id: 'cafe-commande',
-    sourceId: 'bc-teens-cafe',
-    quote: 'Café worker: Next, please! What would you like? Andi: Can I have a burger, please?',
-    claim: 'Au café : « What would you like? » (que veux-tu ?) ; « Can I have…, please? » pour commander.',
-  },
-  {
-    id: 'cafe-boisson',
-    sourceId: 'bc-teens-cafe',
-    quote: 'Café worker: Would you like a drink? Andi: Yes, can I have an apple juice, please?',
-    claim: '« Would you like a drink? » propose une boisson.',
-  },
-  {
-    id: 'cafe-table',
-    sourceId: 'bc-teens-cafe',
-    quote: "What's your table number? Andi: Table 3.",
-    claim: '« What’s your table number? » demande le numéro de la table.',
-  },
-  {
-    id: 'cafe-prix',
-    sourceId: 'bc-teens-cafe',
-    quote: "Andi: Table 3. How much is that? Café worker: That's £8.37, please.",
-    claim: '« How much is that? » demande le prix ; le prix s’écrit avec le signe £ : « That’s £8.37, please. »',
-  },
-  {
-    id: 'date-ordinal-chant',
-    sourceId: 'bck-chant-nine-oclock',
-    quote: 'And once a year my birthday On the twenty-first of June.',
-    claim: 'Une date se dit avec un nombre ordinal : « on the twenty-first of June » (le 21 juin).',
-  },
-  {
-    id: 'date-ordinal-ecrit',
-    sourceId: 'bc-teens-numbers',
-    quote: '25th June',
-    claim: 'À l’écrit, l’ordinal garde ses deux dernières lettres : 25th June.',
-  },
-  {
-    id: 'date-second',
-    sourceId: 'bc-prepositions-time',
-    quote: 'dates on 30 July on the second of August',
-    claim: '« on the second of August » : 2 se dit « second » dans une date.',
-  },
-  {
-    id: 'pays-anglophones',
-    sourceId: 'bc-teens-pancake-day',
-    quote: 'It is celebrated in English-speaking countries like the UK, Ireland, Australia and Canada.',
-    claim: 'Le Royaume-Uni, l’Irlande, l’Australie et le Canada sont des pays anglophones.',
-  },
-  {
-    id: 'pays-autres',
-    sourceId: 'bc-teens-pancake-day',
-    quote: 'In others like Spain, Italy or Brazil, Shrove Tuesday is at the end of Carnival.',
-    claim: 'L’Espagne, l’Italie et le Brésil sont cités à part, comme « autres » pays.',
-  },
-  {
-    id: 'pancake-date',
-    sourceId: 'bc-teens-pancake-day',
-    quote: 'Pancake Day is always on a Tuesday in February or March.',
-    claim: 'Pancake Day (ou Shrove Tuesday) tombe un mardi de février ou de mars.',
-  },
-  {
-    id: 'pancake-course',
-    sourceId: 'bc-teens-pancake-day',
-    quote: 'Another tradition on Pancake Day in the UK is pancake racing.',
-    claim: 'Pour Pancake Day, au Royaume-Uni, on fait des courses de crêpes.',
-  },
-  {
-    id: 'pancake-crepes',
-    sourceId: 'bc-teens-pancake-day',
-    quote: 'On this day many people eat pancakes: thin, flat cakes made in a pan.',
-    claim: 'Pour Pancake Day, on mange des crêpes.',
-  },
-  {
-    id: 'halloween-date',
-    sourceId: 'bc-teens-halloween',
-    quote: "October 31 is Halloween and it's celebrated in many countries around the world.",
-    claim: 'Halloween a lieu le 31 octobre.',
-  },
-  {
-    id: 'halloween-coutumes',
-    sourceId: 'bc-teens-halloween',
-    quote:
-      'When you think of Halloween, you probably think of pumpkin lanterns, fancy-dress costumes and children asking for sweets.',
-    claim: 'Pour Halloween : citrouilles-lanternes, déguisements, enfants qui demandent des bonbons.',
-  },
-  {
-    id: 'halloween-origine',
-    sourceId: 'bc-teens-halloween',
-    quote: 'Halloween traditions actually come from Ireland, Scotland, England and Wales',
-    claim: 'Les traditions d’Halloween viennent d’Irlande et de Grande-Bretagne.',
-  },
-  {
-    id: 'bonfire-date',
-    sourceId: 'bc-teens-bonfire-night',
-    quote:
-      'In the UK, Bonfire Night (or Guy Fawkes Night) is celebrated on 5 November and the night skies are filled with colour.',
-    claim: 'Au Royaume-Uni, Bonfire Night (ou Guy Fawkes Night) a lieu le 5 novembre.',
-  },
-  {
-    id: 'bonfire-feux',
-    sourceId: 'bc-teens-bonfire-night',
-    quote: 'All over Britain there are firework displays and bonfires',
-    claim: 'Pour Bonfire Night, il y a des feux d’artifice et des feux de joie.',
-  },
-  {
-    id: 'christmas-fete',
-    sourceId: 'bc-teens-christmas',
-    quote: 'Christmas in the UK is the biggest holiday of the year.',
-    claim: 'Au Royaume-Uni, Christmas (Noël) est la plus grande fête de l’année.',
-  },
-  {
-    id: 'christmas-date',
-    sourceId: 'bc-teens-christmas',
-    quote:
-      'It’s very common to send Christmas cards to friends, family, colleagues, classmates and neighbours in the weeks leading up to 25 December.',
-    claim: 'Christmas a lieu le 25 décembre ; on envoie des cartes de vœux.',
-  },
-  {
-    id: 'christmas-cadeaux',
-    sourceId: 'bc-teens-christmas',
-    quote: 'For children it often means presents, presents and more presents!',
-    claim: 'Pour Christmas, les enfants reçoivent des cadeaux.',
-  },
-  {
-    id: 'langue-espagne',
-    sourceId: 'eu-espagne',
-    quote: 'Official EU language(s) : Spanish',
-    claim: 'En Espagne, la langue officielle est l’espagnol.',
-  },
-  {
-    id: 'langue-italie',
-    sourceId: 'eu-italie',
-    quote: 'Official EU language(s) : Italian',
-    claim: 'En Italie, la langue officielle est l’italien.',
-  },
-  {
-    id: 'langue-bresil',
-    sourceId: 'cnrtl-bresilien',
-    quote: 'Langue portugaise parlée au Brésil',
-    claim: 'Au Brésil, on parle portugais.',
-  },
-  {
-    id: 'monnaie-pence',
-    sourceId: 'cnrtl-pence',
-    quote:
-      "Unité monétaire divisionnaire britannique qui valait le douzième du shilling, et qui vaut le centième de la livre sterling depuis l'adoption du système décimal en 1971.",
-    claim: 'La monnaie anglaise est la livre (pound) ; un penny (au pluriel : pence) en vaut le centième.',
-  },
+  fait(
+    'programme-consignes',
+    PROGRAMME,
+    'l’élève peut comprendre l’ensemble des consignes utilisées en classe',
+    'Comprendre les consignes de classe est attendu en fin de CM1.',
+  ),
+  fait(
+    'programme-imperatif',
+    PROGRAMME,
+    'Reconnaitre quelques formes courantes de l’impératif à travers des consignes de classe, des instructions de jeu ou des étapes de recette de cuisine.',
+    'L’impératif des consignes est au programme du CM1.',
+  ),
+  fait(
+    'programme-interdiction',
+    PROGRAMME,
+    'il peut repérer une instruction dans un message (autorisation, obligation ou interdiction) pour s’y conformer',
+    'Repérer une interdiction est un objectif (niveau A1+).',
+  ),
+  fait(
+    'programme-chiffres',
+    PROGRAMME,
+    'Repérer les lettres de l’alphabet et les chiffres pour réaliser une tâche.',
+    'Repérer les chiffres à l’oral est au programme du CM1.',
+  ),
+  fait(
+    'programme-compter',
+    PROGRAMME,
+    'compter en utilisant la suite numérique des nombres (A1+) au-delà de 100.',
+    'La suite des nombres est travaillée au CM1.',
+  ),
+  fait(
+    'programme-mots',
+    PROGRAMME,
+    'il peut comprendre des mots familiers et des expressions courtes dans une conversation simple',
+    'Comprendre des mots familiers est attendu en fin de CM1.',
+  ),
+  fait(
+    'programme-informations',
+    PROGRAMME,
+    'l’élève peut isoler des informations simples dans un message explicite',
+    'Isoler une information dans un message est un attendu.',
+  ),
+  fait(
+    'programme-interrogatifs',
+    PROGRAMME,
+    'Reconnaitre les pronoms interrogatifs usuels',
+    'Les mots interrogatifs sont au programme du CM1.',
+  ),
+  fait(
+    'programme-culture',
+    PROGRAMME,
+    'Par ancrage culturel, il faut comprendre, non pas une thématique culturelle spécifique à aborder, mais une irrigation de l’apprentissage de la langue par des objets et contenus culturels qui le sous-tendent.',
+    'Les repères culturels accompagnent l’apprentissage de la langue.',
+  ),
+  fait(
+    'nombres-1-12',
+    'bck-flashcards-1-12',
+    'one two three four five six seven eight nine ten eleven twelve',
+    'Mots-nombres de 1 à 12.',
+  ),
+  fait(
+    'nombres-13-24',
+    'bck-flashcards-13-24',
+    'thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twenty-one twenty-two twenty-three twenty-four',
+    'Mots-nombres de 13 à 24 ; au-delà de 20, un tiret relie la dizaine et l’unité.',
+  ),
+  fait(
+    'dizaines',
+    'bck-flashcards-10-1000',
+    'ten twenty thirty forty fifty sixty seventy eighty ninety a hundred',
+    'Les dizaines de 10 à 90 et 100 (« a hundred »).',
+  ),
+  fait(
+    'consignes-cartes',
+    CARDS,
+    'listen be quiet sit down stand up jump hop turn around clap point touch discuss sing write trace colour cut tick circle underline play a game',
+    'Les consignes de classe en anglais.',
+  ),
+  fait(
+    'consigne-lit',
+    'bck-tidy',
+    'Make your bed. Throw rubbish in the bin.',
+    'À l’impératif, la consigne commence par le verbe, sans sujet.',
+  ),
+  fait(
+    'consigne-livres',
+    'bck-tidy',
+    'Put books on your bookshelf.',
+    'Les livres se rangent sur l’étagère (consigne « Put… »).',
+  ),
+  fait(
+    'consigne-linge',
+    'bck-tidy',
+    'Put dirty clothes in the washing basket.',
+    'Le linge sale va dans le panier à linge.',
+  ),
+  fait('consigne-poubelle', 'bck-tidy', 'Throw rubbish in the bin.', 'Les déchets vont à la poubelle.'),
+  fait(
+    'consigne-negative',
+    'bck-school-note',
+    "Please don't bring expensive things (like tablets or mobile phones) to school.",
+    'Une interdiction commence par « don’t » devant le verbe.',
+  ),
+  fait(
+    'royaume-uni-parties',
+    UK,
+    'England, Scotland, Wales and Northern Ireland are the four parts of the UK.',
+    'Le Royaume-Uni compte quatre parties.',
+  ),
+  fait(
+    'angleterre-ecosse',
+    UK,
+    'England is smaller bigger than Scotland.',
+    'Correction de la fiche : l’Angleterre est plus grande que l’Écosse.',
+  ),
+  fait('drapeau-gallois', UK, 'There’s a dragon on the Welsh flag.', 'Le drapeau gallois porte un dragon.'),
+  fait(
+    'chaussee-geants',
+    UK,
+    'Lots of tourists visit the Giant’s Causeway in Northern Ireland.',
+    'La Chaussée des Géants est en Irlande du Nord.',
+  ),
+  fait(
+    'union-jack',
+    UK,
+    'The UK football team flag is often called the ‘Union Jack’.',
+    'Correction de la fiche : le drapeau du Royaume-Uni est souvent appelé « Union Jack ».',
+  ),
+  fait(
+    'capitale-angleterre',
+    'bck-cities',
+    'England’s capital. It has Big Ben, westminster and Buckingham Palace.',
+    'La capitale de l’Angleterre a Big Ben et Buckingham Palace.',
+  ),
+  fait(
+    'londres',
+    'bck-postcard-london',
+    'write a postcard London Big Ben London Eye Tower Bridge red bus park queen',
+    'Londres (London) : Big Ben, London Eye, Tower Bridge.',
+  ),
+  fait('halloween-date', HALLOWEEN, 'Halloween is on 31 October every year.', 'Halloween a lieu le 31 octobre.'),
+  fait(
+    'halloween-citrouille',
+    HALLOWEEN,
+    'Pumpkins with faces cut in them are called ‘jack o’lanterns’.',
+    'Les citrouilles sculptées s’appellent « jack o’lanterns ».',
+  ),
+  fait(
+    'halloween-bonbons',
+    HALLOWEEN,
+    '‘Trick or treat’ is a game where you play a trick on someone or get sweets.',
+    '« Trick or treat » : jouer un tour ou recevoir des bonbons.',
+  ),
+  fait(
+    'halloween-mots',
+    HALLOWEEN,
+    'bat witch broomstick black cat cauldron pumpkin ghost skeleton haunted house spider',
+    'Les mots d’Halloween.',
+  ),
+  fait('noel-date', XMAS, 'Christmas is on December 25th.', 'Noël a lieu le 25 décembre.'),
+  fait(
+    'noel-sapin',
+    XMAS,
+    'We decorate our Christmas tree with baubles, tinsel and lights.',
+    'On décore le sapin de Noël.',
+  ),
+  fait(
+    'noel-repas',
+    XMAS,
+    'For Christmas dinner we eat turkey and then Christmas cake. My favourite part is pulling the crackers!',
+    'Au repas de Noël : dinde, gâteau et « crackers ».',
+  ),
+  fait(
+    'noel-santa',
+    XMAS,
+    'Children wait for Santa Claus to bring them presents.',
+    'Les enfants attendent Santa Claus.',
+  ),
+  fait(
+    'noel-nourriture',
+    XMAS,
+    'Many leave food for him to eat when he visits.',
+    'Beaucoup d’enfants laissent à manger à Santa Claus.',
+  ),
+  fait(
+    'bonfire-date',
+    BONFIRE,
+    'People in Britain celebrate Bonfire Night every year on November 5th.',
+    'Bonfire Night a lieu le 5 novembre en Grande-Bretagne.',
+  ),
+  fait(
+    'bonfire-feux',
+    BONFIRE,
+    'Now, people go to see a bonfire and fireworks',
+    'Pour Bonfire Night : un grand feu et des feux d’artifice.',
+  ),
+  fait(
+    'paques-chasse',
+    'bck-easter-answers',
+    'Many children go on an egg hunt, looking for hidden',
+    'À Pâques, beaucoup d’enfants cherchent des œufs cachés (egg hunt).',
+  ),
+  fait('paques-mois', 'bck-easter-answers', 'March or April.', 'Pâques a lieu en mars ou en avril.'),
+  fait(
+    'paques-mots',
+    'bck-easter-answers',
+    'eggs basket chocolates bunnies lamb chicks nest hot cross buns',
+    'Les mots de Pâques.',
+  ),
 ];
