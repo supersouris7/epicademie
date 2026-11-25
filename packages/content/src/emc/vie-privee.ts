@@ -383,7 +383,7 @@ const droitIntimite: Notion = {
   credit: CREDIT,
   memo: [
     'L’enfant comme l’adulte a droit au respect de sa **vie privée**, qui comprend le droit à l’**intimité** et le **droit à l’image**.',
-    'Elle couvre aussi le domicile, les communications et le **secret médical**.',
+    'Elle couvre aussi le domicile, les communications et le **secret médical** ; l’intimité recouvre la vie affective et sexuelle.',
     'Capter l’image d’une personne sans son **autorisation** est interdit. Exemple : avant de photographier un camarade, demande-lui son accord ; un **juge** fait respecter ces droits.',
   ],
   faits: [
@@ -428,7 +428,7 @@ const droitIntimite: Notion = {
         { label: 'les lois votées par le Parlement', why: 'Les lois sont publiques.' },
         { label: 'le nom de sa commune affiché à l’entrée de la ville', why: 'C’est une information publique.' },
       ],
-      gap: ['L’intimité d’une personne recouvre sa vie ', ' et sexuelle.', ['affective']],
+      gap: ['L’intimité d’une personne recouvre sa vie ', ' et sexuelle.', ['affective', 'amoureuse', 'sentimentale']],
       explain: 'Les sentiments et la vie amoureuse relèvent de l’intimité : personne ne peut les exposer à ta place.',
     },
     {
@@ -488,7 +488,11 @@ const droitIntimite: Notion = {
         { label: 'uniquement aux professeurs', why: 'Les élèves sont aussi protégés.' },
         { label: 'uniquement aux personnes âgées', why: 'Aucune limite d’âge de ce genre.' },
       ],
-      gap: ['La règle vaut pour tout un chacun et pas seulement pour les personnes ', '.', ['publiques', 'publique']],
+      gap: [
+        'La règle vaut pour tout un chacun et pas seulement pour les personnes ',
+        '.',
+        ['publiques', 'publique', 'célèbres', 'celebres', 'connues'],
+      ],
       explain: 'Un camarade inconnu a autant de droits sur son image qu’une personne connue.',
     },
     {
@@ -525,6 +529,10 @@ const droitIntimite: Notion = {
       traps: [
         { text: 'oubli', why: 'Le droit à l’oubli concerne l’effacement d’informations.' },
         { text: 'éducation', why: 'Le droit à l’éducation permet d’apprendre.' },
+        {
+          text: 'intimité',
+          why: 'L’intimité est protégée aussi, mais le droit qui porte précisément sur les photos est le droit à l’image.',
+        },
       ],
       explain: 'C’est le droit à l’image, lié au droit à la vie privée.',
     },
@@ -541,7 +549,7 @@ const droitIntimite: Notion = {
     {
       ...SECRET_MEDICAL,
       q: 'Comment appelle-t-on le secret qui protège le dossier de santé : le secret … ?',
-      accepted: ['médical', 'medical', 'secret médical', 'le secret médical'],
+      accepted: ['médical', 'medical', 'secret médical', 'le secret médical', 'professionnel', 'secret professionnel'],
       traps: [
         { text: 'scolaire', why: 'Le dossier de santé relève du médecin.' },
         { text: 'bancaire', why: 'Le secret bancaire concerne les comptes d’argent.' },
@@ -574,7 +582,8 @@ const droitIntimite: Notion = {
             },
             { label: 'le camarade n’a aucun droit avant 18 ans', why: 'L’enfant a droit au respect de sa vie privée.' },
           ],
-          explain: 'La règle vaut pour tout un chacun : il fallait demander son autorisation.',
+          explain:
+            'La règle vaut pour tout un chacun : on ne photographie pas quelqu’un sans son autorisation, encore moins quand il se change. Il faut prévenir un adulte.',
         },
         {
           ...COMPREND,
@@ -590,7 +599,7 @@ const droitIntimite: Notion = {
       ],
     },
     {
-      title: 'Le carnet de santé',
+      title: 'Le rendez-vous chez le médecin',
       lines: [
         'Un élève revient au collège après un rendez-vous chez le médecin.',
         'Une camarade veut savoir ce que le médecin a noté dans son dossier.',
@@ -692,7 +701,7 @@ const donneesPersonnelles: Notion = {
       gap: [
         'Le consentement doit être une manifestation de volonté libre et ',
         '.',
-        ['éclairée', 'éclairé', 'eclairee', 'eclaire'],
+        ['éclairée', 'éclairé', 'eclairee', 'eclaire', 'spécifique', 'univoque'],
       ],
       explain: 'Consentir, c’est accepter sans contrainte et en sachant à quoi l’on dit oui.',
     },
@@ -741,7 +750,11 @@ const donneesPersonnelles: Notion = {
         { label: 'le droit à l’image', why: 'Il porte sur la prise et l’usage de ton image.' },
         { label: 'le droit de propriété', why: 'Il concerne les biens possédés.' },
       ],
-      gap: ['La personne a le droit d’obtenir la ', ' des données inexactes.', ['rectification', 'correction']],
+      gap: [
+        'La personne a le droit d’obtenir la ',
+        ' des données inexactes.',
+        ['rectification', 'correction', 'modification'],
+      ],
       explain: 'Rectifier, c’est corriger une information fausse.',
     },
     {
@@ -844,7 +857,7 @@ const donneesPersonnelles: Notion = {
       qs: [
         {
           ...IDENTIFIANTS,
-          q: 'Pourquoi la position du joueur est-elle sensible à protéger ?',
+          q: 'Pourquoi faut-il protéger la position du joueur ?',
           a: 'les données de localisation peuvent permettre de l’identifier',
           wrong: [
             { label: 'elle indique seulement la météo', why: 'La position concerne la personne.' },
@@ -949,7 +962,11 @@ const harcelement: Notion = {
         { label: 'à la date des vacances', why: 'Le calendrier n’est pas concerné.' },
         { label: 'à la couleur de son cartable', why: 'La loi parle de dignité, de santé et d’apprentissage.' },
       ],
-      gap: ['Le harcèlement peut porter atteinte à la ', ' de l’élève.', ['dignité', 'dignite']],
+      gap: [
+        'Le harcèlement peut porter atteinte à sa ',
+        ', altérer sa santé ou dégrader ses conditions d’apprentissage.',
+        ['dignité', 'dignite'],
+      ],
       explain: 'La loi regarde l’effet sur la personne : respect, santé, possibilité d’apprendre.',
     },
     {
@@ -971,11 +988,12 @@ const harcelement: Notion = {
       a: 'au collège ou en marge de la vie scolaire',
       wrong: [
         { label: 'uniquement pendant le cours de mathématiques', why: 'La définition est bien plus large.' },
-        { label: 'uniquement devant le principal', why: 'Un témoin de ce rang n’est pas nécessaire.' },
+        { label: 'uniquement devant le principal', why: 'La définition n’exige pas que le principal soit présent.' },
         { label: 'uniquement pendant les grandes vacances', why: 'La définition vise la vie scolaire.' },
       ],
       gap: ['Les faits sont commis au sein de l’établissement ou en ', ' de la vie scolaire.', ['marge']],
-      explain: 'Ce qui se passe autour de l’école, par exemple sur le trajet, peut aussi compter.',
+      explain:
+        '« En marge » veut dire à côté : des faits liés à la vie scolaire comptent aussi hors de l’établissement.',
     },
     {
       ...DELIT,
@@ -1034,9 +1052,10 @@ const harcelement: Notion = {
       gap: [
         'Agir sur les témoins permet de ',
         ' une situation de harcèlement.',
-        ['désamorcer', 'desamorcer', 'arrêter', 'stopper'],
+        ['désamorcer', 'desamorcer', 'arrêter', 'stopper', 'calmer', 'apaiser'],
       ],
-      explain: 'Privé de son public ou face à des témoins qui réagissent, le harceleur perd de sa force.',
+      explain:
+        'Désamorcer, c’est calmer une situation avant qu’elle s’aggrave : face à des témoins qui réagissent, le harceleur perd de sa force.',
     },
     {
       ...NUMERO,
@@ -1171,7 +1190,8 @@ const harcelement: Notion = {
             { label: 'le 1905', why: '1905 est une date de loi.' },
             { label: 'le 2022', why: '2022 est l’année de la loi contre le harcèlement scolaire.' },
           ],
-          explain: 'Le 3018 aide les jeunes victimes de cyberharcèlement et leurs parents.',
+          explain:
+            'Le 3018 aide les jeunes victimes de cyberharcèlement et leurs parents. Il faut aussi prévenir un adulte.',
         },
       ],
     },
