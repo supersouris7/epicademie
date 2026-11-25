@@ -699,30 +699,62 @@ function marquesDraft(rng: Rng, level: Level): QuestionDraft {
       };
     }
     default: {
-      const temps = rng.shuffle<TempsMarque>(['imparfait', 'imparfait', 'futur', 'futur']);
+      const temps: readonly TempsMarque[] = rng.shuffle<TempsMarque>(['imparfait', 'imparfait', 'futur', 'futur']);
       const verbes = pickN(rng, VERBES_MARQUES, 4);
-      const sujets = sujetsRecit(rng, 4);
       const DEBUTS: Record<TempsMarque, readonly string[]> = {
         imparfait: ['Autrefois,', 'L’an dernier,', 'Avant,'],
         futur: ['Demain,', 'Bientôt,', 'L’an prochain,'],
       };
-      return texteATrous(
-        'Lis le texte. Pour chaque ligne, écris la marque de temps du verbe conjugué.',
-        'Hier et demain',
-        verbes.map((v, i) => {
-          const t = at(temps, i);
-          const s =
-            t === 'futur' ? rng.pick(TOUS_SANS_JE.filter((x) => PERSONNES_FUTUR.includes(x.personne))) : at(sujets, i);
-          const d = decoupe(t, v, s.personne);
-          return {
-            texte: `${rng.pick(DEBUTS[t])} ${lowerFirst(s.texte)} ${d.forme} ${FINS[v]}.`,
-            attendu: d.temps,
-            pourquoi: [...remplacer(s), ...expliquer(t, d), `Réponse : « -${d.temps}- ».`].join(' '),
-          };
-        }),
-        'Trouve le verbe conjugué. Puis cherche -ai-, -i- ou -r- juste avant la fin.',
-        [DEF_MARQUES, DEF_TEMPS],
-      );
+      // Quatre sujets de personnes différentes ; le futur d'abord (nous, vous, ils seulement).
+      const prises = new Set<Personne>();
+      const sujets = new Map<number, Sujet>();
+      for (const i of [0, 1, 2, 3].sort(
+        (a, b) => Number(at(temps, b) === 'futur') - Number(at(temps, a) === 'futur'),
+      )) {
+        const s = rng.pick(
+          TOUS_SANS_JE.filter(
+            (x) => !prises.has(x.personne) && (at(temps, i) === 'imparfait' || PERSONNES_FUTUR.includes(x.personne)),
+          ),
+        );
+        prises.add(s.personne);
+        sujets.set(i, s);
+      }
+      const lignes = verbes.map((v, i) => {
+        const t = at(temps, i);
+        const s = sujets.get(i) ?? at(SANS_JE, 0);
+        const d = decoupe(t, v, s.personne);
+        return {
+          d,
+          texte: `${rng.pick(DEBUTS[t])} ${lowerFirst(s.texte)} ${d.forme} ${FINS[v]}.`,
+          pourquoi: [
+            ...remplacer(s),
+            ...expliquer(t, d),
+            `Réponse : temps « -${d.temps}- », personne « -${d.personne} ».`,
+          ].join(' '),
+        };
+      });
+      return {
+        prompt: 'Lis le texte. Pour chaque ligne, écris la marque de temps puis la marque de personne du verbe.',
+        figure: document(
+          'Hier et demain',
+          lignes.map((l) => l.texte),
+        ),
+        answer: {
+          kind: 'cloze',
+          parts: [...lignes.flatMap((_, i) => [`${i === 0 ? '' : '. '}Ligne ${i + 1} : temps `, ' ; personne ']), '.'],
+          blanks: lignes.flatMap(({ d }) => [
+            { mode: 'text' as const, accepted: avecTirets(d.temps) },
+            { mode: 'text' as const, accepted: finale(d.personne) },
+          ]),
+        },
+        hint: 'Trouve le verbe conjugué. La marque de personne est tout à la fin ; juste avant : -ai-, -i- ou -r-.',
+        steps: [
+          DEF_MARQUES,
+          DEF_TEMPS,
+          ...lignes.map((l, i) => `Ligne ${i + 1} : ${l.pourquoi}`),
+          `Réponses : **${lignes.map(({ d }) => `-${d.temps}- et -${d.personne}`).join(' ; ')}**.`,
+        ],
+      };
     }
   }
 }

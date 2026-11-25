@@ -159,4 +159,23 @@ describe('banques et réponses des temps composés', () => {
       }
     }
   });
+
+  it('marques, niveau 5 : temps et personne par ligne, tirets acceptés, sujets de personnes différentes', () => {
+    for (const q of tirages('fcm2-marques-temps-personne', 5)) {
+      if (q.answer.kind !== 'cloze') throw new Error('forme inattendue');
+      const trous = q.answer.blanks.map((b) => (b.mode === 'text' ? (b.accepted[0] ?? '') : ''));
+      expect(trous).toHaveLength(8);
+      const temps = trous.filter((_, i) => i % 2 === 0);
+      expect([...temps].sort().join(), q.prompt).toMatch(/^(ai|i),(ai|i),r,r$/);
+      const avecTiret = trous.map((t, i) => (i % 2 === 0 ? `-${t}-` : `-${t}`));
+      expect(check(q, { kind: 'cloze', answers: avecTiret }).correct).toBe(true);
+      expect(check(q, { kind: 'cloze', answers: trous }).correct).toBe(true);
+      const personnes = trous.filter((_, i) => i % 2 === 1);
+      expect(new Set(personnes).size, q.prompt).toBe(4);
+    }
+    const q = generate('fcm2-marques-temps-personne', 5, 100);
+    if (q.answer.kind !== 'cloze') throw new Error('forme inattendue');
+    const vus = new Set(q.answer.blanks.flatMap((b) => (b.mode === 'text' ? b.accepted : [])));
+    for (const m of ['-r-', '-ai-', '-i-']) if (vus.has(m.replace(/-/g, ''))) expect(vus.has(m)).toBe(true);
+  });
 });

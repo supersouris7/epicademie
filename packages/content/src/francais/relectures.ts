@@ -96,5 +96,6 @@ export const RELECTURES: readonly Relecture[] = [
     verdict: 'ok',
   },
   { skillId: 'fcm2-temps-composes-negatifs', version: 1, lot: 'fr-cm2-07', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-marques-temps-personne', version: 1, lot: 'fr-cm2-07', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm2-variations-radical', version: 1, lot: 'fr-cm2-07', date: '2026-11-25', verdict: 'ok' },
 ];
