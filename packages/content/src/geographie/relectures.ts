@@ -12,5 +12,6 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'gcm1-travail', version: 1, lot: 'ge-cm1-02', date: '2026-11-24', verdict: 'ok' },
   { skillId: 'gcm2-internet-reseau', version: 1, lot: 'ge-cm2-02', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'gcm2-internet-cables', version: 1, lot: 'ge-cm2-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'gcm2-internet-inegalites', version: 1, lot: 'ge-cm2-02', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'gcm2-internet-usages', version: 1, lot: 'ge-cm2-02', date: '2026-11-25', verdict: 'ok' },
 ];
