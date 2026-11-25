@@ -606,6 +606,7 @@ export const SOURCES: readonly Source[] = [
     consultedOn: CONSULTED,
   },
   tlfi('fonction', 'fonction', 'fonction'),
+  tlfi('inversion', 'inversion', 'inversion'),
   tlfi('article-defini', 'le (article)', 'le/article'),
   tlfi('article-indefini', 'un (article)', 'un/article'),
   tlfi('possessif', 'possessif', 'possessif/adjectif'),

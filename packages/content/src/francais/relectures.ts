@@ -64,4 +64,9 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm1-inferences', version: 1, lot: 'fr-cm1-11', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-sens-mot-texte', version: 1, lot: 'fr-cm1-11', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-ordre-recit', version: 1, lot: 'fr-cm1-11', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-constituants-phrase', version: 1, lot: 'fr-cm2-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-sujet-inverse', version: 1, lot: 'fr-cm2-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-cod-coi', version: 1, lot: 'fr-cm2-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-attribut-ou-objet', version: 1, lot: 'fr-cm2-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-circonstanciels-temps-lieu-cause', version: 1, lot: 'fr-cm2-01', date: '2026-11-25', verdict: 'ok' },
 ];

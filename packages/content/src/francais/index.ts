@@ -11,6 +11,7 @@ import { FCM1_TEMPS } from './temps.ts';
 import { FCM1_VERBE_SUJET } from './verbe-sujet.ts';
 import { FCM1_VOCABULAIRE } from './vocabulaire.ts';
 import { FCM2_GROUPE_NOMINAL } from './groupe-nominal-cm2.ts';
+import { FCM2_PHRASE_SIMPLE } from './phrase-simple.ts';
 
 /** Français : chapitres publiés (ADR 0034). Le lot de contenu ajoute ses chapitres ici, sans toucher à catalog.ts. */
 export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
@@ -101,6 +102,14 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'lecture',
     title: 'Lire et comprendre',
     skills: FCM1_LECTURE,
+  },
+  {
+    id: 'fcm2-phrase-simple',
+    subject: 'francais',
+    grade: 'cm2',
+    domain: 'grammaire',
+    title: 'Analyser la phrase simple',
+    skills: FCM2_PHRASE_SIMPLE,
   },
   {
     id: 'fcm2-groupe-nominal',
