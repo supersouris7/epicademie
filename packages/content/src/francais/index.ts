@@ -5,6 +5,7 @@ import { FCM1_GROUPE_NOMINAL } from './groupe-nominal.ts';
 import { FCM1_NATURE } from './nature.ts';
 import { FCM1_PHRASES } from './phrases.ts';
 import { FCM1_VERBE_SUJET } from './verbe-sujet.ts';
+import { FCM2_GROUPE_NOMINAL } from './groupe-nominal-cm2.ts';
 
 /** Français : chapitres publiés (ADR 0034). Le lot de contenu ajoute ses chapitres ici, sans toucher à catalog.ts. */
 export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
@@ -55,5 +56,13 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'grammaire',
     title: 'Les accords',
     skills: FCM1_ACCORDS,
+  },
+  {
+    id: 'fcm2-groupe-nominal',
+    subject: 'francais',
+    grade: 'cm2',
+    domain: 'grammaire',
+    title: 'Le groupe nominal enrichi',
+    skills: FCM2_GROUPE_NOMINAL,
   },
 ];
