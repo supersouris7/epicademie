@@ -12,7 +12,7 @@
 | Lot        | Chapitre                     | Notions                                                                           | État actuel            |
 | ---------- | ---------------------------- | --------------------------------------------------------------------------------- | ---------------------- |
 | `ge-5e-01` | Démographie et développement | croissance démographique ; inégal développement ; IDH ; répartition des richesses | couverte, en relecture |
-| `ge-5e-02` | Des ressources limitées      | l'énergie ; l'eau ; l'alimentation ; gérer et renouveler                          | absente                |
+| `ge-5e-02` | Des ressources limitées      | l'énergie ; l'eau ; l'alimentation ; gérer et renouveler                          | couverte               |
 | `ge-5e-03` | Changement global et risques | changement climatique ; risques ; s'adapter ; prévenir                            | absente                |
 | `ge-5e-04` | Repères de 5e                | cartes du programme ; grands foyers de population ; ressources ; vocabulaire      | absente                |
 

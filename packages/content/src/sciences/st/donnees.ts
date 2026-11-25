@@ -715,7 +715,7 @@ export const FAITS: readonly Fait[] = [
     source: PROGRAMME,
     citation: 'Identifier les formes d’énergie mises en jeu dans un dispositif de conversion d’énergie.',
   },
-  // ——— Chapitre « Le corps humain » (CM2) : programme, CNRTL, Académie française, Santé publique France. ———
+  // ——— Chapitre « Le corps humain » (CM2) : programme, CNRTL, Académie française, Santé publique France, Bulletin officiel. ———
   {
     id: 'corps-role-aliments',
     source: PROGRAMME,
@@ -756,6 +756,17 @@ export const FAITS: readonly Fait[] = [
     source: 'cnrtl-salive',
     citation:
       'Liquide physiologique incolore, alcalin, plus ou moins visqueux, qui humecte la bouche et qui sert principalement à la digestion buccale',
+  },
+  {
+    id: 'bol-def',
+    source: 'cnrtl-bol',
+    citation: "Quantité d'aliments mastiqués et imprégnés de salive déglutis en une seule fois",
+  },
+  {
+    id: 'chyme-def',
+    source: 'cnrtl-chyme',
+    citation:
+      'Bouillie semi-liquide, de couleur grisâtre ou brunâtre, provenant de la digestion buccale et gastrique des aliments.',
   },
   {
     id: 'oesophage-def',
@@ -819,6 +830,24 @@ export const FAITS: readonly Fait[] = [
     id: 'ecrans-enfants',
     source: 'spf-activite-physique-2017',
     citation: 'limiter le temps de loisir passé devant un écran à deux heures par jour.',
+  },
+  {
+    id: 'besoins-variables',
+    source: 'bo-restauration-2001',
+    citation:
+      "Les besoins énergétiques sont variables d'un sujet à l'autre, en particulier chez l'enfant. Ils sont fonction de la masse corporelle, du degré d'activité, mais aussi de facteurs innés.",
+  },
+  {
+    id: 'besoins-croissance',
+    source: 'bo-restauration-2001',
+    citation:
+      'le repas de midi est une source privilégiée des nutriments essentiels à leur croissance et à leur développement psychomoteur',
+  },
+  {
+    id: 'besoins-ages',
+    source: 'bo-restauration-2001',
+    citation:
+      "pour les élèves de maternelle : 8 g de protéines de bonne qualité, 180 mg de calcium, 2,4 mg de fer ; pour les élèves de l'école élémentaire : 11 g de protéines de bonne qualité, 220 mg de calcium,2,8 mg de fer ; pour les adolescents : 17 à 20 g de protéines de bonne qualité, 300 à 400 mg de calcium, 4 à 7 mg de fer.",
   },
   { id: 'repas-fruits', source: 'spf-alimentation-2019', citation: 'Au moins 5 fruits et légumes par jour' },
   {

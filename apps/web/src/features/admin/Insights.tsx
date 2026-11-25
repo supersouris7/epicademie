@@ -4,7 +4,7 @@ import { ANOMALY_LABELS, api, SUBJECTS, SUBSCRIPTION_STATUS_LABELS } from '@epic
 import { request } from '../../shared/api/client.ts';
 import { useTrends } from './api.ts';
 import { BarChart, LineChart, ShareChart } from './Charts.tsx';
-import { Badge, DataTable, Kpi, Panel } from './ui.tsx';
+import { Badge, DataTable, Kpi, mutedClass, Panel, titleClass } from './ui.tsx';
 
 /** Pilotage : chiffres agrégés, points faibles, anomalies de récompenses, erreurs (aucune donnée personnelle). */
 
@@ -14,16 +14,16 @@ const euros = (cents: number) =>
 const when = (iso: string) => new Date(iso).toLocaleString('fr-FR');
 const OFFER_LABELS: Record<string, string> = { 'famille-annee': 'Famille, à l’année' };
 const nb = (n: number) => n.toLocaleString('fr-FR');
-const Loading = () => <p className="text-sm text-slate-500">Chargement…</p>;
+const Loading = () => <p className={mutedClass}>Chargement…</p>;
 
 export function Stats() {
   const { data: s } = useQuery({ queryKey: ['admin', 'stats'], queryFn: () => request(api.adminStats) });
   const { data: trends } = useTrends();
   if (!s) return <Loading />;
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-[18px]">
       <section aria-label="Indicateurs clés">
-        <dl className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <dl className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
           <Kpi label="Comptes" value={nb(s.families)} hint="familles inscrites" />
           <Kpi label="Profils enfants" value={nb(s.profiles)} hint={`${nb(s.activeProfiles7d)} actifs sur 7 jours`} />
           {(trends?.activeByOffer ?? []).map((o) => (
@@ -37,7 +37,7 @@ export function Stats() {
         </dl>
       </section>
       {trends && (
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-[18px] lg:grid-cols-2">
           <Panel title="Comptes créés par jour (30 jours)">
             <BarChart
               title="Comptes créés par jour"
@@ -60,8 +60,8 @@ export function Stats() {
           </Panel>
         </div>
       )}
-      <h2 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">Détails (7 jours)</h2>
-      <dl className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <h2 className={titleClass}>Détails (7 jours)</h2>
+      <dl className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
         <Kpi label="Familles abonnées" value={nb(s.premiumFamilies)} />
         <Kpi label="Réponses (7 j)" value={nb(s.answers7d)} hint={`${nb(s.finishedSeries7d)} séries terminées`} />
         <Kpi
@@ -71,7 +71,7 @@ export function Stats() {
         <Kpi label="Boss vaincus" value={nb(s.bossWins)} />
         <Kpi label="Signalements ouverts" value={nb(s.openReports)} />
       </dl>
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-[18px] lg:grid-cols-2">
         <Panel title="Réponses par matière (7 jours)">
           <DataTable
             label="Réponses par matière"

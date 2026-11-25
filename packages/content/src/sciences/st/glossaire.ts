@@ -612,6 +612,20 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'La bouchée descend par l’œsophage.',
   },
   {
+    id: 'st-bol-alimentaire',
+    word: 'bol alimentaire',
+    forms: ['bol alimentaire'],
+    definition: 'Les aliments mâchés et mouillés de salive, avalés en une seule fois.',
+    example: 'La bouchée de pain mâchée forme un bol alimentaire.',
+  },
+  {
+    id: 'st-chyme',
+    word: 'chyme',
+    forms: ['chyme'],
+    definition: 'La bouillie à moitié liquide qui vient de la digestion dans la bouche et l’estomac.',
+    example: 'Dans l’estomac, le repas devient du chyme.',
+  },
+  {
     id: 'st-estomac',
     word: 'estomac',
     forms: ['estomac'],

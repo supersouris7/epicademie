@@ -10,6 +10,7 @@ import { SKILLS as HUMANITE } from './humanite.ts';
 import { SKILLS as TEMPS_DES_ROIS } from './le-temps-des-rois.ts';
 import { SKILLS as RECITS_FONDATEURS } from './recits-fondateurs.ts';
 import { SKILLS as REVOLUTION_EMPIRE } from './revolution-empire.ts';
+import { SKILLS as REPERES_5E } from './reperes-5e.ts';
 import { SKILLS as REPERES_6E } from './reperes-6e.ts';
 import { SKILLS as SE_REPERER_CM2 } from './se-reperer-cm2.ts';
 import { SKILLS as SE_REPERER } from './se-reperer.ts';
@@ -229,4 +230,5 @@ export const HISTOIRE_CHAPTERS: readonly Chapter[] = [
   chapter('h5-chretientes-islam', '5e', 'Chrétientés et islam (VIe-XIIIe s.)', CHRETIENTES_ISLAM),
   chapter('h5-occident-feodal', '5e', 'L’Occident féodal (XIe-XVe s.)', OCCIDENT_FEODAL),
   chapter('h5-transformations-europe', '5e', 'Transformations de l’Europe (XVIe-XVIIe s.)', TRANSFORMATIONS_EUROPE),
+  chapter('h5-se-reperer', '5e', 'Repères de 5e', REPERES_5E),
 ];

@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { signupFamily } from './family.ts';
+import { createFirstProfile, signupFamily } from './family.ts';
 
 const tabs = (page: Page) => page.getByRole('navigation', { name: 'Rubriques de l’Espace parent' });
 
@@ -12,8 +12,7 @@ test('Espace parent : navigation stable, chaque chemin reste dans l’espace, un
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
-  await expect(page).toHaveURL(/hub/);
+  await createFirstProfile(page);
 
   await page.goto('/parent');
   await expect(page.getByRole('heading', { level: 1, name: 'Progrès de vos enfants' })).toBeVisible();
@@ -81,8 +80,7 @@ test('Page d’un enfant épurée : synthèse, cartes matière, À réviser ; au
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
-  await expect(page).toHaveURL(/hub/);
+  await createFirstProfile(page);
   // Côté enfant : plus d'encart « Ton parent te recommande ».
   await expect(page.getByRole('region', { name: 'Ton parent te recommande' })).toHaveCount(0);
 

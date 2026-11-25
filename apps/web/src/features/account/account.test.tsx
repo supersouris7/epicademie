@@ -146,6 +146,36 @@ describe('connexion de l’appareil', () => {
   });
 });
 
+describe('passage de l’appareil à l’enfant', () => {
+  const fill = async (user: ReturnType<typeof renderApp>['user']) => {
+    await user.type(await screen.findByPlaceholderText('Ex. Léa'), 'Noé');
+    await user.click(screen.getByRole('button', { name: 'Un garçon' }));
+    await user.type(screen.getByLabelText('Date de naissance'), '2014-03-09');
+    await user.click(await screen.findByRole('button', { name: 'Oui' }));
+  };
+
+  it('1er profil créé par le parent : écran de passage, bouton ciblé, puis le jeu avec ce profil', async () => {
+    const { user } = renderApp('/profils/nouveau?pour=enfant&bienvenue=1', { profiles: [], profileId: null });
+    await fill(user);
+    await user.click(screen.getByRole('button', { name: 'Créer son profil et jouer' }));
+    expect(await screen.findByRole('heading', { name: /^Le profil de Noé est prêt\s!$/ })).toBeInTheDocument();
+    expect(screen.getByText('Passez maintenant l’appareil à Noé.')).toBeInTheDocument();
+    const start = screen.getByRole('button', { name: /^C’est parti, Noé\s!$/ });
+    expect(start).toHaveFocus();
+    expect(screen.queryByRole('group', { name: 'Mon joueur' })).not.toBeInTheDocument();
+    await user.click(start);
+    expect(await screen.findByRole('group', { name: 'Mon joueur' })).toHaveTextContent('Noé');
+  });
+
+  it('élève autonome : le jeu directement, sans écran de passage', async () => {
+    const { user } = renderApp('/profils/nouveau', { profiles: [], profileId: null });
+    await fill(user);
+    await user.click(screen.getByRole('button', { name: /C’est parti/ }));
+    expect(await screen.findByRole('group', { name: 'Mon joueur' })).toHaveTextContent('Noé');
+    expect(screen.queryByText(/Passez maintenant l’appareil/)).not.toBeInTheDocument();
+  });
+});
+
 describe('verrou parent', () => {
   it('créer un profil demande le mot de passe du parent, puis se fait', async () => {
     const { user, server } = renderApp('/profils/nouveau', { parent: false });

@@ -63,9 +63,17 @@ const niveau1 = (rng: Rng): QuestionDraft => {
 
 const GROUPES = [
   { nom: 'boisson sucrée', exemples: SUCREES, why: 'Cette boisson a un goût sucré : on la limite.' },
-  { nom: 'légume sec', exemples: LEGUMES_SECS, why: 'Les légumes secs sont des graines comme les lentilles.' },
+  {
+    nom: 'légume sec',
+    exemples: LEGUMES_SECS,
+    why: 'Les légumes secs sont des graines comme les lentilles. Les repères les comptent à part des fruits et légumes.',
+  },
   { nom: 'produit salé', exemples: SALES, why: 'C’est un produit à limiter, comme les autres produits salés.' },
-  { nom: 'fruit ou légume', exemples: FRUITS_LEGUMES, why: 'Il vient d’une plante : c’est un fruit ou un légume.' },
+  {
+    nom: 'fruit ou légume',
+    exemples: FRUITS_LEGUMES,
+    why: 'C’est un fruit ou un légume, comme la pomme ou la carotte.',
+  },
 ] as const;
 
 const niveau2 = (rng: Rng): QuestionDraft => {
@@ -113,16 +121,17 @@ const REPERES = [
   },
   {
     q: 'De 6 à 17 ans, combien d’heures d’activité physique faut-il faire au moins par jour ? Écris le nombre.',
-    bon: ['1', 'une', 'un', '1 heure', 'une heure'],
+    bon: ['1', 'une', 'un', '1 heure', 'une heure', '1h', '1 h'],
     mot: '1',
     pieges: [
       ['0', 'Il faut bouger chaque jour.'],
       ['30', 'Attention à l’unité : on demande des heures, pas des minutes.'],
+      ['60', 'Tu as compté en minutes. La question demande un nombre d’heures.'],
     ],
   },
   {
     q: 'De 6 à 17 ans, le temps d’écran pour les loisirs se limite à combien d’heures par jour ? Écris le nombre.',
-    bon: ['2', 'deux', '2 heures', 'deux heures'],
+    bon: ['2', 'deux', '2 heures', 'deux heures', '2h', '2 h'],
     mot: '2',
     pieges: [
       ['5', 'C’est trop. La limite de loisir est de 2 heures par jour.'],
@@ -159,9 +168,12 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     prompt: `Léna prépare son goûter avec ${salade}. Complète ses bons réflexes.`,
     answer: {
       kind: 'cloze',
-      parts: ['Pour boire, elle choisit de l’', '. Pour ses repas, elle pense à la ', ' des aliments.'],
+      parts: ['Pour boire, elle choisit surtout : ', '. Pour ses repas, elle pense à la ', ' des aliments.'],
       blanks: [
-        { mode: 'text', accepted: ['eau'] },
+        {
+          mode: 'text',
+          accepted: ['eau', 'l’eau', 'de l’eau', 'eau du robinet', 'l’eau du robinet', 'de l’eau du robinet'],
+        },
         { mode: 'list', options: ['couleur de l’emballage', 'variété', 'publicité'], correct: 1 },
       ],
     },
@@ -199,7 +211,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     const { answer, traps } = choice(rng, bon, [
       {
         label: 'de l’eau, à volonté',
-        why: 'Même avec de l’eau dedans, un goût sucré ajoute du sucre ou un édulcorant.',
+        why: 'Santé publique France compte cette boisson parmi les boissons sucrées : ce n’est pas de l’eau.',
       },
       { label: 'un fruit entier', why: 'Boire n’est pas croquer un fruit entier.' },
       { label: 'un légume sec', why: 'Un légume sec est une graine, comme la lentille.' },
@@ -216,110 +228,227 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       targetSeconds: 35,
     };
   }
+  const fruits = rng.int(1, 3);
+  const velo = rng.pick([15, 20, 25]);
+  const jeu = rng.pick([10, 15, 20]);
   const r = rng.pick([
     {
-      q: 'Écris la seule boisson recommandée par Santé publique France aux adultes.',
-      accepte: ['eau', 'l’eau', 'de l’eau'],
-      mot: 'l’eau',
+      q: `${ADULTES} il faut au moins 5 fruits et légumes par jour. Un adulte en a déjà mangé ${fruits}. Combien lui en manque-t-il au minimum ? Écris le nombre.`,
+      accepte: [String(5 - fruits)],
+      mot: String(5 - fruits),
+      explication: `Le repère est 5. On calcule 5 − ${fruits}.`,
       pieges: [
-        ['jus de fruits', 'Le jus de fruits compte parmi les boissons sucrées.'],
-        ['soda', 'Le soda est une boisson sucrée.'],
+        ['5', 'C’est le repère entier. Retire ce qui est déjà mangé.'],
+        [String(fruits), 'C’est ce qui est déjà mangé. On cherche ce qui manque.'],
+      ],
+    },
+    {
+      q: `Zoé a 10 ans. Aujourd’hui, elle a fait ${velo} minutes de vélo et ${jeu} minutes de jeu de ballon. Combien de minutes lui manque-t-il pour atteindre le repère d’activité physique ? Écris le nombre.`,
+      accepte: [String(60 - velo - jeu), `${60 - velo - jeu} minutes`, `${60 - velo - jeu} min`],
+      mot: `${60 - velo - jeu} minutes`,
+      explication: `Le repère est 1 heure, soit 60 minutes. On calcule 60 − ${velo} − ${jeu}.`,
+      pieges: [
+        [String(velo + jeu), 'C’est ce qu’elle a déjà fait. On cherche ce qui manque pour 60 minutes.'],
+        [String(60 - velo), 'Tu as oublié le jeu de ballon : il compte aussi.'],
+        ['1', 'Le repère est d’une heure, mais on demande les minutes qui manquent.'],
       ],
     },
     {
       q: 'Les lentilles, les pois chiches et les haricots secs forment quelle famille d’aliments ? Écris deux mots.',
-      accepte: ['légumes secs', 'les légumes secs', 'des légumes secs', 'légume sec', 'legumes secs'],
+      accepte: [
+        'légumes secs',
+        'les légumes secs',
+        'des légumes secs',
+        'légume sec',
+        'legumes secs',
+        'légumineuses',
+        'les légumineuses',
+        'des légumineuses',
+        'legumineuses',
+      ],
       mot: 'les légumes secs',
+      explication: 'Les repères les citent à part des fruits et légumes.',
       pieges: [
         ['fruits', 'Ce sont des graines sèches, pas des fruits du verger.'],
         ['légumes verts', 'Les lentilles sont des graines sèches : on les range à part.'],
       ],
     },
-  ] as const);
-  const { answer, traps } = saisie(r.accepte, r.pieges);
+  ]);
+  const { answer, traps } = saisie(
+    r.accepte,
+    r.pieges.map((p) => [p[0] ?? '', p[1] ?? ''] as const),
+  );
   return {
     prompt: r.q,
     answer,
     traps,
-    hint: 'Relis le mémo : la boisson sans goût ajouté, ou la famille des graines sèches.',
-    steps: ['On cherche le mot exact.', `La réponse est **${r.mot}**.`],
-    targetSeconds: 35,
+    hint: 'Rappelle-toi le repère du mémo, puis compare-le avec ce qui est écrit.',
+    steps: ['On cherche le repère utile.', r.explication, `La réponse est **${r.mot}**.`],
+    targetSeconds: 45,
   };
 };
 
+/** Journées inventées d’enfants (repères de mouvement et d’écran, de 6 à 17 ans). */
 const JOURNEES = [
+  { enfant: 'Noa', matin: 'pain, une pomme et de l’eau', gouter: 'un soda', activite: 15, ecran: 3 },
+  { enfant: 'Tao', matin: 'des céréales et un sirop dans l’eau', gouter: 'une poire', activite: 20, ecran: 4 },
+  { enfant: 'Maya', matin: 'du pain et un jus de fruits', gouter: 'une banane', activite: 35, ecran: 5 },
+] as const;
+
+/** Journées inventées d’adultes (repères alimentaires pour les adultes). `fruits` : fruits et légumes écrits. */
+const ADULTES_JOURNEES = [
   {
-    enfant: 'Noa',
+    nom: 'M. Diallo',
     lignes: [
-      'Matin : pain, une pomme et de l’eau.',
-      'Midi : des carottes, du riz, des lentilles et de l’eau.',
-      'Goûter : un soda.',
-      'Après l’école : 15 minutes à vélo, puis 3 heures de jeux vidéo.',
+      'Matin : une pomme et du café.',
+      'Midi : des carottes, du riz et des lentilles.',
+      'Goûter : un soda « light ».',
+      'Soir : une tomate et de l’eau.',
     ],
-    manque: 'Bouger plus longtemps et réduire le temps d’écran',
-    boisson: 'Remplacer le soda par de l’eau',
+    fruits: 3,
+    sucree: 'le soda « light »',
   },
   {
-    enfant: 'Tao',
-    lignes: [
-      'Matin : des céréales et un sirop dans l’eau.',
-      'Midi : des haricots verts, du poisson et de l’eau.',
-      'Goûter : une poire.',
-      'Après l’école : 20 minutes de marche, puis 4 heures devant un écran.',
-    ],
-    manque: 'Bouger plus longtemps et réduire le temps d’écran',
-    boisson: 'Remplacer le sirop par de l’eau',
-  },
-  {
-    enfant: 'Maya',
+    nom: 'Mme Garcia',
     lignes: [
       'Matin : du pain et un jus de fruits.',
-      'Midi : une tomate, des pâtes et de l’eau.',
-      'Goûter : une banane.',
-      'Après l’école : 10 minutes à pied, puis 5 heures de vidéos.',
+      'Midi : des haricots verts et des pâtes.',
+      'Goûter : une eau aromatisée sucrée.',
+      'Soir : une poire et de l’eau.',
     ],
-    manque: 'Bouger plus longtemps et réduire le temps d’écran',
-    boisson: 'Remplacer le jus de fruits par de l’eau',
+    fruits: 2,
+    sucree: 'le jus de fruits',
   },
 ] as const;
 
 const niveau5 = (rng: Rng): QuestionDraft => {
-  const j = rng.pick(JOURNEES);
-  const figure = { kind: 'document' as const, title: `La journée de ${j.enfant} (exemple inventé)`, lines: j.lignes };
-  const surBoisson = rng.int(0, 1) === 0;
-  const bon = surBoisson ? j.boisson : j.manque;
-  const faux = surBoisson
-    ? [
-        { label: 'Supprimer toute l’eau', why: 'L’eau est la boisson recommandée : on la garde.' },
-        { label: 'Ajouter du sucre dans le verre', why: 'On cherche à limiter les boissons sucrées.' },
-        {
-          label: 'Remplacer le fruit du goûter par des biscuits apéritifs',
-          why: 'Les biscuits apéritifs sont à limiter. Ici, on cherche à changer la boisson.',
-        },
-      ]
-    : [
-        { label: 'Ajouter encore une heure d’écran', why: 'Le temps d’écran de loisir est déjà trop long.' },
-        { label: 'Ne plus bouger du tout', why: 'Il faut au moins une heure d’activité physique par jour.' },
-        { label: 'Sauter le repas du midi', why: 'Le corps a besoin d’aliments. Regarde la dernière ligne.' },
-      ];
-  const { answer, traps } = choice(rng, bon, faux);
+  const t = rng.int(0, 3);
+  if (t < 2) {
+    const j = rng.pick(JOURNEES);
+    const manque = 60 - j.activite;
+    const figure = {
+      kind: 'document' as const,
+      title: `La journée de ${j.enfant} (exemple inventé)`,
+      lines: [
+        `${j.enfant} a 10 ans.`,
+        `Matin : ${j.matin}.`,
+        'Midi : des carottes, du riz et de l’eau.',
+        `Goûter : ${j.gouter}.`,
+        `Après l’école : ${j.activite} minutes à vélo, puis ${j.ecran} heures d’écran de loisir (jeux vidéo).`,
+      ],
+    };
+    if (t === 0) {
+      const { answer, traps } = saisie(
+        [String(manque), `${manque} minutes`, `${manque} min`],
+        [
+          [String(j.activite), 'C’est le temps déjà fait. On cherche ce qui manque pour 1 heure.'],
+          ['60', 'C’est le repère entier (1 heure). Retire le temps déjà fait.'],
+          [String(j.ecran), 'Les heures d’écran ne comptent pas comme de l’activité physique.'],
+        ],
+      );
+      return {
+        prompt: `Lis la journée de ${j.enfant}. Combien de minutes d’activité physique manque-t-il pour atteindre le repère ? Écris le nombre.`,
+        figure,
+        answer,
+        traps,
+        hint: 'Convertis d’abord le repère en minutes, puis compare avec la journée.',
+        steps: [
+          'Le repère : au moins 1 heure par jour, soit 60 minutes.',
+          `On calcule 60 − ${j.activite}.`,
+          `Il manque **${manque}** minutes.`,
+        ],
+        targetSeconds: 70,
+      };
+    }
+    const bon = `Faire ${manque} minutes d’activité en plus et descendre à 2 heures d’écran`;
+    const { answer, traps } = choice(rng, bon, [
+      {
+        label: `Faire ${manque} minutes d’activité en plus et garder ${j.ecran} heures d’écran`,
+        why: 'Le mouvement est réglé, mais l’écran de loisir dépasse encore 2 heures.',
+      },
+      {
+        label: 'Descendre à 2 heures d’écran sans bouger davantage',
+        why: `Les écrans sont réglés, mais ${j.activite} minutes d’activité, c’est moins d’1 heure.`,
+      },
+      {
+        label: `Faire ${manque - 10} minutes d’activité en plus et descendre à 2 heures d’écran`,
+        why: `Calcule : ${j.activite} + ${manque - 10} n’atteint pas 60 minutes.`,
+      },
+    ]);
+    return {
+      prompt: `Lis la journée de ${j.enfant}. Quel changement permet de respecter les deux repères : mouvement et écrans ?`,
+      figure,
+      answer,
+      traps,
+      hint: 'Vérifie les deux repères, un par un, pour chaque proposition.',
+      steps: [
+        'Repères : au moins 1 heure d’activité, au plus 2 heures d’écran de loisir.',
+        `Il manque ${manque} minutes, et ${j.ecran} heures dépassent 2 heures.`,
+        `Réponse : **${bon}**.`,
+      ],
+      targetSeconds: 75,
+    };
+  }
+  const a = rng.pick(ADULTES_JOURNEES);
+  const figure = {
+    kind: 'document' as const,
+    title: `La journée de ${a.nom} (adulte, exemple inventé)`,
+    lines: a.lignes,
+  };
+  if (t === 2) {
+    const manque = 5 - a.fruits;
+    const bon = `Ajouter ${manque} fruits ou légumes`;
+    const { answer, traps } = choice(rng, bon, [
+      {
+        label: manque === 2 ? 'Ajouter 1 fruit ou légume' : `Ajouter ${manque - 1} fruits ou légumes`,
+        why: 'Compte : on arrive à 4 seulement. Le repère est d’au moins 5.',
+      },
+      {
+        label: `Ajouter ${manque} portions de lentilles`,
+        why: 'Les légumes secs sont comptés à part des fruits et légumes.',
+      },
+      {
+        label: `Ajouter ${manque} verres de jus de fruits`,
+        why: 'Santé publique France compte le jus de fruits parmi les boissons sucrées.',
+      },
+    ]);
+    return {
+      prompt: `Lis la journée de ${a.nom}. D’après les repères pour les adultes, quel changement permet d’atteindre le repère des fruits et légumes ?`,
+      figure,
+      answer,
+      traps,
+      hint: 'Compte les fruits et légumes écrits, sans les légumes secs ni les boissons.',
+      steps: [
+        `On trouve ${a.fruits} fruits et légumes dans la journée.`,
+        `Il en faut au moins 5 : il en manque ${manque}.`,
+        `Réponse : **${bon}**.`,
+      ],
+      targetSeconds: 80,
+    };
+  }
+  const bon = 'Remplacer toutes les boissons sucrées par de l’eau';
+  const { answer, traps } = choice(rng, bon, [
+    {
+      label: `Remplacer ${a.sucree} par un sirop dans l’eau`,
+      why: 'Le sirop est aussi une boisson sucrée.',
+    },
+    {
+      label: 'Choisir des boissons « light » à la place',
+      why: 'Santé publique France compte les sodas « light » parmi les boissons sucrées.',
+    },
+    {
+      label: 'Boire des eaux aromatisées sucrées à la place',
+      why: 'Les eaux aromatisées sont comptées parmi les boissons sucrées.',
+    },
+  ]);
   return {
-    prompt: surBoisson
-      ? `Lis la journée de ${j.enfant}. Quel changement répond au repère sur les boissons ?`
-      : `Lis la journée de ${j.enfant}. Quel changement répond aux repères sur le mouvement et les écrans ?`,
+    prompt: `Lis la journée de ${a.nom}. D’après les repères pour les adultes, quel changement répond au repère sur les boissons ?`,
     figure,
     answer,
     traps,
-    hint: surBoisson
-      ? 'Cherche la boisson qui a un goût sucré.'
-      : 'Compare la dernière ligne avec 1 heure et 2 heures.',
-    steps: [
-      surBoisson
-        ? 'On cherche la boisson sucrée dans la journée.'
-        : 'Repères : au moins 1 heure d’activité, au plus 2 heures d’écran de loisir.',
-      `Réponse : **${bon}**.`,
-    ],
-    targetSeconds: 60,
+    hint: 'Repère chaque boisson sucrée de la journée. Une boisson « light » compte-t-elle ?',
+    steps: [`Dans la journée, on trouve notamment ${a.sucree} : c’est une boisson sucrée.`, `Réponse : **${bon}**.`],
+    targetSeconds: 70,
   };
 };
 

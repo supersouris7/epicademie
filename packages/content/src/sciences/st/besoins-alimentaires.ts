@@ -2,13 +2,29 @@ import { choice } from '../../build.ts';
 import type { Rng } from '../../rng.ts';
 import type { QuestionDraft, Skill } from '../../types.ts';
 import { PROGRAMME } from './donnees.ts';
-import { association, ordre, saisie } from './outils.ts';
+import { association, maj, ordre, saisie } from './outils.ts';
 
 // ——— Besoins alimentaires : grandir et bouger (programme du cycle 3, CNRTL, Santé publique France) ———
 // Les « points de besoin » des documents sont inventés : ils servent à lire des données, pas à fixer des rations.
+// Leur sens de variation suit les textes cités : plus de la maternelle à l’adolescence (repas de midi, BO 2001),
+// et plus avec l’activité physique.
 
 const ACTIVITES = ['monter les escaliers', 'rouler à vélo', 'jouer au ballon', 'sauter à la corde', 'porter un sac'];
 const REPOS = ['dormir', 'regarder un film assis', 'lire allongé', 'écouter une histoire assis'];
+
+/** Élèves comparés, du plus jeune au plus âgé. */
+const AGES = [
+  { qui: 'un élève de maternelle', court: 'maternelle' },
+  { qui: 'un élève d’école élémentaire', court: 'école élémentaire' },
+  { qui: 'un adolescent', court: 'adolescence' },
+] as const;
+
+/** Trois besoins inventés au calme, strictement croissants avec l’âge. */
+const parAge = (rng: Rng) => {
+  const petit = rng.pick([40, 45, 50]);
+  const moyen = petit + rng.pick([15, 20]);
+  return [petit, moyen, moyen + rng.pick([15, 20])] as const;
+};
 
 const niveau1 = (rng: Rng): QuestionDraft => {
   const t = rng.int(0, 1);
@@ -54,29 +70,46 @@ const niveau1 = (rng: Rng): QuestionDraft => {
 
 const niveau2 = (rng: Rng): QuestionDraft => {
   if (rng.int(0, 1) === 0) {
-    const a = rng.pick(ACTIVITES);
-    const r = rng.pick(REPOS);
+    const points = parAge(rng);
+    const grand = rng.int(0, 1) === 0;
+    const bon = AGES[grand ? 2 : 0].qui;
+    const { answer, traps } = choice(
+      rng,
+      bon,
+      AGES.filter((x) => x.qui !== bon).map((x) => ({
+        label: x.qui,
+        why: `Compare les trois nombres du tableau : le plus ${grand ? 'grand' : 'petit'} est sur une autre ligne.`,
+      })),
+    );
     return {
-      prompt: `Associe chaque mot à son exemple : ${a}, ${r}, grandir.`,
-      answer: association(rng, [
-        ['activité physique', a],
-        ['repos', r],
-        ['croissance', 'grandir'],
-      ]),
-      hint: 'La croissance se voit sur la toise. L’activité fait travailler les muscles.',
-      steps: ['On relie chaque mot à un exemple.', 'Chaque mot a **son** exemple.'],
-      targetSeconds: 45,
+      prompt: `Lis les données. Qui a le plus ${grand ? 'grand' : 'petit'} besoin ?`,
+      figure: {
+        kind: 'document',
+        title: 'Repas de midi, jour calme (points inventés)',
+        lines: AGES.map((x, i) => `${x.qui} : ${points[i]} points.`),
+      },
+      answer,
+      traps,
+      hint: 'Lis les trois nombres, puis compare-les.',
+      steps: ['On compare des enfants d’âges différents.', `La réponse est **${bon}**.`],
+      targetSeconds: 35,
     };
   }
   const bon = 'Son corps grandit : les aliments servent aussi à le construire';
   const age = rng.pick([6, 8, 10]);
   const { answer, traps } = choice(rng, bon, [
-    { label: 'Son corps ne change plus du tout', why: 'À cet âge, le corps grandit encore.' },
     {
-      label: 'Les aliments servent seulement à jouer',
-      why: 'Les aliments servent à rester en vie, à bouger et, chez les jeunes, à grandir.',
+      label: 'Ses besoins sont les mêmes à tout âge',
+      why: 'Les besoins changent au cours de la croissance : ils ne sont pas les mêmes à tout âge.',
     },
-    { label: 'Un enfant n’a pas besoin de manger', why: 'Tout être vivant a besoin d’aliments.' },
+    {
+      label: 'Seul le sport compte : grandir ne change rien',
+      why: 'L’activité compte, mais la croissance aussi.',
+    },
+    {
+      label: 'Il ne mange que pour bouger',
+      why: 'Les aliments servent aussi à rester en vie et, chez les jeunes, à grandir.',
+    },
   ]);
   return {
     prompt: `Un enfant de ${age} ans mange. Qu’est-ce qui est vrai pour lui ?`,
@@ -121,7 +154,23 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     };
   }
   const { answer, traps } = saisie(
-    ['activité physique', 'activite physique', 'l’activité physique', 'une activité physique'],
+    [
+      'activité physique',
+      'activite physique',
+      'l’activité physique',
+      'une activité physique',
+      'activités physiques',
+      'activites physiques',
+      'les activités physiques',
+      'exercice',
+      'exercice physique',
+      'l’exercice',
+      'l’exercice physique',
+      'effort',
+      'effort physique',
+      'l’effort',
+      'un effort',
+    ],
     [
       ['repos', 'Au repos, le corps bouge très peu. On cherche le mot pour les mouvements des muscles.'],
       ['croissance', 'La croissance, c’est grandir. On parle ici de mouvements.'],
@@ -170,6 +219,17 @@ const niveau4 = (rng: Rng): QuestionDraft => {
         'sport',
         'le mouvement',
         'mouvement',
+        'activités physiques',
+        'les activités physiques',
+        'exercice',
+        'exercice physique',
+        'l’exercice',
+        'l’exercice physique',
+        'son exercice',
+        'effort',
+        'l’effort',
+        'effort physique',
+        'son effort',
       ],
       [
         ['taille', 'Ils ont la même taille et le même âge : cherche ce qui change entre eux.'],
@@ -190,97 +250,152 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       targetSeconds: 45,
     };
   }
-  const bon = 'Non : ils varient avec la croissance et l’activité physique';
+  const parLAge = rng.int(0, 1) === 0;
+  const [petit, , grand] = parAge(rng);
+  const calme = rng.pick([60, 65, 70]);
+  const sportif = calme + rng.pick([20, 25, 30]);
+  const bon = parLAge
+    ? 'L’âge : ils n’en sont pas au même moment de leur croissance'
+    : 'L’activité physique : l’un a beaucoup plus bougé';
   const { answer, traps } = choice(rng, bon, [
+    parLAge
+      ? {
+          label: 'L’activité physique : l’un a beaucoup plus bougé',
+          why: 'Les deux sont restés au calme. Cherche ce qui change entre les deux lignes.',
+        }
+      : {
+          label: 'L’âge : ils n’en sont pas au même moment de leur croissance',
+          why: 'Les deux ont le même âge. Cherche ce qui change entre les deux lignes.',
+        },
     {
-      label: 'Oui : tout le monde a les mêmes, toujours',
-      why: 'Les besoins changent d’une personne et d’un jour à l’autre.',
+      label: 'Rien : tous les enfants ont les mêmes besoins',
+      why: 'Les nombres sont différents : les besoins ne sont pas identiques pour tous.',
     },
     {
-      label: 'Oui : seule la couleur des cheveux les change',
-      why: 'La couleur des cheveux ne change pas les besoins.',
+      label: parLAge ? 'Seul le sport peut changer les besoins' : 'Seul l’âge peut changer les besoins',
+      why: parLAge
+        ? 'Ici aucun n’a fait de sport, et les besoins diffèrent pourtant.'
+        : 'Ici l’âge est le même, et les besoins diffèrent pourtant.',
     },
-    { label: 'Non : ils dépendent seulement du prénom', why: 'Le prénom ne change rien au corps.' },
   ]);
-  const qui = rng.pick(['Un bébé et un adulte', 'Un enfant et son grand-père', 'Un coureur et un dormeur']);
+  const lines = parLAge
+    ? [`Élise, élève de maternelle, jour calme : ${petit} points.`, `Hugo, adolescent, jour calme : ${grand} points.`]
+    : [`Tom, 10 ans, jour calme : ${calme} points.`, `Lou, 10 ans, jour de randonnée : ${sportif} points.`];
   return {
-    prompt: `Piège possible ! ${qui} ont-ils forcément les mêmes besoins alimentaires ?`,
+    prompt: 'Lis les données. Qu’est-ce qui explique le mieux l’écart entre les deux besoins ?',
+    figure: { kind: 'document', title: 'Deux besoins (points inventés)', lines },
     answer,
     traps,
-    hint: 'Compare : grandissent-ils pareil ? Bougent-ils pareil ?',
-    steps: ['Le corps ne demande pas toujours la même chose.', `La réponse est **${bon}**.`],
-    targetSeconds: 35,
+    hint: 'Entre les deux lignes, qu’est-ce qui est pareil ? Qu’est-ce qui change ?',
+    steps: [
+      'Les besoins alimentaires varient avec la croissance et l’activité physique.',
+      parLAge ? 'Ici, l’activité est la même et l’âge change.' : 'Ici, l’âge est le même et l’activité change.',
+      `La réponse est **${bon}**.`,
+    ],
+    targetSeconds: 50,
   };
 };
 
 const niveau5 = (rng: Rng): QuestionDraft => {
-  const nom = rng.pick(['Alix', 'Sacha', 'Camille']);
-  const calme = rng.pick([100, 110, 120]);
-  const sport = calme + rng.pick([20, 30, 40]);
+  const calmes = parAge(rng);
+  // Ajout d’un jour de sport inférieur à l’écart entre maternelle et adolescence : le plus jeune sportif reste en dessous.
+  const plus = rng.pick([10, 15, 20]);
+  const sport = calmes.map((c) => c + plus);
   const figure = {
     kind: 'document' as const,
-    title: `Le tableau de ${nom} (nombres inventés pour l’exercice)`,
-    lines: [
-      `Lundi, ${nom} reste au calme : besoin de ${calme} points.`,
-      `Mercredi, ${nom} fait une grande randonnée : besoin de ${sport} points.`,
-      'Les « points » mesurent ici les besoins du corps.',
-      `${nom} est un enfant : son corps grandit.`,
-    ],
+    title: 'Besoins au repas de midi (points inventés pour l’exercice)',
+    lines: AGES.map((x, i) => `${maj(x.court)} : jour calme ${calmes[i]} points ; jour de sport ${sport[i]} points.`),
   };
-  const sujet = `Lis le tableau de ${nom} (${calme} points, ${sport} points).`;
+  const sujet = 'Lis le tableau.';
   const t = rng.int(0, 2);
   if (t === 0) {
-    const ecart = sport - calme;
-    const { answer, traps } = saisie(
-      [String(ecart), `${ecart} points`],
-      [
-        [String(sport), 'C’est le besoin du mercredi. On cherche l’écart avec le lundi.'],
-        [String(sport + calme), 'Tu as additionné. Pour un écart, on soustrait.'],
-      ],
-    );
+    const bon = 'Les besoins augmentent avec l’âge, et aussi les jours de sport';
+    const { answer, traps } = choice(rng, bon, [
+      {
+        label: 'Les besoins changent seulement avec le sport',
+        why: 'Compare les trois jours calmes : les nombres changent déjà avec l’âge.',
+      },
+      {
+        label: 'Les besoins changent seulement avec l’âge',
+        why: 'Sur une même ligne, le jour de sport demande plus que le jour calme.',
+      },
+      {
+        label: 'Tout le monde a les mêmes besoins un jour de sport',
+        why: 'Lis la colonne « jour de sport » : les trois nombres sont différents.',
+      },
+    ]);
     return {
-      prompt: `${sujet} Combien de points en plus faut-il le mercredi ? Écris le nombre.`,
+      prompt: `${sujet} Quelle conclusion permet-il de tirer ?`,
       figure,
       answer,
       traps,
-      hint: 'Soustrais le besoin du lundi de celui du mercredi.',
-      steps: ['On compare les deux jours.', `${sport} − ${calme}.`, `En plus : **${ecart}** points.`],
-      targetSeconds: 60,
+      hint: 'Lis le tableau de haut en bas, puis de gauche à droite.',
+      steps: [
+        'De haut en bas, l’âge augmente : les besoins aussi.',
+        'De gauche à droite, on ajoute du sport : les besoins augmentent.',
+        `Conclusion : **${bon}**.`,
+      ],
+      targetSeconds: 75,
     };
   }
-  const randonnee = t === 1;
-  const bon = randonnee ? 'Son activité physique est plus grande' : 'Les aliments servent aussi à construire son corps';
-  const faux = randonnee
-    ? [
-        { label: 'Son corps a rajeuni en deux jours', why: 'Un corps ne rajeunit pas. Relis la ligne 2.' },
-        {
-          label: 'Le mercredi est un jour plus court',
-          why: 'La longueur du jour n’est pas écrite ici. Regarde ce que fait l’enfant.',
-        },
-        { label: 'Le corps n’a plus besoin d’eau', why: 'Au contraire, on boit quand on bouge. Regarde la ligne 2.' },
-      ]
-    : [
-        { label: 'Un enfant n’utilise pas ses aliments', why: 'Tout être vivant utilise ses aliments.' },
-        {
-          label: 'Les aliments font seulement dormir',
-          why: 'Les aliments apportent de quoi grandir et rester en vie.',
-        },
-        {
-          label: 'Grandir ne demande aucune matière',
-          why: 'Pour grandir, il faut de la matière : elle vient des aliments.',
-        },
-      ];
-  const { answer, traps } = choice(rng, bon, faux);
+  if (t === 1) {
+    const sportSeul = rng.int(0, 1) === 0;
+    const parAges = 'Maternelle au calme et adolescence au calme';
+    const parSport = 'Adolescence au calme et adolescence un jour de sport';
+    const bon = sportSeul ? parAges : parSport;
+    const { answer, traps } = choice(rng, bon, [
+      {
+        label: sportSeul ? parSport : parAges,
+        why: sportSeul
+          ? 'Ici, seul le sport change : cela ne montre pas que l’âge compte aussi.'
+          : 'Ici, seul l’âge change : cela ne montre pas que le sport compte aussi.',
+      },
+      {
+        label: 'Maternelle au calme et adolescence un jour de sport',
+        why: 'Deux choses changent à la fois : l’âge et le sport. On ne sait pas laquelle agit.',
+      },
+      {
+        label: 'Adolescence au calme comparée avec elle-même',
+        why: 'Rien ne change : aucune comparaison n’est possible.',
+      },
+    ]);
+    return {
+      prompt: `${sujet} Léa dit : « ${sportSeul ? 'Seul le sport change les besoins' : 'Seul l’âge change les besoins'}. » Quelle comparaison montre que c’est faux ?`,
+      figure,
+      answer,
+      traps,
+      hint: 'Pour tester une idée, ne fais changer qu’une seule chose à la fois.',
+      steps: [
+        sportSeul ? 'Il faut des âges différents sans sport.' : 'Il faut le même âge avec et sans sport.',
+        `On compare : **${bon}**.`,
+      ],
+      targetSeconds: 80,
+    };
+  }
+  const i = rng.int(0, 2);
+  const age = AGES[i]?.court ?? 'maternelle';
   return {
-    prompt: randonnee
-      ? `${sujet} Pourquoi le besoin est-il plus grand le mercredi ?`
-      : `${sujet} La ligne 4 parle de croissance. Qu’est-ce que cela change pour ses aliments ?`,
+    prompt: `${sujet} Complète les deux conclusions.`,
     figure,
-    answer,
-    traps,
-    hint: randonnee ? 'Qu’est-ce qui change entre lundi et mercredi ?' : 'Pense à la croissance.',
-    steps: ['Les besoins alimentaires varient avec la croissance et l’activité physique.', `Explication : **${bon}**.`],
-    targetSeconds: 55,
+    answer: {
+      kind: 'cloze',
+      parts: [
+        'Au calme, quand l’âge augmente, le besoin ',
+        `. Pour la ligne « ${age} », le jour de sport demande `,
+        ' que le jour calme.',
+      ],
+      blanks: [
+        { mode: 'list', options: ['diminue', 'augmente', 'reste le même'], correct: 1 },
+        { mode: 'list', options: ['moins', 'autant', 'plus'], correct: 2 },
+      ],
+    },
+    hint: 'Compare les nombres de haut en bas, puis sur la ligne demandée.',
+    steps: [
+      `Au calme : ${calmes.join(', ')} points, de plus en plus.`,
+      `Ligne « ${age} » : ${calmes[i]} points au calme, ${sport[i]} avec le sport.`,
+      'Réponses : **augmente** et **plus**.',
+    ],
+    targetSeconds: 60,
   };
 };
 
@@ -293,11 +408,11 @@ export const besoinsAlimentaires: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'Chaque **aliment** apporte de quoi rester en vie. Quand tu es jeune, il sert aussi à ta **croissance**.',
-      'Tes **besoins alimentaires** changent avec ta croissance et ton **activité physique**. Un jour de randonnée, ton corps dépense plus qu’un jour au calme !',
+      'Les **aliments** apportent de quoi rester en vie. Quand tu es jeune, ils servent aussi à ta **croissance**.',
+      'Tes **besoins alimentaires** changent avec ton âge : à midi, il en faut plus à un adolescent qu’à un élève de maternelle. Ils changent aussi avec ton **activité physique** !',
     ],
-    source: `${PROGRAMME} : « Exploiter des données pour expliquer la variation des besoins alimentaires au cours de la croissance et selon l’activité physique ». Santé publique France : l’activité physique entraîne « une dépense en énergie supérieure à celle du repos ».`,
-    sources: [PROGRAMME, 'cnrtl-aliment', 'cnrtl-croissance', 'spf-activite-physique-2017'],
+    source: `${PROGRAMME} : « Exploiter des données pour expliquer la variation des besoins alimentaires au cours de la croissance et selon l’activité physique ». Bulletin officiel (restauration scolaire, 2001) : le repas de midi doit apporter des quantités plus grandes aux adolescents qu’aux élèves de maternelle (« pour les élèves de maternelle : 8 g de protéines de bonne qualité » ; « pour les adolescents : 17 à 20 g ») ; les besoins sont « fonction de la masse corporelle, du degré d'activité ». Santé publique France : l’activité physique entraîne « une dépense en énergie supérieure à celle du repos ».`,
+    sources: [PROGRAMME, 'cnrtl-aliment', 'cnrtl-croissance', 'bo-restauration-2001', 'spf-activite-physique-2017'],
   },
   generate: (rng, level) => (NIVEAUX[level - 1] ?? niveau1)(rng),
 };

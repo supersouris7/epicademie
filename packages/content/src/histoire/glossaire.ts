@@ -2073,4 +2073,47 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Mettre sous tutelle, c’est placer sous son contrôle et sa surveillance.',
     example: 'Le roi veut mettre la noblesse sous tutelle.',
   },
+  {
+    id: 'acteur-historique',
+    word: 'acteur',
+    forms: ['acteur', 'acteurs'],
+    definition: 'En histoire, une personne ou un groupe qui agit et pèse sur les événements.',
+    example: 'Jeanne d’Arc est un acteur de la guerre de Cent Ans.',
+  },
+  {
+    id: 'canonise',
+    word: 'canonisé',
+    forms: ['canonisé', 'canonisée', 'canonisés'],
+    definition: 'Déclaré saint par l’Église.',
+    example: 'Louis IX est canonisé en 1297.',
+  },
+  {
+    id: 'rescape',
+    word: 'rescapé',
+    forms: ['rescapé', 'rescapée', 'rescapés'],
+    definition: 'Une personne qui a échappé vivante à un grand danger.',
+    example: 'Un Omeyyade rescapé fonde un nouvel État à Cordoue.',
+  },
+  {
+    id: 'comptoir',
+    word: 'comptoir',
+    forms: ['comptoir', 'comptoirs'],
+    definition: 'Un établissement installé dans un pays lointain pour y faire du commerce.',
+    example: 'Des marchands italiens ouvrent des comptoirs en Orient.',
+  },
+  {
+    id: 'feodalite',
+    word: 'féodalité',
+    forms: ['féodalité'],
+    definition:
+      'L’organisation de la société du Moyen Âge, fondée sur les seigneurs et les liens entre eux et leurs vassaux.',
+    example: 'Les Capétiens s’appuient sur la féodalité.',
+  },
+  {
+    id: 'absolutisme',
+    word: 'absolutisme',
+    forms: ['absolutisme'],
+    definition: 'L’idée que le roi doit détenir tout le pouvoir, sans le partager.',
+    example: 'On associe l’absolutisme à Louis XIV.',
+  },
 ];

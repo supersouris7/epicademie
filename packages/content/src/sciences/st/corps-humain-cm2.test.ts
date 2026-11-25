@@ -80,6 +80,72 @@ describe('sciences CM2 : « Le corps humain »', () => {
       if (/fruits et légumes faut-il|légumes secs \?|aux adultes/.test(q.prompt)) expect(q.prompt).toMatch(/adultes/);
   });
 
+  const notion = (id: string) => notions.find((s) => s.id === id)!;
+  const accepte = (q: Question) => (q.answer.kind === 'text' ? q.answer.accepted : []);
+
+  it('digestion : les changements de texture sont travaillés, dont une remise en ordre', () => {
+    const digestion = notion('vcm2-digestion');
+    expect(digestion.lesson.memo.join(' ')).toMatch(/bol alimentaire.*chyme/s);
+    for (const level of [2, 3, 4, 5] as const)
+      expect(JSON.stringify(tirages(digestion, level)), `niveau ${level}`).toMatch(/chyme/);
+    expect(
+      tirages(digestion, 3).some((q) => q.answer.kind === 'order' && JSON.stringify(q.answer).includes('chyme')),
+    ).toBe(true);
+  });
+
+  it('digestion niveau 5 : récit exploité sans numéro de ligne, avec ordre, erreur et réponse écrite', () => {
+    const qs = tirages(notion('vcm2-digestion'), 5);
+    expect(new Set(qs.map((q) => q.answer.kind))).toEqual(new Set(['choice', 'order', 'text']));
+    for (const q of qs) expect(q.prompt).not.toMatch(/ligne/);
+    expect(qs.some((q) => q.prompt.includes('Quelle phrase est fausse'))).toBe(true);
+  });
+
+  it('variantes attendues acceptées', () => {
+    const attendues: [string, 3 | 4, string[]][] = [
+      ['vcm2-digestion', 4, ['mâcher', 'macher', 'mâchage', 'côlon', 'colon', 'petit intestin']],
+      ['vcm2-alimentation', 3, ['1h', '1 h']],
+      ['vcm2-alimentation', 4, ['légumineuses']],
+      ['vcm2-besoins-alimentaires', 3, ['exercice physique', 'activités physiques', 'effort', 'l’exercice']],
+      ['vcm2-besoins-alimentaires', 4, ['exercice physique', 'activités physiques', 'effort', 'l’exercice']],
+    ];
+    for (const [id, level, mots] of attendues) {
+      const toutesAcceptees = tirages(notion(id), level).flatMap(accepte);
+      for (const m of mots) expect(toutesAcceptees, `${id} ${m}`).toContain(m);
+    }
+    expect(JSON.stringify(tirages(notion('vcm2-alimentation'), 3))).toContain('eau du robinet');
+  });
+
+  it('alimentation niveaux 4 et 5 : cas à calculer, et plus la question du niveau 1', () => {
+    const alimentation = notion('vcm2-alimentation');
+    for (const q of tirages(alimentation, 4)) expect(q.prompt).not.toMatch(/seule boisson recommandée par/);
+    const n5 = JSON.stringify(tirages(alimentation, 5));
+    expect(n5).not.toMatch(/Supprimer toute l’eau|Ajouter du sucre|Ne plus bouger|fruit du goûter/);
+    expect(n5).toMatch(/écran de loisir/);
+  });
+
+  it('alimentation : explications exactes sur les boissons sucrées et les familles', () => {
+    const textes = JSON.stringify([2, 4].flatMap((l) => tirages(notion('vcm2-alimentation'), l as Level)));
+    expect(textes).not.toMatch(/vient d’une plante|édulcorant/);
+    expect(textes).toContain('comptent à part');
+    expect(textes).toContain('ce n’est pas de l’eau');
+  });
+
+  it('besoins : des données comparent les âges, croissants, et le plus jeune sportif reste sous l’adolescent au calme', () => {
+    const besoins = notion('vcm2-besoins-alimentaires');
+    expect(besoins.lesson.sources).toContain('bo-restauration-2001');
+    for (const level of [2, 4, 5] as const)
+      expect(JSON.stringify(tirages(besoins, level)), `niveau ${level}`).toMatch(/adolescen/i);
+    for (const q of tirages(besoins, 5)) {
+      const lignes = q.figure?.kind === 'document' ? q.figure.lines : [];
+      const n = lignes.map((l) => [...l.matchAll(/(\d+) points/g)].map((m) => Number(m[1])));
+      expect(n[0]![0]!).toBeLessThan(n[1]![0]!);
+      expect(n[1]![0]!).toBeLessThan(n[2]![0]!);
+      for (const [calme, sport] of n) expect(sport!).toBeGreaterThan(calme!);
+      expect(n[0]![1]!).toBeLessThan(n[2]![0]!);
+    }
+    expect(JSON.stringify(toutes(besoins))).not.toMatch(/cheveux|prénom|rajeuni|jour plus court/);
+  });
+
   it('alimentation : le jus de fruits n’est jamais un piège contre « fruit ou légume »', () => {
     const alimentation = notions.find((s) => s.id === 'vcm2-alimentation')!;
     for (const q of tirages(alimentation, 2))
