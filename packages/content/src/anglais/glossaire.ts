@@ -756,7 +756,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'intention',
     word: 'intention',
     forms: ['intention', 'intentions'],
-    definition: 'Ce qu’on a envie ou qu’on veut faire.',
+    definition: 'Ce qu’on veut faire, ou ce qu’on a envie de faire.',
     example: 'I’d like to visit London.',
   },
   {

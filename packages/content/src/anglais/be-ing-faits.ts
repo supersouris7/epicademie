@@ -126,6 +126,12 @@ export const FAITS: readonly Fait[] = [
     'would you like ..., would you like to ... for offers and invitations:',
     'Would you like to… ? propose ou invite.',
   ),
+  fait(
+    'can-capacite',
+    'bck-can',
+    "We can use can and can't to talk about abilities in the present.",
+    'can dit ce qu’on sait faire.',
+  ),
   fait('forme-wear', PROG, 'He is wearing a kilt', 'wear → wearing.'),
   fait('forme-make', PROG, 'They are making a blueberry pie', 'make → making.'),
   fait('forme-work', PC, 'I am working', 'work → working.'),

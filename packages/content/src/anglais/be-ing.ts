@@ -163,7 +163,7 @@ function formMatch(rng: Rng): QuestionDraft {
     answer,
     hint: 'Chaque fin de phrase commence par une forme de be : trouve le sujet qui va avec.',
     steps: [
-      'I va avec am ; he, she, une seule personne vont avec is ; we, they, plusieurs personnes vont avec are.',
+      'I va avec am ; he, she (une seule personne) vont avec is ; we, they (plusieurs personnes) vont avec are.',
       `Réponse : **${rows.map(([s, end]) => `${s} ${end}`).join(' ')}**`,
     ],
   };
@@ -356,10 +356,17 @@ const THIRD: readonly Subject[] = SUBJECTS.filter((s) => s.be === 'is');
 const habit = (s: Subject, a: Action, when = 'every day') => `${s.text} ${a.s} ${a.end} ${when}.`;
 const WHY_HABIT = 'Cette phrase est au présent simple : elle dit une habitude.';
 const RECOGNISE = 'Une action en cours se dit avec be + ing ; une habitude, avec le présent simple.';
+/** « can » au sens de « savoir faire » : seulement avec des actions qui s'apprennent. */
+const SKILLED = ACTIONS.filter((a) => ['play', 'swim', 'cook', 'make'].includes(a.base));
 
 function nowSpot(rng: Rng): QuestionDraft {
   const [s, t] = some(rng, THIRD, 2) as [Subject, Subject];
-  const [a, b, c] = some(rng, ACTIONS, 3) as [Action, Action, Action];
+  const c = rng.pick(SKILLED);
+  const [a, b] = some(
+    rng,
+    ACTIONS.filter((x) => x !== c),
+    2,
+  ) as [Action, Action];
   const good = full(s, a);
   const { answer, traps } = choice(rng, good, [
     { label: habit(t, b), why: WHY_HABIT },
@@ -369,7 +376,7 @@ function nowSpot(rng: Rng): QuestionDraft {
     prompt: 'Quelle phrase parle d’une action en train de se passer ?',
     answer,
     traps,
-    hint: 'Cherche le verbe be suivi d’un verbe en -ing.',
+    hint: 'Observe la forme du verbe dans chaque phrase : laquelle montre ce qui se passe en ce moment ?',
     steps: [RECOGNISE, `Réponse : **${good}**`],
   };
 }
@@ -397,7 +404,12 @@ function nowMeaning(rng: Rng): QuestionDraft {
 }
 
 function nowMatch(rng: Rng): QuestionDraft {
-  const [a, b, c] = some(rng, ACTIONS, 3) as [Action, Action, Action];
+  const c = rng.pick(SKILLED);
+  const [a, b] = some(
+    rng,
+    ACTIONS.filter((x) => x !== c),
+    2,
+  ) as [Action, Action];
   const [s, t, u] = some(rng, THIRD, 3) as [Subject, Subject, Subject];
   const rows = rng.shuffle([
     [full(s, a), 'action en cours'],
@@ -414,7 +426,8 @@ function nowMatch(rng: Rng): QuestionDraft {
 
 const nowRecognise = (rng: Rng) => (coin(rng) ? nowMeaning(rng) : nowMatch(rng));
 
-const NOW_CLUES = ['Look!', 'Listen!', 'Be quiet!'] as const;
+/** « Look! » ouvre la phrase ; les autres indices la terminent. */
+const NOW_CLUES = ['Look!', 'right now', 'at the moment'] as const;
 const HABIT_CLUES = ['every day', 'every Saturday', 'every morning'] as const;
 
 function nowChoose(rng: Rng): QuestionDraft {
@@ -422,8 +435,10 @@ function nowChoose(rng: Rng): QuestionDraft {
   const a = rng.pick(ACTIONS);
   const current = coin(rng);
   const clue = rng.pick(current ? NOW_CLUES : HABIT_CLUES);
-  const sentence = current ? `${clue} ${s.text} … ${a.end}.` : `${s.text} … ${a.end} ${clue}.`;
-  const accepted = current ? affirmative(s, a) : [a.s, `${a.s} ${a.end}`, `${s.text} ${a.s}`];
+  const sentence = clue === 'Look!' ? `${clue} ${s.text} … ${a.end}.` : `${s.text} … ${a.end} ${clue}.`;
+  const accepted = current
+    ? affirmative(s, a)
+    : [a.s, `${a.s} ${a.end}`, `${s.text} ${a.s}`, `${s.text} ${a.s} ${a.end}`];
   const why = current
     ? `« ${clue} » montre que l’action se passe maintenant : be + ing.`
     : `« ${clue} » montre une habitude : présent simple.`;
@@ -436,6 +451,7 @@ function nowChoose(rng: Rng): QuestionDraft {
             [a.s, why],
             [a.base, why],
             [a.ing, WHY_NO_BE],
+            [`is ${a.base}`, WHY_NO_ING],
           ]
         : [
             [`is ${a.ing}`, why],
@@ -492,7 +508,7 @@ function nowDocument(rng: Rng): QuestionDraft {
   const order = coin(rng);
   const me = [`I ${mine.base} ${mine.end} every Saturday, but today I’m ${myNow.ing} ${myNow.end}.`];
   const her = [
-    `My sister ${sister} usually ${hers.s} ${hers.end} in the morning.`,
+    `My sister ${sister} usually ${hers.s} ${hers.end} after school.`,
     `Look, she’s ${herNow.ing} ${herNow.end} now!`,
   ];
   const lines = [`Hi! This is ${writer.name}.`, ...(order ? [...me, ...her] : [...her, ...me])];
@@ -543,9 +559,9 @@ const recognise: Skill = {
     ],
     source: source(
       'reconnaître le présent be + ing',
-      '« Present continuous », « Present simple and present continuous »',
+      '« Present continuous », « Present simple and present continuous », « Modals, can and can’t »',
     ),
-    sources: ['anglais-college-2025', 'bc-present-continuous', 'bck-present-simple-continuous'],
+    sources: ['anglais-college-2025', 'bc-present-continuous', 'bck-present-simple-continuous', 'bck-can'],
   },
   generate: (rng, level: Level): QuestionDraft => {
     if (level === 1) return nowSpot(rng);
@@ -739,7 +755,9 @@ function planAsk(rng: Rng): QuestionDraft {
 function planDocument(rng: Rng): QuestionDraft {
   const k = pickKid(rng);
   const [a, b, c, d] = some(rng, PLANS, 4) as [Plan, Plan, Plan, Plan];
-  const [first, second, third] = some(rng, ['Monday', 'Wednesday', 'Friday', 'Saturday', 'Sunday'] as const, 3) as [
+  /** L'agenda suit l'ordre de la semaine. */
+  const week = ['Monday', 'Wednesday', 'Friday', 'Saturday', 'Sunday'];
+  const [first, second, third] = some(rng, week, 3).sort((x, y) => week.indexOf(x) - week.indexOf(y)) as [
     string,
     string,
     string,
