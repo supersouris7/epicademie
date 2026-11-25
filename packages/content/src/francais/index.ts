@@ -1,5 +1,7 @@
 import type { Chapter } from '../types.ts';
+import { FCM1_ACCORDS } from './accords.ts';
 import { FCM1_COMPLEMENTS } from './complements.ts';
+import { FCM1_GROUPE_NOMINAL } from './groupe-nominal.ts';
 import { FCM1_NATURE } from './nature.ts';
 import { FCM1_PHRASES } from './phrases.ts';
 import { FCM1_VERBE_SUJET } from './verbe-sujet.ts';
@@ -37,5 +39,21 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'grammaire',
     title: 'Nature des mots',
     skills: FCM1_NATURE,
+  },
+  {
+    id: 'fcm1-groupe-nominal',
+    subject: 'francais',
+    grade: 'cm1',
+    domain: 'grammaire',
+    title: 'Le groupe nominal',
+    skills: FCM1_GROUPE_NOMINAL,
+  },
+  {
+    id: 'fcm1-accords',
+    subject: 'francais',
+    grade: 'cm1',
+    domain: 'grammaire',
+    title: 'Les accords',
+    skills: FCM1_ACCORDS,
   },
 ];

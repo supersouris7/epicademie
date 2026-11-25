@@ -51,6 +51,15 @@ export interface Notion {
   readonly paires5: readonly (readonly [string, string])[];
   /** Repères dans l'ordre (au moins 4). */
   readonly ordre?: readonly string[];
+  /** Consigne et règle citée d'un ordre autre que « du plus petit au plus grand ». */
+  readonly consigne?: {
+    readonly prompt: string;
+    readonly hint: string;
+    readonly why: string;
+    readonly fin: string;
+    readonly quote: string;
+    readonly src: string;
+  };
   readonly libres: readonly Libre[];
   readonly docs: readonly {
     readonly title: string;
@@ -76,8 +85,11 @@ function shuffled<T>(rng: Rng, items: readonly T[]): T[] {
 const lookup = (src: string): string => {
   if (src === PROGRAMME) return 'Cherchons ce que dit le programme';
   if (src.startsWith('insee-')) return 'Cherchons ce que dit l’INSEE';
+  if (src.startsWith('ademe-')) return 'Cherchons ce que dit l’ADEME';
   if (src.startsWith('ue-')) return 'Cherchons ce que dit l’Union européenne';
   if (src.startsWith('viepublique-')) return 'Cherchons ce que dit le site public vie-publique.fr';
+  if (src === 'ecologie-lgv') return 'Cherchons ce que dit le ministère chargé des transports';
+  if (src.startsWith('ecologie-')) return 'Cherchons ce que dit le ministère de la Transition écologique';
   return 'Cherchons dans le dictionnaire';
 };
 
@@ -140,14 +152,16 @@ function blank(rng: Rng, accepted: readonly string[], choix?: readonly string[])
 function level3(rng: Rng, n: Notion): QuestionDraft {
   if (n.ordre && rng.int(0, 1) === 0) {
     const items = shuffled(rng, n.ordre);
+    const c = n.consigne;
     return {
-      prompt: 'Remets ces repères dans l’ordre, du plus petit au plus grand.',
+      prompt: c?.prompt ?? 'Remets ces repères dans l’ordre, du plus petit au plus grand.',
       answer: { kind: 'order', items, correct: n.ordre.map((o) => items.indexOf(o)) },
-      hint: 'Commence par le lieu où tu habites : il est le plus petit.',
+      hint: c?.hint ?? 'Commence par le lieu où tu habites : il est le plus petit.',
       steps: [
-        'On range du plus petit au plus grand territoire, comme dans le programme.',
+        ...(c ? [`${lookup(c.src)} : « ${c.quote} ».`] : []),
+        c?.why ?? 'On range du plus petit au plus grand territoire, comme dans le programme.',
         ...n.ordre.map((o, i) => `${i + 1}. ${o}.`),
-        `Le plus petit est **${n.ordre[0]}**.`,
+        `${c?.fin ?? 'Le plus petit est'} **${n.ordre[0]}**.`,
       ],
       targetSeconds: 40,
     };
@@ -206,6 +220,7 @@ function level5(rng: Rng, n: Notion): QuestionDraft {
 /** Sources du registre citées par une notion (le programme, plus celles de ses faits). */
 export function sourcesOf(n: Notion): string[] {
   const all = [...n.faits, ...n.libres, ...n.docs.flatMap((d) => d.qs)].map((f) => f.src ?? PROGRAMME);
+  if (n.consigne) all.push(n.consigne.src);
   return [...new Set([PROGRAMME, ...all])];
 }
 
