@@ -7,6 +7,7 @@ import { ENGLISH_BE_CHAPTERS } from './be.ts';
 import { ENGLISH_TIME_CHAPTER } from './temps.ts';
 import { ENGLISH_FAMILY_CHAPTER } from './famille.ts';
 import { ENGLISH_TASTES_CHAPTER } from './gouts.ts';
+import { ENGLISH_LISTENING_CHAPTER } from './ecoute.ts';
 
 /**
  * Anglais — pilote (docs/adr/0024-contenus-hors-maths.md) : verbes irréguliers, classe de 5e
@@ -127,6 +128,7 @@ export const ANGLAIS_CHAPTERS: readonly Chapter[] = [
   ENGLISH_TIME_CHAPTER,
   ENGLISH_FAMILY_CHAPTER,
   ENGLISH_TASTES_CHAPTER,
+  ENGLISH_LISTENING_CHAPTER,
   {
     id: 'a5-verbes-irreguliers',
     subject: 'anglais',
