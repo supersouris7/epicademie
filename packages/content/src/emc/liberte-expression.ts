@@ -66,12 +66,14 @@ const EN_LIGNE = prog(
   'mais aussi de leurs opinions et croyances (liberté d’opinion, liberté de conscience), ainsi que d’exprimer celles-ci (liberté d’expression), y compris en ligne',
 );
 const PRESSE_COLLECTIVE = prog(
-  'de s’engager dans la vie de la société (droit de réunion, d’association, de manifestation, droit syndical, liberté de la presse)',
+  'Les libertés collectives leur permettent de s’associer les uns avec les autres et de s’engager dans la vie de la société (droit de réunion, d’association, de manifestation, droit syndical, liberté de la presse)',
 );
 const BORNES_LOI = prog(
   'nos libertés sont toutefois encadrées par la loi et limitées, en premier lieu par les libertés des autres',
 );
-const NOUVEAUX_ENJEUX = prog('nouveaux enjeux comme la guerre informationnelle et la cyberdéfense');
+const NOUVEAUX_ENJEUX = prog(
+  'La défense doit également affronter de nouveaux enjeux comme la guerre informationnelle et la cyberdéfense',
+);
 const VIGINUM_PROGRAMME = prog(
   'À partir de l’étude de tentatives d’ingérences étrangères repérées par VIGINUM, comprendre les mécanismes et enjeux de la guerre informationnelle',
 );
@@ -142,14 +144,12 @@ const HAINE = loi(
 
 // ——— Citations exactes : presse, Charte, DSA ———
 
-const FONDEMENT_PRESSE = vpPresse(
-  'Principe fondamental des systèmes démocratiques, la liberté de la presse est inscrite dans',
-);
+const FONDEMENT_PRESSE = vpPresse('Principe fondamental des systèmes démocratiques, la liberté de la presse');
 const LOI_DEFINIT = vpPresse(
   'La loi du 29 juillet 1881 sur la liberté de la presse définit les libertés et responsabilités de la presse française',
 );
 const PLURALISME = vpPresse(
-  'reconnaît le pluralisme des quotidiens d’information politique et générale comme étant “en lui-même un objectif de valeur constitutionnelle”',
+  'une décision du Conseil constitutionnel reconnaît le pluralisme des quotidiens d’information politique et générale comme étant “en lui-même un objectif de valeur constitutionnelle”',
 );
 const AIDES = vpPresse('La France a fait le choix de soutenir la presse écrite par des financements publics');
 const INTERNET_LOI = vpPresse('l’ensemble de la législation existante s’applique aux acteurs d’internet');
@@ -321,7 +321,7 @@ const enLigne: Notion = {
           ['les lois sur la presse écrite sur papier uniquement', 'C’est toute la législation existante.'],
         ],
         ['L’ensemble de la ', ' existante s’applique aux acteurs d’internet.', ['législation', 'legislation']],
-        'Cette étude de 1998 écarte l’idée d’un internet sans règles.',
+        'En 1998, une étude du Conseil d’État écarte ainsi l’idée d’un internet sans règles.',
       ),
     ),
   ],
@@ -333,7 +333,7 @@ const enLigne: Notion = {
   paires5: [
     ['Article 11 de la DDHC', 'Libre communication des pensées et des opinions'],
     ['Article 10 de la Convention européenne', 'Recevoir et communiquer des idées sans considération de frontière'],
-    ['Conseil constitutionnel', 'Y voit une garantie des autres droits et libertés'],
+    ['Conseil constitutionnel', 'Voit dans la liberté d’expression une garantie des autres droits'],
     ['Liberté de manifestation', 'Exprimer une opinion ou soutenir une cause à plusieurs dans la rue'],
     ['Non-droit', 'Situation sans loi'],
   ],
@@ -449,8 +449,8 @@ const limites: Notion = {
   credit: CREDIT,
   memo: [
     'La liberté d’expression a des limites : on doit répondre de ses **abus**, dans les cas fixés par la **loi**. Elle ne permet pas de nuire à **autrui**.',
-    'La loi de 1881 distingue la **diffamation** (affirmer un fait qui porte atteinte à l’honneur d’une personne) de l’**injure** (une insulte ou du mépris sans aucun fait). Elle punit aussi la **provocation à la haine** ou à la violence en raison de l’origine, et elle vise les publications en ligne.',
-    'Exemple : écrire « ce commerçant a volé sa caisse » affirme un fait ; le traiter d’un nom méprisant est une injure. D’autres limites protègent la **vie privée** et le secret de la défense nationale.',
+    'La loi de 1881 distingue la **diffamation** (affirmer un fait qui porte atteinte à l’honneur d’une personne) de l’**injure** (une insulte ou du mépris sans aucun fait). Elle punit aussi la **provocation à la haine** ou à la violence en raison, par exemple, de l’origine ou de la religion, et elle vise les publications en ligne.',
+    'Exemple : écrire « ce commerçant a volé sa caisse » affirme un fait ; le traiter d’un nom méprisant est une injure. Les opinions ne doivent pas troubler l’**ordre public** établi par la loi. D’autres limites protègent la **vie privée** et le secret de la défense nationale ; les agents publics ont un **devoir de réserve**.',
   ],
   faits: [
     fait(
@@ -590,7 +590,7 @@ const limites: Notion = {
           ['la seule fermeture de son compte', 'La loi prévoit une amende, pas une règle de site.'],
         ],
         ['La diffamation publique envers un particulier est punie d’une amende de ', ' euros.', ['12 000', '12000']],
-        'C’est le montant fixé par l’article 32 ; la loi prévoit des peines plus lourdes en cas de diffamation raciste.',
+        'L’article 32 fixe ce montant, que le juge ne peut pas dépasser dans ce cas ; la loi prévoit des peines plus lourdes pour une diffamation raciste.',
       ),
     ),
   ],
@@ -644,13 +644,14 @@ const limites: Notion = {
       [
         ['diffamation', 'La diffamation suppose un fait imputé.'],
         ['critique', 'Une critique argumentée n’est pas une invective.'],
+        ['insulte', 'C’est le mot courant ; la loi emploie un autre terme.'],
       ],
       'Sans fait imputé, une invective est une injure.',
     ),
     libre(
       RESERVE,
       'quel devoir limite l’expression des opinions des agents publics ? Le devoir de …',
-      ['réserve', 'reserve', 'devoir de réserve'],
+      ['réserve', 'reserve', 'devoir de réserve', 'neutralité', 'neutralite'],
       [
         ['grève', 'La grève est un droit, pas un devoir.'],
         ['vote', 'Le vote ne limite pas l’expression des agents publics.'],
@@ -737,7 +738,7 @@ const medias: Notion = {
   programme: PROGRAMME,
   credit: CREDIT,
   memo: [
-    'La **liberté de la presse** est un principe fondamental des démocraties et une liberté collective. En France, la loi du 29 juillet 1881 définit les libertés et les responsabilités de la **presse**.',
+    'La **liberté de la presse** est un principe fondamental des démocraties et une liberté collective. En France, la loi du 29 juillet 1881 définit les libertés et les responsabilités de la **presse** ; son article 1 pose que « l’imprimerie et la librairie sont libres ».',
     'Un **journaliste** recueille des informations et les diffuse au public. Le **secret des sources** protège cette mission : on ne peut y porter atteinte que pour un impératif prépondérant d’intérêt public.',
     'Les **médias** sont aussi protégés par la Charte des droits fondamentaux de l’Union européenne, avec leur **pluralisme**. Exemple : plusieurs journaux indépendants permettent de comparer les points de vue.',
   ],
@@ -759,7 +760,7 @@ const medias: Notion = {
       [
         ['la diffusion de fausses accusations', 'La loi prévoit des abus punis.'],
         ['la découverte forcée des sources des journalistes', 'La loi protège au contraire ces sources.'],
-        ['la vie privée de chacun à publier', 'La vie privée d’autrui est protégée.'],
+        ['la publication de la vie privée de chacun', 'La vie privée d’autrui est protégée.'],
       ],
       ['L’imprimerie et la librairie sont ', '.', ['libres']],
       'C’est le premier article de la loi : il pose la liberté comme point de départ.',
@@ -997,7 +998,7 @@ const information: Notion = {
   credit: CREDIT,
   memo: [
     'La **désinformation** et la **manipulation de l’information** visent à tromper, pour gagner de l’argent ou pour peser sur la politique : faux comptes, faux sites imitant une organisation. Les **plateformes** favorisent la **viralité**, parfois au détriment de la **fiabilité**.',
-    'La **guerre informationnelle** et la **cyberdéfense** sont de nouveaux enjeux de défense. Le service **Viginum** détecte les **ingérences numériques étrangères** : un contenu faux ou trompeur, diffusé massivement de façon artificielle, avec des acteurs étrangers.',
+    'La **guerre informationnelle** et la **cyberdéfense** sont de nouveaux enjeux de défense. Le service **Viginum** détecte les **ingérences numériques étrangères** : un contenu faux ou trompeur, diffusé massivement de façon artificielle, avec des acteurs étrangers, qui peut nuire aux intérêts essentiels du pays.',
     'En France, des lois de 2018 permettent de saisir un juge contre de fausses informations avant un scrutin national. Exemple : avant de partager, il faut **recouper** l’information avec une autre source.',
   ],
   faits: [
@@ -1023,7 +1024,7 @@ const information: Notion = {
       [
         'Pour manipuler, certains créent de faux ',
         ' ou des réseaux inauthentiques.',
-        ['comptes', 'compte', 'profils', 'profil'],
+        ['comptes', 'compte', 'profils', 'profil', 'sites', 'site'],
       ],
       'Un faux compte fait croire à des soutiens ou à des témoins qui n’existent pas.',
     ),
@@ -1123,7 +1124,7 @@ const information: Notion = {
       fait(
         SPONSORISES,
         [
-          'Qu’est-ce que les principales plateformes doivent publier pour les contenus politiques sponsorisés ?',
+          'D’après les lois de 2018 sur les campagnes électorales, que doivent publier les grandes plateformes pour les contenus politiques sponsorisés ?',
           'le nom de leur auteur et la somme payée',
         ],
         [
@@ -1162,7 +1163,7 @@ const information: Notion = {
     libre(
       VIGINUM_PROGRAMME,
       'comment s’appelle la guerre menée avec des informations manipulées ? La guerre …',
-      ['informationnelle', 'guerre informationnelle', 'la guerre informationnelle'],
+      ['informationnelle', 'guerre informationnelle', 'la guerre informationnelle', 'de l’information'],
       [
         ['économique', 'Elle passe par le commerce, pas par les informations.'],
         ['civile', 'Une guerre civile oppose des habitants d’un même pays par les armes.'],
