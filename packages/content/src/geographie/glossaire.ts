@@ -713,7 +713,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'metropolisation',
     word: 'métropolisation',
     forms: ['métropolisation'],
-    definition: 'La place croissante prise par les métropoles dans le monde.',
+    definition: 'La concentration des habitants, des activités et des richesses dans les grandes villes.',
     example: 'La métropolisation touche de nombreux pays.',
   },
   {
@@ -734,7 +734,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'ville-centre',
     word: 'ville-centre',
     forms: ['ville-centre', 'villes-centres'],
-    definition: 'La ou les communes principales d’une agglomération, par leur population.',
+    definition: 'La ou les communes principales d’une agglomération, les plus peuplées.',
     example: 'La ville-centre est entourée de la banlieue.',
   },
   {
@@ -856,5 +856,34 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition:
       'Une ville qui offre des emplois, avec les communes autour dont beaucoup d’actifs viennent y travailler.',
     example: 'Un village peut faire partie de l’aire d’attraction d’une grande ville.',
+  },
+  {
+    id: 'multimillionnaire',
+    word: 'multimillionnaire',
+    forms: ['multimillionnaire', 'multimillionnaires'],
+    definition:
+      'En parlant d’une ville : qui compte plusieurs millions d’habitants (cela ne veut pas dire « très riche »).',
+    example: 'Tokyo est une ville multimillionnaire.',
+  },
+  {
+    id: 'unite-urbaine',
+    word: 'unité urbaine',
+    forms: ['unité urbaine', 'unités urbaines'],
+    definition: 'Le nom donné par l’INSEE à une ville ou à des communes dont les constructions se suivent.',
+    example: 'La ville-centre et sa banlieue forment une unité urbaine.',
+  },
+  {
+    id: 'pole-urbain',
+    word: 'pôle',
+    forms: ['pôle', 'pôles'],
+    definition: 'Un lieu qui rassemble des habitants, des emplois ou des activités.',
+    example: 'Des habitants de la couronne travaillent dans le pôle.',
+  },
+  {
+    id: 'multipolaire',
+    word: 'multipolaire',
+    forms: ['multipolaire', 'multipolaires'],
+    definition: 'Qui a plusieurs centres.',
+    example: 'Une métropole multipolaire a un second centre près de l’aéroport.',
   },
 ];

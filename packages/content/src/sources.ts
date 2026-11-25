@@ -40,6 +40,7 @@ export const ALLOWED_DOMAINS: readonly string[] = [
   'ademe.fr',
   'ecologie.gouv.fr',
   'brgm.fr',
+  'geoconfluences.ens-lyon.fr',
 ];
 
 /** L'URL est en https et son domaine (ou un sous-domaine) est dans la liste autorisée. */
@@ -80,6 +81,16 @@ const inseeDefinition = (id: string, mot: string, numero: number): Source => ({
   title: `Définition « ${mot} »`,
   publisher: 'INSEE',
   url: `https://www.insee.fr/fr/metadonnees/definition/c${numero}`,
+  textDate: '2026',
+  consultedOn: CONSULTED_GE_6E,
+});
+
+/** Notice d’autorité d’un lieu au catalogue de la BnF (`ark` : identifiant de la notice). */
+const bnfLieu = (id: string, nom: string, ark: string): Source => ({
+  id: `bnf-${id}`,
+  title: `Notice d’autorité « ${nom} »`,
+  publisher: 'Bibliothèque nationale de France',
+  url: `https://catalogue.bnf.fr/ark:/12148/${ark}`,
   textDate: '2026',
   consultedOn: CONSULTED_GE_6E,
 });
@@ -1773,11 +1784,44 @@ export const SOURCES: readonly Source[] = [
     textDate: '2018',
     consultedOn: CONSULTED_GE_6E,
   },
-  inseeDefinition('unite-urbaine', 'Unité urbaine', 1501),
+  {
+    id: 'geoconfluences-metropolisation',
+    title: 'Glossaire de Géoconfluences, article « Métropolisation »',
+    publisher: 'Géoconfluences (ENS de Lyon, DGESCO)',
+    url: 'https://geoconfluences.ens-lyon.fr/glossaire/metropolisation',
+    textDate: '2026-09-18',
+    consultedOn: CONSULTED_GE_6E,
+  },
+  {
+    id: 'geoconfluences-villes-mondiales',
+    title: 'Glossaire de Géoconfluences, article « Villes globales, villes mondiales »',
+    publisher: 'Géoconfluences (ENS de Lyon, DGESCO)',
+    url: 'https://geoconfluences.ens-lyon.fr/glossaire/globales-mondiales-villes',
+    textDate: '2026-11-24',
+    consultedOn: CONSULTED_GE_6E,
+  },
+  {
+    id: 'geoconfluences-ilot-chaleur',
+    title: 'Glossaire de Géoconfluences, article « Îlot de chaleur urbain »',
+    publisher: 'Géoconfluences (ENS de Lyon, DGESCO)',
+    url: 'https://geoconfluences.ens-lyon.fr/glossaire/ilot-de-chaleur-urbain',
+    textDate: '2026-06-10',
+    consultedOn: CONSULTED_GE_6E,
+  },
+  bnfLieu('tokyo', 'Tokyo (Japon)', 'cb15322935d'),
+  bnfLieu('shanghai', 'Shanghai (Chine)', 'cb15213593b'),
+  bnfLieu('jakarta', 'Jakarta (Indonésie)', 'cb11943398s'),
+  bnfLieu('seoul', 'Séoul (Corée du Sud)', 'cb15342184t'),
+  bnfLieu('bangkok', 'Bangkok (Thaïlande)', 'cb15284306q'),
+  bnfLieu('new-york', 'New York (New York, États-Unis)', 'cb15294963d'),
+  bnfLieu('los-angeles', 'Los Angeles (Calif., États-Unis)', 'cb11948658k'),
+  bnfLieu('sao-paulo', 'São Paulo (São Paulo, Brésil)', 'cb153033676'),
+  bnfLieu('paris', 'Paris (France)', 'cb11932931q'),
+  bnfLieu('londres', 'Londres (Royaume-Uni)', 'cb15282157k'),
+  bnfLieu('le-caire', 'Le Caire (Égypte)', 'cb119427096'),
   inseeDefinition('ville-centre', 'Ville-centre et banlieue', 1441),
   inseeDefinition('banlieue', 'Banlieue', 1546),
   inseeDefinition('aire-attraction', 'Aire d’attraction des villes', 2173),
-  inseeDefinition('couronne', 'Couronne d’une aire d’attraction des villes', 2340),
   tlfiLe6e('pendulaire', 'pendulaire', 'pendulaire'),
   tlfiLe6e('urbanisation', 'urbanisation', 'urbanisation'),
   tlfiLe6e('bidonville', 'bidonville', 'bidonville'),

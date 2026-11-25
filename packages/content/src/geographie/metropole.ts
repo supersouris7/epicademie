@@ -7,32 +7,27 @@ import { notion, type Notion } from './kit.ts';
 /**
  * Sixième, thème 1 « Habiter une métropole » (lot ge-6e-01). Chaque fait cite une source du registre avec sa
  * citation exacte : programme du cycle 3, ressource Éduscol du thème, INSEE, atlas du Centre commun de recherche
- * de la Commission européenne (en anglais), ADEME, CNRTL. « La ville de demain », sous-thème du programme, est
+ * de la Commission européenne (en anglais), ADEME, CNRTL, Géoconfluences (ENS de Lyon) et notices de la BnF. « La ville de demain », sous-thème du programme, est
  * traitée comme cinquième notion. Les textes à lire du niveau 5 sont écrits pour l’exercice.
  */
 
 const EDUSCOL = 'eduscol-habiter-metropole';
 const ATLAS = 'ghsl-atlas-2018';
-const UNITE = 'insee-unite-urbaine';
 const VILLE_CENTRE = 'insee-ville-centre';
 const BANLIEUE = 'insee-banlieue';
 const AIRE = 'insee-aire-attraction';
-const COURONNE = 'insee-couronne';
 const TRAVAIL = 'insee-domicile-travail';
 const ADEME = 'ademe-trajets';
 const NATURE = 'ecologie-nature-ville';
+const METROPOLISATION = 'geoconfluences-metropolisation';
+const VILLES_MONDIALES = 'geoconfluences-villes-mondiales';
+const ILOT = 'geoconfluences-ilot-chaleur';
 
 // Programme du cycle 3.
-const P_METROPOLISATION =
-  'La métropolisation est une caractéristique majeure de l’évolution géographique du monde contemporain';
 const P_FONCTIONS =
   'en insistant sur ses fonctions économiques, sociales, politiques et culturelles, sur la variété des espaces qui la composent et les flux qui la parcourent';
 const P_HABITANTS =
   'Elle est marquée par la diversité de ses habitants : résidents, migrants pendulaires, touristes, usagers occasionnels la pratiquent différemment et contribuent à la façonner';
-const P_CAS =
-  'deux cas de métropoles choisies pour l’une dans un pays développé, pour l’autre dans un pays émergent ou en développement';
-const P_DEMAIN =
-  'Comment repenser la question de son approvisionnement ? Quelles architectures inventer ? Comment ménager la cohabitation pour mieux vivre ensemble ? Comment améliorer le développement durable ?';
 const P_PROSPECTIVE = 'dans le cadre d’une initiation à la prospective territoriale, à imaginer la ville du futur';
 
 // Ressource Éduscol « Habiter une métropole ».
@@ -42,14 +37,12 @@ const E_COMMANDEMENT =
   'la métropole se caractérise par la concentration de fonctions supérieures et de commandement, de revenus et d’emplois';
 const E_SURFACE =
   'qui s’accroissent en population mais surtout en surface, intégrant progressivement les espaces périphériques';
-const E_REPERES = 'Nommer et localiser dix métropoles mondiales parmi les plus importantes';
 const E_MULTIPOLAIRES = 'Ils sont enfin multipolaires, composés de plusieurs centres, dont des centres secondaires';
 const E_MOBILITES =
   'Les habitants de la métropole s’appuient sur des moyens de transports et numériques bien développés';
 const E_MOTIFS = 'pour toute une palette de motifs, professionnels ou autres';
 const E_ENERGIE = 'en termes de coût énergétique posé par l’étalement et les mobilités';
 const E_NUISANCES = 'de qualité de l’air, de nuisances liées au bruit';
-const E_ILOT = 'de modification du climat urbain (îlot de chaleur)';
 const E_INEGALITES = 'Des problèmes sociaux, liés à la puissance des inégalités urbaines';
 const E_CHOIX = 'la ville de demain résulte d’un certain nombre de choix qui sont faits aujourd’hui';
 const E_DURABLE = 'comment penser, construire et gérer la ville durable ?';
@@ -58,26 +51,12 @@ const E_UTOPIES =
 const E_COMPACTE = 'la ville étalée et de la ville compacte ou verticale';
 const E_CITOYENS = 'comprendre le rôle et la place des citoyens dans les choix d’aménagements urbains';
 
-// Atlas of the Human Planet 2018 (Centre commun de recherche, Commission européenne).
-const A_TOP = 'Tokyo; New York; Los Angeles; Shanghai; Bangkok; Seoul; Jakarta; Singapore; Osaka; Sao Paulo';
-const A_CONTINENTS =
-  'Most of them are in Asia (70%); two of them in Northern America and one in Latin America and the Caribbean';
-const A_POPULATION = 'Jakarta has the largest population';
-const A_PIB = 'Tokyo, the urban centre with the highest GDP';
-
 // INSEE.
-const I_UNITE =
-  'une commune ou un ensemble de communes présentant une zone de bâti continu (pas de coupure de plus de 200 mètres entre deux constructions) qui compte au moins 2 000 habitants';
 const I_AGGLO =
   'Lorsqu’une unité urbaine est constituée de plusieurs communes, on la désigne sous le terme d’agglomération multicommunale';
-const I_VILLE_CENTRE =
-  'Si une commune représente plus de 50 % de la population de l’agglomération multicommunale, elle est seule ville-centre';
+const I_VILLE_CENTRE = 'la commune la plus peuplée, ainsi que cette dernière, sont villes-centres';
 const I_BANLIEUE = 'Les communes qui ne sont pas villes-centres constituent la banlieue de l’unité urbaine';
-const I_AIRE =
-  'constitué d’un pôle de population et d’emploi, et d’une couronne qui regroupe les communes dont au moins 15 % des actifs occupés travaillent dans le pôle';
-const I_COMMUNE_CENTRE = 'La commune la plus peuplée du pôle est appelée commune-centre';
-const I_COURONNE =
-  'La couronne recouvre l’ensemble des communes qui envoient au moins 15 % de leurs actifs occupés travailler dans le pôle d’une aire';
+const I_AIRE = 'constitué d’un pôle de population et d’emploi, et d’une couronne qui regroupe les communes';
 const I_VOITURE =
   'En 2017, 74 % des actifs en emploi qui déclarent se déplacer pour rejoindre leur lieu de travail utilisent leur voiture, 16 % prennent les transports en commun et 8 % ont recours aux modes de transport doux (6 % à la marche et 2 % au vélo)';
 const I_DOUX =
@@ -100,30 +79,132 @@ const C_PERIURBAIN = 'Situé dans les environs immédiats d’une ville';
 const C_ROCADE = 'Voie de circulation rapide contournant ou longeant une agglomération';
 const C_DENSITE = 'Nombre d’habitants par unité de surface, généralement le kilomètre carré';
 
+// Géoconfluences (ENS de Lyon).
+const G_METROPOLISATION =
+  'La métropolisation désigne le processus de concentration de populations, d’activités, de valeur dans des villes de grande taille';
+const G_ILOT =
+  'La température en ville dépend de la température ambiante de la région, mais elle est augmentée à cause de la forme urbaine, l’architecture, les matériaux utilisés, l’absence de végétalisation';
+const G_MATERIAUX = 'les matériaux de construction emmagasinent la chaleur';
+
 // ——— Carte : localiser de grandes métropoles (repère de la ressource Éduscol) ———
 
-type Continent = 'asie' | 'amerique-nord' | 'amerique-sud';
+type Continent = 'asie' | 'amerique-nord' | 'amerique-sud' | 'europe' | 'afrique';
 
-/** Métropoles de la liste des dix de l’atlas, avec leur continent. */
-export const METROPOLES: readonly { readonly nom: string; readonly continent: Continent }[] = [
-  { nom: 'Tokyo', continent: 'asie' },
-  { nom: 'Shanghai', continent: 'asie' },
-  { nom: 'Jakarta', continent: 'asie' },
-  { nom: 'Séoul', continent: 'asie' },
-  { nom: 'Bangkok', continent: 'asie' },
-  { nom: 'New York', continent: 'amerique-nord' },
-  { nom: 'Los Angeles', continent: 'amerique-nord' },
-  { nom: 'São Paulo', continent: 'amerique-sud' },
+/** Pourquoi la ville figure dans la liste (phrase reformulée en français d’après la source). */
+const REPERES = {
+  atlas: 'L’atlas de la Commission européenne la compte parmi les dix grands centres urbains les plus riches en 2015.',
+  mondiale: 'Le site de géographie Géoconfluences la compte parmi les principales villes mondiales.',
+  caire:
+    'L’atlas de la Commission européenne compte Le Caire parmi les dix grands centres urbains les plus exposés aux séismes.',
+} as const;
+
+/** Grandes métropoles à situer : pays d’après la notice de la BnF. */
+export const METROPOLES: readonly {
+  readonly nom: string;
+  readonly notice: string;
+  readonly pays: string;
+  readonly continent: Continent;
+  readonly src: string;
+  readonly repere: keyof typeof REPERES;
+}[] = [
+  {
+    nom: 'Tokyo',
+    notice: 'Tokyo (Japon)',
+    pays: 'au Japon',
+    continent: 'asie',
+    src: 'bnf-tokyo',
+    repere: 'atlas',
+  },
+  {
+    nom: 'Shanghai',
+    notice: 'Shanghai (Chine)',
+    pays: 'en Chine',
+    continent: 'asie',
+    src: 'bnf-shanghai',
+    repere: 'atlas',
+  },
+  {
+    nom: 'Jakarta',
+    notice: 'Jakarta (Indonésie)',
+    pays: 'en Indonésie',
+    continent: 'asie',
+    src: 'bnf-jakarta',
+    repere: 'atlas',
+  },
+  {
+    nom: 'Séoul',
+    notice: 'Séoul (Corée du Sud)',
+    pays: 'en Corée du Sud',
+    continent: 'asie',
+    src: 'bnf-seoul',
+    repere: 'atlas',
+  },
+  {
+    nom: 'Bangkok',
+    notice: 'Bangkok (Thaïlande)',
+    pays: 'en Thaïlande',
+    continent: 'asie',
+    src: 'bnf-bangkok',
+    repere: 'atlas',
+  },
+  {
+    nom: 'New York',
+    notice: 'New York (New York, États-Unis)',
+    pays: 'aux États-Unis',
+    continent: 'amerique-nord',
+    src: 'bnf-new-york',
+    repere: 'atlas',
+  },
+  {
+    nom: 'Los Angeles',
+    notice: 'Los Angeles (Calif., États-Unis)',
+    pays: 'aux États-Unis',
+    continent: 'amerique-nord',
+    src: 'bnf-los-angeles',
+    repere: 'atlas',
+  },
+  {
+    nom: 'São Paulo',
+    notice: 'São Paulo (São Paulo, Brésil)',
+    pays: 'au Brésil',
+    continent: 'amerique-sud',
+    src: 'bnf-sao-paulo',
+    repere: 'atlas',
+  },
+  {
+    nom: 'Paris',
+    notice: 'Paris (France)',
+    pays: 'en France',
+    continent: 'europe',
+    src: 'bnf-paris',
+    repere: 'mondiale',
+  },
+  {
+    nom: 'Londres',
+    notice: 'Londres (Royaume-Uni)',
+    pays: 'au Royaume-Uni',
+    continent: 'europe',
+    src: 'bnf-londres',
+    repere: 'mondiale',
+  },
+  {
+    nom: 'Le Caire',
+    notice: 'Le Caire (Égypte)',
+    pays: 'en Égypte',
+    continent: 'afrique',
+    src: 'bnf-le-caire',
+    repere: 'caire',
+  },
 ];
 
 const CONTINENTS = ['asie', 'amerique-nord', 'amerique-sud', 'europe', 'afrique', 'oceanie'] as const;
 const continent = (id: string) => zoneName('monde', id) ?? id;
 
-const reperage = (nom: string, zone: string) => [
-  `L’atlas de la Commission européenne cite les dix centres urbains au plus grand PIB (richesse produite) en 2015, dont ${nom} : « ${A_TOP} ».`,
-  `Il précise, en anglais : « ${A_CONTINENTS} », soit sept en Asie, deux en Amérique du Nord et un en Amérique latine.`,
-  'On situe la métropole sur le planisphère, continent par continent.',
-  `${nom} se trouve sur le continent : **${continent(zone)}**.`,
+const reperage = (m: (typeof METROPOLES)[number]) => [
+  REPERES[m.repere],
+  `La Bibliothèque nationale de France écrit « ${m.notice} » : ${m.nom} est ${m.pays}.`,
+  'Sur le planisphère, on cherche ce pays, puis le continent où il se trouve.',
+  `${m.nom} se trouve sur le continent : **${continent(m.continent)}**.`,
 ];
 
 function carteMetropoles(rng: Rng, level: Level): QuestionDraft | undefined {
@@ -145,7 +226,7 @@ function carteMetropoles(rng: Rng, level: Level): QuestionDraft | undefined {
         others.slice(0, level === 1 ? 2 : 3).map((z) => ({ label: continent(z), why: why(z) })),
       ),
       hint,
-      steps: reperage(m.nom, m.continent),
+      steps: reperage(m),
       targetSeconds: 25,
     };
   }
@@ -159,7 +240,7 @@ function carteMetropoles(rng: Rng, level: Level): QuestionDraft | undefined {
     answer: { kind: 'zone', map: 'monde', zone: m.continent },
     traps,
     hint,
-    steps: reperage(m.nom, m.continent),
+    steps: reperage(m),
     targetSeconds: 30,
   };
 }
@@ -174,20 +255,20 @@ const metropoles: Notion = {
   memo: [
     'Une **métropole** est une très grande ville qui concentre des emplois, des pouvoirs et de l’influence. Exemple : Tokyo.',
     'Ses habitants sont variés : résidents, **migrants pendulaires**, touristes, usagers occasionnels.',
-    'La **métropolisation**, c’est la place croissante prise par ces grandes villes dans le monde.',
+    'La **métropolisation**, c’est la concentration des habitants, des activités et des richesses dans les grandes villes.',
   ],
   faits: [
     {
-      q: 'Comment la ressource Éduscol définit-elle les métropoles ?',
-      a: 'de très grandes villes comptant plusieurs millions d’habitants',
+      q: 'Qu’est-ce qu’une métropole ?',
+      a: 'une très grande ville comptant plusieurs millions d’habitants',
       wrong: [
-        { label: 'de petits villages isolés', why: 'Une métropole est au contraire une très grande ville.' },
+        { label: 'un petit village isolé', why: 'Une métropole est au contraire une très grande ville.' },
         {
-          label: 'des espaces uniquement agricoles',
+          label: 'un espace uniquement agricole',
           why: 'Une métropole est un ensemble urbain, pas un espace agricole.',
         },
         {
-          label: 'des villes sans activité économique',
+          label: 'une ville sans activité économique',
           why: 'Les métropoles concentrent des emplois et des activités.',
         },
       ],
@@ -253,29 +334,6 @@ const metropoles: Notion = {
       explain: 'Chacun utilise la métropole à sa façon et contribue à la façonner.',
     },
     {
-      q: 'Comment doivent être choisies les deux métropoles étudiées en sixième ?',
-      a: 'l’une dans un pays développé, l’autre dans un pays émergent ou en développement',
-      wrong: [
-        {
-          label: 'toutes les deux dans le même pays',
-          why: 'Le programme veut deux niveaux de développement différents.',
-        },
-        { label: 'toutes les deux à la campagne', why: 'Une métropole est une très grande ville.' },
-        {
-          label: 'les deux plus petites villes de France',
-          why: 'On étudie de grandes métropoles et non de petites villes.',
-        },
-      ],
-      gap: [
-        'On compare une métropole d’un pays développé à une métropole d’un pays ',
-        ' ou en développement.',
-        ['émergent', 'emergent'],
-      ],
-      choix: ['émergent', 'désertique', 'insulaire'],
-      quote: P_CAS,
-      explain: 'La comparaison fait apparaître des ressemblances et des différences.',
-    },
-    {
       q: 'Depuis 2007, quelle part de l’humanité habite en ville ?',
       a: 'plus de la moitié',
       wrong: [
@@ -298,52 +356,82 @@ const metropoles: Notion = {
     ['Métropole', 'Très grande ville qui exerce une influence'],
     ['Résident', 'Personne qui habite durablement dans la métropole'],
     ['Migrant pendulaire', 'Personne qui fait chaque jour l’aller-retour vers son travail'],
-    ['Métropolisation', 'Place croissante prise par les grandes villes'],
+    ['Métropolisation', 'Concentration d’habitants et d’activités dans les grandes villes'],
     ['Fonction de commandement', 'Rôle de décision'],
   ],
   libres: [
     {
-      q: 'D’après l’atlas européen, quelle métropole parmi les dix au plus grand PIB (richesse produite) en 2015 vient en tête ?',
-      accepted: ['Tokyo', 'à Tokyo', 'Tôkyô', 'Tokio'],
-      traps: [
-        { text: 'New York', why: 'New York vient juste après Tokyo dans ce classement.' },
-        { text: 'Jakarta', why: 'Jakarta a la plus grande population du groupe, pas le plus grand PIB.' },
-      ],
-      quote: A_PIB,
-      explain: 'GDP est le mot anglais pour PIB : la richesse produite.',
-      src: ATLAS,
-    },
-    {
-      q: 'Parmi les dix centres urbains au plus grand PIB en 2015 (atlas européen), lequel a la plus grande population ?',
-      accepted: ['Jakarta', 'Djakarta', 'à Jakarta'],
-      traps: [
-        { text: 'Tokyo', why: 'Tokyo a le plus grand PIB, mais vient en deuxième pour la population.' },
-        { text: 'Los Angeles', why: 'Los Angeles est le plus étendu en surface bâtie.' },
-      ],
-      quote: A_POPULATION,
-      explain: 'Taille de la population et richesse produite ne donnent pas le même classement.',
-      src: ATLAS,
-    },
-    {
-      q: 'Quel mot désigne la place croissante prise par les métropoles dans le monde ?',
+      q: 'Quel mot, formé à partir de « métropole », désigne la concentration d’habitants et d’activités dans les grandes villes ?',
       accepted: ['métropolisation', 'la métropolisation', 'une métropolisation'],
       traps: [
         { text: 'mondialisation', why: 'La mondialisation désigne les échanges à l’échelle du monde.' },
         { text: 'urbanisme', why: 'L’urbanisme est l’aménagement des villes.' },
       ],
-      quote: P_METROPOLISATION,
-      explain: 'Le programme parle de métropolisation.',
+      quote: G_METROPOLISATION,
+      explain:
+        '« Métropole » donne « métropolisation » : habitants, activités et richesses se concentrent dans les grandes villes.',
+      src: METROPOLISATION,
     },
     {
-      q: 'Selon la ressource Éduscol, combien de métropoles parmi les plus importantes du monde faut-il savoir nommer et localiser ?',
-      accepted: ['10', 'dix'],
+      q: 'Comment appelle-t-on une très grande ville de plusieurs millions d’habitants, qui concentre des emplois et des pouvoirs ?',
+      accepted: ['métropole', 'une métropole', 'la métropole'],
       traps: [
-        { text: '2', why: 'Deux métropoles servent aux études de cas : le repère à connaître en demande davantage.' },
-        { text: '100', why: 'La ressource Éduscol en demande beaucoup moins.' },
+        { text: 'village', why: 'Un village compte peu d’habitants.' },
+        { text: 'campagne', why: 'La campagne est un espace peu peuplé.' },
       ],
-      quote: E_REPERES,
-      explain: 'Situer les grandes métropoles du monde est un repère à construire.',
+      quote: E_DEFINITION,
+      explain: 'Une très grande ville influente est une métropole.',
       src: EDUSCOL,
+    },
+    {
+      q: 'Comment appelle-t-on une personne qui habite durablement dans la métropole ?',
+      accepted: [
+        'résident',
+        'un résident',
+        'le résident',
+        'résidente',
+        'une résidente',
+        'résidant',
+        'un résidant',
+        'habitant',
+        'un habitant',
+      ],
+      traps: [
+        { text: 'touriste', why: 'Le touriste vient pour une visite : il repart chez lui.' },
+        {
+          text: 'migrant pendulaire',
+          why: 'Le migrant pendulaire fait l’aller-retour entre son domicile et son travail.',
+        },
+      ],
+      quote: P_HABITANTS,
+      explain: 'Le résident habite la métropole.',
+    },
+    {
+      q: 'Comment appelle-t-on une personne venue quelques jours dans une métropole pour la visiter ?',
+      accepted: ['touriste', 'un touriste', 'une touriste', 'le touriste'],
+      traps: [
+        { text: 'résident', why: 'Le résident habite durablement sur place.' },
+        { text: 'migrant pendulaire', why: 'Le migrant pendulaire vient chaque jour pour son travail.' },
+      ],
+      quote: P_HABITANTS,
+      explain: 'Le touriste visite la métropole.',
+    },
+    {
+      q: 'Comment appelle-t-on la personne qui fait chaque jour l’aller-retour entre son domicile et son travail (deux mots) ?',
+      accepted: [
+        'migrant pendulaire',
+        'un migrant pendulaire',
+        'le migrant pendulaire',
+        'migrante pendulaire',
+        'une migrante pendulaire',
+      ],
+      traps: [
+        { text: 'touriste', why: 'Le touriste visite : il ne vient pas travailler chaque jour.' },
+        { text: 'résident', why: 'Le mot « résident » dit où l’on habite, pas le trajet quotidien.' },
+      ],
+      quote: C_PENDULAIRE,
+      explain: 'Comme un balancier d’horloge, le migrant pendulaire va et revient chaque jour.',
+      src: 'cnrtl-pendulaire',
     },
   ],
   docs: [
@@ -380,27 +468,71 @@ const metropoles: Notion = {
       ],
     },
     {
-      title: 'Deux métropoles en classe',
+      title: 'Grandrive et Solaville',
       lines: [
-        'La classe compare deux métropoles de continents différents.',
-        'La première est dans un pays développé, la seconde dans un pays émergent.',
-        'Les élèves décrivent les habitants, les quartiers et les transports de chacune.',
+        'Grandrive compte 3 millions d’habitants. De hautes tours de bureaux forment son quartier d’affaires. Un métro la traverse.',
+        'Solaville compte 12 millions d’habitants. Autour de son centre ancien, des familles vivent dans des habitations de fortune.',
+        'À Solaville, des bus très remplis transportent chaque matin les travailleurs vers le centre.',
       ],
       qs: [
         {
-          q: 'Pourquoi les deux métropoles viennent-elles de pays différents ?',
-          a: 'pour comparer deux niveaux de développement',
+          q: 'Quelle métropole compte le plus d’habitants ?',
+          a: 'Solaville',
           wrong: [
-            { label: 'parce qu’un seul pays possède des villes', why: 'Il y a des villes dans de très nombreux pays.' },
-            { label: 'pour éviter de parler des habitants', why: 'Les habitants sont au cœur de l’étude.' },
+            { label: 'Grandrive', why: 'Grandrive en compte 3 millions, contre 12 millions pour Solaville.' },
+            { label: 'les deux en comptent autant', why: 'Les deux nombres du texte sont différents.' },
+            {
+              label: 'le texte ne permet pas de le savoir',
+              why: 'Le texte donne le nombre d’habitants des deux villes.',
+            },
           ],
-          quote: P_CAS,
-          explain: 'On cherche les ressemblances et les différences.',
+          quote: E_DEFINITION,
+          explain: '12 millions, c’est plus que 3 millions.',
+          src: EDUSCOL,
+        },
+        {
+          q: 'Quel point commun les deux métropoles ont-elles ?',
+          a: 'plusieurs millions d’habitants',
+          wrong: [
+            { label: 'un métro', why: 'Le texte ne cite un métro qu’à Grandrive.' },
+            { label: 'des habitations de fortune', why: 'Le texte n’en cite qu’à Solaville.' },
+            { label: 'le même nombre d’habitants', why: 'L’une en a 3 millions, l’autre 12 millions.' },
+          ],
+          quote: E_DEFINITION,
+          explain: 'Les deux sont de très grandes villes de plusieurs millions d’habitants.',
+          src: EDUSCOL,
+        },
+        {
+          q: 'Quelle différence entre les transports le texte montre-t-il ?',
+          a: 'un métro à Grandrive, des bus très remplis à Solaville',
+          wrong: [
+            { label: 'aucun transport à Solaville', why: 'Des bus y circulent.' },
+            { label: 'un métro à Solaville seulement', why: 'Le métro est cité à Grandrive.' },
+            {
+              label: 'les mêmes transports dans les deux villes',
+              why: 'Le texte cite un métro d’un côté, des bus de l’autre.',
+            },
+          ],
+          quote: E_MOBILITES,
+          explain: 'Chaque métropole organise les déplacements à sa façon.',
+          src: EDUSCOL,
+        },
+        {
+          q: 'Quel quartier de Grandrive montre sa fonction économique ?',
+          a: 'le quartier d’affaires',
+          wrong: [
+            { label: 'le centre ancien', why: 'Le texte cite un centre ancien à Solaville.' },
+            { label: 'les habitations de fortune', why: 'Elles sont à Solaville et servent de logements.' },
+            { label: 'aucun quartier', why: 'Les tours de bureaux forment un quartier d’affaires.' },
+          ],
+          quote: P_FONCTIONS,
+          explain: 'Les bureaux des entreprises relèvent de la fonction économique.',
         },
       ],
     },
   ],
   carte: carteMetropoles,
+  sources: [...METROPOLES.map((m) => m.src), ATLAS, VILLES_MONDIALES],
 };
 
 // ——— Notion 2 : la ville et ses périphéries ———
@@ -411,69 +543,55 @@ const peripheries: Notion = {
   title: 'La ville et ses périphéries',
   hint: 'Pars du centre, puis éloigne-toi : demande-toi ce qui relie chaque commune à la ville.',
   memo: [
-    'Au cœur, la **ville-centre** ; autour, la **banlieue** : ensemble, elles peuvent former une **agglomération**.',
-    'Plus loin, la **couronne** réunit les communes dont beaucoup d’actifs travaillent dans le pôle.',
-    'Les métropoles s’étendent : c’est l’**étalement urbain**, qui gagne les espaces autour de la ville.',
+    'Au cœur, la **ville-centre**, la commune principale ; autour, la **banlieue** : ensemble, elles forment une **agglomération** (l’INSEE parle d’**unité urbaine**).',
+    'Plus loin, la **couronne** : des communes d’où des habitants partent travailler dans le **pôle**, le cœur qui rassemble habitants et emplois.',
+    'Les métropoles s’étendent autour d’elles (**étalement urbain**) et ont souvent plusieurs centres : on les dit **multipolaires**.',
   ],
   faits: [
     {
-      q: 'Dans une agglomération de plusieurs communes, comment appelle-t-on les communes qui ne sont pas villes-centres ?',
+      q: 'Dans une agglomération, comment appelle-t-on les communes qui entourent la ville-centre ?',
       a: 'la banlieue',
       wrong: [
         { label: 'le centre historique', why: 'Le centre historique est dans la ville, pas autour.' },
         { label: 'la capitale', why: 'La capitale est la ville où siège le pouvoir d’un pays.' },
         { label: 'la région', why: 'Une région est un territoire beaucoup plus vaste.' },
       ],
-      gap: ['Les communes qui ne sont pas villes-centres constituent la ', ' de l’unité urbaine.', ['banlieue']],
+      gap: ['Les communes de l’agglomération qui ne sont pas villes-centres forment la ', '.', ['banlieue']],
       quote: I_BANLIEUE,
-      explain: 'La banlieue entoure la ville-centre à l’intérieur de l’unité urbaine.',
+      explain: 'La banlieue entoure la ville-centre, dans la même agglomération.',
       src: BANLIEUE,
     },
     {
-      q: 'Quand une commune est-elle seule ville-centre d’une agglomération ?',
-      a: 'quand elle réunit plus de la moitié de la population de l’agglomération',
+      q: 'Comment appelle-t-on la commune la plus peuplée, au cœur d’une agglomération ?',
+      a: 'la ville-centre',
       wrong: [
-        { label: 'quand elle a la plus petite population', why: 'C’est l’inverse : la ville-centre est très peuplée.' },
-        { label: 'quand elle n’a aucun voisin', why: 'Une agglomération comporte plusieurs communes.' },
-        {
-          label: 'quand elle se trouve au bord de la mer',
-          why: 'La position sur la côte ne compte pas dans cette règle.',
-        },
+        { label: 'la banlieue', why: 'La banlieue regroupe les communes qui entourent la ville-centre.' },
+        { label: 'la couronne', why: 'La couronne est plus loin, autour du pôle.' },
+        { label: 'un hameau', why: 'Un hameau est un tout petit groupe de maisons.' },
       ],
-      gap: [
-        'Une commune est seule ville-centre si elle compte plus de ',
-        ' % de la population de l’agglomération.',
-        ['50', 'cinquante'],
-      ],
+      gap: ['La commune la plus peuplée d’une agglomération est une ville-', '.', ['centre']],
       quote: I_VILLE_CENTRE,
-      explain: 'Au-delà de la moitié de la population, une commune domine seule l’agglomération.',
+      explain: 'La commune la plus peuplée est au cœur : c’est une ville-centre.',
       src: VILLE_CENTRE,
     },
     {
-      q: 'Selon l’INSEE, quelles communes forment la couronne d’une aire d’attraction ?',
-      a: 'celles dont au moins 15 % des actifs occupés travaillent dans le pôle',
+      q: 'Comment appelle-t-on les communes, plus loin autour du pôle, d’où des habitants partent y travailler ?',
+      a: 'la couronne',
       wrong: [
-        {
-          label: 'celles qui n’ont aucun lien avec la ville',
-          why: 'La couronne est définie par un lien de travail avec le pôle.',
-        },
-        { label: 'celles où se trouvent les gratte-ciel', why: 'La hauteur des immeubles ne définit pas la couronne.' },
-        { label: 'les communes situées à l’étranger', why: 'Le critère est le travail dans le pôle, pas le pays.' },
+        { label: 'la ville-centre', why: 'La ville-centre est au cœur, pas autour.' },
+        { label: 'le quartier d’affaires', why: 'Un quartier d’affaires rassemble des bureaux.' },
+        { label: 'le centre historique', why: 'Le centre historique est la partie ancienne de la ville.' },
       ],
-      gap: [
-        'La couronne regroupe les communes dont au moins ',
-        ' % des actifs occupés travaillent dans le pôle.',
-        ['15', 'quinze'],
-      ],
-      quote: I_COURONNE,
+      gap: ['Autour du pôle, les communes liées à lui par le travail forment la ', '.', ['couronne']],
+      quote: I_AIRE,
       explain: 'Le travail relie les communes de la couronne au pôle.',
-      src: COURONNE,
+      src: AIRE,
     },
     {
       q: 'Comment les métropoles s’agrandissent-elles surtout ?',
-      a: 'en surface, en intégrant les espaces périphériques',
+      a: 'en surface, en gagnant les espaces qui les entourent',
       wrong: [
-        { label: 'en perdant leurs habitants', why: 'Elles s’accroissent en population.' },
+        { label: 'en perdant leurs habitants', why: 'Elles gagnent au contraire des habitants.' },
         { label: 'en devenant des villages', why: 'Elles grandissent, elles ne rétrécissent pas.' },
         { label: 'seulement sous la mer', why: 'Elles gagnent surtout du terrain autour d’elles.' },
       ],
@@ -484,12 +602,12 @@ const peripheries: Notion = {
       ],
       choix: ['périphériques', 'montagnards', 'maritimes'],
       quote: E_SURFACE,
-      explain: 'La ville s’étale vers sa périphérie.',
+      explain: 'La ville s’étale vers sa périphérie, c’est-à-dire ses bords.',
       src: EDUSCOL,
     },
     {
-      q: 'Que signifie qu’une métropole est multipolaire ?',
-      a: 'elle comporte plusieurs centres, dont des centres secondaires',
+      q: 'Que veut dire qu’une métropole est « multipolaire » ?',
+      a: 'elle a plusieurs centres',
       wrong: [
         { label: 'elle n’a aucun centre', why: 'Au contraire, elle en a plusieurs.' },
         { label: 'elle est située au pôle Nord', why: '« Pôle » désigne ici un centre d’activités.' },
@@ -504,74 +622,61 @@ const peripheries: Notion = {
       explain: '« Multi » veut dire « plusieurs » : plusieurs centres.',
       src: EDUSCOL,
     },
-    {
-      q: 'Que désigne, selon l’INSEE, la commune-centre d’une aire d’attraction ?',
-      a: 'la commune la plus peuplée du pôle',
-      wrong: [
-        { label: 'la commune la plus éloignée', why: 'Le mot « centre » désigne la commune principale du pôle.' },
-        { label: 'la commune qui n’a pas d’emplois', why: 'Un pôle réunit justement population et emplois.' },
-        { label: 'une commune de la couronne', why: 'La commune-centre fait partie du pôle.' },
-      ],
-      gap: ['La commune la plus peuplée du pôle est appelée commune-', '.', ['centre']],
-      quote: I_COMMUNE_CENTRE,
-      explain: 'La commune-centre est la principale commune du pôle.',
-      src: AIRE,
-    },
   ],
   paires3: [
-    ['Ville-centre', 'La commune principale d’une agglomération'],
-    ['Banlieue', 'Les autres communes de l’unité urbaine'],
-    ['Couronne', 'Les communes dont des actifs travaillent dans le pôle'],
+    ['Ville-centre', 'Une commune principale de l’agglomération'],
+    ['Banlieue', 'Les communes autour de la ville-centre, dans l’agglomération'],
+    ['Couronne', 'Des communes plus loin, liées au pôle par le travail'],
   ],
   paires5: [
-    ['Ville-centre', 'La commune principale d’une agglomération'],
-    ['Banlieue', 'Les autres communes de l’unité urbaine'],
-    ['Couronne', 'Les communes dont des actifs travaillent dans le pôle'],
+    ['Ville-centre', 'Une commune principale de l’agglomération'],
+    ['Banlieue', 'Les communes autour de la ville-centre, dans l’agglomération'],
+    ['Couronne', 'Des communes plus loin, liées au pôle par le travail'],
     ['Étalement urbain', 'La ville gagne les espaces autour d’elle'],
-    ['Pôle', 'Ensemble qui concentre population et emplois'],
+    ['Pôle', 'Cœur qui rassemble habitants et emplois'],
   ],
-  ordre: ['la commune-centre', 'les autres communes du pôle', 'la couronne'],
+  ordre: ['la ville-centre', 'la banlieue', 'la couronne'],
   consigne: {
-    prompt: 'Dans une aire d’attraction, remets ces espaces dans l’ordre, du centre vers l’extérieur.',
-    hint: 'La commune la plus peuplée du pôle est au cœur ; la couronne entoure le pôle.',
-    why: 'L’aire d’attraction réunit un pôle (avec sa commune-centre) et, autour, une couronne.',
+    prompt: 'Remets ces espaces dans l’ordre, du centre vers l’extérieur.',
+    hint: 'La ville-centre est au cœur ; la couronne est la plus éloignée.',
+    why: 'La banlieue entoure la ville-centre ; la couronne se trouve autour du pôle qu’elles forment.',
     fin: 'Au cœur se trouve',
     quote: I_AIRE,
     src: AIRE,
   },
   libres: [
     {
-      q: 'Comment appelle-t-on l’ensemble des communes qui ne sont pas villes-centres dans une unité urbaine ?',
-      accepted: ['banlieue', 'la banlieue', 'les banlieues', 'banlieues'],
+      q: 'Comment appelle-t-on les communes qui entourent la ville-centre, dans la même agglomération ?',
+      accepted: ['banlieue', 'la banlieue', 'les banlieues', 'banlieues', 'une banlieue'],
       traps: [
-        { text: 'couronne', why: 'La couronne se définit par le travail dans un pôle d’aire d’attraction.' },
-        { text: 'ville-centre', why: 'La ville-centre est justement ce qui n’est pas la banlieue.' },
+        { text: 'couronne', why: 'La couronne est plus loin : le travail la relie au pôle.' },
+        { text: 'ville-centre', why: 'La ville-centre est au cœur, pas autour.' },
       ],
       quote: I_BANLIEUE,
-      explain: 'Les communes qui ne sont pas villes-centres forment la banlieue.',
+      explain: 'Les communes autour de la ville-centre forment la banlieue.',
       src: BANLIEUE,
     },
     {
-      q: 'Quel mot désigne une unité urbaine formée de plusieurs communes (sans la précision « multicommunale ») ?',
-      accepted: ['agglomération', 'une agglomération', 'l’agglomération', 'agglomération multicommunale'],
+      q: 'Quel mot désigne un ensemble de plusieurs communes dont les constructions se suivent ?',
+      accepted: ['agglomération', 'une agglomération', 'l’agglomération', 'unité urbaine', 'une unité urbaine'],
       traps: [
-        { text: 'ville isolée', why: 'Une ville isolée est une unité urbaine d’une seule commune.' },
-        { text: 'campagne', why: 'La campagne est un espace peu dense, hors de l’unité urbaine.' },
+        { text: 'région', why: 'Une région est un territoire beaucoup plus vaste.' },
+        { text: 'campagne', why: 'La campagne est un espace peu peuplé.' },
       ],
       quote: I_AGGLO,
-      explain: 'Plusieurs communes au bâti continu forment une agglomération.',
+      explain: 'Plusieurs communes qui se suivent forment une agglomération.',
       src: VILLE_CENTRE,
     },
     {
-      q: 'Dans la définition de l’unité urbaine, combien d’habitants au moins faut-il (en chiffres) ?',
-      accepted: ['2000', '2 000', 'deux mille'],
+      q: 'Comment appelle-t-on le fait que la ville s’étende sur les espaces qui l’entourent (deux mots) ?',
+      accepted: ['étalement urbain', 'l’étalement urbain', 'un étalement urbain'],
       traps: [
-        { text: '200', why: '200, c’est la coupure maximale en mètres entre deux constructions.' },
-        { text: '50000', why: 'Ce seuil de 50 000 sert à d’autres classements, pas à l’unité urbaine.' },
+        { text: 'urbanisme', why: 'L’urbanisme est la façon d’aménager la ville.' },
+        { text: 'centre-ville', why: 'Le centre-ville est le cœur de la ville.' },
       ],
-      quote: I_UNITE,
-      explain: 'Le bâti continu doit compter au moins 2 000 habitants.',
-      src: UNITE,
+      quote: E_SURFACE,
+      explain: 'La ville gagne de la surface : c’est l’étalement urbain.',
+      src: EDUSCOL,
     },
   ],
   docs: [
@@ -601,9 +706,21 @@ const peripheries: Notion = {
             { label: 'la commune-centre', why: 'La commune-centre est la plus peuplée du pôle.' },
             { label: 'la banlieue', why: 'La banlieue est dans l’unité urbaine, en continuité du bâti.' },
           ],
-          quote: I_COURONNE,
+          quote: I_AIRE,
           explain: 'C’est le lien de travail avec le pôle qui définit la couronne.',
-          src: COURONNE,
+          src: AIRE,
+        },
+        {
+          q: 'Quel est le rôle de Vertcoteau dans son agglomération ?',
+          a: 'la ville-centre',
+          wrong: [
+            { label: 'une commune de la couronne', why: 'La couronne est faite des villages plus éloignés.' },
+            { label: 'une commune de banlieue', why: 'La banlieue entoure Vertcoteau.' },
+            { label: 'un hameau isolé', why: 'Vertcoteau rassemble la plupart des habitants.' },
+          ],
+          quote: I_VILLE_CENTRE,
+          explain: 'La commune la plus peuplée est la ville-centre.',
+          src: VILLE_CENTRE,
         },
       ],
     },
@@ -626,6 +743,30 @@ const peripheries: Notion = {
           ],
           quote: E_MULTIPOLAIRES,
           explain: 'Plusieurs centres, dont des centres secondaires : la métropole est multipolaire.',
+          src: EDUSCOL,
+        },
+        {
+          q: 'Comment appeler le fait que la ville aille chaque année plus loin ?',
+          a: 'l’étalement urbain',
+          wrong: [
+            { label: 'la baisse de la population', why: 'Le texte dit que la ville s’étend.' },
+            { label: 'la disparition du centre', why: 'Le centre ancien existe toujours.' },
+            { label: 'le retour des champs', why: 'La ville avance sur les espaces qui l’entourent.' },
+          ],
+          quote: E_SURFACE,
+          explain: 'Une ville qui gagne de la surface s’étale.',
+          src: EDUSCOL,
+        },
+        {
+          q: 'Qu’est-ce que le quartier près de l’aéroport pour cette métropole ?',
+          a: 'un centre secondaire',
+          wrong: [
+            { label: 'son centre ancien', why: 'Le texte distingue le centre ancien de ce quartier.' },
+            { label: 'un village de la campagne', why: 'Le texte parle d’un second centre.' },
+            { label: 'un espace sans activité', why: 'Un second centre rassemble des activités.' },
+          ],
+          quote: E_MULTIPOLAIRES,
+          explain: 'En plus du centre principal, une métropole a des centres secondaires.',
           src: EDUSCOL,
         },
       ],
@@ -846,6 +987,30 @@ const mobilites: Notion = {
           explain: 'Les petites distances se prêtent à la marche ou au vélo.',
           src: TRAVAIL,
         },
+        {
+          q: 'Pour quel motif Malo se déplace-t-il ?',
+          a: 'un motif professionnel, le travail',
+          wrong: [
+            { label: 'les vacances', why: 'Le texte dit qu’il travaille dans le centre.' },
+            { label: 'les achats', why: 'Le texte ne parle pas de courses.' },
+            { label: 'le sport', why: 'Le texte ne parle pas d’activité sportive.' },
+          ],
+          quote: E_MOTIFS,
+          explain: 'Aller travailler est un motif professionnel.',
+          src: EDUSCOL,
+        },
+        {
+          q: 'Awa va au collège à pied. Quel type de déplacement est-ce ?',
+          a: 'un mode de transport doux',
+          wrong: [
+            { label: 'un transport en commun', why: 'La marche ne se partage pas dans un véhicule.' },
+            { label: 'un trajet en voiture', why: 'Awa se déplace à pied.' },
+            { label: 'un séjour touristique', why: 'Elle va au collège.' },
+          ],
+          quote: I_DOUX,
+          explain: 'La marche et le vélo sont les modes doux.',
+          src: TRAVAIL,
+        },
       ],
     },
     {
@@ -864,6 +1029,18 @@ const mobilites: Notion = {
           ],
           quote: D_TIERS,
           explain: 'Les transports pèsent sur l’environnement : partager et pédaler allègent ce poids.',
+          src: ADEME,
+        },
+        {
+          q: 'Avec quelle solution plusieurs personnes partagent-elles une même voiture ?',
+          a: 'le covoiturage',
+          wrong: [
+            { label: 'les pistes cyclables', why: 'Elles servent aux vélos.' },
+            { label: 'les embouteillages', why: 'Ce sont un problème, pas une solution.' },
+            { label: 'la marche', why: 'Marcher ne fait pas partager une voiture.' },
+          ],
+          quote: D_NOUVELLES,
+          explain: 'Le covoiturage réunit plusieurs personnes dans une voiture.',
           src: ADEME,
         },
       ],
@@ -1079,7 +1256,8 @@ const vocabulaire: Notion = {
       title: 'Une commune qui change',
       lines: [
         'En trente ans, la population de la ville de Belmonde a beaucoup augmenté.',
-        'Beaucoup de ces nouveaux habitants ont quitté la campagne pour devenir des citadins.',
+        'Beaucoup de ces nouveaux habitants ont quitté la campagne pour s’installer en ville.',
+        'La surface de la ville, elle, n’a pas changé.',
       ],
       qs: [
         {
@@ -1092,6 +1270,30 @@ const vocabulaire: Notion = {
           quote: C_URBANISATION,
           explain: 'La population se concentre de plus en plus en ville.',
           src: 'cnrtl-urbanisation',
+        },
+        {
+          q: 'Comment appelle-t-on les personnes qui vivent maintenant à Belmonde ?',
+          a: 'des citadins',
+          wrong: [
+            { label: 'des campagnards', why: 'Ils vivent désormais en ville.' },
+            { label: 'des touristes', why: 'Ils se sont installés : ils ne font pas que visiter.' },
+            { label: 'des migrants pendulaires', why: 'Le texte ne parle pas d’un trajet quotidien vers le travail.' },
+          ],
+          quote: C_CITADIN,
+          explain: 'Le citadin est la personne qui vit à la ville.',
+          src: 'cnrtl-citadin',
+        },
+        {
+          q: 'Qu’est-ce qui augmente à Belmonde, puisque plus d’habitants vivent sur la même surface ?',
+          a: 'la densité de population',
+          wrong: [
+            { label: 'la superficie', why: 'Le texte dit que la surface n’a pas changé.' },
+            { label: 'la distance entre les villes', why: 'La population ne change pas cette distance.' },
+            { label: 'la hauteur de la colline', why: 'Le texte ne parle pas de relief.' },
+          ],
+          quote: C_DENSITE,
+          explain: 'Plus d’habitants par kilomètre carré : la densité augmente.',
+          src: 'cnrtl-densite',
         },
       ],
     },
@@ -1129,9 +1331,12 @@ const villeDemain: Notion = {
       q: 'Quel problème l’étalement urbain et les mobilités posent-ils aux métropoles ?',
       a: 'un coût en énergie',
       wrong: [
-        { label: 'la disparition de la mer', why: 'L’étalement ne fait pas disparaître la mer.' },
-        { label: 'le manque de nom des rues', why: 'Ce n’est pas un problème environnemental cité.' },
-        { label: 'la baisse totale des trajets', why: 'Une ville étalée rend au contraire les trajets nombreux.' },
+        { label: 'des trajets plus courts pour tous', why: 'Une ville étalée allonge au contraire les distances.' },
+        { label: 'une baisse du nombre d’habitants', why: 'L’étalement accompagne la croissance de la ville.' },
+        {
+          label: 'la disparition de la circulation',
+          why: 'Les habitants continuent de se déplacer, souvent plus loin.',
+        },
       ],
       gap: ['L’étalement et les mobilités posent un problème de coût ', '.', ['énergétique', 'energetique']],
       choix: ['énergétique', 'postal', 'musical'],
@@ -1153,33 +1358,44 @@ const villeDemain: Notion = {
       src: EDUSCOL,
     },
     {
-      q: 'Comment s’appelle la modification du climat en ville, plus chaud que les environs ?',
+      q: 'Comment s’appelle le phénomène qui rend la ville plus chaude que les environs ?',
       a: 'l’îlot de chaleur',
       wrong: [
-        { label: 'le volcan urbain', why: 'Ce n’est pas un volcan : on parle d’îlot de chaleur.' },
-        { label: 'la banquise', why: 'La banquise est de la glace.' },
-        { label: 'la rocade', why: 'Une rocade est une voie de circulation.' },
+        { label: 'la vague de froid', why: 'Il s’agit au contraire d’un air plus chaud.' },
+        { label: 'la pollution sonore', why: 'La pollution sonore désigne le bruit.' },
+        { label: 'l’étalement urbain', why: 'L’étalement désigne la ville qui gagne de la surface.' },
       ],
-      gap: ['En ville, la modification du climat peut former un îlot de ', '.', ['chaleur']],
-      quote: E_ILOT,
-      explain: 'L’expression désigne une modification du climat propre à la ville.',
-      src: EDUSCOL,
+      gap: ['Le béton garde la chaleur et les arbres manquent : la ville forme un îlot de ', '.', ['chaleur']],
+      quote: G_ILOT,
+      explain:
+        'Les matériaux de construction gardent la chaleur et il manque des plantes : la ville chauffe davantage.',
+      src: ILOT,
     },
     {
-      q: 'Quelle question la ville de demain pose-t-elle, d’après le programme ?',
-      a: 'comment mieux vivre ensemble et améliorer le développement durable',
+      q: 'Une métropole veut loger de nouveaux habitants sans trop allonger leurs trajets. Quel choix est le plus adapté ?',
+      a: 'construire près d’une station de tramway ou de métro',
       wrong: [
-        { label: 'comment supprimer tous les habitants', why: 'La ville est faite pour ses habitants.' },
-        { label: 'comment arrêter tous les échanges', why: 'On cherche à mieux se déplacer et s’approvisionner.' },
-        { label: 'comment copier la ville sans rien changer', why: 'La démarche invite au contraire à imaginer.' },
+        {
+          label: 'construire loin de tout, sur des champs',
+          why: 'Les trajets deviennent plus longs et la ville s’étale.',
+        },
+        {
+          label: 'construire au bord d’une autoroute, sans transport en commun',
+          why: 'Les habitants dépendraient de la voiture.',
+        },
+        {
+          label: 'espacer de grandes maisons à la sortie de la ville',
+          why: 'La ville s’étend et les distances augmentent.',
+        },
       ],
       gap: [
-        'La ville de demain invite à imaginer de nouvelles architectures et à améliorer le développement ',
+        'Une ville qui protège l’environnement et pense aux habitants de demain vise le développement ',
         '.',
         ['durable'],
       ],
-      quote: P_DEMAIN,
-      explain: 'Déplacements, approvisionnement, architecture, cohabitation et durabilité sont en jeu.',
+      quote: E_ENERGIE,
+      explain: 'Loger près des transports limite l’étalement et l’énergie dépensée pour se déplacer.',
+      src: EDUSCOL,
     },
     {
       q: 'Quel problème social les métropoles rencontrent-elles ?',
@@ -1210,7 +1426,7 @@ const villeDemain: Notion = {
   ],
   libres: [
     {
-      q: 'Quel mot désigne la démarche qui consiste à réfléchir à la ville du futur et aux choix possibles (il commence par « prospec ») ?',
+      q: 'Quel mot désigne la démarche qui consiste à réfléchir à la ville du futur et aux choix possibles (il commence par « pro ») ?',
       accepted: ['prospective', 'la prospective', 'la prospective territoriale', 'prospective territoriale'],
       traps: [
         { text: 'prospectus', why: 'Un prospectus est un petit document publicitaire.' },
@@ -1220,25 +1436,32 @@ const villeDemain: Notion = {
       explain: 'La prospective imagine les futurs possibles d’un territoire.',
     },
     {
-      q: 'Complète l’expression étudiée en classe : « la ville … » (celle qui cherche à préserver l’avenir).',
+      q: 'Complète : « La ville qui vise le développement durable s’appelle la ville … »',
       accepted: ['durable', 'la ville durable', 'ville durable'],
       traps: [
+        {
+          text: 'verte',
+          why: 'La ville verte met la nature en avant : c’est une autre idée. Ici, la phrase parle de développement durable.',
+        },
+        {
+          text: 'écologique',
+          why: '« Écologique » ne reprend pas les mots de la phrase : on parle de la ville durable.',
+        },
         { text: 'étalée', why: 'La ville étalée désigne une ville qui s’étend loin.' },
-        { text: 'ancienne', why: 'L’âge d’une ville n’indique pas son rapport à l’avenir.' },
       ],
       quote: E_DURABLE,
-      explain: 'On cherche à penser, construire et gérer la ville durable.',
+      explain: 'Développement durable : ville durable.',
       src: EDUSCOL,
     },
     {
-      q: 'Quel adjectif qualifie la ville opposée à la ville étalée : plus resserrée, ou construite en hauteur (verticale) ?',
-      accepted: ['compacte', 'la ville compacte', 'ville compacte'],
+      q: 'Quel adjectif qualifie la ville opposée à la ville étalée, plus resserrée sur elle-même ?',
+      accepted: ['compacte', 'la ville compacte', 'ville compacte', 'dense', 'la ville dense', 'ville dense'],
       traps: [
         { text: 'périurbaine', why: 'Périurbain désigne les environs de la ville.' },
         { text: 'dispersée', why: 'Une ville dispersée est le contraire d’une ville resserrée.' },
       ],
       quote: E_COMPACTE,
-      explain: 'La ressource oppose la ville étalée à la ville compacte ou verticale.',
+      explain: 'La ressource oppose la ville étalée à la ville compacte, ou construite en hauteur.',
       src: EDUSCOL,
     },
   ],
@@ -1273,6 +1496,21 @@ const villeDemain: Notion = {
           explain: 'La ressource Éduscol demande de comprendre le rôle des citoyens.',
           src: EDUSCOL,
         },
+        {
+          q: 'Quel problème le premier projet risque-t-il d’aggraver ?',
+          a: 'l’énergie dépensée pour les trajets',
+          wrong: [
+            {
+              label: 'la chaleur dans la rue bétonnée du centre',
+              why: 'Le premier projet se situe loin du centre, sur des champs.',
+            },
+            { label: 'le trop grand nombre de stations de tramway', why: 'Ce projet est loin du tramway.' },
+            { label: 'le manque de discussion sur les écoles', why: 'Le texte ne parle pas d’écoles.' },
+          ],
+          quote: E_ENERGIE,
+          explain: 'Loin du centre, les trajets sont plus longs et demandent plus d’énergie.',
+          src: EDUSCOL,
+        },
       ],
     },
     {
@@ -1304,6 +1542,18 @@ const villeDemain: Notion = {
           quote: E_UTOPIES,
           explain: 'La ressource cite la ville intelligente et connectée.',
           src: EDUSCOL,
+        },
+        {
+          q: 'D’après le texte, quel élément de la rue peut garder la chaleur ?',
+          a: 'le béton',
+          wrong: [
+            { label: 'les capteurs numériques', why: 'Ils suivent la circulation.' },
+            { label: 'le futur parc', why: 'Le parc doit au contraire rafraîchir.' },
+            { label: 'les arbres prévus', why: 'Les arbres aident à rafraîchir.' },
+          ],
+          quote: G_MATERIAUX,
+          explain: 'Les matériaux de construction, comme le béton, emmagasinent la chaleur.',
+          src: ILOT,
         },
       ],
     },

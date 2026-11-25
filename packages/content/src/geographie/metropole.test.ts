@@ -45,6 +45,17 @@ describe('géographie 6e — Habiter une métropole', () => {
     }
   });
 
+  it('propose au moins six questions différentes au niveau 5', () => {
+    for (const n of NOTIONS) expect(n.docs.flatMap((d) => d.qs).length, n.id).toBeGreaterThanOrEqual(6);
+  });
+
+  it('n’interroge ni sur les consignes de classe ni sur des seuils statistiques', () => {
+    for (const n of NOTIONS) {
+      const enonces = [...n.faits, ...n.libres, ...n.docs.flatMap((d) => d.qs)].map((f) => f.q).join(' ');
+      expect(enonces, n.id).not.toMatch(/Éduscol|programme|en classe|%|PIB/);
+    }
+  });
+
   it('annonce la classe de sixième dans la leçon et sous les textes à lire', () => {
     for (const s of SKILLS) {
       expect(s.lesson.source).toContain('classe de sixième');
@@ -63,7 +74,14 @@ describe('géographie 6e — Habiter une métropole', () => {
     );
     expect(questions.some((q) => q.answer.kind === 'zone')).toBe(true);
     expect(questions.some((q) => q.answer.kind === 'choice')).toBe(true);
-    for (const m of METROPOLES) expect(zoneIds('monde')).toContain(m.continent);
+    for (const m of METROPOLES) {
+      expect(zoneIds('monde')).toContain(m.continent);
+      expect(skill.lesson.sources).toContain(m.src);
+      expect(getSource(m.src), m.nom).toBeDefined();
+    }
+    expect(new Set(METROPOLES.map((m) => m.continent))).toContain('europe');
+    expect(new Set(METROPOLES.map((m) => m.continent))).toContain('afrique');
+    for (const q of questions) expect(q.steps.join(' ')).not.toMatch(/Most of them/);
   });
 
   it('fait ranger les espaces du centre vers la périphérie', () => {
@@ -73,11 +91,7 @@ describe('géographie 6e — Habiter une métropole', () => {
     );
     expect(orders.length).toBeGreaterThan(0);
     for (const a of orders) {
-      expect(a.correct.map((i) => a.items[i])).toEqual([
-        'la commune-centre',
-        'les autres communes du pôle',
-        'la couronne',
-      ]);
+      expect(a.correct.map((i) => a.items[i])).toEqual(['la ville-centre', 'la banlieue', 'la couronne']);
     }
   });
 });
