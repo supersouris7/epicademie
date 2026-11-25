@@ -1,5 +1,5 @@
 import type { Rng } from '../rng.ts';
-import type { Trap } from '../types.ts';
+import type { Rich, Trap } from '../types.ts';
 
 /** Petits outils communs aux générateurs de français. */
 
@@ -25,3 +25,15 @@ export const lowerFirst = (s: string): string => s.charAt(0).toLowerCase() + s.s
 
 /** Une écriture en minuscules, sans doublon, pour comparer des propositions. */
 export const same = (a: string, b: string): boolean => a.toLowerCase() === b.toLowerCase();
+
+/** Pièges écrits, sans doublon ni écriture qui serait une réponse juste. */
+export function textTraps(accepted: readonly string[], list: readonly (readonly [string, Rich])[]): Trap[] {
+  const out: Trap[] = [];
+  const seen = [...accepted];
+  for (const [text, why] of list) {
+    if (seen.some((s) => same(s, text))) continue;
+    seen.push(text);
+    out.push(textTrap(text, why));
+  }
+  return out;
+}
