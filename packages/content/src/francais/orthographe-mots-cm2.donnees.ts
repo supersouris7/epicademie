@@ -352,12 +352,12 @@ export const QUEL_QUELLE: Serie = {
   ],
   doubles: [
     p('… joie quand on apprend … arrive demain !', 'quelle', 'qu’elle'),
-    p('Je ne sais pas … jour … revient.', 'quel', 'qu’elle'),
+    p('Je ne sais pas … jour il faut … revienne.', 'quel', 'qu’elle'),
     p('Elle demande … heure il est et dit … est pressée.', 'quelle', 'qu’elle'),
     p('… courage ! On voit … n’a pas peur.', 'quel', 'qu’elle'),
-    p('Sais-tu … plat … prépare ?', 'quel', 'qu’elle'),
+    p('Sais-tu … plat je veux … prépare ?', 'quel', 'qu’elle'),
     p('… chance ! Je crois … a gagné.', 'quelle', 'qu’elle'),
-    p('Dis-moi … route … prend, et à … moment.', 'quelle', 'qu’elle', 'quel'),
+    p('Dis-moi … route il faut … prenne, et à … moment.', 'quelle', 'qu’elle', 'quel'),
   ],
 };
 

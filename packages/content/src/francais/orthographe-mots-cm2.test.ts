@@ -88,6 +88,14 @@ describe('banques de phrases', () => {
     expect(phraseComplete('… vas-tu ?', ['où'])).toBe('Où vas-tu ?');
   });
 
+  it('« quel(le) » + nom n’est jamais suivi directement de « qu’elle » (tournure fautive)', () => {
+    for (const serie of SERIES_CM2)
+      for (const x of [...serie.simples, ...serie.doubles]) {
+        const phrase = phraseComplete(x.texte, motsDe(serie, x));
+        expect(phrase).not.toMatch(/(?<!\p{L})quel(le)?s? \p{L}+ qu’(elle|il)/iu);
+      }
+  });
+
   it('niveaux 1 et 2 : trois puis quatre propositions ; niveau 5 : trois lignes avec la notion précédente', () => {
     for (const s of skills.slice(0, 5)) {
       for (const level of [1, 2] as const)
