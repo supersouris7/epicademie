@@ -171,7 +171,7 @@ function articleDocument(rng: Rng): QuestionDraft {
   }
   const blocks: Block[] = rng.shuffle([
     {
-      note: `Il présente son ${pet.fr} pour la première fois, puis il reparle du même ${pet.fr}, de couleur ${colour.fr[0]}.`,
+      note: `Il présente son ${pet.fr} pour la première fois, puis il reparle du même ${pet.fr}, qui est ${colour.fr[0]}.`,
       parts: ['I’ve got ', ` ${pet.en}. `, ` ${pet.en} is ${colour.en}.`],
       articles: ['a', 'the'],
     },
@@ -550,7 +550,7 @@ const plurals: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'Un **pluriel** **irrégulier** ne se forme pas avec -s : man → men, woman → women, child → children.',
+      'Un **pluriel** **irrégulier** ne se forme pas en ajoutant simplement -s : man → men, woman → women, child → children.',
       'À connaître aussi : foot → feet, tooth → teeth, mouse → mice, knife → knives, person → people.',
       'Apprends chaque mot avec ses deux formes. Après two ou three, emploie le pluriel : two children.',
     ],
@@ -725,7 +725,7 @@ const adjectivePlace: Skill = {
 // ——— 5. Le génitif ’s ———
 const MARK: Readonly<Record<Owner['kind'], string>> = {
   one: 'Un seul possesseur : on ajoute ’s.',
-  s: 'Nom terminé par s : on ajoute ’ seule ou ’s.',
+  s: 'Prénom terminé par s : on ajoute ’ seule ou ’s.',
   plural: 'Plusieurs possesseurs, pluriel en -s : l’apostrophe se place après le s.',
   irregular: 'Pluriel irrégulier sans s final : on ajoute ’s.',
 };
@@ -746,6 +746,8 @@ function genitiveWrong(o: Owner, thing: string): (readonly [string, string])[] {
     [`${o.en} ${thing}`, `Il manque la marque du génitif. ${MARK[o.kind]}`],
     [`${thing}’s ${o.en}`, ORDER],
   ];
+  if (o.kind === 's')
+    list.push([`${o.en.slice(0, -1)}’s ${thing}`, 'Le prénom reste entier : l’apostrophe se place après son s final.']);
   if (o.kind === 'one') list.push([`${o.en}s ${thing}`, 'Sans apostrophe, le s marquerait un pluriel.']);
   if (o.kind === 'plural') {
     const singular = o.en.slice(0, -1);
@@ -846,7 +848,7 @@ const genitive: Skill = {
     memo: [
       'Le **génitif** dit à qui est une chose : le **possesseur**, puis **’s**, puis la chose : Greg’s bike (le vélo de Greg).',
       'Pluriel en -s : apostrophe seule après le s (my parents’ house). Pluriel irrégulier : ’s (the children’s room).',
-      'Nom terminé par s : les deux sont admis, James’ bag ou James’s bag.',
+      'Prénom terminé par s : les deux sont admis, James’ bag ou James’s bag.',
     ],
     source: source('Utiliser le génitif', '« Possessive ’s »'),
     sources: ['anglais-college-2025', 'bc-possessive-s'],

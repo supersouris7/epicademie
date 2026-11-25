@@ -241,8 +241,14 @@ export const ARTICLE_SENTENCES: readonly ArticleSentence[] = [
   sentence('He’s', 'a', 'scientist.', 'son métier', JOB),
   sentence('Yesterday, I saw', 'a', 'good film.', 'on parle de ce film pour la première fois', ANY),
   sentence('Do you want', 'a', 'drink?', 'une boisson, n’importe laquelle', ANY),
-  sentence('He’s', 'an', 'architect.', 'son métier', JOB),
-  sentence('I need', 'an', 'umbrella.', 'un parapluie, n’importe lequel', ANY),
+  sentence('He’s', 'an', 'architect.', 'son métier', `${JOB} « architect » commence par un son de voyelle : an.`),
+  sentence(
+    'I need',
+    'an',
+    'umbrella.',
+    'un parapluie, n’importe lequel',
+    `${ANY} « umbrella » commence par un son de voyelle : an.`,
+  ),
   sentence('It took me', 'an', 'hour to get home.', 'une heure de trajet', 'Le h de « hour » ne s’entend pas : an.'),
   sentence('Look at', 'the', 'moon!', 'la Lune', 'Il n’y en a qu’une, tout le monde sait de quoi on parle : the.'),
   sentence('I’ve got a dog.', 'the', 'dog is black.', 'on reparle du même chien', 'Le chien a déjà été cité : the.'),
@@ -286,7 +292,7 @@ const translation = (
   why: string,
 ): Translation => ({ fr, words, accepted, wrong, why });
 const NO_THE = 'On parle en général : pas de « the ».';
-const NEED_A = 'Un nom singulier dénombrable ne reste pas seul : il faut un article.';
+const NEED_A = 'Au singulier, une chose que l’on peut compter ne reste pas seule : il faut un article.';
 
 export const TRANSLATIONS: readonly Translation[] = [
   translation(
