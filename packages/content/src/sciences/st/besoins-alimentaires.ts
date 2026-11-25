@@ -86,7 +86,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
       figure: {
         kind: 'document',
         title: 'Repas de midi, jour calme (points inventés)',
-        lines: AGES.map((x, i) => `${x.qui} : ${points[i]} points.`),
+        lines: AGES.map((x, i) => `${maj(x.qui)} : ${points[i]} points.`),
       },
       answer,
       traps,
@@ -174,6 +174,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     [
       ['repos', 'Au repos, le corps bouge très peu. On cherche le mot pour les mouvements des muscles.'],
       ['croissance', 'La croissance, c’est grandir. On parle ici de mouvements.'],
+      ['sport', 'Le sport n’est qu’un exemple : monter un escalier compte aussi. Cherche le nom qui les regroupe.'],
     ],
   );
   return {
@@ -181,7 +182,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
       'Les mouvements faits par tes muscles, qui dépensent plus d’énergie qu’au repos, ont un nom. Écris-le (deux mots).',
     answer,
     traps,
-    hint: 'Le premier mot commence par « acti », le second par « phy ».',
+    hint: 'Le premier mot vient du verbe « agir ». Le second parle de ton corps.',
     steps: ['On nomme les mouvements des muscles.', 'C’est l’**activité physique**.'],
     targetSeconds: 40,
   };

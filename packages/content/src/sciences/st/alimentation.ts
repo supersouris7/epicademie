@@ -163,9 +163,9 @@ const niveau3 = (rng: Rng): QuestionDraft => {
       targetSeconds: 35,
     };
   }
-  const salade = rng.pick(FRUITS_LEGUMES);
+  const gouter = rng.pick(['une pomme', 'une banane', 'une poire', 'des carottes']);
   return {
-    prompt: `Léna prépare son goûter avec ${salade}. Complète ses bons réflexes.`,
+    prompt: `Léna prépare son goûter avec ${gouter}. Complète ses bons réflexes.`,
     answer: {
       kind: 'cloze',
       parts: ['Pour boire, elle choisit surtout : ', '. Pour ses repas, elle pense à la ', ' des aliments.'],
@@ -306,7 +306,20 @@ const ADULTES_JOURNEES = [
       'Soir : une tomate et de l’eau.',
     ],
     fruits: 3,
-    sucree: 'le soda « light »',
+    boissons: {
+      bon: 'Remplacer le soda « light » par de l’eau',
+      faux: [
+        {
+          label: 'Remplacer le café par de l’eau et garder le soda « light »',
+          why: 'Le soda « light » reste : Santé publique France le compte parmi les boissons sucrées.',
+        },
+        { label: 'Remplacer le soda « light » par un sirop dans l’eau', why: 'Le sirop est aussi une boisson sucrée.' },
+        {
+          label: 'Remplacer l’eau du soir par un autre soda « light »',
+          why: 'Cela ajoute une boisson sucrée et retire de l’eau.',
+        },
+      ],
+    },
   },
   {
     nom: 'Mme Garcia',
@@ -317,7 +330,23 @@ const ADULTES_JOURNEES = [
       'Soir : une poire et de l’eau.',
     ],
     fruits: 2,
-    sucree: 'le jus de fruits',
+    boissons: {
+      bon: 'Remplacer le jus de fruits et l’eau aromatisée sucrée par de l’eau',
+      faux: [
+        {
+          label: 'Remplacer seulement le jus de fruits par de l’eau',
+          why: 'Au goûter, il reste une eau aromatisée sucrée.',
+        },
+        {
+          label: 'Remplacer seulement l’eau aromatisée sucrée par de l’eau',
+          why: 'Le matin, il reste un jus de fruits, compté parmi les boissons sucrées.',
+        },
+        {
+          label: 'Remplacer le jus de fruits et l’eau aromatisée sucrée par des sirops',
+          why: 'Le sirop est aussi une boisson sucrée.',
+        },
+      ],
+    },
   },
 ] as const;
 
@@ -426,28 +455,19 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       targetSeconds: 80,
     };
   }
-  const bon = 'Remplacer toutes les boissons sucrées par de l’eau';
-  const { answer, traps } = choice(rng, bon, [
-    {
-      label: `Remplacer ${a.sucree} par un sirop dans l’eau`,
-      why: 'Le sirop est aussi une boisson sucrée.',
-    },
-    {
-      label: 'Choisir des boissons « light » à la place',
-      why: 'Santé publique France compte les sodas « light » parmi les boissons sucrées.',
-    },
-    {
-      label: 'Boire des eaux aromatisées sucrées à la place',
-      why: 'Les eaux aromatisées sont comptées parmi les boissons sucrées.',
-    },
-  ]);
+  const { bon } = a.boissons;
+  const { answer, traps } = choice(rng, bon, a.boissons.faux);
   return {
     prompt: `Lis la journée de ${a.nom}. D’après les repères pour les adultes, quel changement répond au repère sur les boissons ?`,
     figure,
     answer,
     traps,
-    hint: 'Repère chaque boisson sucrée de la journée. Une boisson « light » compte-t-elle ?',
-    steps: [`Dans la journée, on trouve notamment ${a.sucree} : c’est une boisson sucrée.`, `Réponse : **${bon}**.`],
+    hint: 'Repère chaque boisson sucrée de la journée, du matin au soir.',
+    steps: [
+      'On repère chaque boisson de la journée, puis celles qui sont sucrées.',
+      'On remplace toutes les boissons sucrées par de l’eau.',
+      `Réponse : **${bon}**.`,
+    ],
     targetSeconds: 70,
   };
 };

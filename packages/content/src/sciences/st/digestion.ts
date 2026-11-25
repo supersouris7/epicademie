@@ -178,7 +178,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   const t = rng.int(0, 3);
   if (t === 3) {
     const suite = [
-      'un morceau croqué dans l’assiette',
+      'le morceau que l’on vient de croquer',
       'des morceaux broyés et mouillés de salive (bol alimentaire)',
       'une bouillie à moitié liquide (chyme)',
       'une partie passe dans le sang',
@@ -198,7 +198,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     return {
       prompt: `Range dans l’ordre le trajet d’une bouchée : ${[...suite].sort().join(', ')}.`,
       answer: ordre(rng, suite),
-      hint: 'Commence là où tu croques, puis suis la bouchée de plus en plus loin dans le corps.',
+      hint: 'Récite tout le trajet depuis les dents, puis garde seulement les parties proposées.',
       steps: [
         'La bouchée avance toujours dans le même sens.',
         'Bouche, œsophage, estomac, intestin grêle, gros intestin.',
@@ -358,6 +358,14 @@ const MOMENTS = [
   'Plus loin, dans un long tuyau, une partie passe dans le sang.',
 ] as const;
 
+/** Pourquoi chaque moment du récit est juste (même ordre que `MOMENTS`). */
+const JUSTES = [
+  'Les dents broient et la salive mouille : c’est le début du trajet.',
+  'La bouchée avalée descend bien par un conduit, l’œsophage.',
+  'L’estomac est bien une poche qui brasse le repas.',
+  'Dans l’intestin grêle, une partie passe bien dans le sang.',
+] as const;
+
 /** Une phrase fausse à la place d’un moment du récit. */
 const ERREURS = [
   {
@@ -436,9 +444,9 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     const { answer, traps } = choice(
       rng,
       e.faux,
-      recit
-        .filter((m) => m !== e.faux)
-        .map((label) => ({ label, why: `Cette phrase est juste. Cherche une phrase qui contredit le trajet.` })),
+      MOMENTS.flatMap((label, i) =>
+        i === e.rang ? [] : [{ label, why: `Cette phrase est juste. ${JUSTES[i] ?? ''}` }],
+      ),
     );
     return {
       prompt: `${sujet} Une erreur s’est glissée dedans. Quelle phrase est fausse ?`,
