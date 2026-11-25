@@ -546,7 +546,7 @@ const verifierInformation: Notion = {
       gap: [
         'Une nouvelle sans aucune ',
         ' qu’on peut contrôler doit te faire douter (le mot commence par « pr »).',
-        ['preuve', 'preuves'],
+        ['preuve', 'preuves', 'précision', 'precision', 'précisions', 'precisions'],
       ],
       quote: DEFINITION,
       from: VP_INFOX,
@@ -586,6 +586,7 @@ const verifierInformation: Notion = {
       traps: [
         { text: 'source', why: 'La source dit d’où vient l’information. Ici, on nomme la fausse nouvelle.' },
         { text: 'opinion', why: 'Une opinion est un avis. Ici, on présente un faux fait.' },
+        { text: 'information', why: 'Une information peut être vraie. Le mot cherché dit qu’elle est fausse.' },
       ],
       quote: CIRCULENT,
       from: VP_INFOX,
@@ -703,7 +704,7 @@ const lesSources: Notion = {
   memo: [
     'La **source**, c’est d’où vient une **information** : une personne, un journal, un livre, un site. Cherche son **origine** avant de la croire.',
     'Compare des sources **fiables** et variées. Un **journaliste** recueille des informations pour le public.',
-    'La loi protège le **secret des sources** des journalistes : ils peuvent garder pour eux qui leur a parlé. Elle punit aussi les fausses nouvelles diffusées exprès qui troublent la paix publique.',
+    'La loi de 1881 protège le **secret des sources** des journalistes : ils peuvent garder pour eux qui leur a parlé. Elle punit aussi les fausses nouvelles diffusées exprès qui troublent la paix publique (le calme dans le pays).',
   ],
   faits: [
     {
@@ -765,7 +766,7 @@ const lesSources: Notion = {
     },
     {
       avance: true,
-      q: 'Que dit la loi de 1881 de la diffusion de fausses nouvelles faite de mauvaise foi qui trouble la paix publique ?',
+      q: 'Que dit la loi de 1881 de la diffusion de fausses nouvelles faite de mauvaise foi (exprès) qui trouble la paix publique, c’est-à-dire le calme dans le pays ?',
       a: 'elle est punie',
       wrong: [
         w('elle est récompensée', 'Une loi ne récompense pas ce qu’elle interdit.'),
