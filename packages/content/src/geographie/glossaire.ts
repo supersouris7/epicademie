@@ -1277,7 +1277,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'foyer-secondaire',
     word: 'foyer secondaire',
     forms: ['foyer secondaire', 'foyers secondaires'],
-    definition: 'Un foyer de peuplement plus petit que les trois grands foyers d’Asie et d’Europe.',
+    definition:
+      'Un foyer de peuplement plus petit que les trois grands foyers (Asie orientale, monde indien, Méditerranée-Europe).',
     example: 'Le golfe de Guinée est un foyer secondaire.',
   },
   {
@@ -1286,6 +1287,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['Néolithique', 'néolithique'],
     definition: 'La période de la préhistoire où les hommes inventent l’agriculture et l’élevage.',
     example: 'Au Néolithique, les premiers villages apparaissent.',
+  },
+  {
+    id: 'homo-sapiens',
+    word: 'Homo sapiens',
+    forms: ['Homo sapiens', 'd’Homo sapiens'],
+    definition: 'Le nom scientifique de notre espèce, celle de tous les humains d’aujourd’hui.',
+    example: 'Homo sapiens est sorti d’Afrique il y a environ 100 000 ans.',
   },
   {
     id: 'sedentarisation',

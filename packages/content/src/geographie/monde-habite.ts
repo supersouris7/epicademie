@@ -19,7 +19,6 @@ const HABITAT = 'geoconfluences-habitat';
 const LITTORALISATION = 'geoconfluences-littoralisation';
 
 // Programme du cycle 3.
-const P_INEGAL = 'Où sont les femmes et les hommes sur la Terre ? Comment expliquer l’inégal peuplement de la Terre ?';
 const P_PERMANENCES =
   'montrant les permanences des grands foyers de population et leurs évolutions dans la longue durée';
 
@@ -29,8 +28,6 @@ const E_TROIS_QUARTS =
   'Les trois quarts de l’humanité se distribuent en trois principaux foyers de peuplement : Asie orientale, monde indien et Méditerranée-Europe';
 const E_SECONDAIRES =
   'Le dernier quart de l’humanité se distribue dans le reste du monde en plusieurs foyers secondaires (Amérique : la façade atlantique nord-orientale avec la mégalopole, l’estuaire du Saint Laurent et la région des grands lacs, Sud-est brésilien ; Afrique subsaharienne : golfe de Guinée et Nigéria)';
-const E_MARGES =
-  'incluant leurs marges immédiates (péninsules et archipels asiatiques, Maghreb-Machrek) et les espaces qui les relient (Iran, Croissant fertile)';
 const E_NEOLITHIQUE = 'la mise en place des principaux foyers de peuplement dès le Néolithique';
 const E_AGRICULTURE =
   'ils correspondent aux espaces de sédentarisation en lien avec une augmentation de la production liée à la naissance de l’agriculture';
@@ -46,7 +43,6 @@ const E_HISTOIRE = 'Force est donc de rechercher des clés d’explication du pe
 const E_SORTIE =
   'la diffusion des hommes sur la Terre dans les débuts de l’humanité, depuis la « sortie d’Afrique » vers - 100 000 ans';
 const E_DENSEMENT = 'qu’il y a des espaces très densément peuplés et d’autres relativement vides d’hommes';
-const E_SURVALORISER = 'Survaloriser les facteurs explicatifs climatiques et morphologiques';
 const E_FAIBLEMENT =
   'En dépit des perspectives de forte croissance de la population mondiale, le monde reste dans son ensemble faiblement peuplé';
 const E_ETATS_UNIS =
@@ -100,11 +96,11 @@ const repartition: Notion = {
       wrong: [
         {
           label: 'de façon égale sur toutes les terres émergées',
-          why: 'La carte montre de grands contrastes : la répartition n’est pas égale.',
+          why: 'Les cartes de population montrent de grands contrastes : la répartition n’est pas égale.',
         },
         {
           label: 'uniquement dans les villes',
-          why: 'Une grande partie de l’humanité vit aussi dans les campagnes.',
+          why: 'Des hommes vivent aussi dans des déserts et des régions froides.',
         },
         {
           label: 'uniquement dans les régions au climat doux',
@@ -255,7 +251,7 @@ const repartition: Notion = {
       traps: [
         {
           text: 'Arctique',
-          why: 'L’Arctique est un océan, bordé de terres habitées ; le continent est l’Antarctique.',
+          why: 'L’Arctique est la région du pôle Nord (un océan et des terres habitées) : ce n’est pas un continent.',
         },
         { text: 'Afrique', why: 'L’Afrique est un continent habité, avec de grands foyers de peuplement.' },
       ],
@@ -281,14 +277,24 @@ const repartition: Notion = {
       src: LITTORALISATION,
     },
     {
-      q: 'En plus du climat et du relief, quels facteurs expliquent la répartition des hommes ?',
-      accepted: ['historiques', 'les facteurs historiques', 'facteurs historiques', 'l’histoire', 'histoire'],
+      q: 'Les grands foyers sont habités depuis des millénaires : au-delà du climat et du relief, de quel côté chercher l’explication ? Les facteurs…',
+      accepted: [
+        'historiques',
+        'historique',
+        'les facteurs historiques',
+        'facteurs historiques',
+        'l’histoire',
+        'histoire',
+      ],
       traps: [
         { text: 'climatiques', why: 'Le climat est déjà cité : il ne suffit pas à expliquer le peuplement.' },
-        { text: 'morphologiques', why: 'Le relief (la morphologie) est déjà cité : il ne suffit pas non plus.' },
+        {
+          text: 'économiques',
+          why: 'L’économie compte, mais l’indice est « des millénaires » : c’est le passé, donc l’histoire.',
+        },
       ],
-      quote: E_SURVALORISER,
-      explain: 'Éduscol met en garde contre l’excès d’explications par le climat et le relief : l’histoire compte.',
+      quote: E_HISTOIRE,
+      explain: 'Des foyers habités depuis des millénaires : il faut chercher l’explication du côté de l’histoire.',
       src: EDUSCOL,
     },
     {
@@ -310,7 +316,7 @@ const repartition: Notion = {
       lines: [
         'Sur le planisphère, de grandes taches sombres couvrent l’Asie orientale, l’Inde et l’Europe.',
         'D’autres régions restent très claires : le Sahara, le nord du Canada, l’intérieur de l’Australie.',
-        'Le professeur précise : même dans ces régions claires, on trouve des oasis, des villes et des villages.',
+        'Le professeur précise : même dans ces régions claires, on trouve des habitants : des oasis au Sahara, des villes et des villages ailleurs.',
         'Seul l’Antarctique n’accueille aucune population permanente.',
       ],
       qs: [
@@ -327,14 +333,15 @@ const repartition: Notion = {
               why: 'Le texte cite aussi l’Asie orientale et l’Inde.',
             },
           ],
-          quote: P_INEGAL,
+          quote: E_DENSEMENT,
           explain: 'Taches sombres et régions claires : c’est l’inégal peuplement de la Terre.',
+          src: EDUSCOL,
         },
         {
           q: 'D’après la ligne 3, les régions claires sont-elles totalement vides ?',
-          a: 'non : on y trouve des oasis, des villes et des villages',
+          a: 'non : on y trouve des habitants (oasis, villes, villages)',
           wrong: [
-            { label: 'oui : personne n’y vit', why: 'La ligne 3 cite des oasis, des villes et des villages.' },
+            { label: 'oui : personne n’y vit', why: 'La ligne 3 cite des oasis, des villes et des villages habités.' },
             { label: 'oui : elles sont recouvertes par la mer', why: 'Le Sahara ou le Canada sont des terres.' },
           ],
           quote: E_VIDES,
@@ -480,7 +487,7 @@ const foyers: Notion = {
   memo: [
     'Un **foyer de peuplement** est un espace où la population se concentre. Trois foyers principaux réunissent les trois quarts de l’humanité : Asie orientale, monde indien, Méditerranée-Europe.',
     'Le dernier quart vit surtout dans des **foyers secondaires** : Nord-Est des États-Unis, Sud-Est brésilien, golfe de Guinée.',
-    'Ces foyers sont très anciens : ils se forment dès le **Néolithique**, avec l’agriculture et la **sédentarisation**.',
+    'Les trois **foyers** principaux sont très anciens : ils se forment dès le **Néolithique**, avec l’agriculture et la **sédentarisation**.',
   ],
   faits: [
     {
@@ -492,7 +499,7 @@ const foyers: Notion = {
         { label: 'un quart', why: 'Un quart, c’est la part qui vit hors de ces trois foyers.' },
       ],
       gap: ['Les ', ' de l’humanité vivent dans les trois principaux foyers de peuplement.', ['trois quarts']],
-      choix: ['trois quarts', 'un dixième', 'un quart'],
+      choix: ['trois quarts', 'neuf dixièmes', 'deux dixièmes'],
       quote: E_TROIS_QUARTS,
       explain: 'Trois espaces seulement regroupent la plus grande partie de la population mondiale.',
       src: EDUSCOL,
@@ -518,7 +525,10 @@ const foyers: Notion = {
       q: 'Quel type de foyer de peuplement forment le golfe de Guinée et le Nigéria ?',
       a: 'un foyer secondaire',
       wrong: [
-        { label: 'un des trois foyers principaux', why: 'Les trois foyers principaux sont en Asie et en Europe.' },
+        {
+          label: 'un des trois foyers principaux',
+          why: 'Les trois foyers principaux sont l’Asie orientale, le monde indien et la Méditerranée-Europe.',
+        },
         { label: 'un vide humain', why: 'Cette région est très peuplée : ce n’est pas un vide.' },
         {
           label: 'un espace interdit à l’occupation permanente',
@@ -584,6 +594,7 @@ const foyers: Notion = {
         ' vers l’Amérique, l’Australie et l’Afrique du Sud.',
         ['Européens', 'les Européens'],
       ],
+      choix: ['Européens', 'Australiens', 'Américains'],
       quote: E_XIXE,
       explain: 'Ces migrations expliquent une partie des foyers secondaires d’aujourd’hui.',
       src: EDUSCOL,
@@ -599,10 +610,10 @@ const foyers: Notion = {
     ['Foyer secondaire', 'Golfe de Guinée'],
     ['Néolithique', 'Naissance de l’agriculture'],
     ['XIXe siècle', 'Migrations de masse des Européens'],
-    ['Vers - 100 000 ans', 'Sortie d’Afrique des premiers hommes'],
+    ['Vers - 100 000 ans', 'Sortie d’Afrique d’Homo sapiens'],
   ],
   ordre: [
-    'La sortie d’Afrique des premiers hommes (vers - 100 000 ans)',
+    'La sortie d’Afrique d’Homo sapiens (vers - 100 000 ans)',
     'La formation des grands foyers au Néolithique',
     'Les migrations de masse des Européens au XIXe siècle',
     'L’accélération actuelle de l’urbanisation',
@@ -625,6 +636,16 @@ const foyers: Notion = {
         'le monde indien',
         'Méditerranée-Europe',
         'la Méditerranée-Europe',
+        'Asie de l’Est',
+        'l’Asie de l’Est',
+        'Asie du Sud',
+        'l’Asie du Sud',
+        'Inde',
+        'l’Inde',
+        'Europe-Méditerranée',
+        'Europe et Méditerranée',
+        'Europe',
+        'l’Europe',
       ],
       traps: [
         { text: 'Amérique du Nord', why: 'Le Nord-Est des États-Unis est un foyer secondaire, pas principal.' },
@@ -710,7 +731,7 @@ const foyers: Notion = {
             { label: 'le monde indien', why: 'Le monde indien est décrit à la ligne 3.' },
             { label: 'la Méditerranée-Europe', why: 'La Méditerranée-Europe est décrite à la ligne 4.' },
           ],
-          quote: E_MARGES,
+          quote: E_TROIS_QUARTS,
           explain: 'La Chine de l’Est, la Corée et le Japon forment le foyer d’Asie orientale.',
           src: EDUSCOL,
         },
@@ -754,14 +775,17 @@ const foyers: Notion = {
         'En Amérique du Nord, la population se concentre sur la façade atlantique du Nord-Est.',
         'Au Brésil, elle se concentre dans le Sud-Est du pays.',
         'En Afrique, le golfe de Guinée et le Nigéria sont très peuplés.',
-        'Ces foyers et le reste du monde rassemblent le dernier quart de l’humanité.',
+        'Avec le reste du monde hors des trois grands foyers, ils rassemblent le dernier quart de l’humanité.',
       ],
       qs: [
         {
           q: 'Quel type de foyers ce texte présente-t-il ?',
           a: 'des foyers secondaires',
           wrong: [
-            { label: 'des foyers principaux', why: 'Les foyers principaux sont en Asie et en Europe.' },
+            {
+              label: 'des foyers principaux',
+              why: 'Les foyers principaux sont l’Asie orientale, le monde indien et la Méditerranée-Europe.',
+            },
             { label: 'des vides humains', why: 'Le texte décrit des espaces très peuplés.' },
           ],
           quote: E_SECONDAIRES,
