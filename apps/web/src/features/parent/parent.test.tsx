@@ -1,6 +1,7 @@
 import { screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import type { LearningReport } from '@epicademie/shared';
+import { chaptersOf } from '@epicademie/content';
+import { SUBJECTS, type LearningReport } from '@epicademie/shared';
 import { emptyLearning, FAKE_PASSWORD } from '../../testing/fakeApi.ts';
 import { renderApp } from '../../testing/renderApp.tsx';
 import { synthesis, toReview } from './summary.ts';
@@ -120,7 +121,9 @@ const gold = {
 describe('avancement par matière', () => {
   it('mêmes calculs que les menus : notions or, chapitres, matières à venir masquées', () => {
     const bars = subjectBars('5e', [gold], [], report);
-    expect(bars.map((b) => b.id)).not.toContain('histoire');
+    // Liste déduite du catalogue : un lot de contenu peut ouvrir une matière en 5e.
+    const shown = SUBJECTS.filter((s) => s.available && chaptersOf(s.id, '5e').length > 0);
+    expect(bars.map((b) => b.id)).toEqual(shown.map((s) => s.id));
     const maths = bars.find((b) => b.id === 'maths');
     expect(maths?.acquired).toBe(1);
     expect(maths?.total).toBeGreaterThan(1);
