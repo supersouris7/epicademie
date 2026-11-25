@@ -88,12 +88,12 @@ const SITUATIONS: readonly Qcm[] = [
       ['La côte de la Manche', 'La côte de la Manche n’est pas la zone la plus exposée.'],
       ['L’ensemble du territoire est exposé à égalité', 'Le zonage distingue des niveaux de sismicité différents.'],
     ],
-    indice: 'Pense aux îles situées au contact de deux plaques tectoniques.',
+    indice: 'Cherche un territoire français situé là où deux plaques tectoniques se rencontrent.',
     explication: ['Les Antilles sont au contact de deux plaques : c’est là que le risque est le plus fort.'],
   },
 ];
 
-const ONDES = ['les ondes P (les plus rapides)', 'les ondes S (plus lentes)', 'les ondes de surface (les dernières)'];
+const ONDES = ['les ondes P', 'les ondes S', 'les ondes de surface'];
 const MECANISME = [
   'Les plaques tectoniques bougent',
   'Des contraintes s’accumulent le long d’une faille',
@@ -123,7 +123,7 @@ export const seismes: Skill = {
   lesson: {
     memo: [
       'Un **séisme** est une rupture le long d’une **faille** : elle part du **foyer** et envoie des ondes. L’**épicentre** est le point de la surface juste au-dessus.',
-      'La **magnitude** mesure la puissance libérée ; l’**intensité** décrit la secousse en un lieu et s’atténue avec la distance. On ne sait pas prévoir la date : on construit **parasismique**.',
+      'Les ondes P arrivent les premières, puis les ondes S, puis les ondes de surface. La **magnitude** mesure la puissance libérée ; l’**intensité** décrit la secousse en un lieu et s’atténue avec la distance. On ne sait pas prévoir la date : on construit **parasismique**.',
     ],
     source: `Programme du cycle 4 (BOEN n° 31 du 30 juillet 2020) : « le globe terrestre (forme, rotation, dynamique interne et tectonique des plaques lithosphériques ; séismes, éruptions volcaniques ».`,
     sources: [PROGRAMME, BRGM_SEISME, ECO_SEISMES, TLF_SISMOGRAPHE],
@@ -157,7 +157,7 @@ export const seismes: Skill = {
         return {
           prompt: 'Dans quel ordre les ondes sismiques arrivent-elles à une station ?',
           answer: ordre(rng, ONDES),
-          hint: 'Les ondes « premières » portent bien leur nom, et celles de surface viennent après.',
+          hint: 'Pense au sens des lettres P et S, puis à l’endroit où voyagent les dernières ondes.',
           steps: [
             'Les ondes P vont le plus vite, les ondes S sont plus lentes, puis viennent les ondes de surface.',
             `Les premières arrivées sont **${ONDES[0]}**.`,
@@ -174,15 +174,19 @@ export const seismes: Skill = {
         answer: {
           kind: 'cloze',
           parts: surfaceDabord
-            ? ['À la surface, on parle de l’', ' ; en profondeur, la rupture commence au ', '.']
-            : ['La rupture commence au ', ' ; juste au-dessus, à la surface, se trouve l’', '.'],
+            ? [
+                'Point de la surface situé juste au-dessus de la rupture : ',
+                ' ; endroit profond où la rupture commence : ',
+                '.',
+              ]
+            : ['Endroit profond où la rupture commence : ', ' ; point de la surface situé juste au-dessus : ', '.'],
           blanks: (surfaceDabord ? [1, 0] : [0, 1]).map((correct) => ({
             mode: 'list' as const,
             options,
             correct,
           })),
         },
-        hint: 'L’un des deux mots commence par « épi », qui veut dire « au-dessus ».',
+        hint: 'Le début de mot « épi » veut dire « au-dessus ».',
         steps: [
           'La rupture commence en profondeur, au foyer.',
           'La projection du **foyer** à la surface est l’**épicentre**.',
@@ -254,10 +258,7 @@ export const seismes: Skill = {
           prompt: `Intensités relevées (${recit}). Quelle ville est probablement la plus proche de l’épicentre ?`,
           bonne: pres,
           fausses: [
-            [
-              milieu,
-              'La secousse y est plus faible qu’ailleurs au moins en un point : cherche l’intensité la plus forte.',
-            ],
+            [milieu, 'Une autre ville a une intensité plus forte : cherche la secousse la plus forte.'],
             [loin, 'C’est la secousse la plus faible : la ville est probablement la plus éloignée.'],
             [
               'Impossible à dire, car la magnitude est la même',

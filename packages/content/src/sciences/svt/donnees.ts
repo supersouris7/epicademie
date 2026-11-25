@@ -138,6 +138,16 @@ export const FAITS: readonly Fait[] = [
     'Plus tard viennent d’autres ondes qui ne se propagent qu’à la surface. Elles sont plus énergétiques, et peuvent donc causer plus de dommages.',
   ),
   f('seisme-imprevisible', BRGM_SEISME, 'On n’est pas en mesure de dire où et quand aura lieu un séisme'),
+  f(
+    'seisme-probabilite',
+    BRGM_SEISME,
+    'on est capable de dresser des cartes d’aléas qui caractérisent à un endroit donné la probabilité d’occurrence, sur des temps longs',
+  ),
+  f(
+    'antilles-plaques',
+    ECO_SEISMES,
+    'l’accumulation des contraintes au niveau du contact des plaques tectoniques Amérique et Caraïbes',
+  ),
   f('antilles', ECO_SEISMES, 'le risque de tremblement de terre est fort aux Antilles.'),
   f(
     'constructions',

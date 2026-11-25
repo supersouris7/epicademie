@@ -20,7 +20,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'sv-pression',
     word: 'pressions',
     forms: ['pression', 'pressions'],
-    definition: 'Pression atmosphérique : la force exercée par l’air. Elle varie d’un endroit à l’autre.',
+    definition:
+      'Pression atmosphérique : la poussée de l’air sur tout ce qu’il touche. Elle varie d’un endroit à l’autre.',
     example: 'Une zone de basses pressions s’appelle une dépression.',
   },
   {
@@ -29,6 +30,48 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['vent', 'vents'],
     definition: 'Mouvement horizontal de l’air.',
     example: 'L’air va des hautes vers les basses pressions : on sent le vent.',
+  },
+  {
+    id: 'sv-anticyclone',
+    word: 'anticyclones',
+    forms: ['anticyclone', 'anticyclones'],
+    definition: 'Zone de hautes pressions atmosphériques.',
+    example: 'L’air s’écoule d’un anticyclone vers une dépression.',
+  },
+  {
+    id: 'sv-depression',
+    word: 'dépressions',
+    forms: ['dépression', 'dépressions'],
+    definition: 'En météo, zone de basses pressions atmosphériques.',
+    example: 'Les vents sont souvent forts autour d’une dépression.',
+  },
+  {
+    id: 'sv-ondes-p',
+    word: 'ondes P',
+    forms: ['ondes P'],
+    definition: 'Ondes sismiques « premières » : les plus rapides, elles arrivent d’abord.',
+    example: 'La station enregistre les ondes P en premier.',
+  },
+  {
+    id: 'sv-ondes-s',
+    word: 'ondes S',
+    forms: ['ondes S'],
+    definition: 'Ondes sismiques « secondes » : plus lentes que les ondes P.',
+    example: 'Les ondes S arrivent après les ondes P.',
+  },
+  {
+    id: 'sv-plaque',
+    word: 'plaque tectonique',
+    forms: ['plaques tectoniques'],
+    definition: 'Grand morceau rigide de la surface de la Terre, qui se déplace très lentement.',
+    example: 'Beaucoup de séismes se produisent aux frontières des plaques tectoniques.',
+  },
+  {
+    id: 'sv-contraintes',
+    word: 'contraintes',
+    forms: ['contraintes'],
+    definition: 'Dans les roches, forces qui s’accumulent et les mettent sous tension.',
+    example: 'Les contraintes se relâchent quand la roche rompt.',
   },
   {
     id: 'sv-effet-serre',

@@ -55,7 +55,7 @@ const scene = (s: (typeof SCENES)[number], demande: 'alea' | 'enjeu'): Qcm => {
         alea ? 'Ce qui est exposé est un enjeu, pas l’aléa.' : 'L’événement possible est l’aléa, pas un enjeu.',
       ],
       [
-        'le panneau d’information de la mairie',
+        'une réunion d’information organisée par la mairie',
         'Informer fait partie de la prévention : ce n’est ni l’événement ni ce qui est exposé ici.',
       ],
     ],
@@ -81,19 +81,21 @@ const FAMILLES = {
 } as const;
 type Famille = keyof typeof FAMILLES;
 const NOMS_FAMILLES = Object.keys(FAMILLES) as Famille[];
+/** « de » s’élide devant une voyelle : d’adaptation, d’atténuation. */
+const de = (f: Famille) => (f.startsWith('a') ? `d’${f}` : `de ${f}`);
 
 const famille = ([texte, f]: (typeof MESURES)[number]): Qcm => ({
   prompt: `« ${texte}. » C’est surtout une mesure…`,
-  bonne: `de ${f}`,
-  fausses: NOMS_FAMILLES.filter((n) => n !== f).map((n) => [`de ${n}`, `La mesure de ${n} consiste à ${FAMILLES[n]}.`]),
+  bonne: de(f),
+  fausses: NOMS_FAMILLES.filter((n) => n !== f).map((n) => [de(n), `Une mesure ${de(n)} consiste à ${FAMILLES[n]}.`]),
   indice: 'Cause du climat, ajustement, barrière ou action en amont ?',
-  explication: [`La mesure de ${f} consiste à ${FAMILLES[f]}.`],
+  explication: [`Une mesure ${de(f)} consiste à ${FAMILLES[f]}.`],
 });
 
 const CHAINE = [
   'Connaître l’aléa et les enjeux',
   'Préparer des mesures et informer les habitants',
-  'Surveiller le phénomène et alerter',
+  'Quand le danger approche, donner l’alerte',
   'Se mettre à l’abri ou évacuer en suivant les consignes',
 ];
 
@@ -147,7 +149,7 @@ export const risques: Skill = {
           prompt: `${s.phenomene} menace ${s.expose}. Complète avec les bons mots.`,
           answer: {
             kind: 'cloze',
-            parts: [`Ici, ${s.aleaMot} est l’`, ` et ${s.expose} est un `, '.'],
+            parts: [`Le bon mot pour « ${s.aleaMot} » : `, ` ; le bon mot pour « ${s.expose} » : `, '.'],
             blanks: [
               { mode: 'list', options, correct: 0 },
               { mode: 'list', options, correct: 1 },
@@ -180,7 +182,7 @@ export const risques: Skill = {
       };
     }
     if (level === 4) {
-      const forme = rng.int(0, 2);
+      const forme = rng.int(0, 1);
       if (forme === 0) {
         const serie = rng.int(0, 1);
         const exemples = [
@@ -211,9 +213,15 @@ export const risques: Skill = {
           targetSeconds: 60,
         };
       }
-      if (forme === 1) return qcm(rng, famille(rng.pick(MESURES)), 30);
       const s = rng.pick(SAISIES);
-      const { answer, traps } = saisie(s.accepted, [[s.autre, `« ${s.autre} » désigne ${DEFS[s.autre]}.`]]);
+      const erreurs: (readonly [string, string])[] = [[s.autre, `« ${s.autre} » désigne ${DEFS[s.autre]}.`]];
+      if (s.t === 'prévention') {
+        erreurs.push(
+          ['protection', 'La protection place un obstacle ou un abri entre le danger et les enjeux.'],
+          ['prévision', 'La prévision estime si le phénomène va se produire : elle ne regroupe pas les actions.'],
+        );
+      }
+      const { answer, traps } = saisie(s.accepted, erreurs);
       return {
         prompt: `Écris le mot du vocabulaire des risques qui désigne ${DEFS[s.t]}.`,
         answer,

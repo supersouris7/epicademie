@@ -107,7 +107,7 @@ function carnet(rng: Rng): QuestionDraft {
     const q = qcm(
       rng,
       {
-        prompt: `Éruption observée au ${nom} : ${explosive ? 'gaz et projections' : 'lave fluide et coulée'}. De quel type est-elle ?`,
+        prompt: `D’après le carnet d’observation du ${nom}, de quel type est cette éruption ?`,
         bonne: explosive ? 'explosive' : 'effusive',
         fausses: [
           [
@@ -135,7 +135,7 @@ function carnet(rng: Rng): QuestionDraft {
     {
       prompt: `Au ${nom}, ${explosive ? 'des cendres tombent sur le village' : 'une coulée avance vers la route'}. Quelle action protège le mieux les habitants ?`,
       bonne: explosive
-        ? 'Suivre la surveillance du volcan et les consignes d’évacuation avant le danger'
+        ? 'S’informer auprès des autorités et suivre leurs consignes, y compris pour évacuer'
         : 'Surveiller le volcan, fermer la route menacée et suivre les consignes des autorités',
       fausses: [
         [
@@ -153,7 +153,7 @@ function carnet(rng: Rng): QuestionDraft {
       ],
       indice: 'Pense à la surveillance, à l’alerte et à la distance avec le danger.',
       explication: [
-        'Les volcans sont surveillés et les éruptions sont souvent annoncées : on s’informe et on s’éloigne du danger.',
+        'En France, les volcans sont surveillés et une éruption est généralement prévisible : on s’informe et on s’éloigne du danger.',
       ],
     },
     45,
@@ -169,7 +169,7 @@ export const volcans: Skill = {
   lesson: {
     memo: [
       'Le **magma** se forme en profondeur et monte par la **cheminée** jusqu’au **cratère** ; quand il sort et s’écoule, on parle de **lave**.',
-      'Éruption **effusive** : lave fluide en coulées. Éruption **explosive** : magma riche en gaz, projeté en fragments (dont les **cendres**). Les volcans sont surveillés en permanence.',
+      'Éruption **effusive** : lave fluide en coulées. Éruption **explosive** : magma riche en gaz, projeté en fragments (dont les **cendres**). En France, l’activité volcanique est surveillée en permanence.',
     ],
     source: `Programme du cycle 4 (BOEN n° 31 du 30 juillet 2020) : « dynamique interne et tectonique des plaques lithosphériques ; séismes, éruptions volcaniques ».`,
     sources: [PROGRAMME, TLF_VOLCAN, TLF_LAVE, GEO_VOLCAN, ECO_NATURELS, ECO_MAJEURS],

@@ -51,6 +51,14 @@ const DEFINITIONS: Record<string, string> = {
 };
 const NOMS = Object.keys(DEFINITIONS);
 
+/** Ce qui distingue chaque mot des trois autres. */
+const REPERES: Record<string, string> = {
+  météo: 'Elle porte sur un moment précis, pas sur une longue période.',
+  climat: 'Il résume de nombreuses années d’observations, pas un seul jour.',
+  vent: 'Il s’agit d’air qui se déplace.',
+  'effet de serre': 'Il s’agit de chaleur retenue par des gaz de l’atmosphère.',
+};
+
 const definition = (nom: string): Qcm => ({
   prompt: `Quelle définition correspond à « ${nom} » ?`,
   bonne: DEFINITIONS[nom] ?? '',
@@ -59,7 +67,7 @@ const definition = (nom: string): Qcm => ({
     `Cette définition est celle de « ${n} », pas celle de « ${nom} ».`,
   ]),
   indice: 'Demande-toi si on parle d’un instant, d’une longue moyenne, de l’air en mouvement ou de chaleur retenue.',
-  explication: [`On cherche le sens précis du mot « ${nom} ».`],
+  explication: [`On cherche le sens précis du mot « ${nom} ». ${REPERES[nom] ?? ''}`],
 });
 
 const CHAINE = [
@@ -97,7 +105,7 @@ const MOTS = [
   {
     mot: 'effet de serre',
     accepted: ['effet de serre', 'l’effet de serre'],
-    indice: 'Les gaz de l’atmosphère retiennent une partie de la chaleur, comme une serre.',
+    indice: 'Pense à l’abri vitré où un jardinier garde ses plantes au chaud : l’expression compte trois mots.',
     question: 'Quel phénomène permet à certains gaz de retenir une partie du rayonnement émis par la Terre ?',
     autre: 'météo',
     pourquoi: 'La météo est le temps qu’il fait : ce n’est pas le phénomène qui retient la chaleur.',
@@ -129,7 +137,7 @@ export const meteoClimat: Skill = {
   lesson: {
     memo: [
       'La **météo**, c’est le temps à un instant et un endroit donnés ; le **climat**, c’est la moyenne sur plusieurs décennies (souvent 30 ans). Une semaine froide ne change pas le climat.',
-      'L’air va des hautes vers les basses **pressions** : c’est le **vent**. Les gaz à **effet de serre** ajoutés par les activités humaines réchauffent la planète.',
+      'L’air va des zones de hautes **pressions** (**anticyclones**) vers les zones de basses pressions (**dépressions**) : c’est le **vent**. Les gaz à **effet de serre** ajoutés par les activités humaines réchauffent la planète.',
     ],
     source: `Programme du cycle 4 (BOEN n° 31 du 30 juillet 2020) : « Différence entre météo et climat ; Les grandes zones climatiques de la Terre » ; « Les changements climatiques passés (temps géologiques) et actuels ».`,
     sources: [PROGRAMME, MF_METEO, MF_VENT, MF_SYSTEME, MF_HEXAGONE, MF_OUTREMER, ECO_CLIMAT],
@@ -238,7 +246,7 @@ export const meteoClimat: Skill = {
     const chaud = rng.int(0, 1) === 0;
     const releve = chaud ? normale + ecart : normale - ecart;
     const lines = [
-      `Station fictive de Clairval : température habituelle d’un après-midi de juin (moyenne sur 30 ans) : ${normale} °C.`,
+      `Station fictive de Clairval : température habituelle d’un après-midi de juin, appelée « normale » (moyenne sur 30 ans) : ${normale} °C.`,
       `Cette semaine de juin, on a relevé ${releve} °C l’après-midi.`,
     ];
     const figure = {
@@ -257,6 +265,10 @@ export const meteoClimat: Skill = {
           [releve + normale, 'Un écart se calcule par une soustraction, pas par une addition.'],
           [releve, 'C’est la température relevée, pas l’écart avec la normale.'],
           [normale, 'C’est la normale, pas l’écart.'],
+          [
+            releve - normale,
+            'L’écart demandé est un nombre de degrés, sans signe moins : retire la plus petite valeur de la plus grande.',
+          ],
         ]),
         hint: 'Compare le relevé à la moyenne sur 30 ans en faisant une différence.',
         steps: [
