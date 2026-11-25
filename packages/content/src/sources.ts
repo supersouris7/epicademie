@@ -1605,6 +1605,14 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-25',
   },
   {
+    id: 'bc-articles-general',
+    title: 'LearnEnglish, Grammar A1-A2 : Articles: a, an, the',
+    publisher: 'British Council',
+    url: 'https://learnenglish.britishcouncil.org/free-resources/grammar/a1-a2-grammar/articles-a-an-the',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
     id: 'bc-teens-cafe',
     title: 'LearnEnglish Teens, A1 listening : Ordering food in a café (transcription)',
     publisher: 'British Council',

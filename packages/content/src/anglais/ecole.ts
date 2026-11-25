@@ -37,15 +37,47 @@ const aOrAn = (s: string) => (startsWithVowel(s) ? 'an' : 'a');
 const bare = (list: readonly Word[]) => list.filter((x) => !x.en.includes('.'));
 
 /** Noms qu'on peut ne pas compter : « some » est accepté devant. */
-const MASS = ['bread', 'cheese', 'rice', 'fish', 'meat', 'chicken', 'cake', 'pasta', 'ice cream', 'jam', 'yoghurt'];
+const MASS = [
+  'bread',
+  'cheese',
+  'rice',
+  'fish',
+  'meat',
+  'chicken',
+  'cake',
+  'pasta',
+  'ice cream',
+  'ice-cream',
+  'jam',
+  'yoghurt',
+  'yogurt',
+  'melon',
+  'pineapple',
+  'lettuce',
+  'cabbage',
+];
 const LIQUIDS = ['water', 'milk', 'orange juice', 'tea', 'hot chocolate', 'lemonade', 'glue'];
 /** Mots qu'on peut aussi compter un par un : « a cake », « a tea ». */
-const ALSO_ONE = ['fish', 'chicken', 'cake', 'ice cream', 'yoghurt', 'tea', 'glue'];
+const ALSO_ONE = [
+  'fish',
+  'chicken',
+  'cake',
+  'ice cream',
+  'ice-cream',
+  'yoghurt',
+  'yogurt',
+  'melon',
+  'pineapple',
+  'lettuce',
+  'cabbage',
+  'tea',
+  'glue',
+];
 
 /** Petits mots acceptés devant un nom écrit seul : jamais « a » devant un pluriel. */
 function determiners(name: string): string[] {
   const one = startsWithVowel(name) ? 'an' : 'a';
-  if (name.endsWith('s') || name === 'yoghurt') return name === 'yoghurt' ? ['the', 'some', one] : ['the', 'some'];
+  if (name.endsWith('s')) return ['the', 'some'];
   if (MASS.includes(name) || LIQUIDS.includes(name)) return ['the', 'some', ...(ALSO_ONE.includes(name) ? [one] : [])];
   return ['the', one];
 }
@@ -172,6 +204,24 @@ const COMMON_FOOD = EDIBLE.filter((w) =>
   ['bread', 'cheese', 'rice', 'cake', 'apple', 'banana', 'milk', 'water'].includes(w.en),
 );
 
+/** Noms comptés un par un : au pluriel dans « I like … ». Les autres (indénombrables) restent tels quels. */
+const SAID_PLURAL: Readonly<Record<string, string>> = {
+  apple: 'apples',
+  banana: 'bananas',
+  orange: 'oranges',
+  strawberry: 'strawberries',
+  pear: 'pears',
+  peach: 'peaches',
+  cherry: 'cherries',
+  pineapple: 'pineapples',
+  melon: 'melons',
+  potato: 'potatoes',
+  carrot: 'carrots',
+  onion: 'onions',
+  cucumber: 'cucumbers',
+  sausage: 'sausages',
+};
+
 function heardFood(rng: Rng): QuestionDraft {
   const w = rng.pick(EDIBLE);
   const { answer, traps } = choice(
@@ -179,13 +229,14 @@ function heardFood(rng: Rng): QuestionDraft {
     w.fr,
     others(rng, EDIBLE, w, 3).map((o) => ({ label: o.fr, why: `« ${o.fr} » se dit « ${o.en} » en anglais.` })),
   );
+  const said = `I like ${SAID_PLURAL[w.en] ?? w.en}.`;
   return {
     prompt: 'Écoute. De quel aliment ou de quelle boisson parle-t-on ?',
-    audio: { text: `I like ${w.en}.`, lang: 'en-GB' },
+    audio: { text: said, lang: 'en-GB' },
     answer,
     traps,
     hint: 'Écoute bien le dernier mot de la phrase.',
-    steps: [`On entend « I like ${w.en}. »`, `Réponse : **${w.fr}**`],
+    steps: [`On entend « ${said} »`, `Réponse : **${w.fr}**`],
   };
 }
 
@@ -260,7 +311,7 @@ const food: Skill = {
     memo: [
       'À manger : bread (pain), cheese (fromage), rice (riz), meat (viande), fish (poisson), cake (gâteau).',
       'Fruits, légumes et boissons : apple (pomme), strawberry (fraise), carrot, potato (pomme de terre), water (eau), milk (lait).',
-      'Un **faux ami** : chips veut dire « frites ». Les chips, ce sont des crisps.',
+      'Un **faux ami** : en anglais d’Angleterre, chips veut dire « frites ». Les chips, ce sont des crisps.',
     ],
     source: source(
       'les besoins quotidiens : la nourriture. Mots : British Council, fiches « Food », « Fruit », « Vegetables » et « Drinks ».',
@@ -273,6 +324,7 @@ const food: Skill = {
       'bck-flashcards-vegetables',
       'bck-flashcards-drinks',
       'bck-like',
+      'bc-articles-general',
     ],
   },
   generate: (rng, level): QuestionDraft => {
@@ -296,6 +348,7 @@ const food: Skill = {
 const SOME_WHY = 'Phrase qui dit « oui », devant un pluriel ou un nom qu’on ne compte pas : « some ».';
 const ANY_WHY = 'Phrase avec « not » (n’t) : on prend « any ».';
 const A_WHY = '« a » ou « an » vont avec une seule chose qu’on peut compter.';
+const ONE_WHY = 'Une seule chose qu’on compte : « a » ou « an », pas « some ».';
 const article = (c: Counted) =>
   c.article === 'an'
     ? `« ${c.one} » commence par un son de voyelle : « an ».`
@@ -315,7 +368,7 @@ function someLevel1(rng: Rng): QuestionDraft {
   const sentence = one ? `There is … ${item.one} on the table.` : `There ${many.be} … ${many.noun} on the table.`;
   const wrong = ['a', 'an', 'some']
     .filter((x) => x !== good)
-    .map((label) => ({ label, why: one ? (label === 'some' ? SOME_WHY : article(item)) : A_WHY }));
+    .map((label) => ({ label, why: one ? (label === 'some' ? ONE_WHY : article(item)) : A_WHY }));
   const { answer, traps } = choice(rng, good, wrong);
   return {
     prompt: `Complète : « ${sentence} »`,
@@ -374,14 +427,30 @@ const listBlank = (good: string) => ({
   correct: SMALL_WORDS.indexOf(good),
 });
 
+/** Noms demandés au niveau 4, avec le français qui impose « des » ou « du » (pas des choses précises). */
+const ASKED: readonly { readonly en: string; readonly fr: string; readonly small: string }[] = [
+  { en: 'bread', fr: 'du pain', small: 'du' },
+  { en: 'rice', fr: 'du riz', small: 'du' },
+  { en: 'bananas', fr: 'des bananes', small: 'des' },
+  { en: 'pears', fr: 'des poires', small: 'des' },
+  { en: 'sandwiches', fr: 'des sandwichs', small: 'des' },
+  { en: 'biscuits', fr: 'des biscuits', small: 'des' },
+  { en: 'apples', fr: 'des pommes', small: 'des' },
+  { en: 'oranges', fr: 'des oranges', small: 'des' },
+  { en: 'eggs', fr: 'des œufs', small: 'des' },
+];
+
 function someAsk(rng: Rng): QuestionDraft {
-  const noun = rng.pick(['bread', 'rice', ...COUNTABLE.map((c) => c.many)]);
-  const sentence = `Can I have … ${noun}, please?`;
+  const asked = rng.pick(ASKED);
+  const sentence = `Can I have … ${asked.en}, please?`;
   const why = 'Pour demander quelque chose, on prend d’habitude « some », même dans une question.';
   return {
-    prompt: `Tu demandes poliment à table. Écris le petit mot qui manque : « ${sentence} »`,
+    prompt: `Tu demandes poliment ${asked.fr} (rien de précis). Écris le petit mot qui veut dire « ${asked.small} » : « ${sentence} »`,
     answer: { kind: 'text', accepted: ['some'] },
-    traps: [{ text: 'any', why }],
+    traps: [
+      { text: 'any', why },
+      { text: 'a', why: A_WHY },
+    ],
     hint: 'Ce n’est pas une question pour savoir : tu demandes qu’on te donne quelque chose.',
     steps: [why, `Réponse : **${sentence.replace('…', 'some')}**`],
   };
@@ -407,33 +476,64 @@ function someThree(rng: Rng): QuestionDraft {
   };
 }
 
+const BEGINNINGS = ['There is', 'There isn’t', 'There are', 'There aren’t'];
+
+/** Niveau 5 : quantités et absences tirées au hasard ; le début de phrase et le petit mot se lisent sur la liste. */
 function fridge(rng: Rng): QuestionDraft {
-  const [one, many] = some(rng, COUNTABLE, 2) as [Counted, Counted];
-  const [liquid, none] = some(rng, UNCOUNTABLE, 2) as [(typeof UNCOUNTABLE)[number], (typeof UNCOUNTABLE)[number]];
-  const n = rng.int(2, 4);
-  const lines = rng.shuffle([`${liquid.en}: yes`, `${many.many}: ${n}`, `${none.en}: no`, `${one.one}: 1`]);
+  const counted = some(rng, COUNTABLE, 4);
+  const mass = some(rng, UNCOUNTABLE, 4);
+  let countable = 0;
+  let uncountable = 0;
+  // Un singulier, un pluriel absent ou présent, un indénombrable présent ou absent : 4 lignes sur 5 cas.
+  const cases = some(rng, ['one', 'many', 'noMany', 'mass', 'noMass'] as const, 4);
+  const rows = cases.map((kind) => {
+    if (kind === 'mass' || kind === 'noMass') {
+      const noun = at(mass, uncountable++).en;
+      const yes = kind === 'mass';
+      return {
+        line: `${noun}: ${yes ? 'yes' : 'no'}`,
+        noun,
+        begin: yes ? 'There is' : 'There isn’t',
+        small: yes ? 'some' : 'any',
+        why: `« ${noun}: ${yes ? 'yes' : 'no'} » : un nom qu’on ne compte pas.`,
+      };
+    }
+    const c = at(counted, countable++);
+    if (kind === 'one')
+      return {
+        line: `${c.one}: 1`,
+        noun: c.one,
+        begin: 'There is',
+        small: c.article,
+        why: `« ${c.one}: 1 » : ${article(c)}`,
+      };
+    const n = kind === 'many' ? rng.int(2, 6) : 0;
+    return {
+      line: `${c.many}: ${n}`,
+      noun: c.many,
+      begin: n > 0 ? 'There are' : 'There aren’t',
+      small: n > 0 ? 'some' : 'any',
+      why: `« ${c.many}: ${n} » : un pluriel.`,
+    };
+  });
+  const asked = rng.shuffle(rows);
   const kid = rng.pick(KIDS);
+  const parts = asked.flatMap((r, i) => [i === 0 ? '' : ` ${at(asked, i - 1).noun}. `, ' ']);
   return {
-    prompt: `Lis la liste de la cuisine ${de(kid)} (yes = il y en a, no = il n’y en a pas). Complète avec a, an, some ou any.`,
-    figure: { kind: 'document', title: 'In the kitchen', lines, credit: WRITTEN },
+    prompt: `Lis la liste de la cuisine ${de(kid)} (yes ou un nombre = il y en a ; no ou 0 = il n’y en a pas). Pour chaque phrase, choisis le début puis le petit mot. Les phrases parlent, dans l’ordre, de : ${asked.map((r) => r.noun).join(', ')}.`,
+    figure: { kind: 'document', title: 'In the kitchen', lines: rng.shuffle(rows.map((r) => r.line)), credit: WRITTEN },
     answer: {
       kind: 'cloze',
-      parts: [
-        'There is ',
-        ` ${liquid.en}. There are `,
-        ` ${many.many}. There isn’t `,
-        ` ${none.en}. There is `,
-        ` ${one.one}.`,
-      ],
-      blanks: [listBlank('some'), listBlank('some'), listBlank('any'), listBlank(one.article)],
+      parts: [...parts, ` ${at(asked, asked.length - 1).noun}.`],
+      blanks: asked.flatMap((r) => [
+        { mode: 'list' as const, options: BEGINNINGS, correct: BEGINNINGS.indexOf(r.begin) },
+        listBlank(r.small),
+      ]),
     },
-    hint: 'Lis la ligne de chaque mot : oui, plusieurs, non ou une seule ?',
+    hint: 'Pour chaque mot, lis sa ligne : oui ou non ? une seule chose, plusieurs, ou on ne compte pas ?',
     steps: [
-      `« ${liquid.en}: yes » : on ne le compte pas et il y en a : « some ».`,
-      `« ${many.many}: ${n} » : un pluriel, dans une phrase qui dit oui : « some ».`,
-      `« ${none.en}: no » : la phrase a « isn’t » : « any ».`,
-      article(one),
-      `Réponse : **some, some, any, ${one.article}**`,
+      ...asked.map((r) => `${r.why} **${r.begin} ${r.small} ${r.noun}.**`),
+      `Réponse : **${asked.map((r) => `${r.begin} ${r.small} ${r.noun}`).join('. ')}.**`,
     ],
   };
 }
@@ -445,14 +545,14 @@ const someSkill: Skill = {
   version: 1,
   lesson: {
     memo: [
-      '**some** veut dire « du, de la, des » : there is some milk, there are some pears. Dans une phrase avec n’t, on dit any.',
-      'Un **nom indénombrable** ne se compte pas (milk, water, bread, rice) : pas de a devant. Une seule chose comptable : a pear, an apple.',
+      '**some** veut dire « du, de la, des » : there is some milk, there are some pears. Dans une phrase avec n’t, on dit any : there isn’t any milk, there aren’t any pears.',
+      'Un **nom indénombrable** ne se compte pas (milk, water, bread, rice) : pas de a devant. Une seule chose comptable : a pear, an apple (an devant un son de voyelle).',
       'Pour demander ou proposer, on garde souvent some : Can I have some bread, please?',
     ],
     source: source(
-      'la grammaire : les quantifieurs. Règles : British Council, « Nouns - countable and uncountable » et « Nouns: countable and uncountable ».',
+      'la grammaire : les quantifieurs. Règles : British Council, « Nouns - countable and uncountable », « Nouns: countable and uncountable » et « Articles ».',
     ),
-    sources: ['cycle3-2020', 'bck-countable-uncountable', 'bc-nouns-countable'],
+    sources: ['cycle3-2020', 'bck-countable-uncountable', 'bc-nouns-countable', 'bck-articles'],
   },
   generate: (rng, level): QuestionDraft => {
     if (level === 1) return someLevel1(rng);
@@ -637,6 +737,16 @@ function likeLevel2(rng: Rng): QuestionDraft {
 
 function likeLevel3(rng: Rng): QuestionDraft {
   const d = rng.pick(DISHES);
+  if (rng.int(0, 2) === 0) {
+    const right = ['Would', 'you', 'like', 'some', d.en];
+    const items = shuffledOther(rng, right);
+    return {
+      prompt: `Remets les mots dans l’ordre pour demander à un ami s’il veut ${d.fr}.`,
+      answer: { kind: 'order', items, correct: right.map((x) => items.indexOf(x)) },
+      hint: 'Dans cette question, le mot pour proposer vient avant la personne.',
+      steps: [OFFER_WHY, `Réponse : **${right.join(' ')}?**`],
+    };
+  }
   if (rng.int(0, 1) === 0) {
     const good = 'I’d like';
     return {
@@ -665,16 +775,6 @@ function likeLevel3(rng: Rng): QuestionDraft {
 
 function likeLevel4(rng: Rng): QuestionDraft {
   const d = rng.pick(DISHES);
-  if (rng.int(0, 2) === 0) {
-    const right = ['Would', 'you', 'like', 'some', d.en];
-    const items = shuffledOther(rng, right);
-    return {
-      prompt: `Remets les mots dans l’ordre pour demander à un ami s’il veut ${d.fr}.`,
-      answer: { kind: 'order', items, correct: right.map((x) => items.indexOf(x)) },
-      hint: 'Dans cette question, le mot pour proposer vient avant la personne.',
-      steps: [OFFER_WHY, `Réponse : **${right.join(' ')}?**`],
-    };
-  }
   const good = `I’d like some ${d.en}, please`;
   const starts = ['I’d like', 'I would like'];
   return {
@@ -693,39 +793,37 @@ function likeLevel4(rng: Rng): QuestionDraft {
   };
 }
 
+/** Niveau 5 : lire une liste (oui / non) puis écrire en entier la proposition et la commande. */
 function cafe(rng: Rng): QuestionDraft {
-  const item = rng.pick(COUNTABLE);
-  const dish = rng.pick(DISHES.filter((d) => ['rice', 'bread', 'pasta'].includes(d.en)));
-  const opening = ['Would', 'Are', 'Is'];
-  const small = ['a', 'an', 'some'];
-  const pick = (options: readonly string[], good: string) => ({
-    mode: 'list' as const,
-    options: [...options],
-    correct: options.indexOf(good),
-  });
-  const lines = rng.shuffle([`${item.one}: 1`, `${dish.en}: yes`]);
-  const kid = rng.pick(KIDS);
+  const [wanted, refused, offered] = some(rng, DISHES, 3) as [Dish, Dish, Dish];
+  const lines = rng.shuffle([`${wanted.en}: yes`, `${refused.en}: no`, `${offered.en}: ask your friend`]);
+  const starts = ['I’d like', 'I would like'];
+  const order = {
+    parts: ['Worker: Next, please! — You: ', ', please.'],
+    blank: {
+      mode: 'text' as const,
+      accepted: starts.flatMap((s) =>
+        ['some ', '', ...(wanted.en === 'cake' ? ['a '] : [])].map((small) => `${s} ${small}${wanted.en}`),
+      ),
+    },
+    step: `« ${wanted.en}: yes » : on en veut. **I’d like some ${wanted.en}, please.**`,
+  };
+  const offer = {
+    parts: ['You, to your friend: ', ` some ${offered.en}?`],
+    blank: { mode: 'text' as const, accepted: ['Would you like'] },
+    step: `« ${offered.en}: ask your friend » : on propose. **Would you like some ${offered.en}?**`,
+  };
+  const [a, b] = rng.shuffle([order, offer]) as [typeof order | typeof offer, typeof order | typeof offer];
   return {
-    prompt: `Au café, tu commandes pour ${kid} (1 = une seule chose, yes = on en veut). Lis la commande, puis complète le dialogue.`,
-    figure: { kind: 'document', title: `${kid}’s order`, lines, credit: WRITTEN },
+    prompt: `Tu es au café avec un ami. Lis la liste (yes = tu en veux, no = tu n’en veux pas, ask your friend = propose-le à ton ami). ${a === order ? 'Commande d’abord, puis propose à ton ami' : 'Propose d’abord à ton ami, puis commande'}. Complète en anglais, avec « like » : écris la demande en entier (avec l’aliment) et la proposition.`,
+    figure: { kind: 'document', title: 'My list', lines, credit: WRITTEN },
     answer: {
       kind: 'cloze',
-      parts: ['Worker: What ', ' you like? — You: ', ' like ', ` ${item.one} and `, ` ${dish.en}, please.`],
-      blanks: [
-        pick(opening, 'Would'),
-        { mode: 'text', accepted: ['I’d', 'I would'] },
-        pick(small, item.article),
-        pick(small, 'some'),
-      ],
+      parts: [at(a.parts, 0), `${at(a.parts, 1)} ${at(b.parts, 0)}`, at(b.parts, 1)],
+      blanks: [a.blank, b.blank],
     },
-    hint: 'La personne au comptoir propose. Toi, tu demandes. Puis compte chaque chose de la commande.',
-    steps: [
-      '« What would you like? » veut dire « Que voulez-vous ? ».',
-      WANT_WHY,
-      article(item),
-      `« ${dish.en} » ne se compte pas ici : « some ».`,
-      `Réponse : **Would, I’d, ${item.article}, some**`,
-    ],
+    hint: 'Pour demander : « je voudrais ». Pour proposer à ton ami : la question avec « you ». Lis bien yes, no et ask.',
+    steps: [a.step, b.step, `Réponse : **${[a, b].map((x) => at(x.blank.accepted, 0)).join(' / ')}**`],
   };
 }
 
@@ -741,9 +839,9 @@ const idLike: Skill = {
       'Attention : I like cake = j’aime le gâteau. I’d like some cake = je voudrais du gâteau.',
     ],
     source: source(
-      'accepter ou refuser une proposition, dire ce qu’on veut. Formules : British Council, « will and would » et « Ordering food in a café ».',
+      'accepter ou refuser une proposition, dire ce qu’on veut. Formules : British Council, « will and would », « Ordering food in a café », « Like and don’t like » et « Have got ».',
     ),
-    sources: ['cycle3-2020', 'bc-will-would', 'bc-teens-cafe'],
+    sources: ['cycle3-2020', 'bc-will-would', 'bc-teens-cafe', 'bck-like', 'bck-have-got'],
   },
   generate: (rng, level): QuestionDraft => {
     if (level === 1) return likeLevel1(rng);

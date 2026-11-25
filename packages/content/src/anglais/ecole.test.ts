@@ -147,6 +147,57 @@ describe('anglais cm2 : école, nourriture, animaux', () => {
     }
   });
 
+  it('nourriture, niveau 2 : phrases lues en anglais correct (pluriel des noms comptables)', () => {
+    const heard = new Set<string>();
+    for (let seed = 1; seed <= 3000; seed++) {
+      const audio = generate('acm2-nourriture', 2, seed).audio;
+      if (audio) heard.add(audio.text.replace(/^I like (.+)\.$/, '$1'));
+    }
+    const plurals = [
+      ...['apples', 'bananas', 'oranges', 'strawberries', 'pears', 'peaches', 'cherries', 'pineapples', 'melons'],
+      ...['potatoes', 'carrots', 'onions', 'cucumbers', 'sausages', 'eggs', 'chips', 'crisps', 'sweets', 'grapes'],
+      ...['peas', 'mushrooms'],
+    ];
+    const mass = [
+      ...['bread', 'cheese', 'rice', 'fish', 'meat', 'chicken', 'cake', 'pasta', 'ice cream', 'jam', 'yoghurt'],
+      ...['lettuce', 'cabbage', 'water', 'milk', 'orange juice', 'tea', 'hot chocolate', 'lemonade'],
+    ];
+    expect([...heard].sort()).toEqual([...plurals, ...mass].sort());
+  });
+
+  it('some, niveau 4 : le sens est imposé et « a » est un piège', () => {
+    const asked = questions('acm2-some', 4).filter((q) => q.answer.kind === 'text');
+    expect(asked.length).toBeGreaterThan(0);
+    for (const q of asked) {
+      expect(q.prompt).toMatch(/veut dire « (du|des) »/);
+      expect(q.traps.map((t) => ('text' in t ? t.text : ''))).toContain('a');
+    }
+  });
+
+  it('some, niveau 5 : début de phrase et petit mot lus sur la liste, ordre variable', () => {
+    const answers = new Set<string>();
+    for (const q of questions('acm2-some', 5)) {
+      if (q.answer.kind !== 'cloze') throw new Error('trous attendus');
+      const { parts, blanks } = q.answer;
+      const chosen = blanks.map((b) => (b.mode === 'list' ? (b.options[b.correct] ?? '') : ''));
+      for (let i = 0; i < blanks.length; i += 2) {
+        const noun = (parts[i + 2] ?? '').trim().split('.')[0] ?? '';
+        const value =
+          lines(q)
+            .find((l) => l.startsWith(`${noun}: `))
+            ?.split(': ')[1] ?? '';
+        const none = value === 'no' || value === '0';
+        const plural = Number(value) > 1;
+        const one = value === '1';
+        const begin = `There ${plural || value === '0' ? 'are' : 'is'}${none ? 'n’t' : ''}`;
+        expect(chosen[i], `${noun} ${value}`).toBe(begin);
+        expect(chosen[i + 1]).toBe(none ? 'any' : one ? (/^[aeiou]/.test(noun) ? 'an' : 'a') : 'some');
+      }
+      answers.add(chosen.join(' '));
+    }
+    expect(answers.size).toBeGreaterThan(50);
+  });
+
   it('I’d like, niveau 4 : phrase complète, apostrophe simple et « I would » acceptés', () => {
     const written = questions('acm2-id-like', 4).filter((q) => q.answer.kind === 'text');
     expect(written.length).toBeGreaterThan(0);
@@ -159,16 +210,23 @@ describe('anglais cm2 : école, nourriture, animaux', () => {
     }
   });
 
-  it('I’d like, niveau 5 : le petit mot suit la commande', () => {
+  it('I’d like, niveau 5 : demande et proposition écrites d’après la liste, ordre variable', () => {
+    const first = new Set<string>();
     for (const q of questions('acm2-id-like', 5)) {
       if (q.answer.kind !== 'cloze') throw new Error('trous attendus');
-      const item =
+      const noun = (value: string) =>
         lines(q)
-          .find((l) => l.endsWith(': 1'))
+          .find((l) => l.endsWith(`: ${value}`))
           ?.split(':')[0] ?? '';
-      const blank = q.answer.blanks[2];
-      if (blank?.mode !== 'list') throw new Error('liste attendue');
-      expect(blank.options[blank.correct]).toBe(/^[aeiou]/.test(item) ? 'an' : 'a');
+      const good = q.answer.blanks.map((b) => (b.mode === 'text' ? (b.accepted[0] ?? '') : ''));
+      expect([...good].sort()).toEqual([`I’d like some ${noun('yes')}`, 'Would you like'].sort());
+      expect(check(q, { kind: 'cloze', answers: good }).correct).toBe(true);
+      const refused = good.map((g) => g.replace(noun('yes'), noun('no')));
+      expect(check(q, { kind: 'cloze', answers: refused }).correct).toBe(false);
+      expect(q.answer.parts.join(' ').toLowerCase()).not.toContain('would you like');
+      first.add(good[0] ?? '');
     }
+    expect([...first]).toContain('Would you like');
+    expect(first.size).toBeGreaterThan(1);
   });
 });

@@ -287,6 +287,18 @@ export const FAITS: readonly Fait[] = [
     'some, puis any.',
   ),
   fait(
+    'article-general',
+    'bc-articles-general',
+    'When we talk about things in general, we normally use a plural or uncountable noun with no article.',
+    'Pour parler en général : un pluriel ou un indénombrable, sans « the ».',
+  ),
+  fait(
+    'a-an-son',
+    'bck-articles',
+    'We use a and an with singular nouns. We use a before a consonant sound and an before a vowel sound.',
+    'a et an vont avec un singulier ; an devant un son de voyelle.',
+  ),
+  fait(
     'indenombrable',
     'bck-countable-uncountable',
     "We can use uncountable nouns for things we can't count. There's some bread and cheese on the table.",
