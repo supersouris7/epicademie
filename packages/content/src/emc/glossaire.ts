@@ -1431,4 +1431,32 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'Le principe (article 3 de la CIDE) selon lequel l’intérêt de l’enfant passe en premier dans les décisions qui le concernent.',
     'Le juge tient compte de l’intérêt supérieur de l’enfant.',
   ),
+  t(
+    'salubrite',
+    'salubrité',
+    ['salubrite'],
+    'La propreté et l’hygiène qui protègent la santé de tous.',
+    'Ramasser les ordures contribue à la salubrité d’une ville.',
+  ),
+  t(
+    'litige',
+    'litiges',
+    ['litige'],
+    'Un désaccord que l’on peut faire trancher par un juge.',
+    'Un désaccord entre une habitante et sa mairie est un litige.',
+  ),
+  t(
+    'pourvoi',
+    'pourvoi',
+    ['pourvois'],
+    'La demande faite à la plus haute juridiction de vérifier que le droit a été bien appliqué.',
+    'Après l’arrêt de la cour d’appel, il forme un pourvoi en cassation.',
+  ),
+  t(
+    'tribunal-conflits',
+    'Tribunal des conflits',
+    [],
+    'La juridiction qui décide quel ordre, judiciaire ou administratif, doit juger une affaire en cas de désaccord.',
+    'Le Tribunal des conflits désigne l’ordre compétent.',
+  ),
 ];

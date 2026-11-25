@@ -150,7 +150,6 @@ const PERSONNES_PUBLIQUES = vpJustice(
 const PENAL = vpJustice(
   'pour les autres infractions : tribunal correctionnel ou tribunal de police, cour d’appel, puis pourvoi auprès de la chambre criminelle de la Cour de cassation',
 );
-const ADMINISTRATIF = vpJustice('Contrôle, pourvoi : Conseil d’État, section du contentieux');
 const CONFLITS = vpJustice('Ces conflits de compétence entre les deux ordres sont réglés par le Tribunal des conflits');
 
 const JUGE_DU_DROIT = vpCassation(
@@ -165,7 +164,7 @@ const JURES = vpJures(
 );
 const JURES_JUGES = vpJures('Les jurés d’assises exercent la fonction de juge, au côté de magistrats professionnels');
 const IMPARTIALITE = vpIndependance(
-  'l’impartialité, dont l’importance est notamment consacrée par la Convention européenne des droits de l’homme, désigne l’absence de préjugés qui doit caractériser le juge',
+  'l’impartialité, dont l’importance est notamment consacrée par l’article 6 de la Convention européenne des droits de l’homme, désigne l’absence de préjugés qui doit caractériser le juge',
 );
 const STATUT = vpIndependance(
   'ils ne sont pas des fonctionnaires et ne sont par conséquent pas soumis à l’autorité hiérarchique d’un ministre. Ils sont inamovibles',
@@ -181,8 +180,8 @@ const etatDeDroit: Notion = {
   credit: CREDIT,
   memo: [
     'Dans un **État de droit**, la puissance publique est soumise aux règles de droit : c’est le contraire du pouvoir **arbitraire**. Il repose sur la **hiérarchie des normes**, l’égalité devant la loi et la **séparation des pouvoirs** (législatif, exécutif, judiciaire).',
-    'Les lois votées par le Parlement doivent respecter le **bloc de constitutionnalité** (Constitution de 1958, DDHC de 1789, préambule de 1946), reconnu par le **Conseil constitutionnel**. L’action de l’État elle-même est soumise à la justice.',
-    'Les droits sont aussi garantis par des traités, contrôlés par la **Cour européenne des droits de l’homme**. Exemple : si une administration viole les droits d’un citoyen, un juge peut examiner sa décision.',
+    'Les lois votées par le Parlement doivent respecter le **bloc de constitutionnalité** (notamment la Constitution de 1958, la DDHC de 1789 et le préambule de 1946), reconnu par le **Conseil constitutionnel**. L’action de l’État elle-même est soumise à la justice.',
+    'Les droits sont aussi garantis par des traités internationaux. Leur respect est contrôlé par des cours placées au-dessus des États, comme la **Cour européenne des droits de l’homme**. Exemple : si une administration viole les droits d’un citoyen, un juge peut examiner sa décision.',
   ],
   faits: [
     fait(
@@ -233,7 +232,7 @@ const etatDeDroit: Notion = {
         ['l’égalité des sujets de droit', 'Elle concerne les personnes soumises au droit, pas le partage du pouvoir.'],
         ['la souveraineté nationale', 'Elle dit à qui appartient le pouvoir, pas comment il est réparti.'],
       ],
-      ['La séparation des ', ' vise à éviter la concentration du pouvoir.', ['pouvoirs', 'pouvoir']],
+      ['La ', ' des pouvoirs vise à éviter la concentration du pouvoir.', ['séparation', 'separation']],
       'Le pouvoir est distribué entre des organes indépendants : voter la loi, l’exécuter, rendre la justice.',
     ),
     fait(
@@ -320,7 +319,7 @@ const etatDeDroit: Notion = {
     libre(
       DEFINITION,
       'quel adjectif désigne le pouvoir auquel l’État de droit s’oppose ? Le pouvoir …',
-      ['arbitraire'],
+      ['arbitraire', 'despotique', 'absolu'],
       [
         ['démocratique', 'L’État de droit ne s’oppose pas à la démocratie, mais au pouvoir sans règle.'],
         ['judiciaire', 'Le pouvoir judiciaire rend la justice : il fait partie de l’État de droit.'],
@@ -339,7 +338,7 @@ const etatDeDroit: Notion = {
     ),
     libre(
       GARANTIES,
-      'quelle institution reconnaît le bloc de constitutionnalité ? Le Conseil …',
+      'quelle institution vérifie que les lois respectent les textes placés au-dessus d’elles ? Le Conseil …',
       ['constitutionnel', 'Conseil constitutionnel', 'le Conseil constitutionnel'],
       [
         ['d’État', 'Le Conseil d’État est au sommet de l’ordre administratif.'],
@@ -435,12 +434,12 @@ const etatDeDroit: Notion = {
 const libertes: Notion = {
   id: 'em4-libertes-fondamentales',
   title: 'Les libertés fondamentales et leurs limites',
-  hint: 'Demande-toi si la liberté s’exerce seul ou avec d’autres, puis ce qui peut la limiter : autrui, la loi, l’ordre public.',
+  hint: 'Demande-toi si la liberté s’exerce seul ou avec d’autres, puis qui ou quoi peut la limiter, et dans quel but.',
   programme: PROGRAMME,
   credit: CREDIT,
   memo: [
     'Les **libertés individuelles** rendent chacun maître de ses mouvements, de ses choix, de ses opinions et croyances (liberté de circulation, de conscience, d’expression). Les **libertés collectives** permettent d’agir avec d’autres : réunion, association, manifestation, droit syndical, liberté de la presse.',
-    'Ce sont des **libertés fondamentales**, liées à la dignité humaine. Elles sont encadrées par la loi : la liberté consiste à faire tout ce qui ne nuit pas à autrui (DDHC, art. 4), et elle est limitée par l’**ordre public** (sécurité, tranquillité, salubrité, dignité).',
+    'Ce sont des **libertés fondamentales**, liées à la dignité humaine. Elles sont encadrées par la loi : la liberté consiste à faire tout ce qui ne nuit pas à autrui (DDHC, art. 4), et elle est limitée par l’**ordre public** (sécurité, tranquillité, **salubrité**, dignité).',
     'Exemple : au nom de la liberté de croyance, la loi ne définit pas la secte, mais elle réprime les **dérives sectaires**.',
   ],
   faits: [
@@ -526,7 +525,7 @@ const libertes: Notion = {
           ' et le respect de la dignité de la personne humaine.',
           ['salubrité', 'salubrite'],
         ],
-        'L’ordre public permet à chacun de jouir de ses droits et libertés.',
+        'La salubrité, c’est la propreté et l’hygiène qui protègent la santé. L’ordre public permet à chacun de jouir de ses droits et libertés.',
       ),
     ),
     expert(
@@ -538,7 +537,7 @@ const libertes: Notion = {
           ['le plus fort', 'Ce serait la loi du plus fort, le contraire de l’État de droit.'],
           ['les réseaux sociaux', 'Une plateforme applique la loi, elle ne la fait pas.'],
         ],
-        ['Ces bornes ne peuvent être déterminées que par la ', '.', ['loi']],
+        ['Les bornes de la liberté ne peuvent être déterminées que par la ', '.', ['loi']],
         'Seule la loi, la même pour tous, peut limiter les libertés.',
       ),
     ),
@@ -701,13 +700,13 @@ const libertes: Notion = {
 const justice: Notion = {
   id: 'em4-justice',
   title: 'La justice : indépendance et organisation',
-  hint: 'Repense au mémo : deux ordres, une pyramide à trois étages dans chacun, et des juges indépendants et impartiaux.',
+  hint: 'Repense au mémo : deux ordres, une pyramide à trois étages dans chacun, et des magistrats indépendants et impartiaux.',
   programme: PROGRAMME,
   credit: CREDIT,
   memo: [
     'L’**indépendance de la justice** est une condition de l’État de droit : les juges ne sont pas soumis à l’autorité d’un ministre et sont **inamovibles**. L’**impartialité**, c’est l’absence de préjugés du juge envers les **justiciables**.',
-    'La justice a deux ordres : l’**ordre judiciaire** (tribunal correctionnel, cour d’assises…) et l’**ordre administratif**, qui juge les litiges impliquant les personnes publiques. Chacun forme une pyramide : **première instance**, **appel**, **cassation** ; au sommet, la **Cour de cassation** et le **Conseil d’État**.',
-    'Exemple : en **cour d’assises**, des **jurés** tirés au sort jugent avec des magistrats professionnels. La justice des mineurs est liée au droit à la protection.',
+    'La justice a deux ordres : l’**ordre judiciaire** (tribunal correctionnel, cour d’assises…) et l’**ordre administratif**, qui juge les **litiges** impliquant les personnes publiques. Chacun forme une pyramide : **première instance**, **appel**, **cassation** ; au sommet, la **Cour de cassation** et le **Conseil d’État**, que l’on saisit par un **pourvoi**. Le **Tribunal des conflits** décide quel ordre est compétent en cas de désaccord.',
+    'Exemple : en **cour d’assises**, des **jurés** (des citoyens d’au moins 23 ans, tirés au sort) jugent avec des magistrats professionnels. La justice des mineurs est liée au droit à la protection.',
   ],
   faits: [
     fait(
@@ -824,7 +823,7 @@ const justice: Notion = {
           ['un avocat choisi par l’accusé', 'Les jurés sont tirés au sort, pas choisis par une partie.'],
         ],
         ['Un juré d’assises est tiré au ', ' parmi les citoyens inscrits sur les listes électorales.', ['sort']],
-        'Le jury populaire fait participer des citoyens au jugement des crimes.',
+        'Le jury populaire fait participer des citoyens au jugement des crimes les plus graves.',
       ),
     ),
     expert(
@@ -899,16 +898,19 @@ const justice: Notion = {
       ['cassation', 'Cour de cassation', 'la Cour de cassation'],
       [
         ['appel', 'La cour d’appel juge en second degré, pas au sommet.'],
-        ['assises', 'La cour d’assises juge les crimes ; elle n’est pas au sommet.'],
+        ['assises', 'La cour d’assises juge les crimes les plus graves ; elle n’est pas au sommet.'],
       ],
       'La Cour de cassation est la cour suprême de l’ordre judiciaire.',
     ),
     libre(
       COUR_APPEL,
-      'comment s’appelle la juridiction qui rejuge une affaire après un appel ? La cour d’…',
+      'un condamné conteste le jugement du tribunal correctionnel pour que son affaire soit rejugée. Devant quelle juridiction ? La cour d’…',
       ['appel', 'cour d’appel', 'la cour d’appel'],
       [
-        ['assises', 'La cour d’assises juge les crimes ; ce n’est pas elle qui rejuge après un appel ordinaire.'],
+        [
+          'assises',
+          'La cour d’assises juge les crimes les plus graves ; elle ne rejuge pas les affaires du tribunal correctionnel.',
+        ],
         ['cassation', 'La Cour de cassation ne rejuge pas les faits.'],
       ],
       'L’appel conduit l’affaire devant une juridiction du second degré : la cour d’appel.',
@@ -925,7 +927,7 @@ const justice: Notion = {
     ),
     libre(
       CONFLITS,
-      'quelle juridiction règle les conflits de compétence entre les deux ordres ? Le Tribunal des …',
+      'quelle juridiction tranche quand les deux ordres sont en désaccord sur le tribunal compétent ? Le Tribunal des …',
       ['conflits', 'Tribunal des conflits', 'le Tribunal des conflits'],
       [
         ['litiges', 'Le mot exact est « conflits » : Tribunal des conflits.'],
@@ -978,13 +980,13 @@ const justice: Notion = {
       ],
       qs: [
         lecture(
-          ADMINISTRATIF,
+          SOMMETS,
           'Quelle est la plus haute juridiction évoquée à la dernière ligne ?',
           'le Conseil d’État',
           [
             ['la Cour de cassation', 'Elle est au sommet de l’ordre judiciaire, pas de l’ordre administratif.'],
             ['le Conseil constitutionnel', 'Il contrôle les lois ; il ne juge pas ce pourvoi.'],
-            ['la cour d’assises', 'Elle juge les crimes, dans l’ordre judiciaire.'],
+            ['la cour d’assises', 'Elle juge les crimes les plus graves, dans l’ordre judiciaire.'],
           ],
           'Litige avec une personne publique : ordre administratif, au sommet duquel siège le Conseil d’État.',
         ),
@@ -1012,12 +1014,12 @@ const justice: Notion = {
 const declarations: Notion = {
   id: 'em4-declarations-droits',
   title: 'Les déclarations des droits : DDHC, DUDH, CIDE',
-  hint: 'Repère le texte (1789, universelle, enfant), puis l’article cité : 1er, 2, 16 de la DDHC ou 3, 13, 15, 17 de la CIDE.',
-  programme: PROGRAMME,
+  hint: 'Repère de quel texte on parle, puis l’article cité : chaque article protège un droit ou pose un principe précis.',
+  programme: `${PROGRAMME} ; « Défendre le cadre démocratique » (la sûreté)`,
   credit: 'Extraits de la Déclaration des droits de l’homme et du citoyen de 1789 (texte publié sur Légifrance).',
   memo: [
-    'La DDHC de 1789 proclame des droits naturels et **imprescriptibles** : la liberté, la propriété, la **sûreté** et la **résistance à l’oppression** (art. 2). Son préambule voit dans l’oubli ou le mépris des droits les seules causes des malheurs publics.',
-    'La **Déclaration universelle des droits de l’homme** et la Convention internationale des droits de l’enfant (CIDE) garantissent aussi des droits au quotidien : **intérêt supérieur de l’enfant** (art. 3), liberté d’expression (art. 13), d’association et de réunion (art. 15), d’information (art. 17).',
+    'La **DDHC** de 1789 dit que les hommes naissent et demeurent libres et égaux en droits (art. 1er). Elle proclame des droits naturels et **imprescriptibles** : la liberté, la propriété, la **sûreté** et la **résistance à l’oppression** (art. 2). Son préambule voit dans l’ignorance, l’oubli ou le mépris des droits les seules causes des malheurs publics.',
+    'La **Déclaration universelle des droits de l’homme** et la Convention internationale des droits de l’enfant (CIDE) garantissent aussi des droits au quotidien. Dans la CIDE : **intérêt supérieur de l’enfant** (art. 3), liberté d’expression (art. 13), d’association et de réunion (art. 15), d’information (art. 17).',
     'Article 16 de la DDHC : sans garantie des droits ni séparation des pouvoirs, une société « n’a point de Constitution ». Exemple : la sûreté protège tes droits et ta sécurité.',
   ],
   faits: [
@@ -1047,7 +1049,7 @@ const declarations: Notion = {
         ['l’éducation, la santé et le logement', 'Ces droits ne figurent pas à l’article 2 de la DDHC.'],
       ],
       [
-        'Ces droits sont la liberté, la propriété, la ',
+        'D’après l’article 2 de la DDHC, les droits naturels sont la liberté, la propriété, la ',
         ' et la résistance à l’oppression.',
         ['sûreté', 'surete', 'sureté'],
       ],
@@ -1192,7 +1194,7 @@ const declarations: Notion = {
     libre(
       ART16,
       'd’après l’article 16 de la DDHC, une société sans séparation des pouvoirs n’a point de … (un mot)',
-      ['Constitution', 'une Constitution'],
+      ['Constitution', 'une Constitution', 'de Constitution'],
       [
         ['roi', 'L’article 16 ne parle pas de roi.'],
         ['loi', 'Le mot exact est « Constitution ».'],

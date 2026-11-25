@@ -484,7 +484,7 @@ export const SOURCES: readonly Source[] = [
     title: 'Fiche « La justice est-elle indépendante et impartiale ? »',
     publisher: 'Vie publique (DILA)',
     url: 'https://www.vie-publique.fr/fiches/38029-la-justice-est-elle-independante-et-impartiale',
-    textDate: '2020-07-07',
+    textDate: '2023-03-05',
     consultedOn: '2026-11-25',
   },
   tlfi('xenophobie', 'xénophobie', 'x%C3%A9nophobie'),
