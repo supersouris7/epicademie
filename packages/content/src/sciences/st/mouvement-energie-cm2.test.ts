@@ -67,6 +67,46 @@ describe('sciences CM2 : « Mouvement et énergie »', () => {
     for (const level of LEVELS) expect(JSON.stringify(tirages(vitesse, level))).not.toMatch(/km\/h|m\/s|÷/);
   });
 
+  it('vitesse, niveau 4 : le gagnant est juste, et chacune des deux écritures gagne parfois', () => {
+    const vitesse = notions.find((s) => s.id === 'pcm2-vitesse')!;
+    const issues = new Set<string>();
+    for (const q of tirages(vitesse, 4)) {
+      const mesures = [...q.prompt.matchAll(/robot (\w) (?:met|parcourt) (?:(1 (?:min|m)) )?(\d+) (s|cm)/g)].map(
+        ([, lettre = '', gros, n, unite = '']) => ({
+          lettre,
+          unite,
+          composee: gros !== undefined,
+          valeur: Number(n) + (gros === '1 min' ? 60 : gros === '1 m' ? 100 : 0),
+        }),
+      );
+      expect(mesures, q.prompt).toHaveLength(2);
+      const [a, b] = mesures.sort((p, r) => p.valeur - r.valeur);
+      expect(a!.valeur, q.prompt).toBeLessThan(b!.valeur);
+      const gagnant = a!.unite === 's' ? a! : b!;
+      expect(q.answer.kind === 'text' && q.answer.accepted[0], q.prompt).toBe(gagnant.lettre);
+      const premiere = q.prompt.indexOf(`robot ${gagnant.lettre} `) === q.prompt.indexOf('robot ');
+      issues.add(`${gagnant.unite} ${gagnant.composee} ${premiere}`);
+    }
+    // 2 grandeurs × 2 écritures gagnantes × 2 positions dans l’énoncé.
+    expect(issues.size).toBe(8);
+  });
+
+  it('vitesse, niveau 1 : le plus rapide n’est pas toujours cité en premier', () => {
+    const vitesse = notions.find((s) => s.id === 'pcm2-vitesse')!;
+    const positions = new Set(
+      tirages(vitesse, 1).map((q) => {
+        const [a, b] = [...q.prompt.matchAll(/parcourt (\d+) m/g)].map((m) => Number(m[1]));
+        return a! > b!;
+      }),
+    );
+    expect(positions.size).toBe(2);
+  });
+
+  it('trajectoire : le Soleil n’est jamais dit « qui n’est pas un cercle »', () => {
+    const trajectoire = notions.find((s) => s.id === 'pcm2-trajectoire')!;
+    for (const level of LEVELS) expect(JSON.stringify(tirages(trajectoire, level))).not.toMatch(/Soleil/);
+  });
+
   it('renouvelables : ni uranium ni gaz, dont le classement n’est pas sourcé', () => {
     const renouvelables = notions.find((s) => s.id === 'pcm2-renouvelables')!;
     for (const level of LEVELS)

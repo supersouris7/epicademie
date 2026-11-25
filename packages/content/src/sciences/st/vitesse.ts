@@ -3,7 +3,7 @@ import { r } from '../../rational.ts';
 import type { Rng } from '../../rng.ts';
 import type { QuestionDraft, Skill } from '../../types.ts';
 import { PROGRAMME } from './donnees.ts';
-import { ordre, saisie } from './outils.ts';
+import { maj, ordre, saisie } from './outils.ts';
 
 // ——— Vitesse au cours moyen : mesurer et comparer, sans calculer sa valeur (calcul exigible en 6e) ———
 
@@ -19,12 +19,16 @@ const niveau1 = (rng: Rng): QuestionDraft => {
   const t = rng.pick([10, 20, 30]);
   const loin = rng.int(6, 9);
   const pres = rng.int(2, 4);
+  const [premier, second] = rng.shuffle([
+    [x, loin],
+    [y, pres],
+  ] as const);
   const { answer, traps: tr } = choice(rng, robot(x), [
     { label: robot(y), why: `Le robot ${y} va moins loin dans le même temps. ${REGLE_DISTANCE}` },
     { label: EGAL, why: 'Les deux distances sont différentes pour la même durée : les vitesses sont différentes.' },
   ]);
   return {
-    prompt: `En ${t} secondes, le robot ${x} parcourt ${loin} m et le robot ${y} parcourt ${pres} m. Qui est le plus rapide ?`,
+    prompt: `En ${t} secondes, le robot ${premier?.[0]} parcourt ${premier?.[1]} m et le robot ${second?.[0]} parcourt ${second?.[1]} m. Qui est le plus rapide ?`,
     answer,
     traps: tr,
     hint: 'Les deux robots roulent pendant le même temps. Compare le chemin parcouru.',
@@ -78,10 +82,10 @@ const niveau3 = (rng: Rng): QuestionDraft => {
       [c, dist[2]],
     ]
       .sort((p, q) => String(p[0]).localeCompare(String(q[0])))
-      .map(([n, m]) => `${n} : ${m} m`)
+      .map(([n, m]) => `${n} (${m} m)`)
       .join(' ; ');
     return {
-      prompt: `En une minute, voici les distances parcourues. ${lignes}. Range du plus lent au plus rapide.`,
+      prompt: `En une minute, voici les distances parcourues : ${lignes}. Range du plus lent au plus rapide.`,
       answer: ordre(rng, [a, b, c]),
       hint: 'Même durée pour tous : le plus lent est celui qui va le moins loin.',
       steps: ['La durée est la même : une minute.', REGLE_DISTANCE, `Ordre : **${[a, b, c].join(' → ')}**.`],
@@ -123,44 +127,40 @@ const niveau3 = (rng: Rng): QuestionDraft => {
 };
 
 const niveau4 = (rng: Rng): QuestionDraft => {
+  // x : mesure écrite avec deux unités ; y : avec une seule. Le gagnant et l’ordre de l’énoncé sont tirés au sort.
   const [x = 'A', y = 'B'] = lettres(rng);
-  const t = rng.int(0, 1);
-  // Durées ou distances écrites dans deux unités différentes : il faut convertir avant de comparer.
-  if (t === 0) {
-    const s = rng.pick([20, 30, 40]);
-    const court = 60 + s - rng.int(3, 9);
-    const prompt = `Sur la même piste, le robot ${x} met 1 min ${s} s et le robot ${y} met ${court} s. Écris la lettre du plus rapide.`;
-    const { answer, traps: tr } = saisie(
-      [y, robot(y), `robot ${y}`],
-      [
-        [x, `1 min ${s} s = ${60 + s} s. C’est plus long que ${court} s. ${REGLE_DUREE}`],
-        [`robot ${x}`, `1 min ${s} s = ${60 + s} s, soit plus long que ${court} s.`],
-      ],
-    );
-    return {
-      prompt,
-      answer,
-      traps: tr,
-      hint: 'Écris les deux durées dans la même unité avant de comparer.',
-      steps: [`1 min ${s} s = ${60 + s} s.`, `${court} s < ${60 + s} s. ${REGLE_DUREE}`, `Réponse : **${y}**.`],
-      targetSeconds: 50,
-    };
-  }
-  const cm = rng.pick([20, 30, 50]);
-  const loin = 100 + cm + rng.int(3, 9);
+  const enDurees = rng.int(0, 1) === 0;
+  const reste = rng.pick(enDurees ? [20, 30, 40] : [20, 30, 50]);
+  const composee = (enDurees ? 60 : 100) + reste;
+  const simple = composee + (rng.int(0, 1) === 0 ? -1 : 1) * rng.int(3, 9);
+  // Le plus rapide : la plus petite durée, ou la plus grande distance.
+  const simpleGagne = enDurees ? simple < composee : simple > composee;
+  const bon = simpleGagne ? y : x;
+  const perdant = simpleGagne ? x : y;
+  const ecriture = enDurees ? `1 min ${reste} s` : `1 m ${reste} cm`;
+  const unite = enDurees ? 's' : 'cm';
+  const regle = enDurees ? REGLE_DUREE : REGLE_DISTANCE;
+  const conversion = `${ecriture} = ${composee} ${unite}.`;
+  const comparaison = `${simple} ${unite} ${simple < composee ? '<' : '>'} ${composee} ${unite}.`;
+  const verbe = enDurees ? 'met' : 'parcourt';
+  const [premiere, seconde] = rng.shuffle([
+    `le robot ${x} ${verbe} ${ecriture}`,
+    `le robot ${y} ${verbe} ${simple} ${unite}`,
+  ]);
+  const why = `${conversion} Or ${comparaison} ${regle}`;
   const { answer, traps: tr } = saisie(
-    [x, robot(x), `robot ${x}`],
+    [bon, robot(bon), `robot ${bon}`],
     [
-      [y, `1 m ${cm} cm = ${100 + cm} cm. C’est moins que ${loin} cm. ${REGLE_DISTANCE}`],
-      [`robot ${y}`, `1 m ${cm} cm = ${100 + cm} cm, soit moins que ${loin} cm.`],
+      [perdant, why],
+      [`robot ${perdant}`, why],
     ],
   );
   return {
-    prompt: `En 10 s, le robot ${x} parcourt ${loin} cm et le robot ${y} parcourt 1 m ${cm} cm. Écris la lettre du plus rapide.`,
+    prompt: `${enDurees ? 'Sur la même piste' : 'En 10 s'}, ${premiere} et ${seconde}. Écris la lettre du plus rapide.`,
     answer,
     traps: tr,
-    hint: 'Écris les deux distances dans la même unité avant de comparer.',
-    steps: [`1 m ${cm} cm = ${100 + cm} cm.`, `${loin} cm > ${100 + cm} cm. ${REGLE_DISTANCE}`, `Réponse : **${x}**.`],
+    hint: `Écris les deux ${enDurees ? 'durées' : 'distances'} dans la même unité avant de comparer.`,
+    steps: [conversion, `${comparaison} ${regle}`, `Réponse : **${bon}**.`],
     targetSeconds: 50,
   };
 };
@@ -203,7 +203,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
   const { answer, traps: tr } = saisie(
     [bon, robot(bon), `robot ${bon}`],
     [
-      [x, `${robot(x)} est entre les deux autres. ${etapes.join(' ')}`],
+      [x, `${maj(robot(x))} est entre les deux autres. ${etapes.join(' ')}`],
       [rapide ? y : z, `Tu as pris l’autre extrémité du classement. ${etapes.join(' ')}`],
     ],
   );

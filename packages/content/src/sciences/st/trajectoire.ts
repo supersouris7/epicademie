@@ -52,13 +52,6 @@ const SCENES: readonly Scene[] = [
     why: 'Le point tourne autour de l’axe : il suit un cercle.',
   },
   {
-    nom: 'Soleil',
-    texte: 'Dans le ciel, le Soleil se déplace du matin au soir.',
-    reference: 'à la cour de récréation',
-    forme: 'courbe',
-    why: 'Vu de la cour, le Soleil décrit une courbe dans le ciel.',
-  },
-  {
     nom: 'ballon',
     texte: 'Un ballon est lancé en l’air vers un panier, assez loin.',
     reference: 'au sol',
@@ -77,7 +70,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     { label: 'un zigzag', why: `Un zigzag change sans arrêt de direction d’un coup sec. ${s.why}` },
   ]);
   return {
-    prompt: `${avecRef(s)} quelle ligne suit l’objet ?`,
+    prompt: `${avecRef(s)} quelle ligne est suivie ?`,
     answer,
     traps,
     hint: 'Imagine le trait de crayon que laisserait l’objet en bougeant.',
@@ -151,7 +144,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
 const niveau3 = (rng: Rng): QuestionDraft => {
   if (rng.int(0, 2) === 0) {
     const { answer, traps } = saisie(
-      ['trajectoire', 'la trajectoire'],
+      ['trajectoire', 'la trajectoire', 'sa trajectoire'],
       [
         ['distance', 'La distance est une longueur. On cherche le nom de la ligne suivie.'],
         ['durée', 'La durée est un temps. On cherche le nom de la ligne suivie.'],
@@ -236,7 +229,9 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   }
   const c = rng.pick(REPERES);
   const { answer, traps } = saisie(
-    c.bon === 'circulaire' ? ['circulaire', 'en cercle'] : ['rectiligne', 'droite', 'en ligne droite'],
+    c.bon === 'circulaire'
+      ? ['circulaire', 'en cercle', 'cercle', 'un cercle']
+      : ['rectiligne', 'droite', 'en ligne droite'],
     [
       [c.bon === 'circulaire' ? 'rectiligne' : 'circulaire', c.why],
       ['immobile', `Par rapport à la référence choisie, l’objet change bien de place. ${c.why}`],
