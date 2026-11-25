@@ -1,14 +1,13 @@
 import { expect, test, type Page } from '@playwright/test';
-import { loginFamily, PASSWORD, signupFamily } from './family.ts';
+import { createFirstProfile, loginFamily, PASSWORD, signupFamily } from './family.ts';
 
-/** Crée un profil depuis l'écran de création (après inscription ou « Nouveau joueur »). */
+/** Crée le 1er profil depuis l'écran de création qui suit l'inscription. */
 async function createProfile(page: Page, name: string, birthDate = '2014-03-09') {
   await page.getByPlaceholder('Ex. Léa').fill(name);
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill(birthDate);
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
-  await expect(page).toHaveURL(/hub/);
+  await createFirstProfile(page);
 }
 
 test('Compte : déconnexion de l’appareil, reconnexion, profils et progrès retrouvés', async ({ page }) => {
@@ -53,8 +52,7 @@ test('Adulte : parcours de remise à niveau en maths', async ({ page }) => {
   await page.getByLabel('Date de naissance').fill('1985-05-01');
   await expect(page.getByText('C’est un adulte ?')).toBeVisible();
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
-  await expect(page).toHaveURL(/hub/);
+  await createFirstProfile(page);
   await page.goto('/jouer/entrainement/maths');
   const grades = page.getByRole('radiogroup', { name: 'Classe' });
   await expect(grades.getByRole('radio', { name: /Adulte/ })).toHaveAttribute('aria-checked', 'true');

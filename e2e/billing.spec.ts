@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { signupFamily } from './family.ts';
+import { createFirstProfile, signupFamily } from './family.ts';
 
 test('Version gratuite puis abonnement (simulateur) : chapitres débloqués, historique', async ({ page }) => {
   test.setTimeout(60_000); // parcours complet : inscription, profil, paiement simulé
@@ -8,9 +8,8 @@ test('Version gratuite puis abonnement (simulateur) : chapitres débloqués, his
   await page.getByRole('button', { name: 'Un garçon' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
-  // Le joueur est choisi une fois l'accueil affiché : on l'attend avant de naviguer.
-  await expect(page).toHaveURL(/hub/);
+  await createFirstProfile(page);
+  // Le joueur est choisi une fois l'accueil affiché (attendu avant de naviguer).
 
   await page.goto('/jouer/entrainement/maths?classe=5e');
   await page
