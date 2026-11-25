@@ -8,7 +8,8 @@ import { IRREGULAR_VERBS } from './verbs.ts';
  * - Choix et place des notions : Éduscol, « Repères de progressivité linguistique — Anglais »
  *   (Ministère de l'Éducation nationale, mars 2016) : impératif, déterminants, possessifs,
  *   présent simple (1re et 3e personne), pronoms sujets, be au présent et au prétérit, prétérit.
- * - Le CM2 « Le groupe nominal » (à 5 niveaux) est dans groupe-nominal.ts.
+ * - Le CM2 « Le groupe nominal » (à 5 niveaux) est dans groupe-nominal.ts ; le présent simple de 6e (à 5
+ *   niveaux) dans present-simple.ts.
  * - Formes et règles : British Council, LearnEnglish, English grammar reference (pages
  *   personal-pronouns, possessives-adjectives, verb-be, present-simple, past-simple,
  *   comparative-superlative-adjectives, present-perfect), relues le 21/11/2026. On n'emploie
@@ -45,7 +46,7 @@ const BE_PAST: Record<Pronoun, string> = {
 const pronounFor = (rng: Pick, level: Level): Pronoun =>
   rng.pick(level === 1 ? (['I', 'you', 'he', 'she'] as const) : PRONOUNS);
 
-// ——— 6e : be au prétérit, 3e personne du présent simple ———
+// ——— 6e : be au prétérit ———
 const bePast: Skill = {
   id: 'a6-be-preterit',
   title: 'Le verbe be au prétérit',
@@ -68,40 +69,6 @@ const bePast: Skill = {
       steps: [
         'Yesterday (hier) : on parle du passé, be se met au prétérit (was ou were).',
         `Avec « ${p} » : **${right}**.`,
-      ],
-    };
-  },
-};
-
-/** Verbes des exemples des pages present-simple et past-simple (ajout de -s / -ed seulement). */
-const SIMPLE_VERBS = ['work', 'like', 'call', 'want'] as const;
-
-const thirdPerson: Skill = {
-  id: 'a6-present-3e-personne',
-  title: 'Le présent simple avec he, she, it',
-  lesson: {
-    memo: ['Au présent simple, avec **he, she, it**, on ajoute **-s** au verbe : she work**s**, he like**s**.'],
-    source: src('present-simple', 'présent simple, 3e personne'),
-  },
-  generate: (rng) => {
-    const v = rng.pick(SIMPLE_VERBS);
-    const who = rng.pick(['She', 'He', 'It', 'I', 'They'] as const);
-    const third = who === 'She' || who === 'He' || who === 'It';
-    const right = third ? `${v}s` : v;
-    const { answer, traps } = choice(rng, right, [
-      {
-        label: third ? v : `${v}s`,
-        why: third ? 'Avec he, she, it : on ajoute -s.' : 'Le -s, c’est seulement pour he, she, it.',
-      },
-    ]);
-    return {
-      prompt: `Complète : ${who} … (${v}).`,
-      answer,
-      traps,
-      hint: 'Le -s du présent simple, c’est seulement pour he, she, it.',
-      steps: [
-        'Au présent simple, on ajoute -s seulement avec he, she, it.',
-        third ? `${who} : 3e personne, on ajoute -s → **${right}**.` : `${who} : pas de -s → **${right}**.`,
       ],
     };
   },
@@ -213,7 +180,6 @@ const chapter = (id: string, grade: Chapter['grade'], title: string, skills: rea
 
 export const ENGLISH_GRAMMAR_CHAPTERS: readonly Chapter[] = [
   chapter('a6-be-preterit', '6e', 'Be au passé', [bePast]),
-  chapter('a6-present-simple', '6e', 'Le présent simple', [thirdPerson]),
   chapter('a4-comparatif', '4e', 'Comparer', [comparative]),
   chapter('a3-present-perfect', '3e', 'Le present perfect', [presentPerfect]),
 ];
