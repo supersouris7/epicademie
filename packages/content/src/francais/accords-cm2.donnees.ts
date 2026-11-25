@@ -55,6 +55,7 @@ const REGLES: readonly Fait[] = [
   gram('accord-adjectif-nom', 'Il s’accorde en genre et en nombre avec le nom auquel il se rapporte.'),
   gram('attribut-exemple', 'Adjectif attribut : ce cahier est beau, cette trousse est belle.'),
   gram('verbes-attributifs', 'D’autres verbes attributifs ajoutent des nuances aspectuelles'),
+  fait('academie-paraitre')('paraitre-rectifie', 'Orthographe recommandée : Paraître ou Paraitre'),
   {
     id: 'pp-etre-regle',
     source: 'cnrtl-etre',
@@ -233,12 +234,14 @@ export const OBJETS: readonly Groupe[] = [
 export interface VerbeAttributif {
   readonly infinitif: string;
   readonly formes: readonly [string, string];
+  /** Autre écriture admise au singulier (orthographe rectifiée de 1990). */
+  readonly variante?: string;
 }
 
 export const VERBES_ATTRIBUTIFS: readonly VerbeAttributif[] = [
   { infinitif: 'être', formes: ['est', 'sont'] },
   { infinitif: 'sembler', formes: ['semble', 'semblent'] },
-  { infinitif: 'paraître', formes: ['paraît', 'paraissent'] },
+  { infinitif: 'paraître', formes: ['paraît', 'paraissent'], variante: 'parait' },
   { infinitif: 'rester', formes: ['reste', 'restent'] },
   { infinitif: 'devenir', formes: ['devient', 'deviennent'] },
 ];

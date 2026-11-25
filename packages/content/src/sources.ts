@@ -919,6 +919,7 @@ export const SOURCES: readonly Source[] = [
   tlfi('pneu', 'pneu', 'pneu'),
   tlfi('sec', 'sec', 'sec'),
   ...['gros', 'long', 'nouveau', 'frais', 'public', 'fou', 'jumeau', 'loup'].map((w) => academie(w, w)),
+  academie('paraitre', 'paraître'),
   {
     id: 'eduscol-grammaire-francais',
     title: 'La grammaire du français. Terminologie grammaticale (les guides fondamentaux pour enseigner)',

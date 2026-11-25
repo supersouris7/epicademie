@@ -130,6 +130,37 @@ describe('banques et réponses des accords du CM2', () => {
       );
   });
 
+  it('attribut, niveau 5 : « paraît » et « parait » sont acceptés, « paraissent » ne change pas', () => {
+    const vus = new Set<string>();
+    for (const q of tirages('fcm2-accord-attribut', 5)) {
+      if (q.answer.kind !== 'cloze') throw new Error('forme inattendue');
+      for (const b of q.answer.blanks) {
+        if (b.mode !== 'text') throw new Error('forme inattendue');
+        const [mot = ''] = b.accepted;
+        if (mot !== 'paraît' && mot !== 'paraissent') continue;
+        vus.add(mot);
+        expect(b.accepted).toEqual(mot === 'paraît' ? ['paraît', 'parait'] : ['paraissent']);
+      }
+      const valeurs = trous(q).map((v) => (v === 'paraît' ? 'parait' : v));
+      expect(check(q, { kind: 'cloze', answers: valeurs }).correct).toBe(true);
+    }
+    expect([...vus].sort()).toEqual(['paraissent', 'paraît']);
+  });
+
+  it('féminins, niveau 2 : un choix entre écritures proches d’un même mot courant', () => {
+    const vus = new Set<string>();
+    for (const q of tirages('fcm2-pluriels-feminins', 2)) {
+      const base = /le féminin de « (.+) »/.exec(q.prompt)?.[1] ?? '';
+      const f = FEMININS_COURANTS.find((x) => x.base === base);
+      if (!f || q.answer.kind !== 'choice') throw new Error(`question inattendue : ${q.prompt}`);
+      vus.add(base);
+      expect(juste(q)).toBe(f.forme);
+      expect([...q.answer.options].sort()).toEqual([f.forme, f.faux, f.base].sort());
+      expect(q.traps).toHaveLength(2);
+    }
+    expect(vus.size).toBe(FEMININS_COURANTS.length);
+  });
+
   it('être : le participe porte les marques du sujet', () => {
     for (const q of tirages('fcm2-participe-etre', 3)) {
       const s = SUJETS_PARTICIPE.find((x) => q.prompt.includes(`« ${x.texte} `));

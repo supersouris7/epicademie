@@ -43,6 +43,7 @@ import {
   type Forme,
   type Objet,
   type PhraseVerbe,
+  type VerbeAttributif,
 } from './accords-cm2.donnees.ts';
 import { appariement, at, document, pickN, textTraps } from './outils.ts';
 
@@ -66,10 +67,11 @@ const CATEGORIES: readonly (readonly [Genre, Nombre])[] = [
 ];
 
 /** Texte à trous « Ligne 1 : [..] [..]. Ligne 2 : … » : un groupe de réponses par ligne. */
-const parLignes = (groupes: readonly (readonly string[])[]) => ({
+const parLignes = (groupes: readonly (readonly (string | readonly string[])[])[]) => ({
   kind: 'cloze' as const,
   parts: [...groupes.flatMap((g, i) => g.map((_, j) => (j > 0 ? ' ' : `${i > 0 ? '. ' : ''}Ligne ${i + 1} : `))), '.'],
-  blanks: groupes.flat().map((a) => ({ mode: 'text' as const, accepted: [a] })),
+  // Un trou peut admettre plusieurs écritures : la première est celle de la correction.
+  blanks: groupes.flat().map((a) => ({ mode: 'text' as const, accepted: [a].flat() })),
 });
 
 // ───────────────────────── 1. Accord sujet-verbe ─────────────────────────
@@ -161,6 +163,12 @@ function sujetVerbeDraft(rng: Rng, level: Level): QuestionDraft {
 const DEF_ATTRIBUT = 'L’attribut du sujet s’accorde en genre et en nombre avec le sujet.';
 
 const verbeAu = (formes: readonly [string, string], n: Nombre) => formes[n === 'sg' ? 0 : 1];
+
+/** Écritures admises du verbe conjugué : la variante ne vaut qu'au singulier. */
+const verbesAdmis = (v: VerbeAttributif, n: Nombre) => [
+  verbeAu(v.formes, n),
+  ...(n === 'sg' && v.variante ? [v.variante] : []),
+];
 
 const piegesAttribut = (a: Adj, noyau: string, g: Genre, n: Nombre): (readonly [string, Rich])[] =>
   CATEGORIES.filter(([cg, cn]) => forme(a, cg, cn) !== forme(a, g, n)).map(
@@ -259,7 +267,7 @@ function attributDraft(rng: Rng, level: Level): QuestionDraft {
           'Portraits à compléter',
           lignes.map((x) => `${x.texte} … (${x.verbe.infinitif}) … (${x.adjectif.base}).`),
         ),
-        answer: parLignes(reponses),
+        answer: parLignes(lignes.map((x) => [verbesAdmis(x.verbe, x.nombre), forme(x.adjectif, x.genre, x.nombre)])),
         hint: 'Un même sujet commande deux accords : le verbe et l’attribut.',
         steps: [
           'Le sujet commande le verbe.',
@@ -576,24 +584,17 @@ function particuliersDraft(rng: Rng, level: Level): QuestionDraft {
       };
     }
     case 2: {
-      const trois = pickN(rng, [...FEMININS_COURANTS, ...FEMININS_RARES], 3);
-      const gauche = trois.map((f) => f.base);
+      const f = rng.pick(FEMININS_COURANTS);
+      const { answer, traps } = choice(rng, f.forme, [
+        { label: f.faux, why: f.regle },
+        { label: f.base, why: `« ${f.base} » est le masculin : au féminin, le mot doit changer.` },
+      ]);
       return {
-        prompt: `Associe chaque masculin (${gauche.join(', ')}) à son féminin.`,
-        answer: {
-          kind: 'match',
-          left: gauche,
-          ...appariement(
-            rng,
-            trois.map((f) => f.forme),
-          ),
-        },
-        hint: 'Dis chaque mot avec « une » devant.',
-        steps: [
-          'Le féminin ne s’écrit pas toujours avec un simple e.',
-          ...trois.map((f) => `« ${f.base} » : ${f.regle}`),
-          `Réponses : **${trois.map((f) => `${f.base} → ${f.forme}`).join(', ')}**.`,
-        ],
+        prompt: `Quel est le féminin de « ${f.base} » ?`,
+        answer,
+        traps,
+        hint: 'Dis le mot avec « une » devant, puis compare bien la fin de chaque écriture.',
+        steps: ['Le féminin ne s’écrit pas toujours avec un simple e.', f.regle, `C’est **${f.forme}**.`],
       };
     }
     case 3:
@@ -678,6 +679,7 @@ export const FCM2_ACCORDS: readonly Skill[] = [
       'accord-adjectif-nom',
       'attribut-exemple',
       'verbes-attributifs',
+      'paraitre-rectifie',
       ...faitsDe(Object.values(ADJ_REGULIERS)),
       ...faitsDe(ATTRIBUTS_ELOIGNES.map((x) => x.adjectif)),
     ],
