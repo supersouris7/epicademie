@@ -122,6 +122,29 @@ describe('anglais cm2 : le groupe nominal', () => {
     }
   });
 
+  it('adjectif, niveaux 4 et 5 : « little » accepté pour « small », « large » pour « big » au niveau 4', () => {
+    for (const l of [4, 5] as const) {
+      const seen = new Set<string>();
+      for (const q of questions('acm2-adjectif', l)) {
+        if (q.answer.kind !== 'text') throw new Error('saisie attendue');
+        const [number, size = '', colour, noun] = (q.answer.accepted[0] ?? '').split(' ');
+        seen.add(size);
+        const other = size === 'small' ? 'little' : 'large';
+        const accepted = size === 'small' || l === 4;
+        const colours = colour === 'grey' ? ['grey', 'gray'] : [colour];
+        for (const c of colours)
+          for (const t of [`${number} ${other} ${c} ${noun}`, `${number} ${other}, ${c} ${noun}.`])
+            expect(text(q, t), `${q.prompt} ${t}`).toBe(accepted);
+        expect(text(q, `${number} ${colour} ${other} ${noun}`)).toBe(false);
+      }
+      expect([...seen].sort()).toEqual(['big', 'small']);
+    }
+  });
+
+  it('adjectif, niveau 5 : l’énoncé ne donne pas l’ordre des mots', () => {
+    for (const q of questions('acm2-adjectif', 5)) expect(q.prompt).not.toMatch(/taille|couleur/);
+  });
+
   it('adjectif, niveau 5 : la réponse reprend la ligne de l’enfant demandé', () => {
     for (const q of questions('acm2-adjectif', 5)) {
       if (q.figure?.kind !== 'document' || q.answer.kind !== 'text') throw new Error('document attendu');

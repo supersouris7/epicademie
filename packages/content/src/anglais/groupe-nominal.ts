@@ -464,13 +464,19 @@ const BEFORE = 'En anglais, l’adjectif se place avant le nom.';
 const NO_S = 'Un adjectif anglais ne prend jamais de s.';
 const SIZE_FIRST = 'La taille se place avant la couleur.';
 const colourForms = (c: Adjective) => [c.en, ...(c.alt ? [c.alt] : [])];
+/** « small » se traduit aussi par « little ». */
+const sizeForms = (s: Adjective) => (s.en === 'small' ? [s.en, 'little'] : [s.en]);
+/** En traduction depuis le français, « grand » peut aussi se dire « large ». */
+const translatedSizeForms = (s: Adjective) => (s.en === 'big' ? [s.en, 'large'] : sizeForms(s));
 /** « two small black cats », avec la virgule et l'orthographe américaine acceptées. */
-const bigForms = (number: string, g: Group) =>
+const bigForms = (number: string, g: Group, sizes: readonly string[] = sizeForms(g.size)) =>
   full(
-    colourForms(g.colour).flatMap((c) => [
-      `${number} ${g.size.en} ${c} ${g.thing.many}`,
-      `${number} ${g.size.en}, ${c} ${g.thing.many}`,
-    ]),
+    sizes.flatMap((s) =>
+      colourForms(g.colour).flatMap((c) => [
+        `${number} ${s} ${c} ${g.thing.many}`,
+        `${number} ${s}, ${c} ${g.thing.many}`,
+      ]),
+    ),
   );
 const groupTraps = (number: string, g: Group) => {
   const { size, colour, thing } = g;
@@ -547,7 +553,7 @@ function adjectiveLevel4(rng: Rng): QuestionDraft {
   const fr = `${n} ${frForm(g.size, g.thing, true)} ${g.thing.frMany} ${frForm(g.colour, g.thing, true)}`;
   return {
     prompt: `Écris en anglais, avec le nombre en lettres : « ${fr} ».`,
-    answer: { kind: 'text', accepted: bigForms(number, g) },
+    answer: { kind: 'text', accepted: bigForms(number, g, translatedSizeForms(g.size)) },
     traps: groupTraps(number, g),
     hint: 'Quatre mots : le nombre, deux adjectifs, puis le nom. Quel adjectif passe en premier ?',
     steps: [BEFORE, `${SIZE_FIRST} ${NO_S}`, `Réponse : **${good}**`],
@@ -576,7 +582,7 @@ function adjectiveLevel5(rng: Rng): QuestionDraft {
   const who = elided ? `qu’${kid}` : `que ${kid}`;
   const of = elided ? `d’${kid}` : `de ${kid}`;
   return {
-    prompt: `Lis les messages. Résume ce ${who} possède en un seul groupe : nombre, taille, couleur, nom.`,
+    prompt: `Lis les messages. Résume en un seul groupe de mots anglais ce ${who} possède, sans oublier combien.`,
     figure: { kind: 'document', title: 'What have you got?', lines, credit: 'Écrit pour l’exercice.' },
     answer: { kind: 'text', accepted: bigForms(number, g) },
     traps: groupTraps(number, g),
