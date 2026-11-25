@@ -55,18 +55,13 @@ const E_NOMADISME =
 const E_TRAVAIL = 'le travail humain est à l’origine des produits qu’il trouve dans son assiette';
 
 // INSEE.
-const I_RURAL =
-  'Les territoires ruraux désignent désormais l’ensemble des communes peu denses ou très peu denses d’après la grille communale de densité';
-const I_PART = 'Ils réunissent 88 % des communes en France et 33 % de la population en 2017';
 const I_ARTIFICIEL =
   'Faiblement artificialisés et relativement peu peuplés, les espaces ruraux ne sont pas pour autant des espaces naturels';
-const I_POLE = 'Il faut y associer des critères de type fonctionnel, notamment le degré d’influence d’un pôle d’emploi';
 const I_ACTIVITES = 'Les secteurs d’activité agricole et industrielle sont des marqueurs forts du rural';
-const I_TOURISME = 'Le tourisme est très présent dans le rural, notamment le rural autonome';
+const I_TOURISME = 'Le tourisme est très présent dans le rural';
+// INSEE, « La grille de densité 2025 ».
 const I_GRILLE =
-  'Les communes densément peuplées et les communes de densité intermédiaire constituent l’espace urbain ; les communes peu denses et les communes très peu denses constituent l’espace rural';
-const I_CATEGORIES =
-  'les communes densément peuplées, les communes de densité intermédiaire, les communes peu denses, les communes très peu denses';
+  'La grille communale permet de distinguer trois types de communes : les communes densément peuplées ; les communes de densité intermédiaire ; les communes rurales. Les communes densément peuplées et les communes de densité intermédiaire constituent l’espace urbain';
 
 // Trésor de la langue française informatisé (CNRTL).
 const C_ARIDE = 'Dépourvu d’humidité, sec. Roche, sable aride';
@@ -764,18 +759,18 @@ const habiterRural: Notion = {
   title: 'Habiter un espace rural',
   hint: 'Pense à la densité, aux activités variées et aux liens avec la ville la plus proche.',
   memo: [
-    'En France, l’INSEE appelle **espace rural** les communes peu denses ou très peu denses de la **grille de densité**.',
-    'Le rural n’est pas seulement agricole : industrie, tourisme, résidences secondaires, habitants qui travaillent près d’un **pôle** d’emploi.',
-    'Les espaces ruraux sont divers : certains attirent de nouveaux habitants, d’autres sont en **déprise**.',
+    'L’INSEE classe les communes en trois catégories avec sa **grille de densité** : densément peuplées, de densité intermédiaire et rurales. L’**espace rural** réunit les communes rurales.',
+    'Le rural n’est pas seulement agricole : on y trouve aussi de l’industrie, du tourisme et des habitants liés à la ville voisine.',
+    'Les espaces ruraux sont divers : certains sont riches et liés aux villes, d’autres sont en **déprise**.',
   ],
   faits: [
     {
-      q: 'Comment l’INSEE définit-il les territoires ruraux en France ?',
-      a: 'les communes peu denses ou très peu denses',
+      q: 'Pour l’INSEE, quelles communes forment l’espace rural ?',
+      a: 'les communes ni densément peuplées ni de densité intermédiaire',
       wrong: [
         {
           label: 'les seules communes sans habitants',
-          why: 'Les communes rurales sont habitées : elles sont peu ou très peu denses.',
+          why: 'Les communes rurales sont habitées.',
         },
         {
           label: 'les communes densément peuplées',
@@ -783,33 +778,36 @@ const habiterRural: Notion = {
         },
         {
           label: 'toutes les communes situées en montagne',
-          why: 'Le critère est la densité, pas le relief.',
+          why: 'La grille classe les communes selon la densité, pas selon le relief.',
         },
       ],
-      gap: ['Les territoires ruraux sont les communes peu denses ou ', ' peu denses.', ['très', 'tres']],
-      choix: ['très', 'jamais', 'plus du tout'],
-      quote: I_RURAL,
-      explain: 'La définition repose sur la grille communale de densité.',
-      src: RURAL,
+      gap: [
+        'L’espace rural réunit les communes qui ne sont ni densément peuplées ni de densité ',
+        '.',
+        ['intermédiaire'],
+      ],
+      quote: I_GRILLE,
+      explain: 'Les deux autres catégories forment l’espace urbain : les communes rurales forment l’espace rural.',
+      src: GRILLE,
     },
     {
-      q: 'En 2017, en France, les territoires ruraux regroupent…',
-      a: '88 % des communes et 33 % de la population',
+      q: 'D’après le programme, tous les espaces agricoles de faible densité se ressemblent-ils ?',
+      a: 'non : certains sont riches et liés aux villes, d’autres sont en déprise',
       wrong: [
+        { label: 'oui : ils sont tous en déprise', why: 'Certains sont au contraire des espaces riches.' },
         {
-          label: '33 % des communes et 88 % de la population',
-          why: 'Les chiffres sont inversés : beaucoup de communes, moins d’habitants.',
+          label: 'oui : ils sont tous riches et en croissance',
+          why: 'Certains sont en déprise et en voie de désertification.',
         },
         {
-          label: '88 % des communes et 88 % de la population',
-          why: 'Beaucoup de communes rurales sont peu peuplées : leur part d’habitants est plus faible.',
+          label: 'non : aucun d’eux n’a de lien avec les villes',
+          why: 'Des espaces riches sont intégrés aux dynamiques urbaines.',
         },
-        { label: '5 % des communes et 1 % de la population', why: 'Le rural occupe une place bien plus grande.' },
       ],
-      gap: ['En 2017, le rural réunit 88 % des communes et ', ' % de la population.', ['33', '33 %']],
-      quote: I_PART,
-      explain: 'Beaucoup de petites communes, mais un tiers environ des habitants.',
-      src: RURAL,
+      gap: ['Certains espaces ruraux perdent des habitants et des activités : ils sont en ', '.', ['déprise']],
+      choix: ['déprise', 'croissance', 'ville'],
+      quote: P_AGRICOLES,
+      explain: 'La faible densité recouvre des situations opposées.',
     },
     {
       q: 'Les espaces ruraux sont-ils des espaces naturels, sans trace des sociétés ?',
@@ -848,7 +846,7 @@ const habiterRural: Notion = {
         },
         {
           label: 'oui : aucun habitant n’y travaille ailleurs',
-          why: 'Des habitants de campagnes travaillent près de pôles d’emploi.',
+          why: 'Des habitants de campagnes travaillent en ville.',
         },
       ],
       gap: ['Les campagnes ne sont jamais ', ' agricoles.', ['seulement', 'uniquement']],
@@ -858,17 +856,24 @@ const habiterRural: Notion = {
       src: EDUSCOL,
     },
     {
-      q: 'En plus de la densité, quel critère l’INSEE utilise-t-il pour distinguer les espaces ruraux ?',
-      a: 'le degré d’influence d’un pôle d’emploi',
+      q: 'Quel lien des espaces agricoles dynamiques peuvent-ils avoir avec les espaces urbanisés ?',
+      a: 'ils les approvisionnent',
       wrong: [
-        { label: 'la couleur des toits', why: 'La couleur ne dit rien des liens avec l’emploi.' },
-        { label: 'le nom de la commune', why: 'Un nom ne mesure ni les emplois ni les déplacements.' },
-        { label: 'la longueur des rivières', why: 'La classification ne repose pas sur les rivières.' },
+        {
+          label: 'ils n’ont aucun échange avec eux',
+          why: 'Ces espaces agricoles sont intégrés aux espaces urbanisés.',
+        },
+        { label: 'ils les remplacent par des forêts', why: 'La ressource parle d’un approvisionnement des villes.' },
+        {
+          label: 'ils leur interdisent de s’étendre',
+          why: 'Le lien décrit est l’approvisionnement, pas une interdiction.',
+        },
       ],
-      gap: ['L’INSEE ajoute le degré d’influence d’un pôle d’', '.', ['emploi', 'emplois']],
-      quote: I_POLE,
-      explain: 'On distingue ainsi des communes proches d’un pôle et des communes plus autonomes.',
-      src: RURAL,
+      gap: ['Des espaces agricoles dynamiques ', ' les espaces urbanisés.', ['approvisionnent']],
+      choix: ['approvisionnent', 'ignorent', 'remplacent'],
+      quote: E_CONTRASTES,
+      explain: 'La campagne et la ville sont reliées : la première fournit des produits à la seconde.',
+      src: EDUSCOL,
     },
     {
       q: 'Quelles activités sont des marqueurs forts du rural en France ?',
@@ -883,46 +888,32 @@ const habiterRural: Notion = {
       ],
       gap: ['Agriculture et ', ' sont des marqueurs forts du rural.', ['industrie', 'l’industrie']],
       quote: I_ACTIVITES,
-      explain: 'La part de ces emplois augmente quand on s’éloigne des pôles.',
+      explain: 'Ces deux secteurs d’activité caractérisent fortement le rural.',
       src: RURAL,
     },
   ],
   paires3: [
-    ['Espace rural', 'Communes peu denses ou très peu denses'],
-    ['Pôle d’emploi', 'Lieu qui influence les communes alentour'],
+    ['Espace rural', 'Communes ni densément peuplées ni de densité intermédiaire'],
+    ['Déprise', 'Recul des habitants et des activités'],
     ['Exode rural', 'Départ des campagnes vers les villes'],
   ],
   paires5: [
-    ['Espace rural', 'Communes peu denses ou très peu denses'],
-    ['Pôle d’emploi', 'Lieu qui influence les communes alentour'],
+    ['Espace rural', 'Communes ni densément peuplées ni de densité intermédiaire'],
+    ['Déprise', 'Recul des habitants et des activités'],
     ['Exode rural', 'Départ des campagnes vers les villes'],
-    ['Tourisme', 'Activité très présente dans le rural autonome'],
-    ['Espace urbain', 'Communes denses ou de densité intermédiaire'],
+    ['Tourisme', 'Activité très présente dans les campagnes éloignées de l’influence des villes'],
+    ['Espace urbain', 'Communes densément peuplées ou de densité intermédiaire'],
   ],
-  ordre: [
-    'les communes densément peuplées',
-    'les communes de densité intermédiaire',
-    'les communes peu denses',
-    'les communes très peu denses',
-  ],
-  consigne: {
-    prompt: 'Classe ces catégories de communes de la grille de l’INSEE, de la plus dense à la moins dense.',
-    hint: 'Commence par la catégorie où les habitants sont les plus serrés.',
-    why: 'La grille de densité de l’INSEE range les communes en quatre niveaux.',
-    fin: 'En tête viennent',
-    quote: I_CATEGORIES,
-    src: GRILLE,
-  },
   libres: [
     {
-      q: 'Quel adjectif désigne un espace de communes peu denses ou très peu denses ?',
+      q: 'Quel adjectif désigne l’espace des communes ni densément peuplées ni de densité intermédiaire ?',
       accepted: ['rural', 'rurale', 'un espace rural', 'ruraux'],
       traps: [
-        { text: 'urbain', why: 'L’espace urbain réunit les communes les plus denses.' },
+        { text: 'urbain', why: 'L’espace urbain réunit les communes densément peuplées ou de densité intermédiaire.' },
         { text: 'littoral', why: 'Littoral signifie « du bord de mer » : ce n’est pas la densité.' },
       ],
       quote: I_GRILLE,
-      explain: 'Les communes peu denses et très peu denses constituent l’espace rural.',
+      explain: 'Ces communes sont les communes rurales : elles forment l’espace rural.',
       src: GRILLE,
     },
     {
@@ -944,7 +935,7 @@ const habiterRural: Notion = {
         { text: 'banque', why: 'Les services aux entreprises sont surtout dans l’urbain.' },
       ],
       quote: I_TOURISME,
-      explain: 'Le tourisme marque fortement certains espaces ruraux, notamment les plus autonomes.',
+      explain: 'Le tourisme est très présent, notamment dans les campagnes éloignées de l’influence des villes.',
       src: RURAL,
     },
   ],

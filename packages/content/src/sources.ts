@@ -1862,10 +1862,10 @@ export const SOURCES: readonly Source[] = [
   },
   {
     id: 'insee-grille-densite',
-    title: 'La grille de densité',
+    title: 'La grille de densité 2025',
     publisher: 'INSEE',
-    url: 'https://www.insee.fr/fr/information/2114627',
-    textDate: '2022',
+    url: 'https://www.insee.fr/fr/information/8571524',
+    textDate: '2025',
     consultedOn: '2026-11-25',
   },
   tlfi('aride', 'aride', 'aride'),

@@ -868,21 +868,15 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'espace-rural',
     word: 'espace rural',
     forms: ['espace rural', 'espaces ruraux'],
-    definition: 'Pour l’INSEE, les communes peu denses ou très peu denses.',
+    definition: 'Pour l’INSEE, les communes ni densément peuplées ni de densité intermédiaire.',
     example: 'Un village entouré de champs.',
   },
   {
     id: 'grille-de-densite',
     word: 'grille de densité',
     forms: ['grille de densité'],
-    definition: 'Le classement des communes de l’INSEE en quatre niveaux de densité.',
-    example: 'Une commune « très peu dense » y est rurale.',
-  },
-  {
-    id: 'pole-emploi',
-    word: 'pôle',
-    forms: ['pôle', 'pôles', 'pôle d’emploi'],
-    definition: 'Un lieu qui rassemble des emplois et influence les communes alentour.',
-    example: 'Une ville moyenne où travaillent des habitants des villages.',
+    definition:
+      'Le classement des communes par l’INSEE en trois catégories : densément peuplées, de densité intermédiaire, rurales.',
+    example: 'Un petit village isolé y est souvent classé commune rurale.',
   },
 ];
