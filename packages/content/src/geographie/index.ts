@@ -3,6 +3,7 @@ import { choice, trueFalse } from '../build.ts';
 import { SKILLS as LIEUX } from './lieux.ts';
 import { SKILLS as VIE } from './vie.ts';
 import { SKILLS as TRANSPORTS } from './transports.ts';
+import { SKILLS as MIEUX_HABITER } from './habiter.ts';
 import { DEPARTEMENTS, GEO_FETCHED_ON, PAYS_UE, REGIONS } from './donnees.generated.ts';
 
 /**
@@ -198,6 +199,7 @@ export const GEOGRAPHIE_CHAPTERS: readonly Chapter[] = [
   chapter('gcm1-lieux', 'cm1', 'Les lieux où j’habite', LIEUX),
   chapter('gcm1-se-loger', 'cm1', 'Se loger, travailler, avoir des loisirs', VIE),
   chapter('gcm2-se-deplacer', 'cm2', 'Se déplacer', TRANSPORTS),
+  chapter('gcm2-mieux-habiter', 'cm2', 'Mieux habiter', MIEUX_HABITER),
   chapter('gcm2-departements', 'cm2', 'Les départements', [departments]),
   chapter('g6-prefectures', '6e', 'Les préfectures', [prefectures]),
   chapter('g3-union-europeenne', '3e', 'L’Union européenne', [euCapitals, euro]),
