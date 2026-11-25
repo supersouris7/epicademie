@@ -239,7 +239,15 @@ const viePriveeEnLigne: Notion = {
       gap: [
         'La loi de 2023 sur la majorité numérique n’a jamais pu être ',
         '.',
-        ['appliquée', 'appliquee', 'mise en application', 'mise en œuvre', 'mise en oeuvre'],
+        [
+          'appliquée',
+          'appliquee',
+          'mise en application',
+          'mise en œuvre',
+          'mise en oeuvre',
+          'mise en place',
+          'mise en pratique',
+        ],
       ],
       explain: 'Une loi a été votée, mais elle n’a jamais pu être appliquée.',
     },
