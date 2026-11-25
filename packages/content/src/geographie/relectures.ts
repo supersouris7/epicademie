@@ -38,4 +38,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'g6-littoral-touristique', version: 1, lot: 'ge-6e-03', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'g6-risques-littoraux', version: 1, lot: 'ge-6e-03', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'g6-vocabulaire-littoraux', version: 1, lot: 'ge-6e-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g6-repartition-population', version: 1, lot: 'ge-6e-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g6-foyers-peuplement', version: 1, lot: 'ge-6e-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g6-densite', version: 1, lot: 'ge-6e-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g6-vocabulaire-monde-habite', version: 1, lot: 'ge-6e-04', date: '2026-11-25', verdict: 'ok' },
 ];
