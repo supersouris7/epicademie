@@ -79,6 +79,15 @@ export const SOURCES: readonly Source[] = [
     consultedOn: CONSULTED,
   },
   {
+    id: 'lve-cm-2026',
+    title:
+      'Programme de langues vivantes étrangères et régionales, cours moyen (arrêté du 26 février 2026, BO n° 12, annexe 2)',
+    publisher: 'Ministère de l’Éducation nationale',
+    url: 'https://www.education.gouv.fr/bo/2026/Hebdo12/MENE2602911A',
+    textDate: '2026-02-26',
+    consultedOn: '2026-11-25',
+  },
+  {
     id: 'maths-cycle3-2025',
     title: 'Programme de mathématiques du cycle 3 (CM1, CM2, 6e)',
     publisher: 'Ministère de l’Éducation nationale',

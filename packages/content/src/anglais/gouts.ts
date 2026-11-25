@@ -6,12 +6,13 @@ import type { Word } from './temps-faits.ts';
 import { at, pairs, pickEnglish, shuffledOther, some, understand, write } from './temps.ts';
 
 /**
- * Anglais CM1 — « Goûts et capacités » (lot an-cm1-05, docs/adr/0034). Programme : cycle 3, langues vivantes
- * (exprimer ses goûts ; dialoguer sur les loisirs ; phrase négative et interrogative). Mots et règles :
+ * Anglais CM1 — « Goûts et capacités » (lot an-cm1-05, docs/adr/0034). Programme : langues vivantes,
+ * cours moyen première année (arrêté du 26 février 2026 : goûts, capacité, loisirs, animaux, réponses courtes). Mots et règles :
  * British Council (voir gouts-faits.ts : chaque fait y porte sa source et sa citation).
  */
-const PROGRAMME = 'Programme du cycle 3 (BOEN n° 31 du 30 juillet 2020, version 2023), langues vivantes, CM1';
-const source = (detail: string) => `${PROGRAMME} — goûts, loisirs, phrases négatives et questions. ${detail}`;
+const PROGRAMME =
+  'Programme de langues vivantes, cours moyen première année (arrêté du 26 février 2026, BO n° 12, annexe 2)';
+const source = (detail: string) => `${PROGRAMME} — goûts, capacité, loisirs, réponses courtes. ${detail}`;
 
 /** « de » élidé devant un prénom qui commence par une voyelle. */
 const de = (name: string) => (/^[AEIOU]/.test(name) ? `d’${name}` : `de ${name}`);
@@ -34,6 +35,9 @@ const KIDS: readonly Kid[] = [
 ];
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const otherPronoun = (k: Kid) => (k.he === 'he' ? 'She' : 'He');
+/** Le prénom ne suffit pas à choisir « he » ou « she » : l’énoncé le dit. */
+const gender = (k: Kid) => `${k.name} est ${k.he === 'he' ? 'un garçon' : 'une fille'}.`;
+const PRONOUN_HINT = 'Un garçon : « he ». Une fille : « she ».';
 
 // ——— 1. I like / I don't like ———
 
@@ -99,7 +103,9 @@ function likeChoice(rng: Rng, level: 1 | 2): QuestionDraft {
     { label: verb(!s.third, yes), why: whyVerb(s.third) },
     {
       label: verb(s.third, !yes),
-      why: yes ? 'La phrase en français dit qu’on aime : pas de « not ».' : 'La phrase en français dit non.',
+      why: yes
+        ? 'La phrase en français dit qu’on aime : pas de « don’t » ni de « doesn’t ».'
+        : 'La phrase en français dit non.',
     },
     { label: verb(!s.third, !yes), why: `${whyVerb(s.third)} Regarde aussi s’il y a un « non ».` },
   ]);
@@ -120,7 +126,7 @@ function likeWrite(rng: Rng): QuestionDraft {
   const v = verb(false, yes);
   const good = `${s.en} ${v} ${thing.en}`;
   return {
-    prompt: `Écris en anglais : « ${yes ? s.yes : s.no} ${thing.fr}. »`,
+    prompt: `Écris en anglais (avec « like ») : « ${yes ? s.yes : s.no} ${thing.fr}. »`,
     answer: { kind: 'text', accepted: full(yes ? [good] : [good, `${s.en} ${longForm(v)} ${thing.en}`]) },
     traps: [
       { text: `${s.en} ${verb(false, !yes)} ${thing.en}.`, why: 'Attention : oui et non sont inversés.' },
@@ -129,7 +135,7 @@ function likeWrite(rng: Rng): QuestionDraft {
         ? { text: `${s.en} like the ${thing.en}.`, why: 'Pour parler d’un goût en général, pas de « the ».' }
         : { text: `${s.en} not like ${thing.en}.`, why: 'Pour dire non, il faut « don’t » devant « like ».' },
     ],
-    hint: 'Dans l’ordre : qui, le verbe (avec « don’t » si c’est non), puis la chose au pluriel ou sans « the ».',
+    hint: 'Dans l’ordre : qui, le verbe (avec « don’t » si c’est non), puis la chose, sans « the ».',
     steps: [
       `Sujet : « ${s.en} ». Verbe : « ${v} ».`,
       'On parle d’un goût en général : pas de « the ».',
@@ -216,7 +222,7 @@ function likeRead(rng: Rng): QuestionDraft {
     : [good, `No ${kid.he} doesn’t`, `No, ${kid.he} does not`, `No ${kid.he} does not`];
   const other = otherPronoun(kid).toLowerCase();
   return {
-    prompt: `Lis les messages. Réponds en anglais par une réponse courte : « Does ${kid.name} like ${a.en}? »`,
+    prompt: `Lis les messages. ${gender(kid)} Réponds en anglais par une réponse courte : « Does ${kid.name} like ${a.en}? »`,
     figure: { kind: 'document', title: 'My likes', lines, credit: 'Écrit pour l’exercice.' },
     answer: { kind: 'text', accepted: full(forms) },
     traps: [
@@ -234,7 +240,7 @@ function likeRead(rng: Rng): QuestionDraft {
         why: 'Fais une réponse courte complète : Yes ou No, le pronom, puis does ou doesn’t.',
       },
     ],
-    hint: `Trouve la ligne ${de(kid.name)}. Cherche « ${a.en} » : y a-t-il « don’t » devant « like » ?`,
+    hint: `Trouve la ligne ${de(kid.name)}. Cherche « ${a.en} » : y a-t-il « don’t » devant « like » ? ${PRONOUN_HINT}`,
     steps: [
       `${kid.name} écrit : « I ${yes ? 'like' : 'don’t like'} ${a.en}. »`,
       `La question commence par « Does » : on répond avec « ${yes ? 'does' : 'doesn’t'} ».`,
@@ -255,7 +261,7 @@ const like: Skill = {
       'Question : Do you like bananas? Yes, I do. Does he like cats? No, he doesn’t.',
     ],
     source: source('Règles : British Council, LearnEnglish Kids, « Like and don’t like » et « Like + ing ».'),
-    sources: ['cycle3-2020', 'bck-like', 'bck-like-ing'],
+    sources: ['lve-cm-2026', 'bck-like', 'bck-like-ing'],
   },
   generate: (rng, level): QuestionDraft => {
     if (level === 1 || level === 2) return likeChoice(rng, level);
@@ -268,14 +274,20 @@ const like: Skill = {
 // ——— 2. Can / can't ———
 
 /** Actions tirées des exemples du British Council ; `fr` : « sait + infinitif ». */
-const ACTIONS: readonly { readonly en: string; readonly fr: string }[] = [
+interface Action {
+  readonly en: string;
+  readonly fr: string;
+  /** Autres façons justes d’écrire l’action. */
+  readonly alt?: readonly string[];
+}
+const ACTIONS: readonly Action[] = [
   { en: 'swim', fr: 'nager' },
   { en: 'dance', fr: 'danser' },
-  { en: 'ride a bike', fr: 'faire du vélo' },
+  { en: 'ride a bike', fr: 'faire du vélo', alt: ['ride a bicycle', 'cycle'] },
   { en: 'speak English', fr: 'parler anglais' },
-  { en: 'play the guitar', fr: 'jouer de la guitare' },
-  { en: 'play the piano', fr: 'jouer du piano' },
-  { en: 'run fast', fr: 'courir vite' },
+  { en: 'play the guitar', fr: 'jouer de la guitare', alt: ['play guitar'] },
+  { en: 'play the piano', fr: 'jouer du piano', alt: ['play piano'] },
+  { en: 'run fast', fr: 'courir vite', alt: ['run quickly'] },
 ];
 const ABLE: readonly { readonly en: string; readonly yes: string; readonly no: string }[] = [
   { en: 'I', yes: 'Je sais', no: 'Je ne sais pas' },
@@ -287,6 +299,9 @@ const ABLE: readonly { readonly en: string; readonly yes: string; readonly no: s
 const modal = (yes: boolean) => (yes ? 'can' : 'can’t');
 const negatives = (subject: string, action: string) =>
   ['can’t', 'cannot', 'can not'].map((n) => `${subject} ${n} ${action}`);
+/** Toutes les phrases justes : chaque écriture de l’action, au « oui » ou au « non ». */
+const sentences = (subject: string, a: Action, yes: boolean) =>
+  [a.en, ...(a.alt ?? [])].flatMap((x) => (yes ? [`${subject} can ${x}`] : negatives(subject, x)));
 const WHY_BARE = 'Après « can » ou « can’t », le verbe reste seul : pas de « to », pas de s.';
 
 function canListen(rng: Rng): QuestionDraft {
@@ -357,7 +372,7 @@ function canShort(rng: Rng): QuestionDraft {
     ? [good, `Yes ${kid.he} can`]
     : ['can’t', 'cannot', 'can not'].flatMap((n) => [`No, ${kid.he} ${n}`, `No ${kid.he} ${n}`]);
   return {
-    prompt: `Réponds par une réponse courte (${yes ? 'oui' : 'non'}) : « Can ${kid.name} ${a.en}? »`,
+    prompt: `${gender(kid)} Réponds par une réponse courte (${yes ? 'oui' : 'non'}) : « Can ${kid.name} ${a.en}? »`,
     answer: { kind: 'text', accepted: full(forms) },
     traps: [
       { text: yes ? `No, ${kid.he} can’t.` : `Yes, ${kid.he} can.`, why: 'Regarde entre parenthèses : oui ou non ?' },
@@ -367,7 +382,7 @@ function canShort(rng: Rng): QuestionDraft {
       },
       { text: yes ? 'Yes' : 'No', why: 'Fais une réponse courte complète : Yes ou No, le pronom, puis can ou can’t.' },
     ],
-    hint: `Remplace ${kid.name} par « he » ou « she ». Reprends le premier mot de la question.`,
+    hint: `Remplace ${kid.name} par un pronom. ${PRONOUN_HINT} Reprends le premier mot de la question.`,
     steps: [`Pour ${kid.name}, on dit « ${kid.he} ».`, `Réponse : **${good}.**`],
   };
 }
@@ -388,7 +403,7 @@ function canRead(rng: Rng): QuestionDraft {
   return {
     prompt: `Lis les messages. Qu’est-ce ${que(kid.name)} ${yes ? 'sait' : 'ne sait pas'} faire ? Écris une phrase avec « ${pronoun} ».`,
     figure: { kind: 'document', title: 'What can you do?', lines, credit: 'Écrit pour l’exercice.' },
-    answer: { kind: 'text', accepted: full(yes ? [good] : negatives(pronoun, action.en)) },
+    answer: { kind: 'text', accepted: full(sentences(pronoun, action, yes)) },
     traps: [
       {
         text: `${pronoun} ${modal(yes)} ${wrong.en}.`,
@@ -419,7 +434,7 @@ const can: Skill = {
       'Question : Can you swim? Réponse : Yes, I can. / No, I can’t.',
     ],
     source: source('Règles : British Council, LearnEnglish Kids, « Can and can’t » ; LearnEnglish, « Can, could ».'),
-    sources: ['cycle3-2020', 'bck-can', 'bc-can-could'],
+    sources: ['lve-cm-2026', 'bck-can', 'bc-can-could'],
   },
   generate: (rng, level): QuestionDraft => {
     if (level === 1) {
@@ -432,7 +447,7 @@ const can: Skill = {
         { label: `${s.en} like ${a.en}.`, why: '« like » parle d’un goût. Ici, on parle de savoir faire.' },
       ]);
       return {
-        prompt: `Comment dit-on : « ${yes ? s.yes : s.no} ${a.fr}. » ?`,
+        prompt: `Comment dit-on : « ${yes ? s.yes : s.no} ${a.fr} » ?`,
         answer,
         traps,
         hint: 'Il faut le petit mot de « savoir faire ». Est-ce oui ou non ?',
@@ -465,7 +480,7 @@ const can: Skill = {
       const good = `${s.en} ${modal(yes)} ${a.en}`;
       return {
         prompt: `Écris en anglais : « ${yes ? s.yes : s.no} ${a.fr}. »`,
-        answer: { kind: 'text', accepted: full(yes ? [good] : negatives(s.en, a.en)) },
+        answer: { kind: 'text', accepted: full(sentences(s.en, a, yes)) },
         traps: [
           { text: `${s.en} ${modal(!yes)} ${a.en}.`, why: 'Attention : oui et non sont inversés.' },
           { text: `${s.en} ${modal(yes)} to ${a.en}.`, why: WHY_BARE },
@@ -496,18 +511,26 @@ const MORE: Readonly<Record<string, readonly string[]>> = {
   cycling: ['biking'],
   'horse riding': ['riding'],
   'ride a bike': ['ride a bicycle', 'ride my bike', 'cycle', 'go cycling', 'cycling'],
-  'go rollerblading': ['rollerblading'],
+  'go rollerblading': ['rollerblading', 'rollerblade'],
   'go skateboarding': ['skateboarding', 'skateboard'],
   'go fishing': ['fishing', 'fish'],
-  'play on the computer': ['play computer games'],
+  'watch TV': ['watch the television'],
+  'play on the computer': ['play on a computer', 'play computer games'],
+  budgie: ['parakeet'],
   'play a board game': ['play board games'],
   'play an instrument': ['play a musical instrument'],
 };
 const withMore = (w: Word): Word => ({ ...w, alt: [...(w.alt ?? []), ...(MORE[w.en] ?? [])] });
-/** Un verbe de loisir s’écrit aussi avec « to » devant. */
+/** Un verbe de loisir s’écrit aussi avec « to » devant (jamais devant une forme en -ing). */
 const withTo = (w: Word): Word => {
   const more = withMore(w);
-  return { ...more, alt: [...(more.alt ?? []), ...[w.en, ...(more.alt ?? [])].map((n) => `to ${n}`)] };
+  return {
+    ...more,
+    alt: [
+      ...(more.alt ?? []),
+      ...[w.en, ...(more.alt ?? [])].filter((n) => !/^\w+ing\b/.test(n)).map((n) => `to ${n}`),
+    ],
+  };
 };
 
 /** Sports dont le nom français diffère du nom anglais : les autres ne demandent rien à apprendre. */
@@ -571,7 +594,7 @@ const sports: Skill = {
       'Tu aimes une activité ? Dis : I like swimming.',
     ],
     source: source('Mots : British Council, « Sports flashcards » et « Free time activities flashcards ».'),
-    sources: ['cycle3-2020', 'bck-flashcards-sports', 'bck-flashcards-free-time', 'bck-like', 'bck-like-ing'],
+    sources: ['lve-cm-2026', 'bck-flashcards-sports', 'bck-flashcards-free-time', 'bck-like', 'bck-like-ing'],
   },
   generate: (rng, level): QuestionDraft => {
     if (level === 1)
@@ -627,7 +650,7 @@ const COMMON = [...PETS, ...FARM, ...pickWord(WILD, ['lion', 'tiger', 'elephant'
 function petSentence(rng: Rng): QuestionDraft {
   const w = rng.pick(PETS);
   const good = `I’ve got a ${w.en}`;
-  const names = [w.en, ...(w.alt ?? [])];
+  const names = [w.en, ...(withMore(w).alt ?? [])];
   return {
     prompt: `Écris en anglais, avec « got » : « J’ai ${w.fr.replace(/^la /, 'une ').replace(/^le /, 'un ')}. »`,
     answer: { kind: 'text', accepted: full(names.flatMap((n) => [`I’ve got a ${n}`, `I have got a ${n}`])) },
@@ -665,7 +688,7 @@ function petRead(rng: Rng): QuestionDraft {
     traps: [
       {
         text: `${pronoun}’s got a ${loved.en}.`,
-        why: `${kid.name} aime cet animal (« I like ») mais ne l’a pas. Cherche « I’ve got ».`,
+        why: `${kid.name} aime cet animal (« I like »), mais ce n’est pas celui ${kid.he === 'he' ? 'qu’il' : 'qu’elle'} dit avoir. Cherche « I’ve got ».`,
       },
       { text: `${pronoun}’s got a ${theirs.en}.`, why: `C’est l’animal ${de(mate.name)}.` },
       { text: `${otherPronoun(kid)}’s got a ${mine.en}.`, why: `Pour ${kid.name}, on dit « ${pronoun} ».` },
@@ -695,7 +718,7 @@ const animals: Skill = {
       'Mots : British Council, « Pets », « Farm animals », « Wild animals » et « Sea animals flashcards ».',
     ),
     sources: [
-      'cycle3-2020',
+      'lve-cm-2026',
       'bck-flashcards-pets',
       'bck-flashcards-farm',
       'bck-flashcards-wild',
@@ -713,7 +736,12 @@ const animals: Skill = {
         'Imagine cet animal. Quel mot anglais as-tu entendu en classe ou en chanson ?',
       );
     if (level === 2) return understand(rng, rng.pick([PETS, FARM, WILD]), 'un animal');
-    if (level === 3) return write(rng, COMMON.map(withArticle), 'un animal');
+    if (level === 3)
+      return writeName(
+        rng,
+        COMMON.map((w) => withArticle(withMore(w))),
+        'un animal',
+      );
     if (level === 4) return rng.int(0, 1) === 0 ? pairs(rng, WILD, 5) : petSentence(rng);
     return petRead(rng);
   },

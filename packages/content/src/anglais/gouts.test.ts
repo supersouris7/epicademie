@@ -17,7 +17,7 @@ describe('anglais cm1 : goûts et capacités', () => {
     expect(skills.map((s) => s.id)).toEqual(['acm1-like', 'acm1-can', 'acm1-sports-loisirs', 'acm1-animaux']);
     for (const s of skills) {
       expect(skillLevels(s)).toBe(5);
-      expect(s.lesson.sources).toContain('cycle3-2020');
+      expect(s.lesson.sources).toContain('lve-cm-2026');
       expect(sourceIssues(s)).toEqual([]);
       expect(glossaryIssues({ skill: s, chapter: ENGLISH_TASTES_CHAPTER })).toEqual([]);
     }
@@ -88,6 +88,79 @@ describe('anglais cm1 : goûts et capacités', () => {
           expect(line, q.prompt).toContain(`${said}.`);
         }
       }
+  });
+
+  it('le programme cité est celui du cours moyen (arrêté du 26 février 2026)', () => {
+    expect(FAITS.filter((f) => f.sourceId === 'lve-cm-2026').length).toBeGreaterThan(0);
+    for (const s of skills) {
+      expect(s.lesson.sources).not.toContain('cycle3-2020');
+      expect(s.lesson.source).toContain('26 février 2026');
+      for (const id of s.lesson.sources ?? [])
+        expect(
+          FAITS.some((f) => f.sourceId === id),
+          `${s.id} ${id}`,
+        ).toBe(true);
+    }
+  });
+
+  it('réponse courte : l’énoncé dit si l’enfant est une fille ou un garçon', () => {
+    const short = [...questions('acm1-like', 5), ...questions('acm1-can', 4)].filter((q) =>
+      q.prompt.includes('réponse courte'),
+    );
+    expect(short.length).toBeGreaterThan(0);
+    for (const q of short) {
+      if (q.answer.kind !== 'text') throw new Error('saisie attendue');
+      const girl = /\b(he|she)\b/.exec(q.answer.accepted[0]!)![1] === 'she';
+      expect(q.prompt).toContain(girl ? 'est une fille.' : 'est un garçon.');
+    }
+  });
+
+  it('can, niveaux 3 et 5 : les autres écritures de l’action sont acceptées', () => {
+    const variants = {
+      'ride a bike': ['ride a bicycle', 'cycle'],
+      'run fast': ['run quickly'],
+      'play the guitar': ['play guitar'],
+      'play the piano': ['play piano'],
+    };
+    for (const level of [3, 5] as const)
+      for (const q of questions('acm1-can', level)) {
+        if (q.answer.kind !== 'text') throw new Error('saisie attendue');
+        const good = q.answer.accepted[0]!;
+        for (const [en, others] of Object.entries(variants)) {
+          if (!good.endsWith(` ${en}`)) continue;
+          const subject = good.split(' ')[0]!;
+          const modals = good.includes(' can ') ? ['can'] : ['can’t', 'cannot', 'can not'];
+          for (const m of modals)
+            for (const x of others)
+              expect(check(q, { kind: 'text', text: `${subject} ${m} ${x}` }).correct, `${m} ${x}`).toBe(true);
+        }
+      }
+  });
+
+  it('loisirs et animaux : variantes acceptées, « to » refusé devant -ing, indice juste', () => {
+    const find = (id: string, level: Level, fr: string) => {
+      const q = Array.from({ length: 800 }, (_, i) => generate(id, level, i + 1)).find(
+        (x) => x.answer.kind === 'text' && x.prompt.includes(`« ${fr} »`),
+      );
+      expect(q, fr).toBeDefined();
+      return q!;
+    };
+    const cases: readonly [string, readonly string[], readonly string[]][] = [
+      ['faire du vélo', ['to ride a bike', 'to go cycling', 'cycling'], ['to cycling']],
+      ['aller à la pêche', ['to go fishing', 'to fish'], ['to fishing']],
+      ['faire du roller', ['rollerblade', 'to rollerblade'], ['to rollerblading']],
+      ['faire du skate', ['to skateboard'], ['to skateboarding']],
+      ['regarder la télé', ['watch the television'], []],
+      ['jouer sur l’ordinateur', ['play on a computer'], []],
+    ];
+    for (const [fr, right, wrong] of cases) {
+      const q = find('acm1-sports-loisirs', 4, fr);
+      for (const text of right) expect(check(q, { kind: 'text', text }).correct, text).toBe(true);
+      for (const text of wrong) expect(check(q, { kind: 'text', text }).correct, text).toBe(false);
+    }
+    const budgie = find('acm1-animaux', 3, 'la perruche');
+    expect(check(budgie, { kind: 'text', text: 'a parakeet' }).correct).toBe(true);
+    expect(find('acm1-animaux', 3, 'le cochon d’Inde').hint).toContain('2 mots');
   });
 
   it('can, niveau 2 : l’écoute ne montre pas la phrase dans l’énoncé', () => {

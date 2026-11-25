@@ -5,6 +5,7 @@
 
 ## Textes officiels
 
+- Programme de langues vivantes, cours moyen (arrêté du 26 février 2026, MENE2602911A, BO n° 12 du 19 mars 2026, annexe 2), applicable au CM1 depuis la rentrée 2026 : il remplace la partie langues vivantes du programme de cycle 3 ci-dessous — <https://www.education.gouv.fr/bo/2026/Hebdo12/MENE2602911A> (consulté le 25/11/2026)
 - Programme du cycle 3 (BOEN n° 31 du 30 juillet 2020 et BOEN n° 25 du 22 juin 2023), version Éduscol en vigueur — <https://eduscol.education.fr/document/50990/download> (consulté le 24/11/2026 via la copie d’archive <https://web.archive.org/web/2026id_/https://eduscol.education.fr/document/50990/download>)
 - Repères annuels de progression et attendus de fin d’année (Éduscol), valables jusqu’à l’application des nouveaux programmes — <https://eduscol.education.fr/137/reperes-annuels-de-progression-et-attendus-de-fin-d-annee-du-cp-la-3e> (consulté le 24/11/2026 via la copie d’archive <https://web.archive.org/web/2026id_/https://eduscol.education.fr/137/reperes-annuels-de-progression-et-attendus-de-fin-d-annee-du-cp-la-3e>)
 

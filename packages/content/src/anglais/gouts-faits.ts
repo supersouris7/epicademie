@@ -1,8 +1,9 @@
 /**
  * Anglais CM1, « Goûts et capacités » (lot an-cm1-05) : données citées.
  * Chaque fait porte l'identifiant de sa source (registre `sources.ts`) et une citation exacte du texte consulté
- * le 25/11/2026 (copies d'archive web.archive.org des pages et fiches PDF du British Council ; programme du
- * cycle 3). Les espaces et retours à la ligne des fiches PDF et du programme sont réduits à une espace.
+ * le 25/11/2026 (copies d'archive web.archive.org des pages et fiches PDF du British Council ; programme de langues
+ * vivantes du cours moyen, arrêté du 26 février 2026, annexe 2). Les espaces et retours à la ligne des fiches PDF et du
+ * programme sont réduits à une espace.
  */
 import type { Fait } from './presentation-faits.ts';
 import type { Word } from './temps-faits.ts';
@@ -94,33 +95,39 @@ export const WILD: readonly Word[] = [
 export const FAITS: readonly Fait[] = [
   {
     id: 'programme-gouts',
-    sourceId: 'cycle3-2020',
-    quote: 'exprimer ses goûts et ses sentiments',
-    claim: 'Dire ses goûts est un objectif du cycle 3.',
+    sourceId: 'lve-cm-2026',
+    quote: 'Exprimer ses gouts de façon simple',
+    claim: 'Dire ses goûts est au programme du CM1.',
+  },
+  {
+    id: 'programme-capacite',
+    sourceId: 'lve-cm-2026',
+    quote: "Identifier les auxiliaires modaux pour exprimer au présent l'autorisation, la capacité ou l’incapacité",
+    claim: 'La capacité et l’incapacité (can, can’t) sont au programme du CM1.',
+  },
+  {
+    id: 'programme-reponses',
+    sourceId: 'lve-cm-2026',
+    quote: 'Utiliser les réponses courtes.',
+    claim: 'Les réponses courtes sont au programme du CM1.',
   },
   {
     id: 'programme-loisirs',
-    sourceId: 'cycle3-2020',
-    quote: 'Dialoguer sur des sujets familiers (école, loisirs, maison, etc.).',
-    claim: 'Les loisirs sont un sujet de dialogue du cycle 3.',
+    sourceId: 'lve-cm-2026',
+    quote: 'le matériel scolaire, les loisirs',
+    claim: 'Le lexique des loisirs est au programme du CM1.',
+  },
+  {
+    id: 'programme-animaux',
+    sourceId: 'lve-cm-2026',
+    quote: 'des personnes, des objets ou des animaux familiers',
+    claim: 'Décrire des animaux familiers est au programme du CM1.',
   },
   {
     id: 'programme-negation',
-    sourceId: 'cycle3-2020',
-    quote: 'Type et forme de phrase : déclarative, interrogative, exclamative, impérative, affirmative, négative.',
-    claim: 'Dire non et poser une question sont au programme de grammaire.',
-  },
-  {
-    id: 'programme-environnement',
-    sourceId: 'cycle3-2020',
-    quote: 'sa famille, son environnement concret et immédiat',
-    claim: 'Les mots de l’environnement proche (dont les animaux) sont à comprendre.',
-  },
-  {
-    id: 'programme-biodiversite',
-    sourceId: 'cycle3-2020',
-    quote: 'notamment les spécificités liées à la biodiversité des pays concernés',
-    claim: 'Les animaux relèvent des repères sur la biodiversité.',
+    sourceId: 'lve-cm-2026',
+    quote: 'la phrase négative avec la marque de la négation',
+    claim: 'La phrase négative est au programme du CM1.',
   },
   {
     id: 'like-usage',
@@ -271,6 +278,18 @@ export const FAITS: readonly Fait[] = [
     sourceId: 'bck-flashcards-free-time',
     quote: 'play on the computer play a board game play an instrument paint a picture',
     claim: 'ordinateur, jeu de société, instrument, peinture.',
+  },
+  {
+    id: 'animaux-have-got',
+    sourceId: 'bck-have-got',
+    quote: "I have got long hair. = I've got long hair.",
+    claim: 'Forme courte : I’ve got = I have got.',
+  },
+  {
+    id: 'animaux-have-got-accord',
+    sourceId: 'bck-have-got',
+    quote: 'Use have for I, you, we and they. Use has for he, she and it.',
+    claim: 'have avec I ; has avec he, she : he’s got, she’s got.',
   },
   {
     id: 'animaux-compagnie-1',
