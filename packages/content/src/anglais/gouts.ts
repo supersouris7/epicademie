@@ -510,7 +510,7 @@ const pickWord = (list: readonly Word[], en: readonly string[]) => list.filter((
 const MORE: Readonly<Record<string, readonly string[]>> = {
   cycling: ['biking'],
   'horse riding': ['riding'],
-  'ride a bike': ['ride a bicycle', 'ride my bike', 'cycle', 'go cycling', 'cycling'],
+  'ride a bike': ['ride a bicycle', 'ride my bike', 'cycle', 'go cycling', 'cycling', 'go biking', 'biking'],
   'go rollerblading': ['rollerblading', 'rollerblade'],
   'go skateboarding': ['skateboarding', 'skateboard'],
   'go fishing': ['fishing', 'fish'],
