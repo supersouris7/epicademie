@@ -98,4 +98,10 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm2-temps-composes-negatifs', version: 1, lot: 'fr-cm2-07', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm2-marques-temps-personne', version: 1, lot: 'fr-cm2-07', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm2-variations-radical', version: 1, lot: 'fr-cm2-07', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-familles-de-mots', version: 1, lot: 'fr-cm2-08', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-prefixes', version: 1, lot: 'fr-cm2-08', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-suffixes', version: 1, lot: 'fr-cm2-08', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-synonymes-antonymes', version: 1, lot: 'fr-cm2-08', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-mot-generique', version: 1, lot: 'fr-cm2-08', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-expressions-locutions', version: 1, lot: 'fr-cm2-08', date: '2026-11-25', verdict: 'ok' },
 ];

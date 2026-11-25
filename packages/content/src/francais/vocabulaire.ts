@@ -37,7 +37,7 @@ const parMot = <T extends { readonly mot: string }>(liste: readonly T[], mots: r
   liste.filter((x) => mots.includes(x.mot));
 
 /** Association : la colonne de droite est décalée d'un ou deux rangs, jamais en face. */
-function associer(
+export function associer(
   rng: Rng,
   prompt: string,
   paires: readonly (readonly [string, string])[],
@@ -63,7 +63,7 @@ interface LigneAChoix {
 }
 
 /** Texte numéroté : un trou par ligne, choisi dans une liste. */
-function texteAChoix(
+export function texteAChoix(
   rng: Rng,
   { prompt, titre, hint, etapes }: { prompt: string; titre: string; hint: string; etapes: readonly Rich[] },
   lignes: readonly LigneAChoix[],
@@ -92,7 +92,7 @@ function texteAChoix(
 }
 
 /** Saisie : une ou plusieurs écritures justes, pièges expliqués. */
-function ecrire(
+export function ecrire(
   accepted: readonly string[],
   pieges: readonly (readonly [string, string])[],
   q: Pick<QuestionDraft, 'prompt' | 'hint' | 'steps'>,
@@ -100,8 +100,8 @@ function ecrire(
   return { ...q, answer: { kind: 'text', accepted }, traps: textTraps(accepted, pieges) };
 }
 
-const guillemets = (phrase: string, mot: string) => phrase.replace('{}', `« ${mot} »`);
-const initiale = (mot: string) => `Il commence par « ${mot.charAt(0)} » et compte ${mot.length} lettres.`;
+export const guillemets = (phrase: string, mot: string) => phrase.replace('{}', `« ${mot} »`);
+export const initiale = (mot: string) => `Il commence par « ${mot.charAt(0)} » et compte ${mot.length} lettres.`;
 
 // ───────────────────────── 1. Synonymes ─────────────────────────
 
