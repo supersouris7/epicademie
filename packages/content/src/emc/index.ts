@@ -4,6 +4,7 @@ import { DISCOURS_HAINE_SKILLS } from './discours-haine.ts';
 import { DROITS_LIBERTES_SKILLS } from './droits-libertes.ts';
 import { EGALITE_FRATERNITE_SKILLS } from './egalite-fraternite.ts';
 import { FAIRE_SOCIETE_SKILLS } from './faire-societe.ts';
+import { LIBERTE_EXPRESSION_SKILLS } from './liberte-expression.ts';
 import { SINFORMER_SKILLS } from './sinformer-en-ligne.ts';
 import { SOCIETE_DEMOCRATIQUE_SKILLS } from './societe-democratique.ts';
 import { VIE_PRIVEE_SKILLS } from './vie-privee.ts';
@@ -85,5 +86,13 @@ export const EMC_CHAPTERS: readonly Chapter[] = [
     domain: 'emc',
     title: 'Défendre les droits et les libertés',
     skills: DROITS_LIBERTES_SKILLS,
+  },
+  {
+    id: 'em4-liberte-expression',
+    subject: 'histoire',
+    grade: '4e',
+    domain: 'emc',
+    title: 'Liberté d’expression',
+    skills: LIBERTE_EXPRESSION_SKILLS,
   },
 ];
