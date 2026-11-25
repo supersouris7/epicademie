@@ -60,6 +60,9 @@ const CONSULTED_GE_CM2 = '2026-11-25';
 /** Textes relevés pour le lot hi-cm2-03 (copies d’archive web.archive.org des pages officielles). */
 const CONSULTED_HI_CM2_03 = '2026-11-25';
 
+/** Textes relevés pour le lot hi-6e-01 (pages du CNRS, de la BnF et du CNRTL). */
+const CONSULTED_HI_6E_01 = '2026-11-25';
+
 /** Article du Trésor de la langue française informatisé (CNRTL). */
 const tlfi = (id: string, word: string, path: string): Source => ({
   id: `cnrtl-${id}`,
@@ -68,6 +71,11 @@ const tlfi = (id: string, word: string, path: string): Source => ({
   url: `https://www.cnrtl.fr/definition/${path}`,
   textDate: '2026',
   consultedOn: '2026-11-25',
+});
+
+const tlfiHi6e = (id: string, word: string, path: string): Source => ({
+  ...tlfi(id, word, path),
+  consultedOn: CONSULTED_HI_6E_01,
 });
 
 /** Articles et définitions relevés pour le lot ge-6e-01 (25/11/2026). */
@@ -2490,6 +2498,104 @@ export const SOURCES: readonly Source[] = [
   academie('departement', 'département'),
   academie('prefecture', 'préfecture'),
   academie('ocean', 'océan'),
+  // Lot hi-6e-01 : les débuts de l’humanité, le néolithique, les premiers États.
+  {
+    id: 'cnrs-sahelanthropus',
+    title: 'Sahelanthropus, plus ancien représentant de l’humanité, était bien bipède… mais pas que !',
+    publisher: 'CNRS',
+    url: 'https://www.cnrs.fr/fr/presse/sahelanthropus-plus-ancien-representant-de-lhumanite-etait-bien-bipede-mais-pas-que',
+    textDate: '2022-08-24',
+    consultedOn: CONSULTED_HI_6E_01,
+  },
+  {
+    id: 'cnrs-outils-olduvai',
+    title: 'La production standardisée d’outils en os par nos ancêtres repoussée d’un million d’années',
+    publisher: 'CNRS',
+    url: 'https://www.cnrs.fr/fr/presse/la-production-standardisee-doutils-en-os-par-nos-ancetres-repoussee-dun-million-dannees',
+    textDate: '2025-03-05',
+    consultedOn: CONSULTED_HI_6E_01,
+  },
+  {
+    id: 'cnrs-moulin-quignon',
+    title: 'Le nord de la France était déjà habité il y a plus de 650 000 ans',
+    publisher: 'CNRS',
+    url: 'https://www.cnrs.fr/fr/presse/le-nord-de-la-france-etait-deja-habite-il-y-plus-de-650-000-ans',
+    textDate: '2019-09-11',
+    consultedOn: CONSULTED_HI_6E_01,
+  },
+  {
+    id: 'cnrs-ancetre-commun',
+    title: 'Voici à quoi devait ressembler l’ancêtre commun à tous les hommes modernes',
+    publisher: 'CNRS',
+    url: 'https://www.cnrs.fr/fr/presse/voici-quoi-devait-ressembler-lancetre-commun-tous-les-hommes-modernes',
+    textDate: '2019-09-10',
+    consultedOn: CONSULTED_HI_6E_01,
+  },
+  {
+    id: 'cnrs-sapiens-chine',
+    title: 'Homo sapiens est arrivé en Chine 5 000 ans plus tôt qu’on ne le pensait',
+    publisher: 'CNRS',
+    url: 'https://www.cnrs.fr/fr/presse/homo-sapiens-est-arrive-en-chine-5-000-ans-plus-tot-quon-ne-le-pensait',
+    textDate: '2024-01-18',
+    consultedOn: CONSULTED_HI_6E_01,
+  },
+  {
+    id: 'cnrs-paysages-sapiens',
+    title: 'Étudier les paysages passés pour comprendre l’adaptation des premiers Homo sapiens',
+    publisher: 'CNRS',
+    url: 'https://www.cnrs.fr/fr/presse/etudier-les-paysages-passes-pour-comprendre-ladaptation-des-premiers-homo-sapiens',
+    textDate: '2026',
+    consultedOn: CONSULTED_HI_6E_01,
+  },
+  {
+    id: 'cnrs-domestication-chevre',
+    title: 'L’Homme et la chèvre : histoire de la domestication',
+    publisher: 'CNRS',
+    url: 'https://www.cnrs.fr/fr/presse/lhomme-et-la-chevre-histoire-de-la-domestication',
+    textDate: '2018-07',
+    consultedOn: CONSULTED_HI_6E_01,
+  },
+  {
+    id: 'cnrs-domestication-ane',
+    title: 'Aux origines de la domestication de l’âne',
+    publisher: 'CNRS',
+    url: 'https://www.cnrs.fr/fr/presse/aux-origines-de-la-domestication-de-lane',
+    textDate: '2022-09-09',
+    consultedOn: CONSULTED_HI_6E_01,
+  },
+  {
+    id: 'cnrs-premiers-paysans',
+    title: 'Plongée au temps des premiers paysans français avec le CNRS et France Télévisions',
+    publisher: 'CNRS',
+    url: 'https://www.cnrs.fr/fr/actualite/plongee-au-temps-des-premiers-paysans-francais-avec-le-cnrs-et-france-televisions',
+    textDate: '2026-02',
+    consultedOn: CONSULTED_HI_6E_01,
+  },
+  {
+    id: 'bnf-cuneiforme',
+    title: 'Naissance, vie et mort du cunéiforme',
+    publisher: 'BnF (Les Essentiels)',
+    url: 'https://essentiels.bnf.fr/fr/livres-et-ecritures/les-systemes-ecriture/4ab92041-e146-4582-b101-2d12bf3502b3-ecritures-en-mesopotamie/article/c510245e-aed6-4749-90e6-6cc397e659f6-naissance-vie-et-mort-cuneiforme',
+    textDate: '2026',
+    consultedOn: CONSULTED_HI_6E_01,
+  },
+  {
+    id: 'bnf-ecritures-egypte',
+    title: 'Les écritures égyptiennes',
+    publisher: 'BnF (Les Essentiels)',
+    url: 'https://essentiels.bnf.fr/fr/livres-et-ecritures/les-systemes-ecriture/bdf7550f-78f9-497f-85c5-e21c1dcadf2b-ecritures-dans-egypte-et-nubie-antiques/article/5e7565a9-2bfa-48fa-b313-0b0085e07840-ecritures-egyptiennes',
+    textDate: '2026',
+    consultedOn: CONSULTED_HI_6E_01,
+  },
+  tlfiHi6e('prehistoire', 'préhistoire', 'pr%C3%A9histoire'),
+  tlfiHi6e('migration', 'migration', 'migration'),
+  tlfiHi6e('neolithique', 'néolithique', 'n%C3%A9olithique'),
+  tlfiHi6e('sedentaire', 'sédentaire', 's%C3%A9dentaire'),
+  tlfiHi6e('agriculture', 'agriculture', 'agriculture'),
+  tlfiHi6e('elevage', 'élevage', '%C3%A9levage'),
+  tlfiHi6e('domestication', 'domestication', 'domestication'),
+  tlfiHi6e('pharaon', 'pharaon', 'pharaon'),
+  tlfiHi6e('scribe', 'scribe', 'scribe'),
   {
     id: 'eduscol-habiter-faible-densite',
     title: 'Ressource d’accompagnement, géographie 6e, « Habiter un espace de faible densité » (thème 2)',
