@@ -114,7 +114,9 @@ const HISTORIQUES_MAX = 376;
 
 describe('aperçu de relecture', () => {
   it('une notion : 5 niveaux × 3 graines avec énoncé, réponse, pièges, indice, étapes et sources', () => {
-    const id = CHAPTERS.find((c) => c.subject === 'anglais')!.skills[0]!.id;
+    // Une notion historique (3 niveaux) d’anglais.
+    const english = CHAPTERS.filter((c) => c.subject === 'anglais').flatMap((c) => c.skills);
+    const id = english.find((s) => !isStrict(s))!.id;
     const md = previewSkill(id);
     expect(md).toContain('### Niveau 3');
     expect(md).not.toContain('### Niveau 4');
