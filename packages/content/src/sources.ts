@@ -656,6 +656,9 @@ export const SOURCES: readonly Source[] = [
   academie('avoir', 'avoir'),
   academie('faire', 'faire'),
   academie('aller', 'aller'),
+  academie('ne', 'ne'),
+  academie('jamais', 'jamais'),
+  academie('auxiliaire', 'auxiliaire'),
   {
     id: 'eduscol-grammaire-francais',
     title: 'La grammaire du français. Terminologie grammaticale (les guides fondamentaux pour enseigner)',

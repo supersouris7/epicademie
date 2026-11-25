@@ -5,6 +5,7 @@ import { FCM1_GROUPE_NOMINAL } from './groupe-nominal.ts';
 import { FCM1_NATURE } from './nature.ts';
 import { FCM1_PHRASES } from './phrases.ts';
 import { FCM1_PRESENT } from './present.ts';
+import { FCM1_TEMPS } from './temps.ts';
 import { FCM1_VERBE_SUJET } from './verbe-sujet.ts';
 import { FCM2_GROUPE_NOMINAL } from './groupe-nominal-cm2.ts';
 
@@ -65,6 +66,14 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'conjugaison',
     title: 'Conjuguer au présent',
     skills: FCM1_PRESENT,
+  },
+  {
+    id: 'fcm1-temps',
+    subject: 'francais',
+    grade: 'cm1',
+    domain: 'conjugaison',
+    title: 'Imparfait, futur et passé composé',
+    skills: FCM1_TEMPS,
   },
   {
     id: 'fcm2-groupe-nominal',
