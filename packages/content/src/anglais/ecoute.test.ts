@@ -18,7 +18,7 @@ describe('anglais cm2 : écouter et comprendre', () => {
     expect(skills.map((s) => s.id)).toEqual(IDS);
     for (const s of skills) {
       expect(skillLevels(s)).toBe(5);
-      expect(s.lesson.sources).toContain('lve-cm-2026');
+      expect(s.lesson.sources).not.toContain('lve-cm-2026');
       expect(s.lesson.sources).toContain('cycle3-2020');
       expect(sourceIssues(s)).toEqual([]);
       expect(glossaryIssues({ skill: s, chapter: ENGLISH_LISTENING_CHAPTER })).toEqual([]);
@@ -90,6 +90,44 @@ describe('anglais cm2 : écouter et comprendre', () => {
     for (const text of ['twenty-five to seven', 'It’s twenty five to seven.', "it's twenty-five to seven"])
       expect(check(say, { kind: 'text', text }).correct, text).toBe(true);
     expect(check(say, { kind: 'text', text: 'thirty-five past six' }).correct).toBe(false);
+    expect(check(say, { kind: 'text', text: 'twenty-five minutes to seven' }).correct).toBe(true);
+    expect(check(say, { kind: 'text', text: 'It is twenty five minutes to seven.' }).correct).toBe(true);
+    const quarter = questions('acm2-heure-entendue', 4).find((q) => q.prompt.includes(':45.'))!;
+    if (quarter.answer.kind !== 'text') throw new Error('saisie attendue');
+    expect(quarter.answer.accepted.some((a) => a.startsWith('fifteen to '))).toBe(true);
+    for (const q of questions('acm2-heure-entendue', 4))
+      for (const t of q.traps) if ('text' in t) expect(t.text, q.prompt).not.toMatch(/\d/);
+  });
+
+  it('version lue : elle pose la question et n’écrit pas la réponse en chiffres', () => {
+    for (const [id, levels] of [
+      ['acm2-heure-entendue', [1, 2]],
+      ['acm2-prix-dates', [1, 2]],
+      ['acm2-dialogue', [1]],
+    ] as const)
+      for (const l of levels) for (const q of questions(id, l)) expect(q.prompt, q.prompt).toMatch(/\?|Écris/);
+    for (const q of questions('acm2-prix-dates', 2)) if (!q.audio) expect(q.prompt).not.toContain('£');
+    const written = questions('acm2-prix-dates', 3).filter((q) => !q.audio);
+    expect(written.length).toBeGreaterThan(0);
+    for (const q of written) expect(q.prompt.split('«')[1], q.prompt).not.toMatch(/\d|£/);
+    for (const q of questions('acm2-heure-entendue', 5)) expect(q.audio?.text ?? '').not.toMatch(/\b[AB]:/);
+  });
+
+  it('dialogue : « get » et « want » sont aussi acceptés', () => {
+    const all = questions('acm2-dialogue', 4).flatMap((q) => (q.answer.kind === 'cloze' ? q.answer.blanks : []));
+    const accepted = all.map((b) => (b.mode === 'text' ? b.accepted.join('/') : ''));
+    expect(accepted).toContain('have/get');
+    expect(accepted).toContain('like/want');
+  });
+
+  it('fêtes : variantes acceptées, indices sans pays, date ni mois', () => {
+    const xmas = questions('acm2-reperes-culturels', 4).find((q) => q.prompt.includes('25 décembre'))!;
+    expect(check(xmas, { kind: 'text', text: 'Christmas Day' }).correct).toBe(true);
+    for (const l of [1, 2, 3] as const)
+      for (const q of questions('acm2-reperes-culturels', l))
+        expect(q.hint, q.prompt).not.toMatch(
+          /Royaume-Uni|Irlande|Australie|Canada|octobre|novembre|décembre|février|Halloween|Christmas|Bonfire|Pancake/,
+        );
   });
 
   it('dates : 1st, 2nd, 3rd, mais 11th, 12th, 13th', () => {
@@ -105,7 +143,7 @@ describe('anglais cm2 : écouter et comprendre', () => {
   it('niveau 5 : la réponse vient du message ou du dialogue', () => {
     for (const q of questions('acm2-reperes-culturels', 5)) {
       if (q.figure?.kind !== 'document' || q.answer.kind !== 'choice') throw new Error('document attendu');
-      const kid = /préférée de (\w+)/.exec(q.prompt)![1]!;
+      const kid = /préférée (?:de |d’)(\w+)/.exec(q.prompt)![1]!;
       const line = q.figure.lines.find((l) => l.startsWith(`${kid}:`))!;
       const fest = /festival is ([\w ]+)\./.exec(line)![1]!;
       const dates: Record<string, string> = {

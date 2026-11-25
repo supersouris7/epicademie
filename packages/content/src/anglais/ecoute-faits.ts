@@ -2,8 +2,8 @@
  * Anglais CM2, « Écouter et comprendre » (lot an-cm2-06) : données citées.
  * Chaque fait porte l'identifiant de sa source (registre `sources.ts`) et une citation exacte du texte consulté
  * le 25/11/2026 (copies d'archive web.archive.org des pages du British Council : LearnEnglish Kids et
- * LearnEnglish Teens ; programme de langues vivantes du cours moyen, arrêté du 26 février 2026, annexe 2 ;
- * programme du cycle 3, 2020). Les espaces et retours à la ligne sont réduits à une espace.
+ * LearnEnglish Teens ; programme du cycle 3, 2020 ; pages « Spain » et « Italy » de l'Union européenne ;
+ * articles « brésilien » et « pence » du TLFi). Les espaces et retours à la ligne sont réduits à une espace.
  */
 import type { Fait } from './presentation-faits.ts';
 
@@ -21,33 +21,40 @@ export interface Festival {
   readonly custom: string;
   /** Faute d'écriture typique. */
   readonly typo: string;
+  /** Indice qui aide à retrouver la fête ou sa date sans les dire (ni pays, ni date, ni mois). */
+  readonly clue: string;
 }
 
 export const FESTIVALS: readonly Festival[] = [
   {
     en: 'Halloween',
+    alt: ['Hallowe’en'],
     date: '31 octobre',
     day: 31,
     month: 'October',
     custom: 'des citrouilles-lanternes et des déguisements',
     typo: 'Haloween',
+    clue: 'Pense à la saison des citrouilles.',
   },
   {
     en: 'Bonfire Night',
-    alt: ['Guy Fawkes Night'],
+    alt: ['Guy Fawkes Night', 'Fireworks Night'],
     date: '5 novembre',
     day: 5,
     month: 'November',
     custom: 'des feux de joie et des feux d’artifice',
     typo: 'Bonfir Night',
+    clue: 'Pense au soir où le ciel s’illumine au-dessus des grands feux.',
   },
   {
     en: 'Christmas',
+    alt: ['Christmas Day'],
     date: '25 décembre',
     day: 25,
     month: 'December',
     custom: 'des cartes de vœux et des cadeaux',
     typo: 'Chrismas',
+    clue: 'Pense au moment où l’on envoie des cartes de vœux et où les enfants attendent des cadeaux.',
   },
   {
     en: 'Pancake Day',
@@ -55,6 +62,7 @@ export const FESTIVALS: readonly Festival[] = [
     date: 'un mardi de février ou de mars',
     custom: 'des crêpes et des courses de crêpes',
     typo: 'Pancak Day',
+    clue: 'Pense à ce qui cuit dans la poêle.',
   },
 ];
 
@@ -65,7 +73,11 @@ export const ENGLISH_COUNTRIES: readonly { readonly en: string; readonly fr: str
   { en: 'Australia', fr: 'l’Australie' },
   { en: 'Canada', fr: 'le Canada' },
 ];
-export const OTHER_COUNTRIES: readonly string[] = ['l’Espagne', 'l’Italie', 'le Brésil'];
+export const OTHER_COUNTRIES: readonly { readonly fr: string; readonly why: string }[] = [
+  { fr: 'l’Espagne', why: 'En Espagne, la langue officielle est l’espagnol.' },
+  { fr: 'l’Italie', why: 'En Italie, la langue officielle est l’italien.' },
+  { fr: 'le Brésil', why: 'Au Brésil, on parle portugais.' },
+];
 
 /** Questions d'un dialogue au café ou entre amis (transcriptions LearnEnglish Teens). */
 export const QUESTIONS: readonly { readonly en: string; readonly topic: string }[] = [
@@ -78,43 +90,31 @@ export const QUESTIONS: readonly { readonly en: string; readonly topic: string }
 
 export const FAITS: readonly Fait[] = [
   {
-    id: 'programme-conversation',
-    sourceId: 'lve-cm-2026',
+    id: 'programme-c3-ecoute',
+    sourceId: 'cycle3-2020',
     quote:
-      'il peut comprendre des mots familiers et des expressions courtes dans une conversation simple, à condition que l’interlocuteur parle lentement et très distinctement',
-    claim: 'Au CM2, l’élève comprend une conversation simple dite lentement : notion « dialogue court ».',
+      "L'élève est capable de comprendre des mots familiers et des expressions très courantes sur lui-même, sa famille et son environnement immédiat",
+    claim: 'Au cycle 3, l’élève comprend des mots et des expressions très courants : notion « dialogue court ».',
   },
   {
-    id: 'programme-prix',
-    sourceId: 'lve-cm-2026',
+    id: 'programme-c3-information',
+    sourceId: 'cycle3-2020',
+    quote: "Comprendre et extraire l'information essentielle d'un message oral de courte durée.",
+    claim: 'L’élève relève une information (nombre, prix, heure) dans un message oral court.',
+  },
+  {
+    id: 'programme-c3-date',
+    sourceId: 'cycle3-2020',
     quote:
-      'l’élève peut lister et transmettre, à l’écrit ou à l’oral, des informations d’un intérêt immédiat : noms, nombres, prix, détails factuels',
-    claim: 'Au CM2, l’élève relève et transmet des nombres et des prix entendus.',
+      "Faire une brève annonce (date, anniversaire, invitation, etc.) en situant l'événement dans le temps et l'espace.",
+    claim: 'Au cycle 3, l’élève situe un événement avec une date.',
   },
   {
-    id: 'programme-horaire',
-    sourceId: 'lve-cm-2026',
+    id: 'programme-c3-culture',
+    sourceId: 'cycle3-2020',
     quote:
-      'Transmettre les principales informations factuelles d’un prospectus, d’une invitation (lieu, horaire, prix, etc.).',
-    claim: 'Au CM2 (A1+), l’élève transmet l’horaire et le prix d’une invitation.',
-  },
-  {
-    id: 'programme-date',
-    sourceId: 'lve-cm-2026',
-    quote: 'Situer dans le temps : exprimer une date ou des repères temporels simples.',
-    claim: 'Au cours moyen, l’élève situe dans le temps avec une date ou une heure.',
-  },
-  {
-    id: 'programme-culture',
-    sourceId: 'lve-cm-2026',
-    quote: 'l’élève peut identifier une similitude ou une différence culturelle',
-    claim: 'Au CM2, l’élève repère des faits culturels des pays anglophones.',
-  },
-  {
-    id: 'programme-celebrations',
-    sourceId: 'lve-cm-2026',
-    quote: 'Repérer les mots familiers (A1+) puis en identifier le thème (traditions, histoire, célébrations, etc.).',
-    claim: 'Au CM2, l’élève repère dans un texte court le thème des traditions et des fêtes.',
+      'Identifier quelques grands repères culturels de l’environnement quotidien des élèves du même âge dans les pays ou régions étudiés.',
+    claim: 'Au cycle 3, l’élève repère des faits culturels des pays anglophones.',
   },
   {
     id: 'programme-c3-fetes',
@@ -236,7 +236,13 @@ export const FAITS: readonly Fait[] = [
     id: 'pancake-course',
     sourceId: 'bc-teens-pancake-day',
     quote: 'Another tradition on Pancake Day in the UK is pancake racing.',
-    claim: 'Pour Pancake Day, on mange des crêpes et on fait des courses de crêpes.',
+    claim: 'Pour Pancake Day, au Royaume-Uni, on fait des courses de crêpes.',
+  },
+  {
+    id: 'pancake-crepes',
+    sourceId: 'bc-teens-pancake-day',
+    quote: 'On this day many people eat pancakes: thin, flat cakes made in a pan.',
+    claim: 'Pour Pancake Day, on mange des crêpes.',
   },
   {
     id: 'halloween-date',
@@ -281,6 +287,37 @@ export const FAITS: readonly Fait[] = [
     sourceId: 'bc-teens-christmas',
     quote:
       'It’s very common to send Christmas cards to friends, family, colleagues, classmates and neighbours in the weeks leading up to 25 December.',
-    claim: 'Christmas a lieu le 25 décembre ; on envoie des cartes de vœux et on offre des cadeaux.',
+    claim: 'Christmas a lieu le 25 décembre ; on envoie des cartes de vœux.',
+  },
+  {
+    id: 'christmas-cadeaux',
+    sourceId: 'bc-teens-christmas',
+    quote: 'For children it often means presents, presents and more presents!',
+    claim: 'Pour Christmas, les enfants reçoivent des cadeaux.',
+  },
+  {
+    id: 'langue-espagne',
+    sourceId: 'eu-espagne',
+    quote: 'Official EU language(s) : Spanish',
+    claim: 'En Espagne, la langue officielle est l’espagnol.',
+  },
+  {
+    id: 'langue-italie',
+    sourceId: 'eu-italie',
+    quote: 'Official EU language(s) : Italian',
+    claim: 'En Italie, la langue officielle est l’italien.',
+  },
+  {
+    id: 'langue-bresil',
+    sourceId: 'cnrtl-bresilien',
+    quote: 'Langue portugaise parlée au Brésil',
+    claim: 'Au Brésil, on parle portugais.',
+  },
+  {
+    id: 'monnaie-pence',
+    sourceId: 'cnrtl-pence',
+    quote:
+      "Unité monétaire divisionnaire britannique qui valait le douzième du shilling, et qui vaut le centième de la livre sterling depuis l'adoption du système décimal en 1971.",
+    claim: 'La monnaie anglaise est la livre (pound) ; un penny (au pluriel : pence) en vaut le centième.',
   },
 ];

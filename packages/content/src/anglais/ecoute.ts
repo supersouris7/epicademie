@@ -4,18 +4,17 @@ import { choice } from '../build.ts';
 import { ENGLISH_COUNTRIES, FESTIVALS, OTHER_COUNTRIES, QUESTIONS, type Festival } from './ecoute-faits.ts';
 import { MONTHS } from './temps-faits.ts';
 import { wordOf } from './presentation-faits.ts';
-import { at, shuffledOther, some } from './temps.ts';
+import { at, de, shuffledOther, some } from './temps.ts';
 
 /**
- * Anglais CM2 — « Écouter et comprendre » (lot an-cm2-06, docs/adr/0034). Programme : langues vivantes,
- * cours moyen (arrêté du 26 février 2026, annexe 2 : comprendre une conversation simple, relever nombres, prix,
- * horaires, repères culturels) et cycle 3 (2020 : horaire, prix, fêtes et traditions). Faits : British Council
- * (voir ecoute-faits.ts : chaque fait y porte sa source et sa citation).
+ * Anglais CM2 — « Écouter et comprendre » (lot an-cm2-06, docs/adr/0034). Programme : cycle 3 (2020, modifié
+ * 2023 : comprendre un message oral court, horaire, prix, fêtes et traditions, repères culturels), en vigueur au
+ * CM2 jusqu'à la rentrée 2027. Faits : British Council, Union européenne et TLFi (voir ecoute-faits.ts : chaque
+ * fait y porte sa source et sa citation).
  */
-const PROGRAMME =
-  'Programme de langues vivantes, cours moyen deuxième année (arrêté du 26 février 2026, BO n° 12, annexe 2)';
+const PROGRAMME = 'Programme du cycle 3, CM2 (BOEN n° 31 du 30 juillet 2020 et BOEN n° 25 du 22 juin 2023)';
 const source = (detail: string) => `${PROGRAMME} — comprendre l’oral, prix, horaires, repères culturels. ${detail}`;
-const PROGRAMMES = ['lve-cm-2026', 'cycle3-2020'];
+const PROGRAMMES = ['cycle3-2020'];
 const EN = 'en-GB';
 
 /** Réponses avec ou sans point final. */
@@ -37,9 +36,18 @@ const scene = (i: number) => ({
 /** « du film », « de la fête ». */
 const du = (event: string) => event.replace(/^le /, 'du ').replace(/^la /, 'de la ');
 
-/** Écoute, ou lecture quand la voix anglaise manque (une question sur trois). */
-function listenOrRead(rng: Rng, text: string, listen: string, read: string): Pick<QuestionDraft, 'prompt' | 'audio'> {
-  if (rng.int(0, 2) === 0) return { prompt: `${read} « ${text} »` };
+/**
+ * Écoute, ou lecture quand la voix anglaise manque (une question sur trois). La version lue finit par la question
+ * (`ask`) et peut écrire les nombres en lettres (`written`) pour ne pas souffler la réponse en chiffres.
+ */
+function listenOrRead(
+  rng: Rng,
+  text: string,
+  listen: string,
+  read: string,
+  { ask, written = text }: { ask?: string; written?: string } = {},
+): Pick<QuestionDraft, 'prompt' | 'audio'> {
+  if (rng.int(0, 2) === 0) return { prompt: [`${read} « ${written} »`, ask].filter(Boolean).join(' ') };
   return { prompt: listen, audio: { text, lang: EN } };
 }
 
@@ -52,6 +60,8 @@ interface Time {
 const next = (h: number) => (h === 12 ? 1 : h + 1);
 const prev = (h: number) => (h === 1 ? 12 : h - 1);
 const hourWord = (h: number) => wordOf(h) ?? String(h);
+/** Nombre en lettres, dizaine et unité réunies par un tiret au-delà des mots cités (thirty-five). */
+const numberWord = (n: number) => wordOf(n) ?? `${wordOf(n - (n % 10))}-${wordOf(n % 10)}`;
 const minuteWord = (m: number) => (m === 15 ? 'quarter' : (wordOf(m) ?? String(m)));
 /** L'heure dite en anglais (British Council, « How to tell the time »). */
 function timeEn(t: Time): string {
@@ -69,10 +79,18 @@ const digitalForms = (t: Time): string[] => {
   const pile = t.m === 0 ? [`${t.h}h`, `${t.h} h`] : [];
   return [...base, ...zero, ...pile];
 };
-/** Formes anglaises acceptées : avec ou sans « It’s », « a quarter », tiret ou espace. */
+/** Formes anglaises acceptées : avec ou sans « It’s », « a quarter », « minutes », « fifteen », tiret ou espace. */
 function timeForms(t: Time): string[] {
   const said = timeEn(t);
-  const variants = [said, said.replace('-', ' ')];
+  const variants = [said];
+  if (t.m !== 0 && t.m !== 30) {
+    const before = t.m > 30;
+    const n = before ? 60 - t.m : t.m;
+    const tail = `${before ? 'to' : 'past'} ${hourWord(before ? next(t.h) : t.h)}`;
+    variants.push(`${numberWord(n)} minutes ${tail}`);
+    if (n === 15) variants.push(`${numberWord(n)} ${tail}`);
+  }
+  variants.push(...variants.map((v) => v.replaceAll('-', ' ')));
   if (t.m === 15 || t.m === 45) variants.push(`a ${said}`);
   if (t.m === 0) variants.push(`${hourWord(t.h)} o'clock`);
   const unique = [...new Set(variants)];
@@ -141,6 +159,7 @@ function timeChoice(rng: Rng, level: 1 | 2): QuestionDraft {
       said,
       `Écoute l’horloge parlante de ${s.who}, ${s.day}. Quelle heure est-il ?`,
       `${s.who} lit l’heure, ${s.day} :`,
+      { ask: 'Quelle heure est-il ?' },
     ),
     answer,
     traps: tr,
@@ -206,7 +225,7 @@ function timeSay(rng: Rng): QuestionDraft {
             why: `Avec « to », on dit l’heure qui arrive : ${hourWord(next(t.h))}.`,
           },
           {
-            text: `${wordOf(t.m) ?? t.m} past ${hourWord(t.h)}`,
+            text: `${numberWord(t.m)} past ${hourWord(t.h)}`,
             why: 'Après la demie, on ne dit pas « past » : on compte les minutes qui restent avec « to ».',
           },
         ];
@@ -264,7 +283,7 @@ function timeDialogue(rng: Rng): QuestionDraft {
       : `Écoute ${s.who} et son ami, ${s.day}. ${question}`,
     ...(read
       ? { figure: { kind: 'document' as const, title: 'Plans', lines, credit: 'Écrit pour l’exercice.' } }
-      : { audio: { text: lines.join(' '), lang: EN } }),
+      : { audio: { text: lines.map((l) => l.replace(/^[AB]: /, '')).join(' '), lang: EN } }),
     answer,
     traps,
     hint:
@@ -314,6 +333,8 @@ const priceForms = (p: Price): string[] => {
   const n = [`${p.pounds}.${pad(p.pence)}`, `${p.pounds},${pad(p.pence)}`, ...d];
   return n.flatMap((x) => [x, `£${x}`, `${x}£`, `${x} £`]);
 };
+/** Le prix dit en toutes lettres (version lue : la réponse en chiffres n'est pas à recopier). */
+const priceWords = (p: Price) => `${numberWord(p.pounds)} pounds ${numberWord(p.pence)}`;
 const ITEMS = ['cake', 'juice', 'book', 'ticket', 'sandwich', 'pencil case'] as const;
 const ITEMS_FR: Readonly<Record<(typeof ITEMS)[number], string>> = {
   cake: 'le gâteau',
@@ -340,7 +361,7 @@ function priceTraps(p: Price): { p: Price; why: string }[] {
     },
     {
       p: { pounds: p.pence / 10, pence: p.pounds * 10 },
-      why: 'On dit d’abord les livres (pounds), puis les pence : l’ordre ne change pas.',
+      why: 'On dit d’abord les pounds (livres), puis les pence : l’ordre ne change pas.',
     },
   ];
 }
@@ -379,6 +400,17 @@ const TWIN_MONTH: Readonly<Record<string, string>> = {
 const DATE_DAYS = Object.keys(TWIN_DAY).map(Number);
 const DATE_MONTHS = Object.keys(TWIN_MONTH);
 const dateFr = (d: number, m: string) => `${d === 1 ? '1er' : d} ${monthFr(m)}`;
+/**
+ * Jours dits en lettres : « second » et « twenty-first » sont cités (ecoute-faits.ts) ; « first » et
+ * « twenty-second » en reprennent les deux parties. Le niveau 3 ne tire que ces jours.
+ */
+const DAY_WORDS: Readonly<Record<number, string>> = {
+  1: 'first',
+  2: 'second',
+  21: 'twenty-first',
+  22: 'twenty-second',
+};
+const SPELLED_DAYS = Object.keys(DAY_WORDS).map(Number);
 
 /** Niveau 1 : un prix rond ou un mois, 3 propositions très différentes. */
 function priceDateDiscover(rng: Rng): QuestionDraft {
@@ -404,6 +436,7 @@ function priceDateDiscover(rng: Rng): QuestionDraft {
         said,
         `Écoute le vendeur, au marché de ${s.who}. Combien ça coûte ?`,
         `${s.who} lit le prix :`,
+        { ask: 'Combien ça coûte ?' },
       ),
       answer,
       traps,
@@ -431,6 +464,7 @@ function priceDateDiscover(rng: Rng): QuestionDraft {
       said,
       `Écoute ${s.who}, ${s.day}. En quel mois est son anniversaire ?`,
       `${s.who} dit, ${s.day} :`,
+      { ask: 'Quel mois ?' },
     ),
     answer,
     traps,
@@ -458,11 +492,16 @@ function priceDateRecognise(rng: Rng): QuestionDraft {
         said,
         `Écoute ${s.who}, ${s.day}. Combien coûte ${ITEMS_FR[item]} ?`,
         `${s.who} lit l’étiquette, ${s.day} :`,
+        { ask: 'Combien ça coûte ?', written: `The ${item} is ${priceWords(p)}.` },
       ),
       answer,
       traps,
-      hint: 'D’abord les livres (pounds), puis les pence. -teen ou -ty ?',
-      steps: [`La phrase dit : « ${said} »`, 'On dit les livres, puis les pence.', `Réponse : **${priceFr(p)}**`],
+      hint: 'D’abord les pounds (livres), puis les pence. -teen ou -ty ?',
+      steps: [
+        `La phrase dit : « ${said} »`,
+        'On dit les pounds (livres), puis les pence.',
+        `Réponse : **${priceFr(p)}**`,
+      ],
     };
   }
   const di = rng.int(0, DATE_DAYS.length * DATE_MONTHS.length - 1);
@@ -483,6 +522,7 @@ function priceDateRecognise(rng: Rng): QuestionDraft {
       said,
       `Écoute ${s.who}, ${s.day}. Quelle est la date ${du(s.event)} ?`,
       `${s.who} écrit la date, ${s.day} :`,
+      { ask: 'Quelle date ?' },
     ),
     answer,
     traps,
@@ -508,18 +548,19 @@ function priceDateWrite(rng: Rng): QuestionDraft {
         said,
         `Écoute le vendeur, ${s.day}, au café de ${s.who}. Écris le prix en chiffres (exemple : 2.50).`,
         `Au café de ${s.who}, le vendeur dit le prix. Écris-le en chiffres (exemple : 2.50) :`,
+        { written: `That’s ${priceWords(p)}, please.` },
       ),
       answer: { kind: 'text', accepted: priceForms(p) },
       traps: priceTraps(p)
         .slice(0, 2)
         .map((x) => ({ text: priceEn(x.p).replace('£', ''), why: x.why })),
-      hint: 'Le premier nombre, ce sont les livres. Le second, ce sont les pence.',
+      hint: 'Le premier nombre, ce sont les pounds (livres). Le second, ce sont les pence.',
       steps: [`La phrase dit : « ${said} »`, `Réponse : **${priceEn(p)}**`],
     };
   }
-  const di = rng.int(0, DATE_DAYS.length * DATE_MONTHS.length - 1);
-  const d = at(DATE_DAYS, di % DATE_DAYS.length);
-  const m = at(DATE_MONTHS, Math.floor(di / DATE_DAYS.length));
+  const di = rng.int(0, SPELLED_DAYS.length * DATE_MONTHS.length - 1);
+  const d = at(SPELLED_DAYS, di % SPELLED_DAYS.length);
+  const m = at(DATE_MONTHS, Math.floor(di / SPELLED_DAYS.length));
   const s = scene(di);
   const options = shuffledOther(rng, [
     m,
@@ -533,6 +574,7 @@ function priceDateWrite(rng: Rng): QuestionDraft {
       said,
       `Écoute ${s.who}, ${s.day}, et complète la date ${du(s.event)} : le jour en chiffres, puis le mois.`,
       `${s.who} dit la date ${du(s.event)}, ${s.day}. Complète : le jour en chiffres, puis le mois.`,
+      { written: `The ${eventEn(s.event)} is on the ${DAY_WORDS[d]} of ${m}.` },
     ),
     answer: {
       kind: 'cloze',
@@ -628,14 +670,21 @@ const pricesDates: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'Un prix : d’abord les livres (£), puis les pence. « That’s £8.37, please. »',
+      'Un prix : d’abord les **pounds** (livres, la monnaie anglaise, signe £), puis les **pence**. « That’s £8.37, please. »',
       'Une date se dit avec un nombre **ordinal** : on the twenty-first of June = le 21 juin.',
       'Écoute la fin des nombres : thirteen (13) ou thirty (30) ? Et 1st, 2nd, 3rd, mais 11th, 12th, 13th.',
     ],
     source: source(
-      'Prix : British Council, « Ordering food in a café ». Dates : « At nine o’clock on Monday », « Understanding numbers », « Prepositions of time ».',
+      'Prix : British Council, « Ordering food in a café » ; monnaie : TLFi, « pence ». Dates : « At nine o’clock on Monday », « Understanding numbers », « Prepositions of time ».',
     ),
-    sources: [...PROGRAMMES, 'bc-teens-cafe', 'bck-chant-nine-oclock', 'bc-teens-numbers', 'bc-prepositions-time'],
+    sources: [
+      ...PROGRAMMES,
+      'bc-teens-cafe',
+      'bck-chant-nine-oclock',
+      'bc-teens-numbers',
+      'bc-prepositions-time',
+      'cnrtl-pence',
+    ],
   },
   generate: (rng, level): QuestionDraft => {
     if (level === 1) return priceDateDiscover(rng);
@@ -690,6 +739,7 @@ function dialogueQuestion(rng: Rng): QuestionDraft {
       q.en,
       `Écoute la question posée à ${s.who}. Que veut savoir la personne ?`,
       `On demande à ${s.who} :`,
+      { ask: 'Que veut savoir la personne ?' },
     ),
     answer,
     traps,
@@ -717,7 +767,7 @@ function dialogueMatch(rng: Rng): QuestionDraft {
   return {
     prompt: `Associe chaque question à sa réponse : ${left.join(' / ')}`,
     answer: { kind: 'match', left, right, pairs: rows.map((r) => right.indexOf(r.a)) },
-    hint: 'How much → un prix. What time → une heure. Table number → un numéro. Drink → une boisson.',
+    hint: 'Repère much, time, table, drink, puis cherche la réponse qui parle de la même chose.',
     steps: [...rows.map((r) => `${r.q} → ${r.a}`), `Réponse : **${rows.map((r) => `${r.q} → ${r.a}`).join(' ; ')}**`],
   };
 }
@@ -762,10 +812,10 @@ function dialogueOrder(rng: Rng): QuestionDraft {
 /** Niveau 4 : compléter les questions d'un dialogue, sans propositions. */
 function dialogueCloze(rng: Rng): QuestionDraft {
   const all = [
-    { before: 'Waiter: What would you ', word: 'like', after: '?', topic: 'demander ce que l’on veut' },
-    { before: 'Customer: Can I ', word: 'have', after: ' a burger, please?', topic: 'commander' },
-    { before: 'Customer: How ', word: 'much', after: ' is that?', topic: 'demander le prix' },
-    { before: 'Jack: What ', word: 'time', after: ' is the film?', topic: 'demander l’heure' },
+    { before: 'Waiter: What would you ', words: ['like', 'want'], after: '?', topic: 'demander ce que l’on veut' },
+    { before: 'Customer: Can I ', words: ['have', 'get'], after: ' a burger, please?', topic: 'commander' },
+    { before: 'Customer: How ', words: ['much'], after: ' is that?', topic: 'demander le prix' },
+    { before: 'Jack: What ', words: ['time'], after: ' is the film?', topic: 'demander l’heure' },
   ];
   const rows = some(rng, [0, 1, 2, 3], 3)
     .sort((a, b) => a - b)
@@ -778,14 +828,14 @@ function dialogueCloze(rng: Rng): QuestionDraft {
   });
   parts.push(carry);
   return {
-    prompt: `Complète les questions du dialogue, un mot par trou. Elles servent à : ${rows.map((r) => r.topic).join(', ')}.`,
-    answer: { kind: 'cloze', parts, blanks: rows.map((r) => ({ mode: 'text' as const, accepted: [r.word] })) },
+    prompt: `Complète ces questions, un mot par trou. Elles servent à : ${rows.map((r) => r.topic).join(', ')}.`,
+    answer: { kind: 'cloze', parts, blanks: rows.map((r) => ({ mode: 'text' as const, accepted: r.words })) },
     traps: [],
     hint: 'Pense aux questions apprises : What would you…? Can I…? How… is that? What… is the film?',
     steps: [
       'What would you like? = Que veux-tu ? Can I have…? = Puis-je avoir… ?',
       'How much is that? = Combien ça coûte ? What time…? = À quelle heure… ?',
-      `Réponse : **${rows.map((r) => r.word).join(', ')}**`,
+      `Réponse : **${rows.map((r) => r.words[0]).join(', ')}**`,
     ],
   };
 }
@@ -907,10 +957,7 @@ function cultureDiscover(rng: Rng): QuestionDraft {
       prompt: `Quelle fête a lieu le ${f.date} ?`,
       answer,
       traps,
-      hint:
-        f.en === 'Christmas'
-          ? 'C’est la plus grande fête de l’année au Royaume-Uni.'
-          : 'Pense à la saison : l’automne ou l’hiver ?',
+      hint: f.clue,
       steps: [`${f.en} : ${f.custom}.`, `Réponse : **${f.en}**`],
     };
   }
@@ -918,13 +965,13 @@ function cultureDiscover(rng: Rng): QuestionDraft {
   const { answer, traps } = choice(
     rng,
     c.fr,
-    some(rng, OTHER_COUNTRIES, 2).map((o) => ({ label: o, why: `${cap(o)} n’est pas un pays anglophone.` })),
+    some(rng, OTHER_COUNTRIES, 2).map((o) => ({ label: o.fr, why: o.why })),
   );
   return {
     prompt: 'Dans lequel de ces pays parle-t-on anglais ?',
     answer,
     traps,
-    hint: 'Pense aux pays où l’on fête Pancake Day : le Royaume-Uni, l’Irlande, l’Australie, le Canada.',
+    hint: 'Cherche un pays où l’anglais est la langue de tous les jours.',
     steps: [`${cap(c.fr)} (${c.en}) est un pays anglophone.`, `Réponse : **${c.fr}**`],
   };
 }
@@ -942,7 +989,7 @@ function cultureRecognise(rng: Rng): QuestionDraft {
       prompt: `Que voit-on pour ${f.en} (${f.date}) ?`,
       answer,
       traps,
-      hint: 'Pense au nom de la fête : pancake = crêpe, bonfire = feu de joie.',
+      hint: 'Lis bien le nom de la fête, puis écarte les traditions qui vont avec d’autres fêtes.',
       steps: [`${f.en} : ${f.custom}.`, `Réponse : **${f.custom}**`],
     };
   }
@@ -955,7 +1002,7 @@ function cultureRecognise(rng: Rng): QuestionDraft {
   return {
     prompt: `Associe chaque fête à sa date : ${left.join(', ')}.`,
     answer: { kind: 'match', left, right, pairs: rows.map((f) => right.indexOf(f.date)) },
-    hint: 'Halloween ouvre la saison : fin octobre. Christmas est en hiver.',
+    hint: 'Commence par la fête dont tu es le plus sûr, puis range les autres dans l’ordre de l’année.',
     steps: [
       ...rows.map((f) => `${f.en} → ${f.date}`),
       `Réponse : **${rows.map((f) => `${f.en} = ${f.date}`).join(' ; ')}**`,
@@ -982,7 +1029,7 @@ function cultureCloze(rng: Rng): QuestionDraft {
         { mode: 'list', options, correct: options.indexOf(m) },
       ],
     },
-    hint: 'Halloween : fin octobre. Bonfire Night : début novembre. Christmas : fin décembre.',
+    hint: f.clue,
     steps: [`${f.en} a lieu le ${f.date}.`, `Réponse : **${f.en} is on ${d} ${m}.**`],
   };
 }
@@ -1016,15 +1063,15 @@ function cultureLetter(rng: Rng): QuestionDraft {
     `${nb}: I live in ${b.en}. I love ${fb.en}!`,
   ];
   const { answer, traps } = choice(rng, fa.date, [
-    { label: fb.date, why: `C’est la date de ${fb.en}, la fête préférée de ${nb}.` },
+    { label: fb.date, why: `C’est la date de ${fb.en}, la fête préférée ${de(nb)}.` },
     ...FESTIVALS.filter((x) => x !== fa && x !== fb).map((x) => ({ label: x.date, why: `C’est la date de ${x.en}.` })),
   ]);
   return {
-    prompt: `Lis les messages. Quand a lieu la fête préférée de ${na} ?`,
+    prompt: `Lis les messages. Quand a lieu la fête préférée ${de(na)} ?`,
     figure: { kind: 'document', title: 'Pen pals', lines, credit: 'Écrit pour l’exercice.' },
     answer,
     traps,
-    hint: `Sur la ligne de ${na}, cherche « My favourite festival is… ». Puis souviens-toi de sa date.`,
+    hint: `Sur la ligne ${de(na)}, cherche « My favourite festival is… ». Puis souviens-toi de sa date.`,
     steps: [
       `${na} écrit : « My favourite festival is ${fa.en}. »`,
       `${fa.en} : ${fa.date}.`,
@@ -1045,7 +1092,7 @@ const culture: Skill = {
       'Pancake Day : un mardi de février ou de mars. On y mange des crêpes : c’est une **tradition**.',
     ],
     source: source(
-      'Faits : British Council, LearnEnglish Teens, « Pancake Day », « Halloween », « Bonfire Night », « Christmas ».',
+      'Faits : British Council, LearnEnglish Teens, « Pancake Day », « Halloween », « Bonfire Night », « Christmas ». Langues : Union européenne, « Spain » et « Italy » ; TLFi, « brésilien ».',
     ),
     sources: [
       ...PROGRAMMES,
@@ -1053,6 +1100,9 @@ const culture: Skill = {
       'bc-teens-halloween',
       'bc-teens-bonfire-night',
       'bc-teens-christmas',
+      'eu-espagne',
+      'eu-italie',
+      'cnrtl-bresilien',
     ],
   },
   generate: (rng, level): QuestionDraft => {

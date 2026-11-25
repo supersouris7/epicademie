@@ -228,6 +228,20 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'Quarter to six = six heures moins le quart (5:45).',
   },
   {
+    id: 'pound',
+    word: 'pound',
+    forms: ['pound', 'pounds'],
+    definition: 'La livre : la monnaie anglaise, écrite avec le signe £.',
+    example: '£3 se dit « three pounds » (trois livres).',
+  },
+  {
+    id: 'pence',
+    word: 'pence',
+    forms: ['pence'],
+    definition: 'Les petites unités de la monnaie anglaise : 100 pence font une livre.',
+    example: '£8.37 = huit livres et trente-sept pence.',
+  },
+  {
     id: 'ordinal',
     word: 'nombre ordinal',
     forms: ['ordinal', 'ordinaux', 'nombre ordinal', 'nombres ordinaux'],
