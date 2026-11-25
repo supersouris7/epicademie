@@ -1789,7 +1789,7 @@ export const SOURCES: readonly Source[] = [
     title: 'Glossaire de Géoconfluences, article « Métropolisation »',
     publisher: 'Géoconfluences (ENS de Lyon, DGESCO)',
     url: 'https://geoconfluences.ens-lyon.fr/glossaire/metropolisation',
-    textDate: '2026-09-18',
+    textDate: '2025-06-23',
     consultedOn: CONSULTED_GE_6E,
   },
   {
@@ -1797,7 +1797,7 @@ export const SOURCES: readonly Source[] = [
     title: 'Glossaire de Géoconfluences, article « Villes globales, villes mondiales »',
     publisher: 'Géoconfluences (ENS de Lyon, DGESCO)',
     url: 'https://geoconfluences.ens-lyon.fr/glossaire/globales-mondiales-villes',
-    textDate: '2026-11-24',
+    textDate: '2023-01-16',
     consultedOn: CONSULTED_GE_6E,
   },
   {
@@ -1805,7 +1805,7 @@ export const SOURCES: readonly Source[] = [
     title: 'Glossaire de Géoconfluences, article « Îlot de chaleur urbain »',
     publisher: 'Géoconfluences (ENS de Lyon, DGESCO)',
     url: 'https://geoconfluences.ens-lyon.fr/glossaire/ilot-de-chaleur-urbain',
-    textDate: '2026-06-10',
+    textDate: '2025-05-26',
     consultedOn: CONSULTED_GE_6E,
   },
   bnfLieu('tokyo', 'Tokyo (Japon)', 'cb15322935d'),

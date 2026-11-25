@@ -378,6 +378,14 @@ const metropoles: Notion = {
       traps: [
         { text: 'village', why: 'Un village compte peu d’habitants.' },
         { text: 'campagne', why: 'La campagne est un espace peu peuplé.' },
+        {
+          text: 'mégapole',
+          why: '« Mégapole » insiste seulement sur la taille géante. Pour une très grande ville qui concentre emplois et pouvoirs, le mot de la leçon est « métropole ».',
+        },
+        {
+          text: 'capitale',
+          why: 'La capitale est la ville où siège le pouvoir d’un pays : toutes les métropoles ne sont pas des capitales.',
+        },
       ],
       quote: E_DEFINITION,
       explain: 'Une très grande ville influente est une métropole.',
@@ -503,7 +511,7 @@ const metropoles: Notion = {
           src: EDUSCOL,
         },
         {
-          q: 'Quelle différence entre les transports le texte montre-t-il ?',
+          q: 'Quelle différence le texte montre-t-il entre les transports des deux villes ?',
           a: 'un métro à Grandrive, des bus très remplis à Solaville',
           wrong: [
             { label: 'aucun transport à Solaville', why: 'Des bus y circulent.' },
@@ -651,6 +659,10 @@ const peripheries: Notion = {
       traps: [
         { text: 'couronne', why: 'La couronne est plus loin : le travail la relie au pôle.' },
         { text: 'ville-centre', why: 'La ville-centre est au cœur, pas autour.' },
+        {
+          text: 'périphérie',
+          why: '« Périphérie » désigne tout ce qui est sur les bords, proches ou lointains. Le mot précis pour ces communes est « banlieue ».',
+        },
       ],
       quote: I_BANLIEUE,
       explain: 'Les communes autour de la ville-centre forment la banlieue.',
@@ -685,7 +697,7 @@ const peripheries: Notion = {
       lines: [
         'Vertcoteau compte la grande majorité des habitants de son agglomération.',
         'Les communes bâties à sa suite, sans coupure, l’entourent.',
-        'Plus loin, des villages envoient une grande partie de leurs actifs travailler dans ce pôle.',
+        'Plus loin, des villages envoient beaucoup de leurs habitants travailler dans ce pôle.',
       ],
       qs: [
         {
@@ -696,15 +708,18 @@ const peripheries: Notion = {
             { label: 'la couronne', why: 'La couronne correspond aux villages plus éloignés.' },
           ],
           quote: I_BANLIEUE,
-          explain: 'Elles font partie de l’unité urbaine sans être la ville-centre.',
+          explain: 'Elles font partie de la même agglomération sans être la ville-centre : c’est la banlieue.',
           src: BANLIEUE,
         },
         {
-          q: 'À quel espace correspondent les villages dont les actifs travaillent dans le pôle ?',
+          q: 'À quel espace correspondent les villages dont beaucoup d’habitants travaillent dans le pôle ?',
           a: 'la couronne',
           wrong: [
-            { label: 'la commune-centre', why: 'La commune-centre est la plus peuplée du pôle.' },
-            { label: 'la banlieue', why: 'La banlieue est dans l’unité urbaine, en continuité du bâti.' },
+            { label: 'la ville-centre', why: 'La ville-centre est au cœur : ce ne sont pas ces villages.' },
+            {
+              label: 'la banlieue',
+              why: 'La banlieue touche la ville-centre : ses constructions la prolongent sans coupure.',
+            },
           ],
           quote: I_AIRE,
           explain: 'C’est le lien de travail avec le pôle qui définit la couronne.',
@@ -1389,9 +1404,9 @@ const villeDemain: Notion = {
         },
       ],
       gap: [
-        'Une ville qui protège l’environnement et pense aux habitants de demain vise le développement ',
-        '.',
-        ['durable'],
+        'Construire près du tramway ou du métro, plutôt que loin sur des champs, limite l’',
+        ' urbain.',
+        ['étalement'],
       ],
       quote: E_ENERGIE,
       explain: 'Loger près des transports limite l’étalement et l’énergie dépensée pour se déplacer.',

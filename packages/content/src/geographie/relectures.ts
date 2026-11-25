@@ -24,4 +24,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'gcm2-transition', version: 1, lot: 'ge-cm2-03', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'g6-mobilites', version: 1, lot: 'ge-6e-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'g6-vocabulaire-urbain', version: 1, lot: 'ge-6e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g6-metropoles-monde', version: 1, lot: 'ge-6e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g6-ville-peripheries', version: 1, lot: 'ge-6e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g6-ville-demain', version: 1, lot: 'ge-6e-01', date: '2026-11-25', verdict: 'ok' },
 ];
