@@ -63,7 +63,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
 
 const SALINES: readonly string[] = [
   'Tu as une eau salée, bien claire. Tu veux retrouver le sel.',
-  'Un marais salant contient de l’eau de mer. On veut récolter le sel.',
+  'Un marais salant (un bassin au bord de la mer où l’on récolte le sel) contient de l’eau de mer. On veut récolter le sel.',
   'Au labo, tu as dissous du sel dans de l’eau. Tu veux le récupérer sec.',
 ];
 
@@ -100,11 +100,11 @@ const niveau3 = (rng: Rng): QuestionDraft => {
         kind: 'cloze',
         parts: [`${solide} se `, ' dans l’eau. Pour le retrouver, on laisse l’eau s’', '.'],
         blanks: [
-          { mode: 'text', accepted: ['dissout'] },
+          { mode: 'list', options: ['dissout', 'évapore', 'dépose'], correct: 0 },
           { mode: 'text', accepted: ['évaporer', 'evaporer'] },
         ],
       },
-      hint: 'Les deux mots sont : se mélanger complètement à l’eau, puis partir en vapeur.',
+      hint: 'Le premier mot dit que le solide ne se voit plus dans l’eau. Le second dit que l’eau part en vapeur.',
       steps: [
         `${solide} n’est plus visible : il s’est mélangé complètement à l’eau.`,
         'Pour le retrouver, on fait partir l’eau en vapeur.',
@@ -114,7 +114,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     };
   }
   const eau = rng.int(1, 9) * 100;
-  const sel = rng.int(1, 9) * 5;
+  const sel = rng.int(1, 6) * 5;
   return {
     prompt: `Tu dissous ${sel} g de sel dans ${eau} g d’eau. Quelle est la masse du mélange, en grammes ?`,
     answer: num(eau + sel, 'g'),
@@ -135,7 +135,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
 const niveau4 = (rng: Rng): QuestionDraft => {
   const type = rng.int(0, 2);
   if (type === 0) {
-    const sel = rng.int(1, 9) * 5;
+    const sel = rng.int(1, 6) * 5;
     const eau = rng.int(1, 9) * 100;
     return {
       prompt: `Une eau salée pèse ${eau + sel} g. Elle contient ${eau} g d’eau. Toute l’eau s’évapore. Combien de grammes de sel restent ?`,
@@ -194,7 +194,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
 const SEPARATION: readonly string[] = [
   'Ajouter de l’eau au mélange de sable et de sel, puis remuer',
   'Filtrer : le sable reste sur le papier filtre',
-  'Laisser l’eau salée s’évaporer',
+  'Laisser l’eau salée s’évaporer dans une assiette',
   'Récupérer le sel au fond de l’assiette',
 ];
 

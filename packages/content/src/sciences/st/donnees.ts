@@ -1,5 +1,5 @@
 /**
- * Faits des chapitres « La matière », « Mouvement et énergie » et « Le vivant » (CM1), puis « Matière et information » (CM2). Chaque fait cite son identifiant de source (registre `sources.ts`) et la
+ * Faits des chapitres « La matière », « Mouvement et énergie » et « Le vivant » (CM1), puis « Matériaux et mélanges » (CM2) et « Signal et information » (6e). Chaque fait cite son identifiant de source (registre `sources.ts`) et la
  * citation exacte du texte officiel (programme du cycle 3, Éduscol, domaine « Matière, mouvement, énergie,
  * information »). Les exemples du quotidien (un caillou, une pomme, la buée…) illustrent ces faits : ils ne sont pas des faits.
  */
@@ -470,6 +470,17 @@ export const FAITS: readonly Fait[] = [
     source: PROGRAMME,
     citation:
       'Identifier des signaux de natures différentes et citer des applications dans lesquelles un signal permet de transmettre une information.',
+  },
+  {
+    id: 'signal-6e-identifier',
+    source: PROGRAMME,
+    citation:
+      'Identifier différents signaux pour transmettre de l’information (signal sonore, lumineux, électrique, etc.).',
+  },
+  {
+    id: 'signal-6e-applications',
+    source: PROGRAMME,
+    citation: 'Citer quelques applications des signaux pour transmettre de l’information.',
   },
   {
     id: 'signal-perimetre',

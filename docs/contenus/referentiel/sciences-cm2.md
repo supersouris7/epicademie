@@ -19,3 +19,7 @@
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).
+
+Écart au programme (`st-cm2-01`) : la transmission de l'information est attendue en fin de sixième ; la notion « signal et
+information » est donc livrée en 6e (chapitre « Signal et information »), et le chapitre de CM2 s'intitule « Matériaux et
+mélanges ».

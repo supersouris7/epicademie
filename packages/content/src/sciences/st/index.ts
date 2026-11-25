@@ -46,11 +46,19 @@ export const ST_CHAPTERS: readonly Chapter[] = [
     skills: [classer, besoinsVegetaux, besoinsAnimaux, developpement],
   },
   {
-    id: 'pcm2-matiere-information',
+    id: 'pcm2-materiaux-melanges',
     subject: 'sciences',
     grade: 'cm2',
     domain: 'physique-chimie',
-    title: 'Matière et information',
-    skills: [materiaux, separer, dissolution, signal],
+    title: 'Matériaux et mélanges',
+    skills: [materiaux, separer, dissolution],
+  },
+  {
+    id: 'p6-signal-information',
+    subject: 'sciences',
+    grade: '6e',
+    domain: 'physique-chimie',
+    title: 'Signal et information',
+    skills: [signal],
   },
 ];

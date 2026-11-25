@@ -476,4 +476,25 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Qui utilise le courant électrique.',
     example: 'Un signal électrique voyage dans un fil.',
   },
+  {
+    id: 'st-alliage',
+    word: 'alliage',
+    forms: ['alliage', 'alliages'],
+    definition: 'Métal obtenu en combinant un métal avec un ou plusieurs autres éléments.',
+    example: 'L’acier est un alliage de fer et de carbone.',
+  },
+  {
+    id: 'st-synthetique',
+    word: 'synthétique',
+    forms: ['synthétique', 'synthétiques'],
+    definition: 'Fabriqué par l’être humain grâce à des transformations chimiques.',
+    example: 'Le nylon est une matière synthétique.',
+  },
+  {
+    id: 'st-depoli',
+    word: 'dépoli',
+    forms: ['dépoli', 'dépolie', 'dépolis', 'dépolies'],
+    definition: 'Dont la surface n’est plus lisse ni brillante. Un verre dépoli ne laisse pas voir nettement.',
+    example: 'La vitre d’une salle de bains est souvent en verre dépoli.',
+  },
 ];

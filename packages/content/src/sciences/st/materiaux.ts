@@ -1,6 +1,6 @@
 import { choice } from '../../build.ts';
 import type { Rng } from '../../rng.ts';
-import type { QuestionDraft, Skill } from '../../types.ts';
+import type { AnswerSpec, QuestionDraft, Skill, Trap } from '../../types.ts';
 import { PROGRAMME } from './donnees.ts';
 import { association, maj, saisie } from './outils.ts';
 
@@ -46,7 +46,7 @@ const OPTIQUES: readonly Optique[] = ['transparent', 'translucide', 'opaque'];
 const OBSERVE: Record<Optique, string> = {
   transparent: 'La lumière passe et tu vois nettement à travers.',
   translucide: 'La lumière passe, mais tu ne distingues pas nettement ce qui est derrière.',
-  opaque: 'La lumière ne passe pas : tu ne vois rien à travers.',
+  opaque: 'La lumière ne passe pas, donc tu ne vois rien à travers.',
 };
 
 const OBJETS: Record<Optique, readonly string[]> = {
@@ -274,18 +274,19 @@ const niveau5 = (rng: Rng): QuestionDraft => {
   const cible = rng.pick(lot);
   const lettres = ['A', 'B', 'C', 'D'];
   const label = (i: number) => `Échantillon ${lettres[i]}`;
-  const bon = label(lot.indexOf(cible));
-  const { answer, traps } = choice(
-    rng,
-    bon,
-    lot
-      .map((e, i) => ({
-        e,
-        label: label(i),
-        why: `${label(i)} est ${e.nom} : matériau ${e.origine} et ${e.optique}. Il ne va pas dans ce bac.`,
-      }))
-      .filter((x) => x.e !== cible),
-    true,
+  const rang = lot.indexOf(cible);
+  const bon = label(rang);
+  // Propositions rangées A, B, C, D : la position de la bonne réponse suit le tirage des échantillons.
+  const answer: AnswerSpec = { kind: 'choice', options: lot.map((_, i) => label(i)), correct: rang };
+  const traps: Trap[] = lot.flatMap((e, i) =>
+    i === rang
+      ? []
+      : [
+          {
+            option: i,
+            why: `L’échantillon ${lettres[i]} est ${e.nom} : matériau ${e.origine} et ${e.optique}. Il ne va pas dans ce bac.`,
+          },
+        ],
   );
   return {
     prompt: `Mission tri ! Quel échantillon va dans le bac « matériau ${cible.origine} et ${cible.optique} » ?`,

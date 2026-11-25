@@ -66,13 +66,14 @@ const BESOINS: readonly { besoin: string; t: Technique; pourquoi: string }[] = [
     pourquoi: 'Il n’y a pas de liquide : la farine passe dans le tamis, les haricots restent.',
   },
   {
-    besoin: 'Tu as de l’eau avec de la terre. Tu n’as ni tamis ni filtre, seulement deux bocaux.',
+    besoin:
+      'Tu as de l’eau avec de la terre. Tu n’as ni tamis ni filtre, seulement deux bocaux. Tu veux séparer la terre de l’eau.',
     t: 'decantation',
     pourquoi: 'Sans outil, on attend : la terre tombe au fond, puis on verse l’eau.',
   },
   {
     besoin:
-      'Après un long repos, de l’eau reste trouble à cause de grains très fins. Tu as un entonnoir et un papier filtre.',
+      'Après un long repos, de l’eau reste trouble à cause de grains très fins. Tu as un entonnoir et un papier filtre. Tu veux retirer ces grains.',
     t: 'filtration',
     pourquoi: 'Le papier filtre arrête les grains fins et laisse passer l’eau.',
   },
@@ -106,11 +107,11 @@ const ETAPES: readonly { titre: string; items: readonly string[]; why: string }[
     titre: 'séparer de l’eau et de la terre par décantation',
     items: [
       'Verser le mélange d’eau et de terre dans un bocal',
-      'Laisser le bocal sans le toucher',
-      'Attendre que la terre soit tombée au fond',
+      'Laisser le bocal sans le toucher jusqu’à ce que la terre soit au fond',
+      'Vérifier que l’eau du dessus est devenue plus claire',
       'Verser doucement l’eau du dessus dans un autre bocal',
     ],
-    why: 'On ne verse l’eau qu’après que la terre est tombée, sinon elle repart avec l’eau.',
+    why: 'On attend que la terre soit au fond et on vérifie l’eau avant de la verser, sinon la terre repart avec elle.',
   },
   {
     titre: 'séparer de l’eau et du sable par filtration',
@@ -152,7 +153,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
 
 const MOTS: readonly (readonly [string, string])[] = [
   ['un tamis', 'un cadre percé de trous qui sépare des grains de tailles différentes'],
-  ['un filtre', 'un objet poreux qui retient les solides d’un liquide'],
+  ['un filtre', 'un objet percé de tout petits trous qui retient les solides d’un liquide'],
   ['le tamisage', 'on fait passer un mélange de solides à travers un tamis'],
   ['la décantation', 'on laisse reposer pour que le solide tombe au fond'],
   ['la filtration', 'on verse un mélange avec un liquide à travers un filtre'],
@@ -168,7 +169,7 @@ interface Reste {
 const RESTES: readonly Reste[] = [
   {
     question: 'Tu tamises du sable fin et des graviers. Qu’est-ce qui reste sur le tamis ? Écris la réponse.',
-    accepte: ['les graviers', 'graviers', 'le gravier', 'gravier', 'des graviers'],
+    accepte: ['les graviers', 'graviers', 'le gravier', 'gravier', 'des graviers', 'du gravier'],
     why: 'Le sable fin passe à travers les trous. Les gros morceaux restent dessus.',
     erreurs: [
       ['le sable', 'Le sable fin passe à travers les trous. Les gros morceaux restent dessus.'],
@@ -238,9 +239,9 @@ const MISSIONS: readonly Mission[] = [
   {
     titre: 'Mission : nettoyer l’eau d’un seau',
     lines: [
-      'Le seau contient de l’eau, de la terre fine et de gros cailloux.',
-      'Étape 1 : une grille à trous retient les gros cailloux.',
-      'Étape 2 : on attend, sans toucher au seau, que la terre se dépose.',
+      'Au départ, on a de la terre sèche mêlée à de gros cailloux, et un seau d’eau.',
+      'Étape 1 : on passe la terre sèche sur une grille à trous, qui retient les gros cailloux.',
+      'Étape 2 : on verse la terre fine dans le seau, puis on attend, sans toucher, qu’elle se dépose.',
       'Étape 3 : on verse le reste d’eau trouble à travers un papier.',
     ],
     etapes: [

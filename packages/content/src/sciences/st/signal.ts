@@ -4,7 +4,7 @@ import type { QuestionDraft, Skill } from '../../types.ts';
 import { PROGRAMME } from './donnees.ts';
 import { association, maj, saisie } from './outils.ts';
 
-// ——— Signal et information : signaux lumineux, sonores, électriques (programme du cycle 3) ———
+// ——— Signal et information : signaux lumineux, sonores, électriques (programme du cycle 3, fin de sixième) ———
 
 type Nature = 'lumineux' | 'sonore' | 'électrique';
 const NATURES: readonly Nature[] = ['lumineux', 'sonore', 'électrique'];
@@ -158,10 +158,10 @@ const niveau3 = (rng: Rng): QuestionDraft => {
       prompt: `${s.scene} Complète avec les deux bons mots.`,
       answer: {
         kind: 'cloze',
-        parts: [`${maj(s.signal)} est le `, `. « ${maj(s.info)} » est l’`, '.'],
+        parts: [`${maj(s.signal)} est le `, `. Ce qu’on comprend, « ${s.info} », s’appelle : `, '.'],
         blanks: [
           { mode: 'text', accepted: ['signal'] },
-          { mode: 'text', accepted: ['information'] },
+          { mode: 'text', accepted: ['information', 'l’information', 'une information'] },
         ],
       },
       hint: 'L’un des mots désigne ce qu’on voit ou entend, l’autre ce qu’on comprend.',
@@ -330,7 +330,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
 const NIVEAUX = [niveau1, niveau2, niveau3, niveau4, niveau5] as const;
 
 export const signal: Skill = {
-  id: 'pcm2-signal',
+  id: 'p6-signal',
   title: 'Signal et information',
   levels: 5,
   version: 1,
@@ -339,7 +339,7 @@ export const signal: Skill = {
       'Un **signal** sert à transmettre une **information**. Il peut être **lumineux** (un feu), sonore (une sirène) ou **électrique** (un courant dans un fil).',
       'Exemple : le voyant de charge s’allume (signal) et tu comprends que l’appareil se charge (information). Il faut connaître le code !',
     ],
-    source: `${PROGRAMME} : « Identifier des signaux de natures différentes et citer des applications dans lesquelles un signal permet de transmettre une information » ; « Au cycle 3, le travail concerne les signaux lumineux et électriques ».`,
+    source: `${PROGRAMME} : « Identifier différents signaux pour transmettre de l’information (signal sonore, lumineux, électrique, etc.) » ; « Citer quelques applications des signaux pour transmettre de l’information » ; « Au cycle 3, le travail concerne les signaux lumineux et électriques ».`,
     sources: [PROGRAMME, 'cnrtl-signal', 'cnrtl-sirene', 'cnrtl-voyant'],
   },
   generate: (rng, level) => (NIVEAUX[level - 1] ?? niveau1)(rng),
