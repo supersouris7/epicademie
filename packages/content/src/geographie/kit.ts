@@ -1,4 +1,4 @@
-import type { Figure, Level, QuestionDraft, Skill, Trap } from '../types.ts';
+import type { ClozeBlank, Figure, Level, QuestionDraft, Skill, Trap } from '../types.ts';
 import type { Rng } from '../rng.ts';
 import { choice } from '../build.ts';
 
@@ -13,10 +13,14 @@ export interface Fait {
   readonly wrong: readonly { readonly label: string; readonly why: string }[];
   /** Avant le trou, après le trou, réponses acceptées. */
   readonly gap: readonly [string, string, readonly string[]];
+  /** Trou à liste (quand la saisie libre admettrait des synonymes) : la première réponse acceptée y figure. */
+  readonly choix?: readonly string[];
   readonly quote: string;
   readonly explain: string;
   /** Identifiant du registre des sources (le programme si absent). */
   readonly src?: string;
+  /** Première bulle rédigée, quand la citation (ligne de fichier officiel) est illisible pour un élève. */
+  readonly montre?: string;
 }
 
 export interface Libre {
@@ -26,6 +30,7 @@ export interface Libre {
   readonly quote: string;
   readonly explain: string;
   readonly src?: string;
+  readonly montre?: string;
 }
 
 export interface DocQuestion {
@@ -35,11 +40,12 @@ export interface DocQuestion {
   readonly quote: string;
   readonly explain: string;
   readonly src?: string;
+  readonly montre?: string;
 }
 
 export interface Notion {
   /** Classe citée dans la source de la leçon et sous les textes à lire (CM1 si absente). */
-  readonly classe?: 'CM1' | 'CM2';
+  readonly classe?: 'CM1' | 'CM2' | '6e';
   readonly id: string;
   readonly title: string;
   readonly hint: string;
@@ -57,6 +63,7 @@ export interface Notion {
     readonly fin: string;
     readonly quote: string;
     readonly src: string;
+    readonly montre?: string;
   };
   readonly libres: readonly Libre[];
   readonly docs: readonly {
@@ -64,12 +71,16 @@ export interface Notion {
     readonly lines: readonly string[];
     readonly qs: readonly DocQuestion[];
   }[];
+  /** Sources citées hors des faits (carte). */
+  readonly sources?: readonly string[];
   /** Question de carte facultative (une fois sur deux, quand elle existe pour le niveau). */
   readonly carte?: (rng: Rng, level: Level) => QuestionDraft | undefined;
 }
 
+const nomClasse = (classe: string) => (classe === '6e' ? 'sixième' : classe);
+
 const prog = (classe: string) =>
-  `Programme du cycle 3 (BOEN n° 31 du 30 juillet 2020, version 2023), géographie, classe de ${classe}`;
+  `Programme du cycle 3 (BOEN n° 31 du 30 juillet 2020, version 2023), géographie, classe de ${nomClasse(classe)}`;
 
 /** Mélange jusqu'à ce que l'ordre ne soit pas déjà le bon (validate.ts l'exige). */
 function shuffled<T>(rng: Rng, items: readonly T[]): T[] {
@@ -82,19 +93,25 @@ function shuffled<T>(rng: Rng, items: readonly T[]): T[] {
 /** Première bulle selon l’éditeur de la source (préfixe de son identifiant) ; dictionnaire par défaut. */
 const lookup = (src: string): string => {
   if (src === PROGRAMME) return 'Cherchons ce que dit le programme';
+  if (src.startsWith('eduscol-')) return 'Cherchons ce que dit la ressource Éduscol';
+  if (src.startsWith('ghsl-')) return 'Cherchons ce que dit l’atlas de la Commission européenne (en anglais)';
   if (src.startsWith('insee-')) return 'Cherchons ce que dit l’INSEE';
+  if (src.startsWith('geoconfluences-')) return 'Cherchons ce que dit le site de géographie Géoconfluences';
   if (src.startsWith('ademe-')) return 'Cherchons ce que dit l’ADEME';
   if (src.startsWith('ue-')) return 'Cherchons ce que dit l’Union européenne';
+  if (src.startsWith('viepublique-')) return 'Cherchons ce que dit le site public vie-publique.fr';
   if (src === 'ecologie-lgv') return 'Cherchons ce que dit le ministère chargé des transports';
   if (src.startsWith('ecologie-')) return 'Cherchons ce que dit le ministère de la Transition écologique';
   return 'Cherchons dans le dictionnaire';
 };
 
-const steps = (quote: string, explain: string, answer: string, src: string = PROGRAMME) => [
-  `${lookup(src)} : « ${quote} ».`,
-  explain,
-  `La réponse est donc **${answer}**.`,
-];
+const firstStep = (f: { readonly quote: string; readonly src?: string; readonly montre?: string }) =>
+  f.montre ?? `${lookup(f.src ?? PROGRAMME)} : « ${f.quote} ».`;
+
+const steps = (
+  f: { readonly quote: string; readonly explain: string; readonly src?: string; readonly montre?: string },
+  answer: string,
+) => [firstStep(f), f.explain, `La réponse est donc **${answer}**.`];
 
 function match(rng: Rng, prompt: string, pairs: readonly (readonly [string, string])[], hint: string): QuestionDraft {
   const left = pairs.map((p) => p[0]);
@@ -121,7 +138,7 @@ function level1(rng: Rng, n: Notion): QuestionDraft {
     prompt: f.q,
     ...choice(rng, f.a, f.wrong.slice(0, 2)),
     hint: n.hint,
-    steps: steps(f.quote, f.explain, f.a, f.src),
+    steps: steps(f, f.a),
     targetSeconds: 20,
   };
 }
@@ -135,9 +152,15 @@ function level2(rng: Rng, n: Notion): QuestionDraft {
     prompt: `Attention aux pièges ! ${f.q}`,
     ...choice(rng, f.a, f.wrong),
     hint: n.hint,
-    steps: steps(f.quote, f.explain, f.a, f.src),
+    steps: steps(f, f.a),
     targetSeconds: 25,
   };
+}
+
+function blank(rng: Rng, accepted: readonly string[], choix?: readonly string[]): ClozeBlank {
+  if (!choix) return { mode: 'text', accepted };
+  const options = rng.shuffle([...choix]);
+  return { mode: 'list', options, correct: options.indexOf(accepted[0] ?? '') };
 }
 
 function level3(rng: Rng, n: Notion): QuestionDraft {
@@ -149,7 +172,7 @@ function level3(rng: Rng, n: Notion): QuestionDraft {
       answer: { kind: 'order', items, correct: n.ordre.map((o) => items.indexOf(o)) },
       hint: c?.hint ?? 'Commence par le lieu où tu habites : il est le plus petit.',
       steps: [
-        ...(c ? [`${lookup(c.src)} : « ${c.quote} ».`] : []),
+        ...(c ? [firstStep(c)] : []),
         c?.why ?? 'On range du plus petit au plus grand territoire, comme dans le programme.',
         ...n.ordre.map((o, i) => `${i + 1}. ${o}.`),
         `${c?.fin ?? 'Le plus petit est'} **${n.ordre[0]}**.`,
@@ -161,9 +184,9 @@ function level3(rng: Rng, n: Notion): QuestionDraft {
   const [before, after, accepted] = f.gap;
   return {
     prompt: `Complète la phrase : « ${before}…${after} »`,
-    answer: { kind: 'cloze', parts: [before, after], blanks: [{ mode: 'text', accepted }] },
+    answer: { kind: 'cloze', parts: [before, after], blanks: [blank(rng, accepted, f.choix)] },
     hint: n.hint,
-    steps: steps(f.quote, f.explain, accepted[0] ?? '', f.src),
+    steps: steps(f, accepted[0] ?? ''),
     targetSeconds: 30,
   };
 }
@@ -184,7 +207,7 @@ function level4(rng: Rng, n: Notion): QuestionDraft {
     answer: { kind: 'text', accepted: l.accepted },
     traps,
     hint: n.hint,
-    steps: steps(l.quote, l.explain, l.accepted[0] ?? '', l.src),
+    steps: steps(l, l.accepted[0] ?? ''),
     targetSeconds: 30,
   };
 }
@@ -196,14 +219,14 @@ function level5(rng: Rng, n: Notion): QuestionDraft {
     kind: 'document',
     title: d.title,
     lines: d.lines,
-    credit: `Texte écrit pour l’exercice, d’après le programme de ${n.classe ?? 'CM1'}.`,
+    credit: `Texte écrit pour l’exercice, d’après le programme de ${nomClasse(n.classe ?? 'CM1')}.`,
   };
   return {
     prompt: `Lis le texte, puis réponds. ${dq.q}`,
     figure,
     ...choice(rng, dq.a, dq.wrong),
     hint: 'Relis le texte ligne par ligne : la réponse s’y appuie.',
-    steps: steps(dq.quote, dq.explain, dq.a, dq.src),
+    steps: steps(dq, dq.a),
     targetSeconds: 60,
   };
 }
@@ -212,7 +235,7 @@ function level5(rng: Rng, n: Notion): QuestionDraft {
 export function sourcesOf(n: Notion): string[] {
   const all = [...n.faits, ...n.libres, ...n.docs.flatMap((d) => d.qs)].map((f) => f.src ?? PROGRAMME);
   if (n.consigne) all.push(n.consigne.src);
-  return [...new Set([PROGRAMME, ...all])];
+  return [...new Set([PROGRAMME, ...all, ...(n.sources ?? [])])];
 }
 
 /** Notion à 5 niveaux (grille de docs/contenus/README.md §1). */
