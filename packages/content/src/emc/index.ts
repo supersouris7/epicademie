@@ -1,5 +1,6 @@
 import type { Chapter } from '../types.ts';
 import { CIVISME_NUMERIQUE_SKILLS } from './civisme-numerique.ts';
+import { EGALITE_FRATERNITE_SKILLS } from './egalite-fraternite.ts';
 import { FAIRE_SOCIETE_SKILLS } from './faire-societe.ts';
 import { SINFORMER_SKILLS } from './sinformer-en-ligne.ts';
 import { SOCIETE_DEMOCRATIQUE_SKILLS } from './societe-democratique.ts';
@@ -58,5 +59,13 @@ export const EMC_CHAPTERS: readonly Chapter[] = [
     domain: 'emc',
     title: 'Vie privée et vie publique',
     skills: VIE_PRIVEE_SKILLS,
+  },
+  {
+    id: 'em5-egalite-fraternite',
+    subject: 'histoire',
+    grade: '5e',
+    domain: 'emc',
+    title: 'Égalité, fraternité, solidarité',
+    skills: EGALITE_FRATERNITE_SKILLS,
   },
 ];
