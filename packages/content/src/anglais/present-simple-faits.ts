@@ -106,7 +106,7 @@ export const FAITS: readonly Fait[] = [
     'We use do and does to make questions with the present simple. We use does for the third person singular (she/he/it) and do for the others.',
     'Question : does avec he, she, it ; do avec les autres.',
   ),
-  fait('question-base', QN, 'He works hard.> Does he work hard?', 'Après does, le verbe revient à la base.'),
+  fait('question-base', QN, 'He works hard. > Does he work hard?', 'Après does, le verbe revient à la base.'),
   fait(
     'question-reponses',
     A1,

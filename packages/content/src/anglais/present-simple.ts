@@ -102,6 +102,9 @@ const coin = (rng: Rng) => rng.int(0, 1) === 0;
 const dotted = (forms: readonly string[]) => forms.flatMap((f) => [f, `${f}.`]);
 /** Questions avec ou sans point d’interrogation (collé ou précédé d’une espace). */
 const asked = (forms: readonly string[]) => forms.flatMap((f) => [f, `${f}?`, `${f} ?`]);
+/** Une erreur typique reste reconnue avec ou sans point d’interrogation. */
+const askedTraps = (traps: readonly { readonly text: string; readonly why: string }[]) =>
+  traps.flatMap((t) => asked([t.text]).map((text) => ({ text, why: t.why })));
 /** Les deux écritures de la négation : « doesn’t » et « does not ». */
 const negations = (s: Subject, after: string) => [`${dontFor(s)} ${after}`, `${doFor(s)} not ${after}`];
 
@@ -418,7 +421,8 @@ const WHY_NO_S = 'Après don’t, doesn’t, do ou does, le verbe reste à la ba
 
 function negativeSpot(rng: Rng): QuestionDraft {
   const s = rng.pick(SPEAKERS);
-  const v = rng.pick(upTo(2));
+  // « do » est écarté : le distracteur « I do not judo » ressemblerait à la bonne négation.
+  const v = rng.pick(upTo(2).filter((x) => x.base !== 'do'));
   const good = sentence(s, `don’t ${v.base}`, v);
   const { answer, traps } = choice(rng, good, [
     { label: sentence(s, `not ${v.base}`, v), why: WHY_NOT },
@@ -483,11 +487,12 @@ function negativeWrite(rng: Rng): QuestionDraft {
   return {
     prompt: `Écris toute la phrase à la forme négative : « ${sentence(s, formFor(s, v), v)} »`,
     answer: { kind: 'text', accepted: dotted(groups.map(full)) },
+    // La saisie sans point final reçoit la même explication.
     traps: [
-      { text: `${full(`${isThird(s) ? 'don’t' : 'doesn’t'} ${v.base}`)}.`, why: whyAux(s) },
-      { text: `${full(`${dontFor(s)} ${v.s}`)}.`, why: WHY_NO_S },
-      { text: `${full(`not ${formFor(s, v)}`)}.`, why: WHY_NOT },
-    ],
+      { text: full(`${isThird(s) ? 'don’t' : 'doesn’t'} ${v.base}`), why: whyAux(s) },
+      { text: full(`${dontFor(s)} ${v.s}`), why: WHY_NO_S },
+      { text: full(`not ${formFor(s, v)}`), why: WHY_NOT },
+    ].flatMap((t) => dotted([t.text]).map((text) => ({ text, why: t.why }))),
     hint: 'Garde le sujet et la fin de la phrase. Entre les deux : la négation, puis le verbe sans -s.',
     steps: [who(s), whyAux(s), WHY_NO_S, `Réponse : **${full(at(groups, 0))}.**`],
   };
@@ -562,7 +567,7 @@ function questionSpot(rng: Rng): QuestionDraft {
     { label: question(isThird(s) ? 'Do' : 'Does', s, v.base, v), why: whyDo(s) },
   ]);
   return {
-    prompt: `Quelle question est juste au sujet de « ${s.mid} » (${v.fr}) ?`,
+    prompt: `Quelle question est juste à propos de « ${s.mid} » (${v.fr}) ?`,
     answer,
     traps,
     hint: 'Une question commence par un petit mot qui dépend du sujet ; le verbe vient après le sujet.',
@@ -647,11 +652,11 @@ function questionWh(rng: Rng): QuestionDraft {
   return {
     prompt: `Pose la question avec « ${w.wh} » pour demander ${w.asks} : « ${statement} »`,
     answer: { kind: 'text', accepted: asked([good]) },
-    traps: [
-      { text: `${build(isThird(s) ? 'do' : 'does', v.base)}?`, why: whyDo(s) },
-      { text: `${build(doFor(s), v.s)}?`, why: WHY_NO_S },
-      { text: `${w.wh} ${s.mid} ${formFor(s, v)}${w.keep}?`, why: 'Après le mot interrogatif, il faut do ou does.' },
-    ],
+    traps: askedTraps([
+      { text: build(isThird(s) ? 'do' : 'does', v.base), why: whyDo(s) },
+      { text: build(doFor(s), v.s), why: WHY_NO_S },
+      { text: `${w.wh} ${s.mid} ${formFor(s, v)}${w.keep}`, why: 'Après le mot interrogatif, il faut do ou does.' },
+    ]),
     hint: 'Ordre : le mot interrogatif, le petit mot de la question, le sujet, puis le verbe.',
     steps: ['Le mot interrogatif se place devant do ou does.', whyDo(s), `Réponse : **${good}?**`],
   };
@@ -667,11 +672,13 @@ function questionTransform(rng: Rng): QuestionDraft {
   return {
     prompt: `Transforme en question (réponse attendue : oui ou non) : « ${sentence(s, formFor(s, v), v)} »`,
     answer: { kind: 'text', accepted: asked([good, ...other]) },
-    traps: [
-      { text: question(isThird(s) ? 'Do' : 'Does', s, v.base, v), why: whyDo(s) },
-      { text: question(cap(doFor(s)), s, v.s, v), why: WHY_NO_S },
-      { text: `${cap(formFor(s, v))} ${s.mid} ${rest(v)}?`, why: WHY_INVERT },
-    ].filter((t) => v.base !== 'have' || t.why !== WHY_INVERT),
+    traps: askedTraps(
+      [
+        { text: `${isThird(s) ? 'Do' : 'Does'} ${s.mid} ${v.base} ${rest(v)}`, why: whyDo(s) },
+        { text: `${cap(doFor(s))} ${s.mid} ${v.s} ${rest(v)}`, why: WHY_NO_S },
+        { text: `${cap(formFor(s, v))} ${s.mid} ${rest(v)}`, why: WHY_INVERT },
+      ].filter((t) => v.base !== 'have' || t.why !== WHY_INVERT),
+    ),
     hint: 'Commence par le petit mot qui va avec le sujet, puis vérifie la fin du verbe.',
     steps: [whyDo(s), WHY_NO_S, `Réponse : **${good}?**`],
   };
@@ -740,6 +747,7 @@ const questions: Skill = {
       'Question au présent simple : **Do** ou **Does**, puis le **sujet**, puis la **base verbale** : Does he speak English?',
       '**Does** va avec he, she, it ; **Do** avec les autres sujets.',
       'La **réponse courte** reprend le même petit mot : Yes, he does. No, I don’t.',
+      'Un **mot interrogatif** (where, what time) se place avant do ou does : Where do you live?',
     ],
     source: source('présent simple, phrases interrogatives'),
     sources: ['anglais-college-2025', 'bc-present-simple', 'bc-present-simple-a1', 'bc-questions-negatives'],
