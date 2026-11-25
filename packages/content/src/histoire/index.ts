@@ -5,6 +5,7 @@ import { SKILLS as AVANT_LA_FRANCE } from './avant-la-france.ts';
 import { SKILLS as GUERRES_EUROPE } from './guerres-europe.ts';
 import { SKILLS as HUMANITE } from './humanite.ts';
 import { SKILLS as TEMPS_DES_ROIS } from './le-temps-des-rois.ts';
+import { SKILLS as RECITS_FONDATEURS } from './recits-fondateurs.ts';
 import { SKILLS as REVOLUTION_EMPIRE } from './revolution-empire.ts';
 import { SKILLS as REPERES_6E } from './reperes-6e.ts';
 import { SKILLS as SE_REPERER_CM2 } from './se-reperer-cm2.ts';
@@ -218,5 +219,6 @@ export const HISTOIRE_CHAPTERS: readonly Chapter[] = [
   chapter('hcm2-se-reperer', 'cm2', 'Se repérer dans le temps', SE_REPERER_CM2),
   chapter('h6-reperes', '6e', 'L’Antiquité', [skillOf('h6-reperes', 'Repères de 6e', SIXIEME, 'sixième')]),
   chapter('h6-humanite-migrations', '6e', 'L’humanité et ses migrations', HUMANITE),
+  chapter('h6-recits-fondateurs', '6e', 'Récits fondateurs et citoyenneté', RECITS_FONDATEURS),
   chapter('h6-se-reperer', '6e', 'Se repérer dans le temps', REPERES_6E),
 ];

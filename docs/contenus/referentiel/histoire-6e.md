@@ -13,7 +13,7 @@
 | Lot        | Chapitre                              | Notions                                                                                                                       | État actuel            |
 | ---------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
 | `hi-6e-01` | L'humanité et ses migrations          | débuts de l'humanité ; révolution néolithique ; premiers États, premières écritures                                           | couverte, en relecture |
-| `hi-6e-02` | Récits fondateurs et citoyenneté      | le monde des cités grecques ; Rome du mythe à l'histoire ; la naissance du monothéisme juif ; citoyenneté à Athènes et à Rome | partielle (h6-reperes) |
+| `hi-6e-02` | Récits fondateurs et citoyenneté      | le monde des cités grecques ; Rome du mythe à l'histoire ; la naissance du monothéisme juif ; citoyenneté à Athènes et à Rome | couverte, en relecture |
 | `hi-6e-03` | L'empire romain dans le monde antique | conquêtes, paix romaine et romanisation ; des chrétiens dans l'empire ; la route de la soie et la Chine des Han               | partielle (h6-reperes) |
 | `hi-6e-04` | Se repérer dans le temps              | frise de l’Antiquité ; avant et après J.-C. ; millénaires et siècles ; repères annuels de 6e                                  | couverte, en relecture |
 
