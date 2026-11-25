@@ -462,6 +462,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'finir : nous finissons',
   },
   {
+    id: 'troisieme-groupe',
+    word: 'troisième groupe',
+    forms: ['3e groupe'],
+    definition: 'Tous les verbes qui ne sont ni du premier ni du deuxième groupe.',
+    example: 'partir, voir, prendre',
+  },
+  {
     id: 'verbe-irregulier',
     word: 'verbe irrégulier',
     forms: ['verbes irréguliers', 'irrégulier', 'irréguliers'],

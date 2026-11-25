@@ -212,7 +212,7 @@ export const SUJETS: readonly Sujet[] = [
 
 /** Groupes nominaux et sujets à plusieurs noms : il faut les remplacer par un pronom (niveaux 4 et 5). */
 export const SUJETS_GROUPES: readonly (Sujet & { readonly pronom: string })[] = [
-  { texte: 'Le chien des voisins', personne: 'il', pronom: 'il' },
+  { texte: 'Le fils des voisins', personne: 'il', pronom: 'il' },
   { texte: 'La sœur de mes copains', personne: 'il', pronom: 'elle' },
   { texte: 'Le garçon et la fille', personne: 'ils', pronom: 'ils' },
   { texte: 'Mon frère et moi', personne: 'nous', pronom: 'nous' },
@@ -323,6 +323,7 @@ export const PHRASES_ETRE_AVOIR: readonly PhraseEtreAvoir[] = [
   phrase('Elles', 'ils', 'être', 'à la piscine'),
   phrase('Mes copains', 'ils', 'avoir', 'une idée'),
   phrase('Je', 'je', 'être', 'dans ma chambre'),
+  phrase('Je', 'je', 'avoir', 'un vélo bleu'),
 ];
 
 /** Familles de variations du radical (premier groupe). */

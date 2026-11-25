@@ -242,7 +242,10 @@ function radicalDraft(rng: Rng, level: Level): QuestionDraft {
       const coupe = (i: number) => `${f.slice(0, i)} + ${f.slice(i)}`;
       const bon = coupe(r.length);
       const { answer, traps } = choice(rng, bon, [
-        { label: coupe(r.length + 1), why: `Le radical s’arrête avant : on le retrouve dans « ${r}ons ».` },
+        {
+          label: coupe(r.length + 1),
+          why: `Le radical s’arrête plus tôt. Avec « ${PRONOMS[p]} », la terminaison entière est « -${TERMINAISONS_ER[p]} ».`,
+        },
         { label: coupe(r.length - 1), why: `Il manque une lettre au radical : l’infinitif est « ${v} ».` },
         { label: `${f} + rien`, why: 'Un verbe conjugué a un radical et une terminaison.' },
       ]);
@@ -478,8 +481,10 @@ function irreguliersDraft(rng: Rng, level: Level): QuestionDraft {
       const s = rng.pick(SUJETS);
       return qcmForme(rng, { sujet: s, verbe: v, fin }, 3, [DEF_IRREGULIER, TABLE(v)]);
     }
-    case 2:
-      return associer(rng, rng.pick(IRREGULIERS), PERSONNES, [DEF_IRREGULIER, 'Dis chaque forme à voix haute.']);
+    case 2: {
+      const choisi = rng.pick(IRREGULIERS);
+      return associer(rng, choisi, PERSONNES, [DEF_IRREGULIER, TABLE(choisi)]);
+    }
     case 3: {
       const s = rng.pick(SUJETS.filter((x) => 'tu il nous'.split(' ').includes(x.personne)));
       return saisieForme({ sujet: s, verbe: v, fin }, [DEF_IRREGULIER, TABLE(v)], []);
