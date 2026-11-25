@@ -41,4 +41,5 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm1-present-ir', version: 1, lot: 'fr-cm1-07', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-etre-avoir', version: 1, lot: 'fr-cm1-07', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm1-present-irreguliers', version: 1, lot: 'fr-cm1-07', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm1-present-variations', version: 1, lot: 'fr-cm1-07', date: '2026-11-25', verdict: 'ok' },
 ];
