@@ -123,7 +123,7 @@ const carteLieux =
     const fin = `La réponse est : **${continent(lieu.zone)}**.`;
     if (level <= 2) {
       return {
-        prompt: `${level === 1 ? '' : 'Attention aux pièges ! '}Sur quel continent faut-il placer « ${lieu.nom} » ?`,
+        prompt: `${level === 1 ? '' : 'Attention aux pièges ! '}Quel est ${cible(lieu)} ?`,
         figure: { kind: 'map', map: 'monde' },
         ...choice(
           rng,
@@ -189,7 +189,7 @@ const figures = (rng: Rng, level: Level): QuestionDraft | undefined => {
       : []),
   );
   return {
-    prompt: `Sur ce planisphère, de quel type est le figuré mis en évidence au repère A ?`,
+    prompt: `Sur ce planisphère, de quel type est le figuré mis en couleur et désigné par la lettre A (sans compter le rond de la lettre) ?`,
     figure: { kind: 'map', map: 'monde', highlight: [cas.zone], marks: [{ zone: cas.zone, label: 'A' }] },
     ...choice(rng, cas.type, wrong),
     hint: 'Demande-toi si l’élément est un point, une ligne ou une surface.',
@@ -591,7 +591,7 @@ const foyers: Notion = {
       'Environ combien d’habitants compte chacun des deux principaux foyers (Chine de l’Est ; Inde du Nord et Pakistan) ?',
       'environ 1 milliard',
       [
-        ['environ 10 millions', 'C’est cent fois trop peu : c’est l’ordre de grandeur d’une mégapole.'],
+        ['environ 10 millions', 'C’est cent fois trop peu pour l’une de ces immenses concentrations.'],
         ['environ 100 millions', 'C’est l’ordre de grandeur de la façade orientale des États-Unis.'],
         ['environ 8 milliards', 'Huit milliards est la population de la Terre entière.'],
       ],
@@ -729,7 +729,7 @@ const foyers: Notion = {
       title: 'Les grands foyers sur le planisphère',
       lines: [
         'Sur la carte d’un atlas, deux grandes zones d’Asie sont presque entièrement foncées.',
-        'La première est située à l’est de la Chine.',
+        'La première est située dans l’est de la Chine.',
         'La seconde couvre le nord de l’Inde et le Pakistan.',
         'D’autres taches, plus petites, apparaissent en Europe et sur le golfe de Guinée.',
       ],
@@ -846,7 +846,6 @@ const R_AQUACULTURE =
   'L’Asie produit les neuf dixièmes de la production aquacole, avec la Chine comme premier producteur';
 const R_ZEE =
   "sur laquelle un État riverain (parfois plusieurs États dans le cas d'accords de gestion partagée) dispose de l'exclusivité d'exploitation des ressources";
-const R_ZEE_USA = 'Les États-Unis possèdent la plus vaste ZEE du monde';
 
 const RESSOURCES_PRINCIPALES: readonly Lieu[] = [
   { nom: 'Arabie saoudite (pétrole)', zone: 'asie', quote: R_PRODUCTION },
@@ -871,7 +870,8 @@ const ressources: Notion = {
   memo: [
     'Les ressources sont inégalement réparties. Pour le pétrole, cinq États (Venezuela, Arabie saoudite, Canada, Iran, Irak) contrôlent 62 % des **réserves**.',
     'L’**OPEP** réunit des pays exportateurs de pétrole. Les gisements de **charbon** sont mieux répartis ; le **lithium** vient notamment de l’Altiplano des Andes.',
-    'En mer, l’exploitation **offshore** et la **zone économique exclusive** donnent aux États riverains un enjeu fort ; l’Asie domine l’**aquaculture**.',
+    'La **zone économique exclusive** est un enjeu fort pour les États riverains. En mer, on exploite du pétrole **offshore** ; l’Asie domine l’**aquaculture**.',
+    'Autres repères : l’uranium au Niger, le nickel en Nouvelle-Calédonie, les diamants en République démocratique du Congo, les hydrocarbures en Russie.',
   ],
   faits: [
     fait(
@@ -893,7 +893,11 @@ const ressources: Notion = {
         ['en Amazonie', 'La source cite une autre région.'],
         ['en Scandinavie', 'La mer du Nord est exploitée bien plus tard.'],
       ],
-      ['Des gisements affleurant au ', '-Orient sont connus dès l’Antiquité.', ['Moyen']],
+      [
+        'Certains gisements de pétrole du Moyen-Orient sont connus dès l’',
+        ' (une grande période de l’histoire).',
+        ['Antiquité', 'Antiquite'],
+      ],
       preuve(PETROLE, R_AFFLEURENT, 'Ces affleurements servaient déjà à alimenter des lampes.'),
     ),
     fait(
@@ -931,7 +935,7 @@ const ressources: Notion = {
       [
         ['en mer du Nord', 'La mer du Nord vient ensuite, dans les années 1970.'],
         ['dans le désert du Sahara', 'Offshore signifie en mer.'],
-        ['dans le lac Léman', 'La source cite une autre zone maritime.'],
+        ['dans le lac Léman', '« Offshore » signifie en mer : un lac n’est pas la mer.'],
       ],
       ['L’exploitation offshore débute dans le golfe du ', ' dans les années 1950.', ['Mexique']],
       preuve(PETROLE, R_OFFSHORE, 'Puis elle s’étend en mer du Nord.'),
@@ -1122,13 +1126,16 @@ const ressources: Notion = {
           preuve(ZEE, R_ZEE, 'La ZEE donne à un État riverain des droits exclusifs sur les ressources.'),
         ),
         question(
-          'Quel État possède la plus vaste zone de ce type au monde ?',
-          'les États-Unis',
+          'Que gagnera l’État à qui cet espace sera reconnu ?',
+          'le droit d’exploiter seul ses ressources',
           [
-            ['la Suisse', 'La Suisse n’a pas de littoral.'],
-            ['la Bolivie', 'La Bolivie n’a pas de littoral.'],
+            [
+              'l’obligation de laisser tous les bateaux y exploiter les ressources',
+              'Le texte parle d’un seul exploitant.',
+            ],
+            ['de nouveaux habitants installés sur la mer', 'La dispute porte sur des poissons et des hydrocarbures.'],
           ],
-          preuve(ZEE, R_ZEE_USA, 'La source donne ce premier rang aux États-Unis.'),
+          preuve(ZEE, R_ZEE, 'La zone donne à un État riverain l’exclusivité de l’exploitation.'),
         ),
       ],
     },
@@ -1198,7 +1205,8 @@ const vocabulaire: Notion = {
   memo: [
     'Population : le **solde naturel** compare naissances et décès ; la **transition démographique** fait passer de taux élevés à des taux bas.',
     'Développement : l’**IDH** mêle santé, éducation et niveau de vie ; le **développement durable** pense aussi aux générations futures. La **sécurité alimentaire** vise une nourriture suffisante pour tous.',
-    'Risques : un **aléa** qui touche une population vulnérable crée un **risque** ; la **résilience** aide à s’en relever.',
+    'Risques : il y a un **risque** quand un **aléa** peut se produire et toucher une population vulnérable. La prévention agit avant, l’adaptation ajuste les façons de faire, la **résilience** aide à se relever.',
+    'Ressources : il n’y a pas de ressource sans besoin des sociétés. Une énergie renouvelable vient de processus naturels qui se renouvellent sans cesse.',
   ],
   faits: [
     fait(
@@ -1362,6 +1370,7 @@ const vocabulaire: Notion = {
       [...noms('adaptation', 'l’', 'une '), ...noms('adaptabilité', 'l’', 'une ')],
       [
         ['prévision', 'La prévision cherche à annoncer ce qui va se produire.'],
+        ['résilience', 'La résilience est la capacité à revenir à l’état initial ; ici, on change sa façon de faire.'],
         ['catastrophe', 'La catastrophe est la réalisation d’un risque.'],
       ],
       preuve(ADAPTATION, V_ADAPTATION, 'On parle d’adaptation (ou d’adaptabilité).'),
@@ -1377,7 +1386,14 @@ const vocabulaire: Notion = {
     ),
     libre(
       'comment qualifie-t-on le développement qui répond aux besoins présents sans priver les générations futures ?',
-      ['durable', 'développement durable', 'le développement durable', 'developpement durable'],
+      [
+        'durable',
+        'développement durable',
+        'le développement durable',
+        'developpement durable',
+        'soutenable',
+        'développement soutenable',
+      ],
       [
         ['rapide', 'La vitesse n’est pas le critère de cette définition.'],
         ['émergent', 'L’émergence désigne une intégration à l’économie mondiale.'],
@@ -1385,7 +1401,7 @@ const vocabulaire: Notion = {
       preuve(DURABLE, V_DURABLE, 'On parle de développement durable.'),
     ),
     libre(
-      'sans quel élément venant des sociétés n’y a-t-il pas de ressource ?',
+      'quel mot de six lettres complète la phrase « il n’y a pas de ressource sans … des sociétés » ?',
       ['besoin', 'un besoin', 'le besoin', 'besoins', 'les besoins', 'des besoins'],
       [
         ['frontière', 'La définition ne parle pas de frontière.'],

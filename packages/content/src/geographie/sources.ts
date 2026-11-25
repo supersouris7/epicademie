@@ -666,11 +666,11 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-25',
   },
   // Lot ge-5e-04 : repères de 5e.
-  geoconfluences('carte-croquis-schema', 'Carte, croquis, schéma', 'carte-croquis-schema', '2026-05-06', '2026-11-26'),
+  geoconfluences('carte-croquis-schema', 'Carte, croquis, schéma', 'carte-croquis-schema', '2025-03-07', '2026-11-26'),
   geoconfluences('figure', 'Figuré (en cartographie)', 'figure', '2026-01-05', '2026-11-26'),
-  geoconfluences('projection', 'Projection', 'projection', '2026-05-06', '2026-11-26'),
+  geoconfluences('projection', 'Projection', 'projection', '2022-10-20', '2026-11-26'),
   geoconfluences('echelle', 'Échelle', 'echelle', '2025-09-08', '2026-11-26'),
-  geoconfluences('centrage', 'Centrage (cartographie)', 'centrage-cartographie', '2022-10', '2026-11-26'),
+  geoconfluences('centrage', 'Centrage (cartographie)', 'centrage-cartographie', '2026-05-06', '2026-11-26'),
   geoconfluences(
     'choroplethe',
     'Choroplèthe, choroisoplèthe (carte)',
