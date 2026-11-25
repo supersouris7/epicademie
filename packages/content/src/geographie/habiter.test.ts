@@ -69,7 +69,7 @@ describe('géographie cm2 — Mieux habiter', () => {
     for (const q of orders) {
       expect(q.answer.correct.map((i) => q.answer.items[i])).toEqual([
         'éviter de produire le déchet',
-        'réutiliser',
+        'réutiliser un déchet',
         'recycler',
         'valoriser d’une autre façon',
       ]);

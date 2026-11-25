@@ -12,12 +12,9 @@ const PLAN = 'ecologie-nature-ville';
 const QUARTIER = 'ecologie-ecoquartier';
 const BIO = 'ecologie-biodechets';
 const CIRC = 'ecologie-economie-circulaire';
-const ODD = 'ecologie-odd';
 const INSEE = 'insee-developpement-durable';
 
 // Programme du cycle 3.
-const Q_PLACE =
-  'La place réservée dans la ville aux espaces verts, aux circulations douces, aux berges et corridors verts, au développement de la biodiversité';
 const Q_ACTEURS = 'autant d’occasions de réfléchir aux choix des acteurs dans les politiques de développement durable';
 const Q_ECHELLES = 'à l’échelle des territoires de proximité (quartier, commune, métropole, région)';
 
@@ -34,6 +31,8 @@ const Q_GESTES =
   'Arrêter les traitements phytosanitaires, faucher tardivement, planter des essences locales…les actions possibles sont diverses';
 const Q_FRAIS =
   'La nature améliore la résilience climatique des villes par le rafraichissement et la limitation des impacts des inondations';
+const Q_VIVANT =
+  'Face au défi de l’érosion de la biodiversité, préserver, restaurer les sols et améliorer les connexions des populations végétales et animales est un enjeu essentiel pour la sauvegarde de la diversité du vivant dans nos villes';
 const Q_SANTE =
   'Elle participe aussi à l’amélioration de la santé et du cadre de vie des habitants via la dépollution de l’air, du sol, de l’eau';
 
@@ -52,7 +51,6 @@ const Q_PRIORITE =
 
 const Q_FACON =
   'Elle vise à favoriser l’émergence d’une nouvelle façon de concevoir, de construire et de gérer la ville durablement';
-const Q_LANCEE = 'lancée en 2009 en application de la loi Grenelle 2';
 const Q_LABEL =
   'Le label ÉcoQuartier distingue et valorise des démarches de conception et de réalisation de quartiers qui respectent les principes du développement durable tout en s’adaptant aux caractéristiques de leurs territoires';
 const Q_PORTEURS =
@@ -63,7 +61,6 @@ const Q_VOLONTAIRE = 'Chercher à obtenir le label ÉcoQuartier est une démarch
 const Q_MODELE = "il ne propose pas de modèle d'ÉcoQuartier, il n'apporte pas de solution toute faite";
 
 const Q_CIRCULAIRE = 'Il s’agit de passer d’une société du tout jetable à un modèle économique plus circulaire';
-const Q_AGENDA = 'Les 17 objectifs de développement durable, et leurs 169 cibles forment le cœur de l’agenda 2030';
 
 // INSEE, ADEME, CNRTL.
 const Q_DURABLE =
@@ -80,7 +77,7 @@ const natureVille: Notion = {
   classe: 'CM2',
   id: 'gcm2-nature-ville',
   title: 'La nature en ville',
-  hint: 'Pense aux plantes et aux animaux : où peuvent-ils vivre et circuler dans la ville ?',
+  hint: 'Pense aux plantes, aux animaux et à l’eau : quelle place la ville leur laisse-t-elle ?',
   memo: [
     'En ville, on peut faire de la place à la nature : parcs, berges, arbres. C’est bon pour la **biodiversité**.',
     'La **trame verte et bleue** relie les milieux naturels : le vert sur la terre, le bleu dans l’eau. Un **corridor écologique** est un passage pour les espèces.',
@@ -131,7 +128,11 @@ const natureVille: Notion = {
         { label: 'des salles de cinéma', why: 'Le corridor écologique concerne les milieux naturels.' },
         { label: 'des prises électriques', why: 'Le mot « réseau » parle ici de nature, pas d’électricité.' },
       ],
-      gap: ['Les réservoirs de biodiversité sont reliés par des ', ' écologiques.', ['corridors', 'corridor']],
+      gap: [
+        'Les réservoirs de biodiversité sont reliés par des ',
+        ' écologiques.',
+        ['corridors', 'corridor', 'couloirs', 'couloir'],
+      ],
       quote: Q_CORRIDORS,
       explain: 'Les corridors écologiques relient les réservoirs de biodiversité entre eux.',
       src: TRAME,
@@ -147,7 +148,7 @@ const natureVille: Notion = {
       gap: [
         'En ville, la nature rafraîchit et limite les effets des ',
         ' quand l’eau déborde.',
-        ['inondations', 'inondation'],
+        ['inondations', 'inondation', 'crues', 'crue'],
       ],
       quote: Q_FRAIS,
       explain: 'La nature rafraîchit la ville et limite les effets des inondations.',
@@ -163,14 +164,18 @@ const natureVille: Notion = {
         },
         {
           label: 'tondre le plus souvent possible',
-          why: 'La source conseille au contraire de faucher tard.',
+          why: 'Le ministère conseille au contraire de faucher (couper l’herbe) plus tard.',
         },
         {
           label: 'ajouter des produits chimiques sur les plantes',
-          why: 'La source conseille d’arrêter les traitements chimiques.',
+          why: 'Le ministère conseille d’arrêter les traitements chimiques sur les plantes.',
         },
       ],
-      gap: ['Pour aider la biodiversité, on peut planter des essences ', '.', ['locales', 'locale', 'régionales']],
+      gap: [
+        'Pour aider la biodiversité, on peut planter des essences (espèces d’arbres) ',
+        '.',
+        ['locales', 'locale', 'régionales', 'de la région'],
+      ],
       quote: Q_GESTES,
       explain: 'Les « essences locales » sont les espèces d’arbres et de plantes de la région.',
       src: TRAME,
@@ -196,8 +201,9 @@ const natureVille: Notion = {
         { text: 'biodéchet', why: 'Un biodéchet est un reste de cuisine ou de jardin.' },
         { text: 'biologie', why: 'La biologie est la science du vivant, pas sa variété.' },
       ],
-      quote: Q_PLACE,
-      explain: 'Le programme parle du développement de la biodiversité dans la ville.',
+      quote: Q_VIVANT,
+      explain: 'La biodiversité, c’est la diversité du vivant.',
+      src: PLAN,
     },
     {
       q: 'La trame des rivières et des étangs porte le nom d’une couleur : laquelle ?',
@@ -215,7 +221,7 @@ const natureVille: Notion = {
       accepted: ['verte', 'vert', 'la trame verte', 'trame verte'],
       traps: [
         { text: 'bleue', why: 'La trame bleue concerne l’eau.' },
-        { text: 'marron', why: 'La source parle d’une trame verte, pas marron.' },
+        { text: 'marron', why: 'Le nom officiel est « trame verte », pas « trame marron ».' },
       ],
       quote: Q_VERTE,
       explain: 'Les milieux naturels de la terre forment la trame verte.',
@@ -287,7 +293,7 @@ const recycler: Notion = {
   hint: 'Pose-toi la question : l’objet est-il évité, utilisé encore, ou transformé ?',
   memo: [
     '**Recycler**, c’est traiter des déchets pour en faire un nouvel usage. Trier ne suffit pas : c’est le début.',
-    'Mieux vaut d’abord éviter le déchet, par exemple avec le **réemploi** : on donne ou on répare un objet.',
+    'Mieux vaut d’abord éviter le déchet, par exemple avec le **réemploi** : on donne ou on répare un objet. On sort ainsi de l’**économie linéaire** (extraire, fabriquer, consommer, jeter).',
     'Les **biodéchets** peuvent devenir du **compost**. Exemple : des épluchures nourrissent ensuite le jardin.',
   ],
   faits: [
@@ -315,7 +321,7 @@ const recycler: Notion = {
       gap: [
         'Dans un composteur, on met des déchets de cuisine, comme des ',
         ' de fruits et de légumes.',
-        ['épluchures', 'épluchure', 'pelures', 'pelure'],
+        ['épluchures', 'épluchure', 'pelures', 'pelure', 'peaux', 'restes'],
       ],
       quote: Q_COMPOSTER,
       explain: 'Épluchures, coquilles d’œuf et restes de repas vont au composteur.',
@@ -342,7 +348,11 @@ const recycler: Notion = {
         { label: 'seulement les jardiniers', why: 'Le tri concerne tout le monde, pas un seul métier.' },
         { label: 'personne', why: 'Le tri des biodéchets est généralisé.' },
       ],
-      gap: ['Le tri des biodéchets concerne les professionnels et les ', '.', ['particuliers', 'ménages']],
+      gap: [
+        'Le tri des biodéchets concerne les professionnels et les ',
+        '.',
+        ['particuliers', 'ménages', 'habitants', 'familles'],
+      ],
       quote: Q_TRI,
       explain: 'Le tri est généralisé : il concerne les professionnels et les particuliers.',
       src: BIO,
@@ -373,10 +383,10 @@ const recycler: Notion = {
     ['Composteur', 'Bac où des restes se transforment'],
     ['Déchets verts', 'Tontes de pelouse et feuilles mortes'],
   ],
-  ordre: ['éviter de produire le déchet', 'réutiliser', 'recycler', 'valoriser d’une autre façon'],
+  ordre: ['éviter de produire le déchet', 'réutiliser un déchet', 'recycler', 'valoriser d’une autre façon'],
   consigne: {
     prompt: 'Range ces choix face aux déchets, du premier à préférer au dernier.',
-    hint: 'Le meilleur déchet est celui que l’on ne produit pas.',
+    hint: 'Demande-toi, pour chaque choix : l’objet doit-il être beaucoup transformé ?',
     why: 'La loi donne un ordre de priorité : prévention, réutilisation, recyclage, puis valorisation.',
     fin: 'Le premier choix est',
     quote: Q_PRIORITE,
@@ -440,7 +450,7 @@ const recycler: Notion = {
       ],
     },
     {
-      title: 'Le vélo de Sami',
+      title: 'Le vélo trop petit',
       lines: [
         'Un enfant a un vélo devenu trop petit. Il roule encore bien.',
         'Sa famille le donne à une voisine plus jeune au lieu de le jeter.',
@@ -479,7 +489,7 @@ const ecoquartier: Notion = {
   classe: 'CM2',
   id: 'gcm2-ecoquartier',
   title: 'Habiter un écoquartier',
-  hint: 'Pense à un quartier : comment est-il conçu pour durer, et qui porte le projet ?',
+  hint: 'Pense à un quartier : qui le prépare, à quel endroit et dans quel but ?',
   memo: [
     'Un **écoquartier** est un quartier pensé, construit et géré pour le **développement durable**.',
     'Il peut être neuf ou rénové. Il n’y a pas de modèle unique : chaque projet s’adapte à son territoire.',
@@ -487,7 +497,7 @@ const ecoquartier: Notion = {
   ],
   faits: [
     {
-      q: 'La démarche ÉcoQuartier veut une nouvelle façon de concevoir, construire et gérer la ville…',
+      q: 'La démarche ÉcoQuartier veut une nouvelle façon de concevoir, construire et gérer la ville. Comment ?',
       a: 'durablement',
       wrong: [
         { label: 'le plus vite possible', why: 'La démarche vise la durée, pas la vitesse.' },
@@ -530,7 +540,7 @@ const ecoquartier: Notion = {
       gap: [
         'Un projet d’écoquartier peut être neuf ou concerner la ',
         ' de quartiers anciens.',
-        ['rénovation', 'réhabilitation'],
+        ['rénovation', 'réhabilitation', 'transformation'],
       ],
       quote: Q_PROJETS,
       explain: 'Projets neufs, renouvellement urbain et rénovations sont accompagnés.',
@@ -595,14 +605,14 @@ const ecoquartier: Notion = {
       src: QUARTIER,
     },
     {
-      q: 'En quelle année la démarche ÉcoQuartier a-t-elle été lancée ?',
-      accepted: ['2009', 'en 2009'],
+      q: 'Un écoquartier n’est pas toujours neuf. Comment dit-on qu’un quartier ancien est remis en bon état (le mot commence par « ré ») ?',
+      accepted: ['rénové', 'rénovation', 'la rénovation', 'une rénovation', 'réhabilité', 'réhabilitation'],
       traps: [
-        { text: '2030', why: '2030 est l’horizon de l’agenda 2030, pas le lancement.' },
-        { text: '1992', why: '1992 est l’année du Sommet de la Terre à Rio.' },
+        { text: 'réservé', why: 'Réservé veut dire gardé pour quelqu’un.' },
+        { text: 'recyclé', why: 'On recycle des déchets. Un quartier remis en bon état porte un autre nom.' },
       ],
-      quote: Q_LANCEE,
-      explain: 'La démarche a été lancée en 2009.',
+      quote: Q_PROJETS,
+      explain: 'La démarche accompagne aussi les rénovations de quartiers.',
       src: QUARTIER,
     },
     {
@@ -689,7 +699,7 @@ const transition: Notion = {
   memo: [
     'Une **transition** est un passage, souvent petit à petit, d’un état à un autre. Exemple : passer du tout jetable au réemploi.',
     'Le **développement durable** répond aux besoins d’aujourd’hui en pensant aux **générations** futures.',
-    'Des **acteurs** font des choix pour mieux habiter : habitants, communes, entreprises.',
+    'Il a trois **piliers** : l’économie, le social et l’écologie. Des **acteurs** font des choix pour mieux habiter : habitants, communes, entreprises.',
   ],
   faits: [
     {
@@ -795,7 +805,7 @@ const transition: Notion = {
     },
     {
       q: 'Quel adjectif complète « développement … » : répondre au présent sans compromettre l’avenir ?',
-      accepted: ['durable', 'développement durable'],
+      accepted: ['durable', 'soutenable', 'développement durable'],
       traps: [
         { text: 'rapide', why: 'La vitesse ne dit rien des générations futures.' },
         { text: 'urbain', why: 'Urbain veut dire « de la ville ».' },
@@ -805,15 +815,14 @@ const transition: Notion = {
       src: INSEE,
     },
     {
-      q: 'Combien l’agenda 2030 compte-t-il d’objectifs de développement durable ?',
-      accepted: ['17', 'dix-sept', '17 objectifs'],
+      q: 'Comment appelle-t-on les personnes ou les groupes qui font des choix pour un territoire (le mot commence par « act ») ?',
+      accepted: ['acteurs', 'les acteurs', 'des acteurs', 'acteur', 'un acteur'],
       traps: [
-        { text: '3', why: 'Trois est le nombre de piliers.' },
-        { text: '169', why: '169 est le nombre de cibles, plus précises que les objectifs.' },
+        { text: 'actions', why: 'Une action est ce que l’on fait. On demande qui agit.' },
+        { text: 'actualités', why: 'Les actualités sont les nouvelles du moment.' },
       ],
-      quote: Q_AGENDA,
-      explain: 'Il y a 17 objectifs et 169 cibles.',
-      src: ODD,
+      quote: Q_ACTEURS,
+      explain: 'Habitants, communes et entreprises sont des acteurs.',
     },
   ],
   docs: [

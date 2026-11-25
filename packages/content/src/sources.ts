@@ -1173,14 +1173,6 @@ export const SOURCES: readonly Source[] = [
     consultedOn: CONSULTED_GE_CM2,
   },
   {
-    id: 'ecologie-odd',
-    title: '« Les objectifs de développement durable (ODD) »',
-    publisher: 'Ministère chargé de la transition écologique (ecologie.gouv.fr)',
-    url: 'https://www.ecologie.gouv.fr/politiques-publiques/objectifs-developpement-durable-odd',
-    textDate: '2025-01-24',
-    consultedOn: CONSULTED_GE_CM2,
-  },
-  {
     id: 'insee-developpement-durable',
     title: '« Développement durable » (définition)',
     publisher: 'INSEE',
