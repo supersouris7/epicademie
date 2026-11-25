@@ -8,6 +8,7 @@ import { FCM1_ORTHOGRAPHE_MOTS } from './orthographe-mots.ts';
 import { FCM1_PHRASES } from './phrases.ts';
 import { FCM1_PRESENT } from './present.ts';
 import { FCM1_TEMPS } from './temps.ts';
+import { FCM2_NATURE } from './nature-cm2.ts';
 import { FCM1_VERBE_SUJET } from './verbe-sujet.ts';
 import { FCM1_VOCABULAIRE } from './vocabulaire.ts';
 import { FCM2_GROUPE_NOMINAL } from './groupe-nominal-cm2.ts';
@@ -110,6 +111,14 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'grammaire',
     title: 'Analyser la phrase simple',
     skills: FCM2_PHRASE_SIMPLE,
+  },
+  {
+    id: 'fcm2-nature-mots',
+    subject: 'francais',
+    grade: 'cm2',
+    domain: 'grammaire',
+    title: 'Nature des mots',
+    skills: FCM2_NATURE,
   },
   {
     id: 'fcm2-groupe-nominal',
