@@ -1,4 +1,4 @@
-import type { Chapter, Level, Skill } from '../types.ts';
+import type { Chapter, Skill } from '../types.ts';
 import { choice, trueFalse } from '../build.ts';
 import { SKILLS as LIEUX } from './lieux.ts';
 import { SKILLS as VIE } from './vie.ts';
@@ -10,7 +10,8 @@ import { SKILLS as FAIBLE_DENSITE } from './faible-densite.ts';
 import { SKILLS as LITTORAUX } from './littoraux.ts';
 import { SKILLS as REPERES } from './reperes.ts';
 import { SKILLS as MONDE_HABITE } from './monde-habite.ts';
-import { DEPARTEMENTS, GEO_FETCHED_ON, PAYS_UE, REGIONS } from './donnees.generated.ts';
+import { SKILLS as REPERES_MONDE } from './reperes-monde.ts';
+import { GEO_FETCHED_ON, PAYS_UE, REGIONS } from './donnees.generated.ts';
 
 /**
  * Géographie (docs/adr/0024-contenus-hors-maths.md) : repères sur la France et l'Union
@@ -59,45 +60,6 @@ const regions: Skill = {
       traps,
       hint: 'C’est souvent la plus grande ville de la région.',
       steps: [`La région ${r.name} a pour chef-lieu ${r.chefLieu}.`, `Réponse : **${r.chefLieu}**.`],
-    };
-  },
-};
-
-/** Numéros des départements : de l'Ain (01) au Val-d'Oise (95), puis l'outre-mer (971 à 974 et 976). */
-const departmentsFor = (level: Level) =>
-  level === 1 ? DEPARTEMENTS.filter((d) => /^\d+$/.test(d.code) && Number(d.code) <= 30) : DEPARTEMENTS;
-
-const prefectures: Skill = {
-  id: 'g6-prefectures',
-  title: 'Les préfectures',
-  lesson: {
-    memo: ['Chaque département a une préfecture (son chef-lieu) : Gironde → Bordeaux, Rhône → Lyon, Nord → Lille.'],
-    source: `Géographie : les départements et leurs préfectures. ${INSEE}.`,
-  },
-  generate: (rng, level) => {
-    const pool = departmentsFor(level);
-    const d = rng.pick(pool);
-    const { answer, traps } = choice(
-      rng,
-      d.prefecture,
-      others(
-        rng,
-        pool.filter((o) => o.prefecture !== d.prefecture),
-        d,
-      ).map((o) => ({
-        label: o.prefecture,
-        why: `${o.prefecture} est la préfecture du département ${o.name}.`,
-      })),
-    );
-    return {
-      prompt: `Quelle est la préfecture du département **${d.name}** (${d.code}) ?`,
-      answer,
-      traps,
-      hint: 'La préfecture est le chef-lieu du département.',
-      steps: [
-        `Le département ${d.name} (${d.code}) a pour préfecture ${d.prefecture}.`,
-        `Réponse : **${d.prefecture}**.`,
-      ],
     };
   },
 };
@@ -184,6 +146,6 @@ export const GEOGRAPHIE_CHAPTERS: readonly Chapter[] = [
   chapter('g6-faible-densite', '6e', 'Habiter un espace de faible densité', FAIBLE_DENSITE),
   chapter('g6-littoraux', '6e', 'Habiter les littoraux', LITTORAUX),
   chapter('g6-monde-habite', '6e', 'Le monde habité', MONDE_HABITE),
-  chapter('g6-prefectures', '6e', 'Les préfectures', [prefectures]),
+  chapter('g6-prefectures', '6e', 'Repères : la France et le monde', REPERES_MONDE),
   chapter('g3-union-europeenne', '3e', 'L’Union européenne', [euCapitals, euro]),
 ];
