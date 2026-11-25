@@ -23,4 +23,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'em6-laicite', version: 1, lot: 'em-6e-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'em6-institutions-proximite', version: 1, lot: 'em-6e-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'em6-droits-enfant', version: 1, lot: 'em-6e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'em6-vie-privee-en-ligne', version: 1, lot: 'em-6e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'em6-droit-intimite', version: 1, lot: 'em-6e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'em6-donnees-personnelles', version: 1, lot: 'em-6e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'em6-harcelement', version: 1, lot: 'em-6e-02', date: '2026-11-25', verdict: 'ok' },
 ];
