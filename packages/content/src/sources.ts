@@ -54,15 +54,6 @@ const CONSULTED = '2026-11-24';
 /** Textes relevés pour le lot ge-cm2-01 (copies d’archive web.archive.org des pages officielles). */
 const CONSULTED_GE_CM2 = '2026-11-25';
 
-const tlfi = (id: string, mot: string, chemin: string = id): Source => ({
-  id: `cnrtl-${id}`,
-  title: `Trésor de la langue française informatisé, article « ${mot} »`,
-  publisher: 'CNRTL (CNRS, ATILF)',
-  url: `https://www.cnrtl.fr/definition/${chemin}`,
-  textDate: '2026',
-  consultedOn: CONSULTED_GE_CM2,
-});
-
 /** Article du Trésor de la langue française informatisé (CNRTL). */
 const tlfi = (id: string, word: string, path: string): Source => ({
   id: `cnrtl-${id}`,
@@ -1040,18 +1031,18 @@ export const SOURCES: readonly Source[] = [
     textDate: '2026',
     consultedOn: CONSULTED_GE_CM2,
   },
-  tlfi('trajet', 'trajet'),
-  tlfi('gare', 'gare'),
-  tlfi('autoroute', 'autoroute'),
-  tlfi('aeroport', 'aéroport'),
-  tlfi('port', 'port'),
-  tlfi('paquebot', 'paquebot'),
-  tlfi('vaporetto', 'vaporetto'),
-  tlfi('autobus', 'autobus'),
-  tlfi('tramway', 'tramway'),
+  tlfi('trajet', 'trajet', 'trajet'),
+  tlfi('gare', 'gare', 'gare'),
+  tlfi('autoroute', 'autoroute', 'autoroute'),
+  tlfi('aeroport', 'aéroport', 'aeroport'),
+  tlfi('port', 'port', 'port'),
+  tlfi('paquebot', 'paquebot', 'paquebot'),
+  tlfi('vaporetto', 'vaporetto', 'vaporetto'),
+  tlfi('autobus', 'autobus', 'autobus'),
+  tlfi('tramway', 'tramway', 'tramway'),
   tlfi('telepherique', 'téléphérique', 't%C3%A9l%C3%A9ph%C3%A9rique'),
-  tlfi('long-courrier', 'long-courrier'),
-  tlfi('transatlantique', 'transatlantique'),
+  tlfi('long-courrier', 'long-courrier', 'long-courrier'),
+  tlfi('transatlantique', 'transatlantique', 'transatlantique'),
 ];
 
 export const getSource = (id: string): Source | undefined => SOURCES.find((s) => s.id === id);
