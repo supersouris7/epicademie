@@ -624,9 +624,8 @@ const contacts: Notion = {
   hint: 'Demande-toi si le contact est pacifique (diplomatie, commerce, savoirs) ou guerrier (croisades, pillage), puis vérifie la date.',
   memo: [
     'Chrétientés et islam sont en contact autour de la Méditerranée, sillonnée par des marins, des guerriers et des marchands. Ces contacts peuvent être pacifiques ou guerriers : il faut garder les deux en tête.',
-    'Contacts pacifiques : Charlemagne noue des relations **diplomatiques** avec Haroun al-Rachid, calife de Bagdad ; à Tolède, des traducteurs aident au partage de l’héritage antique ; le commerce est d’abord dominé par Byzance, puis par les cités italiennes.',
-    'Contacts guerriers : les **croisades** (prise de Jérusalem en 1099). Les deux **chrétientés** s’écartent : **excommunication** mutuelle du pape et du patriarche en 1054, puis **sac** de Constantinople par les croisés en 1204.',
-    'À retenir aussi : la bataille dite de Poitiers (732 ou 733), l’école d’astronomie de Cordoue, les lettres échangées entre Saladin et Richard Cœur de Lion, et l’empereur byzantin Alexis Comnène, qui voit passer les chefs de la première croisade.',
+    'Contacts pacifiques : Charlemagne noue des relations **diplomatiques** avec Haroun al-Rachid, calife de Bagdad ; à Tolède, des traducteurs aident au partage de l’héritage antique ; Cordoue a son école d’astronomie ; Saladin et Richard Cœur de Lion échangent des lettres ; le commerce est d’abord dominé par Byzance, puis par les cités italiennes.',
+    'Contacts guerriers : la bataille dite de Poitiers (732 ou 733) ; les **croisades** : l’empereur byzantin Alexis Comnène voit passer les chefs de la première, qui prend Jérusalem en 1099. Les deux **chrétientés** s’écartent : **excommunication** mutuelle du pape et du patriarche en 1054, puis **sac** de Constantinople par les croisés en 1204.',
   ],
   faits: [
     {
