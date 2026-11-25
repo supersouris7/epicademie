@@ -25,7 +25,7 @@ interface Lieu {
 }
 
 /** Toucher une zone : les erreurs typiques nomment la zone touchée. */
-function toucher(
+export function toucher(
   rng: Rng,
   map: MapId,
   pool: readonly Lieu[],
@@ -53,7 +53,7 @@ function toucher(
 }
 
 /** Trois zones repérées A, B, C : quelle lettre montre la cible ? */
-function troisReperes(rng: Rng, map: MapId, pool: readonly Lieu[], hint: string): QuestionDraft {
+export function troisReperes(rng: Rng, map: MapId, pool: readonly Lieu[], hint: string): QuestionDraft {
   const lieux = rng.shuffle([...pool]).slice(0, 3);
   const reperes = lieux.map((l, i) => ({ ...l, label: 'ABC'.charAt(i) }));
   const target = rng.pick(reperes);
@@ -80,7 +80,7 @@ function troisReperes(rng: Rng, map: MapId, pool: readonly Lieu[], hint: string)
 }
 
 /** Une zone repérée A : la nommer parmi `n` propositions. */
-function repereA(
+export function repereA(
   rng: Rng,
   map: MapId,
   { pool, n, quoi }: { readonly pool: readonly string[]; readonly n: number; readonly quoi: string },
@@ -128,7 +128,7 @@ const dep = (code: string): Departement => {
 };
 
 /** Saisie d’un nom : avec ou sans traits d’union et accents (la notion ne porte pas sur l’orthographe). */
-const ecritures = (name: string): string[] => {
+export const ecritures = (name: string): string[] => {
   const sansAccent = name.normalize('NFD').replace(/\p{M}/gu, '');
   return [...new Set([name, sansAccent].flatMap((n) => [n, n.replaceAll('-', ' ')]))];
 };

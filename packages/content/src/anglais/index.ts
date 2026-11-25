@@ -2,6 +2,7 @@ import type { Chapter, Level, Skill } from '../types.ts';
 import { choice } from '../build.ts';
 import { IRREGULAR_VERBS, regularised, verbsFor } from './verbs.ts';
 import { ENGLISH_GRAMMAR_CHAPTERS, REGULAR_PAST_SKILL } from './grammaire.ts';
+import { ENGLISH_PRESENT_SIMPLE_CHAPTER } from './present-simple.ts';
 import { ENGLISH_PRESENTATION_CHAPTER } from './presentation.ts';
 import { ENGLISH_BE_CHAPTERS } from './be.ts';
 import { ENGLISH_TIME_CHAPTER } from './temps.ts';
@@ -129,6 +130,7 @@ const sentence: Skill = {
 
 export const ANGLAIS_CHAPTERS: readonly Chapter[] = [
   ...ENGLISH_GRAMMAR_CHAPTERS.filter((c) => ['cm1', '6e'].includes(c.grade)),
+  ENGLISH_PRESENT_SIMPLE_CHAPTER,
   ENGLISH_PRESENTATION_CHAPTER,
   ...ENGLISH_BE_CHAPTERS,
   ENGLISH_TIME_CHAPTER,

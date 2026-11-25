@@ -62,4 +62,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'acm2-how-old-many', version: 1, lot: 'an-cm2-05', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'acm2-can-you', version: 1, lot: 'an-cm2-05', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'acm2-do-you', version: 1, lot: 'an-cm2-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'a6-present-affirmatif', version: 1, lot: 'an-6e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'a6-present-3e-personne', version: 2, lot: 'an-6e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'a6-present-negation', version: 1, lot: 'an-6e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'a6-present-questions', version: 1, lot: 'an-6e-01', date: '2026-11-25', verdict: 'ok' },
 ];
