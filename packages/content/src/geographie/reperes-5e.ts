@@ -3,7 +3,6 @@ import type { Rng } from '../rng.ts';
 import { choice } from '../build.ts';
 import { zoneName } from '../cartes.ts';
 import { notion, type Fait, type Libre, type Notion } from './kit.ts';
-import { troisReperes } from './reperes.ts';
 
 /**
  * Cinquième, « Repères de 5e » (lot ge-5e-04) : lire les cartes, situer les grands foyers de population et les
@@ -96,24 +95,17 @@ interface Lieu {
 }
 
 /**
- * Question de carte sur un lieu cité par la source : continent à choisir (niveaux 1 et 2), à toucher (3 et 4), à
- * reconnaître parmi trois repères (5). `pools` : lieux du niveau 3 puis lieux du niveau 4.
+ * Question de carte sur un lieu cité par la source : continent à choisir (niveaux 1 et 2), à toucher (3 et 4) ; le
+ * niveau 5 reste sur les textes à lire. `pools` : lieux du niveau 3 puis lieux du niveau 4.
  */
 const carteLieux =
   (pools: readonly [readonly Lieu[], readonly Lieu[]], sujet: string) =>
-  (rng: Rng, level: Level): QuestionDraft => {
+  (rng: Rng, level: Level): QuestionDraft | undefined => {
+    if (level === 5) return undefined;
     const hint = 'Retrouve d’abord le pays ou la région citée, puis son continent sur le planisphère.';
     const pool = level <= 2 ? [...pools[0], ...pools[1]] : level === 4 ? pools[1] : pools[0];
     const lieu = rng.pick(pool);
     const cible = (l: Lieu) => `le continent ${sujet} « ${l.nom} »`;
-    if (level === 5) {
-      const tous = [...pools[0], ...pools[1]];
-      const parContinent = [...new Set(tous.map((l) => l.zone))].map((zone) => {
-        const l = rng.pick(tous.filter((x) => x.zone === zone));
-        return { zone, cible: cible(l) };
-      });
-      return troisReperes(rng, 'monde', parContinent, hint);
-    }
     const autres = rng.shuffle(CONTINENTS.filter((c) => c !== lieu.zone));
     const why = (z: string) => `Tu as choisi ${continent(z)} : « ${lieu.nom} » se trouve sur un autre continent.`;
     const steps = [
@@ -837,11 +829,14 @@ const R_OPEP =
 const R_SIEGE = 'Son siège est à Vienne en Autriche';
 const R_RESERVE =
   'Les réserves sont, au sens géologique, l’état des ressources à un moment donné, et qui sont économiquement et techniquement récupérables';
-const R_ANDES =
-  "les principaux gisements se trouvent dans l’Altiplano de la Cordillère des Andes, principalement au Chili (premier producteur mondial), en Argentine et en Bolivie (lac salé d'Uyuni)";
+const R_ANDES = 'les principaux gisements se trouvent dans l’Altiplano de la Cordillère des Andes';
 const R_BATTERIES = 'il est surtout indispensable dans les batteries électriques';
 const R_MALEDICTION =
   'La R.D.C. et ses diamants, la Russie (ou l’Alaska) et ses hydrocarbures, le Tchad ou le Niger et leur uranium, la Nouvelle-Calédonie et son nickel';
+const R_MALEDICTION_DEF = 'désigne l’ensemble des retombées négatives liées à leur exploitation';
+const R_ACCAPAREMENT = 'accaparement par un groupe social';
+const R_AUTRES_SECTEURS =
+  'le secteur de l’énergie peut occuper une place si considérable dans les recettes fiscales et l’ensemble des exportations d’un État que cette manne entrave le développement des autres secteurs d’activités';
 const R_AQUACULTURE =
   'L’Asie produit les neuf dixièmes de la production aquacole, avec la Chine comme premier producteur';
 const R_ZEE =
@@ -1142,28 +1137,41 @@ const ressources: Notion = {
     {
       title: 'Une richesse qui ne profite pas à tous',
       lines: [
-        'Un pays vend beaucoup d’une matière première très recherchée.',
-        'Les revenus profitent à un petit groupe et les autres secteurs de l’économie reculent.',
-        'Un géographe y voit un exemple de « malédiction des ressources ».',
+        'Dans un pays imaginaire, le pétrole apporte presque tout l’argent des ventes à l’étranger.',
+        'Un petit groupe de personnes garde la plus grande partie de cet argent.',
+        'Les usines et les fermes du pays sont délaissées : leur activité recule.',
       ],
       qs: [
         question(
-          'Quel pays la source cite-t-elle pour ses diamants ?',
-          'la République démocratique du Congo',
+          'Comment les géographes appellent-ils les effets négatifs liés à l’exploitation d’une telle richesse ?',
+          'la malédiction des ressources',
           [
-            ['l’Islande', 'L’Islande ne fait pas partie des exemples étudiés pour des diamants.'],
-            ['la France', 'La France ne fait pas partie des exemples étudiés pour des diamants.'],
+            ['la transition démographique', 'La transition démographique concerne la population.'],
+            ['le développement durable', 'Le texte décrit au contraire des effets négatifs.'],
           ],
-          preuve(MALEDICTION, R_MALEDICTION, 'La R.D.C. est citée pour ses diamants.'),
+          preuve(MALEDICTION, R_MALEDICTION_DEF, 'On parle de « malédiction des ressources ».'),
         ),
         question(
-          'Quel couple pays et ressource la source cite-t-elle aussi ?',
-          'le Niger et l’uranium',
+          'À qui profite surtout l’argent du pétrole dans ce pays ?',
+          'à un petit groupe de personnes',
           [
-            ['la Belgique et le lithium', 'Le lithium est surtout associé à l’Altiplano des Andes.'],
-            ['le Japon et le pétrole', 'Le Japon ne figure pas parmi les exemples de cette « malédiction ».'],
+            ['à tous les habitants à parts égales', 'Le texte dit que le partage est très inégal.'],
+            ['surtout aux familles des fermes', 'Les fermes sont délaissées : leur activité recule.'],
           ],
-          preuve(MALEDICTION, R_MALEDICTION, 'La source cite le Tchad ou le Niger pour leur uranium.'),
+          preuve(MALEDICTION, R_ACCAPAREMENT, 'Un groupe peut s’emparer de la richesse tirée d’une ressource.'),
+        ),
+        question(
+          'Que deviennent les autres secteurs de l’économie, comme les usines et les fermes ?',
+          'leur activité recule',
+          [
+            ['ils se développent aussi vite que le pétrole', 'Le texte dit qu’ils sont délaissés.'],
+            ['ils remplacent le pétrole dans les ventes à l’étranger', 'Le pétrole apporte presque tout cet argent.'],
+          ],
+          preuve(
+            MALEDICTION,
+            R_AUTRES_SECTEURS,
+            'Quand une ressource prend toute la place, les autres activités peinent à se développer.',
+          ),
         ),
       ],
     },

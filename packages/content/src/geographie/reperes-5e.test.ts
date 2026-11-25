@@ -65,7 +65,7 @@ describe('géographie 5e — Repères de 5e', () => {
     }
   });
 
-  it('interroge sur la carte les foyers et les ressources : toucher en 3 et 4, repères en 5', () => {
+  it('interroge sur la carte les foyers et les ressources : toucher en 3 et 4, textes seuls en 5', () => {
     for (const id of ['g5-foyers-population', 'g5-reperes-ressources']) {
       const cibles = (level: Level) =>
         new Set(
@@ -77,14 +77,16 @@ describe('géographie 5e — Repères de 5e', () => {
       expect(cibles(4).size, id).toBeGreaterThan(1);
       expect([...cibles(4)].filter((c) => cibles(3).has(c))).toEqual([]);
       expect(
-        questions(id, 5).some((q) => q.figure?.kind === 'map'),
-        id,
-      ).toBe(true);
-      expect(
-        questions(id, 5).some((q) => q.figure?.kind === 'document'),
+        questions(id, 5).every((q) => q.figure?.kind === 'document'),
         id,
       ).toBe(true);
     }
+  });
+
+  it('ne présente rien de faux sur le lithium et pose des questions auxquelles le texte répond', () => {
+    const ressources = NOTIONS.find((n) => n.id === 'g5-reperes-ressources')!;
+    expect(JSON.stringify(ressources)).not.toContain('premier producteur mondial');
+    for (const d of ressources.docs) for (const q of d.qs) expect(q.q).not.toMatch(/la source/i);
   });
 
   it('montre sur le planisphère un figuré repéré par une lettre aux niveaux 1 et 2 seulement', () => {
