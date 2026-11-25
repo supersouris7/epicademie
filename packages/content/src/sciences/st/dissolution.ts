@@ -95,12 +95,12 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   if (rng.int(0, 1) === 0) {
     const solide = rng.pick(['Le sel', 'Le sucre']);
     return {
-      prompt: `Complète les deux phrases sur ${solide.toLowerCase()}.`,
+      prompt: `Tu as remué ${solide.toLowerCase()} dans de l’eau : tu ne vois plus de grains. Complète les deux phrases.`,
       answer: {
         kind: 'cloze',
         parts: [`${solide} se `, ' dans l’eau. Pour le retrouver, on laisse l’eau s’', '.'],
         blanks: [
-          { mode: 'list', options: ['dissout', 'évapore', 'dépose'], correct: 0 },
+          { mode: 'list', options: ['dissout', 'transforme en vapeur', 'dépose'], correct: 0 },
           { mode: 'text', accepted: ['évaporer', 'evaporer'] },
         ],
       },

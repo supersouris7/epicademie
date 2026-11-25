@@ -132,7 +132,8 @@ describe('sciences : « Matériaux et mélanges » (CM2) et « Signal et informa
   it('dissolution : premier trou en liste, étape de l’assiette annoncée', () => {
     const trous = tirages(dissolution, 3).flatMap((q) => (q.answer.kind === 'cloze' ? [q.answer.blanks[0]] : []));
     expect(trous.length).toBeGreaterThan(0);
-    for (const b of trous) expect(b).toMatchObject({ mode: 'list', options: ['dissout', 'évapore', 'dépose'] });
+    for (const b of trous)
+      expect(b).toMatchObject({ mode: 'list', options: ['dissout', 'transforme en vapeur', 'dépose'] });
     expect(JSON.stringify(tirages(dissolution, 5))).toContain('s’évaporer dans une assiette');
   });
 

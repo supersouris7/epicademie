@@ -22,4 +22,4 @@
 **couverte** (5 niveaux, sources et relecture enregistrées).
 
 Écart au plan : le chapitre « Signal et information » (colonne « fin de sixième » du programme, hors lots ci-dessus) est
-livré avec le lot `st-cm2-01`, en relecture.
+livré avec le lot `st-cm2-01` (couvert, relu).

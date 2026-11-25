@@ -237,12 +237,12 @@ interface Mission {
 
 const MISSIONS: readonly Mission[] = [
   {
-    titre: 'Mission : nettoyer l’eau d’un seau',
+    titre: 'Mission : l’expérience du seau',
     lines: [
-      'Au départ, on a de la terre sèche mêlée à de gros cailloux, et un seau d’eau.',
+      'On a de la terre sèche mêlée à de gros cailloux, et un seau d’eau propre. But : retrouver de l’eau claire.',
       'Étape 1 : on passe la terre sèche sur une grille à trous, qui retient les gros cailloux.',
-      'Étape 2 : on verse la terre fine dans le seau, puis on attend, sans toucher, qu’elle se dépose.',
-      'Étape 3 : on verse le reste d’eau trouble à travers un papier.',
+      'Étape 2 : on verse la terre fine dans le seau, on remue, puis on attend, sans toucher, qu’elle se dépose.',
+      'Étape 3 : on verse l’eau du dessus, encore un peu trouble, à travers un papier filtre.',
     ],
     etapes: [
       ['Pour retirer les cailloux', 'tamisage'],
