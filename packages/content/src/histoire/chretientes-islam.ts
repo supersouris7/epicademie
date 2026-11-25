@@ -696,7 +696,7 @@ const contacts: Notion = {
       ],
       gap: [
         'La ',
-        ', sillonnée par des marins, des guerriers et des marchands, relie ces mondes.',
+        ', sillonnée par des marins, des guerriers et des marchands, relie le monde chrétien et le monde musulman.',
         ['Méditerranée', 'mer Méditerranée', 'Mediterranee', 'mer Mediterranee'],
       ],
       explain: 'La Méditerranée relie les trois mondes : on y fait la guerre, du commerce et des échanges de savoirs.',
@@ -808,7 +808,7 @@ const contacts: Notion = {
     },
     {
       ...P.mediterranee,
-      q: 'Quelle mer, sillonnée par des marins, des guerriers et des marchands, relie ces mondes ? (un nom)',
+      q: 'Quelle mer, sillonnée par des marins, des guerriers et des marchands, relie le monde chrétien et le monde musulman ? (un nom)',
       accepted: [
         'Méditerranée',
         'la Méditerranée',
