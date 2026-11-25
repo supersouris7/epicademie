@@ -58,4 +58,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'acm2-nourriture', version: 1, lot: 'an-cm2-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'acm2-some', version: 1, lot: 'an-cm2-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'acm2-id-like', version: 1, lot: 'an-cm2-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'acm2-mots-interrogatifs', version: 1, lot: 'an-cm2-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'acm2-how-old-many', version: 1, lot: 'an-cm2-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'acm2-can-you', version: 1, lot: 'an-cm2-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'acm2-do-you', version: 1, lot: 'an-cm2-05', date: '2026-11-25', verdict: 'ok' },
 ];

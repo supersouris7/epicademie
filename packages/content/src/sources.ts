@@ -1361,6 +1361,22 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-25',
   },
   {
+    id: 'bc-questions-negatives',
+    title: 'LearnEnglish, English grammar reference : Questions and negatives',
+    publisher: 'British Council',
+    url: 'https://learnenglish.britishcouncil.org/free-resources/grammar/english-grammar-reference/questions-negatives',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'bc-quantifiers',
+    title: 'LearnEnglish, English grammar reference : Quantifiers',
+    publisher: 'British Council',
+    url: 'https://learnenglish.britishcouncil.org/free-resources/grammar/english-grammar-reference/quantifiers',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
     id: 'bck-have-got',
     title: 'LearnEnglish Kids, Grammar practice : Have got',
     publisher: 'British Council',
