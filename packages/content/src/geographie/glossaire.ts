@@ -879,4 +879,18 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
       'Le classement des communes par l’INSEE en trois catégories : densément peuplées, de densité intermédiaire, rurales.',
     example: 'Un petit village isolé y est souvent classé commune rurale.',
   },
+  {
+    id: 'approvisionner',
+    word: 'approvisionner',
+    forms: ['approvisionner', 'approvisionnent', 'approvisionnement'],
+    definition: 'Fournir à un lieu ou à des personnes les produits dont ils ont besoin.',
+    example: 'Des fermes approvisionnent la ville en légumes.',
+  },
+  {
+    id: 'artificialise',
+    word: 'artificialisé',
+    forms: ['artificialisé', 'artificialisés', 'artificialisée', 'artificialisées'],
+    definition: 'Un sol artificialisé a été transformé, par exemple couvert de bâtiments ou de routes.',
+    example: 'Un parking goudronné.',
+  },
 ];

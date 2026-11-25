@@ -863,7 +863,10 @@ const habiterRural: Notion = {
           label: 'ils n’ont aucun échange avec eux',
           why: 'Ces espaces agricoles sont intégrés aux espaces urbanisés.',
         },
-        { label: 'ils les remplacent par des forêts', why: 'La ressource parle d’un approvisionnement des villes.' },
+        {
+          label: 'ils les remplacent par des forêts',
+          why: 'Le lien décrit est autre : ces campagnes fournissent des produits aux villes.',
+        },
         {
           label: 'ils leur interdisent de s’étendre',
           why: 'Le lien décrit est l’approvisionnement, pas une interdiction.',
