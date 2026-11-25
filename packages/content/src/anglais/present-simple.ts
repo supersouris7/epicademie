@@ -761,8 +761,7 @@ const questions: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'Question au présent simple : **Do** ou **Does**, puis le **sujet**, puis la **base verbale** : Does he speak English?',
-      '**Does** va avec he, she, it ; **Do** avec les autres sujets.',
+      'Question : **Do** (ou **Does** avec he, she, it), puis le **sujet**, puis la **base verbale** : Does he speak English?',
       'La **réponse courte** reprend le même petit mot : Yes, he does. No, I don’t.',
       'Un **mot interrogatif** (where, what time) se place avant do ou does : Where do you live?',
     ],
