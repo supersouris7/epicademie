@@ -58,7 +58,10 @@ function heardSmall(rng: Rng): QuestionDraft {
     answer,
     traps,
     hint: 'Récite tout bas « one, two, three… » et compte sur tes doigts.',
-    steps: [`Le mot est « ${numberWord(n)} » : on compte jusqu’à lui.`, `Réponse : **${n}**`],
+    steps: [
+      `« ${numberWord(n)} » veut dire ${n} : en comptant depuis « one », on arrive à ce mot.`,
+      `Réponse : **${n}**`,
+    ],
   };
 }
 
@@ -118,6 +121,10 @@ const digitTraps = (n: number) => {
       ? [{ text: String(swapped), why: 'Tu as inversé les chiffres : d’abord la dizaine, puis l’unité.' }]
       : []),
     { text: String(near), why: `Vérifie la dizaine et la fin du mot : « ${numberWord(n)} » veut dire ${n}.` },
+    {
+      text: String(Math.floor(n / 10)),
+      why: `Il faut deux chiffres : « ${numberWord(n)} » veut dire ${n}.`,
+    },
   ];
 };
 
@@ -130,7 +137,7 @@ function heardDigits(rng: Rng): QuestionDraft {
       audio: sound(m.text(numberWord(m.n))),
       answer: { kind: 'text', accepted: [String(m.n)] },
       traps: digitTraps(m.n),
-      hint: 'Repère le nombre dans la phrase : la dizaine vient en premier, puis l’unité.',
+      hint: 'Repère le nombre dans la phrase, puis écoute bien sa fin : -teen, -ty, ou un deuxième petit nombre ?',
       steps: ['On repère le mot-nombre dans la phrase.', parts(m.n), `Réponse : **${m.n}**`],
     };
   }
@@ -158,8 +165,12 @@ function heardWords(rng: Rng): QuestionDraft {
     traps: [
       { text: word.replace('-', ''), why: 'Entre la dizaine et l’unité, on met un tiret (ou on sépare les mots).' },
       { text: other, why: `« ${other} » n’est pas le même nombre : on veut ${n}.` },
+      { text: String(n), why: 'On demande le nombre en lettres, en anglais, pas en chiffres.' },
+      ...(word.startsWith('forty')
+        ? [{ text: word.replace('forty', 'fourty'), why: '« forty » s’écrit sans « u », même si « four » en a un.' }]
+        : []),
     ].filter((t) => !spellings(word).includes(t.text)),
-    hint: 'Écris d’abord la dizaine, puis l’unité. Attention à la fin : -teen ou -ty ?',
+    hint: 'De 13 à 19, le mot finit par -teen. Après 20, écris la dizaine (-ty), puis l’unité s’il y en a une.',
     steps: [`On cherche le mot anglais pour ${n}.`, parts(n), `Réponse : **${word}**`],
   };
 }
@@ -173,8 +184,13 @@ function heardContext(rng: Rng): QuestionDraft {
   const cards = 15 + i * 7;
   const text = `Hello, I’m ${kid}. I’m ${numberWord(age)}. My house is number ${numberWord(house)}. I’ve got ${numberWord(cards)} cards.`;
   const asked = rng.pick([
-    { q: `Quel est le numéro de la maison ${de(kid)}`, n: house, other: cards },
-    { q: `Combien de cartes a ${kid}`, n: cards, other: house },
+    {
+      q: `Quel est le numéro de la maison ${de(kid)}`,
+      n: house,
+      other: cards,
+      clue: `My house is number ${numberWord(house)}.`,
+    },
+    { q: `Combien de cartes a ${kid}`, n: cards, other: house, clue: `I’ve got ${numberWord(cards)} cards.` },
   ]);
   const heard = flip(rng);
   return {
@@ -183,10 +199,10 @@ function heardContext(rng: Rng): QuestionDraft {
     answer: { kind: 'text', accepted: [String(asked.n)] },
     traps: [
       { text: String(asked.other), why: 'C’est un autre nombre du message : relis ou réécoute le mot juste à côté.' },
-      { text: String(age), why: `C’est l’âge ${de(kid)} : « How old are you? ».` },
+      { text: String(age), why: `C’est l’âge ${de(kid)} : il est dit dans « I’m ${numberWord(age)} ».` },
     ],
     hint: 'Il y a trois nombres. Cherche le mot qui dit de quoi on parle : « house » ou « cards » ?',
-    steps: ['On repère le nom de la chose demandée, puis le nombre à côté.', `Réponse : **${asked.n}**`],
+    steps: [`On cherche la phrase qui parle de la chose demandée : « ${asked.clue} »`, `Réponse : **${asked.n}**`],
   };
 }
 

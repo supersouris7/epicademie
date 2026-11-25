@@ -33,4 +33,5 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'acm1-can', version: 1, lot: 'an-cm1-05', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'acm1-sports-loisirs', version: 1, lot: 'an-cm1-05', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'acm1-animaux', version: 1, lot: 'an-cm1-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'acm1-nombres-entendus', version: 1, lot: 'an-cm1-06', date: '2026-11-25', verdict: 'ok' },
 ];
