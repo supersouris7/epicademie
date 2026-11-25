@@ -169,7 +169,7 @@ const prefectures: Notion = {
         ['le professeur', 'Il enseigne : il ne représente pas le gouvernement dans le département.'],
         [
           'le président du conseil départemental',
-          'Il est à la tête du conseil départemental : le représentant de l’État est le préfet.',
+          'Il dirige le conseil départemental, l’assemblée élue du département : le représentant de l’État est le préfet.',
         ],
       ),
       gap: ['Le haut fonctionnaire qui représente l’État dans le département est le ', '.', ['préfet', 'prefet']],
@@ -829,7 +829,11 @@ const fleuves: Notion = {
         'Yang Tsé',
         'Yang Tse',
         'Yang-Tsé',
+        'Yang-Tse',
         'Yang-Tsé-Kiang',
+        'Yang-Tse-Kiang',
+        'Yang Tsé Kiang',
+        'Yang Tse Kiang',
         'Yangtze',
         'Chang Jiang',
         'fleuve Bleu',
@@ -1011,17 +1015,27 @@ const carteMetropoles = (rng: Rng, level: Level): QuestionDraft | undefined => {
   // Une seule métropole par continent : les zones proposées restent distinctes.
   const parContinent = [...new Set(choisies.map((m) => m.continent))].map((zone) => {
     const m = rng.pick(choisies.filter((x) => x.continent === zone));
-    return { zone, cible: `le continent de la métropole ${de(m.nom)}` };
+    return { zone, cible: `le continent de la métropole ${de(m.nom)}`, ville: m };
   });
   const hint = 'Retrouve d’abord le pays de la métropole, puis son continent.';
   if (level === 5) return troisReperes(rng, 'monde', parContinent, hint);
-  return toucher(
+  const question = toucher(
     rng,
     'monde',
     parContinent,
     (l) => (level === 3 ? `Sur le planisphère, touche ${l.cible}.` : `Sans aide : localise ${l.cible}.`),
     hint,
   );
+  const lieu = parContinent.find((l) => question.answer.kind === 'zone' && l.zone === question.answer.zone);
+  if (!lieu) return question;
+  // Les métropoles du niveau 4 ne couvrent que deux continents : l’Europe fournit la seconde erreur expliquée.
+  const europe = { zone: 'europe', why: `Tu as touché : ${nomZone('europe')}. Cherche encore ${lieu.cible}.` };
+  const [debut, ...suite] = question.steps;
+  return {
+    ...question,
+    traps: level === 4 ? [...(question.traps ?? []), europe] : question.traps,
+    steps: [debut ?? '', `${lieu.ville.nom} est ${lieu.ville.pays}.`, ...suite],
+  };
 };
 
 const grandesMetropoles: Notion = {

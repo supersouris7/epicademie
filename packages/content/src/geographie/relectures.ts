@@ -43,4 +43,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'g6-densite', version: 1, lot: 'ge-6e-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'g6-vocabulaire-monde-habite', version: 1, lot: 'ge-6e-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'g6-continents-oceans', version: 1, lot: 'ge-6e-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g6-prefectures', version: 2, lot: 'ge-6e-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g6-fleuves-montagnes', version: 1, lot: 'ge-6e-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g6-grandes-metropoles', version: 1, lot: 'ge-6e-05', date: '2026-11-25', verdict: 'ok' },
 ];
