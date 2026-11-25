@@ -22,6 +22,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'Dans un solide, les molécules sont fortement liées les unes aux autres.',
   ),
   terme(
+    'cohesion',
+    'cohésion',
+    ['cohésion'],
+    'Ce qui retient les molécules les unes aux autres.',
+    'Dans un liquide, la cohésion entre les molécules est faible : le liquide coule.',
+  ),
+  terme(
     'fusion',
     'fusion',
     ['fusion'],

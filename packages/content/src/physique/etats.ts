@@ -12,7 +12,7 @@ const ETATS: readonly Etat[] = ['solide', 'liquide', 'gazeux'];
 const EXEMPLES: Record<Etat, readonly string[]> = {
   solide: ['un clou en fer', 'un glaçon', 'un morceau de bois', 'une pièce de monnaie'],
   liquide: ['de l’huile versée dans un verre', 'de l’eau du robinet', 'du lait dans une bouteille'],
-  gazeux: ['l’air enfermé dans un ballon', 'de la vapeur d’eau', 'le dioxygène d’une bouteille de plongée'],
+  gazeux: ['l’air enfermé dans un ballon', 'de la vapeur d’eau', 'l’air comprimé d’une bouteille de plongée'],
 };
 
 const PROPRIETE: Record<Etat, string> = {
@@ -141,7 +141,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
     answer,
     traps,
     hint: 'Cherche l’état de départ, puis l’état d’arrivée.',
-    steps: [`Ici, la matière passe ${trajet(c)}.`, `Ce passage s’appelle la ${c.nom} : **${maj(c.nom)}**.`],
+    steps: [`Ici, la matière passe ${trajet(c)}.`, `Ce passage s’appelle la **${c.nom}**.`],
     targetSeconds: 30,
   };
 };
@@ -169,7 +169,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     prompt: `Écris le nom du changement d’état : la matière passe ${trajet(c)}.`,
     answer,
     traps,
-    hint: 'Le nom ressemble souvent à l’état d’arrivée ou à une action : fondre, devenir solide, devenir vapeur…',
+    hint: 'Imagine un exemple du quotidien, puis cherche le nom qui correspond à ce passage dans ta leçon.',
     steps: [`Exemple : ${c.situations[0]}.`, `Réponse : **la ${c.nom}**.`],
     targetSeconds: 35,
   };
@@ -252,7 +252,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       : 'À l’échelle des molécules : leur cohésion est faible, le corps coule mais garde son volume. De quel état s’agit-il ?',
     answer,
     traps,
-    hint: 'Des molécules très liées empêchent le corps de se déformer.',
+    hint: 'Demande-toi si un corps dont les molécules sont ainsi liées peut couler ou garde sa forme.',
     steps: [
       'On relie le comportement des molécules à ce qu’on observe.',
       lies
@@ -307,7 +307,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       maj(etat),
       ETATS.filter((e) => e !== etat).map((e) => ({
         label: maj(e),
-        why: `Compare ${t} °C aux deux températures : sous ${tf} °C le corps est solide, au-dessus de ${te} °C il est gazeux.`,
+        why: `Compare ${t} °C aux deux températures : sous ${tf} °C le corps est solide, entre ${tf} °C et ${te} °C il est liquide, au-dessus de ${te} °C il est gazeux.`,
       })),
     );
     return {
@@ -377,6 +377,7 @@ export const etats: Skill = {
       'ebullition',
       'evaporation',
       'sublimation',
+      'soluble',
     ),
   },
   generate: (rng, level) => ([niveau1, niveau2, niveau3, niveau4, niveau5][level - 1] ?? niveau1)(rng),
