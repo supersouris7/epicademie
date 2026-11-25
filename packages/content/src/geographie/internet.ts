@@ -978,7 +978,7 @@ const usages: Notion = {
       explain: 'Se sentir près, c’est la proximité.',
     },
     {
-      q: 'Droits, devoirs, respect des autres en ligne : Internet pose des questions de … (un mot qui commence par c).',
+      q: 'Droits, devoirs, respect des autres en ligne : Internet pose des questions de … (un mot de la famille de « citoyen »).',
       accepted: ['citoyenneté', 'citoyennete', 'la citoyenneté', 'civisme'],
       traps: [
         { text: 'météo', why: 'La météo parle du temps qu’il fait.' },
