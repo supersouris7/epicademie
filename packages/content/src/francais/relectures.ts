@@ -82,4 +82,9 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm2-participe-etre', version: 1, lot: 'fr-cm2-05', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm2-participe-avoir-cod', version: 1, lot: 'fr-cm2-05', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm2-pluriels-feminins', version: 1, lot: 'fr-cm2-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-passe-simple-1er-groupe', version: 1, lot: 'fr-cm2-06', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-passe-simple-2e-groupe', version: 1, lot: 'fr-cm2-06', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-passe-simple-etre-avoir', version: 1, lot: 'fr-cm2-06', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-passe-simple-irreguliers', version: 1, lot: 'fr-cm2-06', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'fcm2-passe-simple-ou-imparfait', version: 1, lot: 'fr-cm2-06', date: '2026-11-25', verdict: 'ok' },
 ];
