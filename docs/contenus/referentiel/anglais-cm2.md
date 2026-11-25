@@ -19,8 +19,8 @@
 | Lot         | Chapitre                   | Notions                                                                                         | État actuel            |
 | ----------- | -------------------------- | ----------------------------------------------------------------------------------------------- | ---------------------- |
 | `an-cm2-01` | Le groupe nominal          | pluriel des noms ; a / an / the ; this / that ; adjectif avant le nom                           | couverte, en relecture |
-| `an-cm2-02` | Se situer                  | there is / there are ; prépositions de lieu ; la maison ; la ville                              | absente                |
-| `an-cm2-03` | La journée                 | présent simple (I, you) ; l'heure ; la routine ; always, sometimes, never                       | absente                |
+| `an-cm2-02` | Se situer                  | there is / there are ; prépositions de lieu ; la maison ; la ville                              | couverte, en relecture |
+| `an-cm2-03` | La journée                 | présent simple (I, you) ; l'heure ; la routine ; always, sometimes, never                       | couverte, en relecture |
 | `an-cm2-04` | École, nourriture, animaux | l'école ; la nourriture ; some ; les animaux ; I'd like                                         | absente                |
 | `an-cm2-05` | Poser des questions        | who, what, where, when ; how old, how many ; Do you…? Yes, I do ; Can you…?                     | absente                |
 | `an-cm2-06` | Écouter et comprendre      | l'heure entendue ; prix et dates ; dialogue court ; repères culturels (pays anglophones, fêtes) | couverte, en relecture |
