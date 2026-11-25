@@ -1,7 +1,7 @@
 import { choice, num, traps as numTraps } from '../build.ts';
 import { r } from '../rational.ts';
 import type { Rng } from '../rng.ts';
-import type { Level, QuestionDraft, Rich, Skill, Trap } from '../types.ts';
+import type { Level, QuestionDraft, Rich, Skill } from '../types.ts';
 import {
   ADJECTIFS_ANIMES,
   ADJECTIFS_GN,
@@ -35,7 +35,7 @@ import {
   type Regle,
   type SujetAccorde,
 } from './accords.donnees.ts';
-import { at, document, lowerFirst, pickN, same, textTrap } from './outils.ts';
+import { at, document, lowerFirst, pickN, textTraps } from './outils.ts';
 
 /**
  * Chapitre « Les accords » (CM1). Programme de français du cycle 3 (BO du 17 avril 2025),
@@ -45,18 +45,6 @@ const programme = (id: string) =>
   `Programme de français du cycle 3 (BO du 17 avril 2025), CM1 — « ${faitAccord(id).citation} »`;
 
 const maj = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
-/** Pièges écrits, sans doublon ni écriture qui serait une réponse juste. */
-function textTraps(accepted: readonly string[], list: readonly (readonly [string, Rich])[]): Trap[] {
-  const out: Trap[] = [];
-  const seen = [...accepted];
-  for (const [text, why] of list) {
-    if (seen.some((s) => same(s, text))) continue;
-    seen.push(text);
-    out.push(textTrap(text, why));
-  }
-  return out;
-}
 
 /** « Ligne 1 : [trou]. Ligne 2 : [trou]. » */
 const lignesATrous = (answers: readonly string[]) => ({
