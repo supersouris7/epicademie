@@ -733,6 +733,15 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-25',
   },
   {
+    id: 'eduscol-5e-occident-feodal',
+    title:
+      'Ressources d’accompagnement, histoire 5e, thème 2 « Société, Église et pouvoir politique dans l’occident féodal (XIe-XVe siècles) » (consulté via la copie d’archive web.archive.org)',
+    publisher: 'Éduscol',
+    url: 'https://cache.media.eduscol.education.fr/file/Histoire/82/5/C4_HIS_5_Th2_Societes,_Eglises_et_pouvoir_politique-DM_593825.pdf',
+    textDate: '2016-03',
+    consultedOn: '2026-11-25',
+  },
+  {
     id: 'francais-cycle3-2025',
     title: 'Programme de français du cycle 3 (CM1, CM2, 6e)',
     publisher: 'Ministère de l’Éducation nationale',
