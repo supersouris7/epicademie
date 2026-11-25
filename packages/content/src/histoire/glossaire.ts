@@ -572,4 +572,25 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Une personne ou un peuple qui sert de lien entre deux autres.',
     example: 'Des marchands intermédiaires relient Rome et la Chine.',
   },
+  {
+    id: 'senat',
+    word: 'Sénat',
+    forms: ['sénat', 'senat'],
+    definition: 'À Rome, l’assemblée qui réunit des hommes puissants, les sénateurs.',
+    example: 'Le Sénat donne à Octave le nom d’Auguste.',
+  },
+  {
+    id: 'forum',
+    word: 'forum',
+    forms: ['forum', 'forums'],
+    definition: 'La grande place d’une ville romaine, où l’on traite les affaires de la cité.',
+    example: 'Les habitants se retrouvent au forum.',
+  },
+  {
+    id: 'thermes',
+    word: 'thermes',
+    forms: ['thermes'],
+    definition: 'Les bains publics des Romains.',
+    example: 'Après le travail, on va aux thermes.',
+  },
 ];

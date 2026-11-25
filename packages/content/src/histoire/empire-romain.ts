@@ -15,9 +15,9 @@ const romanisation: Notion = {
   title: 'Conquêtes, paix romaine et romanisation',
   hint: 'Distingue les trois piliers de l’unité de l’empire : le pouvoir de l’empereur, la romanisation et le prestige de Rome.',
   memo: [
-    'Par l’enchaînement des conquêtes, Rome forme un vaste **empire** qui réunit des peuples et des cultures variés, répartis en **provinces**. En 27 avant J.-C., le Sénat donne à Octave le nom d’Auguste : il est le premier **empereur**.',
+    'Par l’enchaînement des conquêtes, Rome forme un vaste **empire** qui réunit des peuples et des cultures variés, répartis en **provinces**. En 27 avant J.-C., le **Sénat** donne à Octave le nom d’Auguste : il est le premier **empereur**.',
     'Aux Ier et IIe siècles, c’est la **paix romaine** (pax romana) : l’armée maintient l’ordre et protège les frontières. L’unité repose sur le pouvoir de l’empereur, sur le prestige de Rome, l’**Urbs**, et sur le **culte impérial**.',
-    'La **romanisation** est la diffusion du mode de vie et du modèle civique romains : forum, thermes, théâtres. La **citoyenneté** romaine s’étend peu à peu, jusqu’à l’édit de Caracalla (212), qui l’accorde à tous les hommes libres.',
+    'La **romanisation** est la diffusion du mode de vie et du modèle civique romains : **forum**, **thermes**, théâtres. La **citoyenneté** romaine s’étend peu à peu, jusqu’à l’édit de Caracalla (212), qui l’accorde à tous les hommes libres.',
   ],
   faits: [
     {
@@ -132,7 +132,7 @@ const romanisation: Notion = {
       gap: [
         'La paix romaine correspond aux Ier et ',
         ' siècles.',
-        ['IIe', '2e', 'IIème', '2ème', 'deuxième', 'deuxieme', 'second'],
+        ['IIe', '2e', 'IIème', '2ème', 'deuxième', 'deuxieme', 'second', 'II', '2'],
       ],
       explain: 'Aux Ier et IIe siècles, l’empire romain vit au temps de la pax romana.',
     },
@@ -169,7 +169,7 @@ const romanisation: Notion = {
     {
       ...P.auguste,
       q: 'Quel nom Octave porte-t-il à partir de 27 avant J.-C. ? (un nom)',
-      accepted: ['Auguste'],
+      accepted: ['Auguste', 'Augustus', 'Octave Auguste'],
       traps: [
         { text: 'César', why: 'Jules César est son père adoptif ; Octave, lui, devient Auguste.' },
         { text: 'Trajan', why: 'Trajan est un successeur d’Auguste, le premier empereur non italien.' },
@@ -192,7 +192,16 @@ const romanisation: Notion = {
     {
       ...P.culte,
       q: 'Quel culte, rendu à l’empereur, garantit surtout l’unité de l’empire ? (deux mots)',
-      accepted: ['culte impérial', 'le culte impérial', 'culte imperial', 'le culte imperial'],
+      accepted: [
+        'culte impérial',
+        'le culte impérial',
+        'culte imperial',
+        'le culte imperial',
+        'impérial',
+        'imperial',
+        'culte de l’empereur',
+        'le culte de l’empereur',
+      ],
       traps: [
         {
           text: 'christianisme',
@@ -368,7 +377,7 @@ const chretiens: Notion = {
       gap: [
         'En 380, l’édit de Thessalonique fait du christianisme la religion ',
         ' de l’Empire d’Orient.',
-        ['officielle', 'officielle et unique'],
+        ['officielle', 'officielle et unique', 'unique'],
       ],
       explain: 'Par l’édit de Thessalonique, Théodose Ier fait du christianisme la religion officielle et unique.',
     },
@@ -458,7 +467,7 @@ const chretiens: Notion = {
         'Paul est un Juif de culture grecque.',
         'Il voyage autour de la Méditerranée et écrit des lettres aux communautés qui suivent Jésus, appelé Christ.',
         'Il prêche aussi auprès de populations qui ne sont pas juives.',
-        'Arrêté, il fait valoir qu’il est citoyen romain.',
+        'Il n’hésite pas à faire valoir qu’il est citoyen romain.',
       ],
       qs: [
         {
@@ -473,7 +482,7 @@ const chretiens: Notion = {
         },
         {
           ...P.paulCitoyen,
-          q: 'Quel statut Paul fait-il valoir quand il est arrêté ?',
+          q: 'Quel statut Paul n’hésite-t-il pas à faire valoir ?',
           a: 'la citoyenneté romaine',
           wrong: [
             { label: 'le titre d’empereur', why: 'Paul n’est pas empereur.' },
@@ -486,8 +495,8 @@ const chretiens: Notion = {
     {
       title: 'Théodose Ier et l’évêque Ambroise',
       lines: [
-        'À Thessalonique, une émeute est durement réprimée sur ordre de l’empereur Théodose Ier.',
-        'Ambroise, évêque de Milan, exige que l’empereur fasse pénitence.',
+        'À Thessalonique, une émeute (une révolte dans la rue) est durement réprimée (écrasée) sur ordre de l’empereur Théodose Ier.',
+        'Ambroise, évêque de Milan, exige que l’empereur fasse pénitence (reconnaisse sa faute et demande pardon à Dieu).',
         'Théodose Ier s’incline et fait pénitence devant l’évêque.',
         'C’est le même empereur qui a fait du christianisme la religion officielle par l’édit de Thessalonique.',
       ],
@@ -580,7 +589,7 @@ const soie: Notion = {
       gap: [
         'Un commerce régulier entre Rome et la Chine existe depuis le ',
         ' siècle avant J.-C.',
-        ['IIe', '2e', 'IIème', '2ème', 'deuxième', 'deuxieme'],
+        ['IIe', '2e', 'IIème', '2ème', 'deuxième', 'deuxieme', 'second', 'II', '2'],
       ],
       explain: 'Le commerce régulier entre Rome et la Chine existe depuis le IIe siècle avant J.-C.',
     },
@@ -636,7 +645,11 @@ const soie: Notion = {
           why: 'Il existe un commerce régulier et quelques contacts directs, mais ils sont peu nombreux.',
         },
       ],
-      gap: ['Les contacts directs entre l’empire romain et la Chine sont peu ', '.', ['nombreux']],
+      gap: [
+        'Les contacts directs entre l’empire romain et la Chine sont peu ',
+        '.',
+        ['nombreux', 'fréquents', 'frequents'],
+      ],
       explain: 'Les contacts directs sont peu nombreux et surtout connus par des sources chinoises.',
     },
   ],
@@ -735,7 +748,7 @@ const soie: Notion = {
     {
       title: 'L’empire des Han',
       lines: [
-        'De 202 avant J.-C. à 220, la dynastie des Han gouverne la Chine.',
+        'De 202 avant J.-C. à 220, avec une interruption, la dynastie des Han gouverne la Chine.',
         'L’État est centralisé : il hérite de l’organisation de la dynastie Qin.',
         'Des mandarins administrent l’empire.',
         'L’empereur Wudi agrandit le territoire et prend le contrôle de la route de la soie.',

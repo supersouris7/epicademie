@@ -19,3 +19,7 @@
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).
+
+À anticiper : le programme d’histoire-géographie du cycle 3 de l’arrêté du 22 avril 2026 (BO n° 22 du 28 mai 2026)
+s’applique en 6e à la rentrée 2027 ; l’histoire de 6e s’y arrête au Ier siècle avant J.-C. Le programme ci-dessus reste en
+vigueur en 2026-2027.
