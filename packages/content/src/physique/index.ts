@@ -1,17 +1,24 @@
 import type { Chapter, Level, Skill } from '../types.ts';
 import { choice, num, traps } from '../build.ts';
 import { div, fmt, mul, r } from '../rational.ts';
+import { conservationMasse } from './conservation.ts';
+import { etats } from './etats.ts';
+import { masseVolumique } from './masse-volumique.ts';
+import { corpsPurs } from './melanges.ts';
+import { solubiliteNotion } from './solubilite.ts';
 
 /**
  * Physique-chimie, cycle 4 (docs/adr/0024-contenus-hors-maths.md). Sources institutionnelles :
  * - relations au programme : programme de physique-chimie du cycle 4 (BOEN n° 31 du
- *   30 juillet 2020) : masse volumique m = ρ × V, relation vitesse–distance–durée (mouvement
+ *   30 juillet 2020) : relation vitesse–distance–durée (mouvement
  *   uniforme), loi d'Ohm, puissance électrique P = U × I, relation énergie–puissance–durée ;
  * - unités, symboles et préfixes : BIPM, Le Système international d'unités (SI), 9e édition,
  *   résumé en français (tableaux 1 à 3 : unités de base, unités dérivées à nom spécial —
  *   ohm = V/A, watt = J/s — et préfixes).
  * Le programme est écrit pour tout le cycle : la répartition 5e / 4e / 3e est un choix de
  * progression (des relations les plus simples aux plus composées).
+ * Le chapitre 5e « Organisation de la matière » (5 niveaux) a ses fichiers et ses faits cités
+ * (`donnees-matiere.ts`).
  */
 
 const PROG = 'Physique-chimie, cycle 4 (BOEN n° 31 du 30 juillet 2020)';
@@ -151,28 +158,6 @@ const pair = (rng: Rng, level: Level): [number, number] => {
   return [a, b];
 };
 
-const density = relation({
-  id: 'p5-masse-volumique',
-  title: 'La masse volumique',
-  memo: [
-    'm = ρ × V : la masse est égale à la masse volumique multipliée par le volume.',
-    'Donc ρ = m ÷ V (en g/cm³ si m est en g et V en cm³).',
-  ],
-  source: `${PROG} : « Masse volumique : relation m = ρ × V ».`,
-  draw: (rng, level) => {
-    const [rho, v] = pair(rng, level);
-    const m = rho * v;
-    return {
-      prompt: `Un objet a une masse de ${m} g pour un volume de ${v} cm³. Quelle est sa masse volumique, en g/cm³ ?`,
-      value: r(rho),
-      unit: 'g/cm³',
-      wrong: r(m * v),
-      why: 'On divise la masse par le volume : ρ = m ÷ V (pas m × V).',
-      steps: ['ρ = m ÷ V.', `ρ = ${m} ÷ ${v} = **${rho} g/cm³**.`],
-    };
-  },
-});
-
 const speed = relation({
   id: 'p4-vitesse',
   title: 'La vitesse',
@@ -274,7 +259,13 @@ const chapter = (id: string, grade: Chapter['grade'], title: string, skills: rea
 
 export const PHYSIQUE_CHAPTERS: readonly Chapter[] = [
   chapter('p5-unites', '5e', 'Unités et préfixes', [units, prefixes]),
-  chapter('p5-matiere', '5e', 'La masse volumique', [density]),
+  chapter('p5-matiere', '5e', 'Organisation de la matière', [
+    etats,
+    corpsPurs,
+    masseVolumique,
+    solubiliteNotion,
+    conservationMasse,
+  ]),
   chapter('p4-mouvement', '4e', 'La vitesse', [speed]),
   chapter('p4-electricite', '4e', 'La loi d’Ohm', [ohm]),
   chapter('p3-energie', '3e', 'Puissance et énergie', [power, energy]),
