@@ -1,5 +1,5 @@
 /**
- * Faits des chapitres « La matière », « Mouvement et énergie » et « Le vivant » (CM1), puis « Matériaux et mélanges » (CM2) et « Signal et information » (6e). Chaque fait cite son identifiant de source (registre `sources.ts`) et la
+ * Faits des chapitres « La matière », « Mouvement et énergie » et « Le vivant » (CM1), puis « Matériaux et mélanges » et « Mouvement et énergie » (CM2) et « Signal et information » (6e). Chaque fait cite son identifiant de source (registre `sources.ts`) et la
  * citation exacte du texte officiel (programme du cycle 3, Éduscol, domaine « Matière, mouvement, énergie,
  * information »). Les exemples du quotidien (un caillou, une pomme, la buée…) illustrent ces faits : ils ne sont pas des faits.
  */
@@ -619,5 +619,83 @@ export const FAITS: readonly Fait[] = [
     source: 'cnrtl-voyant',
     citation:
       'Lampe s’allumant pour attirer l’attention sur un danger, un dysfonctionnement ou pour indiquer qu’un appareil fonctionne.',
+  },
+  // ——— Chapitre « Mouvement et énergie » (CM2) : programme, CNRTL, Académie française, ministère. ———
+  {
+    id: 'mouvement-soleil',
+    source: PROGRAMME,
+    citation: 'le Soleil décrit une courbe dans le ciel du point de vue de la cour de récréation',
+  },
+  {
+    id: 'trajectoire-def',
+    source: 'cnrtl-trajectoire',
+    citation: 'Courbe décrite par le centre de gravité d’un mobile.',
+  },
+  {
+    id: 'vitesse-def',
+    source: 'cnrtl-vitesse',
+    citation: 'espace parcouru en fonction du temps mis à le parcourir',
+  },
+  {
+    id: 'vitesse-activites',
+    source: PROGRAMME,
+    citation:
+      'des activités de mesure de distances, de durées (la durée est définie comme l’intervalle entre deux instants), et de vitesse',
+  },
+  {
+    id: 'vitesse-calcul-6e',
+    source: PROGRAMME,
+    citation:
+      'En classe de sixième, seul le calcul de la valeur de la vitesse à partir de la distance parcourue et de la durée de déplacement dans le cas d’un mouvement uniforme est exigible.',
+  },
+  {
+    id: 'renouvelable-sensibilisation',
+    source: PROGRAMME,
+    citation:
+      'Les élèves sont sensibilisés au caractère renouvelable ou non, à l’échelle temporelle de la vie humaine, des ressources en énergie.',
+  },
+  {
+    id: 'enr-alimentation',
+    source: 'ecologie-energies-renouvelables',
+    citation:
+      'Les énergies renouvelables (EnR) sont alimentées par le soleil, le vent, la chaleur de la terre, les chutes d’eau, les marées…',
+  },
+  {
+    id: 'enr-inepuisables',
+    source: 'ecologie-energies-renouvelables',
+    citation: 'Ces sources d’énergie, considérées comme inépuisables à l’échelle du temps humain',
+  },
+  {
+    id: 'enr-fossiles',
+    source: 'ecologie-energies-renouvelables',
+    citation: 'Elles se distinguent des énergies fossiles, polluantes et dont les stocks diminuent.',
+  },
+  {
+    id: 'enr-bois',
+    source: 'ecologie-biomasse',
+    citation: 'Le chauffage individuel au bois représente la première source d’énergie renouvelable en France',
+  },
+  {
+    id: 'fossile-combustibles',
+    source: 'academie-fossile',
+    citation:
+      'Combustibles fossiles, produits par la transformation de matières organiques enfouies dans la terre. La houille, le pétrole sont des combustibles fossiles.',
+  },
+  {
+    id: 'charbon-fossile',
+    source: 'academie-charbon',
+    citation:
+      'Le charbon est une roche fossile résultant de la carbonisation de débris végétaux au cours des âges géologiques.',
+  },
+  {
+    id: 'petrole-def',
+    source: 'academie-petrole',
+    citation:
+      'Huile minérale d’origine naturelle, issue de l’accumulation et de la transformation de matière organique',
+  },
+  {
+    id: 'conversion-attendu',
+    source: PROGRAMME,
+    citation: 'Identifier les formes d’énergie mises en jeu dans un dispositif de conversion d’énergie.',
   },
 ];
