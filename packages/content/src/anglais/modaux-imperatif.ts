@@ -147,7 +147,7 @@ function canUses(rng: Rng): QuestionDraft {
   return {
     prompt: `Associe chaque phrase à ce qu’elle sert à faire : ${quoted(rows.map((r) => r[0]))}`,
     answer: pairs(rng, rows),
-    hint: 'Regarde qui parle de qui : une question, un « you », ou un talent ? Repère aussi la négation.',
+    hint: 'Cherche des indices : une question, un « you » à qui l’on répond, ou un talent ? Repère aussi la négation.',
     steps: [
       'can sert à parler d’une capacité, mais aussi à demander ou donner une autorisation ; can’t peut interdire.',
       ...rows.map(([line, use]) => `« ${line} » sert à ${use}.`),
@@ -203,7 +203,7 @@ function canNegative(rng: Rng): QuestionDraft {
     ]),
     hint: 'Un seul élément change dans la phrase : celui qui précède le verbe.',
     steps: [
-      'can porte lui-même la négation : can’t à l’oral, cannot à l’écrit.',
+      'can porte lui-même la négation : can’t, la forme courante, ou cannot, surtout à l’écrit.',
       WHY_CAN_BASE,
       `Réponse : **${at(accepted, 0)}.**`,
     ],
@@ -306,9 +306,9 @@ const can: Skill = {
   version: 1,
   lesson: {
     memo: [
-      '**Can** dit qu’on sait faire (I can swim) ou donne une **autorisation** (You can go). Le contraire : **can’t** ou cannot.',
-      'Après can vient la **base verbale**, sans to ni -s : He can’t ride a bike.',
-      'La question : can devant le sujet. Can you swim? Yes, I can.',
+      '**Can** dit qu’on sait faire (I can swim) ; il demande ou donne aussi une **autorisation** (Can I go? You can go).',
+      'La négation, **can’t** ou cannot, dit qu’on ne sait pas faire ou qu’on n’a pas le droit.',
+      'Après can vient la **base verbale**, sans to ni -s : He can’t ride a bike. Question : Can you swim? Yes, I can.',
     ],
     source: source(
       'auxiliaires de modalité can / can’t ; autorisation et interdiction',
@@ -339,7 +339,7 @@ const DUTIES: readonly Rule[] = [
   rule('wait here', 'waits here', 'attendre ici'),
   rule('help at home', 'helps at home', 'aider à la maison'),
   rule('be on time', 'is on time', 'être à l’heure'),
-  rule('be quiet', 'is quiet', 'être silencieux'),
+  rule('be quiet', 'is quiet', 'être calme'),
 ];
 const BANS: readonly Rule[] = [
   rule('shout in the library', 'shouts in the library', 'crier à la bibliothèque'),
@@ -611,12 +611,12 @@ const ORDERS: readonly Order[] = [
   order('Close the door', 'Ferme la porte', 'door = porte ; to close = fermer', ['Shut the door']),
   order('Come to the board', 'Viens au tableau', 'board = tableau ; to come = venir', ['Come up to the board']),
   order('Sit down', 'Assieds-toi', 'to sit = s’asseoir ; down = vers le bas'),
-  order('Stand up', 'Lève-toi', 'to stand = se tenir debout ; up = vers le haut'),
+  order('Stand up', 'Lève-toi', 'to stand = se tenir debout ; up = vers le haut', ['Get up']),
   order('Look at the picture', 'Regarde l’image', 'picture = image ; to look at = regarder'),
   order('Listen to the song', 'Écoute la chanson', 'song = chanson ; to listen to = écouter'),
-  order('Help your friend', 'Aide ton ami', 'friend = ami ; to help = aider', ['Help your friends']),
+  order('Help your friend', 'Aide ton ami', 'friend = ami ; to help = aider'),
   order('Take your book', 'Prends ton livre', 'book = livre ; to take = prendre'),
-  order('Come in', 'Entre', 'to come = venir ; in = dedans'),
+  order('Come in', 'Entre', 'to come = venir ; in = dedans', ['Enter']),
   order('Get ready', 'Prépare-toi', 'to get = devenir ; ready = prêt', ['Be ready']),
 ];
 const first = (en: string) => en.split(' ')[0] ?? en;
@@ -771,7 +771,7 @@ const WISHES: readonly Wish[] = [
   wish('se lever', 'up', 'stand', 'get'),
   wish('écouter la chanson', 'to the song', 'listen'),
   wish('regarder l’image', 'at the picture', 'look'),
-  wish('rester silencieux', 'quiet', 'be', 'keep', 'stay'),
+  wish('rester calme', 'quiet', 'be', 'keep', 'stay'),
 ];
 
 function orderDocument(rng: Rng): QuestionDraft {
@@ -904,7 +904,7 @@ function banSigns(rng: Rng): QuestionDraft {
   return {
     prompt: `Associe chaque panneau à la consigne qui a le même sens : ${quoted(rows.map((r) => r[0]))}`,
     answer: pairs(rng, rows),
-    hint: 'Sur le panneau, retire « No » et la terminaison : quel verbe reste-t-il ?',
+    hint: 'Sur le panneau, laisse « No » de côté : quel verbe se cache dans le mot en -ing ?',
     steps: [
       '« No » suivi d’un verbe en -ing interdit une action, comme don’t suivi de la base verbale.',
       `Réponse : **${rows.map(([sign, meaning]) => `${sign} = ${meaning}`).join(' ; ')}**`,
@@ -943,17 +943,20 @@ const OPPOSITES = [
   { base: 'be', end: 'late' },
   { base: 'be', end: 'noisy' },
   { base: 'be', end: 'rude' },
-  { base: 'open', end: 'the door' },
-  { base: 'sit', end: 'there' },
-  { base: 'touch', end: 'the pictures' },
-  { base: 'use', end: 'your phone' },
-  { base: 'take', end: 'photos' },
+  { base: 'open', end: 'the door', ing: 'opening' },
+  { base: 'sit', end: 'there', ing: 'sitting' },
+  { base: 'touch', end: 'the pictures', ing: 'touching' },
+  { base: 'use', end: 'your phone', ing: 'using' },
+  { base: 'take', end: 'photos', ing: 'taking' },
 ] as const;
 
 function banOpposite(rng: Rng): QuestionDraft {
   const o = rng.pick(OPPOSITES);
   const action = `${o.base} ${o.end}`;
-  const accepted = polite([`Don’t ${action}`, `Do not ${action}`, `Never ${action}`]);
+  const accepted = [
+    ...polite([`Don’t ${action}`, `Do not ${action}`, `Never ${action}`]),
+    ...('ing' in o ? [`No ${o.ing} ${o.end}`] : []),
+  ];
   return {
     prompt: `Écris la consigne contraire (une interdiction) : « ${cap(action)}! »`,
     answer: { kind: 'text', accepted: ended(accepted, ORDER_MARKS) },
@@ -982,10 +985,10 @@ const SIGN_BANS = [
   { base: 'dance', ing: 'dancing', place: 'on the tables' },
 ] as const;
 const SIGN_DUTIES = [
-  { line: 'You must be quiet here.', base: 'be', end: 'quiet here' },
-  { line: 'You must be on time.', base: 'be', end: 'on time' },
-  { line: 'You must listen to the teacher.', base: 'listen', end: 'to the teacher' },
-  { line: 'You must wait here.', base: 'wait', end: 'here' },
+  { line: 'You must be quiet here.', verbs: ['be', 'stay', 'keep'], end: 'quiet here' },
+  { line: 'You must be on time.', verbs: ['be'], end: 'on time' },
+  { line: 'You must listen to the teacher.', verbs: ['listen'], end: 'to the teacher' },
+  { line: 'You must wait here.', verbs: ['wait'], end: 'here' },
 ] as const;
 
 function banDocument(rng: Rng): QuestionDraft {
@@ -1004,9 +1007,9 @@ function banDocument(rng: Rng): QuestionDraft {
   for (const line of told) {
     if (line === duty.line) {
       parts[parts.length - 1] = `${at(parts, parts.length - 1)}Please, `;
-      accepted.push([duty.base]);
+      accepted.push([...duty.verbs]);
       parts.push(` ${duty.end}. `);
-      answers.push(duty.base);
+      answers.push(at(duty.verbs, 0));
     } else {
       const sign = line.startsWith(`No ${a.ing}`) ? a : b;
       accepted.push(['Don’t', 'Do not', 'Never']);
