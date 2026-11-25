@@ -163,8 +163,7 @@ const school: Skill = {
   lesson: {
     memo: [
       'Dans ton cartable : pen (stylo), pencil (crayon à papier), ruler (règle), eraser (gomme), glue (colle), scissors (ciseaux).',
-      'Aussi : bag (sac), pencil case (trousse), pencil sharpener (taille-crayon), calculator (calculatrice), felt tips (feutres).',
-      'Et encore : notebook (cahier), folder (classeur), desk (bureau).',
+      'Aussi : bag (sac), pencil case (trousse), pencil sharpener (taille-crayon), calculator (calculatrice), felt tips (feutres), notebook (cahier), folder (classeur), desk (bureau).',
       'Les **matières** : English, maths, science, history, geography, music, art, P.E. (sport à l’école).',
     ],
     source: source('l’école. Mots : British Council, fiches « Classroom objects » et « School subjects ».'),
