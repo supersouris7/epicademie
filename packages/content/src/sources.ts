@@ -757,6 +757,15 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-25',
   },
   {
+    id: 'eduscol-5e-occident-feodal',
+    title:
+      'Ressources d’accompagnement, histoire 5e, thème 2 « Société, Église et pouvoir politique dans l’occident féodal (XIe-XVe siècles) » (consulté via la copie d’archive web.archive.org)',
+    publisher: 'Éduscol',
+    url: 'https://cache.media.eduscol.education.fr/file/Histoire/82/5/C4_HIS_5_Th2_Societes,_Eglises_et_pouvoir_politique-DM_593825.pdf',
+    textDate: '2016-03',
+    consultedOn: '2026-11-25',
+  },
+  {
     id: 'francais-cycle3-2025',
     title: 'Programme de français du cycle 3 (CM1, CM2, 6e)',
     publisher: 'Ministère de l’Éducation nationale',
@@ -3264,6 +3273,39 @@ export const SOURCES: readonly Source[] = [
   },
   academie('chef-lieu', 'chef-lieu'),
   academie('rocheux', 'rocheux'),
+  // Lot an-6e-03 : modaux et impératif.
+  {
+    id: 'bck-must',
+    title: 'LearnEnglish Kids, Grammar practice : Modals, must and mustn’t',
+    publisher: 'British Council',
+    url: 'https://learnenglishkids.britishcouncil.org/grammar-vocabulary/grammar-practice/modals-must-mustnt',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'bck-imperatives',
+    title: 'LearnEnglish Kids, Grammar practice : Imperatives',
+    publisher: 'British Council',
+    url: 'https://learnenglishkids.britishcouncil.org/grammar-vocabulary/grammar-practice/imperatives',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'bc-permission',
+    title: 'LearnEnglish, English grammar reference : Permission',
+    publisher: 'British Council',
+    url: 'https://learnenglish.britishcouncil.org/free-resources/grammar/english-grammar-reference/permission',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
+  {
+    id: 'bc-modals-permission',
+    title: 'LearnEnglish, Grammar B1-B2 : Modals, permission and obligation',
+    publisher: 'British Council',
+    url: 'https://learnenglish.britishcouncil.org/free-resources/grammar/b1-b2/modals-permission-obligation',
+    textDate: '2026',
+    consultedOn: '2026-11-25',
+  },
 ];
 
 export const getSource = (id: string): Source | undefined => SOURCES.find((s) => s.id === id);

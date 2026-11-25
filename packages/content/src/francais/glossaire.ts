@@ -391,7 +391,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'participe-passe',
     word: 'participe passé',
     forms: ['participes passés'],
-    definition: 'La deuxième partie du verbe au passé composé, après être ou avoir.',
+    definition: 'La deuxième partie d’un temps composé (passé composé, plus-que-parfait), après être ou avoir.',
     example: 'Elle est partie. (« partie »)',
   },
   {
@@ -526,6 +526,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['marques de personne'],
     definition: 'La fin du verbe qui va avec le sujet.',
     example: 'Dans « nous chantions », c’est « ons ».',
+  },
+  {
+    id: 'e-muet',
+    word: 'e muet',
+    forms: ['e muets'],
+    definition: 'Un e qu’on écrit mais qu’on n’entend pas, ou à peine.',
+    example: 'Dans « j’appellerai », le e après les deux l ne s’entend presque pas.',
   },
   {
     id: 'adverbe-de-negation',
