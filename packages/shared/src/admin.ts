@@ -159,6 +159,10 @@ export const AuditPageSchema = z.object({
       operator: z.string(),
       action: z.enum(AUDIT_ACTIONS),
       accountId: z.uuid(),
+      /** Nom court du compte : e-mail masqué, « Élève autonome » ou « Compte supprimé ». */
+      accountLabel: z.string(),
+      /** La fiche peut encore être ouverte. */
+      accountExists: z.boolean(),
     }),
   ),
   page: z.number().int(),

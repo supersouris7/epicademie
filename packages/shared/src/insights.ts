@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { OFFERS, SUBSCRIPTION_STATUSES } from './billing.ts';
+import { OFFERS, PAYMENT_PROVIDERS, SUBSCRIPTION_STATUSES } from './billing.ts';
+import { REPORT_STATUSES } from './pedagogy.ts';
 import { SUBJECT_IDS } from './subjects.ts';
 
 /**
@@ -25,7 +26,10 @@ export const AdminStatsSchema = z.object({
   bossWins: count,
   premiumFamilies: count,
   payments: z.array(z.object({ status: z.enum(SUBSCRIPTION_STATUSES), count, amountCents: count })),
+  /** Signalements à traiter (nouveaux et en cours). */
   openReports: count,
+  /** Nombre de signalements dans chaque état. */
+  reportCounts: z.record(z.enum(REPORT_STATUSES), count),
 });
 export type AdminStats = z.infer<typeof AdminStatsSchema>;
 
@@ -88,5 +92,7 @@ export const AdminTrendsSchema = z.object({
   activeByOffer: z.array(z.object({ offer: z.enum(OFFERS), count })),
   /** Total encaissé en mode test (paiements « payés »), en centimes. */
   revenueCents: count,
+  /** Prestataires des paiements encaissés (vide : aucun paiement). */
+  paymentProviders: z.array(z.enum(PAYMENT_PROVIDERS)),
 });
 export type AdminTrends = z.infer<typeof AdminTrendsSchema>;

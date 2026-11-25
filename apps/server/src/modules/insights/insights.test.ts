@@ -86,6 +86,8 @@ describe('pilotage (administration)', () => {
       autonomousRate7d: 0.5,
       answersBySubject7d: [{ subject: 'maths', answers: 2 }],
       premiumFamilies: 1,
+      openReports: 0,
+      reportCounts: { nouveau: 0, 'en-cours': 0, resolu: 0, rejete: 0 },
     });
     expect(res.body).not.toContain(profile.name);
     expect(res.body).not.toContain('@');
@@ -121,6 +123,7 @@ describe('pilotage (administration)', () => {
     expect(at(trends.activeSubscriptionsByDay, '2026-11-20')).toBe(0);
     expect(trends.activeByOffer).toEqual([{ offer: 'famille-annee', count: 0 }]);
     expect(trends.revenueCents).toBe(2499);
+    expect(trends.paymentProviders).toEqual(['simulateur']);
     expect(res.body).not.toContain('@');
     expect(res.body).not.toContain(fam?.id ?? 'x');
   });
@@ -161,6 +164,16 @@ describe('pilotage (administration)', () => {
     await t.http.inject('/api/v1/boom');
     const errors = (await admin.inject('/api/v1/admin/errors')).json<AdminError[]>();
     expect(errors).toContainEqual(expect.objectContaining({ source: 'server', message: 'panne de test', count: 2 }));
+  });
+
+  it('réponses envoyées une seule fois : aucune erreur après les courbes et les chiffres', async () => {
+    for (const url of ['/api/v1/admin/trends', '/api/v1/admin/stats']) {
+      expect((await admin.inject(url)).statusCode).toBe(200);
+    }
+    // Un second envoi aurait lieu juste après la réponse : on lui laisse le temps de se produire.
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    const errors = (await admin.inject('/api/v1/admin/errors')).json<AdminError[]>();
+    expect(errors.filter((e) => e.message.includes('headers'))).toEqual([]);
   });
 
   it('message nettoyé : jamais les paramètres d’une requête SQL', () => {

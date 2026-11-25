@@ -12,9 +12,9 @@ test.describe('console d’administration (opérateur)', () => {
   test('ouverte directement, sans compte de jeu ni choix de profil ; recherche de comptes', async ({ page }) => {
     await page.goto('/admin');
     await expect(page).toHaveURL(/\/admin$/);
-    await expect(page.getByRole('heading', { name: /Console d’administration/ })).toBeVisible();
-    await expect(page.getByText('Opérateur : Recette')).toBeVisible();
-    await page.getByRole('tab', { name: 'Comptes' }).click();
+    await expect(page.getByRole('heading', { name: 'Gestion du jeu' })).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Indicateurs clés' })).toBeVisible();
+    await page.getByRole('tab', { name: 'Familles' }).click();
     await page.getByRole('searchbox').fill('introuvable');
     await page.getByRole('button', { name: 'Rechercher' }).click();
     await expect(page.getByText('Aucun compte ne correspond.')).toBeVisible();

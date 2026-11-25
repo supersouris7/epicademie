@@ -5,46 +5,71 @@ import {
   ACCOUNT_TYPE_LABELS,
   ACCOUNT_TYPES,
   AUDIT_ACTION_LABELS,
+  gradeInfo,
+  ITEM_INFO,
+  MODES,
+  REPORT_REASON_LABELS,
+  REPORT_STATUS_LABELS,
+  subjectLabel,
+  SUBSCRIPTION_STATUS_LABELS,
   type AccountDetail,
   type AccountRow,
   type AccountSearch,
+  type AuditPage,
 } from '@epicademie/shared';
 import { ApiError } from '../../shared/api/client.ts';
 import { useAccount, useAccounts, useAudit, useResetPassword } from './api.ts';
+import {
+  chapterTitle,
+  date,
+  dateTime,
+  labelOf,
+  money,
+  offerLabel,
+  plural,
+  providerLabel,
+  skillTitle,
+} from './labels.ts';
 import {
   AdminButton,
   Badge,
   cardClass,
   errorClass,
+  innerCardClass,
   inputClass,
   mutedClass,
   Panel,
+  RowCard,
+  Segmented,
   tableClass,
   tdClass,
   thClass,
 } from './ui.tsx';
+import { useIsPhone } from './useIsPhone.ts';
 
 /**
- * Comptes : recherche et liste paginées côté serveur (25 par page), fiche détaillée d'un compte,
+ * Familles et comptes : recherche et liste paginées côté serveur (25 par page), fiche détaillée d'un compte,
  * mot de passe temporaire, journal d'audit. Aucune liste complète n'est jamais chargée ; ouvrir une
  * fiche est journalisé (RGPD : traçabilité des accès aux données d'enfants).
  */
 
-const date = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString('fr-FR') : '—');
-const dateTime = (iso: string | null) =>
-  iso ? new Date(iso).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' }) : '—';
-
 const DEFAULT_SEARCH: AccountSearch = { q: '', type: 'tous', state: 'tous', sort: 'creation', order: 'desc', page: 0 };
 
-export function Accounts() {
+export function Accounts({
+  openId,
+  onOpen,
+}: {
+  /** Fiche ouverte (aussi depuis le journal d'audit), ou null pour la liste. */
+  readonly openId: string | null;
+  readonly onOpen: (id: string | null) => void;
+}) {
   const [search, setSearch] = useState<AccountSearch>(DEFAULT_SEARCH);
   const [typed, setTyped] = useState('');
-  const [openId, setOpenId] = useState<string | null>(null);
   const { data, isPending, error, isFetching } = useAccounts(search);
-  if (openId) return <AccountSheet id={openId} onBack={() => setOpenId(null)} />;
+  if (openId) return <AccountSheet id={openId} onBack={() => onOpen(null)} />;
   const change = (patch: Partial<AccountSearch>) => setSearch((s) => ({ ...s, page: 0, ...patch }));
   return (
-    <Panel title="Comptes">
+    <Panel title="Familles et comptes">
       <div className="flex flex-col gap-3">
         <form
           className="flex flex-wrap items-end gap-3"
@@ -66,20 +91,12 @@ export function Accounts() {
           <AdminButton type="submit" tone="primary">
             Rechercher
           </AdminButton>
-          <label className={`flex flex-col gap-1 ${mutedClass}`}>
-            Type
-            <select
-              className={inputClass}
-              value={search.type}
-              onChange={(e) => change({ type: e.target.value as AccountSearch['type'] })}
-            >
-              {ACCOUNT_TYPES.map((t) => (
-                <option key={t} value={t}>
-                  {ACCOUNT_TYPE_LABELS[t]}
-                </option>
-              ))}
-            </select>
-          </label>
+          <Segmented
+            label="Type"
+            value={search.type}
+            onChange={(type) => change({ type })}
+            choices={ACCOUNT_TYPES.map((t) => ({ value: t, label: ACCOUNT_TYPE_LABELS[t] }))}
+          />
           <label className={`flex flex-col gap-1 ${mutedClass}`}>
             État
             <select
@@ -125,7 +142,7 @@ export function Accounts() {
                 {data.total} compte{data.total > 1 ? 's' : ''} · page {data.page + 1}
                 {isFetching ? ' · mise à jour…' : ''}
               </p>
-              <AccountTable rows={data.items} onOpen={setOpenId} />
+              <AccountList rows={data.items} onOpen={onOpen} />
               <div className="flex items-center gap-2">
                 <AdminButton
                   disabled={search.page === 0}
@@ -145,14 +162,41 @@ export function Accounts() {
   );
 }
 
-function AccountTable({
+const accountName = (r: AccountRow) => r.email ?? 'Élève autonome (sans e-mail)';
+const accountType = (type: AccountRow['type']) => ACCOUNT_TYPE_LABELS[type];
+const toValidate = (r: AccountRow) => r.email !== null && !r.emailVerified;
+
+function AccountList({
   rows,
   onOpen,
 }: {
   readonly rows: readonly AccountRow[];
   readonly onOpen: (id: string) => void;
 }) {
+  const phone = useIsPhone();
   if (rows.length === 0) return <p className={mutedClass}>Aucun compte ne correspond.</p>;
+  if (phone) {
+    return (
+      <ul aria-label="Comptes" className="flex flex-col gap-2">
+        {rows.map((r) => (
+          <li key={r.id}>
+            <RowCard
+              onClick={() => onOpen(r.id)}
+              content={{
+                title: accountName(r),
+                infos: [r.profileNames.join(', ') || 'Aucun profil', `Dernière activité : ${date(r.lastActivityAt)}`],
+                badge: toValidate(r) ? (
+                  <Badge tone="amber">E-mail à valider</Badge>
+                ) : (
+                  <Badge>{accountType(r.type)}</Badge>
+                ),
+              }}
+            />
+          </li>
+        ))}
+      </ul>
+    );
+  }
   return (
     <div className="overflow-x-auto">
       <table aria-label="Comptes" className={tableClass}>
@@ -170,15 +214,15 @@ function AccountTable({
           {rows.map((r) => (
             <tr key={r.id}>
               <td className={`${tdClass} font-medium`}>
-                {r.email ?? 'Élève autonome (sans e-mail)'}
-                {r.email && !r.emailVerified && (
+                {accountName(r)}
+                {toValidate(r) && (
                   <>
                     {' '}
                     <Badge tone="amber">E-mail à valider</Badge>
                   </>
                 )}
               </td>
-              <td className={tdClass}>{r.type === 'autonome' ? 'Élève autonome' : 'Famille'}</td>
+              <td className={tdClass}>{accountType(r.type)}</td>
               <td className={tdClass}>{r.profileNames.join(', ') || '—'}</td>
               <td className={tdClass}>{date(r.createdAt)}</td>
               <td className={tdClass}>{date(r.lastActivityAt)}</td>
@@ -201,6 +245,11 @@ function Field({ label, children }: { readonly label: string; readonly children:
     </div>
   );
 }
+
+const itemNames: Record<string, string> = Object.fromEntries(
+  Object.entries(ITEM_INFO).map(([id, info]) => [id, info.name]),
+);
+const modeNames: Record<string, string> = Object.fromEntries(MODES.map((m) => [m.id, m.name]));
 
 const METHOD_LABELS = { 'mot-de-passe': 'Mot de passe', google: 'Google', 'code-recuperation': 'Code de récupération' };
 
@@ -228,7 +277,7 @@ function Sheet({ d }: { readonly d: AccountDetail }) {
         <h3 className="mb-2 font-bold">Compte</h3>
         <dl className="grid gap-3 sm:grid-cols-3">
           <Field label="E-mail">{a.email ?? 'Aucun (élève autonome)'}</Field>
-          <Field label="Type">{a.type === 'autonome' ? 'Élève autonome' : 'Famille'}</Field>
+          <Field label="Type">{ACCOUNT_TYPE_LABELS[a.type]}</Field>
           <Field label="Identifiant de famille">
             <code className="text-xs">{a.familyId}</code>
           </Field>
@@ -245,21 +294,25 @@ function Sheet({ d }: { readonly d: AccountDetail }) {
         {d.profiles.length === 0 && <p className={mutedClass}>Aucun profil.</p>}
         <ul className="flex flex-col gap-2">
           {d.profiles.map((p) => (
-            <li key={p.id} className="rounded-[12px] border border-pilot-line bg-pilot-bg p-3 text-sm">
+            <li key={p.id} className={`${innerCardClass} p-3 text-sm`}>
               <p className="font-semibold">
-                {p.name} <span className="font-normal text-pilot-mut">· {p.grade ?? 'classe non renseignée'}</span>
+                {p.name}{' '}
+                <span className="font-normal text-pilot-mut">
+                  · {p.grade ? gradeInfo(p.grade).name : 'classe non renseignée'}
+                </span>
               </p>
               <p className={mutedClass}>
                 Créé le {date(p.createdAt)} · dernière activité {date(p.lastActivityAt)} · {p.xp} XP · {p.coins} pièces
                 · {p.rubies} rubis
               </p>
               <p className={mutedClass}>
-                {p.games} partie{p.games > 1 ? 's' : ''} · {p.correctAnswers}/{p.answers} bonnes réponses ·{' '}
-                {p.skillsMastered}/{p.skillsStudied} notions maîtrisées · {p.heroesOwned} héros · {p.bossWins} victoire
-                {p.bossWins > 1 ? 's' : ''} de boss
+                {plural(p.games, 'partie')} · {p.correctAnswers}/{p.answers} bonnes réponses · {p.skillsMastered}/
+                {p.skillsStudied} notions maîtrisées · {p.heroesOwned} héros ·{' '}
+                {plural(p.bossWins, 'victoire de boss', 'victoires de boss')}
               </p>
               <p className={mutedClass}>
-                Objets : {p.items.length ? p.items.map((i) => `${i.item} ×${i.count}`).join(', ') : 'aucun'}
+                Objets :{' '}
+                {p.items.length ? p.items.map((i) => `${labelOf(itemNames, i.item)} ×${i.count}`).join(', ') : 'aucun'}
               </p>
             </li>
           ))}
@@ -271,8 +324,8 @@ function Sheet({ d }: { readonly d: AccountDetail }) {
         <ul className="flex flex-col gap-0.5 text-sm">
           {d.recentGames.map((g, i) => (
             <li key={i}>
-              {dateTime(g.startedAt)} — {g.profileName} · {g.mode} · {g.subject} · {g.chapterId} ({g.correct}/
-              {g.answered})
+              {dateTime(g.startedAt)} — {g.profileName} · {labelOf(modeNames, g.mode)} · {subjectLabel(g.subject)} ·{' '}
+              {chapterTitle(g.chapterId)} ({g.correct}/{g.answered})
             </li>
           ))}
         </ul>
@@ -283,7 +336,8 @@ function Sheet({ d }: { readonly d: AccountDetail }) {
         <ul className="flex flex-col gap-0.5 text-sm">
           {d.reports.map((r) => (
             <li key={r.id}>
-              {date(r.createdAt)} — {r.skillId ?? 'général'} · {r.reason} · {r.status}
+              {date(r.createdAt)} — {r.skillId ? skillTitle(r.skillId) : 'Général'} · {REPORT_REASON_LABELS[r.reason]} ·{' '}
+              {REPORT_STATUS_LABELS[r.status]}
               {r.comment ? ` : « ${r.comment} »` : ''}
             </li>
           ))}
@@ -304,8 +358,8 @@ function Sheet({ d }: { readonly d: AccountDetail }) {
         <ul className="flex flex-col gap-0.5 text-sm">
           {d.subscriptions.map((s, i) => (
             <li key={i}>
-              {s.offer} · {s.status} · {(s.amountCents / 100).toFixed(2).replace('.', ',')} {s.currency.toUpperCase()} ·
-              jusqu’au {date(s.periodEnd)} ({s.provider})
+              {offerLabel(s.offer)} · {labelOf(SUBSCRIPTION_STATUS_LABELS, s.status)} ·{' '}
+              {money(s.amountCents, s.currency)} · jusqu’au {date(s.periodEnd)} ({providerLabel(s.provider)})
             </li>
           ))}
         </ul>
@@ -352,8 +406,77 @@ function ResetPassword({ id }: { readonly id: string }) {
   );
 }
 
+type AuditEntry = AuditPage['items'][number];
+
+/** Nom court du compte, avec lien vers sa fiche s'il existe encore. */
+function AuditAccount({ entry, onOpen }: { readonly entry: AuditEntry; readonly onOpen: (id: string) => void }) {
+  if (!entry.accountExists) return <span className={mutedClass}>{entry.accountLabel}</span>;
+  return (
+    <button
+      type="button"
+      onClick={() => onOpen(entry.accountId)}
+      className="cursor-pointer text-left font-semibold text-pilot-acc underline [overflow-wrap:anywhere]"
+    >
+      {entry.accountLabel}
+    </button>
+  );
+}
+
+function AuditList({
+  items,
+  onOpen,
+}: {
+  readonly items: readonly AuditEntry[];
+  readonly onOpen: (id: string) => void;
+}) {
+  const phone = useIsPhone();
+  if (phone) {
+    return (
+      <ul aria-label="Journal d’audit" className="flex flex-col gap-2">
+        {items.map((e) => (
+          <li key={e.id}>
+            <RowCard
+              onClick={e.accountExists ? () => onOpen(e.accountId) : undefined}
+              content={{
+                title: AUDIT_ACTION_LABELS[e.action],
+                infos: [e.accountLabel, `${dateTime(e.at)} · ${e.operator}`],
+              }}
+            />
+          </li>
+        ))}
+      </ul>
+    );
+  }
+  return (
+    <div className="overflow-x-auto">
+      <table aria-label="Journal d’audit" className={tableClass}>
+        <thead>
+          <tr>
+            <th className={thClass}>Date</th>
+            <th className={thClass}>Opérateur</th>
+            <th className={thClass}>Action</th>
+            <th className={thClass}>Compte</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((e) => (
+            <tr key={e.id}>
+              <td className={tdClass}>{dateTime(e.at)}</td>
+              <td className={tdClass}>{e.operator}</td>
+              <td className={tdClass}>{AUDIT_ACTION_LABELS[e.action]}</td>
+              <td className={tdClass}>
+                <AuditAccount entry={e} onOpen={onOpen} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 /** Journal d'audit : consultations de fiches et réinitialisations (opérateur, action, compte, date). */
-export function AuditLog() {
+export function AuditLog({ onOpen }: { readonly onOpen: (id: string) => void }) {
   const [page, setPage] = useState(0);
   const { data, isPending } = useAudit(page);
   return (
@@ -362,31 +485,11 @@ export function AuditLog() {
         <p className={mutedClass}>Chargement…</p>
       ) : (
         <div className="flex flex-col gap-3">
-          {data.items.length === 0 && <p className={mutedClass}>Aucun accès enregistré.</p>}
-          <div className="overflow-x-auto">
-            <table aria-label="Journal d’audit" className={tableClass}>
-              <thead>
-                <tr>
-                  <th className={thClass}>Date</th>
-                  <th className={thClass}>Opérateur</th>
-                  <th className={thClass}>Action</th>
-                  <th className={thClass}>Compte</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.items.map((e) => (
-                  <tr key={e.id}>
-                    <td className={tdClass}>{dateTime(e.at)}</td>
-                    <td className={tdClass}>{e.operator}</td>
-                    <td className={tdClass}>{AUDIT_ACTION_LABELS[e.action]}</td>
-                    <td className={tdClass}>
-                      <code className="text-xs">{e.accountId}</code>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          {data.items.length === 0 ? (
+            <p className={mutedClass}>Aucun accès enregistré.</p>
+          ) : (
+            <AuditList items={data.items} onOpen={onOpen} />
+          )}
           <div className="flex gap-2">
             <AdminButton disabled={page === 0} onClick={() => setPage(page - 1)}>
               Précédent
