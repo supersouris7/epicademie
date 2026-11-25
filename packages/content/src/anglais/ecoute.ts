@@ -232,12 +232,25 @@ const numbersHeard: Skill = {
 
 const bang = (s: string) => `${cap(s)}!`;
 const dont = (o: Order) => `Don’t ${o.en}`;
-/** Écritures justes d'une consigne (britannique et américaine, avec ou sans « please »). */
-const forms = (en: string) => {
-  const base = en === 'colour' ? [en, 'color'] : [en];
-  return full(base.flatMap((b) => [b, `${b} please`, `${b}, please`, `please ${b}`]));
-};
-const negativeForms = (en: string) => forms(en).flatMap((f) => [`don’t ${f}`, `do not ${f}`]);
+const verbs = (o: Order) => [o.en, ...(o.alt ?? [])];
+/** Écritures justes d'une consigne (variantes admises, avec ou sans « please »). */
+const forms = (o: Order) => full(verbs(o).flatMap((b) => [b, `${b} please`, `${b}, please`, `please ${b}`]));
+/** Interdictions justes : « please » se place avant « don’t » ou à la fin, jamais après « don’t ». */
+const negativeForms = (o: Order) =>
+  full(
+    verbs(o).flatMap((b) =>
+      ['don’t', 'do not'].flatMap((no) => [
+        `${no} ${b}`,
+        `${no} ${b} please`,
+        `${no} ${b}, please`,
+        `please ${no} ${b}`,
+        `please, ${no} ${b}`,
+      ]),
+    ),
+  );
+/** Consignes dont l’interdiction est naturelle (pas « Don’t be quiet! »). */
+type Negatable = Order & { readonly not: string };
+const NEGATABLE: readonly Negatable[] = ORDERS.filter((o): o is Negatable => o.not !== undefined);
 const WHY_IMPERATIVE = 'Une consigne commence par le verbe : pas de « you », pas de « to ».';
 
 function orderMeaning(rng: Rng): QuestionDraft {
@@ -259,7 +272,7 @@ function orderMeaning(rng: Rng): QuestionDraft {
     answer,
     traps,
     hint: 'Mime la consigne dans ta tête, comme en classe d’anglais.',
-    steps: [`La consigne est « ${bang(o.en)} ».`, `Réponse : **${o.fr}**`],
+    steps: [`« ${bang(o.en)} » veut dire « ${o.fr} ».`, `Réponse : **${o.fr}**`],
   };
 }
 
@@ -291,14 +304,14 @@ function orderSecond(rng: Rng): QuestionDraft {
   const { answer, traps } = choice(
     rng,
     bang(o.en),
-    others.map((w) => ({ label: bang(w.en), why: `« ${bang(w.en)} » veut dire « ${w.fr} »` })),
+    others.map((w) => ({ label: bang(w.en), why: `« ${bang(w.en)} » veut dire « ${w.fr} ».` })),
   );
   return {
     prompt: `Ton camarade doit faire ceci : « ${o.fr} » Que lui dis-tu en anglais ?`,
     answer,
     traps,
     hint: 'Pense au geste, puis au verbe anglais qui va avec.',
-    steps: [`On cherche le verbe anglais pour « ${o.fr} »`, `Réponse : **${bang(o.en)}**`],
+    steps: [`On cherche le verbe anglais pour « ${o.fr} ».`, `Réponse : **${bang(o.en)}**`],
   };
 }
 
@@ -329,12 +342,12 @@ function orderWrite(rng: Rng): QuestionDraft {
       ? `Écoute la consigne donnée à ${kid}. Écris-la en anglais.`
       : `Écris en anglais la consigne : « ${o.fr} »`,
     ...(heard ? { audio: sound(bang(o.en)) } : {}),
-    answer: { kind: 'text', accepted: forms(o.en) },
+    answer: { kind: 'text', accepted: forms(o) },
     traps: [
       { text: o.typo, why: `Presque ! Regarde les lettres : « ${o.en} ».` },
       { text: `you ${o.en}`, why: WHY_IMPERATIVE },
       { text: `to ${o.en}`, why: WHY_IMPERATIVE },
-      { text: other.en, why: `« ${other.en} » veut dire « ${other.fr} »` },
+      { text: other.en, why: `« ${other.en} » veut dire « ${other.fr} ».` },
     ],
     hint: `La consigne commence par le verbe, qui débute par « ${o.en.slice(0, 1)} ».`,
     steps: ['Une consigne : on dit le verbe tout seul.', `Réponse : **${bang(o.en)}**`],
@@ -342,18 +355,22 @@ function orderWrite(rng: Rng): QuestionDraft {
 }
 
 function orderNegative(rng: Rng): QuestionDraft {
-  const i = rng.int(0, ORDERS.length - 1);
-  const o = at(ORDERS, i);
+  const i = rng.int(0, NEGATABLE.length - 1);
+  const o = at(NEGATABLE, i);
   if (flip(rng)) {
     const no = flip(rng);
-    const w = at(ORDERS, (i + 5) % ORDERS.length);
+    // L’écart avec le second verbe dépend du sens : deux phrases entendues n’ont jamais les mêmes propositions.
+    const w = at(NEGATABLE, (i + (no ? 7 : 4)) % NEGATABLE.length);
     const good = no ? o.not : o.fr;
+    const otherVerb = 'Ce n’est pas le verbe entendu.';
+    // Deux verbes × deux sens : la bonne réponse ne se devine pas à partir des propositions.
     const { answer, traps } = choice(rng, good, [
       {
         label: no ? o.fr : o.not,
         why: no ? 'Tu as entendu « don’t » : c’est une interdiction.' : 'Pas de « don’t » : on te demande de le faire.',
       },
-      { label: no ? w.fr : w.not, why: 'Ce n’est pas le verbe entendu.' },
+      { label: w.fr, why: otherVerb },
+      { label: w.not, why: otherVerb },
     ]);
     return {
       prompt: 'Écoute bien le début. Que dit la maîtresse ?',
@@ -371,12 +388,13 @@ function orderNegative(rng: Rng): QuestionDraft {
   }
   return {
     prompt: `Interdis en anglais : « ${o.not} »`,
-    answer: { kind: 'text', accepted: negativeForms(o.en) },
+    answer: { kind: 'text', accepted: negativeForms(o) },
     traps: [
       { text: `no ${o.en}`, why: 'Pour interdire, on utilise « Don’t » devant le verbe, pas « no ».' },
       { text: `not ${o.en}`, why: 'Il manque « Do » : « Don’t » ou « Do not ».' },
       { text: o.en, why: 'Cette consigne demande de le faire. Ici, c’est interdit.' },
       { text: `don’t to ${o.en}`, why: 'Après « Don’t », le verbe reste seul.' },
+      { text: `don’t please ${o.en}`, why: '« please » se met au début ou à la fin, pas après « Don’t ».' },
     ],
     hint: 'Un petit mot négatif vient avant le verbe.',
     steps: ['On met « Don’t » devant le verbe.', `Réponse : **${dont(o)}!**`],
@@ -399,7 +417,8 @@ function orderRead(rng: Rng): QuestionDraft {
     };
   }
   const [kid, mate] = some(rng, KIDS, 2) as [string, string];
-  const [a, b] = some(rng, ORDERS, 2) as [Order, Order];
+  // Chaque verbe est interdit sur l’une des deux lignes.
+  const [a, b] = some(rng, NEGATABLE, 2) as [Negatable, Negatable];
   const lines = rng.shuffle([`Teacher: ${kid}, ${a.en}. Don’t ${b.en}.`, `Teacher: ${mate}, ${b.en}. Don’t ${a.en}.`]);
   const forbidden = flip(rng);
   const target = forbidden ? b : a;
@@ -409,7 +428,7 @@ function orderRead(rng: Rng): QuestionDraft {
       ? `Lis. Qu’est-ce ${que(kid)} ne doit pas faire ? Réponds en anglais avec « Don’t … ».`
       : `Lis. Que doit faire ${kid} ? Écris la consigne en anglais.`,
     figure: written(rng, lines, 'In class'),
-    answer: { kind: 'text', accepted: forbidden ? negativeForms(target.en) : forms(target.en) },
+    answer: { kind: 'text', accepted: forbidden ? negativeForms(target) : forms(target) },
     traps: [
       {
         text: forbidden ? `don’t ${wrong.en}` : wrong.en,
@@ -486,7 +505,7 @@ function keyColour(rng: Rng): QuestionDraft {
     answer,
     traps,
     hint: 'Tu n’as pas besoin de tout comprendre : cherche seulement le mot de couleur.',
-    steps: [`Le mot-clé est « ${w.en} ».`, `Réponse : **${w.fr}**`],
+    steps: [`Le mot-clé est « ${w.en} » : « ${w.en} » veut dire « ${w.fr} ».`, `Réponse : **${w.fr}**`],
   };
 }
 
@@ -519,7 +538,10 @@ function keyTheme(rng: Rng): QuestionDraft {
   const { answer, traps } = choice(
     rng,
     theme.fr,
-    wrong.map((x) => ({ label: x.fr, why: `« ${w.en} » veut dire « ${w.fr} » : ce mot ne parle pas de ce thème-là.` })),
+    wrong.map((x) => ({
+      label: x.fr,
+      why: `« ${w.en} » veut dire « ${w.fr} » : le thème est « ${theme.fr} », pas « ${x.fr} ».`,
+    })),
   );
   const heard = flip(rng);
   return {
@@ -589,6 +611,12 @@ const PET_FR: Readonly<Record<string, string>> = {
   parrot: 'le perroquet',
 };
 
+/** Autres mots admis pour une personne de la famille (comme dans le lot « famille »). */
+const ALIASES: Readonly<Record<string, readonly string[]>> = {
+  mum: ['mom', 'mummy', 'mommy', 'mother'],
+  dad: ['daddy', 'father'],
+};
+
 function keyWho(rng: Rng): QuestionDraft {
   const o = rng.pick(OWNERS);
   const first = flip(rng);
@@ -600,7 +628,15 @@ function keyWho(rng: Rng): QuestionDraft {
   return {
     prompt: `${heard ? 'Écoute' : 'Lis'} ${o.kid} parler de sa famille. Qui a ${PET_FR[pet]?.replace(/^le /, 'un ')} ? Réponds en anglais.`,
     ...(heard ? { audio: sound(lines.join(' ')) } : { figure: written(rng, lines, `${o.kid}’s family`) }),
-    answer: { kind: 'text', accepted: full([good, `my ${good}`, `the ${good}`, `his ${good}`, `her ${good}`]) },
+    answer: {
+      kind: 'text',
+      accepted: full(
+        [good, ...(ALIASES[good] ?? [])].flatMap((p) => [
+          p,
+          ...['my', 'the', 'his', 'her', `${o.kid}’s`].map((d) => `${d} ${p}`),
+        ]),
+      ),
+    },
     traps: [
       { text: other, why: `« ${other} » a l’autre animal : retrouve la phrase qui dit « ${pet} ».` },
       { text: pet, why: `« ${pet} », c’est l’animal. On demande la personne.` },
@@ -693,10 +729,12 @@ interface Question1 {
   readonly because: string;
   readonly wrong: readonly (readonly [string, string])[];
 }
-const EASY: readonly Question1[] = [
+/** Niveau 1 : chaque question a son indice, qui ne contient pas la réponse. */
+const EASY: readonly (Question1 & { readonly hint: string })[] = [
   {
     q: 'Quelle fête a lieu le 31 octobre ?',
     good: 'Halloween',
+    hint: 'Pense à la fête d’automne où l’on se déguise.',
     because: 'Halloween se fête chaque année le 31 octobre.',
     wrong: [
       ['Christmas', 'Christmas (Noël) a lieu le 25 décembre.'],
@@ -706,6 +744,7 @@ const EASY: readonly Question1[] = [
   {
     q: 'Quelle fête a lieu le 25 décembre ?',
     good: 'Christmas',
+    hint: 'Pense à la fête d’hiver où l’on offre des cadeaux.',
     because: 'Christmas, c’est Noël : le 25 décembre.',
     wrong: [
       ['Halloween', 'Halloween a lieu le 31 octobre.'],
@@ -715,6 +754,7 @@ const EASY: readonly Question1[] = [
   {
     q: 'À Halloween, on creuse un visage dans…',
     good: 'une citrouille',
+    hint: 'C’est un gros légume orange.',
     because: 'On creuse des visages dans les citrouilles : les « jack o’lanterns ».',
     wrong: [
       ['un sapin', 'Le sapin décoré, c’est pour Noël.'],
@@ -724,6 +764,7 @@ const EASY: readonly Question1[] = [
   {
     q: 'Que décore-t-on à Noël ?',
     good: 'le sapin',
+    hint: 'Pense à ce qu’on installe dans le salon en décembre.',
     because: 'À Noël, on décore le sapin avec des boules, des guirlandes et des lumières.',
     wrong: [
       ['une citrouille', 'La citrouille creusée, c’est pour Halloween.'],
@@ -733,6 +774,7 @@ const EASY: readonly Question1[] = [
   {
     q: 'Dans quelle ville se trouve Big Ben ?',
     good: 'London',
+    hint: 'C’est la capitale de l’Angleterre : son nom anglais commence par « L ».',
     because: 'Big Ben est un monument de Londres, « London » en anglais.',
     wrong: [
       ['Paris', 'Paris est en France : Big Ben est à Londres.'],
@@ -742,6 +784,7 @@ const EASY: readonly Question1[] = [
   {
     q: 'Que cherchent beaucoup d’enfants à Pâques, au Royaume-Uni ?',
     good: 'des œufs cachés',
+    hint: 'Au printemps, on en trouve souvent en chocolat, dans le jardin.',
     because: 'À Pâques, beaucoup d’enfants font la chasse aux œufs : « egg hunt ».',
     wrong: [
       ['des citrouilles', 'Les citrouilles, c’est Halloween.'],
@@ -761,7 +804,7 @@ function ukEasy(rng: Rng): QuestionDraft {
     prompt: item.q,
     answer,
     traps,
-    hint: 'Pense aux images et aux fêtes vues en classe : citrouille, sapin, œufs, monuments.',
+    hint: item.hint,
     steps: [item.because, `Réponse : **${item.good}**`],
   };
 }
@@ -780,11 +823,14 @@ const PARTS: readonly Question1[] = [
   {
     q: 'Quel drapeau porte un dragon ?',
     good: 'le drapeau du pays de Galles (Wales)',
-    because: 'Le dragon est dessiné sur le drapeau du pays de Galles.',
+    because: 'Le dragon est dessiné sur le drapeau gallois, c’est-à-dire du pays de Galles.',
     wrong: [
-      ['le drapeau de l’Angleterre (England)', 'Le dragon est sur le drapeau gallois.'],
-      ['le drapeau de l’Écosse (Scotland)', 'Le dragon est sur le drapeau gallois.'],
-      ['le drapeau de la France', 'La France ne fait pas partie du Royaume-Uni : le dragon est gallois.'],
+      ['le drapeau de l’Angleterre (England)', 'Le dragon est sur le drapeau gallois (du pays de Galles).'],
+      ['le drapeau de l’Écosse (Scotland)', 'Le dragon est sur le drapeau gallois (du pays de Galles).'],
+      [
+        'le drapeau de la France',
+        'La France ne fait pas partie du Royaume-Uni : le dragon est sur le drapeau du pays de Galles.',
+      ],
     ],
   },
   {
@@ -885,17 +931,17 @@ const WORDS_TO_WRITE: readonly Typed[] = [
   },
   {
     q: 'Écris en anglais le mot « citrouille ».',
-    good: ['pumpkin', 'a pumpkin'],
+    good: ['pumpkin', 'a pumpkin', 'the pumpkin'],
     traps: [
       ['pumkin', 'Presque ! Il y a un « p » au milieu : pumpkin.'],
       ['witch', '« witch » veut dire « sorcière ».'],
     ],
     because: 'La citrouille, « pumpkin », est un symbole d’Halloween.',
-    hint: 'Le mot commence par « p » et finit par « kin ».',
+    hint: 'Le mot commence par « p ».',
   },
   {
     q: 'Écris en anglais le mot « sorcière ».',
-    good: ['witch', 'a witch'],
+    good: ['witch', 'a witch', 'the witch'],
     traps: [
       ['wich', 'Presque ! Il manque le « t » : witch.'],
       ['ghost', '« ghost » veut dire « fantôme ».'],
@@ -905,7 +951,7 @@ const WORDS_TO_WRITE: readonly Typed[] = [
   },
   {
     q: 'Écris en anglais le mot « fantôme ».',
-    good: ['ghost', 'a ghost'],
+    good: ['ghost', 'a ghost', 'the ghost'],
     traps: [
       ['gost', 'Presque ! Il manque le « h » : ghost.'],
       ['bat', '« bat » veut dire « chauve-souris ».'],
@@ -940,8 +986,8 @@ const FACTS_TO_WRITE: readonly Typed[] = [
     q: 'Quel pays du Royaume-Uni a un dragon sur son drapeau ? Réponds en anglais.',
     good: ['Wales'],
     traps: [
-      ['England', 'England est l’Angleterre : le dragon est gallois.'],
-      ['Scotland', 'Scotland est l’Écosse : le dragon est gallois.'],
+      ['England', 'England est l’Angleterre : le dragon est sur le drapeau du pays de Galles.'],
+      ['Scotland', 'Scotland est l’Écosse : le dragon est sur le drapeau du pays de Galles.'],
     ],
     because: 'Le drapeau du pays de Galles, « Wales », porte un dragon.',
     hint: 'Son nom anglais commence par « W ».',
@@ -968,17 +1014,17 @@ const FACTS_TO_WRITE: readonly Typed[] = [
   },
   {
     q: 'Comment appelle-t-on souvent le drapeau du Royaume-Uni ?',
-    good: ['Union Jack', 'the Union Jack'],
+    good: ['Union Jack', 'the Union Jack', 'Union Flag', 'the Union Flag'],
     traps: [
       ['Big Ben', 'Big Ben est un monument de Londres.'],
       ['Jack o’lantern', 'C’est la citrouille creusée d’Halloween.'],
     ],
     because: 'Le drapeau du Royaume-Uni est souvent appelé « Union Jack ».',
-    hint: 'Son nom commence par « Union ».',
+    hint: 'Un nom en deux mots : le premier commence par « U ».',
   },
   {
     q: 'À Halloween, quelle phrase de jeu signifie : jouer un tour ou recevoir des bonbons ?',
-    good: ['trick or treat'],
+    good: ['trick or treat', 'trick-or-treat'],
     traps: [
       ['happy birthday', 'C’est pour un anniversaire.'],
       ['trick and treat', 'Presque ! On dit « or » (ou), pas « and ».'],
@@ -1014,31 +1060,38 @@ const CARDS5: readonly {
   readonly lines: readonly string[];
   readonly good: string;
   readonly month: string;
+  /** Mots de la carte qui prouvent la fête, avec leur sens. */
+  readonly clues: string;
 }[] = [
   {
     lines: ['Dear Ana,', 'Tonight we cut a face in a pumpkin.', 'I am dressed as a witch. Trick or treat!', 'Emir'],
     good: 'Halloween',
     month: 'October',
+    clues: '« pumpkin » (citrouille), « witch » (sorcière) et « Trick or treat »',
   },
   {
     lines: ['Dear Tom,', 'We decorate the tree with lights.', 'We eat turkey and we pull crackers.', 'Lisa'],
     good: 'Christmas',
     month: 'December',
+    clues: '« tree » (sapin), « turkey » (dinde) et « crackers » (papillotes à pétard)',
   },
   {
     lines: ['Dear Yuna,', 'We go to see a big bonfire.', 'We watch the fireworks in the dark sky.', 'Paul'],
     good: 'Bonfire Night',
     month: 'November',
+    clues: '« bonfire » (grand feu) et « fireworks » (feux d’artifice)',
   },
   {
-    lines: ['Dear Paul,', 'Santa comes with presents for the children.', 'My stocking is by the bed.', 'Ana'],
+    lines: ['Dear Paul,', 'Santa comes with presents for the children.', 'I leave some food for him.', 'Ana'],
     good: 'Christmas',
     month: 'December',
+    clues: '« Santa » (le père Noël) et « presents » (cadeaux)',
   },
   {
     lines: ['Dear Lisa,', 'There are ghosts and bats on our door.', 'The black cat sleeps near the pumpkin.', 'Tom'],
     good: 'Halloween',
     month: 'October',
+    clues: '« ghosts » (fantômes), « bats » (chauves-souris) et « pumpkin » (citrouille)',
   },
 ];
 
@@ -1082,7 +1135,7 @@ function ukRead(rng: Rng): QuestionDraft {
         ],
     hint: 'Cherche les objets de la carte : citrouille, sapin, feu ? Chaque fête a les siens.',
     steps: [
-      `Les indices de la carte montrent la fête **${card.good}**${month ? `, qui a lieu au mois de ${card.month}` : ''}.`,
+      `Les indices ${card.clues} montrent la fête **${card.good}**${month ? ` : le mois est « ${card.month} »` : ''}.`,
       `Réponse : **${good}**`,
     ],
   };
@@ -1095,8 +1148,13 @@ const landmarks: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'Le **Royaume-Uni** a quatre parties : England, Scotland, Wales, Northern Ireland. À Londres, on voit Big Ben.',
+      'Le **Royaume-Uni** (the UK) a quatre parties : England, Scotland, Wales, Northern Ireland.',
+      'England = Angleterre (plus grande que l’Écosse), Scotland = Écosse, Wales = pays de Galles, Northern Ireland = Irlande du Nord.',
+      'À Londres (London), capitale de l’Angleterre : Big Ben, Buckingham Palace, Tower Bridge.',
+      'Le drapeau gallois (du pays de Galles) porte un dragon. En Irlande du Nord, on visite la Chaussée des Géants (Giant’s Causeway). Le drapeau du Royaume-Uni est souvent appelé Union Jack.',
       'Les fêtes : Halloween (31 October), **Bonfire Night** (5 November), Christmas (25 December), Easter (au printemps).',
+      'Halloween : pumpkin = citrouille, witch = sorcière, ghost = fantôme. « Trick or treat » : jouer un tour ou recevoir des bonbons.',
+      'Noël : on décore le sapin. Bonfire Night : grand feu et feux d’artifice. Pâques : chasse aux œufs cachés (egg hunt).',
     ],
     source: source(
       'Faits : British Council, LearnEnglish Kids (fiches sur le Royaume-Uni, Londres, Halloween, Noël, Bonfire Night et Pâques).',

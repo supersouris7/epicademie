@@ -96,6 +96,70 @@ describe('anglais cm1 : écouter et comprendre', () => {
     }
   });
 
+  const find = (id: string, level: Level, part: string) => questions(id, level).find((x) => x.prompt.includes(part))!;
+  const right = (q: ReturnType<typeof find>, text: string) => check(q, { kind: 'text', text }).correct;
+
+  it('consignes : « please » bien placé, variantes courantes, jamais « Don’t be quiet »', () => {
+    const jump = find('acm1-consignes', 4, 'Ne saute pas');
+    for (const text of ["Please don't jump", 'Please do not jump!', "Don't jump, please", 'do not jump please'])
+      expect(right(jump, text), text).toBe(true);
+    for (const text of ["don't please jump", 'do not please jump']) expect(right(jump, text), text).toBe(false);
+    for (const [fr, texts] of [
+      ['Colorie', ['colour in', 'color in', 'color']],
+      ['Découpe', ['cut out']],
+      ['Coche', ['check']],
+      ['Lève-toi', ['get up']],
+    ] as const)
+      for (const text of texts) expect(right(find('acm1-consignes', 3, `« ${fr}`), text), text).toBe(true);
+    expect(right(find('acm1-consignes', 4, 'Ne colorie pas'), "Don't colour in")).toBe(true);
+    for (const l of [4, 5] as const)
+      for (const q of questions('acm1-consignes', l))
+        expect(JSON.stringify(q).toLowerCase()).not.toMatch(/ne te tais pas|don[’']t be quiet\./);
+    for (const q of questions('acm1-consignes', 4))
+      if (q.answer.kind === 'choice') expect(q.answer.options).toHaveLength(4);
+  });
+
+  it('mots-clés : mum, dad et « prénom’s » acceptés', () => {
+    const qs = questions('acm1-mots-cles', 4);
+    const yuna = qs.find((q) => q.prompt.includes('Yuna') && q.prompt.includes('un chien'))!;
+    for (const text of ['mom', 'Mummy', 'mommy', "Yuna's mum", 'Yuna’s mum'])
+      expect(right(yuna, text), text).toBe(true);
+    const dad = qs.find((q) => q.prompt.includes('Yuna') && q.prompt.includes('un chat'))!;
+    expect(right(dad, 'daddy')).toBe(true);
+  });
+
+  it('repères : indices sans la réponse, variantes acceptées, faits évalués présents dans le mémo', () => {
+    for (const q of questions('acm1-reperes-uk', 1)) {
+      if (q.answer.kind !== 'choice') continue;
+      const good = q.answer.options[q.answer.correct]!.replace(/^(une?|le|des) /, '').split(' ')[0]!;
+      expect(q.hint.toLowerCase(), q.prompt).not.toContain(good.toLowerCase());
+    }
+    for (const [part, text] of [
+      ['jouer un tour', 'trick-or-treat'],
+      ['drapeau du Royaume-Uni', 'the Union Flag'],
+      ['drapeau du Royaume-Uni', 'Union Flag'],
+    ] as const)
+      expect(right(find('acm1-reperes-uk', 4, part), text), text).toBe(true);
+    for (const [part, text] of [
+      ['fantôme', 'the ghost'],
+      ['sorcière', 'the witch'],
+      ['citrouille', 'the pumpkin'],
+    ] as const)
+      expect(right(find('acm1-reperes-uk', 3, part), text), text).toBe(true);
+    const memo = skills[3]!.lesson.memo.join(' ');
+    for (const word of [
+      'dragon',
+      'Giant’s Causeway',
+      'Union Jack',
+      'egg hunt',
+      'Trick or treat',
+      'pumpkin',
+      'witch',
+      'ghost',
+    ])
+      expect(memo).toContain(word);
+  });
+
   it('interdiction : « Don’t » avec apostrophe droite ou « Do not » acceptés', () => {
     const q = questions('acm1-consignes', 4).find((x) => x.prompt.includes('N’écris pas'))!;
     for (const text of ["Don't write!", 'Do not write', 'don’t write.'])

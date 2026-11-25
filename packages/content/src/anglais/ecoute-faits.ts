@@ -21,8 +21,10 @@ export interface Order {
   readonly en: string;
   /** Même consigne en français (tutoiement). */
   readonly fr: string;
-  /** La même consigne, interdite. */
-  readonly not: string;
+  /** La même consigne, interdite (absente quand l’interdiction n’est pas naturelle). */
+  readonly not?: string;
+  /** Autres écritures ou traductions anglaises admises. */
+  readonly alt?: readonly string[];
   /** Faute d'écriture typique. */
   readonly typo: string;
 }
@@ -30,9 +32,9 @@ export interface Order {
 /** Consignes : fiche « Classroom language flashcards » (British Council). */
 export const ORDERS: readonly Order[] = [
   { en: 'listen', fr: 'Écoute !', not: 'N’écoute pas !', typo: 'lissen' },
-  { en: 'be quiet', fr: 'Tais-toi !', not: 'Ne te tais pas !', typo: 'be quite' },
+  { en: 'be quiet', fr: 'Tais-toi !', typo: 'be quite' },
   { en: 'sit down', fr: 'Assieds-toi !', not: 'Ne t’assieds pas !', typo: 'sit doun' },
-  { en: 'stand up', fr: 'Lève-toi !', not: 'Ne te lève pas !', typo: 'stend up' },
+  { en: 'stand up', fr: 'Lève-toi !', not: 'Ne te lève pas !', typo: 'stend up', alt: ['get up'] },
   { en: 'jump', fr: 'Saute !', not: 'Ne saute pas !', typo: 'jomp' },
   { en: 'turn around', fr: 'Fais un tour sur toi-même !', not: 'Ne tourne pas sur toi-même !', typo: 'turn arond' },
   { en: 'clap', fr: 'Tape dans tes mains !', not: 'Ne tape pas dans tes mains !', typo: 'clapp' },
@@ -40,9 +42,15 @@ export const ORDERS: readonly Order[] = [
   { en: 'touch', fr: 'Touche !', not: 'Ne touche pas !', typo: 'toutch' },
   { en: 'sing', fr: 'Chante !', not: 'Ne chante pas !', typo: 'singue' },
   { en: 'write', fr: 'Écris !', not: 'N’écris pas !', typo: 'wite' },
-  { en: 'colour', fr: 'Colorie !', not: 'Ne colorie pas !', typo: 'coulor' },
-  { en: 'cut', fr: 'Découpe !', not: 'Ne découpe pas !', typo: 'cutt' },
-  { en: 'tick', fr: 'Coche !', not: 'Ne coche pas !', typo: 'tik' },
+  {
+    en: 'colour',
+    fr: 'Colorie !',
+    not: 'Ne colorie pas !',
+    typo: 'coulor',
+    alt: ['color', 'colour in', 'color in'],
+  },
+  { en: 'cut', fr: 'Découpe !', not: 'Ne découpe pas !', typo: 'cutt', alt: ['cut out'] },
+  { en: 'tick', fr: 'Coche !', not: 'Ne coche pas !', typo: 'tik', alt: ['check'] },
   { en: 'circle', fr: 'Entoure !', not: 'N’entoure pas !', typo: 'cirkle' },
   { en: 'underline', fr: 'Souligne !', not: 'Ne souligne pas !', typo: 'underlign' },
 ];
@@ -188,7 +196,7 @@ export const FAITS: readonly Fait[] = [
   fait(
     'capitale-angleterre',
     'bck-cities',
-    'England’s capital. It has Big Ben, Westminster and Buckingham Palace.',
+    'England’s capital. It has Big Ben, westminster and Buckingham Palace.',
     'La capitale de l’Angleterre a Big Ben et Buckingham Palace.',
   ),
   fait(
@@ -234,6 +242,12 @@ export const FAITS: readonly Fait[] = [
     XMAS,
     'Children wait for Santa Claus to bring them presents.',
     'Les enfants attendent Santa Claus.',
+  ),
+  fait(
+    'noel-nourriture',
+    XMAS,
+    'Many leave food for him to eat when he visits.',
+    'Beaucoup d’enfants laissent à manger à Santa Claus.',
   ),
   fait(
     'bonfire-date',
