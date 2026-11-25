@@ -1868,7 +1868,6 @@ export const SOURCES: readonly Source[] = [
     textDate: '2022',
     consultedOn: '2026-11-25',
   },
-  tlfi('ecoumene', 'écoumène', '%C3%A9coum%C3%A8ne'),
   tlfi('aride', 'aride', 'aride'),
   tlfi('steppe', 'steppe', 'steppe'),
   tlfi('toundra', 'toundra', 'toundra'),
@@ -1879,7 +1878,7 @@ export const SOURCES: readonly Source[] = [
   tlfi('vivrier', 'vivrier', 'vivrier'),
   tlfi('paturage', 'pâturage', 'p%C3%A2turage'),
   tlfi('exode-rural', 'exode', 'exode'),
-  tlfi('cerealier', 'céréalier', 'c%C3%A9r%C3%A9alier'),
+  tlfi('cerealier', 'céréale (dérivé « céréalier »)', 'c%C3%A9r%C3%A9ale'),
 ];
 
 export const getSource = (id: string): Source | undefined => SOURCES.find((s) => s.id === id);

@@ -851,6 +851,20 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'Cultiver du mil pour sa famille.',
   },
   {
+    id: 'competitif',
+    word: 'compétitif',
+    forms: ['compétitif', 'compétitive', 'compétitifs', 'compétitives'],
+    definition: 'Capable de bien vendre ses produits face à ses concurrents.',
+    example: 'Une région céréalière compétitive vend son blé dans le monde entier.',
+  },
+  {
+    id: 'lichen',
+    word: 'lichen',
+    forms: ['lichen', 'lichens'],
+    definition: 'Un être vivant qui pousse en plaques sur les roches ou le sol, même par grand froid.',
+    example: 'La toundra est couverte de mousses et de lichens.',
+  },
+  {
     id: 'espace-rural',
     word: 'espace rural',
     forms: ['espace rural', 'espaces ruraux'],

@@ -7,6 +7,10 @@
 
 - Programme du cycle 3 (BOEN n° 31 du 30 juillet 2020 et BOEN n° 25 du 22 juin 2023), version Éduscol en vigueur — <https://eduscol.education.fr/document/50990/download> (consulté le 24/11/2026 via la copie d’archive <https://web.archive.org/web/2026id_/https://eduscol.education.fr/document/50990/download>)
 
+> Rentrée 2027 : le programme de l’arrêté du 22/04/2026 (BO n° 22 du 28/05/2026, annexe 4) s’appliquera en 6e : le
+> thème 2 devient « Habiter un espace soumis à des contraintes naturelles » et le volet agricole n’y figure plus.
+> Chapitres de géographie 6e à reclasser avant.
+
 ## Chapitres et notions
 
 | Lot        | Chapitre                        | Notions                                                                                          | État actuel                |

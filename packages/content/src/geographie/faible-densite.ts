@@ -69,10 +69,9 @@ const I_CATEGORIES =
   'les communes densément peuplées, les communes de densité intermédiaire, les communes peu denses, les communes très peu denses';
 
 // Trésor de la langue française informatisé (CNRTL).
-const C_ECOUMENE =
-  'Notion géographique pour désigner l’ensemble des terres anthropisées (habitées ou exploitées par l’humain)';
 const C_ARIDE = 'Dépourvu d’humidité, sec. Roche, sable aride';
-const C_STEPPE = 'Formation végétale constituée de plantes xérophiles herbacées ou ligneuses';
+const C_STEPPE =
+  'Formation végétale constituée de plantes xérophiles herbacées ou ligneuses, le plus souvent en touffes espacées, qui croissent sous un climat continental sec en été ou un climat tropical semi-aride';
 const C_TOUNDRA = 'Formation végétale de climat froid, composée de mousses, de lichens, de quelques arbres nains';
 const C_PERGELISOL = 'Zone du sol ou du sous-sol, gelé en permanence et complètement imperméable';
 const C_OASIS = 'Endroit d’un désert qui, grâce à un point d’eau, présente de la végétation et permet la culture';
@@ -81,7 +80,7 @@ const C_INSULARITE = 'État d’un pays, d’un territoire formé d’une ou de 
 const C_VIVRIER = 'Qui est destiné à l’alimentation';
 const C_PATURAGE = 'Terrain couvert d’herbe, réservé à l’alimentation du bétail sur place';
 const C_EXODE = 'Phénomène continu de dépeuplement des campagnes au profit des villes';
-const C_CEREALIER = 'Exploitant agricole produisant des céréales';
+const C_CEREALIER = 'Qui est producteur de céréales';
 
 // ——— Notion 1 : espaces à fortes contraintes et de grande biodiversité ———
 
@@ -151,6 +150,7 @@ const fortesContraintes: Notion = {
         },
       ],
       gap: ['L’intensité des contraintes dépend de la ', ' qui y est confrontée.', ['société', 'societe']],
+      choix: ['société', 'pente', 'saison'],
       quote: E_RELATIF,
       explain: 'La contrainte est relative : elle dépend de la société confrontée et de son niveau de développement.',
       src: EDUSCOL,
@@ -218,6 +218,7 @@ const fortesContraintes: Notion = {
         },
       ],
       gap: ['Les sociétés oscillent entre préservation et ', ' des ressources de leur territoire.', ['exploitation']],
+      choix: ['exploitation', 'disparition', 'invention'],
       quote: E_OSCILLENT,
       explain: 'Réserves et parcs naturels protègent ; d’autres acteurs veulent exploiter les mêmes ressources.',
       src: EDUSCOL,
@@ -244,6 +245,7 @@ const fortesContraintes: Notion = {
         ' des espaces de grande biodiversité.',
         ['protéger', 'proteger'],
       ],
+      choix: ['protéger', 'bétonner', 'vider'],
       quote: E_BIODIVERSITE,
       explain: 'Certains acteurs voient un réservoir de ressources à exploiter, d’autres un espace à protéger.',
       src: EDUSCOL,
@@ -257,7 +259,7 @@ const fortesContraintes: Notion = {
         { label: 'des frontières', why: 'Une frontière sépare des territoires : ce n’est pas une image.' },
       ],
       gap: [
-        'Ces espaces sont parfois l’objet de ',
+        'Les espaces à fortes contraintes sont parfois l’objet de ',
         ', des images que l’on se fait d’eux.',
         ['représentations', 'représentation'],
       ],
@@ -319,7 +321,7 @@ const fortesContraintes: Notion = {
       title: 'Dans une vallée de haute montagne',
       lines: [
         'Les pentes sont raides et la neige coupe la route plusieurs semaines en hiver.',
-        'Des agriculteurs cultivent des terrasses et conservent des provisions.',
+        'Des agriculteurs cultivent des terrasses (des champs en marches sur la pente) et conservent des provisions.',
         'Des visiteurs viennent l’été pour marcher et voient surtout un paysage à admirer.',
       ],
       qs: [
@@ -425,7 +427,7 @@ const espacesAgricoles: Notion = {
   title: 'Les espaces agricoles peu peuplés',
   hint: 'Compare : à qui vend-on la production, avec quels liens vers les villes et le monde ?',
   memo: [
-    'Un espace agricole peu peuplé peut être riche, compétitif et relié aux villes et au monde, comme une grande plaine céréalière.',
+    'Un espace agricole peu peuplé peut être riche, **compétitif** et relié aux villes et au monde, comme une grande plaine céréalière.',
     'Il peut aussi être fragile, en **déprise** : agriculture **vivrière** peu productive, routes rares, habitants qui partent.',
     'Dans les deux cas, la faible densité n’empêche ni les activités ni les flux (marchandises, personnes, informations).',
   ],
@@ -458,7 +460,7 @@ const espacesAgricoles: Notion = {
     },
     {
       q: 'Dans une grande région céréalière peu peuplée et compétitive, qu’est-ce qui accompagne la faible densité ?',
-      a: 'une agriculture très efficace, menée par des acteurs productifs',
+      a: 'une agriculture très efficace, qui produit beaucoup avec peu de personnes',
       wrong: [
         {
           label: 'l’absence totale d’agriculture',
@@ -473,7 +475,11 @@ const espacesAgricoles: Notion = {
           why: 'Ces territoires sont reliés au monde par des flux et un marché mondial.',
         },
       ],
-      gap: ['Là, la faible densité va de pair avec l’', ' agricole.', ['efficacité', 'efficacite']],
+      gap: [
+        'Dans une grande région céréalière compétitive, la faible densité va de pair avec l’',
+        ' agricole.',
+        ['efficacité', 'efficacite'],
+      ],
       choix: ['efficacité', 'absence', 'interdiction'],
       quote: E_EFFICACITE,
       explain:
@@ -497,13 +503,14 @@ const espacesAgricoles: Notion = {
           why: 'La consommation sur place correspond à une agriculture vivrière, pas à ces régions.',
         },
       ],
-      gap: ['Ces territoires sont reliés au monde par des ', ' liés à l’activité agricole.', ['flux']],
+      gap: ['Les grandes régions agricoles sont reliées au monde par des ', ' liés à l’activité agricole.', ['flux']],
+      choix: ['flux', 'frontières', 'déserts'],
       quote: E_FLUX,
       explain: 'La production part vers les villes et vers l’étranger : ce sont des flux.',
       src: EDUSCOL,
     },
     {
-      q: 'Quelle différence caractérise un espace d’agriculture vivrière fragilisé ?',
+      q: 'Qu’est-ce qui caractérise l’agriculture d’un espace rural fragile ?',
       a: 'une agriculture peu productive qui sert d’abord à nourrir sur place',
       wrong: [
         {
@@ -519,7 +526,11 @@ const espacesAgricoles: Notion = {
           why: 'Ces espaces fragiles connaissent souvent un déclin démographique.',
         },
       ],
-      gap: ['Cette agriculture, peu productive, est principalement ', '.', ['vivrière', 'vivriere']],
+      gap: [
+        'Dans un espace rural fragile, l’agriculture, peu productive, est principalement ',
+        '.',
+        ['vivrière', 'vivriere'],
+      ],
       choix: ['vivrière', 'industrielle', 'touristique'],
       quote: E_VIVRIERE,
       explain: 'Une agriculture vivrière sert d’abord à nourrir : elle produit peu à vendre.',
@@ -527,7 +538,7 @@ const espacesAgricoles: Notion = {
     },
     {
       q: 'Dans certains espaces agricoles fragiles comme le sud du Mali, qu’est-ce qui fragilise l’agriculture vivrière ?',
-      a: 'des sécheresses marquées ou des changements',
+      a: 'des sécheresses marquées',
       wrong: [
         {
           label: 'la construction de gratte-ciel',
@@ -539,16 +550,17 @@ const espacesAgricoles: Notion = {
         },
         {
           label: 'l’excès de neige en été',
-          why: 'Dans cet exemple, c’est le manque d’eau et les changements qui fragilisent.',
+          why: 'Dans cet exemple, c’est le manque d’eau qui fragilise.',
         },
       ],
       gap: ['Au sud du Mali, des ', ' marquées fragilisent l’agriculture vivrière.', ['sécheresses', 'sécheresse']],
+      choix: ['sécheresses', 'constructions', 'récoltes'],
       quote: E_SECHERESSES,
       explain: 'Le manque d’eau pèse lourd quand on vit de ses propres cultures.',
       src: EDUSCOL,
     },
     {
-      q: 'Qui peut suivre les cours mondiaux des produits agricoles ?',
+      q: 'Qui peut suivre les cours mondiaux (les prix sur les marchés) des produits agricoles ?',
       a: 'des agriculteurs, comme le céréalier nord-américain ou d’autres avec l’internet mobile',
       wrong: [
         {
@@ -564,7 +576,11 @@ const espacesAgricoles: Notion = {
           why: 'Les touristes visitent ; ce sont les producteurs qui suivent les prix de leurs produits.',
         },
       ],
-      gap: ['Certains agriculteurs peuvent suivre les ', ' mondiaux des produits agricoles.', ['cours']],
+      gap: [
+        'Certains agriculteurs peuvent suivre les ',
+        ' mondiaux, c’est-à-dire les prix des produits agricoles.',
+        ['cours'],
+      ],
       choix: ['cours', 'récits', 'climats'],
       quote: E_COURS,
       explain: 'Les cours sont les prix qui changent sur les marchés : ces campagnes sont insérées dans le monde.',
@@ -588,6 +604,7 @@ const espacesAgricoles: Notion = {
         },
       ],
       gap: ['Les greniers agricoles sont des espaces intensément mis en ', '.', ['valeur']],
+      choix: ['valeur', 'sommeil', 'réserve'],
       quote: E_GRENIERS,
       explain: 'On peut avoir peu d’habitants et une agriculture très intense.',
       src: EDUSCOL,
@@ -607,7 +624,7 @@ const espacesAgricoles: Notion = {
   ],
   libres: [
     {
-      q: 'Comment appelle-t-on une agriculture destinée d’abord à l’alimentation ?',
+      q: 'Quel adjectif, commençant par « v », qualifie une agriculture destinée d’abord à l’alimentation ?',
       accepted: ['vivrière', 'vivrier', 'agriculture vivrière', 'une agriculture vivrière'],
       traps: [
         { text: 'céréalière', why: 'Céréalière précise le produit, pas la destination.' },
@@ -1017,16 +1034,16 @@ const vocabulaire: Notion = {
   faits: [
     {
       q: 'Que désigne l’écoumène ?',
-      a: 'l’ensemble des terres habitées ou exploitées par l’humanité',
+      a: 'l’espace habité par l’humanité',
       wrong: [
         { label: 'les seules terres désertes', why: 'C’est presque le contraire : l’écoumène est l’espace habité.' },
         { label: 'une forêt de climat froid', why: 'Une végétation froide a un autre nom, comme la toundra.' },
         { label: 'le nombre d’habitants par km²', why: 'Ce nombre est la densité.' },
       ],
       gap: ['L’', ' est l’espace habité par l’humanité.', ['écoumène', 'ecoumene']],
-      quote: C_ECOUMENE,
+      quote: E_ECOUMENE,
       explain: 'L’écoumène s’étend aujourd’hui à presque toute la planète.',
-      src: 'cnrtl-ecoumene',
+      src: EDUSCOL,
     },
     {
       q: 'Quel mot qualifie un sol dépourvu d’humidité, sec ?',
@@ -1037,6 +1054,7 @@ const vocabulaire: Notion = {
         { label: 'nomade', why: 'Nomade désigne un mode de vie sans habitation fixe.' },
       ],
       gap: ['Un terrain dépourvu d’humidité est un terrain ', '.', ['aride']],
+      choix: ['aride', 'insulaire', 'nomade'],
       quote: C_ARIDE,
       explain: 'L’aridité est une contrainte pour la culture et l’élevage.',
       src: 'cnrtl-aride',
@@ -1079,6 +1097,7 @@ const vocabulaire: Notion = {
         { label: 'qui habite une île', why: 'Cela se dit insulaire.' },
       ],
       gap: ['Une personne ', ' n’a pas de demeure fixe.', ['nomade']],
+      choix: ['nomade', 'sédentaire', 'insulaire'],
       quote: C_NOMADE,
       explain: 'Le nomadisme peut être une adaptation à de très fortes contraintes.',
       src: 'cnrtl-nomade',
@@ -1087,7 +1106,7 @@ const vocabulaire: Notion = {
       q: 'Quelle végétation de climat froid est faite surtout de mousses et de lichens ?',
       a: 'la toundra',
       wrong: [
-        { label: 'la steppe', why: 'La steppe pousse sous un climat sec en été ou semi-aride.' },
+        { label: 'la steppe', why: 'La steppe pousse sous un climat sec en été ou semi-aride (assez sec).' },
         { label: 'l’oasis', why: 'L’oasis est un lieu de végétation dans un désert.' },
         { label: 'la forêt dense', why: 'La forêt dense est faite de nombreux arbres.' },
       ],
@@ -1104,14 +1123,14 @@ const vocabulaire: Notion = {
   ],
   paires5: [
     ['Écoumène', 'Terres habitées par l’humanité'],
-    ['Steppe', 'Végétation de plantes basses d’un climat sec en été'],
+    ['Steppe', 'Végétation en touffes espacées d’un climat sec'],
     ['Toundra', 'Végétation de climat froid, mousses et lichens'],
     ['Pergélisol', 'Sol gelé en permanence'],
     ['Insularité', 'Fait d’être formé d’îles'],
   ],
   libres: [
     {
-      q: 'Quel mot désigne la formation de plantes basses des climats secs en été ou semi-arides ?',
+      q: 'Quel mot désigne la végétation en touffes espacées des climats secs en été ou semi-arides (assez secs) ?',
       accepted: ['steppe', 'la steppe', 'une steppe'],
       traps: [
         { text: 'toundra', why: 'La toundra est une végétation de climat froid, près des pôles.' },
@@ -1123,7 +1142,7 @@ const vocabulaire: Notion = {
     },
     {
       q: 'Quel mot désigne l’espace habité par l’humanité (il commence par « é ») ?',
-      accepted: ['écoumène', 'l’écoumène', 'ecoumene'],
+      accepted: ['écoumène', 'l’écoumène', 'ecoumene', 'œkoumène', 'oekoumène'],
       traps: [
         { text: 'élevage', why: 'L’élevage est l’art d’élever des animaux.' },
         { text: 'écosystème', why: 'Un écosystème réunit des êtres vivants et leur milieu.' },
