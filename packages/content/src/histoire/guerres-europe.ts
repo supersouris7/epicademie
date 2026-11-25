@@ -493,7 +493,7 @@ const europe: Notion = {
   memo: [
     'Après les guerres, des pays d’Europe veulent la **paix**. Le 9 mai 1950, Robert Schuman, ministre français, propose de mettre en commun le **charbon** et l’**acier**.',
     'En 1951 naît la **CECA**, avec six pays, dont la France et l’Allemagne. En 1957, le **traité** de Rome crée la **CEE**. Le traité de Maastricht, signé en 1992, crée l’**Union européenne**. L’**euro**, une monnaie commune, apparaît en 1999.',
-    'L’Union a des **symboles** : un drapeau bleu à 12 étoiles, un hymne tiré de Beethoven, et la **devise** « Unie dans la diversité ». Le 9 mai est la Journée de l’Europe.',
+    'L’Union a des **symboles** : un drapeau bleu à 12 étoiles, un hymne tiré de Beethoven, et la **devise** « Unie dans la diversité ». Les 12 étoiles ne comptent pas les pays : leur cercle signifie l’unité. Le 9 mai est la Journée de l’Europe.',
   ],
   faits: [
     {
@@ -508,7 +508,7 @@ const europe: Notion = {
         { label: 'pour avoir un seul roi', why: 'L’Europe n’est pas un royaume.' },
         { label: 'pour supprimer toutes les langues', why: 'L’Union garde les langues de ses pays.' },
       ],
-      gap: ['Les pays s’unissent pour construire la ', '.', ['paix']],
+      gap: ['Les pays s’unissent pour mettre fin aux guerres et vivre en ', '.', ['paix']],
       explain: 'Après deux guerres mondiales, l’objectif est la paix.',
     },
     {
@@ -557,7 +557,7 @@ const europe: Notion = {
         { label: 'la déclaration Schuman', why: 'C’est une proposition de 1950, pas le traité qui crée l’Union.' },
       ],
       gap: ['L’Union européenne est créée par le traité de ', '.', ['Maastricht', 'maastricht']],
-      explain: 'Le traité de Maastricht entre en vigueur en 1993.',
+      explain: 'Le traité de Maastricht, signé en 1992, commence à s’appliquer en 1993.',
     },
     {
       ...P.drapeau,
@@ -627,7 +627,7 @@ const europe: Notion = {
     },
     {
       ...P.journeeEurope,
-      q: 'quel mois fête-t-on la Journée de l’Europe, le 9 ? (un mot)',
+      q: 'la Journée de l’Europe a lieu le 9 de quel mois ? (un mot)',
       accepted: ['mai', 'le 9 mai', '9 mai'],
       traps: [
         { text: 'novembre', why: 'En novembre, on se souvient de l’armistice de 1918.' },
