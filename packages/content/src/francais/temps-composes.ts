@@ -376,7 +376,11 @@ function composeOuPqpDraft(rng: Rng, level: Level): QuestionDraft {
         answer,
         traps,
         hint: `Cherche l’auxiliaire ${AU_AU[t]}.`,
-        steps: [DEF_PC_PQP, `La forme au ${t} : **${bon}**.`],
+        steps: [
+          DEF_PC_PQP,
+          `Cherche la forme dont l’auxiliaire est ${AU_AU[t]} : « ${auxiliaireAu(t, v, pBon)} ».`,
+          `La forme au ${t} : **${bon}**.`,
+        ],
       };
     }
     case 3:
@@ -531,6 +535,7 @@ function negationDraft(rng: Rng, level: Level): QuestionDraft {
             texte: `${s.texte} … (${v}, ${tl}, ne … ${a}) ${FINS[v]}.`,
             attendu,
             pourquoi: [
+              ...remplacer(s),
               `Au ${tl}, l’auxiliaire est « ${auxiliaireAu(tl, v, s.personne)} ».`,
               ...accordDe(v, s),
               `La négation l’entoure : « ${attendu} ».`,
@@ -854,7 +859,7 @@ function radicalDraft(rng: Rng, level: Level): QuestionDraft {
         prompt: `« ${f} » : quel est l’infinitif de ce verbe ?`,
         answer,
         traps,
-        hint: 'Mets la forme au présent, ou dis « il faut… » : le verbe se reconnaît mieux.',
+        hint: 'Conjugue dans ta tête chaque verbe proposé : lequel peut donner cette forme ?',
         steps: [DEF_RADICAL, `« ${f} » est ${AU_3[x.t]}. Son infinitif est **${x.v}**.`],
       };
     }
@@ -907,6 +912,7 @@ function radicalDraft(rng: Rng, level: Level): QuestionDraft {
         steps: [
           DEF_RADICAL,
           ...remplacer(s),
+          `Compare avec « il » : ${TEMPS_3.map((x) => `${conjugue3(x, v, 'il')} (${x})`).join(', ')}.`,
           `« ${v} » ${AU_3[t]} avec « ${PRONOMS[s.personne]} » : ${bon}.`,
           `On écrit **${avecSujet(s.texte, bon)} ${FINS[v]}.**`,
         ],
@@ -1047,7 +1053,7 @@ export const FCM2_TEMPS_COMPOSES: readonly Skill[] = [
     title: 'Les variations du radical',
     memo: [
       'Le **radical** porte le sens du verbe. Parfois, il change : je viens, nous venons, je viendrai, il vint.',
-      '**Premier groupe** : devant un e muet, j’appelle, j’achète, je nettoie. Au futur aussi : j’appellerai.',
+      '**Premier groupe** : devant un e muet, j’appelle, j’achète, je nettoie, j’appellerai. Devant a : je lançais, je nageais.',
       'Le **troisième groupe** change souvent de radical : je prends, nous prenons, ils prirent.',
     ],
     factId: 'tc-radical',
