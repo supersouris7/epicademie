@@ -1,5 +1,5 @@
 /**
- * Faits des chapitres « La matière », « Mouvement et énergie » et « Le vivant » (CM1). Chaque fait cite son identifiant de source (registre `sources.ts`) et la
+ * Faits des chapitres « La matière », « Mouvement et énergie » et « Le vivant » (CM1), puis « Matériaux et mélanges » (CM2) et « Signal et information » (6e). Chaque fait cite son identifiant de source (registre `sources.ts`) et la
  * citation exacte du texte officiel (programme du cycle 3, Éduscol, domaine « Matière, mouvement, énergie,
  * information »). Les exemples du quotidien (un caillou, une pomme, la buée…) illustrent ces faits : ils ne sont pas des faits.
  */
@@ -425,5 +425,199 @@ export const FAITS: readonly Fait[] = [
     id: 'chrysalide-def',
     source: 'cnrtl-chrysalide',
     citation: "Nymphe des lépidoptères dont l'état est intermédiaire entre celui de chenille et celui de papillon",
+  },
+  {
+    id: 'materiaux-origine',
+    source: PROGRAMME,
+    citation:
+      'Distinguer les matériaux fabriqués ou transformés par l’être humain des matériaux directement disponibles dans la nature.',
+  },
+  {
+    id: 'materiaux-lumiere',
+    source: PROGRAMME,
+    citation: 'Observer et classer des objets selon qu’ils sont transparents, opaques à la lumière ou translucides.',
+  },
+  {
+    id: 'materiaux-tri',
+    source: PROGRAMME,
+    citation: 'Utiliser les propriétés physiques des matériaux pour les classer, notamment à des fins de tri.',
+  },
+  {
+    id: 'separer-techniques',
+    source: PROGRAMME,
+    citation:
+      'Séparer les constituants d’un mélange de solides ou d’un mélange solide-liquide par tamisage, décantation, filtration.',
+  },
+  {
+    id: 'dissolution-evaporation',
+    source: PROGRAMME,
+    citation:
+      'Observer que certains solides peuvent se dissoudre dans l’eau et qu’il est possible de les récupérer par évaporation.',
+  },
+  {
+    id: 'dissolution-masse',
+    source: PROGRAMME,
+    citation:
+      'Mettre en évidence expérimentalement que la masse totale se conserve lors du mélange d’un solide dans un liquide.',
+  },
+  {
+    id: 'dissolution-sel',
+    source: PROGRAMME,
+    citation: 'La séparation par évaporation trouve une application immédiate dans la récolte du sel',
+  },
+  {
+    id: 'signal-attendu',
+    source: PROGRAMME,
+    citation:
+      'Identifier des signaux de natures différentes et citer des applications dans lesquelles un signal permet de transmettre une information.',
+  },
+  {
+    id: 'signal-6e-identifier',
+    source: PROGRAMME,
+    citation:
+      'Identifier différents signaux pour transmettre de l’information (signal sonore, lumineux, électrique, etc.).',
+  },
+  {
+    id: 'signal-6e-applications',
+    source: PROGRAMME,
+    citation: 'Citer quelques applications des signaux pour transmettre de l’information.',
+  },
+  {
+    id: 'signal-perimetre',
+    source: PROGRAMME,
+    citation:
+      'Au cycle 3, le travail concerne les signaux lumineux et électriques. Les autres types de signaux peuvent être mentionnés en lien avec la transmission d’informations.',
+  },
+  {
+    id: 'signal-applications',
+    source: PROGRAMME,
+    citation:
+      'L’utilisation des signaux lumineux, électriques ou sonores pour transmettre de l’information est illustrée grâce à des applications concrètes (feux de signalisation, voyant de charge d’un appareil, alarme sonore, câbles de communication sous-marins, etc.).',
+  },
+  {
+    id: 'bois-def',
+    source: 'cnrtl-bois',
+    citation: 'Matière (racines, tronc, branches) qui constitue l’arbre (à l’exception du feuillage)',
+  },
+  {
+    id: 'sable-def',
+    source: 'cnrtl-sable',
+    citation:
+      'Roche sédimentaire meuble, constituée de petits fragments provenant de la désagrégation de roches de nature diverse',
+  },
+  {
+    id: 'argile-def',
+    source: 'cnrtl-argile',
+    citation:
+      'Terre glaise, composée de silicate d’alumine hydraté résultant surtout de la décomposition des feldspaths',
+  },
+  {
+    id: 'coton-def',
+    source: 'cnrtl-coton',
+    citation: 'Duvet végétal soyeux, entourant les graines du cotonnier et utilisé comme matière textile.',
+  },
+  {
+    id: 'laine-def',
+    source: 'cnrtl-laine',
+    citation:
+      'Matière constituée par les poils doux et épais, plus ou moins longs, poussant sur la peau de certains mammifères',
+  },
+  {
+    id: 'pierre-def',
+    source: 'cnrtl-pierre',
+    citation:
+      'Matière minérale solide plus ou moins dure qu’on rencontre en masses compactes à la surface et à l’intérieur du sol.',
+  },
+  {
+    id: 'verre-def',
+    source: 'cnrtl-verre',
+    citation:
+      'Substance solide, transparente et cassante, obtenue par la fusion d’un sable siliceux avec du carbonate de sodium ou de potassium.',
+  },
+  {
+    id: 'brique-def',
+    source: 'cnrtl-brique',
+    citation: 'fabriquée à partir d’une pâte d’argile pétrie, moulée, séchée puis cuite au four',
+  },
+  {
+    id: 'acier-def',
+    source: 'cnrtl-acier',
+    citation: 'Métal plus dur et plus résistant que le fer, obtenu par un alliage de fer et de carbone',
+  },
+  {
+    id: 'papier-def',
+    source: 'cnrtl-papier',
+    citation:
+      'Matière à base de cellulose, faite de fibres végétales naturelles ou transformées, réduites en une pâte homogène que l’on étend et sèche pour former une feuille mince.',
+  },
+  {
+    id: 'nylon-def',
+    source: 'cnrtl-nylon',
+    citation: 'Matière synthétique appartenant à la famille des polyamides',
+  },
+  {
+    id: 'transparent-def',
+    source: 'cnrtl-transparent',
+    citation: 'Qui laisse passer la lumière, qui ne fait pas écran à la vision.',
+  },
+  {
+    id: 'opaque-def',
+    source: 'cnrtl-opaque',
+    citation: 'Qui s’oppose au passage de la lumière',
+  },
+  {
+    id: 'translucide-def',
+    source: 'cnrtl-translucide',
+    citation:
+      'Qui laisse passer les rayons lumineux mais ne permet pas de distinguer nettement les contours ou les couleurs des objets.',
+  },
+  {
+    id: 'translucide-exemples',
+    source: 'cnrtl-translucide',
+    citation: 'Matière, papier huilé, pierre, porcelaine, verre dépoli translucide',
+  },
+  {
+    id: 'tamis-def',
+    source: 'cnrtl-tamis',
+    citation: 'sert à séparer des particules solides de tailles différentes ou à filtrer des liquides',
+  },
+  {
+    id: 'filtre-def',
+    source: 'cnrtl-filtre',
+    citation:
+      'Corps poreux ou dispositif à travers lequel on fait passer un fluide pour retenir des corps et des substances solides qu’il contient.',
+  },
+  {
+    id: 'sel-def',
+    source: 'cnrtl-sel',
+    citation: 'formée de cristaux blanchâtres, friables et solubles dans l’eau',
+  },
+  {
+    id: 'soluble-def',
+    source: 'cnrtl-soluble',
+    citation: 'Qui peut se dissoudre dans un solvant approprié, un liquide ou un corps liquéfié.',
+  },
+  {
+    id: 'signal-def',
+    source: 'cnrtl-signal',
+    citation:
+      'Signe conventionnel ou système de signes conventionnels destiné à informer ou à prévenir quelqu’un de quelque chose.',
+  },
+  {
+    id: 'signal-natures',
+    source: 'cnrtl-signal',
+    citation:
+      'Phénomène physique (tension, courant, champ électromagnétique, onde sonore ou lumineuse) transmettant une information.',
+  },
+  {
+    id: 'sirene-def',
+    source: 'cnrtl-sirene',
+    citation: 'Appareil servant à produire un signal sonore très puissant',
+  },
+  {
+    id: 'voyant-def',
+    source: 'cnrtl-voyant',
+    citation:
+      'Lampe s’allumant pour attirer l’attention sur un danger, un dysfonctionnement ou pour indiquer qu’un appareil fonctionne.',
   },
 ];

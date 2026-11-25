@@ -759,4 +759,18 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Temps en deux mots : être ou avoir à l’imparfait, puis le participe passé.',
     example: 'Elle était partie.',
   },
+  {
+    id: 'passe-simple',
+    word: 'passé simple',
+    forms: ['au passé simple'],
+    definition: 'Un temps du passé en un seul mot. On le trouve surtout dans les récits écrits.',
+    example: 'Soudain, le chevalier prit son épée. Il fut très courageux.',
+  },
+  {
+    id: 'accent-circonflexe',
+    word: 'accent circonflexe',
+    forms: ['accents circonflexes', 'circonflexe'],
+    definition: 'Le petit chapeau posé sur une voyelle : â, ê, î, ô, û.',
+    example: 'nous chantâmes, vous finîtes',
+  },
 ];

@@ -20,3 +20,6 @@
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).
+
+Écart au plan : le chapitre « Signal et information » (colonne « fin de sixième » du programme, hors lots ci-dessus) est
+livré avec le lot `st-cm2-01` (couvert, relu).
