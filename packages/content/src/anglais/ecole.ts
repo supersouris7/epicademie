@@ -131,7 +131,8 @@ const school: Skill = {
   lesson: {
     memo: [
       'Dans ton cartable : pen (stylo), pencil (crayon à papier), ruler (règle), eraser (gomme), glue (colle), scissors (ciseaux).',
-      'Aussi : bag (sac), pencil case (trousse), pencil sharpener (taille-crayon), notebook (cahier), folder (classeur), desk (bureau).',
+      'Aussi : bag (sac), pencil case (trousse), pencil sharpener (taille-crayon), calculator (calculatrice), felt tips (feutres).',
+      'Et encore : notebook (cahier), folder (classeur), desk (bureau).',
       'Les **matières** : English, maths, science, history, geography, music, art, P.E. (sport à l’école).',
     ],
     source: source('l’école. Mots : British Council, fiches « Classroom objects » et « School subjects ».'),
@@ -492,7 +493,7 @@ function bodySentence(rng: Rng): QuestionDraft {
         ? { text: `It’s got ${p.en}.`, why: 'Il manque « a » : il y en a un seul.' }
         : { text: `It’s got a ${p.en}.`, why: 'Pas de « a » ici : le mot est au pluriel ou ne se compte pas.' },
     ],
-    hint: 'Commence par « It », puis « a » en deux mots courts. Un seul ou plusieurs : faut-il un petit mot devant ?',
+    hint: 'Après « It », pense au « a » de « have got » avec « he » ou « it ». Un seul ou plusieurs : faut-il un petit mot devant ?',
     steps: ['« Il a » se dit « It’s got ».', `La partie du corps : « ${p.en} ».`, `Réponse : **${good}.**`],
   };
 }

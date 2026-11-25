@@ -52,11 +52,11 @@ export interface Riddle {
 export const SCHOOL_RIDDLES: readonly Riddle[] = [
   { en: 'scissors', clue: 'Je coupe le papier.' },
   { en: 'ruler', clue: 'Je t’aide à tracer un trait bien droit.' },
-  { en: 'glue', clue: 'Je fais tenir une feuille sur une autre.' },
+  { en: 'glue', clue: 'Je colle une feuille sur une autre.' },
   { en: 'eraser', clue: 'J’efface tes traits de crayon.' },
   { en: 'calculator', clue: 'Je fais les calculs quand tu appuies sur mes touches.' },
   { en: 'pencil sharpener', clue: 'Je taille la pointe de ton crayon.' },
-  { en: 'pencil case', clue: 'Je range tes stylos et tes crayons.' },
+  { en: 'pencil case', clue: 'Je suis la petite pochette où tu ranges tes stylos et tes crayons.' },
 ];
 
 // ——— La nourriture ———
