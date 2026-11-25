@@ -34,5 +34,6 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'em5-risques-protection', version: 1, lot: 'em-5e-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'em5-discours-haine-en-ligne', version: 1, lot: 'em-5e-02', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'em5-haine-loi', version: 1, lot: 'em-5e-02', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'em5-haine-reagir', version: 1, lot: 'em-5e-02', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'em5-haine-signaler', version: 1, lot: 'em-5e-02', date: '2026-11-25', verdict: 'ok' },
 ];
