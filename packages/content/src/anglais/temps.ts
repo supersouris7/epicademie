@@ -19,7 +19,7 @@ export const at = <T>(list: readonly T[], i: number): T => {
 };
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 /** « de » élidé devant un prénom qui commence par une voyelle : d’Ana, d’Emir. */
-const de = (name: string) => (/^[AEIOU]/.test(name) ? `d’${name}` : `de ${name}`);
+export const de = (name: string) => (/^[AEIOU]/.test(name) ? `d’${name}` : `de ${name}`);
 export const some = <T>(rng: Rng, list: readonly T[], n: number): T[] => rng.shuffle(list).slice(0, n);
 export const others = <T>(rng: Rng, list: readonly T[], not: T, n: number): T[] =>
   some(
