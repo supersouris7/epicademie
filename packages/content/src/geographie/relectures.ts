@@ -58,4 +58,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'g5-risques', version: 1, lot: 'ge-5e-03', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'g5-adaptation', version: 1, lot: 'ge-5e-03', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'g5-prevention', version: 1, lot: 'ge-5e-03', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'g5-cartes', version: 1, lot: 'ge-5e-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'g5-foyers-population', version: 1, lot: 'ge-5e-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'g5-reperes-ressources', version: 1, lot: 'ge-5e-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'g5-vocabulaire', version: 1, lot: 'ge-5e-04', date: '2026-11-26', verdict: 'ok' },
 ];
