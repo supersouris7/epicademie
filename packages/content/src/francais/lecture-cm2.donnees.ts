@@ -526,7 +526,7 @@ export const DOSSIERS: readonly Dossier[] = [
     paragraphes: [
       par('Les plantes', 'Des arbres, des mousses et des fougères y poussent.'),
       par('Les animaux', 'On y rencontre des cerfs, des écureuils et des pics.'),
-      par('La protection', 'Il ne faut jamais y allumer de feu en été.'),
+      par('La protection', 'Il ne faut pas y allumer de feu.'),
     ],
   },
 ];
@@ -550,15 +550,15 @@ export const INFOS_A_PRELEVER: readonly Saisie[] = [
   {
     titre: 'Le papier',
     lignes: [
-      'Le papier se fabrique surtout à partir du bois.',
+      'Le papier neuf se fabrique à partir du bois.',
       'On le broie pour obtenir une pâte avec de l’eau.',
       'La pâte est ensuite pressée puis séchée.',
     ],
-    question: 'Écris la matière qui sert surtout à fabriquer le papier.',
+    question: 'Écris la matière qui sert à fabriquer le papier neuf.',
     accepted: ['le bois', 'bois', 'du bois'],
     pieges: [
       ['la pâte', 'La pâte vient après : elle est fabriquée à partir d’une autre matière.'],
-      ['l’eau', 'L’eau aide à faire la pâte, mais le papier vient surtout d’une autre matière.'],
+      ['l’eau', 'L’eau aide à faire la pâte, mais le papier neuf vient d’une autre matière.'],
     ],
     preuve: 'La ligne 1 dit : « à partir du bois ».',
   },
@@ -1045,9 +1045,9 @@ export const LONGS_INFERENCE: readonly TexteLong[] = [
         'Les doigts sont « engourdis » dans la neige.',
       ),
       trou(
-        'La fumée leur apprend qu’',
-        'il y a un lieu chauffé',
-        ['il y a un incendie', 'la neige fond'],
+        'La fumée leur apprend',
+        'qu’il y a un lieu chauffé',
+        ['qu’il y a un incendie', 'que la neige fond'],
         'La fumée sort d’un toit, et le gardien les accueille.',
       ),
       trou(
@@ -1591,29 +1591,30 @@ export const REPRISES: readonly Reprise[] = [
   },
   {
     lignes: [
-      'Le capitaine Morel donne un ordre à Iris, la jeune matelote.',
+      'Le capitaine Morel donne un ordre à Iris, la nouvelle apprentie.',
       'L’officier montre le perroquet Coco perché sur le mât.',
-      'La marine grimpe ; l’oiseau s’envole aussitôt.',
+      'La jeune fille grimpe ; l’oiseau s’envole aussitôt.',
     ],
     paires: [
       ['l’officier', 'le capitaine Morel'],
-      ['la marine', 'Iris'],
+      ['la jeune fille', 'Iris'],
       ['l’oiseau', 'Coco'],
     ],
-    preuve: 'Le capitaine est un officier, Iris est matelote donc marine, le perroquet est un oiseau.',
+    preuve:
+      'Le capitaine est un officier, Iris est la jeune fille qui reçoit l’ordre de grimper, le perroquet est un oiseau.',
   },
   {
     lignes: [
       'Le docteur Lemaire examine Paulette, une dame âgée.',
-      'Le médecin rassure la grand-mère.',
+      'Le médecin rassure sa patiente.',
       'Sous la chaise, le chat Biscuit ronronne : le félin n’a pas peur.',
     ],
     paires: [
       ['le médecin', 'le docteur Lemaire'],
-      ['la grand-mère', 'Paulette'],
+      ['sa patiente', 'Paulette'],
       ['le félin', 'Biscuit'],
     ],
-    preuve: 'Le médecin est le docteur, la dame âgée est la grand-mère, le chat est un félin.',
+    preuve: 'Le médecin est le docteur, la patiente est la dame qu’il examine, le chat est un félin.',
   },
 ];
 

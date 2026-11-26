@@ -110,4 +110,6 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm2-leur-leurs', version: 1, lot: 'fr-cm2-09', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'fcm2-quel-quelle', version: 1, lot: 'fr-cm2-09', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'fcm2-lettres-muettes', version: 1, lot: 'fr-cm2-09', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'fcm2-texte-narratif', version: 1, lot: 'fr-cm2-10', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'fcm2-personnages-narrateur', version: 1, lot: 'fr-cm2-10', date: '2026-11-26', verdict: 'ok' },
 ];

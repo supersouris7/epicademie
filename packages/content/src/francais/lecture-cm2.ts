@@ -83,8 +83,15 @@ function qcm(
   };
 }
 
+/** Un piège écrit avec article reste expliqué quand l’élève écrit le mot seul. */
+const avecSansArticle = (pieges: Saisie['pieges']): Saisie['pieges'] =>
+  pieges.flatMap(([texte, why]) => {
+    const seul = texte.replace(/^(?:le |la |les |l’|un |une |des |son )/, '');
+    return seul === texte ? [[texte, why] as const] : [[texte, why] as const, [seul, why] as const];
+  });
+
 function saisir(s: Saisie, consigne: string, etapes: readonly Rich[], hint: string): QuestionDraft {
-  return ecrire(s.accepted, s.pieges, {
+  return ecrire(s.accepted, avecSansArticle(s.pieges), {
     prompt: `${consigne} ${s.question}`,
     figure: document(s.titre, s.lignes),
     hint,
@@ -174,11 +181,11 @@ function genreTrompeur(rng: Rng): QuestionDraft {
   const autre = t.genre === 'recit' ? 'documentaire' : 'recit';
   return ecrire(
     SAISIE_GENRE[t.genre],
-    [
+    avecSansArticle([
       [GENRES[autre].nom, `Non : relis la fin. Un seul événement vécu, ou des faits qui valent toujours ?`],
-      ['poème', 'Le texte n’est pas écrit en vers.'],
-      ['pièce de théâtre', 'Aucun nom de personnage ne précède des paroles.'],
-    ],
+      ['un poème', 'Le texte n’est pas écrit en vers.'],
+      ['une pièce de théâtre', 'Aucun nom de personnage ne précède des paroles.'],
+    ]),
     {
       prompt: 'Attention, ce texte peut tromper ! Écris son genre : récit ou documentaire.',
       figure: document(t.titre, t.lignes),
@@ -518,7 +525,7 @@ function personnagesDraft(rng: Rng, level: Level): QuestionDraft {
         rng.pick(QUI_SE_CACHE),
         'Retrouve le bon personnage.',
         [DEF_REPRISE, 'Un pronom prend le genre (masculin ou féminin) de la personne qu’il remplace.'],
-        'Regarde si le pronom est masculin ou féminin, et qui agit.',
+        'Cherche qui parle et qui agit. « Il » et « elle » t’indiquent aussi le genre.',
       );
     case 4: {
       if (unSur(rng, 2)) {
