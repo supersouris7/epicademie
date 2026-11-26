@@ -532,7 +532,10 @@ const republique: Notion = {
       q: 'quel écrivain publie « J’accuse…! » pour défendre Dreyfus ?',
       accepted: ['Zola', 'Émile Zola', 'Emile Zola'],
       traps: [
-        { text: 'Clemenceau', why: 'Clemenceau dirige le journal et trouve le titre, mais Zola écrit l’article.' },
+        {
+          text: 'Clemenceau',
+          why: 'Clemenceau, qui travaille à L’Aurore, trouve le titre, mais c’est Zola qui écrit l’article.',
+        },
         { text: 'Jules Ferry', why: 'Jules Ferry est connu pour ses lois sur l’école.' },
       ],
       explain: 'La publication de 1898 fait de la condamnation une affaire nationale.',
