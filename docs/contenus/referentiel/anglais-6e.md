@@ -20,7 +20,7 @@
 | `an-6e-06` | Les pronoms                       | pronoms sujets ; pronoms compléments ; déterminants possessifs ; pronoms possessifs ; mots interrogatifs          | couverte, en relecture |
 | `an-6e-07` | Temps, espace, formation des mots | marqueurs de temps ; dates et ordinaux ; prépositions de lieu ; suffixes -y, -er, -ly ; noms composés             | couverte, en relecture |
 | `an-6e-08` | Écouter et comprendre             | comprendre un message court ; nombres, dates, heures ; repères culturels du programme de 6e                       | couverte, en relecture |
-| `an-6e-09` | Vocabulaire thématique            | école ; loisirs ; alimentation ; maison ; repères des 5 axes culturels                                            | absente                |
+| `an-6e-09` | Vocabulaire thématique            | école ; loisirs ; alimentation ; maison ; repères des 5 axes culturels                                            | couverte, en relecture |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).

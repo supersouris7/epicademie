@@ -886,4 +886,32 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Récit transmis depuis longtemps, où le réel se mêle à l’imaginaire.',
     example: 'La légende de Finn McCool vient d’Irlande.',
   },
+  {
+    id: 'lexique',
+    word: 'lexique',
+    forms: ['lexique'],
+    definition: 'L’ensemble des mots d’une langue, ou des mots d’un thème.',
+    example: 'Le lexique de la maison : kitchen, bedroom, garden…',
+  },
+  {
+    id: 'repas',
+    word: 'repas',
+    forms: ['repas'],
+    definition: 'Moment où l’on mange, comme le matin, le midi ou le soir.',
+    example: 'Breakfast est le repas du matin.',
+  },
+  {
+    id: 'axe-culturel',
+    word: 'axe culturel',
+    forms: ['axe culturel', 'axes culturels'],
+    definition: 'Grand thème qui organise la découverte de la culture des pays qui parlent la langue.',
+    example: '« Pays et paysages » est un axe culturel.',
+  },
+  {
+    id: 'objet-etude',
+    word: 'objet d’étude',
+    forms: ['objet d’étude', 'objets d’étude'],
+    definition: 'Sujet précis choisi pour étudier un axe.',
+    example: '« L’image du dragon » est un objet d’étude.',
+  },
 ];
