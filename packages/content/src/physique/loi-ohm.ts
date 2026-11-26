@@ -60,9 +60,8 @@ const niveau2 = (rng: Rng): QuestionDraft => {
       ['I (intensité)', 'ampère (A)'],
       ['R (résistance)', 'ohm (Ω)'],
     ] as const;
-    const grandeur = rng.pick(['un chargeur', 'une lampe', 'un radiateur', 'un moteur']);
     return {
-      prompt: `On analyse ${grandeur} avec la loi d’Ohm. Associe chaque lettre à son unité.`,
+      prompt: 'Dans la loi d’Ohm U = R × I, associe chaque lettre à son unité.',
       answer: association(rng, paires),
       hint: 'Dis d’abord ce que désigne chaque lettre, puis pense à son appareil de mesure.',
       steps: ['U est la tension, I l’intensité, R la résistance.', 'Réponse : **U → volt ; I → ampère ; R → ohm**.'],

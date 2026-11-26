@@ -138,6 +138,10 @@ describe('physique-chimie 4e : « Électricité »', () => {
     }
   });
 
+  it('loi d’Ohm niveau 2 : aucun appareil non ohmique dans les énoncés', () => {
+    for (const q of tirages('p4-loi-ohm', 2)) expect(q.prompt).not.toMatch(/chargeur|lampe|radiateur|moteur/i);
+  });
+
   it('loi d’Ohm : calculs et mesures refaits à partir de l’énoncé', () => {
     for (const q of tirages('p4-loi-ohm', 3)) {
       const t = q.prompt;
