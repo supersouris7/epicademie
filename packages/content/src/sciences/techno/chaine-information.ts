@@ -35,7 +35,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
       { label: 'convertir', why: 'Convertir appartient à la chaîne d’énergie : changer la forme de l’énergie.' },
       { label: 'alimenter', why: 'Alimenter appartient à la chaîne d’énergie : fournir l’énergie.' },
     ]),
-    hint: 'Écarte les verbes qui parlent d’énergie.',
+    hint: 'Imagine le trajet de l’information : elle entre, elle est utilisée, puis un résultat sort.',
     steps: [POURQUOI[f], `La réponse est **${f}**.`],
     targetSeconds: 25,
   };
@@ -87,7 +87,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
       `${s.actionneur} agit`,
     ].map(maj);
     return {
-      prompt: `Dans ${s.nom}, range les étapes, depuis ${s.grandeur} jusqu’à l’action.`,
+      prompt: `Dans ${s.nom}, range les étapes dans l’ordre, de la mesure par le capteur jusqu’à l’action.`,
       answer: ordre(rng, suite),
       hint: 'Suis les trois verbes de la chaîne d’information ; l’action vient après.',
       steps: [

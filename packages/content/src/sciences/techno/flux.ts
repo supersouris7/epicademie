@@ -96,7 +96,12 @@ const CONVERSIONS: readonly Conversion[] = [
     sortie: 'mécanique de translation',
     acceptees: variantes('mécanique', 'cinétique', 'mécanique de translation'),
   },
-  { nom: 'une lampe', entree: 'électrique', sortie: 'lumineuse', acceptees: [...variantes('lumineuse'), 'lumière'] },
+  {
+    nom: 'une lampe',
+    entree: 'électrique',
+    sortie: 'lumineuse',
+    acceptees: [...variantes('lumineuse'), 'lumière', 'la lumière', 'de la lumière'],
+  },
   RADIATEUR,
   {
     nom: 'une génératrice entraînée par une roue',
@@ -124,6 +129,11 @@ const niveau3 = (rng: Rng): QuestionDraft => {
           'L’énergie chimique est une réserve, par exemple dans une pile : ce constituant n’en produit pas.',
         ],
   ];
+  if (c.sortie.startsWith('mécanique'))
+    erreurs.push([
+      'mouvement',
+      'Le mouvement est bien ce qu’on observe : nomme la forme d’énergie correspondante, l’énergie cinétique (ou mécanique).',
+    ]);
   return {
     prompt: `Quelle forme d’énergie utile fournit ${c.nom} ? Écris-la.`,
     ...saisie(c.acceptees, erreurs),
@@ -142,7 +152,7 @@ const CAS_FINS: readonly { texte: string; type: Type }[] = [
   { texte: 'le courant qui traverse un fil pour faire tourner un moteur', type: 'énergie' },
   { texte: 'le signal électrique qu’un capteur de distance envoie par un fil', type: 'information' },
   { texte: 'la consigne envoyée sans fil par une télécommande', type: 'information' },
-  { texte: 'l’eau chaude qu’une cafetière verse dans la tasse', type: 'matière' },
+  { texte: 'l’eau qu’une cafetière verse dans la tasse', type: 'matière' },
   { texte: 'les grains de café qui descendent vers le broyeur', type: 'matière' },
 ];
 
@@ -280,7 +290,8 @@ export const flux = notion(
     title: 'Flux et transformations d’énergie',
     memo: [
       'Dans un système, trois sortes de **flux** circulent : l’énergie (ce qui permet d’agir), l’information (une donnée ou un ordre) et la matière (eau, air, objets).',
-      'Un convertisseur change la forme de l’énergie : le moteur reçoit de l’électricité et fournit un mouvement ; la **génératrice** fait l’inverse.',
+      'Un convertisseur change la forme de l’énergie : le moteur reçoit de l’électricité et fournit un mouvement ; la **génératrice** fait l’inverse. La lampe fournit de la lumière, le radiateur de la chaleur.',
+      'Formes d’énergie : électrique, **énergie cinétique** (liée au mouvement), **énergie thermique** (chaleur), lumineuse, potentielle (en réserve, liée à la position). Certaines fiches écrivent « énergie mécanique » pour le mouvement : de **rotation** (il tourne, comme un moteur) ou de **translation** (en ligne droite, comme un vérin électrique).',
     ],
     classe: '4e',
     attendu: 'Les flux d’information, d’énergie et de matière sont abordés et caractérisés',

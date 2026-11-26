@@ -596,4 +596,32 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Roues dentées qui s’entraînent l’une l’autre pour transmettre un mouvement.',
     example: 'Les roues dentées d’un batteur de cuisine.',
   },
+  {
+    id: 'te-energie-thermique',
+    word: 'énergie thermique',
+    forms: ['énergie thermique', 'énergies thermiques'],
+    definition: 'Énergie sous forme de chaleur.',
+    example: 'Un radiateur fournit de l’énergie thermique.',
+  },
+  {
+    id: 'te-rotation',
+    word: 'rotation',
+    forms: ['rotation', 'rotations'],
+    definition: 'Mouvement de ce qui tourne autour d’un axe.',
+    example: 'La rotation d’une roue.',
+  },
+  {
+    id: 'te-translation',
+    word: 'translation',
+    forms: ['translation', 'translations'],
+    definition: 'Mouvement d’un objet qui se déplace sans tourner, par exemple en ligne droite.',
+    example: 'Un tiroir qui coulisse.',
+  },
+  {
+    id: 'te-cremaillere',
+    word: 'crémaillère',
+    forms: ['crémaillère', 'crémaillères'],
+    definition: 'Barre dentée qu’une petite roue dentée, le pignon, fait avancer.',
+    example: 'La barre dentée d’un portail coulissant motorisé.',
+  },
 ];

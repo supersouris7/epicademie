@@ -26,6 +26,9 @@ const verbe = (bonne: FonctionEnergie) =>
     [
       ...F.filter((f) => f !== bonne).map((f) => [f, POURQUOI[f]] as const),
       ['acquérir', 'Acquérir est une fonction de la chaîne d’information : prélever des informations.'],
+      ['fournir', 'Fournir décrit un rôle : le nom de la fonction qui fournit l’énergie est « alimenter ».'],
+      ['transformer', 'Transformer l’énergie, c’est la fonction qui porte le nom « convertir ».'],
+      ['stocker', 'Stocker, c’est garder en réserve : ce n’est pas l’un des quatre verbes à retenir ici.'],
     ],
   );
 
@@ -43,7 +46,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
       { label: 'acquérir', why: 'Acquérir appartient à la chaîne d’information : prélever des informations.' },
       { label: 'traiter', why: 'Traiter appartient à la chaîne d’information : exécuter le programme.' },
     ]),
-    hint: 'Les deux chaînes n’ont pas les mêmes verbes : cherche celui qui parle d’énergie.',
+    hint: 'Relis le rôle demandé, puis essaie chaque verbe proposé dans une phrase : « il sert à… l’énergie ».',
     steps: [POURQUOI[f], `La réponse est **${f}**.`],
     targetSeconds: 25,
   };
@@ -153,7 +156,7 @@ const PANNES: readonly { fonction: FonctionEnergie; constat: (s: SystemeEnergie)
   {
     fonction: 'transmettre',
     constat: (s) =>
-      `Pendant l’essai, ${s.constituants.convertir} tourne, mais le mouvement n’arrive pas jusqu’au bout : le système n’arrive pas à ${s.action}.`,
+      `Pendant l’essai, ${s.constituants.convertir} tourne, mais le mouvement n’arrive pas jusqu’au bout : le système ne parvient pas à ${s.action}.`,
   },
 ];
 

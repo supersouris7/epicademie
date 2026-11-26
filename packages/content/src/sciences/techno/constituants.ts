@@ -22,7 +22,7 @@ const ENERGIE: readonly Constituant[] = [
 
 const INFORMATION: readonly Constituant[] = [
   { nom: 'le capteur de température', chaine: 'information', role: 'mesurer la température' },
-  { nom: 'le capteur de présence', chaine: 'information', role: 'détecter une personne ou un objet' },
+  { nom: 'le capteur de présence', chaine: 'information', role: 'détecter si une personne ou un objet est présent' },
   { nom: 'le capteur de distance', chaine: 'information', role: 'mesurer l’éloignement d’un obstacle' },
   { nom: 'le microcontrôleur', chaine: 'information', role: 'traiter les informations en exécutant un programme' },
   { nom: 'l’afficheur', chaine: 'information', role: 'montrer des informations à l’usager' },
@@ -30,8 +30,11 @@ const INFORMATION: readonly Constituant[] = [
 
 const TOUS = [...ENERGIE, ...INFORMATION];
 
+/** « de » élidé devant un verbe à voyelle : « d’ouvrir ». */
+const deVerbe = (role: string) => (/^[aeéiou]/.test(role) ? `d’${role}` : `de ${role}`);
+
 const appartient = (c: Constituant) =>
-  `${maj(c.nom)} a pour rôle de ${c.role} : ce constituant appartient à la chaîne d’${c.chaine}.`;
+  `${maj(c.nom)} a pour rôle ${deVerbe(c.role)} : ce constituant appartient à la chaîne d’${c.chaine}.`;
 
 const niveau1 = (rng: Rng): QuestionDraft => {
   const info = rng.int(0, 1) === 0;
@@ -56,14 +59,14 @@ const niveau2 = (rng: Rng): QuestionDraft => {
   const bon = rng.pick(TOUS);
   const autres = rng.shuffle(TOUS.filter((c) => c !== bon)).slice(0, 3);
   return {
-    prompt: `Quel constituant a pour rôle de ${bon.role} ?`,
+    prompt: `Quel constituant a pour rôle ${deVerbe(bon.role)} ?`,
     ...qcm(
       rng,
       bon.nom,
       autres.map((c) => ({ label: c.nom, why: `Pour ${c.nom}, le rôle est différent : ${c.role}.` })),
     ),
     hint: 'Pour chaque proposition, demande-toi ce qu’elle reçoit et ce qu’elle fait.',
-    steps: [`On cherche le constituant capable de ${bon.role}.`, `La réponse est **${bon.nom}**.`],
+    steps: [`On cherche le constituant capable ${deVerbe(bon.role)}.`, `La réponse est **${bon.nom}**.`],
     targetSeconds: 35,
   };
 };
@@ -79,7 +82,7 @@ const A_NOMMER: readonly Nomme[] = [
     description: 'Ce constituant stocke de l’énergie électrique, alimente un objet et peut être rechargé.',
     accepte: ['batterie', 'la batterie', 'une batterie', 'accumulateur', 'un accumulateur', 'l’accumulateur'],
     erreurs: [
-      ['pile', 'Une pile fournit de l’énergie, mais on la jette quand elle est vide : elle ne se recharge pas ici.'],
+      ['pile', 'Une pile fournit de l’énergie, mais on la jette quand elle est vide, à la différence d’une batterie.'],
       ['moteur', 'Un moteur convertit l’énergie : il ne la stocke pas.'],
     ],
   },
