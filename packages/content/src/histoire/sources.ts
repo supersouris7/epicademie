@@ -1356,14 +1356,6 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-26',
   },
   {
-    id: 'un-membres',
-    title: 'États Membres de l’Organisation des Nations unies et dates d’admission',
-    publisher: 'Organisation des Nations unies',
-    url: 'https://www.un.org/fr/about-us/member-states',
-    textDate: '2026',
-    consultedOn: '2026-11-26',
-  },
-  {
     id: 'un-casques-bleus',
     title: 'Notre histoire : le maintien de la paix des Nations unies',
     publisher: 'Organisation des Nations unies',
@@ -1379,6 +1371,14 @@ export const SOURCES: readonly Source[] = [
     textDate: '2026',
     consultedOn: '2026-11-26',
   },
-  { ...academie('independance', 'indépendance'), consultedOn: '2026-11-26' },
   { ...tlfi('terrorisme', 'terrorisme', 'terrorisme'), consultedOn: '2026-11-26' },
+  {
+    id: 'senat-harkis-2022',
+    title: 'Reconnaissance de la Nation envers les harkis : l’essentiel (rapport n° 340, 2021-2022)',
+    publisher: 'Sénat',
+    url: 'https://www.senat.fr/rap/l21-340/l21-3400.html',
+    textDate: '2022',
+    consultedOn: '2026-11-26',
+  },
+  { ...tlfi('rideau', 'rideau', 'rideau'), consultedOn: '2026-11-26' },
 ];

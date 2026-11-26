@@ -31,16 +31,21 @@ const independances: Notion = {
   ],
   faits: [
     {
-      q: 'Selon le programme, quel est un fait majeur du second XXe siècle ?',
-      a: 'l’effondrement rapide des empires coloniaux',
+      q: 'Quel grand bouleversement touche les empires coloniaux après 1945 ?',
+      a: 'ils s’effondrent rapidement',
       wrong: [
-        w('la naissance des premiers empires coloniaux', 'Les conquêtes coloniales sont bien plus anciennes.'),
-        w('le maintien de toutes les colonies', 'Au contraire, les colonies accèdent à l’indépendance.'),
-        w('la disparition de tous les États', 'Le nombre d’États augmente fortement après 1945.'),
+        w('ils naissent pour la première fois', 'Les conquêtes coloniales sont bien plus anciennes.'),
+        w('ils conservent toutes leurs colonies', 'Au contraire, les colonies accèdent à l’indépendance.'),
+        w('ils fusionnent en un seul empire', 'Au contraire, de nombreux nouveaux États apparaissent.'),
       ],
-      gap: ['L’effondrement rapide des empires ', ' est un fait majeur du second XXe siècle.', ['coloniaux']],
+      gap: [
+        'L’effondrement rapide des empires ',
+        ' est un fait majeur de la seconde moitié du XXe siècle.',
+        ['coloniaux'],
+      ],
       ...PREUVES.programmeEmpires,
-      explain: 'Les empires coloniaux s’effondrent rapidement après 1945.',
+      explain:
+        'Les empires coloniaux s’effondrent rapidement au cours du « second XXe siècle », c’est-à-dire sa seconde moitié.',
     },
     {
       q: 'Comment appelle-t-on le processus par lequel des colonies accèdent à l’indépendance après 1945 ?',
@@ -126,7 +131,7 @@ const independances: Notion = {
         w('la dissuasion', 'La dissuasion repose sur la menace des armes nucléaires.'),
         w('l’élargissement', 'L’élargissement désigne l’entrée de nouveaux pays dans l’Union européenne.'),
       ],
-      gap: ['Le refus de s’aligner sur l’un des deux blocs s’appelle le non-', '.', ['alignement']],
+      gap: ['Rester à l’écart des deux blocs de la guerre froide, c’est choisir le non-', '.', ['alignement']],
       ...PREUVES.nonAlignement,
       explain: 'Le non-alignement cherche à échapper à la bipolarisation du monde.',
     },
@@ -277,7 +282,7 @@ const independances: Notion = {
       explain: 'L’indépendance est proclamée le 5 juillet 1962.',
     },
     {
-      q: 'Quelle expression désigne les pays qui émergent à Bandung, entre les deux blocs ?',
+      q: 'Quelle expression, forgée par Alfred Sauvy, désigne les pays qui émergent à Bandung, entre les deux blocs ?',
       accepted: [...mot('Tiers-Monde', 'le '), 'Tiers Monde', 'le Tiers Monde'],
       traps: [
         t('bloc de l’Est', 'Le bloc de l’Est est lié à l’URSS.'),
@@ -332,11 +337,11 @@ const independances: Notion = {
     {
       title: 'L’Algérie vers l’indépendance',
       lines: [
-        'L’Algérie, colonie française depuis 1830, réclame l’indépendance après 1945.',
+        'En Algérie, colonie française depuis 1830, les appels à l’indépendance grandissent après 1945.',
         'En 1954, le FLN lance des attentats : commence une guerre qui dure jusqu’en 1962.',
         'Attentats et répression se succèdent, notamment lors de la bataille d’Alger en 1957.',
         'Après les accords d’Évian, l’indépendance est proclamée le 5 juillet 1962.',
-        'Une majeure partie de la communauté française d’Algérie et des harkis part alors dans la douleur.',
+        'La plupart des Français d’Algérie partent alors dans la douleur ; des harkis partent aussi.',
       ],
       qs: [
         {
@@ -351,13 +356,13 @@ const independances: Notion = {
         },
         {
           q: 'En mobilisant tes connaissances : qui sont les harkis évoqués à la ligne 5 ?',
-          a: 'des hommes engagés dans l’armée française pendant la guerre d’Algérie',
+          a: 'des Algériens recrutés comme supplétifs (soldats auxiliaires) de l’armée française',
           wrong: [
             w('des combattants du FLN', 'Le FLN combat l’armée française.'),
             w('des soldats de l’ONU', 'Le texte ne parle pas de l’ONU.'),
           ],
-          ...PREUVES.departs,
-          explain: 'Les harkis sont engagés dans l’armée française.',
+          ...PREUVES.harkis,
+          explain: 'Les harkis sont des supplétifs d’origine algérienne, recrutés pour appuyer l’armée française.',
         },
         {
           q: 'D’après le texte, combien d’années environ séparent le début de la guerre de l’indépendance ?',
@@ -413,7 +418,7 @@ const guerreFroide: Notion = {
       gap: [
         'Dans la guerre froide, il n’y a pas de conflit ',
         ' entre les deux superpuissances.',
-        ['direct', 'militaire direct'],
+        ['direct', 'militaire direct', 'militaire', 'armé'],
       ],
       ...PREUVES.indirect,
       explain: 'Les affrontements sont localisés, sans guerre directe entre les deux Grands.',
@@ -428,7 +433,7 @@ const guerreFroide: Notion = {
       ],
       gap: ['La frontière symbolique qui divise l’Europe s’appelle le rideau de ', '.', ['fer']],
       ...PREUVES.rideau,
-      explain: 'Churchill popularise l’expression en 1947.',
+      explain: 'Winston Churchill, homme politique britannique, rend l’expression célèbre en 1946.',
     },
     {
       q: 'Quelle doctrine, énoncée le 12 mars 1947, oppose le « monde libre » au bloc communiste ?',
@@ -503,7 +508,7 @@ const guerreFroide: Notion = {
       explain: 'La crise de Cuba est le moment le plus tendu entre les deux Grands.',
     },
     {
-      q: 'Comment appelle-t-on la menace qui dissuade chaque camp d’attaquer, grâce aux armes nucléaires ?',
+      q: 'Comment appelle-t-on la stratégie qui pousse chaque camp à ne pas attaquer, par peur des armes nucléaires de l’autre ?',
       a: 'la dissuasion nucléaire',
       wrong: [
         w('la détente', 'La détente désigne un apaisement politique.'),
@@ -542,10 +547,10 @@ const guerreFroide: Notion = {
       explain: 'La guerre froide finit avec la disparition de l’URSS en 1991.',
     },
     {
-      q: 'Selon le programme, quels types de guerre les États-Unis et l’URSS se livrent-ils aussi ?',
+      q: 'Quels types de guerre les États-Unis et l’URSS se livrent-ils aussi ?',
       a: 'une guerre idéologique et culturelle, d’opinion et d’information',
       wrong: [
-        w('une guerre limitée au commerce des céréales', 'Le programme parle aussi d’idéologie et de culture.'),
+        w('une guerre limitée au commerce des céréales', 'La rivalité porte aussi sur les idées et la culture.'),
         w('une guerre sans aucune propagande', 'La guerre d’opinion en fait partie.'),
         w('une guerre uniquement coloniale', 'Les rivalités portent sur des modèles opposés.'),
       ],
@@ -579,6 +584,7 @@ const guerreFroide: Notion = {
     ['9 novembre 1989', 'Chute du mur de Berlin'],
   ],
   frise: [
+    { label: 'Churchill rend célèbre l’expression « rideau de fer »', date: '1946', ...PREUVES.fulton },
     { label: 'La doctrine Truman', date: '1947', ...PREUVES.truman },
     { label: 'La création de l’OTAN', date: '1949', ...PREUVES.otan },
     { label: 'La construction du mur de Berlin', date: '1961', ...PREUVES.murDate },

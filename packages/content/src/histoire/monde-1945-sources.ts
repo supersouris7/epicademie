@@ -36,9 +36,6 @@ export const PREUVES = {
   decolonisation: etats(
     "la décolonisation, au lendemain de la Seconde Guerre mondiale, et donc l'accession à l'indépendance de nouveaux États",
   ),
-  nombreEtats: etats(
-    "Le nombre d'États dans le monde a presque quadruplé depuis 1945. À titre de repère, l'Organisation des Nations unies (ONU) en comptait 51 à sa création, et en dénombre aujourd’hui 193",
-  ),
   resolution1514: etats(
     "la résolution 1514 adoptée en 1960 (Déclaration sur l'octroi de l'indépendance aux pays et aux peuples coloniaux)",
   ),
@@ -65,24 +62,20 @@ export const PREUVES = {
     'Attentats commis par le FLN et répression sanglante de l’armée française se succèdent, particulièrement en 1957 lors de la bataille d’Alger.',
   ),
   accords: evian("Le 18 mars 1962, à l'Hôtel du Parc d'Évian, des accords sont signés"),
-  cessezLeFeu: evian('un cessez-le-feu applicable sur tout le territoire algérien'),
   guerreAlgerie: evian('La Guerre d’Algérie (1954-1962)'),
   referendum: peuples(
     'Lors du référendum organisé en juillet 1962, les Algériens se prononcent à plus de 90% pour l’indépendance.',
   ),
-  departs: peuples(
-    'Cette période marque le départ précipité et douloureux d’une majeure partie de la communauté française d’Algérie et des Harkis engagés dans l’armée française.',
+  harkis: de(
+    'Le Sénat',
+    'senat-harkis-2022',
+  )(
+    "Au commencement de la guerre d'Algérie, les autorités françaises amorcent le recrutement de supplétifs d'origine algérienne pour appuyer l'armée. À côté des harkis, recrutés par contrat journalier, équipés et encadrés par l'armée",
   ),
   independance: algerie("5 juillet 1962 Proclamation de l'indépendance de l'Algérie"),
   nationalisation: algerie(
     "24 février 1971 Nationalisation du pétrole et du gaz algériens jusqu'alors exploités par des sociétés françaises",
   ),
-  membreAlgerie: onu('membres')("Algérie Date d'admission : 08-10-1962"),
-  independanceDef: {
-    source: 'academie-independance',
-    who: 'Le Dictionnaire de l’Académie française',
-    quote: "État d'un peuple, d'un pays, qui n'est soumis à aucun pouvoir extérieur, qui se gouverne souverainement.",
-  },
 
   // ——— La guerre froide ———
   programmeGuerreFroide: programme(
@@ -91,33 +84,23 @@ export const PREUVES = {
   programmeOpinion: programme(
     'États-Unis et URSS se livrent une guerre idéologique et culturelle, une guerre d’opinion et d’information pour affirmer leur puissance.',
   ),
-  froideDef: de(
-    'Le Trésor de la langue française',
-    'cnrtl-froid',
-  )("Hostilité entre deux ou plusieurs États n'entraînant pas d'opérations militaires."),
   superpuissances: gf(
     'Face à l’effondrement de ces régions apparaissent deux superpuissances, les États-Unis et l’Union des républiques socialistes soviétique (URSS).',
   ),
   indirect: gf(
     'La Guerre froide est caractérisée par des affrontements localisés sans conflit direct entre les deux superpuissances qui usent de la dissuasion nucléaire.',
   ),
-  rideau: gf(
-    'L\'expression "rideau de fer" (popularisée en 1947 par le Premier ministre britannique Winston Churchill) désigne la frontière symbolique qui divise l\'Europe en deux camps distincts',
-  ),
+  rideau: gf("désigne la frontière symbolique qui divise l'Europe en deux camps distincts"),
+  fulton: de('Le Trésor de la langue française', 'cnrtl-rideau')('rendu célèbre par Churchill en 1946'),
   truman: gf(
     'énoncée le 12 mars 1947, la doctrine Truman (du nom du 33e président des États-Unis de 1945 à 1953, Harry Truman) définit l’existence de deux mondes incompatibles',
   ),
   endiguement: gf(
     'Une politique d’endiguement (containment), consistant à aider les pays menacés par l’expansion soviétique, est alors menée, à l’instar du Plan Marshall (1948-1952) en Europe',
   ),
-  jdanov: gf(
-    "la doctrine Jdanov (du nom du 3e secrétaire du Parti communiste de l'Union soviétique, Andreï Jdanov) y répond le 22 septembre 1947",
-  ),
   bipolarite: gf(
     "La Guerre froide renvoie donc à la nouvelle bipolarité du monde, sur la base d'un conflit idéologique, politique, économique et militaire.",
   ),
-  alliances: gf('Par ce jeu d’alliances, chaque conflit local prend une dimension internationale'),
-  coree: gf("de la guerre de Corée (1950-1953) jusqu'à l’invasion de l’Afghanistan par l’URSS en 1979"),
   dissuasion: gf(
     'la capacité de chaque camp à détruire l’autre explique que chacun prenne soin d’éviter la dégradation des crises',
   ),
@@ -137,19 +120,10 @@ export const PREUVES = {
     'Le gouvernement communiste d’Allemagne de l’Est construit un mur à Berlin, qui devient le symbole de la séparation de l’Europe de l’Est et de l’Europe de l’Ouest pendant la guerre froide.',
   ),
   murDate: ue1960('Août 1961 – Construction du mur de Berlin'),
-  prague: ue1960(
-    'Les chars soviétiques écrasent la démocratie naissante en Tchécoslovaquie (le «printemps de Prague»).',
-  ),
   chuteMur: ue1980('9 novembre 1989 – Chute du mur de Berlin'),
 
   // ——— Le projet européen ———
-  programmeEurope: programme(
-    'les étapes et les enjeux de la construction européenne sont à situer dans leur contexte international et à aborder à partir de réalisations concrètes',
-  ),
   contexte: ue1945('cette période marque également le début d’une guerre froide qui divise le continent'),
-  paix: ue1945(
-    'Pour mettre fin aux guerres qui ensanglantent régulièrement le continent et qui culminent avec la Seconde Guerre mondiale',
-  ),
   schuman9mai: ue1945(
     '9 mai 1950 – Un plan pour une nouvelle coopération politique en Europe Robert Schuman, ministre français des affaires étrangères, présente un plan pour une coopération plus poussée.',
   ),
@@ -160,17 +134,10 @@ export const PREUVES = {
   monnet: peres('il conçoit le projet de la CECA, qu’il propose à Robert Schuman de défendre politiquement'),
   fondateurs: ue1945('Ces six pays sont l’Allemagne, la France, l’Italie, les Pays-Bas, la Belgique et le Luxembourg.'),
   ceca: ue1945('18 avril 1951 – Communauté européenne du charbon et de l’acier'),
-  armes: ue1945(
-    "aucun d'entre eux ne peut fabriquer seul des armes de guerre pour attaquer les autres, comme c'était le cas dans le passé",
-  ),
-  ced: peres('l’Assemblée nationale française mettant un terme à cette entreprise le 30 août 1954'),
   rome: ue1945('En 1957, le traité de Rome établit la Communauté économique européenne (CEE)'),
   euratom: ue1945('la Communauté européenne de l’énergie atomique (Euratom)'),
   pac: ue1960(
     'La première politique agricole commune confère aux pays de la CEE un contrôle conjoint de la production alimentaire.',
-  ),
-  douane: ue1960(
-    "Les 6 pays membres de la CEE suppriment les droits de douane sur les biens qu'ils importent entre eux",
   ),
   neuf: ue1970(
     'Le Danemark, l’Irlande et le Royaume-Uni adhèrent aux Communautés européennes le 1er janvier 1973, portant le nombre de pays membres à 9.',
@@ -182,13 +149,9 @@ export const PREUVES = {
   erasmus: ue1980(
     'Le programme Erasmus est lancé pour soutenir financièrement les étudiants souhaitant étudier dans un autre pays européen.',
   ),
-  douze: ue1980('L’Espagne et le Portugal adhèrent aux Communautés, portant le nombre d’États membres à 12.'),
   maastricht: ue1990('7 février 1992 – Traité de Maastricht'),
   union: ue1990(
     'L’«Union européenne» est officiellement créée par le traité, qui entre en vigueur le 1er novembre 1993.',
-  ),
-  marche: ue1990(
-    'Le marché unique et ses 4 libertés — libre circulation des personnes, des biens, des services et des capitaux — sont établis.',
   ),
   schengen: ue1990(
     "Les voyageurs peuvent se déplacer dans l'ensemble de ces pays sans contrôle des passeports aux frontières.",
@@ -210,9 +173,6 @@ export const PREUVES = {
     'L’exemple d’une grande conférence mondiale pour le climat ou d’un sommet mondial pour le développement durable permet d’illustrer le niveau global de l’action politique, les avancées et les difficultés d’une coopération internationale et le rôle des différents acteurs impliqués.',
   ),
   urss1991: etats("disparition de l'URSS en 1991 et accession à l'indépendance de nouvelles républiques"),
-  tchecoslovaquie: etats(
-    'scission en 1993 de la Tchécoslovaquie en deux États indépendants, la République tchèque et la Slovaquie',
-  ),
   soudan: etats("l'indépendance du Kosovo en 2008 et du Soudan du Sud en 2011"),
   yougoslavie: ue1990(
     'Dans les Balkans, la Yougoslavie commence à se disloquer. Les guerres qui s’ensuivent font des dizaines de milliers de victimes',
@@ -227,9 +187,6 @@ export const PREUVES = {
     'Deux avions de ligne sont détournés et percutent les tours jumelles du World Trade Center à New York, ainsi que le Pentagone à Washington.',
   ),
   attaquesDate: ue2000('11 septembre 2001 – Attaques terroristes aux États-Unis'),
-  attentats2015: ue2010(
-    'Plusieurs villes européennes, dont Paris, Bruxelles, Nice, Berlin, Londres et Barcelone, sont la cible d’attentats terroristes.',
-  ),
   terrorismeDef: de(
     'Le Trésor de la langue française',
     'cnrtl-terrorisme',
