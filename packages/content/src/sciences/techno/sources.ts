@@ -150,4 +150,20 @@ export const SOURCES: readonly Source[] = [
   academie('kilo', 'kilo-'),
   academie('giga', 'giga-'),
   tlfi('etoile', 'étoile', '%C3%A9toile'),
+  // ——— Technologie 5e (lot te-5e-03) ———
+  academie('algorithme', 'algorithme'),
+  academie('programme', 'programme'),
+  academie('instruction', 'instruction'),
+  academie('capteur', 'capteur'),
+  academie('sequence', 'séquence'),
+  academie('boucle', 'boucle'),
+  academie('moteur', 'moteur'),
+  {
+    id: 'eduscol-sti-actionneurs',
+    title: '« Actionneurs - Vérins » (ressources de construction mécanique)',
+    publisher: 'Éduscol STI (ministère de l’Éducation nationale)',
+    url: 'https://sti.eduscol.education.fr/construction-mecanique-actionneurs/actionneurs-verins',
+    textDate: '2014',
+    consultedOn: '2026-11-26',
+  },
 ];

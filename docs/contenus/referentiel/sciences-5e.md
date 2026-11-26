@@ -22,7 +22,7 @@
 | `sv-5e-04` | Classer le vivant             | caractères partagés ; groupes emboîtés ; parentés ; espèce                                                     | absente                |
 | `te-5e-01` | Objets et systèmes techniques | besoin et fonction d'usage ; contraintes ; matériaux et procédés ; usages et environnement                     | couverte               |
 | `te-5e-02` | Usages du numérique           | données ; réseaux ; règles et sécurité ; impacts sociétaux                                                     | couverte, en relecture |
-| `te-5e-03` | Programmer                    | algorithme ; capteurs et actionneurs ; séquence et boucle ; tester un programme                                | absente                |
+| `te-5e-03` | Programmer                    | algorithme ; capteurs et actionneurs ; séquence et boucle ; tester un programme                                | couverte, en relecture |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).
