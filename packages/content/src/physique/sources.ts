@@ -96,6 +96,38 @@ export const SOURCES: readonly Source[] = [
   { ...tlfi('infrason', 'infrason', 'infrason'), consultedOn: '2026-11-26' },
   { ...tlfi('sonar', 'sonar', 'sonar'), consultedOn: '2026-11-26' },
   { ...tlfi('propagation', 'propagation', 'propagation'), consultedOn: '2026-11-26' },
+  // Lot pc-4e-01 : atomes et transformations (protoxyde d’azote et mélange : sources déjà au registre).
+  ...(
+    [
+      ['atome', 'atome'],
+      ['molecule', 'molécule'],
+      ['dioxyde', 'dioxyde'],
+      ['monoxyde', 'monoxyde'],
+      ['methane', 'méthane'],
+      ['carbone', 'carbone'],
+      ['oxygene', 'oxygène'],
+      ['hydrogene', 'hydrogène'],
+      ['azote', 'azote'],
+      ['formule', 'formule'],
+      ['reaction', 'réaction'],
+      ['reactif', 'réactif'],
+      ['produit', 'produit'],
+      ['combustion', 'combustion'],
+      ['combustible', 'combustible'],
+    ] as const
+  ).map(([id, mot]) => ({ ...academie(id, mot), consultedOn: '2026-11-26' })),
+  { ...tlfi('eau', 'eau', 'eau'), consultedOn: '2026-11-26' },
+  { ...tlfi('molecule', 'molécule', 'mol%C3%A9cule'), consultedOn: '2026-11-26' },
+  { ...tlfi('transformation', 'transformation', 'transformation'), consultedOn: '2026-11-26' },
+  { ...tlfi('comburant', 'comburant', 'comburant'), consultedOn: '2026-11-26' },
+  {
+    id: 'eduscol-ethanol-4e',
+    title: 'La cheminée à l’éthanol (Physique-chimie 4e, Organisation et transformations de la matière, BRNE)',
+    publisher: 'Éduscol',
+    url: 'https://eduscol.education.fr/document/29578/download',
+    textDate: '2020-04-11',
+    consultedOn: '2026-11-26',
+  },
   {
     id: 'bipm-si-resume',
     title: 'Résumé de la Brochure sur le Système international d’unités (SI)',

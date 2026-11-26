@@ -1,5 +1,6 @@
 /// <reference types="vitest/config" />
-import { defineConfig } from 'vite';
+import { fileURLToPath } from 'node:url';
+import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
@@ -11,8 +12,22 @@ const api = process.env.EPICADEMIE_API ?? 'http://localhost:3000';
  */
 const assetVersion = process.env.VITEST ? 'test' : Date.now().toString(36);
 
+const page = (file: string) => fileURLToPath(new URL(file, import.meta.url));
+
+/** En développement comme en production (serveur), `/admin` et ses sous-adresses servent admin.html. */
+const adminPage: Plugin = {
+  name: 'page-admin',
+  configureServer(server) {
+    server.middlewares.use((req, _res, next) => {
+      if (/^\/admin(\/|\?|$)/.test(req.url ?? '')) req.url = '/admin.html';
+      next();
+    });
+  },
+};
+
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), adminPage],
+  build: { rolldownOptions: { input: { index: page('./index.html'), admin: page('./admin.html') } } },
   define: { __ASSET_VERSION__: JSON.stringify(assetVersion) },
   server: {
     port: 5173,

@@ -22,7 +22,8 @@ des échecs répétés) qui affiche la console dans un onglet de même origine.
   (`/auth/admin`, `/auth/admin/close`, `auth_sessions.admin_until`), commande `admin role`.
   Migration 0025 : comptes admin repassés en `parent` ; `content_events.account_id` remplacé par
   `operator` (nom) ; retour arrière dans l'en-tête du fichier SQL.
-- **Web** : `/admin` est rendue avant toute logique de session de jeu ; elle interroge
+- **Web** : `/admin` est une page à part (`admin.html`, [ADR 0035](0035-chargement-a-la-demande.md)),
+  sans logique de session de jeu ; elle interroge
   `GET /admin/session` (`{ operator }` ou 403 → message « Administration accessible uniquement depuis
   la page de pilotage. »).
 - **Comptes** (module serveur `admin`) : recherche `POST /admin/accounts/search` (e-mail, identifiant de

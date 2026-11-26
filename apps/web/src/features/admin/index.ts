@@ -1,2 +1,2 @@
-/** Fonctionnalité « admin » : console d'administration pédagogique (rôle administrateur). */
-export { AdminPage } from './AdminPage.tsx';
+/** Fonctionnalité « admin » : console d'administration pédagogique, application à part (admin.html). */
+export { AdminApp } from './AdminApp.tsx';

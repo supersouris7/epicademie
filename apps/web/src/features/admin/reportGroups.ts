@@ -1,5 +1,5 @@
 import type { Report } from '@epicademie/shared';
-import { reportTitle } from './labels.ts';
+import { reportTitle } from './contentLabels.ts';
 
 /** Signalements d'une même notion (ou d'un même écran) réunis : les doublons se traitent ensemble. */
 export interface ReportGroup {

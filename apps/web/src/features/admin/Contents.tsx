@@ -13,7 +13,8 @@ import {
   type ValidationState,
 } from '@epicademie/shared';
 import { useContent, useContentHistory, useUpdateContent } from './api.ts';
-import { chapterTitle, date, plural } from './labels.ts';
+import { chapterTitle } from './contentLabels.ts';
+import { date, plural } from './labels.ts';
 import { QuestionPreview } from './QuestionPreview.tsx';
 import { AdminButton, Badge, DataTable, inputClass, mutedClass, Panel, Segmented } from './ui.tsx';
 

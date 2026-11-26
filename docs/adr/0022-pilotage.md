@@ -15,7 +15,7 @@
     abonnements actifs par jour sur 30 jours, abonnements actifs par formule, revenus du mode
     test. Comptes agrégés seulement. Affichées en SVG inline avec leurs valeurs en tableau ;
     la console `/admin` reprend le thème de la page de pilotage (classe `admin-dark`,
-    couleurs `pilot-*` dans `index.css`).
+    dans `admin.css`).
   - **Anomalies de récompenses**, avec des seuils larges (`ANOMALY_THRESHOLDS`) : on signale
     l'impossible, pas l'excellent. Quatre règles :
     - gain de plus de 300 pièces en une partie (maximum théorique ≈ 110) ;

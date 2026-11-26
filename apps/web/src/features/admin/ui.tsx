@@ -439,3 +439,7 @@ function TableView<T>({
     </div>
   );
 }
+
+export function Loading() {
+  return <p className={mutedClass}>Chargement…</p>;
+}

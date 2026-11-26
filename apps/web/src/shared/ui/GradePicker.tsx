@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import { useState } from 'react';
 import { BirthDateSchema, GRADE_INFO, gradeFromBirthDate, gradeInfo, type Grade } from '@epicademie/shared';
 import { localToday } from '../lib/dates.ts';
-import { comingSoon } from '../lib/grades.ts';
+import { comingSoon } from '../lib/comingSoon.ts';
 import { GameButton } from './game/GameButton.tsx';
 import { Questy } from './mascot/Questy.tsx';
 
