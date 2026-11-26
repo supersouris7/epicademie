@@ -78,4 +78,9 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'a6-be-ing-reconnaitre', version: 1, lot: 'an-6e-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'a6-be-ing-futur', version: 1, lot: 'an-6e-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'a6-want-would-like', version: 1, lot: 'an-6e-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'a6-articles', version: 1, lot: 'an-6e-05', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a6-demonstratifs', version: 1, lot: 'an-6e-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'a6-pluriels-irreguliers', version: 1, lot: 'an-6e-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'a6-adjectif-place', version: 1, lot: 'an-6e-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'a6-genitif', version: 1, lot: 'an-6e-05', date: '2026-11-25', verdict: 'ok' },
 ];
