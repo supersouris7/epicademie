@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { MotionConfig } from 'motion/react';
 import { App } from './app/App.tsx';
-import { createQueryClient } from './app/queryClient.ts';
+import { createQueryClient } from './shared/api/queryClient.ts';
 import { installChunkReload } from './shared/lib/chunkReload.ts';
 import { installFullscreenPreference } from './shared/lib/fullscreen.ts';
 import { installErrorReporting } from './shared/lib/telemetry.ts';

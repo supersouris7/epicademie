@@ -1,0 +1,37 @@
+/*
+ * Feuille de style de la console d'administration (admin.html), autonome : thème de la page de
+ * pilotage, qui l'affiche dans un onglet. Rien du jeu (index.css) n'y entre, et inversement.
+ * Seules les classes des fichiers listés par `@source` sont produites.
+ */
+@import 'tailwindcss' source(none);
+@source './features/admin';
+@source './shared/question/MathText.tsx';
+
+/* Classes `*-pilot-*`, variables aussi lues par les graphiques SVG. */
+@theme static {
+  --color-pilot-bg: #0f172a;
+  --color-pilot-card: #1e293b;
+  --color-pilot-line: #334155;
+  --color-pilot-fg: #e2e8f0;
+  --color-pilot-mut: #94a3b8;
+  --color-pilot-acc: #818cf8;
+  --color-pilot-ok: #34d399;
+  --color-pilot-warn: #fbbf24;
+  --color-pilot-bad: #f87171;
+}
+
+html {
+  background: var(--color-pilot-bg);
+  color-scheme: dark;
+  accent-color: var(--color-pilot-acc);
+}
+
+body {
+  color: var(--color-pilot-fg);
+  font:
+    15px/1.45 system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+}

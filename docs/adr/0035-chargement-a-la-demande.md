@@ -10,7 +10,9 @@ contenus pédagogiques. Tout était téléchargé avant le premier écran, y com
 
 ## Décision
 
-- La console et le jeu sont deux morceaux séparés ; chaque écran du jeu est importé à la première
+- La console et le jeu sont deux pages (entrées Vite `index.html` et `admin.html`, chacune avec sa
+  feuille de style) ; le serveur sert `admin.html` pour `/admin` et ses sous-adresses. La console
+  affiche son fond dès le premier pixel, sans passer par le thème du jeu. Chaque écran du jeu est importé à la première
   visite (`React.lazy`, une attente par écran), fichier par fichier depuis `app/`.
 - L’`index.ts` d’une fonctionnalité reste son API pour les autres fonctionnalités ; il n’est créé
   que s’il a quelque chose à leur offrir.

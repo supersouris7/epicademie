@@ -107,6 +107,9 @@ export interface App {
 /** Corps de requête maximal (les réponses d'exercice font quelques centaines d'octets). */
 const BODY_LIMIT = 64 * 1024;
 
+/** `/admin` et ses sous-adresses (avec ou sans paramètres). */
+const ADMIN_PATH = /^\/admin(\/|\?|$)/;
+
 export async function buildApp(deps: AppDeps): Promise<App> {
   const { config, database } = deps;
   const http = Fastify({
@@ -295,9 +298,9 @@ export async function buildApp(deps: AppDeps): Promise<App> {
 }
 
 /**
- * Front buildé (production) : fichiers statiques et repli SPA. Les fichiers à empreinte
- * (`-abcd1234.js`) sont mis en cache un an ; index.html jamais (nouvelle version visible
- * immédiatement).
+ * Front buildé (production) : fichiers statiques et repli SPA (le jeu : index.html ; la console
+ * `/admin` : admin.html). Les fichiers à empreinte (`-abcd1234.js`) sont mis en cache un an ; les
+ * pages HTML jamais (nouvelle version visible immédiatement).
  */
 async function registerWeb(http: FastifyInstance, webDir: string | null): Promise<void> {
   const hasWeb = webDir !== null && fs.existsSync(path.join(webDir, 'index.html'));
@@ -315,6 +318,9 @@ async function registerWeb(http: FastifyInstance, webDir: string | null): Promis
   http.setNotFoundHandler((request, reply) =>
     request.url.startsWith('/api/') || !hasWeb
       ? send(reply, request, 'NOT_FOUND', 'Route inconnue')
-      : reply.type('text/html').header('cache-control', 'no-cache').sendFile('index.html'),
+      : reply
+          .type('text/html')
+          .header('cache-control', 'no-cache')
+          .sendFile(ADMIN_PATH.test(request.url) ? 'admin.html' : 'index.html'),
   );
 }

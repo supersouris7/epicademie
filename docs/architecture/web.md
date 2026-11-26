@@ -22,8 +22,9 @@ React 19, Vite, Tailwind 4, motion (animations), React Query (données serveur),
 
 ## Chargement à la demande
 
-[ADR 0035](../adr/0035-chargement-a-la-demande.md). `app/App.tsx` choisit entre la console et le jeu
-(`app/GameApp.tsx`) ; chaque écran est déclaré par `lazyScreen` (`app/lazyScreen.tsx`) avec son
+[ADR 0035](../adr/0035-chargement-a-la-demande.md). Deux pages (entrées Vite) : le jeu (`index.html`,
+`main.tsx`, `index.css`) et la console `/admin` (`admin.html`, `admin-main.tsx`, `admin.css`), sans
+code ni style commun hors socle `shared/`. Dans le jeu (`app/GameApp.tsx`), chaque écran est déclaré par `lazyScreen` (`app/lazyScreen.tsx`) avec son
 attente. Pour ajouter un écran : le déclarer ainsi, et ne pas importer les contenus pédagogiques
 depuis ce qui est chargé à l'entrée (`catalog.ts` pèse plusieurs mégaoctets). Les tailles sont
 contrôlées par `e2e/chargement.spec.ts`.

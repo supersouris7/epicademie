@@ -40,14 +40,4 @@ describe('drapeau du mode debug', () => {
     expect(flag.className).toContain('focus-visible:opacity-100');
     expect(flag.className).toContain('focus-visible:outline-4');
   });
-
-  it("absent sur la console d'administration", () => {
-    useDebugMode.setState({ enabled: true });
-    render(
-      <MemoryRouter initialEntries={['/admin']}>
-        <DebugFlag />
-      </MemoryRouter>,
-    );
-    expect(screen.queryByRole('button')).toBeNull();
-  });
 });
