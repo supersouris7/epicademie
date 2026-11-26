@@ -1123,4 +1123,47 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Une strophe de quatre vers.',
     example: 'Ce poème commence par un quatrain.',
   },
+  {
+    id: 'constituant',
+    word: 'constituant',
+    forms: ['constituants'],
+    definition: 'Mot ou groupe de mots qui joue un rôle dans la construction d’une phrase : sujet, verbe, complément…',
+    example: 'Dans « Le chat dort ici. », il y a trois constituants : le sujet, le verbe et le complément.',
+  },
+  {
+    id: 'phrase-type',
+    word: 'phrase type',
+    forms: ['phrases types'],
+    definition: 'Modèle de phrase : un groupe sujet, un groupe verbal et, si l’on veut, un groupe circonstanciel.',
+    example: 'Le facteur distribue le courrier à huit heures.',
+  },
+  {
+    id: 'construction-du-verbe',
+    word: 'construction du verbe',
+    forms: ['constructions du verbe'],
+    definition:
+      'Manière dont le verbe s’emploie dans la phrase : seul, avec un complément d’objet direct ou indirect, ou avec un attribut.',
+    example: '« parler » se construit avec « à » dans « Je parle à mon voisin. »',
+  },
+  {
+    id: 'verbe-transitif-direct',
+    word: 'transitif direct',
+    forms: ['transitifs directs', 'verbe transitif direct'],
+    definition: 'Se dit d’un verbe employé avec un complément d’objet direct, sans préposition.',
+    example: 'Le boulanger pétrit la pâte.',
+  },
+  {
+    id: 'verbe-transitif-indirect',
+    word: 'transitif indirect',
+    forms: ['transitifs indirects', 'verbe transitif indirect'],
+    definition: 'Se dit d’un verbe employé avec un complément d’objet introduit par une préposition.',
+    example: 'Le chiot obéit à son maître.',
+  },
+  {
+    id: 'verbe-intransitif',
+    word: 'intransitif',
+    forms: ['intransitifs', 'verbe intransitif'],
+    definition: 'Se dit d’un verbe employé sans complément d’objet.',
+    example: 'Les chevaux galopent.',
+  },
 ];
