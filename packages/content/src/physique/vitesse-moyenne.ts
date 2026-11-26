@@ -96,12 +96,12 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   }
   if (type === 1) {
     return {
-      prompt: `Un chariot a un mouvement uniforme à ${v} m/s. Quelle distance, en mètres, parcourt-il en ${t} s ?`,
+      prompt: `Un véhicule a un mouvement uniforme à ${v} m/s. Quelle distance, en mètres, parcourt-il en ${t} s ?`,
       ...nombre(r(d), 'm', [
         [r(v + t), 'Chaque seconde apporte la même distance : on multiplie.'],
         [div(r(v), r(t)), 'La distance augmente avec la durée : on multiplie, on ne divise pas.'],
       ]),
-      hint: 'Que parcourt le chariot en 1 s ? Et en plusieurs secondes ?',
+      hint: 'Que parcourt le véhicule en 1 s ? Et en plusieurs secondes ?',
       steps: ['Mouvement uniforme : d = v × t.', `d = ${v} × ${t} = **${d} m**.`],
       targetSeconds: 45,
     };
@@ -117,6 +117,9 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     targetSeconds: 45,
   };
 };
+
+const PAS_DECIMAL = (min: number) =>
+  `${min} min ne font pas ${fmt(dec(min, 2))} h : une heure compte 60 minutes, on divise donc les minutes par 60.`;
 
 /** Durées en minutes et leur écriture en heures (en centièmes). */
 const MINUTES = [
@@ -137,6 +140,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       ...nombre(r(v), 'km/h', [
         [div(d, r(duree.min)), 'Ce résultat est en km par minute : convertis d’abord la durée en heures.'],
         [mul(d, h), 'On divise la distance par la durée, même si la durée est inférieure à 1 h.'],
+        [div(d, dec(duree.min, 2)), PAS_DECIMAL(duree.min)],
       ]),
       hint: 'Des km/h demandent une durée en heures : 60 min = 1 h.',
       steps: [
@@ -152,6 +156,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     ...nombre(d, 'km', [
       [r(v * duree.min), 'La vitesse est donnée par heure : convertis les minutes en heures avant de multiplier.'],
       [div(r(v), h), 'La distance s’obtient en multipliant la vitesse par la durée.'],
+      [mul(r(v), dec(duree.min, 2)), PAS_DECIMAL(duree.min)],
     ]),
     hint: 'Exprime la durée en heures, puis utilise la relation entre vitesse, distance et durée.',
     steps: [
@@ -229,7 +234,7 @@ export const vitesseMoyenne: Skill = {
   lesson: {
     memo: [
       'La **vitesse moyenne** est la distance parcourue divisée par la durée : v = d ÷ t. Par exemple, 100 m en 20 s donnent 5 m/s.',
-      'Dans un mouvement uniforme, tu en déduis aussi d = v × t et t = d ÷ v. Accorde les unités : des km/h vont avec des km et des heures.',
+      'Dans un mouvement uniforme, tu en déduis aussi d = v × t et t = d ÷ v. Accorde les unités : des km/h vont avec des km et des heures (45 min = 45 ÷ 60 = 0,75 h).',
     ],
     ...referencesMouvement('relation', 'vitesse-definition', 'vitesse-moyenne', 'caracteriser'),
   },

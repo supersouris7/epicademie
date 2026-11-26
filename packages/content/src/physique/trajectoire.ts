@@ -198,7 +198,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
         { mode: 'text', accepted: [bon] },
       ],
     },
-    hint: 'Le premier mot nomme la ligne ; le second est un adjectif qui dit sa forme.',
+    hint: 'Le premier mot nomme la ligne ; le second est l’adjectif utilisé en physique pour dire sa forme.',
     steps: [s.why, `La ligne décrite est la **trajectoire**, ici **${bon}**.`],
     targetSeconds: 45,
   };
@@ -249,11 +249,24 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     [c.bon],
     [
       [autre, c.why],
+      ...(c.bon === 'rectiligne'
+        ? [
+            [
+              'droite',
+              'L’idée est juste, mais en physique une trajectoire en ligne droite se dit « rectiligne ».',
+            ] as const,
+          ]
+        : [
+            [
+              'arc de cercle',
+              'L’idée est juste, mais on demande un adjectif : une trajectoire en arc de cercle est « circulaire ».',
+            ] as const,
+          ]),
       ['immobile', `Par rapport à la référence choisie, la position change bien. ${c.why}`],
     ],
   );
   return {
-    prompt: `${c.texte} Qualifie la trajectoire par un adjectif.`,
+    prompt: `${c.texte} Qualifie la trajectoire par l’adjectif utilisé en physique.`,
     answer,
     traps,
     hint: 'Place-toi sur la référence citée et suis seulement le point demandé.',

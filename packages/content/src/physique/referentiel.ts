@@ -23,7 +23,7 @@ const SCENES: readonly Scene[] = [
     mobile: 'au quai d’une gare',
   },
   {
-    contexte: 'Deux amis se tiennent immobiles sur la même marche d’un escalier mécanique en marche.',
+    contexte: 'Deux amis restent debout, sans monter, sur la même marche d’un escalier mécanique en marche.',
     sujet: 'le premier ami',
     fixe: 'au second ami',
     mobile: 'au mur du magasin',
@@ -194,6 +194,9 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   const accepted = c.bon === IMMOBILE ? [IMMOBILE] : [MOUVEMENT, 'mouvement'];
   const { answer, traps } = saisie(accepted, [
     [autre, `Observe depuis la référence demandée dans la question. ${c.why}`],
+    ...(c.bon === IMMOBILE
+      ? [['mouvement', `Observe depuis la référence demandée dans la question. ${c.why}`] as const]
+      : []),
   ]);
   return {
     prompt: c.texte,
