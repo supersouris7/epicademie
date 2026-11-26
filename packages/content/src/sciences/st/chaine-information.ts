@@ -282,7 +282,9 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     ? 'L’élément qui recueille une information est un capteur.'
     : 'L’élément qui agit, comme un moteur, est un actionneur.';
   const { answer, traps: tr } = saisie(
-    [bon, `un ${bon}`],
+    capteur
+      ? ['capteur', 'un capteur', 'le capteur', 'détecteur', 'un détecteur', 'le détecteur']
+      : ['actionneur', 'un actionneur', 'l’actionneur'],
     [
       [capteur ? 'actionneur' : 'capteur', why],
       [capteur ? 'un actionneur' : 'un capteur', why],
@@ -413,7 +415,7 @@ export const chaineInformation: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'Un **capteur** acquiert une information : un son, une température, la présence d’un obstacle. Il fait partie de la **chaîne d’information**.',
+      'Un **capteur** acquiert (recueille) une information : un son, une température, la présence d’un obstacle. Il fait partie de la **chaîne d’information**.',
       'Un **actionneur** transforme l’énergie qu’il reçoit en action attendue : le moteur fait tourner les roues du robot. Il fait partie de la **chaîne d’action**. À toi de repérer qui recueille et qui agit !',
     ],
     source: `${PROGRAMME} : « Identifier la chaîne d’information et d’action (exemple d’un éclairage public intelligent : détecteur de présence, boîtier de contrôle, relais de commande d’éclairage, etc.) » ; « Repérer les capteurs et les actionneurs (moteur électrique, etc.) présents dans un objet programmable » ; « capteurs (utilisés pour détecter la présence d’obstacles, ou un niveau de luminosité réduit en fin de journée, etc.) ». Éduscol STI, « La chaîne d’information » : « identifier les constituants de la chaîne d’information d’un OST et de connaître les fonctions des constituants suivants : capteurs » ; « le système acquiert des informations : rôle des capteurs, des codeurs et des détecteurs et il transforme l’énergie qu’il reçoit en action(s) attendue(s) par l’utilisateur : rôle des actionneurs ». Éduscol STI, « La chaîne d’action » : « Structure d’une chaîne d’action • Les actionneurs ». Académie française : capteur, « Appareil sensible à un phénomène physique, qu’il transforme en un signal » ; moteur, « produire de l’énergie mécanique, du mouvement » ; récepteur, « Les ampoules, les résistances, les moteurs électriques, les électrolyseurs sont des récepteurs ».`,
