@@ -18,7 +18,7 @@
 | `pc-5e-04` | Signaux et unités             | propagation de la lumière ; propagation du son ; unités du Système international ; préfixes                    | partielle (p5-unites)  |
 | `sv-5e-01` | Météo, climat et géologie     | météo et climat ; séismes ; volcans ; risques et prévention                                                    | couverte               |
 | `sv-5e-02` | Nutrition des êtres vivants   | besoins des végétaux ; respiration ; écosystèmes ; biodiversité                                                | couverte, en relecture |
-| `sv-5e-03` | Le corps en activité          | respiration ; circulation sanguine ; digestion ; effort physique                                               | absente                |
+| `sv-5e-03` | Le corps en activité          | respiration ; circulation sanguine ; digestion ; effort physique                                               | couverte, en relecture |
 | `sv-5e-04` | Classer le vivant             | caractères partagés ; groupes emboîtés ; parentés ; espèce                                                     | absente                |
 | `te-5e-01` | Objets et systèmes techniques | besoin et fonction d'usage ; contraintes ; matériaux et procédés ; usages et environnement                     | couverte               |
 | `te-5e-02` | Usages du numérique           | données ; réseaux ; règles et sécurité ; impacts sociétaux                                                     | couverte, en relecture |
