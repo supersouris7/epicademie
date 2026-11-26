@@ -220,7 +220,7 @@ export const SIMPLES: readonly Simple[] = [
     '« a préparé » est un temps composé : un seul verbe.',
   ),
   si(
-    'Au fond de la clairière, un chevreuil broute des jeunes pousses.',
+    'Au fond de la clairière, un chevreuil broute de jeunes pousses.',
     'broute',
     'La virgule isole un complément sans verbe : ce n’est pas une proposition.',
   ),
