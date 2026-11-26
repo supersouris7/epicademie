@@ -970,6 +970,11 @@ export const FAITS: readonly Fait[] = [
     citation: "Un lichen est la symbiose d'une algue et d'un champignon",
   },
   {
+    id: 'symbiose-def',
+    source: 'cnrtl-symbiose',
+    citation: "Association durable entre deux ou plusieurs organismes et profitable à chacun d'eux.",
+  },
+  {
     id: 'ensoleillement-def',
     source: 'academie-ensoleillement',
     citation: 'Temps pendant lequel un lieu est ensoleillé.',

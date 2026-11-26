@@ -36,7 +36,8 @@ const RESEAUX: readonly Reseau[] = [
   {
     chaines: [
       ['la salade', 'l’escargot', 'le hérisson'],
-      ['le rosier', 'le puceron', 'la coccinelle', 'la mésange'],
+      ['le rosier', 'le puceron', 'la coccinelle'],
+      ['le rosier', 'le puceron', 'la mésange', 'l’épervier'],
       ['la salade', 'la limace', 'le hérisson'],
     ],
     vegetaux: ['la salade', 'le rosier'],
@@ -76,12 +77,15 @@ const nourritures = (n: Reseau, qui: string) =>
   liens(n)
     .filter((l) => l[1] === qui)
     .map((l) => l[0]);
+const verbe = (sujet: string) => (sujet.startsWith('les ') ? 'mangent' : 'mange');
 const animaux = (n: Reseau) => [...new Set(liens(n).map((l) => l[1]))];
 const sansArticle = (s: string) => s.replace(/^(l’|la |le |les )/, '');
 const variantes = (s: string) => {
   const nu = sansArticle(s);
   const sansAccents = (x: string) => x.normalize('NFD').replace(/\p{M}/gu, '');
-  return [...new Set([s, nu, sansAccents(s), sansAccents(nu)])];
+  // « les feuilles du chêne » : le végétal est le chêne.
+  const aussi = nu === 'feuilles du chêne' ? ['le chêne', 'chêne', 'feuilles de chêne', 'les feuilles de chêne'] : [];
+  return [...new Set([s, nu, ...aussi].flatMap((x) => [x, sansAccents(x)]))];
 };
 const fleches = (c: readonly string[]) => c.join(' → ');
 const enDocument = (n: Reseau, titre: string) => ({
@@ -125,17 +129,17 @@ const niveau2 = (rng: Rng): QuestionDraft => {
     .flat()
     .filter((x) => x !== a && x !== b);
   const [x = '', y = ''] = rng.shuffle([...new Set(autres)]);
-  const { answer, traps: tr } = choice(rng, `${b} mange ${a}`, [
-    { label: `${a} mange ${b}`, why: 'La flèche part de celui qui est mangé et va vers celui qui mange.' },
-    { label: `${a} mange ${x}`, why: 'Cet être vivant n’est pas dans la flèche.' },
-    { label: `${y} mange ${a}`, why: 'Cet être vivant n’est pas dans la flèche.' },
+  const { answer, traps: tr } = choice(rng, `${b} ${verbe(b)} ${a}`, [
+    { label: `${a} ${verbe(a)} ${b}`, why: 'La flèche part de celui qui est mangé et va vers celui qui mange.' },
+    { label: `${a} ${verbe(a)} ${x}`, why: 'Cet être vivant n’est pas dans la flèche.' },
+    { label: `${y} ${verbe(y)} ${a}`, why: 'Cet être vivant n’est pas dans la flèche.' },
   ]);
   return {
     prompt: `${FLECHE} Que signifie « ${a} → ${b} » ?`,
     answer,
     traps: tr,
     hint: 'Lis la flèche avec les mots « est mangé par ».',
-    steps: [`On lit : ${a} est mangé par ${b}.`, `Donc **${b} mange ${a}**.`],
+    steps: [`La flèche « ${a} → ${b} » pointe vers celui qui mange.`, `Donc **${b} ${verbe(b)} ${a}**.`],
     targetSeconds: 35,
   };
 };
@@ -232,12 +236,15 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       .map((m) => [m, `${maj(m)} mange ${x} : ce n’est pas sa nourriture.`] as const),
   ]);
   return {
-    prompt: `Dans ce réseau, quelle est la seule nourriture de ${x} ? Écris-la.`,
+    prompt: `Dans ce réseau, ${x} n’a qu’une seule nourriture. Laquelle ? Écris-la.`,
     figure: enDocument(n, 'Réseau alimentaire (exemple inventé)'),
     answer,
     traps: tr,
     hint: 'Cherche la seule flèche qui arrive vers cet animal.',
-    steps: ['On regarde les flèches qui arrivent vers cet animal.', `La seule nourriture de ${x} est **${aliment}**.`],
+    steps: [
+      'On regarde les flèches qui arrivent vers cet animal.',
+      `${maj(x)} a une seule nourriture ici : **${aliment}**.`,
+    ],
     targetSeconds: 60,
   };
 };
@@ -258,7 +265,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
         [nourritures(n, proie).length, 'Tu as compté ce que cet être mange. Compte ceux qui le mangent.'],
         [fleche, 'Tu as compté toutes les flèches. Ne garde que celles qui partent de cet être.'],
       ]),
-      hint: 'Compte les flèches qui partent de lui.',
+      hint: 'Compte les flèches qui partent de cet être vivant.',
       steps: [`On cherche les flèches qui partent de : ${proie}.`, `Il y en a **${total}**.`],
       targetSeconds: 60,
     };

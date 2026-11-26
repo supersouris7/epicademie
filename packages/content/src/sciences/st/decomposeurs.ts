@@ -44,7 +44,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     };
   }
   const m = rng.pick(MORTS);
-  const bon = 'Des êtres vivants la décomposent';
+  const bon = 'Des êtres vivants décomposent ce reste';
   const { answer, traps: tr } = choice(rng, bon, [
     {
       label: 'Ce reste s’évapore comme de l’eau',
@@ -121,7 +121,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
         parts: ['Après la mort des êtres vivants, leur matière ', ' est ', ' par des êtres vivants.'],
         blanks: [
           { mode: 'text', accepted: ['organique'] },
-          { mode: 'text', accepted: ['décomposée', 'decomposee'] },
+          { mode: 'text', accepted: ['décomposée', 'decomposee', 'dégradée', 'degradee'] },
         ],
       },
       hint: 'Relis la première phrase du mémo.',
@@ -145,7 +145,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     },
   ]);
   const { answer, traps: tr } = saisie(cible.accepte, [
-    [cible.mot === 'humus' ? 'litière' : 'humus', 'Ce mot désigne un autre moment : relis la description.'],
+    [cible.mot === 'humus' ? 'litière' : 'humus', 'Ce mot désigne autre chose : relis la description.'],
     ['sable', 'Le sable est un matériau minéral, pas ce qui est décrit.'],
   ]);
   return {
@@ -197,7 +197,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       ],
     );
     return {
-      prompt: `Les bactéries sont des êtres vivants microscopiques. Sans propositions : quel grand nom désigne ces êtres, qui jouent un rôle clé dans la décomposition ?`,
+      prompt: `Les bactéries sont des êtres vivants microscopiques. Par quel mot désigne-t-on tous les êtres vivants de cette taille, qui jouent un rôle clé dans la décomposition ?`,
       answer,
       traps: tr,
       hint: 'Leur nom dit qu’ils sont très petits.',
@@ -316,7 +316,7 @@ export const decomposeurs: Skill = {
   lesson: {
     memo: [
       'Après sa mort, la **matière organique** d’un être vivant est **décomposée**, par exemple dans le sol.',
-      'Les **décomposeurs** sont des êtres vivants comme les **microorganismes** (bactéries) ou les moisissures. La **litière** peu à peu transformée donne de l’**humus**.',
+      'Les **décomposeurs** sont des êtres vivants comme les **microorganismes** (bactéries), les moisissures ou les vers de terre. La **litière** peu à peu transformée donne de l’**humus**.',
     ],
     source: `${PROGRAMME} : « Mettre en évidence que la matière organique des êtres vivants est décomposée après leur mort (exemple du sol) » ; « Dégager le rôle clé des êtres vivants, en particulier des microorganismes, dans la décomposition de la matière organique » ; humus (TLFi), litière, moisissure, microorganisme, lombric (Académie française) ; lombricomposteur (ministère chargé de la transition écologique).`,
     sources: [

@@ -46,6 +46,23 @@ const ENTRAIDES: readonly Entraide[] = [
 const PREDATION = 'la prédation';
 const COOPERATION = 'la coopération';
 
+const ENTRAIDE_ACCEPTEE = [
+  'coopération',
+  'la coopération',
+  'une coopération',
+  'cooperation',
+  'la cooperation',
+  'une cooperation',
+  'mutualisme',
+  'le mutualisme',
+  'entraide',
+  'l’entraide',
+  'une entraide',
+  'symbiose',
+  'la symbiose',
+  'une symbiose',
+];
+
 const chasse = (c: Chasse) => `${maj(c.predateur)} attrape ${c.proie} pour s’en nourrir.`;
 
 const niveau1 = (rng: Rng): QuestionDraft => {
@@ -126,7 +143,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
       prompt: `${chasse(c)} Complète.`,
       answer: {
         kind: 'cloze',
-        parts: [`${maj(c.predateur)} est le `, `. ${maj(c.proie)} est la `, '.'],
+        parts: [`Dans cette scène, ${c.predateur} a le rôle de `, ` et ${c.proie} a le rôle de `, '.'],
         blanks: [
           { mode: 'text', accepted: ['prédateur', 'predateur'] },
           { mode: 'text', accepted: ['proie'] },
@@ -134,8 +151,8 @@ const niveau3 = (rng: Rng): QuestionDraft => {
       },
       hint: 'L’un chasse, l’autre est chassé.',
       steps: [
-        'Celui qui capture est le prédateur.',
-        'Celui qui est capturé est la **proie** : le premier est le **prédateur**.',
+        'Celui qui capture est le prédateur. Celui qui est capturé est la proie.',
+        `${maj(c.predateur)} : **prédateur**. ${maj(c.proie)} : **proie**.`,
       ],
       targetSeconds: 40,
     };
@@ -162,13 +179,10 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     };
   }
   const e = rng.pick(ENTRAIDES);
-  const { answer, traps: tr } = saisie(
-    ['coopération', 'la coopération', 'cooperation', 'une coopération', 'mutualisme', 'le mutualisme', 'entraide'],
-    [
-      ['prédation', 'Personne ne mange personne : les deux y gagnent.'],
-      ['compétition', 'Ils ne se disputent rien ici : les deux y gagnent.'],
-    ],
-  );
+  const { answer, traps: tr } = saisie(ENTRAIDE_ACCEPTEE, [
+    ['prédation', 'Personne ne mange personne : les deux y gagnent.'],
+    ['compétition', 'Ils ne se disputent rien ici : les deux y gagnent.'],
+  ]);
   return {
     prompt: `${e.texte} Écris le nom de cette relation.`,
     answer,
@@ -201,8 +215,8 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   const entraide = rng.int(0, 1) === 0;
   const scene = entraide ? rng.pick(ENTRAIDES).texte : chasse(rng.pick(CHASSES));
   const accepte = entraide
-    ? ['coopération', 'la coopération', 'cooperation', 'mutualisme', 'le mutualisme', 'entraide']
-    : ['prédation', 'la prédation', 'predation', 'une prédation'];
+    ? ENTRAIDE_ACCEPTEE
+    : ['prédation', 'la prédation', 'une prédation', 'predation', 'la predation', 'une predation'];
   const { answer, traps: tr } = saisie(accepte, [
     entraide
       ? ['prédation', 'Aucun des deux ne mange l’autre.']
@@ -210,7 +224,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     ['écosystème', 'L’écosystème est l’ensemble ; on demande le nom de la relation.'],
   ]);
   return {
-    prompt: `${scene} Nomme précisément la relation, sans propositions.`,
+    prompt: `${scene} Écris le nom précis de cette relation.`,
     answer,
     traps: tr,
     hint: 'Qui y gagne dans cette scène ?',
@@ -247,7 +261,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
   if (t === 1) {
     const c = rng.pick(choisies);
     const { answer, traps: tr } = saisie(
-      ['prédation', 'la prédation', 'predation'],
+      ['prédation', 'la prédation', 'une prédation', 'predation', 'la predation', 'une predation'],
       [['coopération', 'La proie n’y gagne rien.']],
     );
     return {
@@ -267,7 +281,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     { label: 'Les animaux et les objets fabriqués', why: 'Les objets fabriqués ne définissent pas un écosystème.' },
   ]);
   return {
-    prompt: `${sujet} Pour décrire entièrement cet écosystème, que faut-il présenter ?`,
+    prompt: `${sujet} Pour décrire entièrement un écosystème, que faut-il présenter ?`,
     figure,
     answer,
     traps: tr,
