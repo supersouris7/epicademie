@@ -43,6 +43,7 @@ export const ALLOWED_DOMAINS: readonly string[] = [
   'inserm.fr',
   'santepubliquefrance.fr',
   'meteofrance.fr',
+  'meteofrance.com',
   'mnhn.fr',
   'cnes.fr',
   'ademe.fr',

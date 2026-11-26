@@ -18,6 +18,7 @@ import { FCM2_ACCORDS } from './accords-cm2.ts';
 import { FCM2_PASSE_SIMPLE } from './passe-simple.ts';
 import { FCM2_TEMPS_COMPOSES } from './temps-composes.ts';
 import { FCM2_VOCABULAIRE } from './vocabulaire-cm2.ts';
+import { FCM2_ORTHOGRAPHE_MOTS } from './orthographe-mots-cm2.ts';
 
 /** Français : chapitres publiés (ADR 0034). Le lot de contenu ajoute ses chapitres ici, sans toucher à catalog.ts. */
 export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
@@ -172,5 +173,13 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'vocabulaire',
     title: 'Vocabulaire',
     skills: FCM2_VOCABULAIRE,
+  },
+  {
+    id: 'fcm2-orthographe-mots',
+    subject: 'francais',
+    grade: 'cm2',
+    domain: 'orthographe',
+    title: 'Orthographe des mots',
+    skills: FCM2_ORTHOGRAPHE_MOTS,
   },
 ];

@@ -1,6 +1,10 @@
 import type { Chapter } from '../../types.ts';
 import { besoinsAnimaux } from './besoins-animaux.ts';
 import { besoinsVegetaux } from './besoins-vegetaux.ts';
+import { alimentation } from './alimentation.ts';
+import { besoinsAlimentaires } from './besoins-alimentaires.ts';
+import { circulation } from './circulation.ts';
+import { digestion } from './digestion.ts';
 import { classer } from './classer.ts';
 import { conversions } from './conversions.ts';
 import { developpement } from './developpement.ts';
@@ -64,6 +68,14 @@ export const ST_CHAPTERS: readonly Chapter[] = [
     domain: 'physique-chimie',
     title: 'Mouvement et énergie',
     skills: [trajectoire, vitesse, renouvelables, conversions],
+  },
+  {
+    id: 'vcm2-corps-humain',
+    subject: 'sciences',
+    grade: 'cm2',
+    domain: 'svt',
+    title: 'Le corps humain',
+    skills: [digestion, alimentation, besoinsAlimentaires, circulation],
   },
   {
     id: 'p6-signal-information',
