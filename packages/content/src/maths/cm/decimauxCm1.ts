@@ -32,7 +32,7 @@ const fractionNiveau1 = (rng: Rng): QuestionDraft => {
   return {
     prompt: `Quel nombre à virgule est égal à ${rawFrac(n, 10)} ?`,
     ...choice(rng, c(n * 10), [
-      { label: String(n * 10), why: `${rawFrac(n, 10)}, ce sont des parts plus petites que 1.` },
+      { label: String(n * 10), why: `${rawFrac(n, 10)} est plus petit que 1 : ce ne peut pas être ${n * 10}.` },
       { label: c(n), why: `${c(n)}, ce sont des centièmes. Ici, on a des dixièmes.` },
     ]),
     hint: 'Un dixième s’écrit avec un seul chiffre après la virgule.',
@@ -92,7 +92,7 @@ const fractionNiveau4 = (rng: Rng): QuestionDraft => {
         [dec((u + h) * 100, 2), 'Des centièmes ne s’ajoutent pas aux unités comme des unités.'],
       ]),
       hint: 'Combien y a-t-il de dixièmes ici ? Garde leur place.',
-      steps: [`${u} unités, 0 dixième et ${pluriel(h, 'centième')}.`, `On écrit **${c(x)}**.`],
+      steps: [`${pluriel(u, 'unité')}, 0 dixième et ${pluriel(h, 'centième')}.`, `On écrit **${c(x)}**.`],
       targetSeconds: 30,
     };
   }
@@ -101,16 +101,16 @@ const fractionNiveau4 = (rng: Rng): QuestionDraft => {
   const x = u * 100 + t * 10 + k;
   const exact = (v: number) => ({ mode: 'text' as const, accepted: [String(v)] });
   return {
-    prompt: `Décompose ${deuxChiffres(x)} : combien d’unités, de dixièmes et de centièmes ?`,
+    prompt: `Décompose ${deuxChiffres(x)} chiffre par chiffre : combien d’unités, de dixièmes et de centièmes ?`,
     answer: {
       kind: 'cloze',
       parts: [`${deuxChiffres(x)} = `, ' unités + ', ' dixièmes + ', ' centièmes'],
       blanks: [exact(u), exact(t), exact(k)],
     },
-    hint: 'Lis chiffre par chiffre. Un 0 compte aussi.',
+    hint: 'Chaque rang a son chiffre. Un 0 compte aussi.',
     steps: [
       'Avant la virgule : les unités. Après : les dixièmes, puis les centièmes.',
-      `**${u} unités, ${t} dixième${t > 1 ? 's' : ''} et ${k} centième${k > 1 ? 's' : ''}**.`,
+      `**${pluriel(u, 'unité')}, ${pluriel(t, 'dixième')} et ${pluriel(k, 'centième')}**.`,
     ],
     targetSeconds: 35,
   };
@@ -188,7 +188,10 @@ const rangNiveau3 = (rng: Rng): QuestionDraft => {
     answer: num(good),
     traps: traps(r(good), [
       [tenths ? t : h, `Ça, c’est seulement le chiffre des ${name}. Compte aussi ceux des unités.`],
-      [tenths ? u * 100 + t : u * 10 + t, `Une unité contient ${tenths ? 10 : 100} ${name}.`],
+      [
+        tenths ? u * 100 + t : u * 10 + t,
+        tenths ? 'Une unité contient 10 dixièmes.' : 'Là, tu as compté les dixièmes. On demande les centièmes.',
+      ],
     ]),
     hint: `Compte d’abord les ${name} contenus dans les unités.`,
     steps: [
@@ -435,7 +438,7 @@ const entiereNiveau5 = (rng: Rng): QuestionDraft => {
   const [a, b] = [prix(), prix()];
   const good = a.round + b.round;
   return {
-    prompt: `${who} achète un livre à ${deuxChiffres(a.v)} € et un jeu à ${deuxChiffres(b.v)} €. Arrondis chaque prix à l’unité, puis additionne. Quel total estimé trouves-tu, en euros ?`,
+    prompt: `${who} achète un livre à ${deuxChiffres(a.v)} € et un jeu à ${deuxChiffres(b.v)} €. Arrondis chaque prix à l’unité, puis additionne. Quel total approché trouves-tu, en euros ?`,
     answer: num(good, '€'),
     traps: traps(r(good), [
       [a.e + b.e, 'Tu as gardé les parties entières : arrondis chaque prix à l’entier le plus proche.'],

@@ -506,9 +506,9 @@ const usuelleNiveau4 = (rng: Rng): QuestionDraft => {
     ['centièmes', 100, 25],
     ['centièmes', 100, 50],
   ] as const);
-  // Combien de petites parts dans une demie, un cinquième ou un quart.
+  // Combien de petites parts dans un demi, un cinquième ou un quart.
   const grand = d / k;
-  const nom = grand === 2 ? 'une demie' : grand === 5 ? 'un cinquième' : 'un quart';
+  const nom = grand === 2 ? 'un demi' : grand === 5 ? 'un cinquième' : 'un quart';
   return {
     prompt: `Dans ${nom} (${rawFrac(1, grand)}), combien y a-t-il de ${petit} ?`,
     answer: num(k),
@@ -595,7 +595,7 @@ export function calculMentalCm1({ S, id }: Contexte): readonly Skill[] {
       'Connaître l’écriture décimale de fractions usuelles » ; « Connaître quelques relations entre des fractions usuelles',
       [
         'À savoir par cœur : {1/2} = 0,5 ; {1/4} = 0,25 ; {3/4} = 0,75 ; {1/5} = 0,2 ; {1/10} = 0,1.',
-        'Une **fraction** a parfois un autre nom : une demie, c’est aussi deux quarts.',
+        'Une même quantité peut s’écrire avec une autre **fraction** : un demi, c’est aussi deux quarts.',
       ],
       parNiveau([usuelleNiveau1, usuelleNiveau2, usuelleNiveau3, usuelleNiveau4, usuelleNiveau5]),
       { mental: true },
@@ -689,7 +689,7 @@ const retenueNiveau4 = (rng: Rng): QuestionDraft => {
     prompt: `Quel nombre manque ? ${ecrit(q.n)} ${q.op} … = ${ecrit(q.res)}`,
     answer: num(dec(ajout, 2)),
     traps: traps(dec(ajout, 2), [
-      [q.k * 1000, `Regarde le rang du chiffre qui change : combien vaut ${q.k} à cette place ?`],
+      [q.k, `Regarde le rang du chiffre qui change : combien vaut ${q.k} à cette place ?`],
       [dec(q.res, 2), 'Ça, c’est le résultat. On cherche ce qui a changé.'],
       [dec(q.n + q.res, 2), 'On cherche l’écart entre les deux nombres.'],
     ]),
