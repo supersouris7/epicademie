@@ -78,7 +78,7 @@ export const reflexe: Skill = {
           ['la peau', 'La peau porte des récepteurs.'],
           ['le cœur', 'Le cœur assure la circulation du sang.'],
         ],
-        indice: 'Ni la peau ni le muscle : quelle partie reçoit le message et élabore la réponse ?',
+        indice: 'Suis l’arc réflexe : où le message arrivé par le nerf sensitif passe-t-il vers le nerf moteur ?',
         explication: ['L’arc réflexe se situe au sein de la moelle épinière.'],
       },
       {
