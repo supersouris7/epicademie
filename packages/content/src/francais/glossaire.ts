@@ -1225,4 +1225,18 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Lien où une proposition dépend d’une autre et en fait partie.',
     example: 'Je rentre quand la nuit tombe.',
   },
+  {
+    id: 'imperatif',
+    word: 'impératif',
+    forms: ['l’impératif'],
+    definition: 'Le mode qui sert à donner un ordre ou un conseil. Il n’a pas de sujet écrit.',
+    example: 'Ferme la porte !',
+  },
+  {
+    id: 'conditionnel-present',
+    word: 'conditionnel présent',
+    forms: ['au conditionnel présent'],
+    definition: 'Un temps qui dit ce qui arriverait, par exemple après « si ».',
+    example: 'Si je le pouvais, je viendrais.',
+  },
 ];

@@ -24,6 +24,7 @@ import { FCM2_ORTHOGRAPHE_MOTS } from './orthographe-mots-cm2.ts';
 import { F6_PHRASE_SIMPLE } from './phrase-simple-6e.ts';
 import { F6_PRONOMS_GN } from './pronoms-gn-6e.ts';
 import { F6_PHRASE_COMPLEXE } from './phrase-complexe-6e.ts';
+import { F6_CONJUGAISON } from './conjugaison-6e.ts';
 
 /** Français : chapitres publiés (ADR 0034). Le lot de contenu ajoute ses chapitres ici, sans toucher à catalog.ts. */
 export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
@@ -226,5 +227,13 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'grammaire',
     title: 'La phrase complexe',
     skills: F6_PHRASE_COMPLEXE,
+  },
+  {
+    id: 'f6-conjugaison',
+    subject: 'francais',
+    grade: '6e',
+    domain: 'conjugaison',
+    title: 'Conjugaison',
+    skills: F6_CONJUGAISON,
   },
 ];
