@@ -83,4 +83,9 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'a6-pluriels-irreguliers', version: 1, lot: 'an-6e-05', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'a6-adjectif-place', version: 1, lot: 'an-6e-05', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'a6-genitif', version: 1, lot: 'an-6e-05', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'a6-pronoms-sujets', version: 1, lot: 'an-6e-06', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a6-pronoms-complements', version: 1, lot: 'an-6e-06', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a6-determinants-possessifs', version: 1, lot: 'an-6e-06', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a6-pronoms-possessifs', version: 1, lot: 'an-6e-06', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a6-mots-interrogatifs', version: 1, lot: 'an-6e-06', date: '2026-11-26', verdict: 'ok' },
 ];
