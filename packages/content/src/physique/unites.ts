@@ -133,7 +133,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
       prompt: `Écris en toutes lettres le nom de l’unité SI utilisée pour ${u.la}.`,
       answer,
       traps: t,
-      hint: 'Le nom d’une unité commence par une minuscule, même s’il vient d’un nom de savant.',
+      hint: 'Pense à ce qui est écrit après le nombre quand on mesure cette grandeur, puis écris le nom en entier.',
       steps: [`On cherche l’unité utilisée pour ${u.la}.`, `Son symbole est ${u.symbole}.`, `C’est **${l(u)}**.`],
       targetSeconds: 35,
     };
@@ -169,13 +169,18 @@ const niveau4 = (rng: Rng): QuestionDraft => {
         ? `Convertis ${n} h dans l’unité SI de durée, la seconde.`
         : `Une expérience dure ${n} min ${reste} s. Exprime cette durée en secondes.`,
       answer: num(r(res), 's'),
-      traps: traps(r(res), [
-        [
-          r(enHeures ? n * 60 : n * 100 + reste),
-          '1 min = 60 s et 1 h = 3 600 s : ces unités ne se comptent pas ainsi.',
-        ],
-        [r(enHeures ? n * 100 : n + reste), 'Convertis d’abord les unités hors SI en secondes avant d’additionner.'],
-      ]),
+      traps: traps(
+        r(res),
+        enHeures
+          ? [
+              [r(n * 60), 'Tu as trouvé des minutes : chaque minute vaut encore 60 secondes.'],
+              [r(n * 100), 'Les durées ne se comptent pas de 100 en 100 : 1 h = 3 600 s.'],
+            ]
+          : [
+              [r(n * 100 + reste), '1 min vaut 60 s, pas 100 s.'],
+              [r(n + reste), 'Convertis d’abord les minutes en secondes avant d’additionner.'],
+            ],
+      ),
       hint: '1 min = 60 s et 1 h = 60 min.',
       steps: [
         enHeures ? '1 h = 60 min = 3 600 s.' : '1 min = 60 s.',
@@ -212,11 +217,22 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     [
       u.grandeur,
       `la ${u.grandeur}`,
+      `une ${u.grandeur}`,
       `l’${u.grandeur}`,
       accents(u.grandeur),
+      ...(u.grandeur === 'longueur' ? ['distance', 'la distance', 'une distance'] : []),
       ...(u.grandeur === 'durée' ? ['temps', 'le temps'] : []),
       ...(u.grandeur === 'intensité du courant'
-        ? ['intensité', 'courant électrique', 'intensité du courant électrique']
+        ? [
+            'intensité',
+            'l’intensité',
+            'courant',
+            'le courant',
+            'courant électrique',
+            'le courant électrique',
+            'intensité du courant électrique',
+            'l’intensité du courant électrique',
+          ]
         : []),
       ...(u.grandeur === 'température thermodynamique' ? ['température', 'la température'] : []),
     ],
@@ -282,7 +298,10 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       lignes
         .map((_, i) => `ligne ${i + 1}`)
         .filter((x) => x !== bonne)
-        .map((label) => ({ label, why: `Cette ligne est correctement écrite. ${f.why}` })),
+        .map((label) => ({
+          label,
+          why: 'Cette ligne est correctement écrite. Cherche une faute de majuscule, de point, de pluriel ou d’espace dans un symbole.',
+        })),
     );
     return {
       prompt: 'Lis la fiche de mesures. Quelle ligne ne respecte pas les règles d’écriture du Système international ?',
@@ -356,7 +375,7 @@ export const unitesSi: Skill = {
   lesson: {
     memo: [
       'Une **grandeur** se mesure : on écrit un nombre, une espace, puis une **unité** (12 s).',
-      'Dans le **Système international** : mètre (m) pour la longueur, kilogramme (kg) pour la masse, seconde (s) pour la durée, ampère (A) pour le courant, kelvin (K) pour la température.',
+      'Dans le **Système international** : mètre (m) pour la longueur, kilogramme (kg) pour la masse, seconde (s) pour la durée, ampère (A) pour le courant, kelvin (K) pour la température ; on utilise aussi le hertz (Hz) pour la fréquence, le newton (N) pour la force, le joule (J) pour l’énergie, le watt (W) pour la puissance et le volt (V) pour la tension.',
       'Un symbole ne prend ni point ni « s » au pluriel, et il commence par une majuscule seulement si le nom de l’unité vient d’un nom propre : 5 kg, 9 V.',
     ],
     ...referencesSignaux(

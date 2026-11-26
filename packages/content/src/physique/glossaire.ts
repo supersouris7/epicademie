@@ -386,6 +386,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'Le mètre est l’unité de longueur du Système international.',
   ),
   terme(
+    'temperature-thermodynamique',
+    'température thermodynamique',
+    ['température thermodynamique'],
+    'Nom scientifique de la température quand on l’exprime en kelvins (K), l’unité de base du Système international.',
+    'Dans la vie courante on utilise le degré Celsius ; la température thermodynamique s’exprime en kelvins.',
+  ),
+  terme(
     'prefixe-si',
     'préfixe',
     ['préfixe', 'préfixes'],

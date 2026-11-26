@@ -22,7 +22,7 @@ export const OBJETS_DIFFUSANTS = [
 ] as const;
 
 const WHY_DIFFUSANT = (o: string) =>
-  `${maj(o)} ne produit pas sa lumière : on le voit parce que cet objet renvoie la lumière reçue.`;
+  `${maj(o)} ne produit pas sa lumière : on voit cet objet parce qu’il renvoie la lumière reçue.`;
 const WHY_PRIMAIRE = (o: string) => `${maj(o)} produit sa propre lumière : c’est une source primaire.`;
 
 const niveau1 = (rng: Rng): QuestionDraft => {
@@ -79,6 +79,7 @@ const associer = (rng: Rng, n: 3 | 5, secondes: number): QuestionDraft => {
 };
 
 interface Cas {
+  readonly indice: string;
   readonly question: string;
   readonly bon: string;
   readonly faux: readonly (readonly [string, string])[];
@@ -87,6 +88,7 @@ interface Cas {
 
 const CAS_N2: readonly Cas[] = [
   {
+    indice: 'Pense à la forme d’un faisceau et au trajet de la lumière du Soleil dans l’espace.',
     question: 'Comment la lumière se propage-t-elle dans le vide ?',
     bon: 'en ligne droite',
     faux: [
@@ -100,6 +102,7 @@ const CAS_N2: readonly Cas[] = [
     why: 'Dans le vide, la lumière se propage en ligne droite.',
   },
   {
+    indice: 'La Lune produit-elle sa lumière, ou la reçoit-elle d’ailleurs ?',
     question: 'Pourquoi voit-on la Lune briller la nuit ?',
     bon: 'elle renvoie la lumière qu’elle reçoit du Soleil',
     faux: [
@@ -110,6 +113,7 @@ const CAS_N2: readonly Cas[] = [
     why: 'La Lune est un objet diffusant : elle réfléchit la lumière reçue du Soleil.',
   },
   {
+    indice: 'Imagine le trajet de la lumière du Soleil jusqu’au sol, avec l’arbre sur son chemin.',
     question: 'Qu’est-ce qui provoque l’ombre d’un arbre sur le sol ?',
     bon: 'l’arbre, opaque, arrête une partie de la lumière qui arrive en ligne droite',
     faux: [
@@ -120,16 +124,18 @@ const CAS_N2: readonly Cas[] = [
     why: 'Un objet opaque intercepte la lumière : derrière lui apparaît une zone moins éclairée.',
   },
   {
+    indice: 'Demande-toi ce que la lumière fait pendant un an, et ce que l’on veut mesurer.',
     question: 'Qu’est-ce qu’une année-lumière ?',
     bon: 'une unité de distance',
     faux: [
       ['une unité de durée', 'Le mot « année » trompe : on mesure le chemin parcouru par la lumière en un an.'],
       ['une unité de vitesse', 'La vitesse de la lumière s’exprime en km/s ou en m/s, pas en années-lumière.'],
-      ['une unité d’éclairement', 'Elle ne mesure pas la quantité de lumière reçue.'],
+      ['une unité de quantité de lumière', 'Elle ne mesure pas la quantité de lumière reçue.'],
     ],
     why: 'L’année-lumière est la distance parcourue par la lumière dans le vide en un an.',
   },
   {
+    indice: 'Un faisceau laser est très concentré : pense aux yeux des personnes autour de toi.',
     question: 'Quelle précaution prendre avec un pointeur laser ?',
     bon: 'ne jamais le diriger vers une personne ni vers un véhicule',
     faux: [
@@ -157,7 +163,7 @@ const qcm = (rng: Rng, c: Cas, secondes: number): QuestionDraft => {
     prompt: c.question,
     answer,
     traps: t,
-    hint: 'Pense à la source de la lumière, à son trajet et à ce qui l’arrête.',
+    hint: c.indice,
     steps: ['On revient aux idées clés : sources, trajet en ligne droite, ombre.', c.why, `Réponse : **${c.bon}**.`],
     targetSeconds: secondes,
   };
@@ -178,7 +184,10 @@ const TROUS: readonly {
   },
   {
     parts: ['Une flamme est une source ', ' : elle ', ' sa propre lumière.'],
-    mots: [['primaire'], ['produit', 'émet']],
+    mots: [
+      ['primaire', 'lumineuse'],
+      ['produit', 'émet', 'crée', 'fabrique'],
+    ],
     why: 'Une source primaire produit la lumière qu’elle envoie.',
   },
   {
@@ -250,7 +259,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
       hint: 'Pars de la source primaire : c’est elle qui produit la lumière.',
       steps: [
         'La lumière part de la source, puis rencontre les objets.',
-        c.etapes.join(', puis ') + '.',
+        c.etapes.join(' → ') + '.',
         'L’ordre commence par la **source**.',
       ],
       targetSeconds: 55,
@@ -261,7 +270,18 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   const obj: string = rng.pick<string>(primaire ? SOURCES_PRIMAIRES : OBJETS_DIFFUSANTS);
   const why = primaire ? WHY_PRIMAIRE(obj) : WHY_DIFFUSANT(obj);
   const { answer, traps: t } = saisie(
-    primaire ? [nom, `une ${nom}`, 'objet lumineux', 'un objet lumineux'] : [nom, `un ${nom}`],
+    primaire
+      ? [
+          nom,
+          `une ${nom}`,
+          'objet lumineux',
+          'un objet lumineux',
+          'corps lumineux',
+          'un corps lumineux',
+          'source lumineuse',
+          'une source lumineuse',
+        ]
+      : [nom, `un ${nom}`, 'corps diffusant', 'un corps diffusant', 'source secondaire', 'une source secondaire'],
     [
       [primaire ? 'objet diffusant' : 'source primaire', why],
       [primaire ? 'un objet diffusant' : 'une source primaire', why],
@@ -300,7 +320,18 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   if (type === 0) return associer(rng, 5, 80);
   if (type === 1) {
     const { answer, traps: t } = saisie(
-      ['année-lumière', 'année lumière', 'annee-lumiere', 'annee lumiere', 'une année-lumière', 'l’année-lumière'],
+      [
+        'année-lumière',
+        'année lumière',
+        'annee-lumiere',
+        'annee lumiere',
+        'une année-lumière',
+        'l’année-lumière',
+        'années-lumière',
+        'années lumière',
+        'une année lumière',
+        'l’année lumière',
+      ],
       [
         ['année', 'Une année est une durée ; l’unité de distance cherchée ajoute le mot « lumière ».'],
         ['kilomètre', 'Le kilomètre convient, mais la question vise l’unité liée au trajet de la lumière en un an.'],
@@ -340,7 +371,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   const k = rng.int(2, 3);
   const res = h * k;
   return {
-    prompt: `S est une petite source de lumière, [AB] un objet opaque vertical posé sur l’axe et E le pied d’un écran vertical. SA = ${d} carreaux, AB = ${h} carreau${h > 1 ? 'x' : ''}, SE = ${d * k} carreaux. Quelle est la hauteur de l’ombre sur l’écran, en carreaux ?`,
+    prompt: `S est une petite source de lumière, [AB] un objet opaque vertical dont le pied est A, et E le pied d’un écran vertical ; S, A et E sont alignés à l’horizontale. SA = ${d} carreaux, AB = ${h} carreau${h > 1 ? 'x' : ''}, SE = ${d * k} carreaux. Quelle est la hauteur de l’ombre sur l’écran, en carreaux ?`,
     figure: schemaOmbre(d, h, k),
     answer: num(r(res), 'carreaux'),
     traps: traps(r(res), [
@@ -483,7 +514,7 @@ export const propagationLumiere: Skill = {
   lesson: {
     memo: [
       'Une **source primaire** produit sa lumière (Soleil, flamme, lampe allumée) ; un **objet diffusant** (Lune, page, mur) renvoie dans toutes les directions la lumière qu’il reçoit.',
-      'Dans le vide ou un milieu homogène, la lumière va en ligne droite : on la modélise par un **rayon lumineux**, et un objet opaque qui l’arrête crée une **ombre**.',
+      'Dans le vide ou un milieu homogène (le même partout), la lumière va en ligne droite : on représente son trajet par un **rayon lumineux**, et un objet opaque qui l’arrête crée une **ombre**.',
       'Elle parcourt environ 300 000 km par seconde dans le vide ; une **année-lumière** est la distance qu’elle y parcourt en un an ; ne dirige jamais un laser vers quelqu’un.',
     ],
     ...referencesSignaux(

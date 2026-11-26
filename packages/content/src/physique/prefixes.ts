@@ -46,7 +46,7 @@ const qcmSens = (
   const { answer, traps: t } = choice(
     rng,
     p.sens,
-    faux.map((o) => ({ label: o.sens, why: `C’est le sens de « ${o.nom} » : ${WHY(p)}` })),
+    faux.map((o) => ({ label: o.sens, why: `C’est le sens de « ${o.nom} ». ${WHY(p)}` })),
   );
   return {
     prompt,
@@ -327,9 +327,9 @@ export const prefixesSi: Skill = {
   version: 2,
   lesson: {
     memo: [
-      'Un **préfixe** placé devant une unité la multiplie ou la divise : kilo (k) = × 1 000, centi (c) = ÷ 100, milli (m) = ÷ 1 000, donc 3 km = 3 000 m et 250 mg = 0,25 g.',
+      'Un **préfixe** placé devant une unité la multiplie ou la divise : kilo (k) = × 1 000, hecto (h) = × 100, déca (da) = × 10, déci (d) = ÷ 10, centi (c) = ÷ 100, milli (m) = ÷ 1 000, donc 3 km = 3 000 m et 250 mg = 0,25 g.',
       'Plus loin : méga (M) = un million de fois, giga (G) = un milliard de fois, micro (μ) = un millionième, nano (n) = un milliardième.',
-      'Attention à la casse : M (méga) n’est pas m (milli).',
+      'Attention aux majuscules et aux minuscules : M (méga) n’est pas m (milli).',
     ],
     ...referencesSignaux(
       'prefixes-c3',

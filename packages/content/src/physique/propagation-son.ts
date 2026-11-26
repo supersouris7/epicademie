@@ -27,6 +27,7 @@ const VITESSE = 340;
 const DONNEE_AIR = `On prend ${VITESSE} m/s pour la vitesse du son dans l’air.`;
 
 interface Cas {
+  readonly indice: string;
   readonly question: string;
   readonly bon: string;
   readonly faux: readonly (readonly [string, string])[];
@@ -43,7 +44,7 @@ const qcm = (rng: Rng, c: Cas, secondes: number): QuestionDraft => {
     prompt: c.question,
     answer,
     traps: t,
-    hint: 'Demande-toi ce qui vibre, ce qui transporte la vibration et à quelle fréquence.',
+    hint: c.indice,
     steps: ['Un son est une vibration qui se propage dans la matière.', c.why, `Réponse : **${c.bon}**.`],
     targetSeconds: secondes,
   };
@@ -51,6 +52,7 @@ const qcm = (rng: Rng, c: Cas, secondes: number): QuestionDraft => {
 
 const CAS_N1: readonly Cas[] = [
   {
+    indice: 'Pour passer, le son doit faire vibrer quelque chose.',
     question: 'Dans lequel de ces cas un son ne peut-il pas se propager ?',
     bon: 'dans le vide',
     faux: [
@@ -60,6 +62,7 @@ const CAS_N1: readonly Cas[] = [
     why: 'Le vide ne contient pas de matière qui puisse vibrer.',
   },
   {
+    indice: 'Demande-toi ce qui transporte la vibration jusqu’à ton oreille.',
     question: 'De quoi un son a-t-il besoin pour se propager ?',
     bon: 'd’un milieu matériel (gaz, liquide ou solide)',
     faux: [
@@ -69,6 +72,7 @@ const CAS_N1: readonly Cas[] = [
     why: 'La vibration passe de proche en proche à travers la matière.',
   },
   {
+    indice: 'Observe la corde juste après l’avoir pincée.',
     question: 'Que fait un objet qui produit un son, par exemple une corde de guitare ?',
     bon: 'il vibre',
     faux: [
@@ -100,6 +104,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
 
 const CAS_N2: readonly Cas[] = [
   {
+    indice: 'Compare ce dont la lumière et le son ont besoin pour se propager.',
     question:
       'Un réveil sonne sous une cloche en verre. On retire peu à peu l’air à l’intérieur. Qu’observe-t-on à la fin ?',
     bon: 'on voit encore le réveil, mais on ne l’entend presque plus',
@@ -114,16 +119,21 @@ const CAS_N2: readonly Cas[] = [
     why: 'La lumière se propage dans le vide, pas le son.',
   },
   {
+    indice: 'Compare un sifflet et une grosse caisse : lequel vibre le plus vite ?',
     question: 'Un son a une fréquence plus élevée qu’un autre. Comment le perçoit-on ?',
     bon: 'plus aigu',
     faux: [
       ['plus grave', 'Un son grave correspond au contraire à une fréquence faible.'],
       ['plus lent à arriver', 'La fréquence décrit le nombre de vibrations par seconde, pas la durée du trajet.'],
-      ['forcément plus fort', 'La force d’un son dépend de l’amplitude des vibrations, exprimée en décibels.'],
+      [
+        'forcément plus fort',
+        'La force d’un son (son intensité, exprimée en décibels) est une autre caractéristique que la fréquence.',
+      ],
     ],
     why: 'Plus la fréquence est élevée, plus le son est aigu.',
   },
   {
+    indice: 'Pense à ce qui abîme l’oreille : la force du son et la durée d’écoute.',
     question: 'Quel geste protège le mieux ton audition ?',
     bon: 'baisser le volume et faire des pauses quand le son est fort',
     faux: [
@@ -133,13 +143,14 @@ const CAS_N2: readonly Cas[] = [
       ],
       [
         'écouter fort, car les cellules de l’oreille se réparent vite',
-        'La destruction des cellules ciliées de l’oreille est irréversible.',
+        'Les sons forts peuvent détruire des cellules de l’oreille interne (les cellules ciliées), et c’est irréversible.',
       ],
       ['garder le casque toute la journée au maximum', 'Une exposition longue à des niveaux élevés abîme l’audition.'],
     ],
     why: 'Des niveaux sonores élevés détruisent de façon irréversible des cellules de l’oreille.',
   },
   {
+    indice: 'Pense au mot « fréquent » : combien de fois quelque chose se répète-t-il ?',
     question: 'Que mesure la fréquence d’un son ?',
     bon: 'le nombre de vibrations par seconde',
     faux: [
@@ -216,7 +227,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
         { mode: 'text', accepted: ['hertz', 'Hz'] },
       ],
     },
-    hint: 'Les préfixes « infra » (en dessous) et « ultra » (au-delà) t’aident.',
+    hint: 'Situe cette vibration par rapport à la plage entendue, puis pense à l’unité qui compte les vibrations par seconde.',
     steps: [
       WHY_DOMAINE[d],
       'L’unité de fréquence est le hertz, de symbole Hz.',
@@ -258,7 +269,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     const f = rng.pick(FREQUENCES[d]);
     const autre = d === 'infrason' ? 'ultrason' : 'infrason';
     const { answer, traps: t } = saisie(
-      [d, `un ${d}`, `${d}s`],
+      [d, `un ${d}`, `${d}s`, d.replace('son', '-son'), `un ${d.replace('son', '-son')}`],
       [
         [autre, WHY_DOMAINE[d]],
         ['son audible', `Ce son sort de la plage 20 Hz – 20 000 Hz. ${WHY_DOMAINE[d]}`],
@@ -412,7 +423,7 @@ export const propagationSon: Skill = {
     memo: [
       'Un son est une vibration qui se propage dans un **milieu matériel** (gaz, liquide ou solide) : dans le **vide**, il ne passe pas.',
       'Dans l’air, il parcourt environ 340 m par seconde, donc distance = vitesse × durée : un tonnerre entendu 3 s après l’éclair vient d’environ 1 km.',
-      'La **fréquence**, en **hertz** (Hz), compte les vibrations par seconde : on entend d’environ 20 à 20 000 Hz, en dessous ce sont des **infrasons**, au-dessus des **ultrasons** ; les sons trop forts abîment l’oreille pour toujours.',
+      'La **fréquence**, en **hertz** (Hz), compte les vibrations par seconde : on entend d’environ 20 à 20 000 Hz, en dessous ce sont des **infrasons**, au-dessus des **ultrasons** ; les sons trop forts peuvent abîmer l’oreille pour toujours.',
     ],
     ...referencesSignaux(
       'son-conditions',
