@@ -6,4 +6,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'e5-se-presenter', version: 1, lot: 'es-5e-01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'e5-nombres', version: 1, lot: 'es-5e-01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'e5-alphabet-accent', version: 1, lot: 'es-5e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'e5-pronoms-sujets', version: 1, lot: 'es-5e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'e5-present-reguliers', version: 2, lot: 'es-5e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'e5-present-er', version: 1, lot: 'es-5e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'e5-present-ir', version: 1, lot: 'es-5e-02', date: '2026-11-26', verdict: 'ok' },
 ];
