@@ -13,8 +13,10 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'mcm1-valeur-chiffre', version: 2, lot: 'ma-cm1-n01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'mcm1-demi-droite', version: 2, lot: 'ma-cm1-n01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'mcm1-multiples', version: 2, lot: 'ma-cm1-n01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'mcm1-comparer-entiers', version: 2, lot: 'ma-cm1-n01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'mcm1-lire-fraction', version: 2, lot: 'ma-cm1-n01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'mcm1-fraction-entier', version: 2, lot: 'ma-cm1-n01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'mcm1-comparer-fractions', version: 2, lot: 'ma-cm1-n01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'mcm1-additionner-fractions', version: 2, lot: 'ma-cm1-n01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'mcm1-fraction-quantite', version: 2, lot: 'ma-cm1-n01', date: '2026-11-26', verdict: 'ok' },
 ];

@@ -4,7 +4,7 @@ import type { Rng } from '../../rng.ts';
 import type { Figure, QuestionDraft, Skill } from '../../types.ts';
 import { NAMES } from '../kit.ts';
 import type { Contexte } from './contexte.ts';
-import { cinqNiveaux, parNiveau } from './niveaux.ts';
+import { cinqNiveaux, parNiveau, signes } from './niveaux.ts';
 
 /**
  * « Les fractions » au CM1, 5 niveaux (lot ma-cm1-n01). Programme du cycle 3 (17 avril 2025) :
@@ -286,15 +286,7 @@ const comparerNiveau1 = (rng: Rng): QuestionDraft => {
         ['B', ...bande(b, d)],
       ],
     },
-    ...choice(
-      rng,
-      sign,
-      [
-        { label: sign === '<' ? '>' : '<', why },
-        { label: '=', why: 'Les deux bandes n’ont pas le même nombre de cases pleines.' },
-      ],
-      true,
-    ),
+    ...signes(sign, why, 'Les deux bandes n’ont pas le même nombre de cases pleines.'),
     hint: 'Quelle bande a le plus de cases pleines ?',
     steps: [why, `${rawFrac(a, d)} **${sign}** ${rawFrac(b, d)}.`],
     targetSeconds: 15,
@@ -369,29 +361,35 @@ const comparerNiveau4 = (rng: Rng): QuestionDraft => {
 };
 
 const comparerNiveau5 = (rng: Rng): QuestionDraft => {
-  const names = distinct(rng, 3, () => rng.pick(NAMES));
-  const same = rng.int(0, 1) === 0;
-  const d = rng.int(7, 12);
-  const values = distinct(rng, 3, () => (same ? rng.int(1, d - 1) : rng.int(2, 10)));
-  const parts = values.map((v) => (same ? rawFrac(v, d) : rawFrac(1, v)));
-  // Plus grande part d'abord : numérateur le plus grand, ou dénominateur le plus petit.
-  const size = (i: number) => (same ? (values[i] ?? 0) : -(values[i] ?? 0));
-  const base = [0, 1, 2];
-  const wanted = [...base].sort((i, j) => size(j) - size(i));
-  const shown = wanted.every((w, i) => w === i) ? [1, 0, 2] : base;
-  const correct = [0, 1, 2].sort((i, j) => size(shown[j] ?? 0) - size(shown[i] ?? 0));
-  const phrases = base.map((i) => `${names[i]} en mange ${parts[i]}`).join(', ');
+  const names = distinct(rng, 4, () => rng.pick(NAMES));
+  // a/e < a/d < b/d < 1 : il faut enchaîner « même numérateur » et « même dénominateur ».
+  const d = rng.int(5, 15);
+  const e = rng.int(d + 1, 20);
+  const a = rng.int(1, d - 2);
+  const b = rng.int(a + 1, d - 1);
+  const [petite, moyenne, grande] = [rawFrac(a, e), rawFrac(a, d), rawFrac(b, d)];
+  const portions = [
+    { part: petite, rank: 0 },
+    { part: moyenne, rank: 1 },
+    { part: grande, rank: 2 },
+    { part: '1', rank: 3 },
+  ];
+  let shown = rng.shuffle(portions);
+  while (shown.every((x, i) => x.rank === 3 - i)) shown = rng.shuffle(portions);
+  // De la plus grande part à la plus petite.
+  const correct = shown.map((_, i) => i).sort((i, j) => (shown[j]?.rank ?? 0) - (shown[i]?.rank ?? 0));
+  const phrases = shown
+    .map((x, i) => `${names[i]} mange ${x.rank === 3 ? 'toute la sienne' : `${x.part} de la sienne`}`)
+    .join(', ');
   return {
-    prompt: `Trois tablettes de chocolat identiques. ${phrases}. Range les enfants, de celui qui mange le plus à celui qui mange le moins.`,
-    answer: { kind: 'order', items: shown.map((i) => names[i] ?? ''), correct },
-    hint: same
-      ? 'Les parts ont la même taille : qui en prend le plus ?'
-      : 'Chacun prend une seule part : qui a la plus grosse ?',
+    prompt: `Chacun a sa tablette de chocolat, toutes identiques. ${phrases}. Range les enfants, de celui qui mange le plus à celui qui mange le moins.`,
+    answer: { kind: 'order', items: [...names], correct },
+    hint: 'La tablette entière vaut 1. Compare d’abord les fractions de même dénominateur, puis celles de même numérateur.',
     steps: [
-      same
-        ? 'Même dénominateur : le plus grand numérateur donne la plus grande part.'
-        : 'Même numérateur : le plus petit dénominateur donne la plus grande part.',
-      `**${wanted.map((i) => `${names[i]} (${parts[i]})`).join(', puis ')}**.`,
+      `La tablette entière vaut 1 = ${rawFrac(d, d)} : c’est la plus grande part.`,
+      `Même dénominateur : le plus grand numérateur donne la plus grande part, donc ${grande} > ${moyenne}.`,
+      `Même numérateur : le plus petit dénominateur donne la plus grande part, donc ${moyenne} > ${petite}.`,
+      `**${correct.map((i) => `${names[i]} (${shown[i]?.part})`).join(', puis ')}**.`,
     ],
     targetSeconds: 70,
   };

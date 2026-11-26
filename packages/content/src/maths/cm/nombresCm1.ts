@@ -4,7 +4,7 @@ import type { Rng } from '../../rng.ts';
 import type { QuestionDraft, Skill } from '../../types.ts';
 import { big, NAMES } from '../kit.ts';
 import type { Contexte } from './contexte.ts';
-import { cinqNiveaux, parNiveau } from './niveaux.ts';
+import { cinqNiveaux, parNiveau, signes } from './niveaux.ts';
 import { inWords } from './outils.ts';
 
 /**
@@ -275,15 +275,7 @@ const comparerNiveau1 = (rng: Rng): QuestionDraft => {
   const why = 'Compte les chiffres : le nombre qui en a le plus est le plus grand.';
   return {
     prompt: `Quel signe faut-il ? ${big(a)} … ${big(b)}`,
-    ...choice(
-      rng,
-      sign,
-      [
-        { label: sign === '<' ? '>' : '<', why },
-        { label: '=', why: 'Ces deux nombres ne sont pas égaux : ils n’ont pas autant de chiffres.' },
-      ],
-      true,
-    ),
+    ...signes(sign, why, 'Ces deux nombres ne sont pas égaux : ils n’ont pas autant de chiffres.'),
     hint: 'Compte les chiffres de chaque nombre.',
     steps: [why, `${big(a)} **${sign}** ${big(b)}.`],
     targetSeconds: 15,

@@ -77,6 +77,47 @@ describe('lot ma-cm1-n01', () => {
     }
   });
 
+  it.each(['mcm1-comparer-entiers', 'mcm1-comparer-fractions'])(
+    '%s niveau 1 : signes dans un ordre fixe, position de la bonne réponse variable',
+    (id) => {
+      const positions = new Set<number>();
+      for (const seed of SEEDS) {
+        const q = generate(id, 1, seed);
+        if (q.answer.kind !== 'choice') throw new Error('choix attendu');
+        expect(q.answer.options).toEqual(['<', '=', '>']);
+        expect(q.traps.map((x) => ('option' in x ? x.option : -1)).sort()).toEqual(
+          [0, 1, 2].filter((i) => i !== (q.answer as { correct: number }).correct),
+        );
+        positions.add(q.answer.correct);
+      }
+      expect([...positions].sort()).toEqual([0, 2]);
+    },
+  );
+
+  it('comparer-fractions niveau 5 : quatre parts a/e < a/d < b/d < 1, rangées de la plus grande à la plus petite', () => {
+    for (const seed of SEEDS) {
+      const q = generate('mcm1-comparer-fractions', 5, seed);
+      if (q.answer.kind !== 'order') throw new Error('rangement attendu');
+      const fr = [...q.prompt.matchAll(/\{(\d+)\/(\d+)\}/g)].map((m) => [Number(m[1]), Number(m[2])] as const);
+      expect(fr).toHaveLength(3);
+      const [x, y, z] = [...fr].sort((p, r) => p[0] / p[1] - r[0] / r[1]);
+      expect(x![0]).toBe(y![0]);
+      expect(x![1]).toBeGreaterThan(y![1]);
+      expect(y![1]).toBe(z![1]);
+      expect(y![0]).toBeLessThan(z![0]);
+      expect(z![0]).toBeLessThan(z![1]);
+      // Valeur mangée par chaque enfant, relue dans l'énoncé.
+      const eaten = q.answer.items.map((name) => {
+        const m = new RegExp(`${name} mange (toute|\\{(\\d+)/(\\d+)\\})`).exec(q.prompt)!;
+        return m[1] === 'toute' ? 1 : Number(m[2]) / Number(m[3]);
+      });
+      const ordered = q.answer.correct.map((i) => eaten[i]!);
+      expect(ordered).toEqual([...eaten].sort((p, r) => r - p));
+      expect(new Set(eaten).size).toBe(4);
+      expect(q.answer.correct).not.toEqual([0, 1, 2, 3]);
+    }
+  });
+
   it('le CM2 garde ses notions à 3 niveaux et le même ordre que le CM1', () => {
     for (const id of IDS) expect(skillLevels(skill(CM2, id.replace('cm1', 'cm2')))).toBe(3);
     expect(
