@@ -168,7 +168,15 @@ const NIVEAU4: readonly Modele[] = [
   ),
   ecrire(
     'Écris le nom des minuscules saillies de la paroi de l’intestin grêle qui contiennent des capillaires sanguins.',
-    ['villosités', 'les villosités', 'villosité', 'villosités intestinales', 'villosites'],
+    [
+      'villosités',
+      'les villosités',
+      'villosité',
+      'villosités intestinales',
+      'les villosités intestinales',
+      'villosites',
+      'les villosites',
+    ],
     [
       ['alvéoles', 'Les alvéoles sont dans les poumons.'],
       ['capillaires', 'Les capillaires sont à l’intérieur des saillies cherchées.'],
@@ -178,7 +186,17 @@ const NIVEAU4: readonly Modele[] = [
   ),
   ecrire(
     'Écris le nom des matières éliminées par l’organisme à la fin du trajet des aliments (au pluriel).',
-    ['excréments', 'les excréments', 'matières fécales', 'les matières fécales', 'excrements'],
+    [
+      'excréments',
+      'les excréments',
+      'matières fécales',
+      'les matières fécales',
+      'excrements',
+      'selles',
+      'les selles',
+      'fèces',
+      'les fèces',
+    ],
     [
       ['nutriments', 'Les nutriments passent dans le sang : on cherche ce qui est éliminé.'],
       ['bile', 'La bile est un liquide qui sert à la digestion.'],

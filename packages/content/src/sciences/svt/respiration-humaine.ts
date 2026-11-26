@@ -120,7 +120,11 @@ const NIVEAU2: readonly Modele[] = [
 const NIVEAU3: readonly Modele[] = [
   completer(
     'Complète le trajet de l’air inspiré.',
-    ['L’air passe par la ', ', puis par les ', ', avant d’atteindre les alvéoles pulmonaires.'],
+    [
+      'Après le larynx, l’air entre dans la ',
+      ', puis dans les deux ',
+      ' ; viennent ensuite les bronchioles et les alvéoles pulmonaires.',
+    ],
     [
       ['trachée', 'trachee'],
       ['bronches', 'bronche'],
@@ -136,7 +140,17 @@ const NIVEAU3: readonly Modele[] = [
   ),
   ecrire(
     'Écris le nom des minuscules cavités situées au bout des bronchioles, où se font les échanges avec le sang.',
-    ['alvéoles', 'alvéoles pulmonaires', 'les alvéoles', 'les alvéoles pulmonaires', 'alvéole', 'alveoles'],
+    [
+      'alvéoles',
+      'alvéoles pulmonaires',
+      'les alvéoles',
+      'les alvéoles pulmonaires',
+      'alvéole',
+      'alveoles',
+      'alvéole pulmonaire',
+      'l’alvéole pulmonaire',
+      'alveoles pulmonaires',
+    ],
     [
       ['bronches', 'Les bronches conduisent l’air : elles sont en amont des cavités cherchées.'],
       ['villosités', 'Les villosités sont des replis de l’intestin.'],
@@ -184,7 +198,16 @@ const NIVEAU4: readonly Modele[] = [
   ),
   ecrire(
     'Écris le nom des très fins vaisseaux à travers lesquels les gaz s’échangent entre le sang et les cellules ou l’air des alvéoles.',
-    ['capillaires', 'les capillaires', 'capillaire', 'des capillaires', 'capillaires sanguins'],
+    [
+      'capillaires',
+      'les capillaires',
+      'capillaire',
+      'des capillaires',
+      'capillaires sanguins',
+      'les capillaires sanguins',
+      'vaisseaux capillaires',
+      'les vaisseaux capillaires',
+    ],
     [
       ['artères', 'Les artères conduisent le sang depuis le cœur : leur rôle n’est pas l’échange.'],
       ['veines', 'Les veines ramènent le sang vers le cœur : leur rôle n’est pas l’échange.'],

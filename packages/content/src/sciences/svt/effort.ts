@@ -115,8 +115,11 @@ const NIVEAU2: readonly Modele[] = [
 const NIVEAU3: readonly Modele[] = [
   completer(
     'Complète la règle de l’effort.',
-    ['Plus l’effort est intense, plus la consommation de ', ' ', '.'],
-    [['dioxygène', 'dioxygene', 'oxygène', 'oxygene'], ['augmente']],
+    ['Plus l’effort est intense, plus la consommation du gaz appelé ', ' ', '.'],
+    [
+      ['dioxygène', 'dioxygene', 'oxygène', 'oxygene'],
+      ['augmente', 's’élève', 'grandit', 'monte'],
+    ],
     'Pense au gaz absorbé par la respiration et à son évolution.',
     'La consommation de dioxygène augmente avec l’intensité, jusqu’à une limite.',
   ),
