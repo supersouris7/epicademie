@@ -526,4 +526,25 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Ensemble des essais et des mesures prévus pour vérifier une solution, avec la façon de les faire.',
     example: 'Les étapes pour vérifier un détecteur.',
   },
+  {
+    id: 'te-verin',
+    word: 'vérin',
+    forms: ['vérin', 'vérins'],
+    definition: 'Actionneur dont une partie se déplace pour pousser, tirer ou faire tourner une pièce.',
+    example: 'Le vérin qui ouvre la fenêtre d’une serre.',
+  },
+  {
+    id: 'te-pneumatique',
+    word: 'pneumatique',
+    forms: ['pneumatique', 'pneumatiques'],
+    definition: 'Qui fonctionne avec de l’air comprimé (de l’air sous pression).',
+    example: 'Un vérin pneumatique.',
+  },
+  {
+    id: 'te-del',
+    word: 'DEL',
+    forms: ['DEL'],
+    definition: 'Diode électroluminescente : petit composant qui émet de la lumière.',
+    example: 'Le voyant d’un appareil.',
+  },
 ];

@@ -44,7 +44,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
         mot,
         trois.filter((m) => m !== mot).map((m) => ({ label: m, why: `${maj(m)} désigne ${MOTS[m].sens}.` })),
       ),
-      hint: 'Pense au sens courant de chaque mot : une suite, un retour en arrière, quelque chose qui arrive.',
+      hint: 'Pense au sens de chacun de ces mots dans la vie de tous les jours.',
       steps: ['On cherche le mot qui correspond à cette définition.', `La réponse est **${mot}**.`],
       targetSeconds: 25,
     };
@@ -56,7 +56,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
       bonne,
       trois.filter((m) => m !== mot).map((m) => ({ label: MOTS[m].sens, why: `C’est la définition d’${m}.` })),
     ),
-    hint: 'Pense au sens courant du mot : une suite, un retour en arrière, quelque chose qui arrive.',
+    hint: 'Pense au sens de ce mot dans la vie de tous les jours.',
     steps: [`On cherche le sens du mot en programmation.`, `La réponse est **${bonne}**.`],
     targetSeconds: 25,
   };
@@ -81,7 +81,10 @@ const niveau2 = (rng: Rng): QuestionDraft => {
 const nombre = (n: number, unite: string, erreurs: readonly (readonly [number, string])[]) =>
   saisie(
     [String(n), `${n} ${unite}`],
-    erreurs.filter(([v]) => v !== n).map(([v, why]) => [String(v), why] as const),
+    // Deux erreurs peuvent donner le même nombre : une seule explication est gardée (la première).
+    erreurs
+      .filter(([v], i) => v !== n && erreurs.findIndex(([w]) => w === v) === i)
+      .map(([v, why]) => [String(v), why] as const),
   );
 
 const niveau3 = (rng: Rng): QuestionDraft => {
