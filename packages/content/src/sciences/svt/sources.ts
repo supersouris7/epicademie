@@ -70,6 +70,16 @@ const spfIst = (id: string, title: string, page: string, textDate: string): Sour
   consultedOn: '2026-11-26',
 });
 
+/** Page « enjeux de santé » de Santé publique France (`textDate` : mise à jour affichée). */
+const spf = (id: string, title: string, path: string, textDate: string): Source => ({
+  id: `spf-${id}`,
+  title,
+  publisher: 'Santé publique France',
+  url: `https://www.santepubliquefrance.fr/${path}`,
+  textDate,
+  consultedOn: '2026-11-26',
+});
+
 /**
  * Sources de SVT (registre : `sources.ts` à la racine du paquet). Les identifiants partagés avec sciences et
  * technologie ne sont définis qu’une fois, dans `../st/sources.ts`.
@@ -412,4 +422,48 @@ export const SOURCES: readonly Source[] = [
   spfIst('vih', 'VIH/sida', '/vih-sida', '2025-12-09'),
   spfIst('papillomavirus', 'Infections à papillomavirus', '/infections-a-papillomavirus', '2026-03-12'),
   spfIst('chlamydiae', 'Chlamydiae', '/chlamydiae', '2025-12-30'),
+  // ——— SVT 4e (lot sv-4e-03) ———
+  { ...academie('neurone', 'neurone'), consultedOn: '2026-11-26' },
+  { ...academie('nerf', 'nerf'), consultedOn: '2026-11-26' },
+  { ...academie('influx', 'influx'), consultedOn: '2026-11-26' },
+  { ...academie('centre', 'centre'), consultedOn: '2026-11-26' },
+  { ...academie('nerveux', 'nerveux'), consultedOn: '2026-11-26' },
+  { ...academie('cerveau', 'cerveau'), consultedOn: '2026-11-26' },
+  { ...academie('moelle', 'moelle'), consultedOn: '2026-11-26' },
+  { ...academie('reflexe', 'réflexe'), consultedOn: '2026-11-26' },
+  { ...academie('dopage', 'dopage'), consultedOn: '2026-11-26' },
+  { ...tlfi('synapse', 'synapse', 'synapse'), consultedOn: '2026-11-26' },
+  { ...tlfi('stimulus', 'stimulus', 'stimulus'), consultedOn: '2026-11-26' },
+  { ...tlfi('psychotrope', 'psychotrope', 'psychotrope'), consultedOn: '2026-11-26' },
+  inserm('sommeil', 'Sommeil', 'sommeil', '2024-11-08'),
+  inserm('chronobiologie', 'Chronobiologie', 'chronobiologie', '2026-01-23'),
+  inserm('addictions', 'Addictions', 'addictions', '2026-07-23'),
+  inserm('douleur', 'Douleur', 'douleur', '2021-06-28'),
+  inserm('epilepsie', 'Épilepsie', 'epilepsie', '2026-03-20'),
+  inserm('sclerose-plaques', 'Sclérose en plaques (SEP)', 'sclerose-en-plaques-sep', '2020-09-17'),
+  inserm(
+    'sla',
+    'Sclérose latérale amyotrophique (SLA), maladie de Charcot',
+    'sclerose-laterale-amyotrophique-sla-maladie-charcot',
+    '2026-02-24',
+  ),
+  spf('sommeil-enjeux', 'Sommeil : les enjeux de santé', 'sommeil/les-enjeux-de-sante', '2026-04-03'),
+  spf(
+    'tabac-sante',
+    'Quelles sont les conséquences du tabagisme sur la santé ?',
+    'tabac/quelles-sont-les-consequences-du-tabagisme-sur-la-sante',
+    '2025-10-15',
+  ),
+  spf(
+    'alcool-risques',
+    'Quels sont les risques de la consommation d’alcool pour la santé ?',
+    'alcool/quels-sont-les-risques-de-la-consommation-dalcool-pour-la-sante',
+    '2026-01-26',
+  ),
+  spf(
+    'drogues-enjeux',
+    'Drogues illicites : les enjeux de santé',
+    'drogues-illicites/les-enjeux-de-sante',
+    '2024-05-06',
+  ),
 ];
