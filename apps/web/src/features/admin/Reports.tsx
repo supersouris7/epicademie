@@ -7,7 +7,8 @@ import {
   type ReportStatus,
 } from '@epicademie/shared';
 import { useReports, useStats, useUpdateContent, useUpdateReport } from './api.ts';
-import { date, plural, reportTitle, skillGrade } from './labels.ts';
+import { reportTitle, skillGrade } from './contentLabels.ts';
+import { date, plural } from './labels.ts';
 import { QuestionPreview } from './QuestionPreview.tsx';
 import { groupReports, type ReportGroup } from './reportGroups.ts';
 import { AdminButton, Badge, DataTable, inputClass, mutedClass, Panel, Segmented } from './ui.tsx';

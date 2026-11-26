@@ -1,11 +1,13 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useNavigate } from 'react-router';
-import { getChapter } from '@epicademie/content';
 import { useRealtime, type Notice } from './store.ts';
 import { useSession } from '../../shared/lib/session.ts';
 import { HeroFace } from '../../shared/battle/HeroFace.tsx';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
+
+/** Les contenus pédagogiques ne sont téléchargés qu'à la première invitation. */
+const ChapterTitle = lazy(() => import('./ChapterTitle.tsx'));
 
 /** Notifications en haut de l'écran : messages des autres joueurs et invitations à l'arène. */
 export function Notifications() {
@@ -65,7 +67,12 @@ function NoticeCard({ notice }: { readonly notice: Notice }) {
         {notice.kind === 'chat' ? (
           <p className="text-lg leading-snug font-bold">{notice.message.text}</p>
         ) : (
-          <p className="font-bold">t’invite en Duel : {getChapter(notice.invite.chapterId)?.title ?? 'maths'}</p>
+          <p className="font-bold">
+            t’invite en Duel :{' '}
+            <Suspense fallback="…">
+              <ChapterTitle chapterId={notice.invite.chapterId} />
+            </Suspense>
+          </p>
         )}
       </div>
       {notice.kind === 'invite' ? (

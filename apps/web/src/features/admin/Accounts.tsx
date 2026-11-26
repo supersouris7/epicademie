@@ -19,17 +19,8 @@ import {
 } from '@epicademie/shared';
 import { ApiError } from '../../shared/api/client.ts';
 import { useAccount, useAccounts, useAudit, useResetPassword } from './api.ts';
-import {
-  chapterTitle,
-  date,
-  dateTime,
-  labelOf,
-  money,
-  offerLabel,
-  plural,
-  providerLabel,
-  skillTitle,
-} from './labels.ts';
+import { chapterTitle, skillTitle } from './contentLabels.ts';
+import { date, dateTime, labelOf, money, offerLabel, plural, providerLabel } from './labels.ts';
 import {
   AdminButton,
   Badge,

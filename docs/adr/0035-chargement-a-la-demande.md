@@ -1,0 +1,34 @@
+# 0035 — Écrans et contenus chargés à la demande
+
+- Statut : Acceptée
+- Date : 2026-11-26
+
+## Contexte
+
+Le web tenait dans un seul fichier JavaScript (environ 6,7 Mo, 1,9 Mo gzip), surtout à cause des
+contenus pédagogiques. Tout était téléchargé avant le premier écran, y compris sur `/admin`.
+
+## Décision
+
+- La console et le jeu sont deux morceaux séparés ; chaque écran du jeu est importé à la première
+  visite (`React.lazy`, une attente par écran), fichier par fichier depuis `app/`.
+- L’`index.ts` d’une fonctionnalité reste son API pour les autres fonctionnalités ; il n’est créé
+  que s’il a quelque chose à leur offrir.
+- `@epicademie/content` et `apps/web` se déclarent sans effet de bord (`sideEffects`) : le
+  découpage ne garde que ce qui est réellement utilisé. Un module ne doit donc rien faire à son
+  seul import (hors `main.tsx` et les feuilles de style).
+- Les contenus restent un seul morceau, téléchargé au premier écran qui en a besoin. Les rubriques
+  de la console qui affichent des titres de notions les chargent à leur ouverture.
+- Morceau introuvable après une mise à jour (`vite:preloadError`) : la page se recharge, au plus une
+  fois par minute.
+
+## Conséquences
+
+- Premier affichage bien plus léger ; une courte attente à la première visite d'un écran.
+- Le premier écran à contenus télécharge toujours toutes les matières.
+
+## Options écartées
+
+- Contenus par matière à la demande : le catalogue est synchrone et réunit toutes les matières
+  (progression, titres, tirage des questions) ; le rendre asynchrone changerait le comportement et
+  de nombreux écrans. À traiter à part.

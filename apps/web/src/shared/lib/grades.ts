@@ -1,11 +1,6 @@
 import { useSearchParams } from 'react-router';
 import { gradesOf } from '@epicademie/content';
-import { FALLBACK_GRADE, gradeInfo, playedGrade, type Grade, type Profile } from '@epicademie/shared';
-
-/** Message quand la classe n'a pas encore de contenu. */
-export function comingSoon(grade: Grade): string {
-  return `Le programme de ${gradeInfo(grade).name} arrive bientôt. En attendant, tu t’entraînes sur celui de 5e.`;
-}
+import { FALLBACK_GRADE, playedGrade, type Grade, type Profile } from '@epicademie/shared';
 
 /**
  * Classe affichée dans une liste de chapitres : `?classe=` dans l'adresse (pour que le retour garde le choix),

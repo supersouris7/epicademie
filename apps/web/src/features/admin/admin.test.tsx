@@ -191,7 +191,7 @@ describe('comptes', () => {
 
     await user.click(screen.getByRole('button', { name: 'Retour à la liste' }));
     await user.click(screen.getByRole('tab', { name: 'Technique' }));
-    await user.click(screen.getByRole('button', { name: 'Journal d’audit' }));
+    await user.click(await screen.findByRole('button', { name: 'Journal d’audit' }));
     expect(await screen.findByText('Consultation de la fiche')).toBeInTheDocument();
     // E-mail masqué, jamais l'identifiant ; le nom court ouvre la fiche.
     expect(screen.queryByText(/aaaaaaaa-aaaa/)).not.toBeInTheDocument();

@@ -20,6 +20,14 @@ React 19, Vite, Tailwind 4, motion (animations), React Query (données serveur),
 | `progress` | progression par notion, médailles, reliques                                                       |
 | `settings` | paramètres, à propos, crédits                                                                     |
 
+## Chargement à la demande
+
+[ADR 0035](../adr/0035-chargement-a-la-demande.md). `app/App.tsx` choisit entre la console et le jeu
+(`app/GameApp.tsx`) ; chaque écran est déclaré par `lazyScreen` (`app/lazyScreen.tsx`) avec son
+attente. Pour ajouter un écran : le déclarer ainsi, et ne pas importer les contenus pédagogiques
+depuis ce qui est chargé à l'entrée (`catalog.ts` pèse plusieurs mégaoctets). Les tailles sont
+contrôlées par `e2e/chargement.spec.ts`.
+
 ## Socle (`src/shared/`, `src/design/`)
 
 - `shared/api/client.ts` : `request(api.xxx, { params, body })`, typé par le contrat ;

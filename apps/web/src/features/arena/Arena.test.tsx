@@ -134,6 +134,8 @@ describe('arène', () => {
     });
     const alerts = await screen.findAllByRole('alert');
     expect(alerts.length).toBeGreaterThan(0);
+    // Le titre du chapitre arrive avec les contenus, chargés à la demande.
+    expect(await screen.findByText(/t’invite en Duel : .*relatifs/i)).toBeInTheDocument();
     const go = screen.queryByRole('button', { name: 'J’y vais !' });
     if (go) {
       await user.click(go);
