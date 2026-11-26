@@ -28,4 +28,23 @@ export const SOURCES: readonly Source[] = [
   tlfi('miscible', 'miscible', 'miscible'),
   { ...academie('eutectique', 'eutectique'), consultedOn: '2026-11-26' },
   { ...academie('limpide', 'limpide'), consultedOn: '2026-11-26' },
+  // Lot pc-5e-02 : mouvement (trajectoire, vitesse et ralentir : sources déjà au registre).
+  { ...academie('referentiel', 'référentiel'), consultedOn: '2026-11-26' },
+  { ...academie('mouvement', 'mouvement'), consultedOn: '2026-11-26' },
+  { ...academie('rectiligne', 'rectiligne'), consultedOn: '2026-11-26' },
+  {
+    ...academie('circulaire', 'circulaire'),
+    url: 'https://www.cnrtl.fr/definition/academie9/circulaire/adjectif',
+    consultedOn: '2026-11-26',
+  },
+  { ...academie('accelere', 'accéléré'), consultedOn: '2026-11-26' },
+  { ...academie('direction', 'direction'), consultedOn: '2026-11-26' },
+  { ...academie('moyenne', 'moyenne'), consultedOn: '2026-11-26' },
+  { ...tlfi('mouvement', 'mouvement', 'mouvement'), consultedOn: '2026-11-26' },
+  { ...tlfi('uniforme', 'uniforme', 'uniforme/adjectif'), consultedOn: '2026-11-26' },
+  {
+    ...academie('sens', 'sens'),
+    url: 'https://www.cnrtl.fr/definition/academie9/sens/nom',
+    consultedOn: '2026-11-26',
+  },
 ];

@@ -5,7 +5,11 @@ import { conservationMasse } from './conservation.ts';
 import { etats } from './etats.ts';
 import { masseVolumique } from './masse-volumique.ts';
 import { corpsPurs } from './melanges.ts';
+import { mouvementUniforme } from './mouvement-uniforme.ts';
+import { referentielNotion } from './referentiel.ts';
 import { solubiliteNotion } from './solubilite.ts';
+import { trajectoireNotion } from './trajectoire.ts';
+import { vitesseMoyenne } from './vitesse-moyenne.ts';
 
 /**
  * Physique-chimie, cycle 4 (docs/adr/0024-contenus-hors-maths.md). Sources institutionnelles :
@@ -18,7 +22,7 @@ import { solubiliteNotion } from './solubilite.ts';
  * Le programme est écrit pour tout le cycle : la répartition 5e / 4e / 3e est un choix de
  * progression (des relations les plus simples aux plus composées).
  * Le chapitre 5e « Organisation de la matière » (5 niveaux) a ses fichiers et ses faits cités
- * (`donnees-matiere.ts`).
+ * (`donnees-matiere.ts`), de même que le chapitre 5e « Mouvement » (`donnees-mouvement.ts`).
  */
 
 const PROG = 'Physique-chimie, cycle 4 (BOEN n° 31 du 30 juillet 2020)';
@@ -266,6 +270,7 @@ export const PHYSIQUE_CHAPTERS: readonly Chapter[] = [
     solubiliteNotion,
     conservationMasse,
   ]),
+  chapter('p5-mouvement', '5e', 'Mouvement', [trajectoireNotion, referentielNotion, mouvementUniforme, vitesseMoyenne]),
   chapter('p4-mouvement', '4e', 'La vitesse', [speed]),
   chapter('p4-electricite', '4e', 'La loi d’Ohm', [ohm]),
   chapter('p3-energie', '3e', 'Puissance et énergie', [power, energy]),
