@@ -109,4 +109,12 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'a5-preterit', version: 2, lot: 'an-5e-01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'a5-preterit-did', version: 1, lot: 'an-5e-01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'a5-phrase', version: 2, lot: 'an-5e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-will', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-be-going-to', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-be-ing-projet', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-could', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-souhait', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-choisir-futur', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-should', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-opinion', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
 ];

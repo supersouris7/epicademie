@@ -14,8 +14,8 @@
 | ---------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
 | `an-5e-01` | Présent simple et be + ing | formes affirmative, négative, interrogative ; choisir entre présent simple et be + ing ; adverbes de fréquence ; marqueurs de temps | couverte, en relecture |
 | `an-5e-02` | Le prétérit                | prétérit des verbes réguliers ; prétérit des irréguliers ; négation et questions avec did ; raconter au passé                       | couverte, en relecture |
-| `an-5e-03` | Le futur                   | will ; be going to ; be + ing de projet ; choisir la forme                                                                          | absente                |
-| `an-5e-04` | Modaux, souhait, opinion   | should / shouldn't ; could / couldn't ; I wish to, I would love to ; I think, in my opinion                                         | absente                |
+| `an-5e-03` | Le futur                   | will ; be going to ; be + ing de projet ; choisir la forme                                                                          | couverte, en relecture |
+| `an-5e-04` | Modaux, souhait, opinion   | should / shouldn't ; could / couldn't ; I wish to, I would love to ; I think, in my opinion                                         | couverte, en relecture |
 | `an-5e-05` | Groupe nominal et pronoms  | much, many, some ; pronoms réfléchis ; dérivation (-able, un-) ; antonymes                                                          | absente                |
 | `an-5e-06` | Relier et situer           | but, whereas, however ; in the foreground / background ; on the right / left ; very, much, too                                      | absente                |
 | `an-5e-07` | Écouter et comprendre      | message enregistré ; dialogue ; repères culturels de 5e (aire anglophone)                                                           | absente                |
