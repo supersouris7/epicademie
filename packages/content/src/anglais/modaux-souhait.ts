@@ -77,20 +77,46 @@ const WHY_MOD_BASE = 'Après should ou could, le verbe reste à la base verbale 
 const WHY_MOD_DO = 'L’auxiliaire de modalité porte lui-même la négation et la question : ni do ni does.';
 const SHOULD_RULE = 'should conseille de faire ; shouldn’t déconseille. La base verbale suit.';
 
-const MEANINGS: readonly (readonly [string, string, string, string])[] = [
-  ['You should sleep.', 'Tu devrais dormir.', 'Tu as dormi.', 'Tu sais dormir.'],
-  ['You should read this book.', 'Tu devrais lire ce livre.', 'Tu as lu ce livre.', 'Tu sais lire ce livre.'],
-  ['You shouldn’t go out.', 'Tu ne devrais pas sortir.', 'Tu n’es pas sorti.', 'Tu devrais sortir.'],
-  ['You should call her.', 'Tu devrais l’appeler.', 'Tu l’as appelée.', 'Tu l’appelles chaque jour.'],
-  ['He shouldn’t eat that.', 'Il ne devrait pas manger ça.', 'Il n’a pas mangé ça.', 'Il devrait manger ça.'],
+/** Distracteur et motif de l’erreur. */
+type Wrong = readonly [label: string, why: string];
+const WHY_NOT_PAST = 'should ne raconte pas le passé : il donne un conseil.';
+const WHY_NOT_ABLE = 'should ne dit pas qu’on sait faire quelque chose : il donne un conseil.';
+const WHY_NOT_HABIT = 'should ne décrit pas une habitude : il donne un conseil.';
+const MEANINGS: readonly (readonly [line: string, right: string, first: Wrong, second: Wrong])[] = [
+  ['You should sleep.', 'Tu devrais dormir.', ['Tu as dormi.', WHY_NOT_PAST], ['Tu sais dormir.', WHY_NOT_ABLE]],
+  [
+    'You should read this book.',
+    'Tu devrais lire ce livre.',
+    ['Tu as lu ce livre.', WHY_NOT_PAST],
+    ['Tu sais lire ce livre.', WHY_NOT_ABLE],
+  ],
+  [
+    'You shouldn’t go out.',
+    'Tu ne devrais pas sortir.',
+    ['Tu n’es pas sorti.', WHY_NOT_PAST],
+    ['Tu devrais sortir.', 'shouldn’t est négatif : il déconseille de sortir.'],
+  ],
+  [
+    'You should call her.',
+    'Tu devrais l’appeler.',
+    ['Tu l’as appelée.', WHY_NOT_PAST],
+    ['Tu l’appelles chaque jour.', WHY_NOT_HABIT],
+  ],
+  [
+    'He shouldn’t eat that.',
+    'Il ne devrait pas manger ça.',
+    ['Il n’a pas mangé ça.', WHY_NOT_PAST],
+    ['Il devrait manger ça.', 'shouldn’t est négatif : il déconseille de manger ça.'],
+  ],
 ];
 
 function shouldMeaning(rng: Rng): QuestionDraft {
-  const [line, right, w1, w2] = rng.pick(MEANINGS);
-  const { answer, traps } = choice(rng, right, [
-    { label: w1, why: 'should ne raconte ni le passé ni une capacité : il donne un conseil.' },
-    { label: w2, why: 'Vérifie le conseil : should ou shouldn’t, faire ou éviter ?' },
-  ]);
+  const [line, right, ...wrong] = rng.pick(MEANINGS);
+  const { answer, traps } = choice(
+    rng,
+    right,
+    wrong.map(([label, why]) => ({ label, why })),
+  );
   return {
     prompt: `Que veut dire « ${line} » ?`,
     answer,
@@ -205,43 +231,38 @@ function shouldTranslate(rng: Rng): QuestionDraft {
   };
 }
 
+/** Document : quatre situations ; pour chacune, produire should ou shouldn’t suivi de la base verbale. */
 function shouldDocument(rng: Rng): QuestionDraft {
-  const k = pickKid(rng);
-  const [a, b, c] = some(rng, TIPS, 3) as [Tip, Tip, Tip];
-  const values = [a.good, b.good, c.good] as const;
-  const mark = (v: boolean) => (v ? 'good idea' : 'bad idea');
+  const first = [true, false].map((good) => rng.pick(ADVICE.filter((a) => a.good === good)));
+  const others = some(
+    rng,
+    ADVICE.filter((a) => !first.includes(a)),
+    2,
+  );
+  const items = rng.shuffle([...first, ...others]);
+  const answers = items.map((a) => `${should(a.good)} ${a.base}`);
   return {
-    prompt: `Lis la fiche de conseils pour ${k.name}, puis complète avec should ou shouldn’t. Au dernier trou, écris le verbe de la dernière ligne.`,
+    prompt:
+      'Lis les quatre situations, puis écris un conseil pour chacune : should ou shouldn’t, suivi du verbe indiqué.',
     figure: {
       kind: 'document',
-      title: `Tips for ${k.name}`,
-      lines: [
-        `${a.base}: ${mark(values[0])}`,
-        `${b.base}: ${mark(values[1])}`,
-        `${c.base}: ${mark(values[2])}`,
-        `Verb for the last sentence: to ${a.base}`,
-      ],
+      title: 'What’s your advice?',
+      lines: items.map((a, i) => `${i + 1}. ${a.when} (verbe : to ${a.base})`),
       credit: ABOUT,
     },
     answer: {
       kind: 'cloze',
-      parts: [
-        `${k.name} `,
-        ` ${a.base}. ${cap(k.pronoun)} `,
-        ` ${b.base}. And ${k.pronoun} `,
-        ` ${c.base}. So, ${values[0] ? 'yes' : 'no'}: ${k.pronoun} ${should(values[0])} `,
-        '.',
-      ],
-      blanks: [
-        ...values.map((v) => ({ mode: 'text' as const, accepted: shouldForms(v) })),
-        { mode: 'text' as const, accepted: [a.base] },
-      ],
+      parts: [...items.map((_, i) => `${i === 0 ? '' : '. '}${i + 1}. You `), '.'],
+      blanks: items.map((a) => ({
+        mode: 'text' as const,
+        accepted: shouldForms(a.good).map((m) => `${m} ${a.base}`),
+      })),
     },
-    hint: '« good idea » : on conseille ; « bad idea » : on déconseille. Le verbe ne prend aucune marque.',
+    hint: 'Pour chaque situation : vaut-il mieux le faire ou l’éviter ? Le verbe ne prend aucune marque.',
     steps: [
       SHOULD_RULE,
-      `Avec ${k.pronoun}, should ne change pas et le verbe reste à la base.`,
-      `Réponse : **${values.map(should).join(', ')}, ${a.base}**`,
+      ...items.map((a, i) => `${i + 1}. ${WHY_ADVICE(a.good)}`),
+      `Réponse : **${answers.join(', ')}**`,
     ],
   };
 }
@@ -681,7 +702,7 @@ interface Opener {
 }
 const opener = (en: string, fr: string, accepted: readonly string[]): Opener => ({ en, fr, accepted });
 const OPENERS: readonly Opener[] = [
-  opener('I think', 'Je pense que', ['I think', 'I think that']),
+  opener('I think', 'Je pense que', ['I think', 'I think that', 'I believe', 'I believe that']),
   opener('I believe', 'Je crois que', ['I believe', 'I believe that', 'I think', 'I think that']),
   opener('For me,', 'Pour moi,', ['For me', 'For me,']),
   opener('In my opinion,', 'À mon avis,', ['In my opinion', 'In my opinion,']),
@@ -710,7 +731,7 @@ function opinionMatch(rng: Rng): QuestionDraft {
   return {
     prompt: `Associe chaque expression à son sens : ${quoted(rows.map((r) => r[0]))}`,
     answer: pairs(rng, rows),
-    hint: 'Deux expressions ont un verbe, les autres non. Quel verbe veut dire « croire » ?',
+    hint: 'Sépare les expressions qui ont un verbe de celles qui n’en ont pas, puis traduis mot à mot.',
     steps: matchSteps(OPINION_RULE, rows),
   };
 }
@@ -725,6 +746,7 @@ function opinionWrite(rng: Rng): QuestionDraft {
       { text: 'To my opinion', why: 'On dit In my opinion, avec in.' },
       { text: 'At my opinion', why: 'On dit In my opinion, avec in.' },
       { text: 'I am thinking', why: 'Pour donner un avis, think reste au présent simple.' },
+      { text: 'I’m thinking', why: 'Pour donner un avis, think reste au présent simple.' },
       { text: 'I am believing', why: 'believe ne prend pas la forme en -ing.' },
     ],
     hint: 'Une expression toute faite, au présent simple s’il y a un verbe.',
@@ -767,40 +789,53 @@ function opinionOrder(rng: Rng): QuestionDraft {
   };
 }
 
+/** Message à compléter : ce que l’auteur veut dire, le début à trou et les écritures acceptées. */
+interface Gap {
+  readonly meaning: string;
+  readonly before: string;
+  readonly after: string;
+  readonly accepted: readonly [string, ...string[]];
+}
+const gap = (meaning: string, before: string, accepted: Gap['accepted'], after: string): Gap => ({
+  meaning,
+  before,
+  after,
+  accepted,
+});
+/** Un message par expression du cours ; deux trous possibles pour les expressions sans verbe conjugué. */
+const GAPS: readonly (readonly Gap[])[] = [
+  [gap('à mon avis,', '', ['In'], ' my opinion,'), gap('à mon avis,', 'In my ', ['opinion'], ',')],
+  [gap('pour moi,', 'For ', ['me'], ','), gap('pour moi,', '', ['For'], ' me,')],
+  [gap('je crois que', 'I ', ['believe', 'think'], '')],
+  [gap('je pense que', 'I ', ['think', 'believe'], '')],
+];
+
 function opinionDocument(rng: Rng): QuestionDraft {
-  const names = some(rng, ['Ana', 'Lisa', 'Yuna', 'Tom', 'Emir', 'Paul'], 3);
-  const openers = some(rng, ['I think', 'I believe', 'In my opinion,', 'For me,'], 3);
-  const views = some(rng, VIEWS, 3);
-  const asked = rng.shuffle([0, 1, 2]);
-  const lines = names.map((n, i) => `${n}: “${at(openers, i)} ${at(views, i).en}.”`);
+  const names = some(rng, ['Ana', 'Lisa', 'Yuna', 'Tom', 'Emir', 'Paul'], GAPS.length);
+  const gaps = rng.shuffle(GAPS.map((family) => rng.pick(family)));
+  const views = some(rng, VIEWS, GAPS.length);
   const parts = [
-    ...asked.map((p, i) => `${i === 0 ? '' : ' '}Who thinks that ${at(views, p).en}? `),
-    ' And you? Complete: « In my ',
-    ', this forum is useful. »',
+    ...gaps.map((g, i) => {
+      const previous = i === 0 ? '' : `${at(gaps, i - 1).after} ${at(views, i - 1).en}. `;
+      return `${previous}${at(names, i)}: ${g.before}`;
+    }),
+    `${at(gaps, gaps.length - 1).after} ${at(views, gaps.length - 1).en}.`,
   ];
   return {
-    prompt: 'Lis le forum, retrouve qui donne chaque avis, puis complète la dernière expression.',
-    figure: { kind: 'document', title: 'Class forum', lines, credit: ABOUT },
+    prompt: 'Lis ce que chacun veut dire, puis complète les messages du forum en anglais.',
+    figure: {
+      kind: 'document',
+      title: 'Class forum',
+      lines: gaps.map((g, i) => `${at(names, i)} veut dire : « ${g.meaning} ${at(views, i).fr} ».`),
+      credit: ABOUT,
+    },
     answer: {
       kind: 'cloze',
       parts,
-      blanks: [
-        ...asked.map((p) =>
-          listBlank(
-            rng,
-            at(names, p),
-            names.filter((n) => n !== names[p]),
-          ),
-        ),
-        { mode: 'text' as const, accepted: ['opinion'] },
-      ],
+      blanks: gaps.map((g) => ({ mode: 'text' as const, accepted: g.accepted })),
     },
-    hint: 'Relis chaque message et repère la chose dont il parle. La dernière expression veut dire « à mon avis ».',
-    steps: [
-      OPINION_RULE,
-      'In my opinion veut dire « à mon avis ».',
-      `Réponse : **${asked.map((p) => at(names, p)).join(', ')}, opinion**`,
-    ],
+    hint: 'Pour chaque message, retrouve l’expression entière du cours, puis écris seulement le mot qui manque.',
+    steps: [OPINION_RULE, `Réponse : **${gaps.map((g) => g.accepted[0]).join(', ')}**`],
   };
 }
 

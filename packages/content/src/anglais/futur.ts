@@ -853,7 +853,7 @@ function chooseWrite(rng: Rng, kinds: readonly Kind[]): QuestionDraft {
     { text: `going to ${base}`, why: WHY_NO_BE },
   ];
   return {
-    prompt: `${c.fr} Complète avec la forme du futur qui convient, verbe « to ${base} » : « ${c.before} … ${c.after} »`,
+    prompt: `${c.fr} D’après la règle du cours, complète avec la forme du futur qui convient, verbe « to ${base} » : « ${c.before} … ${c.after} »`,
     answer: { kind: 'text', accepted: ACCEPTED[kind].flatMap((f) => writings(f, c)) },
     traps,
     hint: 'Demande-toi quand la décision a été prise, ou sur quoi repose la prévision.',
@@ -861,31 +861,31 @@ function chooseWrite(rng: Rng, kinds: readonly Kind[]): QuestionDraft {
   };
 }
 
-const chooseHard = (rng: Rng) => (coin(rng) ? matchReasons(rng, 5) : chooseWrite(rng, ['plan', 'arranged', 'belief']));
-
+/** Document : quatre phrases à compléter en écrivant le verbe à la forme du futur prévue. */
 function chooseDocument(rng: Rng): QuestionDraft {
   const items = some(rng, KINDS, 4).map((kind) => ({ kind, c: rng.pick(CASES[kind]) }));
   const answers = items.map(({ kind, c }) => shown(EXPECTED[kind], c));
-  const blanks = items.map(({ kind, c }, i) =>
-    listBlank(
-      rng,
-      at(answers, i),
-      wrongOptions(kind, c).map((w) => w.form),
-    ),
-  );
   const parts = [
     ...items.map(({ c }, i) => `${i === 0 ? '' : ` ${at(items, i - 1).c.after} `}${i + 1}. ${c.before} `),
     ` ${at(items, items.length - 1).c.after}`,
   ];
   return {
-    prompt: 'Lis les quatre situations, puis choisis dans chaque phrase la forme prévue par la règle du cours.',
+    prompt:
+      'Lis les quatre situations. D’après la règle du cours, complète chaque phrase en écrivant le verbe indiqué à la forme du futur qui convient.',
     figure: {
       kind: 'document',
       title: 'Four situations',
-      lines: items.map(({ c }, i) => `${i + 1}. ${c.fr}`),
+      lines: items.map(({ c }, i) => `${i + 1}. ${c.fr} (verbe : to ${c.verb[0]})`),
       credit: ABOUT,
     },
-    answer: { kind: 'cloze', parts, blanks },
+    answer: {
+      kind: 'cloze',
+      parts,
+      blanks: items.map(({ kind, c }, i) => ({
+        mode: 'text' as const,
+        accepted: [...new Set([at(answers, i), ...ACCEPTED[kind].flatMap((f) => writings(f, c))])],
+      })),
+    },
     hint: 'Pour chaque ligne : décision à l’instant, projet ancien, rendez-vous, indice visible ou simple avis ?',
     steps: [...items.map(({ kind }, i) => `${i + 1}. ${REASONS[kind].why}`), `Réponse : **${answers.join(', ')}**`],
   };
@@ -910,9 +910,9 @@ const chooseForm: Skill = {
   },
   generate: (rng, level: Level): QuestionDraft => {
     if (level === 1) return chooseQcm(rng);
-    if (level === 2) return matchReasons(rng, 3);
+    if (level === 2) return matchReasons(rng, 5);
     if (level === 3) return chooseWrite(rng, ['now', 'seen']);
-    if (level === 4) return chooseHard(rng);
+    if (level === 4) return chooseWrite(rng, ['plan', 'arranged', 'belief']);
     return chooseDocument(rng);
   },
 };

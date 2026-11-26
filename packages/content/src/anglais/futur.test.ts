@@ -144,6 +144,53 @@ describe('anglais 5e : le futur ; modaux, souhait, opinion', () => {
     refuses(belief, 'wills win', 'won');
   });
 
+  it('choisir la forme : N2 associe 5 raisons, N4 en saisie seule, N5 écrit les verbes sans liste', () => {
+    for (const q of questions('a5-choisir-futur', 2)) expect(q.answer.kind === 'match' && q.answer.left.length).toBe(5);
+    for (const level of [3, 4] as const)
+      for (const q of questions('a5-choisir-futur', level)) {
+        expect(q.answer.kind).toBe('text');
+        expect(q.prompt).toContain('D’après la règle du cours');
+      }
+    for (const q of questions('a5-choisir-futur', 5)) {
+      if (q.answer.kind !== 'cloze') throw new Error('texte à trous attendu');
+      expect(q.answer.blanks.map((b) => b.mode)).toEqual(['text', 'text', 'text', 'text']);
+    }
+  });
+
+  it('should N5 : quatre conseils à produire, aucune réponse ni étiquette dans le texte', () => {
+    for (const q of questions('a5-should', 5)) {
+      if (q.answer.kind !== 'cloze' || q.figure?.kind !== 'document') throw new Error('document à trous attendu');
+      const shown = [...q.figure.lines, ...q.answer.parts].join(' ');
+      expect(shown).not.toMatch(/should|good idea|bad idea/i);
+      const answers = expected(q);
+      expect(answers).toHaveLength(4);
+      for (const a of answers) expect(a).toMatch(/^should(n’t)? \S/);
+      expect(new Set(answers.map((a) => a.startsWith('shouldn’t'))).size).toBe(2);
+    }
+  });
+
+  it('should N1 : un motif propre à chaque distracteur', () => {
+    for (const q of questions('a5-should', 1)) expect(new Set(q.traps.map((t) => t.why)).size).toBe(2);
+  });
+
+  it('opinion N5 : quatre mots d’expression à produire, absents du texte', () => {
+    for (const q of questions('a5-opinion', 5)) {
+      if (q.answer.kind !== 'cloze' || q.figure?.kind !== 'document') throw new Error('document à trous attendu');
+      expect(q.answer.blanks.map((b) => b.mode)).toEqual(['text', 'text', 'text', 'text']);
+      const shown = [q.prompt, q.hint, ...q.figure.lines, ...q.answer.parts].join(' ');
+      for (const a of expected(q)) expect(shown, a).not.toMatch(new RegExp(`\\b${a}\\b`, 'i'));
+    }
+  });
+
+  it('opinion N3 : think et believe acceptés pour « Je pense que » ; I’m thinking expliqué', () => {
+    const q = find('a5-opinion', 3, 'Je pense que');
+    accepts(q, 'I think', 'I believe', 'I believe that');
+    expect(check(q, { kind: 'text', text: "I'm thinking" })).toMatchObject({
+      correct: false,
+      why: expect.stringContaining('présent simple') as unknown,
+    });
+  });
+
   it('modaux : négation contractée ou non, sans do ni to', () => {
     const should = find('a5-should', 3, '« The floor is wet.');
     accepts(should, 'shouldn’t run here', 'should not run here.');
