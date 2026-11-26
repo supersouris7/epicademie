@@ -8,8 +8,12 @@ import { histoireTerre } from './histoire-terre.ts';
 import { effortPhysique } from './effort.ts';
 import { espece } from './espece.ts';
 import { groupesEmboites } from './groupes.ts';
+import { maitriseReproduction } from './maitrise-reproduction.ts';
 import { meteoClimat } from './meteo-climat.ts';
 import { parentes } from './parentes.ts';
+import { puberte } from './puberte.ts';
+import { reproductionHumaine } from './reproduction-humaine.ts';
+import { reproductionModes } from './reproduction-modes.ts';
 import { respiration } from './respiration.ts';
 import { respirationHumaine } from './respiration-humaine.ts';
 import { risques } from './risques.ts';
@@ -61,5 +65,13 @@ export const SVT_CHAPTERS: readonly Chapter[] = [
     domain: 'svt',
     title: 'La Terre interne',
     skills: [structureGlobe, tectonique, roches, histoireTerre],
+  },
+  {
+    id: 'v4-reproduction',
+    subject: 'sciences',
+    grade: '4e',
+    domain: 'svt',
+    title: 'Reproduction et sexualité',
+    skills: [reproductionModes, puberte, reproductionHumaine, maitriseReproduction],
   },
 ];
