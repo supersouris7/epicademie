@@ -16,8 +16,7 @@ const negoces: Notion = {
   memo: [
     'Au XVIIIe siècle, une **bourgeoisie** marchande, avec ses **négociants** et ses **armateurs**, s’enrichit dans les ports de l’Atlantique, comme Nantes ou Bordeaux, grâce au **négoce** avec les colonies ; la plupart de ces échanges se font **en droiture**, directement entre la France et ses colonies, sans traite.',
     'Une partie de ce commerce est la **traite négrière** : des navires vont d’Europe en Afrique, y acquièrent des captifs, les déportent vers les **plantations** des Amériques, puis rentrent avec des **denrées** : c’est le **commerce triangulaire**.',
-    'La traite et l’**esclavage** déportent et privent de liberté des millions de personnes ; dès ce siècle, des voix les contestent et, en 1791, les esclaves de Saint-Domingue se révoltent.',
-    'La traite européenne s’ajoute à une **traite orientale** plus ancienne. Repères : 1664, Colbert crée la Compagnie des Indes orientales ; 1685, le **Code noir** fait de l’esclave un bien (un « meuble ») ; 1748, Montesquieu critique l’esclavage ; 1763, au traité de Paris, la France abandonne le Canada ; 1788, une société pour l’abolition naît en France.',
+    'La traite et l’**esclavage** déportent et privent de liberté des millions de personnes ; dès ce siècle, des voix les contestent et, en 1791, les esclaves de Saint-Domingue se révoltent. La traite européenne s’ajoute à une **traite orientale** plus ancienne. Repères : 1664, Colbert crée la Compagnie des Indes orientales ; 1685, le **Code noir** fait de l’esclave un bien (un « meuble ») ; 1748, Montesquieu critique l’esclavage ; 1763, au traité de Paris, la France abandonne le Canada ; 1788, une société pour l’abolition naît en France.',
   ],
   faits: [
     {
@@ -379,8 +378,7 @@ const lumieres: Notion = {
   memo: [
     'Les **Lumières** sont un mouvement européen : au nom de la **raison**, des **philosophes** critiquent les idées reçues, le pouvoir sans limite et l’intolérance.',
     'Leurs idées circulent par les livres, les académies, les **salons** et l’**Encyclopédie** de Diderot et d’Alembert, malgré la **censure**.',
-    'Certains rois se disent proches des philosophes : c’est le **despotisme éclairé** ; d’autres auteurs veulent limiter le pouvoir ou le confier au peuple, contre l’**absolutisme**.',
-    'Repères : Montesquieu veut que le pouvoir arrête le pouvoir (1748) ; le premier volume de l’Encyclopédie paraît en 1751 ; Voltaire défend Jean Calas, un protestant condamné à mort, et publie le Traité sur la **tolérance** (1763) ; le philosophe allemand Kant écrit sur les Lumières (1784), appelées « Aufklärung » en allemand. Frédéric II (Prusse) et Catherine II (Russie) sont des despotes éclairés.',
+    'Certains rois se disent proches des philosophes : c’est le **despotisme éclairé** ; d’autres auteurs veulent limiter le pouvoir ou le confier au peuple, contre l’**absolutisme**. Repères : Montesquieu veut que le pouvoir arrête le pouvoir (1748) ; le premier volume de l’Encyclopédie paraît en 1751 ; Voltaire défend Jean Calas, un protestant condamné à mort, et publie le Traité sur la **tolérance** (1763) ; le philosophe allemand Kant écrit sur les Lumières (1784), appelées « Aufklärung » en allemand. Frédéric II (Prusse) et Catherine II (Russie) sont des despotes éclairés.',
   ],
   faits: [
     {
@@ -694,8 +692,7 @@ const revolution: Notion = {
   memo: [
     'En 1789, la **Révolution** abolit les **privilèges** et proclame la **Déclaration des droits de l’homme et du citoyen** : égalité devant la loi, libertés et **souveraineté nationale** rompent avec l’**Ancien Régime**.',
     'La monarchie tombe : la **République** naît en 1792 en pleine guerre, Louis XVI est exécuté en 1793, puis vient la **Terreur** ; en 1799, Bonaparte prend le pouvoir par un **coup d’État**.',
-    'Empereur en 1804, il garde certains acquis (**Code civil**, préfets) et les diffuse en Europe, tout en limitant les libertés ; sa domination s’effondre en 1814-1815.',
-    'Repères : 14 juillet 1789, révolte du peuple parisien ; 4 août, fin des privilèges ; 26 août, Déclaration ; 1791, Olympe de Gouges réclame des droits pour les femmes ; 21 janvier 1793, mort du roi ; l’esclavage est aboli en 1794 puis rétabli en 1802, année où Bonaparte devient **consul** à vie ; 9 novembre 1799, son coup d’État. La Terreur est liée à Robespierre ; Bonaparte devient l’empereur Napoléon.',
+    'Empereur en 1804, il garde certains acquis (**Code civil**, préfets) et les diffuse en Europe, tout en limitant les libertés ; sa domination s’effondre en 1814-1815. Repères : 14 juillet 1789, révolte du peuple parisien ; 4 août, fin des privilèges ; 26 août, Déclaration ; 1791, Olympe de Gouges réclame des droits pour les femmes ; 21 janvier 1793, mort du roi ; l’esclavage est aboli en 1794 puis rétabli en 1802, année où Bonaparte devient **consul** à vie ; 9 novembre 1799, son coup d’État. La Terreur est liée à Robespierre ; Bonaparte devient l’empereur Napoléon.',
   ],
   faits: [
     {
