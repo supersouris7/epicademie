@@ -140,16 +140,6 @@ const NIVEAU3: readonly Modele[] = [
     'Les trois niveaux sont les milieux, les espèces et la diversité génétique.',
   ),
   ecrire(
-    'Écris le mot qui désigne le transport du pollen vers le pistil d’une fleur, souvent assuré par des insectes.',
-    ['pollinisation', 'la pollinisation'],
-    [
-      ['photosynthèse', 'La photosynthèse fabrique de la matière à la lumière.'],
-      ['respiration', 'La respiration est un échange de gaz.'],
-    ],
-    'Le mot ressemble à « pollen ».',
-    'La pollinisation transporte les grains de pollen jusqu’au pistil.',
-  ),
-  ecrire(
     'Écris le mot : unité de classification des êtres vivants qui ont les mêmes caractères et sont féconds entre eux.',
     ['espèce', 'une espèce', 'l’espèce', 'espece', 'une espece', 'l’espece'],
     [
@@ -300,8 +290,8 @@ export const biodiversite: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'La **biodiversité** a trois niveaux : les milieux de vie, les **espèces** et la diversité génétique des individus. Exemple : une forêt, ses espèces, et deux chênes différents.',
-      'Elle recule à cause de la destruction des milieux, de la surexploitation, des pollutions, du changement climatique et des **espèces exotiques envahissantes**.',
+      'La **biodiversité** a trois niveaux : les milieux de vie, les **espèces** et la **diversité génétique** des individus (les différences héritées au sein d’une espèce). Exemple : une forêt, ses espèces, et deux chênes différents. Une espèce **endémique** ne vit que sur un territoire limité.',
+      'Elle recule à cause de la destruction et de la **fragmentation** (le découpage) des milieux, de la surexploitation, des pollutions, du changement climatique et des **espèces exotiques envahissantes**.',
     ],
     source: `Programme du cycle 4 (BOEN n° 31 du 30 juillet 2020) : « la biodiversité (diversité des espèces) ».`,
     sources: [
@@ -311,7 +301,6 @@ export const biodiversite: Skill = {
       'academie-espece',
       'cnrtl-espece',
       'academie-endemique',
-      'academie-pollinisation',
     ],
   },
   generate: generer([NIVEAU1, NIVEAU2, NIVEAU3, NIVEAU4, NIVEAU5]),

@@ -125,6 +125,7 @@ export const SOURCES: readonly Source[] = [
   academie('biocenose', 'biocénose'),
   academie('biotope', 'biotope'),
   academie('chaine', 'chaîne'),
+  tlfi('chaine-alimentaire', 'chaîne', 'cha%C3%AEne'),
   academie('predateur', 'prédateur'),
   academie('parasite', 'parasite'),
   academie('phytophage', 'phytophage'),

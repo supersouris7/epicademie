@@ -187,7 +187,7 @@ const NIVEAU4: readonly Modele[] = [
 
 const prairie = (rng: Parameters<Modele>[0]) => {
   const rongeur = rng.pick(['les campagnols', 'les lapins']);
-  const chasseur = rng.pick(['les renards', 'les faucons']);
+  const chasseur = rng.pick(['les renards', 'les fouines']);
   return {
     rongeur,
     chasseur,
@@ -267,6 +267,7 @@ export const ecosystemes: Skill = {
     memo: [
       'Un **écosystème** réunit un milieu, le **biotope**, et des êtres vivants liés entre eux, la **biocénose**. Exemple : une mare, son eau et tout ce qui y vit.',
       'Dans une **chaîne alimentaire**, chacun se nourrit du précédent, en partant d’un végétal. Les **décomposeurs** dégradent la matière morte. Une activité humaine peut modifier tout cet ensemble.',
+      'Un **prédateur** capture d’autres animaux ; un **parasite** vit aux dépens de son hôte ; une **symbiose** profite à chaque partenaire. Un animal **phytophage** mange des végétaux. Un être **hétérotrophe** utilise la matière d’autres êtres vivants.',
     ],
     source: `Programme du cycle 4 (BOEN n° 31 du 30 juillet 2020) : « Expliquer comment une activité humaine peut modifier l’organisation et le fonctionnement des écosystèmes ».`,
     sources: [
@@ -275,6 +276,7 @@ export const ecosystemes: Skill = {
       'academie-biocenose',
       'academie-biotope',
       'academie-chaine',
+      'cnrtl-chaine-alimentaire',
       'academie-predateur',
       'academie-parasite',
       'academie-phytophage',

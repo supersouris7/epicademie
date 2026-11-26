@@ -9,4 +9,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'v5-seismes', version: 1, lot: LOT, date: DATE, verdict: 'ok' },
   { skillId: 'v5-volcans', version: 1, lot: LOT, date: DATE, verdict: 'ok' },
   { skillId: 'v5-risques', version: 1, lot: LOT, date: DATE, verdict: 'ok' },
+  { skillId: 'v5-besoins-vegetaux', version: 1, lot: 'sv-5e-02', date: DATE, verdict: 'ok' },
+  { skillId: 'v5-respiration-etres-vivants', version: 1, lot: 'sv-5e-02', date: DATE, verdict: 'ok' },
+  { skillId: 'v5-biodiversite', version: 1, lot: 'sv-5e-02', date: DATE, verdict: 'ok' },
 ];

@@ -84,7 +84,10 @@ const NIVEAU2: readonly Modele[] = [
     'Quel liquide monte dans la plante en transportant l’eau et les sels minéraux ?',
     'La sève brute',
     [
-      ['La sève élaborée', 'La sève élaborée transporte aussi les matières fabriquées par la photosynthèse.'],
+      [
+        'La sève élaborée',
+        'La sève élaborée contient des matières fabriquées grâce à la photosynthèse : ce n’est pas elle qu’on appelle le flot qui monte.',
+      ],
       ['L’amidon', 'L’amidon est une réserve solide en grains, pas un liquide qui circule.'],
       ['La chlorophylle', 'La chlorophylle est un pigment : elle ne transporte rien.'],
     ],
@@ -95,7 +98,7 @@ const NIVEAU2: readonly Modele[] = [
     'Que signifie qu’une plante verte est « autotrophe » ?',
     'Elle fabrique sa matière organique à partir de matières minérales',
     [
-      ['Elle se nourrit d’autres êtres vivants', 'C’est le cas des êtres vivants hétérotrophes.'],
+      ['Elle se nourrit d’autres êtres vivants', 'C’est le cas des êtres vivants hétérotrophes, comme les animaux.'],
       ['Elle ne prélève rien dans son milieu', 'Elle prélève de l’eau, des sels minéraux et du dioxyde de carbone.'],
       ['Elle peut se passer de lumière', 'Une plante verte a besoin de lumière pour la photosynthèse.'],
     ],
@@ -173,13 +176,24 @@ const NIVEAU4: readonly Modele[] = [
   ),
   ecrire(
     'Écris le nom de l’association entre les racines d’une plante et les filaments d’un champignon.',
-    ['mycorhize', 'une mycorhize', 'la mycorhize', 'mycorhizes', 'des mycorhizes'],
+    [
+      'mycorhize',
+      'une mycorhize',
+      'la mycorhize',
+      'mycorhizes',
+      'des mycorhizes',
+      'mycorrhize',
+      'une mycorrhize',
+      'la mycorrhize',
+      'mycorrhizes',
+      'des mycorrhizes',
+    ],
     [
       ['stomate', 'Un stomate est un dispositif de la feuille qui laisse passer les gaz.'],
       ['racine', 'La racine ne désigne que la partie de la plante, pas l’association avec le champignon.'],
     ],
     'Il commence par la lettre « m » et se forme sous terre.',
-    'Une mycorhize associe les racines d’un végétal et le mycélium d’un champignon.',
+    'Une mycorhize associe les racines d’un végétal et les filaments (le mycélium) d’un champignon.',
   ),
   ecrire(
     'Une plante est bien éclairée et reçoit eau et sels minéraux, mais son air est privé d’un gaz : la photosynthèse s’arrête. Écris le nom de ce gaz.',
@@ -207,7 +221,8 @@ const NIVEAU4: readonly Modele[] = [
 
 const serie = (rng: Parameters<Modele>[0]) => {
   const bas = rng.int(2, 6);
-  const haut = bas + rng.int(5, 12);
+  // Écart toujours supérieur à `bas` : l’erreur « valeur recopiée » ne se confond pas avec la réponse.
+  const haut = bas + rng.int(7, 12);
   return {
     bas,
     haut,
@@ -286,8 +301,8 @@ export const vegetaux: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'Une plante verte prélève de l’eau et des sels minéraux par ses racines, et du dioxyde de carbone par les **stomates** de ses feuilles. Avec la lumière captée par la **chlorophylle**, elle fabrique sa matière : c’est la **photosynthèse**, qui rejette du dioxygène.',
-      'La **sève brute** monte l’eau et les sels minéraux ; la **sève élaborée** transporte des matières fabriquées. Une partie est mise en réserve, souvent sous forme d’**amidon**.',
+      'Une plante verte prélève de l’eau et des sels minéraux par ses racines, et du dioxyde de carbone par les **stomates** de ses feuilles. Avec la lumière captée par la **chlorophylle**, elle fabrique sa matière : c’est la **photosynthèse**, qui rejette du dioxygène. Elle est **autotrophe** : à partir de **matières minérales** (eau, sels minéraux, dioxyde de carbone), elle fabrique de la **matière organique** (la matière des êtres vivants).',
+      'La **sève brute** monte l’eau et les sels minéraux ; la **sève élaborée** transporte des matières fabriquées. Une partie est mise en réserve, souvent sous forme d’**amidon**. Beaucoup de racines s’associent aux filaments d’un champignon : c’est une **mycorhize**.',
     ],
     source: `Programme du cycle 4 (BOEN n° 31 du 30 juillet 2020) : « Relier les besoins des cellules d’une plante chlorophyllienne (CO2, eau, sels minéraux et énergie lumineuse), les lieux de production ou de prélèvement de matière et de stockage et les systèmes de transport au sein de la plante. »`,
     sources: [

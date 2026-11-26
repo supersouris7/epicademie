@@ -10,7 +10,7 @@ const NIVEAU1: readonly Modele[] = [
     'Le dioxygène',
     [
       ['Le dioxyde de carbone', 'C’est le gaz rejeté par la respiration.'],
-      ['La vapeur d’eau', 'La respiration n’est pas définie par une absorption de vapeur d’eau.'],
+      ['La vapeur d’eau', 'L’air contient de la vapeur d’eau, mais ce n’est pas le gaz que la respiration absorbe.'],
     ],
     'C’est le gaz dont nos cellules ont besoin.',
     'Respirer, c’est absorber du dioxygène et rejeter du dioxyde de carbone.',
@@ -92,7 +92,7 @@ const NIVEAU2: readonly Modele[] = [
       ['Seulement le jour', 'La respiration continue la nuit.'],
       ['Seulement au printemps', 'La respiration ne dépend pas d’une saison précise.'],
     ],
-    'La respiration ne dépend pas de la lumière comme la photosynthèse.',
+    'La plante a-t-elle besoin de lumière pour respirer, comme pour la photosynthèse ?',
     'La respiration des végétaux est diurne et nocturne.',
   ),
   associer(
@@ -194,9 +194,11 @@ const NIVEAU4: readonly Modele[] = [
 
 const bocal = (rng: Parameters<Modele>[0]) => {
   const o2Debut = rng.int(40, 50);
-  const o2Fin = o2Debut - rng.int(6, 14);
+  const baisse = rng.int(8, 14);
+  const o2Fin = o2Debut - baisse;
   const co2Debut = rng.int(2, 5);
-  const co2Fin = co2Debut + rng.int(6, 14);
+  // Le dioxyde de carbone rejeté ne dépasse pas le dioxygène absorbé : relevé vraisemblable.
+  const co2Fin = co2Debut + baisse - rng.int(0, 2);
   const vivant = rng.pick(['des criquets', 'des graines en germination', 'une plante verte placée à l’obscurité']);
   return {
     o2Debut,

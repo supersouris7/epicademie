@@ -139,11 +139,13 @@ export const FAITS_NUTRITION: readonly Fait[] = [
     'academie-chaine',
     "Chaîne alimentaire, série d'organismes vivants où chacun se nourrit du précédent.",
   ),
+  f('chaine-producteur', 'cnrtl-chaine-alimentaire', 'du végétal (producteur) au carnivore (consommateur)'),
   f(
     'predateur-definition',
     'academie-predateur',
     "Animal qui vit aux dépens d'autres espèces animales qu'il capture et dont il se nourrit.",
   ),
+  f('predateur-fouine', 'academie-predateur', 'La fouine est un petit prédateur nocturne.'),
   f(
     'parasite-definition',
     'academie-parasite',
