@@ -61,7 +61,10 @@ export const PREUVES = {
   // ——— Le génocide des Juifs et des Tsiganes ———
   definition: academie('genocide', 'Entreprise d’extermination systématique d’un groupe humain.'),
   victimes: academie('genocide', 'Le génocide perpétré par le régime nazi sur les populations juive et tzigane.'),
-  shoah: CM2.shoah,
+  shoah: de(
+    'Le Mémorial de la Shoah',
+    'un-memorial-shoah-faq',
+  )('le chiffre d’environ 6 millions de personnes est avancé et accepté par la plupart des autorités compétentes'),
   motShoah: CM2.motShoah,
   roms: CM2.roms,
   hitler1933: ressourceTle(
@@ -86,6 +89,9 @@ export const PREUVES = {
   antisemitisme: academie('antisemitisme', 'Racisme dirigé contre les Juifs et tout ce qui est perçu comme juif.'),
   rafle: CM2.rafle,
   livrer: CM2.livrer,
+  journeeGenocides: genocides(
+    "Le 27 janvier, « Journée de la mémoire des génocides et de la prévention des crimes contre l'humanité »",
+  ),
   auschwitz: genocides(
     'la date du 27 janvier, jour anniversaire de la découverte du camp d’Auschwitz (27 janvier 1945)',
   ),

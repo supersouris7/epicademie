@@ -111,6 +111,23 @@ describe('histoire 3e — La Seconde Guerre mondiale', () => {
     }
   });
 
+  it('traite le génocide avec des chiffres attribués, sans réponse dans l’énoncé', () => {
+    const genocide = NOTIONS.find((n) => n.id === 'h3-genocide-juifs-tsiganes')!;
+    const bilan = genocide.faits.find((f) => f.q.startsWith('Combien de Juifs'))!;
+    expect(bilan.a).toBe('environ 6 millions');
+    expect(bilan.source).toBe('un-memorial-shoah-faq');
+    expect(genocide.memo.join(' ')).not.toContain('plus de 6 millions');
+    const roms = genocide.faits.find((f) => f.a === 'plus de 500 000')!;
+    expect(roms.gap[0]).toContain('estimation citée par le Parlement européen');
+    for (const l of genocide.libres) expect(l.q).not.toMatch(/Roms/);
+    const journee = genocide.docs.flatMap((d) => d.qs).find((q) => q.q.startsWith('Que commémore'))!;
+    expect(journee.quote).toContain("crimes contre l'humanité");
+    const camp = genocide.libres.find((l) => l.accepted.includes('Auschwitz'))!;
+    expect(camp.accepted).toContain('Auschwitz-Birkenau');
+    const labels = genocide.faits.flatMap((f) => f.wrong.map((w) => w.label)).join(' ');
+    expect(labels).not.toMatch(/vacances|congés payés/);
+  });
+
   it('définit au glossaire chaque terme en gras des mémos', () => {
     for (const n of NOTIONS) {
       for (const term of n.memo.flatMap(boldTerms)) {

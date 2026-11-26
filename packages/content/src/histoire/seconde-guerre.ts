@@ -417,7 +417,7 @@ const genocide: Notion = {
   memo: [
     'Un **génocide** est une entreprise d’**extermination** systématique d’un groupe humain : l’Allemagne nazie l’a commis contre les Juifs et les **Tsiganes** (Roms).',
     'La **persécution** précède l’extermination : lois de Nuremberg (1935), nuit de Cristal (1938), **ghettos**, puis, à partir de l’été 1941, massacres par les **Einsatzgruppen** et **centres de mise à mort** en Pologne.',
-    'Le mot **Shoah** désigne le génocide des Juifs : plus de 6 millions de victimes. Selon les estimations, plus de 500 000 Roms (Tsiganes) ont été exterminés. En France, le gouvernement de Vichy a livré des Juifs à l’occupant (rafle du Vél’ d’Hiv’, 1942).',
+    'Le mot **Shoah** désigne le génocide des Juifs : environ 6 millions de victimes. Selon une estimation citée par le Parlement européen, plus de 500 000 Roms (Tsiganes) ont été exterminés. En France, le gouvernement de Vichy a livré des Juifs à l’occupant (rafle du Vél’ d’Hiv’, 1942).',
   ],
   faits: [
     {
@@ -478,18 +478,19 @@ const genocide: Notion = {
     },
     {
       q: 'Combien de Juifs l’Allemagne nazie a-t-elle tués au cours de la Shoah ?',
-      a: 'plus de 6 millions',
+      a: 'environ 6 millions',
       wrong: [
         { label: 'environ 60 000', why: 'Le bilan est de plusieurs millions de morts.' },
         { label: 'environ 600', why: 'Le bilan est de plusieurs millions de morts.' },
         { label: 'environ 50 000', why: 'Le bilan est de plusieurs millions de morts.' },
       ],
-      gap: ['Au cours de la Shoah, l’Allemagne nazie a tué plus de ', ' millions de Juifs.', ['6', 'six']],
+      gap: ['Au cours de la Shoah, l’Allemagne nazie a tué environ ', ' millions de Juifs.', ['6', 'six']],
       ...PREUVES.shoah,
-      explain: 'Le bilan dépasse 6 millions de victimes juives.',
+      explain:
+        'Un bilan détaillé est impossible : le chiffre d’environ 6 millions de victimes juives est largement accepté.',
     },
     {
-      q: 'Selon les estimations rappelées par le Parlement européen, combien de Roms ont été exterminés ?',
+      q: 'Selon une estimation citée par le Parlement européen, combien de Roms ont été exterminés ?',
       a: 'plus de 500 000',
       wrong: [
         { label: 'aucun', why: 'Les Roms (Tsiganes) ont subi un génocide.' },
@@ -497,7 +498,7 @@ const genocide: Notion = {
         { label: 'plus de 50 millions', why: 'Le Parlement européen évoque plus de 500 000 victimes roms.' },
       ],
       gap: [
-        'Selon les estimations, plus de ',
+        'Selon une estimation citée par le Parlement européen, plus de ',
         ' Roms ont été exterminés pendant la guerre.',
         ['500 000', '500000', '500.000', 'cinq cent mille'],
       ],
@@ -566,7 +567,10 @@ const genocide: Notion = {
       wrong: [
         { label: 'un retour volontaire au pays', why: 'La déportation est imposée.' },
         { label: 'le vote d’une loi', why: 'Ce n’est pas un transfert de personnes.' },
-        { label: 'un départ en vacances', why: 'La déportation est une violence imposée aux victimes.' },
+        {
+          label: 'une mobilisation dans l’armée',
+          why: 'La mobilisation appelle des soldats ; la déportation est un transfert imposé vers un camp.',
+        },
       ],
       gap: [
         'La déportation est le transfert et l’internement dans un camp de concentration ou d’',
@@ -586,13 +590,17 @@ const genocide: Notion = {
       ],
       gap: ['Ce quartier où résidaient les Juifs s’appelle un ', '.', ['ghetto']],
       ...PREUVES.ghetto,
-      explain: 'Les nazis contraignent ensuite des Juifs à vivre dans des ghettos.',
+      explain:
+        'Sous le nazisme, les Juifs sont enfermés de force dans les ghettos : le Mémorial de la Shoah parle de « populations enfermées dans les ghettos polonais ».',
     },
     {
       q: 'Quelle suite d’actions décrit le processus du génocide des Tsiganes ?',
       a: 'recensement, stérilisations, massacres, ghettoïsation et déportations',
       wrong: [
-        { label: 'élections, réformes, congés payés', why: 'Ces actions n’ont rien à voir avec un génocide.' },
+        {
+          label: 'mobilisation, combats, armistice',
+          why: 'Ces mots décrivent une guerre entre armées, pas un génocide.',
+        },
         { label: 'armistice, traité de paix, reconstruction', why: 'Ces mots désignent la fin d’une guerre.' },
         {
           label: 'exil volontaire, retour, indemnisation immédiate',
@@ -605,7 +613,8 @@ const genocide: Notion = {
         ['déportations', 'deportations', 'déportation', 'deportation'],
       ],
       ...PREUVES.processusTsigane,
-      explain: 'Le génocide suit des étapes qui mènent à la mise à mort.',
+      explain:
+        'Les étapes mènent à la mise à mort. La stérilisation prive de force une personne de la possibilité d’avoir des enfants ; la ghettoïsation l’isole dans un ghetto.',
     },
   ],
   paires3: [
@@ -646,14 +655,14 @@ const genocide: Notion = {
       q: 'Quel mot hébreu désigne le génocide des Juifs par les nazis ?',
       accepted: mot('Shoah', 'la '),
       traps: [
-        { text: 'Holocauste', why: 'C’est un autre terme, que Éduscol déconseille.' },
+        { text: 'Holocauste', why: 'C’est un autre terme, qu’Éduscol, le site de l’Éducation nationale, déconseille.' },
         { text: 'Torah', why: 'La Torah est un texte religieux juif.' },
       ],
       ...PREUVES.motShoah,
       explain: 'La Shoah désigne le génocide des Juifs.',
     },
     {
-      q: 'Quel peuple, aussi appelé Roms, a subi avec les Juifs un génocide nazi ?',
+      q: 'Avec les Juifs, quel autre peuple a subi un génocide commis par les nazis ?',
       accepted: [
         ...mot('Tsiganes', 'les ', 'des '),
         ...mot('Tziganes', 'les ', 'des '),
@@ -663,14 +672,17 @@ const genocide: Notion = {
       ],
       traps: [
         { text: 'Arméniens', why: 'Le génocide des Arméniens date de 1915, dans l’Empire ottoman.' },
-        { text: 'Polonais', why: 'La question porte sur le peuple aussi appelé Roms.' },
+        {
+          text: 'Polonais',
+          why: 'La définition du génocide nazi cite les populations juive et tzigane, pas les Polonais.',
+        },
       ],
       ...PREUVES.victimes,
       explain: 'Les Tsiganes (Roms) ont aussi subi un génocide.',
     },
     {
       q: 'Quel camp est découvert le 27 janvier 1945, date retenue pour la journée de mémoire des génocides ?',
-      accepted: mot('Auschwitz', 'le camp d’', 'camp d’'),
+      accepted: [...mot('Auschwitz', 'le camp d’', 'camp d’'), ...mot('Auschwitz-Birkenau', 'le camp d’', 'camp d’')],
       traps: [
         {
           text: 'Drancy',
@@ -750,7 +762,7 @@ const genocide: Notion = {
     {
       title: 'La France et la mémoire',
       lines: [
-        'Les 16 et 17 juillet 1942, la police parisienne arrête 12 884 hommes et femmes juifs de la région parisienne, dont environ 4 000 enfants.',
+        'Les 16 et 17 juillet 1942, la police parisienne arrête 12 884 hommes, femmes et enfants juifs de la région parisienne, dont environ 4 000 enfants.',
         'Le gouvernement de Vichy accepte de livrer à l’occupant des milliers de Juifs.',
         'Le 27 janvier 1945 est le jour de la découverte du camp d’Auschwitz.',
         'La France a retenu le 27 janvier pour une journée de mémoire.',
@@ -783,7 +795,7 @@ const genocide: Notion = {
             { label: 'la fin de la Première Guerre mondiale', why: 'Elle est commémorée le 11 novembre.' },
             { label: 'l’appel du général de Gaulle', why: 'L’appel date du 18 juin 1940.' },
           ],
-          ...PREUVES.auschwitz,
+          ...PREUVES.journeeGenocides,
           explain: 'Le 27 janvier, découverte d’Auschwitz, est une journée de mémoire des génocides.',
         },
       ],

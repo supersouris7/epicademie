@@ -1081,6 +1081,14 @@ export const SOURCES: readonly Source[] = [
   { ...academie('feminisme', 'féminisme'), consultedOn: '2026-11-26' },
   { ...academie('menagere', 'ménagère'), consultedOn: '2026-11-26' },
   {
+    id: 'un-memorial-shoah-faq',
+    title: 'Questions fréquentes sur la Shoah (Mémorial de la Shoah, Paris)',
+    publisher: 'Nations unies (document du Mémorial de la Shoah)',
+    url: 'https://www.un.org/sites/un2.un.org/files/2020/10/faq_memorialshoah.pdf',
+    textDate: '2020-10',
+    consultedOn: '2026-11-26',
+  },
+  {
     id: 'eduscol-3e-guerres-totales',
     title: 'Ressource d’accompagnement « L’Europe, un théâtre majeur des guerres totales (1914-1945) » (classe de 3e)',
     publisher: 'Éduscol (ministère de l’Éducation nationale)',

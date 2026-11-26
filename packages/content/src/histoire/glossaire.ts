@@ -2937,6 +2937,20 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'Les nazis enferment des Juifs dans des ghettos.',
   },
   {
+    id: 'sterilisation',
+    word: 'stérilisation',
+    forms: ['stérilisation', 'stérilisations'],
+    definition: 'Une opération qui empêche une personne d’avoir des enfants ; les nazis l’imposent de force.',
+    example: 'Des Tsiganes subissent des stérilisations.',
+  },
+  {
+    id: 'ghettoisation',
+    word: 'ghettoïsation',
+    forms: ['ghettoïsation'],
+    definition: 'Le fait d’isoler de force des personnes dans un ghetto.',
+    example: 'La ghettoïsation précède des déportations.',
+  },
+  {
     id: 'einsatzgruppen',
     word: 'Einsatzgruppen',
     forms: ['Einsatzgruppen'],
