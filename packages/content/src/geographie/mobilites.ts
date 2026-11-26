@@ -4,7 +4,7 @@ import { notion, type Notion } from './kit.ts';
 /**
  * Quatrième, thème 2 « Les mobilités humaines transnationales » (lot ge-4e-02) : un monde de migrants, le tourisme et
  * ses espaces, vocabulaire. Chaque fait cite une source du registre avec sa citation exacte : programme du cycle 4,
- * glossaire de Géoconfluences (ENS de Lyon, DGESCO) et Union européenne (Erasmus+). Les textes à lire du niveau 5
+ * glossaire de Géoconfluences (ENS de Lyon, DGESCO) Union européenne (Erasmus+) et Nations unies (effectifs des migrants). Les textes à lire du niveau 5
  * sont écrits pour l’exercice (personnes désignées par une lettre, lieux fictifs).
  */
 
@@ -28,6 +28,7 @@ const COMPTOIR = 'geoconfluences-comptoir-touristique';
 const STATION = 'geoconfluences-station-touristique';
 const SURTOURISME = 'geoconfluences-surtourisme';
 const ERASMUS = 'ue-erasmus-plus';
+const ONU = 'un-desa-migrant-stock-2024';
 
 // Programme du cycle 4, géographie, classe de 4e, thème 2.
 const P_MOTIFS =
@@ -40,7 +41,8 @@ const P_EFFETS = 'il est porteur d’effets économiques, sociaux, territoriaux 
 
 // Migrations.
 const G_INED = 'des personnes installées dans un pays différent de celui où elles sont nées';
-const G_281 = 'représentaient 281 millions de personnes, soit 3,6 % de la population mondiale';
+const G_NOMBRE = 'In 2024 the number of international migrants worldwide stood at 304 million';
+const G_PART = 'in 2024 just 3.7 per cent of people globally were international migrants';
 const G_CONTINENTS = 'L’Asie et l’Europe sont les deux continents où vivent le plus de migrants internationaux';
 const G_PARTIE =
   'elles ne représentent qu’une partie de l’ensemble des migrations internationales, sans parler de l’ensemble des migrations';
@@ -114,7 +116,7 @@ const migrants: Notion = {
   title: 'Un monde de migrants',
   hint: 'Demande-toi qui se déplace, pour quelle raison, et si une frontière est franchie.',
   memo: [
-    'Un **migrant international** est installé dans un autre pays que celui où il est né : on en comptait 281 millions en 2024, soit 3,6 % de la population mondiale.',
+    'Un **migrant international** est installé dans un autre pays que celui où il est né : on en comptait 304 millions en 2024, soit 3,7 % de la population mondiale.',
     'Les motifs sont variés (travail, études, conflits, climat) et les flux ne vont pas que des « Suds » vers les « Nords » : il existe aussi des **migrations Sud-Sud**.',
     'Un **réfugié** a fui son pays par crainte de persécutions ; un **déplacé** interne reste dans son pays.',
   ],
@@ -144,31 +146,35 @@ const migrants: Notion = {
     },
     {
       q: 'Combien de migrants internationaux comptait-on dans le monde en 2024 ?',
-      a: '281 millions',
+      a: '304 millions',
       wrong: [
-        { label: '28 millions', why: 'C’est environ dix fois trop peu.' },
-        { label: '2,8 milliards', why: 'C’est environ dix fois trop : la plupart des humains ne migrent pas.' },
-        { label: '3,6 millions', why: '3,6 est la part en pourcentage de la population mondiale, pas le nombre.' },
+        { label: '30 millions', why: 'C’est environ dix fois trop peu.' },
+        { label: '3 milliards', why: 'C’est environ dix fois trop : la plupart des humains ne migrent pas.' },
+        { label: '3,7 millions', why: '3,7 est la part en pourcentage de la population mondiale, pas le nombre.' },
       ],
-      gap: ['En 2024, le monde comptait ', ' millions de migrants internationaux.', ['281']],
-      choix: ['281', '28', '810'],
-      quote: G_281,
+      gap: ['En 2024, le monde comptait ', ' millions de migrants internationaux.', ['304']],
+      choix: ['304', '30', '810'],
+      quote: G_NOMBRE,
+      montre:
+        'Cherchons ce que disent les Nations unies (texte en anglais) : en 2024, le monde comptait 304 millions de migrants internationaux.',
       explain: 'Ce nombre représente un mouvement de très grande ampleur à l’échelle du monde.',
-      src: INTERNATIONALES,
+      src: ONU,
     },
     {
       q: 'En 2024, quelle part de la population mondiale les migrants internationaux représentaient-ils ?',
-      a: 'environ 3,6 %',
+      a: 'environ 3,7 %',
       wrong: [
-        { label: 'environ 36 %', why: 'Cela ferait plus d’une personne sur trois : c’est dix fois trop.' },
-        { label: 'environ 60 %', why: 'La grande majorité des humains vivent dans leur pays de naissance.' },
-        { label: 'environ 0,036 %', why: 'C’est cent fois trop peu.' },
+        { label: 'environ 37 %', why: 'Cela ferait plus d’une personne sur trois : c’est dix fois trop.' },
+        { label: 'environ 60 %', why: 'La grande majorité des humains ne sont pas des migrants internationaux.' },
+        { label: 'environ 0,037 %', why: 'C’est cent fois trop peu.' },
       ],
-      gap: ['Les migrants internationaux représentent environ ', ' % de la population mondiale.', ['3,6']],
-      choix: ['3,6', '36', '63'],
-      quote: G_281,
+      gap: ['En 2024, les migrants internationaux représentent environ ', ' % de la population mondiale.', ['3,7']],
+      choix: ['3,7', '37', '63'],
+      quote: G_PART,
+      montre:
+        'Cherchons ce que disent les Nations unies (texte en anglais) : en 2024, seulement 3,7 % des humains étaient des migrants internationaux.',
       explain: 'Les migrants sont nombreux, mais restent une petite minorité de la population mondiale.',
-      src: INTERNATIONALES,
+      src: ONU,
     },
     {
       q: 'Quelles sont les raisons des migrations transnationales ?',
@@ -280,9 +286,18 @@ const migrants: Notion = {
       q: 'Sur quels deux continents vivent le plus de migrants internationaux ?',
       a: 'l’Asie et l’Europe',
       wrong: [
-        { label: 'l’Afrique et l’Océanie', why: 'Les deux continents cités en tête sont d’autres.' },
-        { label: 'l’Océanie et l’Antarctique', why: 'Les deux continents cités en tête sont d’autres.' },
-        { label: 'l’Afrique et l’Amérique du Sud', why: 'Les migrants vivent surtout sur deux autres continents.' },
+        {
+          label: 'l’Afrique et l’Océanie',
+          why: 'L’Afrique comme l’Océanie comptent moins de migrants installés que l’Europe ou l’Asie.',
+        },
+        {
+          label: 'l’Océanie et l’Antarctique',
+          why: 'L’Océanie comme l’Antarctique comptent moins de migrants installés que l’Europe ou l’Asie.',
+        },
+        {
+          label: 'l’Afrique et l’Amérique du Sud',
+          why: 'L’Afrique comme l’Amérique du Sud comptent moins de migrants installés que l’Europe ou l’Asie.',
+        },
       ],
       gap: ['L’Europe et l’', ' sont les continents où vivent le plus de migrants internationaux.', ['Asie']],
       choix: ['Asie', 'Océanie', 'Afrique'],
@@ -363,6 +378,8 @@ const migrants: Notion = {
     why: 'On part, on dépose une demande, on attend, puis l’État répond : ici, la réponse est favorable.',
     fin: 'La première étape est',
     quote: G_DEPOT,
+    montre:
+      'Cherchons ce que dit le site de géographie Géoconfluences : le demandeur d’asile a demandé à être protégé hors de son pays d’origine, puis il attend la réponse.',
     src: ASILE,
   },
   sources: [ASILE, MIGRANT],
@@ -390,6 +407,10 @@ const migrants: Notion = {
         'rémitances',
         'les rémitances',
         'transferts d’argent',
+        'transfert d’argent',
+        'transferts de fonds',
+        'transfert de fonds',
+        'remise',
       ],
       traps: [
         { text: 'impôts', why: 'Un impôt est versé à un État ou à une collectivité, pas à sa famille.' },
@@ -418,6 +439,8 @@ const migrants: Notion = {
         { text: 'Schengen', why: 'Schengen concerne la circulation entre États, pas un programme d’études.' },
       ],
       quote: G_ERASMUS,
+      montre:
+        'Cherchons ce que dit l’Union européenne : Erasmus+ offre des possibilités de mobilité et de coopération, notamment dans l’enseignement supérieur.',
       explain: 'Erasmus+ ouvre des possibilités de mobilité, notamment dans l’enseignement supérieur.',
       src: ERASMUS,
     },

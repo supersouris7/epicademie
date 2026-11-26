@@ -50,6 +50,7 @@ export const ALLOWED_DOMAINS: readonly string[] = [
   'ecologie.gouv.fr',
   'brgm.fr',
   'geoconfluences.ens-lyon.fr',
+  'un.org',
 ];
 
 /** L'URL est en https et son domaine (ou un sous-domaine) est dans la liste autorisée. */

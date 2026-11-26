@@ -800,4 +800,12 @@ export const SOURCES: readonly Source[] = [
     textDate: '2026',
     consultedOn: '2026-11-26',
   },
+  {
+    id: 'un-desa-migrant-stock-2024',
+    title: 'International Migrant Stock 2024 : Key facts and figures',
+    publisher: 'Nations unies, Département des affaires économiques et sociales',
+    url: 'https://www.un.org/development/desa/pd/sites/www.un.org.development.desa.pd/files/undesa_pd_2025_intlmigstock_2024_key_facts_and_figures_advance-unedited.pdf',
+    textDate: '2025-01',
+    consultedOn: '2026-11-26',
+  },
 ];

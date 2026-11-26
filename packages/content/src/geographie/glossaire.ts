@@ -2382,4 +2382,18 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Les sorties de loisir à la journée, sans nuit sur place.',
     example: 'Passer le dimanche au bord de la mer et rentrer le soir.',
   },
+  {
+    id: 'convention-de-geneve',
+    word: 'Convention de Genève',
+    forms: ['Convention de Genève'],
+    definition: 'Un accord entre États ; celui de 1951 sur les réfugiés dit qui est réfugié et comment le protéger.',
+    example: 'Un État qui l’a ratifiée s’engage à protéger les réfugiés.',
+  },
+  {
+    id: 'intracontinentales',
+    word: 'intracontinentales',
+    forms: ['intracontinentales', 'intracontinentale'],
+    definition: 'Qui se font à l’intérieur d’un même continent.',
+    example: 'Partir d’un pays d’Afrique vers un autre pays d’Afrique.',
+  },
 ];
