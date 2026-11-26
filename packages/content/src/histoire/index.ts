@@ -11,6 +11,7 @@ import { SKILLS as HUMANITE } from './humanite.ts';
 import { SKILLS as TEMPS_DES_ROIS } from './le-temps-des-rois.ts';
 import { SKILLS as RECITS_FONDATEURS } from './recits-fondateurs.ts';
 import { SKILLS as REVOLUTION_EMPIRE } from './revolution-empire.ts';
+import { SKILLS as REPERES_4E } from './reperes-4e.ts';
 import { SKILLS as REPERES_5E } from './reperes-5e.ts';
 import { SKILLS as REPERES_6E } from './reperes-6e.ts';
 import { SKILLS as SE_REPERER_CM2 } from './se-reperer-cm2.ts';
@@ -237,4 +238,5 @@ export const HISTOIRE_CHAPTERS: readonly Chapter[] = [
   chapter('h4-xviiie-siecle', '4e', 'Le XVIIIe siècle : expansions, Lumières et révolutions', XVIIIE_SIECLE),
   chapter('h4-europe-monde-xixe', '4e', 'L’Europe et le monde au XIXe siècle', XIXE_SIECLE),
   chapter('h4-france-xixe', '4e', 'Société, culture et politique dans la France du XIXe siècle', FRANCE_XIXE),
+  chapter('h4-se-reperer', '4e', 'Repères de 4e', REPERES_4E),
 ];

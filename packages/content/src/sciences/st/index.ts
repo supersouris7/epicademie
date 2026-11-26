@@ -4,6 +4,11 @@ import { besoinsVegetaux } from './besoins-vegetaux.ts';
 import { actionsHumaines } from './actions-humaines.ts';
 import { algorithmes } from './algorithmes.ts';
 import { chaineEnergie } from './chaine-energie.ts';
+import { chimieSecurite } from './chimie-6e.ts';
+import { dissolutionMatiere } from './dissolution-6e.ts';
+import { etatsMatiere } from './etats-6e.ts';
+import { masseVolumeMatiere } from './masse-volume-6e.ts';
+import { melangesMatiere } from './melanges-6e.ts';
 import { chaineInformation } from './chaine-information.ts';
 import { conducteurs } from './conducteurs.ts';
 import { securiteElectrique } from './securite-electrique.ts';
@@ -103,6 +108,14 @@ export const ST_CHAPTERS: readonly Chapter[] = [
     domain: 'technologie',
     title: 'Objets techniques et programmation',
     skills: [chaineInformation, algorithmes, securiteElectrique],
+  },
+  {
+    id: 'p6-matiere',
+    subject: 'sciences',
+    grade: '6e',
+    domain: 'physique-chimie',
+    title: 'La matière',
+    skills: [etatsMatiere, masseVolumeMatiere, melangesMatiere, dissolutionMatiere, chimieSecurite],
   },
   {
     id: 'p6-electricite-energie',
