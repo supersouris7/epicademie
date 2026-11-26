@@ -47,7 +47,7 @@ export interface DocQuestion {
 
 export interface Notion {
   /** Classe citée dans la source de la leçon et sous les textes à lire (CM1 si absente). */
-  readonly classe?: 'CM1' | 'CM2' | '6e' | '5e' | '4e';
+  readonly classe?: 'CM1' | 'CM2' | '6e' | '5e' | '4e' | '3e';
   readonly id: string;
   readonly title: string;
   readonly hint: string;
@@ -79,12 +79,17 @@ export interface Notion {
   readonly carte?: (rng: Rng, level: Level) => QuestionDraft | undefined;
 }
 
-const NOMS: Readonly<Record<string, string>> = { '6e': 'sixième', '5e': 'cinquième', '4e': 'quatrième' };
+const NOMS: Readonly<Record<string, string>> = {
+  '6e': 'sixième',
+  '5e': 'cinquième',
+  '4e': 'quatrième',
+  '3e': 'troisième',
+};
 const nomClasse = (classe: string) => NOMS[classe] ?? classe;
 
-const cycle4 = (classe: string) => classe === '5e' || classe === '4e';
+const cycle4 = (classe: string) => classe === '5e' || classe === '4e' || classe === '3e';
 
-/** Programme de la classe : cycle 4 en 5e et 4e, cycle 3 sinon. */
+/** Programme de la classe : cycle 4 de la 5e à la 3e, cycle 3 sinon. */
 const programmeOf = (classe: string) => (cycle4(classe) ? PROGRAMME_C4 : PROGRAMME);
 
 const prog = (classe: string) =>

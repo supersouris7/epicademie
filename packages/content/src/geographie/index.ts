@@ -19,6 +19,7 @@ import { SKILLS as URBANISATION } from './urbanisation.ts';
 import { SKILLS as MOBILITES } from './mobilites.ts';
 import { SKILLS as MONDIALISATION } from './mondialisation.ts';
 import { SKILLS as REPERES_4E } from './reperes-4e.ts';
+import { SKILLS as DYNAMIQUES_TERRITORIALES } from './dynamiques-territoriales.ts';
 import { GEO_FETCHED_ON, PAYS_UE, REGIONS } from './donnees.generated.ts';
 
 /**
@@ -163,5 +164,6 @@ export const GEOGRAPHIE_CHAPTERS: readonly Chapter[] = [
   chapter('g4-mobilites-transnationales', '4e', 'Les mobilités humaines transnationales', MOBILITES),
   chapter('g4-espaces-mondialisation', '4e', 'Des espaces transformés par la mondialisation', MONDIALISATION),
   chapter('g4-reperes', '4e', 'Repères de 4e', REPERES_4E),
+  chapter('g3-dynamiques-territoriales', '3e', 'Dynamiques territoriales de la France', DYNAMIQUES_TERRITORIALES),
   chapter('g3-union-europeenne', '3e', 'L’Union européenne', [euCapitals, euro]),
 ];
