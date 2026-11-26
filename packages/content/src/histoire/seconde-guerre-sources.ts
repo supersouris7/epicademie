@@ -112,7 +112,7 @@ export const PREUVES = {
   ),
   rationnement: academie(
     'rationnement',
-    'En France, le rationnement mis en place au début de la Seconde Guerre mondiale dura, pour certains produits, jusqu’en 1949.',
+    'l’ensemble des mesures prises par un gouvernement, une autorité quand les biens de première nécessité ne sont plus disponibles qu’en quantité limitée',
   ),
   sto: journee('des hommes requis pour le Service du travail obligatoire en février 1943 prennent le maquis'),
   parisLibere: liberation('Durant l’insurrection parisienne et les combats de la Libération, du 19 au 25 août'),

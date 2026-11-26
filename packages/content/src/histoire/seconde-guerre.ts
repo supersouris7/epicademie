@@ -23,7 +23,7 @@ const aneantissement: Notion = {
   hint: 'Situe la question : un front, une date ou une forme de violence contre les civils.',
   memo: [
     'La Deuxième Guerre mondiale (1939-1945) est un conflit **planétaire** marqué par la violence de masse : sur le front de l’Est, elle prend la figure d’une **guerre d’anéantissement**.',
-    'Le 22 juin 1941, Hitler attaque l’**URSS** (opération Barbarossa) : le but mêle objectifs militaires, politiques, économiques et raciaux, dont l’aménagement d’un **espace vital** aux dépens des peuples de l’Est. Cette radicalisation est une des causes des **génocides** juif et tsigane.',
+    'Le 22 juin 1941, Hitler attaque l’**URSS** (opération Barbarossa) : le but mêle objectifs militaires, politiques, économiques et raciaux, dont l’aménagement d’un **espace vital** aux dépens des peuples de l’Est. Cette radicalisation (la violence devient extrême) est une des causes des **génocides** juif et tsigane.',
     'Les **civils** sont acteurs et victimes : bombardements de masse, jusqu’aux **bombes atomiques** sur Hiroshima (6 août 1945) et Nagasaki (9 août). Astuce brevet : donne un lieu, une date et la violence subie.',
   ],
   faits: [
@@ -86,7 +86,10 @@ const aneantissement: Notion = {
           why: 'La guerre d’anéantissement est associée à l’attaque contre l’URSS, à l’est.',
         },
         { label: 'le front intérieur français', why: 'Le « front intérieur » désigne l’arrière, loin des combats.' },
-        { label: 'le front du Pacifique', why: 'La ressource parle de la guerre contre l’URSS.' },
+        {
+          label: 'le front du Pacifique',
+          why: 'La « guerre d’anéantissement » désigne la guerre contre l’URSS, à l’est.',
+        },
       ],
       gap: ['La guerre d’anéantissement se déroule sur le front de l’', '.', ['Est']],
       ...PREUVES.frontEst,
@@ -114,7 +117,7 @@ const aneantissement: Notion = {
       ],
       gap: ['L’opération contre l’URSS s’appelle l’opération ', '.', ['Barbarossa', 'Barbarosse']],
       ...PREUVES.barbarossa,
-      explain: 'L’opération Barbarossa accomplit le projet national-socialiste.',
+      explain: 'L’opération Barbarossa met en œuvre le projet des nazis.',
     },
     {
       q: 'Comment appelle-t-on le territoire que les nazis veulent aménager au détriment des populations de l’Est ?',
@@ -172,7 +175,10 @@ const aneantissement: Notion = {
       q: 'Quels objectifs la guerre contre l’URSS mêle-t-elle ?',
       a: 'des objectifs militaires, politiques, économiques et raciaux',
       wrong: [
-        { label: 'uniquement des objectifs sportifs', why: 'Cette guerre n’a rien d’une compétition.' },
+        {
+          label: 'uniquement la défense des frontières allemandes',
+          why: 'C’est l’Allemagne qui attaque l’URSS pour prendre des territoires.',
+        },
         {
           label: 'seulement la libération de la France',
           why: 'La guerre contre l’URSS ne vise pas la libération de la France.',
@@ -248,9 +254,15 @@ const aneantissement: Notion = {
   libres: [
     {
       q: 'Comment appelle-t-on la guerre menée sur le front de l’Est, qui vise la destruction complète de l’adversaire ?',
-      accepted: mot('guerre d’anéantissement', 'une ', 'la '),
+      accepted: [
+        ...mot('guerre d’anéantissement', 'une ', 'la '),
+        'guerre d’aneantissement',
+        'anéantissement',
+        'd’anéantissement',
+      ],
       traps: [
         { text: 'guerre de position', why: 'La guerre de position décrit un front figé, surtout en 1914-1918.' },
+        { text: 'guerre totale', why: 'La guerre totale mobilise toute la société ; ici, le but est de détruire.' },
         { text: 'guerre froide', why: 'La guerre froide oppose les États-Unis et l’URSS après 1945.' },
       ],
       ...PREUVES.frontEst,
@@ -788,7 +800,7 @@ const franceOccupee: Notion = {
   memo: [
     'La bataille de France commence le 10 mai 1940 : des habitants fuient vers le sud (l’**exode**) et les Allemands entrent à Paris le 14 juin.',
     'Le maréchal Pétain demande l’**armistice**, signé le 22 juin à Rethondes. La France est coupée entre une **zone occupée** et une **zone libre**, puis occupée en entier ; le gouvernement s’installe à Vichy.',
-    'Sous l’**Occupation** (1940-1944), il y a le **rationnement** puis le Service du travail obligatoire (1943). Paris se libère en août 1944. Astuce brevet : distingue la défaite (1940), l’Occupation et la Libération.',
+    'Sous l’**Occupation** (1940-1944), il y a le **rationnement** puis le Service du travail obligatoire ou STO (1943). Paris se libère en août 1944. Astuce brevet : distingue la défaite (1940), l’Occupation et la Libération.',
   ],
   faits: [
     {
@@ -888,7 +900,7 @@ const franceOccupee: Notion = {
       explain: 'Vichy dispose de nombreux hôtels pour accueillir les pouvoirs publics.',
     },
     {
-      q: 'Pendant l’Occupation, comment la France est-elle occupée entre 1940 et 1944 ?',
+      q: 'Entre 1940 et 1944, comment la France est-elle occupée ?',
       a: 'd’abord en partie, puis entièrement',
       wrong: [
         { label: 'jamais, aucune troupe étrangère n’entre en France', why: 'La France est occupée pendant la guerre.' },
@@ -977,7 +989,10 @@ const franceOccupee: Notion = {
       q: 'Comment appelle-t-on la fuite massive d’habitants vers le sud pendant la bataille de France ?',
       accepted: mot('exode', 'l’', 'un '),
       traps: [
-        { text: 'exil', why: 'Le mot du cours pour cette fuite massive de 1940 est un autre.' },
+        {
+          text: 'exil',
+          why: 'L’exil, c’est devoir vivre hors de son pays ; ici, les habitants fuient à l’intérieur de la France.',
+        },
         { text: 'déportation', why: 'La déportation est un transfert imposé vers des camps.' },
       ],
       ...PREUVES.exode,
@@ -1005,7 +1020,7 @@ const franceOccupee: Notion = {
     },
     {
       q: 'Comment appelle-t-on la partie de la France non occupée en 1940 ?',
-      accepted: mot('zone libre', 'la ', 'une '),
+      accepted: [...mot('zone libre', 'la ', 'une '), ...mot('zone sud', 'la '), ...mot('zone non occupée', 'la ')],
       traps: [
         { text: 'zone occupée', why: 'C’est la partie tenue par les Allemands.' },
         { text: 'France libre', why: 'La France libre est l’organisation du général de Gaulle.' },
@@ -1055,7 +1070,7 @@ const franceOccupee: Notion = {
           explain: 'L’armistice du 22 juin vient après le 14 juin.',
         },
         {
-          q: 'En utilisant tes connaissances : quelle conséquence politique la défaite de juin 1940 provoque-t-elle ?',
+          q: 'En utilisant tes connaissances : qu’est-ce que la défaite de juin 1940 provoque en France ?',
           a: 'un effondrement politique, social et moral',
           wrong: [
             { label: 'un renforcement de la IIIe République', why: 'La défaite fragilise au contraire le régime.' },
@@ -1096,7 +1111,7 @@ const franceOccupee: Notion = {
           explain: 'Les biens limités sont rationnés.',
         },
         {
-          q: 'Quel élément du texte date la Libération de Paris ?',
+          q: 'D’après le texte, quand les combats de la Libération se déroulent-ils à Paris ?',
           a: 'août 1944, à la ligne 4',
           wrong: [
             { label: '1940, à la ligne 1', why: '1940 marque le début de l’Occupation.' },
@@ -1167,19 +1182,25 @@ const vichy: Notion = {
       explain: 'Le régime de Vichy est appelé l’État français.',
     },
     {
-      q: 'Quelle devise le texte du 10 juillet 1940 annonce-t-il pour la nouvelle Constitution ?',
-      a: 'Travail, Famille, Patrie',
+      q: 'D’après le texte voté le 10 juillet 1940, quels droits la nouvelle Constitution devra-t-elle garantir ?',
+      a: 'ceux du Travail, de la Famille et de la Patrie',
       wrong: [
-        { label: 'Liberté, Égalité, Fraternité', why: 'C’est la devise de la République, que Vichy abandonne.' },
-        { label: 'Union, Paix, Progrès', why: 'Le texte cite d’autres valeurs.' },
-        { label: 'Unie dans la diversité', why: 'C’est la devise de l’Union européenne.' },
+        {
+          label: 'ceux de la Liberté, de l’Égalité et de la Fraternité',
+          why: 'C’est la devise de la République : le texte ne la reprend pas.',
+        },
+        { label: 'ceux de l’Union, de la Paix et du Progrès', why: 'Le texte cite d’autres mots.' },
+        {
+          label: 'ceux des partis, des syndicats et de la presse',
+          why: 'Le texte ne les cite pas : le régime qui naît est autoritaire.',
+        },
       ],
       gap: ['La nouvelle Constitution doit garantir les droits du Travail, de la Famille et de la ', '.', ['Patrie']],
       ...PREUVES.devise,
-      explain: 'Travail, Famille et Patrie remplacent les valeurs républicaines.',
+      explain: 'Le texte met en avant le Travail, la Famille et la Patrie, pas les mots de la République.',
     },
     {
-      q: 'Comment l’Assemblée nationale décrit-elle le régime de Vichy ?',
+      q: 'Comment peut-on décrire le régime de Vichy ?',
       a: 'autoritaire et hostile aux valeurs républicaines',
       wrong: [
         { label: 'démocratique et attaché à la République', why: 'Vichy rejette les valeurs républicaines.' },
