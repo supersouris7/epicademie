@@ -23,3 +23,6 @@
 
 Écart au plan : le chapitre « Signal et information » (colonne « fin de sixième » du programme, hors lots ci-dessus) est
 livré avec le lot `st-cm2-01` (couvert, relu).
+
+Écart au plan (`st-cm2-04`) : le chapitre « La décomposition » (notion « décomposeurs », colonne « fin de sixième », hors
+lots ci-dessus ; la notion « micro-organismes » de `st-6e-04` reste à couvrir) est livré avec ce lot, en relecture.

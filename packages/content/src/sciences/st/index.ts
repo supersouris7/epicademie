@@ -1,6 +1,11 @@
 import type { Chapter } from '../../types.ts';
 import { besoinsAnimaux } from './besoins-animaux.ts';
 import { besoinsVegetaux } from './besoins-vegetaux.ts';
+import { actionsHumaines } from './actions-humaines.ts';
+import { chainesAlimentaires } from './chaines.ts';
+import { decomposeurs } from './decomposeurs.ts';
+import { peuplement } from './peuplement.ts';
+import { relations } from './relations.ts';
 import { alimentation } from './alimentation.ts';
 import { besoinsAlimentaires } from './besoins-alimentaires.ts';
 import { circulation } from './circulation.ts';
@@ -78,11 +83,27 @@ export const ST_CHAPTERS: readonly Chapter[] = [
     skills: [digestion, alimentation, besoinsAlimentaires, circulation],
   },
   {
+    id: 'vcm2-ecosystemes',
+    subject: 'sciences',
+    grade: 'cm2',
+    domain: 'svt',
+    title: 'Écosystèmes',
+    skills: [peuplement, relations, chainesAlimentaires, actionsHumaines],
+  },
+  {
     id: 'p6-signal-information',
     subject: 'sciences',
     grade: '6e',
     domain: 'physique-chimie',
     title: 'Signal et information',
     skills: [signal],
+  },
+  {
+    id: 'v6-decomposition',
+    subject: 'sciences',
+    grade: '6e',
+    domain: 'svt',
+    title: 'La décomposition',
+    skills: [decomposeurs],
   },
 ];

@@ -14,7 +14,7 @@
 | `st-cm2-01` | Matière et information             | propriétés des matériaux ; séparer un mélange ; dissolution ; signal et information                | couverte               |
 | `st-cm2-02` | Mouvement et énergie               | trajectoire ; vitesse ; énergies renouvelables ou non ; conversions d'énergie                      | couverte, en relecture |
 | `st-cm2-03` | Le corps humain                    | digestion ; alimentation équilibrée ; respiration ; os et muscles                                  | couverte, en relecture |
-| `st-cm2-04` | Écosystèmes                        | peuplement d'un milieu ; chaînes alimentaires ; décomposeurs ; activités humaines et environnement | absente                |
+| `st-cm2-04` | Écosystèmes                        | peuplement d'un milieu ; chaînes alimentaires ; décomposeurs ; activités humaines et environnement | couverte, en relecture |
 | `st-cm2-05` | Objets techniques et programmation | conducteurs et isolants ; chaîne d'énergie simple ; algorithme et programme ; sécurité électrique  | absente                |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
@@ -33,3 +33,9 @@ muscles (ces derniers ne sont cités qu'en croisement avec l'éducation physique
 attendus du thème « Alimentation humaine » : « besoins alimentaires » (croissance et activité physique) et « circulation
 sanguine » (approvisionnement des organes), avec « digestion » et « alimentation équilibrée ». La reproduction et la
 puberté, également attendues au cours moyen, ne figurent dans aucun lot : à traiter à part.
+
+Écart au programme (`st-cm2-04`) : la décomposition de la matière organique et le rôle des microorganismes sont attendus
+en fin de sixième ; la notion « décomposeurs » est donc livrée en 6e (chapitre « La décomposition »). Le lot ajoute au
+CM2 un attendu du cours moyen absent du plan, « les relations dans un écosystème » (prédation, coopération). Les notions
+du chapitre sont : peuplement d'un milieu, relations dans un écosystème, chaînes et réseaux alimentaires, activités
+humaines et environnement.

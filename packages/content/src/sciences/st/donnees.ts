@@ -1,5 +1,5 @@
 /**
- * Faits des chapitres « La matière », « Mouvement et énergie » et « Le vivant » (CM1), puis « Matériaux et mélanges » et « Mouvement et énergie » et « Le corps humain » (CM2) et « Signal et information » (6e). Chaque fait cite son identifiant de source (registre `sources.ts`) et la
+ * Faits des chapitres « La matière », « Mouvement et énergie » et « Le vivant » (CM1), puis « Matériaux et mélanges » et « Mouvement et énergie » « Le corps humain » et « Écosystèmes » (CM2), « Signal et information » et « La décomposition » (6e). Chaque fait cite son identifiant de source (registre `sources.ts`) et la
  * citation exacte du texte officiel (programme du cycle 3, Éduscol, domaine « Matière, mouvement, énergie,
  * information »). Les exemples du quotidien (un caillou, une pomme, la buée…) illustrent ces faits : ils ne sont pas des faits.
  */
@@ -903,5 +903,176 @@ export const FAITS: readonly Fait[] = [
     source: 'academie-capillaire',
     citation:
       'les très fins vaisseaux qui joignent les artérioles aux veinules et permettent les échanges nutritifs et gazeux entre le sang et les cellules.',
+  },
+  // Écosystèmes (CM2) et décomposeurs (6e), lot st-cm2-04.
+  {
+    id: 'eco-caracteriser',
+    source: PROGRAMME,
+    citation:
+      'Caractériser, à partir d’un exemple, un écosystème par son milieu de vie, l’ensemble des êtres vivants et les interactions en son sein.',
+  },
+  {
+    id: 'eco-relations',
+    source: PROGRAMME,
+    citation:
+      'Décrire plusieurs types de relations entre espèces au sein d’un écosystème (coopérations, prédation, etc.).',
+  },
+  {
+    id: 'eco-repartition',
+    source: PROGRAMME,
+    citation:
+      'Comparer, à partir d’observations ou d’expériences, la répartition des êtres vivants dans des milieux proches pour relier les facteurs abiotiques (physico-chimiques) et cette répartition (la température, l’ensoleillement ou l’humidité, etc.).',
+  },
+  {
+    id: 'eco-pollinisation',
+    source: PROGRAMME,
+    citation: 'Illustrer la notion de coopération (interaction mutualiste) avec l’exemple de la pollinisation.',
+  },
+  {
+    id: 'eco-actions',
+    source: PROGRAMME,
+    citation:
+      'Mettre en évidence quelques répercussions positives et négatives des actions humaines sur l’environnement proche.',
+  },
+  {
+    id: 'decompo-mort',
+    source: PROGRAMME,
+    citation:
+      'Mettre en évidence que la matière organique des êtres vivants est décomposée après leur mort (exemple du sol).',
+  },
+  {
+    id: 'decompo-role',
+    source: PROGRAMME,
+    citation:
+      'Dégager le rôle clé des êtres vivants, en particulier des microorganismes, dans la décomposition de la matière organique, contribuant au cycle de la matière.',
+  },
+  {
+    id: 'ecosysteme-def',
+    source: 'academie-ecosysteme',
+    citation:
+      "Ensemble formé par une communauté d'êtres vivants, animaux et végétaux, et par le milieu dans lequel ils vivent. Les composants d'un écosystème sont en interaction constante.",
+  },
+  { id: 'proie-def', source: 'academie-proie', citation: "Être vivant qu'un animal capture pour s'en nourrir." },
+  {
+    id: 'predateur-def',
+    source: 'academie-predateur',
+    citation: "Animal qui vit aux dépens d'autres espèces animales qu'il capture et dont il se nourrit.",
+  },
+  {
+    id: 'mutualisme-def',
+    source: 'academie-mutualisme',
+    citation:
+      "Association de deux animaux d'espèces différentes qui tirent profit de cette union sans vivre aux dépens l'un de l'autre. Le mutualisme de l'anémone de mer et du bernard-l'hermite.",
+  },
+  {
+    id: 'lichen-symbiose',
+    source: 'cnrtl-symbiose',
+    citation: "Un lichen est la symbiose d'une algue et d'un champignon",
+  },
+  {
+    id: 'ensoleillement-def',
+    source: 'academie-ensoleillement',
+    citation: 'Temps pendant lequel un lieu est ensoleillé.',
+  },
+  {
+    id: 'humidite-def',
+    source: 'academie-humidite',
+    citation: "Caractère ou état de ce qui est humide ; eau, vapeur d'eau présente dans un corps, un lieu, etc.",
+  },
+  {
+    id: 'litiere-def',
+    source: 'academie-litiere',
+    citation:
+      "Couche de débris végétaux peu altérés qui se trouvent à la surface d'un sol, notamment d'un sol forestier.",
+  },
+  {
+    id: 'humus-def',
+    source: 'cnrtl-humus',
+    citation:
+      'Terre brune noirâtre provenant de la décomposition de débris végétaux et/ou animaux dans le sol et qui contribue à sa fertilité.',
+  },
+  {
+    id: 'humus-bacteries',
+    source: 'cnrtl-humus',
+    citation:
+      "provenant de la décomposition de la matière organique fraîche par l'action de bactéries ou d'autres organismes vivants.",
+  },
+  {
+    id: 'moisissure-def',
+    source: 'academie-moisissure',
+    citation:
+      'Champignon microscopique qui se développe, en formant souvent des taches duveteuses, sur des matières organiques humides dont il provoque la décomposition ou la fermentation',
+  },
+  {
+    id: 'microorganisme-def',
+    source: 'academie-micro-organisme',
+    citation: 'Les bactéries, les virus, certains protozoaires sont des microorganismes.',
+  },
+  {
+    id: 'lombric-def',
+    source: 'academie-lombric',
+    citation: "Le lombric contribue à la fertilité du sol en l'aérant par les galeries qu'il y creuse.",
+  },
+  {
+    id: 'lombricomposteur-def',
+    source: 'ecologie-biodechets',
+    citation: 'lombricomposteur (composteur individuel basé sur la digestion de déchets alimentaires par des lombrics)',
+  },
+  {
+    id: 'compost-sol',
+    source: 'ecologie-biodechets',
+    citation:
+      'la valorisation organique via le compostage, l’épandage ou la méthanisation permet de faire retourner au sol ou de transformer des matières organiques brutes en une matière valorisable',
+  },
+  {
+    id: 'action-destruction',
+    source: 'ecologie-biodiversite',
+    citation:
+      'la destruction et la fragmentation des milieux naturels liées, notamment, à l’urbanisation et au développement des infrastructures de transport',
+  },
+  {
+    id: 'action-pollutions',
+    source: 'ecologie-biodiversite',
+    citation: 'les pollutions de l’eau, des sols et de l’air',
+  },
+  {
+    id: 'action-surexploitation',
+    source: 'ecologie-biodiversite',
+    citation: 'la surexploitation d’espèces sauvages : surpêche, déforestation, braconnage, etc.',
+  },
+  {
+    id: 'action-fragmentation',
+    source: 'ecologie-trame-verte',
+    citation:
+      'les infrastructures de transport comme les routes et les voies ferrées, les barrages sur les cours d’eau, l’agriculture et la foresterie intensive, ou encore la pollution lumineuse ou sonore, réduisent la surface des espaces naturels et les fragmentent, limitant ainsi les possibilités de déplacement des espèces.',
+  },
+  {
+    id: 'action-haies',
+    source: 'ecologie-trame-verte',
+    citation:
+      'le maintien et la restauration d’infrastructures agroécologiques, entités favorables au fonctionnement de la trame, tels que les haies, bandes enherbées, bocages, arbres isolés et bosquets, mares, milieux humides, bords des cours d’eau',
+  },
+  {
+    id: 'action-passes',
+    source: 'ecologie-trame-verte',
+    citation:
+      'L’effacement des ouvrages ou leur aménagement, en installant notamment des passes à poissons, permet aux espèces de franchir ces obstacles et d’assurer leur cycle de vie.',
+  },
+  {
+    id: 'action-ville',
+    source: 'ecologie-trame-verte',
+    citation:
+      'le mode de gestion de l’espace est primordial pour favoriser la biodiversité et les continuités écologiques. La gestion différenciée consiste à pratiquer un entretien adapté des espaces verts selon leurs caractéristiques et leurs usages. Arrêter les traitements phytosanitaires, faucher tardivement, planter des essences locales…les actions possibles sont diverses.',
+  },
+  {
+    id: 'action-lumiere',
+    source: 'ecologie-pollution-lumineuse',
+    citation:
+      'Elles sont aussi une source de perturbations pour la biodiversité (modification du système proie-prédateur, perturbation des cycles de reproduction, des migrations…)',
+  },
+  {
+    id: 'action-impermeable',
+    source: 'ecologie-artificialisation',
+    citation: 'un sol imperméabilisé n’absorbe pas l’eau de pluie',
   },
 ];
