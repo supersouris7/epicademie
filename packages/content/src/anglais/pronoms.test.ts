@@ -119,12 +119,37 @@ describe('anglais 6e : les pronoms', () => {
   });
 
   it('pronoms compléments : forme complément après verbe et préposition', () => {
-    const wait = find('a6-pronoms-complements', 4, 'waiting for … (I)');
-    accepts(wait, 'me', 'Me.');
-    refuses(wait, 'I', 'my', 'mine');
+    const wait = find('a6-pronoms-complements', 4, 'This present is for');
+    accepts(wait, 'her', 'Her.');
+    refuses(wait, 'she', 'hers', 'him');
     const her = find('a6-pronoms-complements', 3, '« my sister »');
     accepts(her, 'her');
     refuses(her, 'she', 'him', 'hers');
+  });
+
+  it('pronoms compléments, niveau 4 : référent à déduire, sans pronom sujet fourni', () => {
+    const cases = [
+      ['Ben and I are lost.', 'us'],
+      ['My mum and I', 'us'],
+      ['Lisa is my friend.', 'her'],
+      ['My little sister', 'her'],
+      ['Tom is in the garden.', 'him'],
+      ['My uncle', 'him'],
+      ['This song', 'it'],
+      ['My bag', 'it'],
+      ['The window', 'it'],
+      ['My grandparents', 'them'],
+      ['The twins', 'them'],
+      ['These apples', 'them'],
+    ] as const;
+    const all = questions('a6-pronoms-complements', 4);
+    expect(new Set(all.map((q) => q.prompt)).size).toBe(cases.length);
+    for (const q of all) expect(q.prompt).not.toMatch(/[()]/);
+    for (const [lead, pro] of cases) {
+      const q = find('a6-pronoms-complements', 4, lead);
+      accepts(q, pro);
+      refuses(q, ...['me', 'him', 'her', 'it', 'us', 'them'].filter((p) => p !== pro));
+    }
   });
 
   it('déterminants possessifs : its sans apostrophe, accord avec le possesseur', () => {

@@ -79,6 +79,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'a6-be-ing-futur', version: 1, lot: 'an-6e-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'a6-want-would-like', version: 1, lot: 'an-6e-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'a6-pronoms-sujets', version: 1, lot: 'an-6e-06', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a6-pronoms-complements', version: 1, lot: 'an-6e-06', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'a6-determinants-possessifs', version: 1, lot: 'an-6e-06', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'a6-pronoms-possessifs', version: 1, lot: 'an-6e-06', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'a6-mots-interrogatifs', version: 1, lot: 'an-6e-06', date: '2026-11-26', verdict: 'ok' },

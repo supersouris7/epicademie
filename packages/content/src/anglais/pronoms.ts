@@ -407,30 +407,34 @@ function objectWrite(rng: Rng): QuestionDraft {
   };
 }
 
-/** Niveau 4 : à partir du pronom sujet, après un verbe ou une préposition. */
-const AFTER: readonly (readonly [string, Subject, string])[] = [
-  ['She is waiting for', 'I', '.'],
-  ['Give the ball to', 'he', ', please.'],
-  ['I want to speak to', 'they', '.'],
-  ['Why are you looking at', 'she', '?'],
-  ['Don’t take the bike from', 'we', '.'],
-  ['This present is for', 'he', '.'],
-  ['Come with', 'we', '!'],
-  ['My keys! I can’t find', 'they', '.'],
-  ['Listen to', 'I', ', please.'],
-  ['We saw', 'they', ' in town.'],
-  ['He doesn’t know', 'she', '.'],
+/**
+ * Niveau 4 : aucun pronom n'est donné. Le sujet de la 1re phrase est le référent à reprendre, en entier, après un
+ * verbe ou une préposition de la 2e : [1re phrase, début, fin, pronom sujet correspondant, explication].
+ */
+const CONTEXTS: readonly (readonly [string, string, string, Subject, string])[] = [
+  ['Ben and I are lost.', 'Can you help', ', please?', 'we', '« Ben and I » : un groupe avec la personne qui parle.'],
+  ['My mum and I are in the kitchen.', 'Dad is cooking with', '.', 'we', '« My mum and I » contient « I ».'],
+  ['Lisa is my friend.', 'This present is for', '.', 'she', '« Lisa » est une fille.'],
+  ['My little sister is sad.', 'Let’s read a story to', '.', 'she', '« My little sister » : une seule fille.'],
+  ['Tom is in the garden.', 'Go and play with', '!', 'he', '« Tom » est un garçon.'],
+  ['My uncle is a very funny man.', 'Everybody likes', '.', 'he', '« My uncle » est un homme.'],
+  ['This song is great.', 'Listen to', '!', 'it', '« This song » : une seule chose.'],
+  ['My bag is very heavy.', 'I can’t carry', '.', 'it', '« My bag » : une seule chose.'],
+  ['The window is open.', 'Can you close', ', please?', 'it', '« The window » : une seule chose.'],
+  ['My grandparents live in Wales.', 'We often visit', '.', 'they', '« My grandparents » : plusieurs personnes.'],
+  ['The twins are at the door.', 'Please open the door for', '.', 'they', '« The twins » : deux personnes.'],
+  ['These apples are delicious.', 'Do you want to taste', '?', 'they', '« These apples » : plusieurs choses.'],
 ];
 
-function objectFromSubject(rng: Rng): QuestionDraft {
-  const [before, pro, after] = rng.pick(AFTER);
+function objectContext(rng: Rng): QuestionDraft {
+  const [lead, before, after, pro, why] = rng.pick(CONTEXTS);
   const r = rowOf(pro);
   return {
-    prompt: `Mets le pronom entre parenthèses à la forme qui convient : « ${before} … (${pro})${after} »`,
+    prompt: `Écris le pronom qui manque ; il reprend tout le sujet de la 1re phrase : « ${lead} ${before} …${after} »`,
     answer: { kind: 'text', accepted: ended([r.object]) },
     traps: objectTraps(pro),
-    hint: 'Regarde le mot placé avant le trou : le pronom fait-il l’action, ou la reçoit-il ?',
-    steps: [OBJECT_RULE, WHY_OBJECT_FORM(r), `Réponse : **${before} ${r.object}${after}**`],
+    hint: 'De qui ou de quoi parle la 1re phrase ? Observe ensuite la place du trou : avant ou après le verbe ?',
+    steps: [OBJECT_RULE, why, WHY_OBJECT_FORM(r), `Réponse : **${before} ${r.object}${after}**`],
   };
 }
 
@@ -523,7 +527,7 @@ const objectPronouns: Skill = {
     if (level === 1) return objectSpot(rng);
     if (level === 2) return objectRecognise(rng);
     if (level === 3) return objectWrite(rng);
-    if (level === 4) return objectFromSubject(rng);
+    if (level === 4) return objectContext(rng);
     return objectDocument(rng);
   },
 };
