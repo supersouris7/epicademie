@@ -335,3 +335,39 @@ describe('téléphone (sous 700 px) : des cartes à la place des tableaux', () =
     expect(screen.getByText('Cannot read properties of undefined')).toBeInTheDocument();
   });
 });
+
+describe('administration : connexion et rôles', () => {
+  it('connexion configurée, personne non connectée : bouton « Se connecter »', async () => {
+    renderAdmin({ admin: false, adminSso: true, loggedIn: false });
+    const link = await screen.findByRole('link', { name: 'Se connecter' });
+    expect(link).toHaveAttribute('href', '/api/v1/admin-auth/login');
+  });
+
+  it('lecture seule : ni familles, ni technique, ni montants ; déconnexion proposée', async () => {
+    const { server, user } = renderAdmin({ admin: true, adminSso: true, adminRole: 'lecture', loggedIn: false });
+    expect(await screen.findByText('Marie Dupont · Lecture seule')).toBeInTheDocument();
+    expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual([
+      'Vue d’ensemble',
+      'Signalements',
+      'Notions',
+      'Points faibles',
+    ]);
+    expect(server.calls.map((c) => c.path)).not.toContain('/admin/anomalies');
+    expect(screen.getByRole('button', { name: 'Se déconnecter' })).toBeInTheDocument();
+    await user.click(screen.getByRole('tab', { name: 'Notions' }));
+    const notions = await screen.findByRole('table', { name: 'Notions' });
+    await user.click(within(notions).getAllByRole('button', { name: 'Détail' })[0]!);
+    const row = await screen.findByLabelText(/^Notion /);
+    expect(within(row).queryByRole('button', { name: /Désactiver|Marquer relue/ })).not.toBeInTheDocument();
+  });
+
+  it('modération : familles et anomalies, sans notions ni journal d’audit', async () => {
+    const { user } = renderAdmin({ admin: true, adminRole: 'moderation', loggedIn: false });
+    await user.click(await screen.findByRole('tab', { name: 'Technique' }));
+    const tools = await screen.findByRole('group', { name: 'Outil' });
+    expect(within(tools).getByRole('button', { name: 'Anomalies' })).toBeInTheDocument();
+    expect(within(tools).queryByRole('button', { name: 'Journal d’audit' })).not.toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Familles' })).toBeInTheDocument();
+    expect(screen.queryByRole('tab', { name: 'Notions' })).not.toBeInTheDocument();
+  });
+});

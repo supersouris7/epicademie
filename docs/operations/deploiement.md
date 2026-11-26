@@ -44,7 +44,10 @@ si la base est à jour, avant le redémarrage du serveur).
   min.) et faire ajouter par le frontal de la page de pilotage (port réservé, authentifié) les
   en-têtes `X-Epicademie-Operateur: <secret>` et `X-Epicademie-Operateur-Nom: <identifiant>` ; le frontal
   public doit bloquer `/admin` et `/api/v1/admin` (404) et ne jamais transmettre ces en-têtes reçus
-  d'Internet. Voir [ADR 0033](../adr/0033-administration-par-operateur.md).
+  d'Internet. Voir [ADR 0033](../adr/0033-administration-par-operateur.md). Ce mode est remplacé par la
+  connexion de l'équipe ([ADR 0036](../adr/0036-roles-d-administration-oidc.md),
+  [configuration](configuration.md)) dès que celle-ci est configurée ; le frontal public bloque aussi
+  `/api/v1/admin-auth` et retire les en-têtes `X-Epicademie-Secours*`.
 - **Profils de la bêta** (créés avant les comptes) : conservés en base, sans famille, invisibles
   tant qu'ils ne sont pas rattachés. Après la migration, créer le compte familial depuis
   l'application, puis :

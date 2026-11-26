@@ -17,6 +17,7 @@ import type {
 } from '@epicademie/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
+import type { AdminIdentity } from '../../core/http/admin-identity.ts';
 import { anonymizeText } from '../../core/anonymize.ts';
 import { AppError, badRequest, notFound } from '../../core/errors.ts';
 import { normalizeScreen, normalizeVersion } from '../../core/screen.ts';
@@ -201,7 +202,7 @@ export function createPedagogyService({
     async updateContent(
       skillId: string,
       change: { disabled?: boolean; reviewed?: boolean; note?: string },
-      operator: string,
+      by: AdminIdentity,
     ): Promise<ContentSkill> {
       const skill = getAnySkill(skillId);
       if (!skill) throw notFound('Notion inconnue');
@@ -217,12 +218,13 @@ export function createPedagogyService({
             action: change.disabled ? 'desactivation' : 'reactivation',
             version,
             note,
-            operator,
+            operator: by.name,
+            adminSub: by.sub,
           });
         }
         if (change.reviewed) {
           await r.upsertState(skillId, { reviewedVersion: version }, now);
-          await r.addEvent({ skillId, action: 'relecture', version, note, operator });
+          await r.addEvent({ skillId, action: 'relecture', version, note, operator: by.name, adminSub: by.sub });
         }
       });
       const updated = (await contentList()).find((c) => c.skillId === skillId);

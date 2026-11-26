@@ -45,6 +45,7 @@ et les options écartées. Une ADR acceptée ne se modifie pas : une nouvelle AD
 | [0032](0032-ouverture-de-compte-email-google.md) | Ouverture de compte : e-mail validé par lien ou Google                                        | Proposée            |
 | [0034](0034-contenus-toutes-matieres.md)         | Contenus de toutes les matières : 5 niveaux, nouveaux types de questions, sources, relectures | Acceptée            |
 | [0035](0035-chargement-a-la-demande.md)          | Écrans et contenus chargés à la demande                                                       | Acceptée            |
+| [0036](0036-roles-d-administration-oidc.md)      | Rôles d'administration et connexion de l'équipe (OpenID Connect)                              | Acceptée            |
 
 ## Modèle
 

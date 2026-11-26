@@ -29,7 +29,7 @@ describe('espagnol 5e : le présent des réguliers', () => {
       'e5-present-ir',
     ]);
     const chapter = ESPAGNOL_CHAPTERS.find((c) => c.id === 'e5-present')!;
-    expect(chapter.skills.map((s) => s.id)).toEqual([...skills.map((s) => s.id), 'e5-ser-estar']);
+    expect(chapter.skills).toEqual(skills);
     for (const s of skills) {
       expect(skillLevels(s)).toBe(5);
       expect(s.lesson.sources).toContain('espagnol-college-2025');

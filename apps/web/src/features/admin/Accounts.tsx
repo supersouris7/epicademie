@@ -19,6 +19,7 @@ import {
 } from '@epicademie/shared';
 import { ApiError } from '../../shared/api/client.ts';
 import { useAccount, useAccounts, useAudit, useResetPassword } from './api.ts';
+import { useCan } from './can.ts';
 import { chapterTitle, skillTitle } from './contentLabels.ts';
 import { date, dateTime, labelOf, money, offerLabel, plural, providerLabel } from './labels.ts';
 import {
@@ -260,6 +261,7 @@ function AccountSheet({ id, onBack }: { readonly id: string; readonly onBack: ()
 }
 
 function Sheet({ d }: { readonly d: AccountDetail }) {
+  const can = useCan();
   const a = d.account;
   return (
     <div className="flex flex-col gap-5">
@@ -355,7 +357,7 @@ function Sheet({ d }: { readonly d: AccountDetail }) {
           ))}
         </ul>
       </section>
-      {a.type === 'famille' && <ResetPassword id={a.id} />}
+      {a.type === 'famille' && can('comptes:agir') && <ResetPassword id={a.id} />}
     </div>
   );
 }
@@ -399,13 +401,16 @@ function ResetPassword({ id }: { readonly id: string }) {
 
 type AuditEntry = AuditPage['items'][number];
 
+const openOf = (id: string, onOpen: (id: string) => void) => () => onOpen(id);
+
 /** Nom court du compte, avec lien vers sa fiche s'il existe encore. */
 function AuditAccount({ entry, onOpen }: { readonly entry: AuditEntry; readonly onOpen: (id: string) => void }) {
-  if (!entry.accountExists) return <span className={mutedClass}>{entry.accountLabel}</span>;
+  const id = entry.accountId;
+  if (!entry.accountExists || !id) return <span className={mutedClass}>{entry.accountLabel}</span>;
   return (
     <button
       type="button"
-      onClick={() => onOpen(entry.accountId)}
+      onClick={() => onOpen(id)}
       className="cursor-pointer text-left font-semibold text-pilot-acc underline [overflow-wrap:anywhere]"
     >
       {entry.accountLabel}
@@ -427,7 +432,7 @@ function AuditList({
         {items.map((e) => (
           <li key={e.id}>
             <RowCard
-              onClick={e.accountExists ? () => onOpen(e.accountId) : undefined}
+              onClick={e.accountExists && e.accountId ? openOf(e.accountId, onOpen) : undefined}
               content={{
                 title: AUDIT_ACTION_LABELS[e.action],
                 infos: [e.accountLabel, `${dateTime(e.at)} · ${e.operator}`],
@@ -444,7 +449,7 @@ function AuditList({
         <thead>
           <tr>
             <th className={thClass}>Date</th>
-            <th className={thClass}>Opérateur</th>
+            <th className={thClass}>Par</th>
             <th className={thClass}>Action</th>
             <th className={thClass}>Compte</th>
           </tr>
@@ -466,7 +471,7 @@ function AuditList({
   );
 }
 
-/** Journal d'audit : consultations de fiches et réinitialisations (opérateur, action, compte, date). */
+/** Journal d'audit : consultations de fiches et réinitialisations (par qui, action, compte ou accès, date). */
 export function AuditLog({ onOpen }: { readonly onOpen: (id: string) => void }) {
   const [page, setPage] = useState(0);
   const { data, isPending } = useAudit(page);

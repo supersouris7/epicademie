@@ -18,11 +18,11 @@ const lesson = (memo: readonly string[], detail: string, sources: readonly strin
 });
 
 /** Retire les accents écrits (le ñ est gardé : c'est une autre lettre). */
-const noAccent = (s: string) => s.normalize('NFD').replace(/́/g, '').normalize('NFC');
+export const noAccent = (s: string) => s.normalize('NFD').replace(/́/g, '').normalize('NFC');
 /** Saisie avec ou sans point final. */
-const dotted = (...forms: readonly string[]) => [...new Set(forms.flatMap((f) => [f, `${f}.`]))];
+export const dotted = (...forms: readonly string[]) => [...new Set(forms.flatMap((f) => [f, `${f}.`]))];
 
-const options = (rng: Rng, right: string, wrong: readonly (readonly [string, string])[]) =>
+export const options = (rng: Rng, right: string, wrong: readonly (readonly [string, string])[]) =>
   choice(
     rng,
     right,
@@ -30,7 +30,7 @@ const options = (rng: Rng, right: string, wrong: readonly (readonly [string, str
   );
 
 /** Association : colonne de droite mélangée, jamais dans l'ordre de départ. */
-function matching(rng: Rng, pairs: readonly (readonly [string, string])[]) {
+export function matching(rng: Rng, pairs: readonly (readonly [string, string])[]) {
   const left = pairs.map(([l]) => l);
   const values = pairs.map(([, r]) => r);
   let right = rng.shuffle(values);
@@ -584,7 +584,7 @@ function verbQuestion(g: Group, rng: Rng, level: Level): QuestionDraft {
   };
 }
 
-const capital = (s: string) => s.replace(/\p{L}/u, (c) => c.toUpperCase());
+export const capital = (s: string) => s.replace(/\p{L}/u, (c) => c.toUpperCase());
 
 const verbSkill = (g: Group, id: string, version: number, memo: readonly string[]): Skill => ({
   id,
@@ -619,12 +619,12 @@ const verbsIr = verbSkill('ir', 'e5-present-ir', 1, [
 
 export const PRESENT_SKILLS: readonly Skill[] = [pronouns, verbsAr, verbsEr, verbsIr];
 
-/** Identifiant de chapitre conservé ; « ser et estar » y reste jusqu'à son lot. */
-export const presentChapter = (extra: readonly Skill[]): Chapter => ({
+/** Identifiant de chapitre conservé (« ser » et « estar » ont désormais leur chapitre). */
+export const PRESENT_CHAPTER: Chapter = {
   id: 'e5-present',
   subject: 'espagnol',
   grade: '5e',
   domain: 'langue',
   title: 'Le présent',
-  skills: [...PRESENT_SKILLS, ...extra],
-});
+  skills: PRESENT_SKILLS,
+};
