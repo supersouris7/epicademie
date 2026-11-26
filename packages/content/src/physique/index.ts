@@ -9,10 +9,13 @@ import { conservationTransformation } from './conservation-transformation.ts';
 import { conservationMasse } from './conservation.ts';
 import { conversionsEnergie } from './conversions-energie.ts';
 import { etats } from './etats.ts';
+import { forcesNotion } from './forces.ts';
 import { sourcesFormesEnergie } from './formes-energie.ts';
 import { formulesChimiques } from './formules.ts';
+import { interactionsNotion } from './interactions.ts';
 import { masseVolumique } from './masse-volumique.ts';
 import { corpsPurs } from './melanges.ts';
+import { mouvementForce } from './mouvement-force.ts';
 import { mouvementUniforme } from './mouvement-uniforme.ts';
 import { prefixesSi } from './prefixes.ts';
 import { propagationLumiere } from './propagation-lumiere.ts';
@@ -22,13 +25,13 @@ import { solubiliteNotion } from './solubilite.ts';
 import { trajectoireNotion } from './trajectoire.ts';
 import { transformationChimique } from './transformation.ts';
 import { unitesSi } from './unites.ts';
+import { vitesseCaracteres } from './vitesse-caracteres.ts';
 import { vitesseMoyenne } from './vitesse-moyenne.ts';
 
 /**
  * Physique-chimie, cycle 4 (docs/adr/0024-contenus-hors-maths.md). Sources institutionnelles :
  * - relations au programme : programme de physique-chimie du cycle 4 (BOEN n° 31 du
- *   30 juillet 2020) : relation vitesse–distance–durée (mouvement
- *   uniforme), loi d'Ohm, puissance électrique P = U × I, relation énergie–puissance–durée ;
+ *   30 juillet 2020) : loi d'Ohm, puissance électrique P = U × I, relation énergie–puissance–durée ;
  * - unités : BIPM, Le Système international d'unités (SI), 9e édition, résumé en français
  *   (unités dérivées à nom spécial : ohm = V/A, watt = J/s).
  * Le programme est écrit pour tout le cycle : la répartition 5e / 4e / 3e est un choix de
@@ -37,7 +40,8 @@ import { vitesseMoyenne } from './vitesse-moyenne.ts';
  * (`donnees-matiere.ts`), de même que les chapitres 5e « Mouvement » (`donnees-mouvement.ts`), « Énergie et
  * circuits » (`donnees-energie.ts`) et « Signaux et unités » (`donnees-signaux.ts`, identifiant historique
  * `p5-unites`).
- * Le chapitre 4e « Atomes et transformations » (`donnees-atomes.ts`) suit le même modèle.
+ * Les chapitres 4e « Atomes et transformations » (`donnees-atomes.ts`) et « Mouvement et interactions »
+ * (`donnees-interactions.ts`) suivent le même modèle.
  */
 
 const PROG = 'Physique-chimie, cycle 4 (BOEN n° 31 du 30 juillet 2020)';
@@ -89,28 +93,6 @@ const pair = (rng: Rng, level: Level): [number, number] => {
   const b = rng.int(2, level === 3 ? 60 : 12);
   return [a, b];
 };
-
-const speed = relation({
-  id: 'p4-vitesse',
-  title: 'La vitesse',
-  memo: [
-    'Mouvement uniforme : vitesse = distance ÷ durée (v = d ÷ t).',
-    'En km/h si d est en km et t en h ; en m/s si d est en m et t en s.',
-  ],
-  source: `${PROG} : « Utiliser la relation liant vitesse, distance et durée dans le cas d’un mouvement uniforme ».`,
-  draw: (rng, level) => {
-    const [v, t] = pair(rng, level);
-    const d = v * t;
-    return {
-      prompt: `Un objet parcourt ${d} m en ${t} s à vitesse constante. Quelle est sa vitesse, en m/s ?`,
-      value: r(v),
-      unit: 'm/s',
-      wrong: div(r(t), r(d)),
-      why: 'La vitesse, c’est la distance divisée par la durée (pas l’inverse).',
-      steps: ['v = d ÷ t.', `v = ${d} ÷ ${t} = **${v} m/s**.`],
-    };
-  },
-});
 
 const ohm = relation({
   id: 'p4-loi-ohm',
@@ -212,7 +194,12 @@ export const PHYSIQUE_CHAPTERS: readonly Chapter[] = [
     combustions,
     conservationTransformation,
   ]),
-  chapter('p4-mouvement', '4e', 'La vitesse', [speed]),
+  chapter('p4-mouvement', '4e', 'Mouvement et interactions', [
+    vitesseCaracteres,
+    interactionsNotion,
+    forcesNotion,
+    mouvementForce,
+  ]),
   chapter('p4-electricite', '4e', 'La loi d’Ohm', [ohm]),
   chapter('p3-energie', '3e', 'Puissance et énergie', [power, energy]),
 ];
