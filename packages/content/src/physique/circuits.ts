@@ -236,7 +236,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     hint: 'Commence par la situation dangereuse, puis cherche s’il reste un chemin fermé.',
     steps: [
       'Chaque situation se juge au chemin qui reste au courant.',
-      `Réponse : **${cinq.map((p) => p[1].toLowerCase()).join(' ; ')}**.`,
+      `Réponse : **${cinq.map((p) => `${p[0]} → ${p[1].toLowerCase()}`).join(' ; ')}**.`,
     ],
     targetSeconds: 80,
   };

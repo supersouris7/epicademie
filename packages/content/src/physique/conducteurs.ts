@@ -56,7 +56,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
       prompt: `Quatre matériaux : un seul est ${cherche === 'conducteur' ? 'un conducteur' : 'un isolant'} de l’électricité. Lequel ?`,
       answer,
       traps: t,
-      hint: 'Les métaux conduisent généralement bien ; le verre et le caoutchouc, non.',
+      hint: 'Pense au test de la lampe : un seul de ces matériaux se comporte autrement que les trois autres.',
       steps: [regle(bon), `Réponse : **${bon}**.`],
       targetSeconds: 30,
     };
@@ -110,10 +110,9 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   const cas = rng.int(0, 2);
   if (cas === 0) {
     const ame = rng.pick(['cuivre', 'argent'] as const);
-    const gaine = rng.pick(['caoutchouc', 'ébonite'] as const);
     const roles = rng.shuffle(['conducteur', 'isolant']);
     return {
-      prompt: `Un fil électrique a une âme en ${ame} entourée d’une gaine en ${gaine}. Complète la description.`,
+      prompt: `Un fil électrique a une âme (partie centrale) en ${ame} entourée d’une gaine (enveloppe) en caoutchouc. Complète la description.`,
       answer: {
         kind: 'cloze',
         parts: ['L’âme est un ', ', car le courant doit y passer. La gaine est un ', ' : elle protège du contact.'],
@@ -131,8 +130,9 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     };
   }
   if (cas === 1) {
-    const cons = rng.shuffle(CONDUCTEURS).slice(0, 2);
-    const isos = rng.shuffle(ISOLANTS).slice(0, 3);
+    const nb = rng.int(1, 3);
+    const cons = rng.shuffle(CONDUCTEURS).slice(0, nb);
+    const isos = rng.shuffle(ISOLANTS).slice(0, 5 - nb);
     const mats: string[] = [...cons, ...isos];
     const test = (m: string) => (familleDe(m) === 'conducteur' ? 'la lampe brille' : 'la lampe reste éteinte');
     return {
@@ -150,6 +150,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   const { answer, traps: t } = saisie(
     ['graphite', 'le graphite'],
     [
+      ['charbon', '« Charbon » désigne ici une pièce : écris le nom du matériau qui la compose.'],
       ['cuivre', 'Le cuivre conduit, mais c’est un métal.'],
       ['verre', 'Le verre est un isolant.'],
       ['caoutchouc', 'Le caoutchouc est un isolant.'],
@@ -160,7 +161,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     prompt: `${debut} que seuls les métaux conduisent le courant. Quel matériau non métallique, vu dans le cours, prouve le contraire ? Écris son nom.`,
     answer,
     traps: t,
-    hint: 'On l’appelle parfois « charbon » dans certains appareils électriques.',
+    hint: 'Cherche dans le mémo le conducteur qui n’est pas rangé parmi les métaux : son nom commence par « g ».',
     steps: ['Le graphite est utilisé comme conducteur alors qu’il n’est pas un métal.', 'Réponse : **graphite**.'],
     targetSeconds: 60,
   };

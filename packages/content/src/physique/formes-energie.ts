@@ -159,7 +159,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     {
       source: 'le Soleil',
       forme: 'lumineuse' as const,
-      texte: 'La lumière du Soleil arrive sur un panneau photovoltaïque.',
+      texte: 'La lumière du Soleil arrive sur un panneau solaire.',
     },
     {
       source: 'l’uranium',
@@ -177,7 +177,9 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       texte: 'Du charbon est brûlé dans une chaudière.',
     },
   ]);
-  const formes = rng.shuffle([cas.forme, ...rng.shuffle(CLES.filter((x) => x !== cas.forme)).slice(0, 2)]);
+  // Jamais « thermique » en leurre : un combustible ou l’uranium fournissent aussi de la chaleur.
+  const leurres = rng.shuffle(CLES.filter((x) => x !== cas.forme && x !== 'thermique')).slice(0, 2);
+  const formes = rng.shuffle([cas.forme, ...leurres]);
   const sources = rng.shuffle(['le vent', 'le Soleil', 'l’uranium', 'le pétrole', 'le charbon']);
   const options = rng.shuffle([cas.source, ...sources.filter((s) => s !== cas.source).slice(0, 2)]);
   return {
@@ -206,7 +208,11 @@ const EQUIPEMENTS: readonly { ligne: string; source: string; famille: 'renouvela
   { ligne: 'un système utilise la chaleur de la Terre', source: 'la chaleur de la Terre', famille: 'renouvelable' },
   { ligne: 'une chaudière brûle du gaz naturel', source: 'le gaz naturel', famille: 'fossile' },
   { ligne: 'un poêle brûle du charbon', source: 'le charbon', famille: 'fossile' },
-  { ligne: 'un groupe électrogène brûle un carburant tiré du pétrole', source: 'le pétrole', famille: 'fossile' },
+  {
+    ligne: 'un groupe électrogène (appareil qui produit du courant) brûle un carburant tiré du pétrole',
+    source: 'le pétrole',
+    famille: 'fossile',
+  },
 ];
 
 const niveau5 = (rng: Rng): QuestionDraft => {
@@ -249,8 +255,8 @@ export const sourcesFormesEnergie: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'Une **source d’énergie** est ce dont on tire de l’énergie : **renouvelable** (Soleil, vent, chutes d’eau, marées, chaleur de la Terre) ou **fossile** (pétrole, charbon, gaz naturel).',
-      'Les formes : **énergie cinétique** (mouvement), **énergie potentielle** (position), **énergie thermique**, **énergie électrique**, **énergie chimique** (réserve dans la matière), **énergie nucléaire** (uranium) et **énergie lumineuse**.',
+      'Une **source d’énergie** est ce dont on tire de l’énergie. Elle peut être **renouvelable** (Soleil, vent, chutes d’eau, marées, chaleur de la Terre) ou non ; les sources **fossiles** (pétrole, charbon, gaz naturel) ne le sont pas.',
+      'Les formes : **énergie cinétique** (mouvement), **énergie potentielle** (position), **énergie thermique** (chaleur), **énergie électrique** (courant), **énergie chimique** (réserve dans la matière), **énergie nucléaire** (uranium) et **énergie lumineuse** (lumière).',
       'Exemple : le vent est une source ; l’air en mouvement possède de l’énergie cinétique.',
     ],
     ...referencesEnergie(

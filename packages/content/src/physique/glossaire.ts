@@ -280,4 +280,11 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'Effet, qui peut être mortel, du courant électrique sur le corps.',
     'Toucher un fil dénudé du secteur peut provoquer une électrocution.',
   ),
+  terme(
+    'photopile',
+    'photopile',
+    ['photopile', 'photopiles'],
+    'Dispositif qui transforme la lumière du Soleil en électricité.',
+    'Une photopile éclairée peut faire tourner un petit moteur.',
+  ),
 ];

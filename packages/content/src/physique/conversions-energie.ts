@@ -50,8 +50,8 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     {
       label: `Énergie ${autre}`,
       why: entree
-        ? `C’est l’énergie fournie par ${c.nom}, pas celle qu’il reçoit.`
-        : `C’est l’énergie reçue par ${c.nom}, pas celle qu’il fournit.`,
+        ? `C’est l’énergie fournie par ${c.nom}, pas celle du départ.`
+        : `C’est l’énergie du départ dans ${c.dans}, pas celle qui est fournie.`,
     },
     {
       label: `Énergie ${leurre}`,
@@ -60,11 +60,11 @@ const niveau1 = (rng: Rng): QuestionDraft => {
   ]);
   return {
     prompt: entree
-      ? `Quelle forme d’énergie est convertie dans ${c.dans} (celle qu’on lui apporte) ?`
+      ? `Dans ${c.dans}, quelle forme d’énergie est convertie (celle du départ) ?`
       : `Quelle forme d’énergie utile fournit ${c.nom} ?`,
     answer,
     traps: t,
-    hint: 'Un convertisseur reçoit une forme d’énergie et en fournit une autre : repère l’entrée et la sortie.',
+    hint: 'Un convertisseur part d’une forme d’énergie et en fournit une autre : repère le départ et l’arrivée.',
     steps: [`Dans ${c.dans} : ${conversion(c)}.`, `Réponse : **énergie ${bon}**.`],
     targetSeconds: 30,
   };
@@ -122,7 +122,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
         { mode: 'text', accepted: [c.sortie, sansAccent(c.sortie)] },
       ],
     },
-    hint: 'Premier trou : ce que le dispositif reçoit. Second trou : ce qu’il fournit.',
+    hint: 'Premier trou : l’énergie de départ. Second trou : l’énergie fournie.',
     steps: [
       `On repère l’entrée puis la sortie : ${conversion(c)}.`,
       `Réponse : **${c.entree}**, puis **${c.sortie}**.`,
@@ -175,7 +175,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       prompt: 'Parmi ces dispositifs, lequel émet du dioxyde de carbone pendant son fonctionnement ?',
       answer,
       traps: t,
-      hint: 'Cherche celui qui brûle un combustible, comme le gaz ou un carburant tiré du pétrole.',
+      hint: 'Cherche le dispositif qui brûle un combustible.',
       steps: [
         'La combustion de gaz ou de pétrole libère du dioxyde de carbone.',
         `Réponse : **${bon.toLowerCase()}**.`,
@@ -284,7 +284,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       [
         {
           label: `énergie ${premier.sortie} → énergie ${premier.entree} → énergie ${second.sortie}`,
-          why: `La première conversion est inversée : ${premier.nom} reçoit de l’énergie ${premier.entree}.`,
+          why: `La première conversion est inversée : avec ${premier.nom}, on part de l’énergie ${premier.entree}.`,
         },
         {
           label: `énergie ${second.sortie} → énergie ${premier.sortie} → énergie ${premier.entree}`,
@@ -311,18 +311,18 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     };
   }
   const { answer, traps: t } = saisie(variantes(premier.entree), [
-    [premier.sortie, `C’est l’énergie fournie par ${premier.nom}, pas celle qu’il reçoit.`],
+    [premier.sortie, `C’est l’énergie fournie par ${premier.nom}, pas celle du départ.`],
     [second.sortie, 'C’est l’effet obtenu à la fin de la chaîne, pas l’énergie de départ.'],
   ]);
   return {
-    prompt: `Lis la description. Quelle forme d’énergie reçoit le premier convertisseur (écris l’adjectif) ?`,
+    prompt: `Lis la description. Quelle forme d’énergie le premier convertisseur transforme-t-il (écris l’adjectif) ?`,
     figure: { kind: 'document', title: 'Montage (situation inventée)', lines: m.lignes },
     answer,
     traps: t,
     hint: 'Repère d’abord le premier dispositif qui change la forme de l’énergie, puis ce qui lui arrive.',
     steps: [
       `Le premier convertisseur est ${premier.nom} : ${conversion(premier)}.`,
-      `Il reçoit de l’**énergie ${premier.entree}**.`,
+      `Il part de l’**énergie ${premier.entree}**.`,
     ],
     targetSeconds: 80,
   };
@@ -335,7 +335,7 @@ export const conversionsEnergie: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'Une **conversion d’énergie** change la forme de l’énergie : une lampe reçoit de l’**énergie électrique** et fournit de l’**énergie lumineuse**.',
+      'Une **conversion d’énergie** change la forme de l’énergie : une lampe reçoit de l’**énergie électrique** et fournit de l’**énergie lumineuse**. L’appareil qui fait ce changement est un convertisseur ; une **photopile**, par exemple, transforme la lumière du Soleil en électricité.',
       'Convertir n’est pas transférer : l’énergie électrique sert à un transfert, un fil la transporte jusqu’à la lampe sans changer sa forme.',
       'Brûler du gaz ou un carburant tiré du pétrole émet du **dioxyde de carbone**.',
     ],
