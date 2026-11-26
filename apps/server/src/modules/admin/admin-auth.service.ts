@@ -9,7 +9,8 @@ import type { OidcIdentity } from './oidc.ts';
 
 /**
  * Sessions d'administration (docs/adr/0036-…) : courtes, en base (empreinte du jeton seulement),
- * rôle relu à chaque connexion. Connexions, refus et requêtes de secours sont tracés.
+ * rôle relu à chaque connexion. Connexions, déconnexions, refus et requêtes de
+ * secours sont tracés.
  */
 
 export const ADMIN_SESSION_MS = 12 * 3_600_000;
@@ -60,8 +61,19 @@ export function createAdminAuthService({ db, clock }: { db: Db; clock: Clock }) 
       return { name: session.name, role: session.role, sub: session.sub, via: 'sso' };
     },
 
+    /** Ferme la session ; tracée seulement si elle existait encore. */
     async logout(token: string): Promise<void> {
-      await db.delete(adminSessions).where(eq(adminSessions.tokenHash, tokenHash(token)));
+      const [session] = await db
+        .delete(adminSessions)
+        .where(eq(adminSessions.tokenHash, tokenHash(token)))
+        .returning();
+      if (!session) return;
+      await db.insert(adminAccessEvents).values({
+        at: clock.now(),
+        operator: session.name,
+        adminSub: session.sub,
+        action: 'deconnexion',
+      });
     },
 
     async traceRescue(admin: AdminIdentity, request: string): Promise<void> {

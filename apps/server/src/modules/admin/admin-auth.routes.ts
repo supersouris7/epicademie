@@ -94,13 +94,14 @@ export function adminAuthRoutes(service: AdminAuthService, sso: AdminSso | null)
   return async (app: FastifyInstance) => {
     route(app, api.adminAuthConfig, async () => ({ sso: sso !== null }));
     route(app, api.adminLogout, async ({ request, reply }) => {
-      if (!sso) return;
+      if (!sso) return { redirect: null };
       if (!request.headers.origin || !onAdminOrigin(request, sso.origin)) {
         throw new AppError('FORBIDDEN', 'Origine de la requête refusée.');
       }
       const token = readCookie(request.headers.cookie, ADMIN_COOKIE);
       if (token) await service.logout(token);
       reply.header('set-cookie', cookie(ADMIN_COOKIE, '', 0));
+      return { redirect: await sso.oidc.logoutUrl(`${sso.origin}/admin`) };
     });
     if (sso) redirections(app, service, sso);
   };

@@ -25,6 +25,8 @@ export const AdminSessionSchema = z.object({
 export type AdminSession = z.infer<typeof AdminSessionSchema>;
 
 export const AdminAuthConfigSchema = z.object({ sso: z.boolean() });
+/** Après la déconnexion : adresse du fournisseur qui ferme sa session (`null` : sans fournisseur). */
+export const AdminLogoutSchema = z.object({ redirect: z.url().nullable() });
 
 export const ACCOUNT_TYPES = ['tous', 'famille', 'autonome'] as const;
 export const ACCOUNT_STATES = ['tous', 'verifie', 'non-verifie', 'abonne'] as const;
@@ -156,11 +158,12 @@ export type TemporaryPassword = z.infer<typeof TemporaryPasswordSchema>;
 
 export const AuditSearchSchema = z.object({ page: z.number().int().min(0).max(ADMIN_MAX_PAGE).default(0) });
 /** Accès à l'administration, sans compte de jeu visé. */
-export const ACCESS_ACTIONS = ['connexion', 'refus-de-role', 'secours'] as const;
+export const ACCESS_ACTIONS = ['connexion', 'deconnexion', 'refus-de-role', 'secours'] as const;
 export type AccessAction = (typeof ACCESS_ACTIONS)[number];
 export const AUDIT_ACTIONS = ['consultation', 'reinitialisation-mot-de-passe', ...ACCESS_ACTIONS] as const;
 export const AUDIT_ACTION_LABELS = {
   connexion: 'Connexion à l’administration',
+  deconnexion: 'Déconnexion de l’administration',
   'refus-de-role': 'Connexion refusée (aucun rôle)',
   secours: 'Accès de secours',
   consultation: 'Consultation de la fiche',

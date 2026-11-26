@@ -41,6 +41,10 @@ abonnements. La fiche d'un compte (réservée à `comptes:lire`) garde son histo
   plus. Rôle relu à chaque connexion ; une connexion avec un autre rôle, ou sans rôle, ferme les
   sessions précédentes de la personne. Un retrait de groupe prend donc effet à la reconnexion,
   au plus tard à l'expiration.
+- **Déconnexion** : la session de l'application est fermée et le cookie effacé, puis le navigateur est
+  envoyé chez le fournisseur : `end_session_endpoint` de la découverte (RP-Initiated Logout, avec
+  `client_id` et `post_logout_redirect_uri`) s'il l'annonce, sinon `<OIDC_ISSUER>/logout?rd=` (cas
+  d'Authelia 4.39). Retour sur `<ADMIN_ORIGIN>/admin`, à autoriser chez le fournisseur.
 - **Site distinct** : cookie `__Host-epicademie_admin` (Secure, HttpOnly, SameSite=Lax pour le retour
   du fournisseur). Connexion, retour, déconnexion et session ne sont acceptés que si `Host` (et
   `Origin` s'il est présent) correspondent à `ADMIN_ORIGIN` ; `Origin` est obligatoire pour écrire.
@@ -50,8 +54,8 @@ abonnements. La fiche d'un compte (réservée à `comptes:lire`) garde son histo
 - **Accès de secours** : désactivé par défaut ; actif seulement si `ADMIN_SECOURS_SECRET` (32
   caractères min.) est défini. En-têtes `X-Epicademie-Secours` et `-Nom`, rôle propriétaire, limité à
   `ADMIN_ORIGIN` s'il est défini ; chaque requête est inscrite au journal.
-- **Journal** : `admin_audit` et `content_events` gagnent `admin_sub` ; connexions, refus de rôle et
-  requêtes de secours vont dans `admin_access_events`, affichés avec le reste du journal.
+- **Journal** : `admin_audit` et `content_events` gagnent `admin_sub` ; connexions, déconnexions, refus de rôle
+  et requêtes de secours vont dans `admin_access_events`, affichés avec le reste du journal.
 - **Base** : migration 0027, ajouts seuls ; retour arrière écrit en tête du fichier et testé.
 
 ## Conséquences
