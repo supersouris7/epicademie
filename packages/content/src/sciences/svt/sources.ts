@@ -209,7 +209,6 @@ export const SOURCES: readonly Source[] = [
   academie('croute', 'croûte'),
   academie('plaque', 'plaque'),
   academie('rift', 'rift'),
-  academie('orogenese', 'orogenèse'),
   academie('sediment', 'sédiment'),
   academie('sedimentaire', 'sédimentaire'),
   academie('magmatique', 'magmatique'),

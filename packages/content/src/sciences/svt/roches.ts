@@ -16,6 +16,13 @@ const FORMATION: Readonly<Record<Famille, string>> = {
   métamorphique: 'résulte d’une transformation à l’état solide, sous l’effet de la pression et de la température',
 };
 
+/** Pourquoi : le mot qui trahit chaque famille. */
+const REPERES: Readonly<Record<Famille, string>> = {
+  sédimentaire: 'Les mots « dépôt » et « couches » signent une roche sédimentaire.',
+  magmatique: 'Le mot « magma » (roche fondue) signe une roche magmatique.',
+  métamorphique: 'La roche change sans fondre : « méta-morphose » veut dire changement de forme.',
+};
+
 const familleQcm = (rng: Rng, f: Famille, seconds: number) =>
   qcm(
     rng,
@@ -24,7 +31,7 @@ const familleQcm = (rng: Rng, f: Famille, seconds: number) =>
       bonne: f,
       fausses: FAMILLES.filter((x) => x !== f).map((x) => [x, `Une roche ${x} ${FORMATION[x]}.`]),
       indice: 'Dépôt, fusion puis refroidissement, ou transformation sans fondre ?',
-      explication: [`La famille se déduit du mode de formation : ici, la roche ${FORMATION[f]}.`],
+      explication: [`La famille se déduit du mode de formation : ici, la roche ${FORMATION[f]}.`, REPERES[f]],
     },
     seconds,
   );
@@ -115,23 +122,38 @@ const SAISIES: readonly {
   readonly t: Terme;
   readonly accepted: readonly string[];
   readonly erreurs: readonly Terme[];
+  /** Réponse juste mais trop large ou trop précise : explication propre. */
+  readonly autres?: readonly (readonly [string, string])[];
 }[] = [
   { t: 'sédimentaire', accepted: variantes('sédimentaire', 'une roche', 'roche'), erreurs: ['métamorphique'] },
   {
     t: 'magmatique',
     accepted: variantes('magmatique', 'une roche', 'roche'),
     erreurs: ['métamorphique', 'sédimentaire'],
+    autres: [['volcanique', '« volcanique » ne désigne qu’une partie des roches issues d’un magma.']],
   },
   { t: 'métamorphique', accepted: variantes('métamorphique', 'une roche', 'roche'), erreurs: ['magmatique'] },
-  { t: 'plutonique', accepted: variantes('plutonique', 'une roche', 'roche'), erreurs: ['volcanique'] },
-  { t: 'volcanique', accepted: variantes('volcanique', 'une roche', 'roche'), erreurs: ['plutonique'] },
-  { t: 'strate', accepted: variantes('strate', 'une', 'la'), erreurs: [] },
+  {
+    t: 'plutonique',
+    accepted: variantes('plutonique', 'une roche', 'roche'),
+    erreurs: ['volcanique'],
+    autres: [['magmatique', 'C’est bien une roche magmatique, mais on attend l’adjectif plus précis.']],
+  },
+  {
+    t: 'volcanique',
+    accepted: variantes('volcanique', 'une roche', 'roche'),
+    erreurs: ['plutonique'],
+    autres: [['magmatique', 'C’est bien une roche magmatique, mais on attend l’adjectif plus précis.']],
+  },
+  { t: 'strate', accepted: [...variantes('strate', 'une', 'la'), 'strates', 'des strates'], erreurs: [] },
 ];
 
 interface Echantillon {
   readonly indices: string;
   readonly nom: string;
   readonly famille: Famille;
+  /** L’observation décisive. */
+  readonly pourquoi: string;
 }
 
 const ECHANTILLONS: readonly Echantillon[] = [
@@ -139,18 +161,31 @@ const ECHANTILLONS: readonly Echantillon[] = [
     indices: 'gros cristaux de quartz, de feldspath et de mica serrés sans espace',
     nom: 'granite',
     famille: 'magmatique',
+    pourquoi: 'De gros cristaux serrés montrent un magma refroidi lentement en profondeur : c’est le granite.',
   },
   {
     indices: 'roche sombre à pâte compacte, sans grains visibles, près d’un volcan',
     nom: 'basalte',
     famille: 'magmatique',
+    pourquoi: 'Une pâte sombre sans grains visibles montre une lave refroidie vite en surface : c’est le basalte.',
   },
-  { indices: 'grains de sable collés par un ciment, disposés en couches', nom: 'grès', famille: 'sédimentaire' },
-  { indices: 'roche blanche et friable formée de minuscules coquilles', nom: 'craie', famille: 'sédimentaire' },
+  {
+    indices: 'grains de sable collés par un ciment, disposés en couches',
+    nom: 'grès',
+    famille: 'sédimentaire',
+    pourquoi: 'Un sable déposé en couches puis cimenté donne le grès.',
+  },
+  {
+    indices: 'roche blanche et friable (elle s’effrite) formée de minuscules coquilles',
+    nom: 'craie',
+    famille: 'sédimentaire',
+    pourquoi: 'Une accumulation de minuscules coquilles donne une roche blanche et tendre : la craie.',
+  },
   {
     indices: 'lits clairs et lits sombres alternés, minéraux transformés sans fusion',
     nom: 'gneiss',
     famille: 'métamorphique',
+    pourquoi: 'Des lits clairs et sombres formés sans fusion sont la marque du gneiss.',
   },
 ];
 
@@ -183,7 +218,7 @@ function appliquer(rng: Rng): QuestionDraft {
         kind: 'cloze',
         parts: ['Les cristaux sont ', ' et la roche est dite ', '.'],
         blanks: [
-          { mode: 'list', options: ['gros', 'invisibles à l’œil nu'], correct: lente ? 0 : 1 },
+          { mode: 'list', options: ['gros', 'très petits ou invisibles'], correct: lente ? 0 : 1 },
           { mode: 'list', options: ['plutonique', 'volcanique', 'sédimentaire'], correct: lente ? 0 : 1 },
         ],
       },
@@ -191,7 +226,7 @@ function appliquer(rng: Rng): QuestionDraft {
       steps: [
         lente
           ? 'Un refroidissement lent laisse les cristaux grandir.'
-          : 'Un refroidissement brutal fige la pâte sans cristaux visibles.',
+          : 'Un refroidissement brutal ne laisse pas aux cristaux le temps de grandir.',
         `La roche est **${lente ? 'plutonique' : 'volcanique'}**.`,
       ],
       targetSeconds: 35,
@@ -235,7 +270,7 @@ function carnet(rng: Rng): QuestionDraft {
         bonne: e.nom,
         fausses: autres.map((a) => [a.nom, `On attendrait plutôt : ${a.indices}.`]),
         indice: 'Relis l’aspect des grains : cristaux, grains collés, coquilles ou lits ?',
-        explication: [`Les observations (${e.indices}) orientent vers cette roche.`],
+        explication: [e.pourquoi],
       },
       55,
     );
@@ -256,7 +291,7 @@ function carnet(rng: Rng): QuestionDraft {
         `Cette histoire donnerait une roche ${x}.`,
       ]),
       indice: 'Identifie d’abord la famille de la roche.',
-      explication: [`Cet échantillon est une roche ${e.famille} : elle ${FORMATION[e.famille]}.`],
+      explication: [e.pourquoi, `C’est donc une roche ${e.famille} : elle ${FORMATION[e.famille]}.`],
     },
     55,
   );
@@ -366,7 +401,7 @@ export const roches: Skill = {
         {
           prompt: `Comment nomme-t-on ${DEFS[s.t]} ? Écris l’adjectif.`,
           accepted: s.accepted,
-          erreurs: s.erreurs.map((e) => [e, `« ${e} » désigne ${DEFS[e]}.`]),
+          erreurs: [...s.erreurs.map((e) => [e, `« ${e} » désigne ${DEFS[e]}.`] as const), ...(s.autres ?? [])],
           indice: 'Pense à la manière dont la roche s’est formée.',
           explication: `La définition décrit ${DEFS[s.t]}.`,
         },

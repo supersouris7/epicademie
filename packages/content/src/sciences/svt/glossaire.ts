@@ -659,6 +659,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'Des séismes se produisent dans les zones de subduction.',
   },
   {
+    id: 'sv-rift',
+    word: 'rift',
+    forms: ['rift', 'rifts'],
+    definition: 'Région longue et étroite où la lithosphère amincie se casse en failles et en fossés.',
+    example: 'Un rift traverse l’est de l’Afrique.',
+  },
+  {
     id: 'sv-collision',
     word: 'collision',
     forms: ['collision'],

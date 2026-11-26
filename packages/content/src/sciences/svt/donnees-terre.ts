@@ -109,11 +109,6 @@ export const FAITS_TERRE: readonly Fait[] = [
     'academie-rift',
     'Région longue et étroite dans laquelle l’amincissement de la lithosphère provoque la formation de failles et de fossés d’effondrement.',
   ),
-  f(
-    'orogenese',
-    'academie-orogenese',
-    'Ensemble des processus qui provoquent la formation des reliefs d’une chaîne de montagnes',
-  ),
 
   // Roches.
   f(

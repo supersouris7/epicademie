@@ -20,6 +20,19 @@ const DEFS = {
 type Terme = keyof typeof DEFS;
 const TERMES = Object.keys(DEFS) as Terme[];
 
+/** Pourquoi : le repère à retenir pour chaque terme. */
+const REPERES: Readonly<Record<Terme, string>> = {
+  croûte: 'Repère : c’est la couche sur laquelle nous vivons, au-dessus du Moho.',
+  manteau:
+    'Repère : il est sous la croûte et entoure le noyau ; ses roches sont solides, ce n’est pas un océan de magma.',
+  noyau: 'Repère : il occupe le centre, sous le manteau.',
+  'noyau externe': 'Repère : c’est la partie liquide et métallique du noyau, qui entoure la graine.',
+  graine: 'Repère : elle est tout au centre et, contrairement au noyau externe, elle est solide.',
+  lithosphère: 'Repère : « rigide » est le mot clé ; elle comprend la croûte et le haut du manteau.',
+  asthénosphère: 'Repère : « déformable » est le mot clé ; elle est juste sous la lithosphère.',
+  Moho: 'Repère : ce n’est pas une couche mais une limite, au bas de la croûte.',
+};
+
 const INDICE = 'Demande-toi si l’on parle d’une couche (laquelle, à quelle profondeur) ou d’une limite.';
 
 /** Niveau 1 : trois couches très différentes. */
@@ -32,6 +45,8 @@ const SAISIES: readonly {
   readonly t: Terme;
   readonly accepted: readonly string[];
   readonly erreurs: readonly (readonly [string, Terme])[];
+  /** Définition propre à la saisie, quand celle des QCM contient déjà une réponse acceptée. */
+  readonly def?: string;
 }[] = [
   { t: 'lithosphère', accepted: variantes('lithosphère', 'la'), erreurs: [['asthénosphère', 'asthénosphère']] },
   {
@@ -50,7 +65,10 @@ const SAISIES: readonly {
   {
     t: 'graine',
     accepted: [...variantes('graine', 'la'), 'noyau interne', 'le noyau interne'],
-    erreurs: [['noyau externe', 'noyau externe']],
+    erreurs: [
+      ['noyau externe', 'noyau externe'],
+      ['noyau', 'noyau'],
+    ],
   },
   {
     t: 'Moho',
@@ -59,6 +77,7 @@ const SAISIES: readonly {
   },
   {
     t: 'croûte',
+    def: 'la couche solide la plus superficielle du globe, située au-dessus du Moho',
     accepted: [
       ...variantes('croûte', 'la'),
       ...variantes('croûte terrestre', 'la'),
@@ -70,7 +89,7 @@ const SAISIES: readonly {
 
 /** Indices indirects (profondeur, état, mouvement) : différents des définitions des niveaux 1 à 4. */
 const POINTS: readonly (readonly [string, Terme])[] = [
-  ['des roches solides animées de lents mouvements de convection, sous le Moho', 'manteau'],
+  ['des roches solides qui bougent très lentement (convection), sous le Moho', 'manteau'],
   ['du fer et du nickel fondus, vers 3 500 km de profondeur', 'noyau externe'],
   ['du métal solide, entouré de toutes parts par du métal liquide', 'graine'],
   ['des roches situées juste au-dessus du Moho', 'croûte'],
@@ -90,7 +109,7 @@ function carnet(rng: Rng): QuestionDraft {
         bonne: terme,
         fausses: autres.slice(0, 3).map((a) => [a, `${a.charAt(0).toUpperCase()}${a.slice(1)} : ${DEFS[a]}.`]),
         indice: 'Repère deux informations : solide ou liquide, et position par rapport au centre.',
-        explication: [`La description correspond à ${DEFS[terme]}.`],
+        explication: [`La description correspond à ${DEFS[terme]}.`, REPERES[terme]],
       },
       45,
     );
@@ -124,7 +143,7 @@ function carnet(rng: Rng): QuestionDraft {
     figure: document(`Forage imaginaire : ${forage}`, [
       `Projet « ${forage} » (inventé) : forer sous le fond d’un océan.`,
       'Les premiers kilomètres traversent les roches de la croûte océanique.',
-      'Le trépan atteint ensuite la limite appelée Moho et la dépasse.',
+      'L’outil de forage atteint ensuite la limite appelée Moho et la dépasse.',
     ]),
   };
 }
@@ -163,6 +182,7 @@ export const structureGlobe: Skill = {
           t,
           SIMPLES.filter((x) => x !== t),
           INDICE,
+          REPERES[t],
         ),
         25,
       );
@@ -171,7 +191,7 @@ export const structureGlobe: Skill = {
       if (rng.int(0, 1) === 0) {
         const t = rng.pick(TERMES.filter((x) => x !== 'noyau'));
         const autres = rng.shuffle(TERMES.filter((x) => x !== t && x !== 'noyau')).slice(0, 3);
-        return qcm(rng, termeQcm(DEFS, t, autres, INDICE), 35);
+        return qcm(rng, termeQcm(DEFS, t, autres, INDICE, REPERES[t]), 35);
       }
       const termes = rng.shuffle(TERMES.filter((x) => x !== 'noyau')).slice(0, 3);
       return associer(
@@ -192,12 +212,14 @@ export const structureGlobe: Skill = {
         const vers = rng.int(0, 1) === 0;
         const suite = vers ? couches : [...couches].reverse();
         return {
-          prompt: `Range ces parties du globe ${vers ? 'de la surface vers le centre' : 'du centre vers la surface'} (${forme === 0 ? 'composition' : 'comportement des enveloppes'}).`,
+          prompt: `Range ces parties du globe ${vers ? 'de la surface vers le centre' : 'du centre vers la surface'} (${forme === 0 ? 'd’après leur nature' : 'd’après leur rigidité'}).`,
           answer: ordre(rng, suite),
-          hint: 'La croûte et la lithosphère sont en haut ; la graine est au centre.',
+          hint: 'Imagine un forage : qu’est-ce que tu traverses en premier sous tes pieds ?',
           steps: [
-            'On suit un rayon du globe, couche après couche.',
-            `Ordre attendu, dernière position : **${suite[suite.length - 1]}**.`,
+            forme === 0
+              ? 'Repère : les roches (croûte puis manteau) sont à l’extérieur ; le métal, liquide puis solide, est au cœur.'
+              : 'L’enveloppe rigide est en surface et repose sur la couche déformable ; le noyau est bien plus profond.',
+            `Ordre attendu : **${suite.join(' → ')}**.`,
           ],
           targetSeconds: 50,
         };
@@ -231,7 +253,7 @@ export const structureGlobe: Skill = {
             { mode: 'list', options: ['atmosphère', 'asthénosphère', 'écorce'], correct: 1 },
           ],
         },
-        hint: 'La première commence par « litho- » (pierre), la seconde est dessous.',
+        hint: 'La couche rigide porte un nom construit sur le mot grec qui veut dire « pierre ».',
         steps: [
           'La lithosphère est rigide ; la couche sur laquelle elle repose se déforme.',
           'La **lithosphère** repose sur l’**asthénosphère**.',
@@ -260,11 +282,11 @@ export const structureGlobe: Skill = {
       const s = rng.pick(SAISIES);
       return ecrire(
         {
-          prompt: `Écris le terme qui désigne ${DEFS[s.t]}.`,
+          prompt: `Écris le terme qui désigne ${s.def ?? DEFS[s.t]}.`,
           accepted: s.accepted,
           erreurs: s.erreurs.map(([texte, cle]) => [texte, `« ${texte} » désigne ${DEFS[cle]}.`]),
           indice: INDICE,
-          explication: `La définition décrit ${DEFS[s.t]}.`,
+          explication: `La définition décrit ${s.def ?? DEFS[s.t]}. ${REPERES[s.t]}`,
         },
         35,
       );

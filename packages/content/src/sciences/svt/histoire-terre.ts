@@ -60,6 +60,13 @@ const DEFS = {
 } as const;
 type Terme = keyof typeof DEFS;
 
+/** Pourquoi : trace, durée ou science. */
+const POURQUOI: Readonly<Record<Terme, string>> = {
+  fossile: 'On parle d’une trace laissée dans la roche, pas d’une durée ni d’une science.',
+  ère: 'On parle d’une durée : une grande tranche de l’histoire de la Terre.',
+  paléontologie: 'On parle d’une science ; « paléo » veut dire « ancien ».',
+};
+
 const SAISIES: readonly {
   readonly prompt: string;
   readonly accepted: readonly string[];
@@ -80,7 +87,7 @@ const SAISIES: readonly {
   },
   {
     prompt: 'Écris le nom de l’ère aussi appelée « ère primaire ».',
-    accepted: variantes('Paléozoïque', 'le', 'l’ère'),
+    accepted: [...variantes('Paléozoïque', 'le', 'l’ère', 'ère'), 'paléozoique'],
     erreurs: [
       ['Mésozoïque', 'Le Mésozoïque est l’ère secondaire.'],
       ['Précambrien', 'Le Précambrien précède l’ère primaire.'],
@@ -89,7 +96,7 @@ const SAISIES: readonly {
   },
   {
     prompt: 'Écris le nom de l’ère aussi appelée « ère secondaire ».',
-    accepted: variantes('Mésozoïque', 'le', 'l’ère'),
+    accepted: [...variantes('Mésozoïque', 'le', 'l’ère', 'ère'), 'mésozoique'],
     erreurs: [
       ['Paléozoïque', 'Le Paléozoïque est l’ère primaire.'],
       ['Cénozoïque', 'Le Cénozoïque regroupe le tertiaire et le quaternaire.'],
@@ -98,8 +105,11 @@ const SAISIES: readonly {
   },
   {
     prompt: 'Écris le nom de l’ère qui commence il y a environ 66 millions d’années et dure encore.',
-    accepted: variantes('Cénozoïque', 'le', 'l’ère'),
-    erreurs: [['Mésozoïque', 'Le Mésozoïque s’est achevé il y a environ 66 millions d’années.']],
+    accepted: [...variantes('Cénozoïque', 'le', 'l’ère', 'ère'), 'cénozoique'],
+    erreurs: [
+      ['Mésozoïque', 'Le Mésozoïque s’est achevé il y a environ 66 millions d’années.'],
+      ['tertiaire', 'Le tertiaire n’est qu’une partie de cette ère : il manque le quaternaire.'],
+    ],
     explication: 'C’est l’ère la plus récente.',
   },
 ];
@@ -243,7 +253,7 @@ export const histoireTerre: Skill = {
           bonne: t,
           fausses: autres.map((a) => [a, `Le terme « ${a} » désigne ${DEFS[a]}.`]),
           indice: 'S’agit-il d’une trace, d’une durée ou d’une science ?',
-          explication: [`La définition décrit ${DEFS[t]}.`],
+          explication: [`La définition décrit ${DEFS[t]}.`, POURQUOI[t]],
         },
         25,
       );

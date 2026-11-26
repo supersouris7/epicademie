@@ -13,10 +13,18 @@ const DEFS = {
   collision: 'la rencontre de deux continents qui fait naître des montagnes',
   rift: 'une région longue et étroite où la lithosphère amincie se casse en failles et fossés',
   'plaque lithosphérique': 'un morceau rigide de la lithosphère qui se déplace sur l’asthénosphère',
-  orogenèse: 'l’ensemble des processus qui forment les reliefs d’une chaîne de montagnes',
 } as const;
 type Terme = keyof typeof DEFS;
 const TERMES = Object.keys(DEFS) as Terme[];
+
+/** Pourquoi : le mouvement ou l’image à retenir pour chaque terme. */
+const REPERES: Readonly<Record<Terme, string>> = {
+  dorsale: 'Repère : au fond de l’océan, les plaques s’écartent et du plancher neuf apparaît.',
+  subduction: 'Repère : le mot clé est « plonger » : une plaque passe sous l’autre.',
+  collision: 'Repère : deux continents se heurtent et le relief monte.',
+  rift: 'Repère : la lithosphère s’amincit puis se casse en failles.',
+  'plaque lithosphérique': 'Repère : on parle du morceau qui se déplace, pas d’une frontière.',
+};
 
 const INDICE = 'Les plaques s’écartent, se rapprochent, ou une région s’étire : lequel est décrit ?';
 
@@ -39,7 +47,7 @@ const POURQUOI: Readonly<Record<Mouvement, string>> = {
 };
 
 const phenomene = ([texte, type]: readonly [string, Mouvement]): Qcm => ({
-  prompt: `« ${texte}. » Quel phénomène est décrit ?`,
+  prompt: `« ${texte}. » Quel terme correspond à cette situation ?`,
   bonne: type,
   fausses: [
     ...(['dorsale', 'subduction', 'collision'] as const)
@@ -60,10 +68,10 @@ const CYCLE = [
 ];
 
 const FOND = [
-  'Une plaque se forme sur la dorsale',
-  'Elle s’éloigne peu à peu de la dorsale',
-  'En vieillissant, elle devient plus dense',
-  'Elle plonge dans le manteau en subduction',
+  'Du plancher océanique se forme sur la dorsale',
+  'Il s’éloigne peu à peu de la dorsale',
+  'En vieillissant, il devient plus dense',
+  'Il plonge dans le manteau en subduction',
 ];
 
 const SAISIES: readonly {
@@ -78,8 +86,7 @@ const SAISIES: readonly {
   },
   { t: 'subduction', accepted: variantes('subduction', 'la', 'une'), erreurs: ['collision', 'dorsale'] },
   { t: 'collision', accepted: variantes('collision', 'la', 'une'), erreurs: ['subduction'] },
-  { t: 'rift', accepted: variantes('rift', 'le', 'un'), erreurs: ['dorsale'] },
-  { t: 'orogenèse', accepted: variantes('orogenèse', 'l’', 'une'), erreurs: ['collision'] },
+  { t: 'rift', accepted: variantes('rift', 'le', 'un'), erreurs: ['dorsale', 'subduction'] },
 ];
 
 /** Niveau 5 : relevés inventés de balises GPS posées de part et d'autre d'une frontière de plaques. */
@@ -147,14 +154,13 @@ export const tectonique: Skill = {
   lesson: {
     memo: [
       'La lithosphère est découpée en **plaques tectoniques** rigides qui glissent lentement sur l’asthénosphère, de quelques centimètres par an. Séismes et volcans se concentrent souvent à leurs limites.',
-      'Sur une **dorsale**, les plaques s’écartent ; en **subduction**, une plaque plonge dans le manteau ; la **collision** de continents élève des montagnes.',
+      'Sur une **dorsale**, les plaques s’écartent ; dans un **rift**, la lithosphère amincie se casse en failles ; en **subduction**, une plaque plonge dans le manteau ; la **collision** de continents élève des montagnes.',
     ],
     source: `Programme du cycle 4 (BOEN n° 31 du 30 juillet 2020) : « dynamique interne et tectonique des plaques lithosphériques ».`,
     sources: [
       PROGRAMME,
       'academie-plaque',
       'academie-rift',
-      'academie-orogenese',
       'insu-tectonique-debut',
       'insu-dorsale',
       'insu-subduction-carbone',
@@ -174,6 +180,7 @@ export const tectonique: Skill = {
           t,
           (['dorsale', 'subduction', 'collision'] as const).filter((x) => x !== t),
           INDICE,
+          REPERES[t],
         ),
         30,
       );
@@ -181,10 +188,8 @@ export const tectonique: Skill = {
     if (level === 2) {
       if (rng.int(0, 1) === 0) return qcm(rng, phenomene(rng.pick(OBSERVATIONS)), 35);
       const t = rng.pick(TERMES);
-      // « Collision » et « orogenèse » parlent toutes deux de montagnes : jamais proposées ensemble.
-      const voisin: Partial<Record<Terme, Terme>> = { collision: 'orogenèse', orogenèse: 'collision' };
-      const autres = rng.shuffle(TERMES.filter((x) => x !== t && x !== voisin[t])).slice(0, 3);
-      return qcm(rng, termeQcm(DEFS, t, autres, INDICE), 40);
+      const autres = rng.shuffle(TERMES.filter((x) => x !== t)).slice(0, 3);
+      return qcm(rng, termeQcm(DEFS, t, autres, INDICE, REPERES[t]), 40);
     }
     if (level === 3) {
       const forme = rng.int(0, 2);
@@ -194,13 +199,13 @@ export const tectonique: Skill = {
         return {
           prompt: montagne
             ? 'Remets dans l’ordre le cycle qui mène à une chaîne de montagnes.'
-            : 'Remets dans l’ordre la vie d’une plaque océanique.',
+            : 'Remets dans l’ordre l’histoire d’un morceau de plancher océanique.',
           answer: ordre(rng, suite),
-          hint: montagne ? 'La montagne apparaît à la fin du cycle.' : 'La plaque naît à la dorsale.',
+          hint: montagne ? 'La montagne apparaît à la fin du cycle.' : 'Tout commence à la dorsale.',
           steps: [
             montagne
               ? 'Un océan s’ouvre, se remplit de sédiments puis se referme.'
-              : 'La plaque naît, s’éloigne, vieillit puis plonge.',
+              : 'Le plancher naît, s’éloigne, vieillit puis plonge.',
             `Dernière étape : **${suite[suite.length - 1]}**.`,
           ],
           targetSeconds: 60,
@@ -221,7 +226,7 @@ export const tectonique: Skill = {
               }
             : {
                 kind: 'cloze',
-                parts: ['En vieillissant, une plaque devient plus ', ' et plonge dans le ', '.'],
+                parts: ['En vieillissant, une plaque océanique devient plus ', ' et plonge dans le ', '.'],
                 blanks: [
                   { mode: 'list', options: ['légère', 'dense', 'chaude'], correct: 1 },
                   { mode: 'list', options: ['manteau', 'noyau', 'ciel'], correct: 0 },
@@ -258,7 +263,7 @@ export const tectonique: Skill = {
         const serie = rng.int(0, 1);
         const paires: readonly (readonly [string, string])[] =
           serie === 0
-            ? TERMES.filter((t) => t !== 'orogenèse').map((t) => [t, DEFS[t]] as const)
+            ? TERMES.map((t) => [t, DEFS[t]] as const)
             : [
                 ['Dorsale', 'les plaques s’écartent'],
                 ['Rift', 'la lithosphère amincie se casse en failles et fossés'],
@@ -287,7 +292,7 @@ export const tectonique: Skill = {
           accepted: s.accepted,
           erreurs: s.erreurs.map((e) => [e, `« ${e} » désigne ${DEFS[e]}.`]),
           indice: INDICE,
-          explication: `La définition décrit ${DEFS[s.t]}.`,
+          explication: `La définition décrit ${DEFS[s.t]}. ${REPERES[s.t]}`,
         },
         35,
       );

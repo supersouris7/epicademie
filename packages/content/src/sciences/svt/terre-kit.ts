@@ -15,12 +15,14 @@ export const termeQcm = <T extends string>(
   terme: T,
   autres: readonly T[],
   indice: Rich,
+  /** Pourquoi : le repère qui permet de retrouver le terme. */
+  repere: Rich,
 ): Qcm => ({
   prompt: `Quel terme désigne ${defs[terme]} ?`,
   bonne: terme,
   fausses: autres.map((a) => [a, `${cap(a)} : ${defs[a]}.`]),
   indice,
-  explication: [`La définition décrit ${defs[terme]}.`],
+  explication: [`La définition décrit ${defs[terme]}.`, repere],
 });
 
 const sansAccent = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '');

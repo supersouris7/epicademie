@@ -17,4 +17,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'v5-respiration-humaine', version: 1, lot: 'sv-5e-03', date: DATE, verdict: 'ok' },
   { skillId: 'v5-digestion', version: 1, lot: 'sv-5e-03', date: DATE, verdict: 'ok' },
   { skillId: 'v5-effort', version: 1, lot: 'sv-5e-03', date: DATE, verdict: 'ok' },
+  { skillId: 'v4-structure-globe', version: 1, lot: 'sv-4e-01', date: DATE, verdict: 'ok' },
+  { skillId: 'v4-tectonique-plaques', version: 1, lot: 'sv-4e-01', date: DATE, verdict: 'ok' },
+  { skillId: 'v4-roches', version: 1, lot: 'sv-4e-01', date: DATE, verdict: 'ok' },
+  { skillId: 'v4-histoire-terre', version: 1, lot: 'sv-4e-01', date: DATE, verdict: 'ok' },
 ];
