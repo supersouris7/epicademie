@@ -16,6 +16,7 @@ import { SKILLS as CHANGEMENT_GLOBAL } from './changement-global.ts';
 import { SKILLS as RESSOURCES } from './ressources.ts';
 import { SKILLS as REPERES_5E } from './reperes-5e.ts';
 import { SKILLS as URBANISATION } from './urbanisation.ts';
+import { SKILLS as MOBILITES } from './mobilites.ts';
 import { GEO_FETCHED_ON, PAYS_UE, REGIONS } from './donnees.generated.ts';
 
 /**
@@ -157,5 +158,6 @@ export const GEOGRAPHIE_CHAPTERS: readonly Chapter[] = [
   chapter('g5-changement-global', '5e', 'Changement global et risques', CHANGEMENT_GLOBAL),
   chapter('g5-reperes', '5e', 'Repères de 5e', REPERES_5E),
   chapter('g4-urbanisation-monde', '4e', 'L’urbanisation du monde', URBANISATION),
+  chapter('g4-mobilites-transnationales', '4e', 'Les mobilités humaines transnationales', MOBILITES),
   chapter('g3-union-europeenne', '3e', 'L’Union européenne', [euCapitals, euro]),
 ];
