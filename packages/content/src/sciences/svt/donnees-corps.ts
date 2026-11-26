@@ -1,7 +1,7 @@
 /**
  * Faits du chapitre « Le corps en activité » (5e, lot sv-5e-03). Chaque fait cite son identifiant de source
  * (registre `sources.ts`) et la citation exacte du texte consulté (programme du cycle 4, programme de SVT de seconde
- * paru au Bulletin officiel en 2010, programme de SVT du collège de 2008, dictionnaires publiés par le CNRTL, Santé publique France). Les relevés et les
+ * paru au Bulletin officiel en 2010, programme de SVT du collège de 2008, dictionnaires publiés par le CNRTL). Les relevés et les
  * mesures des exercices sont inventés : ils illustrent ces faits, ils ne sont pas des faits.
  */
 import { PROGRAMME, type Fait } from './donnees.ts';
@@ -213,11 +213,6 @@ export const FAITS_CORPS: readonly Fait[] = [
     'muscle-definition',
     'academie-muscle',
     "Organe formé de fibres dont les contractions produisent les mouvements des différentes parties du corps de l'homme et des animaux.",
-  ),
-  f(
-    'activite-physique',
-    'spf-activite-physique-2017',
-    'L’activité physique correspond à tous les mouvements de notre corps produits par la contraction des muscles et qui entraînent une dépense en énergie supérieure à celle du repos.',
   ),
   f(
     'effort-dioxygene',

@@ -158,7 +158,7 @@ const NIVEAU4: readonly Modele[] = [
     'Range dans l’ordre le trajet du sang depuis les veines caves jusqu’au ventricule gauche.',
     ['veines caves', 'oreillette droite', 'ventricule droit', 'poumons', 'oreillette gauche', 'ventricule gauche'],
     'Le sang passe par les poumons entre le côté droit et le côté gauche.',
-    'Côté droit, puis poumons, puis côté gauche : c’est la double circulation.',
+    'Côté droit, puis poumons, puis côté gauche : le sang passe deux fois par le cœur, c’est la double circulation.',
   ),
   associer(
     'Associe chaque cavité ou vaisseau à sa description',

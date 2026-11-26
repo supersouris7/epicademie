@@ -42,7 +42,7 @@ const NIVEAU1: readonly Modele[] = [
       ['Ils passent entiers dans le sang', 'Ils doivent d’abord être transformés.'],
       ['Ils sont changés en air', 'La digestion ne produit pas d’air : elle donne des nutriments.'],
     ],
-    'Cherche les petites substances assimilables par le corps.',
+    'Cherche les petites substances que le corps peut utiliser.',
     'La digestion transforme les aliments en nutriments.',
   ),
   choisir(
@@ -149,7 +149,7 @@ const NIVEAU4: readonly Modele[] = [
       ['Le foie', 'sécrète la bile'],
       ['Le pancréas', 'déverse des enzymes digestives dans l’intestin grêle'],
       ['L’œsophage', 'conduit les aliments vers l’estomac'],
-      ['L’estomac', 'brasse les aliments en forme de poche'],
+      ['L’estomac', 'poche qui brasse les aliments'],
       ['Le gros intestin', 'dernière partie du tube digestif'],
     ],
     'Sépare les glandes qui déversent des liquides des segments du tube.',

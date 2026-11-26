@@ -32,7 +32,7 @@ const NIVEAU1: readonly Modele[] = [
       ['L’expiration', 'L’expiration est le mouvement inverse : l’air est expulsé.'],
       ['La digestion', 'La digestion concerne les aliments, pas l’air.'],
     ],
-    'Le préfixe du mot indique le sens « vers l’intérieur ».',
+    'Pense au sens du trajet : ici, l’air arrive de l’extérieur.',
     'Inspirer, c’est faire pénétrer l’air dans les poumons ; expirer, c’est l’expulser.',
   ),
   choisir(
@@ -88,7 +88,7 @@ const NIVEAU2: readonly Modele[] = [
       ['Les plaquettes', 'Les plaquettes ne sont pas les éléments qui fixent le dioxygène.'],
       ['Les sels minéraux', 'Ce sont des substances dissoutes, pas des cellules transportant le dioxygène.'],
     ],
-    'Ils donnent au sang sa couleur.',
+    'Le sang contient plusieurs sortes d’éléments : pense à ceux qui participent à son oxygénation.',
     'L’oxygénation du sang est la fixation du dioxygène par les globules rouges.',
   ),
   choisir(
@@ -276,10 +276,11 @@ export const respirationHumaine: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'L’air entre par l’**inspiration** et sort par l’**expiration** ; le **diaphragme** est le principal muscle inspirateur. Il suit la trachée, les **bronches** puis les bronchioles.',
+      'L’air entre par l’**inspiration** et sort par l’**expiration** ; le **diaphragme** est le principal muscle inspirateur. L’air inspiré suit la trachée, les **bronches** puis les bronchioles.',
       'Au bout, les **alvéoles pulmonaires** : le sang des capillaires y prend du **dioxygène** et libère du dioxyde de carbone.',
     ],
-    source: 'Programme du cycle 4 (BOEN n° 31 du 30 juillet 2020) : « Rythmes cardiaque et respiratoire, et effort ».',
+    source:
+      'Programme du cycle 4 (BOEN n° 31 du 30 juillet 2020) : « Expliquer comment le système nerveux, le système respiratoire et le système cardiovasculaire interviennent lors d’un effort musculaire ».',
     sources: [
       PROGRAMME,
       'bo-svt-college-2008',
