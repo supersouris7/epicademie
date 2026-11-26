@@ -15,6 +15,8 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import type {
+  AccessAction,
+  AdminRole,
   AccountRole,
   Offer,
   ReportReason,
@@ -418,8 +420,10 @@ export const contentEvents = pgTable(
     action: text('action').$type<'desactivation' | 'reactivation' | 'relecture'>().notNull(),
     version: smallint('version').notNull(),
     note: text('note'),
-    /** Nom assaini de l'opérateur d'administration qui a pris la décision. */
+    /** Nom assaini de la personne qui a pris la décision. */
     operator: text('operator'),
+    /** Identifiant chez le fournisseur d'identité (`secours` : accès de secours) ; nul : opérateur. */
+    adminSub: text('admin_sub'),
     at: at('at').notNull().defaultNow(),
   },
   (t) => [index('content_events_skill_idx').on(t.skillId, t.at)],
@@ -438,8 +442,42 @@ export const adminAudit = pgTable(
     operator: text('operator').notNull(),
     action: text('action').$type<'consultation' | 'reinitialisation-mot-de-passe'>().notNull(),
     accountId: uuid('account_id').notNull(),
+    adminSub: text('admin_sub'),
   },
   (t) => [index('admin_audit_at_idx').on(t.at), index('admin_audit_account_idx').on(t.accountId, t.at)],
+);
+
+/**
+ * Sessions d'administration ouvertes par le fournisseur d'identité (docs/adr/0036-…) : empreinte
+ * du jeton seulement, rôle figé à la connexion, expiration absolue et par inactivité.
+ */
+export const adminSessions = pgTable(
+  'admin_sessions',
+  {
+    tokenHash: text('token_hash').primaryKey(),
+    sub: text('sub').notNull(),
+    name: text('name').notNull(),
+    role: text('role').$type<AdminRole>().notNull(),
+    createdAt: at('created_at').notNull(),
+    expiresAt: at('expires_at').notNull(),
+    lastSeenAt: at('last_seen_at').notNull(),
+  },
+  (t) => [index('admin_sessions_sub_idx').on(t.sub)],
+);
+
+/** Accès à l'administration (connexions, refus de rôle, requêtes de secours) : aucun compte visé. */
+export const adminAccessEvents = pgTable(
+  'admin_access_events',
+  {
+    id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+    at: at('at').notNull().defaultNow(),
+    operator: text('operator').notNull(),
+    adminSub: text('admin_sub'),
+    action: text('action').$type<AccessAction>().notNull(),
+    /** Requête de secours (méthode et chemin déclaré, sans paramètre). */
+    detail: text('detail'),
+  },
+  (t) => [index('admin_access_events_at_idx').on(t.at)],
 );
 
 /**
@@ -566,6 +604,8 @@ export const ALL_TABLES = [
   'content_events',
   'content_states',
   'admin_audit',
+  'admin_sessions',
+  'admin_access_events',
   'attempts',
   'skill_states',
   'inventory',

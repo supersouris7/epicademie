@@ -7,7 +7,7 @@ import type { PedagogyService } from './pedagogy.service.ts';
 /** Signalements par une famille : quelques-uns par minute suffisent. */
 const REPORT_LIMIT = { rateLimit: { max: 10, timeWindow: '1 minute' } };
 
-/** Routes des contenus (familles) et de leur administration (rôle administrateur, contrat). */
+/** Routes des contenus (familles) et de leur administration (permissions du contrat). */
 export function pedagogyRoutes(service: PedagogyService, owns: Ownership) {
   return async (app: FastifyInstance) => {
     route(
@@ -29,8 +29,8 @@ export function pedagogyRoutes(service: PedagogyService, owns: Ownership) {
       service.updateReport(params.id, body.status, body.adminNote),
     );
     route(app, api.adminContent, () => service.content());
-    route(app, api.adminUpdateContent, ({ params, body, operator }) =>
-      service.updateContent(params.skillId, body, operator()),
+    route(app, api.adminUpdateContent, ({ params, body, admin }) =>
+      service.updateContent(params.skillId, body, admin()),
     );
     route(app, api.adminContentHistory, ({ params }) => service.history(params.skillId));
   };

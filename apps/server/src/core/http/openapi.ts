@@ -15,7 +15,7 @@ const TAG_DESCRIPTIONS: Record<(typeof API_TAGS)[number], string> = {
   suivi: 'Suivi des apprentissages',
   contenus: 'Signalements de questions, notions désactivées',
   abonnement: 'Abonnement familial et paiements',
-  admin: 'Administration (rôle administrateur)',
+  admin: 'Administration (équipe, selon le rôle)',
   profils: 'Profils des joueurs',
   recommandations: 'Recommandations de travail d’un parent à son enfant',
   evaluation: 'Arène d’évaluation (épreuves, bilans, chapitres vus en classe)',

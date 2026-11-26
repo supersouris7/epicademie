@@ -15,6 +15,11 @@ refuse de démarrer si une valeur est invalide. Une variable vide vaut « non d�
 | `RATE_LIMIT_MAX`        | `600`                                         | requêtes HTTP par minute et par IP                                                                                                  |
 | `METRICS_TOKEN`         | aucun                                         | jeton (16 caractères min.) exigé par `/api/metrics`                                                                                 |
 | `ADMIN_OPERATOR_SECRET` | aucun (administration désactivée)             | secret de l'opérateur (32 caractères min., sinon le serveur refuse de démarrer) ; voir ADR 0033                                     |
+| `OIDC_ISSUER`           | aucun                                         | émetteur du fournisseur d'identité (HTTPS) ; avec les trois suivantes ou aucune ; voir ADR 0036                                     |
+| `OIDC_CLIENT_ID`        | aucun                                         | identifiant du client confidentiel                                                                                                  |
+| `OIDC_CLIENT_SECRET`    | aucun                                         | secret du client (16 caractères min.)                                                                                               |
+| `ADMIN_ORIGIN`          | aucune                                        | origine du site d'administration (`https://hote`, sans chemin)                                                                      |
+| `ADMIN_SECOURS_SECRET`  | aucun (secours désactivé)                     | accès de secours, rôle propriétaire (32 caractères min.)                                                                            |
 | `API_DOCS`              | `true` hors production                        | Swagger UI sur `/api/docs`                                                                                                          |
 | `LOG_LEVEL`             | `info` (`silent` en test)                     | niveau des journaux                                                                                                                 |
 | `TZ_FAMILY`             | `Europe/Paris`                                | fuseau des jours de révision                                                                                                        |
@@ -64,3 +69,12 @@ par Google). Les enfants de moins de 15 ans restent sans e-mail, rattachés au p
 
 Tests : `TEST_DATABASE_URL` (facultatif) fait tourner les tests du serveur sur un PostgreSQL
 réel (une base neuve par fichier de test, supprimée ensuite).
+
+## Connexion de l'équipe (OpenID Connect)
+
+Chez le fournisseur : client confidentiel, flux « authorization code » avec PKCE S256,
+authentification `client_secret_basic`, portées `openid profile email groups`, adresse de retour
+`<ADMIN_ORIGIN>/api/v1/admin-auth/callback`, second facteur exigé, et les groupes
+`epicademie-proprietaire`, `epicademie-moderation`, `epicademie-pedagogie`, `epicademie-lecture`.
+Une configuration partielle arrête le serveur. Vérifier la connexion d'un propriétaire avant de
+retirer `ADMIN_OPERATOR_SECRET` (ignoré dès que la connexion est configurée).

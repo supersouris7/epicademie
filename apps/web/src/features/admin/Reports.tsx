@@ -7,6 +7,7 @@ import {
   type ReportStatus,
 } from '@epicademie/shared';
 import { useReports, useStats, useUpdateContent, useUpdateReport } from './api.ts';
+import { useCan } from './can.ts';
 import { reportTitle, skillGrade } from './contentLabels.ts';
 import { date, plural } from './labels.ts';
 import { QuestionPreview } from './QuestionPreview.tsx';
@@ -94,6 +95,7 @@ export function Reports() {
 }
 
 function ReportDetail({ report: r }: { readonly report: Report }) {
+  const can = useCan();
   const update = useUpdateReport();
   const disable = useUpdateContent();
   const [note, setNote] = useState(r.adminNote ?? '');
@@ -118,15 +120,21 @@ function ReportDetail({ report: r }: { readonly report: Report }) {
       <div className="flex min-w-0 flex-col gap-2">
         <label className={`flex flex-col gap-1 ${mutedClass}`}>
           Note de l’équipe
-          <input className={inputClass} value={note} onChange={(e) => setNote(e.target.value)} />
+          <input
+            className={inputClass}
+            value={note}
+            readOnly={!can('signalements:traiter')}
+            onChange={(e) => setNote(e.target.value)}
+          />
         </label>
         <div className="flex flex-wrap gap-2">
-          {(['en-cours', 'resolu', 'rejete'] as const).map((s) => (
-            <AdminButton key={s} disabled={update.isPending || r.status === s} onClick={() => set(s)}>
-              {REPORT_STATUS_LABELS[s]}
-            </AdminButton>
-          ))}
-          {skillId && (
+          {can('signalements:traiter') &&
+            (['en-cours', 'resolu', 'rejete'] as const).map((s) => (
+              <AdminButton key={s} disabled={update.isPending || r.status === s} onClick={() => set(s)}>
+                {REPORT_STATUS_LABELS[s]}
+              </AdminButton>
+            ))}
+          {skillId && can('contenus:modifier') && (
             <AdminButton
               tone="danger"
               disabled={disable.isPending}
