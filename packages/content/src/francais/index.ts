@@ -3,6 +3,7 @@ import { FCM1_ACCORDS } from './accords.ts';
 import { FCM1_COMPLEMENTS } from './complements.ts';
 import { FCM1_GROUPE_NOMINAL } from './groupe-nominal.ts';
 import { FCM1_LECTURE } from './lecture.ts';
+import { FCM2_LECTURE } from './lecture-cm2.ts';
 import { FCM1_NATURE } from './nature.ts';
 import { FCM1_ORTHOGRAPHE_MOTS } from './orthographe-mots.ts';
 import { FCM1_PHRASES } from './phrases.ts';
@@ -181,5 +182,13 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'orthographe',
     title: 'Orthographe des mots',
     skills: FCM2_ORTHOGRAPHE_MOTS,
+  },
+  {
+    id: 'fcm2-lecture',
+    subject: 'francais',
+    grade: 'cm2',
+    domain: 'lecture',
+    title: 'Lire et comprendre',
+    skills: FCM2_LECTURE,
   },
 ];
