@@ -943,4 +943,20 @@ export const SOURCES: readonly Source[] = [
     textDate: '2026',
     consultedOn: '2026-11-25',
   },
+  {
+    id: 'bc-personal-pronouns',
+    title: 'LearnEnglish, English grammar reference : Personal pronouns',
+    publisher: 'British Council',
+    url: 'https://learnenglish.britishcouncil.org/free-resources/grammar/english-grammar-reference/personal-pronouns',
+    textDate: '2026',
+    consultedOn: '2026-11-26',
+  },
+  {
+    id: 'bc-possessives-pronouns',
+    title: 'LearnEnglish, English grammar reference : Possessives: pronouns',
+    publisher: 'British Council',
+    url: 'https://learnenglish.britishcouncil.org/grammar/english-grammar-reference/possessives-pronouns',
+    textDate: '2026',
+    consultedOn: '2026-11-26',
+  },
 ];

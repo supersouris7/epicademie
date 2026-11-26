@@ -773,4 +773,40 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: '« J’aimerais » suivi d’une action ; on écrit souvent I’d like to.',
     example: 'I would like to see the giraffes.',
   },
+  {
+    id: 'pronom-complement',
+    word: 'pronom complément',
+    forms: ['pronom complément', 'pronoms compléments'],
+    definition: 'Petit mot qui remplace un nom placé après un verbe ou après un mot comme for ou with : me, him, them.',
+    example: 'I like Tom. → I like him.',
+  },
+  {
+    id: 'determinant-possessif',
+    word: 'déterminant possessif',
+    forms: ['déterminant possessif', 'déterminants possessifs'],
+    definition:
+      'Mot placé devant un nom pour dire à qui est la chose : mon, ton, son… On l’appelle aussi adjectif possessif.',
+    example: 'my bag = mon sac.',
+  },
+  {
+    id: 'pronom-possessif',
+    word: 'pronom possessif',
+    forms: ['pronom possessif', 'pronoms possessifs'],
+    definition: 'Mot qui remplace à lui seul un déterminant possessif et un nom : le mien, le tien, le sien…',
+    example: 'It’s my pen. → It’s mine.',
+  },
+  {
+    id: 'possesseur',
+    word: 'possesseur',
+    forms: ['possesseur', 'possesseurs'],
+    definition: 'La personne ou la chose à qui appartient ce dont on parle.',
+    example: 'Dans « le vélo de Lisa », le possesseur est Lisa.',
+  },
+  {
+    id: 'apostrophe',
+    word: 'apostrophe',
+    forms: ['apostrophe', 'apostrophes'],
+    definition: 'Le petit signe « ’ » placé en hauteur entre deux lettres.',
+    example: 'it’s (it is) a une apostrophe ; its (possessif) n’en a pas.',
+  },
 ];

@@ -18,6 +18,7 @@ import { ENGLISH_PLACES_CHAPTER } from './se-situer.ts';
 import { ENGLISH_DAY_CHAPTER } from './journee.ts';
 import { ENGLISH_SCHOOL_CHAPTER } from './ecole.ts';
 import { ENGLISH_QUESTIONS_CHAPTER } from './poser-questions.ts';
+import { ENGLISH_PRONOUNS_CHAPTER } from './pronoms.ts';
 
 /**
  * Anglais — pilote (docs/adr/0024-contenus-hors-maths.md) : verbes irréguliers, classe de 5e
@@ -136,6 +137,7 @@ export const ANGLAIS_CHAPTERS: readonly Chapter[] = [
   ENGLISH_BE_HAVE_CHAPTER,
   ENGLISH_MODALS_CHAPTER,
   ENGLISH_BE_ING_CHAPTER,
+  ENGLISH_PRONOUNS_CHAPTER,
   ENGLISH_PRESENTATION_CHAPTER,
   ...ENGLISH_BE_CHAPTERS,
   ENGLISH_TIME_CHAPTER,
