@@ -80,6 +80,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'h3-democraties-fragilisees', version: 1, lot: 'hi-3e-01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'h3-regimes-totalitaires', version: 1, lot: 'hi-3e-01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'h3-guerre-aneantissement', version: 1, lot: 'hi-3e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'h3-genocide-juifs-tsiganes', version: 1, lot: 'hi-3e-02', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'h3-france-occupee', version: 1, lot: 'hi-3e-02', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'h3-vichy-resistance', version: 1, lot: 'hi-3e-02', date: '2026-11-26', verdict: 'ok' },
 ];
