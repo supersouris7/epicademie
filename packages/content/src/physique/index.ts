@@ -1,8 +1,12 @@
 import type { Chapter, Level, Skill } from '../types.ts';
 import { choice, num, traps } from '../build.ts';
 import { div, fmt, mul, r } from '../rational.ts';
+import { circuitsSerieDerivation } from './circuits.ts';
+import { conducteursIsolants } from './conducteurs.ts';
 import { conservationMasse } from './conservation.ts';
+import { conversionsEnergie } from './conversions-energie.ts';
 import { etats } from './etats.ts';
+import { sourcesFormesEnergie } from './formes-energie.ts';
 import { masseVolumique } from './masse-volumique.ts';
 import { corpsPurs } from './melanges.ts';
 import { mouvementUniforme } from './mouvement-uniforme.ts';
@@ -22,7 +26,8 @@ import { vitesseMoyenne } from './vitesse-moyenne.ts';
  * Le programme est écrit pour tout le cycle : la répartition 5e / 4e / 3e est un choix de
  * progression (des relations les plus simples aux plus composées).
  * Le chapitre 5e « Organisation de la matière » (5 niveaux) a ses fichiers et ses faits cités
- * (`donnees-matiere.ts`), de même que le chapitre 5e « Mouvement » (`donnees-mouvement.ts`).
+ * (`donnees-matiere.ts`), de même que les chapitres 5e « Mouvement » (`donnees-mouvement.ts`) et « Énergie et
+ * circuits » (`donnees-energie.ts`).
  */
 
 const PROG = 'Physique-chimie, cycle 4 (BOEN n° 31 du 30 juillet 2020)';
@@ -271,6 +276,12 @@ export const PHYSIQUE_CHAPTERS: readonly Chapter[] = [
     conservationMasse,
   ]),
   chapter('p5-mouvement', '5e', 'Mouvement', [trajectoireNotion, referentielNotion, mouvementUniforme, vitesseMoyenne]),
+  chapter('p5-energie', '5e', 'Énergie et circuits', [
+    sourcesFormesEnergie,
+    conversionsEnergie,
+    circuitsSerieDerivation,
+    conducteursIsolants,
+  ]),
   chapter('p4-mouvement', '4e', 'La vitesse', [speed]),
   chapter('p4-electricite', '4e', 'La loi d’Ohm', [ohm]),
   chapter('p3-energie', '3e', 'Puissance et énergie', [power, energy]),
