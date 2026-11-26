@@ -180,7 +180,7 @@ export const sommeilEcrans: Skill = {
         'horloge biologique',
         ['l’', 'une'],
         ['mélatonine', 'rythme circadien'],
-        ['horloge interne', 'l’horloge interne'],
+        ['horloge interne', 'l’horloge interne', 'horloge circadienne', 'l’horloge circadienne'],
       ),
       saisie(
         'rythme circadien',
