@@ -952,6 +952,14 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-26',
   },
   {
+    id: 'bc-it-there',
+    title: 'LearnEnglish, English grammar reference : ‘it’ and ‘there’ as dummy subjects',
+    publisher: 'British Council',
+    url: 'https://learnenglish.britishcouncil.org/free-resources/grammar/english-grammar-reference/it-there-dummy-subjects',
+    textDate: '2026',
+    consultedOn: '2026-11-26',
+  },
+  {
     id: 'bc-possessives-pronouns',
     title: 'LearnEnglish, English grammar reference : Possessives: pronouns',
     publisher: 'British Council',

@@ -191,7 +191,7 @@ const SITUATIONS: readonly {
   { lead: '« Where is my bag? »', rest: 'is under the desk.', pro: 'it', why: '« my bag » est une chose.' },
   { lead: '« Look at Emma and Ben. »', rest: 'are dancing.', pro: 'they', why: 'On parle de deux autres personnes.' },
   {
-    lead: 'Tu parles à Emma et Ben :',
+    lead: 'Tu dis à Emma et Ben qu’ils sont en retard :',
     rest: 'are late!',
     pro: 'you',
     why: 'On s’adresse à eux : « you » vaut pour une ou plusieurs personnes.',
@@ -284,7 +284,7 @@ const subjectPronouns: Skill = {
       'En anglais, une phrase a un **sujet**, sauf pour donner un ordre. Météo, heure : on met it : It is raining.',
     ],
     source: source('pronoms personnels sujets et tournures « This is… »', '« Personal pronouns »'),
-    sources: ['anglais-college-2025', 'bc-personal-pronouns'],
+    sources: ['anglais-college-2025', 'bc-personal-pronouns', 'bc-it-there'],
   },
   generate: (rng, level: Level): QuestionDraft => {
     if (level === 1) return subjectSpot(rng);
@@ -299,6 +299,7 @@ const subjectPronouns: Skill = {
 const WHY_OBJECT_FORM = (r: Row) => `Le pronom complément qui correspond à « ${r.subject} » est « ${r.object} ».`;
 const WHY_IS_SUBJECT = 'C’est un pronom sujet : après un verbe ou une préposition, il faut le pronom complément.';
 const WHY_IS_DET = 'C’est un déterminant possessif : il doit être suivi d’un nom.';
+const whyOtherObject = (r: Row) => `« ${r.object} » correspond à « ${r.subject} » : ${r.who}.`;
 const OBJECT_RULE = 'Après un verbe ou une préposition, le pronom prend sa forme de complément.';
 
 function objectSpot(rng: Rng): QuestionDraft {
@@ -306,7 +307,7 @@ function objectSpot(rng: Rng): QuestionDraft {
   const other = rowOf(rng.pick(CHANGING.filter((p) => p !== r.subject)));
   const { answer, traps } = choice(rng, r.object, [
     { label: r.det === r.object ? r.subject : r.det, why: r.det === r.object ? WHY_IS_SUBJECT : WHY_IS_DET },
-    { label: other.object, why: `« ${other.object} » correspond à « ${other.subject} ».` },
+    { label: other.object, why: whyOtherObject(other) },
   ]);
   return {
     prompt: `Quel pronom complément correspond au pronom sujet « ${r.subject} » ?`,
@@ -355,11 +356,15 @@ function objectChoice(rng: Rng): QuestionDraft {
     ROWS.filter((x) => x.subject !== t.pro && x.subject !== 'I' && x.object !== r.object),
     2,
   );
-  const { answer, traps } = choice(rng, r.object, [
-    ...(r.subject === r.object ? [] : [{ label: r.subject, why: WHY_IS_SUBJECT }]),
-    ...(r.det === r.object ? [] : [{ label: r.det, why: WHY_IS_DET }]),
-    ...others.map((o) => ({ label: o.object, why: `« ${o.object} » correspond à « ${o.subject} ».` })),
-  ]);
+  const { answer, traps } = choice(
+    rng,
+    r.object,
+    [
+      ...(r.subject === r.object ? [] : [{ label: r.subject, why: WHY_IS_SUBJECT }]),
+      ...(r.det === r.object ? [] : [{ label: r.det, why: WHY_IS_DET }]),
+      ...others.map((o) => ({ label: o.object, why: whyOtherObject(o) })),
+    ].slice(0, 3),
+  );
   return {
     prompt: `Remplace « ${t.group} » : « ${t.full} » → « ${t.before}…${t.after} »`,
     answer,
@@ -374,7 +379,7 @@ function objectMatch(rng: Rng): QuestionDraft {
   return {
     prompt: `Associe chaque pronom sujet à son pronom complément : ${quoted(rows.map((r) => r[0]))}`,
     answer: pairs(rng, rows),
-    hint: 'Commence par celui que tu emploies dans « Help …! » quand tu parles de toi.',
+    hint: 'Essaie chaque forme dans « Can you help …? » : de qui parle-t-on ?',
     steps: [OBJECT_RULE, `Réponse : **${rows.map(([s, o]) => `${s} = ${o}`).join(' ; ')}**`],
   };
 }
@@ -386,9 +391,7 @@ function objectTraps(right: Subject): Trap[] {
   return typed(r.object, [
     [r.subject, WHY_IS_SUBJECT],
     [r.det, WHY_IS_DET],
-    ...ROWS.filter((x) => x.object !== r.object).map(
-      (x) => [x.object, `« ${x.object} » correspond à « ${x.subject} ».`] as const,
-    ),
+    ...ROWS.filter((x) => x.object !== r.object).map((x) => [x.object, whyOtherObject(x)] as const),
   ]);
 }
 
@@ -446,7 +449,13 @@ const rewrite = (line: string, before: string, word: string, after: string, why:
   why,
 });
 const OBJECT_LINES: readonly Rewrite[] = [
-  rewrite('I visit my grandfather every Sunday.', 'I visit ', 'him', ' every Sunday.', '« my grandfather » → him.'),
+  rewrite(
+    'I visit my grandfather every Sunday.',
+    'I visit ',
+    'him',
+    ' every Sunday.',
+    '« my grandfather » est un homme → him.',
+  ),
   rewrite('Tom often phones his aunt.', 'Tom often phones ', 'her', '.', '« his aunt » est une femme → her.'),
   rewrite('We listen to this song at home.', 'We listen to ', 'it', ' at home.', '« this song » est une chose → it.'),
   rewrite('Emma feeds the rabbits.', 'Emma feeds ', 'them', '.', '« the rabbits » : plusieurs animaux → them.'),
@@ -459,7 +468,13 @@ const OBJECT_LINES: readonly Rewrite[] = [
   ),
   rewrite('Lisa is waiting for her father.', 'Lisa is waiting for ', 'him', '.', '« her father » est un homme → him.'),
   rewrite('I play chess with my cousins.', 'I play chess with ', 'them', '.', '« my cousins » : plusieurs → them.'),
-  rewrite('My mum drives my sister to school.', 'My mum drives ', 'her', ' to school.', '« my sister » → her.'),
+  rewrite(
+    'My mum drives my sister to school.',
+    'My mum drives ',
+    'her',
+    ' to school.',
+    '« my sister » est une fille → her.',
+  ),
 ];
 
 function objectDocument(rng: Rng): QuestionDraft {
@@ -533,7 +548,7 @@ function detSpot(rng: Rng): QuestionDraft {
     prompt: `Quel déterminant possessif correspond à « ${r.subject} » ?`,
     answer,
     traps,
-    hint: `Imagine la phrase : « ${r.subject} … » puis un objet qui est à cette personne.`,
+    hint: `Demande-toi qui désigne « ${r.subject} », puis cherche le mot qui dit que la chose est à lui, à elle ou à eux.`,
     steps: [DET_RULE, whyDet(r), `Réponse : **${r.det}**`],
   };
 }
@@ -578,7 +593,7 @@ function detChoice(rng: Rng): QuestionDraft {
   ].slice(0, 3);
   const { answer, traps } = choice(rng, cap(r.det), wrong);
   return {
-    prompt: `Complète : « ${o.lead} … ${o.rest} »`,
+    prompt: `Complète (la 2e phrase parle de ce qui est nommé dans la 1re) : « ${o.lead} … ${o.rest} »`,
     answer,
     traps,
     hint: 'Qui possède ? Cherche le possesseur dans la première phrase.',
@@ -592,7 +607,7 @@ function detMatch(rng: Rng): QuestionDraft {
   return {
     prompt: `Associe chaque pronom sujet à son déterminant possessif : ${quoted(rows.map((r) => r[0]))}`,
     answer: pairs(rng, rows),
-    hint: 'Commence par les pronoms qui te désignent, toi, puis la personne à qui tu parles.',
+    hint: 'Commence par ceux que tu connais le mieux : pour chacun, imagine un objet qui lui appartient.',
     steps: [DET_RULE, `Réponse : **${rows.map(([s, d]) => `${s} = ${d}`).join(' ; ')}**`],
   };
 }
@@ -650,9 +665,9 @@ function detBody(rng: Rng): QuestionDraft {
     prompt: `Complète avec un déterminant possessif (le possesseur est le sujet de la phrase) : « ${before} … ${after} »`,
     answer: { kind: 'text', accepted: [r.det] },
     traps: detTraps(pro),
-    hint: 'Trouve le sujet : un homme, une femme, une chose, un groupe ou la personne à qui l’on parle ?',
+    hint: 'Trouve le sujet : qui parle, à qui l’on parle, un homme, une femme, une chose ou un groupe ?',
     steps: [
-      'Avec une partie du corps ou un objet à soi, l’anglais emploie un déterminant possessif.',
+      'Pour une partie du corps, la famille ou ce qui est à soi, l’anglais emploie un déterminant possessif.',
       whyDet(r),
       `Réponse : **${before} ${r.det} ${after}**`,
     ],
@@ -722,7 +737,13 @@ const pronounOf = (p: Subject): string => {
   return word;
 };
 const POSS_RULE = 'Le pronom possessif remplace le déterminant et le nom : il reste seul.';
-const whyPronoun = (p: Subject) => `« ${pronounOf(p)} » correspond à « ${rowOf(p).det} » : ${rowOf(p).pronounFr}.`;
+const whyPronoun = (p: Subject) => {
+  const { det, pronounFr } = rowOf(p);
+  const word = pronounOf(p);
+  return word === det
+    ? `« ${word} » garde la même forme sans nom après lui : ${pronounFr}.`
+    : `« ${word} » correspond à « ${det} » : ${pronounFr}.`;
+};
 const WHY_DET_ALONE = 'C’est un déterminant : il ne peut pas rester seul, sans nom.';
 const WHY_NO_APOSTROPHE = 'Un pronom possessif ne prend jamais d’apostrophe.';
 
@@ -739,7 +760,7 @@ function possSpot(rng: Rng): QuestionDraft {
     [a, b].map((x) => ({ label: pronounOf(x), why: whyPronoun(x) })),
   );
   return {
-    prompt: `Quel pronom possessif correspond au déterminant « ${rowOf(p).det} » (${rowOf(p).detFr}) ?`,
+    prompt: `Quel pronom possessif correspond au déterminant « ${rowOf(p).det} » ?`,
     answer,
     traps,
     hint: 'Cherche la forme qui ressemble au déterminant et qui peut rester seule.',
@@ -922,8 +943,16 @@ interface Exchange {
   readonly reply: string;
   /** La question en français. */
   readonly fr: string;
+  /** Explication propre à la question, quand le sens usuel du mot ne suffit pas (how old, how many). */
+  readonly why?: string;
 }
-const exchange = (w: WhWord, rest: string, reply: string, fr: string): Exchange => ({ wh: w, rest, reply, fr });
+const exchange = (w: WhWord, rest: string, reply: string, fr: string, why?: string): Exchange => ({
+  wh: w,
+  rest,
+  reply,
+  fr,
+  ...(why ? { why } : {}),
+});
 const EXCHANGES: readonly Exchange[] = [
   exchange('Who', 'is that man?', 'He is my uncle Sam.', 'Qui est cet homme ?'),
   exchange('Who', 'is your English teacher?', 'Mrs Taylor.', 'Qui est ton professeur d’anglais ?'),
@@ -1023,8 +1052,8 @@ function whWrite(rng: Rng): QuestionDraft {
 /** Niveau 4 : sans français, la réponse seule indique le mot à écrire. */
 const FROM_REPLY: readonly Exchange[] = [
   ...EXCHANGES,
-  exchange('How', 'old is your brother?', 'He is nine.', ''),
-  exchange('How', 'many pets have you got?', 'Two.', ''),
+  exchange('How', 'old is your brother?', 'He is nine.', '', '« How old » demande l’âge : « quel âge ».'),
+  exchange('How', 'many pets have you got?', 'Two.', '', '« How many » demande un nombre : « combien ».'),
   exchange('What', 'is your name?', 'My name is Maya.', ''),
   exchange('What', 'do you do on Sundays?', 'I play tennis.', ''),
   exchange('Who', 'do you play with?', 'With my cousin.', ''),
@@ -1040,7 +1069,7 @@ function whFromReply(rng: Rng): QuestionDraft {
     hint: 'Que donne la réponse : une personne, une chose, un lieu, un moment, une raison ou une autre précision ?',
     steps: [
       `La réponse « ${e.reply} » indique ce que la question demande.`,
-      whyWh(e.wh),
+      e.why ?? whyWh(e.wh),
       `Réponse : **${question(e)}**`,
     ],
   };
@@ -1092,7 +1121,7 @@ const whQuestions: Skill = {
   lesson: {
     memo: [
       'Un **mot interrogatif** ouvre la question : who (qui), what (quoi), where (où), when (quand), why (pourquoi), how (comment).',
-      'Regarde la réponse : un lieu appelle where, une raison avec because appelle why. Exemple : Why is he sad?',
+      'Regarde la réponse : un lieu appelle where, une raison avec because appelle why. Pour l’âge : How old are you?',
     ],
     source: source('mots interrogatifs usuels', '« Questions and negatives »'),
     sources: ['anglais-college-2025', 'bc-questions-negatives'],

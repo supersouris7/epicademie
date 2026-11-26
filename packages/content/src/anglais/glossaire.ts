@@ -420,7 +420,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'preposition',
     word: 'préposition',
     forms: ['préposition', 'prépositions'],
-    definition: 'Petit mot placé devant un nom, qui peut dire où se trouve une chose.',
+    definition: 'Petit mot placé devant un nom ou un pronom (in, with, for…). Il peut dire où se trouve une chose.',
     example: 'The cat is under the bed : « under » est une préposition.',
   },
   {

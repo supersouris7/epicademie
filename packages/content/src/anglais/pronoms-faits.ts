@@ -76,6 +76,7 @@ export const WH: readonly {
 const fait = (id: string, sourceId: string, quote: string, claim: string): Fait => ({ id, sourceId, quote, claim });
 const PROG = 'anglais-college-2025';
 const PERSONAL = 'bc-personal-pronouns';
+const DUMMY = 'bc-it-there';
 const DET = 'bc-possessives-adjectives';
 const POSS = 'bc-possessives-pronouns';
 const QUESTIONS = 'bc-questions-negatives';
@@ -145,8 +146,10 @@ export const FAITS: readonly Fait[] = [
     'it-sujet',
     PERSONAL,
     'If there is no other subject, we use it or there. We call this a dummy subject.',
-    '« It » sert de sujet quand aucun autre sujet n’existe (météo, heure).',
+    '« It » (ou « there ») sert de sujet quand aucun autre sujet n’existe.',
   ),
+  fait('it-heure', DUMMY, 'times and dates: It’s nearly one o’clock.', '« It » sert de sujet pour dire l’heure.'),
+  fait('it-meteo', DUMMY, 'the weather: It’s raining.', '« It » sert de sujet pour la météo.'),
   fait(
     'he-she-they',
     PERSONAL,
@@ -182,6 +185,12 @@ export const FAITS: readonly Fait[] = [
     DET,
     'to show something belongs to somebody:',
     'Le possessif dit à qui appartient une chose.',
+  ),
+  fait(
+    'determinant-famille',
+    DET,
+    'for relations and friends:',
+    'Le possessif s’emploie aussi pour la famille et les amis.',
   ),
   fait('determinant-corps', DET, 'for parts of the body:', 'Le possessif s’emploie aussi avec les parties du corps.'),
   fait(
@@ -232,4 +241,5 @@ export const FAITS: readonly Fait[] = [
   fait('wh-why-6e', QUESTIONS, 'Why have they been working hard?', '« Why » demande la raison d’une action.'),
   fait('wh-how-6e', QUESTIONS, 'How are you?', '« How » ouvre la question sur l’état de quelqu’un.'),
   fait('wh-how-old-6e', QUESTIONS, 'How old are you?', '« How old » demande l’âge.'),
+  fait('wh-how-many-6e', QUESTIONS, 'How many people came to the meeting?', '« How many » demande un nombre.'),
 ];
