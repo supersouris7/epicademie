@@ -12,7 +12,7 @@
 
 | Lot        | Chapitre                      | Notions                                                                                                        | État actuel            |
 | ---------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| `pc-5e-01` | Organisation de la matière    | états et changements d'état ; corps purs et mélanges ; masse volumique ; solubilité ; conservation de la masse | partielle (p5-matiere) |
+| `pc-5e-01` | Organisation de la matière    | états et changements d'état ; corps purs et mélanges ; masse volumique ; solubilité ; conservation de la masse | couverte, en relecture |
 | `pc-5e-02` | Mouvement                     | trajectoire ; référentiel ; mouvement uniforme ou non ; vitesse moyenne                                        | absente                |
 | `pc-5e-03` | Énergie et circuits           | sources et formes d'énergie ; conversions ; circuit en série et en dérivation ; conducteurs et isolants        | absente                |
 | `pc-5e-04` | Signaux et unités             | propagation de la lumière ; propagation du son ; unités du Système international ; préfixes                    | partielle (p5-unites)  |
