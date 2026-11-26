@@ -13,7 +13,7 @@
 | Lot        | Chapitre                 | Notions                                                                              | État actuel            |
 | ---------- | ------------------------ | ------------------------------------------------------------------------------------ | ---------------------- |
 | `es-5e-01` | Se présenter             | saluer ; se présenter (llamarse, tener… años) ; nombres ; alphabet et accent tonique | couverte               |
-| `es-5e-02` | Le présent des réguliers | verbes en -ar ; en -er ; en -ir ; pronoms sujets                                     | partielle (e5-present) |
+| `es-5e-02` | Le présent des réguliers | verbes en -ar ; en -er ; en -ir ; pronoms sujets                                     | couverte               |
 | `es-5e-03` | Ser, estar, hay          | ser ; estar ; ser ou estar ; hay                                                     | partielle (e5-present) |
 | `es-5e-04` | Le groupe nominal        | genre et nombre ; articles ; possessifs ; démonstratifs ; pays sans article          | absente                |
 | `es-5e-05` | Goûts et quantités       | gustar ; muy / mucho ; poco / mucho ; nombres ordinaux                               | absente                |
