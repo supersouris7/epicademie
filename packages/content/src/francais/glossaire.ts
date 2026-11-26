@@ -1167,4 +1167,18 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Se dit d’un verbe employé sans complément d’objet.',
     example: 'Les chevaux galopent.',
   },
+  {
+    id: 'antecedent',
+    word: 'antécédent',
+    forms: ['antécédents'],
+    definition: 'Groupe nominal dont un pronom tient lieu.',
+    example: 'Dans « Je vois une maison. Je la dessine. », « une maison » est l’antécédent de « la ».',
+  },
+  {
+    id: 'groupe-adjectival',
+    word: 'groupe adjectival',
+    forms: ['groupes adjectivaux'],
+    definition: 'Un adjectif avec les mots qui le complètent ou le précisent.',
+    example: '« très vieille » dans « une très vieille barque »',
+  },
 ];
