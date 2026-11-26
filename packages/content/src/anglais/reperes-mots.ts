@@ -722,8 +722,12 @@ const REGULAR_WORDS = DERIVED.filter((d) => !d.changes);
 const whyDerived = (d: Derived) => `« ${d.word} » veut dire « ${d.fr} » (de « ${d.base} », ${d.baseFr}).`;
 
 /** Adverbes dont les sens français se recouvrent : jamais l'un en distracteur de l'autre. */
-const SAME_SENSE: readonly string[] = ['quietly', 'gently'];
-const overlaps = (a: Derived, b: Derived) => SAME_SENSE.includes(a.word) && SAME_SENSE.includes(b.word);
+const SAME_SENSE: readonly (readonly string[])[] = [
+  ['quietly', 'gently'],
+  ['happily', 'fortunately'],
+];
+const overlaps = (a: Derived, b: Derived) =>
+  SAME_SENSE.some((group) => group.includes(a.word) && group.includes(b.word));
 
 function suffixSpot(rng: Rng): QuestionDraft {
   const d = rng.pick(DERIVED);

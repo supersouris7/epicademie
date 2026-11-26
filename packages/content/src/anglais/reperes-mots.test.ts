@@ -185,6 +185,8 @@ describe('anglais 6e : temps, espace, formation des mots', () => {
       if (q.prompt.includes('« suddenly »')) expect(shownText).not.toContain('"soudain"');
       if (q.prompt.includes('« quietly »')) expect(shownText).not.toContain('"doucement"');
       if (q.prompt.includes('« gently »')) expect(shownText).not.toContain('"calmement"');
+      if (q.prompt.includes('« happily »')) expect(shownText).not.toContain('"heureusement"');
+      if (q.prompt.includes('« fortunately »')) expect(shownText).not.toContain('"joyeusement"');
     }
   });
 
