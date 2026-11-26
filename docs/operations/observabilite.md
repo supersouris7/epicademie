@@ -39,6 +39,6 @@ journaux avec `report: true`. Pour un service externe : implémenter `ErrorRepor
 Six rubriques (« Gestion du jeu ») : Vue d'ensemble, Signalements, Familles, Notions, Points faibles
 et Technique (mode debug, erreurs, journal d'audit, anomalies). Chiffres et erreurs : voir
 docs/adr/0022-pilotage.md ; accès par l'opérateur de la page de pilotage et comptes :
-docs/adr/0033-administration-par-operateur.md. Le journal des erreurs est en mémoire (il repart de
+docs/adr/0033-administration-par-operateur.md ; rôles : 0036-roles-d-administration-oidc.md. Le journal des erreurs est en mémoire (il repart de
 zéro au redémarrage) ; les journaux restent la référence. L'écran affiche un libellé français et
 garde le message d'origine dans le détail.

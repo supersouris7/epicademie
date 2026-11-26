@@ -2495,4 +2495,32 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Un emploi sans contrat de travail et sans protection sociale.',
     example: 'Un petit vendeur de rue sans contrat.',
   },
+  {
+    id: 'route-maritime',
+    word: 'route maritime',
+    forms: ['route maritime', 'routes maritimes'],
+    definition: 'Un trajet en mer, long et assez étroit, que suivent de nombreux navires entre de grands ensembles.',
+    example: 'Entre l’Asie et l’Europe, une route maritime passe par le canal de Suez.',
+  },
+  {
+    id: 'detroit-passage',
+    word: 'détroit',
+    forms: ['détroit', 'détroits'],
+    definition: 'Un passage de mer étroit entre deux terres, qui relie deux espaces maritimes.',
+    example: 'Le détroit de Gibraltar relie l’océan Atlantique à la mer Méditerranée.',
+  },
+  {
+    id: 'couloir-migratoire',
+    word: 'couloir migratoire',
+    forms: ['couloir migratoire', 'couloirs migratoires'],
+    definition: 'Un grand ensemble de départs d’une même région vers une même région d’arrivée.',
+    example: 'D’une région à une autre, des millions de personnes forment un couloir migratoire.',
+  },
+  {
+    id: 'transpacifique',
+    word: 'transpacifique',
+    forms: ['transpacifique', 'transpacifiques'],
+    definition: 'Qui traverse l’océan Pacifique.',
+    example: 'Un trajet transpacifique relie l’Asie à l’Amérique.',
+  },
 ];

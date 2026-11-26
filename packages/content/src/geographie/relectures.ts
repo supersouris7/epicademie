@@ -71,4 +71,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'g4-mers-oceans', version: 1, lot: 'ge-4e-03', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'g4-etats-unis-mondialisation', version: 1, lot: 'ge-4e-03', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'g4-afrique-ouest-mondialisation', version: 1, lot: 'ge-4e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'g4-reperes-metropoles', version: 1, lot: 'ge-4e-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'g4-reperes-flux-migratoires', version: 1, lot: 'ge-4e-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'g4-reperes-routes-maritimes', version: 1, lot: 'ge-4e-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'g4-reperes-vocabulaire', version: 1, lot: 'ge-4e-04', date: '2026-11-26', verdict: 'ok' },
 ];

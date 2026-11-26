@@ -1,5 +1,8 @@
 # ADR 0033 — Administration par opérateur et consultation des comptes
 
+- Statut : Remplacée par [0036](0036-roles-d-administration-oidc.md) dès que la connexion OIDC est configurée
+  (l'opérateur reste actif sinon)
+
 ## Contexte
 
 La console `/admin` exigeait un compte de jeu au rôle `admin` et une session de 15 minutes
