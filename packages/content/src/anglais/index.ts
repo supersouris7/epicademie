@@ -8,6 +8,7 @@ import { ENGLISH_BE_CHAPTERS } from './be.ts';
 import { ENGLISH_BE_HAVE_CHAPTER } from './be-have.ts';
 import { ENGLISH_MODALS_CHAPTER } from './modaux-imperatif.ts';
 import { ENGLISH_BE_ING_CHAPTER } from './be-ing.ts';
+import { ENGLISH_NOUN_PHRASE_6E_CHAPTER } from './groupe-nominal-6e.ts';
 import { ENGLISH_TIME_CHAPTER } from './temps.ts';
 import { ENGLISH_FAMILY_CHAPTER } from './famille.ts';
 import { ENGLISH_TASTES_CHAPTER } from './gouts.ts';
@@ -136,6 +137,7 @@ export const ANGLAIS_CHAPTERS: readonly Chapter[] = [
   ENGLISH_BE_HAVE_CHAPTER,
   ENGLISH_MODALS_CHAPTER,
   ENGLISH_BE_ING_CHAPTER,
+  ENGLISH_NOUN_PHRASE_6E_CHAPTER,
   ENGLISH_PRESENTATION_CHAPTER,
   ...ENGLISH_BE_CHAPTERS,
   ENGLISH_TIME_CHAPTER,
