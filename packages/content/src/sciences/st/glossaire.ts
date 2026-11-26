@@ -966,7 +966,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     word: 'électrocution',
     forms: ['électrocution', 'électrocutions'],
     definition: 'Action, qui peut être mortelle, du courant électrique sur le corps.',
-    example: 'Une électrocution peut causer des brûlures.',
+    example: 'Utiliser un appareil branché dans son bain fait courir un risque d’électrocution.',
   },
   {
     id: 'st-court-circuit',

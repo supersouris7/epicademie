@@ -122,7 +122,9 @@ const PHRASES = [
 const niveau3 = (rng: Rng): QuestionDraft => {
   const p = rng.pick(PHRASES);
   const { answer, traps: tr } = saisie(
-    p.bon === 'mortel' ? [p.bon, 'mortelle', 'dangereux'] : [p.bon, `une ${p.bon}`, `la ${p.bon}`],
+    p.bon === 'mortel'
+      ? [p.bon, 'mortelle', 'dangereux', 'dangereuse', 'très dangereux', 'grave', 'très grave']
+      : [p.bon, `une ${p.bon}`, `la ${p.bon}`, ...(p.bon === 'pile' ? ['pile électrique'] : [])],
     p.faux,
   );
   return {
@@ -180,7 +182,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   }
   const x = rng.pick([
     {
-      q: 'Quel appareil coupe un circuit électrique en cas d’anomalie ?',
+      q: 'Quel interrupteur de sécurité coupe un circuit électrique en cas d’anomalie ?',
       bon: ['disjoncteur', 'le disjoncteur', 'un disjoncteur'],
       faux: [
         ['prise', 'La prise permet de brancher un appareil ; elle ne coupe pas tout seule.'],

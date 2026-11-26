@@ -152,7 +152,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
     prompt: x.q,
     answer,
     traps: tr,
-    hint: 'Pense à la différence entre une consigne et la liste entière.',
+    hint: 'Repense aux mots du mémo et à la façon dont on donne des consignes au robot.',
     steps: ['On cherche le mot exact.', `C’est **${x.bon}**.`],
     targetSeconds: 30,
   };
@@ -183,7 +183,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
       [toujours.length - cases, 'C’est le nombre de virages. Compte les « avance ».'],
     ]),
     hint: 'Seules certaines consignes font changer de case.',
-    steps: ['On compte les blocs « avance d’une case ».', `Le robot parcourt **${cases} case(s)**.`],
+    steps: ['On compte les blocs « avance d’une case ».', `Le robot parcourt **${cases} cases**.`],
     targetSeconds: 40,
   };
 };
@@ -226,7 +226,10 @@ const niveau4 = (rng: Rng): QuestionDraft => {
           : 'Refais les virages un par un, depuis la position du robot.',
       ] as const,
   );
-  const { answer, traps: tr } = saisie([cap, le(cap), `vers ${le(cap)}`], faux);
+  const { answer, traps: tr } = saisie(
+    [cap, le(cap), `vers ${le(cap)}`, cap === 'est' || cap === 'ouest' ? `à l’${cap}` : `au ${cap}`],
+    faux,
+  );
   return {
     prompt: `Le robot regarde vers ${le(depart)}. Il exécute : ${liste(blocs).join(', ')}. Vers où regarde-t-il à la fin ? Écris nord, sud, est ou ouest.`,
     answer,
@@ -273,7 +276,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     title: 'Mission : rejoindre la balise',
     lines: [
       'Au départ, le robot regarde vers le nord.',
-      `La balise est ${p.nord} cases au nord et ${p.est} case(s) à l’est du départ.`,
+      `La balise est ${p.nord} cases au nord et ${p.est} ${p.est > 1 ? 'cases' : 'case'} à l’est du départ.`,
       'Chaque bloc dure une seconde. Aucun obstacle sur la carte.',
       ...programmes.map((g, i) => `Programme ${lettres[i]} : ${liste(g.blocs).join(', ')}.`),
     ],
@@ -304,15 +307,19 @@ const niveau5 = (rng: Rng): QuestionDraft => {
   }
   const bon = p.court.length;
   return {
-    prompt: `Lis la mission. Combien de secondes dure le programme ${lettre('court')} ?`,
+    prompt: 'Lis la mission. Trouve le programme le plus rapide qui atteint la balise. Combien de secondes dure-t-il ?',
     figure,
     answer: num(bon, 's'),
     traps: traps(r(bon), [
       [bon - 1, 'Tourner prend aussi une seconde : compte le virage.'],
-      [p.long.length, 'C’est la durée du programme le plus long.'],
+      [p.long.length, 'C’est la durée du programme le plus long : il arrive, mais il est plus lent.'],
     ]),
-    hint: 'Un bloc, une seconde. N’oublie aucun bloc.',
-    steps: ['On compte tous les blocs du programme demandé.', `Il dure **${bon} secondes**.`],
+    hint: 'Vérifie où arrive chaque programme. Ensuite : un bloc, une seconde.',
+    steps: [
+      `Le programme ${lettre('court')} atteint la balise avec le moins de blocs.`,
+      'On compte tous ses blocs, virages compris.',
+      `Il dure **${bon} secondes**.`,
+    ],
     targetSeconds: 50,
   };
 };

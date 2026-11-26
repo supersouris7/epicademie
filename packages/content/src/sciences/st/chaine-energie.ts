@@ -24,7 +24,8 @@ const ADJ: Record<Forme, readonly [string, string]> = {
 };
 const variantes = (f: Forme) => {
   const [a, b] = ADJ[f];
-  return [...new Set([a, b, NOM[f], `l’${NOM[f]}`, `énergie ${b}`, `energie ${b}`])];
+  const noms = [NOM[f], `énergie ${b}`, `energie ${a}`, `energie ${b}`];
+  return [...new Set([a, b, ...noms, ...noms.map((n) => `l’${n}`)])];
 };
 
 interface Montage {
@@ -61,7 +62,7 @@ const MONTAGES: readonly Montage[] = [
   },
   {
     titre: 'de la chute d’une pomme',
-    situation: 'Une pomme tombe de l’arbre.',
+    situation: 'Une pomme tombe de l’arbre et prend de la vitesse jusqu’à toucher presque le sol.',
     depart: 'pesanteur',
     arrivee: 'cinetique',
     chaine: [
@@ -192,13 +193,13 @@ const niveau4 = (rng: Rng): QuestionDraft => {
 };
 
 const niveau5 = (rng: Rng): QuestionDraft => {
-  const piles = rng.int(1, 3);
+  const piles = rng.int(2, 3);
   const lampes = rng.int(1, 2);
   const figure = {
     kind: 'document' as const,
     title: 'La maquette du robot jouet',
     lines: [
-      `Le robot jouet contient ${piles} pile(s).`,
+      `Le robot jouet contient ${piles} piles.`,
       'Les piles alimentent un moteur qui fait tourner les roues.',
       `Les piles alimentent aussi ${lampes === 1 ? 'une lampe' : 'deux lampes'} sur sa tête.`,
       `Quand le robot roule, ${lampes === 1 ? 'la lampe brille' : 'les lampes brillent'}.`,

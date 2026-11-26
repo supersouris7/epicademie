@@ -47,7 +47,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     traps: tr,
     hint: cherche
       ? 'Le courant passe facilement dans une certaine famille de matériaux.'
-      : 'Cherche l’objet qui n’est pas fait de métal.',
+      : 'Pense au matériau de chaque objet : lequel empêche le courant de passer ?',
     steps: ['Un conducteur laisse passer le courant ; un isolant s’y oppose.', bon.why, `Réponse : **${bon.nom}**.`],
     targetSeconds: 20,
   };
@@ -119,7 +119,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
 const niveau3 = (rng: Rng): QuestionDraft => {
   const o = rng.pick(TOUS);
   if (rng.int(0, 1) === 0) {
-    const { answer, traps: tr } = saisie([MOT(o)], [[AUTRE(o), o.why]]);
+    const { answer, traps: tr } = saisie([MOT(o), `un ${MOT(o)}`], [[AUTRE(o), o.why]]);
     return {
       prompt: `Écris « conducteur » ou « isolant » : ${o.nom}, c’est un objet …`,
       answer,
@@ -210,7 +210,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     },
     {
       prompt: 'Comment s’appelle l’enveloppe isolante qui entoure un fil électrique ?',
-      bon: ['gaine', 'la gaine', 'une gaine'],
+      bon: ['gaine', 'la gaine', 'une gaine', 'gaine isolante', 'la gaine isolante', 'une gaine isolante'],
       faux: [
         ['isolateur', 'Un isolateur est une pièce qui soutient un conducteur ; l’enveloppe du fil est la gaine.'],
         ['pile', 'La pile fournit l’énergie électrique ; ce n’est pas une enveloppe.'],
@@ -261,7 +261,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
           .filter((o) => o.conducteur)
           .map((o) => o.nom)
           .join(', ')}.`,
-        `Elle s’allume dans **${nbOui}** essai(s).`,
+        `Elle s’allume dans **${nbOui}** ${nbOui > 1 ? 'essais' : 'essai'}.`,
       ],
       targetSeconds: 60,
     };
