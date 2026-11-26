@@ -382,6 +382,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'les petites portes vertes',
   },
   {
+    id: 'donneur-d-accord',
+    word: 'donneur d’accord',
+    forms: ['donneurs d’accord'],
+    definition: 'Le mot qui impose son genre et son nombre aux autres : dans un groupe nominal, c’est le nom noyau.',
+    example: 'Dans « les petites barques », « barques » est le donneur d’accord.',
+  },
+  {
     id: 'auxiliaire',
     word: 'auxiliaire',
     forms: ['auxiliaires'],

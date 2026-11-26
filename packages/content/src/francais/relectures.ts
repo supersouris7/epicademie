@@ -140,4 +140,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'f6-marques-temps', version: 1, lot: 'fr-6e-04', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'f6-passe-compose-plus-que-parfait', version: 1, lot: 'fr-6e-04', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'f6-variations-radical', version: 1, lot: 'fr-6e-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-chaine-accord-gn', version: 1, lot: 'fr-6e-05', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-accord-sujet-verbe', version: 1, lot: 'fr-6e-05', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-participe-etre', version: 1, lot: 'fr-6e-05', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-participe-avoir-cod', version: 1, lot: 'fr-6e-05', date: '2026-11-26', verdict: 'ok' },
 ];
