@@ -1,7 +1,8 @@
 import type { Chapter, Level, Skill } from '../types.ts';
 import { choice } from '../build.ts';
 import { CONJUGAISONS, RAE_FETCHED_ON } from './conjugaisons.generated.ts';
-import { presentChapter } from './present-reguliers.ts';
+import { PRESENT_CHAPTER } from './present-reguliers.ts';
+import { SER_ESTAR_HAY_CHAPTER } from './ser-estar-hay.ts';
 import { SPANISH_PRESENTATION_CHAPTER } from './se-presenter.ts';
 
 /**
@@ -99,15 +100,6 @@ function conjugation({ id, title, memo, notion, verbs, tense }: ConjugationSpec)
   };
 }
 
-const serEstar = conjugation({
-  id: 'e5-ser-estar',
-  title: 'Ser et estar au présent',
-  memo: ['ser : soy, eres, es, somos, sois, son.', 'estar : estoy, estás, está, estamos, estáis, están.'],
-  notion: 'ser et estar au présent',
-  verbs: ['ser', 'estar'],
-  tense: 'present',
-});
-
 const presentIrregular = conjugation({
   id: 'e4-present-irreguliers',
   title: 'Le présent des verbes irréguliers',
@@ -164,7 +156,8 @@ const chapter = (id: string, grade: Chapter['grade'], title: string, skills: rea
 
 export const ESPAGNOL_CHAPTERS: readonly Chapter[] = [
   SPANISH_PRESENTATION_CHAPTER,
-  presentChapter([serEstar]),
+  PRESENT_CHAPTER,
+  SER_ESTAR_HAY_CHAPTER,
   chapter('e4-irreguliers', '4e', 'Les verbes irréguliers', [presentIrregular]),
   chapter('e4-passe', '4e', 'Raconter au passé', [pastSimple]),
   chapter('e3-futur', '3e', 'Le futur', [future]),
