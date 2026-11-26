@@ -190,7 +190,7 @@ export const TRANSFORMATIONS: readonly Transformation[] = [
   enPluriel('un', 'animal', doux),
   enPluriel('le', 'bateau', blanc),
   enPluriel('un', 'cadeau', lourd),
-  enPluriel('le', 'oiseau', vif),
+  enPluriel('un', 'oiseau', vif),
   enPluriel('un', 'bal', léger),
   enPluriel('le', 'hibou', content),
   enPluriel('un', 'bocal', lourd),

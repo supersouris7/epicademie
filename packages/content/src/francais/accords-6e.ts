@@ -138,7 +138,7 @@ function chaineDraft(rng: Rng, level: Level): QuestionDraft {
         },
       ]);
       return {
-        prompt: `« ${x.debut}, ${adj} » Quel mot donne son genre et son nombre à « ${adj} » ?`,
+        prompt: `« ${x.debut}, ${adj} ». Quel mot donne son genre et son nombre à « ${adj} » ?`,
         answer,
         traps,
         hint: 'Cherche le nom principal du groupe, celui que l’on ne peut pas supprimer.',
@@ -294,7 +294,11 @@ function sujetVerbeDraft(rng: Rng, level: Level): QuestionDraft {
         ),
         answer: parLignes(lignes.map((p) => [verbeJuste(p)])),
         hint: 'Pour chaque ligne, trouve le groupe sujet : il est parfois après le verbe, ou loin de lui.',
-        steps: [DEF_SUJET, ...lignes.map(raisonner), `Les verbes corrigés : **${lignes.map(verbeJuste).join(', ')}**.`],
+        steps: [
+          DEF_SUJET,
+          ...lignes.map(motifSujet),
+          `Les verbes corrigés : **${lignes.map(verbeJuste).join(', ')}**.`,
+        ],
       };
     }
   }
@@ -469,7 +473,7 @@ const DEF_AVOIR =
 const accorde = (x: Complement) => accordeAvoir(x.verbe.participe, x.genre, x.nombre);
 const formesDe = (participe: string) => [...new Set(CATEGORIES.map(([g, n]) => accordeAvoir(participe, g, n)))];
 const raisonAvant = (x: Complement) =>
-  `Le pronom « ${pronomCod(x)} » est le COD : placé avant, il reprend « ${x.cod} » (${categorie(x.genre, x.nombre)}).`;
+  `Le pronom « ${pronomCod(x)} » est le COD : placé avant, il reprend « ${x.cod} » (${categorie(x.genre, x.nombre)}). Le participe passé prend ce genre et ce nombre.`;
 const raisonApres = (x: Complement) =>
   `Le COD « ${x.cod} » est placé après : le participe passé reste « ${x.verbe.participe} ».`;
 const raisonIndirect = (x: Indirect) =>

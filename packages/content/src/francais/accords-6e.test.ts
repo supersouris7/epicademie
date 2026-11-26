@@ -116,6 +116,8 @@ describe('banques et réponses des accords de 6e', () => {
       expect(trous(q)).toEqual(t.arrivee);
       expect(check(q, { kind: 'cloze', answers: [...t.depart] }).correct).toBe(false);
     }
+    // « le » et « la » s'élident devant une voyelle : « le oiseau » n'est pas du français.
+    for (const t of TRANSFORMATIONS) expect(t.depart.join(' ')).not.toMatch(/^(le|la) [aeiouéèêàâîô]/);
     expect(TRANSFORMATIONS.find((t) => t.depart[1] === 'cheval')?.arrivee).toEqual(['des', 'chevaux', 'vifs']);
     expect(TRANSFORMATIONS.find((t) => t.depart[1] === 'chien')?.arrivee).toEqual(['une', 'chienne', 'vive']);
   });
