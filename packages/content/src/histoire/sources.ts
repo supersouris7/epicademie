@@ -970,6 +970,14 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-26',
   },
   {
+    id: 'senat-femmes-expression',
+    title: 'Le temps de l’expression (1870-1914)',
+    publisher: 'Sénat',
+    url: 'https://www.senat.fr/connaitre-le-senat/lhistoire-du-senat/dossiers-dhistoire/les-femmes-senateurs/le-temps-de-lexpression-1870-1914.html',
+    textDate: '2026',
+    consultedOn: '2026-11-26',
+  },
+  {
     id: 'an-monarchie-censitaire',
     title: 'De 1815 à 1848 : la monarchie censitaire, triomphe des notables',
     publisher: 'Assemblée nationale',

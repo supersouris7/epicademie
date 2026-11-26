@@ -53,11 +53,21 @@ describe('histoire 4e — Société, culture et politique dans la France du XIXe
     const attendues = [
       ['an-revolution-1848'],
       ['vie-publique-loi-1905', 'bnf-zola-dreyfus'],
-      ['an-femmes-revolution', 'vie-publique-vote-femmes', 'eduscol-4e-xixe'],
+      ['an-femmes-revolution', 'senat-femmes-expression', 'vie-publique-vote-femmes', 'eduscol-4e-xixe'],
     ];
     attendues.forEach((ids, i) => {
       for (const id of ids) expect(SKILLS[i]!.lesson.sources, id).toContain(id);
     });
+  });
+
+  it('tient les corrections de la relecture (dates, droits et preuves)', () => {
+    const texte = JSON.stringify(NOTIONS);
+    expect(texte).not.toMatch(/universel masculin demeure|un non \W*et absolu|devient obligatoire/);
+    expect(NOTIONS[0]!.memo.join(' ')).toContain('rétablit le suffrage universel masculin');
+    expect(PREUVES.retabli1851.quote).toContain('rétablit le suffrage universel');
+    expect(PREUVES.jaccuse.quote).toMatch(/Zola.*J'Accuse.*L'Aurore/);
+    expect(PREUVES.fronde.quote).toMatch(/Marguerite Durand.*9 décembre 1897.*La fronde/);
+    expect(texte).not.toContain('1893');
   });
 
   it('range chaque frise du plus ancien au plus récent', () => {

@@ -16,7 +16,7 @@ const vote: Notion = {
   memo: [
     'De 1815 à 1848, sous la Restauration puis la monarchie de Juillet, le **suffrage censitaire** réserve le vote aux hommes qui paient le **cens**, un montant d’impôt : le peuple est exclu de la vie politique. La Restauration compte environ 100 000 électeurs, des propriétaires, des bourgeois et des paysans riches ; la loi de 1820 fait voter deux fois les plus imposés. En juillet 1830, les Trois Glorieuses font tomber Charles X ; en 1831, le cens passe de 300 à 200 francs, mais on ne compte que 246 000 électeurs en 1846 et le ministre Guizot refuse tout élargissement.',
     'Le 24 février 1848, Louis-Philippe abdique et la Deuxième République est proclamée. Le décret du 5 mars 1848 instaure le **suffrage universel masculin**, direct : tous les Français (des hommes) d’au moins 21 ans, résidant depuis six mois dans leur commune et jouissant de leurs droits civiques, votent ; le 23 avril, les électeurs se déplacent en masse, et le 10 décembre Louis-Napoléon Bonaparte est élu président. En 1850, une loi exige trois ans de résidence au même endroit : le corps électoral passe de près de 10 millions à moins de 7 millions, et beaucoup d’ouvriers sont écartés.',
-    'Après le **coup d’État** du 2 décembre 1851, le Second Empire est proclamé le 2 décembre 1852. Le suffrage universel masculin demeure, mais le pouvoir soutient des **candidats officiels** et recourt au **plébiscite**.',
+    'Lors de son **coup d’État** du 2 décembre 1851, Louis-Napoléon Bonaparte rétablit le suffrage universel masculin ; le Second Empire est proclamé le 2 décembre 1852. Mais le pouvoir soutient des **candidats officiels** et recourt au **plébiscite**.',
   ],
   faits: [
     {
@@ -91,7 +91,7 @@ const vote: Notion = {
           why: 'Guizot qualifie le suffrage universel de « principe absurde ».',
         },
       ],
-      gap: ['Guizot oppose à toute extension du droit de vote un non ', ' et absolu.', ['catégorique', 'categorique']],
+      gap: ['Sous la monarchie de Juillet, le ministre ', ' refuse tout élargissement du droit de vote.', ['Guizot']],
       explain: 'Ce blocage nourrit les demandes de réforme à la veille de 1848.',
     },
     {
@@ -360,7 +360,7 @@ const republique: Notion = {
   hint: 'Relis le mémo : suis les dates depuis 1870, puis les grandes lois et les crises.',
   memo: [
     'La République est proclamée le 4 septembre 1870, deux jours après la défaite de Sedan. Au printemps 1871, la **Commune de Paris**, insurrection du 18 mars au 28 mai, est réprimée. L’avenir du régime est incertain ; les **lois constitutionnelles** de 1875 (l’amendement Wallon est voté à une seule voix) l’affermissent, et la crise du 16 mai 1877 oppose le président Mac-Mahon à la majorité républicaine de la Chambre.',
-    'Il s’agit d’unir la nation autour de la République, par l’école, la mairie et la caserne : la Marseillaise devient hymne national en 1879 et le 14 juillet fête nationale en 1880 ; avec les lois de Jules Ferry, l’école devient gratuite (1881), obligatoire et laïque (1882) ; les conseils municipaux élisent leur maire (loi de 1884), la **conscription** devient obligatoire (1889) et des lois accordent des libertés, dont les opposants peuvent aussi se servir : presse (1881), syndicats (1884), associations (1901). L’**isoloir** arrive en 1903.',
+    'Il s’agit d’unir la nation autour de la République, par l’école, la mairie et la caserne : la Marseillaise devient hymne national en 1879 et le 14 juillet fête nationale en 1880 ; avec les lois de Jules Ferry, l’école devient gratuite (1881), obligatoire et laïque (1882) ; les conseils municipaux élisent leur maire (loi de 1884), la loi de 1889 sur la **conscription** obligatoire renforce le service militaire et des lois accordent des libertés, dont les opposants peuvent aussi se servir : presse (1881), syndicats (1884), associations (1901). L’**isoloir** arrive en 1903.',
     'La République reste discutée. L’**affaire Dreyfus** (1894-1906) divise le pays : le capitaine Alfred Dreyfus, officier juif, est injustement accusé de trahison et condamné en 1894 ; Émile Zola publie « J’accuse…! » dans le journal L’Aurore le 13 janvier 1898 ; Dreyfus est réhabilité en 1906. La loi du 9 décembre 1905, de **Séparation des Églises et de l’État**, assure la liberté de conscience, ne reconnaît, ne salarie ni ne subventionne aucun culte, et met fin au Concordat de 1802 : c’est un pas majeur de la **laïcité**.',
   ],
   faits: [
@@ -460,7 +460,7 @@ const republique: Notion = {
         { label: 'l’autorisation des syndicats', why: 'Elle date de 1884.' },
         { label: 'la liberté d’association', why: 'Elle date de 1901.' },
       ],
-      gap: ['En 1889, une loi rend la ', ' obligatoire.', ['conscription']],
+      gap: ['En 1889, une loi porte sur la ', ' obligatoire.', ['conscription']],
       explain: 'Le service militaire réunit les jeunes hommes autour de la nation.',
     },
     {
@@ -515,7 +515,7 @@ const republique: Notion = {
     ['1879', 'La Marseillaise devient hymne national'],
     ['1880', 'Le 14 juillet devient fête nationale'],
     ['1884', 'Les syndicats sont autorisés'],
-    ['1889', 'La conscription devient obligatoire'],
+    ['1889', 'Une loi sur la conscription obligatoire est votée'],
     ['1901', 'La liberté d’association est reconnue'],
   ],
   frise: [
@@ -664,7 +664,7 @@ const femmes: Notion = {
   memo: [
     'En 1804, le Code civil consacre l’**incapacité juridique** de la femme mariée, soumise à l’autorité de son mari, alors que les filles majeures et les veuves peuvent gérer leurs biens. Au XIXe siècle, les femmes restent exclues de la vie politique.',
     'Elles travaillent pourtant beaucoup : 6,2 millions de femmes sont actives en 1866, soit un tiers de la population active, un chiffre sans doute sous-évalué (femmes d’agriculteurs, d’artisans, de commerçants). Ouvrières, paysannes, **ménagères** ou bourgeoises, leurs conditions diffèrent ; les femmes forment un tiers des ouvriers. Elles participent aux grèves, notamment dans le textile. Des femmes aisées fondent des associations pour aider celles qui travaillent.',
-    'Elles gagnent peu à peu des droits : première **bachelière** en 1861, enseignement secondaire féminin en 1867 et 1880, première femme à l’externat de médecine en 1881, droit de plaider comme avocates en 1900, libre disposition de leur salaire et droit d’élire et d’être élues aux **prud’hommes** en 1907, congé de maternité de 8 semaines non payé en 1909. Le **féminisme** revendique le droit de vote dès 1848, avec Eugénie Niboyet (journal « La voix des femmes »), puis Hubertine Auclert (« La Citoyenne », 1881), Marguerite Durand (« La Fronde », 1893) et l’Union française pour le suffrage des femmes (1909) : le droit de vote n’est pas obtenu avant la Première Guerre mondiale (les femmes l’obtiendront en 1944).',
+    'Elles gagnent peu à peu des droits : première **bachelière** en 1861, enseignement secondaire féminin en 1867 et 1880, première femme à l’externat de médecine en 1881, droit de plaider comme avocates en 1900, libre disposition de leur salaire et droit d’élire et d’être élues aux **prud’hommes** en 1907, congé de maternité de 8 semaines non payé en 1909. Le **féminisme** revendique le droit de vote dès 1848, avec Eugénie Niboyet (journal « La voix des femmes »), puis Hubertine Auclert (« La Citoyenne », 1881), Marguerite Durand (« La Fronde », 1897) et l’Union française pour le suffrage des femmes (1909) : le droit de vote n’est pas obtenu avant la Première Guerre mondiale (les femmes l’obtiendront en 1944).',
   ],
   faits: [
     {
@@ -807,14 +807,14 @@ const femmes: Notion = {
     },
     {
       ...P.fronde,
-      q: 'Quel journal quotidien Marguerite Durand crée-t-elle en 1893 ?',
+      q: 'Quel journal quotidien Marguerite Durand crée-t-elle en 1897 ?',
       a: 'La Fronde',
       wrong: [
         { label: 'L’Aurore', why: 'L’Aurore publie « J’accuse…! » en 1898.' },
         { label: 'La voix des femmes', why: 'Ce journal est lié à Eugénie Niboyet, en 1848.' },
         { label: 'La Citoyenne', why: 'La Citoyenne est lancée par Hubertine Auclert en 1881.' },
       ],
-      gap: ['En 1893, Marguerite Durand crée le journal La ', '.', ['Fronde']],
+      gap: ['En 1897, Marguerite Durand crée le journal La ', '.', ['Fronde']],
       explain: 'Les féministes fondent des journaux pour défendre leur cause.',
     },
     {
@@ -823,7 +823,7 @@ const femmes: Notion = {
       a: 'La voix des femmes',
       wrong: [
         { label: 'L’Aurore', why: 'L’Aurore publie « J’accuse…! » en 1898.' },
-        { label: 'La Fronde', why: 'La Fronde est créée par Marguerite Durand en 1893.' },
+        { label: 'La Fronde', why: 'La Fronde est créée par Marguerite Durand en 1897.' },
         { label: 'La Citoyenne', why: 'La Citoyenne est lancée par Hubertine Auclert en 1881.' },
       ],
       gap: ['En 1848, Eugénie Niboyet crée « La voix des ', ' ».', ['femmes']],
@@ -881,7 +881,7 @@ const femmes: Notion = {
   paires5: [
     ['Eugénie Niboyet', 'La voix des femmes, 1848'],
     ['Hubertine Auclert', 'La Citoyenne, 1881'],
-    ['Marguerite Durand', 'La Fronde, 1893'],
+    ['Marguerite Durand', 'La Fronde, 1897'],
     ['1861', 'Première bachelière diplômée'],
     ['1909', 'Congé de maternité de 8 semaines'],
   ],
@@ -918,7 +918,7 @@ const femmes: Notion = {
       q: 'quelle militante lance le journal La Citoyenne en 1881 ?',
       accepted: ['Hubertine Auclert', 'Auclert'],
       traps: [
-        { text: 'Marguerite Durand', why: 'Marguerite Durand crée La Fronde en 1893.' },
+        { text: 'Marguerite Durand', why: 'Marguerite Durand crée La Fronde en 1897.' },
         { text: 'Eugénie Niboyet', why: 'Eugénie Niboyet crée La voix des femmes en 1848.' },
       ],
       explain: 'Hubertine Auclert porte la revendication du droit de vote.',

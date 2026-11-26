@@ -77,6 +77,9 @@ export const PREUVES = {
     'Pour voter, il faut désormais justifier de trois années de résidence au même endroit : cela exclut une bonne partie des ouvriers',
   ),
   coupDEtat: deuxieme('c’est le coup d’État du 2 décembre 1851.'),
+  retabli1851: eduscol(
+    'Louis-Napoléon Bonaparte rétablit le suffrage universel lors de son coup d’État, mais il en dénature l’expression',
+  ),
   empire1852: empire("l'Empire est proclamé le 2 décembre 1852 et Louis-Napoléon prend le titre de Napoléon III."),
   candidats: empire(
     'le Gouvernement qui désigne et soutient ouvertement, au travers des préfets, des candidats officiels.',
@@ -128,7 +131,7 @@ export const PREUVES = {
   condamnation: bnf('la condamnation du capitaine Dreyfus, en 1894'),
   injustement: bnf('Zola prend la défense du capitaine Alfred Dreyfus (1859-1935), injustement accusé de trahison.'),
   officierJuif: bnf('les soupçons se portent immédiatement sur un officier juif'),
-  jaccuse: bnf('Le 13 janvier 1898, les vendeurs de journaux distribuent dans Paris'),
+  jaccuse: bnf("c'est grâce à Émile Zola : en publiant son « J'Accuse... ! » dans L'Aurore, il crée un scandale"),
   rehabilite: bnf("Il faut attendre 1906 pour voir Dreyfus réhabilité et réintégré dans l'armée"),
   conscience: loi1905(
     'La loi du 9 décembre 1905 proclame en premier lieu la liberté de conscience : "La République assure la liberté de conscience".',
@@ -185,7 +188,12 @@ export const PREUVES = {
     'En 1848, Eugénie Niboyet, qui préside le club des femmes et crée « La voix des femmes »',
   ),
   auclert: REPUBLIQUE.auclert,
-  fronde: an('an-vote-femmes', '1893 Création de La Fronde, journal quotidien, par Marguerite Durand.'),
+  fronde: {
+    source: 'senat-femmes-expression',
+    who: 'Le Sénat',
+    quote:
+      'On ne peut évoquer cette fin de siècle sans parler de la journaliste Marguerite Durand. Elle fonde le 9 décembre 1897 le quotidien "La fronde"',
+  },
   ufsf: publique('vie-publique-vote-femmes', 'l’Union française pour le suffrage des femmes (UFSF) est créée en 1909.'),
   feminisme: academie(
     'feminisme',

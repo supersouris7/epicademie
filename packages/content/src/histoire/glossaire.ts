@@ -2583,7 +2583,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     word: 'conscription',
     forms: ['conscription'],
     definition: 'Le recrutement obligatoire des jeunes hommes pour le service militaire.',
-    example: 'La loi de 1889 rend la conscription obligatoire.',
+    example: 'La loi de 1889 porte sur la conscription obligatoire.',
   },
   {
     id: 'isoloir',
