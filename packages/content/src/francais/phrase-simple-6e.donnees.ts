@@ -411,7 +411,7 @@ export interface TroisCc {
 const tri = (action: string, temps: string, lieu: string, cause: string): TroisCc => ({ action, temps, lieu, cause });
 
 export const TROIS_CC: readonly TroisCc[] = [
-  tri('les pêcheurs restent au port', 'depuis trois jours', 'sur la côte nord', 'à cause de la tempête'),
+  tri('les pêcheurs patientent', 'depuis trois jours', 'sur le quai', 'à cause de la tempête'),
   tri('les promeneurs pressent le pas', 'en fin de journée', 'dans le sous-bois', 'à cause du froid'),
   tri('le guide interrompt la visite', 'à midi', 'devant la chapelle', 'à cause de la chaleur'),
   tri('les trains circulent au ralenti', 'ce matin', 'dans la vallée', 'à cause du brouillard'),

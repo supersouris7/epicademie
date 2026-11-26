@@ -161,6 +161,8 @@ describe('réponses de la phrase simple (6e)', () => {
   });
 
   it('compléments circonstanciels : sens, nature et fonction', () => {
+    // un seul groupe de lieu par phrase : l’action n’en contient pas et son verbe n’en réclame pas
+    for (const t of TROIS_CC) expect(t.action).not.toMatch(/\b(restent|vont|au port|à la|dans|sur|sous|devant)\b/);
     for (const q of tirages('f6-complements-circonstanciels', 3)) {
       const t = trouve(TROIS_CC, (x) => q.prompt.includes(x.action));
       const sens = /circonstanciel de (temps|lieu|cause) /.exec(q.prompt)?.[1] as 'temps' | 'lieu' | 'cause';
