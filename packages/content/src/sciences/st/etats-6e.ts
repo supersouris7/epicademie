@@ -39,18 +39,23 @@ const VAPORISATION: Changement = {
   nom: 'vaporisation',
   de: 'liquide',
   vers: 'gazeux',
-  accepte: [
-    'vaporisation',
-    'la vaporisation',
-    'évaporation',
-    'evaporation',
-    'l’évaporation',
-    'ébullition',
-    'ebullition',
-    'l’ébullition',
-  ],
+  accepte: ['vaporisation', 'la vaporisation'],
   situations: ['une flaque d’eau qui disparaît peu à peu au soleil', 'de l’eau qui bout et devient de la vapeur'],
 };
+const EVAPORATION = ['évaporation', 'evaporation', 'l’évaporation'] as const;
+const EBULLITION = ['ébullition', 'ebullition', 'l’ébullition'] as const;
+const POURQUOI_PAS_EVAPORATION =
+  'L’évaporation se fait progressivement à la surface, sans bulles formées dans le liquide.';
+const POURQUOI_PAS_EBULLITION = 'L’ébullition forme des bulles de vapeur dans la masse du liquide.';
+
+/** Mot précis admis (ou confondu) selon la façon dont le liquide devient gaz : surface ou bulles. */
+const PRECISIONS: ReadonlyMap<
+  string,
+  { readonly accepte: readonly string[]; readonly confondus: readonly string[]; readonly why: string }
+> = new Map([
+  [VAPORISATION.situations[0] ?? '', { accepte: EVAPORATION, confondus: EBULLITION, why: POURQUOI_PAS_EBULLITION }],
+  [VAPORISATION.situations[1] ?? '', { accepte: EBULLITION, confondus: EVAPORATION, why: POURQUOI_PAS_EVAPORATION }],
+]);
 const LIQUEFACTION: Changement = {
   nom: 'liquéfaction',
   de: 'gazeux',
@@ -152,9 +157,13 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   if (t === 0) {
     const c = rng.pick(CHANGEMENTS);
     const situation = rng.pick(c.situations);
+    const precis = PRECISIONS.get(situation);
     const { answer, traps: tr } = saisie(
-      c.accepte,
-      CHANGEMENTS.filter((x) => x !== c).map((x) => [x.nom, decrit(x)] as const),
+      [...c.accepte, ...(precis?.accepte ?? [])],
+      [
+        ...(precis?.confondus.map((mot) => [mot, precis.why] as const) ?? []),
+        ...CHANGEMENTS.filter((x) => x !== c).map((x) => [x.nom, decrit(x)] as const),
+      ],
     );
     return {
       prompt: `Écris le nom du changement d’état : ${situation}.`,
@@ -218,7 +227,17 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   if (t === 0) {
     const c = rng.pick(CHANGEMENTS);
     const inv = INVERSE.get(c) ?? c;
-    const { answer, traps: tr } = saisie(inv.accepte, [
+    const versGaz = inv === VAPORISATION;
+    const { answer, traps: tr } = saisie(versGaz ? [...inv.accepte, ...EVAPORATION] : inv.accepte, [
+      ...(versGaz
+        ? EBULLITION.map(
+            (mot) =>
+              [
+                mot,
+                'L’ébullition n’est qu’une façon de passer à l’état gazeux : le nom général est vaporisation.',
+              ] as const,
+          )
+        : []),
       [c.nom, `La ${c.nom} est le changement de départ, pas son inverse.`],
       ...CHANGEMENTS.filter((x) => x !== c && x !== inv).map((x) => [x.nom, decrit(x)] as const),
     ]);
@@ -261,18 +280,10 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   const bulles = rng.int(0, 1) === 0;
   const bon = bulles ? 'ébullition' : 'évaporation';
   const autre = bulles ? 'évaporation' : 'ébullition';
-  const { answer, traps: tr } = saisie(
-    bulles ? ['ébullition', 'ebullition', 'l’ébullition'] : ['évaporation', 'evaporation', 'l’évaporation'],
-    [
-      [
-        autre,
-        bulles
-          ? 'L’évaporation se fait progressivement à la surface, sans bulles formées dans le liquide.'
-          : 'L’ébullition forme des bulles de vapeur dans la masse du liquide.',
-      ],
-      ['fusion', 'La fusion concerne un solide qui devient liquide.'],
-    ],
-  );
+  const { answer, traps: tr } = saisie(bulles ? EBULLITION : EVAPORATION, [
+    [autre, bulles ? POURQUOI_PAS_EVAPORATION : POURQUOI_PAS_EBULLITION],
+    ['fusion', 'La fusion concerne un solide qui devient liquide.'],
+  ]);
   return {
     prompt: bulles
       ? 'Des bulles de vapeur se forment dans toute la masse d’un liquide et crèvent à la surface. Quel mot précis désigne ce phénomène ?'

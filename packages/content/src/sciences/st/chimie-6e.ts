@@ -7,7 +7,7 @@ import { association, maj, saisie } from './outils.ts';
 // ——— Transformations chimiques, produits ménagers et pictogrammes de danger (6e) ———
 
 interface Picto {
-  /** Dessin décrit en mots (aucune information portée par la seule couleur). */
+  /** Symbole nommé comme à l’annexe V du règlement CLP (aucune information portée par la seule couleur). */
   readonly dessin: string;
   readonly danger: string;
   readonly mot: string;
@@ -22,19 +22,19 @@ const PICTOS: readonly Picto[] = [
     accepte: ['inflammable'],
   },
   {
-    dessin: 'une flamme posée sur un cercle',
+    dessin: 'une flamme au-dessus d’un cercle',
     danger: 'produit qui peut provoquer ou aggraver un incendie',
     mot: 'comburant',
     accepte: ['comburant'],
   },
   {
-    dessin: 'des gouttes qui rongent une main et une surface',
+    dessin: 'le symbole « corrosion »',
     danger: 'produit qui peut brûler la peau et les yeux et attaquer les métaux',
     mot: 'corrosif',
     accepte: ['corrosif', 'corrosive'],
   },
   {
-    dessin: 'une tête de mort sur deux os croisés',
+    dessin: 'une tête de mort sur deux tibias',
     danger: 'produit qui peut être mortel s’il est avalé, touché ou respiré',
     mot: 'toxique',
     accepte: ['toxique', 'mortel'],
@@ -46,13 +46,13 @@ const PICTOS: readonly Picto[] = [
     accepte: ['irritant', 'nocif', 'irritant ou nocif'],
   },
   {
-    dessin: 'un arbre sans feuilles et un poisson mort',
+    dessin: 'le symbole « environnement »',
     danger: 'produit toxique pour les êtres vivants dans l’eau',
     mot: 'dangereux pour l’environnement',
     accepte: ['dangereux pour l’environnement', 'dangereux pour l’eau'],
   },
   {
-    dessin: 'une bombe qui explose',
+    dessin: 'une bombe explosant',
     danger: 'produit explosif',
     mot: 'explosif',
     accepte: ['explosif'],
@@ -64,6 +64,8 @@ function parMot(mot: string): Picto {
   if (!p) throw new Error(`Pictogramme inconnu : ${mot}`);
   return p;
 }
+
+const SYMBOLES_PARLANTS: readonly string[] = ['corrosif', 'dangereux pour l’environnement'];
 
 const niveau1 = (rng: Rng): QuestionDraft => {
   const trois = ['inflammable', 'toxique', 'explosif'].map(parMot);
@@ -175,26 +177,27 @@ const niveau3 = (rng: Rng): QuestionDraft => {
 const niveau4 = (rng: Rng): QuestionDraft => {
   const k = rng.int(0, 2);
   if (k === 0) {
-    const cinq = rng.shuffle(PICTOS).slice(0, 5);
+    // Sans les symboles dont le nom donne la réponse (« corrosion », « environnement »).
+    const quatre = rng.shuffle(PICTOS.filter((x) => !SYMBOLES_PARLANTS.includes(x.mot))).slice(0, 4);
     return {
-      prompt: `Associe chaque mot de danger à son dessin : ${cinq
+      prompt: `Associe chaque mot de danger à son dessin : ${quatre
         .map((p) => p.mot)
         .sort()
         .join(', ')}.`,
       answer: association(
         rng,
-        cinq.map((p) => [maj(p.mot), maj(p.dessin)]),
+        quatre.map((p) => [maj(p.mot), maj(p.dessin)]),
       ),
       hint: 'Imagine ce que chaque dessin montre : quel risque annonce-t-il ?',
       steps: [
         'Chaque mot de danger correspond à un seul dessin.',
-        `Réponse : **${cinq.map((p) => `${p.mot} → ${p.dessin}`).join(' ; ')}**.`,
+        `Réponse : **${quatre.map((p) => `${p.mot} → ${p.dessin}`).join(' ; ')}**.`,
       ],
       targetSeconds: 70,
     };
   }
   if (k === 1) {
-    const p = rng.pick(PICTOS.filter((x) => !['dangereux pour l’environnement', 'explosif'].includes(x.mot)));
+    const p = rng.pick(PICTOS.filter((x) => !SYMBOLES_PARLANTS.includes(x.mot) && x.mot !== 'explosif'));
     const { answer, traps } = saisie(
       p.accepte,
       PICTOS.filter((x) => x !== p).map((x) => [x.mot, `Ce mot correspond au dessin : ${x.dessin}.`] as const),
@@ -235,92 +238,132 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   };
 };
 
-interface Etiquette {
-  readonly produit: string;
-  readonly mot: string;
+interface Geste {
   readonly geste: string;
-  readonly mauvais: readonly (readonly [string, string])[];
+  /** Danger auquel le geste répond : sert à expliquer pourquoi il ne convient pas ailleurs. */
+  readonly contre: string;
 }
 
-const ETIQUETTES: readonly Etiquette[] = [
-  {
-    produit: 'un produit de débouchage',
-    mot: 'corrosif',
-    geste: 'Le garder dans son récipient d’origine et éviter tout contact avec la peau',
-    mauvais: [
-      ['Le verser dans une bouteille de jus vide', 'Un produit se conserve dans son récipient d’origine.'],
-      ['Le manipuler les mains nues', 'Un produit corrosif brûle la peau.'],
-    ],
+const GESTES = {
+  inflammable: { geste: 'Le tenir loin des flammes et des surfaces chaudes', contre: 'le risque qu’il prenne feu' },
+  comburant: {
+    geste: 'Le tenir à l’écart des vêtements et des autres matières qui peuvent brûler',
+    contre: 'le risque qu’il provoque ou aggrave un incendie au contact de ces matières',
   },
-  {
-    produit: 'un dissolvant',
-    mot: 'inflammable',
-    geste: 'Le tenir loin de la chaleur et des flammes',
-    mauvais: [
-      ['L’utiliser près d’une bougie allumée', 'Un produit inflammable peut prendre feu.'],
-      ['Le laisser sur un radiateur chaud', 'La chaleur augmente le risque d’incendie.'],
-    ],
-  },
-  {
-    produit: 'un pesticide',
-    mot: 'dangereux pour l’environnement',
+  corrosif: { geste: 'Le conserver uniquement dans son récipient d’origine', contre: 'les erreurs de récipient' },
+  toxique: { geste: 'Ne pas manger ni boire pendant qu’on le manipule', contre: 'le risque d’en avaler' },
+  irritant: { geste: 'L’utiliser dehors ou dans une pièce bien aérée', contre: 'le risque lié à ce qu’on respire' },
+  'dangereux pour l’environnement': {
     geste: 'Éviter de le rejeter dans la nature',
-    mauvais: [
-      ['Vider les restes dans une rivière', 'Ce produit est toxique pour les êtres vivants de l’eau.'],
-      ['Rincer le bidon dans une mare', 'Les restes polluent l’eau.'],
-    ],
+    contre: 'la pollution du milieu naturel',
+  },
+} satisfies Record<string, Geste>;
+
+type Danger = keyof typeof GESTES;
+
+interface Situation {
+  /** Les deux pictogrammes de l’étiquette. */
+  readonly etiquette: readonly [Danger, Danger];
+  readonly situation: string;
+  /** Celui des deux dangers que la situation met en jeu. */
+  readonly enJeu: Danger;
+  /** Gestes prudents, adaptés à un autre danger. */
+  readonly autres: readonly [Danger, Danger, Danger];
+}
+
+const SITUATIONS: readonly Situation[] = [
+  {
+    etiquette: ['inflammable', 'irritant'],
+    situation: 'Une bougie est allumée sur la table où l’on veut ouvrir le flacon.',
+    enJeu: 'inflammable',
+    autres: ['irritant', 'corrosif', 'dangereux pour l’environnement'],
   },
   {
-    produit: 'un produit portant une tête de mort',
-    mot: 'toxique',
-    geste: 'Ne pas manger ni boire pendant qu’on le manipule',
-    mauvais: [
-      ['Goûter le produit pour le reconnaître', 'Un produit toxique peut être mortel s’il est avalé.'],
-      ['Grignoter en le manipulant', 'On ne mange pas en manipulant un produit toxique.'],
-    ],
+    etiquette: ['corrosif', 'dangereux pour l’environnement'],
+    situation: 'Pour gagner de la place, on veut transvaser le produit dans une bouteille de jus vide.',
+    enJeu: 'corrosif',
+    autres: ['dangereux pour l’environnement', 'inflammable', 'toxique'],
+  },
+  {
+    etiquette: ['comburant', 'corrosif'],
+    situation: 'On veut poser le produit sur une pile de chiffons et de vieux vêtements.',
+    enJeu: 'comburant',
+    autres: ['corrosif', 'toxique', 'dangereux pour l’environnement'],
+  },
+  {
+    etiquette: ['irritant', 'dangereux pour l’environnement'],
+    situation: 'On veut vaporiser le produit dans une petite salle de bains fermée.',
+    enJeu: 'irritant',
+    autres: ['dangereux pour l’environnement', 'corrosif', 'inflammable'],
+  },
+  {
+    etiquette: ['toxique', 'dangereux pour l’environnement'],
+    situation: 'La personne qui prépare le produit veut prendre son goûter en même temps.',
+    enJeu: 'toxique',
+    autres: ['dangereux pour l’environnement', 'inflammable', 'comburant'],
+  },
+  {
+    etiquette: ['toxique', 'dangereux pour l’environnement'],
+    situation: 'Après usage, on pense rincer le bidon dans la mare du jardin.',
+    enJeu: 'dangereux pour l’environnement',
+    autres: ['toxique', 'corrosif', 'inflammable'],
   },
 ];
 
 const niveau5 = (rng: Rng): QuestionDraft => {
-  const e = rng.pick(ETIQUETTES);
-  const p = parMot(e.mot);
+  const s = rng.pick(SITUATIONS);
+  const etiquette = rng.shuffle(s.etiquette).map(parMot);
+  const p = parMot(s.enJeu);
   const figure = {
     kind: 'document' as const,
-    title: 'Étiquette relevée à la maison',
-    lines: [`Produit : ${e.produit}.`, `Pictogramme : ${p.dessin}.`, 'Un adulte te demande d’expliquer le bon geste.'],
+    title: 'Étiquette et situation (données de l’exercice)',
+    lines: [
+      `Étiquette du flacon, premier pictogramme : ${etiquette[0]?.dessin}.`,
+      `Second pictogramme : ${etiquette[1]?.dessin}.`,
+      `Situation : ${s.situation}`,
+    ],
   };
+  const annonce = `L’étiquette annonce : ${etiquette.map((x) => x.danger).join(' ; ')}.`;
   if (rng.int(0, 1) === 0) {
+    const bon = GESTES[s.enJeu].geste;
     const { answer, traps } = choice(
       rng,
-      e.geste,
-      e.mauvais.map(([label, why]) => ({ label, why })),
+      bon,
+      s.autres.map((d) => ({
+        label: GESTES[d].geste,
+        why: `Ce geste est prudent contre ${GESTES[d].contre}, mais il ne répond pas à la situation, qui met en jeu un ${p.danger}.`,
+      })),
     );
     return {
-      prompt: 'Lis l’étiquette. Quel geste est prudent ?',
+      prompt: 'Lis l’étiquette et la situation. Quel geste répond au risque de cette situation ?',
       figure,
       answer,
       traps,
-      hint: 'Commence par comprendre le danger annoncé par le dessin.',
-      steps: [`Le dessin signale un ${p.danger}.`, `Geste prudent : **${e.geste.toLowerCase()}**.`],
-      targetSeconds: 55,
+      hint: 'Cherche ce que chaque pictogramme annonce, puis lequel est concerné par la situation.',
+      steps: [annonce, `La situation met en jeu ce danger : ${p.danger}.`, `Geste adapté : **${bon.toLowerCase()}**.`],
+      targetSeconds: 70,
     };
   }
-  const { answer, traps } = choice(
-    rng,
-    maj(p.danger),
-    rng
-      .shuffle(PICTOS.filter((x) => x !== p))
-      .slice(0, 3)
-      .map((x) => ({ label: maj(x.danger), why: `Ce danger correspond au dessin : ${x.dessin}.` })),
-  );
+  const presents = etiquette.filter((x) => x !== p);
+  const absents = rng.shuffle(PICTOS.filter((x) => !s.etiquette.some((d) => d === x.mot))).slice(0, 2);
+  const { answer, traps } = choice(rng, maj(p.danger), [
+    ...presents.map((x) => ({
+      label: maj(x.danger),
+      why: `Ce danger est bien sur l’étiquette (${x.dessin}), mais la situation ne le met pas d’abord en jeu.`,
+    })),
+    ...absents.map((x) => ({
+      label: maj(x.danger),
+      why: `L’étiquette ne porte pas le pictogramme de ce danger (${x.dessin}).`,
+    })),
+  ]);
   return {
-    prompt: 'Lis l’étiquette. Quel danger ce produit présente-t-il ?',
+    prompt: 'Lis l’étiquette et la situation. Quel danger faut-il surtout prendre en compte ici ?',
     figure,
     answer,
     traps,
-    hint: 'Concentre-toi sur la ligne du pictogramme.',
-    steps: [`Le dessin est ${p.dessin}.`, `Le produit présente ce danger : **${p.danger}**.`],
-    targetSeconds: 55,
+    hint: 'La réponse doit être sur l’étiquette et correspondre à ce que l’on s’apprête à faire.',
+    steps: [annonce, `Situation : ${s.situation}`, `Le danger à prendre en compte : **${p.danger}**.`],
+    targetSeconds: 70,
   };
 };
 
@@ -334,7 +377,8 @@ export const chimieSecurite: Skill = {
   lesson: {
     memo: [
       'Une **transformation chimique** change la composition des substances : un gaz qui se dégage (**effervescence**) ou une couleur qui change peuvent la signaler. Une **transformation physique**, comme la glace qui fond, ne la change pas.',
-      'Avant d’utiliser un produit, lis son **pictogramme de danger** : flamme (**inflammable**), flamme sur un cercle (**comburant**), gouttes qui rongent (**corrosif**), tête de mort (toxique), point d’exclamation (irritant ou nocif), bombe (explosif), arbre et poisson morts (dangereux pour l’environnement). Ne rejette pas ces produits dans la nature.',
+      'Avant d’utiliser un produit, lis son **pictogramme de danger** : flamme (**inflammable**), flamme au-dessus d’un cercle (**comburant**), symbole « corrosion » (**corrosif**), tête de mort sur deux tibias (toxique), point d’exclamation (irritant ou nocif), bombe explosant (explosif), symbole « environnement » (dangereux pour l’environnement).',
+      'Adapte le geste au danger : loin des flammes (inflammable), loin des vêtements et des matières qui brûlent (comburant), dans son récipient d’origine (corrosif), sans manger ni boire (toxique), dehors ou dans une pièce aérée (irritant), jamais dans la nature (dangereux pour l’environnement).',
     ],
     ...references(
       'transformation-programme',
@@ -358,6 +402,15 @@ export const chimieSecurite: Skill = {
       'conseil-corrosion',
       'conseil-environnement',
       'conseil-toxique',
+      'conseil-comburant',
+      'conseil-aeration',
+      'symbole-flamme',
+      'symbole-comburant',
+      'symbole-corrosion',
+      'symbole-toxique',
+      'symbole-exclamation',
+      'symbole-environnement',
+      'symbole-explosif',
     ),
   },
   generate: (rng, level) => (NIVEAUX[level - 1] ?? niveau1)(rng),

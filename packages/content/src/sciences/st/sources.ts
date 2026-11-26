@@ -487,4 +487,12 @@ export const SOURCES: readonly Source[] = [
     textDate: '2026',
     consultedOn: '2026-11-26',
   },
+  {
+    id: 'clp-reglement-1272-2008',
+    title: 'Règlement (CE) n° 1272/2008 « CLP », annexes IV et V (texte consolidé)',
+    publisher: 'Union européenne (EUR-Lex, Office des publications)',
+    url: 'https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:02008R1272-20231201',
+    textDate: '2023-12-01',
+    consultedOn: '2026-11-26',
+  },
 ];

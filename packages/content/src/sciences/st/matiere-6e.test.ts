@@ -145,4 +145,41 @@ describe('sciences 6e : « La matière »', () => {
       expect(juste(q, q.prompt.includes('reste au fond') ? total - dissous : eau + total), t).toBe(true);
     }
   });
+
+  it('états : évaporation et ébullition ne sont acceptées que dans leur situation', () => {
+    const accepte = (q: Question, text: string) => check(q, { kind: 'text', text }).correct;
+    const vus = new Set<string>();
+    for (const level of [3, 4] as const)
+      for (const q of tirages('p6-etats', level)) {
+        if (q.answer.kind !== 'text') continue;
+        const flaque = /flaque|sans aucune bulle/.test(q.prompt);
+        const bout = /qui bout|Des bulles/.test(q.prompt);
+        const inverse = q.prompt.includes('subi une liquéfaction');
+        if (!flaque && !bout && !inverse) continue;
+        vus.add(`${level} ${flaque} ${bout}`);
+        expect(accepte(q, 'ébullition'), q.prompt).toBe(bout);
+        expect(accepte(q, 'évaporation'), q.prompt).toBe(flaque || inverse);
+        if (level === 3 || inverse) expect(accepte(q, 'vaporisation'), q.prompt).toBe(true);
+        const confondu = flaque ? 'ébullition' : bout ? 'évaporation' : 'ébullition';
+        expect(
+          q.traps.some((p) => 'text' in p && p.text === confondu),
+          q.prompt,
+        ).toBe(true);
+      }
+    expect(vus.size).toBe(5);
+  });
+
+  it('sécurité, niveau 5 : deux pictogrammes et une situation à croiser, quatre propositions expliquées', () => {
+    const questions = tirages('p6-transformations-securite', 5);
+    for (const q of questions) {
+      const t = texte(q);
+      expect(t).toMatch(/premier pictogramme .*Second pictogramme .*Situation : /);
+      expect(t).not.toContain('Un adulte');
+      expect(q.answer.kind === 'choice' && q.answer.options.length, t).toBe(4);
+      expect(q.traps.length, t).toBe(3);
+    }
+    const gestes = JSON.stringify(questions);
+    expect(gestes).toContain('à l’écart des vêtements');
+    expect(gestes).toContain('pièce bien aérée');
+  });
 });

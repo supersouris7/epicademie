@@ -2,7 +2,8 @@
  * Faits du chapitre « La matière » (6e, lot st-6e-01). Chaque fait cite son identifiant de source (registre
  * `sources.ts`) et la citation exacte : programme du cycle 3 (colonnes « fin de cours moyen » et « fin de sixième »),
  * programme du cycle 4 pour les unités de volume, Trésor de la langue française informatisé (CNRTL), Dictionnaire de
- * l'Académie française, ministère chargé de la transition écologique et Agence européenne des produits chimiques (ECHA).
+ * l'Académie française, ministère chargé de la transition écologique Agence européenne des produits chimiques (ECHA)
+ * et règlement (CE) n° 1272/2008 dit « CLP » (EUR-Lex).
  * Les valeurs numériques des exercices (solides A, B, liquides X, Y, températures d'un corps A, masses, volumes)
  * sont des données inventées, annoncées comme données de l'exercice : ce ne sont pas des faits.
  */
@@ -14,6 +15,7 @@ const fait = (id: string, source: string, citation: string): Fait => ({ id, sour
 const prog = (id: string, citation: string) => fait(id, PROGRAMME, citation);
 const tlfi = (id: string, mot: string, citation: string) => fait(id, `cnrtl-${mot}`, citation);
 const echa = (id: string, citation: string) => fait(id, 'echa-pictogrammes', citation);
+const clp = (id: string, citation: string) => fait(id, 'clp-reglement-1272-2008', citation);
 
 export const FAITS_MATIERE: readonly Fait[] = [
   // États et changements d'état.
@@ -183,7 +185,7 @@ export const FAITS_MATIERE: readonly Fait[] = [
   ),
   echa(
     'picto-exclamation',
-    'Provoque une sévère irritation des yeux. Provoque une irritation cutanée. Nocif en cas d’ingestion.',
+    'Symbol: Exclamation Mark Que signifie ce pictogramme? Peut irriter les voies respiratoires.',
   ),
   echa(
     'picto-environnement',
@@ -197,6 +199,16 @@ export const FAITS_MATIERE: readonly Fait[] = [
   echa('conseil-corrosion', 'Conserver uniquement dans le récipient d’origine.'),
   echa('conseil-environnement', 'Éviter le rejet dans l’environnement.'),
   echa('conseil-toxique', 'Ne pas manger, boire ou fumer en manipulant ce produit.'),
+  echa('conseil-aeration', 'Utiliser seulement en plein air ou dans un endroit bien ventilé.'),
+  clp('conseil-comburant', 'P220 Tenir à l’écart des vêtements et d’autres matières combustibles.'),
+  // Noms officiels des symboles (annexe V du règlement CLP).
+  clp('symbole-explosif', 'Symbole: bombe explosant'),
+  clp('symbole-flamme', 'Symbole: flamme'),
+  clp('symbole-comburant', 'Symbole: flamme au-dessus d’un cercle'),
+  clp('symbole-corrosion', 'Symbole: corrosion'),
+  clp('symbole-toxique', 'Symbole: tête de mort sur deux tibias'),
+  clp('symbole-exclamation', 'Symbole: point d’exclamation'),
+  clp('symbole-environnement', 'Symbole: environnement'),
 ];
 
 /** Référence et identifiants de sources d'une notion, à partir des faits qu'elle utilise. */
