@@ -436,10 +436,10 @@ export const GROUPES_NOMINAUX: readonly GroupeNom[] = [
   ),
   gn(
     'complément circonstanciel',
-    'La troupe répète sa pièce chaque mercredi après-midi.',
-    ['chaque mercredi après-midi', 'mercredi'],
+    'La troupe répète sa pièce chaque mercredi du trimestre.',
+    ['chaque mercredi du trimestre', 'mercredi'],
     ['répète', 'troupe répète sa'],
-    ['après-midi', 'chaque', 'troupe'],
+    ['trimestre', 'chaque', 'troupe'],
   ),
   gn(
     'complément circonstanciel',
