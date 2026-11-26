@@ -709,7 +709,10 @@ function marquesEnTexte(rng: Rng): QuestionDraft {
     steps: [
       DEF_MARQUES,
       DEF_MARQUES_COND,
-      ...choisies.map(({ x, d, mot }) => `« ${mot} » se découpe ${ecrireM(d)} : ${x.t}.`),
+      ...choisies.map(
+        ({ x, d, mot }) =>
+          `« ${mot} » se découpe ${ecrireM(d)}${x.t === 'impératif présent' ? ', sans sujet écrit ni marque de temps' : ''} : ${x.t}.`,
+      ),
       `Réponses : ${choisies.map(({ x, d }, i) => `${at(LETTRES, i)} : **${x.t}**, **${MARQUE_DE[x.t]}**, **${d.personne}**`).join(' ; ')}.`,
     ],
   };

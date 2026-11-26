@@ -137,6 +137,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'f6-conjonctions', version: 1, lot: 'fr-6e-03', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'f6-imperatif-present', version: 1, lot: 'fr-6e-04', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'f6-conditionnel-present', version: 1, lot: 'fr-6e-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-marques-temps', version: 1, lot: 'fr-6e-04', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'f6-passe-compose-plus-que-parfait', version: 1, lot: 'fr-6e-04', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'f6-variations-radical', version: 1, lot: 'fr-6e-04', date: '2026-11-26', verdict: 'ok' },
 ];
