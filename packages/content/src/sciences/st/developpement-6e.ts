@@ -146,67 +146,91 @@ const niveau3 = (rng: Rng): QuestionDraft => {
       q: 'l’organe qui assure les échanges entre la mère et le fœtus',
       mot: 'placenta',
       art: ['le', 'un'],
-      faux: ['utérus', 'cordon ombilical'],
+      faux: [
+        ['utérus', 'L’utérus abrite le fœtus : les échanges se font grâce à un autre organe.'],
+        ['cordon ombilical', 'Le cordon relie le fœtus à l’organe d’échanges : il n’est pas cet organe.'],
+      ] as const,
     },
     {
       q: 'ce qui relie le fœtus au placenta',
       mot: 'cordon ombilical',
       art: ['le', 'un'],
-      faux: ['placenta', 'utérus'],
+      faux: [
+        ['placenta', 'Le placenta est l’organe d’échanges : on cherche ce qui relie le fœtus à lui.'],
+        ['utérus', 'L’utérus est l’organe qui abrite le fœtus.'],
+      ] as const,
     },
     {
       q: 'l’ensemble des transformations qui font passer un têtard à la forme adulte',
       mot: 'métamorphose',
       art: ['la', 'une'],
-      faux: ['germination', 'puberté'],
+      faux: [
+        ['germination', 'La germination concerne la graine, pas le têtard.'],
+        ['puberté', 'La puberté concerne l’être humain qui devient capable de se reproduire.'],
+      ] as const,
     },
   ]);
   return ecrit({
     prompt: `Écris le nom de ${m.q}.`,
     accepte: formes(m.mot, ...m.art).concat(m.mot === 'cordon ombilical' ? ['cordon'] : []),
-    faux: m.faux.map((f): Faux => [f, `Ce terme ne désigne pas ${m.q}.`]),
+    faux: m.faux,
     hint: 'Pense au rôle décrit.',
     pourquoi: [m.mot === 'métamorphose' ? 'La grenouille et le papillon se métamorphosent.' : PLACENTA],
   });
 };
 
+const SITUATIONS: readonly { q: string; bon: string; faux: readonly Faux[]; hint: string; pourquoi: string }[] = [
+  {
+    q: 'Pendant la grossesse, comment le fœtus reçoit-il les nutriments dont il a besoin ?',
+    bon: 'par des échanges au niveau du placenta, relié à lui par le cordon ombilical',
+    faux: [
+      [
+        'en mangeant par la bouche les aliments de sa mère',
+        'Le fœtus ne mange pas par la bouche : les nutriments passent par le placenta.',
+      ],
+      ['en utilisant les réserves d’un œuf pondu', 'L’être humain est vivipare : il ne pond pas d’œuf.'],
+      ['en respirant l’air dans l’utérus', 'Les échanges de gaz passent aussi par le placenta.'],
+    ],
+    hint: 'Quel organe fait le lien entre la mère et le fœtus ?',
+    pourquoi: PLACENTA,
+  },
+  {
+    q: 'Deux élèves du même âge n’ont pas les mêmes signes de puberté. Quelle affirmation est correcte ?',
+    bon: 'la puberté est une période : elle ne se résume pas à un instant ni à un âge unique',
+    faux: [
+      [
+        'l’un des deux n’aura jamais de puberté',
+        'Un décalage entre deux élèves ne veut pas dire qu’elle n’aura pas lieu.',
+      ],
+      ['la puberté se produit en une seule journée', 'Les changements s’installent peu à peu, sur une période.'],
+      ['la puberté commence à la naissance et finit à un an', 'Elle a lieu entre l’enfance et l’âge adulte.'],
+    ],
+    hint: 'La puberté est-elle un instant ou une période ?',
+    pourquoi: 'La puberté est une période de la croissance, pas un moment précis.',
+  },
+  {
+    q: 'Quel changement annonce que le corps devient capable de se reproduire ?',
+    bon: 'les organes reproducteurs deviennent fonctionnels',
+    faux: [
+      ['les dents de lait apparaissent', 'Les dents de lait apparaissent chez le bébé.'],
+      ['l’enfant apprend à marcher', 'La marche s’apprend bien avant la puberté.'],
+      ['le placenta se forme chez l’enfant', 'Le placenta se forme pendant une grossesse.'],
+    ],
+    hint: 'Quels organes servent à se reproduire ?',
+    pourquoi: 'À la puberté, les glandes génitales deviennent fonctionnelles.',
+  },
+];
+
 const niveau4 = (rng: Rng): QuestionDraft => {
   const t = rng.int(0, 3);
   if (t === 0) return paires(rng, MOTS, 5, 'Sans aide, associe les cinq termes à leur sens');
   if (t === 1) {
-    const cas = rng.pick([
-      {
-        q: 'Pendant la grossesse, comment le fœtus reçoit-il les nutriments dont il a besoin ?',
-        bon: 'par des échanges au niveau du placenta, relié à lui par le cordon ombilical',
-        faux: [
-          'en mangeant par la bouche les aliments de sa mère',
-          'en utilisant les réserves d’un œuf pondu',
-          'en respirant l’air dans l’utérus',
-        ],
-        pourquoi: PLACENTA,
-      },
-      {
-        q: 'Deux élèves du même âge n’ont pas les mêmes signes de puberté. Quelle affirmation est correcte ?',
-        bon: 'la puberté est une période : elle ne se résume pas à un instant ni à un âge unique',
-        faux: [
-          'l’un des deux n’aura jamais de puberté',
-          'la puberté se produit en une seule journée',
-          'la puberté commence à la naissance et finit à un an',
-        ],
-        pourquoi: 'La puberté est une période de la croissance, pas un moment précis.',
-      },
-      {
-        q: 'Quel changement annonce que le corps devient capable de se reproduire ?',
-        bon: 'les organes reproducteurs deviennent fonctionnels',
-        faux: ['les dents de lait apparaissent', 'l’enfant apprend à marcher', 'le placenta se forme chez l’enfant'],
-        pourquoi: 'À la puberté, les glandes génitales deviennent fonctionnelles.',
-      },
-    ]);
+    const cas = rng.pick(SITUATIONS);
     return qcm(rng, {
       prompt: cas.q,
       bon: cas.bon,
-      faux: cas.faux.map((f): Faux => [f, cas.pourquoi]),
-      hint: 'Rappelle-toi le rôle de chaque organe et ce qu’est la puberté.',
+      faux: cas.faux,
+      hint: cas.hint,
       pourquoi: [cas.pourquoi],
     });
   }
@@ -251,7 +275,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     const j2 = j1 + rng.pick([30, 35, 40]);
     const j3 = j2 + rng.pick([25, 28, 33]);
     return compter({
-      prompt: `Lis l’élevage de ${espece} (jours ${j1}, ${j2}, ${j3}). Combien de jours séparent la sortie des têtards de l’apparition des pattes arrière ?`,
+      prompt: `Lis l’élevage ${espece.startsWith('le ') ? `du ${espece.slice(3)}` : `de ${espece}`} (jours ${j1}, ${j2}, ${j3}). Combien de jours séparent la sortie des têtards de l’apparition des pattes arrière ?`,
       figure: document('Journal d’élevage (données inventées pour l’exercice)', [
         'Jour 0 : des œufs sont observés dans l’eau.',
         `Jour ${j1} : des têtards sortent des œufs.`,
@@ -273,7 +297,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
   const s3 = 32;
   const m1 = rng.pick([11, 12, 13]);
   const gain = rng.pick([28, 29, 30]);
-  const figure = document('Suivi d’une grossesse (données inventées pour l’exercice)', [
+  const figure = document('Suivi d’une grossesse, en semaines de développement (données inventées)', [
     `Semaine ${s1} : la grossesse est confirmée.`,
     `Semaine ${s2} : taille estimée ${m1} cm.`,
     `Semaine ${s3} : taille estimée ${m1 + gain} cm.`,

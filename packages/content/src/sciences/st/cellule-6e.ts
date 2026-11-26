@@ -92,7 +92,9 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     const p = rng.pick(PARTIES);
     return ecrit({
       prompt: `Écris le nom de cette partie de la cellule : ${p.role}.`,
-      accepte: formes(p.nom, p.art.split(' ')[0] ?? 'le', p.nom === 'membrane' ? 'une' : 'un'),
+      accepte: formes(p.nom, p.art.split(' ')[0] ?? 'le', p.nom === 'membrane' ? 'une' : 'un').concat(
+        p.nom === 'membrane' ? ['membrane plasmique', 'membrane cellulaire', 'la membrane plasmique'] : [],
+      ),
       faux: PARTIES.filter((x) => x !== p).map((x): Faux => [x.nom, `${maj(x.art)}, c’est ${x.role}.`]),
       hint: 'Les trois noms à connaître : un au bord, un arrondi, un qui remplit l’espace entre les deux.',
       pourquoi: [`${maj(p.art)} : ${p.role}.`],
@@ -110,7 +112,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     const u = rng.pick(UNICELLULAIRES);
     return ecrit({
       prompt: `${maj(u)} est un être vivant formé d’une seule cellule. Quel adjectif le qualifie ?`,
-      accepte: ['unicellulaire', 'uni-cellulaire'],
+      accepte: ['unicellulaire', 'uni-cellulaire', 'monocellulaire'],
       faux: [
         ['pluricellulaire', 'Pluricellulaire désigne un être formé de plusieurs cellules.'],
         ['microscope', 'Le microscope est l’instrument, pas un adjectif.'],
@@ -188,7 +190,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
         ['cellule', 'La cellule est l’unité : on cherche le nom de l’ensemble.'],
         ['noyau', 'Le noyau est une partie d’une cellule.'],
       ],
-      hint: 'Le même mot sert pour l’étoffe d’un vêtement.',
+      hint: 'C’est le niveau d’organisation entre la cellule et l’organe.',
       pourquoi: ['Des cellules semblables, de même fonction, forment un ensemble.'],
     });
   return ecrit({
@@ -264,7 +266,9 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     prompt: `Lis les relevés (${code}). Quel adjectif qualifie l’organisme ${cible.l} ?`,
     figure,
     accepte:
-      cible.nb === 1 ? ['unicellulaire', 'uni-cellulaire'] : ['pluricellulaire', 'multicellulaire', 'pluri-cellulaire'],
+      cible.nb === 1
+        ? ['unicellulaire', 'uni-cellulaire', 'monocellulaire']
+        : ['pluricellulaire', 'multicellulaire', 'pluri-cellulaire'],
     faux: [[cible.nb === 1 ? 'pluricellulaire' : 'unicellulaire', UNI]],
     hint: 'Relis la ligne de cet organisme : une seule cellule, ou plusieurs ?',
     pourquoi: [UNI, `L’organisme ${cible.l} est ${bon}.`],

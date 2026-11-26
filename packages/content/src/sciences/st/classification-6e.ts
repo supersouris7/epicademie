@@ -97,8 +97,8 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     const [groupe, attribut] = rng.pick(ATTRIBUTS.filter((a) => a[0] !== 'les arthropodes'));
     const nom = groupe.replace('les ', '');
     return ecrit({
-      prompt: `Un animal possède ${attribut}. Écris le nom du groupe le plus précis que définit cet attribut.`,
-      accepte: formes(nom, 'les').concat(formes(nom.replace(/s$/, ''), 'un')),
+      prompt: `Quel groupe réunit tous les animaux qui possèdent ${attribut} ? Écris son nom.`,
+      accepte: formes(nom, 'les', 'des').concat(formes(nom === 'oiseaux' ? 'oiseau' : nom.replace(/s$/, ''), 'un')),
       faux: ATTRIBUTS.filter((a) => a[0] !== groupe).map(([g, a]): Faux => [
         g.replace('les ', ''),
         `Ce groupe se définit par un autre attribut (${a}) : ce n’est pas le groupe demandé.`,
@@ -118,7 +118,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   });
 };
 
-const PIEGES: readonly { q: string; bon: string; faux: readonly Faux[]; pourquoi: string }[] = [
+const PIEGES: readonly { q: string; bon: string; faux: readonly Faux[]; pourquoi: string; hint: string }[] = [
   {
     q: 'Pourquoi le groupe « les animaux sans vertèbres » n’a-t-il pas de sens dans une classification de parenté ?',
     bon: 'parce que l’on ne réunit que selon des attributs présents',
@@ -128,6 +128,7 @@ const PIEGES: readonly { q: string; bon: string; faux: readonly Faux[]; pourquoi
       ['parce que ces animaux n’ont aucun attribut', 'Ils ont des attributs : il faut les utiliser.'],
     ],
     pourquoi: 'Dans une classification, seules les présences d’attributs ont du sens.',
+    hint: 'Un groupe se définit-il par ce que ses membres ont, ou par ce qu’il leur manque ?',
   },
   {
     q: 'La chauve-souris vole comme le pigeon, mais elle a des mamelles comme le chat. De qui est-elle la plus proche parente ?',
@@ -144,6 +145,7 @@ const PIEGES: readonly { q: string; bon: string; faux: readonly Faux[]; pourquoi
       ],
     ],
     pourquoi: 'La chauve-souris et le chat sont des mammifères.',
+    hint: 'Raisonne sur les attributs présents, pas sur l’apparence ni le mode de vie.',
   },
   {
     q: 'L’araignée est-elle un insecte ?',
@@ -154,6 +156,7 @@ const PIEGES: readonly { q: string; bon: string; faux: readonly Faux[]; pourquoi
       ['non : elle n’appartient pas aux arthropodes', 'Les araignées font partie des arthropodes.'],
     ],
     pourquoi: 'Les insectes ont trois paires de pattes ; les araignées ne sont pas des insectes.',
+    hint: 'Compte les pattes.',
   },
   {
     q: 'Une clé de détermination et une classification servent-elles à la même chose ?',
@@ -167,6 +170,7 @@ const PIEGES: readonly { q: string; bon: string; faux: readonly Faux[]; pourquoi
       ['oui : les deux rangent les êtres vivants selon leur usage', 'L’usage concerne la classification utilitaire.'],
     ],
     pourquoi: 'Identifier un être vivant et le classer sont deux activités différentes.',
+    hint: 'Trouver un nom et réunir en groupes : est-ce la même activité ?',
   },
 ];
 
@@ -179,13 +183,16 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       prompt: p.q,
       bon: p.bon,
       faux: p.faux,
-      hint: 'Raisonne sur les attributs présents, pas sur l’apparence ni le mode de vie.',
+      hint: p.hint,
       pourquoi: [p.pourquoi],
     });
   }
   return ecrit({
     prompt: 'Quel type de classification cherche à montrer les liens de parenté entre les êtres vivants ?',
-    accepte: formes('phylogénétique').concat(['classification phylogénétique', 'phylogénique']),
+    accepte: formes('phylogénétique').concat(formes('classification phylogénétique', 'la', 'une'), [
+      'phylogénique',
+      'phylogenique',
+    ]),
     faux: [
       ['utilitaire', 'La classification utilitaire repose sur l’usage.'],
       ['écologique', 'La classification écologique repose sur le milieu de vie.'],
@@ -233,6 +240,9 @@ const TRIOS: readonly { proches: readonly [Espece, Espece]; autre: Espece; commu
   },
 ];
 
+/** « de » devant un nom précédé de son article : « du chat », « de la baleine ». */
+const de = (nom: string) => (nom.startsWith('le ') ? `du ${nom.slice(3)}` : `de ${nom}`);
+
 const niveau5 = (rng: Rng): QuestionDraft => {
   const trio = rng.pick(TRIOS);
   const [x, y] = rng.shuffle(trio.proches) as [Espece, Espece];
@@ -245,7 +255,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
   const t = rng.int(0, 3);
   if (t === 0)
     return qcm(rng, {
-      prompt: `Lis le tableau (${noms}). Quelle espèce est la plus proche parente de ${x.nom}, parmi les deux autres ?`,
+      prompt: `Lis le tableau (${noms}). Quelle espèce est la plus proche parente ${de(x.nom)}, parmi les deux autres ?`,
       figure,
       bon: y.nom,
       faux: [
@@ -282,7 +292,10 @@ const niveau5 = (rng: Rng): QuestionDraft => {
   return ecrit({
     prompt: `Lis le tableau (${noms}). Écris l’attribut qui réunit ${x.nom} et ${y.nom} dans une boîte plus petite.`,
     figure,
-    accepte: [...formes(trio.commun, 'les', 'des'), ...(trio.commun === 'six pattes' ? ['6 pattes'] : [])],
+    accepte: [
+      ...formes(trio.commun, 'les', 'des'),
+      ...(trio.commun === 'six pattes' ? ['6 pattes', 'trois paires de pattes', '3 paires de pattes'] : []),
+    ],
     faux: [[trio.large, `L’attribut « ${trio.large} » est partagé par les trois : il forme la grande boîte.`]],
     hint: 'Cherche l’attribut que deux lignes seulement ont en commun.',
     pourquoi: [EMBOITE, `Seuls ${x.nom} et ${y.nom} portent « ${trio.commun} ».`],
@@ -300,6 +313,8 @@ export const classification = notion({
     'types-classification',
     'arbres',
     'utilitaire',
+    'ecologie',
+    'phylogenie',
     'caracteres-communs',
     'presence',
     'invertebres',

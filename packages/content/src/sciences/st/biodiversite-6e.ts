@@ -67,7 +67,10 @@ const niveau2 = (rng: Rng): QuestionDraft => {
 const EVENEMENTS: readonly { nom: string; age: number }[] = [
   { nom: 'formation de la Terre (environ 4,5 milliards d’années)', age: 4500 },
   { nom: 'grande extinction de la fin de l’ère primaire (252 millions d’années)', age: 252 },
-  { nom: 'extinction de la fin du Crétacé, celle des dinosaures (environ 66 millions d’années)', age: 66 },
+  {
+    nom: 'extinction de la fin du Crétacé, qui touche les dinosaures non aviens (environ 66 millions d’années)',
+    age: 66,
+  },
 ];
 const HOMO = 'diffusion du genre Homo en Eurasie, au Quaternaire';
 
@@ -109,6 +112,48 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   });
 };
 
+const DINOSAURES =
+  'Les dinosaures non aviens (tous sauf les oiseaux) ont disparu il y a environ 66 millions d’années, bien avant l’histoire des humains.';
+
+const SITUATIONS: readonly { q: string; bon: string; faux: readonly Faux[]; hint: string; pourquoi: string }[] = [
+  {
+    q: 'Un film montre des êtres humains chassant des tyrannosaures. Pourquoi est-ce impossible ?',
+    bon: 'ces dinosaures ont disparu bien avant l’histoire des humains',
+    faux: [
+      ['ces dinosaures ont vécu uniquement après les humains', 'C’est l’inverse : ils ont vécu bien avant.'],
+      ['ces dinosaures et les humains ont disparu la même année', 'Les humains n’ont pas disparu.'],
+      ['les humains sont plus anciens que la Terre', 'La Terre est bien plus ancienne que les humains.'],
+    ],
+    hint: 'Compare les deux époques sur l’échelle des temps.',
+    pourquoi: DINOSAURES,
+  },
+  {
+    q: 'Que signifie une crise biologique à l’échelle des temps géologiques ?',
+    bon: 'de très nombreuses espèces disparaissent, ce qui change la biodiversité',
+    faux: [
+      [
+        'un seul individu d’une espèce meurt',
+        'La mort d’un individu n’est pas une crise : elle concerne beaucoup d’espèces.',
+      ],
+      ['toutes les roches disparaissent', 'Une crise « biologique » concerne les êtres vivants, pas les roches.'],
+      ['les êtres vivants cessent d’avoir des cellules', 'Tous les êtres vivants sont faits de cellules.'],
+    ],
+    hint: '« Biologique » : qu’est-ce qui est touché ?',
+    pourquoi: CRISES,
+  },
+  {
+    q: 'Deux individus se ressemblent beaucoup. Est-ce suffisant pour affirmer qu’ils sont de la même espèce ?',
+    bon: 'non : il faut aussi qu’ils puissent avoir ensemble une descendance fertile',
+    faux: [
+      ['oui : la ressemblance suffit toujours', 'La ressemblance ne suffit pas : la reproduction compte aussi.'],
+      ['oui, s’ils ont la même taille', 'La taille ne définit pas une espèce.'],
+      ['non : des individus d’une espèce sont tous identiques', 'Dans une espèce, les individus diffèrent.'],
+    ],
+    hint: 'Pense à la descendance.',
+    pourquoi: 'La ressemblance ne suffit pas : la reproduction compte aussi.',
+  },
+];
+
 const niveau4 = (rng: Rng): QuestionDraft => {
   const t = rng.int(0, 3);
   if (t === 0) return paires(rng, MOTS, 5, 'Sans aide, associe les cinq termes à leur sens');
@@ -125,44 +170,12 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       pourquoi: ['252 − 66 = 186.'],
     });
   if (t === 2) {
-    const c = rng.pick([
-      {
-        q: 'Un film montre des êtres humains chassant des dinosaures. Pourquoi est-ce impossible ?',
-        bon: 'les dinosaures du film ont disparu bien avant l’histoire des humains',
-        faux: [
-          'les dinosaures vivaient uniquement après les humains',
-          'les deux ont disparu la même année',
-          'les humains sont plus anciens que la Terre',
-        ],
-        pourquoi:
-          'L’extinction des dinosaures date d’environ 66 millions d’années ; le genre Homo se diffuse bien plus tard.',
-      },
-      {
-        q: 'Que signifie une crise biologique à l’échelle des temps géologiques ?',
-        bon: 'de très nombreuses espèces disparaissent, ce qui change la biodiversité',
-        faux: [
-          'un seul individu d’une espèce meurt',
-          'toutes les roches disparaissent',
-          'les êtres vivants cessent d’avoir des cellules',
-        ],
-        pourquoi: CRISES,
-      },
-      {
-        q: 'Deux individus se ressemblent beaucoup. Est-ce suffisant pour affirmer qu’ils sont de la même espèce ?',
-        bon: 'non : il faut aussi qu’ils puissent avoir ensemble une descendance fertile',
-        faux: [
-          'oui : la ressemblance suffit toujours',
-          'oui, s’ils ont la même taille',
-          'non : des individus d’une espèce sont tous identiques',
-        ],
-        pourquoi: 'La ressemblance ne suffit pas : la reproduction compte aussi.',
-      },
-    ]);
+    const c = rng.pick(SITUATIONS);
     return qcm(rng, {
       prompt: c.q,
       bon: c.bon,
-      faux: c.faux.map((f): Faux => [f, c.pourquoi]),
-      hint: 'Pense à l’échelle de temps et à la définition des termes.',
+      faux: c.faux,
+      hint: c.hint,
       pourquoi: [c.pourquoi],
     });
   }
@@ -179,9 +192,8 @@ const niveau4 = (rng: Rng): QuestionDraft => {
 };
 
 const PEUPLEMENTS = [
-  { code: 'A', fossile: 'coquilles d’animaux marins', milieu: 'une mer' },
+  { fossile: 'coquilles d’animaux marins', milieu: 'une mer' },
   {
-    code: 'B',
     fossile: 'feuilles et graines de plantes terrestres',
     milieu: 'une terre émergée avec de la végétation',
   },
@@ -200,7 +212,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       `Surface actuelle : ${actuel} espèces vivantes recensées.`,
     ]);
     return qcm(rng, {
-      prompt: `Lis la coupe (${n}, ${n + 2} et ${actuel} espèces ; couche profonde ${ancien.code}). D’après les fossiles, quel milieu correspond à la couche profonde ?`,
+      prompt: `Lis la coupe (${n}, ${n + 2} et ${actuel} espèces ; couche profonde : surtout des ${ancien.fossile}). D’après les fossiles, quel milieu correspond à la couche profonde ?`,
       figure,
       bon: ancien.milieu,
       faux: [
@@ -275,6 +287,7 @@ export const biodiversite = notion({
     'crises',
     'fin-primaire',
     'fin-cretace',
+    'non-aviens',
     'quaternaire',
     'espece-criteres',
     'cle',

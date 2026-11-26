@@ -48,4 +48,9 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'p6-vitesse', version: 1, lot: 'st-6e-02', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p6-sources-conversions', version: 1, lot: 'st-6e-02', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p6-circuit', version: 1, lot: 'st-6e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'v6-cellule', version: 1, lot: 'st-6e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'v6-classification', version: 1, lot: 'st-6e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'v6-reproduction', version: 1, lot: 'st-6e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'v6-developpement', version: 1, lot: 'st-6e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'v6-biodiversite', version: 1, lot: 'st-6e-03', date: '2026-11-26', verdict: 'ok' },
 ];

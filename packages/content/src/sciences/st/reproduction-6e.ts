@@ -53,40 +53,63 @@ const niveau1 = (rng: Rng): QuestionDraft => {
   });
 };
 
+const SITUATIONS: readonly { q: string; bon: string; faux: readonly Faux[]; hint: string; pourquoi: string }[] = [
+  {
+    q: 'Lors de la pollinisation, d’où le pollen part-il et où arrive-t-il ?',
+    bon: 'de l’étamine au stigmate du pistil',
+    faux: [
+      ['du stigmate du pistil à l’étamine', 'C’est le trajet inversé : le pollen est produit par l’étamine.'],
+      ['de la racine à la fleur', 'La racine ne produit pas de pollen.'],
+      ['du fruit à la graine', 'Le fruit et les graines se forment après la pollinisation.'],
+    ],
+    hint: 'Quel organe de la fleur produit le pollen ?',
+    pourquoi: POLLEN,
+  },
+  {
+    q: 'Chez l’être humain, quel type de fécondation a lieu ?',
+    bon: 'une fécondation interne, dans le corps de la femme',
+    faux: [
+      [
+        'une fécondation externe, dans l’eau',
+        '« Externe » veut dire hors du corps : ce n’est pas le cas chez l’humain.',
+      ],
+      ['une fécondation par transport du pollen', 'Le pollen concerne les plantes à fleurs.'],
+      ['aucune fécondation', 'La reproduction humaine passe par la rencontre de deux gamètes.'],
+    ],
+    hint: 'La rencontre des gamètes a-t-elle lieu dans le corps ou en dehors ?',
+    pourquoi: 'Chez l’être humain, la rencontre des gamètes se fait dans le corps.',
+  },
+  {
+    q: 'Que fait un insecte pollinisateur pour la plante ?',
+    bon: 'il aide au transport du pollen',
+    faux: [
+      ['il fabrique les graines à la place de la plante', 'Les graines viennent des ovules de la fleur.'],
+      ['il remplace les ovules', 'Les ovules appartiennent à la fleur : rien ne les remplace.'],
+      ['il transforme les racines en fruits', 'C’est la fleur qui se transforme en fruit.'],
+    ],
+    hint: 'Pense au nom : pollinisateur.',
+    pourquoi: POLLEN,
+  },
+];
+
 const niveau2 = (rng: Rng): QuestionDraft => {
   const t = rng.int(0, 2);
   if (t === 0) return paires(rng, FLEUR, 3, 'Fleur : associe chaque mot à sa description');
   if (t === 1) return paires(rng, HUMAIN, 3, 'Appareil reproducteur humain : associe chaque élément à sa fonction');
-  const cas = rng.pick([
-    {
-      q: 'Lors de la pollinisation, d’où le pollen part-il et où arrive-t-il ?',
-      bon: 'de l’étamine au stigmate du pistil',
-      faux: ['du stigmate du pistil à l’étamine', 'de la racine à la fleur', 'du fruit à la graine'],
-    },
-    {
-      q: 'Chez l’être humain, quel type de fécondation a lieu ?',
-      bon: 'une fécondation interne, dans le corps de la femme',
-      faux: ['une fécondation externe, dans l’eau', 'une fécondation par transport du pollen', 'aucune fécondation'],
-    },
-    {
-      q: 'Que fait un insecte pollinisateur pour la plante ?',
-      bon: 'il aide au transport du pollen',
-      faux: [
-        'il fabrique les graines à la place de la plante',
-        'il remplace les ovules',
-        'il transforme les racines en fruits',
-      ],
-    },
-  ]);
+  const cas = rng.pick(SITUATIONS);
   return qcm(rng, {
     prompt: cas.q,
     bon: cas.bon,
-    faux: cas.faux.map((f): Faux => [f, `Ce n’est pas ce qui se passe. La bonne idée : ${cas.bon}.`]),
-    hint: 'Pense au trajet et au lieu de la reproduction.',
-    pourquoi: [
-      cas.q.includes('humain') ? 'Chez l’être humain, la rencontre des gamètes se fait dans le corps.' : POLLEN,
-    ],
+    faux: cas.faux,
+    hint: cas.hint,
+    pourquoi: [cas.pourquoi],
   });
+};
+
+const DEFINITIONS: Record<string, string> = {
+  pollinisation: 'La pollinisation est un transport : celui du pollen jusqu’au stigmate.',
+  fécondation: 'La fécondation est une fusion : celle de deux gamètes, après le transport du pollen.',
+  germination: 'La germination est le moment où la graine commence à donner une nouvelle plante.',
 };
 
 const niveau3 = (rng: Rng): QuestionDraft => {
@@ -109,7 +132,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     return ecrit({
       prompt: `Écris le nom de ce phénomène : ${mots.q}.`,
       accepte: formes(mots.m, ...mots.art),
-      faux: mots.faux.map((f): Faux => [f, `La ${f} désigne un autre phénomène que : ${mots.q}.`]),
+      faux: mots.faux.map((f): Faux => [f, DEFINITIONS[f] ?? '']),
       hint: 'Transporter n’est pas la même chose que fusionner.',
       pourquoi: [mots.m === 'pollinisation' ? POLLEN : GAMETES],
     });
@@ -169,9 +192,9 @@ const IDEES: readonly { q: string; bon: string; faux: readonly Faux[]; pourquoi:
     q: 'Quelle situation relève de la reproduction, au sens biologique, plutôt que des autres dimensions de la sexualité ?',
     bon: 'la fécondation d’un ovule par un spermatozoïde',
     faux: [
-      ['les règles fixées par la loi', 'C’est la dimension juridique de la sexualité.'],
+      ['les droits et les interdits fixés par la loi', 'C’est la dimension juridique de la sexualité.'],
       ['les sentiments que l’on éprouve pour une personne', 'C’est la dimension psycho-émotionnelle.'],
-      ['les règles de vie partagées dans une société', 'C’est la dimension sociale.'],
+      ['les habitudes et les traditions d’une société', 'C’est la dimension sociale.'],
     ],
     pourquoi: 'La reproduction est la dimension biologique ; la sexualité a aussi d’autres dimensions.',
   },
@@ -222,7 +245,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       prompt: `Écris le nom scientifique de cet élément de l’appareil reproducteur : « ${role} ».`,
       accepte: o.accepte,
       faux: autresOrganes(nom).map(([n, why]): Faux => [n.replace(/^(les |le |l’)/, ''), why]),
-      hint: 'Le programme attend le vocabulaire scientifique.',
+      hint: 'Que fait cet élément : produire des cellules reproductrices, ou abriter la grossesse ?',
       pourquoi: [`${maj(nom)} : ${role}.`],
     });
   }
@@ -316,6 +339,7 @@ export const reproduction = notion({
     'fruit-graines',
     'cooperation',
     'abondance',
+    'nourriture-pollinisation',
     'impact-pesticides',
     'organes',
     'interne-vivipare',

@@ -510,6 +510,15 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-26',
   },
   // Le vivant (6e, lot st-6e-03).
+  { ...tlfi('ecologie', 'écologie', '%C3%A9cologie'), consultedOn: '2026-11-26' },
+  {
+    id: 'ecologie-rencontre-pollinisateurs',
+    title: '« Rencontre avec les pollinisateurs » (brochure, édition d’avril 2021)',
+    publisher: 'Ministère de la Transition écologique (ecologie.gouv.fr)',
+    url: 'https://www.ecologie.gouv.fr/sites/default/files/publications/11003-9_Rencontre-avec-pollinisateurs_BATweb_en_pdf_accessible.pdf',
+    textDate: '2021-04-01',
+    consultedOn: '2026-11-26',
+  },
   { ...tlfi('cellule', 'cellule', 'cellule'), consultedOn: '2026-11-26' },
   { ...tlfi('microscope', 'microscope', 'microscope'), consultedOn: '2026-11-26' },
   { ...tlfi('membrane', 'membrane', 'membrane'), consultedOn: '2026-11-26' },

@@ -31,7 +31,11 @@ const FAITS_PROPRES: readonly Fait[] = [
   tl('pluricellulaire', 'unicellulaire', "l'organisme pluricellulaire de l'homme"),
   tl('levure', 'levure', 'Champignon unicellulaire'),
   tl('bacterie', 'bacterie', 'Micro-organisme uni-cellulaire'),
-  tl('tissu', 'tissu', 'Ensemble de cellules végétales de morphologie et de composition semblables'),
+  tl(
+    'tissu',
+    'tissu',
+    'Ensemble de cellules végétales de morphologie et de composition semblables, ayant une même fonction',
+  ),
   // Classification.
   prog(
     'types-classification',
@@ -39,6 +43,12 @@ const FAITS_PROPRES: readonly Fait[] = [
   ),
   prog('arbres', 'Lire et interpréter des arbres de parenté simples.'),
   tl('utilitaire', 'utilitaire', "Qui a pour fin l'utilité, qui vise le pratique, l'utile."),
+  tl(
+    'ecologie',
+    'ecologie',
+    'Science qui étudie les relations entre les êtres vivants (humains, animaux, végétaux) et le milieu organique ou inorganique dans lequel ils vivent.',
+  ),
+  fait('phylogenie', 'mnhn-classer-le-vivant', 'une illustration des relations de parenté entre espèces'),
   // Reproduction.
   prog(
     'fruit-graines',
@@ -105,6 +115,11 @@ const FAITS_PROPRES: readonly Fait[] = [
   tl('uterus', 'uterus', "et où s'effectue la gestation"),
   tl('vagin', 'vagin', "Canal musculo-muqueux qui s'étend de l'utérus à la vulve"),
   tl('penis', 'penis', 'Organe copulateur du mâle'),
+  fait(
+    'nourriture-pollinisation',
+    'ecologie-rencontre-pollinisateurs',
+    'C’est en recherchant de la nourriture (nectar, pollen), un abri ou un partenaire que ces animaux pollinisent involontairement les fleurs.',
+  ),
   // Développement et puberté.
   prog('cycle', 'Décrire le cycle de vie d’une plante à fleurs et celui d’un animal.'),
   prog(
@@ -145,6 +160,11 @@ const FAITS_PROPRES: readonly Fait[] = [
     "les transformations phys. et psychiques qui se produisent entre l'enfance et l'âge adulte",
   ),
   // Biodiversité actuelle et passée.
+  fait(
+    'non-aviens',
+    'insu-dinosaures',
+    'On parle de dinosaures non-aviens, c’est à dire du groupe n’incluant pas les oiseaux.',
+  ),
   prog(
     'cle-programme',
     'Déterminer des espèces biologiques actuelles ou fossiles, en utilisant une clé de détermination.',
