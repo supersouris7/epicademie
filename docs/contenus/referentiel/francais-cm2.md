@@ -21,7 +21,7 @@
 | `fr-cm2-08` | Vocabulaire                      | familles de mots ; préfixes (in-, im-, dé-, re-) ; suffixes ; synonymes et antonymes de même classe ; mot générique et mots particuliers ; expressions et locutions                           | couverte, en relecture |
 | `fr-cm2-09` | Orthographe des mots             | ou/où ; la/l'a/là ; ce/se ; leur/leurs ; quel(le)/qu'elle ; lettres muettes finales (dérivation)                                                                                              | couverte, en relecture |
 | `fr-cm2-10` | Lire et comprendre               | texte narratif ; texte documentaire ; inférences ; sens d'un mot ; personnages et narrateur                                                                                                   | couverte, en relecture |
-| `fr-cm2-11` | Culture littéraire               | récit, personnage, narrateur ; théâtre : réplique, didascalie ; poésie : vers, strophe, rime ; fable et morale ; conte merveilleux                                                            | absente                |
+| `fr-cm2-11` | Culture littéraire               | récit, personnage, narrateur ; théâtre : réplique, didascalie ; poésie : vers, strophe, rime ; fable et morale ; conte merveilleux                                                            | couverte, en relecture |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).
