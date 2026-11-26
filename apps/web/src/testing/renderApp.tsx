@@ -5,10 +5,25 @@ import { MotionConfig } from 'motion/react';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 import { App } from '../app/App.tsx';
-import { createQueryClient } from '../app/queryClient.ts';
+import { AdminApp } from '../features/admin/index.ts';
+import { createQueryClient } from '../shared/api/queryClient.ts';
 import { useSession } from '../shared/lib/session.ts';
 import { useRealtime } from '../features/realtime/store.ts';
 import { createFakeApi, type FakeApi, type FakeApiOptions } from './fakeApi.ts';
+
+// L'application charge ses écrans à la demande : ici ils sont déjà transformés avant le 1er test,
+// pour que la durée d'une attente ne dépende pas de la machine (couverture en CI).
+import.meta.glob(['../features/**/*.tsx', '!../**/*.test.tsx'], { eager: true });
+
+/**
+ * Rend la console d'administration (application à part, admin.html), branchée sur le faux serveur.
+ */
+export function renderAdmin(options: FakeApiOptions = {}) {
+  const server = createFakeApi(options);
+  vi.stubGlobal('fetch', server.fetch);
+  const user = userEvent.setup();
+  return { ...render(<AdminApp />), server, user };
+}
 
 /**
  * Rend l'application complète sur une page donnée, branchée sur le faux serveur, avec le

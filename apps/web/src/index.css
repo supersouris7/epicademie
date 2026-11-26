@@ -3,6 +3,9 @@
 @import '@fontsource-variable/nunito';
 @import './design/tokens.css';
 
+/* La console d'administration a sa propre feuille de style (admin.css) : ses classes restent hors du jeu. */
+@source not './features/admin';
+
 /* Tablette (ou écran large) en paysage : mise en page en deux colonnes. */
 @custom-variant land (@media (orientation: landscape) and (min-width: 900px));
 /* Écran coupé en deux colonnes (outils sur le côté) dès qu'il y a la place en largeur, téléphone couché compris. */
@@ -180,36 +183,4 @@ button {
   to {
     background-position-x: var(--sprite-to);
   }
-}
-
-/*
- * Console d'administration (/admin) : thème de la page de pilotage, qui l'affiche dans un onglet
- * (le jeu garde son propre thème). Classes `*-pilot-*`, variables aussi lues par les graphiques SVG.
- */
-@theme static {
-  --color-pilot-bg: #0f172a;
-  --color-pilot-card: #1e293b;
-  --color-pilot-line: #334155;
-  --color-pilot-fg: #e2e8f0;
-  --color-pilot-mut: #94a3b8;
-  --color-pilot-acc: #818cf8;
-  --color-pilot-ok: #34d399;
-  --color-pilot-warn: #fbbf24;
-  --color-pilot-bad: #f87171;
-}
-
-.admin-dark {
-  color-scheme: dark;
-  accent-color: var(--color-pilot-acc);
-  font:
-    15px/1.45 system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    sans-serif;
-}
-
-/* Pas de halo du jeu autour de la console (défilement élastique, barres du navigateur). */
-body:has(.admin-dark) {
-  background: var(--color-pilot-bg);
 }

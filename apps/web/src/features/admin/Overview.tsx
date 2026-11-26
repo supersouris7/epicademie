@@ -1,15 +1,14 @@
+import { lazy, Suspense } from 'react';
 import { OFFERS, SUBJECTS, SUBSCRIPTION_STATUS_LABELS, type AdminStats, type AdminTrends } from '@epicademie/shared';
-import { useAnomalies, useReports, useStats, useTrends } from './api.ts';
+import { useAnomalies, useStats, useTrends } from './api.ts';
 import { BarChart, LineChart, ShareChart } from './Charts.tsx';
-import { Anomalies } from './Insights.tsx';
-import { date, money, nb, offerLabel, plural, providerLabel } from './labels.ts';
-import { groupReports } from './reportGroups.ts';
-import { AdminButton, DataTable, Kpi, mutedClass, Panel, titleClass } from './ui.tsx';
+import { Anomalies } from './Anomalies.tsx';
+import { money, nb, offerLabel, providerLabel } from './labels.ts';
+import { AdminButton, DataTable, Kpi, Loading, mutedClass, Panel, titleClass } from './ui.tsx';
 
 /** Vue d'ensemble : l'essentiel et ce qui attend une action, puis la semaine et le cumul. */
 
-/** Notions signalées montrées dans « À traiter » (la liste complète est dans sa rubrique). */
-const TODO_SHOWN = 5;
+const ToHandleList = lazy(() => import('./ToHandleList.tsx'));
 
 const gridClass = 'grid grid-cols-2 gap-2.5 lg:grid-cols-4';
 const columnsClass = 'grid grid-cols-[minmax(0,1fr)] gap-[18px] lg:grid-cols-2';
@@ -46,11 +45,8 @@ export function Overview({ openReports }: { readonly openReports: () => void }) 
   );
 }
 
-/** Signalements en attente, une ligne par notion (les doublons sont regroupés). */
+/** Signalements en attente : la liste (et les titres des notions) n'est chargée que s'il y en a. */
 function ToHandle({ total, openReports }: { readonly total: number; readonly openReports: () => void }) {
-  const fresh = useReports('nouveau');
-  const started = useReports('en-cours');
-  const groups = groupReports([...(fresh.data ?? []), ...(started.data ?? [])]);
   return (
     <Panel
       title="À traiter"
@@ -59,21 +55,9 @@ function ToHandle({ total, openReports }: { readonly total: number; readonly ope
       {total === 0 ? (
         <p className={mutedClass}>Rien à traiter : aucun signalement en attente.</p>
       ) : (
-        <ul aria-label="Signalements à traiter" className="flex flex-col text-sm">
-          {groups.slice(0, TODO_SHOWN).map((g) => (
-            <li key={g.key} className="flex flex-wrap justify-between gap-x-3 border-t border-pilot-line py-1.5">
-              <span className="font-medium">{g.title}</span>
-              <span className={mutedClass}>
-                {plural(g.reports.length, 'signalement')} · dernier le {date(g.latest)}
-              </span>
-            </li>
-          ))}
-          {groups.length > TODO_SHOWN && (
-            <li className={`border-t border-pilot-line pt-1.5 ${mutedClass}`}>
-              et {plural(groups.length - TODO_SHOWN, 'autre notion', 'autres notions')}
-            </li>
-          )}
-        </ul>
+        <Suspense fallback={<Loading />}>
+          <ToHandleList />
+        </Suspense>
       )}
     </Panel>
   );

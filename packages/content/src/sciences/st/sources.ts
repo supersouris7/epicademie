@@ -465,7 +465,6 @@ export const SOURCES: readonly Source[] = [
     tlfi('quintal', 'quintal', 'quintal'),
     tlfi('surnager', 'surnager', 'surnager'),
     tlfi('decanter', 'décanter', 'd%C3%A9canter/verbe'),
-    tlfi('transformation', 'transformation', 'transformation'),
     tlfi('effervescence', 'effervescence', 'effervescence'),
     academie('air', 'air'),
     tlfi('rouille', 'rouille', 'rouille'),
