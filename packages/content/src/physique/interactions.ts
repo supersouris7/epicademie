@@ -205,6 +205,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     hint: 'Pour chaque effet, cherche d’abord le corps responsable, puis demande-toi s’il touche ce qui subit l’action.',
     steps: [
       'On cherche l’auteur de chaque action, puis on vérifie s’il y a contact.',
+      'Un auteur qui touche ce qu’il pousse, tire ou soutient (même l’air, invisible) exerce une action de contact. La Terre ou un aimant peuvent agir sans toucher.',
       effets.map((e) => `${e.effet} : **${e.auteur}**, action ${NATURES[e.type === 'contact' ? 0 : 1]}`).join(' ; '),
     ],
     targetSeconds: 120,

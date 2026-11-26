@@ -25,6 +25,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'p4-combustions', version: 1, lot: 'pc-4e-01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p4-conservation-masse', version: 1, lot: 'pc-4e-01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p4-vitesse', version: 2, lot: 'pc-4e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p4-interactions', version: 1, lot: 'pc-4e-02', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p4-forces', version: 1, lot: 'pc-4e-02', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p4-mouvement-force', version: 1, lot: 'pc-4e-02', date: '2026-11-26', verdict: 'ok' },
 ];
