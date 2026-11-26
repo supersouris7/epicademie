@@ -124,8 +124,7 @@ export const FCM2_CULTURE: readonly Skill[] = [
     id: 'fcm2-theatre',
     title: 'Le théâtre : réplique et didascalie',
     memo: [
-      'Au **théâtre**, une **réplique** est ce qu’un personnage dit. La **didascalie** dit comment jouer.',
-      'Exemple : « LÉA (en riant). — Bravo ! » On dit « Bravo ! », on ne dit pas « en riant ».',
+      'Au **théâtre**, un personnage dit sa **réplique** ; la **didascalie** dit comment jouer. Dans « LÉA (en riant). — Bravo ! », on ne dit que « Bravo ! ».',
       'Une **tirade** est une longue réplique. Un **aparté** est caché aux autres personnages.',
       'La pièce se découpe en **actes**, et chaque acte en **scènes**. La **comédie** veut divertir.',
     ],
