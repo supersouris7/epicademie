@@ -5,7 +5,7 @@ import { glossaryIssues, sourceIssues } from '../couverture.ts';
 import { getSource, isAllowedUrl } from '../sources.ts';
 import { skillLevels, type Level, type Question } from '../types.ts';
 import { validateVariants } from '../validate.ts';
-import { ENGLISH_PRESENT_5E_CHAPTER, ADVERBS } from './present-5e.ts';
+import { ENGLISH_PRESENT_5E_CHAPTER, ADVERBS, FRAMES } from './present-5e.ts';
 import { FAITS as PRESENT_FACTS } from './present-5e-faits.ts';
 import { ENGLISH_PAST_5E_CHAPTER, REGULAR_VERBS, misspelt } from './preterit.ts';
 import { FAITS as PAST_FACTS } from './preterit-faits.ts';
@@ -143,7 +143,62 @@ describe('anglais 5e : présent simple, be + ing et prétérit', () => {
   it('did : base verbale après did ; « your » accepté pour « my »', () => {
     const q = find('a5-preterit-did', 4, 'oui ou non) : « My brother');
     if (q.answer.kind !== 'text') throw new Error('saisie attendue');
-    for (const a of q.answer.accepted) expect(a).toMatch(/^Did (my|your) brother /);
+    for (const a of q.answer.accepted) expect(a).toMatch(/^Did (my brother|your brother|he) /);
+  });
+
+  it('did : « to » final et pronom sujet acceptés dans la question avec Where', () => {
+    for (const [verb, past] of [
+      ['walk', 'walked to the park'],
+      ['go', 'went to school'],
+    ] as const) {
+      const q = find('a5-preterit-did', 4, `le lieu : « My parents ${past}`);
+      const when = /(?:park|school) (.+)\. »/.exec(q.prompt)![1]!;
+      for (const subject of ['my parents', 'your parents', 'they'])
+        for (const end of ['', ' to', ` ${when}`, ` to ${when}`])
+          for (const mark of ['', '?', ' ?']) {
+            const t = `Where did ${subject} ${verb}${end}${mark}`;
+            expect(text(q, t), t).toBe(true);
+          }
+      expect(text(q, `Where did they ${past.split(' ')[0]}?`)).toBe(false);
+    }
+  });
+
+  it('did : pronom sujet accepté dans la question oui/non et la négation', () => {
+    const ask = find('a5-preterit-did', 4, 'oui ou non) : « Lisa played football');
+    const askWhen = /football (.+)\. »/.exec(ask.prompt)![1]!;
+    expect(text(ask, `Did she play football ${askWhen}?`)).toBe(true);
+    const no = find('a5-preterit-did', 4, 'négative : « Lisa played football');
+    const noWhen = /football (.+)\. »/.exec(no.prompt)![1]!;
+    for (const t of [`She didn’t play football ${noWhen}.`, `She did not play football ${noWhen}`])
+      expect(text(no, t), t).toBe(true);
+    expect(text(no, `He didn’t play football ${noWhen}.`)).toBe(false);
+  });
+
+  it('did : le document du niveau 5 est un message, pas une carte postale', () => {
+    for (const q of questions('a5-preterit-did', 5)) {
+      expect(q.figure?.kind === 'document' && q.figure.title).toMatch(/^A message from /);
+      expect(q.prompt).toMatch(/^Lis le message de /);
+    }
+  });
+
+  it('marqueurs : aucune habitude avec un verbe dont le prétérit s’écrit comme la forme employée', () => {
+    const same = new Set([
+      ...['bet', 'cost', 'cut', 'fit', 'hit', 'hurt', 'let', 'put', 'quit', 'read', 'set', 'shut', 'spread'],
+      ...IRREGULAR_VERBS.filter((v) => v.past.includes(v.base)).map((v) => v.base),
+    ]);
+    const habits = FRAMES.find((f) => f.moment === 'habit')!.frames;
+    for (const frame of habits)
+      for (const word of frame.toLowerCase().split(' ')) expect(same.has(word), frame).toBe(false);
+  });
+
+  it('marqueurs : même semaine précisée au niveau 5, « … time » accepté', () => {
+    for (const q of questions('a5-marqueurs-temps', 5)) expect(q.prompt).toContain('même semaine');
+    const q = find('a5-marqueurs-temps', 3, '« dans deux ans »');
+    for (const t of ['in two years’ time', "in 2 years' time"]) expect(text(q, t), t).toBe(true);
+    for (const x of questions('a5-marqueurs-temps', 4)) {
+      if (x.answer.kind !== 'text' || !x.answer.accepted[0]!.startsWith('in ')) continue;
+      expect(text(x, `${x.answer.accepted[1]!}’ time`), x.prompt).toBe(true);
+    }
   });
 
   it('niveaux 5 : les textes complétés suivent le document', () => {

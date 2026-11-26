@@ -639,7 +639,12 @@ const MARKERS: readonly Marker[] = [
   { en: 'now', fr: 'maintenant', moment: 'now', alt: ['right now'] },
   { en: 'this morning', fr: 'ce matin', moment: 'now' },
   { en: 'tomorrow', fr: 'demain', moment: 'future' },
-  { en: 'in two years', fr: 'dans deux ans', moment: 'future', alt: ['in 2 years'] },
+  {
+    en: 'in two years',
+    fr: 'dans deux ans',
+    moment: 'future',
+    alt: ['in 2 years', 'in two years’ time', 'in 2 years’ time'],
+  },
 ];
 const marked = (moment: Moment) => MARKERS.filter((m) => m.moment === moment && m.en !== 'this morning');
 const MOMENT_FR: Record<Moment, string> = {
@@ -668,9 +673,9 @@ function markerSpot(rng: Rng): QuestionDraft {
   };
 }
 
-const FRAMES = [
+export const FRAMES = [
   { moment: 'past', frames: ['Tom visited London …', 'My parents watched a film …', 'Lisa played tennis …'] },
-  { moment: 'habit', frames: ['My dad cooks dinner …', 'Maya walks the dog …', 'My parents read the news …'] },
+  { moment: 'habit', frames: ['My dad cooks dinner …', 'Maya walks the dog …', 'My sister reads the news …'] },
   { moment: 'now', frames: ['Look! Emir is swimming …', 'Listen! My sister is singing …', 'We are having lunch …'] },
 ] as const;
 /** Marqueurs impossibles avec chaque temps (jamais défendables). */
@@ -755,7 +760,7 @@ function markerCount(rng: Rng): QuestionDraft {
   const verb = past ? 'visited the museum' : 'is visiting the museum';
   return {
     prompt: `Aujourd’hui, nous sommes ${at(DAYS_FR, today)}. « ${p.text} ${verb} on ${at(DAYS, event)} » (la même semaine). Complète avec « ${past ? 'ago' : 'in'} » : « ${p.text} ${verb} … . »`,
-    answer: { kind: 'text', accepted: [good, digits, ...(past ? [] : [`${good}’ time`])] },
+    answer: { kind: 'text', accepted: [good, digits, ...(past ? [] : [`${good}’ time`, `${digits}’ time`])] },
     traps: [
       {
         text: past ? `in ${word} days` : `${word} days ago`,
@@ -794,7 +799,7 @@ function markerDiary(rng: Rng): QuestionDraft {
     `Now: ${current.base} ${current.obj}`,
   ]);
   return {
-    prompt: `Nous sommes ${at(DAYS_FR, today)}. Lis les notes de ${p.text}, puis complète le message (verbe « ${event.base} », nombre de jours et marqueurs).`,
+    prompt: `Nous sommes ${at(DAYS_FR, today)}. Lis les notes de ${p.text} (le jour noté est de la même semaine), puis complète le message (verbe « ${event.base} », nombre de jours et marqueurs).`,
     figure: { kind: 'document', title: `${p.text}’s notes`, lines, credit: WRITTEN },
     answer: {
       kind: 'cloze',

@@ -413,6 +413,9 @@ const ACTIONS: readonly Action[] = [
 const TIMES = ['yesterday', 'last week', 'two days ago'] as const;
 /** Sujets des questions et négations : « we » est écarté des questions (on s’adresse alors à « you »). */
 const ASKABLE = PEOPLE.filter((p) => p.pronoun !== 'we');
+/** Le sujet repris par son pronom (« My parents » → « they ») est aussi une réponse correcte. */
+const withPronoun = (p: Person, subjects: readonly Person[]): readonly Person[] =>
+  p.mid === p.pronoun ? subjects : [...subjects, { ...p, text: cap(p.pronoun), mid: p.pronoun }];
 const WHY_DID = 'Au prétérit, la question et la négation se font avec did (didn’t) pour toutes les personnes.';
 const WHY_BASE = 'Après did ou didn’t, le verbe reste à la base : did porte déjà le passé.';
 
@@ -508,14 +511,20 @@ function didTransform(rng: Rng): QuestionDraft {
   const when = rng.pick(TIMES);
   const mode = rng.int(0, 2);
   if (mode === 0) {
-    const build = (aux: string, form: string) => `${p.text} ${aux} ${form} ${a.obj} ${when}`;
+    const subjects = withPronoun(p, [p]);
+    const build = (to: Person, aux: string, form: string) => `${to.text} ${aux} ${form} ${a.obj} ${when}`;
     return {
       prompt: `Mets à la forme négative : « ${said(p, a, when)} »`,
-      answer: { kind: 'text', accepted: dotted([build('didn’t', a.base), build('did not', a.base)]) },
-      traps: dottedTraps([
-        { text: build('didn’t', a.past), why: WHY_BASE },
-        { text: build('not', a.past), why: WHY_DID },
-      ]),
+      answer: {
+        kind: 'text',
+        accepted: dotted(subjects.flatMap((to) => [build(to, 'didn’t', a.base), build(to, 'did not', a.base)])),
+      },
+      traps: dottedTraps(
+        subjects.flatMap((to) => [
+          { text: build(to, 'didn’t', a.past), why: WHY_BASE },
+          { text: build(to, 'not', a.past), why: WHY_DID },
+        ]),
+      ),
       hint: 'Ajoute le petit mot du passé à la forme négative, puis reviens à la base du verbe.',
       steps: [WHY_DID, WHY_BASE, `Réponse : **${denied(p, a, when)}**`],
     };
@@ -524,12 +533,16 @@ function didTransform(rng: Rng): QuestionDraft {
     const school = ACTIONS.filter((x) => x.obj.startsWith('to '));
     const go = rng.pick(school);
     const build = (to: Person, aux: string, form: string) => `Where ${aux} ${to.mid} ${form}`;
-    const forms = mids(p).flatMap((to) => [build(to, 'did', go.base), `${build(to, 'did', go.base)} ${when}`]);
+    const subjects = withPronoun(p, mids(p));
+    const forms = subjects.flatMap((to) => {
+      const question = build(to, 'did', go.base);
+      return [question, `${question} to`].flatMap((q) => [q, `${q} ${when}`]);
+    });
     return {
       prompt: `Pose la question avec « Where » pour demander le lieu : « ${said(p, go, when)} »`,
       answer: { kind: 'text', accepted: asked(forms) },
       traps: askedTraps(
-        mids(p).flatMap((to) => [
+        subjects.flatMap((to) => [
           { text: build(to, 'did', go.past), why: WHY_BASE },
           { text: `Where ${to.mid} ${go.past}`, why: 'Après le mot interrogatif, il faut did avant le sujet.' },
         ]),
@@ -539,11 +552,12 @@ function didTransform(rng: Rng): QuestionDraft {
     };
   }
   const build = (to: Person, aux: string, form: string) => `${aux} ${to.mid} ${form} ${a.obj} ${when}`;
+  const subjects = withPronoun(p, mids(p));
   return {
     prompt: `Transforme en question (réponse attendue : oui ou non) : « ${said(p, a, when)} »`,
-    answer: { kind: 'text', accepted: asked(mids(p).map((to) => build(to, 'Did', a.base))) },
+    answer: { kind: 'text', accepted: asked(subjects.map((to) => build(to, 'Did', a.base))) },
     traps: askedTraps(
-      mids(p).flatMap((to) => [
+      subjects.flatMap((to) => [
         { text: build(to, 'Did', a.past), why: WHY_BASE },
         { text: `${cap(a.past)} ${to.mid} ${a.obj} ${when}`, why: WHY_DID },
       ]),
@@ -573,17 +587,17 @@ function didPostcard(rng: Rng): QuestionDraft {
       }
     : { parts: [` ${other.obj}.`], blanks: [{ mode: 'text' as const, accepted: [other.past] }] };
   return {
-    prompt: `Lis la carte de ${p.text}, puis complète : question sur « ${q.fr} », réponse courte, puis phrase sur « ${other.fr} ».`,
-    figure: { kind: 'document', title: `A postcard from ${p.text}`, lines, credit: WRITTEN },
+    prompt: `Lis le message de ${p.text}, puis complète : question sur « ${q.fr} », réponse courte, puis phrase sur « ${other.fr} ».`,
+    figure: { kind: 'document', title: `A message from ${p.text}`, lines, credit: WRITTEN },
     answer: {
       kind: 'cloze',
       parts: [...intro, ...end.parts],
       blanks: [{ mode: 'text', accepted: ['Did'] }, { mode: 'text', accepted: reply }, ...end.blanks],
     },
-    hint: 'La réponse courte reprend le petit mot de la question. Puis regarde si la carte affirme ou nie la seconde action.',
+    hint: 'La réponse courte reprend le petit mot de la question. Puis regarde si le message affirme ou nie la seconde action.',
     steps: [
       WHY_DID,
-      `La carte dit : « I ${yes.past} ${yes.obj} » et « I didn’t ${no.base} ${no.obj} ».`,
+      `Le message dit : « I ${yes.past} ${yes.obj} » et « I didn’t ${no.base} ${no.obj} ».`,
       `Réponse : **Did**, **${reply[0]}**, **${first ? `didn’t ${other.base}` : other.past}**`,
     ],
   };
