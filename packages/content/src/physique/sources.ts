@@ -118,7 +118,6 @@ export const SOURCES: readonly Source[] = [
   ).map(([id, mot]) => ({ ...academie(id, mot), consultedOn: '2026-11-26' })),
   { ...tlfi('eau', 'eau', 'eau'), consultedOn: '2026-11-26' },
   { ...tlfi('molecule', 'molécule', 'mol%C3%A9cule'), consultedOn: '2026-11-26' },
-  { ...tlfi('transformation', 'transformation', 'transformation'), consultedOn: '2026-11-26' },
   { ...tlfi('comburant', 'comburant', 'comburant'), consultedOn: '2026-11-26' },
   {
     id: 'eduscol-ethanol-4e',
