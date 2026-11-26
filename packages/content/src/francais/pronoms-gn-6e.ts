@@ -123,7 +123,7 @@ function pronomFonctionDraft(rng: Rng, level: Level): QuestionDraft {
         hint: 'La place ne suffit pas : repère le pronom qui commande le verbe, puis construis le verbe avec « quelqu’un ».',
         steps: [
           'Les pronoms « nous » et « vous » peuvent être sujet, COD ou COI ; « me » et « te » peuvent être COD ou COI.',
-          `« ${d.sujet} » commande le verbe. On dit « ${d.construction} ».`,
+          `« ${d.sujet} » commande le verbe : c’est le sujet. On dit « ${d.construction} » : « ${d.complement} » est donc ${d.fonction}.`,
           `Réponses : **${d.sujet}** ; **${d.complement}** ; **${d.fonction}**.`,
         ],
       };
@@ -155,7 +155,7 @@ function pronomFonctionDraft(rng: Rng, level: Level): QuestionDraft {
         hint: 'Analyse chaque verbe séparément. Pour la ligne 4, la fonction du groupe décide de la forme du pronom.',
         steps: [
           DEF_PRONOM,
-          `${lignes.map((l) => l.preuve).join(' ')} Ligne 4 : « ${r.groupe} » est ${r.fonction} (${r.accord}).`,
+          `${lignes.map((l, i) => `Ligne ${i + 1}, « ${l.pronom} » : ${l.preuve}`).join(' ')} Ligne 4 : « ${r.groupe} » est ${r.fonction} (${r.accord}).`,
           `Réponses : **${lignes.map((l) => l.fonction).join(' ; ')}** ; **${r.pronom}**.`,
         ],
       };
@@ -246,7 +246,7 @@ function antecedentDraft(rng: Rng, level: Level): QuestionDraft {
         hint: 'Demande-toi qui fait l’action, puis qui la reçoit. Vérifie le genre et le nombre.',
         steps: [
           DEF_ANTECEDENT,
-          `Le sujet « ${sujet.pronom} » désigne ceux qui font l’action ; « ${complement.pronom} » est un pronom complément qui reprend l’autre groupe.`,
+          `Le sujet « ${sujet.pronom} » reprend « ${sujet.antecedent} », qui fait l’action ; « ${complement.pronom} » est un pronom complément qui reprend l’autre groupe.`,
           `Réponses : **${sujet.antecedent}** ; **${complement.antecedent}**.`,
         ],
       };
@@ -274,7 +274,7 @@ function antecedentDraft(rng: Rng, level: Level): QuestionDraft {
         hint: 'Remonte dans le texte à partir de chaque pronom, puis remplace-le par le groupe trouvé : la phrase doit garder son sens.',
         steps: [
           DEF_ANTECEDENT,
-          `« ${milieu.pronom} » complète le verbe de la ligne 2 : ${milieu.fonction === 'complément d’objet direct' ? 'sans préposition' : 'il remplace un complément avec « à »'}. À la ligne 4, on cherche qui agit, puis sur quoi porte l’action.`,
+          `« ${milieu.pronom} » complète le verbe de la ligne 2 : ${milieu.fonction === 'complément d’objet direct' ? 'sans préposition, c’est un COD' : 'il remplace un complément avec « à », c’est un COI'}. À la ligne 4, on cherche qui agit, puis sur quoi porte l’action.`,
           `Réponses : **${milieu.antecedent}** ; **${milieu.fonction}** ; **${sujet.antecedent}** ; **${complement.antecedent}**.`,
         ],
       };
@@ -294,7 +294,7 @@ const FONCTIONS_GN: readonly FonctionGn[] = [
 ];
 const PREUVES_GN: Readonly<Record<FonctionGn, string>> = {
   sujet: 'il commande l’accord du verbe et se remplace par « il », « elle », « ils » ou « elles »',
-  'complément d’objet direct': 'il complète le verbe sans préposition',
+  'complément d’objet direct': 'il complète le verbe sans préposition et ne peut pas être déplacé',
   'attribut du sujet': 'il suit un verbe attributif et dit ce qu’est le sujet',
   'complément circonstanciel': 'il précise les circonstances et peut se supprimer',
 };
@@ -372,12 +372,12 @@ function groupeNominalDraft(rng: Rng, level: Level): QuestionDraft {
             ...listes(['complément d’objet indirect', 'complément circonstanciel'], [g.fonction]),
           ],
         },
-        hint: 'La préposition ne fait pas partie du groupe nominal qu’elle introduit. Peut-on supprimer l’ensemble ?',
+        hint: 'Écris le groupe sans la préposition. Puis demande-toi : le verbe réclame-t-il cette préposition, ou le groupe indique-t-il une circonstance (où, quand…) ?',
         steps: [
           'Un groupe nominal prépositionnel est un groupe nominal introduit par une préposition.',
           g.fonction === 'complément d’objet indirect'
             ? 'Ici, le verbe se construit avec cette préposition : le groupe complète le verbe.'
-            : 'Ici, le groupe précise une circonstance : la phrase reste correcte sans lui.',
+            : 'Ici, le verbe n’impose pas cette préposition : le groupe précise une circonstance (où, quand, malgré quoi) et peut se supprimer.',
           `Réponses : **${g.gn}** ; **${g.noyau}** ; **${g.fonction}**.`,
         ],
       };
@@ -396,7 +396,7 @@ function groupeNominalDraft(rng: Rng, level: Level): QuestionDraft {
         hint: 'Repère chaque verbe. Pour le noyau, cherche le nom dont dépendent les autres mots du groupe.',
         steps: [
           DEF_GN,
-          `${preuveGn(a)} ${preuveGn(b)}`,
+          `${preuveGn(a)} ${preuveGn(b)} Dans « ${c.gn} », les autres mots déterminent ou précisent le nom « ${c.noyau} ».`,
           `Réponses : **${a.gn}** ; **${b.fonction}** ; **${c.noyau}**.`,
         ],
       };
@@ -411,7 +411,7 @@ const DEF_EXPANSION =
   'L’épithète (adjectif ou groupe adjectival) se rattache au nom directement. Le complément du nom étudié ici se rattache au nom par une préposition.';
 const preuveExp = (e: AvecExpansion, f: Expansion) =>
   f === 'épithète'
-    ? `« ${e.expansion} » complète le nom « ${e.noyau} » directement, sans préposition, et s’accorde avec lui.`
+    ? `« ${e.expansion} » complète le nom « ${e.noyau} » directement, sans préposition, et s’accorde avec lui.${e.gn.startsWith('de ') ? ' Ici, « de » est un déterminant (il remplace « des » devant l’adjectif), pas une préposition.' : ''}`
     : `« ${e.expansion} » complète le nom « ${e.noyau} » par l’intermédiaire d’une préposition.`;
 const phraseExp = (e: AvecExpansion) => `${e.avant} ${e.gn}.`;
 const banque = (f: Expansion) => (f === 'épithète' ? EPITHETES : COMPLEMENTS_DU_NOM);

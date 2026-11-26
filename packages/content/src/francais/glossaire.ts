@@ -143,7 +143,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'pronom-personnel',
     word: 'pronom personnel',
     forms: ['pronoms personnels', 'pronom', 'pronoms'],
-    definition: 'Petit mot qui remplace un nom ou une personne : je, tu, il, elle, nous, vous, ils, elles.',
+    definition:
+      'Petit mot qui désigne qui parle, à qui l’on parle, ou reprend un groupe nominal : je, tu, il, elle, nous, vous, me, te, le, lui, leur…',
     example: 'Elle chante.',
   },
   {
