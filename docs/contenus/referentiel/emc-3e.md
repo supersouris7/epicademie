@@ -9,10 +9,10 @@
 
 ## Chapitres et notions
 
-| Lot        | Chapitre                  | Notions                                                                                   | État actuel            |
-| ---------- | ------------------------- | ----------------------------------------------------------------------------------------- | ---------------------- |
-| `em-3e-01` | Faire vivre la démocratie | institutions de la Ve République ; élections ; citoyenneté active ; défense et engagement | couverte               |
-| `em-3e-02` | Médias et opinion         | rôle des médias ; sondages ; démocratie et opinion publique ; esprit critique             | couverte, en relecture |
+| Lot        | Chapitre                  | Notions                                                                                   | État actuel |
+| ---------- | ------------------------- | ----------------------------------------------------------------------------------------- | ----------- |
+| `em-3e-01` | Faire vivre la démocratie | institutions de la Ve République ; élections ; citoyenneté active ; défense et engagement | couverte    |
+| `em-3e-02` | Médias et opinion         | rôle des médias ; sondages ; démocratie et opinion publique ; esprit critique             | couverte    |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).

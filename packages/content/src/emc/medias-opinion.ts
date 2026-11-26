@@ -227,7 +227,7 @@ const medias: Notion = {
       ],
       [
         ['uniquement lire, sans jamais réagir', 'Ces plateformes sont interactives : on peut y intervenir.'],
-        ['voter la loi', 'Seul le Parlement vote la loi, pas les internautes.'],
+        ['voter la loi', 'La loi est votée par le Parlement ou par référendum, pas sur un réseau social.'],
         ['effacer les journaux des autres', 'Publier n’autorise pas à supprimer les informations d’autrui.'],
       ],
       ['Sur ces plateformes, chacun peut prendre la ', ' et contribuer à la communication.', ['parole']],
@@ -244,12 +244,19 @@ const medias: Notion = {
         ['de votes officiels pour les députés', 'Les députés sont élus dans des bureaux de vote.'],
         ['de décisions du Gouvernement seulement', 'Les débats y sont ouverts aux citoyens.'],
       ],
-      ['Les médias sociaux sont aussi le lieu de ', ' et de mobilisations.', ['débats', 'debats', 'débat', 'debat']],
+      [
+        'Les médias sociaux sont aussi le lieu de ',
+        ' et de mobilisations.',
+        ['débats', 'debats', 'débat', 'debat', 'discussions', 'discussion', 'échanges', 'echanges'],
+      ],
       'Des citoyens y discutent et s’y rassemblent autour de causes.',
     ),
     fait(
       ENJEU,
-      ['À quelle époque l’information est-elle, tout particulièrement, un enjeu essentiel ?', 'à l’ère du numérique'],
+      [
+        'Selon le programme, à quelle époque l’information est-elle tout particulièrement un enjeu essentiel ?',
+        'à l’ère du numérique',
+      ],
       [
         ['seulement avant l’imprimerie', 'Le programme souligne l’enjeu à notre époque.'],
         ['uniquement en l’absence de médias', 'C’est justement leur multiplication qui rend l’enjeu fort.'],
@@ -395,12 +402,12 @@ const medias: Notion = {
         ),
         lecture(
           SOURCE_SURE,
-          'Quelle compétence Maya peut-elle encore exercer sur ces deux articles ?',
-          'juger si chaque source est sûre ou peu sûre',
+          'Que peut encore vérifier Maya à propos de ces deux articles ?',
+          'si chaque source est sûre ou peu sûre',
           [
-            ['choisir le titre le plus court sans lire', 'La longueur du titre ne dit rien de la fiabilité.'],
-            ['interdire l’un des deux journaux', 'La liberté de la presse ne le permet pas à un lecteur.'],
-            ['croire seulement le premier lu', 'L’ordre de lecture ne prouve rien.'],
+            ['quel titre est le plus court, sans lire', 'La longueur du titre ne dit rien de la fiabilité.'],
+            ['comment faire interdire l’un des deux', 'La liberté de la presse ne le permet pas à un lecteur.'],
+            ['rien : le premier article lu a raison', 'L’ordre de lecture ne prouve rien.'],
           ],
           'L’éducation aux médias apprend à distinguer une source sûre d’une source peu sûre.',
         ),
@@ -430,7 +437,7 @@ const sondages: Notion = {
         ['une loi votée par le Parlement', 'Une loi est une règle, pas une enquête.'],
         ['un comptage de tous les habitants', 'On n’interroge qu’une partie de la population.'],
       ],
-      ['On réalise un sondage en interrogeant un ', ' de la population.', ['échantillon', 'echantillon']],
+      ['Un sondage interroge seulement une partie de la population, appelée un ', '.', ['échantillon', 'echantillon']],
       'On interroge une partie de la population pour estimer ce que pense l’ensemble.',
     ),
     fait(
@@ -520,7 +527,11 @@ const sondages: Notion = {
           ['la Cour d’assises', 'Elle juge les crimes.'],
           ['le conseil de la vie lycéenne', 'Il concerne la démocratie dans les lycées.'],
         ],
-        ['La commission des ', ' veille à la qualité des sondages électoraux.', ['sondages']],
+        [
+          'La ',
+          ' des sondages est chargée d’assurer leur objectivité et leur qualité pour les élections.',
+          ['commission'],
+        ],
         'Elle contrôle les sondages électoraux et peut imposer des mises au point.',
       ),
     ),
@@ -592,7 +603,7 @@ const sondages: Notion = {
       'quelle méthode consiste à interroger un groupe qui a les mêmes caractéristiques que la population ? La méthode des …',
       ['quotas', 'les quotas', 'quota'],
       [
-        ['hasards', 'La méthode au hasard s’appelle la méthode aléatoire, une autre possibilité.'],
+        ['aléatoire', 'La méthode aléatoire tire les personnes au hasard : ici, on fixe des proportions.'],
         ['votes', 'Un vote n’est pas une méthode d’échantillonnage.'],
       ],
       'La méthode des quotas fixe des proportions à respecter.',
@@ -664,7 +675,10 @@ const sondages: Notion = {
           [
             ['que le résultat du vote est déjà connu', 'Un sondage ne remplace pas le scrutin.'],
             ['que personne ne peut consulter la méthode', 'Au contraire, une notice est consultable.'],
-            ['qu’aucun nombre de sondés n’existe', 'Le nombre de personnes interrogées doit être indiqué.'],
+            [
+              'qu’il n’a pas à dire combien de personnes ont répondu',
+              'Le nombre de personnes interrogées doit être indiqué.',
+            ],
           ],
           'La loi impose la mention des marges d’erreur.',
         ),
@@ -705,7 +719,11 @@ const opinion: Notion = {
         ['les décrets du Premier ministre', 'Un décret est une décision, pas une mesure de l’opinion.'],
         ['les bulletins météo', 'Ils ne concernent pas les avis des citoyens.'],
       ],
-      ['On essaie de saisir l’opinion publique par des ', ' de natures diverses.', ['sondages', 'sondage']],
+      [
+        'On essaie de saisir l’opinion publique par des enquêtes de natures diverses, appelées des ',
+        '.',
+        ['sondages', 'sondage'],
+      ],
       'Les sondages tentent de mesurer ce que pense une population à un moment donné.',
     ),
     fait(
@@ -764,11 +782,11 @@ const opinion: Notion = {
         SANS_VALEUR,
         ['Quelle est la portée juridique d’une pétition ?', 'elle n’a pas de valeur juridique'],
         [
-          ['elle vaut une loi dès la première signature', 'Seul le Parlement vote la loi.'],
+          ['elle vaut une loi dès la première signature', 'La loi est votée par le Parlement ou par référendum.'],
           ['elle annule un jugement', 'Un jugement se conteste devant la justice.'],
           ['elle remplace une élection', 'Seule une élection désigne les élus.'],
         ],
-        ['Une pétition n’a pas de valeur ', '.', ['juridique']],
+        ['Une pétition n’a pas de valeur ', '.', ['juridique', 'légale', 'legale']],
         'Elle ne crée pas de règle, mais elle peut peser dans le débat.',
       ),
     ),
@@ -847,14 +865,14 @@ const opinion: Notion = {
       'Le référendum consulte directement le peuple.',
     ),
     libre(
-      PAR_LES_MEDIAS,
-      'quel nom donne-t-on à l’avis d’ensemble qui s’exprime dans la société ? L’opinion …',
-      ['publique', 'l’opinion publique', 'opinion publique'],
+      MANIF,
+      'comment appelle-t-on une réunion organisée sur la voie publique pour exprimer une conviction collective ?',
+      ['une manifestation', 'manifestation', 'la manifestation'],
       [
-        ['privée', 'Une opinion gardée pour soi ne pèse pas dans le débat.'],
-        ['secrète', 'Le vote est secret, mais cette opinion s’exprime au grand jour.'],
+        ['une pétition', 'Une pétition est une demande écrite que l’on signe.'],
+        ['un référendum', 'Un référendum est un vote.'],
       ],
-      'L’opinion publique s’exprime notamment par les médias.',
+      'Manifester, c’est exprimer à plusieurs une conviction sur la voie publique.',
     ),
   ],
   docs: [
@@ -972,16 +990,19 @@ const critique: Notion = {
         ['partager avant de comprendre', 'Partager trop vite peut diffuser une erreur.'],
         ['croire avant de vérifier', 'La vérification doit précéder l’adhésion.'],
       ],
-      ['S’informer, c’est prendre le temps de comprendre avant de ', '.', ['juger']],
+      ['S’informer, c’est prendre le temps de comprendre avant de porter un jugement, donc avant de ', '.', ['juger']],
       'Prendre le temps évite les réactions immédiates.',
     ),
     fait(
       INTERPRETATION,
-      ['Que faut-il différencier d’un fait ?', 'l’interprétation qui le relie et l’explique'],
       [
-        ['la date à laquelle il a eu lieu', 'La date fait partie des faits à établir.'],
-        ['la source qui le rapporte', 'La source s’évalue, mais ce n’est pas la distinction demandée ici.'],
-        ['les témoins qui l’ont vu', 'Les témoins aident à établir le fait.'],
+        'Distinguer les faits et les interprétations, c’est différencier les faits de quoi ?',
+        'de l’interprétation qui les relie et les explique',
+      ],
+      [
+        ['de la date où ils se sont produits', 'La date fait partie des faits à établir.'],
+        ['du lieu où ils se sont produits', 'Le lieu fait partie des faits à établir.'],
+        ['des témoins qui les ont vus', 'Les témoins aident à établir les faits.'],
       ],
       ['Il faut différencier les faits de l’', ' qui les relie et les explique.', ['interprétation', 'interpretation']],
       'Deux personnes peuvent s’accorder sur un fait et l’expliquer différemment.',
@@ -1008,7 +1029,7 @@ const critique: Notion = {
         ],
         ['la liberté de conscience', 'C’est un droit garanti, pas un effet de la désinformation.'],
       ],
-      ['La désinformation peut nourrir le ', '.', ['complotisme']],
+      ['La désinformation peut nourrir le ', '.', ['complotisme', 'conspirationnisme']],
       'De fausses informations peuvent faire croire à des complots cachés, parfois liés au racisme ou à l’antisémitisme.',
     ),
     expert(
@@ -1057,7 +1078,7 @@ const critique: Notion = {
           ['n’importe quel internaute', 'Un internaute peut saisir la justice, mais il n’ordonne rien.'],
         ],
         ['Le juge des ', ' peut faire cesser cette diffusion avant un scrutin.', ['référés', 'referes', 'référé']],
-        'La loi du 22 décembre 2018 permet de saisir ce juge pendant les trois mois précédant le mois des élections.',
+        'La loi du 22 décembre 2018 permet de le saisir des trois mois avant le mois des élections jusqu’au vote.',
       ),
     ),
   ],
@@ -1071,7 +1092,7 @@ const critique: Notion = {
     ['Lucidité', 'Séparer le certain, le supposé et l’ignoré'],
     ['Modestie', 'Accepter de s’être trompé'],
     ['Désinformation', 'Fausses informations diffusées pour tromper'],
-    ['Complotisme', 'Voir partout des complots cachés'],
+    ['Complotisme', 'Expliquer par des complots cachés, sans preuves'],
   ],
   libres: [
     libre(

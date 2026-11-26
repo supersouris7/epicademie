@@ -1831,4 +1831,25 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'La tendance à expliquer des événements par des complots cachés, sans preuves.',
     'Dire sans preuve qu’« on nous cache tout » relève du complotisme.',
   ),
+  t(
+    'methode-quotas',
+    'méthode des quotas',
+    [],
+    'Une façon de composer un échantillon avec les mêmes proportions que la population : âge, métier, région…',
+    'Avec la méthode des quotas, on interroge des jeunes et des adultes en bonnes proportions.',
+  ),
+  t(
+    'redressement-sondage',
+    'redressement',
+    [],
+    'La correction des résultats bruts d’un sondage, en donnant plus ou moins de poids à certaines réponses.',
+    'Le redressement compense un manque de jeunes parmi les personnes interrogées.',
+  ),
+  t(
+    'lucidite',
+    'lucidité',
+    [],
+    'Savoir faire le tri entre ce que l’on sait avec certitude, ce que l’on suppose et ce que l’on ignore.',
+    'Par lucidité, Léa dit qu’elle ne sait pas encore.',
+  ),
 ];
