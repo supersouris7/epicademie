@@ -101,4 +101,12 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'a6-voc-alimentation', version: 1, lot: 'an-6e-09', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'a6-voc-maison', version: 1, lot: 'an-6e-09', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'a6-axes-culturels', version: 1, lot: 'an-6e-09', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-present-formes', version: 1, lot: 'an-5e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-present-ou-be-ing', version: 1, lot: 'an-5e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-adverbes-frequence', version: 1, lot: 'an-5e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-marqueurs-temps', version: 1, lot: 'an-5e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-preterit-regulier', version: 2, lot: 'an-5e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-preterit', version: 2, lot: 'an-5e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-preterit-did', version: 1, lot: 'an-5e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-phrase', version: 2, lot: 'an-5e-01', date: '2026-11-26', verdict: 'ok' },
 ];
