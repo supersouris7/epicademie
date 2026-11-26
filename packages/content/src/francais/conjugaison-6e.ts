@@ -121,7 +121,6 @@ const NOM_PERSONNE: Record<PersonneImp, string> = {
   nous: 'première personne du pluriel',
   vous: 'deuxième personne du pluriel',
 };
-const FIN_IMP: Record<PersonneImp, string> = { tu: '-e, ou -s selon le verbe', nous: '-ons', vous: '-ez' };
 
 // ───────────────────────── 1. Impératif présent ─────────────────────────
 
@@ -155,7 +154,10 @@ function piegesImperatif(v: VerbeOrdre, p: PersonneImp): Piege[] {
   if (p === 'tu' && (bon.endsWith('e') || bon === 'va'))
     pieges.push([`${bon}s`, `Sans « en » ni « y » après lui, « ${bon} » ne prend pas de « s ».`]);
   else if (p === 'tu')
-    pieges.push([`${bon.replace(/s$/, '')}t`, 'La terminaison « -t » est celle de il ou elle, pas celle de tu.']);
+    pieges.push([
+      bon.endsWith('ds') ? bon.slice(0, -1) : `${bon.replace(/s$/, '')}t`,
+      'Cette écriture est celle de il ou elle au présent, pas celle de tu.',
+    ]);
   pieges.push(
     [`${p} ${forme(v, p)}`, 'À l’impératif, on n’écrit pas le sujet.'],
     [v, 'C’est l’infinitif : le verbe n’est pas conjugué.'],
@@ -260,11 +262,13 @@ function imperatifDraft(rng: Rng, level: Level): QuestionDraft {
         `Écris « ${v} » à l’impératif présent (${SITUATIONS[p]}) : « ___ ${ORDRES[v]} ! »`,
         imperatifs(v, p),
         piegesImperatif(v, p),
-        `N’écris pas de sujet. Terminaison attendue : ${FIN_IMP[p]}.`,
+        'Dis d’abord la phrase au présent avec son sujet, retire le sujet, puis vérifie la dernière lettre.',
         [
           DEF_IMP,
           `C’est la ${NOM_PERSONNE[p]}.`,
-          p === 'tu' && REG_ER.includes(v) ? regleS : `On garde le radical de « ${v} » et sa terminaison.`,
+          p === 'tu' && REG_ER.includes(v)
+            ? regleS
+            : `Pour ce verbe, l’impératif s’écrit comme au présent, sans le sujet : « ${p} ${forme(v, p)} » au présent.`,
         ],
       );
     }
@@ -727,6 +731,12 @@ const finDe = (v: VerbeCompose): string => (avecEtre(v) ? FINS_ETRE[v] : FINS[v]
 const autreTemps = (t: Compose): Compose => (t === 'passé composé' ? 'plus-que-parfait' : 'passé composé');
 const sujetsDe = (v: VerbeCompose): readonly SujetC[] => (avecEtre(v) ? SUJETS_TIERS : SUJETS_C);
 
+/** Pourquoi cette réponse : temps de l’auxiliaire, participe passé et accord. */
+const pourquoiCompose = (t: Compose, v: VerbeCompose, s: SujetC): Rich[] => [
+  `Au ${t}, l’auxiliaire « ${avecEtre(v) ? 'être' : 'avoir'} » est ${t === 'passé composé' ? 'au présent' : 'à l’imparfait'} : « ${auxiliaireAu(t, v, s.personne)} ». Le participe passé s’écrit ici « ${accorde(v, s)} ».`,
+  avecEtre(v) ? DEF_ACCORD : 'Avec « avoir », le participe passé ne s’accorde pas avec le sujet.',
+];
+
 /** Erreurs typiques : autre temps composé, mauvais auxiliaire, accord oublié ou ajouté. */
 function piegesCompose(t: Compose, v: VerbeCompose, s: SujetC): Piege[] {
   const pp = accorde(v, s);
@@ -745,7 +755,7 @@ function piegesCompose(t: Compose, v: VerbeCompose, s: SujetC): Piege[] {
   } else
     pieges.push([
       `${aux} ${pp}${pp.endsWith('s') ? 'es' : 's'}`,
-      'Avec « avoir » et un complément placé après, le participe passé ne s’accorde pas avec le sujet.',
+      'Avec « avoir », le participe passé ne s’accorde pas avec le sujet.',
     ]);
   return pieges;
 }
@@ -818,7 +828,7 @@ function composeDraft(rng: Rng, level: Level): QuestionDraft {
         bon,
         pieges: piegesCompose(t, v, s),
         hint: 'Choisis d’abord l’auxiliaire, puis son temps.',
-        steps: [DEF_COMPOSE, ...(avecEtre(v) ? [DEF_ACCORD] : [])],
+        steps: [DEF_COMPOSE, ...pourquoiCompose(t, v, s)],
       });
     }
     case 3:
@@ -851,7 +861,7 @@ function composeDraft(rng: Rng, level: Level): QuestionDraft {
           : 'Deux mots : l’auxiliaire au bon temps, puis le participe passé.',
         [
           DEF_COMPOSE,
-          ...(avecEtre(v) ? [DEF_ACCORD] : []),
+          ...pourquoiCompose(t, v, s),
           ...(negatif ? ['« ne » (ou « n’ ») et « pas » encadrent l’auxiliaire.'] : []),
         ],
       );
@@ -919,6 +929,16 @@ const POURQUOI: Record<Famille6, string> = {
   envoyer: '« Envoyer » a un radical particulier au conditionnel (enverr-) ; au présent, le y devient i.',
 };
 const regle = (v: VerbeVar) => POURQUOI[familleDe(v)];
+
+/** Explication d’une forme : la variation, ou la raison pour laquelle le radical ne change pas. */
+function explique(v: VerbeVar, f: string): string {
+  const base = v.slice(0, -2);
+  const fin = f.startsWith(base) ? f.slice(base.length) : '';
+  if (!['ais', 'ait', 'ions', 'iez', 'aient', 'ons', 'ez'].includes(fin)) return regle(v);
+  return ['cer', 'ger'].includes(familleDe(v))
+    ? `Devant « i », le « ${familleDe(v) === 'cer' ? 'c' : 'g'} » garde déjà le bon son : le radical « ${base}- » ne change pas.`
+    : `La terminaison « -${fin} » ne commence pas par un e muet : le radical « ${base}- » s’écrit comme dans l’infinitif.`;
+}
 
 /** Personne qui montre la variation au présent. */
 const presentVisible = (v: VerbeVar): Personne => (['cer', 'ger'].includes(familleDe(v)) ? 'nous' : 'je');
@@ -1049,7 +1069,7 @@ function variationsDraft(rng: Rng, level: Level): QuestionDraft {
         answer: { kind: 'match', left: items.map((x) => x.texte), right, pairs },
         hint: 'Compare chaque forme avec l’infinitif écrit entre parenthèses.',
         steps: [
-          ...items.map((x) => `${x.v} : ${CHANGEMENT[x.f]}.`),
+          ...items.map((x) => `${x.v} : ${POURQUOI[x.f]}`),
           `Réponses : ${items.map((x) => `**${x.texte}** : ${CHANGEMENT[x.f]}`).join(' ; ')}.`,
         ],
       };
@@ -1067,7 +1087,7 @@ function variationsDraft(rng: Rng, level: Level): QuestionDraft {
         ],
         'Regarde la première lettre de la terminaison : a, i ou un e muet ?',
         [
-          regle(v),
+          explique(v, imparfaitVar(v, p)),
           'À l’imparfait, la terminaison commence par « a » ou « i » : le radical ne change que si la lettre suivante l’exige.',
         ],
       );
@@ -1090,7 +1110,7 @@ function variationsDraft(rng: Rng, level: Level): QuestionDraft {
             [`${p} ${forme(v, p)}`, 'À l’impératif, on n’écrit pas le sujet.'],
           ],
           'Pense au présent de ce verbe, puis retire le sujet.',
-          [regle(v), 'La même variation du radical s’observe à l’impératif présent.'],
+          [explique(v, imperatif(v, p)), 'À l’impératif, le radical s’écrit comme au présent de l’indicatif.'],
         );
       }
       const p = rng.pick(SANS_JE);
@@ -1099,7 +1119,10 @@ function variationsDraft(rng: Rng, level: Level): QuestionDraft {
         conditionnels(v, p),
         [
           [fauteCond(v, p), 'Le radical du conditionnel se construit comme celui du futur : vérifie-le.'],
-          [imperatif(v, 'vous'), 'Cette forme n’a ni le « r » ni la marque « -ai- » ou « -i- ».'],
+          [
+            imperatif(v, 'vous'),
+            'Cette forme n’a pas les marques du conditionnel : « -r- », puis « -ai- » ou « -i- ».',
+          ],
           [v, 'C’est l’infinitif : le verbe n’est pas conjugué.'],
         ],
         'Le conditionnel se construit sur le radical du futur : dis la forme du futur à voix haute.',
@@ -1126,12 +1149,12 @@ function variationsDraft(rng: Rng, level: Level): QuestionDraft {
         prompt: 'Complète les quatre phrases : lis dans le document le verbe et le temps de chaque ligne.',
         figure: document(
           'Verbes à conjuguer',
-          phrases.map((x) => `${x.v}, ${x.t}${x.t === 'impératif présent' ? ` (${x.p})` : ''}`),
+          phrases.map((x, i) => `${i + 1}. ${x.v}, ${x.t}${x.t === 'impératif présent' ? ` (${x.p})` : ''}`),
         ),
         answer: { kind: 'cloze', parts, blanks: phrases.map((x) => textes(reponses(x))) },
         hint: 'Pour chaque verbe, regarde la première lettre de la terminaison avant d’écrire le radical.',
         steps: [
-          ...phrases.map((x) => `${x.v} : ${regle(x.v)}`),
+          ...phrases.map((x) => `${x.v} : ${explique(x.v, reponses(x)[0] ?? '')}`),
           `Réponses : ${phrases.map((x) => `**${reponses(x)[0] ?? ''}**`).join(', ')}.`,
         ],
       };
@@ -1172,7 +1195,8 @@ export const F6_CONJUGAISON: readonly Skill[] = [
     title: 'L’impératif présent',
     memo: [
       'L’**impératif** donne un ordre ou un conseil, sans sujet écrit, à trois personnes : « Chante ! Chantons ! Chantez ! »',
-      'Au singulier, un verbe en -er n’a pas de « s » (« chante ! »), sauf devant « en » ou « y » : « donnes-en », « vas-y ».',
+      'Au singulier, un verbe en -er n’a pas de « s » (« chante ! »), sauf avec « -en » ou « -y » après un trait d’union : « donnes-en ».',
+      'Il en va de même pour « aller » : « va ! » mais « vas-y ! ».',
     ],
     factId: 'c6-a-memoriser',
     faits: [
