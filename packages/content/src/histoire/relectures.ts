@@ -75,4 +75,5 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'h4-frise', version: 1, lot: 'hi-4e-04', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'h4-acteurs', version: 1, lot: 'hi-4e-04', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'h4-vocabulaire-historique', version: 1, lot: 'hi-4e-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'h3-democraties-fragilisees', version: 1, lot: 'hi-3e-01', date: '2026-11-26', verdict: 'ok' },
 ];

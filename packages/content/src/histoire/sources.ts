@@ -1084,7 +1084,7 @@ export const SOURCES: readonly Source[] = [
     id: 'eduscol-3e-guerres-totales',
     title: 'Ressource d’accompagnement « L’Europe, un théâtre majeur des guerres totales (1914-1945) » (classe de 3e)',
     publisher: 'Éduscol (ministère de l’Éducation nationale)',
-    url: 'https://cache.media.eduscol.education.fr/file/Histoire/80/2/C4_HIS_3_Th1_L_Europe,_theatre_majeur_guerres_totales-DM_593802.pdf',
+    url: 'https://eduscol.education.gouv.fr/sites/default/files/document/c4his3th1leuropetheatremajeurguerrestotales-dm593802pdf-78228.pdf',
     textDate: '2016-03',
     consultedOn: '2026-11-26',
   },

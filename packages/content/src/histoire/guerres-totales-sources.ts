@@ -49,7 +49,9 @@ export const PREUVES = {
     'pour le 4 août. Dans son message aux Chambres, lu par le président du Conseil René Viviani, Poincaré introduit le terme d’« Union sacrée »',
   ),
   unionDate: union('Raymond Poincaré, Président de la République, message aux assemblées du 4 août 1914'),
-  solidarite: union('traduisant la nécessaire solidarité face à l’ennemi'),
+  solidarite: union(
+    'Poincaré introduit le terme d’« Union sacrée », traduisant la nécessaire solidarité face à l’ennemi',
+  ),
   crise1917: annee1917('font de 1917 une année de crise'),
   mutineries: annee1917('l’échec de l’offensive Nivelle au Chemin des Dames et les mutineries qui s’ensuivent'),
   executions: civils('entre août et octobre 1914, 6 500 civils belges et français sont exécutés'),

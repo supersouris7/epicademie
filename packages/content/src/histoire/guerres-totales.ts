@@ -24,7 +24,7 @@ const guerreTotale: Notion = {
   memo: [
     'De 1914 à 1918, la Grande Guerre mobilise les **civils** aussi bien que les militaires : on parle de **guerre totale**.',
     'À l’arrière, le **front intérieur** s’organise : **économie de guerre** (les femmes remplacent une partie des hommes), **propagande** et **Union sacrée** (4 août 1914). Au combat, les **tranchées** sont le symbole de cette guerre industrielle.',
-    'Astuce brevet : classe chaque exemple dans une case : combattre, produire, convaincre ou subir. Le conflit fait plus de 9 millions de morts et disparus, dont 1,4 million pour la France.',
+    'Le conflit fait plus de 9 millions de morts et disparus, dont 1,4 million pour la France. Astuce brevet : classe chaque exemple dans une case : combattre, produire, convaincre ou subir.',
   ],
   faits: [
     {
@@ -83,7 +83,7 @@ const guerreTotale: Notion = {
         'La propagande cherche à convaincre ; des autorités morales (Églises, intellectuels, école) y participent.',
     },
     {
-      q: 'Dans l’économie de guerre, qui pallie en partie le manque d’hommes à l’arrière ?',
+      q: 'Dans l’économie de guerre, qui compense en partie le manque d’hommes à l’arrière ?',
       a: 'les femmes et les travailleurs coloniaux',
       wrong: [
         { label: 'les soldats au front', why: 'Les soldats au front combattent, ils ne sont pas à l’arrière.' },
@@ -329,6 +329,7 @@ const genocideArmeniens: Notion = {
   memo: [
     'En 1915, pendant la Grande Guerre, les Arméniens de l’**Empire ottoman** sont victimes d’un **génocide** : l’extermination systématique d’un groupe humain.',
     'Le 24 avril 1915, près de 600 intellectuels arméniens sont arrêtés à Constantinople. Puis viennent les massacres et la **déportation**, notamment vers les déserts de Mésopotamie et de Syrie : plus d’un million de morts.',
+    'L’Empire ottoman, allié de l’Allemagne et de l’Autriche-Hongrie, est alors dirigé par les Jeunes-Turcs : leur parti, Union et Progrès, exerce une dictature. Autres repères : massacres de 1894-1896, procès des responsables en 1919, journée du 24 avril créée en 2019.',
     'La France reconnaît ce génocide par la loi du 29 janvier 2001 et le commémore chaque 24 avril. Astuce brevet : donne toujours le lieu, la date et le contexte de guerre.',
   ],
   faits: [
@@ -345,7 +346,7 @@ const genocideArmeniens: Notion = {
       explain: 'Les Arméniens de l’Empire ottoman sont victimes d’un génocide.',
     },
     {
-      q: 'Dans quel État ce génocide est-il commis ?',
+      q: 'Dans quel État le génocide des Arméniens est-il commis ?',
       a: 'l’Empire ottoman',
       wrong: [
         { label: 'le Royaume-Uni', why: 'Le Royaume-Uni combat contre l’Empire ottoman.' },
@@ -413,7 +414,7 @@ const genocideArmeniens: Notion = {
       explain: 'Le génocide a provoqué la mort de plus d’un million de personnes.',
     },
     {
-      q: 'Vers quels lieux les convois de déportés sont-ils envoyés, souvent pour y mourir ?',
+      q: 'Pendant le génocide des Arméniens, vers quels lieux les convois de déportés sont-ils envoyés, souvent pour y mourir ?',
       a: 'les déserts de Mésopotamie et de Syrie',
       wrong: [
         { label: 'les ports de la mer du Nord', why: 'Ces lieux sont hors de l’Empire ottoman.' },
@@ -425,7 +426,7 @@ const genocideArmeniens: Notion = {
       explain: 'La déportation vers ces déserts fait partie de l’extermination.',
     },
     {
-      q: 'Qui est organisé en convois sur la route de la déportation ?',
+      q: 'Pendant le génocide des Arméniens, qui est organisé en convois sur la route de la déportation ?',
       a: 'des femmes, des enfants et des vieillards',
       wrong: [
         { label: 'les ministres du gouvernement', why: 'Le gouvernement jeune-turc n’est pas déporté.' },
@@ -437,7 +438,7 @@ const genocideArmeniens: Notion = {
       explain: 'La déportation frappe des familles entières.',
     },
     {
-      q: 'Selon les historiens, à quoi la déportation sert-elle de couverture ?',
+      q: 'Pendant le génocide des Arméniens, à quoi la déportation sert-elle de couverture, selon les historiens ?',
       a: 'à des ordres de mise à mort donnés en secret',
       wrong: [
         { label: 'à un retour volontaire des familles', why: 'Il s’agit d’une déportation forcée.' },
@@ -467,14 +468,14 @@ const genocideArmeniens: Notion = {
     ['2001', 'Loi française de reconnaissance'],
   ],
   paires5: [
-    ['1894-1896', 'Premiers grands massacres d’Arméniens'],
+    ['1894-1896', 'Grands massacres d’Arméniens'],
     ['1915', 'Début du génocide'],
     ['1919', 'Procès des unionistes à Constantinople'],
     ['2001', 'Reconnaissance par la loi française'],
     ['2019', 'Décret créant la journée de commémoration'],
   ],
   frise: [
-    { label: 'Les premiers grands massacres d’Arméniens', date: '1894-1896', ...PREUVES.massacres1894 },
+    { label: 'De grands massacres d’Arméniens', date: '1894-1896', ...PREUVES.massacres1894 },
     { label: 'L’arrestation d’intellectuels arméniens à Constantinople', date: '1915', ...PREUVES.rafle },
     { label: 'Le procès des unionistes à Constantinople', date: '1919', ...PREUVES.proces1919 },
     { label: 'La loi française reconnaissant le génocide', date: '2001', ...PREUVES.loiDate },
@@ -628,7 +629,7 @@ const democraties: Notion = {
   memo: [
     'Entre les deux guerres, les **démocraties** sont fragilisées : la **crise** de 1929, partie des États-Unis, provoque un **chômage de masse**, et des **ligues** antiparlementaires contestent le régime.',
     'En France, après la crise politique (émeute du 6 février 1934), la gauche s’unit contre le fascisme : le **Front populaire** gagne en 1936, avec Léon Blum. Viennent les accords Matignon, les congés payés et les 40 heures.',
-    'Astuce brevet : explique toujours en trois temps, crise, contestation, réponse. Ailleurs en Europe, plusieurs pays basculent vers des régimes autoritaires.',
+    'Astuce brevet : explique toujours en trois temps, crise, contestation, réponse. En Europe centrale et orientale, les pays basculent vers des régimes autoritaires, sauf la Tchécoslovaquie. En 1938, les accords de Munich prévoient que l’Allemagne annexe les Sudètes, une région tchécoslovaque.',
   ],
   faits: [
     {
@@ -746,14 +747,14 @@ const democraties: Notion = {
       explain: 'La semaine de travail est fixée à 40 heures.',
     },
     {
-      q: 'Quel est le ciment du Front populaire ?',
+      q: 'Qu’est-ce qui unit les partis du Front populaire, comme un « ciment » ?',
       a: 'l’antifascisme',
       wrong: [
         { label: 'le retour de la monarchie', why: 'Le Front populaire est une alliance républicaine.' },
         { label: 'l’antiparlementarisme', why: 'Au contraire, il veut défendre la République.' },
         { label: 'la collectivisation des terres', why: 'La collectivisation est une politique soviétique.' },
       ],
-      gap: ['Le ciment du Front populaire est l’', '.', ['antifascisme']],
+      gap: ['Ce qui unit les partis du Front populaire, son « ciment », est l’', '.', ['antifascisme']],
       ...PREUVES.antifascisme,
       explain: 'Les partis s’unissent contre le fascisme.',
     },
@@ -766,7 +767,7 @@ const democraties: Notion = {
         { label: 'l’URSS', why: 'L’URSS est une dictature dirigée par Staline.' },
       ],
       gap: [
-        'Les pays d’Europe centrale basculent vers l’autoritarisme, sauf la ',
+        'Dans les années 1930, les pays d’Europe centrale et orientale basculent vers des régimes autoritaires, sauf la ',
         '.',
         ['Tchécoslovaquie', 'Tchecoslovaquie'],
       ],
@@ -817,7 +818,7 @@ const democraties: Notion = {
       explain: 'Léon Blum préside le gouvernement en 1936.',
     },
     {
-      q: 'Comment appelle-t-on la situation où de très nombreuses personnes n’ont pas d’emploi ? (deux ou trois mots)',
+      q: 'Comment appelle-t-on la situation où de très nombreuses personnes n’ont pas d’emploi ?',
       accepted: [
         'chômage de masse',
         'chomage de masse',
@@ -835,7 +836,7 @@ const democraties: Notion = {
       explain: 'La crise provoque un chômage de masse.',
     },
     {
-      q: 'Quel est le nom des accords signés à l’hôtel Matignon en juin 1936 ?',
+      q: 'Quel nom portent les accords signés en juin 1936 entre les patrons et le syndicat CGT, sous le gouvernement de Léon Blum ?',
       accepted: [
         'Matignon',
         'accords Matignon',
@@ -925,7 +926,7 @@ const democraties: Notion = {
         },
         {
           q: 'En réutilisant la notion de démocratie : comment la crise est-elle ici traitée ?',
-          a: 'par des élections, une négociation et des lois',
+          a: 'par une négociation et des lois',
           wrong: [
             { label: 'par la suppression des élections', why: 'La démocratie française continue de fonctionner.' },
             { label: 'par un parti unique', why: 'Plusieurs partis existent.' },
@@ -949,8 +950,8 @@ const totalitaires: Notion = {
   title: 'Les régimes totalitaires',
   hint: 'Associe à chaque régime son chef, son pays, une date et une méthode : parti unique, propagande ou terreur.',
   memo: [
-    'Un régime **totalitaire** repose sur un **parti unique**, interdit l’opposition, concentre tous les pouvoirs et veut contrôler toute la société, avec la **propagande** et la **terreur**.',
-    'En URSS, issue de la révolution de 1917, Staline s’impose en 1928 puis lance la **collectivisation** (1929). En Italie, Mussolini arrive au pouvoir en 1922 (**fascisme**). En Allemagne, Hitler arrive au pouvoir en 1933 (**nazisme**).',
+    'Un régime **totalitaire** repose sur un **parti unique**, interdit l’opposition, concentre tous les pouvoirs et veut contrôler toute la société, avec la **propagande**, la **censure** et la **terreur**.',
+    'En URSS, issue de la révolution de 1917, Staline s’impose en 1928 puis lance la **collectivisation** (1929) ; son communisme s’impose aussi par la Grande Terreur (1937-1938). En Italie, Mussolini arrive au pouvoir en 1922 (**fascisme**). En Allemagne, Hitler arrive au pouvoir en 1933 (**nazisme**) et prend le titre de Führer en 1934.',
     'Astuce brevet : ces régimes ont des points communs, mais pas les mêmes idées ; cite toujours le pays et le chef. L’Allemagne nazie mène une politique **antisémite** : lois de Nuremberg (1935), nuit de Cristal (1938).',
   ],
   faits: [
@@ -1034,7 +1035,7 @@ const totalitaires: Notion = {
         { label: 'l’Union sacrée', why: 'L’Union sacrée date de 1914 en France.' },
         { label: 'les lois de Nuremberg', why: 'Ce sont des lois nazies de 1935.' },
       ],
-      gap: ['En 1929, Staline lance la ', ' et la planification.', ['collectivisation']],
+      gap: ['En 1929, Staline lance la ', ' des terres.', ['collectivisation']],
       ...PREUVES.collectivisation,
       explain: 'La collectivisation s’accompagne d’une industrialisation à marche forcée.',
     },
@@ -1137,6 +1138,10 @@ const totalitaires: Notion = {
       traps: [
         { text: 'démocratique', why: 'Une démocratie permet l’opposition et plusieurs partis.' },
         { text: 'parlementaire', why: 'Un régime parlementaire donne un rôle central au Parlement.' },
+        {
+          text: 'dictature',
+          why: 'C’est bien une dictature, mais quand elle veut contrôler toute la société, le mot précis est « totalitaire ».',
+        },
       ],
       ...PREUVES.totalitaire,
       explain: 'C’est un régime totalitaire.',
@@ -1252,7 +1257,7 @@ const totalitaires: Notion = {
           a: 'Staline',
           wrong: [
             { label: 'Mussolini', why: 'Mussolini dirige l’Italie, pas la Russie.' },
-            { label: 'Hitler', why: 'Hitler est évoqué à la ligne 3.' },
+            { label: 'Hitler', why: 'Hitler dirige l’Allemagne, dont parle la ligne 3.' },
             { label: 'Poincaré', why: 'Poincaré est un président français.' },
           ],
           ...PREUVES.collectivisation,
