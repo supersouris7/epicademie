@@ -1,12 +1,12 @@
 import type { Chapter, Skill } from '../types.ts';
-import { IRREGULAR_VERBS } from './verbs.ts';
+import { IRREGULAR_VERBS, verbsFor } from './verbs.ts';
 
 /**
  * Anglais, du CM1 à la 3e (docs/adr/0024-contenus-hors-maths.md). Règle : sources
  * institutionnelles seulement (21/11/2026).
  * - Choix et place des notions : Éduscol, « Repères de progressivité linguistique — Anglais »
  *   (Ministère de l'Éducation nationale, mars 2016) : impératif, déterminants, possessifs,
- *   présent simple (1re et 3e personne), pronoms sujets, prétérit.
+ *   présent simple (1re et 3e personne), pronoms sujets, prétérit (5e : voir preterit.ts).
  * - Le CM2 « Le groupe nominal » (à 5 niveaux) est dans groupe-nominal.ts ; le présent simple de 6e (à 5
  *   niveaux) dans present-simple.ts ; « Be et have » de 6e dans be-have.ts.
  * - Formes et règles : British Council, LearnEnglish, English grammar reference (pages
@@ -18,31 +18,6 @@ import { IRREGULAR_VERBS } from './verbs.ts';
 const BC = 'British Council, LearnEnglish, English grammar reference';
 const src = (page: string, notion: string) =>
   `Anglais : ${notion} (Éduscol, repères de progressivité). Formes : ${BC} (${page}).`;
-
-// ——— 5e : prétérit des verbes réguliers ———
-const regularPast: Skill = {
-  id: 'a5-preterit-regulier',
-  title: 'Le prétérit des verbes réguliers',
-  lesson: {
-    memo: [
-      'La plupart des verbes forment leur prétérit en ajoutant **-ed** : call → called, work → worked, want → wanted.',
-    ],
-    source: src('past-simple', 'prétérit des verbes réguliers'),
-  },
-  generate: (rng) => {
-    const v = rng.pick(['call', 'work', 'want'] as const);
-    return {
-      prompt: `Quel est le prétérit de **${v}** ?`,
-      answer: { kind: 'text', accepted: [`${v}ed`] },
-      traps: [{ text: v, why: 'Au prétérit, le verbe change : on ajoute -ed.' }],
-      hint: 'Verbe régulier : la terminaison du passé est -ed.',
-      steps: [
-        'La plupart des verbes forment leur prétérit avec -ed.',
-        `${v} est régulier : on ajoute -ed → **${v}ed**.`,
-      ],
-    };
-  },
-};
 
 // ——— 4e : comparatif et superlatif ———
 /** Exemples et adjectifs irréguliers de la page comparative-superlative-adjectives. */
@@ -87,6 +62,42 @@ const comparative: Skill = {
 };
 
 // ——— 3e : present perfect ———
+/**
+ * Participe passé (notion historique à 3 niveaux, chapitre de 5e) : hors des notions du lot an-5e-01, gardée sans
+ * changement d’énoncé pour la progression des élèves.
+ */
+export const PAST_PARTICIPLE_SKILL: Skill = {
+  id: 'a5-participe',
+  title: 'Le participe passé des verbes irréguliers',
+  lesson: {
+    memo: [
+      'Le participe passé sert avec have : I have **eaten** (j’ai mangé).',
+      'Chez les irréguliers, il est parfois égal au prétérit (bought, bought), parfois différent (went, **gone**).',
+    ],
+    source:
+      'Anglais, collège : participe passé des verbes irréguliers. Formes : British Council, LearnEnglish, « Irregular verbs ».',
+  },
+  generate: (rng, level) => {
+    const v = rng.pick(verbsFor(level));
+    const traps = v.past
+      .filter((p) => p !== v.participle)
+      .map((p) => ({
+        text: p,
+        why: `« ${p} », c’est le prétérit. Le participe passé de « ${v.base} » est différent.`,
+      }));
+    return {
+      prompt: `Quel est le participe passé de **to ${v.base}** (${v.french}) ?`,
+      answer: { kind: 'text', accepted: [v.participle] },
+      traps,
+      hint: 'Récite le verbe en entier : base, prétérit, participe passé. C’est la 3e forme.',
+      steps: [
+        `On récite les trois formes : **${v.base}** – **${v.past.join(' / ')}** – **${v.participle}**.`,
+        `Le participe passé est la 3e : **${v.participle}**.`,
+      ],
+    };
+  },
+};
+
 const presentPerfect: Skill = {
   id: 'a3-present-perfect',
   title: 'Le present perfect',
@@ -127,6 +138,3 @@ export const ENGLISH_GRAMMAR_CHAPTERS: readonly Chapter[] = [
   chapter('a4-comparatif', '4e', 'Comparer', [comparative]),
   chapter('a3-present-perfect', '3e', 'Le present perfect', [presentPerfect]),
 ];
-
-/** Prétérit régulier : ajouté au chapitre des verbes de 5e. */
-export const REGULAR_PAST_SKILL = regularPast;
