@@ -52,7 +52,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
     return {
       prompt: 'Associe chaque gaz à sa part dans l’air sec.',
       answer: association(rng, PART),
-      hint: 'Le gaz le plus abondant n’est pas celui qu’on respire pour vivre.',
+      hint: 'Les trois parts font 100 % : cherche le gaz le plus abondant, puis le suivant.',
       steps: [
         'L’air sec est un mélange de plusieurs gaz.',
         'Réponse : **azote → environ 78 % ; oxygène → environ 21 % ; argon et gaz rares → environ 1 %**.',
@@ -88,7 +88,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
     maj(bon),
     GAZ_AUTRES.map((g) => ({
       label: maj(g),
-      why: 'Ce gaz fait partie de l’air, mais il n’est pas cité parmi les gaz à effet de serre.',
+      why: 'Ce n’est pas un gaz à effet de serre à connaître : retiens la vapeur d’eau, le dioxyde de carbone et le méthane.',
     })),
   );
   return {
@@ -223,13 +223,13 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   const gaz = rng.pick([
     {
       nom: 'méthane',
-      source: 'les élevages de ruminants et les rizières inondées',
-      accepte: ['méthane', 'le méthane', 'methane', 'CH4'],
+      source: 'les élevages de ruminants (vaches, moutons…) et les rizières inondées',
+      accepte: ['méthane', 'le méthane', 'methane', 'CH4', 'CH₄'],
     },
     {
       nom: 'dioxyde de carbone',
-      source: 'la combustion de pétrole et de gaz, et la déforestation',
-      accepte: ['dioxyde de carbone', 'le dioxyde de carbone', 'gaz carbonique', 'le gaz carbonique', 'CO2'],
+      source: 'la combustion de pétrole et de gaz, et la déforestation (destruction des forêts)',
+      accepte: ['dioxyde de carbone', 'le dioxyde de carbone', 'gaz carbonique', 'le gaz carbonique', 'CO2', 'CO₂'],
     },
   ]);
   const { answer, traps: tr } = saisie(gaz.accepte, [

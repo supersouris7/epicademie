@@ -110,9 +110,9 @@ const TRANSFORMATIONS: readonly { situation: string; chimique: boolean; why: str
     why: 'La rouille est une nouvelle substance, différente du fer.',
   },
   {
-    situation: 'on mélange du sable et du gravier',
+    situation: 'on écrase un morceau de craie en poudre',
     chimique: false,
-    why: 'Les deux solides restent ce qu’ils étaient.',
+    why: 'La poudre est toujours de la craie : seule sa forme change.',
   },
 ];
 
@@ -185,9 +185,9 @@ const niveau4 = (rng: Rng): QuestionDraft => {
         rng,
         cinq.map((p) => [maj(p.mot), maj(p.dessin)]),
       ),
-      hint: 'Attention : deux dessins montrent une flamme.',
+      hint: 'Imagine ce que chaque dessin montre : quel risque annonce-t-il ?',
       steps: [
-        'La flamme seule et la flamme sur un cercle ne disent pas la même chose.',
+        'Chaque mot de danger correspond à un seul dessin.',
         `Réponse : **${cinq.map((p) => `${p.mot} → ${p.dessin}`).join(' ; ')}**.`,
       ],
       targetSeconds: 70,
@@ -334,7 +334,7 @@ export const chimieSecurite: Skill = {
   lesson: {
     memo: [
       'Une **transformation chimique** change la composition des substances : un gaz qui se dégage (**effervescence**) ou une couleur qui change peuvent la signaler. Une **transformation physique**, comme la glace qui fond, ne la change pas.',
-      'Avant d’utiliser un produit, lis son **pictogramme de danger** : flamme (**inflammable**), flamme sur un cercle (**comburant**), corrosion (**corrosif**), tête de mort (toxique). Ne le rejette pas dans la nature.',
+      'Avant d’utiliser un produit, lis son **pictogramme de danger** : flamme (**inflammable**), flamme sur un cercle (**comburant**), gouttes qui rongent (**corrosif**), tête de mort (toxique), point d’exclamation (irritant ou nocif), bombe (explosif), arbre et poisson morts (dangereux pour l’environnement). Ne rejette pas ces produits dans la nature.',
     ],
     ...references(
       'transformation-programme',

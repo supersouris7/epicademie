@@ -101,7 +101,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     word: 'décantation',
     forms: ['décantation', 'décanter'],
     definition:
-      'Technique qui consiste à laisser un solide tomber au fond d’un liquide au repos, puis à verser le liquide.',
+      'Technique qui consiste à laisser un mélange au repos (un solide tombe au fond, ou deux liquides se mettent en couches), puis à séparer les parties.',
     example: 'La terre d’une eau boueuse tombe au fond du seau.',
   },
   {

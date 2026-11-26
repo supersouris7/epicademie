@@ -198,7 +198,10 @@ const niveau3 = (rng: Rng): QuestionDraft => {
       [fond ? 32 : 90, 'Cette valeur n’est pas un des deux repères de l’échelle Celsius pour l’eau.'],
     ]),
     hint: 'L’échelle Celsius a été construite avec deux repères liés à l’eau.',
-    steps: ['Les deux repères : la glace fondante et l’eau bouillante.', `La température cherchée est **${v} °C**.`],
+    steps: [
+      'Les deux repères de l’échelle Celsius : la glace fondante à 0 °C et l’eau bouillante à 100 °C.',
+      `La température cherchée est **${v} °C**.`,
+    ],
     targetSeconds: 25,
   };
 };

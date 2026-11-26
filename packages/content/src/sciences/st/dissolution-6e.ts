@@ -20,6 +20,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
       solide: 'une pincée de sel',
       vu: 'on ne voit plus aucun grain',
       bon: DISSOUS,
+      pourquoi: 'Plus aucun grain visible : tout le sel est passé dans l’eau.',
       faux: [
         [INSOLUBLE, 'On ne voit plus le sel : il s’est dissous dans l’eau.'],
         [SATUREE, 'Une solution saturée ne dissout plus tout : ici rien ne reste au fond.'],
@@ -29,6 +30,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
       solide: 'une cuillère de sucre',
       vu: 'on ne voit plus aucun grain',
       bon: DISSOUS,
+      pourquoi: 'Plus aucun grain visible : tout le sucre est passé dans l’eau.',
       faux: [
         [INSOLUBLE, 'On ne voit plus le sucre : il s’est dissous dans l’eau.'],
         [SATUREE, 'Une solution saturée ne dissout plus tout : ici rien ne reste au fond.'],
@@ -38,6 +40,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
       solide: 'du sable',
       vu: 'tous les grains retombent au fond',
       bon: INSOLUBLE,
+      pourquoi: 'Tous les grains restent visibles au fond : l’eau n’a pas dissous le sable.',
       faux: [
         [DISSOUS, 'Les grains sont toujours visibles : le sable ne s’est pas dissous.'],
         [SATUREE, 'La saturation concerne un solide qui se dissout, jusqu’à une limite : le sable ne se dissout pas.'],
@@ -47,6 +50,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
       solide: 'de plus en plus de sel, cuillère après cuillère,',
       vu: 'les premières cuillères disparaissent, puis les grains restent au fond malgré l’agitation',
       bon: SATUREE,
+      pourquoi: 'Le sel se dissout d’abord, puis l’eau ne peut plus en dissoudre davantage : elle est saturée.',
       faux: [
         [DISSOUS, 'Des grains restent au fond : tout le sel ne s’est pas dissous.'],
         [INSOLUBLE, 'Les premières cuillères ont disparu : le sel s’est d’abord dissous.'],
@@ -63,7 +67,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     answer,
     traps: t,
     hint: 'Regarde ce qui reste visible : rien, tout le solide, ou seulement une partie ?',
-    steps: ['On observe ce qui reste visible après agitation.', `**${s.bon}**.`],
+    steps: ['On observe ce qui reste visible après agitation.', s.pourquoi, `**${s.bon}**.`],
     targetSeconds: 25,
   };
 };
@@ -85,7 +89,9 @@ const niveau2 = (rng: Rng): QuestionDraft => {
         .sort()
         .join(', ')}.`,
       answer: association(rng, trois),
-      hint: 'Le préfixe « in » veut dire « ne pas ».',
+      hint: trois.some(([m]) => m === 'Insoluble')
+        ? 'Le préfixe « in » veut dire « ne pas ».'
+        : 'Demande-toi qui dissout, qui est dissous, et ce qui est possible ou non.',
       steps: [
         'Chaque mot désigne une chose précise.',
         `Réponse : **${trois.map(([m, d]) => `${m} → ${d}`).join(' ; ')}**.`,
@@ -303,7 +309,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     prompt: `On veut récupérer le solide ${nom} dissous dans la solution saturée. Lis le compte rendu, puis remets les étapes dans l’ordre.`,
     figure,
     answer: ordre(rng, EVAPORATION),
-    hint: 'Il faut d’abord retirer le dépôt, puis faire partir l’eau.',
+    hint: 'Le dépôt n’était pas dissous : sépare-le avant de t’occuper du solide caché dans le liquide.',
     steps: ['On sépare le dépôt, puis on fait évaporer l’eau.', `Ordre : **${EVAPORATION.map(maj).join(' → ')}**.`],
     targetSeconds: 80,
   };

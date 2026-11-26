@@ -233,7 +233,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     kind: 'document' as const,
     title: 'Le métal inconnu (données de l’exercice)',
     lines: [
-      'Les pièces sont faites du même métal : c’est un corps homogène.',
+      'Les pièces sont faites du même métal : c’est un corps homogène (identique en tout point).',
       `Une pièce de ${v1} cm³ a une masse de ${m1} g.`,
     ],
   };
@@ -284,7 +284,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       kind: 'document',
       title: 'Carnet de laboratoire (données de l’exercice)',
       lines: [
-        'Le liquide Z est homogène.',
+        'Le liquide Z est homogène (identique en tout point).',
         `On en mesure ${eau} cm³ : leur masse est ${eau * d} g.`,
         `On veut maintenant en préparer ${n} L.`,
       ],
