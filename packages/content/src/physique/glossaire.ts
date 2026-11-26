@@ -553,4 +553,18 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'État de repos d’un corps soumis à des forces qui s’annulent.',
     'Une lampe suspendue et immobile est en équilibre.',
   ),
+  terme(
+    'dynamometre',
+    'dynamomètre',
+    ['dynamomètre', 'dynamomètres'],
+    'Appareil qui mesure la valeur d’une force.',
+    'On accroche un objet à un dynamomètre et on lit la valeur en newtons.',
+  ),
+  terme(
+    'chronophotographie',
+    'chronophotographie',
+    ['chronophotographie', 'chronophotographies'],
+    'Image qui montre les positions successives d’un objet en mouvement, prises à des durées égales.',
+    'Sur la chronophotographie d’une bille, des positions de plus en plus écartées montrent qu’elle accélère.',
+  ),
 ];

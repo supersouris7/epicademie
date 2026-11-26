@@ -52,7 +52,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
       prompt: 'Quelle est l’unité de la valeur d’une force dans le Système international ?',
       answer,
       traps: t,
-      hint: 'Elle porte le nom d’un physicien anglais ; son symbole est N.',
+      hint: 'Une force n’est ni une masse ni une longueur : elle a sa propre unité.',
       steps: ['La valeur d’une force se mesure avec une unité propre.', 'C’est **le newton** (symbole N).'],
       targetSeconds: 25,
     };
@@ -69,7 +69,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
       prompt: 'Quel appareil mesure la valeur d’une force ?',
       answer,
       traps: t,
-      hint: 'Son nom contient « dyna- », qui évoque la force.',
+      hint: 'L’appareil cherché ne mesure ni une masse ni une température.',
       steps: ['Il faut un appareil destiné à mesurer l’intensité des forces.', 'C’est **un dynamomètre**.'],
       targetSeconds: 25,
     };
@@ -133,7 +133,8 @@ const fleche = (sens: Situation['sens'], n: number): Figure => {
 };
 
 const SENS = ['vers la droite', 'vers la gauche', 'vers le haut', 'vers le bas'] as const;
-const LECTURE = 'La force est représentée par la flèche partant de A (origine) et finissant en B (pointe).';
+const LECTURE =
+  'Le segment [AB] représente la flèche d’une force : A est son origine et B sa pointe (la tête de flèche n’est pas dessinée).';
 
 const niveau3 = (rng: Rng): QuestionDraft => {
   const sens = rng.pick(SENS);
@@ -172,7 +173,8 @@ const niveau4 = (rng: Rng): QuestionDraft => {
           { mode: 'text', accepted: ['A'] },
           { mode: 'list', options: ['horizontale', 'verticale'], correct: direction },
           { mode: 'list', options: [...SENS], correct: SENS.indexOf(sens) },
-          { mode: 'text', accepted: [String(valeur)] },
+          // Les milliers s’écrivent avec ou sans espace.
+          { mode: 'text', accepted: [String(valeur), String(valeur).replace(/\B(?=(\d{3})+$)/, ' ')] },
         ],
       },
       hint: 'L’origine de la flèche, la droite qui la porte, le côté de la pointe, puis la longueur avec l’échelle.',

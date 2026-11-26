@@ -51,7 +51,8 @@ const CARACTERES = ['direction', 'sens', 'valeur'] as const;
 type Caractere = (typeof CARACTERES)[number];
 
 const DEFINITION: Record<Caractere, string> = {
-  direction: 'La direction est la droite suivant laquelle l’objet se déplace.',
+  direction:
+    'La direction est la droite suivant laquelle l’objet se déplace (deux droites parallèles donnent la même direction).',
   sens: 'Le sens indique vers quel côté l’objet avance sur cette droite.',
   valeur: 'La valeur est un nombre accompagné d’une unité, comme des m/s ou des km/h.',
 };
@@ -64,7 +65,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     t[c],
     CARACTERES.filter((x) => x !== c).map((x) => ({
       label: t[x],
-      why: `Cette information correspond à ${x === 'sens' ? 'un autre élément, le sens' : `un autre élément, la ${x}`}. ${DEFINITION[x]}`,
+      why: `Cette information donne ${x === 'sens' ? 'le sens' : `la ${x}`}, pas ${c === 'sens' ? 'le sens' : `la ${c}`}. ${DEFINITION[x]}`,
     })),
   );
   return {
@@ -151,7 +152,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
     prompt: `${p.texte} Qu’est-ce qui distingue les deux vitesses ?`,
     answer,
     traps: tr,
-    hint: 'Compare dans l’ordre : la droite suivie, puis le côté vers lequel on va, puis le nombre avec son unité.',
+    hint: 'Compare dans l’ordre : les droites suivies (sont-elles parallèles ?), puis le côté vers lequel on va, puis le nombre avec son unité.',
     steps: [p.why, `Réponse : **${DIFFERENCE[bon]}**.`],
     targetSeconds: 45,
   };
@@ -299,7 +300,7 @@ const classement = (rng: Rng): QuestionDraft => {
     answer,
     traps: tr,
     hint: 'On ne compare que des valeurs écrites dans la même unité.',
-    steps: [why, `La plus grande valeur est ${max} m/s : **${bon.toLowerCase()}**.`],
+    steps: [why, `La plus grande valeur est ${max} m/s : **le mobile ${NOMS[valeurs.indexOf(max)]}**.`],
     targetSeconds: 120,
   };
 };
@@ -315,7 +316,7 @@ export const vitesseCaracteres: Skill = {
   version: 2,
   lesson: {
     memo: [
-      'La **vitesse** d’un mobile a une direction (la droite suivie), un sens (le côté vers lequel il avance) et une valeur (par exemple 20 m/s).',
+      'La **vitesse** d’un mobile a une direction (la droite suivie, la même pour des droites parallèles), un sens (le côté vers lequel il avance) et une valeur (par exemple 20 m/s).',
       'Dans un mouvement uniforme, v = d ÷ t. Pour passer des m/s aux km/h, multiplie par 3,6 : 10 m/s = 36 km/h, car 1 h = 3 600 s.',
     ],
     ...referencesInteractions(

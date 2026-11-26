@@ -50,7 +50,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     answer,
     traps: t,
     hint: 'La forme change-t-elle, ou la façon de se déplacer ?',
-    steps: [e.why, `On observe que **${e.bon}**.`],
+    steps: [e.why, `Effet observé de la force : **${e.bon}**.`],
     targetSeconds: 25,
   };
 };
@@ -122,16 +122,16 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     answer: {
       kind: 'cloze',
       parts: [
-        'La caractéristique de la vitesse que cette description montre en train de changer est ',
-        ' : une ',
-        ' agit donc sur le mobile pour modifier son mouvement.',
+        'D’après la description, la caractéristique de la vitesse qui change est ',
+        '. L’action qui modifie ce mouvement est modélisée par une ',
+        '.',
       ],
       blanks: [
         { mode: 'list', options, correct: options.indexOf(c.quoi) },
         { mode: 'text', accepted: ['force'] },
       ],
     },
-    hint: 'Le second mot désigne ce qui modélise une action capable de modifier un mouvement.',
+    hint: 'Pour le second mot, rappelle-toi comment on modélise une action en physique.',
     steps: [
       `Dans cette situation, c’est **${c.quoi}** qui change.`,
       'Ce qui modifie le mouvement d’un corps est une **force**.',
@@ -164,7 +164,16 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       targetSeconds: 60,
     };
   const { answer, traps: t } = saisie(
-    ['vers le haut', 'le haut', 'haut', 'de bas en haut'],
+    [
+      'vers le haut',
+      'vers le haut.',
+      'le haut',
+      'haut',
+      'en haut',
+      'de bas en haut',
+      'du bas vers le haut',
+      'verticalement vers le haut',
+    ],
     [
       ['vers le bas', 'Les deux forces s’additionneraient vers le bas : l’objet ne resterait pas en équilibre.'],
       ['le bas', 'Les deux forces s’additionneraient vers le bas : l’objet ne resterait pas en équilibre.'],
