@@ -98,7 +98,8 @@ const carteReperes =
     const pool = level <= 2 ? [...pools[0], ...pools[1]] : level === 4 ? pools[1] : pools[0];
     const l = rng.pick(pool);
     const autres = rng.shuffle(zones.filter((z) => z !== l.zone));
-    const why = (z: string) => `Tu as choisi ${nomZone(z)} : cherche encore ${l.cible}.`;
+    const why = (z: string) =>
+      `Tu as choisi ${nomZone(z)} : ce n’est pas là. Repère d’abord les pays ou les mers liés à la question, puis cherche-les sur le planisphère.`;
     const steps = [
       l.preuve.montre ?? `Cherchons ce que dit la source : « ${l.preuve.quote} ».`,
       l.preuve.explain,
@@ -158,10 +159,10 @@ const metropoles: Notion = {
   classe: '4e',
   id: 'g4-reperes-metropoles',
   title: 'Repères : les grandes métropoles',
-  hint: 'Demande-toi s’il s’agit d’une ville qui commande, d’un ensemble de villes ou d’un nœud de transport.',
+  hint: 'Repense au rôle de la ville ou de l’ensemble de villes, à sa taille et à sa place dans le monde.',
   memo: [
     'Les **villes mondiales** sont les métropoles capables de commander l’économie mondiale : Londres, New York, Paris et Tokyo sont parmi les plus citées. Une **mégapole** compte au moins 10 millions d’habitants : 33 en 2025, dont 19 en Asie, 5 en Amérique latine, 4 en Afrique, 3 en Europe et 2 en Amérique du Nord.',
-    'Une **mégalopole** est un vaste réseau de grandes villes : de Boston à Washington, au cœur du Japon (couloir du Tōkaidō) ; de Londres à Milan, on parle plutôt de dorsale européenne.',
+    'Une **mégalopole** est un vaste réseau de grandes villes : de Boston à Washington, au cœur du Japon (couloir du Tōkaidō) ; de Londres à Milan, on parle plutôt de dorsale européenne. Le mot a aussi été employé pour SanSan (de San Francisco à San Diego) et le Gauteng (Afrique du Sud).',
     'Autres repères : les **hubs** aériens d’Atlanta, Singapour et Doubaï, le port de Shanghai (premier pour les conteneurs) et Détroit, **ville rétrécissante**.',
   ],
   faits: [
@@ -184,7 +185,7 @@ const metropoles: Notion = {
         ['Shanghai, Los Angeles et Séoul', 'Elles sont citées cinq ou quatre fois seulement.'],
         ['Singapour, Hong Kong et Pékin', 'Elles sont citées huit ou quatre fois, pas dix.'],
       ],
-      ['Londres, Paris et New ', ' sont citées dans les dix classements.', ['York']],
+      ['Londres, New York et ', ' sont citées dans les dix classements.', ['Paris']],
       preuve(VILLES, M_DIX, 'Ces trois villes font consensus entre les classements.', M_DIX_MONTRE),
     ),
     fait(
@@ -262,8 +263,8 @@ const metropoles: Notion = {
       'Shanghai',
       [
         ['Détroit', 'Détroit est connue pour son déclin industriel.'],
-        ['Atlanta', 'Atlanta est citée comme hub aérien.'],
-        ['Milan', 'Milan sert à situer la dorsale européenne.'],
+        ['Rotterdam', 'Rotterdam est un grand port d’Europe, mais pas le premier pour les conteneurs.'],
+        ['Ningbo', 'Ningbo est premier par le tonnage, pas pour les conteneurs.'],
       ],
       ['Le port de ', ' est le premier pour les conteneurs.', ['Shanghai', 'Shanghaï', 'Changhaï']],
       preuve(PORT, M_SHANGHAI, 'Les conteneurs sont de grandes boîtes de taille normalisée.'),
@@ -308,6 +309,7 @@ const metropoles: Notion = {
       [
         ['mégapole', 'Une mégapole est une seule ville très peuplée.'],
         ['métropole', 'Une métropole est une ville qui exerce des fonctions de commandement.'],
+        ['conurbation', 'Une conurbation réunit des villes qui se touchent ; ce réseau est bien plus vaste.'],
       ],
       preuve(MEGALOPOLE, M_BOSWASH, 'C’est une mégalopole.'),
     ),
@@ -340,7 +342,12 @@ const metropoles: Notion = {
     ),
     libre(
       'comment appelle-t-on l’ensemble urbain européen allant de Londres à Milan (deux mots) ?',
-      [...noms('dorsale européenne', 'la ', 'une ')],
+      [
+        ...noms('dorsale européenne', 'la ', 'une '),
+        ...noms('mégalopole européenne', 'la ', 'une '),
+        'banane bleue',
+        'la banane bleue',
+      ],
       [
         ['BosWash', 'La BosWash se trouve aux États-Unis.'],
         ['Tōkaidō', 'Le Tōkaidō se trouve au Japon.'],
@@ -524,9 +531,9 @@ const flux: Notion = {
   title: 'Repères : les flux migratoires',
   hint: 'Distingue la région ou le pays d’accueil, la région de départ et le couloir qui les relie.',
   memo: [
-    'En 2024, l’Europe est la région qui accueille le plus de **migrants internationaux** (94 millions), devant l’Amérique du Nord (61 millions). Premier pays d’accueil : les États-Unis (52,4 millions), puis l’Allemagne, l’Arabie saoudite, le Royaume-Uni et la France.',
-    'Près de la moitié des migrants (45 %) restent dans leur région d’origine : 74 % pour ceux nés en Europe, 64 % pour ceux nés en Afrique subsaharienne.',
-    'Le plus grand **couloir migratoire** entre deux régions va d’Amérique latine et des Caraïbes vers l’Amérique du Nord (27 millions).',
+    'En 2024, l’Europe est la région qui accueille le plus de **migrants internationaux** (94 millions), devant l’Amérique du Nord (61 millions ; pour l’ONU, surtout les États-Unis et le Canada, sans le Mexique). Premier pays d’accueil : les États-Unis (52,4 millions), puis l’Allemagne, l’Arabie saoudite, le Royaume-Uni et la France.',
+    'Près de la moitié des migrants (45 %) restent dans leur région d’origine : 74 % pour ceux nés en Europe, 64 % pour ceux nés en Afrique subsaharienne. C’est en Océanie que la part de migrants parmi les habitants est la plus forte (21 %).',
+    'Le plus grand **couloir migratoire** entre deux régions va d’Amérique latine et des Caraïbes vers l’Amérique du Nord (27 millions). L’argent envoyé par les migrants à leurs proches s’appelle les **remises**.',
   ],
   faits: [
     fait(
@@ -582,7 +589,7 @@ const flux: Notion = {
         ['l’Arabie saoudite', 'Elle est troisième, avec 13,7 millions.'],
         ['la France', 'La France est cinquième, avec 9,2 millions.'],
       ],
-      ['En 2024, le premier pays d’accueil des migrants est les ', '.', ['États-Unis', 'Etats-Unis']],
+      ['En 2024, les migrants internationaux sont les plus nombreux aux ', '.', ['États-Unis', 'Etats-Unis']],
       P_PAYS('Les États-Unis sont loin devant les autres pays.'),
     ),
     fait(
@@ -650,7 +657,10 @@ const flux: Notion = {
       'd’Amérique latine et des Caraïbes vers l’Amérique du Nord',
       [
         ['d’Europe vers l’Océanie', 'Ce n’est pas le plus grand couloir cité.'],
-        ['d’Asie de l’Est vers l’Amérique du Nord', 'Ce couloir compte 12 millions de personnes, moins que 27.'],
+        [
+          'd’Asie de l’Est et du Sud-Est vers l’Amérique du Nord',
+          'Ce couloir compte 12 millions de personnes, moins que 27.',
+        ],
         ['d’Afrique du Nord et d’Asie de l’Ouest vers l’Europe', 'Ce couloir compte 13 millions de personnes.'],
       ],
       ['Le plus grand couloir va d’Amérique latine et des Caraïbes vers l’Amérique du ', '.', ['Nord']],
@@ -720,7 +730,7 @@ const flux: Notion = {
       ['États-Unis', 'les États-Unis', 'Etats-Unis', 'les Etats-Unis', 'USA', 'les USA', 'États-Unis d’Amérique'],
       [
         ['Allemagne', 'L’Allemagne est deuxième.'],
-        ['Canada', 'Le Canada est loin derrière les premiers pays.'],
+        ['Canada', 'Le Canada ne fait pas partie des cinq premiers pays d’accueil.'],
       ],
       P_PAYS('Les États-Unis sont premiers.'),
     ),
@@ -757,7 +767,7 @@ const flux: Notion = {
     ),
     libre(
       'sur 100 migrants nés en Europe, combien vivaient dans un autre pays européen en 2024 ? (Un nombre.)',
-      ['74', '74 %', 'soixante-quatorze'],
+      ['74', '74 %', 'soixante-quatorze', 'soixante quatorze'],
       [
         ['45', 'C’est la moyenne pour tous les migrants du monde.'],
         ['64', 'C’est le chiffre des migrants nés en Afrique subsaharienne.'],
@@ -963,7 +973,7 @@ const routes: Notion = {
   hint: 'Imagine le trajet du navire : de quelle mer à quelle autre passe-t-il ?',
   memo: [
     'Environ 80 % du commerce international en volume voyage par bateau, sur de longues **routes maritimes**. Les **détroits** et les canaux les fixent : Gibraltar (Atlantique et Méditerranée), Suez (Méditerranée et mer Rouge), Bab-el-Mandeb (mer Rouge et océan Indien), Panama (mer des Caraïbes et Pacifique).',
-    'Plus loin : Ormuz (golfe Persique et mer d’Oman), Malacca (océan Indien et mer de Chine méridionale), le Pas de Calais (Manche et mer du Nord). Malacca est le passage le plus fréquenté.',
+    'Plus loin : Ormuz (golfe Persique et mer d’Oman), Malacca (océan Indien et mer de Chine méridionale), le Pas de Calais (Manche et mer du Nord). En 2023, le plus fréquenté est Malacca, devant le détroit de Taïwan, le Pas de Calais puis Gibraltar.',
     'Pour les porte-conteneurs, le plus grand axe est **transpacifique** (46 %), devant Asie-Europe (40 %) et l’Atlantique Nord (14 %). Passer par le cap de Bonne-Espérance au lieu de Suez rallonge le trajet.',
   ],
   faits: [
@@ -1072,7 +1082,7 @@ const routes: Notion = {
       preuve(PPO, R_NAVIRES, 'Malacca concentre 18,5 % des flux.'),
     ),
     fait(
-      'Quel est le premier grand segment du transport par porte-conteneurs ?',
+      'Quel grand segment du transport par porte-conteneurs a le plus gros trafic ?',
       'le segment transpacifique, entre l’Asie et l’Amérique du Nord',
       [
         ['le segment transatlantique, entre l’Amérique du Nord et l’Europe', 'Il ne pèse que 14 %.'],
@@ -1084,7 +1094,7 @@ const routes: Notion = {
     ),
     fait(
       'Pour aller d’Asie en Europe, que représente le passage par le cap de Bonne-Espérance au lieu de Suez ?',
-      'un détour de plusieurs milliers de milles marins',
+      'un détour de plusieurs milliers de milles marins (unité de distance en mer)',
       [
         ['un raccourci très net', 'Contourner l’Afrique allonge le trajet.'],
         ['un trajet exactement identique', 'La source parle d’un détour.'],
@@ -1145,7 +1155,15 @@ const routes: Notion = {
     ),
     libre(
       'quel passage entre la Manche et la mer du Nord est cité parmi les plus fréquentés du monde ?',
-      ['Pas de Calais', 'le Pas de Calais', 'Pas-de-Calais', 'le Pas-de-Calais', 'détroit du Pas de Calais'],
+      [
+        'Pas de Calais',
+        'le Pas de Calais',
+        'Pas-de-Calais',
+        'le Pas-de-Calais',
+        'détroit du Pas de Calais',
+        'détroit de Douvres',
+        'le détroit de Douvres',
+      ],
       [
         ['Gibraltar', 'Gibraltar est entre l’Atlantique et la Méditerranée.'],
         ['Øresund', 'L’Øresund relie la mer Baltique à la mer du Nord.'],
@@ -1203,7 +1221,7 @@ const routes: Notion = {
       title: 'Un passage fermé',
       lines: [
         'Un grand passage entre la Méditerranée et la mer Rouge est fermé quelques jours.',
-        'Des armateurs envisagent de contourner l’Afrique par le sud.',
+        'Des compagnies de navires envisagent de contourner l’Afrique par le sud.',
         'Les marchandises arriveront plus tard en Europe.',
       ],
       qs: [
@@ -1326,7 +1344,7 @@ const vocabulaire: Notion = {
   hint: 'Cherche le mot-clé : une ville, une population qui se déplace, un port ou une route en mer ?',
   memo: [
     'Villes : une **mégapole** compte au moins 10 millions d’habitants ; une **conurbation** réunit des villes qui se sont rejointes ; une **mégalopole** est un réseau de villes encore plus vaste.',
-    'Mer : une **route maritime** relie de grands ensembles ; un **passage stratégique** est un point obligé. Un port a un **arrière-pays** (sur terre) et un **avant-pays** (au-delà des mers) ; c’est une **interface** entre les deux. Un **hub** maritime redistribue les marchandises.',
+    'Mer : une **route maritime** relie de grands ensembles ; un **passage stratégique** (en anglais « choke point ») est un point obligé. Un port a un **arrière-pays** (sur terre) et un **avant-pays** (au-delà des mers) ; c’est une **interface** entre les deux. Un **hub** maritime redistribue les marchandises.',
     'Migrations : un migrant international a franchi une frontière et changé de pays de résidence ; une **diaspora** est une population dispersée ; les **remises** sont l’argent envoyé au pays.',
   ],
   faits: [
@@ -1349,7 +1367,7 @@ const vocabulaire: Notion = {
         ['une grande gare', 'Le terme concerne ici la mer.'],
         ['un hub aérien', 'Il s’agit d’un passage maritime, pas d’un aéroport.'],
       ],
-      ['En anglais, un passage stratégique est un choke ', '.', ['point']],
+      ['Un point de passage obligé du transport maritime est un passage ', '.', ['stratégique', 'strategique']],
       preuve(CHOKE, V_CHOKE, 'C’est un goulet que les navires doivent emprunter.'),
     ),
     fait(
@@ -1514,6 +1532,8 @@ const vocabulaire: Notion = {
         'transfert de fonds',
         'transferts d’argent',
         'transfert d’argent',
+        'remittances',
+        'rémittences',
       ],
       [
         ['impôts', 'Un impôt est versé à un État.'],
@@ -1527,6 +1547,7 @@ const vocabulaire: Notion = {
       [
         ['mégapole', 'La mégapole est une seule agglomération très peuplée.'],
         ['métropole', 'La métropole est une ville qui commande.'],
+        ['conurbation', 'La conurbation réunit des villes qui se touchent ; ce réseau est plus vaste.'],
       ],
       preuve(MEGALOPOLE, V_MEGALOPOLE, 'C’est une mégalopole.'),
     ),
