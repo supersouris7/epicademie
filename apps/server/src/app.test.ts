@@ -1,3 +1,6 @@
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { api } from '@epicademie/shared';
 import { createTestApp, profileInput } from './testing/harness.ts';
@@ -33,6 +36,40 @@ describe('routes d’exploitation', () => {
     // Route paramétrée, jamais l'URL brute (pas d'identifiant dans les métriques).
     expect(res.body).toContain('route="/api/v1/profiles"');
     expect(res.body).toContain('epicademie_online_players');
+  });
+});
+
+describe('front buildé', () => {
+  const webDir = fs.mkdtempSync(path.join(os.tmpdir(), 'web-'));
+  let web: Awaited<ReturnType<typeof createTestApp>>;
+  beforeAll(async () => {
+    fs.writeFileSync(path.join(webDir, 'index.html'), 'jeu');
+    fs.writeFileSync(path.join(webDir, 'admin.html'), 'console');
+    web = await createTestApp({ config: { webDir } });
+  });
+  afterAll(async () => {
+    await web.close();
+    fs.rmSync(webDir, { recursive: true, force: true });
+  });
+
+  it.each(['/admin', '/admin/', '/admin/x', '/admin/x/y', '/admin?onglet=1', '/admin.html'])(
+    '%s : la console, jamais mise en cache',
+    async (url) => {
+      const res = await web.http.inject(url);
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toBe('console');
+      expect(res.headers['cache-control']).toBe('no-cache');
+    },
+  );
+
+  it.each(['/', '/hub', '/administration', '/jouer/admin'])('%s : le jeu', async (url) => {
+    const res = await web.http.inject(url);
+    expect(res.body).toBe('jeu');
+    expect(res.headers['cache-control']).toBe('no-cache');
+  });
+
+  it('API inconnue : toujours 404', async () => {
+    expect((await web.http.inject('/api/v1/admin/inconnue')).statusCode).toBe(404);
   });
 });
 

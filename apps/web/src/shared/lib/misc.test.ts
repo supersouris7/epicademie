@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { localToday, randomSeed } from './dates.ts';
-import { comingSoon } from './grades.ts';
+import { comingSoon } from './comingSoon.ts';
 
 describe('petits outils', () => {
   it('date locale AAAA-MM-JJ et graine aléatoire', () => {

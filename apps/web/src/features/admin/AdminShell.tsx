@@ -10,8 +10,8 @@ export interface AdminSection {
   readonly count?: number | undefined;
 }
 
-/** Fond et texte communs aux deux écrans de la console (police : classe `admin-dark`). */
-const frameClass = 'admin-dark min-h-dvh bg-pilot-bg text-pilot-fg';
+/** Fond et texte communs aux écrans de la console (police et couleurs du navigateur : admin.css). */
+export const frameClass = 'min-h-dvh bg-pilot-bg text-pilot-fg';
 
 /**
  * Cadre de la console d'administration : titre, rubriques en sélecteur segmenté
