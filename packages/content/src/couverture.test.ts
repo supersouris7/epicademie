@@ -110,7 +110,7 @@ describe('couverture du catalogue', () => {
 });
 
 // Nombre de notions à 3 niveaux au moment du lot moteur (mo-03).
-const HISTORIQUES_MAX = 376;
+const HISTORIQUES_MAX = 368;
 
 describe('aperçu de relecture', () => {
   it('une notion : 5 niveaux × 3 graines avec énoncé, réponse, pièges, indice, étapes et sources', () => {

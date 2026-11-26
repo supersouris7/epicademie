@@ -8,6 +8,7 @@ import { RELECTURES as GEOGRAPHIE } from './geographie/relectures.ts';
 import { RELECTURES as HISTOIRE } from './histoire/relectures.ts';
 import { RELECTURES as PHYSIQUE } from './physique/relectures.ts';
 import { RELECTURES as ST } from './sciences/st/relectures.ts';
+import { RELECTURES as SVT } from './sciences/svt/relectures.ts';
 import { RELECTURES as TECHNO } from './sciences/techno/relectures.ts';
 
 /** Registre des relectures pédagogiques (docs/adr/0034, point 7) ; chaque matière tient le sien. */
@@ -21,6 +22,7 @@ export const RELECTURES: readonly Relecture[] = [
   ...EMC,
   ...PHYSIQUE,
   ...ST,
+  ...SVT,
   ...TECHNO,
 ];
 
