@@ -144,6 +144,7 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-26',
   })),
   { ...tlfi('aimant', 'aimant', 'aimant'), consultedOn: '2026-11-26' },
+  { ...tlfi('suspente', 'suspente', 'suspente'), consultedOn: '2026-11-26' },
   { ...tlfi('vecteur', 'vecteur', 'vecteur/nom'), consultedOn: '2026-11-26' },
   {
     id: 'seconde-pc-2019',

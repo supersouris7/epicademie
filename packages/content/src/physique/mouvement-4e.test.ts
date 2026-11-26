@@ -122,6 +122,45 @@ describe('physique-chimie 4e : « Mouvement et interactions »', () => {
     }
   });
 
+  it('interactions : au niveau 4, auteur et nature se décident séparément, sans recopie', () => {
+    const systemes = new Set<string>();
+    for (const q of tirages('p4-interactions', 4)) {
+      if (q.answer.kind !== 'cloze') throw new Error('texte à trous attendu');
+      const { parts, blanks } = q.answer;
+      systemes.add(q.prompt);
+      expect(q.prompt).not.toMatch(/contact|à distance|attire|tiré|porté|retenu/i);
+      expect(blanks.length).toBeGreaterThanOrEqual(6);
+      blanks.forEach((b, i) => {
+        if (b.mode !== 'list') throw new Error('liste attendue');
+        if (i % 2 === 1) {
+          expect(b.options).toEqual(['de contact', 'à distance']);
+          return;
+        }
+        expect(b.options.length).toBeGreaterThanOrEqual(3);
+        for (const auteur of b.options) expect(String(parts[i])).not.toContain(auteur);
+        // La Terre n’est jamais en contact dans ces scènes, et elle seule ou l’aimant agit à distance.
+        const auteur = b.options[b.correct]!;
+        const nature = blanks[i + 1]!;
+        if (nature.mode !== 'list') throw new Error('liste attendue');
+        expect(nature.correct === 1, auteur).toBe(auteur === 'la Terre' || auteur === 'l’aimant');
+      });
+    }
+    expect(systemes.size).toBe(3);
+  });
+
+  it('interactions : au niveau 5, aucune proposition ne répète les mêmes corps', () => {
+    for (const q of tirages('p4-interactions', 5)) {
+      if (q.answer.kind !== 'choice') throw new Error('choix attendu');
+      const cles = q.answer.options.map((o) =>
+        o
+          .split(/, | et /)
+          .sort()
+          .join('|'),
+      );
+      expect(new Set(cles).size, String(q.answer.options)).toBe(cles.length);
+    }
+  });
+
   it('forces : valeur lue sur la flèche et longueurs recalculées', () => {
     for (const q of tirages('p4-forces', 3)) {
       if (q.figure?.kind !== 'grid') throw new Error('schéma attendu');

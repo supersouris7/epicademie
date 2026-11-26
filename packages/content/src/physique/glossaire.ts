@@ -512,6 +512,20 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'La Terre et la Lune sont en interaction.',
   ),
   terme(
+    'diagramme-objet-interaction',
+    'diagramme objet-interaction',
+    ['diagramme objet-interaction', 'diagrammes objet-interaction'],
+    'Schéma qui sert à étudier un objet : il fait apparaître les corps qui sont en interaction avec lui.',
+    'Le diagramme objet-interaction d’un livre posé fait apparaître la table et la Terre.',
+  ),
+  terme(
+    'suspente',
+    'suspente',
+    ['suspente', 'suspentes'],
+    'Chacune des cordes qui relient la voile d’un parachute au harnais.',
+    'Les suspentes du parachute sont attachées au harnais.',
+  ),
+  terme(
     'action-contact',
     'action de contact',
     ['action de contact', 'actions de contact'],

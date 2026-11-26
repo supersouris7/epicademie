@@ -42,6 +42,11 @@ export const FAITS_INTERACTIONS: readonly Fait[] = [
   fait('gravitation', 'academie-action', 'La gravitation est une action à distance.'),
   fait('poids', 'academie-poids', 'Force d’attraction gravitationnelle exercée par la Terre sur un corps'),
   fait('aimant', 'cnrtl-aimant', 'qui attire à elle, à plusieurs pouces de distance, des particules de fer'),
+  prog(
+    'diagramme',
+    'L’étude mécanique d’un système peut être l’occasion d’utiliser les diagrammes « objet-interaction ».',
+  ),
+  fait('suspente', 'cnrtl-suspente', 'Chacune des cordes qui relient la voilure d’un parachute au harnais.'),
   // Forces.
   prog(
     'modeliser-force',

@@ -1,6 +1,6 @@
 import { choice } from '../build.ts';
 import type { Rng } from '../rng.ts';
-import { association, maj, saisie } from '../sciences/st/outils.ts';
+import { maj } from '../sciences/st/outils.ts';
 import type { QuestionDraft, Skill } from '../types.ts';
 import { referencesInteractions } from './donnees-interactions.ts';
 
@@ -50,11 +50,11 @@ const ACTIONS: readonly Action[] = [
     why: 'Le livre repose sur la table : ils se touchent.',
   },
   {
-    texte: 'La Terre attire une pomme qui tombe d’une branche, sans que le sol l’ait encore touchée.',
+    texte: 'La Terre attire une pomme qui tombe d’une branche.',
     auteur: 'la Terre',
     receveur: 'la pomme',
     type: 'distance',
-    why: 'La Terre agit sur la pomme par gravitation, même pendant la chute, sans contact.',
+    why: 'La Terre agit à distance sur la pomme par gravitation, qu’elle tombe ou qu’elle soit posée.',
   },
   {
     texte: 'Un aimant, tenu à quelques centimètres d’un clou en fer, attire ce clou.',
@@ -83,7 +83,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     { label: 'aucune action', why: `${maj(a.auteur)} agit bien sur ${a.receveur}. ${a.why}` },
   ]);
   return {
-    prompt: `${a.texte} Il s’agit ici d’…`,
+    prompt: `${a.texte} Quel type d’action est décrit ?`,
     answer,
     traps,
     hint: 'Les deux corps se touchent-ils ?',
@@ -138,76 +138,76 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   };
 };
 
-interface Systeme {
-  readonly nom: string;
-  readonly texte: string;
-  /** [action, auteur (type)] : colonne de droite distincte. */
-  readonly paires: readonly (readonly [string, string])[];
+interface Effet {
+  /** Effet seul : ni l’auteur ni la nature n’y figurent. */
+  readonly effet: string;
+  readonly auteur: string;
+  readonly type: Type;
 }
+
+interface Systeme {
+  readonly texte: string;
+  readonly effets: readonly Effet[];
+}
+
+const effet = (e: string, auteur: string, type: Type): Effet => ({ effet: e, auteur, type });
 
 const SYSTEMES: readonly Systeme[] = [
   {
-    nom: 'un voilier qui avance',
-    texte: 'Un voilier avance sur la mer, tiré par une corde reliée à un autre bateau, le vent dans sa voile.',
-    paires: [
-      ['la voile est poussée', 'l’air (contact)'],
-      ['la coque est soutenue', 'l’eau (contact)'],
-      ['le voilier est tiré', 'la corde (contact)'],
-      ['le voilier est attiré vers le bas', 'la Terre (à distance)'],
-    ],
-  },
-  {
-    nom: 'une luge tractée',
     texte:
-      'Un enfant tire avec une corde une luge posée sur la neige ; un aimant fixé au bord attire une clé en fer posée sur la luge, sans la toucher.',
-    paires: [
-      ['la luge est tirée', 'la corde (contact)'],
-      ['la luge est soutenue', 'la neige (contact)'],
-      ['la luge est attirée vers le bas', 'la Terre (à distance)'],
-      ['la clé est attirée vers le bord', 'l’aimant (à distance)'],
+      'Un jour de vent, un voilier est sur la mer, voile gonflée. Une corde tendue va de son avant à un bateau à moteur qui le précède.',
+    effets: [
+      effet('Le voilier est attiré vers le bas', 'la Terre', 'distance'),
+      effet('L’avant du voilier est tiré', 'la corde', 'contact'),
+      effet('La voile est poussée', 'l’air', 'contact'),
+      effet('La coque est soutenue', 'l’eau', 'contact'),
     ],
   },
   {
-    nom: 'un cerf-volant',
-    texte: 'Un cerf-volant vole, retenu par un fil, porté par le vent.',
-    paires: [
-      ['le cerf-volant est porté', 'le vent (contact)'],
-      ['le cerf-volant est retenu', 'le fil (contact)'],
-      ['le cerf-volant est attiré vers le bas', 'la Terre (à distance)'],
+    texte:
+      'Un enfant fait avancer une luge sur la neige à l’aide d’une corde. Sur la luge, une clé en fer se trouve à quelques centimètres d’un aimant fixé au bord, sans le toucher.',
+    effets: [
+      effet('La luge est tirée vers l’avant', 'la corde', 'contact'),
+      effet('La luge est attirée vers le bas', 'la Terre', 'distance'),
+      effet('La clé est attirée vers le bord', 'l’aimant', 'distance'),
+      effet('La luge est soutenue', 'la neige', 'contact'),
+    ],
+  },
+  {
+    texte:
+      'Un jour de vent, un cerf-volant est en l’air. Un enfant resté au sol tient le bout de la ficelle attachée au cerf-volant.',
+    effets: [
+      effet('Le cerf-volant est attiré vers le bas', 'la Terre', 'distance'),
+      effet('Le cerf-volant est soutenu', 'l’air', 'contact'),
+      effet('Le cerf-volant est empêché de partir au loin', 'la ficelle', 'contact'),
     ],
   },
 ];
 
+const NATURES = ['de contact', 'à distance'];
+
+/** Pour chaque effet, l’élève choisit séparément l’auteur puis la nature de l’action. */
 const niveau4 = (rng: Rng): QuestionDraft => {
-  if (rng.int(0, 2) === 0) {
-    const a = rng.pick(ACTIONS);
-    const { answer, traps } = saisie(
-      ['interaction', 'une interaction'],
-      [
-        ['action', 'Le mot attendu désigne l’action réciproque des deux corps, pas une seule action.'],
-        ['force', 'La force modélise l’action ; l’action réciproque des deux corps a un autre nom.'],
-        ['contact', 'Le contact désigne deux corps qui se touchent ; ce n’est pas le mot général.'],
-      ],
-    );
-    return {
-      prompt: `${a.texte} ${maj(a.auteur)} et ${a.receveur} agissent l’un sur l’autre. Quel mot désigne cette action réciproque ?`,
-      answer,
-      traps,
-      hint: 'Le mot commence par le préfixe « inter- », qui évoque ce qui se passe entre deux corps.',
-      steps: ['L’action réciproque de deux ou plusieurs corps porte un nom précis.', 'C’est une **interaction**.'],
-      targetSeconds: 40,
-    };
-  }
   const s = rng.pick(SYSTEMES);
+  // Ordre fixe (un énoncé, une réponse) : les auteurs sont rangés par ordre alphabétique, pas comme les effets.
+  const { effets } = s;
+  const auteurs = effets.map((e) => e.auteur).sort((a, b) => a.localeCompare(b, 'fr'));
   return {
-    prompt: `${s.texte} Associe chaque effet à son auteur et à la nature de l’action.`,
-    answer: association(rng, s.paires),
-    hint: 'Pour chaque effet, cherche le corps responsable, puis vérifie s’il touche l’objet.',
+    prompt: `${s.texte} Pour chaque effet, choisis son auteur, puis la nature de l’action.`,
+    answer: {
+      kind: 'cloze',
+      parts: [...effets.flatMap((e, i) => [`${i === 0 ? '' : '. '}${e.effet} : auteur `, ', action ']), '.'],
+      blanks: effets.flatMap((e) => [
+        { mode: 'list' as const, options: auteurs, correct: auteurs.indexOf(e.auteur) },
+        { mode: 'list' as const, options: NATURES, correct: e.type === 'contact' ? 0 : 1 },
+      ]),
+    },
+    hint: 'Pour chaque effet, cherche d’abord le corps responsable, puis demande-toi s’il touche ce qui subit l’action.',
     steps: [
-      'On cherche l’auteur de chaque action, puis on vérifie le contact.',
-      s.paires.map(([e, a]) => `${e} → **${a}**`).join(' ; '),
+      'On cherche l’auteur de chaque action, puis on vérifie s’il y a contact.',
+      effets.map((e) => `${e.effet} : **${e.auteur}**, action ${NATURES[e.type === 'contact' ? 0 : 1]}`).join(' ; '),
     ],
-    targetSeconds: 75,
+    targetSeconds: 120,
   };
 };
 
@@ -228,6 +228,7 @@ const DOSSIERS: readonly Dossier[] = [
       'Un aimant est tenu au-dessus de la bille, sans la toucher.',
       'L’aimant attire la bille sans réussir à la soulever : elle reste sur la table.',
       'La Terre attire la bille.',
+      'On néglige l’action de l’air.',
     ],
     contact: ['la table'],
     distance: ['l’aimant', 'la Terre'],
@@ -237,7 +238,7 @@ const DOSSIERS: readonly Dossier[] = [
     systeme: 'la lampe',
     lignes: [
       'Système étudié : une lampe suspendue au plafond par un câble.',
-      'La lampe ne touche que le câble.',
+      'On néglige l’action de l’air.',
       'La Terre attire la lampe.',
     ],
     contact: ['le câble'],
@@ -267,10 +268,15 @@ const niveau5 = (rng: Rng): QuestionDraft => {
   const autres = type === 'contact' ? d.distance : d.contact;
   const tous = [...d.contact, ...d.distance];
   const bon = liste(bons);
+  /** Deux listes des mêmes corps dans un autre ordre sont la même proposition. */
+  const cle = (l: readonly string[]) => [...l].sort().join('|');
   const why = `Actions de contact sur ${d.systeme} : ${liste(d.contact)}. Actions à distance : ${liste(d.distance)}.`;
-  const candidats = [liste(autres), liste(tous), liste([...bons.slice(0, 1), ...autres.slice(0, 1)])];
+  const candidats = new Map(
+    [autres, tous, [...bons.slice(0, 1), ...autres.slice(0, 1)]].map((l) => [cle(l), liste(l)] as const),
+  );
+  candidats.delete(cle(bons));
   const { answer, traps } = choice(rng, bon, [
-    ...[...new Set(candidats)].filter((c) => c !== bon).map((label) => ({ label, why })),
+    ...[...candidats.values()].map((label) => ({ label, why })),
     { label: 'aucun corps', why: `Plusieurs corps agissent sur ${d.systeme}. ${why}` },
   ]);
   return {
@@ -310,6 +316,8 @@ export const interactionsNotion: Skill = {
       'gravitation',
       'poids',
       'aimant',
+      'diagramme',
+      'suspente',
     ),
   },
   generate: (rng, level) => (NIVEAUX[level - 1] ?? niveau1)(rng),
