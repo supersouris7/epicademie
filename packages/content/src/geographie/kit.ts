@@ -47,7 +47,7 @@ export interface DocQuestion {
 
 export interface Notion {
   /** Classe citée dans la source de la leçon et sous les textes à lire (CM1 si absente). */
-  readonly classe?: 'CM1' | 'CM2' | '6e' | '5e';
+  readonly classe?: 'CM1' | 'CM2' | '6e' | '5e' | '4e';
   readonly id: string;
   readonly title: string;
   readonly hint: string;
@@ -79,14 +79,16 @@ export interface Notion {
   readonly carte?: (rng: Rng, level: Level) => QuestionDraft | undefined;
 }
 
-const NOMS: Readonly<Record<string, string>> = { '6e': 'sixième', '5e': 'cinquième' };
+const NOMS: Readonly<Record<string, string>> = { '6e': 'sixième', '5e': 'cinquième', '4e': 'quatrième' };
 const nomClasse = (classe: string) => NOMS[classe] ?? classe;
 
-/** Programme de la classe : cycle 4 en 5e, cycle 3 sinon. */
-const programmeOf = (classe: string) => (classe === '5e' ? PROGRAMME_C4 : PROGRAMME);
+const cycle4 = (classe: string) => classe === '5e' || classe === '4e';
+
+/** Programme de la classe : cycle 4 en 5e et 4e, cycle 3 sinon. */
+const programmeOf = (classe: string) => (cycle4(classe) ? PROGRAMME_C4 : PROGRAMME);
 
 const prog = (classe: string) =>
-  classe === '5e'
+  cycle4(classe)
     ? `Programme du cycle 4 (BOEN n° 31 du 30 juillet 2020), géographie, classe de ${nomClasse(classe)}`
     : `Programme du cycle 3 (BOEN n° 31 du 30 juillet 2020, version 2023), géographie, classe de ${nomClasse(classe)}`;
 
