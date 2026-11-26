@@ -14,7 +14,7 @@
 | ---------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------- | ---------------------- |
 | `pc-4e-01` | Atomes et transformations          | atomes et molécules ; formules chimiques ; transformation chimique ; combustions ; conservation de la masse | couverte, en relecture |
 | `pc-4e-02` | Mouvement et interactions          | vitesse ; interactions ; forces et représentation ; mouvement et force                                      | couverte, en relecture |
-| `pc-4e-03` | Électricité                        | tension ; intensité ; lois des circuits ; loi d'Ohm                                                         | couverte, en relecture |
+| `pc-4e-03` | Électricité                        | tension ; intensité ; lois des circuits ; loi d'Ohm                                                         | couverte               |
 | `pc-4e-04` | Signaux                            | vitesse de la lumière et du son ; fréquence ; sons audibles ; lumière blanche et couleurs                   | absente                |
 | `sv-4e-01` | La Terre interne                   | structure du globe ; tectonique des plaques ; roches ; histoire de la Terre                                 | couverte               |
 | `sv-4e-02` | Reproduction                       | reproduction sexuée et asexuée ; puberté ; reproduction humaine ; maîtrise de la reproduction               | couverte               |
