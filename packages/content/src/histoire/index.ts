@@ -9,6 +9,7 @@ import { SKILLS as FRANCE_XIXE } from './france-xixe.ts';
 import { SKILLS as GUERRES_EUROPE } from './guerres-europe.ts';
 import { SKILLS as GUERRES_TOTALES } from './guerres-totales.ts';
 import { SKILLS as HUMANITE } from './humanite.ts';
+import { SKILLS as MONDE_1945 } from './monde-1945.ts';
 import { SKILLS as TEMPS_DES_ROIS } from './le-temps-des-rois.ts';
 import { SKILLS as RECITS_FONDATEURS } from './recits-fondateurs.ts';
 import { SKILLS as REVOLUTION_EMPIRE } from './revolution-empire.ts';
@@ -243,4 +244,5 @@ export const HISTOIRE_CHAPTERS: readonly Chapter[] = [
   chapter('h4-se-reperer', '4e', 'Repères de 4e', REPERES_4E),
   chapter('h3-guerres-totales', '3e', 'La Première Guerre mondiale et les totalitarismes', GUERRES_TOTALES),
   chapter('h3-seconde-guerre', '3e', 'La Seconde Guerre mondiale', SECONDE_GUERRE),
+  chapter('h3-monde-depuis-1945', '3e', 'Le monde depuis 1945', MONDE_1945),
 ];

@@ -13,7 +13,7 @@
 | ---------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------- | ---------------------- |
 | `st-6e-01` | La matière                     | états et changements d'état ; masse et volume ; mélanges et corps purs ; dissolution et conservation de la masse | couverte, en relecture |
 | `st-6e-02` | Mouvements et énergie          | types de mouvements ; vitesse ; sources et conversions d'énergie ; circuit électrique                            | couverte, en relecture |
-| `st-6e-03` | Le vivant                      | la cellule ; classification par groupes emboîtés ; reproduction ; développement                                  | absente                |
+| `st-6e-03` | Le vivant                      | la cellule ; classification par groupes emboîtés ; reproduction ; développement                                  | couverte, en relecture |
 | `st-6e-04` | Nutrition                      | besoins des végétaux ; origine de la matière des êtres vivants ; transformation des aliments ; micro-organismes  | absente                |
 | `st-6e-05` | La planète Terre               | séismes et volcans ; phénomènes météorologiques ; ressources ; impact des activités humaines                     | absente                |
 | `st-6e-06` | Matériaux et objets techniques | familles de matériaux ; besoin, fonction, solution ; représenter un objet ; objets et environnement              | absente                |
@@ -41,3 +41,9 @@ règles de sécurité électrique ne sont pas reprises dans ce lot : elles sont 
 Écart au plan (`st-6e-01`) : « corps purs » n’est pas au programme de 6e (le terme relève du cycle 4, couvert en 5e) ;
 la notion « mélanges » porte sur les liquides non miscibles, la composition de l’air et l’effet de serre. Une cinquième
 notion, « transformations chimiques et sécurité » (colonne « fin de sixième » de la partie « Mélanges »), est ajoutée.
+
+Écart au plan (`st-6e-03`) : une cinquième notion, « biodiversité actuelle et passée » (colonne « fin de sixième » de
+la partie « Panorama du monde vivant », dans aucun lot), est ajoutée. « La reproduction » couvre la pollinisation,
+l’appareil reproducteur humain, la fécondation et la distinction avec la sexualité ; « le développement » couvre les
+cycles de vie, le développement vivipare et la puberté. La réalisation d’observations microscopiques et l’usage de bases
+de données numériques ne sont pas évaluables dans le jeu.
