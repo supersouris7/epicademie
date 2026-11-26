@@ -52,7 +52,7 @@ export const PREUVES = {
     'les députés sont élus par les hommes de plus de 25 ans payant un cens de 200 francs (au lieu de 300 précédemment)',
   ),
   guizot: censitaire(
-    'Guizot, oppose à toute réforme visant à étendre le droit du suffrage un non catégorique et absolu.',
+    "le principal ministre de l'époque, Guizot, oppose à toute réforme visant à étendre le droit du suffrage un non catégorique et absolu.",
   ),
   electeurs1846: censitaire('le nombre total des électeurs ne dépasse pas 246 000 citoyens'),
   fevrier1848: an(
@@ -73,7 +73,9 @@ export const PREUVES = {
   restriction1850: deuxieme(
     'les députés limitent le droit de vote (le corps électoral passe de près de 10 millions à moins de 7 millions de votants)',
   ),
-  ouvriers1850: deuxieme('cela exclut une bonne partie des ouvriers'),
+  ouvriers1850: deuxieme(
+    'Pour voter, il faut désormais justifier de trois années de résidence au même endroit : cela exclut une bonne partie des ouvriers',
+  ),
   coupDEtat: deuxieme('c’est le coup d’État du 2 décembre 1851.'),
   empire1852: empire("l'Empire est proclamé le 2 décembre 1852 et Louis-Napoléon prend le titre de Napoléon III."),
   candidats: empire(
@@ -95,7 +97,9 @@ export const PREUVES = {
   unite: programme(
     'Après les événements de 1870 et 1871, l’enjeu est de réaliser l’unité nationale autour de la République',
   ),
-  lieux: programme("l'école, la municipalité, la caserne deviennent des lieux où se construit une culture"),
+  lieux: programme(
+    "l'école, la municipalité, la caserne deviennent des lieux où se construit une culture républicaine progressiste et laïque",
+  ),
   contestee: programme(
     'Mais de son installation à la loi de Séparation des Églises et de l’État, la République est encore discutée et contestée.',
   ),

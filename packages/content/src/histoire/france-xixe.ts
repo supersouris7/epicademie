@@ -15,7 +15,7 @@ const vote: Notion = {
   hint: 'Relis le mémo : cherche qui a le droit de voter, sous quel régime et à quelle date.',
   memo: [
     'De 1815 à 1848, sous la Restauration puis la monarchie de Juillet, le **suffrage censitaire** réserve le vote aux hommes qui paient le **cens**, un montant d’impôt : le peuple est exclu de la vie politique. La Restauration compte environ 100 000 électeurs, des propriétaires, des bourgeois et des paysans riches ; la loi de 1820 fait voter deux fois les plus imposés. En juillet 1830, les Trois Glorieuses font tomber Charles X ; en 1831, le cens passe de 300 à 200 francs, mais on ne compte que 246 000 électeurs en 1846 et le ministre Guizot refuse tout élargissement.',
-    'Le 24 février 1848, Louis-Philippe abdique et la Deuxième République est proclamée. Le décret du 5 mars 1848 instaure le **suffrage universel masculin**, direct : tous les Français (des hommes) de 21 ans, résidant depuis six mois dans leur commune et jouissant de leurs droits civiques, votent ; le 23 avril, les électeurs se déplacent en masse, et le 10 décembre Louis-Napoléon Bonaparte est élu président. En 1850, une loi réduit le corps électoral de près de 10 millions à moins de 7 millions, en écartant beaucoup d’ouvriers.',
+    'Le 24 février 1848, Louis-Philippe abdique et la Deuxième République est proclamée. Le décret du 5 mars 1848 instaure le **suffrage universel masculin**, direct : tous les Français (des hommes) d’au moins 21 ans, résidant depuis six mois dans leur commune et jouissant de leurs droits civiques, votent ; le 23 avril, les électeurs se déplacent en masse, et le 10 décembre Louis-Napoléon Bonaparte est élu président. En 1850, une loi exige trois ans de résidence au même endroit : le corps électoral passe de près de 10 millions à moins de 7 millions, et beaucoup d’ouvriers sont écartés.',
     'Après le **coup d’État** du 2 décembre 1851, le Second Empire est proclamé le 2 décembre 1852. Le suffrage universel masculin demeure, mais le pouvoir soutient des **candidats officiels** et recourt au **plébiscite**.',
   ],
   faits: [
@@ -233,7 +233,7 @@ const vote: Notion = {
     },
     {
       ...P.cens,
-      q: 'quel montant d’impôt fallait-il payer pour voter sous la Restauration et la monarchie de Juillet ?',
+      q: 'comment appelle-t-on le montant d’impôt qu’il fallait payer pour voter sous la Restauration et la monarchie de Juillet ?',
       accepted: ['cens', 'le cens', 'cens électoral', 'le cens électoral'],
       traps: [
         { text: 'dîme', why: 'La dîme est un impôt d’Ancien Régime versé à l’Église.' },
@@ -360,8 +360,8 @@ const republique: Notion = {
   hint: 'Relis le mémo : suis les dates depuis 1870, puis les grandes lois et les crises.',
   memo: [
     'La République est proclamée le 4 septembre 1870, deux jours après la défaite de Sedan. Au printemps 1871, la **Commune de Paris**, insurrection du 18 mars au 28 mai, est réprimée. L’avenir du régime est incertain ; les **lois constitutionnelles** de 1875 (l’amendement Wallon est voté à une seule voix) l’affermissent, et la crise du 16 mai 1877 oppose le président Mac-Mahon à la majorité républicaine de la Chambre.',
-    'Il s’agit d’unir la nation autour de la République, par l’école, la mairie et la caserne : la Marseillaise devient hymne national en 1879 et le 14 juillet fête nationale en 1880 ; l’école devient gratuite (1881), obligatoire et laïque (1882) ; la presse est libre (1881), les syndicats sont autorisés (1884), les conseils municipaux élisent leur maire (loi de 1884), la **conscription** devient obligatoire (1889) et les associations sont libres (1901). L’**isoloir** arrive en 1903.',
-    'La République reste discutée. L’**affaire Dreyfus** (1894-1906) divise le pays : le capitaine Alfred Dreyfus, officier juif, est injustement accusé de trahison et condamné en 1894 ; Émile Zola publie « J’accuse…! » le 13 janvier 1898 ; Dreyfus est réhabilité en 1906. La loi du 9 décembre 1905, de **Séparation des Églises et de l’État**, assure la liberté de conscience, ne reconnaît, ne salarie ni ne subventionne aucun culte, et met fin au Concordat de 1802 : c’est un pas majeur de la **laïcité**.',
+    'Il s’agit d’unir la nation autour de la République, par l’école, la mairie et la caserne : la Marseillaise devient hymne national en 1879 et le 14 juillet fête nationale en 1880 ; avec les lois de Jules Ferry, l’école devient gratuite (1881), obligatoire et laïque (1882) ; les conseils municipaux élisent leur maire (loi de 1884), la **conscription** devient obligatoire (1889) et des lois accordent des libertés, dont les opposants peuvent aussi se servir : presse (1881), syndicats (1884), associations (1901). L’**isoloir** arrive en 1903.',
+    'La République reste discutée. L’**affaire Dreyfus** (1894-1906) divise le pays : le capitaine Alfred Dreyfus, officier juif, est injustement accusé de trahison et condamné en 1894 ; Émile Zola publie « J’accuse…! » dans le journal L’Aurore le 13 janvier 1898 ; Dreyfus est réhabilité en 1906. La loi du 9 décembre 1905, de **Séparation des Églises et de l’État**, assure la liberté de conscience, ne reconnaît, ne salarie ni ne subventionne aucun culte, et met fin au Concordat de 1802 : c’est un pas majeur de la **laïcité**.',
   ],
   faits: [
     {
@@ -441,14 +441,14 @@ const republique: Notion = {
     },
     {
       ...P.maires,
-      q: 'Depuis la loi de 1884, qui élit le maire dans toutes les communes ?',
+      q: 'Depuis la loi de 1884, qui élit le maire de la commune ?',
       a: 'le conseil municipal',
       wrong: [
         { label: 'le préfet', why: 'La loi de 1884 confie ce choix au conseil municipal.' },
         { label: 'le président de la République', why: 'Le président ne choisit pas les maires.' },
         { label: 'les sénateurs', why: 'Les sénateurs siègent au Parlement ; ils n’élisent pas le maire.' },
       ],
-      gap: ['Depuis 1884, tous les conseils ', ' élisent leur maire.', ['municipaux']],
+      gap: ['Depuis 1884, les conseils ', ' élisent leur maire.', ['municipaux']],
       explain: 'La mairie devient un lieu de la démocratie locale.',
     },
     {
@@ -664,7 +664,7 @@ const femmes: Notion = {
   memo: [
     'En 1804, le Code civil consacre l’**incapacité juridique** de la femme mariée, soumise à l’autorité de son mari, alors que les filles majeures et les veuves peuvent gérer leurs biens. Au XIXe siècle, les femmes restent exclues de la vie politique.',
     'Elles travaillent pourtant beaucoup : 6,2 millions de femmes sont actives en 1866, soit un tiers de la population active, un chiffre sans doute sous-évalué (femmes d’agriculteurs, d’artisans, de commerçants). Ouvrières, paysannes, **ménagères** ou bourgeoises, leurs conditions diffèrent ; les femmes forment un tiers des ouvriers. Elles participent aux grèves, notamment dans le textile. Des femmes aisées fondent des associations pour aider celles qui travaillent.',
-    'Elles gagnent peu à peu des droits : première **bachelière** en 1861, enseignement secondaire féminin en 1867 et 1880, première femme à l’externat de médecine en 1881, droit de plaider comme avocates en 1900, libre disposition de leur salaire et droit d’élire et d’être élues aux **prud’hommes** en 1907, congé de maternité de 8 semaines non payé en 1909. Le **féminisme** revendique le droit de vote dès 1848, avec Eugénie Niboyet (journal « La voix des femmes »), puis Hubertine Auclert (« La Citoyenne », 1881), Marguerite Durand (« La Fronde », 1893) et l’Union française pour le suffrage des femmes (1909) : le droit de vote n’est pas obtenu.',
+    'Elles gagnent peu à peu des droits : première **bachelière** en 1861, enseignement secondaire féminin en 1867 et 1880, première femme à l’externat de médecine en 1881, droit de plaider comme avocates en 1900, libre disposition de leur salaire et droit d’élire et d’être élues aux **prud’hommes** en 1907, congé de maternité de 8 semaines non payé en 1909. Le **féminisme** revendique le droit de vote dès 1848, avec Eugénie Niboyet (journal « La voix des femmes »), puis Hubertine Auclert (« La Citoyenne », 1881), Marguerite Durand (« La Fronde », 1893) et l’Union française pour le suffrage des femmes (1909) : le droit de vote n’est pas obtenu avant la Première Guerre mondiale (les femmes l’obtiendront en 1944).',
   ],
   faits: [
     {
@@ -720,9 +720,15 @@ const femmes: Notion = {
       q: 'Dans quel secteur, où les femmes sont nombreuses, des grèves se produisent-elles ?',
       a: 'le textile',
       wrong: [
-        { label: 'les mines', why: 'La ressource cite le textile comme secteur à dominante féminine.' },
+        {
+          label: 'les mines',
+          why: 'Le travail dans les mines est surtout masculin ; cherche un secteur où les ouvrières dominent.',
+        },
         { label: 'l’armée', why: 'L’armée n’emploie pas les femmes comme ouvrières.' },
-        { label: 'la métallurgie', why: 'L’exemple de secteur à dominante féminine donné ici est un autre.' },
+        {
+          label: 'la métallurgie',
+          why: 'La métallurgie emploie surtout des hommes ; cherche un secteur où les ouvrières dominent.',
+        },
       ],
       gap: ['Des grèves se produisent là où le travail féminin domine, comme dans le ', '.', ['textile']],
       explain: 'Les ouvrières se mobilisent, même si elles sont moins syndiquées que les hommes.',
@@ -771,12 +777,18 @@ const femmes: Notion = {
     },
     {
       ...P.avocates,
-      q: 'Quel métier les femmes peuvent-elles exercer en plaidant à partir de 1900 ?',
+      q: 'En 1900, quel métier de la justice s’ouvre aux femmes, avec le droit de plaider ?',
       a: 'celui d’avocate',
       wrong: [
         { label: 'celui de députée', why: 'Les femmes restent exclues de la vie politique.' },
-        { label: 'celui de préfète', why: 'La ressource cite le droit de plaider comme avocates.' },
-        { label: 'celui d’officier', why: 'La date concerne le métier d’avocat.' },
+        {
+          label: 'celui de préfète',
+          why: 'Un préfet représente le gouvernement ; il ne plaide pas devant les tribunaux.',
+        },
+        {
+          label: 'celui d’officier',
+          why: 'Un officier sert dans l’armée ; plaider, c’est défendre quelqu’un devant un tribunal.',
+        },
       ],
       gap: ['En 1900, les femmes ont le droit de plaider comme ', '.', ['avocates', 'avocate']],
       explain: 'C’est une des avancées de la fin du siècle.',
@@ -831,7 +843,7 @@ const femmes: Notion = {
     },
     {
       ...P.ouvrieres,
-      q: 'Quelle part des ouvriers les femmes représentent-elles en France ?',
+      q: 'En France, au XIXe siècle, quelle part des ouvriers les femmes représentent-elles ?',
       a: 'le tiers',
       wrong: [
         { label: 'aucune', why: 'De nombreuses femmes travaillent comme ouvrières.' },
@@ -888,6 +900,8 @@ const femmes: Notion = {
       accepted: [
         'Code civil',
         'le Code civil',
+        'Code civil de 1804',
+        'le Code civil de 1804',
         'code napoléonien',
         'le code napoléonien',
         'code Napoléon',
