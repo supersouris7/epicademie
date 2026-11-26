@@ -17,9 +17,9 @@ const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 const coin = (rng: Rng) => rng.int(0, 1) === 0;
 const quoted = (list: readonly string[]) => list.map((l) => `« ${l} »`).join(' ');
 /** Saisies acceptées : avec ou sans point final. */
-const ended = (forms: readonly string[]) => forms.flatMap((f) => [f, `${f}.`, `${f} .`]);
+export const ended = (forms: readonly string[]) => forms.flatMap((f) => [f, `${f}.`, `${f} .`]);
 /** Une erreur typique reste reconnue avec ou sans point ; la première explication d'une même saisie gagne. */
-function typed(good: string, traps: readonly (readonly [string, string])[]): Trap[] {
+export function typed(good: string, traps: readonly (readonly [string, string])[]): Trap[] {
   const seen = new Set([good.toLowerCase()]);
   return traps.flatMap(([text, why]) => {
     if (seen.has(text.toLowerCase())) return [];
@@ -29,7 +29,7 @@ function typed(good: string, traps: readonly (readonly [string, string])[]): Tra
 }
 
 /** Association : éléments à gauche, réponses mélangées à droite. */
-function pairs(rng: Rng, rows: readonly (readonly [string, string])[]) {
+export function pairs(rng: Rng, rows: readonly (readonly [string, string])[]) {
   const left = rows.map((r) => r[0]);
   const right = shuffledOther(
     rng,
@@ -39,7 +39,7 @@ function pairs(rng: Rng, rows: readonly (readonly [string, string])[]) {
 }
 
 /** Texte à trous saisis : le trou i s'insère entre `lines[i][0]` et `lines[i][1]`. */
-function gaps(lines: readonly (readonly [string, string, string])[]) {
+export function gaps(lines: readonly (readonly [string, string, string])[]) {
   const parts: string[] = [''];
   for (const [before, , after] of lines) {
     parts[parts.length - 1] = `${at(parts, parts.length - 1)}${before}`;
