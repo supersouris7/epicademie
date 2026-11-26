@@ -113,6 +113,37 @@ describe('sciences 6e : « Mouvements et énergie »', () => {
     }
   });
 
+  it('circuit : intervertir des composants ne change pas le fonctionnement (N4 et N5)', () => {
+    for (const level of [4, 5] as const) {
+      const qs = tirages('p6-circuit', level).filter((q) => /intervertit|essai 3/.test(q.prompt));
+      expect(qs.length, `niveau ${level}`).toBeGreaterThan(0);
+      for (const q of qs) {
+        expect(texte(q)).toContain('intervertit');
+        if (q.answer.kind !== 'choice') throw new Error(q.prompt);
+        expect(q.answer.options[q.answer.correct], q.prompt).toMatch(/comme (avant|à l’essai 1)$/);
+      }
+    }
+    const lesson = notions.find((s) => s.id === 'p6-circuit')?.lesson;
+    expect(lesson?.memo.join(' ')).toContain('intervertir');
+    expect(lesson?.source).toContain('intervertir les positions');
+    for (const q of tirages('p6-circuit', 5)) expect(q.answer.kind, q.prompt).toBe('choice');
+  });
+
+  it('circuit : les noms justes de la photopile et du récepteur sont acceptés, « pile » est expliqué', () => {
+    const qs = tirages('p6-circuit', 4);
+    const photo = qs.find((q) => q.prompt.includes('photovoltaïque produit'));
+    const recepteur = qs.find((q) => q.prompt.includes('convertit l’énergie électrique reçue'));
+    if (!photo || !recepteur) throw new Error('question absente');
+    const dit = (q: Question, text: string) => check(q, { kind: 'text', text });
+    for (const mot of ['élément', 'panneau']) expect(dit(photo, `un ${mot} photovoltaïque`).correct, mot).toBe(true);
+    for (const text of ['une pile photovoltaïque', 'pile solaire', 'convertisseur photovoltaïque'])
+      expect(dit(photo, text).correct, text).toBe(true);
+    expect(dit(photo, 'pile').correct).toBe(false);
+    expect(dit(photo, 'pile').why).toContain('chimique');
+    for (const text of ['convertisseur', 'un convertisseur d’énergie'])
+      expect(dit(recepteur, text).correct, text).toBe(true);
+  });
+
   it('circuit : une boucle interrompue n’est jamais dite fermée', () => {
     for (const q of tirages('p6-circuit', 3)) {
       if (q.answer.kind !== 'text') continue;

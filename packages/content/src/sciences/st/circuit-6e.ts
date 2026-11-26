@@ -7,11 +7,13 @@ import { association, maj, saisie } from './outils.ts';
 // ——— Circuit électrique à une boucle : éléments, circuit ouvert ou fermé, courant qui ne s'use pas (6e) ———
 
 const RECEPTEURS = [
-  { nom: 'la lampe', un: 'une lampe', effet: 'brille', neg: 'reste éteinte' },
-  { nom: 'le moteur', un: 'un moteur', effet: 'tourne', neg: 'reste immobile' },
+  { nom: 'la lampe', un: 'une lampe', effet: 'brille', neg: 'reste éteinte', plus: 'brille davantage' },
+  { nom: 'le moteur', un: 'un moteur', effet: 'tourne', neg: 'reste immobile', plus: 'tourne plus vite' },
 ] as const;
 const REGLE =
   'Le courant passe dans un circuit fermé ; une interruption dans un seul élément empêche le passage du courant.';
+const PERMUTATION =
+  'Dans un circuit à une boucle, on peut intervertir les positions des composants : le fonctionnement ne change pas.';
 
 const niveau1 = (rng: Rng): QuestionDraft => {
   const rec = rng.pick(RECEPTEURS);
@@ -125,7 +127,21 @@ const MOTS: readonly { q: string; accepte: readonly string[]; faux: readonly (re
   },
   {
     q: 'Comment nomme-t-on un élément, comme une ampoule ou un moteur, qui convertit l’énergie électrique reçue ?',
-    accepte: ['récepteur', 'un récepteur', 'le récepteur', 'recepteur', 'un recepteur'],
+    accepte: [
+      'récepteur',
+      'un récepteur',
+      'le récepteur',
+      'recepteur',
+      'un recepteur',
+      'convertisseur',
+      'un convertisseur',
+      'le convertisseur',
+      'convertisseur d’énergie',
+      'un convertisseur d’énergie',
+      'le convertisseur d’énergie',
+      'convertisseur d’energie',
+      'un convertisseur d’energie',
+    ],
     faux: [['générateur', 'Un générateur fournit l’énergie électrique.']],
   },
   {
@@ -145,8 +161,35 @@ const MOTS: readonly { q: string; accepte: readonly string[]; faux: readonly (re
       'cellule photovoltaïque',
       'une cellule photovoltaïque',
       'cellule photovoltaique',
+      'une cellule photovoltaique',
+      'la cellule photovoltaïque',
+      'élément photovoltaïque',
+      'un élément photovoltaïque',
+      'l’élément photovoltaïque',
+      'element photovoltaique',
+      'un element photovoltaique',
+      'panneau photovoltaïque',
+      'un panneau photovoltaïque',
+      'le panneau photovoltaïque',
+      'panneau photovoltaique',
+      'un panneau photovoltaique',
+      'pile photovoltaïque',
+      'une pile photovoltaïque',
+      'la pile photovoltaïque',
+      'pile photovoltaique',
+      'une pile photovoltaique',
+      'pile solaire',
+      'une pile solaire',
+      'la pile solaire',
+      'convertisseur photovoltaïque',
+      'un convertisseur photovoltaïque',
+      'le convertisseur photovoltaïque',
+      'convertisseur photovoltaique',
+      'un convertisseur photovoltaique',
     ],
     faux: [
+      ['pile', 'Une pile ordinaire fournit de l’énergie électrique à partir de l’énergie chimique, pas du Soleil.'],
+      ['une pile', 'Une pile ordinaire fournit de l’énergie électrique à partir de l’énergie chimique, pas du Soleil.'],
       ['lampe', 'La lampe fait l’inverse : elle reçoit de l’électricité et éclaire.'],
       ['moteur', 'Le moteur produit un mouvement.'],
     ],
@@ -162,7 +205,33 @@ const MOTS: readonly { q: string; accepte: readonly string[]; faux: readonly (re
 ];
 
 const niveau4 = (rng: Rng): QuestionDraft => {
-  const t = rng.int(0, 2);
+  const t = rng.int(0, 3);
+  if (t === 3) {
+    const rec = rng.pick(RECEPTEURS);
+    const bon = maj(`${rec.nom} ${rec.effet} comme avant`);
+    const { answer, traps } = choice(rng, bon, [
+      {
+        label: maj(`${rec.nom} ${rec.plus}, car le récepteur placé en premier reçoit plus de courant`),
+        why: `Le courant ne s’use pas : la première place ne donne aucun avantage. ${PERMUTATION}`,
+      },
+      {
+        label: maj(`${rec.nom} ${rec.neg}, car il faut que l’interrupteur soit avant ${rec.nom}`),
+        why: `L’interrupteur fermé peut occuper n’importe quelle place. ${PERMUTATION}`,
+      },
+      {
+        label: maj(`${rec.nom} ${rec.neg}, car la boucle devient ouverte quand on change l’ordre`),
+        why: `La boucle a été refermée et l’interrupteur est fermé. ${PERMUTATION}`,
+      },
+    ]);
+    return {
+      prompt: `Dans une boucle, on lit dans cet ordre : borne d’une pile, interrupteur fermé, ${rec.nom}, autre borne : ${rec.nom} ${rec.effet}. On intervertit l’interrupteur et ${rec.nom}, puis on rebranche tout ; l’interrupteur reste fermé. Qu’observe-t-on ?`,
+      answer,
+      traps,
+      hint: 'La boucle est-elle toujours complète après l’échange ?',
+      steps: [PERMUTATION, `La boucle reste fermée : **${bon}**.`],
+      targetSeconds: 55,
+    };
+  }
   if (t === 0) {
     const paires = rng
       .shuffle(ELEMENTS)
@@ -222,6 +291,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
   const source = rng.pick(['une pile', 'une photopile éclairée par le Soleil']);
   const lampeAvant = rng.int(0, 1) === 0;
   const ordreBoucle = lampeAvant ? 'une lampe, puis un moteur' : 'un moteur, puis une lampe';
+  const t = rng.int(0, 2);
   const figure = {
     kind: 'document' as const,
     title: 'Montage d’un élève (données de l’exercice)',
@@ -229,10 +299,14 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       `La boucle contient ${source}, un interrupteur, ${ordreBoucle}.`,
       'Essai 1, interrupteur fermé : la lampe brille et le moteur tourne.',
       'Essai 2 : l’élève débranche un seul fil, entre la lampe et le moteur, sans rien rebrancher.',
+      ...(t === 2
+        ? [
+            'Essai 3 : l’élève rebranche ce fil, intervertit les places de la lampe et du moteur, puis rétablit une boucle complète, interrupteur fermé.',
+          ]
+        : []),
       `L’élève écrit : « Le courant est usé par ${lampeAvant ? 'la lampe' : 'le moteur'}, il en reste moins pour la suite. »`,
     ],
   };
-  const t = rng.int(0, 2);
   if (t === 0) {
     const bon = 'La lampe s’éteint et le moteur s’arrête';
     const { answer, traps } = choice(rng, bon, [
@@ -280,18 +354,31 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       targetSeconds: 70,
     };
   }
-  const { answer, traps } = saisie(
-    ['ouvert', 'circuit ouvert'],
-    [['fermé', 'Un fil est débranché : la boucle est interrompue.']],
-  );
+  const bon = 'La lampe brille et le moteur tourne, comme à l’essai 1';
+  const premier = lampeAvant ? 'le moteur' : 'la lampe';
+  const second = lampeAvant ? 'la lampe' : 'le moteur';
+  const { answer, traps } = choice(rng, bon, [
+    {
+      label: `Seul ${premier} fonctionne, car le récepteur placé en premier prend le courant`,
+      why: `Le courant ne s’use pas en traversant un récepteur. ${PERMUTATION}`,
+    },
+    {
+      label: `Seul ${second} fonctionne, car chaque récepteur doit garder sa place`,
+      why: `Aucun récepteur n’a de place imposée. ${PERMUTATION}`,
+    },
+    {
+      label: 'La lampe reste éteinte et le moteur reste immobile, car l’ordre a changé',
+      why: `La boucle est complète et l’interrupteur est fermé. ${PERMUTATION}`,
+    },
+  ]);
   return {
-    prompt: 'Lis le document. À l’essai 2, le circuit est-il ouvert ou fermé ? Écris le bon mot.',
+    prompt: 'Lis le document. Qu’observe-t-on à l’essai 3 ?',
     figure,
     answer,
     traps,
-    hint: 'Regarde ce que l’élève a fait à la boucle.',
-    steps: ['Le fil débranché interrompt la boucle.', 'Le circuit est **ouvert**.'],
-    targetSeconds: 45,
+    hint: 'La boucle est-elle complète ? L’ordre des composants compte-t-il ?',
+    steps: ['À l’essai 3, la boucle est de nouveau fermée.', PERMUTATION, `**${bon}**.`],
+    targetSeconds: 70,
   };
 };
 
@@ -306,6 +393,7 @@ export const circuitElectrique: Skill = {
     memo: [
       'Un **circuit électrique** à une boucle réunit un **générateur** (pile ou **photopile**), des fils, un **récepteur** (lampe, moteur) et souvent un **interrupteur**. Un **capteur** peut y transformer un phénomène en signal.',
       'Le courant passe si le circuit est **fermé**. Une seule interruption (circuit **ouvert**) arrête tout. Le courant ne s’use pas en traversant un récepteur : c’est l’énergie qui est convertie.',
+      'Dans une boucle, on peut intervertir les positions des composants : le fonctionnement ne change pas.',
     ],
     ...references(
       'boucle',
@@ -320,6 +408,7 @@ export const circuitElectrique: Skill = {
       'moteur',
       'capteur',
       'usure',
+      'intervertir',
     ),
   },
   generate: (rng, level) => (NIVEAUX[level - 1] ?? niveau1)(rng),

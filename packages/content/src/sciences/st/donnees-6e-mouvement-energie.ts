@@ -131,6 +131,10 @@ export const FAITS_MOUVEMENT_ENERGIE: readonly Fait[] = [
   ),
   // Circuit électrique.
   prog('boucle', 'Mettre en œuvre des circuits électriques à une boucle en respectant des consignes de sécurité.'),
+  prog(
+    'intervertir',
+    'Mettre en évidence expérimentalement la possibilité d’intervertir les positions des composants d’un circuit à une boucle.',
+  ),
   prog('elements', 'capteurs, moteurs électriques miniatures, éléments photovoltaïques'),
   prog(
     'usure',

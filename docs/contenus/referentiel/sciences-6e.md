@@ -33,7 +33,10 @@ couvrir.
 
 Écart au plan (`st-6e-02`) : « types de mouvements » couvre aussi la rotation et la révolution de la Terre (jour,
 année) et le calcul de vitesse se limite au mouvement uniforme (la relation avec la distance ou la durée relève du
-cycle 4). Le dihydrogène, cité par le programme, n’est pas classé renouvelable ou non faute de source qui le tranche.
+cycle 4). Le dihydrogène, cité par le programme, n’est pas classé renouvelable ou non faute de source qui le tranche. La
+« représentation schématique normalisée » du circuit n’est pas couverte (aucune figure de circuit dans le moteur). Les
+règles de sécurité électrique ne sont pas reprises dans ce lot : elles sont traitées par la notion
+`tcm2-securite-electrique` (lot `st-cm2-05`, classée en CM2).
 
 Écart au plan (`st-6e-01`) : « corps purs » n’est pas au programme de 6e (le terme relève du cycle 4, couvert en 5e) ;
 la notion « mélanges » porte sur les liquides non miscibles, la composition de l’air et l’effet de serre. Une cinquième
