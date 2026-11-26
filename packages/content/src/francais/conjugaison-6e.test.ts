@@ -16,7 +16,7 @@ import {
   imperatif,
   type VerbeOrdre,
 } from './conjugaison-6e.donnees.ts';
-import { F6_CONJUGAISON, decoupe } from './conjugaison-6e.ts';
+import { F6_CONJUGAISON, RECITS_MARQUES, decoupe } from './conjugaison-6e.ts';
 import { PERSONNES } from './present.donnees.ts';
 import { conjugue } from './temps.donnees.ts';
 
@@ -131,12 +131,37 @@ describe('réponses des niveaux', () => {
     }
   });
 
-  it('marques niveau 5 : les quatre temps peuvent se répéter (aucune ligne ne se déduit)', () => {
-    const repetitions = tirages('f6-marques-temps', 5).filter((q) => {
-      if (q.answer.kind !== 'cloze') throw new Error('forme inattendue');
-      return new Set(q.answer.blanks.map((b) => (b.mode === 'list' ? b.correct : -1))).size < 4;
-    });
-    expect(repetitions.length).toBeGreaterThan(100);
+  it('marques niveau 5 : texte suivi, trois verbes dont on donne temps et marques', () => {
+    const temps = new Set<string>();
+    let repetitions = 0;
+    for (const q of tirages('f6-marques-temps', 5)) {
+      if (q.answer.kind !== 'cloze' || q.figure?.kind !== 'document') throw new Error('forme inattendue');
+      const { blanks } = q.answer;
+      expect(blanks.map((b) => b.mode)).toEqual(Array(3).fill(['list', 'list', 'text']).flat());
+      const texte = q.figure.lines.join(' ');
+      expect(texte).toMatch(/Si .+ (était|avions|avais|avait) .+!/);
+      for (const lettre of ['A', 'B', 'C']) expect(texte).toContain(`(${lettre})`);
+      const choisis = [0, 3, 6].map((i) => {
+        const b = blanks[i];
+        return b?.mode === 'list' ? b.options[b.correct] : undefined;
+      });
+      for (const t of choisis) temps.add(t ?? '');
+      if (new Set(choisis).size < 3) repetitions++;
+    }
+    expect(temps.size).toBe(4);
+    expect(repetitions).toBeGreaterThan(50);
+  });
+
+  it('marques niveau 5 : chaque verbe des textes est régulier et accordé à son sujet', () => {
+    for (const r of RECITS_MARQUES) {
+      const formes = r.phrases.map(([, x]) => decoupe(x.t, x.v, x.p).forme);
+      expect(new Set(formes).size, r.titre).toBe(formes.length);
+      for (const [avant, x] of r.phrases) {
+        expect(REGULIERS_6).toContain(x.v);
+        if (x.t === 'impératif présent') expect(avant).toBe('');
+        if (x.t === 'conditionnel présent') expect(avant).toMatch(/^Si /);
+      }
+    }
   });
 
   it('QCM : la bonne réponse n’est pas toujours la plus longue ni la plus courte', () => {

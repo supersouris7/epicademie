@@ -598,6 +598,123 @@ function tirerMarques(rng: Rng, t: TempsM) {
   return { t, v, p, d, texte };
 }
 
+/** Verbe à analyser dans un texte suivi : verbe régulier, temps imposé par la phrase, personne du sujet. */
+interface VerbeEnTexte {
+  readonly v: VerbeOrdre;
+  readonly t: TempsM;
+  readonly p: Personne;
+}
+
+const enTexte = (v: VerbeOrdre, t: TempsM, p: Personne): VerbeEnTexte => ({ v, t, p });
+
+interface Recit {
+  readonly titre: string;
+  readonly situation: string;
+  /** Phrases du texte : le verbe à analyser entre le début et la suite. */
+  readonly phrases: readonly (readonly [string, VerbeEnTexte, string])[];
+}
+
+/** Textes écrits pour l’exercice : récit à l’imparfait, annonce au futur, hypothèses avec « si », puis un ordre. */
+export const RECITS_MARQUES: readonly Recit[] = [
+  {
+    titre: 'La chorale prépare son concert',
+    situation: 'La cheffe de chœur s’adresse à ses élèves avant le concert de juin.',
+    phrases: [
+      ['L’an dernier, la chorale ', enTexte('chanter', 'imparfait', 'il'), ' dans une petite salle.'],
+      ['Les nouveaux ', enTexte('regarder', 'imparfait', 'ils'), ' leurs pieds pendant les refrains.'],
+      ['En juin, nous ', enTexte('porter', 'futur', 'nous'), ' tous un foulard bleu.'],
+      [
+        'Si le gymnase était libre, les familles ',
+        enTexte('écouter', 'conditionnel présent', 'ils'),
+        ' le concert assises.',
+      ],
+      ['Si nous avions un piano, nous ', enTexte('danser', 'conditionnel présent', 'nous'), ' sur le dernier morceau.'],
+      ['', enTexte('marcher', 'impératif présent', 'vous'), ' sans bruit jusqu’à la scène !'],
+    ],
+  },
+  {
+    titre: 'Au club de jardinage',
+    situation: 'Une élève parle du jardin du collège à un camarade qui arrive dans le club.',
+    phrases: [
+      ['Au printemps, nous ', enTexte('remplir', 'imparfait', 'nous'), ' les arrosoirs chaque matin.'],
+      ['Les plus jeunes ', enTexte('porter', 'imparfait', 'ils'), ' les petits sacs de terre.'],
+      ['À la rentrée, tu ', enTexte('choisir', 'futur', 'tu'), ' les graines du potager.'],
+      [
+        'Si la cour était plus grande, nous ',
+        enTexte('dessiner', 'conditionnel présent', 'nous'),
+        ' une seconde allée.',
+      ],
+      ['Si tu avais une serre, tu ', enTexte('réussir', 'conditionnel présent', 'tu'), ' tes semis en hiver.'],
+      ['', enTexte('finir', 'impératif présent', 'nous'), ' d’arroser avant midi !'],
+    ],
+  },
+  {
+    titre: 'La course d’orientation',
+    situation: 'Le professeur parle à une équipe avant le départ.',
+    phrases: [
+      ['L’année passée, vous ', enTexte('marcher', 'imparfait', 'vous'), ' trop loin des balises.'],
+      ['Votre capitaine ', enTexte('trouver', 'imparfait', 'il'), ' pourtant le chemin le plus court.'],
+      ['Aujourd’hui, les équipes ', enTexte('finir', 'futur', 'ils'), ' le parcours avant la nuit.'],
+      ['Si le terrain était sec, vous ', enTexte('sauter', 'conditionnel présent', 'vous'), ' par-dessus les fossés.'],
+      [
+        'Si votre capitaine avait une boussole, il ',
+        enTexte('choisir', 'conditionnel présent', 'il'),
+        ' le sentier du bois.',
+      ],
+      ['', enTexte('regarder', 'impératif présent', 'vous'), ' la carte avant de partir !'],
+    ],
+  },
+];
+
+const LETTRES = ['A', 'B', 'C'] as const;
+
+/** Niveau 5 : dans un texte suivi, temps, marque de temps et marque de personne de trois verbes. */
+function marquesEnTexte(rng: Rng): QuestionDraft {
+  const recit = rng.pick(RECITS_MARQUES);
+  const rangs = pickN(
+    rng,
+    recit.phrases.map((_, i) => i),
+    LETTRES.length,
+  ).sort((a, b) => a - b);
+  const phrases = recit.phrases.map(([avant, x, apres], i) => {
+    const d = decoupe(x.t, x.v, x.p);
+    const mot = avant === '' ? capitale(d.forme) : d.forme;
+    const rang = rangs.indexOf(i);
+    const repere = rang < 0 ? '' : ` (${at(LETTRES, rang)})`;
+    return { x, d, mot, rang, ligne: `${avant}${mot}${repere}${apres}` };
+  });
+  const choisies = phrases.filter((x) => x.rang >= 0);
+  const temps = [...TEMPS_M];
+  const marques = [...MARQUE_OPTIONS];
+  return {
+    prompt: `Lis le texte. Pour chaque verbe repéré (${choisies.map((c, i) => `${at(LETTRES, i)} : « ${c.mot} »`).join(', ')}), choisis son temps et sa marque de temps, puis écris sa marque de personne.`,
+    figure: document(recit.titre, [recit.situation, ...phrases.map((x) => x.ligne)]),
+    answer: {
+      kind: 'cloze',
+      parts: [
+        ...choisies.flatMap((_, i) => [
+          `${i === 0 ? '' : '. '}${at(LETTRES, i)}, temps : `,
+          ' ; marque de temps : ',
+          ' ; marque de personne : ',
+        ]),
+        '.',
+      ],
+      blanks: choisies.flatMap(({ x, d }): ClozeBlank[] => [
+        { mode: 'list', options: temps, correct: temps.indexOf(x.t) },
+        { mode: 'list', options: marques, correct: marques.indexOf(MARQUE_DE[x.t]) },
+        textes([d.personne, `-${d.personne}`]),
+      ]),
+    },
+    hint: 'Pour chaque verbe, regarde s’il a un sujet, puis découpe sa fin en partant de la dernière lettre.',
+    steps: [
+      DEF_MARQUES,
+      DEF_MARQUES_COND,
+      ...choisies.map(({ x, d, mot }) => `« ${mot} » se découpe ${ecrireM(d)} : ${x.t}.`),
+      `Réponses : ${choisies.map(({ x, d }, i) => `${at(LETTRES, i)} : **${x.t}**, **${MARQUE_DE[x.t]}**, **${d.personne}**`).join(' ; ')}.`,
+    ],
+  };
+}
+
 function marquesDraft(rng: Rng, level: Level): QuestionDraft {
   switch (level) {
     case 1: {
@@ -693,29 +810,8 @@ function marquesDraft(rng: Rng, level: Level): QuestionDraft {
         ],
       };
     }
-    default: {
-      const lignes = Array.from({ length: 4 }, () => tirerMarques(rng, rng.pick(TEMPS_M)));
-      const options = [...TEMPS_M];
-      return {
-        prompt: 'Lis les quatre phrases et donne le temps de chaque verbe, d’après ses marques.',
-        figure: document(
-          'Quatre phrases',
-          lignes.map((x) => (x.t === 'impératif présent' ? x.texte : `${capitale(x.texte)}.`)),
-        ),
-        answer: {
-          kind: 'cloze',
-          parts: ['Ligne 1 : ', '. Ligne 2 : ', '. Ligne 3 : ', '. Ligne 4 : ', '.'],
-          blanks: lignes.map((x) => ({ mode: 'list' as const, options, correct: options.indexOf(x.t) })),
-        },
-        hint: 'Sujet écrit ou non ? Puis cherche « r », « ai » ou « i ».',
-        steps: [
-          DEF_MARQUES,
-          DEF_MARQUES_COND,
-          ...lignes.map((x) => `${ecrireM(x.d)} : ${x.t}.`),
-          `Réponses : ${lignes.map((x) => `**${x.t}**`).join(', ')}.`,
-        ],
-      };
-    }
+    default:
+      return marquesEnTexte(rng);
   }
 }
 
