@@ -2,7 +2,7 @@
  * Faits du chapitre « La matière » (6e, lot st-6e-01). Chaque fait cite son identifiant de source (registre
  * `sources.ts`) et la citation exacte : programme du cycle 3 (colonnes « fin de cours moyen » et « fin de sixième »),
  * programme du cycle 4 pour les unités de volume, Trésor de la langue française informatisé (CNRTL), Dictionnaire de
- * l'Académie française, ministère chargé de la transition écologique Agence européenne des produits chimiques (ECHA)
+ * l'Académie française, ministère chargé de la transition écologique, Agence européenne des produits chimiques (ECHA)
  * et règlement (CE) n° 1272/2008 dit « CLP » (EUR-Lex).
  * Les valeurs numériques des exercices (solides A, B, liquides X, Y, températures d'un corps A, masses, volumes)
  * sont des données inventées, annoncées comme données de l'exercice : ce ne sont pas des faits.
@@ -185,7 +185,7 @@ export const FAITS_MATIERE: readonly Fait[] = [
   ),
   echa(
     'picto-exclamation',
-    'Symbol: Exclamation Mark Que signifie ce pictogramme? Peut irriter les voies respiratoires.',
+    'Symbol: Exclamation Mark Que signifie ce pictogramme? Peut irriter les voies respiratoires. Peut provoquer somnolence ou vertiges. Peut provoquer une allergie cutanée. Provoque une sévère irritation des yeux. Provoque une irritation cutanée. Nocif en cas d’ingestion.',
   ),
   echa(
     'picto-environnement',

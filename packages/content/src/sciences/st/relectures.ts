@@ -39,7 +39,9 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'tcm2-securite-electrique', version: 1, lot: 'st-cm2-05', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p6-conducteurs-isolants', version: 1, lot: 'st-cm2-05', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p6-chaine-energie', version: 1, lot: 'st-cm2-05', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p6-etats', version: 1, lot: 'st-6e-01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p6-masse-volume', version: 1, lot: 'st-6e-01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p6-melanges', version: 1, lot: 'st-6e-01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p6-dissolution', version: 1, lot: 'st-6e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p6-transformations-securite', version: 1, lot: 'st-6e-01', date: '2026-11-26', verdict: 'ok' },
 ];
