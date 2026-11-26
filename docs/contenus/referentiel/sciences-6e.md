@@ -12,7 +12,7 @@
 | Lot        | Chapitre                       | Notions                                                                                                          | État actuel            |
 | ---------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------- | ---------------------- |
 | `st-6e-01` | La matière                     | états et changements d'état ; masse et volume ; mélanges et corps purs ; dissolution et conservation de la masse | couverte, en relecture |
-| `st-6e-02` | Mouvements et énergie          | types de mouvements ; vitesse ; sources et conversions d'énergie ; circuit électrique                            | absente                |
+| `st-6e-02` | Mouvements et énergie          | types de mouvements ; vitesse ; sources et conversions d'énergie ; circuit électrique                            | couverte, en relecture |
 | `st-6e-03` | Le vivant                      | la cellule ; classification par groupes emboîtés ; reproduction ; développement                                  | absente                |
 | `st-6e-04` | Nutrition                      | besoins des végétaux ; origine de la matière des êtres vivants ; transformation des aliments ; micro-organismes  | absente                |
 | `st-6e-05` | La planète Terre               | séismes et volcans ; phénomènes météorologiques ; ressources ; impact des activités humaines                     | absente                |
@@ -30,6 +30,10 @@ lots ci-dessus ; la notion « micro-organismes » de `st-6e-04` reste à couvrir
 Écart au plan (`st-cm2-05`) : le chapitre « Électricité et énergie » (notions « conducteurs et isolants » et « chaîne
 d'énergie », colonne « fin de sixième ») est livré avec ce lot, en relecture ; le circuit électrique de `st-6e-02` reste à
 couvrir.
+
+Écart au plan (`st-6e-02`) : « types de mouvements » couvre aussi la rotation et la révolution de la Terre (jour,
+année) et le calcul de vitesse se limite au mouvement uniforme (la relation avec la distance ou la durée relève du
+cycle 4). Le dihydrogène, cité par le programme, n’est pas classé renouvelable ou non faute de source qui le tranche.
 
 Écart au plan (`st-6e-01`) : « corps purs » n’est pas au programme de 6e (le terme relève du cycle 4, couvert en 5e) ;
 la notion « mélanges » porte sur les liquides non miscibles, la composition de l’air et l’effet de serre. Une cinquième
