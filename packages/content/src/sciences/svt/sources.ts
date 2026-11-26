@@ -1,4 +1,4 @@
-import { tlfi, type Source } from '../../sources-outils.ts';
+import { academie, tlfi, type Source } from '../../sources-outils.ts';
 
 /** Article du glossaire de Géoconfluences (`textDate` : dernière modification affichée). */
 const geoconfluences = (id: string, mot: string, page: string, textDate: string): Source => ({
@@ -8,6 +8,16 @@ const geoconfluences = (id: string, mot: string, page: string, textDate: string)
   url: `https://geoconfluences.ens-lyon.fr/glossaire/${page}`,
   textDate,
   consultedOn: '2026-11-25',
+});
+
+/** Page du ministère chargé de la transition écologique (`textDate` : dernière mise à jour affichée). */
+const ecologie = (id: string, title: string, path: string, textDate: string): Source => ({
+  id: `ecologie-${id}`,
+  title,
+  publisher: 'Ministère chargé de la transition écologique (ecologie.gouv.fr)',
+  url: `https://www.ecologie.gouv.fr/${path}`,
+  textDate,
+  consultedOn: '2026-11-26',
 });
 
 /** Sources de SVT (registre : `sources.ts` à la racine du paquet). */
@@ -97,4 +107,44 @@ export const SOURCES: readonly Source[] = [
   tlfi('volcan', 'volcan', 'volcan'),
   tlfi('lave', 'lave', 'lave'),
   tlfi('sismographe', 'sismographe', 'sismographe'),
+  // ——— SVT 5e (lot sv-5e-02) ———
+  academie('photosynthese', 'photosynthèse'),
+  academie('chlorophylle', 'chlorophylle'),
+  academie('autotrophe', 'autotrophe'),
+  academie('heterotrophe', 'hétérotrophe'),
+  academie('mycorhize', 'mycorhize'),
+  tlfi('stomate', 'stomate', 'stomate'),
+  tlfi('seve', 'sève', 's%C3%A8ve'),
+  tlfi('amidon', 'amidon', 'amidon'),
+  tlfi('respiration', 'respiration', 'respiration'),
+  tlfi('poumon', 'poumon', 'poumon'),
+  tlfi('trachee', 'trachée', 'trach%C3%A9e'),
+  academie('dauphin', 'dauphin'),
+  academie('branchie', 'branchie'),
+  academie('ecosysteme', 'écosystème'),
+  academie('biocenose', 'biocénose'),
+  academie('biotope', 'biotope'),
+  academie('chaine', 'chaîne'),
+  tlfi('chaine-alimentaire', 'chaîne', 'cha%C3%AEne'),
+  academie('predateur', 'prédateur'),
+  academie('parasite', 'parasite'),
+  academie('phytophage', 'phytophage'),
+  tlfi('symbiose', 'symbiose', 'symbiose'),
+  { ...tlfi('phyto', 'phyto-', 'phyto-'), consultedOn: '2026-11-26' },
+  academie('espece', 'espèce'),
+  tlfi('espece', 'espèce', 'esp%C3%A8ce'),
+  academie('endemique', 'endémique'),
+  academie('pollinisation', 'pollinisation'),
+  ecologie(
+    'biodiversite',
+    'Biodiversité : présentation et enjeux',
+    'politiques-publiques/biodiversite-presentation-enjeux',
+    '2026-09-11',
+  ),
+  ecologie(
+    'especes-envahissantes',
+    'Espèces exotiques envahissantes',
+    'politiques-publiques/especes-exotiques-envahissantes',
+    '2026-09-16',
+  ),
 ];
