@@ -643,7 +643,7 @@ function hayQuestion(rng: Rng, level: Level): QuestionDraft {
     const s = rng.pick(HAY_HARD);
     const bare = noAccent(s.good);
     return {
-      prompt: `Écris le verbe qui manque, sans propositions : « ${sentence(s)} »`,
+      prompt: `Écris sans propositions « hay », « está » ou « están » (pense aux accents) : « ${sentence(s)} »`,
       answer: { kind: 'text', accepted: dotted(s.good) },
       traps: [
         ...(bare === s.good ? [] : [{ text: bare, why: ACCENT_WHY[bare] ?? `On écrit « ${s.good} ».` }]),

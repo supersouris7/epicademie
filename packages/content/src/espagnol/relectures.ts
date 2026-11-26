@@ -13,4 +13,5 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'e5-ser', version: 1, lot: 'es-5e-03', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'e5-estar', version: 1, lot: 'es-5e-03', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'e5-ser-estar', version: 2, lot: 'es-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'e5-hay', version: 1, lot: 'es-5e-03', date: '2026-11-26', verdict: 'ok' },
 ];

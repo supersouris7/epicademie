@@ -109,6 +109,14 @@ describe('espagnol 5e : ser, estar, hay', () => {
     expect(typed(q, wrong).why).toBeTruthy();
   });
 
+  it('hay niveau 4 : l’énoncé borne les verbes attendus', () => {
+    for (const q of many('e5-hay', 4)) {
+      expect(q.prompt).toContain('Écris sans propositions « hay », « está » ou « están » (pense aux accents)');
+      if (q.answer.kind !== 'text') throw new Error('saisie attendue');
+      expect(['hay', 'está', 'están']).toContain(q.answer.accepted[0]);
+    }
+  });
+
   it('niveau 5 : un document et trois phrases à compléter, qui ne recopient pas le document', () => {
     for (const s of skills)
       for (const q of many(s.id, 5, 50)) {
