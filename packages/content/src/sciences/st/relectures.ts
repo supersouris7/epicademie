@@ -29,7 +29,9 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'vcm2-alimentation', version: 1, lot: 'st-cm2-03', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'vcm2-besoins-alimentaires', version: 1, lot: 'st-cm2-03', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'vcm2-circulation', version: 1, lot: 'st-cm2-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'vcm2-peuplement', version: 1, lot: 'st-cm2-04', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'vcm2-relations', version: 1, lot: 'st-cm2-04', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'vcm2-chaines-alimentaires', version: 1, lot: 'st-cm2-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'vcm2-actions-humaines', version: 1, lot: 'st-cm2-04', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'v6-decomposeurs', version: 1, lot: 'st-cm2-04', date: '2026-11-26', verdict: 'ok' },
 ];
