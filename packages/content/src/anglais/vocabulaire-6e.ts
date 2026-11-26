@@ -29,7 +29,8 @@ const quoted = (list: readonly string[]) => list.map((l) => `« ${l} »`).join('
 const answered = (rows: readonly (readonly [string, string])[]) =>
   `Réponse : **${rows.map(([a, b]) => `${a} = ${b}`).join(' ; ')}**`;
 
-const article = (word: string) => (/^[aeiou]/i.test(word) ? 'an' : 'a');
+/** « an » devant un son voyelle : « an uncle », mais « a uniform » (le mot commence par le son « you »). */
+const article = (word: string) => (/^(?!uni)[aeiou]/i.test(word) ? 'an' : 'a');
 /** Le mot tel qu'il entre dans une phrase : « a ruler », « scissors », « bread ». */
 const inSentence = (t: Term) => (t.noun === 'one' ? `${article(t.en)} ${t.en}` : t.en);
 
@@ -40,7 +41,7 @@ export function spellings(t: Term): string[] {
     if (t.noun === 'one') return ['the', article(name)];
     return t.noun === 'none' ? [] : ['the', 'some'];
   };
-  return [...names, ...names.flatMap((n) => (/^an? /.test(n) ? [] : small(n).map((d) => `${d} ${n}`)))];
+  return [...names, ...names.flatMap((n) => (/^(an?|the) /.test(n) ? [] : small(n).map((d) => `${d} ${n}`)))];
 }
 
 // ——— Les quatre thèmes de lexique ———
@@ -146,6 +147,28 @@ function write(rng: Rng, list: readonly Term[], t: Term) {
   return { answer: { kind: 'text' as const, accepted: ended(accepted) }, traps };
 }
 
+/**
+ * Dans une phrase à trou, seules les réponses qui laissent la phrase correcte sont admises : pas de petit mot en plus
+ * (« my a ruler »), sauf « some cheese » après « with », ni de mot déjà écrit (« a school school uniform »).
+ */
+function inGap(written: ReturnType<typeof write>, t: Term, text: string) {
+  const said = new Set(text.toLowerCase().split(/[^a-z]+/));
+  const bare = [t.en, ...t.alt].filter(
+    (n) => !/^(an?|the) /.test(n) && (n === t.en || !n.split(' ').some((w) => said.has(w))),
+  );
+  const some = t.noun === 'mass' && text.includes('with …') ? [`some ${t.en}`] : [];
+  const extra = typed(
+    t.en,
+    /\b(the|my|a|our) …/.test(text)
+      ? [[`the ${t.en}`, 'Relis la phrase : un petit mot est déjà là. Écris seulement le mot qui manque.']]
+      : [],
+  );
+  return {
+    answer: { kind: 'text' as const, accepted: ended([...bare, ...some]) },
+    traps: [...written.traps, ...extra],
+  };
+}
+
 const size = (t: Term) => {
   const words = t.en.split(' ').length;
   return words > 1
@@ -158,7 +181,7 @@ function complete(rng: Rng, th: Theme): QuestionDraft {
   const t = find(th.terms, f.en);
   return {
     prompt: `Complète avec le mot anglais qui veut dire « ${t.fr} » (il commence par « ${t.en.slice(0, 1)} ») : « ${f.text} »`,
-    ...write(rng, th.terms, t),
+    ...inGap(write(rng, th.terms, t), t, f.text),
     hint: size(t),
     steps: [
       `On cherche un mot qui veut dire « ${t.fr} » et qui complète le sens de la phrase.`,
@@ -264,7 +287,7 @@ const SCHOOL_THEME: Theme = {
   slots: [
     slot(
       'L’objet qu’Alex a dans son sac est',
-      ['ruler', 'calculator', 'notebook', 'folder', 'pencil case', 'eraser'],
+      ['ruler', 'calculator', 'pencil case', 'eraser'],
       (g, o) => `In my bag, I haven’t got ${o}, but I’ve got ${g}.`,
     ),
     slot(
@@ -488,7 +511,7 @@ const home = lexical({
     'Attention : furniture désigne l’ensemble des meubles et ne prend pas de -s.',
   ],
   detail: 'lexique « L’habitat, la maison »',
-  sources: ['bck-flashcards-home', 'bck-flashcards-furniture'],
+  sources: ['bck-flashcards-home', 'bck-flashcards-furniture', 'bc-uncount-nouns'],
 });
 
 // ——— 5. Les repères des cinq axes culturels ———

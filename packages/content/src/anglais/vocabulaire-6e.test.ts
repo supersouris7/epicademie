@@ -115,7 +115,9 @@ describe('anglais 6e : vocabulaire thématique', () => {
   });
 
   it('variantes britanniques et américaines, article admis', () => {
-    accepts(find('a6-voc-maison', 3, '« le réfrigérateur »'), 'fridge', 'the fridge', 'refrigerator');
+    const fridge = find('a6-voc-maison', 3, '« le réfrigérateur »');
+    accepts(fridge, 'fridge', 'refrigerator');
+    refuses(fridge, 'the fridge', 'a fridge');
     const flat = find('a6-voc-maison', 4, '« l’appartement »');
     accepts(flat, 'flat', 'a flat', 'an apartment', 'Apartment.');
     refuses(flat, 'house', 'an flat');
@@ -125,11 +127,15 @@ describe('anglais 6e : vocabulaire thématique', () => {
     const zucchini = find('a6-voc-alimentation', 4, '« la courgette »');
     accepts(zucchini, 'zucchini', 'a courgette');
     const library = find('a6-voc-loisirs', 3, 'borrow books');
-    accepts(library, 'library', 'the library');
-    refuses(library, 'bookshop', 'librery');
+    accepts(library, 'library');
+    refuses(library, 'the library', 'bookshop', 'librery');
     const scissors = find('a6-voc-ecole', 3, '« les ciseaux »');
-    accepts(scissors, 'scissors', 'some scissors');
-    refuses(scissors, 'a scissors', 'ruler');
+    accepts(scissors, 'scissors');
+    refuses(scissors, 'a scissors', 'some pair of scissors', 'ruler');
+    const wear = find('a6-voc-ecole', 3, 'wear a school');
+    refuses(wear, 'school uniform', 'an uniform');
+    accepts(find('a6-voc-ecole', 4, '« l’uniforme »'), 'uniform', 'a uniform');
+    accepts(find('a6-voc-alimentation', 3, 'sandwich with'), 'cheese', 'some cheese');
   });
 
   it('niveau 5 : la réponse attendue suit la phrase, affirmée ou niée', () => {
@@ -141,6 +147,15 @@ describe('anglais 6e : vocabulaire thématique', () => {
       if (blank.mode !== 'list') throw new Error('liste attendue');
       const good = FOODS.find((t) => t.fr === blank.options[blank.correct])!;
       expect(q.figure.lines[i]).toContain(`haven’t got any ${good.en}`);
+    }
+  });
+
+  it('école, niveau 5 : jamais un objet à la fois dans le sac et introuvable', () => {
+    for (const q of questions('a6-voc-ecole', 5)) {
+      if (q.figure?.kind !== 'document') throw new Error('document attendu');
+      const doc = q.figure.lines.join(' ');
+      const lost = /can’t find my ([a-z ]+)\./.exec(doc)?.[1];
+      if (lost) expect(doc).not.toMatch(new RegExp(`I’ve got an? ${lost}\\.`));
     }
   });
 

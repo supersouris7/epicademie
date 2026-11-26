@@ -37,11 +37,11 @@ export const SCHOOL: readonly Term[] = [
   term('affaires', 'one', 'pencil case', 'la trousse', 'pencil caze'),
   term('affaires', 'one', 'pencil sharpener', 'le taille-crayon', 'pencil sharpner', ['sharpener']),
   term('affaires', 'one', 'ruler', 'la règle', 'rouler'),
-  term('affaires', 'many', 'scissors', 'les ciseaux', 'sissors', ['pair of scissors', 'a pair of scissors']),
+  term('affaires', 'many', 'scissors', 'les ciseaux', 'sissors', ['a pair of scissors', 'the pair of scissors']),
   term('affaires', 'one', 'calculator', 'la calculatrice', 'calculater'),
   term('affaires', 'one', 'notebook', 'le cahier', 'notbook', ['exercise book']),
   term('affaires', 'one', 'eraser', 'la gomme', 'eraiser', ['rubber']),
-  term('affaires', 'one', 'folder', 'le classeur ou la chemise', 'foldeur', ['binder']),
+  term('affaires', 'one', 'folder', 'le classeur ou la chemise', 'foldeur', ['binder', 'file']),
   term('matières', 'none', 'history', 'l’histoire (la matière)', 'histery'),
   term('matières', 'none', 'geography', 'la géographie', 'geografy'),
   term('matières', 'none', 'science', 'les sciences', 'sciense', ['sciences']),
@@ -337,6 +337,12 @@ export const FAITS: readonly Fait[] = [
   ),
   ...STUDIES.map((s, i) =>
     fait(`programme-objet-${i + 1}`, PROG, s.name, `Objet d’étude possible de l’axe ${s.axis + 1}.`),
+  ),
+  fait(
+    'meubles-indenombrable',
+    'bc-uncount-nouns',
+    'We bought some new furniture. (NOT furnitures)',
+    'furniture est indénombrable : pas de pluriel.',
   ),
   ...REPRIS,
 ];
