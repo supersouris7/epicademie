@@ -255,16 +255,41 @@ function attributDraft(rng: Rng, level: Level): QuestionDraft {
       const comp = rng.pick(COMPOSEES);
       const p = rng.pick(PAIRES);
       const lignes = rng.shuffle([
-        { phrase: `${a.s} ${a.verbe} ${a.att}.`, groupe: a.att, nom: 'attribut du sujet' },
-        { phrase: `${direct.s} ${direct.verbe} ${direct.cod}.`, groupe: direct.cod, nom: 'COD' },
-        { phrase: comp.phrase, groupe: comp.mot, nom: 'partie du verbe conjugué' },
+        {
+          phrase: `${a.s} ${a.verbe} ${a.att}.`,
+          groupe: a.att,
+          nom: 'attribut du sujet',
+          why: whyAttribut(a.s, a.verbe, a.att),
+        },
+        {
+          phrase: `${direct.s} ${direct.verbe} ${direct.cod}.`,
+          groupe: direct.cod,
+          nom: 'COD',
+          why: whyCod(direct.s, direct.verbe, direct.cod),
+        },
+        {
+          phrase: comp.phrase,
+          groupe: comp.mot,
+          nom: 'partie du verbe conjugué',
+          why: `« ${comp.mot} » complète l’auxiliaire « être » : ensemble, ils forment un temps composé, ce n’est pas un attribut.`,
+        },
         rng.int(0, 1) === 0
-          ? { phrase: `${p.s} ${p.attributif} ${p.groupe}.`, groupe: p.groupe, nom: 'attribut du sujet' }
-          : { phrase: `${p.s} ${p.action} ${p.groupe}.`, groupe: p.groupe, nom: 'COD' },
+          ? {
+              phrase: `${p.s} ${p.attributif} ${p.groupe}.`,
+              groupe: p.groupe,
+              nom: 'attribut du sujet',
+              why: whyAttribut(p.s, p.attributif, p.groupe),
+            }
+          : {
+              phrase: `${p.s} ${p.action} ${p.groupe}.`,
+              groupe: p.groupe,
+              nom: 'COD',
+              why: whyCod(p.s, p.action, p.groupe),
+            },
       ]);
       const libelles = lignes.map((l, i) => `Ligne ${i + 1}, « ${l.groupe} » : `);
       return {
-        prompt: `Lis le texte. Choisis la fonction de ${lignes.map((l) => `« ${l.groupe} »`).join(', ')}.`,
+        prompt: `Lis le texte. Choisis le rôle de ${lignes.map((l) => `« ${l.groupe} »`).join(', ')}.`,
         figure: document(
           'Scènes de village',
           lignes.map((l) => l.phrase),
@@ -280,7 +305,7 @@ function attributDraft(rng: Rng, level: Level): QuestionDraft {
         hint: 'Attention : « être » peut servir d’auxiliaire. Repère d’abord le verbe conjugué en entier.',
         steps: [
           DEF_ATTRIBUT,
-          `« ${comp.mot} » complète l’auxiliaire « être » : ensemble, ils forment un temps composé, ce n’est pas un attribut.`,
+          lignes.map((l, i) => `Ligne ${i + 1} : ${l.why}`).join(' '),
           `Réponses : **${lignes.map((l) => l.nom).join(' ; ')}**.`,
         ],
       };
@@ -362,7 +387,7 @@ function coiDraft(rng: Rng, level: Level): QuestionDraft {
       const autres = [
         {
           phrase: `${direct.s} ${direct.verbe} ${direct.cod}.`,
-          why: `« ${direct.cod} » n’a pas de préposition : c’est un COD.`,
+          why: `« ${direct.cod} » complète le verbe sans préposition devant lui : c’est un COD.`,
         },
         {
           phrase: `${attribut.s} ${attribut.verbe} ${attribut.att}.`,
@@ -416,7 +441,7 @@ function coiDraft(rng: Rng, level: Level): QuestionDraft {
         traps: textTraps(accepted, [
           [p.sujet, `« ${p.sujet} » est le sujet : il commande l’accord du verbe.`],
           [p.verbe, `« ${p.verbe} » est le verbe.`],
-          [p.leurre, `« ${p.leurre} » précise les circonstances : ce n’est pas un complément d’objet.`],
+          [p.leurre, `« ${p.leurre} » peut se supprimer et ne répond pas à « à qui ? » : ce n’est pas le COI.`],
         ]),
         hint: 'Cherche le petit mot placé avant le verbe qui répond à « à qui ? ».',
         steps: [
@@ -445,10 +470,10 @@ function coiDraft(rng: Rng, level: Level): QuestionDraft {
           ]),
           blanks: [...saisies([d.de, d.a]), ...listes(['lui', 'leur'], [autre.pronom])],
         },
-        hint: 'Un verbe peut avoir deux compléments. Pour le pronom, compte les personnes désignées.',
+        hint: 'Un verbe peut avoir deux compléments. Pour le pronom, regarde si le nom remplacé est au singulier ou au pluriel.',
         steps: [
           'Un verbe peut avoir deux compléments d’objet. Ici, les deux sont introduits par une préposition : ce sont deux COI.',
-          `Ligne 2 : « ${autre.a} » désigne ${autre.pronom === 'lui' ? 'une seule personne ou un seul groupe' : 'plusieurs personnes'}.`,
+          `Ligne 2 : « ${autre.a} » est au ${autre.pronom === 'lui' ? 'singulier : le pronom est « lui »' : 'pluriel : le pronom est « leur »'}.`,
           `Réponses : **${d.de}** ; **${d.a}** ; **${autre.pronom}**.`,
         ],
       };
@@ -469,8 +494,9 @@ const NOM_NATURE: Record<Circonstanciel['nature'], string> = {
   'un groupe adjectival': 'groupe adjectival',
 };
 const WHY_NATURE: Record<Circonstanciel['nature'], string> = {
-  'un groupe nominal': 'un groupe nominal commence par un déterminant (ou « chaque ») suivi d’un nom, sans préposition',
-  'un groupe prépositionnel': 'un groupe prépositionnel commence par une préposition',
+  'un groupe nominal':
+    'un groupe nominal contient un nom précédé d’un déterminant (« le », « chaque »…), sans préposition',
+  'un groupe prépositionnel': 'un groupe prépositionnel commence par une préposition (« au » cache « à » + « le »)',
   'un adverbe': 'un adverbe est un seul mot invariable',
   'un groupe adjectival': 'un groupe adjectival a pour noyau un adjectif',
 };
@@ -598,7 +624,7 @@ const DEF_CONSTRUCTION =
   'Un verbe est transitif direct avec un COD, transitif indirect avec un COI, intransitif sans complément d’objet. Un verbe attributif relie le sujet à son attribut.';
 const explique = (e: Emploi) =>
   e.complement
-    ? `« ${e.verbe} » est suivi de « ${e.complement} » : ${EXPLICATION[e.construction]}.`
+    ? `Avec « ${e.verbe} » et « ${e.complement} », ${EXPLICATION[e.construction]}.`
     : `« ${e.verbe} » : ${EXPLICATION[e.construction]} ; le reste de la phrase donne des circonstances.`;
 const explications = (e: Emploi, choix: readonly Construction[]) =>
   choix
@@ -642,7 +668,7 @@ function constructionDraft(rng: Rng, level: Level): QuestionDraft {
         hint: `Dis à voix haute l’infinitif suivi d’un complément : « ${x.infinitif} … quelqu’un ou quelque chose ».`,
         steps: [
           'Un verbe transitif indirect se construit avec une préposition, qui introduit le COI.',
-          `On dit « ${x.infinitif} ${x.prep} quelque chose ou quelqu’un ».`,
+          `On dit « ${x.infinitif} ${x.prep} ${x.apres.replace(/\.$/, '')} ».`,
           `La préposition est **${x.prep}**.`,
         ],
       };
@@ -694,7 +720,7 @@ function constructionDraft(rng: Rng, level: Level): QuestionDraft {
       return {
         prompt: `Lis le texte. Choisis la construction de chaque verbe. Écris ensuite le complément ou l’attribut de la ligne ${rang}.`,
         figure: document(
-          'Au marché',
+          'Phrases à analyser',
           lignes.map((l) => l.phrase),
         ),
         answer: {
@@ -801,7 +827,7 @@ export const F6_PHRASE_SIMPLE: readonly Skill[] = [
     title: 'La construction du verbe',
     memo: [
       'La **construction du verbe** aide à analyser la phrase : **transitif direct** avec un COD, **transitif indirect** avec un COI.',
-      'Un verbe **intransitif** n’a pas de complément d’objet : « Le soleil brille. »',
+      'Un verbe **intransitif** n’a pas de complément d’objet (« Le soleil brille. ») ; un **verbe attributif** relie le sujet à son attribut.',
       'Un même verbe peut changer : « Le pain cuit. » / « Je cuis le pain. »',
     ],
     factId: 'construction-programme',

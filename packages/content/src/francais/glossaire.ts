@@ -1128,7 +1128,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     word: 'constituant',
     forms: ['constituants'],
     definition: 'Mot ou groupe de mots qui joue un rôle dans la construction d’une phrase : sujet, verbe, complément…',
-    example: 'Dans « Le chat dort ici. », il y a trois constituants : le sujet, le verbe et le complément.',
+    example:
+      'Dans « Le chat dort ici. », il y a trois constituants : le groupe sujet, le groupe verbal et le groupe circonstanciel.',
   },
   {
     id: 'phrase-type',

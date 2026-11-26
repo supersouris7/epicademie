@@ -203,7 +203,7 @@ export const ATTRIBUTS_6E: readonly Attribut6e[] = [
   att('Les spectateurs', 'paraissent', 'très émus', 'après le final'),
   att('La rivière', 'semble', 'particulièrement calme', 'ce matin'),
   att('Ces explorateurs', 'restent', 'prudents', 'dans la grotte'),
-  att('La vieille horloge', 'est', 'une pièce unique', 'selon le conservateur'),
+  att('La vieille horloge', 'est', 'une pièce unique', 'dans ce musée'),
   att('Les rues du port', 'deviennent', 'désertes', 'en hiver'),
   att('Mon grand-père', 'a l’air', 'ravi de sa trouvaille', 'depuis midi'),
 ];
@@ -299,7 +299,7 @@ export const INDIRECTS: readonly Indirect[] = [
   ind('Cette décision', 'déplaît', 'aux', 'riverains', 'depuis le début'),
   ind('Les marins', 'rêvent', 'de', 'la terre ferme', 'pendant la traversée'),
   ind('Le vieux conteur', 'parle', 'de', 'son enfance', 'au coin du feu'),
-  ind('Le chiot', 'ressemble', 'à', 'sa mère', 'trait pour trait'),
+  ind('Le chiot', 'ressemble', 'à', 'sa mère', 'depuis sa naissance'),
 ];
 
 /** COI exprimé par un pronom placé avant le verbe. */
@@ -415,7 +415,7 @@ export const TROIS_CC: readonly TroisCc[] = [
   tri('les promeneurs pressent le pas', 'en fin de journée', 'dans le sous-bois', 'à cause du froid'),
   tri('le guide interrompt la visite', 'à midi', 'devant la chapelle', 'à cause de la chaleur'),
   tri('les trains circulent au ralenti', 'ce matin', 'dans la vallée', 'à cause du brouillard'),
-  tri('les ouvriers arrêtent le chantier', 'depuis lundi', 'au bord du canal', 'à cause des inondations'),
+  tri('les ouvriers arrêtent le chantier', 'ce lundi', 'au bord du canal', 'à cause des inondations'),
 ];
 
 /** Groupe introduit ou non par une préposition, dont la fonction demande réflexion. */
