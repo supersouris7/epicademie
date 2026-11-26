@@ -1,11 +1,15 @@
 import type { Chapter } from '../../types.ts';
 import { biodiversite } from './biodiversite.ts';
+import { caracteresPartages } from './caracteres.ts';
 import { circulationSang } from './circulation.ts';
 import { digestionAliments } from './digestion.ts';
 import { ecosystemes } from './ecosystemes.ts';
 import { histoireTerre } from './histoire-terre.ts';
 import { effortPhysique } from './effort.ts';
+import { espece } from './espece.ts';
+import { groupesEmboites } from './groupes.ts';
 import { meteoClimat } from './meteo-climat.ts';
+import { parentes } from './parentes.ts';
 import { respiration } from './respiration.ts';
 import { respirationHumaine } from './respiration-humaine.ts';
 import { risques } from './risques.ts';
@@ -41,6 +45,14 @@ export const SVT_CHAPTERS: readonly Chapter[] = [
     domain: 'svt',
     title: 'Le corps en activité',
     skills: [respirationHumaine, circulationSang, digestionAliments, effortPhysique],
+  },
+  {
+    id: 'v5-classer',
+    subject: 'sciences',
+    grade: '5e',
+    domain: 'svt',
+    title: 'Classer le vivant',
+    skills: [caracteresPartages, groupesEmboites, parentes, espece],
   },
   {
     id: 'v4-terre',

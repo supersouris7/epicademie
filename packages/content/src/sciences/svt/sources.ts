@@ -20,6 +20,16 @@ const ecologie = (id: string, title: string, path: string, textDate: string): So
   consultedOn: '2026-11-26',
 });
 
+/** Article du site du Muséum (`textDate` : date de publication affichée ; texte lu sur la copie web.archive.org). */
+const museum = (id: string, title: string, path: string, textDate: string): Source => ({
+  id: `mnhn-${id}`,
+  title,
+  publisher: 'Muséum national d’Histoire naturelle',
+  url: `https://www.mnhn.fr/fr/${path}`,
+  textDate,
+  consultedOn: '2026-11-26',
+});
+
 /** Article du CNRS Terre & Univers (INSU) ; `textDate` : date affichée par la page. */
 const insu = (id: string, title: string, page: string, textDate: string): Source => ({
   id: `insu-${id}`,
@@ -201,6 +211,25 @@ export const SOURCES: readonly Source[] = [
     textDate: '2010-04-29',
     consultedOn: '2026-11-26',
   },
+  // ——— SVT 5e (lot sv-5e-04) ———
+  museum(
+    'classer-le-vivant',
+    'Taxonomie, systématique, à quoi sert de classer le vivant ?',
+    'taxonomie-systematique-a-quoi-sert-de-classer-le-vivant',
+    '2024-07-17',
+  ),
+  museum('arbre-du-vivant', 'L’arbre du vivant', 'l-arbre-du-vivant', '2023-10-02'),
+  museum('espece', 'Qu’est-ce qu’une espèce ?', 'qu-est-ce-qu-une-espece', '2025-07-09'),
+  museum('homme-singe', 'L’Homme descend-il du singe ?', 'l-homme-descend-il-du-singe', '2023-05-03'),
+  museum('tous-parents', 'Sommes-nous tous parents ?', 'sommes-nous-tous-parents', '2023-03-28'),
+  museum('humain', 'Qu’est-ce qu’un humain ?', 'qu-est-ce-qu-un-humain', '2025-02-17'),
+  museum('arthropode', 'Qu’est-ce qu’un arthropode ?', 'qu-est-ce-qu-un-arthropode', '2022-09-06'),
+  museum('insecte', 'Qu’est-ce qu’un insecte ?', 'qu-est-ce-qu-un-insecte', '2023-05-22'),
+  museum('araignee', 'Qu’est-ce qu’une araignée ?', 'qu-est-ce-qu-une-araignee', '2024-10-24'),
+  museum('cetace', 'Qu’est-ce qu’un cétacé ?', 'qu-est-ce-qu-un-cetace', '2025-02-26'),
+  { ...academie('hybride', 'hybride'), consultedOn: '2026-11-26' },
+  { ...academie('mulet', 'mulet'), consultedOn: '2026-11-26' },
+  { ...tlfi('primate', 'primate', 'primate'), consultedOn: '2026-11-26' },
   // ——— SVT 4e (lot sv-4e-01) ———
   academie('lithosphere', 'lithosphère'),
   academie('asthenosphere', 'asthénosphère'),
