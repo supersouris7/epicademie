@@ -99,7 +99,7 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
   {
     id: 'ordre-croissant',
     word: 'ordre croissant',
-    forms: ['ordre croissant'],
+    forms: ['ordre croissant', 'ordre décroissant'],
     definition: 'Ranger du **plus petit au plus grand**. L’ordre décroissant va dans l’autre sens.',
     example: '3 < 8 < 12 : ces nombres sont rangés dans l’ordre croissant.',
     family: 'operations',
@@ -111,6 +111,22 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
     definition:
       'Une ligne qui part d’un point et porte des traits régulièrement espacés. Chaque trait correspond à un nombre.',
     example: 'Entre 0 et 100, avec 10 intervalles égaux, les traits indiquent 10, 20, 30…',
+    family: 'operations',
+  },
+  {
+    id: 'intervalle',
+    word: 'intervalle',
+    forms: ['intervalle', 'intervalles'],
+    definition: 'L’espace entre deux traits (ou deux nombres) qui se suivent.',
+    example: 'De 0 à 30 avec 3 intervalles égaux, chaque intervalle vaut 10.',
+    family: 'operations',
+  },
+  {
+    id: 'encadrer',
+    word: 'encadrer',
+    forms: ['encadrer', 'encadre'],
+    definition: 'Placer un nombre **entre deux autres** : un plus petit et un plus grand.',
+    example: 'On encadre 47 entre deux dizaines : 40 < 47 < 50.',
     family: 'operations',
   },
   {

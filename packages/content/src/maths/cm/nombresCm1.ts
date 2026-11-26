@@ -93,7 +93,10 @@ const lireNiveau3 = (rng: Rng): QuestionDraft => {
     answer: num(n),
     traps: traps(r(n), [
       [b * 1000 + a, 'Tu as inversé les deux tranches : ce qui est avant « mille » s’écrit en premier.'],
-      [a * 1000 + Math.floor(b / 10), 'Il manque un chiffre après les milliers : il en faut 3.'],
+      [
+        a * 1000 + Math.floor(b / 10),
+        'Un chiffre a disparu : après les milliers, il en faut 3 (centaines, dizaines, unités).',
+      ],
     ]),
     hint: 'Écris le nombre de milliers, puis la suite avec 3 chiffres.',
     steps: [`Milliers : ${a}. Reste : ${b}.`, `On colle les deux tranches : **${big(n)}**.`],
@@ -171,7 +174,10 @@ const valeurNiveau1 = (rng: Rng): QuestionDraft => {
       others.map((q) => ({ label: String(chiffreAu(n, q)), why: `Ça, c’est le chiffre ${des(q)}.` })),
     ),
     hint: 'Pars de la droite : unités, dizaines, centaines, puis unités de mille.',
-    steps: [`De droite à gauche : unités, dizaines, centaines, milliers.`, `Le chiffre ${des(p)} est **${good}**.`],
+    steps: [
+      `De droite à gauche : unités, dizaines, centaines, unités de mille.`,
+      `Le chiffre ${des(p)} est **${good}**.`,
+    ],
     targetSeconds: 15,
   };
 };
@@ -296,9 +302,16 @@ const comparerNiveau2 = (rng: Rng): QuestionDraft => {
       big(max),
       values
         .filter((v) => v !== max)
-        .map((v) => ({ label: big(v), why: `Compare de gauche à droite : ${big(max)} est plus grand.` })),
+        .map((v) => {
+          // Premier rang, depuis la gauche, où les deux nombres diffèrent.
+          const p = [4, 3, 2, 1, 0].find((q) => chiffreAu(v, q) !== chiffreAu(max, q)) ?? 0;
+          return {
+            label: big(v),
+            why: `Au rang ${des(p)}, ${chiffreAu(max, p)} est plus grand que ${chiffreAu(v, p)} : ${big(max)} dépasse ${big(v)}.`,
+          };
+        }),
     ),
-    hint: 'Les milliers sont égaux : regarde les centaines.',
+    hint: 'Les milliers sont égaux : regarde les centaines, puis les dizaines si besoin.',
     steps: ['Même nombre de chiffres : on compare de gauche à droite.', `Le plus grand est **${big(max)}**.`],
     targetSeconds: 30,
   };
@@ -440,7 +453,10 @@ const droiteNiveau4 = (rng: Rng): QuestionDraft => {
     figure: droite(start, step, [2, 7], [{ name: 'A', at }]),
     answer: num(at),
     traps: traps(r(at), [
-      [first + k * step, `Le point A se compte depuis le premier trait, pas depuis ${big(first)}.`],
+      [
+        first + k * step,
+        `Tu as compté les intervalles depuis le début de la droite : à partir de ${big(first)}, compte depuis le trait de ${big(first)}.`,
+      ],
       [first + (k - 2), `Un intervalle ne vaut pas 1 : il y en a 5 entre ${big(first)} et ${big(second)}.`],
     ]),
     hint: `Compte les intervalles entre ${big(first)} et ${big(second)}.`,
@@ -613,7 +629,7 @@ export function nombresCm1({ S, id }: Contexte): readonly Skill[] {
       'Lire et écrire les grands nombres',
       'Connaître la suite écrite et la suite orale des nombres jusqu’à 999 999',
       [
-        'Coupe le nombre en deux tranches depuis la droite : les milliers, puis 3 **chiffres**.',
+        'Coupe le nombre en deux tranches : à droite 3 **chiffres**, à gauche les milliers.',
         '« Quarante-mille-six » s’écrit 40 006 : chaque rang vide prend un 0.',
       ],
       parNiveau([lireNiveau1, lireNiveau2, lireNiveau3, lireNiveau4, lireNiveau5]),
@@ -659,7 +675,7 @@ export function nombresCm1({ S, id }: Contexte): readonly Skill[] {
     N(
       id('multiples'),
       'Multiples et diviseurs',
-      'Savoir déterminer si un nombre entier donné est un multiple d’un nombre entier inférieur ou égal à 10 » ; « Savoir déterminer si un nombre entier inférieur ou égal à 10 est un diviseur d’un nombre entier donné',
+      'Savoir reconnaître les multiples de 2, de 5 et de 10 à partir de leur écriture chiffrée » ; « Savoir déterminer si un nombre entier donné est un multiple d’un nombre entier inférieur ou égal à 10 » ; « Savoir déterminer si un nombre entier inférieur ou égal à 10 est un diviseur d’un nombre entier donné',
       [
         '63 = 7 × 9 : 63 est un **multiple** de 7, et 7 est un **diviseur** de 63.',
         'Astuce : un multiple de 2 finit par 0, 2, 4, 6, 8 ; de 5 par 0 ou 5 ; de 10 par 0.',

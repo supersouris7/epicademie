@@ -1,5 +1,5 @@
 import { choice, distinct, fraction, num, traps } from '../../build.ts';
-import { r, rawFrac } from '../../rational.ts';
+import { frac, r, rawFrac } from '../../rational.ts';
 import type { Rng } from '../../rng.ts';
 import type { Figure, QuestionDraft, Skill } from '../../types.ts';
 import { NAMES } from '../kit.ts';
@@ -31,6 +31,12 @@ const s = (n: number) => (n > 1 ? 's' : '');
 /** Bande partagée en `d` cases égales, `n` cases pleines (formes, pas seulement des couleurs). */
 const bande = (n: number, d: number) => Array.from({ length: d }, (_, i) => (i < n ? '■' : '□'));
 const figureBande = (n: number, d: number): Figure => ({ kind: 'table', header: false, rows: [bande(n, d)] });
+
+/** La correction affiche la fraction réduite : on dit pourquoi c'est la même quantité. */
+const memeQuantite = (n: number, d: number) => {
+  const q = r(n, d);
+  return q.d === d ? [] : [`${rawFrac(n, d)}, c’est la même quantité que ${frac(q)}.`];
+};
 
 // ——— Lire et représenter ———
 
@@ -78,7 +84,11 @@ const lireNiveau3 = (rng: Rng): QuestionDraft => {
       [r(n, d - n), 'En bas : toutes les parts, même celles que tu as prises.'],
     ]),
     hint: 'En bas : les parts en tout. En haut : les parts prises.',
-    steps: [`${d} parts égales : dénominateur ${d}. ${n} prise${s(n)} : numérateur ${n}.`, `**${rawFrac(n, d)}**.`],
+    steps: [
+      `${d} parts égales : dénominateur ${d}. ${n} prise${s(n)} : numérateur ${n}.`,
+      `**${rawFrac(n, d)}**.`,
+      ...memeQuantite(n, d),
+    ],
     targetSeconds: 25,
   };
 };
@@ -95,7 +105,11 @@ const lireNiveau4 = (rng: Rng): QuestionDraft => {
       [r(rest, n), `En bas : tous les carreaux du mur, soit ${d}.`],
     ]),
     hint: 'Commence par compter les carreaux non peints.',
-    steps: [`Non peints : ${d} − ${n} = ${rest} carreaux sur ${d}.`, `**${rawFrac(rest, d)}**.`],
+    steps: [
+      `Non peints : ${d} − ${n} = ${rest} carreaux sur ${d}.`,
+      `**${rawFrac(rest, d)}**.`,
+      ...memeQuantite(rest, d),
+    ],
     targetSeconds: 35,
   };
 };
@@ -119,6 +133,7 @@ const lireNiveau5 = (rng: Rng): QuestionDraft => {
     steps: [
       `En tout : ${rows} × ${cols} = ${d} carrés.`,
       `Il reste ${d} − ${a} − ${b} = ${rest} carré${s(rest)} : **${rawFrac(rest, d)}**.`,
+      ...memeQuantite(rest, d),
     ],
     targetSeconds: 70,
   };
@@ -187,7 +202,11 @@ const grandeNiveau3 = (rng: Rng): QuestionDraft => {
       [r(e * rest, d), 'On ajoute les parts, on ne les multiplie pas.'],
     ]),
     hint: `Transforme ${e} en parts : combien de parts dans ${e} unités ?`,
-    steps: [`${e} = ${rawFrac(e * d, d)}.`, `${rawFrac(e * d, d)} + ${rawFrac(rest, d)} = **${rawFrac(n, d)}**.`],
+    steps: [
+      `${e} = ${rawFrac(e * d, d)}.`,
+      `${rawFrac(e * d, d)} + ${rawFrac(rest, d)} = **${rawFrac(n, d)}**.`,
+      ...memeQuantite(n, d),
+    ],
     targetSeconds: 30,
   };
 };
@@ -219,7 +238,7 @@ const grandeNiveau5 = (rng: Rng): QuestionDraft => {
   const who = rng.pick(NAMES);
   if (rng.int(0, 1) === 0) {
     return {
-      prompt: `Au goûter de ${who}, chaque tarte est coupée en ${d} parts égales. On mange ${e} tartes entières et ${rest} part${s(rest)}. Quelle fraction de tarte a-t-on mangée ?`,
+      prompt: `Au goûter ${/^[AEI]/.test(who) ? 'd’' : 'de '}${who}, chaque tarte est coupée en ${d} parts égales. On mange ${e} tartes entières et ${rest} part${s(rest)}. Une tarte est l’unité : écris avec une seule fraction la quantité mangée.`,
       answer: fraction(r(n, d)),
       traps: traps(r(n, d), [
         [r(e + rest, d), `Une tarte entière compte ${d} parts, pas 1.`],
@@ -229,12 +248,13 @@ const grandeNiveau5 = (rng: Rng): QuestionDraft => {
       steps: [
         `${e} tartes = ${e} × ${d} = ${e * d} parts. Avec ${rest} de plus : ${n} parts.`,
         `Chaque part est ${rawFrac(1, d)} de tarte : **${rawFrac(n, d)}**.`,
+        ...memeQuantite(n, d),
       ],
       targetSeconds: 60,
     };
   }
   return {
-    prompt: `${who} verse ${rawFrac(n, d)} L de sirop dans des bouteilles de 1 L. Combien de bouteilles sont remplies à ras bord ?`,
+    prompt: `${who} verse ${rawFrac(n, d)} L de sirop dans des bouteilles de 1 L, en remplissant chaque bouteille avant de passer à la suivante. Combien de bouteilles sont remplies à ras bord ?`,
     answer: num(e),
     traps: traps(r(e), [
       [e + 1, 'La dernière bouteille n’est pas pleine.'],
@@ -434,7 +454,7 @@ const addNiveau3 = (rng: Rng): QuestionDraft => {
       [r(Math.abs(minus ? a + b : a - b), d), `Regarde bien le signe ${op}.`],
     ]),
     hint: 'Même dénominateur : calcule avec les numérateurs.',
-    steps: [`${a} ${op} ${b} = ${res}, et on garde ${d}.`, `**${rawFrac(res, d)}**.`],
+    steps: [`${a} ${op} ${b} = ${res}, et on garde ${d}.`, `**${rawFrac(res, d)}**.`, ...memeQuantite(res, d)],
     targetSeconds: 25,
   };
 };
@@ -466,7 +486,11 @@ const addNiveau4 = (rng: Rng): QuestionDraft => {
       [r(d + a, d), 'C’est une soustraction : le résultat est plus petit que 1.'],
     ]),
     hint: `Écris 1 sous la forme d’une fraction de dénominateur ${d}.`,
-    steps: [`1 = ${rawFrac(d, d)}.`, `${rawFrac(d, d)} − ${rawFrac(a, d)} = **${rawFrac(res, d)}**.`],
+    steps: [
+      `1 = ${rawFrac(d, d)}.`,
+      `${rawFrac(d, d)} − ${rawFrac(a, d)} = **${rawFrac(res, d)}**.`,
+      ...memeQuantite(res, d),
+    ],
     targetSeconds: 35,
   };
 };
@@ -490,6 +514,7 @@ const addNiveau5 = (rng: Rng): QuestionDraft => {
       `Bu : ${rawFrac(a, d)} + ${rawFrac(b, d)} = ${rawFrac(a + b, d)} L.`,
       `${litres} L = ${rawFrac(litres * d, d)} L.`,
       `${rawFrac(litres * d, d)} − ${rawFrac(a + b, d)} = **${rawFrac(res, d)} L**.`,
+      ...memeQuantite(res, d),
     ],
     targetSeconds: 70,
   };
@@ -519,7 +544,7 @@ const quantiteQcm = (rng: Rng, level: 1 | 2): QuestionDraft => {
   ].filter((w, i, all) => w.label !== String(part) && all.findIndex((x) => x.label === w.label) === i);
   const nom = NOMS_UNITAIRES[d] ?? rawFrac(1, d);
   return {
-    prompt: `${nom} de ${total} ${what}, ça fait combien de ${what} ?`,
+    prompt: `${nom} de ${total} ${what}, ça fait combien ${what.startsWith('i') ? 'd’' : 'de '}${what} ?`,
     ...choice(rng, String(part), wrong.slice(0, level + 1)),
     hint: `Partage les ${total} ${what} en ${d} tas égaux.`,
     steps: [`On partage en ${d} : ${total} ÷ ${d} = ${part}.`, `**${part}** ${what}.`],
@@ -532,7 +557,7 @@ const quantiteNiveau3 = (rng: Rng): QuestionDraft => {
   const part = rng.int(3, 12);
   const total = d * part;
   return {
-    prompt: `Combien font ${rawFrac(1, d)} de ${total} ?`,
+    prompt: `Combien vaut ${rawFrac(1, d)} de ${total} ?`,
     answer: num(part),
     traps: traps(r(part), [
       [total - part, 'Tu as calculé ce qui reste.'],
@@ -547,7 +572,7 @@ const quantiteNiveau3 = (rng: Rng): QuestionDraft => {
 
 const GRANDEURS = [
   { quoi: 'Un parcours mesure', unit: 'm', mot: 'mètres' },
-  { quoi: 'Un sac de farine pèse', unit: 'g', mot: 'grammes' },
+  { quoi: 'Un paquet de farine pèse', unit: 'g', mot: 'grammes' },
   { quoi: 'Une cuve contient', unit: 'L', mot: 'litres' },
 ] as const;
 
@@ -557,7 +582,7 @@ const quantiteNiveau4 = (rng: Rng): QuestionDraft => {
   const total = d * part;
   const g = rng.pick(GRANDEURS);
   return {
-    prompt: `${g.quoi} ${total} ${g.unit}. Combien font ${rawFrac(1, d)} de cette quantité, en ${g.mot} ?`,
+    prompt: `${g.quoi} ${total} ${g.unit}. Combien vaut ${rawFrac(1, d)} de cette quantité, en ${g.mot} ?`,
     answer: num(part, g.unit),
     traps: traps(r(part), [
       [total - part, 'Tu as trouvé tout le reste, pas une seule part.'],
