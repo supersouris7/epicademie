@@ -35,6 +35,7 @@ export const FAITS_PHRASE_COMPLEXE_6E: readonly Fait[] = [
     'proposition-ponctuation',
     'si la proposition est en début de phrase, elle ne se termine pas par un point et si elle n’est pas en début de phrase, elle ne commence pas par une majuscule',
   ),
+  prog('accord-programme', 'Identifier le groupe sujet et raisonner sur l’accord sujet/verbe'),
   gram(
     'sujet-ellipse',
     'très souvent, lorsqu’il est le même dans plusieurs propositions juxtaposées ou coordonnées, le groupe sujet n’est exprimé que dans la première proposition',
@@ -132,6 +133,25 @@ export const PROPOSITIONS: readonly Prop[] = [
   p('le boulanger', 'pétrit', 'la pâte'),
 ];
 
+/** Groupes sujets et groupes verbaux par personne : la terminaison du verbe désigne un seul sujet. */
+export interface Accord {
+  readonly sujets: readonly string[];
+  readonly groupes: readonly string[];
+}
+export const ACCORDS: readonly Accord[] = [
+  {
+    sujets: ['le gardien', 'la marée', 'un chevreuil', 'le conteur'],
+    groupes: ['ferme la grille', 'monte vite', 'traverse la clairière', 'baisse la voix'],
+  },
+  {
+    sujets: ['les marins', 'les hirondelles', 'nos voisins', 'les randonneurs'],
+    groupes: ['hissent la voile', 'reviennent au printemps', 'réparent le toit', 'consultent la carte'],
+  },
+  { sujets: ['tu'], groupes: ['ranges les romans', 'pétris la pâte', 'allumes la lampe'] },
+  { sujets: ['nous'], groupes: ['observons le ciel', 'fermons la porte', 'préparons le repas'] },
+  { sujets: ['vous'], groupes: ['cherchez le sentier', 'dessinez un phare', 'portez les sacs'] },
+];
+
 /** Groupes de mots sans verbe conjugué : ce ne sont pas des propositions. */
 export const GROUPES_SANS_VERBE: readonly string[] = [
   'la grille du parc',
@@ -170,23 +190,71 @@ export const ELLIPSES: readonly Ellipse[] = [
 export interface Simple {
   readonly texte: string;
   readonly verbe: string;
+  /** Ce qui pourrait faire croire à une seconde proposition (phrases pièges). */
+  readonly piege?: string;
 }
-const si = (texte: string, verbe: string): Simple => ({ texte, verbe });
+const si = (texte: string, verbe: string, piege?: string): Simple =>
+  piege === undefined ? { texte, verbe } : { texte, verbe, piege };
 
 /** Une seule proposition : groupes longs, noms coordonnés, temps composés et infinitifs piègent. */
 export const SIMPLES: readonly Simple[] = [
-  si('Le gardien ferme la grille du parc.', 'ferme'),
-  si('Les marins et les pêcheurs observent le ciel.', 'observent'),
-  si('Depuis le début des vacances, ma cousine collectionne les timbres anciens.', 'collectionne'),
-  si('Les randonneurs veulent atteindre le refuge avant la nuit.', 'veulent'),
-  si('Le boulanger a préparé trois grandes tartes aux prunes.', 'a préparé'),
-  si('Au fond de la clairière, un chevreuil broute des jeunes pousses.', 'broute'),
-  si('La bibliothécaire range les romans, les albums et les revues.', 'range'),
-  si('Nous allons visiter le château et son vieux donjon.', 'allons'),
-  si('Le conteur parle d’une voix grave et lente.', 'parle'),
-  si('Les hirondelles sont revenues sous le toit de la grange.', 'sont revenues'),
-  si('Chaque soir, le chat gris du voisin traverse notre jardin.', 'traverse'),
-  si('Le phare isolé éclaire la côte pendant toute la nuit.', 'éclaire'),
+  si('Le gardien ferme la grille du parc.', 'ferme', '« du parc » complète « la grille » : aucun autre verbe.'),
+  si(
+    'Les marins et les pêcheurs observent le ciel.',
+    'observent',
+    '« et » relie deux noms qui partagent le même verbe.',
+  ),
+  si(
+    'Depuis le début des vacances, ma cousine collectionne les timbres anciens.',
+    'collectionne',
+    'La virgule isole un complément sans verbe : ce n’est pas une proposition.',
+  ),
+  si(
+    'Les randonneurs veulent atteindre le refuge avant la nuit.',
+    'veulent',
+    '« atteindre » est un infinitif : il n’est pas conjugué.',
+  ),
+  si(
+    'Le boulanger a préparé trois grandes tartes aux prunes.',
+    'a préparé',
+    '« a préparé » est un temps composé : un seul verbe.',
+  ),
+  si(
+    'Au fond de la clairière, un chevreuil broute des jeunes pousses.',
+    'broute',
+    'La virgule isole un complément sans verbe : ce n’est pas une proposition.',
+  ),
+  si(
+    'La bibliothécaire range les romans, les albums et les revues.',
+    'range',
+    'La virgule et « et » énumèrent des noms : ils partagent le même verbe.',
+  ),
+  si(
+    'Nous allons visiter le château et son vieux donjon.',
+    'allons',
+    '« visiter » est un infinitif et « et » relie deux noms.',
+  ),
+  si('Le conteur parle d’une voix grave et lente.', 'parle', '« et » relie deux adjectifs, sans nouveau verbe.'),
+  si(
+    'Les hirondelles sont revenues sous le toit de la grange.',
+    'sont revenues',
+    '« sont revenues » est un temps composé : un seul verbe.',
+  ),
+  si(
+    'Chaque soir, le chat gris du voisin traverse notre jardin.',
+    'traverse',
+    'La virgule isole un complément sans verbe : ce n’est pas une proposition.',
+  ),
+  si(
+    'Le phare isolé éclaire la côte pendant toute la nuit.',
+    'éclaire',
+    '« pendant toute la nuit » est un complément sans verbe.',
+  ),
+  si('La mer est calme.', 'est'),
+  si('Le train arrive.', 'arrive'),
+  si('Nous aimons ce jardin.', 'aimons'),
+  si('Les feuilles tombent.', 'tombent'),
+  si('Mon frère a beaucoup grandi.', 'a beaucoup grandi'),
 ];
 
 // ───────────────────────── Phrases complexes ─────────────────────────
@@ -255,25 +323,28 @@ export interface Double {
   readonly props: 'mais' | 'car' | 'et' | 'ou';
   /** La conjonction entre les noms vient en premier dans la phrase. */
   readonly nomsDabord: boolean;
+  /** Verbe de la première proposition. */
+  readonly verbe1: string;
   /** Verbe de la seconde proposition. */
   readonly verbe2: string;
 }
-const db = (texte: string, conjonctions: string, verbe2: string, nomsDabord = true): Double => {
+const db = (texte: string, conjonctions: string, verbes: string, nomsDabord = true): Double => {
   const [noms, props] = conjonctions.split('|') as [Double['noms'], Double['props']];
-  return { texte, noms, props, nomsDabord, verbe2 };
+  const [verbe1, verbe2] = verbes.split('|') as [string, string];
+  return { texte, noms, props, nomsDabord, verbe1, verbe2 };
 };
 
 export const DOUBLES: readonly Double[] = [
-  db('Le chien et le chat dorment, mais le perroquet crie.', 'et|mais', 'crie'),
-  db('Tu prends un pull ou une veste, car le vent fraîchit.', 'ou|car', 'fraîchit'),
-  db('Mon oncle et ma tante arrivent, mais le repas refroidit.', 'et|mais', 'refroidit'),
-  db('Le renard ou la fouine rôde, car les poules s’agitent.', 'ou|car', 's’agitent'),
-  db('Les poires et les pommes mûrissent, mais les prunes manquent.', 'et|mais', 'manquent'),
-  db('La brume et la pluie arrivent, car le temps change.', 'et|car', 'change'),
-  db('La pluie tombe, mais le chien et le chat restent dehors.', 'et|mais', 'restent', false),
-  db('Je porte les sacs, car mon père et ma mère déchargent la voiture.', 'et|car', 'déchargent', false),
-  db('Le gardien patiente, mais les parents ou les voisins tardent.', 'ou|mais', 'tardent', false),
-  db('La classe se tait, car le directeur et la gardienne entrent.', 'et|car', 'entrent', false),
+  db('Le chien et le chat dorment, mais le perroquet crie.', 'et|mais', 'dorment|crie'),
+  db('Tu prends un pull ou une veste, car le vent fraîchit.', 'ou|car', 'prends|fraîchit'),
+  db('Mon oncle et ma tante arrivent, mais le repas refroidit.', 'et|mais', 'arrivent|refroidit'),
+  db('Le renard ou la fouine rôde, car les poules s’agitent.', 'ou|car', 'rôde|s’agitent'),
+  db('Les poires et les pommes mûrissent, mais les prunes manquent.', 'et|mais', 'mûrissent|manquent'),
+  db('La brume et la pluie arrivent, car le temps change.', 'et|car', 'arrivent|change'),
+  db('La pluie tombe, mais le chien et le chat restent dehors.', 'et|mais', 'tombe|restent', false),
+  db('Je porte les sacs, car mon père et ma mère déchargent la voiture.', 'et|car', 'porte|déchargent', false),
+  db('Le gardien patiente, mais les parents ou les voisins tardent.', 'ou|mais', 'patiente|tardent', false),
+  db('La classe se tait, car le directeur et la gardienne entrent.', 'et|car', 'se tait|entrent', false),
 ];
 
 export interface Subord {
@@ -326,22 +397,45 @@ export interface Mixte {
   readonly texte: string;
   readonly subordination: (typeof SUBORDINATION_6E)[number];
   readonly coordination: (typeof COORDINATION_6E)[number];
+  readonly verbes: readonly string[];
 }
-const mx = (texte: string, subordination: Mixte['subordination'], coordination: Mixte['coordination']): Mixte => ({
-  texte,
-  subordination,
-  coordination,
-});
+const mx = (
+  texte: string,
+  subordination: Mixte['subordination'],
+  coordination: Mixte['coordination'],
+  verbes: string,
+): Mixte => ({ texte, subordination, coordination, verbes: verbes.split('|') });
 
 export const MIXTES: readonly Mixte[] = [
-  mx('Quand il pleut, je lis ou je dessine.', 'quand', 'ou'),
-  mx('La classe sort, mais le gardien attend que la pluie cesse.', 'que', 'mais'),
-  mx('Je prends un parapluie, car je sais que le ciel changera.', 'que', 'car'),
-  mx('Si le vent faiblit, nous sortons le bateau et nous pêchons.', 'si', 'et'),
-  mx('Le chien jappe lorsque la porte grince, mais le chat dort.', 'lorsque', 'mais'),
-  mx('Dès que le soleil paraît, la neige fond et le chemin brille.', 'dès que', 'et'),
-  mx('Tu restes ici parce que la nuit tombe, ou tu prends une lampe.', 'parce que', 'ou'),
-  mx('Puisque le musée est fermé, nous marchons et nous discutons.', 'puisque', 'et'),
+  mx('Quand il pleut, je lis ou je dessine.', 'quand', 'ou', 'pleut|lis|dessine'),
+  mx('La classe sort, mais le gardien attend que la pluie cesse.', 'que', 'mais', 'sort|attend|cesse'),
+  mx('Je prends un parapluie, car je sais que le ciel changera.', 'que', 'car', 'prends|sais|changera'),
+  mx('Si le vent faiblit, nous sortons le bateau et nous pêchons.', 'si', 'et', 'faiblit|sortons|pêchons'),
+  mx('Le chien jappe lorsque la porte grince, mais le chat dort.', 'lorsque', 'mais', 'jappe|grince|dort'),
+  mx('Dès que le soleil paraît, la neige fond et le chemin brille.', 'dès que', 'et', 'paraît|fond|brille'),
+  mx('Tu restes ici parce que la nuit tombe, ou tu prends une lampe.', 'parce que', 'ou', 'restes|tombe|prends'),
+  mx('Puisque le musée est fermé, nous marchons et nous discutons.', 'puisque', 'et', 'est|marchons|discutons'),
+];
+
+/** Phrases complexes longues : avec les phrases simples courtes, la longueur ne désigne pas la réponse. */
+export interface Longue {
+  readonly texte: string;
+  readonly verbes: readonly string[];
+}
+const lg = (texte: string, verbes: string): Longue => ({ texte, verbes: verbes.split('|') });
+
+export const COMPLEXES_LONGUES: readonly Longue[] = [
+  lg('Le gardien du vieux musée ferme la grande grille, puis les derniers visiteurs s’éloignent.', 'ferme|s’éloignent'),
+  lg(
+    'Les randonneurs fatigués consultent longuement la carte, car le sentier du refuge a disparu.',
+    'consultent|a disparu',
+  ),
+  lg('Quand la cloche de la petite école sonne, tous les élèves de sixième rangent leurs affaires.', 'sonne|rangent'),
+  lg('Au sommet de la colline, le vieux moulin tourne encore, mais son toit de bois s’abîme.', 'tourne|s’abîme'),
+  lg(
+    'La bibliothécaire du collège range les nouveaux romans pendant que nous choisissons un album.',
+    'range|choisissons',
+  ),
 ];
 
 /** Mots à classer : conjonctions des deux sortes et « donc », qui est un adverbe. */

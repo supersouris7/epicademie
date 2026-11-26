@@ -3,6 +3,8 @@ import { r } from '../rational.ts';
 import type { Rng } from '../rng.ts';
 import type { Level, QuestionDraft, Rich, Skill } from '../types.ts';
 import {
+  ACCORDS,
+  COMPLEXES_LONGUES,
   COORDONNEES,
   DOUBLES,
   ELLIPSES,
@@ -144,19 +146,19 @@ function propositionDraft(rng: Rng, level: Level): QuestionDraft {
       };
     }
     case 2: {
-      const props = pickN(rng, PROPOSITIONS, 3);
+      const choisis = pickN(rng, ACCORDS, 3).map((a) => ({ s: rng.pick(a.sujets), g: rng.pick(a.groupes) }));
       const { right, pairs } = appariement(
         rng,
-        props.map((x) => x.s),
+        choisis.map((x) => x.g),
       );
       return {
-        prompt: `Associe chaque proposition à son groupe sujet. Verbes à observer : ${listeVerbes(props.map((x) => x.v).sort())}.`,
-        answer: { kind: 'match', left: props.map(propTexte), right, pairs },
-        hint: 'Pose la question « Qui est-ce qui… ? » au verbe de chaque proposition.',
+        prompt: `Forme trois propositions : associe chaque groupe sujet (${listeVerbes(choisis.map((x) => x.s).sort())}) au groupe verbal qui s’accorde avec lui. Verbes à observer : ${listeVerbes(choisis.map((x) => x.g.split(' ')[0] ?? '').sort())}.`,
+        answer: { kind: 'match', left: choisis.map((x) => x.s), right, pairs },
+        hint: 'Regarde la terminaison de chaque verbe : elle indique quel sujet lui convient.',
         steps: [
           DEF_PROP,
-          'Dans chaque proposition, le sujet répond à « qui est-ce qui » suivi du verbe.',
-          `Réponses : ${props.map((x) => `**${x.s}** (${x.v})`).join(' ; ')}.`,
+          'Le verbe s’accorde avec son sujet : chaque terminaison ne convient ici qu’à un seul des trois sujets.',
+          `Réponses : ${choisis.map((x) => `**${x.s} ${x.g}**`).join(' ; ')}.`,
         ],
       };
     }
@@ -237,6 +239,7 @@ const COMPLEXES: readonly Analyse[] = [
   ...JUXTAPOSEES.map((j) => ({ texte: texteJuxta(j), verbes: [j.a.v, j.b.v] })),
   ...SUBORD.map((x) => ({ texte: texteSubord(x), verbes: [x.principale.v, x.sub.v] })),
   ...ELLIPSES.map((e) => ({ texte: e.texte, verbes: e.verbes })),
+  ...COMPLEXES_LONGUES,
 ];
 const SIMPLES_A: readonly Analyse[] = SIMPLES.map((s) => ({ texte: s.texte, verbes: [s.verbe] }));
 const sorteDe = (a: Analyse): Sorte => (a.verbes.length > 1 ? 'complexe' : 'simple');
@@ -245,31 +248,103 @@ const preuve = (a: Analyse): Rich =>
     ? `Verbes conjugués ${listeVerbes(a.verbes)} : ${a.verbes.length} propositions, donc phrase complexe.`
     : `Un seul verbe conjugué (« ${at(a.verbes, 0)} ») : une proposition, donc phrase simple.`;
 
-/** Phrases simples longues et phrases complexes courtes : la longueur trompe. */
-const SIMPLES_LONGUES = SIMPLES_A.filter((a) => a.texte.length > 45);
-const COMPLEXES_COURTES = COMPLEXES.filter((a) => a.texte.length <= 45);
+/**
+ * Une phrase de la sorte demandée et trois de l’autre sorte. Le rang de longueur de la bonne réponse (de la plus
+ * courte à la plus longue) est tiré d’abord : la longueur ne prédit rien.
+ */
+function parLongueur(rng: Rng, cherchee: Sorte): { bon: Analyse; faux: Analyse[] } {
+  const [bons, autres] = cherchee === 'simple' ? [SIMPLES_A, COMPLEXES] : [COMPLEXES, SIMPLES_A];
+  const rang = rng.int(0, 3);
+  const plusCourtes = (a: Analyse) => autres.filter((x) => x.texte.length < a.texte.length);
+  const plusLongues = (a: Analyse) => autres.filter((x) => x.texte.length > a.texte.length);
+  const bon = rng.pick(bons.filter((a) => plusCourtes(a).length >= rang && plusLongues(a).length >= 3 - rang));
+  return { bon, faux: [...pickN(rng, plusCourtes(bon), rang), ...pickN(rng, plusLongues(bon), 3 - rang)] };
+}
+
+/** Phrases pièges du niveau 4, rangées par nombre de propositions, avec les erreurs possibles expliquées. */
+interface Cas extends Analyse {
+  readonly pieges: readonly (readonly [number, Rich])[];
+}
+const cas = (a: Analyse, pieges: Cas['pieges']): Cas => ({ texte: a.texte, verbes: a.verbes, pieges });
+const deux = (texte: string, verbes: readonly string[], une: Rich, trois: Rich): Cas =>
+  cas({ texte, verbes }, [
+    [1, une],
+    [3, trois],
+  ]);
+const trois = (a: Analyse): Cas =>
+  cas(a, [
+    [2, 'Tu en as oublié une : chaque verbe conjugué forme une proposition, même sans sujet répété.'],
+    [1, 'Une seule phrase peut contenir plusieurs propositions : compte les verbes conjugués.'],
+    [4, 'Tu en as compté une de trop : un nom ou un mot de liaison ne forme pas de proposition.'],
+  ]);
+
+const PIEGES: readonly (readonly Cas[])[] = [
+  SIMPLES.flatMap((s) =>
+    s.piege === undefined
+      ? []
+      : [
+          cas({ texte: s.texte, verbes: [s.verbe] }, [
+            [2, `Un seul verbe conjugué (« ${s.verbe} »). ${s.piege}`],
+            [3, 'Compte les verbes conjugués : les noms et les groupes de mots ne comptent pas.'],
+          ]),
+        ],
+  ),
+  [
+    ...SUB_DEBUT.map((x) =>
+      deux(
+        texteSubord(x),
+        [x.sub.v, x.principale.v],
+        `La subordonnée en tête, « ${subTexte(x)} », a son propre verbe : elle compte comme une proposition.`,
+        `« ${x.mot} » et la virgule n’ajoutent pas de proposition : il n’y a que deux verbes conjugués.`,
+      ),
+    ),
+    ...JUXTAPOSEES.map((j) =>
+      deux(
+        texteJuxta(j),
+        [j.a.v, j.b.v],
+        `Le signe de ponctuation (${NOM_SIGNE[j.signe]}) sépare ici deux propositions, chacune avec son verbe.`,
+        'Il n’y a que deux verbes conjugués : un nom ou un complément ne forme pas de proposition.',
+      ),
+    ),
+    ...DOUBLES.map((d) =>
+      deux(
+        d.texte,
+        [d.verbe1, d.verbe2],
+        `« ${d.props} » relie deux propositions : « ${d.verbe1} » et « ${d.verbe2} » sont deux verbes conjugués.`,
+        `« ${d.noms} » relie seulement deux noms : cela ne crée pas de proposition.`,
+      ),
+    ),
+    ...ELLIPSES.filter((e) => e.verbes.length === 2).map((e) =>
+      deux(
+        e.texte,
+        e.verbes,
+        'Le sujet n’est écrit qu’une fois, mais chaque verbe conjugué forme une proposition.',
+        'Il n’y a que deux verbes conjugués : un nom ne forme pas de proposition.',
+      ),
+    ),
+  ],
+  [...ELLIPSES.filter((e) => e.verbes.length === 3), ...MIXTES].map(trois),
+];
 
 function simpleComplexeDraft(rng: Rng, level: Level): QuestionDraft {
   switch (level) {
     case 1:
     case 2: {
-      const cherchee = level === 1 ? rng.pick(SORTES) : 'complexe';
-      const banque = (s: Sorte): readonly Analyse[] => {
-        if (level === 1) return s === 'simple' ? SIMPLES_A : COMPLEXES;
-        return s === 'simple' ? SIMPLES_LONGUES : COMPLEXES_COURTES;
+      const cherchee = rng.pick(SORTES);
+      const tirage = () => {
+        if (level === 2) return parLongueur(rng, cherchee);
+        const [bons, autres] = cherchee === 'simple' ? [SIMPLES_A, COMPLEXES] : [COMPLEXES, SIMPLES_A];
+        return { bon: rng.pick(bons), faux: pickN(rng, autres, 2) };
       };
-      const bon = rng.pick(banque(cherchee));
-      const faux = pickN(rng, banque(cherchee === 'simple' ? 'complexe' : 'simple'), level === 1 ? 2 : 3);
+      const { bon, faux } = tirage();
       const { answer, traps } = choice(
         rng,
         bon.texte,
         faux.map((f) => ({ label: f.texte, why: preuve(f) })),
       );
+      const question = `Quelle phrase est une phrase ${cherchee} ?`;
       return {
-        prompt:
-          level === 1
-            ? `Quelle phrase est une phrase ${cherchee} ?`
-            : 'La longueur ne compte pas. Quelle phrase est complexe ?',
+        prompt: level === 1 ? question : `La longueur ne compte pas. ${question}`,
         answer,
         traps,
         hint: 'Compte les propositions : une par verbe conjugué.',
@@ -291,24 +366,13 @@ function simpleComplexeDraft(rng: Rng, level: Level): QuestionDraft {
       };
     }
     case 4: {
-      const pieges = [...SIMPLES_A, ...COMPLEXES.filter((a) => a.verbes.length > 2)];
-      const a = rng.pick(pieges);
+      // Le nombre de propositions est tiré d’abord : 1, 2 et 3 sont aussi fréquents.
+      const a = rng.pick(rng.pick(PIEGES));
       const n = a.verbes.length;
       return {
         prompt: `Combien de propositions contient « ${a.texte} » ? Écris le nombre en chiffres.`,
         answer: num(n),
-        traps: numTraps(r(n), [
-          [
-            n + 1,
-            'Un infinitif, un second nom ou un second complément ne forme pas une proposition ; un temps composé (« a préparé ») est un seul verbe.',
-          ],
-          ...(n > 1
-            ? ([
-                [n - 1, 'Tu en as oublié une : chaque verbe conjugué forme une proposition.'],
-                [1, 'Le sujet n’est écrit qu’une fois, mais chaque verbe conjugué forme une proposition.'],
-              ] as const)
-            : ([[3, 'Compte les verbes conjugués : les noms et les groupes de mots ne comptent pas.']] as const)),
-        ]),
+        traps: numTraps(r(n), a.pieges),
         hint: 'Compte les verbes conjugués, pas les mots « et » ni les virgules.',
         steps: [DEF_COMPLEXE, preuve(a), `La réponse est **${n}**.`],
       };
@@ -772,7 +836,7 @@ export const F6_PHRASE_COMPLEXE: readonly Skill[] = [
       'Un sujet peut servir à plusieurs propositions : « Il arrive et repart » en contient deux.',
     ],
     factId: 'notion-programme',
-    faits: ['proposition', 'proposition-ponctuation', 'sujet-ellipse'],
+    faits: ['proposition', 'proposition-ponctuation', 'sujet-ellipse', 'accord-programme'],
     generate: propositionDraft,
   }),
   skill({

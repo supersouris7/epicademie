@@ -6,6 +6,8 @@ import { getSource } from '../sources.ts';
 import { validateVariants } from '../validate.ts';
 import type { Level, Question } from '../types.ts';
 import {
+  ACCORDS,
+  COMPLEXES_LONGUES,
   COORDINATION_6E,
   COORDONNEES,
   DOUBLES,
@@ -41,7 +43,8 @@ const COMPLEXES = new Map<string, number>([
   ...[...JUXTAPOSEES.map(texteJuxta), ...COORDONNEES.map(texteCoord), ...SUBORDS.map(texteSubord)].map(
     (t) => [t, 2] as const,
   ),
-  ...ELLIPSES.map((e) => [e.texte, e.verbes.length] as const),
+  ...[...ELLIPSES, ...MIXTES, ...COMPLEXES_LONGUES].map((e) => [e.texte, e.verbes.length] as const),
+  ...DOUBLES.map((d) => [d.texte, 2] as const),
 ]);
 const nbProps = (texte: string) => {
   if (SIMPLES.some((s) => s.texte === texte)) return 1;
@@ -106,9 +109,11 @@ describe('banques et réponses de la phrase complexe (6e)', () => {
     for (const d of DOUBLES) {
       expect(d.texte).toContain(` ${d.noms} `);
       expect(d.texte).toContain(` ${d.props} `);
+      expect(d.texte).toContain(d.verbe1);
       expect(d.texte).toContain(d.verbe2);
       expect(d.texte.indexOf(` ${d.noms} `) < d.texte.indexOf(` ${d.props} `), d.texte).toBe(d.nomsDabord);
     }
+    for (const e of [...MIXTES, ...COMPLEXES_LONGUES]) for (const v of e.verbes) expect(e.texte).toContain(v);
     for (const m of MIXTES) {
       for (const mot of [m.subordination, m.coordination]) expect(m.texte.toLowerCase()).toContain(mot);
       expect(classeDe(m.subordination)).toBe('conjonction de subordination');
@@ -128,6 +133,49 @@ describe('banques et réponses de la phrase complexe (6e)', () => {
       const i = Number(/ligne (\d)\./.exec(q.prompt)?.[1]) - 1;
       expect(ELLIPSES.find((e) => e.texte === lignes(q)[i])?.sujet).toBe(trous(q)[3]);
     }
+  });
+
+  it('proposition N2 : le sujet ne se lit pas dans le groupe verbal, une seule association s’accorde', () => {
+    const personne = (sujet: string) => ACCORDS.findIndex((a) => a.sujets.includes(sujet));
+    for (const q of tirages('f6-proposition', 2)) {
+      if (q.answer.kind !== 'match') throw new Error('forme inattendue');
+      const { left, right, pairs } = q.answer;
+      expect(new Set(left.map(personne)).size).toBe(3);
+      for (const [i, j] of pairs.entries()) {
+        const sujet = left[i] ?? '';
+        const groupe = right[j] ?? '';
+        expect(groupe).not.toContain(sujet);
+        expect(ACCORDS[personne(sujet)]?.groupes).toContain(groupe);
+      }
+    }
+  });
+
+  it('simple ou complexe N2 : la longueur ne prédit pas la réponse', () => {
+    const qs = Array.from({ length: 2000 }, (_, seed) => generate('f6-phrase-simple-complexe', 2, seed));
+    for (const sorte of ['simple', 'complexe']) {
+      const rangs = [0, 0, 0, 0];
+      const memeSorte = qs.filter((q) => q.prompt.includes(`phrase ${sorte}`));
+      for (const q of memeSorte) {
+        const { toutes, bonne } = options(q);
+        const rang = toutes.filter((o) => o.length < bonne.length).length;
+        rangs[rang] = (rangs[rang] ?? 0) + 1;
+      }
+      expect(memeSorte.length).toBeGreaterThan(800);
+      for (const n of rangs)
+        expect(Math.abs(n / memeSorte.length - 0.25), `${sorte} ${rangs.join(', ')}`).toBeLessThan(0.05);
+    }
+  });
+
+  it('simple ou complexe N4 : 1, 2 et 3 équilibrés, deux pièges, cas à deux propositions variés', () => {
+    const qs = Array.from({ length: 2000 }, (_, seed) => generate('f6-phrase-simple-complexe', 4, seed));
+    for (const n of [1, 2, 3]) {
+      const part = qs.filter((q) => nbProps(citee(q)) === n).length / qs.length;
+      expect(Math.abs(part - 1 / 3), String(n)).toBeLessThan(0.05);
+    }
+    for (const q of qs) expect(q.traps.length).toBeGreaterThanOrEqual(2);
+    const vues = new Set(qs.map(citee));
+    for (const banque of [SUB_DEBUT.map(texteSubord), JUXTAPOSEES.map(texteJuxta), DOUBLES.map((d) => d.texte)])
+      expect(banque.some((t) => vues.has(t))).toBe(true);
   });
 
   it('simple ou complexe : la réponse suit le nombre de propositions', () => {
