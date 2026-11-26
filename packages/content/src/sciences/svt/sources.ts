@@ -130,7 +130,6 @@ export const SOURCES: readonly Source[] = [
   academie('parasite', 'parasite'),
   academie('phytophage', 'phytophage'),
   tlfi('symbiose', 'symbiose', 'symbiose'),
-  tlfi('saprophyte', 'saprophyte', 'saprophyte'),
   { ...tlfi('phyto', 'phyto-', 'phyto-'), consultedOn: '2026-11-26' },
   academie('espece', 'espèce'),
   tlfi('espece', 'espèce', 'esp%C3%A8ce'),

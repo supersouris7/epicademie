@@ -294,7 +294,6 @@ export const ecosystemes: Skill = {
       'cnrtl-phyto',
       'academie-heterotrophe',
       'cnrtl-symbiose',
-      'cnrtl-saprophyte',
     ],
   },
   generate: generer([NIVEAU1, NIVEAU2, NIVEAU3, NIVEAU4, NIVEAU5]),

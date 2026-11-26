@@ -159,11 +159,6 @@ export const FAITS_NUTRITION: readonly Fait[] = [
     'cnrtl-symbiose',
     "Association durable entre deux ou plusieurs organismes et profitable à chacun d'eux.",
   ),
-  f(
-    'saprophyte-definition',
-    'cnrtl-saprophyte',
-    '(Végétal, microorganisme) qui vit aux dépens des matières organiques inertes et qui peut en provoquer la décomposition',
-  ),
   // Biodiversité.
   f(
     'biodiversite-definition',
