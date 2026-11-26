@@ -1,12 +1,16 @@
 import type { Chapter, Level, Skill } from '../types.ts';
 import { num, traps } from '../build.ts';
 import { div, fmt, mul, r } from '../rational.ts';
+import { atomesMolecules } from './atomes.ts';
 import { circuitsSerieDerivation } from './circuits.ts';
+import { combustions } from './combustions.ts';
 import { conducteursIsolants } from './conducteurs.ts';
+import { conservationTransformation } from './conservation-transformation.ts';
 import { conservationMasse } from './conservation.ts';
 import { conversionsEnergie } from './conversions-energie.ts';
 import { etats } from './etats.ts';
 import { sourcesFormesEnergie } from './formes-energie.ts';
+import { formulesChimiques } from './formules.ts';
 import { masseVolumique } from './masse-volumique.ts';
 import { corpsPurs } from './melanges.ts';
 import { mouvementUniforme } from './mouvement-uniforme.ts';
@@ -16,6 +20,7 @@ import { propagationSon } from './propagation-son.ts';
 import { referentielNotion } from './referentiel.ts';
 import { solubiliteNotion } from './solubilite.ts';
 import { trajectoireNotion } from './trajectoire.ts';
+import { transformationChimique } from './transformation.ts';
 import { unitesSi } from './unites.ts';
 import { vitesseMoyenne } from './vitesse-moyenne.ts';
 
@@ -32,6 +37,7 @@ import { vitesseMoyenne } from './vitesse-moyenne.ts';
  * (`donnees-matiere.ts`), de même que les chapitres 5e « Mouvement » (`donnees-mouvement.ts`), « Énergie et
  * circuits » (`donnees-energie.ts`) et « Signaux et unités » (`donnees-signaux.ts`, identifiant historique
  * `p5-unites`).
+ * Le chapitre 4e « Atomes et transformations » (`donnees-atomes.ts`) suit le même modèle.
  */
 
 const PROG = 'Physique-chimie, cycle 4 (BOEN n° 31 du 30 juillet 2020)';
@@ -198,6 +204,13 @@ export const PHYSIQUE_CHAPTERS: readonly Chapter[] = [
     conversionsEnergie,
     circuitsSerieDerivation,
     conducteursIsolants,
+  ]),
+  chapter('p4-atomes', '4e', 'Atomes et transformations', [
+    atomesMolecules,
+    formulesChimiques,
+    transformationChimique,
+    combustions,
+    conservationTransformation,
   ]),
   chapter('p4-mouvement', '4e', 'La vitesse', [speed]),
   chapter('p4-electricite', '4e', 'La loi d’Ohm', [ohm]),
