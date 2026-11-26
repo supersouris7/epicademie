@@ -78,20 +78,33 @@ const POURQUOI: Readonly<Record<Role, string>> = {
   'Ce n’est pas une substance': 'Ici, il s’agit bien d’une matière qui participe à la combustion.',
 };
 
+/** Pourquoi la chaleur n’a aucun des trois rôles : ce n’est pas une matière. */
+const CHALEUR: Readonly<Record<Exclude<Role, 'Ce n’est pas une substance'>, string>> = {
+  'Le combustible': 'La chaleur n’est pas une matière qui brûle : elle est dégagée par la combustion.',
+  'Le comburant': 'La chaleur n’est pas un corps qui se combine avec le combustible.',
+  'Un produit':
+    'La chaleur est bien dégagée, mais ce n’est pas une matière : un produit est une substance qui se forme.',
+};
+
 const niveau2 = (rng: Rng): QuestionDraft => {
   const c = rng.pick(CAS);
   const { answer, traps: t } = choice(
     rng,
     c.role,
-    (Object.keys(POURQUOI) as Role[]).filter((k) => k !== c.role).map((label) => ({ label, why: POURQUOI[label] })),
+    (Object.keys(POURQUOI) as Role[])
+      .filter((k) => k !== c.role)
+      .map((label) => ({
+        label,
+        why: c.element === 'la chaleur' && label !== 'Ce n’est pas une substance' ? CHALEUR[label] : POURQUOI[label],
+      })),
   );
   return {
-    prompt: `${c.reaction} Quel est le rôle de ${c.element} ?`,
+    prompt: `${c.reaction} Dans cette combustion, comment classer ${c.element} ?`,
     answer,
     traps: t,
-    hint: 'Qu’est-ce qui brûle ? Qu’est-ce qui permet de brûler ? Qu’est-ce qui se forme ?',
+    hint: 'Cherche d’abord si c’est une matière. Si oui : brûle-t-elle, permet-elle de brûler ou se forme-t-elle ?',
     steps: [
-      'Combustible : ce qui brûle. Comburant : ce qui permet de brûler. Produit : ce qui se forme.',
+      'Combustible : la matière qui brûle. Comburant : celle qui permet de brûler. Produit : une substance qui se forme. La chaleur est dégagée, mais ce n’est pas une substance.',
       `${c.element.charAt(0).toUpperCase() + c.element.slice(1)} : **${c.role.toLowerCase()}**.`,
     ],
     targetSeconds: 35,
@@ -107,6 +120,7 @@ const SAISIES = [
       ['dioxygène', 'Le dioxygène est le comburant, il est consommé.'],
     ],
     reponse: 'dioxyde de carbone',
+    parce: 'La combustion complète du carbone forme du dioxyde de carbone.',
   },
   {
     question:
@@ -117,6 +131,7 @@ const SAISIES = [
       ['dioxygène', 'Le dioxygène est le comburant des combustions dans l’air.'],
     ],
     reponse: 'monoxyde de carbone',
+    parce: 'Quand la combustion est incomplète, du monoxyde de carbone peut se dégager : il est très toxique.',
   },
   {
     question: 'Dans les combustions qui ont lieu dans l’air, quel gaz joue le rôle de comburant ?',
@@ -126,6 +141,7 @@ const SAISIES = [
       ['dioxyde de carbone', 'Le dioxyde de carbone est un produit de la combustion du carbone.'],
     ],
     reponse: 'dioxygène',
+    parce: 'Le comburant permet la combustion : dans l’air, c’est le dioxygène.',
   },
   {
     question: 'Le dihydrogène brûle dans le dioxygène. Quelle substance se forme ? Écris son nom ou sa formule.',
@@ -135,6 +151,7 @@ const SAISIES = [
       ['dihydrogène', 'Le dihydrogène est le combustible : il est consommé.'],
     ],
     reponse: 'eau',
+    parce: 'Le dihydrogène et le dioxygène sont consommés, et de l’eau se forme.',
   },
 ] as const;
 
@@ -146,7 +163,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     answer,
     traps: t,
     hint: 'Repère le combustible, le comburant et ce qui se forme.',
-    steps: ['Une combustion associe un combustible et un comburant et forme des produits.', `**${q.reponse}**.`],
+    steps: [q.parce, `**${q.reponse}**.`],
     targetSeconds: 45,
   };
 };
@@ -187,11 +204,20 @@ const niveau4 = (rng: Rng): QuestionDraft => {
 };
 
 const BOCAUX = [
-  { reste: 'Il reste du carbone, mais plus de dioxygène.', bon: 'Le comburant est épuisé' },
-  { reste: 'Il reste du dioxygène, mais plus de carbone.', bon: 'Le combustible est épuisé' },
+  {
+    reste: 'Il reste du carbone, mais plus de dioxygène.',
+    bon: 'Le comburant est épuisé',
+    parce: 'Il n’y a plus de dioxygène, le comburant ; il reste du carbone, le combustible.',
+  },
+  {
+    reste: 'Il reste du dioxygène, mais plus de carbone.',
+    bon: 'Le combustible est épuisé',
+    parce: 'Il n’y a plus de carbone, le combustible ; il reste du dioxygène, le comburant.',
+  },
   {
     reste: 'Il ne reste ni carbone ni dioxygène.',
     bon: 'Le combustible et le comburant sont tous deux épuisés',
+    parce: 'Il ne reste ni carbone, le combustible, ni dioxygène, le comburant.',
   },
 ] as const;
 
@@ -213,7 +239,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       why:
         label === 'La masse des réactifs a été détruite'
           ? 'La matière ne disparaît pas : les atomes se redistribuent dans les produits.'
-          : 'Regarde ce qui reste dans le bocal à la fin.',
+          : 'Compare avec ce qui reste dans le bocal : le carbone est le combustible, le dioxygène le comburant.',
     })),
   );
   return {
@@ -231,7 +257,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     traps: t,
     hint: 'Une combustion a besoin à la fois d’un combustible et d’un comburant.',
     steps: [
-      'La combustion cesse quand un des réactifs manque.',
+      `La combustion cesse quand un des réactifs manque. ${b.parce}`,
       `D’après le compte rendu : **${b.bon.toLowerCase()}**.`,
     ],
     targetSeconds: 100,
@@ -254,6 +280,7 @@ export const combustions: Skill = {
       'combustions-programme',
       'combustion',
       'comburant',
+      'dioxygene-reactif',
       'combustible',
       'air-oxygene',
       'co2-complete',

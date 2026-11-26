@@ -30,7 +30,10 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     answer,
     traps: t,
     hint: 'Rien n’entre ni ne sort du flacon.',
-    steps: ['La masse se conserve lors d’une transformation chimique.', `La balance indique toujours **${m} g**.`],
+    steps: [
+      'Rien n’entre ni ne sort, et les atomes sont conservés : la masse ne change pas.',
+      `La balance indique toujours **${m} g**.`,
+    ],
     targetSeconds: 30,
   };
 };
@@ -161,10 +164,17 @@ export const conservationTransformation: Skill = {
   lesson: {
     memo: [
       'Lors d’une transformation chimique, la **conservation de la masse** s’applique : la masse des réactifs consommés est égale à la masse des produits formés, car les atomes sont seulement redistribués.',
-      'Exemple : 3 g de carbone réagissent avec 8 g de dioxygène et forment 11 g de dioxyde de carbone.',
+      'Par exemple, 3 g de carbone qui réagissent entièrement avec 8 g de dioxygène forment 11 g de dioxyde de carbone.',
       'Dans un récipient ouvert, un gaz qui s’échappe n’est plus pesé : la balance baisse, mais la matière n’a pas disparu.',
     ],
-    ...references('conservation-transformation', 'redistribution', 'co2-complete', 'eau-combinaison'),
+    ...references(
+      'conservation-transformation',
+      'redistribution',
+      'conservation-atomes',
+      'reactifs-consommes',
+      'co2-complete',
+      'eau-combinaison',
+    ),
   },
   generate: (rng, level) => ([niveau1, niveau2, niveau3, niveau4, niveau5][level - 1] ?? niveau1)(rng),
 };

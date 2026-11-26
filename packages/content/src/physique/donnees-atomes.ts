@@ -1,7 +1,7 @@
 /**
  * Faits du chapitre « Atomes et transformations » (4e). Chaque fait cite son identifiant de source (registre
  * `sources.ts`) et la citation exacte : programme du cycle 4 (physique-chimie), Dictionnaire de l’Académie française
- * et Trésor de la langue française informatisé (CNRTL). Les masses, volumes et nombres de molécules des exercices sont
+ * Trésor de la langue française informatisé (CNRTL) et ressource Éduscol. Les masses, volumes et nombres de molécules des exercices sont
  * des données de l’exercice (masses choisies dans les proportions des réactions citées), pas des faits à retenir.
  */
 import { PROGRAMME, referencesDe, type Fait } from './donnees-matiere.ts';
@@ -87,7 +87,18 @@ export const FAITS: readonly Fait[] = [
     'cnrtl-melange',
     'Association de plusieurs corps où les constituants gardent leurs propriétés spécifiques et sans qu’il y ait combinaison de leurs molécules.',
   ),
+  fait(
+    'reactifs-consommes',
+    'eduscol-ethanol-4e',
+    'Au cours d’une transformation chimique, des espèces chimiques sont consommées (les réactifs) et de nouvelles espèces chimiques sont formées (les produits).',
+  ),
+  fait('conservation-atomes', 'eduscol-ethanol-4e', 'Il y a conservation des atomes.'),
   // Combustions.
+  fait(
+    'dioxygene-reactif',
+    'eduscol-ethanol-4e',
+    'Une combustion est un exemple de transformation chimique, dont l’un des réactifs est souvent le dioxygène de l’air.',
+  ),
   prog('combustions-programme', 'Combustions dans l’air.'),
   fait(
     'combustion',

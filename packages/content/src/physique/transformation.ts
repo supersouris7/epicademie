@@ -15,6 +15,14 @@ const POURQUOI: Readonly<Record<Type, string>> = {
   'Un simple déplacement': 'Ici, la matière ne reste pas telle quelle : relis ce qui lui arrive.',
 };
 
+const PARCE_QUE: Readonly<Record<Type, string>> = {
+  'Une transformation chimique': 'Des substances disparaissent et de nouvelles substances se forment.',
+  'Un mélange': 'Des corps sont réunis, mais aucune nouvelle substance ne se forme.',
+  'Un changement d’état':
+    'La même substance passe d’un état à un autre : c’est une transformation physique, pas chimique.',
+  'Un simple déplacement': 'L’objet change de place, mais sa matière reste la même.',
+};
+
 const TYPIQUES = [
   { texte: 'Du carbone brûle : il disparaît et un nouveau gaz se forme.', bon: 'Une transformation chimique' },
   { texte: 'Du dihydrogène brûle et il apparaît de l’eau.', bon: 'Une transformation chimique' },
@@ -38,7 +46,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     answer,
     traps: t,
     hint: 'Une nouvelle substance apparaît-elle ?',
-    steps: ['Une transformation chimique change la composition : de nouvelles substances se forment.', `**${x.bon}**.`],
+    steps: [PARCE_QUE[x.bon], `**${x.bon}**.`],
     targetSeconds: 30,
   };
 };
@@ -69,10 +77,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
     answer,
     traps: t,
     hint: 'Demande-toi : une nouvelle substance apparaît-elle ? L’état change-t-il ? Plusieurs corps sont-ils réunis ?',
-    steps: [
-      'Nouvelle substance : transformation chimique. Même substance, autre état : changement d’état. Corps réunis sans nouvelle substance : mélange.',
-      `**${s.type}**.`,
-    ],
+    steps: [PARCE_QUE[s.type], `**${s.type}**.`],
     targetSeconds: 40,
   };
 };
@@ -225,9 +230,9 @@ export const transformationChimique: Skill = {
   advice: 'brouillon',
   lesson: {
     memo: [
-      'Dans une **transformation chimique**, des **réactifs** sont consommés et des **produits** se forment : la composition change. Exemple : carbone + dioxygène → dioxyde de carbone.',
-      'Les atomes ne sont ni créés ni détruits : ils se redistribuent pour former de nouvelles molécules.',
-      'Un changement d’état ou un mélange ne crée pas de nouvelle substance. On décrit la réaction par une équation : C + O₂ → CO₂.',
+      'Dans une **transformation chimique**, des **réactifs** sont consommés et des **produits** se forment : la composition change. Les atomes ne sont ni créés ni détruits : ils se redistribuent.',
+      'Un changement d’état est une **transformation physique** : comme un mélange, il ne crée pas de nouvelle substance.',
+      'Une équation décrit la transformation chimique, par exemple la combustion du carbone (carbone + dioxygène → dioxyde de carbone) : C + O₂ → CO₂.',
     ],
     ...references(
       'distinguer',
@@ -236,6 +241,8 @@ export const transformationChimique: Skill = {
       'transformation-chimique',
       'reaction',
       'reactif',
+      'reactifs-consommes',
+      'conservation-atomes',
       'produit',
       'melange-sans-combinaison',
       'co2-complete',

@@ -169,7 +169,7 @@ export const formulesChimiques: Skill = {
   advice: 'brouillon',
   lesson: {
     memo: [
-      'Chaque élément a un **symbole** : C (carbone), H (hydrogène), N (azote), O (oxygène). Le tableau périodique donne aussi son numéro atomique.',
+      'Chaque élément a un **symbole** : C (carbone), H (hydrogène), N (azote), O (oxygène). Le tableau périodique, ou classification périodique, donne aussi son numéro atomique : le nombre qui le repère dans ce tableau.',
       'Une **formule chimique** indique les atomes d’une molécule et leur nombre : H₂O contient 2 atomes d’hydrogène et 1 d’oxygène. Pas de chiffre veut dire 1.',
       'Un grand chiffre devant compte les molécules : 3 H₂O représente 3 molécules d’eau.',
     ],

@@ -121,6 +121,14 @@ export const SOURCES: readonly Source[] = [
   { ...tlfi('transformation', 'transformation', 'transformation'), consultedOn: '2026-11-26' },
   { ...tlfi('comburant', 'comburant', 'comburant'), consultedOn: '2026-11-26' },
   {
+    id: 'eduscol-ethanol-4e',
+    title: 'La cheminée à l’éthanol (Physique-chimie 4e, Organisation et transformations de la matière, BRNE)',
+    publisher: 'Éduscol',
+    url: 'https://eduscol.education.fr/document/29578/download',
+    textDate: '2020-04-11',
+    consultedOn: '2026-11-26',
+  },
+  {
     id: 'bipm-si-resume',
     title: 'Résumé de la Brochure sur le Système international d’unités (SI)',
     publisher: 'Bureau international des poids et mesures (BIPM)',

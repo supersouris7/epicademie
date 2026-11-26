@@ -146,6 +146,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     ]),
     hint: 'Calcule les atomes d’oxygène de chaque sorte de molécule, puis additionne.',
     steps: [
+      'Chaque molécule apporte ses atomes d’oxygène : on multiplie leur nombre par le nombre de molécules, puis on additionne.',
       `Pour chaque sorte : ${x} × ${compte(a, 'O')} = ${x * compte(a, 'O')} et ${y} × ${compte(b, 'O')} = ${y * compte(b, 'O')}.`,
       `Total : **${n}** atomes d’oxygène.`,
     ],
@@ -162,7 +163,8 @@ export const atomesMolecules: Skill = {
   lesson: {
     memo: [
       'Une **molécule** est une association d’**atomes** liés entre eux.',
-      'Dans un corps simple, les atomes de la molécule sont semblables (le dioxygène : 2 atomes d’oxygène). L’eau, elle, réunit 2 atomes d’hydrogène et 1 atome d’oxygène.',
+      'Dans un corps simple, les atomes de la molécule sont semblables (le dioxygène : 2 atomes d’oxygène ; le dihydrogène : 2 atomes d’hydrogène). L’eau, elle, réunit 2 atomes d’hydrogène et 1 atome d’oxygène.',
+      'À connaître aussi : le dioxyde de carbone (1 atome de carbone, 2 d’oxygène), le monoxyde de carbone (1 de carbone, 1 d’oxygène), le méthane (1 de carbone, 4 d’hydrogène) et le protoxyde d’azote (2 d’azote, 1 d’oxygène).',
     ],
     ...references(
       'notions',
