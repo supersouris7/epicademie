@@ -4,7 +4,7 @@ import type { Rng } from '../../rng.ts';
 import type { QuestionDraft, Skill } from '../../types.ts';
 import { big, NAMES } from '../kit.ts';
 import type { Contexte } from './contexte.ts';
-import { cinqNiveaux, parNiveau, signes } from './niveaux.ts';
+import { aRanger, cinqNiveaux, parNiveau, signes } from './niveaux.ts';
 import { inWords } from './outils.ts';
 
 /**
@@ -33,18 +33,6 @@ const chiffres = (rng: Rng, count: number) => rng.shuffle([1, 2, 3, 4, 5, 6, 7, 
 const nombre = (digits: readonly number[]) => Number(digits.join(''));
 /** Chiffre au rang `p` (0 = unités). */
 const chiffreAu = (n: number, p: number) => Math.floor(n / 10 ** p) % 10;
-
-/** Mélange jusqu'à ce que les éléments ne soient pas déjà dans l'ordre demandé. */
-function aRanger<T>(rng: Rng, items: readonly T[], key: (t: T) => number): { items: T[]; correct: number[] } {
-  for (;;) {
-    const shown = rng.shuffle([...items]);
-    const correct = shown
-      .map((t, i) => ({ k: key(t), i }))
-      .sort((a, b) => a.k - b.k)
-      .map((x) => x.i);
-    if (correct.some((c, i) => c !== i)) return { items: shown, correct };
-  }
-}
 
 // ——— Lire et écrire les grands nombres ———
 

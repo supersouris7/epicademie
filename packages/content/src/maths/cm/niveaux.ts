@@ -33,3 +33,29 @@ export const signes = (bon: '<' | '>', pourInverse: string, pourEgal: string) =>
   );
   return { answer, traps };
 };
+
+/** Mélange jusqu'à ce que les éléments ne soient pas déjà dans l'ordre demandé (clé croissante). */
+export function aRanger<T>(rng: Rng, items: readonly T[], key: (t: T) => number): { items: T[]; correct: number[] } {
+  for (;;) {
+    const shown = rng.shuffle([...items]);
+    const correct = shown
+      .map((t, i) => ({ k: key(t), i }))
+      .sort((a, b) => a.k - b.k)
+      .map((x) => x.i);
+    if (correct.some((c, i) => c !== i)) return { items: shown, correct };
+  }
+}
+
+/** Association de paires [gauche, droite] : la colonne de droite est mélangée, jamais déjà en face. */
+export function associer(rng: Rng, paires: readonly (readonly [string, string])[]): AnswerSpec {
+  for (;;) {
+    const ordre = rng.shuffle(paires.map((_, i) => i));
+    if (ordre.every((x, i) => x === i)) continue;
+    return {
+      kind: 'match',
+      left: paires.map((p) => p[0]),
+      right: ordre.map((i) => paires[i]?.[1] ?? ''),
+      pairs: paires.map((_, i) => ordre.indexOf(i)),
+    };
+  }
+}
