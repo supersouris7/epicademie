@@ -383,6 +383,8 @@ export const SOURCES: readonly Source[] = [
   academie('humidite', 'humidité'),
   academie('litiere', 'litière'),
   academie('lombric', 'lombric'),
+  academie('cloporte', 'cloporte'),
+  tlfi('lombric', 'lombric', 'lombric'),
   academie('moisissure', 'moisissure'),
   academie('micro-organisme', 'micro-organisme'),
   tlfi('symbiose', 'symbiose', 'symbiose'),

@@ -985,6 +985,16 @@ export const FAITS: readonly Fait[] = [
     citation: "Caractère ou état de ce qui est humide ; eau, vapeur d'eau présente dans un corps, un lieu, etc.",
   },
   {
+    id: 'cloporte-milieu',
+    source: 'academie-cloporte',
+    citation: 'Petit crustacé isopode terrestre qui vit dans les lieux sombres et humides.',
+  },
+  {
+    id: 'lombric-milieu',
+    source: 'cnrtl-lombric',
+    citation: 'vit en milieu humide (terre, fumier p. ex.)',
+  },
+  {
     id: 'litiere-def',
     source: 'academie-litiere',
     citation:

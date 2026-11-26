@@ -94,7 +94,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   const contraire = estPositive(a) ? 'négatif' : 'positif';
   if (t === 0) {
     const { answer, traps: tr } = saisie(
-      [...new Set([signe, signe.replace('é', 'e'), `un effet ${signe}`])],
+      [...new Set([signe, `un effet ${signe}`].flatMap((x) => [x, x.replace('é', 'e')]))],
       [
         [contraire, `Relis ce que fait l’action : ${a.effet}.`],
         ['neutre', 'Cette action change bien quelque chose pour la nature.'],
@@ -156,7 +156,9 @@ const MOTS = [
   {
     texte: 'Un passage construit pour que les poissons franchissent un barrage',
     mot: 'passe à poissons',
-    accepte: ['passe à poissons', 'une passe à poissons', 'passe a poissons', 'la passe à poissons'],
+    accepte: ['à', 'a'].flatMap((a) =>
+      ['', 'une ', 'la '].flatMap((d) => [`${d}passe ${a} poissons`, `${d}passe ${a} poisson`]),
+    ),
   },
   {
     texte: 'La saleté ou les produits qui abîment l’eau, le sol ou l’air',
@@ -175,7 +177,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       ),
     );
     return {
-      prompt: `Sans propositions : ${m.texte.toLowerCase()}. Quel est ce mot ?`,
+      prompt: `${m.texte}. Quel est ce mot ?`,
       answer,
       traps: tr,
       hint: 'Il fait partie des mots de cette leçon.',
@@ -226,7 +228,10 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     const { answer, traps: tr } = choice(rng, maj(cible.acte), [
       ...bonnes.map((a) => ({ label: maj(a.acte), why: `Cette action ${a.effet}.` })),
       ...mauvaises
-        .filter((a) => a !== cible)
+        // Une route goudronnée empêche aussi le sol d'absorber l'eau : jamais proposée face à « goudronner ».
+        .filter(
+          (a) => a !== cible && !(cible.acte === 'goudronner un sol nu' && a.acte.startsWith('construire une route')),
+        )
         .map((a) => ({ label: maj(a.acte), why: `Cette action ${a.effet} : ce n’est pas l’effet demandé.` })),
     ]);
     return {

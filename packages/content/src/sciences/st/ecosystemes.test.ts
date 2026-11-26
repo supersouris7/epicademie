@@ -62,4 +62,55 @@ describe('lot « Écosystèmes » (CM2) et décomposition (6e)', () => {
     );
     expect(q && check(q, { kind: 'text', text: 'humidite' }).correct).toBe(true);
   });
+
+  const textes = (id: string, level: Level) => Array.from({ length: 500 }, (_, seed) => generate(id, level, seed));
+
+  it('relevés chiffrés : cloportes, escargots et vers de terre plus nombreux au frais, à l’ombre et à l’humide', () => {
+    const defavorable = /il fait 25 degrés|8 heures par jour|le sol est sec/;
+    const favorable = /il fait 12 degrés|1 heure par jour|le sol est mouillé/;
+    for (const q of textes('vcm2-peuplement', 5)) {
+      if (q.figure?.kind !== 'document') continue;
+      const [a = '', b = ''] = q.figure.lines;
+      // Seul le facteur étudié diffère entre A et B ; B (le plus peuplé) a la valeur favorable.
+      const propre = (ligne: string, autre: string) => ligne.split(/ : | ; |\. /).find((x) => !autre.includes(x)) ?? '';
+      expect(propre(b.slice(7), a)).toMatch(favorable);
+      expect(propre(a.slice(7), b)).toMatch(defavorable);
+      expect(JSON.stringify(q)).not.toMatch(/de escargots|Dans ce relevé, il y a/);
+    }
+    for (const q of textes('vcm2-peuplement', 4)) {
+      const m = /Zone A : (.*?) ; des (.+?) : \d+\. Zone B : (.*?) ; des /.exec(q.prompt);
+      if (!m) continue;
+      const [, a = '', etre, b = ''] = m;
+      const change = b.split(' ; ').find((x) => !a.includes(x)) ?? '';
+      if (etre === 'pâquerettes') expect(change).toContain('8 heures');
+      else {
+        expect(['cloportes', 'escargots', 'vers de terre']).toContain(etre);
+        expect(change).toMatch(favorable);
+      }
+    }
+  });
+
+  it('enquête : trois étapes à ordre unique', () => {
+    for (const q of textes('vcm2-peuplement', 3)) if (q.answer.kind === 'order') expect(q.answer.items).toHaveLength(3);
+  });
+
+  it('jamais la route proposée quand on cherche ce qui empêche le sol d’absorber l’eau', () => {
+    const concernees = textes('vcm2-actions-humaines', 5).filter((q) =>
+      q.prompt.includes('Quelle action notée empêche le sol'),
+    );
+    expect(concernees.length).toBeGreaterThan(0);
+    for (const q of concernees) expect(JSON.stringify([q.answer, q.traps])).not.toContain('Construire une route');
+  });
+
+  it('variantes de saisie des actions humaines', () => {
+    const tous = ([3, 4] as const).flatMap((l) => textes('vcm2-actions-humaines', l));
+    for (const [attendu, saisies] of [
+      ['passe à poissons', ['passe à poisson', 'une passe a poissons']],
+      ['négatif', ['un effet negatif']],
+    ] as const) {
+      const q = tous.find((x) => x.answer.kind === 'text' && x.answer.accepted.includes(attendu));
+      for (const text of saisies) expect(q && check(q, { kind: 'text', text }).correct, text).toBe(true);
+    }
+    expect(tous.some((q) => q.prompt.includes('Sans propositions'))).toBe(false);
+  });
 });

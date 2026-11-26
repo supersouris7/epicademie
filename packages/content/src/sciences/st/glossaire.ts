@@ -822,6 +822,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'La haie sépare deux champs.',
   },
   {
+    id: 'st-passe-a-poissons',
+    word: 'passe à poissons',
+    forms: ['passe à poissons', 'passes à poissons'],
+    definition: 'Un passage aménagé pour que les poissons franchissent un obstacle dans une rivière, comme un barrage.',
+    example: 'Grâce à la passe à poissons, les saumons franchissent le barrage.',
+  },
+  {
     id: 'st-matiere-organique',
     word: 'matière organique',
     forms: ['matière organique'],

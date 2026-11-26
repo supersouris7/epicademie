@@ -56,6 +56,26 @@ const ETRES = ['des cloportes', 'des escargots', 'des fourmis', 'des vers de ter
 /** « des escargots » → « d’escargots », « de fourmis ». */
 const de = (nom: string) => (/^[aeiouyéè]/.test(nom) ? `d’${nom}` : `de ${nom}`);
 
+/**
+ * Valeur du facteur où l'on compte le plus d'individus, pour chaque couple (être, facteur) utilisé dans les relevés
+ * chiffrés. Un couple absent n'est jamais tiré.
+ */
+type Valeur = 'bas' | 'haut';
+const ABRITE: Readonly<Record<Facteur, Valeur>> = { temperature: 'bas', ensoleillement: 'bas', humidite: 'haut' };
+const PREFERENCES = {
+  cloportes: ABRITE,
+  escargots: ABRITE,
+  'vers de terre': ABRITE,
+  pâquerettes: { ensoleillement: 'haut' },
+} as const satisfies Record<string, Partial<Record<Facteur, Valeur>>>;
+const contraire = (v: Valeur): Valeur => (v === 'bas' ? 'haut' : 'bas');
+
+/** Deux endroits et leur valeur ; pour l'humidité, le premier lieu (nord, arbre, mare) est le plus mouillé. */
+const deuxEndroits = (f: Facteur, [a, b]: readonly [string, string]) => {
+  const [v, w] = f === 'humidite' ? [FACTEURS[f].haut, FACTEURS[f].bas] : [FACTEURS[f].bas, FACTEURS[f].haut];
+  return `${maj(a)}, ${v}. ${maj(b)}, ${w}.`;
+};
+
 const autre = (f: Facteur) => CLES.filter((x) => x !== f);
 const faux = (x: Facteur) => ({
   label: FACTEURS[x].nom,
@@ -64,10 +84,10 @@ const faux = (x: Facteur) => ({
 
 const niveau1 = (rng: Rng): QuestionDraft => {
   const f = rng.pick(CLES);
-  const [a, b] = rng.pick(LIEUX);
+  const lieux = rng.pick(LIEUX);
   const { answer, traps: tr } = choice(rng, FACTEURS[f].nom, autre(f).map(faux));
   return {
-    prompt: `${maj(a)}, ${FACTEURS[f].bas}. ${maj(b)}, ${FACTEURS[f].haut}. Qu’est-ce qui est différent ?`,
+    prompt: `${deuxEndroits(f, lieux)} Qu’est-ce qui est différent ?`,
     answer,
     traps: tr,
     hint: 'Compare les deux phrases : parlent-elles de chaleur, de soleil ou d’eau ?',
@@ -80,12 +100,12 @@ const niveau2 = (rng: Rng): QuestionDraft => {
   if (rng.int(0, 1) === 0) {
     const cles = rng.shuffle(CLES);
     return {
-      prompt: `Associe chaque observation à ce qu’elle renseigne : ${cles.map((f) => FACTEURS[f].outil).join(' ')}`,
+      prompt: `Associe chaque observation à ce qu’elle nous apprend : ${cles.map((f) => FACTEURS[f].outil).join(' ')}`,
       answer: association(
         rng,
         cles.map((f) => [FACTEURS[f].outil, maj(FACTEURS[f].nom)] as const),
       ),
-      hint: 'Un thermomètre parle de chaud et de froid. Un sol mouillé parle d’eau.',
+      hint: 'Pour chaque phrase, demande-toi : chaleur, soleil ou eau ?',
       steps: [
         'Chaque observation renseigne sur un seul facteur du milieu.',
         'Chaque phrase est reliée à **son** facteur.',
@@ -117,8 +137,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
 
 const ETAPES = [
   'Choisir deux milieux proches',
-  'Mesurer un facteur dans chaque milieu',
-  'Compter les êtres vivants dans chaque milieu',
+  'Mesurer un facteur et compter les êtres vivants dans chaque milieu',
   'Comparer et relier le facteur à la répartition',
 ] as const;
 
@@ -129,7 +148,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     return {
       prompt: `Tu veux savoir où vivent ${etre} près de l’école. Remets l’enquête dans l’ordre.`,
       answer: ordre(rng, ETAPES),
-      hint: 'On choisit les endroits d’abord. On conclut à la fin.',
+      hint: 'On choisit les endroits, puis on fait le relevé, et on conclut à la fin.',
       steps: ['On observe, on mesure, puis on compare.', `Ordre : **${ETAPES.join(' → ')}**.`],
       targetSeconds: 50,
     };
@@ -154,13 +173,13 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     };
   }
   const f = rng.pick(CLES);
-  const [a, b] = rng.pick(LIEUX);
+  const lieux = rng.pick(LIEUX);
   const { answer, traps: tr } = saisie(
     FACTEURS[f].accepte,
     autre(f).map((x) => [FACTEURS[x].accepte[0] ?? '', faux(x).why] as const),
   );
   return {
-    prompt: `${maj(a)}, ${FACTEURS[f].bas}. ${maj(b)}, ${FACTEURS[f].haut}. Écris le nom du facteur qui change.`,
+    prompt: `${deuxEndroits(f, lieux)} Écris le nom du facteur qui change.`,
     answer,
     traps: tr,
     hint: 'Pense aux trois facteurs du mémo.',
@@ -173,7 +192,10 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   if (rng.int(0, 1) === 0) {
     const f = rng.pick(CLES);
     const [x, y] = autre(f) as [Facteur, Facteur];
-    const etre = rng.pick(ETRES);
+    const etre = rng.pick(
+      (Object.keys(PREFERENCES) as (keyof typeof PREFERENCES)[]).filter((e) => f in PREFERENCES[e]),
+    );
+    const favorable: Valeur = (PREFERENCES[etre] as Partial<Record<Facteur, Valeur>>)[f] ?? 'haut';
     const peu = rng.pick([1, 2, 3]);
     const beaucoup = rng.pick([11, 13, 16]);
     const meme = rng.pick([`${FACTEURS[x].bas} et ${FACTEURS[y].haut}`, `${FACTEURS[x].haut} et ${FACTEURS[y].bas}`]);
@@ -182,7 +204,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       [x, y].map((k) => [FACTEURS[k].accepte[0] ?? '', `Ce point est pareil aux deux endroits : ${meme}.`] as const),
     );
     return {
-      prompt: `Zone A : ${meme} ; ${FACTEURS[f].bas} ; ${etre} : ${peu}. Zone B : ${meme} ; ${FACTEURS[f].haut} ; ${etre} : ${beaucoup}. Quel facteur peut expliquer l’écart ? Écris-le.`,
+      prompt: `Zone A : ${meme} ; ${FACTEURS[f][contraire(favorable)]} ; des ${etre} : ${peu}. Zone B : ${meme} ; ${FACTEURS[f][favorable]} ; des ${etre} : ${beaucoup}. Quel facteur peut expliquer l’écart ? Écris-le.`,
       answer,
       traps: tr,
       hint: 'Barre ce qui est pareil dans les deux zones.',
@@ -208,8 +230,11 @@ const niveau4 = (rng: Rng): QuestionDraft => {
 };
 
 const niveau5 = (rng: Rng): QuestionDraft => {
-  const etre = rng.pick(['cloportes', 'escargots', 'vers de terre']);
+  const etre = rng.pick(['cloportes', 'escargots', 'vers de terre'] as const);
   const f = rng.pick(CLES);
+  const favorable = PREFERENCES[etre][f];
+  const plus = FACTEURS[f][favorable];
+  const moins = FACTEURS[f][contraire(favorable)];
   const [x, y] = autre(f) as [Facteur, Facteur];
   const a = rng.int(2, 6);
   const b = a + rng.int(6, 12);
@@ -218,9 +243,9 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     kind: 'document' as const,
     title: 'Relevé de sortie (exemple inventé)',
     lines: [
-      `Zone A : ${meme} ; ${FACTEURS[f].bas}. Nombre de ${etre} : ${a}.`,
-      `Zone B : ${meme} ; ${FACTEURS[f].haut}. Nombre de ${etre} : ${b}.`,
-      `Zone C : ${FACTEURS[x].haut} ; ${FACTEURS[y].bas} ; ${FACTEURS[f].haut}. Nombre de ${etre} : ${rng.int(0, 20)}.`,
+      `Zone A : ${meme} ; ${moins}. Nombre ${de(etre)} : ${a}.`,
+      `Zone B : ${meme} ; ${plus}. Nombre ${de(etre)} : ${b}.`,
+      `Zone C : ${FACTEURS[x].haut} ; ${FACTEURS[y].bas} ; ${plus}. Nombre ${de(etre)} : ${rng.int(0, 20)}.`,
       'Chaque zone a la même taille. Les comptages sont faits le même jour.',
     ],
   };
@@ -259,10 +284,10 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       targetSeconds: 60,
     };
   }
-  const bon = `Dans ce relevé, il y a plus de ${etre} là où ${FACTEURS[f].haut}.`;
+  const bon = `Entre les zones A et B, il y a plus ${de(etre)} là où ${plus}.`;
   const { answer, traps: tr } = choice(rng, bon, [
     {
-      label: `Dans ce relevé, il y a plus de ${etre} là où ${FACTEURS[f].bas}.`,
+      label: `Entre les zones A et B, il y a plus ${de(etre)} là où ${moins}.`,
       why: `Compare les nombres : la zone A en a ${a}, la zone B en a ${b}.`,
     },
     {
@@ -270,7 +295,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       why: 'Ce facteur est pareil en A et en B : il ne peut pas expliquer la différence.',
     },
     {
-      label: `Partout sur la Terre, les ${etre} ne vivent que là où ${FACTEURS[f].haut}.`,
+      label: `Partout sur la Terre, les ${etre} ne vivent que là où ${plus}.`,
       why: 'Un seul relevé sur deux petites zones ne permet pas de généraliser à toute la Terre.',
     },
   ]);
@@ -297,8 +322,8 @@ export const peuplement: Skill = {
       'Un **milieu de vie** abrite des êtres vivants. Leur **répartition** change d’un endroit à l’autre.',
       'Pour comprendre pourquoi, mesure un **facteur du milieu** : la température, l’**ensoleillement** ou l’**humidité**. Puis compare deux endroits proches !',
     ],
-    source: `${PROGRAMME} : « Comparer, à partir d’observations ou d’expériences, la répartition des êtres vivants dans des milieux proches pour relier les facteurs abiotiques (physico-chimiques) et cette répartition » ; « Temps pendant lequel un lieu est ensoleillé » (Académie française).`,
-    sources: [PROGRAMME, 'academie-ensoleillement', 'academie-humidite'],
+    source: `${PROGRAMME} : « Comparer, à partir d’observations ou d’expériences, la répartition des êtres vivants dans des milieux proches pour relier les facteurs abiotiques (physico-chimiques) et cette répartition » ; « Temps pendant lequel un lieu est ensoleillé » (Académie française) ; « vit dans les lieux sombres et humides » (cloporte, Académie française) ; « vit en milieu humide » (lombric, TLFi).`,
+    sources: [PROGRAMME, 'academie-ensoleillement', 'academie-humidite', 'academie-cloporte', 'cnrtl-lombric'],
   },
   generate: (rng, level) => (NIVEAUX[level - 1] ?? niveau1)(rng),
 };
