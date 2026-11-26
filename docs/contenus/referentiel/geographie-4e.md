@@ -11,7 +11,7 @@
 
 | Lot        | Chapitre                | Notions                                                                                               | État actuel |
 | ---------- | ----------------------- | ----------------------------------------------------------------------------------------------------- | ----------- |
-| `ge-4e-01` | L'urbanisation du monde | espaces et paysages de l'urbanisation ; des villes inégalement connectées ; vocabulaire               | absente     |
+| `ge-4e-01` | L'urbanisation du monde | espaces et paysages de l'urbanisation ; des villes inégalement connectées ; vocabulaire               | couverte    |
 | `ge-4e-02` | Les mobilités humaines  | un monde de migrants ; le tourisme et ses espaces ; vocabulaire                                       | absente     |
 | `ge-4e-03` | La mondialisation       | mers et océans : un monde maritimisé ; espaces transformés par la mondialisation ; firmes et échanges | absente     |
 | `ge-4e-04` | Repères de 4e           | grandes métropoles ; flux migratoires ; routes maritimes ; vocabulaire                                | absente     |

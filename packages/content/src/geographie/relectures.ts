@@ -62,4 +62,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'g5-foyers-population', version: 1, lot: 'ge-5e-04', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'g5-reperes-ressources', version: 1, lot: 'ge-5e-04', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'g5-vocabulaire', version: 1, lot: 'ge-5e-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'g4-centres-peripheries', version: 1, lot: 'ge-4e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'g4-villes-connectees', version: 1, lot: 'ge-4e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'g4-vocabulaire-urbanisation', version: 1, lot: 'ge-4e-01', date: '2026-11-26', verdict: 'ok' },
 ];
