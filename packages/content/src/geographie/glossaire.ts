@@ -2242,7 +2242,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
   {
     id: 'deplace',
     word: 'déplacé',
-    forms: ['déplacé', 'déplacés', 'déplacé interne'],
+    forms: ['un déplacé', 'les déplacés', 'des déplacés', 'déplacé interne', 'déplacés internes'],
     definition:
       'Une personne contrainte de partir de chez elle ; elle est dite « interne » quand elle reste dans son pays.',
     example: 'Fuir des combats pour une autre région de son pays.',
@@ -2367,5 +2367,19 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['artificialisation'],
     definition: 'Le remplacement de sols naturels par des constructions ou des routes.',
     example: 'Un parking remplace une prairie.',
+  },
+  {
+    id: 'retombees-tourisme',
+    word: 'retombées',
+    forms: ['retombées'],
+    definition: 'Les effets d’une activité sur un territoire, par exemple l’argent et les emplois qu’elle apporte.',
+    example: 'Les dépenses des visiteurs font vivre des commerces.',
+  },
+  {
+    id: 'excursionnisme',
+    word: 'excursionnisme',
+    forms: ['excursionnisme'],
+    definition: 'Les sorties de loisir à la journée, sans nuit sur place.',
+    example: 'Passer le dimanche au bord de la mer et rentrer le soir.',
   },
 ];

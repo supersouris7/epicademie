@@ -65,9 +65,12 @@ const G_TOURISME = 'tout voyage hors du domicile habituel pour au moins une nuit
 const G_DOMESTIQUE = 'le tourisme domestique reste largement supérieur au tourisme international, à l’échelle mondiale';
 const G_MEDITERRANEE = 'Le bassin méditerranéen est, de loin, la première région touristique du monde';
 const G_COTES = 'Le tourisme en Méditerranée reste essentiellement concentré sur les bandes côtières';
-const G_ARTIFICIEL = 'alimenter la pression sur les littoraux et à provoquer leur artificialisation';
-const G_RETOMBEES = 'bénéficient donc relativement peu des retombées du tourisme international';
-const G_EAU = 'gestion des déchets, approvisionnements en eau concentrés en pleine période de sécheresse estivale';
+const G_ARTIFICIEL =
+  'Il contribue donc largement à alimenter la pression sur les littoraux et à provoquer leur artificialisation';
+const G_RETOMBEES =
+  'Les pays du Sud et de l’Est méditerranéens, confrontés à de fortes croissances démographiques, bénéficient donc relativement peu des retombées du tourisme international';
+const G_EAU =
+  'Les communes d’accueil touristique doivent aussi faire face à des problèmes de gestion environnementale spécifiques : gestion des déchets, approvisionnements en eau concentrés en pleine période de sécheresse estivale';
 const G_STATION = 'les stations touristiques sont en effet créées par et pour les touristes';
 const G_OUVERT = 'la station est un lieu ouvert, habitée par une population permanente';
 const G_SITE = 'Un site touristique est un lieu de passage, mais non de séjour';
@@ -76,8 +79,10 @@ const G_COMPTOIR =
 const G_MISE =
   'La mise en tourisme est le processus de création d’un lieu touristique ou de transformation d’un lieu ancien par le tourisme';
 const G_SUR = 'désigne les effets négatifs produits par une fréquentation touristique excessive dans certains lieux';
-const G_VENISE = 'Le centre historique de Venise';
-const G_HABITANTS = 'au détriment de la qualité de vie des résidents';
+const G_VENISE =
+  'Le centre historique de Venise, une des destinations touristiques les plus connues et fréquentées au monde, est un exemple emblématique de ces dynamiques';
+const G_HABITANTS =
+  'le tourisme a transformé le logement, le commerce et les espaces publics pour répondre aux besoins des visiteurs au détriment de la qualité de vie des résidents';
 const G_DURABLE =
   'qui tient pleinement compte de ses impacts économiques, sociaux et environnementaux actuels et futurs';
 
@@ -90,7 +95,7 @@ const G_DEPOT =
   'ont déposé une demande d’asile arguant de leur besoin de protection à l’extérieur de leur pays d’origine';
 const G_DIASPORA = 'indique la dispersion d’une population';
 const G_LIENS =
-  'des échanges matériels et immatériels organisés en réseaux (personnes, biens, informations, capitaux, etc.)';
+  'Des groupes dispersés qui conservent et développent entre eux et avec la société d’origine (lorsqu’elle existe encore), des échanges matériels et immatériels organisés en réseaux (personnes, biens, informations, capitaux, etc.)';
 const G_TOURISTE =
   'effectue au moins une nuitée sur place, ce qui le différencie de l’excursionniste qui fait l’aller-retour dans la même journée';
 const G_EXCURSION = 'un déplacement de moins de 24 heures dans le cadre d’une mobilité de loisir';
@@ -98,7 +103,8 @@ const G_DUREE = 'voyage touristique, qui dure au moins deux jours, mais moins d�
 const G_MOBILITE = 'la mobilité désigne un changement de lieu accompli par une ou des personnes';
 const G_TYPES =
   'les mobilités définitives ou de longue durée, appelées migrations (internationales si une frontière est franchie, intérieures sinon)';
-const G_MASSE = 'Il met en œuvre des flux inégalés';
+const G_MASSE =
+  'Le tourisme de masse est historiquement le troisième système touristique à s’être développé, après le tourisme artisanal et le tourisme industriel. Il met en œuvre des flux inégalés';
 
 // ——— Notion 1 : un monde de migrants ———
 
@@ -551,8 +557,8 @@ const tourisme: Notion = {
   ],
   faits: [
     {
-      q: 'Comment le programme présente-t-il le tourisme international ?',
-      a: 'le mouvement de population le plus massif de l’histoire du monde',
+      q: 'Quelle place le tourisme international occupe-t-il parmi les mouvements de population ?',
+      a: 'c’est le mouvement de population le plus massif que le monde ait connu',
       wrong: [
         { label: 'un phénomène rare et en voie de disparition', why: 'Au contraire, ses flux sont immenses.' },
         { label: 'un déplacement limité à un seul continent', why: 'Il relie des pays du monde entier.' },
@@ -717,11 +723,11 @@ const tourisme: Notion = {
       src: SURTOURISME,
     },
     {
-      q: 'Quelle ville italienne est citée comme exemple emblématique de surtourisme dans son centre historique ?',
+      q: 'Quelle ville italienne, donnée en exemple dans la leçon, subit un surtourisme dans son centre historique ?',
       accepted: ['Venise', 'la ville de Venise', 'Venezia'],
       traps: [
-        { text: 'Turin', why: 'L’exemple emblématique cité par la source est une autre ville.' },
-        { text: 'Rome', why: 'L’exemple emblématique cité par la source est un autre centre historique.' },
+        { text: 'Turin', why: 'La leçon prend l’exemple d’une autre ville, célèbre pour ses canaux.' },
+        { text: 'Rome', why: 'Rome accueille beaucoup de visiteurs, mais la leçon prend l’exemple d’une autre ville.' },
       ],
       quote: G_VENISE,
       explain: 'À Venise, la pression touristique pèse sur la vie des habitants.',
@@ -857,7 +863,7 @@ const tourisme: Notion = {
           q: 'Quel type d’effet la ligne 2 illustre-t-elle ?',
           a: 'un effet environnemental',
           wrong: [
-            { label: 'un effet grammatical', why: 'Le tourisme n’a pas d’effet de ce type.' },
+            { label: 'un effet positif sur la propreté des rues', why: 'La ligne 2 dit que les déchets s’accumulent.' },
             { label: 'un effet positif sur la ressource en eau', why: 'La ligne 2 dit que l’eau manque.' },
             { label: 'aucun effet', why: 'Le manque d’eau et les déchets sont des effets visibles.' },
           ],
@@ -1190,7 +1196,7 @@ const vocabulaire: Notion = {
           a: 'une diaspora',
           wrong: [
             { label: 'une mégalopole', why: 'Une mégalopole est un réseau de villes.' },
-            { label: 'un excursionnisme', why: 'Il ne s’agit pas de sorties à la journée.' },
+            { label: 'une excursion', why: 'Une excursion est une sortie à la journée.' },
             { label: 'une station touristique', why: 'Il s’agit d’une population, pas d’un lieu de séjour.' },
           ],
           quote: G_LIENS,
@@ -1203,7 +1209,7 @@ const vocabulaire: Notion = {
       title: 'Au guichet des départs (cas fictifs)',
       lines: [
         'H a déposé une demande de protection à l’étranger et attend la réponse.',
-        'I a obtenu ce statut après examen de son dossier.',
+        'I a obtenu le statut de réfugié après examen de son dossier.',
         'J a emménagé dans une autre région de son pays pour un emploi.',
       ],
       qs: [
