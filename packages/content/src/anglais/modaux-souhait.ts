@@ -467,7 +467,7 @@ const couldSkill: Skill = {
   lesson: {
     memo: [
       '**Could** et **couldn’t** disent ce qu’on savait ou ne savait pas faire : I could swim when I was four.',
-      'Could sert aussi à demander poliment (Could you help me, please?) ou à faire une **suggestion** (We could meet).',
+      'Could sert aussi à demander poliment un service (Could you help me, please?) ou une autorisation (Could I go?), et à faire une **suggestion** (We could meet).',
       'Ensuite vient la **base verbale** ; pour la question, could passe devant le sujet.',
     ],
     source: source(
@@ -512,7 +512,10 @@ function wishMeaning(rng: Rng): QuestionDraft {
   const line = `I ${wish ? 'wish to' : 'would love to'} ${a.base}.`;
   const right = `Je souhaite ${a.fr}.`;
   const { answer, traps } = choice(rng, right, [
-    { label: `J’ai l’habitude de ${a.fr}.`, why: 'La phrase dit un souhait, pas une habitude.' },
+    {
+      label: `J’ai l’habitude ${/^[aeéiou]/.test(a.fr) ? 'd’' : 'de '}${a.fr}.`,
+      why: 'La phrase dit un souhait, pas une habitude.',
+    },
     { label: `Je dois ${a.fr}.`, why: 'Une obligation se dit avec must ; ici c’est une envie.' },
   ]);
   return {

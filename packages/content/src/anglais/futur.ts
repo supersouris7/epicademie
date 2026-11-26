@@ -240,7 +240,7 @@ function willDocument(rng: Rng): QuestionDraft {
   const forms = (yes: boolean) => (yes ? ['will', '’ll'] : ['won’t', 'will not']);
   const last = values[2];
   return {
-    prompt: `Lis les prévisions sur la vie future de ${k.name} (yes = cela arrivera, no = cela n’arrivera pas), puis complète avec will, won’t, Yes ou No. Au dernier trou, écris le verbe de la dernière ligne à la bonne forme après will.`,
+    prompt: `Lis les prévisions sur la vie future ${/^[AEIOU]/.test(k.name) ? 'd’' : 'de '}${k.name} (yes = cela arrivera, no = cela n’arrivera pas), puis complète avec will, won’t, Yes ou No. Au dernier trou, écris l’activité de la dernière ligne à la base verbale.`,
     figure: {
       kind: 'document',
       title: `${k.name} in ten years`,
@@ -260,7 +260,7 @@ function willDocument(rng: Rng): QuestionDraft {
         ` ${b.base}. « `,
         ` ${k.pronoun} ${c.base}? » « `,
         `, ${k.pronoun} `,
-        `. » Will ${k.pronoun} really `,
+        `. » Question about the last line: does ${k.pronoun} want to `,
         `?`,
       ],
       blanks: [
@@ -276,7 +276,7 @@ function willDocument(rng: Rng): QuestionDraft {
     steps: [
       '« yes » : will ; « no » : won’t. Ces formes ne changent pas avec he ou she.',
       'Dans la question, will passe devant le sujet ; la réponse courte reprend Yes ou No, la personne, puis will ou won’t.',
-      `Après will, la base verbale : **${a.base}**.`,
+      `Après to, comme après will, la base verbale : **${a.base}**.`,
       `Réponse : **${modal(values[0])}, ${modal(values[1])}, Will, ${last ? 'Yes' : 'No'}, ${modal(last)}, ${a.base}**`,
     ],
   };
@@ -395,7 +395,7 @@ function frameNegative(rng: Rng, frame: Frame, verbs: readonly Verb[]): Question
       { text: `${s.text} not ${tail}`, why: WHY_NO_BE },
     ]),
     hint: 'Un seul mot à ajouter. Où se place-t-il par rapport à be ?',
-    steps: ['La négation not se place juste après am, is ou are.', `Réponse : **${at(accepted, 0)} ${tail}.**`],
+    steps: ['La négation not se place juste après am, is ou are.', `Réponse : **${at(accepted, 0)}.**`],
   };
 }
 

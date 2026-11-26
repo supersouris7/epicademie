@@ -101,4 +101,9 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'a6-voc-alimentation', version: 1, lot: 'an-6e-09', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'a6-voc-maison', version: 1, lot: 'an-6e-09', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'a6-axes-culturels', version: 1, lot: 'an-6e-09', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-will', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-be-going-to', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-be-ing-projet', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-could', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-souhait', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
 ];

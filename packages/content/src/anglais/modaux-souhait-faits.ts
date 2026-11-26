@@ -86,7 +86,7 @@ export const FAITS: readonly Fait[] = [
     'souhait-would',
     WOULD,
     'to say what we want or what we want to do',
-    'would (like / love) dit ce que l’on veut ou ce que l’on veut faire.',
+    'I would like dit ce que l’on veut ou veut faire ; I would love to, cité par le programme, se construit de même.',
   ),
   fait(
     'programme-opinion',
