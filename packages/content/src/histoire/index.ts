@@ -15,6 +15,7 @@ import { SKILLS as REVOLUTION_EMPIRE } from './revolution-empire.ts';
 import { SKILLS as REPERES_4E } from './reperes-4e.ts';
 import { SKILLS as REPERES_5E } from './reperes-5e.ts';
 import { SKILLS as REPERES_6E } from './reperes-6e.ts';
+import { SKILLS as SECONDE_GUERRE } from './seconde-guerre.ts';
 import { SKILLS as SE_REPERER_CM2 } from './se-reperer-cm2.ts';
 import { SKILLS as SE_REPERER } from './se-reperer.ts';
 import { SKILLS as TEMPS_REPUBLIQUE } from './temps-republique.ts';
@@ -241,4 +242,5 @@ export const HISTOIRE_CHAPTERS: readonly Chapter[] = [
   chapter('h4-france-xixe', '4e', 'Société, culture et politique dans la France du XIXe siècle', FRANCE_XIXE),
   chapter('h4-se-reperer', '4e', 'Repères de 4e', REPERES_4E),
   chapter('h3-guerres-totales', '3e', 'La Première Guerre mondiale et les totalitarismes', GUERRES_TOTALES),
+  chapter('h3-seconde-guerre', '3e', 'La Seconde Guerre mondiale', SECONDE_GUERRE),
 ];
