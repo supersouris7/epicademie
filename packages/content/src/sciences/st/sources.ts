@@ -374,10 +374,8 @@ export const SOURCES: readonly Source[] = [
     textDate: '2017-09',
     consultedOn: '2026-11-25',
   },
-  // Écosystèmes (lot st-cm2-04).
-  academie('ecosysteme', 'écosystème'),
+  // Écosystèmes (lot st-cm2-04) ; écosystème, prédateur, symbiose et biodiversité sont dans `../svt/sources.ts`.
   academie('proie', 'proie'),
-  academie('predateur', 'prédateur'),
   academie('mutualisme', 'mutualisme'),
   academie('ensoleillement', 'ensoleillement'),
   academie('humidite', 'humidité'),
@@ -387,16 +385,7 @@ export const SOURCES: readonly Source[] = [
   tlfi('lombric', 'lombric', 'lombric'),
   academie('moisissure', 'moisissure'),
   academie('micro-organisme', 'micro-organisme'),
-  tlfi('symbiose', 'symbiose', 'symbiose'),
   tlfi('humus', 'humus', 'humus'),
-  {
-    id: 'ecologie-biodiversite',
-    title: '« Biodiversité : présentation et enjeux »',
-    publisher: 'Ministère chargé de la transition écologique (ecologie.gouv.fr)',
-    url: 'https://www.ecologie.gouv.fr/politiques-publiques/biodiversite-presentation-enjeux',
-    textDate: '2026-09-11',
-    consultedOn: '2026-11-26',
-  },
   {
     id: 'ecologie-pollution-lumineuse',
     title: '« Pollution lumineuse »',
