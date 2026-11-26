@@ -94,6 +94,19 @@ describe('histoire 4e — Repères de 4e', () => {
     }
   });
 
+  it('accepte à l’écrit les formulations justes relevées à la relecture', () => {
+    const trous = NOTIONS.flatMap((n) => n.faits.map((f) => f.gap));
+    const accepte = (debut: string, texte: string) =>
+      expect(trous.find(([avant]) => avant.startsWith(debut))?.[2], debut).toContain(texte);
+    accepte('En 1848, la France adopte', 'universel masculin');
+    accepte('En 1848, on passe', 'universel masculin');
+    accepte('Le commerce international', 'continuité');
+    accepte('Des années 1670', 'traite négrière');
+    accepte('Des années 1670', 'traite atlantique');
+    const libres = NOTIONS.flatMap((n) => n.libres.flatMap((l) => l.accepted));
+    for (const t of ['une affranchie', 'Louis Napoléon', 'Napoleon III']) expect(libres, t).toContain(t);
+  });
+
   it('définit au glossaire chaque terme en gras des mémos', () => {
     for (const n of NOTIONS) {
       for (const term of n.memo.flatMap(boldTerms)) {

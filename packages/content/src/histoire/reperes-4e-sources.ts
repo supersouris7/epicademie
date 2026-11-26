@@ -6,6 +6,7 @@
  */
 import type { Preuve } from './kit.ts';
 import { PREUVES as CM2 } from './se-reperer-cm2-sources.ts';
+import { PREUVES as REPUBLIQUE } from './temps-republique-sources.ts';
 import { PREUVES as THEME3 } from './france-xixe-sources.ts';
 import { PREUVES as THEME2 } from './xixe-siecle-sources.ts';
 import { PREUVES as THEME1 } from './xviiie-siecle-sources.ts';
@@ -80,12 +81,18 @@ export const PREUVES = {
     'xviiie',
     'les quakers des futurs États-Unis d’Amérique créent, dès 1775, la première société pour l’abolition de l’esclavage',
   ),
+  auclert: REPUBLIQUE.auclert,
   darwin: eduscol(
     'xixe',
     'L’expédition à laquelle il participa à bord du Beagle de 1831 à 1836 l’amena non seulement à poser les premières bases de sa célèbre théorie sur l’origine des espèces',
   ),
 
   // Vocabulaire
+  cens: academie({
+    source: 'academie-cens',
+    quote:
+      "Cens électoral, quotité d'imposition qui, selon la Constitution de certains pays, était nécessaire pour être électeur ou éligible.",
+  }),
   industrialisation: eduscol(
     'xixe',
     'On lui préfère celui « d’industrialisation » pour décrire le phénomène de montée de l’industrie dans les autres pays.',

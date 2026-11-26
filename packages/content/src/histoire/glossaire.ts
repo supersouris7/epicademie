@@ -2697,4 +2697,25 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'La neutralité religieuse : l’indépendance à l’égard de toutes les Églises et confessions.',
     example: 'La laïcité est un principe de la République.',
   },
+  {
+    id: 'seconde-mondialisation',
+    word: 'seconde mondialisation',
+    forms: ['seconde mondialisation'],
+    definition: 'La nouvelle période, de 1870 à 1914, où les échanges se développent à l’échelle du monde.',
+    example: 'La seconde mondialisation va de 1870 à 1914.',
+  },
+  {
+    id: 'doctrine',
+    word: 'doctrine',
+    forms: ['doctrine'],
+    definition: 'Un ensemble d’idées qui guide un mouvement ou une action.',
+    example: 'Le socialisme est une doctrine.',
+  },
+  {
+    id: 'corps-electoral',
+    word: 'corps électoral',
+    forms: ['corps électoral'],
+    definition: 'L’ensemble des personnes qui ont le droit de voter.',
+    example: 'Le plébiscite consulte tout le corps électoral.',
+  },
 ];

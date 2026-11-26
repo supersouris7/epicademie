@@ -40,8 +40,8 @@ const reperes: Notion = {
   title: 'Les repères chronologiques de 4e',
   hint: 'Demande-toi d’abord à quel thème appartient le fait : le XVIIIe siècle, l’Europe et le monde au XIXe siècle ou la France du XIXe siècle.',
   memo: [
-    'Un **repère** est un fait daté qu’on retient pour situer les autres. XVIIIe siècle : essor de la traite (années 1670-années 1750), Encyclopédie (1751-1772), Révolution (1789), Napoléon au pouvoir (1799-1814/1815).',
-    'Europe et monde : **révolution industrielle** en Angleterre (dernier tiers du XVIIIe siècle), « **Printemps des peuples** » (1848), exposition universelle de Paris (1900). France : suffrage universel masculin (1848), Troisième République (1870), école (1882), affaire Dreyfus (1894-1906), Séparation (1905).',
+    'Un **repère** est un fait daté qu’on retient pour situer les autres. XVIIIe siècle : essor de la traite (années 1670-années 1750), Encyclopédie (1751-1772), Révolution (1789), Napoléon au pouvoir (1799-1814/1815), apogée de la traite (fin du XVIIIe siècle).',
+    'Europe et monde : **révolution industrielle** en Angleterre (dernier tiers du XVIIIe siècle), « **Printemps des peuples** » (1848), exposition universelle de Paris (1900), seconde révolution industrielle (années 1870), seconde mondialisation et relance de la colonisation (1870-1914). France : suffrage universel masculin (1848), Troisième République (1870), école (1882), affaire Dreyfus (1894-1906), Séparation (1905).',
     'Astuce de coach : accroche chaque date à un acteur ou à un lieu (1882, Jules Ferry). Une même année peut porter plusieurs faits : en 1848, la France adopte le suffrage universel et abolit l’esclavage dans ses colonies.',
   ],
   faits: [
@@ -80,7 +80,7 @@ const reperes: Notion = {
       a: 'Napoléon Bonaparte',
       wrong: [
         { label: 'Jules Ferry', why: 'Jules Ferry agit sous la Troisième République, vers 1882.' },
-        { label: 'Louis XIV', why: 'Louis XIV règne de 1661 à 1715, bien avant.' },
+        { label: 'Louis XIV', why: 'Louis XIV meurt en 1715, bien avant 1799.' },
         { label: 'Victor Schoelcher', why: 'Schoelcher est l’homme de l’abolition de 1848, pas un chef d’État.' },
       ],
       gap: ['De 1799 à 1814/1815, ', ' Bonaparte est au pouvoir.', ['Napoléon']],
@@ -95,7 +95,11 @@ const reperes: Notion = {
         { label: 'la « seconde mondialisation »', why: 'La seconde mondialisation est datée de 1870 à 1914.' },
         { label: 'la parution de l’Encyclopédie', why: 'L’Encyclopédie paraît de 1751 à 1772.' },
       ],
-      gap: ['Des années 1670 aux années 1750 se produit l’essor de la ', '.', ['traite']],
+      gap: [
+        'Des années 1670 aux années 1750 se produit l’essor de la ',
+        '.',
+        ['traite', 'traite négrière', 'traite negriere', 'traite atlantique'],
+      ],
       ...PREUVES.essorTraite,
       explain: 'Des années 1670 aux années 1750 : c’est l’essor de la traite.',
     },
@@ -149,7 +153,7 @@ const reperes: Notion = {
       q: 'Quand la seconde révolution industrielle commence-t-elle ?',
       a: 'dans les années 1870',
       wrong: [
-        { label: 'dans les années 1750', why: 'Les années 1750 closent l’essor de la traite, un siècle plus tôt.' },
+        { label: 'dans les années 1750', why: 'Les années 1750 closent l’essor de la traite, bien plus tôt.' },
         { label: 'en 1789', why: '1789 est le début de la Révolution française, un fait politique.' },
         { label: 'dans les années 1820', why: 'Les années 1820 sont l’époque de la première industrialisation.' },
       ],
@@ -177,7 +181,7 @@ const reperes: Notion = {
         { label: 'la séparation des Églises et de l’État', why: 'La séparation date de 1905.' },
         { label: 'l’école gratuite et obligatoire', why: 'Le repère de l’école de Jules Ferry est 1882.' },
       ],
-      gap: ['En 1848, la France adopte le suffrage ', ' (pour les hommes).', ['universel']],
+      gap: ['En 1848, la France adopte le suffrage ', ' masculin.', ['universel', 'universel masculin']],
       ...PREUVES.suffrage,
       explain: '1848 : adoption du suffrage universel, réservé aux hommes.',
     },
@@ -382,7 +386,7 @@ const frise: Notion = {
   ],
   faits: [
     {
-      q: 'Sur la frise, de quel événement à quel autre la classe de 4e s’étend-elle d’après le programme ?',
+      q: 'D’après le programme, la période étudiée en 4e va de quel événement à quel autre ?',
       a: 'de la mort de Louis XIV à l’installation de la Troisième République',
       wrong: [
         { label: 'de la préhistoire à l’Antiquité', why: 'C’est la période étudiée en 6e.' },
@@ -457,14 +461,14 @@ const frise: Notion = {
       explain: 'La Déclaration proclame des principes qui rompent avec l’Ancien Régime.',
     },
     {
-      q: 'Quel changement de 1848 la ressource d’Éduscol qualifie-t-elle de rupture « brusque » ?',
+      q: 'En 1848, quel changement est une rupture « brusque » ?',
       a: 'le passage du suffrage censitaire au suffrage universel',
       wrong: [
         { label: 'le début de la traite atlantique', why: 'La traite commence bien avant 1848.' },
         { label: 'la mise en place de l’école de Jules Ferry', why: 'Elle date de 1882.' },
         { label: 'la loi de séparation', why: 'La séparation date de 1905.' },
       ],
-      gap: ['En 1848, on passe du système censitaire au suffrage ', '.', ['universel']],
+      gap: ['En 1848, on passe du système censitaire au suffrage ', '.', ['universel', 'universel masculin']],
       ...PREUVES.ruptureVote,
       explain: 'Le passage du système censitaire au suffrage universel est une rupture « brusque ».',
     },
@@ -480,9 +484,9 @@ const frise: Notion = {
         { label: 'les marchés de la préhistoire', why: 'La préhistoire est bien trop ancienne.' },
       ],
       gap: [
-        'Le commerce international du XVIIIe siècle se développe dans la continuité des ',
-        ' inaugurés au siècle précédent.',
-        ['circuits'],
+        'Le commerce international du XVIIIe siècle se développe dans la ',
+        ' des circuits inaugurés au siècle précédent.',
+        ['continuité', 'continuite'],
       ],
       ...PREUVES.continuiteCommerce,
       explain: 'Les circuits commerciaux se prolongent d’un siècle à l’autre : c’est une continuité.',
@@ -627,6 +631,28 @@ const frise: Notion = {
           ...PREUVES.separation,
           explain: '1905 est au XXe siècle, donc sur la bande C.',
         },
+        {
+          q: 'Sur quelle bande faut-il placer l’année 1800 ?',
+          a: 'la bande A',
+          wrong: [
+            { label: 'la bande B', why: 'La bande B commence en 1801.' },
+            { label: 'la bande C', why: 'La bande C commence en 1901.' },
+            { label: 'sur aucune des trois', why: '1800 est la dernière année de la bande A.' },
+          ],
+          ...PREUVES.bornes,
+          explain: 'Un siècle finit par une année en 00 : 1800 est la dernière année de la bande A.',
+        },
+        {
+          q: 'Sur quelle bande faut-il placer l’année 1900 ?',
+          a: 'la bande B',
+          wrong: [
+            { label: 'la bande A', why: 'La bande A s’arrête en 1800.' },
+            { label: 'la bande C', why: 'La bande C commence en 1901.' },
+            { label: 'sur aucune des trois', why: '1900 est la dernière année de la bande B.' },
+          ],
+          ...PREUVES.bornes,
+          explain: 'Un siècle finit par une année en 00 : 1900 est la dernière année de la bande B.',
+        },
       ],
     },
     {
@@ -634,7 +660,7 @@ const frise: Notion = {
       lines: [
         'Au XVIIIe siècle, les marchands utilisent des routes maritimes ouvertes au siècle précédent.',
         'En 1789, des principes nouveaux sont proclamés : égalité devant la loi et souveraineté nationale.',
-        'Un nouvel ordre politique rompt avec l’Ancien Régime.',
+        'Ces principes fondent un nouvel ordre politique.',
       ],
       qs: [
         {
@@ -650,14 +676,14 @@ const frise: Notion = {
         },
         {
           q: 'Quel élément du texte montre une rupture ?',
-          a: 'le nouvel ordre politique qui rompt avec l’Ancien Régime',
+          a: 'le nouvel ordre politique fondé sur ces principes',
           wrong: [
             { label: 'les routes maritimes', why: 'Elles continuent : c’est une continuité.' },
             { label: 'le siècle précédent', why: 'Un siècle n’est pas un changement.' },
             { label: 'les marchands du XVIIIe siècle', why: 'Le texte ne les présente pas comme un changement.' },
           ],
           ...PREUVES.ruptureAncienRegime,
-          explain: 'Le nouvel ordre rompt avec l’Ancien Régime : c’est une rupture.',
+          explain: 'Le nouvel ordre politique rompt avec l’Ancien Régime : c’est une rupture.',
         },
       ],
     },
@@ -725,7 +751,7 @@ const acteurs: Notion = {
       explain: 'Certains souverains, comme Frédéric II de Prusse, se disent « philosophes ».',
     },
     {
-      q: 'Quel groupe religieux fonde en 1775 la première société pour l’abolition de l’esclavage ?',
+      q: 'Quel groupe fonde en 1775 la première société pour l’abolition de l’esclavage ?',
       a: 'les quakers',
       wrong: [
         { label: 'les négociants', why: 'Les négociants sont des commerçants en gros.' },
@@ -753,16 +779,16 @@ const acteurs: Notion = {
       explain: 'En septembre 1791, Olympe de Gouges fait paraître cette Déclaration.',
     },
     {
-      q: 'Qui prend le pouvoir pendant la Révolution et instaure un régime de Terreur ?',
+      q: 'Sous quel révolutionnaire le régime de la Terreur est-il instauré ?',
       a: 'Robespierre',
       wrong: [
         { label: 'Guizot', why: 'Guizot gouverne au XIXe siècle.' },
         { label: 'Diderot', why: 'Diderot est un auteur des Lumières, qui dirige l’Encyclopédie.' },
         { label: 'Zola', why: 'Zola est un écrivain de la fin du XIXe siècle.' },
       ],
-      gap: ['Le régime de Terreur est instauré par ', '.', ['Robespierre']],
+      gap: ['Le régime de la Terreur est instauré sous ', '.', ['Robespierre']],
       ...T1.terreur,
-      explain: 'Robespierre prend le pouvoir et instaure un régime de Terreur.',
+      explain: 'Le régime de la Terreur est lié à Robespierre.',
     },
     {
       q: 'Quel homme politique est associé à l’abolition de l’esclavage de 1848 ?',
@@ -867,7 +893,7 @@ const acteurs: Notion = {
       explain: 'Voltaire défend Calas et publie le Traité sur la tolérance.',
     },
     {
-      q: 'Quel acteur de la colonisation, cité avec Jules Ferry et Gallieni, agit au Maroc ?',
+      q: 'Quel acteur de la colonisation française agit au Maroc ?',
       accepted: ['Lyautey', 'Hubert Lyautey'],
       traps: [
         { text: 'Gallieni', why: 'Gallieni est associé à Madagascar.' },
@@ -877,14 +903,15 @@ const acteurs: Notion = {
       explain: 'Hubert Lyautey agit au Maroc.',
     },
     {
-      q: 'Quelle militante, sous la Troisième République, porte la revendication du droit de vote des femmes ?',
+      q: 'Quelle militante lance en 1881 le journal « La Citoyenne » pour défendre les droits des femmes ?',
       accepted: ['Hubertine Auclert', 'Auclert'],
       traps: [
         { text: 'Olympe de Gouges', why: 'Olympe de Gouges écrit en 1791, sous la Révolution.' },
-        { text: 'Marie Curie', why: 'Marie Curie est une savante.' },
+        { text: 'Marguerite Durand', why: 'Marguerite Durand fonde « La Fronde » en 1897.' },
+        { text: 'Eugénie Niboyet', why: 'Eugénie Niboyet crée « La voix des femmes » en 1848.' },
       ],
-      ...T3.vote,
-      explain: 'Hubertine Auclert fait partie des militantes du droit de vote.',
+      ...PREUVES.auclert,
+      explain: 'Hubertine Auclert lance le journal « La Citoyenne » en 1881.',
     },
     {
       q: 'Quel ministre de la monarchie de Juillet refuse d’élargir le droit de vote ?',
@@ -903,7 +930,11 @@ const acteurs: Notion = {
         'Louis Napoléon Bonaparte',
         'Louis-Napoléon',
         'Louis Napoleon Bonaparte',
+        'Louis Napoléon',
+        'Louis Napoleon',
+        'Louis-Napoleon',
         'Napoléon III',
+        'Napoleon III',
       ],
       traps: [
         { text: 'Louis-Philippe', why: 'Louis-Philippe abdique en février 1848.' },
@@ -990,7 +1021,7 @@ const vocabulaire: Notion = {
   memo: [
     'Un mot précis vaut une longue explication. XVIIIe siècle : **négociant**, **armateur**, **despotisme éclairé**. Exemple : un armateur équipe des navires.',
     'XIXe siècle : **salariat**, **socialisme**, **métropole**, **protectorat** ; et pour la France : **suffrage censitaire**, **plébiscite**, **laïcité**, **féminisme**.',
-    'Ne confonds pas des mots voisins : le suffrage censitaire réserve le vote à ceux qui paient le **cens** ; le **suffrage universel masculin** de 1848 concerne les hommes, pas les femmes.',
+    'Ne confonds pas des mots voisins : le suffrage censitaire réserve le vote à ceux qui paient le **cens** ; le **suffrage universel masculin** de 1848 concerne les hommes, pas les femmes. D’autres mots à connaître : commerce triangulaire, affranchi, abolitionnisme, conscription, industrialisation.',
   ],
   faits: [
     {
@@ -1001,7 +1032,11 @@ const vocabulaire: Notion = {
         { label: 'un affranchi', why: 'Un affranchi est libéré de sa servitude.' },
         { label: 'un armateur', why: 'L’armateur équipe des navires.' },
       ],
-      gap: ['La personne qui se livre au commerce en gros est un ', '.', ['négociant', 'negociant']],
+      gap: [
+        'Au XVIIIe siècle, le marchand qui fait le commerce en gros, par exemple du sucre des colonies, s’appelle un ',
+        ' (mot qui commence par « nég »).',
+        ['négociant', 'negociant'],
+      ],
       ...T1.negociant,
       explain: 'Le négociant fait le commerce en gros.',
     },
@@ -1033,7 +1068,7 @@ const vocabulaire: Notion = {
       explain: 'Les trois sommets forment le commerce triangulaire.',
     },
     {
-      q: 'Quelle idée désigne une nation gouvernée par un monarque au service de son peuple, inspiré par les Lumières ?',
+      q: 'Comment appelle-t-on le pouvoir d’un monarque inspiré par les Lumières, qui dit servir son peuple ?',
       a: 'le despotisme éclairé',
       wrong: [
         { label: 'le suffrage censitaire', why: 'Le suffrage censitaire est un système électoral.' },
@@ -1080,7 +1115,11 @@ const vocabulaire: Notion = {
         { label: 'un protectorat', why: 'Le protectorat est un régime de tutelle.' },
         { label: 'une grève', why: 'La grève est un arrêt de travail.' },
       ],
-      gap: ['La consultation directe de tout le corps électoral est un ', '.', ['plébiscite', 'plebiscite']],
+      gap: [
+        'Sous Napoléon III, la consultation directe de tout le corps électoral s’appelle un ',
+        ' (mot qui commence par « pléb »).',
+        ['plébiscite', 'plebiscite'],
+      ],
       ...T3.plebisciteMot,
       explain: 'Le plébiscite consulte directement le corps électoral.',
     },
@@ -1166,7 +1205,7 @@ const vocabulaire: Notion = {
   libres: [
     {
       q: 'Quel mot désigne la personne libérée de sa servitude ?',
-      accepted: [...mot('affranchi', 'un ', 'l’', "l'"), 'affranchie'],
+      accepted: [...mot('affranchi', 'un ', 'l’', "l'"), ...mot('affranchie', 'une ', 'l’', "l'")],
       traps: [
         { text: 'colon', why: 'Le colon s’installe dans une colonie.' },
         { text: 'salarié', why: 'Le salarié est payé pour son travail ; il n’est pas question de servitude.' },
@@ -1185,17 +1224,17 @@ const vocabulaire: Notion = {
       explain: 'C’est l’abolitionnisme.',
     },
     {
-      q: 'Dans le suffrage censitaire, comment appelle-t-on ce que les électeurs doivent payer ?',
+      q: 'Dans le suffrage censitaire, quel nom précis, de quatre lettres, porte l’impôt qu’il faut payer pour être électeur ?',
       accepted: mot('cens', 'le ', 'un '),
       traps: [
         { text: 'plébiscite', why: 'Le plébiscite est une consultation électorale.' },
         { text: 'conscription', why: 'La conscription est un recrutement militaire.' },
       ],
-      ...T3.censitaire,
-      explain: 'Seuls ceux qui paient le cens sont électeurs.',
+      ...PREUVES.cens,
+      explain: 'Le cens est l’impôt qu’il faut payer pour être électeur.',
     },
     {
-      q: 'Quel mot désigne l’enrôlement des jeunes hommes pour l’armée ?',
+      q: 'Quel mot, qui commence par « cons- », désigne le recrutement des soldats ?',
       accepted: mot('conscription', 'la '),
       traps: [
         { text: 'plébiscite', why: 'Le plébiscite est une consultation.' },
