@@ -21,6 +21,16 @@ test.describe('console d’administration (opérateur)', () => {
   });
 });
 
+test.describe('page à part', () => {
+  test('fond de la console dès la page servie, sans feuille de style ni code du jeu', async ({ page }) => {
+    const response = await page.goto('/admin/x');
+    expect(await response?.text()).toContain('<meta name="theme-color" content="#0f172a" />');
+    await expect(page.getByText('Administration accessible uniquement depuis la page de pilotage.')).toBeVisible();
+    await expect(page.locator('html')).toHaveCSS('background-color', 'rgb(15, 23, 42)');
+    await expect(page.locator('body')).toHaveCSS('background-image', 'none');
+  });
+});
+
 test.describe('sans opérateur', () => {
   test('message, jamais de renvoi vers l’accueil du jeu', async ({ page }) => {
     await page.goto('/admin');

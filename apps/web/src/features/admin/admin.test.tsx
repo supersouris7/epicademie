@@ -2,7 +2,7 @@ import { screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { getChapter } from '@epicademie/content';
 import type { ReportStatus } from '@epicademie/shared';
-import { renderApp } from '../../testing/renderApp.tsx';
+import { renderAdmin, renderApp } from '../../testing/renderApp.tsx';
 import { plural } from './labels.ts';
 import { integerTicks } from './ticks.ts';
 import { PHONE_QUERY } from './useIsPhone.ts';
@@ -72,8 +72,8 @@ describe('administration', () => {
     expect(screen.queryByRole('button', { name: 'Administration' })).not.toBeInTheDocument();
   });
 
-  it('/admin : console directe pour l’opérateur, sans compte ni choix de profil', async () => {
-    renderApp('/admin', { admin: true, loggedIn: false });
+  it('console directe pour l’opérateur, sans compte ni choix de profil', async () => {
+    renderAdmin({ admin: true, loggedIn: false });
     expect(await screen.findByRole('heading', { name: 'Gestion du jeu' })).toBeInTheDocument();
     expect(screen.queryByText(/Opérateur :/)).not.toBeInTheDocument();
     expect(screen.queryByLabelText('Mot de passe')).not.toBeInTheDocument();
@@ -81,23 +81,15 @@ describe('administration', () => {
   });
 
   it('hors page de pilotage : message, jamais de renvoi vers « Je suis un élève / un parent »', async () => {
-    renderApp('/admin', { admin: false, loggedIn: false });
+    renderAdmin({ admin: false, loggedIn: false });
     expect(
       await screen.findByText('Administration accessible uniquement depuis la page de pilotage.'),
     ).toBeInTheDocument();
     expect(screen.queryByText(/Je suis un élève/)).not.toBeInTheDocument();
   });
 
-  it('même connecté en parent, /admin ne montre pas le choix du profil', async () => {
-    renderApp('/admin', { admin: false });
-    expect(
-      await screen.findByText('Administration accessible uniquement depuis la page de pilotage.'),
-    ).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Nouveau joueur' })).not.toBeInTheDocument();
-  });
-
   it('signalement traité, notion désactivée depuis la console', async () => {
-    const { user, server } = renderApp('/admin', { admin: true });
+    const { user, server } = renderAdmin({ admin: true });
     server.reports.push({
       id: '99999999-9999-4999-8999-999999999999',
       profileId: null,
@@ -163,7 +155,7 @@ describe('administration', () => {
 
 describe('comptes', () => {
   it('liste paginée côté serveur, recherche, fiche, mot de passe temporaire et journal', async () => {
-    const { user, server } = renderApp('/admin', { admin: true });
+    const { user, server } = renderAdmin({ admin: true });
     await user.click(await screen.findByRole('tab', { name: 'Familles' }));
     const table = await screen.findByRole('table', { name: 'Comptes' });
     // 30 comptes côté serveur : une seule page de 25 lignes est affichée.
@@ -191,7 +183,7 @@ describe('comptes', () => {
 
     await user.click(screen.getByRole('button', { name: 'Retour à la liste' }));
     await user.click(screen.getByRole('tab', { name: 'Technique' }));
-    await user.click(screen.getByRole('button', { name: 'Journal d’audit' }));
+    await user.click(await screen.findByRole('button', { name: 'Journal d’audit' }));
     expect(await screen.findByText('Consultation de la fiche')).toBeInTheDocument();
     // E-mail masqué, jamais l'identifiant ; le nom court ouvre la fiche.
     expect(screen.queryByText(/aaaaaaaa-aaaa/)).not.toBeInTheDocument();
@@ -202,7 +194,7 @@ describe('comptes', () => {
 
 describe('pilotage', () => {
   it('vue d’ensemble : tuiles en tête, sections datées, anomalies visibles', async () => {
-    renderApp('/admin', { admin: true });
+    renderAdmin({ admin: true });
     const kpis = await screen.findByRole('region', { name: 'Indicateurs clés' });
     for (const label of ['Familles', 'Enfants actifs', 'Abonnés', 'Signalements à traiter']) {
       expect(within(kpis).getByText(label)).toBeInTheDocument();
@@ -223,7 +215,7 @@ describe('pilotage', () => {
   });
 
   it('signalements à traiter : compteur sur l’onglet, regroupés par notion, lien', async () => {
-    const { user, server } = renderApp('/admin', { admin: true });
+    const { user, server } = renderAdmin({ admin: true });
     server.reports.push(report('1', 'nouveau'), report('2', 'nouveau'), report('3', 'en-cours'));
     const todo = await screen.findByRole('list', { name: 'Signalements à traiter' });
     await waitFor(() => expect(within(todo).getAllByRole('listitem')).toHaveLength(1));
@@ -240,7 +232,7 @@ describe('pilotage', () => {
   });
 
   it('six rubriques ; « Technique » réunit les outils et les erreurs ont un libellé français', async () => {
-    const { user } = renderApp('/admin', { admin: true });
+    const { user } = renderAdmin({ admin: true });
     const nav = await screen.findByRole('navigation', { name: 'Rubriques' });
     expect(
       within(nav)
@@ -263,7 +255,7 @@ describe('pilotage', () => {
   });
 
   it('notions : total détaillé, type « notions » par défaut, badge court, noms de chapitre', async () => {
-    const { user } = renderApp('/admin', { admin: true });
+    const { user } = renderAdmin({ admin: true });
     await user.click(await screen.findByRole('tab', { name: 'Notions' }));
     const table = await screen.findByRole('table', { name: 'Notions' });
     expect(screen.getByText(/^\d+ notions? \+ \d+ questions? de boss$/)).toBeInTheDocument();
@@ -279,15 +271,15 @@ describe('pilotage', () => {
     expect(screen.getByText('Aucune notion avec ces filtres.')).toBeInTheDocument();
   });
 
-  it('thème sombre local à la console, texte sombre sur le violet actif', async () => {
-    const { container } = renderApp('/admin', { admin: true });
+  it('thème propre à la console, texte sombre sur le violet actif', async () => {
+    const { container } = renderAdmin({ admin: true });
     const tab = await screen.findByRole('tab', { name: 'Vue d’ensemble' });
-    expect(container.querySelector('.admin-dark')).not.toBeNull();
+    expect(container.firstChild).toHaveClass('bg-pilot-bg', 'text-pilot-fg');
     expect(tab).toHaveClass('bg-pilot-acc', 'text-pilot-bg');
   });
 
   it('graphiques : textes hors de l’échelle du dessin, accords, graduations entières', async () => {
-    const { user } = renderApp('/admin', { admin: true });
+    const { user } = renderAdmin({ admin: true });
     const bars = await screen.findByRole('img', { name: /Comptes créés par jour\. 3 comptes sur 30 jours/ });
     expect(bars.querySelector('text')).toBeNull();
     expect(
@@ -314,7 +306,7 @@ describe('téléphone (sous 700 px) : des cartes à la place des tableaux', () =
   });
 
   it('comptes : carte entièrement touchable qui ouvre la fiche', async () => {
-    const { user } = renderApp('/admin', { admin: true });
+    const { user } = renderAdmin({ admin: true });
     await user.click(await screen.findByRole('tab', { name: 'Familles' }));
     const list = await screen.findByRole('list', { name: 'Comptes' });
     expect(screen.queryByRole('table', { name: 'Comptes' })).not.toBeInTheDocument();
@@ -324,7 +316,7 @@ describe('téléphone (sous 700 px) : des cartes à la place des tableaux', () =
   });
 
   it('signalements, notions et erreurs en cartes qui déplient leur détail', async () => {
-    const { user, server } = renderApp('/admin', { admin: true });
+    const { user, server } = renderAdmin({ admin: true });
     server.reports.push(report('1', 'nouveau'));
     await user.click(await screen.findByRole('tab', { name: /^Signalements/ }));
     const reports = await screen.findByRole('list', { name: 'Signalements' });
