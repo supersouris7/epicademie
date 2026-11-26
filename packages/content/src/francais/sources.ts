@@ -205,6 +205,10 @@ export const SOURCES: readonly Source[] = [
     'espérer',
     'préférer',
     'céder',
+    // Lot fr-6e-04 : verbes conjugués avec « être ».
+    'arriver',
+    'tomber',
+    'rester',
   ].map(conjugaison),
   academie('avancer', 'avancer'),
   academie('cedille', 'cédille'),
@@ -224,6 +228,8 @@ export const SOURCES: readonly Source[] = [
   academie('ne', 'ne'),
   academie('jamais', 'jamais'),
   academie('auxiliaire', 'auxiliaire'),
+  // Lot fr-6e-04 : le « s » de l’impératif devant « en » (article du pronom).
+  { ...academie('en', 'en'), url: 'https://www.cnrtl.fr/definition/academie9/en/pronom', consultedOn: '2026-11-26' },
   // Lot fr-cm1-09 : vocabulaire.
   tlfi('synonyme', 'synonyme', 'synonyme'),
   tlfi('famille', 'famille', 'famille'),
