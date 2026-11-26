@@ -173,6 +173,7 @@ describe('matière Sciences (#76)', () => {
       'p5-unites',
       'p5-matiere',
       'p5-mouvement',
+      'p5-energie',
       'p4-mouvement',
       'p4-electricite',
       'p3-energie',

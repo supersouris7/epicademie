@@ -47,4 +47,32 @@ export const SOURCES: readonly Source[] = [
     url: 'https://www.cnrtl.fr/definition/academie9/sens/nom',
     consultedOn: '2026-11-26',
   },
+  // Lot pc-5e-03 : énergie et circuits (pile, métal, dérivation, fossile, pétrole, charbon, cuivre : déjà au registre).
+  ...(
+    [
+      ['renouvelable', 'renouvelable'],
+      ['nucleaire', 'nucléaire'],
+      ['lampe', 'lampe'],
+      ['moteur', 'moteur'],
+      ['radiateur', 'radiateur'],
+      ['generateur', 'générateur'],
+      ['circuit', 'circuit'],
+      ['conducteur', 'conducteur'],
+      ['argent', 'argent'],
+      ['ebonite', 'ébonite'],
+      ['electrocution', 'électrocution'],
+    ] as const
+  ).map(([id, mot]) => ({ ...academie(id, mot), consultedOn: '2026-11-26' })),
+  {
+    ...academie('isolant', 'isolant'),
+    url: 'https://www.cnrtl.fr/definition/academie9/isolant/adjectif',
+    consultedOn: '2026-11-26',
+  },
+  { ...tlfi('pile', 'pile', 'pile/nom'), consultedOn: '2026-11-26' },
+  { ...tlfi('thermique', 'thermique', 'thermique'), consultedOn: '2026-11-26' },
+  { ...tlfi('nucleaire', 'nucléaire', 'nucl%C3%A9aire'), consultedOn: '2026-11-26' },
+  { ...tlfi('circuit', 'circuit', 'circuit'), consultedOn: '2026-11-26' },
+  { ...tlfi('serie', 'série', 's%C3%A9rie'), consultedOn: '2026-11-26' },
+  { ...tlfi('interrupteur', 'interrupteur', 'interrupteur'), consultedOn: '2026-11-26' },
+  { ...tlfi('court-circuit', 'court-circuit', 'court-circuit'), consultedOn: '2026-11-26' },
 ];
