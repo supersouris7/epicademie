@@ -509,7 +509,7 @@ export const SOURCES: readonly Source[] = [
     textDate: '2017-11-24',
     consultedOn: '2026-11-26',
   },
-  // Le vivant (6e, lot st-6e-03).
+  // Le vivant (6e, lot st-6e-03). Testicule, spermatozoïde et utérus : déjà au registre (`sciences/svt/sources.ts`).
   { ...tlfi('ecologie', 'écologie', '%C3%A9cologie'), consultedOn: '2026-11-26' },
   {
     id: 'ecologie-rencontre-pollinisateurs',
@@ -536,11 +536,8 @@ export const SOURCES: readonly Source[] = [
   { ...tlfi('graine', 'graine', 'graine'), consultedOn: '2026-11-26' },
   { ...tlfi('fecondation', 'fécondation', 'f%C3%A9condation'), consultedOn: '2026-11-26' },
   { ...tlfi('pesticide', 'pesticide', 'pesticide'), consultedOn: '2026-11-26' },
-  { ...tlfi('testicule', 'testicule', 'testicule'), consultedOn: '2026-11-26' },
-  { ...tlfi('spermatozoide', 'spermatozoïde', 'spermatozo%C3%AFde'), consultedOn: '2026-11-26' },
   { ...tlfi('ovaire', 'ovaire', 'ovaire'), consultedOn: '2026-11-26' },
   { ...tlfi('trompe', 'trompe', 'trompe'), consultedOn: '2026-11-26' },
-  { ...tlfi('uterus', 'utérus', 'ut%C3%A9rus'), consultedOn: '2026-11-26' },
   { ...tlfi('vagin', 'vagin', 'vagin'), consultedOn: '2026-11-26' },
   { ...tlfi('penis', 'pénis', 'p%C3%A9nis'), consultedOn: '2026-11-26' },
   { ...tlfi('metamorphose', 'métamorphose', 'm%C3%A9tamorphose'), consultedOn: '2026-11-26' },
