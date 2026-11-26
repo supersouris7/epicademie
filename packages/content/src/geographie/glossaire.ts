@@ -2084,6 +2084,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'Un semis serré de villes.',
   },
   {
+    id: 'malediction-ressources',
+    word: 'malédiction des ressources',
+    forms: ['malédiction des ressources'],
+    definition: 'L’ensemble des effets négatifs liés à l’exploitation d’une ressource.',
+    example: 'La richesse tirée du pétrole est gardée par un petit groupe.',
+  },
+  {
     id: 'riverain-etat',
     word: 'riverain',
     forms: ['riverain', 'riverains'],

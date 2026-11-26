@@ -867,6 +867,7 @@ const ressources: Notion = {
     'L’**OPEP** réunit des pays exportateurs de pétrole. Les gisements de **charbon** sont mieux répartis ; le **lithium** vient notamment de l’Altiplano des Andes.',
     'La **zone économique exclusive** est un enjeu fort pour les États riverains. En mer, on exploite du pétrole **offshore** ; l’Asie domine l’**aquaculture**.',
     'Autres repères : l’uranium au Niger, le nickel en Nouvelle-Calédonie, les diamants en République démocratique du Congo, les hydrocarbures en Russie.',
+    'La **malédiction des ressources** désigne les effets négatifs liés à leur exploitation : un groupe qui garde la richesse, d’autres activités qui reculent.',
   ],
   faits: [
     fait(
@@ -1155,7 +1156,7 @@ const ressources: Notion = {
           'À qui profite surtout l’argent du pétrole dans ce pays ?',
           'à un petit groupe de personnes',
           [
-            ['à tous les habitants à parts égales', 'Le texte dit que le partage est très inégal.'],
+            ['à tous les habitants à parts égales', 'Le texte dit qu’un petit groupe en garde la plus grande partie.'],
             ['surtout aux familles des fermes', 'Les fermes sont délaissées : leur activité recule.'],
           ],
           preuve(MALEDICTION, R_ACCAPAREMENT, 'Un groupe peut s’emparer de la richesse tirée d’une ressource.'),
