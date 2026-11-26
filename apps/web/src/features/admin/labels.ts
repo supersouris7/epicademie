@@ -1,5 +1,4 @@
-import { chapterOfAnySkill, getAnySkill, getChapter } from '@epicademie/content';
-import { gradeInfo, OFFER_LABELS, PAYMENT_PROVIDER_LABELS, type AdminError, type Report } from '@epicademie/shared';
+import { OFFER_LABELS, PAYMENT_PROVIDER_LABELS, type AdminError } from '@epicademie/shared';
 
 /** Vocabulaire de la console : formats et libellés français à la place des identifiants. */
 
@@ -11,16 +10,6 @@ export const money = (cents: number, currency = 'EUR') =>
 export const date = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString('fr-FR') : '—');
 export const dateTime = (iso: string | null) =>
   iso ? new Date(iso).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' }) : '—';
-
-export const skillTitle = (id: string) => getAnySkill(id)?.title ?? id;
-export const chapterTitle = (id: string) => getChapter(id)?.title ?? id;
-/** Classe d'une notion (« CM1 »), ou « — » si elle n'est plus au contenu. */
-export const skillGrade = (id: string) => {
-  const grade = chapterOfAnySkill(id)?.grade;
-  return grade ? gradeInfo(grade).name : '—';
-};
-export const reportTitle = (r: Pick<Report, 'skillId' | 'screen'>) =>
-  r.skillId ? skillTitle(r.skillId) : `Général${r.screen ? ` · ${r.screen}` : ''}`;
 
 /** Libellé d'un code, ou le code lui-même s'il est inconnu (donnée ancienne). */
 export const labelOf = (labels: Readonly<Record<string, string>>, code: string): string => labels[code] ?? code;

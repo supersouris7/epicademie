@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { AuditLog } from './Accounts.tsx';
 import { DebugMode } from './DebugMode.tsx';
-import { Anomalies, Errors } from './Insights.tsx';
+import { Anomalies } from './Anomalies.tsx';
+import { Errors } from './Insights.tsx';
 import { Segmented } from './ui.tsx';
 
 /** Outils techniques réunis : mode debug, erreurs, journal d'audit, anomalies. */

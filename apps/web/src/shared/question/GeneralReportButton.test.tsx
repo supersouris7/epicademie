@@ -1,7 +1,7 @@
 import { screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useDebugMode } from '../lib/debugMode.ts';
-import { renderApp } from '../../testing/renderApp.tsx';
+import { renderAdmin, renderApp } from '../../testing/renderApp.tsx';
 
 vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.ts')).socketModule);
 
@@ -75,7 +75,7 @@ describe('mode debug', () => {
   });
 
   it('s’active depuis l’administration', async () => {
-    const { user } = renderApp('/admin', { admin: true });
+    const { user } = renderAdmin({ admin: true });
     // Mode debug : premier outil de la rubrique « Technique ».
     await user.click(await screen.findByRole('tab', { name: 'Technique' }));
     const box = await screen.findByRole('checkbox', { name: /drapeau de signalement/ });

@@ -1,12 +1,15 @@
-import { useState } from 'react';
-import { Accounts } from './Accounts.tsx';
+import { lazy, Suspense, useState } from 'react';
 import { AdminGate, AdminShell, type AdminSection } from './AdminShell.tsx';
 import { useStats } from './api.ts';
-import { Contents } from './Contents.tsx';
-import { WeakSkills } from './Insights.tsx';
 import { Overview } from './Overview.tsx';
-import { Reports } from './Reports.tsx';
-import { Technical } from './Technical.tsx';
+import { Loading } from './ui.tsx';
+
+// Rubriques qui affichent des contenus pédagogiques : chargées à leur ouverture.
+const Accounts = lazy(() => import('./Accounts.tsx').then((m) => ({ default: m.Accounts })));
+const Contents = lazy(() => import('./Contents.tsx').then((m) => ({ default: m.Contents })));
+const Reports = lazy(() => import('./Reports.tsx').then((m) => ({ default: m.Reports })));
+const Technical = lazy(() => import('./Technical.tsx').then((m) => ({ default: m.Technical })));
+const WeakSkills = lazy(() => import('./Insights.tsx').then((m) => ({ default: m.WeakSkills })));
 
 /**
  * Console d'administration (pédagogie et pilotage) : vue d'ensemble, signalements des familles avec
@@ -52,12 +55,14 @@ function Console() {
       onSelect={(id) => select(id as SectionId)}
     >
       <div role="tabpanel" aria-label={section.label}>
-        {section.id === 'stats' && <Overview openReports={() => select('reports')} />}
-        {section.id === 'reports' && <Reports />}
-        {section.id === 'accounts' && <Accounts openId={accountId} onOpen={setAccountId} />}
-        {section.id === 'content' && <Contents />}
-        {section.id === 'weak' && <WeakSkills />}
-        {section.id === 'technical' && <Technical openAccount={openAccount} />}
+        <Suspense key={section.id} fallback={<Loading />}>
+          {section.id === 'stats' && <Overview openReports={() => select('reports')} />}
+          {section.id === 'reports' && <Reports />}
+          {section.id === 'accounts' && <Accounts openId={accountId} onOpen={setAccountId} />}
+          {section.id === 'content' && <Contents />}
+          {section.id === 'weak' && <WeakSkills />}
+          {section.id === 'technical' && <Technical openAccount={openAccount} />}
+        </Suspense>
       </div>
     </AdminShell>
   );
