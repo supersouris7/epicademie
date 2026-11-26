@@ -100,4 +100,5 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'a6-voc-loisirs', version: 1, lot: 'an-6e-09', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'a6-voc-alimentation', version: 1, lot: 'an-6e-09', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'a6-voc-maison', version: 1, lot: 'an-6e-09', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a6-axes-culturels', version: 1, lot: 'an-6e-09', date: '2026-11-26', verdict: 'ok' },
 ];

@@ -180,7 +180,7 @@ export const STUDIES: readonly Study[] = [
 export const AXIS_WORDS: readonly Term[] = [
   term('famille', 'one', 'family', 'la famille', 'familly'),
   term('famille', 'one', 'uncle', 'l’oncle', 'uncel'),
-  term('famille', 'one', 'aunt', 'la tante', 'ant'),
+  term('famille', 'one', 'aunt', 'la tante', 'ant', ['auntie', 'aunty']),
   term('paysages', 'one', 'river', 'la rivière ou le fleuve', 'rivor'),
   term('paysages', 'one', 'lake', 'le lac', 'lac'),
   term('paysages', 'one', 'coast', 'la côte (le bord de mer)', 'cost', ['seaside', 'coastline']),

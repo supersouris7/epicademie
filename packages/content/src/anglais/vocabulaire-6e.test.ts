@@ -200,5 +200,6 @@ describe('anglais 6e : vocabulaire thématique', () => {
     const witch = find('a6-axes-culturels', 3, '« la sorcière »');
     accepts(witch, 'witch');
     refuses(witch, 'wizard', 'wich', 'a witch', 'the witch');
+    accepts(find('a6-axes-culturels', 3, '« la tante »'), 'aunt', 'auntie', 'aunty');
   });
 });

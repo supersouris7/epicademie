@@ -598,7 +598,14 @@ function axisMatch(rng: Rng, words: boolean): QuestionDraft {
     prompt: `Associe chaque ${what} à son axe culturel : ${rows.map((r) => r[0]).join(' / ')}`,
     answer: pairs(rng, rows),
     hint: 'Commence par ce qui nomme clairement un lieu, une histoire ou une activité de tous les jours.',
-    steps: [axisRule, ...(words ? rows.map((r) => means(find(AXIS_TERMS, r[0]))) : []), answered(rows)],
+    steps: [
+      axisRule,
+      ...rows.map(([name, good]) => {
+        const meaning = words ? `${means(find(AXIS_TERMS, name))} ` : `« ${name} » : `;
+        return `${meaning}${whyAxis(AXES.findIndex((a) => a === good))}`;
+      }),
+      answered(rows),
+    ],
   };
 }
 
