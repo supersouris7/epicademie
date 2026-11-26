@@ -20,10 +20,24 @@ const ADJ: Record<Forme, string> = {
 const nom = (f: Forme) => `énergie ${ADJ[f]}`;
 const FORMES = Object.keys(ADJ) as Forme[];
 const sansAccent = (s: string) => s.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+/** Autres écritures justes d’une même forme. */
+const SYNONYMES: Partial<Record<Forme, readonly string[]>> = {
+  pesanteur: [
+    'pesanteur',
+    'potentielle',
+    'énergie potentielle',
+    'potentielle de pesanteur',
+    'énergie potentielle de pesanteur',
+  ],
+  thermique: ['chaleur', 'la chaleur', 'calorifique', 'énergie calorifique'],
+  electrique: ['électricité', 'l’électricité'],
+  nucleaire: ['atomique', 'énergie atomique'],
+};
+/** Admises seulement quand la lumière décrite vient du Soleil. */
+const SOLAIRE = ['solaire', 'énergie solaire', 'l’énergie solaire', 'energie solaire', 'l’energie solaire'];
 const variantes = (f: Forme) => {
-  const courts = f === 'pesanteur' ? ['de pesanteur', 'pesanteur'] : [ADJ[f]];
   const longs = [nom(f), `l’${nom(f)}`];
-  return [...new Set([...courts, ...longs].flatMap((v) => [v, sansAccent(v)]))];
+  return [...new Set([ADJ[f], ...(SYNONYMES[f] ?? []), ...longs].flatMap((v) => [v, sansAccent(v)]))];
 };
 
 const DEFINITION: Record<Forme, string> = {
@@ -56,7 +70,7 @@ const SITUATIONS: readonly { q: string; forme: Forme; why: string }[] = [
   {
     q: 'ce qui est transféré par les fils d’une pile vers un moteur',
     forme: 'electrique',
-    why: 'Les fils transportent un transfert électrique.',
+    why: 'Par les fils, l’énergie est transférée sous forme électrique.',
   },
   {
     q: 'ce que la Terre reçoit du Soleil par la lumière qu’il émet',
@@ -250,7 +264,8 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   const depart = rng.int(0, 1) === 0;
   const bon = depart ? c.depart : c.arrivee;
   const autre = depart ? c.arrivee : c.depart;
-  const { answer, traps } = saisie(variantes(bon), [
+  const acceptees = [...variantes(bon), ...(depart && bon === 'lumineuse' ? SOLAIRE : [])];
+  const { answer, traps } = saisie(acceptees, [
     ...variantes(autre).map((v) => [v, `C’est la forme ${depart ? 'obtenue' : 'de départ'}. ${c.why}`] as const),
   ]);
   return {
@@ -289,11 +304,13 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     const x = rng.pick([...NON, ...OUI]);
     const bon = x.renouvelable ? 'renouvelable' : 'non renouvelable';
     const { answer, traps } = saisie(
-      x.renouvelable ? ['renouvelable'] : ['non renouvelable', 'non-renouvelable', 'pas renouvelable'],
+      x.renouvelable
+        ? ['renouvelable', 'renouvelables']
+        : ['non renouvelable', 'non renouvelables', 'non-renouvelable', 'non-renouvelables', 'pas renouvelable'],
       [[x.renouvelable ? 'non renouvelable' : 'renouvelable', x.why]],
     );
     return {
-      prompt: `À l’échelle d’une vie humaine, comment qualifie-t-on la ressource en énergie suivante : ${x.nom} ?`,
+      prompt: `À l’échelle d’une vie humaine, cette ressource en énergie est-elle renouvelable ou non renouvelable : ${x.nom} ?`,
       answer,
       traps,
       hint: 'Les stocks de cette ressource diminuent-ils ?',
@@ -303,7 +320,8 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   }
   const s = rng.pick(SITUATIONS);
   const transfert = TRANSFERTS.includes(s.forme);
-  const { answer, traps } = saisie(variantes(s.forme), [
+  const acceptees = [...variantes(s.forme), ...(s.forme === 'lumineuse' ? SOLAIRE : [])];
+  const { answer, traps } = saisie(acceptees, [
     ...variantes(s.forme === 'chimique' ? 'electrique' : 'chimique').map(
       (v) => [v, `Ce n’est pas la forme décrite. ${s.why}`] as const,
     ),
@@ -460,8 +478,8 @@ export const sourcesConversions: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'Stockables : **énergie de pesanteur**, **énergie cinétique**, **énergie chimique**, **énergie thermique**, **énergie nucléaire**. **Transferts d’énergie** : électrique et lumineuse. Dans une chute, une **conversion d’énergie** change la pesanteur en cinétique.',
-      'Soleil, vent, eau, bois bien géré : ressources **renouvelables**. Pétrole, charbon, gaz, uranium : stocks. Brûler du pétrole ou du gaz émet du dioxyde de carbone ; l’uranium laisse des déchets radioactifs.',
+      'Tu peux stocker l’**énergie de pesanteur**, l’**énergie cinétique**, l’**énergie chimique**, l’**énergie thermique** et l’**énergie nucléaire** ; les énergies électrique et lumineuse correspondent à des **transferts d’énergie**. Exemple de **conversion d’énergie** : dans une chute, l’énergie de pesanteur est convertie en énergie cinétique.',
+      'Soleil, vent, eau et bois bien géré sont des ressources **renouvelables** ; pétrole, charbon, gaz et uranium sont des stocks qui ne se renouvellent pas à l’échelle d’une vie humaine. Brûler du pétrole ou du gaz émet du dioxyde de carbone ; l’uranium laisse des déchets radioactifs.',
     ],
     ...references(
       'formes',

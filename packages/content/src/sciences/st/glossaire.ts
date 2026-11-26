@@ -1070,7 +1070,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'st-revolution',
     word: 'révolution',
     forms: ['révolution'],
-    definition: 'Mouvement d’un astre qui tourne autour d’un autre en revenant au même point de son orbite.',
+    definition:
+      'Mouvement d’un astre qui tourne autour d’un autre en revenant au même point de son orbite (le chemin qu’il suit autour de lui).',
     example: 'La Terre fait sa révolution autour du Soleil.',
   },
   {

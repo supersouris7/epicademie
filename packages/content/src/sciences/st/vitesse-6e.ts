@@ -140,7 +140,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     const metres = v * min * 60;
     const km = (metres / 1000).toLocaleString('fr-FR');
     return {
-      prompt: `${uniforme('un cycliste', `${km} km`, `${min} min`)} Calcule sa vitesse en m/s.`,
+      prompt: `${uniforme('une voiture', `${km} km`, `${min} min`)} Calcule sa vitesse en m/s.`,
       answer: num(v, 'm/s'),
       traps: traps(r(v), [
         [r(metres, min), 'Tu as trouvé des mètres par minute : convertis aussi la durée en secondes.'],

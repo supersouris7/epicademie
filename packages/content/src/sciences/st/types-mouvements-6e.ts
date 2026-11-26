@@ -225,8 +225,9 @@ const MOTS: readonly { q: string; accepte: readonly string[]; faux: readonly (re
   },
   {
     q: 'Quel adjectif qualifie un mouvement dont la valeur de la vitesse reste constante ?',
-    accepte: ['uniforme'],
+    accepte: ['uniforme', 'mouvement uniforme'],
     faux: [
+      ['constant', 'C’est la valeur de la vitesse qui est constante ; le mouvement, lui, est dit uniforme.'],
       ['rectiligne', 'Rectiligne décrit la forme de la trajectoire, pas la vitesse.'],
       ['circulaire', 'Circulaire décrit la forme de la trajectoire, pas la vitesse.'],
     ],

@@ -86,7 +86,7 @@ describe('sciences 6e : « Mouvements et énergie »', () => {
           attendu = (d / fin) * (q.prompt.includes('par minute') ? 60 : 1);
         } else if (t.includes('planète')) {
           attendu = nombre(/parcourt ([\d\s]+) km/, t) / (nombre(/en (\d+) jours/, t) * 24);
-        } else if (t.includes('cycliste')) {
+        } else if (t.includes('une voiture')) {
           attendu = (nombre(/parcourt ([\d,]+) km/, t) * 1000) / (nombre(/en (\d+) min/, t) * 60);
         } else {
           attendu = nombre(/parcourt (\d+) k?m en/, t) / nombre(/ en (\d+) [sh]\./, t);
