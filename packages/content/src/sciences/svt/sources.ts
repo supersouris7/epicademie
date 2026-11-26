@@ -20,6 +20,26 @@ const ecologie = (id: string, title: string, path: string, textDate: string): So
   consultedOn: '2026-11-26',
 });
 
+/** Article du CNRS Terre & Univers (INSU) ; `textDate` : date affichée par la page. */
+const insu = (id: string, title: string, page: string, textDate: string): Source => ({
+  id: `insu-${id}`,
+  title,
+  publisher: 'CNRS Terre & Univers (INSU)',
+  url: `https://www.insu.cnrs.fr/fr/cnrsinfo/${page}`,
+  textDate,
+  consultedOn: '2026-11-26',
+});
+
+/** Page du BRGM, service géologique national ; `textDate` : date de publication de la page. */
+const brgm = (id: string, title: string, path: string, textDate: string): Source => ({
+  id: `brgm-${id}`,
+  title,
+  publisher: 'BRGM',
+  url: `https://www.brgm.fr/fr/actualite/${path}`,
+  textDate,
+  consultedOn: '2026-11-26',
+});
+
 /**
  * Sources de SVT (registre : `sources.ts` à la racine du paquet). Les identifiants partagés avec sciences et
  * technologie ne sont définis qu’une fois, dans `../st/sources.ts`.
@@ -181,4 +201,119 @@ export const SOURCES: readonly Source[] = [
     textDate: '2010-04-29',
     consultedOn: '2026-11-26',
   },
+  // ——— SVT 4e (lot sv-4e-01) ———
+  academie('lithosphere', 'lithosphère'),
+  academie('asthenosphere', 'asthénosphère'),
+  academie('manteau', 'manteau'),
+  academie('noyau', 'noyau'),
+  academie('croute', 'croûte'),
+  academie('plaque', 'plaque'),
+  academie('rift', 'rift'),
+  academie('orogenese', 'orogenèse'),
+  academie('sediment', 'sédiment'),
+  academie('sedimentaire', 'sédimentaire'),
+  academie('magmatique', 'magmatique'),
+  academie('plutonique', 'plutonique'),
+  academie('metamorphique', 'métamorphique'),
+  academie('metamorphisme', 'métamorphisme'),
+  academie('granite', 'granite'),
+  academie('basalte', 'basalte'),
+  academie('gneiss', 'gneiss'),
+  academie('craie', 'craie'),
+  academie('paleontologie', 'paléontologie'),
+  academie('paleozoique', 'paléozoïque'),
+  academie('ammonite', 'ammonite'),
+  tlfi('mesozoique', 'mésozoïque', 'm%C3%A9sozo%C3%AFque'),
+  tlfi('cenozoique', 'cénozoïque', 'c%C3%A9nozo%C3%AFque'),
+  brgm(
+    'cycle-roches',
+    'Le cycle des roches : découvrez leur histoire',
+    'video/cycle-roches-decouvrez-histoire',
+    '2020-08-05',
+  ),
+  brgm(
+    'temps-geologiques',
+    'Le calendrier de l’« avant » : voyage au cœur des temps géologiques',
+    'eclairage/calendrier-avant-voyage-au-coeur-temps-geologiques',
+    '2024-12-20',
+  ),
+  brgm(
+    'voyage-temps-geologiques',
+    'Voyage dans les temps géologiques',
+    'communique-presse/voyage-temps-geologiques',
+    '2019-05-06',
+  ),
+  brgm(
+    'roches-alpes',
+    'Des roches plus vieilles que ce que l’on pensait au cœur des Alpes',
+    'eclairage/roches-plus-vieilles-pensait-au-coeur-alpes',
+    '2023-03-16',
+  ),
+  brgm('mayotte', 'Mayotte : comment l’île s’est-elle formée ?', 'video/mayotte-comment-ile-est-formee', '2023-11-06'),
+  brgm(
+    'tour-geologique',
+    'Tour de France géologique : 5 sites à découvrir cet été',
+    'eclairage/tour-france-geologique-5-sites-decouvrir-cet-ete',
+    '2021-08-03',
+  ),
+  insu(
+    'tectonique-debut',
+    'Comment la tectonique des plaques a-t-elle commencé sur Terre ?',
+    'comment-la-tectonique-des-plaques-t-elle-commence-sur-terre',
+    '2014-04-05',
+  ),
+  insu(
+    'subduction-carbone',
+    'Une couche carbonatée sous les océans à l’origine de la tectonique des plaques moderne ?',
+    'une-couche-carbonatee-sous-les-oceans-lorigine-de-la-tectonique-des-plaques-moderne',
+    '2021-02-03',
+  ),
+  insu(
+    'verre-olivine',
+    'Une nouvelle piste pour comprendre la tectonique des plaques : le verre d’olivine',
+    'une-nouvelle-piste-pour-comprendre-la-tectonique-des-plaques-le-verre-dolivine',
+    '2021-03-04',
+  ),
+  insu(
+    'dorsale',
+    'Une dorsale océanique surprise en pleine action',
+    'une-dorsale-oceanique-surprise-en-pleine-action',
+    '2026-07-08',
+  ),
+  insu(
+    'moho',
+    'Atteindre le Moho de la dorsale Sud-Ouest Indienne',
+    'atteindre-le-moho-de-la-dorsale-sud-ouest-indienne',
+    '2015-11-29',
+  ),
+  insu(
+    'noyau',
+    'Les mouvements du noyau terrestre comme vous ne les avez jamais vus !',
+    'les-mouvements-du-noyau-terrestre-comme-vous-ne-les-avez-jamais-vus',
+    '2017-06-29',
+  ),
+  insu(
+    'manteau',
+    'La plasticité du manteau terrestre enfin expliquée',
+    'la-plasticite-du-manteau-terrestre-enfin-expliquee',
+    '2014-03-01',
+  ),
+  insu(
+    'antilles',
+    'La campagne Manta-Ray : mieux comprendre la zone de subduction des Petites-Antilles',
+    'la-campagne-manta-ray-mieux-comprendre-la-zone-de-subduction-des-petites-antilles',
+    '2022-09-26',
+  ),
+  insu(
+    'extinction-primaire',
+    'Une biodiversité inattendue après la plus importante extinction de tous les temps',
+    'une-biodiversite-inattendue-apres-la-plus-importante-extinction-de-tous-les-temps',
+    '2017-02-14',
+  ),
+  insu(
+    'dinosaures',
+    'Les communautés de dinosaures étaient-elles stables avant leur extinction ?',
+    'les-communautes-de-dinosaures-etaient-elles-stables-avant-leur-extinction',
+    '2022-03-10',
+  ),
 ];
