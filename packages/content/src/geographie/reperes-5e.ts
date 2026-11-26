@@ -864,10 +864,8 @@ const ressources: Notion = {
   hint: 'Associe la ressource à son lieu : pétrole, charbon, lithium ou produits de la mer.',
   memo: [
     'Les ressources sont inégalement réparties. Pour le pétrole, cinq États (Venezuela, Arabie saoudite, Canada, Iran, Irak) contrôlent 62 % des **réserves**.',
-    'L’**OPEP** réunit des pays exportateurs de pétrole. Les gisements de **charbon** sont mieux répartis ; le **lithium** vient notamment de l’Altiplano des Andes.',
-    'La **zone économique exclusive** est un enjeu fort pour les États riverains. En mer, on exploite du pétrole **offshore** ; l’Asie domine l’**aquaculture**.',
-    'Autres repères : l’uranium au Niger, le nickel en Nouvelle-Calédonie, les diamants en République démocratique du Congo, les hydrocarbures en Russie.',
-    'La **malédiction des ressources** désigne les effets négatifs liés à leur exploitation : un groupe qui garde la richesse, d’autres activités qui reculent.',
+    'L’**OPEP** réunit des pays exportateurs de pétrole. Les gisements de **charbon** sont mieux répartis ; le **lithium** vient notamment de l’Altiplano des Andes. Autres repères : l’uranium au Niger, le nickel en Nouvelle-Calédonie, les diamants en République démocratique du Congo, les hydrocarbures en Russie.',
+    'La **zone économique exclusive** est un enjeu fort pour les États riverains. En mer, on exploite du pétrole **offshore** ; l’Asie domine l’**aquaculture**. La **malédiction des ressources** désigne les effets négatifs liés à leur exploitation : un groupe qui garde la richesse, d’autres activités qui reculent.',
   ],
   faits: [
     fait(
@@ -1214,8 +1212,7 @@ const vocabulaire: Notion = {
   memo: [
     'Population : le **solde naturel** compare naissances et décès ; la **transition démographique** fait passer de taux élevés à des taux bas.',
     'Développement : l’**IDH** mêle santé, éducation et niveau de vie ; le **développement durable** pense aussi aux générations futures. La **sécurité alimentaire** vise une nourriture suffisante pour tous.',
-    'Risques : il y a un **risque** quand un **aléa** peut se produire et toucher une population vulnérable. La prévention agit avant, l’adaptation ajuste les façons de faire, la **résilience** aide à se relever.',
-    'Ressources : il n’y a pas de ressource sans besoin des sociétés. Une énergie renouvelable vient de processus naturels qui se renouvellent sans cesse.',
+    'Risques : il y a un **risque** quand un **aléa** peut se produire et toucher une population vulnérable. La prévention agit avant, l’adaptation ajuste les façons de faire, la **résilience** aide à se relever. Ressources : il n’y a pas de ressource sans besoin des sociétés. Une énergie renouvelable vient de processus naturels qui se renouvellent sans cesse.',
   ],
   faits: [
     fait(
