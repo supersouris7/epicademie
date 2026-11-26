@@ -106,7 +106,7 @@ const SAISIES: readonly {
 
 /** Niveau 5 : coupe géologique inventée (couches non retournées). */
 function coupe(rng: Rng): QuestionDraft {
-  const lieu = rng.pick(['Montsel', 'Brécourt', 'Ayguès']);
+  const lieu = rng.pick(['Montsel', 'Brécourt', 'Combelle']);
   const lines = [
     `Coupe de ${lieu} (lieu inventé). Les couches n’ont pas été retournées.`,
     'Couche 1 (en bas) : calcaire avec des coquilles d’ammonites.',
