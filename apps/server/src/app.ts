@@ -33,7 +33,13 @@ import { createEvaluationService, evaluationRoutes } from './modules/evaluation/
 import { createTrainingService, trainingRoutes } from './modules/training/index.ts';
 import { battlesRoutes, createBattlesService } from './modules/battles/index.ts';
 import { createShopService, inventoryRoutes } from './modules/inventory/index.ts';
-import { adminRoutes, createAdminService } from './modules/admin/index.ts';
+import {
+  adminAuthRoutes,
+  adminRoutes,
+  createAdminAuthService,
+  createAdminService,
+  createOidc,
+} from './modules/admin/index.ts';
 import { createInsightsService, insightsRoutes } from './modules/insights/index.ts';
 import { createPresence, type Presence } from './modules/realtime/index.ts';
 import { opsRoutes, systemRoutes } from './modules/system/index.ts';
@@ -60,6 +66,9 @@ export type AppConfig = Pick<
   | 'authRateLimitMax'
   | 'metricsToken'
   | 'adminOperatorSecret'
+  | 'adminOrigin'
+  | 'adminRescueSecret'
+  | 'adminSso'
   | 'apiDocs'
   | 'corsOrigins'
   | 'timeZone'
@@ -83,7 +92,7 @@ export interface AppDeps {
   readonly metrics?: Metrics;
   /** Envoi d'e-mails ; par défaut, journal sans contenu (aucun fournisseur configuré). */
   readonly mailer?: Mailer;
-  /** Appels HTTP sortants (paiement, Brevo, Google) ; remplaçable en test. */
+  /** Appels HTTP sortants (paiement, Brevo, Google, fournisseur d'identité) ; remplaçable en test. */
   readonly fetcher?: typeof fetch;
   /** Clés publiques de Google pour vérifier l'id_token ; remplaçables en test (aucun appel réseau). */
   readonly googleKeys?: Parameters<typeof createGoogle>[0]['keys'];
@@ -192,10 +201,30 @@ export async function buildApp(deps: AppDeps): Promise<App> {
     ? createGoogle({ ...config.google, fetcher: deps.fetcher, keys: deps.googleKeys })
     : null;
   const owns = createOwnership(db);
+  const adminAuth = createAdminAuthService({ db, clock });
+  // Connexion de l'équipe : configurée, elle remplace le secret historique de l'opérateur.
+  const sso =
+    config.adminSso && config.adminOrigin
+      ? {
+          origin: config.adminOrigin,
+          rateLimitMax: config.authRateLimitMax,
+          oidc: createOidc({
+            ...config.adminSso,
+            redirectUri: `${config.adminOrigin}${API_PREFIX}/admin-auth/callback`,
+            fetcher: deps.fetcher,
+          }),
+        }
+      : null;
   registerAuth(http, {
     resolve: (token) => accounts.resolve(token),
     allowedOrigins: config.corsOrigins,
-    operatorSecret: config.adminOperatorSecret,
+    admin: {
+      origin: config.adminOrigin,
+      resolveSession: sso ? (token) => adminAuth.resolve(token) : null,
+      operatorSecret: sso ? null : config.adminOperatorSecret,
+      rescueSecret: config.adminRescueSecret,
+      traceRescue: (admin, request) => adminAuth.traceRescue(admin, request),
+    },
   });
   const training = createTrainingService({
     db,
@@ -275,6 +304,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
       await v1.register(inventoryRoutes(shop, owns));
       await v1.register(friendsRoutes(friends, owns, (ids) => learning.ranking(ids)));
       await v1.register(adminRoutes(createAdminService({ db, clock })));
+      await v1.register(adminAuthRoutes(adminAuth, sso));
       await v1.register(insightsRoutes(createInsightsService({ db, clock }), () => reporter.recent()));
       await v1.register(telemetryRoutes(reporter, createTelemetryService({ db, clock })));
     },

@@ -1,6 +1,8 @@
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useState, type ReactNode } from 'react';
+import type { AdminPermission } from '@epicademie/shared';
 import { AdminGate, AdminShell, type AdminSection } from './AdminShell.tsx';
 import { useStats } from './api.ts';
+import { useCan } from './can.ts';
 import { Overview } from './Overview.tsx';
 import { Loading } from './ui.tsx';
 
@@ -14,32 +16,31 @@ const WeakSkills = lazy(() => import('./Insights.tsx').then((m) => ({ default: m
 /**
  * Console d'administration (pédagogie et pilotage) : vue d'ensemble, signalements des familles avec
  * la question exacte régénérée, familles (recherche, fiche), état de validation des notions, points
- * faibles et outils techniques. Réservée à l'opérateur de la page de pilotage (en-tête secret du
- * frontal) : aucun compte de jeu, aucun bouton depuis l'application.
+ * faibles et outils techniques. Réservée à l'équipe (rubriques selon le rôle) : aucun compte de
+ * jeu, aucun bouton depuis l'application.
  */
 const SECTIONS = [
-  { id: 'stats', label: 'Vue d’ensemble' },
-  { id: 'reports', label: 'Signalements' },
-  { id: 'accounts', label: 'Familles' },
-  { id: 'content', label: 'Notions' },
-  { id: 'weak', label: 'Points faibles' },
-  { id: 'technical', label: 'Technique' },
-] as const satisfies readonly AdminSection[];
+  { id: 'stats', label: 'Vue d’ensemble', permission: 'stats:lire' },
+  { id: 'reports', label: 'Signalements', permission: 'signalements:lire' },
+  { id: 'accounts', label: 'Familles', permission: 'comptes:lire' },
+  { id: 'content', label: 'Notions', permission: 'contenus:lire' },
+  { id: 'weak', label: 'Points faibles', permission: 'stats:lire' },
+  // Le mode debug, au moins, concerne qui signale ou traite les signalements.
+  { id: 'technical', label: 'Technique', permission: 'signalements:traiter' },
+] as const satisfies readonly (AdminSection & { permission: AdminPermission })[];
 type SectionId = (typeof SECTIONS)[number]['id'];
 
 export function AdminPage() {
-  return (
-    <AdminGate>
-      <Console />
-    </AdminGate>
-  );
+  return <AdminGate>{(user) => <Console user={user} />}</AdminGate>;
 }
 
-function Console() {
+function Console({ user }: { readonly user: ReactNode }) {
+  const can = useCan();
+  const sections = SECTIONS.filter((s) => can(s.permission));
   const [active, setActive] = useState<SectionId>('stats');
   const [accountId, setAccountId] = useState<string | null>(null);
   const { data: stats } = useStats();
-  const section = SECTIONS.find((s) => s.id === active) ?? SECTIONS[0];
+  const section = sections.find((s) => s.id === active) ?? SECTIONS[0];
   const select = (id: SectionId) => {
     setAccountId(null);
     setActive(id);
@@ -50,7 +51,8 @@ function Console() {
   };
   return (
     <AdminShell
-      sections={SECTIONS.map((s) => (s.id === 'reports' ? { ...s, count: stats?.openReports } : s))}
+      user={user}
+      sections={sections.map((s) => (s.id === 'reports' ? { ...s, count: stats?.openReports } : s))}
       active={section.id}
       onSelect={(id) => select(id as SectionId)}
     >

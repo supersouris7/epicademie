@@ -13,6 +13,7 @@ import {
 import {
   API_PREFIX,
   api,
+  type AdminRole,
   type AnyEndpoint,
   type BattleView,
   type BossOverview,
@@ -102,6 +103,10 @@ export interface FakeApiOptions {
   readonly epreuve?: { readonly passed: boolean; readonly weakestSkillId: string | null };
   /** La requête vient de l'opérateur de la page de pilotage (sinon l'administration répond 403). */
   readonly admin?: boolean;
+  /** Rôle de cette personne (défaut : propriétaire, opérateur historique). */
+  readonly adminRole?: AdminRole;
+  /** Connexion par fournisseur d'identité configurée. */
+  readonly adminSso?: boolean;
   /** Rapport de suivi renvoyé pour chaque profil (par défaut : vide). */
   readonly learning?: LearningReport;
   /** Abonnement familial en cours (par défaut : oui, tous les chapitres jouables). */
@@ -295,7 +300,7 @@ function authHandlers(options: FakeApiOptions) {
 function adminHandlers(
   reports: Record<string, unknown>[],
   disabled: Set<string>,
-  operator: boolean,
+  { admin: operator = false, adminRole = 'proprietaire', adminSso = false }: FakeApiOptions,
 ): Partial<Record<keyof typeof api, Handler>> {
   const skill = (skillId: string) => ({
     skillId,
@@ -330,8 +335,10 @@ function adminHandlers(
   return {
     adminSession: () => {
       operatorOnly();
-      return { operator: 'Marie Dupont' };
+      return { operator: 'Marie Dupont', role: adminRole, via: adminSso ? 'sso' : 'operateur' };
     },
+    adminAuthConfig: () => ({ sso: adminSso }),
+    adminLogout: () => null,
     adminAccounts: ({ body }) => {
       operatorOnly();
       const b = body as { q: string; page: number };
@@ -406,7 +413,7 @@ function adminHandlers(
       return {
         items: [
           {
-            id: 1,
+            id: 'compte-1',
             at: '2026-11-24T08:00:00.000Z',
             operator: 'Marie Dupont',
             action: 'consultation',
@@ -756,7 +763,7 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     ownedHeroes: () => ({ heroes: [...STARTING_HEROES] }),
     ...friendHandlers(),
     badges: () => badgeProgress({ boss: 2, parfait: 3, perseverance: 0, chapitres: 0, consolidees: 0, coffres: 1 }),
-    ...adminHandlers(reports, disabledSet, Boolean(options.admin)),
+    ...adminHandlers(reports, disabledSet, options),
   };
 
   function reply(method: string, url: string, body: unknown): Reply {

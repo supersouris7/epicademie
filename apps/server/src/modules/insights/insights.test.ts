@@ -118,9 +118,9 @@ describe('pilotage (administration)', () => {
     const at = (rows: { day: string; count: number }[], day: string) => rows.find((r) => r.day === day)?.count;
     expect(at(trends.accountsByDay, '2026-11-18')).toBe(1);
     expect(at(trends.accountsByDay, '2026-11-19')).toBe(0);
-    expect(at(trends.activeSubscriptionsByDay, '2026-11-16')).toBe(0);
-    expect(at(trends.activeSubscriptionsByDay, '2026-11-18')).toBe(1);
-    expect(at(trends.activeSubscriptionsByDay, '2026-11-20')).toBe(0);
+    expect(at(trends.activeSubscriptionsByDay!, '2026-11-16')).toBe(0);
+    expect(at(trends.activeSubscriptionsByDay!, '2026-11-18')).toBe(1);
+    expect(at(trends.activeSubscriptionsByDay!, '2026-11-20')).toBe(0);
     expect(trends.activeByOffer).toEqual([{ offer: 'famille-annee', count: 0 }]);
     expect(trends.revenueCents).toBe(2499);
     expect(trends.paymentProviders).toEqual(['simulateur']);
