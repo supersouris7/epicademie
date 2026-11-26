@@ -250,6 +250,43 @@ describe('correction des réponses', () => {
     for (const t of ['embarcation', 'une embarcation']) expect(check(q, saisie(t)).correct).toBe(true);
   });
 
+  it('mot du texte : accents facultatifs, avec ou sans article', () => {
+    const cas = [
+      ['fcm2-sens-mot', 3, 7, ['pénombre', 'penombre', 'la penombre']],
+      ['fcm2-sens-mot', 3, 6, ['récif', 'recif', 'un recif']],
+      ['fcm2-sens-mot', 3, 44, ['vetuste']],
+      ['fcm2-sens-mot', 3, 4, ['derobe']],
+      ['fcm2-sens-mot', 3, 14, ['epie']],
+    ] as const;
+    for (const [id, level, seed, reponses] of cas)
+      for (const t of reponses) expect(check(generate(id, level, seed), saisie(t)).correct, t).toBe(true);
+  });
+
+  it('variantes défendables acceptées', () => {
+    const cas = [
+      ['fcm2-inferences', 4, 'Rayan', ['triste', 'il est triste', 'il est decu']],
+      [
+        'fcm2-inferences',
+        4,
+        'Papi',
+        ['allergie aux pollens', 'une allergie aux pollens', 'allergie aux fleurs', 'une allergie aux fleurs'],
+      ],
+      ['fcm2-inferences', 3, 'stéthoscope', ['un docteur', 'le docteur', 'le médecin', 'le medecin']],
+      ['fcm2-inferences', 3, 'grand écran', ['salle de cinéma', 'dans une salle de cinema', 'au ciné']],
+      [
+        'fcm2-texte-documentaire',
+        4,
+        'volcans',
+        ['2e étage', '2ème', '2eme étage', 'au 2ème étage', 'au deuxième', 'deuxieme'],
+      ],
+      ['fcm2-texte-documentaire', 3, 'tortue luth', ['meduses', 'des meduses']],
+    ] as const;
+    for (const [id, level, morceau, reponses] of cas) {
+      const q = trouve(id, level, morceau);
+      for (const t of reponses) expect(check(q, saisie(t)).correct, t).toBe(true);
+    }
+  });
+
   it('narrateur caché : le prénom attendu, l’autre personnage expliqué', () => {
     const q = trouve('fcm2-personnages-narrateur', 4, 'piano');
     expect(check(q, saisie('maelle')).correct).toBe(true);

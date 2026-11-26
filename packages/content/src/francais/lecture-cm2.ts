@@ -90,8 +90,18 @@ const avecSansArticle = (pieges: Saisie['pieges']): Saisie['pieges'] =>
     return seul === texte ? [[texte, why] as const] : [[texte, why] as const, [seul, why] as const];
   });
 
+const sansAccent = (c: string) => c.normalize('NFD').replace(/\p{M}/gu, '');
+/** Une écriture et toutes celles où des accents manquent (un, plusieurs ou tous). */
+const ecritures = (texte: string): string[] =>
+  Array.from(texte).reduce<string[]>(
+    (debuts, c) => debuts.flatMap((d) => [...new Set([c, sansAccent(c)])].map((x) => d + x)),
+    [''],
+  );
+/** Le chapitre ne porte pas sur les accents : ils sont facultatifs dans toutes les saisies. */
+const tolerer = (accepted: readonly string[]): string[] => [...new Set(accepted.flatMap(ecritures))];
+
 function saisir(s: Saisie, consigne: string, etapes: readonly Rich[], hint: string): QuestionDraft {
-  return ecrire(s.accepted, avecSansArticle(s.pieges), {
+  return ecrire(tolerer(s.accepted), avecSansArticle(s.pieges), {
     prompt: `${consigne} ${s.question}`,
     figure: document(s.titre, s.lignes),
     hint,
@@ -180,7 +190,7 @@ function genreTrompeur(rng: Rng): QuestionDraft {
   const t = rng.pick(TEXTES_TROMPEURS);
   const autre = t.genre === 'recit' ? 'documentaire' : 'recit';
   return ecrire(
-    SAISIE_GENRE[t.genre],
+    tolerer(SAISIE_GENRE[t.genre]),
     avecSansArticle([
       [GENRES[autre].nom, `Non : relis la fin. Un seul événement vécu, ou des faits qui valent toujours ?`],
       ['un poème', 'Le texte n’est pas écrit en vers.'],
@@ -398,7 +408,7 @@ const autresMots = (m: Mot): string[] =>
     .slice(0, 3);
 
 function retrouver(m: Mot): QuestionDraft {
-  const accepted = [m.mot, ...(VARIANTES[m.mot] ?? [])];
+  const accepted = tolerer([m.mot, ...(VARIANTES[m.mot] ?? [])]);
   return {
     prompt: `Écris le mot du texte qui veut dire : « ${m.sens} ».`,
     figure: document('Dans le texte', m.lignes),
@@ -420,7 +430,7 @@ function fabriquer(d: Derive): QuestionDraft {
   // « illisible », « immangeable » : la lettre doublée est souvent oubliée.
   const simple = d.mot.startsWith('in') ? [] : [d.mot.charAt(0) + d.mot.slice(2)];
   return ecrire(
-    [d.mot],
+    tolerer([d.mot]),
     [
       [d.base, `« ${d.base} » dit le contraire : il manque le préfixe qui veut dire « ne… pas ».`],
       [`in${d.base}`, 'Devant certaines lettres, le préfixe « in- » change d’écriture.'],
