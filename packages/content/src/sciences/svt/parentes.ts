@@ -141,8 +141,11 @@ const NIVEAU3: readonly Modele[] = [
   ),
   completer(
     'Complète la phrase avec ces deux animaux : escargot et crabe.',
-    ['L’araignée est plus proche parente du ', ' que de l’', '.'],
-    [['crabe'], ['escargot']],
+    ['Entre ces deux animaux, le plus proche parent de l’araignée est : ', '. Le plus éloigné est : ', '.'],
+    [
+      ['crabe', 'le crabe'],
+      ['escargot', 'l’escargot'],
+    ],
     'Un des deux animaux a une coquille.',
     'L’araignée est plus apparentée au crabe qu’à l’escargot.',
   ),
@@ -174,13 +177,12 @@ const NIVEAU4: readonly Modele[] = [
     'La classification en arbre ne place pas l’être humain au-dessus des autres espèces.',
   ),
   associer(
-    'Associe chaque duo d’êtres vivants à ce que montre l’arbre du vivant',
+    'Associe chaque être vivant à son plus proche parent dans la liste de droite',
     [
-      ['Humains et chimpanzés', 'un ancêtre commun vieux de plusieurs millions d’années'],
-      ['Araignée et crabe', 'plus proches entre eux que de l’escargot'],
-      ['Crocodile et mésange', 'plus proches entre eux que du lézard'],
-      ['Truite et être humain', 'plus proches entre eux que du requin'],
-      ['Champignons et animaux', 'plus proches entre eux que des plantes'],
+      ['Araignée', 'le crabe'],
+      ['Crocodile', 'la mésange'],
+      ['Truite', 'l’être humain'],
+      ['Champignons', 'les animaux'],
     ],
     'Méfie-toi des ressemblances liées au milieu de vie.',
     'L’arbre du vivant montre des degrés de parenté, qui ne suivent pas toujours l’apparence.',
