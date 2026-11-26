@@ -10,6 +10,10 @@ import { useSession } from '../shared/lib/session.ts';
 import { useRealtime } from '../features/realtime/store.ts';
 import { createFakeApi, type FakeApi, type FakeApiOptions } from './fakeApi.ts';
 
+// L'application charge ses écrans à la demande : ici ils sont déjà transformés avant le 1er test,
+// pour que la durée d'une attente ne dépende pas de la machine (couverture en CI).
+import.meta.glob(['../app/GameApp.tsx', '../features/**/*.tsx', '!../**/*.test.tsx'], { eager: true });
+
 /**
  * Rend l'application complète sur une page donnée, branchée sur le faux serveur, avec le
  * profil choisi sur « cet appareil ». Animations réduites (pas d'attente inutile).
