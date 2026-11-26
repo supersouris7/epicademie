@@ -98,7 +98,15 @@ const reperes: Notion = {
       gap: [
         'Des années 1670 aux années 1750 se produit l’essor de la ',
         '.',
-        ['traite', 'traite négrière', 'traite negriere', 'traite atlantique'],
+        [
+          'traite',
+          'traite négrière',
+          'traite negriere',
+          'traite atlantique',
+          'traite des esclaves',
+          'traite des Africains',
+          'traite des Noirs',
+        ],
       ],
       ...PREUVES.essorTraite,
       explain: 'Des années 1670 aux années 1750 : c’est l’essor de la traite.',
@@ -486,7 +494,7 @@ const frise: Notion = {
       gap: [
         'Le commerce international du XVIIIe siècle se développe dans la ',
         ' des circuits inaugurés au siècle précédent.',
-        ['continuité', 'continuite'],
+        ['continuité', 'continuite', 'continuation', 'lignée', 'lignee', 'suite'],
       ],
       ...PREUVES.continuiteCommerce,
       explain: 'Les circuits commerciaux se prolongent d’un siècle à l’autre : c’est une continuité.',
