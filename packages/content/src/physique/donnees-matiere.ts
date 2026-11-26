@@ -126,17 +126,19 @@ export const FAITS: readonly Fait[] = [
   ),
 ];
 
-export const getFait = (id: string): Fait => {
-  const f = FAITS.find((x) => x.id === id);
-  if (!f) throw new Error(`Fait inconnu : ${id}`);
-  return f;
-};
-
 /** Référence et identifiants de sources d'une notion, à partir des faits qu'elle utilise. */
-export const references = (...ids: readonly string[]) => {
-  const faits = ids.map(getFait);
-  return {
-    source: `Programme du cycle 4 (BOEN n° 31 du 30 juillet 2020) et définitions citées : ${faits.map((f) => `« ${f.citation} »`).join(' ; ')}.`,
-    sources: [...new Set([PROGRAMME, ...faits.map((f) => f.source)])],
+export const referencesDe =
+  (registre: readonly Fait[]) =>
+  (...ids: readonly string[]) => {
+    const faits = ids.map((id) => {
+      const f = registre.find((x) => x.id === id);
+      if (!f) throw new Error(`Fait inconnu : ${id}`);
+      return f;
+    });
+    return {
+      source: `Programme du cycle 4 (BOEN n° 31 du 30 juillet 2020) et textes cités : ${faits.map((f) => `« ${f.citation} »`).join(' ; ')}.`,
+      sources: [...new Set([PROGRAMME, ...faits.map((f) => f.source)])],
+    };
   };
-};
+
+export const references = referencesDe(FAITS);

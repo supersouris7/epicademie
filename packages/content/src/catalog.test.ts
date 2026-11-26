@@ -172,6 +172,7 @@ describe('matière Sciences (#76)', () => {
     expect(chapters.map((c) => c.id).filter((id) => /^p[345]-/.test(id))).toEqual([
       'p5-unites',
       'p5-matiere',
+      'p5-mouvement',
       'p4-mouvement',
       'p4-electricite',
       'p3-energie',
