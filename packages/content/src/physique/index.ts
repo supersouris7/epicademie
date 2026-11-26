@@ -12,7 +12,10 @@ import { etats } from './etats.ts';
 import { forcesNotion } from './forces.ts';
 import { sourcesFormesEnergie } from './formes-energie.ts';
 import { formulesChimiques } from './formules.ts';
+import { intensiteNotion } from './intensite.ts';
 import { interactionsNotion } from './interactions.ts';
+import { loiOhm } from './loi-ohm.ts';
+import { loisCircuits } from './lois-circuits.ts';
 import { masseVolumique } from './masse-volumique.ts';
 import { corpsPurs } from './melanges.ts';
 import { mouvementForce } from './mouvement-force.ts';
@@ -22,6 +25,7 @@ import { propagationLumiere } from './propagation-lumiere.ts';
 import { propagationSon } from './propagation-son.ts';
 import { referentielNotion } from './referentiel.ts';
 import { solubiliteNotion } from './solubilite.ts';
+import { tensionNotion } from './tension.ts';
 import { trajectoireNotion } from './trajectoire.ts';
 import { transformationChimique } from './transformation.ts';
 import { unitesSi } from './unites.ts';
@@ -31,9 +35,9 @@ import { vitesseMoyenne } from './vitesse-moyenne.ts';
 /**
  * Physique-chimie, cycle 4 (docs/adr/0024-contenus-hors-maths.md). Sources institutionnelles :
  * - relations au programme : programme de physique-chimie du cycle 4 (BOEN n° 31 du
- *   30 juillet 2020) : loi d'Ohm, puissance électrique P = U × I, relation énergie–puissance–durée ;
+ *   30 juillet 2020) : puissance électrique P = U × I, relation énergie–puissance–durée ;
  * - unités : BIPM, Le Système international d'unités (SI), 9e édition, résumé en français
- *   (unités dérivées à nom spécial : ohm = V/A, watt = J/s).
+ *   (unité dérivée à nom spécial : watt = J/s).
  * Le programme est écrit pour tout le cycle : la répartition 5e / 4e / 3e est un choix de
  * progression (des relations les plus simples aux plus composées).
  * Le chapitre 5e « Organisation de la matière » (5 niveaux) a ses fichiers et ses faits cités
@@ -41,7 +45,8 @@ import { vitesseMoyenne } from './vitesse-moyenne.ts';
  * circuits » (`donnees-energie.ts`) et « Signaux et unités » (`donnees-signaux.ts`, identifiant historique
  * `p5-unites`).
  * Les chapitres 4e « Atomes et transformations » (`donnees-atomes.ts`) et « Mouvement et interactions »
- * (`donnees-interactions.ts`) suivent le même modèle.
+ * (`donnees-interactions.ts`) suivent le même modèle, comme le chapitre 4e « Électricité »
+ * (`donnees-electricite.ts`).
  */
 
 const PROG = 'Physique-chimie, cycle 4 (BOEN n° 31 du 30 juillet 2020)';
@@ -93,38 +98,6 @@ const pair = (rng: Rng, level: Level): [number, number] => {
   const b = rng.int(2, level === 3 ? 60 : 12);
   return [a, b];
 };
-
-const ohm = relation({
-  id: 'p4-loi-ohm',
-  title: 'La loi d’Ohm',
-  memo: [
-    'Loi d’Ohm : U = R × I (tension en volts, résistance en ohms, intensité en ampères).',
-    'L’ohm vaut un volt par ampère (Ω = V/A).',
-  ],
-  source: `${PROG} : « Relation tension – courant : loi d’Ohm » ; ${BIPM} : ohm = V/A.`,
-  draw: (rng, level) => {
-    const [rr, i] = pair(rng, level);
-    const u = rr * i;
-    const askU = rng.pick([true, false]);
-    return askU
-      ? {
-          prompt: `Une résistance de ${rr} Ω est traversée par un courant de ${i} A. Quelle est la tension à ses bornes, en V ?`,
-          value: r(u),
-          unit: 'V',
-          wrong: r(rr + i),
-          why: 'U = R × I : on multiplie (on n’additionne pas).',
-          steps: ['U = R × I.', `U = ${rr} × ${i} = **${u} V**.`],
-        }
-      : {
-          prompt: `Une tension de ${u} V est appliquée à une résistance de ${rr} Ω. Quelle est l’intensité du courant, en A ?`,
-          value: r(i),
-          unit: 'A',
-          wrong: r(u * rr),
-          why: 'I = U ÷ R : on divise la tension par la résistance.',
-          steps: ['U = R × I, donc I = U ÷ R.', `I = ${u} ÷ ${rr} = **${i} A**.`],
-        };
-  },
-});
 
 const power = relation({
   id: 'p3-puissance',
@@ -200,6 +173,6 @@ export const PHYSIQUE_CHAPTERS: readonly Chapter[] = [
     forcesNotion,
     mouvementForce,
   ]),
-  chapter('p4-electricite', '4e', 'La loi d’Ohm', [ohm]),
+  chapter('p4-electricite', '4e', 'Électricité', [tensionNotion, intensiteNotion, loisCircuits, loiOhm]),
   chapter('p3-energie', '3e', 'Puissance et énergie', [power, energy]),
 ];

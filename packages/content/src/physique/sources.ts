@@ -186,4 +186,42 @@ export const SOURCES: readonly Source[] = [
     textDate: '2016-11-22',
     consultedOn: '2026-11-26',
   },
+  // Lot pc-4e-03 : électricité (circuit, court-circuit, interrupteur, programme de seconde et BIPM : sources déjà au registre).
+  ...(
+    [
+      ['ampere', 'ampère'],
+      ['amperemetre', 'ampèremètre'],
+      ['ohm', 'ohm'],
+      ['resistance', 'résistance'],
+      ['noeud', 'nœud'],
+    ] as const
+  ).map(([id, mot]) => ({ ...academie(id, mot), consultedOn: '2026-11-26' })),
+  ...(
+    [
+      ['tension', 'tension', 'tension'],
+      ['voltmetre', 'voltmètre', 'voltm%C3%A8tre'],
+      ['intensite', 'intensité', 'intensit%C3%A9'],
+      ['maille', 'maille', 'maille'],
+      ['borne', 'borne', 'borne'],
+      ['surtension', 'surtension', 'surtension'],
+      ['sous-tension', 'sous-tension', 'sous-tension'],
+    ] as const
+  ).map(([id, mot, chemin]) => ({ ...tlfi(id, mot, chemin), consultedOn: '2026-11-26' })),
+  {
+    id: 'college-pc-2008',
+    title:
+      'Programme de physique-chimie du collège (BO spécial n° 6 du 28 août 2008), programme antérieur cité pour l’énoncé des lois de l’électricité',
+    publisher: 'Ministère de l’Éducation nationale',
+    url: 'https://cache.media.education.gouv.fr/file/special_6/52/7/Programme_physique-chimie_33527.pdf',
+    textDate: '2008-08-28',
+    consultedOn: '2026-11-26',
+  },
+  {
+    id: 'eduscol-electricite-lois',
+    title: 'Électricité (Physique-chimie, seconde) : proposition d’énoncés des lois dans un circuit électrique',
+    publisher: 'Éduscol',
+    url: 'https://eduscol.education.gouv.fr/sites/default/files/document/ra19lyceegt2phychiressources-electricite1161322pdf-82476.pdf',
+    textDate: '2019-07',
+    consultedOn: '2026-11-26',
+  },
 ];
