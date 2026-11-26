@@ -4,6 +4,7 @@ import { caracteresPartages } from './caracteres.ts';
 import { circulationSang } from './circulation.ts';
 import { digestionAliments } from './digestion.ts';
 import { ecosystemes } from './ecosystemes.ts';
+import { histoireTerre } from './histoire-terre.ts';
 import { effortPhysique } from './effort.ts';
 import { espece } from './espece.ts';
 import { groupesEmboites } from './groupes.ts';
@@ -12,7 +13,10 @@ import { parentes } from './parentes.ts';
 import { respiration } from './respiration.ts';
 import { respirationHumaine } from './respiration-humaine.ts';
 import { risques } from './risques.ts';
+import { roches } from './roches.ts';
 import { seismes } from './seismes.ts';
+import { structureGlobe } from './structure-globe.ts';
+import { tectonique } from './tectonique.ts';
 import { vegetaux } from './vegetaux.ts';
 import { volcans } from './volcans.ts';
 
@@ -49,5 +53,13 @@ export const SVT_CHAPTERS: readonly Chapter[] = [
     domain: 'svt',
     title: 'Classer le vivant',
     skills: [caracteresPartages, groupesEmboites, parentes, espece],
+  },
+  {
+    id: 'v4-terre',
+    subject: 'sciences',
+    grade: '4e',
+    domain: 'svt',
+    title: 'La Terre interne',
+    skills: [structureGlobe, tectonique, roches, histoireTerre],
   },
 ];
