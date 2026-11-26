@@ -11,7 +11,7 @@
 
 | Lot        | Chapitre                              | Notions                                                                                                      | État actuel                     |
 | ---------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------- |
-| `ge-3e-01` | Dynamiques territoriales de la France | aires urbaines ; espaces productifs ; espaces de faible densité ; vocabulaire                                | absente                         |
+| `ge-3e-01` | Dynamiques territoriales de la France | aires urbaines ; espaces productifs ; espaces de faible densité ; vocabulaire                                | couverte, en relecture          |
 | `ge-3e-02` | Aménager le territoire                | aménager pour réduire les inégalités ; territoires ultramarins ; acteurs de l'aménagement                    | absente                         |
 | `ge-3e-03` | La France et l'Union européenne       | l'Union européenne, un territoire ; capitales et monnaie ; la France et l'Europe dans le monde               | partielle (g3-union-europeenne) |
 | `ge-3e-04` | Repères et méthode (brevet)           | repères de la France (aires urbaines, ultramarins) ; repères de l'UE ; lire une carte ; compléter un croquis | absente                         |
