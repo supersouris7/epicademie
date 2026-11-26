@@ -118,7 +118,7 @@ const NIVEAU3: readonly Modele[] = [
     ['Plus l’effort est intense, plus la consommation du gaz appelé ', ' ', '.'],
     [
       ['dioxygène', 'dioxygene', 'oxygène', 'oxygene'],
-      ['augmente', 's’élève', 'grandit', 'monte'],
+      ['augmente', 's’élève', 'grandit', 'monte', 'croît', 'croit', 's’accroît', 's’accroit'],
     ],
     'Pense au gaz absorbé par la respiration et à son évolution.',
     'La consommation de dioxygène augmente avec l’intensité, jusqu’à une limite.',
