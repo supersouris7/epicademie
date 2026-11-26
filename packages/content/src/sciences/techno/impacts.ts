@@ -54,7 +54,7 @@ const SENS: Record<Derive, string> = {
   'usurpation d’identité':
     'le fait de se faire passer pour une autre personne pour lui nuire ou troubler sa tranquillité',
   'atteinte à la vie privée': 'le fait de dévoiler ou d’exposer ce qui relève de l’intimité d’une personne',
-  'accès frauduleux': 'le fait d’entrer sans autorisation, par tromperie, dans un compte ou un système',
+  'accès frauduleux': 'le fait d’entrer ou de rester sans autorisation dans un compte ou un système',
 };
 
 const CAS: readonly { texte: string; derive: Derive }[] = [
@@ -123,19 +123,24 @@ const ROLES_SI: readonly { texte: string; bonne: string }[] = [
   },
 ];
 
-const ARTICLES = { 'usurpation d’identité': 'l’', cyberharcèlement: 'le' } as const;
+const ACCEPTEES = {
+  'usurpation d’identité': [...formes('usurpation d’identité', 'l’'), 'une usurpation d’identité'],
+  cyberharcèlement: [
+    ...['cyberharcèlement', 'cyber-harcèlement', 'cyber harcèlement'].flatMap((m) => [...formes(m, 'le'), `un ${m}`]),
+    ...formes('harcèlement en ligne', 'le'),
+    ...formes('harcèlement numérique', 'le'),
+  ],
+} as const;
 
 const niveau3 = (rng: Rng): QuestionDraft => {
   const sorte = rng.int(0, 1);
   if (sorte === 0) {
     const cas = rng.pick(CAS.filter((c) => c.derive === 'cyberharcèlement' || c.derive === 'usurpation d’identité'));
-    const d = cas.derive as keyof typeof ARTICLES;
+    const d = cas.derive as keyof typeof ACCEPTEES;
     return {
       prompt: `${cas.texte} Écris le nom de la dérive.`,
       ...saisie(
-        d === 'cyberharcèlement'
-          ? [...formes(d, ARTICLES[d]), 'cyber-harcèlement', 'le cyber-harcèlement']
-          : formes(d, ARTICLES[d]),
+        ACCEPTEES[d],
         DERIVES.filter((x) => x !== d).map((x) => [x, why(x)] as const),
       ),
       hint: 'S’agit-il de messages répétés ou d’un faux nom ?',
@@ -144,21 +149,18 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     };
   }
   return {
-    prompt: 'Écris le numéro national à joindre pour les victimes de violences numériques (4 chiffres).',
+    prompt: 'Écris le numéro national contre le harcèlement et le cyberharcèlement (4 chiffres).',
     ...saisie(
       ['3018', '30 18'],
       [
-        [
-          '3020',
-          'Le 3020 est le numéro contre le harcèlement à l’École ; pour les violences numériques, c’est un autre numéro.',
-        ],
+        ['3020', 'Le numéro national unique pour le harcèlement et le cyberharcèlement est aujourd’hui le 3018.'],
         ['17', 'Le 17 est le numéro de la police et de la gendarmerie en urgence ; le numéro demandé a 4 chiffres.'],
       ],
     ),
-    hint: 'C’est un numéro réservé à ces violences, différent de celui contre le harcèlement à l’École.',
+    hint: 'Un numéro à 4 chiffres, le même contre le harcèlement et le cyberharcèlement.',
     steps: [
-      'Un numéro national aide les victimes de violences numériques.',
-      'Il peut aider à faire retirer rapidement un contenu qui porte préjudice.',
+      'Un numéro national unique permet d’alerter en cas de harcèlement.',
+      'Le même numéro sert aussi pour le cyberharcèlement.',
       'La réponse est le **3018**.',
     ],
     targetSeconds: 35,
@@ -250,7 +252,8 @@ const niveau4 = (rng: Rng): QuestionDraft => {
 const niveau5 = (rng: Rng): QuestionDraft => {
   const sorte = rng.int(0, 2);
   if (sorte === 0) {
-    const bonne = 'En 2020, le numérique représentait 10 % de la consommation électrique annuelle de la France.';
+    const bonne =
+      'En 2020, environ une part sur dix de l’électricité consommée en France dans l’année allait au numérique';
     return {
       prompt: 'D’après ce document sur les incidences du numérique, quelle affirmation est exacte ?',
       figure: {
@@ -264,23 +267,24 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       },
       ...qcm(rng, bonne, [
         {
-          label: 'En 2020, le numérique représentait 10 % de l’empreinte carbone annuelle de la France.',
-          why: '10 % concerne l’électricité ; pour l’empreinte carbone, le document donne 2,5 %.',
+          label: 'En 2020, environ une part sur dix de l’empreinte carbone annuelle de la France venait du numérique',
+          why: 'Une part sur dix, soit 10 %, concerne l’électricité ; pour l’empreinte carbone, le document donne 2,5 %.',
         },
         {
-          label: 'En 2020, le numérique représentait 2,5 % de la consommation électrique annuelle de la France.',
-          why: '2,5 % concerne l’empreinte carbone ; pour l’électricité, le document donne 10 %.',
+          label: 'En 2020, le numérique pesait plus lourd dans l’empreinte carbone que dans la consommation électrique',
+          why: 'C’est l’inverse : 2,5 % de l’empreinte carbone, contre 10 % de la consommation électrique.',
         },
         {
-          label: 'D’après le document, le numérique n’a aucune incidence sur l’environnement.',
-          why: 'Le document donne justement deux mesures de cette incidence.',
+          label: 'En 2020, la plus grande partie de l’électricité consommée en France allait au numérique',
+          why: '10 % est une petite partie du total : la plus grande partie dépasserait 50 %.',
         },
       ]),
       hint: 'Associe chaque pourcentage à la bonne grandeur.',
       steps: [
         'Le document donne deux grandeurs : empreinte carbone et consommation électrique.',
         '2,5 % porte sur l’empreinte carbone, 10 % sur l’électricité.',
-        `La réponse est **${bonne}**`,
+        '10 %, c’est environ une part sur dix.',
+        `La réponse est : **${bonne}**.`,
       ],
       targetSeconds: 55,
     };
@@ -291,14 +295,17 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       prompt: `${r.texte} Quel est ici le rôle du système d’information ?`,
       ...qcm(rng, r.bonne, [
         {
-          label: 'produire l’électricité qui alimente les appareils',
-          why: 'Un système d’information traite des données ; il ne produit pas l’énergie.',
+          label: 'stocker des données sans permettre à d’autres personnes de les consulter',
+          why: 'Ici, les données saisies sont justement consultées ensuite : elles sont partagées.',
         },
         {
-          label: 'rendre les données visibles par n’importe qui',
+          label: 'rendre les données visibles et modifiables par n’importe qui',
           why: 'Le partage est réservé aux personnes autorisées, pour protéger les données.',
         },
-        { label: 'supprimer les données dès qu’elles sont saisies', why: 'Pour les partager, il faut les conserver.' },
+        {
+          label: 'transmettre des données une seule fois, sans les conserver',
+          why: 'Pour consulter les données plus tard, il faut les conserver.',
+        },
       ]),
       hint: 'Que deviennent les données après leur saisie ?',
       steps: [
@@ -363,7 +370,7 @@ export const impacts = notion(
       'code-penal-222-33-2-2',
       'code-penal-323-1',
       'education-cyberharcelement',
-      'eduscol-donnees-personnelles',
+      'education-politique-harcelement',
       'ue-nis2-2022-2555',
       'ecologie-numerique-responsable',
     ],

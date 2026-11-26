@@ -118,14 +118,6 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-26',
   },
   {
-    id: 'eduscol-donnees-personnelles',
-    title: '« Protection des données personnelles et assistance »',
-    publisher: 'éduscol (ministère de l’Éducation nationale)',
-    url: 'https://eduscol.education.fr/398/protection-des-donnees-personnelles-et-assistance',
-    textDate: '2026',
-    consultedOn: '2026-11-26',
-  },
-  {
     id: 'education-cyberharcelement',
     title: 'Non au harcèlement : « Qu’est-ce que le harcèlement ? »',
     publisher: 'Ministère de l’Éducation nationale',

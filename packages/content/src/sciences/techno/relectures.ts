@@ -9,4 +9,5 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 't5-donnees', version: 1, lot: 'te-5e-02', date: '2026-11-26', verdict: 'ok' },
   { skillId: 't5-reseaux', version: 1, lot: 'te-5e-02', date: '2026-11-26', verdict: 'ok' },
   { skillId: 't5-securite-numerique', version: 1, lot: 'te-5e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 't5-impacts-numerique', version: 1, lot: 'te-5e-02', date: '2026-11-26', verdict: 'ok' },
 ];

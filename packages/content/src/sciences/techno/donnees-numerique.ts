@@ -247,8 +247,9 @@ export const FAITS_NUMERIQUE: readonly Fait[] = [
   },
   {
     id: 'numero-3018',
-    source: 'eduscol-donnees-personnelles',
-    citation: 'Le numéro national pour les victimes de violences numériques est le 3018.',
+    source: 'education-politique-harcelement',
+    citation:
+      'Le numéro d’alerte 3018, opéré par l’association e-Enfance, est le numéro national unique pour alerter en cas de situation de harcèlement et de cyberharcèlement.',
   },
   {
     id: 'empreinte-numerique',
