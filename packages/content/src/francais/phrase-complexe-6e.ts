@@ -109,7 +109,11 @@ function quellePhrase(rng: Rng, bon: Exemple, faux: readonly Exemple[], prompt: 
 
 /** Un verbe pronominal est accepté avec ou sans son pronom. */
 const verbeAccepte = (v: string): string[] => [...new Set([v, v.replace(/^(se |s’)/, '')])];
-const saisieVerbe = (v: string) => ({ mode: 'text' as const, accepted: verbeAccepte(v) });
+const saisieVerbe = (v: string) => ({
+  mode: 'text' as const,
+  // L’orthographe rectifiée (« fraichit ») est acceptée.
+  accepted: verbeAccepte(v).flatMap((x) => (x.includes('aî') ? [x, x.replace('aî', 'ai')] : [x])),
+});
 const saisieMot = (mot: string) => ({ mode: 'text' as const, accepted: mot === 'dès que' ? [mot, 'des que'] : [mot] });
 
 const avecVariantes = (texte: string): string[] => {
@@ -294,7 +298,10 @@ function simpleComplexeDraft(rng: Rng, level: Level): QuestionDraft {
         prompt: `Combien de propositions contient « ${a.texte} » ? Écris le nombre en chiffres.`,
         answer: num(n),
         traps: numTraps(r(n), [
-          [n + 1, 'Un infinitif, un second nom sujet ou un second complément ne forme pas une proposition.'],
+          [
+            n + 1,
+            'Un infinitif, un second nom ou un second complément ne forme pas une proposition ; un temps composé (« a préparé ») est un seul verbe.',
+          ],
           ...(n > 1
             ? ([
                 [n - 1, 'Tu en as oublié une : chaque verbe conjugué forme une proposition.'],
@@ -437,8 +444,15 @@ function coordinationDraft(rng: Rng, level: Level): QuestionDraft {
       return quellePhrase(
         rng,
         unCoord(rng),
-        [exSimple(noms.texte, noms.verbe), unSub(rng), unJuxta(rng)],
-        'Le mot « et » peut relier deux mots seulement. Quelle phrase coordonne deux propositions ?',
+        [
+          {
+            ...exSimple(noms.texte, noms.verbe),
+            pourquoi: `Un seul verbe conjugué (« ${noms.verbe} ») : « et » relie ici seulement des mots ou des groupes de mots.`,
+          },
+          unSub(rng),
+          unJuxta(rng),
+        ],
+        'Attention : « et » relie parfois seulement des mots. Quelle phrase coordonne deux propositions ?',
         DEF_COORD,
       );
     }
@@ -608,7 +622,7 @@ const roleDe = (c: Classe6e) => (c === 'conjonction de coordination' ? at(ROLES,
 const whyClasse = (mot: string): Rich =>
   classeDe(mot) === 'conjonction de coordination'
     ? `« ${mot} » est dans la liste mais, ou, et, or, ni, car : c’est une conjonction de coordination.`
-    : `« ${mot} » n’est pas dans la liste de coordination : c’est une conjonction de subordination.`;
+    : `« ${mot} » fait entrer une proposition subordonnée dans la principale : c’est une conjonction de subordination.`;
 
 interface Lien {
   readonly texte: string;
