@@ -143,7 +143,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'pronom-personnel',
     word: 'pronom personnel',
     forms: ['pronoms personnels', 'pronom', 'pronoms'],
-    definition: 'Petit mot qui remplace un nom ou une personne : je, tu, il, elle, nous, vous, ils, elles.',
+    definition:
+      'Petit mot qui désigne qui parle, à qui l’on parle, ou reprend un groupe nominal : je, tu, il, elle, nous, vous, me, te, le, lui, leur…',
     example: 'Elle chante.',
   },
   {
@@ -1166,5 +1167,19 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['intransitifs', 'verbe intransitif'],
     definition: 'Se dit d’un verbe employé sans complément d’objet.',
     example: 'Les chevaux galopent.',
+  },
+  {
+    id: 'antecedent',
+    word: 'antécédent',
+    forms: ['antécédents'],
+    definition: 'Groupe nominal dont un pronom tient lieu.',
+    example: 'Dans « Je vois une maison. Je la dessine. », « une maison » est l’antécédent de « la ».',
+  },
+  {
+    id: 'groupe-adjectival',
+    word: 'groupe adjectival',
+    forms: ['groupes adjectivaux'],
+    definition: 'Un adjectif avec les mots qui le complètent ou le précisent.',
+    example: '« très vieille » dans « une très vieille barque »',
   },
 ];
