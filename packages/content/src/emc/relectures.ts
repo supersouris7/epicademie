@@ -48,4 +48,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'em3-elections', version: 1, lot: 'em-3e-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'em3-citoyennete-active', version: 1, lot: 'em-3e-01', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'em3-defense-engagement', version: 1, lot: 'em-3e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'em3-role-medias', version: 1, lot: 'em-3e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'em3-sondages', version: 1, lot: 'em-3e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'em3-opinion-publique', version: 1, lot: 'em-3e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'em3-esprit-critique', version: 1, lot: 'em-3e-02', date: '2026-11-26', verdict: 'ok' },
 ];
