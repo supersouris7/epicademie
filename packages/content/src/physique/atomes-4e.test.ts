@@ -100,14 +100,21 @@ describe('physique-chimie 4e : « Atomes et transformations »', () => {
   });
 
   it('transformation : l’équation fournie est équilibrée et le décompte la respecte', () => {
+    const coefficients: Record<string, number> = { 'de dihydrogène': 2, 'de dioxygène': 1, 'd’eau': 2 };
+    const couples = new Set<string>();
     for (const q of tirages('p4-transformation-chimique', 4)) {
-      const [, eq, n, produit, reactif] =
-        /est (.+?)\. Pour former (\d+) molécules (.+?), combien de molécules de (\S+) sont/.exec(q.prompt) ?? [];
-      const eau = produit === 'd’eau';
-      const ratio = eau ? (reactif === 'dihydrogène' ? 1 : 0.5) : 1;
-      expect(eq, q.prompt).toBe(eau ? '2 H₂ + O₂ → 2 H₂O' : 'C + O₂ → CO₂');
+      const [, eq, n, donne = '', cherche = ''] =
+        /est (.+?)\. (?:Pour former|Quand) (\d+) molécules (d’eau|de \S+?)(?: sont consommées)?, combien de molécules (d’eau|de \S+)/.exec(
+          q.prompt,
+        ) ?? [];
+      expect(eq, q.prompt).toBe('2 H₂ + O₂ → 2 H₂O');
+      const ratio = (coefficients[cherche] ?? 0) / (coefficients[donne] ?? 0);
+      expect(ratio, q.prompt).not.toBe(1);
       expect(juste(q, Number(n) * ratio), q.prompt).toBe(true);
+      expect(juste(q, Number(n)), q.prompt).toBe(false);
+      couples.add(`${donne} → ${cherche}`);
     }
+    expect(couples.size).toBe(4);
   });
 
   it('combustions : au niveau 4, un cinquième de l’air ; au niveau 5, la conclusion suit les restes', () => {

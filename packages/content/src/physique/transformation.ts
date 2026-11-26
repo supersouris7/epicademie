@@ -121,30 +121,55 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   };
 };
 
-/** Équations fournies dans l’exercice : coefficients des réactifs et des produits. */
-const EQUATIONS = [
-  { texte: '2 H₂ + O₂ → 2 H₂O', consomme: 'dioxygène', parProduit: 'molécules d’eau', ratio: [1, 2] },
-  { texte: '2 H₂ + O₂ → 2 H₂O', consomme: 'dihydrogène', parProduit: 'molécules d’eau', ratio: [2, 2] },
-  { texte: 'C + O₂ → CO₂', consomme: 'dioxygène', parProduit: 'molécules de dioxyde de carbone', ratio: [1, 1] },
+/**
+ * Équation fournie (synthèse de l’eau) : on ne demande que des couples de molécules aux coefficients différents,
+ * pour que la réponse ne soit jamais le nombre déjà écrit dans l’énoncé.
+ */
+const EQUATION = '2 H₂ + O₂ → 2 H₂O';
+
+interface Molecules {
+  readonly nom: string;
+  /** « de dioxygène », « d’eau ». */
+  readonly de: string;
+  readonly coefficient: number;
+}
+
+const DIHYDROGENE: Molecules = { nom: 'le dihydrogène', de: 'de dihydrogène', coefficient: 2 };
+const DIOXYGENE: Molecules = { nom: 'le dioxygène', de: 'de dioxygène', coefficient: 1 };
+const EAU: Molecules = { nom: 'l’eau', de: 'd’eau', coefficient: 2 };
+
+const COUPLES = [
+  { donne: EAU, cherche: DIOXYGENE },
+  { donne: DIOXYGENE, cherche: EAU },
+  { donne: DIOXYGENE, cherche: DIHYDROGENE },
+  { donne: DIHYDROGENE, cherche: DIOXYGENE },
 ] as const;
 
 const niveau4 = (rng: Rng): QuestionDraft => {
-  const e = rng.pick(EQUATIONS);
+  const { donne, cherche } = rng.pick(COUPLES);
   const k = rng.int(2, 9);
-  const produits = k * e.ratio[1];
-  const n = k * e.ratio[0];
+  const connu = k * donne.coefficient;
+  const n = k * cherche.coefficient;
+  const debut =
+    donne === EAU
+      ? `Pour former ${connu} molécules ${donne.de}`
+      : `Quand ${connu} molécules ${donne.de} sont consommées`;
+  const fin = cherche === EAU ? 'se forment' : 'sont consommées';
   return {
-    prompt: `L’équation fournie est ${e.texte}. Pour former ${produits} ${e.parProduit}, combien de molécules de ${e.consomme} sont consommées ?`,
+    prompt: `L’équation fournie est ${EQUATION}. ${debut}, combien de molécules ${cherche.de} ${fin} ?`,
     answer: num(n),
     traps: traps(r(n), [
-      [produits, 'Ce nombre est celui des produits : lis le coefficient devant chaque molécule de l’équation.'],
-      [n * 2, 'Compte les molécules, pas les atomes : regarde le coefficient devant la formule.'],
-      [e.ratio[0], 'C’est le nombre pour une seule fois l’équation : adapte à la quantité de produit demandée.'],
+      [connu, 'C’est le nombre de l’énoncé : les deux molécules n’ont pas le même coefficient dans l’équation.'],
+      [
+        r(connu * donne.coefficient, cherche.coefficient),
+        'Les deux coefficients sont inversés : divise par celui de la molécule connue, multiplie par celui de la molécule cherchée.',
+      ],
     ]),
-    hint: 'Combien de fois faut-il écrire l’équation pour obtenir le nombre de produits demandé ?',
+    hint: 'Combien de fois faut-il écrire l’équation pour obtenir le nombre de molécules de l’énoncé ?',
     steps: [
-      `Dans l’équation, le coefficient (sans chiffre, il vaut 1) est ${e.ratio[0]} pour le ${e.consomme} et ${e.ratio[1]} pour le produit.`,
-      `L’équation se répète ${k} fois : ${k} × ${e.ratio[0]} = **${n}**.`,
+      `Dans l’équation, le coefficient (sans chiffre, il vaut 1) est ${donne.coefficient} pour ${donne.nom} et ${cherche.coefficient} pour ${cherche.nom}.`,
+      `${connu} ÷ ${donne.coefficient} = ${k} fois l’équation.`,
+      `${k} × ${cherche.coefficient} = **${n}**.`,
     ],
     targetSeconds: 80,
   };
