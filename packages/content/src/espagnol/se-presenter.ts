@@ -218,10 +218,11 @@ const DIALOGUES: readonly Dialogue[] = [
 /** Réplique écrite dans le dialogue à partir de la formule (majuscule, ponctuation de la ligne gardée). */
 const blank = (line: string, es: string): string => {
   const shown = line.toLowerCase();
-  const bare = es.replace(/[¿?]/g, '');
-  const i = shown.indexOf(bare);
+  // La ponctuation propre à la formule (« ¿? ») est masquée avec elle : elle désignerait la réponse.
+  const hidden = shown.includes(es) ? es : es.replace(/[¿?]/g, '');
+  const i = shown.indexOf(hidden);
   if (i < 0) throw new Error(`formule « ${es} » absente de « ${line} »`);
-  return `${line.slice(0, i)}……${line.slice(i + bare.length)}`;
+  return `${line.slice(0, i)}……${line.slice(i + hidden.length)}`;
 };
 
 const saluer: Skill = {
