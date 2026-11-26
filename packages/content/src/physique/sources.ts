@@ -186,13 +186,12 @@ export const SOURCES: readonly Source[] = [
     textDate: '2016-11-22',
     consultedOn: '2026-11-26',
   },
-  // Lot pc-4e-03 : électricité (circuit, court-circuit, interrupteur, programme de seconde et BIPM : sources déjà au registre).
+  // Lot pc-4e-03 : électricité (circuit, court-circuit, interrupteur, résistance, programme de seconde et BIPM : sources déjà au registre).
   ...(
     [
       ['ampere', 'ampère'],
       ['amperemetre', 'ampèremètre'],
       ['ohm', 'ohm'],
-      ['resistance', 'résistance'],
       ['noeud', 'nœud'],
     ] as const
   ).map(([id, mot]) => ({ ...academie(id, mot), consultedOn: '2026-11-26' })),
