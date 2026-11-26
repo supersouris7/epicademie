@@ -150,7 +150,9 @@ const niveau3 = (rng: Rng): QuestionDraft => {
       .shuffle(UNITES)
       .slice(0, taille)
       .sort((a, b) => UNITES.indexOf(a) - UNITES.indexOf(b));
-    const listees = [...choisies].sort((a, b) => a.localeCompare(b, 'fr'));
+    const alphabetique = [...choisies].sort((a, b) => a.localeCompare(b, 'fr'));
+    // L'énoncé ne doit jamais lister les unités déjà rangées.
+    const listees = alphabetique.every((u, k) => u === choisies[k]) ? alphabetique.reverse() : alphabetique;
     return {
       prompt: `Range ces unités de la plus petite à la plus grande : ${listees.join(', ')}.`,
       answer: ordre(rng, choisies),
@@ -164,20 +166,40 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     };
   }
   const mot = rng.pick([
-    { definition: 'l’unité élémentaire d’information, notée 0 ou 1', reponse: 'bit', article: 'le' as const },
-    { definition: 'l’unité d’information composée de huit bits', reponse: 'octet', article: 'l’' as const },
+    {
+      definition: 'l’unité élémentaire d’information, notée 0 ou 1',
+      reponse: 'bit',
+      article: 'le' as const,
+      indefini: 'un bit',
+      erreurs: [
+        ['octet', 'Un octet réunit huit bits : ce n’est pas l’unité élémentaire.'],
+        ['fichier', 'Un fichier est un ensemble de données enregistré : ce n’est pas une unité.'],
+      ] as const,
+    },
+    {
+      definition: 'l’unité d’information composée de huit bits',
+      reponse: 'octet',
+      article: 'l’' as const,
+      indefini: 'un octet',
+      erreurs: [
+        ['bit', 'Le bit est l’unité élémentaire : il en faut huit pour faire l’unité demandée.'],
+        ['fichier', 'Un fichier est un ensemble de données enregistré : ce n’est pas une unité.'],
+      ] as const,
+    },
     {
       definition: 'l’organisation des dossiers et des fichiers en forme d’arbre',
       reponse: 'arborescence',
       article: 'l’' as const,
+      indefini: 'une arborescence',
+      erreurs: [
+        ['dossier', 'Un dossier regroupe des fichiers : ce n’est qu’une partie de l’organisation.'],
+        ['fichier', 'Un fichier est un ensemble de données enregistré, pas une organisation.'],
+      ] as const,
     },
   ]);
   return {
     prompt: `Écris le mot qui désigne ${mot.definition}.`,
-    ...saisie(formes(mot.reponse, mot.article), [
-      ['dossier', 'Un dossier regroupe des fichiers ; ce n’est pas le mot demandé.'],
-      ['fichier', 'Un fichier est un ensemble de données enregistré ; ce n’est pas le mot demandé.'],
-    ]),
+    ...saisie([...formes(mot.reponse, mot.article), mot.indefini], mot.erreurs),
     hint: 'C’est un mot du vocabulaire des données : unité ou organisation ?',
     steps: [
       'On retrouve le mot à partir de sa définition.',
@@ -298,6 +320,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     { nom: n2, texte: `${petits} Mo` },
     { nom: n3, texte: `${(libre + 1000) / 1000} Go`.replace('.', ',') },
   ]);
+  const converti = (nom: string) => (nom === n3 ? `, soit ${libre + 1000} Mo` : '');
   return {
     prompt: `Une clé USB a ${libre} Mo d’espace libre. D’après la liste, quel fichier peut y être copié ?`,
     figure: {
@@ -312,7 +335,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
         .filter((t) => t.nom !== bonne)
         .map((t) => ({
           label: t.nom,
-          why: `« ${t.nom} » pèse ${t.texte} : c’est plus que les ${libre} Mo disponibles.`,
+          why: `« ${t.nom} » pèse ${t.texte}${converti(t.nom)} : c’est plus que les ${libre} Mo disponibles.`,
         })),
     ),
     hint: 'Exprime toutes les tailles dans la même unité avant de comparer.',

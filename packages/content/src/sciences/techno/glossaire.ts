@@ -399,4 +399,33 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Harcèlement par des moyens numériques : agressions répétées en ligne.',
     example: 'Des messages moqueurs envoyés chaque soir.',
   },
+  {
+    id: 'te-paquet',
+    word: 'paquet de données',
+    forms: ['paquet', 'paquets'],
+    definition: 'Petit bloc de données envoyé sur un réseau.',
+    example: 'Un fichier est envoyé en plusieurs paquets.',
+  },
+  {
+    id: 'te-point-acces',
+    word: 'point d’accès',
+    forms: ['point d’accès', 'points d’accès'],
+    definition: 'Appareil qui permet à d’autres appareils de rejoindre un réseau sans fil (Wi-Fi).',
+    example: 'La borne Wi-Fi d’un collège.',
+  },
+  {
+    id: 'te-trace-numerique',
+    word: 'trace numérique',
+    forms: ['trace numérique', 'traces numériques'],
+    definition: 'Information laissée par l’usage d’un appareil ou d’un service.',
+    example: 'La liste des pages visitées.',
+  },
+  {
+    id: 'te-temoin-connexion',
+    word: 'témoin de connexion',
+    forms: ['témoin de connexion', 'témoins de connexion'],
+    definition:
+      'Petit fichier qu’un site enregistre sur l’appareil pour garder des informations sur la visite (en anglais : « cookie »).',
+    example: 'Un site retient la langue choisie.',
+  },
 ];

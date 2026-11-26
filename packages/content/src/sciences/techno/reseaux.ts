@@ -154,7 +154,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   return {
     prompt: `Écris le nom du composant qui sert à ${ROLE[c]}.`,
     ...saisie(
-      [...formes(c, 'le'), `un ${c}`],
+      [...formes(c, 'le'), `un ${c}`, ...(c === 'commutateur' ? [...formes('switch', 'le'), 'un switch'] : [])],
       COMPOSANTS.filter((x) => x !== c).map((x) => [x, `Le ${x} sert à ${ROLE[x]}.`] as const),
     ),
     hint: 'Ce composant fait partie de ceux d’un réseau : relis les verbes du rôle demandé.',
@@ -275,8 +275,8 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     'Un commutateur est au centre du réseau local.',
     ...liste.map((nom, i) =>
       i === sansFil
-        ? `${nom} : relié en Wi-Fi à un point d’accès, branché au commutateur.`
-        : `${nom} : relié au commutateur par un câble.`,
+        ? `${nom} : liaison Wi-Fi avec un point d’accès, lui-même relié au commutateur.`
+        : `${nom} : liaison par câble avec le commutateur.`,
     ),
   ];
   const figure = { kind: 'document' as const, title: 'Description d’un réseau local', lines };

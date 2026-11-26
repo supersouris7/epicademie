@@ -126,7 +126,8 @@ const SAISIES: readonly { texte: string; mot: Notion; article: 'l’' | 'la' | '
     article: 'la',
   },
   {
-    texte: 'Après un trajet, le téléphone garde en mémoire les positions par lesquelles son propriétaire est passé.',
+    texte:
+      'Après un trajet, il reste dans le téléphone une information sur les lieux traversés, laissée simplement parce qu’on s’en est servi.',
     mot: 'trace numérique',
     article: 'une',
   },
@@ -137,7 +138,12 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   return {
     prompt: `${s.texte} Écris le mot (ou le groupe de mots) du vocabulaire de la sécurité numérique qui correspond.`,
     ...saisie(
-      formes(s.mot, s.article),
+      [
+        ...formes(s.mot, s.article),
+        ...(s.mot === 'trace numérique'
+          ? ['traces numériques', 'des traces numériques', 'la trace numérique']
+          : [`une ${s.mot}`]),
+      ],
       TERMES.filter((x) => x !== s.mot).map((x) => [x, `« ${maj(x)} » désigne : ${SENS[x]}.`] as const),
     ),
     hint: 'Cette action sert-elle à se présenter, à le prouver, à conserver ou à laisser une marque ?',
@@ -150,26 +156,33 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   };
 };
 
-const REGLES: readonly { texte: string; regle: string }[] = [
+const REGLES: readonly { texte: string; regle: string; pourquoi: string }[] = [
   {
     texte: 'Un élève recopie plusieurs pages d’un roman récent et les met en ligne sans l’accord de l’auteur.',
     regle: 'obtenir l’accord de l’auteur avant de diffuser son œuvre',
+    pourquoi: 'Mettre en ligne l’œuvre d’un autre, c’est la reproduire : il faut en principe son consentement.',
   },
   {
     texte: 'Un exposé reprend des phrases d’un site en les présentant comme les siennes.',
     regle: 'ne pas présenter comme sien le travail d’autrui',
+    pourquoi:
+      'Reprendre des phrases sans dire d’où elles viennent fait croire qu’on en est l’auteur : c’est un plagiat.',
   },
   {
     texte: 'Un élève utilise le mot de passe d’un camarade, trouvé par hasard, pour entrer dans son compte.',
     regle: 'pas d’accès frauduleux à un système',
+    pourquoi: 'Même trouvé par hasard, un mot de passe ne donne pas le droit d’entrer dans le compte d’autrui.',
   },
   {
-    texte: 'Un site veut enregistrer sur l’appareil des informations non indispensables pour suivre la navigation.',
+    texte:
+      'Pour suivre la navigation, un site veut enregistrer sur l’appareil des témoins de connexion non indispensables.',
     regle: 'consentement avant d’enregistrer des informations',
+    pourquoi: 'L’utilisateur doit être informé puis donner son accord avant cet enregistrement non indispensable.',
   },
   {
     texte: 'Un travail de groupe n’existe qu’en un seul fichier sur un seul ordinateur.',
     regle: 'sauvegarde des données',
+    pourquoi: 'Avec un seul exemplaire, une panne suffit à tout perdre : il faut une copie sur un autre support.',
   },
 ];
 
@@ -221,11 +234,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
         .map((x) => ({ label: x.regle, why: `« ${maj(x.regle)} » concerne une autre situation : ${x.texte}` })),
     ),
     hint: 'Qu’est-ce qui est menacé : le travail d’un auteur, un compte, un appareil ou des données ?',
-    steps: [
-      'On repère ce qui est menacé.',
-      `La situation relève de la règle « ${r.regle} ».`,
-      `La réponse est **${r.regle}**.`,
-    ],
+    steps: ['On repère ce qui est menacé.', r.pourquoi, `La réponse est **${r.regle}**.`],
     targetSeconds: 45,
   };
 };
@@ -304,7 +313,7 @@ export const securite = notion(
     title: 'Règles et sécurité du numérique',
     memo: [
       'Protège ton environnement : **mises à jour**, mot de passe gardé pour toi, **sauvegarde** des données, méfiance face au **hameçonnage**. L’**identification** dit qui tu es, l’**authentification** le confirme.',
-      'Une œuvre a un auteur : la reproduire sans son consentement est illicite (**propriété intellectuelle**). Citer ses sources évite le **plagiat**.',
+      'Une œuvre a un auteur : en principe, la reproduire sans son consentement est illicite (**propriété intellectuelle**). Citer ses sources évite le **plagiat**.',
     ],
     attendu:
       'Identifier des règles permettant de sécuriser un environnement numérique (bases de la cybersécurité) et des règles de respect de la propriété intellectuelle',
