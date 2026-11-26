@@ -1,5 +1,5 @@
 import type { Chapter, Level, Skill } from '../types.ts';
-import { choice, num, traps } from '../build.ts';
+import { num, traps } from '../build.ts';
 import { div, fmt, mul, r } from '../rational.ts';
 import { circuitsSerieDerivation } from './circuits.ts';
 import { conducteursIsolants } from './conducteurs.ts';
@@ -10,9 +10,13 @@ import { sourcesFormesEnergie } from './formes-energie.ts';
 import { masseVolumique } from './masse-volumique.ts';
 import { corpsPurs } from './melanges.ts';
 import { mouvementUniforme } from './mouvement-uniforme.ts';
+import { prefixesSi } from './prefixes.ts';
+import { propagationLumiere } from './propagation-lumiere.ts';
+import { propagationSon } from './propagation-son.ts';
 import { referentielNotion } from './referentiel.ts';
 import { solubiliteNotion } from './solubilite.ts';
 import { trajectoireNotion } from './trajectoire.ts';
+import { unitesSi } from './unites.ts';
 import { vitesseMoyenne } from './vitesse-moyenne.ts';
 
 /**
@@ -20,107 +24,20 @@ import { vitesseMoyenne } from './vitesse-moyenne.ts';
  * - relations au programme : programme de physique-chimie du cycle 4 (BOEN n° 31 du
  *   30 juillet 2020) : relation vitesse–distance–durée (mouvement
  *   uniforme), loi d'Ohm, puissance électrique P = U × I, relation énergie–puissance–durée ;
- * - unités, symboles et préfixes : BIPM, Le Système international d'unités (SI), 9e édition,
- *   résumé en français (tableaux 1 à 3 : unités de base, unités dérivées à nom spécial —
- *   ohm = V/A, watt = J/s — et préfixes).
+ * - unités : BIPM, Le Système international d'unités (SI), 9e édition, résumé en français
+ *   (unités dérivées à nom spécial : ohm = V/A, watt = J/s).
  * Le programme est écrit pour tout le cycle : la répartition 5e / 4e / 3e est un choix de
  * progression (des relations les plus simples aux plus composées).
  * Le chapitre 5e « Organisation de la matière » (5 niveaux) a ses fichiers et ses faits cités
- * (`donnees-matiere.ts`), de même que les chapitres 5e « Mouvement » (`donnees-mouvement.ts`) et « Énergie et
- * circuits » (`donnees-energie.ts`).
+ * (`donnees-matiere.ts`), de même que les chapitres 5e « Mouvement » (`donnees-mouvement.ts`), « Énergie et
+ * circuits » (`donnees-energie.ts`) et « Signaux et unités » (`donnees-signaux.ts`, identifiant historique
+ * `p5-unites`).
  */
 
 const PROG = 'Physique-chimie, cycle 4 (BOEN n° 31 du 30 juillet 2020)';
 const BIPM = 'BIPM, Le Système international d’unités, 9e édition (résumé)';
 
 type Rng = { int(min: number, max: number): number; pick<T>(l: readonly T[]): T };
-
-// ——— Unités et préfixes (BIPM) ———
-const UNITS: readonly { readonly grandeur: string; readonly unite: string; readonly symbole: string }[] = [
-  { grandeur: 'longueur', unite: 'mètre', symbole: 'm' },
-  { grandeur: 'masse', unite: 'kilogramme', symbole: 'kg' },
-  { grandeur: 'temps (durée)', unite: 'seconde', symbole: 's' },
-  { grandeur: 'intensité du courant électrique', unite: 'ampère', symbole: 'A' },
-  { grandeur: 'température thermodynamique', unite: 'kelvin', symbole: 'K' },
-  { grandeur: 'force', unite: 'newton', symbole: 'N' },
-  { grandeur: 'énergie', unite: 'joule', symbole: 'J' },
-  { grandeur: 'puissance', unite: 'watt', symbole: 'W' },
-  { grandeur: 'tension électrique (différence de potentiel)', unite: 'volt', symbole: 'V' },
-  { grandeur: 'résistance électrique', unite: 'ohm', symbole: 'Ω' },
-  { grandeur: 'fréquence', unite: 'hertz', symbole: 'Hz' },
-  { grandeur: 'pression', unite: 'pascal', symbole: 'Pa' },
-];
-
-const PREFIXES: readonly {
-  readonly nom: string;
-  readonly symbole: string;
-  readonly facteur: string;
-  readonly tier: Level;
-}[] = [
-  { nom: 'kilo', symbole: 'k', facteur: '1 000 (10^3)', tier: 1 },
-  { nom: 'milli', symbole: 'm', facteur: '0,001 (10^-3)', tier: 1 },
-  { nom: 'centi', symbole: 'c', facteur: '0,01 (10^-2)', tier: 1 },
-  { nom: 'méga', symbole: 'M', facteur: '1 000 000 (10^6)', tier: 2 },
-  { nom: 'micro', symbole: 'μ', facteur: '0,000 001 (10^-6)', tier: 2 },
-  { nom: 'giga', symbole: 'G', facteur: '10^9', tier: 3 },
-  { nom: 'nano', symbole: 'n', facteur: '10^-9', tier: 3 },
-];
-
-const units: Skill = {
-  id: 'p5-unites',
-  title: 'Les unités du Système international',
-  lesson: {
-    memo: [
-      'Chaque grandeur a son unité : la force en newtons (N), l’énergie en joules (J), la puissance en watts (W), la tension en volts (V).',
-    ],
-    source: `${BIPM} : tableaux 1 et 2.`,
-  },
-  generate: (rng) => {
-    const u = rng.pick(UNITS);
-    const others = UNITS.filter((x) => x.unite !== u.unite);
-    const wrong = [rng.pick(others), rng.pick(others), rng.pick(others)];
-    const { answer, traps: t } = choice(
-      rng,
-      `${u.unite} (${u.symbole})`,
-      wrong.map((w) => ({ label: `${w.unite} (${w.symbole})`, why: `Le ${w.unite} mesure la ${w.grandeur}.` })),
-    );
-    return {
-      prompt: `Dans quelle unité du Système international exprime-t-on la **${u.grandeur}** ?`,
-      answer,
-      traps: t,
-      hint: 'Pense aux grandeurs du cours : force, énergie, puissance, tension…',
-      steps: [`La ${u.grandeur} s’exprime en ${u.unite}s.`, `Unité : **${u.unite} (${u.symbole})**.`],
-    };
-  },
-};
-
-const prefixes: Skill = {
-  id: 'p5-prefixes',
-  title: 'Les préfixes du SI',
-  lesson: {
-    memo: [
-      'kilo (k) = × 1 000, milli (m) = × 0,001 : 1 km = 1 000 m, 1 mA = 0,001 A.',
-      'méga (M) = × 1 000 000, micro (μ) = × 0,000 001.',
-    ],
-    source: `${BIPM} : tableau 3.`,
-  },
-  generate: (rng, level) => {
-    const p = rng.pick(PREFIXES.filter((x) => x.tier <= level));
-    const others = PREFIXES.filter((x) => x.nom !== p.nom);
-    const { answer, traps: t } = choice(
-      rng,
-      p.facteur,
-      [rng.pick(others), rng.pick(others)].map((o) => ({ label: o.facteur, why: `C’est le facteur de « ${o.nom} ».` })),
-    );
-    return {
-      prompt: `Que vaut le préfixe **${p.nom}** (${p.symbole}) ?`,
-      answer,
-      traps: t,
-      hint: 'kilo = mille ; milli = un millième.',
-      steps: [`Le préfixe ${p.nom} (${p.symbole}) multiplie l’unité par ${p.facteur}.`, `Réponse : **${p.facteur}**.`],
-    };
-  },
-};
 
 // ——— Relations (programme) ———
 interface RelationSpec {
@@ -267,7 +184,7 @@ const chapter = (id: string, grade: Chapter['grade'], title: string, skills: rea
 });
 
 export const PHYSIQUE_CHAPTERS: readonly Chapter[] = [
-  chapter('p5-unites', '5e', 'Unités et préfixes', [units, prefixes]),
+  chapter('p5-unites', '5e', 'Signaux et unités', [propagationLumiere, propagationSon, unitesSi, prefixesSi]),
   chapter('p5-matiere', '5e', 'Organisation de la matière', [
     etats,
     corpsPurs,
