@@ -3,17 +3,7 @@ import type { Rng } from '../rng.ts';
 import { choice } from '../build.ts';
 import { ended, pairs, typed } from './pronoms.ts';
 import { at, others, some } from './temps.ts';
-import {
-  AXES,
-  AXIS_WORDS,
-  FOODS,
-  HOME,
-  LEISURE,
-  SCHOOL,
-  STUDIES,
-  type Study,
-  type Term,
-} from './vocabulaire-6e-faits.ts';
+import { AXES, AXIS_WORDS, FOODS, HOME, LEISURE, SCHOOL, STUDIES, type Term } from './vocabulaire-6e-faits.ts';
 
 /**
  * Anglais 6e — « Vocabulaire thématique » (lot an-6e-09, docs/adr/0034). Programme d'anglais du collège (arrêté du
@@ -79,9 +69,9 @@ const find = (list: readonly Term[], en: string): Term => {
 };
 const means = (t: Term) => `« ${t.en} » veut dire « ${t.fr} ».`;
 const saidAs = (t: Term) => `« ${t.fr} » se dit « ${t.en} ».`;
-const rule = (th: Theme) => `Vocabulaire : ${th.name}. Chaque mot anglais a un sens précis.`;
+const rule = (th: Pick<Theme, 'name'>) => `Vocabulaire : ${th.name}. Chaque mot anglais a un sens précis.`;
 
-function spot(rng: Rng, th: Theme): QuestionDraft {
+function spot(rng: Rng, th: Pick<Theme, 'terms' | 'name'>): QuestionDraft {
   const t = rng.pick(th.terms);
   // Trois sens très éloignés : un seul mot par famille.
   const far: Term[] = [];
@@ -176,7 +166,7 @@ const size = (t: Term) => {
     : `La réponse s’écrit en un seul mot de ${t.en.length} caractères.`;
 };
 
-function complete(rng: Rng, th: Theme): QuestionDraft {
+function complete(rng: Rng, th: Pick<Theme, 'terms' | 'frames'>): QuestionDraft {
   const f = rng.pick(th.frames);
   const t = find(th.terms, f.en);
   return {
@@ -516,8 +506,8 @@ const home = lexical({
 
 // ——— 5. Les repères des cinq axes culturels ———
 const axis = (i: number) => at(AXES, i);
-const axisRule = 'Le programme de 6e compte cinq axes culturels ; chacun a ses objets d’étude possibles.';
-const classed = (s: Study) => `« ${s.name} » est un objet d’étude de l’axe « ${axis(s.axis)} ».`;
+const axisRule =
+  'Le programme de 6e compte cinq axes culturels. Les sujets rattachés ici à un axe sont des exemples, pas une liste à réciter.';
 const AXIS_ABOUT: readonly string[] = [
   'des personnes et des personnages, réels ou fictifs, et leurs relations',
   'la vie des jeunes : lieux de vie, école, loisirs',
@@ -527,11 +517,61 @@ const AXIS_ABOUT: readonly string[] = [
 ];
 const whyAxis = (i: number) => `L’axe « ${axis(i)} » porte sur ${at(AXIS_ABOUT, i)}.`;
 
-function studyChoice(rng: Rng, s: Study, count: number): QuestionDraft {
+/** Mots anglais qui renvoient clairement à un seul axe, rangés dans l'ordre des axes. */
+const AXIS_LEXIS: readonly (readonly string[])[] = [
+  ['family', 'uncle', 'aunt'],
+  ['homework', 'calculator', 'pencil case'],
+  ['river', 'lake', 'coast', 'cliff', 'valley', 'hill'],
+  ['witch', 'wizard', 'fairy tale', 'dwarf'],
+  ['happy', 'angry', 'afraid', 'disappointed'],
+];
+const AXIS_TERMS: readonly Term[] = AXIS_LEXIS.flat().map((en) => find([...AXIS_WORDS, ...SCHOOL], en));
+const AXIS_THEME = {
+  terms: AXIS_TERMS,
+  name: 'les thèmes des axes culturels',
+  frames: [
+    frame('family', 'There are five people in my ….'),
+    frame('uncle', 'My dad’s brother is my ….'),
+    frame('aunt', 'My mum’s sister is my ….'),
+    frame('homework', 'After school, I do my ….'),
+    frame('calculator', 'In maths, I can use my ….'),
+    frame('river', 'The Mississippi is a very long ….'),
+    frame('lake', 'The boat is in the middle of the ….'),
+    frame('valley', 'The village is in a green … between two mountains.'),
+    frame('witch', 'In the story, the … flies on her broom.'),
+    frame('wizard', 'Harry Potter is a famous British ….'),
+    frame('dwarf', 'In the fairy tale, a little … works in the mine.'),
+    frame('happy', 'It’s my birthday today: I’m very ….'),
+    frame('angry', 'He is shouting because he is very ….'),
+    frame('afraid', 'The dog is big and I am … of it.'),
+  ],
+};
+/** Niveau 4 : mots à écrire sans modèle. */
+const AXIS_HARD = [
+  'aunt',
+  'homework',
+  'coast',
+  'cliff',
+  'valley',
+  'hill',
+  'wizard',
+  'fairy tale',
+  'dwarf',
+  'disappointed',
+];
+
+/** Sujets d'exemple : objets d'étude à un seul axe évident, et la famille. */
+const SUBJECTS: readonly { axis: number; name: string }[] = [
+  { axis: 0, name: 'La famille : parents, oncles et tantes' },
+  ...STUDIES,
+];
+
+function subjectChoice(rng: Rng): QuestionDraft {
+  const s = rng.pick(SUBJECTS);
   const wrong = some(
     rng,
     AXES.map((_, i) => i).filter((i) => i !== s.axis),
-    count - 1,
+    2,
   );
   const { answer, traps } = choice(
     rng,
@@ -539,85 +579,57 @@ function studyChoice(rng: Rng, s: Study, count: number): QuestionDraft {
     wrong.map((i) => ({ label: axis(i), why: whyAxis(i) })),
   );
   return {
-    prompt: `Programme de 6e : à quel axe culturel appartient l’objet d’étude « ${s.name} » ?`,
+    prompt: `Voici un exemple de sujet étudié en anglais : « ${s.name} ». À quel axe culturel le rattacher ?`,
     answer,
     traps,
-    hint: 'Cherche le mot important du titre : parle-t-il de gens, de la vie de tous les jours, de nature, d’histoires ou d’art ?',
-    steps: [axisRule, classed(s), whyAxis(s.axis), `Réponse : **${axis(s.axis)}**`],
+    hint: 'Cherche le mot important : parle-t-il de gens, de la vie de tous les jours, de nature, d’histoires ou d’art ?',
+    steps: [axisRule, whyAxis(s.axis), `Réponse : **${axis(s.axis)}**`],
   };
 }
 
-function studyMatch(rng: Rng, count: number, pool: readonly Study[]): QuestionDraft {
-  const rows = some(rng, [0, 1, 2, 3, 4], count).map((i) => {
-    const s = rng.pick(pool.filter((x) => x.axis === i));
-    return [s.name, axis(i)] as const;
+/** Quatre mots anglais, ou quatre sujets d'exemple, à relier chacun à un axe différent. */
+function axisMatch(rng: Rng, words: boolean): QuestionDraft {
+  const rows = some(rng, [0, 1, 2, 3, 4], 4).map((i) => {
+    const name = words ? rng.pick(at(AXIS_LEXIS, i)) : rng.pick(SUBJECTS.filter((s) => s.axis === i)).name;
+    return [name, axis(i)] as const;
   });
+  const what = words ? 'mot anglais' : 'exemple de sujet';
   return {
-    prompt: `Associe chaque objet d’étude à son axe culturel : ${rows.map((r) => r[0]).join(' / ')}`,
+    prompt: `Associe chaque ${what} à son axe culturel : ${rows.map((r) => r[0]).join(' / ')}`,
     answer: pairs(rng, rows),
-    hint: 'Commence par les objets dont le titre nomme un lieu, une histoire ou un art.',
-    steps: [axisRule, answered(rows)],
+    hint: 'Commence par ce qui nomme clairement un lieu, une histoire ou une activité de tous les jours.',
+    steps: [axisRule, ...(words ? rows.map((r) => means(find(AXIS_TERMS, r[0]))) : []), answered(rows)],
   };
 }
 
-/** Axe auquel se rattache chaque famille de mots. */
-const GROUP_AXIS: Readonly<Record<string, number>> = { famille: 0, paysages: 2, contes: 3, émotions: 4 };
-const EASY_WORDS = [
-  'family',
-  'uncle',
-  'aunt',
-  'river',
-  'lake',
-  'forest',
-  'island',
-  'witch',
-  'happy',
-  'angry',
-  'afraid',
-];
-const HARD_WORDS = [
-  'coast',
-  'cliff',
-  'valley',
-  'hill',
-  'meadow',
-  'wizard',
-  'fairy tale',
-  'dwarf',
-  'haunted castle',
-  'disappointed',
-];
-
-function axisWord(rng: Rng, hard: boolean): QuestionDraft {
-  const t = find(AXIS_WORDS, rng.pick(hard ? HARD_WORDS : EASY_WORDS));
-  const i = GROUP_AXIS[t.group] ?? 0;
-  const initial = t.en.slice(0, 1);
+function axisWrite(rng: Rng): QuestionDraft {
+  const t = find(AXIS_TERMS, rng.pick(AXIS_HARD));
+  const i = AXIS_LEXIS.findIndex((words) => words.includes(t.en));
   return {
-    prompt: hard
-      ? `Repère de l’axe « ${axis(i)} » : sans modèle, écris en anglais « ${t.fr} ».`
-      : `Repère de l’axe « ${axis(i)} » : écris en anglais « ${t.fr} » (le mot commence par « ${initial} »).`,
-    ...write(rng, AXIS_WORDS, t),
-    hint: hard ? `Le mot commence par « ${initial} ». ${size(t)}` : size(t),
+    prompt: `Sans modèle, écris en anglais : « ${t.fr} ».`,
+    ...write(rng, AXIS_TERMS, t),
+    hint: `Le mot commence par « ${t.en.slice(0, 1)} ». ${size(t)}`,
     steps: [`Ce mot sert à parler de l’axe « ${axis(i)} ».`, saidAs(t), `Réponse : **${t.en}**`],
   };
 }
 
-/** Activités d'une semaine culturelle, chacune tirée d'un objet d'étude du programme. */
+/** Activités d'une semaine culturelle, inventées : chacune ne touche qu'un seul axe. */
 const ACTIVITIES: readonly (readonly [number, string])[] = [
-  [0, 'We read a sailor’s logbook and a girl’s diary.'],
-  [0, 'We present real families and families from stories.'],
-  [0, 'We make masks and costumes for our characters.'],
+  [0, 'We learn who is who in a big family.'],
+  [0, 'We talk about parents, brothers and sisters.'],
+  [0, 'We present our uncles, aunts and cousins.'],
   [1, 'We compare school days in England and in France.'],
   [1, 'We try a traditional British sport.'],
-  [1, 'We find out about school holidays in the USA.'],
+  [1, 'We look at the timetable of a British school.'],
   [2, 'We follow the Mississippi river on a map.'],
-  [2, 'We look at photos of the Highlands in Scotland.'],
+  [2, 'We find the mountains and lakes of Scotland on a map.'],
   [2, 'We learn about the national parks of Kenya.'],
   [3, 'We read an old legend from Ireland.'],
-  [3, 'We draw a dragon from a fairy tale.'],
-  [3, 'We talk about witches and wizards in stories.'],
+  [3, 'We read a fairy tale about a dragon.'],
+  [3, 'We talk about witches and wizards in magic stories.'],
   [4, 'We listen to music and say how we feel.'],
-  [4, 'We use augmented reality to look at a painting.'],
+  [4, 'We say if a piece of music makes us happy or sad.'],
+  [4, 'We listen to a song and talk about our feelings.'],
 ];
 
 function week(rng: Rng): QuestionDraft {
@@ -635,7 +647,7 @@ function week(rng: Rng): QuestionDraft {
     prompt: 'Lis le programme de la semaine culturelle, puis indique l’axe culturel de chaque journée.',
     figure: { kind: 'document', title: 'Culture week', lines: rows.map((r) => r.line), credit: ABOUT },
     answer: lists(rng, rows),
-    hint: 'Dans chaque ligne, repère le nom principal : qui ou quoi étudie-t-on ce jour-là ?',
+    hint: 'Lis chaque phrase en entier : de qui ou de quoi parle-t-on ce jour-là ?',
     steps: [axisRule, ...rows.map((r) => r.why), `Réponse : **${rows.map((r) => r.good).join(' ; ')}**`],
   };
 }
@@ -648,16 +660,16 @@ const axes: Skill = {
   lesson: {
     memo: [
       'En 6e, cinq **axes culturels** : Personnes et personnages ; Le quotidien : vivre, jouer, apprendre ; Pays et paysages ; Imaginaire, contes et légendes ; Arts et expression des sentiments.',
-      'Chaque axe se découvre par un **objet d’étude** : l’image du dragon (imaginaire), le Mississippi (paysages), l’école (quotidien).',
+      'Chaque axe se découvre par un **objet d’étude**. Ceux que tu vois ici sont des exemples : l’image du dragon (imaginaire), le Mississippi (paysages), l’école (quotidien).',
     ],
-    source: source('les cinq axes culturels, leurs objets d’étude et leur lexique'),
+    source: source('les cinq axes culturels, leurs objets d’étude (proposés à titre indicatif) et leur lexique'),
     sources: [...FRAMED],
   },
   generate: (rng, level: Level): QuestionDraft => {
-    if (level === 1) return studyChoice(rng, rng.pick(STUDIES.filter((s) => s.plain)), 3);
-    if (level === 2) return coin(rng) ? studyChoice(rng, rng.pick(STUDIES), 4) : studyMatch(rng, 3, STUDIES);
-    if (level === 3) return axisWord(rng, false);
-    if (level === 4) return coin(rng) ? studyMatch(rng, 5, STUDIES) : axisWord(rng, true);
+    if (level === 1) return coin(rng) ? spot(rng, AXIS_THEME) : subjectChoice(rng);
+    if (level === 2) return axisMatch(rng, coin(rng));
+    if (level === 3) return complete(rng, AXIS_THEME);
+    if (level === 4) return axisWrite(rng);
     return week(rng);
   },
 };

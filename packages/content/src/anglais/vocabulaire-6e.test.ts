@@ -62,7 +62,6 @@ describe('anglais 6e : vocabulaire thématique', () => {
     for (const t of [...SCHOOL, ...LEISURE, ...FOODS, ...HOME, ...AXIS_WORDS])
       expect(quotes, t.en).toContain(plain(t.en.replace(/^to /, '')));
     for (const s of STUDIES) expect(quotes, s.name).toContain(plain(s.name));
-    for (let axis = 0; axis < 5; axis++) expect(STUDIES.filter((s) => s.axis === axis)).toHaveLength(4);
   });
 
   it('un sens français ne désigne qu’un mot, et aucune faute typique n’est une réponse admise', () => {
@@ -159,15 +158,47 @@ describe('anglais 6e : vocabulaire thématique', () => {
     }
   });
 
-  it('axes : un objet d’étude renvoie à son seul axe', () => {
+  it('axes : les sujets et activités à deux axes possibles sont écartés', () => {
+    const banned = [
+      'journal de bord',
+      'familles fictives',
+      'leçons de vie',
+      'masques',
+      'lieux de vie des élèves',
+      'vacances aux états unis',
+      'mers et océans',
+      'seuss',
+      'réalité augmentée',
+      'fêtes de fin d’année',
+      'supercali',
+      'logbook',
+      'diary',
+      'real families',
+      'costumes',
+      'we draw',
+      'augmented reality',
+      'painting',
+    ];
+    for (const l of LEVELS)
+      for (const q of questions('a6-axes-culturels', l)) {
+        const shown = plain(JSON.stringify(q));
+        for (const b of banned) expect(shown, `${l} ${q.prompt}`).not.toContain(b);
+      }
+  });
+
+  it('axes : montée continue, du choix à la lecture, sujets annoncés comme exemples', () => {
+    const kinds = LEVELS.map((l) => [...new Set(questions('a6-axes-culturels', l).map((q) => q.answer.kind))]);
+    expect(kinds).toEqual([['choice'], ['match'], ['text'], ['text'], ['cloze']]);
     for (const q of questions('a6-axes-culturels', 1)) {
       if (q.answer.kind !== 'choice') throw new Error('QCM attendu');
       expect(q.answer.options).toHaveLength(3);
-      const s = STUDIES.find((x) => q.prompt.includes(`« ${x.name} »`))!;
-      expect(s.plain, q.prompt).toBe(true);
     }
+    for (const q of questions('a6-axes-culturels', 3)) expect(q.prompt).toMatch(/^Complète .*« .*….* »$/);
+    for (const q of questions('a6-axes-culturels', 4)) expect(q.prompt).toMatch(/^Sans modèle/);
+    const memo = skills.at(-1)!.lesson.memo.join(' ');
+    expect(memo).toContain('des exemples');
     const witch = find('a6-axes-culturels', 3, '« la sorcière »');
-    accepts(witch, 'witch', 'a witch');
-    refuses(witch, 'wizard', 'wich');
+    accepts(witch, 'witch');
+    refuses(witch, 'wizard', 'wich', 'a witch', 'the witch');
   });
 });

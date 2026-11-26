@@ -157,32 +157,23 @@ export interface Study {
   readonly axis: number;
   /** Objet d'étude, tel que le programme l'écrit. */
   readonly name: string;
-  /** Assez parlant pour le niveau 1. */
-  readonly plain: boolean;
 }
-const study = (axis: number, name: string, plain = false): Study => ({ axis, name, plain });
+const study = (axis: number, name: string): Study => ({ axis, name });
 
+/**
+ * Seuls objets d'étude utilisés dans les exercices : ceux qui renvoient à un seul axe évident. Les autres titres du
+ * programme, proposés à titre indicatif, se rattachent raisonnablement à plusieurs axes (relecture an-6e-09).
+ */
 export const STUDIES: readonly Study[] = [
-  study(0, 'Journal de bord et journal intime'),
-  study(0, 'Familles fictives et réelles', true),
-  study(0, 'Les animaux à l’origine de leçons de vie dans les fictions'),
-  study(0, 'Masques et costumes'),
-  study(1, 'Les lieux de vie des élèves des pays anglophones'),
-  study(1, 'Sports populaires et traditionnels', true),
-  study(1, 'L’école et son organisation', true),
-  study(1, 'Les vacances aux États-Unis et leurs spécificités'),
-  study(2, 'À la découverte du fleuve Mississippi', true),
+  study(1, 'Sports populaires et traditionnels'),
+  study(1, 'L’école et son organisation'),
+  study(2, 'À la découverte du fleuve Mississippi'),
   study(2, 'Les Highlands en Écosse'),
-  study(2, 'Les parcs nationaux du Kenya, avec leur faune et flore', true),
-  study(2, 'Mers et océans dans les pays anglophones, un bain linguistique'),
-  study(3, 'L’image du dragon', true),
-  study(3, 'L’Irlande, terre de mythes et de légendes', true),
-  study(3, 'It’s a kind of magic : sorciers et magiciens dans le folklore et la fiction', true),
-  study(3, 'L’univers poétique et farfelu du Dr. Seuss'),
-  study(4, 'Réalité augmentée, un regard sur l’art'),
-  study(4, 'Le pouvoir évocateur de la musique', true),
-  study(4, 'L’imagerie des fêtes de fin d’année'),
-  study(4, 'Supercalifragilisticexpialidocious et la musicalité de la langue anglaise'),
+  study(2, 'Les parcs nationaux du Kenya, avec leur faune et flore'),
+  study(3, 'L’image du dragon'),
+  study(3, 'L’Irlande, terre de mythes et de légendes'),
+  study(3, 'It’s a kind of magic : sorciers et magiciens dans le folklore et la fiction'),
+  study(4, 'Le pouvoir évocateur de la musique'),
 ];
 
 /** Mots du programme rattachés aux thèmes des axes (famille, paysages, contes, émotions). */
@@ -334,6 +325,18 @@ export const FAITS: readonly Fait[] = [
   ),
   ...AXES.map((axis, i) =>
     fait(`programme-axe-${i + 1}`, PROG, `Axe ${i + 1}. ${axis}`, `L’axe ${i + 1} s’intitule « ${axis} ».`),
+  ),
+  fait(
+    'programme-objets-indicatifs',
+    PROG,
+    'Les objets d’étude pour chaque axe sont proposés à titre indicatif.',
+    'Les objets d’étude sont des exemples.',
+  ),
+  fait(
+    'programme-personnes-relations',
+    PROG,
+    'dont il découvre les interactions et relations possibles ainsi que la place de chacun dans l’environnement proche et le quotidien',
+    'La famille et ses relations relèvent de l’axe « Personnes et personnages ».',
   ),
   ...STUDIES.map((s, i) =>
     fait(`programme-objet-${i + 1}`, PROG, s.name, `Objet d’étude possible de l’axe ${s.axis + 1}.`),
