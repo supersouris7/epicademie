@@ -83,4 +83,6 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'h3-genocide-juifs-tsiganes', version: 1, lot: 'hi-3e-02', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'h3-france-occupee', version: 1, lot: 'hi-3e-02', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'h3-vichy-resistance', version: 1, lot: 'hi-3e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'h3-projet-europeen', version: 1, lot: 'hi-3e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'h3-apres-1989', version: 1, lot: 'hi-3e-03', date: '2026-11-26', verdict: 'ok' },
 ];

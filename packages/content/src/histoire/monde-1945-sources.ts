@@ -234,7 +234,7 @@ export const PREUVES = {
     'Le Trésor de la langue française',
     'cnrtl-terrorisme',
   )(
-    "Ensemble des actes de violence qu'une organisation politique exécute dans le but de désorganiser la société existante et de créer un climat d'insécurité",
+    "Ensemble des actes de violence qu'une organisation politique exécute dans le but de désorganiser la société existante et de créer un climat d'insécurité tel que la prise du pouvoir soit possible",
   ),
   onuMission: vp('onu')(
     'L’Organisation des Nations unies (ONU) est créée en 1945 pour assurer le "maintien de la paix et de la sécurité internationales"',

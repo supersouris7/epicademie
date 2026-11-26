@@ -868,7 +868,8 @@ const projetEuropeen: Notion = {
       ],
       gap: ['L’Union européenne est créée par le traité de ', '.', ['Maastricht']],
       ...PREUVES.union,
-      explain: 'Le traité de Maastricht entre en vigueur en 1993.',
+      explain:
+        'Signé en 1992, ce traité crée l’Union européenne, officiellement à partir de son entrée en vigueur en 1993.',
     },
     {
       q: 'Quel accord permet de voyager entre plusieurs pays sans contrôle des passeports aux frontières ?',
@@ -892,7 +893,7 @@ const projetEuropeen: Notion = {
       ],
       gap: ['Le 1er janvier 1999 naît la monnaie commune : l’', '.', ['euro']],
       ...PREUVES.euro,
-      explain: 'Les billets et les pièces en euros arrivent en 2002.',
+      explain: 'L’euro naît en 1999 ; ses billets et ses pièces arrivent ensuite, en 2002.',
     },
     {
       q: 'Dans quel contexte international débute la construction européenne ?',
@@ -993,7 +994,7 @@ const projetEuropeen: Notion = {
       accepted: [...mot('euro', 'l’', 'un ')],
       traps: [
         t('franc', 'Le franc est une ancienne monnaie.'),
-        t('écu', 'La monnaie née en 1999 s’appelle autrement.'),
+        t('écu', 'La monnaie commune née en 1999 ne s’appelle pas l’écu, mais l’euro.'),
       ],
       ...PREUVES.euro,
       explain: 'L’euro naît le 1er janvier 1999.',
@@ -1027,7 +1028,7 @@ const projetEuropeen: Notion = {
           explain: 'La mise en commun rend la guerre impossible.',
         },
         {
-          q: 'En mobilisant tes connaissances : quel traité de la ligne 4 crée la CEE ?',
+          q: 'En mobilisant tes connaissances : quel traité crée la CEE, citée à la ligne 4 ?',
           a: 'le traité de Rome',
           wrong: [
             w('le traité de Maastricht', 'Maastricht est signé en 1992.'),
@@ -1138,7 +1139,7 @@ const apres1989: Notion = {
       wrong: [
         w('une bombe atomique détruit une ville', 'Ce n’est pas ce qui s’est passé en 2001.'),
         w('un débarquement militaire sur la côte', 'Il s’agit d’un attentat terroriste.'),
-        w('la construction d’un mur à New York', 'Aucun mur n’est construit.'),
+        w('une prise d’otages dans une ambassade', 'Ce jour-là, des avions détournés frappent des bâtiments.'),
       ],
       gap: ['Le 11 septembre ', ', des attentats frappent New York et Washington.', annee('2001')],
       ...PREUVES.attaques,
@@ -1247,7 +1248,7 @@ const apres1989: Notion = {
       gap: [
         'Avec la fin de la guerre froide, le nombre de missions de maintien de la paix a rapidement ',
         '.',
-        ['augmenté', 'augmente'],
+        ['augmenté', 'augmente', 'progressé', 'progresse'],
       ],
       ...PREUVES.hausseMissions,
       explain: 'La fin de la rivalité des blocs permet davantage d’interventions.',

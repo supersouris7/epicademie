@@ -3167,4 +3167,32 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Un développement qui répond aux besoins d’aujourd’hui sans compromettre l’avenir.',
     example: 'Le Sommet de la Terre met en avant le développement durable.',
   },
+  {
+    id: 'suffrage-direct',
+    word: 'suffrage direct',
+    forms: ['suffrage direct'],
+    definition: 'Un vote où les citoyens choisissent eux-mêmes leurs élus, sans intermédiaire.',
+    example: 'Depuis 1979, les députés européens sont élus au suffrage direct.',
+  },
+  {
+    id: 'contraignant',
+    word: 'contraignant',
+    forms: ['contraignant', 'contraignante'],
+    definition: 'Qui oblige à respecter un engagement.',
+    example: 'L’accord de Paris est contraignant.',
+  },
+  {
+    id: 'coercitif',
+    word: 'coercitif',
+    forms: ['coercitif', 'coercitive'],
+    definition: 'Qui permet de forcer quelqu’un à obéir, par exemple en le punissant.',
+    example: 'L’accord de Paris n’a pas de mécanisme coercitif.',
+  },
+  {
+    id: 'cop',
+    word: 'COP',
+    forms: ['COP', 'COP21'],
+    definition: 'La conférence où les États signataires d’un traité sur le climat se réunissent ; COP21 est la 21e.',
+    example: 'La COP21 se tient à Paris en 2015.',
+  },
 ];
