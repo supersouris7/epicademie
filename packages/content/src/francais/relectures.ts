@@ -123,5 +123,6 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'f6-constituants-phrase', version: 1, lot: 'fr-6e-01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'f6-attribut-ou-cod', version: 1, lot: 'fr-6e-01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'f6-coi', version: 1, lot: 'fr-6e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-complements-circonstanciels', version: 1, lot: 'fr-6e-01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'f6-construction-verbe', version: 1, lot: 'fr-6e-01', date: '2026-11-26', verdict: 'ok' },
 ];
