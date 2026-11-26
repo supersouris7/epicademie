@@ -19,6 +19,14 @@ const academieOm2 = (id: string, word: string, page: string): Source => ({
   url: `https://www.cnrtl.fr/definition/academie9/${page}`,
 });
 
+/** Articles relevés pour le lot fr-cm2-10 (consultés le 26/11/2026). */
+const CONSULTED_L2 = '2026-11-26';
+const academieL2 = (id: string, word: string): Source => ({ ...academie(id, word), consultedOn: CONSULTED_L2 });
+const tlfiL2 = (id: string, word: string, path: string): Source => ({
+  ...tlfi(id, word, path),
+  consultedOn: CONSULTED_L2,
+});
+
 /** Sources de français (registre : `sources.ts` à la racine du paquet). */
 export const SOURCES: readonly Source[] = [
   {
@@ -562,4 +570,30 @@ export const SOURCES: readonly Source[] = [
   academieOm2('accord', 'accord', 'accord'),
   academieOm2('repos', 'repos', 'repos'),
   tlfi('om2-leur-pronom', 'leur (pronom personnel)', 'leur/pronom'),
+  // Lot fr-cm2-10 : lire et comprendre.
+  academieL2('narratif', 'narratif'),
+  academieL2('fiction', 'fiction'),
+  academieL2('poeme', 'poème'),
+  academieL2('dialogue', 'dialogue'),
+  academieL2('document', 'document'),
+  academieL2('paragraphe', 'paragraphe'),
+  academieL2('schema', 'schéma'),
+  academieL2('narrateur', 'narrateur'),
+  academieL2('auteur', 'auteur'),
+  academieL2('personnage', 'personnage'),
+  academieL2('penombre', 'pénombre'),
+  academieL2('chanceler', 'chanceler'),
+  academieL2('arpenter', 'arpenter'),
+  academieL2('hisser', 'hisser'),
+  academieL2('lugubre', 'lugubre'),
+  academieL2('epier', 'épier'),
+  academieL2('recif', 'récif'),
+  academieL2('embarcation', 'embarcation'),
+  academieL2('murmurer', 'murmurer'),
+  academieL2('illisible', 'illisible'),
+  academieL2('immangeable', 'immangeable'),
+  academieL2('inaudible', 'inaudible'),
+  tlfiL2('documentaire', 'documentaire', 'documentaire'),
+  tlfiL2('titre', 'titre', 'titre'),
+  tlfiL2('vetuste', 'vétuste', 'v%C3%A9tuste'),
 ];
