@@ -150,6 +150,7 @@ const M_2025 =
   "33 mégapoles (megacities) dépassaient les dix millions d'habitants (dont 19 en Asie, 5 en Amérique latine, 4 en Afrique, 3 en Europe et 2 en Amérique du Nord)";
 const M_AFRIQUE =
   'Certaines agglomérations africaines, multimillionnaires, ne possèdent pas forcément de fonctions métropolitaines';
+const M_DEF_HUB = 'la plateforme de correspondance ou de regroupement des compagnies aériennes';
 const M_HUBS = 'comme Atlanta en Amérique du Nord, Singapour, ou encore Doubaï';
 const M_SHANGHAI = 'Shanghai (premier pour les conteneurs) avec Yangshan';
 const M_DETROIT = 'Détroit, Cleveland, Pittsburgh et Buffalo plus de 30 %';
@@ -163,7 +164,7 @@ const metropoles: Notion = {
   memo: [
     'Les **villes mondiales** sont les métropoles capables de commander l’économie mondiale : Londres, New York, Paris et Tokyo sont parmi les plus citées. Une **mégapole** compte au moins 10 millions d’habitants : 33 en 2025, dont 19 en Asie, 5 en Amérique latine, 4 en Afrique, 3 en Europe et 2 en Amérique du Nord.',
     'Une **mégalopole** est un vaste réseau de grandes villes : de Boston à Washington, au cœur du Japon (couloir du Tōkaidō) ; de Londres à Milan, on parle plutôt de dorsale européenne. Le mot a aussi été employé pour SanSan (de San Francisco à San Diego) et le Gauteng (Afrique du Sud).',
-    'Autres repères : les **hubs** aériens d’Atlanta, Singapour et Doubaï, le port de Shanghai (premier pour les conteneurs) et Détroit, **ville rétrécissante**.',
+    'Autres repères : un **hub** aérien est une plateforme de correspondance ou de regroupement des compagnies aériennes (Atlanta, Singapour, Doubaï) ; le port de Shanghai (premier pour les conteneurs) et Détroit, **ville rétrécissante**.',
   ],
   faits: [
     fait(
@@ -248,15 +249,19 @@ const metropoles: Notion = {
       preuve(METROPOLE, M_AFRIQUE, 'La taille ne suffit pas à définir une métropole.'),
     ),
     fait(
-      'Quelles villes sont citées comme exemples de très grands hubs aériens ?',
-      'Atlanta, Singapour et Doubaï',
+      'Qu’est-ce qu’un hub aérien ?',
+      'une plateforme de correspondance ou de regroupement des compagnies aériennes',
       [
-        ['Détroit, Cleveland et Buffalo', 'Ces villes sont citées parce qu’elles perdent des habitants.'],
-        ['Boston, Washington et Milan', 'Ces villes servent à situer des mégalopoles.'],
-        ['Tokyo, Londres et New York', 'Ce sont les trois villes globales d’une analyse ancienne.'],
+        ['un avion qui transporte seulement des marchandises', 'Un hub est un lieu, pas un avion.'],
+        ['un aéroport où personne ne peut changer d’avion', 'Au contraire, on y fait des correspondances.'],
+        ['une ligne directe qui relie seulement deux villes', 'Un hub est un nœud, pas une ligne entre deux villes.'],
       ],
-      ['Atlanta, Singapour et ', ' sont de grands hubs aériens.', ['Doubaï', 'Dubaï', 'Dubai', 'Doubai']],
-      preuve(HUB, M_HUBS, 'Un hub est un nœud où l’on fait des correspondances.'),
+      [
+        'Un hub aérien est une plateforme de ',
+        ' ou de regroupement des compagnies aériennes.',
+        ['correspondance', 'correspondances'],
+      ],
+      preuve(HUB, M_DEF_HUB, 'Un hub est un nœud où l’on fait des correspondances.'),
     ),
     fait(
       'Quel port est le premier pour les conteneurs ?',
@@ -435,11 +440,7 @@ const metropoles: Notion = {
             ['une conurbation', 'Une conurbation est un ensemble de villes qui se sont rejointes.'],
             ['un avant-pays', 'L’avant-pays désigne les territoires atteints par des lignes.'],
           ],
-          preuve(
-            HUB,
-            'la plateforme de correspondance ou de regroupement des compagnies aériennes',
-            'On y change d’avion : c’est un hub.',
-          ),
+          preuve(HUB, M_DEF_HUB, 'On y change d’avion : c’est un hub.'),
         ),
         question(
           'Sur quel continent se trouve la ville du texte ?',
