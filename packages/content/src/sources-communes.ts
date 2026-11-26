@@ -46,4 +46,5 @@ export const SOURCES: readonly Source[] = [
   tlfi('bois', 'bois', 'bois'),
   tlfi('verre', 'verre', 'verre'),
   tlfi('acier', 'acier', 'acier'),
+  { ...tlfi('transformation', 'transformation', 'transformation'), consultedOn: '2026-11-26' },
 ];
