@@ -152,6 +152,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: '« el libro » : le livre dont on parle.',
   },
   {
+    id: 'possessif',
+    word: 'possessif',
+    forms: ['possessif', 'possessifs'],
+    definition: 'Mot qui dit à qui est quelque chose, placé devant le nom : mi, tu, su (mon, ton, son).',
+    example: '« mi libro » : mon livre.',
+  },
+  {
     id: 'article-indefini',
     word: 'article indéfini',
     forms: ['article indéfini', 'articles indéfinis'],

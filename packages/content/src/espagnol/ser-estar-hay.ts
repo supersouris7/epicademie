@@ -13,6 +13,8 @@ import { capital, dotted, matching, noAccent, options } from './present-regulier
 type Copula = 'ser' | 'estar';
 const form = (v: Copula, p: Person): string => CONJUGAISONS[v].present[p];
 const table = (v: Copula) => PERSONS.map((p) => `${PRONOUN[p]} ${form(v, p)}`).join(', ');
+/** Pronom cité dans les étapes : la 3e personne vaut aussi pour le féminin. */
+const subjectOf = (p: Person) => (p === 'el' ? 'él / ella' : p === 'ellos' ? 'ellos / ellas' : PRONOUN[p]);
 const other = (v: Copula): Copula => (v === 'ser' ? 'estar' : 'ser');
 
 /** Phrase à compléter : « before … after ». */
@@ -32,7 +34,11 @@ const phrase = (before: string, after: string, verb: Copula, person: Person, why
   person,
   why,
 });
-const sentence = (s: Pick<Phrase, 'before' | 'after'>) => `${s.before ? `${s.before} ` : ''}… ${s.after}`;
+/** Pas d'espace après « ¿ » ni avant la ponctuation. */
+const sentence = (s: Pick<Phrase, 'before' | 'after'>) => {
+  const start = s.before === '' || s.before === '¿' ? s.before : `${s.before} `;
+  return `${start}…${/^[?!.,]/.test(s.after) ? '' : ' '}${s.after}`;
+};
 const right = (s: Phrase) => form(s.verb, s.person);
 /** Réponse affichée : majuscule quand le verbe ouvre la phrase. */
 const shown = (s: Phrase) => (s.before === '' || s.before === '¿' ? capital(right(s)) : right(s));
@@ -71,6 +77,9 @@ const SER_HARD: readonly Phrase[] = [
   phrase('Estos libros', 'de Javier.', 'ser', 'ellos', OWNER),
   phrase('Usted', 'profesor, ¿no?', 'ser', 'el', '« usted » se conjugue à la 3e personne du singulier.'),
   phrase('Ustedes', 'de México, ¿no?', 'ser', 'ellos', '« ustedes » se conjugue à la 3e personne du pluriel.'),
+  phrase('¿De dónde', 'tú?', 'ser', 'tu', ORIGIN),
+  phrase('Mi hermana y yo no', 'de aquí.', 'ser', 'nosotros', ORIGIN),
+  phrase('¿Vosotros', 'los primos de Javier?', 'ser', 'vosotros', IDENTITY),
 ];
 
 const PLACE = '« estar » dit où se trouve quelqu’un ou quelque chose.';
@@ -190,7 +199,7 @@ function recognise(v: Copula, rng: Rng): QuestionDraft {
     answer,
     traps,
     hint: 'Trouve d’abord le pronom qui peut remplacer le sujet.',
-    steps: [`Le sujet correspond à « ${PRONOUN[s.person]} ».`, s.why, answerStep(good)],
+    steps: [`Le sujet correspond à « ${subjectOf(s.person)} ».`, s.why, answerStep(good)],
   };
 }
 
@@ -226,7 +235,7 @@ function distinguish(v: Copula, rng: Rng): QuestionDraft {
     answer,
     traps,
     hint: 'Le sujet contient-il « moi » ou « toi » ? Remplace-le par un pronom.',
-    steps: [`Le sujet correspond à « ${PRONOUN[s.person]} ».`, s.why, answerStep(good)],
+    steps: [`Le sujet correspond à « ${subjectOf(s.person)} ».`, s.why, answerStep(good)],
   };
 }
 
@@ -242,7 +251,7 @@ function write(v: Copula, rng: Rng): QuestionDraft {
       blanks: [{ mode: 'text', accepted: [good] }],
     },
     hint: 'Remplace le sujet par un pronom, puis récite le présent jusqu’à lui. Pense aux accents écrits.',
-    steps: [`Le sujet correspond à « ${PRONOUN[s.person]} ».`, `${v} au présent : ${table(v)}.`, answerStep(good)],
+    steps: [`Le sujet correspond à « ${subjectOf(s.person)} ».`, `${v} au présent : ${table(v)}.`, answerStep(good)],
   };
 }
 
@@ -253,7 +262,7 @@ function master(prompt: string, s: Phrase): QuestionDraft {
     answer: { kind: 'text', accepted: dotted(right(s)) },
     traps: typedTraps(s),
     hint: 'Demande-toi ce que dit la phrase (qui, quoi, quand, où, en train de quoi), puis cherche le sujet.',
-    steps: [s.why, `La forme à employer correspond à « ${PRONOUN[s.person]} ».`, answerStep(shown(s))],
+    steps: [s.why, `La forme à employer correspond à « ${subjectOf(s.person)} ».`, answerStep(shown(s))],
   };
 }
 
@@ -406,7 +415,7 @@ function conjugationQuestion(v: Copula, rng: Rng, level: Level): QuestionDraft {
   return document(rng, rng.pick(v === 'ser' ? SER_SCENES : ESTAR_SCENES), {
     instruction: `Lis le document, puis complète avec « ${v} » au présent :`,
     value: right,
-    why: (i) => `avec « ${i.before} », on emploie « ${right(i)} ». ${i.why}`,
+    why: (i) => `avec « ${i.before.replace('¿', '')} », on emploie « ${right(i)} ». ${i.why}`,
     hint: 'Dans chaque phrase, repère le sujet : il a pu changer par rapport au document.',
   });
 }
@@ -473,7 +482,7 @@ function choiceQuestion(rng: Rng, level: Level): QuestionDraft {
       answer,
       traps,
       hint: 'Décide d’abord du verbe, puis de la personne.',
-      steps: [s.why, `Le sujet correspond à « ${PRONOUN[s.person]} ».`, answerStep(good)],
+      steps: [s.why, `Le sujet correspond à « ${subjectOf(s.person)} ».`, answerStep(good)],
     };
   }
   if (level === 3) {
@@ -483,7 +492,7 @@ function choiceQuestion(rng: Rng, level: Level): QuestionDraft {
       prompt: `« ser » ou « estar » ? Écris la forme au présent : « ${sentence(s)} »`,
       answer: { kind: 'cloze', parts: [`${s.before} `, ` ${s.after}`], blanks: [{ mode: 'text', accepted: [good] }] },
       hint: 'Dit-on qui est le sujet et d’où il vient, ou bien où il est et dans quel état ?',
-      steps: [s.why, `Le sujet correspond à « ${PRONOUN[s.person]} ».`, answerStep(good)],
+      steps: [s.why, `Le sujet correspond à « ${subjectOf(s.person)} ».`, answerStep(good)],
     };
   }
   if (level === 4) return master('« ser » ou « estar » ? Écris la forme qui manque :', rng.pick(CHOICE_HARD));
@@ -574,13 +583,13 @@ const HAY_SCENES: readonly HayScene[] = [
     lines: [
       'Inés : Mi habitación tiene una cama y una mesa.',
       'Inés : El ordenador se encuentra en la mesa.',
-      'Inés : Tengo dos pósters, a la derecha de la ventana.',
+      'Inés : Tengo dos pósteres, a la derecha de la ventana.',
     ],
     items: [
       { ...presence('En la habitación de Inés', 'una cama.', 'hay', A_NOUN), line: 1 },
       { ...presence('El ordenador', 'en la mesa.', 'está', ONE), line: 2 },
-      { ...presence('En la habitación', 'dos pósters.', 'hay', NUMBER), line: 3 },
-      { ...presence('Los pósters', 'a la derecha de la ventana.', 'están', MANY), line: 3 },
+      { ...presence('En la habitación', 'dos pósteres.', 'hay', NUMBER), line: 3 },
+      { ...presence('Los pósteres', 'a la derecha de la ventana.', 'están', MANY), line: 3 },
     ],
   },
   {
@@ -686,6 +695,7 @@ const ser = skill({
   memo: [
     '« ser » (être) relie le sujet à un **attribut** : qui il est, son origine, son métier. « Soy Inés. Soy de Sevilla. »',
     'Présent : soy, eres, es, somos, sois, son. Il sert aussi pour l’heure : « Es la una. Son las tres. »',
+    'Et pour le jour (« Hoy es martes. ») ou le propriétaire (« Es de Inés. »). Avec « usted », on dit « es ».',
   ],
   detail: 'Présent des verbes irréguliers : ser.',
   sources: ['rae-dle-ser', 'rae-dpd-ser', 'rae-dpd-estar'],
@@ -699,6 +709,7 @@ const estar = skill({
   memo: [
     '« estar » (être, se trouver) dit un lieu ou un **état** : « Estoy en casa. Estoy contento. » Avec le **gérondif**, il montre une action en cours : « Estoy cantando. »',
     'Présent : estoy, estás, está, estamos, estáis, están. Garde les accents. Pour la date : « Hoy estamos a lunes. »',
+    'Pour la saison : « Estamos en primavera. » Pour prendre des nouvelles : « ¿Cómo estás? »',
   ],
   detail: 'Présent des verbes irréguliers : estar ; estar + gérondif.',
   sources: ['rae-dle-estar', 'rae-dpd-estar'],
@@ -724,8 +735,8 @@ const hay = skill({
   title: 'Hay : dire ce qu’il y a',
   version: 1,
   memo: [
-    '« hay » veut dire « il y a » : c’est un **verbe impersonnel**, invariable ici. « Hay un libro. Hay dos libros. No hay leche. »',
-    'Avec un **article défini** (el, la, los, las) ou un possessif, on situe avec « está / están » : « El libro está en la mesa. » « hay que » + infinitif : il faut.',
+    '« hay » veut dire « il y a » : c’est un **verbe impersonnel**, invariable ici. On l’emploie devant un **article indéfini** (un, unas…), un nombre, une quantité ou un nom seul : « Hay un libro. Hay dos libros. No hay leche. »',
+    'Avec un **article défini** (el, la, los, las) ou un **possessif** (mi, tu…), on situe avec « está / están » : « El libro está en la mesa. » « hay que » + infinitif : il faut.',
   ],
   detail: 'Obligation impersonnelle (hay que) ; situer et dénombrer des personnes et des objets.',
   sources: ['rae-dle-haber', 'rae-dpd-haber', 'rae-dle-estar', 'rae-dpd-estar'],

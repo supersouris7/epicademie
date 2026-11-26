@@ -72,7 +72,7 @@ describe('espagnol 5e : ser, estar, hay', () => {
   });
 
   it('estar : l’accent écrit est exigé et expliqué', () => {
-    const q = find('e5-estar', 4, '¿cómo … ?');
+    const q = find('e5-estar', 4, '¿cómo …?');
     expect(typed(q, 'Estás').correct).toBe(true);
     expect(typed(q, 'estas').why).toMatch(/ces/);
     expect(typed(q, 'eres').why).toMatch(/ser/);
