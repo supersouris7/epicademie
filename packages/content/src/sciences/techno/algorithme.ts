@@ -176,7 +176,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
           ['instruction', 'Une instruction est une seule consigne ; ici il y a toute la suite des étapes.'],
         ],
       ),
-      hint: 'Le mot commence par « algo ».',
+      hint: 'Ce texte s’écrit avec des phrases, avant d’être traduit pour la machine.',
       steps: ['Les étapes sont décrites dans l’ordre, avec des phrases.', 'La réponse est **algorithme**.'],
       targetSeconds: 30,
     };
@@ -326,24 +326,33 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       targetSeconds: 50,
     };
   }
+  // Modification du seuil : la mesure, strictement entre les deux seuils, fait changer l'action.
+  const delta = rng.int(2, 4);
+  const nouveau = dessus ? seuil + delta : seuil - delta;
+  const entre = dessus ? seuil + rng.int(1, delta - 1) : seuil - rng.int(1, delta - 1);
+  const apres = t.comparaison === 'supérieure' ? entre > nouveau : entre < nouveau;
+  const bonne = apres ? t.oui : t.non;
   return {
-    prompt: `On modifie l’algorithme d’${t.objet} : le seuil de ${seuil} ${t.unite} est augmenté de ${ecart} ${t.unite}. Quel nouveau seuil faut-il écrire, en ${t.unite} ? (nombre seul)`,
+    prompt: `On modifie l’algorithme d’${t.objet} : le seuil passe de ${seuil} ${t.unite} à ${nouveau} ${t.unite}. Après cette modification, quelle action est commandée pour une mesure de ${entre} ${t.unite} ?`,
     figure,
-    ...saisie(
-      [String(seuil + ecart), `${seuil + ecart} ${t.unite}`],
-      [
-        [String(seuil - ecart), 'Tu as diminué le seuil : on demande de l’augmenter.'],
-        [String(seuil), 'C’est l’ancien seuil : il faut le modifier.'],
-        [String(ecart), 'C’est seulement l’augmentation : ajoute-la à l’ancien seuil.'],
-      ],
-    ),
-    hint: 'Repère l’ancien seuil dans le document, puis applique la modification.',
+    ...qcm(rng, bonne, [
+      {
+        label: apres ? t.non : t.oui,
+        why: `C’est l’action commandée avant la modification, avec le seuil de ${seuil} ${t.unite}. Le seuil vaut maintenant ${nouveau} ${t.unite}.`,
+      },
+      { label: 'aucune action', why: 'L’algorithme prévoit une action dans les deux cas : « si » et « sinon ».' },
+      {
+        label: 'les deux actions en même temps',
+        why: 'Avec « si… sinon », une seule des deux actions est exécutée à chaque passage.',
+      },
+    ]),
+    hint: 'Remplace l’ancien seuil par le nouveau dans la condition, puis teste la mesure.',
     steps: [
-      'Modifier un paramètre, c’est changer une valeur utilisée par l’algorithme.',
-      `${seuil} + ${ecart} = ${seuil + ecart}.`,
-      `La réponse est **${seuil + ecart}**.`,
+      `La nouvelle condition est : ${t.grandeur} ${t.comparaison} à ${nouveau} ${t.unite}.`,
+      `Avec ${entre} ${t.unite}, elle est ${apres ? 'vraie' : 'fausse'}, alors qu’elle était ${apres ? 'fausse' : 'vraie'} avant la modification.`,
+      `L’action commandée est : **${bonne}**.`,
     ],
-    targetSeconds: 50,
+    targetSeconds: 65,
   };
 };
 

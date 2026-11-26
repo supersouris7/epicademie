@@ -547,4 +547,18 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Diode électroluminescente : petit composant qui émet de la lumière.',
     example: 'Le voyant d’un appareil.',
   },
+  {
+    id: 'te-mise-au-point',
+    word: 'mise au point',
+    forms: ['mise au point'],
+    definition: 'Travail d’essais et de corrections, jusqu’à ce que le programme réponde au besoin.',
+    example: 'Essayer le programme, corriger le seuil, puis essayer de nouveau.',
+  },
+  {
+    id: 'te-decibel',
+    word: 'décibel (dB)',
+    forms: ['décibel', 'décibels', 'dB'],
+    definition: 'Unité utilisée pour indiquer le niveau d’un son.',
+    example: 'Une alarme de bruit compare le niveau sonore à un seuil en dB.',
+  },
 ];

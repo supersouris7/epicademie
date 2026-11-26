@@ -129,7 +129,7 @@ describe('technologie 5e : « Programmer »', () => {
   it('tests : la valeur révélatrice et l’essai en écart sont les seuls à contredire le besoin', () => {
     const s = notion('t5-tester-programme');
     for (const q of tirages(s, 4)) {
-      if (q.answer.kind !== 'choice') continue;
+      if (q.answer.kind !== 'choice' || !q.prompt.includes('Parmi ces valeurs')) continue;
       const demande = nombre(q.prompt, /supérieure à (\d+)/);
       const ecrit = nombre(lignes(q), /> (\d+)/);
       const differe = q.answer.options.filter(
@@ -143,5 +143,41 @@ describe('technologie 5e : « Programmer »', () => {
       const essai = new RegExp(`Essai (\\d) : mesure ${seuil} `).exec(lignes(q))?.[1];
       expect(q.answer.options[q.answer.correct], q.prompt).toBe(`l’essai ${essai}`);
     }
+  });
+
+  it('algorithme : après modification du seuil, la mesure intermédiaire change d’action', () => {
+    const cas = new Set<string>();
+    for (const q of tirages(notion('t5-algorithme'), 5)) {
+      const modif = /seuil passe de (\d+) \S+ à (\d+) .*mesure de (\d+)/.exec(q.prompt);
+      if (!modif || q.answer.kind !== 'choice') continue;
+      const [avant = 0, apres = 0, mesure = 0] = modif.slice(1).map(Number);
+      expect(Math.abs(apres - avant), q.prompt).toBeGreaterThanOrEqual(2);
+      expect((mesure - avant) * (mesure - apres), q.prompt).toBeLessThan(0);
+      const doc = lignes(q);
+      const [, sens, , oui] = /est (supérieure|inférieure) à (\d+) [^,]+, (.+?) ;/.exec(doc) ?? [];
+      const non = /sinon, (.+)\./.exec(doc)?.[1];
+      const action = (seuil: number) => ((sens === 'supérieure' ? mesure > seuil : mesure < seuil) ? oui : non);
+      expect(q.answer.options[q.answer.correct], q.prompt).toBe(action(apres));
+      expect(q.answer.options, q.prompt).toContain(action(avant));
+      cas.add(`${sens} ${apres > avant}`);
+    }
+    expect(cas.size).toBe(4);
+  });
+
+  it('tests : le résultat annoncé suit le programme, sa conformité suit le besoin', () => {
+    const verdicts = new Set<string>();
+    for (const q of tirages(notion('t5-tester-programme'), 4)) {
+      if (!q.prompt.includes('Essai à') || q.answer.kind !== 'choice') continue;
+      const mesure = nombre(q.prompt, /Essai à (\d+)/);
+      const demande = nombre(q.prompt, /supérieure à (\d+)/);
+      const ecrit = nombre(lignes(q), /> (\d+)/);
+      const [, marche, arret] = /, ([^,]+?) ; sinon, (.+?)\. Essai/.exec(q.prompt) ?? [];
+      const verdict = mesure > ecrit === mesure > demande ? 'conforme' : 'non conforme';
+      const attendu = `${mesure > ecrit ? marche : arret} : c’est ${verdict} au besoin`;
+      expect(q.answer.options[q.answer.correct], q.prompt).toBe(attendu);
+      expect(q.answer.options).toHaveLength(4);
+      verdicts.add(verdict);
+    }
+    expect(verdicts.size).toBe(2);
   });
 });

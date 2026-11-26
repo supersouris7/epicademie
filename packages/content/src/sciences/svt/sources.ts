@@ -20,10 +20,7 @@ const ecologie = (id: string, title: string, path: string, textDate: string): So
   consultedOn: '2026-11-26',
 });
 
-/**
- * Sources de SVT (registre : `sources.ts` à la racine du paquet). Les identifiants partagés avec sciences et
- * technologie ne sont définis qu’une fois, dans `../st/sources.ts`.
- */
+/** Sources de SVT (registre : `sources.ts` à la racine du paquet). */
 export const SOURCES: readonly Source[] = [
   // ——— SVT 5e (lot sv-5e-01) ———
   {
@@ -124,17 +121,26 @@ export const SOURCES: readonly Source[] = [
   tlfi('trachee', 'trachée', 'trach%C3%A9e'),
   academie('dauphin', 'dauphin'),
   academie('branchie', 'branchie'),
+  academie('ecosysteme', 'écosystème'),
   academie('biocenose', 'biocénose'),
   academie('biotope', 'biotope'),
   academie('chaine', 'chaîne'),
   tlfi('chaine-alimentaire', 'chaîne', 'cha%C3%AEne'),
+  academie('predateur', 'prédateur'),
   academie('parasite', 'parasite'),
   academie('phytophage', 'phytophage'),
+  tlfi('symbiose', 'symbiose', 'symbiose'),
   { ...tlfi('phyto', 'phyto-', 'phyto-'), consultedOn: '2026-11-26' },
   academie('espece', 'espèce'),
   tlfi('espece', 'espèce', 'esp%C3%A8ce'),
   academie('endemique', 'endémique'),
   academie('pollinisation', 'pollinisation'),
+  ecologie(
+    'biodiversite',
+    'Biodiversité : présentation et enjeux',
+    'politiques-publiques/biodiversite-presentation-enjeux',
+    '2026-09-11',
+  ),
   ecologie(
     'especes-envahissantes',
     'Espèces exotiques envahissantes',

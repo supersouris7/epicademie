@@ -129,7 +129,7 @@ const niveau3 = (rng: Rng): QuestionDraft => {
           ['besoin', 'Le besoin dit ce que le système doit faire.'],
         ],
       ),
-      hint: 'Le mot commence par la lettre « é ».',
+      hint: 'Cherche le nom de la différence entre ce que l’on voulait et ce que l’on observe.',
       steps: ['On compare le résultat obtenu au résultat attendu.', 'Une différence est un **écart**.'],
       targetSeconds: 30,
     };
@@ -167,22 +167,31 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   const faux = seuil + rng.pick([4, 5, 6]);
   const figure = { kind: 'document' as const, title: 'Programme à tester', lines: programmeSeuil(b, faux) };
   if (rng.int(0, 1) === 0) {
+    // Entre les deux seuils, l'essai montre un écart ; en dehors, le résultat est conforme.
+    const mesure = rng.pick([
+      rng.int(seuil + 1, faux - 1),
+      rng.int(seuil + 1, faux - 1),
+      seuil - rng.int(2, 6),
+      faux + rng.int(2, 6),
+    ]);
+    const obtenu = mesure > faux;
+    const conforme = obtenu === mesure > seuil;
+    const issue = (action: boolean, ok: boolean) =>
+      `${action ? b.marche : b.arret} : c’est ${ok ? 'conforme' : 'non conforme'} au besoin`;
+    const lecture = `Dans le programme, la condition « ${b.grandeur} > ${faux} ${b.unite} » est ${obtenu ? 'vraie' : 'fausse'} à ${mesure} ${b.unite}.`;
+    const attendu = `À ${mesure} ${b.unite}, le besoin demande : « ${mesure > seuil ? b.marche : b.arret} ».`;
+    const bonne = issue(obtenu, conforme);
     return {
-      prompt: `${besoinDe(b, seuil)} Le programme ne répond pas au besoin. Quelle valeur du seuil faut-il écrire, en ${b.unite} ? (nombre seul)`,
+      prompt: `${besoinDe(b, seuil)} Essai à ${mesure} ${b.unite} : d’après le programme, qu’obtient-on, et est-ce conforme au besoin ?`,
       figure,
-      ...saisie(
-        [String(seuil), `${seuil} ${b.unite}`],
-        [
-          [String(faux), 'C’est la valeur actuelle du programme, qui ne respecte pas le besoin.'],
-          [String(faux - seuil), 'C’est la différence entre les deux seuils, pas le nouveau seuil.'],
-        ],
-      ),
-      hint: 'Compare le nombre du besoin et celui du programme.',
-      steps: [
-        `Le besoin fixe le seuil à ${seuil} ${b.unite} ; le programme utilise ${faux} ${b.unite}.`,
-        `Il faut modifier ce paramètre : **${seuil}**.`,
-      ],
-      targetSeconds: 50,
+      ...qcm(rng, bonne, [
+        { label: issue(obtenu, !conforme), why: attendu },
+        { label: issue(!obtenu, true), why: lecture },
+        { label: issue(!obtenu, false), why: lecture },
+      ]),
+      hint: 'Lis d’abord la condition du programme, puis compare avec le besoin.',
+      steps: [lecture, attendu, `La réponse est **${bonne}**.`],
+      targetSeconds: 60,
     };
   }
   const revele = seuil + rng.int(1, 3);
