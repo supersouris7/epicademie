@@ -86,4 +86,15 @@ export const SOURCES: readonly Source[] = [
   dpd('letra-x', 'x'),
   dpd('letra-y', 'y'),
   dpd('letra-z', 'z'),
+  // Lot es-5e-03 (ser, estar, hay) : copies d’archive de 2023 et 2024 (dictionnaires) et de 2026 (Cervantes).
+  ...['ser', 'estar', 'haber'].map((v) => ({ ...dle(v, v), textDate: '2023' })),
+  ...['ser', 'estar', 'haber'].map((v) => ({ ...dpd(v, v), textDate: '2024' })),
+  {
+    id: 'cervantes-pcic-gramatica-a1-a2',
+    title: 'Plan curricular del Instituto Cervantes, « Gramática. Inventario A1-A2 »',
+    publisher: 'Instituto Cervantes',
+    url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/niveles/02_gramatica_inventario_a1-a2.htm',
+    textDate: '2026',
+    consultedOn: CONSULTED_ES,
+  },
 ];
