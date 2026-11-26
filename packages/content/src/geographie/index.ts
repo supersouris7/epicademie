@@ -17,6 +17,7 @@ import { SKILLS as RESSOURCES } from './ressources.ts';
 import { SKILLS as REPERES_5E } from './reperes-5e.ts';
 import { SKILLS as URBANISATION } from './urbanisation.ts';
 import { SKILLS as MOBILITES } from './mobilites.ts';
+import { SKILLS as MONDIALISATION } from './mondialisation.ts';
 import { GEO_FETCHED_ON, PAYS_UE, REGIONS } from './donnees.generated.ts';
 
 /**
@@ -159,5 +160,6 @@ export const GEOGRAPHIE_CHAPTERS: readonly Chapter[] = [
   chapter('g5-reperes', '5e', 'Repères de 5e', REPERES_5E),
   chapter('g4-urbanisation-monde', '4e', 'L’urbanisation du monde', URBANISATION),
   chapter('g4-mobilites-transnationales', '4e', 'Les mobilités humaines transnationales', MOBILITES),
+  chapter('g4-espaces-mondialisation', '4e', 'Des espaces transformés par la mondialisation', MONDIALISATION),
   chapter('g3-union-europeenne', '3e', 'L’Union européenne', [euCapitals, euro]),
 ];
