@@ -130,13 +130,13 @@ const NIVEAU3: readonly Modele[] = [
   ),
   ecrire(
     'Écris l’adjectif qui qualifie un animal, comme le criquet, qui se nourrit de matières végétales.',
-    ['phytophage', 'un phytophage'],
+    ['phytophage', 'un phytophage', 'herbivore', 'un herbivore'],
     [
       ['prédateur', 'Un prédateur se nourrit d’animaux qu’il capture.'],
       ['parasite', 'Un parasite vit fixé sur un hôte à son détriment.'],
     ],
-    'Il commence par la lettre « p » et se termine comme « saprophage ».',
-    'Phytophage : qui se nourrit de matières végétales.',
+    'Il commence par « phyto- », qui veut dire plante.',
+    'Phytophage : qui se nourrit de matières végétales. « Herbivore » convient aussi.',
   ),
 ];
 
@@ -151,15 +151,25 @@ const NIVEAU4: readonly Modele[] = [
     'C’est le contraire d’« autotrophe ».',
     'Un hétérotrophe utilise des matières organiques fabriquées par d’autres.',
   ),
-  ecrire(
-    'Un micro-organisme vit aux dépens de matières mortes et provoque leur décomposition. Écris son nom savant.',
-    ['saprophyte', 'un saprophyte'],
+  choisir(
+    'Prairie imaginée : les campagnols mangent l’herbe et sont la seule nourriture des renards. Des personnes détruisent presque toute l’herbe. Rien d’autre ne change. Quel risque y a-t-il pour les renards ?',
+    'Ils risquent d’être moins nombreux, car leurs proies manqueront de nourriture',
     [
-      ['parasite', 'Un parasite vit au détriment d’un hôte vivant.'],
-      ['saprophage', 'Le saprophage est un animal qui mange des matières en décomposition.'],
+      [
+        'Ils vont être plus nombreux, car l’herbe ne les gênera plus',
+        'Les campagnols ont moins à manger : les renards risquent donc d’avoir moins de proies.',
+      ],
+      [
+        'Aucun risque, car les renards ne mangent pas d’herbe',
+        'L’effet est indirect : sans herbe, les campagnols dont les renards se nourrissent sont menacés.',
+      ],
+      [
+        'Aucun risque, car chaque être vivant est indépendant des autres',
+        'Dans une chaîne alimentaire, chacun dépend de celui qu’il mange.',
+      ],
     ],
-    'Il ressemble à « saprophage », qui désigne un animal, mais se termine autrement.',
-    'Un saprophyte vit aux dépens de matières organiques inertes.',
+    'Suis la chaîne : de quoi se nourrissent les proies des renards ?',
+    'Sans herbe, les campagnols manquent de nourriture ; les renards, qui s’en nourrissent, risquent d’en manquer à leur tour.',
   ),
   associer(
     'Associe chaque relation à sa description',
@@ -280,10 +290,11 @@ export const ecosystemes: Skill = {
       'academie-predateur',
       'academie-parasite',
       'academie-phytophage',
+      'cnrtl-herbivore',
+      'cnrtl-phyto',
       'academie-heterotrophe',
       'cnrtl-symbiose',
       'cnrtl-saprophyte',
-      'cnrtl-saprophage',
     ],
   },
   generate: generer([NIVEAU1, NIVEAU2, NIVEAU3, NIVEAU4, NIVEAU5]),

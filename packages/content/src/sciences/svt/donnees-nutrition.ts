@@ -152,6 +152,8 @@ export const FAITS_NUTRITION: readonly Fait[] = [
     "Organisme qui vit et se développe au détriment de l'hôte sur lequel il s'est fixé.",
   ),
   f('phytophage-definition', 'academie-phytophage', 'qui se nourrit de matières végétales'),
+  f('herbivore-definition', 'cnrtl-herbivore', "Qui se nourrit d'herbes ou d'autres substances végétales."),
+  f('phyto-sens', 'cnrtl-phyto', 'de φυτόν «végétal, plante»'),
   f(
     'symbiose-definition',
     'cnrtl-symbiose',
@@ -162,7 +164,6 @@ export const FAITS_NUTRITION: readonly Fait[] = [
     'cnrtl-saprophyte',
     '(Végétal, microorganisme) qui vit aux dépens des matières organiques inertes et qui peut en provoquer la décomposition',
   ),
-  f('saprophage-definition', 'cnrtl-saprophage', 'qui se nourrit de matières organiques en décomposition'),
   // Biodiversité.
   f(
     'biodiversite-definition',
