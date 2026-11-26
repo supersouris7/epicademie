@@ -11,12 +11,13 @@ import { PREUVES as P } from './xviiie-siecle-sources.ts';
 
 const negoces: Notion = {
   id: 'h4-negoces-traites',
-  title: 'Négoce maritime, traite négrière et esclavage',
+  title: 'Négoces, traites négrières et esclavage au XVIIIe siècle',
   hint: 'Relis le mémo : qui fait le commerce, quelle route suivent les navires et ce que subissent les personnes déportées.',
   memo: [
-    'Au XVIIIe siècle, une **bourgeoisie** marchande, avec ses **négociants** et ses **armateurs**, s’enrichit dans les ports de l’Atlantique, comme Nantes ou Bordeaux, grâce au commerce avec les colonies.',
+    'Au XVIIIe siècle, une **bourgeoisie** marchande, avec ses **négociants** et ses **armateurs**, s’enrichit dans les ports de l’Atlantique, comme Nantes ou Bordeaux, grâce au **négoce** avec les colonies ; la plupart de ces échanges se font **en droiture**, directement entre la France et ses colonies, sans traite.',
     'Une partie de ce commerce est la **traite négrière** : des navires vont d’Europe en Afrique, y acquièrent des captifs, les déportent vers les **plantations** des Amériques, puis rentrent avec des **denrées** : c’est le **commerce triangulaire**.',
     'La traite et l’**esclavage** déportent et privent de liberté des millions de personnes ; dès ce siècle, des voix les contestent et, en 1791, les esclaves de Saint-Domingue se révoltent.',
+    'La traite européenne s’ajoute à une **traite orientale** plus ancienne. Repères : 1664, Colbert crée la Compagnie des Indes orientales ; 1685, le **Code noir** fait de l’esclave un bien (un « meuble ») ; 1748, Montesquieu critique l’esclavage ; 1763, au traité de Paris, la France abandonne le Canada ; 1788, une société pour l’abolition naît en France.',
   ],
   faits: [
     {
@@ -31,7 +32,7 @@ const negoces: Notion = {
         { label: 'les membres du clergé', why: 'La bourgeoisie diffère justement du clergé.' },
         { label: 'les familles nobles de la cour', why: 'La bourgeoisie diffère de la noblesse.' },
       ],
-      gap: ['La bourgeoisie diffère de la noblesse et du ', '.', ['clergé', 'clerge']],
+      gap: ['Sous l’Ancien Régime, la bourgeoisie est distincte de la noblesse et du ', '.', ['clergé', 'clerge']],
       explain: 'Les négociants et les armateurs font partie de cette bourgeoisie, enrichie par le commerce.',
     },
     {
@@ -49,7 +50,7 @@ const negoces: Notion = {
           why: 'Le négociant fait du commerce en gros, à grande échelle.',
         },
       ],
-      gap: ['Une personne qui fait du commerce en gros est un ', '.', ['négociant', 'negociant']],
+      gap: ['Une personne qui fait du commerce en gros est un ', '.', ['négociant', 'negociant', 'grossiste']],
       explain: 'Le négociant achète et vend en gros : c’est un grand marchand.',
     },
     {
@@ -82,11 +83,7 @@ const negoces: Notion = {
         { label: 'Strasbourg et Reims', why: 'Ce sont des villes de l’est, éloignées de l’océan.' },
         { label: 'Toulouse et Clermont', why: 'Ces villes ne sont pas des ports maritimes.' },
       ],
-      gap: [
-        'Au XVIIIe siècle, les ports de Nantes, de ',
-        ', de La Rochelle et de Rouen se développent par le commerce maritime.',
-        ['Bordeaux'],
-      ],
+      gap: ['Le mémo cite deux ports de l’Atlantique enrichis par le commerce : Nantes et ', '.', ['Bordeaux']],
       explain: 'Les ports de la façade atlantique profitent du commerce avec les colonies.',
     },
     {
@@ -143,7 +140,7 @@ const negoces: Notion = {
           why: 'La soie et la porcelaine viennent d’Asie : ce ne sont pas des cultures de plantation américaines.',
         },
       ],
-      gap: ['Les plantations produisent le ', ', le cacao, le café et le tabac.', ['sucre']],
+      gap: ['Dans les plantations des Antilles, on tire de la canne un produit au goût doux : le ', '.', ['sucre']],
       explain: 'Ces cultures destinées à l’Europe se développent aux Amériques et dans l’océan Indien.',
     },
     {
@@ -203,7 +200,7 @@ const negoces: Notion = {
     { ...P.colbert, label: 'Colbert crée la Compagnie des Indes orientales', date: '1664' },
     { ...P.codeDate, label: 'Le Code noir s’applique aux Antilles', date: '1685' },
     { ...P.montesquieuEsclavage, label: 'Montesquieu critique l’esclavage', date: '1748' },
-    { ...P.traiteParis, label: 'Traité de Paris', date: '1763' },
+    { ...P.traiteParis, label: 'Au traité de Paris, la France abandonne le Canada', date: '1763' },
     { ...P.societe, label: 'Une société pour l’abolition est créée en France', date: '1788' },
     { ...P.saintDomingue, label: 'Révolte des esclaves de Saint-Domingue', date: '1791' },
   ],
@@ -347,7 +344,7 @@ const negoces: Notion = {
             { label: 'elle pousse seulement sur la côte d’Afrique', why: 'La canne est implantée dans les Caraïbes.' },
             {
               label: 'elle se cultive sans travailleurs',
-              why: 'Le texte et le programme disent le contraire : elle demande beaucoup de bras.',
+              why: 'Le texte dit le contraire : le sucre est produit par le travail forcé d’esclaves.',
             },
           ],
           explain: 'La canne consomme beaucoup de main-d’œuvre, ce qui alimente la traite et l’esclavage.',
@@ -366,7 +363,7 @@ const negoces: Notion = {
               why: 'Le phénomène est massif : il s’agit de millions de personnes.',
             },
           ],
-          explain: 'Au moins 11 millions de personnes sont déplacées de force.',
+          explain: 'La traite menée par les Européens a déplacé de force au moins 11 millions de personnes.',
         },
       ],
     },
@@ -383,18 +380,19 @@ const lumieres: Notion = {
     'Les **Lumières** sont un mouvement européen : au nom de la **raison**, des **philosophes** critiquent les idées reçues, le pouvoir sans limite et l’intolérance.',
     'Leurs idées circulent par les livres, les académies, les **salons** et l’**Encyclopédie** de Diderot et d’Alembert, malgré la **censure**.',
     'Certains rois se disent proches des philosophes : c’est le **despotisme éclairé** ; d’autres auteurs veulent limiter le pouvoir ou le confier au peuple, contre l’**absolutisme**.',
+    'Repères : Montesquieu veut que le pouvoir arrête le pouvoir (1748) ; le premier volume de l’Encyclopédie paraît en 1751 ; Voltaire défend Jean Calas, un protestant condamné à mort, et publie le Traité sur la **tolérance** (1763) ; le philosophe allemand Kant écrit sur les Lumières (1784), appelées « Aufklärung » en allemand. Frédéric II (Prusse) et Catherine II (Russie) sont des despotes éclairés.',
   ],
   faits: [
     {
       ...P.raison,
-      q: 'À quoi les hommes des Lumières veulent-ils que tout soit conforme ?',
+      q: 'Au temps des Lumières, à quoi veut-on désormais que tout soit conforme ?',
       a: 'à la raison',
       wrong: [
         { label: 'à la tradition', why: 'Les Lumières interrogent justement la tradition.' },
         { label: 'à la seule volonté du roi', why: 'Les Lumières critiquent le pouvoir sans limite.' },
         { label: 'à la coutume des ancêtres', why: 'La coutume est ce qu’ils soumettent à l’examen.' },
       ],
-      gap: ['On cherche désormais ce qui est conforme à la ', '.', ['raison']],
+      gap: ['Au temps des Lumières, on cherche désormais ce qui est conforme à la ', '.', ['raison']],
       explain: 'La raison est l’outil qui permet à chacun d’examiner les idées reçues.',
     },
     {
@@ -409,8 +407,13 @@ const lumieres: Notion = {
           why: 'Les Lumières touchent la politique, la société, les sciences et la religion.',
         },
       ],
-      gap: ['Les Lumières sont un phénomène ', '.', ['européen', 'europeen']],
-      explain: 'Enlightenment, Aufklärung, Illuminismo : le mouvement a des noms dans plusieurs langues.',
+      gap: [
+        'Anglais, Allemands, Italiens : les Lumières ne sont pas seulement françaises, c’est un mouvement ',
+        '.',
+        ['européen', 'europeen'],
+      ],
+      explain:
+        'Le mouvement a un nom en anglais (Enlightenment), en allemand (Aufklärung) et en italien (Illuminismo).',
     },
     {
       ...P.encyclopedie,
@@ -440,7 +443,11 @@ const lumieres: Notion = {
         },
         { label: 'ils sont perdus en mer', why: 'Rien de tel : le pouvoir en a interdit la diffusion.' },
       ],
-      gap: ['En 1752, le Conseil du roi ', ' la diffusion des deux premiers volumes.', ['interdit']],
+      gap: [
+        'En 1752, le Conseil du roi ',
+        ' la diffusion des deux premiers volumes.',
+        ['interdit', 'bloque', 'suspend', 'empêche', 'empeche'],
+      ],
       explain: 'La censure frappe l’Encyclopédie, qui doit contourner les interdits.',
     },
     {
@@ -450,7 +457,7 @@ const lumieres: Notion = {
       wrong: [
         {
           label: 'les corporations de métiers seulement',
-          why: 'Les corporations organisent des métiers, elles ne sont pas le grand relais cité ici.',
+          why: 'Les corporations organisent les métiers : ce ne sont pas des lieux faits pour débattre des idées.',
         },
         {
           label: 'les plantations des colonies',
@@ -462,22 +469,22 @@ const lumieres: Notion = {
         },
       ],
       gap: [
-        'Les idées circulent par le livre, les académies et les ',
+        'Les réunions chez une personne, où l’on discute des idées et des œuvres, sont appelées des ',
         '.',
-        ['salons', 'salon', 'loges', 'loges maçonniques', 'loges maconniques'],
+        ['salons', 'salon'],
       ],
       explain: 'Livres, académies, loges et salons sont des lieux et des moyens où l’on discute les idées.',
     },
     {
       ...P.despote,
-      q: 'Quel souverain de Prusse est cité comme despote éclairé ?',
+      q: 'Quel roi de Prusse est un exemple de despote éclairé ?',
       a: 'Frédéric II',
       wrong: [
         { label: 'Louis XIV', why: 'Louis XIV, roi de France, incarne la monarchie absolue.' },
         { label: 'Charles Quint', why: 'Charles Quint vit au XVIe siècle.' },
         { label: 'Soliman le Magnifique', why: 'Soliman dirige l’empire ottoman au XVIe siècle.' },
       ],
-      gap: ['En Prusse, le roi ', ' II est cité comme despote éclairé.', ['Frédéric', 'Frederic']],
+      gap: ['En Prusse, le roi ', ' II est un exemple de despote éclairé.', ['Frédéric', 'Frederic']],
       explain: 'Frédéric II de Prusse, Catherine II en Russie et Joseph II à Vienne en sont des exemples.',
     },
     {
@@ -494,10 +501,10 @@ const lumieres: Notion = {
     },
     {
       ...P.calas,
-      q: 'Dans l’affaire Calas, que fait Voltaire ?',
+      q: 'Jean Calas, un protestant, a été condamné à mort. Voltaire le croit innocent : que fait-il ?',
       a: 'il porte l’affaire devant l’opinion pour obtenir la révision du procès',
       wrong: [
-        { label: 'il fait exécuter le père de la victime', why: 'Voltaire défend l’innocence de Calas.' },
+        { label: 'il réclame une peine plus lourde', why: 'Voltaire défend au contraire l’innocence de Calas.' },
         { label: 'il juge lui-même le procès au parlement', why: 'Voltaire n’est pas juge : il mobilise l’opinion.' },
         { label: 'il demande qu’on oublie le jugement', why: 'Il veut au contraire que le procès soit revu.' },
       ],
@@ -612,8 +619,8 @@ const lumieres: Notion = {
           wrong: [
             { label: 'l’absence de lecteurs', why: 'Les amies le lisent : c’est le pouvoir qui s’y oppose.' },
             {
-              label: 'une pénurie d’imprimerie au Moyen Âge',
-              why: 'Nous sommes au XVIIIe siècle, et l’obstacle vient du Conseil du roi.',
+              label: 'une interdiction décidée par les lectrices',
+              why: 'Les lectrices veulent lire : l’interdiction vient du Conseil du roi.',
             },
           ],
           explain: 'Le Conseil du roi interdit en 1752 la diffusion des deux premiers volumes.',
@@ -626,7 +633,7 @@ const lumieres: Notion = {
         'Un professeur compare, dans un résumé fictif, deux avis.',
         'A : « Un souverain instruit par les philosophes doit réformer son royaume, sans partager son pouvoir. »',
         'B : « Les pouvoirs doivent être répartis, pour que le pouvoir arrête le pouvoir. »',
-        'Les deux discutent des limites de la monarchie absolue.',
+        'Les deux discutent de la bonne manière de gouverner.',
       ],
       qs: [
         {
@@ -688,6 +695,7 @@ const revolution: Notion = {
     'En 1789, la **Révolution** abolit les **privilèges** et proclame la **Déclaration des droits de l’homme et du citoyen** : égalité devant la loi, libertés et **souveraineté nationale** rompent avec l’**Ancien Régime**.',
     'La monarchie tombe : la **République** naît en 1792 en pleine guerre, Louis XVI est exécuté en 1793, puis vient la **Terreur** ; en 1799, Bonaparte prend le pouvoir par un **coup d’État**.',
     'Empereur en 1804, il garde certains acquis (**Code civil**, préfets) et les diffuse en Europe, tout en limitant les libertés ; sa domination s’effondre en 1814-1815.',
+    'Repères : 14 juillet 1789, révolte du peuple parisien ; 4 août, fin des privilèges ; 26 août, Déclaration ; 1791, Olympe de Gouges réclame des droits pour les femmes ; 21 janvier 1793, mort du roi ; l’esclavage est aboli en 1794 puis rétabli en 1802, année où Bonaparte devient **consul** à vie ; 9 novembre 1799, son coup d’État. La Terreur est liée à Robespierre ; Bonaparte devient l’empereur Napoléon.',
   ],
   faits: [
     {
@@ -774,7 +782,7 @@ const revolution: Notion = {
         { label: 'la Constitution civile du clergé', why: 'Ce texte organise l’Église pendant la Révolution.' },
         { label: 'l’édit de Nantes', why: 'L’édit de Nantes date de 1598.' },
       ],
-      gap: ['En 1804, le Code ', ' unifie le droit français.', ['civil']],
+      gap: ['En 1804, le Code ', ' unifie le droit français.', ['civil', 'Napoléon', 'Napoleon']],
       explain: 'Le Code civil donne les mêmes règles de droit à tout le pays.',
     },
     {
@@ -801,7 +809,11 @@ const revolution: Notion = {
         },
         { label: 'jamais remis en cause', why: 'La Convention l’abolit en 1794.' },
       ],
-      gap: ['La Convention abolit l’esclavage en 1794 ; Napoléon le ', ' en 1802.', ['rétablit', 'retablit']],
+      gap: [
+        'La Convention abolit l’esclavage en 1794 ; Napoléon le ',
+        ' en 1802.',
+        ['rétablit', 'retablit', 'restaure'],
+      ],
       explain: 'L’histoire de l’abolition n’est pas linéaire : l’abolition définitive date de 1848.',
     },
   ],
@@ -849,7 +861,7 @@ const revolution: Notion = {
     {
       ...P.codeCivil,
       q: 'quel code, promulgué en 1804, unifie le droit français (deux mots) ?',
-      accepted: ['Code civil', 'le Code civil'],
+      accepted: ['Code civil', 'le Code civil', 'Code Napoléon', 'Code Napoleon'],
       traps: [
         { text: 'Code noir', why: 'Le Code noir date de 1685.' },
         { text: 'Code pénal', why: 'Le code demandé unifie le droit civil, en 1804.' },
@@ -950,7 +962,7 @@ const revolution: Notion = {
         },
         {
           ...P.domination,
-          q: 'Quand cette domination sur l’Europe est-elle mise à bas ?',
+          q: 'Quand cette domination sur l’Europe s’effondre-t-elle ?',
           a: 'en 1814 et 1815',
           wrong: [
             { label: 'en 1789 et 1790', why: 'C’est le début de la Révolution.' },

@@ -10,12 +10,12 @@
 
 ## Chapitres et notions
 
-| Lot        | Chapitre                            | Notions                                                                                                                       | État actuel            |
-| ---------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| `hi-4e-01` | Le XVIIIe siècle                    | bourgeoisies marchandes, négoces et traites négrières ; l'Europe des Lumières ; la Révolution française et l'Empire           | couverte, en relecture |
-| `hi-4e-02` | L'Europe et le monde au XIXe siècle | révolution industrielle ; conquêtes et sociétés coloniales ; abolition de l'esclavage                                         | absente                |
-| `hi-4e-03` | La France du XIXe siècle            | une difficile conquête de la démocratie (1815-1870) ; la IIIe République ; conditions des femmes dans une société en mutation | absente                |
-| `hi-4e-04` | Repères de 4e                       | repères chronologiques ; frise ; acteurs ; vocabulaire historique                                                             | absente                |
+| Lot        | Chapitre                            | Notions                                                                                                                       | État actuel |
+| ---------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `hi-4e-01` | Le XVIIIe siècle                    | bourgeoisies marchandes, négoces et traites négrières ; l'Europe des Lumières ; la Révolution française et l'Empire           | couverte    |
+| `hi-4e-02` | L'Europe et le monde au XIXe siècle | révolution industrielle ; conquêtes et sociétés coloniales ; abolition de l'esclavage                                         | absente     |
+| `hi-4e-03` | La France du XIXe siècle            | une difficile conquête de la démocratie (1815-1870) ; la IIIe République ; conditions des femmes dans une société en mutation | absente     |
+| `hi-4e-04` | Repères de 4e                       | repères chronologiques ; frise ; acteurs ; vocabulaire historique                                                             | absente     |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).

@@ -62,4 +62,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'h5-frise', version: 1, lot: 'hi-5e-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'h5-acteurs-lieux', version: 1, lot: 'hi-5e-04', date: '2026-11-25', verdict: 'ok' },
   { skillId: 'h5-vocabulaire-historique', version: 1, lot: 'hi-5e-04', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'h4-negoces-traites', version: 1, lot: 'hi-4e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'h4-europe-lumieres', version: 1, lot: 'hi-4e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'h4-revolution-empire', version: 1, lot: 'hi-4e-01', date: '2026-11-26', verdict: 'ok' },
 ];
