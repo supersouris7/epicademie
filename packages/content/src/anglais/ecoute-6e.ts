@@ -125,7 +125,12 @@ function writeInfo(rng: Rng): QuestionDraft {
     answer: { kind: 'text', accepted: french(value.accepted) },
     traps,
     hint: CLUE[field],
-    steps: [`On cherche ${LABEL[field]}.`, `La phrase utile : « ${key} »`, `Réponse : **${at(value.accepted, 0)}**`],
+    steps: [
+      `On cherche ${LABEL[field]}.`,
+      `La phrase utile : « ${key} »`,
+      `« ${value.en} » se traduit par « ${at(value.accepted, 0)} ».`,
+      `Réponse : **${at(value.accepted, 0)}**`,
+    ],
   };
 }
 
@@ -143,7 +148,8 @@ function fillForm(rng: Rng): QuestionDraft {
     hint: 'Une information à la fois : le jour, puis « Meet me… », puis « bring… ».',
     steps: [
       `Les phrases utiles : « ${lines.slice(2, 5).join(' ')} »`,
-      'Attention : la première partie du message contient d’autres jours, lieux ou objets qui ne servent pas à la fiche.',
+      `${FIELDS.map((k) => `« ${f[k].en} » = ${at(f[k].accepted, 0)}`).join(' ; ')}.`,
+      'Attention : au début du message, un autre jour est cité ; il ne sert pas à la fiche.',
       `Réponse : **${FIELDS.map((k) => at(f[k].accepted, 0)).join(', ')}**`,
     ],
   };
@@ -205,7 +211,8 @@ const message: Skill = {
   lesson: {
     memo: [
       'Écoute d’abord pour le sens général, puis relève les **mots-clés** : qui, quoi, où, quand.',
-      '« First », « then », « finally » sont des **connecteurs** : ils donnent l’ordre. « Don’t come on Monday » veut dire : ne viens pas lundi.',
+      '« First », « then », « finally » sont des **connecteurs** : ils donnent l’ordre. « Before that » = avant cela ; « after » = après.',
+      '« Don’t come on Monday » veut dire : ne viens pas lundi.',
     ],
     source: source('compréhension de l’oral et de l’écrit : sens général, mots-clés, informations, chronologie'),
     sources: ['anglais-college-2025'],
@@ -284,7 +291,11 @@ const NUMBER_SCENES = [
   { who: 'à la gare', say: (n: string) => `Take bus number ${n}.`, ask: 'Quel bus faut-il prendre ?' },
   { who: 'en classe', say: (n: string) => `Open your books at page ${n}.`, ask: 'Quelle page faut-il ouvrir ?' },
   { who: 'au zoo', say: (n: string) => `There are ${n} birds here.`, ask: 'Combien y a-t-il d’oiseaux ?' },
-  { who: 'au magasin', say: (n: string) => `That’s ${n} pounds, please.`, ask: 'Combien de livres faut-il payer ?' },
+  {
+    who: 'au magasin',
+    say: (n: string) => `That’s ${n} pounds, please.`,
+    ask: 'Quel prix faut-il payer, en livres anglaises (£) ?',
+  },
 ] as const;
 const WHO = ['Mia', 'Leo', 'Zoé', 'Sam', 'Nina', 'Hugo', 'Emma', 'Tom', 'Lisa', 'Paul'] as const;
 const DAYS_FR = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'] as const;
@@ -309,7 +320,7 @@ function discover(rng: Rng): QuestionDraft {
     );
     const said = s.say(numberWord(n));
     return {
-      ...heard(rng, [said], `Message entendu ${s.who} par ${scene(n)}.`, s.ask),
+      ...heard(rng, [said], `Message ${s.who} pour ${scene(n)}.`, s.ask),
       answer,
       traps,
       hint: 'Compte dans ta tête en anglais jusqu’au mot entendu.',
@@ -353,7 +364,7 @@ function recognise(rng: Rng): QuestionDraft {
     const { answer, traps } = choice(rng, String(n), wrong);
     const said = s.say(numberWord(n));
     return {
-      ...heard(rng, [said], `Annonce entendue ${s.who} par ${scene(n)}.`, s.ask),
+      ...heard(rng, [said], `Annonce ${s.who} pour ${scene(n)}.`, s.ask),
       answer,
       traps,
       hint: 'Écoute la fin du nombre : le son long de « -teen » ou le son bref de « -ty ».',
@@ -573,6 +584,13 @@ const EVENTS = [
   { en: 'The picnic', fr: 'Le pique-nique', place: 'in the park' },
 ] as const;
 
+/** Heure saisie dans une fiche : 4:30, 4.30, 4h30, 4 h 30 ; « 3h » pour une heure pile. */
+const clockForms = (t: Time): string[] => {
+  const mm = String(t.m).padStart(2, '0');
+  const pile = t.m === 0 ? [`${t.h}h`, `${t.h} h`] : [];
+  return [digital(t), `${t.h}.${mm}`, `${t.h}h${mm}`, `${t.h} h ${mm}`, ...pile];
+};
+
 /** Niveau 5 : une annonce complète (date, horaires, prix) ; relever plusieurs informations. */
 function announcement(rng: Rng): QuestionDraft {
   // Tout découle d'un seul indice : un contexte désigne une seule annonce.
@@ -601,8 +619,8 @@ function announcement(rng: Rng): QuestionDraft {
       parts: ['Jour du mois : ', ' · Début : ', ' · Fin : ', ' · Prix pour un adulte : ', ' £'],
       blanks: [
         { mode: 'text', accepted: [String(x.d)] },
-        { mode: 'text', accepted: [digital(startT), `${startT.h}h${String(startT.m).padStart(2, '0')}`] },
-        { mode: 'text', accepted: [digital(endT), `${endT.h}h${endT.m}`] },
+        { mode: 'text', accepted: clockForms(startT) },
+        { mode: 'text', accepted: clockForms(endT) },
         { mode: 'text', accepted: [String(price)] },
       ],
     },
@@ -730,7 +748,7 @@ const culture: Skill = {
     memo: [
       'Un **repère culturel** relie la langue à un pays : Saint Patrick’s Day (17 mars, Irlande, vert), Thanksgiving (novembre, États-Unis, dinde), Halloween (31 octobre), Bonfire Night (5 novembre, Royaume-Uni), Christmas, Pancake Day (crêpes).',
       'Lieux : les Highlands (Écosse), le fleuve Mississippi, le parc national de Nairobi (Kenya, rhinocéros noirs et girafes), Dublin (capitale de l’Irlande, symbole : le trèfle, shamrock).',
-      'Histoires : Harry Potter (sorcier britannique, élève à Hogwarts), la **légende** de Finn McCool (géant d’Irlande, Giant’s Causeway vers l’Écosse), le Grinch (il déteste Noël), l’univers poétique et farfelu du Dr. Seuss.',
+      'Histoires : Harry Potter (sorcier britannique, élève à Hogwarts), la **légende** de Finn McCool (géant d’Irlande, Giant’s Causeway vers l’Écosse), le Grinch (il déteste Noël), l’univers poétique et farfelu (plein de fantaisie) du Dr. Seuss.',
     ],
     source: source('repères culturels des cinq axes'),
     sources: [

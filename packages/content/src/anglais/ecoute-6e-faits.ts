@@ -162,6 +162,12 @@ export const FAITS: readonly Fait[] = [
     'Saint Patrick’s Day, fête nationale irlandaise, a lieu le 17 mars.',
   ),
   fait(
+    'patrick-patron',
+    PATRICK,
+    "It is a celebration of Saint Patrick, Ireland's patron saint, who died on that date.",
+    'Saint Patrick est le saint patron (protecteur) de l’Irlande.',
+  ),
+  fait(
     'patrick-fete',
     PATRICK,
     'parades, Irish dancing, Irish traditional music, and everyone dressed in green.',
