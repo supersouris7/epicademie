@@ -94,6 +94,22 @@ describe('histoire 3e — La Première Guerre mondiale et les totalitarismes', (
     }
   });
 
+  it('rend univoques les textes à trous du niveau 3 ou accepte leurs variantes justes', () => {
+    const cas: readonly [string, string, readonly string[], readonly string[]][] = [
+      ['h3-guerre-totale', 'dits travailleurs', ['coloniaux'], ['enfants']],
+      ['h3-guerre-totale', 'Chemin des Dames, des', ['mutineries', 'révoltes', 'revoltes'], ['grèves']],
+      ['h3-genocide-armeniens', 'commis dans l’Empire', ['ottoman', 'turc'], ['russe']],
+      ['h3-regimes-totalitaires', 'Pour diffuser ses idées', ['propagande'], ['terreur']],
+      ['h3-regimes-totalitaires', 'appelée la', ['terreur'], ['propagande']],
+    ];
+    for (const [id, extrait, justes, fausses] of cas) {
+      const question = questions(id, 3).find((q) => q.prompt.includes(extrait))!;
+      expect(question, extrait).toBeDefined();
+      for (const text of justes) expect(check(question, { kind: 'cloze', answers: [text] }).correct, text).toBe(true);
+      for (const text of fausses) expect(check(question, { kind: 'cloze', answers: [text] }).correct, text).toBe(false);
+    }
+  });
+
   it('définit au glossaire chaque terme en gras des mémos', () => {
     for (const n of NOTIONS) {
       for (const term of n.memo.flatMap(boldTerms)) {
