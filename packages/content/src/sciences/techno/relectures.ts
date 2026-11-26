@@ -10,4 +10,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 't5-reseaux', version: 1, lot: 'te-5e-02', date: '2026-11-26', verdict: 'ok' },
   { skillId: 't5-securite-numerique', version: 1, lot: 'te-5e-02', date: '2026-11-26', verdict: 'ok' },
   { skillId: 't5-impacts-numerique', version: 1, lot: 'te-5e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 't5-algorithme', version: 1, lot: 'te-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 't5-capteurs-actionneurs', version: 1, lot: 'te-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 't5-sequence-boucle', version: 1, lot: 'te-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 't5-tester-programme', version: 1, lot: 'te-5e-03', date: '2026-11-26', verdict: 'ok' },
 ];
