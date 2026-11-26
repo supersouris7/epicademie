@@ -458,4 +458,33 @@ export const SOURCES: readonly Source[] = [
     textDate: '2020-09-28',
     consultedOn: '2026-11-26',
   },
+  // La matière, 6e (lot st-6e-01). Autres sources du chapitre déjà au registre (physique-chimie, programmes).
+  ...[
+    tlfi('centigrade', 'centigrade', 'centigrade'),
+    tlfi('tonne', 'tonne', 'tonne'),
+    tlfi('quintal', 'quintal', 'quintal'),
+    tlfi('surnager', 'surnager', 'surnager'),
+    tlfi('decanter', 'décanter', 'd%C3%A9canter/verbe'),
+    tlfi('transformation', 'transformation', 'transformation'),
+    tlfi('effervescence', 'effervescence', 'effervescence'),
+    academie('air', 'air'),
+    tlfi('rouille', 'rouille', 'rouille'),
+    tlfi('combustion', 'combustion', 'combustion'),
+  ].map((s) => ({ ...s, consultedOn: '2026-11-26' })),
+  {
+    id: 'ecologie-effet-de-serre',
+    title: '« Changement climatique : causes, effets et enjeux »',
+    publisher: 'Ministère chargé de la transition écologique (ecologie.gouv.fr)',
+    url: 'https://www.ecologie.gouv.fr/politiques-publiques/changement-climatique-causes-effets-enjeux',
+    textDate: '2025-10-31',
+    consultedOn: '2026-11-26',
+  },
+  {
+    id: 'echa-pictogrammes',
+    title: '« Pictogrammes CLP »',
+    publisher: 'Agence européenne des produits chimiques (ECHA)',
+    url: 'https://echa.europa.eu/fr/regulations/clp/clp-pictograms',
+    textDate: '2026',
+    consultedOn: '2026-11-26',
+  },
 ];
