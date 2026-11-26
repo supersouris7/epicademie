@@ -219,11 +219,7 @@ export const FAITS_NERVEUX: readonly Fait[] = [
     'inserm-addictions',
     'Une augmentation de la quantité de substance consommée, ou du temps consacré au comportement addictif, devient alors nécessaire pour activer suffisamment le circuit de la récompense',
   ),
-  f(
-    'sevrage',
-    'inserm-addictions',
-    'c’est-à-dire de l’ensemble des symptômes provoqués par l’arrêt brutal de la consommation ou du jeu',
-  ),
+  f('sevrage', 'inserm-addictions', 'Le sevrage, c’est-à-dire l’arrêt de la consommation ou de la pratique addictive'),
   f('initiation', 'inserm-addictions', 'L’initiation précoce constitue un facteur de risque majeur.'),
   f(
     'addiction-sans-produit',

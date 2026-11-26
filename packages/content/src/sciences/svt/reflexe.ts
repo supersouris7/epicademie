@@ -71,7 +71,7 @@ export const reflexe: Skill = {
         explication: ['La main est dégagée avant que le cerveau ait identifié la douleur.'],
       },
       {
-        prompt: 'Quel centre nerveux permet ce retrait de la main ?',
+        prompt: 'Une main touche une surface brûlante et se retire aussitôt. Quel centre nerveux permet ce réflexe ?',
         bonne: 'la moelle épinière',
         fausses: [
           ['le muscle du bras', 'Le muscle exécute la réponse : ce n’est pas un centre nerveux.'],
@@ -188,12 +188,6 @@ export const reflexe: Skill = {
         ['nerf moteur', 'moelle épinière'],
         ['nerfs sensitifs', 'nerf sensoriel', 'le nerf sensoriel', 'un nerf sensoriel'],
       ),
-      saisie(
-        'stimulus',
-        ['un', 'le'],
-        ['réflexe', 'arc réflexe'],
-        ['stimuli', 'les stimuli', 'stimulation', 'une stimulation'],
-      ),
     ],
     series: [
       [
@@ -286,7 +280,7 @@ export const reflexe: Skill = {
         titre: 'Mesures « deux réponses »',
         lignes: [
           'Mesures (inventées) sur un même élève.',
-          'Réponse A : la main s’écarte d’une surface très chaude en 0,05 seconde.',
+          'Réponse A : la main s’écarte d’une surface très chaude en 0,1 seconde.',
           'Réponse B : il appuie sur un bouton quand il décide qu’une image lui plaît, en 0,6 seconde.',
         ],
         questions: [

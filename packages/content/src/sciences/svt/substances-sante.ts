@@ -108,7 +108,7 @@ export const substancesSante: Skill = {
           ['les goudrons', 'Ils sont toxiques ; la dépendance vient d’une autre substance.'],
           ['le plomb', 'C’est un métal lourd présent dans la fumée.'],
         ],
-        indice: 'C’est un alcaloïde puissant.',
+        indice: 'Cherche la substance qui pousse à fumer de nouveau.',
         explication: ['La nicotine est la substance qui entraîne la dépendance.'],
       },
       {
@@ -139,7 +139,7 @@ export const substancesSante: Skill = {
         prompt: 'Range le trajet de l’alcool et ses effets.',
         suite: [
           'la boisson alcoolisée est avalée',
-          'l’éthanol passe dans le sang par le tube digestif',
+          'l’éthanol (l’alcool de la boisson) passe dans le sang par le tube digestif',
           'le sang apporte l’éthanol au cerveau',
           'le temps de réaction augmente',
         ],
@@ -196,7 +196,15 @@ export const substancesSante: Skill = {
         'substance psychoactive',
         ['une', 'la'],
         ['nicotine', 'dopage'],
-        ['psychotrope', 'un psychotrope', 'substances psychoactives', 'psychotropes'],
+        [
+          'psychotrope',
+          'un psychotrope',
+          'substances psychoactives',
+          'psychotropes',
+          'drogue',
+          'une drogue',
+          'la drogue',
+        ],
       ),
       saisie('craving', ['le', 'un'], ['sevrage', 'tolérance']),
     ],
@@ -237,7 +245,9 @@ export const substancesSante: Skill = {
           ['il vaut aussi pour les adolescents', 'Pour eux, ne pas consommer est l’option la plus sûre.'],
         ],
         indice: 'Un repère n’est pas une garantie.',
-        explication: ['Le repère (par exemple 10 verres standards au plus par semaine) vise à limiter les risques.'],
+        explication: [
+          'Le repère (par exemple 10 verres standards au plus par semaine ; un verre standard contient environ 10 g d’alcool pur) vise à limiter les risques.',
+        ],
       },
       {
         prompt: 'Un conducteur a consommé de l’alcool et aussi du cannabis. Qu’indique l’étude citée par l’Inserm ?',
@@ -276,7 +286,8 @@ export const substancesSante: Skill = {
             ],
           },
           {
-            prompt: 'Quel organe, dans lequel arrive l’éthanol, commande la vigilance et le jugement ?',
+            prompt:
+              'Quel organe, atteint par l’éthanol (l’alcool de la boisson), commande la vigilance et le jugement ?',
             bonne: 'le cerveau',
             fausses: [
               ['la moelle osseuse', 'Elle fabrique des cellules du sang.'],

@@ -29,4 +29,5 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'v4-puberte', version: 1, lot: 'sv-4e-02', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'v4-reproduction-humaine', version: 1, lot: 'sv-4e-02', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'v4-maitrise-reproduction', version: 1, lot: 'sv-4e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'v4-substances-sante', version: 1, lot: 'sv-4e-03', date: '2026-11-26', verdict: 'ok' },
 ];

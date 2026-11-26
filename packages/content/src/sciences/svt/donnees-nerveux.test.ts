@@ -52,7 +52,7 @@ describe('sciences 4e, SVT : le système nerveux et la santé', () => {
     const attendus: Readonly<Record<string, readonly [string, string]>> = {
       'v4-message-nerveux': ['la moelle epiniere', 'moelle épinière'],
       'v4-reflexe': ['l’arc reflexe', 'arc réflexe'],
-      'v4-sommeil-ecrans': ['la melatonine', 'mélatonine'],
+      'v4-sommeil-ecrans': ['le rythme circadien', 'rythme circadien'],
       'v4-substances-sante': ['la tolerance', 'tolérance'],
     };
     for (const [id, textes] of Object.entries(attendus)) {

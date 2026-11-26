@@ -94,7 +94,7 @@ export const sommeilEcrans: Skill = {
         explication: ['La recommandation est de 9 à 10 heures pour les 14-17 ans.'],
       },
       {
-        prompt: 'Que se passe-t-il pour les informations apprises pendant la nuit ?',
+        prompt: 'Pendant la nuit, que fait le cerveau des informations apprises dans la journée ?',
         bonne: 'le cerveau les consolide et les trie',
         fausses: [
           ['elles sont toutes effacées', 'Le sommeil aide au contraire à les mémoriser.'],
@@ -170,12 +170,10 @@ export const sommeilEcrans: Skill = {
     faciles: [
       saisie('sommeil', ['le'], ['mélatonine', 'horloge biologique']),
       saisie('mélatonine', ['la'], ['horloge biologique', 'lumière bleue']),
-      saisie('sommeil paradoxal', ['le'], ['sommeil lent', 'sommeil']),
     ],
     saisies: [
       saisie('sommeil lent', ['le'], ['sommeil paradoxal', 'sommeil']),
       saisie('sommeil paradoxal', ['le'], ['sommeil lent', 'rythme circadien']),
-      saisie('mélatonine', ['la'], ['lumière bleue', 'sommeil']),
       saisie(
         'horloge biologique',
         ['l’', 'une'],
@@ -215,7 +213,9 @@ export const sommeilEcrans: Skill = {
           ['les ondes sont toutes lentes et profondes', 'Les ondes lentes caractérisent le sommeil lent.'],
         ],
         indice: 'Le mot « paradoxal » annonce un contraste entre cerveau et muscles.',
-        explication: ['L’activité cérébrale ressemble à celle de l’éveil ; les muscles sont sans tonus.'],
+        explication: [
+          'L’activité cérébrale ressemble à celle de l’éveil ; les muscles sont sans tonus (sans tension).',
+        ],
       },
       {
         prompt: 'Un filtre anti-lumière bleue suffit-il à protéger le sommeil, selon l’Inserm ?',
