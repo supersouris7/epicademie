@@ -1039,4 +1039,20 @@ export const SOURCES: readonly Source[] = [
     textDate: '2012',
     consultedOn: '2026-11-26',
   },
+  {
+    id: 'bc-teens-saint-patrick',
+    title: 'LearnEnglish Teens, Life around the world : It’s Saint Patrick’s Day on March 17',
+    publisher: 'British Council',
+    url: 'https://learnenglishteens.britishcouncil.org/archive/magazine/life-around-the-world/its-saint-patricks-day-on-march-17',
+    textDate: '2016-03-15',
+    consultedOn: '2026-11-26',
+  },
+  {
+    id: 'bc-teens-thanksgiving',
+    title: 'LearnEnglish Teens, Life around the world : Thanksgiving',
+    publisher: 'British Council',
+    url: 'https://learnenglishteens.britishcouncil.org/archive/magazine/life-around-the-world/thanksgiving',
+    textDate: '2014',
+    consultedOn: '2026-11-26',
+  },
 ];

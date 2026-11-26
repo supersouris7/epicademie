@@ -244,7 +244,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
   {
     id: 'mot-cle',
     word: 'mot-clé',
-    forms: ['mot-clé'],
+    forms: ['mot-clé', 'mots-clés'],
     definition: 'Mot le plus important, qui donne l’information cherchée.',
     example: 'Dans « I play tennis on Monday », Monday dit le jour.',
   },
@@ -864,5 +864,26 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['nom composé', 'noms composés'],
     definition: 'Nom formé de deux mots : le premier précise le second.',
     example: 'kitchen window (fenêtre de la cuisine).',
+  },
+  {
+    id: 'repere-culturel',
+    word: 'repère culturel',
+    forms: ['repère culturel', 'repères culturels'],
+    definition: 'Une chose à connaître sur la vie des pays qui parlent la langue : un lieu, une fête, un personnage…',
+    example: 'Les Highlands, en Écosse, sont un repère culturel.',
+  },
+  {
+    id: 'connecteur',
+    word: 'connecteur',
+    forms: ['connecteur', 'connecteurs'],
+    definition: 'Petit mot qui relie des phrases et montre leur ordre ou leur lien.',
+    example: '« First », « then » et « finally » sont des connecteurs.',
+  },
+  {
+    id: 'legende',
+    word: 'légende',
+    forms: ['légende', 'légendes'],
+    definition: 'Récit transmis depuis longtemps, où le réel se mêle à l’imaginaire.',
+    example: 'La légende de Finn McCool vient d’Irlande.',
   },
 ];

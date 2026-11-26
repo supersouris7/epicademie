@@ -93,4 +93,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'a6-prepositions-lieu', version: 1, lot: 'an-6e-07', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'a6-suffixes', version: 1, lot: 'an-6e-07', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'a6-noms-composes', version: 1, lot: 'an-6e-07', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a6-message-court', version: 1, lot: 'an-6e-08', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a6-nombres-dates-heures', version: 1, lot: 'an-6e-08', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a6-reperes-culturels', version: 1, lot: 'an-6e-08', date: '2026-11-26', verdict: 'ok' },
 ];
