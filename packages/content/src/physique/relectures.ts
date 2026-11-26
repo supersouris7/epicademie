@@ -15,4 +15,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'p5-conversions-energie', version: 1, lot: 'pc-5e-03', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p5-circuits-serie-derivation', version: 1, lot: 'pc-5e-03', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p5-conducteurs-isolants', version: 1, lot: 'pc-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-propagation-lumiere', version: 1, lot: 'pc-5e-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-propagation-son', version: 1, lot: 'pc-5e-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-unites', version: 2, lot: 'pc-5e-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-prefixes', version: 2, lot: 'pc-5e-04', date: '2026-11-26', verdict: 'ok' },
 ];
