@@ -173,6 +173,7 @@ test('Défaite : 5 secondes pour recommencer, puis l’entraînement', async ({ 
   await skipEmperor(page);
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
   const provoke = page.getByRole('dialog', { name: /te provoque/ });
+  await expect(provoke).toBeVisible(); // l'écran est chargé à la demande
   await page.waitForTimeout(700); // anti double-toucher
   await provoke.getByRole('button', { name: 'Passer' }).click();
   await expect(provoke).toHaveCount(0);
