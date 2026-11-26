@@ -7,6 +7,7 @@ import { SKILLS as OCCIDENT_FEODAL } from './occident-feodal.ts';
 import { SKILLS as EMPIRE_ROMAIN } from './empire-romain.ts';
 import { SKILLS as FRANCE_XIXE } from './france-xixe.ts';
 import { SKILLS as GUERRES_EUROPE } from './guerres-europe.ts';
+import { SKILLS as GUERRES_TOTALES } from './guerres-totales.ts';
 import { SKILLS as HUMANITE } from './humanite.ts';
 import { SKILLS as TEMPS_DES_ROIS } from './le-temps-des-rois.ts';
 import { SKILLS as RECITS_FONDATEURS } from './recits-fondateurs.ts';
@@ -239,4 +240,5 @@ export const HISTOIRE_CHAPTERS: readonly Chapter[] = [
   chapter('h4-europe-monde-xixe', '4e', 'L’Europe et le monde au XIXe siècle', XIXE_SIECLE),
   chapter('h4-france-xixe', '4e', 'Société, culture et politique dans la France du XIXe siècle', FRANCE_XIXE),
   chapter('h4-se-reperer', '4e', 'Repères de 4e', REPERES_4E),
+  chapter('h3-guerres-totales', '3e', 'La Première Guerre mondiale et les totalitarismes', GUERRES_TOTALES),
 ];

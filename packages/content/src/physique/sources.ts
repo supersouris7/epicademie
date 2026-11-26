@@ -118,8 +118,42 @@ export const SOURCES: readonly Source[] = [
   ).map(([id, mot]) => ({ ...academie(id, mot), consultedOn: '2026-11-26' })),
   { ...tlfi('eau', 'eau', 'eau'), consultedOn: '2026-11-26' },
   { ...tlfi('molecule', 'molécule', 'mol%C3%A9cule'), consultedOn: '2026-11-26' },
-  { ...tlfi('transformation', 'transformation', 'transformation'), consultedOn: '2026-11-26' },
   { ...tlfi('comburant', 'comburant', 'comburant'), consultedOn: '2026-11-26' },
+  // Lot pc-4e-02 : mouvement et interactions (direction, sens : sources déjà au registre).
+  ...(
+    [
+      ['interaction', 'interaction'],
+      ['contact', 'contact'],
+      ['distance', 'distance'],
+      ['action', 'action'],
+      ['equilibre', 'équilibre'],
+      ['newton', 'newton'],
+      ['dynamometre', 'dynamomètre'],
+      ['kilometre', 'kilomètre'],
+    ] as const
+  ).map(([id, mot]) => ({ ...academie(id, mot), consultedOn: '2026-11-26' })),
+  ...(
+    [
+      ['metre', 'mètre', 'm%C3%A8tre/nom'],
+      ['force', 'force', 'force/nom'],
+      ['poids', 'poids', 'poids/nom'],
+    ] as const
+  ).map(([id, mot, chemin]) => ({
+    ...academie(id, mot),
+    url: `https://www.cnrtl.fr/definition/academie9/${chemin}`,
+    consultedOn: '2026-11-26',
+  })),
+  { ...tlfi('aimant', 'aimant', 'aimant'), consultedOn: '2026-11-26' },
+  { ...tlfi('suspente', 'suspente', 'suspente'), consultedOn: '2026-11-26' },
+  { ...tlfi('vecteur', 'vecteur', 'vecteur/nom'), consultedOn: '2026-11-26' },
+  {
+    id: 'seconde-pc-2019',
+    title: 'Programme de physique-chimie de seconde générale et technologique (BO spécial n° 1 du 22 janvier 2019)',
+    publisher: 'Ministère de l’Éducation nationale',
+    url: 'https://cache.media.education.gouv.fr/file/SP1-MEN-22-1-2019/98/9/spe634_annexe_1062989.pdf',
+    textDate: '2019-01-22',
+    consultedOn: '2026-11-26',
+  },
   {
     id: 'eduscol-ethanol-4e',
     title: 'La cheminée à l’éthanol (Physique-chimie 4e, Organisation et transformations de la matière, BRNE)',

@@ -25,6 +25,8 @@ export const notion = (
     readonly memo: readonly Rich[];
     readonly attendu: string;
     readonly sources: readonly string[];
+    /** Classe dont le programme est cité (5e par défaut). */
+    readonly classe?: '5e' | '4e';
   },
   niveaux: readonly [Niveau, Niveau, Niveau, Niveau, Niveau],
 ): Skill => ({
@@ -34,7 +36,7 @@ export const notion = (
   version: 1,
   lesson: {
     memo: base.memo,
-    source: `Programme de technologie du cycle 4, classe de 5e (BO n° 9 du 29 février 2024) : « ${base.attendu} ».`,
+    source: `Programme de technologie du cycle 4, classe de ${base.classe ?? '5e'} (BO n° 9 du 29 février 2024) : « ${base.attendu} ».`,
     sources: [PROGRAMME, ...base.sources],
   },
   generate: (rng, level) => (niveaux[level - 1] ?? niveaux[0])(rng),

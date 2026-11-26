@@ -5,6 +5,10 @@ import { actionsHumaines } from './actions-humaines.ts';
 import { algorithmes } from './algorithmes.ts';
 import { chaineEnergie } from './chaine-energie.ts';
 import { chimieSecurite } from './chimie-6e.ts';
+import { circuitElectrique } from './circuit-6e.ts';
+import { sourcesConversions } from './energie-6e.ts';
+import { typesMouvements } from './types-mouvements-6e.ts';
+import { vitesseUniforme } from './vitesse-6e.ts';
 import { dissolutionMatiere } from './dissolution-6e.ts';
 import { etatsMatiere } from './etats-6e.ts';
 import { masseVolumeMatiere } from './masse-volume-6e.ts';
@@ -116,6 +120,14 @@ export const ST_CHAPTERS: readonly Chapter[] = [
     domain: 'physique-chimie',
     title: 'La matière',
     skills: [etatsMatiere, masseVolumeMatiere, melangesMatiere, dissolutionMatiere, chimieSecurite],
+  },
+  {
+    id: 'p6-mouvements-energie',
+    subject: 'sciences',
+    grade: '6e',
+    domain: 'physique-chimie',
+    title: 'Mouvements et énergie',
+    skills: [typesMouvements, vitesseUniforme, sourcesConversions, circuitElectrique],
   },
   {
     id: 'p6-electricite-energie',

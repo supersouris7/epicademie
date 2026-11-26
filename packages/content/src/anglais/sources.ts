@@ -863,6 +863,14 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-25',
   },
   {
+    id: 'bc-uncount-nouns',
+    title: 'LearnEnglish, English Grammar : Uncount nouns',
+    publisher: 'British Council',
+    url: 'https://learnenglish.britishcouncil.org/grammar/english-grammar-reference/uncount-nouns',
+    textDate: '2026',
+    consultedOn: '2026-11-26',
+  },
+  {
     id: 'bc-nouns-countable',
     title: 'LearnEnglish, Grammar A1-A2 : Nouns, countable and uncountable',
     publisher: 'British Council',
