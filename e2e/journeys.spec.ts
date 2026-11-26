@@ -60,13 +60,13 @@ test('Adulte : parcours de remise à niveau en maths', async ({ page }) => {
   await expect(page.getByRole('button', { name: /Pythagore/ }).last()).toBeVisible();
 });
 
-test('Anglais : chapitre des verbes irréguliers jouable', async ({ page }) => {
+test('Anglais : chapitre du prétérit jouable', async ({ page }) => {
   await signupFamily(page);
   await createProfile(page, `Eng${Date.now() % 10000}`);
   await page.getByRole('button', { name: /Entraînement/ }).click();
   await page.getByRole('button', { name: 'Anglais', exact: true }).click();
   await page
-    .getByRole('button', { name: /Les verbes irréguliers/ })
+    .getByRole('button', { name: /Le prétérit/ })
     .last()
     .click();
   await page
