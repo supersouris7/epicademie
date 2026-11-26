@@ -23,6 +23,8 @@ import { ENGLISH_PRONOUNS_CHAPTER } from './pronoms.ts';
 import { ENGLISH_WORDS_6E_CHAPTER } from './reperes-mots.ts';
 import { ENGLISH_LISTENING_6E_CHAPTER } from './ecoute-6e.ts';
 import { ENGLISH_VOCABULARY_6E_CHAPTER } from './vocabulaire-6e.ts';
+import { ENGLISH_FUTURE_CHAPTER } from './futur.ts';
+import { ENGLISH_ADVICE_CHAPTER } from './modaux-souhait.ts';
 
 /**
  * Anglais — pilote (docs/adr/0024-contenus-hors-maths.md) : verbes irréguliers, classe de 5e
@@ -158,6 +160,8 @@ export const ANGLAIS_CHAPTERS: readonly Chapter[] = [
   ENGLISH_SCHOOL_CHAPTER,
   ENGLISH_QUESTIONS_CHAPTER,
   ENGLISH_LISTENING_CM2_CHAPTER,
+  ENGLISH_FUTURE_CHAPTER,
+  ENGLISH_ADVICE_CHAPTER,
   {
     id: 'a5-verbes-irreguliers',
     subject: 'anglais',
