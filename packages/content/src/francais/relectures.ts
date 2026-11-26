@@ -129,4 +129,10 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'f6-pronom-antecedent', version: 1, lot: 'fr-6e-02', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'f6-groupe-nominal', version: 1, lot: 'fr-6e-02', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'f6-epithete-complement-nom', version: 1, lot: 'fr-6e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-proposition', version: 1, lot: 'fr-6e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-phrase-simple-complexe', version: 1, lot: 'fr-6e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-juxtaposition', version: 1, lot: 'fr-6e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-coordination', version: 1, lot: 'fr-6e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-subordination', version: 1, lot: 'fr-6e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-conjonctions', version: 1, lot: 'fr-6e-03', date: '2026-11-26', verdict: 'ok' },
 ];
