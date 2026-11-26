@@ -97,7 +97,17 @@ const niveau3 = (rng: Rng): QuestionDraft => {
   }
   const i = rng.int(2, 90) * 10;
   const { answer, traps: t } = saisie(
-    ['intensité', 'l’intensité', 'intensite', 'intensité du courant', 'l’intensité du courant'],
+    [
+      'intensité',
+      'l’intensité',
+      'intensite',
+      'intensité électrique',
+      'l’intensité électrique',
+      'intensité du courant',
+      'l’intensité du courant',
+      'intensité du courant électrique',
+      'l’intensité du courant électrique',
+    ],
     [
       ['tension', 'La tension se mesure en volts, avec un voltmètre.'],
       ['résistance', 'La résistance s’exprime en ohms.'],
@@ -183,7 +193,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       ...trois.flatMap((a, i) =>
         i === coupable ? [] : [{ label: nom(a), why: `${mesures[i]} mA est inférieur à la limite de ${limite} mA.` }],
       ),
-      { label: 'Aucun des trois', why: `Une mesure dépasse la limite une fois convertie : ${limite} mA.` },
+      { label: 'Aucun des trois', why: `Convertie, la limite vaut ${limite} mA : l’une des mesures la dépasse.` },
     ],
     true,
   );

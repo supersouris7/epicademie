@@ -180,6 +180,10 @@ const niveau4 = (rng: Rng): QuestionDraft => {
         haute ? 'sous-tension' : 'surtension',
         haute ? 'La tension reçue dépasse la valeur prévue.' : 'La tension reçue est plus faible que la valeur prévue.',
       ],
+      [
+        'tension nominale',
+        'La tension nominale est la valeur prévue pour la lampe : on demande le nom de la situation où elle reçoit autre chose.',
+      ],
     ],
   );
   return {
@@ -250,7 +254,7 @@ export const tensionNotion: Skill = {
   lesson: {
     memo: [
       'La **tension électrique** se note U, se mesure entre deux points et s’exprime en **volts** (V). On la lit sur un **voltmètre** branché **en dérivation** : borne V du côté où le courant arrive, borne COM de l’autre.',
-      'Pour fonctionner normalement, un appareil doit recevoir une tension proche de sa **tension nominale**. Exemple : 6 000 mV = 6 V, parfait pour une lampe « 6 V ».',
+      'Pour fonctionner normalement, un appareil doit recevoir une tension proche de sa **tension nominale**. Exemple : 6 000 mV = 6 V, parfait pour une lampe « 6 V ». Bien au-dessus, c’est une **surtension** ; bien en dessous, une **sous-tension**.',
     ],
     ...referencesElectricite(
       'tension',

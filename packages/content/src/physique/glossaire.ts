@@ -585,7 +585,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'tension-electrique',
     'tension électrique',
     ['tension électrique', 'tensions électriques'],
-    'Différence de potentiel entre deux points d’un circuit, exprimée en volts.',
+    'Grandeur mesurée entre deux points d’un circuit avec un voltmètre, exprimée en volts (aussi appelée différence de potentiel).',
     'La tension électrique aux bornes de cette pile est de 4,5 V.',
   ),
   terme(
@@ -692,5 +692,26 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     ['conducteur ohmique', 'conducteurs ohmiques'],
     'Dipôle dont la tension est proportionnelle à l’intensité du courant qui le traverse.',
     'Pour un conducteur ohmique, U = R × I.',
+  ),
+  terme(
+    'dipole',
+    'dipôle',
+    ['dipôle', 'dipôles'],
+    'Élément d’un circuit électrique qui a deux bornes.',
+    'Une lampe, une pile et un moteur sont des dipôles.',
+  ),
+  terme(
+    'surtension',
+    'surtension',
+    ['surtension', 'surtensions'],
+    'Tension anormalement élevée, bien au-dessus de la tension prévue.',
+    'Une lampe « 6 V » branchée sur 12 V est en surtension.',
+  ),
+  terme(
+    'sous-tension',
+    'sous-tension',
+    ['sous-tension', 'sous-tensions'],
+    'Tension inférieure à la normale, ici à la tension prévue pour l’appareil.',
+    'Une lampe « 6 V » qui ne reçoit que 2 V est en sous-tension.',
   ),
 ];

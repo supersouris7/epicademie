@@ -12,14 +12,16 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     {
       question: 'Pour un conducteur ohmique, quelle relation est la loi d’Ohm ?',
       bon: 'U = R × I',
+      pourquoi: 'La tension est proportionnelle à l’intensité ; le coefficient qui les relie est la résistance R.',
       faux: [
-        ['U = R + I', 'La tension est un produit, pas une somme.'],
-        ['U = R − I', 'La tension est un produit, pas une différence.'],
+        ['U = R + I', 'La tension s’obtient en multipliant R par I, pas en les additionnant.'],
+        ['U = R − I', 'La tension s’obtient en multipliant R par I, pas en les soustrayant.'],
       ],
     },
     {
       question: 'Quelle est l’unité de la résistance électrique ?',
       bon: 'L’ohm (Ω)',
+      pourquoi: 'La résistance R s’exprime en ohms, de symbole Ω.',
       faux: [
         ['L’ampère (A)', 'L’ampère est l’unité de l’intensité.'],
         ['Le volt (V)', 'Le volt est l’unité de la tension.'],
@@ -27,8 +29,9 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     },
     {
       question:
-        'Dans un circuit en série avec le même générateur, on remplace la résistance par une plus grande. Que fait l’intensité ?',
+        'Dans un circuit en série, on garde le même générateur et on remplace la résistance par une plus grande. Que fait l’intensité ?',
       bon: 'Elle diminue',
+      pourquoi: 'La résistance s’oppose au passage du courant : plus elle est grande, moins le courant est intense.',
       faux: [
         ['Elle augmente', 'Une plus grande résistance s’oppose davantage au passage du courant.'],
         ['Elle ne change pas', 'La résistance a un effet sur l’intensité.'],
@@ -45,7 +48,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     answer,
     traps: t,
     hint: 'La résistance s’oppose au passage du courant et relie la tension à l’intensité.',
-    steps: ['Un conducteur ohmique vérifie U = R × I, avec R en ohms.', `Réponse : **${cas.bon}**.`],
+    steps: [cas.pourquoi, `Réponse : **${cas.bon}**.`],
     targetSeconds: 30,
   };
 };
@@ -61,7 +64,7 @@ const niveau2 = (rng: Rng): QuestionDraft => {
     return {
       prompt: `On analyse ${grandeur} avec la loi d’Ohm. Associe chaque lettre à son unité.`,
       answer: association(rng, paires),
-      hint: 'Chaque unité porte le nom d’une grandeur étudiée ou d’un savant.',
+      hint: 'Dis d’abord ce que désigne chaque lettre, puis pense à son appareil de mesure.',
       steps: ['U est la tension, I l’intensité, R la résistance.', 'Réponse : **U → volt ; I → ampère ; R → ohm**.'],
       targetSeconds: 45,
     };
@@ -84,7 +87,14 @@ const niveau2 = (rng: Rng): QuestionDraft => {
     answer,
     traps: t,
     hint: 'Pars de la relation entre U, R et I et cherche à laisser la grandeur seule.',
-    steps: ['U = R × I.', `On isole la grandeur cherchée : **${bons[cherche]}**.`],
+    steps: [
+      'U = R × I.',
+      {
+        U: 'La tension est déjà seule d’un côté : **U = R × I**.',
+        I: 'I est multiplié par R : on divise les deux côtés par R, donc **I = U ÷ R**.',
+        R: 'R est multiplié par I : on divise les deux côtés par I, donc **R = U ÷ I**.',
+      }[cherche],
+    ],
     targetSeconds: 45,
   };
 };
@@ -216,7 +226,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
           ? []
           : [{ label: `Le dipôle ${n}`, why: 'Pour ce dipôle, le quotient U ÷ I change d’une mesure à l’autre.' }],
       ),
-      { label: 'Aucun des trois', why: `Pour ${bon.toLowerCase()}, le quotient U ÷ I reste le même.` },
+      { label: 'Aucun des trois', why: `Pour le dipôle ${NOMS[ohmique]}, le quotient U ÷ I reste le même.` },
     ],
     true,
   );
@@ -228,7 +238,7 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     hint: 'Vérifie si la tension est proportionnelle à l’intensité, mesure après mesure.',
     steps: [
       'Un conducteur ohmique a une tension proportionnelle à l’intensité : U ÷ I est constant.',
-      `Seul ${bon.toLowerCase()} garde le même quotient, soit R = ${res} Ω.`,
+      `Seul le dipôle ${NOMS[ohmique]} garde le même quotient, soit R = ${res} Ω.`,
       `Réponse : **${bon}**.`,
     ],
     targetSeconds: 150,

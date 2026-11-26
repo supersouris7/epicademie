@@ -12,6 +12,8 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     {
       question: 'Dans un circuit qui ne contient que des dipôles en série, comment est l’intensité du courant ?',
       bon: 'La même en tout point',
+      pourquoi:
+        'En série, le courant n’a qu’un chemin : il traverse chaque dipôle l’un après l’autre, sans se partager.',
       faux: [
         ['Plus forte près de la pile', 'Le courant ne s’use pas : l’intensité est la même partout dans la boucle.'],
         ['Nulle après la première lampe', 'Dans une boucle fermée, le courant traverse tous les dipôles.'],
@@ -20,6 +22,8 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     {
       question: 'Deux lampes sont branchées en dérivation. Comment sont les tensions à leurs bornes ?',
       bon: 'Égales',
+      pourquoi:
+        'En dérivation, les deux lampes sont reliées aux deux mêmes points : la tension entre ces points est la même.',
       faux: [
         ['Leur somme vaut zéro', 'Les deux lampes sont entre les mêmes points : leurs tensions sont les mêmes.'],
         ['Toujours différentes', 'Entre les mêmes deux points, la tension est la même.'],
@@ -28,6 +32,7 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     {
       question: 'Comment appelle-t-on un point d’un circuit où plusieurs conducteurs sont reliés ?',
       bon: 'Un nœud',
+      pourquoi: 'Un nœud est un point de rencontre : le courant peut s’y partager entre plusieurs branches.',
       faux: [
         ['Une maille', 'Une maille est un parcours fermé, pas un point.'],
         ['Un dipôle', 'Un dipôle est un composant à deux bornes.'],
@@ -44,18 +49,18 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     answer,
     traps: t,
     hint: 'Imagine le chemin du courant : une seule boucle, ou plusieurs branches reliées.',
-    steps: [
-      'On regarde si les dipôles sont sur la même boucle ou sur des branches séparées.',
-      `Réponse : **${cas.bon}**.`,
-    ],
+    steps: [cas.pourquoi, `Réponse : **${cas.bon}**.`],
     targetSeconds: 30,
   };
 };
 
 const LOIS = [
-  ['Intensité en série', 'I est la même en tout point de la boucle'],
+  ['Intensité en série', 'En série, I est la même en tout point de la boucle'],
   ['Additivité des tensions', 'En série, U du générateur = somme des tensions des récepteurs'],
-  ['Additivité des intensités', 'À un nœud, ce qui arrive égale ce qui repart'],
+  [
+    'Additivité des intensités',
+    'À un nœud, la somme des intensités qui arrivent égale la somme de celles qui repartent',
+  ],
   ['Unicité des tensions', 'En dérivation, les dipôles ont la même tension'],
 ] as const;
 
