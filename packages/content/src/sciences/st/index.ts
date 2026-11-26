@@ -2,6 +2,11 @@ import type { Chapter } from '../../types.ts';
 import { besoinsAnimaux } from './besoins-animaux.ts';
 import { besoinsVegetaux } from './besoins-vegetaux.ts';
 import { actionsHumaines } from './actions-humaines.ts';
+import { algorithmes } from './algorithmes.ts';
+import { chaineEnergie } from './chaine-energie.ts';
+import { chaineInformation } from './chaine-information.ts';
+import { conducteurs } from './conducteurs.ts';
+import { securiteElectrique } from './securite-electrique.ts';
 import { chainesAlimentaires } from './chaines.ts';
 import { decomposeurs } from './decomposeurs.ts';
 import { peuplement } from './peuplement.ts';
@@ -30,7 +35,8 @@ import { trajectoire } from './trajectoire.ts';
 import { vitesse } from './vitesse.ts';
 
 /**
- * Sciences et technologie, CM1 à 6e (préfixe `p…` pour le domaine physique-chimie, `v…` pour la SVT, ADR 0034).
+ * Sciences et technologie, CM1 à 6e (préfixe `p…` pour le domaine physique-chimie, `v…` pour la SVT, `t…`
+ * pour la technologie, ADR 0034).
  * Le lot de contenu ajoute ses chapitres ici, sans toucher à catalog.ts.
  */
 export const ST_CHAPTERS: readonly Chapter[] = [
@@ -89,6 +95,22 @@ export const ST_CHAPTERS: readonly Chapter[] = [
     domain: 'svt',
     title: 'Écosystèmes',
     skills: [peuplement, relations, chainesAlimentaires, actionsHumaines],
+  },
+  {
+    id: 'tcm2-objets-programmation',
+    subject: 'sciences',
+    grade: 'cm2',
+    domain: 'technologie',
+    title: 'Objets techniques et programmation',
+    skills: [chaineInformation, algorithmes, securiteElectrique],
+  },
+  {
+    id: 'p6-electricite-energie',
+    subject: 'sciences',
+    grade: '6e',
+    domain: 'physique-chimie',
+    title: 'Électricité et énergie',
+    skills: [conducteurs, chaineEnergie],
   },
   {
     id: 'p6-signal-information',
