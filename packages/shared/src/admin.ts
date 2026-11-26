@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ADMIN_ROLES } from './admin-roles.ts';
 import { GRADES } from './grades.ts';
 import { MODE_IDS } from './modes.ts';
 import { REPORT_REASONS, REPORT_STATUSES } from './pedagogy.ts';
@@ -6,7 +7,7 @@ import { HEROES } from './profile.ts';
 import { SUBJECT_IDS } from './subjects.ts';
 
 /**
- * Administration par « opérateur » et consultation des comptes (docs/adr/0033-…). Toutes les
+ * Administration et consultation des comptes (docs/adr/0033-… et 0036-…). Toutes les
  * listes sont paginées côté serveur (25 par page) ; aucune empreinte, jeton ni secret n'y figure.
  */
 
@@ -14,8 +15,16 @@ export const ADMIN_PAGE_SIZE = 25;
 /** Plus de 400 pages (10 000 lignes) : affiner la recherche plutôt que parcourir. */
 export const ADMIN_MAX_PAGE = 400;
 
-export const AdminSessionSchema = z.object({ operator: z.string() });
+export const AdminSessionSchema = z.object({
+  /** Nom affiché de la personne connectée. */
+  operator: z.string(),
+  role: z.enum(ADMIN_ROLES),
+  /** `sso` : session ouverte par le fournisseur d'identité (déconnexion possible). */
+  via: z.enum(['sso', 'secours', 'operateur']),
+});
 export type AdminSession = z.infer<typeof AdminSessionSchema>;
+
+export const AdminAuthConfigSchema = z.object({ sso: z.boolean() });
 
 export const ACCOUNT_TYPES = ['tous', 'famille', 'autonome'] as const;
 export const ACCOUNT_STATES = ['tous', 'verifie', 'non-verifie', 'abonne'] as const;
@@ -146,20 +155,31 @@ export const TemporaryPasswordSchema = z.object({ password: z.string(), sessions
 export type TemporaryPassword = z.infer<typeof TemporaryPasswordSchema>;
 
 export const AuditSearchSchema = z.object({ page: z.number().int().min(0).max(ADMIN_MAX_PAGE).default(0) });
-export const AUDIT_ACTIONS = ['consultation', 'reinitialisation-mot-de-passe'] as const;
+/** Accès à l'administration, sans compte de jeu visé. */
+export const ACCESS_ACTIONS = ['connexion', 'refus-de-role', 'secours'] as const;
+export type AccessAction = (typeof ACCESS_ACTIONS)[number];
+export const AUDIT_ACTIONS = ['consultation', 'reinitialisation-mot-de-passe', ...ACCESS_ACTIONS] as const;
 export const AUDIT_ACTION_LABELS = {
+  connexion: 'Connexion à l’administration',
+  'refus-de-role': 'Connexion refusée (aucun rôle)',
+  secours: 'Accès de secours',
   consultation: 'Consultation de la fiche',
   'reinitialisation-mot-de-passe': 'Mot de passe réinitialisé',
 } as const;
 export const AuditPageSchema = z.object({
   items: z.array(
     z.object({
-      id: z.number().int(),
+      /** Unique dans le journal (`compte-12`, `acces-3`). */
+      id: z.string(),
       at: z.string(),
       operator: z.string(),
       action: z.enum(AUDIT_ACTIONS),
-      accountId: z.uuid(),
-      /** Nom court du compte : e-mail masqué, « Élève autonome » ou « Compte supprimé ». */
+      /** `null` : accès à l'administration (connexion, secours). */
+      accountId: z.uuid().nullable(),
+      /**
+       * Nom court du compte (e-mail masqué, « Élève autonome », « Compte supprimé ») ou, pour un
+       * accès, la requête de secours (« — » pour une connexion).
+       */
       accountLabel: z.string(),
       /** La fiche peut encore être ouverte. */
       accountExists: z.boolean(),

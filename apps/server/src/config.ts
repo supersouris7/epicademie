@@ -47,6 +47,17 @@ const EnvSchema = z.object({
    * Moins de 32 caractères : démarrage refusé.
    */
   ADMIN_OPERATOR_SECRET: z.string().min(32).optional(),
+  /**
+   * Connexion de l'équipe par OpenID Connect (docs/adr/0036-…) : les trois variables et
+   * ADMIN_ORIGIN vont ensemble. Configurée, elle remplace ADMIN_OPERATOR_SECRET (ignoré).
+   */
+  OIDC_ISSUER: z.url().optional(),
+  OIDC_CLIENT_ID: z.string().min(1).optional(),
+  OIDC_CLIENT_SECRET: z.string().min(16).optional(),
+  /** Origine du site d'administration (`https://admin.exemple.fr`, sans chemin). */
+  ADMIN_ORIGIN: z.url().optional(),
+  /** Accès de secours (en-tête X-Epicademie-Secours, rôle propriétaire) ; absent : désactivé. */
+  ADMIN_SECOURS_SECRET: z.string().min(32).optional(),
   /** Documentation interactive de l'API (/api/docs) ; par défaut hors production. */
   API_DOCS: bool,
   /** Fuseau horaire des jours de révision (répétition espacée). */
@@ -109,8 +120,14 @@ export interface ServerConfig {
   readonly rateLimitMax: number;
   readonly authRateLimitMax: number;
   readonly metricsToken: string | null;
-  /** `null` : administration désactivée. */
+  /** Secret historique de l'opérateur ; sans effet quand `adminSso` est configuré. */
   readonly adminOperatorSecret: string | null;
+  /** Origine du site d'administration, ou `null`. */
+  readonly adminOrigin: string | null;
+  /** `null` (défaut) : accès de secours désactivé. */
+  readonly adminRescueSecret: string | null;
+  /** `null` : pas de connexion par fournisseur d'identité. */
+  readonly adminSso: AdminSsoConfig | null;
   readonly apiDocs: boolean;
   readonly timeZone: string;
   readonly version: string;
@@ -133,6 +150,12 @@ export interface MailConfig {
   /** `null` : mode simulation (lien journalisé ; renvoyé dans la réponse hors production). */
   readonly brevoApiKey: string | null;
   readonly from: string;
+}
+
+export interface AdminSsoConfig {
+  readonly issuer: string;
+  readonly clientId: string;
+  readonly clientSecret: string;
 }
 
 export interface GoogleConfig {
@@ -182,6 +205,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
     authRateLimitMax: e.AUTH_RATE_LIMIT_MAX,
     metricsToken: e.METRICS_TOKEN ?? null,
     adminOperatorSecret: e.ADMIN_OPERATOR_SECRET ?? null,
+    ...adminConfig(e),
     apiDocs: e.API_DOCS ?? !production,
     timeZone: e.TZ_FAMILY,
     version: e.EPICADEMIE_VERSION,
@@ -212,6 +236,27 @@ function mailConfig(e: z.infer<typeof EnvSchema>): MailConfig {
     brevoApiKey: e.BREVO_API_KEY ?? null,
     from: e.MAIL_FROM ?? 'Épicadémie <noreply@localhost>',
   };
+}
+
+/** HTTPS obligatoire, sauf pour un essai sur la machine elle-même. */
+const secureUrl = (url: URL) => url.protocol === 'https:' || ['localhost', '127.0.0.1'].includes(url.hostname);
+
+/** Administration : SSO complet ou absent (une configuration partielle arrête le serveur). */
+function adminConfig(
+  e: z.infer<typeof EnvSchema>,
+): Pick<ServerConfig, 'adminOrigin' | 'adminSso' | 'adminRescueSecret'> {
+  const origin = e.ADMIN_ORIGIN ? new URL(e.ADMIN_ORIGIN) : null;
+  if (origin && (origin.origin !== e.ADMIN_ORIGIN || !secureUrl(origin))) {
+    throw new ConfigError('ADMIN_ORIGIN doit être une origine HTTPS, sans chemin ni barre finale');
+  }
+  const { OIDC_ISSUER: issuer, OIDC_CLIENT_ID: clientId, OIDC_CLIENT_SECRET: clientSecret } = e;
+  const base = { adminOrigin: origin?.origin ?? null, adminRescueSecret: e.ADMIN_SECOURS_SECRET ?? null };
+  if (!issuer && !clientId && !clientSecret) return { ...base, adminSso: null };
+  if (!issuer || !clientId || !clientSecret || !origin) {
+    throw new ConfigError('OIDC_ISSUER, OIDC_CLIENT_ID, OIDC_CLIENT_SECRET et ADMIN_ORIGIN vont ensemble');
+  }
+  if (!secureUrl(new URL(issuer))) throw new ConfigError('OIDC_ISSUER doit être en HTTPS');
+  return { ...base, adminSso: { issuer, clientId, clientSecret } };
 }
 
 /** Google : actif seulement si identifiant et secret sont tous deux fournis. */

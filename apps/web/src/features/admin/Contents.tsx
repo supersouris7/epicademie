@@ -13,6 +13,7 @@ import {
   type ValidationState,
 } from '@epicademie/shared';
 import { useContent, useContentHistory, useUpdateContent } from './api.ts';
+import { useCan } from './can.ts';
 import { chapterTitle } from './contentLabels.ts';
 import { date, plural } from './labels.ts';
 import { QuestionPreview } from './QuestionPreview.tsx';
@@ -176,6 +177,7 @@ function FilterBar({
 }
 
 function ContentDetail({ skill: c }: { readonly skill: ContentSkill }) {
+  const can = useCan();
   const update = useUpdateContent();
   const { data: history } = useContentHistory(c.skillId);
   return (
@@ -198,21 +200,23 @@ function ContentDetail({ skill: c }: { readonly skill: ContentSkill }) {
         <QuestionPreview skillId={c.skillId} level={1} seed={1} />
       </div>
       <div className="flex min-w-0 flex-col gap-2">
-        <div className="flex flex-wrap gap-2">
-          <AdminButton
-            tone={c.disabled ? 'primary' : 'danger'}
-            disabled={update.isPending}
-            onClick={() => update.mutate({ skillId: c.skillId, disabled: !c.disabled })}
-          >
-            {c.disabled ? 'Réactiver' : 'Désactiver'}
-          </AdminButton>
-          <AdminButton
-            disabled={update.isPending || c.reviewedVersion === c.version}
-            onClick={() => update.mutate({ skillId: c.skillId, reviewed: true })}
-          >
-            {c.reviewedVersion === c.version ? 'Relue' : 'Marquer relue'}
-          </AdminButton>
-        </div>
+        {can('contenus:modifier') && (
+          <div className="flex flex-wrap gap-2">
+            <AdminButton
+              tone={c.disabled ? 'primary' : 'danger'}
+              disabled={update.isPending}
+              onClick={() => update.mutate({ skillId: c.skillId, disabled: !c.disabled })}
+            >
+              {c.disabled ? 'Réactiver' : 'Désactiver'}
+            </AdminButton>
+            <AdminButton
+              disabled={update.isPending || c.reviewedVersion === c.version}
+              onClick={() => update.mutate({ skillId: c.skillId, reviewed: true })}
+            >
+              {c.reviewedVersion === c.version ? 'Relue' : 'Marquer relue'}
+            </AdminButton>
+          </div>
+        )}
         <p className="text-sm font-semibold">Historique</p>
         {history?.length === 0 && <p className={mutedClass}>Aucune décision pour l’instant.</p>}
         <ul className={`flex flex-col gap-0.5 ${mutedClass}`}>

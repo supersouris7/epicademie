@@ -852,4 +852,30 @@ export const SOURCES: readonly Source[] = [
     textDate: '2017-01-09',
     consultedOn: '2026-11-26',
   },
+  // Lot ge-4e-04 : repères de 4e (routes maritimes).
+  {
+    id: 'geoconfluences-passages-strategiques-geopolitique',
+    title:
+      'Catherine Biaggi et Laurent Carroué, « Les grands détroits et canaux internationaux dans la géopolitique des mers et océans »',
+    publisher: 'Géoconfluences (ENS de Lyon, DGESCO)',
+    url: 'https://geoconfluences.ens-lyon.fr/informations-scientifiques/dossiers-thematiques/oceans-et-mondialisation/articles-scientifiques/passages-strategiques-maritimes-ppo-geopolitique',
+    textDate: '2024-06-10',
+    consultedOn: '2026-11-26',
+  },
+  {
+    id: 'geoconfluences-canal-de-suez',
+    title: '« Le canal de Suez, les nouvelles dimensions d’une voie de passage stratégique »',
+    publisher: 'Géoconfluences (ENS de Lyon, DGESCO)',
+    url: 'https://geoconfluences.ens-lyon.fr/informations-scientifiques/dossiers-thematiques/oceans-et-mondialisation/corpus-documentaire/canal-de-suez-strategique/',
+    textDate: '2018-03-19',
+    consultedOn: '2026-11-26',
+  },
+  {
+    id: 'geoconfluences-crise-mer-rouge',
+    title: '« La crise en mer Rouge, révélatrice de la vulnérabilité des grandes routes maritimes mondiales »',
+    publisher: 'Géoconfluences (ENS de Lyon, DGESCO)',
+    url: 'https://geoconfluences.ens-lyon.fr/actualites/veille/breves/mer-rouge-houthis',
+    textDate: '2024-02-01',
+    consultedOn: '2026-11-26',
+  },
 ];

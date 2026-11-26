@@ -1,14 +1,16 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { createHash, timingSafeEqual } from 'node:crypto';
-import type { Access, AccountRole } from '@epicademie/shared';
+import { API_PREFIX, can, type AccountRole, type AnyEndpoint } from '@epicademie/shared';
 import { AppError } from '../errors.ts';
 import { readCookie, SESSION_COOKIE } from '../auth/cookies.ts';
+import { sanitizeAdminName, type AdminIdentity } from './admin-identity.ts';
 
 /**
  * Qui fait la requête : résolu une fois par requête à partir du cookie de session, puis vérifié
  * par `route()` selon le niveau d'accès du contrat (`public`, `family`, `parent`, `admin`).
- * L'administration n'est pas un compte de jeu : c'est un « opérateur » reconnu à l'en-tête secret
- * que le frontal de la page de pilotage ajoute (docs/adr/0033-…).
+ * L'administration n'est pas un compte de jeu : session ouverte par le fournisseur d'identité de
+ * l'équipe, avec un rôle (docs/adr/0036-…). Tant qu'il n'est pas configuré, « opérateur » reconnu à
+ * l'en-tête secret du frontal de pilotage (docs/adr/0033-…).
  * Les services reçoivent la famille de l'acteur ; l'appartenance de chaque profil, partie ou
  * combat désigné est vérifiée par le module « comptes » (`ownership`).
  */
@@ -31,8 +33,8 @@ export interface Actor {
 declare module 'fastify' {
   interface FastifyRequest {
     actor: Actor | null;
-    /** Nom assaini de l'opérateur d'administration (secret valide), sinon `null`. */
-    operator: string | null;
+    /** Membre de l'équipe reconnu pour cette requête, sinon `null`. */
+    admin: AdminIdentity | null;
   }
 }
 
@@ -41,26 +43,29 @@ export interface AuthOptions {
   readonly resolve: (token: string) => Promise<Actor | null>;
   /** Origines autorisées en plus de la page elle-même (CORS_ORIGINS). */
   readonly allowedOrigins: readonly string[] | null;
-  /** Secret de l'opérateur (ADMIN_OPERATOR_SECRET) ; `null` : aucune administration. */
+  readonly admin: AdminAuthOptions;
+}
+
+export interface AdminAuthOptions {
+  /** Origine du site d'administration ; si définie, SSO et secours n'y sont acceptés que là. */
+  readonly origin: string | null;
+  /** Session d'administration (fournisseur d'identité) ; `null` : SSO non configuré. */
+  readonly resolveSession: ((token: string) => Promise<AdminIdentity | null>) | null;
+  /** Secret historique de l'opérateur, tant que le SSO n'est pas configuré ; sinon `null`. */
   readonly operatorSecret: string | null;
+  /** Secret de l'accès de secours ; `null` (défaut) : désactivé. */
+  readonly rescueSecret: string | null;
+  /** Trace chaque requête d'administration faite par l'accès de secours. */
+  readonly traceRescue: (admin: AdminIdentity, request: string) => Promise<void>;
 }
 
 export const OPERATOR_HEADER = 'x-epicademie-operateur';
 export const OPERATOR_NAME_HEADER = 'x-epicademie-operateur-nom';
-const OPERATOR_NAME_MAX = 40;
-
-/** Nom d'opérateur sûr pour les journaux : sans caractère de contrôle, 40 caractères au plus. */
-export function sanitizeOperatorName(raw: unknown): string {
-  const text = typeof raw === 'string' ? raw : '';
-  const clean = Array.from(text, (c) => {
-    const code = c.codePointAt(0) ?? 0;
-    return code < 32 || (code >= 127 && code <= 159) ? ' ' : c;
-  })
-    .join('')
-    .replace(/\s+/g, ' ')
-    .trim();
-  return clean.slice(0, OPERATOR_NAME_MAX) || 'operateur';
-}
+export const RESCUE_HEADER = 'x-epicademie-secours';
+export const RESCUE_NAME_HEADER = 'x-epicademie-secours-nom';
+/** Cookie de la session d'administration : lié à l'hôte du site d'administration (préfixe __Host-). */
+export const ADMIN_COOKIE = '__Host-epicademie_admin';
+const ADMIN_ROUTES = `${API_PREFIX}/admin/`;
 
 /** Comparaison en temps constant (empreintes de même longueur). */
 function sameSecret(given: string, expected: string): boolean {
@@ -68,11 +73,39 @@ function sameSecret(given: string, expected: string): boolean {
   return timingSafeEqual(digest(given), digest(expected));
 }
 
-/** Opérateur reconnu : secret correct (aucun cookie ni compte de jeu n'entre en jeu). */
-function readOperator(request: FastifyRequest, secret: string | null): string | null {
-  const given = request.headers[OPERATOR_HEADER];
+/** Personne reconnue à un secret d'en-tête (aucun cookie ni compte de jeu n'entre en jeu). */
+function readSecretHeader(
+  request: FastifyRequest,
+  secret: string | null,
+  headers: readonly [string, string],
+): string | null {
+  const given = request.headers[headers[0]];
   if (secret === null || typeof given !== 'string' || !sameSecret(given, secret)) return null;
-  return sanitizeOperatorName(request.headers[OPERATOR_NAME_HEADER]);
+  return sanitizeAdminName(request.headers[headers[1]]);
+}
+
+/** La requête vise bien le site d'administration (hôte, et origine si elle est annoncée). */
+export function onAdminOrigin(request: FastifyRequest, adminOrigin: string): boolean {
+  const { host, origin } = request.headers;
+  return host?.toLowerCase() === new URL(adminOrigin).host && (origin === undefined || origin === adminOrigin);
+}
+
+/** Identité portée par un en-tête secret : accès de secours, sinon opérateur historique. */
+function headerAdmin(request: FastifyRequest, options: AdminAuthOptions): AdminIdentity | null {
+  const rescue = readSecretHeader(request, options.rescueSecret, [RESCUE_HEADER, RESCUE_NAME_HEADER]);
+  if (rescue !== null) {
+    if (options.origin && !onAdminOrigin(request, options.origin)) return null;
+    return { name: `${rescue} (secours)`, role: 'proprietaire', sub: 'secours', via: 'secours' };
+  }
+  const operator = readSecretHeader(request, options.operatorSecret, [OPERATOR_HEADER, OPERATOR_NAME_HEADER]);
+  return operator === null ? null : { name: operator, role: 'proprietaire', sub: null, via: 'operateur' };
+}
+
+/** Identité portée par le cookie de session d'administration (routes d'administration seulement). */
+async function sessionAdmin(request: FastifyRequest, options: AdminAuthOptions): Promise<AdminIdentity | null> {
+  if (!options.resolveSession || !options.origin || !onAdminOrigin(request, options.origin)) return null;
+  const token = readCookie(request.headers.cookie, ADMIN_COOKIE);
+  return token ? options.resolveSession(token) : null;
 }
 
 const UNSAFE = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
@@ -91,32 +124,47 @@ function sameOrigin(request: FastifyRequest, allowed: readonly string[] | null):
 
 export function registerAuth(app: FastifyInstance, options: AuthOptions): void {
   app.decorateRequest('actor', null);
-  app.decorateRequest('operator', null);
+  app.decorateRequest('admin', null);
   app.addHook('onRequest', async (request) => {
-    if (UNSAFE.has(request.method) && !sameOrigin(request, options.allowedOrigins)) {
+    const unsafe = UNSAFE.has(request.method);
+    if (unsafe && !sameOrigin(request, options.allowedOrigins)) {
       throw new AppError('FORBIDDEN', 'Origine de la requête refusée.');
     }
-    // Un opérateur n'a ni famille, ni profil, ni session : le cookie de jeu est ignoré.
-    request.operator = readOperator(request, options.operatorSecret);
-    // Requête d'opérateur qui modifie quelque chose : l'en-tête Origin est obligatoire (il doit
-    // égaler l'origine de la page de pilotage ; sameOrigin l'a déjà comparé s'il est présent).
-    if (request.operator && UNSAFE.has(request.method) && !request.headers.origin) {
+    const route = request.routeOptions.url;
+    const adminRoute = route?.startsWith(ADMIN_ROUTES) ?? false;
+    // Un membre de l'équipe n'a ni famille, ni profil : le cookie de jeu est alors ignoré.
+    request.admin = headerAdmin(request, options.admin);
+    if (!request.admin && adminRoute) request.admin = await sessionAdmin(request, options.admin);
+    // Écriture d'administration : l'en-tête Origin est obligatoire (comparé ci-dessus).
+    if (request.admin && unsafe && !request.headers.origin) {
       throw new AppError('FORBIDDEN', 'Origine de la requête manquante.');
     }
-    if (request.operator) return;
+    if (request.admin) {
+      if (request.admin.via === 'secours' && adminRoute) {
+        await options.admin.traceRescue(request.admin, `${request.method} ${route ?? ''}`);
+      }
+      return;
+    }
     const token = readCookie(request.headers.cookie, SESSION_COOKIE);
     request.actor = token ? await options.resolve(token) : null;
   });
 }
 
 export const ADMIN_ONLY_MESSAGE = 'Administration accessible uniquement depuis la page de pilotage.';
+export const ADMIN_ROLE_MESSAGE = 'Ton rôle ne permet pas cette action.';
 export const AUTONOMOUS_MESSAGE = 'Demande à un parent : il doit d’abord rattacher ton compte au sien.';
 
-/** Lève l'erreur adaptée si l'acteur n'a pas le niveau d'accès demandé. */
-export function checkAccess(access: Access, actor: Actor | null, operator: string | null = null): void {
+/** Lève l'erreur adaptée si l'acteur n'a pas le niveau d'accès (ou la permission) demandé. */
+export function checkAccess(
+  { access, permission }: Pick<AnyEndpoint, 'access' | 'permission'>,
+  actor: Actor | null,
+  admin: AdminIdentity | null,
+): void {
   if (access === 'public') return;
   if (access === 'admin') {
-    if (!operator) throw new AppError('FORBIDDEN', ADMIN_ONLY_MESSAGE);
+    if (!admin) throw new AppError('FORBIDDEN', ADMIN_ONLY_MESSAGE);
+    // Route sans permission déclarée : refusée à tous (échec fermé).
+    if (!permission || !can(admin.role, permission)) throw new AppError('FORBIDDEN', ADMIN_ROLE_MESSAGE);
     return;
   }
   if (!actor) throw new AppError('UNAUTHORIZED', 'Connecte-toi pour continuer.');
@@ -126,10 +174,10 @@ export function checkAccess(access: Access, actor: Actor | null, operator: strin
   }
 }
 
-/** Opérateur d'une route `admin` (garanti par `route()`). */
-export function operatorOf(request: FastifyRequest): string {
-  if (!request.operator) throw new AppError('FORBIDDEN', ADMIN_ONLY_MESSAGE);
-  return request.operator;
+/** Membre de l'équipe d'une route `admin` (garanti par `route()`). */
+export function adminOf(request: FastifyRequest): AdminIdentity {
+  if (!request.admin) throw new AppError('FORBIDDEN', ADMIN_ONLY_MESSAGE);
+  return request.admin;
 }
 
 /** Acteur d'une route `family` ou plus (garanti par `route()`). */

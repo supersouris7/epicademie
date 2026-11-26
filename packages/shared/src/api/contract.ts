@@ -65,11 +65,13 @@ import {
   AccountDetailSchema,
   AccountPageSchema,
   AccountSearchSchema,
+  AdminAuthConfigSchema,
   AdminSessionSchema,
   AuditPageSchema,
   AuditSearchSchema,
   TemporaryPasswordSchema,
 } from '../admin.ts';
+import type { AdminPermission } from '../admin-roles.ts';
 import { BillingSchema, CheckoutSchema, SimulatePaymentSchema } from '../billing.ts';
 import {
   AdminErrorSchema,
@@ -112,7 +114,7 @@ export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
  * - `public` : tout le monde (connexion, inscription, télémétrie) ;
  * - `family` : un appareil connecté au compte de la famille (les enfants y jouent) ;
  * - `parent` : idem, mot de passe confirmé récemment (actions réservées au parent) ;
- * - `admin` : opérateur de la page de pilotage (en-tête secret ajouté par le frontal ; aucun compte de jeu).
+ * - `admin` : membre de l'équipe (aucun compte de jeu) dont le rôle a la `permission` de la route.
  * Les données d'une autre famille restent invisibles : le serveur vérifie aussi l'appartenance
  * de chaque profil, partie ou combat désigné (réponse 404 sinon).
  */
@@ -131,6 +133,8 @@ export interface Endpoint<
   readonly tag: ApiTag;
   readonly summary: string;
   readonly access: Access;
+  /** Obligatoire pour une route `admin` (sans elle, le serveur refuse tout le monde). */
+  readonly permission?: AdminPermission;
   readonly status: 200 | 201 | 204;
   readonly params?: TParams;
   readonly body?: TBody;
@@ -909,12 +913,31 @@ export const api = {
   }),
 
   // ——— Administration ———
+  adminAuthConfig: endpoint({
+    method: 'GET',
+    path: '/admin-auth/config',
+    tag: 'admin',
+    summary: 'La connexion par le fournisseur d’identité est-elle proposée ?',
+    access: 'public',
+    status: 200,
+    response: AdminAuthConfigSchema,
+  }),
+  adminLogout: endpoint({
+    method: 'POST',
+    path: '/admin-auth/logout',
+    tag: 'admin',
+    summary: 'Ferme la session d’administration et efface son cookie',
+    access: 'public',
+    status: 204,
+    response: null,
+  }),
   adminSession: endpoint({
     method: 'GET',
     path: '/admin/session',
     tag: 'admin',
-    summary: 'Opérateur reconnu (403 sinon)',
+    summary: 'Personne reconnue et son rôle (403 sinon)',
     access: 'admin',
+    permission: 'stats:lire',
     status: 200,
     response: AdminSessionSchema,
   }),
@@ -924,6 +947,7 @@ export const api = {
     tag: 'admin',
     summary: 'Recherche paginée de comptes (25 par page, jamais de liste complète)',
     access: 'admin',
+    permission: 'comptes:lire',
     status: 200,
     body: AccountSearchSchema,
     response: AccountPageSchema,
@@ -934,6 +958,7 @@ export const api = {
     tag: 'admin',
     summary: 'Fiche d’un compte (consultation journalisée)',
     access: 'admin',
+    permission: 'comptes:lire',
     status: 200,
     params: IdParamsSchema,
     response: AccountDetailSchema,
@@ -944,6 +969,7 @@ export const api = {
     tag: 'admin',
     summary: 'Mot de passe temporaire (montré une fois), sessions du compte fermées',
     access: 'admin',
+    permission: 'comptes:agir',
     status: 200,
     params: IdParamsSchema,
     response: TemporaryPasswordSchema,
@@ -952,8 +978,9 @@ export const api = {
     method: 'POST',
     path: '/admin/audit',
     tag: 'admin',
-    summary: 'Journal d’audit (consultations de fiches, réinitialisations), 25 par page',
+    summary: 'Journal d’audit (fiches, réinitialisations, connexions, secours), 25 par page',
     access: 'admin',
+    permission: 'audit:lire',
     status: 200,
     body: AuditSearchSchema,
     response: AuditPageSchema,
@@ -964,6 +991,7 @@ export const api = {
     tag: 'admin',
     summary: 'Statistiques agrégées (aucune donnée personnelle)',
     access: 'admin',
+    permission: 'stats:lire',
     status: 200,
     response: AdminStatsSchema,
   }),
@@ -973,6 +1001,7 @@ export const api = {
     tag: 'admin',
     summary: 'Courbes sur 30 jours : comptes créés, abonnements actifs (agrégés, aucune donnée personnelle)',
     access: 'admin',
+    permission: 'stats:lire',
     status: 200,
     response: AdminTrendsSchema,
   }),
@@ -982,6 +1011,7 @@ export const api = {
     tag: 'admin',
     summary: 'Notions les plus ratées (90 jours, anonyme : aucun nom d’enfant)',
     access: 'admin',
+    permission: 'stats:lire',
     status: 200,
     response: z.array(WeakSkillStatSchema),
   }),
@@ -991,6 +1021,7 @@ export const api = {
     tag: 'admin',
     summary: 'Erreurs récentes regroupées (serveur, navigateur, temps réel)',
     access: 'admin',
+    permission: 'audit:lire',
     status: 200,
     response: z.array(AdminErrorSchema),
   }),
@@ -1000,6 +1031,7 @@ export const api = {
     tag: 'admin',
     summary: 'Anomalies de récompenses à vérifier (gains impossibles, rythme suspect)',
     access: 'admin',
+    permission: 'comptes:lire',
     status: 200,
     response: z.array(AnomalySchema),
   }),
@@ -1009,6 +1041,7 @@ export const api = {
     tag: 'admin',
     summary: 'Signalements d’un état (du plus récent au plus ancien)',
     access: 'admin',
+    permission: 'signalements:lire',
     status: 200,
     params: z.object({ status: z.enum(REPORT_STATUSES) }),
     response: z.array(ReportSchema),
@@ -1019,6 +1052,7 @@ export const api = {
     tag: 'admin',
     summary: 'Change l’état d’un signalement',
     access: 'admin',
+    permission: 'signalements:traiter',
     status: 200,
     params: IdParamsSchema,
     body: ReportUpdateSchema,
@@ -1030,6 +1064,7 @@ export const api = {
     tag: 'admin',
     summary: 'Toutes les notions avec leur état de validation',
     access: 'admin',
+    permission: 'contenus:lire',
     status: 200,
     response: z.array(ContentSkillSchema),
   }),
@@ -1039,6 +1074,7 @@ export const api = {
     tag: 'admin',
     summary: 'Désactive, réactive ou marque comme relue une notion (historique conservé)',
     access: 'admin',
+    permission: 'contenus:modifier',
     status: 200,
     params: z.object({ skillId: z.string().min(1).max(80) }),
     body: ContentUpdateSchema,
@@ -1050,6 +1086,7 @@ export const api = {
     tag: 'admin',
     summary: 'Historique pédagogique d’une notion (désactivations, relectures)',
     access: 'admin',
+    permission: 'contenus:lire',
     status: 200,
     params: z.object({ skillId: z.string().min(1).max(80) }),
     response: z.array(ContentEventSchema),
