@@ -1,12 +1,12 @@
 # Épicadémie — règles du projet
 
 > Complète le socle commun de la fabrique (`~/.claude/CLAUDE.md`, `~/.claude/fabrique/standards/`),
-> sans jamais l'affaiblir en sécurité. Point de reprise : `~/opencode/questeo-pilotage/ETAT.md` (dépôt privé de pilotage).
+> sans jamais l'affaiblir en sécurité. Point de reprise : `~/opencode/epicademie-pilotage/ETAT.md` (dépôt privé de pilotage).
 
 ## Produit
 
 - Vision, spécifications produit (spec avant code) et Arène d'évaluation : dépôt privé de pilotage, clone local
-  `~/opencode/questeo-pilotage/specs/` (SPEC.md, VISION.md, ARENE-EVALUATION.md). Identité visuelle :
+  `~/opencode/epicademie-pilotage/specs/` (SPEC.md, VISION.md, ARENE-EVALUATION.md). Identité visuelle :
   `docs/DESIGN-SYSTEM.md`, `docs/ASSETS-CHATGPT.md`, `docs/PLANCHES-BOSS.md`.
 - Décisions d'architecture : `docs/adr/`.
 
