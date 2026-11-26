@@ -50,6 +50,26 @@ const brgm = (id: string, title: string, path: string, textDate: string): Source
   consultedOn: '2026-11-26',
 });
 
+/** Dossier d’information de l’Inserm (`textDate` : dernière date affichée, publication ou modification). */
+const inserm = (id: string, title: string, page: string, textDate: string): Source => ({
+  id: `inserm-${id}`,
+  title,
+  publisher: 'Inserm',
+  url: `https://www.inserm.fr/dossier/${page}/`,
+  textDate,
+  consultedOn: '2026-11-26',
+});
+
+/** Dossier thématique de Santé publique France (`textDate` : mise à jour affichée). */
+const spfIst = (id: string, title: string, page: string, textDate: string): Source => ({
+  id: `spf-${id}`,
+  title,
+  publisher: 'Santé publique France',
+  url: `https://www.santepubliquefrance.fr/maladies-et-traumatismes/infections-sexuellement-transmissibles${page}`,
+  textDate,
+  consultedOn: '2026-11-26',
+});
+
 /**
  * Sources de SVT (registre : `sources.ts` à la racine du paquet). Les identifiants partagés avec sciences et
  * technologie ne sont définis qu’une fois, dans `../st/sources.ts`.
@@ -344,4 +364,52 @@ export const SOURCES: readonly Source[] = [
     'les-communautes-de-dinosaures-etaient-elles-stables-avant-leur-extinction',
     '2022-03-10',
   ),
+  // ——— SVT 4e (lot sv-4e-02) ———
+  { ...academie('reproduction', 'reproduction'), consultedOn: '2026-11-26' },
+  { ...academie('asexue', 'asexué'), consultedOn: '2026-11-26' },
+  { ...academie('bouture', 'bouture'), consultedOn: '2026-11-26' },
+  { ...academie('bouturage', 'bouturage'), consultedOn: '2026-11-26' },
+  { ...academie('bourgeonnement', 'bourgeonnement'), consultedOn: '2026-11-26' },
+  { ...academie('clone', 'clone'), consultedOn: '2026-11-26' },
+  { ...academie('gamete', 'gamète'), consultedOn: '2026-11-26' },
+  { ...academie('ovule', 'ovule'), consultedOn: '2026-11-26' },
+  { ...academie('fecondation', 'fécondation'), consultedOn: '2026-11-26' },
+  { ...academie('hermaphrodite', 'hermaphrodite'), consultedOn: '2026-11-26' },
+  { ...academie('graine', 'graine'), consultedOn: '2026-11-26' },
+  { ...academie('pollen', 'pollen'), consultedOn: '2026-11-26' },
+  { ...academie('dissemination', 'dissémination'), consultedOn: '2026-11-26' },
+  { ...academie('puberte', 'puberté'), consultedOn: '2026-11-26' },
+  { ...academie('hormone', 'hormone'), consultedOn: '2026-11-26' },
+  { ...academie('ovaire', 'ovaire'), consultedOn: '2026-11-26' },
+  { ...academie('oestrogene', 'œstrogène'), consultedOn: '2026-11-26' },
+  { ...academie('hypophyse', 'hypophyse'), consultedOn: '2026-11-26' },
+  { ...academie('ovulation', 'ovulation'), consultedOn: '2026-11-26' },
+  { ...academie('menstruation', 'menstruation'), consultedOn: '2026-11-26' },
+  { ...academie('nidation', 'nidation'), consultedOn: '2026-11-26' },
+  { ...academie('embryon', 'embryon'), consultedOn: '2026-11-26' },
+  { ...academie('foetus', 'fœtus'), consultedOn: '2026-11-26' },
+  { ...academie('placenta', 'placenta'), consultedOn: '2026-11-26' },
+  { ...academie('ombilical', 'ombilical'), consultedOn: '2026-11-26' },
+  { ...academie('amniotique', 'amniotique'), consultedOn: '2026-11-26' },
+  { ...academie('grossesse', 'grossesse'), consultedOn: '2026-11-26' },
+  { ...academie('accouchement', 'accouchement'), consultedOn: '2026-11-26' },
+  { ...academie('contraception', 'contraception'), consultedOn: '2026-11-26' },
+  { ...academie('preservatif', 'préservatif'), consultedOn: '2026-11-26' },
+  { ...academie('pilule', 'pilule'), consultedOn: '2026-11-26' },
+  { ...tlfi('spermatozoide', 'spermatozoïde', 'spermatozo%C3%AFde'), consultedOn: '2026-11-26' },
+  { ...tlfi('testicule', 'testicule', 'testicule'), consultedOn: '2026-11-26' },
+  { ...tlfi('uterus', 'utérus', 'ut%C3%A9rus'), consultedOn: '2026-11-26' },
+  { ...tlfi('sperme', 'sperme', 'sperme'), consultedOn: '2026-11-26' },
+  { ...tlfi('stolon', 'stolon', 'stolon'), consultedOn: '2026-11-26' },
+  { ...tlfi('testosterone', 'testostérone', 'testost%C3%A9rone'), consultedOn: '2026-11-26' },
+  { ...tlfi('scissiparite', 'scissiparité', 'scissiparit%C3%A9'), consultedOn: '2026-11-26' },
+  inserm('contraception', 'Contraception', 'contraception', '2023-01-23'),
+  inserm('infertilite', 'Infertilité', 'infertilite', '2019-09-19'),
+  inserm('menopause', 'Ménopause', 'menopause', '2023-09-18'),
+  inserm('amp', 'Assistance médicale à la procréation (AMP)', 'assistance-medicale-procreation-amp', '2018-03-01'),
+  inserm('alcool-sante', 'Alcool et santé', 'alcool-sante', '2026-11-02'),
+  spfIst('ist', 'Infections sexuellement transmissibles', '', '2024-11-28'),
+  spfIst('vih', 'VIH/sida', '/vih-sida', '2025-12-09'),
+  spfIst('papillomavirus', 'Infections à papillomavirus', '/infections-a-papillomavirus', '2026-03-12'),
+  spfIst('chlamydiae', 'Chlamydiae', '/chlamydiae', '2025-12-30'),
 ];

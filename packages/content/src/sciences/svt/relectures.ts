@@ -25,4 +25,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'v4-tectonique-plaques', version: 1, lot: 'sv-4e-01', date: DATE, verdict: 'ok' },
   { skillId: 'v4-roches', version: 1, lot: 'sv-4e-01', date: DATE, verdict: 'ok' },
   { skillId: 'v4-histoire-terre', version: 1, lot: 'sv-4e-01', date: DATE, verdict: 'ok' },
+  { skillId: 'v4-reproduction-sexuee-asexuee', version: 1, lot: 'sv-4e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'v4-puberte', version: 1, lot: 'sv-4e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'v4-reproduction-humaine', version: 1, lot: 'sv-4e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'v4-maitrise-reproduction', version: 1, lot: 'sv-4e-02', date: '2026-11-26', verdict: 'ok' },
 ];

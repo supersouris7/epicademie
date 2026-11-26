@@ -17,7 +17,7 @@
 | `pc-4e-03` | Électricité                        | tension ; intensité ; lois des circuits ; loi d'Ohm                                                         | partielle (p4-electricite) |
 | `pc-4e-04` | Signaux                            | vitesse de la lumière et du son ; fréquence ; sons audibles ; lumière blanche et couleurs                   | absente                    |
 | `sv-4e-01` | La Terre interne                   | structure du globe ; tectonique des plaques ; roches ; histoire de la Terre                                 | couverte                   |
-| `sv-4e-02` | Reproduction                       | reproduction sexuée et asexuée ; puberté ; reproduction humaine ; maîtrise de la reproduction               | absente                    |
+| `sv-4e-02` | Reproduction                       | reproduction sexuée et asexuée ; puberté ; reproduction humaine ; maîtrise de la reproduction               | couverte                   |
 | `sv-4e-03` | Système nerveux et santé           | message nerveux ; réflexe ; sommeil et écrans ; substances et santé                                         | absente                    |
 | `sv-4e-04` | Écosystèmes et action humaine      | ressources ; pollutions ; agriculture ; préserver                                                           | absente                    |
 | `te-4e-01` | Chaînes d'énergie et d'information | fonctions de la chaîne d'énergie ; chaîne d'information ; constituants ; flux                               | couverte, en relecture     |
