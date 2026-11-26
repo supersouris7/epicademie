@@ -314,7 +314,7 @@ const airesUrbaines: Notion = {
   ],
   paires3: [
     ['pôle', 'lieu de population et d’emploi'],
-    ['couronne', 'communes autour du pôle, dont des actifs y travaillent'],
+    ['couronne', 'communes autour du pôle, d’où des actifs viennent y travailler'],
     ['mobilité pendulaire', 'aller-retour quotidien domicile-travail'],
   ],
   paires5: [
@@ -441,7 +441,7 @@ const airesUrbaines: Notion = {
       ],
     },
     {
-      title: 'Deux cartes, deux époques',
+      title: 'Une ville, deux époques',
       lines: [
         'En 1975, la ville fictive de Brancy forme une agglomération entourée de champs.',
         'Aujourd’hui, des lotissements s’égrènent loin du centre, le long des routes.',
@@ -450,7 +450,7 @@ const airesUrbaines: Notion = {
       ],
       qs: [
         {
-          q: 'Entre les deux dates, quelle évolution la comparaison des cartes montre-t-elle ?',
+          q: 'Entre les deux époques, quelle évolution le texte montre-t-il ?',
           a: 'l’étalement de la ville en périphérie',
           wrong: [
             {
@@ -499,7 +499,7 @@ const airesUrbaines: Notion = {
     {
       title: 'Une ville près de la frontière',
       lines: [
-        'La ville fictive de Rochemont est située près de la frontière.',
+        'La ville fictive de Rochemont est située en France, près de la frontière.',
         'Des habitants de ses environs vont travailler dans une grande ville du pays voisin.',
         'Un aéroport et des trains rapides relient la métropole de Rochemont à d’autres métropoles.',
         'Elle accueille des services de haut niveau qui rayonnent sur sa région.',
@@ -565,7 +565,7 @@ const espacesProductifs: Notion = {
   faits: [
     {
       q: 'Qu’est-ce qu’un espace productif ?',
-      a: 'la dimension spatiale d’un ensemble d’activités productives',
+      a: 'un lieu organisé par des activités productives liées entre elles',
       wrong: [
         {
           label: 'un espace réservé aux seuls logements',
@@ -602,6 +602,7 @@ const espacesProductifs: Notion = {
         '.',
         ['affaires'],
       ],
+      choix: ['affaires', 'habitation', 'enseignement'],
       quote: P_MUTATIONS,
       explain: 'Le thème étudie les mutations de ces quatre grandes dominantes.',
     },
@@ -707,7 +708,10 @@ const espacesProductifs: Notion = {
           label: 'une région agricole spécialisée dans le blé',
           why: 'Le technopôle concerne la recherche et les technologies, non les cultures.',
         },
-        { label: 'un port réservé aux pétroliers', why: 'Ce serait un port spécialisé.' },
+        {
+          label: 'un port réservé aux pétroliers',
+          why: 'Le technopôle concerne la recherche et l’innovation, pas le transport du pétrole.',
+        },
         { label: 'un parc national de montagne', why: 'Un parc protège la nature.' },
       ],
       gap: ['Un technopôle réunit des activités qui recourent à des technologies ', '.', ['innovantes']],
@@ -717,7 +721,7 @@ const espacesProductifs: Notion = {
       src: TECHNOPOLE,
     },
     {
-      q: 'Qui regroupe un pôle de compétitivité, labellisé par l’État ?',
+      q: 'Quels acteurs un pôle de compétitivité, labellisé (reconnu officiellement) par l’État, réunit-il ?',
       a: 'des entreprises, des unités de recherche et de formation et des organismes publics',
       wrong: [
         { label: 'seulement des agriculteurs voisins', why: 'Le réseau réunit des acteurs plus divers.' },
@@ -817,7 +821,8 @@ const espacesProductifs: Notion = {
         { text: 'banlieue', why: 'La banlieue désigne des communes autour d’une ville-centre.' },
       ],
       quote: G_TECHNOPOLE,
-      explain: 'Sophia-Antipolis, près de Nice et Antibes, est un des premiers exemples en France.',
+      explain:
+        'Sophia-Antipolis, près de Nice et Antibes, est un des premiers exemples en France. À ne pas confondre avec une technopole (sans accent), qui désigne une grande ville tournée vers l’innovation.',
       src: TECHNOPOLE,
     },
     {
@@ -952,7 +957,10 @@ const espacesProductifs: Notion = {
           a: 'un technopôle',
           wrong: [
             { label: 'un bassin céréalier', why: 'On n’y cultive pas de céréales.' },
-            { label: 'une station balnéaire', why: 'Elle se situe au bord de la mer et accueille des touristes.' },
+            {
+              label: 'une station balnéaire',
+              why: 'Une station balnéaire accueille des vacanciers au bord de la mer, pas des laboratoires.',
+            },
           ],
           quote: G_TECHNOPOLE,
           explain: 'Recherche, université et entreprises innovantes y sont réunies.',
@@ -1014,7 +1022,8 @@ const faibleDensite: Notion = {
           why: 'Le sujet porte sur leurs dynamiques actuelles et leurs atouts.',
         },
       ],
-      gap: ['On étudie la diversité de leurs dynamiques et de leurs ', '.', ['atouts', 'atout']],
+      gap: ['On étudie la diversité de leurs dynamiques et de leurs ', '.', ['atouts']],
+      choix: ['atouts', 'frontières', 'langues'],
       quote: P_FAIBLE,
       explain: 'Ces espaces ne suivent pas tous la même trajectoire.',
     },
@@ -1158,7 +1167,16 @@ const faibleDensite: Notion = {
   libres: [
     {
       q: 'comment appelle-t-on les nouveaux habitants des communes rurales venus de la ville ?',
-      accepted: ['néoruraux', 'neoruraux', 'néo-ruraux', 'neo-ruraux', 'les néoruraux', 'les néo-ruraux'],
+      accepted: [
+        'néoruraux',
+        'neoruraux',
+        'néo-ruraux',
+        'neo-ruraux',
+        'les néoruraux',
+        'les néo-ruraux',
+        'des néoruraux',
+        'des néo-ruraux',
+      ],
       traps: [
         {
           text: 'navetteurs',
@@ -1341,9 +1359,9 @@ const vocabulaire: Notion = {
   classe: CLASSE,
   id: 'g3-vocabulaire-territoires',
   title: 'Le vocabulaire des dynamiques territoriales',
-  hint: 'Décompose le mot (péri, dé, re, néo, multi) pour retrouver son sens.',
+  hint: 'Regarde les débuts de mots (péri, dé, re, multi) et demande-toi s’il s’agit d’un lieu, d’un trajet ou d’un changement.',
   memo: [
-    'Les débuts de mots aident : « péri » veut dire autour, « dé » indique un recul, « re » un retour. Ainsi la **périurbanisation** étend la ville autour d’elle.',
+    'Les débuts de mots aident : « péri » veut dire autour, « dé » indique un recul, « re » une nouvelle fois ou un retour. Ainsi la **périurbanisation** étend la ville autour d’elle.',
     'Au brevet, emploie les mots exacts : **aire d’attraction**, **mobilité pendulaire**, **reconversion**, **déprise**, **multifonctionnalité**.',
   ],
   faits: [
@@ -1421,7 +1439,7 @@ const vocabulaire: Notion = {
       src: AGRITOURISME,
     },
     {
-      q: 'Quel mot les géographes préfèrent-ils aux anciens « secteurs » pour étudier ce que produit un territoire ?',
+      q: 'Quelle expression les géographes préfèrent-ils aux anciens « secteurs » pour étudier ce que produit un territoire ?',
       a: 'systèmes productifs ou espaces productifs',
       wrong: [
         { label: 'frontières naturelles', why: 'Les frontières ne décrivent pas la production.' },
