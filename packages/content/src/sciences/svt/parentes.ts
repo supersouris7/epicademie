@@ -85,15 +85,15 @@ const NIVEAU2: readonly Modele[] = [
     'Le crocodile est plus apparenté à la mésange qu’au lézard.',
   ),
   choisir(
-    'Les champignons sont plus proches parents…',
-    'des animaux',
+    'De qui les champignons sont-ils les plus proches parents ?',
+    'Des animaux',
     [
       [
-        'des plantes',
+        'Des plantes',
         'Les champignons ont longtemps été rangés près des plantes, mais ils sont plus proches des animaux.',
       ],
-      ['des pierres', 'Les pierres ne sont pas des êtres vivants.'],
-      ['d’aucun autre être vivant', 'Tous les êtres vivants sont apparentés.'],
+      ['Des pierres', 'Les pierres ne sont pas des êtres vivants.'],
+      ['D’aucun autre être vivant', 'Tous les êtres vivants sont apparentés.'],
     ],
     'L’apparence peut tromper.',
     'Des études montrent que les champignons sont plus proches des animaux que des plantes.',
@@ -129,18 +129,18 @@ const NIVEAU3: readonly Modele[] = [
     'Ses membres ont un pouce opposable.',
     'Les humains sont des primates, comme les babouins et les chimpanzés.',
   ),
-  ecrire(
-    'Pour comparer des parentés, quel mot désigne un attribut trouvé semblable chez plusieurs espèces et probablement hérité d’un ancêtre commun ? (un caractère…)',
-    ['partagé', 'partage', 'commun', 'caractère partagé', 'caractère commun'],
+  choisir(
+    'Plusieurs espèces possèdent le même caractère. Comment appelle-t-on ce caractère ?',
+    'Un caractère partagé',
     [
-      ['unique', 'Un caractère unique ne permet pas de relier deux espèces.'],
-      ['absent', 'On compare ce que les espèces possèdent.'],
+      ['Un caractère unique', 'Un caractère unique ne permet pas de relier deux espèces.'],
+      ['Un caractère absent', 'On compare ce que les espèces possèdent.'],
     ],
     'Plusieurs espèces le possèdent.',
     'Les caractères partagés servent à établir des degrés de parenté.',
   ),
   completer(
-    'Complète avec les noms de groupes.',
+    'Complète la phrase avec ces deux animaux : escargot et crabe.',
     ['L’araignée est plus proche parente du ', ' que de l’', '.'],
     [['crabe'], ['escargot']],
     'Un des deux animaux a une coquille.',
@@ -176,7 +176,7 @@ const NIVEAU4: readonly Modele[] = [
   associer(
     'Associe chaque duo d’êtres vivants à ce que montre l’arbre du vivant',
     [
-      ['Humains et chimpanzés', 'un ancêtre commun hominoïde'],
+      ['Humains et chimpanzés', 'un ancêtre commun vieux de plusieurs millions d’années'],
       ['Araignée et crabe', 'plus proches entre eux que de l’escargot'],
       ['Crocodile et mésange', 'plus proches entre eux que du lézard'],
       ['Truite et être humain', 'plus proches entre eux que du requin'],
@@ -187,7 +187,14 @@ const NIVEAU4: readonly Modele[] = [
   ),
   ecrire(
     'Un caractère semblable chez plusieurs espèces actuelles a probablement été transmis par un… (deux mots).',
-    ['ancêtre commun', 'un ancêtre commun', 'ancetre commun', 'un ancetre commun'],
+    [
+      'ancêtre commun',
+      'un ancêtre commun',
+      'ancetre commun',
+      'un ancetre commun',
+      'ancêtres communs',
+      'ancetres communs',
+    ],
     [
       ['milieu commun', 'Le milieu ne transmet pas de caractère.'],
       ['descendant commun', 'Les caractères se transmettent des ancêtres vers les descendants.'],
@@ -230,7 +237,10 @@ const procheParent: Modele = (rng) => {
         `Nombre de caractères que cet animal partage avec ${cas.de.nom} : ${communs(cas.de.profil, x.profil).length}. Un autre en partage davantage.`,
       ]),
       indice: 'Compte les caractères que chaque animal partage avec lui.',
-      explication: ['Plus deux animaux partagent de caractères hérités, plus leur parenté est proche.'],
+      explication: [
+        `Caractères que ${cas.bon.nom} partage avec ${cas.de.nom} : ${communs(cas.de.profil, cas.bon.profil).join(' et ')}.`,
+        'Plus deux animaux partagent de caractères hérités, plus leur parenté est proche.',
+      ],
     },
     60,
   );

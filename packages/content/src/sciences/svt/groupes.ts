@@ -1,5 +1,5 @@
 import type { Skill } from '../../types.ts';
-import { avecFiches, compter, fiches, Maj } from './classification-kit.ts';
+import { avecFiches, communs, compter, fiches, Maj } from './classification-kit.ts';
 import { CLASSER } from './donnees-classification.ts';
 import { PROGRAMME } from './donnees.ts';
 import { qcm } from './kit.ts';
@@ -119,8 +119,8 @@ const NIVEAU3: readonly Modele[] = [
     'Les araignées sont des arachnides, qui sont des arthropodes.',
   ),
   completer(
-    'Complète l’exemple du Muséum pour le hérisson.',
-    ['On ouvre d’abord le grand tiroir des ', ', puis, à l’intérieur, celui des ', '.'],
+    'Range pour le hérisson ces deux groupes : mammifères et vertébrés.',
+    ['On ouvre d’abord le grand tiroir des ', ', puis, à l’intérieur, le tiroir plus petit des ', '.'],
     [
       ['vertébrés', 'vertebres', 'Vertébrés'],
       ['mammifères', 'mammiferes', 'Mammifères'],
@@ -144,7 +144,7 @@ const NIVEAU4: readonly Modele[] = [
   ranger(
     'Range les boîtes qui contiennent le loup commun, de la plus grande à la plus petite.',
     ['Vertébrés', 'Mammifères', 'Carnivores', 'Canidés', 'Loup commun (espèce)'],
-    'La famille est une boîte plus petite que l’ordre.',
+    'Dans la classification, la boîte « famille » est plus petite que la boîte « ordre ».',
     'Le loup est un vertébré, un mammifère, de l’ordre des Carnivores et de la famille des Canidés.',
   ),
   associer(
@@ -242,6 +242,7 @@ const plusPetiteBoite: Modele = (rng) => {
       fausses: tous.filter(([label]) => label !== cas.bonne),
       indice: 'Liste les caractères communs aux deux fiches, puis prends le plus précis.',
       explication: [
+        `Caractères communs : ${communs(cas.a.profil, cas.b.profil).join(' et ')}.`,
         `${Maj(cas.a.nom)} et ${cas.b.nom} se rejoignent dans la boîte définie par leur caractère commun le plus précis.`,
       ],
     },

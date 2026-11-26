@@ -58,7 +58,7 @@ const NIVEAU1: readonly Modele[] = [
       ['Huit', 'Huit pattes, c’est le cas des araignées, qui sont des arachnides.'],
       ['Quatre', 'Quatre membres caractérisent d’autres animaux, pas les insectes.'],
     ],
-    'Trois paires de pattes.',
+    'Pense à une fourmi et compte ses pattes de chaque côté.',
     'Un insecte possède trois paires de pattes.',
   ),
 ];
@@ -102,7 +102,7 @@ const NIVEAU2: readonly Modele[] = [
     'Cet animal possède des plumes',
     [
       ['Cet animal n’a pas de plumes', 'Une absence ne dit pas ce que les animaux possèdent en commun.'],
-      ['Cet animal est dangereux', 'C’est un jugement utile, pas un caractère de classification.'],
+      ['Cet animal est dangereux', 'C’est un avis sur le danger, pas un caractère que l’animal possède.'],
       ['Cet animal vit dans une forêt', 'C’est son milieu de vie, pas un caractère qu’il possède.'],
     ],
     'Seul ce qu’un être vivant possède compte.',
@@ -122,8 +122,8 @@ const NIVEAU2: readonly Modele[] = [
 
 const NIVEAU3: readonly Modele[] = [
   completer(
-    'Complète : les caractères de deux groupes.',
-    ['Les vertébrés possèdent des ', '. Les mammifères possèdent en plus des ', '.'],
+    'Complète avec les bons mots de cette liste : mamelles, plumes, vertèbres.',
+    ['Les vertébrés sont les animaux avec des ', '. Les mammifères sont les animaux à ', '.'],
     [['vertèbres', 'vertebres'], ['mamelles']],
     'Les deux mots ressemblent au nom des groupes.',
     'Les vertébrés ont des vertèbres, les mammifères des mamelles.',
