@@ -16,6 +16,7 @@ import { SKILLS as SE_REPERER_CM2 } from './se-reperer-cm2.ts';
 import { SKILLS as SE_REPERER } from './se-reperer.ts';
 import { SKILLS as TEMPS_REPUBLIQUE } from './temps-republique.ts';
 import { SKILLS as TRANSFORMATIONS_EUROPE } from './transformations-europe.ts';
+import { SKILLS as XVIIIE_SIECLE } from './xviiie-siecle.ts';
 
 /**
  * Histoire, cycle 3 (docs/adr/0024-contenus-hors-maths.md). Source institutionnelle unique :
@@ -231,4 +232,5 @@ export const HISTOIRE_CHAPTERS: readonly Chapter[] = [
   chapter('h5-occident-feodal', '5e', 'L’Occident féodal (XIe-XVe s.)', OCCIDENT_FEODAL),
   chapter('h5-transformations-europe', '5e', 'Transformations de l’Europe (XVIe-XVIIe s.)', TRANSFORMATIONS_EUROPE),
   chapter('h5-se-reperer', '5e', 'Repères de 5e', REPERES_5E),
+  chapter('h4-xviiie-siecle', '4e', 'Le XVIIIe siècle : expansions, Lumières et révolutions', XVIIIE_SIECLE),
 ];
