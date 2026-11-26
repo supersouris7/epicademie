@@ -26,3 +26,7 @@ livré avec le lot `st-cm2-01` (couvert, relu).
 
 Écart au plan (`st-cm2-04`) : le chapitre « La décomposition » (notion « décomposeurs », colonne « fin de sixième », hors
 lots ci-dessus ; la notion « micro-organismes » de `st-6e-04` reste à couvrir) est livré avec ce lot, en relecture.
+
+Écart au plan (`st-cm2-05`) : le chapitre « Électricité et énergie » (notions « conducteurs et isolants » et « chaîne
+d'énergie », colonne « fin de sixième ») est livré avec ce lot, en relecture ; le circuit électrique de `st-6e-02` reste à
+couvrir.

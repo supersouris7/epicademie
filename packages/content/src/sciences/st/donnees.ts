@@ -1,5 +1,5 @@
 /**
- * Faits des chapitres « La matière », « Mouvement et énergie » et « Le vivant » (CM1), puis « Matériaux et mélanges » et « Mouvement et énergie » « Le corps humain » et « Écosystèmes » (CM2), « Signal et information » et « La décomposition » (6e). Chaque fait cite son identifiant de source (registre `sources.ts`) et la
+ * Faits des chapitres « La matière », « Mouvement et énergie » et « Le vivant » (CM1), puis « Matériaux et mélanges » et « Mouvement et énergie » « Le corps humain » et « Écosystèmes » (CM2), « Signal et information », « La décomposition » et « Électricité et énergie » (6e), « Objets techniques et programmation » (CM2). Chaque fait cite son identifiant de source (registre `sources.ts`) et la
  * citation exacte du texte officiel (programme du cycle 3, Éduscol, domaine « Matière, mouvement, énergie,
  * information »). Les exemples du quotidien (un caillou, une pomme, la buée…) illustrent ces faits : ils ne sont pas des faits.
  */
@@ -1089,5 +1089,275 @@ export const FAITS: readonly Fait[] = [
     id: 'action-impermeable',
     source: 'ecologie-artificialisation',
     citation: 'un sol imperméabilisé n’absorbe pas l’eau de pluie',
+  },
+  // Objets techniques et programmation (CM2), électricité et chaîne d’énergie (6e) : lot st-cm2-05.
+  {
+    id: 'conducteur-def',
+    source: 'academie-conducteur',
+    citation: 'Susceptible d’être parcouru par le courant électrique ou de transférer la chaleur.',
+  },
+  {
+    id: 'conducteur-oppose',
+    source: 'academie-conducteur',
+    citation: 'Les corps conducteurs, par opposition aux corps isolants.',
+  },
+  {
+    id: 'conducteur-metal',
+    source: 'academie-metal',
+    citation:
+      'généralement bon conducteur de la chaleur et de l’électricité. Le fer, le cuivre, le magnésium, le calcium sont des métaux.',
+  },
+  {
+    id: 'conducteur-cuivre',
+    source: 'academie-cuivre',
+    citation: 'Le cuivre est bon conducteur de la chaleur et de l’électricité.',
+  },
+  {
+    id: 'conducteur-argent',
+    source: 'academie-argent',
+    citation: 'Métal de couleur blanche, brillant, ductile et bon conducteur de la chaleur et de l’électricité',
+  },
+  {
+    id: 'conducteur-aluminium',
+    source: 'cnrtl-aluminium',
+    citation: 'Métal blanc, très léger, de symbole Al',
+  },
+  {
+    id: 'isolant-def',
+    source: 'cnrtl-isolant',
+    citation: 'Corps, matériau qui s’oppose au passage du courant électrique, de la chaleur ou des vibrations sonores',
+  },
+  {
+    id: 'isolant-verre',
+    source: 'cnrtl-isolant',
+    citation: 'Le verre est considéré depuis longtemps comme un bon diélectrique',
+  },
+  {
+    id: 'isolant-porcelaine',
+    source: 'cnrtl-isolateur',
+    citation: 'isolé du sol par des isolateurs en porcelaine',
+  },
+  {
+    id: 'isolant-mica',
+    source: 'cnrtl-mica',
+    citation: 'résistantes à la chaleur et isolantes',
+  },
+  {
+    id: 'isolant-bakelite',
+    source: 'cnrtl-bakelite',
+    citation: 'matière plastique, utilisée comme isolant',
+  },
+  {
+    id: 'isolant-gaine',
+    source: 'cnrtl-gaine',
+    citation: 'Enveloppe isolante d’un fil, d’un câble.',
+  },
+  {
+    id: 'isolant-isoler',
+    source: 'academie-isoler',
+    citation:
+      'séparer par un isolant des conducteurs, des corps chargés électriquement, de façon à empêcher tout contact',
+  },
+  {
+    id: 'conductivite-6e',
+    source: PROGRAMME,
+    citation:
+      'comparer et trier différents matériaux sur la base de leurs propriétés physiques (conductivité thermique ou électrique, capacité à interagir avec un aimant).',
+  },
+  {
+    id: 'chaine-representation',
+    source: PROGRAMME,
+    citation:
+      'Réaliser expérimentalement un dispositif de conversion d’énergie et en rendre compte par la représentation d’une chaîne énergétique.',
+  },
+  {
+    id: 'chaine-stockage',
+    source: PROGRAMME,
+    citation:
+      'distinguer les énergies qui peuvent être stockées (énergies de pesanteur, cinétique, chimique, nucléaire et thermique) de celles qui correspondent à des transferts énergétiques (énergies électrique et lumineuse).',
+  },
+  {
+    id: 'chaine-moteur-pile',
+    source: PROGRAMME,
+    citation:
+      'conversion d’énergie chimique en énergie cinétique dans un dispositif constitué d’un moteur alimenté par une pile électrique',
+  },
+  {
+    id: 'chaine-lampe-pile',
+    source: PROGRAMME,
+    citation:
+      'transfert d’énergie électrique vers une lampe ou un autre appareil électrique alimentés par une pile électrique',
+  },
+  {
+    id: 'chaine-chute',
+    source: PROGRAMME,
+    citation: 'au cours de la chute d’un objet, son énergie de pesanteur est convertie en énergie cinétique',
+  },
+  {
+    id: 'chaine-recepteur',
+    source: 'academie-recepteur',
+    citation:
+      'Appareil, installation qui convertissent l’énergie électrique fournie par un générateur en une autre forme d’énergie, lumineuse, thermique, mécanique ou chimique. Les ampoules, les résistances, les moteurs électriques, les électrolyseurs sont des récepteurs.',
+  },
+  {
+    id: 'chaine-pile',
+    source: 'academie-pile',
+    citation: 'Appareil, dispositif qui fournit de l’énergie électrique à partir de l’énergie chimique.',
+  },
+  {
+    id: 'chaine-photopile',
+    source: 'academie-photopile',
+    citation:
+      'Dispositif utilisant l’effet photovoltaïque pour produire de l’électricité à partir de l’énergie solaire',
+  },
+  {
+    id: 'chaine-moteur',
+    source: 'academie-moteur',
+    citation:
+      'Appareil qui utilise une source quelconque d’énergie pour produire de l’énergie mécanique, du mouvement.',
+  },
+  {
+    id: 'info-chaines',
+    source: PROGRAMME,
+    citation:
+      'Identifier la chaîne d’information et d’action (exemple d’un éclairage public intelligent : détecteur de présence, boîtier de contrôle, relais de commande d’éclairage, etc.).',
+  },
+  {
+    id: 'info-reperer',
+    source: PROGRAMME,
+    citation:
+      'Repérer les capteurs et les actionneurs (moteur électrique, etc.) présents dans un objet programmable (par exemple un robot).',
+  },
+  {
+    id: 'info-detecter',
+    source: PROGRAMME,
+    citation:
+      'capteurs (utilisés pour détecter la présence d’obstacles, ou un niveau de luminosité réduit en fin de journée, etc.)',
+  },
+  {
+    id: 'info-capteur',
+    source: 'academie-capteur',
+    citation:
+      'Appareil sensible à un phénomène physique, qu’il transforme en un signal, généralement électrique, transmissible à distance. Un microphone est un capteur sensible aux sons',
+  },
+  {
+    id: 'info-chaine-capteurs',
+    source: 'eduscol-chaine-information',
+    citation:
+      'identifier les constituants de la chaîne d’information d’un OST et de connaître les fonctions des constituants suivants : capteurs',
+  },
+  {
+    id: 'info-roles',
+    source: 'eduscol-chaine-information-synthese',
+    citation:
+      'le système acquiert des informations : rôle des capteurs, des codeurs et des détecteurs et il transforme l’énergie qu’il reçoit en action(s) attendue(s) par l’utilisateur : rôle des actionneurs',
+  },
+  {
+    id: 'info-exemples',
+    source: 'eduscol-chaine-information-synthese',
+    citation: 'Exemples : capteur de température, de luminosité, d’humidité',
+  },
+  {
+    id: 'info-chaine-actionneurs',
+    source: 'eduscol-chaine-action',
+    citation: 'Structure d’une chaîne d’action • Les actionneurs',
+  },
+  {
+    id: 'algo-def',
+    source: 'academie-algorithme',
+    citation: 'en appliquant dans un ordre précis une suite finie de règles',
+  },
+  {
+    id: 'algo-programme',
+    source: 'academie-programme',
+    citation:
+      'Suite d’instructions rédigées dans un langage spécifique, qui commande à un dispositif, à un appareil ou à un système informatique d’exécuter une tâche donnée',
+  },
+  {
+    id: 'algo-instruction',
+    source: 'academie-instruction',
+    citation: 'Consigne formulée dans un langage de programmation, selon un code.',
+  },
+  {
+    id: 'algo-consignes',
+    source: PROGRAMME,
+    citation:
+      'organiser un ensemble de consignes (par exemple, pour un robot : avancer, tourner, s’arrêter), recueillir des informations (détecter un obstacle, détecter un niveau de batteries faible) pour accomplir la tâche souhaitée.',
+  },
+  {
+    id: 'algo-blocs',
+    source: PROGRAMME,
+    citation:
+      'initier les élèves à la programmation d’objets techniques à l’aide de langages de programmation par blocs.',
+  },
+  {
+    id: 'algo-coder',
+    source: PROGRAMME,
+    citation:
+      'Coder un algorithme simple agissant sur le comportement d’un objet technique (déplacement d’un robot, fonctionnement d’un système d’éclairage, etc.).',
+  },
+  {
+    id: 'algo-traduire',
+    source: PROGRAMME,
+    citation: 'Comprendre un programme simple et le traduire en langage naturel.',
+  },
+  {
+    id: 'algo-critiquer',
+    source: PROGRAMME,
+    citation: 'Critiquer un programme au regard du comportement de l’objet programmé',
+  },
+  {
+    id: 'secu-regles',
+    source: PROGRAMME,
+    citation:
+      'Rechercher des informations sur les règles de sécurité électrique et les prendre en compte dans son activité.',
+  },
+  {
+    id: 'secu-domestiques',
+    source: PROGRAMME,
+    citation: 'sensibilisation des élèves aux risques électriques domestiques.',
+  },
+  {
+    id: 'secu-pile',
+    source: PROGRAMME,
+    citation:
+      'Réaliser un circuit électrique à une boucle associant un générateur (pile), un interrupteur, un ou deux récepteurs',
+  },
+  {
+    id: 'secu-mortelle',
+    source: 'academie-electrocution',
+    citation: 'Action, qui peut être mortelle, du courant électrique sur un organisme.',
+  },
+  {
+    id: 'secu-mouille',
+    source: 'cnrtl-electrocution',
+    citation:
+      'Les courants domestiques : 120 et 240 volts peuvent provoquer l’électrocution si la peau du sujet est humide ou s’il existe une « bonne terre » (sujet dans une baignoire)',
+  },
+  {
+    id: 'secu-installation',
+    source: 'ecologie-securite-installations',
+    citation: 'Une installation électrique défaillante représente un risque important d’électrisation',
+  },
+  {
+    id: 'secu-incendie',
+    source: 'ecologie-securite-installations',
+    citation: 'cause de nombreux départs de feu',
+  },
+  {
+    id: 'secu-prise',
+    source: 'academie-prise',
+    citation: 'petit dispositif fixe femelle, relié de façon permanente au réseau électrique',
+  },
+  {
+    id: 'secu-disjoncteur',
+    source: 'academie-disjoncteur',
+    citation:
+      'Interrupteur qui assure en cas d’anomalie la coupure d’un circuit électrique, soit par commande manuelle, soit automatiquement.',
+  },
+  {
+    id: 'secu-court-circuit',
+    source: 'cnrtl-court-circuit',
+    citation: 'une élévation dangereuse de la température des conducteurs',
   },
 ];
