@@ -189,6 +189,14 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
     family: 'decimaux',
   },
   {
+    id: 'fraction-decimale',
+    word: 'fraction décimale',
+    forms: ['fraction décimale', 'fractions décimales'],
+    definition: 'Une fraction qui a 10, 100 ou 1 000 en bas : elle peut s’écrire avec une virgule.',
+    example: '{7/10} = 0,7 et {8/100} = 0,08.',
+    family: 'decimaux',
+  },
+  {
     id: 'partie-entiere',
     word: 'partie entière',
     forms: ['partie entière', 'parties entières'],
