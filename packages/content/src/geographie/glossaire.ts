@@ -2181,4 +2181,32 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'L’éparpillement de constructions, sans plan d’ensemble, dans la campagne.',
     example: 'Des maisons isolées au milieu de champs.',
   },
+  {
+    id: 'foncier',
+    word: 'foncier',
+    forms: ['foncier'],
+    definition: 'Ce qui concerne le sol, les terrains et leur prix.',
+    example: 'Au centre d’une grande ville, le foncier coûte cher.',
+  },
+  {
+    id: 'viabilise',
+    word: 'viabilisé',
+    forms: ['viabilisé', 'viabilisés', 'viabilisée', 'viabilisées'],
+    definition: 'Un terrain viabilisé est équipé : eau, égouts, électricité, accès.',
+    example: 'Sur un terrain non viabilisé, il n’y a pas d’égouts.',
+  },
+  {
+    id: 'evincer',
+    word: 'évincer',
+    forms: ['évincer', 'évince', 'évincés', 'évincées'],
+    definition: 'Pousser quelqu’un à partir, le mettre à l’écart.',
+    example: 'Des loyers trop chers évincent les familles modestes.',
+  },
+  {
+    id: 'desindustrialisation',
+    word: 'désindustrialisation',
+    forms: ['désindustrialisation'],
+    definition: 'Le recul de l’industrie : des usines ferment et des emplois disparaissent.',
+    example: 'Une région perd ses usines.',
+  },
 ];

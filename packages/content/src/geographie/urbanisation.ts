@@ -38,8 +38,6 @@ const P_DIFFERENCES =
 const P_1945 = 'Le monde s’urbanise à grande vitesse depuis 1945';
 const P_MOITIE =
   'Plus de la moitié de l’humanité habite les villes, depuis 2007, et probablement les 2/3 à l’horizon 2050';
-const P_FAIT =
-  'Plus de la moitié de l’humanité habite les villes, depuis 2007, et probablement les 2/3 à l’horizon 2050. Il s’agit d’un fait majeur qui caractérise la mondialisation';
 const P_ECART =
   'des villes plus à l’écart, voire confrontées à des phénomènes de « rétrécissement » (Shrinking Cities, comme Detroit)';
 
@@ -81,6 +79,7 @@ const G_RESEAU = "Les réseaux sont les supports des flux d'échanges";
 const G_MATERIEL = 'les axes qui les supportent restent toujours matériels (câbles, serveurs, centres de données';
 const G_SHRINK =
   "une manifestation spatiale de la mondialisation pour les villes n'arrivant pas à trouver leur place dans l'internationalisation de la compétitivité économique et peinant à se connecter aux réseaux globaux";
+const G_VILLES_US = 'Détroit, Cleveland, Pittsburgh et Buffalo plus de 30 %';
 const G_TROIS =
   "démographique, par la perte de population ; économique, par la perte d'activités, de fonctions, de revenus et d'emplois ; et social";
 
@@ -108,10 +107,10 @@ const espaces: Notion = {
   classe: '4e',
   id: 'g4-centres-peripheries',
   title: 'Espaces et paysages de l’urbanisation : centres et périphéries',
-  hint: 'Repère d’abord où l’on se trouve (au centre ou autour), puis ce que montre le paysage : hauteur des bâtiments, type de logements.',
+  hint: 'Repère de quoi on parle : un lieu (au centre ou autour), un paysage, un changement ou une date.',
   memo: [
-    'L’**urbanisation** transforme le monde : plus de la moitié de l’humanité vit en ville depuis 2007. Une ville s’organise souvent entre un centre et des **périphéries**, qui dépendent de lui.',
-    'Les paysages changent : tours du **quartier d’affaires**, **habitat pavillonnaire** né de la **périurbanisation**, **quartier informel** fait d’habitations fragiles.',
+    'L’**urbanisation** transforme le monde à grande vitesse depuis 1945 : plus de la moitié de l’humanité vit en ville depuis 2007. Une ville s’organise souvent entre un centre et des **périphéries**, qui dépendent de lui.',
+    'Les paysages changent : tours du **quartier d’affaires** (le CBD en Amérique du Nord), **habitat pavillonnaire** né de la **périurbanisation**, **quartier informel** fait d’habitations fragiles.',
     'Les quartiers se transforment et se séparent aussi : **gentrification** d’un quartier populaire, ou **quartier résidentiel fermé** pour des habitants aisés.',
   ],
   faits: [
@@ -284,7 +283,7 @@ const espaces: Notion = {
     prompt: 'Dans le modèle simplifié d’une grande ville, remets ces espaces dans l’ordre, du centre vers l’extérieur.',
     hint: 'Pars du cœur de la ville : en t’éloignant, les constructions se desserrent peu à peu.',
     why: 'La banlieue touche la ville-centre ; le périurbain est plus extérieur et moins dense ; au-delà vient le rural.',
-    fin: 'Au cœur se trouve',
+    fin: 'En partant du cœur, on commence par',
     quote: G_EXTERIEUR,
     src: BANLIEUE,
   },
@@ -338,7 +337,7 @@ const espaces: Notion = {
       src: CBD,
     },
     {
-      q: 'Depuis quelle année, selon le programme, le monde s’urbanise-t-il à grande vitesse ?',
+      q: 'Depuis quelle année le monde s’urbanise-t-il à grande vitesse ?',
       accepted: ['1945', 'en 1945', 'depuis 1945'],
       traps: [
         { text: '2007', why: 'En 2007, la moitié de l’humanité est devenue urbaine : l’essor a commencé avant.' },
@@ -479,24 +478,24 @@ const connexion: Notion = {
   classe: '4e',
   id: 'g4-villes-connectees',
   title: 'Des villes inégalement connectées aux réseaux de la mondialisation',
-  hint: 'Demande-toi si la ville reçoit et émet beaucoup de flux (voyageurs, marchandises, argent, informations) ou si elle reste à l’écart.',
+  hint: 'Pense aux liaisons d’une ville avec le reste du monde (voyageurs, marchandises, argent, informations) : en a-t-elle beaucoup ou peu ?',
   memo: [
-    'La **mondialisation** relie les villes par des **réseaux** qui portent des **flux**. Les **villes mondiales** commandent une grande part de l’économie.',
+    'La **mondialisation** relie les villes par des **réseaux** qui portent des **flux**. La **métropolisation** concentre habitants et activités dans les grandes villes. Les **villes mondiales** commandent une grande part de l’économie.',
     'Les grandes métropoles reliées entre elles forment l’**archipel métropolitain mondial** ; un **hub** est un nœud où convergent des lignes de transport.',
     'D’autres villes restent à l’écart : une **ville rétrécissante** perd habitants et emplois, comme Detroit aux États-Unis.',
   ],
   faits: [
     {
-      q: 'Quelle différence le programme met-il en avant entre les villes face à la mondialisation ?',
+      q: 'Face à la mondialisation, quelle différence observe-t-on entre les villes ?',
       a: 'certaines sont bien connectées, d’autres plus à l’écart',
       wrong: [
         {
           label: 'toutes sont connectées de la même façon',
-          why: 'Le programme insiste au contraire sur les différences de connexion.',
+          why: 'Au contraire, les villes ne sont pas toutes aussi bien reliées.',
         },
         {
           label: 'seules les villes côtières existent dans la mondialisation',
-          why: 'Le programme compare les niveaux de connexion, pas la position sur la côte.',
+          why: 'La différence porte sur la connexion aux réseaux ; des villes de l’intérieur participent aussi à la mondialisation.',
         },
         {
           label: 'les villes n’ont plus aucun lien entre elles',
@@ -509,7 +508,7 @@ const connexion: Notion = {
       explain: 'Les unes sont intégrées et entraînent la mondialisation, les autres restent plus à l’écart.',
     },
     {
-      q: 'Selon la définition de Géoconfluences, que savent faire les villes mondiales ?',
+      q: 'Que sont capables de faire les villes mondiales ?',
       a: 'commander l’économie mondiale',
       wrong: [
         {
@@ -553,10 +552,11 @@ const connexion: Notion = {
         { label: 'une ville qui a perdu tous ses habitants', why: 'Le hub est un point d’échanges très actif.' },
         { label: 'un quartier réservé au logement', why: 'Le hub concerne les transports, pas le logement.' },
       ],
-      gap: ['Le hub est le noyau ', ' d’un système de transport.', ['pivot']],
-      choix: ['pivot', 'fermé', 'oublié'],
+      gap: ['Le nœud de transport vers lequel convergent les lignes s’appelle un ', '.', ['hub']],
+      choix: ['hub', 'CBD', 'mitage'],
       quote: G_HUB,
-      explain: 'Les lignes arrivent au hub et en repartent : on y change d’avion ou on y transborde des conteneurs.',
+      explain:
+        'Les lignes arrivent au hub et en repartent : on y change d’avion ou des marchandises y changent de transport.',
       src: HUB,
     },
     {
@@ -591,7 +591,7 @@ const connexion: Notion = {
       src: SHRINK,
     },
     {
-      q: 'Quelle ville le programme cite-t-il comme exemple de rétrécissement urbain ?',
+      q: 'Laquelle de ces villes est un exemple de ville rétrécissante ?',
       a: 'Detroit',
       wrong: [
         { label: 'Singapour', why: 'Singapour est un grand nœud d’échanges, très connecté.' },
@@ -601,7 +601,8 @@ const connexion: Notion = {
       gap: ['Detroit est un exemple de ville confrontée au « ', ' ».', ['rétrécissement']],
       choix: ['rétrécissement', 'littoral', 'tourisme'],
       quote: P_ECART,
-      explain: 'Le programme la cite comme exemple de « shrinking city », c’est-à-dire de ville rétrécissante.',
+      explain:
+        'Detroit, aux États-Unis, est un exemple connu de « shrinking city », c’est-à-dire de ville rétrécissante.',
     },
   ],
   paires3: [
@@ -630,14 +631,26 @@ const connexion: Notion = {
       src: HUB,
     },
     {
-      q: 'Quelle ville des États-Unis le programme cite-t-il pour illustrer le « rétrécissement » urbain ?',
-      accepted: ['Detroit', 'Détroit'],
-      traps: [
-        { text: 'New York', why: 'New York est une ville mondiale, pas l’exemple de rétrécissement du programme.' },
-        { text: 'Los Angeles', why: 'Los Angeles n’est pas l’exemple donné par le programme.' },
+      q: 'Cite une ville des États-Unis qui illustre le « rétrécissement » urbain (shrinking city).',
+      accepted: [
+        'Detroit',
+        'Détroit',
+        'Cleveland',
+        'Pittsburgh',
+        'Buffalo',
+        'Baltimore',
+        'Cincinnati',
+        'Philadelphie',
+        'Saint-Louis',
+        'Saint Louis',
       ],
-      quote: P_ECART,
-      explain: 'Detroit est l’exemple que donne le programme pour ce phénomène.',
+      traps: [
+        { text: 'New York', why: 'New York est une ville mondiale, très reliée au reste du monde.' },
+        { text: 'Los Angeles', why: 'Los Angeles compte parmi les villes mondiales les plus citées.' },
+      ],
+      quote: G_VILLES_US,
+      explain: 'Detroit est l’exemple le plus connu : ces villes industrielles ont perdu beaucoup d’habitants.',
+      src: SHRINK,
     },
     {
       q: 'Comment appelle-t-on le processus de concentration des populations et des activités dans les grandes villes ?',
@@ -765,20 +778,6 @@ const connexion: Notion = {
           explain: 'Même immatériels, les flux ont besoin de câbles, de serveurs et de centres de données.',
           src: RESEAU,
         },
-        {
-          q: 'D’après le programme, quel fait majeur, lié à la croissance des villes, caractérise la mondialisation ?',
-          a: 'l’urbanisation du monde',
-          wrong: [
-            { label: 'la disparition des villes', why: 'Le monde s’urbanise au contraire.' },
-            { label: 'la fin des échanges entre villes', why: 'Les échanges s’intensifient.' },
-            {
-              label: 'le retour de la majorité à la campagne',
-              why: 'Plus de la moitié de l’humanité habite en ville.',
-            },
-          ],
-          quote: P_FAIT,
-          explain: 'La majorité de l’humanité vit désormais en ville : le programme y voit un fait majeur.',
-        },
       ],
     },
   ],
@@ -832,9 +831,9 @@ const vocabulaire: Notion = {
       q: 'Comment appelle-t-on un vaste réseau de grandes villes reliées par un tissu dense d’axes de transport ?',
       a: 'une mégalopole',
       wrong: [
-        { label: 'une mégapole', why: 'Une mégapole est une seule ville géante, pas un réseau de villes.' },
         { label: 'un hameau', why: 'Un hameau est un tout petit groupe de maisons.' },
         { label: 'un quartier informel', why: 'Un quartier informel est une partie d’une ville.' },
+        { label: 'une mégapole', why: 'Une mégapole est une seule ville géante, pas un réseau de villes.' },
       ],
       gap: ['Une ', ' est un réseau de villes à vaste échelle.', ['mégalopole']],
       choix: ['mégalopole', 'mégapole', 'banlieue'],
@@ -862,7 +861,7 @@ const vocabulaire: Notion = {
       wrong: [
         {
           label: 'une mégalopole',
-          why: 'La mégalopole réunit plusieurs grandes villes, très loin les unes des autres.',
+          why: 'La mégalopole réunit de nombreuses grandes villes sur une très vaste étendue.',
         },
         { label: 'un quartier informel', why: 'Un quartier informel est un type d’habitat.' },
         { label: 'un hub', why: 'Un hub est un nœud de transport.' },
@@ -918,7 +917,7 @@ const vocabulaire: Notion = {
   libres: [
     {
       q: 'Comment appelle-t-on une ville géante, d’au moins 10 millions d’habitants selon l’ONU ?',
-      accepted: ['mégapole', 'une mégapole', 'la mégapole', 'mégapoles', 'mégaville', 'une mégaville'],
+      accepted: ['mégapole', 'une mégapole', 'la mégapole', 'mégapoles', 'mégaville', 'une mégaville', 'megacity'],
       traps: [
         { text: 'mégalopole', why: 'La mégalopole est un réseau de plusieurs villes, pas une seule ville géante.' },
         { text: 'métropole', why: 'Une métropole se définit par ses fonctions, pas par ce seuil.' },
@@ -940,7 +939,15 @@ const vocabulaire: Notion = {
     },
     {
       q: 'Comment appelle-t-on l’ensemble des communes urbanisées autour d’une ville-centre et sous son influence ?',
-      accepted: ['banlieue', 'la banlieue', 'les banlieues', 'banlieues', 'une banlieue'],
+      accepted: [
+        'banlieue',
+        'la banlieue',
+        'les banlieues',
+        'banlieues',
+        'une banlieue',
+        'périphérie',
+        'la périphérie',
+      ],
       traps: [
         { text: 'mégalopole', why: 'La mégalopole réunit de grandes villes sur une vaste étendue.' },
         { text: 'campagne', why: 'Ces communes sont urbanisées, elles ne forment pas la campagne.' },
@@ -1040,14 +1047,18 @@ const vocabulaire: Notion = {
         },
         {
           q: 'À la ligne 3, de quel exemple célèbre est-il question ?',
-          a: 'la mégalopole du Nord-Est des États-Unis, de Boston à Washington',
+          a: 'la mégalopole du Nord-Est des États-Unis',
           wrong: [
-            { label: 'la dorsale européenne', why: 'Elle se situe en Europe, pas de Boston à Washington.' },
+            {
+              label: 'la dorsale européenne',
+              why: 'Elle se situe en Europe ; Boston et Washington sont aux États-Unis.',
+            },
             { label: 'la mégalopole japonaise', why: 'Elle se trouve au Japon.' },
             { label: 'la ville de Detroit', why: 'Detroit est une seule ville, citée pour son rétrécissement.' },
           ],
           quote: G_BOSWASH,
-          explain: 'Cette conurbation de Boston à Washington a donné son nom à la mégalopole.',
+          explain:
+            'De Boston à Washington, sur la côte atlantique : c’est le premier ensemble à avoir été appelé ainsi.',
           src: MEGALOPOLE,
         },
       ],
@@ -1075,7 +1086,10 @@ const vocabulaire: Notion = {
           q: 'Pourquoi la population de la ville D ne suffit-elle pas à en faire une métropole ?',
           a: 'le nombre d’habitants n’est pas un critère déterminant',
           wrong: [
-            { label: 'une métropole doit être très petite', why: 'La taille n’est ni exigée petite ni suffisante.' },
+            {
+              label: 'une métropole doit être très petite',
+              why: 'Une métropole peut être très grande ; c’est seulement que la taille ne suffit pas.',
+            },
             { label: 'une métropole se définit par son climat', why: 'Le climat ne définit pas une métropole.' },
           ],
           quote: G_TAILLE,
