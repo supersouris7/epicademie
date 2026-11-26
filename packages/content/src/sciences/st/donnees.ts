@@ -1241,6 +1241,28 @@ export const FAITS: readonly Fait[] = [
       'Appareil sensible à un phénomène physique, qu’il transforme en un signal, généralement électrique, transmissible à distance. Un microphone est un capteur sensible aux sons',
   },
   {
+    id: 'info-chaine-capteurs',
+    source: 'eduscol-chaine-information',
+    citation:
+      'identifier les constituants de la chaîne d’information d’un OST et de connaître les fonctions des constituants suivants : capteurs',
+  },
+  {
+    id: 'info-roles',
+    source: 'eduscol-chaine-information-synthese',
+    citation:
+      'le système acquiert des informations : rôle des capteurs, des codeurs et des détecteurs et il transforme l’énergie qu’il reçoit en action(s) attendue(s) par l’utilisateur : rôle des actionneurs',
+  },
+  {
+    id: 'info-exemples',
+    source: 'eduscol-chaine-information-synthese',
+    citation: 'Exemples : capteur de température, de luminosité, d’humidité',
+  },
+  {
+    id: 'info-chaine-actionneurs',
+    source: 'eduscol-chaine-action',
+    citation: 'Structure d’une chaîne d’action • Les actionneurs',
+  },
+  {
     id: 'algo-def',
     source: 'academie-algorithme',
     citation: 'en appliquant dans un ordre précis une suite finie de règles',

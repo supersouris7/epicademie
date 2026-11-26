@@ -923,8 +923,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'st-actionneur',
     word: 'actionneur',
     forms: ['actionneur', 'actionneurs'],
-    definition: 'Élément d’un objet programmable qui agit, comme un moteur.',
-    example: 'Le moteur d’un robot est un actionneur.',
+    definition: 'Élément qui transforme l’énergie qu’il reçoit en une action attendue.',
+    example: 'Le moteur d’un robot est un actionneur : il fait tourner les roues.',
   },
   {
     id: 'st-chaine-information',

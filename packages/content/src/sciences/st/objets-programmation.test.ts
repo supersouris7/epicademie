@@ -5,6 +5,7 @@ import { getSource } from '../../sources.ts';
 import type { Level, Question, Skill } from '../../types.ts';
 import { validateVariants } from '../../validate.ts';
 import { CAPS, executer, parcours } from './algorithmes.ts';
+import { chaineInformation } from './chaine-information.ts';
 import { FAITS } from './donnees.ts';
 import { ST_CHAPTERS } from './index.ts';
 import { BONS_GESTES, DANGERS } from './securite-electrique.ts';
@@ -87,5 +88,29 @@ describe('sciences : « Objets techniques et programmation » (CM2) et « Élect
   it('sécurité : un geste n’est jamais à la fois dangereux et bon réflexe', () => {
     const dangers = new Set(DANGERS.map((g) => g.texte));
     expect(BONS_GESTES.some((g) => dangers.has(g.texte))).toBe(false);
+  });
+
+  it('capteurs et actionneurs : aucun élément ne porte la réponse dans son nom', () => {
+    const noms = LEVELS.flatMap((l) =>
+      tirages(chaineInformation, l).flatMap(({ answer: a }) =>
+        a.kind === 'choice' ? a.options : a.kind === 'match' ? a.left : a.kind === 'order' ? a.items : [],
+      ),
+    );
+    expect(noms.filter((n) => /capteur|actionneur/i.test(n))).toEqual([]);
+    const classements = tirages(chaineInformation, 4).filter((q) => q.answer.kind === 'cloze');
+    for (const q of classements) expect(q.prompt).not.toMatch(/capteur|actionneur/i);
+  });
+
+  it('capteurs et actionneurs : variété aux niveaux 2 et 5, « moteur électrique » accepté', () => {
+    const distincts = (l: Level) => new Set(tirages(chaineInformation, l).map((q) => q.prompt));
+    expect(distincts(2).size).toBeGreaterThanOrEqual(6);
+    const fiches = new Set(tirages(chaineInformation, 5).map((q) => q.figure && JSON.stringify(q.figure)));
+    expect(fiches.size).toBeGreaterThanOrEqual(4);
+    expect(distincts(5).size).toBeGreaterThanOrEqual(8);
+    const saisies = tirages(chaineInformation, 3).flatMap((q) =>
+      q.answer.kind === 'text' && q.answer.accepted.includes('moteur') ? [q.answer.accepted] : [],
+    );
+    expect(saisies.length).toBeGreaterThan(0);
+    expect(saisies[0]).toEqual(expect.arrayContaining(['moteur électrique', 'le moteur électrique']));
   });
 });
