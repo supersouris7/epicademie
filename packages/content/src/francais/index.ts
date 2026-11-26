@@ -22,6 +22,7 @@ import { FCM2_TEMPS_COMPOSES } from './temps-composes.ts';
 import { FCM2_VOCABULAIRE } from './vocabulaire-cm2.ts';
 import { FCM2_ORTHOGRAPHE_MOTS } from './orthographe-mots-cm2.ts';
 import { F6_PHRASE_SIMPLE } from './phrase-simple-6e.ts';
+import { F6_PRONOMS_GN } from './pronoms-gn-6e.ts';
 
 /** Français : chapitres publiés (ADR 0034). Le lot de contenu ajoute ses chapitres ici, sans toucher à catalog.ts. */
 export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
@@ -208,5 +209,13 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'grammaire',
     title: 'La phrase simple',
     skills: F6_PHRASE_SIMPLE,
+  },
+  {
+    id: 'f6-pronoms-gn',
+    subject: 'francais',
+    grade: '6e',
+    domain: 'grammaire',
+    title: 'Pronoms et groupe nominal',
+    skills: F6_PRONOMS_GN,
   },
 ];

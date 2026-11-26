@@ -15,7 +15,7 @@
 | `st-cm2-02` | Mouvement et énergie               | trajectoire ; vitesse ; énergies renouvelables ou non ; conversions d'énergie                      | couverte, en relecture |
 | `st-cm2-03` | Le corps humain                    | digestion ; alimentation équilibrée ; respiration ; os et muscles                                  | couverte, en relecture |
 | `st-cm2-04` | Écosystèmes                        | peuplement d'un milieu ; chaînes alimentaires ; décomposeurs ; activités humaines et environnement | couverte               |
-| `st-cm2-05` | Objets techniques et programmation | conducteurs et isolants ; chaîne d'énergie simple ; algorithme et programme ; sécurité électrique  | absente                |
+| `st-cm2-05` | Objets techniques et programmation | conducteurs et isolants ; chaîne d'énergie simple ; algorithme et programme ; sécurité électrique  | couverte, en relecture |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).
@@ -39,3 +39,9 @@ en fin de sixième ; la notion « décomposeurs » est donc livrée en 6e (chapi
 CM2 un attendu du cours moyen absent du plan, « les relations dans un écosystème » (prédation, coopération). Les notions
 du chapitre sont : peuplement d'un milieu, relations dans un écosystème, chaînes et réseaux alimentaires, activités
 humaines et environnement.
+
+Écart au programme (`st-cm2-05`) : l'étude de la conductivité électrique des matériaux et la représentation d'une chaîne
+énergétique sont attendues en fin de sixième ; les notions « conducteurs et isolants » et « chaîne d'énergie » sont donc
+livrées en 6e (chapitre « Électricité et énergie »). Le CM2 reçoit à la place un attendu du cours moyen absent du plan,
+« capteurs et actionneurs » (chaînes d'information et d'action), avec « algorithme et programme » et « sécurité
+électrique ».

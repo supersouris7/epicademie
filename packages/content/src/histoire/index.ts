@@ -5,11 +5,13 @@ import { SKILLS as AVANT_LA_FRANCE } from './avant-la-france.ts';
 import { SKILLS as CHRETIENTES_ISLAM } from './chretientes-islam.ts';
 import { SKILLS as OCCIDENT_FEODAL } from './occident-feodal.ts';
 import { SKILLS as EMPIRE_ROMAIN } from './empire-romain.ts';
+import { SKILLS as FRANCE_XIXE } from './france-xixe.ts';
 import { SKILLS as GUERRES_EUROPE } from './guerres-europe.ts';
 import { SKILLS as HUMANITE } from './humanite.ts';
 import { SKILLS as TEMPS_DES_ROIS } from './le-temps-des-rois.ts';
 import { SKILLS as RECITS_FONDATEURS } from './recits-fondateurs.ts';
 import { SKILLS as REVOLUTION_EMPIRE } from './revolution-empire.ts';
+import { SKILLS as REPERES_4E } from './reperes-4e.ts';
 import { SKILLS as REPERES_5E } from './reperes-5e.ts';
 import { SKILLS as REPERES_6E } from './reperes-6e.ts';
 import { SKILLS as SE_REPERER_CM2 } from './se-reperer-cm2.ts';
@@ -235,4 +237,6 @@ export const HISTOIRE_CHAPTERS: readonly Chapter[] = [
   chapter('h5-se-reperer', '5e', 'Repères de 5e', REPERES_5E),
   chapter('h4-xviiie-siecle', '4e', 'Le XVIIIe siècle : expansions, Lumières et révolutions', XVIIIE_SIECLE),
   chapter('h4-europe-monde-xixe', '4e', 'L’Europe et le monde au XIXe siècle', XIXE_SIECLE),
+  chapter('h4-france-xixe', '4e', 'Société, culture et politique dans la France du XIXe siècle', FRANCE_XIXE),
+  chapter('h4-se-reperer', '4e', 'Repères de 4e', REPERES_4E),
 ];
