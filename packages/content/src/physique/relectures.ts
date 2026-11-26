@@ -21,6 +21,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'p5-prefixes', version: 2, lot: 'pc-5e-04', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p4-atomes-molecules', version: 1, lot: 'pc-4e-01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p4-formules-chimiques', version: 1, lot: 'pc-4e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p4-transformation-chimique', version: 1, lot: 'pc-4e-01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p4-combustions', version: 1, lot: 'pc-4e-01', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p4-conservation-masse', version: 1, lot: 'pc-4e-01', date: '2026-11-26', verdict: 'ok' },
 ];
