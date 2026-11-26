@@ -13,6 +13,8 @@ import { pickN } from './outils.ts';
 /** Textes d'accompagnement d'une notion : la définition ouvre les étapes, les indices ne donnent pas la réponse. */
 interface Guide {
   readonly definition: Rich;
+  /** Consigne d’association, si les paires ne sont pas « description → nom ». */
+  readonly consigne?: string;
   readonly association: string;
   readonly indice: string;
   readonly indiceLong: string;
@@ -22,7 +24,7 @@ const apparier = (rng: Rng, paires: Banque['paires'], n: 3 | 5, consigne: string
   const choisies = pickN(rng, paires, n);
   return associer(
     rng,
-    `${consigne} À classer : ${choisies.map(([a]) => `« ${a} »`).join(' ')}`,
+    `${consigne} ${g.consigne ?? 'Associe chaque description à son nom.'} À classer : ${choisies.map(([a]) => `« ${a} »`).join(' ')}`,
     choisies,
     g.association,
     [g.definition, ...choisies.map(([a, b]) => `« ${a} » → ${b}.`)],
@@ -45,7 +47,7 @@ const draft =
         });
       case 2:
         return unSurDeux()
-          ? apparier(rng, banque.paires, 3, 'Associe chaque description à son nom.', g)
+          ? apparier(rng, banque.paires, 3, 'Observe bien.', g)
           : qcm(rng, rng.pick(banque.reconnaitre), 3, {
               consigne: 'Observe bien.',
               definition: g.definition,
@@ -63,7 +65,7 @@ const draft =
         return repondre(rng.pick(banque.ecrire), 'À toi d’écrire !', g);
       case 4:
         return unSurDeux()
-          ? apparier(rng, banque.cinq, 5, 'Défi des cinq paires ! Associe chaque description à son nom.', g)
+          ? apparier(rng, banque.cinq, 5, 'Défi des cinq paires !', g)
           : repondre(rng.pick(banque.pieges), 'Attention au piège !', g);
       default: {
         const t = rng.pick(banque.longs);
@@ -106,6 +108,7 @@ export const FCM2_CULTURE: readonly Skill[] = [
     memo: [
       'Dans un **récit**, l’**auteur** écrit le livre. Le **narrateur** raconte, et le **personnage** agit.',
       'Le **héros** est le personnage principal. Exemple : « Je courus » (narrateur dans l’histoire).',
+      'Le **dénouement** termine l’histoire.',
     ],
     factId: 'cl2-prog-genres',
     faits: DEFINITIONS_CULTURE.recit,
@@ -123,6 +126,8 @@ export const FCM2_CULTURE: readonly Skill[] = [
     memo: [
       'Au **théâtre**, une **réplique** est ce qu’un personnage dit. La **didascalie** dit comment jouer.',
       'Exemple : « LÉA (en riant). — Bravo ! » On dit « Bravo ! », on ne dit pas « en riant ».',
+      'Une **tirade** est une longue réplique. Un **aparté** est caché aux autres personnages.',
+      'La pièce se découpe en **actes**, et chaque acte en **scènes**. La **comédie** veut divertir.',
     ],
     factId: 'cl2-prog-forme',
     faits: DEFINITIONS_CULTURE.theatre,
@@ -141,6 +146,7 @@ export const FCM2_CULTURE: readonly Skill[] = [
     memo: [
       'Un **vers** est une ligne d’un **poème**. Une **strophe** est un groupe de vers.',
       'Une **rime** est un son qui revient à la fin des vers : « lune » et « prune ».',
+      'Un **quatrain** a quatre vers. Rimes plates : AABB. Croisées : ABAB. Embrassées : ABBA.',
     ],
     factId: 'cl2-prog-poesie',
     faits: DEFINITIONS_CULTURE.poesie,
@@ -165,6 +171,7 @@ export const FCM2_CULTURE: readonly Skill[] = [
     banque: BANQUES.fable,
     guide: {
       definition: 'Une **fable** est un court récit qui exprime une leçon, souvent une **morale**.',
+      consigne: 'Associe chaque histoire à sa morale.',
       association: 'Pour chaque histoire, demande-toi : qu’est-ce qu’elle apprend ?',
       indice: 'Qui réussit, qui échoue, et pourquoi ?',
       indiceLong: 'Relis la fin : quelle leçon en tires-tu ?',
@@ -176,6 +183,7 @@ export const FCM2_CULTURE: readonly Skill[] = [
     memo: [
       'Un **conte** est un court récit d’aventures imaginaires. Le **merveilleux** y fait entrer la magie.',
       'Une **fée**, un **ogre** ou une **métamorphose** : voilà des indices ! Début : « Il était une fois ».',
+      'Perrault a publié des contes célèbres.',
     ],
     factId: 'cl2-prog-merveilleux',
     faits: DEFINITIONS_CULTURE.conte,
