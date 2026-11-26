@@ -120,7 +120,7 @@ describe('sciences 6e : « Mouvements et énergie »', () => {
       for (const q of qs) {
         expect(texte(q)).toContain('intervertit');
         if (q.answer.kind !== 'choice') throw new Error(q.prompt);
-        expect(q.answer.options[q.answer.correct], q.prompt).toMatch(/comme (avant|à l’essai 1)$/);
+        expect(q.answer.options[q.answer.correct], q.prompt).toMatch(/comme (avant|à l’essai 1), car la boucle/);
       }
     }
     const lesson = notions.find((s) => s.id === 'p6-circuit')?.lesson;
@@ -136,7 +136,12 @@ describe('sciences 6e : « Mouvements et énergie »', () => {
     if (!photo || !recepteur) throw new Error('question absente');
     const dit = (q: Question, text: string) => check(q, { kind: 'text', text });
     for (const mot of ['élément', 'panneau']) expect(dit(photo, `un ${mot} photovoltaïque`).correct, mot).toBe(true);
-    for (const text of ['une pile photovoltaïque', 'pile solaire', 'convertisseur photovoltaïque'])
+    for (const text of [
+      'une pile photovoltaïque',
+      'pile solaire',
+      'un panneau solaire',
+      'convertisseur photovoltaïque',
+    ])
       expect(dit(photo, text).correct, text).toBe(true);
     expect(dit(photo, 'pile').correct).toBe(false);
     expect(dit(photo, 'pile').why).toContain('chimique');

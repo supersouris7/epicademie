@@ -47,4 +47,5 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'p6-types-mouvements', version: 1, lot: 'st-6e-02', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p6-vitesse', version: 1, lot: 'st-6e-02', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'p6-sources-conversions', version: 1, lot: 'st-6e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p6-circuit', version: 1, lot: 'st-6e-02', date: '2026-11-26', verdict: 'ok' },
 ];

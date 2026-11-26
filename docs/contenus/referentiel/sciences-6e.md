@@ -28,8 +28,8 @@ livré avec le lot `st-cm2-01` (couvert, relu).
 lots ci-dessus ; la notion « micro-organismes » de `st-6e-04` reste à couvrir) est livré avec ce lot, en relecture.
 
 Écart au plan (`st-cm2-05`) : le chapitre « Électricité et énergie » (notions « conducteurs et isolants » et « chaîne
-d'énergie », colonne « fin de sixième ») est livré avec ce lot, en relecture ; le circuit électrique de `st-6e-02` reste à
-couvrir.
+d'énergie », colonne « fin de sixième ») est livré avec ce lot, en relecture ; le circuit électrique est couvert par
+le lot `st-6e-02`.
 
 Écart au plan (`st-6e-02`) : « types de mouvements » couvre aussi la rotation et la révolution de la Terre (jour,
 année) et le calcul de vitesse se limite au mouvement uniforme (la relation avec la distance ou la durée relève du

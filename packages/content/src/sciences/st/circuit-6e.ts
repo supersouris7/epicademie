@@ -181,6 +181,14 @@ const MOTS: readonly { q: string; accepte: readonly string[]; faux: readonly (re
       'pile solaire',
       'une pile solaire',
       'la pile solaire',
+      'panneau solaire',
+      'un panneau solaire',
+      'le panneau solaire',
+      'panneau solaire photovoltaïque',
+      'un panneau solaire photovoltaïque',
+      'cellule solaire',
+      'une cellule solaire',
+      'la cellule solaire',
       'convertisseur photovoltaïque',
       'un convertisseur photovoltaïque',
       'le convertisseur photovoltaïque',
@@ -208,7 +216,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
   const t = rng.int(0, 3);
   if (t === 3) {
     const rec = rng.pick(RECEPTEURS);
-    const bon = maj(`${rec.nom} ${rec.effet} comme avant`);
+    const bon = maj(`${rec.nom} ${rec.effet} comme avant, car la boucle reste fermée`);
     const { answer, traps } = choice(rng, bon, [
       {
         label: maj(`${rec.nom} ${rec.plus}, car le récepteur placé en premier reçoit plus de courant`),
@@ -354,16 +362,15 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       targetSeconds: 70,
     };
   }
-  const bon = 'La lampe brille et le moteur tourne, comme à l’essai 1';
-  const premier = lampeAvant ? 'le moteur' : 'la lampe';
-  const second = lampeAvant ? 'la lampe' : 'le moteur';
+  const bon = 'La lampe brille et le moteur tourne comme à l’essai 1, car la boucle est de nouveau fermée';
+  const [premier, second] = lampeAvant ? ['Seul le moteur', 'Seule la lampe'] : ['Seule la lampe', 'Seul le moteur'];
   const { answer, traps } = choice(rng, bon, [
     {
-      label: `Seul ${premier} fonctionne, car le récepteur placé en premier prend le courant`,
+      label: `${premier} fonctionne, car le récepteur placé en premier prend le courant`,
       why: `Le courant ne s’use pas en traversant un récepteur. ${PERMUTATION}`,
     },
     {
-      label: `Seul ${second} fonctionne, car chaque récepteur doit garder sa place`,
+      label: `${second} fonctionne, car chaque récepteur doit garder sa place`,
       why: `Aucun récepteur n’a de place imposée. ${PERMUTATION}`,
     },
     {
