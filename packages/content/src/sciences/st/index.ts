@@ -2,6 +2,11 @@ import type { Chapter } from '../../types.ts';
 import { besoinsAnimaux } from './besoins-animaux.ts';
 import { besoinsVegetaux } from './besoins-vegetaux.ts';
 import { actionsHumaines } from './actions-humaines.ts';
+import { biodiversite } from './biodiversite-6e.ts';
+import { cellule } from './cellule-6e.ts';
+import { classification } from './classification-6e.ts';
+import { developpementEtPuberte } from './developpement-6e.ts';
+import { reproduction } from './reproduction-6e.ts';
 import { algorithmes } from './algorithmes.ts';
 import { chaineEnergie } from './chaine-energie.ts';
 import { chimieSecurite } from './chimie-6e.ts';
@@ -144,6 +149,14 @@ export const ST_CHAPTERS: readonly Chapter[] = [
     domain: 'physique-chimie',
     title: 'Signal et information',
     skills: [signal],
+  },
+  {
+    id: 'v6-vivant',
+    subject: 'sciences',
+    grade: '6e',
+    domain: 'svt',
+    title: 'Le vivant',
+    skills: [cellule, classification, reproduction, developpementEtPuberte, biodiversite],
   },
   {
     id: 'v6-decomposition',
