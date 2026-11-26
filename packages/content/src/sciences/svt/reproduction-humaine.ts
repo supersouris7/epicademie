@@ -80,18 +80,18 @@ export const reproductionHumaine: Skill = {
           ['dans le placenta', 'Le placenta se forme pendant la grossesse.'],
           ['dans le vagin', 'Le trajet des spermatozoïdes continue au-delà.'],
         ],
-        indice: 'C’est le conduit entre l’ovaire et l’utérus.',
+        indice: 'Suis le trajet de l’ovule dès sa sortie de l’ovaire : où les spermatozoïdes le rejoignent-ils ?',
         explication: ['Chez la femme, la fécondation s’effectue dans la trompe utérine.'],
       },
       {
-        prompt: 'Que contient le sperme, et qui est indispensable à la fécondation ?',
+        prompt: 'Quelles cellules, contenues dans le sperme, sont indispensables à la fécondation ?',
         bonne: 'des spermatozoïdes',
         fausses: [
           ['des ovules', 'Les ovules sont les gamètes femelles.'],
           ['des œufs', 'L’œuf n’apparaît qu’après la fécondation.'],
           ['des embryons', 'L’embryon vient du développement de l’œuf.'],
         ],
-        indice: 'Il s’agit du gamète mâle.',
+        indice: 'Pour la fécondation, il faut un gamète de chaque sexe : lequel vient de l’homme ?',
         explication: ['Le sperme est le liquide qui contient les spermatozoïdes, les gamètes mâles.'],
       },
       {
@@ -161,7 +161,7 @@ export const reproductionHumaine: Skill = {
         prompt: 'Complète les échanges au niveau du placenta.',
         parts: ['Le sang maternel apporte au fœtus de l’', ' et des nutriments ; le fœtus rejette du ', '.'],
         choix: [
-          [['oxygène', 'alcool', 'urine'], 0],
+          [['oxygène', 'amidon', 'urine'], 0],
           [['lait', 'gaz carbonique', 'sperme'], 1],
         ],
         indice: 'Pense à la respiration et à ses déchets.',
@@ -185,10 +185,15 @@ export const reproductionHumaine: Skill = {
     ],
     saisies: [
       saisie('nidation', ['la'], ['accouchement', 'trompe']),
-      saisie('trompe', ['la', 'une'], ['utérus', 'placenta'], ['trompe utérine', 'la trompe utérine']),
+      saisie(
+        'trompe',
+        ['la', 'une'],
+        ['utérus', 'placenta'],
+        ['trompe utérine', 'la trompe utérine', 'trompe uterine', 'la trompe uterine'],
+      ),
       saisie('embryon', ['l’', 'un'], ['fœtus', 'spermatozoïde']),
       saisie('fœtus', ['le', 'un'], ['embryon', 'placenta'], ['foetus', 'le foetus', 'un foetus']),
-      saisie('cordon ombilical', ['le'], ['placenta', 'trompe']),
+      saisie('cordon ombilical', ['le'], ['placenta', 'trompe'], ['cordon', 'le cordon']),
       saisie('liquide amniotique', ['le'], ['placenta', 'cordon ombilical']),
     ],
     series: [

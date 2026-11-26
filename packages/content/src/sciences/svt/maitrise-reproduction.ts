@@ -80,7 +80,7 @@ export const maitriseReproduction: Skill = {
         explication: ['Le préservatif protège à la fois contre une grossesse et contre les IST.'],
       },
       {
-        prompt: 'Comment agit surtout une pilule contraceptive combinée ?',
+        prompt: 'Comment agit surtout une pilule contraceptive combinée (qui associe deux hormones) ?',
         bonne: 'elle bloque notamment l’ovulation',
         fausses: [
           ['elle forme une barrière physique', 'C’est le principe du préservatif.'],
@@ -193,7 +193,23 @@ export const maitriseReproduction: Skill = {
     ],
     faciles: [
       saisie('contraception', ['la'], ['dépistage', 'vaccination']),
-      saisie('préservatif', ['le'], ['implant', 'pilule']),
+      saisie(
+        'préservatif',
+        ['le', 'un'],
+        ['implant', 'pilule'],
+        [
+          'préservatif masculin',
+          'le préservatif masculin',
+          'preservatif masculin',
+          'le preservatif masculin',
+          'préservatif féminin',
+          'le préservatif féminin',
+          'preservatif feminin',
+          'le preservatif feminin',
+          'condom',
+          'le condom',
+        ],
+      ),
       saisie('pilule', ['la'], ['implant', 'préservatif'], ['pilule contraceptive', 'la pilule contraceptive']),
     ],
     saisies: [
@@ -204,7 +220,7 @@ export const maitriseReproduction: Skill = {
         'insémination artificielle',
         ['l’', 'une'],
         ['fécondation in vitro', 'implant'],
-        ['insémination', 'l’insémination'],
+        ['insémination', 'l’insémination', 'insemination', 'l’insemination'],
       ),
     ],
     series: [
@@ -254,7 +270,7 @@ export const maitriseReproduction: Skill = {
       },
       {
         prompt: 'À quoi sert la procréation médicalement assistée ?',
-        bonne: 'aider à obtenir une grossesse quand la conception est difficile',
+        bonne: 'aider à obtenir une grossesse grâce à des techniques médicales',
         fausses: [
           ['empêcher une grossesse', 'C’est le but de la contraception.'],
           ['soigner une IST', 'Cette technique concerne la conception d’un enfant, pas les infections.'],

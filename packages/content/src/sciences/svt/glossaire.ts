@@ -979,7 +979,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     word: 'IST',
     forms: ['IST'],
     definition:
-      'Infections sexuellement transmissibles : des virus ou des bactéries transmis surtout lors des rapports sexuels.',
+      'Infections sexuellement transmissibles, dues par exemple à des virus ou à des bactéries, transmises surtout lors des rapports sexuels.',
     example: 'Le VIH en est une.',
   },
   {

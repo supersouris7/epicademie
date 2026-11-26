@@ -189,7 +189,12 @@ export const reproductionModes: Skill = {
     saisies: [
       saisie('bouturage', ['le'], ['bourgeonnement', 'scissiparité']),
       saisie('bourgeonnement', ['le'], ['bouturage', 'scissiparité']),
-      saisie('scissiparité', ['la'], ['bourgeonnement', 'bouturage']),
+      saisie(
+        'scissiparité',
+        ['la'],
+        ['bourgeonnement', 'bouturage'],
+        ['fissiparité', 'la fissiparité', 'fissiparite', 'la fissiparite'],
+      ),
       saisie(
         'dissémination',
         ['la'],
@@ -208,7 +213,7 @@ export const reproductionModes: Skill = {
       ],
       [
         ['hydre d’eau douce', 'reproduction par bourgeonnement'],
-        ['fraisier à stolons', 'reproduction par marcottage naturel'],
+        ['fraisier à tiges rampantes (stolons)', 'reproduction par marcottage naturel'],
         ['fragment de tige replanté', 'reproduction par bouturage'],
         ['pollen déposé sur une fleur', 'préparation d’une reproduction sexuée'],
         ['organisme unicellulaire coupé en deux', 'reproduction par division'],

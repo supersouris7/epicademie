@@ -83,7 +83,7 @@ export const puberte: Skill = {
           ['les règles', 'Les règles viennent de l’utérus.'],
           ['la formation du stock d’ovocytes', 'Ce stock existe chez la fille dès la naissance.'],
         ],
-        indice: 'Quelles cellules reproductrices sont mâles ?',
+        indice: 'Demande-toi quelle glande génitale le garçon possède, et ce qu’elle se met à faire.',
         explication: ['À la puberté, les testicules se mettent à fabriquer des spermatozoïdes.'],
       },
       {
@@ -94,7 +94,7 @@ export const puberte: Skill = {
           ['par les voies respiratoires', 'L’air n’achemine pas les hormones.'],
           ['uniquement par contact entre deux organes voisins', 'Une hormone agit à distance.'],
         ],
-        indice: 'Pense au liquide qui circule dans tout le corps.',
+        indice: 'Une hormone agit loin de la glande qui la produit : qu’est-ce qui relie tous les organes ?',
         explication: ['Les hormones sont déversées dans le sang, qui les transporte vers l’organe régulé.'],
       },
       {
@@ -113,7 +113,7 @@ export const puberte: Skill = {
       {
         prompt: 'Range les étapes du contrôle hormonal des testicules.',
         suite: [
-          'l’hypothalamus et l’hypophyse libèrent des hormones dans le sang',
+          'l’hypothalamus (zone du cerveau) et l’hypophyse libèrent des hormones dans le sang',
           'le sang transporte ces hormones jusqu’aux testicules',
           'les testicules produisent de la testostérone',
           'la testostérone agit sur des organes du corps',
@@ -225,7 +225,8 @@ export const puberte: Skill = {
         ],
       },
       {
-        prompt: 'Vers quel moment d’un cycle l’Inserm situe-t-il habituellement l’ovulation ?',
+        prompt:
+          'Vers quel moment d’un cycle l’Inserm (institut de recherche médicale) situe-t-il habituellement l’ovulation ?',
         bonne: 'vers le 14e jour, compté depuis le premier jour des règles',
         fausses: [
           ['le premier jour des règles', 'Ce jour ouvre le cycle, il n’est pas celui de l’ovulation.'],
@@ -246,7 +247,9 @@ export const puberte: Skill = {
           ['les poumons donnent l’ordre par l’air', 'La commande passe par des hormones dans le sang.'],
         ],
         indice: 'Qui commande, et par quel moyen ?',
-        explication: ['Le complexe hypothalamus-hypophyse libère des hormones (FSH et LH) dans le sang.'],
+        explication: [
+          'L’hypothalamus (une zone du cerveau) et l’hypophyse forment un ensemble qui libère des hormones (FSH et LH) dans le sang.',
+        ],
       },
     ],
     dossiers: [
@@ -302,7 +305,7 @@ export const puberte: Skill = {
             ],
             indice: 'Qui commande les testicules ?',
             explication: [
-              'La production est contrôlée par le complexe hypothalamus-hypophyse, grâce à FSH et LH dans le sang.',
+              'La production est contrôlée par l’hypothalamus (une zone du cerveau) et l’hypophyse, grâce aux hormones FSH et LH dans le sang.',
             ],
           },
           {
@@ -313,7 +316,7 @@ export const puberte: Skill = {
               ['par les voies urinaires', 'Les urines évacuent des déchets, elles ne commandent pas les glandes.'],
               ['par le tube digestif', 'Les aliments suivent ce trajet, pas les commandes hormonales.'],
             ],
-            indice: 'Une hormone voyage dans un liquide qui irrigue tous les organes.',
+            indice: 'L’hypophyse est loin des testicules : qu’est-ce qui relie tous les organes ?',
             explication: ['Les hormones sont libérées dans le sang, qui les distribue aux organes.'],
           },
         ],
