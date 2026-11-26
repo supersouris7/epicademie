@@ -81,15 +81,19 @@ const REPLACE: readonly { readonly group: string; readonly accepted: readonly st
 ];
 
 /** Phrases sans sujet exprimé : la terminaison désigne le pronom. */
-const DEDUCE: readonly { readonly rest: string; readonly accepted: readonly string[] }[] = [
-  { rest: 'hablo español.', accepted: ['yo'] },
-  { rest: 'vivo en España.', accepted: ['yo'] },
-  { rest: 'estudias en casa.', accepted: ['tú'] },
-  { rest: 'comes una naranja.', accepted: ['tú'] },
-  { rest: 'cantamos una canción.', accepted: ['nosotros', 'nosotras'] },
-  { rest: 'leemos un libro.', accepted: ['nosotros', 'nosotras'] },
-  { rest: 'escucháis música.', accepted: ['vosotros', 'vosotras'] },
-  { rest: 'escribís un mensaje.', accepted: ['vosotros', 'vosotras'] },
+const DEDUCE: readonly {
+  readonly rest: string;
+  readonly accepted: readonly string[];
+  readonly ending: string;
+}[] = [
+  { rest: 'hablo español.', accepted: ['yo'], ending: '-o' },
+  { rest: 'vivo en España.', accepted: ['yo'], ending: '-o' },
+  { rest: 'estudias en casa.', accepted: ['tú'], ending: '-as' },
+  { rest: 'comes una naranja.', accepted: ['tú'], ending: '-es' },
+  { rest: 'cantamos una canción.', accepted: ['nosotros', 'nosotras'], ending: '-amos' },
+  { rest: 'leemos un libro.', accepted: ['nosotros', 'nosotras'], ending: '-emos' },
+  { rest: 'escucháis música.', accepted: ['vosotros', 'vosotras'], ending: '-áis' },
+  { rest: 'escribís un mensaje.', accepted: ['vosotros', 'vosotras'], ending: '-ís' },
 ];
 
 /** Situations de la saisie : vouvoiement et usage d'Amérique, avec les erreurs typiques de chacune. */
@@ -259,15 +263,16 @@ const PRONOUN_LEVELS: Readonly<Record<Level, (rng: Rng) => QuestionDraft>> = {
   },
   3: (rng) => {
     const r = rng.pick(REPLACE);
-    const [first] = r.accepted;
-    const wrong = ['él', 'ella', 'ellos', 'ellas', 'nosotros', 'vosotros'].filter((p) => !r.accepted.includes(p));
+    const wrong = ['él', 'ella', 'ellos', 'ellas', 'nosotros', 'nosotras', 'vosotros', 'vosotras'].filter(
+      (p) => !r.accepted.includes(p),
+    );
     const traps = wrong.map((p) => ({ text: p, why: r.why }));
     return {
       prompt: `Remplace « ${r.group} » par un pronom sujet.`,
       answer: { kind: 'text', accepted: dotted(...r.accepted) },
       traps: [...accentTraps(r.accepted), ...traps],
       hint: 'Le groupe contient-il « moi » ou « toi » ? Combien de personnes ? Des filles, des garçons ?',
-      steps: [r.why, `Réponse : **${first}**`],
+      steps: [r.why, `Réponse : **${r.accepted.join(' ou ')}**`],
     };
   },
   4: (rng) => {
@@ -285,7 +290,6 @@ const PRONOUN_LEVELS: Readonly<Record<Level, (rng: Rng) => QuestionDraft>> = {
       };
     }
     const d = rng.pick(DEDUCE);
-    const [first] = d.accepted;
     return {
       prompt: `Quel pronom sujet est sous-entendu ? Écris-le : « … ${d.rest} »`,
       answer: { kind: 'text', accepted: dotted(...d.accepted) },
@@ -296,7 +300,11 @@ const PRONOUN_LEVELS: Readonly<Record<Level, (rng: Rng) => QuestionDraft>> = {
           .map((p) => ({ text: p, why: `La terminaison du verbe ne va pas avec « ${p} ».` })),
       ],
       hint: 'Observe la fin du verbe : elle indique qui fait l’action.',
-      steps: ['En espagnol, la terminaison du verbe suffit souvent à dire qui agit.', `Réponse : **${first}**`],
+      steps: [
+        'En espagnol, la terminaison du verbe suffit souvent à dire qui agit.',
+        `Ici, le verbe finit par « ${d.ending} » : c’est la terminaison qui va avec « ${d.accepted.join(' / ')} ».`,
+        `Réponse : **${d.accepted.join(' ou ')}**`,
+      ],
     };
   },
   5: (rng) => {
@@ -334,7 +342,7 @@ const pronouns: Skill = {
     [
       'Les **pronoms sujets** : yo, tú, él / ella, nosotros / nosotras, vosotros / vosotras, ellos / ellas. Pour le **vouvoiement** : usted (une personne), ustedes (plusieurs), avec le verbe à la 3e personne.',
       'La terminaison du verbe suffit souvent : « Vivo en España. » Ajoute le pronom pour insister, opposer ou lever un doute : « Yo canto y tú bailas. »',
-      'Attention à l’accent écrit : tú (tu) et él (il). En Espagne, vosotros tutoie un groupe ; en Amérique, on dit ustedes.',
+      'Attention à l’accent écrit : tú (tu) et él (il). Dans la plus grande partie de l’Espagne, vosotros tutoie un groupe ; en Amérique, on dit ustedes.',
     ],
     'Pronoms personnels sujets (pour insister, pour lever un doute sur la personne verbale).',
     ['rae-dpd-pronombres-tonicos', 'rae-dpd-usted', 'rae-dpd-vosotros', 'rae-dpd-tilde'],
@@ -469,7 +477,7 @@ const MESSAGES: Readonly<Record<Group, readonly Message[]>> = {
       items: [
         { before: 'Antonio', verb: 'abrir', person: 'el', after: 'la puerta.', line: 2 },
         { before: 'Antonio', verb: 'escribir', person: 'el', after: 'en casa.', line: 2 },
-        { before: 'Antonio e Inés', verb: 'vivir', person: 'ellos', after: 'en España.', line: 3 },
+        { before: 'Inés y Antonio', verb: 'vivir', person: 'ellos', after: 'en España.', line: 3 },
       ],
     },
   ],
@@ -505,7 +513,7 @@ function verbQuestion(g: Group, rng: Rng, level: Level): QuestionDraft {
       ...(odd ? [odd] : []),
     ]);
     return {
-      prompt: `Choisis la forme correcte du présent : « ${PRONOUN[p]} … » (${v}, ${verb.fr}).`,
+      prompt: `Choisis la forme correcte du présent de l’indicatif : « ${PRONOUN[p]} … » (${v}, ${verb.fr}).`,
       answer,
       traps,
       hint: `Vérifie deux choses : la personne (« ${PRONOUN[p]} ») et la voyelle propre aux verbes en -${g}.`,
@@ -595,17 +603,17 @@ const verbSkill = (g: Group, id: string, version: number, memo: readonly string[
 
 // « e5-present-reguliers » garde son identifiant (progression des élèves) et porte désormais les verbes en -ar.
 const verbsAr = verbSkill('ar', 'e5-present-reguliers', 2, [
-  'Au présent, enlève -ar de l’**infinitif** pour garder le **radical**, puis ajoute la **terminaison** : -o, -as, -a, -amos, -áis, -an.',
+  'Au présent de l’indicatif (la forme ordinaire pour dire ce qui se fait), enlève -ar de l’**infinitif** pour garder le **radical**, puis ajoute la **terminaison** : -o, -as, -a, -amos, -áis, -an.',
   'hablar : hablo, hablas, habla, hablamos, habláis, hablan. Ne perds pas l’accent écrit de « habláis ».',
 ]);
 
 const verbsEr = verbSkill('er', 'e5-present-er', 1, [
-  'Au présent, enlève -er de l’**infinitif** pour garder le **radical**, puis ajoute la **terminaison** : -o, -es, -e, -emos, -éis, -en.',
+  'Au présent de l’indicatif (la forme ordinaire pour dire ce qui se fait), enlève -er de l’**infinitif** pour garder le **radical**, puis ajoute la **terminaison** : -o, -es, -e, -emos, -éis, -en.',
   'comer : como, comes, come, comemos, coméis, comen. Ne perds pas l’accent écrit de « coméis ».',
 ]);
 
 const verbsIr = verbSkill('ir', 'e5-present-ir', 1, [
-  'Au présent, enlève -ir de l’**infinitif** pour garder le **radical**, puis ajoute la **terminaison** : -o, -es, -e, -imos, -ís, -en.',
+  'Au présent de l’indicatif (la forme ordinaire pour dire ce qui se fait), enlève -ir de l’**infinitif** pour garder le **radical**, puis ajoute la **terminaison** : -o, -es, -e, -imos, -ís, -en.',
   'vivir : vivo, vives, vive, vivimos, vivís, viven. Les verbes en -er et en -ir ne diffèrent qu’avec nosotros et vosotros.',
 ]);
 

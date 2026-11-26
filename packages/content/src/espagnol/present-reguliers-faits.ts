@@ -2,6 +2,7 @@
  * Espagnol 5e, « Le présent des réguliers » (lot es-5e-02) : données citées. Chaque fait porte l'identifiant de sa
  * source (registre `sources.ts`) et une citation exacte du texte consulté le 26/11/2026 (copies d'archive
  * web.archive.org des pages de la Real Academia Española ; programme : annexe 9 de l'arrêté du 5 mai 2025).
+ * La citation de l'apéndice 1 se lit dans la copie d'archive du 25/07/2013 (les plus récentes n'ont pas le texte).
  */
 import type { Fait } from './se-presenter-faits.ts';
 
@@ -35,7 +36,7 @@ export const VERBES = {
     { inf: 'leer', fr: 'lire', rest: 'un libro' },
   ],
   ir: [
-    { inf: 'vivir', fr: 'vivre (habiter)', rest: 'en España' },
+    { inf: 'vivir', fr: 'habiter, vivre', rest: 'en una casa' },
     { inf: 'escribir', fr: 'écrire', rest: 'un mensaje' },
     { inf: 'abrir', fr: 'ouvrir', rest: 'la puerta' },
   ],
