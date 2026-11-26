@@ -138,7 +138,7 @@ function markerPreposition(rng: Rng): QuestionDraft {
   const forms = s.weekend ? [s.prep, 'on'] : [s.prep];
   const wrong = (['in', 'on', 'at'] as const).map((p) => [p, WHY_TIME[s.prep]] as const);
   return {
-    prompt: `Écris la préposition de temps qui manque : « ${s.before} … ${s.after} »`,
+    prompt: `Écris la préposition de temps qui manque (in, on ou at) : « ${s.before} … ${s.after} »`,
     ...written(forms, wrong),
     hint: 'Regarde ce qui suit le trou : une heure, un jour, une date, un mois, une année ou un moment de la journée ?',
     steps: [
@@ -273,7 +273,7 @@ const timeMarkers: Skill = {
   lesson: {
     memo: [
       'Un **marqueur de temps** dit quand : yesterday (hier), today (aujourd’hui), tomorrow (demain), now (maintenant), then (ensuite).',
-      'Retiens : at 7 o’clock, on Saturday, in December, at the weekend. Devant last et this, rien : last weekend.',
+      'Retiens : at 7 o’clock, at night, at the weekend ; on Saturday ; in December, in the morning. Devant last et this, rien : last weekend.',
     ],
     source: source('marqueurs temporels essentiels', '« Prepositions of time » et « How we make adverbials »'),
     sources: ['anglais-college-2025', 'bck-prepositions-time', 'bc-prepositions-time', 'bc-how-adverbials'],
