@@ -31,7 +31,7 @@ const industrie: Notion = {
           why: 'L’Allemagne s’industrialise à partir du milieu du XIXe siècle, bien après les débuts.',
         },
       ],
-      gap: ['La « révolution industrielle » commence en ', ' au XVIIIe siècle.', ['Angleterre']],
+      gap: ['La « révolution industrielle » commence en ', ' au XVIIIe siècle.', ['Angleterre', 'Grande-Bretagne']],
       explain: 'L’Angleterre est la première à connaître ces transformations rapides de l’économie.',
     },
     {
@@ -167,8 +167,9 @@ const industrie: Notion = {
         { label: 'par la fin du charbon', why: 'Le charbon reste utilisé : la crise a une autre origine.' },
         { label: 'par une révolte d’esclaves', why: 'Il ne s’agit pas d’une révolte mais d’un choc financier.' },
       ],
-      gap: ['La crise de 1873 commence par une crise ', '.', ['bancaire']],
-      explain: 'Les crises périodiques frappent l’économie industrielle et le travail.',
+      gap: ['La crise de 1873 commence par une crise ', '.', ['bancaire', 'financière', 'financiere']],
+      explain:
+        'Les difficultés partent des banques, puis la croissance ralentit jusqu’en 1896 : ces crises touchent aussi le travail.',
     },
     {
       ...P.transports,
@@ -199,14 +200,24 @@ const industrie: Notion = {
     { ...P.famine, label: 'La grande famine irlandaise commence', date: '1845' },
     { ...P.juin1848, label: 'En France, les journées de juin', date: '1848' },
     { ...P.urbain, label: 'L’Angleterre devient majoritairement urbaine', date: '1851' },
-    { ...P.crise, label: 'Une crise bancaire ouvre une longue crise', date: '1873' },
+    { ...P.crise, label: 'Une crise bancaire ouvre un long ralentissement', date: '1873' },
     { ...P.crise, label: 'La longue phase de ralentissement s’achève', date: '1896' },
   ],
   libres: [
     {
       ...P.debuts,
       q: 'dans quel pays la « révolution industrielle » commence-t-elle ?',
-      accepted: ['Angleterre', 'l’Angleterre', 'en Angleterre'],
+      accepted: [
+        'Angleterre',
+        'l’Angleterre',
+        'en Angleterre',
+        'Grande-Bretagne',
+        'la Grande-Bretagne',
+        'en Grande-Bretagne',
+        'Royaume-Uni',
+        'le Royaume-Uni',
+        'au Royaume-Uni',
+      ],
       traps: [
         { text: 'France', why: 'La France s’industrialise à partir des années 1820 et 1830.' },
         { text: 'Allemagne', why: 'L’Allemagne s’industrialise à partir du milieu du XIXe siècle.' },
@@ -231,7 +242,8 @@ const industrie: Notion = {
         { text: 'absolutisme', why: 'L’absolutisme désigne un pouvoir sans limite du monarque.' },
         { text: 'capitalisme', why: 'Cette doctrine critique justement le capitalisme.' },
       ],
-      explain: 'Il s’agit du socialisme.',
+      explain:
+        'Le socialisme critique le capitalisme et cherche plus d’égalité, en réponse aux effets de la révolution industrielle.',
     },
     {
       ...P.premiere,
@@ -337,8 +349,8 @@ const industrie: Notion = {
           a: 'l’idée de nationalité et le droit au travail',
           wrong: [
             {
-              label: 'la traite négrière et la plantation',
-              why: 'Ce ne sont pas les idées que le texte met en avant.',
+              label: 'la mécanisation et la division du travail',
+              why: 'Ce sont des caractères de l’industrie ; le texte parle de nations et de droit au travail.',
             },
             {
               label: 'le droit divin et les privilèges',
@@ -372,7 +384,7 @@ const coloniales: Notion = {
   title: 'Conquêtes et sociétés coloniales',
   hint: 'Relis le mémo : pourquoi et comment les Européens conquièrent, quels territoires la France domine et comment vit une société coloniale.',
   memo: [
-    'Au XIXe siècle, de nouvelles **conquêtes coloniales** renforcent la domination de l’Europe sur le monde, qui aboutit à la colonisation des trois quarts de la planète. L’Europe a pour elle une supériorité militaire et maritime ; les États rivaux cherchent du prestige, des points d’appui, des **matières premières** et des **débouchés**.',
+    'Au XIXe siècle, de nouvelles **conquêtes coloniales** renforcent la domination de l’Europe sur le monde : cette reprise de l’expansion aboutit à la colonisation des trois quarts de la planète. L’Europe a pour elle une supériorité militaire et maritime ; les États rivaux cherchent du prestige, des points d’appui, des **matières premières** et des **débouchés**.',
     'Une **colonie** est un territoire conquis hors d’Europe, que sa **métropole** administre et exploite ; dans une colonie de peuplement, des colons de la métropole s’installent en nombre. Dans un **protectorat**, un État puissant contrôle l’administration, la sécurité intérieure et les relations extérieures d’un autre en lui laissant certains pouvoirs. Les **indigènes** sont les populations autochtones d’un pays colonisé ou sous protectorat.',
     'Les conquêtes se font par la violence ou par des traités inégaux et rencontrent de vives **résistances**. Une **société coloniale** est marquée par la hiérarchie des pouvoirs, l’inégalité des droits et une inégalité de considération qui va jusqu’au racisme ; des résistances et des contacts avec des élites locales préparent l’émancipation. Repères pour l’empire français : 1830, début de la conquête de l’Algérie ; 1881, protectorat sur la Tunisie ; 1883 sur l’Annam et 1885 sur le Tonkin ; en 1885, Jules Ferry défend la colonisation devant les députés, au nom d’idées économiques, de civilisation et patriotiques, face à Clemenceau ; la même année, la conférence de Berlin est un moment clé du partage de l’Afrique ; en 1896, les Abyssins battent les Italiens à Adoua. Gallieni (Madagascar) et Lyautey (Maroc) comptent aussi parmi les acteurs.',
   ],
@@ -386,7 +398,10 @@ const coloniales: Notion = {
           label: 'un État indépendant qui commerce librement avec l’Europe',
           why: 'Une colonie n’est pas indépendante : une puissance la domine.',
         },
-        { label: 'un groupe de vacances pour des enfants', why: 'Ce sens du mot n’a rien d’historique ici.' },
+        {
+          label: 'un État d’Europe qui domine des territoires lointains',
+          why: 'C’est la métropole : la colonie est le territoire dominé.',
+        },
         {
           label: 'une ville d’Europe gouvernée par ses habitants',
           why: 'La colonie est située hors d’Europe et dépend d’une puissance.',
@@ -437,7 +452,11 @@ const coloniales: Notion = {
           why: 'La colonisation s’accompagne de la croissance des échanges.',
         },
       ],
-      gap: ['Les progrès techniques donnent à l’Europe une supériorité militaire et ', ' considérable.', ['maritime']],
+      gap: [
+        'Les progrès techniques donnent à l’Europe une supériorité militaire et ',
+        ' considérable.',
+        ['maritime', 'navale'],
+      ],
       explain: 'Armes et navires modernes facilitent la conquête.',
     },
     {
@@ -458,7 +477,7 @@ const coloniales: Notion = {
       gap: [
         'Les États cherchent des sources de matières premières et des ',
         '.',
-        ['débouchés', 'debouches', 'débouché'],
+        ['débouchés', 'debouches', 'débouché', 'marchés', 'marches'],
       ],
       explain: 'Les débouchés sont les marchés où vendre les produits.',
     },
@@ -510,11 +529,15 @@ const coloniales: Notion = {
         },
         { label: 'en ignorant les conquérants', why: 'La conquête bouleverse la vie : elle suscite des réactions.' },
         {
-          label: 'en demandant à être conquises partout',
-          why: 'La violence des guerres de conquête montre le contraire.',
+          label: 'uniquement par des accords entre égaux',
+          why: 'Le rapport de force est défavorable : il y a des guerres et des traités inégaux.',
         },
       ],
-      gap: ['Les conquêtes ne se sont pas faites sans de vives ', '.', ['résistances', 'resistances', 'résistance']],
+      gap: [
+        'Les conquêtes ne se sont pas faites sans de vives ',
+        '.',
+        ['résistances', 'resistances', 'résistance', 'révoltes', 'revoltes', 'oppositions'],
+      ],
       explain: 'Des résistances se manifestent tout au long de la période.',
     },
     {
@@ -570,7 +593,7 @@ const coloniales: Notion = {
         { text: 'protectorat', why: 'Le protectorat est un régime de tutelle sur un autre État.' },
         { text: 'colonie', why: 'La colonie est le territoire dominé, pas l’État qui domine.' },
       ],
-      explain: 'On parle de la métropole.',
+      explain: 'Vu depuis ses colonies, l’État qui les domine est appelé la métropole.',
     },
     {
       ...P.protectorats,
@@ -579,8 +602,10 @@ const coloniales: Notion = {
       traps: [
         { text: 'colonie de peuplement', why: 'La Tunisie conserve certaines institutions : c’est une tutelle.' },
         { text: 'indépendance', why: 'La Tunisie perd justement une partie de son autonomie.' },
+        { text: 'colonie', why: 'Le mot précis est attendu : ici, l’État dominé garde certains pouvoirs.' },
       ],
-      explain: 'La Tunisie devient un protectorat français.',
+      explain:
+        'En 1881, la France prend le contrôle de la Tunisie, qui garde certaines institutions : c’est un protectorat.',
     },
     {
       ...P.indigene,
@@ -600,7 +625,7 @@ const coloniales: Notion = {
         { text: 'Paris', why: 'La conférence de 1885 sur l’Afrique ne se tient pas à Paris.' },
         { text: 'Londres', why: 'La conférence de 1885 sur l’Afrique ne se tient pas à Londres.' },
       ],
-      explain: 'Il s’agit de la conférence de Berlin.',
+      explain: 'À Berlin, les puissances fixent des règles pour leur partage colonial de l’Afrique.',
     },
   ],
   docs: [
@@ -801,7 +826,7 @@ const abolition: Notion = {
         { label: 'l’Espagne', why: 'La décision de 1808 est celle de l’Angleterre.' },
       ],
       gap: ['En 1808, l’', ' interdit la traite à ses ressortissants.', ['Angleterre']],
-      explain: 'La marine britannique arraisonne ensuite des navires négriers.',
+      explain: 'La marine britannique arrête ensuite en mer des navires négriers, qui transportent des captifs.',
     },
     {
       ...P.traiteFrancaise,
@@ -837,14 +862,18 @@ const abolition: Notion = {
           why: 'L’interdiction anglaise de 1808 ne supprime pas l’esclavage partout.',
         },
         { label: 'il disparaît en 1848', why: 'Le décret de 1848 concerne les colonies françaises.' },
-        { label: 'l’esclavage n’y existe pas', why: 'L’esclavage existe bien en Afrique à cette période.' },
+        { label: 'il ne change pas du tout', why: 'Le nombre ne reste pas stable : il progresse au XIXe siècle.' },
       ],
-      gap: ['Au XIXe siècle, le nombre d’esclaves sur le continent africain ', '.', ['augmente']],
+      gap: [
+        'Au XIXe siècle, le nombre d’esclaves sur le continent africain ',
+        '.',
+        ['augmente', 'croît', 'croit', 'progresse'],
+      ],
       explain: 'La fin de la traite atlantique ne met pas fin à l’esclavage dans le monde.',
     },
   ],
   paires3: [
-    ['Abolition', 'Action d’abolir, de supprimer'],
+    ['Abolition', 'Suppression officielle d’une loi ou d’une pratique'],
     ['Affranchi', 'Personne libérée de sa servitude'],
     ['Abolitionnisme', 'Doctrine favorable à la fin de l’esclavage'],
   ],
@@ -872,7 +901,8 @@ const abolition: Notion = {
         { text: 'Napoléon', why: 'Napoléon rétablit l’esclavage en 1802.' },
         { text: 'Colbert', why: 'Colbert est lié au Code noir de 1685.' },
       ],
-      explain: 'C’est Victor Schoelcher.',
+      explain:
+        'Chef de file des abolitionnistes français, Victor Schoelcher obtient ce décret sous la Deuxième République.',
     },
     {
       ...P.haiti,
@@ -882,7 +912,7 @@ const abolition: Notion = {
         { text: 'Martinique', why: 'La Martinique est une autre île.' },
         { text: 'Guadeloupe', why: 'La Guadeloupe est une autre île.' },
       ],
-      explain: 'Saint-Domingue devient Haïti.',
+      explain: 'Née de la révolte des esclaves de 1791, la colonie devient indépendante en 1804 sous le nom d’Haïti.',
     },
     {
       ...P.affranchi,
@@ -892,7 +922,7 @@ const abolition: Notion = {
         { text: 'colon', why: 'Un colon est un habitant venu de la métropole.' },
         { text: 'salarié', why: 'Un salarié est payé pour son travail : le mot cherché dit qu’il a été libéré.' },
       ],
-      explain: 'On parle d’un affranchi.',
+      explain: 'Affranchir, c’est libérer d’une servitude : la personne libérée est un affranchi.',
     },
     {
       ...P.trois,
@@ -902,7 +932,7 @@ const abolition: Notion = {
         { text: '1794', why: '1794 est l’année de la première abolition.' },
         { text: '1848', why: '1848 est l’année de l’abolition définitive.' },
       ],
-      explain: 'Le rétablissement a lieu en 1802.',
+      explain: 'La Convention abolit l’esclavage en 1794 ; huit ans plus tard, en 1802, Napoléon le rétablit.',
     },
   ],
   docs: [
@@ -910,7 +940,7 @@ const abolition: Notion = {
       title: 'Le témoignage d’un affranchi',
       lines: [
         'Un récit fictif donne la parole à un homme des Antilles françaises.',
-        '« En mai 1848, la nouvelle est arrivée : un décret de la République met fin à l’esclavage. »',
+        '« En 1848, la nouvelle est arrivée : un décret de la République met fin à l’esclavage. »',
         '« Personne ne peut plus être la propriété d’un autre ; nos enfants iront à l’école. »',
       ],
       qs: [
@@ -950,7 +980,7 @@ const abolition: Notion = {
       qs: [
         {
           ...P.trois,
-          q: 'Qui est le dirigeant de la deuxième étape ?',
+          q: 'Qui est le général devenu chef de l’État dont parle le texte ?',
           a: 'Napoléon Bonaparte',
           wrong: [
             { label: 'Victor Schoelcher', why: 'Schoelcher agit pour l’abolition, en 1848.' },
@@ -987,8 +1017,8 @@ const abolition: Notion = {
           a: 'l’interdiction de la traite',
           wrong: [
             {
-              label: 'l’interdiction du commerce en droiture',
-              why: 'Ce navire transporte des captifs : c’est la traite.',
+              label: 'l’interdiction de l’esclavage dans toutes les colonies',
+              why: 'En 1820, l’esclavage n’est pas aboli partout : la patrouille vise le transport des captifs.',
             },
             {
               label: 'l’interdiction de l’émigration',

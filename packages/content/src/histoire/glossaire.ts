@@ -2371,8 +2371,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'socialisme',
     word: 'socialisme',
     forms: ['socialisme'],
-    definition:
-      'Une doctrine qui critique le capitalisme (les moyens de produire appartiennent à des particuliers) et veut une société plus égale.',
+    definition: 'Une doctrine (un ensemble d’idées) qui critique le capitalisme et veut une société plus égale.',
     example: 'Le socialisme se développe au XIXe siècle.',
   },
   {
@@ -2500,5 +2499,34 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['traite'],
     definition: 'Ici, le commerce d’êtres humains réduits en esclavage.',
     example: 'La France interdit la traite en 1818.',
+  },
+  {
+    id: 'capitalisme',
+    word: 'capitalisme',
+    forms: ['capitalisme'],
+    definition:
+      'Un système économique où les usines, les machines et l’argent investi appartiennent à des particuliers qui cherchent un profit.',
+    example: 'Le socialisme critique le capitalisme.',
+  },
+  {
+    id: 'ressortissant',
+    word: 'ressortissant',
+    forms: ['ressortissant', 'ressortissants'],
+    definition: 'Une personne qui dépend d’un État, par exemple parce qu’elle en a la nationalité.',
+    example: 'En 1808, l’Angleterre interdit la traite à ses ressortissants.',
+  },
+  {
+    id: 'promulguer',
+    word: 'promulguer',
+    forms: ['promulguer', 'promulgue'],
+    definition: 'Rendre officiellement applicable une loi ou un décret.',
+    example: 'Le décret d’abolition est promulgué en 1848.',
+  },
+  {
+    id: 'servitude',
+    word: 'servitude',
+    forms: ['servitude'],
+    definition: 'L’état d’une personne qui n’est pas libre et dépend d’un maître.',
+    example: 'Un affranchi est libéré de sa servitude.',
   },
 ];
