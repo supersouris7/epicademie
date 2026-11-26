@@ -1,6 +1,7 @@
 import type { Chapter, Level, Skill } from '../types.ts';
 import { choice } from '../build.ts';
 import { CONJUGAISONS, RAE_FETCHED_ON } from './conjugaisons.generated.ts';
+import { SPANISH_PRESENTATION_CHAPTER } from './se-presenter.ts';
 
 /**
  * Espagnol, de la 5e à la 3e (LV2 au cycle 4 ; docs/adr/0024-contenus-hors-maths.md).
@@ -173,6 +174,7 @@ const chapter = (id: string, grade: Chapter['grade'], title: string, skills: rea
 });
 
 export const ESPAGNOL_CHAPTERS: readonly Chapter[] = [
+  SPANISH_PRESENTATION_CHAPTER,
   chapter('e5-present', '5e', 'Le présent', [presentRegular, serEstar]),
   chapter('e4-irreguliers', '4e', 'Les verbes irréguliers', [presentIrregular]),
   chapter('e4-passe', '4e', 'Raconter au passé', [pastSimple]),
