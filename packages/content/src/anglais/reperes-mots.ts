@@ -322,7 +322,7 @@ function ordinalSpot(rng: Rng): QuestionDraft {
     prompt: `Quel nombre ordinal anglais veut dire « ${rank(o.n)} » ?`,
     answer,
     traps,
-    hint: 'Les trois premiers ont une forme à part ; les suivants ressemblent au nombre, avec -th à la fin.',
+    hint: 'Les rangs 1, 2 et 3 ont une forme à part, qui revient après les dizaines ; les autres finissent par -th, mais le mot du nombre change parfois un peu.',
     steps: [ORDINAL_RULE, whyOrdinal(o), `Réponse : **${o.word}**`],
   };
 }
@@ -368,6 +368,9 @@ function ordinalTraps(o: Ordinal): (readonly [string, string])[] {
     [cardinal, `« ${cardinal} » est le nombre qui compte ; pour un rang ou une date, il faut l’ordinal.`],
     [`${cardinal}th`, `On n’ajoute pas simplement -th à « ${cardinal} » : le mot s’écrit « ${o.word} ».`],
     [o.short, 'C’est l’écriture abrégée : la consigne demande le mot en toutes lettres.'],
+    ...(o.word.includes('-')
+      ? [[o.word.replace('-', ' '), `Il manque le trait d’union : « ${o.word} ».`] as const]
+      : []),
   ];
 }
 /** Au niveau 3 : ordinaux formés en ajoutant simplement -th. */
@@ -377,14 +380,18 @@ const IRREGULAR = [1, 2, 3, 5, 8, 9, 21] as const;
 function ordinalWrite(rng: Rng): QuestionDraft {
   const o = ordinal(rng.pick(REGULAR));
   const cardinal = CARDINALS[o.n] ?? '';
+  const month = rng.pick(MONTHS).en;
   return {
-    prompt: `Écris en toutes lettres, en anglais, le nombre ordinal « ${rank(o.n)} » (le nombre « ${cardinal} » est donné).`,
+    prompt: `Écris en toutes lettres, en anglais, le nombre ordinal « ${rank(o.n)} » (le nombre « ${cardinal} » est donné) : « The party is on the … of ${month}. »`,
     ...written(
       [o.word],
       ordinalTraps(o).filter(([t]) => t !== o.word),
     ),
     hint: 'Pars du nombre donné et ajoute la terminaison des ordinaux réguliers.',
-    steps: ['La plupart des ordinaux se forment avec le nombre suivi de -th.', `Réponse : **${o.word}**`],
+    steps: [
+      'La plupart des ordinaux se forment avec le nombre suivi de -th.',
+      `Réponse : **The party is on the ${o.word} of ${month}.**`,
+    ],
   };
 }
 
@@ -415,6 +422,11 @@ function dateWrite(rng: Rng): QuestionDraft {
     `on the ${o.short} of ${m}`,
     `${o.short} of ${m}`,
     `${m} the ${o.short}`,
+    `on ${m} ${o.short}`,
+    `on ${m} ${d}`,
+    `on ${m} the ${o.short}`,
+    `the ${o.short} ${m}`,
+    `on the ${o.short} ${m}`,
   ];
   return {
     prompt: `Écris en anglais, avec le jour en chiffres, la date « le ${o.n === 1 ? '1er' : o.n} ${month.fr} ».`,
@@ -510,13 +522,13 @@ const place = (fr: string, before: string, after: string, ...forms: [string, ...
 const PLACES: readonly Place[] = [
   place('dans', 'The keys are', 'the box.', 'in', 'inside'),
   place('sur', 'The book is', 'the table.', 'on'),
-  place('sous', 'The cat is sitting', 'the chair.', 'under', 'underneath', 'below'),
+  place('sous', 'The cat is sitting', 'the chair.', 'under', 'underneath', 'below', 'beneath'),
   place('au-dessus de', 'The lamp is', 'the table.', 'above', 'over'),
   place('devant', 'The bike is', 'the house.', 'in front of'),
   place('derrière', 'The dog is hiding', 'the door.', 'behind'),
   place('à côté de', 'Come and sit', 'me.', 'next to', 'beside'),
   place('entre', 'The library is', 'the bank and the museum.', 'between'),
-  place('en face de', 'The bank is', 'the cinema.', 'opposite'),
+  place('en face de', 'The bank is', 'the cinema.', 'opposite', 'across from'),
 ];
 const placeOf = (word: string) => {
   const p = PLACES.find((x) => x.forms[0] === word);
@@ -524,6 +536,13 @@ const placeOf = (word: string) => {
   return p;
 };
 const whyPlace = (p: Place) => `« ${p.forms[0]} » veut dire « ${p.fr} ».`;
+/** « devant » et « en face de » sont trop proches en français pour être proposés ensemble (niveaux 1 et 2). */
+const NEAR_IN_FRENCH = ['in front of', 'opposite'] as const;
+/** Les prépositions proposables avec `target` (ou dans une association) : jamais les deux voisines à la fois. */
+function proposable(rng: Rng, target?: Place): readonly Place[] {
+  const kept = NEAR_IN_FRENCH.find((w) => w === target?.forms[0]) ?? rng.pick(NEAR_IN_FRENCH);
+  return PLACES.filter((p) => p.forms[0] === kept || !NEAR_IN_FRENCH.some((w) => w === p.forms[0]));
+}
 const PLACE_RULE = 'Une préposition de lieu se place devant le nom et dit où se trouve une personne ou un objet.';
 
 function placeSpot(rng: Rng): QuestionDraft {
@@ -531,7 +550,7 @@ function placeSpot(rng: Rng): QuestionDraft {
   const { answer, traps } = choice(
     rng,
     p.fr,
-    others(rng, PLACES, p, 2).map((o) => ({ label: o.fr, why: `« ${o.fr} » se dit « ${o.forms[0]} ».` })),
+    others(rng, proposable(rng, p), p, 2).map((o) => ({ label: o.fr, why: `« ${o.fr} » se dit « ${o.forms[0]} ».` })),
   );
   return {
     prompt: `Que veut dire la préposition « ${p.forms[0]} » ?`,
@@ -548,7 +567,7 @@ function placeRecognise(rng: Rng): QuestionDraft {
     const { answer, traps } = choice(
       rng,
       p.forms[0],
-      others(rng, PLACES, p, 3).map((o) => ({ label: o.forms[0], why: whyPlace(o) })),
+      others(rng, proposable(rng, p), p, 3).map((o) => ({ label: o.forms[0], why: whyPlace(o) })),
     );
     return {
       prompt: `Quelle préposition anglaise veut dire « ${p.fr} » ?`,
@@ -558,7 +577,7 @@ function placeRecognise(rng: Rng): QuestionDraft {
       steps: [PLACE_RULE, whyPlace(p), `Réponse : **${p.forms[0]}**`],
     };
   }
-  const rows = some(rng, PLACES, 4).map((p) => [p.forms[0], p.fr] as const);
+  const rows = some(rng, proposable(rng), 4).map((p) => [p.forms[0], p.fr] as const);
   return {
     prompt: `Associe chaque préposition à son sens : ${quoted(rows.map((r) => r[0]))}`,
     answer: pairs(rng, rows),
@@ -585,8 +604,11 @@ const WHY_ACTIVITY = '« at » : lieu d’une activité (at work, at home) ou ad
 const WHY_INSIDE = '« in » : à l’intérieur d’un espace, comme dans in the world.';
 const WHY_FRONT = 'Pour dire « devant », l’anglais emploie trois mots : in front of.';
 
+/** Erreur typique : seule (explication de la ligne) ou avec sa propre explication. */
+type Wrong = string | readonly [string, string];
+const notBehind = (word: string) => [word, `« derrière », pour situer, se dit « behind » et non « ${word} ».`] as const;
 /** Niveau 4 : [indication, début, fin, formes admises, explication, erreurs typiques]. */
-const FIXED: readonly (readonly [string, string, string, readonly [string, ...string[]], string, readonly string[]])[] =
+const FIXED: readonly (readonly [string, string, string, readonly [string, ...string[]], string, readonly Wrong[]])[] =
   [
     ['au mur', 'There is a poster', 'the wall.', ['on'], WHY_SURFACE, ['at', 'in']],
     ['au cinquième étage', 'We live', 'the fifth floor.', ['on'], WHY_SURFACE, ['at', 'in']],
@@ -607,9 +629,13 @@ const FIXED: readonly (readonly [string, string, string, readonly [string, ...st
       'en face de',
       'Our school is',
       'the park.',
-      ['opposite'],
+      ['opposite', 'across from'],
       '« opposite » ne prend pas de « of » ni de « to ».',
-      ['opposite of', 'in front of', 'face to'],
+      [
+        'opposite of',
+        ['in front of', '« in front of » veut dire « devant » ; « en face de », de l’autre côté, se dit « opposite ».'],
+        'face to',
+      ],
     ],
     [
       'derrière',
@@ -617,7 +643,7 @@ const FIXED: readonly (readonly [string, string, string, readonly [string, ...st
       'the house.',
       ['behind'],
       '« behind » s’emploie seul, sans « of ».',
-      ['behind of', 'after', 'back'],
+      ['behind of', notBehind('after'), notBehind('back')],
     ],
   ];
 
@@ -625,7 +651,10 @@ function placeFixed(rng: Rng): QuestionDraft {
   const [cue, before, after, forms, why, wrong] = rng.pick(FIXED);
   return {
     prompt: `Complète (${cue}) : « ${before} … ${after} »`,
-    ...written(forms, [...wrong.map((w) => [w, why] as const)]),
+    ...written(
+      forms,
+      wrong.map((w) => (typeof w === 'string' ? ([w, why] as const) : w)),
+    ),
     hint: 'Surface, intérieur, lieu d’activité ou position par rapport à un objet : choisis, puis vérifie le nombre de mots.',
     steps: [PLACE_RULE, why, `Réponse : **${before} ${forms[0]} ${after}**`],
   };
@@ -664,6 +693,7 @@ const places: Skill = {
   lesson: {
     memo: [
       'Une **préposition** de lieu dit où : in (dans), on (sur), under (sous), above (au-dessus), between (entre), behind (derrière).',
+      'Retiens aussi : in front of (devant), next to (à côté de), opposite (en face de).',
       'Elle se place devant le nom : The cat is under the chair. Pense aussi à at home, at work, on the wall.',
     ],
     source: source(
@@ -691,9 +721,13 @@ const KIND: Readonly<Record<Suffix, string>> = { y: 'un adjectif', er: 'un nom',
 const REGULAR_WORDS = DERIVED.filter((d) => !d.changes);
 const whyDerived = (d: Derived) => `« ${d.word} » veut dire « ${d.fr} » (de « ${d.base} », ${d.baseFr}).`;
 
+/** Adverbes dont les sens français se recouvrent : jamais l'un en distracteur de l'autre. */
+const SAME_SENSE: readonly string[] = ['quietly', 'gently'];
+const overlaps = (a: Derived, b: Derived) => SAME_SENSE.includes(a.word) && SAME_SENSE.includes(b.word);
+
 function suffixSpot(rng: Rng): QuestionDraft {
   const d = rng.pick(DERIVED);
-  const other = rng.pick(DERIVED.filter((x) => x.base !== d.base));
+  const other = rng.pick(DERIVED.filter((x) => x.base !== d.base && !overlaps(d, x)));
   const { answer, traps } = choice(
     rng,
     d.fr,
@@ -756,7 +790,7 @@ function suffixWrite(rng: Rng): QuestionDraft {
 
 /** Niveau 4, orthographe et exceptions : [phrase, base, formes admises, explication, erreurs typiques]. */
 const TRICKY: readonly (readonly [string, string, readonly [string, ...string[]], string, readonly string[]])[] = [
-  ['The weather is … today.', 'sun', ['sunny'], 'On double le n : sun → sunny.', ['suny', 'sun', 'sunly']],
+  ['It is a very … day.', 'sun', ['sunny'], 'On double le n : sun → sunny.', ['suny', 'sun', 'sunly']],
   [
     'My aunt is a … .',
     'write',
@@ -814,12 +848,18 @@ const TRICKY: readonly (readonly [string, string, readonly [string, ...string[]]
     'L’adverbe de good est irrégulier : well.',
     ['goodly', 'good', 'goodely'],
   ],
-  ['My mum drives … .', 'fast', ['fast'], 'fast garde la même forme comme adverbe.', ['fastly', 'faster', 'fasty']],
   [
-    'Do you work …?',
+    'My mum drives very … .',
+    'fast',
+    ['fast'],
+    'fast garde la même forme comme adverbe ; après very, pas de comparatif en -er.',
+    ['fastly', 'faster', 'fasty'],
+  ],
+  [
+    'Do you work very …?',
     'hard',
     ['hard'],
-    'hard garde la même forme ; hardly a un autre sens.',
+    'hard garde la même forme (hardly a un autre sens) ; après very, pas de comparatif en -er.',
     ['hardly', 'harder', 'hardy'],
   ],
 ];
@@ -844,7 +884,7 @@ const PORTRAIT: readonly (readonly [string, string, string, string])[] = [
   ['Mr Hill can teach maths.', 'Mr Hill is a maths ', 'teacher', '.'],
   ['Mrs Cole likes to drive buses.', 'Mrs Cole is a bus ', 'driver', '.'],
   ['There are many clouds today.', 'The sky is ', 'cloudy', '.'],
-  ['There is a lot of rain in the week.', 'It is a ', 'rainy', ' week.'],
+  ['There is a lot of rain this week.', 'It is a ', 'rainy', ' week.'],
   ['Zoe loves sport.', 'Zoe is very ', 'sporty', '.'],
   ['Leo is a quiet boy.', 'Leo speaks ', 'quietly', '.'],
   ['Emma is careful with her bike.', 'Emma rides her bike ', 'carefully', '.'],
@@ -1008,9 +1048,12 @@ const compoundOf = (en: string) => {
 
 function compoundProduce(rng: Rng): QuestionDraft {
   const c = compoundOf(rng.pick(FROM_FRENCH));
+  // « cours de natation » se lit aussi au pluriel.
+  const plural = c.en === 'swimming lesson' ? ['swimming lessons'] : [];
   return {
-    prompt: `Écris le nom composé anglais qui veut dire « ${c.fr} ».`,
-    ...written(compoundForms(c), compoundTraps(c)),
+    // Les initiales désignent les mots attendus : d'autres traductions justes existent (apple tart, grocery list…).
+    prompt: `Écris le nom composé anglais qui veut dire « ${c.fr} » (initiales des deux mots qui le forment : « ${c.modifier.charAt(0)} » puis « ${c.head.charAt(0)} »).`,
+    ...written([...compoundForms(c), ...plural], compoundTraps(c)),
     hint: 'Traduis les deux idées séparément, puis place en dernier celle qui nomme la chose.',
     steps: [COMPOUND_RULE, parts(c), `Réponse : **${c.en}**`],
   };
@@ -1024,7 +1067,7 @@ const NOTES: readonly (readonly [string, string, string, string])[] = [
   ['One leg of the chair is broken.', 'The ', 'chair leg', ' is broken.'],
   ['Our village has got an old church.', 'We visit the ', 'village church', '.'],
   ['Mum writes a list before she goes shopping.', 'Her ', 'shopping list', ' is on the table.'],
-  ['On Friday, I have got a lesson: we learn swimming.', 'My ', 'swimming lesson', ' is on Friday.'],
+  ['On Friday, I have got a lesson: we learn to go swimming.', 'My ', 'swimming lesson', ' is on Friday.'],
   ['This machine is for washing clothes.', 'The ', 'washing machine', ' is new.'],
 ];
 
@@ -1033,7 +1076,7 @@ function compoundDocument(rng: Rng): QuestionDraft {
   const asked = rows.map(([, before, word, after]) => [before, compoundForms(compoundOf(word)), after] as const);
   return {
     prompt:
-      'Lis les notes, puis redis chaque information plus vite : un nom composé par trou (deux mots pris dans la ligne).',
+      'Lis les notes, puis redis chaque information plus court : un nom composé par trou (deux mots pris dans la ligne).',
     figure: { kind: 'document', title: 'Home notes', lines: rows.map((r) => r[0]), credit: ABOUT },
     answer: cloze(asked),
     hint: 'Dans chaque ligne, trouve la chose dont on parle et le mot qui la précise ; mets la chose en dernier.',

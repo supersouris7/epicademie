@@ -130,6 +130,12 @@ describe('anglais 6e : temps, espace, formation des mots', () => {
     const may = find('a6-dates-ordinaux', 4, '« le 3 mai »');
     accepts(may, '3 May', '3rd May', 'May 3rd', 'May 3', 'the 3rd of May', '3rd of May', 'May the 3rd', 'on 3 May');
     refuses(may, '3 mai', '3th May', '3 of May', 'May');
+    accepts(may, 'on May 3rd', 'on May 3', 'on May the 3rd', 'the 3rd May', 'on the 3rd May');
+    const april = find('a6-dates-ordinaux', 4, '« le 4 avril »');
+    accepts(april, 'on April 4th', 'on April 4', 'the 4th April', 'on the 4th April');
+    for (const q of questions('a6-dates-ordinaux', 3).filter((x) => x.prompt.includes('« 21e »')))
+      refuses(q, 'twenty first');
+    expect(new Set(questions('a6-dates-ordinaux', 3).map((q) => q.prompt)).size).toBeGreaterThan(20);
   });
 
   it('prépositions : above et over admis, in front of en trois mots', () => {
@@ -142,6 +148,20 @@ describe('anglais 6e : temps, espace, formation des mots', () => {
     const work = find('a6-prepositions-lieu', 4, '(au travail)');
     accepts(work, 'at');
     refuses(work, 'in', 'to');
+    accepts(find('a6-prepositions-lieu', 3, '« sous »'), 'under', 'beneath');
+    accepts(find('a6-prepositions-lieu', 3, '« en face de »'), 'opposite', 'across from');
+    const facing = find('a6-prepositions-lieu', 4, '(en face de)');
+    accepts(facing, 'opposite', 'across from');
+    refuses(facing, 'in front of', 'opposite of');
+    expect(facing.traps.map((t) => t.why).join(' ')).toContain('« in front of » veut dire « devant »');
+    for (const level of [1, 2] as const)
+      for (const q of questions('a6-prepositions-lieu', level)) {
+        const shownText = JSON.stringify([q.prompt, q.answer]);
+        expect(/\bdevant\b/.test(shownText) && shownText.includes('en face de'), `${q.prompt} ${shownText}`).toBe(
+          false,
+        );
+        expect(shownText.includes('in front of') && shownText.includes('opposite'), shownText).toBe(false);
+      }
   });
 
   it('suffixes : changements d’orthographe et exceptions', () => {
@@ -154,6 +174,18 @@ describe('anglais 6e : temps, espace, formation des mots', () => {
     const act = find('a6-suffixes', 4, '« act »');
     accepts(act, 'actor');
     refuses(act, 'acter');
+    for (const base of ['fast', 'hard']) {
+      const q = find('a6-suffixes', 4, `« ${base} »`);
+      expect(q.prompt).toContain('very …');
+      accepts(q, base);
+      refuses(q, `${base}er`);
+    }
+    for (const q of questions('a6-suffixes', 1)) {
+      const shownText = JSON.stringify(q.answer);
+      if (q.prompt.includes('« suddenly »')) expect(shownText).not.toContain('"soudain"');
+      if (q.prompt.includes('« quietly »')) expect(shownText).not.toContain('"doucement"');
+      if (q.prompt.includes('« gently »')) expect(shownText).not.toContain('"calmement"');
+    }
   });
 
   it('noms composés : ordre des mots, sans of ni ’s, un ou deux mots', () => {
@@ -166,5 +198,14 @@ describe('anglais 6e : temps, espace, formation des mots', () => {
     const box = find('a6-noms-composes', 3, 'boîte à déjeuner');
     accepts(box, 'lunch box', 'lunchbox');
     refuses(box, 'box lunch');
+    // Les initiales excluent les autres traductions justes (apple tart, swimming class, grocery list, suppertime).
+    for (const [fr, first, second] of [
+      ['tarte aux pommes', 'a', 'p'],
+      ['cours de natation', 's', 'l'],
+      ['liste de courses', 's', 'l'],
+      ['heure du dîner', 'd', 't'],
+    ] as const)
+      expect(find('a6-noms-composes', 4, fr).prompt).toContain(`« ${first} » puis « ${second} »`);
+    accepts(find('a6-noms-composes', 4, 'cours de natation'), 'swimming lesson', 'swimming lessons');
   });
 });
