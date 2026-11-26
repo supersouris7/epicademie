@@ -114,4 +114,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'a5-be-ing-projet', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'a5-could', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'a5-souhait', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-choisir-futur', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-should', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'a5-opinion', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
 ];

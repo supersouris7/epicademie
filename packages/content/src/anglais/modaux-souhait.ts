@@ -704,8 +704,8 @@ const opener = (en: string, fr: string, accepted: readonly string[]): Opener => 
 const OPENERS: readonly Opener[] = [
   opener('I think', 'Je pense que', ['I think', 'I think that', 'I believe', 'I believe that']),
   opener('I believe', 'Je crois que', ['I believe', 'I believe that', 'I think', 'I think that']),
-  opener('For me,', 'Pour moi,', ['For me', 'For me,']),
-  opener('In my opinion,', 'À mon avis,', ['In my opinion', 'In my opinion,']),
+  opener('For me,', 'Pour moi,', ['For me', 'For me,', 'To me', 'To me,']),
+  opener('In my opinion,', 'À mon avis,', ['In my opinion', 'In my opinion,', 'In my view', 'In my view,']),
 ];
 const OPINION_RULE = 'I think, I believe, For me et In my opinion annoncent que l’on donne son avis.';
 
@@ -765,7 +765,11 @@ const MISTAKES: readonly (readonly [wrong: string, right: string, why: string])[
 function opinionFix(rng: Rng): QuestionDraft {
   const v = rng.pick(VIEWS);
   const [wrong, right, why] = rng.pick(MISTAKES);
-  const accepted = [right, `${right},`, ...(right.startsWith('I ') ? [`${right} that`] : [])];
+  // Une autre expression correcte et de même sens est acceptée aussi (OPENERS).
+  const same = OPENERS.find((o) => o.en.replace(',', '') === right && !right.startsWith('I '));
+  const accepted = [
+    ...new Set([right, `${right},`, ...(right.startsWith('I ') ? [`${right} that`] : (same?.accepted ?? []))]),
+  ];
   return {
     prompt: `Corrige le début de cet avis, écris seulement l’expression juste : « ${wrong} ${v.en}. »`,
     answer: { kind: 'text', accepted },
@@ -804,8 +808,8 @@ const gap = (meaning: string, before: string, accepted: Gap['accepted'], after: 
 });
 /** Un message par expression du cours ; deux trous possibles pour les expressions sans verbe conjugué. */
 const GAPS: readonly (readonly Gap[])[] = [
-  [gap('à mon avis,', '', ['In'], ' my opinion,'), gap('à mon avis,', 'In my ', ['opinion'], ',')],
-  [gap('pour moi,', 'For ', ['me'], ','), gap('pour moi,', '', ['For'], ' me,')],
+  [gap('à mon avis,', '', ['In'], ' my opinion,'), gap('à mon avis,', 'In my ', ['opinion', 'view'], ',')],
+  [gap('pour moi,', 'For ', ['me'], ','), gap('pour moi,', '', ['For', 'To'], ' me,')],
   [gap('je crois que', 'I ', ['believe', 'think'], '')],
   [gap('je pense que', 'I ', ['think', 'believe'], '')],
 ];
