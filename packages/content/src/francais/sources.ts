@@ -13,6 +13,12 @@ const conjugaison = (verbe: string): Source => {
   };
 };
 
+/** Article de l'Académie (9e édition) relevé pour le lot fr-cm2-09 (`page` : fin de l'adresse). */
+const academieOm2 = (id: string, word: string, page: string): Source => ({
+  ...academie(`om2-${id}`, word),
+  url: `https://www.cnrtl.fr/definition/academie9/${page}`,
+});
+
 /** Sources de français (registre : `sources.ts` à la racine du paquet). */
 export const SOURCES: readonly Source[] = [
   {
@@ -516,4 +522,44 @@ export const SOURCES: readonly Source[] = [
   academie('frissonner', 'frissonner'),
   tlfi('souligner', 'souligner', 'souligner'),
   tlfi('dissimuler', 'dissimuler', 'dissimuler'),
+  academieOm2('ou', 'ou', 'ou'),
+  academieOm2('ou-accent', 'où', 'o%C3%B9'),
+  academieOm2('le-determinant', 'le, la (article)', 'le/d%C3%A9terminant'),
+  academieOm2('le-pronom', 'le, la (pronom)', 'le/pronom'),
+  academieOm2('la-accent', 'là', 'l%C3%A0'),
+  academieOm2('ce', 'ce (adjectif démonstratif)', 'ce'),
+  academieOm2('ce-pronom', 'ce (pronom)', 'ce/pronom'),
+  academieOm2('se', 'se (pronom)', 'se/pronom'),
+  academieOm2('leur', 'leur', 'leur/adjectif'),
+  academieOm2('quel', 'quel', 'quel'),
+  academieOm2('que', 'que (conjonction)', 'que/conjonction'),
+  academieOm2('il', 'il (pronom)', 'il/pronom'),
+  academieOm2('muet', 'muet', 'muet'),
+  academieOm2('derivation', 'dérivation', 'd%C3%A9rivation'),
+  academieOm2('dentiste', 'dentiste', 'dentiste'),
+  academieOm2('grandir', 'grandir', 'grandir'),
+  academieOm2('petitesse', 'petitesse', 'petitesse'),
+  academieOm2('bavarder', 'bavarder', 'bavarder'),
+  academieOm2('laitage', 'laitage', 'laitage'),
+  academieOm2('border', 'border', 'border'),
+  academieOm2('literie', 'literie', 'literie'),
+  academieOm2('grosseur', 'grosseur', 'grosseur'),
+  academieOm2('grisaille', 'grisaille', 'grisaille'),
+  academieOm2('chaton', 'chaton', 'chaton'),
+  academieOm2('hauteur', 'hauteur', 'hauteur'),
+  academieOm2('longueur', 'longueur', 'longueur'),
+  academieOm2('camper', 'camper', 'camper'),
+  academieOm2('draperie', 'draperie', 'draperie'),
+  academieOm2('plombier', 'plombier', 'plombier'),
+  academieOm2('dossier', 'dossier', 'dossier'),
+  academieOm2('boiser', 'boiser', 'boiser'),
+  academieOm2('larder', 'larder', 'larder'),
+  academieOm2('gourmandise', 'gourmandise', 'gourmandise'),
+  academieOm2('renardeau', 'renardeau', 'renardeau'),
+  academieOm2('debut', 'début', 'd%C3%A9but'),
+  academieOm2('regard', 'regard', 'regard'),
+  academieOm2('retard', 'retard', 'retard'),
+  academieOm2('accord', 'accord', 'accord'),
+  academieOm2('repos', 'repos', 'repos'),
+  tlfi('om2-leur-pronom', 'leur (pronom personnel)', 'leur/pronom'),
 ];
