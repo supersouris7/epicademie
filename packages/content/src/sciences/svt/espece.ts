@@ -128,7 +128,7 @@ const NIVEAU3: readonly Modele[] = [
       ['europaeus', 'C’est le second mot : il désigne l’espèce à l’intérieur du genre.'],
       ['hérisson', 'C’est le nom courant, pas le nom de genre.'],
     ],
-    'Le genre est le mot avec une majuscule.',
+    'Un nom scientifique va du plus large au plus précis.',
     'Le premier mot d’un nom scientifique est le genre.',
   ),
   completer(
@@ -167,7 +167,7 @@ const NIVEAU4: readonly Modele[] = [
   ),
   ecrire(
     'Un mulet ne peut pas avoir de petits. Écris l’adjectif qui le qualifie.',
-    ['stérile', 'sterile'],
+    ['stérile', 'sterile', 'infertile', 'infécond', 'infecond'],
     [
       ['fertile', 'Fertile signifie justement qu’on peut avoir des petits.'],
       ['hybride', 'Il est bien un hybride, mais on cherche l’adjectif qui dit qu’il ne se reproduit pas.'],
@@ -179,7 +179,7 @@ const NIVEAU4: readonly Modele[] = [
     'Un animal issu du croisement de deux espèces différentes, comme le mulet, est appelé un…',
     ['hybride', 'un hybride'],
     [
-      ['mutant', 'Une mutation est un changement de l’ADN, pas un croisement.'],
+      ['mutant', 'Le mot « mutant » ne dit pas que les parents sont de deux espèces différentes.'],
       ['ancêtre', 'Un ancêtre est un être du passé dont on descend.'],
     ],
     'Le mot désigne le résultat d’un croisement entre deux lignées différentes.',

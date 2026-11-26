@@ -658,4 +658,25 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Être vivant issu du croisement de deux lignées différentes, par exemple de deux espèces.',
     example: 'Le mulet est un hybride de l’âne et de la jument.',
   },
+  {
+    id: 'sv-sterile',
+    word: 'stérile',
+    forms: ['stérile', 'stériles'],
+    definition: 'Qui ne peut pas avoir de petits.',
+    example: 'Le mulet est stérile.',
+  },
+  {
+    id: 'sv-descendance',
+    word: 'descendance',
+    forms: ['descendance'],
+    definition: 'Les petits d’un être vivant, puis les petits de ses petits, et ainsi de suite.',
+    example: 'La descendance d’un couple de chats : ses chatons, puis leurs petits.',
+  },
+  {
+    id: 'sv-genre',
+    word: 'genre',
+    forms: ['genre', 'genres'],
+    definition: 'En classification, groupe qui réunit des espèces très proches.',
+    example: 'Homo sapiens appartient au genre Homo.',
+  },
 ];
