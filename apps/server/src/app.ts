@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
-import Fastify, { LogController, type FastifyInstance } from 'fastify';
+import Fastify, { LogController, type FastifyInstance, type FastifyRequest } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
 import { API_PREFIX } from '@epicademie/shared';
@@ -119,6 +119,17 @@ const BODY_LIMIT = 64 * 1024;
 /** `/admin` et ses sous-adresses (avec ou sans paramètres). */
 const ADMIN_PATH = /^\/admin(\/|\?|$)/;
 
+/** Requête telle que journalisée ; le retour du fournisseur d'identité n'y laisse ni code ni state. */
+function requestForLog(request: FastifyRequest) {
+  return {
+    method: request.method,
+    url: request.url.includes('/admin-auth/callback') ? request.url.split('?')[0] : request.url,
+    host: request.host,
+    remoteAddress: request.ip,
+    remotePort: request.socket.remotePort,
+  };
+}
+
 export async function buildApp(deps: AppDeps): Promise<App> {
   const { config, database } = deps;
   const http = Fastify({
@@ -126,6 +137,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
       level: config.logLevel,
       // Jamais de secrets ni de cookies dans les journaux.
       redact: ['req.headers.authorization', 'req.headers.cookie', 'req.headers["set-cookie"]'],
+      serializers: { req: requestForLog },
     },
     bodyLimit: BODY_LIMIT,
     // Nombre de proxys de confiance (nginx…) : l'IP client réelle vient de X-Forwarded-For.
