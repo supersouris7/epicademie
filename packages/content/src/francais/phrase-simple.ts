@@ -29,7 +29,7 @@ import {
   type Objet,
   type Phrase,
 } from './phrase-simple.donnees.ts';
-import { at, document, lowerFirst, pickN, textTraps } from './outils.ts';
+import { at, colonnes, document, listes, lowerFirst, pickN, saisies, segments, textTraps } from './outils.ts';
 
 /**
  * Chapitre « Analyser la phrase simple » (CM2). Programme de français du cycle 3 (BO du 17 avril 2025),
@@ -37,23 +37,6 @@ import { at, document, lowerFirst, pickN, textTraps } from './outils.ts';
  */
 const programme = (id: string) =>
   `Programme de français du cycle 3 (BO du 17 avril 2025), CM2 — « ${faitPhraseSimple(id).citation} »`;
-
-/** Texte à trous dont chaque trou se choisit dans la même liste. */
-const listes = (options: readonly string[], justes: readonly string[]) =>
-  justes.map((juste) => ({ mode: 'list' as const, options: [...options], correct: options.indexOf(juste) }));
-
-/** Texte à trous à saisir. */
-const saisies = (mots: readonly string[]) => mots.map((mot) => ({ mode: 'text' as const, accepted: [mot] }));
-
-/** Ordres des deux colonnes d'une association, jamais déjà face à face. */
-function colonnes<T>(rng: Rng, items: readonly T[]): { gauche: T[]; droite: T[] } {
-  const gauche = rng.shuffle(items);
-  const droite = rng.shuffle(items);
-  return { gauche, droite: droite.every((x, i) => x === gauche[i]) ? [...droite.slice(1), at(droite, 0)] : droite };
-}
-
-/** Segments d'un texte à trous : un libellé avant chaque trou, un point à la fin. */
-const segments = (libelles: readonly string[]) => [...libelles.map((l, i) => (i === 0 ? l : `. ${l}`)), '.'];
 
 // ───────────────────────── 1. Groupe sujet, groupe verbal, groupe circonstanciel ─────────────────────────
 

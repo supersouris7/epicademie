@@ -1,8 +1,12 @@
 import type { Chapter } from '../../types.ts';
 import { biodiversite } from './biodiversite.ts';
+import { circulationSang } from './circulation.ts';
+import { digestionAliments } from './digestion.ts';
 import { ecosystemes } from './ecosystemes.ts';
+import { effortPhysique } from './effort.ts';
 import { meteoClimat } from './meteo-climat.ts';
 import { respiration } from './respiration.ts';
+import { respirationHumaine } from './respiration-humaine.ts';
 import { risques } from './risques.ts';
 import { seismes } from './seismes.ts';
 import { vegetaux } from './vegetaux.ts';
@@ -25,5 +29,13 @@ export const SVT_CHAPTERS: readonly Chapter[] = [
     domain: 'svt',
     title: 'Nutrition des êtres vivants',
     skills: [vegetaux, respiration, ecosystemes, biodiversite],
+  },
+  {
+    id: 'v5-corps',
+    subject: 'sciences',
+    grade: '5e',
+    domain: 'svt',
+    title: 'Le corps en activité',
+    skills: [respirationHumaine, circulationSang, digestionAliments, effortPhysique],
   },
 ];

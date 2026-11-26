@@ -34,4 +34,9 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'vcm2-chaines-alimentaires', version: 1, lot: 'st-cm2-04', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'vcm2-actions-humaines', version: 1, lot: 'st-cm2-04', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'v6-decomposeurs', version: 1, lot: 'st-cm2-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'tcm2-chaine-information', version: 1, lot: 'st-cm2-05', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'tcm2-algorithme-programme', version: 1, lot: 'st-cm2-05', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'tcm2-securite-electrique', version: 1, lot: 'st-cm2-05', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p6-conducteurs-isolants', version: 1, lot: 'st-cm2-05', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p6-chaine-energie', version: 1, lot: 'st-cm2-05', date: '2026-11-26', verdict: 'ok' },
 ];

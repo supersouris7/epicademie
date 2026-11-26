@@ -120,4 +120,13 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm2-poesie', version: 1, lot: 'fr-cm2-11', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'fcm2-fable-morale', version: 1, lot: 'fr-cm2-11', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'fcm2-conte-merveilleux', version: 1, lot: 'fr-cm2-11', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-constituants-phrase', version: 1, lot: 'fr-6e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-attribut-ou-cod', version: 1, lot: 'fr-6e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-coi', version: 1, lot: 'fr-6e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-complements-circonstanciels', version: 1, lot: 'fr-6e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-construction-verbe', version: 1, lot: 'fr-6e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-pronom-fonction', version: 1, lot: 'fr-6e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-pronom-antecedent', version: 1, lot: 'fr-6e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-groupe-nominal', version: 1, lot: 'fr-6e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'f6-epithete-complement-nom', version: 1, lot: 'fr-6e-02', date: '2026-11-26', verdict: 'ok' },
 ];
