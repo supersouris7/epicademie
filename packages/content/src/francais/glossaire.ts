@@ -1182,4 +1182,47 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Un adjectif avec les mots qui le complètent ou le précisent.',
     example: '« très vieille » dans « une très vieille barque »',
   },
+  {
+    id: 'proposition',
+    word: 'proposition',
+    forms: ['propositions'],
+    definition: 'Un groupe sujet et un groupe verbal avec un verbe conjugué.',
+    example: '« la marée monte »',
+  },
+  {
+    id: 'proposition-independante',
+    word: 'proposition indépendante',
+    forms: ['propositions indépendantes'],
+    definition: 'Proposition qui ne dépend d’aucune autre et n’en contient pas de subordonnée.',
+    example: '« Il pleut » et « je sors » dans « Il pleut, je sors. »',
+  },
+  {
+    id: 'juxtaposition',
+    word: 'juxtaposition',
+    forms: ['juxtaposées', 'juxtaposer'],
+    definition:
+      'Propositions placées côte à côte, séparées par un signe de ponctuation, sans conjonction de coordination.',
+    example: 'La cloche sonne, les élèves sortent.',
+  },
+  {
+    id: 'coordination',
+    word: 'coordination',
+    forms: ['coordonnées', 'coordonner'],
+    definition: 'Lien entre des éléments sur le même plan, avec un mot comme et, mais ou car.',
+    example: 'Il pleut, mais je sors.',
+  },
+  {
+    id: 'sur-le-meme-plan',
+    word: 'sur le même plan',
+    forms: [],
+    definition: 'Au même niveau : aucune des deux parties ne dépend de l’autre.',
+    example: '« Le chat dort et le chien joue. »',
+  },
+  {
+    id: 'subordination',
+    word: 'subordination',
+    forms: [],
+    definition: 'Lien où une proposition dépend d’une autre et en fait partie.',
+    example: 'Je rentre quand la nuit tombe.',
+  },
 ];
