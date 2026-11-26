@@ -2,9 +2,13 @@ import type { Chapter } from '../../types.ts';
 import { algorithme } from './algorithme.ts';
 import { besoin } from './besoin.ts';
 import { capteurs } from './capteurs.ts';
+import { chaineInformation } from './chaine-information.ts';
+import { constituants } from './constituants.ts';
 import { contraintes } from './contraintes.ts';
 import { cycleVie } from './cycle-vie.ts';
+import { fonctionsEnergie } from './fonctions-energie.ts';
 import { donnees } from './fichiers.ts';
+import { flux } from './flux.ts';
 import { impacts } from './impacts.ts';
 import { materiaux } from './materiaux.ts';
 import { reseaux } from './reseaux.ts';
@@ -37,5 +41,13 @@ export const TECHNO_CHAPTERS: readonly Chapter[] = [
     domain: 'technologie',
     title: 'Programmer',
     skills: [algorithme, capteurs, sequenceBoucle, testsProgramme],
+  },
+  {
+    id: 't4-chaines',
+    subject: 'sciences',
+    grade: '4e',
+    domain: 'technologie',
+    title: 'Chaînes d’énergie et d’information',
+    skills: [fonctionsEnergie, chaineInformation, constituants, flux],
   },
 ];

@@ -20,7 +20,7 @@
 | `sv-4e-02` | Reproduction                       | reproduction sexuée et asexuée ; puberté ; reproduction humaine ; maîtrise de la reproduction               | absente                    |
 | `sv-4e-03` | Système nerveux et santé           | message nerveux ; réflexe ; sommeil et écrans ; substances et santé                                         | absente                    |
 | `sv-4e-04` | Écosystèmes et action humaine      | ressources ; pollutions ; agriculture ; préserver                                                           | absente                    |
-| `te-4e-01` | Chaînes d'énergie et d'information | fonctions de la chaîne d'énergie ; chaîne d'information ; constituants ; flux                               | absente                    |
+| `te-4e-01` | Chaînes d'énergie et d'information | fonctions de la chaîne d'énergie ; chaîne d'information ; constituants ; flux                               | couverte, en relecture     |
 | `te-4e-02` | Concevoir et modéliser             | croquis et schémas ; modéliser une forme ; matériaux et procédés ; contraintes                              | absente                    |
 | `te-4e-03` | Objets communicants                | réseau et protocole ; adresse ; programme et événements ; données échangées                                 | absente                    |
 
