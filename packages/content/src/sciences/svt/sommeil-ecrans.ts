@@ -139,7 +139,7 @@ export const sommeilEcrans: Skill = {
           [['lent', 'artificiel', 'éveillé'], 0],
           [['paradoxal', 'artificiel', 'éveillé'], 0],
         ],
-        indice: 'Le premier a des ondes lentes.',
+        indice: 'Chaque phase tient son nom de l’activité du cerveau enregistrée pendant la nuit.',
         explication: 'Chaque cycle comporte du sommeil lent puis du sommeil paradoxal.',
       },
       {

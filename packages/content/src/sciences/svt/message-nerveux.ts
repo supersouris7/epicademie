@@ -123,7 +123,7 @@ export const messageNerveux: Skill = {
           ['des muscles et des os', 'Ils forment l’appareil du mouvement.'],
           ['du cerveau et du cœur', 'Le cœur est un organe de la circulation.'],
         ],
-        indice: 'Un organe dans le crâne et un autre dans la colonne vertébrale.',
+        indice: 'Les nerfs relient cette partie au reste du corps : cherche ce qu’ils rejoignent.',
         explication: ['Le système nerveux central comprend l’encéphale et la moelle épinière.'],
       },
     ],
