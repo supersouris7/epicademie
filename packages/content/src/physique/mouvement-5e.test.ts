@@ -165,4 +165,30 @@ describe('physique-chimie 5e : « Mouvement »', () => {
       expect(check(q, { kind: 'number', text: String(attendu) }).correct, lignes(q).join(' ')).toBe(true);
     }
   });
+
+  it('allure en saisie : « décélérée » acceptée, « constant » et « régulier » expliqués', () => {
+    const saisies = ([3, 4] as const)
+      .flatMap((l) => tirages('p5-mouvement-uniforme', l))
+      .filter((q) => q.answer.kind === 'text');
+    expect(new Set(saisies.map(mot)).size).toBe(3);
+    for (const q of saisies) {
+      expect(check(q, { kind: 'text', text: 'décélérée' }).correct).toBe(mot(q) === 'ralenti');
+      for (const text of ['constant', 'régulier']) {
+        const r = check(q, { kind: 'text', text });
+        expect(r.correct).toBe(false);
+        expect(
+          q.traps.some((t) => 'text' in t && t.text === text),
+          text,
+        ).toBe(true);
+      }
+    }
+  });
+
+  it('direction et sens : deux mots distincts, définis au mémo, et « mobile » au glossaire', () => {
+    const memo = notions.find((s) => s.id === 'p5-mouvement-uniforme')?.lesson.memo.join(' ');
+    expect(memo).toContain('La direction est la droite suivie ; le sens indique vers quel côté');
+    expect(FAITS_MOUVEMENT.find((f) => f.id === 'sens')?.source).toBe('academie-sens');
+    expect(getSource('cnrtl-sens')).toBeUndefined();
+    expect(isDefined('mobile', SUBJECT_GLOSSARIES.sciences ?? [])).toBe(true);
+  });
 });

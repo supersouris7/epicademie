@@ -110,14 +110,27 @@ const niveau2 = (rng: Rng): QuestionDraft => {
 const VARIANTES: Record<Allure, readonly string[]> = {
   uniforme: ['uniforme'],
   accéléré: ['accéléré', 'accélérée', 'accelere'],
-  ralenti: ['ralenti', 'ralentie', 'décéléré', 'decelere'],
+  ralenti: ['ralenti', 'ralentie', 'décéléré', 'décélérée', 'decelere'],
 };
 
+/** Mots proches mais imprécis : le terme attendu pour une vitesse constante est « uniforme ». */
+const IMPRECIS = ['constant', 'régulier'] as const;
+
 const saisieAllure = (allure: Allure) =>
-  saisie(
-    VARIANTES[allure],
-    ALLURES.filter((a) => a !== allure).map((a) => [a, `${WHY[a]} Ce n’est pas ce que montrent les données.`] as const),
-  );
+  saisie(VARIANTES[allure], [
+    ...ALLURES.filter((a) => a !== allure).map(
+      (a) => [a, `${WHY[a]} Ce n’est pas ce que montrent les données.`] as const,
+    ),
+    ...IMPRECIS.map(
+      (m) =>
+        [
+          m,
+          allure === 'uniforme'
+            ? 'Tu as la bonne idée, mais en physique on dit que ce mouvement est « uniforme ».'
+            : `Les distances ne sont pas égales ici. ${WHY[allure]}`,
+        ] as const,
+    ),
+  ]);
 
 const MOBILES = ['un coureur', 'une trottinette', 'un robot', 'une luge'] as const;
 
@@ -261,7 +274,7 @@ const niveau4 = (rng: Rng): QuestionDraft => {
 };
 
 const FORMES = ['rectiligne', 'circulaire'] as const;
-const LIEUX = { rectiligne: 'sur une piste droite', circulaire: 'sur un rond-point en cercle' } as const;
+const LIEUX = { rectiligne: 'sur une piste droite', circulaire: 'sur un circuit circulaire' } as const;
 const PHASES = ['A', 'B', 'C'] as const;
 
 const niveau5 = (rng: Rng): QuestionDraft => {
@@ -343,7 +356,7 @@ export const mouvementUniforme: Skill = {
     memo: [
       'Dans un **mouvement uniforme**, la valeur de la vitesse est constante : en des durées égales, on parcourt des distances égales.',
       'Sinon, le mouvement peut être **accéléré** (la valeur augmente) ou **ralenti** (elle diminue).',
-      'La vitesse a une direction, un sens et une valeur : sur un manège régulier, la valeur est constante mais la direction change.',
+      'La vitesse a une direction, un sens et une valeur : sur un manège régulier, la valeur est constante mais la direction change. La direction est la droite suivie ; le sens indique vers quel côté on avance sur cette droite.',
     ],
     ...referencesMouvement(
       'uniforme-programme',
@@ -351,6 +364,7 @@ export const mouvementUniforme: Skill = {
       'circulaire-uniforme',
       'vitesse-caracteres',
       'accelere',
+      'accelere-mecanique',
       'ralentir',
       'direction',
       'sens',

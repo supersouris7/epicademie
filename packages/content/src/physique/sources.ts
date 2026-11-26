@@ -42,5 +42,9 @@ export const SOURCES: readonly Source[] = [
   { ...academie('moyenne', 'moyenne'), consultedOn: '2026-11-26' },
   { ...tlfi('mouvement', 'mouvement', 'mouvement'), consultedOn: '2026-11-26' },
   { ...tlfi('uniforme', 'uniforme', 'uniforme/adjectif'), consultedOn: '2026-11-26' },
-  { ...tlfi('sens', 'sens', 'sens/nom'), consultedOn: '2026-11-26' },
+  {
+    ...academie('sens', 'sens'),
+    url: 'https://www.cnrtl.fr/definition/academie9/sens/nom',
+    consultedOn: '2026-11-26',
+  },
 ];

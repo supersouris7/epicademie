@@ -176,6 +176,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'Pendant le freinage d’un vélo, le mouvement est ralenti.',
   ),
   terme(
+    'mobile',
+    'mobile',
+    ['mobile', 'mobiles'],
+    'En physique, objet en mouvement dont on étudie le déplacement.',
+    'Sur un schéma, on note les positions successives d’un mobile.',
+  ),
+  terme(
     'vitesse-moyenne',
     'vitesse moyenne',
     ['vitesse moyenne', 'vitesses moyennes'],

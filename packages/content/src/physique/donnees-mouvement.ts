@@ -52,13 +52,22 @@ export const FAITS_MOUVEMENT: readonly Fait[] = [
     'Mouvement d’un point matériel qui décrit un cercle avec une vitesse constante',
   ),
   fait('accelere', 'academie-accelere', 'Qui a une vitesse accrue par rapport à la normale.'),
+  fait(
+    'accelere-mecanique',
+    'academie-accelere',
+    'Mouvement uniformément accéléré, dont la vitesse s’accroît d’une quantité constante à chaque unité de temps.',
+  ),
   fait('ralentir', 'academie-ralentir', 'Rendre plus lent un mouvement, un rythme, un mécanisme, etc.'),
   fait(
     'direction',
     'academie-direction',
     'Droite suivant laquelle se déplace ou s’oriente un corps, s’exerce une force.',
   ),
-  fait('sens', 'cnrtl-sens', 'Orientation, direction.'),
+  fait(
+    'sens',
+    'academie-sens',
+    'Chacun des deux trajets, d’un point A à un point B, ou d’un point B à un point A, que l’on peut prendre comme référence pour caractériser une droite, un cercle, etc. auxquels ces deux points appartiennent.',
+  ),
   fait(
     'vitesse-definition',
     'cnrtl-vitesse',
