@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { signupFamily } from './family.ts';
+import { createFirstProfile, signupFamily } from './family.ts';
 
 test('création d’un profil, hub, thème sombre puis suppression', async ({ page }) => {
   const name = `E2E${Date.now() % 100000}`;
@@ -28,9 +28,8 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByRole('button', { name: 'Avatar 05' })).toHaveAttribute('aria-pressed', 'true');
   // Le héros ne se choisit plus dans le profil : il a son propre menu.
   await expect(page.getByRole('radiogroup', { name: 'Ton héros' })).toHaveCount(0);
-  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
+  await createFirstProfile(page);
 
-  await expect(page).toHaveURL(/\/hub$/);
   // Barre du haut : le joueur en bref (prénom, niveau, pièces).
   await expect(page.getByRole('group', { name: 'Mon joueur' })).toContainText(name);
   await expect(page.getByRole('progressbar', { name: /^Niveau 1/ })).toBeVisible();

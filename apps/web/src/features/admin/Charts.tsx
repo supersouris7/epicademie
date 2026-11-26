@@ -1,8 +1,12 @@
 import type { ReactNode } from 'react';
+import { nb, plural } from './labels.ts';
+import { integerTicks } from './ticks.ts';
+import { mutedClass, tableClass, tdClass, thClass } from './ui.tsx';
 
 /**
- * Graphiques de la console en SVG pur (aucune dépendance). Chaque graphique est décrit en texte
- * (`aria-label`, légende) et ses valeurs sont aussi données dans un tableau repliable.
+ * Graphiques de la console sans dépendance : tracé en SVG étiré à la largeur disponible, textes en
+ * HTML (jamais mis à l'échelle : 12 px au moins, même sur téléphone). Chaque graphique est décrit
+ * en texte (`aria-label`, légende) et ses valeurs sont aussi données dans un tableau repliable.
  */
 
 export interface Point {
@@ -10,37 +14,45 @@ export interface Point {
   readonly value: number;
 }
 
+/** Nom de ce qu'on compte, pour accorder les phrases. */
+export interface Unit {
+  readonly one: string;
+  readonly many: string;
+}
+
+/** Repère de dessin (unités du SVG, indépendantes de la taille affichée). */
 const W = 600;
-const H = 180;
-const PAD = { left: 32, right: 8, top: 8, bottom: 22 } as const;
+const H = 150;
+const PAD = 4;
 
 const shortDay = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
-const nb = (n: number) => n.toLocaleString('fr-FR');
+
+const yOf = (value: number, top: number) => H - PAD - (value / top) * (H - 2 * PAD);
 
 function Values({ caption, head, points }: { caption: string; head: string; points: readonly Point[] }) {
   return (
-    <details className="mt-3 text-xs text-slate-600">
-      <summary className="cursor-pointer font-medium text-slate-700">Voir les valeurs</summary>
+    <details className="mt-3 text-sm">
+      <summary className="cursor-pointer font-semibold text-pilot-acc">Voir les valeurs</summary>
       <div className="mt-2 max-h-48 overflow-auto">
-        <table className="w-full text-left">
+        <table className={tableClass}>
           <caption className="sr-only">{caption}</caption>
           <thead>
             <tr>
-              <th scope="col" className="py-1 pr-3 font-semibold">
+              <th scope="col" className={thClass}>
                 Jour
               </th>
-              <th scope="col" className="py-1 text-right font-semibold">
+              <th scope="col" className={`${thClass} text-right`}>
                 {head}
               </th>
             </tr>
           </thead>
           <tbody>
             {points.map((p) => (
-              <tr key={p.label} className="border-t border-slate-200">
-                <th scope="row" className="py-1 pr-3 font-normal">
+              <tr key={p.label}>
+                <th scope="row" className={`${tdClass} font-normal`}>
                   {shortDay(p.label)}
                 </th>
-                <td className="py-1 text-right tabular-nums">{nb(p.value)}</td>
+                <td className={`${tdClass} text-right tabular-nums`}>{nb(p.value)}</td>
               </tr>
             ))}
           </tbody>
@@ -50,47 +62,67 @@ function Values({ caption, head, points }: { caption: string; head: string; poin
   );
 }
 
-function Frame({ title, summary, children }: { title: string; summary: string; children: ReactNode }) {
+/** Cadre commun : axe vertical, lignes de repère, premier et dernier jour. */
+function Chart({
+  title,
+  head,
+  summary,
+  points,
+  ticks,
+  children,
+}: {
+  readonly title: string;
+  readonly head: string;
+  readonly summary: string;
+  readonly points: readonly Point[];
+  readonly ticks: readonly number[];
+  readonly children: ReactNode;
+}) {
+  const top = ticks.at(-1) ?? 1;
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${title}. ${summary}`} className="h-auto w-full">
-      {children}
-    </svg>
+    <figure>
+      <div className="flex gap-2 text-xs text-pilot-mut tabular-nums">
+        <div aria-hidden="true" className="relative h-40 shrink-0">
+          {/* Largeur réservée par le plus grand repère. */}
+          <span className="invisible">{nb(top)}</span>
+          {ticks.map((t) => (
+            <span key={t} className="absolute right-0 -translate-y-1/2" style={{ top: `${(yOf(t, top) / H) * 100}%` }}>
+              {nb(t)}
+            </span>
+          ))}
+        </div>
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          preserveAspectRatio="none"
+          role="img"
+          aria-label={`${title}. ${summary}`}
+          className="h-40 min-w-0 flex-1 overflow-visible"
+        >
+          {ticks.map((t) => (
+            <line
+              key={t}
+              x1={0}
+              x2={W}
+              y1={yOf(t, top)}
+              y2={yOf(t, top)}
+              stroke="var(--color-pilot-line)"
+              vectorEffect="non-scaling-stroke"
+            />
+          ))}
+          {children}
+        </svg>
+      </div>
+      <div aria-hidden="true" className="flex justify-between pl-6 text-xs text-pilot-mut">
+        <span>{points[0] && shortDay(points[0].label)}</span>
+        <span>{shortDay(points.at(-1)?.label ?? '')}</span>
+      </div>
+      <figcaption className={`mt-1 ${mutedClass}`}>{summary}</figcaption>
+      <Values caption={title} head={head} points={points} />
+    </figure>
   );
 }
 
-/** Repères communs : 3 lignes (0, moitié, max) et premier/dernier jour. */
-function Axes({ max, points }: { max: number; points: readonly Point[] }) {
-  const innerH = H - PAD.top - PAD.bottom;
-  const first = points[0];
-  const last = points.at(-1);
-  return (
-    <g fontSize="11" fill="var(--color-slate-500)">
-      {[0, max / 2, max].map((t) => {
-        const y = PAD.top + innerH - (t / max) * innerH;
-        return (
-          <g key={t}>
-            <line x1={PAD.left} x2={W - PAD.right} y1={y} y2={y} stroke="var(--admin-chart-grid)" strokeWidth="1" />
-            <text x={PAD.left - 4} y={y + 4} textAnchor="end">
-              {nb(Math.round(t * 10) / 10)}
-            </text>
-          </g>
-        );
-      })}
-      {first && (
-        <text x={PAD.left} y={H - 6}>
-          {shortDay(first.label)}
-        </text>
-      )}
-      {last && (
-        <text x={W - PAD.right} y={H - 6} textAnchor="end">
-          {shortDay(last.label)}
-        </text>
-      )}
-    </g>
-  );
-}
-
-const maxOf = (points: readonly Point[]) => Math.max(1, ...points.map((p) => p.value));
+const maxOf = (points: readonly Point[]) => Math.max(0, ...points.map((p) => p.value));
 
 /** Barres : une par jour (comptes créés). */
 export function BarChart({
@@ -99,38 +131,30 @@ export function BarChart({
   points,
 }: {
   readonly title: string;
-  readonly unit: string;
+  readonly unit: Unit;
   readonly points: readonly Point[];
 }) {
   const max = maxOf(points);
-  const innerW = W - PAD.left - PAD.right;
-  const innerH = H - PAD.top - PAD.bottom;
-  const step = innerW / Math.max(points.length, 1);
+  const ticks = integerTicks(max);
+  const top = ticks.at(-1) ?? 1;
+  const step = W / Math.max(points.length, 1);
   const total = points.reduce((s, p) => s + p.value, 0);
-  const summary = `${nb(total)} ${unit} sur ${points.length} jours, maximum ${nb(max)} par jour.`;
+  const summary = `${plural(total, unit.one, unit.many)} sur ${points.length} jours, maximum ${nb(max)} par jour.`;
   return (
-    <figure>
-      <Frame title={title} summary={summary}>
-        <Axes max={max} points={points} />
-        {points.map((p, i) => {
-          const h = (p.value / max) * innerH;
-          return (
-            <rect
-              key={p.label}
-              x={PAD.left + i * step + step * 0.15}
-              y={PAD.top + innerH - h}
-              width={step * 0.7}
-              height={h}
-              fill="var(--admin-chart-1)"
-            >
-              <title>{`${shortDay(p.label)} : ${nb(p.value)}`}</title>
-            </rect>
-          );
-        })}
-      </Frame>
-      <figcaption className="text-xs text-slate-500">{summary}</figcaption>
-      <Values caption={title} head={unit} points={points} />
-    </figure>
+    <Chart title={title} head={unit.many} summary={summary} points={points} ticks={ticks}>
+      {points.map((p, i) => (
+        <rect
+          key={p.label}
+          x={i * step + step * 0.15}
+          y={yOf(p.value, top)}
+          width={step * 0.7}
+          height={H - PAD - yOf(p.value, top)}
+          fill="var(--color-pilot-acc)"
+        >
+          <title>{`${shortDay(p.label)} : ${nb(p.value)}`}</title>
+        </rect>
+      ))}
+    </Chart>
   );
 }
 
@@ -141,31 +165,42 @@ export function LineChart({
   points,
 }: {
   readonly title: string;
-  readonly unit: string;
+  readonly unit: Unit;
   readonly points: readonly Point[];
 }) {
   const max = maxOf(points);
-  const innerW = W - PAD.left - PAD.right;
-  const innerH = H - PAD.top - PAD.bottom;
-  const x = (i: number) => PAD.left + (points.length <= 1 ? 0 : (i / (points.length - 1)) * innerW);
-  const y = (v: number) => PAD.top + innerH - (v / max) * innerH;
-  const path = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${x(i).toFixed(1)} ${y(p.value).toFixed(1)}`).join(' ');
+  const ticks = integerTicks(max);
+  const top = ticks.at(-1) ?? 1;
+  const x = (i: number) => (points.length <= 1 ? 0 : (i / (points.length - 1)) * W);
+  const path = points
+    .map((p, i) => `${i === 0 ? 'M' : 'L'}${x(i).toFixed(1)} ${yOf(p.value, top).toFixed(1)}`)
+    .join(' ');
   const last = points.at(-1)?.value ?? 0;
-  const summary = `${nb(last)} ${unit} aujourd’hui, maximum ${nb(max)} sur ${points.length} jours.`;
+  const summary = `${plural(last, unit.one, unit.many)} aujourd’hui, maximum ${nb(max)} sur ${points.length} jours.`;
   return (
-    <figure>
-      <Frame title={title} summary={summary}>
-        <Axes max={max} points={points} />
-        <path d={path} fill="none" stroke="var(--admin-chart-2)" strokeWidth="2.5" strokeLinejoin="round" />
-        {points.map((p, i) => (
-          <circle key={p.label} cx={x(i)} cy={y(p.value)} r="2.5" fill="var(--admin-chart-2)">
-            <title>{`${shortDay(p.label)} : ${nb(p.value)}`}</title>
-          </circle>
-        ))}
-      </Frame>
-      <figcaption className="text-xs text-slate-500">{summary}</figcaption>
-      <Values caption={title} head={unit} points={points} />
-    </figure>
+    <Chart title={title} head={unit.many} summary={summary} points={points} ticks={ticks}>
+      <path
+        d={path}
+        fill="none"
+        stroke="var(--color-pilot-ok)"
+        strokeWidth="2.5"
+        strokeLinejoin="round"
+        vectorEffect="non-scaling-stroke"
+      />
+      {/* Points : traits de longueur nulle à bouts ronds, qui restent ronds malgré l'étirement. */}
+      {points.map((p, i) => (
+        <path
+          key={p.label}
+          d={`M${x(i).toFixed(1)} ${yOf(p.value, top).toFixed(1)}h0`}
+          stroke="var(--color-pilot-ok)"
+          strokeWidth="6"
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+        >
+          <title>{`${shortDay(p.label)} : ${nb(p.value)}`}</title>
+        </path>
+      ))}
+    </Chart>
   );
 }
 
@@ -183,11 +218,11 @@ export function ShareChart({ title, points }: { readonly title: string; readonly
                 {nb(p.value)} ({total === 0 ? 0 : Math.round((p.value / total) * 100)} %)
               </span>
             </div>
-            <div className="mt-1 h-3 rounded-[4px] bg-slate-200" aria-hidden="true">
-              <div
-                className="h-3 rounded-[4px]"
-                style={{ width: `${total === 0 ? 0 : (p.value / total) * 100}%`, background: 'var(--admin-chart-1)' }}
-              />
+            <div
+              className="mt-1 h-3.5 overflow-hidden rounded-full border border-pilot-line bg-pilot-bg"
+              aria-hidden="true"
+            >
+              <div className="h-full bg-pilot-acc" style={{ width: `${total === 0 ? 0 : (p.value / total) * 100}%` }} />
             </div>
           </li>
         ))}

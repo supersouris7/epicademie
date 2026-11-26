@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { fmt, generate, type Question } from '../packages/content/src/index.ts';
 import type { BattleAnswerResult, BattleView } from '../packages/shared/src/index.ts';
-import { signupFamily } from './family.ts';
+import { createFirstProfile, signupFamily } from './family.ts';
 
 type Answer = { kind: 'choice'; index: number } | { kind: 'number'; text: string };
 
@@ -49,8 +49,7 @@ test('Mode Histoire : ouvert d’emblée, mobs, riposte, victoire et coffre', as
   await page.getByRole('button', { name: 'Un garçon' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
-  await expect(page).toHaveURL(/\/hub$/);
+  await createFirstProfile(page);
 
   await page.getByRole('button', { name: /^Mode Histoire/ }).click();
   await skipEmperor(page);
@@ -169,8 +168,7 @@ test('Défaite : 5 secondes pour recommencer, puis l’entraînement', async ({ 
   await page.getByRole('button', { name: 'Un garçon' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
-  await expect(page).toHaveURL(/\/hub$/);
+  await createFirstProfile(page);
   await page.getByRole('button', { name: /^Mode Histoire/ }).click();
   await skipEmperor(page);
   await page.getByRole('button', { name: 'Maths', exact: true }).click();

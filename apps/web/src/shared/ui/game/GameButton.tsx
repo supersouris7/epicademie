@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
 import { GameIcon, type IconSize } from './GameIcon.tsx';
 
 /** Couleurs des boutons (planches : orange principal, violet secondaire, cyan, vert, rouge). */
@@ -30,6 +30,7 @@ export interface GameButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
   readonly selected?: boolean;
   /** Verrouillé : grisé avec cadenas, reste focalisable mais ne déclenche rien. */
   readonly locked?: boolean;
+  readonly ref?: Ref<HTMLButtonElement>;
   readonly children?: ReactNode;
 }
 

@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { signupFamily } from './family.ts';
+import { createFirstProfile, signupFamily } from './family.ts';
 
 test('Entraînement : série complète de tables, correction, leçon et résultats', async ({ page }) => {
   test.setTimeout(60_000); // série complète : 5 questions + variantes
@@ -8,7 +8,7 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
+  await createFirstProfile(page);
 
   await page.getByRole('button', { name: /Entraînement/ }).click();
   // C'est ici qu'on gagne son équipement (dès le choix de la matière).
@@ -107,8 +107,7 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await page.getByLabel('Date de naissance').fill('2013-05-20');
   await expect(page.getByText('Votre enfant est en 4e ?')).toBeVisible();
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
-  await expect(page).toHaveURL(/\/hub$/);
+  await createFirstProfile(page);
   // Toutes les classes du CM1 à la 3e ont leur programme : plus de message « arrive bientôt ».
   await expect(page.getByText(/arrive bientôt/)).toHaveCount(0);
 
