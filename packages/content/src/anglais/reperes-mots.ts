@@ -725,6 +725,7 @@ const whyDerived = (d: Derived) => `« ${d.word} » veut dire « ${d.fr} » (de 
 const SAME_SENSE: readonly (readonly string[])[] = [
   ['quietly', 'gently'],
   ['happily', 'fortunately'],
+  ['badly', 'terribly'],
 ];
 const overlaps = (a: Derived, b: Derived) =>
   SAME_SENSE.some((group) => group.includes(a.word) && group.includes(b.word));
