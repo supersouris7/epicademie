@@ -14,7 +14,7 @@
 | ---------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------- |
 | `pc-5e-01` | Organisation de la matière    | états et changements d'état ; corps purs et mélanges ; masse volumique ; solubilité ; conservation de la masse | couverte, en relecture |
 | `pc-5e-02` | Mouvement                     | trajectoire ; référentiel ; mouvement uniforme ou non ; vitesse moyenne                                        | couverte, en relecture |
-| `pc-5e-03` | Énergie et circuits           | sources et formes d'énergie ; conversions ; circuit en série et en dérivation ; conducteurs et isolants        | absente                |
+| `pc-5e-03` | Énergie et circuits           | sources et formes d'énergie ; conversions ; circuit en série et en dérivation ; conducteurs et isolants        | couverte, en relecture |
 | `pc-5e-04` | Signaux et unités             | propagation de la lumière ; propagation du son ; unités du Système international ; préfixes                    | partielle (p5-unites)  |
 | `sv-5e-01` | Météo, climat et géologie     | météo et climat ; séismes ; volcans ; risques et prévention                                                    | couverte               |
 | `sv-5e-02` | Nutrition des êtres vivants   | besoins des végétaux ; respiration ; écosystèmes ; biodiversité                                                | couverte, en relecture |

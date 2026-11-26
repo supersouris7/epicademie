@@ -1,5 +1,7 @@
+import { choice } from '../build.ts';
 import type { Rng } from '../rng.ts';
 import type { QuestionDraft, Rich } from '../types.ts';
+import type { Choix, Saisie } from './lecture-cm2.donnees.ts';
 import type { Trou } from './lecture.donnees.ts';
 import { at, document, textTraps } from './outils.ts';
 
@@ -82,4 +84,53 @@ export function ranger(
     },
     targetSeconds: 90,
   };
+}
+
+/** QCM sur un texte : `n` distracteurs. */
+export function qcm(
+  rng: Rng,
+  c: Choix,
+  n: 2 | 3,
+  { consigne, definition, hint }: { readonly consigne: string; readonly definition: Rich; readonly hint: string },
+): QuestionDraft {
+  const { answer, traps } = choice(
+    rng,
+    c.bon,
+    c.faux.slice(0, n).map(([label, why]) => ({ label, why })),
+  );
+  return {
+    prompt: `${consigne} ${c.question}`,
+    figure: document(c.titre, c.lignes),
+    answer,
+    traps,
+    hint,
+    steps: [definition, c.preuve, `La réponse est **${sansPoint(c.bon)}**.`],
+    targetSeconds: 60,
+  };
+}
+
+/** Un piège écrit avec article reste expliqué quand l’élève écrit le mot seul. */
+export const avecSansArticle = (pieges: Saisie['pieges']): Saisie['pieges'] =>
+  pieges.flatMap(([texte, why]) => {
+    const seul = texte.replace(/^(?:le |la |les |l’|un |une |des |son )/, '');
+    return seul === texte ? [[texte, why] as const] : [[texte, why] as const, [seul, why] as const];
+  });
+
+const sansAccent = (c: string) => c.normalize('NFD').replace(/\p{M}/gu, '');
+/** Une écriture et toutes celles où des accents manquent (un, plusieurs ou tous). */
+const ecritures = (texte: string): string[] =>
+  Array.from(texte).reduce<string[]>(
+    (debuts, c) => debuts.flatMap((d) => [...new Set([c, sansAccent(c)])].map((x) => d + x)),
+    [''],
+  );
+/** Le chapitre ne porte pas sur les accents : ils sont facultatifs dans toutes les saisies. */
+export const tolerer = (accepted: readonly string[]): string[] => [...new Set(accepted.flatMap(ecritures))];
+
+export function saisir(s: Saisie, consigne: string, etapes: readonly Rich[], hint: string): QuestionDraft {
+  return ecrire(tolerer(s.accepted), avecSansArticle(s.pieges), {
+    prompt: `${consigne} ${s.question}`,
+    figure: document(s.titre, s.lignes),
+    hint,
+    steps: [...etapes, s.preuve, `La réponse est **${at(s.accepted, 0)}**.`],
+  });
 }
