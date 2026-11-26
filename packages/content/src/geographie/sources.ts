@@ -809,6 +809,8 @@ export const SOURCES: readonly Source[] = [
     consultedOn: '2026-11-26',
   },
   // Lot ge-4e-03 : la mondialisation (mers et océans, États-Unis, Afrique de l’Ouest).
+  { ...tlfi('detroit-geographie', 'détroit', 'd%C3%A9troit'), consultedOn: '2026-11-26' },
+  geoconfluences('corridor', 'Corridor', 'corridor', '2025-09-26', '2026-11-26'),
   geoconfluences('maritimisation', 'Maritimisation, monde maritimisé', 'maritimisation', '2026-01-26', '2026-11-26'),
   geoconfluences('passage-strategique', 'Choke point, passage stratégique', 'choke-point', '2026-08-31', '2026-11-26'),
   geoconfluences('haute-mer', 'Haute mer, eaux internationales', 'haute-mer', '2026-08-31', '2026-11-26'),

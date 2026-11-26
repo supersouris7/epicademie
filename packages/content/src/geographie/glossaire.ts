@@ -2428,7 +2428,7 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'rust-belt',
     word: 'Rust Belt',
     forms: ['Rust Belt'],
-    definition: '« Ceinture de la rouille » : l’ancienne région industrielle du Nord-Est des États-Unis.',
+    definition: '« Ceinture de la rouille » : la vieille région industrielle du Nord-Est des États-Unis.',
     example: 'Détroit en fait partie.',
   },
   {

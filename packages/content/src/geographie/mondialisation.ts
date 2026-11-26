@@ -25,6 +25,8 @@ const FTN = 'geoconfluences-firme-transnationale';
 const RELOC = 'geoconfluences-delocalisation';
 const DESINDUS = 'geoconfluences-desindustrialisation';
 const INTERFACE = 'geoconfluences-interface';
+const DETROIT_DICO = 'cnrtl-detroit-geographie';
+const CORRIDOR = 'geoconfluences-corridor';
 const CADRAGE_AF = 'geoconfluences-dossier-afrique';
 const SAHEL = 'geoconfluences-sahel';
 const INFORMEL = 'geoconfluences-informel';
@@ -51,6 +53,7 @@ const G_TRAFIC =
 const G_BOITES = 'Les conteneurs sont des boîtes métalliques de dimensions normalisées';
 const G_EPINE = 'La conteneurisation est devenue l’épine dorsale de la mondialisation';
 const G_PASSAGE = 'Ce sont principalement des détroits ou des canaux';
+const G_DETROIT_DICO = 'Espace de mer étroit entre deux terres, qui met en communication deux étendues marines';
 const G_ZEE = "dispose de l'exclusivité d'exploitation des ressources";
 const G_200 = '200 milles marins internationaux (370 km)';
 const G_VASTE =
@@ -91,6 +94,8 @@ const G_INVESTIR =
   'les investissements dans les grandes infrastructures portuaires et logistiques continentales sont une tendance généralisée';
 const G_CORRIDOR =
   "essentiel à l'intégration de la sous-région ouest-africaine aux réseaux de la mondialisation, il repose sur l'intégration entre elles de métropoles portuaires concurrentes";
+const G_AXE =
+  'Un corridor, au sens général, est un espace géographique dans lequel les régions sont parfaitement interconnectées par des liaisons terrestres ou maritimes plurimodales';
 const G_URBAIN = "le continent africain s'urbanise à un rythme soutenu";
 const G_SAHEL = 'des écosystèmes fragiles en raison de l’irrégularité des pluies';
 const G_TRANSITION = 'de transition entre le Sahara et les régions à climat plus humides au sud';
@@ -129,7 +134,7 @@ const mers: Notion = {
         },
       ],
       gap: ['La maritimisation est le rôle ', ' des mers et des océans dans l’organisation du monde.', ['croissant']],
-      choix: ['croissant', 'décroissant', 'oublié'],
+      choix: ['croissant', 'secondaire', 'en recul'],
       quote: G_MARITIMISATION,
       explain: 'Les mers relient les territoires : leur place dans les échanges et les stratégies grandit.',
       src: MARITIMISATION,
@@ -172,7 +177,7 @@ const mers: Notion = {
         },
       ],
       gap: ['Les conteneurs sont des boîtes métalliques de dimensions ', '.', ['normalisées']],
-      choix: ['normalisées', 'variables au hasard', 'secrètes'],
+      choix: ['normalisées', 'libres', 'différentes pour chaque navire'],
       quote: G_BOITES,
       explain: 'La taille standard permet de passer du navire au train ou au camion sans vider la boîte.',
       src: CONTENEUR,
@@ -189,7 +194,7 @@ const mers: Notion = {
         },
       ],
       gap: ['Les passages stratégiques sont principalement des détroits ou des ', '.', ['canaux']],
-      choix: ['canaux', 'cols', 'plateaux'],
+      choix: ['canaux', 'golfes', 'estuaires'],
       quote: G_PASSAGE,
       explain: 'Un passage étroit que les navires doivent emprunter est stratégique : le bloquer gêne le commerce.',
       src: PASSAGE,
@@ -218,7 +223,7 @@ const mers: Notion = {
       src: ZEE,
     },
     {
-      q: 'Jusqu’à quelle distance de la ligne de base s’étend en principe une ZEE ?',
+      q: 'Jusqu’à quelle distance de la ligne de base (la limite sur la côte d’où l’on mesure) s’étend en principe une ZEE ?',
       a: '200 milles marins, soit 370 km',
       wrong: [
         { label: '2 000 milles marins', why: 'C’est dix fois trop.' },
@@ -261,22 +266,22 @@ const mers: Notion = {
         },
         { label: 'la marée haute le long des plages', why: 'La haute mer n’est pas un moment de la marée.' },
       ],
-      gap: ['La haute mer est située en dehors des zones de souveraineté et des ', ' des États côtiers.', ['ZEE']],
-      choix: ['ZEE', 'plages', 'montagnes'],
+      gap: ['En théorie, la haute mer appartient à ', '.', ['aucun État']],
+      choix: ['aucun État', 'l’État côtier le plus proche', 'un seul grand État'],
       quote: G_HAUTE,
       explain: 'Aucun État ne peut s’approprier la haute mer en théorie.',
       src: HAUTE_MER,
     },
     {
-      q: 'Selon les chiffres de 2020 cités par Géoconfluences, que dit-on des stocks de poissons suivis par la FAO ?',
+      q: 'En 2020, que dit-on des stocks de poissons suivis par la FAO (l’organisation de l’ONU pour l’alimentation et l’agriculture) ?',
       a: '34 % d’entre eux sont surexploités',
       wrong: [
         { label: 'tous sont sous-exploités', why: 'Très peu le sont : environ 6 % en 2020.' },
         { label: 'aucun n’est surexploité', why: 'Environ un tiers le sont.' },
         { label: '3 % d’entre eux sont surexploités', why: 'C’est environ dix fois trop peu.' },
       ],
-      gap: ['En 2020, ', ' % des stocks de poissons suivis sont surexploités.', ['34']],
-      choix: ['34', '3', '94'],
+      gap: ['En 2020, ', ' % des stocks de poissons suivis par la FAO sont surexploités.', ['34']],
+      choix: ['34', '6', '50'],
       quote: G_SURPECHE,
       explain: 'La surpêche prélève plus de poissons que le stock ne peut en renouveler.',
       src: STOCK,
@@ -329,8 +334,8 @@ const mers: Notion = {
   ordre: ['le littoral', 'les eaux territoriales', 'la zone économique exclusive', 'la haute mer'],
   consigne: {
     prompt: 'Remets ces espaces dans l’ordre, de la côte vers le large.',
-    hint: 'Pars de la terre ferme ; la ZEE se situe entre les eaux territoriales et les eaux internationales.',
-    why: 'La ZEE se trouve entre les eaux territoriales et les eaux internationales (la haute mer) ; le littoral est au bord.',
+    hint: 'Pars de la terre ferme, puis demande-toi quels droits l’État côtier garde quand on s’éloigne.',
+    why: 'Le littoral est au bord. Viennent les eaux territoriales (la bande de mer la plus proche, où l’État est souverain), puis la ZEE, située avant les eaux internationales (la haute mer).',
     fin: 'Le plus proche de la terre est',
     quote: 'située entre les eaux territoriales et les eaux internationales',
     src: ZEE,
@@ -349,14 +354,14 @@ const mers: Notion = {
     },
     {
       q: 'Quel mot désigne un passage maritime naturel et étroit entre deux terres ?',
-      accepted: ['détroit', 'un détroit', 'le détroit', 'détroits'],
+      accepted: ['détroit', 'un détroit', 'le détroit', 'détroits', 'des détroits'],
       traps: [
         { text: 'canal', why: 'Un canal est creusé par l’homme ; ici le passage est naturel.' },
         { text: 'isthme', why: 'Un isthme est une bande de terre, pas un passage maritime.' },
       ],
-      quote: G_PASSAGE,
-      explain: 'Un détroit est un passage naturel très fréquenté par les navires.',
-      src: PASSAGE,
+      quote: G_DETROIT_DICO,
+      explain: 'Un détroit relie deux étendues de mer ; certains sont des passages très fréquentés par les navires.',
+      src: DETROIT_DICO,
     },
     {
       q: 'Quel processus désigne le rôle croissant des mers et des océans dans le monde ?',
@@ -374,7 +379,17 @@ const mers: Notion = {
     },
     {
       q: 'Quelle boîte métallique normalisée est devenue l’épine dorsale de la mondialisation ?',
-      accepted: ['conteneur', 'le conteneur', 'un conteneur', 'conteneurs'],
+      accepted: [
+        'conteneur',
+        'le conteneur',
+        'un conteneur',
+        'conteneurs',
+        'les conteneurs',
+        'container',
+        'le container',
+        'un container',
+        'containers',
+      ],
       traps: [
         { text: 'porte-conteneurs', why: 'Le porte-conteneurs est le navire qui transporte les boîtes.' },
         { text: 'cargaison', why: 'La cargaison est tout ce que transporte un navire, pas la boîte.' },
@@ -493,34 +508,43 @@ const mers: Notion = {
           explain: 'La proximité des routes maritimes attire les activités.',
         },
         {
-          q: 'Quel rôle les lignes maritimes jouent-elles dans l’économie du monde ?',
-          a: 'un rôle essentiel',
+          q: 'Que montre l’arrivée de navires venus de trois continents ?',
+          a: 'les lignes maritimes relient des territoires très éloignés',
           wrong: [
-            { label: 'un rôle négligeable', why: 'Le programme les dit essentielles.' },
-            { label: 'aucun rôle', why: 'Le commerce mondial passe largement par la mer.' },
+            { label: 'le port échange seulement avec ses voisins', why: 'Les navires viennent de trois continents.' },
+            {
+              label: 'la mer sépare ce port du reste du monde',
+              why: 'La mer le relie au contraire à d’autres continents.',
+            },
           ],
           quote: P_LIGNES,
-          explain: 'Des navires reliant trois continents illustrent ce rôle.',
+          explain: 'Les lignes de transport maritimes sont essentielles à l’économie du monde.',
         },
       ],
     },
     {
       title: 'La planète bleue (note fictive)',
       lines: [
-        'Sur le globe du bureau de L, le bleu domine largement les terres.',
-        'L se demande quelle part de la surface de la Terre est couverte par l’Océan mondial.',
+        'L lit que l’Océan mondial couvre 70,8 % de la surface de la Terre.',
+        'L cherche ce que cela change quand on compare les mers et les terres.',
       ],
       qs: [
         {
-          q: 'Quelle est la bonne réponse à la question de L ?',
-          a: 'un peu plus de 70 %',
+          q: 'Que peut-on en déduire ?',
+          a: 'l’océan couvre plus de deux fois la surface des terres',
           wrong: [
-            { label: 'un peu plus de 30 %', why: '30 % correspond à peu près aux terres émergées.' },
-            { label: 'environ 7 %', why: 'C’est dix fois trop peu.' },
-            { label: 'la totalité', why: 'Les continents émergent.' },
+            {
+              label: 'les terres couvrent plus de surface que l’océan',
+              why: 'Les terres n’occupent que 29,2 % de la surface.',
+            },
+            {
+              label: 'l’océan et les terres se partagent la surface à égalité',
+              why: '70,8 % dépasse largement la moitié.',
+            },
+            { label: 'l’océan recouvre toute la planète', why: 'Il reste 29,2 % pour les terres.' },
           ],
           quote: G_OCEAN,
-          explain: '70,8 % de la surface est océanique.',
+          explain: '100 − 70,8 = 29,2 % pour les terres : l’océan couvre plus du double.',
           src: OCEAN,
         },
       ],
@@ -537,7 +561,7 @@ const etatsUnis: Notion = {
   hint: 'Demande-toi quels espaces profitent des échanges mondiaux et lesquels sont en difficulté.',
   memo: [
     'Puissance attractive, les États-Unis s’adaptent à la mondialisation : les **métropoles** et les **littoraux** sont les espaces les plus favorisés.',
-    'L’ancienne région industrielle du Nord-Est, la **Rust Belt**, a connu un déclin ; au sud, la **Sun Belt** attire habitants et activités, et la Silicon Valley est un **technopôle**.',
+    'La vieille région industrielle du Nord-Est, la **Rust Belt**, a connu un déclin ; au sud, la **Sun Belt** attire habitants et activités, et la Silicon Valley est un **technopôle**.',
     'Les **firmes transnationales** répartissent leurs activités entre pays : des **relocalisations** transforment les territoires.',
   ],
   faits: [
@@ -559,7 +583,7 @@ const etatsUnis: Notion = {
         },
       ],
       gap: ['La puissance états-unienne valorise surtout les métropoles et les ', '.', ['littoraux']],
-      choix: ['littoraux', 'déserts', 'sommets'],
+      choix: ['littoraux', 'campagnes isolées', 'montagnes'],
       quote: G_SELECTIVE,
       explain: 'La mondialisation choisit ses lieux : grandes villes et façades maritimes.',
       src: CADRAGE_US,
@@ -583,7 +607,7 @@ const etatsUnis: Notion = {
     },
     {
       q: 'Qu’est-ce que la Rust Belt ?',
-      a: 'l’ancienne grande région industrielle du Nord-Est',
+      a: 'la vieille grande région industrielle du Nord-Est',
       wrong: [
         { label: 'la ceinture ensoleillée du Sud', why: 'C’est la Sun Belt.' },
         { label: 'la vallée des nouvelles technologies de Californie', why: 'C’est la Silicon Valley.' },
@@ -592,7 +616,8 @@ const etatsUnis: Notion = {
       gap: ['La Rust Belt est la région industrielle du ', ' des États-Unis.', ['Nord-Est']],
       choix: ['Nord-Est', 'Sud-Ouest', 'Sud'],
       quote: G_RUST,
-      explain: 'On l’appelait auparavant la Manufacturing Belt (« ceinture manufacturière »).',
+      explain:
+        'On l’appelait auparavant la Manufacturing Belt. Malgré la crise, elle reste une grande région industrielle.',
       src: RUST,
     },
     {
@@ -610,7 +635,7 @@ const etatsUnis: Notion = {
       src: RUST,
     },
     {
-      q: 'Quelle ville est l’exemple le plus connu d’une ville en rétrécissement dans la Rust Belt ?',
+      q: 'Quelle ville de la Rust Belt est l’exemple le plus connu de rétrécissement urbain (une ville qui perd des habitants) ?',
       a: 'Détroit',
       wrong: [
         { label: 'Miami', why: 'Miami est une métropole de la Sun Belt.' },
@@ -627,7 +652,7 @@ const etatsUnis: Notion = {
       q: 'Comment désigne-t-on le pourtour sud des États-Unis, au climat chaud et dynamique ?',
       a: 'la Sun Belt',
       wrong: [
-        { label: 'la Rust Belt', why: 'La Rust Belt est l’ancienne région industrielle du Nord-Est.' },
+        { label: 'la Rust Belt', why: 'La Rust Belt est la vieille région industrielle du Nord-Est.' },
         { label: 'la Megalopolis', why: 'Elle s’étire sur la côte atlantique de Boston à Washington.' },
         { label: 'la mégalopole japonaise', why: 'Elle se trouve au Japon.' },
       ],
@@ -709,14 +734,14 @@ const etatsUnis: Notion = {
         },
         { label: 'un pays sans lien avec la mondialisation', why: 'Il est au cœur des échanges mondiaux.' },
       ],
-      gap: ['Les États-Unis accueillent des flux ', ' importants.', ['migratoires']],
-      choix: ['migratoires', 'glaciaires', 'volcaniques'],
+      gap: ['Les États-Unis sont une grande puissance ', ' qui accueille de nombreux migrants.', ['attractive']],
+      choix: ['attractive', 'isolée', 'fermée'],
       quote: P_US,
       explain: 'L’attractivité et l’adaptation sont les deux idées clés du sous-thème.',
     },
   ],
   paires3: [
-    ['Rust Belt', 'ancienne région industrielle du Nord-Est'],
+    ['Rust Belt', 'vieille région industrielle du Nord-Est'],
     ['Sun Belt', 'pourtour sud au climat chaud et dynamique'],
     ['firme transnationale', 'entreprise installée dans plusieurs pays'],
   ],
@@ -725,12 +750,12 @@ const etatsUnis: Notion = {
     ['Megalopolis', 'grand ensemble urbain de Boston à Washington'],
     ['relocalisation', 'déplacement d’activités pour profiter d’avantages ailleurs'],
     ['interface', 'bande de contact et d’échanges entre deux espaces'],
-    ['Détroit', 'exemple célèbre de ville en rétrécissement'],
+    ['Détroit', 'exemple célèbre de ville qui perd des habitants'],
   ],
   libres: [
     {
-      q: 'Comment appelle-t-on la « ceinture de la rouille », ancienne grande région industrielle du Nord-Est des États-Unis ?',
-      accepted: ['Rust Belt', 'la Rust Belt', 'rustbelt'],
+      q: 'Comment appelle-t-on la « ceinture de la rouille », vieille grande région industrielle du Nord-Est des États-Unis ?',
+      accepted: ['Rust Belt', 'la Rust Belt', 'rustbelt', 'la rustbelt'],
       traps: [
         { text: 'Sun Belt', why: 'La Sun Belt est le pourtour sud, ensoleillé et dynamique.' },
         { text: 'Silicon Valley', why: 'C’est un pôle de nouvelles technologies en Californie.' },
@@ -856,7 +881,7 @@ const etatsUnis: Notion = {
             { label: 'une interface désertique', why: 'Il s’agit d’un ensemble de villes.' },
           ],
           quote: G_BOSWASH,
-          explain: 'Des villes qui se prolongent de Boston à Washington.',
+          explain: 'Une conurbation réunit des villes qui finissent par se rejoindre : ici de Boston à Washington.',
           src: MEGALOPOLE,
         },
       ],
@@ -864,7 +889,7 @@ const etatsUnis: Notion = {
     {
       title: 'Un port d’une côte (note fictive)',
       lines: [
-        'N décrit une côte où s’échangent chaque jour des marchandises venues de la mer et de l’intérieur.',
+        'N décrit une côte des États-Unis où s’échangent chaque jour des marchandises venues de la mer et de l’intérieur.',
         'Les ports, les entrepôts et les routes se concentrent sur cette bande.',
       ],
       qs: [
@@ -910,7 +935,7 @@ const afrique: Notion = {
         },
       ],
       gap: ['En Afrique, les potentiels de développement mais aussi les ', ' sont manifestes.', ['fragilités']],
-      choix: ['fragilités', 'frontières', 'océans'],
+      choix: ['fragilités', 'certitudes', 'égalités'],
       quote: P_AFRIQUE,
       explain: 'Atouts et difficultés existent ensemble : il faut regarder les deux.',
     },
@@ -923,11 +948,12 @@ const afrique: Notion = {
         { label: 'la division des États en petites provinces', why: 'Il s’agit de rapprocher les États.' },
       ],
       gap: ['La CEDEAO applique un principe de libre ', '.', ['circulation']],
-      choix: ['circulation', 'pêche', 'monnaie mondiale'],
+      choix: ['circulation', 'fermeture', 'surveillance'],
       quote: G_CEDEAO,
       montre:
         'Cherchons ce que dit un dossier de Géoconfluences (2017) : la CEDEAO est sans doute l’organisation qui va le plus loin dans l’intégration des territoires, notamment par la libre circulation, même si des difficultés demeurent.',
-      explain: 'Faire circuler plus librement rapproche des économies, même si des difficultés demeurent.',
+      explain:
+        'Circuler librement rapproche les États, malgré des difficultés : trois États du Sahel se sont mis en marge de la CEDEAO.',
       src: CADRAGE_AF,
     },
     {
@@ -939,7 +965,7 @@ const afrique: Notion = {
         { label: 'les seules zones désertiques vides', why: 'Les échanges passent par des ports et des axes.' },
       ],
       gap: ['Les ports et les ', ' sont des hauts lieux de la mondialisation en Afrique.', ['corridors']],
-      choix: ['corridors', 'volcans', 'glaciers'],
+      choix: ['corridors', 'pâturages', 'villages isolés'],
       quote: G_PORTS,
       explain: 'Les ports ouvrent sur la mer ; les corridors les relient à l’intérieur.',
       src: CADRAGE_AF,
@@ -966,7 +992,7 @@ const afrique: Notion = {
         { label: 'des villages isolés du désert', why: 'Le corridor relie de grandes villes côtières.' },
         { label: 'des capitales européennes', why: 'Le corridor est en Afrique de l’Ouest.' },
       ],
-      gap: ['Le corridor relie des métropoles ', ' qui sont concurrentes.', ['portuaires']],
+      gap: ['Le projet de corridor Abidjan-Lagos repose sur des métropoles ', ' concurrentes.', ['portuaires']],
       choix: ['portuaires', 'sahariennes', 'européennes'],
       quote: G_CORRIDOR,
       explain: 'Ces ports se disputent les trafics tout en gagnant à être reliés.',
@@ -987,7 +1013,7 @@ const afrique: Notion = {
       src: CADRAGE_AF,
     },
     {
-      q: 'Pourquoi les écosystèmes du Sahel sont-ils fragiles ?',
+      q: 'Pourquoi les écosystèmes (les milieux et les êtres vivants qui y vivent) du Sahel sont-ils fragiles ?',
       a: 'notamment parce que les pluies sont irrégulières',
       wrong: [
         { label: 'parce qu’il pleut partout tous les jours', why: 'La saison des pluies est courte et irrégulière.' },
@@ -1004,9 +1030,12 @@ const afrique: Notion = {
       q: 'Quels problèmes majeurs touchent aujourd’hui le Sahel selon Géoconfluences ?',
       a: 'l’insécurité, le terrorisme et la lutte armée',
       wrong: [
-        { label: 'la surpêche et la montée des eaux', why: 'Le Sahel n’est pas une zone littorale.' },
+        {
+          label: 'la surpêche et la montée des eaux',
+          why: 'Ce sont des problèmes de la mer : la source parle ici de sécurité.',
+        },
         { label: 'l’excès de neige et les avalanches', why: 'Le climat y est chaud et sec.' },
-        { label: 'le surtourisme balnéaire', why: 'La région n’est pas une côte touristique.' },
+        { label: 'le surtourisme balnéaire', why: 'La source ne parle pas d’un excès de touristes, mais de sécurité.' },
       ],
       gap: ['Le Sahel est soumis à des problèmes d’', ', de terrorisme et de lutte armée.', ['insécurité']],
       choix: ['insécurité', 'abondance', 'enneigement'],
@@ -1029,7 +1058,7 @@ const afrique: Notion = {
       src: INFORMEL,
     },
     {
-      q: 'Selon Géoconfluences, quelle part des terres accaparées dans le monde se trouverait en Afrique ?',
+      q: 'Des investisseurs achètent ou louent de grandes surfaces : ce sont des terres accaparées. Quelle part de ces terres dans le monde se trouverait en Afrique ?',
       a: 'environ la moitié',
       wrong: [
         { label: 'aucune', why: 'L’Afrique est au contraire très concernée.' },
@@ -1050,7 +1079,7 @@ const afrique: Notion = {
   ],
   paires5: [
     ['Sahel', 'zone de transition entre le Sahara et des régions plus humides'],
-    ['urbanisation', 'croissance de la part des villes'],
+    ['urbanisation', 'croissance de la part des habitants qui vivent en ville'],
     ['accaparement des terres', 'acquisition de grandes surfaces par des investisseurs'],
     ['port', 'porte d’entrée des marchandises par la mer'],
     ['intégration régionale', 'rapprochement entre des États voisins'],
@@ -1058,7 +1087,7 @@ const afrique: Notion = {
   libres: [
     {
       q: 'Quel est le sigle de l’organisation ouest-africaine qui applique un principe de libre circulation ?',
-      accepted: ['CEDEAO', 'la CEDEAO', 'CDEAO'],
+      accepted: ['CEDEAO', 'la CEDEAO', 'CDEAO', 'la CDEAO', 'ECOWAS'],
       traps: [
         { text: 'ONU', why: 'L’ONU réunit des États du monde entier.' },
         { text: 'ZEE', why: 'La ZEE est un espace marin.' },
@@ -1082,7 +1111,7 @@ const afrique: Notion = {
     },
     {
       q: 'Comment qualifie-t-on un emploi sans contrat de travail et sans protection sociale ?',
-      accepted: ['informel', 'un emploi informel', 'emploi informel'],
+      accepted: ['informel', 'informelle', 'un emploi informel', 'emploi informel', 'l’emploi informel'],
       traps: [
         { text: 'salarié', why: 'Un salarié déclaré a un contrat.' },
         { text: 'saisonnier', why: 'Un emploi saisonnier dépend de la saison, pas de l’absence de contrat.' },
@@ -1098,16 +1127,18 @@ const afrique: Notion = {
         { text: 'détroit', why: 'Un détroit est un passage maritime étroit.' },
         { text: 'bidonville', why: 'C’est un quartier précaire.' },
       ],
-      quote: G_PORTS,
-      explain: 'Les corridors relient les ports à l’arrière-pays.',
-      src: CADRAGE_AF,
+      quote: G_AXE,
+      montre:
+        'Cherchons ce que dit le site de géographie Géoconfluences : un corridor est un espace où les régions sont bien reliées par des routes de terre ou de mer.',
+      explain: 'Les corridors relient les ports à l’arrière-pays (les terres situées derrière le port).',
+      src: CORRIDOR,
     },
   ],
   docs: [
     {
       title: 'Un axe côtier (projet fictif)',
       lines: [
-        'Les ports de Kora et de Sélia veulent attirer les mêmes navires.',
+        'En Afrique de l’Ouest, les ports de Kora et de Sélia veulent attirer les mêmes navires.',
         'Une grande route et une voie ferrée doivent les relier.',
         'Les marchandises circuleraient plus vite entre les deux pays.',
       ],
