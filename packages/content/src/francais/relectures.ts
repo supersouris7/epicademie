@@ -112,4 +112,7 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'fcm2-lettres-muettes', version: 1, lot: 'fr-cm2-09', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'fcm2-texte-narratif', version: 1, lot: 'fr-cm2-10', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'fcm2-personnages-narrateur', version: 1, lot: 'fr-cm2-10', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'fcm2-texte-documentaire', version: 1, lot: 'fr-cm2-10', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'fcm2-inferences', version: 1, lot: 'fr-cm2-10', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'fcm2-sens-mot', version: 1, lot: 'fr-cm2-10', date: '2026-11-26', verdict: 'ok' },
 ];
