@@ -225,7 +225,8 @@ describe('matière français et domaines (ADR 0034)', () => {
 
 describe('niveaux maximaux', () => {
   it('3 par défaut ; une notion inconnue vaut 3 ; un niveau demandé au-delà est ramené au maximum', () => {
-    const id = CHAPTERS[0]!.skills[0]!.id;
+    // Première notion encore à 3 niveaux (les lots de contenu les portent à 5 au fil de l'eau).
+    const id = CHAPTERS.flatMap((c) => c.skills).find((x) => x.levels !== 5)!.id;
     expect(maxLevelOf(id)).toBe(3);
     expect(maxLevelOf('inconnue')).toBe(3);
     expect(generate(id, 5, 7).level).toBe(3);

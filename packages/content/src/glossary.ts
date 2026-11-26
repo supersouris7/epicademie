@@ -97,6 +97,23 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
   },
   // ——— Les opérations ———
   {
+    id: 'ordre-croissant',
+    word: 'ordre croissant',
+    forms: ['ordre croissant'],
+    definition: 'Ranger du **plus petit au plus grand**. L’ordre décroissant va dans l’autre sens.',
+    example: '3 < 8 < 12 : ces nombres sont rangés dans l’ordre croissant.',
+    family: 'operations',
+  },
+  {
+    id: 'demi-droite-graduee',
+    word: 'demi-droite graduée',
+    forms: ['demi-droite graduée', 'demi-droites graduées'],
+    definition:
+      'Une ligne qui part d’un point et porte des traits régulièrement espacés. Chaque trait correspond à un nombre.',
+    example: 'Entre 0 et 100, avec 10 intervalles égaux, les traits indiquent 10, 20, 30…',
+    family: 'operations',
+  },
+  {
     id: 'somme',
     word: 'somme',
     forms: ['somme', 'sommes'],
