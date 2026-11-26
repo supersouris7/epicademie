@@ -157,7 +157,7 @@ export const SOURCES: readonly Source[] = [
   academie('capteur', 'capteur'),
   academie('sequence', 'séquence'),
   academie('boucle', 'boucle'),
-  academie('moteur', 'moteur'),
+  // « moteur » (academie-moteur) est défini dans `../../physique/sources.ts`.
   {
     id: 'eduscol-sti-actionneurs',
     title: '« Actionneurs - Vérins » (ressources de construction mécanique)',
