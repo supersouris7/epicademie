@@ -67,9 +67,15 @@ export const useAdminAuthConfig = (enabled: boolean) =>
     enabled,
   });
 
-/** Déconnexion, puis page rechargée : aucune donnée consultée ne reste en mémoire. */
+/**
+ * Déconnexion, puis départ vers le fournisseur (qui ferme sa session et ramène sur `/admin`) :
+ * la page est rechargée, aucune donnée consultée ne reste en mémoire.
+ */
 export const useLogout = () =>
-  useMutation({ mutationFn: () => request(api.adminLogout), onSuccess: () => window.location.assign('/admin') });
+  useMutation({
+    mutationFn: () => request(api.adminLogout),
+    onSuccess: ({ redirect }) => window.location.assign(redirect ?? '/admin'),
+  });
 
 /** Liste paginée côté serveur : 25 comptes par page, filtres et tri envoyés au serveur. */
 export const useAccounts = (search: AccountSearchInput) =>

@@ -42,6 +42,7 @@ const DiscoverySchema = z.object({
   token_endpoint: z.url(),
   jwks_uri: z.url(),
   userinfo_endpoint: z.url().optional(),
+  end_session_endpoint: z.url().optional(),
 });
 const TokenResponseSchema = z.object({ id_token: z.string().min(10), access_token: z.string().optional() });
 const profileShape = {
@@ -74,7 +75,13 @@ export function createOidc(options: OidcOptions) {
     const base = options.issuer.replace(/\/+$/, '');
     const found = DiscoverySchema.parse(await getJson(`${base}/.well-known/openid-configuration`));
     if (found.issuer !== options.issuer) throw new OidcError('émetteur annoncé différent de OIDC_ISSUER');
-    const endpoints = [found.authorization_endpoint, found.token_endpoint, found.jwks_uri, found.userinfo_endpoint];
+    const endpoints = [
+      found.authorization_endpoint,
+      found.token_endpoint,
+      found.jwks_uri,
+      found.userinfo_endpoint,
+      found.end_session_endpoint,
+    ];
     if (secure && endpoints.some((url) => url && !url.startsWith('https://'))) {
       throw new OidcError('point d’accès non chiffré');
     }
@@ -143,6 +150,24 @@ export function createOidc(options: OidcOptions) {
         code_challenge_method: 'S256',
       }))
         url.searchParams.set(key, value);
+      return url.toString();
+    },
+
+    /**
+     * Adresse qui ferme la session chez le fournisseur puis ramène à `returnTo` : déconnexion à
+     * l'initiative de l'application (OpenID Connect RP-Initiated Logout) s'il l'annonce, sinon sa
+     * page `/logout?rd=` (Authelia).
+     */
+    async logoutUrl(returnTo: string): Promise<string> {
+      const endpoint = await discovery().then(
+        (provider) => provider.end_session_endpoint,
+        () => undefined,
+      );
+      const url = new URL(endpoint ?? `${options.issuer.replace(/\/+$/, '')}/logout`);
+      if (endpoint) {
+        url.searchParams.set('client_id', options.clientId);
+        url.searchParams.set('post_logout_redirect_uri', returnTo);
+      } else url.searchParams.set('rd', returnTo);
       return url.toString();
     },
 

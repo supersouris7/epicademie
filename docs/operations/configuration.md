@@ -76,5 +76,9 @@ Chez le fournisseur : client confidentiel, flux « authorization code » avec PK
 authentification `client_secret_basic`, portées `openid profile email groups`, adresse de retour
 `<ADMIN_ORIGIN>/api/v1/admin-auth/callback`, second facteur exigé, et les groupes
 `epicademie-proprietaire`, `epicademie-moderation`, `epicademie-pedagogie`, `epicademie-lecture`.
+Déconnexion : sans `end_session_endpoint` annoncé, le navigateur est envoyé sur
+`<OIDC_ISSUER>/logout?rd=<ADMIN_ORIGIN>/admin` ; Authelia ne suit ce retour que si l'adresse est en
+HTTPS et dans le domaine de ses cookies de session (sinon la personne reste sur le fournisseur). Avec
+`end_session_endpoint`, déclarer `<ADMIN_ORIGIN>/admin` comme adresse de retour après déconnexion.
 Une configuration partielle arrête le serveur. Vérifier la connexion d'un propriétaire avant de
 retirer `ADMIN_OPERATOR_SECRET` (ignoré dès que la connexion est configurée).

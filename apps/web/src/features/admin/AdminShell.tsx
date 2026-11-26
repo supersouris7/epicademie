@@ -72,13 +72,18 @@ export function AdminShell({
 function SignedIn({ session }: { readonly session: AdminSession }) {
   const logout = useLogout();
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex w-full flex-wrap items-center justify-between gap-2 sm:w-auto">
       <p className={mutedClass}>
         {session.operator} · {ADMIN_ROLE_LABELS[session.role]}
       </p>
-      <AdminButton disabled={logout.isPending} onClick={() => logout.mutate()}>
+      <AdminButton tone="primary" disabled={logout.isPending} onClick={() => logout.mutate()}>
         Se déconnecter
       </AdminButton>
+      {logout.isError && (
+        <p role="alert" className="w-full text-sm text-pilot-bad">
+          La déconnexion a échoué. Réessaie.
+        </p>
+      )}
     </div>
   );
 }

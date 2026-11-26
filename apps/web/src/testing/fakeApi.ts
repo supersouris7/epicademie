@@ -338,7 +338,7 @@ function adminHandlers(
       return { operator: 'Marie Dupont', role: adminRole, via: adminSso ? 'sso' : 'operateur' };
     },
     adminAuthConfig: () => ({ sso: adminSso }),
-    adminLogout: () => null,
+    adminLogout: () => ({ redirect: adminSso ? 'https://sso.test/logout?rd=admin' : null }),
     adminAccounts: ({ body }) => {
       operatorOnly();
       const b = body as { q: string; page: number };

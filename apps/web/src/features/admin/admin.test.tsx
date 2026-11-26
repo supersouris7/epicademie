@@ -343,6 +343,15 @@ describe('administration : connexion et rôles', () => {
     expect(link).toHaveAttribute('href', '/api/v1/admin-auth/login');
   });
 
+  it('« Se déconnecter » : session fermée, puis départ vers la déconnexion du fournisseur', async () => {
+    const assign = vi.fn();
+    vi.stubGlobal('location', Object.assign(new URL(window.location.href), { assign }));
+    const { server, user } = renderAdmin({ admin: true, adminSso: true, loggedIn: false });
+    await user.click(await screen.findByRole('button', { name: 'Se déconnecter' }));
+    await waitFor(() => expect(assign).toHaveBeenCalledWith('https://sso.test/logout?rd=admin'));
+    expect(server.calls).toContainEqual(expect.objectContaining({ method: 'POST', path: '/admin-auth/logout' }));
+  });
+
   it('lecture seule : ni familles, ni technique, ni montants ; déconnexion proposée', async () => {
     const { server, user } = renderAdmin({ admin: true, adminSso: true, adminRole: 'lecture', loggedIn: false });
     expect(await screen.findByText('Marie Dupont · Lecture seule')).toBeInTheDocument();

@@ -16,6 +16,7 @@ import {
 import { loadConfig } from '../../config.ts';
 import { adminAccessEvents, adminAudit, adminSessions, contentEvents } from '../../db/schema.ts';
 import { createTestApp, fixedClock, TEST_OPERATOR_SECRET } from '../../testing/harness.ts';
+import { createOidc } from './oidc.ts';
 import { createTestOidc, TEST_CLIENT, TEST_ISSUER, type TestSignIn } from '../../testing/oidcProvider.ts';
 
 const ORIGIN = 'https://admin.test';
@@ -72,6 +73,14 @@ const as = async (role: AdminRole, person: TestSignIn = {}) => {
 
 const status = async (cookie: string, url = '/admin/session') =>
   (await browser(cookie)({ url: API_PREFIX + url })).statusCode;
+
+/** Document de découverte du faux fournisseur, complété. */
+const discoveryWith =
+  (extra: object): typeof fetch =>
+  async (input, init) => {
+    const res = await provider.fetcher(input, init);
+    return new Response(JSON.stringify({ ...((await res.json()) as object), ...extra }));
+  };
 
 /** Matrice attendue (docs/adr/0036), écrite à part de la table du code. */
 const MATRIX: Record<AdminPermission, readonly [boolean, boolean, boolean, boolean]> = {
@@ -268,9 +277,41 @@ describe('session', () => {
     const foreign = await t.raw.inject({ method: 'POST', url, headers: { host: HOST, cookie } });
     expect(foreign.statusCode).toBe(403);
     const res = await browser(cookie)({ method: 'POST', url });
-    expect(res.statusCode).toBe(204);
+    expect(res.statusCode).toBe(200);
+    // Fournisseur sans `end_session_endpoint` : sa page de déconnexion, retour sur la console.
+    expect(res.json()).toEqual({ redirect: `${TEST_ISSUER}/logout?rd=${encodeURIComponent(`${ORIGIN}/admin`)}` });
     expect(cookiesOf(res).join()).toContain(`${COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0`);
     expect(await status(cookie)).toBe(403);
+    // Cookie rejoué : la déconnexion n'est tracée qu'une fois.
+    expect((await browser(cookie)({ method: 'POST', url })).statusCode).toBe(200);
+    const events = await t.database.db.select().from(adminAccessEvents);
+    expect(events.map((e) => [e.action, e.adminSub, e.operator])).toEqual([
+      ['connexion', 'sub-camille', 'Camille Martin'],
+      ['deconnexion', 'sub-camille', 'Camille Martin'],
+    ]);
+  });
+
+  it('fournisseur avec `end_session_endpoint` : déconnexion à l’initiative de l’application', async () => {
+    const oidc = createOidc({
+      issuer: TEST_ISSUER,
+      ...TEST_CLIENT,
+      redirectUri: `${ORIGIN}/retour`,
+      fetcher: discoveryWith({ end_session_endpoint: `${TEST_ISSUER}/fin` }),
+    });
+    const url = new URL(await oidc.logoutUrl(`${ORIGIN}/admin`));
+    expect(url.origin + url.pathname).toBe(`${TEST_ISSUER}/fin`);
+    expect(Object.fromEntries(url.searchParams)).toEqual({
+      client_id: TEST_CLIENT.clientId,
+      post_logout_redirect_uri: `${ORIGIN}/admin`,
+    });
+  });
+
+  it.each<[string, typeof fetch]>([
+    ['injoignable', () => Promise.reject(new Error('hors ligne'))],
+    ['annonçant une adresse non chiffrée', discoveryWith({ end_session_endpoint: 'http://sso.test/fin' })],
+  ])('fournisseur %s : page de déconnexion de l’émetteur', async (_label, fetcher) => {
+    const oidc = createOidc({ issuer: TEST_ISSUER, ...TEST_CLIENT, redirectUri: `${ORIGIN}/retour`, fetcher });
+    expect(await oidc.logoutUrl(`${ORIGIN}/admin`)).toMatch(`${TEST_ISSUER}/logout?rd=`);
   });
 });
 
