@@ -337,8 +337,7 @@ const genocideArmeniens: Notion = {
   memo: [
     'En 1915, pendant la Grande Guerre, les Arméniens de l’**Empire ottoman** sont victimes d’un **génocide** : l’extermination systématique d’un groupe humain.',
     'Le 24 avril 1915, près de 600 intellectuels arméniens sont arrêtés à Constantinople. Puis viennent les massacres et la **déportation**, notamment vers les déserts de Mésopotamie et de Syrie : plus d’un million de morts.',
-    'L’Empire ottoman, allié de l’Allemagne et de l’Autriche-Hongrie, est alors dirigé par les Jeunes-Turcs : leur parti, Union et Progrès, exerce une dictature. Autres repères : massacres de 1894-1896, procès des responsables en 1919, journée du 24 avril créée en 2019.',
-    'La France reconnaît ce génocide par la loi du 29 janvier 2001 et le commémore chaque 24 avril. Astuce brevet : donne toujours le lieu, la date et le contexte de guerre.',
+    'L’Empire ottoman, allié de l’Allemagne et de l’Autriche-Hongrie, est alors dirigé par les Jeunes-Turcs : leur parti, Union et Progrès, exerce une dictature. Autres repères : massacres de 1894-1896, procès des responsables en 1919, journée du 24 avril créée en 2019. La France reconnaît ce génocide par la loi du 29 janvier 2001 et le commémore chaque 24 avril. Astuce brevet : donne toujours le lieu, la date et le contexte de guerre.',
   ],
   faits: [
     {
