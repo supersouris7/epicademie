@@ -58,6 +58,8 @@ export const FAITS: readonly Fait[] = [
   fait('que-tal', PROGRAMME, 'demander des nouvelles', '¿Qué tal? / ¿Qué tal están tus padres?'),
   fait('como-estas', PROGRAMME, 'demander et donner des nouvelles', '¡Hola! ¿Cómo estás? / Bien, gracias.'),
   fait('disculpa', PROGRAMME, 'formules d’excuse du programme', 'Por favor. / Disculpa. / Permiso.'),
+  fait('disculpe', PROGRAMME, 'formule d’excuse en vouvoyant', 'Disculpe…'),
+  fait('y-tu', PROGRAMME, 'renvoyer la question', '¿Y tú?'),
   // Se présenter
   fait(
     'llamarse',
@@ -117,6 +119,12 @@ export const FAITS: readonly Fait[] = [
     '« uno » devient « un » (« veintiún ») devant un nom masculin',
     'adoptan siempre la forma apocopada un: un libro, veintiún soldados',
   ),
+  fait(
+    'cent',
+    'rae-dpd-cardinales',
+    '« cien » est un cardinal simple',
+    'Hay cardinales simples ―de cero a quince, todas las decenas (diez, veinte, treinta, etc.), cien(to), quinientos y mil―',
+  ),
   // Alphabet
   fait(
     'abecedaire',
@@ -131,6 +139,18 @@ export const FAITS: readonly Fait[] = [
     'no forman hoy parte del abecedario por no ser propiamente letras',
   ),
   fait('nom-b', 'rae-dpd-letra-b', 'nom de b', 'Su nombre es femenino: la be.'),
+  fait(
+    'nom-b-amerique',
+    'rae-dpd-letra-b',
+    'en Amérique, autres noms de b',
+    'En América recibe también los nombres de be larga, be grande y be alta.',
+  ),
+  fait(
+    'son-ch',
+    'rae-dpd-abecedario',
+    'le groupe ch représente un son à lui seul',
+    'por representar cada uno de ellos de forma exclusiva un fonema del español',
+  ),
   fait('nom-g', 'rae-dpd-letra-g', 'nom de g', 'Su nombre es femenino: la ge'),
   fait('nom-h', 'rae-dpd-letra-h', 'nom de h', 'Su nombre es femenino: la hache'),
   fait(
@@ -146,8 +166,8 @@ export const FAITS: readonly Fait[] = [
   fait(
     'nom-v-amerique',
     'rae-dpd-letra-v',
-    'en Amérique, v s’appelle aussi « ve »',
-    'En América recibe también los nombres de ve',
+    'en Amérique, v s’appelle aussi « ve » ou « ve corta »',
+    'En América recibe también los nombres de ve, ve corta',
   ),
   fait(
     'son-v',
@@ -156,6 +176,12 @@ export const FAITS: readonly Fait[] = [
     'No existe en español ninguna diferencia en la pronunciación de las letras b y v.',
   ),
   fait('nom-w', 'rae-dpd-letra-w', 'nom de w', 'Su nombre es femenino: la uve doble'),
+  fait(
+    'nom-w-amerique',
+    'rae-dpd-letra-w',
+    'autres noms de w',
+    'En América existen otras denominaciones, como ve doble, doble ve y, en México y algunos países del área centroamericana y caribeña, doble u',
+  ),
   fait('nom-x', 'rae-dpd-letra-x', 'nom de x', 'Su nombre es femenino: la equis'),
   fait('nom-y', 'rae-dpd-letra-y', 'noms de y', 'Su nombre es femenino: la ye o la i griega'),
   fait('nom-z', 'rae-dpd-letra-z', 'nom de z', 'Su nombre es femenino: la zeta'),
@@ -264,8 +290,17 @@ export const LLAMAR: Readonly<Record<Person, string>> = {
   ellos: 'llaman',
 };
 
-/** Prénoms fictifs, repris des exemples du programme. */
-export const NAMES = ['Clara', 'Antonio', 'Inés', 'Javier', 'Alicia', 'Gonzalo'] as const;
+/** Prénoms fictifs, repris des exemples du programme, avec leur genre (pour les accords). */
+export const GENDER = {
+  Clara: 'f',
+  Antonio: 'm',
+  Inés: 'f',
+  Javier: 'm',
+  Alicia: 'f',
+  Gonzalo: 'm',
+} as const;
+export type Name = keyof typeof GENDER;
+export const NAMES = Object.keys(GENDER) as Name[];
 
 // ——— Nombres ———
 
@@ -326,14 +361,14 @@ export function numberWord(n: number): string {
 
 /** Lettres dont le nom est cité par le DPD. */
 export const LETTERS: readonly { readonly letter: string; readonly names: readonly string[] }[] = [
-  { letter: 'b', names: ['be'] },
+  { letter: 'b', names: ['be', 'be larga', 'be alta', 'be grande'] },
   { letter: 'g', names: ['ge'] },
   { letter: 'h', names: ['hache'] },
   { letter: 'j', names: ['jota'] },
   { letter: 'ñ', names: ['eñe'] },
   { letter: 'q', names: ['cu'] },
-  { letter: 'v', names: ['uve', 've'] },
-  { letter: 'w', names: ['uve doble', 'doble uve'] },
+  { letter: 'v', names: ['uve', 've', 've corta'] },
+  { letter: 'w', names: ['uve doble', 'doble uve', 've doble', 'doble ve', 'doble u'] },
   { letter: 'x', names: ['equis'] },
   { letter: 'y', names: ['ye', 'i griega'] },
   { letter: 'z', names: ['zeta'] },

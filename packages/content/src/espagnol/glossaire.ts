@@ -55,7 +55,8 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'tilde',
     word: 'tilde',
     forms: ['tilde', 'tildes'],
-    definition: 'En espagnol, l’accent écrit (´) posé sur une voyelle ; il montre la syllabe tonique.',
+    definition:
+      'En espagnol, l’accent écrit (´) posé sur une voyelle ; il montre la syllabe tonique. (En français, « le tilde » désigne le signe ~ du ñ.)',
     example: 'Le mot « lápiz » porte une tilde sur le a.',
   },
   {

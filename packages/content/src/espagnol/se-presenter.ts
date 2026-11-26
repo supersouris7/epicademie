@@ -4,6 +4,7 @@ import { choice } from '../build.ts';
 import { CONJUGAISONS } from './conjugaisons.generated.ts';
 import {
   FORMULAS,
+  GENDER,
   LETTERS,
   LLAMAR,
   NAMES,
@@ -14,6 +15,7 @@ import {
   WRITTEN_ACCENT,
   numberWord,
   type Formula,
+  type Name,
   type Person,
   type Word,
 } from './se-presenter-faits.ts';
@@ -97,24 +99,27 @@ const ASKED: Readonly<Record<string, string>> = {
   'buenos días': 'bonjour (la formule réservée au matin)',
   'buenas tardes': 'bonjour (la formule de l’après-midi)',
   'buenas noches': 'bonne nuit (la formule de la nuit)',
+  '¿qué tal?': 'comment ça va ? (en tutoyant)',
 };
 /** Autres formules du programme ou du dictionnaire également justes pour la même consigne. */
 const ALSO_RIGHT: Readonly<Record<string, readonly string[]>> = {
   adiós: ['hasta luego'],
-  perdón: ['lo siento', 'disculpa'],
+  // « perdona » et « perdone » : impératif régulier de « perdonar » (tú, usted).
+  perdón: ['lo siento', 'disculpa', 'disculpe', 'perdona', 'perdone'],
   '¿qué tal?': ['¿cómo estás?'],
 };
 
 /**
- * Distracteurs d'une situation : « hola » convient à toute heure, on ne le propose jamais contre une salutation
- * d'un moment précis, et inversement.
+ * Distracteurs d'une situation. Pour une salutation, ni départ, ni demande de nouvelles, ni « hola » (qui convient à
+ * toute heure) : ces formules peuvent aussi saluer. Contre « hola », aucune autre salutation.
  */
 function compatible(target: Formula, other: Formula): boolean {
   if (overlap(target, other)) return false;
   // « au revoir » se dit aussi bien avec une autre formule de départ : on n'en propose aucune contre « adiós ».
   if (target.es === 'adiós') return other.family !== 'conge';
-  if (target.es === 'hola') return other.family !== 'salut';
-  return !(target.family === 'salut' && other.es === 'hola');
+  if (target.family !== 'salut') return true;
+  if (other.es === 'hola' || other.family === 'conge' || other.family === 'nouvelles') return false;
+  return target.es !== 'hola' || other.family !== 'salut';
 }
 
 interface Dialogue {
@@ -154,7 +159,7 @@ const DIALOGUES: readonly Dialogue[] = [
       {
         line: 4,
         right: 'hasta luego',
-        wrong: ['buenos días', 'de nada', 'perdón'],
+        wrong: ['buenas noches', 'perdón', '¿qué tal?'],
         desc: 'Javier s’en va et dit « à plus tard ».',
       },
     ],
@@ -170,12 +175,41 @@ const DIALOGUES: readonly Dialogue[] = [
     ],
     slots: [
       { line: 3, right: 'gracias', wrong: ['de nada', 'buenas noches', '¿qué tal?'], desc: 'Inés remercie Antonio.' },
-      { line: 4, right: 'de nada', wrong: ['gracias', 'hola', 'hasta pronto'], desc: 'Antonio répond « de rien ».' },
+      { line: 4, right: 'de nada', wrong: ['gracias', 'hola', '¿qué tal?'], desc: 'Antonio répond « de rien ».' },
       {
         line: 5,
         right: 'hasta mañana',
         wrong: ['buenos días', 'de nada', '¿qué tal?'],
         desc: 'Inés s’en va et dit « à demain ».',
+      },
+    ],
+  },
+  {
+    title: 'L’après-midi, dans la rue',
+    lines: [
+      'Alicia : ¡Buenas tardes, Gonzalo!',
+      'Gonzalo : ¡Hola, Alicia! ¿Qué tal?',
+      'Alicia : Bien, gracias.',
+      'Gonzalo : Hasta pronto.',
+    ],
+    slots: [
+      {
+        line: 1,
+        right: 'buenas tardes',
+        wrong: ['buenos días', 'de nada', 'perdón'],
+        desc: 'Alicia salue Gonzalo l’après-midi.',
+      },
+      {
+        line: 2,
+        right: '¿qué tal?',
+        wrong: ['de nada', 'hasta mañana', 'perdón'],
+        desc: 'Gonzalo demande des nouvelles à Alicia.',
+      },
+      {
+        line: 3,
+        right: 'bien, gracias',
+        wrong: ['de nada', 'perdón', 'buenas noches'],
+        desc: 'Alicia répond à la question sur ses nouvelles.',
       },
     ],
   },
@@ -198,7 +232,8 @@ const saluer: Skill = {
   lesson: lesson(
     [
       'Les **formules de politesse** changent avec le moment : buenos días (le matin), buenas tardes (l’après-midi), buenas noches (la nuit) ; hola convient à toute heure entre proches.',
-      'Pour **prendre congé** : adiós, hasta luego, hasta mañana. À « ¿Qué tal? », tu peux répondre « Bien, gracias. ».',
+      'Pour **prendre congé** : adiós, hasta luego, hasta mañana, hasta pronto. À « ¿Qué tal? », tu peux répondre « Bien, gracias. ».',
+      'Pour remercier : gracias (on répond « de nada ») ; pour demander pardon : perdón.',
     ],
     'Utiliser des formules de politesse élémentaires pour saluer, prendre congé, remercier, s’excuser.',
     [
@@ -248,14 +283,14 @@ const saluer: Skill = {
       if (rng.int(0, 1) === 0) {
         const farewell = rng.pick(['Adiós.', 'Hasta luego.', 'Hasta mañana.', 'Hasta pronto.']);
         const name = rng.pick(NAMES);
-        const base = [`¡Hola, ${name}!`, '¡Hola! ¿Qué tal?', 'Bien, gracias.', farewell];
+        const base = [`¡Hola, ${name}! ¿Qué tal?`, 'Bien, gracias. ¿Y tú?', 'Muy bien, gracias.', farewell];
         const items = shuffledOther(rng, base);
         return {
-          prompt: `Remets dans l’ordre cette conversation avec ${name}, du premier bonjour au départ (elle finit par « ${farewell} »).`,
+          prompt: `${name} arrive : c’est toi qui salues en premier, en disant son prénom. Remets la conversation dans l’ordre : chaque question reçoit sa réponse avant le départ (« ${farewell} »).`,
           answer: { kind: 'order', items, correct: base.map((b) => items.indexOf(b)) },
-          hint: 'On salue, on demande des nouvelles, on répond, puis on prend congé.',
+          hint: 'Repère la réplique qui contient le prénom, puis celle qui renvoie la question (« ¿Y tú? » : et toi ?).',
           steps: [
-            'Le premier salut appelle le prénom ; la réponse ajoute la question sur les nouvelles.',
+            'Le salut avec le prénom ouvre la conversation et demande des nouvelles ; la réponse renvoie la question (« ¿Y tú? ») ; on y répond, puis on prend congé.',
             `Réponse : **${base.join(' → ')}**`,
           ],
         };
@@ -316,7 +351,7 @@ const saluer: Skill = {
       slot.wrong.map((es) => [es, `${capital(meaning(formulaOf(es)))} : relis la ligne ${slot.line}.`]),
     );
     return {
-      prompt: `Lis le dialogue. Quelle formule manque à la ligne ${slot.line} ? (${slot.desc})`,
+      prompt: `Lis le dialogue. Quelle formule manque à la ligne ${slot.line} ?`,
       figure: { kind: 'document', title: dialogue.title, lines, credit: 'Dialogue écrit pour l’exercice.' },
       answer,
       traps,
@@ -334,7 +369,12 @@ const saluer: Skill = {
 
 const reflexive = (p: Person) => `${REFLEXIVE[p]} ${LLAMAR[p]}`;
 const have = (p: Person): string => CONJUGAISONS.tener.present[p];
-const ageWords = (n: number) => `${numberWord(n)} años`;
+/** Nombre placé devant un nom masculin : « uno » est raccourci en « un » (« veintiún »). */
+const beforeNoun = (n: number) =>
+  numberWord(n)
+    .replace(/veintiuno$/, 'veintiún')
+    .replace(/uno$/, 'un');
+const ageWords = (n: number) => `${beforeNoun(n)} años`;
 const ageAccepted = (core: string, n: number) => lenient(`${core} ${ageWords(n)}`, `${core} ${n} años`);
 
 const allForms = (verb: 'llamarse' | 'tener') =>
@@ -343,7 +383,7 @@ const allForms = (verb: 'llamarse' | 'tener') =>
 /** Tirage commun aux niveaux de « Se présenter » : un prénom et un âge d'élève. */
 interface Draw {
   readonly rng: Rng;
-  readonly name: string;
+  readonly name: Name;
   readonly age: number;
 }
 
@@ -428,7 +468,7 @@ function choosePresentation({ rng, name, age }: Draw): QuestionDraft {
 function completePresentation({ rng, name, age }: Draw): QuestionDraft {
   const p = rng.pick(['yo', 'tu', 'el'] as const);
   if (rng.int(0, 1) === 0) {
-    const subject = { yo: 'Yo', tu: 'Tú', el: 'Él' }[p];
+    const subject = { yo: 'Yo', tu: 'Tú', el: GENDER[name] === 'f' ? 'Ella' : 'Él' }[p];
     return {
       prompt: `Complète avec le pronom et le verbe « llamarse » (sujet : ${subject}).`,
       answer: {
@@ -510,10 +550,10 @@ function readPresentation({ rng, name, age }: Draw): QuestionDraft {
       lines: [
         `¡Hola! Me llamo ${name}.`,
         `Tengo ${ageWords(age)}.`,
-        `Mi amigo se llama ${other} y tiene ${ageWords(otherAge)}.`,
+        `${GENDER[other] === 'f' ? 'Mi amiga' : 'Mi amigo'} se llama ${other}. Dice: «Tengo ${ageWords(otherAge)}».`,
         '¡Hasta pronto!',
       ],
-      credit: 'Message écrit pour l’exercice.',
+      credit: '« dice » : il ou elle dit. Message écrit pour l’exercice.',
     },
     answer: { kind: 'text', accepted: ageAccepted('Tiene', years) },
     traps: [
@@ -580,6 +620,12 @@ const NEIGHBOURS = [
   [9, 19, 90],
 ] as const;
 
+/** Écritures de la forme raccourcie devant un nom masculin (« veintiún », « treinta y un », « treintaiún »). */
+function apocopeSpellings(n: number): string[] {
+  const short = beforeNoun(n);
+  return lenient(short, short.replace(' y un', 'iún'));
+}
+
 /** Erreurs typiques d'écriture d'un nombre. */
 function numberTraps(n: number) {
   const out: { text: string; why: string }[] = [];
@@ -595,7 +641,7 @@ function numberTraps(n: number) {
   if (n >= 16 && n <= 19)
     out.push({
       text: `dici${numberWord(unit)}`,
-      why: `La diphtongue « ie » reste : « ${numberWord(n)} ».`,
+      why: `Il faut garder les deux voyelles « ie » : « ${numberWord(n)} ».`,
     });
   if (n > 30 && unit !== 0)
     out.push({
@@ -617,7 +663,7 @@ const nombres: Skill = {
   version: 1,
   lesson: lesson(
     [
-      'De 0 à 15 et pour les dizaines, chaque nombre a son mot : doce, quince, veinte, treinta. De 16 à 29, un seul mot : dieciséis, veintidós.',
+      'De 0 à 15, pour les dizaines et pour 100 (cien), chaque nombre a son mot : doce, quince, veinte, treinta. De 16 à 29, un seul mot : dieciséis, veintidós.',
       'À partir de 31, on relie dizaine et unité avec « y » : treinta y uno. Devant un nom masculin, uno subit une **apocope** : veintiún años.',
     ],
     'Dénombrer des personnes et des objets, dire son âge, donner des numéros de téléphone.',
@@ -674,10 +720,10 @@ const nombres: Skill = {
       if (rng.int(0, 3) === 0) {
         const n = rng.pick([21, 31, 41, 51]);
         const full = numberWord(n);
-        const short = full.replace(/veintiuno$/, 'veintiún').replace(/uno$/, 'un');
+        const short = beforeNoun(n);
         return {
           prompt: `Complète en lettres : « Mi profesor tiene … años. » (${n} ans)`,
-          answer: { kind: 'text', accepted: lenient(short, short.replace(' y un', 'iún')) },
+          answer: { kind: 'text', accepted: apocopeSpellings(n) },
           traps: [
             { text: full, why: `Devant un nom masculin, « uno » devient « un » : « ${short} años ».` },
             { text: String(n), why: 'Écris le nombre en lettres.' },
@@ -735,7 +781,11 @@ const nombres: Skill = {
         lines: [`Hola, me llamo ${first}. Tengo ${ageWords(a)}.`, `${second} tiene ${numberWord(b)} años más que yo.`],
         credit: '« más que yo » : de plus que moi. Texte écrit pour l’exercice.',
       },
-      answer: { kind: 'text', accepted: spellings(sum) },
+      // La somme est un âge : la forme employée devant « años » est admise elle aussi.
+      answer: {
+        kind: 'text',
+        accepted: [...new Set([...spellings(sum), ...(sum % 10 === 1 ? apocopeSpellings(sum) : [])])],
+      },
       traps: [
         { text: numberWord(a), why: `C’est l’âge ${de(first)} : il faut ajouter ${b}.` },
         { text: numberWord(a - b), why: '« más » veut dire « de plus » : on ajoute.' },
@@ -793,7 +843,7 @@ const alphabet: Skill = {
   version: 1,
   lesson: lesson(
     [
-      'L’**alphabet** espagnol a 27 lettres, dont ñ (eñe) ; h (hache) ne se prononce pas, b (be) et v (uve) se prononcent pareil.',
+      'L’**alphabet** espagnol a 27 lettres, dont ñ (eñe) ; h (hache) ne se prononce pas (sauf dans le groupe ch), b (be) et v (uve) se prononcent pareil.',
       'Chaque mot a une **syllabe tonique** : un accent écrit la montre (**tilde** : lápiz) ; sinon, voyelle, -n ou -s final → avant-dernière (camisa), autre consonne → dernière (azul).',
       'Un mot est **aguda**, **llana** ou **esdrújula** selon que la voix insiste sur la dernière, l’avant-dernière ou l’antépénultième syllabe.',
     ],

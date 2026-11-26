@@ -6,7 +6,7 @@ import { getSource, isAllowedUrl } from '../sources.ts';
 import { skillLevels, type Level, type Question } from '../types.ts';
 import { validateVariants } from '../validate.ts';
 import { SPANISH_PRESENTATION_CHAPTER as chapter } from './se-presenter.ts';
-import { FAITS, NO_ACCENT, WRITTEN_ACCENT, numberWord } from './se-presenter-faits.ts';
+import { FAITS, FORMULAS, GENDER, NAMES, NO_ACCENT, WRITTEN_ACCENT, numberWord } from './se-presenter-faits.ts';
 
 const skills = chapter.skills;
 const LEVELS: readonly Level[] = [1, 2, 3, 4, 5];
@@ -104,5 +104,69 @@ describe('espagnol 5e : se présenter', () => {
     const q = find('e5-alphabet-accent', 3, (x) => x.prompt.includes('lettre « y »'));
     expect(typed(q, 'i griega').correct).toBe(true);
     expect(typed(q, 'ye').correct).toBe(true);
+  });
+
+  it('saluer N2 : contre une salutation, ni départ, ni nouvelles, ni « hola »', () => {
+    const greetings = FORMULAS.filter((f) => f.family === 'salut');
+    const banned = FORMULAS.filter((f) => f.family === 'conge' || f.family === 'nouvelles' || f.es === 'hola');
+    let seen = 0;
+    for (const q of many('e5-saluer', 2, 1000)) {
+      if (!greetings.some((f) => q.prompt.startsWith(f.situation))) continue;
+      seen++;
+      const right = q.answer.kind === 'choice' ? q.answer.options[q.answer.correct] : undefined;
+      const wrong = q.answer.kind === 'choice' ? q.answer.options.filter((o) => o !== right) : [];
+      expect(wrong).toHaveLength(3);
+      for (const f of banned) expect(wrong, q.prompt).not.toContain(f.es);
+    }
+    expect(seen).toBeGreaterThan(0);
+  });
+
+  it('saluer N3 : une seule réplique ouvre, renvoie la question et répond', () => {
+    const q = find('e5-saluer', 3, (x) => x.answer.kind === 'order');
+    if (q.answer.kind !== 'order') throw new Error('ordre attendu');
+    const { items, correct } = q.answer;
+    const lines = correct.map((i) => items[i]!);
+    expect(lines[0]).toMatch(/^¡Hola, \p{L}+! ¿Qué tal\?$/u);
+    expect(lines.slice(1, 3)).toEqual(['Bien, gracias. ¿Y tú?', 'Muy bien, gracias.']);
+  });
+
+  it('saluer N4 : « disculpe », « perdona » et « perdone » valent « perdón »', () => {
+    const q = find('e5-saluer', 4, (x) => x.prompt.includes('« pardon »'));
+    for (const text of ['disculpe', 'Perdona', 'perdone.']) expect(typed(q, text).correct, text).toBe(true);
+  });
+
+  it('saluer N5 : au moins trois dialogues, sans traduction de la réplique dans l’énoncé', () => {
+    const questions = many('e5-saluer', 5);
+    expect(new Set(questions.map((q) => (q.figure?.kind === 'document' ? q.figure.title : ''))).size).toBe(3);
+    for (const q of questions) expect(q.prompt).toMatch(/à la ligne \d \?$/);
+  });
+
+  it('se présenter : le sujet et « amigo / amiga » s’accordent avec le prénom', () => {
+    for (const q of many('e5-se-presenter', 3, 500)) {
+      if (q.answer.kind !== 'cloze') throw new Error('trous attendus');
+      const subject = q.answer.parts[0]!.trim();
+      const name = NAMES.find((n) => q.answer.kind === 'cloze' && q.answer.parts.at(-1) === ` ${n}.`);
+      if (name && (subject === 'Él' || subject === 'Ella')) expect(subject).toBe(GENDER[name] === 'f' ? 'Ella' : 'Él');
+    }
+    for (const q of many('e5-se-presenter', 5)) {
+      const line = q.figure?.kind === 'document' ? q.figure.lines[2]! : '';
+      const [, friend, name] = /^(Mi amig[oa]) se llama (\p{L}+)\. Dice: «Tengo /u.exec(line) ?? [];
+      expect(friend, line).toBe(GENDER[name as keyof typeof GENDER] === 'f' ? 'Mi amiga' : 'Mi amigo');
+    }
+  });
+
+  it('nombres : « veintiún años » devant le nom, forme admise au niveau 5', () => {
+    for (const s of skills) {
+      for (const level of LEVELS) expect(JSON.stringify(many(s.id, level))).not.toMatch(/uno años/);
+    }
+    const q = many('e5-nombres', 5, 2000).find((x) => x.steps.at(-1) === 'Réponse : **veintiuno**')!;
+    for (const text of ['veintiuno', 'veintiún', 'veintiun']) expect(typed(q, text).correct, text).toBe(true);
+  });
+
+  it('alphabet : toutes les dénominations citées de w sont admises', () => {
+    const q = find('e5-alphabet-accent', 3, (x) => x.prompt.includes('lettre « w »'));
+    for (const text of ['uve doble', 'doble uve', 've doble', 'doble ve', 'doble u']) {
+      expect(typed(q, text).correct, text).toBe(true);
+    }
   });
 });
