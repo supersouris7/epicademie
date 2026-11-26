@@ -61,9 +61,7 @@ const NOT_HAVE = ACTIVITIES.filter((a) => a.base !== 'have');
 const HABITS = ['every day', 'every weekend', 'on Saturdays'] as const;
 const NOWS = [
   { before: 'Look! ', after: '' },
-  { before: 'Listen! ', after: '' },
   { before: '', after: ' right now' },
-  { before: '', after: ' now' },
 ] as const;
 
 const formFor = (p: Person, a: Activity) => (isThird(p) ? a.s : a.base);
@@ -77,7 +75,8 @@ const WHY_AUX = (p: Person) =>
   isThird(p)
     ? `Avec « ${p.mid} » (he ou she), on emploie does et doesn’t.`
     : `Avec « ${p.mid} », on emploie do et don’t ; does et doesn’t vont avec he, she, it.`;
-const WHY_NO_S = 'Après does ou doesn’t, le verbe reste à la base : le -s est déjà dans does.';
+const WHY_NO_S =
+  'Après do, does, don’t ou doesn’t, le verbe reste à la base, sans -s : avec he, she, it, le -s est déjà dans does.';
 const WHY_DO = 'Au présent simple, la négation et la question se construisent avec do ou does.';
 const WHY_BE = 'Be ne sert pas à former le présent simple : am, is, are vont avec la forme en -ing.';
 const WHY_HABIT = 'Une habitude, qui se répète, se dit au présent simple.';
@@ -248,7 +247,7 @@ function formsDocument(rng: Rng): QuestionDraft {
         { mode: 'text', accepted: ['doesn’t', 'does not'] },
       ],
     },
-    hint: `Lis seulement le message de ce prénom : ${p.text}. Il parle avec « I » ; toi, tu parles de lui ou d’elle à la 3e personne.`,
+    hint: `Lis seulement le message de ce prénom : ${p.text}. Ce message dit « I » ; toi, tu parles de ${p.text} à la 3e personne.`,
     steps: [
       `Message : « ${says(yes, true)} » → à la 3e personne : **${yes.s}**.`,
       `Message : « ${says(no, false)} » → **doesn’t ${no.base}**.`,
@@ -305,7 +304,7 @@ function tenseSpot(rng: Rng): QuestionDraft {
   const other = isThird(p) ? a.base : a.s;
   const { answer, traps } = choice(rng, c.right, [
     { label: c.now ? formFor(p, a) : `${beFor(p)} ${a.ing}`, why: c.why },
-    { label: other, why: WHY_S },
+    { label: other, why: c.now ? c.why : WHY_S },
   ]);
   return {
     prompt: `Complète (${a.base}) : « ${c.sentence('…')} »`,
@@ -338,7 +337,9 @@ function tenseType(rng: Rng): QuestionDraft {
   const p = rng.pick(SUBJECTS);
   const a = rng.pick(ACTIVITIES);
   const c = context(rng, p, a);
-  const accepted = c.now ? [c.right, ...(isThird(p) ? [`’s ${a.ing}`] : [])] : [c.right];
+  // Forme courte après le sujet : « Tom’s eating », « They’re eating ».
+  const short = isThird(p) ? [`’s ${a.ing}`] : p.text === 'They' ? [`’re ${a.ing}`] : [];
+  const accepted = c.now ? [c.right, ...short] : [c.right];
   const wrong = c.now ? formFor(p, a) : `${beFor(p)} ${a.ing}`;
   return {
     prompt: `Écris le verbe « ${a.base} » au bon temps : « ${c.sentence('…')} »`,
@@ -385,10 +386,12 @@ function tenseTricky(rng: Rng): QuestionDraft {
   const p = rng.pick(SUBJECTS);
   const a = rng.pick(ACTIVITIES);
   const now = rng.int(0, 1) === 0;
-  const when = now ? rng.pick(['right now', 'now'] as const) : rng.pick(HABITS);
+  // « right now » seulement : « He doesn’t play now » (de nos jours) serait aussi défendable.
+  const when = now ? 'right now' : rng.pick(HABITS);
   const right = now ? `${beFor(p)}n’t ${a.ing}` : `${dontFor(p)} ${a.base}`;
   const long = now ? `${beFor(p)} not ${a.ing}` : `${doFor(p)} not ${a.base}`;
-  const accepted = [right, long, ...(now && isThird(p) ? [`’s not ${a.ing}`] : [])];
+  const short = isThird(p) ? [`’s not ${a.ing}`] : p.text === 'They' ? [`’re not ${a.ing}`] : [];
+  const accepted = [right, long, ...(now ? short : [])];
   return {
     prompt: `Écris à la forme négative (${a.base}) : « ${p.text} … ${a.obj} ${when}. »`,
     answer: { kind: 'text', accepted },
@@ -421,7 +424,7 @@ function tenseDocument(rng: Rng): QuestionDraft {
         `On Saturdays, ${p.text} usually `,
         ` ${usual.obj}. But look! Today, ${p.pronoun} `,
         ` ${today.obj}. ${He(p)} `,
-        ` ${usual.obj} now.`,
+        ` ${usual.obj} right now.`,
       ],
       blanks: [
         { mode: 'text', accepted: [usual.s] },
@@ -429,7 +432,7 @@ function tenseDocument(rng: Rng): QuestionDraft {
         { mode: 'text', accepted: [`isn’t ${usual.ing}`, `is not ${usual.ing}`] },
       ],
     },
-    hint: '« usually » annonce une habitude ; « look! » et « now » montrent ce qui se passe maintenant. La dernière phrase dit ce qui ne se passe pas.',
+    hint: '« usually » annonce une habitude ; « look! » et « right now » montrent ce qui se passe maintenant. La dernière phrase dit ce qui ne se passe pas.',
     steps: [
       `Habitude : ${WHY_HABIT} → **${usual.s}**.`,
       `En ce moment : ${WHY_NOW} → **is ${today.ing}**.`,

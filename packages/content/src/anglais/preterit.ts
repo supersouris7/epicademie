@@ -623,7 +623,7 @@ const present = (p: Person, a: Action) => {
   const s = a.base === 'go' ? 'goes' : third(a.base);
   return `${p.text} ${s} ${a.obj}`;
 };
-const WHY_PAST = '« yesterday », « last week » : le fait est terminé, on le raconte au prétérit.';
+const WHY_PAST = '« yesterday », « last week », « two days ago » : le fait est terminé, on le raconte au prétérit.';
 
 function tellSpot(rng: Rng): QuestionDraft {
   const p = rng.pick(SINGLE);
