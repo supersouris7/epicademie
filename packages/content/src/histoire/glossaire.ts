@@ -2676,4 +2676,25 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Un concours qui permet à un étudiant en médecine de travailler à l’hôpital.',
     example: 'En 1881, une femme est reçue à l’externat de médecine.',
   },
+  {
+    id: 'printemps-des-peuples',
+    word: 'Printemps des peuples',
+    forms: ['Printemps des peuples'],
+    definition: 'Le nom donné au mouvement des révolutions qui traversent l’Europe en 1848.',
+    example: 'Le « Printemps des peuples » date de 1848.',
+  },
+  {
+    id: 'quakers',
+    word: 'quakers',
+    forms: ['quakers', 'quaker'],
+    definition: 'Les membres d’un groupe religieux protestant, présent en Angleterre et en Amérique.',
+    example: 'Les quakers fondent une société abolitionniste en 1775.',
+  },
+  {
+    id: 'laicite',
+    word: 'laïcité',
+    forms: ['laïcité', 'laicite'],
+    definition: 'La neutralité religieuse : l’indépendance à l’égard de toutes les Églises et confessions.',
+    example: 'La laïcité est un principe de la République.',
+  },
 ];
