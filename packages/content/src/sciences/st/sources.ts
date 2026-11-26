@@ -494,4 +494,19 @@ export const SOURCES: readonly Source[] = [
     textDate: '2023-12-01',
     consultedOn: '2026-11-26',
   },
+  // Mouvements et énergie, 6e (lot st-6e-02). Autres sources du chapitre déjà au registre.
+  ...[
+    academie('rotation', 'rotation'),
+    academie('revolution', 'révolution'),
+    academie('heliocentrique', 'héliocentrique'),
+    academie('minute', 'minute'),
+  ].map((s) => ({ ...s, consultedOn: '2026-11-26' })),
+  {
+    id: 'ecologie-cycle-uranium',
+    title: '« Approvisionnement en uranium et le cycle du combustible nucléaire »',
+    publisher: 'Ministère chargé de la transition écologique (ecologie.gouv.fr)',
+    url: 'https://www.ecologie.gouv.fr/politiques-publiques/approvisionnement-uranium-cycle-du-combustible-nucleaire',
+    textDate: '2017-11-24',
+    consultedOn: '2026-11-26',
+  },
 ];
