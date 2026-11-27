@@ -9,7 +9,7 @@ import { skillLevels, type Level, type Question } from '../types.ts';
 import { validateVariants } from '../validate.ts';
 import { ANNOUNCEMENTS, LANDMARKS, TOURS, VISITS } from './ecoute-5e-donnees.ts';
 import { FAITS as LISTENING_FACTS } from './ecoute-5e-faits.ts';
-import { ENGLISH_LISTENING_5E_CHAPTER, hourForms, priceForms } from './ecoute-5e.ts';
+import { ENGLISH_LISTENING_5E_CHAPTER, digitForms, hourForms, priceDigitForms, priceForms } from './ecoute-5e.ts';
 import {
   ACTIVITIES,
   AXES,
@@ -131,13 +131,55 @@ describe('anglais 5e : écouter et comprendre, vocabulaire thématique', () => {
         }
   });
 
-  it('heures et prix : chiffres, 24 heures et anglais', () => {
+  it('heures et prix : chiffres sur 12 heures et anglais', () => {
     expect(hourForms({ h: 5, m: 30 })).toEqual(
-      expect.arrayContaining(['5:30', '5h30', '17:30', 'half past five', 'five thirty']),
+      expect.arrayContaining(['5:30', '5h30', '05:30', 'half past five', 'five thirty']),
     );
+    expect(hourForms({ h: 5, m: 30 })).not.toContain('17:30');
     expect(hourForms({ h: 5, m: 30 })).not.toContain('6:30');
     expect(hourForms({ h: 12, m: 15 })).not.toContain('0:15');
     expect(priceForms(12)).toEqual(expect.arrayContaining(['12', '£12', '12 pounds', 'twelve']));
+  });
+
+  it('heure : aucune forme sur 24 heures, le message ne précisant pas le moment', () => {
+    for (const id of ['a5-message-enregistre', 'a5-dialogue'])
+      for (const l of [3, 4] as const)
+        for (const q of questions(id, l)) {
+          const a = q.answer;
+          const lists =
+            a.kind === 'text'
+              ? [a.accepted]
+              : a.kind === 'cloze'
+                ? a.blanks.map((b) => (b.mode === 'text' ? b.accepted : []))
+                : [];
+          for (const f of lists.flat()) expect(f, q.prompt).not.toMatch(/^(1[3-9]|2[0-3]) ?[:.h] ?\d/);
+        }
+  });
+
+  it('consigne « en chiffres » : les réponses en lettres sont refusées', () => {
+    expect(digitForms({ h: 8, m: 15 })).not.toContain('quarter past eight');
+    expect(priceDigitForms(12)).not.toContain('twelve');
+    let seen = 0;
+    for (const id of ['a5-message-enregistre', 'a5-dialogue'])
+      for (const q of questions(id, 3)) {
+        if (q.answer.kind !== 'text' || !q.prompt.includes('en chiffres')) continue;
+        seen += 1;
+        for (const f of q.answer.accepted) expect(f, q.prompt).toMatch(/\d/);
+      }
+    expect(seen).toBeGreaterThan(0);
+  });
+
+  it('lieu en français : accepté avec ou sans accents', () => {
+    const find = (id: string, needle: string) =>
+      questions(id, 3).find((q) => q.answer.kind === 'text' && q.answer.accepted.includes(needle))!;
+    const gate = find('a5-message-enregistre', 'au portail de l’école');
+    for (const t of ['au portail de l’école', "Au portail de l'ecole."]) expect(text(gate, t), t).toBe(true);
+    for (const [needle, typedText] of [
+      ['à l’arrêt de bus', "a l'arret de bus"],
+      ['près de la bibliothèque', 'pres de la bibliotheque'],
+      ['près du pont', 'a cote du pont'],
+    ] as const)
+      expect(text(find('a5-dialogue', needle), typedText), typedText).toBe(true);
   });
 
   it('fiche corrigée au niveau 5 : seules les nouvelles informations sont justes', () => {

@@ -565,6 +565,8 @@ export interface Landmark {
   readonly wrong: readonly { readonly label: string; readonly why: string }[];
   /** Phrase anglaise qui donne la réponse. */
   readonly key: string;
+  /** Mot difficile du message, expliqué à l'élève. */
+  readonly help?: string;
   /** Saisie : consigne, réponses acceptées, erreur typique. */
   readonly typed: {
     readonly ask: string;
@@ -620,7 +622,7 @@ export const LANDMARKS: readonly Landmark[] = [
     ),
     key: 'Chartwell was the home of Winston Churchill.',
     typed: {
-      ask: 'Écris en anglais le nom de la région où se trouve Chartwell.',
+      ask: 'Écris en anglais le nom du comté où se trouve Chartwell.',
       accepted: ['Kent', 'in Kent'],
       trap: ['London', 'Le message dit « far from London » : loin de Londres.'],
     },
@@ -703,6 +705,7 @@ export const LANDMARKS: readonly Landmark[] = [
       ['le franc', 'Le franc n’est pas dans le message.'],
     ),
     key: 'The pound sterling is the official currency of the United Kingdom.',
+    help: 'Retiens ce mot : « currency » veut dire « monnaie ».',
     typed: {
       ask: 'Écris en anglais le nom de la monnaie.',
       accepted: ['pound', 'pound sterling', 'the pound', 'the pound sterling', 'pounds', 'sterling'],

@@ -91,14 +91,7 @@ export const TRAVEL: readonly Word5[] = [
     ['overhead bin', 'overhead compartment'],
   ),
   word('voyage', 'one', 'journey', 'le trajet', 'journy', 'The journey to London takes two hours.', ['trip']),
-  word(
-    'voyage',
-    'mass',
-    'sightseeing',
-    'la visite des monuments (le tourisme)',
-    'sightseing',
-    'We love sightseeing in a new city.',
-  ),
+  word('voyage', 'mass', 'sightseeing', 'la visite touristique', 'sightseing', 'We love sightseeing in a new city.'),
   word('voyage', 'mass', 'traffic', 'la circulation', 'trafic', 'We are late because of the traffic.'),
   word('voyage', 'one', 'underground', 'le métro', 'undergound', 'In London, we take the underground.', [
     'tube',
@@ -161,7 +154,7 @@ export const SPORT: readonly Word5[] = [
 
 // ——— Nature ———
 export const NATURE_WORDS: readonly Word5[] = [
-  word('eau', 'one', 'river', 'la rivière (le fleuve)', 'rivver', 'The river crosses the town.'),
+  word('eau', 'one', 'river', 'la rivière', 'rivver', 'The river crosses the town.'),
   word('eau', 'one', 'sea', 'la mer', 'see', 'We swim in the sea.'),
   word('eau', 'one', 'lake', 'le lac', 'lac', 'There are ducks on the lake.'),
   word('eau', 'one', 'waterfall', 'la cascade', 'waterfal', 'We hear the waterfall behind the trees.'),
@@ -460,6 +453,8 @@ export interface Reference {
   /** La même chose en quelques mots (association). */
   readonly short: string;
   readonly typo: string;
+  /** Indice du niveau 1, quand le nom ne contient aucun mot courant. */
+  readonly hint?: string;
 }
 
 export const REFERENCES: readonly Reference[] = [
@@ -496,6 +491,7 @@ export const REFERENCES: readonly Reference[] = [
     short: 'la famille de la cité idéale',
     accepted: ['Cadbury', 'the Cadbury family', 'Cadbury family', 'the Cadburys', 'Cadburys'],
     about: 'la famille associée à une cité idéale',
+    hint: 'C’est un nom propre : retrouve dans la leçon les repères de l’imaginaire.',
     typo: 'Cadburry',
   },
   {
@@ -503,6 +499,7 @@ export const REFERENCES: readonly Reference[] = [
     short: 'un imaginaire à explorer',
     accepted: ['Roald Dahl', 'Dahl'],
     about: 'celui dont l’imaginaire illustre l’axe « Le réel et l’imaginaire »',
+    hint: 'C’est un nom de personne : retrouve dans la leçon les repères de l’imaginaire.',
     typo: 'Roald Dhal',
   },
   {

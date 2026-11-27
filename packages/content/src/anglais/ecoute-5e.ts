@@ -63,18 +63,23 @@ const solved = (rows: readonly (readonly [string, string])[]) => {
 const halfWhy = (t: Time) =>
   t.m === 30 ? '« half past » veut dire « et demie ».' : 'Vérifie « past » (après l’heure) et « to » (avant l’heure).';
 const dotted = (forms: readonly string[]) => forms.flatMap((f) => [f, `${f}.`]);
-/** Réponse en français : avec ou sans point ; les jours aussi avec « le ». */
-const french = (forms: readonly string[]) => dotted(forms);
+const noAccent = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '');
+/** Réponse en français : avec ou sans point, avec ou sans accents (la notion porte sur l'anglais). */
+const french = (forms: readonly string[]) => dotted([...new Set(forms.flatMap((f) => [f, noAccent(f)]))]);
 
-/** Toutes les écritures d'une heure : chiffres (12 h ou 24 h, rien ne précise le moment) et anglais. */
-export function hourForms(t: Time): string[] {
+/** Écritures en chiffres, sur 12 heures : aucun message ne précise le moment de la journée. */
+export function digitForms(t: Time): string[] {
   const mm = String(t.m).padStart(2, '0');
-  const hours = [String(t.h), String(t.h).padStart(2, '0'), ...(t.h < 12 ? [String(t.h + 12)] : [])];
+  const hours = [String(t.h), String(t.h).padStart(2, '0')];
   const written = hours.flatMap((h) => [`${h}:${mm}`, `${h}.${mm}`, `${h}h${mm}`, `${h} h ${mm}`]);
+  return [...new Set([digital(t), ...dotted(written)])];
+}
+/** Toutes les écritures d'une heure : chiffres et anglais. */
+export function hourForms(t: Time): string[] {
   const minutes: Readonly<Record<number, string>> = { 15: 'fifteen', 30: 'thirty', 45: 'forty-five' };
   const said = minutes[t.m];
   const plain = said ? [`${numberWord(t.h)} ${said}`, `${numberWord(t.h)} ${said.replace('-', ' ')}`] : [];
-  return [...new Set([digital(t), ...dotted(written), ...dotted(plain), ...timeForms(t)])];
+  return [...new Set([...digitForms(t), ...dotted(plain), ...timeForms(t)])];
 }
 export const priceForms = (n: number): string[] =>
   dotted([
@@ -89,6 +94,8 @@ export const priceForms = (n: number): string[] =>
     numberWord(n),
     `${numberWord(n)} pounds`,
   ]);
+/** Consigne « en chiffres » : les prix écrits en toutes lettres sont écartés. */
+export const priceDigitForms = (n: number): string[] => priceForms(n).filter((f) => /\d/.test(f));
 
 // ——— 1. Comprendre un message enregistré ———
 
@@ -210,6 +217,7 @@ function writeNote(rng: Rng): QuestionDraft {
     place: 'Écris en français le lieu du rendez-vous.',
     price: 'Écris en chiffres le prix demandé.',
   }[field];
+  const accepted = { time: digitForms(a.time), place: ACCEPTED.place(a), price: priceDigitForms(a.price) }[field];
   const wrong: readonly (readonly [string, string])[] =
     field === 'time'
       ? [
@@ -227,8 +235,8 @@ function writeNote(rng: Rng): QuestionDraft {
           ];
   return {
     ...heard(rng, noteLines(a), voice(a), task),
-    answer: { kind: 'text', accepted: [...ACCEPTED[field](a)] },
-    traps: typed(SHOWN[field](a), wrong).filter((t) => !('text' in t) || !ACCEPTED[field](a).includes(t.text)),
+    answer: { kind: 'text', accepted: [...accepted] },
+    traps: typed(SHOWN[field](a), wrong).filter((t) => !('text' in t) || !accepted.includes(t.text)),
     hint: CLUE[field],
     steps: [
       'Cherche une seule information et laisse le reste de côté.',
@@ -287,7 +295,7 @@ const recorded: Skill = {
   lesson: {
     memo: [
       'Écoute d’abord pour savoir qui parle, puis repère les **mots-clés** : heure, lieu, prix, consigne.',
-      'Après « at » vient l’heure, après « costs » vient le prix : « at half past two ».',
+      'Dans ces messages, l’heure vient après « at » et le prix après « It costs ».',
       'Écoute jusqu’au bout : « change » ou « not » annonce parfois une correction.',
     ],
     source: source('compréhension de l’oral : noter des horaires, des lieux et des consignes'),
@@ -396,7 +404,7 @@ function writeMeeting(rng: Rng): QuestionDraft {
           ];
   return {
     ...heard(rng, planLines(p), planContext(p), task),
-    answer: { kind: 'text', accepted: [...slotForms[slot](p)] },
+    answer: { kind: 'text', accepted: [...(slot === 'time' ? digitForms(p.time) : slotForms[slot](p))] },
     traps: typed(slotShown[slot](p), wrong),
     hint:
       slot === 'day' ? 'Le premier jour cité est-il accepté ?' : 'La phrase « Meet me… » donne le lieu puis l’heure.',
@@ -516,7 +524,12 @@ function aboutWhat(rng: Rng): QuestionDraft {
     answer,
     traps,
     hint: 'Repère le nom propre et le mot qui le suit.',
-    steps: [UK_RULE, `Retrouve la phrase : ${cited(at(l.lines, 0))}`, `Retiens la réponse : **${l.topic}**`],
+    steps: [
+      UK_RULE,
+      `Retrouve la phrase : ${cited(at(l.lines, 0))}`,
+      ...(l.help ? [l.help] : []),
+      `Retiens la réponse : **${l.topic}**`,
+    ],
   };
 }
 

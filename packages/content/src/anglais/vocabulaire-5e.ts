@@ -103,7 +103,10 @@ function spot(rng: Rng, th: Theme): QuestionDraft {
     prompt: `Choisis le sens du mot « ${t.en} » (${th.name}).`,
     answer,
     traps,
-    hint: 'Dis le mot à voix haute : ressemble-t-il à un mot français ?',
+    hint:
+      t.en === 'to train'
+        ? 'Le petit mot « to » devant montre que c’est une action.'
+        : 'Dis le mot à voix haute : ressemble-t-il à un mot français ?',
     steps: [
       `Lis une phrase avec ce mot : « ${t.ex} »`,
       `Retiens le sens : ${means(t)}`,
@@ -306,9 +309,9 @@ const TRAVEL_THEME: Theme = {
       (g, o) => `My dad hasn’t got a ${o}, but he has got a ${g}.`,
     ),
     slot(
-      'À Londres, Kim utilise',
+      'À Londres, Kim choisit',
       ['underground', 'bus', 'taxi', 'bike'],
-      (g, o) => `In London, we don’t use the ${o}: we use the ${g}.`,
+      (g, o) => `In London, I don’t want to use the ${o}: I choose the ${g}.`,
     ),
     slot(
       'Kim cherche',
@@ -634,8 +637,12 @@ function referenceSpot(rng: Rng): QuestionDraft {
     prompt: `Choisis ce que désigne « ${r.name} ».`,
     answer,
     traps,
-    hint: 'Cherche un mot connu dans le nom : « year », « book », « portrait » ou « thanks ».',
-    steps: ['Découpe le nom et cherche les mots que tu connais.', whatIs(r), `Choisis la réponse : **${r.about}**`],
+    hint: r.hint ?? 'Cherche un mot ou des lettres que tu connais dans ce nom.',
+    steps: [
+      r.hint ? 'Souviens-toi de ce que la leçon dit de ce nom.' : 'Observe le nom et cherche ce que tu connais.',
+      whatIs(r),
+      `Choisis la réponse : **${r.about}**`,
+    ],
   };
 }
 
@@ -675,7 +682,10 @@ function referenceWrite(rng: Rng): QuestionDraft {
     prompt: `Écris le nom anglais du repère : ${r.about}.`,
     answer: { kind: 'text', accepted: ended(r.accepted) },
     traps: typed(good, [[r.typo, `Regarde bien l’orthographe : on écrit « ${good} ».`]]),
-    hint: `La réponse commence par « ${good.slice(0, 1)} ». ${size(good)}`,
+    hint: `Les initiales du nom sont : ${good
+      .split(' ')
+      .map((w) => `« ${w.slice(0, 1)} »`)
+      .join(', ')}.`,
     steps: ['Cherche le repère appris dans la leçon.', whatIs(r), `Écris la réponse : **${good}**`],
   };
 }
@@ -737,7 +747,7 @@ const axes: Skill = {
   ],
   lesson: {
     memo: [
-      'Les **axes culturels** de 5e : Portrait, autoportrait ; Le quotidien : lieux, rythmes, saisons ; Le réel et l’imaginaire.',
+      'Six **axes culturels**, dont cinq étudiés en 5e : Portrait, autoportrait ; Le quotidien : lieux, rythmes, saisons ; Le réel et l’imaginaire.',
       'Puis École et loisirs ; Des langues, des lieux, des histoires ; Le Royaume-Uni, toujours étudié.',
       'Repères : yearbook (album scolaire) ; National Portrait Gallery (portraits) ; National Trust (patrimoine) ; BBC (séries) ; Cadbury et Roald Dahl (imaginaire) ; Thanksgiving (dinde).',
     ],
