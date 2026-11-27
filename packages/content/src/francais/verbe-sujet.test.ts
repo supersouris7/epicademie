@@ -213,6 +213,17 @@ describe('repasse du chapitre', () => {
       });
   });
 
+  it('types de sujets, niveau 5 : compter le sujet piège a toujours son explication', () => {
+    for (let seed = 0; seed < 500; seed++) {
+      const q = generate('fcm1-types-sujets', 5, seed);
+      if (q.answer.kind !== 'number') throw new Error('nombre attendu');
+      const tropUn = String(q.answer.value.n / q.answer.value.d + 1);
+      const result = check(q, { kind: 'number', text: tropUn });
+      expect(result.correct).toBe(false);
+      expect(JSON.stringify(result), `graine ${seed}`).toContain('Tu en as compté un de trop');
+    }
+  });
+
   it('« Qui est-ce qui » est suivi d’un verbe au singulier bien écrit', () => {
     const questions = new Set<string>();
     for (const id of ['fcm1-groupe-sujet', 'fcm1-types-sujets'])

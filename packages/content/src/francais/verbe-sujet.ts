@@ -608,14 +608,15 @@ function typesSujetsDraft(rng: Rng, level: Level): QuestionDraft {
         ),
         answer: num(k),
         traps: numTraps(r(k), [
-          [g, 'Tu as compté les groupes nominaux : ils n’ont qu’un seul nom noyau.'],
-          ...(p > 0
-            ? [[p, 'Tu as compté les pronoms : un pronom remplace un nom, ce n’est pas « plusieurs noms ».'] as const]
-            : []),
+          // En premier : à valeur égale, seule la première explication est gardée.
           [
             k + 1,
             `Tu en as compté un de trop. Dans « ${piege.s} », ${piege.piege ?? ''} C’est un seul groupe nominal.`,
           ],
+          [g, 'Tu as compté les groupes nominaux : ils n’ont qu’un seul nom noyau.'],
+          ...(p > 0
+            ? [[p, 'Tu as compté les pronoms : un pronom remplace un nom, ce n’est pas « plusieurs noms ».'] as const]
+            : []),
         ]),
         hint: 'Cherche les sujets où « et » relie des noms.',
         steps: [
