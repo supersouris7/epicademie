@@ -54,14 +54,15 @@ export function Notions({ profile }: { readonly profile: Profile }) {
                 disabled={off}
                 className="cartoon cartoon-press bg-surface flex w-full flex-wrap items-center gap-3 p-4 text-left disabled:opacity-60"
               >
+                {/* Médaille tout à gauche, même taille que dans le combat de boss (64 px). */}
+                <span className="shrink-0" data-testid="notion-medal">
+                  <MedalBadge medal={medal(st)} size={64} />
+                </span>
                 {/* Titre sur toute la largeur, état en dessous : rien n'écrase le titre sur téléphone. */}
                 <span className="flex min-w-0 flex-1 flex-col gap-1">
                   <span className="font-display text-xl tracking-wide">{s.title}</span>
-                  <span className="flex items-center gap-2">
-                    <span className="text-sm font-bold" style={{ color: m.color }}>
-                      {m.label}
-                    </span>
-                    <MedalBadge medal={medal(st)} size={28} />
+                  <span className="text-sm font-bold" style={{ color: m.color }}>
+                    {m.label}
                   </span>
                 </span>
                 {off ? (
