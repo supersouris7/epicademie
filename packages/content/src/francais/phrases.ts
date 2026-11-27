@@ -3,7 +3,7 @@ import { r } from '../rational.ts';
 import type { Rng } from '../rng.ts';
 import type { Level, QuestionDraft, Sens, Skill, Trap } from '../types.ts';
 import {
-  A_EXCLAMER,
+  A_COMPLETER,
   DECLARATIVES,
   EXCLAMATIVES,
   EXCLAMATIVES_A_RANGER,
@@ -11,12 +11,16 @@ import {
   FAUSSES_AMIES_RAISONS,
   IMPERATIVES,
   INFORMATIONS,
+  INTENTIONS,
   INTERROGATIVES,
   NEGATIONS,
+  OUBLIS,
   QUESTIONS,
+  QUESTIONS_LUES,
   SENS,
   TRIPLETS,
   fait,
+  type Tournure1,
 } from './phrases.donnees.ts';
 
 /**
@@ -355,30 +359,28 @@ function questionDraft(rng: Rng, level: Level): QuestionDraft {
         ],
       };
     default: {
-      const others = pickN(
-        rng,
-        QUESTIONS.filter((x) => x !== item),
-        3,
-      );
-      const line = rng.int(1, 4);
-      const source = rng.pick(['estCeQue', 'intonation'] as const);
-      const lines = others.map((x) => `${x[rng.pick(TOURNURES)]} ?`);
-      lines.splice(line - 1, 0, `${item[source]} ?`);
+      const lue = rng.pick(QUESTIONS_LUES);
+      // Les autres lignes informent : aucune ne montre une inversion à imiter.
+      const lines = pickN(rng, DECLARATIVES, 3).map((x) => withSign(x, 'declarative'));
+      lines.splice(rng.int(0, 3), 0, `${lue.estCeQue} ?`);
       return {
-        prompt: `Lis ces questions. Réécris la ligne ${line} avec l’inversion du sujet.`,
-        figure: document('Quelques questions', lines),
-        answer: { kind: 'text', accepted: variants(item.inversion, [' ?', '?']) },
+        prompt: 'Lis ce message. Trouve la question et réécris-la avec l’inversion du sujet.',
+        figure: document('Un message', lines),
+        answer: { kind: 'text', accepted: variants(lue.inversion, [' ?', '?']) },
         traps: [
-          textTrap(`${item.estCeQue} ?`, 'Enlève « est-ce que » et mets le sujet après le verbe.'),
-          textTrap(`${item.intonation} ?`, 'Le sujet est encore avant le verbe. Change sa place.'),
-          ...sansT(item.inversion),
+          textTrap(`${lue.estCeQue} ?`, 'Tu as recopié la question. Enlève « est-ce que » et déplace le sujet.'),
+          textTrap(
+            `${capital(lue.estCeQue.replace(/^Est-ce qu(e |’)/, ''))} ?`,
+            'Le sujet est encore avant le verbe. Change sa place.',
+          ),
+          ...sansT(lue.inversion),
         ],
-        hint: 'Retrouve le verbe et le sujet de la ligne demandée.',
+        hint: 'Cherche la phrase qui demande une réponse. Quels mots faut-il enlever ?',
         steps: [
-          `Lis la ligne ${line} : « ${item[source]} ? »`,
-          `Trouve le verbe « ${item.verbe} » et le sujet « ${item.sujet} ».`,
-          relier(item.inversion),
-          `Écris la question : **${item.inversion} ?**`,
+          `Trouve la question : « ${lue.estCeQue} ? »`,
+          `Enlève « est-ce que ». Repère le verbe « ${lue.verbe} » et le sujet « ${lue.sujet} ».`,
+          relier(lue.inversion),
+          `Écris la question : **${lue.inversion} ?**`,
         ],
       };
     }
@@ -493,30 +495,23 @@ function negationDraft(rng: Rng, level: Level): QuestionDraft {
       };
     }
     default: {
-      const others = pickN(
-        rng,
-        NEGATIONS.filter((x) => x !== n),
-        2,
-      );
-      const m = rng.pick(['jamais', 'plus'] as const);
-      const line = rng.int(1, 3);
-      const lines = others.map((x) => `${x.affirmative}.`);
-      lines.splice(line - 1, 0, `${n.affirmative}.`);
+      const o = rng.pick(OUBLIS);
+      // Les autres lignes sont affirmatives : aucune négation complète ne sert de modèle.
+      const lines = pickN(rng, NEGATIONS, 2).map((x) => `${x.affirmative}.`);
+      lines.splice(rng.int(0, 2), 0, `${o.fautive}.`);
       return {
-        prompt: `Lis ces phrases. Écris la ligne ${line} à la forme négative avec « ne… ${m} ».`,
-        figure: document('Quelques phrases', lines),
-        answer: { kind: 'text', accepted: variants(n[m], ['.']) },
+        prompt: 'Un mot de la négation manque dans ce message. Écris la phrase corrigée en entier.',
+        figure: document('Un message', lines),
+        answer: { kind: 'text', accepted: variants(o.corrigee, ['.']) },
         traps: [
-          textTrap(`${n.pas}.`, `Tu as écrit « ne… pas ». La consigne demande « ne… ${m} ».`),
-          textTrap(`${withoutNe(n[m])}.`, MANQUE_NE),
-          textTrap(`${n.affirmative}.`, 'Tu as recopié la phrase. Ajoute les deux mots de la négation.'),
-          ...sansElision(n[m]),
+          textTrap(`${o.fautive}.`, 'Tu as recopié la phrase. Ajoute le mot oublié avant le verbe.'),
+          ...sansElision(o.corrigee),
         ],
-        hint: 'Cherche la bonne ligne. Entoure ensuite son verbe avec deux mots.',
+        hint: 'Cherche la phrase qui dit non. Compte les mots de sa négation.',
         steps: [
-          `Lis la ligne ${line} et trouve le verbe « ${n.verbe} ».`,
-          placer(n[m], n.verbe, m),
-          `Écris la phrase : **${n[m]}.**`,
+          `Trouve la phrase qui contient « ${o.marque} » : son verbe est « ${o.verbe} ».`,
+          placer(o.corrigee, o.verbe, o.marque),
+          `Écris la phrase : **${o.corrigee}.**`,
         ],
       };
     }
@@ -524,6 +519,8 @@ function negationDraft(rng: Rng, level: Level): QuestionDraft {
 }
 
 // ───────────────────────── 4. La forme exclamative ─────────────────────────
+
+const TOURNURES_EXCLAMATIVES: readonly Tournure1[] = ['Quel', 'Quelle', 'Comme'];
 
 function exclamativeDraft(rng: Rng, level: Level): QuestionDraft {
   const e = rng.pick(EXCLAMATIVES);
@@ -592,25 +589,26 @@ function exclamativeDraft(rng: Rng, level: Level): QuestionDraft {
       };
     }
     case 4: {
-      const t = rng.pick(A_EXCLAMER);
-      const juste = first(t.accepted);
+      // Une phrase par tournure, dans le désordre : l’élève choisit lui-même.
+      const trous = rng.shuffle(TOURNURES_EXCLAMATIVES).map((m) => rng.pick(A_COMPLETER.filter((t) => t.mot === m)));
+      const [p1 = '', p2 = '', p3 = ''] = trous.map((t) => `${t.suite} !`);
       return {
-        prompt: `Transforme en phrase exclamative qui commence par « Comme » : « ${t.declarative}. »`,
-        // Accents non exigés ; le point d’exclamation, lui, est exigé.
+        prompt: `Choisis « Quel », « Quelle » ou « Comme » devant : ${trous.map((t) => `« ${t.suite} »`).join(', ')}.`,
         answer: {
-          kind: 'text',
-          accepted: [...new Set(t.accepted.flatMap((x) => [x, sansAccents(x)]))].flatMap((x) => [`${x} !`, `${x}!`]),
+          kind: 'cloze',
+          parts: ['', ` ${p1} · `, ` ${p2} · `, ` ${p3}`],
+          blanks: trous.map((t) => ({
+            mode: 'list' as const,
+            options: [...TOURNURES_EXCLAMATIVES],
+            correct: TOURNURES_EXCLAMATIVES.indexOf(t.mot),
+          })),
         },
-        traps: [
-          textTrap(`${t.declarative} !`, 'Il manque le premier mot demandé dans la consigne.'),
-          textTrap(`${juste}.`, 'Une exclamation finit par un point d’exclamation, pas par un point.'),
-          textTrap(juste, 'Il manque le signe de fin de l’exclamation.'),
-        ],
-        hint: 'Ajoute un mot au début. Change aussi le signe de fin.',
+        hint: 'Regarde ce qui suit le trou : un nom, ou bien un sujet et son verbe ?',
         steps: [
-          'Écris « Comme » au début.',
-          `Recopie « ${t.declarative.toLowerCase()} » sans le point.`,
-          `Termine par un point d’exclamation : **${juste} !**`,
+          'Cherche la phrase avec un sujet et un verbe : écris « Comme ».',
+          'Dans les autres phrases, trouve le nom.',
+          'Choisis « Quel » devant un nom masculin, « Quelle » devant un nom féminin.',
+          `Écris dans l’ordre : **${trous.map((t) => t.mot).join(', ')}**.`,
         ],
       };
     }
@@ -682,7 +680,9 @@ function ponctuationDraft(rng: Rng, level: Level): QuestionDraft {
   const fin = rng.pick(FINS);
   const phrase = rng.pick(bankOf(fin));
   const mark = MARK[fin];
-  const lire = `Lis la phrase : « ${phrase} » (sans signe)`;
+  const intention = (f: Fin) => rng.pick(INTENTIONS[f]);
+  const contexte = intention(fin);
+  const lire = `Regarde qui parle. ${contexte} : « ${phrase} » (sans signe)`;
   const penser = `Demande-toi ce qu’elle fait. Ici, ${FIN_REASON[fin]}.`;
   switch (level) {
     case 1: {
@@ -692,7 +692,7 @@ function ponctuationDraft(rng: Rng, level: Level): QuestionDraft {
         EASY_WRONG[fin].map((w) => ({ label: w, why: whyWrongMark(w, fin) })),
       );
       return {
-        prompt: `Choisis le signe qui termine cette phrase : « ${phrase} » (sans signe)`,
+        prompt: `Choisis le signe de fin. ${contexte} : « ${phrase} » (sans signe)`,
         answer,
         traps,
         hint: 'La phrase informe, questionne ou montre une émotion ?',
@@ -706,16 +706,16 @@ function ponctuationDraft(rng: Rng, level: Level): QuestionDraft {
         WRONG_MARKS[fin].map((w) => ({ label: marked(phrase, w), why: whyWrongMark(w, fin) })),
       );
       return {
-        prompt: 'Choisis la phrase bien ponctuée.',
+        prompt: `Choisis la phrase bien ponctuée. ${contexte} :`,
         answer,
         traps,
-        hint: 'Lis la phrase à voix haute. Que fait-elle ?',
-        steps: [`Lis les mots : « ${phrase} » (sans signe)`, penser, `Choisis : **${marked(phrase, mark)}**`],
+        hint: 'Relis qui parle. Que veut faire cette personne ?',
+        steps: [lire, penser, `Choisis : **${marked(phrase, mark)}**`],
       };
     }
     case 3:
       return {
-        prompt: `Écris le signe qui termine cette phrase : « ${phrase} » (sans signe)`,
+        prompt: `Écris le signe de fin. ${contexte} : « ${phrase} » (sans signe)`,
         answer: { kind: 'text', accepted: [mark] },
         traps: WRONG_MARKS[fin].slice(0, 2).map((w) => textTrap(w, whyWrongMark(w, fin))),
         hint: 'Trouve d’abord ce que fait la phrase.',
@@ -723,7 +723,7 @@ function ponctuationDraft(rng: Rng, level: Level): QuestionDraft {
       };
     case 4: {
       const order = rng.shuffle(FINS);
-      const sentences = order.map((f) => rng.pick(bankOf(f)));
+      const sentences = order.map((f) => `${intention(f)} : « ${rng.pick(bankOf(f))} »`);
       return {
         prompt: 'Écris le signe de fin de chacune de ces trois phrases.',
         // Les phrases sont dans la figure ; les trous ne les répètent pas.
@@ -735,7 +735,7 @@ function ponctuationDraft(rng: Rng, level: Level): QuestionDraft {
         },
         hint: 'Traite une phrase à la fois : que fait-elle ?',
         steps: [
-          'Lis les phrases une par une.',
+          'Lis chaque phrase et regarde qui parle.',
           'Cherche la question, puis la phrase qui montre une émotion.',
           'Garde le point pour la phrase qui informe.',
           `Écris dans l’ordre : **${order.map((f) => MARK[f]).join(' ')}**`,
@@ -745,7 +745,7 @@ function ponctuationDraft(rng: Rng, level: Level): QuestionDraft {
     default: {
       const kinds = rng.shuffle([...FINS, rng.pick(FINS)]);
       const stock = new Map(FINS.map((f) => [f, rng.shuffle(bankOf(f))]));
-      const lines = kinds.map((f, i) => at(stock.get(f) ?? [], i));
+      const lines = kinds.map((f, i) => `${intention(f)} : « ${at(stock.get(f) ?? [], i)} »`);
       return {
         prompt: 'Lis ces phrases. Écris le signe de fin de chaque ligne.',
         figure: document('Sans signe de fin', lines),
@@ -756,7 +756,7 @@ function ponctuationDraft(rng: Rng, level: Level): QuestionDraft {
         },
         hint: 'Attention : un même signe peut servir deux fois.',
         steps: [
-          'Lis chaque ligne et cherche ce qu’elle fait.',
+          'Lis chaque ligne et regarde qui parle.',
           'Repère les questions et les émotions vives.',
           'Garde le point pour les informations.',
           `Écris dans l’ordre : **${kinds.map((f) => MARK[f]).join(' ')}**`,
@@ -833,6 +833,7 @@ export const FCM1_PHRASES: readonly Skill[] = [
     memo: [
       'La **forme exclamative** montre une **émotion vive**, comme la joie.',
       'Elle finit par un **point d’exclamation** : « Quel joli vélo ! »',
+      'Écris « Quel » ou « Quelle » avec un nom, « Comme » avec un verbe.',
     ],
     factId: 'formes',
     sources: ['cnrtl-exclamation'],

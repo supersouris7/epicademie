@@ -29,6 +29,11 @@ export const FAITS: readonly Fait[] = [
     citation: 'types de phrases : déclaratives, interrogatives et impératives ; formes négative et exclamative',
   },
   {
+    id: 'accord-gn',
+    source: PROGRAMME,
+    citation: 'Réaliser la chaîne d’accords au sein du groupe nominal',
+  },
+  {
     id: 'interroger',
     source: PROGRAMME,
     citation:
@@ -146,15 +151,23 @@ export const FAUSSES_AMIES_RAISONS: readonly string[] = [
   'Comme j’ai faim, je prends une pomme',
 ];
 
-/** Informations à transformer en exclamation avec « Comme » (réponses justes, signe compris à part). */
-export const A_EXCLAMER: readonly { readonly declarative: string; readonly accepted: readonly string[] }[] = [
-  { declarative: 'Ce gâteau est bon', accepted: ['Comme ce gâteau est bon', 'Comme est bon ce gâteau'] },
-  { declarative: 'Tu as grandi', accepted: ['Comme tu as grandi'] },
-  { declarative: 'Ce film est drôle', accepted: ['Comme ce film est drôle', 'Comme est drôle ce film'] },
-  { declarative: 'Tu chantes bien', accepted: ['Comme tu chantes bien'] },
-  { declarative: 'Ce jardin est joli', accepted: ['Comme ce jardin est joli', 'Comme est joli ce jardin'] },
-  { declarative: 'Il fait chaud', accepted: ['Comme il fait chaud'] },
-  { declarative: 'Tu cours vite', accepted: ['Comme tu cours vite'] },
+/** Exclamations à compléter : une seule des trois tournures convient dans chaque phrase. */
+export type Tournure1 = 'Quel' | 'Quelle' | 'Comme';
+export interface Trou {
+  readonly suite: string;
+  readonly mot: Tournure1;
+}
+
+export const A_COMPLETER: readonly Trou[] = [
+  { suite: 'beau château', mot: 'Quel' },
+  { suite: 'grand arbre', mot: 'Quel' },
+  { suite: 'joli cadeau', mot: 'Quel' },
+  { suite: 'jolie maison', mot: 'Quelle' },
+  { suite: 'bonne idée', mot: 'Quelle' },
+  { suite: 'grande tour', mot: 'Quelle' },
+  { suite: 'tu es fort', mot: 'Comme' },
+  { suite: 'il court vite', mot: 'Comme' },
+  { suite: 'nous avons ri', mot: 'Comme' },
 ];
 
 /** Même idée dite de trois façons : déclarative, interrogative (est-ce que ou inversion), impérative. */
@@ -379,6 +392,80 @@ export const NEGATIONS: readonly Negation[] = [
     plus: 'Ils ne finissent plus leur travail',
   },
 ];
+
+/** Questions avec « est-ce que » à réécrire avec l’inversion (absentes des niveaux 1 à 4). */
+export interface QuestionLue {
+  readonly estCeQue: string;
+  readonly inversion: string;
+  readonly sujet: string;
+  readonly verbe: string;
+}
+
+export const QUESTIONS_LUES: readonly QuestionLue[] = [
+  { estCeQue: 'Est-ce que tu cherches ton livre', inversion: 'Cherches-tu ton livre', sujet: 'tu', verbe: 'cherches' },
+  { estCeQue: 'Est-ce qu’il prend le bus', inversion: 'Prend-il le bus', sujet: 'il', verbe: 'prend' },
+  { estCeQue: 'Est-ce qu’elle porte un sac', inversion: 'Porte-t-elle un sac', sujet: 'elle', verbe: 'porte' },
+  { estCeQue: 'Est-ce que vous aimez ce jeu', inversion: 'Aimez-vous ce jeu', sujet: 'vous', verbe: 'aimez' },
+  { estCeQue: 'Est-ce qu’ils ont un chien', inversion: 'Ont-ils un chien', sujet: 'ils', verbe: 'ont' },
+  { estCeQue: 'Est-ce qu’il dessine un bateau', inversion: 'Dessine-t-il un bateau', sujet: 'il', verbe: 'dessine' },
+  { estCeQue: 'Est-ce que nous prenons le train', inversion: 'Prenons-nous le train', sujet: 'nous', verbe: 'prenons' },
+  {
+    estCeQue: 'Est-ce qu’elles arrivent ce soir',
+    inversion: 'Arrivent-elles ce soir',
+    sujet: 'elles',
+    verbe: 'arrivent',
+  },
+];
+
+/** Phrases où « ne » a été oublié, comme à l’oral (absentes des niveaux 1 à 4). */
+export interface Oubli {
+  readonly fautive: string;
+  readonly corrigee: string;
+  readonly verbe: string;
+  readonly marque: 'pas' | 'jamais';
+}
+
+export const OUBLIS: readonly Oubli[] = [
+  { fautive: 'Je mange pas de poisson', corrigee: 'Je ne mange pas de poisson', verbe: 'mange', marque: 'pas' },
+  {
+    fautive: 'Tu ranges jamais tes jouets',
+    corrigee: 'Tu ne ranges jamais tes jouets',
+    verbe: 'ranges',
+    marque: 'jamais',
+  },
+  { fautive: 'Il vient pas ce soir', corrigee: 'Il ne vient pas ce soir', verbe: 'vient', marque: 'pas' },
+  {
+    fautive: 'Nous regardons jamais ce film',
+    corrigee: 'Nous ne regardons jamais ce film',
+    verbe: 'regardons',
+    marque: 'jamais',
+  },
+  {
+    fautive: 'Elle écoute jamais la radio',
+    corrigee: 'Elle n’écoute jamais la radio',
+    verbe: 'écoute',
+    marque: 'jamais',
+  },
+  { fautive: 'On entend pas la cloche', corrigee: 'On n’entend pas la cloche', verbe: 'entend', marque: 'pas' },
+  {
+    fautive: 'Vous oubliez jamais vos clés',
+    corrigee: 'Vous n’oubliez jamais vos clés',
+    verbe: 'oubliez',
+    marque: 'jamais',
+  },
+  { fautive: 'Ils arrivent pas à l’heure', corrigee: 'Ils n’arrivent pas à l’heure', verbe: 'arrivent', marque: 'pas' },
+];
+
+/** Qui parle et dans quelle intention : sans cela, une information pourrait aussi être une question. */
+export const INTENTIONS = {
+  declarative: [
+    'Léo informe calmement son ami',
+    'Inès explique calmement à sa voisine',
+    'Tom donne calmement un renseignement',
+  ],
+  interrogative: ['Léo pose une question à son ami', 'Inès demande à sa voisine', 'Tom veut obtenir une réponse'],
+  exclamative: ['Mia, tout émue, s’écrie', 'Hugo, plein d’émotion, s’écrie', 'Lina, très émue, s’écrie'],
+} as const satisfies Record<string, readonly string[]>;
 
 /**
  * « Sens » de chaque notion (README §9) : une phrase montrée à l’enfant et le passage exact qui l’appuie.

@@ -6,13 +6,18 @@ import { sensIssues } from '../sens.ts';
 import { getSource } from '../sources.ts';
 import type { Level, Question } from '../types.ts';
 import {
+  A_COMPLETER,
   DECLARATIVES,
   EXCLAMATIVES,
   FAITS,
   IMPERATIVES,
   INFORMATIONS,
+  INTENTIONS,
   INTERROGATIVES,
   NEGATIONS,
+  OUBLIS,
+  QUESTIONS,
+  QUESTIONS_LUES,
 } from './phrases.donnees.ts';
 import { FRANCAIS_CHAPTERS } from './index.ts';
 
@@ -103,15 +108,31 @@ describe('francais cm1 — types et formes de phrases', () => {
     expect(seen.size).toBeGreaterThanOrEqual(5);
   });
 
-  it('négative, niveau 5 : une liste de phrases déclaratives, la ligne demandée avec « jamais » ou « plus »', () => {
+  it('négative, niveau 5 : une phrase nouvelle sans « ne » à corriger, aucune négation modèle', () => {
     each('fcm1-forme-negative', 5, (q) => {
-      const line = lines(q)[Number(/ligne (\d)/.exec(q.prompt)?.[1]) - 1];
-      const n = NEGATIONS.find((x) => `${x.affirmative}.` === line);
-      const m = /« ne… (jamais|plus) »/.exec(q.prompt)?.[1] as 'jamais' | 'plus';
-      for (const l of lines(q)) expect(NEGATIONS.map((x) => `${x.affirmative}.`)).toContain(l);
-      expect(new Set(lines(q)).size).toBe(3);
-      expect(typed(q, `${n?.[m]}.`)).toBe(true);
-      expect(typed(q, `${n?.pas}.`)).toBe(false);
+      const found = OUBLIS.filter((o) => lines(q).includes(`${o.fautive}.`));
+      expect(found).toHaveLength(1);
+      const o = found[0]!;
+      for (const l of lines(q)) expect(l).not.toMatch(/\bne\b|n’/);
+      expect(NEGATIONS.map((n) => n.pas)).not.toContain(o.corrigee);
+      expect(q.prompt).not.toContain(o.verbe);
+      expect(typed(q, `${o.corrigee}.`)).toBe(true);
+      expect(typed(q, `${o.fautive}.`)).toBe(false);
+      if (o.corrigee.includes('n’')) expect(typed(q, `${o.corrigee.replace('n’', 'ne ')}.`)).toBe(false);
+    });
+  });
+
+  it('question, niveau 5 : une question nouvelle à trouver, aucune inversion modèle', () => {
+    each('fcm1-poser-question', 5, (q) => {
+      const found = QUESTIONS_LUES.filter((x) => lines(q).includes(`${x.estCeQue} ?`));
+      expect(found).toHaveLength(1);
+      const lue = found[0]!;
+      expect(QUESTIONS.map((x) => x.inversion)).not.toContain(lue.inversion);
+      expect(lines(q).filter((l) => l.endsWith('?'))).toHaveLength(1);
+      expect(lines(q).join(' ')).not.toMatch(/-(t-)?(tu|il|elle|vous|nous|ils|elles)\b/);
+      expect(q.prompt).not.toContain(lue.verbe);
+      expect(typed(q, `${lue.inversion} ?`)).toBe(true);
+      expect(typed(q, `${lue.estCeQue} ?`)).toBe(false);
     });
   });
 
@@ -122,16 +143,21 @@ describe('francais cm1 — types et formes de phrases', () => {
     });
   });
 
-  it('exclamative, niveau 4 : accents non exigés, point d’exclamation exigé', () => {
-    const plain = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '');
+  it('exclamative, niveau 4 : l’élève choisit la tournure, l’énoncé ne la donne pas', () => {
+    const seen = new Set<string>();
     each('fcm1-forme-exclamative', 4, (q) => {
-      const accepted = q.answer.kind === 'text' ? q.answer.accepted : [];
-      for (const a of accepted) {
-        expect(typed(q, plain(a)), a).toBe(true);
-        expect(typed(q, plain(a).replace(/ ?!$/, '')), a).toBe(false);
-        expect(typed(q, plain(a).replace(/ ?!$/, '.')), a).toBe(false);
-      }
+      if (q.answer.kind !== 'cloze') throw new Error('texte à trous attendu');
+      const parts = q.answer.parts;
+      const answers = q.answer.blanks.map((_, i) => {
+        const trou = A_COMPLETER.find((t) => parts[i + 1]?.startsWith(` ${t.suite} !`));
+        seen.add(trou?.suite ?? '');
+        return trou?.mot ?? '';
+      });
+      expect([...answers].sort()).toEqual(['Comme', 'Quel', 'Quelle']);
+      expect(check(q, { kind: 'cloze', answers }).correct).toBe(true);
+      expect(check(q, { kind: 'cloze', answers: [...answers].reverse() }).correct).toBe(false);
     });
+    expect(seen.size).toBe(A_COMPLETER.length);
   });
 
   it('ponctuation, niveau 4 : les phrases ne sont écrites qu’une fois (dans les trous)', () => {
@@ -147,6 +173,24 @@ describe('francais cm1 — types et formes de phrases', () => {
       const k = lines(q).filter((l) => EXCLAMATIVES.includes(l)).length;
       expect(check(q, { kind: 'number', text: String(k) }).correct).toBe(true);
     });
+  });
+
+  it('ponctuation : l’intention est donnée avec chaque phrase, à tous les niveaux', () => {
+    const banks = { declarative: INFORMATIONS, interrogative: INTERROGATIVES, exclamative: EXCLAMATIVES };
+    for (const level of [1, 2, 3, 4, 5] as const)
+      each('fcm1-ponctuation-fin', level, (q) => {
+        const texts = level >= 4 ? lines(q) : [q.prompt];
+        for (const text of texts) {
+          const [kind] = Object.entries(INTENTIONS).find(([, l]) => l.some((i) => text.includes(i))) ?? [];
+          expect(kind, text).toBeDefined();
+          const bank = banks[kind as keyof typeof banks];
+          if (level !== 2)
+            expect(
+              bank.some((p) => text.includes(`« ${p} »`)),
+              text,
+            ).toBe(true);
+        }
+      });
   });
 
   it('ponctuation : le point seul pour une information, aucun « ! » proposé pour elle', () => {
@@ -175,21 +219,12 @@ describe('francais cm1 — types et formes de phrases', () => {
         expect(typed(q, 'Ranges ta chambre.')).toBe(false);
       }
     });
-    each('fcm1-forme-exclamative', 4, (q) => {
-      if (!q.prompt.includes('Ce gâteau')) return;
-      seen.add('gateau');
-      expect(typed(q, 'Comme ce gâteau est bon!')).toBe(true);
-      expect(typed(q, 'Comme ce gâteau est bon.')).toBe(false);
-    });
     each('fcm1-forme-negative', 5, (q) => {
-      if (!/ligne (\d)/.test(q.prompt)) return;
-      const n = Number(/ligne (\d)/.exec(q.prompt)?.[1]);
-      if (lines(q)[n - 1] !== 'Elle ouvre la fenêtre.') return;
-      seen.add('fenetre');
-      const m = q.prompt.includes('ne… jamais') ? 'jamais' : 'plus';
-      expect(typed(q, `Elle n'ouvre ${m} la fenetre`)).toBe(true);
-      expect(typed(q, `Elle ouvre ${m} la fenêtre.`)).toBe(false);
+      if (!lines(q).includes('Elle écoute jamais la radio.')) return;
+      seen.add('radio');
+      expect(typed(q, "Elle n'ecoute jamais la radio")).toBe(true);
+      expect(typed(q, 'Elle écoute jamais la radio.')).toBe(false);
     });
-    expect(seen.size).toBe(4);
+    expect(seen.size).toBe(3);
   });
 });
