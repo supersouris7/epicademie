@@ -543,7 +543,7 @@ const howOld: Skill = {
         traps: [
           { text: `I have ${w}`, why: 'En anglais, on dit « I am », pas « I have » comme dans « j’ai ».' },
           { text: `I have ${w} years old`, why: 'Pour l’âge, commence par « I am », pas par « I have ».' },
-          { text: `I’m ${w} years`, why: 'Après « years », il faut « old ». Tu peux aussi enlever les deux mots.' },
+          { text: `I’m ${w} years`, why: 'Ajoute « old » à la fin, ou enlève « years ».' },
           { text: `I’m ${age}`, why: `On demande l’âge en lettres : ${age} s’écrit « ${w} ».` },
           { text: w, why: 'Le nombre seul n’est pas une phrase. Écris les mots pour « je suis » devant.' },
         ],
