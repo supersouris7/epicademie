@@ -78,11 +78,11 @@ function objetCircDraft(rng: Rng, level: Level): QuestionDraft {
         prompt: `Choisis le rôle du groupe « ${g} » dans « ${base(e)} »`,
         answer,
         traps,
-        hint: 'Essaie de déplacer le groupe au début. Écoute si la phrase sonne bien.',
+        hint: 'Déplace le groupe au début. Lis la phrase à voix haute : reste-t-elle correcte ?',
         steps: [
           `Essaie de déplacer « ${g} » au début de la phrase.`,
           estObjet
-            ? `Écoute bien : la phrase sonne mal. Garde ce groupe avec le verbe « ${e.verbe} ».`
+            ? `Lis la phrase à voix haute : elle n’est plus correcte. Garde ce groupe avec le verbe « ${e.verbe} ».`
             : `Lis : « ${devant(e)} » La phrase reste correcte.`,
           `Choisis **${estObjet ? OBJET : CIRC}**.`,
         ],
@@ -92,7 +92,10 @@ function objetCircDraft(rng: Rng, level: Level): QuestionDraft {
       const e = rng.pick(ENTREES);
       const { answer, traps } = choice(rng, e.circ, [
         { label: e.gs, why: `« ${e.gs} » est le sujet : il reste devant le verbe.` },
-        { label: e.verbe, why: `« ${e.verbe} » est le verbe : c’est le centre de la phrase.` },
+        {
+          label: `${e.verbe} ${e.obj}`,
+          why: `« ${e.verbe} ${e.obj} » contient le verbe « ${e.verbe} » : ce groupe reste après le sujet.`,
+        },
         { label: e.obj, why: whyObjet(e) },
       ]);
       return {
@@ -148,7 +151,7 @@ function objetCircDraft(rng: Rng, level: Level): QuestionDraft {
       const k = rng.int(1, 3);
       const texte = lines.map((e, i) => (i < k ? avecCirc(rng, e) : sansCirc(e)));
       return {
-        prompt: 'Lis ce texte. Combien de phrases contiennent un groupe circonstanciel ?',
+        prompt: 'Lis ces phrases. Combien contiennent un groupe circonstanciel ?',
         figure: document('Quelques phrases', rng.shuffle(texte)),
         answer: num(k),
         traps: numTraps(r(k), [
@@ -418,7 +421,7 @@ function circonstancielsDraft(rng: Rng, level: Level): QuestionDraft {
       const lignes = rng.shuffle([{ texte: deux(double, premier), n: 2 }, ...autres]);
       const total = lignes.reduce((n, l) => n + l.n, 0);
       return {
-        prompt: 'Lis ce texte. Combien de groupes circonstanciels contient-il en tout ?',
+        prompt: 'Lis ces phrases. Combien de groupes circonstanciels contiennent-elles en tout ?',
         figure: document(
           'Quelques phrases',
           lignes.map((l) => l.texte),

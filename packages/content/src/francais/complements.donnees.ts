@@ -58,10 +58,9 @@ export const SENS_COMPL = {
   },
   codCoi: {
     type: 'usage',
-    text: 'Plus tard, trouver le COD t’aidera à bien accorder des verbes employés avec « avoir ».',
+    text: 'Plus tard, le COD t’aidera à accorder le participe passé avec « avoir ».',
     source: PROGRAMME,
-    citation:
-      'Accorder le participe passé avec le complément d’objet direct (COD) pour les verbes étudiés et conjugués avec l’auxiliaire avoir',
+    citation: 'Accorder le participe passé avec le COD pour les verbes étudiés et conjugués avec l’auxiliaire avoir',
   },
   circonstanciels: {
     type: 'savais-tu',
@@ -360,10 +359,12 @@ export const manipsDe = (e: Entree): readonly Manip[] => MANIPS.filter((m) => m 
 /** Écritures d’une phrase : avec ou sans point ; la virgule après un groupe placé en tête est facultative. */
 export const ecritures = (phrase: string): string[] =>
   [...new Set([phrase, phrase.replace(',', '')])].flatMap((s) => [s, s.replace(/\.$/, '')]);
-/** Réponses acceptées pour une phrase : le chapitre ne porte pas sur les accents, ils sont facultatifs. */
-export const phraseAcceptee = (phrase: string): string[] => tolerer(ecritures(phrase));
-/** Réponses acceptées pour un groupe recopié : accents facultatifs, point ou virgule recopiés tolérés. */
-export const groupeAccepte = (groupe: string): string[] => tolerer([groupe, `${groupe}.`, `${groupe},`]);
+/** Les accents sont facultatifs, sauf celui de « à » : « a » est le verbe avoir, et non la préposition évaluée. */
+const toleres = (accepted: readonly string[]): string[] => tolerer(accepted, 'àÀ');
+/** Réponses acceptées pour une phrase. */
+export const phraseAcceptee = (phrase: string): string[] => toleres(ecritures(phrase));
+/** Réponses acceptées pour un groupe recopié : point ou virgule recopiés tolérés. */
+export const groupeAccepte = (groupe: string): string[] => toleres([groupe, `${groupe}.`, `${groupe},`]);
 
 /** Résultat d'une manipulation sur la phrase de base. */
 export function resultat(e: Entree, m: Manip): string {

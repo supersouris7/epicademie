@@ -83,6 +83,13 @@ describe('banque de phrases', () => {
   });
 });
 
+/** Une écriture sans accent, sauf celui de « à ». */
+const sansAccentSaufA = (texte: string): string =>
+  texte
+    .split(/([àÀ])/)
+    .map((t) => (/^[àÀ]$/.test(t) ? t : t.normalize('NFD').replace(/\p{M}/gu, '')))
+    .join('');
+
 /** Toutes les questions d'une notion à un niveau, sur de nombreuses graines. */
 const tirages = (id: string, level: 1 | 2 | 3 | 4 | 5) =>
   Array.from({ length: 200 }, (_, seed) => generate(id, level, seed));
@@ -172,20 +179,36 @@ describe('repasse : explications, sens et saisies', () => {
       const groupe = q.answer.accepted.find((a) => q.prompt.includes(a) && !/[.,]$/.test(a));
       if (!groupe) continue;
       vus++;
-      const sansAccent = groupe.normalize('NFD').replace(/\p{M}/gu, '');
-      for (const text of [`${groupe}.`, `${groupe},`, sansAccent])
+      for (const text of [`${groupe}.`, `${groupe},`, sansAccentSaufA(groupe)])
         expect(check(q, { kind: 'text', text }).correct, text).toBe(true);
     }
     expect(vus).toBeGreaterThan(0);
   });
 
-  it('une phrase est acceptée sans aucun accent', () => {
+  it('une phrase est acceptée sans accent, hors celui de « à »', () => {
     for (let level = 3; level <= 5; level++)
       for (const q of tirages('fcm1-manipulations', level as 3)) {
         if (q.answer.kind !== 'text') continue;
-        const text = (q.answer.accepted[0] ?? '').normalize('NFD').replace(/\p{M}/gu, '');
+        const text = sansAccentSaufA(q.answer.accepted[0] ?? '');
         expect(check(q, { kind: 'text', text }).correct, text).toBe(true);
       }
+  });
+
+  it('« a » (verbe avoir) n’est jamais accepté à la place de « à »', () => {
+    const vues = new Set<string>();
+    for (const s of skills)
+      for (let level = 1; level <= 5; level++)
+        for (const q of tirages(s.id, level as 1)) {
+          if (q.answer.kind !== 'text') continue;
+          const attendu = q.answer.accepted[0] ?? '';
+          if (!/(^| )à /i.test(attendu)) continue;
+          vues.add(s.id);
+          for (const a of [attendu, sansAccentSaufA(attendu)]) {
+            const text = a.replace(/(^| )à /gi, '$1a ');
+            expect(check(q, { kind: 'text', text }).correct, text).toBe(false);
+          }
+        }
+    expect(vues.size).toBe(skills.length);
   });
 
   it('groupes circonstanciels, N4 : le complément d’objet commence toujours par « à » ou « de »', () => {
