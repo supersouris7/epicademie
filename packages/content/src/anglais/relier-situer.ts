@@ -54,19 +54,19 @@ export const COMPARISONS: readonly Joined[] = [
   joined('In Spain it is hot,', 'in Iceland it is cold.'),
   joined('My room is tidy,', 'my brother’s room is a mess.'),
 ];
-/** Une nouvelle phrase qui s’oppose à la précédente. */
+/** Une seconde idée, après un point-virgule, qui s’oppose à la première. */
 export const HOWEVERS: readonly Joined[] = [
-  joined('It was raining.', 'we played outside.'),
-  joined('The museum was closed.', 'we saw the garden.'),
-  joined('The test was hard.', 'I did my best.'),
-  joined('We were very late.', 'the film had not started.'),
+  joined('It was raining;', 'we played outside.'),
+  joined('The museum was closed;', 'we saw the garden.'),
+  joined('The test was hard;', 'I did my best.'),
+  joined('We were very late;', 'the film had not started.'),
   joined('The castle is old;', 'it is still beautiful.'),
   joined('They did not win;', 'they had a great day.'),
   joined('The shop is far;', 'we can walk there.'),
 ];
 
 const LINK_WHY: Readonly<Record<string, string>> = {
-  but: 'but relie deux idées dans la même phrase, après une virgule.',
+  but: 'but veut dire « mais » : ce n’est pas le mot attendu dans cette phrase.',
   whereas: 'whereas compare deux personnes ou deux choses.',
   however: 'however vient après un point ou un point-virgule, suivi d’une virgule.',
   because: 'because donne une cause : il ne dit pas le contraire.',
@@ -97,14 +97,7 @@ function linkFirst(rng: Rng): QuestionDraft {
 function linkPick(rng: Rng): QuestionDraft {
   const kind = rng.pick(['but', 'whereas', 'however'] as const);
   const j = rng.pick(kind === 'but' ? CONCESSIONS : kind === 'whereas' ? COMPARISONS : HOWEVERS);
-  const right = kind === 'however' && j.start.endsWith('.') ? 'However' : kind;
-  const other =
-    kind === 'however'
-      ? j.start.endsWith('.')
-        ? wrongs('But', 'Because', 'So')
-        : wrongs('but', 'because', 'so')
-      : wrongs('because', 'so', 'and');
-  const { answer, traps } = choice(rng, right, other);
+  const { answer, traps } = choice(rng, kind, wrongs('because', 'so', 'and'));
   return {
     prompt: `Choisis le mot qui marque l’opposition et respecte la ponctuation : « ${show(j)} »`,
     answer,
@@ -113,7 +106,7 @@ function linkPick(rng: Rng): QuestionDraft {
     steps: [
       'Repère la ponctuation autour du trou.',
       'Garde seulement un mot qui oppose deux idées.',
-      `Choisis : **${right}**.`,
+      `Choisis : **${kind}**.`,
     ],
   };
 }
@@ -149,22 +142,26 @@ function linkMeaning(rng: Rng): QuestionDraft {
 const PUNCTUATION_STEP: Readonly<Record<Link, string>> = {
   but: 'Garde les deux idées ensemble : une seule personne, une surprise.',
   whereas: 'Remarque qu’on compare deux sujets différents.',
-  however: 'Après un point ou un point-virgule, choisis le mot suivi d’une virgule.',
+  however: 'Après un point-virgule, avec une virgule derrière le trou, choisis however.',
 };
+
+/** Pour comparer deux sujets, « but » est juste aussi (mémo) : les deux sont acceptés et affichés. */
+const COMPARING: readonly string[] = ['whereas', 'but'];
+const shown = (accepted: readonly string[]) => accepted.join(' ou ');
 
 function linkPunctuation(rng: Rng): QuestionDraft {
   const kind = rng.pick(['but', 'whereas', 'however'] as const);
   const j = rng.pick(POOL[kind]);
-  const accepted = kind === 'whereas' ? ['whereas', 'but'] : [kind];
+  const accepted = kind === 'whereas' ? COMPARING : [kind];
   return {
-    prompt: `Complète avec but, whereas ou however, selon la ponctuation et le sens : « ${show(j)} »`,
+    prompt: `Complète avec le mot de contraste du cours, selon la ponctuation et le sens : « ${show(j)} »`,
     answer: typed(accepted),
     traps: textTraps(
       accepted,
       ['but', 'whereas', 'however'].map((l) => ({ text: l, why: LINK_WHY[l] ?? '' })),
     ),
-    hint: 'Un point avant le trou change tout. Sinon, compare-t-on deux personnes ou deux choses ?',
-    steps: ['Regarde le signe placé avant le trou.', PUNCTUATION_STEP[kind], `Écris : **${at(accepted, 0)}**.`],
+    hint: 'Un point-virgule avant le trou change tout. Sinon, compare-t-on deux personnes ou deux choses ?',
+    steps: ['Regarde le signe placé avant le trou.', PUNCTUATION_STEP[kind], `Écris : **${shown(accepted)}**.`],
   };
 }
 
@@ -180,12 +177,12 @@ const NAMES = ['Ana', 'Lisa', 'Maya', 'Tom', 'Emir', 'Paul'] as const;
 
 function linkDocument(rng: Rng): QuestionDraft {
   const name = rng.pick(NAMES);
-  const however = rng.pick(HOWEVERS.filter((h) => h.start.endsWith('.')));
+  const however = rng.pick(HOWEVERS);
   const cause = (link: 'so' | 'because') => rng.pick(CAUSES.filter((c) => c[1] === link))[0];
   const so = cause('so');
   const because = cause('because');
   const rows = rng.shuffle([
-    { line: (gap: string) => show(rng.pick(COMPARISONS), gap), accepted: ['whereas', 'but'] },
+    { line: (gap: string) => show(rng.pick(COMPARISONS), gap), accepted: COMPARING },
     { line: (gap: string) => show(however, gap), accepted: ['however'] },
     { line: (gap: string) => `${so.start} ${gap} ${so.end}`, accepted: ['so'] },
     { line: (gap: string) => `${because.start} ${gap} ${because.end}`, accepted: ['because'] },
@@ -201,7 +198,7 @@ function linkDocument(rng: Rng): QuestionDraft {
     steps: [
       'Lis les deux parties autour de chaque trou.',
       'Distingue l’opposition, la cause et la conséquence.',
-      ok(rows.map((r) => at(r.accepted, 0))),
+      ok(rows.map((r) => shown(r.accepted))),
     ],
   };
 }
@@ -222,8 +219,8 @@ const linkSkill: Skill = {
   lesson: {
     memo: [
       'Un **contraste** oppose deux idées : but (mais), whereas (alors que), however (cependant).',
-      'but suit une virgule dans la phrase ; whereas compare deux personnes ou deux choses.',
-      'however vient après un point, avec une virgule derrière lui.',
+      'whereas compare deux personnes ou deux choses ; but (mais) peut aussi le faire.',
+      'however vient après un point ou un point-virgule, avec une virgule derrière lui.',
     ],
     source: source('exprimer une opposition, une concession ou un contraste'),
     sources: [PROG],
@@ -421,8 +418,8 @@ const spot = (word: Spot['word'], fr: string, phrase: string, ...more: string[])
 export const SPOTS: readonly Spot[] = [
   spot('left', 'à gauche', 'on the left', 'on the left side', 'on the left-hand side', 'to the left'),
   spot('right', 'à droite', 'on the right', 'on the right side', 'on the right-hand side', 'to the right'),
-  spot('top', 'en haut', 'at the top', 'on the top'),
-  spot('bottom', 'en bas', 'at the bottom', 'on the bottom'),
+  spot('top', 'en haut', 'at the top'),
+  spot('bottom', 'en bas', 'at the bottom'),
 ];
 export const OBJECTS: readonly (readonly [en: string, the: string])[] = [
   ['The sun', 'le soleil'],
@@ -511,6 +508,7 @@ function spotPhrase(rng: Rng): QuestionDraft {
     answer: typed(s.accepted),
     traps: textTraps(s.accepted, [
       { text: `in the ${s.word}`, why: WHY_IN },
+      { text: `${prep(s) === 'on' ? 'at' : 'on'} the ${s.word}`, why: WHY_IN },
       ...SPOTS.filter((x) => x !== s).map((x) => ({ text: x.phrase, why: WHY_SPOT })),
     ]),
     hint: 'Trois mots : un petit mot de lieu, the, puis la position.',
@@ -719,7 +717,7 @@ function degreeTranslate(rng: Rng): QuestionDraft {
   const extra =
     d === 'much' ? [{ text: `much more ${q.adj}`, why: `Le comparatif attendu est ${q.comparative}.` }] : [];
   return {
-    prompt: `Écris la fin en anglais avec very, much ou too : « ${french(q, d)} » → ${q.en} … .`,
+    prompt: `Écris la fin en anglais avec un adverbe de degré du cours : « ${french(q, d)} » → ${q.en} … .`,
     answer: typed(accepted),
     traps: textTraps(accepted, [...wrong, ...(q.comparative.startsWith('more') ? [] : extra)]),
     hint: `Le mot de base est « ${q.adj} ». Choisis le petit mot, puis la bonne forme.`,

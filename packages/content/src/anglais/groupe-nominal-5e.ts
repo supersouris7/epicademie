@@ -146,6 +146,8 @@ interface Gapped {
   readonly right: Quant;
   readonly why: string;
   readonly rule: string;
+  /** Sens français du mot attendu : sans liste de mots, il écarte les autres mots justes (any, a…). */
+  readonly gloss: string;
   /** Seconde bulle : ce qu’il faut retenir pour ce type de phrase. */
   readonly retain: string;
 }
@@ -154,7 +156,14 @@ const negative = (rng: Rng): Gapped => {
   const n = rng.pick(NOUNS);
   const right = forCount(n);
   const start = n.countable ? 'There aren’t' : 'There isn’t';
-  return { sentence: `${start} … ${n.en}.`, right, why: WHY_COUNT(n), rule: countLook(n), retain: RETAIN_COUNT };
+  return {
+    sentence: `${start} … ${n.en}.`,
+    right,
+    why: WHY_COUNT(n),
+    rule: countLook(n),
+    gloss: 'pas beaucoup',
+    retain: RETAIN_COUNT,
+  };
 };
 const how = (rng: Rng): Gapped => {
   const n = rng.pick(NOUNS);
@@ -163,6 +172,7 @@ const how = (rng: Rng): Gapped => {
     right: forCount(n),
     why: WHY_COUNT(n),
     rule: countLook(n),
+    gloss: 'combien',
     retain: RETAIN_COUNT,
   };
 };
@@ -174,6 +184,7 @@ const offer = (rng: Rng): Gapped => {
     right: 'some',
     why: WHY_OFFER,
     rule: 'Repère qu’on propose ou qu’on demande quelque chose.',
+    gloss: 'un peu ou quelques',
     retain: 'Retiens : pour proposer ou demander, on ne compte pas.',
   };
 };
@@ -182,7 +193,7 @@ function quantifierChoose(rng: Rng): QuestionDraft {
   const g = rng.pick([negative, how, offer, offer])(rng);
   const others = (['much', 'many', 'some'] as const).filter((q) => q !== g.right);
   return {
-    prompt: `Complète d’après la règle du cours (much, many ou some) : « ${g.sentence} »`,
+    prompt: `Complète d’après la règle du cours : « ${g.sentence} » (sens : ${g.gloss})`,
     answer: typed([g.right]),
     traps: textTraps(
       [g.right],
@@ -473,7 +484,7 @@ const derived = (base: string, able: string, fr: string, notFr: string, extra: E
 export const PLAIN: readonly Derived[] = [
   derived('wash', 'washable', 'lavable', 'qu’on ne peut pas laver'),
   derived('enjoy', 'enjoyable', 'agréable', 'désagréable'),
-  derived('drink', 'drinkable', 'qu’on peut boire', 'imbuvable', { notAlso: ['non-drinkable', 'nondrinkable'] }),
+  derived('drink', 'drinkable', 'qu’on peut boire', 'imbuvable'),
   derived('read', 'readable', 'lisible', 'illisible'),
   derived('break', 'breakable', 'cassable', 'incassable'),
   derived('accept', 'acceptable', 'qu’on peut admettre', 'qu’on ne peut pas admettre'),
@@ -604,7 +615,7 @@ interface Context {
 }
 const context = (text: string, base: string, ...accepted: string[]): Context => ({ text, base, accepted });
 export const CONTEXTS: readonly Context[] = [
-  context('The river water is very dirty: it is …', 'drink', 'undrinkable', 'non-drinkable', 'nondrinkable'),
+  context('The river water is very dirty: it is …', 'drink', 'undrinkable'),
   context('This glass never breaks: it is …', 'break', 'unbreakable'),
   context('You can put this shirt in the machine: it is …', 'wash', 'washable'),
   context('I love this game, it is really …', 'enjoy', 'enjoyable'),
@@ -684,7 +695,7 @@ export const PREFIX_PAIRS: readonly (readonly [base: string, accepted: readonly 
   ['satisfied', ['dissatisfied', 'unsatisfied'], 'satisfait'],
   ['regular', ['irregular'], 'régulier'],
   ['legal', ['illegal'], 'légal'],
-  ['social', ['antisocial', 'anti-social', 'unsocial', 'asocial'], 'sociable'],
+  ['social', ['antisocial', 'anti-social'], 'sociable'],
   ['recognisable', ['unrecognisable', 'unrecognizable'], 'reconnaissable'],
 ];
 const ALL_PAIRS: readonly (readonly [string, string])[] = [
@@ -768,18 +779,19 @@ function antonymPrefix(rng: Rng): QuestionDraft {
 interface Opposite {
   readonly line: string;
   readonly from: string;
-  readonly accepted: readonly string[];
+  /** Une seule réponse : le contraire appris dans le cours. */
+  readonly answer: string;
 }
-const opposite = (line: string, from: string, ...accepted: string[]): Opposite => ({ line, from, accepted });
+const opposite = (line: string, from: string, answer: string): Opposite => ({ line, from, answer });
 export const OPPOSITES: readonly Opposite[] = [
-  opposite('Our street is not quiet, it is very …', 'quiet', 'noisy', 'loud'),
+  opposite('Our street is not quiet, it is very …', 'quiet', 'noisy'),
   opposite('This village is not urban, it is …', 'urban', 'rural'),
-  opposite('The money in this game is not real, it is …', 'real', 'virtual', 'unreal', 'fake', 'imaginary'),
+  opposite('The money in this game is not real, it is …', 'real', 'virtual'),
   opposite('Your plan is not possible, it is …', 'possible', 'impossible'),
   opposite('Parking here is not legal, it is …', 'legal', 'illegal'),
   opposite('His visits are not regular, they are …', 'regular', 'irregular'),
-  opposite('Emir is not happy today, he is …', 'happy', 'unhappy', 'sad'),
-  opposite('The client is not satisfied, she is …', 'satisfied', 'dissatisfied', 'unsatisfied'),
+  opposite('Emir is not happy today, he is …', 'happy', 'unhappy'),
+  opposite('Sam is not lonely at school, he is very …', 'lonely', 'popular'),
 ];
 
 function antonymDocument(rng: Rng): QuestionDraft {
@@ -787,17 +799,18 @@ function antonymDocument(rng: Rng): QuestionDraft {
   const parts = rows.map((r, i) => `${i === 0 ? '' : '. '}${r.line.replace('…', '')}`);
   parts.push('.');
   return {
-    prompt: 'Lis le message, puis complète chaque phrase avec le contraire du mot déjà écrit.',
+    prompt:
+      'Complète chaque phrase avec le contraire du cours : l’autre mot de la paire du mémo, sinon le même mot avec un préfixe.',
     figure: document(
       'Mots à renverser',
       rows.map((r, i) => `Trou ${i + 1} : le contraire de « ${r.from} ».`),
     ),
-    answer: { kind: 'cloze', parts, blanks: rows.map((r) => ({ mode: 'text' as const, accepted: r.accepted })) },
+    answer: { kind: 'cloze', parts, blanks: rows.map((r) => ({ mode: 'text' as const, accepted: [r.answer] })) },
     hint: 'Certains contraires sont des mots nouveaux, d’autres ajoutent un préfixe.',
     steps: [
       'Lis chaque phrase jusqu’au bout.',
       'Choisis un mot du cours ou ajoute un préfixe.',
-      ok(rows.map((r) => at(r.accepted, 0))),
+      ok(rows.map((r) => r.answer)),
     ],
   };
 }

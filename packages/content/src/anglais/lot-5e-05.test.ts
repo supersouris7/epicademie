@@ -121,17 +121,53 @@ describe('anglais 5e : groupe nominal et pronoms, relier et situer', () => {
     for (const t of ['immovable', 'unmovable', 'unmoveable']) expect(text(move, t), t).toBe(true);
   });
 
+  it('saisie sans propositions au niveau 4 : aucune liste de mots dans l’énoncé', () => {
+    for (const id of ['a5-quantifieurs', 'a5-contraste', 'a5-intensite'])
+      for (const q of questions(id, 4))
+        expect(q.prompt.split('«')[0], id).not.toMatch(/\b(much|many|some|but|whereas|however|very|too)\b/);
+  });
+
+  it('une seule règle par trou : non- (drink), unsocial et synonymes hors cours refusés', () => {
+    const drink = find('a5-derivation', 4, '« drink »');
+    for (const t of ['non-drinkable', 'nondrinkable']) expect(text(drink, t), t).toBe(false);
+    const social = find('a5-antonymes', 4, '« social »');
+    for (const t of ['unsocial', 'asocial']) expect(text(social, t), t).toBe(false);
+    const extras = ['sad', 'fake', 'imaginary', 'unreal', 'loud', 'unsatisfied', 'non-drinkable', 'nondrinkable'];
+    for (const q of [...questions('a5-antonymes', 5), ...questions('a5-derivation', 5)]) {
+      if (q.answer.kind !== 'cloze') throw new Error('texte à trous attendu');
+      for (const b of q.answer.blanks)
+        if (b.mode === 'text') for (const t of extras) expect(b.accepted, t).not.toContain(t);
+    }
+  });
+
+  it('positions : « on the top » et « on the bottom » refusés', () => {
+    for (const [fr, word] of [
+      ['en haut', 'top'],
+      ['en bas', 'bottom'],
+    ] as const) {
+      const q = find('a5-gauche-droite', 4, `« ${fr} »`);
+      expect(text(q, `at the ${word}`)).toBe(true);
+      for (const t of [`on the ${word}`, `on the ${word} of the picture`]) expect(text(q, t), t).toBe(false);
+    }
+  });
+
   it('antonymes : autres contraires corrects acceptés', () => {
     const q = find('a5-antonymes', 4, '« satisfied »');
     for (const t of ['dissatisfied', 'unsatisfied']) expect(text(q, t), t).toBe(true);
     expect(text(find('a5-antonymes', 4, '« legal »'), 'unlegal')).toBe(false);
   });
 
-  it('contraste : however seulement après un point ; whereas ou but pour comparer', () => {
+  it('contraste : however seulement après un point-virgule ; « But » jamais proposé comme faux', () => {
+    for (const q of questions('a5-contraste', 2)) {
+      if (q.answer.kind !== 'choice') throw new Error('choix attendu');
+      if (q.prompt.includes('; …')) expect(JSON.stringify(q.answer), q.prompt).not.toMatch(/"but"/i);
+    }
     for (const q of questions('a5-contraste', 4)) {
       if (q.answer.kind !== 'text') throw new Error('saisie attendue');
       const after = /([.;,]) …/.exec(q.prompt)![1];
-      expect(q.answer.accepted[0] === 'however', q.prompt).toBe(after !== ',');
+      expect(after, q.prompt).not.toBe('.');
+      expect(q.answer.accepted[0] === 'however', q.prompt).toBe(after === ';');
+      if (q.answer.accepted[0] === 'whereas') expect(q.steps.at(-1)).toContain('whereas ou but');
     }
   });
 
