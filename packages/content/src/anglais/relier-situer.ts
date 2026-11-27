@@ -139,66 +139,46 @@ function linkMeaning(rng: Rng): QuestionDraft {
   };
 }
 
-const PUNCTUATION_STEP: Readonly<Record<Link, string>> = {
+/** Saisie : la ponctuation et le sens n’admettent qu’un mot. Pas de comparaison ici (« but » y serait juste aussi). */
+type Typed = 'but' | 'however';
+const TYPED: readonly Typed[] = ['but', 'however'];
+const PUNCTUATION_STEP: Readonly<Record<Typed, string>> = {
   but: 'Garde les deux idées ensemble : une seule personne, une surprise.',
-  whereas: 'Remarque qu’on compare deux sujets différents.',
   however: 'Après un point-virgule, avec une virgule derrière le trou, choisis however.',
 };
 
-/** Pour comparer deux sujets, « but » est juste aussi (mémo) : les deux sont acceptés et affichés. */
-const COMPARING: readonly string[] = ['whereas', 'but'];
-const shown = (accepted: readonly string[]) => accepted.join(' ou ');
-
 function linkPunctuation(rng: Rng): QuestionDraft {
-  const kind = rng.pick(['but', 'whereas', 'however'] as const);
+  const kind = rng.pick(TYPED);
   const j = rng.pick(POOL[kind]);
-  const accepted = kind === 'whereas' ? COMPARING : [kind];
   return {
     prompt: `Complète avec le mot de contraste du cours, selon la ponctuation et le sens : « ${show(j)} »`,
-    answer: typed(accepted),
+    answer: typed([kind]),
     traps: textTraps(
-      accepted,
+      [kind],
       ['but', 'whereas', 'however'].map((l) => ({ text: l, why: LINK_WHY[l] ?? '' })),
     ),
-    hint: 'Un point-virgule avant le trou change tout. Sinon, compare-t-on deux personnes ou deux choses ?',
-    steps: ['Regarde le signe placé avant le trou.', PUNCTUATION_STEP[kind], `Écris : **${shown(accepted)}**.`],
+    hint: 'Un point-virgule avant le trou change tout. Sans lui, la seconde idée surprend-elle après la première ?',
+    steps: ['Regarde le signe placé avant le trou.', PUNCTUATION_STEP[kind], `Écris : **${kind}**.`],
   };
 }
 
-const CAUSES: readonly (readonly [Joined, 'so' | 'because'])[] = [
-  [joined('I was very hungry,', 'I made a sandwich.'), 'so'],
-  [joined('It was my friend’s birthday,', 'I bought a present.'), 'so'],
-  [joined('I was thirsty,', 'I drank some water.'), 'so'],
-  [joined('We wore warm coats', 'it was very cold.'), 'because'],
-  [joined('We went to bed early', 'we were tired.'), 'because'],
-  [joined('Tom took an umbrella', 'it was raining.'), 'because'],
-];
 const NAMES = ['Ana', 'Lisa', 'Maya', 'Tom', 'Emir', 'Paul'] as const;
 
 function linkDocument(rng: Rng): QuestionDraft {
   const name = rng.pick(NAMES);
-  const however = rng.pick(HOWEVERS);
-  const cause = (link: 'so' | 'because') => rng.pick(CAUSES.filter((c) => c[1] === link))[0];
-  const so = cause('so');
-  const because = cause('because');
-  const rows = rng.shuffle([
-    { line: (gap: string) => show(rng.pick(COMPARISONS), gap), accepted: COMPARING },
-    { line: (gap: string) => show(however, gap), accepted: ['however'] },
-    { line: (gap: string) => `${so.start} ${gap} ${so.end}`, accepted: ['so'] },
-    { line: (gap: string) => `${because.start} ${gap} ${because.end}`, accepted: ['because'] },
-  ]);
+  const rows = rng.shuffle(TYPED.flatMap((link) => some(rng, POOL[link], 2).map((j) => ({ j, link }))));
   return {
-    prompt: 'Lis le message, puis complète chaque trou avec but, whereas, however, so ou because.',
+    prompt: 'Lis le message, puis complète chaque trou avec le mot de contraste du cours.',
     figure: document(
       `Message from ${name}`,
-      rows.map((r, i) => r.line(`(${i + 1})`)),
+      rows.map((r, i) => show(r.j, `(${i + 1})`)),
     ),
-    answer: { kind: 'cloze', parts: numbered(rows.length), blanks: blanksOf(rows.map((r) => r.accepted)) },
-    hint: 'Pour chaque trou, demande-toi : opposition, cause ou conséquence ?',
+    answer: { kind: 'cloze', parts: numbered(rows.length), blanks: blanksOf(rows.map((r) => [r.link])) },
+    hint: 'Pour chaque trou, regarde le signe placé avant lui.',
     steps: [
       'Lis les deux parties autour de chaque trou.',
-      'Distingue l’opposition, la cause et la conséquence.',
-      ok(rows.map((r) => shown(r.accepted))),
+      'Cherche les points-virgules : ils annoncent un mot précis.',
+      ok(rows.map((r) => r.link)),
     ],
   };
 }
@@ -735,7 +715,7 @@ function degreeDocument(rng: Rng): QuestionDraft {
   const fourth = rng.pick(CASES.filter((c) => c.degree !== 'very' && !picked.includes(c)));
   const rows = rng.shuffle([...picked, fourth]);
   return {
-    prompt: 'Lis le journal, puis complète chaque phrase avec very, much ou too, d’après la règle du cours.',
+    prompt: 'Lis le journal, puis complète chaque phrase avec un adverbe de degré du cours.',
     figure: document(
       `Diary of ${name}`,
       rows.map((r, i) => r.text.replace('…', `(${i + 1})`)),

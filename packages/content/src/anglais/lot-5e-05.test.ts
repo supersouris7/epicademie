@@ -118,13 +118,19 @@ describe('anglais 5e : groupe nominal et pronoms, relier et situer', () => {
     expect(text(q, 'Unbelievable.')).toBe(true);
     expect(text(q, 'unbelieveable')).toBe(false);
     const move = find('a5-derivation', 4, '« move » qui veut dire « qu’on ne peut pas déplacer »');
-    for (const t of ['immovable', 'unmovable', 'unmoveable']) expect(text(move, t), t).toBe(true);
+    for (const t of ['unmovable', 'unmoveable']) expect(text(move, t), t).toBe(true);
+    for (const t of ['immovable', 'immoveable']) expect(text(move, t), t).toBe(false);
   });
 
-  it('saisie sans propositions au niveau 4 : aucune liste de mots dans l’énoncé', () => {
+  it('saisie sans propositions aux niveaux 4 et 5 : aucune liste de mots dans l’énoncé', () => {
     for (const id of ['a5-quantifieurs', 'a5-contraste', 'a5-intensite'])
-      for (const q of questions(id, 4))
+      for (const q of [...questions(id, 4), ...questions(id, 5)])
         expect(q.prompt.split('«')[0], id).not.toMatch(/\b(much|many|some|but|whereas|however|very|too)\b/);
+  });
+
+  it('quantifieurs : le document donne le sens « pas beaucoup » dans les négations', () => {
+    for (const q of questions('a5-quantifieurs', 5))
+      expect(JSON.stringify(q.figure)).not.toMatch(/il manque|il y a peu/);
   });
 
   it('une seule règle par trou : non- (drink), unsocial et synonymes hors cours refusés', () => {
@@ -151,9 +157,10 @@ describe('anglais 5e : groupe nominal et pronoms, relier et situer', () => {
     }
   });
 
-  it('antonymes : autres contraires corrects acceptés', () => {
+  it('antonymes : seul le préfixe du cours est accepté', () => {
     const q = find('a5-antonymes', 4, '« satisfied »');
-    for (const t of ['dissatisfied', 'unsatisfied']) expect(text(q, t), t).toBe(true);
+    expect(text(q, 'Dissatisfied.')).toBe(true);
+    expect(text(q, 'unsatisfied')).toBe(false);
     expect(text(find('a5-antonymes', 4, '« legal »'), 'unlegal')).toBe(false);
   });
 
@@ -167,7 +174,18 @@ describe('anglais 5e : groupe nominal et pronoms, relier et situer', () => {
       const after = /([.;,]) …/.exec(q.prompt)![1];
       expect(after, q.prompt).not.toBe('.');
       expect(q.answer.accepted[0] === 'however', q.prompt).toBe(after === ';');
-      if (q.answer.accepted[0] === 'whereas') expect(q.steps.at(-1)).toContain('whereas ou but');
+    }
+    for (const q of questions('a5-contraste', 4)) {
+      if (q.answer.kind !== 'text') throw new Error('saisie attendue');
+      for (const t of ['but', 'whereas', 'however']) expect(text(q, t), q.prompt).toBe(t === q.answer.accepted[0]);
+    }
+    for (const q of questions('a5-contraste', 5)) {
+      if (q.answer.kind !== 'cloze') throw new Error('texte à trous attendu');
+      expect(q.answer.blanks).toHaveLength(4);
+      for (const b of q.answer.blanks) {
+        if (b.mode !== 'text') throw new Error('saisie attendue');
+        expect(['but', 'however']).toContain(b.accepted.join('|'));
+      }
     }
   });
 

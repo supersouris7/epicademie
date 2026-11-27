@@ -65,7 +65,7 @@ export const FAITS: readonly Fait[] = [
     'programme-degre',
     PROG,
     'Faire varier le degré d’intensité de la qualité à l’aide d’adverbes de degré : very, much, too, etc.',
-    'very, much et too sont au programme.',
+    'very, much et too sont au programme de 5e (« Classe de cinquième », « La phrase et son organisation »).',
   ),
   fait(
     'too-sens',

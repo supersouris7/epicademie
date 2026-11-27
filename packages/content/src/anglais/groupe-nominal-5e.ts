@@ -211,9 +211,9 @@ function quantifierDocument(rng: Rng): QuestionDraft {
   const rows: readonly (readonly [string, string, Quant])[] = rng
     .shuffle([
       [`How … ${a.en} have we got?`, `question sur ce qu’il reste ${a.of}`, 'many'],
-      [`We haven’t got … ${c.en}.`, `il manque ${c.of}`, 'much'],
+      [`We haven’t got … ${c.en}.`, `il n’y a pas beaucoup ${c.of}`, 'much'],
       [`Can you buy … ${wanted.en}, please?`, `demande d’achat ${wanted.of}`, 'some'],
-      [`There aren’t … ${b.en}.`, `il y a peu ${b.of}`, 'many'],
+      [`There aren’t … ${b.en}.`, `il n’y a pas beaucoup ${b.of}`, 'many'],
       [`How … ${d.en} do we need?`, `question sur le besoin ${d.of}`, 'much'],
     ] as const)
     .slice(0, 4);
@@ -224,7 +224,7 @@ function quantifierDocument(rng: Rng): QuestionDraft {
   });
   parts.push(at(at(rows, 3)[0].split('…'), 1));
   return {
-    prompt: 'Lis la liste, puis complète le message avec much, many ou some, d’après la règle du cours.',
+    prompt: 'Lis la liste, puis complète le message avec un quantifieur du cours.',
     figure: document(
       'Picnic list',
       rows.map((r, i) => `Phrase ${i + 1} : ${r[1]}.`),
@@ -467,14 +467,9 @@ export interface Derived {
   readonly also: readonly string[];
   readonly fr: string;
   readonly notFr: string;
-  /** Autres contraires corrects, en plus de un- + adjectif. */
-  readonly notAlso: readonly string[];
 }
-type Extra = Partial<Pick<Derived, 'also' | 'notAlso'>>;
-const derived = (base: string, able: string, fr: string, notFr: string, extra: Extra = {}): Derived => ({
-  also: [],
-  notAlso: [],
-  ...extra,
+const derived = (base: string, able: string, fr: string, notFr: string, ...also: string[]): Derived => ({
+  also,
   base,
   able,
   fr,
@@ -492,11 +487,8 @@ export const PLAIN: readonly Derived[] = [
 /** Le verbe perd son « e » final (écritures avec « e » acceptées quand elles existent). */
 export const SPELLED: readonly Derived[] = [
   derived('believe', 'believable', 'croyable', 'incroyable'),
-  derived('move', 'movable', 'qu’on peut déplacer', 'qu’on ne peut pas déplacer', {
-    also: ['moveable'],
-    notAlso: ['immovable', 'immoveable'],
-  }),
-  derived('use', 'usable', 'utilisable', 'inutilisable', { also: ['useable'] }),
+  derived('move', 'movable', 'qu’on peut déplacer', 'qu’on ne peut pas déplacer', 'moveable'),
+  derived('use', 'usable', 'utilisable', 'inutilisable', 'useable'),
 ];
 
 export interface Negated {
@@ -590,13 +582,16 @@ function derivationHard(rng: Rng): QuestionDraft {
   const d = rng.pick(spelled ? SPELLED : PLAIN.filter((p) => ['drink', 'read', 'break', 'wash'].includes(p.base)));
   const negative = spelled ? coin(rng) : true;
   const forms = [d.able, ...d.also];
-  const accepted = negative ? [...un(forms), ...d.notAlso] : forms;
+  const accepted = negative ? un(forms) : forms;
   const right = at(accepted, 0);
   const traps: Trap[] = [{ text: negative ? d.able : `un${d.able}`, why: negative ? WHY_UN : WHY_NOT_UN }];
   if (spelled) traps.push({ text: `${negative ? 'un' : ''}${d.base}able`, why: WHY_E });
-  if (negative) traps.push({ text: `in${d.able}`, why: 'Avec ce mot, le préfixe du cours est un-.' });
+  if (negative)
+    traps.push(
+      ...['in', 'im'].map((p) => ({ text: `${p}${d.able}`, why: 'Avec ce mot, le préfixe du cours est un-.' })),
+    );
   return {
-    prompt: `Écris l’adjectif formé sur « ${d.base} » qui veut dire « ${negative ? d.notFr : d.fr} ».`,
+    prompt: `Avec les ajouts du mémo, écris l’adjectif formé sur « ${d.base} » qui veut dire « ${negative ? d.notFr : d.fr} ».`,
     answer: typed(accepted),
     traps: textTraps(accepted, traps),
     hint: 'Deux questions : le sens est-il contraire ? Le verbe garde-t-il sa dernière lettre ?',
@@ -692,7 +687,7 @@ export const PROGRAMME_PAIRS: readonly Pair[] = [
 export const PREFIX_PAIRS: readonly (readonly [base: string, accepted: readonly string[], fr: string])[] = [
   ['happy', ['unhappy'], 'heureux'],
   ['possible', ['impossible'], 'possible'],
-  ['satisfied', ['dissatisfied', 'unsatisfied'], 'satisfait'],
+  ['satisfied', ['dissatisfied'], 'satisfait'],
   ['regular', ['irregular'], 'régulier'],
   ['legal', ['illegal'], 'légal'],
   ['social', ['antisocial', 'anti-social'], 'sociable'],
@@ -761,10 +756,10 @@ function antonymPrefix(rng: Rng): QuestionDraft {
   const right = at(accepted, 0);
   const wrong = ['un', 'in', 'im', 'il', 'ir', 'dis'].map((p) => ({
     text: `${p}${base}`,
-    why: 'Ce préfixe ne va pas avec ce mot : chaque mot a le sien.',
+    why: 'Ce n’est pas le préfixe du cours pour ce mot : chaque mot a le sien.',
   }));
   return {
-    prompt: `Écris le contraire de « ${base} » en ajoutant un préfixe au début.`,
+    prompt: `Écris le contraire de « ${base} » appris dans le cours : ajoute un préfixe au début.`,
     answer: typed(accepted),
     traps: textTraps(accepted, [{ text: base, why: 'C’est le mot de départ : il manque le préfixe.' }, ...wrong]),
     hint: 'Essaie les préfixes du mémo et garde celui que tu as déjà lu avec ce mot.',
@@ -777,6 +772,7 @@ function antonymPrefix(rng: Rng): QuestionDraft {
 }
 
 interface Opposite {
+  /** « … » marque le trou : le reste de la phrase écarte les autres contraires. */
   readonly line: string;
   readonly from: string;
   /** Une seule réponse : le contraire appris dans le cours. */
@@ -784,20 +780,20 @@ interface Opposite {
 }
 const opposite = (line: string, from: string, answer: string): Opposite => ({ line, from, answer });
 export const OPPOSITES: readonly Opposite[] = [
-  opposite('Our street is not quiet, it is very …', 'quiet', 'noisy'),
   opposite('This village is not urban, it is …', 'urban', 'rural'),
-  opposite('The money in this game is not real, it is …', 'real', 'virtual'),
+  opposite('With this headset you do not see the real world, you are in … reality', 'real', 'virtual'),
   opposite('Your plan is not possible, it is …', 'possible', 'impossible'),
   opposite('Parking here is not legal, it is …', 'legal', 'illegal'),
-  opposite('His visits are not regular, they are …', 'regular', 'irregular'),
-  opposite('Emir is not happy today, he is …', 'happy', 'unhappy'),
-  opposite('Sam is not lonely at school, he is very …', 'lonely', 'popular'),
+  opposite('The verb “play” is regular, but the verb “go” is …', 'regular', 'irregular'),
+  opposite('Tom is happy with his mark, but Emir is … with his', 'happy', 'unhappy'),
+  opposite('Sam is not lonely: he is the most … boy at school, and everyone invites him', 'lonely', 'popular'),
 ];
 
 function antonymDocument(rng: Rng): QuestionDraft {
   const rows = some(rng, OPPOSITES, 4);
-  const parts = rows.map((r, i) => `${i === 0 ? '' : '. '}${r.line.replace('…', '')}`);
-  parts.push('.');
+  const halves = rows.map((r) => r.line.split('…'));
+  const parts = halves.map((h, i) => `${i === 0 ? '' : `${at(at(halves, i - 1), 1)}. `}${at(h, 0)}`);
+  parts.push(`${at(at(halves, 3), 1)}.`);
   return {
     prompt:
       'Complète chaque phrase avec le contraire du cours : l’autre mot de la paire du mémo, sinon le même mot avec un préfixe.',
@@ -832,7 +828,7 @@ const antonymSkill: Skill = {
     memo: [
       'Un **antonyme** est un mot de sens contraire : quiet et noisy, urban et rural.',
       'Autres paires : real et virtual, lonely et popular, freedom et constraint, separation et union.',
-      'Un **préfixe** peut aussi renverser le sens : un-, im-, il-, ir-, dis- ou anti-, comme antisocial.',
+      'Un **préfixe** (un-, im-, il-, ir-, dis-, anti-) renverse le sens : dissatisfied, antisocial.',
     ],
     source: source('utiliser des antonymes', '« Does it have a prefix or a suffix? »'),
     sources: [PROG, 'bct-prefix-suffix'],
