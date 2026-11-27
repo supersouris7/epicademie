@@ -164,16 +164,6 @@ export const A_EXCLAMER: readonly { readonly declarative: string; readonly accep
   { declarative: 'Tu cours vite', accepted: ['Comme tu cours vite'] },
 ];
 
-/** Ordres à mettre à la forme négative avec « ne… pas ». */
-export const ORDRES: readonly { readonly affirmative: string; readonly negative: string }[] = [
-  { affirmative: 'Cours dans le couloir', negative: 'Ne cours pas dans le couloir' },
-  { affirmative: 'Ouvre la porte', negative: 'N’ouvre pas la porte' },
-  { affirmative: 'Touche à ce bouton', negative: 'Ne touche pas à ce bouton' },
-  { affirmative: 'Oublie ton cartable', negative: 'N’oublie pas ton cartable' },
-  { affirmative: 'Parlez pendant le film', negative: 'Ne parlez pas pendant le film' },
-  { affirmative: 'Jette ton papier par terre', negative: 'Ne jette pas ton papier par terre' },
-];
-
 /** Même idée dite de trois façons : déclarative, interrogative (est-ce que ou inversion), impérative. */
 export interface Triplet {
   readonly declarative: string;

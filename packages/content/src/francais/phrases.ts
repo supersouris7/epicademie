@@ -14,7 +14,6 @@ import {
   INFORMATIONS,
   INTERROGATIVES,
   NEGATIONS,
-  ORDRES,
   QUESTIONS,
   SENS,
   TRIPLETS,
@@ -159,9 +158,9 @@ function typesDraft(rng: Rng, level: Level): QuestionDraft {
         hint: 'Cherche d’abord la question. Cherche ensuite l’ordre.',
         steps: [
           `Trouve la question : « ${withSign(t.interrogative, 'interrogative')} »`,
-          `Trouve l’ordre : « ${withSign(t.imperative, 'imperative')} » Le sujet a disparu.`,
+          `Trouve l’ordre (l’impératif) : « ${withSign(t.imperative, 'imperative')} » Le sujet a disparu.`,
           `Regarde la dernière : « ${withSign(t.declarative, 'declarative')} » Elle informe.`,
-          'Relie dans cet ordre : **interrogative, impérative, déclarative**.',
+          'Relie la question à **interrogative**, l’ordre à **impérative**, l’information à **déclarative**.',
         ],
       };
     }
@@ -210,7 +209,7 @@ function typesDraft(rng: Rng, level: Level): QuestionDraft {
       ]);
       const count = (n: number) => ({ mode: 'text' as const, accepted: [String(n), at(EN_LETTRES, n)] });
       return {
-        prompt: 'Lis ce texte. Compte les phrases de chaque type.',
+        prompt: 'Lis ces phrases. Compte les phrases de chaque type.',
         figure: document('Quelques phrases', lines),
         answer: {
           kind: 'cloze',
@@ -390,11 +389,10 @@ function questionDraft(rng: Rng, level: Level): QuestionDraft {
 
 const MARQUES = ['pas', 'jamais', 'plus'] as const;
 type Marque = (typeof MARQUES)[number];
-const MARQUE_LABEL: Record<Marque | 'rien', string> = {
+const MARQUE_LABEL: Record<Marque, string> = {
   pas: 'ne… pas',
   jamais: 'ne… jamais',
   plus: 'ne… plus',
-  rien: 'ne… rien',
 };
 
 /** Retire le « ne » (ou « n’ ») de la phrase négative : l'oubli le plus courant. */
@@ -445,16 +443,13 @@ function negationDraft(rng: Rng, level: Level): QuestionDraft {
     }
     case 2: {
       const m = rng.pick(MARQUES);
-      const labels: readonly (Marque | 'rien')[] = ['pas', 'jamais', 'plus', 'rien'];
       const { answer, traps } = choice(
         rng,
         MARQUE_LABEL[m],
-        labels
-          .filter((l) => l !== m)
-          .map((l) => ({
-            label: MARQUE_LABEL[l],
-            why: `Regarde après le verbe : on lit « ${m} », pas « ${l} ».`,
-          })),
+        MARQUES.filter((l) => l !== m).map((l) => ({
+          label: MARQUE_LABEL[l],
+          why: `Regarde après le verbe : on lit « ${m} », pas « ${l} ».`,
+        })),
         true,
       );
       return {
@@ -498,32 +493,30 @@ function negationDraft(rng: Rng, level: Level): QuestionDraft {
       };
     }
     default: {
-      const ordres = pickN(rng, ORDRES, 3);
+      const others = pickN(
+        rng,
+        NEGATIONS.filter((x) => x !== n),
+        2,
+      );
+      const m = rng.pick(['jamais', 'plus'] as const);
       const line = rng.int(1, 3);
-      const o = at(ordres, line - 1);
-      const verbe = first(o.affirmative.split(' '));
+      const lines = others.map((x) => `${x.affirmative}.`);
+      lines.splice(line - 1, 0, `${n.affirmative}.`);
       return {
-        prompt: `Lis ces ordres. Écris la ligne ${line} à la forme négative avec « ne… pas ».`,
-        figure: document(
-          'Quelques ordres',
-          ordres.map((x) => `${x.affirmative}.`),
-        ),
-        answer: { kind: 'text', accepted: variants(o.negative, ['.', ' !', '!']) },
+        prompt: `Lis ces phrases. Écris la ligne ${line} à la forme négative avec « ne… ${m} ».`,
+        figure: document('Quelques phrases', lines),
+        answer: { kind: 'text', accepted: variants(n[m], ['.']) },
         traps: [
-          textTrap(`${withoutNe(o.negative)}.`, MANQUE_NE),
-          textTrap(`${o.negative.replace(' pas', '')}.`, 'Il manque « pas » après le verbe.'),
-          textTrap(`${o.affirmative}.`, 'Tu as recopié l’ordre. Ajoute les deux mots de la négation.'),
-          ...(o.negative.startsWith('N’')
-            ? [textTrap(`${o.negative.replace('N’', 'Ne ')}.`, 'Devant une voyelle, « ne » devient « n’ ».')]
-            : []),
+          textTrap(`${n.pas}.`, `Tu as écrit « ne… pas ». La consigne demande « ne… ${m} ».`),
+          textTrap(`${withoutNe(n[m])}.`, MANQUE_NE),
+          textTrap(`${n.affirmative}.`, 'Tu as recopié la phrase. Ajoute les deux mots de la négation.'),
+          ...sansElision(n[m]),
         ],
-        hint: 'Dans un ordre aussi, le verbe est entre deux mots.',
+        hint: 'Cherche la bonne ligne. Entoure ensuite son verbe avec deux mots.',
         steps: [
-          `Lis la ligne ${line} et trouve le verbe « ${verbe.toLowerCase()} ».`,
-          o.negative.startsWith('N’')
-            ? 'Commence par « N’ », car le verbe commence par une voyelle.'
-            : 'Commence la phrase par « Ne », avant le verbe.',
-          `Ajoute « pas » après le verbe : **${o.negative}.**`,
+          `Lis la ligne ${line} et trouve le verbe « ${n.verbe} ».`,
+          placer(n[m], n.verbe, m),
+          `Écris la phrase : **${n[m]}.**`,
         ],
       };
     }
@@ -603,7 +596,11 @@ function exclamativeDraft(rng: Rng, level: Level): QuestionDraft {
       const juste = first(t.accepted);
       return {
         prompt: `Transforme en phrase exclamative qui commence par « Comme » : « ${t.declarative}. »`,
-        answer: { kind: 'text', accepted: t.accepted.flatMap((x) => [`${x} !`, `${x}!`]) },
+        // Accents non exigés ; le point d’exclamation, lui, est exigé.
+        answer: {
+          kind: 'text',
+          accepted: [...new Set(t.accepted.flatMap((x) => [x, sansAccents(x)]))].flatMap((x) => [`${x} !`, `${x}!`]),
+        },
         traps: [
           textTrap(`${t.declarative} !`, 'Il manque le premier mot demandé dans la consigne.'),
           textTrap(`${juste}.`, 'Une exclamation finit par un point d’exclamation, pas par un point.'),
@@ -685,7 +682,7 @@ function ponctuationDraft(rng: Rng, level: Level): QuestionDraft {
   const fin = rng.pick(FINS);
   const phrase = rng.pick(bankOf(fin));
   const mark = MARK[fin];
-  const lire = `Lis la phrase : « ${phrase} … »`;
+  const lire = `Lis la phrase : « ${phrase} » (sans signe)`;
   const penser = `Demande-toi ce qu’elle fait. Ici, ${FIN_REASON[fin]}.`;
   switch (level) {
     case 1: {
@@ -695,7 +692,7 @@ function ponctuationDraft(rng: Rng, level: Level): QuestionDraft {
         EASY_WRONG[fin].map((w) => ({ label: w, why: whyWrongMark(w, fin) })),
       );
       return {
-        prompt: `Choisis le signe qui termine cette phrase : « ${phrase} … »`,
+        prompt: `Choisis le signe qui termine cette phrase : « ${phrase} » (sans signe)`,
         answer,
         traps,
         hint: 'La phrase informe, questionne ou montre une émotion ?',
@@ -713,12 +710,12 @@ function ponctuationDraft(rng: Rng, level: Level): QuestionDraft {
         answer,
         traps,
         hint: 'Lis la phrase à voix haute. Que fait-elle ?',
-        steps: [`Lis les mots : « ${phrase} … »`, penser, `Choisis : **${marked(phrase, mark)}**`],
+        steps: [`Lis les mots : « ${phrase} » (sans signe)`, penser, `Choisis : **${marked(phrase, mark)}**`],
       };
     }
     case 3:
       return {
-        prompt: `Écris le signe qui termine cette phrase : « ${phrase} … »`,
+        prompt: `Écris le signe qui termine cette phrase : « ${phrase} » (sans signe)`,
         answer: { kind: 'text', accepted: [mark] },
         traps: WRONG_MARKS[fin].slice(0, 2).map((w) => textTrap(w, whyWrongMark(w, fin))),
         hint: 'Trouve d’abord ce que fait la phrase.',
@@ -729,10 +726,11 @@ function ponctuationDraft(rng: Rng, level: Level): QuestionDraft {
       const sentences = order.map((f) => rng.pick(bankOf(f)));
       return {
         prompt: 'Écris le signe de fin de chacune de ces trois phrases.',
+        // Les phrases sont dans la figure ; les trous ne les répètent pas.
         figure: document('Sans signe de fin', sentences),
         answer: {
           kind: 'cloze',
-          parts: [`${sentences[0]} `, ` ${sentences[1]} `, ` ${sentences[2]} `, ''],
+          parts: ['Phrase 1 : ', ' · Phrase 2 : ', ' · Phrase 3 : ', ''],
           blanks: order.map((f) => ({ mode: 'text' as const, accepted: [MARK[f]] })),
         },
         hint: 'Traite une phrase à la fois : que fait-elle ?',
@@ -749,7 +747,7 @@ function ponctuationDraft(rng: Rng, level: Level): QuestionDraft {
       const stock = new Map(FINS.map((f) => [f, rng.shuffle(bankOf(f))]));
       const lines = kinds.map((f, i) => at(stock.get(f) ?? [], i));
       return {
-        prompt: 'Lis ce texte. Écris le signe de fin de chaque ligne.',
+        prompt: 'Lis ces phrases. Écris le signe de fin de chaque ligne.',
         figure: document('Sans signe de fin', lines),
         answer: {
           kind: 'cloze',

@@ -13,6 +13,7 @@ import {
   IMPERATIVES_NEGATIVES,
   INFORMATIONS,
   INTERROGATIVES,
+  NEGATIONS,
 } from './phrases.donnees.ts';
 import { FRANCAIS_CHAPTERS } from './index.ts';
 
@@ -90,6 +91,45 @@ describe('francais cm1 — types et formes de phrases', () => {
     });
   });
 
+  it('négative, niveau 5 : une liste de phrases déclaratives, la ligne demandée avec « jamais » ou « plus »', () => {
+    each('fcm1-forme-negative', 5, (q) => {
+      const line = lines(q)[Number(/ligne (\d)/.exec(q.prompt)?.[1]) - 1];
+      const n = NEGATIONS.find((x) => `${x.affirmative}.` === line);
+      const m = /« ne… (jamais|plus) »/.exec(q.prompt)?.[1] as 'jamais' | 'plus';
+      for (const l of lines(q)) expect(NEGATIONS.map((x) => `${x.affirmative}.`)).toContain(l);
+      expect(new Set(lines(q)).size).toBe(3);
+      expect(typed(q, `${n?.[m]}.`)).toBe(true);
+      expect(typed(q, `${n?.pas}.`)).toBe(false);
+    });
+  });
+
+  it('négative, niveau 2 : seules les négations présentées dans le mémo sont proposées', () => {
+    each('fcm1-forme-negative', 2, (q) => {
+      const options = q.answer.kind === 'choice' ? q.answer.options : [];
+      expect([...options].sort()).toEqual(['ne… jamais', 'ne… pas', 'ne… plus']);
+    });
+  });
+
+  it('exclamative, niveau 4 : accents non exigés, point d’exclamation exigé', () => {
+    const plain = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '');
+    each('fcm1-forme-exclamative', 4, (q) => {
+      const accepted = q.answer.kind === 'text' ? q.answer.accepted : [];
+      for (const a of accepted) {
+        expect(typed(q, plain(a)), a).toBe(true);
+        expect(typed(q, plain(a).replace(/ ?!$/, '')), a).toBe(false);
+        expect(typed(q, plain(a).replace(/ ?!$/, '.')), a).toBe(false);
+      }
+    });
+  });
+
+  it('ponctuation, niveau 4 : les phrases ne sont écrites qu’une fois (dans les trous)', () => {
+    each('fcm1-ponctuation-fin', 4, (q) => {
+      const parts = q.answer.kind === 'cloze' ? q.answer.parts.join('') : '';
+      expect(lines(q)).toHaveLength(3);
+      for (const l of lines(q)) expect(parts).not.toContain(l);
+    });
+  });
+
   it('exclamative, niveau 5 : seules les phrases exclamatives sont comptées', () => {
     each('fcm1-forme-exclamative', 5, (q) => {
       const k = lines(q).filter((l) => EXCLAMATIVES.includes(l)).length;
@@ -100,7 +140,8 @@ describe('francais cm1 — types et formes de phrases', () => {
   it('ponctuation : le point seul pour une information, aucun « ! » proposé pour elle', () => {
     for (const level of [1, 3] as const)
       each('fcm1-ponctuation-fin', level, (q) => {
-        const phrase = /« (.*) … »/.exec(q.prompt)?.[1] ?? '';
+        const phrase = /« (.*) » \(sans signe\)/.exec(q.prompt)?.[1] ?? '';
+        expect(phrase).not.toBe('');
         if (!INFORMATIONS.includes(phrase)) return;
         if (q.answer.kind === 'choice') {
           expect(q.answer.options[q.answer.correct]).toBe('.');
@@ -131,10 +172,11 @@ describe('francais cm1 — types et formes de phrases', () => {
     each('fcm1-forme-negative', 5, (q) => {
       if (!/ligne (\d)/.test(q.prompt)) return;
       const n = Number(/ligne (\d)/.exec(q.prompt)?.[1]);
-      if (lines(q)[n - 1] !== 'Ouvre la porte.') return;
-      seen.add('porte');
-      expect(typed(q, "N'ouvre pas la porte !")).toBe(true);
-      expect(typed(q, 'Ouvre pas la porte.')).toBe(false);
+      if (lines(q)[n - 1] !== 'Elle ouvre la fenêtre.') return;
+      seen.add('fenetre');
+      const m = q.prompt.includes('ne… jamais') ? 'jamais' : 'plus';
+      expect(typed(q, `Elle n'ouvre ${m} la fenetre`)).toBe(true);
+      expect(typed(q, `Elle ouvre ${m} la fenêtre.`)).toBe(false);
     });
     expect(seen.size).toBe(4);
   });
