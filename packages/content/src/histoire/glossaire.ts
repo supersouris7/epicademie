@@ -3286,4 +3286,32 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'La conférence où les États signataires d’un traité sur le climat se réunissent ; COP21 est la 21e.',
     example: 'La COP21 se tient à Paris en 2015.',
   },
+  {
+    id: 'execution',
+    word: 'exécution',
+    forms: ['exécution', 'execution', 'exécuté', 'exécutés'],
+    definition: 'La mise à mort d’une personne condamnée.',
+    example: 'L’exécution de Louis XVI a lieu en 1793.',
+  },
+  {
+    id: 'tiers-etat',
+    word: 'tiers état',
+    forms: ['tiers état', 'tiers-état', 'tiers etat'],
+    definition: 'Le groupe des gens qui ne sont ni nobles ni membres du clergé.',
+    example: 'Sur un dessin, le tiers état porte les deux autres groupes.',
+  },
+  {
+    id: 'citoyen',
+    word: 'citoyen',
+    forms: ['citoyen', 'citoyens', 'citoyenne', 'citoyennes'],
+    definition: 'Un membre d’un pays qui a des droits et des devoirs.',
+    example: 'La Déclaration de 1789 parle de l’homme et du citoyen.',
+  },
+  {
+    id: 'cocarde',
+    word: 'cocarde',
+    forms: ['cocarde', 'cocarde tricolore'],
+    definition: 'Un insigne rond en tissu. La cocarde tricolore est bleue, blanche et rouge.',
+    example: 'La cocarde tricolore est un symbole de la Révolution.',
+  },
 ];
