@@ -12,6 +12,8 @@ export const answerBattle = (id: string, answer: BattleAnswer) =>
 export const sendBattleItem = (id: string, item: ItemId) =>
   request(api.useBattleItem, { params: { id }, body: { item } });
 
+export const askBattleHint = (id: string) => request(api.battleHint, { params: { id } });
+
 export const finishBattle = (id: string) => request(api.finishBattle, { params: { id } });
 
 /** Achat : une clé par appui, pour qu'une requête rejouée ne débite jamais deux fois. */

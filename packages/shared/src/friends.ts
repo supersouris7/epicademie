@@ -52,33 +52,3 @@ export const FamilyFriendSchema = FriendSchema.extend({
   profileName: z.string(),
 });
 export type FamilyFriend = z.infer<typeof FamilyFriendSchema>;
-
-/**
- * Classement « Se comparer » (décision du 21/11/2026) : joueurs de la famille et amis actifs
- * seulement. Chiffres depuis le début, plus l'XP de la semaine en cours.
- */
-export const RankingRowSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  hero: z.enum(HEROES),
-  avatar: AvatarConfigSchema,
-  /** Le joueur qui regarde. */
-  me: z.boolean(),
-  /** Ami d'une autre famille (sinon : famille). */
-  friend: z.boolean(),
-  level: z.number().int(),
-  xp: z.number().int(),
-  weekXp: z.number().int(),
-  /** Chapitres dont le boss est vaincu, et médailles or / diamant parmi eux. */
-  bosses: z.number().int(),
-  goldMedals: z.number().int(),
-  diamondMedals: z.number().int(),
-  /** Notions en or (série sans faute). */
-  goldSkills: z.number().int(),
-  /** Grades de badges atteints (bronze = 1 … diamant = 4, additionnés). */
-  badgePoints: z.number().int(),
-  /** Records des défis, toutes matières : bonnes réponses. */
-  chrono: z.number().int(),
-  survie: z.number().int(),
-});
-export type RankingRow = z.infer<typeof RankingRowSchema>;

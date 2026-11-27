@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { acquired, addDays, applySession, mastery, masteryFromRate, medal, newSkillState, scoreOn20 } from './srs.ts';
+import {
+  acquired,
+  addDays,
+  applySession,
+  mastery,
+  masteryFromRate,
+  medal,
+  newSkillState,
+  scoreOn20,
+  seriesScore,
+} from './srs.ts';
 
 const ok = { answered: 5, correct: 5 };
 const ko = { answered: 5, correct: 2 };
@@ -26,7 +36,7 @@ describe('répétition espacée', () => {
     expect(s2.attempts).toBe(10);
   });
 
-  it('une série ratée remet « à revoir » le lendemain', () => {
+  it('une série pas encore réussie remet « à revoir » le lendemain', () => {
     let s = applySession(newSkillState('x'), ok, '2026-11-16');
     s = applySession(s, ok, '2026-11-18');
     s = applySession(s, ko, '2026-11-20');
@@ -85,8 +95,26 @@ describe('médailles', () => {
       'aucune',
     );
   });
-  it('« Je n’ai pas compris » remet à revoir, même avec de bonnes réponses', () => {
-    const s = applySession(newSkillState('x'), { answered: 5, correct: 5 }, '2026-11-16', { forceFail: true });
-    expect(s).toMatchObject({ stage: 0, due: '2026-11-17' });
+  it('tout réussi avec aide : Or ; sans aide : Diamant, au-dessus ; jamais perdue', () => {
+    expect(seriesScore(5, 5)).toBe(5);
+    expect(seriesScore(4, 4, true)).toBe(6);
+    // « Sans aide » ne vaut que pour une série entièrement réussie.
+    expect(seriesScore(4, 5, true)).toBe(4);
+    const day = '2026-11-16';
+    let s = applySession(newSkillState('x'), ok, day, { series: seriesScore(5, 5) });
+    expect(medal(s)).toBe('or');
+    s = applySession(s, ok, day, { series: seriesScore(5, 5, true) });
+    expect(medal(s)).toBe('diamant');
+    expect(acquired(s)).toBe(true);
+    // Une aide ensuite, ou une série moins réussie : le diamant reste.
+    s = applySession(s, ok, day, { series: seriesScore(5, 5), reviewSoon: true });
+    s = applySession(s, ko, day, { series: 2 });
+    expect(medal(s)).toBe('diamant');
+  });
+  it('demander l’explication n’est jamais une erreur : même progression, notion reproposée dès demain', () => {
+    const day = '2026-11-16';
+    const plain = applySession(newSkillState('x'), ok, day, { series: 5 });
+    const asked = applySession(newSkillState('x'), ok, day, { series: 5, reviewSoon: true });
+    expect(asked).toEqual({ ...plain, due: '2026-11-17' });
   });
 });

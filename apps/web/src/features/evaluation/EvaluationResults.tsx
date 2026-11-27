@@ -168,10 +168,10 @@ function Body(p: {
         )}
       </Section>
 
-      <Section title={r.kind === 'origines' ? 'À consolider pour réussir dans ta classe' : 'À travailler'}>
+      <Section title={r.kind === 'origines' ? 'À consolider pour réussir dans ta classe' : 'Notions à renforcer'}>
         <Chips
           ids={r.kind === 'origines' && r.forNextYear.length > 0 ? r.forNextYear : r.toWork}
-          empty="Rien de fragile repéré, bravo !"
+          empty="Rien à renforcer repéré, bravo !"
         />
         {r.prerequisitesToRework.length > 0 && (
           <>
@@ -183,7 +183,7 @@ function Body(p: {
 
       {(r.notEvaluated.length > 0 || r.notStudied.length > 0) && (
         <Section title="Pas évalué">
-          <p className="text-muted text-lg">Ce n’est pas une mauvaise note : on n’a simplement pas pu le voir.</p>
+          <p className="text-muted text-lg">Cela ne change pas ta note : on n’a simplement pas pu le voir.</p>
           <Chips ids={[...r.notEvaluated, ...r.notStudied]} empty="" />
         </Section>
       )}

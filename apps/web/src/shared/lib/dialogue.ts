@@ -88,7 +88,7 @@ const ALEX: Voice = {
   lastOne: [L('determine', 'Dernière ligne de code !'), L('determine', 'On termine le programme en beauté.')],
   comeback: [
     L('confiant', 'Tu sais ce qui est petit ? Tes chances de gagner.'),
-    L('clin-oeil', 'J’ai calculé tes points faibles. Il y en a beaucoup.'),
+    L('clin-oeil', 'J’ai calculé ton prochain coup. Enfin, presque.'),
     L('rire', 'Un sorcier en armure ? Je vais te mettre à jour, toi !'),
     L('determine', 'Mon canon à plasma a soif de bonnes réponses.'),
     L('confiant', 'Ta capuche, c’est pour cacher que tu révises en secret ?'),
@@ -105,7 +105,10 @@ const ALEX: Voice = {
     L('triste', 'Ouille, ça pique en binaire.'),
     L('surprise', 'Je n’avais pas prévu ça dans mes plans !'),
   ],
-  shield: [L('confiant', 'Bouclier activé. Prévu, calculé.'), L('clin-oeil', 'Raté ! Mon bouclier, c’est du solide.')],
+  shield: [
+    L('confiant', 'Bouclier activé. Prévu, calculé.'),
+    L('clin-oeil', 'Bloqué ! Mon bouclier, c’est du solide.'),
+  ],
   bossArrives: [L('surprise', 'Waouh… il est encore plus grand en vrai.'), L('determine', 'Enfin le grand méchant !')],
   rage: [L('surprise', 'Il… il surchauffe ?!'), L('determine', 'Plus il s’énerve, plus il fait d’erreurs !')],
   victory: [
@@ -165,7 +168,7 @@ const LINA: Voice = {
     L('surprise', 'Il a osé ?!'),
     L('triste', 'Aïe, batterie faible…'),
   ],
-  shield: [L('confiant', 'Mon bouclier électrique te dit non !'), L('rire', 'Raté ! Ça grésille, hein ?')],
+  shield: [L('confiant', 'Mon bouclier électrique te dit non !'), L('rire', 'Bloqué ! Ça grésille, hein ?')],
   bossArrives: [
     L('determine', 'Enfin un adversaire à ma taille !'),
     L('enthousiaste', 'Le grand boss ! Ça va chauffer !'),
@@ -206,7 +209,7 @@ const SORCIER: Record<BossMoment, readonly BossLine[]> = {
     L('moqueur', 'Haha ! Personne ne passe ce chapitre sans perdre ses cœurs !'),
     L('menace', 'Je suis le maître des maths. Toi, t’es le maître des… brouillons ?'),
     L('rire', 'Tu comptes encore sur tes doigts ? Hahaha !'),
-    L('clin-oeil', 'Mes mobs ont faim de mauvaises réponses.'),
+    L('clin-oeil', 'Mes mobs ont faim, ils ne te laisseront pas passer.'),
     L('concentre', 'J’ai préparé des questions spéciales. Spécialement dures.'),
     L('moqueur', 'Même ma capuche est plus maligne que toi !'),
   ],
@@ -225,7 +228,7 @@ const SORCIER: Record<BossMoment, readonly BossLine[]> = {
     L('furieux', 'Tu vas me le payer en fractions !'),
   ],
   onHeroMiss: [
-    L('rire', 'Hahaha ! Mauvaise réponse !'),
+    L('rire', 'Hahaha ! Pas encore !'),
     L('moqueur', 'Tu veux une calculatrice ? Ah non, c’est moi qui les ai !'),
     L('clin-oeil', 'Merci pour le cœur, je le garde en souvenir.'),
     L('rire', 'Même mon π-bot savait celle-là !'),
@@ -266,7 +269,7 @@ const GENERIC_BOSS: Record<BossMoment, readonly BossLine[]> = {
   taunt: [
     L('moqueur', 'Haha ! Personne ne passe ce chapitre sans perdre ses cœurs !'),
     L('menace', 'Mes questions sont les plus coriaces du royaume !'),
-    L('clin-oeil', 'Mes mobs ont faim de mauvaises réponses.'),
+    L('clin-oeil', 'Mes mobs ont faim, ils ne te laisseront pas passer.'),
   ],
   counter: [
     L('colere', 'QUOI ?! On ne me parle pas sur ce ton !'),
@@ -274,10 +277,7 @@ const GENERIC_BOSS: Record<BossMoment, readonly BossLine[]> = {
     L('rire', 'Hahaha ! Mignon. Allez, mes mobs, à table !'),
   ],
   onHit: [L('surprise', 'Hé ! Ça chatouille !'), L('inquiet', 'Il… il connaît la réponse ?!'), L('colere', 'Aïe !')],
-  onHeroMiss: [
-    L('rire', 'Hahaha ! Mauvaise réponse !'),
-    L('clin-oeil', 'Merci pour le cœur, je le garde en souvenir.'),
-  ],
+  onHeroMiss: [L('rire', 'Hahaha ! Pas encore !'), L('clin-oeil', 'Merci pour le cœur, je le garde en souvenir.')],
   onShield: [L('perplexe', 'Un bouclier ?! Ça ne compte pas !'), L('colere', 'Tricheur ! Enfin… malin.')],
   arrival: [
     L('colere', 'Mes mobs… tous battus ?! Bon. Je vais m’en occuper MOI-MÊME !'),
@@ -313,7 +313,7 @@ const PI_BOT: Record<MobMoment, readonly MobLine[]> = {
   onHeroMiss: [
     L('rire', 'Bip ! Bip ! Hihihi !'),
     L('moqueur', 'Je vais le dire au patron !'),
-    L('amour', 'J’adore les mauvaises réponses !'),
+    L('amour', 'J’adore te voir hésiter !'),
     L('idee', 'J’ai une idée : tu devrais réviser !'),
   ],
 };

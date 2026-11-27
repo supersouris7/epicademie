@@ -20,7 +20,6 @@ const FAMILY_SCREENS = [
   '/jouer/survie',
   '/arene',
   '/multi',
-  '/classement',
   '/amis',
   '/heros',
   '/shop',

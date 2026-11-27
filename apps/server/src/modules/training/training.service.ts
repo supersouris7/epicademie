@@ -58,7 +58,7 @@ const UNKNOWN_SKILL = 'Notion inconnue';
 const BOSS_ELSEWHERE = 'Mode Histoire : utiliser /battles';
 const EVALUATION_ELSEWHERE = 'Arène d’évaluation : utiliser /evaluations';
 
-/** Notion la plus ratée (part d'erreurs la plus forte, puis le plus d'erreurs), null sans erreur. */
+/** Notion à renforcer (part de réponses pas encore réussies la plus forte, puis leur nombre), ou null. */
 const weakestSkill = (skills: readonly SessionSkillSummary[]): string | null => {
   const missed = skills.filter((s) => s.correct < s.answered);
   const rate = (s: SessionSkillSummary) => (s.answered - s.correct) / s.answered;
@@ -68,7 +68,14 @@ const weakestSkill = (skills: readonly SessionSkillSummary[]): string | null => 
 
 type FirstAttempt = Awaited<ReturnType<ReturnType<typeof trainingRepo>['firstAttemptsOf']>>[number];
 
+/** Question trouvée : juste du premier coup, ou au second essai après l'indice. */
+const isSolved = (first: FirstAttempt, all: readonly FirstAttempt[]) =>
+  first.correct ||
+  all.some((a) => a.attempt === 2 && a.correct && a.skillId === first.skillId && a.seed === first.seed);
+
 interface SeriesInput {
+  /** Toutes les réponses, seconds essais compris. */
+  readonly all: readonly FirstAttempt[];
   readonly rows: readonly FirstAttempt[];
   readonly regular: readonly FirstAttempt[];
   readonly length: number;
@@ -79,7 +86,7 @@ interface SeriesInput {
 async function updateSkills(
   repo: ReturnType<typeof trainingRepo>,
   session: { readonly profileId: string; readonly confused: readonly string[] },
-  { rows, regular, length, day }: SeriesInput,
+  { all, rows, regular, length, day }: SeriesInput,
 ): Promise<SessionSkillSummary[]> {
   const bySkill = new Map<string, boolean[]>();
   for (const r of rows) bySkill.set(r.skillId, [...(bySkill.get(r.skillId) ?? []), r.correct]);
@@ -88,13 +95,19 @@ async function updateSkills(
   for (const [skillId, answers] of bySkill) {
     const before = states.get(skillId) ?? newSkillState(skillId);
     const correct = answers.filter(Boolean).length;
-    // Série complète sur cette seule notion : ses erreurs du 1er coup fixent la médaille.
+    // Série complète sur cette seule notion : toute réussite compte (Or) ; sans aucune aide, Diamant.
     const firsts = regular.filter((r) => r.skillId === skillId);
     const series =
-      firsts.length >= length ? seriesScore(firsts.filter((r) => r.correct).length, firsts.length) : undefined;
+      firsts.length >= length
+        ? seriesScore(
+            firsts.filter((r) => isSolved(r, all)).length,
+            firsts.length,
+            firsts.every((r) => r.correct && !r.hinted),
+          )
+        : undefined;
     const after = applySession(before, { answered: answers.length, correct }, day, {
       answers,
-      forceFail: session.confused.includes(skillId),
+      reviewSoon: session.confused.includes(skillId),
       series,
     });
     await repo.saveSkillState(session.profileId, after);
@@ -184,28 +197,17 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
     tx: Tx,
     profileId: string,
     p: {
-      readonly sessionId: string;
       readonly defi: DefiKind | null;
-      readonly regular: readonly { readonly correct: boolean; readonly skillId: string; readonly seed: number }[];
+      readonly all: readonly FirstAttempt[];
+      readonly regular: readonly FirstAttempt[];
       readonly correct: number;
       readonly complete: boolean;
     },
   ): Promise<Chest | null> => {
     if (p.defi) return openDefiChest(tx, profileId, p.defi, p.correct);
     if (!p.complete) return null;
-    const solved = await solvedCount(trainingRepo(tx), p.sessionId, p.regular);
+    const solved = p.regular.filter((r) => isSolved(r, p.all)).length;
     return openChest(tx, profileId, { total: p.regular.length, solved, firstTry: p.correct });
-  };
-
-  /** Questions de la série trouvées : justes du 1er coup, ou rattrapées au 2e essai (indice). */
-  const solvedCount = async (
-    repo: ReturnType<typeof trainingRepo>,
-    sessionId: string,
-    regular: readonly { readonly correct: boolean; readonly skillId: string; readonly seed: number }[],
-  ) => {
-    const secondTries = (await repo.attemptsOf(sessionId)).filter((a) => a.attempt === 2 && a.correct);
-    return regular.filter((r) => r.correct || secondTries.some((a) => a.skillId === r.skillId && a.seed === r.seed))
-      .length;
   };
 
   return {
@@ -286,7 +288,7 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
           targetSeconds: question.targetSeconds,
           streak: result.correct ? streak + 1 : 0,
         });
-        await repo.insertAttempt({ ...recorded, xp, attempt: 1 });
+        await repo.insertAttempt({ ...recorded, xp, attempt: 1, hinted: a.helped });
         return { correct: result.correct, invalid: false, xp };
       });
     },
@@ -316,6 +318,7 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
 
         // Score, médailles et répétition espacée : premières réponses seulement.
         const rows = await repo.firstAttemptsOf(sessionId);
+        const all = await repo.attemptsOf(sessionId);
         const regular = rows.filter((r) => !r.variant);
         const variants = rows.filter((r) => r.variant);
         const regularCorrect = regular.filter((r) => r.correct).length;
@@ -331,7 +334,7 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
         const coinsGained = coinsForXp(xpGained);
 
         // Répétition espacée : une mise à jour par notion jouée.
-        const skills = await updateSkills(repo, session, { rows, regular, length, day: clock.today() });
+        const skills = await updateSkills(repo, session, { all, rows, regular, length, day: clock.today() });
 
         // Coffre d'équipement : seulement pour une série complète entièrement juste (une question
         // ratée puis trouvée avec l'indice compte comme trouvée).
@@ -351,8 +354,8 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
         const chest =
           settled?.chest ??
           (await chestOf(tx, profile.id, {
-            sessionId,
             defi,
+            all,
             regular,
             correct: regularCorrect,
             complete: regular.length >= length,

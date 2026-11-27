@@ -54,9 +54,11 @@ export const AnswerSubmitSchema = z.object({
   durationMs: z.number().int().nonnegative().max(3_600_000),
   /**
    * 1 : première réponse (compte pour le score et la progression) ; 2 : second essai après
-   * l'indice (enregistré comme « réussite avec aide », sans XP ni effet sur la médaille).
+   * l'indice (enregistré comme « réussite avec aide », sans XP ; compte pour la médaille d'or).
    */
   attempt: z.union([z.literal(1), z.literal(2)]).default(1),
+  /** L'élève a demandé un indice ou l'explication avant de répondre : jamais une erreur, pas de Diamant. */
+  helped: z.boolean().default(false),
 });
 export type AnswerSubmit = z.infer<typeof AnswerSubmitSchema>;
 
@@ -83,8 +85,8 @@ export const SkillProgressSchema = z.object({
   correct: z.number().int().nonnegative(),
   recent: z.array(z.boolean()).readonly(),
   maintained: z.number().int().nonnegative(),
-  /** Meilleure série sur la notion (0 à 5) : fixe la médaille (5 Or, 4 Argent, 3 Bronze). */
-  best: z.number().int().min(0).max(5),
+  /** Meilleure série sur la notion (0 à 6) : fixe la médaille (6 Diamant, 5 Or, 4 Argent, 3 Bronze). */
+  best: z.number().int().min(0).max(6),
   /** Jour de dernière pratique (fuseau de la famille) : le moteur espace les répétitions. */
   lastPracticed: DaySchema.nullable(),
 });
@@ -113,7 +115,7 @@ export const EpreuveResultSchema = z.object({
   rewarded: z.boolean(),
   /** Chapitre déjà validé avant cette épreuve. */
   alreadyValidated: z.boolean(),
-  /** Notion la plus ratée (conseil d'entraînement), null si aucune erreur. */
+  /** Notion à renforcer en priorité (conseil d'entraînement), null si tout est réussi. */
   weakestSkillId: z.string().nullable(),
 });
 export type EpreuveResult = z.infer<typeof EpreuveResultSchema>;

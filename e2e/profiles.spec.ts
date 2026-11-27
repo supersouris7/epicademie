@@ -69,9 +69,28 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   for (const gone of ['Révisions du jour', 'Atelier des erreurs', 'Défi du jour', 'Bilan']) {
     await expect(page.getByRole('button', { name: new RegExp(gone) })).toHaveCount(0);
   }
+  // Les défis se jouent sur les notions réussies : les tables sont données « en or » à ce profil neuf.
+  await page.route('**/api/v1/profiles/*/skills', (route) =>
+    route.fulfill({
+      json: [
+        {
+          skillId: 'm5-tables',
+          stage: 1,
+          due: null,
+          attempts: 5,
+          correct: 5,
+          recent: [true],
+          maintained: 0,
+          best: 5,
+          lastPracticed: null,
+        },
+      ],
+    }),
+  );
+  await page.reload(); // la progression est gardée en cache
   await page.getByRole('button', { name: /^Survie/ }).click();
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
-  await expect(page.getByText(/3 cœurs. Chaque erreur coûte un cœur et casse ta série/)).toBeVisible();
+  await expect(page.getByText(/Tu perds un cœur et la série repart/)).toBeVisible();
   await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
   await expect(page.getByRole('img', { name: '3 cœurs sur 3' })).toBeVisible();
   await page.getByRole('button', { name: 'Arrêter' }).click();
@@ -100,17 +119,18 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByLabel(/^[1-9]\d* points$/)).toBeVisible();
   await expect(page.getByRole('timer')).toHaveText(/⏱ 6\d s/);
   await expect(page.getByRole('status')).toBeHidden();
-  // Erreur : −5 s et série perdue.
+  // Pas encore : −5 s, la série repart.
   await answer('1');
   await expect(page.getByText('−5 s', { exact: true })).toBeVisible();
-  await expect(page.getByRole('status')).toContainText('−5 s, série perdue');
+  await expect(page.getByRole('status')).toContainText('Oups ! −5 s, la série repart');
   await expect(page.getByRole('timer')).toHaveText(/⏱ [56]\d s/);
   // Fin de partie : l'horloge saute au-delà du temps restant.
   await page.clock.fastForward(70_000);
   await expect(page.getByRole('heading', { name: /\d+ points/ })).toBeVisible();
-  await page.getByRole('button', { name: /Revoir mes erreurs \(1\)/ }).click();
-  await expect(page.getByRole('list', { name: 'Mes erreurs' })).toContainText('Calcule 3 × 2.');
-  await expect(page.getByRole('list', { name: 'Mes erreurs' })).toContainText('Bonne réponse : 6');
+  await page.getByRole('button', { name: /Questions à revoir \(1\)/ }).click();
+  await expect(page.getByRole('list', { name: 'Questions à revoir' })).toContainText('Calcule 3 × 2.');
+  await expect(page.getByRole('list', { name: 'Questions à revoir' })).toContainText('Bonne réponse : 6');
+  await page.unroute('**/api/v1/profiles/*/skills');
   await page.goto('/hub');
   // Mode d'abord, matière ensuite.
   await page.getByRole('button', { name: /^Entraînement/ }).click();

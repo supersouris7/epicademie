@@ -6,9 +6,10 @@ const MEDAL_ICONS: Record<Medal, string> = {
   bronze: 'rewards-medals-bronze',
   argent: 'rewards-medals-argent',
   or: 'rewards-medals-or',
+  diamant: 'rewards-medals-diamant',
 };
 
-/** Médaille d'une notion (bronze 2 erreurs, argent 1 erreur, or sans faute ; emplacement vide sinon). */
+/** Médaille d'une notion (bronze, argent, or avec aide, diamant sans aide ; emplacement vide sinon). */
 export function MedalBadge({
   medal,
   size = 40,
