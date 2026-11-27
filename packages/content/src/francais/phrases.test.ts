@@ -51,8 +51,9 @@ describe('francais cm1 — types et formes de phrases', () => {
           if (q.traps.length >= 2) withTraps.add(level);
           for (const t of q.traps) expect(t.why.trim().length).toBeGreaterThan(5);
         }
-      // Tous les niveaux sauf les niveaux à association/ordre (pas de piège ciblé possible).
-      expect(withTraps.size, s.id).toBeGreaterThanOrEqual(3);
+      // Sauf association, ordre et texte à trous (pas de piège ciblé possible) :
+      // la ponctuation n’a que des trous à partir du niveau 3.
+      expect(withTraps.size, s.id).toBeGreaterThanOrEqual(s.id === 'fcm1-ponctuation-fin' ? 2 : 3);
     }
   });
 
@@ -89,7 +90,13 @@ describe('francais cm1 — types et formes de phrases', () => {
     each('fcm1-types-phrases', 5, (q) => {
       const answers = [DECLARATIVES, INTERROGATIVES, IMPERATIVES].map((bank) => String(count(q, bank)));
       expect(answers.reduce((sum, n) => sum + Number(n), 0)).toBe(lines(q).length);
+      if (q.answer.kind !== 'cloze') throw new Error('texte à trous attendu');
+      // Les nombres se choisissent : le clavier de l’application n’a pas de chiffres.
+      q.answer.blanks.forEach((b, i) => expect(b.mode === 'list' && b.options).toContain(answers[i]));
       expect(check(q, { kind: 'cloze', answers }).correct).toBe(true);
+      expect(q.steps.at(-1)).toContain(
+        `déclaratives ${answers[0]}, interrogatives ${answers[1]}, impératives ${answers[2]}`,
+      );
     });
   });
 
@@ -202,8 +209,44 @@ describe('francais cm1 — types et formes de phrases', () => {
         if (q.answer.kind === 'choice') {
           expect(q.answer.options[q.answer.correct]).toBe('.');
           expect(q.answer.options).not.toContain('!');
-        } else expect(typed(q, '.')).toBe(true);
+        } else expect(check(q, { kind: 'cloze', answers: ['.'] }).correct).toBe(true);
       });
+  });
+
+  it('saisie : chaque réponse écrite attendue est tapable avec le clavier de l’application', () => {
+    // Touches de `Keyboard.tsx` : lettres, accents, apostrophe, trait d’union et espace.
+    const typable = (text: string) => /^[\p{L} \-’]+$/u.test(text);
+    for (const s of skills)
+      for (const level of [1, 2, 3, 4, 5] as const)
+        each(s.id, level, (q) => {
+          const expected =
+            q.answer.kind === 'text'
+              ? [q.answer.accepted]
+              : q.answer.kind === 'cloze'
+                ? q.answer.blanks.flatMap((b) => (b.mode === 'text' ? [b.accepted] : []))
+                : [];
+          for (const accepted of expected) expect(accepted.some(typable), `${s.id} L${level}`).toBe(true);
+          // La réponse montrée dans la dernière bulle, signe de fin mis à part, est acceptée.
+          if (q.answer.kind === 'text') {
+            const shown = /\*\*(.+?)\*\*/.exec(q.steps.at(-1) ?? '')?.[1] ?? '';
+            const keys = shown.replace(/ ?[.?!]$/, '');
+            expect(typable(keys), shown).toBe(true);
+            expect(typed(q, keys), shown).toBe(true);
+          }
+        });
+  });
+
+  it('types, niveau 3 : « injonctive » est acceptée, aucune écriture ne répète « phrase »', () => {
+    let injonctives = 0;
+    each('fcm1-types-phrases', 3, (q) => {
+      const accepted = q.answer.kind === 'text' ? q.answer.accepted : [];
+      for (const a of accepted) expect(a).not.toContain('phrase phrase');
+      if (!accepted.includes('impérative')) return;
+      injonctives++;
+      for (const a of ['injonctive', 'phrase injonctive', 'une phrase injonctive', 'type injonctif'])
+        expect(typed(q, a), a).toBe(true);
+    });
+    expect(injonctives).toBeGreaterThan(0);
   });
 
   it('saisie : accents, apostrophe et signe de fin tolérés, la faute typique refusée', () => {

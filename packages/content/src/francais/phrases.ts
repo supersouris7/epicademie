@@ -49,30 +49,23 @@ const CLUE: Record<TypeId, string> = {
   interrogative: 'Elle finit par un point d’interrogation.',
   imperative: 'Le verbe est au début, sans sujet.',
 };
-const NAMES: Record<TypeId, readonly string[]> = {
-  declarative: ['déclarative', 'declarative', 'phrase déclarative', 'phrase declarative', 'déclaratif', 'declaratif'],
-  interrogative: ['interrogative', 'phrase interrogative', 'interrogatif'],
-  imperative: [
-    'impérative',
-    'imperative',
-    'phrase impérative',
-    'phrase imperative',
-    'impératif',
-    'imperatif',
-    'injonctive',
-    'injonctif',
-  ],
+/** Adjectifs acceptés pour chaque type (« phrase … »), avec ou sans accents ; le premier est affiché. */
+const FEMININS: Record<TypeId, readonly [string, ...string[]]> = {
+  declarative: ['déclarative', 'declarative'],
+  interrogative: ['interrogative'],
+  imperative: ['impérative', 'imperative', 'injonctive'],
 };
-/** Toutes les écritures d’un type : le nom seul, ou dans « une phrase … », « type … ». */
-const typeAnswers = (type: TypeId): string[] => {
-  const [accent, plain] = NAMES[type];
-  const masculine = NAMES[type].filter((n) => n.endsWith('if') && !n.includes(' '));
-  return [
-    ...NAMES[type],
-    ...[accent, plain].map((n) => `une phrase ${n}`),
-    ...masculine.flatMap((n) => [`type ${n}`, `de type ${n}`]),
-  ];
+/** Les mêmes au masculin (« type … »). */
+const MASCULINS: Record<TypeId, readonly string[]> = {
+  declarative: ['déclaratif', 'declaratif'],
+  interrogative: ['interrogatif'],
+  imperative: ['impératif', 'imperatif', 'injonctif'],
 };
+/** Toutes les écritures d’un type : l’adjectif seul, ou dans « une phrase … », « type … ». */
+const typeAnswers = (type: TypeId): string[] => [
+  ...FEMININS[type].flatMap((n) => [n, `phrase ${n}`, `une phrase ${n}`]),
+  ...MASCULINS[type].flatMap((n) => [n, `type ${n}`, `de type ${n}`]),
+];
 
 /** Signe de fin de chaque type, avec l'espace avant « ? » et « ! ». */
 const SIGN = { declarative: '.', interrogative: ' ?', imperative: '.', exclamative: ' !' } as const;
@@ -114,8 +107,8 @@ function phraseOf(rng: Rng, type: TypeId): string {
   return rng.pick(bank);
 }
 
-/** Petits nombres écrits en lettres. */
-const EN_LETTRES = ['zéro', 'un', 'deux', 'trois', 'quatre', 'cinq'] as const;
+/** Nombres proposés au niveau 5 : chaque type compte de une à trois phrases. */
+const NOMBRES = ['1', '2', '3'] as const;
 
 const whyNotType = (wrong: TypeId, actual: TypeId) => `Ce n’est pas une ${LABEL[wrong]} : ici, ${REASON[actual]}.`;
 
@@ -174,12 +167,12 @@ function typesDraft(rng: Rng, level: Level): QuestionDraft {
       return {
         prompt: `Écris le nom du type de cette phrase : « ${phrase} »`,
         answer: { kind: 'text', accepted: typeAnswers(type) },
-        traps: TYPES.filter((x) => x !== type).map((x) => textTrap(first(NAMES[x]), whyNotType(x, type))),
+        traps: TYPES.filter((x) => x !== type).map((x) => textTrap(FEMININS[x][0], whyNotType(x, type))),
         hint: 'Que fait cette phrase : informer, questionner ou ordonner ?',
         steps: [
           `Lis la phrase : « ${phrase} »`,
           `Observe un indice. ${CLUE[type]}`,
-          `Écris le nom du type : **${NAMES[type][0]}**.`,
+          `Écris le nom du type : **${FEMININS[type][0]}**.`,
         ],
       };
     }
@@ -211,9 +204,10 @@ function typesDraft(rng: Rng, level: Level): QuestionDraft {
         ...pickN(rng, INTERROGATIVES, q).map((x) => withSign(x, 'interrogative')),
         ...pickN(rng, DECLARATIVES, d).map((x) => withSign(x, 'declarative')),
       ]);
-      const count = (n: number) => ({ mode: 'text' as const, accepted: [String(n), at(EN_LETTRES, n)] });
+      // Choix dans une liste : le clavier des réponses écrites n’a pas de chiffres.
+      const count = (n: number) => ({ mode: 'list' as const, options: [...NOMBRES], correct: n - 1 });
       return {
-        prompt: 'Lis ces phrases. Compte les phrases de chaque type.',
+        prompt: 'Lis ces phrases. Compte chaque type, puis choisis le nombre.',
         figure: document('Quelques phrases', lines),
         answer: {
           kind: 'cloze',
@@ -225,7 +219,7 @@ function typesDraft(rng: Rng, level: Level): QuestionDraft {
           'Compte les questions : elles finissent par un point d’interrogation.',
           'Compte les ordres et les conseils : ils n’ont pas de sujet.',
           'Compte les autres lignes : elles donnent une information.',
-          `Écris les trois nombres : **${d}, ${q}, ${k}**.`,
+          `Choisis : **déclaratives ${d}, interrogatives ${q}, impératives ${k}**.`,
         ],
       };
     }
@@ -673,6 +667,12 @@ const EASY_WRONG: Record<Fin, readonly string[]> = {
 const bankOf = (fin: Fin) =>
   fin === 'declarative' ? INFORMATIONS : fin === 'interrogative' ? INTERROGATIVES : EXCLAMATIVES;
 const whyWrongMark = (mark: string, fin: Fin) => `${WHY_MARK[mark]} Ici, ${FIN_REASON[fin]}.`;
+/** Trou en liste : le clavier des réponses écrites n’a aucun signe de ponctuation. */
+const markBlank = (fin: Fin) => ({
+  mode: 'list' as const,
+  options: FINS.map((f) => MARK[f]),
+  correct: FINS.indexOf(fin),
+});
 /** La phrase suivie d'un signe, à la française : « . » et « , » collés, les autres après une espace. */
 const marked = (text: string, mark: string) => `${text}${mark === '.' || mark === ',' ? '' : ' '}${mark}`;
 
@@ -715,30 +715,29 @@ function ponctuationDraft(rng: Rng, level: Level): QuestionDraft {
     }
     case 3:
       return {
-        prompt: `Écris le signe de fin. ${contexte} : « ${phrase} » (sans signe)`,
-        answer: { kind: 'text', accepted: [mark] },
-        traps: WRONG_MARKS[fin].slice(0, 2).map((w) => textTrap(w, whyWrongMark(w, fin))),
+        prompt: `Choisis le signe qui manque. ${contexte} : « ${phrase} » (sans signe)`,
+        answer: { kind: 'cloze', parts: ['Signe de fin : ', ''], blanks: [markBlank(fin)] },
         hint: 'Trouve d’abord ce que fait la phrase.',
-        steps: [lire, penser, `Écris le signe : **${mark}**`],
+        steps: [lire, penser, `Choisis le signe : **${mark}**`],
       };
     case 4: {
       const order = rng.shuffle(FINS);
       const sentences = order.map((f) => `${intention(f)} : « ${rng.pick(bankOf(f))} »`);
       return {
-        prompt: 'Écris le signe de fin de chacune de ces trois phrases.',
+        prompt: 'Choisis le signe de fin de chacune de ces trois phrases.',
         // Les phrases sont dans la figure ; les trous ne les répètent pas.
         figure: document('Sans signe de fin', sentences),
         answer: {
           kind: 'cloze',
           parts: ['Phrase 1 : ', ' · Phrase 2 : ', ' · Phrase 3 : ', ''],
-          blanks: order.map((f) => ({ mode: 'text' as const, accepted: [MARK[f]] })),
+          blanks: order.map(markBlank),
         },
         hint: 'Traite une phrase à la fois : que fait-elle ?',
         steps: [
           'Lis chaque phrase et regarde qui parle.',
           'Cherche la question, puis la phrase qui montre une émotion.',
           'Garde le point pour la phrase qui informe.',
-          `Écris dans l’ordre : **${order.map((f) => MARK[f]).join(' ')}**`,
+          `Choisis dans l’ordre : **${order.map((f) => MARK[f]).join(' ')}**`,
         ],
       };
     }
@@ -747,19 +746,19 @@ function ponctuationDraft(rng: Rng, level: Level): QuestionDraft {
       const stock = new Map(FINS.map((f) => [f, rng.shuffle(bankOf(f))]));
       const lines = kinds.map((f, i) => `${intention(f)} : « ${at(stock.get(f) ?? [], i)} »`);
       return {
-        prompt: 'Lis ces phrases. Écris le signe de fin de chaque ligne.',
+        prompt: 'Lis ces phrases. Choisis le signe de fin de chaque ligne.',
         figure: document('Sans signe de fin', lines),
         answer: {
           kind: 'cloze',
           parts: ['Ligne 1 : ', ' · Ligne 2 : ', ' · Ligne 3 : ', ' · Ligne 4 : ', ''],
-          blanks: kinds.map((f) => ({ mode: 'text' as const, accepted: [MARK[f]] })),
+          blanks: kinds.map(markBlank),
         },
         hint: 'Attention : un même signe peut servir deux fois.',
         steps: [
           'Lis chaque ligne et regarde qui parle.',
           'Repère les questions et les émotions vives.',
           'Garde le point pour les informations.',
-          `Écris dans l’ordre : **${kinds.map((f) => MARK[f]).join(' ')}**`,
+          `Choisis dans l’ordre : **${kinds.map((f) => MARK[f]).join(' ')}**`,
         ],
       };
     }
