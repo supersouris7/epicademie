@@ -499,8 +499,9 @@ const EST_UN: Record<TypeSujet, string> = {
   gn: 'un groupe nominal',
   noms: 'formé de plusieurs noms',
 };
+/** Face à « plusieurs noms », un sujet à piège n'a que l'explication de son piège. */
 const whyType = (s: Sujet, wrong: TypeSujet) =>
-  `Le sujet « ${s.s} » n’est pas ${EST_UN[wrong]}. ${WHY_TYPE[s.type][wrong]}`;
+  `Le sujet « ${s.s} » n’est pas ${EST_UN[wrong]}. ${(wrong === 'noms' ? s.piege : undefined) ?? WHY_TYPE[s.type][wrong]}`;
 const phraseS = (s: Sujet, pre?: string) => (pre ? `${pre} ${lowerFirst(s.s)} ${s.reste}.` : `${s.s} ${s.reste}.`);
 const byType = (type: TypeSujet) => SUJETS.filter((s) => s.type === type);
 
@@ -508,10 +509,7 @@ const byType = (type: TypeSujet) => SUJETS.filter((s) => s.type === type);
 const observeType = (s: Sujet): string => {
   if (s.type === 'pronom') return `Cherche un nom dans « ${s.s} » : aucun.`;
   if (s.type === 'noms') return `Compte les noms de « ${s.s} » : plusieurs.`;
-  const [premier = '', second = ''] = [...(s.piege ?? '').matchAll(/« ([^»]+) »/g)].map((m) => m[1]);
-  return s.piege
-    ? `Remarque que « ${premier} » complète « ${second} » : un groupe.`
-    : `Compte les noms de « ${s.s} » : un seul.`;
+  return `Compte les noms de « ${s.s} » : un seul.`;
 };
 
 const stepsType = (s: Sujet, action: 'Choisis' | 'Écris', pre?: string) => [
@@ -573,7 +571,7 @@ function typesSujetsDraft(rng: Rng, level: Level): QuestionDraft {
     case 3: {
       const s = rng.pick(SUJETS);
       return {
-        prompt: `Trouve le sujet et écris sa sorte (pronom personnel, groupe nominal ou plusieurs noms) : « ${phraseS(s)} »`,
+        prompt: `Trouve le sujet et écris sa sorte : « ${phraseS(s)} »`,
         answer: { kind: 'text', accepted: ACCEPTED_TYPE[s.type] },
         traps: TYPES.filter((t) => t !== s.type).map((t) => textTrap(at(ACCEPTED_TYPE[t], 0), whyType(s, t))),
         hint: 'Trouve d’abord le sujet. Compte ensuite ses noms.',
@@ -584,14 +582,11 @@ function typesSujetsDraft(rng: Rng, level: Level): QuestionDraft {
       const type = rng.pick(TYPES);
       const s = type === 'gn' ? rng.pick(SUJETS_PIEGES) : rng.pick(byType(type));
       const pre = rng.pick(AVANT_SUJET);
-      const piege = s.piege;
       const wrongs = TYPES.filter((t) => t !== type);
       return {
-        prompt: `Attention au piège ! Écris la sorte du sujet (pronom personnel, groupe nominal ou plusieurs noms) : « ${phraseS(s, pre)} »`,
+        prompt: `Attention au piège ! Écris la sorte du sujet : « ${phraseS(s, pre)} »`,
         answer: { kind: 'text', accepted: ACCEPTED_TYPE[type] },
-        traps: wrongs.map((t) =>
-          textTrap(at(ACCEPTED_TYPE[t], 0), t === 'noms' && piege ? `${whyType(s, t)} ${piege}` : whyType(s, t)),
-        ),
+        traps: wrongs.map((t) => textTrap(at(ACCEPTED_TYPE[t], 0), whyType(s, t))),
         hint: 'Supprime le groupe qui dit quand. Regarde les noms du sujet.',
         steps: stepsType(s, 'Écris', pre),
       };

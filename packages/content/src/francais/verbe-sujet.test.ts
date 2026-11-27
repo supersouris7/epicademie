@@ -9,11 +9,14 @@ import { FCM1_VERBE_SUJET } from './verbe-sujet.ts';
 import {
   AVANT_SUJET,
   FAITS_VS,
+  GROUPES_SUJETS,
   NOMS_VERBES,
   PHRASES_DOUBLES,
   PHRASES_INFINITIF,
   PHRASES_NEGATIVES,
   PHRASES_SIMPLES,
+  SUJETS,
+  SUJETS_PIEGES,
   VERBES_IRREGULIERS,
   VERBES_REGULIERS,
   sentence,
@@ -178,6 +181,28 @@ describe('repasse du chapitre', () => {
       correct.add(q.answer.correct);
     });
     expect(correct.size).toBe(2);
+  });
+
+  it('groupes nominaux du CM1 seulement : aucun complément du nom parmi les sujets', () => {
+    const groupes = [...GROUPES_SUJETS.map((g) => g.gs), ...[...SUJETS, ...SUJETS_PIEGES].map((x) => x.s)];
+    for (const g of groupes) expect(g).not.toMatch(/ (de|du|des|d’|à|au|aux) /);
+  });
+
+  it('types de sujets, saisies : la consigne ne liste pas les réponses', () => {
+    for (const level of [3, 4] as const)
+      each('fcm1-types-sujets', level, (q) => expect(q.prompt).not.toMatch(/pronom|groupe nominal|plusieurs noms/i));
+  });
+
+  it('types de sujets, niveau 4 : l’explication d’un piège ne se contredit pas', () => {
+    let pieges = 0;
+    each('fcm1-types-sujets', 4, (q) => {
+      const s = SUJETS_PIEGES.find((x) => q.prompt.toLowerCase().includes(`${x.s} ${x.reste}`.toLowerCase()));
+      if (!s) return;
+      pieges++;
+      const why = q.traps.find((t) => 'text' in t && t.text === 'plusieurs noms')?.why;
+      expect(why).toBe(`Le sujet « ${s.s} » n’est pas formé de plusieurs noms. ${s.piege ?? ''}`);
+    });
+    expect(pieges).toBeGreaterThan(0);
   });
 
   it('« Qui est-ce qui » est suivi d’un verbe au singulier bien écrit', () => {

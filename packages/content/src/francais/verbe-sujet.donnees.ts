@@ -209,13 +209,13 @@ export interface GroupeSujet {
 export const GROUPES_SUJETS: readonly GroupeSujet[] = [
   { gs: 'Le petit chat', noyau: 'chat', reste: 'dort sur le canapé', verbe: 'dort' },
   { gs: 'Mon frère aîné', noyau: 'frère', reste: 'range sa chambre', verbe: 'range' },
-  { gs: 'Les oiseaux du jardin', noyau: 'oiseaux', reste: 'chantent très fort', verbe: 'chantent' },
+  { gs: 'Les oiseaux bleus', noyau: 'oiseaux', reste: 'chantent très fort', verbe: 'chantent' },
   { gs: 'La maîtresse', noyau: 'maîtresse', reste: 'lit une histoire à la classe', verbe: 'lit' },
   { gs: 'Ma petite sœur', noyau: 'sœur', reste: 'joue du piano', verbe: 'joue' },
-  { gs: 'Les élèves de CM1', noyau: 'élèves', reste: 'entrent en classe', verbe: 'entrent' },
+  { gs: 'Les nouveaux élèves', noyau: 'élèves', reste: 'entrent en classe', verbe: 'entrent' },
   { gs: 'Un gros nuage gris', noyau: 'nuage', reste: 'cache le soleil', verbe: 'cache' },
   { gs: 'Mes deux cousins', noyau: 'cousins', reste: 'jouent dans la cour', verbe: 'jouent' },
-  { gs: 'Le chien de mon voisin', noyau: 'chien', reste: 'aboie très fort', verbe: 'aboie' },
+  { gs: 'Le chien noir', noyau: 'chien', reste: 'aboie très fort', verbe: 'aboie' },
   { gs: 'Les petits poissons rouges', noyau: 'poissons', reste: 'nagent dans le bocal', verbe: 'nagent' },
 ];
 
@@ -230,7 +230,7 @@ export interface Sujet {
   readonly s: string;
   readonly reste: string;
   readonly type: TypeSujet;
-  /** Pourquoi ce n'est pas « plusieurs noms » (groupe nominal avec un nom qui en complète un autre). */
+  /** Pourquoi ce n'est pas « plusieurs noms » (groupe nominal au pluriel, avec un adjectif). */
   readonly piege?: string;
 }
 
@@ -255,37 +255,37 @@ export const SUJETS: readonly Sujet[] = [
   { s: 'Les filles, les garçons et la maîtresse', reste: 'partent en sortie', type: 'noms' },
 ];
 
-/** Groupes nominaux qui contiennent deux noms sans être « plusieurs noms » : un nom complète l'autre. */
+/** Groupes nominaux au pluriel avec un adjectif : plusieurs êtres ou choses, mais un seul nom. */
 export const SUJETS_PIEGES: readonly Sujet[] = [
   {
-    s: 'Les oiseaux du jardin',
-    reste: 'chantent très fort',
+    s: 'Les petits oiseaux',
+    reste: 'volent dans le ciel',
     type: 'gn',
-    piege: '« jardin » complète « oiseaux » (les oiseaux du jardin) : les deux noms ne sont pas reliés par « et ».',
+    piege: '« oiseaux » est au pluriel, mais c’est un seul nom : « petits » est un adjectif.',
   },
   {
-    s: 'Le chien de mon voisin',
-    reste: 'aboie très fort',
+    s: 'Les chiens noirs',
+    reste: 'courent dans le pré',
     type: 'gn',
-    piege: '« voisin » complète « chien » (le chien de mon voisin) : les deux noms ne sont pas reliés par « et ».',
+    piege: '« chiens » est au pluriel, mais c’est un seul nom : « noirs » est un adjectif.',
   },
   {
-    s: 'Le vélo de mon père',
-    reste: 'est dans la cour',
+    s: 'Les jolies fleurs',
+    reste: 'poussent dans le jardin',
     type: 'gn',
-    piege: '« père » complète « vélo » (le vélo de mon père) : les deux noms ne sont pas reliés par « et ».',
+    piege: '« fleurs » est au pluriel, mais c’est un seul nom : « jolies » est un adjectif.',
   },
   {
-    s: 'La maison de mes grands-parents',
-    reste: 'est près de la mer',
+    s: 'Les poissons rouges',
+    reste: 'tournent dans le bocal',
     type: 'gn',
-    piege: '« grands-parents » complète « maison » : les deux noms ne sont pas reliés par « et ».',
+    piege: '« poissons » est au pluriel, mais c’est un seul nom : « rouges » est un adjectif.',
   },
   {
-    s: 'Le cahier de ma sœur',
-    reste: 'est sur la table',
+    s: 'Les nouveaux voisins',
+    reste: 'ferment la porte',
     type: 'gn',
-    piege: '« sœur » complète « cahier » : les deux noms ne sont pas reliés par « et ».',
+    piege: '« voisins » est au pluriel, mais c’est un seul nom : « nouveaux » est un adjectif.',
   },
 ];
 
