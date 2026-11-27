@@ -67,6 +67,41 @@ describe('anglais cm1 : le temps qui passe', () => {
     }
   });
 
+  it('couleurs : un mot au niveau 3, puis « a » + couleur + nom au singulier au niveau 4', () => {
+    for (let seed = 1; seed <= 100; seed++) {
+      const word = generate('acm1-couleurs', 3, seed).answer;
+      if (word.kind !== 'text') throw new Error('saisie attendue');
+      expect(word.accepted[0]).toMatch(/^[a-z]+$/);
+      const q = generate('acm1-couleurs', 4, seed);
+      if (q.answer.kind !== 'text') throw new Error('saisie attendue');
+      const good = q.answer.accepted[0] ?? '';
+      expect(good, q.prompt).toMatch(/^a (red|blue|green|black|white|yellow) (cat|bag|ball|car|bird)$/);
+      const [, colour = '', noun = ''] = good.split(' ');
+      for (const text of [`a ${noun} ${colour}`, `${colour} ${noun}`])
+        expect(check(q, { kind: 'text', text }).correct, text).toBe(false);
+    }
+  });
+
+  it('saisons, niveau 5 : indices en vocabulaire simple, deux par saison', () => {
+    const known = new Set(
+      (
+        'new flowers open the trees are green again cold days end we see it’s hot and sunny swim in sea no school ' +
+        'eat ice cream sun leaves now brown orange windy red on ground very snowy play snow christmas want'
+      ).split(' '),
+    );
+    const bySeason = new Map<string, Set<string>>();
+    for (let seed = 1; seed <= 300; seed++) {
+      const q = generate('acm1-saisons', 5, seed);
+      if (q.figure?.kind !== 'document' || q.answer.kind !== 'text') throw new Error('document attendu');
+      const text = q.figure.lines.join(' ');
+      for (const w of text.toLowerCase().split(/[^a-z’]+/)) if (w) expect(known.has(w), `${w} : ${text}`).toBe(true);
+      const season = q.answer.accepted[0] ?? '';
+      bySeason.set(season, (bySeason.get(season) ?? new Set()).add(text));
+    }
+    expect([...bySeason.keys()].sort()).toEqual(SEASONS.map((s) => s.en).sort());
+    for (const [season, texts] of bySeason) expect(texts.size, season).toBe(2);
+  });
+
   it('date : ordinaux en lettres acceptés, calcul du niveau 5 vérifié', () => {
     const words: Readonly<Record<string, string>> = { 14: 'fourteenth', 28: 'twenty-eighth', 31: 'thirty-first' };
     const seen = new Set<string>();

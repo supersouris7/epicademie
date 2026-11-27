@@ -232,6 +232,15 @@ const PLURAL_FR: Readonly<Record<string, readonly [string, string]>> = {
   white: ['blancs', 'blanches'],
   yellow: ['jaunes', 'jaunes'],
 };
+/** Mêmes couleurs au singulier : [masculin, féminin]. */
+const SINGULAR_FR: Readonly<Record<string, readonly [string, string]>> = {
+  red: ['rouge', 'rouge'],
+  blue: ['bleu', 'bleue'],
+  green: ['vert', 'verte'],
+  black: ['noir', 'noire'],
+  white: ['blanc', 'blanche'],
+  yellow: ['jaune', 'jaune'],
+};
 /** « orange » s’écrit pareil en français : la question donnerait la réponse. */
 const GUESSABLE = COLOURS.filter((c) => c.en !== c.fr);
 const colourWord = (en: string): Word => {
@@ -243,8 +252,6 @@ const frColour = (c: Word, t: Thing) => at(PLURAL_FR[c.en] ?? [], t.feminine ? 1
 const NUMBERS = [
   [2, 'two'],
   [3, 'three'],
-  [4, 'four'],
-  [5, 'five'],
 ] as const;
 
 const colours: Skill = {
@@ -254,9 +261,9 @@ const colours: Skill = {
   version: 2,
   lesson: {
     memo: [
-      'Apprends les couleurs : red (rouge), yellow (jaune), blue (bleu), green (vert), pink (rose), purple (violet) ; orange (orange), brown (marron), black (noir), white (blanc), grey (gris).',
-      'La couleur est un **adjectif** : place-la avant le nom, sans s.',
-      'Exemple : three black cats.',
+      'Apprends : red (rouge), yellow (jaune), blue (bleu), green (vert), pink (rose).',
+      'Retiens aussi : purple (violet), orange (orange), brown (marron), black (noir), white (blanc), grey (gris).',
+      'La couleur est un **adjectif** : place-la avant le nom, sans s, comme dans « three black cats ».',
     ],
     source: source('Mots : British Council, « Colours flashcards » et « Adjectives ».'),
     sources: ['lve-cm-2026', 'bck-flashcards-colours', 'bck-adjectives'],
@@ -281,23 +288,27 @@ const colours: Skill = {
     if (level === 2) return understand(rng, GUESSABLE, 'une couleur', SAY.colours);
     if (level === 3) return write(rng, GUESSABLE, 'une couleur', SAY.colours);
     if (level === 4) {
+      // Une seule difficulté de plus que le niveau 3 : placer la couleur avant un nom au singulier.
       const thing = rng.pick(THINGS);
-      const c = colourWord(rng.pick(Object.keys(PLURAL_FR)));
-      const [n, num] = rng.pick(NUMBERS);
-      const good = `${num} ${c.en} ${thing.many}`;
+      const [wanted, wrong] = some(rng, Object.keys(SINGULAR_FR), 2) as [string, string];
+      const c = colourWord(wanted);
+      const other = colourWord(wrong);
+      const gender = thing.feminine ? 1 : 0;
+      const article = thing.feminine ? 'une' : 'un';
+      const good = `a ${c.en} ${thing.one}`;
       return {
-        prompt: `Écris en anglais : « ${n} ${thing.fr} ${frColour(c, thing)} ». Aide : « ${thing.frOne} » se dit « ${thing.one} ».`,
-        answer: { kind: 'text', accepted: dotted([good, `${n} ${c.en} ${thing.many}`]) },
+        prompt: `Écris en anglais : « ${article} ${thing.frOne} ${at(SINGULAR_FR[c.en] ?? [], gender)} ». Aide : « ${article} ${thing.frOne} » se dit « a ${thing.one} ».`,
+        answer: { kind: 'text', accepted: dotted([good]) },
         traps: [
-          { text: `${num} ${thing.many} ${c.en}`, why: 'En anglais, la couleur se place avant le nom.' },
-          { text: `${num} ${c.en}s ${thing.many}`, why: 'Un adjectif anglais ne prend jamais de s au pluriel.' },
-          { text: `${num} ${c.en} ${thing.one}`, why: 'Il y en a plusieurs : le nom prend un s.' },
+          { text: `a ${thing.one} ${c.en}`, why: 'En anglais, la couleur se place avant le nom.' },
+          { text: `${c.en} ${thing.one}`, why: `Il manque le petit mot « a », qui veut dire « ${article} ».` },
+          { text: `a ${other.en} ${thing.one}`, why: `« ${other.en} » veut dire « ${other.fr} ».` },
         ],
-        hint: 'Écris dans l’ordre : le nombre, la couleur, puis le nom.',
+        hint: 'Écris dans l’ordre : « a », la couleur, puis le nom.',
         steps: [
-          `Écris d’abord le nombre : « ${num} ».`,
-          `Place ensuite la couleur, sans s : « ${c.en} ».`,
-          `Ajoute le nom au **pluriel**, avec un s : « ${thing.many} ».`,
+          `Écris d’abord « a » : il veut dire « ${article} ».`,
+          `Place ensuite la couleur : « ${c.en} ».`,
+          `Ajoute le nom après la couleur : « ${thing.one} ».`,
           `Réponds : **${good}**.`,
         ],
       };
@@ -306,7 +317,7 @@ const colours: Skill = {
     const [thing, other] = some(rng, OWNED, 2) as [Thing, Thing];
     const [wanted, second, third] = some(rng, Object.keys(PLURAL_FR), 3) as [string, string, string];
     const c = colourWord(wanted);
-    const [n, num] = rng.pick(NUMBERS.slice(0, 2));
+    const [n, num] = rng.pick(NUMBERS);
     const kids = some(rng, ['Emir', 'Ana', 'Yuna', 'Paul', 'Lina', 'Tom'], n + 3);
     const owned: readonly (readonly [Thing, string])[] = [
       ...Array.from({ length: n }, () => [thing, wanted] as const),
@@ -317,6 +328,7 @@ const colours: Skill = {
     const good = `${num} ${wanted} ${thing.many}`;
     const more = n === 2 ? 'three' : 'four';
     return {
+      // « there are … » reste accepté : c’est une phrase anglaise juste qui contient la réponse demandée.
       prompt: `Lis les messages. Combien de ${thing.fr} sont ${frColour(c, thing)} ? Écris la réponse en anglais : le nombre, la couleur, puis l’objet.`,
       figure: {
         kind: 'document',
@@ -339,7 +351,7 @@ const colours: Skill = {
         { text: `${num} ${wanted} ${thing.one}`, why: 'Il y en a plusieurs : le nom prend un s.' },
         { text: `${more} ${wanted} ${thing.many}`, why: `Compte seulement les ${thing.fr}, pas les autres objets.` },
       ],
-      hint: 'Traduis la couleur. Puis compte seulement le bon objet.',
+      hint: 'Compte seulement le bon objet. Il y en a plusieurs : ajoute un s à son nom.',
       steps: [
         `Cherche les lignes avec « ${thing.one} » (${thing.frOne}).`,
         `Compte seulement celles qui disent « ${wanted} » (${c.fr}) : il y en a ${n}.`,
@@ -491,19 +503,44 @@ const months: Skill = {
 };
 
 // ——— 4. Les saisons ———
+/** Indices du niveau 5 : mots simples (météo, école, loisirs, couleurs, nourriture), une seule saison possible. */
 const CLUES: readonly { readonly season: string; readonly en: string; readonly fr: string }[] = [
-  { season: 'spring', en: 'Flowers open and baby lambs play.', fr: 'les fleurs s’ouvrent, les agneaux jouent' },
-  { season: 'spring', en: 'New green leaves grow on the trees.', fr: 'de nouvelles feuilles vertes poussent' },
-  { season: 'summer', en: 'We swim in the sea in the hot sun.', fr: 'on nage dans la mer sous un soleil chaud' },
-  { season: 'summer', en: 'We eat ice cream. The days are long.', fr: 'on mange des glaces, les jours sont longs' },
+  {
+    season: 'spring',
+    en: 'New flowers open. The trees are green again.',
+    fr: 'de nouvelles fleurs s’ouvrent, les arbres redeviennent verts',
+  },
+  {
+    season: 'spring',
+    en: 'The cold days end. We see new flowers.',
+    fr: 'les jours froids se terminent, on voit de nouvelles fleurs',
+  },
+  { season: 'summer', en: 'It’s hot and sunny. We swim in the sea.', fr: 'il fait chaud et beau, on nage dans la mer' },
+  {
+    season: 'summer',
+    en: 'No school! We eat ice cream in the hot sun.',
+    fr: 'pas d’école, on mange des glaces sous un soleil chaud',
+  },
   {
     season: 'autumn',
-    en: 'The leaves turn brown and drop to the ground.',
-    fr: 'les feuilles deviennent marron et tombent par terre',
+    en: 'The green leaves are now brown and orange.',
+    fr: 'les feuilles vertes sont devenues marron et orange',
   },
-  { season: 'autumn', en: 'Squirrels collect their nuts.', fr: 'les écureuils ramassent leurs noisettes' },
-  { season: 'winter', en: 'We wait for snow. It is very cold.', fr: 'on attend la neige, il fait très froid' },
-  { season: 'winter', en: 'The lake is freezing and my nose is red.', fr: 'le lac gèle et mon nez est rouge' },
+  {
+    season: 'autumn',
+    en: 'It’s windy. Red and brown leaves are on the ground.',
+    fr: 'il y a du vent, des feuilles rouges et marron sont par terre',
+  },
+  {
+    season: 'winter',
+    en: 'It’s very cold and snowy. We play in the snow.',
+    fr: 'il fait très froid et il neige, on joue dans la neige',
+  },
+  {
+    season: 'winter',
+    en: 'It’s cold. It’s Christmas and we want snow.',
+    fr: 'il fait froid, c’est Noël et on espère la neige',
+  },
 ];
 const season = (en: string): Word => {
   const w = SEASONS.find((s) => s.en === en);
@@ -575,7 +612,7 @@ const seasons: Skill = {
         kind: 'document',
         title: 'Which season?',
         lines: [first.en],
-        credit: 'Écrit pour l’exercice, d’après un poème du British Council.',
+        credit: 'Écrit pour l’exercice.',
       },
       answer: { kind: 'text', accepted: accepted(good) },
       traps: [

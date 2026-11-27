@@ -229,7 +229,7 @@ export const FAITS: readonly Fait[] = [
     id: 'date-ordinal',
     sourceId: 'bc-prepositions-time',
     quote: 'dates on 30 July on the second of August',
-    claim: 'À l’oral, « 2 August » se dit « the second of August ».',
+    claim: '« 2 August » peut se dire « the second of August ».',
   },
   {
     id: 'date-ordinaux-programme',
@@ -277,7 +277,7 @@ export const FAITS: readonly Fait[] = [
     id: 'meteo-doux',
     sourceId: 'bc-prepositions-time',
     quote: 'In spring, the weather is warmer.',
-    claim: 'warm sert aussi à dire qu’il fait chaud ou doux (écriture acceptée).',
+    claim: 'warm qualifie le temps (« warmer » : plus chaud) ; la saisie « warm » est acceptée.',
   },
   {
     id: 'meteo-question',
