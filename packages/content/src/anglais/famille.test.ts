@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { generate } from '../catalog.ts';
 import { check } from '../check.ts';
 import { glossaryIssues, sourceIssues } from '../couverture.ts';
+import { analyzeSkill } from '../lisibilite.ts';
+import { sensIssues } from '../sens.ts';
 import { getSource, isAllowedUrl } from '../sources.ts';
 import { skillLevels, type Level } from '../types.ts';
 import { validateVariants } from '../validate.ts';
@@ -23,7 +25,10 @@ describe('anglais cm1 : famille, corps, vêtements', () => {
     ]);
     for (const s of skills) {
       expect(skillLevels(s)).toBe(5);
-      expect(s.lesson.sources).toContain('cycle3-2020');
+      expect(s.lesson.sources).toContain('lve-cm-2026');
+      expect(s.version, s.id).toBe(2);
+      expect(s.sens?.length, s.id).toBeGreaterThan(0);
+      expect(sensIssues(s), s.id).toEqual([]);
       expect(sourceIssues(s)).toEqual([]);
       expect(glossaryIssues({ skill: s, chapter: ENGLISH_FAMILY_CHAPTER })).toEqual([]);
     }
@@ -110,5 +115,63 @@ describe('anglais cm1 : famille, corps, vêtements', () => {
       expect(lines.find((l) => l.startsWith(`${kid}:`))).toMatch(new RegExp(`my ${garment} is ${colour}\\b`, 'i'));
       expect(lines.filter((l) => new RegExp(`my ${garment} is`, 'i').test(l))).toHaveLength(2);
     }
+  });
+
+  it('le détecteur d’explications ne signale plus rien', () => {
+    for (const s of skills) {
+      const { counts, words } = analyzeSkill(s, ENGLISH_FAMILY_CHAPTER);
+      expect({ id: s.id, counts, words }).toEqual({ id: s.id, counts: {}, words: [] });
+    }
+  });
+
+  it('chaque explication finit par la réponse en gras', () => {
+    for (const s of skills)
+      for (const l of LEVELS)
+        for (const q of questions(s.id, l)) {
+          const bold = /\*\*(.+?)\*\*/.exec(q.steps.at(-1) ?? '')?.[1] ?? '';
+          const a = q.answer;
+          const good =
+            a.kind === 'text'
+              ? a.accepted[0]
+              : a.kind === 'choice'
+                ? a.options[a.correct]
+                : a.kind === 'order'
+                  ? a.correct.map((i) => a.items[i]).join(' ')
+                  : a.kind === 'match'
+                    ? `${a.left[0]} = ${a.right[a.pairs[0] ?? 0]}`
+                    : undefined;
+          expect(bold, `${s.id} ${l} ${q.prompt}`).toContain(good);
+        }
+  });
+
+  it('écritures correctes acceptées : petits noms, forme courte, chiffres, couleur ajoutée', () => {
+    const accepted = (id: string, level: Level) =>
+      new Set(
+        Array.from({ length: 600 }, (_, i) => generate(id, level, i + 1)).flatMap((q) =>
+          q.answer.kind === 'text' ? q.answer.accepted : [],
+        ),
+      );
+    for (const text of ['my mother', 'mummy', 'daddy', 'the uncle'])
+      expect(accepted('acm1-famille', 3), text).toContain(text);
+    for (const text of ['has', 'have', '’s', '’ve']) expect(accepted('acm1-have-got', 3), text).toContain(text);
+    for (const text of ['my mother’s dog', 'Tom’s bicycle', 'Ana’s sweater'])
+      expect(accepted('acm1-genitif', 3), text).toContain(text);
+    expect([...accepted('acm1-corps', 5)].some((t) => /^It’s got [2-5] /.test(t))).toBe(true);
+    expect([...accepted('acm1-vetements', 4)].some((t) => /^a pair of \w+ jeans$/.test(t))).toBe(true);
+    expect([...accepted('acm1-genitif', 5)].some((t) => /^\w+’s (red|blue|green|black) \w+$/.test(t))).toBe(true);
+  });
+
+  it('saisie de la famille : l’énoncé ne montre jamais le mot attendu', () => {
+    for (const q of questions('acm1-famille', 3)) {
+      if (q.answer.kind !== 'text') throw new Error('saisie attendue');
+      expect(q.prompt).not.toMatch(new RegExp(`\\b${q.answer.accepted[0]}\\b`));
+    }
+  });
+
+  it('indice de saisie : le tiret de « t-shirt » ne compte pas comme une lettre', () => {
+    const q = Array.from({ length: 600 }, (_, i) => generate('acm1-vetements', 3, i + 1)).find(
+      (x) => x.answer.kind === 'text' && x.answer.accepted[0] === 't-shirt',
+    );
+    expect(q?.hint).toContain('6 lettres');
   });
 });
