@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { Navigate, useNavigate, useParams } from 'react-router';
-import { getChapter } from '@epicademie/content';
+import { chapterSens, getChapter, type Sens } from '@epicademie/content';
+import { SensNote } from '../../shared/ui/SensNote.tsx';
 import type { Profile } from '@epicademie/shared';
 import { useDisabledSkills, useSkills } from './api.ts';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
@@ -25,6 +26,7 @@ export function Notions({ profile }: { readonly profile: Profile }) {
   const play = (skill: string) => void navigate(`/partie/entrainement/${chapter.id}/${skill}`);
   return (
     <PageShell title={chapter.title} back={`/jouer/entrainement/${subject}?classe=${chapter.grade}`}>
+      <WhyLearn sens={chapterSens(chapter)} />
       <button
         type="button"
         onClick={() => play(EPREUVE_SKILL)}
@@ -75,5 +77,20 @@ export function Notions({ profile }: { readonly profile: Profile }) {
         })}
       </ul>
     </PageShell>
+  );
+}
+
+/** Ouverture du chapitre : donner envie, sans clic. Rien si le chapitre n'a pas encore de « sens ». */
+function WhyLearn({ sens }: { readonly sens: readonly Sens[] }) {
+  if (sens.length === 0) return null;
+  return (
+    <section aria-labelledby="pourquoi" className="cartoon bg-surface-2 flex flex-col gap-1 p-3">
+      <h2 id="pourquoi" className="font-display text-xl tracking-wide">
+        Pourquoi apprendre ça ?
+      </h2>
+      {sens.map((s) => (
+        <SensNote key={s.text} sens={s} />
+      ))}
+    </section>
   );
 }

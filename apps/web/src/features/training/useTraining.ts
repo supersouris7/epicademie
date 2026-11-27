@@ -12,7 +12,15 @@ import {
 } from '@epicademie/engine';
 import type { Profile, SkillProgress } from '@epicademie/shared';
 import { ApiError } from '../../shared/api/client.ts';
-import { chapterTrophiesKey, finishSession, markConfused, skillsKey, startSession, submitAnswer } from './api.ts';
+import {
+  chapterTrophiesKey,
+  finishSession,
+  journeyKey,
+  markConfused,
+  skillsKey,
+  startSession,
+  submitAnswer,
+} from './api.ts';
 import { localToday, randomSeed } from '../../shared/lib/dates.ts';
 import { heroSays } from '../../shared/lib/dialogue.ts';
 import { freshQuestion, recentPrompts, rememberPrompt } from '../../shared/lib/recent.ts';
@@ -210,6 +218,7 @@ export function useTraining(
       dispatch({ type: 'finished', summary });
       playSound(summary.levelAfter > summary.levelBefore ? 'levelup' : 'finish');
       void qc.invalidateQueries({ queryKey: skillsKey(profile.id) });
+      void qc.invalidateQueries({ queryKey: journeyKey(profile.id) });
       void qc.invalidateQueries({ queryKey: ['profiles'] });
       if (summary.epreuve) void qc.invalidateQueries({ queryKey: chapterTrophiesKey(profile.id) });
     } catch {

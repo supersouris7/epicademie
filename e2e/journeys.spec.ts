@@ -89,6 +89,20 @@ test('Mes progrès : trophées et badges visibles dès le départ', async ({ pag
   await expect(page.getByText('Chasseur de boss').first()).toBeVisible();
 });
 
+test('Sens et progrès : « Pourquoi apprendre ça ? » puis son propre chemin', async ({ page }) => {
+  await signupFamily(page);
+  await createProfile(page, `Sen${Date.now() % 10000}`);
+  await page.goto('/jouer/entrainement/maths/m6-numeration');
+  const why = page.getByRole('region', { name: 'Pourquoi apprendre ça ?' });
+  await expect(why).toContainText('Un peu d’histoire');
+  await page.goto('/progres');
+  await expect(page.getByRole('region', { name: 'Tes efforts de la semaine' })).toContainText('Une première série');
+  await expect(page.getByRole('region', { name: 'Ton chemin' })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Ce que tu sais maintenant faire' })).toContainText(
+    'Ta première notion',
+  );
+});
+
 test('Mise en page : aucun défilement horizontal sur les écrans principaux', async ({ page }) => {
   await signupFamily(page);
   await createProfile(page, `Lay${Date.now() % 10000}`);

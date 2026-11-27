@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
+import { daysBetween } from '../srs.ts';
 import type { Level } from '@epicademie/shared';
 import {
   competenceState,
   competenceStats,
-  daysBetween,
   freshness,
   isSufficient,
   observationWeight,

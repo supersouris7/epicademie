@@ -1,4 +1,4 @@
-import { and, desc, eq, gt, gte, isNotNull, notInArray, sql } from 'drizzle-orm';
+import { and, desc, eq, gt, gte, isNotNull, ne, notInArray, sql } from 'drizzle-orm';
 import type { AnswerFact } from '@epicademie/engine';
 import type { Executor } from '../../db/client.ts';
 import type { ModeId } from '@epicademie/shared';
@@ -33,6 +33,22 @@ export function learningRepo(db: Executor) {
         .orderBy(desc(attempts.id))
         .limit(MAX_FACTS);
       return rows.map((r) => ({ ...r, attempt: r.attempt === 2 ? 2 : 1, at: r.at.toISOString() }));
+    },
+
+    /** Jour de fin (fuseau de la famille) de chaque série ou combat terminé depuis `since`. */
+    async finishedDays(profileId: string, since: Date, timeZone: string): Promise<string[]> {
+      const rows = await db
+        .select({ day: sql<string>`to_char(${sessions.finishedAt} at time zone ${timeZone}, 'YYYY-MM-DD')` })
+        .from(sessions)
+        .where(
+          and(
+            eq(sessions.profileId, profileId),
+            ne(sessions.mode, 'evaluation'),
+            gte(sessions.finishedAt, since),
+            gt(sessions.answered, 0),
+          ),
+        );
+      return rows.map((r) => r.day);
     },
 
     /** Compteurs des badges (voir @epicademie/engine/badges.ts), tirés des événements enregistrés. */

@@ -23,6 +23,7 @@ import type {
   Chest,
   ChapterTrophy,
   EpreuveResult,
+  Feeling,
   AnswerSubmit,
   SessionCreate,
   SessionSkillSummary,
@@ -303,6 +304,17 @@ export function createTrainingService({ db, clock, random, timeZone, onFinished 
         if (session.finishedAt) throw conflict('Partie terminée');
         if (session.confused.includes(skillId)) return;
         await repo.updateSession(sessionId, { confused: [...session.confused, skillId] });
+      });
+    },
+
+    /** « Je me sens capable ? » : seulement une fois la séance terminée ; l'enfant peut changer d'avis. */
+    async rate(sessionId: string, feeling: Feeling): Promise<void> {
+      await db.transaction(async (tx) => {
+        const repo = trainingRepo(tx);
+        const session = await repo.findSessionForUpdate(sessionId);
+        if (!session) throw notFound(SESSION_NOT_FOUND);
+        if (!session.finishedAt) throw conflict('Partie pas encore terminée');
+        await repo.updateSession(sessionId, { feeling });
       });
     },
 

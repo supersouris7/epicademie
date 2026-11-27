@@ -174,10 +174,69 @@ describe('partie d’entraînement', () => {
       await waitFor(() => expect(screen.queryByRole('button', { name: ANSWER_KEY })).not.toBeInTheDocument());
     }
     expect(finished()).toBe(true);
-    expect(await screen.findByText(/Pas encore 80 %/)).toBeInTheDocument();
-    expect(screen.getByText(/son coffre est à toi/)).toBeInTheDocument();
+    // Étape valorisée avant le seuil, avec ce qu'il reste à faire.
+    expect(await screen.findByText('Premier pas fait !')).toBeInTheDocument();
+    expect(screen.getByText(/son coffre est à toi\. Encore \d+ bonnes réponses et tu y es/)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Suite' }));
     expect(await screen.findByText(/c’est ta notion à renforcer/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /S’entraîner sur cette notion/ })).toBeInTheDocument();
   });
+});
+
+describe('fin de séance : sens et « Je me sens capable ? »', () => {
+  it(
+    'après une réussite : une phrase de sens ; puis 3 smileys, envoyés avec la séance',
+    { timeout: 90_000 },
+    async () => {
+      const summary = (correct: number) => ({
+        regular: { answered: 5, correct },
+        variants: { answered: 0, correct: 0 },
+        scoreOn20: 4 * correct,
+        xpGained: 0,
+        coinsGained: 0,
+        perfect: false,
+        levelBefore: 1,
+        levelAfter: 1,
+        chest: null,
+        skills: ['m6-rang', 'm6-arrondir'].map((skillId, i) => ({
+          skillId,
+          answered: 4,
+          correct: i === 0 ? correct : 0,
+          stageBefore: 0,
+          stageAfter: 1,
+          bestBefore: 0,
+          bestAfter: 0,
+          due: null,
+        })),
+      });
+      const { user, server } = renderApp(PATH, {
+        setup: (s) => s.override('finishSession', () => summary(3)),
+      });
+      await screen.findByRole('button', { name: ANSWER_KEY });
+      const finished = () => server.calls.some((c) => c.path.endsWith('/finish'));
+      for (let i = 0; i < 80 && !finished(); i++) {
+        const step = screen.queryByRole('button', { name: /^Suivant|^Continuer$|Oui, j’essaie/ });
+        if (step) {
+          await user.click(step);
+          continue;
+        }
+        const ok = await screen.findByRole('button', { name: ANSWER_KEY }, { timeout: 4000 }).catch(() => null);
+        if (!ok) continue;
+        await answer(user, '-1');
+        if (await screen.findByText(/Essaie encore !/).catch(() => null)) await answer(user, '-1');
+        await waitFor(() => expect(screen.queryByRole('button', { name: ANSWER_KEY })).not.toBeInTheDocument());
+      }
+      // Une seule notion réussie : une seule phrase.
+      expect(await screen.findByText(/Avec un boulier ou un abaque/)).toBeInTheDocument();
+      expect(screen.getAllByText(/^(À quoi ça sert|Le sais-tu \?|Qui s’en sert|Un peu d’histoire)$/)).toHaveLength(1);
+      await user.click(screen.getByRole('button', { name: 'Suite' }));
+      const question = await screen.findByRole('group', { name: 'Je me sens capable ?' });
+      const smileys = within(question).getAllByRole('button');
+      expect(smileys.map((b) => b.textContent)).toEqual(['😕Pas encore', '🙂Un peu', '😄Oui']);
+      await user.click(within(question).getByRole('button', { name: 'Oui' }));
+      expect(await within(question).findByText('Merci, c’est noté !')).toBeInTheDocument();
+      expect(within(question).getByRole('button', { name: 'Oui' })).toHaveAttribute('aria-pressed', 'true');
+      expect(server.feelings).toEqual([3]);
+    },
+  );
 });

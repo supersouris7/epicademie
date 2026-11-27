@@ -20,6 +20,7 @@ import {
   type BattleView,
   type BossOverview,
   type Inventory,
+  type Journey,
   type LearningReport,
   type ItemId,
   type Profile,
@@ -111,11 +112,18 @@ export interface FakeApiOptions {
   readonly adminSso?: boolean;
   /** Rapport de suivi renvoyé pour chaque profil (par défaut : vide). */
   readonly learning?: LearningReport;
+  readonly journey?: Journey;
   /** Abonnement familial en cours (par défaut : oui, tous les chapitres jouables). */
   readonly premium?: boolean;
 }
 
 /** Rapport de suivi vide (nouveau joueur). */
+export const emptyJourney = (): Journey => ({
+  today: '2026-11-20',
+  gains: [],
+  effort: { series: 0, days: 0, reworked: [], pauseDays: null },
+});
+
 export const emptyLearning = (): LearningReport => ({
   day: '2026-11-20',
   tally: { answered: 0, autonomous: 0, helped: 0, hints: 0, collective: 0 },
@@ -633,6 +641,8 @@ export function createFakeApi(options: FakeApiOptions = {}) {
   };
   /** Signalements reçus. */
   const reports: Record<string, unknown>[] = [];
+  /** Réponses « Je me sens capable ? » reçues. */
+  const feelings: number[] = [];
   const disabledSet = new Set(options.disabled ?? []);
   /** Appels reçus (méthode + chemin), pour vérifier ce que l'écran a envoyé. */
   const calls: { method: string; path: string; body: unknown }[] = [];
@@ -769,6 +779,11 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     },
     disabledContent: () => ({ skills: [...disabledSet] }),
     learningReport: () => options.learning ?? emptyLearning(),
+    journey: () => options.journey ?? emptyJourney(),
+    rateSession: ({ body }) => {
+      feelings.push((body as { feeling: number }).feeling);
+      return null;
+    },
     ...billingHandlers(options.premium ?? true, uuid),
     ownedHeroes: () => ({ heroes: [...STARTING_HEROES] }),
     ...friendHandlers(),
@@ -818,6 +833,7 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     fetch: fakeFetch,
     calls,
     reports,
+    feelings,
     profiles,
     battles,
     overview,

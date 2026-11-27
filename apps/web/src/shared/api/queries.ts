@@ -13,6 +13,9 @@ const skillsQuery = (profileId: string) =>
 
 export const useSkills = (profileId: string) => useQuery(skillsQuery(profileId));
 
+/** Progrès personnel (rafraîchi à chaque fin de série). */
+export const journeyKey = (profileId: string) => ['journey', profileId] as const;
+
 export const chapterTrophiesKey = (profileId: string) => ['chapter-trophies', profileId] as const;
 
 const chapterTrophiesQuery = (profileId: string) =>

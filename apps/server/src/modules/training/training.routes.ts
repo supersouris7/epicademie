@@ -35,6 +35,10 @@ export function trainingRoutes(service: TrainingService, owns: Ownership, billin
       await owns.game(actor(), params.id);
       await service.confused(params.id, body.skillId);
     });
+    route(app, api.rateSession, async ({ params, body, actor }) => {
+      await owns.game(actor(), params.id);
+      await service.rate(params.id, body.feeling);
+    });
     route(app, api.finishSession, async ({ params, actor }) => {
       await owns.game(actor(), params.id);
       return service.finish(params.id);

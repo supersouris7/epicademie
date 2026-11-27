@@ -1,6 +1,6 @@
 import type { Level, SkillStatus } from '@epicademie/shared';
 import { MIN_ANSWERS_FOR_RATE, RECENT_ANSWERS, SOLID_RATE, WEAK_RATE } from './learning.ts';
-import { isDue, type SkillState } from './srs.ts';
+import { isDue, type SkillState, daysBetween } from './srs.ts';
 
 /**
  * Moteur adaptatif de l'entraînement (docs/adr/0017-moteur-adaptatif.md) : déterministe,
@@ -56,9 +56,6 @@ const STATUS_WEIGHT: Record<SkillStatus, number> = {
   'a-consolider': 2,
   acquise: 1,
 };
-
-const daysBetween = (from: string, to: string) =>
-  Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000);
 
 /**
  * Poids de tirage d'une notion dans une série :

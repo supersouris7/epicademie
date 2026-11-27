@@ -13,6 +13,7 @@ import {
   AnswerResultSchema,
   AnswerSubmitSchema,
   ConfusedSchema,
+  FeelingSchema,
   SessionCreatedSchema,
   SessionCreateSchema,
   SessionSummarySchema,
@@ -60,7 +61,7 @@ import {
   StudiedChapterViewSchema,
   StudiedChaptersUpdateSchema,
 } from '../evaluation.ts';
-import { BadgeProgressSchema, LearningReportSchema } from '../learning.ts';
+import { BadgeProgressSchema, JourneySchema, LearningReportSchema } from '../learning.ts';
 import {
   AccountDetailSchema,
   AccountPageSchema,
@@ -563,6 +564,17 @@ export const api = {
     response: LearningReportSchema,
   }),
 
+  journey: endpoint({
+    method: 'GET',
+    path: '/profiles/:id/journey',
+    tag: 'suivi',
+    summary: 'Progrès personnel : notions en hausse et efforts de la semaine',
+    access: 'family',
+    status: 200,
+    params: IdParamsSchema,
+    response: JourneySchema,
+  }),
+
   badges: endpoint({
     method: 'GET',
     path: '/profiles/:id/badges',
@@ -615,6 +627,17 @@ export const api = {
     status: 204,
     params: IdParamsSchema,
     body: ConfusedSchema,
+    response: null,
+  }),
+  rateSession: endpoint({
+    method: 'POST',
+    path: '/sessions/:id/feeling',
+    tag: 'entrainement',
+    summary: '« Je me sens capable ? » : réponse de fin de séance (modifiable)',
+    access: 'family',
+    status: 204,
+    params: IdParamsSchema,
+    body: FeelingSchema,
     response: null,
   }),
   finishSession: endpoint({
