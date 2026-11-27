@@ -113,7 +113,8 @@ describe('anglais cm1 : se présenter et saluer', () => {
 
   it('en français, on habite « à Londres »', () => {
     for (let seed = 1; seed <= 80; seed++)
-      for (const level of [3, 4]) expect(generate('acm1-where-live', level, seed).prompt).not.toContain('à London');
+      for (const level of [3, 4] as const)
+        expect(generate('acm1-where-live', level, seed).prompt).not.toContain('à London');
   });
 
   it('au niveau 3, la phrase à compléter pour dire où l’on habite est donnée en français', () => {
