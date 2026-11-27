@@ -18,6 +18,7 @@ import {
   StudentRecoverScreen,
   StudentSignupScreen,
   WelcomeScreen,
+  useSessionSync,
 } from '../features/account/index.ts';
 import { useProfile } from '../features/profiles/index.ts';
 import { Notifications, RealtimeLink } from '../features/realtime/index.ts';
@@ -25,8 +26,9 @@ import { Term } from '../shared/question/Term.tsx';
 import { NoDefinitions } from '../shared/question/TermLocked.tsx';
 import { TermContext } from '../shared/question/termContext.ts';
 import { DebugFlag } from '../shared/question/DebugFlag.tsx';
-import { LoadingScreen } from '../shared/ui/LoadingScreen.tsx';
+import { ScreenSkeleton } from '../shared/ui/Skeleton.tsx';
 import { lazyScreen } from './lazyScreen.tsx';
+import { Warmup } from './Warmup.tsx';
 
 /**
  * Le jeu : routes et garde de profil. Les écrans d'entrée (compte familial) sont chargés avec lui ;
@@ -82,6 +84,15 @@ const AssetPreview = import.meta.env.DEV
   ? lazy(() => import('../dev/AssetPreview.tsx').then((m) => ({ default: m.AssetPreview })))
   : null;
 
+/** Code téléchargé d'avance après la 1re ouverture : les voisins de l'accueil, puis tout le reste. */
+const PRELOAD = [
+  [Hub, ProfilePicker, ModeSetup, Chapters, Notions, BossChapters, Progress, ParentHome],
+  [TrainingPlay, BossPlay, SubjectProgress, TrophiesPage, Shop, Heroes, MultiModes, Settings, Dictionary],
+  [DefiPlay, EvaluationHome, EvaluationPlay, EvaluationResults, Arena, Online, Friends, TvScreen],
+  [ChildReport, ParentProfiles, ParentProfileEditor, ParentSettings, Subscription, PaymentSimulator],
+  [ProfileEditor, DeleteFamily, About],
+];
+
 /** Rend `children(profile)` si un profil est sélectionné et existe, sinon renvoie vers l'accueil. */
 function WithProfile({ children }: { readonly children: (profile: Profile) => ReactNode }) {
   const profileId = useSession((s) => s.profileId);
@@ -89,7 +100,7 @@ function WithProfile({ children }: { readonly children: (profile: Profile) => Re
   // Profil supprimé ou identifiant périmé : retour au choix du profil.
   const gone = error instanceof ApiError && (error.status === 404 || error.status === 400);
   if (!profileId || gone) return <Navigate to="/" replace />;
-  if (isPending) return <p className="p-8 text-xl">Chargement…</p>;
+  if (isPending) return <ScreenSkeleton />;
   if (!data) {
     // Serveur injoignable : on propose de réessayer plutôt que de perdre l'écran en cours.
     return (
@@ -107,6 +118,7 @@ function WithProfile({ children }: { readonly children: (profile: Profile) => Re
 function ConnectedShell({ profileId }: { readonly profileId: string | null }) {
   return (
     <RequireAccount>
+      <Warmup profileId={profileId} screens={PRELOAD} />
       <RealtimeLink profileId={profileId} />
       <Notifications />
     </RequireAccount>
@@ -120,6 +132,7 @@ function LegacyAbonnement() {
 
 export function GameApp() {
   const profileId = useSession((s) => s.profileId);
+  useSessionSync();
   return (
     <TermContext.Provider value={Term}>
       <ParentGateProvider>
@@ -252,7 +265,7 @@ export function GameApp() {
               <Route
                 path="/dev/assets"
                 element={
-                  <Suspense fallback={<LoadingScreen />}>
+                  <Suspense fallback={<ScreenSkeleton />}>
                     <AssetPreview />
                   </Suspense>
                 }

@@ -11,8 +11,12 @@ import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { SpeechBubble } from '../../shared/ui/SpeechBubble.tsx';
 import { QuestyPose } from '../../shared/ui/mascot/QuestyPose.tsx';
 import { useSession } from '../../shared/lib/session.ts';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { request } from '../../shared/api/client.ts';
+import { prefetchPlayerData } from '../../shared/api/queries.ts';
+import { onIntent } from '../../shared/lib/intent.ts';
+import { BlockSkeleton } from '../../shared/ui/Skeleton.tsx';
+import { prefetchParentData } from '../parent/index.ts';
 import { useRealtime } from '../realtime/index.ts';
 import { StudentSpace, useMe } from '../account/index.ts';
 import { useToast } from '../../shared/ui/Toast.tsx';
@@ -21,7 +25,12 @@ export function ProfilePicker() {
   const { data: profiles, isPending, isError, refetch } = useProfiles();
   const selectProfile = useSession((s) => s.selectProfile);
   const navigate = useNavigate();
-  const autonomous = useMe().data?.family.autonomous === true;
+  const me = useMe().data;
+  const autonomous = me?.family.autonomous === true;
+  const qc = useQueryClient();
+  const prepareParent = () => {
+    if (me?.parent) prefetchParentData(qc, profiles?.map((p) => p.id) ?? []);
+  };
 
   const keyArt = assetSrc('branding-key-art');
   const [toast, showToast] = useToast(3500);
@@ -57,7 +66,7 @@ export function ProfilePicker() {
         <SpeechBubble>{refused ?? 'Salut ! Qui part à l’aventure ?'}</SpeechBubble>
       </div>
 
-      {isPending && <p className="text-muted text-xl">Chargement…</p>}
+      {isPending && <BlockSkeleton />}
       {isError && (
         <div className="cartoon bg-surface flex items-center gap-4 p-4">
           <p className="flex-1 text-lg">Impossible de joindre le serveur.</p>
@@ -69,7 +78,7 @@ export function ProfilePicker() {
 
       <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-5">
         {profiles?.map((p, i) => (
-          <li key={p.id}>
+          <li key={p.id} {...onIntent(() => prefetchPlayerData(qc, p.id))}>
             <CharacterCard
               index={i}
               name={p.name}
@@ -96,7 +105,12 @@ export function ProfilePicker() {
       {autonomous ? (
         <StudentSpace />
       ) : (
-        <GameButton variant="surface" icon="icons-navigation-team" onClick={() => void navigate('/parent')}>
+        <GameButton
+          variant="surface"
+          icon="icons-navigation-team"
+          onClick={() => void navigate('/parent')}
+          {...onIntent(prepareParent)}
+        >
           Espace parent
         </GameButton>
       )}

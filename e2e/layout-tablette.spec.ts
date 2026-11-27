@@ -108,7 +108,7 @@ async function audit(page: Page, path: string): Promise<void> {
   await page.goto(path);
   await page.waitForLoadState('networkidle');
   // Écran chargé à la demande : on l'attend, puis la fin de son animation d'apparition.
-  await expect(page.getByText('Chargement…')).toHaveCount(0);
+  await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);
   await expect
     .configure({ soft: true })
     .poll(() => overflows(page), { message: `${path} à ${page.viewportSize()?.width}×${page.viewportSize()?.height}` })

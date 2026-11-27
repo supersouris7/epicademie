@@ -1,3 +1,4 @@
+import { BlockSkeleton } from '../../shared/ui/Skeleton.tsx';
 import { useState, type ReactNode } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
 import {
@@ -58,7 +59,13 @@ function useVoice(parentSpace: ParentSpace | undefined, creating: boolean) {
 export function ProfileEditor({ parentSpace }: { readonly parentSpace?: ParentSpace } = {}) {
   const { id } = useParams();
   const { data: existing, isPending } = useProfile(id ?? null);
-  if (id && isPending) return <PageShell back="/parametres">Chargement…</PageShell>;
+  if (id && isPending) {
+    return (
+      <PageShell back="/parametres">
+        <BlockSkeleton />
+      </PageShell>
+    );
+  }
   return <EditorForm key={existing?.id ?? 'new'} existing={existing} parentSpace={parentSpace} />;
 }
 

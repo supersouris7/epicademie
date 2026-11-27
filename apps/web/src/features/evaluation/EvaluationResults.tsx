@@ -1,3 +1,4 @@
+import { BlockSkeleton } from '../../shared/ui/Skeleton.tsx';
 import { useState, type ReactNode } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router';
 import { check } from '@epicademie/content';
@@ -49,7 +50,7 @@ export function EvaluationResults({ profile }: { readonly profile: Profile }) {
   if (!result) {
     return (
       <PageShell title="Mon bilan" back="/jouer/evaluation">
-        {isLoading && <p role="status">Chargement du bilan…</p>}
+        {isLoading && <BlockSkeleton />}
         {isError && <p role="alert">Ce bilan est introuvable.</p>}
       </PageShell>
     );
@@ -237,7 +238,7 @@ function Body(p: {
 /** Corrections : enfin, la question, la réponse donnée, la bonne réponse et l'explication. */
 function Review({ id }: { readonly id: string }) {
   const { data, isLoading } = useEvaluationReview(id, true);
-  if (isLoading || !data) return <p role="status">Chargement des corrections…</p>;
+  if (isLoading || !data) return <BlockSkeleton />;
   return (
     <ol className="flex flex-col gap-2" aria-label="Corrections">
       {data.questions.map((q, i) => {

@@ -74,7 +74,9 @@ test('Anglais : chapitre du prétérit jouable', async ({ page }) => {
     .first()
     .click();
   await expect(page.getByRole('progressbar', { name: 'Progression de la série' })).toBeVisible();
-  await expect(page.getByText(/prétérit|participe passé|Complète/).first()).toBeVisible();
+  // La question est tirée au hasard : on vérifie le chapitre joué, pas les mots de l’énoncé.
+  await expect(page).toHaveURL(/\/partie\/entrainement\/a5-verbes-irreguliers\//);
+  await expect(page.getByRole('main').getByRole('heading', { level: 1 })).toBeVisible();
 });
 
 test('Mes progrès : trophées et badges visibles dès le départ', async ({ page }) => {

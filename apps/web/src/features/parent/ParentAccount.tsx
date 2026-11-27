@@ -1,3 +1,4 @@
+import { BlockSkeleton } from '../../shared/ui/Skeleton.tsx';
 import { Link } from 'react-router';
 import { gradeInfo } from '@epicademie/shared';
 import { CharacterAvatar } from '../../shared/ui/game/CharacterAvatar.tsx';
@@ -14,7 +15,7 @@ export function ParentProfiles() {
   const { data: profiles, isPending } = useProfiles();
   return (
     <ParentPage title="Profils des enfants">
-      {isPending && <p>Chargement…</p>}
+      {isPending && <BlockSkeleton />}
       <ul className="flex flex-col gap-3">
         {profiles?.map((p) => (
           <li key={p.id} className="bg-surface flex items-center gap-3 rounded-2xl p-3 shadow-sm">
