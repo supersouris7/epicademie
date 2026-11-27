@@ -10,7 +10,8 @@
 
 L'image part de `node:24-slim` épinglée par empreinte, sans npm ni corepack, et n'est publiée que
 si l'analyse de sécurité (Trivy) ne trouve aucune faille grave corrigeable. Pour obtenir une
-nouvelle image de base, accepter la PR Dependabot correspondante.
+nouvelle image de base, accepter la PR Dependabot correspondante. Un correctif Debian pas encore
+intégré à l'image de base est appliqué dans le `Dockerfile` aux seuls paquets concernés.
 
 ## Une machine (Docker Compose)
 
