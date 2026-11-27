@@ -180,7 +180,8 @@ function typesDraft(rng: Rng, level: Level): QuestionDraft {
       };
     }
     case 4: {
-      const t = rng.pick(TRIPLETS);
+      // Seuls les verbes qui changent : sinon, retirer le sujet suffit et l’énoncé contient la réponse.
+      const t = rng.pick(TRIPLETS.filter((x) => x.faute !== undefined));
       return {
         prompt: `Transforme en phrase impérative, avec le même verbe : « ${t.declarative}. »`,
         answer: { kind: 'text', accepted: variants(t.imperative, ['.', ' !', '!']) },

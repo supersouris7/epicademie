@@ -88,6 +88,21 @@ describe('francais cm1 — types et formes de phrases', () => {
     });
   });
 
+  it('types, niveau 4 : le verbe change, l’énoncé ne contient pas la réponse', () => {
+    const seen = new Set<string>();
+    each('fcm1-types-phrases', 4, (q) => {
+      const answer = q.answer.kind === 'text' ? (q.answer.accepted[0] ?? '') : '';
+      const order = answer.replace(/ ?[.!]$/, '').toLowerCase();
+      const [verb = '', ...rest] = order.split(' ');
+      seen.add(order);
+      expect(q.prompt.toLowerCase()).toContain(`« tu ${verb}s ${rest.join(' ')}. »`);
+      expect(q.prompt.toLowerCase()).not.toContain(`${order}.`);
+      expect(typed(q, `${verb}s ${rest.join(' ')}.`)).toBe(false);
+      expect(typed(q, `${order}.`)).toBe(true);
+    });
+    expect(seen.size).toBeGreaterThanOrEqual(5);
+  });
+
   it('négative, niveau 5 : une liste de phrases déclaratives, la ligne demandée avec « jamais » ou « plus »', () => {
     each('fcm1-forme-negative', 5, (q) => {
       const line = lines(q)[Number(/ligne (\d)/.exec(q.prompt)?.[1]) - 1];
@@ -150,9 +165,9 @@ describe('francais cm1 — types et formes de phrases', () => {
   it('saisie : accents, apostrophe et signe de fin tolérés, la faute typique refusée', () => {
     const seen = new Set<string>();
     each('fcm1-types-phrases', 4, (q) => {
-      if (q.prompt.includes('Vous écoutez')) {
-        seen.add('ecoutez');
-        expect(typed(q, 'Ecoutez la radio !')).toBe(true);
+      if (q.prompt.includes('Tu écoutes')) {
+        seen.add('ecoute');
+        expect(typed(q, 'Ecoute la maitresse !')).toBe(true);
       }
       if (q.prompt.includes('Tu ranges')) {
         seen.add('ranges');

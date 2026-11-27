@@ -215,6 +215,38 @@ export const TRIPLETS: readonly Triplet[] = [
     verbe: 'Ici, « ouvres » perd son « s » : « Ouvre ».',
     faute: 'Ouvres la fenêtre',
   },
+  {
+    declarative: 'Tu fermes la porte',
+    interrogative: 'Est-ce que tu fermes la porte',
+    imperative: 'Ferme la porte',
+    sujet: 'tu',
+    verbe: 'Ici, « fermes » perd son « s » : « Ferme ».',
+    faute: 'Fermes la porte',
+  },
+  {
+    declarative: 'Tu écoutes la maîtresse',
+    interrogative: 'Est-ce que tu écoutes la maîtresse',
+    imperative: 'Écoute la maîtresse',
+    sujet: 'tu',
+    verbe: 'Ici, « écoutes » perd son « s » : « Écoute ».',
+    faute: 'Écoutes la maîtresse',
+  },
+  {
+    declarative: 'Tu manges ta soupe',
+    interrogative: 'Est-ce que tu manges ta soupe',
+    imperative: 'Mange ta soupe',
+    sujet: 'tu',
+    verbe: 'Ici, « manges » perd son « s » : « Mange ».',
+    faute: 'Manges ta soupe',
+  },
+  {
+    declarative: 'Tu apportes ton cahier',
+    interrogative: 'Est-ce que tu apportes ton cahier',
+    imperative: 'Apporte ton cahier',
+    sujet: 'tu',
+    verbe: 'Ici, « apportes » perd son « s » : « Apporte ».',
+    faute: 'Apportes ton cahier',
+  },
 ];
 
 /** Une question posée de trois façons. */
