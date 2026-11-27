@@ -193,6 +193,21 @@ describe('repasse du chapitre', () => {
       each('fcm1-types-sujets', level, (q) => expect(q.prompt).not.toMatch(/pronom|groupe nominal|plusieurs noms/i));
   });
 
+  it('types de sujets, saisies : « sujet » ajouté au type reste juste', () => {
+    for (const level of [3, 4] as const) {
+      const seen = new Set<string>();
+      each('fcm1-types-sujets', level, (q) => {
+        for (const type of ['pronom personnel', 'groupe nominal']) {
+          if (!typed(q, type)) continue;
+          seen.add(type);
+          expect(typed(q, `${type} sujet`), q.prompt).toBe(true);
+          expect(typed(q, `un ${type} sujet`), q.prompt).toBe(true);
+        }
+      });
+      expect(seen.size).toBe(2);
+    }
+  });
+
   it('types de sujets, niveau 4 : seule nouveauté, un groupe qui dit quand devant un sujet du niveau 3', () => {
     const phrase = (x: (typeof SUJETS)[number]) => `${x.s} ${x.reste}`.toLowerCase();
     const contient = (q: Question, x: (typeof SUJETS)[number]) => q.prompt.toLowerCase().includes(phrase(x));

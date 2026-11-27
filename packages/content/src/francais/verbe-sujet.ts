@@ -470,7 +470,7 @@ const ACCEPTED_TYPE: Record<TypeSujet, readonly string[]> = {
     'pronom personnel sujet',
     'un pronom personnel sujet',
   ],
-  gn: ['groupe nominal', 'un groupe nominal', 'gn', 'un gn'],
+  gn: ['groupe nominal', 'un groupe nominal', 'gn', 'un gn', 'groupe nominal sujet', 'un groupe nominal sujet'],
   noms: ['plusieurs noms', 'des noms', 'noms'],
 };
 const TYPES: readonly TypeSujet[] = ['pronom', 'gn', 'noms'];
