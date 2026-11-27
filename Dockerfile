@@ -25,6 +25,12 @@ LABEL org.opencontainers.image.title="Épicadémie" \
       org.opencontainers.image.licenses="LicenseRef-Proprietary"
 ENV NODE_ENV=production PORT=3000 EPICADEMIE_VERSION=${VERSION}
 WORKDIR /app
+# Correctif de sécurité linux-pam (CVE-2025-6020) absent de l'image de base épinglée : mise à
+# niveau des seuls paquets concernés. À retirer quand une nouvelle empreinte l'intègre.
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends --only-upgrade \
+      libpam-modules libpam-modules-bin libpam-runtime libpam0g \
+ && rm -rf /var/lib/apt/lists/*
 # npm, npx et corepack ne servent qu'à installer : absents de l'image d'exécution (surface
 # d'attaque réduite, et leurs dépendances embarquées ne remontent plus aux analyses de sécurité).
 RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
