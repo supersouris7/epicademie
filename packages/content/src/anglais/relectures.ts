@@ -117,4 +117,8 @@ export const RELECTURES: readonly Relecture[] = [
   { skillId: 'a5-choisir-futur', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'a5-should', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
   { skillId: 'a5-opinion', version: 1, lot: 'an-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'acm1-be-present', version: 3, lot: 'rp-an-cm1-02', date: '2026-11-27', verdict: 'ok' },
+  { skillId: 'acm1-pronoms-sujets', version: 2, lot: 'rp-an-cm1-02', date: '2026-11-27', verdict: 'ok' },
+  { skillId: 'acm1-questions-be', version: 2, lot: 'rp-an-cm1-02', date: '2026-11-27', verdict: 'ok' },
+  { skillId: 'acm1-possessifs', version: 3, lot: 'rp-an-cm1-02', date: '2026-11-27', verdict: 'ok' },
 ];
