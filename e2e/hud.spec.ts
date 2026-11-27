@@ -19,10 +19,13 @@ async function quitPlace(page: Page): Promise<{ right: number; top: number }> {
   const quit = page.getByRole('button', { name: 'Quitter', exact: true });
   await expect(quit).toBeVisible();
   await expect(quit).toHaveText('');
+  const width = page.viewportSize()!.width;
+  // Rien ne dépasse en largeur (sinon le téléphone dézoome et les boutons se déplacent).
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
   const box = (await quit.boundingBox())!;
   expect(box.width).toBeGreaterThanOrEqual(44);
   expect(box.height).toBeGreaterThanOrEqual(44);
-  expect(box.x + box.width).toBeLessThanOrEqual(page.viewportSize()!.width);
+  expect(box.x + box.width).toBeLessThanOrEqual(width);
   // Rien ne le recouvre.
   await quit.click({ trial: true });
   return { right: Math.round(box.x + box.width), top: Math.round(box.y) };

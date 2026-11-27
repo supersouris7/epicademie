@@ -51,6 +51,7 @@ test('Plusieurs joueurs : connectés, message, profil déjà ouvert refusé, ar�
   await tom.getByRole('alert').getByRole('button', { name: 'J’y vais !' }).click();
   await expect(tom).toHaveURL(/arene/);
   await lea.getByRole('button', { name: 'Lancer le combat' }).click();
+  await expect(lea.getByText(/À toi de jouer !|Au tour de/)).toBeVisible();
   // Duel : « Quitter » en icône, en haut à droite comme dans les autres modes.
   const quit = (await lea.getByRole('button', { name: 'Quitter', exact: true }).boundingBox())!;
   expect(quit.width).toBeGreaterThanOrEqual(44);

@@ -124,9 +124,10 @@ function Game(setup: TrainingSetup) {
 
   const skill = s.current ? getSkill(s.current.plan.skillId) : undefined;
   return (
-    <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-3 px-3 py-3 sm:px-4">
+    <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-3 px-3 pt-16 pb-3 sm:px-4 sm:pt-3">
       <GameControls onPause={pause} onQuit={() => setDialog('quit')} />
-      <header className="flex min-h-14 shrink-0 items-center gap-3 pr-28">
+      {/* Tablette et ordinateur : une ligne avec les boutons ; téléphone : boutons au-dessus (trop étroit). */}
+      <header className="flex shrink-0 items-center gap-3 sm:min-h-14 sm:pr-28">
         <HeroBubble hero={profile.hero} face={s.hero.face} text={s.hero.text} nonce={s.hero.nonce} />
         <ProgressBar
           className="flex-1"
