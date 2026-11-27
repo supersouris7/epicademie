@@ -45,3 +45,8 @@ humaines et environnement.
 livrées en 6e (chapitre « Électricité et énergie »). Le CM2 reçoit à la place un attendu du cours moyen absent du plan,
 « capteurs et actionneurs » (chaînes d'information et d'action), avec « algorithme et programme » et « sécurité
 électrique ».
+
+## À anticiper
+
+Le programme de sciences et technologie de l’arrêté du 5 juin 2026 (annexe 2) s’applique à cette classe à la rentrée
+2027 (article 3, <https://www.education.gouv.fr/sites/default/files/document/bulletin-officiel-ndeg-24-du-11-juin-2026-519026.pdf>). Le programme ci-dessus reste en vigueur en 2026-2027.
