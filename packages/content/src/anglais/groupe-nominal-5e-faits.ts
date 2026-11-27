@@ -34,13 +34,13 @@ export const FAITS: readonly Fait[] = [
   fait(
     'much-indenombrable',
     MUCH,
-    'For things we can’t count, we use much or a lot of (or lots of) in negative sentences and questions.',
+    "For things we can't count, we use much or a lot of (or lots of) in negative sentences and questions.",
     'much avec ce qui ne se compte pas, dans les questions et les négations.',
   ),
   fait(
     'how-much-many',
     MUCH,
-    'To ask about quantities, we use how many for things we can count and how much for things we can’t count.',
+    "To ask about quantities, we use how many for things we can count and how much for things we can't count.",
     'how many pour ce qui se compte, how much pour le reste.',
   ),
   fait(

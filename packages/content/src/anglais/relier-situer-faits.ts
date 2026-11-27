@@ -33,7 +33,7 @@ export const FAITS: readonly Fait[] = [
     'however-point-virgule',
     PROG,
     'reach their destination; however, they managed to sail back',
-    'however suit aussi un point-virgule, avec une virgule après.',
+    'however suit aussi un point-virgule, avec une virgule après (exemple pris dans la partie 4e du programme).',
   ),
   fait(
     'programme-situer',

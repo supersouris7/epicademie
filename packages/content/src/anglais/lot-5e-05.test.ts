@@ -9,7 +9,7 @@ import type { Level, Question } from '../types.ts';
 import { validateVariants } from '../validate.ts';
 import { ENGLISH_PRONOUNS_5E_CHAPTER, NOUNS, PREFIX_PAIRS } from './groupe-nominal-5e.ts';
 import { FAITS as GROUP_FACTS } from './groupe-nominal-5e-faits.ts';
-import { CASES, CONCESSIONS, ENGLISH_LINKING_5E_CHAPTER, HOWEVERS } from './relier-situer.ts';
+import { CASES, CONCESSIONS, ENGLISH_LINKING_5E_CHAPTER, HOWEVERS, QUALITIES } from './relier-situer.ts';
 import { FAITS as LINK_FACTS } from './relier-situer-faits.ts';
 
 const LEVELS: readonly Level[] = [1, 2, 3, 4, 5];
@@ -242,11 +242,6 @@ describe('anglais 5e : groupe nominal et pronoms, relier et situer', () => {
           CASES.some((c) => q.prompt.includes(c.fr) && q.prompt.includes(c.text)),
           q.prompt,
         ).toBe(true);
-    for (const q of questions('a5-intensite', 5))
-      expect(
-        CASES.filter((c) => JSON.stringify(q.figure).includes(c.fr)),
-        q.prompt,
-      ).toHaveLength(4);
     for (const level of [2, 3, 5] as const)
       for (const q of questions('a5-intensite', level))
         expect([q.hint, ...q.steps].join(' ')).not.toMatch(/plaisir|aime/);
@@ -259,10 +254,22 @@ describe('anglais 5e : groupe nominal et pronoms, relier et situer', () => {
     expect(text(q, 'in the left')).toBe(false);
   });
 
-  it('degré : le document propose toujours quatre trous', () => {
+  it('degré : le document fait produire quatre groupes complets, dont deux comparatifs', () => {
     for (const q of questions('a5-intensite', 5)) {
-      if (q.answer.kind !== 'cloze') throw new Error('texte à trous attendu');
+      if (q.answer.kind !== 'cloze' || q.figure?.kind !== 'document') throw new Error('document à trous attendu');
+      const { lines } = q.figure;
       expect(q.answer.blanks).toHaveLength(4);
+      const answers = q.answer.blanks.map((b, i) => {
+        if (b.mode !== 'text') throw new Error('saisie attendue');
+        const [answer = ''] = b.accepted;
+        const [degree = '', ...form] = answer.split(' ');
+        const quality = QUALITIES.find((x) => lines[2 * i]!.startsWith(`${x.en} (`))!;
+        expect(form.join(' '), q.prompt).toBe(degree === 'much' ? quality.comparative : quality.adj);
+        expect(lines[2 * i + 1]).toContain(`Mot de base : ${quality.adj}.`);
+        for (const bare of ['very', 'too', 'much', quality.adj]) expect(b.accepted).not.toContain(bare);
+        return degree;
+      });
+      expect([...answers].sort(), q.prompt).toEqual(['much', 'much', 'too', 'very']);
     }
   });
 

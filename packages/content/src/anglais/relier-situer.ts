@@ -94,7 +94,7 @@ export const HOWEVERS: readonly Translated[] = [
 const LINK_WHY: Readonly<Record<string, string>> = {
   but: 'but veut dire « mais » : ce n’est pas le mot attendu dans cette phrase.',
   whereas: 'whereas veut dire « alors que » : ce n’est pas le mot attendu dans cette phrase.',
-  however: 'however peut suivre un point ou un point-virgule, avec une virgule après lui.',
+  however: 'however veut dire « cependant » : ce n’est pas le mot attendu dans cette phrase.',
   because: 'because donne une cause : il ne dit pas le contraire.',
   so: 'so donne une conséquence : il ne dit pas le contraire.',
   and: 'and ajoute une idée : il ne marque pas l’opposition.',
@@ -667,10 +667,10 @@ export const QUALITIES: readonly Quality[] = [
   quality('This book is', 'Ce livre est', 'long', 'longer', 'long'),
   quality('This bike is', 'Ce vélo est', 'fast', 'faster', 'rapide'),
 ];
-const french = (q: Quality, d: Degree) =>
-  `${q.fr} ${d === 'very' ? 'très' : d === 'too' ? 'trop' : 'beaucoup plus'} ${q.frAdj}.`;
+const french = (q: Quality, d: Degree) => `${q.fr} ${DEGREE_FR[d]} ${q.frAdj}.`;
 const english = (q: Quality, d: Degree) => `${d} ${d === 'much' ? q.comparative : q.adj}`;
 const DEGREES = ['very', 'too', 'much'] as const;
+const DEGREE_FR: Readonly<Record<Degree, string>> = { very: 'très', too: 'trop', much: 'beaucoup plus' };
 
 function degreeMeaning(rng: Rng): QuestionDraft {
   const q = rng.pick(QUALITIES);
@@ -679,7 +679,10 @@ function degreeMeaning(rng: Rng): QuestionDraft {
   const { answer, traps } = choice(
     rng,
     right,
-    DEGREES.filter((x) => x !== d).map((x) => ({ label: french(q, x), why: WHY_DEGREE[d] })),
+    DEGREES.filter((x) => x !== d).map((x) => ({
+      label: french(q, x),
+      why: `« ${DEGREE_FR[x]} » traduit ${x} : ici, tu lis ${d}, qui veut dire « ${DEGREE_FR[d]} ».`,
+    })),
   );
   return {
     prompt: `Choisis le sens de « ${q.en} ${english(q, d)}. »`,
@@ -726,7 +729,7 @@ function degreeTranslate(rng: Rng): QuestionDraft {
   const accepted = [english(q, d)];
   const wrong = DEGREES.filter((x) => x !== d).map((x) => ({
     text: `${x} ${d === 'much' ? q.comparative : q.adj}`,
-    why: WHY_DEGREE[d],
+    why: `${x} veut dire « ${DEGREE_FR[x]} » : la phrase française dit « ${DEGREE_FR[d]} ».`,
   }));
   const extra =
     d === 'much' ? [{ text: `much more ${q.adj}`, why: `Le comparatif attendu est ${q.comparative}.` }] : [];
@@ -743,23 +746,25 @@ function degreeTranslate(rng: Rng): QuestionDraft {
   };
 }
 
+/** Quatre qualités différentes, les trois adverbes, dont deux « beaucoup plus » (forme à construire). */
 function degreeDocument(rng: Rng): QuestionDraft {
   const name = rng.pick(NAMES);
-  const picked = DEGREES.map((d) => rng.pick(CASES.filter((c) => c.degree === d)));
-  const fourth = rng.pick(CASES.filter((c) => c.degree !== 'very' && !picked.includes(c)));
-  const rows = rng.shuffle([...picked, fourth]);
+  const degrees = rng.shuffle([...DEGREES, 'much' as const]);
+  const rows = some(rng, QUALITIES, degrees.length).map((q, i) => ({ q, d: at(degrees, i) }));
+  const answers = rows.map((r) => english(r.q, r.d));
   return {
-    prompt: 'Lis le journal et sa traduction, puis complète chaque phrase avec un adverbe de degré du cours.',
+    prompt:
+      'Lis le journal et sa traduction. Écris dans chaque trou, en anglais, l’adverbe de degré et la qualité à la bonne forme.',
     figure: document(
       `Diary of ${name}`,
-      rows.flatMap((r, i) => [r.text.replace('…', `(${i + 1})`), `= ${r.fr}`]),
+      rows.flatMap((r, i) => [`${r.q.en} (${i + 1}).`, `= ${french(r.q, r.d)} Mot de base : ${r.q.adj}.`]),
     ),
-    answer: { kind: 'cloze', parts: numbered(rows.length), blanks: blanksOf(rows.map((r) => [r.degree])) },
-    hint: 'Pour chaque trou, relis la phrase française placée en dessous.',
+    answer: { kind: 'cloze', parts: numbered(rows.length), blanks: blanksOf(answers.map((a) => [a])) },
+    hint: 'Pour chaque trou, relis la phrase française, puis le mot de base.',
     steps: [
-      'Lis chaque phrase française avant de remplir son trou.',
-      'Associe très, trop et beaucoup plus au bon mot anglais.',
-      ok(rows.map((r) => r.degree)),
+      'Pour chaque trou, trouve le sens : très, trop ou beaucoup plus.',
+      'Pour « beaucoup plus », utilise la forme de comparaison de la qualité.',
+      ok(answers),
     ],
   };
 }
@@ -772,9 +777,9 @@ const degreeSkill: Skill = {
   sens: [
     sens(
       'usage',
-      'Pour dire qu’une musique est plus forte que tu ne le voudrais.',
-      'bck-too-adjective',
-      'We can use too + adjective to say when something is more than we want.',
+      'Pour dire à quel point une musique est forte, par exemple « very loud ».',
+      'bc-intensifiers',
+      'We use words like very, really and extremely to make adjectives stronger',
     ),
   ],
   lesson: {

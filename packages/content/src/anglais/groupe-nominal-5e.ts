@@ -68,11 +68,9 @@ const countLook = (n: Noun) =>
   n.countable
     ? `Regarde « ${n.en} » : on peut dire one, two, three.`
     : `Regarde « ${n.en} » : on ne le compte pas un par un.`;
-const countSteps = (n: Noun, answer: string) => [
-  countLook(n),
-  'Retiens : avec how ou not, choisis le mot pour compter ou pour mesurer.',
-  `Écris : **${answer}**.`,
-];
+/** Retenue commune aux questions en how et aux phrases avec not. */
+const RETAIN_COUNT = 'Retiens : many pour des chaises que l’on compte, much pour du jus que l’on verse.';
+const countSteps = (n: Noun, answer: string) => [countLook(n), RETAIN_COUNT, `Écris : **${answer}**.`];
 
 function quantifierHow(rng: Rng): QuestionDraft {
   const n = rng.pick(NOUNS);
@@ -151,7 +149,6 @@ interface Gapped {
   /** Seconde bulle : ce qu’il faut retenir pour ce type de phrase. */
   readonly retain: string;
 }
-const RETAIN_COUNT = 'Retiens : avec how ou not, choisis le mot pour compter ou pour mesurer.';
 const negative = (rng: Rng): Gapped => {
   const n = rng.pick(NOUNS);
   const right = forCount(n);
@@ -781,7 +778,7 @@ interface Opposite {
 const opposite = (line: string, from: string, answer: string): Opposite => ({ line, from, answer });
 export const OPPOSITES: readonly Opposite[] = [
   opposite('This village is not urban, it is …', 'urban', 'rural'),
-  opposite('With this headset you do not see the real world, you are in … reality', 'real', 'virtual'),
+  opposite('With this headset you do not see the real world, you see what is called … reality', 'real', 'virtual'),
   opposite('Your plan is not possible, it is …', 'possible', 'impossible'),
   opposite('Parking here is not legal, it is …', 'legal', 'illegal'),
   opposite('The verb “play” is regular, but the verb “go” is …', 'regular', 'irregular'),
@@ -796,7 +793,7 @@ function antonymDocument(rng: Rng): QuestionDraft {
   parts.push(`${at(at(halves, 3), 1)}.`);
   return {
     prompt:
-      'Complète chaque phrase avec le contraire du cours : l’autre mot de la paire du mémo, sinon le même mot avec un préfixe.',
+      'Complète avec le contraire appris dans le mémo, pas un synonyme : l’autre mot de la paire, sinon le même mot avec un préfixe.',
     figure: document(
       'Mots à renverser',
       rows.map((r, i) => `Trou ${i + 1} : le contraire de « ${r.from} ».`),
