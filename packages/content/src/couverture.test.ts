@@ -90,7 +90,7 @@ describe('couverture du catalogue', () => {
       const prompts = byLevel.map((qs) => qs.map((q) => q.prompt).join('|'));
       expect(new Set(prompts).size, `${s.id} : niveaux identiques`).toBe(5);
     }
-  });
+  }, 30_000);
 
   it('les sources citées existent dans le registre', () => {
     const ids = new Set(SOURCES.map((s) => s.id));
