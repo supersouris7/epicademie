@@ -101,6 +101,10 @@ const REPRISES = [
   'm5-boss-fractions-reste',
   'm6-arrondir',
   'p5-etats',
+  'hcm1-traces',
+  'hcm1-heritages',
+  'hcm1-mouvements',
+  'hcm1-clovis-charlemagne',
 ];
 
 describe('détecteur : catalogue', () => {

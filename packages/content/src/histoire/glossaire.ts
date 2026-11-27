@@ -111,14 +111,14 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     id: 'lombards',
     word: 'Lombards',
     forms: ['lombards', 'lombard'],
-    definition: 'Un peuple dont Charlemagne est le roi, comme des Francs.',
+    definition: 'Un peuple dont Charlemagne est le roi, en plus des Francs.',
     example: 'Charlemagne est roi des Francs et des Lombards.',
   },
   {
     id: 'mediterraneen',
     word: 'méditerranéen',
     forms: ['méditerranéen', 'méditerranéenne', 'méditerranéennes', 'méditerranéens'],
-    definition: 'Des pays autour de la mer Méditerranée.',
+    definition: 'Qui vient des pays autour de la mer Méditerranée.',
     example: 'Les Grecs forment une civilisation méditerranéenne.',
   },
   {

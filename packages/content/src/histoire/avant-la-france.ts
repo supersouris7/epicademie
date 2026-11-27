@@ -62,7 +62,7 @@ const traces: NotionGuidee = {
         { label: 'personne n’a jamais vécu là', why: 'Un outil a été fabriqué par quelqu’un : des gens étaient là.' },
         { label: 'les habitants avaient des voitures', why: 'La voiture est une invention bien plus récente.' },
       ],
-      gap: ['Des outils très anciens montrent l’ancienneté du ', ' : la présence d’habitants.', ['peuplement']],
+      gap: ['Des outils très anciens prouvent un ', ' ancien : la présence d’habitants (un mot en p).', ['peuplement']],
       indice: 'Pense à ceux qui ont fabriqué ces outils.',
       etapes: [
         'Regarde les outils : quelqu’un les a fabriqués ici.',
@@ -94,7 +94,7 @@ const traces: NotionGuidee = {
     },
     {
       quote: P.materielles,
-      q: 'Quelle chose est une trace matérielle des Gaulois ?',
+      q: 'Qu’est-ce qui est une trace matérielle des Gaulois ?',
       a: 'un outil gaulois que l’on peut toucher',
       wrong: [
         {
@@ -123,7 +123,11 @@ const traces: NotionGuidee = {
         { label: 'seulement au fond de l’océan', why: 'Le point de départ est l’endroit que tu connais.' },
         { label: 'seulement sur la Lune', why: 'Les traces de notre histoire se cherchent autour de toi.' },
       ],
-      gap: ['Tu cherches d’abord des traces dans ton ', ' proche (un mot en e).', ['environnement', 'entourage']],
+      gap: [
+        'Tu cherches d’abord des traces dans ton ',
+        ' proche (un mot qui commence par « envi »).',
+        ['environnement'],
+      ],
       indice: 'Pense aux lieux que tu connais déjà.',
       etapes: [
         'Pense à ton quartier ou à ton village.',
@@ -149,14 +153,17 @@ const traces: NotionGuidee = {
     {
       source: 'academie-prehistoire',
       quote: 'Période antérieure à celle sur laquelle on possède des témoignages écrits et qu’on appelle Histoire',
-      q: 'La préhistoire est la période d’avant quoi ?',
-      a: 'les témoignages écrits',
+      q: 'Quelle nouveauté marque la fin de la préhistoire ?',
+      a: 'les premiers textes écrits',
       wrong: [
         { label: 'les premiers outils en pierre', why: 'Des outils en pierre existent déjà pendant la préhistoire.' },
-        { label: 'la naissance de ton école', why: 'Ton école est bien plus récente que la préhistoire.' },
+        {
+          label: 'la naissance de ton école',
+          why: 'Ton école est très récente : la préhistoire est déjà finie depuis longtemps.',
+        },
         { label: 'l’invention de la voiture', why: 'La voiture est très récente : la préhistoire finit bien avant.' },
       ],
-      gap: ['La préhistoire est la période avant les témoignages ', ', ceux que l’on peut lire.', ['écrits', 'ecrits']],
+      gap: ['La préhistoire est la période avant les premiers textes ', ' (un mot en é).', ['écrits', 'ecrits']],
       indice: 'Pense à ce que les humains ne faisaient pas encore.',
       etapes: [
         'Repère le début du mot : « pré » veut dire « avant ».',
@@ -184,6 +191,7 @@ const traces: NotionGuidee = {
       traps: [
         { text: 'passé', why: 'Le passé est un temps. On cherche la présence d’habitants.' },
         { text: 'pays', why: 'Un pays est un lieu. On cherche la présence des gens.' },
+        { text: 'population', why: 'La population, ce sont les gens. Le mot demandé ressemble à « peuple ».' },
       ],
       indice: 'Ce mot ressemble à « peuple ».',
       etapes: ['Pense au mot « peuple ».', 'Ajoute la fin du mot : elle dit que des gens habitent là.'],
@@ -301,6 +309,7 @@ const traces: NotionGuidee = {
           accepted: ['peuplement'],
           traps: [
             { text: 'paysage', why: 'Le paysage est ce qu’on voit. Les outils parlent des habitants.' },
+            { text: 'peuple', why: 'Un peuple est un groupe de gens. On cherche le mot pour leur présence.' },
             { text: 'passage', why: 'Les gens ont fabriqué les outils ici : on cherche leur présence.' },
           ],
           indice: 'Pense à la présence des habitants.',
@@ -399,11 +408,7 @@ const heritages: NotionGuidee = {
         { label: 'des trains', why: 'Le train arrive bien après les Romains.' },
         { label: 'l’électricité', why: 'L’électricité est utilisée bien plus tard.' },
       ],
-      gap: [
-        'La romanité apporte des villes et des ',
-        ' pour voyager à pied ou à cheval.',
-        ['routes', 'voies', 'chemins'],
-      ],
+      gap: ['La romanité apporte des villes et des ', ' (un mot en r) pour voyager.', ['routes']],
       indice: 'Pense à ce qui existait déjà au temps de Rome.',
       etapes: [
         'Élimine les inventions récentes, avec un moteur ou de l’électricité.',
@@ -423,7 +428,7 @@ const heritages: NotionGuidee = {
         { label: 'aucune autre civilisation', why: 'Les Celtes et les Gaulois rencontrent d’autres civilisations.' },
       ],
       gap: [
-        'Les Celtes et les Gaulois ont des contacts avec des peuples de la mer ',
+        'Les Celtes et les Gaulois ont des contacts avec des peuples proches de la mer ',
         ' (au sud de la France).',
         ['Méditerranée', 'mediterranée', 'mediterranee', 'méditerranee'],
       ],
@@ -464,7 +469,7 @@ const heritages: NotionGuidee = {
         { label: 'la religion des pharaons', why: 'La religion des pharaons n’est pas un apport de la romanité.' },
         {
           label: 'la religion des Vikings',
-          why: 'La religion des Vikings n’est pas un apport de la romanité.',
+          why: 'La religion des Vikings ne vient pas du monde romain.',
         },
         { label: 'la religion des Aztèques', why: 'La religion des Aztèques ne vient pas du monde romain.' },
       ],
@@ -537,7 +542,7 @@ const heritages: NotionGuidee = {
     },
     {
       quote: P.colonisation,
-      q: 'Rome s’installe dans les Gaules et les contrôle. Écris le nom en c de cette action.',
+      q: 'Rome s’installe dans les Gaules et les contrôle. Écris le nom de cette action (un mot en « col »).',
       accepted: ['colonisation', 'la colonisation', 'une colonisation'],
       traps: [
         { text: 'croisade', why: 'Les croisades ont lieu bien plus tard, au Moyen Âge.' },
@@ -602,7 +607,7 @@ const heritages: NotionGuidee = {
         {
           quote: P.contacts,
           q: 'Qui habite ces terres quand les Romains arrivent ? Écris le nom en G.',
-          accepted: ['Gaulois', 'les Gaulois'],
+          accepted: ['Gaulois', 'les Gaulois', 'des Gaulois'],
           traps: [
             { text: 'Grecs', why: 'Les Grecs ont des contacts avec les Gaules : le nom demandé vient du pays.' },
             { text: 'Romains', why: 'Les Romains arrivent : on cherche ceux qui sont déjà là.' },
@@ -650,7 +655,7 @@ const heritages: NotionGuidee = {
         {
           quote: P.materielles,
           q: 'Écris le mot en r qui veut dire « cassure nette » avec le passé.',
-          accepted: ['rupture', 'de rupture'],
+          accepted: ['rupture', 'de rupture', 'une rupture', 'la rupture'],
           traps: [
             { text: 'route', why: 'Une route sert à voyager. On cherche un arrêt net.' },
             { text: 'rencontre', why: 'Les rencontres existent. On cherche un mot pour un arrêt net.' },
@@ -663,7 +668,7 @@ const heritages: NotionGuidee = {
         },
         {
           quote: P.colonisation,
-          q: 'Les Romains s’installent dans les Gaules et les contrôlent. Écris le nom en c de cette action.',
+          q: 'Les Romains s’installent dans les Gaules et les contrôlent. Écris le nom de cette action (un mot en « col »).',
           accepted: ['colonisation', 'la colonisation', 'une colonisation'],
           traps: [
             { text: 'croisade', why: 'Les croisades ont lieu bien plus tard.' },
@@ -705,7 +710,7 @@ const mouvements: NotionGuidee = {
         { label: 'le XIIIe siècle', why: 'Au XIIIe siècle, règne Louis IX : c’est bien plus tard.' },
       ],
       gap: [
-        'Ces installations commencent à partir du ',
+        'Les peuples de l’est s’installent dans l’empire romain à partir du ',
         ' siècle.',
         ['IVe', 'IV', 'IVème', 'IVè', '4e', '4ème', '4eme', 'quatrième', 'quatrieme'],
       ],
@@ -717,7 +722,7 @@ const mouvements: NotionGuidee = {
     },
     {
       quote: P.migrations,
-      q: 'D’où viennent ces peuples qui s’installent dans l’empire romain d’Occident ?',
+      q: 'D’où viennent les Francs et les Wisigoths ?',
       a: 'de l’est',
       wrong: [
         { label: 'de l’ouest', why: 'À l’ouest, il y a l’océan : ces peuples viennent du côté opposé.' },
@@ -769,14 +774,14 @@ const mouvements: NotionGuidee = {
     },
     {
       quote: P.migrations,
-      q: 'Ces peuples de l’est arrivent-ils tous en même temps ?',
+      q: 'Les peuples de l’est arrivent-ils tous en même temps ?',
       a: 'non, sur plusieurs siècles',
       wrong: [
         { label: 'oui, en une seule journée', why: 'Un si grand déplacement ne se fait pas en un jour.' },
         { label: 'oui, en une seule semaine', why: 'Ces arrivées durent bien plus longtemps.' },
         { label: 'non, car ils ne viennent jamais', why: 'Ils viennent bien : ils s’installent dans l’empire.' },
       ],
-      gap: ['Ces peuples s’installent sur plusieurs ', ', des périodes de cent ans.', ['siècles', 'siecles']],
+      gap: ['Les peuples de l’est s’installent sur plusieurs ', ', des périodes de cent ans.', ['siècles', 'siecles']],
       indice: 'Pense à la durée de ces arrivées.',
       etapes: ['Imagine des groupes qui arrivent les uns après les autres.', 'Compte en périodes de cent ans.'],
     },
@@ -789,7 +794,7 @@ const mouvements: NotionGuidee = {
         { label: 'l’empire des Han en Chine', why: 'L’empire des Han n’est pas l’empire de Rome.' },
         { label: 'l’empire colonial français', why: 'Cet empire se forme bien plus tard.' },
       ],
-      gap: ['Ces peuples s’installent dans l’empire romain d’', ', la partie ouest.', ['Occident']],
+      gap: ['Les Francs et les Wisigoths s’installent dans l’empire romain d’', ', la partie ouest.', ['Occident']],
       indice: 'Pense à la partie ouest de l’empire de Rome.',
       etapes: ['Pense à l’empire qui contrôle les Gaules.', 'Choisis le nom de sa partie ouest.'],
     },
@@ -1079,7 +1084,7 @@ const rois: NotionGuidee = {
       q: 'Charlemagne est roi des Francs, mais aussi de quel peuple ?',
       a: 'les Lombards',
       wrong: [
-        { label: 'les Wisigoths', why: 'Les Wisigoths sont cités pour les installations du IVe siècle.' },
+        { label: 'les Wisigoths', why: 'Les Wisigoths sont un autre peuple venu de l’est.' },
         { label: 'les Grecs', why: 'Charlemagne n’est pas le roi des Grecs.' },
         { label: 'les Égyptiens', why: 'Les Égyptiens ne sont pas son second peuple.' },
       ],
@@ -1105,7 +1110,7 @@ const rois: NotionGuidee = {
   paires3: [
     ['Clovis', 'Roi baptisé'],
     ['Charlemagne', 'Empereur en 800'],
-    ['Lombards', 'Peuple avec les Francs'],
+    ['Lombards', 'Peuple de Charlemagne'],
   ],
   paires5: [
     ['Clovis', 'Roi baptisé'],
@@ -1131,7 +1136,7 @@ const rois: NotionGuidee = {
       q: 'Charlemagne est roi des Francs. Écris le nom en L de son autre peuple.',
       accepted: ['Lombards', 'les Lombards', 'des Lombards', 'Lombard'],
       traps: [
-        { text: 'Latins', why: 'Le peuple demandé n’est pas les Latins.' },
+        { text: 'Latins', why: 'Ce n’est pas le peuple des Latins.' },
         { text: 'Francs', why: 'Les Francs sont déjà donnés dans la question.' },
       ],
       indice: 'Pense aux deux titres de roi de ce souverain.',
@@ -1151,7 +1156,7 @@ const rois: NotionGuidee = {
     },
     {
       quote: P.bapteme,
-      q: 'Complète avec l’adjectif en M tiré du nom de la famille de Clovis : le monde …',
+      q: 'Complète avec un mot en m, lié à la famille de Clovis : le monde …',
       accepted: ['mérovingien', 'merovingien'],
       traps: [
         { text: 'médiéval', why: 'Médiéval veut dire « du Moyen Âge ». On cherche le nom lié à Clovis.' },
@@ -1255,13 +1260,13 @@ const rois: NotionGuidee = {
         {
           source: 'cnrtl-etym-carolingien',
           quote: "dér. de Carolus, nom de l'empereur Charlemagne",
-          q: 'Écris le nom français de cet empereur.',
+          q: 'Écris le nom français de cet empereur, couronné en 800.',
           accepted: ['Charlemagne', 'l’empereur Charlemagne'],
           traps: [
             { text: 'Clovis', why: 'Clovis n’est pas empereur.' },
             { text: 'Napoléon', why: 'Napoléon vit bien des siècles plus tard.' },
           ],
-          indice: 'Pense à un souverain très célèbre.',
+          indice: 'Pense à un empereur très célèbre.',
           etapes: ['Relis la ligne 2 : cherche un empereur.', 'Pense à l’empereur couronné en 800.'],
         },
         {
