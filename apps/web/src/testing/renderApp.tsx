@@ -13,7 +13,10 @@ import { createFakeApi, type FakeApi, type FakeApiOptions } from './fakeApi.ts';
 
 // L'application charge ses écrans à la demande : ici ils sont déjà transformés avant le 1er test,
 // pour que la durée d'une attente ne dépende pas de la machine (couverture en CI).
-import.meta.glob(['../features/**/*.tsx', '!../**/*.test.tsx'], { eager: true });
+// L'exclusion reprend la racine du motif inclus : `!../**` laisse passer des fichiers de test.
+export const preloadedScreens = import.meta.glob(['../features/**/*.tsx', '!../features/**/*.test.tsx'], {
+  eager: true,
+});
 
 /**
  * Rend la console d'administration (application à part, admin.html), branchée sur le faux serveur.
