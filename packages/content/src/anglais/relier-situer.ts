@@ -4,6 +4,7 @@ import { choice } from '../build.ts';
 import { at, some } from './temps.ts';
 import { coin } from './futur.ts';
 import { document, ok, textTraps, typed } from './outils-lot05.ts';
+import type { TextTrap } from './outils-5e.ts';
 
 /**
  * Anglais 5e — « Relier et situer » (lot an-5e-05, docs/adr/0034). Programme d'anglais du collège (arrêté du 5 mai
@@ -33,16 +34,25 @@ export interface Joined {
   /** Fin de la phrase. */
   readonly end: string;
 }
+/** Phrase dont le sens français départage les mots : « whereas » resterait grammatical là où l’on attend « mais ». */
+export interface Translated extends Joined {
+  readonly fr: string;
+}
 const joined = (start: string, end: string): Joined => ({ start, end });
+const translated = (start: string, end: string, fr: string): Translated => ({ start, end, fr });
 /** Une même personne : une idée vient contredire l’autre. */
-export const CONCESSIONS: readonly Joined[] = [
-  joined('I am tired,', 'I want to finish the game.'),
-  joined('She wants to play,', 'she has homework.'),
-  joined('My bike is old,', 'it is very fast.'),
-  joined('I want to come,', 'I am busy today.'),
-  joined('The film is long,', 'it is not boring.'),
-  joined('He is small,', 'he is very strong.'),
-  joined('I like this song,', 'I don’t know the words.'),
+export const CONCESSIONS: readonly Translated[] = [
+  translated('I am tired,', 'I want to finish the game.', 'Je suis fatigué, mais je veux finir la partie.'),
+  translated('She wants to play,', 'she has homework.', 'Elle veut jouer, mais elle a des devoirs.'),
+  translated('My bike is old,', 'it is very fast.', 'Mon vélo est vieux, mais il est très rapide.'),
+  translated('I want to come,', 'I am busy today.', 'Je veux venir, mais je suis occupé aujourd’hui.'),
+  translated('The film is long,', 'it is not boring.', 'Le film est long, mais il n’est pas ennuyeux.'),
+  translated('He is small,', 'he is very strong.', 'Il est petit, mais il est très fort.'),
+  translated(
+    'I like this song,',
+    'I don’t know the words.',
+    'J’aime cette chanson, mais je ne connais pas les paroles.',
+  ),
 ];
 /** Deux sujets que l’on compare. */
 export const COMPARISONS: readonly Joined[] = [
@@ -55,14 +65,30 @@ export const COMPARISONS: readonly Joined[] = [
   joined('My room is tidy,', 'my brother’s room is a mess.'),
 ];
 /** Une seconde idée, après un point-virgule, qui s’oppose à la première. */
-export const HOWEVERS: readonly Joined[] = [
-  joined('It was raining;', 'we played outside.'),
-  joined('The museum was closed;', 'we saw the garden.'),
-  joined('The test was hard;', 'I did my best.'),
-  joined('We were very late;', 'the film had not started.'),
-  joined('The castle is old;', 'it is still beautiful.'),
-  joined('They did not win;', 'they had a great day.'),
-  joined('The shop is far;', 'we can walk there.'),
+export const HOWEVERS: readonly Translated[] = [
+  translated('It was raining;', 'we played outside.', 'Il pleuvait ; cependant, nous avons joué dehors.'),
+  translated(
+    'The museum was closed;',
+    'we saw the garden.',
+    'Le musée était fermé ; cependant, nous avons vu le jardin.',
+  ),
+  translated(
+    'The test was hard;',
+    'I did my best.',
+    'Le contrôle était difficile ; cependant, j’ai fait de mon mieux.',
+  ),
+  translated(
+    'We were very late;',
+    'the film had not started.',
+    'Nous étions très en retard ; cependant, le film n’avait pas commencé.',
+  ),
+  translated('The castle is old;', 'it is still beautiful.', 'Le château est vieux ; cependant, il est toujours beau.'),
+  translated(
+    'They did not win;',
+    'they had a great day.',
+    'Ils n’ont pas gagné ; cependant, ils ont passé une super journée.',
+  ),
+  translated('The shop is far;', 'we can walk there.', 'Le magasin est loin ; cependant, nous pouvons y aller à pied.'),
 ];
 
 const LINK_WHY: Readonly<Record<string, string>> = {
@@ -139,26 +165,31 @@ function linkMeaning(rng: Rng): QuestionDraft {
   };
 }
 
-/** Saisie : la ponctuation et le sens n’admettent qu’un mot. Pas de comparaison ici (« but » y serait juste aussi). */
+/** Saisie : la phrase française donne le sens. Pas de comparaison ici (« but » y serait juste aussi). */
 type Typed = 'but' | 'however';
 const TYPED: readonly Typed[] = ['but', 'however'];
-const PUNCTUATION_STEP: Readonly<Record<Typed, string>> = {
-  but: 'Garde les deux idées ensemble : une seule personne, une surprise.',
-  however: 'Après un point-virgule, avec une virgule derrière le trou, choisis however.',
+const TYPED_POOL: Readonly<Record<Typed, readonly Translated[]>> = { but: CONCESSIONS, however: HOWEVERS };
+const TYPED_WHY: Readonly<Record<Typed, readonly TextTrap[]>> = {
+  but: [
+    { text: 'whereas', why: 'whereas veut dire « alors que » : la phrase française dit « mais ».' },
+    { text: 'however', why: 'however veut dire « cependant » : la phrase française dit « mais ».' },
+  ],
+  however: [
+    { text: 'but', why: 'but veut dire « mais » : la phrase française dit « cependant ».' },
+    { text: 'whereas', why: 'whereas veut dire « alors que » : la phrase française dit « cependant ».' },
+  ],
 };
+const MEANING_STEP = 'Repère dans la phrase française le mot qui relie les deux idées.';
 
-function linkPunctuation(rng: Rng): QuestionDraft {
+function linkTranslate(rng: Rng): QuestionDraft {
   const kind = rng.pick(TYPED);
-  const j = rng.pick(POOL[kind]);
+  const j = rng.pick(TYPED_POOL[kind]);
   return {
-    prompt: `Complète avec le mot de contraste du cours, selon la ponctuation et le sens : « ${show(j)} »`,
+    prompt: `Complète avec le mot de contraste du cours pour dire « ${j.fr} » : « ${show(j)} »`,
     answer: typed([kind]),
-    traps: textTraps(
-      [kind],
-      ['but', 'whereas', 'however'].map((l) => ({ text: l, why: LINK_WHY[l] ?? '' })),
-    ),
-    hint: 'Un point-virgule avant le trou change tout. Sans lui, la seconde idée surprend-elle après la première ?',
-    steps: ['Regarde le signe placé avant le trou.', PUNCTUATION_STEP[kind], `Écris : **${kind}**.`],
+    traps: textTraps([kind], TYPED_WHY[kind]),
+    hint: 'Dans la phrase française, cherche le mot qui relie les deux idées.',
+    steps: [MEANING_STEP, `Retrouve le mot anglais qui veut dire « ${MEANING[kind]} ».`, `Écris : **${kind}**.`],
   };
 }
 
@@ -166,18 +197,18 @@ const NAMES = ['Ana', 'Lisa', 'Maya', 'Tom', 'Emir', 'Paul'] as const;
 
 function linkDocument(rng: Rng): QuestionDraft {
   const name = rng.pick(NAMES);
-  const rows = rng.shuffle(TYPED.flatMap((link) => some(rng, POOL[link], 2).map((j) => ({ j, link }))));
+  const rows = rng.shuffle(TYPED.flatMap((link) => some(rng, TYPED_POOL[link], 2).map((j) => ({ j, link }))));
   return {
-    prompt: 'Lis le message, puis complète chaque trou avec le mot de contraste du cours.',
+    prompt: 'Lis le message et sa traduction, puis complète chaque trou avec le mot de contraste du cours.',
     figure: document(
       `Message from ${name}`,
-      rows.map((r, i) => show(r.j, `(${i + 1})`)),
+      rows.flatMap((r, i) => [show(r.j, `(${i + 1})`), `= ${r.j.fr}`]),
     ),
     answer: { kind: 'cloze', parts: numbered(rows.length), blanks: blanksOf(rows.map((r) => [r.link])) },
-    hint: 'Pour chaque trou, regarde le signe placé avant lui.',
+    hint: 'Pour chaque trou, relis la phrase française placée en dessous.',
     steps: [
-      'Lis les deux parties autour de chaque trou.',
-      'Cherche les points-virgules : ils annoncent un mot précis.',
+      'Lis chaque phrase française avant de remplir son trou.',
+      'Associe « mais » et « cependant » au bon mot anglais.',
       ok(rows.map((r) => r.link)),
     ],
   };
@@ -209,7 +240,7 @@ const linkSkill: Skill = {
     if (level === 1) return linkFirst(rng);
     if (level === 2) return linkPick(rng);
     if (level === 3) return linkMeaning(rng);
-    if (level === 4) return linkPunctuation(rng);
+    if (level === 4) return linkTranslate(rng);
     return linkDocument(rng);
   },
 };
