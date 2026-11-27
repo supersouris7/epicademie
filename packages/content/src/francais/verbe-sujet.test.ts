@@ -257,6 +257,17 @@ describe('repasse du chapitre', () => {
     expect(memo).not.toContain('nom principal');
   });
 
+  it('types de sujets : le mémo précise que le pronom est un pronom personnel sujet', () => {
+    const memo = skills.find((s) => s.id === 'fcm1-types-sujets')?.lesson.memo.join(' ');
+    expect(memo).toContain('Un **pronom personnel sujet** est un petit mot sujet');
+    expect(memo).not.toContain('**pronom personnel**');
+  });
+
+  it('types de sujets : les pièges sur un pronom parlent des noms du sujet, pas de la phrase', () => {
+    for (const level of [1, 2, 3, 4, 5] as const)
+      each('fcm1-types-sujets', level, (q) => expect(JSON.stringify(q)).not.toContain('aucun nom ici'));
+  });
+
   it('« Qui est-ce qui » est suivi d’un verbe au singulier bien écrit', () => {
     const questions = new Set<string>();
     for (const id of ['fcm1-groupe-sujet', 'fcm1-types-sujets'])

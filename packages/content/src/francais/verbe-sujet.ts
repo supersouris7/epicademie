@@ -479,8 +479,8 @@ const TYPES: readonly TypeSujet[] = ['pronom', 'gn', 'noms'];
 const WHY_TYPE: Record<TypeSujet, Record<TypeSujet, string>> = {
   pronom: {
     pronom: '',
-    gn: 'Il n’y a aucun nom ici : le sujet est un seul petit mot, un pronom.',
-    noms: 'Il n’y a aucun nom ici : le sujet est un seul petit mot, un pronom.',
+    gn: 'Il n’y a aucun nom dans le sujet : c’est un seul petit mot, un pronom.',
+    noms: 'Il n’y a aucun nom dans le sujet : c’est un seul petit mot, un pronom.',
   },
   gn: {
     pronom: 'Le sujet n’est pas un petit mot comme il, elle, nous : il contient un nom.',
@@ -864,7 +864,7 @@ export const FCM1_VERBE_SUJET: readonly Skill[] = [
     id: 'fcm1-types-sujets',
     title: 'Sujet pronom, groupe nominal ou plusieurs noms',
     memo: [
-      'Un **pronom personnel** est un petit mot sujet : « elle chante ».',
+      'Un **pronom personnel sujet** est un petit mot sujet : « elle chante ».',
       'Un **groupe nominal** a un nom noyau : « le petit chat dort ».',
       'Le sujet peut réunir plusieurs noms : « mon père et ma mère cuisinent ».',
     ],
