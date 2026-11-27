@@ -13,3 +13,4 @@ export * from './adaptive.ts';
 export * from './badges.ts';
 export * from './economy.ts';
 export * from './evaluation/index.ts';
+export * from './shootout.ts';
