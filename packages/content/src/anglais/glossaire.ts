@@ -24,6 +24,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'What’s est la contraction de What is. I’m est la contraction de I am.',
   },
   {
+    id: 'apostrophe',
+    word: 'apostrophe',
+    forms: ['apostrophe', 'apostrophes'],
+    definition: 'Petit signe ’ qui remplace une lettre qui disparaît.',
+    example: 'Dans I’m, l’apostrophe remplace le a de am.',
+  },
+  {
     id: 'adjectif-possessif',
     word: 'adjectif possessif',
     forms: ['adjectif possessif', 'adjectifs possessifs'],
