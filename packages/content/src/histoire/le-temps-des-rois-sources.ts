@@ -44,7 +44,12 @@ export const PREUVES = {
   vinci: francois(
     'l’artiste vécut ses dernières années à Amboise, tout près des châteaux que François Ier possédait à Blois et à Chambord, et le roi lui acheta le célèbre portrait de la Joconde.',
   ),
-  invitation: francois('Il eut plus de succès avec Léonard de Vinci et Benvenuto Cellini'),
+  invitation: francois(
+    'S’il ne put parvenir à persuader Michel-Ange de venir en France, il lui acheta une statue d’Hercule. Il eut plus de succès avec Léonard de Vinci et Benvenuto Cellini',
+  ),
+  humanisme: francois(
+    'mouvement intellectuel d’érudition et de curiosité passionnée pour l’Antiquité classique – grecque et romaine –, il se manifeste par la recherche et l’établissement des textes anciens',
+  ),
   college: francois('Il crée surtout, en 1530, le Collège de France'),
   chercheurs: francois(
     'Il crée surtout, en 1530, le Collège de France, sur la suggestion du savant humaniste Guillaume Budé. Il s’agit de constituer, à côté de la Sorbonne – principalement orientée vers les études religieuses –, un collège royal où des lecteurs appointés à 200 écus par an poursuivraient librement leurs recherches.',
@@ -63,17 +68,17 @@ export const PREUVES = {
   limites: nantes(
     'leur liberté de conscience est reconnue. Mais leur liberté de culte est restreinte et les lieux de cultes limités.',
   ),
-  assassinat: henri('Il est assassiné en 1610 par Ravaillac.'),
-  revocation: preuve('bnf-revocation-edit-nantes')('Le 18 octobre 1685, Louis XIV révoque l’édit de Nantes'),
-  conscience: preuve('emc-2024')(
-    'La laïcité est abordée comme liberté de croire, de ne pas croire ou de changer de croyance',
+  refuge: nantes('« places de sûreté » (villes fortifiées où ils peuvent trouver refuge)'),
+  assassinat: henri(
+    'Son image devient alors celle du « bon roi », soucieux du bien-être de ses sujets. Avec son ministre Sully, il assainit les finances du royaume. Il est assassiné en 1610 par Ravaillac.',
   ),
+  revocation: preuve('bnf-revocation-edit-nantes')('Le 18 octobre 1685, Louis XIV révoque l’édit de Nantes'),
 
   // Louis XIV
   soleil: programme('Louis XIV, le roi Soleil à Versailles'),
   dates: preuve('bnf-portrait-louis-xiv')('Portrait gravé de Louis XIV, roi de France de 1643 à 1715.'),
   regente: preuve('bnf-naissance-louis-xiv')(
-    'À la mort de Louis XIII (1643), Anne d’Autriche devient régente et fait appel au cardinal Mazarin pour gouverner l’État',
+    'Anne d’Autriche, la fille aînée du roi Philippe III d’Espagne, voie la naissance du dauphin Louis (1638), prénommé Dieudonné et fêté dans tout le royaume. À la mort de Louis XIII (1643), Anne d’Autriche devient régente et fait appel au cardinal Mazarin pour gouverner l’État',
   ),
   ballet: preuve('bnf-soleil-levant')(
     'Louis XIV alors âgé de 14 ans, vêtu en « Soleil levant suivi des Génies qui lui rendent hommage »',
@@ -87,6 +92,7 @@ export const PREUVES = {
   premiereFete: fetes(
     'Les Plaisirs de l’Île enchantée constituent la première des grandes fêtes versaillaises du règne de Louis XIV.',
   ),
+  fete1664: fetes('Du 7 au 13 mai 1664, Les Plaisirs de l’île enchantée'),
   colonial: programme(
     'une présentation de la formation du premier empire colonial français, porté par le pouvoir royal, et dont le peuplement repose notamment sur le déplacement d’Africains réduits en esclavage',
   ),

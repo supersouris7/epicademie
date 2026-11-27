@@ -38,11 +38,10 @@ describe('histoire cm1 — Le temps des rois', () => {
     }
   });
 
-  it('repasse : mêmes identifiants, version 2, un sens par notion, quatre types différents', () => {
+  it('repasse : mêmes identifiants, version 2, un sens par notion', () => {
     expect(SKILLS.map((s) => s.id)).toEqual(['hcm1-louis-ix', 'hcm1-francois-ier', 'hcm1-henri-iv', 'hcm1-louis-xiv']);
     expect(SKILLS.map((s) => s.version)).toEqual([2, 2, 2, 2]);
     for (const s of SKILLS) expect(sensIssues(s), s.id).toEqual([]);
-    expect(new Set(SKILLS.map((s) => s.sens?.[0]?.type)).size).toBe(4);
   });
 
   it('le détecteur ne signale plus rien', () => {

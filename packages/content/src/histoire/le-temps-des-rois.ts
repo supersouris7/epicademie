@@ -163,7 +163,7 @@ const louisIx: NotionGuidee = {
       q: 'Quel nom Louis IX reçoit-il quand l’Église le déclare saint ?',
       a: 'saint Louis',
       wrong: [
-        { label: 'Louis le Grand', why: 'On appelle Louis XIV « Louis le Grand ».' },
+        { label: 'le bon roi', why: 'Le « bon roi » est le surnom d’Henri IV.' },
         { label: 'saint Henri', why: 'Henri est un autre prénom : le roi s’appelle Louis.' },
         { label: 'le roi Soleil', why: 'Le roi Soleil est Louis XIV.' },
       ],
@@ -233,7 +233,7 @@ const louisIx: NotionGuidee = {
       accepted: ['Blanche de Castille', 'Blanche', 'la reine Blanche de Castille'],
       traps: [
         { text: 'Anne d’Autriche', why: 'Anne d’Autriche est la mère de Louis XIV.' },
-        { text: 'Jeanne d’Albret', why: 'Jeanne d’Albret est la mère d’Henri IV.' },
+        { text: 'Sully', why: 'Sully est le ministre d’Henri IV, bien plus tard.' },
       ],
       indice: 'Elle assure la régence à la place de son fils.',
       etapes: ['Pense à la femme qui gouverne avec le jeune roi.', 'Écris son prénom, puis le nom de son pays.'],
@@ -318,7 +318,7 @@ const louisIx: NotionGuidee = {
           q: 'Écris le nom que ce roi reçoit quand l’Église le déclare saint.',
           accepted: SAINT_LOUIS,
           traps: [
-            { text: 'Louis le Grand', why: 'Ce nom désigne Louis XIV.' },
+            { text: 'le roi Soleil', why: 'Le roi Soleil est Louis XIV.' },
             { text: 'saint Henri', why: 'Ce roi ne s’appelle pas Henri.' },
           ],
           indice: 'Garde son prénom et ajoute un titre.',
@@ -417,7 +417,7 @@ const francoisIer: NotionGuidee = {
       wrong: [
         { label: 'Michel-Ange', why: 'Le roi ne parvient pas à faire venir Michel-Ange.' },
         { label: 'Molière', why: 'Molière est un auteur du temps de Louis XIV.' },
-        { label: 'Hyacinthe Rigaud', why: 'Rigaud est un peintre du temps de Louis XIV.' },
+        { label: 'Guillaume Budé', why: 'Budé est un savant : il conseille au roi de créer un collège.' },
       ],
       gap: ['Le peintre Léonard de ', ' vient vivre en France.', ['Vinci']],
       indice: 'Il finit sa vie à Amboise.',
@@ -442,7 +442,7 @@ const francoisIer: NotionGuidee = {
       a: 'le Collège de France',
       wrong: [
         { label: 'la Sainte-Chapelle', why: 'La Sainte-Chapelle est bâtie par Louis IX.' },
-        { label: 'l’Académie des sciences', why: 'On la relie à Louis XIV et à son ministre Colbert.' },
+        { label: 'la Sorbonne', why: 'La Sorbonne existe déjà : le roi crée un autre lieu.' },
         { label: 'le château de Versailles', why: 'Versailles est un château, agrandi par Louis XIV.' },
       ],
       gap: ['En 1530, le roi crée le ', ' de France.', ['Collège', 'College']],
@@ -663,6 +663,17 @@ const francoisIer: NotionGuidee = {
             'Cherche le mot proche de « renaître ».',
           ],
         },
+        {
+          ...P.humanisme,
+          q: 'Écris le nom du roi dont parle ce texte.',
+          accepted: FRANCOIS,
+          traps: [
+            { text: 'Louis XIV', why: 'Louis XIV règne au XVIIe siècle.' },
+            { text: 'Louis IX', why: 'Louis IX vit au XIIIe siècle.' },
+          ],
+          indice: 'C’est un protecteur des artistes.',
+          etapes: ['Relis la ligne 1 : des idées viennent d’Italie.', 'Cherche le roi de cette époque nouvelle.'],
+        },
       ],
     },
   ],
@@ -679,10 +690,10 @@ const henriIv: NotionGuidee = {
     'Henri IV est assassiné en 1610.',
   ],
   sens: {
-    type: 'usage',
-    text: 'En EMC aussi, tu parles de la liberté de croire, de ne pas croire ou de changer de croyance.',
-    source: P.conscience.source,
-    citation: P.conscience.quote,
+    type: 'savais-tu',
+    text: 'Avec l’édit de Nantes, des protestants peuvent se réfugier dans des villes fortifiées.',
+    source: P.refuge.source,
+    citation: P.refuge.quote,
   },
   faits: [
     {
@@ -874,7 +885,10 @@ const henriIv: NotionGuidee = {
           accepted: EDIT,
           traps: [
             { text: 'ordonnance de Villers-Cotterêts', why: 'Ce texte de 1539 vient de François Ier.' },
-            { text: 'édit de Fontainebleau', why: 'Ce texte de 1685 annule celui qu’on cherche.' },
+            {
+              text: 'édit de Versailles',
+              why: 'Versailles est un château : cet édit porte le nom d’une ville de l’ouest.',
+            },
           ],
           indice: 'Son nom contient une ville.',
           etapes: ['Relis la ligne 2 : repère l’année.', 'Cherche l’édit signé cette année-là.'],
@@ -901,12 +915,15 @@ const henriIv: NotionGuidee = {
       ],
       qs: [
         {
-          ...P.limites,
+          ...P.refuge,
           q: 'Écris le nom de ce texte du roi.',
           accepted: EDIT,
           traps: [
-            { text: 'Code civil', why: 'Le Code civil vient bien après le temps des rois étudiés ici.' },
-            { text: 'édit de Fontainebleau', why: 'Ce texte interdit au contraire le culte protestant.' },
+            {
+              text: 'édit de Versailles',
+              why: 'Versailles est un château : cet édit porte le nom d’une ville de l’ouest.',
+            },
+            { text: 'ordonnance de Villers-Cotterêts', why: 'Ce texte de 1539 vient de François Ier.' },
           ],
           indice: 'Son nom contient une ville.',
           etapes: [
@@ -1112,7 +1129,7 @@ const louisXiv: NotionGuidee = {
       accepted: ['Anne d’Autriche', 'la reine Anne d’Autriche'],
       traps: [
         { text: 'Blanche de Castille', why: 'Blanche de Castille est la mère de Louis IX.' },
-        { text: 'Marie de Médicis', why: 'Marie de Médicis est la femme d’Henri IV.' },
+        { text: 'Mazarin', why: 'Mazarin aide la reine à gouverner : il n’est pas la mère du roi.' },
       ],
       indice: 'Elle est la fille d’un roi d’Espagne.',
       etapes: ['Pense à la reine régente après 1643.', 'Écris son prénom, puis son pays.'],
@@ -1209,7 +1226,7 @@ const louisXiv: NotionGuidee = {
       title: 'Les fêtes de la cour',
       lines: [
         'En 1664, le roi donne une grande fête près de son pavillon de chasse.',
-        'Molière et Lully participent aux spectacles.',
+        'La fête dure plusieurs jours.',
         'Ces fêtes aident le roi à contrôler les gens de sa cour.',
       ],
       qs: [
@@ -1234,6 +1251,17 @@ const louisXiv: NotionGuidee = {
           ],
           indice: 'Pense au château du roi Soleil.',
           etapes: ['Relis la ligne 1 : un pavillon de chasse.', 'Souviens-toi du château qu’il est devenu.'],
+        },
+        {
+          ...P.fete1664,
+          q: 'Écris le nom et le numéro du roi qui donne cette fête.',
+          accepted: LOUIS_XIV,
+          traps: [
+            { text: 'Louis XIII', why: 'Louis XIII est mort en 1643, avant cette fête.' },
+            { text: 'Henri IV', why: 'Henri IV est mort en 1610.' },
+          ],
+          indice: 'Cherche le roi qui règne en 1664.',
+          etapes: ['Relis la ligne 1 : repère l’année.', 'Pense au roi qui règne à cette date.'],
         },
       ],
     },
