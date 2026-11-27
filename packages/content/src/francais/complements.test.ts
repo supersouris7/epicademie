@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { generate } from '../catalog.ts';
 import { check } from '../check.ts';
+import { analyzeSkill } from '../lisibilite.ts';
+import { sensIssues } from '../sens.ts';
 import { getSource } from '../sources.ts';
 import { FCM1_COMPLEMENTS } from './complements.ts';
 import { ENTREES, FAITS_COMPL, MANIPS, base, devant, resultat } from './complements.donnees.ts';
@@ -136,6 +138,78 @@ describe('corrections de relecture', () => {
     for (const q of tirages('fcm1-groupes-circonstanciels', 3)) expect(q.prompt).toContain('à la fin');
     for (const q of tirages('fcm1-groupes-circonstanciels', 5)) {
       expect(q.answer.kind === 'number' && q.answer.value.n >= 4).toBeTruthy();
+    }
+  });
+});
+
+describe('repasse : explications, sens et saisies', () => {
+  it('chaque notion est en version 2 et dit pourquoi l’apprendre, avec une source', () => {
+    for (const s of skills) {
+      expect(s.version, s.id).toBe(2);
+      expect(s.sens, s.id).toHaveLength(1);
+      expect(sensIssues(s), s.id).toEqual([]);
+      for (const sens of s.sens ?? []) expect(s.lesson.sources?.includes(sens.source), s.id).toBe(true);
+    }
+  });
+
+  it('le détecteur de lisibilité ne signale plus rien', () => {
+    for (const s of skills) {
+      const report = analyzeSkill(s, { id: 'fcm1-complements', subject: 'francais', grade: 'cm1' });
+      expect({ id: s.id, counts: report.counts, words: report.words }).toEqual({ id: s.id, counts: {}, words: [] });
+    }
+  });
+
+  it('la dernière bulle donne la réponse en gras', () => {
+    for (const s of skills)
+      for (let level = 1; level <= 5; level++)
+        for (const q of tirages(s.id, level as 1)) expect(q.steps.at(-1), `${s.id} N${level}`).toMatch(/\*\*.+\*\*/);
+  });
+
+  it('un groupe recopié est accepté sans accent, avec un point ou une virgule', () => {
+    let vus = 0;
+    for (const q of tirages('fcm1-groupes-circonstanciels', 4)) {
+      if (q.answer.kind !== 'text') continue;
+      const groupe = q.answer.accepted.find((a) => q.prompt.includes(a) && !/[.,]$/.test(a));
+      if (!groupe) continue;
+      vus++;
+      const sansAccent = groupe.normalize('NFD').replace(/\p{M}/gu, '');
+      for (const text of [`${groupe}.`, `${groupe},`, sansAccent])
+        expect(check(q, { kind: 'text', text }).correct, text).toBe(true);
+    }
+    expect(vus).toBeGreaterThan(0);
+  });
+
+  it('une phrase est acceptée sans aucun accent', () => {
+    for (let level = 3; level <= 5; level++)
+      for (const q of tirages('fcm1-manipulations', level as 3)) {
+        if (q.answer.kind !== 'text') continue;
+        const text = (q.answer.accepted[0] ?? '').normalize('NFD').replace(/\p{M}/gu, '');
+        expect(check(q, { kind: 'text', text }).correct, text).toBe(true);
+      }
+  });
+
+  it('groupes circonstanciels, N4 : le complément d’objet commence toujours par « à » ou « de »', () => {
+    const cois = ENTREES.filter((e) => e.type === 'coi');
+    for (const q of tirages('fcm1-groupes-circonstanciels', 4))
+      expect(
+        cois.some((e) => q.prompt.includes(base(e)) || q.prompt.includes(devant(e))),
+        q.prompt,
+      ).toBe(true);
+  });
+
+  it('au niveau 5, chaque erreur de comptage typique garde son explication', () => {
+    for (const q of tirages('fcm1-groupes-circonstanciels', 5))
+      expect(q.traps.some((t) => t.why.includes('un groupe par phrase'))).toBe(true);
+    for (const q of tirages('fcm1-cod-coi', 5)) {
+      if (q.answer.kind !== 'number') continue;
+      const k = q.answer.value.n;
+      const why = (n: number): string => {
+        const result = check(q, { kind: 'number', text: String(n) });
+        expect(result.correct).toBe(false);
+        return JSON.stringify(result);
+      };
+      expect(why(k + 1)).toContain('compté trop');
+      expect(why(k - 1)).toContain('Il t’en manque');
     }
   });
 });
