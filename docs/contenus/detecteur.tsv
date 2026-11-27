@@ -1,0 +1,1215 @@
+matiere	classe	chapitre	notion	type	score	indices	mots_non_definis
+anglais	cm1	acm1-ecouter-comprendre	acm1-consignes	entrainement	2.12	etapes-nombre=150, bulle-sans-action=129, bulle-chargee=24, consigne-sans-verbe=14, memo-long=1	
+anglais	cm1	acm1-ecouter-comprendre	acm1-reperes-uk	entrainement	2.07	etapes-nombre=150, bulle-sans-action=150, consigne-sans-verbe=3, phrase-longue=6, memo-long=1	
+anglais	cm1	acm1-se-presenter	acm1-saluer	entrainement	2.03	bulle-sans-action=150, etapes-nombre=60, bulle-chargee=46, phrase-longue=46, peu-de-variantes=1, memo-long=1	
+anglais	cm1	acm1-temps	acm1-meteo	entrainement	2.01	etapes-nombre=120, bulle-sans-action=150, phrase-longue=31, memo-long=1	
+anglais	cm1	acm1-ecouter-comprendre	acm1-mots-cles	entrainement	2.01	etapes-nombre=150, bulle-sans-action=150, memo-long=1	
+anglais	cm1	acm1-se-presenter	acm1-nombres-1-31	entrainement	2.01	etapes-nombre=120, bulle-sans-action=150, phrase-longue=30, memo-long=1	
+anglais	cm1	acm1-se-presenter	acm1-where-live	entrainement	2.01	etapes-nombre=90, bulle-sans-action=150, phrase-longue=30, peu-de-variantes=1, bulle-chargee=30, memo-long=1	
+anglais	cm1	acm1-temps	acm1-saisons	entrainement	1.93	etapes-nombre=108, bulle-sans-action=150, phrase-longue=30, peu-de-variantes=1	
+anglais	cm1	acm1-famille-corps	acm1-corps	entrainement	1.87	etapes-nombre=99, bulle-sans-action=150, phrase-longue=31, memo-long=1	
+anglais	cm1	acm1-gouts-capacites	acm1-sports-loisirs	entrainement	1.86	etapes-nombre=120, bulle-sans-action=150, bulle-chargee=7, memo-long=1, phrase-longue=1	
+anglais	cm1	acm1-famille-corps	acm1-have-got	entrainement	1.81	etapes-nombre=120, bulle-sans-action=150, memo-long=1	
+anglais	cm1	acm1-temps	acm1-mois	entrainement	1.73	etapes-nombre=108, bulle-sans-action=150, memo-long=1	
+anglais	cm1	acm1-ecouter-comprendre	acm1-nombres-entendus	entrainement	1.73	etapes-nombre=108, bulle-sans-action=150, memo-long=1	
+anglais	cm1	acm1-temps	acm1-jours	entrainement	1.72	etapes-nombre=108, bulle-sans-action=150	
+anglais	cm1	acm1-gouts-capacites	acm1-animaux	entrainement	1.69	etapes-nombre=102, bulle-sans-action=150, memo-long=1	
+anglais	cm1	acm1-famille-corps	acm1-famille	entrainement	1.68	etapes-nombre=102, bulle-sans-action=150	
+anglais	cm1	acm1-be	acm1-be-present	entrainement	1.63	bulle-sans-action=150, etapes-nombre=64, phrase-longue=30, memo-long=1	
+anglais	cm1	acm1-gouts-capacites	acm1-can	entrainement	1.61	etapes-nombre=90, bulle-sans-action=150, memo-long=1	
+anglais	cm1	acm1-temps	acm1-couleurs	entrainement	1.61	etapes-nombre=90, bulle-sans-action=150, memo-long=1	
+anglais	cm1	acm1-se-presenter	acm1-how-old	entrainement	1.61	etapes-nombre=90, bulle-sans-action=150, peu-de-variantes=1, memo-long=1	
+anglais	cm1	acm1-be	acm1-questions-be	entrainement	1.61	etapes-nombre=90, bulle-sans-action=150, memo-long=1	
+anglais	cm1	acm1-famille-corps	acm1-vetements	entrainement	1.61	etapes-nombre=90, bulle-sans-action=150, memo-long=1	
+anglais	cm1	acm1-se-presenter	acm1-your-name	entrainement	1.61	etapes-nombre=90, bulle-sans-action=150, peu-de-variantes=1, memo-long=1	
+anglais	cm1	acm1-gouts-capacites	acm1-like	entrainement	1.46	etapes-nombre=68, bulle-sans-action=150, memo-long=1	
+anglais	cm1	acm1-possessifs	acm1-possessifs	entrainement	1.44	bulle-sans-action=150, etapes-nombre=48, phrase-longue=18	
+anglais	cm1	acm1-temps	acm1-date	entrainement	1.41	etapes-nombre=46, bulle-sans-action=150, bulle-chargee=14, memo-long=1	
+anglais	cm1	acm1-be	acm1-pronoms-sujets	entrainement	1.29	bulle-sans-action=150, etapes-nombre=12, phrase-longue=30, memo-long=1	
+anglais	cm1	acm1-famille-corps	acm1-genitif	entrainement	1.01	bulle-sans-action=150, memo-long=1	
+anglais	cm2	acm2-ecole-nourriture-animaux	acm2-some	entrainement	2.67	etapes-nombre=132, bulle-sans-action=150, phrase-longue=57, bulle-chargee=30, enonce-long=30, memo-long=1	
+anglais	cm2	acm2-ecouter-comprendre	acm2-dialogue	entrainement	2.21	etapes-nombre=90, bulle-sans-action=150, bulle-chargee=60, phrase-longue=30, peu-de-variantes=1, memo-long=1	
+anglais	cm2	acm2-ecouter-comprendre	acm2-reperes-culturels	entrainement	2.01	etapes-nombre=102, bulle-sans-action=150, phrase-longue=47, peu-de-variantes=1, memo-long=1	
+anglais	cm2	acm2-poser-questions	acm2-do-you	entrainement	1.90	etapes-nombre=120, bulle-sans-action=150, phrase-longue=14, memo-long=1	
+anglais	cm2	acm2-ecole-nourriture-animaux	acm2-ecole	entrainement	1.81	etapes-nombre=120, bulle-sans-action=150, memo-long=1, phrase-longue=1	
+anglais	cm2	acm2-la-journee	acm2-heure	entrainement	1.81	etapes-nombre=120, bulle-sans-action=150, memo-long=1	
+anglais	cm2	acm2-ecole-nourriture-animaux	acm2-id-like	entrainement	1.81	etapes-nombre=90, bulle-sans-action=150, enonce-long=30, memo-long=1	
+anglais	cm2	acm2-se-situer	acm2-maison	entrainement	1.81	etapes-nombre=120, bulle-sans-action=150, memo-long=1, phrase-longue=1	
+anglais	cm2	acm2-se-situer	acm2-prepositions	entrainement	1.81	etapes-nombre=120, bulle-sans-action=150, phrase-longue=1	
+anglais	cm2	acm2-la-journee	acm2-present-simple	entrainement	1.81	etapes-nombre=120, bulle-sans-action=150, memo-long=1	
+anglais	cm2	acm2-la-journee	acm2-routine	entrainement	1.81	etapes-nombre=120, bulle-sans-action=150, phrase-longue=1	
+anglais	cm2	acm2-se-situer	acm2-there-is	entrainement	1.81	etapes-nombre=120, bulle-sans-action=150, memo-long=1	
+anglais	cm2	acm2-se-situer	acm2-ville	entrainement	1.81	etapes-nombre=120, bulle-sans-action=150, memo-long=1	
+anglais	cm2	acm2-poser-questions	acm2-can-you	entrainement	1.79	etapes-nombre=104, bulle-sans-action=150, phrase-longue=14, memo-long=1	
+anglais	cm2	acm2-poser-questions	acm2-how-old-many	entrainement	1.75	etapes-nombre=81, bulle-sans-action=150, bulle-chargee=30, memo-long=1	
+anglais	cm2	acm2-ecole-nourriture-animaux	acm2-animaux	entrainement	1.69	etapes-nombre=102, bulle-sans-action=150, memo-long=1	
+anglais	cm2	acm2-ecole-nourriture-animaux	acm2-nourriture	entrainement	1.69	etapes-nombre=102, bulle-sans-action=150, memo-long=1	
+anglais	cm2	acm2-pluriel	acm2-adjectif	entrainement	1.61	etapes-nombre=60, bulle-sans-action=150, phrase-longue=30, memo-long=1	
+anglais	cm2	acm2-poser-questions	acm2-mots-interrogatifs	entrainement	1.52	etapes-nombre=68, bulle-sans-action=150, bulle-chargee=9, memo-long=1	
+anglais	cm2	acm2-la-journee	acm2-frequence	entrainement	1.49	etapes-nombre=72, bulle-sans-action=150, memo-long=1	
+anglais	cm2	acm2-ecouter-comprendre	acm2-prix-dates	entrainement	1.49	etapes-nombre=72, bulle-sans-action=150, memo-long=1	
+anglais	cm2	acm2-pluriel	acm2-articles	entrainement	1.41	etapes-nombre=60, bulle-sans-action=150, memo-long=1	
+anglais	cm2	acm2-ecouter-comprendre	acm2-heure-entendue	entrainement	1.21	bulle-sans-action=150, etapes-nombre=30, memo-long=1	
+anglais	cm2	acm2-pluriel	acm2-this-that	entrainement	1.21	bulle-sans-action=150, etapes-nombre=30, memo-long=1	
+anglais	cm2	acm2-pluriel	acm2-pluriel	entrainement	1.07	bulle-sans-action=150, etapes-nombre=9, memo-long=1	
+anglais	6e	a6-temps-espace-mots	a6-prepositions-lieu	entrainement	2.33	bulle-sans-action=150, phrase-longue=150, etapes-nombre=48, memo-long=1	
+anglais	6e	a6-vocabulaire-thematique	a6-axes-culturels	entrainement	2.10	bulle-sans-action=150, phrase-longue=90, etapes-nombre=60, bulle-chargee=15	
+anglais	6e	a6-modaux-imperatif	a6-imperatif-affirmatif	entrainement	2.09	etapes-nombre=120, bulle-sans-action=150, bulle-chargee=12, phrase-longue=30, memo-long=1	
+anglais	6e	a6-be-ing	a6-want-would-like	entrainement	2.05	etapes-nombre=108, bulle-sans-action=150, bulle-chargee=48, memo-long=1, phrase-longue=1	
+anglais	6e	a6-vocabulaire-thematique	a6-voc-loisirs	entrainement	1.94	bulle-sans-action=150, etapes-nombre=62, phrase-longue=31, consigne-sans-verbe=18, bulle-chargee=30	
+anglais	6e	a6-vocabulaire-thematique	a6-voc-maison	entrainement	1.93	bulle-sans-action=150, etapes-nombre=62, phrase-longue=30, consigne-sans-verbe=18, bulle-chargee=30	
+anglais	6e	a6-ecouter-comprendre	a6-reperes-culturels	entrainement	1.89	etapes-nombre=120, bulle-sans-action=150, phrase-longue=13, memo-long=1	
+anglais	6e	a6-vocabulaire-thematique	a6-voc-alimentation	entrainement	1.88	bulle-sans-action=150, etapes-nombre=62, phrase-longue=30, consigne-sans-verbe=18, bulle-chargee=22	
+anglais	6e	a6-vocabulaire-thematique	a6-voc-ecole	entrainement	1.85	bulle-sans-action=150, etapes-nombre=62, phrase-longue=26, consigne-sans-verbe=18, bulle-chargee=22	
+anglais	6e	a6-modaux-imperatif	a6-must	entrainement	1.84	etapes-nombre=96, bulle-sans-action=150, bulle-chargee=18, consigne-sans-verbe=12	
+anglais	6e	a6-groupe-nominal	a6-adjectif-place	entrainement	1.81	etapes-nombre=120, bulle-sans-action=150, memo-long=1	
+anglais	6e	a6-temps-espace-mots	a6-dates-ordinaux	entrainement	1.80	bulle-sans-action=150, etapes-nombre=90, bulle-chargee=30	
+anglais	6e	a6-groupe-nominal	a6-articles	entrainement	1.77	bulle-sans-action=150, bulle-chargee=55, etapes-nombre=60, memo-long=1	
+anglais	6e	a6-pronoms	a6-determinants-possessifs	entrainement	1.73	bulle-sans-action=150, phrase-longue=60, etapes-nombre=48, memo-long=1	
+anglais	6e	a6-modaux-imperatif	a6-imperatif-negatif	entrainement	1.73	etapes-nombre=90, bulle-sans-action=150, bulle-chargee=18, memo-long=1	
+anglais	6e	a6-pronoms	a6-mots-interrogatifs	entrainement	1.72	bulle-sans-action=150, etapes-nombre=90, bulle-chargee=18	
+anglais	6e	a6-present-simple	a6-present-affirmatif	entrainement	1.60	etapes-nombre=90, bulle-sans-action=150	
+anglais	6e	a6-temps-espace-mots	a6-suffixes	entrainement	1.60	bulle-sans-action=150, etapes-nombre=60, bulle-chargee=30	
+anglais	6e	a6-modaux-imperatif	a6-can	entrainement	1.57	bulle-sans-action=150, etapes-nombre=36, bulle-chargee=18, phrase-longue=31, memo-long=1	
+anglais	6e	a6-be-ing	a6-be-ing-futur	entrainement	1.53	etapes-nombre=60, bulle-sans-action=150, bulle-chargee=18, memo-long=1	
+anglais	6e	a6-be-ing	a6-be-ing-reconnaitre	entrainement	1.53	etapes-nombre=60, bulle-sans-action=150, bulle-chargee=18, memo-long=1	
+anglais	6e	a6-pronoms	a6-pronoms-sujets	entrainement	1.53	bulle-sans-action=150, etapes-nombre=48, bulle-chargee=30, memo-long=1	
+anglais	6e	a6-temps-espace-mots	a6-noms-composes	entrainement	1.52	bulle-sans-action=150, etapes-nombre=48, consigne-sans-verbe=30	
+anglais	6e	a6-pronoms	a6-pronoms-possessifs	entrainement	1.52	bulle-sans-action=150, etapes-nombre=48, consigne-sans-verbe=30	
+anglais	6e	a6-present-simple	a6-present-questions	entrainement	1.49	bulle-sans-action=150, etapes-nombre=60, bulle-chargee=12, memo-long=1	
+anglais	6e	a6-temps-espace-mots	a6-marqueurs-temps	entrainement	1.47	bulle-sans-action=150, etapes-nombre=40, bulle-chargee=30	
+anglais	6e	a6-be-ing	a6-be-ing-present	entrainement	1.45	etapes-nombre=48, bulle-sans-action=150, bulle-chargee=18, memo-long=1	
+anglais	6e	a6-groupe-nominal	a6-demonstratifs	entrainement	1.45	bulle-sans-action=150, etapes-nombre=48, bulle-chargee=18, memo-long=1	
+anglais	6e	a6-groupe-nominal	a6-pluriels-irreguliers	entrainement	1.45	bulle-sans-action=150, etapes-nombre=66, memo-long=1	
+anglais	6e	a6-groupe-nominal	a6-genitif	entrainement	1.41	etapes-nombre=60, bulle-sans-action=150, memo-long=1	
+anglais	6e	a6-present-simple	a6-present-3e-personne	entrainement	1.41	bulle-sans-action=150, etapes-nombre=30, phrase-longue=30, memo-long=1	
+anglais	6e	a6-ecouter-comprendre	a6-nombres-dates-heures	entrainement	1.35	bulle-sans-action=150, etapes-nombre=22, bulle-chargee=30	
+anglais	6e	a6-be-preterit	a6-be-present	entrainement	1.33	bulle-sans-action=150, etapes-nombre=48, memo-long=1	
+anglais	6e	a6-be-preterit	a6-be-preterit	entrainement	1.32	bulle-sans-action=150, etapes-nombre=48	
+anglais	6e	a6-pronoms	a6-pronoms-complements	entrainement	1.32	bulle-sans-action=150, etapes-nombre=48	
+anglais	6e	a6-ecouter-comprendre	a6-message-court	entrainement	1.30	bulle-sans-action=150, bulle-chargee=44, memo-long=1	
+anglais	6e	a6-be-preterit	a6-there-was-were	entrainement	1.21	bulle-sans-action=150, bulle-chargee=30, memo-long=1	
+anglais	6e	a6-present-simple	a6-present-negation	entrainement	1.20	etapes-nombre=30, bulle-sans-action=150	
+anglais	6e	a6-be-preterit	a6-have	entrainement	1.01	bulle-sans-action=150, memo-long=1	
+anglais	5e	a5-futur	a5-choisir-futur	entrainement	2.23	etapes-nombre=150, bulle-sans-action=150, bulle-chargee=30, enonce-long=4	
+anglais	5e	a5-present	a5-adverbes-frequence	entrainement	2.20	etapes-nombre=150, bulle-sans-action=150, consigne-sans-verbe=30	
+anglais	5e	a5-modaux-souhait-opinion	a5-opinion	entrainement	2.00	etapes-nombre=150, bulle-sans-action=150	
+anglais	5e	a5-verbes-irreguliers	a5-participe	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+anglais	5e	a5-verbes-irreguliers	a5-phrase	entrainement	2.00	etapes-nombre=120, bulle-sans-action=150, consigne-sans-verbe=30	
+anglais	5e	a5-modaux-souhait-opinion	a5-souhait	entrainement	1.80	etapes-nombre=120, bulle-sans-action=150	
+anglais	5e	a5-modaux-souhait-opinion	a5-could	entrainement	1.69	etapes-nombre=90, bulle-sans-action=150, bulle-chargee=12, phrase-longue=1	
+anglais	5e	a5-modaux-souhait-opinion	a5-should	entrainement	1.60	etapes-nombre=90, bulle-sans-action=150	
+anglais	5e	a5-present	a5-marqueurs-temps	entrainement	1.53	etapes-nombre=78, bulle-sans-action=150, memo-long=1	
+anglais	5e	a5-futur	a5-be-going-to	entrainement	1.41	etapes-nombre=60, bulle-sans-action=150, memo-long=1	
+anglais	5e	a5-futur	a5-be-ing-projet	entrainement	1.41	etapes-nombre=60, bulle-sans-action=150, memo-long=1	
+anglais	5e	a5-present	a5-present-formes	entrainement	1.41	etapes-nombre=30, bulle-chargee=30, bulle-sans-action=150, memo-long=1	
+anglais	5e	a5-verbes-irreguliers	a5-preterit-did	entrainement	1.41	etapes-nombre=30, bulle-chargee=30, bulle-sans-action=150, memo-long=1	
+anglais	5e	a5-verbes-irreguliers	a5-preterit-regulier	entrainement	1.33	etapes-nombre=48, bulle-sans-action=150, memo-long=1	
+anglais	5e	a5-futur	a5-will	entrainement	1.33	etapes-nombre=48, bulle-sans-action=150, memo-long=1	
+anglais	5e	a5-verbes-irreguliers	a5-preterit	entrainement	1.23	bulle-sans-action=150, etapes-nombre=35	
+anglais	5e	a5-present	a5-present-ou-be-ing	entrainement	1.07	bulle-sans-action=150, etapes-nombre=9, memo-long=1	
+anglais	4e	a4-comparatif	a4-comparatif	entrainement	2.02	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=1, memo-long=1	
+anglais	3e	a3-present-perfect	a3-present-perfect	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+espagnol	5e	e5-se-presenter	e5-nombres	entrainement	2.01	etapes-nombre=150, bulle-sans-action=150, memo-long=1	
+espagnol	5e	e5-se-presenter	e5-se-presenter	entrainement	1.91	etapes-nombre=120, bulle-sans-action=150, phrase-longue=16, memo-long=1	
+espagnol	5e	e5-ser-estar-hay	e5-hay	entrainement	1.81	etapes-nombre=120, bulle-sans-action=150, memo-long=1	
+espagnol	5e	e5-se-presenter	e5-saluer	entrainement	1.74	etapes-nombre=90, bulle-sans-action=150, bulle-chargee=20, memo-long=1	
+espagnol	5e	e5-present	e5-pronoms-sujets	entrainement	1.69	etapes-nombre=102, bulle-sans-action=150, memo-long=1	
+espagnol	5e	e5-se-presenter	e5-alphabet-accent	entrainement	1.61	etapes-nombre=90, bulle-sans-action=150, phrase-longue=1	
+espagnol	5e	e5-ser-estar-hay	e5-ser-estar	entrainement	1.57	etapes-nombre=42, bulle-sans-action=150, phrase-longue=30, bulle-chargee=12, memo-long=1	
+espagnol	5e	e5-present	e5-present-er	entrainement	1.41	etapes-nombre=60, bulle-sans-action=150, phrase-longue=1	
+espagnol	5e	e5-present	e5-present-ir	entrainement	1.41	etapes-nombre=60, bulle-sans-action=150, phrase-longue=1	
+espagnol	5e	e5-present	e5-present-reguliers	entrainement	1.41	etapes-nombre=60, bulle-sans-action=150, phrase-longue=1	
+espagnol	5e	e5-ser-estar-hay	e5-estar	entrainement	1.09	bulle-sans-action=150, etapes-nombre=12, memo-long=1	
+espagnol	5e	e5-ser-estar-hay	e5-ser	entrainement	1.09	bulle-sans-action=150, etapes-nombre=12, memo-long=1	
+espagnol	4e	e4-irreguliers	e4-present-irreguliers	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+espagnol	4e	e4-passe	e4-preterito-indefinido	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+espagnol	3e	e3-futur	e3-futur	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+espagnol	3e	e3-passe-compose	e3-preterito-perfecto	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+francais	cm1	fcm1-temps	fcm1-passe-compose-negatif	entrainement	3.21	etapes-nombre=150, bulle-sans-action=150, phrase-longue=150, bulle-chargee=30, memo-long=1	
+francais	cm1	fcm1-orthographe-mots	fcm1-ces-ses	entrainement	2.81	etapes-nombre=120, bulle-chargee=150, bulle-sans-action=150, memo-long=1	
+francais	cm1	fcm1-lecture	fcm1-inferences	entrainement	2.55	bulle-sans-action=150, phrase-longue=150, etapes-nombre=54, bulle-chargee=19, peu-de-variantes=1, enonce-long=7, memo-long=1	
+francais	cm1	fcm1-accords	fcm1-accord-sujet-verbe	entrainement	2.33	bulle-sans-action=150, phrase-longue=139, etapes-nombre=60, memo-long=1	
+francais	cm1	fcm1-groupe-nominal	fcm1-gn-pronom	entrainement	2.25	bulle-sans-action=150, phrase-longue=91, consigne-sans-verbe=90, bulle-chargee=5, memo-long=1	
+francais	cm1	fcm1-present	fcm1-present-variations	entrainement	2.03	etapes-nombre=129, bulle-sans-action=150, bulle-chargee=26	
+francais	cm1	fcm1-verbe-sujet	fcm1-groupe-sujet	entrainement	2.01	bulle-chargee=120, bulle-sans-action=150, phrase-longue=30, memo-long=1	
+francais	cm1	fcm1-orthographe-mots	fcm1-et-est	entrainement	1.81	etapes-nombre=120, bulle-sans-action=150, memo-long=1	
+francais	cm1	fcm1-complements	fcm1-groupes-circonstanciels	entrainement	1.81	bulle-chargee=60, bulle-sans-action=150, phrase-longue=61, memo-long=1	
+francais	cm1	fcm1-orthographe-mots	fcm1-on-ont	entrainement	1.81	etapes-nombre=120, bulle-sans-action=150, memo-long=1	
+francais	cm1	fcm1-orthographe-mots	fcm1-son-sont	entrainement	1.80	etapes-nombre=120, bulle-sans-action=150	
+francais	cm1	fcm1-temps	fcm1-passe-compose	entrainement	1.76	etapes-nombre=73, bulle-sans-action=150, bulle-chargee=38, phrase-longue=3	
+francais	cm1	fcm1-temps	fcm1-futur	entrainement	1.75	bulle-sans-action=150, etapes-nombre=82, bulle-chargee=30	
+francais	cm1	fcm1-temps	fcm1-imparfait	entrainement	1.75	bulle-sans-action=150, etapes-nombre=82, bulle-chargee=30	
+francais	cm1	fcm1-lecture	fcm1-lire-qui-quoi	entrainement	1.62	bulle-sans-action=150, etapes-nombre=46, bulle-chargee=16, phrase-longue=30, memo-long=1	
+francais	cm1	fcm1-orthographe-mots	fcm1-a-a	entrainement	1.61	etapes-nombre=90, bulle-sans-action=150, memo-long=1	
+francais	cm1	fcm1-complements	fcm1-objet-circonstanciel	entrainement	1.61	bulle-sans-action=150, bulle-chargee=30, phrase-longue=60, memo-long=1	
+francais	cm1	fcm1-phrases	fcm1-ponctuation-fin	entrainement	1.61	bulle-sans-action=150, phrase-longue=60, bulle-chargee=30, memo-long=1	
+francais	cm1	fcm1-accords	fcm1-participe-etre	entrainement	1.60	bulle-sans-action=150, consigne-sans-verbe=30, phrase-longue=30, etapes-nombre=30	
+francais	cm1	fcm1-lecture	fcm1-ordre-recit	entrainement	1.59	bulle-sans-action=150, etapes-nombre=30, bulle-chargee=25, consigne-sans-verbe=30, phrase-longue=4	
+francais	cm1	fcm1-vocabulaire	fcm1-mots-polysemiques	entrainement	1.47	bulle-sans-action=150, etapes-nombre=48, bulle-chargee=22	
+francais	cm1	fcm1-lecture	fcm1-consigne-document	entrainement	1.45	bulle-sans-action=150, etapes-nombre=54, bulle-chargee=12, memo-long=1	
+francais	cm1	fcm1-vocabulaire	fcm1-familles-de-mots	entrainement	1.44	bulle-sans-action=150, etapes-nombre=66	
+francais	cm1	fcm1-vocabulaire	fcm1-sens-contexte	entrainement	1.44	bulle-sans-action=150, etapes-nombre=66	
+francais	cm1	fcm1-phrases	fcm1-forme-negative	entrainement	1.41	bulle-sans-action=150, phrase-longue=60, memo-long=1	
+francais	cm1	fcm1-nature-mots	fcm1-nature-fonction	entrainement	1.41	bulle-sans-action=150, consigne-sans-verbe=30, phrase-longue=30, memo-long=1	
+francais	cm1	fcm1-verbe-sujet	fcm1-nom-ou-verbe	entrainement	1.41	bulle-sans-action=150, phrase-longue=60, memo-long=1	
+francais	cm1	fcm1-nature-mots	fcm1-pronoms-personnels	entrainement	1.41	bulle-sans-action=150, consigne-sans-verbe=60, memo-long=1	
+francais	cm1	fcm1-accords	fcm1-accord-gn	entrainement	1.40	bulle-sans-action=150, consigne-sans-verbe=30, etapes-nombre=30	
+francais	cm1	fcm1-phrases	fcm1-forme-exclamative	entrainement	1.40	bulle-sans-action=150, phrase-longue=60	
+francais	cm1	fcm1-orthographe-mots	fcm1-mots-invariables	entrainement	1.40	bulle-sans-action=150, phrase-longue=30, etapes-nombre=30	
+francais	cm1	fcm1-phrases	fcm1-types-phrases	entrainement	1.40	bulle-sans-action=150, etapes-nombre=30, phrase-longue=30	
+francais	cm1	fcm1-lecture	fcm1-sens-mot-texte	entrainement	1.37	bulle-sans-action=150, etapes-nombre=54, memo-long=1	
+francais	cm1	fcm1-vocabulaire	fcm1-synonymes	entrainement	1.36	bulle-sans-action=150, etapes-nombre=54	
+francais	cm1	fcm1-groupe-nominal	fcm1-gn-composition	entrainement	1.34	bulle-sans-action=150, consigne-sans-verbe=30, bulle-chargee=20, phrase-longue=1	
+francais	cm1	fcm1-vocabulaire	fcm1-prefixes-suffixes	entrainement	1.32	bulle-sans-action=150, etapes-nombre=48	
+francais	cm1	fcm1-complements	fcm1-manipulations	entrainement	1.31	bulle-sans-action=150, bulle-chargee=30, enonce-long=15, memo-long=1	
+francais	cm1	fcm1-present	fcm1-present-er	entrainement	1.31	bulle-sans-action=150, etapes-nombre=46	
+francais	cm1	fcm1-temps	fcm1-infinitif-participe	entrainement	1.29	bulle-sans-action=150, etapes-nombre=42, memo-long=1	
+francais	cm1	fcm1-vocabulaire	fcm1-antonymes	entrainement	1.28	bulle-sans-action=150, etapes-nombre=42	
+francais	cm1	fcm1-groupe-nominal	fcm1-adjectif-epithete	entrainement	1.21	bulle-sans-action=150, phrase-longue=30, memo-long=1	
+francais	cm1	fcm1-nature-mots	fcm1-articles	entrainement	1.21	bulle-sans-action=150, consigne-sans-verbe=30, memo-long=1	
+francais	cm1	fcm1-complements	fcm1-cod-coi	entrainement	1.21	bulle-sans-action=150, consigne-sans-verbe=30, memo-long=1, phrase-longue=1	
+francais	cm1	fcm1-nature-mots	fcm1-determinants-poss-dem	entrainement	1.21	bulle-sans-action=150, consigne-sans-verbe=30, phrase-longue=1	
+francais	cm1	fcm1-phrases	fcm1-poser-question	entrainement	1.21	bulle-sans-action=150, phrase-longue=30, memo-long=1	
+francais	cm1	fcm1-present	fcm1-etre-avoir	entrainement	1.20	bulle-sans-action=150, etapes-nombre=30	
+francais	cm1	fcm1-accords	fcm1-feminin	entrainement	1.20	bulle-sans-action=150, phrase-longue=30	
+francais	cm1	fcm1-accords	fcm1-genre-nombre	entrainement	1.20	bulle-sans-action=150, consigne-sans-verbe=30	
+francais	cm1	fcm1-present	fcm1-present-ir	entrainement	1.20	bulle-sans-action=150, etapes-nombre=30	
+francais	cm1	fcm1-present	fcm1-present-irreguliers	entrainement	1.20	bulle-sans-action=150, etapes-nombre=30	
+francais	cm1	fcm1-accords	fcm1-pluriels	entrainement	1.18	bulle-sans-action=150, etapes-nombre=26, memo-long=1	
+francais	cm1	fcm1-verbe-sujet	fcm1-verbe-conjugue	entrainement	1.13	bulle-sans-action=150, phrase-longue=18, memo-long=1	
+francais	cm1	fcm1-nature-mots	fcm1-conjonctions-coordination	entrainement	1.05	bulle-sans-action=150, bulle-chargee=5, memo-long=1, phrase-longue=1	
+francais	cm1	fcm1-nature-mots	fcm1-adverbes	entrainement	1.01	bulle-sans-action=150, memo-long=1	
+francais	cm1	fcm1-groupe-nominal	fcm1-gn-noyau	entrainement	1.01	bulle-sans-action=150, memo-long=1	
+francais	cm1	fcm1-verbe-sujet	fcm1-infinitif	entrainement	1.01	bulle-sans-action=150, memo-long=1	
+francais	cm1	fcm1-verbe-sujet	fcm1-types-sujets	entrainement	1.01	bulle-sans-action=150, memo-long=1	
+francais	cm1	fcm1-present	fcm1-radical-terminaison	entrainement	1.00	bulle-sans-action=150	
+francais	cm2	fcm2-temps-composes	fcm2-temps-composes-negatifs	entrainement	3.20	etapes-nombre=150, bulle-sans-action=150, phrase-longue=150, bulle-chargee=30	
+francais	cm2	fcm2-orthographe-mots	fcm2-quel-quelle	entrainement	2.76	etapes-nombre=120, bulle-sans-action=150, phrase-longue=114, bulle-chargee=30	
+francais	cm2	fcm2-temps-composes	fcm2-passe-compose-ou-plus-que-parfait	entrainement	2.70	bulle-chargee=150, bulle-sans-action=150, consigne-sans-verbe=60, etapes-nombre=44, memo-long=1	
+francais	cm2	fcm2-lecture	fcm2-inferences	entrainement	2.66	bulle-sans-action=150, phrase-longue=150, etapes-nombre=54, bulle-chargee=24, enonce-long=19, peu-de-variantes=1, memo-long=1	
+francais	cm2	fcm2-passe-simple	fcm2-passe-simple-2e-groupe	entrainement	2.60	bulle-sans-action=150, phrase-longue=150, etapes-nombre=60, bulle-chargee=30	
+francais	cm2	fcm2-culture-litteraire	fcm2-poesie	entrainement	2.51	bulle-sans-action=150, phrase-longue=150, etapes-nombre=54, consigne-sans-verbe=8, peu-de-variantes=1, bulle-chargee=12, enonce-long=1, memo-long=1	
+francais	cm2	fcm2-orthographe-mots	fcm2-leur-leurs	entrainement	2.50	etapes-nombre=120, bulle-sans-action=150, bulle-chargee=104, memo-long=1	
+francais	cm2	fcm2-phrase-simple	fcm2-attribut-ou-objet	entrainement	2.40	bulle-sans-action=150, phrase-longue=150, consigne-sans-verbe=30, bulle-chargee=30	
+francais	cm2	fcm2-groupe-nominal	fcm2-chaine-accord-expansions	entrainement	2.40	bulle-sans-action=150, phrase-longue=150, consigne-sans-verbe=30, bulle-chargee=30	
+francais	cm2	fcm2-temps-composes	fcm2-marques-temps-personne	entrainement	2.21	etapes-nombre=120, bulle-sans-action=150, consigne-sans-verbe=30, bulle-chargee=30, memo-long=1	
+francais	cm2	fcm2-accords	fcm2-participe-avoir-cod	entrainement	2.21	bulle-sans-action=150, phrase-longue=150, etapes-nombre=30, memo-long=1	
+francais	cm2	fcm2-groupe-nominal	fcm2-epithete-attribut	entrainement	2.19	bulle-sans-action=150, phrase-longue=118, consigne-sans-verbe=30, etapes-nombre=30, memo-long=1	
+francais	cm2	fcm2-phrase-simple	fcm2-cod-coi	entrainement	2.01	bulle-sans-action=150, phrase-longue=120, consigne-sans-verbe=30, memo-long=1	
+francais	cm2	fcm2-phrase-simple	fcm2-circonstanciels-temps-lieu-cause	entrainement	2.00	bulle-chargee=120, bulle-sans-action=150, phrase-longue=30	
+francais	cm2	fcm2-vocabulaire	fcm2-mot-generique	entrainement	1.84	etapes-nombre=126, bulle-sans-action=150	
+francais	cm2	fcm2-accords	fcm2-accord-attribut	entrainement	1.81	bulle-sans-action=150, etapes-nombre=60, consigne-sans-verbe=60, memo-long=1	
+francais	cm2	fcm2-orthographe-mots	fcm2-ou-ou	entrainement	1.81	etapes-nombre=120, bulle-sans-action=150, phrase-longue=1, memo-long=1	
+francais	cm2	fcm2-phrase-simple	fcm2-sujet-inverse	entrainement	1.81	bulle-chargee=120, bulle-sans-action=150, memo-long=1	
+francais	cm2	fcm2-orthographe-mots	fcm2-ce-se	entrainement	1.80	etapes-nombre=120, bulle-sans-action=150	
+francais	cm2	fcm2-orthographe-mots	fcm2-la-la-la	entrainement	1.74	etapes-nombre=120, bulle-sans-action=140, memo-long=1	
+francais	cm2	fcm2-lecture	fcm2-texte-documentaire	entrainement	1.73	bulle-sans-action=150, etapes-nombre=69, bulle-chargee=39, peu-de-variantes=1, memo-long=1	
+francais	cm2	fcm2-culture-litteraire	fcm2-fable-morale	entrainement	1.71	bulle-sans-action=150, etapes-nombre=54, bulle-chargee=36, enonce-long=12, consigne-sans-verbe=4	
+francais	cm2	fcm2-passe-simple	fcm2-passe-simple-irreguliers	entrainement	1.70	bulle-sans-action=150, etapes-nombre=74, bulle-chargee=30, memo-long=1	
+francais	cm2	fcm2-temps-composes	fcm2-variations-radical	entrainement	1.67	etapes-nombre=70, bulle-sans-action=150, bulle-chargee=30, memo-long=1	
+francais	cm2	fcm2-passe-simple	fcm2-passe-simple-etre-avoir	entrainement	1.64	bulle-sans-action=150, phrase-longue=49, etapes-nombre=47	
+francais	cm2	fcm2-phrase-complexe	fcm2-mots-qui-relient	entrainement	1.61	bulle-sans-action=150, etapes-nombre=60, consigne-sans-verbe=30, memo-long=1	
+francais	cm2	fcm2-passe-simple	fcm2-passe-simple-ou-imparfait	entrainement	1.61	bulle-sans-action=150, consigne-sans-verbe=60, etapes-nombre=30, memo-long=1	
+francais	cm2	fcm2-culture-litteraire	fcm2-theatre	entrainement	1.61	bulle-sans-action=150, etapes-nombre=54, consigne-sans-verbe=12, peu-de-variantes=1, bulle-chargee=12, enonce-long=11, memo-long=1	
+francais	cm2	fcm2-lecture	fcm2-personnages-narrateur	entrainement	1.59	bulle-sans-action=150, phrase-longue=21, peu-de-variantes=1, etapes-nombre=42, bulle-chargee=12, enonce-long=12, memo-long=1	
+francais	cm2	fcm2-lecture	fcm2-sens-mot	entrainement	1.59	bulle-sans-action=150, etapes-nombre=60, bulle-chargee=22, enonce-long=5, memo-long=1	
+francais	cm2	fcm2-vocabulaire	fcm2-expressions-locutions	entrainement	1.57	bulle-sans-action=150, etapes-nombre=66, bulle-chargee=19	
+francais	cm2	fcm2-lecture	fcm2-texte-narratif	entrainement	1.56	bulle-sans-action=150, bulle-chargee=39, phrase-longue=15, etapes-nombre=30	
+francais	cm2	fcm2-culture-litteraire	fcm2-conte-merveilleux	entrainement	1.55	bulle-sans-action=150, etapes-nombre=54, bulle-chargee=24, consigne-sans-verbe=4, memo-long=1	
+francais	cm2	fcm2-culture-litteraire	fcm2-recit-narrateur	entrainement	1.55	bulle-sans-action=150, etapes-nombre=54, consigne-sans-verbe=4, bulle-chargee=24, memo-long=1	
+francais	cm2	fcm2-temps-composes	fcm2-plus-que-parfait	entrainement	1.49	bulle-sans-action=150, etapes-nombre=44, bulle-chargee=30	
+francais	cm2	fcm2-passe-simple	fcm2-passe-simple-1er-groupe	entrainement	1.48	bulle-sans-action=150, etapes-nombre=41, bulle-chargee=30, memo-long=1	
+francais	cm2	fcm2-phrase-simple	fcm2-constituants-phrase	entrainement	1.47	bulle-sans-action=150, bulle-chargee=70, memo-long=1	
+francais	cm2	fcm2-vocabulaire	fcm2-suffixes	entrainement	1.47	bulle-sans-action=150, etapes-nombre=66, bulle-chargee=5	
+francais	cm2	fcm2-vocabulaire	fcm2-prefixes	entrainement	1.45	bulle-sans-action=150, etapes-nombre=61, bulle-chargee=6, memo-long=1	
+francais	cm2	fcm2-vocabulaire	fcm2-familles-de-mots	entrainement	1.44	bulle-sans-action=150, etapes-nombre=66	
+francais	cm2	fcm2-vocabulaire	fcm2-synonymes-antonymes	entrainement	1.44	bulle-sans-action=150, etapes-nombre=66	
+francais	cm2	fcm2-orthographe-mots	fcm2-lettres-muettes	entrainement	1.40	bulle-sans-action=150, etapes-nombre=30, phrase-longue=30	
+francais	cm2	fcm2-accords	fcm2-participe-etre	entrainement	1.40	bulle-sans-action=150, consigne-sans-verbe=30, etapes-nombre=30	
+francais	cm2	fcm2-nature-mots	fcm2-pronoms-complements	entrainement	1.35	bulle-sans-action=150, consigne-sans-verbe=51, memo-long=1	
+francais	cm2	fcm2-accords	fcm2-accord-sujet-verbe	entrainement	1.21	bulle-sans-action=150, etapes-nombre=30, memo-long=1	
+francais	cm2	fcm2-phrase-complexe	fcm2-phrase-simple-complexe	entrainement	1.21	bulle-sans-action=150, consigne-sans-verbe=30, etapes-nombre=1, memo-long=1	
+francais	cm2	fcm2-accords	fcm2-pluriels-feminins	entrainement	1.21	bulle-sans-action=150, etapes-nombre=30, memo-long=1	
+francais	cm2	fcm2-nature-mots	fcm2-conjonctions-subordination	entrainement	1.20	bulle-sans-action=150, consigne-sans-verbe=29, memo-long=1	
+francais	cm2	fcm2-nature-mots	fcm2-mots-variables	entrainement	1.13	bulle-sans-action=150, peu-de-variantes=1, consigne-sans-verbe=18, memo-long=1	
+francais	cm2	fcm2-groupe-nominal	fcm2-complement-du-nom	entrainement	1.01	bulle-sans-action=150, memo-long=1	
+francais	cm2	fcm2-groupe-nominal	fcm2-gn-expansions	entrainement	1.01	bulle-sans-action=150, memo-long=1	
+francais	cm2	fcm2-nature-mots	fcm2-prepositions	entrainement	1.01	bulle-sans-action=150, memo-long=1	
+francais	cm2	fcm2-nature-mots	fcm2-variations-pronom	entrainement	1.01	bulle-sans-action=150, peu-de-variantes=1, memo-long=1	
+francais	cm2	fcm2-phrase-complexe	fcm2-verbes-conjugues	entrainement	1.01	bulle-sans-action=150, memo-long=1	
+francais	6e	f6-phrase-complexe	f6-juxtaposition	entrainement	2.61	bulle-sans-action=150, phrase-longue=150, consigne-sans-verbe=60, bulle-chargee=30, memo-long=1	
+francais	6e	f6-phrase-simple	f6-attribut-ou-cod	entrainement	2.60	bulle-sans-action=150, phrase-longue=150, consigne-sans-verbe=30, bulle-chargee=60	
+francais	6e	f6-accords	f6-chaine-accord-gn	entrainement	2.60	bulle-sans-action=150, phrase-longue=150, consigne-sans-verbe=60, etapes-nombre=30	
+francais	6e	f6-phrase-complexe	f6-coordination	entrainement	2.41	bulle-sans-action=150, phrase-longue=150, consigne-sans-verbe=60, memo-long=1	
+francais	6e	f6-accords	f6-participe-avoir-cod	entrainement	2.41	bulle-sans-action=150, phrase-longue=150, etapes-nombre=60, memo-long=1	
+francais	6e	f6-phrase-complexe	f6-subordination	entrainement	2.40	bulle-sans-action=150, phrase-longue=150, consigne-sans-verbe=30, bulle-chargee=30	
+francais	6e	f6-phrase-simple	f6-construction-verbe	entrainement	2.21	bulle-sans-action=150, phrase-longue=120, consigne-sans-verbe=30, bulle-chargee=30, memo-long=1	
+francais	6e	f6-pronoms-gn	f6-groupe-nominal	entrainement	2.20	bulle-sans-action=150, phrase-longue=120, consigne-sans-verbe=30, bulle-chargee=30	
+francais	6e	f6-conjugaison	f6-passe-compose-plus-que-parfait	entrainement	2.20	bulle-chargee=150, bulle-sans-action=150, etapes-nombre=30	
+francais	6e	f6-phrase-simple	f6-constituants-phrase	entrainement	2.05	bulle-sans-action=150, phrase-longue=127, bulle-chargee=30	
+francais	6e	f6-pronoms-gn	f6-pronom-fonction	entrainement	2.01	bulle-sans-action=150, phrase-longue=90, consigne-sans-verbe=30, bulle-chargee=30, memo-long=1	
+francais	6e	f6-accords	f6-accord-sujet-verbe	entrainement	1.81	bulle-sans-action=150, bulle-chargee=60, etapes-nombre=30, consigne-sans-verbe=30, memo-long=1	
+francais	6e	f6-phrase-simple	f6-coi	entrainement	1.60	bulle-sans-action=150, phrase-longue=90	
+francais	6e	f6-conjugaison	f6-variations-radical	entrainement	1.53	etapes-nombre=80, bulle-sans-action=150	
+francais	6e	f6-conjugaison	f6-marques-temps	entrainement	1.52	bulle-sans-action=150, etapes-nombre=48, phrase-longue=30	
+francais	6e	f6-phrase-simple	f6-complements-circonstanciels	entrainement	1.40	bulle-sans-action=150, bulle-chargee=60	
+francais	6e	f6-conjugaison	f6-conditionnel-present	entrainement	1.40	etapes-nombre=60, bulle-sans-action=150	
+francais	6e	f6-phrase-complexe	f6-conjonctions	entrainement	1.40	bulle-sans-action=150, consigne-sans-verbe=30, bulle-chargee=30	
+francais	6e	f6-pronoms-gn	f6-epithete-complement-nom	entrainement	1.40	bulle-sans-action=150, consigne-sans-verbe=30, bulle-chargee=30	
+francais	6e	f6-conjugaison	f6-imperatif-present	entrainement	1.21	bulle-sans-action=150, phrase-longue=30, memo-long=1	
+francais	6e	f6-phrase-complexe	f6-phrase-simple-complexe	entrainement	1.21	bulle-sans-action=150, phrase-longue=2, consigne-sans-verbe=30	
+francais	6e	f6-accords	f6-participe-etre	entrainement	1.20	bulle-sans-action=150, etapes-nombre=30	
+francais	6e	f6-phrase-complexe	f6-proposition	entrainement	1.20	bulle-sans-action=150, consigne-sans-verbe=30	
+francais	6e	f6-pronoms-gn	f6-pronom-antecedent	entrainement	1.01	bulle-sans-action=150, peu-de-variantes=1, memo-long=1	
+geographie	cm1	gcm1-se-loger	gcm1-espaces-touristiques	entrainement	2.85	bulle-chargee=79, bulle-sans-action=150, phrase-longue=119, consigne-sans-verbe=53, etapes-nombre=24, peu-de-variantes=1, memo-long=1	
+geographie	cm1	gcm1-se-loger	gcm1-logement	entrainement	2.43	bulle-sans-action=150, phrase-longue=110, consigne-sans-verbe=42, bulle-chargee=37, etapes-nombre=24, peu-de-variantes=1, memo-long=1	
+geographie	cm1	gcm1-lieux	gcm1-espace-proche	entrainement	2.42	bulle-sans-action=150, phrase-longue=126, bulle-chargee=18, consigne-sans-verbe=43, etapes-nombre=24, peu-de-variantes=1, memo-long=1	
+geographie	cm1	gcm1-lieux	gcm1-france-carte	entrainement	2.28	bulle-chargee=60, bulle-sans-action=150, phrase-longue=97, etapes-nombre=30, consigne-sans-verbe=4, memo-long=1	
+geographie	cm1	gcm1-lieux	gcm1-commune	entrainement	2.22	bulle-chargee=19, bulle-sans-action=150, phrase-longue=120, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=18, memo-long=1	
+geographie	cm1	gcm1-lieux	gcm1-grands-reperes	entrainement	2.03	bulle-sans-action=150, phrase-longue=54, consigne-sans-verbe=41, bulle-chargee=34, etapes-nombre=24, memo-long=1	
+geographie	cm1	gcm1-regions	gcm1-regions	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+geographie	cm1	gcm1-se-loger	gcm1-travail	entrainement	1.93	bulle-sans-action=150, phrase-longue=71, consigne-sans-verbe=42, etapes-nombre=24, peu-de-variantes=1, memo-long=1	
+geographie	cm1	gcm1-se-loger	gcm1-espaces-urbains	entrainement	1.85	bulle-sans-action=150, phrase-longue=59, consigne-sans-verbe=42, etapes-nombre=24, peu-de-variantes=1, memo-long=1	
+geographie	cm2	gcm2-internet	gcm2-internet-reseau	entrainement	2.45	bulle-sans-action=150, phrase-longue=126, bulle-chargee=48, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=18, memo-long=1	
+geographie	cm2	gcm2-mieux-habiter	gcm2-recycler	entrainement	2.41	bulle-chargee=71, bulle-sans-action=150, phrase-longue=96, etapes-nombre=36, consigne-sans-verbe=7, memo-long=1	
+geographie	cm2	gcm2-se-deplacer	gcm2-ville-en-ville	entrainement	2.36	bulle-chargee=64, bulle-sans-action=150, phrase-longue=112, etapes-nombre=24, consigne-sans-verbe=3, memo-long=1	
+geographie	cm2	gcm2-internet	gcm2-internet-usages	entrainement	2.25	bulle-sans-action=150, phrase-longue=123, consigne-sans-verbe=39, etapes-nombre=24, memo-long=1	
+geographie	cm2	gcm2-internet	gcm2-internet-inegalites	entrainement	2.14	bulle-sans-action=150, phrase-longue=81, bulle-chargee=40, consigne-sans-verbe=25, etapes-nombre=24, memo-long=1	
+geographie	cm2	gcm2-se-deplacer	gcm2-europe-monde	entrainement	2.02	bulle-chargee=37, bulle-sans-action=150, phrase-longue=91, etapes-nombre=24, memo-long=1	
+geographie	cm2	gcm2-se-deplacer	gcm2-quotidien	entrainement	1.95	bulle-sans-action=150, bulle-chargee=40, phrase-longue=76, etapes-nombre=24, peu-de-variantes=1, memo-long=1	
+geographie	cm2	gcm2-mieux-habiter	gcm2-nature-ville	entrainement	1.90	bulle-sans-action=150, phrase-longue=69, bulle-chargee=40, etapes-nombre=24, peu-de-variantes=1, memo-long=1	
+geographie	cm2	gcm2-mieux-habiter	gcm2-ecoquartier	entrainement	1.88	bulle-sans-action=150, phrase-longue=66, bulle-chargee=40, etapes-nombre=24, peu-de-variantes=1, memo-long=1	
+geographie	cm2	gcm2-se-deplacer	gcm2-modes-transport	entrainement	1.78	bulle-sans-action=150, phrase-longue=79, etapes-nombre=24, consigne-sans-verbe=7, bulle-chargee=6, memo-long=1	
+geographie	cm2	gcm2-mieux-habiter	gcm2-transition	entrainement	1.69	bulle-sans-action=150, phrase-longue=77, etapes-nombre=24, peu-de-variantes=1, memo-long=1	
+geographie	cm2	gcm2-internet	gcm2-internet-cables	entrainement	1.46	bulle-sans-action=150, consigne-sans-verbe=27, phrase-longue=17, etapes-nombre=24, memo-long=1	
+geographie	cm2	gcm2-departements	gcm2-europe-capitales	entrainement	1.41	bulle-sans-action=150, phrase-longue=40, etapes-nombre=20, memo-long=1	
+geographie	cm2	gcm2-departements	gcm2-continents-oceans	entrainement	1.34	bulle-chargee=8, bulle-sans-action=150, phrase-longue=22, etapes-nombre=20, memo-long=1	
+geographie	cm2	gcm2-departements	gcm2-departements	entrainement	1.21	bulle-sans-action=150, etapes-nombre=30, memo-long=1	
+geographie	6e	g6-monde-habite	g6-foyers-peuplement	entrainement	2.14	bulle-sans-action=150, phrase-longue=81, bulle-chargee=59, etapes-nombre=30, memo-long=1	
+geographie	6e	g6-littoraux	g6-littoral-industrialo-portuaire	entrainement	2.09	bulle-sans-action=150, phrase-longue=135, bulle-chargee=3, etapes-nombre=24, memo-long=1	
+geographie	6e	g6-monde-habite	g6-repartition-population	entrainement	2.00	bulle-sans-action=150, phrase-longue=125, etapes-nombre=24, memo-long=1	
+geographie	6e	g6-littoraux	g6-risques-littoraux	entrainement	1.89	bulle-sans-action=150, phrase-longue=93, bulle-chargee=16, etapes-nombre=24, memo-long=1	
+geographie	6e	g6-habiter-metropole	g6-metropoles-monde	entrainement	1.87	bulle-sans-action=150, phrase-longue=110, etapes-nombre=20, memo-long=1	
+geographie	6e	g6-littoraux	g6-littoral-touristique	entrainement	1.72	bulle-sans-action=150, phrase-longue=76, etapes-nombre=24, consigne-sans-verbe=4, bulle-chargee=3, memo-long=1	
+geographie	6e	g6-monde-habite	g6-densite	entrainement	1.69	bulle-sans-action=150, phrase-longue=53, bulle-chargee=14, etapes-nombre=36, memo-long=1	
+geographie	6e	g6-habiter-metropole	g6-mobilites	entrainement	1.69	bulle-sans-action=150, phrase-longue=50, bulle-chargee=29, etapes-nombre=24, memo-long=1	
+geographie	6e	g6-faible-densite	g6-espaces-agricoles	entrainement	1.63	bulle-sans-action=150, phrase-longue=63, consigne-sans-verbe=8, etapes-nombre=24	
+geographie	6e	g6-littoraux	g6-vocabulaire-littoraux	entrainement	1.62	bulle-sans-action=150, phrase-longue=68, etapes-nombre=24, memo-long=1	
+geographie	6e	g6-faible-densite	g6-habiter-rural	entrainement	1.57	bulle-sans-action=150, phrase-longue=44, bulle-chargee=17, etapes-nombre=24, memo-long=1	
+geographie	6e	g6-monde-habite	g6-vocabulaire-monde-habite	entrainement	1.54	bulle-sans-action=150, phrase-longue=57, etapes-nombre=24	
+geographie	6e	g6-faible-densite	g6-fortes-contraintes	entrainement	1.53	bulle-sans-action=150, phrase-longue=47, etapes-nombre=24, consigne-sans-verbe=7, memo-long=1	
+geographie	6e	g6-prefectures	g6-continents-oceans	entrainement	1.51	bulle-sans-action=150, phrase-longue=33, etapes-nombre=30, consigne-sans-verbe=12, memo-long=1	
+geographie	6e	g6-faible-densite	g6-vocabulaire-faible-densite	entrainement	1.41	bulle-sans-action=150, phrase-longue=29, etapes-nombre=24, consigne-sans-verbe=7, memo-long=1	
+geographie	6e	g6-prefectures	g6-grandes-metropoles	entrainement	1.36	bulle-sans-action=150, phrase-longue=15, etapes-nombre=26, consigne-sans-verbe=12, memo-long=1	
+geographie	6e	g6-habiter-metropole	g6-ville-demain	entrainement	1.35	bulle-sans-action=150, bulle-chargee=11, phrase-longue=17, etapes-nombre=24, memo-long=1	
+geographie	6e	g6-habiter-metropole	g6-ville-peripheries	entrainement	1.28	bulle-sans-action=150, etapes-nombre=36, phrase-longue=6	
+geographie	6e	g6-prefectures	g6-fleuves-montagnes	entrainement	1.27	bulle-sans-action=150, phrase-longue=7, etapes-nombre=20, consigne-sans-verbe=12, memo-long=1	
+geographie	6e	g6-prefectures	g6-prefectures	entrainement	1.26	bulle-sans-action=150, etapes-nombre=26, consigne-sans-verbe=12, memo-long=1	
+geographie	6e	g6-habiter-metropole	g6-vocabulaire-urbain	entrainement	1.17	bulle-sans-action=150, etapes-nombre=24, memo-long=1	
+geographie	5e	g5-demographie-developpement	g5-croissance-demographique	entrainement	1.93	bulle-sans-action=150, bulle-chargee=38, phrase-longue=76, etapes-nombre=24, memo-long=1	
+geographie	5e	g5-demographie-developpement	g5-inegal-developpement	entrainement	1.89	bulle-sans-action=150, phrase-longue=77, bulle-chargee=32, etapes-nombre=24, memo-long=1	
+geographie	5e	g5-reperes	g5-foyers-population	entrainement	1.85	bulle-sans-action=150, phrase-longue=97, etapes-nombre=30, memo-long=1	
+geographie	5e	g5-changement-global	g5-changement-climatique	entrainement	1.65	bulle-sans-action=150, phrase-longue=60, etapes-nombre=36, memo-long=1	
+geographie	5e	g5-ressources-limitees	g5-gerer-renouveler	entrainement	1.65	bulle-chargee=12, bulle-sans-action=150, phrase-longue=48, etapes-nombre=36, memo-long=1	
+geographie	5e	g5-demographie-developpement	g5-idh	entrainement	1.62	bulle-chargee=26, bulle-sans-action=150, phrase-longue=42, etapes-nombre=24, memo-long=1	
+geographie	5e	g5-ressources-limitees	g5-alimentation	entrainement	1.57	bulle-sans-action=150, phrase-longue=48, etapes-nombre=36, memo-long=1	
+geographie	5e	g5-changement-global	g5-adaptation	entrainement	1.49	bulle-sans-action=150, phrase-longue=49, etapes-nombre=24, memo-long=1	
+geographie	5e	g5-reperes	g5-reperes-ressources	entrainement	1.49	bulle-sans-action=150, phrase-longue=53, etapes-nombre=20, memo-long=1	
+geographie	5e	g5-changement-global	g5-prevention	entrainement	1.47	bulle-sans-action=150, phrase-longue=45, etapes-nombre=24, memo-long=1	
+geographie	5e	g5-reperes	g5-cartes	entrainement	1.43	bulle-sans-action=150, phrase-longue=21, etapes-nombre=42, memo-long=1	
+geographie	5e	g5-changement-global	g5-risques	entrainement	1.43	bulle-sans-action=150, phrase-longue=40, etapes-nombre=24, memo-long=1	
+geographie	5e	g5-reperes	g5-vocabulaire	entrainement	1.41	bulle-sans-action=150, phrase-longue=34, bulle-chargee=3, etapes-nombre=24, memo-long=1	
+geographie	5e	g5-ressources-limitees	g5-eau	entrainement	1.38	bulle-sans-action=150, phrase-longue=32, etapes-nombre=24, memo-long=1	
+geographie	5e	g5-ressources-limitees	g5-energie	entrainement	1.30	bulle-sans-action=150, etapes-nombre=24, bulle-chargee=10, phrase-longue=10, memo-long=1	
+geographie	5e	g5-demographie-developpement	g5-repartition-richesses	entrainement	1.29	bulle-sans-action=150, phrase-longue=19, etapes-nombre=24, memo-long=1	
+geographie	4e	g4-espaces-mondialisation	g4-mers-oceans	entrainement	2.00	bulle-sans-action=150, phrase-longue=114, etapes-nombre=36	
+geographie	4e	g4-reperes	g4-reperes-metropoles	entrainement	1.69	bulle-sans-action=150, phrase-longue=73, etapes-nombre=30, memo-long=1	
+geographie	4e	g4-mobilites-transnationales	g4-vocabulaire-mobilites	entrainement	1.64	bulle-sans-action=150, phrase-longue=60, etapes-nombre=36	
+geographie	4e	g4-reperes	g4-reperes-vocabulaire	entrainement	1.56	bulle-sans-action=150, phrase-longue=59, etapes-nombre=24, memo-long=1	
+geographie	4e	g4-mobilites-transnationales	g4-monde-migrants	entrainement	1.49	bulle-sans-action=150, phrase-longue=38, etapes-nombre=36	
+geographie	4e	g4-urbanisation-monde	g4-vocabulaire-urbanisation	entrainement	1.48	bulle-sans-action=150, phrase-longue=48, etapes-nombre=24	
+geographie	4e	g4-urbanisation-monde	g4-centres-peripheries	entrainement	1.46	bulle-sans-action=150, phrase-longue=32, etapes-nombre=36, memo-long=1	
+geographie	4e	g4-espaces-mondialisation	g4-etats-unis-mondialisation	entrainement	1.45	bulle-sans-action=150, phrase-longue=43, etapes-nombre=24	
+geographie	4e	g4-reperes	g4-reperes-routes-maritimes	entrainement	1.43	bulle-sans-action=150, phrase-longue=34, etapes-nombre=30, memo-long=1	
+geographie	4e	g4-urbanisation-monde	g4-villes-connectees	entrainement	1.41	bulle-sans-action=150, phrase-longue=32, etapes-nombre=24, consigne-sans-verbe=4, memo-long=1	
+geographie	4e	g4-mobilites-transnationales	g4-tourisme-espaces	entrainement	1.34	bulle-sans-action=150, phrase-longue=27, etapes-nombre=24	
+geographie	4e	g4-espaces-mondialisation	g4-afrique-ouest-mondialisation	entrainement	1.33	bulle-sans-action=150, phrase-longue=26, etapes-nombre=24	
+geographie	4e	g4-reperes	g4-reperes-flux-migratoires	entrainement	1.21	bulle-sans-action=150, etapes-nombre=30, memo-long=1, phrase-longue=1	
+geographie	3e	g3-union-europeenne	g3-ue-euro	entrainement	3.00	etapes-nombre=90, bulle-sans-action=90, consigne-sans-verbe=90	
+geographie	3e	g3-union-europeenne	g3-ue-capitales	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+geographie	3e	g3-dynamiques-territoriales	g3-espaces-productifs	entrainement	1.57	bulle-sans-action=150, phrase-longue=48, etapes-nombre=36, memo-long=1	
+geographie	3e	g3-dynamiques-territoriales	g3-aires-urbaines	entrainement	1.42	bulle-sans-action=150, phrase-longue=38, etapes-nombre=24, memo-long=1	
+geographie	3e	g3-dynamiques-territoriales	g3-faible-densite	entrainement	1.33	bulle-sans-action=150, phrase-longue=25, etapes-nombre=24, memo-long=1	
+geographie	3e	g3-dynamiques-territoriales	g3-vocabulaire-territoires	entrainement	1.29	bulle-sans-action=150, phrase-longue=19, etapes-nombre=24	
+histoire	cm1	emcm1-civisme-numerique	emcm1-sobriete-numerique	entrainement	2.74	bulle-chargee=78, bulle-sans-action=150, phrase-longue=139, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=18, memo-long=1	
+histoire	cm1	hcm1-se-reperer	hcm1-ordonner-evenements	entrainement	2.66	bulle-chargee=67, bulle-sans-action=150, phrase-longue=91, etapes-nombre=90, memo-long=1	
+histoire	cm1	emcm1-civisme-numerique	emcm1-regles-en-ligne	entrainement	2.14	bulle-sans-action=150, phrase-longue=127, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=18, memo-long=1	
+histoire	cm1	hcm1-revolution-empire	hcm1-napoleon	entrainement	2.13	bulle-sans-action=150, phrase-longue=115, etapes-nombre=36, consigne-sans-verbe=18	
+histoire	cm1	hcm1-avant-la-france	hcm1-clovis-charlemagne	entrainement	2.09	bulle-sans-action=150, phrase-longue=114, etapes-nombre=36, consigne-sans-verbe=12, memo-long=1	
+histoire	cm1	hcm1-avant-la-france	hcm1-heritages	entrainement	2.07	bulle-sans-action=150, phrase-longue=121, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=13, memo-long=1	
+histoire	cm1	emcm1-faire-societe	emcm1-fraternite-empathie	entrainement	2.06	bulle-sans-action=150, phrase-longue=133, etapes-nombre=24, peu-de-variantes=1, memo-long=1	
+histoire	cm1	hcm1-avant-la-france	hcm1-mouvements	entrainement	2.04	bulle-sans-action=150, phrase-longue=91, etapes-nombre=36, consigne-sans-verbe=11, bulle-chargee=18	
+histoire	cm1	hcm1-reperes	hcm1-reperes	entrainement	2.03	etapes-nombre=90, bulle-sans-action=90, phrase-longue=3	
+histoire	cm1	hcm1-se-reperer	hcm1-avant-apres-jc	entrainement	2.01	bulle-sans-action=150, bulle-chargee=76, etapes-nombre=49, phrase-longue=25, memo-long=1	
+histoire	cm1	emcm1-faire-societe	emcm1-regles-lois	entrainement	1.89	bulle-sans-action=150, phrase-longue=109, etapes-nombre=24, memo-long=1	
+histoire	cm1	hcm1-avant-la-france	hcm1-traces	entrainement	1.87	bulle-sans-action=150, phrase-longue=87, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=18, memo-long=1	
+histoire	cm1	hcm1-revolution-empire	hcm1-1789-execution	entrainement	1.81	bulle-sans-action=150, phrase-longue=71, etapes-nombre=36, consigne-sans-verbe=13, memo-long=1	
+histoire	cm1	emcm1-faire-societe	emcm1-egalite-dignite	entrainement	1.78	bulle-sans-action=150, phrase-longue=68, consigne-sans-verbe=23, etapes-nombre=24, peu-de-variantes=1, memo-long=1	
+histoire	cm1	hcm1-se-reperer	hcm1-frise-chronologique	entrainement	1.77	bulle-chargee=36, bulle-sans-action=150, phrase-longue=63, etapes-nombre=15, memo-long=1	
+histoire	cm1	hcm1-temps-des-rois	hcm1-louis-ix	entrainement	1.75	bulle-sans-action=150, phrase-longue=69, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=18, memo-long=1	
+histoire	cm1	hcm1-revolution-empire	hcm1-nation	entrainement	1.67	bulle-sans-action=150, phrase-longue=57, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=18, memo-long=1	
+histoire	cm1	emcm1-faire-societe	emcm1-respect-autrui	entrainement	1.64	bulle-sans-action=150, phrase-longue=55, consigne-sans-verbe=16, etapes-nombre=24, memo-long=1	
+histoire	cm1	hcm1-temps-des-rois	hcm1-louis-xiv	entrainement	1.61	bulle-sans-action=150, phrase-longue=48, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=18	
+histoire	cm1	hcm1-revolution-empire	hcm1-heritages-revolution	entrainement	1.59	bulle-chargee=17, bulle-sans-action=150, phrase-longue=18, etapes-nombre=36, consigne-sans-verbe=18	
+histoire	cm1	emcm1-civisme-numerique	emcm1-respect-en-ligne	entrainement	1.49	bulle-sans-action=150, phrase-longue=29, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=18, memo-long=1	
+histoire	cm1	hcm1-se-reperer	hcm1-siecles-romains	entrainement	1.47	bulle-sans-action=150, bulle-chargee=5, phrase-longue=65, memo-long=1	
+histoire	cm1	hcm1-temps-des-rois	hcm1-henri-iv	entrainement	1.45	bulle-sans-action=150, phrase-longue=30, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=13	
+histoire	cm1	emcm1-civisme-numerique	emcm1-chercher-information	entrainement	1.30	bulle-sans-action=150, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=18, memo-long=1, phrase-longue=1	
+histoire	cm1	hcm1-temps-des-rois	hcm1-francois-ier	entrainement	1.25	bulle-sans-action=150, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=11, phrase-longue=1	
+histoire	cm1	emcm1-civisme-numerique	emcm1-signaler	entrainement	1.23	bulle-sans-action=150, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=8, memo-long=1	
+histoire	cm2	hcm2-se-reperer	hcm2-frise-periodes	entrainement	2.37	bulle-sans-action=150, phrase-longue=122, etapes-nombre=73, bulle-chargee=9, memo-long=1	
+histoire	cm2	hcm2-temps-republique	hcm2-democratie	entrainement	2.27	bulle-sans-action=150, phrase-longue=74, bulle-chargee=76, etapes-nombre=36, consigne-sans-verbe=4, memo-long=1	
+histoire	cm2	hcm2-reperes	hcm2-reperes	entrainement	2.23	etapes-nombre=90, bulle-sans-action=90, phrase-longue=21	
+histoire	cm2	emcm2-vivre-republique	emcm2-commune-elus	entrainement	2.22	bulle-sans-action=150, phrase-longue=106, bulle-chargee=40, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=11, memo-long=1	
+histoire	cm2	hcm2-guerres-europe	hcm2-lieux-memoire	entrainement	2.05	bulle-chargee=34, bulle-sans-action=150, phrase-longue=86, etapes-nombre=36, memo-long=1	
+histoire	cm2	hcm2-se-reperer	hcm2-ordonner	entrainement	2.03	bulle-sans-action=150, phrase-longue=18, etapes-nombre=90, bulle-chargee=31, consigne-sans-verbe=15, memo-long=1	
+histoire	cm2	hcm2-temps-republique	hcm2-ecole-ferry	entrainement	2.01	bulle-sans-action=150, phrase-longue=115, etapes-nombre=36, memo-long=1	
+histoire	cm2	emcm2-vivre-republique	emcm2-droits-de-tous	entrainement	2.00	bulle-sans-action=150, bulle-chargee=50, phrase-longue=56, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=18, memo-long=1	
+histoire	cm2	emcm2-vivre-republique	emcm2-vote	entrainement	2.00	bulle-sans-action=150, phrase-longue=86, bulle-chargee=20, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=18, memo-long=1	
+histoire	cm2	hcm2-temps-republique	hcm2-vote-femmes	entrainement	1.97	bulle-sans-action=150, phrase-longue=65, bulle-chargee=31, consigne-sans-verbe=12, etapes-nombre=36, memo-long=1	
+histoire	cm2	hcm2-age-industriel	hcm2-monde-rural	entrainement	1.91	bulle-sans-action=150, phrase-longue=86, bulle-chargee=17, etapes-nombre=24, consigne-sans-verbe=8, memo-long=1	
+histoire	cm2	hcm2-age-industriel	hcm2-ville-industrielle	entrainement	1.89	bulle-chargee=21, bulle-sans-action=150, phrase-longue=71, etapes-nombre=36, consigne-sans-verbe=4, memo-long=1	
+histoire	cm2	hcm2-guerres-europe	hcm2-premiere-guerre	entrainement	1.87	bulle-sans-action=150, phrase-longue=56, bulle-chargee=38, etapes-nombre=36, memo-long=1	
+histoire	cm2	hcm2-guerres-europe	hcm2-seconde-guerre	entrainement	1.87	bulle-sans-action=150, phrase-longue=68, bulle-chargee=25, etapes-nombre=36, memo-long=1	
+histoire	cm2	emcm2-sinformer-en-ligne	emcm2-sources	entrainement	1.83	bulle-sans-action=150, phrase-longue=75, bulle-chargee=12, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=11, memo-long=1	
+histoire	cm2	emcm2-sinformer-en-ligne	emcm2-liberte-expression	entrainement	1.75	bulle-sans-action=150, phrase-longue=72, consigne-sans-verbe=15, etapes-nombre=24, peu-de-variantes=1, memo-long=1	
+histoire	cm2	hcm2-guerres-europe	hcm2-construction-europeenne	entrainement	1.67	bulle-sans-action=150, phrase-longue=64, etapes-nombre=36, memo-long=1	
+histoire	cm2	hcm2-se-reperer	hcm2-durees	entrainement	1.56	bulle-sans-action=150, phrase-longue=32, bulle-chargee=4, etapes-nombre=47, memo-long=1	
+histoire	cm2	hcm2-age-industriel	hcm2-travail	entrainement	1.55	bulle-sans-action=150, phrase-longue=46, etapes-nombre=36, memo-long=1	
+histoire	cm2	emcm2-vivre-republique	emcm2-valeurs-symboles	entrainement	1.54	bulle-sans-action=150, phrase-longue=45, bulle-chargee=10, etapes-nombre=24, peu-de-variantes=1, memo-long=1	
+histoire	cm2	emcm2-sinformer-en-ligne	emcm2-liberte-information	entrainement	1.44	bulle-sans-action=150, consigne-sans-verbe=33, etapes-nombre=24, peu-de-variantes=1, phrase-longue=7, memo-long=1	
+histoire	cm2	hcm2-temps-republique	hcm2-1892	entrainement	1.44	bulle-sans-action=150, phrase-longue=25, etapes-nombre=36, consigne-sans-verbe=4, memo-long=1	
+histoire	cm2	emcm2-sinformer-en-ligne	emcm2-verifier-information	entrainement	1.41	bulle-sans-action=150, phrase-longue=23, etapes-nombre=24, peu-de-variantes=1, consigne-sans-verbe=12, memo-long=1	
+histoire	cm2	hcm2-age-industriel	hcm2-energies-machines	entrainement	1.41	bulle-sans-action=150, phrase-longue=21, etapes-nombre=36, consigne-sans-verbe=4, memo-long=1	
+histoire	cm2	hcm2-se-reperer	hcm2-reperes-cycle3	entrainement	1.32	bulle-sans-action=150, phrase-longue=31, etapes-nombre=13, bulle-chargee=3, memo-long=1	
+histoire	6e	h6-reperes	h6-reperes	entrainement	2.54	etapes-nombre=90, bulle-sans-action=90, phrase-longue=49	
+histoire	6e	em6-vie-privee	em6-vie-privee-en-ligne	entrainement	2.33	bulle-sans-action=150, phrase-longue=133, bulle-chargee=42, etapes-nombre=24, memo-long=1	
+histoire	6e	h6-se-reperer	h6-millenaires-siecles	entrainement	2.19	bulle-sans-action=150, phrase-longue=112, bulle-chargee=29, etapes-nombre=36, memo-long=1	
+histoire	6e	h6-se-reperer	h6-frise-antiquite	entrainement	2.10	bulle-chargee=56, bulle-sans-action=150, phrase-longue=61, etapes-nombre=36, consigne-sans-verbe=12	
+histoire	6e	h6-recits-fondateurs	h6-monotheisme-juif	entrainement	2.08	bulle-sans-action=150, phrase-longue=103, bulle-chargee=22, etapes-nombre=36, memo-long=1	
+histoire	6e	h6-humanite-migrations	h6-premiers-etats-ecritures	entrainement	2.08	bulle-sans-action=150, phrase-longue=67, bulle-chargee=59, etapes-nombre=36	
+histoire	6e	em6-vie-privee	em6-droit-intimite	entrainement	2.02	bulle-sans-action=150, phrase-longue=123, etapes-nombre=24, consigne-sans-verbe=5, memo-long=1	
+histoire	6e	h6-empire-romain	h6-romanisation	entrainement	2.01	bulle-sans-action=150, phrase-longue=115, etapes-nombre=36, memo-long=1	
+histoire	6e	h6-se-reperer	h6-reperes-annuels	entrainement	1.67	bulle-sans-action=150, phrase-longue=46, bulle-chargee=10, etapes-nombre=36, consigne-sans-verbe=8, memo-long=1	
+histoire	6e	h6-empire-romain	h6-route-soie-han	entrainement	1.61	bulle-sans-action=150, phrase-longue=27, bulle-chargee=28, etapes-nombre=36, memo-long=1	
+histoire	6e	h6-se-reperer	h6-avant-apres-jc	entrainement	1.59	bulle-sans-action=150, bulle-chargee=33, phrase-longue=15, etapes-nombre=36, consigne-sans-verbe=4, memo-long=1	
+histoire	6e	em6-societe-democratique	em6-citoyennete	entrainement	1.55	bulle-sans-action=150, phrase-longue=58, etapes-nombre=24, memo-long=1	
+histoire	6e	h6-humanite-migrations	h6-debuts-humanite	entrainement	1.55	bulle-sans-action=150, phrase-longue=46, etapes-nombre=36, memo-long=1	
+histoire	6e	em6-vie-privee	em6-donnees-personnelles	entrainement	1.52	bulle-sans-action=150, phrase-longue=38, etapes-nombre=24, bulle-chargee=15, memo-long=1	
+histoire	6e	em6-societe-democratique	em6-laicite	entrainement	1.51	bulle-sans-action=150, phrase-longue=51, etapes-nombre=24, memo-long=1	
+histoire	6e	h6-recits-fondateurs	h6-citoyennete-athenes	entrainement	1.49	bulle-sans-action=150, phrase-longue=32, bulle-chargee=5, etapes-nombre=36, memo-long=1	
+histoire	6e	h6-humanite-migrations	h6-revolution-neolithique	entrainement	1.48	bulle-sans-action=150, phrase-longue=35, etapes-nombre=36, memo-long=1	
+histoire	6e	h6-recits-fondateurs	h6-cites-grecques	entrainement	1.42	bulle-sans-action=150, phrase-longue=26, etapes-nombre=36, memo-long=1	
+histoire	6e	em6-societe-democratique	em6-institutions-proximite	entrainement	1.41	bulle-sans-action=150, bulle-chargee=9, phrase-longue=28, etapes-nombre=24, memo-long=1	
+histoire	6e	h6-empire-romain	h6-chretiens-empire	entrainement	1.39	bulle-sans-action=150, phrase-longue=21, etapes-nombre=36, memo-long=1	
+histoire	6e	h6-recits-fondateurs	h6-rome-mythe-histoire	entrainement	1.39	bulle-sans-action=150, bulle-chargee=16, etapes-nombre=36, phrase-longue=6, memo-long=1	
+histoire	6e	em6-societe-democratique	em6-droits-enfant	entrainement	1.34	bulle-sans-action=150, phrase-longue=26, etapes-nombre=24, memo-long=1	
+histoire	6e	em6-vie-privee	em6-harcelement	entrainement	1.29	bulle-sans-action=150, phrase-longue=11, etapes-nombre=24, consigne-sans-verbe=7, memo-long=1	
+histoire	5e	em5-discours-haine	em5-haine-loi	entrainement	2.11	bulle-chargee=57, bulle-sans-action=150, phrase-longue=85, etapes-nombre=24, memo-long=1	
+histoire	5e	h5-transformations-europe	h5-grandes-decouvertes	entrainement	2.04	bulle-sans-action=150, phrase-longue=115, etapes-nombre=36, bulle-chargee=4, memo-long=1	
+histoire	5e	h5-se-reperer	h5-acteurs-lieux	entrainement	2.02	bulle-sans-action=150, phrase-longue=116, etapes-nombre=36, memo-long=1	
+histoire	5e	h5-occident-feodal	h5-eglise-feodale	entrainement	1.99	bulle-sans-action=150, phrase-longue=123, etapes-nombre=24, memo-long=1	
+histoire	5e	h5-occident-feodal	h5-etat-monarchique	entrainement	1.99	bulle-sans-action=150, phrase-longue=111, etapes-nombre=36, memo-long=1	
+histoire	5e	h5-transformations-europe	h5-humanisme-reformes	entrainement	1.95	bulle-sans-action=150, phrase-longue=106, etapes-nombre=36, memo-long=1	
+histoire	5e	h5-occident-feodal	h5-ordre-seigneurial	entrainement	1.95	bulle-sans-action=150, phrase-longue=105, etapes-nombre=36, memo-long=1	
+histoire	5e	h5-chretientes-islam	h5-islam-bagdad	entrainement	1.94	bulle-sans-action=150, phrase-longue=100, etapes-nombre=36, bulle-chargee=4, memo-long=1	
+histoire	5e	h5-transformations-europe	h5-prince-roi-absolu	entrainement	1.93	bulle-sans-action=150, phrase-longue=103, etapes-nombre=36, memo-long=1	
+histoire	5e	h5-occident-feodal	h5-societe-urbaine	entrainement	1.93	bulle-sans-action=150, phrase-longue=114, etapes-nombre=24, memo-long=1	
+histoire	5e	em5-discours-haine	em5-discours-haine-en-ligne	entrainement	1.79	bulle-sans-action=150, phrase-longue=94, etapes-nombre=24, memo-long=1	
+histoire	5e	h5-chretientes-islam	h5-byzance-carolingiens	entrainement	1.68	bulle-sans-action=150, phrase-longue=65, etapes-nombre=36, memo-long=1	
+histoire	5e	h5-se-reperer	h5-frise	entrainement	1.68	bulle-chargee=23, bulle-sans-action=150, phrase-longue=42, etapes-nombre=36, memo-long=1	
+histoire	5e	em5-egalite-fraternite	em5-egalite-femmes-hommes	entrainement	1.60	bulle-sans-action=150, phrase-longue=65, etapes-nombre=24, memo-long=1	
+histoire	5e	em5-egalite-fraternite	em5-risques-protection	entrainement	1.60	bulle-sans-action=150, phrase-longue=65, etapes-nombre=24, memo-long=1	
+histoire	5e	em5-discours-haine	em5-haine-reagir	entrainement	1.55	bulle-sans-action=150, phrase-longue=58, etapes-nombre=24, memo-long=1	
+histoire	5e	em5-discours-haine	em5-haine-signaler	entrainement	1.55	bulle-chargee=23, bulle-sans-action=150, phrase-longue=35, etapes-nombre=24, memo-long=1	
+histoire	5e	h5-chretientes-islam	h5-mondes-contact	entrainement	1.54	bulle-sans-action=150, phrase-longue=44, etapes-nombre=36, memo-long=1	
+histoire	5e	h5-se-reperer	h5-vocabulaire-historique	entrainement	1.51	bulle-sans-action=150, phrase-longue=53, etapes-nombre=24	
+histoire	5e	em5-egalite-fraternite	em5-solidarite	entrainement	1.45	bulle-sans-action=150, phrase-longue=43, etapes-nombre=24, memo-long=1	
+histoire	5e	em5-egalite-fraternite	em5-discriminations	entrainement	1.35	bulle-sans-action=150, phrase-longue=27, etapes-nombre=24, memo-long=1	
+histoire	5e	em5-egalite-fraternite	em5-engagement	entrainement	1.31	bulle-sans-action=150, phrase-longue=22, etapes-nombre=24, memo-long=1	
+histoire	5e	h5-se-reperer	h5-reperes-chronologiques	entrainement	1.25	bulle-sans-action=150, etapes-nombre=36, memo-long=1	
+histoire	4e	em4-droits-libertes	em4-libertes-fondamentales	entrainement	2.37	bulle-sans-action=150, phrase-longue=133, bulle-chargee=48, etapes-nombre=24, memo-long=1	
+histoire	4e	em4-droits-libertes	em4-declarations-droits	entrainement	2.13	bulle-chargee=70, bulle-sans-action=150, phrase-longue=68, etapes-nombre=24, consigne-sans-verbe=7, memo-long=1	
+histoire	4e	h4-se-reperer	h4-acteurs	entrainement	2.06	bulle-sans-action=150, phrase-longue=96, bulle-chargee=26, etapes-nombre=36, memo-long=1	
+histoire	4e	em4-droits-libertes	em4-etat-de-droit	entrainement	2.03	bulle-sans-action=150, phrase-longue=74, bulle-chargee=55, etapes-nombre=24, memo-long=1	
+histoire	4e	h4-europe-monde-xixe	h4-revolution-industrielle	entrainement	1.72	bulle-sans-action=150, phrase-longue=61, bulle-chargee=10, etapes-nombre=36, memo-long=1	
+histoire	4e	em4-liberte-expression	em4-information	entrainement	1.67	bulle-sans-action=150, phrase-longue=75, etapes-nombre=24, memo-long=1	
+histoire	4e	h4-xviiie-siecle	h4-europe-lumieres	entrainement	1.65	bulle-chargee=31, bulle-sans-action=150, phrase-longue=25, consigne-sans-verbe=5, etapes-nombre=36, memo-long=1	
+histoire	4e	em4-liberte-expression	em4-limites-expression	entrainement	1.61	bulle-sans-action=150, phrase-longue=51, bulle-chargee=13, etapes-nombre=24, consigne-sans-verbe=3, memo-long=1	
+histoire	4e	em4-liberte-expression	em4-medias-presse	entrainement	1.51	bulle-sans-action=150, phrase-longue=51, etapes-nombre=24, memo-long=1	
+histoire	4e	h4-france-xixe	h4-conditions-feminines	entrainement	1.51	bulle-chargee=6, bulle-sans-action=150, phrase-longue=34, etapes-nombre=36, memo-long=1	
+histoire	4e	h4-xviiie-siecle	h4-negoces-traites	entrainement	1.50	bulle-sans-action=150, phrase-longue=38, etapes-nombre=36, memo-long=1	
+histoire	4e	em4-liberte-expression	em4-expression-en-ligne	entrainement	1.49	bulle-sans-action=150, phrase-longue=49, etapes-nombre=24, memo-long=1	
+histoire	4e	em4-droits-libertes	em4-justice	entrainement	1.49	bulle-sans-action=150, phrase-longue=34, etapes-nombre=24, bulle-chargee=15, memo-long=1	
+histoire	4e	h4-xviiie-siecle	h4-revolution-empire	entrainement	1.49	bulle-sans-action=150, phrase-longue=37, etapes-nombre=36, memo-long=1	
+histoire	4e	h4-europe-monde-xixe	h4-conquetes-coloniales	entrainement	1.47	bulle-sans-action=150, phrase-longue=33, etapes-nombre=36, memo-long=1	
+histoire	4e	h4-france-xixe	h4-troisieme-republique	entrainement	1.47	bulle-sans-action=150, bulle-chargee=14, phrase-longue=19, etapes-nombre=36, memo-long=1	
+histoire	4e	h4-europe-monde-xixe	h4-abolition-esclavage	entrainement	1.41	bulle-sans-action=150, phrase-longue=24, etapes-nombre=36, memo-long=1	
+histoire	4e	h4-se-reperer	h4-vocabulaire-historique	entrainement	1.41	bulle-sans-action=150, phrase-longue=29, etapes-nombre=24, bulle-chargee=8, memo-long=1	
+histoire	4e	h4-france-xixe	h4-voter-1815-1870	entrainement	1.36	bulle-sans-action=150, phrase-longue=17, etapes-nombre=36, memo-long=1	
+histoire	4e	h4-se-reperer	h4-frise	entrainement	1.35	bulle-sans-action=150, phrase-longue=15, etapes-nombre=36, memo-long=1	
+histoire	4e	h4-se-reperer	h4-reperes-chronologiques	entrainement	1.25	bulle-sans-action=150, etapes-nombre=36, memo-long=1, phrase-longue=1	
+histoire	3e	h3-monde-depuis-1945	h3-guerre-froide	entrainement	1.53	bulle-sans-action=150, phrase-longue=43, etapes-nombre=36, memo-long=1	
+histoire	3e	h3-guerres-totales	h3-guerre-totale	entrainement	1.53	bulle-sans-action=150, phrase-longue=40, bulle-chargee=3, etapes-nombre=36, memo-long=1	
+histoire	3e	h3-seconde-guerre	h3-vichy-resistance	entrainement	1.53	bulle-sans-action=150, phrase-longue=43, etapes-nombre=36, memo-long=1	
+histoire	3e	h3-monde-depuis-1945	h3-apres-1989	entrainement	1.51	bulle-sans-action=150, bulle-chargee=5, phrase-longue=35, etapes-nombre=36, memo-long=1	
+histoire	3e	h3-guerres-totales	h3-democraties-fragilisees	entrainement	1.51	bulle-sans-action=150, bulle-chargee=8, phrase-longue=31, etapes-nombre=36, memo-long=1	
+histoire	3e	em3-medias-opinion	em3-sondages	entrainement	1.47	bulle-sans-action=150, phrase-longue=46, etapes-nombre=24	
+histoire	3e	em3-medias-opinion	em3-role-medias	entrainement	1.46	bulle-sans-action=150, phrase-longue=45, etapes-nombre=24	
+histoire	3e	h3-guerres-totales	h3-genocide-armeniens	entrainement	1.41	bulle-sans-action=150, phrase-longue=24, etapes-nombre=36, memo-long=1	
+histoire	3e	em3-medias-opinion	em3-esprit-critique	entrainement	1.37	bulle-sans-action=150, phrase-longue=24, bulle-chargee=7, etapes-nombre=24	
+histoire	3e	h3-monde-depuis-1945	h3-decolonisation	entrainement	1.37	bulle-sans-action=150, phrase-longue=13, etapes-nombre=36, bulle-chargee=5, memo-long=1	
+histoire	3e	h3-seconde-guerre	h3-guerre-aneantissement	entrainement	1.35	bulle-sans-action=150, phrase-longue=15, etapes-nombre=36, memo-long=1	
+histoire	3e	h3-guerres-totales	h3-regimes-totalitaires	entrainement	1.33	bulle-sans-action=150, phrase-longue=9, bulle-chargee=3, etapes-nombre=36, memo-long=1	
+histoire	3e	h3-seconde-guerre	h3-france-occupee	entrainement	1.32	bulle-sans-action=150, phrase-longue=11, etapes-nombre=36, memo-long=1	
+histoire	3e	h3-monde-depuis-1945	h3-projet-europeen	entrainement	1.32	bulle-sans-action=150, phrase-longue=11, etapes-nombre=36, memo-long=1	
+histoire	3e	em3-faire-vivre-democratie	em3-defense-engagement	entrainement	1.31	bulle-sans-action=150, phrase-longue=21, etapes-nombre=24, memo-long=1	
+histoire	3e	h3-seconde-guerre	h3-genocide-juifs-tsiganes	entrainement	1.30	bulle-sans-action=150, phrase-longue=8, etapes-nombre=36, memo-long=1	
+histoire	3e	em3-faire-vivre-democratie	em3-institutions	entrainement	1.29	bulle-sans-action=150, phrase-longue=19, etapes-nombre=24	
+histoire	3e	em3-medias-opinion	em3-opinion-publique	entrainement	1.27	bulle-sans-action=150, phrase-longue=17, etapes-nombre=24	
+histoire	3e	em3-faire-vivre-democratie	em3-elections	entrainement	1.25	bulle-sans-action=150, consigne-sans-verbe=13, etapes-nombre=24	
+histoire	3e	em3-faire-vivre-democratie	em3-citoyennete-active	entrainement	1.21	bulle-sans-action=150, etapes-nombre=24, phrase-longue=7	
+maths	cm1	mcm1-angles	mcm1-angles	entrainement	3.00	etapes-nombre=90, bulle-sans-action=90, consigne-sans-verbe=90	
+maths	cm1	mcm1-nombres	mcm1-comparer-entiers	entrainement	2.21	etapes-nombre=150, bulle-sans-action=150, phrase-longue=30, memo-long=1	
+maths	cm1	mcm1-calcul-mental	mcm1-fois-10	entrainement	2.21	etapes-nombre=150, bulle-sans-action=150, bulle-chargee=30, memo-long=1	
+maths	cm1	mcm1-calcul-mental	mcm1-distributivite	entrainement	2.20	etapes-nombre=150, bulle-sans-action=150, consigne-sans-verbe=30	
+maths	cm1	mcm1-calcul-mental	mcm1-fractions-usuelles	entrainement	2.20	etapes-nombre=150, bulle-sans-action=150, bulle-chargee=30	
+maths	cm1	mcm1-fractions	mcm1-fraction-entier	entrainement	2.10	etapes-nombre=135, bulle-sans-action=150, consigne-sans-verbe=30	
+maths	cm1	mcm1-probabilites	mcm1-chances	entrainement	2.04	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3, phrase-longue=1	
+maths	cm1	mcm1-proportionnalite	mcm1-propor-identifier	entrainement	2.04	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3, phrase-longue=1	
+maths	cm1	mcm1-geometrie	mcm1-solides	entrainement	2.04	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3, memo-long=1	
+maths	cm1	mcm1-aires	mcm1-boss-aires-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	cm1	mcm1-angles	mcm1-boss-angles-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	cm1	mcm1-durees	mcm1-boss-durees-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	cm1	mcm1-geometrie	mcm1-boss-geometrie-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	cm1	mcm1-probabilites	mcm1-boss-probas-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	cm1	mcm1-problemes	mcm1-boss-problemes-glaces	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	cm1	mcm1-probabilites	mcm1-issues	entrainement	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	cm1	mcm1-calcul-mental	mcm1-ajouter-9	entrainement	2.01	etapes-nombre=150, bulle-sans-action=150, memo-long=1	
+maths	cm1	mcm1-probabilites	mcm1-comparer-chances	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	cm1	mcm1-durees	mcm1-durees	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=1	
+maths	cm1	mcm1-geometrie	mcm1-figures	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, memo-long=1	
+maths	cm1	mcm1-operations	mcm1-multiplication-posee	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	cm1	mcm1-operations	mcm1-multiplier-decimal	entrainement	2.01	etapes-nombre=150, bulle-sans-action=150, phrase-longue=1	
+maths	cm1	mcm1-mesures	mcm1-unite-adaptee	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, memo-long=1	
+maths	cm1	mcm1-operations	mcm1-addition-posee	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-aires	mcm1-aire-carreaux	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-calcul-mental	mcm1-ajouter-sans-retenue	entrainement	2.00	etapes-nombre=150, bulle-sans-action=150	
+maths	cm1	mcm1-decimaux	mcm1-arrondi	entrainement	2.00	etapes-nombre=150, bulle-sans-action=150	
+maths	cm1	mcm1-aires	mcm1-boss-aires-carrelage	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-aires	mcm1-boss-aires-potager	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-algebre	mcm1-boss-algebre-ciseaux	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-algebre	mcm1-boss-algebre-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-algebre	mcm1-boss-algebre-tshirts	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-angles	mcm1-boss-angles-equerre	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-angles	mcm1-boss-angles-horloge	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-decimaux	mcm1-boss-decimaux-course	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-decimaux	mcm1-boss-decimaux-monnaie	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-decimaux	mcm1-boss-decimaux-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-donnees	mcm1-boss-donnees-ecart	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-donnees	mcm1-boss-donnees-meteo	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-donnees	mcm1-boss-donnees-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-durees	mcm1-boss-durees-ecole	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-durees	mcm1-boss-durees-recette	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-fractions	mcm1-boss-fractions-billes	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-fractions	mcm1-boss-fractions-gateau	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-fractions	mcm1-boss-fractions-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-geometrie	mcm1-boss-geometrie-patron	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-geometrie	mcm1-boss-geometrie-roue	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-calcul-mental	mcm1-boss-mental-boulangerie	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-calcul-mental	mcm1-boss-mental-cartes	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-mesures	mcm1-boss-mesures-confiture	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-mesures	mcm1-boss-mesures-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-mesures	mcm1-boss-mesures-randonnee	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-nombres	mcm1-boss-nombres-cheque	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-nombres	mcm1-boss-nombres-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-nombres	mcm1-boss-nombres-stade	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-operations	mcm1-boss-operations-ficelle	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-operations	mcm1-boss-operations-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-operations	mcm1-boss-operations-sortie	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-probabilites	mcm1-boss-probas-billes	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-probabilites	mcm1-boss-probas-roue	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-problemes	mcm1-boss-problemes-cinema	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-problemes	mcm1-boss-problemes-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-proportionnalite	mcm1-boss-propor-crepes	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-proportionnalite	mcm1-boss-propor-essence	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-proportionnalite	mcm1-boss-propor-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-geometrie	mcm1-cercle	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-decimaux	mcm1-comparer-decimaux	entrainement	2.00	etapes-nombre=150, bulle-sans-action=150	
+maths	cm1	mcm1-fractions	mcm1-comparer-fractions	entrainement	2.00	etapes-nombre=120, bulle-sans-action=150, enonce-long=30	
+maths	cm1	mcm1-calcul-mental	mcm1-decimal-fois-10	entrainement	2.00	etapes-nombre=150, bulle-sans-action=150	
+maths	cm1	mcm1-problemes	mcm1-denombrement	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-geometrie	mcm1-deplacements	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-operations	mcm1-division	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-algebre	mcm1-egalite-trous	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-fractions	mcm1-encadrer-fraction	entrainement	2.00	etapes-nombre=150, bulle-sans-action=150	
+maths	cm1	mcm1-calcul-mental	mcm1-fois-4-5-8	entrainement	2.00	etapes-nombre=150, bulle-sans-action=150	
+maths	cm1	mcm1-calcul-mental	mcm1-fois-dizaines	entrainement	2.00	etapes-nombre=150, bulle-sans-action=150	
+maths	cm1	mcm1-fractions	mcm1-fraction-droite	entrainement	2.00	etapes-nombre=150, bulle-sans-action=150	
+maths	cm1	mcm1-fractions	mcm1-fraction-quantite	entrainement	2.00	etapes-nombre=150, bulle-sans-action=150	
+maths	cm1	mcm1-durees	mcm1-horaire	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-donnees	mcm1-lire-donnees	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-nombres	mcm1-lire-nombres	entrainement	2.00	etapes-nombre=150, bulle-sans-action=150	
+maths	cm1	mcm1-algebre	mcm1-motifs	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-nombres	mcm1-multiples	entrainement	2.00	etapes-nombre=150, bulle-sans-action=150	
+maths	cm1	mcm1-problemes	mcm1-optimisation	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-operations	mcm1-parentheses	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-aires	mcm1-perimetre	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-donnees	mcm1-probleme-donnees	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-problemes	mcm1-problemes-additifs	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-problemes	mcm1-problemes-etapes	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-problemes	mcm1-problemes-multiplicatifs	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-algebre	mcm1-programme-calcul	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-proportionnalite	mcm1-propor-additivite	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-proportionnalite	mcm1-propor-fois-plus	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-algebre	mcm1-suites	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-geometrie	mcm1-symetrie	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm1	mcm1-calcul-mental	mcm1-tables	entrainement	2.00	etapes-nombre=150, bulle-sans-action=150	
+maths	cm1	mcm1-nombres	mcm1-unites-numeration	entrainement	2.00	etapes-nombre=150, bulle-sans-action=150	
+maths	cm1	mcm1-nombres	mcm1-valeur-chiffre	entrainement	2.00	etapes-nombre=150, bulle-sans-action=150	
+maths	cm1	mcm1-nombres	mcm1-demi-droite	entrainement	1.80	etapes-nombre=120, bulle-sans-action=150	
+maths	cm1	mcm1-decimaux	mcm1-droite-decimale	entrainement	1.80	etapes-nombre=120, bulle-sans-action=150	
+maths	cm1	mcm1-decimaux	mcm1-fraction-decimale	entrainement	1.80	etapes-nombre=120, bulle-sans-action=150	
+maths	cm1	mcm1-fractions	mcm1-lire-fraction	entrainement	1.71	etapes-nombre=106, bulle-sans-action=150	
+maths	cm1	mcm1-fractions	mcm1-additionner-fractions	entrainement	1.69	etapes-nombre=103, bulle-sans-action=150	
+maths	cm1	mcm1-decimaux	mcm1-chiffres-decimaux	entrainement	1.60	etapes-nombre=90, bulle-sans-action=150	
+maths	cm2	mcm2-angles	mcm2-angles	entrainement	3.00	etapes-nombre=90, bulle-sans-action=90, consigne-sans-verbe=90	
+maths	cm2	mcm2-operations	mcm2-multiplication-posee	entrainement	3.00	etapes-nombre=90, bulle-sans-action=90, phrase-longue=91	
+maths	cm2	mcm2-probabilites	mcm2-chances	entrainement	2.04	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3, phrase-longue=1	
+maths	cm2	mcm2-proportionnalite	mcm2-propor-identifier	entrainement	2.04	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3, phrase-longue=1	
+maths	cm2	mcm2-geometrie	mcm2-solides	entrainement	2.04	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3, memo-long=1	
+maths	cm2	mcm2-aires	mcm2-boss-aires-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	cm2	mcm2-angles	mcm2-boss-angles-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	cm2	mcm2-durees	mcm2-boss-durees-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	cm2	mcm2-geometrie	mcm2-boss-geometrie-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	cm2	mcm2-probabilites	mcm2-boss-probas-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	cm2	mcm2-problemes	mcm2-boss-problemes-glaces	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	cm2	mcm2-probabilites	mcm2-issues	entrainement	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	cm2	mcm2-angles	mcm2-mesure-angles	entrainement	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	cm2	mcm2-probabilites	mcm2-comparer-chances	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	cm2	mcm2-operations	mcm2-division	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	cm2	mcm2-durees	mcm2-durees	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=1	
+maths	cm2	mcm2-geometrie	mcm2-figures	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, memo-long=1	
+maths	cm2	mcm2-calcul-mental	mcm2-fois-10	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	cm2	mcm2-fractions	mcm2-fraction-quantite	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	cm2	mcm2-nombres	mcm2-lire-nombres	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	cm2	mcm2-nombres	mcm2-multiples	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, memo-long=1	
+maths	cm2	mcm2-mesures	mcm2-unite-adaptee	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, memo-long=1	
+maths	cm2	mcm2-operations	mcm2-addition-posee	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-fractions	mcm2-additionner-fractions	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-aires	mcm2-aire-carreaux	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-calcul-mental	mcm2-ajouter-9	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-decimaux	mcm2-arrondi	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-aires	mcm2-boss-aires-carrelage	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-aires	mcm2-boss-aires-potager	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-algebre	mcm2-boss-algebre-ciseaux	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-algebre	mcm2-boss-algebre-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-algebre	mcm2-boss-algebre-tshirts	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-angles	mcm2-boss-angles-equerre	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-angles	mcm2-boss-angles-horloge	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-decimaux	mcm2-boss-decimaux-course	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-decimaux	mcm2-boss-decimaux-monnaie	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-decimaux	mcm2-boss-decimaux-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-donnees	mcm2-boss-donnees-ecart	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-donnees	mcm2-boss-donnees-meteo	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-donnees	mcm2-boss-donnees-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-durees	mcm2-boss-durees-ecole	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-durees	mcm2-boss-durees-recette	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-fractions	mcm2-boss-fractions-billes	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-fractions	mcm2-boss-fractions-gateau	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-fractions	mcm2-boss-fractions-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-geometrie	mcm2-boss-geometrie-patron	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-geometrie	mcm2-boss-geometrie-roue	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-calcul-mental	mcm2-boss-mental-boulangerie	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-calcul-mental	mcm2-boss-mental-cartes	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-mesures	mcm2-boss-mesures-confiture	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-mesures	mcm2-boss-mesures-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-mesures	mcm2-boss-mesures-randonnee	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-nombres	mcm2-boss-nombres-cheque	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-nombres	mcm2-boss-nombres-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-nombres	mcm2-boss-nombres-stade	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-operations	mcm2-boss-operations-ficelle	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-operations	mcm2-boss-operations-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-operations	mcm2-boss-operations-sortie	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-probabilites	mcm2-boss-probas-billes	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-probabilites	mcm2-boss-probas-roue	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-problemes	mcm2-boss-problemes-cinema	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-problemes	mcm2-boss-problemes-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-proportionnalite	mcm2-boss-propor-crepes	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-proportionnalite	mcm2-boss-propor-essence	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-proportionnalite	mcm2-boss-propor-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-geometrie	mcm2-cercle	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-decimaux	mcm2-chiffres-decimaux	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-decimaux	mcm2-comparer-decimaux	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-nombres	mcm2-comparer-entiers	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-fractions	mcm2-comparer-fractions	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-aires	mcm2-conversions-aire	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-nombres	mcm2-demi-droite	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-problemes	mcm2-denombrement	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-geometrie	mcm2-deplacements	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-decimaux	mcm2-droite-decimale	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-algebre	mcm2-egalite-trous	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-fractions	mcm2-entier-fois-fraction	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-calcul-mental	mcm2-fois-4-5-8	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-decimaux	mcm2-fraction-decimale	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-fractions	mcm2-fraction-entier	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-calcul-mental	mcm2-fractions-usuelles	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-durees	mcm2-horaire	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-donnees	mcm2-lire-donnees	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-fractions	mcm2-lire-fraction	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-algebre	mcm2-motifs	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-problemes	mcm2-optimisation	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-operations	mcm2-parentheses	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-aires	mcm2-perimetre	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-donnees	mcm2-probleme-donnees	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-problemes	mcm2-problemes-additifs	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-problemes	mcm2-problemes-etapes	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-problemes	mcm2-problemes-multiplicatifs	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-algebre	mcm2-programme-calcul	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-proportionnalite	mcm2-propor-additivite	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-proportionnalite	mcm2-propor-fois-plus	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-algebre	mcm2-suites	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-geometrie	mcm2-symetrie	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-calcul-mental	mcm2-tables	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	cm2	mcm2-nombres	mcm2-valeur-chiffre	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-espace	m6-faces-aretes	entrainement	3.00	etapes-nombre=90, bulle-chargee=90, bulle-sans-action=90	
+maths	6e	m6-cercles	m6-mediatrice	entrainement	2.67	etapes-nombre=90, bulle-sans-action=90, phrase-longue=60	
+maths	6e	m6-numeration	m6-rang	entrainement	2.51	etapes-nombre=90, bulle-sans-action=90, phrase-longue=46	
+maths	6e	m6-durees	m6-boss-durees-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	6e	m6-espace	m6-boss-espace-peinture	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	6e	m6-symetrie	m6-boss-symetrie-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	6e	m6-aires	m6-aire-rectangle	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, memo-long=1	
+maths	6e	m6-pourcentages	m6-appliquer-pourcentage	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, memo-long=1	
+maths	6e	m6-cercles	m6-boss-cercles-chevre	boss	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	6e	m6-cercles	m6-boss-cercles-tresor	boss	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	6e	m6-donnees	m6-boss-donnees-piege	boss	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	6e	m6-numeration	m6-comparer-decimaux	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, memo-long=1	
+maths	6e	m6-longueurs	m6-conversions-longueur	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	6e	m6-division	m6-division-euclidienne	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, memo-long=1	
+maths	6e	m6-algebre	m6-egalites-trous	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, memo-long=1	
+maths	6e	m6-donnees	m6-filtrer-tableau	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	6e	m6-fractions	m6-fractions-egales	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	6e	m6-numeration	m6-grands-nombres	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=1	
+maths	6e	m6-informatique	m6-instructions	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	6e	m6-donnees	m6-lire-diagramme	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	6e	m6-angles	m6-nature-angle	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, memo-long=1	
+maths	6e	m6-pourcentages	m6-pourcentage-sens	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=1	
+maths	6e	m6-probabilites	m6-proba-calcul	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=1	
+maths	6e	m6-calcul	m6-problemes-multiplication	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	6e	m6-calcul	m6-produit-decimaux	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	6e	m6-proportionnalite	m6-propor-tableau	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	6e	m6-espace	m6-solides	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, memo-long=1	
+maths	6e	m6-calcul	m6-add-decimaux	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-fractions	m6-addition-fractions	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-aires	m6-aire-quadrillage	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-symetrie	m6-axes-symetrie	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-angles	m6-bissectrice	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-aires	m6-boss-aires-gazon	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-aires	m6-boss-aires-peinture	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-aires	m6-boss-aires-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-algebre	m6-boss-algebre-cinema	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-algebre	m6-boss-algebre-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-algebre	m6-boss-algebre-tables	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-angles	m6-boss-angles-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-angles	m6-boss-angles-pizza	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-angles	m6-boss-angles-toit	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-calcul	m6-boss-calcul-carrelage	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-calcul	m6-boss-calcul-courses	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-calcul	m6-boss-calcul-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-cercles	m6-boss-cercles-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-division	m6-boss-division-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-division	m6-boss-division-pizzas	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-division	m6-boss-division-rubans	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-donnees	m6-boss-donnees-club	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-donnees	m6-boss-donnees-meteo	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-durees	m6-boss-durees-entrainement	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-durees	m6-boss-durees-train	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-espace	m6-boss-espace-aretes	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-espace	m6-boss-espace-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-fractions	m6-boss-fractions-classe	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-fractions	m6-boss-fractions-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-informatique	m6-boss-info-carre	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-informatique	m6-boss-info-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-informatique	m6-boss-info-tirelire	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-longueurs	m6-boss-longueurs-cloture	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-longueurs	m6-boss-longueurs-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-longueurs	m6-boss-longueurs-roue	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-numeration	m6-boss-numeration-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-numeration	m6-boss-numeration-podium	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-numeration	m6-boss-numeration-population	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-pourcentages	m6-boss-pourcentages-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-pourcentages	m6-boss-pourcentages-soldes	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-pourcentages	m6-boss-pourcentages-sondage	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-probabilites	m6-boss-probas-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-probabilites	m6-boss-probas-roue	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-probabilites	m6-boss-probas-sacs	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-proportionnalite	m6-boss-propor-carte	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-proportionnalite	m6-boss-propor-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-proportionnalite	m6-boss-propor-recette	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-symetrie	m6-boss-symetrie-miroir	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-symetrie	m6-boss-symetrie-papillon	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-volumes	m6-boss-volumes-carton	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-volumes	m6-boss-volumes-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-volumes	m6-boss-volumes-tour	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-cercles	m6-cercle	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-fractions	m6-comparer-fractions	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-volumes	m6-comparer-volumes	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-aires	m6-conversions-aire	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-durees	m6-convertir-durees	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-division	m6-division-decimale	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-proportionnalite	m6-echelles	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-numeration	m6-ecritures-decimales	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-numeration	m6-encadrer	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-calcul	m6-fois-10	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-fractions	m6-fraction-fois-entier	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-probabilites	m6-frequences	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-durees	m6-horaires	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-cercles	m6-milieu	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-algebre	m6-motifs	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-calcul	m6-ordre-grandeur	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-longueurs	m6-perimetre-compose	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-longueurs	m6-perimetre-disque	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-longueurs	m6-perimetre-rectangle	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-probabilites	m6-proba-0-1	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-algebre	m6-problemes-algebriques	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-division	m6-problemes-division	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-durees	m6-problemes-durees	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-fractions	m6-problemes-fractions	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-proportionnalite	m6-propor-linearite	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-proportionnalite	m6-propor-reconnaitre	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-proportionnalite	m6-propor-unite	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-symetrie	m6-proprietes-symetrie	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-informatique	m6-repeter	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-informatique	m6-sequence	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-angles	m6-somme-angles	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-symetrie	m6-symetrique-point	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-angles	m6-triangles-particuliers	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	6e	m6-volumes	m6-volume-cubes	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-probabilites	m5-boss-probas-piege	boss	3.00	etapes-nombre=90, bulle-sans-action=90, consigne-sans-verbe=90	
+maths	5e	m5-triangles	m5-droites-remarquables	entrainement	2.36	bulle-sans-action=90, consigne-sans-verbe=90, bulle-chargee=30, peu-de-variantes=1, memo-long=1	
+maths	5e	m5-angles	m5-angles-vocab	entrainement	2.34	etapes-nombre=90, bulle-sans-action=90, consigne-sans-verbe=30, memo-long=1	
+maths	5e	m5-puissances	m5-boss-puissances-cube	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	5e	m5-parallelogrammes	m5-para-proprietes	entrainement	2.03	bulle-sans-action=90, consigne-sans-verbe=90, peu-de-variantes=2, memo-long=1	
+maths	5e	m5-angles	m5-boss-angles-piege	boss	2.01	etapes-nombre=90, bulle-sans-action=90, memo-long=1	
+maths	5e	m5-litteral	m5-nature-litterale	entrainement	2.01	bulle-sans-action=90, consigne-sans-verbe=90, memo-long=1	
+maths	5e	m5-angles	m5-angles-paralleles	entrainement	2.00	etapes-nombre=44, bulle-sans-action=90, consigne-sans-verbe=44, memo-long=1, phrase-longue=1	
+maths	5e	m5-algorithmique	m5-boss-algo-lutin	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-algorithmique	m5-boss-algo-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-algorithmique	m5-boss-algo-score	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-angles	m5-boss-angles-ciseaux	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-angles	m5-boss-angles-rails	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-calcul	m5-boss-calcul-courses	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-calcul	m5-boss-calcul-partage	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-calcul	m5-boss-calcul-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-espace	m5-boss-espace-aquarium	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-espace	m5-boss-espace-boite	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-espace	m5-boss-espace-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-fonctions	m5-boss-fonctions-bougie	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-fonctions	m5-boss-fonctions-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-fonctions	m5-boss-fonctions-velo	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-fractions	m5-boss-fractions-part	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-fractions	m5-boss-fractions-piege-addition	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-litteral	m5-boss-litteral-devinette	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-litteral	m5-boss-litteral-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-litteral	m5-boss-litteral-taxi	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-operations	m5-boss-operations-paquets	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-operations	m5-boss-operations-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-parallelogrammes	m5-boss-para-affiche	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-parallelogrammes	m5-boss-para-jardin	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-parallelogrammes	m5-boss-para-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-probabilites	m5-boss-probas-de	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-probabilites	m5-boss-probas-sac	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-proportionnalite	m5-boss-propor-piege-additif	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-proportionnalite	m5-boss-propor-piege-taille	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-proportionnalite	m5-boss-propor-recette	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-proportionnalite	m5-boss-propor-soldes	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-proportionnalite	m5-boss-propor-vitesse	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-puissances	m5-boss-puissances-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-puissances	m5-boss-puissances-terrasse	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-relatifs	m5-boss-relatifs-piege-soustraction	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-relatifs	m5-boss-relatifs-plongeur	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-relatifs	m5-boss-relatifs-score	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-reperage	m5-boss-reperage-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-reperage	m5-boss-reperage-saut	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-reperage	m5-boss-reperage-tresor	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-statistiques	m5-boss-stats-chats	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-statistiques	m5-boss-stats-notes	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-statistiques	m5-boss-stats-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-symetries	m5-boss-symetries-droite	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-symetries	m5-boss-symetries-longueur	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-symetries	m5-boss-symetries-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-triangles	m5-boss-triangles-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-triangles	m5-boss-triangles-toit	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-triangles	m5-boss-triangles-voile	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	5e	m5-litteral	m5-developper	entrainement	2.00	bulle-sans-action=90, consigne-sans-verbe=90	
+maths	5e	m5-operations	m5-divisibilite	entrainement	2.00	bulle-sans-action=90, consigne-sans-verbe=90	
+maths	5e	m5-parallelogrammes	m5-para-aire	entrainement	2.00	bulle-sans-action=90, phrase-longue=90	
+maths	5e	m5-probabilites	m5-probas-vocab	entrainement	2.00	bulle-sans-action=90, consigne-sans-verbe=90	
+maths	5e	m5-litteral	m5-reduire	entrainement	2.00	bulle-sans-action=90, consigne-sans-verbe=90	
+maths	5e	m5-symetries	m5-symetrie-axiale	entrainement	2.00	bulle-sans-action=90, phrase-longue=91	
+maths	5e	m5-symetries	m5-symetrie-centrale	entrainement	2.00	bulle-sans-action=90, phrase-longue=91	
+maths	5e	m5-statistiques	m5-diagrammes	entrainement	1.68	bulle-sans-action=90, etapes-nombre=60, phrase-longue=1	
+maths	5e	m5-statistiques	m5-effectifs-frequences	entrainement	1.68	etapes-nombre=60, bulle-sans-action=90, memo-long=1	
+maths	5e	m5-relatifs	m5-relatifs-vocab	entrainement	1.68	bulle-sans-action=90, etapes-nombre=30, consigne-sans-verbe=30, memo-long=1	
+maths	5e	m5-operations	m5-vocabulaire	entrainement	1.68	bulle-sans-action=90, consigne-sans-verbe=60, memo-long=1	
+maths	5e	m5-puissances	m5-carres	entrainement	1.67	etapes-nombre=60, bulle-sans-action=90	
+maths	5e	m5-operations	m5-multiples	entrainement	1.67	bulle-sans-action=90, consigne-sans-verbe=60	
+maths	5e	m5-symetries	m5-symetrie-proprietes	entrainement	1.67	bulle-sans-action=90, consigne-sans-verbe=60	
+maths	5e	m5-proportionnalite	m5-pourcentages	entrainement	1.59	etapes-nombre=52, bulle-sans-action=90, memo-long=1	
+maths	5e	m5-parallelogrammes	m5-conversions-longueur-aire	entrainement	1.48	bulle-sans-action=90, phrase-longue=42, memo-long=1	
+maths	5e	m5-espace	m5-patron-cube	entrainement	1.40	bulle-sans-action=90, phrase-longue=36	
+maths	5e	m5-fractions	m5-fractions-comparer	entrainement	1.36	etapes-nombre=31, bulle-sans-action=90, memo-long=1	
+maths	5e	m5-probabilites	m5-probas-calcul	entrainement	1.36	bulle-sans-action=90, peu-de-variantes=2, etapes-nombre=30	
+maths	5e	m5-calcul	m5-tables	entrainement	1.36	bulle-sans-action=90, etapes-nombre=31, memo-long=1	
+maths	5e	m5-proportionnalite	m5-coefficient	entrainement	1.34	etapes-nombre=30, bulle-sans-action=90, memo-long=1	
+maths	5e	m5-fonctions	m5-fonctions-graphique	entrainement	1.34	bulle-sans-action=90, phrase-longue=31	
+maths	5e	m5-probabilites	m5-probas-frequences	entrainement	1.34	bulle-sans-action=90, etapes-nombre=30, memo-long=1	
+maths	5e	m5-calcul	m5-decimaux-add	entrainement	1.14	bulle-sans-action=90, etapes-nombre=12, memo-long=1	
+maths	5e	m5-operations	m5-priorites	entrainement	1.13	bulle-sans-action=90, etapes-nombre=11, memo-long=1	
+maths	5e	m5-algorithmique	m5-blocs-valeur	entrainement	1.02	bulle-sans-action=90, memo-long=1, phrase-longue=1	
+maths	5e	m5-espace	m5-conversions-volume	entrainement	1.02	bulle-sans-action=90, memo-long=1, phrase-longue=1	
+maths	5e	m5-litteral	m5-motifs	entrainement	1.02	bulle-sans-action=90, peu-de-variantes=1, memo-long=1	
+maths	5e	m5-puissances	m5-puissances-notation	entrainement	1.02	bulle-sans-action=90, peu-de-variantes=1, memo-long=1	
+maths	5e	m5-espace	m5-disque	entrainement	1.01	bulle-sans-action=90, memo-long=1	
+maths	5e	m5-operations	m5-distributivite	entrainement	1.01	bulle-sans-action=90, memo-long=1	
+maths	5e	m5-operations	m5-division-decimal	entrainement	1.01	bulle-sans-action=90, memo-long=1	
+maths	5e	m5-reperage	m5-droite-decimaux	entrainement	1.01	bulle-sans-action=90, memo-long=1	
+maths	5e	m5-litteral	m5-equations	entrainement	1.01	bulle-sans-action=90, memo-long=1	
+maths	5e	m5-calcul	m5-fois-10	entrainement	1.01	bulle-sans-action=90, memo-long=1	
+maths	5e	m5-litteral	m5-formules	entrainement	1.01	bulle-sans-action=90, memo-long=1	
+maths	5e	m5-fractions	m5-fractions-dun-nombre	entrainement	1.01	bulle-sans-action=90, memo-long=1	
+maths	5e	m5-fractions	m5-fractions-quotient	entrainement	1.01	bulle-sans-action=90, memo-long=1	
+maths	5e	m5-proportionnalite	m5-propor-reconnaitre	entrainement	1.01	bulle-sans-action=90, memo-long=1	
+maths	5e	m5-relatifs	m5-relatifs-addition	entrainement	1.01	bulle-sans-action=90, memo-long=1	
+maths	5e	m5-relatifs	m5-relatifs-comparer	entrainement	1.01	bulle-sans-action=90, memo-long=1	
+maths	5e	m5-relatifs	m5-relatifs-problemes	entrainement	1.01	bulle-sans-action=90, memo-long=1	
+maths	5e	m5-operations	m5-traduire	entrainement	1.01	bulle-sans-action=90, memo-long=1	
+maths	5e	m5-triangles	m5-triangle-angles	entrainement	1.01	bulle-sans-action=90, phrase-longue=1	
+maths	5e	m5-espace	m5-volumes	entrainement	1.01	bulle-sans-action=90, memo-long=1	
+maths	5e	m5-algorithmique	m5-blocs-boucle	entrainement	1.00	bulle-sans-action=90	
+maths	5e	m5-fractions	m5-boss-fractions-trajet	boss	1.00	bulle-sans-action=90	
+maths	5e	m5-relatifs	m5-boss-relatifs-ascenseur	boss	1.00	bulle-sans-action=90	
+maths	5e	m5-reperage	m5-coordonnees	entrainement	1.00	bulle-sans-action=90	
+maths	5e	m5-calcul	m5-decomposer	entrainement	1.00	bulle-sans-action=90	
+maths	5e	m5-fonctions	m5-fonctions-formule	entrainement	1.00	bulle-sans-action=90	
+maths	5e	m5-fractions	m5-fractions-decimales	entrainement	1.00	bulle-sans-action=90	
+maths	5e	m5-fractions	m5-fractions-droite	entrainement	1.00	bulle-sans-action=90	
+maths	5e	m5-fractions	m5-fractions-egales	entrainement	1.00	bulle-sans-action=90	
+maths	5e	m5-statistiques	m5-moyenne	entrainement	1.00	bulle-sans-action=90	
+maths	5e	m5-calcul	m5-produits-decimaux	entrainement	1.00	bulle-sans-action=90	
+maths	5e	m5-proportionnalite	m5-propor-calcul	entrainement	1.00	bulle-sans-action=90	
+maths	5e	m5-puissances	m5-puissances-expressions	entrainement	1.00	bulle-sans-action=90	
+maths	5e	m5-relatifs	m5-relatifs-soustraction	entrainement	1.00	bulle-sans-action=90	
+maths	5e	m5-litteral	m5-substitution	entrainement	1.00	bulle-sans-action=90	
+maths	5e	m5-litteral	m5-tester-egalite	entrainement	1.00	bulle-sans-action=90	
+maths	5e	m5-triangles	m5-triangle-aire	entrainement	1.00	bulle-sans-action=90	
+maths	4e	m4-litteral	m4-developper	entrainement	3.00	etapes-nombre=90, bulle-sans-action=90, consigne-sans-verbe=90	
+maths	4e	m4-litteral	m4-factoriser	entrainement	3.00	etapes-nombre=90, bulle-sans-action=90, consigne-sans-verbe=90	
+maths	4e	m4-litteral	m4-reduire	entrainement	3.00	etapes-nombre=90, bulle-sans-action=90, consigne-sans-verbe=90	
+maths	4e	m4-parallelogrammes	m4-boss-para-cerf-volant	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	4e	m4-parallelogrammes	m4-boss-para-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	4e	m4-probabilites	m4-boss-probas-sondage	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	4e	m4-proportionnalite	m4-boss-propor-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	4e	m4-puissances	m4-boss-puissances-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	4e	m4-racines	m4-boss-racines-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	4e	m4-rationnels	m4-boss-rationnels-heritage	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	4e	m4-transformations	m4-boss-transfo-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	4e	m4-probabilites	m4-reunion-intersection	entrainement	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	4e	m4-probabilites	m4-deux-epreuves	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=1	
+maths	4e	m4-parallelogrammes	m4-diagonales	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, memo-long=1	
+maths	4e	m4-triangles	m4-droite-milieux	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	4e	m4-algorithmique	m4-modifier-programme	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	4e	m4-algorithmique	m4-boss-algo-compteur	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-algorithmique	m4-boss-algo-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-algorithmique	m4-boss-algo-ticket	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-espace	m4-boss-espace-glace	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-espace	m4-boss-espace-louvre	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-espace	m4-boss-espace-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-fonctions	m4-boss-fonctions-mystere	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-fonctions	m4-boss-fonctions-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-fonctions	m4-boss-fonctions-taxi	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-litteral	m4-boss-litteral-forfaits	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-litteral	m4-boss-litteral-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-litteral	m4-boss-litteral-rectangle	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-parallelogrammes	m4-boss-para-cadre	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-probabilites	m4-boss-probas-menu	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-probabilites	m4-boss-probas-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-proportionnalite	m4-boss-propor-hausse-baisse	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-proportionnalite	m4-boss-propor-trajet	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-puissances	m4-boss-puissances-bacteries	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-puissances	m4-boss-puissances-cubes	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-racines	m4-boss-racines-carrelage	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-racines	m4-boss-racines-jardin	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-rationnels	m4-boss-rationnels-bouteilles	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-rationnels	m4-boss-rationnels-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-relatifs	m4-boss-relatifs-congelateur	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-relatifs	m4-boss-relatifs-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-relatifs	m4-boss-relatifs-quiz	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-statistiques	m4-boss-stats-comparer	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-statistiques	m4-boss-stats-note	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-statistiques	m4-boss-stats-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-transformations	m4-boss-transfo-pavage	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-transformations	m4-boss-transfo-robot	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-triangles	m4-boss-triangles-echelle	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-triangles	m4-boss-triangles-ecran	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-triangles	m4-boss-triangles-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-triangles	m4-cercle-circonscrit	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-proportionnalite	m4-coefficient-multiplicateur	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-algorithmique	m4-conditionnelle	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-transformations	m4-conservation	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-transformations	m4-demi-tour	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-rationnels	m4-diviser-fractions	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-racines	m4-encadrer-racine	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-relatifs	m4-enchainement-relatifs	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-litteral	m4-equation	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-statistiques	m4-etendue	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-rationnels	m4-expressions-fractions	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-fonctions	m4-formule	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-rationnels	m4-fraction-de-fraction	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-proportionnalite	m4-grandeurs-quotients	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-rationnels	m4-inverse	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-fonctions	m4-lire-graphique	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-statistiques	m4-mediane	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-litteral	m4-mise-en-equation	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-statistiques	m4-moyenne-ponderee	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-proportionnalite	m4-partage-proportionnel	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-probabilites	m4-proba-contraire	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-rationnels	m4-produit-fractions	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-puissances	m4-produit-puissances	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-relatifs	m4-produit-relatifs	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-fonctions	m4-programme-calcul	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-parallelogrammes	m4-proprietes-parallelogramme	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-puissances	m4-puissance-definition	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-puissances	m4-puissances-10	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-espace	m4-pyramide-cone	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-triangles	m4-pythagore-cote	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-triangles	m4-pythagore-hypotenuse	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-triangles	m4-pythagore-reciproque	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-proportionnalite	m4-quatrieme-proportionnelle	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-relatifs	m4-quotient-relatifs	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-racines	m4-racine-carree	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-fonctions	m4-remonter-programme	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-rationnels	m4-simplifier	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-transformations	m4-translation	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-statistiques	m4-valeur-extreme	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-algorithmique	m4-variable	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-relatifs	m4-vocabulaire-calcul	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-espace	m4-volume-cone	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-espace	m4-volume-pyramide	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	4e	m4-espace	m4-volumes-usuels	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-litteral	m3-double-distributivite	entrainement	3.00	etapes-nombre=90, bulle-sans-action=90, consigne-sans-verbe=90	
+maths	3e	m3-litteral	m3-identites	entrainement	3.00	etapes-nombre=90, bulle-sans-action=90, consigne-sans-verbe=90	
+maths	3e	m3-arithmetique	m3-irreductible	entrainement	3.00	etapes-nombre=90, bulle-sans-action=90, consigne-sans-verbe=90	
+maths	3e	m3-litteral	m3-oppose-expression	entrainement	3.00	etapes-nombre=90, bulle-sans-action=90, consigne-sans-verbe=90	
+maths	3e	m3-arithmetique	m3-boss-arith-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	3e	m3-espace	m3-boss-espace-balles	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	3e	m3-espace	m3-boss-espace-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	3e	m3-litteral	m3-boss-litteral-astuce	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	3e	m3-probabilites	m3-boss-probas-code	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	3e	m3-proportionnalite	m3-boss-propor-population	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	3e	m3-puissances	m3-boss-puissances-cellules	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	3e	m3-puissances	m3-boss-puissances-lumiere	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	3e	m3-racines	m3-boss-racines-chute	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	3e	m3-statistiques	m3-boss-stats-piege	boss	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	3e	m3-probabilites	m3-independantes	entrainement	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	3e	m3-algorithmique	m3-structurer	entrainement	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	3e	m3-trigonometrie	m3-trigo-choisir	entrainement	2.03	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=3	
+maths	3e	m3-thales	m3-boss-thales-piege	boss	2.01	etapes-nombre=90, bulle-sans-action=90, phrase-longue=1	
+maths	3e	m3-puissances	m3-exposant-negatif	entrainement	2.01	etapes-nombre=90, bulle-sans-action=90, peu-de-variantes=1	
+maths	3e	m3-fonctions	m3-affine	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-fonctions	m3-affine-graphique	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-algorithmique	m3-boss-algo-acces	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-algorithmique	m3-boss-algo-epargne	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-algorithmique	m3-boss-algo-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-arithmetique	m3-boss-arith-bouquets	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-arithmetique	m3-boss-arith-feux	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-espace	m3-boss-espace-fromage	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-fonctions	m3-boss-fonctions-forfaits	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-fonctions	m3-boss-fonctions-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-fonctions	m3-boss-fonctions-taxi	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-litteral	m3-boss-litteral-cadre	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-litteral	m3-boss-litteral-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-probabilites	m3-boss-probas-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-probabilites	m3-boss-probas-sport	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-proportionnalite	m3-boss-propor-heritage	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-proportionnalite	m3-boss-propor-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-puissances	m3-boss-puissances-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-racines	m3-boss-racines-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-racines	m3-boss-racines-tapis	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-statistiques	m3-boss-stats-concours	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-statistiques	m3-boss-stats-temperature	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-thales	m3-boss-thales-arbre	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-thales	m3-boss-thales-riviere	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-trigonometrie	m3-boss-trigo-cerf	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-trigonometrie	m3-boss-trigo-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-trigonometrie	m3-boss-trigo-rampe	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-vecteurs	m3-boss-vecteurs-bateau	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-vecteurs	m3-boss-vecteurs-chasles	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-vecteurs	m3-boss-vecteurs-piege	boss	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-algorithmique	m3-boucle-conditionnelle	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-vecteurs	m3-chasles	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-algorithmique	m3-conditions-composees	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-arithmetique	m3-decomposition	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-statistiques	m3-effectifs-cumules	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-racines	m3-equation-carre	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-proportionnalite	m3-evolution	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-fonctions	m3-fonction-carre	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-fonctions	m3-image-antecedent	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-litteral	m3-inequation	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-statistiques	m3-interpreter-stats	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-fonctions	m3-lineaire	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-proportionnalite	m3-lineaire-proportionnalite	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-puissances	m3-notation-scientifique	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-proportionnalite	m3-partage-ratio	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-arithmetique	m3-premier	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-probabilites	m3-proba-reunion	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-racines	m3-problemes-racine	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-puissances	m3-problemes-scientifique	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-litteral	m3-produit-nul	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-statistiques	m3-quartiles	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-puissances	m3-quotient-puissances	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-espace	m3-sections	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-espace	m3-sphere	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-probabilites	m3-stabilisation	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-thales	m3-thales-longueur	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-thales	m3-thales-papillon	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-thales	m3-thales-reciproque	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-trigonometrie	m3-trigo-angle	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-trigonometrie	m3-trigo-longueur	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-vecteurs	m3-vecteur-image	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-vecteurs	m3-vecteurs-egaux	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+maths	3e	m3-espace	m3-volume-boule	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+sciences	cm1	vcm1-vivant	vcm1-developpement	entrainement	1.59	bulle-sans-action=150, etapes-nombre=86, memo-long=1, phrase-longue=1	
+sciences	cm1	vcm1-vivant	vcm1-besoins-vegetaux	entrainement	1.55	bulle-sans-action=150, enonce-long=35, etapes-nombre=30, bulle-chargee=6, phrase-longue=10, memo-long=1	
+sciences	cm1	pcm1-matiere	pcm1-masse-volume	entrainement	1.50	etapes-nombre=73, bulle-sans-action=150, memo-long=1, phrase-longue=1	
+sciences	cm1	vcm1-vivant	vcm1-classer	entrainement	1.36	bulle-sans-action=150, etapes-nombre=39, phrase-longue=14, memo-long=1	
+sciences	cm1	pcm1-matiere	pcm1-melanges	entrainement	1.33	bulle-sans-action=150, phrase-longue=37, etapes-nombre=12, memo-long=1	
+sciences	cm1	pcm1-matiere	pcm1-eau	entrainement	1.31	bulle-sans-action=150, etapes-nombre=16, phrase-longue=30	
+sciences	cm1	pcm1-matiere	pcm1-etats	entrainement	1.30	bulle-sans-action=150, phrase-longue=44, memo-long=1	
+sciences	cm1	pcm1-mouvement-energie	pcm1-sources-energie	entrainement	1.29	bulle-sans-action=150, phrase-longue=30, etapes-nombre=12, memo-long=1	
+sciences	cm1	pcm1-mouvement-energie	pcm1-formes-energie	entrainement	1.25	bulle-sans-action=150, bulle-chargee=12, etapes-nombre=12, phrase-longue=12, memo-long=1	
+sciences	cm1	pcm1-mouvement-energie	pcm1-energie-quotidien	entrainement	1.07	bulle-sans-action=150, etapes-nombre=8, peu-de-variantes=1, memo-long=1	
+sciences	cm1	pcm1-mouvement-energie	pcm1-mouvement	entrainement	1.01	bulle-sans-action=150, memo-long=1	
+sciences	cm1	vcm1-vivant	vcm1-besoins-animaux	entrainement	1.01	bulle-sans-action=150, memo-long=1, phrase-longue=1	
+sciences	cm2	vcm2-ecosystemes	vcm2-peuplement	entrainement	2.23	etapes-nombre=150, bulle-sans-action=150, phrase-longue=21, enonce-long=12, memo-long=1	
+sciences	cm2	vcm2-ecosystemes	vcm2-relations	entrainement	2.07	etapes-nombre=150, bulle-sans-action=150, enonce-long=9, phrase-longue=1	
+sciences	cm2	vcm2-ecosystemes	vcm2-chaines-alimentaires	entrainement	2.01	etapes-nombre=150, bulle-sans-action=150, memo-long=1	
+sciences	cm2	tcm2-objets-programmation	tcm2-algorithme-programme	entrainement	1.83	etapes-nombre=99, bulle-sans-action=144, phrase-longue=30, memo-long=1	
+sciences	cm2	vcm2-corps-humain	vcm2-besoins-alimentaires	entrainement	1.73	etapes-nombre=107, bulle-sans-action=150, memo-long=1, phrase-longue=1	
+sciences	cm2	tcm2-objets-programmation	tcm2-chaine-information	entrainement	1.70	bulle-sans-action=150, etapes-nombre=90, phrase-longue=14, memo-long=1	
+sciences	cm2	vcm2-corps-humain	vcm2-digestion	entrainement	1.70	bulle-sans-action=150, bulle-chargee=47, phrase-longue=26, etapes-nombre=31, memo-long=1	
+sciences	cm2	pcm2-mouvement-energie	pcm2-trajectoire	entrainement	1.64	bulle-sans-action=150, etapes-nombre=27, bulle-chargee=30, peu-de-variantes=1, phrase-longue=37, memo-long=1	
+sciences	cm2	tcm2-objets-programmation	tcm2-securite-electrique	entrainement	1.61	bulle-sans-action=150, etapes-nombre=90, peu-de-variantes=1, memo-long=1	
+sciences	cm2	vcm2-ecosystemes	vcm2-actions-humaines	entrainement	1.53	bulle-sans-action=150, etapes-nombre=78, memo-long=1	
+sciences	cm2	vcm2-corps-humain	vcm2-alimentation	entrainement	1.51	etapes-nombre=59, bulle-sans-action=150, bulle-chargee=16, memo-long=1	
+sciences	cm2	vcm2-corps-humain	vcm2-circulation	entrainement	1.43	bulle-sans-action=150, bulle-chargee=12, phrase-longue=26, etapes-nombre=26, memo-long=1	
+sciences	cm2	pcm2-materiaux-melanges	pcm2-materiaux	entrainement	1.42	bulle-sans-action=150, bulle-chargee=33, phrase-longue=13, etapes-nombre=17	
+sciences	cm2	pcm2-mouvement-energie	pcm2-conversions-energie	entrainement	1.39	bulle-sans-action=150, phrase-longue=22, etapes-nombre=24, bulle-chargee=12, memo-long=1	
+sciences	cm2	pcm2-mouvement-energie	pcm2-vitesse	entrainement	1.39	bulle-sans-action=150, phrase-longue=44, etapes-nombre=13, memo-long=1	
+sciences	cm2	pcm2-materiaux-melanges	pcm2-separer	entrainement	1.28	bulle-sans-action=150, etapes-nombre=17, bulle-chargee=17, phrase-longue=6, peu-de-variantes=1, memo-long=1	
+sciences	cm2	pcm2-mouvement-energie	pcm2-renouvelables	entrainement	1.15	bulle-sans-action=150, phrase-longue=22	
+sciences	cm2	pcm2-materiaux-melanges	pcm2-dissolution	entrainement	1.13	bulle-sans-action=150, etapes-nombre=9, bulle-chargee=9, memo-long=1	
+sciences	6e	p6-matiere	p6-melanges	entrainement	2.15	etapes-nombre=150, bulle-sans-action=150, phrase-longue=13, bulle-chargee=8, memo-long=1	
+sciences	6e	v6-decomposition	v6-decomposeurs	entrainement	2.01	etapes-nombre=150, bulle-sans-action=150, phrase-longue=1	
+sciences	6e	v6-vivant	v6-reproduction	entrainement	2.01	etapes-nombre=109, bulle-sans-action=150, phrase-longue=36, bulle-chargee=5, memo-long=1	
+sciences	6e	v6-vivant	v6-developpement	entrainement	1.93	etapes-nombre=133, bulle-sans-action=150, bulle-chargee=6, memo-long=1	
+sciences	6e	p6-matiere	p6-transformations-securite	entrainement	1.87	etapes-nombre=120, bulle-sans-action=150, bulle-chargee=9, memo-long=1, phrase-longue=1	
+sciences	6e	v6-vivant	v6-biodiversite	entrainement	1.85	etapes-nombre=112, bulle-sans-action=150, bulle-chargee=13, phrase-longue=2, memo-long=1	
+sciences	6e	p6-mouvements-energie	p6-sources-conversions	entrainement	1.82	bulle-sans-action=150, etapes-nombre=112, bulle-chargee=9, memo-long=1, phrase-longue=1	
+sciences	6e	p6-matiere	p6-dissolution	entrainement	1.81	bulle-sans-action=150, etapes-nombre=120, memo-long=1	
+sciences	6e	p6-electricite-energie	p6-chaine-energie	entrainement	1.75	bulle-sans-action=150, phrase-longue=30, etapes-nombre=82	
+sciences	6e	p6-mouvements-energie	p6-circuit	entrainement	1.71	bulle-sans-action=150, etapes-nombre=90, bulle-chargee=5, phrase-longue=11, memo-long=1	
+sciences	6e	p6-matiere	p6-etats	entrainement	1.64	bulle-sans-action=150, etapes-nombre=86, bulle-chargee=9, phrase-longue=1	
+sciences	6e	v6-vivant	v6-classification	entrainement	1.62	etapes-nombre=90, bulle-sans-action=150, phrase-longue=3	
+sciences	6e	p6-matiere	p6-masse-volume	entrainement	1.57	etapes-nombre=85, bulle-sans-action=150, memo-long=1	
+sciences	6e	v6-vivant	v6-cellule	entrainement	1.57	etapes-nombre=79, bulle-sans-action=150, bulle-chargee=5, memo-long=1	
+sciences	6e	p6-mouvements-energie	p6-vitesse	entrainement	1.46	etapes-nombre=69, bulle-sans-action=150	
+sciences	6e	p6-mouvements-energie	p6-types-mouvements	entrainement	1.43	bulle-sans-action=150, etapes-nombre=46, phrase-longue=10, bulle-chargee=8, memo-long=1	
+sciences	6e	p6-electricite-energie	p6-conducteurs-isolants	entrainement	1.29	bulle-sans-action=150, etapes-nombre=36, phrase-longue=8	
+sciences	6e	p6-signal-information	p6-signal	entrainement	1.13	bulle-sans-action=150, etapes-nombre=14, bulle-chargee=5, memo-long=1	
+sciences	5e	p5-energie	p5-sources-formes-energie	entrainement	2.17	etapes-nombre=150, bulle-sans-action=150, phrase-longue=13, bulle-chargee=12, memo-long=1	
+sciences	5e	p5-energie	p5-circuits-serie-derivation	entrainement	2.13	etapes-nombre=150, bulle-sans-action=150, bulle-chargee=18, memo-long=1	
+sciences	5e	v5-terre	v5-risques	entrainement	2.08	etapes-nombre=150, bulle-sans-action=150, consigne-sans-verbe=12	
+sciences	5e	v5-corps	v5-effort	entrainement	2.07	etapes-nombre=150, bulle-sans-action=150, consigne-sans-verbe=9, memo-long=1	
+sciences	5e	v5-classer	v5-espece	entrainement	2.07	etapes-nombre=150, bulle-sans-action=150, peu-de-variantes=1, consigne-sans-verbe=9, memo-long=1	
+sciences	5e	p5-energie	p5-conducteurs-isolants	entrainement	2.01	etapes-nombre=150, bulle-sans-action=150, memo-long=1	
+sciences	5e	p5-matiere	p5-solubilite	entrainement	2.01	etapes-nombre=150, bulle-sans-action=150, peu-de-variantes=1, memo-long=1	
+sciences	5e	v5-nutrition	v5-besoins-vegetaux	entrainement	2.01	etapes-nombre=150, bulle-sans-action=150, memo-long=1, phrase-longue=1	
+sciences	5e	v5-nutrition	v5-biodiversite	entrainement	2.01	etapes-nombre=150, bulle-sans-action=150, memo-long=1, phrase-longue=1	
+sciences	5e	v5-nutrition	v5-ecosystemes	entrainement	2.01	etapes-nombre=150, bulle-sans-action=150, memo-long=1	
+sciences	5e	v5-nutrition	v5-respiration-etres-vivants	entrainement	2.01	etapes-nombre=150, bulle-sans-action=150, peu-de-variantes=1	
+sciences	5e	v5-terre	v5-seismes	entrainement	2.01	etapes-nombre=150, bulle-sans-action=150, memo-long=1	
+sciences	5e	v5-corps	v5-circulation	entrainement	2.00	etapes-nombre=150, bulle-sans-action=150	
+sciences	5e	v5-corps	v5-digestion	entrainement	2.00	etapes-nombre=150, bulle-sans-action=150	
+sciences	5e	v5-corps	v5-respiration-humaine	entrainement	2.00	etapes-nombre=150, bulle-sans-action=150	
+sciences	5e	v5-classer	v5-caracteres-partages	entrainement	1.95	etapes-nombre=133, bulle-sans-action=150, peu-de-variantes=1, consigne-sans-verbe=8	
+sciences	5e	v5-terre	v5-volcans	entrainement	1.93	etapes-nombre=138, bulle-sans-action=150, memo-long=1	
+sciences	5e	v5-terre	v5-meteo-climat	entrainement	1.91	bulle-sans-action=150, consigne-sans-verbe=30, etapes-nombre=106, memo-long=1	
+sciences	5e	p5-energie	p5-conversions-energie	entrainement	1.90	etapes-nombre=134, bulle-sans-action=150, memo-long=1	
+sciences	5e	v5-classer	v5-parentes	entrainement	1.86	etapes-nombre=120, bulle-sans-action=150, consigne-sans-verbe=8, memo-long=1	
+sciences	5e	t5-programmer	t5-capteurs-actionneurs	entrainement	1.81	etapes-nombre=109, bulle-sans-action=150, bulle-chargee=12, memo-long=1	
+sciences	5e	v5-classer	v5-groupes-emboites	entrainement	1.81	etapes-nombre=120, bulle-sans-action=150, memo-long=1	
+sciences	5e	p5-matiere	p5-conservation-masse	entrainement	1.80	etapes-nombre=120, bulle-sans-action=150	
+sciences	5e	p5-matiere	p5-corps-purs-melanges	entrainement	1.67	etapes-nombre=99, bulle-sans-action=150, memo-long=1	
+sciences	5e	p5-mouvement	p5-trajectoire	entrainement	1.61	bulle-sans-action=150, bulle-chargee=21, etapes-nombre=39, peu-de-variantes=1, consigne-sans-verbe=30	
+sciences	5e	p5-mouvement	p5-vitesse-moyenne	entrainement	1.61	etapes-nombre=90, bulle-sans-action=150, memo-long=1	
+sciences	5e	t5-programmer	t5-sequence-boucle	entrainement	1.55	etapes-nombre=71, bulle-sans-action=150, bulle-chargee=11, memo-long=1	
+sciences	5e	p5-mouvement	p5-referentiel	entrainement	1.54	etapes-nombre=30, bulle-sans-action=150, consigne-sans-verbe=26, phrase-longue=25	
+sciences	5e	t5-programmer	t5-algorithme	entrainement	1.53	etapes-nombre=53, bulle-sans-action=150, phrase-longue=16, bulle-chargee=9, memo-long=1	
+sciences	5e	t5-programmer	t5-tester-programme	entrainement	1.50	etapes-nombre=74, bulle-sans-action=150, memo-long=1	
+sciences	5e	p5-mouvement	p5-mouvement-uniforme	entrainement	1.47	bulle-sans-action=150, consigne-sans-verbe=48, bulle-chargee=12, etapes-nombre=9, memo-long=1	
+sciences	5e	t5-numerique	t5-securite-numerique	entrainement	1.47	bulle-sans-action=150, etapes-nombre=29, bulle-chargee=12, peu-de-variantes=1, enonce-long=9, phrase-longue=18, memo-long=1	
+sciences	5e	p5-matiere	p5-masse-volumique	entrainement	1.46	etapes-nombre=68, bulle-sans-action=150, memo-long=1	
+sciences	5e	t5-objets-techniques	t5-usages-environnement	entrainement	1.45	bulle-sans-action=150, bulle-chargee=42, etapes-nombre=12, enonce-long=12, memo-long=1, phrase-longue=1	
+sciences	5e	t5-numerique	t5-reseaux	entrainement	1.36	bulle-sans-action=150, phrase-longue=13, etapes-nombre=32, bulle-chargee=8, memo-long=1	
+sciences	5e	t5-objets-techniques	t5-besoin	entrainement	1.33	bulle-sans-action=150, etapes-nombre=30, bulle-chargee=19, memo-long=1	
+sciences	5e	t5-numerique	t5-impacts-numerique	entrainement	1.33	bulle-sans-action=150, phrase-longue=23, peu-de-variantes=1, etapes-nombre=12, bulle-chargee=12, memo-long=1	
+sciences	5e	t5-objets-techniques	t5-contraintes	entrainement	1.31	bulle-sans-action=150, phrase-longue=5, etapes-nombre=30, bulle-chargee=12	
+sciences	5e	t5-objets-techniques	t5-materiaux	entrainement	1.25	bulle-sans-action=150, etapes-nombre=12, bulle-chargee=12, consigne-sans-verbe=12, phrase-longue=1	
+sciences	5e	p5-unites	p5-propagation-son	entrainement	1.21	bulle-sans-action=150, consigne-sans-verbe=18, phrase-longue=13	
+sciences	5e	t5-numerique	t5-donnees	entrainement	1.18	bulle-sans-action=150, etapes-nombre=13, bulle-chargee=13, memo-long=1	
+sciences	5e	p5-unites	p5-unites	entrainement	1.11	bulle-sans-action=150, phrase-longue=17	
+sciences	5e	p5-unites	p5-prefixes	entrainement	1.09	bulle-sans-action=150, bulle-chargee=14	
+sciences	5e	p5-unites	p5-propagation-lumiere	entrainement	1.05	bulle-sans-action=150, bulle-chargee=5, phrase-longue=3	
+sciences	4e	p4-atomes	p4-combustions	entrainement	2.21	etapes-nombre=150, bulle-sans-action=150, bulle-chargee=30, peu-de-variantes=1	
+sciences	4e	t4-chaines	t4-constituants	entrainement	2.20	etapes-nombre=150, bulle-sans-action=150, bulle-chargee=30	
+sciences	4e	p4-mouvement	p4-forces	entrainement	2.11	etapes-nombre=150, bulle-sans-action=150, phrase-longue=16	
+sciences	4e	t4-chaines	t4-flux	entrainement	2.11	etapes-nombre=150, bulle-sans-action=150, bulle-chargee=14, peu-de-variantes=1, memo-long=1	
+sciences	4e	p4-mouvement	p4-vitesse	entrainement	2.09	etapes-nombre=138, bulle-sans-action=150, bulle-chargee=12, phrase-longue=13	
+sciences	4e	t4-chaines	t4-chaine-information	entrainement	2.05	etapes-nombre=150, bulle-sans-action=150, phrase-longue=8	
+sciences	4e	t4-chaines	t4-fonctions-energie	entrainement	2.04	etapes-nombre=150, bulle-sans-action=150, phrase-longue=6	
+sciences	4e	v4-reproduction	v4-puberte	entrainement	2.02	bulle-sans-action=150, phrase-longue=33, etapes-nombre=120	
+sciences	4e	p4-atomes	p4-conservation-masse	entrainement	2.01	etapes-nombre=150, bulle-sans-action=150, phrase-longue=1	
+sciences	4e	p4-atomes	p4-formules-chimiques	entrainement	2.01	etapes-nombre=150, bulle-sans-action=150, peu-de-variantes=1, memo-long=1	
+sciences	4e	p4-mouvement	p4-mouvement-force	entrainement	2.01	etapes-nombre=150, bulle-sans-action=150, peu-de-variantes=1, phrase-longue=1	
+sciences	4e	v4-nerveux	v4-substances-sante	entrainement	1.90	bulle-sans-action=150, phrase-longue=15, etapes-nombre=120	
+sciences	4e	v4-terre	v4-histoire-terre	entrainement	1.87	bulle-sans-action=150, etapes-nombre=129, memo-long=1, phrase-longue=1	
+sciences	4e	p4-mouvement	p4-interactions	entrainement	1.86	etapes-nombre=60, bulle-sans-action=150, phrase-longue=60, bulle-chargee=8, peu-de-variantes=1	
+sciences	4e	p4-atomes	p4-atomes-molecules	entrainement	1.85	etapes-nombre=120, bulle-sans-action=150, peu-de-variantes=1, bulle-chargee=5, memo-long=1, phrase-longue=1	
+sciences	4e	p4-electricite	p4-lois-circuits	entrainement	1.85	etapes-nombre=116, bulle-sans-action=150, bulle-chargee=9, memo-long=1, phrase-longue=1	
+sciences	4e	v4-nerveux	v4-message-nerveux	entrainement	1.84	bulle-sans-action=150, etapes-nombre=120, bulle-chargee=5, phrase-longue=1	
+sciences	4e	v4-reproduction	v4-reproduction-humaine	entrainement	1.84	bulle-sans-action=150, etapes-nombre=120, phrase-longue=6	
+sciences	4e	v4-nerveux	v4-sommeil-ecrans	entrainement	1.82	bulle-sans-action=150, etapes-nombre=120, phrase-longue=3	
+sciences	4e	p4-electricite	p4-intensite	entrainement	1.81	etapes-nombre=120, bulle-sans-action=150, memo-long=1	
+sciences	4e	p4-electricite	p4-tension	entrainement	1.81	etapes-nombre=120, bulle-sans-action=150, memo-long=1	
+sciences	4e	p4-atomes	p4-transformation-chimique	entrainement	1.81	etapes-nombre=120, bulle-sans-action=150, memo-long=1	
+sciences	4e	v4-reproduction	v4-maitrise-reproduction	entrainement	1.80	bulle-sans-action=150, etapes-nombre=120	
+sciences	4e	v4-nerveux	v4-reflexe	entrainement	1.80	bulle-sans-action=150, etapes-nombre=120	
+sciences	4e	v4-reproduction	v4-reproduction-sexuee-asexuee	entrainement	1.80	bulle-sans-action=150, etapes-nombre=120	
+sciences	4e	v4-terre	v4-roches	entrainement	1.69	bulle-sans-action=150, etapes-nombre=104	
+sciences	4e	v4-terre	v4-structure-globe	entrainement	1.66	bulle-sans-action=150, etapes-nombre=92, phrase-longue=7	
+sciences	4e	p4-electricite	p4-loi-ohm	entrainement	1.61	etapes-nombre=90, bulle-sans-action=150, memo-long=1	
+sciences	4e	v4-terre	v4-tectonique-plaques	entrainement	1.59	bulle-sans-action=150, etapes-nombre=88	
+sciences	3e	p3-energie	p3-energie	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	
+sciences	3e	p3-energie	p3-puissance	entrainement	2.00	etapes-nombre=90, bulle-sans-action=90	

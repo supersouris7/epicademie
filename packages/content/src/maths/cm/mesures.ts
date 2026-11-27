@@ -26,7 +26,7 @@ export function buildMesures({ S, C, id }: Contexte): Chapter {
       id(key),
       title,
       objective,
-      [memo, 'D’une unité à la suivante, on multiplie ou on divise par **10**.'],
+      [memo, 'D’une unité à sa voisine, multiplie ou divise par **10**.'],
       (rng, level) => {
         const from = rng.int(0, units.length - 1);
         let to = rng.int(
@@ -47,11 +47,13 @@ export function buildMesures({ S, C, id }: Contexte): Chapter {
               `${ut} est une unité plus ${to > from ? 'petite' : 'grande'} : le nombre doit devenir plus ${to > from ? 'grand' : 'petit'}.`,
             ],
           ]),
-          hint: `Place le chiffre des unités de ${fmt(x)} sous ${uf} dans le tableau, puis lis jusqu’à ${ut}.`,
+          hint: `Dans le tableau, place ${fmt(x)} sous ${uf}. Puis lis jusqu’à ${ut}.`,
           demo: { kind: 'conversion', table, value: x, from: uf, to: ut },
           steps: [
-            `De ${uf} à ${ut} : ${Math.abs(to - from)} rang${Math.abs(to - from) > 1 ? 's' : ''}, on ${to > from ? 'multiplie' : 'divise'} par ${big(10 ** Math.abs(to - from))}.`,
-            `${fmt(x)} ${uf} = **${fmt(res)} ${ut}**.`,
+            `Regarde les unités : ${ut} est plus ${to > from ? 'petite' : 'grande'} que ${uf}.`,
+            `Compte les cases entre ${uf} et ${ut} : il y en a ${Math.abs(to - from)}.`,
+            `${to > from ? 'Multiplie' : 'Divise'} ${fmt(x)} par ${big(10 ** Math.abs(to - from))}.`,
+            `Écris la réponse : ${fmt(x)} ${uf} = **${fmt(res)} ${ut}**.`,
           ],
           targetSeconds: 25,
         };
@@ -69,7 +71,7 @@ export function buildMesures({ S, C, id }: Contexte): Chapter {
     'Connaître les relations entre les unités de longueur',
     LEN,
     'longueur',
-    '1 km = 1 000 m ; 1 m = 100 cm ; 1 cm = 10 mm.',
+    'Retiens : 1 km = 1 000 m ; 1 m = 100 cm.',
   );
   const masses = conversion(
     'conversions-masse',
@@ -77,7 +79,7 @@ export function buildMesures({ S, C, id }: Contexte): Chapter {
     'Connaître les relations entre les unités de masse',
     MASS,
     'masse',
-    '1 kg = 1 000 g ; 1 g = 1 000 mg. (Et 1 tonne = 1 000 kg.)',
+    'Retiens : 1 kg = 1 000 g ; 1 tonne = 1 000 kg.',
   );
   const contenances = conversion(
     'conversions-contenance',
@@ -85,7 +87,7 @@ export function buildMesures({ S, C, id }: Contexte): Chapter {
     'Connaître les relations entre les unités de contenance',
     CAP,
     'volume',
-    '1 L = 10 dL = 100 cL = 1 000 mL ; 1 hL = 100 L.',
+    'Retiens : 1 L = 100 cL = 1 000 mL ; 1 hL = 100 L.',
   );
 
   const uniteAdaptee = S(

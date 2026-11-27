@@ -175,7 +175,7 @@ function ChoiceAnswer(p: {
   }, [options, disabled, excluded, onSubmit]);
   return (
     <div
-      className={`grid h-full auto-rows-[minmax(3.5rem,6.5rem)] content-center gap-3 overflow-y-auto ${p.options.length > 2 ? 'sm:grid-cols-2' : 'grid-cols-2'}`}
+      className={`grid h-full auto-rows-[minmax(3.5rem,auto)] gap-3 overflow-y-auto [align-content:safe_center] ${p.options.length > 2 ? 'sm:grid-cols-2' : 'grid-cols-2'}`}
     >
       {p.options.map((o, i) => (
         <button
@@ -183,7 +183,7 @@ function ChoiceAnswer(p: {
           type="button"
           disabled={p.disabled || p.excluded === i}
           onClick={() => p.onSubmit({ kind: 'choice', index: i })}
-          className={`cartoon cartoon-press bg-surface min-h-14 px-4 py-2 text-2xl font-bold disabled:opacity-40 ${p.excluded === i ? 'line-through' : ''}`}
+          className={`cartoon cartoon-press bg-surface min-h-14 min-w-0 px-3 py-2 text-lg font-bold break-words sm:px-4 sm:text-2xl disabled:opacity-40 ${p.excluded === i ? 'line-through' : ''}`}
         >
           <MathText text={o} />
         </button>

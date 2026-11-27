@@ -99,8 +99,8 @@ const droite: Skill = {
   title: 'Relatifs sur une droite graduée',
   lesson: {
     memo: [
-      'À gauche de zéro, les nombres sont **négatifs** ; à droite, ils sont positifs. Comme un thermomètre couché !',
-      'D’abord, regarde ce que vaut **un petit trait** (1 ? 0,5 ? 0,1 ?). Puis compte les traits depuis zéro.',
+      'À gauche de zéro, les nombres sont **négatifs**. À droite, ils sont positifs.',
+      'Regarde ce que vaut **un petit trait**, puis compte les traits depuis zéro.',
     ],
     source: objective(
       'Lire l’abscisse d’un nombre relatif sur une droite graduée et placer un nombre relatif d’abscisse donnée',
@@ -129,10 +129,11 @@ const droite: Skill = {
         hint: 'Combien vaut un petit trait ? Puis compte les traits entre 0 et A.',
         steps: [
           sub === 1
-            ? `Entre 0 et 1, il y a un seul intervalle : un trait vaut 1.`
-            : `Entre 0 et 1, il y a ${sub} intervalles : un trait vaut 1 ÷ ${sub} = ${fmt(r(1, sub))}.`,
-          `A est à ${Math.abs(target.n * (sub / target.d))} trait${Math.abs(target.n * (sub / target.d)) > 1 ? 's' : ''} de zéro, soit ${fmt(abs(target))}.`,
-          `A est ${target.n < 0 ? 'à gauche de zéro : son abscisse est négative' : 'à droite de zéro : son abscisse est positive'}. C’est **${fmt(target)}**.`,
+            ? `Regarde entre 0 et 1 : un petit trait vaut 1.`
+            : `Compte les espaces entre 0 et 1 : il y en a ${sub}. Un trait vaut ${fmt(r(1, sub))}.`,
+          `Compte les traits de 0 jusqu’à A : il y en a ${Math.abs(target.n * (sub / target.d))}.`,
+          `Regarde le côté : A est ${target.n < 0 ? 'à gauche de zéro, donc négatif' : 'à droite de zéro, donc positif'}.`,
+          `Écris l’abscisse de A : **${fmt(target)}**.`,
         ],
       };
     }
@@ -147,9 +148,10 @@ const droite: Skill = {
       ...choice(rng, correct, wrong, true),
       hint: `${fmt(target)} est-il à gauche ou à droite de zéro ? Et à combien de traits ?`,
       steps: [
-        `Un trait vaut ${fmt(r(1, sub))}.`,
-        `${fmt(target)} est ${target.n < 0 ? 'négatif : à gauche' : 'positif : à droite'} de zéro, à ${fmt(abs(target))}.`,
-        `Le point qui est là, c’est **A**.`,
+        `Regarde la droite : un petit trait vaut ${fmt(r(1, sub))}.`,
+        `Cherche le côté : ${fmt(target)} est ${target.n < 0 ? 'négatif, donc à gauche' : 'positif, donc à droite'} de zéro.`,
+        `Avance depuis 0 jusqu’à la distance ${fmt(abs(target))}.`,
+        `Lis le nom du point placé là : c’est **A**.`,
       ],
     };
   },
@@ -351,22 +353,24 @@ const sommes: Skill = {
   id: 'm5-relatifs-sommes',
   mental: true,
   title: 'Enchaîner additions et soustractions',
+  version: 2,
   lesson: {
     memo: [
-      'D’abord, on enlève les parenthèses : + (−3) devient − 3, et − (−2) devient + 2.',
-      'Puis on fait deux tas : les gains (positifs) d’un côté, les pertes (négatifs) de l’autre. On compare les deux tas.',
-      'Exemple : −3 + 7 − 5 + 2. Gains : 7 + 2 = 9. Pertes : 3 + 5 = 8. 9 − 8 = 1.',
+      'Enlève d’abord les parenthèses : + (−3) devient − 3, et − (−2) devient + 2.',
+      'Fais deux tas, les gains et les pertes, puis compare-les.',
+      'Dans −3 + 7 − 5 + 2, les gains font 9, les pertes 8 : il reste 1.',
     ],
     source: objective(
       'Additionner plusieurs nombres décimaux relatifs. Simplifier l’écriture de sommes comportant des parenthèses. Enchainer additions et soustractions de décimaux relatifs',
     ),
   },
   generate(rng, level) {
+    // Une difficulté par niveau : 3 nombres, puis 4 nombres, puis les parenthèses.
     const count = level === 1 ? 3 : 4;
-    const terms = Array.from({ length: count }, () => relatif(rng, level === 3 ? 2 : level));
+    const terms = Array.from({ length: count }, () => relatif(rng, 1));
     const total = terms.reduce((s, t) => add(s, t), r(0));
-    const withParens = level >= 2;
-    // Écriture : chaque terme t est écrit soit « + (t) », soit « − (−t) » (niveau ≥ 2).
+    const withParens = level === 3;
+    // Écriture : chaque terme t est écrit soit « + (t) », soit « − (−t) » (avec parenthèses).
     let text = withParens ? fmtSigned(terms[0] ?? r(0)) : fmt(terms[0] ?? r(0));
     let wrong = terms[0] ?? r(0);
     for (const t of terms.slice(1)) {
@@ -378,29 +382,31 @@ const sommes: Skill = {
         wrong = add(wrong, t);
       }
     }
-    const pos = terms.filter((t) => t.n > 0).reduce((s, t) => add(s, t), r(0));
-    const negs = terms.filter((t) => t.n < 0).reduce((s, t) => add(s, t), r(0));
+    const gains = terms.filter((t) => t.n > 0);
+    const losses = terms.filter((t) => t.n < 0);
+    const pos = gains.reduce((s, t) => add(s, t), r(0));
+    const negs = losses.reduce((s, t) => add(s, t), r(0));
+    const short = terms.map((t, i) => (i === 0 ? fmt(t) : `${t.n < 0 ? '−' : '+'} ${fmt(abs(t))}`)).join(' ');
     return {
       prompt: `Calcule ${text}.`,
       answer: num(total),
       traps: traps(total, [
-        [wrong, 'Soustraire un nombre, c’est ajouter son opposé : le signe dans la parenthèse doit changer.'],
+        withParens
+          ? [wrong, 'Soustraire un nombre, c’est ajouter son opposé : change le signe dans la parenthèse.']
+          : [add(pos, abs(negs)), 'Les nombres avec un signe − sont des pertes : on les enlève.'],
         [neg(total), 'Le signe du résultat est faux.'],
       ]),
       steps: [
-        ...(withParens
-          ? [
-              `On enlève les parenthèses (− (−…) devient +, + (−…) devient −) : ${terms.map((t, i) => (i === 0 ? fmt(t) : `${t.n < 0 ? '−' : '+'} ${fmt(abs(t))}`)).join(' ')}.`,
-            ]
-          : []),
-        `On fait deux tas. Gains : ${pile(terms.filter((t) => t.n > 0))}. Pertes : ${pile(terms.filter((t) => t.n < 0))}.`,
+        ...(withParens ? [`Enlève les parenthèses : ${short}.`] : [`Regarde les signes : + est un gain, − une perte.`]),
+        `Additionne les gains : ${pile(gains)}. Additionne les pertes : ${pile(losses)}.`,
         cmp(pos, abs(negs)) >= 0
-          ? `Les gains sont plus gros : ${fmt(pos)} − ${fmt(abs(negs))} = **${fmt(total)}**`
-          : `Les pertes sont plus grosses : ${fmt(abs(negs))} − ${fmt(pos)} = ${fmt(abs(total))}, et c’est négatif → **${fmt(total)}**`,
+          ? `Enlève les pertes aux gains : ${fmt(pos)} − ${fmt(abs(negs))} = ${fmt(total)}.`
+          : `Les pertes gagnent : calcule ${fmt(abs(negs))} − ${fmt(pos)} = ${fmt(abs(total))}.`,
+        total.n < 0 ? `Mets le signe − : la réponse est **${fmt(total)}**.` : `Écris la réponse : **${fmt(total)}**.`,
       ],
       hint: withParens
-        ? 'Enlève d’abord les parenthèses (− (−2) devient + 2), puis regroupe les positifs et les négatifs.'
-        : 'Regroupe les nombres positifs d’un côté, les négatifs de l’autre.',
+        ? 'Enlève d’abord les parenthèses. Puis regroupe les gains et les pertes.'
+        : 'Regroupe les gains d’un côté, les pertes de l’autre.',
       targetSeconds: 30,
     };
   },

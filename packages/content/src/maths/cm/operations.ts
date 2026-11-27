@@ -109,31 +109,39 @@ export function buildOperations({ S, C, cm2, id, decs }: Contexte): Chapter {
     { mental: true },
   );
 
-  const estimer = S(
+  const estimerBase = S(
     id('estimer'),
     'Estimer un résultat',
     'Estimer le résultat d’une opération',
-    ['Pour estimer, on arrondit : 49 × 21 ≈ 50 × 20 = 1 000. Ça permet de vérifier un calcul.'],
+    [
+      'L’**ordre de grandeur** est un résultat approché, trouvé de tête.',
+      'Arrondis chaque nombre : 49 devient 50, 21 devient 20. Puis 50 × 20 = 1 000.',
+    ],
     (rng) => {
       const a = rng.int(2, 9) * 10 + rng.pick([-1, 1, 2, -2]);
       const b = rng.int(2, 9) * 10 + rng.pick([-1, 1]);
-      const est = Math.round(a / 10) * 10 * Math.round(b / 10) * 10;
+      const ra = Math.round(a / 10) * 10;
+      const rb = Math.round(b / 10) * 10;
+      const est = ra * rb;
       return {
-        prompt: `Sans calculer exactement, quel est l’ordre de grandeur de ${a} × ${b} ?`,
+        prompt: `Choisis le nombre le plus proche de ${a} × ${b}, sans faire le calcul exact.`,
         ...choice(rng, big(est), [
-          { label: big(est * 10), why: 'Arrondis chaque nombre à la dizaine.' },
-          { label: big(est / 10), why: 'Arrondis chaque nombre à la dizaine, puis multiplie.' },
+          { label: big(est * 10), why: `C’est 10 fois trop grand : calcule ${ra} × ${rb}.` },
+          { label: big(est / 10), why: `C’est 10 fois trop petit : calcule ${ra} × ${rb}.` },
         ]),
-        hint: `Arrondis ${a} et ${b} à la dizaine.`,
+        hint: `Remplace ${a} et ${b} par la dizaine la plus proche (10, 20, 30…).`,
         steps: [
-          `${a} ≈ ${Math.round(a / 10) * 10} et ${b} ≈ ${Math.round(b / 10) * 10}.`,
-          `Ordre de grandeur : **${big(est)}** (exact : ${big(a * b)}).`,
+          `Arrondis ${a} : la dizaine la plus proche est ${ra}.`,
+          `Arrondis ${b} : la dizaine la plus proche est ${rb}.`,
+          `Multiplie les dizaines : ${ra / 10} × ${rb / 10} = ${est / 100}, puis ajoute deux zéros.`,
+          `Choisis **${big(est)}** : c’est l’ordre de grandeur.`,
         ],
-        targetSeconds: 20,
+        targetSeconds: 30,
       };
     },
     { mental: true },
   );
+  const estimer = { ...estimerBase, version: 2 };
 
   const parentheses = S(
     id('parentheses'),

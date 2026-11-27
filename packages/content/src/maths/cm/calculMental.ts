@@ -183,6 +183,7 @@ export function buildCalculMental({ S, C, cm2, id }: Contexte): Chapter {
               targetSeconds: 20,
             };
           },
+          { mental: true },
         ),
         S(
           id('boss-mental-cartes'),
@@ -201,39 +202,40 @@ export function buildCalculMental({ S, C, cm2, id }: Contexte): Chapter {
               targetSeconds: 20,
             };
           },
+          { mental: true },
         ),
       ],
       [
-        S(
-          id('boss-mental-piege'),
-          'Piège : 6 × 7',
-          'Connaître des faits numériques usuels relatifs aux nombres entiers',
-          ['6 × 7 = 42 et 7 × 8 = 56 : les plus « piégeuses » des tables.'],
-          (rng) => {
-            const [a, b] = rng.pick([
-              [6, 7],
-              [7, 8],
-              [6, 8],
-              [8, 9],
-              [7, 9],
-              [6, 9],
-            ] as const);
-            return {
-              prompt: `Combien font ${a} × ${b} ?`,
-              answer: num(a * b),
-              traps: traps(r(a * b), [
-                [a * b + a, `Il y a une fois ${a} de trop.`],
-                [a * b - a, `Il manque une fois ${a}.`],
-              ]),
-              hint: `Pars de ${a} × 5 = ${a * 5} puis ajoute ${a} × ${b - 5}.`,
-              steps: [
-                `${a} × 5 = ${a * 5} ; ${a} × ${b - 5} = ${a * (b - 5)}.`,
-                `${a * 5} + ${a * (b - 5)} = **${a * b}**.`,
-              ],
-              targetSeconds: 12,
-            };
-          },
-        ),
+        {
+          ...S(
+            id('boss-mental-piege'),
+            'Piège : les tables difficiles',
+            'Connaître des faits numériques usuels relatifs aux nombres entiers',
+            ['Pour une table difficile, pars de la table de 5.', '6 × 7 : 5 × 7 = 35, puis encore 7, ça fait 42.'],
+            (rng) => {
+              const a = rng.int(6, 9);
+              const b = rng.int(6, 9);
+              return {
+                prompt: `Calcule de tête : ${a} × ${b}.`,
+                answer: num(a * b),
+                traps: traps(r(a * b), [
+                  [a * b + a, `Il y a une fois ${a} de trop.`],
+                  [a * b - a, `Il manque une fois ${a}.`],
+                ]),
+                hint: `Pars de ${a} × 5, puis ajoute le reste.`,
+                steps: [
+                  `Calcule d’abord le plus facile : ${a} × 5 = ${a * 5}.`,
+                  `Calcule ce qui manque : ${a} × ${b - 5} = ${a * (b - 5)}.`,
+                  `Ajoute les deux : ${a * 5} + ${a * (b - 5)}.`,
+                  `Écris la réponse : **${a * b}**.`,
+                ],
+                targetSeconds: 15,
+              };
+            },
+            { mental: true },
+          ),
+          version: 2,
+        },
       ],
     ),
   );

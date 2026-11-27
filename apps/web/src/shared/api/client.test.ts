@@ -51,12 +51,20 @@ describe('client HTTP typé par le contrat', () => {
     expect(err).toMatchObject({ status: 409, code: 'CONFLICT', message: 'Partie terminée', requestId: 'r-1' });
   });
 
-  it('corps d’erreur illisible : message générique', async () => {
+  it('serveur qui redémarre (502 du relais) : message clair pour l’enfant', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('<html>', { status: 502 })));
     await expect(request(api.listProfiles)).rejects.toMatchObject({
       status: 502,
+      message: 'Le serveur redémarre. Patiente un instant, puis réessaie.',
+    });
+  });
+
+  it('corps d’erreur illisible : message générique', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('<html>', { status: 500 })));
+    await expect(request(api.listProfiles)).rejects.toMatchObject({
+      status: 500,
       code: 'INTERNAL',
-      message: 'Erreur 502',
+      message: 'Erreur 500',
     });
   });
 

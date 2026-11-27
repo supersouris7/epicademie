@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { generate } from '@epicademie/content';
+import { CHAPTERS, generate } from '@epicademie/content';
 import { Feedback } from './Feedback.tsx';
 
 const question = generate('m5-tables', 1, 7);
@@ -46,5 +46,22 @@ describe('Feedback', () => {
     expect(onSkip).toHaveBeenCalledOnce();
     await user.click(screen.getByRole('button', { name: 'Oui, j’essaie' }));
     expect(onNext).toHaveBeenCalledOnce();
+  });
+
+  it('brouillon pendant l’explication : étapes lues rappelées, puis retour', async () => {
+    const user = userEvent.setup();
+    render(<Feedback {...base} correct={false} onNext={() => undefined} />);
+    await user.click(screen.getByRole('button', { name: 'Brouillon' }));
+    const sheet = screen.getByRole('dialog', { name: 'Brouillon pleine page' });
+    expect(within(sheet).getAllByRole('listitem')).toHaveLength(1);
+    expect(within(sheet).getByRole('img', { name: /Zone de brouillon/ })).toBeInTheDocument();
+    await user.click(within(sheet).getByRole('button', { name: 'Revenir à l’explication' }));
+    expect(screen.queryByRole('dialog', { name: 'Brouillon pleine page' })).not.toBeInTheDocument();
+  });
+
+  it('pas de brouillon hors des matières où l’on calcule', () => {
+    const history = CHAPTERS.find((c) => c.subject === 'histoire')!.skills[0]!;
+    render(<Feedback {...base} question={generate(history.id, 1, 1)} correct={false} onNext={() => undefined} />);
+    expect(screen.queryByRole('button', { name: 'Brouillon' })).not.toBeInTheDocument();
   });
 });

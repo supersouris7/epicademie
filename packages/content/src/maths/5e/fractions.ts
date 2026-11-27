@@ -323,8 +323,8 @@ const entier: Skill = {
   title: 'Partie entière d’une fraction',
   lesson: {
     memo: [
-      '{17/5}, c’est 17 cinquièmes. Avec 5 cinquièmes, on fait 1 unité entière.',
-      'Avec 17 cinquièmes, on fait 3 unités (15 cinquièmes) et il en reste 2 : {17/5} = 3 + {2/5}.',
+      '{17/5}, c’est 17 parts. Il faut 5 parts pour faire 1 entier.',
+      'Avec 15 parts, on fait 3 entiers, et il reste 2 parts : {17/5} = 3 + {2/5}.',
     ],
     source: objective(
       'Écrire une fraction sous la forme d’une somme d’un nombre entier et d’une fraction inférieure à 1 : 17/5 = 3 + 2/5',
@@ -336,11 +336,12 @@ const entier: Skill = {
     const rest = rng.int(1, d - 1);
     const n = d * q + rest;
     const steps = [
-      `${d} parts de ${rawFrac(1, d)}, ça fait 1 unité entière. Combien d’unités entières avec ${n} parts ?`,
-      `${d} × ${q} = ${d * q} : on fait ${q} unité${q > 1 ? 's' : ''} entière${q > 1 ? 's' : ''}, et il reste ${n} − ${d * q} = ${rest} part${rest > 1 ? 's' : ''}.`,
-      `Donc ${rawFrac(n, d)} = **${q} + ${rawFrac(rest, d)}**.`,
+      `Regarde le nombre du bas : il faut ${d} parts pour faire 1 entier.`,
+      `Cherche dans la table de ${d} : ${d} × ${q} = ${d * q}, juste avant ${n}.`,
+      `Enlève ces parts : ${n} − ${d * q} = ${rest}. Il reste ${rawFrac(rest, d)}.`,
+      `Écris la réponse : ${rawFrac(n, d)} = **${q} + ${rawFrac(rest, d)}**.`,
     ];
-    const hint = `Avec ${d} parts, on fait 1 unité. Combien d’unités complètes avec ${n} parts ?`;
+    const hint = `Avec ${d} parts, on fait 1 entier. Combien d’entiers avec ${n} parts ?`;
     if (level === 3) {
       return {
         prompt: `Complète : ${rawFrac(n, d)} = ${q} + …`,
@@ -420,9 +421,9 @@ function addSubSkill(id: string, title: string, minus: boolean): Skill {
     advice: 'brouillon',
     lesson: {
       memo: [
-        `Le dénominateur, c’est la **taille des parts** ; le numérateur, c’est le **nombre de parts**.`,
-        `On ${minus ? 'enlève' : 'ajoute'} des parts de même taille : {5/7} ${op} {1/7} = {${minus ? 4 : 6}/7}. La taille des parts (7) ne change pas !`,
-        'Si les parts n’ont pas la même taille, on redécoupe d’abord pour avoir le même dénominateur.',
+        'Le **dénominateur** (en bas) dit la taille des parts ; le **numérateur** (en haut), leur nombre.',
+        `On ${minus ? 'enlève' : 'ajoute'} des parts de même taille : {5/7} ${op} {1/7} = {${minus ? 4 : 6}/7}.`,
+        'Si les nombres du bas sont différents, rends-les d’abord égaux.',
       ],
       source: objective('Additionner et soustraire des fractions de dénominateurs quelconques'),
     },
@@ -432,23 +433,46 @@ function addSubSkill(id: string, title: string, minus: boolean): Skill {
       const s = commonDenSteps(a, b);
       const t = addSubTraps(a, b, minus);
       const show = (x: [number, number]) => (x[1] === 1 ? String(x[0]) : rawFrac(...x));
-      const res = rawFrac(minus ? s.a2 - s.b2 : s.a2 + s.b2, s.den);
+      const top = minus ? s.a2 - s.b2 : s.a2 + s.b2;
+      const res = rawFrac(top, s.den);
+      const verb = minus ? 'Enlève' : 'Ajoute';
+      // Un entier (3 + {2/5}) n’a pas de nombre du bas : on le dit autrement.
+      const whole = a[1] === 1 ? a[0] : b[1] === 1 ? b[0] : null;
+      const lookDown =
+        whole === null
+          ? `Regarde les nombres du bas : ils sont différents. Choisis ${s.den} pour les deux.`
+          : `Repère le nombre entier ${whole} : il faut l’écrire avec ${s.den} en bas.`;
       return {
         prompt: `Calcule ${show(a)} ${op} ${show(b)}.`,
         answer: fraction(value),
         traps: traps(value, t),
         hint:
           a[1] === b[1]
-            ? `Les parts ont la même taille : ${minus ? 'enlève' : 'ajoute'} les numérateurs et garde le dénominateur.`
-            : `Mets d’abord les deux fractions au même dénominateur (un nombre qui est dans la table de ${a[1]} et de ${b[1]}).`,
+            ? `Les parts ont la même taille. ${verb} les nombres du haut, garde celui du bas.`
+            : whole === null
+              ? `Rends les nombres du bas égaux. Cherche un nombre dans la table de ${a[1]} et de ${b[1]}.`
+              : `Écris ${whole} en fraction, avec le même nombre en bas que l’autre.`,
         steps: [
+          a[1] === b[1] ? `Regarde les nombres du bas : ils sont égaux, les parts ont la même taille.` : lookDown,
           a[1] === b[1]
-            ? `Même dénominateur : les parts ont la même taille, on peut ${minus ? 'les enlever' : 'les ajouter'} directement.`
-            : `Les dénominateurs sont différents : les parts n’ont pas la même taille. Il faut redécouper !`,
-          ...(a[1] === b[1] ? [] : [s.line]),
-          `On ${minus ? 'enlève' : 'ajoute'} les parts : ${s.a2} ${op} ${s.b2} = ${minus ? s.a2 - s.b2 : s.a2 + s.b2}, et le dénominateur reste ${s.den}.`,
-          `${rawFrac(s.a2, s.den)} ${op} ${rawFrac(s.b2, s.den)} = **${res}**${res !== frac(value) ? ` (ou **${frac(value)}** en simplifiant, les deux sont justes)` : ''}.`,
+            ? `${verb} les nombres du haut : ${s.a2} ${op} ${s.b2} = ${top}.`
+            : `Écris les deux fractions avec ${s.den} en bas : ${rawFrac(s.a2, s.den)} et ${rawFrac(s.b2, s.den)}.`,
+          a[1] === b[1]
+            ? `Garde le nombre du bas : ${s.den}.`
+            : `${verb} les nombres du haut : ${s.a2} ${op} ${s.b2} = ${top}. Garde ${s.den} en bas.`,
+          `Écris la réponse : **${res}**${res !== frac(value) ? ` (ou **${frac(value)}** en simplifiant)` : ''}.`,
         ],
+        ...(s.den <= 12 && a[1] > 1 && b[1] > 1 && s.a2 <= s.den && s.b2 <= s.den
+          ? {
+              demo: {
+                kind: 'fraction',
+                parts: [
+                  { num: s.a2, den: s.den },
+                  { num: s.b2, den: s.den },
+                ],
+              } as const,
+            }
+          : {}),
         targetSeconds: level === 1 ? 15 : 40,
       };
     },
@@ -500,46 +524,60 @@ const problemes: Skill = {
   id: 'm5-fractions-problemes',
   title: 'Problèmes avec des fractions',
   advice: 'brouillon',
+  version: 2,
   lesson: {
     memo: [
-      'La pizza entière, c’est 1. Coupée en 12, c’est {12/12}.',
-      'Tom mange {1/4} = {3/12}, Léa {1/3} = {4/12}. Ils ont mangé {7/12}, il reste {12/12} − {7/12} = {5/12}.',
-      'Dessine la pizza au brouillon : ça aide beaucoup !',
+      'La pizza entière vaut 1. Coupée en 8, c’est {8/8}.',
+      'Dessine-la : si Tom mange {1/8} et Léa {3/8}, il reste {8/8} − {4/8} = {4/8}.',
     ],
     source: objective('Résoudre des problèmes avec des additions et soustractions de fractions'),
   },
   generate(rng, level) {
     const names = rng.shuffle(['Inès', 'Noah', 'Jade', 'Sacha', 'Léo', 'Maya']);
-    const thing = rng.pick(['d’une pizza', 'd’un gâteau', 'd’une tablette de chocolat', 'du trajet']);
-    const a = randomFrac(rng, level === 1 ? [6] : [2, 3, 4, 5], 1);
-    let b = randomFrac(rng, level === 1 ? [6] : [3, 4, 6, 8], 1);
-    while (cmp(add(r(...a), r(...b)), r(1)) >= 0) b = [1, b[1] * 2];
-    const eaten = add(r(...a), r(...b));
+    const [first = 'Inès', second = 'Noah'] = names;
+    const thing = rng.pick(['d’une pizza', 'd’un gâteau', 'd’une tablette de chocolat']);
+    // Une difficulté par niveau : même dénominateur (total), puis « le reste », puis dénominateurs multiples.
+    const d = rng.pick(level === 3 ? [3, 4, 5] : [5, 6, 8, 10]);
+    const k = level === 3 ? 2 : 1;
+    const den = d * k;
+    const x = rng.int(1, level === 3 ? d - 2 : Math.floor((den - 1) / 2));
+    const y = rng.int(1, Math.max(1, den - x * k - 1));
+    const x2 = x * k;
+    const used = x2 + y;
+    const eaten = r(used, den);
     const askRest = level >= 2;
     const value = askRest ? sub(r(1), eaten) : eaten;
-    const s = commonDenSteps(a, b);
-    const verb = thing === 'du trajet' ? 'parcourt' : 'mange';
+    const top = askRest ? den - used : used;
+    const result = rawFrac(top, den);
+    const simpler = result !== frac(value) ? ` (ou **${frac(value)}**)` : '';
     return {
-      prompt: `${names[0] ?? 'Inès'} ${verb} ${rawFrac(...a)} ${thing}, puis ${names[1] ?? 'Noah'} ${verb} ${rawFrac(...b)} ${thing}. ${askRest ? 'Quelle fraction reste-t-il ?' : 'Quelle fraction en tout ?'}`,
+      prompt: `${first} mange ${rawFrac(x, d)} ${thing}. ${second} en mange ${rawFrac(y, den)}. ${askRest ? 'Quelle fraction reste-t-il ?' : 'Quelle fraction est mangée en tout ?'}`,
       answer: fraction(value),
       traps: traps(value, [
-        [r(a[0] + b[0], a[1] + b[1]), 'On n’additionne pas les dénominateurs : il faut un dénominateur commun.'],
+        [r(x + y, d + den), 'On n’additionne pas les nombres du bas.'],
         ...(askRest
-          ? ([[eaten, `${frac(eaten)} est la part utilisée ; il reste 1 − ${frac(eaten)}.`]] as [Rational, string][])
+          ? ([[eaten, 'Ça, c’est ce qui est **mangé**. On demande ce qui reste.']] as [Rational, string][])
           : []),
       ]),
       hint: askRest
-        ? 'Calcule d’abord ce qui a été pris en tout (même dénominateur !), puis enlève-le du tout, qui vaut 1.'
-        : 'Additionne les deux fractions, après les avoir mises au même dénominateur.',
+        ? `Compte d’abord les parts mangées. Puis enlève-les de ${rawFrac(den, den)}.`
+        : 'Ajoute les parts mangées. Le nombre du bas ne change pas.',
+      demo: {
+        kind: 'fraction',
+        parts: [
+          { num: x2, den },
+          { num: y, den },
+        ],
+      },
       steps: [
-        a[1] === b[1] ? 'Les deux fractions ont déjà le même dénominateur.' : s.line,
-        `Pris en tout : ${rawFrac(s.a2, s.den)} + ${rawFrac(s.b2, s.den)} = ${rawFrac(s.a2 + s.b2, s.den)}${rawFrac(s.a2 + s.b2, s.den) !== frac(eaten) ? ` = ${frac(eaten)}` : ''}.`,
-        ...(askRest
-          ? [
-              `Le tout vaut 1, c’est-à-dire ${rawFrac(s.den, s.den)}.`,
-              `Il reste ${rawFrac(s.den, s.den)} − ${rawFrac(s.a2 + s.b2, s.den)} = **${rawFrac(s.den - s.a2 - s.b2, s.den)}**${rawFrac(s.den - s.a2 - s.b2, s.den) !== frac(value) ? ` = **${frac(value)}**` : ''}.`,
-            ]
-          : [`Réponse : **${frac(value)}**.`]),
+        k === 1
+          ? `Regarde les nombres du bas : les parts ont la même taille.`
+          : `Mets ${den} en bas : ${rawFrac(x, d)}, c’est pareil que ${rawFrac(x2, den)}.`,
+        `Ajoute les parts mangées : ${x2} + ${y} = ${used}, donc ${rawFrac(used, den)}.`,
+        askRest
+          ? `Enlève-les du tout : ${rawFrac(den, den)} − ${rawFrac(used, den)} = ${result}.`
+          : `Garde ${den} en bas : la taille des parts ne change pas.`,
+        `Écris la réponse : **${result}**${simpler}.`,
       ],
       targetSeconds: 60,
     };

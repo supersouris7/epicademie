@@ -18,7 +18,7 @@ export function DemoView({ demo }: { readonly demo: Demo }) {
     case 'rangs':
       return <PlaceValueDemo value={demo.value} />;
     case 'fraction':
-      return <FractionDemo parts={demo.parts} />;
+      return <FractionDemo parts={demo.parts} shape={demo.shape} />;
     case 'droite':
       return <NumberLineDemo values={demo.values} />;
   }

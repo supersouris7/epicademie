@@ -105,9 +105,10 @@ const niveau1 = (rng: Rng): QuestionDraft => {
     traps,
     hint: 'Garde-t-il sa forme ? Garde-t-il son volume ?',
     steps: [
-      'On regarde si le corps garde sa forme et son volume.',
-      `Un corps à l’état ${etat} ${PROPRIETE[etat]}.`,
-      `Il est à l’état **${etat}**.`,
+      'Regarde si le corps garde sa forme.',
+      'Regarde aussi s’il garde son volume.',
+      `Rappelle-toi : un corps à l’état ${etat} ${PROPRIETE[etat]}.`,
+      `Choisis l’état **${etat}**.`,
     ],
     targetSeconds: 20,
   };
@@ -123,8 +124,9 @@ const niveau2 = (rng: Rng): QuestionDraft => {
       ),
       hint: 'Demande-toi lequel garde sa forme, lequel garde seulement son volume, lequel remplit tout.',
       steps: [
-        'Le solide garde forme et volume ; le liquide garde seulement son volume.',
-        `Réponse : **${ETATS.map((e) => `${e} → ${PROPRIETE[e]}`).join(' ; ')}**.`,
+        `Commence par le solide : il **${PROPRIETE.solide}**.`,
+        `Continue avec le liquide : il **${PROPRIETE.liquide}**.`,
+        `Termine avec le gaz : il **${PROPRIETE.gazeux}**.`,
       ],
       targetSeconds: 40,
     };
@@ -141,7 +143,11 @@ const niveau2 = (rng: Rng): QuestionDraft => {
     answer,
     traps,
     hint: 'Cherche l’état de départ, puis l’état d’arrivée.',
-    steps: [`Ici, la matière passe ${trajet(c)}.`, `Ce passage s’appelle la **${c.nom}**.`],
+    steps: [
+      `Cherche l’état au départ : l’état ${c.de}.`,
+      `Cherche l’état à la fin : l’état ${c.vers}.`,
+      `Choisis le nom de ce passage : la **${c.nom}**.`,
+    ],
     targetSeconds: 30,
   };
 };
@@ -157,7 +163,11 @@ const niveau3 = (rng: Rng): QuestionDraft => {
         blanks: [c.de, c.vers].map((e) => ({ mode: 'list' as const, options: [...ETATS], correct: ETATS.indexOf(e) })),
       },
       hint: 'Pense à un exemple du quotidien, puis nomme l’état avant et l’état après.',
-      steps: [`Exemple : ${c.situations[0]}.`, `La ${c.nom} fait passer **${trajet(c)}**.`],
+      steps: [
+        `Pense à cet exemple : ${c.situations[0]}.`,
+        `Trouve l’état au départ : l’état **${c.de}**.`,
+        `Trouve l’état à la fin : l’état **${c.vers}**.`,
+      ],
       targetSeconds: 35,
     };
   }
@@ -170,7 +180,11 @@ const niveau3 = (rng: Rng): QuestionDraft => {
     answer,
     traps,
     hint: 'Imagine un exemple du quotidien, puis cherche le nom qui correspond à ce passage dans ta leçon.',
-    steps: [`Exemple : ${c.situations[0]}.`, `Réponse : **la ${c.nom}**.`],
+    steps: [
+      `Repère le départ et l’arrivée : ${trajet(c)}.`,
+      `Pense à cet exemple : ${c.situations[0]}.`,
+      `Écris le nom : **la ${c.nom}**.`,
+    ],
     targetSeconds: 35,
   };
 };
@@ -190,8 +204,9 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       answer: association(rng, cinq),
       hint: 'Commence par les changements que tu connais le mieux, puis déduis les autres.',
       steps: [
-        'La sublimation va directement du solide au gaz.',
-        `Réponse : **${cinq.map(([a, b]) => `${a} → ${b.toLowerCase()}`).join(' ; ')}**.`,
+        'Associe d’abord la **fusion** (solide → liquide) et la **solidification** (liquide → solide).',
+        'Associe ensuite la **vaporisation** (liquide → gaz) et la **liquéfaction** (gaz → liquide).',
+        'Termine par la **sublimation** : elle va du solide au gaz.',
       ],
       targetSeconds: 70,
     };
@@ -213,9 +228,9 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       traps,
       hint: 'Le solide se mélange à l’eau : ce n’est pas un changement d’état.',
       steps: [
-        'La fusion transforme un solide en liquide sous l’effet de la chaleur.',
-        'Ici, le solide se mélange complètement à l’eau.',
-        'C’est une **dissolution**.',
+        'Rappelle-toi : la fusion a besoin de chaleur pour changer un solide en liquide.',
+        'Observe ici : le solide se mélange à l’eau.',
+        'Écris le bon mot : c’est une **dissolution**.',
       ],
       targetSeconds: 45,
     };
@@ -231,7 +246,11 @@ const niveau4 = (rng: Rng): QuestionDraft => {
       answer,
       traps,
       hint: 'Repère l’état de départ et l’état d’arrivée, sans te fier à l’aspect.',
-      steps: [`La matière passe ${trajet(c)}.`, `C’est la **${c.nom}**.`],
+      steps: [
+        `Cherche l’état au départ : l’état ${c.de}.`,
+        `Cherche l’état à la fin : l’état ${c.vers}.`,
+        `Écris le nom de ce passage : la **${c.nom}**.`,
+      ],
       targetSeconds: 45,
     };
   }
@@ -254,11 +273,11 @@ const niveau4 = (rng: Rng): QuestionDraft => {
     traps,
     hint: 'Demande-toi si un corps dont les molécules sont ainsi liées peut couler ou garde sa forme.',
     steps: [
-      'On relie le comportement des molécules à ce qu’on observe.',
+      'Regarde comment les molécules sont liées entre elles.',
       lies
-        ? 'Des molécules fortement liées donnent une forme déterminée.'
-        : 'Une faible cohésion laisse le corps couler.',
-      `C’est l’état **${bon.toLowerCase()}**.`,
+        ? 'Retiens : des molécules très liées donnent une forme déterminée.'
+        : 'Retiens : des molécules peu liées laissent le corps couler.',
+      `Choisis l’état **${bon.toLowerCase()}**.`,
     ],
     targetSeconds: 45,
   };
@@ -294,7 +313,12 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       figure,
       answer: ordre(rng, items),
       hint: 'La température monte : quelle température rencontre-t-on la première ?',
-      steps: [`La fusion a lieu à ${tf} °C, avant l’ébullition à ${te} °C.`, `Ordre : **${items.join(' → ')}**.`],
+      steps: [
+        `Commence par le solide, à ${tf - 10} °C.`,
+        `Place la fusion à ${tf} °C, puis le liquide.`,
+        `Place la vaporisation à ${te} °C, puis le gaz.`,
+        'Range donc : **solide, fusion, liquide, vaporisation, gaz**.',
+      ],
       targetSeconds: 80,
     };
   }
@@ -317,13 +341,13 @@ const niveau5 = (rng: Rng): QuestionDraft => {
       traps,
       hint: 'Place la température par rapport à la fusion et à l’ébullition.',
       steps: [
-        `On compare ${t} °C avec ${tf} °C (fusion) et ${te} °C (ébullition).`,
+        `Repère les deux températures : fusion à ${tf} °C, ébullition à ${te} °C.`,
         zone === 0
-          ? 'La température est inférieure à celle de la fusion.'
+          ? `Compare : ${t} °C est plus bas que la fusion.`
           : zone === 1
-            ? 'La température est entre la fusion et l’ébullition.'
-            : 'La température est supérieure à celle de l’ébullition.',
-        `La substance est à l’état **${etat}**.`,
+            ? `Compare : ${t} °C est entre la fusion et l’ébullition.`
+            : `Compare : ${t} °C est plus haut que l’ébullition.`,
+        `Choisis l’état **${etat}**.`,
       ],
       targetSeconds: 70,
     };
@@ -342,9 +366,9 @@ const niveau5 = (rng: Rng): QuestionDraft => {
     traps,
     hint: 'Quel état avant, quel état après la température de fusion ?',
     steps: [
-      `On franchit ${tf} °C, la température de fusion, en ${monte ? 'chauffant' : 'refroidissant'}.`,
-      `La substance passe ${trajet(c)}.`,
-      `C’est la **${c.nom}**.`,
+      `Regarde la température de fusion : ${tf} °C.`,
+      `Observe : on la traverse en ${monte ? 'chauffant' : 'refroidissant'}.`,
+      `Écris le changement : ${trajet(c)}, c’est la **${c.nom}**.`,
     ],
     targetSeconds: 70,
   };
@@ -357,9 +381,9 @@ export const etats: Skill = {
   version: 1,
   lesson: {
     memo: [
-      'Trois états : **solide** (forme et volume déterminés), **liquide** (volume invariable, pas de forme propre), **gaz** (occupe tout l’espace).',
-      '**Fusion** : solide → liquide. **Solidification** : liquide → solide. **Vaporisation** : liquide → gaz. **Liquéfaction** : gaz → liquide. **Sublimation** : solide → gaz.',
-      'À l’échelle des molécules : très liées dans un solide, peu liées dans un liquide. Attention : le sucre ne « fond » pas dans le thé, il se dissout.',
+      'Un **solide** garde sa forme ; un **liquide** garde son volume ; un **gaz** occupe tout l’espace.',
+      '**Fusion** : solide → liquide ; **solidification** : liquide → solide ; **vaporisation** : liquide → gaz ; **liquéfaction** : gaz → liquide ; **sublimation** : solide → gaz.',
+      'Le sucre ne « fond » pas dans le thé : il se dissout.',
     ],
     ...references(
       'etats-programme',
