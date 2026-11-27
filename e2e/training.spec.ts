@@ -96,6 +96,12 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   await page.getByRole('button', { name: 'Suite' }).click();
   await expect(page.getByText(/Pas encore réussies \(\d+\)/)).toBeVisible();
   await expect(page.getByText(/Bonne réponse :/).first()).toBeVisible();
+  // Fin de séance : « Je me sens capable ? », 3 smileys assez grands pour un doigt.
+  const feeling = page.getByRole('group', { name: 'Je me sens capable ?' });
+  const some = feeling.getByRole('button', { name: 'Un peu' });
+  expect((await some.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+  await some.click();
+  await expect(feeling.getByRole('status')).toHaveText('Merci, c’est noté !');
 
   // La notion apparaît « à revoir » demain : pas encore échue aujourd'hui, mais évaluée.
   await page.getByRole('button', { name: 'Autre notion' }).click();

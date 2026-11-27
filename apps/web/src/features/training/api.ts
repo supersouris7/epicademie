@@ -1,10 +1,10 @@
 import { queryOptions, useQuery } from '@tanstack/react-query';
-import { api, type AnswerSubmit, type SessionCreate } from '@epicademie/shared';
+import { api, type AnswerSubmit, type Feeling, type SessionCreate } from '@epicademie/shared';
 import { request } from '../../shared/api/client.ts';
 import { LONG_FRESH_MS } from '../../shared/api/queryClient.ts';
 
 /** Appels au serveur pour l'entraînement : progression par notion, partie, réponses, bilan. */
-export { chapterTrophiesKey, skillsKey, useSkills } from '../../shared/api/queries.ts';
+export { chapterTrophiesKey, journeyKey, skillsKey, useSkills } from '../../shared/api/queries.ts';
 
 export const startSession = (input: SessionCreate) => request(api.startSession, { body: input });
 
@@ -12,6 +12,9 @@ export const submitAnswer = (sessionId: string, answer: AnswerSubmit) =>
   request(api.answerSession, { params: { id: sessionId }, body: answer });
 
 export const finishSession = (sessionId: string) => request(api.finishSession, { params: { id: sessionId } });
+
+export const rateSession = (sessionId: string, feeling: Feeling) =>
+  request(api.rateSession, { params: { id: sessionId }, body: { feeling } });
 
 export const markConfused = (sessionId: string, skillId: string) =>
   request(api.markConfused, { params: { id: sessionId }, body: { skillId } });

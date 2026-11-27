@@ -47,6 +47,7 @@ et les options écartées. Une ADR acceptée ne se modifie pas : une nouvelle AD
 | [0035](0035-chargement-a-la-demande.md)          | Écrans et contenus chargés à la demande                                                       | Acceptée            |
 | [0036](0036-roles-d-administration-oidc.md)      | Rôles d'administration et connexion de l'équipe (OpenID Connect)                              | Acceptée            |
 | [0037](0037-aide-sans-penalite.md)               | Aide sans pénalité, médaille de diamant, aucune comparaison entre enfants                     | Acceptée            |
+| [0038](0038-progres-personnel-et-sens.md)        | Progrès personnel, sens des matières, ressenti de fin de séance                               | Acceptée            |
 
 ## Modèle
 

@@ -277,6 +277,28 @@ export type Tool = 'conversion-longueur' | 'conversion-aire' | 'conversion-volum
 /** Conseil donné par Questy au début de chaque question de la notion. */
 export type Advice = 'calculatrice' | 'brouillon';
 
+/**
+ * « Sens des matières » (docs/contenus/README.md) : les quatre façons de dire à l'enfant pourquoi
+ * apprendre une notion.
+ */
+export const SENS_LABELS = {
+  usage: 'À quoi ça sert',
+  'savais-tu': 'Le sais-tu ?',
+  metier: 'Qui s’en sert',
+  histoire: 'Un peu d’histoire',
+} as const;
+export type SensType = keyof typeof SENS_LABELS;
+
+export interface Sens {
+  readonly type: SensType;
+  /** Une phrase courte, à hauteur d'enfant. */
+  readonly text: Rich;
+  /** Identifiant du registre des sources (`sources.ts`) : institutionnelle ou encyclopédique. */
+  readonly source: string;
+  /** Passage exact de la source qui appuie la phrase. */
+  readonly citation: string;
+}
+
 export interface Skill {
   readonly id: string;
   readonly title: string;
@@ -290,6 +312,8 @@ export interface Skill {
   /** Conseil de Questy à la 1re question de la notion (aucun par défaut). */
   readonly advice?: Advice;
   readonly lesson: Lesson;
+  /** Sens de la notion (au moins une phrase attendue) ; facultatif tant que tous les contenus ne l'ont pas. */
+  readonly sens?: readonly Sens[];
   /** Niveau maximal de la notion : 3 par défaut, 5 pour les nouvelles notions (docs/adr/0034). */
   readonly levels?: 3 | 5;
   readonly generate: (rng: Rng, level: Level) => QuestionDraft;

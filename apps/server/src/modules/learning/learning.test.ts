@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
 import { fmt, generate } from '@epicademie/content';
-import type { LearningReport, Profile, SessionSummary } from '@epicademie/shared';
-import { attempts } from '../../db/schema.ts';
+import type { Journey, LearningReport, Profile, SessionSummary } from '@epicademie/shared';
+import { attempts, sessions } from '../../db/schema.ts';
 import { dayIn } from '../../core/clock.ts';
 import { createTestApp, profileInput } from '../../testing/harness.ts';
 
@@ -167,5 +167,68 @@ describe('badges', () => {
     t.clock.set('2026-11-21');
     await perfectSeries();
     expect((await badges()).find((b) => b.category === 'parfait')?.value).toBe(2);
+  });
+});
+
+describe('progrès personnel et ressenti de fin de séance', () => {
+  const journeyOf = async (id: string) => (await t.http.inject(`/api/v1/profiles/${id}/journey`)).json<Journey>();
+  const finish = (id: string) => t.http.inject({ method: 'POST', url: `/api/v1/sessions/${id}/finish` });
+  const rate = (id: string, feeling: number) =>
+    t.http.inject({ method: 'POST', url: `/api/v1/sessions/${id}/feeling`, payload: { feeling } });
+
+  it('compare la notion à deux semaines d’écart et compte les efforts après une pause', async () => {
+    t.clock.set('2026-11-06');
+    const old = await start();
+    for (const seed of [1, 2, 3, 4]) await answer(old, seed, seed === 1);
+    await finish(old);
+    await t.database.db.update(attempts).set({ createdAt: new Date('2026-11-06T10:00:00Z') });
+    t.clock.set('2026-11-20');
+    const recent = await start();
+    for (const seed of [5, 6, 7, 8]) await answer(recent, seed, seed !== 5);
+    await finish(recent);
+    await t.database.db
+      .update(attempts)
+      .set({ createdAt: new Date('2026-11-20T10:00:00Z') })
+      .where(eq(attempts.sessionId, recent));
+    const j = await journeyOf(profileId);
+    expect(j.gains).toEqual([
+      {
+        skillId: 'm5-tables',
+        before: { day: '2026-11-06', correct: 1, answered: 4 },
+        now: { day: '2026-11-20', correct: 3, answered: 4 },
+      },
+    ]);
+    expect(j.effort).toEqual({ series: 1, days: 1, reworked: ['m5-tables'], pauseDays: 14 });
+  });
+
+  it('un joueur sans réponse : rien à comparer, aucun effort compté', async () => {
+    expect(await journeyOf(profileId)).toEqual({
+      today: '2026-11-20',
+      gains: [],
+      effort: { series: 0, days: 0, reworked: [], pauseDays: null },
+    });
+  });
+
+  it('« Je me sens capable ? » : après la séance seulement, de 1 à 3, modifiable', async () => {
+    const id = await start();
+    expect((await rate(id, 3)).statusCode).toBe(409);
+    await finish(id);
+    expect((await rate(id, 4)).statusCode).toBe(400);
+    expect((await rate(id, 1)).statusCode).toBe(204);
+    expect((await rate(id, 3)).statusCode).toBe(204);
+    const [row] = await t.database.db.select().from(sessions).where(eq(sessions.id, id));
+    expect(row?.feeling).toBe(3);
+    expect((await rate('00000000-0000-4000-8000-000000000000', 2)).statusCode).toBe(404);
+  });
+
+  it('une autre famille ne lit ni n’écrit rien (404, aucune écriture)', async () => {
+    const id = await start();
+    await finish(id);
+    const other = t.as((await t.signup()).cookie);
+    expect((await other.inject(`/api/v1/profiles/${profileId}/journey`)).statusCode).toBe(404);
+    const res = await other.inject({ method: 'POST', url: `/api/v1/sessions/${id}/feeling`, payload: { feeling: 1 } });
+    expect(res.statusCode).toBe(404);
+    const [row] = await t.database.db.select().from(sessions).where(eq(sessions.id, id));
+    expect(row?.feeling).toBeNull();
   });
 });

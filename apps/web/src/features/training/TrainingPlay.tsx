@@ -112,6 +112,7 @@ function Game(setup: TrainingSetup) {
       <Results
         profileId={profile.id}
         summary={s.summary}
+        sessionId={s.sessionId}
         missed={s.missed}
         gender={profile.gender}
         chapterId={chapterId}

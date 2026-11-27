@@ -25,6 +25,7 @@ import type {
   AvatarConfig,
   BossMedal,
   ChestRarity,
+  Feeling,
   CompetenceState,
   EvaluationKind,
   EvaluationRole,
@@ -235,8 +236,13 @@ export const sessions = pgTable(
     chest: text('chest').$type<ChestRarity>(),
     /** Épreuve du chapitre (série mélangée de toutes ses notions, validée à 80 %). */
     epreuve: boolean('epreuve').notNull().default(false),
+    /** « Je me sens capable ? » en fin de séance : 1 pas encore, 2 un peu, 3 oui (null : sans réponse). */
+    feeling: smallint('feeling').$type<Feeling>(),
   },
-  (t) => [index('sessions_profile_mode_chapter_idx').on(t.profileId, t.mode, t.chapterId)],
+  (t) => [
+    index('sessions_profile_mode_chapter_idx').on(t.profileId, t.mode, t.chapterId),
+    check('sessions_feeling_range', sql`${t.feeling} between 1 and 3`),
+  ],
 );
 
 export type SessionRow = typeof sessions.$inferSelect;

@@ -1,4 +1,5 @@
 import type { CompetenceState, Level } from '@epicademie/shared';
+import { daysBetween } from '../srs.ts';
 import { EVALUATION } from './constants.ts';
 
 /** Origine d'une observation : l'épreuve, un mode solo, un mode à plusieurs, ou écartée (poids 0). */
@@ -16,9 +17,6 @@ export interface Observation {
   /** Jour de la réponse, `AAAA-MM-JJ` (fuseau de la famille). */
   readonly day: string;
 }
-
-export const daysBetween = (from: string, to: string): number =>
-  Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000);
 
 /** Fraîcheur d'une observation selon son âge (§3.1) : l'Arène vieillit moins vite que le reste. */
 export function freshness(source: ObservationSource, ageDays: number): number {

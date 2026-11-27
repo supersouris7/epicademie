@@ -49,6 +49,10 @@ export function newSkillState(skillId: string): SkillState {
   return { skillId, stage: 0, due: null, attempts: 0, correct: 0, recent: [], maintained: 0, best: 0 };
 }
 
+/** Nombre de jours d'un jour AAAA-MM-JJ à un autre. */
+export const daysBetween = (from: string, to: string) =>
+  Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000);
+
 export function addDays(day: string, days: number): string {
   const d = new Date(`${day}T00:00:00Z`);
   d.setUTCDate(d.getUTCDate() + days);

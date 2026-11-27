@@ -14,4 +14,5 @@ export * from './relectures.ts';
 export * from './glossaires.ts';
 export * from './couverture.ts';
 export * from './apercu.ts';
+export * from './sens.ts';
 export * from './lisibilite.ts';

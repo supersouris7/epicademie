@@ -64,6 +64,10 @@ export type AnswerSubmit = z.infer<typeof AnswerSubmitSchema>;
 
 export const ConfusedSchema = z.object({ skillId: ContentIdSchema });
 
+/** « Je me sens capable ? » en fin de séance (3 smileys) : 1 pas encore, 2 un peu, 3 oui. Rien d'autre n'est demandé. */
+export const FeelingSchema = z.object({ feeling: z.union([z.literal(1), z.literal(2), z.literal(3)]) });
+export type Feeling = z.infer<typeof FeelingSchema>['feeling'];
+
 export const AnswerResultSchema = z.object({
   correct: z.boolean(),
   /** Réponse illisible (ex. « 3,,2 ») : ni juste ni fausse, le joueur la corrige. */

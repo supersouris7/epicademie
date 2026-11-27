@@ -245,6 +245,30 @@ indice reste à relire (grille du §5).
 - En CI (`lisibilite.test.ts`) : mode **avertissement** pour le catalogue ; les notions déjà reprises, inscrites dans
   `REPRISES`, ne doivent plus rien déclencher (bloquant). Chaque lot repris y ajoute ses notions.
 
+## 9. Sens des matières
+
+Chaque notion dit à l'enfant **pourquoi l'apprendre** : champ `sens` de la notion (`Skill.sens`), une ou plusieurs
+phrases de l'un des quatre types.
+
+| Type (`type`) | Titre montré      | Contenu                                                  |
+| ------------- | ----------------- | -------------------------------------------------------- |
+| `usage`       | À quoi ça sert    | une situation concrète d'un enfant, ou une autre matière |
+| `savais-tu`   | Le sais-tu ?      | un fait étonnant                                         |
+| `metier`      | Qui s'en sert     | un métier, une discipline ou une passion                 |
+| `histoire`    | Un peu d'histoire | qui a inventé ou découvert ça, et pourquoi               |
+
+- **Longueur** : une seule phrase courte, 120 caractères au plus (`SENS_MAX_LENGTH`), mots simples.
+- **Ton** : coach, concret ; aucune morale, aucune injonction, aucune promesse.
+- **Source** : institutionnelle ou encyclopédique, du registre (`source` = identifiant, domaine autorisé) ;
+  `citation` = le passage exact qui appuie la phrase. La phrase ne dit rien de plus que ce passage. Aucun lien
+  n'est montré à l'enfant.
+- **Affichage** : après une réussite (bilan de la série, sans clic), à l'ouverture d'un chapitre
+  (« Pourquoi apprendre ça ? », deux phrases de types variés) et dans « Ce que tu sais maintenant faire ».
+- **Obligation** : tout nouveau lot de contenu remplit `sens` pour chacune de ses notions. Le champ reste
+  facultatif dans le schéma tant que l'existant n'est pas complété : absent, le test avertit sans bloquer, sauf
+  en mathématiques CM1, CM2 et 6e (`maths/sens.ts`), où il est exigé.
+- Contrôle : `packages/content/src/sens.test.ts`. Relecture pédagogique : exactitude et ton.
+
 ## Référentiel d'évaluation d'une nouvelle matière (Arène)
 
 Gabarit et règles : `packages/content/src/referentiel/gabarit.ts`. Enregistrer le référentiel dans `REFERENTIALS` :

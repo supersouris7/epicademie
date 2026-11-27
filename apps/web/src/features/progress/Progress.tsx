@@ -15,6 +15,7 @@ import {
   type SubjectId,
 } from '@epicademie/shared';
 import { TrophiesSection } from './Trophies.tsx';
+import { JourneySections } from './Journey.tsx';
 import { useBosses } from '../boss/index.ts';
 import { relicProgressOf, useRelicProgress } from '../../shared/lib/relicProgress.ts';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
@@ -134,6 +135,7 @@ export function Progress({ profile }: { readonly profile: Profile }) {
           </li>
         ))}
       </ul>
+      <JourneySections profile={profile} states={data ?? []} />
       <button
         type="button"
         onClick={() => void navigate('/progres/trophees')}

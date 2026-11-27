@@ -103,6 +103,31 @@ export const LearningReportSchema = z.object({
 });
 export type LearningReport = z.infer<typeof LearningReportSchema>;
 
+// ——— Progrès personnel (« depuis quand », efforts) : l'enfant comparé à lui-même seulement ———
+
+/** Réussite sur quelques premières réponses d'une période ; `day` : dernier jour de la période. */
+const JourneyPointSchema = z.object({ day: z.string(), correct: count, answered: count });
+export type JourneyPoint = z.infer<typeof JourneyPointSchema>;
+
+export const JourneySchema = z.object({
+  /** Jour du calcul (AAAA-MM-JJ). */
+  today: z.string(),
+  /** Notions où la réussite a monté (au plus 5, les plus fortes hausses d'abord) : jamais de recul. */
+  gains: z.array(z.object({ skillId: z.string(), before: JourneyPointSchema, now: JourneyPointSchema })),
+  /** Efforts des 7 derniers jours. */
+  effort: z.object({
+    /** Séries et combats terminés. */
+    series: count,
+    /** Jours d'entraînement. */
+    days: count,
+    /** Notions retravaillées après une réponse pas encore juste. */
+    reworked: z.array(z.string()),
+    /** Reprise cette semaine après une pause d'au moins 7 jours : sa durée, sinon null. */
+    pauseDays: count.nullable(),
+  }),
+});
+export type Journey = z.infer<typeof JourneySchema>;
+
 // ——— Badges (conditions : @epicademie/engine/badges.ts) ———
 
 export const BADGE_CATEGORIES = ['boss', 'parfait', 'perseverance', 'chapitres', 'consolidees', 'coffres'] as const;

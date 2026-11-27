@@ -204,6 +204,13 @@
       "when": 1796100000000,
       "tag": "0028_medaille_diamant",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1796200000000,
+      "tag": "0029_sentiment_de_capacite",
+      "breakpoints": true
     }
   ]
 }

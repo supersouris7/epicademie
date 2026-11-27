@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { RecapScreen } from './GameRecap.tsx';
 import { motion } from 'motion/react';
-import { getChapter, getSkill } from '@epicademie/content';
+import { getChapter, getSkill, pickSens } from '@epicademie/content';
 import { accord, type Gender, type SessionSummary } from '@epicademie/shared';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { Confetti } from '../../shared/ui/Confetti.tsx';
 import { MedalBadge, RewardBadge } from '../../shared/ui/game/RewardBadge.tsx';
-import { medal } from '@epicademie/engine';
+import { epreuveStep, medal } from '@epicademie/engine';
+import { SensNote } from '../../shared/ui/SensNote.tsx';
+import { FeelingQuestion } from './FeelingQuestion.tsx';
 import { QuestyPose } from '../../shared/ui/mascot/QuestyPose.tsx';
 import type { QuestyPoseId } from '../../shared/ui/mascot/poses.ts';
 import type { MoodId } from '../../shared/ui/mascot/moods.ts';
@@ -23,6 +25,7 @@ import type { Missed } from './types.ts';
 export function Results({
   profileId,
   summary,
+  sessionId,
   missed,
   gender,
   chapterId,
@@ -33,6 +36,8 @@ export function Results({
 }: {
   profileId: string;
   summary: SessionSummary;
+  /** Partie terminée (réponse « Je me sens capable ? »). */
+  sessionId: string | null;
   missed: readonly Missed[];
   gender: Gender | null;
   chapterId: string;
@@ -61,6 +66,7 @@ export function Results({
         {failedEpreuve && (
           <EpreuveAdvice weakest={summary.epreuve?.weakestSkillId ?? null} chapterId={chapterId} onGo={onExit} />
         )}
+        {sessionId && <FeelingQuestion sessionId={sessionId} />}
         <GameButton icon="icons-navigation-retry" onClick={onReplay}>
           Rejouer
         </GameButton>
@@ -130,17 +136,23 @@ export function Results({
 
       <section className="flex flex-col gap-3">
         <h2 className="font-display text-2xl tracking-wide">Tes notions</h2>
-        {summary.skills.map((s) => (
-          <div key={s.skillId} className="cartoon bg-surface flex flex-wrap items-center gap-3 p-4">
-            <div className="min-w-0 flex-1">
-              <p className="font-display text-xl tracking-wide">{getSkill(s.skillId)?.title}</p>
-              <p className="text-muted font-bold">
-                {s.correct}/{s.answered} · {medalMessage(s, gender)}
-              </p>
+        {summary.skills.map((s, i) => {
+          const skill = getSkill(s.skillId);
+          // Après une réussite seulement : pourquoi cette notion compte (une phrase, sans clic de plus).
+          const sens = s.correct > 0 ? pickSens(skill, summary.xpGained + i) : undefined;
+          return (
+            <div key={s.skillId} className="cartoon bg-surface flex flex-wrap items-center gap-3 p-4">
+              <div className="min-w-0 flex-1">
+                <p className="font-display text-xl tracking-wide">{skill?.title}</p>
+                <p className="text-muted font-bold">
+                  {s.correct}/{s.answered} · {medalMessage(s, gender)}
+                </p>
+              </div>
+              <MedalBadge medal={medal({ best: s.bestAfter })} size={48} />
+              {sens && <SensNote sens={sens} className="basis-full" />}
             </div>
-            <MedalBadge medal={medal({ best: s.bestAfter })} size={48} />
-          </div>
-        ))}
+          );
+        })}
       </section>
 
       <div className="flex justify-center">
@@ -151,6 +163,13 @@ export function Results({
     </div>
   );
 }
+
+/** Épreuve pas encore réussie : l'étape déjà franchie avant les 80 %. */
+const STEP_TITLES = {
+  depart: 'Premier pas fait !',
+  'mi-chemin': 'Mi-chemin franchi !',
+  proche: 'Grande étape franchie !',
+} as const;
 
 /** Humeur de Questy, pose et message du bilan selon le score (et l'issue d'une épreuve). */
 function tone(
@@ -175,7 +194,7 @@ function tone(
   const message = result?.passed
     ? 'Chapitre validé !'
     : result && !result.passed
-      ? 'Pas encore 80 %, tu y es presque !'
+      ? STEP_TITLES[epreuveStep(summary.regular.correct, summary.regular.answered).step]
       : summary.perfect
         ? `Sans-faute, ${accord(gender, 'champion', 'championne')} !`
         : summary.scoreOn20 >= 14
@@ -190,9 +209,11 @@ function tone(
 function ChestOutcome({ summary, chapterTitle }: { summary: SessionSummary; chapterTitle: string | undefined }) {
   const result = summary.epreuve;
   if (result && !result.passed) {
+    const { missing } = epreuveStep(summary.regular.correct, summary.regular.answered);
+    const left = `${missing} bonne${missing > 1 ? 's' : ''} réponse${missing > 1 ? 's' : ''}`;
     return (
       <p className="cartoon bg-surface-2 p-3 text-center font-bold">
-        Pas encore : avec 80 % de bonnes réponses, le chapitre est validé et son coffre est à toi. Réessaie !
+        {`Pas encore : avec 80 % de bonnes réponses, le chapitre est validé et son coffre est à toi. Encore ${left} et tu y es. Réessaie !`}
       </p>
     );
   }

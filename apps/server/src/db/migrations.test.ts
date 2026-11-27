@@ -181,6 +181,35 @@ describe('migrations', () => {
     }
   });
 
+  it('sentiment de fin de séance : depuis une base en 0028, parties intactes ; bornes et retour arrière', async () => {
+    const dir = migrationsUpTo(29); // jusqu'à 0028
+    try {
+      database = await openDatabase('pglite://memory');
+      await runMigrations(database, dir);
+      const { db } = database;
+      await db.execute(sql`insert into profiles (id, name, avatar, hero) values
+        ('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa', 'Léa', '{"style":"pixelbot","seed":"l"}', 'alex')`);
+      await db.execute(sql`insert into sessions (profile_id, mode, subject, chapter_id)
+        values ('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa', 'entrainement', 'maths', 'm5-calcul')`);
+      await runMigrations(database, MIGRATIONS_DIR);
+      expect((await schemaStatus(database, MIGRATIONS_DIR)).upToDate).toBe(true);
+      expect(await db.select({ feeling: sessions.feeling }).from(sessions)).toEqual([{ feeling: null }]);
+      await db.execute(sql`update sessions set feeling = 3`);
+      await expect(db.execute(sql`update sessions set feeling = 4`)).rejects.toThrow();
+      const file = readFileSync(path.join(MIGRATIONS_DIR, '0029_sentiment_de_capacite.sql'), 'utf8');
+      const rollback = file
+        .split('\n')
+        .filter((l) => l.startsWith('--   '))
+        .map((l) => l.slice(5))
+        .join('\n');
+      for (const statement of rollback.split(';').filter((q) => q.trim())) await db.execute(sql.raw(statement));
+      expect(rows<{ n: number }>(await db.execute(sql`select count(*)::int as n from sessions`))).toEqual([{ n: 1 }]);
+      await expect(db.execute(sql`select feeling from sessions`)).rejects.toThrow();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it('épreuve du chapitre : depuis une base en 0019, parties intactes ; une seule récompense ; retour arrière', async () => {
     const dir = migrationsUpTo(20); // jusqu'à 0019
     try {
