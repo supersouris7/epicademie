@@ -252,6 +252,28 @@ describe('correction des réponses', () => {
     expect(check(q, saisie('amplifier')).correct).toBe(false);
   });
 
+  it('antonyme de « diminuer » : l’indice ne désigne qu’une réponse aux niveaux 3 et 5', () => {
+    const q = trouve('f6-synonymes-antonymes', 3, 'antonyme du verbe « diminuer »');
+    expect(q.prompt).toContain('Il commence par « au » et compte 9 lettres.');
+    const lignes = tirages('f6-synonymes-antonymes', 5).flatMap((x) =>
+      x.figure?.kind === 'document' ? x.figure.lines.filter((l) => /« diminuer ».*Antonyme/.test(l)) : [],
+    );
+    expect(lignes.length).toBeGreaterThan(0);
+    for (const l of lignes) expect(l).toContain('au… (9 lettres)');
+  });
+
+  it('sens figuré N5 : seule la forme écrite dans la phrase est acceptée', () => {
+    for (const q of tirages('f6-sens-propre-figure', 5)) {
+      if (q.answer.kind !== 'cloze' || q.figure?.kind !== 'document') throw new Error('forme inattendue');
+      const lines = q.figure.lines;
+      q.answer.blanks.forEach((b, i) => {
+        if (b.mode !== 'text') throw new Error('forme inattendue');
+        expect(b.accepted).toHaveLength(1);
+        expect(lines[i]).toContain(b.accepted[0]);
+      });
+    }
+  });
+
   it('synonyme de « pénurie » : tous les synonymes cités sont acceptés', () => {
     const q = trouve('f6-synonymes-antonymes', 4, 'synonyme du nom « pénurie »');
     for (const mot of ['manque', 'carence', 'défaut', 'insuffisance', 'rareté'])

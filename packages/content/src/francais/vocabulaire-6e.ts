@@ -288,6 +288,14 @@ const DEF_RELATION: Record<Relation, string> = {
 const DEF_CLASSE = 'Garde la même **classe grammaticale** que le mot de départ.';
 const deLaClasse = (c: Classe) => (c === 'adjectif' || c === 'adverbe' ? `de l’${c}` : `du ${c}`);
 const principale = (c: Cas) => c.reponse.mots[0];
+/** Début du mot attendu, assez long pour écarter les autres réponses citées de même longueur. */
+function debut(c: Cas): string {
+  const mot = principale(c);
+  const rivaux = c.reponse.mots.filter((m) => m !== mot && m.length === mot.length);
+  let n = 1;
+  while (rivaux.some((m) => m.startsWith(mot.slice(0, n)))) n++;
+  return mot.slice(0, n);
+}
 const conclure = (verbe: 'Choisis' | 'Écris', c: Cas) =>
   `${verbe} **${principale(c)}** : c’est un ${c.relation} ${deLaClasse(c.entree.classe)} « ${c.entree.mot} ».`;
 const HORS_SUJET: Record<Classe, readonly string[]> = {
@@ -357,7 +365,7 @@ function piegesRelation(c: Cas): (readonly [string, string])[] {
 
 function ecrireRelation(c: Cas): QuestionDraft {
   return ecrire(c.reponse.mots, piegesRelation(c), {
-    prompt: `Écris un ${c.relation} ${deLaClasse(c.entree.classe)} « ${c.entree.mot} ». ${initiale(principale(c))}`,
+    prompt: `Écris un ${c.relation} ${deLaClasse(c.entree.classe)} « ${c.entree.mot} ». Il commence par « ${debut(c)} » et compte ${principale(c).length} lettres.`,
     hint: 'Essaie ton mot dans une phrase avec la même classe.',
     steps: [DEF_RELATION[c.relation], DEF_CLASSE, conclure('Écris', c)],
   });
@@ -391,15 +399,15 @@ function relationsDraft(rng: Rng, level: Level): QuestionDraft {
         {
           prompt: 'Lis chaque ligne. Écris le synonyme ou l’antonyme demandé, dans la même classe grammaticale.',
           titre: 'Les mots en relation',
-          hint: 'Lis bien : synonyme ou antonyme ? La première lettre t’aide.',
+          hint: 'Lis bien : synonyme ou antonyme ? Le début du mot t’aide.',
           etapes: [
             'Repère la demande : **synonyme** (sens voisin) ou **antonyme** (sens contraire).',
             DEF_CLASSE,
-            'Vérifie la première lettre et le nombre de lettres.',
+            'Vérifie le début du mot et le nombre de lettres.',
           ],
         },
         choisis.map((c) => ({
-          texte: `${remplir(c.entree.phrase, `« ${c.entree.mot} »`)} ${maj(c.relation)} : ${principale(c).charAt(0)}… (${principale(c).length} lettres)`,
+          texte: `${remplir(c.entree.phrase, `« ${c.entree.mot} »`)} ${maj(c.relation)} : ${debut(c)}… (${principale(c).length} lettres)`,
           accepted: c.reponse.mots,
         })),
       );
@@ -484,8 +492,6 @@ function memeMotDeuxPhrases(f: Figure): QuestionDraft {
   };
 }
 
-const ecrituresDe = (f: Figure) => [...new Set([f.forme, f.mot])];
-
 /** « éteint » est écarté : sans le nombre de lettres, « étouffe » compléterait aussi les deux phrases. */
 const FIGURES_SANS_LONGUEUR = FIGURES.filter((f) => f.mot !== 'éteindre');
 
@@ -526,7 +532,7 @@ function figureDraft(rng: Rng, level: Level): QuestionDraft {
             'Garde pour chaque ligne le mot qui fait image.',
           ],
         },
-        pickN(rng, FIGURES, 4).map((f) => ({ texte: enClair(f, f.contexte), accepted: ecrituresDe(f) })),
+        pickN(rng, FIGURES, 4).map((f) => ({ texte: enClair(f, f.contexte), accepted: [f.forme] })),
       );
   }
 }
