@@ -1,4 +1,4 @@
-import { randomBytes, randomUUID } from 'node:crypto';
+import { randomBytes, randomUUID, timingSafeEqual } from 'node:crypto';
 import {
   FALLBACK_GRADE,
   GUEST_AVATARS,
@@ -109,10 +109,19 @@ const snapshot = (room: LiveRoom): Room => ({
   seats: room.seats.map(copy),
 });
 
+/** Comparaison des jetons de place en temps constant. */
+const sameToken = (a: string, b: string) => {
+  const x = Buffer.from(a);
+  const y = Buffer.from(b);
+  return x.length === y.length && timingSafeEqual(x, y);
+};
+
 /** Place déjà tenue par ce visiteur (jeton de l'invité, profil du joueur). */
 const ownSeat = (room: LiveRoom, who: Visitor) =>
   room.seats.find((s) =>
-    'player' in who ? s.profile?.id === who.player.profile.id : who.token !== undefined && s.token === who.token,
+    'player' in who
+      ? s.profile?.id === who.player.profile.id
+      : who.token !== undefined && s.token !== null && sameToken(s.token, who.token),
   );
 
 export function createRooms(deps: RoomsDeps) {
