@@ -36,6 +36,23 @@ Exemples :
   4. irréguliers rares et négation ;
   5. phrase entendue à l'audio, puis la réécrire au passé.
 
+### Qualité d'une question (exigences du client, 27/11/2026)
+
+- **Pertinente** : elle teste la notion visée et rien d'autre ; la lecture, le vocabulaire et les calculs annexes
+  restent plus simples que la notion (un problème de fractions ne doit pas échouer à cause d'un mot inconnu).
+  Contexte tiré de la vie d'un enfant de cet âge, nombres et situations réalistes ; jamais de piège gratuit.
+- **Progressive** : chaque niveau ajoute **une seule** difficulté au précédent (forme, nombres, piège, contexte),
+  sans saut. Cible de réussite d'un enfant qui a fait le niveau précédent : ≈ 90 % au niveau 1, ≈ 75 % au 3,
+  ≈ 55 % au 5. Une fois des données réelles disponibles, une question hors cible (trop facile ou trop difficile
+  pour son niveau) est signalée automatiquement et recalibrée.
+- **Bien construite** : consigne courte qui commence par le verbe d'action (« Choisis », « Écris », « Range ») ;
+  une seule bonne réponse ; distracteurs plausibles, tirés des erreurs typiques (jamais absurdes) ; en saisie,
+  toutes les écritures correctes sont acceptées (majuscules, espaces, unité, écriture équivalente).
+- **Variée** : le générateur produit assez de variantes pour qu'un enfant ne revoie pas la même question
+  dans une séance ; les situations changent, pas seulement les nombres.
+- **Utile en cas d'erreur** : la correction répond à l'erreur faite (piège reconnu → explication ciblée), puis
+  propose une question du même type pour vérifier que c'est compris.
+
 ## 2. Types de questions
 
 | Besoin                              | Type                            | Remarques                                                                                            |
@@ -148,18 +165,19 @@ Un lot = une matière × une classe × un chapitre (4 à 8 notions), sur une bra
 
 ### Grille de relecture (chaque notion)
 
-| #   | Critère                   | Bloquant si…                                                                                                                                                                       |
-| --- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Conformité au programme   | notion hors programme de la classe, ou terminologie différente de celle du programme                                                                                               |
-| 2   | Exactitude                | un fait sans source, une citation qui ne dit pas ce qu'affirme la question, une règle fausse                                                                                       |
-| 3   | Univocité                 | deux réponses défendables, distracteur juste, variante correcte refusée                                                                                                            |
-| 4   | Progressivité             | niveaux 1 → 5 pas de difficulté croissante, niveau 5 sans contexte                                                                                                                 |
-| 5   | Clarté et âge             | énoncé ambigu, trop long pour l'âge, mot difficile non défini                                                                                                                      |
-| 6   | Explications              | étapes qui n'expliquent pas pourquoi, indice qui donne la réponse, piège sans explication, explication qui suppose l'aide d'un adulte (pas par étapes, pas guidée, trop abstraite) |
-| 7   | Erreurs typiques          | moins de deux erreurs typiques prévues                                                                                                                                             |
-| 8   | Neutralité et sensibilité | stéréotype, jugement de valeur, sujet sensible traité sans sobriété (guerres, génocides, religions, corps)                                                                         |
-| 9   | Accessibilité             | information portée par la seule couleur, écoute sans alternative                                                                                                                   |
-| 10  | Données                   | prénom réel d'élève, donnée personnelle, lien externe dans l'énoncé                                                                                                                |
+| #   | Critère                    | Bloquant si…                                                                                                                                                                       |
+| --- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Conformité au programme    | notion hors programme de la classe, ou terminologie différente de celle du programme                                                                                               |
+| 2   | Exactitude                 | un fait sans source, une citation qui ne dit pas ce qu'affirme la question, une règle fausse                                                                                       |
+| 3   | Univocité                  | deux réponses défendables, distracteur juste, variante correcte refusée                                                                                                            |
+| 4   | Progressivité              | niveaux 1 → 5 pas de difficulté croissante, plus d'une difficulté ajoutée d'un niveau au suivant, niveau 5 sans contexte                                                           |
+| 4b  | Pertinence et construction | question qui échoue pour une autre raison que la notion, contexte irréaliste, consigne sans verbe d'action, distracteur absurde, écriture correcte refusée, trop peu de variantes  |
+| 5   | Clarté et âge              | énoncé ambigu, trop long pour l'âge, mot difficile non défini                                                                                                                      |
+| 6   | Explications               | étapes qui n'expliquent pas pourquoi, indice qui donne la réponse, piège sans explication, explication qui suppose l'aide d'un adulte (pas par étapes, pas guidée, trop abstraite) |
+| 7   | Erreurs typiques           | moins de deux erreurs typiques prévues                                                                                                                                             |
+| 8   | Neutralité et sensibilité  | stéréotype, jugement de valeur, sujet sensible traité sans sobriété (guerres, génocides, religions, corps)                                                                         |
+| 9   | Accessibilité              | information portée par la seule couleur, écoute sans alternative                                                                                                                   |
+| 10  | Données                    | prénom réel d'élève, donnée personnelle, lien externe dans l'énoncé                                                                                                                |
 
 Aucun lien vers un site non institutionnel. Pour la littérature : seulement des œuvres du domaine public,
 ou des textes écrits pour l'exercice.
