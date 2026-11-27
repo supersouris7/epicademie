@@ -27,6 +27,9 @@ const tlfiL2 = (id: string, word: string, path: string): Source => ({
   consultedOn: CONSULTED_L2,
 });
 
+/** Articles relevés pour le lot fr-6e-06, valeurs des temps (consultés le 27/11/2026). */
+const academieVt = (id: string, word: string): Source => ({ ...academie(id, word), consultedOn: '2026-11-27' });
+
 /** Sources de français (registre : `sources.ts` à la racine du paquet). */
 export const SOURCES: readonly Source[] = [
   {
@@ -627,4 +630,11 @@ export const SOURCES: readonly Source[] = [
   tlfiL2('tirade', 'tirade', 'tirade'),
   tlfiL2('didascalie', 'didascalie', 'didascalie'),
   tlfiL2('indication', 'indication', 'indication'),
+  // Lot fr-6e-06 : valeurs des temps.
+  academieVt('present', 'présent'),
+  academieVt('passe', 'passé'),
+  academieVt('imparfait', 'imparfait'),
+  academieVt('futur', 'futur'),
+  academieVt('enonciation', 'énonciation'),
+  { ...tlfi('present', 'présent', 'pr%C3%A9sent'), consultedOn: '2026-11-27' },
 ];

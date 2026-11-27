@@ -1246,4 +1246,48 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     definition: 'Un temps qui dit ce qui arriverait, par exemple après « si ».',
     example: 'Si je le pouvais, je viendrais.',
   },
+  // Lot fr-6e-06 : valeurs des temps.
+  {
+    id: 'temps-chronologique',
+    word: 'temps chronologique',
+    forms: ['temps chronologiques'],
+    definition: 'L’époque où se situe un fait : le passé, le présent ou le futur.',
+    example: 'Demain : c’est le futur.',
+  },
+  {
+    id: 'temps-verbal',
+    word: 'temps verbal',
+    forms: ['temps verbaux'],
+    definition: 'Le nom de la forme conjuguée du verbe, comme le présent ou l’imparfait.',
+    example: '« Je chantais » est à l’imparfait.',
+  },
+  {
+    id: 'present-enonciation',
+    word: 'présent d’énonciation',
+    forms: [],
+    definition:
+      'Présent qui montre un fait en train de se passer au moment où l’on parle. L’énonciation, c’est le fait de dire quelque chose.',
+    example: 'Écoute, il pleut !',
+  },
+  {
+    id: 'present-verite-generale',
+    word: 'présent de vérité générale',
+    forms: [],
+    definition: 'Présent qui dit une idée vraie en tout temps, comme dans un proverbe.',
+    example: 'Qui dort dîne.',
+  },
+  {
+    id: 'present-narration',
+    word: 'présent de narration',
+    forms: ['présent historique'],
+    definition: 'Présent employé à la place d’un temps du passé pour rendre un récit plus vivant.',
+    example: 'Il faisait nuit. Soudain, une porte claque !',
+  },
+  {
+    id: 'discours-enonciation',
+    word: 'discours',
+    forms: ['temps du discours'],
+    definition: 'Paroles ou texte liés au moment où quelqu’un parle ou écrit.',
+    example: 'Hier, j’ai vu ton frère.',
+  },
 ];
