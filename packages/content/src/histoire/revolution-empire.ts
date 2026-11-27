@@ -316,7 +316,7 @@ const etapes: NotionGuidee = {
         {
           ...P.declaration,
           q: 'Écris le premier mot du titre de ce texte.',
-          accepted: avec(['la '], 'Déclaration', 'Declaration', 'Déclaration des droits de l’homme et du citoyen'),
+          accepted: avec(['la '], 'Déclaration', 'Declaration'),
           traps: [
             { text: 'Code', why: 'Le Code civil paraît en 1804.' },
             { text: 'Édit', why: 'Un édit est un texte décidé par un roi.' },
@@ -458,7 +458,7 @@ const nation: NotionGuidee = {
     {
       ...P.rupture,
       q: 'Écris le mot qui manque : avant la Révolution, c’est l’… Régime.',
-      accepted: ['Ancien', 'l’Ancien', ...avec(['l’'], 'Ancien Régime', 'Ancien Regime')],
+      accepted: ['Ancien', 'l’Ancien'],
       traps: [
         { text: 'Nouveau', why: 'Le nouveau commence avec la Révolution.' },
         { text: 'Premier', why: 'Ce n’est pas le nom du temps des rois.' },
@@ -663,7 +663,7 @@ const napoleon: NotionGuidee = {
       ],
       gap: ['En 1799, Bonaparte fait un coup d’', '.', ['État', 'Etat']],
       indice: 'C’est une prise du pouvoir hors des règles.',
-      etapes: ['Pense à un pouvoir pris par la force.', 'Cherche l’expression en trois mots.'],
+      etapes: ['Pense à un pouvoir pris par la force.', 'Cherche l’expression qui nomme cette action.'],
     },
     {
       ...P.brumaire,
@@ -893,7 +893,7 @@ const napoleon: NotionGuidee = {
             { text: 'élection', why: 'Une élection suit des règles.' },
           ],
           indice: 'L’expression commence par « coup ».',
-          etapes: ['Relis : force, hors des règles.', 'Écris l’expression en trois mots.'],
+          etapes: ['Relis : force, hors des règles.', 'Écris l’expression en entier.'],
         },
       ],
     },
@@ -929,8 +929,8 @@ const heritages: NotionGuidee = {
       ],
       gap: [
         'Napoléon ',
-        ' certains acquis de la Révolution (verbe au présent).',
-        ['conserve', 'garde', 'maintient', 'préserve', 'preserve', 'respecte', 'sauvegarde', 'reprend'],
+        ' certains acquis de la Révolution (verbe au présent, qui commence par « conse »).',
+        ['conserve'],
       ],
       indice: 'Un acquis est gagné : que devient-il ici ?',
       etapes: ['Pense à l’égalité devant la loi.', 'Remarque qu’elle reste sous Napoléon.'],

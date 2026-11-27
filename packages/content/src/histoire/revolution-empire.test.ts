@@ -55,6 +55,32 @@ describe('histoire cm1 — Révolution et Empire', () => {
     }
   });
 
+  it('saisie : seules les réponses demandées par la consigne sont acceptées', () => {
+    const accepted = (q: string) => ecrites.find(({ l }) => l.q === q)?.l.accepted;
+    expect(accepted('Écris le mot qui manque : avant la Révolution, c’est l’… Régime.')).toEqual([
+      'Ancien',
+      'l’Ancien',
+    ]);
+    expect(accepted('Écris le premier mot du titre de ce texte.')).toEqual([
+      'Déclaration',
+      'Declaration',
+      'la Déclaration',
+      'la Declaration',
+    ]);
+  });
+
+  it('texte à trou sur les acquis : un seul verbe convient, annoncé par ses premières lettres', () => {
+    const fait = NOTIONS.flatMap((n) => n.faits).find(
+      (f) => f.q === 'Que fait Napoléon de certains acquis de la Révolution ?',
+    );
+    expect(fait?.gap[1]).toContain('« conse »');
+    expect(fait?.gap[2]).toEqual(['conserve']);
+  });
+
+  it('n’annonce pas un nombre de mots pour « coup d’État »', () => {
+    expect(JSON.stringify(NOTIONS)).not.toMatch(/expression en (deux|trois) mots/);
+  });
+
   it('la dernière bulle donne la réponse en gras', () => {
     for (const s of SKILLS) {
       for (const level of [1, 2, 3, 4, 5] as const) {
