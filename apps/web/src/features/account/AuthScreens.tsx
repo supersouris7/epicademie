@@ -1,4 +1,4 @@
-import { useId, useState, type ReactNode } from 'react';
+import { Fragment, useId, useState, type ReactNode } from 'react';
 import { Link, Navigate, Outlet, useLocation, useNavigate, useSearchParams } from 'react-router';
 import { PASSWORD_MIN } from '@epicademie/shared';
 import { ApiError } from '../../shared/api/client.ts';
@@ -46,11 +46,12 @@ export function RequireAccount({ children }: { readonly children?: ReactNode }) 
       </div>
     );
   }
+  // Famille changée (autre onglet) : les écrans repartent de zéro, sans rien garder à l'affichage.
   return (
-    <>
+    <Fragment key={data.family.id}>
       {children}
       <Outlet />
-    </>
+    </Fragment>
   );
 }
 

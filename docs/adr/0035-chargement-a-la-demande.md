@@ -22,7 +22,8 @@ contenus pédagogiques. Tout était téléchargé avant le premier écran, y com
 - Les contenus restent un seul morceau, téléchargé au premier écran qui en a besoin. Les rubriques
   de la console qui affichent des titres de notions les chargent à leur ouverture.
 - Morceau introuvable après une mise à jour (`vite:preloadError`) : la page se recharge, au plus une
-  fois par minute.
+  fois par minute. Un préchargement en échec est silencieux (aucun rechargement) : le code est
+  redemandé à la visite.
 
 ## Conséquences
 

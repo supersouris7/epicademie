@@ -1,4 +1,5 @@
 import { createElement, lazy, Suspense, useState, type FunctionComponent } from 'react';
+import { reportChunkFailure } from '../shared/lib/chunkReload.ts';
 import { ScreenSkeleton } from '../shared/ui/Skeleton.tsx';
 
 /** Écran à la demande : `preload` télécharge son code d'avance. */
@@ -12,6 +13,7 @@ export type PreloadableScreen<P extends object> = FunctionComponent<P> & { reado
 export function lazyScreen<P extends object>(load: () => Promise<FunctionComponent<P>>): PreloadableScreen<P> {
   let ready: FunctionComponent<P> | undefined;
   let pending: Promise<{ default: FunctionComponent<P> }> | undefined;
+  let visited = false;
   const fetchScreen = () =>
     (pending ??= load().then(
       (screen) => {
@@ -20,10 +22,15 @@ export function lazyScreen<P extends object>(load: () => Promise<FunctionCompone
       },
       (error: unknown) => {
         pending = undefined; // Échec (réseau) : la prochaine demande réessaie.
+        reportChunkFailure(error, visited);
+        visited = false;
         throw error;
       },
     ));
-  const Lazy = lazy<FunctionComponent<P>>(fetchScreen);
+  const Lazy = lazy<FunctionComponent<P>>(() => {
+    visited = true;
+    return fetchScreen();
+  });
   function LazyScreen(props: P) {
     // Choisi au montage : un code arrivé ensuite ne doit pas remonter l'écran affiché.
     const [screen] = useState(() => ready ?? (Lazy as FunctionComponent<P>));

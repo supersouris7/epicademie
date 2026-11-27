@@ -15,6 +15,8 @@ import { REALTIME_REFUSALS } from '@epicademie/shared';
 type RealtimeSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
 /** Notification en haut de l'écran : message reçu, invitation à l'arène, ou joueur qui arrive. */
+import { useSession } from '../../shared/lib/session.ts';
+
 export type Notice =
   | { readonly id: number; readonly kind: 'chat'; readonly message: ChatMessage }
   | { readonly id: number; readonly kind: 'invite'; readonly invite: ArenaInvite }
@@ -92,7 +94,7 @@ export const useRealtime = create<RealtimeState>((set, get) => ({
     const cur = get();
     if (cur.profileId === profileId && (cur.socket || !profileId)) return;
     cur.socket?.disconnect();
-    set({ socket: null, profileId, online: [], arena: null });
+    set({ socket: null, profileId, online: [], notices: [], arena: null });
     if (!profileId || typeof window === 'undefined') return;
     const socket: RealtimeSocket = io({ auth: { profileId }, transports: ['websocket', 'polling'] });
     // La 1re liste après la connexion ne s'annonce pas ; ensuite, chaque arrivée : « X est connecté ».
@@ -146,3 +148,9 @@ export const useRealtime = create<RealtimeState>((set, get) => ({
     set({ arena: null });
   },
 }));
+
+// Plus de joueur choisi (déconnexion, session finie, autre famille), même hors des pages connectées :
+// la connexion se ferme et ses messages disparaissent.
+useSession.subscribe(({ profileId }) => {
+  if (!profileId) useRealtime.getState().connect(null);
+});

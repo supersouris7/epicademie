@@ -1,5 +1,7 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import { installChunkReload } from '../shared/lib/chunkReload.ts';
+import { ErrorBoundary } from './ErrorBoundary.tsx';
 import { lazyScreen, preloadScreens } from './lazyScreen.tsx';
 
 describe('écran chargé à la demande', () => {
@@ -32,6 +34,39 @@ describe('écran chargé à la demande', () => {
     expect(screen.getByRole('heading', { name: 'Déjà là' })).toBeInTheDocument();
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
     expect(asked).toBe(1);
+  });
+
+  it('préchargement en échec : aucun rechargement ; en échec pendant la visite : la page se recharge', async () => {
+    const reload = vi.fn();
+    const remove = installChunkReload(reload);
+    /** Import en échec tel que Vite le signale : événement, puis rejet avec la même erreur. */
+    const broken = () =>
+      lazyScreen<object>(async () => {
+        await Promise.resolve();
+        const payload = new Error('réseau coupé');
+        window.dispatchEvent(Object.assign(new Event('vite:preloadError'), { payload }));
+        throw payload;
+      });
+    const settle = () => new Promise((resolve) => setTimeout(resolve, 10));
+    await preloadScreens([[broken()]]);
+    await settle();
+    expect(reload).not.toHaveBeenCalled();
+
+    // Visite alors que le téléchargement d'avance est encore en route : l'écran est attendu.
+    const Visited = broken();
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const early = preloadScreens([[Visited]]);
+    render(
+      <ErrorBoundary>
+        <Visited />
+      </ErrorBoundary>,
+    );
+    await early;
+    await settle();
+    expect(reload).toHaveBeenCalledTimes(1);
+    remove();
+    sessionStorage.clear();
+    vi.restoreAllMocks();
   });
 
   it('préchargement en échec : les autres écrans continuent, le code est redemandé', async () => {

@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import {
   api,
   API_PREFIX,
@@ -8,13 +8,36 @@ import {
   type Signup,
   type StudentSignup,
 } from '@epicademie/shared';
-import { request } from '../../shared/api/client.ts';
+import { ApiError, request } from '../../shared/api/client.ts';
+import { useSession } from '../../shared/lib/session.ts';
+import { announceSession, dropFamilyData, followSession, meKey } from './sessionCache.ts';
+
+/**
+ * Demande la session au serveur et met le cache en accord : famille changée ailleurs, verrou parent
+ * expiré, ou session finie (401), qui retire les données de la famille et le profil choisi.
+ */
+async function fetchMe(qc: QueryClient): Promise<Me> {
+  try {
+    const me = await request(api.me);
+    const previous = qc.getQueryData<Me>(meKey);
+    if (previous && previous.family.id !== me.family.id) useSession.setState({ profileId: null });
+    followSession(qc, previous, me);
+    return me;
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 401) {
+      dropFamilyData(qc);
+      if (qc.getQueryData(meKey)) {
+        useSession.getState().selectProfile(null);
+        announceSession('');
+      }
+    }
+    throw err;
+  }
+}
 
 /** Session de l'appareil : compte connecté (401 si aucun, jamais retenté). */
-export const meKey = ['me'] as const;
-
 export const useMe = () =>
-  useQuery({ queryKey: meKey, queryFn: () => request(api.me), retry: false, staleTime: 60_000 });
+  useQuery({ queryKey: meKey, queryFn: ({ client }) => fetchMe(client), retry: false, staleTime: 60_000 });
 
 export const signup = (input: Signup) => request(api.signup, { body: input });
 export const verifyEmail = (token: string, password: string) => request(api.verifyEmail, { body: { token, password } });
@@ -42,19 +65,21 @@ export const resetPassword = (token: string, password: string) =>
   request(api.resetPassword, { body: { token, password } });
 
 /**
- * Met à jour la session en cache après connexion, inscription ou déverrouillage parent. Le cache
- * dure tant que la page est ouverte : une autre famille (ou aucune) repart sans rien de la précédente.
+ * Met à jour la session en cache après connexion, inscription, (dé)verrouillage parent ou
+ * déconnexion. Le cache dure tant que la page est ouverte : une autre famille (ou aucune) repart sans
+ * rien de la précédente.
  */
 export function useSetMe() {
   const qc = useQueryClient();
   return (me: Me | null) => {
     if (!me) {
       qc.removeQueries();
+      announceSession('');
       return;
     }
-    if (qc.getQueryData<Me>(meKey)?.family.id !== me.family.id) {
-      qc.removeQueries({ predicate: ({ queryKey: [name] }) => name !== meKey[0] && name !== 'auth-options' });
-    }
+    const previous = qc.getQueryData<Me>(meKey);
+    if (previous && previous.family.id !== me.family.id) useSession.getState().selectProfile(null);
+    followSession(qc, previous, me);
     qc.setQueryData(meKey, me);
   };
 }

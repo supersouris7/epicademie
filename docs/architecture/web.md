@@ -33,11 +33,15 @@ contrôlées par `e2e/chargement.spec.ts`.
 
 - **Code** : une fois la session vérifiée, `app/Warmup.tsx` télécharge en arrière-plan le code des écrans
   de `PRELOAD` (voisins de l'accueil d'abord). Un écran préchargé s'affiche sans attente.
-- **Données** : le cache React Query est gardé tant que la page est ouverte (`gcTime` infini, vidé à la
-  déconnexion et au changement de famille). Une donnée connue s'affiche tout de suite et se rafraîchit en arrière-plan. Fraîcheur :
-  30 s par défaut, `LONG_FRESH_MS` pour les profils et les notions en maintenance — toute action qui
-  les change doit invalider la clé. Les menus du joueur sont demandés d'avance (`Warmup`), et au
-  survol ou à l'appui (`shared/lib/intent.ts`).
+- **Données** : le cache React Query est gardé tant que la page est ouverte (`gcTime` infini). Une donnée
+  connue s'affiche tout de suite et se rafraîchit en arrière-plan. Fraîcheur : 30 s par défaut,
+  `LONG_FRESH_MS` pour les profils et les notions en maintenance — toute action qui les change doit
+  invalider la clé. Les menus du joueur sont demandés d'avance (`Warmup`), et au survol ou à l'appui
+  (`shared/lib/intent.ts`).
+- **Purge** (`features/account/sessionCache.ts`) : déconnexion, réponse 401 et changement de famille
+  retirent les données et le profil choisi ; les autres onglets sont avertis par un événement
+  `storage`. Les données du parent (`meta.parentOnly`) partent au verrouillage ; l'abonnement et les
+  amis de la famille ne restent qu'une minute après leur dernier affichage (`PARENT_GC_MS`).
 - **Attente** : jamais de message « Chargement » ; `shared/ui/Skeleton.tsx` pour une donnée jamais reçue.
 - **Mesure** : `e2e/fluidite.spec.ts` (tablette, 50 ms de latence, moins de 300 ms par parcours).
 

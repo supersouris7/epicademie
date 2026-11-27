@@ -4,7 +4,8 @@ import type { ReactNode } from 'react';
 import { describe, expect, it } from 'vitest';
 import type { Me } from '@epicademie/shared';
 import { createQueryClient } from '../../shared/api/queryClient.ts';
-import { meKey, useSetMe } from './api.ts';
+import { useSetMe } from './api.ts';
+import { meKey } from './sessionCache.ts';
 
 const me = (family: string): Me => ({
   account: { id: family, email: null, role: 'parent' },

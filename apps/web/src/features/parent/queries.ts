@@ -8,12 +8,14 @@ export const learningQuery = (profileId: string) =>
   queryOptions({
     queryKey: ['learning', profileId] as const,
     queryFn: () => request(api.learningReport, { params: { id: profileId } }),
+    meta: { parentOnly: true },
   });
 
 export const evaluationSummaryQuery = (profileId: string) =>
   queryOptions({
     queryKey: ['evaluation-summary', profileId] as const,
     queryFn: () => request(api.evaluationSummary, { params: { id: profileId } }),
+    meta: { parentOnly: true },
   });
 
 /** Demande d'avance les progrès des enfants (Espace parent déjà ouvert). */

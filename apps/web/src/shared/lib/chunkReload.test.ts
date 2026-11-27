@@ -1,7 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { installChunkReload } from './chunkReload.ts';
+import { installChunkReload, reportChunkFailure } from './chunkReload.ts';
 
-const fail = () => window.dispatchEvent(new Event('vite:preloadError'));
+/** Comme Vite : l'événement porte l'erreur ; le rechargement est décidé juste après. */
+const fail = (payload = new Error('morceau introuvable')) => {
+  window.dispatchEvent(Object.assign(new Event('vite:preloadError'), { payload }));
+  vi.advanceTimersByTime(0);
+};
 
 describe('écran introuvable après une mise à jour', () => {
   afterEach(() => {
@@ -22,7 +26,24 @@ describe('écran introuvable après une mise à jour', () => {
     remove();
   });
 
+  it('téléchargement d’avance en échec : pas de rechargement ; attendu par un écran : oui', () => {
+    vi.useFakeTimers({ now: 1_000_000 });
+    const reload = vi.fn();
+    const remove = installChunkReload(reload);
+    const early = new Error('en arrière-plan');
+    window.dispatchEvent(Object.assign(new Event('vite:preloadError'), { payload: early }));
+    reportChunkFailure(early, false);
+    vi.advanceTimersByTime(0);
+    expect(reload).not.toHaveBeenCalled();
+    // La même erreur rendue à un écran affiché (module partagé) : on recharge.
+    reportChunkFailure(early, true);
+    fail(early);
+    expect(reload).toHaveBeenCalledTimes(1);
+    remove();
+  });
+
   it('hors ligne : pas de rechargement', () => {
+    vi.useFakeTimers();
     vi.spyOn(navigator, 'onLine', 'get').mockReturnValueOnce(false);
     const reload = vi.fn();
     const remove = installChunkReload(reload);

@@ -18,6 +18,7 @@ import {
   StudentRecoverScreen,
   StudentSignupScreen,
   WelcomeScreen,
+  useSessionSync,
 } from '../features/account/index.ts';
 import { useProfile } from '../features/profiles/index.ts';
 import { Notifications, RealtimeLink } from '../features/realtime/index.ts';
@@ -132,6 +133,7 @@ function LegacyAbonnement() {
 
 export function GameApp() {
   const profileId = useSession((s) => s.profileId);
+  useSessionSync();
   return (
     <TermContext.Provider value={Term}>
       <ParentGateProvider>
