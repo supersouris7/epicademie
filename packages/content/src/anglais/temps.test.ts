@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { generate } from '../catalog.ts';
 import { check } from '../check.ts';
+import { analyzeSkill } from '../lisibilite.ts';
+import { sensIssues } from '../sens.ts';
 import { getSource, isAllowedUrl } from '../sources.ts';
 import { skillLevels } from '../types.ts';
 import { ENGLISH_TIME_CHAPTER } from './temps.ts';
@@ -20,8 +22,90 @@ describe('anglais cm1 : le temps qui passe', () => {
     ]);
     for (const s of skills) {
       expect(skillLevels(s)).toBe(5);
-      expect(s.lesson.sources).toContain('cycle3-2020');
+      expect(s.lesson.sources).toContain('lve-cm-2026');
+      expect(s.version, s.id).toBe(2);
+      expect(s.sens?.length, s.id).toBeGreaterThan(0);
+      expect(sensIssues(s), s.id).toEqual([]);
     }
+  });
+
+  it('le détecteur d’explications ne signale plus rien', () => {
+    for (const s of skills) {
+      const { counts, words } = analyzeSkill(s, ENGLISH_TIME_CHAPTER);
+      expect({ id: s.id, counts, words }).toEqual({ id: s.id, counts: {}, words: [] });
+    }
+  });
+
+  it('chaque question : 3 ou 4 bulles, la dernière donne la réponse en gras', () => {
+    for (const s of skills)
+      for (const level of [1, 2, 3, 4, 5] as const)
+        for (let seed = 1; seed <= 40; seed++) {
+          const q = generate(s.id, level, seed);
+          const last = q.steps.at(-1) ?? '';
+          const bold = [...last.matchAll(/\*\*(.+?)\*\*/g)].map((m) => m[1] ?? '');
+          expect(bold.length, `${s.id} ${level} ${last}`).toBeGreaterThan(0);
+          if (q.answer.kind === 'text')
+            expect(check(q, { kind: 'text', text: bold[0] ?? '' }).correct, last).toBe(true);
+          if (q.answer.kind === 'choice') expect(bold[0]).toBe(q.answer.options[q.answer.correct]);
+        }
+  });
+
+  it('niveaux 2 et 3 : aucune couleur qui s’écrit pareil dans les deux langues', () => {
+    for (const level of [2, 3] as const)
+      for (let seed = 1; seed <= 200; seed++)
+        expect(JSON.stringify(generate('acm1-couleurs', level, seed).answer)).not.toContain('orange');
+  });
+
+  it('couleurs, niveau 5 : le nombre attendu est celui des lignes avec le bon objet et la bonne couleur', () => {
+    const numbers = ['zero', 'one', 'two', 'three', 'four'];
+    for (let seed = 1; seed <= 100; seed++) {
+      const q = generate('acm1-couleurs', 5, seed);
+      if (q.figure?.kind !== 'document' || q.answer.kind !== 'text') throw new Error('document attendu');
+      const [num, colour, many] = (q.answer.accepted[0] ?? '').split(' ');
+      const found = q.figure.lines.filter((l) => l.endsWith(`My ${(many ?? '').slice(0, -1)} is ${colour}.`));
+      expect(num, q.prompt).toBe(numbers[found.length]);
+    }
+  });
+
+  it('date : ordinaux en lettres acceptés, calcul du niveau 5 vérifié', () => {
+    const words: Readonly<Record<string, string>> = { 14: 'fourteenth', 28: 'twenty-eighth', 31: 'thirty-first' };
+    const seen = new Set<string>();
+    for (let seed = 1; seed <= 300; seed++) {
+      const q = generate('acm1-date', 3, seed);
+      if (q.answer.kind !== 'text') continue;
+      const [day = '', month = ''] = (q.answer.accepted[0] ?? '').split(' ');
+      const word = words[day];
+      if (!word) continue;
+      seen.add(day);
+      expect(right('acm1-date', 3, seed, `the ${word} of ${month}`)).toBe(true);
+    }
+    expect(seen.size).toBe(3);
+    for (let seed = 1; seed <= 100; seed++) {
+      const q = generate('acm1-date', 5, seed);
+      if (q.figure?.kind !== 'document' || q.answer.kind !== 'text') throw new Error('document attendu');
+      const [first = '', second = ''] = q.figure.lines;
+      const [, start, month] = /Monday (\d+) (\w+)/.exec(first) ?? [];
+      const gap = DAYS.findIndex((d) => second.startsWith(`${d.en}:`));
+      expect(gap).toBeGreaterThan(0);
+      expect(q.answer.accepted[0]).toBe(`${Number(start) + gap} ${month ?? ''}`);
+    }
+  });
+
+  it('météo : « warm », « It’s a sunny day » acceptés', () => {
+    const tried = new Set<string>();
+    for (let seed = 1; seed <= 200; seed++) {
+      const q = generate('acm1-meteo', 4, seed);
+      if (q.answer.kind !== 'text') continue;
+      for (const [word, text] of [
+        ['hot', 'It is warm.'],
+        ['sunny', "It's a sunny day"],
+      ] as const)
+        if (q.answer.accepted.includes(`It’s ${word}`)) {
+          tried.add(word);
+          expect(right('acm1-meteo', 4, seed, text), text).toBe(true);
+        }
+    }
+    expect(tried.size).toBe(2);
   });
 
   it('chaque fait cite une source du registre (domaine autorisé) et une citation non vide', () => {
@@ -87,7 +171,9 @@ describe('anglais cm1 : le temps qui passe', () => {
       const d = generate('acm1-date', 5, seed);
       if (d.answer.kind !== 'text') continue;
       const [day, month] = (d.answer.accepted[0] ?? '').split(' ');
-      const weekday = /« ([A-Z][a-z]+day) »/.exec(d.prompt)?.[1] ?? '';
+      const lines = d.figure?.kind === 'document' ? d.figure.lines : [];
+      const weekday = /^([A-Z][a-z]+day):/.exec(lines[1] ?? '')?.[1] ?? '';
+      expect(weekday).not.toBe('');
       for (const t of [`on ${day} ${month}`, `${weekday} ${day} ${month}`, `${month} the ${day}th`])
         if (!t.endsWith('th') || /^([4-9]|1\d|20)$/.test(day ?? ''))
           expect(right('acm1-date', 5, seed, t), t).toBe(true);
