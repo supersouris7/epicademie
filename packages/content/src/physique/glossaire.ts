@@ -60,14 +60,14 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'ebullition',
     'ébullition',
     ['ébullition'],
-    'Vaporisation rapide : le liquide bout et des bulles se forment.',
+    'Vaporisation avec des bulles de vapeur : elles se forment dans le liquide et crèvent à la surface.',
     'L’eau de la casserole bout : c’est l’ébullition.',
   ),
   terme(
     'evaporation',
     'évaporation',
     ['évaporation'],
-    'Vaporisation lente, à la surface d’un liquide.',
+    'Passage progressif d’un liquide à l’état gazeux, à partir de sa surface.',
     'Une flaque disparaît peu à peu au soleil : c’est l’évaporation.',
   ),
   terme(
