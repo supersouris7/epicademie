@@ -10,7 +10,6 @@ import {
   EXCLAMATIVES,
   FAITS,
   IMPERATIVES,
-  IMPERATIVES_NEGATIVES,
   INFORMATIONS,
   INTERROGATIVES,
   NEGATIONS,
@@ -83,9 +82,7 @@ describe('francais cm1 — types et formes de phrases', () => {
     const count = (q: Question, bank: readonly string[]) =>
       lines(q).filter((l) => bank.includes(l.replace(/ ?[.?!]$/, ''))).length;
     each('fcm1-types-phrases', 5, (q) => {
-      const answers = [DECLARATIVES, INTERROGATIVES, [...IMPERATIVES, ...IMPERATIVES_NEGATIVES]].map((bank) =>
-        String(count(q, bank)),
-      );
+      const answers = [DECLARATIVES, INTERROGATIVES, IMPERATIVES].map((bank) => String(count(q, bank)));
       expect(answers.reduce((sum, n) => sum + Number(n), 0)).toBe(lines(q).length);
       expect(check(q, { kind: 'cloze', answers }).correct).toBe(true);
     });

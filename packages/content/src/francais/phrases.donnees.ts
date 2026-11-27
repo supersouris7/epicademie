@@ -104,13 +104,6 @@ export const EXCLAMATIVES: readonly string[] = [
   'Quelle chance tu as',
 ];
 
-/** Ordres à la forme négative (niveau 5 des types de phrases). */
-export const IMPERATIVES_NEGATIVES: readonly string[] = [
-  'Ne cours pas dans le couloir',
-  'N’oublie pas ton cartable',
-  'Ne touche pas à ce bouton',
-];
-
 /** Informations neutres : aucune ne porte d’émotion, le point est le seul signe attendu. */
 export const INFORMATIONS: readonly string[] = [
   'La piscine ouvre à neuf heures',

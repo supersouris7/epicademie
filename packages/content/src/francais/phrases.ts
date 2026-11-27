@@ -10,7 +10,6 @@ import {
   FAUSSES_AMIES_QUESTIONS,
   FAUSSES_AMIES_RAISONS,
   IMPERATIVES,
-  IMPERATIVES_NEGATIVES,
   INFORMATIONS,
   INTERROGATIVES,
   NEGATIONS,
@@ -203,7 +202,7 @@ function typesDraft(rng: Rng, level: Level): QuestionDraft {
       const q = rng.int(1, 2);
       const d = 5 - k - q;
       const lines = rng.shuffle([
-        ...pickN(rng, [...IMPERATIVES, ...IMPERATIVES_NEGATIVES], k).map((x) => withSign(x, 'imperative')),
+        ...pickN(rng, IMPERATIVES, k).map((x) => withSign(x, 'imperative')),
         ...pickN(rng, INTERROGATIVES, q).map((x) => withSign(x, 'interrogative')),
         ...pickN(rng, DECLARATIVES, d).map((x) => withSign(x, 'declarative')),
       ]);
