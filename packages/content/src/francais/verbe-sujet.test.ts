@@ -193,16 +193,24 @@ describe('repasse du chapitre', () => {
       each('fcm1-types-sujets', level, (q) => expect(q.prompt).not.toMatch(/pronom|groupe nominal|plusieurs noms/i));
   });
 
-  it('types de sujets, niveau 4 : l’explication d’un piège ne se contredit pas', () => {
-    let pieges = 0;
-    each('fcm1-types-sujets', 4, (q) => {
-      const s = SUJETS_PIEGES.find((x) => q.prompt.toLowerCase().includes(`${x.s} ${x.reste}`.toLowerCase()));
-      if (!s) return;
-      pieges++;
-      const why = q.traps.find((t) => 'text' in t && t.text === 'plusieurs noms')?.why;
-      expect(why).toBe(`Le sujet « ${s.s} » n’est pas formé de plusieurs noms. ${s.piege ?? ''}`);
-    });
-    expect(pieges).toBeGreaterThan(0);
+  it('types de sujets, niveau 4 : seule nouveauté, un groupe qui dit quand devant un sujet du niveau 3', () => {
+    const phrase = (x: (typeof SUJETS)[number]) => `${x.s} ${x.reste}`.toLowerCase();
+    const contient = (q: Question, x: (typeof SUJETS)[number]) => q.prompt.toLowerCase().includes(phrase(x));
+    for (const level of [3, 4] as const)
+      each('fcm1-types-sujets', level, (q) => {
+        expect(
+          SUJETS.some((x) => contient(q, x)),
+          q.prompt,
+        ).toBe(true);
+        expect(
+          SUJETS_PIEGES.some((x) => contient(q, x)),
+          q.prompt,
+        ).toBe(false);
+        expect(
+          AVANT_SUJET.some((a) => q.prompt.includes(`« ${a} `)),
+          q.prompt,
+        ).toBe(level === 4);
+      });
   });
 
   it('« Qui est-ce qui » est suivi d’un verbe au singulier bien écrit', () => {
