@@ -32,7 +32,9 @@ export const PREUVES = {
   reliques: preuve('bnf-reliques-louis-ix')(
     'Le roi fit acheter vers 1239 à Byzance la couronne d’épines et une partie de la vraie croix et de la sainte lance, reliques pour lesquelles il fit bâtir la Sainte-Chapelle.',
   ),
-  tunis: preuve('bnf-mort-louis-ix')('Louis IX décède quelques heures avant leur arrivée, le 25 août 1270.'),
+  tunis: preuve('bnf-mort-louis-ix')(
+    'La huitième croisade part de Paris le 15 mars 1270, et arrive le 7 juillet dans les ruines de Carthage, en face de Tunis. Affaiblie par la chaleur et la maladie, l’armée de Louis IX est incapable de se battre et doit attendre des renforts. Louis IX décède quelques heures avant leur arrivée, le 25 août 1270.',
+  ),
 
   // François Ier
   protecteur: programme('François Ier, un protecteur des Arts et des Lettres à la Renaissance'),
@@ -40,15 +42,12 @@ export const PREUVES = {
   diffusion: francois(
     'C’est sous François Ier que la Renaissance et l’humanisme, nés en Italie, se diffusent en France.',
   ),
-  artistes: francois('Le roi soutient de nombreux artistes'),
+  activite: francois('Une activité artistique et intellectuelle soutenue par le souverain'),
   vinci: francois(
     'l’artiste vécut ses dernières années à Amboise, tout près des châteaux que François Ier possédait à Blois et à Chambord, et le roi lui acheta le célèbre portrait de la Joconde.',
   ),
   invitation: francois(
     'S’il ne put parvenir à persuader Michel-Ange de venir en France, il lui acheta une statue d’Hercule. Il eut plus de succès avec Léonard de Vinci et Benvenuto Cellini',
-  ),
-  humanisme: francois(
-    'mouvement intellectuel d’érudition et de curiosité passionnée pour l’Antiquité classique – grecque et romaine –, il se manifeste par la recherche et l’établissement des textes anciens',
   ),
   college: francois('Il crée surtout, en 1530, le Collège de France'),
   chercheurs: francois(
@@ -68,7 +67,7 @@ export const PREUVES = {
   limites: nantes(
     'leur liberté de conscience est reconnue. Mais leur liberté de culte est restreinte et les lieux de cultes limités.',
   ),
-  refuge: nantes('« places de sûreté » (villes fortifiées où ils peuvent trouver refuge)'),
+  refuge: nantes('Il leur accorde aussi des « places de sûreté » (villes fortifiées où ils peuvent trouver refuge)'),
   assassinat: henri(
     'Son image devient alors celle du « bon roi », soucieux du bien-être de ses sujets. Avec son ministre Sully, il assainit les finances du royaume. Il est assassiné en 1610 par Ravaillac.',
   ),
@@ -90,9 +89,8 @@ export const PREUVES = {
     'pour Louis XIV, la fête de cour est un acte à la fois esthétique et politique, un instrument au service du pouvoir qui lui permet d’exercer un contrôle sur les courtisans',
   ),
   premiereFete: fetes(
-    'Les Plaisirs de l’Île enchantée constituent la première des grandes fêtes versaillaises du règne de Louis XIV.',
+    'Donnés du 7 au 13 mai 1664 en l’honneur d’Anne d’Autriche et de la reine Marie-Thérèse, Les Plaisirs de l’Île enchantée constituent la première des grandes fêtes versaillaises du règne de Louis XIV.',
   ),
-  fete1664: fetes('Du 7 au 13 mai 1664, Les Plaisirs de l’île enchantée'),
   colonial: programme(
     'une présentation de la formation du premier empire colonial français, porté par le pouvoir royal, et dont le peuplement repose notamment sur le déplacement d’Africains réduits en esclavage',
   ),

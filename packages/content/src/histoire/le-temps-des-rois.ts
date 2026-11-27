@@ -49,7 +49,7 @@ const RENAISSANCE = avec(['la '], 'Renaissance');
 const VINCI = ['Léonard de Vinci', 'Leonard de Vinci', 'Léonard', 'Leonard', 'de Vinci', 'Vinci'];
 const JOCONDE = avec(['la '], 'Joconde');
 const EDIT = avec(['l’', 'un '], 'édit de Nantes', 'edit de Nantes');
-const VERSAILLES = ['Versailles', 'château de Versailles', 'le château de Versailles', 'chateau de Versailles'];
+const VERSAILLES = ['Versailles', ...avec(['le '], 'château de Versailles', 'chateau de Versailles')];
 
 // ——— Notion 1 : Louis IX ———
 
@@ -135,12 +135,9 @@ const louisIx: NotionGuidee = {
           why: 'Louis IX gouverne le royaume : il veut le faire avec justice.',
         },
       ],
-      gap: ['Louis IX veut être un roi ', ' et miséricordieux (mot en j).', ['juste']],
+      gap: ['Louis IX veut être un roi ', ' et plein de pitié (mot en j).', ['juste']],
       indice: 'Pense à ce qu’on attend d’un bon juge.',
-      etapes: [
-        'Imagine un roi qui aide les pauvres.',
-        'Retiens : « miséricordieux » veut dire qui a pitié des autres.',
-      ],
+      etapes: ['Imagine un roi qui aide les pauvres.', 'Cherche la qualité d’un bon juge.'],
     },
     {
       ...P.tunis,
@@ -230,12 +227,12 @@ const louisIx: NotionGuidee = {
     {
       ...P.couronne,
       q: 'Écris le nom de la mère qui aide le jeune Louis IX.',
-      accepted: ['Blanche de Castille', 'Blanche', 'la reine Blanche de Castille'],
+      accepted: ['Blanche de Castille', 'Blanche', 'la reine Blanche de Castille', 'la reine Blanche'],
       traps: [
         { text: 'Anne d’Autriche', why: 'Anne d’Autriche est la mère de Louis XIV.' },
         { text: 'Sully', why: 'Sully est le ministre d’Henri IV, bien plus tard.' },
       ],
-      indice: 'Elle assure la régence à la place de son fils.',
+      indice: 'Elle gouverne pour son fils encore enfant.',
       etapes: ['Pense à la femme qui gouverne avec le jeune roi.', 'Écris son prénom, puis le nom de son pays.'],
     },
     {
@@ -279,12 +276,12 @@ const louisIx: NotionGuidee = {
             { text: 'François Ier', why: 'François Ier règne à partir de 1515.' },
           ],
           indice: 'Cherche le roi du XIIIe siècle.',
-          etapes: ['Relis la ligne 1 : repère l’année.', 'Relis la ligne 3 : pense au « roi chrétien ».'],
+          etapes: ['Relis la ligne 1 : repère l’année.', 'Relis la ligne 3 : quel roi a voulu des reliques ?'],
         },
         {
           ...P.couronne,
           q: 'Écris le nom de la mère dont parle la ligne 2.',
-          accepted: ['Blanche de Castille', 'Blanche'],
+          accepted: ['Blanche de Castille', 'Blanche', 'la reine Blanche de Castille', 'la reine Blanche'],
           traps: [
             { text: 'Anne d’Autriche', why: 'C’est la mère de Louis XIV.' },
             { text: 'Anne de Bretagne', why: 'Anne de Bretagne n’est pas la mère de ce roi.' },
@@ -298,7 +295,7 @@ const louisIx: NotionGuidee = {
       title: 'Un départ lointain',
       lines: [
         'En 1270, le roi chrétien part loin avec son armée.',
-        'Comme d’autres expéditions, la sienne est liée à la religion.',
+        'Ce voyage armé est lié à la religion.',
         'Il meurt près de Tunis.',
       ],
       qs: [
@@ -379,7 +376,7 @@ const francoisIer: NotionGuidee = {
   ],
   sens: {
     type: 'histoire',
-    text: 'En 1530, François Ier crée le Collège de France, où des savants cherchent librement.',
+    text: 'En 1530, François Ier crée le Collège de France, où des savants font librement des recherches.',
     source: P.chercheurs.source,
     citation: P.chercheurs.quote,
   },
@@ -398,9 +395,9 @@ const francoisIer: NotionGuidee = {
       etapes: ['Pense à des idées anciennes qui reviennent.', 'Cherche le nom qui parle d’une nouvelle naissance.'],
     },
     {
-      ...P.artistes,
+      ...P.activite,
       q: 'Que veut dire « protéger les arts et les lettres » pour ce roi ?',
-      a: 'soutenir des artistes et des écrivains',
+      a: 'aider des artistes et des savants',
       wrong: [
         { label: 'interdire d’écrire des livres', why: 'Protéger veut dire aider, pas interdire.' },
         { label: 'envoyer les peintres à la guerre', why: 'Le roi aide les peintres à créer, pas à combattre.' },
@@ -408,7 +405,7 @@ const francoisIer: NotionGuidee = {
       ],
       gap: ['François Ier est un protecteur des Arts et des ', '.', ['Lettres']],
       indice: 'Un protecteur aide les gens.',
-      etapes: ['Pense au mot « protéger » : aider et défendre.', 'Cherche qui crée des tableaux et des livres.'],
+      etapes: ['Pense au mot « protéger » : aider et défendre.', 'Cherche qui crée des tableaux et qui étudie.'],
     },
     {
       ...P.invitation,
@@ -526,7 +523,7 @@ const francoisIer: NotionGuidee = {
     },
     {
       ...P.college,
-      q: 'Écris le nom du roi qui crée le Collège de France.',
+      q: 'Écris le nom et le numéro du roi qui crée le Collège de France.',
       accepted: FRANCOIS,
       traps: [
         { text: 'Louis XIV', why: 'Louis XIV règne au XVIIe siècle.' },
@@ -580,7 +577,7 @@ const francoisIer: NotionGuidee = {
         },
         {
           ...P.vinci,
-          q: 'Écris le nom du roi qui achète ce portrait.',
+          q: 'Écris le nom et le numéro du roi qui achète ce portrait.',
           accepted: FRANCOIS,
           traps: [
             { text: 'Louis XIV', why: 'Louis XIV naît bien après la mort de cet artiste.' },
@@ -620,7 +617,14 @@ const francoisIer: NotionGuidee = {
         {
           ...P.college,
           q: 'Écris le nom du lieu créé en 1530.',
-          accepted: ['Collège de France', 'College de France', 'le Collège de France', 'le College de France'],
+          accepted: [
+            'Collège de France',
+            'College de France',
+            'le Collège de France',
+            'le College de France',
+            'Collège royal',
+            'le Collège royal',
+          ],
           traps: [
             { text: 'Sorbonne', why: 'La Sorbonne existe déjà : le roi crée un autre lieu.' },
             { text: 'Versailles', why: 'Versailles est un château.' },
@@ -630,7 +634,7 @@ const francoisIer: NotionGuidee = {
         },
         {
           ...P.college,
-          q: 'Écris le nom du roi qui prend ces deux décisions.',
+          q: 'Écris le nom et le numéro du roi qui prend ces deux décisions.',
           accepted: FRANCOIS,
           traps: [
             { text: 'Henri IV', why: 'Henri IV signe l’édit de Nantes en 1598.' },
@@ -664,8 +668,8 @@ const francoisIer: NotionGuidee = {
           ],
         },
         {
-          ...P.humanisme,
-          q: 'Écris le nom du roi dont parle ce texte.',
+          ...P.diffusion,
+          q: 'Écris le nom et le numéro du roi dont parle ce texte.',
           accepted: FRANCOIS,
           traps: [
             { text: 'Louis XIV', why: 'Louis XIV règne au XVIIe siècle.' },
@@ -740,12 +744,12 @@ const henriIv: NotionGuidee = {
       q: 'À quels croyants l’édit de Nantes donne-t-il des droits ?',
       a: 'aux protestants',
       wrong: [
-        { label: 'aux croyants de la Rome antique', why: 'Ces croyants vivent bien avant le temps des rois.' },
+        { label: 'seulement aux moines', why: 'Les moines sont catholiques : l’édit vise d’autres chrétiens.' },
         {
           label: 'seulement aux catholiques',
           why: 'Les catholiques ont déjà la religion du roi : l’édit vise d’autres.',
         },
-        { label: 'aux druides gaulois', why: 'Les druides vivent bien avant le temps des rois.' },
+        { label: 'aux musulmans', why: 'L’édit parle des protestants, qui sont des chrétiens.' },
       ],
       gap: ['L’édit donne des droits aux ', ' (des chrétiens, mot en p).', ['protestants']],
       indice: 'Ce sont des chrétiens, mais pas des catholiques.',
@@ -754,13 +758,13 @@ const henriIv: NotionGuidee = {
     {
       ...P.limites,
       q: 'Avec l’édit de Nantes, les protestants prient-ils où ils veulent ?',
-      a: 'non, leurs lieux de culte sont limités',
+      a: 'non, leurs lieux de prière sont limités',
       wrong: [
         { label: 'oui, partout et sans aucune limite', why: 'L’édit donne des droits, mais avec des limites.' },
         { label: 'non, leur religion est interdite', why: 'L’interdiction arrive en 1685, quand l’édit est annulé.' },
         { label: 'oui, car tout le monde devient protestant', why: 'Les catholiques restent catholiques.' },
       ],
-      gap: ['Les lieux de culte des protestants sont ', ' (mot en l).', ['limités', 'limites']],
+      gap: ['Les lieux de prière des protestants sont ', ' (mot en l).', ['limités', 'limites']],
       indice: 'L’édit donne des droits, mais pas tous.',
       etapes: [
         'Pense : leur liberté de croire est reconnue.',
@@ -895,7 +899,7 @@ const henriIv: NotionGuidee = {
         },
         {
           ...P.signature,
-          q: 'Écris le nom du roi qui le signe.',
+          q: 'Écris le nom et le numéro du roi qui le signe.',
           accepted: HENRI,
           traps: [
             { text: 'Louis XIV', why: 'Louis XIV n’est pas encore né en 1598.' },
@@ -909,13 +913,13 @@ const henriIv: NotionGuidee = {
     {
       title: 'Des droits avec des limites',
       lines: [
-        'Un texte du roi reconnaît la liberté de conscience des protestants.',
+        'Un texte du roi permet aux protestants de croire à leur façon.',
         'Mais leurs lieux de prière sont limités.',
         'Des villes fortifiées peuvent leur servir de refuge.',
       ],
       qs: [
         {
-          ...P.refuge,
+          ...P.limites,
           q: 'Écris le nom de ce texte du roi.',
           accepted: EDIT,
           traps: [
@@ -954,7 +958,7 @@ const henriIv: NotionGuidee = {
       qs: [
         {
           ...P.assassinat,
-          q: 'Écris le nom du roi assassiné.',
+          q: 'Écris le nom et le numéro du roi assassiné.',
           accepted: HENRI,
           traps: [
             { text: 'Louis XIV', why: 'Louis XIV meurt en 1715.' },
@@ -965,7 +969,7 @@ const henriIv: NotionGuidee = {
         },
         {
           ...P.revocation,
-          q: 'Écris le nom du roi de la ligne 3, qui annule cet édit en 1685.',
+          q: 'Écris le nom et le numéro du roi qui annule cet édit en 1685.',
           accepted: LOUIS_XIV,
           traps: [
             { text: 'Henri IV', why: 'Henri IV signe l’édit et meurt en 1610.' },
@@ -987,7 +991,7 @@ const louisXiv: NotionGuidee = {
   memo: [
     'Louis XIV, le « roi **Soleil** », règne de 1643 à 1715.',
     'Il s’installe à **Versailles** et contrôle les **courtisans** par des fêtes.',
-    'Le premier **empire colonial** compte notamment des Africains réduits en **esclavage**.',
+    'L’**empire colonial** est peuplé notamment par des Africains réduits en **esclavage**.',
   ],
   sens: {
     type: 'metier',
@@ -1007,7 +1011,7 @@ const louisXiv: NotionGuidee = {
       ],
       gap: ['Louis XIV est le roi ', ' (mot en S).', ['Soleil']],
       indice: 'Pense à un astre très brillant.',
-      etapes: ['Pense au ballet : le roi y joue le jour qui revient.', 'Cherche l’astre qui éclaire le jour.'],
+      etapes: ['Souviens-toi : à 14 ans, il danse déguisé en astre.', 'Cherche l’astre qui éclaire le jour.'],
     },
     {
       ...P.chasse,
@@ -1032,7 +1036,7 @@ const louisXiv: NotionGuidee = {
         { label: 'une ville fortifiée protestante', why: 'Versailles n’est pas un refuge protestant.' },
       ],
       gap: ['Avant d’être agrandi, Versailles est un pavillon de ', '.', ['chasse']],
-      indice: 'Le roi y vient suivre les animaux.',
+      indice: 'Le roi y vient poursuivre des animaux.',
       etapes: ['Imagine Versailles encore petit, près d’une forêt.', 'Cherche l’activité que le roi y pratique.'],
     },
     {
@@ -1076,16 +1080,29 @@ const louisXiv: NotionGuidee = {
     },
     {
       ...P.colonial,
-      q: 'Au temps des rois, qui porte la formation du premier empire colonial français ?',
-      a: 'le pouvoir royal',
+      q: 'Qui dirige la création du premier empire colonial français ?',
+      a: 'le pouvoir du roi',
       wrong: [
-        { label: 'le pouvoir des Romains', why: 'Les Romains vivent dans l’Antiquité, bien avant.' },
-        { label: 'le pouvoir des Gaulois', why: 'Les Gaulois vivent bien avant le temps des rois.' },
-        { label: 'les paysans seuls', why: 'C’est le roi et son pouvoir qui le portent.' },
+        { label: 'les paysans seuls', why: 'Les paysans ne dirigent pas le royaume : le roi décide.' },
+        { label: 'les courtisans seuls', why: 'Les courtisans entourent le roi, mais c’est lui qui dirige.' },
+        { label: 'les savants du Collège de France', why: 'Ces savants font des recherches : ils ne dirigent pas.' },
       ],
-      gap: ['Le premier empire colonial français est porté par le pouvoir ', '.', ['royal']],
+      gap: ['Le premier empire colonial français est créé par le pouvoir ', ' (mot proche de « roi »).', ['royal']],
       indice: 'Pense à celui qui gouverne le royaume.',
-      etapes: ['Demande-toi qui dirige la France alors.', 'Élimine les peuples de l’Antiquité.'],
+      etapes: ['Demande-toi qui commande en France alors.', 'Cherche celui qui porte la couronne.'],
+    },
+    {
+      ...P.regente,
+      q: 'Quelle personne de sa famille gouverne quand Louis XIV est enfant ?',
+      a: 'sa mère, Anne d’Autriche',
+      wrong: [
+        { label: 'sa mère, Blanche de Castille', why: 'Blanche de Castille est la mère de Louis IX.' },
+        { label: 'son ministre, Sully', why: 'Sully est le ministre d’Henri IV.' },
+        { label: 'le roi Henri IV', why: 'Henri IV est mort en 1610, avant la naissance de Louis XIV.' },
+      ],
+      gap: ['La mère de Louis XIV, ', ' d’Autriche, gouverne quand il est enfant.', ['Anne']],
+      indice: 'C’est la fille d’un roi d’Espagne.',
+      etapes: ['Cherche une femme de la famille du roi.', 'Élimine la mère de Louis IX.'],
     },
   ],
   paires3: [
@@ -1126,13 +1143,13 @@ const louisXiv: NotionGuidee = {
     {
       ...P.regente,
       q: 'Écris le nom de la mère de Louis XIV, qui gouverne quand il est enfant.',
-      accepted: ['Anne d’Autriche', 'la reine Anne d’Autriche'],
+      accepted: ['Anne d’Autriche', 'Anne', 'la reine Anne d’Autriche', 'la reine Anne'],
       traps: [
         { text: 'Blanche de Castille', why: 'Blanche de Castille est la mère de Louis IX.' },
         { text: 'Mazarin', why: 'Mazarin aide la reine à gouverner : il n’est pas la mère du roi.' },
       ],
       indice: 'Elle est la fille d’un roi d’Espagne.',
-      etapes: ['Pense à la reine régente après 1643.', 'Écris son prénom, puis son pays.'],
+      etapes: ['Pense à la reine qui gouverne après 1643.', 'Écris son prénom, puis la suite de son nom.'],
     },
     {
       ...P.courtisans,
@@ -1154,7 +1171,7 @@ const louisXiv: NotionGuidee = {
         { text: 'colonie', why: 'Une colonie est un territoire dirigé par un pays lointain.' },
       ],
       indice: 'Cette injustice a frappé des Africains déplacés.',
-      etapes: ['Pense aux Africains déportés vers les colonies.', 'Écris le mot qui commence par « escl ».'],
+      etapes: ['Pense aux Africains emmenés de force vers les colonies.', 'Écris le mot qui commence par « escl ».'],
     },
   ],
   docs: [
@@ -1180,7 +1197,7 @@ const louisXiv: NotionGuidee = {
         {
           ...P.ballet,
           q: 'Complète le surnom de ce roi : « le roi … ».',
-          accepted: ['Soleil', 'le roi Soleil', 'roi Soleil'],
+          accepted: ['Soleil', 'le roi Soleil', 'roi Soleil', 'le Soleil'],
           traps: [
             { text: 'Lune', why: 'La Lune brille la nuit : le costume montre le jour.' },
             { text: 'chrétien', why: 'Le roi chrétien est Louis IX.' },
@@ -1233,7 +1250,7 @@ const louisXiv: NotionGuidee = {
         {
           ...P.courtisans,
           q: 'Écris le mot qui désigne les gens de la cour.',
-          accepted: ['courtisans', 'les courtisans', 'des courtisans'],
+          accepted: ['courtisans', 'les courtisans', 'des courtisans', 'courtisan', 'un courtisan'],
           traps: [
             { text: 'paysans', why: 'Les paysans travaillent la terre, loin de la cour.' },
             { text: 'comédiens', why: 'Les comédiens jouent les spectacles : on cherche tout l’entourage du roi.' },
@@ -1253,7 +1270,7 @@ const louisXiv: NotionGuidee = {
           etapes: ['Relis la ligne 1 : un pavillon de chasse.', 'Souviens-toi du château qu’il est devenu.'],
         },
         {
-          ...P.fete1664,
+          ...P.premiereFete,
           q: 'Écris le nom et le numéro du roi qui donne cette fête.',
           accepted: LOUIS_XIV,
           traps: [
