@@ -47,3 +47,8 @@ la partie « Panorama du monde vivant », dans aucun lot), est ajoutée. « La r
 l’appareil reproducteur humain, la fécondation et la distinction avec la sexualité ; « le développement » couvre les
 cycles de vie, le développement vivipare et la puberté. La réalisation d’observations microscopiques et l’usage de bases
 de données numériques ne sont pas évaluables dans le jeu.
+
+## À anticiper
+
+Le programme de sciences et technologie de l’arrêté du 5 juin 2026 (annexe 2) s’applique à cette classe à la rentrée
+2027 (article 3, <https://www.education.gouv.fr/sites/default/files/document/bulletin-officiel-ndeg-24-du-11-juin-2026-519026.pdf>). Le programme ci-dessus reste en vigueur en 2026-2027.
