@@ -10,7 +10,7 @@ refuse de démarrer si une valeur est invalide. Une variable vide vaut « non d�
 | `DATABASE_URL`          | dev : `pglite://apps/server/data/pglite`      | `postgres://…`, `pglite://memory` ou `pglite://<dossier>`                                                                           |
 | `DATABASE_POOL_MAX`     | `10`                                          | connexions PostgreSQL par instance                                                                                                  |
 | `PUBLIC_URL`            | IP du réseau local détectée                   | URL du QR code de connexion des appareils                                                                                           |
-| `TRUST_PROXY`           | `0`                                           | nombre de proxys devant le serveur (nginx : `1`)                                                                                    |
+| `TRUST_PROXY`           | `0`                                           | nombre de proxys devant le serveur (nginx : `1`) ; aussi pour la limite des codes de salle                                          |
 | `CORS_ORIGINS`          | même origine                                  | origines autorisées pour le temps réel, séparées par des virgules                                                                   |
 | `RATE_LIMIT_MAX`        | `600`                                         | requêtes HTTP par minute et par IP                                                                                                  |
 | `METRICS_TOKEN`         | aucun                                         | jeton (16 caractères min.) exigé par `/api/metrics`                                                                                 |
