@@ -87,6 +87,15 @@ Planche livrée dans un autre ordre ou avec d'autres objets : la ranger dans `as
 Séparation : l'apparence vient des tokens et des assets, les données arrivent par les props, les états
 interactifs sont gérés par les attributs ARIA et les variantes, et les animations sont centralisées dans `design/motion.ts`.
 
+### HUD et écrans de jeu
+
+- `GameControls` : seul composant des boutons « Pause » et « Quitter », en icônes (libellé accessible,
+  44 px), en haut à droite de la zone de jeu dans tous les modes ; « Pause » seulement quand le mode
+  peut se mettre en pause. La première ligne de l'écran réserve la place (`pr-14` ou `pr-28`).
+- Barres (`HudBar`) : jamais de texte ; une alerte (dernière vie, temps qui presse) ajoute
+  `AlertSymbol` à la couleur.
+- Menu principal : icônes seules sur téléphone ; une seconde ligne seulement quand la place manque.
+
 ## Animations
 
 - **États prévus** : idle, run, shoot, hurt, victory, defeat pour les héros ; 16 poses et 12 humeurs pour Questy.

@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router';
-import { getChapter, type Chapter } from '@epicademie/content';
-import type { Profile } from '@epicademie/shared';
+import { getChapter, type Chapter, type Question } from '@epicademie/content';
+import type { BattleView, Profile } from '@epicademie/shared';
 import { RageScene, RetryCountdown } from '../../shared/battle/BattleScenes.tsx';
 import { useBackGuard, useGameExit } from '../../shared/lib/gameExit.ts';
 import { ConfirmDialog } from '../../shared/ui/ConfirmDialog.tsx';
+import { GameControls } from '../../shared/ui/game/GameControls.tsx';
 import { Memo } from '../../shared/question/Memo.tsx';
 import { useToast } from '../../shared/ui/Toast.tsx';
 import { bossOf, randomArena } from '../../design/bosses.ts';
@@ -30,6 +31,10 @@ export function BossPlay({ profile }: { readonly profile: Profile }) {
   return <Battle key={location.key} profile={profile} chapter={chapter} />;
 }
 
+/** Question en cours, avec son énoncé généré (absente pendant les transitions). */
+const askedQuestion = (battle: BattleView | null, question: Question | null) =>
+  battle?.question && question ? { battle: { ...battle, question: battle.question }, question } : null;
+
 /**
  * Écran d'un combat : enchaîne entrée en scène, questions (bandeau + énoncé, ou scène d'action
  * en grand), arrivée et rage du boss, puis bilan. Le déroulé est dans `useBattle` (minuteurs,
@@ -43,7 +48,8 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   // Arène tirée une fois par combat, en rotation par profil.
   const [arena] = useState(() => randomArena(profile.id));
   const [memo, setMemo] = useState(false);
-  const [confirmQuit, setConfirmQuit] = useState(false);
+  /** Fenêtre ouverte : menu Pause, ou confirmation du bouton « Quitter ». */
+  const [dialog, setDialog] = useState<'pause' | 'quit' | null>(null);
   const { state: s, question, skill, ...act } = useBattle(profile, chapter, showToast);
   const exchange = useFaceOff(profile, chapter);
 
@@ -52,7 +58,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
   // Quitter la partie ramène au menu principal.
   const leave = () => exit('/hub');
   // « Précédent » pendant le combat : même confirmation que la Pause.
-  const { rearm } = useBackGuard(!s.summary && !s.error, () => setConfirmQuit(true));
+  const { rearm } = useBackGuard(!s.summary && !s.error, () => setDialog('pause'));
   const replay = () => void navigate(location.pathname, { replace: true, state: { replay: Date.now() } });
 
   if (s.error) return <BattleFailure error={s.error} onReplay={replay} onLeave={leave} />;
@@ -71,11 +77,10 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
 
   const stage = { screen: s, hero: profile.hero, boss, arena };
   const staging = s.intro || s.arrival;
-  // Question en cours, avec son énoncé généré (absente pendant les transitions).
-  const asked =
-    s.battle?.question && question ? { battle: { ...s.battle, question: s.battle.question }, question } : null;
+  const asked = askedQuestion(s.battle, question);
   return (
-    <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-3 px-3 py-3 sm:px-4">
+    <div className={`mx-auto flex h-dvh max-w-6xl flex-col gap-3 px-3 pt-16 pb-3 sm:px-4 ${staging ? '' : 'sm:pt-3'}`}>
+      <GameControls onPause={() => setDialog('pause')} onQuit={() => setDialog('quit')} />
       {s.rage && (
         <RageScene bossId={boss.id} name={boss.name} stage={s.rage} lines={s.rageLines} onNext={act.nextRage} />
       )}
@@ -113,7 +118,6 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
           onSubmit={act.submit}
           onUseItem={act.spendItem}
           onAskHint={act.askHint}
-          onPause={() => setConfirmQuit(true)}
           onMemo={() => setMemo(true)}
           onNext={act.next}
         />
@@ -121,22 +125,39 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
         <BattleWaiting started={s.battle !== null} bossName={boss.name} />
       )}
       {memo && skill && <Memo skill={skill} onClose={() => setMemo(false)} />}
-      {confirmQuit && (
-        <ConfirmDialog
-          title="Pause"
-          message="Si tu quittes, le boss garde ses vies : tu pourras revenir l’affronter."
-          confirm="Quitter le combat"
-          mood="ok"
-          cancel="Reprendre"
-          extra={{ label: 'Recommencer', onClick: restart }}
-          onConfirm={leave}
-          onCancel={() => {
-            setConfirmQuit(false);
+      {dialog && (
+        <QuitDialog
+          paused={dialog === 'pause'}
+          onRestart={restart}
+          onQuit={leave}
+          onResume={() => {
+            setDialog(null);
             rearm();
           }}
         />
       )}
       {toast}
     </div>
+  );
+}
+
+/** Menu Pause (ou confirmation du bouton « Quitter ») du combat. */
+function QuitDialog(p: {
+  readonly paused: boolean;
+  readonly onRestart: () => void;
+  readonly onQuit: () => void;
+  readonly onResume: () => void;
+}) {
+  return (
+    <ConfirmDialog
+      title={p.paused ? 'Pause' : 'Quitter le combat ?'}
+      message="Si tu quittes, le boss garde ses vies : tu pourras revenir l’affronter."
+      confirm="Quitter le combat"
+      mood="ok"
+      cancel="Reprendre"
+      extra={{ label: 'Recommencer', onClick: p.onRestart }}
+      onConfirm={p.onQuit}
+      onCancel={p.onResume}
+    />
   );
 }

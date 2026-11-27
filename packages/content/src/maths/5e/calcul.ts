@@ -124,25 +124,28 @@ const euclide: Skill = {
   advice: 'brouillon',
   lesson: {
     memo: [
-      'Diviser 17 par 5, c’est faire des paquets de 5 avec 17 objets.',
-      'On fait 3 paquets (5 × 3 = 15) et il reste 2 objets : **quotient 3**, **reste 2**. On écrit 17 = 5 × 3 + 2.',
-      'Le reste est toujours plus petit que 5, sinon on pourrait faire un paquet de plus !',
+      'Diviser 17 par 5, c’est faire des paquets de 5 : 3 paquets, et il reste 2.',
+      'Le **quotient** est 3, le **reste** est 2, toujours plus petit que 5.',
     ],
     source: objective(
       'Déterminer le quotient et le reste dans une division euclidienne, par exemple, savoir que 17 = 3 × 5 + 2',
     ),
   },
+  version: 2,
   generate(rng, level) {
+    // Niveau 1 : petites tables et le quotient seul ; le reste arrive au niveau 2.
     const b = rng.int(level === 1 ? 2 : 3, level === 1 ? 5 : level === 2 ? 9 : 12);
-    const q = rng.int(2, level === 3 ? 12 : 9);
+    const q = rng.int(2, level === 1 ? 5 : level === 2 ? 9 : 12);
     const rest = rng.int(1, b - 1);
     const a = b * q + rest;
-    const askRest = rng.next() < 0.5;
+    const askRest = level > 1 && rng.next() < 0.5;
     const steps = [
-      `On fait des paquets de ${b} avec ${a} : combien de paquets complets ?`,
-      `${b} × ${q} = ${b * q}, ça rentre. ${b} × ${q + 1} = ${b * (q + 1)}, c’est trop ! Donc ${q} paquets : le quotient est ${q}.`,
-      `Il reste ${a} − ${b * q} = ${rest} (moins que ${b}, c’est bon) : le reste est ${rest}.`,
-      `${a} = ${b} × ${q} + ${rest}, donc la réponse est **${askRest ? rest : q}**.`,
+      `Cherche dans la table de ${b} le résultat juste avant ${a}.`,
+      `Vérifie : ${b} × ${q} = ${b * q} rentre, mais ${b} × ${q + 1} = ${b * (q + 1)} dépasse.`,
+      askRest
+        ? `Enlève les paquets : ${a} − ${b * q} = ${rest}, moins que ${b}.`
+        : `Compte les paquets : il y en a ${q}.`,
+      askRest ? `Écris le reste : **${rest}**.` : `Écris le quotient : **${q}**.`,
     ];
     const hint = `Cherche le plus grand nombre de la table de ${b} qui ne dépasse pas ${a}.`;
     return askRest

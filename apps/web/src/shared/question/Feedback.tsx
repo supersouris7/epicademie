@@ -9,6 +9,7 @@ import { MathText } from './MathText.tsx';
 import { Questy } from '../ui/mascot/Questy.tsx';
 import type { MoodId } from '../ui/mascot/moods.ts';
 import { DemoView } from './demos/DemoView.tsx';
+import { ExplanationDraft } from './ExplanationDraft.tsx';
 
 interface FeedbackProps {
   readonly question: Question;
@@ -120,6 +121,7 @@ function Explanation({ question, why, given, similar = false, onMemo, onNext, on
         <Questy mood={why ? 'wink' : 'ok'} size={short ? 56 : 80} />
         <h2 className="sr-only">On regarde ensemble</h2>
         <span className="flex-1" />
+        <ExplanationDraft question={question} steps={steps.slice(0, shown)} />
         <button
           type="button"
           onClick={onMemo}

@@ -14,6 +14,11 @@ import { NAMES } from '../kit.ts';
 type Source = (skillId: string) => string;
 type Make = (src: Source) => Skill;
 
+/** Question dont l’énoncé ou la réponse a changé (`Skill.version` 2). */
+const versionDeux =
+  (make: Make): Make =>
+  (src) => ({ ...make(src), version: 2 });
+
 const B =
   (
     id: string,
@@ -121,31 +126,39 @@ const calcul = boss(
 
 const operations = boss(
   [
-    B(
-      'm5-boss-operations-cinema',
-      'Problème : la sortie au cinéma',
-      'm5-traduire',
-      ['Pour un groupe : ce que paie une personne, puis × le nombre de personnes : n × (place + pop-corn).'],
-      (rng) => {
-        const n = rng.int(3, 8);
-        const place = rng.int(6, 11);
-        const pop = rng.int(3, 6);
-        const res = n * (place + pop);
-        return {
-          prompt: `${rng.pick(NAMES)} va au cinéma avec des amis : ils sont ${n} en tout. Chacun paie sa place ${place} € et un pop-corn ${pop} €. Combien paie le groupe (en €) ?`,
-          answer: num(res, '€'),
-          traps: traps(r(res), [
-            [n * place + pop, 'Chacun prend un pop-corn : il y en a ' + `${n}, pas un seul.`],
-            [place + pop, 'C’est ce que paie **une** personne.'],
-          ]),
-          hint: 'Combien paie une seule personne ?',
-          steps: [
-            `Une personne : ${place} + ${pop} = ${place + pop} €.`,
-            `${n} personnes : ${n} × ${place + pop} = **${res} €**.`,
-          ],
-          targetSeconds: 45,
-        };
-      },
+    versionDeux(
+      B(
+        'm5-boss-operations-cinema',
+        'Problème : la sortie au cinéma',
+        'm5-traduire',
+        [
+          'Cherche d’abord ce que paie **une** personne.',
+          'Multiplie ensuite par le nombre de personnes : 4 × (8 + 3) = 44.',
+        ],
+        (rng) => {
+          const n = rng.int(3, 8);
+          const place = rng.int(6, 11);
+          const pop = rng.int(3, 6);
+          const res = n * (place + pop);
+          const who = rng.pick(NAMES);
+          return {
+            prompt: `${who} va au cinéma : le groupe compte ${n} personnes. Chaque personne achète 1 place à ${place} € et 1 pop-corn à ${pop} €. Combien paie le groupe en tout (en €) ?`,
+            answer: num(res, '€'),
+            traps: traps(r(res), [
+              [n * place + pop, `Chaque personne a son pop-corn : il y en a ${n}, pas un seul.`],
+              [place + pop, 'C’est ce que paie **une** personne.'],
+            ]),
+            hint: 'Combien paie une seule personne ?',
+            steps: [
+              `Cherche le prix pour une personne : ${place} + ${pop} = ${place + pop} €.`,
+              `Compte les personnes : il y en a ${n}.`,
+              `Multiplie : ${n} × ${place + pop} = ${res}.`,
+              `Écris la réponse : le groupe paie **${res} €**.`,
+            ],
+            targetSeconds: 45,
+          };
+        },
+      ),
     ),
     B(
       'm5-boss-operations-paquets',

@@ -12,6 +12,8 @@ import { PlayDock, type DockTab } from './PlayDock.tsx';
 import { toolTabs } from './tools.ts';
 import { ConfirmDialog } from '../ui/ConfirmDialog.tsx';
 
+const NO_UNITS: ReadonlySet<string> = new Set();
+
 /** Tableau adapté à l'unité de la question (aires en ^2, volumes en ^3 ou en litres). */
 function conversionKind(q: Question): ConversionKind {
   const text = q.prompt + (q.answer.kind === 'number' ? (q.answer.unit ?? '') : '');
@@ -121,7 +123,8 @@ export function QuestionTools({
             kind={kind}
             state={conv ?? emptyConversion(kind)}
             onChange={setConv}
-            highlight={unitsIn(question.prompt)}
+            // Au-delà du niveau 1, repérer les unités fait partie de l’exercice.
+            highlight={question.level === 1 ? unitsIn(question.prompt) : NO_UNITS}
             onUse={sendToAnswer}
           />
         )}

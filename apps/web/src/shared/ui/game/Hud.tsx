@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'motion/react';
+import { AlertSymbol } from './AlertSymbol.tsx';
 
 /**
  * Pièces du HUD façon jeu de combat, partagées par la barre de combat et la barre du menu
@@ -42,6 +43,7 @@ const FILLS = {
  * traînée blanche qui rattrape la valeur restante après un coup. Se vide vers le centre.
  * `kind="xp"` : barre d'expérience (bleue, sans alerte), découpée en `segments` cases.
  * `kind="time"` : jauge de temps (bleue), rouge et pulsante quand `alert` ; `hit` rejoue la traînée.
+ * En alerte, un symbole se pose sur le bout vide de la barre (jamais de texte dans les barres).
  */
 export function HudBar({
   side,
@@ -78,31 +80,38 @@ export function HudBar({
       ? { role, 'aria-label': label, 'aria-valuemin': 0, 'aria-valuemax': max, 'aria-valuenow': value }
       : { role, 'aria-label': label };
   return (
-    <div
-      {...a11y}
-      className={`relative h-4 w-full overflow-hidden rounded-sm border-2 border-black/70 bg-black/60 sm:h-5 ${side === 'left' ? '-skew-x-12' : 'skew-x-12'} ${className}`}
-    >
-      {/* Traînée : rattrape la valeur restante un peu après le coup. */}
-      <motion.div
-        key={`trail-${hit}`}
-        className={`absolute inset-y-0 ${origin} bg-white/80`}
-        initial={false}
-        animate={{ width: `${pct}%` }}
-        transition={{ delay: reduce ? 0 : 0.6, duration: reduce ? 0 : 0.5 }}
-      />
-      <motion.div
-        className={`absolute inset-y-0 ${origin} ${low && !reduce ? 'animate-pulse' : ''}`}
-        style={{ background: fill }}
-        initial={false}
-        animate={{ width: `${pct}%` }}
-        transition={{ duration: reduce ? 0 : 0.2 }}
-      />
-      {/* Séparations entre les cases. */}
-      <div className="absolute inset-0 flex" aria-hidden>
-        {Array.from({ length: segments ?? max }, (_, i) => (
-          <span key={i} className="h-full flex-1 border-r-2 border-black/50 last:border-r-0" />
-        ))}
+    <div className="relative w-full">
+      <div
+        {...a11y}
+        className={`relative h-5 w-full overflow-hidden rounded-sm border-2 border-black/70 bg-black/60 ${side === 'left' ? '-skew-x-12' : 'skew-x-12'} ${className}`}
+      >
+        {/* Traînée : rattrape la valeur restante un peu après le coup. */}
+        <motion.div
+          key={`trail-${hit}`}
+          className={`absolute inset-y-0 ${origin} bg-white/80`}
+          initial={false}
+          animate={{ width: `${pct}%` }}
+          transition={{ delay: reduce ? 0 : 0.6, duration: reduce ? 0 : 0.5 }}
+        />
+        <motion.div
+          className={`absolute inset-y-0 ${origin} ${low && !reduce ? 'animate-pulse' : ''}`}
+          style={{ background: fill }}
+          initial={false}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: reduce ? 0 : 0.2 }}
+        />
+        {/* Séparations entre les cases. */}
+        <div className="absolute inset-0 flex" aria-hidden>
+          {Array.from({ length: segments ?? max }, (_, i) => (
+            <span key={i} className="h-full flex-1 border-r-2 border-black/50 last:border-r-0" />
+          ))}
+        </div>
       </div>
+      {low && (
+        <AlertSymbol
+          className={`pointer-events-none absolute top-1/2 -translate-y-1/2 ${side === 'left' ? 'left-0' : 'right-0'}`}
+        />
+      )}
     </div>
   );
 }

@@ -333,7 +333,7 @@ export const api = {
     method: 'POST',
     path: '/auth/logout',
     tag: 'comptes',
-    summary: 'Ferme la session de cet appareil',
+    summary: 'Ferme la session de cet appareil (compte parent : Espace parent ouvert exigé, sinon 403)',
     access: 'public',
     status: 204,
     response: null,

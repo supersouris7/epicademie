@@ -64,9 +64,13 @@ const fractionDunNombre: Skill = {
 const fractionGourde: Skill = {
   id: 'm5-boss-fractions-reste',
   title: 'Problème : ce qu’il reste',
+  version: 2,
   lesson: fractionsLesson(
     'Additionner et soustraire des fractions dont les dénominateurs sont multiples l’un de l’autre',
-    ['Pour enlever {1/4} de {5/8} : on met tout en huitièmes. {1/4} = {2/8}, donc {5/8} − {2/8} = {3/8}.'],
+    [
+      'Pour ajouter ou enlever, il faut le même **dénominateur** (le nombre du bas).',
+      'Pour enlever {1/4} de {5/8} : écris {1/4} = {2/8}, puis {5/8} − {2/8} = {3/8}.',
+    ],
   ),
   generate(rng) {
     const d = rng.pick([6, 8, 10, 12]);
@@ -78,17 +82,28 @@ const fractionGourde: Skill = {
     const who = rng.pick(NAMES);
     const value = r(rest, d);
     return {
-      prompt: `La gourde de ${who} contient ${rawFrac(n, d)} de litre d’eau. ${who} en boit ${rawFrac(drunk, small)} de litre. Quelle fraction de litre reste-t-il ?`,
+      prompt: `${who} a ${rawFrac(n, d)} de litre d’eau dans sa gourde. ${who} en boit ${rawFrac(drunk, small)} de litre. Quelle fraction de litre reste-t-il ?`,
       answer: fraction(value),
       traps: traps(value, [
         [r(n - drunk, d - small), 'On ne soustrait pas les dénominateurs : il faut un dénominateur commun.'],
         [r(n - drunk, d), `${rawFrac(drunk, small)} n’est pas ${rawFrac(drunk, d)} : mets-le d’abord en ${d}ᵉˢ.`],
       ]),
-      hint: `Écris ${rawFrac(drunk, small)} avec le dénominateur ${d}, puis soustrais.`,
+      hint: `Les nombres du bas sont différents. Écris ${rawFrac(drunk, small)} avec ${d} en bas.`,
+      demo: {
+        kind: 'fraction',
+        parts: [
+          { num: n, den: d },
+          { num: drunk, den: small },
+          { num: drunkOver, den: d },
+        ],
+      },
       steps: [
-        `On veut ${rawFrac(n, d)} − ${rawFrac(drunk, small)}, mais les dénominateurs sont différents.`,
-        `${rawFrac(drunk, small)} = ${rawFrac(drunkOver, d)} (on multiplie en haut et en bas par ${d / small}).`,
-        `${rawFrac(n, d)} − ${rawFrac(drunkOver, d)} = ${rawFrac(rest, d) === frac(value) ? `**${frac(value)}**` : `${rawFrac(rest, d)} = **${frac(value)}**`} de litre.`,
+        `Regarde les nombres du bas : ${d} et ${small} sont différents.`,
+        `Mets le même nombre en bas : multiplie ${rawFrac(drunk, small)} par ${d / small} en haut et en bas.`,
+        `Enlève les parts : ${rawFrac(n, d)} − ${rawFrac(drunkOver, d)} = ${rawFrac(rest, d)}.`,
+        rawFrac(rest, d) === frac(value)
+          ? `Écris la réponse : il reste **${frac(value)}** de litre.`
+          : `Simplifie si tu veux : il reste **${frac(value)}** de litre.`,
       ],
       targetSeconds: 50,
     };
@@ -174,31 +189,40 @@ const piegeAddition: Skill = {
 const piegeComparer: Skill = {
   id: 'm5-boss-fractions-piege-comparer',
   title: 'Piège : comparer des fractions',
+  version: 2,
   lesson: fractionsLesson('Comparer des fractions', [
-    'Plus on coupe en beaucoup de parts, plus les parts sont **petites** : {1/8} de pizza est plus petit que {1/3}.',
+    'Avec le même nombre en haut, regarde la taille des parts.',
+    'Plus on coupe en beaucoup de parts, plus elles sont petites : {3/8} est plus petit que {3/4}.',
   ]),
   generate(rng) {
-    const [a, b] = rng
-      .shuffle([2, 3, 4, 5, 6, 8, 10])
-      .slice(0, 2)
-      .toSorted((x, y) => x - y) as [number, number];
-    const { answer, traps: t } = choice(rng, rawFrac(1, a), [
+    // Même numérateur (2 ou 3), trois dénominateurs : le piège est de choisir le plus grand nombre du bas.
+    const n = rng.pick([2, 3]);
+    const [a, b, c] = rng
+      .shuffle([4, 5, 6, 8, 10, 12])
+      .slice(0, 3)
+      .toSorted((x, y) => x - y) as [number, number, number];
+    const shown = rng.shuffle([a, b, c]).map((d) => rawFrac(n, d));
+    const { answer, traps: t } = choice(rng, rawFrac(n, a), [
       {
-        label: rawFrac(1, b),
-        why: `${b} est plus grand que ${a}, mais un ${b}ᵉ de pizza est une part **plus petite** qu’un ${a}ᵉ.`,
+        label: rawFrac(n, c),
+        why: `${c} est le plus grand nombre du bas : les parts sont donc les **plus petites**.`,
       },
-      { label: 'Elles sont égales', why: 'Les deux ont 1 part, mais les parts n’ont pas la même taille.' },
+      { label: rawFrac(n, b), why: `Les parts sont plus petites qu’avec ${a} parts.` },
+      { label: 'Elles sont égales', why: 'Le nombre de parts est le même, mais pas leur taille.' },
     ]);
     return {
-      prompt: `Quelle fraction est la plus grande : ${rawFrac(1, a)} ou ${rawFrac(1, b)} ?`,
+      prompt: `Quelle fraction est la plus grande : ${shown.join(' ; ')} ?`,
       answer,
       traps: t,
-      hint: 'Imagine une pizza coupée en beaucoup de parts : les parts sont-elles grosses ou petites ?',
+      hint: 'Imagine le même gâteau coupé de trois façons. Quand les parts sont-elles les plus grosses ?',
+      demo: { kind: 'fraction', shape: 'cake', parts: [a, b, c].map((den) => ({ num: n, den })) },
       steps: [
-        `${rawFrac(1, a)} : une pizza coupée en ${a}. ${rawFrac(1, b)} : la même pizza coupée en ${b}, donc en parts plus petites.`,
-        `La plus grande est **${rawFrac(1, a)}**.`,
+        `Regarde le nombre du haut : on prend ${n} parts à chaque fois.`,
+        `Imagine un gâteau coupé en ${a}, en ${b} ou en ${c}.`,
+        `Compare la taille : les parts sont les plus grosses quand on coupe en ${a}.`,
+        `Choisis donc **${rawFrac(n, a)}**, la plus grande.`,
       ],
-      targetSeconds: 20,
+      targetSeconds: 25,
     };
   },
 };
@@ -297,28 +321,37 @@ const plongeur: Skill = {
 const piegePlusPetit: Skill = {
   id: 'm5-boss-relatifs-piege-comparer',
   title: 'Piège : le plus petit relatif',
+  version: 2,
   lesson: relLesson([
-    'Entre deux négatifs, le plus petit est celui qui est le **plus loin de zéro** : −8 < −3, comme −8 °C est plus froid que −3 °C.',
+    'Entre deux négatifs, le plus petit est le **plus loin de zéro** : −8 < −3.',
+    'Ajoute un zéro pour comparer : −2,5 = −2,50, plus loin de zéro que −2,45.',
   ]),
   generate(rng) {
-    const far = -rng.int(6, 15);
-    const near = -rng.int(1, -far - 2);
+    // Trois négatifs très proches, écrits avec un ou deux chiffres après la virgule, et un positif.
+    const unit = rng.int(1, 9);
+    const tenth = rng.int(2, 8);
+    const far = dec(-(unit * 100 + tenth * 10), 2);
+    const middle = dec(-(unit * 100 + tenth * 10 - rng.int(1, 4)), 2);
+    const near = dec(-(unit * 100 + rng.int(1, 9)), 2);
     const pos = rng.int(1, 9);
-    const { answer, traps: t } = choice(rng, signed(far), [
-      { label: signed(near), why: `${signed(near)} est plus près de 0 : il est **plus grand** que ${signed(far)}.` },
-      { label: '0', why: `0 est plus grand que tous les nombres négatifs.` },
+    const { answer, traps: t } = choice(rng, fmt(far), [
+      { label: fmt(middle), why: `Compare les centièmes : ${fmt(middle)} est plus près de zéro.` },
+      { label: fmt(near), why: `${fmt(near)} est le plus près de zéro des négatifs : il est plus grand.` },
       { label: String(pos), why: `${pos} est positif : il est plus grand que les négatifs.` },
     ]);
+    const shown = rng.shuffle([fmt(far), fmt(middle), fmt(near), String(pos)]);
     return {
-      prompt: `Quel est le plus petit de ces nombres : ${signed(near)} ; ${pos} ; ${signed(far)} ; 0 ?`,
+      prompt: `Quel est le plus petit de ces nombres : ${shown.join(' ; ')} ?`,
       answer,
       traps: t,
-      hint: 'Pense à un thermomètre : quelle est la température la plus froide ?',
+      hint: 'Pense à un thermomètre. Quelle température est la plus froide ?',
       steps: [
-        `Sur un thermomètre, ${signed(far)} °C est plus froid que ${signed(near)} °C : il est plus bas.`,
-        `Le plus petit est **${signed(far)}**.`,
+        `Écarte ${pos} : un nombre positif est plus grand que les négatifs.`,
+        `Écris les négatifs avec deux chiffres après la virgule.`,
+        `Cherche le plus loin de zéro : c’est le plus froid.`,
+        `Choisis **${fmt(far)}**, le plus petit.`,
       ],
-      targetSeconds: 20,
+      targetSeconds: 25,
     };
   },
 };

@@ -93,7 +93,7 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByText(/Tu perds un cœur et la série repart/)).toBeVisible();
   await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
   await expect(page.getByRole('img', { name: '3 cœurs sur 3' })).toBeVisible();
-  await page.getByRole('button', { name: 'Arrêter' }).click();
+  await page.getByRole('button', { name: 'Quitter' }).click();
   await expect(page.getByRole('heading', { name: /points/ })).toBeVisible();
 
   // Contre-la-montre : tirage figé (toujours « Calcule 3 × 2. ») et horloge simulée pour ne pas attendre 60 s.

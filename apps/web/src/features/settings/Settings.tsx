@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import type { Profile } from '@epicademie/shared';
 import { useDeleteProfile, useUpdateProfile } from '../profiles/index.ts';
-import { logout, useParentGate, useSetMe } from '../account/index.ts';
+import { SignOutButton, useParentGate } from '../account/index.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { useSession } from '../../shared/lib/session.ts';
@@ -22,7 +22,7 @@ function Toggle({ label, checked, onChange }: { label: string; checked: boolean;
   );
 }
 
-/** Paramètres du joueur : son, plein écran, profil (modifier, changer de joueur, déconnecter l'appareil). */
+/** Paramètres du joueur : son, plein écran, profil (modifier, changer de joueur) ; déconnexion en haut à droite. */
 export function Settings({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
   const update = useUpdateProfile(profile.id);
@@ -32,23 +32,15 @@ export function Settings({ profile }: { readonly profile: Profile }) {
   const [fullscreen, setFullscreen] = useFullscreenPreference();
 
   const withParent = useParentGate();
-  const setMe = useSetMe();
   const deleteProfile = () =>
     withParent(async () => {
       await remove.mutateAsync(profile.id);
       selectProfile(null);
       void navigate('/');
     });
-  /** Déconnecte l'appareil du compte familial (les progrès restent sur le serveur). */
-  const signOut = async () => {
-    await logout();
-    selectProfile(null);
-    setMe(null);
-    void navigate('/bienvenue');
-  };
 
   return (
-    <PageShell title="Paramètres" nav={profile}>
+    <PageShell title="Paramètres" nav={profile} actions={<SignOutButton />}>
       <section className="flex flex-col gap-3">
         <h2 className="font-display text-2xl tracking-wide">Son</h2>
         <Toggle label="Effets sonores" checked={profile.soundOn} onChange={(soundOn) => update.mutate({ soundOn })} />
@@ -78,14 +70,6 @@ export function Settings({ profile }: { readonly profile: Profile }) {
           onClick={() => void navigate('/')}
         >
           Changer de joueur
-        </GameButton>
-        <GameButton
-          variant="surface"
-          icon="icons-navigation-back"
-          className="justify-start"
-          onClick={() => void signOut()}
-        >
-          Déconnecter cet appareil
         </GameButton>
         {confirming ? (
           <div className="cartoon bg-surface flex flex-col gap-3 p-4">

@@ -62,6 +62,30 @@ describe('inscription et connexion', () => {
     expect((await me(cookie)).statusCode).toBe(401);
   });
 
+  it('déconnexion refusée sans code parent ; permise après le code PIN ou le mot de passe', async () => {
+    const cookie = t.family().cookie;
+    const c = t.as(cookie);
+    const post = (url: string, payload?: object) => c.inject({ method: 'POST', url: `/api/v1${url}`, payload });
+    await post('/auth/parent/pin', { password: TEST_PASSWORD, pin: '2580' });
+    await post('/auth/parent/lock');
+    const refused = await post('/auth/logout');
+    expect(refused.statusCode).toBe(403);
+    expect(refused.json()).toMatchObject({ code: 'FORBIDDEN' });
+    expect(refused.headers['set-cookie']).toBeUndefined();
+    expect((await me(cookie)).statusCode).toBe(200);
+    expect((await post('/auth/parent/pin/unlock', { pin: '0000' })).statusCode).toBe(401);
+    expect((await post('/auth/logout')).statusCode).toBe(403);
+    // Déverrouillage expiré : de nouveau refusé.
+    await post('/auth/parent/pin/unlock', { pin: '2580' });
+    t.clock.set('2026-11-21');
+    expect((await post('/auth/logout')).statusCode).toBe(403);
+    await post('/auth/parent', { password: TEST_PASSWORD });
+    expect((await post('/auth/logout')).statusCode).toBe(204);
+    expect((await me(cookie)).statusCode).toBe(401);
+    // Session déjà fermée : rien à protéger, le cookie est effacé.
+    expect((await post('/auth/logout')).statusCode).toBe(204);
+  });
+
   it('session expirée après 30 jours sans activité, prolongée par l’activité', async () => {
     const cookie = t.family().cookie;
     t.clock.set('2026-12-10');

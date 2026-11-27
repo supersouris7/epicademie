@@ -139,7 +139,8 @@ export function ConversionTable({ kind, state, onChange, highlight, onUse }: Con
   return (
     <div className="flex h-full min-h-0 flex-col gap-2">
       <p className="text-muted shrink-0 text-xs font-bold [@media(max-height:500px)]:hidden">
-        Touche une case, écris les chiffres, place la virgule. Unités de l’énoncé en orange.
+        Touche une case, écris les chiffres, place la virgule.
+        {highlight.size > 0 && ' Unités de l’énoncé en orange.'}
       </p>
       <div className="shrink-0 overflow-x-auto">
         <ConversionGrid kind={kind} state={state} highlight={highlight} onSelect={(i) => set({ selected: i })} />

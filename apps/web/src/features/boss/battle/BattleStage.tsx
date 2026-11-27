@@ -25,6 +25,8 @@ export function BattleHud({ screen: s, hero, boss }: StageProps) {
   return (
     <>
       <BattleBar
+        // Tablette et ordinateur : boutons sur la ligne du HUD ; téléphone : au-dessus (trop étroit).
+        className="sm:pr-28"
         hero={hero}
         face={s.heroFace}
         hearts={battle?.hearts ?? 3}
@@ -49,7 +51,7 @@ export function BattleHud({ screen: s, hero, boss }: StageProps) {
 /** Les coups se jouent en grand, personnages entiers, au milieu de l'écran (sur tout appareil). */
 export function ActionScene({ screen: s, hero, boss, arena }: StageProps) {
   return (
-    <div className="pointer-events-none fixed inset-0 z-20 mx-auto flex max-w-6xl flex-col justify-center px-3 pt-24 sm:px-4">
+    <div className="pointer-events-none fixed inset-0 z-20 mx-auto flex max-w-6xl flex-col justify-center px-3 pt-36 sm:px-4 sm:pt-24">
       <BattleArena
         hero={hero}
         heroState={s.heroState}

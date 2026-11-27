@@ -1,5 +1,6 @@
 import { dec, mul, r, type Rational } from '../../rational.ts';
 import type { Rng } from '../../rng.ts';
+import type { Skill } from '../../types.ts';
 import { chapterOf, skillsOf } from '../kit.ts';
 
 /** Outils communs aux chapitres de la 6e. */
@@ -8,6 +9,9 @@ import { chapterOf, skillsOf } from '../kit.ts';
 export const S = skillsOf('6e');
 
 export const C = chapterOf('6e');
+
+/** Notion dont les énoncés ou les réponses ont changé (`Skill.version` 2). */
+export const versionDeux = (skill: Skill): Skill => ({ ...skill, version: 2 });
 
 /** Décimal dont le dernier chiffre n'est pas 0 (pour avoir vraiment `d` décimales). */
 export function exactDecimal(rng: Rng, min: number, max: number, d: number): Rational {

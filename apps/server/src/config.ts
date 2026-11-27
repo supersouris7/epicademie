@@ -93,6 +93,8 @@ const EnvSchema = z.object({
   /** Clé de l'API transactionnelle Brevo ; absente : simulation (interdite en production). */
   /** Longueur minimale d'un nouveau mot de passe (défaut : 12 ; 8 en recette). */
   PASSWORD_MIN_LENGTH: z.coerce.number().int().min(6).max(64).optional(),
+  /** Page de déconnexion du portail placé devant la plateforme (HTTPS) ; vide : aucun portail. */
+  PORTAL_LOGOUT_URL: z.url({ protocol: /^https$/ }).optional(),
   BREVO_API_KEY: z.string().min(10).optional(),
   /** Expéditeur des e-mails : `adresse@domaine` ou `Nom <adresse@domaine>`. */
   MAIL_FROM: z.string().min(3).max(200).optional(),
@@ -140,6 +142,7 @@ export interface ServerConfig {
    * « mot de passe oublié » remplacé par une consigne. Jamais en production.
    */
   readonly recette: boolean;
+  readonly portalLogoutUrl: string | null;
   readonly passwordMinLength: number;
   readonly google: GoogleConfig | null;
 }
@@ -213,9 +216,20 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
     sessionDays: e.SESSION_DAYS,
     billing: billingConfig(e, production),
     mail: mailConfig(e),
-    recette: e.APP_ENV === 'recette',
-    passwordMinLength: e.PASSWORD_MIN_LENGTH ?? (e.APP_ENV === 'recette' ? 8 : 12),
+    ...accessConfig(e),
     google: googleConfig(e),
+  };
+}
+
+/** Accès à la plateforme : mode de test, longueur des mots de passe, portail de connexion devant. */
+function accessConfig(
+  e: z.infer<typeof EnvSchema>,
+): Pick<ServerConfig, 'recette' | 'passwordMinLength' | 'portalLogoutUrl'> {
+  const recette = e.APP_ENV === 'recette';
+  return {
+    recette,
+    passwordMinLength: e.PASSWORD_MIN_LENGTH ?? (recette ? 8 : 12),
+    portalLogoutUrl: e.PORTAL_LOGOUT_URL ?? null,
   };
 }
 

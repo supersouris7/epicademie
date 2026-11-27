@@ -19,6 +19,7 @@ import { useToast } from '../../shared/ui/Toast.tsx';
 import { ChestReveal } from '../../shared/ui/game/ChestReveal.tsx';
 import { bestScore, comboOf, PRESSURE_S, type DefiId } from './rules.ts';
 import { DefiHud } from './DefiHud.tsx';
+import { GameControls } from '../../shared/ui/game/GameControls.tsx';
 import { useDefi, type DefiMiss, type Feedback } from './useDefi.ts';
 import { RecapScreen } from '../training/index.ts';
 
@@ -118,59 +119,62 @@ export function DefiPlay({ profile }: { readonly profile: Profile }) {
   const expression = heroExpression(kind, d, urgent);
   const shake = shakes(reduce, pressure, d.flash);
   return (
-    <motion.div
-      animate={shake ? { x: [0, -2, 2, -1, 1, 0] } : { x: 0 }}
-      transition={shake ? { duration: pressure ? 0.5 : 0.3, repeat: pressure ? Infinity : 0 } : { duration: 0 }}
-      className="mx-auto flex h-dvh max-w-6xl flex-col gap-2 px-3 py-3 sm:px-4"
-    >
-      <FlashOverlay flash={d.flash} reduce={reduce} />
-      <DefiHud
-        kind={kind}
-        hero={profile.hero}
-        expression={expression}
-        points={points}
-        totalPoints={d.score.points}
-        correct={d.score.correct}
-        best={Math.max(d.previousBest, d.score.points)}
-        combo={combo}
-        hearts={d.score.hearts}
-        leftMs={d.leftMs}
-        seconds={d.secondsLeft}
-        pressure={pressure}
-        flash={d.flash}
-        reduce={reduce}
-        onStop={d.stop}
-      />
-      <FeedbackLine kind={kind} flash={d.flash} reduce={reduce} />
-      {d.question && (
-        <motion.main
-          key={`${d.question.skillId}-${d.question.seed}`}
-          initial={reduce ? false : { x: 24, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.15 }}
-          className="side:grid side:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] flex min-h-0 flex-1 flex-col gap-3"
-        >
-          <section className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
-            <h1 className="text-2xl leading-snug font-bold sm:text-3xl">
-              <MathText text={d.question.prompt} terms />
-            </h1>
-            {d.question.figure && <Figure figure={d.question.figure} maxHeight="var(--figure-max)" />}
-          </section>
-          <section
-            className={`side:h-[min(100%,520px)] side:self-center flex ${DOCK_HEIGHT} min-h-0 shrink-0 flex-col`}
+    <>
+      {/* Hors du conteneur secoué : les boutons ne bougent pas. */}
+      <GameControls onQuit={d.stop} />
+      <motion.div
+        animate={shake ? { x: [0, -2, 2, -1, 1, 0] } : { x: 0 }}
+        transition={shake ? { duration: pressure ? 0.5 : 0.3, repeat: pressure ? Infinity : 0 } : { duration: 0 }}
+        className="mx-auto flex h-dvh max-w-6xl flex-col gap-2 px-3 py-3 sm:px-4"
+      >
+        <FlashOverlay flash={d.flash} reduce={reduce} />
+        <DefiHud
+          kind={kind}
+          hero={profile.hero}
+          expression={expression}
+          points={points}
+          totalPoints={d.score.points}
+          correct={d.score.correct}
+          best={Math.max(d.previousBest, d.score.points)}
+          combo={combo}
+          hearts={d.score.hearts}
+          leftMs={d.leftMs}
+          seconds={d.secondsLeft}
+          pressure={pressure}
+          flash={d.flash}
+          reduce={reduce}
+        />
+        <FeedbackLine kind={kind} flash={d.flash} reduce={reduce} />
+        {d.question && (
+          <motion.main
+            key={`${d.question.skillId}-${d.question.seed}`}
+            initial={reduce ? false : { x: 24, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.15 }}
+            className="side:grid side:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] flex min-h-0 flex-1 flex-col gap-3"
           >
-            <QuestionTools
-              key={`${d.question.skillId}-${d.question.seed}`}
-              question={d.question}
-              skill={getAnySkill(d.question.skillId)}
-              picked={null}
-              onSubmit={d.submit}
-            />
-          </section>
-        </motion.main>
-      )}
-      {toast}
-    </motion.div>
+            <section className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
+              <h1 className="text-2xl leading-snug font-bold sm:text-3xl">
+                <MathText text={d.question.prompt} terms />
+              </h1>
+              {d.question.figure && <Figure figure={d.question.figure} maxHeight="var(--figure-max)" />}
+            </section>
+            <section
+              className={`side:h-[min(100%,520px)] side:self-center flex ${DOCK_HEIGHT} min-h-0 shrink-0 flex-col`}
+            >
+              <QuestionTools
+                key={`${d.question.skillId}-${d.question.seed}`}
+                question={d.question}
+                skill={getAnySkill(d.question.skillId)}
+                picked={null}
+                onSubmit={d.submit}
+              />
+            </section>
+          </motion.main>
+        )}
+        {toast}
+      </motion.div>
+    </>
   );
 }
 

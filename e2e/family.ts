@@ -51,6 +51,14 @@ async function subscribe(page: Page): Promise<void> {
   expect(paid.status()).toBe(200);
 }
 
+/** « Se déconnecter » (Paramètres) : le code parent (ici le mot de passe du compte) est redemandé. */
+export async function signOut(page: Page): Promise<void> {
+  await page.getByRole('button', { name: 'Se déconnecter' }).click();
+  const gate = page.getByRole('dialog', { name: 'Espace parent' });
+  await gate.getByLabel('Mot de passe du compte familial').fill(PASSWORD);
+  await gate.getByRole('button', { name: 'Ouvrir l’Espace parent' }).click();
+}
+
 /** Connexion d'un autre appareil au même compte : arrive sur le choix du joueur. */
 export async function loginFamily(page: Page, email: string): Promise<void> {
   await page.goto('/connexion');
