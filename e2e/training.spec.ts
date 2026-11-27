@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { signupFamily } from './family.ts';
+import { createFirstProfile, signupFamily } from './family.ts';
 
 test('Entraînement : série complète de tables, correction, leçon et résultats', async ({ page }) => {
   test.setTimeout(60_000); // série complète : 5 questions + variantes
@@ -8,7 +8,7 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await createFirstProfile(page);
 
   await page.getByRole('button', { name: /Entraînement/ }).click();
   // C'est ici qu'on gagne son équipement (dès le choix de la matière).
@@ -29,6 +29,9 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
 
   // 1re réponse fausse : Questy donne un indice et on réessaie la même question.
   await expect(page.getByRole('progressbar', { name: 'Progression de la série' })).toBeVisible();
+  // Aide à tout moment, sans coût : explication complète puis retour à la même question.
+  await page.getByRole('button', { name: 'Explique-moi' }).click();
+  await page.getByRole('dialog', { name: 'Explication complète' }).getByRole('button', { name: 'J’essaie' }).click();
   const wrong = async () => {
     await page.getByRole('button', { name: 'Moins' }).click();
     await page.getByRole('button', { name: '1', exact: true }).click();
@@ -41,14 +44,14 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   const explanation = page.getByRole('region', { name: 'Explication de Questy' });
   await expect(explanation).toContainText('Tu as répondu −1');
   await expect(explanation).toContainText('La bonne réponse');
-  // L'explication ne se passe pas : « Suivant » à chaque étape, puis « Vérifions si j'ai compris ».
-  await expect(page.getByRole('button', { name: /Vérifions/ })).toBeHidden();
+  // L'explication ne se passe pas : « Suivant » à chaque étape, puis une question du même type est proposée.
+  await expect(page.getByRole('button', { name: 'Oui, j’essaie' })).toBeHidden();
   const more = page.getByRole('button', { name: /^Suivant/ });
   while (await more.isVisible()) await more.click();
   await page.getByRole('button', { name: 'Le truc à retenir' }).click();
   await expect(page.getByRole('dialog')).toContainText('Tables de multiplication');
   await page.getByRole('button', { name: /J’ai compris/ }).click();
-  await page.getByRole('button', { name: 'Vérifions si j’ai compris' }).click();
+  await page.getByRole('button', { name: 'Oui, j’essaie' }).click();
   await expect(page.getByText('Question similaire', { exact: true })).toBeVisible();
 
   // Le bilan reçoit un coffre (forcé ici, le tirage est aléatoire) : il s'ouvre en plein écran au toucher.
@@ -64,7 +67,7 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   // On répond « −1 » (toujours faux) jusqu'à la fin de la série : 5 questions + 3 variantes au plus.
   // Touche de validation : « OK », ou « ? » tant que rien n'est saisi.
   const ok = page.getByRole('button', { name: /^(OK|Je ne sais pas : un indice)$/ });
-  const next = page.getByRole('button', { name: /^Suivant|Vérifions si j’ai compris/ });
+  const next = page.getByRole('button', { name: /^Suivant|^Continuer$|^Oui, j’essaie$/ });
   const end = page.getByText(/On s’accroche/);
   for (let i = 0; i < 80; i++) {
     await expect(ok.or(next).or(end).first()).toBeVisible();
@@ -74,7 +77,7 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
       await expect(next.or(page.getByText(/Essaie encore !/))).toBeVisible();
       continue;
     }
-    const last = ((await next.textContent()) ?? '').includes('Vérifions');
+    const last = /Continuer|essaie/.test((await next.textContent()) ?? '');
     await next.click();
     if (last) await expect(next).toBeHidden();
   }
@@ -88,15 +91,15 @@ test('Entraînement : série complète de tables, correction, leçon et résulta
   await expect(opened).toHaveCount(0);
   await expect(page.getByText(/On s’accroche/)).toBeVisible();
   await expect(page.getByText('0/5')).toBeVisible();
-  await expect(page.getByText(/À revoir dès/)).toBeVisible();
+  await expect(page.getByText(/réessaie dès/)).toBeVisible();
   // Écran suivant : récapitulatif des erreurs avec la bonne réponse.
   await page.getByRole('button', { name: 'Suite' }).click();
-  await expect(page.getByText(/Tes erreurs \(\d+\)/)).toBeVisible();
+  await expect(page.getByText(/Pas encore réussies \(\d+\)/)).toBeVisible();
   await expect(page.getByText(/Bonne réponse :/).first()).toBeVisible();
 
   // La notion apparaît « à revoir » demain : pas encore échue aujourd'hui, mais évaluée.
   await page.getByRole('button', { name: 'Autre notion' }).click();
-  await expect(page.getByRole('button', { name: /Tables de multiplication/ })).toContainText('À travailler');
+  await expect(page.getByRole('button', { name: /Tables de multiplication/ })).toContainText('À renforcer');
 });
 
 test('outils : calculatrice, brouillon, tableau de conversion', async ({ page }) => {
@@ -105,10 +108,9 @@ test('outils : calculatrice, brouillon, tableau de conversion', async ({ page })
   await page.getByPlaceholder('Ex. Léa').fill(`Outil${Date.now() % 10000}`);
   await page.getByRole('button', { name: 'Un garçon' }).click();
   await page.getByLabel('Date de naissance').fill('2013-05-20');
-  await expect(page.getByText('Tu es en 4e ?')).toBeVisible();
+  await expect(page.getByText('Votre enfant est en 4e ?')).toBeVisible();
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti/ }).click();
-  await expect(page).toHaveURL(/\/hub$/);
+  await createFirstProfile(page);
   // Toutes les classes du CM1 à la 3e ont leur programme : plus de message « arrive bientôt ».
   await expect(page.getByText(/arrive bientôt/)).toHaveCount(0);
 

@@ -23,7 +23,7 @@ test('inscription : mot de passe affichable, compte actif aussitôt, reconnexion
   await toggle.click();
   await expect(page.getByLabel('Mot de passe', { exact: true })).toHaveAttribute('type', 'text');
   await page.getByRole('button', { name: 'Créer le compte' }).click();
-  await expect(page).toHaveURL(/\/profils\/nouveau$/);
+  await expect(page).toHaveURL(/\/profils\/nouveau\?pour=enfant&bienvenue=1$/);
 
   await page.context().clearCookies();
   await page.goto('/inscription');

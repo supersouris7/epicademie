@@ -1,4 +1,5 @@
 import { abs, cmp, dec, eq, fmt, isInteger, mul, parseDecimal, r, sub, type Rational } from './rational.ts';
+import { zoneName } from './cartes.ts';
 import { diagnose } from './diagnose.ts';
 import type { CheckResult, Question, Response } from './types.ts';
 
@@ -70,11 +71,49 @@ function checkPoint(answer: AnswerOf<'point'>, response: ResponseOf<'point'>, tr
   return { correct: false, why };
 }
 
+/** Zone : la zone touchée doit exister sur la carte (sinon réponse à refaire) ; la mauvaise peut avoir son piège. */
+function checkZone(answer: AnswerOf<'zone'>, response: ResponseOf<'zone'>, traps: readonly Trap[]): CheckResult {
+  if (zoneName(answer.map, response.zone) === undefined) return INVALID;
+  if (response.zone === answer.zone) return RIGHT;
+  return { correct: false, why: trapWhy(traps, (t) => 'zone' in t && t.zone === response.zone) };
+}
+
 function checkText(answer: AnswerOf<'text'>, response: ResponseOf<'text'>, traps: readonly Trap[]): CheckResult {
   if (!response.text.trim()) return INVALID;
   const given = normalizeText(response.text);
   if (answer.accepted.some((a) => normalizeText(a) === given)) return RIGHT;
   return { correct: false, why: trapWhy(traps, (t) => 'text' in t && normalizeText(t.text) === given) };
+}
+
+/** Ordre : la séquence doit reprendre chaque élément une fois ; `parts` marque les places justes. */
+function checkOrder(answer: AnswerOf<'order'>, response: ResponseOf<'order'>): CheckResult {
+  const n = answer.items.length;
+  const o = response.order;
+  if (o.length !== n || new Set(o).size !== n || o.some((i) => !Number.isInteger(i) || i < 0 || i >= n)) return INVALID;
+  const parts = answer.correct.map((c, i) => o[i] === c);
+  return parts.every(Boolean) ? RIGHT : { correct: false, parts };
+}
+
+/** Association : une paire par élément de gauche, chaque élément de droite utilisé une fois. */
+function checkMatch(answer: AnswerOf<'match'>, response: ResponseOf<'match'>): CheckResult {
+  const n = answer.left.length;
+  const p = response.pairs;
+  const m = answer.right.length;
+  if (p.length !== n || new Set(p).size !== n || p.some((i) => !Number.isInteger(i) || i < 0 || i >= m)) return INVALID;
+  const parts = answer.pairs.map((c, i) => p[i] === c);
+  return parts.every(Boolean) ? RIGHT : { correct: false, parts };
+}
+
+/** Texte à trous : correction trou par trou ; un trou vide est une saisie à refaire. */
+function checkCloze(answer: AnswerOf<'cloze'>, response: ResponseOf<'cloze'>): CheckResult {
+  if (response.answers.length !== answer.blanks.length || response.answers.some((t) => !t.trim())) return INVALID;
+  const parts = answer.blanks.map((b, i) => {
+    const given = normalizeText(response.answers[i] ?? '');
+    return b.mode === 'list'
+      ? given === normalizeText(b.options[b.correct] ?? '')
+      : b.accepted.some((a) => normalizeText(a) === given);
+  });
+  return parts.every(Boolean) ? RIGHT : { correct: false, parts };
 }
 
 /**
@@ -95,7 +134,15 @@ export function check(question: Question, response: Response): CheckResult {
       return response.kind === 'choice' ? checkChoice(answer, response, traps) : INVALID;
     case 'point':
       return response.kind === 'point' ? checkPoint(answer, response, traps) : INVALID;
+    case 'zone':
+      return response.kind === 'zone' ? checkZone(answer, response, traps) : INVALID;
     case 'text':
       return response.kind === 'text' ? checkText(answer, response, traps) : INVALID;
+    case 'order':
+      return response.kind === 'order' ? checkOrder(answer, response) : INVALID;
+    case 'match':
+      return response.kind === 'match' ? checkMatch(answer, response) : INVALID;
+    case 'cloze':
+      return response.kind === 'cloze' ? checkCloze(answer, response) : INVALID;
   }
 }

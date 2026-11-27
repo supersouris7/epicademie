@@ -6,6 +6,9 @@ import { applyKey } from './numpad.ts';
 import { typeKey } from './keyboard.ts';
 import { Keyboard } from './tools/Keyboard.tsx';
 import { NumPad, SubmitKey } from './NumPad.tsx';
+import { isStructured } from './answers.ts';
+import { StructuredAnswer } from './StructuredAnswers.tsx';
+import { ZoneAnswer } from './ZoneAnswer.tsx';
 
 interface AnswerInputProps {
   readonly question: Question;
@@ -64,6 +67,10 @@ export function AnswerInput({
 
   if (a.kind === 'choice')
     return <ChoiceAnswer options={a.options} disabled={disabled} excluded={excluded} onSubmit={onSubmit} />;
+  if (isStructured(a))
+    return <StructuredAnswer question={question} disabled={disabled} onSubmit={onSubmit} onUnknown={help} />;
+  if (a.kind === 'zone')
+    return <ZoneAnswer key={question.seed} spec={a} disabled={disabled} onSubmit={onSubmit} onUnknown={help} />;
   if (a.kind === 'point')
     return <PointAnswer picked={picked} disabled={disabled} onSubmit={onSubmit} onUnknown={help} />;
 

@@ -4,11 +4,11 @@
  */
 export const EVALUATION = {
   questions: {
-    /** Budget de questions notées visé au lancement. */
+    /** Nombre fixe de questions de l'épreuve, annoncé au lancement (moins si le programme est trop petit). */
     target: 16,
     /** Une épreuve ne se termine pas « conclue » avant ce nombre (borné par le programme choisi). */
     min: 12,
-    /** Plafond absolu, explorations comprises. */
+    /** Plafond absolu, défis bonus compris (les prérequis restent dans le nombre fixe). */
     max: 20,
   },
   /** Seuils d'un appui sur 3 niveaux. */
@@ -49,7 +49,6 @@ export const EVALUATION = {
   stateValue: { maitrisee: 1, 'a-consolider': 0.75, 'en-cours': 0.5, 'en-difficulte': 0 },
   /** Maîtrise (§7) : poids d'une essentielle, seuil d'affichage, arrondi. */
   weights: { essential: 2, other: 1 },
-  minWeightForMastery: 4,
   displayStep: 5,
   /** Comparaison de deux bilans : compétences communes minimales. */
   minCommon: 3,

@@ -29,7 +29,7 @@ export interface NewSession {
   readonly battle?: unknown;
 }
 
-export interface NewAttempt extends Omit<AnswerSubmit, 'response' | 'attempt'> {
+export interface NewAttempt extends Omit<AnswerSubmit, 'response' | 'attempt' | 'helped'> {
   readonly sessionId: string;
   readonly profileId: string;
   readonly response: unknown;

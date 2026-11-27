@@ -4,7 +4,7 @@ import { api, type AccountSearch, type ReportStatus } from '@epicademie/shared';
 export type AccountSearchInput = AccountSearch;
 import { request } from '../../shared/api/client.ts';
 
-/** Administration : signalements et état des notions (rôle administrateur, vérifié par le serveur). */
+/** Administration : signalements et état des notions (permissions vérifiées par le serveur). */
 const keys = {
   reports: (status: ReportStatus) => ['admin', 'reports', status] as const,
   content: ['admin', 'content'] as const,
@@ -12,6 +12,11 @@ const keys = {
 
 export const useReports = (status: ReportStatus) =>
   useQuery({ queryKey: keys.reports(status), queryFn: () => request(api.adminReports, { params: { status } }) });
+
+export const useStats = () => useQuery({ queryKey: ['admin', 'stats'], queryFn: () => request(api.adminStats) });
+
+export const useAnomalies = (enabled = true) =>
+  useQuery({ queryKey: ['admin', 'anomalies'], queryFn: () => request(api.adminAnomalies), enabled });
 
 export const useTrends = () => useQuery({ queryKey: ['admin', 'trends'], queryFn: () => request(api.adminTrends) });
 
@@ -44,13 +49,32 @@ export function useUpdateContent() {
   });
 }
 
-/** Opérateur reconnu par le serveur (403 : la console n'est pas ouverte depuis la page de pilotage). */
+/** Personne reconnue par le serveur et son rôle (403 : pas connectée, ou session expirée). */
 export const useAdminSession = () =>
   useQuery({
     queryKey: ['admin', 'session'],
     queryFn: () => request(api.adminSession),
     retry: false,
     staleTime: Infinity,
+    refetchOnWindowFocus: 'always',
+  });
+
+export const useAdminAuthConfig = (enabled: boolean) =>
+  useQuery({
+    queryKey: ['admin', 'auth-config'],
+    queryFn: () => request(api.adminAuthConfig),
+    retry: false,
+    enabled,
+  });
+
+/**
+ * Déconnexion, puis départ vers le fournisseur (qui ferme sa session et ramène sur `/admin`) :
+ * la page est rechargée, aucune donnée consultée ne reste en mémoire.
+ */
+export const useLogout = () =>
+  useMutation({
+    mutationFn: () => request(api.adminLogout),
+    onSuccess: ({ redirect }) => window.location.assign(redirect ?? '/admin'),
   });
 
 /** Liste paginée côté serveur : 25 comptes par page, filtres et tri envoyés au serveur. */

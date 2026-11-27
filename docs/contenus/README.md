@@ -36,6 +36,23 @@ Exemples :
   4. irréguliers rares et négation ;
   5. phrase entendue à l'audio, puis la réécrire au passé.
 
+### Qualité d'une question (exigences du client, 27/11/2026)
+
+- **Pertinente** : elle teste la notion visée et rien d'autre ; la lecture, le vocabulaire et les calculs annexes
+  restent plus simples que la notion (un problème de fractions ne doit pas échouer à cause d'un mot inconnu).
+  Contexte tiré de la vie d'un enfant de cet âge, nombres et situations réalistes ; jamais de piège gratuit.
+- **Progressive** : chaque niveau ajoute **une seule** difficulté au précédent (forme, nombres, piège, contexte),
+  sans saut. Cible de réussite d'un enfant qui a fait le niveau précédent : ≈ 90 % au niveau 1, ≈ 75 % au 3,
+  ≈ 55 % au 5. Une fois des données réelles disponibles, une question hors cible (trop facile ou trop difficile
+  pour son niveau) est signalée automatiquement et recalibrée.
+- **Bien construite** : consigne courte qui commence par le verbe d'action (« Choisis », « Écris », « Range ») ;
+  une seule bonne réponse ; distracteurs plausibles, tirés des erreurs typiques (jamais absurdes) ; en saisie,
+  toutes les écritures correctes sont acceptées (majuscules, espaces, unité, écriture équivalente).
+- **Variée** : le générateur produit assez de variantes pour qu'un enfant ne revoie pas la même question
+  dans une séance ; les situations changent, pas seulement les nombres.
+- **Utile en cas d'erreur** : la correction répond à l'erreur faite (piège reconnu → explication ciblée), puis
+  propose une question du même type pour vérifier que c'est compris.
+
 ## 2. Types de questions
 
 | Besoin                              | Type                            | Remarques                                                                                            |
@@ -49,12 +66,51 @@ Exemples :
 | Écoute                              | `audio` + tout type             | synthèse vocale de l'appareil ; le texte écouté n'apparaît pas avant la réponse                      |
 | Lecture de document                 | figure `document`               | extrait court ; texte original du domaine public ou écrit pour l'exercice                            |
 
+### Audio
+
+`Question.audio = { text, lang }` (`lang` BCP 47 : `fr-FR`, `en-GB`, `es-ES`). Le texte lu n'apparaît pas dans l'énoncé
+(contrôle `audio` du validateur). Lecture par la voix locale de l'appareil (bouton « Écouter ») ; rien n'est envoyé à
+l'extérieur. Sans voix pour la langue, l'entraînement remplace la question par une autre de la notion : prévoir
+plusieurs variantes sans audio ou avec une autre langue. Au CM1 et CM2, le bouton lit aussi l'énoncé des autres questions.
+
+### Forme des réponses structurées
+
+- `order` : `items` dans l'ordre présenté (jamais déjà rangé), `correct` = indices de `items` dans l'ordre juste.
+  Réponse : `{ kind: 'order', order: [indices] }`.
+- `match` : `left`, `right` (déjà mélangée), `pairs[i]` = indice de `right` associé à `left[i]`.
+  Réponse : `{ kind: 'match', pairs: [indices] }`.
+- `cloze` : `parts` (un segment de plus que de trous) et `blanks` : `{ mode: 'text', accepted }` ou
+  `{ mode: 'list', options, correct }`. Réponse : `{ kind: 'cloze', answers: [texte par trou] }`.
+- Les éléments d'une même colonne sont distincts (sans tenir compte de la casse) : `validate.ts` énumère toutes les
+  permutations (6 éléments au plus) et exige qu'une seule soit jugée juste.
+- `check` renvoie `parts` (réussite par place, paire ou trou) pour la correction une à une.
+- Figure `document` : `{ kind: 'document', title?, lines, credit? }`, chaque ligne est numérotée à l'affichage.
+- Figure `map` : `{ kind: 'map', map, highlight?, marks? }`. `map` : `france-regions`, `france-departements`
+  (France métropolitaine), `europe` ou `monde` (continents, océans, grands fleuves). `highlight` colore des zones,
+  `marks` pose un repère (`{ zone, label }`) au centre d'une zone. Les identifiants de zones sont ceux du registre
+  `packages/content/src/cartes-zones.ts` (INSEE pour les régions et départements, code pays à 3 lettres en minuscules pour
+  l'Europe, `afrique`, `atlantique`, `nil`… pour le monde) ; le validateur refuse toute zone inconnue.
+- Réponse `zone` : `{ kind: 'zone', map, zone }`, réponse `{ kind: 'zone', zone }`. L'élève touche la zone sur la carte
+  (boutons ＋/－ pour les petites zones). Erreur typique : `{ zone, why }`. Après une erreur, l'entraînement affiche la
+  carte avec la bonne zone surlignée. Pour « quelle est la zone surlignée ? », utiliser la figure `map` + `choice`.
+- Fonds de carte : simplifiés par `apps/web/scripts/fonds-cartes.mjs` (IGN Admin Express, Licence Ouverte 2.0, et Natural
+  Earth, domaine public), chargés à la demande ; ne pas les modifier à la main. Aucune zone contestée dans le registre
+  (ni Kosovo, ni Chypre, ni Turquie en Europe) ; la frontière Europe/Asie du monde est approchée par le méridien 60° E ;
+  les limites des océans sont des conventions simplifiées (pas d'océan Austral).
+- Saisie : toucher (numéros, OK), clavier physique (chiffres, lettres, Retour arrière, Entrée) et télécommande
+  (flèches pour passer d'un bouton à l'autre, OK pour valider).
+
 ## 3. Explications, indices, corrections
 
 - **Mémo** de la notion (`lesson.memo`) : 2 ou 3 phrases de coach, avec un mini-exemple. Chaque mot difficile
   est défini dans le glossaire de la matière.
 - **Indice** (2e essai) : met sur la voie sans donner la réponse.
 - **Étapes** : ce qu'on cherche, comment, pourquoi ; la dernière bulle donne la réponse en gras.
+  Une explication doit permettre à l'enfant de comprendre **seul, sans adulte** :
+  - **par étapes** : une idée par bulle, 3 ou 4 bulles au plus, du plus simple jusqu'au résultat ;
+  - **guidée** : chaque bulle dit quoi faire (« Regarde le nombre du bas », « Compte les parts »), pas seulement quoi savoir ;
+  - **simple** : phrases courtes (≈ 12 mots en CM1-CM2), aucun mot nouveau sans définition, toujours un exemple concret ;
+  - **vérifiable** : après l'explication, l'enfant doit pouvoir réussir seul une question du même type.
 - **Pièges** (`traps`) : au moins deux erreurs typiques par notion, chacune avec une explication ciblée.
 - **Sources** (`lesson.sources`) : programme officiel de la classe, et source institutionnelle pour chaque fait.
   Pour un fait, la source porte la citation exacte.
@@ -62,6 +118,21 @@ Exemples :
   - CM1-CM2 : ludique, phrases courtes (≈ 15 mots) ;
   - 6e et après : plus sérieux, vocabulaire disciplinaire ;
   - 3e : rappels du brevet quand c'est utile.
+
+### Ton « pas encore » (tout texte lu par l'enfant)
+
+- Une réponse fausse n'est qu'un « pas encore » : ni « raté », ni « échec », ni « mauvaise réponse », ni
+  « points faibles ». On dit « notion à renforcer », « pas encore », « Oups ! » et on invite à réessayer.
+- Après une erreur : explication ciblée, puis « Tu veux réessayer une question du même type ? ».
+- Demander un indice ou l'explication n'est **jamais** une erreur. Entraînement : les deux, à tout moment,
+  sans coût. Épreuve du chapitre : indice seulement (explication après la réponse). Boss : indice seulement,
+  attaque un peu moins forte.
+- Médailles de notion : réussite avec aide = or ; sans aide = diamant (« Reviens sans indice pour le
+  diamant ! »). Une médaille gagnée n'est jamais perdue.
+- Accord selon le profil avec `accord()` (« seul » / « seule ») ; genre non renseigné : tournure neutre
+  (« Maîtrisée sans aide »).
+- Comparaison à soi seulement (record personnel, « record à battre ») : aucun classement entre enfants.
+- Contrôle : `apps/web/src/shared/lib/ton.test.ts`.
 
 ## 4. Contrôles automatiques (bloquants en CI)
 
@@ -109,18 +180,19 @@ Un lot = une matière × une classe × un chapitre (4 à 8 notions), sur une bra
 
 ### Grille de relecture (chaque notion)
 
-| #   | Critère                   | Bloquant si…                                                                                               |
-| --- | ------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| 1   | Conformité au programme   | notion hors programme de la classe, ou terminologie différente de celle du programme                       |
-| 2   | Exactitude                | un fait sans source, une citation qui ne dit pas ce qu'affirme la question, une règle fausse               |
-| 3   | Univocité                 | deux réponses défendables, distracteur juste, variante correcte refusée                                    |
-| 4   | Progressivité             | niveaux 1 → 5 pas de difficulté croissante, niveau 5 sans contexte                                         |
-| 5   | Clarté et âge             | énoncé ambigu, trop long pour l'âge, mot difficile non défini                                              |
-| 6   | Explications              | étapes qui n'expliquent pas pourquoi, indice qui donne la réponse, piège sans explication                  |
-| 7   | Erreurs typiques          | moins de deux erreurs typiques prévues                                                                     |
-| 8   | Neutralité et sensibilité | stéréotype, jugement de valeur, sujet sensible traité sans sobriété (guerres, génocides, religions, corps) |
-| 9   | Accessibilité             | information portée par la seule couleur, écoute sans alternative                                           |
-| 10  | Données                   | prénom réel d'élève, donnée personnelle, lien externe dans l'énoncé                                        |
+| #   | Critère                    | Bloquant si…                                                                                                                                                                       |
+| --- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Conformité au programme    | notion hors programme de la classe, ou terminologie différente de celle du programme                                                                                               |
+| 2   | Exactitude                 | un fait sans source, une citation qui ne dit pas ce qu'affirme la question, une règle fausse                                                                                       |
+| 3   | Univocité                  | deux réponses défendables, distracteur juste, variante correcte refusée                                                                                                            |
+| 4   | Progressivité              | niveaux 1 → 5 pas de difficulté croissante, plus d'une difficulté ajoutée d'un niveau au suivant, niveau 5 sans contexte                                                           |
+| 4b  | Pertinence et construction | question qui échoue pour une autre raison que la notion, contexte irréaliste, consigne sans verbe d'action, distracteur absurde, écriture correcte refusée, trop peu de variantes  |
+| 5   | Clarté et âge              | énoncé ambigu, trop long pour l'âge, mot difficile non défini                                                                                                                      |
+| 6   | Explications               | étapes qui n'expliquent pas pourquoi, indice qui donne la réponse, piège sans explication, explication qui suppose l'aide d'un adulte (pas par étapes, pas guidée, trop abstraite) |
+| 7   | Erreurs typiques           | moins de deux erreurs typiques prévues                                                                                                                                             |
+| 8   | Neutralité et sensibilité  | stéréotype, jugement de valeur, sujet sensible traité sans sobriété (guerres, génocides, religions, corps)                                                                         |
+| 9   | Accessibilité              | information portée par la seule couleur, écoute sans alternative                                                                                                                   |
+| 10  | Données                    | prénom réel d'élève, donnée personnelle, lien externe dans l'énoncé                                                                                                                |
 
 Aucun lien vers un site non institutionnel. Pour la littérature : seulement des œuvres du domaine public,
 ou des textes écrits pour l'exercice.
@@ -134,3 +206,21 @@ ou des textes écrits pour l'exercice.
 - Notions existantes reprises : identifiants conservés (progression des élèves), `version` incrémentée si les
   énoncés ou réponses changent.
 - Aperçu de relecture joint à la PR (extrait), état du référentiel mis à jour (`couverte`).
+
+## 7. Outils du moteur (lot mo-03)
+
+- **Sources** : `<matiere>/sources.ts` (sciences : `sciences/<st|svt|techno>/sources.ts`) ; celles de plusieurs matières
+  dans `sources-communes.ts`, les fabriques partagées (`tlfi`, `academie`) dans `sources-outils.ts`. `sources.ts` les
+  réunit (registre et liste des domaines autorisés) ; les identifiants sont uniques dans tout le registre. Une notion
+  cite ses sources par identifiant dans `lesson.sources` (obligatoire pour les notions à 5 niveaux).
+- **Relectures** : `<matiere>/relectures.ts`, une ligne `{ skillId, version, lot, date, verdict }` par relecture.
+- **Glossaire** : `<matiere>/glossaire.ts` (maths : `glossary.ts`) ; les termes en gras d'un mémo y sont définis.
+- **Contrôles** : `couverture.test.ts` applique ces règles aux notions à 5 niveaux ; le nombre de notions
+  historiques (3 niveaux) ne peut que diminuer (constante `HISTORIQUES_MAX`, à abaisser à chaque lot).
+- **Aperçu de relecture** : `node apps/server/scripts/apercu.ts <chapitre|notion>… [--out aperçu.md]`
+  (niveaux × 3 graines : énoncé, réponse, pièges, indice, étapes, sources).
+
+## Référentiel d'évaluation d'une nouvelle matière (Arène)
+
+Gabarit et règles : `packages/content/src/referentiel/gabarit.ts`. Enregistrer le référentiel dans `REFERENTIALS` :
+`referentiel.test.ts` le contrôle alors automatiquement (rattachement des chapitres, prérequis, cycles, essentielles).

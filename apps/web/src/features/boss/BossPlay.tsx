@@ -112,6 +112,7 @@ function Battle({ profile, chapter }: { readonly profile: Profile; readonly chap
           onPick={act.pick}
           onSubmit={act.submit}
           onUseItem={act.spendItem}
+          onAskHint={act.askHint}
           onPause={() => setConfirmQuit(true)}
           onMemo={() => setMemo(true)}
           onNext={act.next}

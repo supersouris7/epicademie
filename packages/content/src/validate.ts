@@ -1,3 +1,4 @@
+import { zoneName } from './cartes.ts';
 import { check, normalizeText } from './check.ts';
 import { eq, fmt, isDecimal, type Rational } from './rational.ts';
 import type { Figure, Level, Question, Response, Trap } from './types.ts';
@@ -31,8 +32,24 @@ const MAX_MAGNITUDE = 1e9;
 
 type Check = (code: string, message: string) => void;
 
+/** Textes montrés à l'élève par la réponse elle-même (propositions, éléments, colonnes, segments). */
+function answerTexts(a: Question['answer']): readonly string[] {
+  switch (a.kind) {
+    case 'choice':
+      return a.options;
+    case 'order':
+      return a.items;
+    case 'match':
+      return [...a.left, ...a.right];
+    case 'cloze':
+      return [...a.parts, ...a.blanks.flatMap((b) => (b.mode === 'list' ? b.options : []))];
+    default:
+      return [];
+  }
+}
+
 function textChecks(q: Question, fail: Check): void {
-  const texts = [q.prompt, q.hint, ...q.steps, ...(q.answer.kind === 'choice' ? q.answer.options : [])];
+  const texts = [q.prompt, q.hint, ...q.steps, ...answerTexts(q.answer)];
   if (!q.prompt.trim()) fail('enonce-vide', 'Énoncé vide');
   if (!q.hint.trim()) fail('indice-vide', 'Indice vide');
   if (q.steps.length === 0 || q.steps.some((s) => !s.trim())) fail('correction-vide', 'Correction absente ou vide');
@@ -67,8 +84,28 @@ function rightResponses(q: Question): Response[] {
       return [{ kind: 'choice', index: a.correct }];
     case 'point':
       return [{ kind: 'point', x: a.x, y: a.y }];
+    case 'zone':
+      return [{ kind: 'zone', zone: a.zone }];
     case 'text':
       return a.accepted.map((text) => ({ kind: 'text', text: ` ${text.toUpperCase()} ` }));
+    case 'order':
+      return [{ kind: 'order', order: [...a.correct] }];
+    case 'match':
+      return [{ kind: 'match', pairs: [...a.pairs] }];
+    case 'cloze':
+      return [
+        {
+          kind: 'cloze',
+          answers: a.blanks.map((b) => (b.mode === 'list' ? (b.options[b.correct] ?? '') : (b.accepted[0] ?? ''))),
+        },
+        // Majuscules et espaces superflus : toujours acceptés.
+        {
+          kind: 'cloze',
+          answers: a.blanks.map(
+            (b) => ` ${(b.mode === 'list' ? (b.options[b.correct] ?? '') : (b.accepted[0] ?? '')).toUpperCase()} `,
+          ),
+        },
+      ];
   }
 }
 
@@ -100,11 +137,97 @@ function choiceChecks(q: Question, fail: Check): void {
   if (normalized.some((o) => o === '')) fail('qcm-vide', 'Proposition vide');
 }
 
+const MIN_ITEMS = 3;
+const MAX_ITEMS = 6;
+
+const isPermutation = (p: readonly number[], n: number) =>
+  p.length === n && new Set(p).size === n && p.every((i) => Number.isInteger(i) && i >= 0 && i < n);
+
+/** Toutes les permutations de 0..n-1 (n ≤ 6 : 720 au plus). */
+function permutations(n: number): number[][] {
+  const out: number[][] = [];
+  const walk = (cur: number[], rest: number[]) => {
+    if (rest.length === 0) out.push(cur);
+    for (const [k, x] of rest.entries()) walk([...cur, x], [...rest.slice(0, k), ...rest.slice(k + 1)]);
+  };
+  walk(
+    [],
+    Array.from({ length: n }, (_, i) => i),
+  );
+  return out;
+}
+
+/** Éléments sans doublon ni vide, sinon plusieurs ordres ou associations seraient justes. */
+function distinctItems(items: readonly string[], what: string, fail: Check): void {
+  const normalized = items.map((i) => normalizeText(i));
+  if (normalized.some((i) => i === '')) fail('element-vide', `${what} : élément vide`);
+  if (new Set(normalized).size !== normalized.length) fail('element-doublon', `${what} : éléments en double`);
+}
+
+/** Ordre : 3 à 6 éléments distincts, un seul ordre juste, jamais présenté déjà rangé. */
+function orderChecks(a: Extract<Question['answer'], { kind: 'order' }>, q: Question, fail: Check): void {
+  const n = a.items.length;
+  if (n < MIN_ITEMS || n > MAX_ITEMS) fail('ordre-taille', `Ordre : ${n} éléments (3 à 6 attendus)`);
+  if (!isPermutation(a.correct, n)) {
+    fail('ordre-permutation', 'Ordre : la solution n’est pas une permutation');
+    return;
+  }
+  distinctItems(a.items, 'Ordre', fail);
+  if (a.correct.every((c, i) => c === i)) fail('ordre-deja-range', 'Ordre : les éléments sont présentés déjà rangés');
+  if (n > MAX_ITEMS) return;
+  // Un seul ordre juste : toute autre permutation est jugée fausse.
+  const right = permutations(n).filter((p) => check(q, { kind: 'order', order: p }).correct);
+  if (right.length !== 1) fail('ordre-non-unique', `Ordre : ${right.length} ordres jugés justes (1 attendu)`);
+}
+
+/** Association : 3 à 6 paires, colonnes distinctes, une seule solution. */
+function matchChecks(a: Extract<Question['answer'], { kind: 'match' }>, q: Question, fail: Check): void {
+  const n = a.left.length;
+  if (n < MIN_ITEMS || n > MAX_ITEMS) fail('paires-taille', `Association : ${n} paires (3 à 6 attendues)`);
+  if (a.right.length !== n) {
+    fail('paires-colonnes', 'Association : colonnes de tailles différentes');
+    return;
+  }
+  if (!isPermutation(a.pairs, n)) {
+    fail('paires-permutation', 'Association : la solution n’est pas une bijection');
+    return;
+  }
+  distinctItems(a.left, 'Association (gauche)', fail);
+  distinctItems(a.right, 'Association (droite)', fail);
+  if (a.pairs.every((c, i) => c === i))
+    fail('paires-deja-rangees', 'Association : colonnes déjà en face l’une de l’autre');
+  if (n > MAX_ITEMS) return;
+  const right = permutations(n).filter((p) => check(q, { kind: 'match', pairs: p }).correct);
+  if (right.length !== 1)
+    fail('paires-non-unique', `Association : ${right.length} solutions jugées justes (1 attendue)`);
+}
+
+/** Texte à trous : segments et trous cohérents ; liste valide ; saisie courte avec au moins une variante. */
+function clozeChecks(a: Extract<Question['answer'], { kind: 'cloze' }>, fail: Check): void {
+  if (a.blanks.length === 0) fail('trou-aucun', 'Texte à trous sans trou');
+  if (a.parts.length !== a.blanks.length + 1) fail('trou-segments', 'Texte à trous : segments et trous incohérents');
+  for (const b of a.blanks) {
+    if (b.mode === 'text') {
+      if (b.accepted.length === 0 || b.accepted.some((t) => !t.trim()))
+        fail('trou-attendu', 'Trou sans réponse acceptée');
+      continue;
+    }
+    if (b.options.length < 2) fail('trou-options', 'Trou en liste avec moins de 2 propositions');
+    if (b.correct < 0 || b.correct >= b.options.length) fail('trou-correct', 'Bonne proposition hors de la liste');
+    distinctItems(b.options, 'Trou en liste', fail);
+  }
+}
+
 function answerChecks(q: Question, fail: Check): void {
   const a = q.answer;
   if (!numericChecks(q, fail)) return;
   choiceChecks(q, fail);
+  if (a.kind === 'order') orderChecks(a, q, fail);
+  if (a.kind === 'match') matchChecks(a, q, fail);
+  if (a.kind === 'cloze') clozeChecks(a, fail);
   if (a.kind === 'point' && (!Number.isInteger(a.x) || !Number.isInteger(a.y))) fail('point', 'Point hors des nœuds');
+  if (a.kind === 'zone' && zoneName(a.map, a.zone) === undefined)
+    fail('zone-inconnue', `Zone « ${a.zone} » absente de la carte ${a.map}`);
   if (a.kind === 'text' && (a.accepted.length === 0 || a.accepted.some((t) => !t.trim()))) {
     fail('texte-attendu', 'Aucune réponse écrite acceptée');
   }
@@ -117,6 +240,21 @@ function answerChecks(q: Question, fail: Check): void {
 const isRightValue = (a: Question['answer'], v: Rational) =>
   (a.kind === 'number' || a.kind === 'fraction') &&
   (eq(v, a.value) || (a.kind === 'number' && (a.accept ?? []).some((x) => eq(x, v))));
+
+/** Erreur typique sur une zone : jamais la bonne zone, toujours une zone de la carte. */
+function zoneTrapResponse(
+  a: Question['answer'],
+  t: { readonly zone: string },
+): { response: Response; problem?: [string, string] } {
+  const same = a.kind === 'zone' && t.zone === a.zone;
+  const known = a.kind === 'zone' && zoneName(a.map, t.zone) !== undefined;
+  const problem: [string, string] | undefined = same
+    ? ['piege-juste', 'Erreur typique = bonne zone']
+    : known
+      ? undefined
+      : ['piege-zone', `Erreur typique sur une zone inconnue (${t.zone})`];
+  return { response: { kind: 'zone', zone: t.zone }, problem };
+}
 
 /** Saisie correspondant à une erreur typique, et problème de cohérence éventuel. */
 function trapResponse(a: Question['answer'], t: Trap): { response: Response | null; problem?: [string, string] } {
@@ -144,6 +282,7 @@ function trapResponse(a: Question['answer'], t: Trap): { response: Response | nu
       problem: same ? ['piege-juste', 'Erreur typique = bon point'] : undefined,
     };
   }
+  if ('zone' in t) return zoneTrapResponse(a, t);
   const accepted = a.kind === 'text' && a.accepted.some((x) => normalizeText(x) === normalizeText(t.text));
   return {
     response: { kind: 'text', text: t.text },
@@ -164,6 +303,17 @@ function trapChecks(q: Question, fail: Check): void {
 }
 
 const finite = (...values: number[]) => values.every(Number.isFinite);
+
+/** Carte : zones surlignées et repères connus de la carte, repères non vides, distincts, un par zone. */
+function mapFigureChecks(f: Extract<Figure, { kind: 'map' }>, fail: Check): void {
+  const marks = f.marks ?? [];
+  const unknown = [...(f.highlight ?? []), ...marks.map((m) => m.zone)].filter((z) => zoneName(f.map, z) === undefined);
+  if (unknown.length > 0) fail('figure', `Carte ${f.map} : zone inconnue (${unknown.join(', ')})`);
+  const labels = marks.map((m) => m.label.trim());
+  if (labels.some((l) => !l) || new Set(labels).size !== labels.length)
+    fail('figure', 'Carte : repères vides ou en double');
+  if (new Set(marks.map((m) => m.zone)).size !== labels.length) fail('figure', 'Carte : deux repères sur la même zone');
+}
 
 function figureChecks(f: Figure | undefined, q: Question, fail: Check): void {
   if (!f) return;
@@ -192,9 +342,25 @@ function figureChecks(f: Figure | undefined, q: Question, fail: Check): void {
     case 'table':
       if (f.rows.length === 0) fail('figure', 'Tableau vide');
       return;
+    case 'map':
+      mapFigureChecks(f, fail);
+      return;
+    case 'document':
+      if (f.lines.length === 0 || f.lines.some((l) => !l.trim())) fail('figure', 'Document vide ou à ligne vide');
+      return;
     default:
       return;
   }
+}
+
+/** Audio : texte et langue valides, texte écouté absent de l'énoncé (question d'écoute). */
+function audioChecks(q: Question, fail: Check): void {
+  const a = q.audio;
+  if (!a) return;
+  if (!a.text.trim()) fail('audio', 'Audio sans texte');
+  if (!/^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$/.test(a.lang)) fail('audio', `Langue d'audio invalide : ${a.lang}`);
+  if (a.text.trim() && normalizeText(q.prompt).includes(normalizeText(a.text)))
+    fail('audio', 'Le texte à écouter apparaît dans l’énoncé');
 }
 
 /** Contrôles d'une question générée. */
@@ -206,6 +372,7 @@ export function validateQuestion(q: Question): ValidationIssue[] {
   answerChecks(q, fail);
   trapChecks(q, fail);
   figureChecks(q.figure, q, fail);
+  audioChecks(q, fail);
   return issues;
 }
 
@@ -220,8 +387,25 @@ function answerKey(q: Question): string {
       return `choice:${normalizeText(a.options[a.correct] ?? '')}`;
     case 'point':
       return `point:${a.x},${a.y}`;
+    case 'zone':
+      return `zone:${a.map}:${a.zone}`;
     case 'text':
       return `text:${a.accepted.map(normalizeText).sort().join('|')}`;
+    case 'order':
+      return `order:${a.correct.map((i) => normalizeText(a.items[i] ?? '')).join('|')}`;
+    case 'match':
+      return `match:${a.left
+        .map((l, i) => `${normalizeText(l)}=${normalizeText(a.right[a.pairs[i] ?? 0] ?? '')}`)
+        .sort()
+        .join('|')}`;
+    case 'cloze':
+      return `cloze:${a.blanks
+        .map((b) =>
+          b.mode === 'list'
+            ? normalizeText(b.options[b.correct] ?? '')
+            : b.accepted.map(normalizeText).sort().join('/'),
+        )
+        .join('|')}`;
   }
 }
 

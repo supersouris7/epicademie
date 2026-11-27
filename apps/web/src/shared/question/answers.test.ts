@@ -35,7 +35,19 @@ describe('réponses en texte', () => {
     expect(medalMessage({ ...base, bestAfter: 4 })).toMatch(/Argent/);
     expect(medalMessage({ ...base, bestAfter: 3 })).toMatch(/Bronze/);
     expect(medalMessage({ ...base, answered: 2, bestAfter: 0 })).toMatch(/série complète/);
-    expect(medalMessage({ ...base, bestAfter: 1 })).toMatch(/À revoir dès/);
+    expect(medalMessage({ ...base, bestAfter: 1 })).toMatch(/réessaie dès/);
     expect(medalMessage({ ...base, due: null, bestAfter: 1 })).toMatch(/bientôt/);
+  });
+
+  it('or avec aide : invitation au diamant ; diamant accordé au profil, neutre sans genre', () => {
+    const base = { answered: 4, bestBefore: 0, due: null };
+    expect(medalMessage({ ...base, bestAfter: 5 })).toMatch(
+      /réussis tout du premier coup, sans indice ni explication !/,
+    );
+    const diamond = { ...base, bestAfter: 6 };
+    expect(medalMessage(diamond, 'garcon')).toMatch(/Tu l’as maîtrisée seul !/);
+    expect(medalMessage(diamond, 'fille')).toMatch(/Tu l’as maîtrisée seule !/);
+    expect(medalMessage(diamond, null)).toMatch(/Maîtrisée sans aide !/);
+    expect(medalMessage({ ...diamond, bestBefore: 6 })).toBe('Toujours en diamant : bravo !');
   });
 });

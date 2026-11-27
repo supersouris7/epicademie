@@ -10,7 +10,8 @@
 
 L'image part de `node:24-slim` épinglée par empreinte, sans npm ni corepack, et n'est publiée que
 si l'analyse de sécurité (Trivy) ne trouve aucune faille grave corrigeable. Pour obtenir une
-nouvelle image de base, accepter la PR Dependabot correspondante.
+nouvelle image de base, accepter la PR Dependabot correspondante. Un correctif Debian pas encore
+intégré à l'image de base est appliqué dans le `Dockerfile` aux seuls paquets concernés.
 
 ## Une machine (Docker Compose)
 
@@ -44,7 +45,10 @@ si la base est à jour, avant le redémarrage du serveur).
   min.) et faire ajouter par le frontal de la page de pilotage (port réservé, authentifié) les
   en-têtes `X-Epicademie-Operateur: <secret>` et `X-Epicademie-Operateur-Nom: <identifiant>` ; le frontal
   public doit bloquer `/admin` et `/api/v1/admin` (404) et ne jamais transmettre ces en-têtes reçus
-  d'Internet. Voir [ADR 0033](../adr/0033-administration-par-operateur.md).
+  d'Internet. Voir [ADR 0033](../adr/0033-administration-par-operateur.md). Ce mode est remplacé par la
+  connexion de l'équipe ([ADR 0036](../adr/0036-roles-d-administration-oidc.md),
+  [configuration](configuration.md)) dès que celle-ci est configurée ; le frontal public bloque aussi
+  `/api/v1/admin-auth` et retire les en-têtes `X-Epicademie-Secours*`.
 - **Profils de la bêta** (créés avant les comptes) : conservés en base, sans famille, invisibles
   tant qu'ils ne sont pas rattachés. Après la migration, créer le compte familial depuis
   l'application, puis :

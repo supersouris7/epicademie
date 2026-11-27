@@ -17,7 +17,15 @@ export const ResponseSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('fraction'), num: z.string().max(20), den: z.string().max(20) }),
   z.object({ kind: z.literal('choice'), index: z.number().int().min(0).max(20) }),
   z.object({ kind: z.literal('point'), x: z.number().int().min(-50).max(50), y: z.number().int().min(-50).max(50) }),
+  /** Zone touchée sur une carte (identifiant de zone, ex. `53`, `fra`, `atlantique`). */
+  z.object({ kind: z.literal('zone'), zone: z.string().regex(/^[a-z0-9-]{1,30}$/i) }),
   z.object({ kind: z.literal('text'), text: z.string().max(80) }),
+  /** Ordre : indices des éléments dans l'ordre choisi (6 éléments au plus). */
+  z.object({ kind: z.literal('order'), order: z.array(z.number().int().min(0).max(11)).min(2).max(12).readonly() }),
+  /** Association : indice de la colonne de droite choisi pour chaque élément de gauche. */
+  z.object({ kind: z.literal('match'), pairs: z.array(z.number().int().min(0).max(11)).min(2).max(12).readonly() }),
+  /** Texte à trous : une saisie par trou. */
+  z.object({ kind: z.literal('cloze'), answers: z.array(z.string().max(80)).min(1).max(12).readonly() }),
   /** « Je ne sais pas » : compte comme une erreur. */
   z.object({ kind: z.literal('unknown') }),
 ]);
@@ -46,9 +54,11 @@ export const AnswerSubmitSchema = z.object({
   durationMs: z.number().int().nonnegative().max(3_600_000),
   /**
    * 1 : première réponse (compte pour le score et la progression) ; 2 : second essai après
-   * l'indice (enregistré comme « réussite avec aide », sans XP ni effet sur la médaille).
+   * l'indice (enregistré comme « réussite avec aide », sans XP ; compte pour la médaille d'or).
    */
   attempt: z.union([z.literal(1), z.literal(2)]).default(1),
+  /** L'élève a demandé un indice ou l'explication avant de répondre : jamais une erreur, pas de Diamant. */
+  helped: z.boolean().default(false),
 });
 export type AnswerSubmit = z.infer<typeof AnswerSubmitSchema>;
 
@@ -75,8 +85,8 @@ export const SkillProgressSchema = z.object({
   correct: z.number().int().nonnegative(),
   recent: z.array(z.boolean()).readonly(),
   maintained: z.number().int().nonnegative(),
-  /** Meilleure série sur la notion (0 à 5) : fixe la médaille (5 Or, 4 Argent, 3 Bronze). */
-  best: z.number().int().min(0).max(5),
+  /** Meilleure série sur la notion (0 à 6) : fixe la médaille (6 Diamant, 5 Or, 4 Argent, 3 Bronze). */
+  best: z.number().int().min(0).max(6),
   /** Jour de dernière pratique (fuseau de la famille) : le moteur espace les répétitions. */
   lastPracticed: DaySchema.nullable(),
 });
@@ -105,7 +115,7 @@ export const EpreuveResultSchema = z.object({
   rewarded: z.boolean(),
   /** Chapitre déjà validé avant cette épreuve. */
   alreadyValidated: z.boolean(),
-  /** Notion la plus ratée (conseil d'entraînement), null si aucune erreur. */
+  /** Notion à renforcer en priorité (conseil d'entraînement), null si tout est réussi. */
   weakestSkillId: z.string().nullable(),
 });
 export type EpreuveResult = z.infer<typeof EpreuveResultSchema>;

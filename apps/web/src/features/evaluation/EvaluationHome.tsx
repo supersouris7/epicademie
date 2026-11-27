@@ -14,9 +14,11 @@ import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import { SpeechBubble } from '../../shared/ui/SpeechBubble.tsx';
+import { BlockSkeleton } from '../../shared/ui/Skeleton.tsx';
 import { useToast } from '../../shared/ui/Toast.tsx';
 import { evaluationHomeKey, startEvaluation, useEvaluationHome } from './api.ts';
-import { competenceTitle, gradeName, KIND_INFO, round5 } from './texts.ts';
+import { appreciation } from './appreciation.ts';
+import { competenceTitle, gradeName, formatNote, KIND_INFO } from './texts.ts';
 
 const KINDS: readonly EvaluationKind[] = ['origines', 'progression', 'maitres'];
 
@@ -57,7 +59,7 @@ export function EvaluationHome({ profile }: { readonly profile: Profile }) {
           explications viennent après !
         </SpeechBubble>
       </div>
-      {isLoading && <p role="status">Chargement…</p>}
+      {isLoading && <BlockSkeleton />}
       {isError && <p role="alert">Impossible de charger l’Arène pour l’instant.</p>}
       {home && !home.available && (
         <p className="cartoon bg-surface p-4 text-lg font-bold">
@@ -164,8 +166,9 @@ export function EvaluationHome({ profile }: { readonly profile: Profile }) {
                         {h.partial ? ' (arrêtée en cours de route)' : ''}
                       </span>
                       <span>
-                        {h.mastery !== null ? `Maîtrise ${round5(h.mastery)} %` : 'Maîtrise : pas assez de questions'}
-                        {' · '}Couverture {h.coverage !== null ? `${round5(h.coverage)} %` : '–'}
+                        {h.mastery !== null
+                          ? `Note ${formatNote(h.mastery)} · ${appreciation(h.mastery, h.id)?.label ?? ''}`
+                          : 'Note : –'}
                       </span>
                     </Link>
                   </li>

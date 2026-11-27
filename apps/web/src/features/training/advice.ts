@@ -9,7 +9,7 @@ export interface RecapRow {
   readonly correct: number;
 }
 
-/** Notion souvent ratée, à proposer à l'entraînement. */
+/** Notion à renforcer, à proposer à l'entraînement. */
 export interface Advice {
   readonly skillId: string;
   readonly chapterId: string;
@@ -17,7 +17,7 @@ export interface Advice {
   readonly errors: number;
 }
 
-/** Nombre d'erreurs, parmi les `RECENT_ANSWERS` (10) dernières réponses, à partir duquel une notion est « souvent ratée ». */
+/** Nombre d'erreurs, parmi les `RECENT_ANSWERS` (10) dernières réponses, à partir duquel une notion est « à renforcer ». */
 export const OFTEN_MISSED = 3;
 
 /** Erreurs de l'élève parmi ses 10 dernières réponses (premier essai) sur une notion. */
@@ -26,10 +26,10 @@ export function recentErrors(progress: SkillProgress): number {
 }
 
 /**
- * Notion à proposer en fin de partie (décision du 22/11/2026) : une notion est « souvent ratée »
+ * Notion à proposer en fin de partie (décision du 22/11/2026) : une notion est « à renforcer »
  * quand l'élève a fait au moins 3 erreurs sur ses 10 dernières réponses (historique à jour, partie
  * comprise), et seulement dans la ou les matières de la partie jouée (retour #47 : jamais Fractions après
- * un test d'anglais). On prend en priorité une notion jouée dans la partie, puis la plus ratée. Seules les
+ * un test d'anglais). On prend en priorité une notion jouée dans la partie, puis la moins réussie. Seules les
  * notions d'entraînement comptent (pas les questions propres aux boss). Sinon : rien.
  */
 export function oftenMissed(rows: readonly RecapRow[], history: readonly SkillProgress[] = []): Advice | null {

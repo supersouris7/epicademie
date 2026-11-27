@@ -64,7 +64,9 @@ describe('connexion de l’appareil', () => {
     await user.clear(screen.getByLabelText('Mot de passe du compte'));
     await user.type(screen.getByLabelText('Mot de passe du compte'), FAKE_PASSWORD);
     await user.click(screen.getByRole('button', { name: 'Valider mon adresse' }));
-    expect(await screen.findByRole('heading', { name: 'Nouveau joueur' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Profil de votre enfant' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Compte créé' })).toBeInTheDocument();
+    expect(screen.getByText('Prénom de votre enfant (ou un pseudo)')).toBeInTheDocument();
     expect(server.calls.filter((c) => c.path === '/auth/email/verify').at(-1)?.body).toEqual({
       token: FAKE_VERIFICATION_TOKEN,
       password: FAKE_PASSWORD,
@@ -141,6 +143,36 @@ describe('connexion de l’appareil', () => {
     await user.click(await screen.findByRole('button', { name: 'Déconnecter cet appareil' }));
     expect(await screen.findByRole('heading', { name: 'Bienvenue !' })).toBeInTheDocument();
     expect(server.calls.some((c) => c.path === '/auth/logout')).toBe(true);
+  });
+});
+
+describe('passage de l’appareil à l’enfant', () => {
+  const fill = async (user: ReturnType<typeof renderApp>['user']) => {
+    await user.type(await screen.findByPlaceholderText('Ex. Léa'), 'Noé');
+    await user.click(screen.getByRole('button', { name: 'Un garçon' }));
+    await user.type(screen.getByLabelText('Date de naissance'), '2014-03-09');
+    await user.click(await screen.findByRole('button', { name: 'Oui' }));
+  };
+
+  it('1er profil créé par le parent : écran de passage, bouton ciblé, puis le jeu avec ce profil', async () => {
+    const { user } = renderApp('/profils/nouveau?pour=enfant&bienvenue=1', { profiles: [], profileId: null });
+    await fill(user);
+    await user.click(screen.getByRole('button', { name: 'Créer son profil et jouer' }));
+    expect(await screen.findByRole('heading', { name: /^Le profil de Noé est prêt\s!$/ })).toBeInTheDocument();
+    expect(screen.getByText('Passez maintenant l’appareil à Noé.')).toBeInTheDocument();
+    const start = screen.getByRole('button', { name: /^C’est parti, Noé\s!$/ });
+    expect(start).toHaveFocus();
+    expect(screen.queryByRole('group', { name: 'Mon joueur' })).not.toBeInTheDocument();
+    await user.click(start);
+    expect(await screen.findByRole('group', { name: 'Mon joueur' })).toHaveTextContent('Noé');
+  });
+
+  it('élève autonome : le jeu directement, sans écran de passage', async () => {
+    const { user } = renderApp('/profils/nouveau', { profiles: [], profileId: null });
+    await fill(user);
+    await user.click(screen.getByRole('button', { name: /C’est parti/ }));
+    expect(await screen.findByRole('group', { name: 'Mon joueur' })).toHaveTextContent('Noé');
+    expect(screen.queryByText(/Passez maintenant l’appareil/)).not.toBeInTheDocument();
   });
 });
 
@@ -247,7 +279,9 @@ describe('plateforme de test (recette)', () => {
     await user.type(screen.getByLabelText('Mot de passe'), '1234');
     expect(screen.getByRole('link', { name: 'Se connecter' })).toHaveAttribute('href', '/connexion');
     await user.click(screen.getByRole('button', { name: 'Créer le compte' }));
-    expect(await screen.findByRole('heading', { name: 'Nouveau joueur' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Profil de votre enfant' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Compte créé' })).toBeInTheDocument();
+    expect(screen.getByText('Prénom de votre enfant (ou un pseudo)')).toBeInTheDocument();
     expect(server.calls.some((c) => c.path === '/auth/email/resend')).toBe(false);
     expect(document.body).not.toHaveTextContent(/lien|boîte mail|valid/i);
   });

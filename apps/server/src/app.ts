@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
-import Fastify, { LogController, type FastifyInstance } from 'fastify';
+import Fastify, { LogController, type FastifyInstance, type FastifyRequest } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
 import { API_PREFIX } from '@epicademie/shared';
@@ -33,7 +33,13 @@ import { createEvaluationService, evaluationRoutes } from './modules/evaluation/
 import { createTrainingService, trainingRoutes } from './modules/training/index.ts';
 import { battlesRoutes, createBattlesService } from './modules/battles/index.ts';
 import { createShopService, inventoryRoutes } from './modules/inventory/index.ts';
-import { adminRoutes, createAdminService } from './modules/admin/index.ts';
+import {
+  adminAuthRoutes,
+  adminRoutes,
+  createAdminAuthService,
+  createAdminService,
+  createOidc,
+} from './modules/admin/index.ts';
 import { createInsightsService, insightsRoutes } from './modules/insights/index.ts';
 import { createPresence, type Presence } from './modules/realtime/index.ts';
 import { opsRoutes, systemRoutes } from './modules/system/index.ts';
@@ -60,6 +66,9 @@ export type AppConfig = Pick<
   | 'authRateLimitMax'
   | 'metricsToken'
   | 'adminOperatorSecret'
+  | 'adminOrigin'
+  | 'adminRescueSecret'
+  | 'adminSso'
   | 'apiDocs'
   | 'corsOrigins'
   | 'timeZone'
@@ -83,7 +92,7 @@ export interface AppDeps {
   readonly metrics?: Metrics;
   /** Envoi d'e-mails ; par défaut, journal sans contenu (aucun fournisseur configuré). */
   readonly mailer?: Mailer;
-  /** Appels HTTP sortants (paiement, Brevo, Google) ; remplaçable en test. */
+  /** Appels HTTP sortants (paiement, Brevo, Google, fournisseur d'identité) ; remplaçable en test. */
   readonly fetcher?: typeof fetch;
   /** Clés publiques de Google pour vérifier l'id_token ; remplaçables en test (aucun appel réseau). */
   readonly googleKeys?: Parameters<typeof createGoogle>[0]['keys'];
@@ -107,6 +116,20 @@ export interface App {
 /** Corps de requête maximal (les réponses d'exercice font quelques centaines d'octets). */
 const BODY_LIMIT = 64 * 1024;
 
+/** `/admin` et ses sous-adresses (avec ou sans paramètres). */
+const ADMIN_PATH = /^\/admin(\/|\?|$)/;
+
+/** Requête telle que journalisée ; le retour du fournisseur d'identité n'y laisse ni code ni state. */
+function requestForLog(request: FastifyRequest) {
+  return {
+    method: request.method,
+    url: request.url.includes('/admin-auth/callback') ? request.url.split('?')[0] : request.url,
+    host: request.host,
+    remoteAddress: request.ip,
+    remotePort: request.socket.remotePort,
+  };
+}
+
 export async function buildApp(deps: AppDeps): Promise<App> {
   const { config, database } = deps;
   const http = Fastify({
@@ -114,6 +137,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
       level: config.logLevel,
       // Jamais de secrets ni de cookies dans les journaux.
       redact: ['req.headers.authorization', 'req.headers.cookie', 'req.headers["set-cookie"]'],
+      serializers: { req: requestForLog },
     },
     bodyLimit: BODY_LIMIT,
     // Nombre de proxys de confiance (nginx…) : l'IP client réelle vient de X-Forwarded-For.
@@ -189,10 +213,30 @@ export async function buildApp(deps: AppDeps): Promise<App> {
     ? createGoogle({ ...config.google, fetcher: deps.fetcher, keys: deps.googleKeys })
     : null;
   const owns = createOwnership(db);
+  const adminAuth = createAdminAuthService({ db, clock });
+  // Connexion de l'équipe : configurée, elle remplace le secret historique de l'opérateur.
+  const sso =
+    config.adminSso && config.adminOrigin
+      ? {
+          origin: config.adminOrigin,
+          rateLimitMax: config.authRateLimitMax,
+          oidc: createOidc({
+            ...config.adminSso,
+            redirectUri: `${config.adminOrigin}${API_PREFIX}/admin-auth/callback`,
+            fetcher: deps.fetcher,
+          }),
+        }
+      : null;
   registerAuth(http, {
     resolve: (token) => accounts.resolve(token),
     allowedOrigins: config.corsOrigins,
-    operatorSecret: config.adminOperatorSecret,
+    admin: {
+      origin: config.adminOrigin,
+      resolveSession: sso ? (token) => adminAuth.resolve(token) : null,
+      operatorSecret: sso ? null : config.adminOperatorSecret,
+      rescueSecret: config.adminRescueSecret,
+      traceRescue: (admin, request) => adminAuth.traceRescue(admin, request),
+    },
   });
   const training = createTrainingService({
     db,
@@ -270,8 +314,9 @@ export async function buildApp(deps: AppDeps): Promise<App> {
       await v1.register(battlesRoutes(battles, owns, billing));
       await v1.register(billingRoutes(billing, config.billing.stripeWebhookSecret));
       await v1.register(inventoryRoutes(shop, owns));
-      await v1.register(friendsRoutes(friends, owns, (ids) => learning.ranking(ids)));
+      await v1.register(friendsRoutes(friends, owns));
       await v1.register(adminRoutes(createAdminService({ db, clock })));
+      await v1.register(adminAuthRoutes(adminAuth, sso));
       await v1.register(insightsRoutes(createInsightsService({ db, clock }), () => reporter.recent()));
       await v1.register(telemetryRoutes(reporter, createTelemetryService({ db, clock })));
     },
@@ -295,9 +340,9 @@ export async function buildApp(deps: AppDeps): Promise<App> {
 }
 
 /**
- * Front buildé (production) : fichiers statiques et repli SPA. Les fichiers à empreinte
- * (`-abcd1234.js`) sont mis en cache un an ; index.html jamais (nouvelle version visible
- * immédiatement).
+ * Front buildé (production) : fichiers statiques et repli SPA (le jeu : index.html ; la console
+ * `/admin` : admin.html). Les fichiers à empreinte (`-abcd1234.js`) sont mis en cache un an ; les
+ * pages HTML jamais (nouvelle version visible immédiatement).
  */
 async function registerWeb(http: FastifyInstance, webDir: string | null): Promise<void> {
   const hasWeb = webDir !== null && fs.existsSync(path.join(webDir, 'index.html'));
@@ -315,6 +360,9 @@ async function registerWeb(http: FastifyInstance, webDir: string | null): Promis
   http.setNotFoundHandler((request, reply) =>
     request.url.startsWith('/api/') || !hasWeb
       ? send(reply, request, 'NOT_FOUND', 'Route inconnue')
-      : reply.type('text/html').header('cache-control', 'no-cache').sendFile('index.html'),
+      : reply
+          .type('text/html')
+          .header('cache-control', 'no-cache')
+          .sendFile(ADMIN_PATH.test(request.url) ? 'admin.html' : 'index.html'),
   );
 }

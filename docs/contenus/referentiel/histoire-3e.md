@@ -10,13 +10,13 @@
 
 ## Chapitres et notions
 
-| Lot        | Chapitre                                          | Notions                                                                                                                           | État actuel |
-| ---------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| `hi-3e-01` | La Première Guerre mondiale et les totalitarismes | guerre totale (1914-1918) ; génocide des Arméniens ; démocraties fragilisées ; régimes totalitaires                               | absente     |
-| `hi-3e-02` | La Seconde Guerre mondiale                        | guerre d'anéantissement ; génocide des Juifs et des Tsiganes ; la France défaite et occupée ; Vichy, collaboration, Résistance    | absente     |
-| `hi-3e-03` | Le monde depuis 1945                              | indépendances et décolonisation ; un monde bipolaire (guerre froide) ; le projet européen ; enjeux et conflits après 1989         | absente     |
-| `hi-3e-04` | Une République repensée                           | refonder la République (1944-1947) ; la Ve République, de de Gaulle à l'alternance ; femmes et hommes dans la société (1950-1980) | absente     |
-| `hi-3e-05` | Repères et méthode (brevet)                       | repères chronologiques du cycle 4 ; frise ; lire un document historique ; vocabulaire historique                                  | absente     |
+| Lot        | Chapitre                                          | Notions                                                                                                                           | État actuel            |
+| ---------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `hi-3e-01` | La Première Guerre mondiale et les totalitarismes | guerre totale (1914-1918) ; génocide des Arméniens ; démocraties fragilisées ; régimes totalitaires                               | couverte, en relecture |
+| `hi-3e-02` | La Seconde Guerre mondiale                        | guerre d'anéantissement ; génocide des Juifs et des Tsiganes ; la France défaite et occupée ; Vichy, collaboration, Résistance    | couverte, en relecture |
+| `hi-3e-03` | Le monde depuis 1945                              | indépendances et décolonisation ; un monde bipolaire (guerre froide) ; le projet européen ; enjeux et conflits après 1989         | couverte, en relecture |
+| `hi-3e-04` | Une République repensée                           | refonder la République (1944-1947) ; la Ve République, de de Gaulle à l'alternance ; femmes et hommes dans la société (1950-1980) | absente                |
+| `hi-3e-05` | Repères et méthode (brevet)                       | repères chronologiques du cycle 4 ; frise ; lire un document historique ; vocabulaire historique                                  | absente                |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).

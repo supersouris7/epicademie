@@ -1,3 +1,4 @@
+import { BlockSkeleton } from '../../shared/ui/Skeleton.tsx';
 import { useState, type ReactNode } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router';
 import { check } from '@epicademie/content';
@@ -11,7 +12,10 @@ import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
 import { ProgressBar } from '../../shared/ui/game/ProgressBar.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { useEvaluationResult, useEvaluationReview } from './api.ts';
-import { competenceTitle, domainLabel, generateEvaluation, gradeName, KIND_INFO, round5 } from './texts.ts';
+import { appreciation } from './appreciation.ts';
+import { Questy } from '../../shared/ui/mascot/Questy.tsx';
+import { SpeechBubble } from '../../shared/ui/SpeechBubble.tsx';
+import { competenceTitle, domainLabel, formatNote, generateEvaluation, gradeName, KIND_INFO, note20 } from './texts.ts';
 
 function Section({ title, children }: { readonly title: string; readonly children: ReactNode }) {
   return (
@@ -35,7 +39,7 @@ function Chips({ ids, empty }: { readonly ids: readonly string[]; readonly empty
   );
 }
 
-/** Bilan d'une épreuve : maîtrise et couverture toujours ensemble, domaines, forces, points à travailler, suite. */
+/** Bilan d'une épreuve : note sur 20, domaines, forces, points à travailler, suite. */
 export function EvaluationResults({ profile }: { readonly profile: Profile }) {
   const { id = '' } = useParams();
   const location = useLocation();
@@ -46,7 +50,7 @@ export function EvaluationResults({ profile }: { readonly profile: Profile }) {
   if (!result) {
     return (
       <PageShell title="Mon bilan" back="/jouer/evaluation">
-        {isLoading && <p role="status">Chargement du bilan…</p>}
+        {isLoading && <BlockSkeleton />}
         {isError && <p role="alert">Ce bilan est introuvable.</p>}
       </PageShell>
     );
@@ -56,34 +60,24 @@ export function EvaluationResults({ profile }: { readonly profile: Profile }) {
 
 function Scores({ r, grade }: { readonly r: EvaluationResult; readonly grade: string }) {
   return (
-    <Section title="Maîtrise et couverture">
-      <p className="text-muted text-lg">
-        La <strong>maîtrise</strong> : ce que tu réussis dans ce qui a été évalué. La <strong>couverture</strong> : la
-        part du programme de {grade} que cette épreuve a pu regarder.
-      </p>
-      <ProgressBar
-        value={r.masteryDisplayable && r.mastery !== null ? round5(r.mastery) : 0}
-        max={100}
-        label="Maîtrise"
-        color="var(--success)"
-        text={
-          r.masteryDisplayable && r.mastery !== null
-            ? `Maîtrise ${round5(r.mastery)} %`
-            : 'Maîtrise : pas encore mesurable'
-        }
-      />
-      <ProgressBar
-        value={round5(r.coverage)}
-        max={100}
-        label="Couverture"
-        color="var(--gold)"
-        text={`Couverture ${round5(r.coverage)} %`}
-      />
-      {!r.masteryDisplayable && (
-        <p className="text-lg">
-          Pas assez de questions sur l’essentiel pour afficher une maîtrise fiable : ce n’est pas un échec.
+    <Section title="Ma note">
+      {r.masteryDisplayable && r.mastery !== null && (
+        <p
+          className="font-display text-toon text-5xl text-[var(--gold)]"
+          aria-label={`Note : ${note20(r.mastery)} sur 20`}
+        >
+          {note20(r.mastery)}
+          <span className="text-muted text-2xl"> /20</span>
         </p>
       )}
+      <p className="text-muted text-lg">Ta note sur 20 dit ce que tu réussis dans le programme de {grade} évalué.</p>
+      <ProgressBar
+        value={r.masteryDisplayable && r.mastery !== null ? note20(r.mastery) : 0}
+        max={20}
+        label="Note"
+        color="var(--success)"
+        text={r.masteryDisplayable && r.mastery !== null ? `Note ${formatNote(r.mastery)}` : 'Note : –'}
+      />
       <p className="text-lg">
         {r.counts.mastered} maîtrisée{r.counts.mastered > 1 ? 's' : ''} · {r.counts.inProgress} en progrès ·{' '}
         {r.counts.struggling} à travailler · {r.questions} questions
@@ -121,6 +115,7 @@ function Body(p: {
   const grade = gradeName(r.referentialGrade);
   const adv = r.competences.filter((c) => c.role === 'avance' && c.state === 'maitrisee');
   const title = (cid: string) => r.competences.find((c) => c.id === cid)?.title ?? competenceTitle(cid);
+  const mood = appreciation(r.masteryDisplayable ? r.mastery : null, r.id, r.partial);
   return (
     <PageShell title={`Mon bilan · ${info.name}`} back={p.back}>
       <div className="flex items-center gap-3">
@@ -132,6 +127,15 @@ function Body(p: {
         </p>
       </div>
 
+      {mood && (
+        <div className="flex items-center gap-3" aria-label="Appréciation de Questy">
+          <Questy size={90} mood={mood.mood} />
+          <SpeechBubble>
+            <strong>{mood.label} !</strong> {mood.line}
+          </SpeechBubble>
+        </div>
+      )}
+
       <Scores r={r} grade={grade} />
 
       {r.domains.length > 0 && (
@@ -140,16 +144,14 @@ function Body(p: {
             {r.domains.map((d) => (
               <li key={d.domain}>
                 <ProgressBar
-                  value={d.mastery === null ? 0 : round5(d.mastery)}
-                  max={100}
+                  value={d.mastery === null ? 0 : note20(d.mastery)}
+                  max={20}
                   label={domainLabel(d.domain)}
                   color="var(--success)"
                   size="sm"
                 />
                 <p className="text-lg">
-                  <strong>{domainLabel(d.domain)}</strong> ·{' '}
-                  {d.mastery === null ? 'pas évalué' : `maîtrise ${round5(d.mastery)} %`} · couverture{' '}
-                  {round5(d.coverage)} %
+                  <strong>{domainLabel(d.domain)}</strong> · {d.mastery === null ? 'pas évalué' : formatNote(d.mastery)}
                 </p>
               </li>
             ))}
@@ -166,10 +168,10 @@ function Body(p: {
         )}
       </Section>
 
-      <Section title={r.kind === 'origines' ? 'À consolider pour réussir dans ta classe' : 'À travailler'}>
+      <Section title={r.kind === 'origines' ? 'À consolider pour réussir dans ta classe' : 'Notions à renforcer'}>
         <Chips
           ids={r.kind === 'origines' && r.forNextYear.length > 0 ? r.forNextYear : r.toWork}
-          empty="Rien de fragile repéré, bravo !"
+          empty="Rien à renforcer repéré, bravo !"
         />
         {r.prerequisitesToRework.length > 0 && (
           <>
@@ -181,7 +183,7 @@ function Body(p: {
 
       {(r.notEvaluated.length > 0 || r.notStudied.length > 0) && (
         <Section title="Pas évalué">
-          <p className="text-muted text-lg">Ce n’est pas une mauvaise note : on n’a simplement pas pu le voir.</p>
+          <p className="text-muted text-lg">Cela ne change pas ta note : on n’a simplement pas pu le voir.</p>
           <Chips ids={[...r.notEvaluated, ...r.notStudied]} empty="" />
         </Section>
       )}
@@ -236,7 +238,7 @@ function Body(p: {
 /** Corrections : enfin, la question, la réponse donnée, la bonne réponse et l'explication. */
 function Review({ id }: { readonly id: string }) {
   const { data, isLoading } = useEvaluationReview(id, true);
-  if (isLoading || !data) return <p role="status">Chargement des corrections…</p>;
+  if (isLoading || !data) return <BlockSkeleton />;
   return (
     <ol className="flex flex-col gap-2" aria-label="Corrections">
       {data.questions.map((q, i) => {

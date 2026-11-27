@@ -1,6 +1,26 @@
-import type { Chapter, Level, Skill } from '../types.ts';
+import type { Chapter, Skill } from '../types.ts';
 import { choice, trueFalse } from '../build.ts';
-import { DEPARTEMENTS, GEO_FETCHED_ON, PAYS_UE, REGIONS } from './donnees.generated.ts';
+import { SKILLS as LIEUX } from './lieux.ts';
+import { SKILLS as VIE } from './vie.ts';
+import { SKILLS as TRANSPORTS } from './transports.ts';
+import { SKILLS as INTERNET } from './internet.ts';
+import { SKILLS as MIEUX_HABITER } from './habiter.ts';
+import { SKILLS as METROPOLE } from './metropole.ts';
+import { SKILLS as FAIBLE_DENSITE } from './faible-densite.ts';
+import { SKILLS as LITTORAUX } from './littoraux.ts';
+import { SKILLS as REPERES } from './reperes.ts';
+import { SKILLS as MONDE_HABITE } from './monde-habite.ts';
+import { SKILLS as REPERES_MONDE } from './reperes-monde.ts';
+import { SKILLS as DEMOGRAPHIE } from './demographie.ts';
+import { SKILLS as CHANGEMENT_GLOBAL } from './changement-global.ts';
+import { SKILLS as RESSOURCES } from './ressources.ts';
+import { SKILLS as REPERES_5E } from './reperes-5e.ts';
+import { SKILLS as URBANISATION } from './urbanisation.ts';
+import { SKILLS as MOBILITES } from './mobilites.ts';
+import { SKILLS as MONDIALISATION } from './mondialisation.ts';
+import { SKILLS as REPERES_4E } from './reperes-4e.ts';
+import { SKILLS as DYNAMIQUES_TERRITORIALES } from './dynamiques-territoriales.ts';
+import { GEO_FETCHED_ON, PAYS_UE, REGIONS } from './donnees.generated.ts';
 
 /**
  * Géographie (docs/adr/0024-contenus-hors-maths.md) : repères sur la France et l'Union
@@ -49,73 +69,6 @@ const regions: Skill = {
       traps,
       hint: 'C’est souvent la plus grande ville de la région.',
       steps: [`La région ${r.name} a pour chef-lieu ${r.chefLieu}.`, `Réponse : **${r.chefLieu}**.`],
-    };
-  },
-};
-
-/** Numéros des départements : de l'Ain (01) au Val-d'Oise (95), puis l'outre-mer (971 à 976). */
-const departmentsFor = (level: Level) =>
-  level === 1 ? DEPARTEMENTS.filter((d) => /^\d+$/.test(d.code) && Number(d.code) <= 30) : DEPARTEMENTS;
-
-const departments: Skill = {
-  id: 'gcm2-departements',
-  title: 'Les numéros des départements',
-  lesson: {
-    memo: [
-      'Chaque département a un numéro (code), souvent dans l’ordre alphabétique : 01 Ain, 02 Aisne, 03 Allier…',
-      'La Corse a deux départements : 2A (Corse-du-Sud) et 2B (Haute-Corse). L’outre-mer : 971 à 976.',
-    ],
-    source: `Géographie : les départements. ${INSEE}.`,
-  },
-  generate: (rng, level) => {
-    const pool = departmentsFor(level);
-    const d = rng.pick(pool);
-    const { answer, traps } = choice(
-      rng,
-      d.name,
-      others(rng, pool, d).map((o) => ({ label: o.name, why: `${o.name} porte le numéro ${o.code}.` })),
-    );
-    return {
-      prompt: `Quel département porte le numéro **${d.code}** ?`,
-      answer,
-      traps,
-      hint: 'Les premiers numéros suivent à peu près l’ordre alphabétique.',
-      steps: [`Le département n° ${d.code} est : ${d.name}.`, `Réponse : **${d.name}**.`],
-    };
-  },
-};
-
-const prefectures: Skill = {
-  id: 'g6-prefectures',
-  title: 'Les préfectures',
-  lesson: {
-    memo: ['Chaque département a une préfecture (son chef-lieu) : Gironde → Bordeaux, Rhône → Lyon, Nord → Lille.'],
-    source: `Géographie : les départements et leurs préfectures. ${INSEE}.`,
-  },
-  generate: (rng, level) => {
-    const pool = departmentsFor(level);
-    const d = rng.pick(pool);
-    const { answer, traps } = choice(
-      rng,
-      d.prefecture,
-      others(
-        rng,
-        pool.filter((o) => o.prefecture !== d.prefecture),
-        d,
-      ).map((o) => ({
-        label: o.prefecture,
-        why: `${o.prefecture} est la préfecture du département ${o.name}.`,
-      })),
-    );
-    return {
-      prompt: `Quelle est la préfecture du département **${d.name}** (${d.code}) ?`,
-      answer,
-      traps,
-      hint: 'La préfecture est le chef-lieu du département.',
-      steps: [
-        `Le département ${d.name} (${d.code}) a pour préfecture ${d.prefecture}.`,
-        `Réponse : **${d.prefecture}**.`,
-      ],
     };
   },
 };
@@ -192,7 +145,25 @@ const chapter = (id: string, grade: Chapter['grade'], title: string, skills: rea
 
 export const GEOGRAPHIE_CHAPTERS: readonly Chapter[] = [
   chapter('gcm1-regions', 'cm1', 'Les régions de France', [regions]),
-  chapter('gcm2-departements', 'cm2', 'Les départements', [departments]),
-  chapter('g6-prefectures', '6e', 'Les préfectures', [prefectures]),
+  chapter('gcm1-lieux', 'cm1', 'Les lieux où j’habite', LIEUX),
+  chapter('gcm1-se-loger', 'cm1', 'Se loger, travailler, avoir des loisirs', VIE),
+  chapter('gcm2-se-deplacer', 'cm2', 'Se déplacer', TRANSPORTS),
+  chapter('gcm2-internet', 'cm2', 'Communiquer grâce à Internet', INTERNET),
+  chapter('gcm2-mieux-habiter', 'cm2', 'Mieux habiter', MIEUX_HABITER),
+  chapter('gcm2-departements', 'cm2', 'Repères : France et Europe', REPERES),
+  chapter('g6-habiter-metropole', '6e', 'Habiter une métropole', METROPOLE),
+  chapter('g6-faible-densite', '6e', 'Habiter un espace de faible densité', FAIBLE_DENSITE),
+  chapter('g6-littoraux', '6e', 'Habiter les littoraux', LITTORAUX),
+  chapter('g6-monde-habite', '6e', 'Le monde habité', MONDE_HABITE),
+  chapter('g6-prefectures', '6e', 'Repères : la France et le monde', REPERES_MONDE),
+  chapter('g5-demographie-developpement', '5e', 'Démographie et développement', DEMOGRAPHIE),
+  chapter('g5-ressources-limitees', '5e', 'Des ressources limitées, à gérer et à renouveler', RESSOURCES),
+  chapter('g5-changement-global', '5e', 'Changement global et risques', CHANGEMENT_GLOBAL),
+  chapter('g5-reperes', '5e', 'Repères de 5e', REPERES_5E),
+  chapter('g4-urbanisation-monde', '4e', 'L’urbanisation du monde', URBANISATION),
+  chapter('g4-mobilites-transnationales', '4e', 'Les mobilités humaines transnationales', MOBILITES),
+  chapter('g4-espaces-mondialisation', '4e', 'Des espaces transformés par la mondialisation', MONDIALISATION),
+  chapter('g4-reperes', '4e', 'Repères de 4e', REPERES_4E),
+  chapter('g3-dynamiques-territoriales', '3e', 'Dynamiques territoriales de la France', DYNAMIQUES_TERRITORIALES),
   chapter('g3-union-europeenne', '3e', 'L’Union européenne', [euCapitals, euro]),
 ];

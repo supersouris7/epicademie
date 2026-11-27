@@ -35,7 +35,6 @@ const ROUTES = [
   '/arene',
   '/connectes',
   '/amis',
-  '/classement',
   '/partie/defi/:defi/:subject',
   '/jouer/:modeId',
   '/jouer/entrainement/:subject',

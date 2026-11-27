@@ -11,8 +11,8 @@
 
 | Lot         | Chapitre            | Notions                                                                              | État actuel |
 | ----------- | ------------------- | ------------------------------------------------------------------------------------ | ----------- |
-| `em-cm2-01` | Vivre en République | valeurs et symboles ; droits de tous ; la commune et ses élus ; le vote              | absente     |
-| `em-cm2-02` | S'informer en ligne | liberté d'expression ; liberté de l'information ; vérifier une information ; sources | absente     |
+| `em-cm2-01` | Vivre en République | valeurs et symboles ; droits de tous ; la commune et ses élus ; le vote              | couverte    |
+| `em-cm2-02` | S'informer en ligne | liberté d'expression ; liberté de l'information ; vérifier une information ; sources | couverte    |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).

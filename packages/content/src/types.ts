@@ -1,4 +1,5 @@
 import type { Grade, SubjectId } from '@epicademie/shared';
+import type { MapId } from './cartes.ts';
 import type { Rational } from './rational.ts';
 import type { Rng } from './rng.ts';
 
@@ -95,6 +96,25 @@ export type Figure =
       readonly line: boolean;
     }
   | { readonly kind: 'blocks'; readonly program: readonly Block[] }
+  /** Extrait de texte numéroté ligne par ligne (lecture, source historique). */
+  | {
+      readonly kind: 'document';
+      readonly title?: string;
+      /** Une chaîne par ligne ; le rendu les numérote à partir de 1. */
+      readonly lines: readonly string[];
+      /** Origine de l'extrait (auteur, œuvre, date), affichée sous le texte. */
+      readonly credit?: string;
+    }
+  /**
+   * Carte (France régions ou départements, Europe, monde) : `highlight` colore des zones, `marks` pose un repère
+   * (numéro ou lettre) au centre d'une zone. Les identifiants de zones sont ceux de `cartes-zones.ts`.
+   */
+  | {
+      readonly kind: 'map';
+      readonly map: MapId;
+      readonly highlight?: readonly string[];
+      readonly marks?: readonly { readonly zone: string; readonly label: string }[];
+    }
   | { readonly kind: 'pattern'; readonly steps: readonly (readonly [number, number][])[] };
 
 /** Programme par blocs (façon Scratch) pour la pensée informatique. */
@@ -122,15 +142,46 @@ export type AnswerSpec =
   | { readonly kind: 'fraction'; readonly value: Rational }
   | { readonly kind: 'choice'; readonly options: readonly Rich[]; readonly correct: number }
   | { readonly kind: 'point'; readonly x: number; readonly y: number }
+  /** Toucher une zone d'une carte (identifiant de `cartes-zones.ts`). */
+  | { readonly kind: 'zone'; readonly map: MapId; readonly zone: string }
   /** Réponse écrite (clavier) : comparée sans tenir compte de la casse, des espaces doublés ni de l'apostrophe typographique. */
-  | { readonly kind: 'text'; readonly accepted: readonly string[] };
+  | { readonly kind: 'text'; readonly accepted: readonly string[] }
+  /**
+   * Remettre dans l'ordre : `items` est l'ordre présenté à l'élève, `correct` donne les indices de `items`
+   * dans l'ordre juste (une permutation). Les éléments doivent être distincts : un seul ordre juste.
+   */
+  | { readonly kind: 'order'; readonly items: readonly Rich[]; readonly correct: readonly number[] }
+  /**
+   * Associer deux colonnes : `pairs[i]` est l'indice de `right` associé à `left[i]` (une permutation).
+   * `right` est présenté tel quel (déjà mélangé par le générateur).
+   */
+  | {
+      readonly kind: 'match';
+      readonly left: readonly Rich[];
+      readonly right: readonly Rich[];
+      readonly pairs: readonly number[];
+    }
+  /** Texte à trous : `parts` compte un segment de plus que `blanks` ; le trou i s'insère entre parts[i] et parts[i+1]. */
+  | { readonly kind: 'cloze'; readonly parts: readonly Rich[]; readonly blanks: readonly ClozeBlank[] };
+
+/** Un trou : saisie courte (variantes acceptées) ou liste de propositions. */
+export type ClozeBlank =
+  | { readonly mode: 'text'; readonly accepted: readonly string[] }
+  | { readonly mode: 'list'; readonly options: readonly string[]; readonly correct: number };
 
 export type Response =
   | { readonly kind: 'number'; readonly text: string }
   | { readonly kind: 'fraction'; readonly num: string; readonly den: string }
   | { readonly kind: 'choice'; readonly index: number }
   | { readonly kind: 'point'; readonly x: number; readonly y: number }
+  | { readonly kind: 'zone'; readonly zone: string }
   | { readonly kind: 'text'; readonly text: string }
+  /** Ordre : indices de `items` dans l'ordre choisi par l'élève (tous les éléments). */
+  | { readonly kind: 'order'; readonly order: readonly number[] }
+  /** Association : `pairs[i]` est l'indice de `right` choisi pour `left[i]`. */
+  | { readonly kind: 'match'; readonly pairs: readonly number[] }
+  /** Texte à trous : une saisie par trou (le texte de la proposition choisie pour une liste). */
+  | { readonly kind: 'cloze'; readonly answers: readonly string[] }
   /** « Je ne sais pas » : compte comme une erreur (indice, puis explication). */
   | { readonly kind: 'unknown' };
 
@@ -139,7 +190,14 @@ export type Trap =
   | { readonly value: Rational; readonly why: Rich }
   | { readonly option: number; readonly why: Rich }
   | { readonly point: { x: number; y: number }; readonly why: Rich }
+  | { readonly zone: string; readonly why: Rich }
   | { readonly text: string; readonly why: Rich };
+
+/** Texte à écouter et sa langue (code BCP 47 : `fr-FR`, `en-GB`, `es-ES`…). */
+export interface Audio {
+  readonly text: string;
+  readonly lang: string;
+}
 
 export interface Question {
   readonly skillId: string;
@@ -147,6 +205,11 @@ export interface Question {
   readonly seed: number;
   readonly prompt: Rich;
   readonly figure?: Figure;
+  /**
+   * Audio lu par la synthèse vocale de l'appareil (jamais envoyé à l'extérieur). Le texte lu n'apparaît pas
+   * dans l'énoncé : question d'écoute. Sans voix pour `lang`, la question est remplacée par une autre.
+   */
+  readonly audio?: Audio;
   readonly answer: AnswerSpec;
   readonly traps: readonly Trap[];
   /**
@@ -196,6 +259,11 @@ export interface Lesson {
   readonly memo: readonly Rich[];
   /** Référence : objectif du programme officiel et éventuelle source complémentaire. */
   readonly source: string;
+  /**
+   * Identifiants du registre des sources (`sources.ts`) : programme de la classe et sources des faits.
+   * Obligatoire pour toute notion à 5 niveaux (docs/adr/0034) ; facultatif pour les notions historiques.
+   */
+  readonly sources?: readonly string[];
 }
 
 /** Outils d'aide en plus du pavé, du brouillon et de la calculatrice (toujours là sauf `mental`). */
@@ -247,6 +315,18 @@ export const DOMAINS = {
   'physique-chimie': 'Physique-chimie',
   svt: 'Sciences de la vie et de la Terre',
   technologie: 'Technologie',
+  // Matière « Français » et domaines ajoutés par l'ADR 0034 (l'EMC est un domaine de la matière histoire).
+  grammaire: 'Grammaire',
+  conjugaison: 'Conjugaison',
+  orthographe: 'Orthographe',
+  vocabulaire: 'Vocabulaire',
+  lecture: 'Lecture',
+  litterature: 'Littérature',
+  histoire: 'Histoire',
+  geographie: 'Géographie',
+  emc: 'Enseignement moral et civique',
+  'comprehension-orale': 'Compréhension orale',
+  culture: 'Culture',
 } as const;
 export type DomainId = keyof typeof DOMAINS;
 
@@ -281,6 +361,32 @@ export interface CheckResult {
   readonly correct: boolean;
   /** Saisie illisible (ex. « 3,,2 ») : on redemande sans compter d'erreur. */
   readonly invalid?: boolean;
+  /** Texte à trous, association : réussite de chaque trou ou de chaque paire (correction une à une). */
+  readonly parts?: readonly boolean[];
   /** Explication de l'erreur typique reconnue, le cas échéant. */
   readonly why?: Rich;
+}
+
+/**
+ * Relecture pédagogique d'une notion à une version (docs/adr/0034, point 7) : une ligne par notion et version relue.
+ */
+export interface Relecture {
+  readonly skillId: string;
+  /** Version de la notion relue (`Skill.version`, 1 par défaut). */
+  readonly version: number;
+  /** Lot de production (ex. `fr-cm1-01`). */
+  readonly lot: string;
+  /** AAAA-MM-JJ. */
+  readonly date: string;
+  readonly verdict: 'ok' | 'corriger';
+}
+
+/** Mot défini dans le glossaire d'une matière (docs/adr/0034, point 8). */
+export interface SubjectTerm {
+  readonly id: string;
+  readonly word: string;
+  /** Formes reconnues (minuscules, pluriels compris). */
+  readonly forms: readonly string[];
+  readonly definition: Rich;
+  readonly example: Rich;
 }

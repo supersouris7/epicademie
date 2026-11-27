@@ -1,15 +1,19 @@
+import { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import type { Question, Response, Skill } from '@epicademie/content';
+import { getChapterOfSkill, type Question, type Response, type Skill } from '@epicademie/content';
 import type { Profile } from '@epicademie/shared';
 import { Feedback } from '../../shared/question/Feedback.tsx';
 import { Figure } from '../../shared/question/figures/Figure.tsx';
+import { ListenButton } from '../../shared/question/ListenButton.tsx';
+import { READ_ALOUD_GRADES } from '../../shared/lib/speech.ts';
 import { MathText } from '../../shared/question/MathText.tsx';
 import { QuestionTools } from '../../shared/question/QuestionTools.tsx';
 import { ReportButton } from '../../shared/question/ReportButton.tsx';
 import { DOCK_HEIGHT, toolTabs } from '../../shared/question/tools.ts';
+import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { GameIcon } from '../../shared/ui/game/GameIcon.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
-import type { Current, Retry, TrainingScreen } from './state.ts';
+import type { Current, Help, Retry, TrainingScreen } from './state.ts';
 
 type Point = { readonly x: number; readonly y: number };
 
@@ -22,20 +26,27 @@ export function TrainingQuestion({
   screen,
   skill,
   gender,
+  epreuve,
   onPick,
   onSubmit,
   onNext,
+  onHelp,
+  onCloseExplanation,
   onMemo,
 }: {
   readonly screen: TrainingScreen;
   readonly skill: Skill | undefined;
   readonly gender: Profile['gender'];
+  /** Épreuve du chapitre : indice seulement, l'explication vient après la réponse. */
+  readonly epreuve: boolean;
+  readonly onHelp: (help: Help) => void;
+  readonly onCloseExplanation: () => void;
   readonly onPick: (point: Point | null) => void;
   readonly onSubmit: (response: Response) => void;
-  readonly onNext: () => void;
+  readonly onNext: (skipSimilar?: boolean) => void;
   readonly onMemo: () => void;
 }) {
-  const { current, answered, retry, picked } = screen;
+  const { current, answered, picked } = screen;
   const advice = current?.advise ? skill?.advice : undefined;
   const explaining = answered !== null && !answered.correct;
   return (
@@ -61,8 +72,18 @@ export function TrainingQuestion({
             <h1 className="text-2xl leading-snug font-bold sm:text-3xl xl:text-4xl">
               <MathText text={current.question.prompt} terms />
             </h1>
-            {retry && !answered && <RetryHint retry={retry} hint={current.question.hint} />}
-            {advice && !answered && !retry && toolTabs(current.question, skill).includes(advice) && (
+            <ListenButton
+              question={current.question}
+              readPrompt={READ_ALOUD_GRADES.includes(getChapterOfSkill(current.question.skillId)?.grade ?? '')}
+            />
+            <StatementHelp
+              screen={screen}
+              question={current.question}
+              epreuve={epreuve}
+              onHelp={onHelp}
+              onCloseExplanation={onCloseExplanation}
+            />
+            {advice && !answered && !screen.retry && toolTabs(current.question, skill).includes(advice) && (
               <AdviceNote advice={advice} />
             )}
             {current.question.figure && (
@@ -74,6 +95,7 @@ export function TrainingQuestion({
                 reveal={revealedPoint(current.question, explaining)}
               />
             )}
+            <ZoneReveal question={current.question} explaining={explaining} />
           </section>
 
           {/* Écran coupé : pavé et outils en bas (portrait) ou sur le côté (paysage). */}
@@ -85,6 +107,7 @@ export function TrainingQuestion({
             gender={gender}
             onSubmit={onSubmit}
             onNext={onNext}
+            onHint={() => onHelp('hint')}
             onMemo={onMemo}
           />
         </motion.main>
@@ -111,13 +134,7 @@ function RetryHint({ retry, hint }: { readonly retry: Retry; readonly hint: stri
         <Questy mood="wink" size={72} />
       </span>
       <span className="cartoon bg-[color-mix(in_srgb,var(--danger)_14%,var(--surface))] px-3 py-2">
-        {retry.unknown ? (
-          'Pas de souci, voici un indice pour t’aider.'
-        ) : retry.why ? (
-          <MathText text={retry.why} />
-        ) : (
-          'Ce n’est pas ça…'
-        )}
+        {retry.why ? <MathText text={retry.why} /> : 'Pas encore…'}
         <span className="mt-1 flex items-start gap-1.5">
           <GameIcon id="icons-navigation-hint" size="xs" />
           <span>
@@ -127,6 +144,123 @@ function RetryHint({ retry, hint }: { readonly retry: Retry; readonly hint: stri
         <span className="text-muted mt-1 block">Relis l’indice et réfléchis avant de répondre. Essaie encore !</span>
       </span>
     </motion.p>
+  );
+}
+
+/**
+ * Sous l'énoncé, tant qu'on n'a pas répondu : l'indice du 2e essai ou celui demandé, les boutons
+ * d'aide, et l'explication complète quand elle est ouverte.
+ */
+function StatementHelp({
+  screen,
+  question,
+  epreuve,
+  onHelp,
+  onCloseExplanation,
+}: {
+  readonly screen: TrainingScreen;
+  readonly question: Question;
+  readonly epreuve: boolean;
+  readonly onHelp: (help: Help) => void;
+  readonly onCloseExplanation: () => void;
+}) {
+  const [explanationOpen, setExplanationOpen] = useState(false);
+  const { answered, retry, help } = screen;
+  if (answered) return null;
+  const asked = help.includes('hint');
+  const explain = () => {
+    onHelp('explanation');
+    setExplanationOpen(true);
+  };
+  return (
+    <>
+      {retry && <RetryHint retry={retry} hint={question.hint} />}
+      {!retry && asked && <HintNote hint={question.hint} />}
+      <HelpButtons
+        hintShown={retry !== null || asked}
+        onHint={() => onHelp('hint')}
+        onExplain={epreuve ? undefined : explain}
+      />
+      {explanationOpen && (
+        <FullExplanation
+          question={question}
+          onClose={() => {
+            setExplanationOpen(false);
+            onCloseExplanation();
+          }}
+        />
+      )}
+    </>
+  );
+}
+
+/** Indice demandé avant de répondre. */
+function HintNote({ hint }: { readonly hint: string }) {
+  return (
+    <p className="cartoon bg-surface-2 flex items-start gap-2 px-3 py-2 font-bold" role="status">
+      <GameIcon id="icons-navigation-hint" size="xs" />
+      <span>
+        <strong>Indice :</strong> <MathText text={hint} />
+      </span>
+    </p>
+  );
+}
+
+/** Aides à tout moment, sans coût (à l'Épreuve : l'indice seulement). */
+function HelpButtons({
+  hintShown,
+  onHint,
+  onExplain,
+}: {
+  readonly hintShown: boolean;
+  readonly onHint: () => void;
+  readonly onExplain: (() => void) | undefined;
+}) {
+  const button = 'cartoon cartoon-press bg-surface-2 flex items-center gap-1.5 px-3 py-1.5 text-sm font-bold';
+  return (
+    <div className="flex flex-wrap gap-2" role="group" aria-label="Aide">
+      {!hintShown && (
+        <button type="button" onClick={onHint} className={button}>
+          <GameIcon id="icons-navigation-hint" size="xs" />
+          Un indice
+        </button>
+      )}
+      {onExplain && (
+        <button type="button" onClick={onExplain} className={button}>
+          <GameIcon id="icons-navigation-lesson" size="xs" />
+          Explique-moi
+        </button>
+      )}
+    </div>
+  );
+}
+
+/** Explication complète demandée avant de répondre : ensuite, l'enfant répond à la même question. */
+function FullExplanation({ question, onClose }: { readonly question: Question; readonly onClose: () => void }) {
+  return (
+    <div
+      className="fixed inset-0 z-40 flex items-end justify-center bg-black/50 p-3 sm:items-center"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Explication complète"
+    >
+      <div className="cartoon bg-surface flex max-h-[85dvh] w-full max-w-xl flex-col gap-3 p-4">
+        <div className="flex items-center gap-3">
+          <Questy mood="wink" size={64} />
+          <h2 className="font-display text-2xl tracking-wide">On regarde ensemble</h2>
+        </div>
+        <ol className="flex min-h-0 flex-col gap-2 overflow-y-auto">
+          {question.steps.map((s, i) => (
+            <li key={i} className="bg-surface-2 rounded-2xl p-3 text-lg leading-snug">
+              <MathText text={s} />
+            </li>
+          ))}
+        </ol>
+        <GameButton className="self-end" variant="success" onClick={onClose}>
+          J’essaie
+        </GameButton>
+      </div>
+    </div>
   );
 }
 
@@ -174,6 +308,7 @@ function AnswerDock({
   gender,
   onSubmit,
   onNext,
+  onHint,
   onMemo,
 }: {
   readonly screen: TrainingScreen;
@@ -182,10 +317,11 @@ function AnswerDock({
   readonly advice: Skill['advice'];
   readonly gender: Profile['gender'];
   readonly onSubmit: (response: Response) => void;
-  readonly onNext: () => void;
+  readonly onNext: (skipSimilar?: boolean) => void;
+  readonly onHint: () => void;
   readonly onMemo: () => void;
 }) {
-  const { answered, retry, picked } = screen;
+  const { answered, retry, picked, help, training } = screen;
   const explaining = answered !== null && !answered.correct;
   return (
     <section
@@ -202,7 +338,9 @@ function AnswerDock({
           streak={answered.streak}
           gender={gender}
           onMemo={onMemo}
-          onNext={onNext}
+          similar={training.pendingVariant !== null}
+          onNext={() => onNext()}
+          onSkip={() => onNext(true)}
         />
       ) : (
         <QuestionTools
@@ -214,14 +352,17 @@ function AnswerDock({
           attempt={retry?.nonce ?? 0}
           picked={picked}
           onSubmit={onSubmit}
-          onUnknown={() => onSubmit({ kind: 'unknown' })}
-          unknownWarning={
-            retry
-              ? 'Tu vas voir l’explication : cette question comptera comme une erreur.'
-              : 'Questy te donne un indice, mais cette question comptera comme une erreur.'
-          }
+          // « ? » : l'indice, tout de suite et sans coût.
+          onUnknown={retry || help.includes('hint') ? undefined : onHint}
         />
       )}
     </section>
   );
+}
+
+/** Après une erreur sur une zone : la carte s'affiche avec la bonne zone surlignée. */
+function ZoneReveal({ question, explaining }: { readonly question: Question; readonly explaining: boolean }) {
+  const a = question.answer;
+  if (!explaining || a.kind !== 'zone') return null;
+  return <Figure figure={{ kind: 'map', map: a.map, highlight: [a.zone] }} maxHeight="var(--figure-max)" />;
 }

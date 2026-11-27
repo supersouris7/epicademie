@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { queryOptions, useQuery } from '@tanstack/react-query';
 import { api, type EvaluationAnswer, type EvaluationCreate, type SubjectId } from '@epicademie/shared';
 import { request } from '../../shared/api/client.ts';
 
@@ -6,11 +6,14 @@ import { request } from '../../shared/api/client.ts';
 export const evaluationHomeKey = (profileId: string, subject: string) =>
   ['evaluation-home', profileId, subject] as const;
 
-export const useEvaluationHome = (profileId: string, subject: SubjectId) =>
-  useQuery({
+export const evaluationHomeQuery = (profileId: string, subject: SubjectId) =>
+  queryOptions({
     queryKey: evaluationHomeKey(profileId, subject),
     queryFn: () => request(api.evaluationHome, { params: { id: profileId, subject } }),
   });
+
+export const useEvaluationHome = (profileId: string, subject: SubjectId) =>
+  useQuery(evaluationHomeQuery(profileId, subject));
 
 export const useEvaluationResult = (id: string) =>
   useQuery({ queryKey: ['evaluation', id], queryFn: () => request(api.evaluationResult, { params: { id } }) });

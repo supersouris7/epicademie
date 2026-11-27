@@ -60,8 +60,6 @@ describe('outils de réponse', () => {
     );
     const user = userEvent.setup();
     await user.keyboard('?');
-    expect(onUnknown).not.toHaveBeenCalled();
-    await user.click(screen.getByRole('button', { name: 'Oui, aide-moi' }));
     expect(onUnknown).toHaveBeenCalledOnce();
     await user.keyboard('42{Enter}');
     expect(onSubmit).toHaveBeenCalledWith({ kind: 'number', text: '42' });

@@ -11,6 +11,8 @@ export interface ScoredCompetence {
   readonly state: CompetenceState;
   /** Déclarée « vue en classe » (Progression, Maîtres). */
   readonly studied?: boolean;
+  /** Réussite pondérée (0–1) quand l'élève a répondu sans preuve suffisante : comptée dans la note. */
+  readonly rate?: number | null;
 }
 
 export const competenceWeight = (c: Pick<ScoredCompetence, 'essential'>): number =>
@@ -34,9 +36,9 @@ export const isEvaluated = (state: CompetenceState): boolean => stateValue(state
 const sum = (xs: readonly number[]) => xs.reduce((a, b) => a + b, 0);
 
 export interface Scores {
-  /** 0–100 non arrondi ; null si rien n'est évalué. */
+  /** 0–100 non arrondi (note sur 20 = M / 5) ; null seulement si l'élève n'a répondu à rien de noté. */
   readonly mastery: number | null;
-  /** M peut être montrée (au moins 4 points de poids évalués). */
+  /** M peut être montrée : toujours, dès qu'il y a une réponse notée (décision client du 24/11). */
   readonly masteryDisplayable: boolean;
   readonly coverage: number;
   /** Part du programme étudiée (0–100), null si la notion ne s'applique pas. */
@@ -54,14 +56,19 @@ export function computeScores(program: readonly ScoredCompetence[], trackStudied
   const evaluated = program.filter((c) => c.scored && isEvaluated(c.state));
   const evalWeight = sum(evaluated.map(competenceWeight));
   const programWeight = sum(program.map(competenceWeight));
-  const mastery =
-    evalWeight > 0
-      ? (sum(evaluated.map((c) => competenceWeight(c) * (stateValue(c.state) ?? 0))) / evalWeight) * 100
-      : null;
+  // Note : compétences évaluées (valeur de leur état) et compétences répondues sans preuve suffisante
+  // (leur réussite), pour qu'une épreuve répondue ait toujours une note.
+  const valued = program.flatMap((c) => {
+    if (!c.scored) return [];
+    const v = stateValue(c.state) ?? (c.state === 'evaluation-insuffisante' ? (c.rate ?? null) : null);
+    return v === null ? [] : [{ w: competenceWeight(c), v }];
+  });
+  const valuedWeight = sum(valued.map((x) => x.w));
+  const mastery = valuedWeight > 0 ? (sum(valued.map((x) => x.w * x.v)) / valuedWeight) * 100 : null;
   const studiedWeight = sum(program.filter((c) => c.studied).map(competenceWeight));
   return {
     mastery,
-    masteryDisplayable: evalWeight >= EVALUATION.minWeightForMastery,
+    masteryDisplayable: mastery !== null,
     coverage: programWeight > 0 ? (evalWeight / programWeight) * 100 : 0,
     studied: trackStudied && programWeight > 0 ? (studiedWeight / programWeight) * 100 : null,
     counts: {

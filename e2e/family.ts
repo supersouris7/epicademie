@@ -23,9 +23,20 @@ export async function signupFamily(
   await page.getByLabel('E-mail du parent').fill(email);
   await page.getByLabel('Mot de passe', { exact: true }).fill(PASSWORD);
   await page.getByRole('button', { name: 'Créer le compte' }).click();
-  await expect(page).toHaveURL(/\/profils\/nouveau$/);
+  await expect(page).toHaveURL(/\/profils\/nouveau\?pour=enfant/);
+  await expect(page.getByRole('region', { name: 'Compte créé' })).toBeVisible();
   if (premium) await subscribe(page);
   return email;
+}
+
+/** Envoi du 1er profil après l'inscription, puis passage de l'appareil à l'enfant : arrive au jeu. */
+export async function createFirstProfile(page: Page): Promise<void> {
+  await page.getByRole('button', { name: 'Créer son profil et jouer' }).click();
+  await expect(page.getByRole('heading', { name: /^Le profil de .+ est prêt\s!$/ })).toBeVisible();
+  const start = page.getByRole('button', { name: /^C’est parti, .+\s!$/ });
+  await expect(start).toBeFocused();
+  await start.click();
+  await expect(page).toHaveURL(/\/hub$/);
 }
 
 /** Paiement simulé de l'année scolaire (même session que la page, verrou parent ouvert). */

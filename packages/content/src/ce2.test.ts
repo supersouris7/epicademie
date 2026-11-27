@@ -20,8 +20,19 @@ function perfect(q: Question): Response {
       return { kind: 'choice', index: a.correct };
     case 'point':
       return { kind: 'point', x: a.x, y: a.y };
+    case 'zone':
+      return { kind: 'zone', zone: a.zone };
     case 'text':
       return { kind: 'text', text: a.accepted[0] ?? '' };
+    case 'order':
+      return { kind: 'order', order: [...a.correct] };
+    case 'match':
+      return { kind: 'match', pairs: [...a.pairs] };
+    case 'cloze':
+      return {
+        kind: 'cloze',
+        answers: a.blanks.map((b) => (b.mode === 'list' ? (b.options[b.correct] ?? '') : (b.accepted[0] ?? ''))),
+      };
   }
 }
 

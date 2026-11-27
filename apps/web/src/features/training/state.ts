@@ -42,9 +42,10 @@ export interface Retry {
   readonly excluded?: number;
   /** Identifiant de l'essai (relance l'animation et remet les outils à zéro). */
   readonly nonce: number;
-  /** L'enfant a dit « Je ne sais pas » (pas une mauvaise réponse). */
-  readonly unknown?: boolean;
 }
+
+/** Aide demandée avant de répondre : jamais une erreur, elle écarte seulement le Diamant. */
+export type Help = 'hint' | 'explanation';
 
 /** Réaction du héros en haut de l'écran ; `nonce` relance l'animation de la bulle. */
 export interface HeroReaction extends HeroLine {
@@ -57,9 +58,11 @@ export interface TrainingScreen {
   readonly current: Current | null;
   readonly answered: Answered | null;
   readonly retry: Retry | null;
+  /** Aides demandées pour la question en cours. */
+  readonly help: readonly Help[];
   /** Nœud choisi sur une figure (réponse « point »). */
   readonly picked: { readonly x: number; readonly y: number } | null;
-  /** Questions ratées (récapitulatif de fin). */
+  /** Questions à revoir (récapitulatif de fin). */
   readonly missed: readonly Missed[];
   /** Bonnes réponses d'affilée (bonus d'XP). */
   readonly streak: number;
@@ -77,6 +80,7 @@ export const initialTrainingScreen = (training: TrainingState, hello: HeroLine):
   current: null,
   answered: null,
   retry: null,
+  help: [],
   picked: null,
   missed: [],
   streak: 0,
@@ -96,6 +100,8 @@ export type TrainingEvent =
       readonly response: Response;
       readonly durationMs: number;
     }
+  | { readonly type: 'helpAsked'; readonly help: Help }
+  | { readonly type: 'variantDeclined' }
   | { readonly type: 'picked'; readonly point: { readonly x: number; readonly y: number } | null }
   | { readonly type: 'finishing' }
   | { readonly type: 'finished'; readonly summary: SessionSummary }
@@ -159,8 +165,7 @@ export function createTrainingReducer(heroSays: (moment: HeroMoment) => HeroLine
     if (!correct && canRetry(current.question)) {
       const nonce = s.retries + 1;
       const excluded = response.kind === 'choice' ? response.index : undefined;
-      const unknown = response.kind === 'unknown';
-      return { ...scored, retry: { why, excluded, nonce, unknown }, retries: nonce, picked: null };
+      return { ...scored, retry: { why, excluded, nonce }, retries: nonce, picked: null };
     }
     return { ...scored, answered: { correct, why, given: response, xp, streak } };
   };
@@ -170,13 +175,18 @@ export function createTrainingReducer(heroSays: (moment: HeroMoment) => HeroLine
       case 'started':
         return { ...s, sessionId: e.sessionId };
       case 'drawn': {
-        const drawn = { ...s, current: e.current, answered: null, retry: null, picked: null };
+        const drawn = { ...s, current: e.current, answered: null, retry: null, help: [], picked: null };
         return e.lastOne ? react(drawn, 'lastOne') : drawn;
       }
       case 'answered':
         // Réponse ignorée sans question, ou une fois la correction affichée.
         if (!s.current || s.answered) return s;
         return s.retry ? secondAttempt(s, e.result, e.response) : firstAttempt(s, s.current, e);
+      case 'helpAsked':
+        if (!s.current || s.answered || s.help.includes(e.help)) return s;
+        return { ...s, help: [...s.help, e.help] };
+      case 'variantDeclined':
+        return { ...s, training: { ...s.training, pendingVariant: null } };
       case 'picked':
         return { ...s, picked: e.point };
       case 'finishing':

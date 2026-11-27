@@ -1,9 +1,10 @@
-import { useId, useState, type ReactNode } from 'react';
+import { Fragment, useId, useState, type ReactNode } from 'react';
 import { Link, Navigate, Outlet, useLocation, useNavigate, useSearchParams } from 'react-router';
 import { PASSWORD_MIN } from '@epicademie/shared';
 import { ApiError } from '../../shared/api/client.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
+import { ScreenSkeleton } from '../../shared/ui/Skeleton.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import {
   forgotPassword,
@@ -32,7 +33,7 @@ const message = (err: unknown, fallback: string) => (err instanceof ApiError ? e
 export function RequireAccount({ children }: { readonly children?: ReactNode }) {
   const { data, error, isPending, refetch } = useMe();
   const location = useLocation();
-  if (isPending) return <p className="p-8 text-xl">Chargement…</p>;
+  if (isPending) return <ScreenSkeleton />;
   if (error instanceof ApiError && error.status === 401) {
     return <Navigate to="/bienvenue" replace state={{ from: location.pathname }} />;
   }
@@ -45,11 +46,12 @@ export function RequireAccount({ children }: { readonly children?: ReactNode }) 
       </div>
     );
   }
+  // Famille changée (autre onglet) : les écrans repartent de zéro, sans rien garder à l'affichage.
   return (
-    <>
+    <Fragment key={data.family.id}>
       {children}
       <Outlet />
-    </>
+    </Fragment>
   );
 }
 
@@ -140,7 +142,7 @@ function BigLink({ to, children }: { readonly to: string; readonly children: Rea
  */
 export function HiddenInRecette({ children }: { readonly children: ReactNode }) {
   const { data, isPending } = useAuthOptions();
-  if (isPending) return <p className="p-8 text-xl">Chargement…</p>;
+  if (isPending) return <ScreenSkeleton />;
   if (data?.recette) return <Navigate to="/connexion" replace />;
   return children;
 }
@@ -298,7 +300,7 @@ export function SignupScreen() {
     <AuthForm
       title={student ? 'Ton compte' : 'Compte familial'}
       intro={
-        recette
+        recette && student
           ? 'Crée ton compte : e-mail et mot de passe, et tu peux jouer.'
           : student
             ? 'Crée ton compte avec ton e-mail, puis choisis ton profil de joueur.'
@@ -315,7 +317,9 @@ export function SignupScreen() {
           const result = await signup({ email, password });
           if (result.status === 'active' && result.me) {
             setMe(result.me);
-            void navigate('/profils/nouveau', { replace: true });
+            void navigate(student ? '/profils/nouveau' : '/profils/nouveau?pour=enfant&bienvenue=1', {
+              replace: true,
+            });
           } else setSent(result.email);
         } catch (err) {
           setError(message(err, 'Création impossible pour le moment.'));
@@ -419,7 +423,7 @@ export function VerifyEmailScreen() {
       onSubmit={async () => {
         try {
           setMe(await verifyEmail(token, password));
-          void navigate('/profils/nouveau', { replace: true });
+          void navigate('/profils/nouveau?pour=enfant&bienvenue=1', { replace: true });
         } catch (err) {
           // Mot de passe refusé : le lien reste valable, on réessaie ici. Autre refus : lien à renouveler.
           if (err instanceof ApiError && err.status === 401)

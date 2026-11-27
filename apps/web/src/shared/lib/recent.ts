@@ -1,4 +1,5 @@
 import { generate, type Level, type Question } from '@epicademie/content';
+import { isPlayable } from './speech.ts';
 import { safeStorage } from './storage.ts';
 
 /** Énoncés retenus par notion et par profil (sur l'appareil), pour ne pas les reposer de sitôt. */
@@ -28,7 +29,8 @@ export interface PromptsToAvoid {
 
 /**
  * Question sans doublon pour la notion prévue, en changeant de graine (`nextSeed`) tant que
- * l'énoncé est à éviter. Une notion à peu d'énoncés possibles finit par en reposer d'anciens.
+ * l'énoncé est à éviter. Une question d'écoute sans voix pour sa langue est remplacée par une autre de la
+ * notion (docs/adr/0034). Une notion à peu d'énoncés possibles finit par en reposer d'anciens.
  */
 export function freshQuestion(
   { skillId, level, seed }: { readonly skillId: string; readonly level: Level; readonly seed: number },
@@ -39,6 +41,10 @@ export function freshQuestion(
   let s = seed;
   for (let i = 0; i < 60; i++) {
     const question = generate(skillId, level, s);
+    if (!isPlayable(question)) {
+      s = nextSeed();
+      continue;
+    }
     if (!seen.has(question.prompt)) {
       if (!recent.includes(question.prompt)) return { question, seed: s };
       best ??= { question, seed: s };

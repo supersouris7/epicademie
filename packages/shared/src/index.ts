@@ -21,3 +21,4 @@ export * from './insights.ts';
 export * from './friends.ts';
 export * from './evaluation.ts';
 export * from './admin.ts';
+export * from './admin-roles.ts';

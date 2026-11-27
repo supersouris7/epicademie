@@ -1,5 +1,28 @@
 import type { Chapter, Skill } from '../types.ts';
 import { choice } from '../build.ts';
+import { SKILLS as AGE_INDUSTRIEL } from './age-industriel.ts';
+import { SKILLS as AVANT_LA_FRANCE } from './avant-la-france.ts';
+import { SKILLS as CHRETIENTES_ISLAM } from './chretientes-islam.ts';
+import { SKILLS as OCCIDENT_FEODAL } from './occident-feodal.ts';
+import { SKILLS as EMPIRE_ROMAIN } from './empire-romain.ts';
+import { SKILLS as FRANCE_XIXE } from './france-xixe.ts';
+import { SKILLS as GUERRES_EUROPE } from './guerres-europe.ts';
+import { SKILLS as GUERRES_TOTALES } from './guerres-totales.ts';
+import { SKILLS as HUMANITE } from './humanite.ts';
+import { SKILLS as MONDE_1945 } from './monde-1945.ts';
+import { SKILLS as TEMPS_DES_ROIS } from './le-temps-des-rois.ts';
+import { SKILLS as RECITS_FONDATEURS } from './recits-fondateurs.ts';
+import { SKILLS as REVOLUTION_EMPIRE } from './revolution-empire.ts';
+import { SKILLS as REPERES_4E } from './reperes-4e.ts';
+import { SKILLS as REPERES_5E } from './reperes-5e.ts';
+import { SKILLS as REPERES_6E } from './reperes-6e.ts';
+import { SKILLS as SECONDE_GUERRE } from './seconde-guerre.ts';
+import { SKILLS as SE_REPERER_CM2 } from './se-reperer-cm2.ts';
+import { SKILLS as SE_REPERER } from './se-reperer.ts';
+import { SKILLS as TEMPS_REPUBLIQUE } from './temps-republique.ts';
+import { SKILLS as TRANSFORMATIONS_EUROPE } from './transformations-europe.ts';
+import { SKILLS as XIXE_SIECLE } from './xixe-siecle.ts';
+import { SKILLS as XVIIIE_SIECLE } from './xviiie-siecle.ts';
 
 /**
  * Histoire, cycle 3 (docs/adr/0024-contenus-hors-maths.md). Source institutionnelle unique :
@@ -195,8 +218,31 @@ const chapter = (id: string, grade: Chapter['grade'], title: string, skills: rea
 
 export const HISTOIRE_CHAPTERS: readonly Chapter[] = [
   chapter('hcm1-reperes', 'cm1', 'Des Gaulois à Napoléon', [skillOf('hcm1-reperes', 'Repères de CM1', CM1, 'CM1')]),
+  chapter('hcm1-avant-la-france', 'cm1', 'Et avant la France ?', AVANT_LA_FRANCE),
+  chapter('hcm1-temps-des-rois', 'cm1', 'Le temps des rois', TEMPS_DES_ROIS),
+  chapter('hcm1-revolution-empire', 'cm1', 'Révolution et Empire', REVOLUTION_EMPIRE),
+  chapter('hcm1-se-reperer', 'cm1', 'Se repérer dans le temps', SE_REPERER),
   chapter('hcm2-reperes', 'cm2', 'La République et le XXe siècle', [
     skillOf('hcm2-reperes', 'Repères de CM2', CM2, 'CM2'),
   ]),
+  chapter('hcm2-temps-republique', 'cm2', 'Le temps de la République', TEMPS_REPUBLIQUE),
+  chapter('hcm2-age-industriel', 'cm2', 'L’âge industriel en France', AGE_INDUSTRIEL),
+  chapter('hcm2-guerres-europe', 'cm2', 'Des guerres mondiales à l’Union européenne', GUERRES_EUROPE),
+  chapter('hcm2-se-reperer', 'cm2', 'Se repérer dans le temps', SE_REPERER_CM2),
   chapter('h6-reperes', '6e', 'L’Antiquité', [skillOf('h6-reperes', 'Repères de 6e', SIXIEME, 'sixième')]),
+  chapter('h6-humanite-migrations', '6e', 'L’humanité et ses migrations', HUMANITE),
+  chapter('h6-recits-fondateurs', '6e', 'Récits fondateurs et citoyenneté', RECITS_FONDATEURS),
+  chapter('h6-empire-romain', '6e', 'L’empire romain dans le monde antique', EMPIRE_ROMAIN),
+  chapter('h6-se-reperer', '6e', 'Se repérer dans le temps', REPERES_6E),
+  chapter('h5-chretientes-islam', '5e', 'Chrétientés et islam (VIe-XIIIe s.)', CHRETIENTES_ISLAM),
+  chapter('h5-occident-feodal', '5e', 'L’Occident féodal (XIe-XVe s.)', OCCIDENT_FEODAL),
+  chapter('h5-transformations-europe', '5e', 'Transformations de l’Europe (XVIe-XVIIe s.)', TRANSFORMATIONS_EUROPE),
+  chapter('h5-se-reperer', '5e', 'Repères de 5e', REPERES_5E),
+  chapter('h4-xviiie-siecle', '4e', 'Le XVIIIe siècle : expansions, Lumières et révolutions', XVIIIE_SIECLE),
+  chapter('h4-europe-monde-xixe', '4e', 'L’Europe et le monde au XIXe siècle', XIXE_SIECLE),
+  chapter('h4-france-xixe', '4e', 'Société, culture et politique dans la France du XIXe siècle', FRANCE_XIXE),
+  chapter('h4-se-reperer', '4e', 'Repères de 4e', REPERES_4E),
+  chapter('h3-guerres-totales', '3e', 'La Première Guerre mondiale et les totalitarismes', GUERRES_TOTALES),
+  chapter('h3-seconde-guerre', '3e', 'La Seconde Guerre mondiale', SECONDE_GUERRE),
+  chapter('h3-monde-depuis-1945', '3e', 'Le monde depuis 1945', MONDE_1945),
 ];

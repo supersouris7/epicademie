@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import { useState } from 'react';
 import { BirthDateSchema, GRADE_INFO, gradeFromBirthDate, gradeInfo, type Grade } from '@epicademie/shared';
 import { localToday } from '../lib/dates.ts';
-import { comingSoon } from '../lib/grades.ts';
+import { comingSoon } from '../lib/comingSoon.ts';
 import { GameButton } from './game/GameButton.tsx';
 import { Questy } from './mascot/Questy.tsx';
 
@@ -10,16 +10,32 @@ interface GradePickerProps {
   readonly birthDate: string;
   readonly grade: Grade | null;
   readonly onChange: (g: Grade) => void;
+  /** Rempli par le parent pour son enfant : vouvoiement (« Votre enfant est en 5e ? »). */
+  readonly parent?: boolean;
 }
 
-const question = (g: Grade) => (g === 'adulte' ? 'Tu es un adulte ?' : `Tu es en ${gradeInfo(g).name} ?`);
+const CHILD = {
+  question: (g: Grade) => (g === 'adulte' ? 'Tu es un adulte ?' : `Tu es en ${gradeInfo(g).name} ?`),
+  birth: 'Indique ta date de naissance : Questy devinera ta classe.',
+  asking: 'Questy te demande ta classe…',
+  label: 'Ta classe',
+  which: 'Quelle est ta classe ?',
+};
+const PARENT: typeof CHILD = {
+  question: (g: Grade) => (g === 'adulte' ? 'C’est un adulte ?' : `Votre enfant est en ${gradeInfo(g).name} ?`),
+  birth: 'Indiquez sa date de naissance : Questy devinera sa classe.',
+  asking: 'Questy vous demande sa classe…',
+  label: 'Sa classe',
+  which: 'Quelle est sa classe ?',
+};
 
 /**
  * Classe du joueur : déduite de la date de naissance, Questy demande de confirmer dans une fenêtre
  * au premier plan (« Tu es en 5e ? »).
  * « Non » ouvre la liste ; les classes sans contenu sont marquées « À venir » mais restent choisissables.
  */
-export function GradePicker({ birthDate, grade, onChange }: GradePickerProps) {
+export function GradePicker({ birthDate, grade, onChange, parent = false }: GradePickerProps) {
+  const t = parent ? PARENT : CHILD;
   const [choosing, setChoosing] = useState(false);
   const validBirth = BirthDateSchema.safeParse(birthDate).success;
   const guess = validBirth ? gradeFromBirthDate(birthDate, localToday()) : null;
@@ -29,18 +45,18 @@ export function GradePicker({ birthDate, grade, onChange }: GradePickerProps) {
   };
 
   if (!validBirth && !grade) {
-    return <p className="text-muted font-bold">Indique ta date de naissance : Questy devinera ta classe.</p>;
+    return <p className="text-muted font-bold">{t.birth}</p>;
   }
 
   if (!grade && guess && !choosing) {
     // Questy demande en grand (fenêtre au premier plan) : impossible de passer à côté.
     return (
       <>
-        <p className="text-muted font-bold">Questy te demande ta classe…</p>
+        <p className="text-muted font-bold">{t.asking}</p>
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Ta classe"
+          aria-label={t.label}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
         >
           <motion.div
@@ -49,7 +65,7 @@ export function GradePicker({ birthDate, grade, onChange }: GradePickerProps) {
             className="cartoon border-accent bg-surface flex w-full max-w-md flex-col items-center gap-4 p-6 text-center"
           >
             <Questy mood="wow" size={120} />
-            <h2 className="font-display text-3xl tracking-wide">{question(guess)}</h2>
+            <h2 className="font-display text-3xl tracking-wide">{t.question(guess)}</h2>
             <div className="flex flex-wrap justify-center gap-3">
               <GameButton size="lg" variant="success" icon="icons-status-correct" onClick={() => pick(guess)}>
                 Oui
@@ -81,8 +97,8 @@ export function GradePicker({ birthDate, grade, onChange }: GradePickerProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      {!guess && validBirth && <p className="font-bold">Quelle est ta classe ?</p>}
-      <div role="radiogroup" aria-label="Ta classe" className="grid grid-cols-4 gap-2 sm:grid-cols-7">
+      {!guess && validBirth && <p className="font-bold">{t.which}</p>}
+      <div role="radiogroup" aria-label={t.label} className="grid grid-cols-4 gap-2 sm:grid-cols-7">
         {GRADE_INFO.map((g) => (
           <button
             key={g.id}

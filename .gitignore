@@ -13,3 +13,6 @@ apps/server/data/
 
 # Document de stratégie produit : local uniquement (dépôt public)
 docs/projet/VISION.md
+
+# Carte du code Graphify (locale, regeneree par la fabrique)
+graphify-out/

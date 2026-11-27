@@ -3,7 +3,7 @@ import { count, eq } from 'drizzle-orm';
 import type { AccountDetail, AccountPage, AuditPage, Profile, TemporaryPassword } from '@epicademie/shared';
 import { accounts, adminAudit, authSessions, contentEvents, passwordResets, profiles } from '../../db/schema.ts';
 import { loadConfig } from '../../config.ts';
-import { sanitizeOperatorName } from '../../core/http/auth.ts';
+import { sanitizeAdminName } from '../../core/http/admin-identity.ts';
 import { createTestApp, profileInput, TEST_OPERATOR_SECRET, TEST_PASSWORD } from '../../testing/harness.ts';
 import { newTemporaryPassword } from './admin.service.ts';
 
@@ -32,7 +32,11 @@ describe('opérateur d’administration', () => {
     });
     expect(wrong.statusCode).toBe(403);
     expect((await t.raw.inject('/api/v1/admin/session')).statusCode).toBe(403);
-    expect((await op.inject('/api/v1/admin/session')).json()).toEqual({ operator: 'Marie Dupont' });
+    expect((await op.inject('/api/v1/admin/session')).json()).toEqual({
+      operator: 'Marie Dupont',
+      role: 'proprietaire',
+      via: 'operateur',
+    });
   });
 
   it('droits d’administration uniquement : aucune famille, aucun profil', async () => {
@@ -60,9 +64,9 @@ describe('opérateur d’administration', () => {
   });
 
   it('nom assaini : caractères de contrôle retirés, 40 caractères', () => {
-    expect(sanitizeOperatorName('  Marie\n\tDupont\u0000 ')).toBe('Marie Dupont');
-    expect(sanitizeOperatorName('a'.repeat(100))).toHaveLength(40);
-    expect(sanitizeOperatorName(undefined)).toBe('operateur');
+    expect(sanitizeAdminName('  Marie\n\tDupont\u0000 ')).toBe('Marie Dupont');
+    expect(sanitizeAdminName('a'.repeat(100))).toHaveLength(40);
+    expect(sanitizeAdminName(undefined)).toBe('operateur');
   });
 
   it('origine vérifiée pour les requêtes non sûres', async () => {
@@ -224,6 +228,8 @@ describe('fiche d’un compte', () => {
       ['Marie Dupont', 'consultation', id],
     ]);
     expect(audit.hasMore).toBe(false);
+    // Nom court : e-mail masqué (jamais l'adresse entière), avec de quoi ouvrir la fiche.
+    expect(audit.items.every((a) => a.accountExists && /^.…@/.test(a.accountLabel))).toBe(true);
     expect(new Date(audit.items[0]?.at ?? '').getTime()).toBeGreaterThan(0);
   });
 });

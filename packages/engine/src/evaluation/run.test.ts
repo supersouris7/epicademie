@@ -415,15 +415,46 @@ describe('arrêt, reprise et expiration (§5.5)', () => {
     if (n.done) throw new Error('attendu');
     expect(nextEvaluationQuestion(n.state, NOW + 30 * MIN)).toMatchObject({ done: false, question: n.question });
   });
-  it('fin au maximum de 20 questions : partielle', () => {
+  it('nombre fixe : exactement le nombre annoncé, quelles que soient les réponses', () => {
     const program = Array.from({ length: 12 }, (_, i) => comp(`c${i}`, 'nombres', true));
-    const s = { ...createEvaluation(plan(program)), asked: 0 };
-    const p = play(s, (q) => q.index % 2 === 0);
-    expect(p.asked.length).toBeLessThanOrEqual(EVALUATION.questions.max);
-    const forced = play({ ...createEvaluation(plan(eight())), asked: 20 }, () => true);
+    const policies = [
+      () => true,
+      (q: EvaluationQuestion) => q.index % 2 === 0,
+      (q: EvaluationQuestion) => q.index % 3 !== 0,
+    ];
+    for (const build of [() => plan(program), () => plan(eight()), () => plan([comp('a', 'nombres', true)])]) {
+      for (const policy of policies) {
+        const s = createEvaluation(build());
+        const p = play(s, policy);
+        const main = p.asked.filter((q) => q.role !== 'avance');
+        expect(main).toHaveLength(s.planned);
+        expect(p.asked.every((q) => q.planned === s.planned)).toBe(true);
+      }
+    }
+    expect(createEvaluation(plan([comp('a', 'nombres', true)])).planned).toBe(EVALUATION.maxPerCompetence);
+  });
+  it('les prérequis explorés restent dans le nombre fixe', () => {
+    const program = eight().map((c) => ({ ...c, primaryPrerequisite: 'p1' }));
+    const pre = comp('p1', 'nombres', false, { scored: false });
+    const s = createEvaluation(plan(program, { prerequisitePool: [pre] }));
+    const p = play(s, (q) => q.role === 'prerequis' || q.competenceId !== 'n1');
+    expect(p.asked.some((q) => q.role === 'prerequis')).toBe(true);
+    expect(p.asked).toHaveLength(s.planned);
+  });
+  it('une note sur 20 existe toujours, même épreuve écourtée ou découragée', () => {
+    const program = Array.from({ length: 12 }, (_, i) => comp(`c${i}`, 'nombres', i % 2 === 0));
+    const policies = [() => false, () => true, (q: EvaluationQuestion) => q.index % 2 === 0];
+    for (const policy of policies) {
+      const p = play(createEvaluation(plan(program)), policy);
+      expect(summarize(p.state).scores.masteryDisplayable).toBe(true);
+    }
+    const short = play(createEvaluation(plan(eight())), () => true, { max: 1 });
+    expect(summarize({ ...short.state, endReason: 'time' }).scores.mastery).not.toBeNull();
+  });
+  it('nombre atteint : fin conclue, sans nouvelle question', () => {
+    const forced = play({ ...createEvaluation(plan(eight())), asked: 16 }, () => true);
     expect(forced.asked).toHaveLength(0);
-    expect(forced.state.endReason).toBe('max');
-    expect(summarize(forced.state).partial).toBe(true);
+    expect(forced.state.endReason).toBe('concluded');
   });
   it('reprise : l’état sérialisé redonne exactement la même question', () => {
     const n = nextEvaluationQuestion(createEvaluation(plan(eight())), NOW);

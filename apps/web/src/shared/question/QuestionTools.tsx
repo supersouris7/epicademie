@@ -32,9 +32,9 @@ interface QuestionToolsProps {
   readonly attempt?: number;
   readonly picked: { x: number; y: number } | null;
   readonly onSubmit: (r: Response) => void;
-  /** Rien de saisi : le bouton OK devient « ? » (entraînement, combat). */
+  /** Rien de saisi : le bouton OK devient « ? » (indice ; « je ne sais pas » à l'évaluation). */
   readonly onUnknown?: () => void;
-  /** Ce que coûte le « ? » (demandé en confirmation avant d'aider). */
+  /** Message à confirmer avant le « ? » ; absent : l'aide est donnée tout de suite. */
   readonly unknownWarning?: string;
 }
 
@@ -51,9 +51,9 @@ export function QuestionTools({
   picked,
   onSubmit,
   onUnknown,
-  unknownWarning = DEFAULT_WARNING,
+  unknownWarning,
 }: QuestionToolsProps) {
-  // « ? » : on confirme d'abord (indice compté comme erreur, objet utilisé…).
+  // « ? » : confirmation seulement quand il consomme ou change quelque chose.
   const help = useHelpConfirm(onUnknown, unknownWarning);
   const [tab, setTab] = useState<DockTab>('reponse');
   const [opened, setOpened] = useState<ReadonlySet<DockTab>>(new Set());
@@ -188,18 +188,20 @@ function keyboardTip(question: Question): string {
       return 'Au clavier : chiffres, « / » pour passer au dénominateur, Entrée pour valider.';
     case 'point':
       return 'Touche un nœud du quadrillage, puis OK.';
+    case 'zone':
+      return 'Au clavier : flèches pour passer d’une zone à l’autre, Entrée pour choisir, Entrée encore pour valider.';
     default:
       return 'Au clavier : tape ta réponse puis Entrée (« ? » pour un indice).';
   }
 }
 
 /** « ? » avec confirmation : `ask` ouvre la fenêtre, `dialog` est à afficher. */
-function useHelpConfirm(onUnknown: (() => void) | undefined, message: string) {
+function useHelpConfirm(onUnknown: (() => void) | undefined, message: string | undefined) {
   const [asking, setAsking] = useState(false);
   return {
-    ask: onUnknown ? () => setAsking(true) : undefined,
+    ask: onUnknown && message !== undefined ? () => setAsking(true) : onUnknown,
     dialog:
-      asking && onUnknown ? (
+      asking && onUnknown && message !== undefined ? (
         <UnknownConfirm
           message={message}
           onConfirm={() => {
@@ -212,9 +214,7 @@ function useHelpConfirm(onUnknown: (() => void) | undefined, message: string) {
   };
 }
 
-const DEFAULT_WARNING = 'Cette question comptera comme une erreur.';
-
-/** Confirmation du « ? » : ce qu'il va coûter (erreur, objet Indice…). */
+/** Confirmation du « ? » : ce qu'il va faire (objet Indice, attaque moins forte…). */
 function UnknownConfirm(p: {
   readonly message: string;
   readonly onConfirm: () => void;

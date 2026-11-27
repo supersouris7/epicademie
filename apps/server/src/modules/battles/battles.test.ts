@@ -45,6 +45,10 @@ function perfect(q: Question): Response {
   if (a.kind === 'fraction') return { kind: 'fraction', num: String(a.value.n), den: String(a.value.d) };
   if (a.kind === 'choice') return { kind: 'choice', index: a.correct };
   if (a.kind === 'point') return { kind: 'point', x: a.x, y: a.y };
+  if (a.kind === 'zone') return { kind: 'zone', zone: a.zone };
+  if (a.kind === 'order') return { kind: 'order', order: a.correct };
+  if (a.kind === 'match') return { kind: 'match', pairs: a.pairs };
+  if (a.kind === 'cloze') return { kind: 'cloze', answers: a.blanks.map(() => 'x') };
   return { kind: 'text', text: a.accepted[0] ?? '' };
 }
 
@@ -234,6 +238,17 @@ describe('équipement et objets en combat', () => {
     await reply(first.json<BattleView>(), true);
     const rows = await t.database.db.select().from(attempts).where(eq(attempts.sessionId, b.id));
     expect(rows.map((r) => [r.correct, r.hinted])).toEqual([[true, true]]);
+  });
+
+  it('indice sans objet : gratuit, jamais une erreur, réussite avec aide et un peu moins d’XP', async () => {
+    const b = (await startBattle()).json<BattleView>();
+    const ask = () => app.inject({ method: 'POST', url: `/api/v1/battles/${b.id}/hint` });
+    const hinted = await ask();
+    expect(hinted.json<BattleView>()).toMatchObject({ hintShown: true, weakAttack: true, hearts: 3, turn: 0 });
+    expect((await ask()).statusCode).toBe(409);
+    await reply(hinted.json<BattleView>(), true);
+    const rows = await t.database.db.select().from(attempts).where(eq(attempts.sessionId, b.id));
+    expect(rows.map((r) => [r.correct, r.hinted, r.xp])).toEqual([[true, true, 7]]);
   });
 
   it('combat inconnu ou terminé : 404 / 409', async () => {

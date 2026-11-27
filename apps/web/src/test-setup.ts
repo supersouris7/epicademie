@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom/vitest';
-import { cleanup } from '@testing-library/react';
+import { cleanup, configure } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { afterEach, vi } from 'vitest';
 
@@ -10,6 +10,9 @@ import { afterEach, vi } from 'vitest';
 
 // Fichiers de test en environnement Node (`@vitest-environment node`) : pas de navigateur simulé.
 if (typeof window !== 'undefined') {
+  // Écrans chargés à la demande : React retient l'écran d'attente un court instant avant d'afficher
+  // l'écran (deux fois à l'ouverture), ce qui entame la seconde accordée par défaut aux `findBy`.
+  configure({ asyncUtilTimeout: 3000 });
   // Observateur de taille (cadre de l'arène) : jamais déclenché sous jsdom.
   class NoResizeObserver {
     observe = () => undefined;

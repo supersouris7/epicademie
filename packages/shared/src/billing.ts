@@ -18,6 +18,15 @@ export const SUBSCRIPTION_STATUS_LABELS: Record<SubscriptionStatus, string> = {
 /** Offres (une seule pour l'instant ; le champ permet d'en ajouter sans migration). */
 export const OFFERS = ['famille-annee'] as const;
 export type Offer = (typeof OFFERS)[number];
+export const OFFER_LABELS: Record<Offer, string> = { 'famille-annee': 'Famille, année scolaire' };
+
+/** Prestataire d'un paiement enregistré (le simulateur sert au développement et aux tests). */
+export const PAYMENT_PROVIDERS = ['simulateur', 'stripe'] as const;
+export type PaymentProvider = (typeof PAYMENT_PROVIDERS)[number];
+export const PAYMENT_PROVIDER_LABELS: Record<PaymentProvider, string> = {
+  simulateur: 'simulateur de paiement',
+  stripe: 'Stripe',
+};
 
 /**
  * Fin de l'accès payé : la première fin d'année scolaire (`schoolYearEnd`, MM-JJ) tombant au

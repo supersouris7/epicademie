@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { signupFamily } from './family.ts';
+import { createFirstProfile, signupFamily } from './family.ts';
 
 /**
  * Non-débordement sur les écrans principaux, en tablette portrait (768 × 1024) et paysage
@@ -20,7 +20,6 @@ const FAMILY_SCREENS = [
   '/jouer/survie',
   '/arene',
   '/multi',
-  '/classement',
   '/amis',
   '/heros',
   '/shop',
@@ -108,8 +107,11 @@ async function overflows(page: Page): Promise<string[]> {
 async function audit(page: Page, path: string): Promise<void> {
   await page.goto(path);
   await page.waitForLoadState('networkidle');
-  expect
-    .soft(await overflows(page), `${path} à ${page.viewportSize()?.width}×${page.viewportSize()?.height}`)
+  // Écran chargé à la demande : on l'attend, puis la fin de son animation d'apparition.
+  await expect(page.locator('[aria-busy="true"]')).toHaveCount(0);
+  await expect
+    .configure({ soft: true })
+    .poll(() => overflows(page), { message: `${path} à ${page.viewportSize()?.width}×${page.viewportSize()?.height}` })
     .toEqual([]);
 }
 
@@ -127,8 +129,7 @@ test.describe('tablette : aucun débordement', () => {
       await page.getByRole('button', { name: 'Une fille' }).click();
       await page.getByLabel('Date de naissance').fill('2014-03-09');
       await page.getByRole('button', { name: 'Oui', exact: true }).click();
-      await page.getByRole('button', { name: /C’est parti/ }).click();
-      await expect(page).toHaveURL(/hub/);
+      await createFirstProfile(page);
       for (const path of FAMILY_SCREENS) await audit(page, path);
     });
   }

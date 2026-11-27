@@ -40,13 +40,19 @@ export interface BattleState {
   readonly order: readonly string[];
   readonly shield: boolean;
   readonly hintShown: boolean;
+  /** Indice demandé sans objet pour la question en cours : l'attaque sera un peu moins forte. */
+  readonly weakAttack: boolean;
+  /** Indices demandés sans objet (une aide : pas de médaille Diamant). */
+  readonly hintsAsked: number;
+  /** Bonnes réponses données avec une attaque moins forte (XP réduite). */
+  readonly weakHits: number;
   readonly itemsUsed: number;
   /** Objets équipés encore disponibles (pris dans l'équipement du joueur au début du combat). */
   readonly equipped: readonly ItemId[];
   readonly question: BattleQuestion | null;
   readonly answered: number;
   readonly correct: number;
-  /** Notions ratées, dans l'ordre (pour proposer l'entraînement après une défaite). */
+  /** Notions à renforcer, dans l'ordre (pour proposer l'entraînement après une défaite). */
   readonly misses: readonly string[];
   /** Énoncés déjà posés (dans ce combat et les précédents) : jamais deux fois le même. */
   readonly seen: readonly string[];
@@ -104,7 +110,7 @@ function nextQuestion(
   }
   const stage = bossStage(s.bossLives);
   const pool = stage === 'piege' ? pools.traps : pools.problems;
-  // Après une erreur contre le boss : une autre question du même type (autre générateur si possible).
+  // Après une erreur contre le boss : une question de la même étape (autre générateur si possible).
   const skillId = pick(pool, dice.random, previous?.stage === stage ? previous.skillId : undefined);
   return { skillId, level: 2, seed: freshSeed(pools, skillId, 2, dice, s.seen), stage } satisfies BattleQuestion;
 }
@@ -129,6 +135,9 @@ export function createBattle(
     order: shuffleWith(pools.mobs, dice.random),
     shield: false,
     hintShown: false,
+    weakAttack: false,
+    hintsAsked: 0,
+    weakHits: 0,
     itemsUsed: 0,
     equipped: equipped.slice(0, MAX_ITEMS_PER_BATTLE),
     answered: 0,
@@ -143,7 +152,7 @@ export function createBattle(
 /**
  * Applique une réponse : bonne → tir (mob vaincu ou boss −1 vie) ; mauvaise → riposte (−1 cœur, ou
  * bouclier consommé). Après une erreur, l'adversaire reste : un mob pose une autre question de sa
- * notion, le boss une autre question du même type. À 0 cœur, le combat est perdu.
+ * notion, le boss une question d'un autre générateur de la même étape (si possible). À 0 cœur, le combat est perdu.
  */
 export function answerBattle(
   s: BattleState,
@@ -179,6 +188,8 @@ export function answerBattle(
     bossLives,
     turn: s.turn + 1,
     hintShown: false,
+    weakAttack: false,
+    weakHits: s.weakHits + (correct && s.weakAttack ? 1 : 0),
     answered: s.answered + 1,
     correct: s.correct + (correct ? 1 : 0),
     misses: correct ? s.misses : [...s.misses, q.skillId],
@@ -210,7 +221,20 @@ export function applyItem(s: BattleState, item: ItemId): BattleState {
   return { ...used, hintShown: true };
 }
 
-/** Notion la plus souvent ratée (la plus récente en cas d'égalité), parmi les notions d'entraînement. */
+/** Raison du refus d'un indice sans objet, ou null s'il peut être demandé. */
+export function hintRefusal(s: Pick<BattleState, 'status' | 'hintShown'>): string | null {
+  if (s.status !== 'fighting') return 'Le combat est terminé';
+  return s.hintShown ? 'L’indice est déjà affiché' : null;
+}
+
+/** Indice demandé sans objet : jamais une erreur, seule l'attaque de cette question est moins forte. */
+export function askHint(s: BattleState): BattleState {
+  const refusal = hintRefusal(s);
+  if (refusal) throw new Error(refusal);
+  return { ...s, hintShown: true, weakAttack: true, hintsAsked: s.hintsAsked + 1 };
+}
+
+/** Notion la plus souvent à renforcer (la plus récente en cas d'égalité), parmi les notions d'entraînement. */
 export function weakestSkill(s: BattleState, trainable: readonly string[]): string | null {
   const counts = new Map<string, number>();
   for (const id of s.misses) if (trainable.includes(id)) counts.set(id, (counts.get(id) ?? 0) + 1);
@@ -228,9 +252,12 @@ export function weakestSkill(s: BattleState, trainable: readonly string[]): stri
 
 /** Barème du combat (docs/SPEC.md §7). */
 export const BATTLE_XP_PER_HIT = 10;
+/** XP d'un tir après un indice sans objet (attaque un peu moins forte). */
+export const BATTLE_XP_PER_WEAK_HIT = 7;
 export const BATTLE_WIN_XP = 50;
 export const BATTLE_FIRST_WIN_COINS = 50;
 
 export function battleXp(s: BattleState): number {
-  return s.correct * BATTLE_XP_PER_HIT + (s.status === 'won' ? BATTLE_WIN_XP : 0);
+  const lost = s.weakHits * (BATTLE_XP_PER_HIT - BATTLE_XP_PER_WEAK_HIT);
+  return s.correct * BATTLE_XP_PER_HIT - lost + (s.status === 'won' ? BATTLE_WIN_XP : 0);
 }

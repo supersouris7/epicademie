@@ -1,7 +1,8 @@
 /**
- * Médaille d'une notion : sa meilleure série de 5 questions (5/5 Or = notion acquise, 4/5 Argent,
- * 3/5 Bronze). En arrière-plan, la répétition espacée (J0, J+2, J+7, puis mensuel) propose
- * les notions « à revoir » ; une série ratée remet la notion à revoir le lendemain.
+ * Médaille d'une notion : sa meilleure série de 5 questions (tout réussi sans aide : Diamant ;
+ * tout réussi avec aide : Or ; 4/5 Argent, 3/5 Bronze). Une médaille gagnée n'est jamais perdue.
+ * En arrière-plan, la répétition espacée (J0, J+2, J+7, puis mensuel) propose les notions
+ * « à revoir » ; une série pas encore réussie remet la notion à revoir le lendemain.
  */
 export type Stage = 0 | 1 | 2 | 3;
 
@@ -18,8 +19,9 @@ export interface SkillState {
   /** Rappels d'entretien réussis une fois la notion acquise. */
   readonly maintained: number;
   /**
-   * Meilleure série sur cette notion, notée « 5 − erreurs » (0 à 5) quelle que soit sa longueur
-   * (4 questions, ou 5 en calcul de tête) : 5 = sans-faute (Or), 4 = une erreur (Argent), 3 = deux (Bronze).
+   * Meilleure série sur cette notion, quelle que soit sa longueur (4 questions, ou 5 en calcul de
+   * tête) : 6 = tout réussi sans aide (Diamant), 5 = tout réussi avec aide (Or), 4 = une question
+   * pas encore réussie (Argent), 3 = deux (Bronze).
    */
   readonly best: number;
 }
@@ -58,8 +60,16 @@ export const isDue = (s: SkillState, today: string) => s.due !== null && s.due <
 /** Note maximale d'une série (sans-faute), quelle que soit sa longueur. */
 export const SERIES_LENGTH = 5;
 
-/** Note d'une série complète : 5 − erreurs (une série de 4 sans faute vaut 5, comme une de 5). */
-export const seriesScore = (correct: number, length: number) => Math.max(0, SERIES_LENGTH - (length - correct));
+/** Meilleure note : série entièrement réussie sans aucune aide (Diamant). */
+export const UNAIDED_SERIES = SERIES_LENGTH + 1;
+
+/**
+ * Note d'une série complète : 5 − questions pas encore réussies (une série de 4 toute réussie vaut
+ * 5, comme une de 5). `solved` compte les réussites avec ou sans aide ; `unaided` (toutes justes
+ * du premier coup, sans indice ni explication) donne la note Diamant.
+ */
+export const seriesScore = (solved: number, length: number, unaided = false) =>
+  unaided && solved >= length ? UNAIDED_SERIES : Math.max(0, SERIES_LENGTH - (length - solved));
 
 /**
  * Détails facultatifs du bilan d'une série sur une notion (voir `applySession`).
@@ -67,11 +77,14 @@ export const seriesScore = (correct: number, length: number) => Math.max(0, SERI
 export interface SessionDetails {
   /** Réponses dans l'ordre (vrai = juste), pour la fenêtre des réponses récentes. */
   readonly answers?: readonly boolean[];
-  /** L'élève a signalé « Je n'ai pas compris » : la notion repasse à revoir. */
-  readonly forceFail?: boolean;
   /**
-   * Note de la série complète de cette seule notion (5 − erreurs du 1er coup), absente si la
-   * série mêlait plusieurs notions ; la meilleure fixe la médaille.
+   * L'élève a demandé l'explication (« Je n'ai pas compris ») : jamais une erreur, la notion est
+   * simplement reproposée dès le lendemain.
+   */
+  readonly reviewSoon?: boolean;
+  /**
+   * Note de la série complète de cette seule notion (voir `seriesScore`), absente si la série
+   * mêlait plusieurs notions ; la meilleure fixe la médaille.
    */
   readonly series?: number;
 }
@@ -81,7 +94,7 @@ export function applySession(
   state: SkillState,
   result: SkillSessionResult,
   today: string,
-  { answers = [], forceFail = false, series }: SessionDetails = {},
+  { answers = [], reviewSoon = false, series }: SessionDetails = {},
 ): SkillState {
   const recent = [...state.recent, ...answers].slice(-RECENT_WINDOW);
   const base = {
@@ -89,11 +102,16 @@ export function applySession(
     attempts: state.attempts + result.answered,
     correct: state.correct + result.correct,
     recent,
-    best: Math.max(state.best, Math.min(SERIES_LENGTH, series ?? 0)),
+    best: Math.max(state.best, Math.min(UNAIDED_SERIES, series ?? 0)),
   };
   if (result.answered === 0) return state;
-  // « Je n'ai pas compris » : la série ne compte pas pour la médaille.
-  if (forceFail) return { ...base, best: state.best, stage: 0, maintained: 0, due: addDays(today, GAP_AFTER_STAGE[0]) };
+  const next = schedule(state, base, result, today);
+  // Explication demandée : la notion est reproposée dès demain, sans rien retirer à l'élève.
+  return reviewSoon ? { ...next, due: addDays(today, GAP_AFTER_STAGE[0]) } : next;
+}
+
+/** Répétition espacée : palier et prochaine date après une série. */
+function schedule(state: SkillState, base: SkillState, result: SkillSessionResult, today: string): SkillState {
   const rate = result.correct / result.answered;
   if (rate < SUCCESS_RATE) return { ...base, stage: 0, maintained: 0, due: addDays(today, GAP_AFTER_STAGE[0]) };
   // Réussite : progression seulement si la notion est nouvelle ou arrivée à échéance.
@@ -109,8 +127,8 @@ export type Mastery = 'non-evalue' | 'insuffisante' | 'fragile' | 'satisfaisante
 
 export const MASTERY_LABELS: Record<Mastery, string> = {
   'non-evalue': 'Pas encore évalué',
-  insuffisante: 'Maîtrise insuffisante',
-  fragile: 'Maîtrise fragile',
+  insuffisante: 'Maîtrise à renforcer',
+  fragile: 'Maîtrise en progrès',
   satisfaisante: 'Maîtrise satisfaisante',
   'tres-bonne': 'Très bonne maîtrise',
 };
@@ -136,23 +154,25 @@ export function scoreOn20(correct: number, total: number): number {
   return Math.round((correct / total) * 40) / 2;
 }
 
-/** Médaille d'une notion, d'après sa meilleure série : Or (sans faute, acquise), Argent (1 erreur), Bronze (2 erreurs). */
-export type Medal = 'aucune' | 'bronze' | 'argent' | 'or';
-export const MEDALS: readonly Medal[] = ['bronze', 'argent', 'or'];
+/** Médaille d'une notion, d'après sa meilleure série : Diamant (sans aide), Or (avec aide), Argent, Bronze. */
+export type Medal = 'aucune' | 'bronze' | 'argent' | 'or' | 'diamant';
+export const MEDALS: readonly Medal[] = ['bronze', 'argent', 'or', 'diamant'];
 export const MEDAL_LABELS: Record<Medal, string> = {
   aucune: 'Pas encore',
   bronze: 'Bronze',
   argent: 'Argent',
   or: 'Or',
+  diamant: 'Diamant',
 };
 
 export function medal(state: Pick<SkillState, 'best'> | undefined): Medal {
   const best = state?.best ?? 0;
+  if (best >= UNAIDED_SERIES) return 'diamant';
   if (best >= SERIES_LENGTH) return 'or';
   if (best === SERIES_LENGTH - 1) return 'argent';
   if (best === SERIES_LENGTH - 2) return 'bronze';
   return 'aucune';
 }
 
-/** Notion acquise : médaille d'or (sans-faute sur une série de 5). */
-export const acquired = (state: Pick<SkillState, 'best'> | undefined) => medal(state) === 'or';
+/** Notion acquise : médaille d'or ou de diamant (série entièrement réussie). */
+export const acquired = (state: Pick<SkillState, 'best'> | undefined) => (state?.best ?? 0) >= SERIES_LENGTH;

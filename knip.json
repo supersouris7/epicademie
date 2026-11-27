@@ -5,7 +5,9 @@
     ".": {
       "entry": ["e2e/**/*.ts"]
     },
-    "apps/server": {},
+    "apps/server": {
+      "entry": ["scripts/*.ts"]
+    },
     "apps/web": {
       "entry": ["scripts/**/*.{ts,tsx,mjs}"]
     },

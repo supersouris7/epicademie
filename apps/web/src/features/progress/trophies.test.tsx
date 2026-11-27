@@ -4,6 +4,23 @@ import { renderApp } from '../../testing/renderApp.tsx';
 
 vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.ts')).socketModule);
 
+describe('Mes progrès : détail d’une matière', () => {
+  it('légende des médailles : une ligne par médaille, condition du diamant en clair', async () => {
+    renderApp('/progres/maths');
+    const legend = await screen.findByRole('list', { name: 'Légende des médailles' });
+    expect(
+      within(legend)
+        .getAllByRole('listitem')
+        .map((li) => li.textContent),
+    ).toEqual([
+      'Diamant : tout réussi du premier coup, sans indice ni explication',
+      'Or : tout réussi, avec de l’aide (notion acquise)',
+      'Argent : il te reste 1 question à réussir',
+      'Bronze : il t’en reste 2',
+    ]);
+  });
+});
+
 describe('Mes progrès : trophées et badges', () => {
   it('boss vaincus avec leur médaille, puis les badges (plus d’Acad-Héros)', async () => {
     renderApp('/progres/trophees', {

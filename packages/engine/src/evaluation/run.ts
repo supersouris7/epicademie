@@ -205,7 +205,9 @@ export function createEvaluation(input: PlanInput): EvaluationState {
       proofAsked: false,
     })),
   ];
-  const planned = [...needs.values()].reduce((a, b) => a + b, 0);
+  // Nombre fixe, annoncé au départ et jamais modifié : 16, moins seulement si le programme est trop petit.
+  const capacity = needs.size * EVALUATION.maxPerCompetence;
+  const planned = Math.min(EVALUATION.questions.target, capacity);
   return {
     v: EVALUATION_STATE_VERSION,
     kind: input.kind,
@@ -272,7 +274,7 @@ function needMet(c: EvalCompetence): boolean {
 /** Exception : bonne réussite sans preuve de niveau 2 → une question de niveau 2 en plus si le budget le permet. */
 function needsProof(c: EvalCompetence, s: EvaluationState): boolean {
   if (c.proofAsked || c.answers.length === 0 || !needMet(c)) return false;
-  if (s.asked >= EVALUATION.questions.target) return false;
+  if (s.asked >= s.planned) return false;
   const stats = statsOf(c, s.today);
   return (stats.rate ?? 0) >= EVALUATION.state.mastered && !stats.level2Proof;
 }
@@ -296,8 +298,14 @@ function pickSkill(c: EvalCompetence, s: EvaluationState): string {
   return (ranked[0] as { id: string }).id;
 }
 
+/** Complément du nombre fixe : compétence retenue encore sous son plafond de questions. */
+const canFill = (c: EvalCompetence) =>
+  isScoreRole(c) && c.skills.length > 0 && c.need > 0 && c.answers.length < EVALUATION.maxPerCompetence;
+
 function pickScored(s: EvaluationState): { c: EvalCompetence; forced: Level | null } | null {
   let open = s.competences.filter((c) => isOpen(c, s));
+  // Besoins couverts avant la fin : on complète jusqu'au nombre annoncé.
+  if (open.length === 0) open = s.competences.filter(canFill);
   if (open.length === 0) return null;
   const others = open.filter((c) => c.id !== s.lastCompetenceId);
   if (others.length > 0) open = others;
@@ -328,7 +336,7 @@ const question = (s: EvaluationState, c: EvalCompetence, level: Level): Evaluati
   skillId: pickSkill(c, s),
   level,
   index: s.asked + 1,
-  planned: Math.max(s.planned, s.asked + 1),
+  planned: s.planned,
   domain: c.domain,
   role: c.role,
   seed: null,
@@ -345,7 +353,7 @@ function struggling(c: EvalCompetence, today: string, lenient: boolean): boolean
   return needMet(c) && stateOf(c, today) === 'en-difficulte';
 }
 
-function leaveScore(s: EvaluationState, reason: EvaluationEndReason): EvaluationState {
+function wantedPrerequisites(s: EvaluationState, reason: EvaluationEndReason): string[] {
   const wanted: string[] = [];
   for (const c of s.competences) {
     const target = c.primaryPrerequisite;
@@ -353,7 +361,15 @@ function leaveScore(s: EvaluationState, reason: EvaluationEndReason): Evaluation
     if (!s.competences.some((x) => x.id === target && x.role === 'prerequis' && x.skills.length > 0)) continue;
     if (struggling(c, s.today, reason === 'discouraged')) wanted.push(target);
   }
-  const queue = wanted.slice(0, EVALUATION.exploration.maxPrerequisites);
+  return wanted.slice(0, EVALUATION.exploration.maxPrerequisites);
+}
+
+/** Questions à garder dans le nombre fixe pour explorer les prérequis des essentielles en difficulté. */
+const prerequisiteReserve = (s: EvaluationState) =>
+  wantedPrerequisites(s, 'concluded').length * EVALUATION.exploration.questionsPerPrerequisite;
+
+function leaveScore(s: EvaluationState, reason: EvaluationEndReason): EvaluationState {
+  const queue = wantedPrerequisites(s, reason);
   return { ...s, phase: queue.length > 0 ? 'prerequis' : 'fin', queue, endReason: reason };
 }
 
@@ -394,7 +410,7 @@ export function nextEvaluationQuestion(state: EvaluationState, nowMs: number): E
     const pick = pickScored(s);
     const elapsed = nowMs - s.startedAt >= EVALUATION.maxDurationMs;
     if (s.errorsInRow >= EVALUATION.errorsToStop) s = leaveScore(s, 'discouraged');
-    else if (s.asked >= EVALUATION.questions.max) s = leaveScore(s, 'max');
+    else if (s.planned - s.asked <= prerequisiteReserve(s)) s = leaveScore(s, 'concluded');
     else if (elapsed && pick) s = leaveScore(s, 'time');
     else if (!pick) s = leaveScore(s, 'concluded');
     else {
@@ -406,7 +422,7 @@ export function nextEvaluationQuestion(state: EvaluationState, nowMs: number): E
     const c = s.queue
       .map((id) => s.competences.find((x) => x.id === id && x.role === 'prerequis'))
       .find((x) => x && x.answers.length < EVALUATION.exploration.questionsPerPrerequisite);
-    if (c && s.asked < EVALUATION.questions.max) {
+    if (c && s.asked < s.planned) {
       const q = question(s, c, c.answers.length === 0 ? 1 : 2);
       return { done: false, state: { ...s, pending: q }, question: q };
     }
@@ -555,6 +571,7 @@ export function summarize(state: EvaluationState): EvaluationOutcome {
     scored: c.scored,
     state: stateOf(c, state.today),
     studied: c.studied === 'vu',
+    rate: c.answers.length > 0 ? statsOf(c, state.today).rate : null,
   }));
   const scores = computeScores(program, state.kind !== 'origines');
   const partialCoverage = state.endReason !== null && state.endReason !== 'concluded';

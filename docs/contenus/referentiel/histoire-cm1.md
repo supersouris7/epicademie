@@ -10,12 +10,12 @@
 
 ## Chapitres et notions
 
-| Lot         | Chapitre                 | Notions                                                                                                                                                                                                  | État actuel              |
-| ----------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| `hi-cm1-01` | Et avant la France ?     | traces d'une occupation ancienne du territoire ; Celtes, Gaulois, Grecs et Romains : héritages ; grands mouvements de populations (IVe-Xe siècles) ; Clovis et Charlemagne, Mérovingiens et Carolingiens | partielle (hcm1-reperes) |
-| `hi-cm1-02` | Le temps des rois        | Louis IX, le roi chrétien ; François Ier, protecteur des arts ; Henri IV et l'édit de Nantes ; Louis XIV, le roi Soleil à Versailles                                                                     | partielle (hcm1-reperes) |
-| `hi-cm1-03` | Révolution et Empire     | 1789 à l'exécution du roi ; la Nation ; Napoléon Bonaparte, du général à l'Empereur ; héritages de la période                                                                                            | partielle (hcm1-reperes) |
-| `hi-cm1-04` | Se repérer dans le temps | siècles et chiffres romains ; frise chronologique ; avant et après J.-C. ; ordonner des événements                                                                                                       | absente                  |
+| Lot         | Chapitre                 | Notions                                                                                                                                                                                                  | État actuel            |
+| ----------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `hi-cm1-01` | Et avant la France ?     | traces d'une occupation ancienne du territoire ; Celtes, Gaulois, Grecs et Romains : héritages ; grands mouvements de populations (IVe-Xe siècles) ; Clovis et Charlemagne, Mérovingiens et Carolingiens | couverte, en relecture |
+| `hi-cm1-02` | Le temps des rois        | Louis IX, le roi chrétien ; François Ier, protecteur des arts ; Henri IV et l'édit de Nantes ; Louis XIV, le roi Soleil à Versailles                                                                     | couverte, en relecture |
+| `hi-cm1-03` | Révolution et Empire     | 1789 à l'exécution du roi ; la Nation ; Napoléon Bonaparte, du général à l'Empereur ; héritages de la période                                                                                            | couverte, en relecture |
+| `hi-cm1-04` | Se repérer dans le temps | siècles et chiffres romains ; frise chronologique ; avant et après J.-C. ; ordonner des événements                                                                                                       | couverte, en relecture |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).

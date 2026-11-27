@@ -18,6 +18,9 @@ dépendance abandonnée ou une faille connue dans l'image peuvent passer inaper�
   images Docker, regroupées, avec un **délai de 14 jours** après publication (une version
   compromise est en général retirée avant). La CI complète valide chaque proposition.
 - Dépendances ajoutées à la main : versions publiées depuis au moins deux semaines.
+- **Correctif système en attente d'image de base** : si une faille corrigée par Debian bloque
+  l'analyse alors qu'aucune image de base ne l'intègre, mise à niveau des seuls paquets concernés
+  dans l'étage final (`apt-get install --only-upgrade`), retirée ensuite. Pas d'exclusion Trivy.
 - **Image d'exécution minimale** : npm, npx et corepack en sont retirés (inutiles pour exécuter).
 - **Analyse Trivy** de l'image en CI : bloquante s'il reste une faille grave ou critique
   corrigeable (paquets système et dépendances Node).

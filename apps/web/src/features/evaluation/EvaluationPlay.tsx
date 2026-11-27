@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { useNavigate, useParams } from 'react-router';
@@ -13,11 +14,12 @@ import { QuestionTools } from '../../shared/question/QuestionTools.tsx';
 import { DOCK_HEIGHT } from '../../shared/question/tools.ts';
 import { ConfirmDialog } from '../../shared/ui/ConfirmDialog.tsx';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
-import { ProgressBar } from '../../shared/ui/game/ProgressBar.tsx';
+import { HUD_FRAME, HudBar, HudPortrait } from '../../shared/ui/game/Hud.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import { SpeechBubble } from '../../shared/ui/SpeechBubble.tsx';
 import { useToast } from '../../shared/ui/Toast.tsx';
 import { answerQuestion, chooseAdvanced, finishEvaluation, nextQuestion } from './api.ts';
+import { BlockSkeleton } from '../../shared/ui/Skeleton.tsx';
 import { domainLabel, generateEvaluation } from './texts.ts';
 
 type Phase =
@@ -47,6 +49,7 @@ const UNKNOWN_WARNING =
 export function EvaluationPlay({ profile }: { readonly profile: Profile }) {
   const { id = '' } = useParams();
   const navigate = useNavigate();
+  const qc = useQueryClient();
   const reduce = useReducedMotion();
   const [toast, showToast] = useToast(3000);
   const [phase, setPhase] = useState<Phase>({ step: 'loading' });
@@ -73,12 +76,16 @@ export function EvaluationPlay({ profile }: { readonly profile: Profile }) {
     setPhase({ step: 'closing' });
     try {
       const result = await finishEvaluation(id);
+      // XP, coffre et historique ont changé : les écrans suivants les redemandent.
+      for (const key of ['profiles', 'bosses', 'evaluation-home', 'evaluation-summary']) {
+        void qc.invalidateQueries({ queryKey: [key] });
+      }
       void navigate(`/evaluation/${id}/resultat`, { replace: true, state: { fresh: result } });
     } catch (e) {
       closing.current = false;
       fail(e);
     }
-  }, [id, navigate, fail]);
+  }, [id, navigate, fail, qc]);
 
   const load = useCallback(async () => {
     try {
@@ -133,18 +140,17 @@ export function EvaluationPlay({ profile }: { readonly profile: Profile }) {
 
   const unknown = () => void send({ kind: 'unknown' });
   const skill = current ? (getAnySkill(current.skillId) ?? getCe2Skill(current.skillId)) : undefined;
-  const total = Math.max(progress.planned, progress.index);
 
   return (
     <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-2 px-3 py-3 sm:px-4">
       <PlayHeader
         hero={profile.hero}
         index={progress.index}
-        total={total}
+        total={progress.planned}
         domain={current?.domain ?? null}
         onQuit={() => setConfirmQuit(true)}
       />
-      {phase.step === 'loading' && <p role="status">Chargement de ton épreuve…</p>}
+      {phase.step === 'loading' && <BlockSkeleton />}
       {phase.step === 'closing' && (
         <div className="flex items-center gap-3" role="status">
           <Questy size={90} mood="proud" />
@@ -236,7 +242,11 @@ export function EvaluationPlay({ profile }: { readonly profile: Profile }) {
   );
 }
 
-/** En-tête de l'épreuve : héros, progression visible (sans verdict), gardien et sortie. */
+/**
+ * HUD de l'épreuve, même langage que les HUD de combat et de défis (cadre sombre, portraits inclinés,
+ * jauge segmentée) : une case par question du nombre fixe annoncé, jamais de juste ou faux.
+ * Au-delà du nombre fixe : défis bonus, affichés à part.
+ */
 function PlayHeader(p: {
   readonly hero: Profile['hero'];
   readonly index: number;
@@ -244,35 +254,50 @@ function PlayHeader(p: {
   readonly domain: string | null;
   readonly onQuit: () => void;
 }) {
-  const reduce = useReducedMotion();
-  const sparkle = reduce ? undefined : { y: [0, -6, 0] };
+  const bonus = p.index > p.total;
+  const done = bonus ? p.total : Math.max(0, p.index - 1);
   const bossSrc = assetSrc(bossHeadId(bossOfSubject('maths').id, 'menace'));
   return (
-    <header className="cartoon bg-surface flex shrink-0 items-center gap-3 px-3 py-2" aria-label="Épreuve des Origines">
-      <motion.span animate={sparkle} transition={{ repeat: Infinity, duration: 2.4 }}>
+    <header
+      className={`${HUD_FRAME} flex shrink-0 items-center gap-2 px-2 py-1.5 sm:gap-3 sm:px-3`}
+      aria-label="Épreuve des Origines"
+    >
+      <HudPortrait side="left">
         <HeroFace hero={p.hero} expression="determine" size={52} />
-      </motion.span>
-      <div className="min-w-0 flex-1">
-        <ProgressBar
-          value={Math.max(0, p.index - 1)}
+      </HudPortrait>
+      <div className="flex min-w-0 flex-1 flex-col gap-1">
+        <div className="flex items-baseline gap-x-2 sm:gap-x-3">
+          {bonus ? (
+            <span className="font-display text-toon text-xl leading-none whitespace-nowrap text-[var(--gold)] sm:text-2xl">
+              Défi bonus
+            </span>
+          ) : (
+            <span
+              className="font-display text-xl leading-none whitespace-nowrap tabular-nums sm:text-3xl"
+              aria-label={`Question ${p.index} sur ${p.total}`}
+            >
+              {p.index}
+              <span className="text-base text-white/70 sm:text-lg"> / {p.total}</span>
+            </span>
+          )}
+          {p.domain && <span className="truncate text-sm font-bold text-white/90">{domainLabel(p.domain)}</span>}
+        </div>
+        <HudBar
+          side="left"
+          kind="xp"
+          value={done}
           max={p.total}
-          color="var(--gold)"
+          segments={p.total}
+          role="progressbar"
           label="Progression de l’épreuve"
-          text={`Question ${p.index} sur environ ${p.total}`}
-          size="md"
         />
-        {p.domain && <p className="truncate text-sm font-bold">{domainLabel(p.domain)}</p>}
       </div>
       {bossSrc && (
-        <motion.img
-          src={bossSrc}
-          alt=""
-          aria-hidden
-          draggable={false}
-          className="hidden h-12 w-12 shrink-0 object-contain sm:block"
-          animate={sparkle}
-          transition={{ repeat: Infinity, duration: 3 }}
-        />
+        <span className="hidden sm:block">
+          <HudPortrait side="right" size={52}>
+            <img src={bossSrc} alt="" aria-hidden draggable={false} className="h-11 w-11 object-contain" />
+          </HudPortrait>
+        </span>
       )}
       <GameButton variant="surface" size="sm" onClick={p.onQuit}>
         Quitter

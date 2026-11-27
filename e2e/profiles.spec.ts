@@ -1,23 +1,23 @@
 import { expect, test } from '@playwright/test';
-import { signupFamily } from './family.ts';
+import { createFirstProfile, signupFamily } from './family.ts';
 
 test('création d’un profil, hub, thème sombre puis suppression', async ({ page }) => {
   const name = `E2E${Date.now() % 100000}`;
   // Le parent crée le compte familial, puis le 1er profil enfant.
   await signupFamily(page);
-  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
   await expect(page.getByRole('alert')).toHaveText('Le prénom est obligatoire');
   await page.getByPlaceholder('Ex. Léa').fill('X');
-  await page.getByRole('button', { name: /C’est parti/ }).click();
-  await expect(page.getByRole('alert')).toHaveText('Choisis fille ou garçon.');
+  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
+  await expect(page.getByRole('alert')).toHaveText('Choisissez fille ou garçon.');
 
   await page.getByPlaceholder('Ex. Léa').fill(name);
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   // Classe déduite de l'âge : Questy demande de confirmer dans une fenêtre au premier plan ;
   // « Non » ouvre la liste (du CM1 à la 3e, et Adulte).
-  const gradeDialog = page.getByRole('dialog', { name: 'Ta classe' });
-  await expect(gradeDialog).toContainText('Tu es en 5e ?');
+  const gradeDialog = page.getByRole('dialog', { name: 'Sa classe' });
+  await expect(gradeDialog).toContainText('Votre enfant est en 5e ?');
   await gradeDialog.getByRole('button', { name: 'Non', exact: true }).click();
   await expect(gradeDialog).toHaveCount(0);
   await expect(page.getByRole('radio', { name: 'CM1', exact: true })).toBeVisible();
@@ -28,9 +28,8 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByRole('button', { name: 'Avatar 05' })).toHaveAttribute('aria-pressed', 'true');
   // Le héros ne se choisit plus dans le profil : il a son propre menu.
   await expect(page.getByRole('radiogroup', { name: 'Ton héros' })).toHaveCount(0);
-  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await createFirstProfile(page);
 
-  await expect(page).toHaveURL(/\/hub$/);
   // Barre du haut : le joueur en bref (prénom, niveau, pièces).
   await expect(page.getByRole('group', { name: 'Mon joueur' })).toContainText(name);
   await expect(page.getByRole('progressbar', { name: /^Niveau 1/ })).toBeVisible();
@@ -70,10 +69,29 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   for (const gone of ['Révisions du jour', 'Atelier des erreurs', 'Défi du jour', 'Bilan']) {
     await expect(page.getByRole('button', { name: new RegExp(gone) })).toHaveCount(0);
   }
+  // Les défis se jouent sur les notions réussies : les tables sont données « en or » à ce profil neuf.
+  await page.route('**/api/v1/profiles/*/skills', (route) =>
+    route.fulfill({
+      json: [
+        {
+          skillId: 'm5-tables',
+          stage: 1,
+          due: null,
+          attempts: 5,
+          correct: 5,
+          recent: [true],
+          maintained: 0,
+          best: 5,
+          lastPracticed: null,
+        },
+      ],
+    }),
+  );
+  await page.reload(); // la progression est gardée en cache
   await page.getByRole('button', { name: /^Survie/ }).click();
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
-  await expect(page.getByText(/3 cœurs. Chaque erreur coûte un cœur et casse ta série/)).toBeVisible();
-  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await expect(page.getByText(/Tu perds un cœur et la série repart/)).toBeVisible();
+  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
   await expect(page.getByRole('img', { name: '3 cœurs sur 3' })).toBeVisible();
   await page.getByRole('button', { name: 'Arrêter' }).click();
   await expect(page.getByRole('heading', { name: /points/ })).toBeVisible();
@@ -87,7 +105,7 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
     Math.random = () => 0;
   });
   await page.clock.install();
-  await page.getByRole('button', { name: /C’est parti/ }).click();
+  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
   await expect(page.getByText('Calcule 3 × 2.')).toBeVisible();
   await expect(page.getByRole('progressbar', { name: 'Temps restant' })).toBeVisible();
   const answer = async (digit: string) => {
@@ -101,27 +119,29 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await expect(page.getByLabel(/^[1-9]\d* points$/)).toBeVisible();
   await expect(page.getByRole('timer')).toHaveText(/⏱ 6\d s/);
   await expect(page.getByRole('status')).toBeHidden();
-  // Erreur : −5 s et série perdue.
+  // Pas encore : −5 s, la série repart.
   await answer('1');
   await expect(page.getByText('−5 s', { exact: true })).toBeVisible();
-  await expect(page.getByRole('status')).toContainText('−5 s, série perdue');
+  await expect(page.getByRole('status')).toContainText('Oups ! −5 s, la série repart');
   await expect(page.getByRole('timer')).toHaveText(/⏱ [56]\d s/);
   // Fin de partie : l'horloge saute au-delà du temps restant.
   await page.clock.fastForward(70_000);
   await expect(page.getByRole('heading', { name: /\d+ points/ })).toBeVisible();
-  await page.getByRole('button', { name: /Revoir mes erreurs \(1\)/ }).click();
-  await expect(page.getByRole('list', { name: 'Mes erreurs' })).toContainText('Calcule 3 × 2.');
-  await expect(page.getByRole('list', { name: 'Mes erreurs' })).toContainText('Bonne réponse : 6');
+  await page.getByRole('button', { name: /Questions à revoir \(1\)/ }).click();
+  await expect(page.getByRole('list', { name: 'Questions à revoir' })).toContainText('Calcule 3 × 2.');
+  await expect(page.getByRole('list', { name: 'Questions à revoir' })).toContainText('Bonne réponse : 6');
+  await page.unroute('**/api/v1/profiles/*/skills');
   await page.goto('/hub');
   // Mode d'abord, matière ensuite.
   await page.getByRole('button', { name: /^Entraînement/ }).click();
   // Matières : toutes jouables (maths, anglais, espagnol, sciences, géographie, histoire).
   await expect(page.getByRole('button', { name: 'Maths', exact: true })).toBeVisible();
-  // Toutes les matières sont jouables.
+  // Les matières avec contenu sont jouables ; le français (dossiers encore vides) est signalé « à venir ».
   for (const subject of ['Anglais', 'Espagnol', 'Sciences', 'Géographie', 'Histoire']) {
     await expect(page.getByRole('button', { name: subject, exact: true })).toBeVisible();
   }
-  await expect(page.getByRole('button', { name: /à venir/ })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /à venir/ })).toHaveCount(1);
+  await expect(page.getByRole('button', { name: 'Français, à venir' })).toBeVisible();
   await page.getByRole('button', { name: 'Retour' }).click();
   await nav.getByRole('button', { name: 'Multi' }).click();
   // Multi : seuls les Duels sont proposés.

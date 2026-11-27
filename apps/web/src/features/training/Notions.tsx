@@ -38,7 +38,7 @@ export function Notions({ profile }: { readonly profile: Profile }) {
       <ul className="flex flex-col gap-3">
         {chapter.skills.map((s, i) => {
           const st = states.get(s.id);
-          const m = masteryOf(st);
+          const m = masteryOf(st, profile.gender);
           const due = st?.due != null && st.due <= today;
           const off = disabled?.has(s.id) === true;
           return (

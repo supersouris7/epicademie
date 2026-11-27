@@ -3,8 +3,10 @@ import type { FigureProps } from './common.ts';
 import { Bars } from './Bars.tsx';
 import { Blocks } from './Blocks.tsx';
 import { Chart } from './Chart.tsx';
+import { Document } from './Document.tsx';
 import { Disk } from './Disk.tsx';
 import { Grid } from './Grid.tsx';
+import { MapFigure } from './MapFigure.tsx';
 import { NumberLine } from './NumberLine.tsx';
 import { Parallels } from './Parallels.tsx';
 import { Pattern } from './Pattern.tsx';
@@ -47,6 +49,10 @@ export function Figure(props: FigureProps) {
       return box(<Chart f={f} />);
     case 'blocks':
       return box(<Blocks program={f.program} />);
+    case 'document':
+      return box(<Document f={f} />, true);
+    case 'map':
+      return box(<MapFigure f={f} />, true);
     case 'pattern':
       return box(<Pattern f={f} />, true);
   }

@@ -460,6 +460,40 @@ describe('migrations', () => {
   });
 });
 
+describe('médaille de diamant (0028)', () => {
+  it('les séries parfaites passent en diamant, 7 est refusé, le retour arrière les remet en or', async () => {
+    const dir = migrationsUpTo(28); // jusqu'à 0027
+    try {
+      database = await openDatabase('pglite://memory');
+      await runMigrations(database, dir);
+      const { db } = database;
+      const leo = 'bbbbbbbb-1111-4111-8111-bbbbbbbbbbbb';
+      await db.execute(sql`insert into profiles (id, name, avatar, hero) values
+        (${leo}, 'Léo', '{"style":"pixelbot","seed":"l"}', 'alex')`);
+      await db.execute(sql`insert into skill_states (profile_id, skill_id, recent, best_series) values
+        (${leo}, 'a', '[]', 5), (${leo}, 'b', '[]', 4)`);
+      const best = async () =>
+        rows<{ best_series: number }>(
+          await db.execute(sql`select best_series from skill_states order by skill_id`),
+        ).map((r) => r.best_series);
+      await runMigrations(database, MIGRATIONS_DIR);
+      expect(await best()).toEqual([6, 4]);
+      await expect(db.execute(sql`update skill_states set best_series = 7`)).rejects.toThrow();
+      const file = readFileSync(path.join(MIGRATIONS_DIR, '0028_medaille_diamant.sql'), 'utf8');
+      const rollback = file
+        .split('\n')
+        .filter((l) => l.startsWith('--   '))
+        .map((l) => l.slice(5))
+        .join('\n');
+      for (const statement of rollback.split(';').filter((q) => q.trim())) await db.execute(sql.raw(statement));
+      expect(await best()).toEqual([5, 4]);
+      await expect(db.execute(sql`update skill_states set best_series = 6`)).rejects.toThrow();
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
 /** Copie des `count` premières migrations (base d'une version antérieure). */
 function migrationsUpTo(count: number): string {
   const dir = mkdtempSync(path.join(tmpdir(), 'epicademie-migrations-'));
@@ -471,3 +505,41 @@ function migrationsUpTo(count: number): string {
 }
 
 const rows = <T>(result: unknown): T[] => (result as { rows: T[] }).rows;
+
+describe('rôles d’administration (0027)', () => {
+  const tables = async (db: Database['db']) =>
+    JSON.stringify(
+      await db.execute(sql`select table_name, column_name from information_schema.columns
+        where table_schema = 'public' and (table_name in ('admin_sessions', 'admin_access_events') or column_name = 'admin_sub')
+        order by 1, 2`),
+    );
+
+  it('montée puis descente (retour arrière écrit dans le fichier) puis remontée, données conservées', async () => {
+    const dir = migrationsUpTo(27); // jusqu'à 0026
+    const after = migrationsUpTo(28); // jusqu'à 0027
+    try {
+      database = await openDatabase('pglite://memory');
+      await runMigrations(database, dir);
+      const { db } = database;
+      await db.execute(sql`insert into admin_audit (operator, action, account_id)
+        values ('Marie', 'consultation', '77777777-7777-4777-8777-777777777777')`);
+      const before = await tables(db);
+      await runMigrations(database, after);
+      expect(await tables(db)).toContain('admin_sessions');
+      const down = readFileSync(path.join(MIGRATIONS_DIR, '0027_administration_roles.sql'), 'utf8')
+        .split('\n')
+        .filter((line) => line.startsWith('--   '))
+        .map((line) => line.slice(2));
+      expect(down).toHaveLength(5);
+      for (const statement of down) await db.execute(sql.raw(statement));
+      expect(await tables(db)).toBe(before);
+      expect((await schemaStatus(database, dir)).upToDate).toBe(true);
+      await runMigrations(database, after);
+      expect((await schemaStatus(database, after)).upToDate).toBe(true);
+      expect(JSON.stringify(await db.execute(sql`select operator, admin_sub from admin_audit`))).toContain('Marie');
+    } finally {
+      rmSync(after, { recursive: true, force: true });
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});

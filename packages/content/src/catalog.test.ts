@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { SUBJECTS } from '@epicademie/shared';
 import { battlePools, CHAPTERS, chaptersOf, generate, maxLevelOf } from './catalog.ts';
 import { DOMAINS, SCIENCES_DOMAINS } from './types.ts';
 import { check } from './check.ts';
@@ -20,8 +21,19 @@ function perfect(q: Question): Response {
       return { kind: 'choice', index: a.correct };
     case 'point':
       return { kind: 'point', x: a.x, y: a.y };
+    case 'zone':
+      return { kind: 'zone', zone: a.zone };
     case 'text':
       return { kind: 'text', text: a.accepted[0] ?? '' };
+    case 'order':
+      return { kind: 'order', order: [...a.correct] };
+    case 'match':
+      return { kind: 'match', pairs: [...a.pairs] };
+    case 'cloze':
+      return {
+        kind: 'cloze',
+        answers: a.blanks.map((b) => (b.mode === 'list' ? (b.options[b.correct] ?? '') : (b.accepted[0] ?? ''))),
+      };
   }
 }
 
@@ -66,13 +78,15 @@ describe('catalogue', () => {
     const sciences: Record<string, string> = { 'physique-chimie': 'p', svt: 'v', technologie: 't' };
     const subject: Record<string, string> = {
       maths: 'm',
+      francais: 'f',
       anglais: 'a',
       espagnol: 'e',
       geographie: 'g',
       histoire: 'h',
     };
     for (const c of CHAPTERS) {
-      const letter = c.subject === 'sciences' ? sciences[c.domain] : subject[c.subject];
+      // EMC : domaine de la matière histoire, préfixe « em » (ADR 0034).
+      const letter = c.domain === 'emc' ? 'em' : c.subject === 'sciences' ? sciences[c.domain] : subject[c.subject];
       const prefix = `${letter ?? '?'}${grade[c.grade]}`;
       expect(c.id.startsWith(prefix), c.id).toBe(true);
       for (const s of withBoss(c)) expect(s.id.startsWith(prefix), s.id).toBe(true);
@@ -154,14 +168,19 @@ describe('parcours Adulte', () => {
 describe('matière Sciences (#76)', () => {
   it('les chapitres de physique-chimie sont dans la matière sciences, domaine physique-chimie', () => {
     const chapters = chaptersOf('sciences');
-    expect(chapters.map((c) => c.id)).toEqual([
+    // Les chapitres des lots de contenu (ADR 0034, ex. « pcm1-matiere ») s'ajoutent à ceux du cycle 4.
+    expect(chapters.map((c) => c.id).filter((id) => /^p[345]-/.test(id))).toEqual([
       'p5-unites',
       'p5-matiere',
+      'p5-mouvement',
+      'p5-energie',
+      'p4-atomes',
       'p4-mouvement',
       'p4-electricite',
       'p3-energie',
     ]);
-    for (const c of chapters) expect(c.domain).toBe('physique-chimie');
+    // La SVT du CM1 à la 6e (préfixe « v ») relève du domaine « svt ».
+    for (const c of chapters.filter((x) => x.id.startsWith('p'))) expect(c.domain).toBe('physique-chimie');
     expect(chaptersOf('physique')).toHaveLength(0);
   });
 
@@ -177,9 +196,40 @@ describe('matière Sciences (#76)', () => {
   });
 });
 
+describe('matière français et domaines (ADR 0034)', () => {
+  const NEW_DOMAINS = [
+    'grammaire',
+    'conjugaison',
+    'orthographe',
+    'vocabulaire',
+    'lecture',
+    'litterature',
+    'histoire',
+    'geographie',
+    'emc',
+    'comprehension-orale',
+    'culture',
+  ] as const;
+
+  it('chaque nouveau domaine a un libellé', () => {
+    for (const d of NEW_DOMAINS) expect(DOMAINS[d], d).toBeTruthy();
+  });
+
+  it('toute matière publiée a au moins un chapitre (le français se remplit lot par lot, avant sa publication)', () => {
+    for (const s of SUBJECTS.filter((x) => x.available)) expect(chaptersOf(s.id).length, s.id).toBeGreaterThan(0);
+    for (const c of chaptersOf('francais')) expect(c.id.startsWith('f'), c.id).toBe(true);
+  });
+
+  it('les identifiants de chapitres restent uniques', () => {
+    const ids = CHAPTERS.map((c) => c.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+});
+
 describe('niveaux maximaux', () => {
   it('3 par défaut ; une notion inconnue vaut 3 ; un niveau demandé au-delà est ramené au maximum', () => {
-    const id = CHAPTERS[0]!.skills[0]!.id;
+    // Première notion encore à 3 niveaux (les lots de contenu les portent à 5 au fil de l'eau).
+    const id = CHAPTERS.flatMap((c) => c.skills).find((x) => x.levels !== 5)!.id;
     expect(maxLevelOf(id)).toBe(3);
     expect(maxLevelOf('inconnue')).toBe(3);
     expect(generate(id, 5, 7).level).toBe(3);

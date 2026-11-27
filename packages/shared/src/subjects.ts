@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { Grade } from './grades.ts';
 
-export const SUBJECT_IDS = ['maths', 'sciences', 'anglais', 'espagnol', 'histoire', 'geographie'] as const;
+export const SUBJECT_IDS = ['maths', 'francais', 'sciences', 'anglais', 'espagnol', 'histoire', 'geographie'] as const;
 
 export type SubjectId = (typeof SUBJECT_IDS)[number];
 
@@ -25,6 +25,7 @@ export interface SubjectInfo {
 
 export const SUBJECTS: readonly SubjectInfo[] = [
   { id: 'maths', name: 'Maths', color: 'maths', available: true },
+  { id: 'francais', name: 'Français', color: 'francais', available: false },
   { id: 'sciences', name: 'Sciences', color: 'sciences', available: true },
   { id: 'anglais', name: 'Anglais', color: 'anglais', available: true },
   { id: 'espagnol', name: 'Espagnol', color: 'espagnol', available: true },
