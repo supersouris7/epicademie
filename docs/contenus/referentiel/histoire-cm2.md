@@ -19,3 +19,8 @@
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).
+
+## À anticiper
+
+L’arrêté du 22 avril 2026 s’applique au CM2 à la rentrée 2027 (article 3, <https://www.education.gouv.fr/sites/default/files/document/boenjs22pdf-516809.pdf>). Le programme ci-dessus reste en
+vigueur en 2026-2027. Le nouveau CM2 va de 1792 à nos jours (six thèmes, annexe 4).

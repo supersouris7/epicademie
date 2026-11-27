@@ -3,6 +3,8 @@
 Un fichier par matière et par classe : notions du programme en vigueur, regroupées en chapitres, avec
 l’état du contenu existant. Les textes officiels ont été récupérés le 24/11/2026 (copies d’archive : les sites
 du ministère refusent les accès automatisés) ; les extraits texte servent aux lots de contenu.
+CM1 : histoire, géographie, sciences, anglais et EMC revérifiés le 25/11/2026 sur les arrêtés en vigueur à la rentrée
+2026 (textes cités dans chaque fichier).
 
 | Matière    | Classe | Fichier                                | Chapitres (lots) | Notions visées |
 | ---------- | ------ | -------------------------------------- | ---------------- | -------------- |
@@ -18,8 +20,8 @@ du ministère refusent les accès automatisés) ; les extraits texte servent aux
 | anglais    | 5e     | [anglais-5e.md](anglais-5e.md)         | 8                | 32             |
 | anglais    | 4e     | [anglais-4e.md](anglais-4e.md)         | 8                | 32             |
 | anglais    | 3e     | [anglais-3e.md](anglais-3e.md)         | 8                | 33             |
-| histoire   | CM1    | [histoire-cm1.md](histoire-cm1.md)     | 4                | 16             |
-| geographie | CM1    | [geographie-cm1.md](geographie-cm1.md) | 4                | 16             |
+| histoire   | CM1    | [histoire-cm1.md](histoire-cm1.md)     | 5                | 23             |
+| geographie | CM1    | [geographie-cm1.md](geographie-cm1.md) | 4                | 15             |
 | emc        | CM1    | [emc-cm1.md](emc-cm1.md)               | 2                | 8              |
 | histoire   | CM2    | [histoire-cm2.md](histoire-cm2.md)     | 4                | 16             |
 | geographie | CM2    | [geographie-cm2.md](geographie-cm2.md) | 4                | 15             |
@@ -36,7 +38,7 @@ du ministère refusent les accès automatisés) ; les extraits texte servent aux
 | histoire   | 3e     | [histoire-3e.md](histoire-3e.md)       | 5                | 19             |
 | geographie | 3e     | [geographie-3e.md](geographie-3e.md)   | 4                | 14             |
 | emc        | 3e     | [emc-3e.md](emc-3e.md)                 | 2                | 8              |
-| sciences   | CM1    | [sciences-cm1.md](sciences-cm1.md)     | 5                | 20             |
+| sciences   | CM1    | [sciences-cm1.md](sciences-cm1.md)     | 7                | 28             |
 | sciences   | CM2    | [sciences-cm2.md](sciences-cm2.md)     | 5                | 20             |
 | sciences   | 6e     | [sciences-6e.md](sciences-6e.md)       | 6                | 24             |
 | sciences   | 5e     | [sciences-5e.md](sciences-5e.md)       | 11               | 45             |

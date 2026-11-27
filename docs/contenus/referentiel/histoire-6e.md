@@ -22,6 +22,6 @@
 
 ## À anticiper
 
-Le programme de l’arrêté du 22/04/2026 s’appliquerait à la 6e à la rentrée 2027 (sources concordantes ; article
-d’application non lu directement). Son thème 1 devient « Du Paléolithique au Néolithique » : revoir alors `hi-6e-01`.
-L’histoire de 6e s’y arrête au Ier siècle avant J.-C. Le programme ci-dessus reste en vigueur en 2026-2027.
+L’arrêté du 22 avril 2026 s’applique à la 6e à la rentrée 2027 (article 3, <https://www.education.gouv.fr/sites/default/files/document/boenjs22pdf-516809.pdf>). Le programme ci-dessus reste en
+vigueur en 2026-2027. Dans le nouveau texte, l’histoire de 6e va du Paléolithique au Ier siècle avant J.-C. : tous les
+chapitres sont à revoir.
