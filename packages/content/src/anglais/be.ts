@@ -125,7 +125,7 @@ const bePresent: Skill = {
             label: sentence(p.en, v, pred),
             why:
               v === 'be'
-                ? '« be » tout seul, c’est « être » sans pronom : après un pronom, il faut am, is ou are.'
+                ? '« be » veut dire « être » : après un pronom, il faut am, is ou are.'
                 : `« ${v} » ne va pas avec « ${p.en} » : on dit « ${p.en} ${p.be} ».`,
           })),
         );
@@ -160,7 +160,7 @@ const bePresent: Skill = {
       const [a, b] = rng.shuffle(PRONOUNS).slice(0, 2) as [PronounRow, PronounRow];
       const [pa, pb] = rng.shuffle(PREDICATES).slice(0, 2) as [string, string];
       return {
-        prompt: `Écris le bon verbe be dans chaque trou : « ${cap(a.en)} … ${pa}. ${cap(b.en)} … ${pb}. »`,
+        prompt: `Écris le verbe be au présent dans chaque trou : « ${cap(a.en)} … ${pa}. ${cap(b.en)} … ${pb}. »`,
         answer: {
           kind: 'cloze',
           parts: [`${cap(a.en)} `, ` ${pa}. ${cap(b.en)} `, ` ${pb}.`],
@@ -213,8 +213,8 @@ const bePresent: Skill = {
       const FR: readonly { readonly p: Pronoun; readonly fr: string }[] = [
         { p: 'I', fr: 'Je suis content(e).' },
         { p: 'you', fr: 'Tu es content(e).' },
-        { p: 'he', fr: 'Il est content.' },
-        { p: 'she', fr: 'Elle est contente.' },
+        { p: 'he', fr: 'Il est content (un garçon).' },
+        { p: 'she', fr: 'Elle est contente (une fille).' },
         { p: 'we', fr: 'Nous sommes contents.' },
         { p: 'they', fr: 'Ils sont contents.' },
       ];
@@ -231,7 +231,7 @@ const bePresent: Skill = {
           accepted: dotted([`${cap(q.en)} ${q.be} happy`, `${cap(q.short)} happy`]),
         },
         traps: [
-          { text: `${cap(q.en)} be happy.`, why: '« be » seul ne se conjugue pas : il faut am, is ou are.' },
+          { text: `${cap(q.en)} be happy.`, why: 'Ici « be » doit changer de forme : il faut am, is ou are.' },
           {
             text: sentence(q.en, wrongBe, 'happy'),
             why: `« ${wrongBe} » ne va pas avec « ${q.en} » : on dit « ${q.en} ${q.be} ».`,
@@ -245,29 +245,28 @@ const bePresent: Skill = {
         ],
       };
     }
-    // Niveau 5 : le petit texte d'Ana, trois formes de be à écrire (un sujet « I », un singulier, un pluriel).
+    // Niveau 5 : le petit texte d'Ana, trois formes de be à écrire (« I », puis deux sujets tirés librement :
+    // pas toujours une de chaque forme, pour qu'on ne réponde pas par élimination).
     const intro = { text: 'Hello! I … Ana.', be: 'am', pro: 'I' };
-    const others = [
-      rng.pick([
+    const others = rng
+      .shuffle([
         { text: 'My brother … ten.', be: 'is', pro: 'my brother = he' },
         { text: 'My sister … tired.', be: 'is', pro: 'my sister = she' },
         { text: 'My book … on the table.', be: 'is', pro: 'my book = it' },
-      ]),
-      rng.pick([
         { text: 'My parents … in the kitchen.', be: 'are', pro: 'my parents = they' },
         { text: 'Emir and I … at school.', be: 'are', pro: 'Emir and I = we' },
         { text: 'Paul and Yuna … happy.', be: 'are', pro: 'Paul and Yuna = they' },
-      ]),
-    ];
-    const lines = [intro, ...rng.shuffle(others)];
+      ])
+      .slice(0, 2);
+    const lines = [intro, ...others];
     return {
-      prompt: 'Lis le texte d’Ana. Écris « am », « is » ou « are » dans chaque trou.',
+      prompt: 'Lis le texte d’Ana. Écris le verbe be au présent dans chaque trou.',
       ...numberedText(
         'Ana se présente',
         lines.map((l) => l.text),
         lines.map((l) => l.be),
       ),
-      hint: 'Cherche qui fait chaque phrase. Remplace-le par un pronom.',
+      hint: 'De qui parle chaque phrase ? Remplace ce sujet par un pronom.',
       steps: [
         'Trouve le sujet placé devant chaque trou.',
         `Remplace chaque sujet par un pronom : ${lines.map((l) => l.pro).join(' ; ')}.`,
@@ -317,7 +316,7 @@ const subjectPronouns: Skill = {
   lesson: {
     memo: [
       'Un **pronom sujet** remplace la personne ou la chose dont on parle.',
-      'I = moi ; you = tu ou vous ; Emir → he ; Ana → she ; the book → it.',
+      'I = je ; you = tu ou vous ; Emir → he ; Ana → she ; the book → it.',
       'Pour un groupe, dis « they », ou « we » si tu en fais partie.',
     ],
     source: source(
@@ -384,10 +383,11 @@ const subjectPronouns: Skill = {
     }
     if (level === 3) {
       const s = rng.pick(SUBJECTS);
-      const pred = rng.pick(PREDICATES);
+      // Une chose n’est ni contente ni fatiguée : seulement les fins de phrase qui disent où elle est.
+      const pred = rng.pick(s.pro === 'it' ? PREDICATES.filter((x) => x.includes(' ')) : PREDICATES);
       const be = rowOf(s.pro).be;
       return {
-        prompt: `Écris le pronom sujet qui remplace le début de la phrase : « ${s.en} ${be} ${pred}. » → « … ${be} ${pred}. »`,
+        prompt: `Écris le pronom sujet qui remplace le début de la phrase : « ${cap(s.en)} ${be} ${pred}. » → « … ${be} ${pred}. »`,
         answer: { kind: 'text', accepted: [s.pro] },
         traps: PRONOUNS.filter((x) => x.en !== s.pro && x.be === be)
           .slice(0, 2)
@@ -406,7 +406,7 @@ const subjectPronouns: Skill = {
           .map((x) => ({ text: x.en, why: `« ${x.en} » sert pour ${x.usage} : ce n’est pas le cas ici.` })),
         hint: 'Qui parle ? À qui ? De qui ? Combien de personnes ?',
         steps: [
-          'Cherche de qui tu parles dans la phrase.',
+          'Cherche de qui, ou à qui, tu parles.',
           `Retiens ce cas : ${rowOf(sc.pro).usage}.`,
           `Écris le pronom : **${sc.pro}**`,
         ],
@@ -482,7 +482,7 @@ function questionWriting(rng: Rng): QuestionDraft {
           why: `Cette forme de be ne va pas avec « ${p.en} ».`,
         },
       ],
-      hint: 'Be passe en premier, avec une majuscule. Le reste ne change pas.',
+      hint: 'Cherche be dans la phrase. Où va-t-il dans une question ?',
       steps: [
         `Repère le verbe be dans la phrase : « ${p.be} ».`,
         `Place « ${cap(p.be)} » tout au début, avant « ${p.en} ».`,
@@ -617,7 +617,7 @@ const questionsBe: Skill = {
         prompt: 'Laquelle de ces phrases est une question ?',
         answer,
         traps,
-        hint: 'Une question commence par be (am, is, are) et finit par un point d’interrogation.',
+        hint: 'Compare le début des phrases : dans une question, be change de place.',
         steps: [
           'Regarde le premier mot de chaque phrase.',
           'Cherche celle qui commence par am, is ou are.',
@@ -684,9 +684,7 @@ const questionsBe: Skill = {
       return {
         prompt: `Remets les mots dans l’ordre pour former une question : ${items.join(' / ')}`,
         answer: { kind: 'order', items, correct: final.map((w) => items.indexOf(w)) },
-        hint: wh
-          ? 'Le mot interrogatif ouvre la question, puis be, puis le sujet.'
-          : 'Be en premier, puis le pronom, puis la suite.',
+        hint: wh ? 'Cherche d’abord la place du mot « Where ».' : 'Quel mot change de place pour poser une question ?',
         steps: [
           wh ? 'Place d’abord le mot interrogatif « Where ».' : `Place d’abord be : « ${cap(p.be)} ».`,
           wh ? `Ajoute ensuite be : « ${p.be} ».` : `Ajoute ensuite le pronom : « ${p.en} ».`,
@@ -727,7 +725,7 @@ function possessiveText(rng: Rng): QuestionDraft {
   ];
   const lines = [intro, ...rng.shuffle(others).slice(0, 2)];
   return {
-    prompt: 'Lis le texte d’Ana. Écris le possessif de chaque trou. Cherche à qui est la chose.',
+    prompt: 'Lis le texte d’Ana. Écris le possessif de chaque trou. Regarde bien la phrase d’avant.',
     ...numberedText(
       'Le texte d’Ana',
       lines.map((l) => l.text),
@@ -854,9 +852,9 @@ const possessives: Skill = {
     if (level === 4) {
       if (rng.int(0, 1) === 0) {
         const cases = [
-          { b: 'Look at the bus.', a: 'door is open.', ctx: 'La porte est au bus.', poss: 'its' },
-          { b: 'She’s washing', a: 'hair.', ctx: 'Les cheveux sont à Ana.', poss: 'her' },
-          { b: 'He’s broken', a: 'arm.', ctx: 'Le bras est à Emir.', poss: 'his' },
+          { b: 'Look at the bus.', a: 'door is open.', ctx: 'C’est la porte du bus.', poss: 'its' },
+          { b: 'She’s washing', a: 'hair.', ctx: 'Ce sont les cheveux d’Ana.', poss: 'her' },
+          { b: 'He’s broken', a: 'arm.', ctx: 'C’est le bras d’Emir.', poss: 'his' },
           {
             b: 'How old is',
             a: 'sister?',
@@ -906,6 +904,7 @@ const possessives: Skill = {
       ];
       const c = rng.pick(cases);
       const noun = c.en.split(' ')[1] ?? '';
+      const owner = PRONOUNS.find((x) => x.poss === c.p)?.en ?? '';
       const swap = at(
         ['my', 'your', 'his', 'her', 'our', 'their'].filter((x) => x !== c.p && !(c.p === 'its' && x === 'his')),
         rng.int(0, 3),
@@ -923,7 +922,7 @@ const possessives: Skill = {
         hint: 'Trouve d’abord le pronom. Cherche ensuite son possessif, puis le nom.',
         steps: [
           'Cherche à qui est la chose.',
-          `Choisis le possessif qui correspond : « ${c.p} ».`,
+          `Trouve le pronom « ${owner} » : son possessif est « ${c.p} ».`,
           `Écris le possessif puis le nom : **${c.en}**`,
         ],
       };

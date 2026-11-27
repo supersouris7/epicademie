@@ -61,9 +61,9 @@ export const SUBJECTS: readonly Subject[] = [
   { en: 'Ana and I', pro: 'we' },
 ];
 
-/** Propriétaires pour les adjectifs possessifs : `fr` complète « appartient à … ». */
+/** Propriétaires pour les adjectifs possessifs : `fr` complète « La chose est … ». */
 export interface Owner {
-  /** Complète « La maison appartient … » (préposition comprise). */
+  /** Complète « La maison est … » (préposition comprise). */
   readonly fr: string;
   /** Le propriétaire, sans préposition (pour les explications). */
   readonly who: string;
@@ -77,9 +77,9 @@ export const OWNERS: readonly Owner[] = [
   { fr: 'à Emir', who: 'Emir', pro: 'he' },
   { fr: 'à Ana', who: 'Ana', pro: 'she' },
   // Une chose (et non un animal, qu’on peut aussi appeler « he » ou « she ») : « its » est la seule réponse.
-  { fr: 'au bus', who: 'le bus', pro: 'it', thing: { en: 'door', fr: 'La porte' } },
-  { fr: 'à Emir et moi', who: 'Emir et moi', pro: 'we' },
-  { fr: 'à Ana et Emir', who: 'Ana et Emir', pro: 'they' },
+  { fr: 'celle du bus', who: 'le bus', pro: 'it', thing: { en: 'door', fr: 'La porte' } },
+  { fr: 'à Emir et à moi', who: 'Emir et moi', pro: 'we' },
+  { fr: 'à Ana et à Emir', who: 'Ana et Emir', pro: 'they' },
 ];
 
 /** Objets possédés : mot anglais et mot français (avec son article). */

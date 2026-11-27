@@ -100,14 +100,14 @@ describe('anglais cm1 : be et possessifs', () => {
   it('possessifs : « it’s » est refusé avec une explication sur l’apostrophe', () => {
     for (let seed = 1; seed < 200; seed++) {
       const q = generate('acm1-possessifs', 3, seed);
-      if (!q.prompt.includes('au bus')) continue;
+      if (!q.prompt.includes('du bus')) continue;
       expect(check(q, { kind: 'text', text: 'its' }).correct).toBe(true);
       const res = check(q, { kind: 'text', text: 'it’s' });
       expect(res.correct).toBe(false);
       expect(res.why).toMatch(/it is/);
       return;
     }
-    throw new Error('« au bus » jamais tiré');
+    throw new Error('« du bus » jamais tiré');
   });
 
   it('questions : la question correcte est acceptée avec ou sans point d’interrogation, « do » est refusé', () => {
