@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { useNavigate, useParams } from 'react-router';
@@ -18,6 +19,7 @@ import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import { SpeechBubble } from '../../shared/ui/SpeechBubble.tsx';
 import { useToast } from '../../shared/ui/Toast.tsx';
 import { answerQuestion, chooseAdvanced, finishEvaluation, nextQuestion } from './api.ts';
+import { BlockSkeleton } from '../../shared/ui/Skeleton.tsx';
 import { domainLabel, generateEvaluation } from './texts.ts';
 
 type Phase =
@@ -47,6 +49,7 @@ const UNKNOWN_WARNING =
 export function EvaluationPlay({ profile }: { readonly profile: Profile }) {
   const { id = '' } = useParams();
   const navigate = useNavigate();
+  const qc = useQueryClient();
   const reduce = useReducedMotion();
   const [toast, showToast] = useToast(3000);
   const [phase, setPhase] = useState<Phase>({ step: 'loading' });
@@ -73,12 +76,16 @@ export function EvaluationPlay({ profile }: { readonly profile: Profile }) {
     setPhase({ step: 'closing' });
     try {
       const result = await finishEvaluation(id);
+      // XP, coffre et historique ont changé : les écrans suivants les redemandent.
+      for (const key of ['profiles', 'bosses', 'evaluation-home', 'evaluation-summary']) {
+        void qc.invalidateQueries({ queryKey: [key] });
+      }
       void navigate(`/evaluation/${id}/resultat`, { replace: true, state: { fresh: result } });
     } catch (e) {
       closing.current = false;
       fail(e);
     }
-  }, [id, navigate, fail]);
+  }, [id, navigate, fail, qc]);
 
   const load = useCallback(async () => {
     try {
@@ -143,7 +150,7 @@ export function EvaluationPlay({ profile }: { readonly profile: Profile }) {
         domain={current?.domain ?? null}
         onQuit={() => setConfirmQuit(true)}
       />
-      {phase.step === 'loading' && <p role="status">Chargement de ton épreuve…</p>}
+      {phase.step === 'loading' && <BlockSkeleton />}
       {phase.step === 'closing' && (
         <div className="flex items-center gap-3" role="status">
           <Questy size={90} mood="proud" />

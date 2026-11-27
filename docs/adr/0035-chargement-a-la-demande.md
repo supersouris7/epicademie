@@ -26,7 +26,8 @@ contenus pédagogiques. Tout était téléchargé avant le premier écran, y com
 
 ## Conséquences
 
-- Premier affichage bien plus léger ; une courte attente à la première visite d'un écran.
+- Premier affichage bien plus léger. Après la première ouverture, le code des écrans est préchargé
+  en arrière-plan (session vérifiée seulement) ; sinon une silhouette tient la place.
 - Le premier écran à contenus télécharge toujours toutes les matières.
 
 ## Options écartées

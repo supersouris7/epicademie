@@ -1,3 +1,4 @@
+import { BlockSkeleton } from '../../shared/ui/Skeleton.tsx';
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useSearchParams } from 'react-router';
@@ -30,7 +31,7 @@ export function Subscription() {
     <ParentPage title="Abonnement familial">
       {returned === 'ok' && <p role="status">Merci ! Le paiement est en cours de validation.</p>}
       {returned === 'annule' && <p role="status">Paiement annulé : rien n’a été débité.</p>}
-      {isPending && <p>Chargement…</p>}
+      {isPending && <BlockSkeleton />}
       {b && (
         <>
           <section className="cartoon bg-surface flex flex-col gap-2 p-4">

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { api, subjectLabel, type Grade } from '@epicademie/shared';
-import { request } from '../../shared/api/client.ts';
+import { subjectLabel, type Grade } from '@epicademie/shared';
+import { evaluationSummaryQuery } from './queries.ts';
 import { appreciation, formatNote, KIND_INFO, note20 } from '../evaluation/index.ts';
 import { dateOf, evolution, noted } from './evaluationNotes.ts';
 
@@ -8,11 +8,7 @@ import { dateOf, evolution, noted } from './evaluationNotes.ts';
  * Notes des évaluations dans l'Espace parent : par matière, la dernière note sur 20 avec son
  * appréciation, l'évolution depuis l'épreuve précédente (12/20 → 15/20) et l'historique.
  */
-const useEvaluationSummary = (profileId: string) =>
-  useQuery({
-    queryKey: ['evaluation-summary', profileId],
-    queryFn: () => request(api.evaluationSummary, { params: { id: profileId } }),
-  });
+const useEvaluationSummary = (profileId: string) => useQuery(evaluationSummaryQuery(profileId));
 
 /** Une ligne par matière pour la carte d'un enfant : dernière note et évolution. */
 export function EvaluationLine({ profileId, grade }: { readonly profileId: string; readonly grade: Grade | null }) {

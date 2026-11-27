@@ -24,10 +24,22 @@ React 19, Vite, Tailwind 4, motion (animations), React Query (données serveur),
 
 [ADR 0035](../adr/0035-chargement-a-la-demande.md). Deux pages (entrées Vite) : le jeu (`index.html`,
 `main.tsx`, `index.css`) et la console `/admin` (`admin.html`, `admin-main.tsx`, `admin.css`), sans
-code ni style commun hors socle `shared/`. Dans le jeu (`app/GameApp.tsx`), chaque écran est déclaré par `lazyScreen` (`app/lazyScreen.tsx`) avec son
-attente. Pour ajouter un écran : le déclarer ainsi, et ne pas importer les contenus pédagogiques
+code ni style commun hors socle `shared/`. Dans le jeu (`app/GameApp.tsx`), chaque écran est déclaré par `lazyScreen` (`app/lazyScreen.tsx`) avec sa
+silhouette d'attente. Pour ajouter un écran : le déclarer ainsi, l'inscrire dans `PRELOAD`, et ne pas importer les contenus pédagogiques
 depuis ce qui est chargé à l'entrée (`catalog.ts` pèse plusieurs mégaoctets). Les tailles sont
 contrôlées par `e2e/chargement.spec.ts`.
+
+## Fluidité
+
+- **Code** : une fois la session vérifiée, `app/Warmup.tsx` télécharge en arrière-plan le code des écrans
+  de `PRELOAD` (voisins de l'accueil d'abord). Un écran préchargé s'affiche sans attente.
+- **Données** : le cache React Query est gardé tant que la page est ouverte (`gcTime` infini, vidé à la
+  déconnexion et au changement de famille). Une donnée connue s'affiche tout de suite et se rafraîchit en arrière-plan. Fraîcheur :
+  30 s par défaut, `LONG_FRESH_MS` pour les profils et les notions en maintenance — toute action qui
+  les change doit invalider la clé. Les menus du joueur sont demandés d'avance (`Warmup`), et au
+  survol ou à l'appui (`shared/lib/intent.ts`).
+- **Attente** : jamais de message « Chargement » ; `shared/ui/Skeleton.tsx` pour une donnée jamais reçue.
+- **Mesure** : `e2e/fluidite.spec.ts` (tablette, 50 ms de latence, moins de 300 ms par parcours).
 
 ## Socle (`src/shared/`, `src/design/`)
 

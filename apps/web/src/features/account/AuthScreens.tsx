@@ -4,6 +4,7 @@ import { PASSWORD_MIN } from '@epicademie/shared';
 import { ApiError } from '../../shared/api/client.ts';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
+import { ScreenSkeleton } from '../../shared/ui/Skeleton.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import {
   forgotPassword,
@@ -32,7 +33,7 @@ const message = (err: unknown, fallback: string) => (err instanceof ApiError ? e
 export function RequireAccount({ children }: { readonly children?: ReactNode }) {
   const { data, error, isPending, refetch } = useMe();
   const location = useLocation();
-  if (isPending) return <p className="p-8 text-xl">Chargement…</p>;
+  if (isPending) return <ScreenSkeleton />;
   if (error instanceof ApiError && error.status === 401) {
     return <Navigate to="/bienvenue" replace state={{ from: location.pathname }} />;
   }
@@ -140,7 +141,7 @@ function BigLink({ to, children }: { readonly to: string; readonly children: Rea
  */
 export function HiddenInRecette({ children }: { readonly children: ReactNode }) {
   const { data, isPending } = useAuthOptions();
-  if (isPending) return <p className="p-8 text-xl">Chargement…</p>;
+  if (isPending) return <ScreenSkeleton />;
   if (data?.recette) return <Navigate to="/connexion" replace />;
   return children;
 }

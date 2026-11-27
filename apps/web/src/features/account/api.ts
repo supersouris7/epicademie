@@ -41,11 +41,20 @@ export const forgotPassword = (email: string) => request(api.forgotPassword, { b
 export const resetPassword = (token: string, password: string) =>
   request(api.resetPassword, { body: { token, password } });
 
-/** Met à jour la session en cache après connexion, inscription ou déverrouillage parent. */
+/**
+ * Met à jour la session en cache après connexion, inscription ou déverrouillage parent. Le cache
+ * dure tant que la page est ouverte : une autre famille (ou aucune) repart sans rien de la précédente.
+ */
 export function useSetMe() {
   const qc = useQueryClient();
   return (me: Me | null) => {
-    if (me) qc.setQueryData(meKey, me);
-    else qc.removeQueries();
+    if (!me) {
+      qc.removeQueries();
+      return;
+    }
+    if (qc.getQueryData<Me>(meKey)?.family.id !== me.family.id) {
+      qc.removeQueries({ predicate: ({ queryKey: [name] }) => name !== meKey[0] && name !== 'auth-options' });
+    }
+    qc.setQueryData(meKey, me);
   };
 }
