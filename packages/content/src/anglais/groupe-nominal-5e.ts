@@ -146,8 +146,8 @@ interface Gapped {
   readonly right: Quant;
   readonly why: string;
   readonly rule: string;
-  /** Sens français du mot attendu : sans liste de mots, il écarte les autres mots justes (any, a…). */
-  readonly gloss: string;
+  /** Précision de l’énoncé : sans liste de mots, elle écarte les autres réponses justes (any, a few…). */
+  readonly cue: string;
   /** Seconde bulle : ce qu’il faut retenir pour ce type de phrase. */
   readonly retain: string;
 }
@@ -161,7 +161,7 @@ const negative = (rng: Rng): Gapped => {
     right,
     why: WHY_COUNT(n),
     rule: countLook(n),
-    gloss: 'pas beaucoup',
+    cue: 'sens : pas beaucoup',
     retain: RETAIN_COUNT,
   };
 };
@@ -172,7 +172,7 @@ const how = (rng: Rng): Gapped => {
     right: forCount(n),
     why: WHY_COUNT(n),
     rule: countLook(n),
-    gloss: 'combien',
+    cue: 'sens : combien',
     retain: RETAIN_COUNT,
   };
 };
@@ -184,8 +184,8 @@ const offer = (rng: Rng): Gapped => {
     right: 'some',
     why: WHY_OFFER,
     rule: 'Repère qu’on propose ou qu’on demande quelque chose.',
-    gloss: 'un peu ou quelques',
-    retain: 'Retiens : pour proposer ou demander, on ne compte pas.',
+    cue: 'écris le mot du mémo pour proposer ou demander, en un seul mot',
+    retain: 'Retiens : pour proposer ou demander, on ne donne pas de nombre précis.',
   };
 };
 
@@ -193,7 +193,7 @@ function quantifierChoose(rng: Rng): QuestionDraft {
   const g = rng.pick([negative, how, offer, offer])(rng);
   const others = (['much', 'many', 'some'] as const).filter((q) => q !== g.right);
   return {
-    prompt: `Complète d’après la règle du cours : « ${g.sentence} » (sens : ${g.gloss})`,
+    prompt: `Complète d’après la règle du cours : « ${g.sentence} » (${g.cue})`,
     answer: typed([g.right]),
     traps: textTraps(
       [g.right],
@@ -255,7 +255,7 @@ const quantifierSkill: Skill = {
   lesson: {
     memo: [
       'Un **quantifieur** dit une quantité : many avec un **nom dénombrable**, much avec un **nom indénombrable**.',
-      'Dans une question ou après not : how many chairs, not much juice ; pour proposer : some tea.',
+      'Dans une question ou après not : how many chairs, not much juice ; pour proposer ou demander : some tea.',
     ],
     source: source('les quantifieurs much, many, some', '« Much and many », « Quantifiers », « Uncount nouns »'),
     sources: [PROG, 'bck-much-many', 'bc-quantifiers', 'bc-uncount-nouns'],
@@ -756,16 +756,16 @@ function antonymPrefix(rng: Rng): QuestionDraft {
   const right = at(accepted, 0);
   const wrong = ['un', 'in', 'im', 'il', 'ir', 'dis'].map((p) => ({
     text: `${p}${base}`,
-    why: 'Ce n’est pas le préfixe du cours pour ce mot : chaque mot a le sien.',
+    why: 'Ce n’est pas le mot du cours : retrouve dans le mémo le préfixe de ce mot.',
   }));
   return {
     prompt: `Écris le contraire de « ${base} » appris dans le cours : ajoute un préfixe au début.`,
     answer: typed(accepted),
     traps: textTraps(accepted, [{ text: base, why: 'C’est le mot de départ : il manque le préfixe.' }, ...wrong]),
-    hint: 'Essaie les préfixes du mémo et garde celui que tu as déjà lu avec ce mot.',
+    hint: 'Cherche dans le mémo le mot formé à partir de celui-ci.',
     steps: [
       'Garde le mot de départ en entier.',
-      'Ajoute devant lui le préfixe appris avec ce mot.',
+      'Retrouve son préfixe dans le mémo, puis ajoute-le devant.',
       `Écris : **${right}**.`,
     ],
   };
@@ -826,9 +826,9 @@ const antonymSkill: Skill = {
   ],
   lesson: {
     memo: [
-      'Un **antonyme** est un mot de sens contraire : quiet et noisy, urban et rural.',
-      'Autres paires : real et virtual, lonely et popular, freedom et constraint, separation et union.',
-      'Un **préfixe** (un-, im-, il-, ir-, dis-, anti-) renverse le sens : dissatisfied, antisocial.',
+      'Un **antonyme** est un mot de sens contraire : quiet et noisy, urban et rural, real et virtual ; lonely et popular, freedom et constraint, separation et union.',
+      'Un **préfixe** se place au début : unhappy, unrecognisable, impossible, irregular, illegal, dissatisfied.',
+      'Le préfixe anti- rend le mot négatif : antisocial.',
     ],
     source: source('utiliser des antonymes', '« Does it have a prefix or a suffix? »'),
     sources: [PROG, 'bct-prefix-suffix'],

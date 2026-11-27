@@ -7,9 +7,9 @@ import { sensIssues } from '../sens.ts';
 import { getSource, isAllowedUrl } from '../sources.ts';
 import type { Level, Question } from '../types.ts';
 import { validateVariants } from '../validate.ts';
-import { ENGLISH_PRONOUNS_5E_CHAPTER, NOUNS } from './groupe-nominal-5e.ts';
+import { ENGLISH_PRONOUNS_5E_CHAPTER, NOUNS, PREFIX_PAIRS } from './groupe-nominal-5e.ts';
 import { FAITS as GROUP_FACTS } from './groupe-nominal-5e-faits.ts';
-import { ENGLISH_LINKING_5E_CHAPTER } from './relier-situer.ts';
+import { CASES, ENGLISH_LINKING_5E_CHAPTER } from './relier-situer.ts';
 import { FAITS as LINK_FACTS } from './relier-situer-faits.ts';
 
 const LEVELS: readonly Level[] = [1, 2, 3, 4, 5];
@@ -187,6 +187,49 @@ describe('anglais 5e : groupe nominal et pronoms, relier et situer', () => {
         expect(['but', 'however']).toContain(b.accepted.join('|'));
       }
     }
+  });
+
+  it('quantifieurs : proposer ou demander attend un seul mot, celui du mémo', () => {
+    const offers = questions('a5-quantifieurs', 4).filter((q) => /Would you like|Can I have/.test(q.prompt));
+    expect(offers.length).toBeGreaterThan(0);
+    for (const q of offers) {
+      expect(q.prompt).toContain('en un seul mot');
+      expect(q.prompt).not.toMatch(/un peu|quelques/);
+    }
+  });
+
+  it('antonymes : chaque mot à préfixe attendu est montré dans le mémo', () => {
+    const memo = getSkill('a5-antonymes')!.lesson.memo.join(' ');
+    for (const [, accepted] of PREFIX_PAIRS) expect(memo).toContain(accepted[0]);
+  });
+
+  it('contraste : aucune règle de comparaison non sourcée', () => {
+    const skill = getSkill('a5-contraste')!;
+    const why = LEVELS.flatMap((l) => questions(skill.id, l)).flatMap((q) => q.traps.map((t) => t.why));
+    for (const t of [...skill.lesson.memo, ...why, ...skill.sens!.map((x) => x.text)]) expect(t).not.toMatch(/compar/i);
+  });
+
+  it('degré : le sens français désigne un seul adverbe, sans règle liée au plaisir', () => {
+    const french = { very: 'très', too: 'trop', much: 'beaucoup plus' };
+    for (const c of CASES) {
+      expect(c.fr, c.text).toContain(french[c.degree]);
+      for (const [degree, words] of Object.entries(french))
+        if (degree !== c.degree) expect(c.fr, c.text).not.toContain(words);
+    }
+    for (const level of [2, 3] as const)
+      for (const q of questions('a5-intensite', level))
+        expect(
+          CASES.some((c) => q.prompt.includes(c.fr) && q.prompt.includes(c.text)),
+          q.prompt,
+        ).toBe(true);
+    for (const q of questions('a5-intensite', 5))
+      expect(
+        CASES.filter((c) => JSON.stringify(q.figure).includes(c.fr)),
+        q.prompt,
+      ).toHaveLength(4);
+    for (const level of [2, 3, 5] as const)
+      for (const q of questions('a5-intensite', level))
+        expect([q.hint, ...q.steps].join(' ')).not.toMatch(/plaisir|aime/);
   });
 
   it('positions : écritures courantes acceptées, « in the left » refusé', () => {

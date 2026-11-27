@@ -73,7 +73,6 @@ export const FAITS: readonly Fait[] = [
     'We can use too + adjective to say when something is more than we want.',
     'too + adjectif : plus que ce que l’on veut.',
   ),
-  fait('very-sens', TOO, 'Use very + adjective to talk about good things.', 'very + adjectif pour ce qui plaît.'),
   fait(
     'very-renforce',
     INT,

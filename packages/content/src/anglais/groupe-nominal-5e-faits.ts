@@ -114,7 +114,12 @@ export const FAITS: readonly Fait[] = [
   fait('prefixe-dis', AFF, 'dis- satisfied - dissatisfied', 'dis- : satisfied → dissatisfied.'),
   fait('prefixe-ir', AFF, 'ir- regular - irregular', 'ir- : regular → irregular.'),
   fait('prefixe-il', AFF, 'il- legal - illegal', 'il- : legal → illegal.'),
-  fait('prefixe-anti', AFF, 'anti- social - antisocial', 'anti- : social → antisocial.'),
+  fait(
+    'prefixe-anti',
+    AFF,
+    'Other prefixes make a word negative: anti- social - antisocial',
+    'anti- rend le mot négatif : social → antisocial.',
+  ),
   fait('suffixe-able', AFF, '-able - reliable / capable', '-able est un suffixe d’adjectif.'),
   fait(
     'programme-antonymes',

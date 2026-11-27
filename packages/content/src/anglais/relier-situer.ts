@@ -67,8 +67,8 @@ export const HOWEVERS: readonly Joined[] = [
 
 const LINK_WHY: Readonly<Record<string, string>> = {
   but: 'but veut dire « mais » : ce n’est pas le mot attendu dans cette phrase.',
-  whereas: 'whereas compare deux personnes ou deux choses.',
-  however: 'however vient après un point ou un point-virgule, suivi d’une virgule.',
+  whereas: 'whereas veut dire « alors que » : ce n’est pas le mot attendu dans cette phrase.',
+  however: 'however peut suivre un point ou un point-virgule, avec une virgule après lui.',
   because: 'because donne une cause : il ne dit pas le contraire.',
   so: 'so donne une conséquence : il ne dit pas le contraire.',
   and: 'and ajoute une idée : il ne marque pas l’opposition.',
@@ -191,7 +191,7 @@ const linkSkill: Skill = {
   sens: [
     sens(
       'usage',
-      'Pour opposer deux idées quand tu donnes ton avis ou que tu compares.',
+      'Pour exprimer une opposition ou un contraste entre deux idées.',
       PROG,
       'Exprimer une opposition, une concession ou un contraste : but, whereas, however, or, etc.',
     ),
@@ -199,8 +199,8 @@ const linkSkill: Skill = {
   lesson: {
     memo: [
       'Un **contraste** oppose deux idées : but (mais), whereas (alors que), however (cependant).',
-      'whereas compare deux personnes ou deux choses ; but (mais) peut aussi le faire.',
-      'however vient après un point ou un point-virgule, avec une virgule derrière lui.',
+      'however peut suivre un point ou un point-virgule, avec une virgule derrière lui.',
+      'Exemple : « The test was hard; however, I did my best. »',
     ],
     source: source('exprimer une opposition, une concession ou un contraste'),
     sources: [PROG],
@@ -560,39 +560,42 @@ const spotSkill: Skill = {
 export type Degree = 'very' | 'much' | 'too';
 export interface Case {
   readonly text: string;
+  /** Sens français : lui seul départage very et too, tous deux possibles dans bien des phrases anglaises. */
+  readonly fr: string;
   readonly degree: Degree;
 }
-const cases = (degree: Degree, ...texts: string[]): Case[] => texts.map((text) => ({ text, degree }));
+const cases = (degree: Degree, ...rows: (readonly [text: string, fr: string])[]): Case[] =>
+  rows.map(([text, fr]) => ({ text, fr, degree }));
 export const CASES: readonly Case[] = [
   ...cases(
     'too',
-    'I am … young to drive.',
-    'This soup is … hot to eat.',
-    'The box is … heavy to carry.',
-    'I am … tired to play.',
-    'The shop is … far for us to walk.',
-    'This bike is … small for me to ride.',
-    'The water is … cold to swim in.',
+    ['I am … young to drive.', 'Je suis trop jeune pour conduire.'],
+    ['This soup is … hot to eat.', 'Cette soupe est trop chaude pour être mangée.'],
+    ['The box is … heavy to carry.', 'La boîte est trop lourde à porter.'],
+    ['I am … tired to play.', 'Je suis trop fatigué pour jouer.'],
+    ['The shop is … far for us to walk.', 'Le magasin est trop loin pour y aller à pied.'],
+    ['This bike is … small for me to ride.', 'Ce vélo est trop petit pour moi.'],
+    ['The water is … cold to swim in.', 'L’eau est trop froide pour s’y baigner.'],
   ),
   ...cases(
     'very',
-    'It was … sunny yesterday and I loved it!',
-    'The game is … funny: we love it!',
-    'This cake is … good, I want more!',
-    'Your drawing is … nice, I like it a lot.',
-    'The film was … interesting and I enjoyed it.',
-    'I am … happy: we won the match!',
-    'The new park is … beautiful, we love it.',
+    ['It was … sunny yesterday and I loved it!', 'Il y avait un très beau soleil hier et j’ai adoré !'],
+    ['The game is … funny: we love it!', 'Le jeu est très drôle : nous l’adorons !'],
+    ['This cake is … good, I want more!', 'Ce gâteau est très bon, j’en veux encore !'],
+    ['Your drawing is … nice, I like it a lot.', 'Ton dessin est très joli, je l’adore.'],
+    ['The film was … interesting and I enjoyed it.', 'Le film était très intéressant et il m’a plu.'],
+    ['I am … happy: we won the match!', 'Je suis très content : nous avons gagné le match !'],
+    ['The new park is … beautiful, we love it.', 'Le nouveau parc est très beau, nous l’adorons.'],
   ),
   ...cases(
     'much',
-    'My brother is … taller than me.',
-    'This phone is … cheaper than that one.',
-    'London is … bigger than my town.',
-    'Today is … colder than yesterday.',
-    'My new bag is … lighter than the old one.',
-    'A plane is … faster than a car.',
-    'This test is … easier than the last one.',
+    ['My brother is … taller than me.', 'Mon frère est beaucoup plus grand que moi.'],
+    ['This phone is … newer than that one.', 'Ce téléphone est beaucoup plus récent que celui-là.'],
+    ['London is … bigger than my town.', 'Londres est beaucoup plus grande que ma ville.'],
+    ['Today is … colder than yesterday.', 'Aujourd’hui, il fait beaucoup plus froid qu’hier.'],
+    ['My new bag is … lighter than the old one.', 'Mon nouveau sac est beaucoup plus léger que l’ancien.'],
+    ['A plane is … faster than a car.', 'Un avion est beaucoup plus rapide qu’une voiture.'],
+    ['This test is … easier than the last one.', 'Ce contrôle est beaucoup plus facile que le dernier.'],
   ),
 ];
 const WHY_DEGREE: Readonly<Record<Degree | 'many', string>> = {
@@ -602,9 +605,9 @@ const WHY_DEGREE: Readonly<Record<Degree | 'many', string>> = {
   many: 'many compte des choses : il ne renforce pas un adjectif.',
 };
 const DEGREE_STEP: Readonly<Record<Degree, string>> = {
-  too: 'Regarde : quelque chose est impossible à cause de cette qualité.',
-  very: 'Regarde : la personne aime ce qu’elle décrit.',
-  much: 'Regarde le mot than : on compare deux choses.',
+  too: 'Repère « trop » dans la phrase française : c’est plus que ce que l’on veut.',
+  very: 'Repère « très » dans la phrase française : la qualité est renforcée.',
+  much: 'Repère « beaucoup plus » en français et than (que) en anglais.',
 };
 const DEGREE_RULE = 'Choisis selon le sens : très, trop, ou beaucoup plus.';
 const caseSteps = (c: Case) => [DEGREE_STEP[c.degree], DEGREE_RULE, `Écris : **${c.degree}**.`];
@@ -664,10 +667,10 @@ function degreePick(rng: Rng): QuestionDraft {
     [...DEGREES.filter((x) => x !== c.degree), 'many' as const].map((x) => ({ label: x, why: WHY_DEGREE[x] })),
   );
   return {
-    prompt: `Choisis le mot qui complète d’après la règle du cours : « ${c.text} »`,
+    prompt: `Choisis le mot qui donne le sens « ${c.fr} » à la phrase : « ${c.text} »`,
     answer,
     traps,
-    hint: 'Cherche un indice : une comparaison, une chose impossible ou un plaisir ?',
+    hint: 'Dans la phrase française, cherche les mots placés devant la qualité.',
     steps: [DEGREE_STEP[c.degree], DEGREE_RULE, `Choisis : **${c.degree}**.`],
   };
 }
@@ -675,13 +678,13 @@ function degreePick(rng: Rng): QuestionDraft {
 function degreeWrite(rng: Rng): QuestionDraft {
   const c = rng.pick(CASES);
   return {
-    prompt: `Complète avec very, much ou too, d’après la règle du cours : « ${c.text} »`,
+    prompt: `Complète avec very, much ou too pour dire « ${c.fr} » : « ${c.text} »`,
     answer: typed([c.degree]),
     traps: textTraps(
       [c.degree],
       [...DEGREES, 'many' as const].map((x) => ({ text: x, why: WHY_DEGREE[x] })),
     ),
-    hint: 'Cherche un indice : une comparaison, une chose impossible ou un plaisir ?',
+    hint: 'Dans la phrase française, cherche les mots placés devant la qualité.',
     steps: caseSteps(c),
   };
 }
@@ -715,16 +718,16 @@ function degreeDocument(rng: Rng): QuestionDraft {
   const fourth = rng.pick(CASES.filter((c) => c.degree !== 'very' && !picked.includes(c)));
   const rows = rng.shuffle([...picked, fourth]);
   return {
-    prompt: 'Lis le journal, puis complète chaque phrase avec un adverbe de degré du cours.',
+    prompt: 'Lis le journal et sa traduction, puis complète chaque phrase avec un adverbe de degré du cours.',
     figure: document(
       `Diary of ${name}`,
-      rows.map((r, i) => r.text.replace('…', `(${i + 1})`)),
+      rows.flatMap((r, i) => [r.text.replace('…', `(${i + 1})`), `= ${r.fr}`]),
     ),
     answer: { kind: 'cloze', parts: numbered(rows.length), blanks: blanksOf(rows.map((r) => [r.degree])) },
-    hint: 'Pour chaque phrase, cherche un indice : comparaison, impossibilité ou plaisir.',
+    hint: 'Pour chaque trou, relis la phrase française placée en dessous.',
     steps: [
-      'Cherche le mot than : il annonce une comparaison.',
-      'Distingue ce qui est impossible de ce qui plaît.',
+      'Lis chaque phrase française avant de remplir son trou.',
+      'Associe très, trop et beaucoup plus au bon mot anglais.',
       ok(rows.map((r) => r.degree)),
     ],
   };
