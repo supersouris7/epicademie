@@ -38,6 +38,7 @@ refuse de démarrer si une valeur est invalide. Une variable vide vaut « non d�
 | `AUTH_RATE_LIMIT_MAX`   | `10`                                          | tentatives par minute et par IP : connexion, inscription, mot de passe                                                              |
 | `APP_ENV`               | `production` si `NODE_ENV=production`         | `production` impose Brevo et ne renvoie jamais de lien secret dans une réponse ; `recette` : plateforme de test sans aucun e-mail   |
 | `PASSWORD_MIN_LENGTH`   | `12` (`8` si `APP_ENV=recette`)               | longueur minimale d'un nouveau mot de passe (6 à 64), contrôlée par le serveur et affichée par l'interface (`/api/v1/auth/options`) |
+| `PORTAL_LOGOUT_URL`     | —                                             | portail de connexion placé devant la plateforme : page de déconnexion (HTTPS), ouverte après « Se déconnecter »                     |
 | `BREVO_API_KEY`         | —                                             | clé de l'API transactionnelle Brevo (secret) ; absente : pas d'envoi (journal seulement), **démarrage refusé en production**        |
 | `MAIL_FROM`             | —                                             | expéditeur (`adresse@domaine` ou `Nom <adresse@domaine>`), exigé avec `BREVO_API_KEY`                                               |
 | `GOOGLE_CLIENT_ID`      | —                                             | identifiant client OAuth Google ; avec le secret, active « Continuer avec Google »                                                  |

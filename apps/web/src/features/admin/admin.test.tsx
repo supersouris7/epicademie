@@ -337,10 +337,24 @@ describe('téléphone (sous 700 px) : des cartes à la place des tableaux', () =
 });
 
 describe('administration : connexion et rôles', () => {
-  it('connexion configurée, personne non connectée : bouton « Se connecter »', async () => {
+  it('connexion configurée, personne non connectée : départ direct vers le SSO', async () => {
+    sessionStorage.clear();
+    const assign = vi.fn();
+    vi.stubGlobal('location', Object.assign(new URL(window.location.href), { assign }));
+    renderAdmin({ admin: false, adminSso: true, loggedIn: false });
+    await waitFor(() => expect(assign).toHaveBeenCalledWith('/api/v1/admin-auth/login'));
+    expect(screen.queryByRole('link', { name: 'Se connecter' })).not.toBeInTheDocument();
+  });
+
+  it('tentative récente échouée : pas de boucle, lien « Se connecter » proposé', async () => {
+    sessionStorage.setItem('admin-sso-tentative', String(Date.now()));
+    const assign = vi.fn();
+    vi.stubGlobal('location', Object.assign(new URL(window.location.href), { assign }));
     renderAdmin({ admin: false, adminSso: true, loggedIn: false });
     const link = await screen.findByRole('link', { name: 'Se connecter' });
     expect(link).toHaveAttribute('href', '/api/v1/admin-auth/login');
+    expect(assign).not.toHaveBeenCalled();
+    sessionStorage.clear();
   });
 
   it('« Se déconnecter » : session fermée, puis départ vers la déconnexion du fournisseur', async () => {

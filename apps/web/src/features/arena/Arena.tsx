@@ -1,5 +1,5 @@
 import { RecapScreen } from '../training/index.ts';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { chaptersOf, generate, getAnySkill, getChapter } from '@epicademie/content';
@@ -21,6 +21,10 @@ import { SpeechBubble } from '../../shared/ui/SpeechBubble.tsx';
 import { heroSays } from '../../shared/lib/dialogue.ts';
 import { useGradeChoice } from '../../shared/lib/grades.ts';
 import { DOCK_HEIGHT } from '../../shared/question/tools.ts';
+import { AlertSymbol } from '../../shared/ui/game/AlertSymbol.tsx';
+import { GameControls } from '../../shared/ui/game/GameControls.tsx';
+import { ConfirmDialog } from '../../shared/ui/ConfirmDialog.tsx';
+import { playSound, setSoundEnabled } from '../../shared/lib/sound.ts';
 import { useRealtime } from '../realtime/index.ts';
 
 /**
@@ -133,6 +137,7 @@ export function PlayerChip({ arena, id, me }: { readonly arena: ArenaView; reado
           {Array.from({ length: ARENA_HEARTS }, (_, i) => (
             <GameIcon key={i} id={i < p.hearts ? 'icons-resources-life' : 'icons-resources-life-empty'} size={18} />
           ))}
+          {p.hearts === 1 && <AlertSymbol className="ml-1 !h-5 !w-5" />}
         </span>
       )}
     </div>
@@ -145,7 +150,8 @@ function ArenaLobby({ profile, arena }: { readonly profile: Profile; readonly ar
   const host = arena.hostId === profile.id;
   const ready = arena.players.filter((p) => p.ready).length;
   return (
-    <PageShell title="Duels · salon" back="/multi">
+    <PageShell title="Duels · salon" back="/multi" actions={<span aria-hidden className="w-12 shrink-0" />}>
+      <GameControls onQuit={leave} />
       <p className="font-display text-xl tracking-wide">{getChapter(arena.chapterId)?.title}</p>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {arena.players.map((p) => (
@@ -168,9 +174,6 @@ function ArenaLobby({ profile, arena }: { readonly profile: Profile; readonly ar
             Lancer le combat
           </GameButton>
         )}
-        <GameButton variant="surface" onClick={leave}>
-          Quitter
-        </GameButton>
       </div>
     </PageShell>
   );
@@ -186,11 +189,21 @@ export function Countdown({ deadline }: { readonly deadline: number }) {
   return (
     <span
       role="timer"
-      className={`font-display rounded-full px-3 py-1 text-lg ${left <= 10 ? 'bg-danger text-white' : 'bg-surface-2'}`}
+      className={`font-display flex items-center gap-1 rounded-full px-3 py-1 text-lg ${left <= 10 ? 'bg-danger text-white' : 'bg-surface-2'}`}
     >
-      ⏱ {left} s
+      {left <= 10 && <AlertSymbol />}⏱ {left} s
     </span>
   );
+}
+
+/** Un son à chaque vie perdue par le joueur (réglage « Effets sonores » respecté). */
+function useLifeLossSound(hearts: number, soundOn: boolean) {
+  const previous = useRef(hearts);
+  useEffect(() => {
+    setSoundEnabled(soundOn);
+    if (hearts < previous.current) playSound('hurt');
+    previous.current = hearts;
+  }, [hearts, soundOn]);
 }
 
 function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly arena: ArenaView }) {
@@ -202,6 +215,8 @@ function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly are
   const q = arena.question;
   const question = useMemo(() => (q ? generate(q.skillId, q.level, q.seed) : null), [q]);
   const [recap, setRecap] = useState(false);
+  const [confirmQuit, setConfirmQuit] = useState(false);
+  useLifeLossSound(arena.players.find((p) => p.id === profile.id)?.hearts ?? ARENA_HEARTS, profile.soundOn);
   const myTurn = arena.turnId === profile.id;
   const name = (id: string | null) => arena.players.find((p) => p.id === id)?.name ?? '?';
   const turnName = name(arena.turnId);
@@ -267,8 +282,10 @@ function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly are
   }
 
   return (
-    <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-3 px-3 py-3 sm:px-4">
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+    <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-3 px-3 pt-16 pb-3 sm:px-4 sm:pt-3">
+      <GameControls onQuit={() => setConfirmQuit(true)} />
+      {/* Tablette et ordinateur : une ligne avec le bouton ; téléphone : bouton au-dessus. */}
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:pr-14">
         {arena.players.map((p) => (
           <PlayerChip key={p.id} arena={arena} id={p.id} me={profile.id} />
         ))}
@@ -296,9 +313,6 @@ function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly are
               : `Au tour de ${turnName}…`}
         </span>
         {arena.deadline && <Countdown deadline={arena.deadline} />}
-        <GameButton size="sm" variant="surface" onClick={leave}>
-          Quitter
-        </GameButton>
       </div>
       {question && q && (
         <main className="side:grid side:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] flex min-h-0 flex-1 flex-col gap-3">
@@ -328,6 +342,16 @@ function ArenaGame({ profile, arena }: { readonly profile: Profile; readonly are
             </div>
           )}
         </main>
+      )}
+      {confirmQuit && (
+        <ConfirmDialog
+          title="Quitter le duel ?"
+          message="Tu abandonnes la partie en cours."
+          confirm="Quitter le duel"
+          cancel="Continuer"
+          onConfirm={leave}
+          onCancel={() => setConfirmQuit(false)}
+        />
       )}
     </div>
   );

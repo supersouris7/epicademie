@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { ADMIN_ROLE_LABELS, API_PREFIX, type AdminSession } from '@epicademie/shared';
 import { useAdminAuthConfig, useAdminSession, useLogout } from './api.ts';
 import { RoleContext } from './can.ts';
@@ -98,23 +98,58 @@ export function AdminGate({ children }: { readonly children: (user: ReactNode) =
   return <SignIn />;
 }
 
+const LOGIN_URL = `${API_PREFIX}/admin-auth/login`;
+const LOGIN_ATTEMPT_KEY = 'admin-sso-tentative';
+/** Délai pendant lequel un nouvel envoi automatique vers le SSO est bloqué (anti-boucle si la connexion échoue). */
+const LOGIN_RETRY_MS = 60_000;
+
+/** Vrai si l'on peut partir seul vers le SSO (pas de tentative automatique récente dans cet onglet). */
+function claimAutoLogin(): boolean {
+  const now = Date.now();
+  try {
+    const last = Number(sessionStorage.getItem(LOGIN_ATTEMPT_KEY) ?? 0);
+    if (now - last < LOGIN_RETRY_MS) return false;
+    sessionStorage.setItem(LOGIN_ATTEMPT_KEY, String(now));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Personne non connectée : départ direct vers le SSO s'il est configuré. */
 function SignIn() {
   const { data, isPending } = useAdminAuthConfig(true);
   if (isPending) return null;
+  return data?.sso ? (
+    <SsoSignIn />
+  ) : (
+    <SignInFrame>
+      <p className="text-sm">Administration accessible uniquement depuis la page de pilotage.</p>
+    </SignInFrame>
+  );
+}
+
+/** Envoi automatique vers le SSO ; le lien ne s'affiche qu'après une tentative récente (connexion échouée). */
+function SsoSignIn() {
+  const [redirecting] = useState(claimAutoLogin);
+  useEffect(() => {
+    if (redirecting) window.location.assign(LOGIN_URL);
+  }, [redirecting]);
+  if (redirecting) return null;
+  return (
+    <SignInFrame>
+      <p className="text-sm">La connexion n’a pas abouti.</p>
+      <a href={LOGIN_URL} className="font-semibold text-pilot-acc underline">
+        Se connecter
+      </a>
+    </SignInFrame>
+  );
+}
+
+function SignInFrame({ children }: { readonly children: ReactNode }) {
   return (
     <div className={`${frameClass} flex items-center justify-center p-4`}>
-      <div className={`${cardClass} flex w-full max-w-sm flex-col gap-3 p-6`}>
-        {data?.sso ? (
-          <>
-            <p className="text-sm">Administration réservée à l’équipe.</p>
-            <a href={`${API_PREFIX}/admin-auth/login`} className="font-semibold text-pilot-acc underline">
-              Se connecter
-            </a>
-          </>
-        ) : (
-          <p className="text-sm">Administration accessible uniquement depuis la page de pilotage.</p>
-        )}
-      </div>
+      <div className={`${cardClass} flex w-full max-w-sm flex-col gap-3 p-6`}>{children}</div>
     </div>
   );
 }

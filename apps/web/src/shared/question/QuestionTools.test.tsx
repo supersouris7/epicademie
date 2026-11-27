@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { CHAPTERS, generate, getSkill, type Question } from '@epicademie/content';
+import { CHAPTERS, generate, getAnySkill, getSkill, type Question } from '@epicademie/content';
 import { QuestionTools } from './QuestionTools.tsx';
 
 /**
@@ -25,7 +25,7 @@ const tools = (question: Question, onSubmit = vi.fn()) => {
   render(
     <QuestionTools
       question={question}
-      skill={getSkill(question.skillId)}
+      skill={getAnySkill(question.skillId)}
       advice={getSkill(question.skillId)?.advice}
       picked={null}
       onSubmit={onSubmit}
@@ -141,6 +141,22 @@ describe('outils de réponse', () => {
     await user.keyboard('5');
     await user.click(within(panel).getByRole('button', { name: 'Tout effacer' }));
     expect(panel).toBeInTheDocument();
+  });
+
+  it.each([
+    [1, true],
+    [2, false],
+  ] as const)('conversion au niveau %i : unités de l’énoncé repérées = %s', async (level, marked) => {
+    const { user } = tools(generate('mcm2-conversions-contenance', level, 3));
+    await user.click(screen.getByRole('tab', { name: 'Conversion' }));
+    const panel = screen.getByRole('tabpanel');
+    expect(panel.querySelectorAll('th.bg-primary').length > 0).toBe(marked);
+    expect(panel.textContent.includes('en orange')).toBe(marked);
+  });
+
+  it('boss de calcul mental : pas de calculatrice', () => {
+    tools(generate('mcm1-boss-mental-piege', 2, 1));
+    expect(screen.queryByRole('tab', { name: 'Calculatrice' })).not.toBeInTheDocument();
   });
 
   it('réponse écrite : clavier avec lettres accentuées', async () => {

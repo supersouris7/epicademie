@@ -24,6 +24,8 @@ interface BattleBarProps {
   /** Change à chaque coup reçu par le héros / par l'adversaire : le portrait tremble. */
   readonly riposte: number;
   readonly shot: number;
+  /** Classes ajoutées au cadre (place des boutons de la partie). */
+  readonly className?: string;
 }
 
 /**
@@ -40,7 +42,7 @@ export function BattleBar(p: BattleBarProps) {
   const shake = (key: number, dir: 1 | -1) => (key && !reduce ? { x: [0, 8 * dir, -8 * dir, 4 * dir, 0] } : undefined);
   return (
     <header
-      className={`${HUD_FRAME} relative flex shrink-0 items-center gap-2 px-2 py-1.5 sm:gap-3 sm:px-3`}
+      className={`${HUD_FRAME} relative flex shrink-0 items-center gap-2 px-2 py-1.5 sm:gap-3 sm:px-3 ${p.className ?? ''}`}
       aria-label="Combat"
     >
       {/* Héros : portrait (tremble quand il est touché), nom, barre de vie, bouclier. */}
@@ -101,6 +103,8 @@ export function BattleBar(p: BattleBarProps) {
           label={onBoss ? `Vies de ${p.enemyName}` : 'Mobs restants'}
           hit={p.shot}
           kind={onBoss ? 'boss' : 'life'}
+          // Le dernier mob n'est pas un danger : l'alerte est réservée à la vie du joueur.
+          alert={false}
         />
       </div>
       <motion.div

@@ -5,6 +5,7 @@ import type { ArenaView, OnlinePlayer } from '@epicademie/shared';
 import { makeProfile } from '../../testing/fakeApi.ts';
 import { sockets } from '../../testing/fakeSocket.ts';
 import { renderApp } from '../../testing/renderApp.tsx';
+import * as sound from '../../shared/lib/sound.ts';
 
 vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.ts')).socketModule);
 
@@ -62,7 +63,8 @@ describe('arène', () => {
     expect(emitted('arena:create')).toHaveLength(1);
 
     serverSays('arena', arena());
-    await user.click(await screen.findByRole('button', { name: 'Lancer le combat' }));
+    expect(await screen.findByRole('button', { name: 'Quitter' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Lancer le combat' }));
     expect(emitted('arena:start')).toHaveLength(1);
   });
 
@@ -99,6 +101,34 @@ describe('arène', () => {
     // Bouton du bilan (le dernier ; le premier est la flèche retour de la page).
     await user.click(screen.getAllByRole('button', { name: 'Retour' }).at(-1)!);
     expect(emitted('arena:leave').length).toBeGreaterThan(0);
+  });
+
+  it('vie perdue : son de dégât ; dernière vie doublée d’un symbole ; quitter demande confirmation', async () => {
+    const play = vi.spyOn(sound, 'playSound');
+    const { user, container } = renderApp('/arene');
+    await screen.findByText(/Le chapitre/);
+    const playing = (hearts: number) =>
+      arena({
+        phase: 'playing',
+        turnId: tom.id,
+        players: [
+          { id: me.id, name: me.name, hero: me.hero, hearts, ready: true },
+          { id: tom.id, name: tom.name, hero: tom.hero, hearts: 3, ready: true },
+        ],
+      });
+    serverSays('arena', playing(2));
+    expect(await screen.findByText(/Au tour de Tom/)).toBeInTheDocument();
+    expect(play).not.toHaveBeenCalled();
+    expect(container.querySelector('[data-alert-symbol]')).toBeNull();
+    serverSays('arena', playing(1));
+    expect(play).toHaveBeenCalledExactlyOnceWith('hurt');
+    expect(container.querySelector('[data-alert-symbol]')).not.toBeNull();
+
+    await user.click(screen.getByRole('button', { name: 'Quitter' }));
+    expect(emitted('arena:leave')).toHaveLength(0);
+    await user.click(screen.getByRole('button', { name: 'Quitter le duel' }));
+    expect(emitted('arena:leave')).toHaveLength(1);
+    play.mockRestore();
   });
 
   it('défaite : le nom du gagnant', async () => {

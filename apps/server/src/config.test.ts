@@ -53,6 +53,13 @@ describe('configuration', () => {
     expect(loadConfig({ ...base, APP_ENV: 'recette', PASSWORD_MIN_LENGTH: '10' }).passwordMinLength).toBe(10);
     expect(loadConfig({ ...base, ...PROD, PASSWORD_MIN_LENGTH: '8' }).passwordMinLength).toBe(8);
     expect(() => loadConfig({ PASSWORD_MIN_LENGTH: '2' })).toThrow(/PASSWORD_MIN_LENGTH/);
+    // Portail de connexion devant la plateforme : facultatif, en HTTPS.
+    expect(loadConfig({ ...base, ...PROD, PORTAL_LOGOUT_URL: '' }).portalLogoutUrl).toBeNull();
+    const portal = 'https://portail.test/logout';
+    expect(loadConfig({ ...base, ...PROD, PORTAL_LOGOUT_URL: portal }).portalLogoutUrl).toBe(portal);
+    expect(() => loadConfig({ ...base, ...PROD, PORTAL_LOGOUT_URL: 'http://portail.test' })).toThrow(
+      /PORTAL_LOGOUT_URL/,
+    );
   });
 
   it('Google : actif seulement avec identifiant ET secret ; retour par défaut sous PUBLIC_URL', () => {

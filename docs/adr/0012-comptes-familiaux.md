@@ -27,6 +27,12 @@ familles, et empêcher qu'un enfant fasse seul les actions du parent sur l'appar
   les actions parent 10 minutes sur cet appareil. Réservées au parent : créer ou supprimer un
   profil, changer le prénom, la date de naissance, la classe ou le genre. L'enfant garde ses
   réglages (son, héros).
+- **Déconnexion de l'appareil** (complément du 27/11/2026) : réservée au parent. L'interface
+  reverrouille puis redemande le code PIN (ou le mot de passe) à chaque fois ; le serveur répond 403
+  à `POST /auth/logout` tant que l'Espace parent est fermé. Exceptions : élève autonome (aucun
+  parent) et session absente ou expirée. Durcissement assumé de la v1 ([ADR 0004](0004-api-versionnee.md)) :
+  une page restée sur l'ancienne version ne peut plus déconnecter sans ce verrou. Un portail placé
+  devant la plateforme (`PORTAL_LOGOUT_URL`) est quitté à la suite.
 - **Mot de passe oublié** : lien à usage unique (1 h) envoyé par l'interface `Mailer`. Aucun
   fournisseur d'e-mails n'est branché (décision humaine) : en production, l'envoi est journalisé
   sans contenu.

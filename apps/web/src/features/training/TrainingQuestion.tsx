@@ -3,6 +3,8 @@ import { AnimatePresence, motion } from 'motion/react';
 import { getChapterOfSkill, type Question, type Response, type Skill } from '@epicademie/content';
 import type { Profile } from '@epicademie/shared';
 import { Feedback } from '../../shared/question/Feedback.tsx';
+import { DemoView } from '../../shared/question/demos/DemoView.tsx';
+import { ExplanationDraft } from '../../shared/question/ExplanationDraft.tsx';
 import { Figure } from '../../shared/question/figures/Figure.tsx';
 import { ListenButton } from '../../shared/question/ListenButton.tsx';
 import { READ_ALOUD_GRADES } from '../../shared/lib/speech.ts';
@@ -253,12 +255,20 @@ function FullExplanation({ question, onClose }: { readonly question: Question; r
           {question.steps.map((s, i) => (
             <li key={i} className="bg-surface-2 rounded-2xl p-3 text-lg leading-snug">
               <MathText text={s} />
+              {i === 0 && question.demo && (
+                <span className="mt-2 block">
+                  <DemoView demo={question.demo} />
+                </span>
+              )}
             </li>
           ))}
         </ol>
-        <GameButton className="self-end" variant="success" onClick={onClose}>
-          J’essaie
-        </GameButton>
+        <div className="flex items-center justify-end gap-2">
+          <ExplanationDraft question={question} steps={question.steps} />
+          <GameButton variant="success" onClick={onClose}>
+            J’essaie
+          </GameButton>
+        </div>
       </div>
     </div>
   );

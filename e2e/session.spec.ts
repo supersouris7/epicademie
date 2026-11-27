@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { createFirstProfile, signupFamily } from './family.ts';
+import { createFirstProfile, signOut, signupFamily } from './family.ts';
 
 /** Appareil partagé : un 2e onglet ne garde rien d'une famille déconnectée dans le 1er. */
 test('Deux onglets : après déconnexion et changement de famille, aucun ancien profil affiché', async ({
@@ -25,7 +25,7 @@ test('Deux onglets : après déconnexion et changement de famille, aucun ancien 
   await expect(page).toHaveURL(/\/hub$/);
   // Sans rechargement : la déconnexion doit partir d'un onglet resté ouvert.
   await page.getByRole('navigation').getByRole('button', { name: 'Paramètres' }).click();
-  await page.getByRole('button', { name: 'Déconnecter cet appareil' }).click();
+  await signOut(page);
   await expect(page).toHaveURL(/\/(bienvenue|connexion)$/);
   // Sans rechargement ni action dans le 2e onglet.
   await expect(other).toHaveURL(/\/(bienvenue|connexion)$/);
