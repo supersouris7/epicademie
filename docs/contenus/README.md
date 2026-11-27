@@ -89,6 +89,11 @@ plusieurs variantes sans audio ou avec une autre langue. Au CM1 et CM2, le bouto
   est défini dans le glossaire de la matière.
 - **Indice** (2e essai) : met sur la voie sans donner la réponse.
 - **Étapes** : ce qu'on cherche, comment, pourquoi ; la dernière bulle donne la réponse en gras.
+  Une explication doit permettre à l'enfant de comprendre **seul, sans adulte** :
+  - **par étapes** : une idée par bulle, 3 ou 4 bulles au plus, du plus simple jusqu'au résultat ;
+  - **guidée** : chaque bulle dit quoi faire (« Regarde le nombre du bas », « Compte les parts »), pas seulement quoi savoir ;
+  - **simple** : phrases courtes (≈ 12 mots en CM1-CM2), aucun mot nouveau sans définition, toujours un exemple concret ;
+  - **vérifiable** : après l'explication, l'enfant doit pouvoir réussir seul une question du même type.
 - **Pièges** (`traps`) : au moins deux erreurs typiques par notion, chacune avec une explication ciblée.
 - **Sources** (`lesson.sources`) : programme officiel de la classe, et source institutionnelle pour chaque fait.
   Pour un fait, la source porte la citation exacte.
@@ -143,18 +148,18 @@ Un lot = une matière × une classe × un chapitre (4 à 8 notions), sur une bra
 
 ### Grille de relecture (chaque notion)
 
-| #   | Critère                   | Bloquant si…                                                                                               |
-| --- | ------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| 1   | Conformité au programme   | notion hors programme de la classe, ou terminologie différente de celle du programme                       |
-| 2   | Exactitude                | un fait sans source, une citation qui ne dit pas ce qu'affirme la question, une règle fausse               |
-| 3   | Univocité                 | deux réponses défendables, distracteur juste, variante correcte refusée                                    |
-| 4   | Progressivité             | niveaux 1 → 5 pas de difficulté croissante, niveau 5 sans contexte                                         |
-| 5   | Clarté et âge             | énoncé ambigu, trop long pour l'âge, mot difficile non défini                                              |
-| 6   | Explications              | étapes qui n'expliquent pas pourquoi, indice qui donne la réponse, piège sans explication                  |
-| 7   | Erreurs typiques          | moins de deux erreurs typiques prévues                                                                     |
-| 8   | Neutralité et sensibilité | stéréotype, jugement de valeur, sujet sensible traité sans sobriété (guerres, génocides, religions, corps) |
-| 9   | Accessibilité             | information portée par la seule couleur, écoute sans alternative                                           |
-| 10  | Données                   | prénom réel d'élève, donnée personnelle, lien externe dans l'énoncé                                        |
+| #   | Critère                   | Bloquant si…                                                                                                                                                                       |
+| --- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Conformité au programme   | notion hors programme de la classe, ou terminologie différente de celle du programme                                                                                               |
+| 2   | Exactitude                | un fait sans source, une citation qui ne dit pas ce qu'affirme la question, une règle fausse                                                                                       |
+| 3   | Univocité                 | deux réponses défendables, distracteur juste, variante correcte refusée                                                                                                            |
+| 4   | Progressivité             | niveaux 1 → 5 pas de difficulté croissante, niveau 5 sans contexte                                                                                                                 |
+| 5   | Clarté et âge             | énoncé ambigu, trop long pour l'âge, mot difficile non défini                                                                                                                      |
+| 6   | Explications              | étapes qui n'expliquent pas pourquoi, indice qui donne la réponse, piège sans explication, explication qui suppose l'aide d'un adulte (pas par étapes, pas guidée, trop abstraite) |
+| 7   | Erreurs typiques          | moins de deux erreurs typiques prévues                                                                                                                                             |
+| 8   | Neutralité et sensibilité | stéréotype, jugement de valeur, sujet sensible traité sans sobriété (guerres, génocides, religions, corps)                                                                         |
+| 9   | Accessibilité             | information portée par la seule couleur, écoute sans alternative                                                                                                                   |
+| 10  | Données                   | prénom réel d'élève, donnée personnelle, lien externe dans l'énoncé                                                                                                                |
 
 Aucun lien vers un site non institutionnel. Pour la littérature : seulement des œuvres du domaine public,
 ou des textes écrits pour l'exercice.
