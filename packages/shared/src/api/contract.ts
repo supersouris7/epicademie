@@ -81,7 +81,7 @@ import {
   AnomalySchema,
   WeakSkillStatSchema,
 } from '../insights.ts';
-import { FamilyFriendSchema, FriendRequestSchema, FriendsViewSchema, RankingRowSchema } from '../friends.ts';
+import { FamilyFriendSchema, FriendRequestSchema, FriendsViewSchema } from '../friends.ts';
 import {
   ContentEventSchema,
   ContentSkillSchema,
@@ -520,16 +520,6 @@ export const api = {
     params: FriendParamsSchema,
     response: FriendsViewSchema,
   }),
-  ranking: endpoint({
-    method: 'GET',
-    path: '/profiles/:id/ranking',
-    tag: 'amis',
-    summary: 'Se comparer : niveau, boss, badges, records des défis (famille et amis actifs)',
-    access: 'family',
-    status: 200,
-    params: IdParamsSchema,
-    response: z.array(RankingRowSchema),
-  }),
   familyFriends: endpoint({
     method: 'GET',
     path: '/family/friends',
@@ -690,6 +680,16 @@ export const api = {
     status: 200,
     params: IdParamsSchema,
     body: BattleItemSchema,
+    response: BattleViewSchema,
+  }),
+  battleHint: endpoint({
+    method: 'POST',
+    path: '/battles/:id/hint',
+    tag: 'combats',
+    summary: 'Demande un indice sans objet (attaque de la question un peu moins forte)',
+    access: 'family',
+    status: 200,
+    params: IdParamsSchema,
     response: BattleViewSchema,
   }),
   finishBattle: endpoint({
@@ -1010,7 +1010,7 @@ export const api = {
     method: 'GET',
     path: '/admin/weak-skills',
     tag: 'admin',
-    summary: 'Notions les plus ratées (90 jours, anonyme : aucun nom d’enfant)',
+    summary: 'Notions à renforcer (90 jours, anonyme : aucun nom d’enfant)',
     access: 'admin',
     permission: 'stats:lire',
     status: 200,

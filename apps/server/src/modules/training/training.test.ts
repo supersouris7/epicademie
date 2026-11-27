@@ -101,7 +101,7 @@ describe('parties d’entraînement', () => {
         stageBefore: 0,
         stageAfter: 1,
         bestBefore: 0,
-        bestAfter: 5, // sans-faute : médaille d'or, notion acquise
+        bestAfter: 6, // sans-faute et sans aide : médaille de diamant
         due: '2026-11-18',
       },
     ]);
@@ -114,7 +114,7 @@ describe('parties d’entraînement', () => {
     expect(skills[0]).toMatchObject({ skillId: 'm5-tables', stage: 1, attempts: 5, correct: 5 });
   });
 
-  it('série ratée : notion à revoir demain, variantes comptées à part', async () => {
+  it('série pas encore réussie : notion à revoir demain, variantes comptées à part', async () => {
     const id = await start();
     for (let seed = 1; seed <= 5; seed++) {
       await answer(id, seed, seed > 3);
@@ -145,6 +145,47 @@ describe('parties d’entraînement', () => {
     ).json<SessionSummary>();
     expect(got.perfect).toBe(false);
     expect(got.chest).not.toBeNull();
+  });
+
+  it('réussite avec aide : indice ou explication ne comptent jamais comme une erreur, médaille d’or', async () => {
+    const id = await start();
+    for (let seed = 1; seed <= 5; seed++) {
+      const q = generate('m5-tables', 1, seed);
+      if (q.answer.kind !== 'number') throw new Error('attendu : nombre');
+      const res = await app.inject({
+        method: 'POST',
+        url: `/api/v1/sessions/${id}/answers`,
+        payload: {
+          skillId: 'm5-tables',
+          level: 1,
+          seed,
+          variant: false,
+          response: { kind: 'number', text: fmt(q.answer.value) },
+          durationMs: 2000,
+          helped: true,
+        },
+      });
+      expect(res.json<AnswerResult>().correct).toBe(true);
+      expect(res.json<AnswerResult>().xp).toBeGreaterThan(0);
+    }
+    await app.inject({ method: 'POST', url: `/api/v1/sessions/${id}/confused`, payload: { skillId: 'm5-tables' } });
+    const summary = (await app.inject({ method: 'POST', url: `/api/v1/sessions/${id}/finish` })).json<SessionSummary>();
+    expect(summary).toMatchObject({ perfect: true, scoreOn20: 20 });
+    expect(summary.skills[0]).toMatchObject({ bestAfter: 5, stageAfter: 1, due: '2026-11-17' });
+  });
+
+  it('question rattrapée au 2e essai : série réussie avec aide (or) ; un diamant gagné reste', async () => {
+    const play = async (miss: boolean) => {
+      const id = await start();
+      for (let seed = 1; seed <= 5; seed++) {
+        await answer(id, seed, !(miss && seed === 2));
+        if (miss && seed === 2) await answer(id, seed, true, false, 2);
+      }
+      return (await app.inject({ method: 'POST', url: `/api/v1/sessions/${id}/finish` })).json<SessionSummary>();
+    };
+    expect((await play(true)).skills[0]).toMatchObject({ bestAfter: 5 });
+    expect((await play(false)).skills[0]).toMatchObject({ bestBefore: 5, bestAfter: 6 });
+    expect((await play(true)).skills[0]).toMatchObject({ bestBefore: 6, bestAfter: 6 });
   });
 
   it('défis : coffre selon le score et bonus d’XP de fin (Survie : 5 bonnes réponses = coffre commun)', async () => {
@@ -179,7 +220,7 @@ describe('parties d’entraînement', () => {
     expect(res.json<AnswerResult>()).toMatchObject({ correct: false, xp: 0 });
   });
 
-  it('« Je n’ai pas compris » remet la notion à revoir malgré un sans-faute', async () => {
+  it('« Je n’ai pas compris » n’est pas une erreur : la notion est juste reproposée dès demain', async () => {
     const id = await start();
     for (let seed = 1; seed <= 5; seed++) await answer(id, seed, true);
     const res = await app.inject({
@@ -189,7 +230,7 @@ describe('parties d’entraînement', () => {
     });
     expect(res.statusCode).toBe(204);
     const summary = (await app.inject({ method: 'POST', url: `/api/v1/sessions/${id}/finish` })).json<SessionSummary>();
-    expect(summary.skills[0]).toMatchObject({ stageAfter: 0, due: '2026-11-17' });
+    expect(summary.skills[0]).toMatchObject({ stageAfter: 1, due: '2026-11-17', bestAfter: 6 });
   });
 
   it('refuse de terminer deux fois et de répondre après la fin', async () => {

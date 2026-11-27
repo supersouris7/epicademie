@@ -5,4 +5,3 @@
  */
 export { createLearningService } from './learning.service.ts';
 export { learningRoutes } from './learning.routes.ts';
-export type { RankingStats } from './ranking.ts';

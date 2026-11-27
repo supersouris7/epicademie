@@ -21,17 +21,30 @@ describe('Feedback', () => {
     vi.useRealTimers();
   });
 
-  it('erreur : chaque étape avec « Suivant », puis « Vérifions si j’ai compris » seulement à la fin', async () => {
+  it('pas encore : chaque étape avec « Suivant », puis la proposition d’une question du même type', async () => {
     const user = userEvent.setup();
     const onNext = vi.fn();
-    render(<Feedback {...base} correct={false} given={{ kind: 'number', text: '1' }} onNext={onNext} />);
+    const onSkip = vi.fn();
+    render(
+      <Feedback
+        {...base}
+        correct={false}
+        similar
+        given={{ kind: 'number', text: '1' }}
+        onNext={onNext}
+        onSkip={onSkip}
+      />,
+    );
     expect(question.steps.length).toBeGreaterThan(1);
     for (let i = 1; i < question.steps.length; i++) {
-      expect(screen.queryByRole('button', { name: /Vérifions/ })).not.toBeInTheDocument();
+      expect(screen.queryByText(/question du même type/)).not.toBeInTheDocument();
       await user.click(screen.getByRole('button', { name: /^Suivant/ }));
     }
     expect(screen.queryByRole('button', { name: /^Suivant/ })).not.toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: 'Vérifions si j’ai compris' }));
+    expect(screen.getByText('Tu veux réessayer une question du même type ?')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Pas maintenant' }));
+    expect(onSkip).toHaveBeenCalledOnce();
+    await user.click(screen.getByRole('button', { name: 'Oui, j’essaie' }));
     expect(onNext).toHaveBeenCalledOnce();
   });
 });

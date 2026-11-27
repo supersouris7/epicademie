@@ -96,7 +96,8 @@ test('Mode Histoire : ouvert d’emblée, mobs, riposte, victoire et coffre', as
   await expect(page.getByText(/La bonne réponse/)).toBeVisible();
   // L'explication complète s'affiche directement (plus de « Voir tout »).
   await expect(page.getByRole('button', { name: 'Voir tout' })).toHaveCount(0);
-  await page.getByRole('button', { name: 'Suivant' }).click();
+  await expect(page.getByText('Tu veux réessayer une question du même type ?')).toBeVisible();
+  await page.getByRole('button', { name: 'Oui, j’essaie' }).click();
 
   // Puis sans faute jusqu'au boss et à sa défaite.
   let sawBoss = false;
@@ -189,7 +190,7 @@ test('Défaite : 5 secondes pour recommencer, puis l’entraînement', async ({ 
   await page.getByRole('button', { name: 'Passer' }).click();
   while (view.status === 'fighting') {
     view = await answer(page, view, false);
-    await page.getByRole('button', { name: /Suivant|Voir le résultat/ }).click();
+    await page.getByRole('button', { name: /Oui, j’essaie|Voir le résultat/ }).click();
   }
   expect(view.status).toBe('lost');
   await expect(page.getByRole('heading', { name: 'On recommence ?' })).toBeVisible({ timeout: 10_000 });

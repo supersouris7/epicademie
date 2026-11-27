@@ -321,7 +321,7 @@ describe('déroulé d’une épreuve', () => {
   });
 });
 
-describe('badges, records et classement', () => {
+describe('badges', () => {
   it('une épreuve toute juste ne compte pas comme « série parfaite »', async () => {
     const { id } = (await start()).json<EvaluationStarted>();
     await play(id, () => true);
@@ -332,9 +332,6 @@ describe('badges, records et classement', () => {
     const [s] = (rows as { rows: { correct: number; answered: number }[] }).rows;
     expect(s?.answered).toBeGreaterThanOrEqual(12);
     expect(s?.correct).toBe(s?.answered);
-    const ranking = await t.http.inject(`/api/v1/profiles/${profileId}/ranking`);
-    expect(ranking.statusCode).toBe(200);
-    expect(ranking.json<{ chrono: number; survie: number }[]>()[0]).toMatchObject({ chrono: 0, survie: 0 });
   });
 });
 

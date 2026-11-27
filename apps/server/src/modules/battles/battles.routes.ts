@@ -32,6 +32,10 @@ export function battlesRoutes(service: BattlesService, owns: Ownership, billing:
       await owns.game(actor(), params.id, BATTLE_NOT_FOUND);
       return service.useItem(params.id, body.item);
     });
+    route(app, api.battleHint, async ({ params, actor }) => {
+      await owns.game(actor(), params.id, BATTLE_NOT_FOUND);
+      return service.hint(params.id);
+    });
     route(app, api.finishBattle, async ({ params, actor }) => {
       await owns.game(actor(), params.id, BATTLE_NOT_FOUND);
       return service.finish(params.id);

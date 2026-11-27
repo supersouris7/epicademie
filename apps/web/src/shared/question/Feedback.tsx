@@ -22,7 +22,11 @@ interface FeedbackProps {
   readonly streak: number;
   readonly gender: Gender | null;
   readonly onMemo: () => void;
+  /** Après l'explication : une question du même type est prête à être proposée. */
+  readonly similar?: boolean;
   readonly onNext: () => void;
+  /** L'enfant ne veut pas de la question du même type pour l'instant. */
+  readonly onSkip?: () => void;
 }
 
 const PRAISE = ['Bravo !', 'Excellent !', 'Parfait !', 'Bien joué !', 'Génial !', 'Trop fort !'];
@@ -90,9 +94,9 @@ function Success({ question, retried, xp, streak, gender, onNext }: FeedbackProp
 /**
  * « On regarde ensemble » : Questy part de la réponse de l'enfant, dit ce qui cloche, puis explique
  * la question pas à pas (une bulle par appui sur « Suivant »). L'explication ne se passe pas :
- * on lit chaque étape, et seulement à la fin « Vérifions si j'ai compris » mène à la suite.
+ * on lit chaque étape, puis Questy propose de réessayer une question du même type.
  */
-function Explanation({ question, why, given, onMemo, onNext }: FeedbackProps) {
+function Explanation({ question, why, given, similar = false, onMemo, onNext, onSkip }: FeedbackProps) {
   const short = isShort();
   const steps = question.steps;
   // Première bulle + première étape d'emblée : un appui de moins.
@@ -128,14 +132,10 @@ function Explanation({ question, why, given, onMemo, onNext }: FeedbackProps) {
 
       <div ref={box} className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto scroll-smooth pr-1 [&>*]:shrink-0">
         <Bubble>
-          {given?.kind === 'unknown' ? (
-            <>Tu ne savais pas : c’est justement pour ça qu’on regarde ensemble. </>
-          ) : (
-            given && (
-              <>
-                Tu as répondu <MathText text={formatResponse(question, given)} className="font-bold" />.{' '}
-              </>
-            )
+          {given && (
+            <>
+              Tu as répondu <MathText text={formatResponse(question, given)} className="font-bold" />.{' '}
+            </>
           )}
           La bonne réponse : <MathText text={formatAnswer(question)} className="font-bold" />.
           {why && (
@@ -159,10 +159,20 @@ function Explanation({ question, why, given, onMemo, onNext }: FeedbackProps) {
         ))}
       </div>
 
-      <div className="flex shrink-0 justify-end">
-        {done ? (
+      <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+        {done && similar ? (
+          <>
+            <p className="w-full text-right font-bold">Tu veux réessayer une question du même type ?</p>
+            <GameButton variant="surface" size="sm" onClick={onSkip}>
+              Pas maintenant
+            </GameButton>
+            <GameButton size={short ? 'sm' : undefined} icon="icons-navigation-next" onClick={onNext}>
+              Oui, j’essaie
+            </GameButton>
+          </>
+        ) : done ? (
           <GameButton size={short ? 'sm' : undefined} icon="icons-navigation-next" onClick={onNext}>
-            Vérifions si j’ai compris
+            Continuer
           </GameButton>
         ) : (
           <GameButton

@@ -240,6 +240,17 @@ describe('équipement et objets en combat', () => {
     expect(rows.map((r) => [r.correct, r.hinted])).toEqual([[true, true]]);
   });
 
+  it('indice sans objet : gratuit, jamais une erreur, réussite avec aide et un peu moins d’XP', async () => {
+    const b = (await startBattle()).json<BattleView>();
+    const ask = () => app.inject({ method: 'POST', url: `/api/v1/battles/${b.id}/hint` });
+    const hinted = await ask();
+    expect(hinted.json<BattleView>()).toMatchObject({ hintShown: true, weakAttack: true, hearts: 3, turn: 0 });
+    expect((await ask()).statusCode).toBe(409);
+    await reply(hinted.json<BattleView>(), true);
+    const rows = await t.database.db.select().from(attempts).where(eq(attempts.sessionId, b.id));
+    expect(rows.map((r) => [r.correct, r.hinted, r.xp])).toEqual([[true, true, 7]]);
+  });
+
   it('combat inconnu ou terminé : 404 / 409', async () => {
     const unknown = '00000000-0000-4000-8000-000000000000';
     expect((await app.inject({ method: 'POST', url: `/api/v1/battles/${unknown}/finish` })).statusCode).toBe(404);

@@ -21,7 +21,7 @@ import { RELICS } from '../../../design/relics.ts';
 
 import { FROM_BATTLE } from './constants.ts';
 
-/** Après une défaite : entraînement de la notion la plus fragile (ou du chapitre). */
+/** Pas encore vaincu : entraînement de la notion à renforcer (ou du chapitre). */
 function TrainButton({
   chapter,
   weak,
@@ -168,8 +168,8 @@ export function BattleResults({
             <p className="text-muted font-bold">
               {summary.newBest ? 'Nouveau record sur ce boss !' : 'Ton record reste le même.'}{' '}
               {summary.medal === 'diamant'
-                ? 'Sans perdre un cœur et sans objet : parfait !'
-                : 'Diamant : gagne sans perdre de cœur et sans objet.'}
+                ? 'Sans perdre un cœur et sans aide : parfait !'
+                : 'Reviens sans indice ni objet, en gardant tes cœurs, pour le diamant !'}
             </p>
           </div>
         </motion.section>

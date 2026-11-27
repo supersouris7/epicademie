@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { check, generate, getAnySkill, type Chapter, type Response } from '@epicademie/content';
 import { itemRefusal } from '@epicademie/engine';
 import type { BattleView, ItemId, Profile } from '@epicademie/shared';
-import { answerBattle, bossesKey, finishBattle, sendBattleItem, startBattle } from '../api.ts';
+import { answerBattle, askBattleHint, bossesKey, finishBattle, sendBattleItem, startBattle } from '../api.ts';
 import { ApiError } from '../../../shared/api/client.ts';
 import { bossSays, heroSays, mobSays, questySays } from '../../../shared/lib/dialogue.ts';
 import { playSound, preloadSounds, setSoundEnabled } from '../../../shared/lib/sound.ts';
@@ -202,6 +202,20 @@ export function useBattle(profile: Profile, chapter: Chapter, notify: (message: 
     }
   };
 
+  /** Indice sans objet : jamais une erreur, l'attaque de la question est un peu moins forte. */
+  const askHint = async () => {
+    const { battle, busy, missed } = latest.current;
+    if (!battle || busy || missed || battle.hintShown) return;
+    try {
+      const next = await askBattleHint(battle.id);
+      playSound('reveal');
+      dispatch({ type: 'hinted', battle: next });
+    } catch (err) {
+      if (err instanceof ApiError && err.code === 'GONE') dispatch({ type: 'failed', error: blocking(err, '') });
+      else notify(err instanceof ApiError ? err.message : 'Problème de connexion');
+    }
+  };
+
   return {
     state,
     question,
@@ -209,6 +223,7 @@ export function useBattle(profile: Profile, chapter: Chapter, notify: (message: 
     sendMobs,
     submit: (response: Response) => void submit(response),
     spendItem: (item: ItemId) => void spendItem(item),
+    askHint: () => void askHint(),
     /** Après le panneau d'erreur : la suite du combat. */
     next: (battle: BattleView) => advance(battle),
     pick: (point: { readonly x: number; readonly y: number } | null) => dispatch({ type: 'picked', point }),

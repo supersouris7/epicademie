@@ -1,5 +1,5 @@
 import { acquired as isAcquired, medal } from '@epicademie/engine';
-import type { SkillProgress } from '@epicademie/shared';
+import { accord, type Gender, type SkillProgress } from '@epicademie/shared';
 
 export interface ChapterProgress {
   readonly total: number;
@@ -20,7 +20,7 @@ export function chapterProgress(
     const s = states.get(id);
     if (!s) continue;
     started++;
-    // Notion acquise : médaille d'or (sans-faute sur une série de 5).
+    // Notion acquise : médaille d'or ou de diamant (série entièrement réussie).
     if (isAcquired(s)) acquired++;
     if (s.due !== null && s.due <= today) due++;
   }
@@ -29,20 +29,28 @@ export function chapterProgress(
 
 /**
  * Niveau affiché d'une notion, tiré de sa médaille (toujours cohérent avec elle) :
- * jamais travaillée → « Pas encore évalué » ; pas de médaille → « À travailler » ;
- * Bronze → « Fragile » ; Argent → « Satisfaisante » ; Or → « Acquise ».
+ * jamais travaillée → « Pas encore évalué » ; pas de médaille → « À renforcer » ;
+ * Bronze → « En progrès » ; Argent → « Presque acquise » ; Or → « Acquise » ; Diamant → « Maîtrisée
+ * seul(e) » (neutre sans genre).
  */
-export function masteryOf(s: SkillProgress | undefined): { id: string; label: string; color: string } {
+export function masteryOf(
+  s: SkillProgress | undefined,
+  gender?: Gender | null,
+): { id: string; label: string; color: string } {
   if (!s || s.attempts === 0) return { id: 'non-evalue', label: 'Pas encore évalué', color: 'var(--text-muted)' };
   switch (medal(s)) {
+    case 'diamant': {
+      const label = gender ? accord(gender, 'Maîtrisée seul', 'Maîtrisée seule') : 'Maîtrisée sans aide';
+      return { id: 'sans-aide', label, color: 'var(--success)' };
+    }
     case 'or':
       return { id: 'acquise', label: 'Acquise', color: 'var(--success)' };
     case 'argent':
-      return { id: 'satisfaisante', label: 'Satisfaisante', color: 'var(--accent)' };
+      return { id: 'satisfaisante', label: 'Presque acquise', color: 'var(--accent)' };
     case 'bronze':
-      return { id: 'fragile', label: 'Fragile', color: 'var(--primary)' };
+      return { id: 'en-progres', label: 'En progrès', color: 'var(--primary)' };
     default:
-      return { id: 'a-travailler', label: 'À travailler', color: 'var(--danger)' };
+      return { id: 'a-renforcer', label: 'À renforcer', color: 'var(--primary)' };
   }
 }
 export interface Suggestion<C> {

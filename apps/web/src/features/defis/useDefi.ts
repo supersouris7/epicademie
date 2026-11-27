@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { chaptersOf, check, generate, maxLevelOf, type Question, type Response } from '@epicademie/content';
+import { acquired } from '@epicademie/engine';
 import { playedGrade, type Profile, type SessionSummary, type SubjectId } from '@epicademie/shared';
 import { playSound } from '../../shared/lib/sound.ts';
 import { formatAnswer, formatResponse } from '../../shared/question/answers.ts';
 import { useChapterAccess } from '../parent/index.ts';
-import { finishSession, startSession, submitAnswer, useDisabledSkills } from '../training/index.ts';
+import { finishSession, startSession, submitAnswer, useDisabledSkills, useSkills } from '../training/index.ts';
 import {
   comboOf,
   INITIAL_SCORE,
@@ -22,8 +23,9 @@ import {
   type DefiScore,
 } from './rules.ts';
 
-/** Question ratée, pour « Revoir mes erreurs ». */
+/** Question à revoir, pour « Revoir mes erreurs ». */
 export interface DefiMiss {
+  readonly skillId: string;
   readonly prompt: string;
   readonly given: string;
   readonly answer: string;
@@ -46,17 +48,20 @@ const FEEDBACK_MS = 350;
 export type Phase = 'intro' | 'playing' | 'finishing' | 'done';
 
 /**
- * Déroulé d'un défi : tirage des questions dans les chapitres accessibles de sa classe,
- * enregistrement des réponses (comme à l'entraînement), fin au temps écoulé ou au dernier cœur.
+ * Déroulé d'un défi : tirage des questions dans les notions déjà réussies (or ou diamant) des
+ * chapitres accessibles de sa classe, enregistrement des réponses (comme à l'entraînement), fin au temps écoulé ou au dernier cœur.
  */
 export function useDefi(profile: Profile, kind: DefiId, subject: SubjectId, notify: (m: string) => void) {
   const qc = useQueryClient();
   const canPlay = useChapterAccess();
   const { data: disabled } = useDisabledSkills();
+  const { data: progress, isPending: loading } = useSkills(profile.id);
   const chapters = chaptersOf(subject, playedGrade(profile.grade)).filter((c) => canPlay(c.id));
+  // La vitesse se joue sur du connu : notions en or ou en diamant seulement.
+  const mastered = useMemo(() => new Set((progress ?? []).filter(acquired).map((s) => s.skillId)), [progress]);
   const pool = useMemo(
-    () => chapters.flatMap((c) => c.skills.map((s) => s.id)).filter((id) => !disabled?.has(id)),
-    [chapters, disabled],
+    () => chapters.flatMap((c) => c.skills.map((s) => s.id)).filter((id) => mastered.has(id) && !disabled?.has(id)),
+    [chapters, disabled, mastered],
   );
 
   const [phase, setPhase] = useState<Phase>('intro');
@@ -115,8 +120,8 @@ export function useDefi(profile: Profile, kind: DefiId, subject: SubjectId, noti
   });
 
   const start = async () => {
-    const first = chapters[0];
-    if (!first || pool.length === 0) return;
+    const first = chapters.find((c) => c.skills.some((s) => pool.includes(s.id)));
+    if (!first) return;
     try {
       const { id } = await startSession({
         profileId: profile.id,
@@ -153,6 +158,7 @@ export function useDefi(profile: Profile, kind: DefiId, subject: SubjectId, noti
         response,
         durationMs: Math.round(performance.now() - shownAt.current),
         attempt: 1,
+        helped: false,
       }).catch(() => undefined),
     );
     const duration = performance.now() - shownAt.current;
@@ -177,6 +183,7 @@ export function useDefi(profile: Profile, kind: DefiId, subject: SubjectId, noti
       setMisses((m) => [
         ...m,
         {
+          skillId: question.skillId,
           prompt: question.prompt,
           given: formatResponse(question, response),
           answer: formatAnswer(question),
@@ -199,6 +206,7 @@ export function useDefi(profile: Profile, kind: DefiId, subject: SubjectId, noti
     summary,
     record,
     available: pool.length > 0,
+    loading,
     misses,
     previousBest,
     leftMs,

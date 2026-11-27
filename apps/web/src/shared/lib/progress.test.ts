@@ -33,9 +33,12 @@ describe('progression', () => {
     expect(masteryOf(undefined).id).toBe('non-evalue');
     expect(masteryOf(state('a', { attempts: 0 })).id).toBe('non-evalue');
     expect(masteryOf(state('a', { best: 5 })).label).toBe('Acquise');
-    expect(masteryOf(state('a', { best: 4 })).label).toBe('Satisfaisante');
-    expect(masteryOf(state('a', { best: 3 })).label).toBe('Fragile');
-    expect(masteryOf(state('a', { best: 1 })).label).toBe('À travailler');
+    expect(masteryOf(state('a', { best: 4 })).label).toBe('Presque acquise');
+    expect(masteryOf(state('a', { best: 3 })).label).toBe('En progrès');
+    expect(masteryOf(state('a', { best: 1 })).label).toBe('À renforcer');
+    expect(masteryOf(state('a', { best: 6 }), 'fille').label).toBe('Maîtrisée seule');
+    expect(masteryOf(state('a', { best: 6 }), 'garcon').label).toBe('Maîtrisée seul');
+    expect(masteryOf(state('a', { best: 6 }), null).label).toBe('Maîtrisée sans aide');
   });
 
   it('où reprendre : à revoir, puis commencé, puis premier non acquis', () => {

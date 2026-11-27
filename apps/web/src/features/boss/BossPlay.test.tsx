@@ -80,7 +80,7 @@ describe('combat de boss', () => {
     for (let i = 0; i < 3; i++) {
       await answer(user, server);
       await wait(1500);
-      await user.click(await screen.findByRole('button', { name: /Suivant|Voir le résultat/ }));
+      await user.click(await screen.findByRole('button', { name: /Oui, j’essaie|Voir le résultat/ }));
     }
     await wait(4000);
     expect((await screen.findAllByText(/On recommence/)).length).toBeGreaterThan(0);
@@ -96,6 +96,17 @@ describe('combat de boss', () => {
     await skipIntro(user);
     await user.click(screen.getByRole('button', { name: /Indice/ }));
     expect(await screen.findByText('Indice :')).toBeInTheDocument();
+  });
+
+  it('indice sans objet : « ? » le donne, sans réponse envoyée ni erreur', async () => {
+    const { user, server } = renderApp(PATH, { fakeTimers: true });
+    await skipIntro(user);
+    await user.click(screen.getByRole('button', { name: 'Un indice (attaque un peu moins forte)' }));
+    expect(await screen.findByText('Indice :')).toBeInTheDocument();
+    expect(screen.getByText(/ton attaque sera un peu moins forte/)).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: '3 cœurs sur 3' })).toBeInTheDocument();
+    expect(server.calls.some((c) => c.path.endsWith('/hint'))).toBe(true);
+    expect(server.calls.some((c) => c.path.endsWith('/answers'))).toBe(false);
   });
 
   it('pause : le boss garde ses vies, on peut reprendre', async () => {

@@ -69,7 +69,6 @@ const EvaluationResults = lazyScreen(
 const Arena = lazyScreen(async () => (await import('../features/arena/Arena.tsx')).Arena);
 const Online = lazyScreen(async () => (await import('../features/realtime/Online.tsx')).Online);
 const Friends = lazyScreen(async () => (await import('../features/realtime/Friends.tsx')).Friends);
-const Ranking = lazyScreen(async () => (await import('../features/realtime/Ranking.tsx')).Ranking);
 const TvScreen = lazyScreen(async () => (await import('../features/tv/TvScreen.tsx')).TvScreen);
 const Progress = lazyScreen(async () => (await import('../features/progress/Progress.tsx')).Progress);
 const SubjectProgress = lazyScreen(async () => (await import('../features/progress/Progress.tsx')).SubjectProgress);
@@ -190,7 +189,6 @@ export function GameApp() {
             <Route path="/arene" element={<WithProfile>{(p) => <Arena profile={p} />}</WithProfile>} />
             <Route path="/connectes" element={<WithProfile>{(p) => <Online profile={p} />}</WithProfile>} />
             <Route path="/amis" element={<WithProfile>{(p) => <Friends profile={p} />}</WithProfile>} />
-            <Route path="/classement" element={<WithProfile>{(p) => <Ranking profile={p} />}</WithProfile>} />
             <Route
               path="/partie/defi/:defi/:subject"
               element={

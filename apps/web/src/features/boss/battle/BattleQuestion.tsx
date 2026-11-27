@@ -29,6 +29,7 @@ export function BattleQuestion({
   onPick,
   onSubmit,
   onUseItem,
+  onAskHint,
   onPause,
   onMemo,
   onNext,
@@ -42,6 +43,8 @@ export function BattleQuestion({
   readonly onPick: (point: Point | null) => void;
   readonly onSubmit: (response: Response) => void;
   readonly onUseItem: (item: ItemId) => void;
+  /** Indice sans objet (attaque un peu moins forte). */
+  readonly onAskHint: () => void;
   readonly onPause: () => void;
   readonly onMemo: () => void;
   readonly onNext: (battle: BattleView) => void;
@@ -49,6 +52,8 @@ export function BattleQuestion({
   const q = battle.question;
   const hintItem = itemRefusal(battle, 'indice') === null;
   const pointAnswer = question.answer.kind === 'point';
+  // Un objet Indice équipé s'il en reste (pleine puissance), sinon un indice avec une attaque moins forte.
+  const askHint = () => (hintItem ? onUseItem('indice') : onAskHint());
   return (
     <AnimatePresence mode="wait">
       <motion.main
@@ -77,6 +82,20 @@ export function BattleQuestion({
           <h1 className="text-2xl leading-snug font-bold sm:text-3xl xl:text-4xl">
             <MathText text={question.prompt} terms />
           </h1>
+          {!battle.hintShown && !missed && (
+            <button
+              type="button"
+              disabled={busy}
+              onClick={askHint}
+              className="cartoon cartoon-press bg-surface-2 flex items-center gap-1.5 self-start px-3 py-1.5 text-sm font-bold"
+            >
+              <GameIcon id="icons-navigation-hint" size="xs" />
+              {hintItem ? 'Un indice (objet)' : 'Un indice (attaque un peu moins forte)'}
+            </button>
+          )}
+          {battle.weakAttack && (
+            <p className="text-muted text-sm font-bold">Avec l’indice, ton attaque sera un peu moins forte.</p>
+          )}
           {battle.hintShown && (
             <p className="cartoon bg-surface-2 flex items-start gap-2 px-3 py-2 font-bold" role="note">
               <GameIcon id="icons-navigation-hint" size="xs" />
@@ -106,6 +125,7 @@ export function BattleQuestion({
               canMemo={skill !== undefined}
               onMemo={onMemo}
               onNext={() => onNext(missed.next)}
+              onPause={onPause}
             />
           ) : (
             <QuestionTools
@@ -114,12 +134,12 @@ export function BattleQuestion({
               skill={skill}
               picked={picked}
               onSubmit={onSubmit}
-              // « ? » : un objet Indice équipé s'il en reste, sinon c'est une erreur (le boss riposte).
-              onUnknown={() => (hintItem ? onUseItem('indice') : onSubmit({ kind: 'unknown' }))}
+              // « ? » : le même indice que le bouton, après confirmation.
+              onUnknown={battle.hintShown ? undefined : askHint}
               unknownWarning={
                 hintItem
                   ? 'Ça va utiliser ton objet Indice pour afficher l’indice.'
-                  : 'Tu n’as plus d’objet Indice : ça compte comme une erreur, le boss va riposter.'
+                  : 'Voici un indice. Ton attaque sera juste un peu moins forte.'
               }
             />
           )}
