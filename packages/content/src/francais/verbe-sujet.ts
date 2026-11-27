@@ -597,7 +597,8 @@ function typesSujetsDraft(rng: Rng, level: Level): QuestionDraft {
         SUJETS.filter((s) => s.type !== 'noms'),
         3 - k,
       );
-      const lines = rng.shuffle<Sujet>([...pickN(rng, byType('noms'), k), piege, ...rest]);
+      const noms = pickN(rng, byType('noms'), k);
+      const lines = rng.shuffle<Sujet>([...noms, piege, ...rest]);
       const p = lines.filter((s) => s.type === 'pronom').length;
       const g = lines.filter((s) => s.type === 'gn').length;
       return {
@@ -608,11 +609,12 @@ function typesSujetsDraft(rng: Rng, level: Level): QuestionDraft {
         ),
         answer: num(k),
         traps: numTraps(r(k), [
-          // En premier : à valeur égale, seule la première explication est gardée.
+          // En premier (un de trop, un oublié) : à valeur égale, seule la première explication est gardée.
           [
             k + 1,
             `Tu en as compté un de trop. Dans « ${piege.s} », ${piege.piege ?? ''} C’est un seul groupe nominal.`,
           ],
+          [k - 1, `Tu en as oublié un. Relis chaque sujet, comme « ${at(noms, 0).s} » : « et » y relie des noms.`],
           [g, 'Tu as compté les groupes nominaux : ils n’ont qu’un seul nom noyau.'],
           ...(p > 0
             ? [[p, 'Tu as compté les pronoms : un pronom remplace un nom, ce n’est pas « plusieurs noms ».'] as const]
@@ -863,7 +865,7 @@ export const FCM1_VERBE_SUJET: readonly Skill[] = [
     title: 'Sujet pronom, groupe nominal ou plusieurs noms',
     memo: [
       'Un **pronom personnel** est un petit mot sujet : « elle chante ».',
-      'Un **groupe nominal** a un nom principal : « le petit chat dort ».',
+      'Un **groupe nominal** a un nom noyau : « le petit chat dort ».',
       'Le sujet peut réunir plusieurs noms : « mon père et ma mère cuisinent ».',
     ],
     factId: 'types-sujets',
