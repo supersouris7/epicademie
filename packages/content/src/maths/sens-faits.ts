@@ -40,7 +40,7 @@ export const NOMBRES = {
     'des éléments non manipulables (distance entre deux villes, durée d’un film, volume d’eau d’une piscine, etc.)',
   ),
   jalousies: histoire(
-    'Plusieurs traditions ont leurs façons de calculer, comme la multiplication « par jalousies ».',
+    'Dans plusieurs pays, on a inventé ses façons de calculer, comme la multiplication « par jalousies ».',
     'algorithmes opératoires, développés dans plusieurs traditions mathématiques, comme la multiplication par jalousies',
   ),
   partDivision: usage(
@@ -83,7 +83,7 @@ export const DECIMAUX = {
     'nombres permettent en effet de mesurer des grandeurs quand les entiers ne suffisent plus',
   ),
   stevin: histoire(
-    'Simon Stevin, de Bruges, a utilisé une écriture des décimaux qui montre leur lien avec les fractions.',
+    'Simon Stevin, de Bruges, a écrit les décimaux d’une façon qui montre leur lien avec les fractions.',
     'l’écriture des nombres décimaux utilisée par Simon Stevin de Bruges',
   ),
   codage: saisTu(
@@ -161,7 +161,7 @@ export const MESURES = {
   ),
   prefixes: bipm(
     'savais-tu',
-    'Les préfixes comme « kilo » ou « milli » servent avec toutes les unités du système international.',
+    'Les préfixes, ces petits mots devant l’unité comme « kilo » ou « milli », vont avec toutes les unités.',
     'Les préfixes peuvent être utilisés avec toutes les unités SI',
   ),
   estimer: usage(
@@ -186,7 +186,7 @@ export const TEMPS = {
     'système sexagésimal (base soixante) utilisé pour les unités de durée',
   ),
   babylone: histoire(
-    'Dans l’ancienne Babylone, on comptait avec un système qui marche comme nos heures et nos minutes.',
+    'Dans l’ancienne Babylone, on comptait par soixante, comme pour nos heures et nos minutes.',
     'la numération sexagésimale paléo-babylonienne, qui repose sur les mêmes principes mathématiques que le système utilisé pour exprimer des durées en heures, minutes et secondes',
   ),
   clepsydre: histoire(
@@ -214,7 +214,7 @@ export const GEOMETRIE = {
     'Utiliser les outils géométriques usuels : règle, règle graduée, équerre et compas',
   ),
   raisonner: usage(
-    'Prouver et raisonner en géométrie t’aide dans d’autres matières, et plus tard dans ton métier.',
+    'Raisonner en géométrie sert dans d’autres matières, et plus tard dans la vie.',
     'facultés qui seront également un atout majeur dans sa future vie personnelle et professionnelle',
   ),
   perspective: saisTu(
@@ -264,7 +264,7 @@ export const HASARD = {
     'le dé « ne se souvient pas » du résultat',
   ),
   pile: saisTu(
-    'À pile ou face, « pile » a une chance sur deux de sortir.',
+    'Avec une pièce équilibrée, « pile » a une chance sur deux de sortir.',
     '« obtenir pile » en lançant une pièce de monnaie',
   ),
   jeux: usage(
@@ -283,7 +283,7 @@ export const PROPORTION = {
     'Si j’achète 3 fois plus de pains aux raisins, alors je vais payer 3 fois plus.',
   ),
   coeur: saisTu(
-    '« Prix au kilo » ou « battements du cœur par minute » : ces expressions cachent une proportionnalité.',
+    '« Prix au kilo », « battements du cœur par minute » : deux grandeurs mises en rapport.',
     '« prix au kilo » ou « nombre de battements du cœur par minute »',
   ),
   feuilles: usage(

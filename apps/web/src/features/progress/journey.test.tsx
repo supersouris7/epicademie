@@ -38,7 +38,7 @@ describe('Mes progrès : le chemin parcouru', () => {
       'Valeur d’un chiffre selon son rangIl y a 2 semaines : 4/10 → Aujourd’hui : 8/10',
     );
     const effort = screen.getByRole('region', { name: 'Tes efforts de la semaine' });
-    expect(effort).toHaveTextContent('Te revoilà après 12 jours de pause : bravo !');
+    expect(effort).toHaveTextContent('Te revoilà après 12 jours : content de te revoir !');
     expect(effort).toHaveTextContent('3 séries terminées · 2 jours d’entraînement');
     expect(effort).toHaveTextContent('1 notion retravaillée après un « pas encore »');
     // Jamais de comparaison à d'autres enfants.

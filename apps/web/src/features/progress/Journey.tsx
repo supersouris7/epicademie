@@ -23,7 +23,9 @@ function Effort({ effort }: { readonly effort: Journey['effort'] }) {
       <h2 id="efforts" className="font-display text-2xl tracking-wide">
         Tes efforts de la semaine
       </h2>
-      {pauseDays !== null && <p className="text-lg font-bold">Te revoilà après {pauseDays} jours de pause : bravo !</p>}
+      {pauseDays !== null && (
+        <p className="text-lg font-bold">Te revoilà après {pauseDays} jours : content de te revoir !</p>
+      )}
       {series === 0 && days === 0 ? (
         <p className="font-bold">Une première série et ton compteur démarre.</p>
       ) : (
@@ -33,10 +35,7 @@ function Effort({ effort }: { readonly effort: Journey['effort'] }) {
             {plural(days, 'jour d’entraînement', 'jours d’entraînement')}
           </li>
           {reworked.length > 0 && (
-            <li>
-              {plural(reworked.length, 'notion retravaillée', 'notions retravaillées')} après un « pas encore » : c’est
-              comme ça qu’on progresse.
-            </li>
+            <li>{plural(reworked.length, 'notion retravaillée', 'notions retravaillées')} après un « pas encore ».</li>
           )}
         </ul>
       )}
