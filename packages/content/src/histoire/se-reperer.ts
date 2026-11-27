@@ -1,4 +1,4 @@
-import type { Level, QuestionDraft, Rich, Skill, Trap } from '../types.ts';
+import type { Level, QuestionDraft, Rich, Sens, Skill, Trap } from '../types.ts';
 import type { Rng } from '../rng.ts';
 import { choice, type Option } from '../build.ts';
 import { shuffled } from './kit.ts';
@@ -160,40 +160,78 @@ export function saisie(
 
 export type Generator = (rng: Rng) => QuestionDraft;
 
+/** Ce que la notion donne à lire : mémo, « sens », et les preuves de ses faits. */
+interface Contenu {
+  readonly memo: readonly Rich[];
+  readonly sens: Sens;
+  readonly preuves: readonly Preuve[];
+}
+
 function skill(
   id: string,
   title: string,
-  memo: readonly Rich[],
-  preuves: readonly Preuve[],
+  { memo, sens, preuves }: Contenu,
   levels: readonly [Generator, Generator, Generator, Generator, Generator],
 ): Skill {
   return {
     id,
     title,
     levels: 5,
-    version: 1,
-    lesson: { memo, source: PROG, sources: [...new Set(['cycle3-2020', ...preuves.map((p) => p.source)])] },
+    version: 2,
+    sens: [sens],
+    lesson: {
+      memo,
+      source: PROG,
+      sources: [...new Set(['cycle3-2020', sens.source, ...preuves.map((p) => p.source)])],
+    },
     generate: (rng: Rng, level: Level) => at(levels, level - 1)(rng),
+  };
+}
+
+// ——— Explications guidées (docs/contenus/README.md §3) ———
+
+/** Dernière bulle : la réponse en gras, sans doubler le point après « J.-C. ». */
+const retiens = (answer: string) => `Retiens la réponse : **${answer}**${answer.endsWith('.') ? '' : '.'}`;
+
+/** Dernière bulle d’une remise en ordre : les noms courts, dans l’ordre. */
+const rangeAinsi = (labels: readonly string[]) => `Range ainsi : **${labels.join(' → ')}**.`;
+
+/** Question à choix du niveau 1 : ses deux bulles disent quoi faire, la troisième donne la réponse. */
+interface FaitSimple {
+  readonly q: string;
+  readonly a: string;
+  readonly wrong: readonly Option[];
+  readonly hint: string;
+  readonly how: readonly [Rich, Rich];
+}
+
+function fait(rng: Rng, f: FaitSimple): QuestionDraft {
+  return {
+    prompt: f.q,
+    ...choice(rng, f.a, f.wrong),
+    hint: f.hint,
+    steps: [...f.how, retiens(f.a)],
+    targetSeconds: 25,
   };
 }
 
 // ——— Notion 1 : siècles et chiffres romains ———
 
-const LETTRES = 'I vaut 1, V vaut 5 et X vaut 10.';
-const AJOUTER = 'Petite lettre après : on ajoute (VI = 6). Petite lettre avant : on enlève (IV = 4).';
-const BORNES = 'Le Ier siècle va de l’année 1 à 100. Le IIe va de 101 à 200, et ainsi de suite.';
+const LETTRES = 'Retiens les lettres : I vaut 1, V vaut 5, X vaut 10.';
 
-const FAITS_SIECLE: readonly QcmFait[] = [
+const FAITS_SIECLE: readonly FaitSimple[] = [
   {
     q: 'Combien d’années dure un siècle ?',
     a: '100 ans',
     wrong: [
-      { label: '10 ans', why: '10 ans, c’est beaucoup plus court : un siècle dure 100 ans.' },
+      { label: '10 ans', why: '10 ans, c’est beaucoup plus court qu’un siècle.' },
       { label: '1 000 ans', why: '1 000 ans, c’est un millénaire, soit dix siècles.' },
     ],
-    preuve: PREUVES.siecle,
-    explain: 'Un siècle, c’est une durée de cent ans.',
-    hint: 'Pense au mot « cent ».',
+    hint: 'Un siècle est bien plus long qu’une enfance.',
+    how: [
+      'Imagine une durée plus longue que la vie de la plupart des gens.',
+      'Écarte 10 ans : c’est ton âge, environ. Écarte aussi le millénaire.',
+    ],
   },
   {
     q: 'En chiffres romains, que vaut la lettre X ?',
@@ -202,9 +240,8 @@ const FAITS_SIECLE: readonly QcmFait[] = [
       { label: '1', why: 'Le chiffre 1 s’écrit I.' },
       { label: '5', why: 'Le chiffre 5 s’écrit V.' },
     ],
-    preuve: PREUVES.lettres,
-    explain: LETTRES,
-    hint: 'Il y a trois lettres à connaître : I, V et X. X est la plus grande.',
+    hint: 'La lettre X vaut plus que la lettre V.',
+    how: ['Retrouve les trois lettres à connaître : I, V et X.', 'Classe-les de la plus petite à la plus grande.'],
   },
   {
     q: 'En chiffres romains, que vaut la lettre V ?',
@@ -213,37 +250,134 @@ const FAITS_SIECLE: readonly QcmFait[] = [
       { label: '1', why: 'Le chiffre 1 s’écrit I.' },
       { label: '10', why: 'Le nombre 10 s’écrit X.' },
     ],
-    preuve: PREUVES.lettres,
-    explain: LETTRES,
-    hint: 'Le V est entre le I et le X.',
+    hint: 'La lettre V est entre la lettre I et la lettre X.',
+    how: ['Retrouve les trois lettres à connaître : I, V et X.', 'Pense à la lettre du milieu, entre 1 et 10.'],
   },
   {
-    q: 'Avec quels chiffres écrit-on d’habitude le numéro d’un siècle ?',
-    a: 'des chiffres romains',
+    q: 'En chiffres romains, que vaut la lettre I ?',
+    a: '1',
     wrong: [
-      { label: 'des notes de musique', why: 'Les notes servent à écrire la musique, pas les siècles.' },
-      { label: 'des signes de ponctuation', why: 'La ponctuation sert à couper les phrases.' },
+      { label: '5', why: 'Le chiffre 5 s’écrit V.' },
+      { label: '10', why: 'Le nombre 10 s’écrit X.' },
     ],
-    preuve: PREUVES.siecleRomain,
-    explain: 'On écrit par exemple « le XXe siècle ».',
-    hint: 'Pense à la façon dont on écrit « XXe ».',
+    hint: 'La lettre I vaut moins que la lettre V.',
+    how: ['Compte les traits de la lettre I.', 'Choisis la plus petite des trois valeurs.'],
+  },
+  {
+    q: 'Comment écrit-on le plus souvent « le vingtième siècle » ?',
+    a: 'le XXe siècle',
+    wrong: [
+      { label: 'le XVe siècle', why: 'XV vaut 15 : c’est le quinzième siècle.' },
+      { label: 'le XIIe siècle', why: 'XII vaut 12 : c’est le douzième siècle.' },
+    ],
+    hint: 'Calcule la valeur des lettres de chaque proposition.',
+    how: ['Calcule : X vaut 10, V vaut 5, I vaut 1.', 'Cherche les lettres qui font 20 ensemble.'],
   },
 ];
 
 const NOMBRES_ROMAINS = [4, 6, 9, 11, 14, 16] as const;
 
-const siecles1: Generator = (rng) => qcm(rng, rng.pick(FAITS_SIECLE));
+/** Découpe un nombre en lettres : deux bulles concrètes (« 14 = 10 + 4, soit X puis IV »). */
+function decoupage(n: number): [Rich, Rich] {
+  if (n === 4 || n === 9) {
+    const [letter, value] = n === 4 ? ['V', 5] : ['X', 10];
+    return [`Pars de la lettre ${letter}, qui vaut ${value}.`, `Enlève 1 : place un I avant le ${letter}.`];
+  }
+  const values: number[] = [];
+  const letters: string[] = [];
+  let rest = n;
+  for (const [value, l] of ROMAINS) {
+    while (rest >= value) {
+      values.push(value);
+      letters.push(l);
+      rest -= value;
+    }
+  }
+  if (values.length === 1) return [`Cherche la lettre qui vaut exactement ${n}.`, 'Écris cette lettre toute seule.'];
+  return [
+    `Décompose ${n} ainsi : ${values.join(' + ')}.`,
+    `Écris les morceaux dans l’ordre : ${letters.join(' puis ')}.`,
+  ];
+}
+
+/** Lit un nombre romain de gauche à droite, morceau par morceau. */
+function lecture(n: number): [Rich, Rich] {
+  const blocks: [number, string][] = [];
+  let rest = n;
+  for (const [value, l] of ROMAINS) {
+    while (rest >= value) {
+      blocks.push([value, l]);
+      rest -= value;
+    }
+  }
+  const [first] = blocks;
+  if (blocks.length === 1 && first) {
+    if (n === 4 || n === 9) {
+      const [letter, value] = n === 4 ? ['V', 5] : ['X', 10];
+      return [`Regarde le I placé avant le ${letter}.`, `Enlève 1 à ${value}.`];
+    }
+    return [`Regarde la lettre ${first[1]}.`, 'Retrouve sa valeur parmi 1, 5 et 10.'];
+  }
+  return [
+    `Décompose ${toRoman(n)} de gauche à droite : ${blocks.map((b) => b[1]).join(' puis ')}.`,
+    `Additionne les valeurs : ${blocks.map((b) => b[0]).join(' + ')}.`,
+  ];
+}
+
+/** Nombres écrits en lettres, de 1 à 21 : « dix-huitième siècle » est aussi une écriture juste. */
+const ORDINAUX = [
+  'premier',
+  'deuxième',
+  'troisième',
+  'quatrième',
+  'cinquième',
+  'sixième',
+  'septième',
+  'huitième',
+  'neuvième',
+  'dixième',
+  'onzième',
+  'douzième',
+  'treizième',
+  'quatorzième',
+  'quinzième',
+  'seizième',
+  'dix-septième',
+  'dix-huitième',
+  'dix-neuvième',
+  'vingtième',
+  'vingt et unième',
+] as const;
+
+/** Toutes les écritures justes d’un siècle saisi, avec « le » ou « au », en chiffres ou en lettres. */
+function ecrituresSiecle(c: number): string[] {
+  const word = at(ORDINAUX, c - 1);
+  const words = [word, ...(c === 2 ? ['second'] : []), ...(c === 21 ? ['vingt-et-unième'] : [])];
+  const forms = [...siecleForms(c), ...words.flatMap((w) => [w, `${w} siècle`, `${w} siecle`])];
+  // « le » et « au » ne précèdent que la forme complète, avec le mot « siècle ».
+  return [...forms, ...forms.filter((f) => f.endsWith(' siècle')).flatMap((f) => [`le ${f}`, `au ${f}`])];
+}
+
+const siecles1: Generator = (rng) => fait(rng, rng.pick(FAITS_SIECLE));
 
 const siecles2: Generator = (rng) => {
   if (rng.int(0, 1) === 0) {
     const nombres = rng.shuffle([...NOMBRES_ROMAINS]).slice(0, 3);
-    return association(
+    const q = association(
       rng,
       `Associe ces nombres romains à leur valeur : ${liste(nombres.map(toRoman))}.`,
       nombres.map((n) => [toRoman(n), String(n)] as const),
       'Regarde si la petite lettre est avant ou après la grande.',
-      [LETTRES, AJOUTER],
+      [],
     );
+    return {
+      ...q,
+      steps: [
+        LETTRES,
+        'Regarde la petite lettre : après la grande, ajoute. Avant, enlève.',
+        `Associe ainsi : **${nombres.map((n) => `${toRoman(n)} → ${n}`).join(' ; ')}**.`,
+      ],
+    };
   }
   const n = rng.pick(NOMBRES_ROMAINS);
   const voisins = [n - 2, n + 2, n + 1, n - 1]
@@ -260,26 +394,10 @@ const siecles2: Generator = (rng) => {
     prompt: `Attention aux pièges ! Comment s’écrit ${n} en chiffres romains ?`,
     ...choice(rng, toRoman(n), wrong),
     hint: 'Cherche la grande lettre la plus proche, puis ajoute ou enlève.',
-    steps: [cite(PREUVES.lettres), AJOUTER, fin(toRoman(n))],
+    steps: [LETTRES, ...decoupage(n), retiens(toRoman(n))],
     targetSeconds: 30,
   };
 };
-
-/** Découpage d’un nombre, pour expliquer son écriture : « 14 = 10 + 4, soit X puis IV ». */
-function decoupage(n: number): string {
-  const values: number[] = [];
-  const letters: string[] = [];
-  let rest = n;
-  for (const [value, l] of ROMAINS) {
-    while (rest >= value) {
-      values.push(value);
-      letters.push(l);
-      rest -= value;
-    }
-  }
-  if (values.length === 1) return `${n} s’écrit avec un seul bloc : ${letters.join('')}.`;
-  return `${n} = ${values.join(' + ')}, soit ${letters.join(' puis ')}.`;
-}
 
 const siecles3: Generator = (rng) => {
   const n = rng.int(2, 21);
@@ -293,12 +411,12 @@ const siecles3: Generator = (rng) => {
         [toRoman(n + 1), `Tu as écrit ${n + 1}. Il en faut un de moins.`],
         [toRoman(n - 1), `Tu as écrit ${n - 1}. Il en manque un.`],
       ],
-      'Découpe le nombre avec des 10, des 5 et des 1.',
-      [LETTRES, AJOUTER, decoupage(n), fin(r)],
+      'Décompose le nombre avec des 10, des 5 et des 1.',
+      [LETTRES, ...decoupage(n), retiens(r)],
     );
   }
   return saisie(
-    `Le nombre romain ${r} : écris-le avec nos chiffres habituels.`,
+    `Écris le nombre romain ${r} avec nos chiffres habituels.`,
     [String(n)],
     [
       [String(n + 1), 'Tu as compté un de trop. Relis lettre par lettre.'],
@@ -311,9 +429,26 @@ const siecles3: Generator = (rng) => {
       ],
     ],
     'Lis de gauche à droite : ajoute, ou enlève si la petite lettre est devant.',
-    [LETTRES, AJOUTER, decoupage(n), fin(String(n))],
+    [LETTRES, ...lecture(n), retiens(String(n))],
   );
 };
+
+const bornes = (c: number) => `le ${siecle(c)} siècle va de ${(c - 1) * 100 + 1} à ${c * 100}`;
+
+/** Deux bulles pour trouver le siècle d’une année après J.-C. */
+function trouverSiecle(year: number): [Rich, Rich] {
+  if (year % 100 === 0) {
+    return [
+      `Regarde la fin : ${year} se termine par 00.`,
+      `Garde le nombre de centaines, ${year / 100} : c’est le numéro du siècle.`,
+    ];
+  }
+  const hundreds = Math.floor(year / 100);
+  return [
+    `Efface les deux derniers chiffres de ${year} : il reste ${hundreds}.`,
+    `Ajoute 1 : tu obtiens ${hundreds + 1}, le numéro du siècle.`,
+  ];
+}
 
 const siecles4: Generator = (rng) => {
   // Une fois sur trois, une année « ronde » : le piège classique.
@@ -329,78 +464,82 @@ const siecles4: Generator = (rng) => {
     return [siecle(wrong), `${wrong}e`, `${siecle(wrong)} siècle`].map((t) => [t, why] as const);
   });
   return saisie(
-    `Sans proposition : dans quel siècle se trouve l’année ${year} ?`,
-    siecleForms(c),
+    `Trouve le siècle de l’année ${year}. Écris-le.`,
+    ecrituresSiecle(c),
     traps,
-    'Compte les centaines, puis demande-toi si l’année finit par 00.',
-    [
-      cite(PREUVES.bornes),
-      BORNES,
-      `L’année ${year} est entre ${(c - 1) * 100 + 1} et ${c * 100}.`,
-      fin(`${siecle(c)} siècle`),
-    ],
+    'Compte les centaines, puis regarde si l’année finit par 00.',
+    ['Souviens-toi : le Ier siècle va de l’année 1 à 100.', ...trouverSiecle(year), retiens(`le ${siecle(c)} siècle`)],
   );
 };
 
+const OBJETS_VITRINE = ['La clé', 'Le vase', 'La pièce', 'La lampe'] as const;
+
+/** Niveau 5 : comparer les objets d’une vitrine, puis écrire le siècle de l’un d’eux, sans proposition. */
 const siecles5: Generator = (rng) => {
   const years = distinctYears(rng, 4, 501, 200);
-  const objets = ['La clé', 'Le vase', 'La pièce', 'La lampe'];
-  const k = rng.int(0, 3);
+  const recent = rng.int(0, 1) === 0;
+  const wanted = recent ? Math.max(...years) : Math.min(...years);
+  const k = years.indexOf(wanted);
+  // Une fois sur trois, l’année cherchée finit par 00 : elle reste dans sa tranche, donc à sa place.
+  if (rng.int(0, 2) === 0) years[k] = Math.ceil(wanted / 100) * 100;
   const year = at(years, k);
   const c = centuryOf(year);
+  const other = centuryOf(recent ? Math.min(...years) : Math.max(...years));
+  const traps = [
+    [c - 1, 'Tu as compté un siècle de moins. Le Ier siècle va de 1 à 100.'],
+    [c + 1, 'Tu as compté un siècle de trop. Vérifie si l’année finit par 00.'],
+    [
+      other,
+      recent
+        ? 'C’est l’objet le plus ancien. Cherche le plus récent.'
+        : 'C’est l’objet le plus récent. Cherche le plus ancien.',
+    ],
+  ] as const;
+  const q = saisie(
+    `Lis la vitrine. Écris le siècle de l’objet le plus ${recent ? 'récent' : 'ancien'}.`,
+    ecrituresSiecle(c),
+    traps.flatMap(([w, why]) => [siecle(w), `${w}e`, `${siecle(w)} siècle`].map((t) => [t, why] as const)),
+    'Compare d’abord les quatre années. Cherche ensuite le siècle.',
+    [
+      `Cherche l’année la plus ${recent ? 'grande' : 'petite'} : ${year}.`,
+      ...trouverSiecle(year),
+      retiens(`le ${siecle(c)} siècle`),
+    ],
+  );
   return {
-    prompt: `Lis le texte, puis réponds. Quel objet date du ${siecle(c)} siècle ?`,
+    ...q,
     figure: {
       kind: 'document',
       title: 'La vitrine du petit musée',
-      lines: objets.map((o, i) => `${o} : fabrication en ${years[i]}.`),
+      lines: OBJETS_VITRINE.map((o, i) => `${o} : fabrication en ${years[i]}.`),
       credit: CREDIT,
     },
-    ...choice(
-      rng,
-      at(objets, k),
-      objets.flatMap((label, i) =>
-        i === k ? [] : [{ label, why: `${label} date du ${siecle(centuryOf(at(years, i)))} siècle (${years[i]}).` }],
-      ),
-    ),
-    hint: 'Calcule le siècle de chaque date, ligne par ligne.',
-    steps: [
-      cite(PREUVES.bornes),
-      BORNES,
-      `Le ${siecle(c)} siècle va de ${(c - 1) * 100 + 1} à ${c * 100}.`,
-      fin(at(objets, k)),
-    ],
     targetSeconds: 60,
   };
 };
 
 // ——— Notion 2 : la frise chronologique ———
 
-const SENS = 'Sur nos frises, le temps avance de haut en bas : en haut, c’est le plus ancien.';
-const CROISSANT = 'Après J.-C., plus le nombre est petit, plus l’année est ancienne.';
-
-const FAITS_FRISE: readonly QcmFait[] = [
+const FAITS_FRISE: readonly FaitSimple[] = [
   {
     q: 'À quoi sert une frise chronologique ?',
     a: 'à représenter le temps',
     wrong: [
       { label: 'à mesurer une distance', why: 'Pour une distance, on utilise une règle ou l’échelle d’une carte.' },
-      { label: 'à donner la météo', why: 'La météo annonce le temps qu’il fait, pas le temps qui passe.' },
+      { label: 'à montrer les rivières d’un pays', why: 'Pour les rivières, on regarde une carte.' },
     ],
-    preuve: PREUVES.frise,
-    explain: 'La frise chronologique est un dessin qui montre le temps.',
-    hint: 'Le mot « chronologique » parle du temps.',
+    hint: 'Observe ce qui est écrit le long d’une frise.',
+    how: ['Imagine une frise : un long dessin avec des dates.', 'Demande-toi ce que ces dates montrent.'],
   },
   {
     q: 'Quel mot désigne une durée de mille ans ?',
     a: 'un millénaire',
     wrong: [
       { label: 'un siècle', why: 'Un siècle dure cent ans.' },
-      { label: 'une semaine', why: 'Une semaine ne dure que sept jours.' },
+      { label: 'une année', why: 'Une année dure douze mois seulement.' },
     ],
-    preuve: PREUVES.millenaire,
-    explain: 'Un millénaire, c’est mille ans.',
-    hint: 'Le début du mot ressemble à « mille ».',
+    hint: 'Compare les trois durées, de la plus courte à la plus longue.',
+    how: ['Classe les trois mots, du plus court au plus long.', 'Cherche la durée qui vaut dix siècles.'],
   },
   {
     q: 'Quel mot désigne une durée de cent ans ?',
@@ -409,9 +548,8 @@ const FAITS_FRISE: readonly QcmFait[] = [
       { label: 'un millénaire', why: 'Un millénaire dure mille ans.' },
       { label: 'un mois', why: 'Un mois dure quelques semaines.' },
     ],
-    preuve: PREUVES.siecle,
-    explain: 'Un siècle, c’est cent ans.',
-    hint: 'Ce mot sert aussi à numéroter les époques : le XXe…',
+    hint: 'Pense au mot qu’on numérote avec des chiffres romains.',
+    how: ['Écarte le mois : il est très court.', 'Choisis entre les deux grandes durées celle de cent ans.'],
   },
 ];
 
@@ -425,11 +563,45 @@ const frise = (title: string, marks: readonly string[]) => ({
   credit: CREDIT,
 });
 
-const frise1: Generator = (rng) => qcm(rng, rng.pick(FAITS_FRISE));
+/** Niveau 1 : lire sur une petite frise le repère le plus ancien ou le plus récent. */
+function friseLecture(rng: Rng): QuestionDraft {
+  const years = distinctYears(rng, 3, 101, 300).sort((a, b) => a - b);
+  const recent = rng.int(0, 1) === 0;
+  const k = recent ? 2 : 0;
+  const answer = `le repère ${at(LETTRES_FRISE, k)}`;
+  return {
+    prompt: `Regarde la frise. Quel repère est le plus ${recent ? 'récent' : 'ancien'} ?`,
+    figure: frise(
+      'Petite frise',
+      years.map((y, i) => `${y} : repère ${at(LETTRES_FRISE, i)}`),
+    ),
+    ...choice(
+      rng,
+      answer,
+      [0, 1, 2]
+        .filter((i) => i !== k)
+        .map((i) => ({
+          label: `le repère ${at(LETTRES_FRISE, i)}`,
+          why: `Le repère ${at(LETTRES_FRISE, i)} est en ${years[i]} : il n’est pas le plus ${recent ? 'récent' : 'ancien'}.`,
+        })),
+    ),
+    hint: 'Sur cette frise, le temps avance de haut en bas.',
+    steps: [
+      'Observe la frise : le temps avance de haut en bas.',
+      recent
+        ? 'Cherche la date tout en bas : c’est la plus récente.'
+        : 'Cherche la date tout en haut : c’est la plus ancienne.',
+      retiens(answer),
+    ],
+    targetSeconds: 25,
+  };
+}
+
+const frise1: Generator = (rng) => (rng.int(0, 1) === 0 ? fait(rng, rng.pick(FAITS_FRISE)) : friseLecture(rng));
 
 const frise2: Generator = (rng) => {
   if (rng.int(0, 2) === 0) {
-    return association(
+    const q = association(
       rng,
       'Associe chaque mot du temps à ce qui lui correspond.',
       [
@@ -438,32 +610,41 @@ const frise2: Generator = (rng) => {
         ['Frise chronologique', 'dessin du temps'],
       ],
       'Cherche d’abord les deux durées.',
-      [cite(PREUVES.siecle), cite(PREUVES.millenaire)],
+      [],
     );
+    return {
+      ...q,
+      steps: [
+        'Commence par les deux mots qui sont des durées.',
+        'Retiens : un siècle vaut 100 ans, un millénaire 1 000.',
+        'Associe ainsi : **Siècle → cent ans ; Millénaire → mille ans ; Frise chronologique → dessin du temps**.',
+      ],
+    };
   }
   const start = rng.int(2, 8) * 100;
   const years = LETTRES_FRISE.map((_, i) => start + i * 300);
   const k = rng.int(0, 3);
   const year = at(years, k);
+  const answer = `le repère ${at(LETTRES_FRISE, k)}`;
   return {
-    prompt: `Sur la frise, quel repère est placé entre ${year - 100} et ${year + 100} ?`,
+    prompt: `Lis la frise. Quel repère est placé entre ${year - 100} et ${year + 100} ?`,
     figure: frise(
       'Frise des repères',
       LETTRES_FRISE.map((l, i) => `${years[i]} : repère ${l}`),
     ),
     ...choice(
       rng,
-      `le repère ${LETTRES_FRISE[k]}`,
+      answer,
       LETTRES_FRISE.flatMap((l, i) =>
         i === k ? [] : [{ label: `le repère ${l}`, why: `Le repère ${l} est en ${years[i]}, hors de l’intervalle.` }],
       ),
     ),
     hint: 'Lis le nombre écrit devant chaque repère.',
     steps: [
-      SENS,
-      `On cherche une année entre ${year - 100} et ${year + 100}.`,
-      `Le repère ${LETTRES_FRISE[k]} est en ${year}, entre ${year - 100} et ${year + 100}.`,
-      fin(`le repère ${LETTRES_FRISE[k]}`),
+      `Cherche une année placée entre ${year - 100} et ${year + 100}.`,
+      'Lis les repères de haut en bas, un par un.',
+      `Garde l’année ${year} : elle est entre les deux.`,
+      retiens(answer),
     ],
     targetSeconds: 30,
   };
@@ -472,13 +653,22 @@ const frise2: Generator = (rng) => {
 const frise3: Generator = (rng) => {
   if (rng.int(0, 1) === 0) {
     const years = distinctYears(rng, 4, 101, 300);
-    return ranger(
+    const sorted = [...years].sort((a, b) => a - b).map(String);
+    const q = ranger(
       rng,
       `Comme sur une frise, range ces années de la plus ancienne à la plus récente : ${liste(years.map(String))}.`,
       years.map((y) => ({ label: String(y), t: y })),
       'Cherche d’abord le plus petit nombre.',
-      `${SENS} ${CROISSANT}`,
+      '',
     );
+    return {
+      ...q,
+      steps: [
+        'Cherche le plus petit nombre : c’est l’année la plus ancienne.',
+        'Continue avec le plus petit des nombres qui restent.',
+        rangeAinsi(sorted),
+      ],
+    };
   }
   const start = rng.int(1, 14) * 100;
   const hole = rng.int(1, 3);
@@ -486,14 +676,19 @@ const frise3: Generator = (rng) => {
   const answer = at(years, hole);
   const q = saisie(
     `Complète la frise : quelle année se cache sous l’étoile (frise de ${start} à ${start + 400}) ?`,
-    [String(answer)],
+    [String(answer), `en ${answer}`],
     [
-      [String(answer - 100), 'C’est la graduation juste avant l’étoile. Avance d’un cran.'],
-      [String(answer + 100), 'C’est la graduation juste après l’étoile. Recule d’un cran.'],
+      [String(answer - 100), 'C’est la date juste au-dessus de l’étoile. Avance de 100 ans.'],
+      [String(answer + 100), 'C’est la date juste en dessous de l’étoile. Recule de 100 ans.'],
       [String(answer - 90), 'Ici, on avance de 100 en 100, pas de 10 en 10.'],
     ],
-    'Regarde de combien on avance d’une graduation à la suivante.',
-    [SENS, 'On avance de 100 ans à chaque graduation.', fin(String(answer))],
+    'Regarde de combien on avance d’une date à la suivante.',
+    [
+      'Compare deux dates voisines : on avance de 100 ans.',
+      `Pars de ${answer - 100}, juste au-dessus de l’étoile.`,
+      `Ajoute 100 à ${answer - 100}.`,
+      retiens(String(answer)),
+    ],
   );
   return {
     ...q,
@@ -504,34 +699,50 @@ const frise3: Generator = (rng) => {
   };
 };
 
+/** Écritures justes d’une durée : le nombre seul, avec l’unité, avec ou sans espace des milliers. */
+function ecrituresDuree(n: number, unite: 'ans' | 'siècles'): string[] {
+  const numbers = [String(n), ...(n >= 1000 ? [`${Math.floor(n / 1000)} ${String(n % 1000).padStart(3, '0')}`] : [])];
+  const units = unite === 'ans' ? ['ans', 'années', 'annees'] : ['siècles', 'siecles'];
+  return numbers.flatMap((x) => [x, ...units.map((u) => `${x} ${u}`)]);
+}
+
 const frise4: Generator = (rng) => {
   const a = rng.int(2, 9) * 100 + rng.int(0, 1) * 50;
   const b = a + rng.int(3, 9) * 100;
   const gap = b - a;
   if (rng.int(0, 1) === 0) {
     return saisie(
-      `Sans proposition : combien d’années séparent ${a} et ${b} ?`,
-      [String(gap), `${gap} ans`],
+      `Calcule : combien d’années séparent ${a} et ${b} ?`,
+      ecrituresDuree(gap, 'ans'),
       [
         [String(a + b), 'Tu as ajouté. Pour une durée, on soustrait la date ancienne de la date récente.'],
         [String(gap / 100), 'Tu as compté les siècles. La question demande des années.'],
         [String(gap + 100), 'Cent ans de trop : vérifie ta soustraction.'],
       ],
       'Pars de la date la plus ancienne et avance jusqu’à l’autre.',
-      ['Durée = date récente − date ancienne.', `${b} − ${a} = ${gap}.`, fin(`${gap} ans`)],
+      [
+        `Repère la date la plus ancienne : ${a}.`,
+        'Soustrais-la de la date la plus récente.',
+        `Calcule : ${b} − ${a} = ${gap}.`,
+        retiens(`${gap} ans`),
+      ],
     );
   }
   const siecles = gap / 100;
   return saisie(
-    `Sans proposition : combien de siècles s’écoulent entre ${a} et ${b} ?`,
-    [String(siecles), `${siecles} siècles`],
+    `Calcule : combien de siècles s’écoulent entre ${a} et ${b} ?`,
+    ecrituresDuree(siecles, 'siècles'),
     [
       [String(gap), 'Ce sont des années. Un siècle vaut 100 ans.'],
       [String(siecles + 1), 'Tu as compté un bond de trop.'],
       [String(siecles - 1), 'Il manque un siècle : compte chaque bond de 100 ans.'],
     ],
     'Avance de 100 ans en 100 ans et compte les bonds.',
-    [cite(PREUVES.siecle), `${b} − ${a} = ${gap} ans, soit ${siecles} fois 100 ans.`, fin(`${siecles} siècles`)],
+    [
+      `Calcule d’abord les années : ${b} − ${a} = ${gap}.`,
+      `Compte les paquets de 100 ans dans ${gap} ans.`,
+      retiens(`${siecles} siècles`),
+    ],
   );
 };
 
@@ -573,8 +784,6 @@ function friseVillage(rng: Rng, siecles: readonly number[], rondes: readonly num
   return { marques, figure: { ...figure, lines: [note, ...figure.lines] } };
 }
 
-const bornes = (c: number) => `Le ${siecle(c)} siècle va de ${(c - 1) * 100 + 1} à ${c * 100}.`;
-
 /** Niveau 5, en deux temps : trouver les années par le nom des repères, puis calculer la durée. */
 function friseDuree(rng: Rng): QuestionDraft {
   const siecles = rng.shuffle([8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]).slice(0, rng.int(4, 6));
@@ -585,7 +794,7 @@ function friseDuree(rng: Rng): QuestionDraft {
   const gap = to.year - from.year;
   const q = saisie(
     `Lis la frise, puis réponds. Combien d’années s’écoulent entre « ${from.text} » et « ${to.text} » ?`,
-    [String(gap), `${gap} ans`],
+    ecrituresDuree(gap, 'ans'),
     [
       [String(from.year + to.year), 'Tu as ajouté les dates. Pour une durée, on soustrait.'],
       [String(gap + 100), 'Un siècle de trop : refais la soustraction.'],
@@ -594,11 +803,10 @@ function friseDuree(rng: Rng): QuestionDraft {
     ],
     'Trouve d’abord l’année de chaque repère sur la frise.',
     [
-      `« ${from.text} » : ${from.year}. « ${to.text} » : ${to.year}.`,
-      ...(from.year === 800 ? [cite(PREUVES.charlemagne)] : []),
-      'Durée = date récente − date ancienne.',
-      `${to.year} − ${from.year} = ${gap}.`,
-      fin(`${gap} ans`),
+      `Cherche le premier repère sur la frise : ${from.year}.`,
+      `Cherche ensuite le second repère : ${to.year}.`,
+      `Soustrais : ${to.year} − ${from.year} = ${gap}.`,
+      retiens(`${gap} ans`),
     ],
   );
   return { ...q, figure, targetSeconds: 70 };
@@ -634,13 +842,11 @@ function friseSiecle(rng: Rng): QuestionDraft {
     ),
     hint: 'Écris la première et la dernière année du siècle, puis cherche sur la frise.',
     steps: [
-      cite(PREUVES.bornes),
-      bornes(c),
-      ...(cible.year === 800 ? [cite(PREUVES.charlemagne)] : []),
+      `Écris les limites : ${bornes(c)}.`,
       cible.year % 100 === 0
-        ? `${cible.year} finit par 00 : cette année termine le ${siecle(c)} siècle.`
-        : `${cible.year} est entre ces deux années.`,
-      fin(cible.text),
+        ? `Garde l’année ${cible.year} : elle termine ce siècle.`
+        : `Garde l’année ${cible.year} : elle est entre ces limites.`,
+      retiens(cible.text),
     ],
     targetSeconds: 70,
   };
@@ -650,10 +856,7 @@ const frise5: Generator = (rng) => (rng.int(0, 1) === 0 ? friseDuree(rng) : fris
 
 // ——— Notion 3 : avant et après J.-C. ———
 
-const REBOURS = 'Avant J.-C., plus le nombre est grand, plus la date est ancienne.';
-const DEPART = 'Après J.-C., plus le nombre est grand, plus la date est récente.';
-
-const FAITS_JC: readonly QcmFait[] = [
+const FAITS_JC: readonly FaitSimple[] = [
   {
     q: 'Que veut dire « av. J.-C. » ?',
     a: 'avant Jésus-Christ',
@@ -661,23 +864,28 @@ const FAITS_JC: readonly QcmFait[] = [
       { label: 'après Jésus-Christ', why: '« Après » s’abrège « apr. », et non « av. ».' },
       { label: 'avant Jules César', why: 'Les lettres J.-C. désignent Jésus-Christ, pas Jules César.' },
     ],
-    preuve: PREUVES.jc,
-    explain: '« av. » veut dire avant, et J.-C. désigne Jésus-Christ.',
-    hint: '« av. » est le début d’un petit mot qui parle du temps.',
+    hint: 'Les lettres a et v commencent un petit mot de temps.',
+    how: ['Regarde les deux premières lettres : a et v.', 'Rappelle-toi ce que veulent dire les lettres J.-C.'],
+  },
+  {
+    q: 'Que veut dire « apr. J.-C. » ?',
+    a: 'après Jésus-Christ',
+    wrong: [
+      { label: 'avant Jésus-Christ', why: '« Avant » s’abrège « av. », et non « apr. ».' },
+      { label: 'après Jules César', why: 'Les lettres J.-C. désignent Jésus-Christ, pas Jules César.' },
+    ],
+    hint: 'Les lettres a, p et r commencent un petit mot de temps.',
+    how: ['Regarde les trois premières lettres : a, p et r.', 'Rappelle-toi ce que veulent dire les lettres J.-C.'],
   },
   {
     q: 'À quel moment commence l’ère chrétienne ?',
     a: 'à la date supposée de la naissance de Jésus-Christ',
     wrong: [
-      {
-        label: 'au couronnement de Charlemagne',
-        why: 'Charlemagne est couronné en 800 : l’ère a déjà commencé.',
-      },
+      { label: 'au couronnement de Charlemagne', why: 'Charlemagne est couronné en 800 : l’ère a déjà commencé.' },
       { label: 'au début de la Révolution', why: 'La Révolution commence en 1789, bien après le début de l’ère.' },
     ],
-    preuve: PREUVES.ere,
-    explain: 'C’est le point de départ du compte des années. Dans la source, « présumée » veut dire supposée.',
     hint: 'Pense à ce que veut dire le mot « chrétienne ».',
+    how: ['Cherche le nom caché dans le mot « chrétienne ».', 'Choisis le point de départ du compte des années.'],
   },
   {
     q: 'Quelle expression veut dire la même chose que « avant Jésus-Christ » ?',
@@ -686,9 +894,8 @@ const FAITS_JC: readonly QcmFait[] = [
       { label: 'de notre ère', why: '« De notre ère » désigne le temps après le point de départ.' },
       { label: 'à notre époque', why: '« À notre époque » veut dire aujourd’hui.' },
     ],
-    preuve: PREUVES.jc,
-    explain: 'On peut dire « avant J.-C. » ou « avant notre ère ».',
     hint: 'Cherche l’expression qui parle du temps d’avant le point de départ.',
+    how: ['Repère le petit mot « avant » dans la question.', 'Choisis l’expression qui garde ce mot.'],
   },
 ];
 
@@ -698,7 +905,28 @@ function datesMelangees(rng: Rng): number[] {
   return rng.shuffle([...avant, ...distinctYears(rng, 2, 100, 200)]);
 }
 
-const siecleAvantForms = (c: number) => siecleForms(c).flatMap((f) => [f, `${f} av. J.-C.`, `${f} avant J.-C.`]);
+/** « 400 avant », « 150 après » : la forme courte des bulles. */
+const court = (y: number) => (y < 0 ? `${-y} avant` : `${y} après`);
+
+/** Écritures justes d’« avant J.-C. » après un nombre ou un siècle. */
+const SUFFIXES_AV = [
+  'av. J.-C.',
+  'av J.-C.',
+  'av. JC',
+  'av JC',
+  'avant J.-C.',
+  'avant JC',
+  'avant Jésus-Christ',
+  'avant notre ère',
+] as const;
+
+const avecAvant = (forms: readonly string[]) => {
+  // Le point final d’« av. J.-C. » est souvent oublié : la réponse reste juste.
+  const suffixes = SUFFIXES_AV.flatMap((s) => (s.endsWith('.') ? [s, s.slice(0, -1)] : [s]));
+  return forms.flatMap((f) => [f, ...suffixes.map((s) => `${f} ${s}`)]);
+};
+
+const siecleAvantForms = (c: number) => avecAvant(ecrituresSiecle(c));
 
 /** Siècles voisins, la confusion classique. */
 const siecleAvantPieges = (c: number, why: string) =>
@@ -706,7 +934,27 @@ const siecleAvantPieges = (c: number, why: string) =>
     [siecle(w), `${w}e`, `${siecle(w)} siècle`, `${siecle(w)} siècle av. J.-C.`].map((t) => [t, why] as const),
   );
 
-const jc1: Generator = (rng) => qcm(rng, rng.pick(FAITS_JC));
+const jc1: Generator = (rng) => {
+  if (rng.int(0, 1) === 0) return fait(rng, rng.pick(FAITS_JC));
+  const year = rng.int(1, 9) * 100;
+  const others = rng.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9].map((x) => x * 100 + 50)).slice(0, 2);
+  const answer = `${year} av. J.-C.`;
+  return {
+    prompt: 'Choisis la date placée avant Jésus-Christ.',
+    ...choice(
+      rng,
+      answer,
+      others.map((y) => ({ label: `${y} apr. J.-C.`, why: '« apr. » veut dire après : cette date est après.' })),
+    ),
+    hint: 'Lis les petites lettres écrites après chaque nombre.',
+    steps: [
+      'Cherche les lettres « av » : elles veulent dire avant.',
+      'Écarte les dates notées « apr ».',
+      retiens(answer),
+    ],
+    targetSeconds: 25,
+  };
+};
 
 const jc2: Generator = (rng) => {
   const dates = datesMelangees(rng);
@@ -721,24 +969,39 @@ const jc2: Generator = (rng) => {
         .map((d) => ({
           label: apresJc(d),
           why:
-            d < 0 ? `${REBOURS} Une autre date est encore plus ancienne.` : 'Une date avant J.-C. est plus ancienne.',
+            d < 0
+              ? 'Avant J.-C., plus le nombre est grand, plus la date est ancienne.'
+              : 'Une date avant J.-C. est plus ancienne.',
         })),
     ),
     hint: 'Regarde d’abord les dates avant J.-C. Elles se comptent à rebours.',
-    steps: [cite(PREUVES.ere), REBOURS, fin(apresJc(oldest))],
+    steps: [
+      'Garde les dates notées « av » : elles sont les plus anciennes.',
+      'Compare leurs nombres : choisis le plus grand, car on compte à rebours.',
+      retiens(apresJc(oldest)),
+    ],
     targetSeconds: 30,
   };
 };
 
 const jc3: Generator = (rng) => {
   const dates = datesMelangees(rng);
-  return ranger(
+  const sorted = [...dates].sort((a, b) => a - b);
+  const q = ranger(
     rng,
     point(`Range ces dates, de la plus ancienne à la plus récente : ${liste(dates.map(apresJc))}`),
     dates.map((d) => ({ label: apresJc(d), t: d })),
     'Place d’abord toutes les dates avant J.-C.',
-    `${cite(PREUVES.ere)}. ${REBOURS} ${DEPART}`,
+    '',
   );
+  return {
+    ...q,
+    steps: [
+      'Place d’abord les dates « avant », du plus grand nombre au plus petit.',
+      'Ajoute ensuite les dates « après », du plus petit au plus grand.',
+      rangeAinsi(sorted.map(court)),
+    ],
+  };
 };
 
 const jc4: Generator = (rng) => {
@@ -747,28 +1010,36 @@ const jc4: Generator = (rng) => {
     const ancien = recent + rng.int(1, 5) * 100 + 50;
     const gap = ancien - recent;
     return saisie(
-      `Sans aide : combien d’années séparent ${ancien} av. J.-C. et ${recent} av. J.-C. ?`,
-      [String(gap), `${gap} ans`],
+      `Calcule : combien d’années séparent ${ancien} av. J.-C. et ${recent} av. J.-C. ?`,
+      ecrituresDuree(gap, 'ans'),
       [
         [String(ancien + recent), 'Les deux dates sont du même côté : on soustrait, on n’ajoute pas.'],
         [String(gap + 100), 'Cent ans de trop : refais la soustraction.'],
         [String(ancien), 'C’est la date elle-même. Cherche la durée entre les deux.'],
       ],
       'Les deux dates sont avant J.-C. Cherche l’écart entre les deux nombres.',
-      [REBOURS, `${ancien} − ${recent} = ${gap}.`, fin(`${gap} ans`)],
+      [
+        'Vérifie que les deux dates sont avant J.-C.',
+        'Soustrais le petit nombre du grand nombre.',
+        `Calcule : ${ancien} − ${recent} = ${gap}.`,
+        retiens(`${gap} ans`),
+      ],
     );
   }
   const year = rng.int(0, 2) === 0 ? rng.int(2, 9) * 100 : rng.int(101, 999);
   const c = centuryOf(year);
   return saisie(
-    `Sans aide : dans quel siècle avant J.-C. se trouve l’année ${year} av. J.-C. ?`,
+    `Trouve le siècle de l’année ${year} av. J.-C. Écris-le.`,
     siecleAvantForms(c),
     siecleAvantPieges(c, 'Ce n’est pas ce siècle. Avant J.-C., le Ier va de 100 à 1, le IIe de 200 à 101.'),
     'Avant J.-C., les siècles se comptent aussi à partir du point de départ.',
     [
-      cite(PREUVES.siecle),
-      `Le ${siecle(c)} siècle av. J.-C. va de ${c * 100} à ${(c - 1) * 100 + 1} av. J.-C.`,
-      fin(`${siecle(c)} siècle av. J.-C.`),
+      'Compte à rebours : le Ier siècle va de 100 à 1.',
+      year % 100 === 0
+        ? `Regarde ${year} : cette année ouvre le siècle numéro ${c}.`
+        : `Efface les deux derniers chiffres de ${year}, puis ajoute 1.`,
+      `Vérifie : le ${siecle(c)} siècle va de ${c * 100} à ${(c - 1) * 100 + 1}.`,
+      retiens(`${siecle(c)} siècle av. J.-C.`),
     ],
   );
 };
@@ -814,51 +1085,63 @@ const jc5: Generator = (rng) => {
     ]),
     credit: CREDIT,
   };
-  const calculAvant = `${maj(avant.nom)} : ${base} + ${d1} = ${av(avant.year)}`;
-  const calculApres = `${maj(apres.nom)} : ${base} − ${d2} = ${av(apres.year)}`;
-  const calculChaine = `${maj(chaine.nom)} : ${avant.year} + ${d3} = ${av(chaine.year)}`;
-  const regle = 'Avant J.-C., « plus tôt » veut dire un nombre plus grand : on ajoute. « Plus tard » : on enlève.';
+  const depart = `Pars de la seule date donnée : ${base}. Pour « avant », ajoute.`;
+  const calculAvant = `Calcule pour ${avant.nom} : ${base} + ${d1} = ${avant.year}.`;
+  const calculChaine = `Calcule pour ${chaine.nom} : ${avant.year} + ${d3} = ${chaine.year}.`;
   const hint = 'Pars de la seule date donnée. Avant J.-C., les années se comptent à rebours.';
   const mode = rng.pick(['annee', 'siecle', 'ranger'] as const);
   if (mode === 'ranger') {
+    const tous = [repere, avant, apres, chaine];
     const q = ranger(
       rng,
       'Lis le texte, puis range ces objets, du plus ancien au plus récent.',
-      [repere, avant, apres, chaine].map((o) => ({ label: maj(o.nom), t: -o.year })),
+      tous.map((o) => ({ label: maj(o.nom), t: -o.year })),
       hint,
-      `${regle} ${point(calculAvant)} ${point(calculApres)} ${point(calculChaine)} ${REBOURS}`,
+      '',
     );
-    return { ...q, figure, targetSeconds: 90 };
+    return {
+      ...q,
+      steps: [
+        depart,
+        `Ajoute : ${base} + ${d1} = ${avant.year}, puis ${avant.year} + ${d3} = ${chaine.year}.`,
+        `Enlève pour « après » : ${base} − ${d2} = ${apres.year}.`,
+        `Range du plus grand nombre au plus petit : **${[...tous]
+          .sort((a, b) => b.year - a.year)
+          .map((o) => maj(o.nom))
+          .join(' → ')}**.`,
+      ],
+      figure,
+      targetSeconds: 90,
+    };
   }
   if (mode === 'annee') {
     const y = chaine.year;
     const q = saisie(
       `Lis le texte, puis réponds. En quelle année avant J.-C. a-t-on fabriqué ${chaine.nom} ?`,
-      [String(y), av(y), `${y} avant J.-C.`],
+      avecAvant([String(y)]),
       [
-        [String(avant.year - d3), regle],
+        [String(avant.year - d3), 'Avant J.-C., « plus tôt » veut dire un nombre plus grand : on ajoute.'],
         [String(avant.year), `C’est la date pour ${avant.nom}. Il reste un calcul.`],
         [String(base + d3), `Tu n’es pas parti du bon objet. Le texte compare avec ${avant.nom}.`],
       ],
       hint,
-      [regle, point(calculAvant), point(calculChaine), fin(av(y))],
+      [depart, calculAvant, calculChaine, retiens(av(y))],
     );
     return { ...q, figure, targetSeconds: 90 };
   }
   const target = rng.pick([avant, chaine]);
   const c = centuryOf(target.year);
+  const calcul = target === chaine ? `Calcule : ${base} + ${d1} + ${d3} = ${target.year}.` : calculAvant;
   const q = saisie(
     `Lis le texte, puis réponds. Dans quel siècle avant J.-C. a-t-on fabriqué ${target.nom} ?`,
     siecleAvantForms(c),
     siecleAvantPieges(c, `Calcule d’abord l’année. Avant J.-C., le Ier siècle va de 100 à 1, le IIe de 200 à 101.`),
     hint,
     [
-      cite(PREUVES.siecle),
-      regle,
-      point(calculAvant),
-      ...(target === chaine ? [point(calculChaine)] : []),
-      `${target.year} av. J.-C. : le ${siecle(c)} siècle av. J.-C. va de ${c * 100} à ${(c - 1) * 100 + 1} av. J.-C.`,
-      fin(`${siecle(c)} siècle av. J.-C.`),
+      depart,
+      calcul,
+      `Trouve le siècle : le ${siecle(c)} va de ${c * 100} à ${(c - 1) * 100 + 1}.`,
+      retiens(`${siecle(c)} siècle av. J.-C.`),
     ],
   );
   return { ...q, figure, targetSeconds: 90 };
@@ -867,7 +1150,7 @@ const jc5: Generator = (rng) => {
 // ——— Notion 4 : ordonner des événements ———
 
 interface Evenement extends Repere {
-  /** Nom court, pour l’énoncé. */
+  /** Nom court, pour l’énoncé et les bulles. */
   readonly court: string;
   /** Date écrite comme dans le programme. */
   readonly date: string;
@@ -920,8 +1203,11 @@ const NAPOLEON: Evenement = {
 export const EVENEMENTS: readonly Evenement[] = [MIGRATIONS, CHUTE, CHARLEMAGNE, LOUIS_IX, REVOLUTION, NAPOLEON];
 
 const dated = (e: Evenement) => `${e.label} (${e.date})`;
+const bref = (e: Evenement) => `${e.court}, ${e.date}`;
+const chrono = (list: readonly Evenement[]) => [...list].sort((a, b) => a.t - b.t);
+const XIII = 'Souviens-toi : le XIIIe siècle va de 1201 à 1300.';
 
-const FAITS_ORDRE: readonly QcmFait[] = [
+const FAITS_ORDRE: readonly FaitSimple[] = [
   {
     q: 'Que veut dire ranger des événements dans l’ordre chronologique ?',
     a: 'les ranger selon le moment où ils arrivent',
@@ -929,15 +1215,24 @@ const FAITS_ORDRE: readonly QcmFait[] = [
       { label: 'les ranger par ordre alphabétique', why: 'L’alphabet range les lettres, pas les moments.' },
       { label: 'les ranger du plus court nom au plus long', why: 'La longueur du nom ne dit rien du temps.' },
     ],
-    preuve: PREUVES.chronologie,
-    explain: 'La chronologie présente les faits les uns après les autres, dans leur ordre.',
     hint: 'Pense au temps qui passe.',
+    how: ['Pense à une histoire : un début, une suite, une fin.', 'Demande-toi ce qui arrive avant et après.'],
+  },
+  {
+    q: 'Quel mot désigne des faits rangés dans l’ordre du temps ?',
+    a: 'une chronologie',
+    wrong: [
+      { label: 'un millénaire', why: 'Un millénaire est une durée de mille ans.' },
+      { label: 'une carte', why: 'Une carte montre des lieux, pas un ordre dans le temps.' },
+    ],
+    hint: 'Pense à des faits placés les uns après les autres.',
+    how: ['Écarte ce qui montre des lieux.', 'Écarte aussi ce qui est seulement une durée.'],
   },
 ];
 
 const premier: Generator = (rng) => {
   const choisis = rng.shuffle([...EVENEMENTS]).slice(0, 3);
-  const [first, ...apres] = [...choisis].sort((a, b) => a.t - b.t) as [Evenement, ...Evenement[]];
+  const [first, ...apres] = chrono(choisis) as [Evenement, ...Evenement[]];
   return {
     prompt: 'Lequel de ces événements arrive en premier ?',
     ...choice(
@@ -946,12 +1241,17 @@ const premier: Generator = (rng) => {
       apres.map((e) => ({ label: dated(e), why: `Cet événement arrive plus tard : ${e.date}.` })),
     ),
     hint: 'Compare les siècles et les années entre parenthèses.',
-    steps: [cite(first.preuve), 'La date la plus ancienne arrive en premier.', fin(dated(first))],
+    steps: [
+      'Lis la date écrite entre parenthèses après chaque événement.',
+      ...(choisis.includes(LOUIS_IX) ? [XIII] : []),
+      'Cherche la date la plus ancienne des trois.',
+      retiens(bref(first)),
+    ],
     targetSeconds: 25,
   };
 };
 
-const ordre1: Generator = (rng) => (rng.int(0, 3) === 0 ? qcm(rng, at(FAITS_ORDRE, 0)) : premier(rng));
+const ordre1: Generator = (rng) => (rng.int(0, 3) === 0 ? fait(rng, rng.pick(FAITS_ORDRE)) : premier(rng));
 
 const ordre2: Generator = (rng) => {
   const i = rng.int(1, 3);
@@ -973,9 +1273,10 @@ const ordre2: Generator = (rng) => {
     ),
     hint: 'Écarte ce qui est avant, puis prends le plus proche.',
     steps: [
-      cite(next.preuve),
-      `On cherche le premier événement qui suit : ${ref.label} (${ref.date}).`,
-      fin(dated(next)),
+      `Repère la date de départ : ${ref.date}.`,
+      'Écarte les événements plus anciens que cette date.',
+      'Garde le plus proche parmi ceux qui restent.',
+      retiens(bref(next)),
     ],
     targetSeconds: 35,
   };
@@ -983,38 +1284,60 @@ const ordre2: Generator = (rng) => {
 
 const ordre3: Generator = (rng) => {
   const choisis = rng.shuffle([...EVENEMENTS]).slice(0, 4);
-  const louis = choisis.includes(LOUIS_IX) ? ' Le XIIIe siècle va de 1201 à 1300.' : '';
-  return ranger(
+  const q = ranger(
     rng,
     `Range du plus ancien au plus récent : ${liste(choisis.map((e) => e.court))}.`,
     choisis.map((e) => ({ label: dated(e), t: e.t })),
     'Lis les dates : un siècle en chiffres romains se compare aux années.',
-    `On range selon les dates.${louis}`,
+    '',
   );
+  return {
+    ...q,
+    steps: [
+      'Lis la date écrite entre parenthèses après chaque événement.',
+      ...(choisis.includes(LOUIS_IX) ? [XIII] : ['Commence par la date la plus ancienne.']),
+      rangeAinsi(chrono(choisis).map((e) => e.court)),
+    ],
+  };
 };
 
 const ordre4: Generator = (rng) => {
   const choisis = rng.shuffle([...EVENEMENTS]).slice(1);
   const noms = liste(choisis.map((e) => e.court));
+  const sorted = chrono(choisis);
   if (rng.int(0, 1) === 0) {
-    return ranger(
+    const q = ranger(
       rng,
       `Sans les dates, remets en ordre : ${noms}.`,
       choisis.map((e) => ({ label: e.label, t: e.t })),
-      'Souviens-toi : les temps anciens, puis les rois, puis la Révolution.',
-      `On retrouve les dates : ${[...choisis]
-        .sort((a, b) => a.t - b.t)
-        .map((e) => e.date)
-        .join(', ')}.`,
+      'Souviens-toi : l’empire romain, puis les rois, puis la Révolution.',
+      '',
     );
+    return {
+      ...q,
+      steps: [
+        'Retrouve de mémoire la date de chaque événement.',
+        `Compare ces dates : ${sorted.map((e) => e.date).join(' ; ')}.`,
+        rangeAinsi(sorted.map((e) => e.court)),
+      ],
+    };
   }
-  return association(
+  const q = association(
     rng,
     `Sans aide, associe chaque événement à sa date : ${noms}.`,
     choisis.map((e) => [e.label, e.date] as const),
     'Commence par les dates dont tu es sûr.',
-    ['Chaque événement a un repère dans le temps.', ...choisis.map((e) => cite(e.preuve))],
+    [],
   );
+  const paires = (list: readonly Evenement[]) => list.map((e) => `${e.court} → ${e.date}`).join(' ; ');
+  return {
+    ...q,
+    steps: [
+      'Commence par les événements dont tu connais bien la date.',
+      `Associe les plus anciens : **${paires(sorted.slice(0, 2))}**.`,
+      `Associe les suivants : **${paires(sorted.slice(2))}**.`,
+    ],
+  };
 };
 
 /** Événements inventés du récit (signalés comme tels). */
@@ -1064,15 +1387,18 @@ const ordre5: Generator = (rng) => {
     'Lis le récit : la guide mélange tout ! Remets les événements dans l’ordre du temps.',
     tous,
     'Retrouve les dates que tu connais. Place ensuite les événements inventés grâce aux indices.',
-    [
-      `Repères à connaître : ${programme.map((e) => `« ${e.label} » ${e.date}`).join(' ; ')}.`,
-      `« ${nomSiecle} » est au ${siecle(c)} siècle. ${bornes(c)} On le place donc ${creuxSiecle.relatif}.`,
-      `« ${nomRelatif} » se place ${creuxRelatif.relatif}.`,
-    ].join(' '),
+    '',
   );
   return {
     ...q,
-    steps: [...programme.map((e) => cite(e.preuve)), ...q.steps],
+    steps: [
+      `Retrouve les dates : ${programme.map((e) => `${e.court} ${e.date}`).join(' ; ')}.`,
+      `Place « ${nomSiecle} » : ${bornes(c)}.`,
+      `Place « ${nomRelatif} » : ${creuxRelatif.relatif}.`,
+      rangeAinsi(
+        [...tous].sort((a, b) => a.t - b.t).map((r) => programme.find((e) => e.label === r.label)?.court ?? r.label),
+      ),
+    ],
     figure: {
       kind: 'document',
       title: 'Le récit dans le désordre',
@@ -1089,53 +1415,94 @@ export const SKILLS: readonly Skill[] = [
   skill(
     'hcm1-siecles-romains',
     'Siècles et chiffres romains',
-    [
-      'Un **siècle** dure cent ans. Son numéro s’écrit en **chiffres romains** : I vaut 1, V vaut 5, X vaut 10.',
-      'Petite lettre après, on ajoute : VI = 6. Petite lettre avant, on enlève : IV = 4.',
-      'Le Ier siècle va de 1 à 100. Le XVIIIe va de 1701 à 1800 : 1789 en fait partie, et 1800 aussi !',
-    ],
-    [
-      PREUVES.siecle,
-      PREUVES.bornes,
-      PREUVES.lettres,
-      PREUVES.quatre,
-      PREUVES.neuf,
-      PREUVES.quatorze,
-      PREUVES.siecleRomain,
-    ],
+    {
+      memo: [
+        'Un **siècle** dure 100 ans ; en **chiffres romains**, I vaut 1, V vaut 5, X vaut 10.',
+        'Ajoute un I placé après (VI = 6), enlève un I placé avant (IV = 4).',
+        'Le Ier siècle va de 1 à 100, le IIe de 101 à 200.',
+      ],
+      sens: {
+        type: 'usage',
+        text: 'Pour lire un siècle dans un livre : son numéro s’écrit le plus souvent en chiffres romains.',
+        source: 'tlfi-siecle',
+        citation:
+          "Quand l'adj. numéral ordinal est écrit en chiffres, il l'est gén. en chiffres romains plutôt qu'en chiffres arabes.",
+      },
+      preuves: [
+        PREUVES.siecle,
+        PREUVES.bornes,
+        PREUVES.lettres,
+        PREUVES.quatre,
+        PREUVES.neuf,
+        PREUVES.quatorze,
+        PREUVES.siecleRomain,
+      ],
+    },
     [siecles1, siecles2, siecles3, siecles4, siecles5],
   ),
   skill(
     'hcm1-frise-chronologique',
     'La frise chronologique',
-    [
-      'La **frise chronologique** est un dessin du temps. On y place des dates, de la plus ancienne à la plus récente.',
-      'Un **siècle** dure 100 ans. Un **millénaire** dure 1 000 ans.',
-      'Pour une durée, soustrais : de 800 à 1800, il y a 1 000 ans.',
-    ],
-    [PREUVES.frise, PREUVES.siecle, PREUVES.millenaire, PREUVES.charlemagne, PREUVES.revolution, PREUVES.napoleon],
+    {
+      memo: [
+        'La **frise chronologique** est un dessin qui montre le temps.',
+        'Sur nos frises, lis de haut en bas : du plus ancien au plus récent.',
+        'Pour une durée, soustrais : un **siècle** vaut 100 ans, un **millénaire** 1 000.',
+      ],
+      sens: {
+        type: 'usage',
+        text: 'En histoire, les frises chronologiques te montrent le temps, à différentes échelles.',
+        source: 'cycle3-2020',
+        citation:
+          'Utiliser des documents donnant à voir une représentation du temps (dont les frises chronologiques), à différentes échelles',
+      },
+      preuves: [
+        PREUVES.frise,
+        PREUVES.siecle,
+        PREUVES.millenaire,
+        PREUVES.charlemagne,
+        PREUVES.revolution,
+        PREUVES.napoleon,
+      ],
+    },
     [frise1, frise2, frise3, frise4, frise5],
   ),
   skill(
     'hcm1-avant-apres-jc',
     'Avant et après J.-C.',
-    [
-      'L’**ère chrétienne** commence à la date supposée de la naissance de Jésus-Christ. C’est le point de départ.',
-      '**J.-C.** veut dire Jésus-Christ. On écrit « av. J.-C. » avant ce point, « apr. J.-C. » après.',
-      'Avant J.-C., on compte à rebours : 500 av. J.-C. est plus ancien que 100 av. J.-C.',
-    ],
-    [PREUVES.ere, PREUVES.jc, PREUVES.siecle, PREUVES.charlemagne, PREUVES.revolution],
+    {
+      memo: [
+        'L’**ère chrétienne** commence à la naissance supposée de Jésus-Christ (**J.-C.**).',
+        'Avant elle, compte à rebours : 500 est plus ancien que 100.',
+        'Après elle, plus le nombre est grand, plus la date est récente.',
+      ],
+      sens: {
+        type: 'savais-tu',
+        text: 'L’ère chrétienne part de la naissance du Christ, mais cette date est seulement présumée !',
+        source: 'academie-ere',
+        citation: 'L’ère chrétienne commence à la date présumée de la naissance du Christ',
+      },
+      preuves: [PREUVES.ere, PREUVES.jc, PREUVES.siecle, PREUVES.charlemagne, PREUVES.revolution],
+    },
     [jc1, jc2, jc3, jc4, jc5],
   ),
   skill(
     'hcm1-ordonner-evenements',
     'Ordonner des événements',
-    [
-      'La **chronologie** range les faits dans l’ordre où ils arrivent. Cherche d’abord leurs dates !',
-      'Un **événement** plus ancien a une date plus petite après J.-C. : 800 vient avant 1789.',
-      'Repères : Charlemagne en 800, Louis IX au XIIIe siècle, la Révolution en 1789, Napoléon empereur en 1804.',
-    ],
-    [PREUVES.ordonner, PREUVES.chronologie, ...EVENEMENTS.map((e) => e.preuve)],
+    {
+      memo: [
+        'La **chronologie** range chaque **événement** dans l’ordre du temps.',
+        'Après J.-C., la plus petite date vient en premier : 800 avant 1789.',
+        'Repères : Charlemagne en 800, Louis IX au XIIIe siècle, la Révolution en 1789.',
+      ],
+      sens: {
+        type: 'metier',
+        text: 'La chronologie est aussi une science : elle cherche les dates des événements de l’histoire.',
+        source: 'academie-chronologie',
+        citation: 'Science qui a pour objet la datation des évènements historiques.',
+      },
+      preuves: [PREUVES.ordonner, PREUVES.chronologie, ...EVENEMENTS.map((e) => e.preuve)],
+    },
     [ordre1, ordre2, ordre3, ordre4, ordre5],
   ),
 ];
