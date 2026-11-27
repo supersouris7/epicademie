@@ -5,7 +5,6 @@ import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
 import { trainingRepo } from '../training/index.ts';
 import { learningRepo } from './learning.repo.ts';
-import { rankingStats, type RankingStats } from './ranking.ts';
 
 /** Profondeur de l'historique lu pour le suivi. */
 const HISTORY_DAYS = 365;
@@ -47,11 +46,6 @@ export function createLearningService({ db, clock, timeZone }: { db: Db; clock: 
         consolidees: c.medals.filter((m) => m.stage === 3).length,
         coffres: c.chests,
       });
-    },
-
-    /** Classement « Se comparer » : chiffres de ces joueurs (famille et amis, choisis par l'appelant). */
-    ranking(ids: readonly string[]): Promise<RankingStats[]> {
-      return rankingStats(db, ids, { today: clock.today(), timeZone, badges: (id) => service.badges(id) });
     },
   };
   return service;

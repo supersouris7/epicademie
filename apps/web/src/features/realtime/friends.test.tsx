@@ -34,14 +34,9 @@ describe('amis', () => {
     expect(screen.queryByRole('button', { name: /Joueurs connectés/ })).not.toBeInTheDocument();
   });
 
-  it('se comparer : classement par niveau, puis cette semaine (toi en avant, ami marqué)', async () => {
-    const { user } = renderApp('/classement');
-    const list = await screen.findByRole('list', { name: 'Classement : Niveau' });
-    const items = await within(list).findAllByRole('listitem');
-    expect(items[0]).toHaveTextContent('Tom');
-    expect(items[1]).toHaveTextContent('Léa (toi)');
-    await user.click(screen.getByRole('tab', { name: 'Cette semaine' }));
-    const week = within(screen.getByRole('list', { name: 'Classement : Cette semaine' })).getAllByRole('listitem');
-    expect(week[0]).toHaveTextContent('Léa (toi)');
+  it('plus aucun classement : ni accès depuis Multijoueur, ni page', async () => {
+    renderApp('/multi');
+    expect(await screen.findByRole('button', { name: 'Mes amis' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Se comparer|Classement/i })).not.toBeInTheDocument();
   });
 });

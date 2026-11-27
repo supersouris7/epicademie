@@ -314,7 +314,7 @@ export async function buildApp(deps: AppDeps): Promise<App> {
       await v1.register(battlesRoutes(battles, owns, billing));
       await v1.register(billingRoutes(billing, config.billing.stripeWebhookSecret));
       await v1.register(inventoryRoutes(shop, owns));
-      await v1.register(friendsRoutes(friends, owns, (ids) => learning.ranking(ids)));
+      await v1.register(friendsRoutes(friends, owns));
       await v1.register(adminRoutes(createAdminService({ db, clock })));
       await v1.register(adminAuthRoutes(adminAuth, sso));
       await v1.register(insightsRoutes(createInsightsService({ db, clock }), () => reporter.recent()));

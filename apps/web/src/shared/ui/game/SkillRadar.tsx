@@ -3,7 +3,7 @@ import { useState } from 'react';
 export interface RadarAxis {
   readonly id: string;
   readonly label: string;
-  /** Part de notions acquises (médaille d'or), de 0 à 1. */
+  /** Part de notions acquises (or ou diamant), de 0 à 1. */
   readonly value: number;
   /** Détail affiché au survol : « 4 notions en or sur 12 ». */
   readonly detail: string;

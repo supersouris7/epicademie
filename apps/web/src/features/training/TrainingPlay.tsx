@@ -147,9 +147,12 @@ function Game(setup: TrainingSetup) {
         screen={s}
         skill={skill}
         gender={profile.gender}
+        epreuve={setup.epreuve === true}
         onPick={act.pick}
         onSubmit={act.submit}
         onNext={act.next}
+        onHelp={act.askHelp}
+        onCloseExplanation={act.closeExplanation}
         onMemo={() => {
           setMemo(true);
           act.reportConfused();

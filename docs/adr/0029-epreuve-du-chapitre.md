@@ -25,7 +25,7 @@ Finir un chapitre en Entraînement ne rapportait rien. Décision du client : « 
   « chapitre » (le coffre habituel d'une série sans faute reste possible).
 - Coffre « chapitre » : rareté légendaire (la meilleure), remis par `grantChest` dans la même
   transaction ; affiché par `ChestReveal` (célébration existante) avec un bandeau « Chapitre validé ! ».
-- Épreuve ratée : pas de coffre ; le bilan donne la notion la plus ratée (`epreuve.weakestSkillId`) avec un
+- Épreuve pas encore réussie : pas de coffre ; le bilan donne la notion à renforcer (`epreuve.weakestSkillId`) avec un
   bouton d'entraînement.
 - Trophées : `GET /profiles/:id/chapter-trophies` ; Mes progrès affiche les chapitres de la classe jouée
   (et ceux déjà validés), grisés tant que l'épreuve n'est pas réussie.

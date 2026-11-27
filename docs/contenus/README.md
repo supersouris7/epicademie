@@ -119,6 +119,21 @@ plusieurs variantes sans audio ou avec une autre langue. Au CM1 et CM2, le bouto
   - 6e et après : plus sérieux, vocabulaire disciplinaire ;
   - 3e : rappels du brevet quand c'est utile.
 
+### Ton « pas encore » (tout texte lu par l'enfant)
+
+- Une réponse fausse n'est qu'un « pas encore » : ni « raté », ni « échec », ni « mauvaise réponse », ni
+  « points faibles ». On dit « notion à renforcer », « pas encore », « Oups ! » et on invite à réessayer.
+- Après une erreur : explication ciblée, puis « Tu veux réessayer une question du même type ? ».
+- Demander un indice ou l'explication n'est **jamais** une erreur. Entraînement : les deux, à tout moment,
+  sans coût. Épreuve du chapitre : indice seulement (explication après la réponse). Boss : indice seulement,
+  attaque un peu moins forte.
+- Médailles de notion : réussite avec aide = or ; sans aide = diamant (« Reviens sans indice pour le
+  diamant ! »). Une médaille gagnée n'est jamais perdue.
+- Accord selon le profil avec `accord()` (« seul » / « seule ») ; genre non renseigné : tournure neutre
+  (« Maîtrisée sans aide »).
+- Comparaison à soi seulement (record personnel, « record à battre ») : aucun classement entre enfants.
+- Contrôle : `apps/web/src/shared/lib/ton.test.ts`.
+
 ## 4. Contrôles automatiques (bloquants en CI)
 
 1. `validate.test.ts` : toutes les notions × 5 niveaux × 20 graines.

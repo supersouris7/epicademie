@@ -6,6 +6,8 @@ import {
   battleXp,
   createBattle,
   itemRefusal,
+  askHint,
+  hintRefusal,
   levelFromXp,
   type BattleDice,
   type BattleState,
@@ -164,6 +166,7 @@ const view = (id: string, b: Battle, inventory: Inventory): BattleView => ({
   turn: b.state.turn,
   shield: b.state.shield,
   hintShown: b.state.hintShown,
+  weakAttack: b.state.weakAttack,
   itemsUsed: b.state.itemsUsed,
   equipped: b.state.equipped,
   question: b.state.question,
@@ -578,6 +581,13 @@ function battleHandlers(ctx: {
       b.state = next.state;
       return { correct, invalid: false, outcome: next.outcome, battle: view(params.id ?? '', b, overview.inventory) };
     },
+    battleHint: ({ params }) => {
+      const b = battleOf(params.id);
+      const refusal = hintRefusal(b.state);
+      if (refusal) throw new FakeError(409, 'CONFLICT', refusal);
+      b.state = askHint(b.state);
+      return view(params.id ?? '', b, overview.inventory);
+    },
     useBattleItem: ({ params, body }) => {
       const b = battleOf(params.id);
       const item = (body as { item: ItemId }).item;
@@ -840,42 +850,6 @@ function friendHandlers(): Partial<Record<keyof typeof api, Handler>> {
       status = 'none';
       return view();
     },
-    ranking: () => [
-      {
-        ...tom,
-        avatar: { style: 'portrait' as const, seed: '03' },
-        me: false,
-        friend: true,
-        level: 4,
-        xp: 900,
-        weekXp: 120,
-        bosses: 2,
-        goldMedals: 1,
-        diamondMedals: 0,
-        goldSkills: 5,
-        badgePoints: 3,
-        chrono: 12,
-        survie: 7,
-      },
-      {
-        id: makeProfile().id,
-        name: 'Léa',
-        hero: 'lina' as const,
-        avatar: { style: 'portrait' as const, seed: '07' },
-        me: true,
-        friend: false,
-        level: 2,
-        xp: 300,
-        weekXp: 200,
-        bosses: 1,
-        goldMedals: 0,
-        diamondMedals: 1,
-        goldSkills: 2,
-        badgePoints: 1,
-        chrono: 20,
-        survie: 3,
-      },
-    ],
     familyFriends: () => friends().map((f) => ({ ...f, profileId: makeProfile().id, profileName: 'Léa' })),
     approveFriend: () => {
       myParentOk = true;

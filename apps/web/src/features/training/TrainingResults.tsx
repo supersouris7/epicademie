@@ -135,7 +135,7 @@ export function Results({
             <div className="min-w-0 flex-1">
               <p className="font-display text-xl tracking-wide">{getSkill(s.skillId)?.title}</p>
               <p className="text-muted font-bold">
-                {s.correct}/{s.answered} · {medalMessage(s)}
+                {s.correct}/{s.answered} · {medalMessage(s, gender)}
               </p>
             </div>
             <MedalBadge medal={medal({ best: s.bestAfter })} size={48} />
@@ -186,13 +186,13 @@ function tone(
   return { mood, pose, message };
 }
 
-/** Coffre de fin de série ; pour une Épreuve du chapitre, sa validation (ou son échec) en plus. */
+/** Coffre de fin de série ; pour une Épreuve du chapitre, sa validation (ou le « pas encore ») en plus. */
 function ChestOutcome({ summary, chapterTitle }: { summary: SessionSummary; chapterTitle: string | undefined }) {
   const result = summary.epreuve;
   if (result && !result.passed) {
     return (
       <p className="cartoon bg-surface-2 p-3 text-center font-bold">
-        Il faut 80 % de bonnes réponses pour valider le chapitre et gagner son coffre : pas de coffre cette fois.
+        Pas encore : avec 80 % de bonnes réponses, le chapitre est validé et son coffre est à toi. Réessaie !
       </p>
     );
   }
@@ -210,7 +210,7 @@ function ChestOutcome({ summary, chapterTitle }: { summary: SessionSummary; chap
   );
 }
 
-/** Épreuve ratée : conseil d'entraînement sur la notion la plus ratée (ou la liste des notions). */
+/** Épreuve pas encore réussie : conseil d'entraînement sur la notion à renforcer. */
 function EpreuveAdvice({
   weakest,
   chapterId,
@@ -225,7 +225,7 @@ function EpreuveAdvice({
     <section className="cartoon bg-surface flex w-full flex-col items-center gap-2 p-3 text-center">
       <p className="text-lg font-bold">
         {skill
-          ? `Conseil de Questy : entraîne-toi sur « ${skill.title} », c’est la notion la plus ratée.`
+          ? `Conseil de Questy : entraîne-toi sur « ${skill.title} », c’est ta notion à renforcer.`
           : 'Conseil de Questy : reprends les notions une par une.'}
       </p>
       {skill && (

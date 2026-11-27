@@ -2,6 +2,10 @@ import { battlePools, check, generate, getChapter, getSkill, skillVersion } from
 import {
   answerBattle,
   applyItem,
+  askHint,
+  BATTLE_XP_PER_HIT,
+  BATTLE_XP_PER_WEAK_HIT,
+  hintRefusal,
   BATTLE_FIRST_WIN_COINS,
   battleXp,
   bossChest,
@@ -71,6 +75,7 @@ const view = (id: string, chapterId: string, s: BattleState, inventory: Inventor
   turn: s.turn,
   shield: s.shield,
   hintShown: s.hintShown,
+  weakAttack: s.weakAttack,
   itemsUsed: s.itemsUsed,
   equipped: s.equipped,
   question: s.question,
@@ -229,8 +234,8 @@ export function createBattlesService({ db, clock, random, onFinished }: BattlesD
           response: a.response,
           correct: result.correct,
           durationMs: a.durationMs,
-          xp: result.correct ? 10 : 0,
-          // L'objet « indice » affiché pour cette question : réussite avec aide.
+          xp: result.correct ? (state.weakAttack ? BATTLE_XP_PER_WEAK_HIT : BATTLE_XP_PER_HIT) : 0,
+          // Indice affiché pour cette question (objet ou demandé) : réussite avec aide.
           hinted: state.hintShown,
           skillVersion: skillVersion(getSkill(q.skillId)),
           diagnosis: result.correct ? null : (result.why ?? null),
@@ -259,6 +264,18 @@ export function createBattlesService({ db, clock, random, onFinished }: BattlesD
       });
     },
 
+    /** Indice sans objet : gratuit en réserve, l'attaque de la question est un peu moins forte. */
+    hint(id: string): Promise<BattleView> {
+      return withBattle(id, async ({ tx, session, state }) => {
+        if (session.finishedAt) throw conflict('Combat terminé');
+        const refusal = hintRefusal(state);
+        if (refusal) throw conflict(refusal);
+        const next = askHint(state);
+        await trainingRepo(tx).updateSession(id, { battle: storeBattle(next) });
+        return view(id, session.chapterId, next, await inventoryRepo(tx).read(session.profileId));
+      });
+    },
+
     /** Fin du combat : XP, pièces, et à la 1re victoire médaille et coffre. */
     async finish(id: string): Promise<BattleSummary> {
       const summary = await withBattle(id, async ({ tx, session, state }): Promise<BattleSummary> => {
@@ -272,7 +289,7 @@ export function createBattlesService({ db, clock, random, onFinished }: BattlesD
         const records = battlesRepo(tx);
         const record = await records.record(profile.id, session.chapterId);
         const firstWin = won && !record;
-        const medal = won ? bossMedal(state.hearts, state.maxHearts, state.itemsUsed) : null;
+        const medal = won ? bossMedal(state.hearts, state.maxHearts, state.itemsUsed + state.hintsAsked) : null;
         const best = bestMedal(record?.bestMedal ?? null, medal) ?? 'bronze';
         const newBest = medal !== null && best !== record?.bestMedal;
         if (won) await records.saveWin(profile.id, session.chapterId, state.hearts, best, clock.now());

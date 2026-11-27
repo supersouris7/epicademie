@@ -15,6 +15,7 @@ const view = (over: Partial<BattleView>): BattleView => ({
   turn: 0,
   shield: false,
   hintShown: false,
+  weakAttack: false,
   itemsUsed: 0,
   equipped: [],
   question: null,

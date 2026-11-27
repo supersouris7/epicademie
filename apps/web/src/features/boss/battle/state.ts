@@ -152,6 +152,7 @@ export type BattleEvent =
   | { readonly type: 'rageAnswered' }
   | { readonly type: 'arrivalSkipped' }
   | { readonly type: 'itemUsed'; readonly item: ItemId; readonly battle: BattleView }
+  | { readonly type: 'hinted'; readonly battle: BattleView }
   | { readonly type: 'heroIdle' }
   | { readonly type: 'finished'; readonly summary: BattleSummary }
   | { readonly type: 'retrySkipped' };
@@ -317,6 +318,8 @@ export function createBattleReducer(voices: BattleVoices) {
           heroFace: e.item === 'indice' ? 'reflexion' : e.item === 'soin' ? 'joie' : s.heroFace,
           heroState: e.item === 'bouclier' ? 'shield' : s.heroState,
         };
+      case 'hinted':
+        return { ...s, battle: e.battle, heroFace: 'reflexion' };
       case 'finished':
         return { ...s, summary: e.summary, retry: !e.summary.won };
       case 'retrySkipped':

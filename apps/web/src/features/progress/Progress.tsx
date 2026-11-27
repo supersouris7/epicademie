@@ -60,7 +60,7 @@ const DOMAIN_SHORT: Record<DomainId, string> = {
 };
 
 function countMedals(ids: readonly string[], states: ReadonlyMap<string, SkillProgress>) {
-  const counts: Record<MedalId, number> = { aucune: 0, bronze: 0, argent: 0, or: 0 };
+  const counts: Record<MedalId, number> = { aucune: 0, bronze: 0, argent: 0, or: 0, diamant: 0 };
   for (const id of ids) counts[medal(states.get(id))]++;
   return counts;
 }
@@ -201,6 +201,22 @@ export function TrophiesPage({ profile }: { readonly profile: Profile }) {
   );
 }
 
+/** Comment se gagne chaque médaille de notion (sa meilleure série). */
+function MedalLegend() {
+  return (
+    <div className="text-muted text-sm font-bold">
+      <p>Ta médaille sur une notion, c’est ta meilleure série :</p>
+      <ul className="list-disc pl-5" aria-label="Légende des médailles">
+        <li>Diamant : tout réussi du premier coup, sans indice ni explication</li>
+        <li>Or : tout réussi, avec de l’aide (notion acquise)</li>
+        <li>Argent : il te reste 1 question à réussir</li>
+        <li>Bronze : il t’en reste 2</li>
+      </ul>
+      <p>Une médaille gagnée reste à toi.</p>
+    </div>
+  );
+}
+
 /** Détail d'une matière : médailles par domaine, chapitre et notion. */
 export function SubjectProgress({ profile }: { readonly profile: Profile }) {
   const enter = useEntrance();
@@ -245,23 +261,21 @@ export function SubjectProgress({ profile }: { readonly profile: Profile }) {
           <span className="bg-danger font-display rounded-full px-3 py-1 text-lg text-white">{due} à revoir</span>
         )}
       </section>
-      <p className="text-muted text-sm font-bold">
-        Médaille d’une notion = sa meilleure série : Or sans faute (notion acquise) · Argent une erreur · Bronze deux
-        erreurs.
-      </p>
+      <MedalLegend />
       <GradeTabs grades={grades} value={grade} own={own} onChange={setGrade} />
 
-      {/* Toile des compétences : part de notions acquises (Or) par domaine de la classe choisie. */}
+      {/* Toile des compétences : part de notions acquises (Or ou Diamant) par domaine de la classe choisie. */}
       <SkillRadar
-        title="Mes compétences (notions en or)"
+        title="Mes compétences (notions en or ou diamant)"
         axes={domains.map((d) => {
           const ids = chapters.filter((c) => c.domain === d).flatMap((c) => c.skills.map((s) => s.id));
-          const gold = countMedals(ids, states).or;
+          const counts = countMedals(ids, states);
+          const gold = counts.or + counts.diamant;
           return {
             id: d,
             label: DOMAIN_SHORT[d],
             value: ids.length ? gold / ids.length : 0,
-            detail: `${gold} notion${gold > 1 ? 's' : ''} en or sur ${ids.length}`,
+            detail: `${gold} notion${gold > 1 ? 's' : ''} en or ou diamant sur ${ids.length}`,
           };
         })}
       />
@@ -307,7 +321,7 @@ export function SubjectProgress({ profile }: { readonly profile: Profile }) {
                     {c.skills.map((s) => {
                       const st = states.get(s.id);
                       const m = medal(st);
-                      const mastery = masteryOf(st);
+                      const mastery = masteryOf(st, profile.gender);
                       const isDue = st?.due != null && st.due <= today;
                       return (
                         <li key={s.id}>

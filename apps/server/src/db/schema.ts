@@ -298,14 +298,14 @@ export const skillStates = pgTable(
     correct: integer('correct').notNull().default(0),
     recent: jsonb('recent').$type<boolean[]>().notNull(),
     maintained: integer('maintained').notNull().default(0),
-    /** Meilleure série (bonnes réponses du 1er coup) : fixe la médaille. */
+    /** Meilleure série (voir `seriesScore` : 6 = sans aide) : fixe la médaille. */
     bestSeries: smallint('best_series').notNull().default(0),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
     primaryKey({ columns: [t.profileId, t.skillId] }),
     check('skill_states_stage_range', sql`${t.stage} between 0 and 3`),
-    check('skill_states_best_range', sql`${t.bestSeries} between 0 and 5`),
+    check('skill_states_best_range', sql`${t.bestSeries} between 0 and 6`),
   ],
 );
 
