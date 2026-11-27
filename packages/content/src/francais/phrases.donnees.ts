@@ -2,6 +2,8 @@
  * Données du chapitre « Types et formes de phrases » (CM1) : faits cités et banques de phrases.
  * Chaque fait porte l'identifiant de sa source (registre `sources.ts`) et sa citation exacte.
  */
+import type { Sens } from '../types.ts';
+
 export interface Fait {
   readonly id: string;
   readonly source: string;
@@ -102,11 +104,87 @@ export const EXCLAMATIVES: readonly string[] = [
   'Quelle chance tu as',
 ];
 
+/** Ordres à la forme négative (niveau 5 des types de phrases). */
+export const IMPERATIVES_NEGATIVES: readonly string[] = [
+  'Ne cours pas dans le couloir',
+  'N’oublie pas ton cartable',
+  'Ne touche pas à ce bouton',
+];
+
+/** Informations neutres : aucune ne porte d’émotion, le point est le seul signe attendu. */
+export const INFORMATIONS: readonly string[] = [
+  'La piscine ouvre à neuf heures',
+  'Mon cahier est dans mon sac',
+  'Le car part à huit heures',
+  'La cantine ouvre à midi',
+  'Mon frère a dix ans',
+  'Le musée ferme le lundi',
+  'Nous avons sport le jeudi',
+  'La classe compte douze tables',
+];
+
+/** Phrases exclamatives dont l’ordre des mots est le seul possible. */
+export const EXCLAMATIVES_A_RANGER: readonly string[] = [
+  'Quel beau dessin',
+  'Comme tu as grandi',
+  'Quelle belle surprise',
+  'Quelle chance tu as',
+  'Comme tu chantes bien',
+  'Quel joli jardin',
+  'Que tu es rapide',
+  'Quelle belle journée',
+];
+
+/** Questions qui commencent comme une exclamation (« Quel », « Que »…). */
+export const FAUSSES_AMIES_QUESTIONS: readonly string[] = [
+  'Quel âge as-tu',
+  'Que fais-tu ce soir',
+  'Quelle heure est-il',
+  'Que cherches-tu',
+  'Quel jour sommes-nous',
+  'Quel livre préfères-tu',
+];
+
+/** Informations qui commencent par « Comme » pour donner une raison. */
+export const FAUSSES_AMIES_RAISONS: readonly string[] = [
+  'Comme il pleut, nous restons ici',
+  'Comme il est tard, je rentre',
+  'Comme il fait froid, je mets un bonnet',
+  'Comme j’ai faim, je prends une pomme',
+];
+
+/** Informations à transformer en exclamation avec « Comme » (réponses justes, signe compris à part). */
+export const A_EXCLAMER: readonly { readonly declarative: string; readonly accepted: readonly string[] }[] = [
+  { declarative: 'Ce gâteau est bon', accepted: ['Comme ce gâteau est bon', 'Comme est bon ce gâteau'] },
+  { declarative: 'Tu as grandi', accepted: ['Comme tu as grandi'] },
+  { declarative: 'Ce film est drôle', accepted: ['Comme ce film est drôle', 'Comme est drôle ce film'] },
+  { declarative: 'Tu chantes bien', accepted: ['Comme tu chantes bien'] },
+  { declarative: 'Ce jardin est joli', accepted: ['Comme ce jardin est joli', 'Comme est joli ce jardin'] },
+  { declarative: 'Il fait chaud', accepted: ['Comme il fait chaud'] },
+  { declarative: 'Tu cours vite', accepted: ['Comme tu cours vite'] },
+];
+
+/** Ordres à mettre à la forme négative avec « ne… pas ». */
+export const ORDRES: readonly { readonly affirmative: string; readonly negative: string }[] = [
+  { affirmative: 'Cours dans le couloir', negative: 'Ne cours pas dans le couloir' },
+  { affirmative: 'Ouvre la porte', negative: 'N’ouvre pas la porte' },
+  { affirmative: 'Touche à ce bouton', negative: 'Ne touche pas à ce bouton' },
+  { affirmative: 'Oublie ton cartable', negative: 'N’oublie pas ton cartable' },
+  { affirmative: 'Parlez pendant le film', negative: 'Ne parlez pas pendant le film' },
+  { affirmative: 'Jette ton papier par terre', negative: 'Ne jette pas ton papier par terre' },
+];
+
 /** Même idée dite de trois façons : déclarative, interrogative (est-ce que ou inversion), impérative. */
 export interface Triplet {
   readonly declarative: string;
   readonly interrogative: string;
   readonly imperative: string;
+  /** Sujet de la phrase déclarative (il disparaît à l’impératif). */
+  readonly sujet: string;
+  /** Ce que devient le verbe dans l’ordre. */
+  readonly verbe: string;
+  /** Forme fautive fréquente (« s » gardé), s’il y en a une. */
+  readonly faute?: string;
 }
 
 export const TRIPLETS: readonly Triplet[] = [
@@ -114,19 +192,45 @@ export const TRIPLETS: readonly Triplet[] = [
     declarative: 'Tu ranges ta chambre',
     interrogative: 'Est-ce que tu ranges ta chambre',
     imperative: 'Range ta chambre',
+    sujet: 'tu',
+    verbe: 'Ici, « ranges » perd son « s » : « Range ».',
+    faute: 'Ranges ta chambre',
   },
-  { declarative: 'Vous écoutez la radio', interrogative: 'Écoutez-vous la radio', imperative: 'Écoutez la radio' },
-  { declarative: 'Tu lis cette histoire', interrogative: 'Lis-tu cette histoire', imperative: 'Lis cette histoire' },
+  {
+    declarative: 'Vous écoutez la radio',
+    interrogative: 'Écoutez-vous la radio',
+    imperative: 'Écoutez la radio',
+    sujet: 'vous',
+    verbe: 'Ici, « écoutez » ne change pas.',
+  },
+  {
+    declarative: 'Tu lis cette histoire',
+    interrogative: 'Lis-tu cette histoire',
+    imperative: 'Lis cette histoire',
+    sujet: 'tu',
+    verbe: 'Ici, « lis » garde son « s ».',
+  },
   {
     declarative: 'Nous partons à huit heures',
     interrogative: 'Partons-nous à huit heures',
     imperative: 'Partons à huit heures',
+    sujet: 'nous',
+    verbe: 'Ici, « partons » ne change pas.',
   },
-  { declarative: 'Tu prends ton manteau', interrogative: 'Prends-tu ton manteau', imperative: 'Prends ton manteau' },
+  {
+    declarative: 'Tu prends ton manteau',
+    interrogative: 'Prends-tu ton manteau',
+    imperative: 'Prends ton manteau',
+    sujet: 'tu',
+    verbe: 'Ici, « prends » garde son « s ».',
+  },
   {
     declarative: 'Tu ouvres la fenêtre',
     interrogative: 'Est-ce que tu ouvres la fenêtre',
     imperative: 'Ouvre la fenêtre',
+    sujet: 'tu',
+    verbe: 'Ici, « ouvres » perd son « s » : « Ouvre ».',
+    faute: 'Ouvres la fenêtre',
   },
 ];
 
@@ -136,43 +240,71 @@ export interface Question3 {
   readonly intonation: string;
   readonly estCeQue: string;
   readonly inversion: string;
+  readonly sujet: string;
+  readonly verbe: string;
 }
 
 export const QUESTIONS: readonly Question3[] = [
-  { declarative: 'Tu viens', intonation: 'Tu viens', estCeQue: 'Est-ce que tu viens', inversion: 'Viens-tu' },
-  { declarative: 'Il mange', intonation: 'Il mange', estCeQue: 'Est-ce qu’il mange', inversion: 'Mange-t-il' },
+  {
+    declarative: 'Tu viens',
+    sujet: 'tu',
+    verbe: 'viens',
+    intonation: 'Tu viens',
+    estCeQue: 'Est-ce que tu viens',
+    inversion: 'Viens-tu',
+  },
+  {
+    declarative: 'Il mange',
+    sujet: 'il',
+    verbe: 'mange',
+    intonation: 'Il mange',
+    estCeQue: 'Est-ce qu’il mange',
+    inversion: 'Mange-t-il',
+  },
   {
     declarative: 'Vous partez',
+    sujet: 'vous',
+    verbe: 'partez',
     intonation: 'Vous partez',
     estCeQue: 'Est-ce que vous partez',
     inversion: 'Partez-vous',
   },
   {
     declarative: 'Elle chante',
+    sujet: 'elle',
+    verbe: 'chante',
     intonation: 'Elle chante',
     estCeQue: 'Est-ce qu’elle chante',
     inversion: 'Chante-t-elle',
   },
   {
     declarative: 'Tu aimes ce livre',
+    sujet: 'tu',
+    verbe: 'aimes',
     intonation: 'Tu aimes ce livre',
     estCeQue: 'Est-ce que tu aimes ce livre',
     inversion: 'Aimes-tu ce livre',
   },
   {
     declarative: 'Ils jouent au ballon',
+    sujet: 'ils',
+    verbe: 'jouent',
     intonation: 'Ils jouent au ballon',
     estCeQue: 'Est-ce qu’ils jouent au ballon',
     inversion: 'Jouent-ils au ballon',
   },
   {
     declarative: 'Nous commençons',
+    sujet: 'nous',
+    verbe: 'commençons',
     intonation: 'Nous commençons',
     estCeQue: 'Est-ce que nous commençons',
     inversion: 'Commençons-nous',
   },
   {
     declarative: 'Elle finit son dessin',
+    sujet: 'elle',
+    verbe: 'finit',
     intonation: 'Elle finit son dessin',
     estCeQue: 'Est-ce qu’elle finit son dessin',
     inversion: 'Finit-elle son dessin',
@@ -182,6 +314,7 @@ export const QUESTIONS: readonly Question3[] = [
 /** Phrase affirmative et ses formes négatives (ne… pas, ne… jamais, ne… plus). */
 export interface Negation {
   readonly affirmative: string;
+  readonly verbe: string;
   readonly pas: string;
   readonly jamais: string;
   readonly plus: string;
@@ -190,116 +323,83 @@ export interface Negation {
 export const NEGATIONS: readonly Negation[] = [
   {
     affirmative: 'Le chien dort',
+    verbe: 'dort',
     pas: 'Le chien ne dort pas',
     jamais: 'Le chien ne dort jamais',
     plus: 'Le chien ne dort plus',
   },
   {
     affirmative: 'Je joue au ballon',
+    verbe: 'joue',
     pas: 'Je ne joue pas au ballon',
     jamais: 'Je ne joue jamais au ballon',
     plus: 'Je ne joue plus au ballon',
   },
   {
     affirmative: 'Nous aimons les carottes',
+    verbe: 'aimons',
     pas: 'Nous n’aimons pas les carottes',
     jamais: 'Nous n’aimons jamais les carottes',
     plus: 'Nous n’aimons plus les carottes',
   },
   {
     affirmative: 'Elle ouvre la fenêtre',
+    verbe: 'ouvre',
     pas: 'Elle n’ouvre pas la fenêtre',
     jamais: 'Elle n’ouvre jamais la fenêtre',
     plus: 'Elle n’ouvre plus la fenêtre',
   },
   {
     affirmative: 'Tu parles anglais',
+    verbe: 'parles',
     pas: 'Tu ne parles pas anglais',
     jamais: 'Tu ne parles jamais anglais',
     plus: 'Tu ne parles plus anglais',
   },
   {
     affirmative: 'Ils finissent leur travail',
+    verbe: 'finissent',
     pas: 'Ils ne finissent pas leur travail',
     jamais: 'Ils ne finissent jamais leur travail',
     plus: 'Ils ne finissent plus leur travail',
   },
 ];
 
-/** Lignes de texte pour le niveau 5 de la forme négative : (ligne, négative ?). */
-export const LIGNES_NEGATION: readonly { readonly text: string; readonly negative: boolean }[] = [
-  { text: 'Je ne vois plus le bateau.', negative: true },
-  { text: 'Nous n’allons jamais au cinéma le lundi.', negative: true },
-  { text: 'Il ne neige pas ici.', negative: true },
-  { text: 'Ne cours pas dans le couloir !', negative: true },
-  { text: 'Elle ne chante plus.', negative: true },
-  { text: 'Le soleil brille.', negative: false },
-  { text: 'Tu connais ce jeu.', negative: false },
-  { text: 'Nous mangeons à midi.', negative: false },
-  { text: 'Range ta chambre.', negative: false },
-  { text: 'Les enfants jouent dans la cour.', negative: false },
-];
-
-/** Compléter une phrase exclamative : début manquant, réponses justes, et erreurs typiques avec leur raison. */
-export interface Amorce {
-  readonly rest: string;
-  readonly accepted: readonly string[];
-  readonly wrong: readonly { readonly text: string; readonly why: string }[];
-}
-
-export const AMORCES: readonly Amorce[] = [
-  {
-    rest: 'ce gâteau est bon !',
-    accepted: ['Comme', 'Que'],
-    wrong: [
-      {
-        text: 'Quel',
-        why: '« Quel » accompagne un nom (Quel beau dessin !). Ici, le mot placé avant « ce gâteau est bon » ne s’accorde avec aucun nom.',
-      },
-      { text: 'Est-ce que', why: '« Est-ce que » sert à poser une question, pas à s’exclamer.' },
-    ],
+/**
+ * « Sens » de chaque notion (README §9) : une phrase montrée à l’enfant et le passage exact qui l’appuie.
+ */
+export const SENS = {
+  types: {
+    type: 'usage',
+    text: 'Reconnaître le type d’une phrase t’aide à comprendre son effet dans un texte.',
+    source: PROGRAMME,
+    citation:
+      'Identifier les trois types de phrases (déclaratif, interrogatif, impératif ou injonctif) et comprendre leurs effets dans un texte simple',
   },
-  {
-    rest: 'belle surprise !',
-    accepted: ['Quelle'],
-    wrong: [
-      { text: 'Quel', why: '« Surprise » est un nom féminin : on écrit Quelle.' },
-      {
-        text: 'Comme',
-        why: '« Comme » s’emploie avec un verbe ou un adjectif, ici le nom « surprise » demande Quelle.',
-      },
-    ],
+  question: {
+    type: 'histoire',
+    text: 'En 1550, un livre de grammaire parlait déjà du point d’interrogation.',
+    source: 'cnrtl-interrogation',
+    citation: "1550 gramm. interrogacion, point d'interrogacion (L. Meigret, Tretté de la gramm. fr.",
   },
-  {
-    rest: 'beau dessin !',
-    accepted: ['Quel'],
-    wrong: [
-      { text: 'Quelle', why: '« Dessin » est un nom masculin : on écrit Quel.' },
-      { text: 'Comme', why: '« Comme » s’emploie avec un verbe ou un adjectif, ici le nom « dessin » demande Quel.' },
-    ],
+  negation: {
+    type: 'savais-tu',
+    text: 'Dans « ne… pas », « pas » vient d’un nom ajouté à « ne » pour le renforcer.',
+    source: 'cnrtl-ne',
+    citation:
+      'Négation ne renforcée par des subst.: ne ... gout(t)e*, ne ... mie*, ne ... mot*, ne ... nient (néant*), ne ... pas*, ne ... point*, ne ... rien*; ces groupes destinés à renforcer la négation totale',
   },
-  {
-    rest: 'tu as grandi !',
-    accepted: ['Comme', 'Que'],
-    wrong: [
-      { text: 'Quel', why: '« Quel » accompagne un nom, or il n’y a pas de nom ici.' },
-      { text: 'Quelle', why: '« Quelle » accompagne un nom féminin, or il n’y a pas de nom ici.' },
-    ],
+  exclamative: {
+    type: 'savais-tu',
+    text: 'Le point d’exclamation s’est aussi appelé « point d’admiration ».',
+    source: 'cnrtl-exclamation',
+    citation: "Synon. vieilli point admiratif (Ac. 1798), point d'admiration (Ac. 1835, 1878)",
   },
-  {
-    rest: 'chance tu as !',
-    accepted: ['Quelle'],
-    wrong: [
-      { text: 'Quel', why: '« Chance » est un nom féminin : on écrit Quelle.' },
-      { text: 'Comme', why: 'Devant le nom « chance », on écrit Quelle.' },
-    ],
+  ponctuation: {
+    type: 'usage',
+    text: 'Quand tu lis à voix haute, tu tiens compte de la ponctuation.',
+    source: PROGRAMME,
+    citation:
+      'Lire à voix haute un texte court, après préparation, sans confondre les graphèmes, même complexes et en tenant compte des marques de ponctuation',
   },
-  {
-    rest: 'ce film est drôle !',
-    accepted: ['Que', 'Comme'],
-    wrong: [
-      { text: 'Quel', why: '« Quel » accompagne un nom, mais ici le mot manquant se place devant « ce film ».' },
-      { text: 'Est-ce que', why: '« Est-ce que » sert à poser une question, pas à s’exclamer.' },
-    ],
-  },
-];
+} as const satisfies Record<string, Sens>;

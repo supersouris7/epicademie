@@ -498,6 +498,7 @@ export const SOURCES: readonly Source[] = [
     textDate: '2026',
     consultedOn: CONSULTED,
   },
+  { ...tlfi('ne', 'ne', 'ne'), consultedOn: '2026-11-27' },
   // Lot fr-cm1-11 (lecture)
   academie('ou', 'où'),
   academie('quand', 'quand'),
