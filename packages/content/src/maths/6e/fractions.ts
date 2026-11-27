@@ -241,13 +241,13 @@ const problemesFractions = S(
     const restPart = d - a;
     const res = (total / d) * restPart;
     return {
-      prompt: `${who} a ${total} billes. Il en donne ${rawFrac(a, d)} à sa sœur. Combien de billes lui reste-t-il ?`,
+      prompt: `${who} a ${total} billes et en donne ${rawFrac(a, d)} à un ami. Combien de billes lui reste-t-il ?`,
       answer: num(res),
       traps: traps(r(res), [[(total / d) * a, `Ça, c’est ce qu’il **donne**. On demande ce qui reste.`]]),
       hint: `Calcule ${rawFrac(a, d)} de ${total}, puis enlève-le.`,
       steps: [
-        `Il donne ${rawFrac(a, d)} de ${total} = ${(total / d) * a} billes.`,
-        `Il lui reste ${total} − ${(total / d) * a} = **${res}** billes.`,
+        `${who} donne ${rawFrac(a, d)} de ${total} = ${(total / d) * a} billes.`,
+        `Il en reste ${total} − ${(total / d) * a} = **${res}** billes.`,
       ],
       targetSeconds: 40,
     };
