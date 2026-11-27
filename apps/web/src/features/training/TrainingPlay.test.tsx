@@ -43,6 +43,17 @@ describe('partie d’entraînement', () => {
     expect(server.calls.some((c) => c.path.endsWith('/finish'))).toBe(false);
   });
 
+  it('« Quitter » : confirmation, puis retour au menu principal', async () => {
+    const { user } = renderApp(PATH);
+    await screen.findByRole('button', { name: ANSWER_KEY });
+    await user.click(screen.getByRole('button', { name: 'Quitter' }));
+    const dialog = screen.getByRole('alertdialog', { name: 'Quitter la série ?' });
+    await user.click(within(dialog).getByRole('button', { name: 'Quitter la série' }));
+    expect(await screen.findByRole('group', { name: 'Mon joueur' })).toBeInTheDocument();
+    // La partie quittée est marquée pour cet onglet : les tests suivants repartent à neuf.
+    sessionStorage.clear();
+  });
+
   it('erreur, indice, 2e essai réussi, puis série complète jusqu’au bilan', { timeout: 90_000 }, async () => {
     const { user, server } = renderApp(PATH);
     expect(await screen.findByRole('progressbar', { name: 'Progression de la série' })).toBeInTheDocument();

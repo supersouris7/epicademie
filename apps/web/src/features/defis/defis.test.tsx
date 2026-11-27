@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { makeProfile } from '../../testing/fakeApi.ts';
 import { renderApp } from '../../testing/renderApp.tsx';
+import * as sound from '../../shared/lib/sound.ts';
 import { PersonalRecord } from './DefiPlay.tsx';
 
 // Tirage figé : la question est toujours « Calcule 3 × 2. » (réponse 6).
@@ -41,7 +43,7 @@ describe('défis', () => {
     // HUD de combat réutilisé : cadre, portrait et jauge segmentée (10 cases) ; record lisible.
     expect(screen.getByRole('progressbar', { name: 'Temps restant' })).toHaveAttribute('aria-valuenow', '100');
     expect(screen.getByText(/^Record \d+$/)).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: 'Arrêter' }));
+    await user.click(screen.getByRole('button', { name: 'Quitter' }));
     expect(await screen.findByRole('heading', { name: /0 points/ })).toBeInTheDocument();
   });
 
@@ -66,13 +68,24 @@ describe('défis', () => {
     expect(await screen.findByText('Calcule 3 × 2.')).toBeInTheDocument();
     await answer(user, '5');
     expect(await screen.findByRole('status')).toHaveTextContent('Oups ! −1 cœur, la série repart');
-    await user.click(screen.getByRole('button', { name: 'Arrêter' }));
+    await user.click(screen.getByRole('button', { name: 'Quitter' }));
     await user.click(await screen.findByRole('button', { name: /Questions à revoir \(1\)/ }));
     const list = screen.getByRole('list', { name: 'Questions à revoir' });
     expect(list).toHaveTextContent('Calcule 3 × 2.');
     expect(list).toHaveTextContent('Ta réponse : 5');
     expect(list).toHaveTextContent('Bonne réponse : 6');
     expect(list).toHaveTextContent('Tu veux réessayer une question du même type ?');
+  });
+
+  it.each([true, false])('Survie, vie perdue : son de dégât (effets sonores : %s)', async (soundOn) => {
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+    const play = vi.spyOn(sound, 'playSound');
+    const enable = vi.spyOn(sound, 'setSoundEnabled');
+    const { user } = renderApp('/partie/defi/survie/maths', { ...GOLD, profiles: [makeProfile({ soundOn })] });
+    await user.click(await screen.findByRole('button', { name: /C’est parti/ }));
+    await answer(user, '5');
+    expect(play).toHaveBeenCalledWith('hurt');
+    expect(enable).toHaveBeenLastCalledWith(soundOn);
   });
 
   it.each([

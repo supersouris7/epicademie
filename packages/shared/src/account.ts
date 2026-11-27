@@ -88,6 +88,8 @@ export const AuthOptionsSchema = z.object({
   passwordMinLength: z.number().int(),
   /** Plateforme de test : pas d'e-mail, parcours élève autonome masqué, « mot de passe oublié » = consigne. */
   recette: z.boolean(),
+  /** Déconnexion du portail placé devant la plateforme, à enchaîner après celle de l'appareil. */
+  portalLogoutUrl: z.url().optional(),
 });
 
 export const PasswordForgotSchema = z.object({ email: EmailSchema });

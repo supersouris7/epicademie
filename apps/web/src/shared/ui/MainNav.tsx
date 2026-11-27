@@ -16,7 +16,7 @@ const ITEMS = [
 
 /**
  * Barre du haut des écrans principaux, figée, au style du HUD de combat (même cadre, barre segmentée inclinée) : le joueur en bref (avatar, prénom, niveau,
- * pièces) et les cinq onglets. Sur téléphone, deux lignes ; à partir de la tablette en paysage, une seule.
+ * pièces) et les cinq onglets. Sur téléphone, le joueur puis les onglets (icônes seules) ; à partir de la tablette en paysage, une ligne.
  */
 export function MainNav({ profile }: { readonly profile: Profile }) {
   const navigate = useNavigate();
@@ -26,43 +26,49 @@ export function MainNav({ profile }: { readonly profile: Profile }) {
     <div className="sticky top-0 z-40 -mx-4 px-4 pt-2 pb-2 sm:-mx-6 sm:px-6">
       <div className={`${HUD_FRAME} flex flex-wrap items-center gap-x-3 gap-y-1.5 p-1.5 lg:flex-nowrap`}>
         {/* Le joueur : toucher l'avatar pour changer de joueur. */}
-        <div className="flex min-w-0 flex-1 items-center gap-2 pl-1" aria-label="Mon joueur" role="group">
+        <div
+          className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1 pl-1"
+          aria-label="Mon joueur"
+          role="group"
+        >
           <button type="button" onClick={() => void navigate('/')} aria-label="Changer de joueur" className="shrink-0">
             <CharacterAvatar avatar={profile.avatar} size={44} />
           </button>
-          {/* Avatar et pseudo à gauche ; niveau, barre d'XP, pièces et rubis collés à droite. */}
-          <span className="font-display text-toon min-w-0 shrink truncate text-lg leading-tight tracking-wide">
+          {/* Avatar et pseudo (jamais tronqué) à gauche ; niveau, barre d'XP, pièces et rubis à droite,
+              sur une seconde ligne seulement quand la place manque. */}
+          <span className="font-display text-toon max-w-[calc(100%-3.5rem)] text-lg leading-tight tracking-wide break-words">
             {profile.name}
           </span>
-          <span className="flex-1" />
-          <span className="font-display text-toon shrink-0 text-sm text-[var(--gold)] italic">Niv. {level}</span>
-          <span className="w-20 shrink-0 sm:w-40">
-            <HudBar
-              side="right"
-              kind="xp"
-              role="progressbar"
-              value={xpInLevel}
-              max={xpForNext}
-              segments={10}
-              label={`Niveau ${level}, ${xpInLevel} XP sur ${xpForNext}`}
-            />
-          </span>
-          <span
-            className="font-display text-toon flex shrink-0 items-center gap-1 pr-1 text-lg"
-            role="status"
-            aria-label={`${profile.coins} pièces`}
-          >
-            <GameIcon id="icons-resources-coin" size={26} />
-            {profile.coins.toLocaleString('fr-FR')}
-          </span>
-          <span
-            className="font-display text-toon flex shrink-0 items-center gap-1 pr-1 text-lg"
-            aria-label={`${profile.rubies} rubis`}
-          >
-            <GameIcon id="icons-resources-gem" size={24} />
-            {profile.rubies.toLocaleString('fr-FR')}
-          </span>
-          <GeneralReportButton />
+          <div className="ml-auto flex items-center gap-2">
+            <span className="font-display text-toon shrink-0 text-sm text-[var(--gold)] italic">Niv. {level}</span>
+            <span className="w-20 shrink-0 sm:w-40">
+              <HudBar
+                side="right"
+                kind="xp"
+                role="progressbar"
+                value={xpInLevel}
+                max={xpForNext}
+                segments={10}
+                label={`Niveau ${level}, ${xpInLevel} XP sur ${xpForNext}`}
+              />
+            </span>
+            <span
+              className="font-display text-toon flex shrink-0 items-center gap-1 pr-1 text-lg"
+              role="status"
+              aria-label={`${profile.coins} pièces`}
+            >
+              <GameIcon id="icons-resources-coin" size={26} />
+              {profile.coins.toLocaleString('fr-FR')}
+            </span>
+            <span
+              className="font-display text-toon flex shrink-0 items-center gap-1 pr-1 text-lg"
+              aria-label={`${profile.rubies} rubis`}
+            >
+              <GameIcon id="icons-resources-gem" size={24} />
+              {profile.rubies.toLocaleString('fr-FR')}
+            </span>
+            <GeneralReportButton />
+          </div>
         </div>
 
         <nav aria-label="Menu principal" className="w-full lg:w-auto">

@@ -51,6 +51,10 @@ test('Plusieurs joueurs : connectés, message, profil déjà ouvert refusé, ar�
   await tom.getByRole('alert').getByRole('button', { name: 'J’y vais !' }).click();
   await expect(tom).toHaveURL(/arene/);
   await lea.getByRole('button', { name: 'Lancer le combat' }).click();
+  // Duel : « Quitter » en icône, en haut à droite comme dans les autres modes.
+  const quit = (await lea.getByRole('button', { name: 'Quitter', exact: true }).boundingBox())!;
+  expect(quit.width).toBeGreaterThanOrEqual(44);
+  expect(Math.round(quit.y)).toBe(18);
 
   // Chacun répond à son tour : Léa juste, Tom faux ; Léa gagne.
   const view = async (page: Page) =>

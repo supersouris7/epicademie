@@ -32,6 +32,8 @@ services:
       DATABASE_URL: postgres://questeo:${POSTGRES_PASSWORD}@db:5432/questeo
       # La configuration est validée aussi ici : mêmes règles de production que le serveur.
       APP_ENV: ${APP_ENV:-}
+      # Portail de connexion placé devant la plateforme : sa page de déconnexion (facultatif).
+      PORTAL_LOGOUT_URL: ${PORTAL_LOGOUT_URL:-}
       BREVO_API_KEY: ${BREVO_API_KEY:-}
       MAIL_FROM: ${MAIL_FROM:-}
     depends_on:
