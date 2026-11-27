@@ -148,31 +148,21 @@ const compose = (mot: string, citation: string, source: string = mot): MotType =
   type: 'composé',
   faitId: acad(source, citation, `compose-${slug(mot)}`),
 });
-/**
- * Mot simple : « saison » est donné comme tel par l’article « simple » ; pour les autres, l’étymologie de leur article
- * montre un mot venu tout entier du latin, à lire avec la définition « def-simple ».
- */
-const simple = (mot: string, citation: string, article: string = mot): MotType => ({
-  mot,
-  type: 'simple',
-  faitId: acad(article, citation, `simple-${slug(mot)}`),
-});
-
 export const MOTS_TYPES: readonly MotType[] = [
   compose('porte-monnaie', 'Composé de porte III et de monnaie.'),
   compose('porte-clefs', 'Composé de porte III et de clef ou clé, au pluriel.'),
   compose('passe-temps', LISTE_COMPOSES, 'composé'),
   compose('château fort', LISTE_COMPOSES, 'composé'),
   compose('plate-forme', LISTE_COMPOSES, 'composé'),
-  simple(
-    'saison',
-    'Mot simple, qui est formé d’un seul terme. « Saison » est un mot simple, « arrière-saison », un mot composé.',
-    'simple',
-  ),
-  simple('monnaie', 'Emprunté du latin moneta'),
-  simple('clef', 'Du latin classique clavem, accusatif de clavis, « clef, loquet, barre ».'),
-  simple('pluie', 'Issu du latin pluvia, de même sens'),
-  simple('fleuve', 'Emprunté du latin fluvius, de même sens'),
+  {
+    mot: 'saison',
+    type: 'simple',
+    faitId: acad(
+      'simple',
+      'Mot simple, qui est formé d’un seul terme. « Saison » est un mot simple, « arrière-saison », un mot composé.',
+      'simple-saison',
+    ),
+  },
 ];
 
 export interface PhraseConstruite {
@@ -331,6 +321,7 @@ export const ENTREES: readonly Entree[] = [
       'augmenter',
       'accroître',
       'amplifier',
+      'accentuer',
     ),
     phrase: 'Le prix va {}.',
   },

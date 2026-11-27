@@ -477,13 +477,23 @@ function memeMotDeuxPhrases(f: Figure): QuestionDraft {
 
 const ecrituresDe = (f: Figure) => [...new Set([f.forme, f.mot])];
 
-function motFigure(f: Figure): QuestionDraft {
-  const phrase = enClair(f, f.figure);
-  return ecrire(ecrituresDe(f), [[f.autre, `« ${f.autre} » est employé au sens propre.`]], {
-    prompt: `Écris le mot employé au sens figuré dans cette phrase : ${phrase}`,
-    hint: 'Cherche le mot qui n’est pas vrai mot à mot.',
-    steps: [DEF_FIGURE, expliquer(f), `Écris le mot : **${f.forme}**.`],
-  });
+/** Sans phrase modèle au sens propre : une définition, puis une seule phrase au sens figuré à compléter. */
+function completerImage(f: Figure): QuestionDraft {
+  const pieges: (readonly [string, string])[] = estVerbe(f)
+    ? [[f.mot, 'Tu as écrit l’infinitif. La phrase demande le verbe conjugué.']]
+    : [];
+  return {
+    ...ecrire([f.forme], pieges, {
+      prompt: `Au sens propre, le mot cherché veut dire « ${f.sensPropre} ». Écris-le pour compléter la phrase au sens figuré. ${initiale(f.forme)}`,
+      hint: 'Pars du sens propre, puis cherche l’image dans la phrase.',
+      steps: [
+        DEF_FIGURE,
+        `Pense à un mot qui veut dire « ${f.sensPropre} ». Ici, il fait image : « ${f.sensFigure} ».`,
+        `Écris le mot : **${f.forme}**.`,
+      ],
+    }),
+    figure: document('Une phrase imagée', [remplir(f.contexte, '…')]),
+  };
 }
 
 function figureDraft(rng: Rng, level: Level): QuestionDraft {
@@ -495,7 +505,7 @@ function figureDraft(rng: Rng, level: Level): QuestionDraft {
     case 3:
       return memeMotDeuxPhrases(rng.pick(FIGURES));
     case 4:
-      return motFigure(rng.pick(FIGURES));
+      return completerImage(rng.pick(FIGURES));
     default:
       return lignesAEcrire(
         {

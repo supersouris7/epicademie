@@ -13,6 +13,7 @@ import {
   ENTREES,
   FAITS_VOCABULAIRE_6E,
   FIGURES,
+  MOTS_TYPES,
   PHRASES_CONSTRUITES,
   POLYSEMES,
   TERMES,
@@ -211,10 +212,31 @@ describe('correction des réponses', () => {
     expect(check(q, saisie('habileté')).why).toContain('nom');
   });
 
-  it('sens figuré : le mot ou son infinitif est accepté', () => {
-    const q = trouve('f6-sens-propre-figure', 4, 'roman');
-    for (const mot of ['dévore', 'dévorer']) expect(check(q, saisie(mot)).correct).toBe(true);
-    expect(check(q, saisie('roman')).why).toContain('propre');
+  it('sens figuré N4 : le mot à écrire n’est montré ni dans l’énoncé, ni dans la phrase, ni dans l’indice', () => {
+    for (const q of tirages('f6-sens-propre-figure', 4)) {
+      if (q.answer.kind !== 'text' || q.figure?.kind !== 'document') throw new Error('forme inattendue');
+      expect(q.figure.lines).toHaveLength(1);
+      expect(q.figure.lines[0], q.prompt).toContain('…');
+      const visibles = [q.prompt.split(' Il commence par')[0], q.hint, ...q.figure.lines].join(' ');
+      const mots = visibles.toLowerCase().split(/[^\p{L}]+/u);
+      for (const juste of q.answer.accepted) expect(mots, q.prompt).not.toContain(juste);
+    }
+  });
+
+  it('sens figuré N4 : le verbe est attendu conjugué, l’infinitif est expliqué', () => {
+    const q = trouve('f6-sens-propre-figure', 4, 'manger en déchirant');
+    expect(check(q, saisie('dévore')).correct).toBe(true);
+    expect(check(q, saisie('dévorer')).why).toContain('conjugué');
+  });
+
+  it('antonyme de « diminuer » : « accentuer », cité par la source, est accepté', () => {
+    const q = trouve('f6-synonymes-antonymes', 3, 'antonyme du verbe « diminuer »');
+    for (const mot of ['augmenter', 'accentuer']) expect(check(q, saisie(mot)).correct, mot).toBe(true);
+  });
+
+  it('mots simples : seuls ceux que la source dit simples', () => {
+    for (const m of MOTS_TYPES.filter((x) => x.type === 'simple'))
+      expect(faitVocabulaire6e(m.faitId).citation, m.mot).toMatch(new RegExp(`« ${m.mot} » est un mot simple`, 'i'));
   });
 
   it('champ lexical : le thème se nomme avec ou sans article', () => {
