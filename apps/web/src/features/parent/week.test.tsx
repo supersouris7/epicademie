@@ -38,7 +38,11 @@ describe('la semaine en mots', () => {
     for (const a of PARENT_ADVICE) expect(adviceText(a, 'Léa', 'fille')).toMatch(/Léa|l’effort/);
     expect(adviceText('perseverance', 'Léa', 'fille')).toContain('Léa est revenue sur');
     expect(adviceText('perseverance', 'Tom', 'garcon')).toContain('Tom est revenu sur');
-    expect(adviceText('perseverance', 'Sam', null)).toContain('Sam a repris');
+    expect(adviceText('perseverance', 'Sam', null)).toContain(
+      'Sam a repris une notion qui n’était pas réussie du premier coup.',
+    );
+    expect(adviceText('rassurer', 'Sam', null)).toContain('il est normal de douter quand on apprend');
+    expect(adviceText('proposer', 'Sam', null)).toContain('Quelques minutes suffisent.');
   });
 
   it('tendance du ressenti : toujours par rapport à l’enfant lui-même', () => {

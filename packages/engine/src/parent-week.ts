@@ -55,7 +55,8 @@ export function weeklyAdvice({ effort, gains }: Journey, feelings: ParentWeek['f
   if (effort.series === 0 && effort.days === 0) return 'proposer';
   if (needsComfort(feelings)) return 'rassurer';
   if (effort.pauseDays !== null) return 'reprise';
-  if (effort.reworked.length > 0) return 'perseverance';
+  // Un progrès suppose une notion retravaillée : testé après, il ne serait jamais choisi.
   if (gains.length > 0) return 'progres';
+  if (effort.reworked.length > 0) return 'perseverance';
   return effort.days >= REGULAR_DAYS ? 'regularite' : 'effort';
 }

@@ -26,10 +26,10 @@ export function effortLines({ series, days, reworked, pauseDays }: ParentWeek['e
 export function adviceText(advice: ParentAdvice, name: string, gender: Gender | null): string {
   const back = accord(gender, 'est revenu sur', 'est revenue sur', 'a repris');
   const texts: Record<ParentAdvice, string> = {
-    proposer: `Pas de séance ces 7 derniers jours : proposez à ${name} un court moment ensemble, sans reproche. C’est la reprise qui compte.`,
-    rassurer: `Rassurez ${name} : « pas encore » fait partie de l’apprentissage. Demandez ce qui l’aiderait, puis saluez chaque essai.`,
+    proposer: `Pas de séance ces 7 derniers jours : proposez à ${name} un court moment ensemble, sans reproche. Quelques minutes suffisent.`,
+    rassurer: `Rassurez ${name} : il est normal de douter quand on apprend. Demandez ce qui l’aiderait, puis saluez chaque essai.`,
     reprise: `${name} a repris après une pause : dites que cela vous fait plaisir, sans revenir sur les jours sans séance.`,
-    perseverance: `Félicitez l’effort plutôt que la note : ${name} ${back} une notion pas encore réussie.`,
+    perseverance: `Félicitez l’effort plutôt que la note : ${name} ${back} une notion qui n’était pas réussie du premier coup.`,
     progres: `Demandez à ${name} de vous expliquer une notion qui progresse : votre intérêt met en valeur le chemin parcouru.`,
     regularite: `Saluez la régularité de ${name} : revenir plusieurs jours dans la semaine est un bel effort.`,
     effort: `Félicitez l’effort plutôt que la note : demandez à ${name} ce qui a été essayé cette semaine.`,

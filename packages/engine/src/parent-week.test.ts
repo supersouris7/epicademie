@@ -1,15 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import type { Feeling, Journey } from '@epicademie/shared';
+import type { Feeling } from '@epicademie/shared';
+import { journey } from './journey.ts';
+import type { AnswerFact } from './learning.ts';
 import { feelingSummary, weeklyAdvice, type FeelingFact } from './parent-week.ts';
 
 const TODAY = '2026-11-20';
 const on = (day: string, ...feelings: Feeling[]): FeelingFact[] => feelings.map((feeling) => ({ day, feeling }));
 
-const journey = (effort: Partial<Journey['effort']> = {}, gains: Journey['gains'] = []): Journey => ({
-  today: TODAY,
-  gains,
-  effort: { series: 2, days: 1, reworked: [], pauseDays: null, ...effort },
-});
 const calm = feelingSummary([], TODAY);
 
 describe('ressenti agrégé', () => {
@@ -40,30 +37,63 @@ describe('ressenti agrégé', () => {
 });
 
 describe('conseil de la semaine', () => {
-  const gain = {
-    skillId: 'm5-tables',
-    before: { day: '2026-11-01', correct: 1, answered: 4 },
-    now: { day: TODAY, correct: 3, answered: 4 },
-  };
+  /** `right` réponses justes sur `total` pour une notion, le même jour. */
+  const answers = (day: string, right: number, total: number): AnswerFact[] =>
+    Array.from({ length: total }, (_, i) => ({
+      skillId: 'm5-tables',
+      attempt: 1,
+      correct: i < right,
+      hinted: false,
+      collective: false,
+      at: `${day}T10:00:0${i}.000Z`,
+      day,
+      mode: 'entrainement',
+      diagnosis: null,
+    }));
+  /** La semaine telle que la calcule le progrès personnel, à partir des réponses. */
+  const weekOf = (...facts: AnswerFact[][]) => journey({ facts: facts.flat(), seriesDays: [], today: TODAY });
   const low = feelingSummary(on(TODAY, 1, 1, 3), TODAY);
+  // Hausse de la réussite sans pause : avant (13/11), puis cette semaine (15/11).
+  const progress = weekOf(answers('2026-11-13', 1, 4), answers('2026-11-15', 3, 4));
+  // Même hausse après 19 jours sans séance.
+  const back = weekOf(answers('2026-11-01', 1, 4), answers(TODAY, 3, 4));
 
-  it('aucune séance : proposer un moment, quel que soit le reste', () => {
-    expect(weeklyAdvice(journey({ series: 0, days: 0 }), low)).toBe('proposer');
+  it('proposer : aucune séance ces 7 jours, quel que soit le ressenti', () => {
+    expect(weeklyAdvice(weekOf(), calm)).toBe('proposer');
+    expect(weeklyAdvice(weekOf(answers('2026-11-01', 1, 4)), low)).toBe('proposer');
   });
 
-  it('priorités : rassurer, reprise, persévérance, progrès, régularité, effort', () => {
-    const all = { pauseDays: 9, reworked: ['m5-tables'], days: 4 };
-    expect(weeklyAdvice(journey(all, [gain]), low)).toBe('rassurer');
-    expect(weeklyAdvice(journey(all, [gain]), calm)).toBe('reprise');
-    expect(weeklyAdvice(journey({ ...all, pauseDays: null }, [gain]), calm)).toBe('perseverance');
-    expect(weeklyAdvice(journey({ days: 4 }, [gain]), calm)).toBe('progres');
-    expect(weeklyAdvice(journey({ days: 3 }), calm)).toBe('regularite');
-    expect(weeklyAdvice(journey({ days: 2 }), calm)).toBe('effort');
+  it('rassurer : passe avant la reprise et le progrès', () => {
+    expect(weeklyAdvice(back, low)).toBe('rassurer');
+  });
+
+  it('reprise : après une pause, avant le progrès', () => {
+    expect(back.effort.pauseDays).toBe(19);
+    expect(back.gains).toHaveLength(1);
+    expect(weeklyAdvice(back, calm)).toBe('reprise');
+  });
+
+  it('progrès : la réussite monte, avant la persévérance', () => {
+    expect(progress.effort).toMatchObject({ reworked: ['m5-tables'], pauseDays: null });
+    expect(weeklyAdvice(progress, calm)).toBe('progres');
+  });
+
+  it('persévérance : notion retravaillée sans hausse mesurée, avant la régularité', () => {
+    const week = weekOf(answers('2026-11-15', 0, 1), answers('2026-11-17', 1, 1), answers('2026-11-19', 1, 1));
+    expect(week).toMatchObject({ gains: [], effort: { days: 3, reworked: ['m5-tables'] } });
+    expect(weeklyAdvice(week, calm)).toBe('perseverance');
+  });
+
+  it('régularité à partir de 3 jours, effort en dessous', () => {
+    const days = ['2026-11-15', '2026-11-17', '2026-11-19'].map((day) => answers(day, 2, 2));
+    expect(weeklyAdvice(weekOf(...days), calm)).toBe('regularite');
+    expect(weeklyAdvice(weekOf(...days.slice(1)), calm)).toBe('effort');
   });
 
   it('un seul « pas encore » isolé ne suffit pas ; un recul du ressenti suffit', () => {
-    expect(weeklyAdvice(journey(), feelingSummary(on(TODAY, 1), TODAY))).toBe('effort');
+    const week = weekOf(answers(TODAY, 2, 2));
+    expect(weeklyAdvice(week, feelingSummary(on(TODAY, 1), TODAY))).toBe('effort');
     const down = feelingSummary([...on(TODAY, 2, 2, 2), ...on('2026-11-01', 3, 3, 3)], TODAY);
-    expect(weeklyAdvice(journey(), down)).toBe('rassurer');
+    expect(weeklyAdvice(week, down)).toBe('rassurer');
   });
 });
