@@ -38,6 +38,8 @@ const cods = ENTREES.filter((e) => e.type === 'cod');
 const cois = ENTREES.filter((e) => e.type === 'coi');
 /** Les phrases dont le groupe circonstanciel dit où : on peut leur ajouter un repère de temps ou « souvent ». */
 const deLieu = ENTREES.flatMap((e) => (e.avant ? [{ ...e, avant: e.avant }] : []));
+const deLieuCod = deLieu.filter((e) => e.type === 'cod');
+const deLieuCoi = deLieu.filter((e) => e.type === 'coi');
 /** Le groupe circonstanciel à la fin ou déplacé au début (tirage). */
 const avecCirc = (rng: Rng, e: Entree): string => (rng.int(0, 1) === 0 ? base(e) : devant(e));
 
@@ -362,8 +364,10 @@ function circonstancielsDraft(rng: Rng, level: Level): QuestionDraft {
         ],
       };
     }
-    case 3: {
-      const e = rng.pick(deLieu);
+    case 3:
+    case 4: {
+      // Seule difficulté ajoutée au niveau 4 : le complément d’objet commence par « à » ou « de », comme un détail.
+      const e = rng.pick(level === 3 ? deLieuCod : deLieuCoi);
       const avant = rng.pick(e.avant);
       return {
         prompt: `Écris le groupe circonstanciel qui est à la fin de cette phrase : « ${deux(e, avant)} »`,
@@ -380,28 +384,6 @@ function circonstancielsDraft(rng: Rng, level: Level): QuestionDraft {
         steps: [
           `Repère « ${e.obj} » : ce groupe complète le verbe.`,
           'Regarde ce qui vient après lui, jusqu’au point.',
-          `Écris **${e.circ}**.`,
-        ],
-      };
-    }
-    case 4: {
-      // Seule difficulté ajoutée : un complément d’objet qui commence par « à » ou « de » ressemble à un détail.
-      const e = rng.pick(cois);
-      const s = avecCirc(rng, e);
-      return {
-        prompt: `Attention au piège ! Écris le groupe circonstanciel : « ${s} »`,
-        answer: { kind: 'text', accepted: groupeAccepte(e.circ) },
-        traps: [
-          textTrap(
-            e.obj,
-            `« ${e.obj} » commence par « ${e.prep ?? 'à'} », mais il complète le verbe : c’est un complément d’objet.`,
-          ),
-          textTrap(e.gs, whySujet(e)),
-        ],
-        hint: 'Un petit mot comme « à » ne suffit pas. Essaie de déplacer chaque groupe.',
-        steps: [
-          `Garde « ${e.obj} » avec le verbe « ${e.verbe} ».`,
-          `Essaie de déplacer l’autre groupe : « ${devant(e)} »`,
           `Écris **${e.circ}**.`,
         ],
       };

@@ -5,7 +5,7 @@ import { analyzeSkill } from '../lisibilite.ts';
 import { sensIssues } from '../sens.ts';
 import { getSource } from '../sources.ts';
 import { FCM1_COMPLEMENTS } from './complements.ts';
-import { ENTREES, FAITS_COMPL, MANIPS, base, devant, resultat } from './complements.donnees.ts';
+import { ENTREES, FAITS_COMPL, MANIPS, base, deux, devant, resultat } from './complements.donnees.ts';
 
 const skills = FCM1_COMPLEMENTS;
 
@@ -211,13 +211,18 @@ describe('repasse : explications, sens et saisies', () => {
     expect(vues.size).toBe(skills.length);
   });
 
-  it('groupes circonstanciels, N4 : le complément d’objet commence toujours par « à » ou « de »', () => {
-    const cois = ENTREES.filter((e) => e.type === 'coi');
-    for (const q of tirages('fcm1-groupes-circonstanciels', 4))
-      expect(
-        cois.some((e) => q.prompt.includes(base(e)) || q.prompt.includes(devant(e))),
-        q.prompt,
-      ).toBe(true);
+  it('groupes circonstanciels, N4 : la phrase du N3, avec un complément d’objet en « à » ou « de », sans aide', () => {
+    const phrases = (type: 'cod' | 'coi') =>
+      ENTREES.filter((e) => e.type === type).flatMap((e) => (e.avant ?? []).map((a) => deux(e, a)));
+    for (const [level, type] of [
+      [3, 'cod'],
+      [4, 'coi'],
+    ] as const)
+      for (const q of tirages('fcm1-groupes-circonstanciels', level)) {
+        const phrase = phrases(type).find((p) => q.prompt.includes(p));
+        expect(q.prompt).toBe(`Écris le groupe circonstanciel qui est à la fin de cette phrase : « ${phrase} »`);
+        expect(q.hint).toBe('Trouve le complément d’objet. Regarde ce qui vient après lui.');
+      }
   });
 
   it('au niveau 5, chaque erreur de comptage typique garde son explication', () => {
