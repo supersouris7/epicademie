@@ -220,6 +220,31 @@ ou des textes écrits pour l'exercice.
 - **Aperçu de relecture** : `node apps/server/scripts/apercu.ts <chapitre|notion>… [--out aperçu.md]`
   (niveaux × 3 graines : énoncé, réponse, pièges, indice, étapes, sources).
 
+## 8. Détecteur des notions à reprendre
+
+`packages/content/src/lisibilite.ts` mesure, sans IA, chaque notion (tous niveaux, 30 graines) contre les §1 et §3 :
+
+| Indice                | Seuil                                                                       |
+| --------------------- | --------------------------------------------------------------------------- |
+| `etapes-nombre`       | moins de 3 ou plus de 4 bulles                                              |
+| `bulle-chargee`       | plus de 2 phrases dans une bulle, ou trop de mots (30 en CM, 35 à 45 après) |
+| `bulle-sans-action`   | aucun verbe à l'impératif qui dise quoi faire                               |
+| `phrase-longue`       | phrase de plus de 14 mots en CM, 16 en 6e, 18 en 5e-4e, 20 en 3e            |
+| `memo-long`           | mémo de plus de 3 phrases                                                   |
+| `mot-non-defini`      | mot difficile (liste du détecteur) absent du glossaire de la matière        |
+| `consigne-sans-verbe` | ni verbe à l'impératif ni question                                          |
+| `enonce-long`         | plus de 40 mots en CM, 45 en 6e, 55 en 5e-4e, 65 en 3e                      |
+| `distracteur-double`  | deux propositions identiques                                                |
+| `peu-de-variantes`    | moins de 6 questions différentes à un niveau                                |
+
+Les nombres et les calculs ne comptent pas comme des mots. Ce sont des indices, pas un jugement : une notion sans
+indice reste à relire (grille du §5).
+
+- Liste triée par matière et classe, pour découper la reprise en lots : [detecteur.tsv](detecteur.tsv), réécrite par
+  `node apps/server/scripts/detecteur.ts` (à relancer après chaque lot repris).
+- En CI (`lisibilite.test.ts`) : mode **avertissement** pour le catalogue ; les notions déjà reprises, inscrites dans
+  `REPRISES`, ne doivent plus rien déclencher (bloquant). Chaque lot repris y ajoute ses notions.
+
 ## Référentiel d'évaluation d'une nouvelle matière (Arène)
 
 Gabarit et règles : `packages/content/src/referentiel/gabarit.ts`. Enregistrer le référentiel dans `REFERENTIALS` :
