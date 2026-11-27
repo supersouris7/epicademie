@@ -40,7 +40,13 @@ const bare = (text: string): string => text.replace(/\s?[.!?]$/, '');
 const asked = (...forms: string[]): string[] => forms.flatMap((f) => [f, `${f}?`, `${f} ?`]);
 
 /** Autres façons correctes de demander l’âge, le prénom ou le lieu où l’on habite. */
-const NAME_QUESTIONS = asked('What’s your name', 'What is your name', 'What are you called');
+const NAME_QUESTIONS = asked(
+  'What’s your name',
+  'What is your name',
+  'What’s your first name',
+  'What is your first name',
+  'What are you called',
+);
 const AGE_QUESTIONS = asked('How old are you', 'What’s your age', 'What is your age', 'What age are you');
 const LIVE_QUESTIONS = asked('Where do you live', 'Where do you live now', 'Where are you living');
 
@@ -71,7 +77,7 @@ const saluer: Skill = {
     memo: [
       'Pour **saluer**, dis « Hello » ou « Hi » : cela veut dire « bonjour ».',
       'À une rencontre : « Nice to meet you », puis la réponse « You too ».',
-      'Pour **prendre congé**, c’est-à-dire partir, dis « Bye for now ».',
+      'Pour **prendre congé**, c’est-à-dire dire au revoir, dis « Bye for now ».',
     ],
     source: source('Expressions : British Council, LearnEnglish, Speaking A1 « Meeting new people », et programme.'),
     sources: ['lve-cm-2026', 'lve-c2-2026', 'bc-meeting-new-people'],
@@ -126,7 +132,7 @@ const saluer: Skill = {
         const base = [hello, ...ROLES.slice(1).map((x) => PHRASES[x].en)];
         const items = shuffledOther(rng, base);
         return {
-          prompt: `Tu rencontres ${name}. Range les phrases, du premier mot jusqu’au départ.`,
+          prompt: `Tu rencontres ${name}. Range les phrases, de l’arrivée jusqu’au départ.`,
           answer: { kind: 'order', items, correct: base.map((b) => items.indexOf(b)) },
           hint: 'Une rencontre commence par un salut. Elle se termine par un départ.',
           steps: [
@@ -160,9 +166,14 @@ const saluer: Skill = {
       return {
         prompt: `${s.text} Écris la phrase en anglais.`,
         answer: { kind: 'text', accepted: punctuated(accepted) },
-        traps: ROLES.filter((x) => x !== s.role)
-          .slice(0, 2)
-          .map((x) => ({ text: PHRASES[x].en, why: phraseTrap(x) })),
+        traps: [
+          ...(s.role === 'repondre'
+            ? [{ text: 'Me too.', why: '« Me too » veut dire « moi aussi », pas « toi aussi ».' }]
+            : []),
+          ...ROLES.filter((x) => x !== s.role)
+            .slice(0, 2)
+            .map((x) => ({ text: PHRASES[x].en, why: phraseTrap(x) })),
+        ],
         hint,
         steps: [...look, `Écris la phrase : **${s.en}**`],
       };
@@ -293,7 +304,7 @@ const yourName: Skill = {
         .slice(0, 3);
       const { answer, traps } = questionOptions(rng, askName, wrong);
       return {
-        prompt: `${rng.pick(NAME_SCENES)} Choisis la question bien écrite.`,
+        prompt: `${rng.pick(NAME_SCENES)} Choisis la bonne question, sans faute.`,
         answer,
         traps,
         hint: 'Vérifie le premier mot, puis chaque petit mot.',
@@ -307,7 +318,7 @@ const yourName: Skill = {
         [
           { parts: [`${name} : `, ' your name?'], accepted: ['What’s', 'What is'], missing: 'What’s' },
           { parts: [`${name} : What’s `, ' name?'], accepted: ['your'], missing: 'your' },
-          { parts: [`${name} : What’s your `, '?'], accepted: ['name'], missing: 'name' },
+          { parts: [`${name} : What’s your `, '?'], accepted: ['name', 'first name'], missing: 'name' },
         ],
         slot,
       );
@@ -336,7 +347,15 @@ const yourName: Skill = {
         };
       }
       const n = rng.pick(NAMES);
-      const forms = [`I’m ${n}`, `I am ${n}`, `My name is ${n}`, `My name’s ${n}`, `It’s ${n}`];
+      const forms = [
+        `I’m ${n}`,
+        `I am ${n}`,
+        `My name is ${n}`,
+        `My name’s ${n}`,
+        `It’s ${n}`,
+        `I’m called ${n}`,
+        `I am called ${n}`,
+      ];
       return {
         prompt: `Dans un jeu, tu joues ${n}. On te demande « What’s your name? ». Réponds par une phrase.`,
         answer: {
@@ -370,7 +389,21 @@ const yourName: Skill = {
         ['(1) ', ' (2) ', ' (3) ', ''],
         [
           NAME_QUESTIONS,
-          ['I’m', 'I am', 'My name is', 'My name’s', 'It’s', 'Hi, I’m', 'Hello, I’m'],
+          [
+            'I’m',
+            'I am',
+            'My name is',
+            'My name’s',
+            'It’s',
+            'I’m called',
+            'I am called',
+            'Hi, I’m',
+            'Hello, I’m',
+            'Hi, I am',
+            'Hello, I am',
+            'Hi, my name is',
+            'Hello, my name is',
+          ],
           punctuated(['too']),
         ],
       ),
@@ -459,7 +492,7 @@ const howOld: Skill = {
         .slice(0, 3);
       const { answer, traps } = questionOptions(rng, askAge, wrong);
       return {
-        prompt: `${rng.pick(AGE_SCENES)} Choisis la question bien écrite.`,
+        prompt: `${rng.pick(AGE_SCENES)} Choisis la bonne question, sans faute.`,
         answer,
         traps,
         hint: 'Vérifie le premier mot, puis l’ordre des autres mots.',
@@ -509,6 +542,8 @@ const howOld: Skill = {
         answer: { kind: 'text', accepted: punctuated(forms) },
         traps: [
           { text: `I have ${w}`, why: 'En anglais, on dit « I am », pas « I have » comme dans « j’ai ».' },
+          { text: `I have ${w} years old`, why: 'Pour l’âge, commence par « I am », pas par « I have ».' },
+          { text: `I’m ${w} years`, why: 'Après « years », il faut « old ». Tu peux aussi enlever les deux mots.' },
           { text: `I’m ${age}`, why: `On demande l’âge en lettres : ${age} s’écrit « ${w} ».` },
           { text: w, why: 'Le nombre seul n’est pas une phrase. Écris les mots pour « je suis » devant.' },
         ],
@@ -574,7 +609,11 @@ const MISSPELLED: Readonly<Record<number, string>> = {
 /** Ce que l'élève fait pour trouver comment un nombre s'écrit. */
 const howToWrite = (n: number): [string, string] => {
   if (n <= 12) return ['Compte dans l’ordre depuis « one ».', `Garde le mot qui arrive au nombre ${n}.`];
-  if (n <= 19) return [`Repère que ${n} est entre 13 et 19.`, 'Pense au début du mot, puis ajoute la fin « -teen ».'];
+  if (n <= 19)
+    return [
+      `Repère que ${n} fait partie des nombres de 13 à 19.`,
+      'Pense au début du mot, puis ajoute la fin « -teen ».',
+    ];
   if (n % 10 === 0) return [`Repère que ${n} est un nombre rond.`, 'Cherche le mot qui finit par « -ty ».'];
   return [
     `Coupe ${n} en deux : la dizaine ${n - (n % 10)} et l’unité ${n % 10}.`,
@@ -606,7 +645,7 @@ const numbers: Skill = {
     memo: [
       'De 13 à 19, les nombres finissent par « -teen » : thirteen, fourteen.',
       'Les **dizaines** finissent par « -ty » : twenty, thirty.',
-      'De 21 à 29, mets un **tiret** avant l’**unité** : twenty-one.',
+      'Dans 21 ou 31, mets un **tiret** avant l’**unité** : twenty-one, thirty-one.',
     ],
     source: source('Nombres : British Council, LearnEnglish Kids (cartes 1-12 et 13-24, fiche « Numbers 10-100 »).'),
     sources: ['lve-cm-2026', 'bck-flashcards-1-12', 'bck-flashcards-13-24', 'bck-worksheet-10-100'],
@@ -689,7 +728,8 @@ const numbers: Skill = {
         prompt: `Écris en anglais, en lettres, le nombre ${n}.`,
         answer: { kind: 'text', accepted: spellings(word(n)) },
         traps: [...glued(n), { text: word(bad), why: means(bad, n) }],
-        hint: 'Sépare la dizaine et l’unité avant d’écrire.',
+        hint:
+          n % 10 === 0 ? 'Regarde bien la fin du mot des dizaines.' : 'Sépare la dizaine et l’unité avant d’écrire.',
         steps: writeSteps(n),
       };
     }
@@ -726,6 +766,8 @@ const numbers: Skill = {
 };
 
 // ——— 5. Where do you live? ———
+/** Nom français de la ville (seule « London » s’écrit autrement). */
+const cityFr = (city: string): string => (city === 'London' ? 'Londres' : city);
 const askLive = QUESTIONS.live.en;
 
 const LIVE_SCENES = [
@@ -792,7 +834,7 @@ const whereLive: Skill = {
         .slice(0, 3);
       const { answer, traps } = questionOptions(rng, askLive, wrong);
       return {
-        prompt: `${rng.pick(LIVE_SCENES)} Choisis la question bien écrite.`,
+        prompt: `${rng.pick(LIVE_SCENES)} Choisis la bonne question, sans faute.`,
         answer,
         traps,
         hint: 'Vérifie le premier mot, puis le petit mot avant « you ».',
@@ -814,7 +856,9 @@ const whereLive: Skill = {
       );
       return {
         prompt: `${
-          slot < 2 ? `${name} veut savoir où tu habites.` : `${name} veut dire « J’habite à ${city} » en anglais.`
+          slot < 2
+            ? `${name} veut savoir où tu habites.`
+            : `${name} veut dire « J’habite à ${cityFr(city)} » en anglais.`
         } Complète : « ${spec.parts.join('…').replace(`${name} : `, '')} »`,
         answer: gaps(spec.parts, [[spec.missing]]),
         hint: `Cherche ${spec.clue}.`,
@@ -837,7 +881,9 @@ const whereLive: Skill = {
       const city = rng.pick(CITIES);
       const forms = [`I live in ${city}`, `I live in ${city} now`, `I’m living in ${city}`, `I am living in ${city}`];
       return {
-        prompt: `Dans un jeu, tu habites à ${city}. Réponds à « Where do you live? » par une phrase.`,
+        prompt: `Dans un jeu, tu habites à ${cityFr(city)}${
+          city === cityFr(city) ? '' : ` (en anglais : ${city})`
+        }. Réponds à « Where do you live? » par une phrase.`,
         answer: { kind: 'text', accepted: punctuated(forms) },
         traps: [
           { text: `I live ${city}`, why: 'Il manque le petit mot « in » avant la ville.' },
@@ -883,8 +929,8 @@ const whereLive: Skill = {
       ),
       hint: 'Lis la réponse sous chaque question. Parle-t-elle de la maison ou de l’origine ?',
       steps: [
-        ...turns.map((t, i) => `Lis la réponse au trou (${i + 1}) : elle parle ${t.about}.`),
-        'Écris chaque question en commençant par le mot du lieu.',
+        ...turns.map((t, i) => `Lis la réponse sous la question (${i + 1}) : elle parle ${t.about}.`),
+        'Commence chaque question par « Where », qui demande un lieu.',
         `Vérifie les deux questions : **${turns.map((t) => t.shown).join(' → ')}**`,
       ],
     };

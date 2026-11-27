@@ -98,6 +98,24 @@ describe('anglais cm1 : se présenter et saluer', () => {
     }
   });
 
+  it('« first name » et « I’m called » sont acceptés', () => {
+    const questions = Array.from({ length: 120 }, (_, i) => i + 1);
+    const gap = questions.map((seed) => generate('acm1-your-name', 3, seed)).find((x) => x.prompt.includes('your …'));
+    if (!gap) throw new Error('trou « name » jamais tiré');
+    expect(check(gap, { kind: 'cloze', answers: ['first name'] }).correct).toBe(true);
+    const written = questions.map((seed) => generate('acm1-your-name', 4, seed));
+    const asking = written.find((x) => x.answer.kind === 'text' && x.answer.accepted.includes('What’s your name'));
+    const replying = written.find((x) => x.prompt.includes('tu joues Ana'));
+    if (!asking || !replying) throw new Error('question jamais tirée');
+    expect(check(asking, { kind: 'text', text: 'What’s your first name?' }).correct).toBe(true);
+    expect(check(replying, { kind: 'text', text: 'I’m called Ana.' }).correct).toBe(true);
+  });
+
+  it('en français, on habite « à Londres »', () => {
+    for (let seed = 1; seed <= 80; seed++)
+      for (const level of [3, 4]) expect(generate('acm1-where-live', level, seed).prompt).not.toContain('à London');
+  });
+
   it('au niveau 3, la phrase à compléter pour dire où l’on habite est donnée en français', () => {
     for (let seed = 1; seed <= 40; seed++) {
       const q = generate('acm1-where-live', 3, seed);
