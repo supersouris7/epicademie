@@ -302,8 +302,8 @@ const arrondir = S(
   'Arrondir un décimal',
   'Donner la valeur arrondie à l’unité, au dixième ou au centième, d’un nombre décimal',
   [
-    'Pour arrondir au dixième, regarde le chiffre **juste après** (les centièmes) : de 0 à 4 on garde, de 5 à 9 on monte d’un dixième.',
-    'Exemple : 3,47 arrondi au dixième donne 3,5 (car 7 ≥ 5).',
+    'L’**arrondi** est le nombre proche le plus simple. Regarde le chiffre **juste après** la place demandée.',
+    'De 0 à 4, on garde ; de 5 à 9, on monte : 3,47 donne 3,5 au dixième.',
   ],
   (rng, level) => {
     const place = level === 1 ? 0 : level === 2 ? 1 : rng.int(1, 2);
@@ -325,8 +325,10 @@ const arrondir = S(
       ]),
       hint: `Regarde le chiffre juste après celui ${['des unités', 'des dixièmes', 'des centièmes'][place] ?? ''} : 5 ou plus, on monte.`,
       steps: [
-        `${fmt(x)} est entre ${fmt(r(down, 10 ** place))} et ${fmt(r(down + 1, 10 ** place))}.`,
-        `Le chiffre suivant est ${nextDigit} : ${up ? 'on monte' : 'on garde'}. L’arrondi est **${fmt(rounded)}**.`,
+        `Place ${fmt(x)} entre ${fmt(r(down, 10 ** place))} et ${fmt(r(down + 1, 10 ** place))}.`,
+        `Regarde le chiffre juste après : c’est ${nextDigit}.`,
+        up ? `Monte, car ${nextDigit} est entre 5 et 9.` : `Garde, car ${nextDigit} est entre 0 et 4.`,
+        `Écris l’arrondi : **${fmt(rounded)}**.`,
       ],
       targetSeconds: 15,
     };

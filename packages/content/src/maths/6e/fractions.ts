@@ -1,48 +1,54 @@
 import { choice, fraction, num, traps } from '../../build.ts';
 import { add, cmp, fmt, frac, mul, r, rawFrac, sub } from '../../rational.ts';
 import { bossOf, NAMES } from '../kit.ts';
-import { S, C } from './commun.ts';
+import { S, C, versionDeux } from './commun.ts';
 
 // ——— Fractions ———
 
-const fractionQuotient = S(
-  'm6-fraction-quotient',
-  'La fraction, un quotient',
-  'Comprendre et connaître la définition du quotient d’un entier a par un entier b non nul',
-  ['{3/7}, c’est le nombre qui, multiplié par 7, donne 3 : 7 × {3/7} = 3.', '{a/b} = a ÷ b : {3/4} = 3 ÷ 4 = 0,75.'],
-  (rng, level) => {
-    if (level === 1) {
-      const b = rng.int(3, 13);
-      const a = rng.int(1, 20);
-      return {
-        prompt: `Complète : ${b} × … = ${a}`,
-        answer: fraction(r(a, b)),
-        traps: traps(r(a, b), [
-          [
-            r(b, a),
-            'Le nombre cherché est a ÷ b : le numérateur est le résultat, le dénominateur le nombre qu’on multiplie.',
+const fractionQuotient = versionDeux(
+  S(
+    'm6-fraction-quotient',
+    'La fraction, un quotient',
+    'Comprendre et connaître la définition du quotient d’un entier a par un entier b non nul',
+    ['{3/4}, c’est 3 partagé en 4 : {3/4} = 3 ÷ 4 = 0,75.', 'Le nombre qui, multiplié par 4, donne 3, c’est {3/4}.'],
+    (rng, level) => {
+      if (level === 1) {
+        // Niveau 1 : moins d’un gâteau par personne, petits nombres, partage que l’on peut dessiner.
+        const b = rng.int(3, 8);
+        const a = rng.int(1, b - 1);
+        return {
+          prompt: `Complète avec une fraction : ${b} × … = ${a}`,
+          answer: fraction(r(a, b)),
+          traps: traps(r(a, b), [[r(b, a), `En haut, on écrit ${a} (le total). En bas, ${b} (le nombre de parts).`]]),
+          hint: `Imagine ${a} à partager en ${b} parts égales.`,
+          demo: { kind: 'fraction', parts: [{ num: a, den: b }] },
+          steps: [
+            `Regarde : ${b} fois le nombre caché doit donner ${a}.`,
+            `Partage donc ${a} en ${b} parts égales : calcule ${a} ÷ ${b}.`,
+            `Écris ce partage en fraction : ${a} en haut, ${b} en bas.`,
+            `Vérifie : ${b} × ${rawFrac(a, b)} = ${a}. La réponse est **${rawFrac(a, b)}**.`,
           ],
-        ]),
-        hint: `Le nombre qui, multiplié par ${b}, donne ${a}, c’est ${a} ÷ ${b} : écris-le en fraction.`,
+          targetSeconds: 20,
+        };
+      }
+      const b = rng.pick([2, 4, 5, 8, 10, 20, 25]);
+      const a = rng.int(1, b * 3);
+      const v = r(a, b);
+      return {
+        prompt: `Écris ${rawFrac(a, b)} avec une virgule (écriture décimale).`,
+        answer: num(v),
+        traps: traps(v, [[r(b, a), `La barre veut dire : ${a} divisé par ${b}, dans cet ordre.`]]),
+        hint: `La barre de fraction veut dire « divisé par ».`,
         steps: [
-          `Par définition, ${rawFrac(a, b)} est le nombre qui, multiplié par ${b}, donne ${a}.`,
-          `${b} × **${rawFrac(a, b)}** = ${a}.`,
+          `Regarde la barre de ${rawFrac(a, b)} : elle veut dire « divisé par ».`,
+          `Écris la division : ${a} ÷ ${b}.`,
+          `Calcule : ${a} ÷ ${b} = **${fmt(v)}**.`,
         ],
-        targetSeconds: 15,
+        targetSeconds: 20,
       };
-    }
-    const b = rng.pick([2, 4, 5, 8, 10, 20, 25]);
-    const a = rng.int(1, b * 3);
-    const v = r(a, b);
-    return {
-      prompt: `Donne l’écriture décimale de ${rawFrac(a, b)}.`,
-      answer: num(v),
-      hint: `${rawFrac(a, b)} = ${a} ÷ ${b}.`,
-      steps: [`Une fraction est un quotient : ${rawFrac(a, b)} = ${a} ÷ ${b}.`, `${a} ÷ ${b} = **${fmt(v)}**.`],
-      targetSeconds: 20,
-    };
-  },
-  { mental: true },
+    },
+    { mental: true },
+  ),
 );
 
 const fractionsEgales = S(
@@ -255,35 +261,52 @@ export const fractions = C(
   [fractionQuotient, fractionsEgales, comparerFractions, additionFractions, fractionEntier, problemesFractions],
   bossOf(
     [
-      S(
-        'm6-boss-fractions-gateau',
-        'Problème : le gâteau',
-        'Résoudre des problèmes mettant en jeu des fractions',
-        ['Pour additionner {1/4} et {3/8}, on écrit {1/4} = {2/8}. Le reste du gâteau = 1 − ce qui est mangé.'],
-        (rng) => {
-          const [d1, d2] = rng.pick([
-            [4, 8],
-            [3, 6],
-            [2, 8],
-            [5, 10],
-            [3, 12],
-          ] as const);
-          const a = 1;
-          const b = rng.int(1, d2 / 2 - 1 || 1);
-          const eaten = add(r(a, d1), r(b, d2));
-          const rest = sub(r(1), eaten);
-          return {
-            prompt: `Lina mange ${rawFrac(a, d1)} du gâteau et Tao ${rawFrac(b, d2)}. Quelle fraction du gâteau reste-t-il ?`,
-            answer: fraction(rest),
-            traps: traps(rest, [[eaten, 'Ça, c’est ce qui est **mangé**.']]),
-            hint: `Mets tout en ${d2}ᵉˢ : le gâteau entier vaut {${d2}/${d2}}.`,
-            steps: [
-              `${rawFrac(a, d1)} = ${rawFrac(d2 / d1, d2)}, donc ils mangent ${rawFrac(d2 / d1 + b, d2)}.`,
-              `Il reste {${d2}/${d2}} − ${rawFrac(d2 / d1 + b, d2)} = **${frac(rest)}**.`,
-            ],
-            targetSeconds: 50,
-          };
-        },
+      versionDeux(
+        S(
+          'm6-boss-fractions-gateau',
+          'Problème : le gâteau',
+          'Résoudre des problèmes mettant en jeu des fractions',
+          ['Le gâteau entier vaut {8/8}. Si on mange {3/8}, il reste {8/8} − {3/8} = {5/8}.'],
+          (rng) => {
+            const [d1, d2] = rng.pick([
+              [4, 8],
+              [3, 6],
+              [2, 8],
+              [5, 10],
+              [3, 12],
+            ] as const);
+            const b = rng.int(1, d2 / 2 - 1 || 1);
+            const k = d2 / d1;
+            const eaten = add(r(1, d1), r(b, d2));
+            const rest = sub(r(1), eaten);
+            const left = d2 - k - b;
+            const same = rawFrac(left, d2) === frac(rest);
+            return {
+              prompt: `Lina mange ${rawFrac(1, d1)} du gâteau. Tao en mange ${rawFrac(b, d2)}. Quelle fraction du gâteau reste-t-il ?`,
+              answer: fraction(rest),
+              traps: traps(rest, [[eaten, 'Ça, c’est ce qui est **mangé**. On demande ce qui reste.']]),
+              hint: `Coupe le gâteau en ${d2} parts égales. Combien de parts mange chacun ?`,
+              demo: {
+                kind: 'fraction',
+                shape: 'cake',
+                parts: [
+                  { num: 1, den: d1 },
+                  { num: k, den: d2 },
+                  { num: b, den: d2 },
+                ],
+              },
+              steps: [
+                `Coupe le gâteau en ${d2} parts : ${rawFrac(1, d1)}, c’est pareil que ${rawFrac(k, d2)}.`,
+                `Compte les parts mangées : ${k} + ${b} = ${k + b}, donc ${rawFrac(k + b, d2)}.`,
+                `Enlève-les du gâteau entier : ${rawFrac(d2, d2)} − ${rawFrac(k + b, d2)} = ${rawFrac(left, d2)}.`,
+                same
+                  ? `Écris la réponse : il reste **${frac(rest)}** du gâteau.`
+                  : `Simplifie si tu veux : il reste **${frac(rest)}** du gâteau.`,
+              ],
+              targetSeconds: 50,
+            };
+          },
+        ),
       ),
       S(
         'm6-boss-fractions-classe',

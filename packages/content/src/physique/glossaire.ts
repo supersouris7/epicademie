@@ -57,6 +57,20 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     'La buée sur une bouteille froide vient de la liquéfaction de la vapeur d’eau.',
   ),
   terme(
+    'ebullition',
+    'ébullition',
+    ['ébullition'],
+    'Vaporisation rapide : le liquide bout et des bulles se forment.',
+    'L’eau de la casserole bout : c’est l’ébullition.',
+  ),
+  terme(
+    'evaporation',
+    'évaporation',
+    ['évaporation'],
+    'Vaporisation lente, à la surface d’un liquide.',
+    'Une flaque disparaît peu à peu au soleil : c’est l’évaporation.',
+  ),
+  terme(
     'sublimation',
     'sublimation',
     ['sublimation'],

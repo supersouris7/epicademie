@@ -28,7 +28,9 @@ interface CommonProps {
 }
 
 const LETTERS = 'ABCDEFGHIJKL';
-const BUTTON = 'cartoon cartoon-press bg-surface min-h-14 px-3 py-2 text-xl font-bold disabled:opacity-40';
+// Téléphone : texte plus petit et mots coupés, pour que les longues propositions restent dans leur bouton.
+const BUTTON =
+  'cartoon cartoon-press bg-surface min-h-14 min-w-0 px-2 py-2 text-base font-bold break-words hyphens-auto sm:px-3 sm:text-xl disabled:opacity-40';
 
 /** Groupe de boutons dont les flèches de la télécommande font passer le focus au suivant ou au précédent. */
 function ArrowGroup(p: { readonly label: string; readonly className: string; readonly children: ReactNode }) {
@@ -66,7 +68,7 @@ function useGameKeys(handler: (e: KeyboardEvent) => boolean, deps: readonly unkn
 
 function Frame({ children, hint }: { readonly children: ReactNode; readonly hint: string }) {
   return (
-    <div className="flex h-full min-h-0 flex-col items-center justify-center gap-3 overflow-y-auto">
+    <div className="flex h-full min-h-0 flex-col items-center gap-3 overflow-y-auto [justify-content:safe_center]">
       <p className="text-muted text-center text-lg font-bold">{hint}</p>
       {children}
     </div>
@@ -192,7 +194,10 @@ function MatchAnswer({ spec, disabled, onSubmit, onUnknown }: CommonProps & { re
   );
   return (
     <Frame hint="Touche un élément à gauche, puis son partenaire à droite.">
-      <ArrowGroup label="Associer les deux colonnes" className="grid w-full max-w-3xl grid-cols-2 gap-x-6 gap-y-2">
+      <ArrowGroup
+        label="Associer les deux colonnes"
+        className="grid w-full max-w-3xl grid-cols-2 gap-x-2 gap-y-2 sm:gap-x-6"
+      >
         <div className="flex flex-col gap-2">
           {spec.left.map((l, i) => {
             const partner = pairs[i];

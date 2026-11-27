@@ -114,6 +114,31 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
     family: 'operations',
   },
   {
+    id: 'graduation',
+    word: 'graduation',
+    forms: ['graduation', 'graduations'],
+    definition: 'Chacun des petits traits d’une droite ou d’une règle. Ils sont espacés régulièrement.',
+    example: 'Sur une règle, il y a 10 graduations de 1 mm dans 1 cm.',
+    family: 'operations',
+  },
+  {
+    id: 'abscisse',
+    word: 'abscisse',
+    forms: ['abscisse', 'abscisses'],
+    definition: 'Le nombre qui dit où est un point sur une droite graduée.',
+    example: 'Le point placé 3 unités à droite de zéro a pour abscisse 3.',
+    visual: { kind: 'droite', values: [3] },
+    family: 'operations',
+  },
+  {
+    id: 'ordre-de-grandeur',
+    word: 'ordre de grandeur',
+    forms: ['ordre de grandeur', 'ordres de grandeur'],
+    definition: 'Un nombre simple, proche du vrai résultat. On le trouve de tête pour vérifier un calcul.',
+    example: '49 × 21 est proche de 50 × 20 = 1 000 : l’ordre de grandeur est 1 000.',
+    family: 'operations',
+  },
+  {
     id: 'intervalle',
     word: 'intervalle',
     forms: ['intervalle', 'intervalles'],
@@ -300,6 +325,14 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
   },
   // ——— Les équations ———
   {
+    id: 'valeur-absolue',
+    word: 'valeur absolue',
+    forms: ['valeur absolue', 'valeurs absolues'],
+    definition: 'La distance entre un nombre et zéro. Elle n’est jamais négative.',
+    example: 'La valeur absolue de −3 est 3 : le nombre −3 est à 3 unités de zéro.',
+    family: 'relatifs',
+  },
+  {
     id: 'equation',
     word: 'équation',
     forms: ['équation', 'équations'],
@@ -383,6 +416,14 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
     definition: 'La mesure d’un trait, d’un côté, d’une distance. Elle s’exprime en mm, cm, m, km…',
     example: 'Un côté de 3 cm : c’est 3 traits de 1 cm mis bout à bout.',
     visual: { kind: 'unites', focus: 'longueur' },
+    family: 'mesures',
+  },
+  {
+    id: 'contenance',
+    word: 'contenance',
+    forms: ['contenance', 'contenances'],
+    definition: 'La quantité qu’un récipient peut contenir. On la mesure souvent en litres.',
+    example: 'Une grande bouteille a une contenance de 1,5 L.',
     family: 'mesures',
   },
   {

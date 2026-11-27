@@ -29,6 +29,9 @@ export class ApiError extends Error {
   }
 }
 
+/** Réponses d’un relais quand le serveur redémarre ou ne répond pas : passagères. */
+export const isGatewayError = (status: number) => status === 502 || status === 503 || status === 504;
+
 /** Délai maximal d'une requête (réseau du collège ou de la maison parfois lent). */
 const TIMEOUT_MS = 15_000;
 
@@ -62,7 +65,10 @@ export async function request<E extends AnyEndpoint>(endpoint: E, ...[input]: Ar
   }
   if (!res.ok) {
     const err = (await res.json().catch(() => null)) as Partial<ErrorBody> | null;
-    throw new ApiError(res.status, err?.code ?? 'INTERNAL', err?.error ?? `Erreur ${res.status}`, err?.requestId);
+    const fallback = isGatewayError(res.status)
+      ? 'Le serveur redémarre. Patiente un instant, puis réessaie.'
+      : `Erreur ${res.status}`;
+    throw new ApiError(res.status, err?.code ?? 'INTERNAL', err?.error ?? fallback, err?.requestId);
   }
   return (res.status === 204 ? undefined : await res.json()) as ResponseOf<E>;
 }
