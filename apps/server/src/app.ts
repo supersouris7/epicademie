@@ -80,6 +80,7 @@ export type AppConfig = Pick<
   | 'google'
   | 'recette'
   | 'passwordMinLength'
+  | 'portalLogoutUrl'
 >;
 
 export interface AppDeps {
@@ -303,7 +304,11 @@ export async function buildApp(deps: AppDeps): Promise<App> {
             rateLimitMax: config.authRateLimitMax,
           },
           google,
-          { recette: config.recette, passwordMinLength: config.passwordMinLength },
+          {
+            recette: config.recette,
+            passwordMinLength: config.passwordMinLength,
+            portalLogoutUrl: config.portalLogoutUrl,
+          },
         ),
       );
       await v1.register(profilesRoutes(profiles, owns));

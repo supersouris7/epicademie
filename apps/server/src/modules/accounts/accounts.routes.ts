@@ -14,7 +14,10 @@ export function accountsRoutes(
   service: AccountsService,
   cookie: { secure: boolean; maxAgeDays: number; rateLimitMax: number },
   google: Google | null = null,
-  options: { recette: boolean; passwordMinLength: number } = { recette: false, passwordMinLength: 12 },
+  options: { recette: boolean; passwordMinLength: number; portalLogoutUrl?: string | null } = {
+    recette: false,
+    passwordMinLength: 12,
+  },
 ) {
   const STRICT = { rateLimit: { max: cookie.rateLimitMax, timeWindow: '1 minute' } };
   const setSession = (reply: FastifyReply, opened: OpenedSession) => {
@@ -47,6 +50,7 @@ export function accountsRoutes(
       google: google !== null,
       passwordMinLength: options.passwordMinLength,
       recette: options.recette,
+      ...(options.portalLogoutUrl ? { portalLogoutUrl: options.portalLogoutUrl } : {}),
     }));
     if (google) googleRoutes(app, { service, google, secure: cookie.secure, strict: STRICT, setSession });
     route(

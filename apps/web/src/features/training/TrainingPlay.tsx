@@ -15,7 +15,7 @@ import { Memo } from '../../shared/question/Memo.tsx';
 import { useBackGuard, useGameExit } from '../../shared/lib/gameExit.ts';
 import { ConfirmDialog } from '../../shared/ui/ConfirmDialog.tsx';
 import { HeroBubble } from '../../shared/battle/HeroBubble.tsx';
-import { PauseButton } from '../../shared/question/PauseButton.tsx';
+import { GameControls } from '../../shared/ui/game/GameControls.tsx';
 import { Results } from './TrainingResults.tsx';
 import { TrainingQuestion } from './TrainingQuestion.tsx';
 import { EPREUVE_SKILL } from './epreuve.ts';
@@ -76,7 +76,7 @@ export function TrainingPlay({ profile }: { readonly profile: Profile }) {
 }
 
 /**
- * Écran d'une partie : en-tête (pause, héros, progression, XP), question en cours avec sa
+ * Écran d'une partie : en-tête (héros, progression, XP), question en cours avec sa
  * correction, puis bilan. Le déroulé est dans `useTraining`, les règles dans `state.ts`.
  */
 function Game(setup: TrainingSetup) {
@@ -85,16 +85,17 @@ function Game(setup: TrainingSetup) {
   const location = useLocation();
   const [toast, showToast] = useToast(2500);
   const [memo, setMemo] = useState(false);
-  const [confirmQuit, setConfirmQuit] = useState(false);
+  /** Fenêtre ouverte : menu Pause, ou confirmation du bouton « Quitter ». */
+  const [dialog, setDialog] = useState<'pause' | 'quit' | null>(null);
   const { state: s, ...act } = useTraining(setup, showToast);
 
-  const quit = () => setConfirmQuit(true);
+  const pause = () => setDialog('pause');
   // Sorties : la partie est remplacée dans l'historique (« précédent » ne la relance pas).
   const { exit, restart } = useGameExit(exitTo);
   // Quitter la partie ramène au menu principal.
   const leave = () => exit('/hub');
   // « Précédent » pendant la série : même confirmation que la Pause.
-  const { rearm } = useBackGuard(!s.summary && !s.error, quit);
+  const { rearm } = useBackGuard(!s.summary && !s.error, pause);
 
   if (s.error) {
     return (
@@ -123,9 +124,10 @@ function Game(setup: TrainingSetup) {
 
   const skill = s.current ? getSkill(s.current.plan.skillId) : undefined;
   return (
-    <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-3 px-3 py-3 sm:px-4">
-      <header className="flex shrink-0 items-center gap-3">
-        <PauseButton onClick={quit} />
+    <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-3 px-3 pt-16 pb-3 sm:px-4 sm:pt-3">
+      <GameControls onPause={pause} onQuit={() => setDialog('quit')} />
+      {/* Tablette et ordinateur : une ligne avec les boutons ; téléphone : boutons au-dessus (trop étroit). */}
+      <header className="flex shrink-0 items-center gap-3 sm:min-h-14 sm:pr-28">
         <HeroBubble hero={profile.hero} face={s.hero.face} text={s.hero.text} nonce={s.hero.nonce} />
         <ProgressBar
           className="flex-1"
@@ -160,9 +162,9 @@ function Game(setup: TrainingSetup) {
         }}
       />
       {memo && skill && <Memo skill={skill} onClose={() => setMemo(false)} />}
-      {confirmQuit && (
+      {dialog && (
         <ConfirmDialog
-          title="Pause"
+          title={dialog === 'pause' ? 'Pause' : 'Quitter la série ?'}
           message="Si tu quittes, cette série ne sera pas comptée."
           confirm="Quitter la série"
           mood="ok"
@@ -170,7 +172,7 @@ function Game(setup: TrainingSetup) {
           extra={{ label: 'Recommencer', onClick: restart }}
           onConfirm={leave}
           onCancel={() => {
-            setConfirmQuit(false);
+            setDialog(null);
             rearm();
           }}
         />

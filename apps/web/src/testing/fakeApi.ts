@@ -82,6 +82,8 @@ interface Battle {
 export interface FakeApiOptions {
   /** Code PIN parent déjà choisi (null : aucun). */
   readonly pin?: string | null;
+  /** Déconnexion du portail placé devant la plateforme. */
+  readonly portalLogoutUrl?: string;
   readonly profiles?: readonly Profile[];
   readonly skills?: readonly SkillProgress[];
   readonly inventory?: Inventory;
@@ -181,7 +183,8 @@ function authHandlers(options: FakeApiOptions) {
   const session = {
     loggedIn: options.loggedIn ?? true,
     parent: options.parent ?? true,
-    email: 'parent@famille.test',
+    /** Nul pour un élève autonome (aucun parent à solliciter). */
+    email: 'parent@famille.test' as string | null,
     pin: options.pin ?? null,
   };
   const me = () => {
@@ -229,6 +232,7 @@ function authHandlers(options: FakeApiOptions) {
       google: options.google ?? false,
       recette: options.recette ?? false,
       passwordMinLength: options.passwordMinLength ?? (options.recette ? 8 : 12),
+      ...(options.portalLogoutUrl ? { portalLogoutUrl: options.portalLogoutUrl } : {}),
     }),
     signupStudent: ({ body }) => {
       const b = body as { name: string; avatar: unknown; grade: string };
@@ -250,6 +254,7 @@ function authHandlers(options: FakeApiOptions) {
       return me();
     },
     logout: () => {
+      if (session.loggedIn && session.email !== null) requireParent();
       session.loggedIn = false;
       return null;
     },

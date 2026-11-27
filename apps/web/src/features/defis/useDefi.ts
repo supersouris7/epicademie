@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { chaptersOf, check, generate, maxLevelOf, type Question, type Response } from '@epicademie/content';
 import { acquired } from '@epicademie/engine';
 import { playedGrade, type Profile, type SessionSummary, type SubjectId } from '@epicademie/shared';
-import { playSound } from '../../shared/lib/sound.ts';
+import { playSound, setSoundEnabled } from '../../shared/lib/sound.ts';
 import { formatAnswer, formatResponse } from '../../shared/question/answers.ts';
 import { useChapterAccess } from '../parent/index.ts';
 import { finishSession, startSession, submitAnswer, useDisabledSkills, useSkills } from '../training/index.ts';
@@ -80,6 +80,10 @@ export function useDefi(profile: Profile, kind: DefiId, subject: SubjectId, noti
   const shownAt = useRef(0);
   const pending = useRef<Promise<unknown>[]>([]);
   const finishing = useRef(false);
+
+  useEffect(() => {
+    setSoundEnabled(profile.soundOn);
+  }, [profile.soundOn]);
 
   const draw = (correct: number) => {
     const skillId = pool[Math.floor(Math.random() * pool.length)];
@@ -179,7 +183,8 @@ export function useDefi(profile: Profile, kind: DefiId, subject: SubjectId, noti
     });
     if (result.correct) playSound(next.streak >= 3 ? 'combo' : 'correct');
     else {
-      playSound('wrong');
+      // Survie : l'erreur coûte une vie, le son le dit.
+      playSound(kind === 'survie' ? 'hurt' : 'wrong');
       setMisses((m) => [
         ...m,
         {

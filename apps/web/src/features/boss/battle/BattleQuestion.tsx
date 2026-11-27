@@ -3,7 +3,6 @@ import type { Question, Response, Skill } from '@epicademie/content';
 import type { BattleView, ItemId } from '@epicademie/shared';
 import { Figure } from '../../../shared/question/figures/Figure.tsx';
 import { MathText } from '../../../shared/question/MathText.tsx';
-import { PauseButton } from '../../../shared/question/PauseButton.tsx';
 import { ReportButton } from '../../../shared/question/ReportButton.tsx';
 import { QuestionTools } from '../../../shared/question/QuestionTools.tsx';
 import { DOCK_HEIGHT } from '../../../shared/question/tools.ts';
@@ -16,7 +15,7 @@ import { MissedPanel } from './MissedPanel.tsx';
 type Point = { readonly x: number; readonly y: number };
 
 /**
- * Question du combat : énoncé (avec étape du boss, objets, pause, indice et figure) et zone de
+ * Question du combat : énoncé (avec étape du boss, objets, indice et figure) et zone de
  * réponse, remplacée après une erreur par le panneau d'explication.
  */
 export function BattleQuestion({
@@ -30,7 +29,6 @@ export function BattleQuestion({
   onSubmit,
   onUseItem,
   onAskHint,
-  onPause,
   onMemo,
   onNext,
 }: {
@@ -45,7 +43,6 @@ export function BattleQuestion({
   readonly onUseItem: (item: ItemId) => void;
   /** Indice sans objet (attaque un peu moins forte). */
   readonly onAskHint: () => void;
-  readonly onPause: () => void;
   readonly onMemo: () => void;
   readonly onNext: (battle: BattleView) => void;
 }) {
@@ -78,7 +75,6 @@ export function BattleQuestion({
             <span className="flex-1" />
             <ItemBar battle={battle} disabled={busy || missed !== null} onUse={onUseItem} />
             <ReportButton question={question} />
-            <PauseButton onClick={onPause} />
           </div>
           <h1 className="text-2xl leading-snug font-bold sm:text-3xl xl:text-4xl">
             <MathText text={question.prompt} terms />

@@ -15,6 +15,7 @@ import { DOCK_HEIGHT } from '../../shared/question/tools.ts';
 import { ConfirmDialog } from '../../shared/ui/ConfirmDialog.tsx';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { HUD_FRAME, HudBar, HudPortrait } from '../../shared/ui/game/Hud.tsx';
+import { GameControls } from '../../shared/ui/game/GameControls.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import { SpeechBubble } from '../../shared/ui/SpeechBubble.tsx';
 import { useToast } from '../../shared/ui/Toast.tsx';
@@ -143,12 +144,12 @@ export function EvaluationPlay({ profile }: { readonly profile: Profile }) {
 
   return (
     <div className="mx-auto flex h-dvh max-w-6xl flex-col gap-2 px-3 py-3 sm:px-4">
+      <GameControls onQuit={() => setConfirmQuit(true)} />
       <PlayHeader
         hero={profile.hero}
         index={progress.index}
         total={progress.planned}
         domain={current?.domain ?? null}
-        onQuit={() => setConfirmQuit(true)}
       />
       {phase.step === 'loading' && <BlockSkeleton />}
       {phase.step === 'closing' && (
@@ -252,14 +253,13 @@ function PlayHeader(p: {
   readonly index: number;
   readonly total: number;
   readonly domain: string | null;
-  readonly onQuit: () => void;
 }) {
   const bonus = p.index > p.total;
   const done = bonus ? p.total : Math.max(0, p.index - 1);
   const bossSrc = assetSrc(bossHeadId(bossOfSubject('maths').id, 'menace'));
   return (
     <header
-      className={`${HUD_FRAME} flex shrink-0 items-center gap-2 px-2 py-1.5 sm:gap-3 sm:px-3`}
+      className={`${HUD_FRAME} flex shrink-0 items-center gap-2 py-1.5 pr-14 pl-2 sm:gap-3 sm:pl-3`}
       aria-label="Épreuve des Origines"
     >
       <HudPortrait side="left">
@@ -299,9 +299,6 @@ function PlayHeader(p: {
           </HudPortrait>
         </span>
       )}
-      <GameButton variant="surface" size="sm" onClick={p.onQuit}>
-        Quitter
-      </GameButton>
     </header>
   );
 }

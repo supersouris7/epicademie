@@ -138,11 +138,37 @@ describe('connexion de l’appareil', () => {
     });
   });
 
-  it('déconnexion de l’appareil depuis les paramètres', async () => {
-    const { user, server } = renderApp('/parametres');
-    await user.click(await screen.findByRole('button', { name: 'Déconnecter cet appareil' }));
+  it('déconnexion de l’appareil : code parent redemandé, même juste après l’avoir saisi', async () => {
+    const { user, server } = renderApp('/parametres', { parent: true, pin: '2580' });
+    await user.click(await screen.findByRole('button', { name: 'Se déconnecter' }));
+    const gate = await screen.findByRole('dialog', { name: 'Espace parent' });
+    // Annuler : l'appareil reste connecté, le serveur a refusé la déconnexion.
+    await user.click(within(gate).getByRole('button', { name: 'Annuler' }));
+    expect(screen.getByRole('heading', { name: 'Paramètres' })).toBeInTheDocument();
+    expect(server.calls.filter((c) => c.path === '/auth/logout')).toHaveLength(1);
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Se déconnecter' })).toBeEnabled());
+
+    await user.click(screen.getByRole('button', { name: 'Se déconnecter' }));
+    const again = await screen.findByRole('dialog', { name: 'Espace parent' });
+    await user.click(within(again).getByRole('button', { name: '0' }));
+    for (const k of ['0', '0', '0']) await user.click(within(again).getByRole('button', { name: k }));
+    expect(await within(again).findByRole('alert')).toHaveTextContent('incorrect');
+    for (const k of ['2', '5', '8', '0']) await user.click(within(again).getByRole('button', { name: k }));
     expect(await screen.findByRole('heading', { name: 'Bienvenue !' })).toBeInTheDocument();
-    expect(server.calls.some((c) => c.path === '/auth/logout')).toBe(true);
+  });
+
+  it('déconnexion derrière un portail de connexion : on en sort à la suite', async () => {
+    const assign = vi.fn();
+    const { href, origin } = window.location;
+    vi.stubGlobal('location', { href, origin, assign });
+    const portalLogoutUrl = 'https://portail.test/logout';
+    const { user } = renderApp('/parametres', { portalLogoutUrl });
+    await user.click(await screen.findByRole('button', { name: 'Se déconnecter' }));
+    const gate = await screen.findByRole('dialog', { name: 'Espace parent' });
+    await user.type(within(gate).getByLabelText(/Mot de passe/), FAKE_PASSWORD);
+    await user.click(within(gate).getByRole('button', { name: 'Ouvrir l’Espace parent' }));
+    await waitFor(() => expect(assign).toHaveBeenCalledWith(portalLogoutUrl));
+    vi.unstubAllGlobals();
   });
 });
 

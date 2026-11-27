@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { createFirstProfile, loginFamily, PASSWORD, signupFamily } from './family.ts';
+import { createFirstProfile, loginFamily, PASSWORD, signOut, signupFamily } from './family.ts';
 
 /** Crée le 1er profil depuis l'écran de création qui suit l'inscription. */
 async function createProfile(page: Page, name: string, birthDate = '2014-03-09') {
@@ -15,7 +15,7 @@ test('Compte : déconnexion de l’appareil, reconnexion, profils et progrès re
   const name = `Cpt${Date.now() % 10000}`;
   await createProfile(page, name);
   await page.goto('/parametres');
-  await page.getByRole('button', { name: 'Déconnecter cet appareil' }).click();
+  await signOut(page);
   await expect(page).toHaveURL(/\/connexion$/);
   await loginFamily(page, email);
   await expect(page.getByRole('button', { name: new RegExp(name) })).toBeVisible();

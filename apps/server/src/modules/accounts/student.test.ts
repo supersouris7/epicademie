@@ -71,6 +71,14 @@ describe('inscription d’un élève de moins de 15 ans', () => {
   });
 });
 
+describe('déconnexion d’un élève autonome', () => {
+  it('permise sans code parent : aucun parent n’est rattaché', async () => {
+    const s = await newStudent();
+    expect((await post('/auth/logout', s.cookie)).statusCode).toBe(204);
+    expect((await t.as(s.cookie).inject('/api/v1/auth/me')).statusCode).toBe(401);
+  });
+});
+
 describe('récupération sur un autre appareil', () => {
   it('le code ouvre une session sur le même profil (casse et tirets sans importance)', async () => {
     const s = await newStudent();

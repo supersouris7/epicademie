@@ -390,6 +390,16 @@ describe('plateforme de test (APP_ENV=recette)', () => {
   });
 });
 
+describe('portail de connexion devant la plateforme', () => {
+  it('options : sa page de déconnexion est annoncée à l’interface', async () => {
+    const portalLogoutUrl = 'https://portail.test/logout';
+    const p = await createTestApp({ config: { portalLogoutUrl } });
+    const res = await p.http.inject({ url: '/api/v1/auth/options', headers: anonymous });
+    expect(res.json()).toMatchObject({ portalLogoutUrl });
+    await p.close();
+  });
+});
+
 describe('production : comportement inchangé', () => {
   it('options : 12 caractères, pas de mode recette ; 8 caractères refusés ; lien jamais dans la réponse', async () => {
     const options = await t.http.inject({ url: '/api/v1/auth/options', headers: anonymous });

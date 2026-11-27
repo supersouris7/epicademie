@@ -3,7 +3,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { generate } from '@epicademie/content';
 import { renderApp } from '../../testing/renderApp.tsx';
 import { hintWarning } from './battle/constants.ts';
-import { FakeError, type FakeApi } from '../../testing/fakeApi.ts';
+import { FakeError, makeProfile, type FakeApi } from '../../testing/fakeApi.ts';
+import * as sound from '../../shared/lib/sound.ts';
 
 vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.ts')).socketModule);
 
@@ -95,6 +96,23 @@ describe('combat de boss', () => {
     expect(await screen.findByRole('heading', { name: /n’est pas encore vaincu/ })).toBeInTheDocument();
   });
 
+  it.each([true, false])('vie perdue : son de dégât (effets sonores : %s)', async (soundOn) => {
+    const play = vi.spyOn(sound, 'playSound');
+    const enable = vi.spyOn(sound, 'setSoundEnabled');
+    const { user, server } = renderApp(PATH, {
+      fakeTimers: true,
+      battleAnswers: false,
+      profiles: [makeProfile({ soundOn })],
+    });
+    await skipIntro(user);
+    await answer(user, server);
+    await wait(1500);
+    expect(play).toHaveBeenCalledWith('hurt');
+    expect(enable).toHaveBeenLastCalledWith(soundOn);
+    play.mockRestore();
+    enable.mockRestore();
+  });
+
   it('objets : l’indice s’affiche, un objet épuisé est refusé', async () => {
     const { user, server } = renderApp(PATH, {
       fakeTimers: true,
@@ -142,6 +160,17 @@ describe('combat de boss', () => {
     expect(screen.getByRole('alertdialog', { name: 'Pause' })).toHaveTextContent('le boss garde ses vies');
     await user.click(screen.getByRole('button', { name: 'Reprendre' }));
     expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+  });
+
+  it('« Quitter » à côté de « Pause » dès l’entrée en scène : confirmation avant de sortir', async () => {
+    const { user } = renderApp(PATH, { fakeTimers: true });
+    expect(await screen.findByRole('button', { name: 'Pause' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Quitter' }));
+    const dialog = screen.getByRole('alertdialog', { name: 'Quitter le combat ?' });
+    await user.click(within(dialog).getByRole('button', { name: 'Quitter le combat' }));
+    expect(await screen.findByRole('group', { name: 'Mon joueur' })).toBeInTheDocument();
+    // La partie quittée est marquée pour cet onglet : les tests suivants repartent à neuf.
+    sessionStorage.clear();
   });
 
   it('pause : Recommencer relance un combat identique', async () => {

@@ -142,8 +142,19 @@ export function createAccountsService({
       return open({ ...account, autonomous: false });
     },
 
+    /**
+     * Ferme la session de l'appareil. Compte parent : Espace parent ouvert exigé (code PIN ou mot de
+     * passe), pour qu'un enfant ne déconnecte pas la famille. Élève autonome : aucun parent à solliciter.
+     */
     async logout(token: string | null): Promise<void> {
-      if (token) await repo.deleteSession(tokenHash(token));
+      if (!token) return;
+      const hash = tokenHash(token);
+      const now = clock.now();
+      const s = await repo.findSession(hash, now);
+      if (s && !s.autonomous && !(s.parentUntil && s.parentUntil > now)) {
+        throw new AppError('FORBIDDEN', 'Action réservée au parent : saisis le code parent pour déconnecter.');
+      }
+      await repo.deleteSession(hash);
     },
 
     /**
