@@ -8,7 +8,7 @@ import {
   DECOUPES,
   ENTREES,
   FIGURES,
-  MOTS_TYPES,
+  MOTS_COMPOSES,
   PHRASES_CONSTRUITES,
   POLYSEMES,
   TERMES,
@@ -23,7 +23,6 @@ import {
   type MotChamp,
   type Reponse,
   type Terme,
-  type TypeDeMot,
 } from './vocabulaire-6e.donnees.ts';
 
 /**
@@ -141,21 +140,31 @@ function choisirRadical(rng: Rng): QuestionDraft {
   };
 }
 
-const TYPES: readonly TypeDeMot[] = ['simple', 'dérivé', 'composé'];
-const DEF_TYPES = 'Cherche : **mot simple** sans ajout, **mot dérivé** avec ajout, **mot composé** de plusieurs mots.';
+const DEF_TYPES = 'Compare : un **mot dérivé** a un ajout, un **mot composé** réunit plusieurs mots.';
 
+/** Distinguer dérivé et composé : une bonne réponse d'une sorte, trois mots de l'autre. */
 function classerMots(rng: Rng): QuestionDraft {
-  const choisis = rng.shuffle(TYPES).map((type) => ({
-    type,
-    mot: type === 'dérivé' ? rng.pick(DECOUPES).mot : rng.pick(MOTS_TYPES.filter((m) => m.type === type)).mot,
-  }));
-  return associer(
+  const demande = rng.pick(['dérivé', 'composé'] as const);
+  const derives = DECOUPES.map((d) => d.mot);
+  const composes = MOTS_COMPOSES.map((m) => m.mot);
+  const [justes, autres] = demande === 'dérivé' ? [derives, composes] : [composes, derives];
+  const bon = rng.pick(justes);
+  const pourquoi =
+    demande === 'dérivé'
+      ? 'C’est un mot composé : il réunit plusieurs mots.'
+      : 'C’est un mot dérivé : des morceaux sont ajoutés à un radical.';
+  const { answer, traps } = choice(
     rng,
-    `Associe chaque mot (${choisis.map((c) => c.mot).join(', ')}) à sa sorte.`,
-    choisis.map((c) => [c.mot, `mot ${c.type}`]),
-    'Pour chaque mot, essaie de le couper en morceaux.',
-    [DEF_TYPES, 'Coupe chaque mot : cherche un préfixe, un suffixe ou plusieurs mots.'],
+    bon,
+    pickN(rng, autres, 3).map((label) => ({ label, why: pourquoi })),
   );
+  return {
+    prompt: `Choisis le mot ${demande}.`,
+    answer,
+    traps,
+    hint: 'Pour chaque mot, essaie de le couper en morceaux.',
+    steps: [DEF_TYPES, 'Coupe chaque mot : cherche un préfixe, un suffixe ou plusieurs mots.', `Choisis **${bon}**.`],
+  };
 }
 
 function ecrireRadical(d: Decoupe): QuestionDraft {
@@ -477,22 +486,21 @@ function memeMotDeuxPhrases(f: Figure): QuestionDraft {
 
 const ecrituresDe = (f: Figure) => [...new Set([f.forme, f.mot])];
 
-/** Sans phrase modèle au sens propre : une définition, puis une seule phrase au sens figuré à compléter. */
+/** « éteint » est écarté : sans le nombre de lettres, « étouffe » compléterait aussi les deux phrases. */
+const FIGURES_SANS_LONGUEUR = FIGURES.filter((f) => f.mot !== 'éteindre');
+
+/** Comme au niveau 3, avec une phrase figurée plus longue et la première lettre pour seule aide. */
 function completerImage(f: Figure): QuestionDraft {
   const pieges: (readonly [string, string])[] = estVerbe(f)
     ? [[f.mot, 'Tu as écrit l’infinitif. La phrase demande le verbe conjugué.']]
     : [];
   return {
     ...ecrire([f.forme], pieges, {
-      prompt: `Au sens propre, le mot cherché veut dire « ${f.sensPropre} ». Écris-le pour compléter la phrase au sens figuré. ${initiale(f.forme)}`,
-      hint: 'Pars du sens propre, puis cherche l’image dans la phrase.',
-      steps: [
-        DEF_FIGURE,
-        `Pense à un mot qui veut dire « ${f.sensPropre} ». Ici, il fait image : « ${f.sensFigure} ».`,
-        `Écris le mot : **${f.forme}**.`,
-      ],
+      prompt: `Écris le mot qui complète les deux phrases. Il commence par « ${f.forme.charAt(0)} ».`,
+      hint: 'Une phrase est au sens propre, l’autre au sens figuré.',
+      steps: [DEF_FIGURE, 'Essaie ton mot dans les deux phrases.', `Écris le mot : **${f.forme}**.`],
     }),
-    figure: document('Une phrase imagée', [remplir(f.contexte, '…')]),
+    figure: document('Un mot, deux sens', [remplir(f.propre, '…'), remplir(f.contexte, '…')]),
   };
 }
 
@@ -505,7 +513,7 @@ function figureDraft(rng: Rng, level: Level): QuestionDraft {
     case 3:
       return memeMotDeuxPhrases(rng.pick(FIGURES));
     case 4:
-      return completerImage(rng.pick(FIGURES));
+      return completerImage(rng.pick(FIGURES_SANS_LONGUEUR));
     default:
       return lignesAEcrire(
         {
@@ -842,7 +850,7 @@ export const F6_VOCABULAIRE: readonly Skill[] = [
       'v6-def-simple',
       'v6-sens-prefixe',
       ...DECOUPES.map((d) => d.faitId),
-      ...MOTS_TYPES.map((m) => m.faitId),
+      ...MOTS_COMPOSES.map((m) => m.faitId),
     ],
     sens: [
       sens(

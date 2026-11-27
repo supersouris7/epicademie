@@ -13,7 +13,7 @@ import {
   ENTREES,
   FAITS_VOCABULAIRE_6E,
   FIGURES,
-  MOTS_TYPES,
+  MOTS_COMPOSES,
   PHRASES_CONSTRUITES,
   POLYSEMES,
   TERMES,
@@ -155,8 +155,14 @@ describe('données', () => {
       for (const r of [e.synonyme, e.antonyme]) {
         if (!r) continue;
         const [principale, ...autres] = r.mots;
-        expect(faitVocabulaire6e(r.faitId).citation.toLowerCase(), principale).toContain(principale);
-        for (const m of autres) expect([m.charAt(0), m.length]).toEqual([principale.charAt(0), principale.length]);
+        const citation = faitVocabulaire6e(r.faitId).citation.toLowerCase();
+        expect(citation, principale).toContain(principale);
+        // Une autre réponse est citée, ou répond au même indice (initiale et longueur).
+        for (const m of autres)
+          expect(
+            citation.includes(m) || (m.startsWith(principale.charAt(0)) && m.length === principale.length),
+            m,
+          ).toBe(true);
       }
     }
   });
@@ -212,11 +218,18 @@ describe('correction des réponses', () => {
     expect(check(q, saisie('habileté')).why).toContain('nom');
   });
 
-  it('sens figuré N4 : le mot à écrire n’est montré ni dans l’énoncé, ni dans la phrase, ni dans l’indice', () => {
+  it('sens figuré N4 : moins d’aide qu’au niveau 3, ni sens propre donné, ni nombre de lettres', () => {
+    for (const q of tirages('f6-sens-propre-figure', 4)) {
+      expect(q.prompt).toMatch(/^Écris le mot qui complète les deux phrases\. Il commence par « \p{L} »\.$/u);
+      for (const f of FIGURES) expect([q.hint, ...q.steps].join(' '), q.prompt).not.toContain(f.sensPropre);
+    }
+  });
+
+  it('sens figuré N4 : le mot à écrire n’est montré ni dans l’énoncé, ni dans les phrases, ni dans l’indice', () => {
     for (const q of tirages('f6-sens-propre-figure', 4)) {
       if (q.answer.kind !== 'text' || q.figure?.kind !== 'document') throw new Error('forme inattendue');
-      expect(q.figure.lines).toHaveLength(1);
-      expect(q.figure.lines[0], q.prompt).toContain('…');
+      expect(q.figure.lines).toHaveLength(2);
+      for (const line of q.figure.lines) expect(line, q.prompt).toContain('…');
       const visibles = [q.prompt.split(' Il commence par')[0], q.hint, ...q.figure.lines].join(' ');
       const mots = visibles.toLowerCase().split(/[^\p{L}]+/u);
       for (const juste of q.answer.accepted) expect(mots, q.prompt).not.toContain(juste);
@@ -224,19 +237,40 @@ describe('correction des réponses', () => {
   });
 
   it('sens figuré N4 : le verbe est attendu conjugué, l’infinitif est expliqué', () => {
-    const q = trouve('f6-sens-propre-figure', 4, 'manger en déchirant');
+    const q = tirages('f6-sens-propre-figure', 4).find(
+      (x) => x.figure?.kind === 'document' && x.figure.lines[0]?.startsWith('Le lion'),
+    );
+    if (!q) throw new Error('aucune question sur « dévorer »');
     expect(check(q, saisie('dévore')).correct).toBe(true);
     expect(check(q, saisie('dévorer')).why).toContain('conjugué');
   });
 
-  it('antonyme de « diminuer » : « accentuer », cité par la source, est accepté', () => {
+  it('antonyme de « diminuer » : tous les antonymes cités sont acceptés, et eux seuls', () => {
     const q = trouve('f6-synonymes-antonymes', 3, 'antonyme du verbe « diminuer »');
-    for (const mot of ['augmenter', 'accentuer']) expect(check(q, saisie(mot)).correct, mot).toBe(true);
+    for (const mot of ['augmenter', 'accentuer', 'accroître', 'agrandir', 'allonger'])
+      expect(check(q, saisie(mot)).correct, mot).toBe(true);
+    expect(check(q, saisie('amplifier')).correct).toBe(false);
   });
 
-  it('mots simples : seuls ceux que la source dit simples', () => {
-    for (const m of MOTS_TYPES.filter((x) => x.type === 'simple'))
-      expect(faitVocabulaire6e(m.faitId).citation, m.mot).toMatch(new RegExp(`« ${m.mot} » est un mot simple`, 'i'));
+  it('synonyme de « pénurie » : tous les synonymes cités sont acceptés', () => {
+    const q = trouve('f6-synonymes-antonymes', 4, 'synonyme du nom « pénurie »');
+    for (const mot of ['manque', 'carence', 'défaut', 'insuffisance', 'rareté'])
+      expect(check(q, saisie(mot)).correct, mot).toBe(true);
+  });
+
+  it('dérivé ou composé : jamais de mot simple, un seul mot de la sorte demandée', () => {
+    const composes = new Set(MOTS_COMPOSES.map((m) => m.mot));
+    const questions = tirages('f6-prefixe-radical-suffixe', 2).filter((q) => /mot (dérivé|composé)\.$/.test(q.prompt));
+    const bonnes = new Set<string>();
+    for (const q of questions) {
+      if (q.answer.kind !== 'choice') throw new Error('forme inattendue');
+      const compose = q.prompt.includes('composé');
+      const options = q.answer.options.map((o) => JSON.stringify(o));
+      const nb = [...composes].filter((m) => options.some((o) => o.includes(`"${m}"`))).length;
+      expect(nb, q.prompt).toBe(compose ? 1 : 3);
+      bonnes.add(JSON.stringify(q.answer));
+    }
+    expect(bonnes.size).toBeGreaterThanOrEqual(6);
   });
 
   it('champ lexical : le thème se nomme avec ou sans article', () => {

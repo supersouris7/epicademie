@@ -704,7 +704,6 @@ export const SOURCES: readonly Source[] = [
   academie6('rejouir', 'réjouir'),
   academie6('rythme', 'rythme'),
   academie6('semer', 'semer'),
-  academie6('simple', 'simple'),
   tlfi6('antique', 'antique', 'antique'),
   tlfi6('aussitot', 'aussitôt', 'aussit%C3%B4t'),
   tlfi6('autoriser', 'autoriser', 'autoriser'),

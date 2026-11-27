@@ -133,36 +133,24 @@ export const DECOUPES: readonly Decoupe[] = [
   decoupe('dépaysement', ['dé', 'pays', 'ement'], 'dépayser', 'le fait de dépayser', 'Dérivé de dépayser.'),
 ];
 
-export type TypeDeMot = 'simple' | 'dérivé' | 'composé';
-export interface MotType {
+export interface MotCompose {
   readonly mot: string;
-  readonly type: TypeDeMot;
   readonly faitId: string;
 }
 
 /** Phrase de l'article « composé » qui donne des exemples. */
 const LISTE_COMPOSES =
   '« Contredire », « surtout », « passe-temps », « plate-forme », « hôtel de ville », « château fort » sont des mots composés.';
-const compose = (mot: string, citation: string, source: string = mot): MotType => ({
+const compose = (mot: string, citation: string, source: string = mot): MotCompose => ({
   mot,
-  type: 'composé',
   faitId: acad(source, citation, `compose-${slug(mot)}`),
 });
-export const MOTS_TYPES: readonly MotType[] = [
+export const MOTS_COMPOSES: readonly MotCompose[] = [
   compose('porte-monnaie', 'Composé de porte III et de monnaie.'),
   compose('porte-clefs', 'Composé de porte III et de clef ou clé, au pluriel.'),
   compose('passe-temps', LISTE_COMPOSES, 'composé'),
   compose('château fort', LISTE_COMPOSES, 'composé'),
   compose('plate-forme', LISTE_COMPOSES, 'composé'),
-  {
-    mot: 'saison',
-    type: 'simple',
-    faitId: acad(
-      'simple',
-      'Mot simple, qui est formé d’un seul terme. « Saison » est un mot simple, « arrière-saison », un mot composé.',
-      'simple-saison',
-    ),
-  },
 ];
 
 export interface PhraseConstruite {
@@ -189,7 +177,7 @@ export const PHRASES_CONSTRUITES: readonly PhraseConstruite[] = [
 export type Classe = 'nom' | 'verbe' | 'adjectif' | 'adverbe';
 
 export interface Reponse {
-  /** Réponse principale puis autres réponses de même initiale et de même longueur. */
+  /** Réponse principale (celle que décrit l'indice), puis les autres réponses acceptées. */
   readonly mots: readonly [string, ...string[]];
   readonly faitId: string;
 }
@@ -258,7 +246,16 @@ export const ENTREES: readonly Entree[] = [
     classe: 'nom',
     rare: true,
     autre: ['rare', 'adjectif'],
-    synonyme: rel('pénurie', 'syn', 'Synon. carence, défaut, insuffisance, manque, rareté', 'manque'),
+    synonyme: rel(
+      'pénurie',
+      'syn',
+      'Synon. carence, défaut, insuffisance, manque, rareté',
+      'manque',
+      'carence',
+      'défaut',
+      'insuffisance',
+      'rareté',
+    ),
     antonyme: rel('pénurie', 'ant', 'anton. abondance.', 'abondance'),
     phrase: 'La ville craint une {} d’eau.',
   },
@@ -320,8 +317,9 @@ export const ENTREES: readonly Entree[] = [
       'Anton. accentuer, accroître, agrandir, allonger, augmenter',
       'augmenter',
       'accroître',
-      'amplifier',
       'accentuer',
+      'agrandir',
+      'allonger',
     ),
     phrase: 'Le prix va {}.',
   },
