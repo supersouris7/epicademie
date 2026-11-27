@@ -8,7 +8,7 @@ import { ReportButton } from '../../../shared/question/ReportButton.tsx';
 import { QuestionTools } from '../../../shared/question/QuestionTools.tsx';
 import { DOCK_HEIGHT } from '../../../shared/question/tools.ts';
 import { GameIcon } from '../../../shared/ui/game/GameIcon.tsx';
-import { STAGE_LABEL, type Missed } from './constants.ts';
+import { HELP_MEDAL_NOTE, hintWarning, STAGE_LABEL, type Missed } from './constants.ts';
 import { ItemBar } from './ItemBar.tsx';
 import { itemRefusal } from '@epicademie/engine';
 import { MissedPanel } from './MissedPanel.tsx';
@@ -52,6 +52,7 @@ export function BattleQuestion({
   const q = battle.question;
   const hintItem = itemRefusal(battle, 'indice') === null;
   const pointAnswer = question.answer.kind === 'point';
+  const diamondOpen = battle.hearts >= battle.maxHearts;
   // Un objet Indice équipé s'il en reste (pleine puissance), sinon un indice avec une attaque moins forte.
   const askHint = () => (hintItem ? onUseItem('indice') : onAskHint());
   return (
@@ -93,6 +94,10 @@ export function BattleQuestion({
               {hintItem ? 'Un indice (objet)' : 'Un indice (attaque un peu moins forte)'}
             </button>
           )}
+          {/* Annoncé avant l'aide, tant que le diamant est encore en jeu (aucun cœur perdu). */}
+          {!battle.hintShown && !missed && diamondOpen && (
+            <p className="text-muted text-sm font-bold">{HELP_MEDAL_NOTE}</p>
+          )}
           {battle.weakAttack && (
             <p className="text-muted text-sm font-bold">Avec l’indice, ton attaque sera un peu moins forte.</p>
           )}
@@ -125,7 +130,6 @@ export function BattleQuestion({
               canMemo={skill !== undefined}
               onMemo={onMemo}
               onNext={() => onNext(missed.next)}
-              onPause={onPause}
             />
           ) : (
             <QuestionTools
@@ -136,11 +140,7 @@ export function BattleQuestion({
               onSubmit={onSubmit}
               // « ? » : le même indice que le bouton, après confirmation.
               onUnknown={battle.hintShown ? undefined : askHint}
-              unknownWarning={
-                hintItem
-                  ? 'Ça va utiliser ton objet Indice pour afficher l’indice.'
-                  : 'Voici un indice. Ton attaque sera juste un peu moins forte.'
-              }
+              unknownWarning={hintWarning(hintItem, diamondOpen)}
             />
           )}
         </section>

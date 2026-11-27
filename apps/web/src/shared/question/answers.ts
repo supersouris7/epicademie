@@ -84,7 +84,7 @@ export function medalMessage(
   if (s.bestAfter >= 6)
     return s.bestBefore >= 6 ? 'Toujours en diamant : bravo !' : `Médaille de diamant ! ${unaidedMessage(gender)} !`;
   if (s.bestAfter === 5)
-    return `${s.bestBefore >= 5 ? 'Toujours en or : bravo !' : 'Médaille d’or : notion réussie !'} Reviens sans indice pour le diamant !`;
+    return `${s.bestBefore >= 5 ? 'Toujours en or : bravo !' : 'Médaille d’or : notion réussie !'} Pour le diamant : réussis tout du premier coup, sans indice ni explication !`;
   if (s.answered < 4) return 'Fais une série complète sur cette notion pour gagner sa médaille.';
   if (s.bestAfter === 4) return 'Argent : plus qu’une question à réussir pour l’or !';
   if (s.bestAfter === 3) return 'Bronze : encore deux questions à réussir pour l’or !';

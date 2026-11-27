@@ -23,7 +23,7 @@ import {
   type DefiScore,
 } from './rules.ts';
 
-/** Question à revoir, pour « Revoir mes erreurs ». */
+/** Question à revoir, pour « Questions à revoir ». */
 export interface DefiMiss {
   readonly skillId: string;
   readonly prompt: string;

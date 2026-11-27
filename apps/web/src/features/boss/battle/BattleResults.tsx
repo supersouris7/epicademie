@@ -139,7 +139,7 @@ export function BattleResults({
           )}
         </motion.div>
         <h1 className="font-display text-4xl tracking-wide">
-          {summary.won ? `${boss.name} est vaincu !` : `${boss.name} a gagné cette fois…`}
+          {summary.won ? `${boss.name} est vaincu !` : `${boss.name} n’est pas encore vaincu`}
         </h1>
         {/* Échange final : le héros, puis le boss. */}
         <div className="flex w-full max-w-xl flex-col gap-2 text-left">

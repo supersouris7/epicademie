@@ -2,6 +2,7 @@ import { act, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { generate } from '@epicademie/content';
 import { renderApp } from '../../testing/renderApp.tsx';
+import { hintWarning } from './battle/constants.ts';
 import { FakeError, type FakeApi } from '../../testing/fakeApi.ts';
 
 vi.mock('socket.io-client', async () => (await import('../../testing/fakeSocket.ts')).socketModule);
@@ -80,11 +81,18 @@ describe('combat de boss', () => {
     for (let i = 0; i < 3; i++) {
       await answer(user, server);
       await wait(1500);
-      await user.click(await screen.findByRole('button', { name: /Oui, j’essaie|Voir le résultat/ }));
+      const next = await screen.findByRole('button', { name: /^(Continuer|Voir le résultat)$/ });
+      // Après une réponse « pas encore » : un seul choix, rien qui mène à quitter le combat.
+      expect(screen.queryByRole('button', { name: 'Pas maintenant' })).not.toBeInTheDocument();
+      expect(screen.queryByText(/question du même type/)).not.toBeInTheDocument();
+      await user.click(next);
+      expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
     }
     await wait(4000);
     expect((await screen.findAllByText(/On recommence/)).length).toBeGreaterThan(0);
     expect(server.calls.some((c) => c.path.endsWith('/finish'))).toBe(true);
+    await user.click(screen.getByRole('button', { name: 'Non, voir le bilan' }));
+    expect(await screen.findByRole('heading', { name: /n’est pas encore vaincu/ })).toBeInTheDocument();
   });
 
   it('objets : l’indice s’affiche, un objet épuisé est refusé', async () => {
@@ -101,12 +109,30 @@ describe('combat de boss', () => {
   it('indice sans objet : « ? » le donne, sans réponse envoyée ni erreur', async () => {
     const { user, server } = renderApp(PATH, { fakeTimers: true });
     await skipIntro(user);
+    // Annoncé avant l'aide : le diamant se gagne sans elle, l'or reste possible.
+    const note = 'Avec un indice ou un objet, l’or reste possible ; le diamant se gagne sans aide.';
+    expect(screen.getByText(note)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Un indice (attaque un peu moins forte)' }));
     expect(await screen.findByText('Indice :')).toBeInTheDocument();
     expect(screen.getByText(/ton attaque sera un peu moins forte/)).toBeInTheDocument();
     expect(screen.getByRole('img', { name: '3 cœurs sur 3' })).toBeInTheDocument();
     expect(server.calls.some((c) => c.path.endsWith('/hint'))).toBe(true);
     expect(server.calls.some((c) => c.path.endsWith('/answers'))).toBe(false);
+  });
+
+  it('indice « objet » : la même annonce avant de le consommer', async () => {
+    const { user, server } = renderApp(PATH, { fakeTimers: true, inventory: { bouclier: 0, soin: 0, indice: 1 } });
+    server.overview.equipped = ['indice'];
+    await skipIntro(user);
+    expect(screen.getByRole('button', { name: 'Un indice (objet)' })).toBeInTheDocument();
+    expect(screen.getByText(/l’or reste possible ; le diamant se gagne sans aide/)).toBeInTheDocument();
+    expect(server.calls.some((c) => c.path.endsWith('/items'))).toBe(false);
+  });
+
+  it('confirmation du « ? » : annonce le diamant tant qu’il est en jeu', () => {
+    expect(hintWarning(true, true)).toMatch(/objet Indice.*le diamant se gagne sans aide/);
+    expect(hintWarning(false, true)).toMatch(/moins forte.*l’or reste possible/);
+    expect(hintWarning(false, false)).not.toMatch(/diamant|l’or/);
   });
 
   it('pause : le boss garde ses vies, on peut reprendre', async () => {

@@ -201,6 +201,22 @@ export function TrophiesPage({ profile }: { readonly profile: Profile }) {
   );
 }
 
+/** Comment se gagne chaque médaille de notion (sa meilleure série). */
+function MedalLegend() {
+  return (
+    <div className="text-muted text-sm font-bold">
+      <p>Ta médaille sur une notion, c’est ta meilleure série :</p>
+      <ul className="list-disc pl-5" aria-label="Légende des médailles">
+        <li>Diamant : tout réussi du premier coup, sans indice ni explication</li>
+        <li>Or : tout réussi, avec de l’aide (notion acquise)</li>
+        <li>Argent : il te reste 1 question à réussir</li>
+        <li>Bronze : il t’en reste 2</li>
+      </ul>
+      <p>Une médaille gagnée reste à toi.</p>
+    </div>
+  );
+}
+
 /** Détail d'une matière : médailles par domaine, chapitre et notion. */
 export function SubjectProgress({ profile }: { readonly profile: Profile }) {
   const enter = useEntrance();
@@ -245,10 +261,7 @@ export function SubjectProgress({ profile }: { readonly profile: Profile }) {
           <span className="bg-danger font-display rounded-full px-3 py-1 text-lg text-white">{due} à revoir</span>
         )}
       </section>
-      <p className="text-muted text-sm font-bold">
-        Médaille d’une notion = sa meilleure série : Diamant tout réussi sans aide · Or tout réussi avec aide (notion
-        acquise) · Argent plus qu’une question à réussir · Bronze deux. Une médaille gagnée reste à toi.
-      </p>
+      <MedalLegend />
       <GradeTabs grades={grades} value={grade} own={own} onChange={setGrade} />
 
       {/* Toile des compétences : part de notions acquises (Or ou Diamant) par domaine de la classe choisie. */}

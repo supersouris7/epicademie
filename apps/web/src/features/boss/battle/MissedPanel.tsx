@@ -7,8 +7,8 @@ import type { Question } from '@epicademie/content';
 import type { Missed } from './constants.ts';
 
 /**
- * Pas encore : la réponse donnée, la bonne, pourquoi, la méthode pas à pas, puis la proposition de
- * réessayer une question du même type (l'adversaire en pose toujours une).
+ * Pas encore : la réponse donnée, la bonne, pourquoi, la méthode pas à pas, puis la suite du combat
+ * (un seul bouton : mettre en pause ou quitter reste en haut de l'écran).
  */
 export function MissedPanel({
   question,
@@ -16,16 +16,13 @@ export function MissedPanel({
   canMemo,
   onMemo,
   onNext,
-  onPause,
 }: {
   readonly question: Question;
   readonly missed: Missed;
   readonly canMemo: boolean;
   readonly onMemo: () => void;
   readonly onNext: () => void;
-  readonly onPause: () => void;
 }) {
-  const fighting = missed.next.status === 'fighting';
   return (
     <motion.div
       initial={{ y: 20, opacity: 0 }}
@@ -52,19 +49,13 @@ export function MissedPanel({
         </ol>
       </div>
       <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
-        {fighting && <p className="w-full text-right font-bold">Tu veux réessayer une question du même type ?</p>}
         {canMemo && (
           <GameButton variant="surface" size="sm" icon="icons-navigation-hint" onClick={onMemo}>
             Le truc à retenir
           </GameButton>
         )}
-        {fighting && (
-          <GameButton variant="surface" size="sm" onClick={onPause}>
-            Pas maintenant
-          </GameButton>
-        )}
         <GameButton icon="icons-navigation-next" onClick={onNext}>
-          {fighting ? 'Oui, j’essaie' : 'Voir le résultat'}
+          {missed.next.status === 'fighting' ? 'Continuer' : 'Voir le résultat'}
         </GameButton>
       </div>
     </motion.div>

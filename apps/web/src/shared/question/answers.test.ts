@@ -41,7 +41,9 @@ describe('réponses en texte', () => {
 
   it('or avec aide : invitation au diamant ; diamant accordé au profil, neutre sans genre', () => {
     const base = { answered: 4, bestBefore: 0, due: null };
-    expect(medalMessage({ ...base, bestAfter: 5 })).toMatch(/Reviens sans indice pour le diamant !/);
+    expect(medalMessage({ ...base, bestAfter: 5 })).toMatch(
+      /réussis tout du premier coup, sans indice ni explication !/,
+    );
     const diamond = { ...base, bestAfter: 6 };
     expect(medalMessage(diamond, 'garcon')).toMatch(/Tu l’as maîtrisée seul !/);
     expect(medalMessage(diamond, 'fille')).toMatch(/Tu l’as maîtrisée seule !/);

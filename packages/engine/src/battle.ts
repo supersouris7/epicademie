@@ -110,7 +110,7 @@ function nextQuestion(
   }
   const stage = bossStage(s.bossLives);
   const pool = stage === 'piege' ? pools.traps : pools.problems;
-  // Après une erreur contre le boss : une autre question du même type (autre générateur si possible).
+  // Après une erreur contre le boss : une question de la même étape (autre générateur si possible).
   const skillId = pick(pool, dice.random, previous?.stage === stage ? previous.skillId : undefined);
   return { skillId, level: 2, seed: freshSeed(pools, skillId, 2, dice, s.seen), stage } satisfies BattleQuestion;
 }
@@ -152,7 +152,7 @@ export function createBattle(
 /**
  * Applique une réponse : bonne → tir (mob vaincu ou boss −1 vie) ; mauvaise → riposte (−1 cœur, ou
  * bouclier consommé). Après une erreur, l'adversaire reste : un mob pose une autre question de sa
- * notion, le boss une autre question du même type. À 0 cœur, le combat est perdu.
+ * notion, le boss une question d'un autre générateur de la même étape (si possible). À 0 cœur, le combat est perdu.
  */
 export function answerBattle(
   s: BattleState,

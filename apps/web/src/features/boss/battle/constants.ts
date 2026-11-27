@@ -13,6 +13,17 @@ export interface Missed {
   readonly next: BattleView;
 }
 
+/** Ce qu'une aide change à la médaille (voir `bossMedal`). */
+export const HELP_MEDAL_NOTE = 'Avec un indice ou un objet, l’or reste possible ; le diamant se gagne sans aide.';
+
+/** Confirmation du « ? » : ce que l'indice utilise, et ce qu'il change à la médaille. */
+export function hintWarning(hintItem: boolean, diamondOpen: boolean) {
+  const use = hintItem
+    ? 'Ça va utiliser ton objet Indice pour afficher l’indice.'
+    : 'Voici un indice. Ton attaque sera juste un peu moins forte.';
+  return diamondOpen ? `${use} ${HELP_MEDAL_NOTE}` : use;
+}
+
 export const STAGE_LABEL = { mob: '', probleme: 'Problème', piege: 'Piège !' } as const;
 /** Durées de l'animation d'un tir (ms). */
 export const HIT_MS = 450;

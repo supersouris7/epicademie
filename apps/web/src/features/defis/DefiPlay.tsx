@@ -25,10 +25,12 @@ import { RecapScreen } from '../training/index.ts';
 const TITLES: Record<DefiId, string> = { chrono: 'Contre-la-montre', survie: 'Survie' };
 const RULES: Record<DefiId, string> = {
   chrono:
-    '60 secondes, et chaque bonne réponse te rend du temps : un peu pour une question rapide, jusqu’à +10 s pour un problème long. Une erreur coûte 5 s et casse ta série. Plus la question est difficile et plus tu réponds vite, plus tu marques de points ; enchaîne les bonnes réponses pour un COMBO jusqu’à ×5.',
+    '60 secondes, et chaque bonne réponse te rend du temps : un peu pour une question rapide, jusqu’à +10 s pour un problème long. Pas encore la bonne réponse ? Tu perds 5 s et la série repart. Plus la question est difficile et plus tu réponds vite, plus tu marques de points ; enchaîne les bonnes réponses pour un COMBO jusqu’à ×5.',
   survie:
-    '3 cœurs. Chaque erreur coûte un cœur et casse ta série, et ça devient plus dur toutes les 5 bonnes réponses. Plus la question est difficile et plus tu réponds vite, plus tu marques de points ; enchaîne les bonnes réponses pour un COMBO jusqu’à ×5.',
+    '3 cœurs. Pas encore la bonne réponse ? Tu perds un cœur et la série repart. Ça devient plus dur toutes les 5 bonnes réponses. Plus la question est difficile et plus tu réponds vite, plus tu marques de points ; enchaîne les bonnes réponses pour un COMBO jusqu’à ×5.',
 };
+
+const countPoints = (n: number) => `${n} ${n === 1 ? 'point' : 'points'}`;
 
 /** Nombre qui défile jusqu'à sa nouvelle valeur (immédiat avec « réduire les animations »). */
 function useCountUp(target: number, reduce: boolean | null): number {
@@ -245,7 +247,7 @@ function Intro(p: {
         <Questy mood={p.kind === 'chrono' ? 'wow' : 'cool'} size={100} />
         <SpeechBubble>{RULES[p.kind]}</SpeechBubble>
       </div>
-      {p.best > 0 && <p className="font-bold">Record à battre : {p.best} points.</p>}
+      {p.best > 0 && <p className="font-bold">Record à battre : {countPoints(p.best)}.</p>}
       {p.loading ? (
         <p>Chargement…</p>
       ) : p.available ? (
@@ -294,7 +296,7 @@ function Results(p: {
   return (
     <div className="flex flex-col items-center gap-3 text-center">
       <HeroFace hero={p.profile.hero} expression={p.record ? 'enthousiaste' : 'joie'} size={110} />
-      <h1 className="font-display text-toon text-4xl tracking-wide">{shown} points</h1>
+      <h1 className="font-display text-toon text-4xl tracking-wide">{countPoints(shown)}</h1>
       <PersonalRecord points={p.points} best={p.best} record={p.record} />
       {p.summary && (
         <p className="flex items-center gap-2 text-lg font-bold">
@@ -306,7 +308,7 @@ function Results(p: {
       {p.summary?.chest && <ChestReveal chest={p.summary.chest} />}
       {p.misses.length > 0 && (
         <GameButton variant="surface" onClick={() => setReview((r) => !r)} aria-expanded={review}>
-          Revoir mes erreurs ({p.misses.length})
+          Questions à revoir ({p.misses.length})
         </GameButton>
       )}
       {review && <MissList misses={p.misses} />}
@@ -329,22 +331,22 @@ function Results(p: {
 }
 
 /** Fin de défi : le record personnel d'abord, jamais une comparaison avec d'autres. */
-function PersonalRecord(p: { readonly points: number; readonly best: number; readonly record: boolean }) {
+export function PersonalRecord(p: { readonly points: number; readonly best: number; readonly record: boolean }) {
   if (p.record) return <p className="font-display text-2xl tracking-wide">Nouveau record personnel !</p>;
   if (p.best <= 0) return <p className="text-lg font-bold">Ton premier record t’attend : rejoue pour le poser !</p>;
   return (
     <div className="flex flex-col items-center">
-      <p className="font-display text-2xl tracking-wide">Record à battre : {p.best} points</p>
-      <p className="text-lg font-bold">Encore {p.best - p.points + 1} points pour le battre !</p>
+      <p className="font-display text-2xl tracking-wide">Record à battre : {countPoints(p.best)}</p>
+      <p className="text-lg font-bold">Encore {countPoints(p.best - p.points + 1)} pour le battre !</p>
     </div>
   );
 }
 
-/** Erreurs de la partie : question, réponse donnée, bonne réponse, explication courte. */
+/** Questions à revoir : question, réponse donnée, bonne réponse, explication courte. */
 function MissList({ misses }: { readonly misses: readonly DefiMiss[] }) {
   const navigate = useNavigate();
   return (
-    <ul className="flex w-full flex-col gap-2 text-left" aria-label="Mes erreurs">
+    <ul className="flex w-full flex-col gap-2 text-left" aria-label="Questions à revoir">
       {misses.map((m, i) => (
         <li key={i} className="cartoon bg-surface flex flex-col gap-1 p-3 text-lg">
           <MathText text={m.prompt} />

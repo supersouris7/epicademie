@@ -90,7 +90,7 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   await page.reload(); // la progression est gardée en cache
   await page.getByRole('button', { name: /^Survie/ }).click();
   await page.getByRole('button', { name: 'Maths', exact: true }).click();
-  await expect(page.getByText(/3 cœurs. Chaque erreur coûte un cœur et casse ta série/)).toBeVisible();
+  await expect(page.getByText(/Tu perds un cœur et la série repart/)).toBeVisible();
   await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
   await expect(page.getByRole('img', { name: '3 cœurs sur 3' })).toBeVisible();
   await page.getByRole('button', { name: 'Arrêter' }).click();
@@ -127,9 +127,9 @@ test('création d’un profil, hub, thème sombre puis suppression', async ({ pa
   // Fin de partie : l'horloge saute au-delà du temps restant.
   await page.clock.fastForward(70_000);
   await expect(page.getByRole('heading', { name: /\d+ points/ })).toBeVisible();
-  await page.getByRole('button', { name: /Revoir mes erreurs \(1\)/ }).click();
-  await expect(page.getByRole('list', { name: 'Mes erreurs' })).toContainText('Calcule 3 × 2.');
-  await expect(page.getByRole('list', { name: 'Mes erreurs' })).toContainText('Bonne réponse : 6');
+  await page.getByRole('button', { name: /Questions à revoir \(1\)/ }).click();
+  await expect(page.getByRole('list', { name: 'Questions à revoir' })).toContainText('Calcule 3 × 2.');
+  await expect(page.getByRole('list', { name: 'Questions à revoir' })).toContainText('Bonne réponse : 6');
   await page.unroute('**/api/v1/profiles/*/skills');
   await page.goto('/hub');
   // Mode d'abord, matière ensuite.

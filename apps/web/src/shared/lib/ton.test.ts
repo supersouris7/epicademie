@@ -31,9 +31,12 @@ const contents = import.meta.glob<string>(
 
 const WORD = (words: string) => new RegExp(`(?<![\\p{L}])(?:${words})(?![\\p{L}])`, 'iu');
 const FORBIDDEN = WORD(
-  'rat(?:é|ée|és|ées|er)|échecs?|échoué[es]*|points? faibles?|mauvaises? (?:réponses?|notes?)|dommage|nul(?:le)?s?|insuffisante?s?|fragiles?|série perdue',
+  'rat(?:é|ée|és|ées|er)|échecs?|échoué[es]*|points? faibles?|mauvaises? (?:réponses?|notes?)|dommage|nul(?:le)?s?|insuffisante?s?|fragiles?|série perdue|casse(?:s|r)? (?:ta|la) série',
 );
 const FORBIDDEN_IN_CONTENT = WORD('c’est raté|raté !|la plus ratée|points faibles|quel dommage|c’est dommage');
+
+/** Défis : ni « erreur », ni série perdue (ton « pas encore », record personnel). */
+const FORBIDDEN_IN_DEFIS = WORD('erreurs?|série (?:perdue|cassée|brisée)|casse(?:s|r)? (?:ta|la) série');
 
 /** Retire commentaires, identifiants entre apostrophes (`'a-travailler'`) et clés d'objet. */
 const visibleText = (code: string) =>
@@ -61,6 +64,13 @@ describe('ton « pas encore »', () => {
   it('aucun libellé dévalorisant dans les écrans, les répliques et les messages', () => {
     expect(Object.keys(sources).length).toBeGreaterThan(200);
     expect(offences(sources, FORBIDDEN)).toEqual([]);
+  });
+
+  it('ni « erreur » ni série perdue dans les défis', () => {
+    const defis = Object.fromEntries(Object.entries(sources).filter(([file]) => file.includes('defis/')));
+    expect(Object.keys(defis).length).toBeGreaterThanOrEqual(4);
+    expect(offences({ x: "const m = 'Revoir mes erreurs';" }, FORBIDDEN_IN_DEFIS)).toHaveLength(1);
+    expect(offences(defis, FORBIDDEN_IN_DEFIS)).toEqual([]);
   });
 
   it('ni dans les contenus pédagogiques', () => {

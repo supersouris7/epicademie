@@ -1,6 +1,7 @@
-import { screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderApp } from '../../testing/renderApp.tsx';
+import { PersonalRecord } from './DefiPlay.tsx';
 
 // Tirage figé : la question est toujours « Calcule 3 × 2. » (réponse 6).
 const answer = async (user: ReturnType<typeof renderApp>['user'], digit: string) => {
@@ -55,10 +56,10 @@ describe('défis', () => {
     const { user } = renderApp('/hub');
     await user.click(await screen.findByRole('button', { name: /Survie/ }));
     await user.click(await screen.findByRole('button', { name: 'Maths' }));
-    expect(await screen.findByText(/3 cœurs. Chaque erreur coûte un cœur et casse ta série/)).toBeInTheDocument();
+    expect(await screen.findByText(/Tu perds un cœur et la série repart/)).toBeInTheDocument();
   });
 
-  it('Revoir mes erreurs : question, réponse donnée, bonne réponse et explication', async () => {
+  it('Questions à revoir : question, réponse donnée, bonne réponse et explication', async () => {
     vi.spyOn(Math, 'random').mockReturnValue(0);
     const { user } = renderApp('/partie/defi/survie/maths', GOLD);
     await user.click(await screen.findByRole('button', { name: /C’est parti/ }));
@@ -66,12 +67,20 @@ describe('défis', () => {
     await answer(user, '5');
     expect(await screen.findByRole('status')).toHaveTextContent('Oups ! −1 cœur, la série repart');
     await user.click(screen.getByRole('button', { name: 'Arrêter' }));
-    await user.click(await screen.findByRole('button', { name: /Revoir mes erreurs \(1\)/ }));
-    const list = screen.getByRole('list', { name: 'Mes erreurs' });
+    await user.click(await screen.findByRole('button', { name: /Questions à revoir \(1\)/ }));
+    const list = screen.getByRole('list', { name: 'Questions à revoir' });
     expect(list).toHaveTextContent('Calcule 3 × 2.');
     expect(list).toHaveTextContent('Ta réponse : 5');
     expect(list).toHaveTextContent('Bonne réponse : 6');
     expect(list).toHaveTextContent('Tu veux réessayer une question du même type ?');
+  });
+
+  it.each([
+    { points: 40, expected: 'Encore 1 point pour le battre !' },
+    { points: 38, expected: 'Encore 3 points pour le battre !' },
+  ])('record à 40, partie à $points : « $expected »', ({ points, expected }) => {
+    render(<PersonalRecord points={points} best={40} record={false} />);
+    expect(screen.getByText(expected)).toBeInTheDocument();
   });
 
   it('sans notion en or ou diamant : pas de défi, on propose de s’entraîner', async () => {
