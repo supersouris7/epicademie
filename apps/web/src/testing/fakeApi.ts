@@ -22,6 +22,7 @@ import {
   type Inventory,
   type Journey,
   type LearningReport,
+  type ParentWeek,
   type ItemId,
   type Profile,
   type SkillProgress,
@@ -115,9 +116,17 @@ export interface FakeApiOptions {
   /** Rapport de suivi renvoyé pour chaque profil (par défaut : vide). */
   readonly learning?: LearningReport;
   readonly journey?: Journey;
+  /** Semaine vue par le parent, par profil (par défaut : aucune séance). */
+  readonly parentWeeks?: Readonly<Record<string, ParentWeek>>;
   /** Abonnement familial en cours (par défaut : oui, tous les chapitres jouables). */
   readonly premium?: boolean;
 }
+
+export const emptyParentWeek = (): ParentWeek => ({
+  ...emptyJourney(),
+  feelings: { week: { pasEncore: 0, unPeu: 0, oui: 0 }, before: { pasEncore: 0, unPeu: 0, oui: 0 }, trend: null },
+  advice: 'proposer',
+});
 
 /** Rapport de suivi vide (nouveau joueur). */
 export const emptyJourney = (): Journey => ({
@@ -785,6 +794,7 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     disabledContent: () => ({ skills: [...disabledSet] }),
     learningReport: () => options.learning ?? emptyLearning(),
     journey: () => options.journey ?? emptyJourney(),
+    parentWeek: ({ params }) => options.parentWeeks?.[params.id ?? ''] ?? emptyParentWeek(),
     rateSession: ({ body }) => {
       feelings.push((body as { feeling: number }).feeling);
       return null;
