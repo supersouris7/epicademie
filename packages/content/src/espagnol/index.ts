@@ -1,6 +1,9 @@
 import type { Chapter, Level, Skill } from '../types.ts';
 import { choice } from '../build.ts';
 import { CONJUGAISONS, RAE_FETCHED_ON } from './conjugaisons.generated.ts';
+import { PRESENT_CHAPTER } from './present-reguliers.ts';
+import { SER_ESTAR_HAY_CHAPTER } from './ser-estar-hay.ts';
+import { SPANISH_PRESENTATION_CHAPTER } from './se-presenter.ts';
 
 /**
  * Espagnol, de la 5e à la 3e (LV2 au cycle 4 ; docs/adr/0024-contenus-hors-maths.md).
@@ -97,27 +100,6 @@ function conjugation({ id, title, memo, notion, verbs, tense }: ConjugationSpec)
   };
 }
 
-const presentRegular = conjugation({
-  id: 'e5-present-reguliers',
-  title: 'Le présent des verbes réguliers',
-  memo: [
-    'Les verbes en -ar, -er, -ir changent de terminaison selon la personne : hablo, hablas, habla, hablamos, habláis, hablan.',
-    'comer : como, comes, come… ; vivir : vivo, vives, vive…',
-  ],
-  notion: 'présent des verbes réguliers',
-  verbs: REGULAR,
-  tense: 'present',
-});
-
-const serEstar = conjugation({
-  id: 'e5-ser-estar',
-  title: 'Ser et estar au présent',
-  memo: ['ser : soy, eres, es, somos, sois, son.', 'estar : estoy, estás, está, estamos, estáis, están.'],
-  notion: 'ser et estar au présent',
-  verbs: ['ser', 'estar'],
-  tense: 'present',
-});
-
 const presentIrregular = conjugation({
   id: 'e4-present-irreguliers',
   title: 'Le présent des verbes irréguliers',
@@ -173,7 +155,9 @@ const chapter = (id: string, grade: Chapter['grade'], title: string, skills: rea
 });
 
 export const ESPAGNOL_CHAPTERS: readonly Chapter[] = [
-  chapter('e5-present', '5e', 'Le présent', [presentRegular, serEstar]),
+  SPANISH_PRESENTATION_CHAPTER,
+  PRESENT_CHAPTER,
+  SER_ESTAR_HAY_CHAPTER,
   chapter('e4-irreguliers', '4e', 'Les verbes irréguliers', [presentIrregular]),
   chapter('e4-passe', '4e', 'Raconter au passé', [pastSimple]),
   chapter('e3-futur', '3e', 'Le futur', [future]),

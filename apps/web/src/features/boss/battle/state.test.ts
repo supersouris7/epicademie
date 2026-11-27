@@ -30,6 +30,7 @@ const view = (over: Partial<BattleView> = {}): BattleView => ({
   turn: 0,
   shield: false,
   hintShown: false,
+  weakAttack: false,
   itemsUsed: 0,
   equipped: [],
   question: { skillId: 'm5-relatifs-somme', level: 1, seed: 1, stage: 'mob' },

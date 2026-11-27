@@ -36,6 +36,9 @@ export const testConfig = (overrides: Partial<AppConfig> = {}): AppConfig => ({
   authRateLimitMax: 100_000,
   metricsToken: null,
   adminOperatorSecret: TEST_OPERATOR_SECRET,
+  adminOrigin: null,
+  adminRescueSecret: null,
+  adminSso: null,
   apiDocs: false,
   timeZone: 'Europe/Paris',
   version: 'test',
@@ -125,6 +128,8 @@ export interface TestHarnessOptions {
   readonly wrapMailer?: (inner: Mailer) => Mailer;
   /** Appels HTTP sortants (prestataire de paiement simulé). */
   readonly fetcher?: typeof fetch;
+  /** Horloge à la place de l'horloge à jour fixe (tests de durées). */
+  readonly clock?: Clock & { set(day: string): void };
   /** Clés publiques de Google (tests de « Continuer avec Google »). */
   readonly googleKeys?: AppDeps['googleKeys'];
 }
@@ -152,7 +157,7 @@ export const sessionCookie = (res: LightMyRequestResponse): string => {
  */
 export async function createTestApp(options: TestHarnessOptions = {}) {
   const database = await createTestDatabase();
-  const clock = fixedClock(options.today ?? '2026-11-16');
+  const clock = options.clock ?? fixedClock(options.today ?? '2026-11-16');
   const mailer = memoryMailer();
   const app: App = await buildApp({
     config: testConfig(options.config),

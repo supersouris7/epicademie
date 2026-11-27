@@ -1,3 +1,4 @@
+import { BlockSkeleton } from '../../shared/ui/Skeleton.tsx';
 import { useState, type ReactNode } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router';
 import { check } from '@epicademie/content';
@@ -49,7 +50,7 @@ export function EvaluationResults({ profile }: { readonly profile: Profile }) {
   if (!result) {
     return (
       <PageShell title="Mon bilan" back="/jouer/evaluation">
-        {isLoading && <p role="status">Chargement du bilan…</p>}
+        {isLoading && <BlockSkeleton />}
         {isError && <p role="alert">Ce bilan est introuvable.</p>}
       </PageShell>
     );
@@ -167,10 +168,10 @@ function Body(p: {
         )}
       </Section>
 
-      <Section title={r.kind === 'origines' ? 'À consolider pour réussir dans ta classe' : 'À travailler'}>
+      <Section title={r.kind === 'origines' ? 'À consolider pour réussir dans ta classe' : 'Notions à renforcer'}>
         <Chips
           ids={r.kind === 'origines' && r.forNextYear.length > 0 ? r.forNextYear : r.toWork}
-          empty="Rien de fragile repéré, bravo !"
+          empty="Rien à renforcer repéré, bravo !"
         />
         {r.prerequisitesToRework.length > 0 && (
           <>
@@ -182,7 +183,7 @@ function Body(p: {
 
       {(r.notEvaluated.length > 0 || r.notStudied.length > 0) && (
         <Section title="Pas évalué">
-          <p className="text-muted text-lg">Ce n’est pas une mauvaise note : on n’a simplement pas pu le voir.</p>
+          <p className="text-muted text-lg">Cela ne change pas ta note : on n’a simplement pas pu le voir.</p>
           <Chips ids={[...r.notEvaluated, ...r.notStudied]} empty="" />
         </Section>
       )}
@@ -237,7 +238,7 @@ function Body(p: {
 /** Corrections : enfin, la question, la réponse donnée, la bonne réponse et l'explication. */
 function Review({ id }: { readonly id: string }) {
   const { data, isLoading } = useEvaluationReview(id, true);
-  if (isLoading || !data) return <p role="status">Chargement des corrections…</p>;
+  if (isLoading || !data) return <BlockSkeleton />;
   return (
     <ol className="flex flex-col gap-2" aria-label="Corrections">
       {data.questions.map((q, i) => {

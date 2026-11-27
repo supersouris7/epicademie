@@ -17,6 +17,10 @@ import { buildDonnees } from './donnees.ts';
 import { buildProbabilites } from './probabilites.ts';
 import { buildProportionnalite } from './proportionnalite.ts';
 import { buildComplements } from './complements.ts';
+import { nombresCm1 } from './nombresCm1.ts';
+import { fractionsCm1 } from './fractionsCm1.ts';
+import { decimauxCm1 } from './decimauxCm1.ts';
+import { calculMentalCm1, sansRetenueCm1 } from './calculMentalCm1.ts';
 
 /**
  * Programmes du CM1 et du CM2 (cycle 3, BO n°16 du 17 avril 2025). Les deux années ont la même structure ;
@@ -43,10 +47,15 @@ function build(g: CM): Chapter[] {
     buildProbabilites(k),
     buildProportionnalite(k),
   ];
+  // Notions du CM1 déjà portées à 5 niveaux : elles remplacent la version à 3 niveaux, sous le même identifiant.
+  const portees = g === 'cm1' ? [nombresCm1, fractionsCm1, decimauxCm1, calculMentalCm1].flatMap((f) => f(k)) : [];
+  const renewed = new Map(portees.map((s) => [s.id, s]));
   // Notions ajoutées par l'audit du programme (complements.ts), rangées dans leur chapitre (m<classe>-<clé>).
   return chapters.map((c) => {
-    const more = extra[c.id.replace(`m${g}-`, '')];
-    return more ? { ...c, skills: [...c.skills, ...more] } : c;
+    const cle = c.id.replace(`m${g}-`, '');
+    const sansRetenue = g === 'cm1' && cle === 'calcul-mental' ? [sansRetenueCm1(k)] : [];
+    const more = [...(extra[cle] ?? []), ...sansRetenue];
+    return { ...c, skills: [...c.skills.map((s) => renewed.get(s.id) ?? s), ...more] };
   });
 }
 

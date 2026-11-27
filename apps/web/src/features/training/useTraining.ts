@@ -22,6 +22,7 @@ import {
   createTrainingReducer,
   initialTrainingScreen,
   isFirstAttempt,
+  type Help,
   type TrainingScreen,
 } from './state.ts';
 
@@ -169,15 +170,32 @@ export function useTraining(
         response,
         durationMs,
         attempt,
+        helped: s.help.length > 0,
       }).catch(() => notify('Réponse non enregistrée (problème de connexion).')),
     );
   };
 
-  /** Question suivante, ou fin de partie (après l'enregistrement de toutes les réponses). */
-  const next = async () => {
-    const { answered, training, sessionId } = latest.current;
+  /** Moment où l'explication complète a été ouverte (son temps de lecture ne compte pas). */
+  const explainedAt = useRef<number | null>(null);
+  const askHelp = (help: Help) => {
+    if (help === 'explanation') explainedAt.current = performance.now();
+    dispatch({ type: 'helpAsked', help });
+  };
+  const closeExplanation = () => {
+    if (explainedAt.current !== null) shownAt.current += performance.now() - explainedAt.current;
+    explainedAt.current = null;
+  };
+
+  /**
+   * Question suivante, ou fin de partie (après l'enregistrement de toutes les réponses).
+   * `skipSimilar` : l'enfant ne veut pas de la question du même type proposée.
+   */
+  const next = async (skipSimilar = false) => {
+    const { answered, sessionId, training: current } = latest.current;
     if (!answered || advancing.current) return;
     advancing.current = true;
+    const training = skipSimilar ? { ...current, pendingVariant: null } : current;
+    if (skipSimilar) dispatch({ type: 'variantDeclined' });
     playSound('click', 0.3);
     if (!isFinished(training)) {
       draw(training);
@@ -212,7 +230,9 @@ export function useTraining(
   return {
     state,
     submit,
-    next: () => void next(),
+    next: (skipSimilar?: boolean) => void next(skipSimilar),
+    askHelp,
+    closeExplanation,
     reportConfused,
     pick: (point: { readonly x: number; readonly y: number } | null) => dispatch({ type: 'picked', point }),
   };

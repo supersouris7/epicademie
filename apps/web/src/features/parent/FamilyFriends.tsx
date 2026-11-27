@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, type FamilyFriend } from '@epicademie/shared';
 import { ApiError, request } from '../../shared/api/client.ts';
+import { PARENT_GC_MS } from '../../shared/api/queryClient.ts';
 import { CharacterAvatar } from '../../shared/ui/game/CharacterAvatar.tsx';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { useToast } from '../../shared/ui/Toast.tsx';
@@ -19,7 +20,12 @@ const STATUS: Record<FamilyFriend['status'], string> = {
 export function FamilyFriends() {
   const qc = useQueryClient();
   const key = ['family-friends'];
-  const { data } = useQuery({ queryKey: key, queryFn: () => request(api.familyFriends) });
+  const { data } = useQuery({
+    queryKey: key,
+    queryFn: () => request(api.familyFriends),
+    gcTime: PARENT_GC_MS,
+    meta: { parentOnly: true },
+  });
   const [toast, showToast] = useToast(3000);
   const fail = (err: unknown) => showToast(err instanceof ApiError ? err.message : 'Problème de connexion');
   const approve = useMutation({

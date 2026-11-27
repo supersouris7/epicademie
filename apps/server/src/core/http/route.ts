@@ -2,7 +2,8 @@ import type { FastifyInstance, FastifyReply, FastifyRequest, RouteShorthandOptio
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 import type { z } from 'zod';
 import { ErrorBodySchema, type AnyEndpoint, type ResponseOf } from '@epicademie/shared';
-import { actorOf, checkAccess, operatorOf, type Actor } from './auth.ts';
+import { actorOf, adminOf, checkAccess, type Actor } from './auth.ts';
+import type { AdminIdentity } from './admin-identity.ts';
 
 /**
  * Branche un point d'accès du contrat (`@epicademie/shared` → `api`) sur Fastify.
@@ -29,8 +30,8 @@ export interface HandlerInput<E extends AnyEndpoint> {
   readonly reply: FastifyReply;
   /** Compte connecté (lève 401 si la route est publique et que personne ne l'est). */
   readonly actor: () => Actor;
-  /** Nom de l'opérateur d'administration (routes `admin` seulement ; 403 sinon). */
-  readonly operator: () => string;
+  /** Membre de l'équipe connecté (routes `admin` seulement ; 403 sinon). */
+  readonly admin: () => AdminIdentity;
 }
 
 /** Gestionnaire : renvoie la réponse du contrat (valeur ignorée pour une réponse 204). */
@@ -64,14 +65,14 @@ export function route<E extends AnyEndpoint>(
       ...('body' in endpoint ? { body: endpoint.body } : {}),
       response: { ...success, ...errorResponses },
     },
-    // Niveau d'accès du contrat, vérifié avant toute lecture des données.
+    // Niveau d'accès et permission du contrat, vérifiés avant toute lecture des données.
     preHandler: async (request) => {
-      checkAccess(endpoint.access, request.actor, request.operator);
+      checkAccess(endpoint, request.actor, request.admin);
     },
-    handler: async (request, reply): Promise<void> => {
+    handler: async (request, reply) => {
       const result = await handler({
         actor: () => actorOf(request),
-        operator: () => operatorOf(request),
+        admin: () => adminOf(request),
         reply,
         params: request.params as HandlerInput<E>['params'],
         body: request.body as HandlerInput<E>['body'],
@@ -81,6 +82,9 @@ export function route<E extends AnyEndpoint>(
       const raw = reply as unknown as { code(n: number): { send(body?: unknown): unknown } };
       if (endpoint.status === 204) raw.code(204).send();
       else raw.code(endpoint.status).send(result);
+      // `return reply` : sans lui, Fastify croit que rien n'est parti tant que les crochets
+      // `onSend` (asynchrones) tournent, et envoie une seconde fois (« Cannot write headers… »).
+      return reply;
     },
   });
 }

@@ -1,5 +1,5 @@
 /**
- * Faits des chapitres « La matière », « Mouvement et énergie » et « Le vivant » (CM1), puis « Matériaux et mélanges » (CM2) et « Signal et information » (6e). Chaque fait cite son identifiant de source (registre `sources.ts`) et la
+ * Faits des chapitres « La matière », « Mouvement et énergie » et « Le vivant » (CM1), puis « Matériaux et mélanges » et « Mouvement et énergie » « Le corps humain » et « Écosystèmes » (CM2), « Signal et information », « La décomposition » et « Électricité et énergie » (6e), « Objets techniques et programmation » (CM2). Chaque fait cite son identifiant de source (registre `sources.ts`) et la
  * citation exacte du texte officiel (programme du cycle 3, Éduscol, domaine « Matière, mouvement, énergie,
  * information »). Les exemples du quotidien (un caillou, une pomme, la buée…) illustrent ces faits : ils ne sont pas des faits.
  */
@@ -619,5 +619,745 @@ export const FAITS: readonly Fait[] = [
     source: 'cnrtl-voyant',
     citation:
       'Lampe s’allumant pour attirer l’attention sur un danger, un dysfonctionnement ou pour indiquer qu’un appareil fonctionne.',
+  },
+  // ——— Chapitre « Mouvement et énergie » (CM2) : programme, CNRTL, Académie française, ministère. ———
+  {
+    id: 'mouvement-soleil',
+    source: PROGRAMME,
+    citation: 'le Soleil décrit une courbe dans le ciel du point de vue de la cour de récréation',
+  },
+  {
+    id: 'trajectoire-def',
+    source: 'cnrtl-trajectoire',
+    citation: 'Courbe décrite par le centre de gravité d’un mobile.',
+  },
+  {
+    id: 'vitesse-def',
+    source: 'cnrtl-vitesse',
+    citation: 'espace parcouru en fonction du temps mis à le parcourir',
+  },
+  {
+    id: 'vitesse-activites',
+    source: PROGRAMME,
+    citation:
+      'des activités de mesure de distances, de durées (la durée est définie comme l’intervalle entre deux instants), et de vitesse',
+  },
+  {
+    id: 'vitesse-calcul-6e',
+    source: PROGRAMME,
+    citation:
+      'En classe de sixième, seul le calcul de la valeur de la vitesse à partir de la distance parcourue et de la durée de déplacement dans le cas d’un mouvement uniforme est exigible.',
+  },
+  {
+    id: 'renouvelable-sensibilisation',
+    source: PROGRAMME,
+    citation:
+      'Les élèves sont sensibilisés au caractère renouvelable ou non, à l’échelle temporelle de la vie humaine, des ressources en énergie.',
+  },
+  {
+    id: 'enr-alimentation',
+    source: 'ecologie-energies-renouvelables',
+    citation:
+      'Les énergies renouvelables (EnR) sont alimentées par le soleil, le vent, la chaleur de la terre, les chutes d’eau, les marées…',
+  },
+  {
+    id: 'enr-inepuisables',
+    source: 'ecologie-energies-renouvelables',
+    citation: 'Ces sources d’énergie, considérées comme inépuisables à l’échelle du temps humain',
+  },
+  {
+    id: 'enr-fossiles',
+    source: 'ecologie-energies-renouvelables',
+    citation: 'Elles se distinguent des énergies fossiles, polluantes et dont les stocks diminuent.',
+  },
+  {
+    id: 'enr-bois',
+    source: 'ecologie-biomasse',
+    citation: 'Le chauffage individuel au bois représente la première source d’énergie renouvelable en France',
+  },
+  {
+    id: 'enr-bois-condition',
+    source: 'ecologie-energies-renouvelables',
+    citation:
+      'Il s’agit d’une source d’énergie considérée comme renouvelable, dans la mesure où la forêt est gérée de façon durable.',
+  },
+  {
+    id: 'enr-geothermie',
+    source: 'ecologie-energies-renouvelables',
+    citation: 'exploitent toutes la chaleur de la croûte terrestre',
+  },
+  { id: 'vent-def', source: 'cnrtl-vent', citation: 'Déplacement d’air plus ou moins important' },
+  {
+    id: 'maree-def',
+    source: 'cnrtl-maree',
+    citation: 'Mouvement alternatif, périodique et journalier du niveau de la mer',
+  },
+  {
+    id: 'fossile-combustibles',
+    source: 'academie-fossile',
+    citation:
+      'Combustibles fossiles, produits par la transformation de matières organiques enfouies dans la terre. La houille, le pétrole sont des combustibles fossiles.',
+  },
+  {
+    id: 'charbon-fossile',
+    source: 'academie-charbon',
+    citation:
+      'Le charbon est une roche fossile résultant de la carbonisation de débris végétaux au cours des âges géologiques.',
+  },
+  {
+    id: 'petrole-def',
+    source: 'academie-petrole',
+    citation:
+      'Huile minérale d’origine naturelle, issue de l’accumulation et de la transformation de matière organique',
+  },
+  {
+    id: 'conversion-attendu',
+    source: PROGRAMME,
+    citation: 'Identifier les formes d’énergie mises en jeu dans un dispositif de conversion d’énergie.',
+  },
+  // ——— Chapitre « Le corps humain » (CM2) : programme, CNRTL, Académie française, Santé publique France, Bulletin officiel. ———
+  {
+    id: 'corps-role-aliments',
+    source: PROGRAMME,
+    citation: 'Expliquer le rôle des aliments pour le fonctionnement de l’organisme.',
+  },
+  {
+    id: 'corps-trajet',
+    source: PROGRAMME,
+    citation:
+      'Identifier et localiser la transformation des aliments dans l’appareil digestif (mastication par les dents, changements de texture lors du trajet).',
+  },
+  {
+    id: 'corps-circulation',
+    source: PROGRAMME,
+    citation: 'Identifier le rôle de la circulation sanguine dans l’approvisionnement des organes.',
+  },
+  {
+    id: 'corps-comportements',
+    source: PROGRAMME,
+    citation:
+      'Citer quelques comportements alimentaires et règles d’hygiène favorables à la santé (équilibre alimentaire, qualité sanitaire des aliments, brossage des dents, etc.).',
+  },
+  {
+    id: 'digestion-def',
+    source: 'cnrtl-digestion',
+    citation:
+      "Ensemble des transformations, d'ordre mécanique ou chimique, subies par les aliments dans le tube digestif avant de parvenir à l'état sous lequel ils sont assimilables par les cellules",
+  },
+  {
+    id: 'mastication-def',
+    source: 'cnrtl-mastication',
+    citation:
+      'Action de mastiquer, de broyer les aliments avec les dents de manière à en favoriser la déglutition et la digestion.',
+  },
+  { id: 'dent-role', source: 'cnrtl-dent', citation: 'destiné à saisir, retenir et broyer les aliments.' },
+  {
+    id: 'salive-def',
+    source: 'cnrtl-salive',
+    citation:
+      'Liquide physiologique incolore, alcalin, plus ou moins visqueux, qui humecte la bouche et qui sert principalement à la digestion buccale',
+  },
+  {
+    id: 'bol-def',
+    source: 'cnrtl-bol',
+    citation: "Quantité d'aliments mastiqués et imprégnés de salive déglutis en une seule fois",
+  },
+  {
+    id: 'chyme-def',
+    source: 'cnrtl-chyme',
+    citation:
+      'Bouillie semi-liquide, de couleur grisâtre ou brunâtre, provenant de la digestion buccale et gastrique des aliments.',
+  },
+  {
+    id: 'oesophage-def',
+    source: 'cnrtl-oesophage',
+    citation:
+      "Segment du tube digestif reliant le pharynx à l'estomac, et dont la fonction est de conduire les aliments dans l'estomac après la déglutition.",
+  },
+  {
+    id: 'estomac-def',
+    source: 'cnrtl-estomac',
+    citation: 'Organe en forme de poche dans lequel les aliments sont brassés, transformés en chyme',
+  },
+  { id: 'intestin-def', source: 'cnrtl-intestin', citation: "Partie du tube digestif qui va de l'estomac à l'anus." },
+  {
+    id: 'intestin-grele',
+    source: 'cnrtl-intestin',
+    citation: 'Segment du tube digestif allant du pylore au gros intestin',
+  },
+  { id: 'gros-intestin', source: 'cnrtl-intestin', citation: 'Dernière partie du tube digestif' },
+  {
+    id: 'chyle-sang',
+    source: 'cnrtl-chyle',
+    citation:
+      "Produit de la digestion d'apparence laiteuse qui est absorbé par la paroi de l'intestin grêle pour être conduit dans la circulation sanguine",
+  },
+  {
+    id: 'aliment-def',
+    source: 'cnrtl-aliment',
+    citation:
+      'Toute substance susceptible de fournir aux êtres vivants les éléments nécessaires à leur croissance ou à leur conservation',
+  },
+  {
+    id: 'aliment-jeunes',
+    source: 'cnrtl-aliment',
+    citation:
+      "chez les êtres jeunes, ils doivent en outre servir à l'édification, au développement de chaque partie du corps",
+  },
+  {
+    id: 'croissance-def',
+    source: 'cnrtl-croissance',
+    citation: 'Action de grandir (surtout en hauteur, largeur ou en nombre)',
+  },
+  {
+    id: 'activite-def',
+    source: 'spf-activite-physique-2017',
+    citation:
+      'L’activité physique correspond à tous les mouvements de notre corps produits par la contraction des muscles et qui entraînent une dépense en énergie supérieure à celle du repos.',
+  },
+  {
+    id: 'activite-exemples',
+    source: 'spf-activite-physique-2017',
+    citation:
+      'se déplacer à pied ou à vélo, porter une charge, monter ou descendre les escaliers, être actif à son domicile sont des pratiques d’activité physique.',
+  },
+  {
+    id: 'activite-enfants',
+    source: 'spf-activite-physique-2017',
+    citation: 'pratiquer au moins une heure par jour d’activité physique d’intensité modérée et élevée.',
+  },
+  {
+    id: 'ecrans-enfants',
+    source: 'spf-activite-physique-2017',
+    citation: 'limiter le temps de loisir passé devant un écran à deux heures par jour.',
+  },
+  {
+    id: 'besoins-variables',
+    source: 'bo-restauration-2001',
+    citation:
+      "Les besoins énergétiques sont variables d'un sujet à l'autre, en particulier chez l'enfant. Ils sont fonction de la masse corporelle, du degré d'activité, mais aussi de facteurs innés.",
+  },
+  {
+    id: 'besoins-croissance',
+    source: 'bo-restauration-2001',
+    citation:
+      'le repas de midi est une source privilégiée des nutriments essentiels à leur croissance et à leur développement psychomoteur',
+  },
+  {
+    id: 'besoins-ages',
+    source: 'bo-restauration-2001',
+    citation:
+      "pour les élèves de maternelle : 8 g de protéines de bonne qualité, 180 mg de calcium, 2,4 mg de fer ; pour les élèves de l'école élémentaire : 11 g de protéines de bonne qualité, 220 mg de calcium,2,8 mg de fer ; pour les adolescents : 17 à 20 g de protéines de bonne qualité, 300 à 400 mg de calcium, 4 à 7 mg de fer.",
+  },
+  { id: 'repas-fruits', source: 'spf-alimentation-2019', citation: 'Au moins 5 fruits et légumes par jour' },
+  {
+    id: 'repas-legumes-secs',
+    source: 'spf-alimentation-2019',
+    citation: 'Des légumes secs au moins 2 fois par semaine : lentilles, haricots secs, pois chiches, etc.',
+  },
+  { id: 'repas-eau', source: 'spf-alimentation-2019', citation: 'L’eau est la seule boisson recommandée' },
+  {
+    id: 'repas-sucrees',
+    source: 'spf-alimentation-2019',
+    citation:
+      'On entend par boissons sucrées : les jus de fruits, les boissons aux fruits, les sirops, les eaux aromatisées, les sodas même « light » et les boissons dites « énergisantes ».',
+  },
+  {
+    id: 'repas-sucrees-limite',
+    source: 'spf-alimentation-2019',
+    citation: 'Les boissons sucrées doivent être limitées le plus possible',
+  },
+  { id: 'repas-sel', source: 'spf-alimentation-2019', citation: 'Limiter la consommation de sel et de produits salés' },
+  {
+    id: 'repas-sel-origine',
+    source: 'spf-alimentation-2019',
+    citation:
+      'Le sel consommé provient surtout des produits transformés : charcuterie, plats préparés du commerce, soupes déshydratées, fromage, pain, etc.',
+  },
+  {
+    id: 'repas-gras',
+    source: 'spf-alimentation-2019',
+    citation: 'Réduire la consommation d’aliments gras, sucrés, salés et ultra-transformés',
+  },
+  { id: 'repas-variete', source: 'spf-alimentation-2019', citation: 'privilégier la variété, le fait maison' },
+  {
+    id: 'sang-def',
+    source: 'cnrtl-sang',
+    citation:
+      "propulsé par le cœur dans un système fermé de vaisseaux (appareil circulatoire), remplit de multiples fonctions essentielles à l'organisme (notamment la fonction nutritive, respiratoire, excrétoire, immunisante)",
+  },
+  { id: 'coeur-role', source: 'cnrtl-coeur', citation: 'agent principal de la circulation sanguine' },
+  {
+    id: 'artere-def',
+    source: 'cnrtl-artere',
+    citation:
+      'Chacun des vaisseaux qui, partant des ventricules du cœur, distribuent le sang dans toutes les parties du corps',
+  },
+  {
+    id: 'veine-def',
+    source: 'cnrtl-veine',
+    citation: 'Vaisseau sanguin dans lequel la circulation se fait de la périphérie vers le cœur.',
+  },
+  {
+    id: 'capillaire-def',
+    source: 'academie-capillaire',
+    citation:
+      'les très fins vaisseaux qui joignent les artérioles aux veinules et permettent les échanges nutritifs et gazeux entre le sang et les cellules.',
+  },
+  // Écosystèmes (CM2) et décomposeurs (6e), lot st-cm2-04.
+  {
+    id: 'eco-caracteriser',
+    source: PROGRAMME,
+    citation:
+      'Caractériser, à partir d’un exemple, un écosystème par son milieu de vie, l’ensemble des êtres vivants et les interactions en son sein.',
+  },
+  {
+    id: 'eco-relations',
+    source: PROGRAMME,
+    citation:
+      'Décrire plusieurs types de relations entre espèces au sein d’un écosystème (coopérations, prédation, etc.).',
+  },
+  {
+    id: 'eco-repartition',
+    source: PROGRAMME,
+    citation:
+      'Comparer, à partir d’observations ou d’expériences, la répartition des êtres vivants dans des milieux proches pour relier les facteurs abiotiques (physico-chimiques) et cette répartition (la température, l’ensoleillement ou l’humidité, etc.).',
+  },
+  {
+    id: 'eco-pollinisation',
+    source: PROGRAMME,
+    citation: 'Illustrer la notion de coopération (interaction mutualiste) avec l’exemple de la pollinisation.',
+  },
+  {
+    id: 'eco-actions',
+    source: PROGRAMME,
+    citation:
+      'Mettre en évidence quelques répercussions positives et négatives des actions humaines sur l’environnement proche.',
+  },
+  {
+    id: 'decompo-mort',
+    source: PROGRAMME,
+    citation:
+      'Mettre en évidence que la matière organique des êtres vivants est décomposée après leur mort (exemple du sol).',
+  },
+  {
+    id: 'decompo-role',
+    source: PROGRAMME,
+    citation:
+      'Dégager le rôle clé des êtres vivants, en particulier des microorganismes, dans la décomposition de la matière organique, contribuant au cycle de la matière.',
+  },
+  {
+    id: 'ecosysteme-def',
+    source: 'academie-ecosysteme',
+    citation:
+      "Ensemble formé par une communauté d'êtres vivants, animaux et végétaux, et par le milieu dans lequel ils vivent. Les composants d'un écosystème sont en interaction constante.",
+  },
+  { id: 'proie-def', source: 'academie-proie', citation: "Être vivant qu'un animal capture pour s'en nourrir." },
+  {
+    id: 'predateur-def',
+    source: 'academie-predateur',
+    citation: "Animal qui vit aux dépens d'autres espèces animales qu'il capture et dont il se nourrit.",
+  },
+  {
+    id: 'mutualisme-def',
+    source: 'academie-mutualisme',
+    citation:
+      "Association de deux animaux d'espèces différentes qui tirent profit de cette union sans vivre aux dépens l'un de l'autre. Le mutualisme de l'anémone de mer et du bernard-l'hermite.",
+  },
+  {
+    id: 'lichen-symbiose',
+    source: 'cnrtl-symbiose',
+    citation: "Un lichen est la symbiose d'une algue et d'un champignon",
+  },
+  {
+    id: 'symbiose-def',
+    source: 'cnrtl-symbiose',
+    citation: "Association durable entre deux ou plusieurs organismes et profitable à chacun d'eux.",
+  },
+  {
+    id: 'ensoleillement-def',
+    source: 'academie-ensoleillement',
+    citation: 'Temps pendant lequel un lieu est ensoleillé.',
+  },
+  {
+    id: 'humidite-def',
+    source: 'academie-humidite',
+    citation: "Caractère ou état de ce qui est humide ; eau, vapeur d'eau présente dans un corps, un lieu, etc.",
+  },
+  {
+    id: 'cloporte-milieu',
+    source: 'academie-cloporte',
+    citation: 'Petit crustacé isopode terrestre qui vit dans les lieux sombres et humides.',
+  },
+  {
+    id: 'lombric-milieu',
+    source: 'cnrtl-lombric',
+    citation: 'vit en milieu humide (terre, fumier p. ex.)',
+  },
+  {
+    id: 'litiere-def',
+    source: 'academie-litiere',
+    citation:
+      "Couche de débris végétaux peu altérés qui se trouvent à la surface d'un sol, notamment d'un sol forestier.",
+  },
+  {
+    id: 'humus-def',
+    source: 'cnrtl-humus',
+    citation:
+      'Terre brune noirâtre provenant de la décomposition de débris végétaux et/ou animaux dans le sol et qui contribue à sa fertilité.',
+  },
+  {
+    id: 'humus-bacteries',
+    source: 'cnrtl-humus',
+    citation:
+      "provenant de la décomposition de la matière organique fraîche par l'action de bactéries ou d'autres organismes vivants.",
+  },
+  {
+    id: 'moisissure-def',
+    source: 'academie-moisissure',
+    citation:
+      'Champignon microscopique qui se développe, en formant souvent des taches duveteuses, sur des matières organiques humides dont il provoque la décomposition ou la fermentation',
+  },
+  {
+    id: 'microorganisme-def',
+    source: 'academie-micro-organisme',
+    citation: 'Les bactéries, les virus, certains protozoaires sont des microorganismes.',
+  },
+  {
+    id: 'lombric-def',
+    source: 'academie-lombric',
+    citation: "Le lombric contribue à la fertilité du sol en l'aérant par les galeries qu'il y creuse.",
+  },
+  {
+    id: 'lombricomposteur-def',
+    source: 'ecologie-biodechets',
+    citation: 'lombricomposteur (composteur individuel basé sur la digestion de déchets alimentaires par des lombrics)',
+  },
+  {
+    id: 'compost-sol',
+    source: 'ecologie-biodechets',
+    citation:
+      'la valorisation organique via le compostage, l’épandage ou la méthanisation permet de faire retourner au sol ou de transformer des matières organiques brutes en une matière valorisable',
+  },
+  {
+    id: 'action-destruction',
+    source: 'ecologie-biodiversite',
+    citation:
+      'la destruction et la fragmentation des milieux naturels liées, notamment, à l’urbanisation et au développement des infrastructures de transport',
+  },
+  {
+    id: 'action-pollutions',
+    source: 'ecologie-biodiversite',
+    citation: 'les pollutions de l’eau, des sols et de l’air',
+  },
+  {
+    id: 'action-surexploitation',
+    source: 'ecologie-biodiversite',
+    citation: 'la surexploitation d’espèces sauvages : surpêche, déforestation, braconnage, etc.',
+  },
+  {
+    id: 'action-fragmentation',
+    source: 'ecologie-trame-verte',
+    citation:
+      'les infrastructures de transport comme les routes et les voies ferrées, les barrages sur les cours d’eau, l’agriculture et la foresterie intensive, ou encore la pollution lumineuse ou sonore, réduisent la surface des espaces naturels et les fragmentent, limitant ainsi les possibilités de déplacement des espèces.',
+  },
+  {
+    id: 'action-haies',
+    source: 'ecologie-trame-verte',
+    citation:
+      'le maintien et la restauration d’infrastructures agroécologiques, entités favorables au fonctionnement de la trame, tels que les haies, bandes enherbées, bocages, arbres isolés et bosquets, mares, milieux humides, bords des cours d’eau',
+  },
+  {
+    id: 'action-passes',
+    source: 'ecologie-trame-verte',
+    citation:
+      'L’effacement des ouvrages ou leur aménagement, en installant notamment des passes à poissons, permet aux espèces de franchir ces obstacles et d’assurer leur cycle de vie.',
+  },
+  {
+    id: 'action-ville',
+    source: 'ecologie-trame-verte',
+    citation:
+      'le mode de gestion de l’espace est primordial pour favoriser la biodiversité et les continuités écologiques. La gestion différenciée consiste à pratiquer un entretien adapté des espaces verts selon leurs caractéristiques et leurs usages. Arrêter les traitements phytosanitaires, faucher tardivement, planter des essences locales…les actions possibles sont diverses.',
+  },
+  {
+    id: 'action-lumiere',
+    source: 'ecologie-pollution-lumineuse',
+    citation:
+      'Elles sont aussi une source de perturbations pour la biodiversité (modification du système proie-prédateur, perturbation des cycles de reproduction, des migrations…)',
+  },
+  {
+    id: 'action-impermeable',
+    source: 'ecologie-artificialisation',
+    citation: 'un sol imperméabilisé n’absorbe pas l’eau de pluie',
+  },
+  // Objets techniques et programmation (CM2), électricité et chaîne d’énergie (6e) : lot st-cm2-05.
+  {
+    id: 'conducteur-def',
+    source: 'academie-conducteur',
+    citation: 'Susceptible d’être parcouru par le courant électrique ou de transférer la chaleur.',
+  },
+  {
+    id: 'conducteur-oppose',
+    source: 'academie-conducteur',
+    citation: 'Les corps conducteurs, par opposition aux corps isolants.',
+  },
+  {
+    id: 'conducteur-metal',
+    source: 'academie-metal',
+    citation:
+      'généralement bon conducteur de la chaleur et de l’électricité. Le fer, le cuivre, le magnésium, le calcium sont des métaux.',
+  },
+  {
+    id: 'conducteur-cuivre',
+    source: 'academie-cuivre',
+    citation: 'Le cuivre est bon conducteur de la chaleur et de l’électricité.',
+  },
+  {
+    id: 'conducteur-argent',
+    source: 'academie-argent',
+    citation: 'Métal de couleur blanche, brillant, ductile et bon conducteur de la chaleur et de l’électricité',
+  },
+  {
+    id: 'conducteur-aluminium',
+    source: 'cnrtl-aluminium',
+    citation: 'Métal blanc, très léger, de symbole Al',
+  },
+  {
+    id: 'isolant-def',
+    source: 'cnrtl-isolant',
+    citation: 'Corps, matériau qui s’oppose au passage du courant électrique, de la chaleur ou des vibrations sonores',
+  },
+  {
+    id: 'isolant-verre',
+    source: 'cnrtl-isolant',
+    citation: 'Le verre est considéré depuis longtemps comme un bon diélectrique',
+  },
+  {
+    id: 'isolant-porcelaine',
+    source: 'cnrtl-isolateur',
+    citation: 'isolé du sol par des isolateurs en porcelaine',
+  },
+  {
+    id: 'isolant-mica',
+    source: 'cnrtl-mica',
+    citation: 'résistantes à la chaleur et isolantes',
+  },
+  {
+    id: 'isolant-bakelite',
+    source: 'cnrtl-bakelite',
+    citation: 'matière plastique, utilisée comme isolant',
+  },
+  {
+    id: 'isolant-gaine',
+    source: 'cnrtl-gaine',
+    citation: 'Enveloppe isolante d’un fil, d’un câble.',
+  },
+  {
+    id: 'isolant-isoler',
+    source: 'academie-isoler',
+    citation:
+      'séparer par un isolant des conducteurs, des corps chargés électriquement, de façon à empêcher tout contact',
+  },
+  {
+    id: 'conductivite-6e',
+    source: PROGRAMME,
+    citation:
+      'comparer et trier différents matériaux sur la base de leurs propriétés physiques (conductivité thermique ou électrique, capacité à interagir avec un aimant).',
+  },
+  {
+    id: 'chaine-representation',
+    source: PROGRAMME,
+    citation:
+      'Réaliser expérimentalement un dispositif de conversion d’énergie et en rendre compte par la représentation d’une chaîne énergétique.',
+  },
+  {
+    id: 'chaine-stockage',
+    source: PROGRAMME,
+    citation:
+      'distinguer les énergies qui peuvent être stockées (énergies de pesanteur, cinétique, chimique, nucléaire et thermique) de celles qui correspondent à des transferts énergétiques (énergies électrique et lumineuse).',
+  },
+  {
+    id: 'chaine-moteur-pile',
+    source: PROGRAMME,
+    citation:
+      'conversion d’énergie chimique en énergie cinétique dans un dispositif constitué d’un moteur alimenté par une pile électrique',
+  },
+  {
+    id: 'chaine-lampe-pile',
+    source: PROGRAMME,
+    citation:
+      'transfert d’énergie électrique vers une lampe ou un autre appareil électrique alimentés par une pile électrique',
+  },
+  {
+    id: 'chaine-chute',
+    source: PROGRAMME,
+    citation: 'au cours de la chute d’un objet, son énergie de pesanteur est convertie en énergie cinétique',
+  },
+  {
+    id: 'chaine-recepteur',
+    source: 'academie-recepteur',
+    citation:
+      'Appareil, installation qui convertissent l’énergie électrique fournie par un générateur en une autre forme d’énergie, lumineuse, thermique, mécanique ou chimique. Les ampoules, les résistances, les moteurs électriques, les électrolyseurs sont des récepteurs.',
+  },
+  {
+    id: 'chaine-pile',
+    source: 'academie-pile',
+    citation: 'Appareil, dispositif qui fournit de l’énergie électrique à partir de l’énergie chimique.',
+  },
+  {
+    id: 'chaine-photopile',
+    source: 'academie-photopile',
+    citation:
+      'Dispositif utilisant l’effet photovoltaïque pour produire de l’électricité à partir de l’énergie solaire',
+  },
+  {
+    id: 'chaine-moteur',
+    source: 'academie-moteur',
+    citation:
+      'Appareil qui utilise une source quelconque d’énergie pour produire de l’énergie mécanique, du mouvement.',
+  },
+  {
+    id: 'info-chaines',
+    source: PROGRAMME,
+    citation:
+      'Identifier la chaîne d’information et d’action (exemple d’un éclairage public intelligent : détecteur de présence, boîtier de contrôle, relais de commande d’éclairage, etc.).',
+  },
+  {
+    id: 'info-reperer',
+    source: PROGRAMME,
+    citation:
+      'Repérer les capteurs et les actionneurs (moteur électrique, etc.) présents dans un objet programmable (par exemple un robot).',
+  },
+  {
+    id: 'info-detecter',
+    source: PROGRAMME,
+    citation:
+      'capteurs (utilisés pour détecter la présence d’obstacles, ou un niveau de luminosité réduit en fin de journée, etc.)',
+  },
+  {
+    id: 'info-capteur',
+    source: 'academie-capteur',
+    citation:
+      'Appareil sensible à un phénomène physique, qu’il transforme en un signal, généralement électrique, transmissible à distance. Un microphone est un capteur sensible aux sons',
+  },
+  {
+    id: 'info-chaine-capteurs',
+    source: 'eduscol-chaine-information',
+    citation:
+      'identifier les constituants de la chaîne d’information d’un OST et de connaître les fonctions des constituants suivants : capteurs',
+  },
+  {
+    id: 'info-roles',
+    source: 'eduscol-chaine-information-synthese',
+    citation:
+      'le système acquiert des informations : rôle des capteurs, des codeurs et des détecteurs et il transforme l’énergie qu’il reçoit en action(s) attendue(s) par l’utilisateur : rôle des actionneurs',
+  },
+  {
+    id: 'info-exemples',
+    source: 'eduscol-chaine-information-synthese',
+    citation: 'Exemples : capteur de température, de luminosité, d’humidité',
+  },
+  {
+    id: 'info-chaine-actionneurs',
+    source: 'eduscol-chaine-action',
+    citation: 'Structure d’une chaîne d’action • Les actionneurs',
+  },
+  {
+    id: 'algo-def',
+    source: 'academie-algorithme',
+    citation: 'en appliquant dans un ordre précis une suite finie de règles',
+  },
+  {
+    id: 'algo-programme',
+    source: 'academie-programme',
+    citation:
+      'Suite d’instructions rédigées dans un langage spécifique, qui commande à un dispositif, à un appareil ou à un système informatique d’exécuter une tâche donnée',
+  },
+  {
+    id: 'algo-instruction',
+    source: 'academie-instruction',
+    citation: 'Consigne formulée dans un langage de programmation, selon un code.',
+  },
+  {
+    id: 'algo-consignes',
+    source: PROGRAMME,
+    citation:
+      'organiser un ensemble de consignes (par exemple, pour un robot : avancer, tourner, s’arrêter), recueillir des informations (détecter un obstacle, détecter un niveau de batteries faible) pour accomplir la tâche souhaitée.',
+  },
+  {
+    id: 'algo-blocs',
+    source: PROGRAMME,
+    citation:
+      'initier les élèves à la programmation d’objets techniques à l’aide de langages de programmation par blocs.',
+  },
+  {
+    id: 'algo-coder',
+    source: PROGRAMME,
+    citation:
+      'Coder un algorithme simple agissant sur le comportement d’un objet technique (déplacement d’un robot, fonctionnement d’un système d’éclairage, etc.).',
+  },
+  {
+    id: 'algo-traduire',
+    source: PROGRAMME,
+    citation: 'Comprendre un programme simple et le traduire en langage naturel.',
+  },
+  {
+    id: 'algo-critiquer',
+    source: PROGRAMME,
+    citation: 'Critiquer un programme au regard du comportement de l’objet programmé',
+  },
+  {
+    id: 'secu-regles',
+    source: PROGRAMME,
+    citation:
+      'Rechercher des informations sur les règles de sécurité électrique et les prendre en compte dans son activité.',
+  },
+  {
+    id: 'secu-domestiques',
+    source: PROGRAMME,
+    citation: 'sensibilisation des élèves aux risques électriques domestiques.',
+  },
+  {
+    id: 'secu-pile',
+    source: PROGRAMME,
+    citation:
+      'Réaliser un circuit électrique à une boucle associant un générateur (pile), un interrupteur, un ou deux récepteurs',
+  },
+  {
+    id: 'secu-mortelle',
+    source: 'academie-electrocution',
+    citation: 'Action, qui peut être mortelle, du courant électrique sur un organisme.',
+  },
+  {
+    id: 'secu-mouille',
+    source: 'cnrtl-electrocution',
+    citation:
+      'Les courants domestiques : 120 et 240 volts peuvent provoquer l’électrocution si la peau du sujet est humide ou s’il existe une « bonne terre » (sujet dans une baignoire)',
+  },
+  {
+    id: 'secu-installation',
+    source: 'ecologie-securite-installations',
+    citation: 'Une installation électrique défaillante représente un risque important d’électrisation',
+  },
+  {
+    id: 'secu-incendie',
+    source: 'ecologie-securite-installations',
+    citation: 'cause de nombreux départs de feu',
+  },
+  {
+    id: 'secu-prise',
+    source: 'academie-prise',
+    citation: 'petit dispositif fixe femelle, relié de façon permanente au réseau électrique',
+  },
+  {
+    id: 'secu-disjoncteur',
+    source: 'academie-disjoncteur',
+    citation:
+      'Interrupteur qui assure en cas d’anomalie la coupure d’un circuit électrique, soit par commande manuelle, soit automatiquement.',
+  },
+  {
+    id: 'secu-court-circuit',
+    source: 'cnrtl-court-circuit',
+    citation: 'une élévation dangereuse de la température des conducteurs',
   },
 ];

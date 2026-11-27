@@ -16,7 +16,7 @@ import { BATTLE_STATUSES, BattleQuestionSchema, ItemIdSchema } from '@epicademie
  */
 
 /** Version du format stocké. À incrémenter à chaque changement de `BattleState`. */
-export const BATTLE_STATE_VERSION = 1;
+export const BATTLE_STATE_VERSION = 2;
 
 const count = z.number().int().nonnegative();
 
@@ -30,6 +30,9 @@ const BattleStateSchema = z.object({
   order: z.array(z.string()).readonly(),
   shield: z.boolean(),
   hintShown: z.boolean(),
+  weakAttack: z.boolean(),
+  hintsAsked: count,
+  weakHits: count,
   itemsUsed: count,
   equipped: z.array(ItemIdSchema).readonly(),
   question: BattleQuestionSchema.nullable(),

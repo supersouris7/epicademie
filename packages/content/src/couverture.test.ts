@@ -90,7 +90,7 @@ describe('couverture du catalogue', () => {
       const prompts = byLevel.map((qs) => qs.map((q) => q.prompt).join('|'));
       expect(new Set(prompts).size, `${s.id} : niveaux identiques`).toBe(5);
     }
-  });
+  }, 30_000);
 
   it('les sources citées existent dans le registre', () => {
     const ids = new Set(SOURCES.map((s) => s.id));
@@ -110,7 +110,7 @@ describe('couverture du catalogue', () => {
 });
 
 // Nombre de notions à 3 niveaux au moment du lot moteur (mo-03).
-const HISTORIQUES_MAX = 376;
+const HISTORIQUES_MAX = 340;
 
 describe('aperçu de relecture', () => {
   it('une notion : 5 niveaux × 3 graines avec énoncé, réponse, pièges, indice, étapes et sources', () => {

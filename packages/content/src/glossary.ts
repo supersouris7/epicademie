@@ -97,6 +97,39 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
   },
   // ——— Les opérations ———
   {
+    id: 'ordre-croissant',
+    word: 'ordre croissant',
+    forms: ['ordre croissant', 'ordre décroissant'],
+    definition: 'Ranger du **plus petit au plus grand**. L’ordre décroissant va dans l’autre sens.',
+    example: '3 < 8 < 12 : ces nombres sont rangés dans l’ordre croissant.',
+    family: 'operations',
+  },
+  {
+    id: 'demi-droite-graduee',
+    word: 'demi-droite graduée',
+    forms: ['demi-droite graduée', 'demi-droites graduées'],
+    definition:
+      'Une ligne qui part d’un point et porte des traits régulièrement espacés. Chaque trait correspond à un nombre.',
+    example: 'Entre 0 et 100, avec 10 intervalles égaux, les traits indiquent 10, 20, 30…',
+    family: 'operations',
+  },
+  {
+    id: 'intervalle',
+    word: 'intervalle',
+    forms: ['intervalle', 'intervalles'],
+    definition: 'L’espace entre deux traits (ou deux nombres) qui se suivent.',
+    example: 'De 0 à 30 avec 3 intervalles égaux, chaque intervalle vaut 10.',
+    family: 'operations',
+  },
+  {
+    id: 'encadrer',
+    word: 'encadrer',
+    forms: ['encadrer', 'encadre'],
+    definition: 'Placer un nombre **entre deux autres** : un plus petit et un plus grand.',
+    example: 'On encadre 47 entre deux dizaines : 40 < 47 < 50.',
+    family: 'operations',
+  },
+  {
     id: 'somme',
     word: 'somme',
     forms: ['somme', 'sommes'],
@@ -153,6 +186,14 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
     definition: 'Un nombre qui peut s’écrire avec une virgule et un nombre fini de chiffres après la virgule.',
     example: '12,75 est un nombre décimal ; 12 aussi (12 = 12,0).',
     visual: { kind: 'rangs', value: '12,75' },
+    family: 'decimaux',
+  },
+  {
+    id: 'fraction-decimale',
+    word: 'fraction décimale',
+    forms: ['fraction décimale', 'fractions décimales'],
+    definition: 'Une fraction qui a 10, 100 ou 1 000 en bas : elle peut s’écrire avec une virgule.',
+    example: '{7/10} = 0,7 et {8/100} = 0,08.',
     family: 'decimaux',
   },
   {

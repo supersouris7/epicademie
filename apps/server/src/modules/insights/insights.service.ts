@@ -1,6 +1,7 @@
 import { and, count, desc, eq, gt, gte, isNotNull, or, sql, sum } from 'drizzle-orm';
 import {
   OFFERS,
+  REPORT_STATUSES,
   SUBJECT_IDS,
   TREND_DAYS,
   type AdminStats,
@@ -90,11 +91,11 @@ export function createInsightsService({ db, clock }: { db: Db; clock: Clock }) {
           .select({ n: sql<number>`count(distinct ${subscriptions.familyId})` })
           .from(subscriptions)
           .where(and(eq(subscriptions.status, 'payee'), gte(subscriptions.periodEnd, clock.today()))),
-        db
-          .select({ n: count() })
-          .from(questionReports)
-          .where(or(eq(questionReports.status, 'nouveau'), eq(questionReports.status, 'en-cours'))),
+        db.select({ status: questionReports.status, n: count() }).from(questionReports).groupBy(questionReports.status),
       ]);
+      const reportCounts = Object.fromEntries(
+        REPORT_STATUSES.map((s) => [s, num(reports.find((r) => r.status === s)?.n)]),
+      ) as AdminStats['reportCounts'];
       const payments = await db
         .select({ status: subscriptions.status, count: count(), amountCents: sum(subscriptions.amountCents) })
         .from(subscriptions)
@@ -117,7 +118,8 @@ export function createInsightsService({ db, clock }: { db: Db; clock: Clock }) {
         bossWins: num(wins[0]?.n),
         premiumFamilies: num(premium[0]?.n),
         payments: payments.map((p) => ({ status: p.status, count: num(p.count), amountCents: num(p.amountCents) })),
-        openReports: num(reports[0]?.n),
+        openReports: reportCounts.nouveau + reportCounts['en-cours'],
+        reportCounts,
       };
     },
 
@@ -140,6 +142,7 @@ export function createInsightsService({ db, clock }: { db: Db; clock: Clock }) {
           start: sql<string>`to_char(coalesce(${subscriptions.paidAt}, ${subscriptions.createdAt}), 'YYYY-MM-DD')`,
           end: subscriptions.periodEnd,
           amountCents: subscriptions.amountCents,
+          provider: subscriptions.provider,
         })
         .from(subscriptions)
         .where(eq(subscriptions.status, 'payee'));
@@ -158,6 +161,7 @@ export function createInsightsService({ db, clock }: { db: Db; clock: Clock }) {
         })),
         activeByOffer: OFFERS.map((offer) => ({ offer, count: familiesByOffer.get(offer)?.size ?? 0 })),
         revenueCents: paid.reduce((total, p) => total + p.amountCents, 0),
+        paymentProviders: [...new Set(paid.map((p) => p.provider))].sort(),
       };
     },
 

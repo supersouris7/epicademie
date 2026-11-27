@@ -6,14 +6,14 @@ import { GeneralReportDialog } from './GeneralReportButton.tsx';
 
 /**
  * Mode debug : petit drapeau discret dans un coin de chaque écran qui ouvre le signalement
- * « Signaler un problème sur cet écran ». Absent par défaut et sur la console d'administration.
+ * « Signaler un problème sur cet écran ». Absent par défaut.
  */
 export function DebugFlag() {
   const enabled = useDebugMode((s) => s.enabled);
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const inGame = isGameRoute(pathname);
-  if (!enabled || pathname.startsWith('/admin')) return null;
+  if (!enabled) return null;
   return (
     <>
       <button

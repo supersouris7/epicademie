@@ -1,4 +1,35 @@
 import type { Relecture } from '../types.ts';
 
 /** Relectures pédagogiques de la matière (une ligne par notion et version relue). */
-export const RELECTURES: readonly Relecture[] = [];
+export const RELECTURES: readonly Relecture[] = [
+  { skillId: 'p5-etats', version: 1, lot: 'pc-5e-01', date: '2026-11-25', verdict: 'ok' },
+  { skillId: 'p5-corps-purs-melanges', version: 1, lot: 'pc-5e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-masse-volumique', version: 2, lot: 'pc-5e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-solubilite', version: 1, lot: 'pc-5e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-conservation-masse', version: 1, lot: 'pc-5e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-trajectoire', version: 1, lot: 'pc-5e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-referentiel', version: 1, lot: 'pc-5e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-mouvement-uniforme', version: 1, lot: 'pc-5e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-vitesse-moyenne', version: 1, lot: 'pc-5e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-sources-formes-energie', version: 1, lot: 'pc-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-conversions-energie', version: 1, lot: 'pc-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-circuits-serie-derivation', version: 1, lot: 'pc-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-conducteurs-isolants', version: 1, lot: 'pc-5e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-propagation-lumiere', version: 1, lot: 'pc-5e-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-propagation-son', version: 1, lot: 'pc-5e-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-unites', version: 2, lot: 'pc-5e-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p5-prefixes', version: 2, lot: 'pc-5e-04', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p4-atomes-molecules', version: 1, lot: 'pc-4e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p4-formules-chimiques', version: 1, lot: 'pc-4e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p4-transformation-chimique', version: 1, lot: 'pc-4e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p4-combustions', version: 1, lot: 'pc-4e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p4-conservation-masse', version: 1, lot: 'pc-4e-01', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p4-vitesse', version: 2, lot: 'pc-4e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p4-interactions', version: 1, lot: 'pc-4e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p4-forces', version: 1, lot: 'pc-4e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p4-mouvement-force', version: 1, lot: 'pc-4e-02', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p4-tension', version: 1, lot: 'pc-4e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p4-intensite', version: 1, lot: 'pc-4e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p4-lois-circuits', version: 1, lot: 'pc-4e-03', date: '2026-11-26', verdict: 'ok' },
+  { skillId: 'p4-loi-ohm', version: 2, lot: 'pc-4e-03', date: '2026-11-26', verdict: 'ok' },
+];

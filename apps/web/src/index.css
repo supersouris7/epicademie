@@ -3,6 +3,9 @@
 @import '@fontsource-variable/nunito';
 @import './design/tokens.css';
 
+/* La console d'administration a sa propre feuille de style (admin.css) : ses classes restent hors du jeu. */
+@source not './features/admin';
+
 /* Tablette (ou écran large) en paysage : mise en page en deux colonnes. */
 @custom-variant land (@media (orientation: landscape) and (min-width: 900px));
 /* Écran coupé en deux colonnes (outils sur le côté) dès qu'il y a la place en largeur, téléphone couché compris. */
@@ -180,42 +183,4 @@ button {
   to {
     background-position-x: var(--sprite-to);
   }
-}
-
-/*
- * Console d'administration (/admin) : thème sombre par défaut. Les couleurs de la palette
- * utilisées par la console sont redéfinies localement (le reste de l'appli est inchangé).
- * Contrastes : texte principal #f1f5f9 sur #1e293b ≈ 13:1, texte atténué #a3b3c8 ≈ 6:1.
- */
-.admin-dark {
-  color-scheme: dark;
-  --color-white: #1e293b;
-  --color-slate-50: #182234;
-  --color-slate-100: #0f172a;
-  --color-slate-200: #334155;
-  --color-slate-300: #475569;
-  --color-slate-400: #94a3b8;
-  --color-slate-500: #a3b3c8;
-  --color-slate-600: #b6c2d3;
-  --color-slate-700: #cbd5e1;
-  --color-slate-800: #e2e8f0;
-  --color-slate-900: #f1f5f9;
-  --color-indigo-50: #1e1b4b;
-  --color-indigo-200: #3730a3;
-  --color-indigo-500: #818cf8;
-  --color-indigo-600: #818cf8;
-  --color-indigo-700: #a5b4fc;
-  --color-emerald-50: #0b3b2e;
-  --color-emerald-200: #065f46;
-  --color-emerald-700: #6ee7b7;
-  --color-amber-50: #3b2a0a;
-  --color-amber-200: #78350f;
-  --color-amber-800: #fcd34d;
-  --color-red-50: #3f1518;
-  --color-red-200: #7f1d1d;
-  --color-red-700: #fca5a5;
-  /* Couleurs des graphiques. */
-  --admin-chart-1: #818cf8;
-  --admin-chart-2: #34d399;
-  --admin-chart-grid: #334155;
 }

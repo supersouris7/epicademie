@@ -1,8 +1,10 @@
 import { and, asc, count, desc, eq, exists, gt, gte, inArray, isNull, or, sql, type SQL } from 'drizzle-orm';
-import { ADMIN_PAGE_SIZE, type AccountSearch } from '@epicademie/shared';
+import { unionAll } from 'drizzle-orm/pg-core';
+import { ADMIN_PAGE_SIZE, type AccountSearch, type AuditPage } from '@epicademie/shared';
 import type { Executor } from '../../db/client.ts';
 import {
   accounts,
+  adminAccessEvents,
   adminAudit,
   attempts,
   authSessions,
@@ -19,6 +21,8 @@ import {
   skillStates,
   subscriptions,
 } from '../../db/schema.ts';
+
+type AuditAction = AuditPage['items'][number]['action'];
 
 /** Minuscules sans accents (même règle côté base, pour une recherche insensible aux accents). */
 const ACCENTS_FROM = 'àáâãäåçèéêëìíîïñòóôõöùúûüýÿœæ';
@@ -122,6 +126,35 @@ async function pendingProcedures(db: Executor, accountId: string, familyId: stri
     passwordReset: reset.length > 0,
     emailVerification: verification.length > 0,
   };
+}
+
+/** Fiches et réinitialisations, mêlées aux accès (connexions, secours), des plus récents aux plus anciens. */
+async function auditPageOf(db: Executor, page: number) {
+  const accountEvents = db
+    .select({
+      id: adminAudit.id,
+      at: adminAudit.at,
+      operator: adminAudit.operator,
+      action: sql<AuditAction>`${adminAudit.action}`.as('action'),
+      accountId: sql<string | null>`${adminAudit.accountId}`.as('account_id'),
+      detail: sql<string | null>`null::text`.as('detail'),
+    })
+    .from(adminAudit);
+  const accessEvents = db
+    .select({
+      id: adminAccessEvents.id,
+      at: adminAccessEvents.at,
+      operator: adminAccessEvents.operator,
+      action: sql<AuditAction>`${adminAccessEvents.action}`.as('action'),
+      accountId: sql<string | null>`null::uuid`.as('account_id'),
+      detail: sql<string | null>`${adminAccessEvents.detail}`.as('detail'),
+    })
+    .from(adminAccessEvents);
+  const rows = await unionAll(accountEvents, accessEvents)
+    .orderBy(sql`2 desc, 1 desc`)
+    .limit(ADMIN_PAGE_SIZE + 1)
+    .offset(page * ADMIN_PAGE_SIZE);
+  return { rows: rows.slice(0, ADMIN_PAGE_SIZE), hasMore: rows.length > ADMIN_PAGE_SIZE };
 }
 
 /** Accès en lecture aux comptes pour l'administration, et journal d'audit. */
@@ -309,14 +342,16 @@ export function adminRepo(db: Executor) {
       await db.insert(adminAudit).values(entry);
     },
 
-    async auditPage(page: number) {
-      const rows = await db
-        .select()
-        .from(adminAudit)
-        .orderBy(desc(adminAudit.at), desc(adminAudit.id))
-        .limit(ADMIN_PAGE_SIZE + 1)
-        .offset(page * ADMIN_PAGE_SIZE);
-      return { rows: rows.slice(0, ADMIN_PAGE_SIZE), hasMore: rows.length > ADMIN_PAGE_SIZE };
+    auditPage: (page: number) => auditPageOf(db, page),
+
+    /** E-mail et nature des comptes cités par le journal (absents : comptes supprimés). */
+    async accountNames(ids: readonly string[]) {
+      if (ids.length === 0) return [];
+      return db
+        .select({ id: accounts.id, email: accounts.email, autonomous: families.autonomous })
+        .from(accounts)
+        .innerJoin(families, eq(families.id, accounts.familyId))
+        .where(inArray(accounts.id, [...ids]));
     },
   };
 }

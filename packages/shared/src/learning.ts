@@ -19,7 +19,7 @@ export type SkillStatus = (typeof SKILL_STATUSES)[number];
 
 export const SKILL_STATUS_LABELS: Record<SkillStatus, string> = {
   'non-commencee': 'Pas encore commencée',
-  'a-travailler': 'À travailler',
+  'a-travailler': 'À renforcer',
   'en-progression': 'En progression',
   'a-consolider': 'À consolider',
   acquise: 'Acquise',

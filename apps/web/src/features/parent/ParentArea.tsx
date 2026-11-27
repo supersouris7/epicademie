@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
-import { api, gradeInfo, type LearningReport, type Profile } from '@epicademie/shared';
-import { request } from '../../shared/api/client.ts';
+import { gradeInfo, type LearningReport, type Profile } from '@epicademie/shared';
 import { ParentPage } from './ParentShell.tsx';
 import { CharacterAvatar } from '../../shared/ui/game/CharacterAvatar.tsx';
 import { useProfiles } from '../profiles/index.ts';
+import { learningQuery } from './queries.ts';
+import { BlockSkeleton } from '../../shared/ui/Skeleton.tsx';
 import { ToReview } from './ToReview.tsx';
 import { EvaluationLine, EvaluationNotes } from './Evaluations.tsx';
 import { SubjectCards, SubjectDetail } from './SubjectCards.tsx';
@@ -16,17 +17,13 @@ import { synthesis, toReview } from './summary.ts';
  * d'un enfant : synthèse, avancement par matière et chapitre, notions à réviser. Lecture seule. Réservé au parent (code PIN ou mot de passe, verrou de 10 minutes). Écrit pour un parent non technicien : des mots, peu de chiffres.
  */
 
-const useLearning = (profileId: string) =>
-  useQuery({
-    queryKey: ['learning', profileId],
-    queryFn: () => request(api.learningReport, { params: { id: profileId } }),
-  });
+const useLearning = (profileId: string) => useQuery(learningQuery(profileId));
 
 export function ParentHome() {
   const { data: profiles, isPending } = useProfiles();
   return (
     <ParentPage title="Progrès de vos enfants">
-      {isPending && <p>Chargement…</p>}
+      {isPending && <BlockSkeleton />}
       {profiles?.length === 0 && (
         <p>
           Aucun profil enfant pour l’instant.{' '}
@@ -88,7 +85,7 @@ export function ChildReport() {
       title={child ? `Progrès de ${child.name}` : 'Progrès'}
       back={{ to: '/parent', label: 'Tous les enfants' }}
     >
-      {isPending && <p>Chargement…</p>}
+      {isPending && <BlockSkeleton />}
       {r && child && <ReportView report={r} child={child} />}
     </ParentPage>
   );

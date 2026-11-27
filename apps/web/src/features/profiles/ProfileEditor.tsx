@@ -1,3 +1,4 @@
+import { BlockSkeleton } from '../../shared/ui/Skeleton.tsx';
 import { useState, type ReactNode } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
 import {
@@ -10,6 +11,7 @@ import {
   type Profile,
 } from '@epicademie/shared';
 import { useCreateProfile, useProfile, useUpdateProfile } from './api.ts';
+import { HandOff } from './HandOff.tsx';
 import { Avatar } from '../../shared/ui/Avatar.tsx';
 import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { CharacterAvatar } from '../../shared/ui/game/CharacterAvatar.tsx';
@@ -49,14 +51,21 @@ const PARENT_VOICE: typeof CHILD_VOICE = {
 function useVoice(parentSpace: ParentSpace | undefined, creating: boolean) {
   const [params] = useSearchParams();
   const forChild = !!parentSpace || params.get('pour') === 'enfant';
-  return { t: forChild ? PARENT_VOICE : CHILD_VOICE, welcome: creating && params.get('bienvenue') === '1' };
+  const welcome = creating && params.get('bienvenue') === '1';
+  return { t: forChild ? PARENT_VOICE : CHILD_VOICE, welcome, passDevice: welcome && forChild };
 }
 
 /** Création (`/profils/nouveau`) ou modification (`/profils/:id/modifier`) d'un profil. */
 export function ProfileEditor({ parentSpace }: { readonly parentSpace?: ParentSpace } = {}) {
   const { id } = useParams();
   const { data: existing, isPending } = useProfile(id ?? null);
-  if (id && isPending) return <PageShell back="/parametres">Chargement…</PageShell>;
+  if (id && isPending) {
+    return (
+      <PageShell back="/parametres">
+        <BlockSkeleton />
+      </PageShell>
+    );
+  }
   return <EditorForm key={existing?.id ?? 'new'} existing={existing} parentSpace={parentSpace} />;
 }
 
@@ -77,8 +86,7 @@ function EditorForm({
   readonly parentSpace: ParentSpace | undefined;
 }) {
   const navigate = useNavigate();
-  const { t, welcome } = useVoice(parentSpace, !existing);
-  const selectProfile = useSession((s) => s.selectProfile);
+  const { t, welcome, passDevice } = useVoice(parentSpace, !existing);
   const withParent = useParentGate();
   const create = useCreateProfile();
   const update = useUpdateProfile(existing?.id ?? '');
@@ -92,6 +100,7 @@ function EditorForm({
   const shown: AvatarConfig = { style: 'portrait', seed: avatar.seed };
   const [error, setError] = useState<string | null>(null);
   const saving = create.isPending || update.isPending;
+  const { handOff, onCreated } = useAfterCreate(parentSpace, passDevice);
 
   const submit = async () => {
     const checked = validate({ name, gender, birthDate, grade }, t);
@@ -107,13 +116,7 @@ function EditorForm({
           await update.mutateAsync(payload);
           void navigate(parentSpace?.doneTo ?? '/parametres');
         } else {
-          const profile = await create.mutateAsync(payload);
-          if (parentSpace) {
-            void navigate(parentSpace.doneTo);
-          } else {
-            selectProfile(profile.id);
-            void navigate('/hub');
-          }
+          onCreated(await create.mutateAsync(payload));
         }
       });
     } catch (err) {
@@ -231,14 +234,56 @@ function EditorForm({
       </form>
     </>
   );
+  if (handOff) return handOff;
+  return (
+    <EditorFrame parentSpace={parentSpace} editing={!!existing} title={t.title}>
+      {body}
+    </EditorFrame>
+  );
+}
+
+/** Cadre de l'éditeur : celui de l'Espace parent s'il en vient, sinon une page du jeu. */
+function EditorFrame({
+  parentSpace,
+  editing,
+  title,
+  children,
+}: {
+  readonly parentSpace: ParentSpace | undefined;
+  readonly editing: boolean;
+  readonly title: string;
+  readonly children: ReactNode;
+}) {
   if (parentSpace) {
-    return <>{parentSpace.shell({ title: existing ? 'Modifier le profil' : 'Ajouter un enfant', children: body })}</>;
+    return <>{parentSpace.shell({ title: editing ? 'Modifier le profil' : 'Ajouter un enfant', children })}</>;
   }
   return (
-    <PageShell title={existing ? 'Modifier mon profil' : t.title} back={existing ? '/parametres' : '/'}>
-      {body}
+    <PageShell title={editing ? 'Modifier mon profil' : title} back={editing ? '/parametres' : '/'}>
+      {children}
     </PageShell>
   );
+}
+
+/**
+ * Suite d'une création : retour à l'Espace parent, sinon le jeu avec ce profil. À l'inscription
+ * (`passDevice`), le parent a rempli le formulaire : un écran le fait passer à l'enfant, qui lance le jeu.
+ */
+function useAfterCreate(parentSpace: ParentSpace | undefined, passDevice: boolean) {
+  const navigate = useNavigate();
+  const selectProfile = useSession((s) => s.selectProfile);
+  const [waiting, setWaiting] = useState<Profile | null>(null);
+  const play = (profile: Profile) => {
+    selectProfile(profile.id);
+    void navigate('/hub');
+  };
+  return {
+    handOff: waiting && <HandOff name={waiting.name} onStart={() => play(waiting)} />,
+    onCreated: (profile: Profile) => {
+      if (parentSpace) void navigate(parentSpace.doneTo);
+      else if (passDevice) setWaiting(profile);
+      else play(profile);
+    },
+  };
 }
 
 /** Accueil juste après l'inscription : le parent sait qu'il crée le profil de son enfant, pas le sien. */

@@ -1,14 +1,13 @@
 import { expect, test, type Page } from '@playwright/test';
-import { loginFamily, PASSWORD, signupFamily } from './family.ts';
+import { createFirstProfile, loginFamily, PASSWORD, signupFamily } from './family.ts';
 
-/** Crée un profil depuis l'écran de création (après inscription ou « Nouveau joueur »). */
+/** Crée le 1er profil depuis l'écran de création qui suit l'inscription. */
 async function createProfile(page: Page, name: string, birthDate = '2014-03-09') {
   await page.getByPlaceholder('Ex. Léa').fill(name);
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill(birthDate);
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
-  await expect(page).toHaveURL(/hub/);
+  await createFirstProfile(page);
 }
 
 test('Compte : déconnexion de l’appareil, reconnexion, profils et progrès retrouvés', async ({ page }) => {
@@ -53,8 +52,7 @@ test('Adulte : parcours de remise à niveau en maths', async ({ page }) => {
   await page.getByLabel('Date de naissance').fill('1985-05-01');
   await expect(page.getByText('C’est un adulte ?')).toBeVisible();
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
-  await expect(page).toHaveURL(/hub/);
+  await createFirstProfile(page);
   await page.goto('/jouer/entrainement/maths');
   const grades = page.getByRole('radiogroup', { name: 'Classe' });
   await expect(grades.getByRole('radio', { name: /Adulte/ })).toHaveAttribute('aria-checked', 'true');
@@ -62,13 +60,13 @@ test('Adulte : parcours de remise à niveau en maths', async ({ page }) => {
   await expect(page.getByRole('button', { name: /Pythagore/ }).last()).toBeVisible();
 });
 
-test('Anglais : chapitre des verbes irréguliers jouable', async ({ page }) => {
+test('Anglais : chapitre du prétérit jouable', async ({ page }) => {
   await signupFamily(page);
   await createProfile(page, `Eng${Date.now() % 10000}`);
   await page.getByRole('button', { name: /Entraînement/ }).click();
   await page.getByRole('button', { name: 'Anglais', exact: true }).click();
   await page
-    .getByRole('button', { name: /Les verbes irréguliers/ })
+    .getByRole('button', { name: /Le prétérit/ })
     .last()
     .click();
   await page
@@ -76,7 +74,9 @@ test('Anglais : chapitre des verbes irréguliers jouable', async ({ page }) => {
     .first()
     .click();
   await expect(page.getByRole('progressbar', { name: 'Progression de la série' })).toBeVisible();
-  await expect(page.getByText(/prétérit|participe passé|Complète/).first()).toBeVisible();
+  // La question est tirée au hasard : on vérifie le chapitre joué, pas les mots de l’énoncé.
+  await expect(page).toHaveURL(/\/partie\/entrainement\/a5-verbes-irreguliers\//);
+  await expect(page.getByRole('main').getByRole('heading', { level: 1 })).toBeVisible();
 });
 
 test('Mes progrès : trophées et badges visibles dès le départ', async ({ page }) => {

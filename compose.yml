@@ -56,6 +56,12 @@ services:
       # Administration : secret (32 caractères min.) que le frontal de la page de pilotage ajoute
       # (en-tête X-Epicademie-Operateur). Vide : aucune administration. Voir docs/adr/0033-….
       ADMIN_OPERATOR_SECRET: ${ADMIN_OPERATOR_SECRET:-}
+      # Connexion de l'équipe par OpenID Connect (remplace le secret ci-dessus) ; voir docs/adr/0036-….
+      OIDC_ISSUER: ${OIDC_ISSUER:-}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:-}
+      ADMIN_ORIGIN: ${ADMIN_ORIGIN:-}
+      ADMIN_SECOURS_SECRET: ${ADMIN_SECOURS_SECRET:-}
       # E-mails de validation (Brevo) et connexion Google : voir docs/operations/configuration.md.
       # Production : BREVO_API_KEY obligatoire ; recette sans fournisseur : APP_ENV=recette.
       APP_ENV: ${APP_ENV:-}

@@ -9,12 +9,13 @@ import {
 } from '@epicademie/shared';
 import type { Db } from '../../db/client.ts';
 import type { Clock } from '../../core/clock.ts';
+import type { AdminIdentity } from '../../core/http/admin-identity.ts';
 import { conflict, notFound } from '../../core/errors.ts';
 import { hashPassword } from '../../core/auth/password.ts';
 import { adminRepo } from './admin.repo.ts';
 
 /**
- * Consultation des comptes par l'opérateur (docs/adr/0033-…) : liste paginée, fiche, mot de passe
+ * Consultation des comptes par l'équipe (docs/adr/0033-… et 0036-…) : liste paginée, fiche, mot de passe
  * temporaire, journal d'audit. Les données renvoyées sont des résumés : ni empreinte, ni jeton, ni
  * réponses détaillées des élèves.
  */
@@ -27,6 +28,19 @@ const RECENT = 20;
 export function newTemporaryPassword(): string {
   return Array.from({ length: TEMP_PASSWORD_LENGTH }, () => READABLE[randomInt(READABLE.length)]).join('');
 }
+
+/** « w…@exemple.fr » : de quoi reconnaître un compte sans réécrire son adresse. */
+export const maskEmail = (email: string): string => {
+  const at = email.lastIndexOf('@');
+  return `${email.slice(0, 1)}…${at < 0 ? '' : email.slice(at)}`;
+};
+
+/** Nom court d'un compte cité par le journal d'audit (aucun prénom d'enfant). */
+const shortName = (account: { email: string | null; autonomous: boolean } | undefined): string => {
+  if (!account) return 'Compte supprimé';
+  if (account.email) return maskEmail(account.email);
+  return account.autonomous ? 'Élève autonome' : 'Compte sans e-mail';
+};
 
 const iso = (d: Date | null) => (d ? d.toISOString() : null);
 const latest = (...dates: (Date | null)[]) => dates.reduce<Date | null>((a, b) => (b && (!a || b > a) ? b : a), null);
@@ -57,10 +71,10 @@ export function createAdminService({ db, clock }: { db: Db; clock: Clock }) {
     },
 
     /** Fiche d'un compte ; la consultation est journalisée (RGPD : accès aux données d'enfants). */
-    async detail(id: string, operator: string): Promise<AccountDetail> {
+    async detail(id: string, by: AdminIdentity): Promise<AccountDetail> {
       const account = await repo.account(id);
       if (!account) throw notFound('Compte introuvable');
-      await repo.audit({ operator, action: 'consultation', accountId: id });
+      await repo.audit({ operator: by.name, adminSub: by.sub, action: 'consultation', accountId: id });
       const [profiles, recentGames, reports, pending, subscriptions] = await Promise.all([
         repo.profilesOf(account.familyId),
         repo.recentGames(account.familyId, RECENT),
@@ -113,7 +127,7 @@ export function createAdminService({ db, clock }: { db: Db; clock: Clock }) {
     },
 
     /** Mot de passe temporaire (montré une seule fois) ; les sessions du compte sont fermées. */
-    async resetPassword(id: string, operator: string): Promise<TemporaryPassword> {
+    async resetPassword(id: string, by: AdminIdentity): Promise<TemporaryPassword> {
       const account = await repo.account(id);
       if (!account) throw notFound('Compte introuvable');
       if (account.autonomous || account.email === null) {
@@ -121,20 +135,25 @@ export function createAdminService({ db, clock }: { db: Db; clock: Clock }) {
       }
       const password = newTemporaryPassword();
       // Journal d'abord : aucune réinitialisation sans trace.
-      await repo.audit({ operator, action: 'reinitialisation-mot-de-passe', accountId: id });
+      await repo.audit({ operator: by.name, adminSub: by.sub, action: 'reinitialisation-mot-de-passe', accountId: id });
       const sessionsClosed = await repo.resetPassword(id, await hashPassword(password));
       return { password, sessionsClosed };
     },
 
     async auditPage(page: number): Promise<AuditPage> {
       const { rows, hasMore } = await repo.auditPage(page);
+      const ids = rows.flatMap((r) => (r.accountId ? [r.accountId] : []));
+      const names = await repo.accountNames([...new Set(ids)]);
+      const byId = new Map(names.map((n) => [n.id, n]));
       return {
         items: rows.map((r) => ({
-          id: r.id,
+          id: `${r.accountId ? 'compte' : 'acces'}-${r.id}`,
           at: r.at.toISOString(),
           operator: r.operator,
           action: r.action,
           accountId: r.accountId,
+          accountLabel: r.accountId ? shortName(byId.get(r.accountId)) : (r.detail ?? '—'),
+          accountExists: r.accountId !== null && byId.has(r.accountId),
         })),
         page,
         hasMore,

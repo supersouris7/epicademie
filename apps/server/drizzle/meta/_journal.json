@@ -190,6 +190,20 @@
       "when": 1795900000000,
       "tag": "0026_niveaux_1_a_5",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1796000000000,
+      "tag": "0027_administration_roles",
+      "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1796100000000,
+      "tag": "0028_medaille_diamant",
+      "breakpoints": true
     }
   ]
 }

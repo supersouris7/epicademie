@@ -9,12 +9,12 @@
 
 ## Chapitres et notions
 
-| Lot        | Chapitre                | Notions                                                                                               | État actuel |
-| ---------- | ----------------------- | ----------------------------------------------------------------------------------------------------- | ----------- |
-| `ge-4e-01` | L'urbanisation du monde | espaces et paysages de l'urbanisation ; des villes inégalement connectées ; vocabulaire               | absente     |
-| `ge-4e-02` | Les mobilités humaines  | un monde de migrants ; le tourisme et ses espaces ; vocabulaire                                       | absente     |
-| `ge-4e-03` | La mondialisation       | mers et océans : un monde maritimisé ; espaces transformés par la mondialisation ; firmes et échanges | absente     |
-| `ge-4e-04` | Repères de 4e           | grandes métropoles ; flux migratoires ; routes maritimes ; vocabulaire                                | absente     |
+| Lot        | Chapitre                | Notions                                                                                               | État actuel            |
+| ---------- | ----------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------- |
+| `ge-4e-01` | L'urbanisation du monde | espaces et paysages de l'urbanisation ; des villes inégalement connectées ; vocabulaire               | couverte               |
+| `ge-4e-02` | Les mobilités humaines  | un monde de migrants ; le tourisme et ses espaces ; vocabulaire                                       | couverte               |
+| `ge-4e-03` | La mondialisation       | mers et océans : un monde maritimisé ; espaces transformés par la mondialisation ; firmes et échanges | couverte               |
+| `ge-4e-04` | Repères de 4e           | grandes métropoles ; flux migratoires ; routes maritimes ; vocabulaire                                | couverte, en relecture |
 
 États : **absente** (rien en ligne), **partielle** (chapitres existants à compléter et à porter à 5 niveaux),
 **couverte** (5 niveaux, sources et relecture enregistrées).

@@ -3,6 +3,7 @@ import { BATTLE_MOBS } from '@epicademie/shared';
 import {
   answerBattle,
   applyItem,
+  askHint,
   battleXp,
   bossStage,
   createBattle,
@@ -39,6 +40,17 @@ describe('combat de boss', () => {
     expect(levels.slice(0, 4)).toEqual([1, 1, 2, 2]);
     expect(s.hearts).toBe(3);
     expect(battleXp(s)).toBe(10 * 7 + 50);
+  });
+
+  it('indice demandé : jamais une erreur, seule l’attaque de la question est un peu moins forte', () => {
+    const d = dice();
+    const s = askHint(createBattle(pools, d));
+    expect(s).toMatchObject({ hintShown: true, weakAttack: true, hearts: 3, answered: 0, misses: [] });
+    expect(() => askHint(s)).toThrow(/déjà affiché/);
+    const hit = answerBattle(s, pools, true, d);
+    expect(hit.outcome).toBe('hit');
+    expect(hit.state).toMatchObject({ hearts: 3, mobsDefeated: 1, weakAttack: false, weakHits: 1, hintsAsked: 1 });
+    expect(battleXp(hit.state)).toBe(7);
   });
 
   it('chaque notion du chapitre passe avant qu’une autre revienne', () => {

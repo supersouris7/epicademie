@@ -14,6 +14,7 @@ import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { PageShell } from '../../shared/ui/PageShell.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import { SpeechBubble } from '../../shared/ui/SpeechBubble.tsx';
+import { BlockSkeleton } from '../../shared/ui/Skeleton.tsx';
 import { useToast } from '../../shared/ui/Toast.tsx';
 import { evaluationHomeKey, startEvaluation, useEvaluationHome } from './api.ts';
 import { appreciation } from './appreciation.ts';
@@ -58,7 +59,7 @@ export function EvaluationHome({ profile }: { readonly profile: Profile }) {
           explications viennent après !
         </SpeechBubble>
       </div>
-      {isLoading && <p role="status">Chargement…</p>}
+      {isLoading && <BlockSkeleton />}
       {isError && <p role="alert">Impossible de charger l’Arène pour l’instant.</p>}
       {home && !home.available && (
         <p className="cartoon bg-surface p-4 text-lg font-bold">

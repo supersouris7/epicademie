@@ -12,15 +12,22 @@ test.describe('console d’administration (opérateur)', () => {
   test('ouverte directement, sans compte de jeu ni choix de profil ; recherche de comptes', async ({ page }) => {
     await page.goto('/admin');
     await expect(page).toHaveURL(/\/admin$/);
-    await expect(page.getByRole('heading', { name: /Console d’administration/ })).toBeVisible();
-    await expect(page.getByText('Opérateur : Recette')).toBeVisible();
-    // Smartphone : le menu des rubriques est une liste déroulante ; sinon, des onglets.
-    const menu = page.getByRole('combobox', { name: 'Rubrique' });
-    if (await menu.isVisible()) await menu.selectOption({ label: 'Utilisateurs · Comptes' });
-    else await page.getByRole('tab', { name: 'Comptes' }).click();
+    await expect(page.getByRole('heading', { name: 'Gestion du jeu' })).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Indicateurs clés' })).toBeVisible();
+    await page.getByRole('tab', { name: 'Familles' }).click();
     await page.getByRole('searchbox').fill('introuvable');
     await page.getByRole('button', { name: 'Rechercher' }).click();
     await expect(page.getByText('Aucun compte ne correspond.')).toBeVisible();
+  });
+});
+
+test.describe('page à part', () => {
+  test('fond de la console dès la page servie, sans feuille de style ni code du jeu', async ({ page }) => {
+    const response = await page.goto('/admin/x');
+    expect(await response?.text()).toContain('<meta name="theme-color" content="#0f172a" />');
+    await expect(page.getByText('Administration accessible uniquement depuis la page de pilotage.')).toBeVisible();
+    await expect(page.locator('html')).toHaveCSS('background-color', 'rgb(15, 23, 42)');
+    await expect(page.locator('body')).toHaveCSS('background-image', 'none');
   });
 });
 

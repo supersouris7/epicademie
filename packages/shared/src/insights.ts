@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { OFFERS, SUBSCRIPTION_STATUSES } from './billing.ts';
+import { OFFERS, PAYMENT_PROVIDERS, SUBSCRIPTION_STATUSES } from './billing.ts';
+import { REPORT_STATUSES } from './pedagogy.ts';
 import { SUBJECT_IDS } from './subjects.ts';
 
 /**
@@ -23,9 +24,13 @@ export const AdminStatsSchema = z.object({
   autonomousRate7d: z.number().min(0).max(1).nullable(),
   answersBySubject7d: z.array(z.object({ subject: z.enum(SUBJECT_IDS), answers: count })),
   bossWins: count,
-  premiumFamilies: count,
-  payments: z.array(z.object({ status: z.enum(SUBSCRIPTION_STATUSES), count, amountCents: count })),
+  /** `null` pour un rôle sans accès aux finances (comme `payments`). */
+  premiumFamilies: count.nullable(),
+  payments: z.array(z.object({ status: z.enum(SUBSCRIPTION_STATUSES), count, amountCents: count })).nullable(),
+  /** Signalements à traiter (nouveaux et en cours). */
   openReports: count,
+  /** Nombre de signalements dans chaque état. */
+  reportCounts: z.record(z.enum(REPORT_STATUSES), count),
 });
 export type AdminStats = z.infer<typeof AdminStatsSchema>;
 
@@ -84,9 +89,12 @@ export const AdminTrendsSchema = z.object({
   /** Jour du calcul (AAAA-MM-JJ). */
   day: z.string(),
   accountsByDay: z.array(z.object({ day: z.string(), count })),
-  activeSubscriptionsByDay: z.array(z.object({ day: z.string(), count })),
-  activeByOffer: z.array(z.object({ offer: z.enum(OFFERS), count })),
+  /** Les quatre champs suivants sont `null` pour un rôle sans accès aux finances. */
+  activeSubscriptionsByDay: z.array(z.object({ day: z.string(), count })).nullable(),
+  activeByOffer: z.array(z.object({ offer: z.enum(OFFERS), count })).nullable(),
   /** Total encaissé en mode test (paiements « payés »), en centimes. */
-  revenueCents: count,
+  revenueCents: count.nullable(),
+  /** Prestataires des paiements encaissés (vide : aucun paiement). */
+  paymentProviders: z.array(z.enum(PAYMENT_PROVIDERS)).nullable(),
 });
 export type AdminTrends = z.infer<typeof AdminTrendsSchema>;

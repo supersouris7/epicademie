@@ -9,6 +9,7 @@ import { GameButton } from '../../shared/ui/game/GameButton.tsx';
 import { ProgressBar } from '../../shared/ui/game/ProgressBar.tsx';
 import { ResourceCounter } from '../../shared/ui/game/ResourceCounter.tsx';
 import { useToast } from '../../shared/ui/Toast.tsx';
+import { ScreenSkeleton } from '../../shared/ui/Skeleton.tsx';
 import { Questy } from '../../shared/ui/mascot/Questy.tsx';
 import { Memo } from '../../shared/question/Memo.tsx';
 import { useBackGuard, useGameExit } from '../../shared/lib/gameExit.ts';
@@ -55,7 +56,7 @@ export function TrainingPlay({ profile }: { readonly profile: Profile }) {
   // Partie déjà quittée, revenue par « précédent » : on ne la relance pas (redirection en cours).
   if (left) return null;
   // La série se compose une fois la progression et les notions en maintenance connues.
-  if (isPending || !progress || disabledPending) return <p className="p-8 text-xl">Chargement…</p>;
+  if (isPending || !progress || disabledPending) return <ScreenSkeleton />;
   const valid = reviews
     ? skills.length > 0
     : chapter !== undefined && skills.length > 0 && skills.every((id) => chapter.skills.some((s) => s.id === id));
@@ -147,9 +148,12 @@ function Game(setup: TrainingSetup) {
         screen={s}
         skill={skill}
         gender={profile.gender}
+        epreuve={setup.epreuve === true}
         onPick={act.pick}
         onSubmit={act.submit}
         onNext={act.next}
+        onHelp={act.askHelp}
+        onCloseExplanation={act.closeExplanation}
         onMemo={() => {
           setMemo(true);
           act.reportConfused();

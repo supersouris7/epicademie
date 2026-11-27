@@ -11,6 +11,15 @@ import { SKILLS as LITTORAUX } from './littoraux.ts';
 import { SKILLS as REPERES } from './reperes.ts';
 import { SKILLS as MONDE_HABITE } from './monde-habite.ts';
 import { SKILLS as REPERES_MONDE } from './reperes-monde.ts';
+import { SKILLS as DEMOGRAPHIE } from './demographie.ts';
+import { SKILLS as CHANGEMENT_GLOBAL } from './changement-global.ts';
+import { SKILLS as RESSOURCES } from './ressources.ts';
+import { SKILLS as REPERES_5E } from './reperes-5e.ts';
+import { SKILLS as URBANISATION } from './urbanisation.ts';
+import { SKILLS as MOBILITES } from './mobilites.ts';
+import { SKILLS as MONDIALISATION } from './mondialisation.ts';
+import { SKILLS as REPERES_4E } from './reperes-4e.ts';
+import { SKILLS as DYNAMIQUES_TERRITORIALES } from './dynamiques-territoriales.ts';
 import { GEO_FETCHED_ON, PAYS_UE, REGIONS } from './donnees.generated.ts';
 
 /**
@@ -147,5 +156,14 @@ export const GEOGRAPHIE_CHAPTERS: readonly Chapter[] = [
   chapter('g6-littoraux', '6e', 'Habiter les littoraux', LITTORAUX),
   chapter('g6-monde-habite', '6e', 'Le monde habité', MONDE_HABITE),
   chapter('g6-prefectures', '6e', 'Repères : la France et le monde', REPERES_MONDE),
+  chapter('g5-demographie-developpement', '5e', 'Démographie et développement', DEMOGRAPHIE),
+  chapter('g5-ressources-limitees', '5e', 'Des ressources limitées, à gérer et à renouveler', RESSOURCES),
+  chapter('g5-changement-global', '5e', 'Changement global et risques', CHANGEMENT_GLOBAL),
+  chapter('g5-reperes', '5e', 'Repères de 5e', REPERES_5E),
+  chapter('g4-urbanisation-monde', '4e', 'L’urbanisation du monde', URBANISATION),
+  chapter('g4-mobilites-transnationales', '4e', 'Les mobilités humaines transnationales', MOBILITES),
+  chapter('g4-espaces-mondialisation', '4e', 'Des espaces transformés par la mondialisation', MONDIALISATION),
+  chapter('g4-reperes', '4e', 'Repères de 4e', REPERES_4E),
+  chapter('g3-dynamiques-territoriales', '3e', 'Dynamiques territoriales de la France', DYNAMIQUES_TERRITORIALES),
   chapter('g3-union-europeenne', '3e', 'L’Union européenne', [euCapitals, euro]),
 ];

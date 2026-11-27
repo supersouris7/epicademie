@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
+import { noop, useQueryClient } from '@tanstack/react-query';
 import { Navigate, useNavigate, useParams } from 'react-router';
 import { chaptersOf } from '@epicademie/content';
-import { SUBJECTS, getMode, playedGrade, subjectLabel, type Profile } from '@epicademie/shared';
+import { SUBJECTS, getMode, playedGrade, subjectLabel, type Profile, type SubjectId } from '@epicademie/shared';
+import { evaluationHomeQuery } from '../evaluation/index.ts';
+import { onIntent } from '../../shared/lib/intent.ts';
 import { acquired } from '@epicademie/engine';
 import { useSkills } from '../training/index.ts';
 import { EmperorScene, emperorDue } from '../boss/index.ts';
@@ -29,6 +32,7 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
   const mode = getMode(modeId);
   const [toast, showToast] = useToast();
   const navigate = useNavigate();
+  const qc = useQueryClient();
   const { data: skills } = useSkills(profile.id);
   const relicOf = useRelicProgress(profile);
   // L'Empereur du Savoir se présente en plein écran une fois par jour, à l'entrée du Mode Histoire.
@@ -59,6 +63,10 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
     else if (mode.id === 'chrono' || mode.id === 'survie') void navigate(`/partie/defi/${mode.id}/${subject}`);
     else if (playable) void navigate(`/jouer/${mode.id}/${subject}`);
     else showToast(`${mode.name} arrive bientôt !`);
+  };
+
+  const prepare = (subject: SubjectId) => {
+    if (isEvaluation) void qc.query(evaluationHomeQuery(profile.id, subject)).catch(noop);
   };
 
   return (
@@ -96,6 +104,7 @@ export function ModeSetup({ profile }: { readonly profile: Profile }) {
           <motion.li
             key={s.id}
             className="relative"
+            {...onIntent(() => prepare(s.id))}
             initial={enter ? { scale: 0.8, opacity: 0 } : false}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.05 + i * 0.05, type: 'spring', stiffness: 220, damping: 15 }}

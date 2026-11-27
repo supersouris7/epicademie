@@ -1,6 +1,3 @@
-/** Fonctionnalité « parent » : espace parent (progrès des enfants, abonnement, profils, réglages). */
-export { ChildReport, ParentHome } from './ParentArea.tsx';
-export { DeleteFamily } from './DeleteFamily.tsx';
-export { ParentProfileEditor, ParentProfiles, ParentSettings } from './ParentAccount.tsx';
-export { PaymentSimulator, Subscription } from './Subscription.tsx';
+/** Fonctionnalité « parent » : espace parent (accès aux chapitres ; les écrans sont chargés par `app/`). */
 export { useChapterAccess } from './billing.ts';
+export { prefetchParentData } from './queries.ts';

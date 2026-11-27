@@ -3,6 +3,8 @@ import { FCM1_ACCORDS } from './accords.ts';
 import { FCM1_COMPLEMENTS } from './complements.ts';
 import { FCM1_GROUPE_NOMINAL } from './groupe-nominal.ts';
 import { FCM1_LECTURE } from './lecture.ts';
+import { FCM2_LECTURE } from './lecture-cm2.ts';
+import { FCM2_CULTURE } from './culture-cm2.ts';
 import { FCM1_NATURE } from './nature.ts';
 import { FCM1_ORTHOGRAPHE_MOTS } from './orthographe-mots.ts';
 import { FCM1_PHRASES } from './phrases.ts';
@@ -17,6 +19,13 @@ import { FCM2_PHRASE_COMPLEXE } from './phrase-complexe.ts';
 import { FCM2_ACCORDS } from './accords-cm2.ts';
 import { FCM2_PASSE_SIMPLE } from './passe-simple.ts';
 import { FCM2_TEMPS_COMPOSES } from './temps-composes.ts';
+import { FCM2_VOCABULAIRE } from './vocabulaire-cm2.ts';
+import { FCM2_ORTHOGRAPHE_MOTS } from './orthographe-mots-cm2.ts';
+import { F6_PHRASE_SIMPLE } from './phrase-simple-6e.ts';
+import { F6_PRONOMS_GN } from './pronoms-gn-6e.ts';
+import { F6_PHRASE_COMPLEXE } from './phrase-complexe-6e.ts';
+import { F6_CONJUGAISON } from './conjugaison-6e.ts';
+import { F6_ACCORDS } from './accords-6e.ts';
 
 /** Français : chapitres publiés (ADR 0034). Le lot de contenu ajoute ses chapitres ici, sans toucher à catalog.ts. */
 export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
@@ -163,5 +172,77 @@ export const FRANCAIS_CHAPTERS: readonly Chapter[] = [
     domain: 'conjugaison',
     title: 'Les temps composés',
     skills: FCM2_TEMPS_COMPOSES,
+  },
+  {
+    id: 'fcm2-vocabulaire',
+    subject: 'francais',
+    grade: 'cm2',
+    domain: 'vocabulaire',
+    title: 'Vocabulaire',
+    skills: FCM2_VOCABULAIRE,
+  },
+  {
+    id: 'fcm2-orthographe-mots',
+    subject: 'francais',
+    grade: 'cm2',
+    domain: 'orthographe',
+    title: 'Orthographe des mots',
+    skills: FCM2_ORTHOGRAPHE_MOTS,
+  },
+  {
+    id: 'fcm2-lecture',
+    subject: 'francais',
+    grade: 'cm2',
+    domain: 'lecture',
+    title: 'Lire et comprendre',
+    skills: FCM2_LECTURE,
+  },
+  {
+    id: 'fcm2-culture-litteraire',
+    subject: 'francais',
+    grade: 'cm2',
+    domain: 'litterature',
+    title: 'Culture littéraire',
+    skills: FCM2_CULTURE,
+  },
+  {
+    id: 'f6-phrase-simple',
+    subject: 'francais',
+    grade: '6e',
+    domain: 'grammaire',
+    title: 'La phrase simple',
+    skills: F6_PHRASE_SIMPLE,
+  },
+  {
+    id: 'f6-pronoms-gn',
+    subject: 'francais',
+    grade: '6e',
+    domain: 'grammaire',
+    title: 'Pronoms et groupe nominal',
+    skills: F6_PRONOMS_GN,
+  },
+  {
+    id: 'f6-phrase-complexe',
+    subject: 'francais',
+    grade: '6e',
+    domain: 'grammaire',
+    title: 'La phrase complexe',
+    skills: F6_PHRASE_COMPLEXE,
+  },
+  {
+    id: 'f6-conjugaison',
+    subject: 'francais',
+    grade: '6e',
+    domain: 'conjugaison',
+    title: 'Conjugaison',
+    skills: F6_CONJUGAISON,
+  },
+  {
+    id: 'f6-accords',
+    subject: 'francais',
+    grade: '6e',
+    domain: 'orthographe',
+    title: 'Les accords',
+    skills: F6_ACCORDS,
   },
 ];

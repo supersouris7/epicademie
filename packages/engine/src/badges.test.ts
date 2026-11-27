@@ -18,3 +18,9 @@ describe('badges', () => {
     expect(p.find((b) => b.category === 'coffres')).toMatchObject({ tier: null, next: 5 });
   });
 });
+
+describe('défis facultatifs', () => {
+  it('aucun badge n’exige un défi chronométré pour progresser', () => {
+    expect(BADGES.map((b) => `${b.title} ${b.how}`).join(' ')).not.toMatch(/défi|chrono|survie/i);
+  });
+});

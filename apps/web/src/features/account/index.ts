@@ -23,3 +23,4 @@ export { ParentGateProvider } from './ParentGate.tsx';
 export { useParentGate } from './parentGate.ts';
 export { deleteFamily, exportFamily, lockParent, logout, setParentPin, useMe, useSetMe } from './api.ts';
 export { ParentUnlock } from './ParentUnlock.tsx';
+export { useSessionSync } from './sessionCache.ts';

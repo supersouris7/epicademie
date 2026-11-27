@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { signupFamily } from './family.ts';
+import { createFirstProfile, signupFamily } from './family.ts';
 
 test('Arène d’évaluation : Épreuve des Origines lancée, quittée puis reprise, sans correction', async ({ page }) => {
   test.setTimeout(60_000);
@@ -8,7 +8,7 @@ test('Arène d’évaluation : Épreuve des Origines lancée, quittée puis repr
   await page.getByRole('button', { name: 'Une fille' }).click();
   await page.getByLabel('Date de naissance').fill('2014-03-09');
   await page.getByRole('button', { name: 'Oui', exact: true }).click();
-  await page.getByRole('button', { name: /C’est parti|Créer son profil/ }).click();
+  await createFirstProfile(page);
 
   await page.getByRole('button', { name: /^Arène d’évaluation/ }).click();
   await page.getByRole('button', { name: 'Maths', exact: true }).click();

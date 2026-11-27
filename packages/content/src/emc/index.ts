@@ -4,7 +4,9 @@ import { DISCOURS_HAINE_SKILLS } from './discours-haine.ts';
 import { DROITS_LIBERTES_SKILLS } from './droits-libertes.ts';
 import { EGALITE_FRATERNITE_SKILLS } from './egalite-fraternite.ts';
 import { FAIRE_SOCIETE_SKILLS } from './faire-societe.ts';
+import { FAIRE_VIVRE_DEMOCRATIE_SKILLS } from './faire-vivre-democratie.ts';
 import { LIBERTE_EXPRESSION_SKILLS } from './liberte-expression.ts';
+import { MEDIAS_OPINION_SKILLS } from './medias-opinion.ts';
 import { SINFORMER_SKILLS } from './sinformer-en-ligne.ts';
 import { SOCIETE_DEMOCRATIQUE_SKILLS } from './societe-democratique.ts';
 import { VIE_PRIVEE_SKILLS } from './vie-privee.ts';
@@ -94,5 +96,21 @@ export const EMC_CHAPTERS: readonly Chapter[] = [
     domain: 'emc',
     title: 'Liberté d’expression',
     skills: LIBERTE_EXPRESSION_SKILLS,
+  },
+  {
+    id: 'em3-faire-vivre-democratie',
+    subject: 'histoire',
+    grade: '3e',
+    domain: 'emc',
+    title: 'Faire vivre la démocratie',
+    skills: FAIRE_VIVRE_DEMOCRATIE_SKILLS,
+  },
+  {
+    id: 'em3-medias-opinion',
+    subject: 'histoire',
+    grade: '3e',
+    domain: 'emc',
+    title: 'Médias et opinion',
+    skills: MEDIAS_OPINION_SKILLS,
   },
 ];

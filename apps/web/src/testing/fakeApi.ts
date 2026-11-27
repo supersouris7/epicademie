@@ -6,6 +6,8 @@ import {
   battleXp,
   createBattle,
   itemRefusal,
+  askHint,
+  hintRefusal,
   levelFromXp,
   type BattleDice,
   type BattleState,
@@ -13,6 +15,7 @@ import {
 import {
   API_PREFIX,
   api,
+  type AdminRole,
   type AnyEndpoint,
   type BattleView,
   type BossOverview,
@@ -102,6 +105,10 @@ export interface FakeApiOptions {
   readonly epreuve?: { readonly passed: boolean; readonly weakestSkillId: string | null };
   /** La requête vient de l'opérateur de la page de pilotage (sinon l'administration répond 403). */
   readonly admin?: boolean;
+  /** Rôle de cette personne (défaut : propriétaire, opérateur historique). */
+  readonly adminRole?: AdminRole;
+  /** Connexion par fournisseur d'identité configurée. */
+  readonly adminSso?: boolean;
   /** Rapport de suivi renvoyé pour chaque profil (par défaut : vide). */
   readonly learning?: LearningReport;
   /** Abonnement familial en cours (par défaut : oui, tous les chapitres jouables). */
@@ -159,6 +166,7 @@ const view = (id: string, b: Battle, inventory: Inventory): BattleView => ({
   turn: b.state.turn,
   shield: b.state.shield,
   hintShown: b.state.hintShown,
+  weakAttack: b.state.weakAttack,
   itemsUsed: b.state.itemsUsed,
   equipped: b.state.equipped,
   question: b.state.question,
@@ -295,7 +303,7 @@ function authHandlers(options: FakeApiOptions) {
 function adminHandlers(
   reports: Record<string, unknown>[],
   disabled: Set<string>,
-  operator: boolean,
+  { admin: operator = false, adminRole = 'proprietaire', adminSso = false }: FakeApiOptions,
 ): Partial<Record<keyof typeof api, Handler>> {
   const skill = (skillId: string) => ({
     skillId,
@@ -330,8 +338,10 @@ function adminHandlers(
   return {
     adminSession: () => {
       operatorOnly();
-      return { operator: 'Marie Dupont' };
+      return { operator: 'Marie Dupont', role: adminRole, via: adminSso ? 'sso' : 'operateur' };
     },
+    adminAuthConfig: () => ({ sso: adminSso }),
+    adminLogout: () => ({ redirect: adminSso ? 'https://sso.test/logout?rd=admin' : null }),
     adminAccounts: ({ body }) => {
       operatorOnly();
       const b = body as { q: string; page: number };
@@ -406,11 +416,13 @@ function adminHandlers(
       return {
         items: [
           {
-            id: 1,
+            id: 'compte-1',
             at: '2026-11-24T08:00:00.000Z',
             operator: 'Marie Dupont',
             action: 'consultation',
             accountId: 'aaaaaaaa-aaaa-4aaa-8aaa-000000000001',
+            accountLabel: 'p…@famille.test',
+            accountExists: true,
           },
         ],
         page: 0,
@@ -437,6 +449,7 @@ function adminHandlers(
       })),
       activeByOffer: [{ offer: 'famille-annee', count: 5 }],
       revenueCents: 12495,
+      paymentProviders: ['simulateur'],
     }),
     adminStats: () => ({
       day: '2026-11-20',
@@ -450,7 +463,10 @@ function adminHandlers(
       bossWins: 21,
       premiumFamilies: 5,
       payments: [{ status: 'payee', count: 5, amountCents: 12495 }],
-      openReports: 1,
+      openReports: reports.filter((r) => r.status === 'nouveau' || r.status === 'en-cours').length,
+      reportCounts: Object.fromEntries(
+        ['nouveau', 'en-cours', 'resolu', 'rejete'].map((s) => [s, reports.filter((r) => r.status === s).length]),
+      ),
     }),
     adminAnomalies: () => [
       {
@@ -564,6 +580,13 @@ function battleHandlers(ctx: {
       const next = answerBattle(b.state, pools, correct, dice);
       b.state = next.state;
       return { correct, invalid: false, outcome: next.outcome, battle: view(params.id ?? '', b, overview.inventory) };
+    },
+    battleHint: ({ params }) => {
+      const b = battleOf(params.id);
+      const refusal = hintRefusal(b.state);
+      if (refusal) throw new FakeError(409, 'CONFLICT', refusal);
+      b.state = askHint(b.state);
+      return view(params.id ?? '', b, overview.inventory);
     },
     useBattleItem: ({ params, body }) => {
       const b = battleOf(params.id);
@@ -750,7 +773,7 @@ export function createFakeApi(options: FakeApiOptions = {}) {
     ownedHeroes: () => ({ heroes: [...STARTING_HEROES] }),
     ...friendHandlers(),
     badges: () => badgeProgress({ boss: 2, parfait: 3, perseverance: 0, chapitres: 0, consolidees: 0, coffres: 1 }),
-    ...adminHandlers(reports, disabledSet, Boolean(options.admin)),
+    ...adminHandlers(reports, disabledSet, options),
   };
 
   function reply(method: string, url: string, body: unknown): Reply {
@@ -827,42 +850,6 @@ function friendHandlers(): Partial<Record<keyof typeof api, Handler>> {
       status = 'none';
       return view();
     },
-    ranking: () => [
-      {
-        ...tom,
-        avatar: { style: 'portrait' as const, seed: '03' },
-        me: false,
-        friend: true,
-        level: 4,
-        xp: 900,
-        weekXp: 120,
-        bosses: 2,
-        goldMedals: 1,
-        diamondMedals: 0,
-        goldSkills: 5,
-        badgePoints: 3,
-        chrono: 12,
-        survie: 7,
-      },
-      {
-        id: makeProfile().id,
-        name: 'Léa',
-        hero: 'lina' as const,
-        avatar: { style: 'portrait' as const, seed: '07' },
-        me: true,
-        friend: false,
-        level: 2,
-        xp: 300,
-        weekXp: 200,
-        bosses: 1,
-        goldMedals: 0,
-        diamondMedals: 1,
-        goldSkills: 2,
-        badgePoints: 1,
-        chrono: 20,
-        survie: 3,
-      },
-    ],
     familyFriends: () => friends().map((f) => ({ ...f, profileId: makeProfile().id, profileName: 'Léa' })),
     approveFriend: () => {
       myParentOk = true;

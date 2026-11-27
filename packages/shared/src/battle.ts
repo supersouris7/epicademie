@@ -37,6 +37,8 @@ export const BattleViewSchema = z.object({
   turn: int,
   shield: z.boolean(),
   hintShown: z.boolean(),
+  /** Indice demandé sans objet : l'attaque de cette question est un peu moins forte. */
+  weakAttack: z.boolean(),
   itemsUsed: int,
   /** Objets équipés encore disponibles dans ce combat (3 emplacements au plus). */
   equipped: z.array(ItemIdSchema).readonly(),
@@ -45,7 +47,7 @@ export const BattleViewSchema = z.object({
 });
 export type BattleView = z.infer<typeof BattleViewSchema>;
 
-/** Médaille d'une victoire contre un boss : selon les cœurs restants, diamant à 3 cœurs sans objet. */
+/** Médaille d'une victoire contre un boss : selon les cœurs restants, diamant à 3 cœurs sans aide. */
 export const BOSS_MEDALS = ['bronze', 'argent', 'or', 'diamant'] as const;
 export type BossMedal = (typeof BOSS_MEDALS)[number];
 export const BossMedalSchema = z.enum(BOSS_MEDALS);
@@ -56,9 +58,10 @@ export const BOSS_MEDAL_LABELS: Record<BossMedal, string> = {
   diamant: 'Diamant',
 };
 
-export function bossMedal(hearts: number, maxHearts: number, itemsUsed: number): BossMedal | null {
+/** `helps` : objets utilisés et indices demandés. */
+export function bossMedal(hearts: number, maxHearts: number, helps: number): BossMedal | null {
   if (hearts <= 0) return null;
-  if (hearts >= maxHearts) return itemsUsed === 0 ? 'diamant' : 'or';
+  if (hearts >= maxHearts) return helps === 0 ? 'diamant' : 'or';
   return hearts >= maxHearts - 1 ? 'argent' : 'bronze';
 }
 
@@ -97,7 +100,7 @@ export const BattleSummarySchema = z.object({
   newBest: z.boolean(),
   /** Coffre de victoire, de la rareté de la médaille (parfois un cran au-dessus) ; null si défaite. */
   chest: ChestSchema.nullable(),
-  /** Notion la plus ratée : l'écran de défaite propose de s'y entraîner. */
+  /** Notion à renforcer en priorité : l'écran de défaite propose de s'y entraîner. */
   weakSkill: z.string().nullable(),
   /** Récap : réponses et réponses justes par notion (premiers essais). */
   skills: z.array(z.object({ skillId: z.string(), answered: int, correct: int })).readonly(),

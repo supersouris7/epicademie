@@ -1,5 +1,8 @@
 # ADR 0033 — Administration par opérateur et consultation des comptes
 
+- Statut : Remplacée par [0036](0036-roles-d-administration-oidc.md) dès que la connexion OIDC est configurée
+  (l'opérateur reste actif sinon)
+
 ## Contexte
 
 La console `/admin` exigeait un compte de jeu au rôle `admin` et une session de 15 minutes
@@ -22,7 +25,8 @@ des échecs répétés) qui affiche la console dans un onglet de même origine.
   (`/auth/admin`, `/auth/admin/close`, `auth_sessions.admin_until`), commande `admin role`.
   Migration 0025 : comptes admin repassés en `parent` ; `content_events.account_id` remplacé par
   `operator` (nom) ; retour arrière dans l'en-tête du fichier SQL.
-- **Web** : `/admin` est rendue avant toute logique de session de jeu ; elle interroge
+- **Web** : `/admin` est une page à part (`admin.html`, [ADR 0035](0035-chargement-a-la-demande.md)),
+  sans logique de session de jeu ; elle interroge
   `GET /admin/session` (`{ operator }` ou 403 → message « Administration accessible uniquement depuis
   la page de pilotage. »).
 - **Comptes** (module serveur `admin`) : recherche `POST /admin/accounts/search` (e-mail, identifiant de
@@ -34,7 +38,8 @@ des échecs répétés) qui affiche la console dans un onglet de même origine.
   sessions du compte fermées, refusé pour un élève autonome).
 - **Audit RGPD** : table `admin_audit` (opérateur, action, compte, date ; sans clé étrangère, la trace survit
   à la suppression du compte). Chaque ouverture de fiche et chaque réinitialisation y figure ; lecture
-  paginée par `POST /admin/audit`. Le mot de passe temporaire n'y est jamais écrit.
+  paginée par `POST /admin/audit`, qui renvoie un nom court (e-mail masqué) et non l'adresse.
+  Le mot de passe temporaire n'y est jamais écrit.
 
 ## Conséquences
 

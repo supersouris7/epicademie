@@ -2,10 +2,17 @@ import { useQuery } from '@tanstack/react-query';
 import { isFreeChapter } from '@epicademie/content';
 import { api } from '@epicademie/shared';
 import { request } from '../../shared/api/client.ts';
+import { PARENT_GC_MS } from '../../shared/api/queryClient.ts';
 
 /** Abonnement de la famille (accès premium, prix, historique). */
 export const billingKey = ['billing'] as const;
-export const useBilling = () => useQuery({ queryKey: billingKey, queryFn: () => request(api.billing) });
+export const useBilling = () =>
+  useQuery({
+    queryKey: billingKey,
+    queryFn: () => request(api.billing),
+    gcTime: PARENT_GC_MS,
+    meta: { parentOnly: true },
+  });
 
 /**
  * Le chapitre est-il jouable ? Gratuit (1er chapitre de chaque classe) ou abonnement en cours.

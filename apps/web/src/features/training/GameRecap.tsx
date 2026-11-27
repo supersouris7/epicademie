@@ -11,7 +11,7 @@ import type { Missed } from './types.ts';
 
 /**
  * Récap de fin de partie (écran qui suit celui des récompenses), commun à tous les modes : tableau
- * des notions, erreurs commises (énoncé et bonne réponse) et, si une notion est souvent ratée, le
+ * des notions, questions à revoir (énoncé et bonne réponse) et, si une notion est à renforcer, le
  * mot de Questy avec un bouton qui lance directement son entraînement.
  */
 export function GameRecap({
@@ -24,7 +24,7 @@ export function GameRecap({
   readonly rows: readonly RecapRow[];
   /** Tableau des notions (sauf quand l'écran a déjà le sien, comme l'entraînement). */
   readonly table?: boolean;
-  /** Questions ratées pendant la partie, avec la bonne réponse. */
+  /** Questions à revoir de la partie, avec la bonne réponse. */
   readonly missed?: readonly Missed[];
 }) {
   const navigate = useNavigate();
@@ -49,9 +49,7 @@ export function GameRecap({
             {rows.map((r) => (
               <tr key={r.skillId} className="border-outline/20 border-t">
                 <td className="py-1.5 font-bold">{title(r.skillId)}</td>
-                <td
-                  className={`py-1.5 text-right font-bold ${r.correct < r.answered ? 'text-danger' : 'text-success'}`}
-                >
+                <td className={`py-1.5 text-right font-bold ${r.correct < r.answered ? '' : 'text-success'}`}>
                   {r.correct} / {r.answered}
                 </td>
               </tr>
@@ -61,7 +59,7 @@ export function GameRecap({
       )}
       {missed.length > 0 && (
         <div className="flex flex-col gap-2">
-          <h3 className="font-display text-lg tracking-wide">Tes erreurs ({missed.length})</h3>
+          <h3 className="font-display text-lg tracking-wide">Pas encore réussies ({missed.length})</h3>
           <ul className="flex flex-col gap-2">
             {missed.map((m, i) => (
               <li key={i} className="bg-surface-2 rounded-2xl p-3 text-lg">
@@ -98,8 +96,8 @@ export function GameRecap({
         <div className="bg-surface-2 flex flex-wrap items-center gap-3 rounded-2xl p-3">
           <Questy mood="wink" size={56} />
           <p className="min-w-0 flex-1 font-bold">
-            Tu fais souvent des erreurs sur <span className="font-display tracking-wide">{title(advice.skillId)}</span>.
-            Tu devrais faire cet entraînement pour ne plus jamais hésiter !
+            Notion à renforcer : <span className="font-display tracking-wide">{title(advice.skillId)}</span>. Un
+            entraînement et tu vas la réussir !
           </p>
           <GameButton
             icon="icons-navigation-play"
