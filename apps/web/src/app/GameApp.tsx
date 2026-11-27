@@ -88,7 +88,7 @@ const AssetPreview = import.meta.env.DEV
 const PRELOAD = [
   [Hub, ProfilePicker, ModeSetup, Chapters, Notions, BossChapters, Progress, ParentHome],
   [TrainingPlay, BossPlay, SubjectProgress, TrophiesPage, Shop, Heroes, MultiModes, Settings, Dictionary],
-  [DefiPlay, EvaluationHome, EvaluationPlay, EvaluationResults, Arena, Online, Friends, Ranking, TvScreen],
+  [DefiPlay, EvaluationHome, EvaluationPlay, EvaluationResults, Arena, Online, Friends, TvScreen],
   [ChildReport, ParentProfiles, ParentProfileEditor, ParentSettings, Subscription, PaymentSimulator],
   [ProfileEditor, DeleteFamily, About],
 ];

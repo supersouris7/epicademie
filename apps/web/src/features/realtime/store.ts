@@ -11,12 +11,11 @@ import type {
   ServerToClientEvents,
 } from '@epicademie/shared';
 import { REALTIME_REFUSALS } from '@epicademie/shared';
+import { useSession } from '../../shared/lib/session.ts';
 
 type RealtimeSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
 /** Notification en haut de l'écran : message reçu, invitation à l'arène, ou joueur qui arrive. */
-import { useSession } from '../../shared/lib/session.ts';
-
 export type Notice =
   | { readonly id: number; readonly kind: 'chat'; readonly message: ChatMessage }
   | { readonly id: number; readonly kind: 'invite'; readonly invite: ArenaInvite }
