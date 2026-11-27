@@ -148,10 +148,14 @@ const compose = (mot: string, citation: string, source: string = mot): MotType =
   type: 'composé',
   faitId: acad(source, citation, `compose-${slug(mot)}`),
 });
-const simple = (mot: string, dans: string, citation: string): MotType => ({
+/**
+ * Mot simple : « saison » est donné comme tel par l’article « simple » ; pour les autres, l’étymologie de leur article
+ * montre un mot venu tout entier du latin, à lire avec la définition « def-simple ».
+ */
+const simple = (mot: string, citation: string, article: string = mot): MotType => ({
   mot,
   type: 'simple',
-  faitId: acad(dans, citation, `simple-${slug(mot)}`),
+  faitId: acad(article, citation, `simple-${slug(mot)}`),
 });
 
 export const MOTS_TYPES: readonly MotType[] = [
@@ -160,11 +164,15 @@ export const MOTS_TYPES: readonly MotType[] = [
   compose('passe-temps', LISTE_COMPOSES, 'composé'),
   compose('château fort', LISTE_COMPOSES, 'composé'),
   compose('plate-forme', LISTE_COMPOSES, 'composé'),
-  simple('monnaie', 'porte-monnaie', 'Composé de porte III et de monnaie.'),
-  simple('clef', 'porte-clefs', 'Composé de porte III et de clef ou clé, au pluriel.'),
-  simple('pluie', 'parapluie', 'Composé de para- II et de pluie.'),
-  simple('fleuve', 'fleuve', "Long cours d'eau aux affluents nombreux"),
-  simple('plaine', 'plaine', 'Vaste étendue de terres, plate ou faiblement vallonnée.'),
+  simple(
+    'saison',
+    'Mot simple, qui est formé d’un seul terme. « Saison » est un mot simple, « arrière-saison », un mot composé.',
+    'simple',
+  ),
+  simple('monnaie', 'Emprunté du latin moneta'),
+  simple('clef', 'Du latin classique clavem, accusatif de clavis, « clef, loquet, barre ».'),
+  simple('pluie', 'Issu du latin pluvia, de même sens'),
+  simple('fleuve', 'Emprunté du latin fluvius, de même sens'),
 ];
 
 export interface PhraseConstruite {
@@ -260,7 +268,7 @@ export const ENTREES: readonly Entree[] = [
     classe: 'nom',
     rare: true,
     autre: ['rare', 'adjectif'],
-    synonyme: rel('pénurie', 'syn', 'Synon. carence, défaut, insuffisance, manque, rareté', 'manque', 'misère'),
+    synonyme: rel('pénurie', 'syn', 'Synon. carence, défaut, insuffisance, manque, rareté', 'manque'),
     antonyme: rel('pénurie', 'ant', 'anton. abondance.', 'abondance'),
     phrase: 'La ville craint une {} d’eau.',
   },
@@ -790,12 +798,8 @@ export const CHAMPS: readonly Champ[] = [
       'le temps',
       'temps qu’il fait',
       'le temps qu’il fait',
-      'pluie',
-      'la pluie',
       'mauvais temps',
       'le mauvais temps',
-      'climat',
-      'le climat',
       'météorologie',
       'la météorologie',
     ],
