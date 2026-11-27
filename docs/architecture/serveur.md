@@ -33,9 +33,26 @@ src/
 | `training`  | parties hors boss, correction serveur, répétition espacée, coffres          |
 | `battles`   | combats de boss (état serveur), boss vaincus, médailles, équipement         |
 | `inventory` | objets possédés, équipement, boutique                                       |
-| `realtime`  | présence, messages prédéfinis, arène, salles à code (socket.io)             |
+| `realtime`  | présence, messages prédéfinis, arène, Duel, salles à code (socket.io)       |
 | `system`    | santé, disponibilité, métriques, réseau local, présence                     |
 | `telemetry` | erreurs remontées par le navigateur                                         |
+
+## Duel à distance (temps réel)
+
+Dans `modules/realtime` ([ADR 0040](../adr/0040-duel-et-quiz-tv.md)) ; règles pures dans
+`@epicademie/engine` (`shootout.ts`), contrat dans `packages/shared/src/duel.ts`.
+
+- `duel.ts` : défi d'un joueur lié, en ligne et libre ; questions de chacun (`class-pool.ts`, sa
+  classe, sa famille), correction et minuteurs côté serveur, reconnexion, revanche. Rien n'est
+  écrit en base ;
+- `duel-view.ts` : état en mémoire et vue de chaque joueur (jamais la question ni le bilan de
+  l'autre) ;
+- un joueur n'est occupé que par un mode à la fois : démarrer un duel fait quitter les salons
+  d'arène ; une partie d'arène annule les invitations en duel ;
+- seul l'invité reçoit `duel:invite`, seul l'auteur du défi voit la vue `lobby` ;
+- une revanche ferme le duel (`duel:closed`) puis en ouvre un nouveau ;
+- après plus de 30 s de coupure, le serveur n'envoie plus rien au joueur : le client efface son
+  duel à la reconnexion et n'affiche que l'état reçu.
 
 ## Salles à code (temps réel)
 

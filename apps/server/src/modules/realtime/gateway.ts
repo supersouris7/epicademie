@@ -7,6 +7,10 @@ import {
   ArenaRespondSchema,
   chatText,
   ChatSendSchema,
+  DuelAnswerSchema,
+  DuelChallengeSchema,
+  DuelRespondSchema,
+  DuelSubjectsRequestSchema,
   REALTIME_REFUSALS,
   RealtimeAuthSchema,
   type ChatMessage,
@@ -22,6 +26,7 @@ import type { ErrorReporter } from '../../core/observability/error-reporter.ts';
 import type { Metrics } from '../../core/observability/metrics.ts';
 import { createArenas } from './arena.ts';
 import { clientIp } from './client-ip.ts';
+import { createDuels, type Duels } from './duel.ts';
 import type { PlayerSocket, Presence, SocketData } from './presence.ts';
 import { tokenBucket } from './rate-limiter.ts';
 import { createRooms, type Rooms, type Seat } from './rooms.ts';
@@ -33,6 +38,8 @@ import { createRooms, type Rooms, type Seat } from './rooms.ts';
  * - Présence : un profil n'est ouvert que sur un seul appareil (2e connexion refusée).
  * - Messages : prédéfinis ou emoji seulement (pas de texte libre : sûr pour des enfants).
  * - Arène : invitation, puis tour par tour.
+ * - Duel à distance : défi d'un joueur lié, réponses simultanées. Un joueur n'est occupé que par
+ *   un mode à la fois.
  * - Invités sans compte : un code de salle ouverte (ou un jeton de place) suffit ; aucun
  *   gestionnaire des joueurs inscrits ne leur est branché (docs/adr/0040-duel-et-quiz-tv.md).
  */
@@ -113,13 +120,53 @@ function welcomeGuest(io: RealtimeServer, socket: PlayerSocket, rooms: Rooms, me
 
 const tvRoom = (familyId: string) => `tv:${familyId}`;
 
+/** Valide le message et le débit, puis exécute ; toute erreur est journalisée, jamais fatale. */
+function binder(socket: PlayerSocket, { logger, reporter }: RealtimeDeps) {
+  const actionLimit = tokenBucket(ACTION_BURST, ACTION_REFILL_MS);
+  return <S extends z.ZodType>(
+    event: keyof ClientToServerEvents,
+    schema: S | null,
+    handler: (msg: z.output<S>) => void | Promise<void>,
+    limit = actionLimit,
+  ) => {
+    const failed = (err: unknown) => reporter.capture(err, { source: 'realtime', event });
+    socket.on(event, (raw?: unknown) => {
+      if (!limit.take()) return;
+      const parsed = schema ? schema.safeParse(raw) : { success: true as const, data: undefined };
+      if (!parsed.success) {
+        logger.debug({ event }, 'message temps réel invalide ignoré');
+        return;
+      }
+      try {
+        void handler(parsed.data as z.output<S>)?.catch(failed);
+      } catch (err) {
+        failed(err);
+      }
+    });
+  };
+}
+
+/** Messages du Duel d'un joueur inscrit (aucun n'est ouvert aux invités ni à l'écran TV). */
+function bindDuel(on: ReturnType<typeof binder>, duels: Duels, profile: Profile) {
+  on('duel:subjects', DuelSubjectsRequestSchema, ({ to }) => duels.subjects(profile.id, to));
+  on('duel:challenge', DuelChallengeSchema, (msg) => duels.challenge(profile, msg));
+  on('duel:respond', DuelRespondSchema, ({ duelId, accept }) => duels.respond(profile.id, duelId, accept));
+  on('duel:answer', DuelAnswerSchema, (msg) => duels.answer(profile.id, msg));
+  on('duel:rematch', null, () => duels.rematch(profile.id));
+  on('duel:leave', null, () => duels.leave(profile.id));
+}
+
 export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
-  const { presence, logger, reporter, metrics } = deps;
+  const { presence, reporter, metrics } = deps;
   const arenas = createArenas({
     presence,
     clock: deps.clock,
     random: deps.random,
-    onBusyChange: () => broadcastPresence(),
+    onBusyChange: () => {
+      // Une partie d'arène a pu prendre un joueur invité en duel.
+      duels.prune();
+      broadcastPresence();
+    },
     onCountChange: (n) => metrics?.openArenas.set(n),
     onView: (view, playerIds) => {
       // Écran TV : la famille des joueurs (connus de la présence, ou dernière famille vue).
@@ -131,14 +178,29 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
     },
   });
   const arenaFamily = new Map<string, string>();
+  const duels = createDuels({
+    presence,
+    clock: deps.clock,
+    random: deps.random,
+    canPlayChapter: deps.canPlayChapter,
+    isBusyElsewhere: arenas.isBusy,
+    onStart: (ids) => ids.forEach(arenas.withdraw),
+    onBusyChange: () => broadcastPresence(),
+    onCountChange: (n) => metrics?.openDuels.set(n),
+  });
+  const isBusy = (id: string) => arenas.isBusy(id) || duels.isBusy(id);
   const rooms = createGatewayRooms(io, deps);
 
   /** Chaque joueur reçoit la liste de ses connectés : sa famille et ses amis actifs (jamais les autres). */
   const broadcastPresence = () => {
-    for (const id of presence.allIds()) presence.emit(id, 'presence', presence.visibleTo(id, arenas.isBusy));
+    for (const id of presence.allIds()) presence.emit(id, 'presence', presence.visibleTo(id, isBusy));
     metrics?.onlinePlayers.set(presence.count());
   };
-  presence.onChanged(broadcastPresence);
+  presence.onChanged(() => {
+    // Liaison retirée (amitié) : le duel concerné s'arrête.
+    duels.prune();
+    broadcastPresence();
+  });
 
   /** Invité : pas de session ; code de salle ouverte ou jeton de place, tentatives limitées. */
   const admitGuest = (socket: PlayerSocket, { code, token }: GuestAuth, next: (err?: Error) => void) => {
@@ -232,31 +294,10 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
     arenas.reconnected(profile.id);
     const current = arenas.viewOf(profile.id);
     if (current) socket.emit('arena', current);
+    duels.reconnected(profile.id);
 
     const chatLimit = tokenBucket(CHAT_BURST, CHAT_REFILL_MS);
-    const actionLimit = tokenBucket(ACTION_BURST, ACTION_REFILL_MS);
-
-    /** Valide le message et le débit, puis exécute ; toute erreur est journalisée, jamais fatale. */
-    const on = <S extends z.ZodType>(
-      event: keyof ClientToServerEvents,
-      schema: S | null,
-      handler: (msg: z.output<S>) => void,
-      limit = actionLimit,
-    ) => {
-      socket.on(event, (raw?: unknown) => {
-        if (!limit.take()) return;
-        const parsed = schema ? schema.safeParse(raw) : { success: true as const, data: undefined };
-        if (!parsed.success) {
-          logger.debug({ event }, 'message temps réel invalide ignoré');
-          return;
-        }
-        try {
-          handler(parsed.data as z.output<S>);
-        } catch (err) {
-          reporter.capture(err, { source: 'realtime', event });
-        }
-      });
-    };
+    const on = binder(socket, deps);
 
     on(
       'chat',
@@ -278,21 +319,28 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
       deps
         .canPlayChapter(socket.data.familyId, msg.chapterId)
         .then((ok) => {
-          if (ok)
-            arenas.create(profile, { ...msg, invite: msg.invite.filter((id) => presence.linked(profile.id, id)) });
+          if (!ok || duels.isBusy(profile.id)) return;
+          const invite = msg.invite.filter((id) => presence.linked(profile.id, id) && !duels.isBusy(id));
+          arenas.create(profile, { ...msg, invite });
         })
         .catch((err: unknown) => reporter.capture(err, { source: 'realtime', event: 'arena:create' }));
     });
-    on('arena:respond', ArenaRespondSchema, ({ arenaId, accept }) => arenas.respond(profile.id, arenaId, accept));
+    on('arena:respond', ArenaRespondSchema, ({ arenaId, accept }) => {
+      if (!accept || !duels.isBusy(profile.id)) arenas.respond(profile.id, arenaId, accept);
+    });
     on('arena:start', null, () => arenas.start(profile.id));
     on('arena:answer', ArenaAnswerSchema, ({ response }) => arenas.answer(profile.id, response));
     on('arena:leave', null, () => arenas.leave(profile.id));
+    bindDuel(on, duels, profile);
 
     socket.on('disconnect', () => {
       presence.leave(socket, profile.id);
       // Connexion remplacée par un autre appareil : le joueur est toujours là.
       // Sinon, pas d'élimination immédiate : le temps de revenir (voir ARENA_GRACE_MS).
-      if (!presence.isOnline(profile.id)) arenas.disconnected(profile.id);
+      if (!presence.isOnline(profile.id)) {
+        arenas.disconnected(profile.id);
+        duels.disconnected(profile.id);
+      }
       metrics?.realtimeDisconnects.inc();
       broadcastPresence();
     });
@@ -304,6 +352,7 @@ export function attachRealtime(io: RealtimeServer, deps: RealtimeDeps) {
     /** Arrêt propre : minuteurs coupés, connexions fermées. */
     async close(): Promise<void> {
       arenas.dispose();
+      duels.dispose();
       rooms.dispose();
       await io.close();
     },

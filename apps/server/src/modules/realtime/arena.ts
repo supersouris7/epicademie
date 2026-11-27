@@ -256,6 +256,9 @@ export function createArenas(deps: ArenaDeps) {
     isBusy: (profileId: string) => arenaOf(profileId)?.state != null,
     count: () => arenas.size,
 
+    /** Le joueur part dans un autre mode : il quitte ses salons et ses parties finies. */
+    withdraw: (profileId: string) => detach(profileId),
+
     /** Vue de l'arène du joueur (reconnexion). */
     viewOf(profileId: string): ArenaView | null {
       const a = arenaOf(profileId) ?? finishedOf(profileId);
