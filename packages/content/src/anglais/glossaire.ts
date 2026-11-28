@@ -24,6 +24,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     example: 'What’s est la contraction de What is. I’m est la contraction de I am.',
   },
   {
+    id: 'apostrophe',
+    word: 'apostrophe',
+    forms: ['apostrophe', 'apostrophes'],
+    definition: 'Petit signe ’ qui remplace une lettre qui disparaît.',
+    example: 'Dans I’m, l’apostrophe remplace le a de am.',
+  },
+  {
     id: 'adjectif-possessif',
     word: 'adjectif possessif',
     forms: ['adjectif possessif', 'adjectifs possessifs'],
@@ -57,6 +64,13 @@ export const GLOSSAIRE: readonly SubjectTerm[] = [
     forms: ['tiret', 'tirets'],
     definition: 'Le petit trait « - » qui relie deux mots.',
     example: 'twenty-one s’écrit avec un tiret entre twenty et one.',
+  },
+  {
+    id: 'unite-nombre',
+    word: 'unité',
+    forms: ['unité', 'unités'],
+    definition: 'Dans un nombre, le chiffre de droite : il compte les « un par un ».',
+    example: 'Dans 25, la dizaine est 20 et l’unité est 5.',
   },
   {
     id: 'adjectif',
