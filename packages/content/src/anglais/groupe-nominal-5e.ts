@@ -181,7 +181,7 @@ const offer = (rng: Rng): Gapped => {
     right: 'some',
     why: WHY_OFFER,
     rule: 'Repère qu’on propose ou qu’on demande quelque chose.',
-    cue: 'écris le mot du mémo pour proposer ou demander, en un seul mot',
+    cue: 'en un seul mot',
     retain: 'Retiens : pour proposer ou demander, on ne donne pas de nombre précis.',
   };
 };

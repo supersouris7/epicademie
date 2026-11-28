@@ -165,31 +165,51 @@ function linkMeaning(rng: Rng): QuestionDraft {
   };
 }
 
-/** Saisie : la phrase française donne le sens. Pas de comparaison ici (« but » y serait juste aussi). */
+/** Saisie en document : la phrase française donne le sens. Pas de comparaison ici (« but » y serait juste aussi). */
 type Typed = 'but' | 'however';
 const TYPED: readonly Typed[] = ['but', 'however'];
 const TYPED_POOL: Readonly<Record<Typed, readonly Translated[]>> = { but: CONCESSIONS, however: HOWEVERS };
-const TYPED_WHY: Readonly<Record<Typed, readonly TextTrap[]>> = {
+
+/**
+ * Saisie sans traduction : le mot se déduit de la phrase anglaise seule. On garde les phrases où la seconde idée
+ * contrarie un souhait ou un goût (« whereas » n’y convient pas), et on écarte l’exemple du mémo.
+ */
+const MEMO_START = 'The test was hard;';
+const ALONE_STARTS: readonly string[] = ['I am tired,', 'She wants to play,', 'I want to come,', 'I like this song,'];
+export const ALONE_POOL: Readonly<Record<Typed, readonly Joined[]>> = {
+  but: CONCESSIONS.filter((j) => ALONE_STARTS.includes(j.start)),
+  however: HOWEVERS.filter((j) => j.start !== MEMO_START),
+};
+const ALONE_WHY: Readonly<Record<Typed, readonly TextTrap[]>> = {
   but: [
-    { text: 'whereas', why: 'whereas veut dire « alors que » : la phrase française dit « mais ».' },
-    { text: 'however', why: 'however veut dire « cependant » : la phrase française dit « mais ».' },
+    {
+      text: 'whereas',
+      why: 'whereas veut dire « alors que » : ici, la seconde idée contrarie la première (« mais »).',
+    },
+    { text: 'however', why: 'however suit un point ou un point-virgule : ici, une virgule précède le trou.' },
   ],
   however: [
-    { text: 'but', why: 'but veut dire « mais » : la phrase française dit « cependant ».' },
-    { text: 'whereas', why: 'whereas veut dire « alors que » : la phrase française dit « cependant ».' },
+    { text: 'but', why: 'Après ce point-virgule, avec une virgule derrière le trou, le cours emploie however.' },
+    {
+      text: 'whereas',
+      why: 'whereas veut dire « alors que » : il ne convient pas entre ce point-virgule et la virgule.',
+    },
   ],
 };
-const MEANING_STEP = 'Repère dans la phrase française le mot qui relie les deux idées.';
 
-function linkTranslate(rng: Rng): QuestionDraft {
+function linkAlone(rng: Rng): QuestionDraft {
   const kind = rng.pick(TYPED);
-  const j = rng.pick(TYPED_POOL[kind]);
+  const j = rng.pick(ALONE_POOL[kind]);
   return {
-    prompt: `Complète avec le mot de contraste du cours pour dire « ${j.fr} » : « ${show(j)} »`,
+    prompt: `Complète avec le mot de contraste du cours : « ${show(j)} »`,
     answer: typed([kind]),
-    traps: textTraps([kind], TYPED_WHY[kind]),
-    hint: 'Dans la phrase française, cherche le mot qui relie les deux idées.',
-    steps: [MEANING_STEP, `Retrouve le mot anglais qui veut dire « ${MEANING[kind]} ».`, `Écris : **${kind}**.`],
+    traps: textTraps([kind], ALONE_WHY[kind]),
+    hint: 'Comprends les deux idées, puis regarde la ponctuation autour du trou.',
+    steps: [
+      'Traduis toi-même les deux idées de la phrase.',
+      'Regarde le signe avant le trou, puis le signe après le trou.',
+      `Écris : **${kind}**.`,
+    ],
   };
 }
 
@@ -240,7 +260,7 @@ const linkSkill: Skill = {
     if (level === 1) return linkFirst(rng);
     if (level === 2) return linkPick(rng);
     if (level === 3) return linkMeaning(rng);
-    if (level === 4) return linkTranslate(rng);
+    if (level === 4) return linkAlone(rng);
     return linkDocument(rng);
   },
 };

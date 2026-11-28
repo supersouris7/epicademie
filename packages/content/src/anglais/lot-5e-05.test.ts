@@ -9,7 +9,7 @@ import type { Level, Question } from '../types.ts';
 import { validateVariants } from '../validate.ts';
 import { ENGLISH_PRONOUNS_5E_CHAPTER, NOUNS, PREFIX_PAIRS } from './groupe-nominal-5e.ts';
 import { FAITS as GROUP_FACTS } from './groupe-nominal-5e-faits.ts';
-import { CASES, CONCESSIONS, ENGLISH_LINKING_5E_CHAPTER, HOWEVERS, QUALITIES } from './relier-situer.ts';
+import { ALONE_POOL, CASES, CONCESSIONS, ENGLISH_LINKING_5E_CHAPTER, HOWEVERS, QUALITIES } from './relier-situer.ts';
 import { FAITS as LINK_FACTS } from './relier-situer-faits.ts';
 
 const LEVELS: readonly Level[] = [1, 2, 3, 4, 5];
@@ -189,19 +189,11 @@ describe('anglais 5e : groupe nominal et pronoms, relier et situer', () => {
     }
   });
 
-  it('contraste : aux niveaux saisis, la phrase française désigne « mais » ou « cependant », jamais « alors que »', () => {
-    const french = { but: 'mais', however: 'cependant' };
+  it('contraste : dans le document, la phrase française désigne « mais » ou « cependant », jamais « alors que »', () => {
     const all = [...CONCESSIONS, ...HOWEVERS];
     for (const j of all) expect(j.fr).not.toContain('alors que');
     for (const j of CONCESSIONS) expect(j.fr, j.start).toMatch(/, mais /);
     for (const j of HOWEVERS) expect(j.fr, j.start).toMatch(/; cependant, /);
-    for (const q of questions('a5-contraste', 4)) {
-      if (q.answer.kind !== 'text') throw new Error('saisie attendue');
-      const j = all.find((x) => q.prompt.includes(x.fr) && q.prompt.includes(x.start));
-      expect(j, q.prompt).toBeDefined();
-      expect(j!.fr).toContain(french[q.answer.accepted[0] as 'but' | 'however']);
-      expect(q.traps.find((x) => JSON.stringify(x).includes('whereas'))?.why).toContain('la phrase française dit');
-    }
     for (const q of questions('a5-contraste', 5))
       expect(
         all.filter((j) => JSON.stringify(q.figure).includes(j.fr)),
@@ -209,11 +201,24 @@ describe('anglais 5e : groupe nominal et pronoms, relier et situer', () => {
       ).toHaveLength(4);
   });
 
-  it('quantifieurs : proposer ou demander attend un seul mot, celui du mémo', () => {
+  it('contraste : au niveau 4, ni traduction ni mot français, et jamais l’exemple du mémo', () => {
+    const memo = getSkill('a5-contraste')!.lesson.memo.join(' ');
+    const pool = [...ALONE_POOL.but, ...ALONE_POOL.however];
+    for (const q of questions('a5-contraste', 4)) {
+      const j = pool.find((x) => q.prompt.includes(x.start) && q.prompt.includes(x.end));
+      expect(j, q.prompt).toBeDefined();
+      expect(memo).not.toContain(j!.start);
+      expect([q.prompt, q.hint].join(' ')).not.toMatch(/\bmais\b|cependant|alors que/);
+      for (const x of [...CONCESSIONS, ...HOWEVERS]) expect(q.prompt).not.toContain(x.fr);
+    }
+  });
+
+  it('quantifieurs : proposer ou demander attend un seul mot, sans renvoyer au mémo', () => {
     const offers = questions('a5-quantifieurs', 4).filter((q) => /Would you like|Can I have/.test(q.prompt));
     expect(offers.length).toBeGreaterThan(0);
     for (const q of offers) {
       expect(q.prompt).toContain('en un seul mot');
+      expect(q.prompt).not.toMatch(/mémo|proposer|demander/);
       expect(q.prompt).not.toMatch(/un peu|quelques/);
     }
   });
